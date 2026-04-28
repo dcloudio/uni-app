@@ -217,6 +217,21 @@ describe('runtime/install', () => {
     expect(cfg.pageInactiveTimeoutSec).toBe(120)
   })
 
+  test('I9.c manifest 为字符串数字时仍解析（工具链/手工 JSON 常见）', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      JSON.stringify({
+        backgroundTimeout: '90',
+        pageInactiveTimeout: '120',
+        reportInterval: '8',
+      })
+
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    const cfg = getStatApp().getConfig()!
+    expect(cfg.backgroundTimeoutSec).toBe(90)
+    expect(cfg.pageInactiveTimeoutSec).toBe(120)
+    expect(cfg.reportIntervalSec).toBe(8)
+  })
+
   // === collectItems：与私有版完全同名同义 ===
 
   test('I10 collectItems.uniPushClientID=true → enablePush=true', () => {

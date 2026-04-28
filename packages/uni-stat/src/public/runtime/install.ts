@@ -67,13 +67,23 @@ import type { LifecycleOptions } from './lifecycleHooks'
  * `public/config.ts#IMAGE_REPORT_DEFAULTS` 中维护，**不**通过 manifest 暴露给业务方。
  *
  * 任意 JSON 解析 / 字段类型异常都吞掉，回到默认值；此处**不能**抛错，否则会阻塞自动 install。
+ *
+ * ## 必须直接写 `process.env.UNI_STATISTICS_CONFIG`
+ *
+ * `uni:stat` 插件通过 Vite `define` 在**构建阶段**把字面量 `process.env.UNI_STATISTICS_CONFIG`
+ * 替换为 JSON 字符串。若写成 `const env = process.env; env.UNI_STATISTICS_CONFIG`，
+ * 打包器无法静态替换，小程序/H5 运行时读到的一直是 `undefined`，manifest 超时等字段全部丢失。
+ *
+ * ## 禁止 `typeof process !== 'undefined' ? process.env.XXX : …`
+ *
+ * 微信小程序等运行时**往往没有全局 `process`**。替换后源码等价于
+ * `typeof process !== 'undefined' ? "{\"enable\":…}" : undefined`，条件为假时会**整段丢弃**
+ * 已内联的 JSON 字符串，表现为 `UNI_STATISTICS_CONFIG_len=0`、会话阈值永远默认。
+ * 因此必须**直接**书写 `process.env.UNI_STATISTICS_CONFIG`（无任何 `typeof process` 包裹）。
  */
 function readManifestStatConfig(): Partial<StatAppConfig> | undefined {
   try {
-    const env =
-      (typeof process !== 'undefined' && process.env) ||
-      ({} as Record<string, string | undefined>)
-    const raw = env.UNI_STATISTICS_CONFIG
+    const raw = process.env.UNI_STATISTICS_CONFIG
     if (!raw || typeof raw !== 'string') return undefined
     const obj = JSON.parse(raw) as Record<string, unknown>
     if (!obj || typeof obj !== 'object') return undefined
@@ -126,6 +136,114 @@ function readManifestStatConfig(): Partial<StatAppConfig> | undefined {
 }
 
 /**
+ * 构建期 manifest 注入核对（面向小程序 / H5 差异排查）。
+ *
+ * 使用 `logger.info` 输出（不依赖 manifest.debug），便于在微信开发者工具直接复制粘贴给维护者。
+ * 仅输出类型、长度、顶层键名及对会话阈值相关的字段**原文**（不含整段 JSON，避免泄露 ak）。
+ *
+ * @param fromManifest `readManifestStatConfig` 映射后的结果，便于对照「注入原文 → 映射结果」。
+ */
+function logManifestBuildInjectDiagnostics(
+  fromManifest: Partial<StatAppConfig> | undefined
+): void {
+  if (typeof process !== 'undefined' && process.env.NODE_ENV === 'test') {
+    return
+  }
+
+  try {
+    // 只使用 initDefine / uni:stat 已声明的 `process.env.XXX` 字面量；勿读 `UNI_APP_X` 等未进
+    // `initDefine` 的键：小程序无 `process` 时，未替换的 `process.env.*` 会直接 ReferenceError。
+    const raw = process.env.UNI_STATISTICS_CONFIG
+    let parsedKeys: string[] = []
+    let parseError: string | undefined
+    const sample: Record<string, unknown> = {}
+
+    if (typeof raw === 'string' && raw.length > 0) {
+      try {
+        const o = JSON.parse(raw) as Record<string, unknown>
+        parsedKeys = Object.keys(o)
+        Object.assign(sample, {
+          enable: o.enable,
+          version: o.version,
+          reportInterval: o.reportInterval,
+          reportIntervalSec: o.reportIntervalSec,
+          backgroundTimeout: o.backgroundTimeout,
+          backgroundTimeoutSec: o.backgroundTimeoutSec,
+          pageInactiveTimeout: o.pageInactiveTimeout,
+          pageInactiveTimeoutSec: o.pageInactiveTimeoutSec,
+        })
+      } catch (e) {
+        parseError = e instanceof Error ? e.message : String(e)
+      }
+    }
+
+    logger.info(
+      '[manifest 构建注入诊断] 请整段复制给排查（len=0：define 未替换或曾对 env 误包 typeof process）',
+      {
+        UNI_PLATFORM: process.env.UNI_PLATFORM,
+        UNI_STAT_DEBUG: process.env.UNI_STAT_DEBUG,
+        UNI_STATISTICS_CONFIG_type:
+          raw === undefined ? 'undefined' : typeof raw,
+        UNI_STATISTICS_CONFIG_len: typeof raw === 'string' ? raw.length : 0,
+        json_parse_ok:
+          parseError === undefined && typeof raw === 'string' && raw.length > 0,
+        json_parse_error: parseError,
+        parsed_top_keys: parsedKeys,
+        parsed_sample_stat_fields: sample,
+        readManifestStatConfig_keys: fromManifest
+          ? Object.keys(fromManifest)
+          : [],
+        readManifestStatConfig_timeouts: fromManifest
+          ? {
+              backgroundTimeoutSec: fromManifest.backgroundTimeoutSec,
+              pageInactiveTimeoutSec: fromManifest.pageInactiveTimeoutSec,
+              reportIntervalSec: fromManifest.reportIntervalSec,
+            }
+          : undefined,
+      }
+    )
+  } catch (e) {
+    logger.warn(
+      '[uni-stat] manifest 构建注入诊断输出失败（小程序请勿读取未 define 的 process.env）',
+      e
+    )
+  }
+}
+
+/**
+ * 将 manifest / JSON 中的数值候选标准化为正数（> 0）。
+ * 兼容部分工具或手工编辑 manifest 时写成**字符串数字**（如 `"60"`）的情况。
+ */
+function normalizePositiveNumber(value: unknown): number | undefined {
+  if (typeof value === 'number') {
+    return value > 0 ? value : undefined
+  }
+  if (typeof value === 'string') {
+    const t = value.trim()
+    if (t === '') return undefined
+    const n = Number(t)
+    if (Number.isFinite(n) && n > 0) return n
+  }
+  return undefined
+}
+
+/**
+ * 将候选标准化为非负数（>= 0），用于 `reportInterval`。
+ */
+function normalizeNonNegativeNumber(value: unknown): number | undefined {
+  if (typeof value === 'number') {
+    return value >= 0 ? value : undefined
+  }
+  if (typeof value === 'string') {
+    const t = value.trim()
+    if (t === '') return undefined
+    const n = Number(t)
+    if (Number.isFinite(n) && n >= 0) return n
+  }
+  return undefined
+}
+
+/**
  * 在多个候选值中按顺序取**第一个有效的正数**（> 0），其余忽略。
  * 用于 manifest 字段的"主名 / 别名"二选一解析（如 `backgroundTimeout` / `backgroundTimeoutSec`）。
  *
@@ -134,7 +252,8 @@ function readManifestStatConfig(): Partial<StatAppConfig> | undefined {
  */
 function pickPositiveNumber(...candidates: unknown[]): number | undefined {
   for (const c of candidates) {
-    if (typeof c === 'number' && c > 0) return c
+    const n = normalizePositiveNumber(c)
+    if (n !== undefined) return n
   }
   return undefined
 }
@@ -144,7 +263,8 @@ function pickPositiveNumber(...candidates: unknown[]): number | undefined {
  */
 function pickNonNegativeNumber(...candidates: unknown[]): number | undefined {
   for (const c of candidates) {
-    if (typeof c === 'number' && c >= 0) return c
+    const n = normalizeNonNegativeNumber(c)
+    if (n !== undefined) return n
   }
   return undefined
 }
@@ -208,6 +328,7 @@ export function installPublicStat(opts: InstallOptions = {}): void {
   // 这样业务/灰度同学既能在 manifest 里改超时阈值（生产路径），
   // 也能用 installPublicStat({ config: {...} }) 在测试环境强行覆盖（接入调试）。
   const fromManifest = readManifestStatConfig()
+  logManifestBuildInjectDiagnostics(fromManifest)
   const finalConfig: Partial<StatAppConfig> = Object.assign(
     {},
     fromManifest,
@@ -220,18 +341,15 @@ export function installPublicStat(opts: InstallOptions = {}): void {
   // 启动摘要：与生命周期解耦，保证 StatApp.install 完成后立刻可打印（不依赖 uni 是否已挂载）。
   tryRun(() => {
     const cfgBoot = app.getConfig()
-    const env =
-      (typeof process !== 'undefined' && process.env) ||
-      ({} as Record<string, string | undefined>)
-    const appName = (env.UNI_APP_NAME as string | undefined) || ''
+    const appName = process.env.UNI_APP_NAME || ''
     logBoot({
       channel: cfgBoot?.version ?? 'image',
       reportIntervalSec: cfgBoot?.reportIntervalSec ?? 0,
       ak: cfgBoot?.ak ?? '',
       appName,
       debugFromManifest:
-        env.UNI_STAT_DEBUG === 'true' ||
-        (env.UNI_STAT_DEBUG as unknown) === true,
+        process.env.UNI_STAT_DEBUG === 'true' ||
+        (process.env.UNI_STAT_DEBUG as unknown) === true,
       backgroundTimeoutSec: cfgBoot?.backgroundTimeoutSec,
       pageInactiveTimeoutSec: cfgBoot?.pageInactiveTimeoutSec,
     })

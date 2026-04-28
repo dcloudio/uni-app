@@ -58,19 +58,10 @@ export default () => [
             titlesJson[page.path] = titleText
           }
         })
-        // 小程序 X 模式下，需要将标题信息注入到环境中
-        if (process.env.UNI_APP_X === 'true') {
-          if (process.env.UNI_PLATFORM?.startsWith('mp-')) {
-            process.env.UNI_STAT_TITLE_JSON = JSON.stringify(titlesJson)
-            return {
-              define: {
-                'process.env.UNI_STAT_TITLE_JSON': JSON.stringify(
-                  process.env.UNI_STAT_TITLE_JSON ?? '{}'
-                ),
-              },
-            }
-          }
-        }
+        // 注意：勿在此对 mp- + UNI_APP_X 提前 return。
+        // 提前 return 会导致后续未执行 getUniStatistics / UNI_STATISTICS_CONFIG，
+        // 小程序公有版运行时 manifest（backgroundTimeout / reportInterval 等）全部丢失，仍走默认值；
+        // H5 不走 mp- 分支故无此问题。标题 JSON 与统计配置在同一套 define 末尾统一注入。
         // ssr 时不开启
         if (!isSsr(env.command, config)) {
           const statConfig = getUniStatistics(inputDir, platform)

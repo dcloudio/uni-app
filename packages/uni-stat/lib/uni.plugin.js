@@ -37,7 +37,7 @@ var index = () => [
             name: 'uni:stat',
             enforce: 'pre',
             config(config, env) {
-                var _a, _b, _c, _d, _e, _f, _g;
+                var _a, _b, _c, _d, _e;
                 if (!uniCliShared.isNormalCompileTarget()) {
                     // 不需要统计
                     return;
@@ -59,17 +59,10 @@ var index = () => [
                         titlesJson[page.path] = titleText;
                     }
                 });
-                // 小程序 X 模式下，需要将标题信息注入到环境中
-                if (process.env.UNI_APP_X === 'true') {
-                    if ((_a = process.env.UNI_PLATFORM) === null || _a === void 0 ? void 0 : _a.startsWith('mp-')) {
-                        process.env.UNI_STAT_TITLE_JSON = JSON.stringify(titlesJson);
-                        return {
-                            define: {
-                                'process.env.UNI_STAT_TITLE_JSON': JSON.stringify((_b = process.env.UNI_STAT_TITLE_JSON) !== null && _b !== void 0 ? _b : '{}'),
-                            },
-                        };
-                    }
-                }
+                // 注意：勿在此对 mp- + UNI_APP_X 提前 return。
+                // 提前 return 会导致后续未执行 getUniStatistics / UNI_STATISTICS_CONFIG，
+                // 小程序公有版运行时 manifest（backgroundTimeout / reportInterval 等）全部丢失，仍走默认值；
+                // H5 不走 mp- 分支故无此问题。标题 JSON 与统计配置在同一套 define 末尾统一注入。
                 // ssr 时不开启
                 if (!uniCliShared.isSsr(env.command, config)) {
                     const statConfig = uniCliShared.getUniStatistics(inputDir, platform);
@@ -125,18 +118,18 @@ var index = () => [
                 return {
                     define: {
                         // 与 UNI_APP_NAME 同理：外层 JSON.stringify 才能得到合法的内联字符串字面量
-                        'process.env.UNI_STAT_TITLE_JSON': JSON.stringify((_c = process.env.UNI_STAT_TITLE_JSON) !== null && _c !== void 0 ? _c : '{}'),
-                        'process.env.UNI_STAT_UNI_CLOUD': JSON.stringify((_d = process.env.UNI_STAT_UNI_CLOUD) !== null && _d !== void 0 ? _d : '{}'),
+                        'process.env.UNI_STAT_TITLE_JSON': JSON.stringify((_a = process.env.UNI_STAT_TITLE_JSON) !== null && _a !== void 0 ? _a : '{}'),
+                        'process.env.UNI_STAT_UNI_CLOUD': JSON.stringify((_b = process.env.UNI_STAT_UNI_CLOUD) !== null && _b !== void 0 ? _b : '{}'),
                         // 注意：define 的 value 是「替换后的源码字面量」，必须 JSON.stringify 一次，
                         // 否则 'true' / 'false' 字符串会被当成布尔字面量替换进源码，导致
                         // dist 中 `process.env.UNI_STAT_DEBUG === 'true'` 永远等于 false（公有版调试日志失效根因）。
-                        'process.env.UNI_STAT_DEBUG': JSON.stringify((_e = process.env.UNI_STAT_DEBUG) !== null && _e !== void 0 ? _e : 'false'),
+                        'process.env.UNI_STAT_DEBUG': JSON.stringify((_c = process.env.UNI_STAT_DEBUG) !== null && _c !== void 0 ? _c : 'false'),
                         // 与 UNI_STAT_TITLE_JSON 同理：`statConfig` 已是 JSON 字符串，若不经
                         // JSON.stringify 再包一层，esbuild/vite define 会把串内 `"` 当成源码边界，
                         // 运行时替换结果残缺 → JSON.parse 失败 → readManifestStatConfig 静默回退，
                         // manifest 里的 backgroundTimeout / pageInactiveTimeout 等全部丢失（表现为默认 300/1800）。
-                        'process.env.UNI_STATISTICS_CONFIG': JSON.stringify((_f = process.env.UNI_STATISTICS_CONFIG) !== null && _f !== void 0 ? _f : '{}'),
-                        'process.env.UNI_APP_NAME': JSON.stringify((_g = process.env.UNI_APP_NAME) !== null && _g !== void 0 ? _g : ''),
+                        'process.env.UNI_STATISTICS_CONFIG': JSON.stringify((_d = process.env.UNI_STATISTICS_CONFIG) !== null && _d !== void 0 ? _d : '{}'),
+                        'process.env.UNI_APP_NAME': JSON.stringify((_e = process.env.UNI_APP_NAME) !== null && _e !== void 0 ? _e : ''),
                     },
                 };
             },

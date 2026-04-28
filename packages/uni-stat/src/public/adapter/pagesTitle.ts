@@ -21,11 +21,8 @@ function getTitleMap(): Record<string, string> {
   if (titleMapCache) return titleMapCache
   titleMapCache = {}
   try {
-    const env =
-      typeof process !== 'undefined' && process.env
-        ? (process.env as Record<string, string | undefined>)
-        : {}
-    const raw = env.UNI_STAT_TITLE_JSON
+    // 必须直接读 process.env.UNI_STAT_TITLE_JSON；勿包 typeof process（小程序无 process 时 define 内联字面量会被三元式丢弃，见 install#readManifestStatConfig）。
+    const raw = process.env.UNI_STAT_TITLE_JSON
     if (typeof raw !== 'string' || !raw) return titleMapCache
     const parsed = JSON.parse(raw) as unknown
     if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {

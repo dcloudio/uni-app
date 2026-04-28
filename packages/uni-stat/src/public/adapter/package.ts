@@ -167,7 +167,7 @@ function getAppName(): string {
  * `plugin/index.ts` 后续会读取 `manifest.json#name` 注入此字段；当前若未注入返回 ''。
  */
 function getEnvAppName(): string {
-  return (process.env as Record<string, string | undefined>).UNI_APP_NAME ?? ''
+  return process.env.UNI_APP_NAME ?? ''
 }
 
 /**
