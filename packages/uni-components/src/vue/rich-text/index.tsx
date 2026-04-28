@@ -1,4 +1,12 @@
-import { type VNode, getCurrentInstance, h, onMounted, ref, watch } from 'vue'
+import {
+  type VNode,
+  getCurrentInstance,
+  h,
+  onMounted,
+  ref,
+  shallowRef,
+  watch,
+} from 'vue'
 import { isString } from '@vue/shared'
 import {
   type EmitEvent,
@@ -27,7 +35,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const vm = getCurrentInstance()
     const scopeId = (vm && vm.vnode.scopeId) || ''
     const rootRef = ref<HTMLElement | null>(null)
-    const _vnode = ref<Array<VNode | undefined>>([])
+    const _vnode = shallowRef<Array<VNode | undefined>>([])
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
 
     function triggerItemClick(e: Event, detail = {}) {
