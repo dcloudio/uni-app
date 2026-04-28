@@ -91,6 +91,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
           const utsChanged = process.env.UNI_APP_UTS_CHANGED === 'true'
           process.env.UNI_APP_UTS_CHANGED = ''
           let changedFiles = ''
+          let hasBinFiles = false
           if (options.platform === 'app') {
             const files = process.env.UNI_APP_CHANGED_FILES
             const pages = process.env.UNI_APP_CHANGED_PAGES
@@ -99,7 +100,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
               process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
                 ? process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES
                 : ''
-            const hasBinFiles = binFiles && binFiles !== '[]'
+            hasBinFiles = !!(binFiles && binFiles !== '[]')
             changedFiles = pages || files
             process.env.UNI_APP_CHANGED_PAGES = ''
             process.env.UNI_APP_CHANGED_FILES = ''
@@ -107,13 +108,14 @@ export async function runDev(options: CliOptions & ServerOptions) {
             if (process.env.UNI_APP_X_DOM2_DYNAMIC === 'true') {
               process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES = ''
             }
+            const hasIncrementalFiles =
+              changedFiles &&
+              !changedFiles.includes(APP_CONFIG_SERVICE) &&
+              !changedFiles.includes(APP_SERVICE_FILENAME)
             if (
               // 目前动态渲染下，只要bin有变更，就需要全量同步，后续可以优化成bin变更时输出bin变更文件列表
-              (!hasBinFiles &&
-                changedFiles &&
-                !changedFiles.includes(APP_CONFIG_SERVICE) &&
-                !changedFiles.includes(APP_SERVICE_FILENAME)) ||
-              dex
+              !hasBinFiles &&
+              (hasIncrementalFiles || dex)
             ) {
               if (pages) {
                 return output(
@@ -190,8 +192,8 @@ export async function runDev(options: CliOptions & ServerOptions) {
             ) {
               return output('log', M['dev.watching.end'])
             }
-            // 没有cpp/uts插件变更，且没有增量js文件变更，就输出无变更
-            if (!changedFiles) {
+            // 没有cpp/uts插件变更，且没有增量js/bin文件变更，就输出无变更
+            if (!changedFiles && !hasBinFiles) {
               return output('log', M['uvue.dev.watching.end.empty'])
             }
           }
