@@ -120,6 +120,7 @@ describe('runtime/lifecycleHooks', () => {
       .map((c) => c[0] as ReportInput)
       .find((i) => i.lt === '1')!
     expect(launch.url).toBe('pages/index/index')
+    expect((launch as unknown as Record<string, unknown>).iey).toBeUndefined()
   })
 
   test('T2 app_show 后台超时 → cst=2，仅发 lt=1', () => {
@@ -252,20 +253,24 @@ describe('runtime/lifecycleHooks', () => {
     expect(getReportedLts(reportSpy)).toContain('11')
   })
 
-  test('app_hide：iey/ppiey 取自最近一次 prev 状态（修复 #PPIEY）', () => {
+  test('app_hide：lt=3 不上报 iey/ppiey（入口标记仅 lt=11）', () => {
     const { app, reportSpy } = installAppWithSpyReporter()
     handleLaunch(app, {})
-    handlePageShow(app, { route: 'pages/home' }) // home 标为入口
+    handlePageShow(app, { route: 'pages/home' })
     handlePageHide(app, { route: 'pages/home' })
-    handlePageShow(app, { route: 'pages/A' }) // A 非入口；prevIey=true
+    handlePageShow(app, { route: 'pages/A' })
     reportSpy.mockClear()
 
     handleAppHide(app)
     const hideEvent = reportSpy.mock.calls
       .map((c) => c[0] as ReportInput)
       .find((i) => i.lt === '3')!
-    expect(hideEvent.iey).toBe(false) // 当前页 A 非入口
-    expect(hideEvent.ppiey).toBe(true) // 上一页 home 是入口
+    expect(
+      (hideEvent as unknown as Record<string, unknown>).iey
+    ).toBeUndefined()
+    expect(
+      (hideEvent as unknown as Record<string, unknown>).ppiey
+    ).toBeUndefined()
   })
 
   test('onError：转给 StatApp.reportError，不抛错', () => {

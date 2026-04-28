@@ -3,15 +3,16 @@
  *
  * 设计文档：`03-公有版架构设计.md` §4 与 `04-字段字典与平台获取矩阵.md`。
  *
- * 字段含义：
- *   - `iey` (is entry yes)：当前页是否为本会话**入口页**。`1` = 是，`0` = 否。
- *   - `ppiey` (previous page is entry yes)：**上一页**是否为入口页。
+ * 上行出口：
+ *   - **仅 `lt=11` 携带 `iey` / `ppiey`（0/1）**；`lt=1` / `lt=3` 等事件不含入口字段。
+ * 字段含义（`lt=11` 在**下一页 onShow** 采集，描述**刚离开的上一页**）：
+ *   - `iey`：离开页是否为本会话**入口页**。
+ *   - `ppiey`：`urlref` 指向页（再上一层来源）是否入口页。
  *
- * 写入时机：
- *   - 新会话第一次 `pageShow` 时调用 `markEntryPage(currentRoute)`，把当前路径登记为
- *     entry，并写入 `__stat:session:entryRoute`。
- *   - 同一会话内后续 page 切换不再标记 entry。
- *   - session 切换（cst=1/2/3）时由 collector 调 `clearEntry()`，等待新会话 first pageShow。
+ * 写入时机（`markEntryPage` 仅维护「本会话入口 path」，供 `isEntry` 与 `lt=11` 使用）：
+ *   - 新会话：`clearEntry()` 后立刻 `markEntryPage(route)`（launch / app_show / 首个 page_show），
+ *     使首屏/恢复后当前页成为本会话登记入口。
+ *   - 同一会话内仅首个 route 生效（一会话一 entry）；后续 `markEntryPage` noop。
  *
  * 模块**不持有** lastRoute；ppiey 由调用方传入"上一页"，避免和 `adapter/route` 的
  * 当前路由职责耦合。

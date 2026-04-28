@@ -496,15 +496,16 @@ function rollbackPendingVisit() {
  *
  * 设计文档：`03-公有版架构设计.md` §4 与 `04-字段字典与平台获取矩阵.md`。
  *
- * 字段含义：
- *   - `iey` (is entry yes)：当前页是否为本会话**入口页**。`1` = 是，`0` = 否。
- *   - `ppiey` (previous page is entry yes)：**上一页**是否为入口页。
+ * 上行出口：
+ *   - **仅 `lt=11` 携带 `iey` / `ppiey`（0/1）**；`lt=1` / `lt=3` 等事件不含入口字段。
+ * 字段含义（`lt=11` 在**下一页 onShow** 采集，描述**刚离开的上一页**）：
+ *   - `iey`：离开页是否为本会话**入口页**。
+ *   - `ppiey`：`urlref` 指向页（再上一层来源）是否入口页。
  *
- * 写入时机：
- *   - 新会话第一次 `pageShow` 时调用 `markEntryPage(currentRoute)`，把当前路径登记为
- *     entry，并写入 `__stat:session:entryRoute`。
- *   - 同一会话内后续 page 切换不再标记 entry。
- *   - session 切换（cst=1/2/3）时由 collector 调 `clearEntry()`，等待新会话 first pageShow。
+ * 写入时机（`markEntryPage` 仅维护「本会话入口 path」，供 `isEntry` 与 `lt=11` 使用）：
+ *   - 新会话：`clearEntry()` 后立刻 `markEntryPage(route)`（launch / app_show / 首个 page_show），
+ *     使首屏/恢复后当前页成为本会话登记入口。
+ *   - 同一会话内仅首个 route 生效（一会话一 entry）；后续 `markEntryPage` noop。
  *
  * 模块**不持有** lastRoute；ppiey 由调用方传入"上一页"，避免和 `adapter/route` 的
  * 当前路由职责耦合。
@@ -1519,6 +1520,18 @@ function safeCollector(app) {
     return app.getCollector();
 }
 /**
+ * 将 onLaunch / onShow 透传的 path 归一为 `markEntryPage` 使用的 route（去 query、去前导 `/`）。
+ *
+ * 与 `getCurrentRoute()` 常见返回值对齐，避免入口登记与实际页面 path 不一致。
+ */
+function normalizePathForEntryMark(raw) {
+    var _a;
+    if (!raw || typeof raw !== 'string')
+        return '';
+    const noQuery = (_a = raw.split('?')[0]) !== null && _a !== void 0 ? _a : '';
+    return noQuery.startsWith('/') ? noQuery.slice(1) : noQuery;
+}
+/**
  * 新会话首报：仅发一条 `lt=1`（Launch），新会话字段随之上行。
  *
  * 重要约束（修复 lvts=0 缺陷）：
@@ -1588,7 +1601,13 @@ function handleLaunch(app, options = {}, opts = {}) {
     const result = tryRun(() => ensureSession('cold_launch', { now, scene }), null);
     if (!result)
         return;
+    // 冷启动同样视为新会话：清旧入口登记，再按 launch path 登记入口，最后发 lt=1（不含 iey，入口仅 lt=11）。
+    tryRun(() => clearEntry(), undefined);
     const url = options.path || '';
+    const entryKey = normalizePathForEntryMark(url);
+    if (entryKey) {
+        tryRun(() => markEntryPage(entryKey), undefined);
+    }
     reportNewSession(c, result.cst || CST.ColdLaunch, scene, now, true, url);
     if (opts.enablePush) {
         void getPushClientId({ enabled: true, timeoutMs: opts.pushTimeoutMs })
@@ -1619,9 +1638,14 @@ function handleAppShow(app, options = {}, _opts = {}) {
     const result = tryRun(() => ensureSession('app_show', { now, scene }), null);
     if (!result || !result.isNew)
         return;
+    tryRun(() => clearEntry(), undefined);
     // cst=2：不再携带 fvts/lvts/tvc（首批已在 cold_launch 上报过）。
     // url 优先取 options.path；拿不到就用上次记录的 lastRoute（用户回到的页面通常即此）。
     const url = options.path || state$1.lastRoute || '';
+    const entryKey = normalizePathForEntryMark(url);
+    if (entryKey) {
+        tryRun(() => markEntryPage(entryKey), undefined);
+    }
     reportNewSession(c, result.cst || CST.BackgroundTimeout, scene, now, false, url);
 }
 /**
@@ -1645,9 +1669,6 @@ function handleAppHide(app) {
         t: now,
         urlref: state$1.lastRoute,
         urlref_ts: stayed,
-        iey: state$1.lastIey,
-        // 与 lt=11 字段语义一致：ppiey 表示"切到当前页之前的那一页是否入口页"。
-        ppiey: state$1.prevIey,
     });
     void c
         .flush(true)
@@ -1688,15 +1709,17 @@ function handlePageShow(app, vm, opts = {}) {
     tryRun(() => setReportTitle(''), undefined);
     tryRun(() => setConfigTitle(getPagesJsonNavigationTitle(route)), undefined);
     if (result.isNew) {
-        // 新会话：清掉旧 entry，等待 markEntryPage 重新登记
+        // 新会话：清 entry → 先登记当前页为会话入口（与 lt=1「落地即入口」一致）→ 再发 lt=1。
         tryRun(() => clearEntry(), undefined);
+    }
+    if (route) {
+        tryRun(() => markEntryPage(route), undefined);
+    }
+    if (result.isNew) {
         // cst=3：不再携带 fvts/lvts/tvc（首批已在 cold_launch 上报过）。
         // 注意：lt=1（新会话首报）**不受** enablePageLog 控制 —— 与私有版语义一致，
         // is_page_report 仅拦截 pageShow/pageHide，不影响 launch/appShow/appHide。
         reportNewSession(c, result.cst || CST.PageInactiveTimeout, '', now, false, url);
-    }
-    if (route) {
-        tryRun(() => markEntryPage(route), undefined);
     }
     // 存在上一页 → 发 lt=11：描述「离开的上一页」，而非当前 vm 所在页。
     if (state$1.lastRoute && opts.enablePageLog !== false) {
@@ -3202,16 +3225,17 @@ function createStatDataBuilder(deps) {
             out.ttc = s(ctx.ttc);
         return out;
     }
-    /** 入口标记：lt=11/3 携带 iey/ppiey；其他事件不携带。 */
+    /**
+     * 入口标记：**仅 lt=11** 携带 iey + ppiey（缺省按 0）；lt=1 / lt=3 等不参与入口字段。
+     */
     function entryFields(ctx) {
-        if (ctx.lt !== '11' && ctx.lt !== '3')
-            return {};
-        const out = {};
-        if (ctx.iey !== undefined)
-            out.iey = toIey(ctx.iey);
-        if (ctx.ppiey !== undefined)
-            out.ppiey = toIey(ctx.ppiey);
-        return out;
+        if (ctx.lt === '11') {
+            return {
+                iey: toIey(ctx.iey !== undefined ? ctx.iey : false),
+                ppiey: toIey(ctx.ppiey !== undefined ? ctx.ppiey : false),
+            };
+        }
+        return {};
     }
     /** 访问字段：仅 lt=1（应用启动 / 新会话）且 collector 显式传入 visit 时携带。 */
     function visitFields(ctx) {

@@ -158,12 +158,38 @@ describe('domain/statData', () => {
     })
   })
 
-  describe('入口字段（仅 lt=11/3）', () => {
+  describe('入口字段（仅 lt=11）', () => {
     test('lt=11 时 iey/ppiey 转 0/1 上行', () => {
       const builder = createStatDataBuilder(makeDeps())
       const data = builder.build({ lt: LT.Page, t: 1, iey: true, ppiey: false })
       expect(data.iey).toBe(1)
       expect(data.ppiey).toBe(0)
+    })
+
+    test('lt=11 未传 iey/ppiey → 默认 0（每条必带）', () => {
+      const builder = createStatDataBuilder(makeDeps())
+      const data = builder.build({
+        lt: LT.Page,
+        t: 1,
+        url: 'pages/A',
+        urlref_ts: 1,
+      })
+      expect(data.iey).toBe(0)
+      expect(data.ppiey).toBe(0)
+    })
+
+    test('lt=3 不携带 iey/ppiey（入口标记仅 lt=11）', () => {
+      const builder = createStatDataBuilder(makeDeps())
+      const data = builder.build({
+        lt: LT.Hide,
+        t: 1,
+        urlref: 'pages/home',
+        urlref_ts: 1,
+        iey: true,
+        ppiey: true,
+      })
+      expect(data.iey).toBeUndefined()
+      expect(data.ppiey).toBeUndefined()
     })
 
     test('lt=21（自定义事件）时不携带 iey/ppiey', () => {

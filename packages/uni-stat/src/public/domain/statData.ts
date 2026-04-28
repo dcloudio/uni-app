@@ -55,9 +55,9 @@ export interface EventContext {
   sc?: string
   /** session snapshot；由 collector 在 ensureSession 后传入。 */
   session?: SessionSnapshot
-  /** 是否为入口页（任意输入，统一转 0/1）。 */
+  /** 是否为入口页（任意输入，统一转 0/1）；仅 lt=11 使用。 */
   iey?: unknown
-  /** 上一页是否为入口页。 */
+  /** 上级页是否为入口页；仅 lt=11 使用。 */
   ppiey?: unknown
   /** 访问字段（仅 lt=1 且首次构建时携带）。 */
   visit?: { fvts: number; lvts: number; tvc: number }
@@ -204,13 +204,17 @@ export function createStatDataBuilder(deps: StatDataDeps) {
     return out
   }
 
-  /** 入口标记：lt=11/3 携带 iey/ppiey；其他事件不携带。 */
+  /**
+   * 入口标记：**仅 lt=11** 携带 iey + ppiey（缺省按 0）；lt=1 / lt=3 等不参与入口字段。
+   */
   function entryFields(ctx: EventContext): StatData {
-    if (ctx.lt !== '11' && ctx.lt !== '3') return {}
-    const out: StatData = {}
-    if (ctx.iey !== undefined) out.iey = toIey(ctx.iey) as IEYValue
-    if (ctx.ppiey !== undefined) out.ppiey = toIey(ctx.ppiey) as IEYValue
-    return out
+    if (ctx.lt === '11') {
+      return {
+        iey: toIey(ctx.iey !== undefined ? ctx.iey : false) as IEYValue,
+        ppiey: toIey(ctx.ppiey !== undefined ? ctx.ppiey : false) as IEYValue,
+      }
+    }
+    return {}
   }
 
   /** 访问字段：仅 lt=1（应用启动 / 新会话）且 collector 显式传入 visit 时携带。 */
