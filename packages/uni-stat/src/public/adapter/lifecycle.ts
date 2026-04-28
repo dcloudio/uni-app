@@ -12,6 +12,7 @@
  * 处理），保持单一职责。
  */
 
+import { resolveUniRuntime } from '../infra/uniRuntime'
 import { tryRun } from '../infra/safe'
 
 import { getPlatform } from './platform'
@@ -40,7 +41,8 @@ interface UniLifecycleApi {
 }
 
 function getUni(): UniLifecycleApi | undefined {
-  return (globalThis as unknown as { uni?: UniLifecycleApi }).uni
+  const u = resolveUniRuntime()
+  return u != null && typeof u === 'object' ? (u as UniLifecycleApi) : undefined
 }
 
 /**

@@ -72,7 +72,7 @@ describe('adapter/device', () => {
         patch: { getSystemInfoSync: () => ({}) },
       })
       const uuid = getUuid()
-      expect(uuid).toMatch(/^device-anon-[0-9a-z]+-[0-9a-z]{10}$/)
+      expect(uuid).toMatch(/^\d{18,21}$/)
       const snap = handle.storage.__inspect()
       const stored = Object.entries(snap).find(([k]) =>
         k.includes('device:uuid')
@@ -97,13 +97,13 @@ describe('adapter/device', () => {
       })
       handle.storage.__failNext({ set: new Error('storage write failed') })
       expect(() => getUuid()).not.toThrow()
-      expect(getUuid()).toMatch(/^device-anon-/)
+      expect(getUuid()).toMatch(/^\d{18,21}$/)
     })
 
     test('uni 缺失 → 不抛，返回 anon uuid', () => {
       delete (globalThis as { uni?: unknown }).uni
       const uuid = getUuid()
-      expect(uuid).toMatch(/^device-anon-/)
+      expect(uuid).toMatch(/^\d{18,21}$/)
     })
   })
 

@@ -13,9 +13,12 @@
  * 命名空间：所有 key 自动加前缀 `UNI_STAT_DATA:<appid>:`；`<appid>` 取
  * `process.env.UNI_APP_ID`，缺失时退化为 `default`。
  *
- * 注意：本模块依赖 `globalThis.uni.{getStorageSync,setStorageSync,removeStorageSync}`，
+ * 注意：本模块依赖 `uni.{getStorageSync,setStorageSync,removeStorageSync}`，
+ * 解析规则见 `infra/uniRuntime.ts`（含小程序注入路径）。
  * 测试中通过 `helpers/mockUni` 注入。
  */
+
+import { resolveUniRuntime } from './uniRuntime'
 
 /**
  * 公有版命名空间前缀，遵循公司内部统一规范 `UNI_STAT_DATA:<appid>:<key>`。
@@ -56,16 +59,18 @@ function getUni(): {
   setStorageSync(k: string, v: unknown): void
   removeStorageSync(k: string): void
 } {
-  const u = (
-    globalThis as unknown as {
-      uni?: {
-        getStorageSync(k: string): unknown
-        setStorageSync(k: string, v: unknown): void
-        removeStorageSync(k: string): void
-      }
-    }
-  ).uni
-  if (!u) throw new Error('[uni统计公有版] uni storage API is not available')
+  const raw = resolveUniRuntime()
+  const u =
+    raw != null && typeof raw === 'object'
+      ? (raw as {
+          getStorageSync(k: string): unknown
+          setStorageSync(k: string, v: unknown): void
+          removeStorageSync(k: string): void
+        })
+      : undefined
+  if (!u || typeof u.getStorageSync !== 'function') {
+    throw new Error('[uni统计公有版] uni storage API is not available')
+  }
   return u
 }
 

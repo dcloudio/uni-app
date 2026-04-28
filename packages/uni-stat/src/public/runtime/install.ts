@@ -25,6 +25,7 @@ import {
 } from './StatApp'
 import { logBoot } from '../infra/debugLog'
 import { logger } from '../infra/logger'
+import { resolveUniRuntime } from '../infra/uniRuntime'
 import { tryRun } from '../infra/safe'
 
 import type { LifecycleOptions } from './lifecycleHooks'
@@ -152,11 +153,28 @@ interface UniGlobal {
   onCreateVueApp?: (
     cb: (app: { mixin: (m: Record<string, unknown>) => void }) => void
   ) => void
+  /** 与 lifecycleHooks.bindLifecycle 订阅一致；用于判定 uni 是否已就绪。 */
+  onAppShow?: (
+    cb: (e: { scene?: string | number; path?: string }) => void
+  ) => void
+  onAppHide?: (cb: () => void) => void
   report?: (type: string, value?: unknown) => void
 }
 
 function getUni(): UniGlobal | undefined {
-  return (globalThis as unknown as { uni?: UniGlobal }).uni
+  const u = resolveUniRuntime()
+  return u != null && typeof u === 'object' ? (u as UniGlobal) : undefined
+}
+
+/**
+ * 判定 `uni` 是否已具备生命周期绑定所需 API。
+ *
+ * 部分环境下 `uni` 仅作为**构建注入的模块标识符**存在，不在 `globalThis.uni`；
+ * 已统一由 `infra/uniRuntime#resolveUniRuntime` 解析（含注入路径）。
+ */
+function isUniLifecycleReady(): boolean {
+  const u = getUni()
+  return !!(u && typeof u.onAppShow === 'function')
 }
 
 /** install 是否已经触发过（不论成功失败）。 */
@@ -199,51 +217,75 @@ export function installPublicStat(opts: InstallOptions = {}): void {
   const app = getStatApp()
   tryRun(() => app.install(finalConfig, opts.overrides), undefined)
 
-  // 把 collectItems 的开关透传给 lifecycleHooks：
-  //   - uniPushClientID → enablePush（决定是否抓取 push CID 上报 lt=101）
-  //   - uniStatPageLog  → enablePageLog（决定是否上报 lt=11 页面切换事件）
-  // 调用方通过 opts.lifecycle 显式传入的值优先级最高，未指定时用 manifest 默认。
-  const cfg = app.getConfig()
-  const lifecycleOpts = Object.assign(
-    {},
-    {
-      enablePush: cfg?.enablePush ?? false,
-      enablePageLog: cfg?.enablePageLog ?? true,
-    },
-    opts.lifecycle
-  )
-
-  const { mixin, unbind } = bindLifecycle(app, lifecycleOpts)
-  lastUnbind = unbind
-
-  if (!opts.skipVueMixin) {
-    tryRun(() => mountVueMixin(mixin), undefined)
-  }
-
-  if (!opts.skipUniReport) {
-    tryRun(() => mountUniReport(app), undefined)
-  }
-
-  // 启动摘要：debug 模式下输出一次配置概览，方便业务方确认接入状态。
-  // 非 debug 模式 logBoot 自身判断后立即返回，无副作用。
+  // 启动摘要：与生命周期解耦，保证 StatApp.install 完成后立刻可打印（不依赖 uni 是否已挂载）。
   tryRun(() => {
-    const cfg = app.getConfig()
+    const cfgBoot = app.getConfig()
     const env =
       (typeof process !== 'undefined' && process.env) ||
       ({} as Record<string, string | undefined>)
     const appName = (env.UNI_APP_NAME as string | undefined) || ''
     logBoot({
-      channel: cfg?.version ?? 'image',
-      reportIntervalSec: cfg?.reportIntervalSec ?? 0,
-      ak: cfg?.ak ?? '',
+      channel: cfgBoot?.version ?? 'image',
+      reportIntervalSec: cfgBoot?.reportIntervalSec ?? 0,
+      ak: cfgBoot?.ak ?? '',
       appName,
       debugFromManifest:
         env.UNI_STAT_DEBUG === 'true' ||
         (env.UNI_STAT_DEBUG as unknown) === true,
-      backgroundTimeoutSec: cfg?.backgroundTimeoutSec,
-      pageInactiveTimeoutSec: cfg?.pageInactiveTimeoutSec,
+      backgroundTimeoutSec: cfgBoot?.backgroundTimeoutSec,
+      pageInactiveTimeoutSec: cfgBoot?.pageInactiveTimeoutSec,
     })
   }, undefined)
+
+  /**
+   * 装配 vue mixin 与 uni 生命周期；与 logBoot 解耦，便于在 uni 晚就绪时延后执行。
+   */
+  const finishLifecycleInstall = (): void => {
+    // 把 collectItems 的开关透传给 lifecycleHooks：
+    //   - uniPushClientID → enablePush（决定是否抓取 push CID 上报 lt=101）
+    //   - uniStatPageLog  → enablePageLog（决定是否上报 lt=11 页面切换事件）
+    // 调用方通过 opts.lifecycle 显式传入的值优先级最高，未指定时用 manifest 默认。
+    const cfg = app.getConfig()
+    const lifecycleOpts = Object.assign(
+      {},
+      {
+        enablePush: cfg?.enablePush ?? false,
+        enablePageLog: cfg?.enablePageLog ?? true,
+      },
+      opts.lifecycle
+    )
+
+    const { mixin, unbind } = bindLifecycle(app, lifecycleOpts)
+    lastUnbind = unbind
+
+    if (!opts.skipVueMixin) {
+      tryRun(() => mountVueMixin(mixin), undefined)
+    }
+
+    if (!opts.skipUniReport) {
+      tryRun(() => mountUniReport(app), undefined)
+    }
+  }
+
+  if (isUniLifecycleReady()) {
+    finishLifecycleInstall()
+    return
+  }
+
+  queueMicrotask(() => {
+    if (isUniLifecycleReady()) {
+      finishLifecycleInstall()
+      return
+    }
+    setTimeout(() => {
+      if (!isUniLifecycleReady()) {
+        logger.warn(
+          '[uni-stat] uni 运行时仍未就绪（缺少 onAppShow），统计生命周期绑定已推迟；若仍无采集日志请检查入口脚本加载顺序或延后引入 uni-stat-public'
+        )
+      }
+      finishLifecycleInstall()
+    }, 0)
+  })
 }
 
 /**
@@ -253,8 +295,8 @@ export function installPublicStat(opts: InstallOptions = {}): void {
 function mountVueMixin(mixin: Record<string, unknown>): void {
   const u = getUni()
   if (u && typeof u.onCreateVueApp === 'function') {
-    u.onCreateVueApp((app) => {
-      tryRun(() => app.mixin(mixin), undefined)
+    u.onCreateVueApp((vueApp) => {
+      tryRun(() => vueApp.mixin(mixin), undefined)
     })
     return
   }

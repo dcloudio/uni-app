@@ -15,6 +15,7 @@
 
 import { CLOUD_MAX_RETRIES, RETRY_BASE_DELAY_MS } from '../../config'
 import { logger } from '../../infra/logger'
+import { resolveUniRuntime } from '../../infra/uniRuntime'
 import { withRetry } from '../../infra/safe'
 
 import type { Channel, ReportPayload } from '../types'
@@ -35,16 +36,16 @@ interface UniCloudReceiver {
 /**
  * 解析当前可用的 uniCloud space。
  *
- * 优先级：opts.uniCloudSpace > globalThis.uni.__stat_uniCloud_space。
+ * 优先级：opts.uniCloudSpace > uni.__stat_uniCloud_space（`uni` 解析见 `infra/uniRuntime`）。
  * 都不可用返回 undefined，由 `available()` / `send()` 自行处理。
  */
 function resolveSpace(injected?: UniCloudSpace): UniCloudSpace | undefined {
   if (injected) return injected
-  const u = (
-    globalThis as unknown as {
-      uni?: { __stat_uniCloud_space?: UniCloudSpace }
-    }
-  ).uni
+  const raw = resolveUniRuntime()
+  const u =
+    raw != null && typeof raw === 'object'
+      ? (raw as { __stat_uniCloud_space?: UniCloudSpace })
+      : undefined
   return u?.__stat_uniCloud_space
 }
 

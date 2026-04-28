@@ -19,6 +19,7 @@ import {
   STAT_URL,
 } from '../../config'
 import { logger } from '../../infra/logger'
+import { resolveUniRuntime } from '../../infra/uniRuntime'
 import { tryRun, withRetry } from '../../infra/safe'
 
 import type { Channel, ReportPayload } from '../types'
@@ -35,7 +36,8 @@ interface UniRequestApi {
 }
 
 function getUni(): UniRequestApi | undefined {
-  return (globalThis as unknown as { uni?: UniRequestApi }).uni
+  const u = resolveUniRuntime()
+  return u != null && typeof u === 'object' ? (u as UniRequestApi) : undefined
 }
 
 /**

@@ -36,6 +36,7 @@ import { getCurrentRoute, getCurrentRouteWithQuery } from '../adapter/route'
 import { getLaunchScene } from '../adapter/lifecycle'
 import { getPushClientId } from '../adapter/push'
 import { logger } from '../infra/logger'
+import { resolveUniRuntime } from '../infra/uniRuntime'
 import { clampUrlrefStaySec, nowSec } from '../infra/time'
 import { tryRun } from '../infra/safe'
 
@@ -542,7 +543,8 @@ interface UniLifecycleApi {
 }
 
 function getUni(): UniLifecycleApi | undefined {
-  return (globalThis as unknown as { uni?: UniLifecycleApi }).uni
+  const u = resolveUniRuntime()
+  return u != null && typeof u === 'object' ? (u as UniLifecycleApi) : undefined
 }
 
 export interface BindLifecycleResult {

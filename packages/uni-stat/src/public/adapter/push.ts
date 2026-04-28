@@ -14,6 +14,7 @@
  *   3. 不缓存：业务方需要会话维度复用时在 `domain/push.ts` 中缓存（待 Phase 5 接入）。
  */
 
+import { resolveUniRuntime } from '../infra/uniRuntime'
 import { tryRun } from '../infra/safe'
 
 export interface PushClientResult {
@@ -34,7 +35,8 @@ interface UniPushApi {
 }
 
 function getUni(): UniPushApi | undefined {
-  return (globalThis as unknown as { uni?: UniPushApi }).uni
+  const u = resolveUniRuntime()
+  return u != null && typeof u === 'object' ? (u as UniPushApi) : undefined
 }
 
 export interface GetPushOptions {

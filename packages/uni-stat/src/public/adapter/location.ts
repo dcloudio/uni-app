@@ -12,6 +12,7 @@
  * 失败时分别填 `''`，由 `domain/statData.ts` 决定是否丢字段。
  */
 
+import { resolveUniRuntime } from '../infra/uniRuntime'
 import { tryRun } from '../infra/safe'
 
 export interface LocationResult {
@@ -36,7 +37,8 @@ interface UniLocationApi {
 }
 
 function getUni(): UniLocationApi | undefined {
-  return (globalThis as unknown as { uni?: UniLocationApi }).uni
+  const u = resolveUniRuntime()
+  return u != null && typeof u === 'object' ? (u as UniLocationApi) : undefined
 }
 
 export interface GetLocationOptions {

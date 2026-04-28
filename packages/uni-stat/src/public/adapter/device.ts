@@ -59,14 +59,16 @@ function readSysDeviceId(): string {
 }
 
 /**
- * 生成 anon-${base36(now)}-${rand} 形式的兜底 uuid。
+ * 生成兜底设备 id（did）：**纯数字串**，与常见线上形态一致（毫秒时间戳 + 6 位随机数，约 19 位）。
  *
- * 与 `infra/sid.genSid` 区别：sid 每次会话都重新生成，uuid 是设备级单例，
- * 因此格式上加 `device-anon-` 前缀以便日志中分辨来源。
+ * 与 `infra/sid.genSid` 区别：uuid 设备级持久化；sid 每会话新生且带 `-xxxx-xxxx` 形后缀。
  */
 function generateAnonUuid(): string {
-  const r = Math.random().toString(36).slice(2, 12).padEnd(10, '0')
-  return `device-anon-${nowMs().toString(36)}-${r}`
+  const ms = nowMs()
+  const rnd = Math.floor(Math.random() * 1_000_000)
+    .toString()
+    .padStart(6, '0')
+  return `${ms}${rnd}`
 }
 
 /**
@@ -96,6 +98,12 @@ export function getUuid(): string {
 
   const stored = storage.get<string>(STORAGE_KEY_UUID)
   if (typeof stored === 'string' && stored.length > 0) {
+    if (stored.startsWith('device-anon-')) {
+      const upgraded = generateAnonUuid()
+      tryRun(() => storage.set(STORAGE_KEY_UUID, upgraded), undefined)
+      cachedUuid = upgraded
+      return cachedUuid
+    }
     cachedUuid = stored
     return cachedUuid
   }

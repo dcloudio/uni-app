@@ -50,6 +50,11 @@ export function installMockUni(options: MockUniOptions = {}): MockUniHandle {
     ...options.patch,
   }
 
+  // installPublicStat 依赖 `uni.onAppShow` 判定就绪；Jest 预置的 uni 可能不含该项。
+  if (typeof uni.onAppShow !== 'function') {
+    uni.onAppShow = (): void => {}
+  }
+
   ;(globalThis as unknown as { uni: UniGlobal }).uni = uni
 
   if (options.platform) {

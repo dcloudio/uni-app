@@ -9,6 +9,7 @@
  *   `wifi | 2g | 3g | 4g | 5g | ethernet | unknown | none`。
  */
 
+import { resolveUniRuntime } from '../infra/uniRuntime'
 import { tryRun } from '../infra/safe'
 
 /** 受控的 NetType 联合，统一所有平台返回值。 */
@@ -58,7 +59,8 @@ interface UniNetworkApi {
 }
 
 function getUni(): UniNetworkApi | undefined {
-  return (globalThis as unknown as { uni?: UniNetworkApi }).uni
+  const u = resolveUniRuntime()
+  return u != null && typeof u === 'object' ? (u as UniNetworkApi) : undefined
 }
 
 /**

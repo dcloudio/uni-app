@@ -12,6 +12,7 @@
  *   - `an`：应用名（App = plus.runtime.appname；其他端 = `process.env.UNI_APP_NAME`）。
  */
 
+import { resolveUniRuntime } from '../infra/uniRuntime'
 import { tryRun } from '../infra/safe'
 
 import { getPlatform, getRawPlatform, isApp, isH5, isMp } from './platform'
@@ -46,7 +47,8 @@ interface UniWithCanIUse {
 }
 
 function getUni(): UniWithCanIUse | undefined {
-  return (globalThis as unknown as { uni?: UniWithCanIUse }).uni
+  const u = resolveUniRuntime()
+  return u != null && typeof u === 'object' ? (u as UniWithCanIUse) : undefined
 }
 
 function getPlus(): PlusLike | undefined {

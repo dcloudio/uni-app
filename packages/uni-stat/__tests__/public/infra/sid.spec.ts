@@ -1,32 +1,33 @@
 import { genSid } from '../../../src/public/infra/sid'
 
 describe('infra/sid.genSid', () => {
-  test('有 uuid：形如 ${uuid}-${ts36}-${4}', () => {
-    const sid = genSid('user123')
-    const parts = sid.split('-')
-    expect(parts.length).toBe(3)
-    expect(parts[0]).toBe('user123')
-    expect(parts[1]).toMatch(/^[0-9a-z]+$/)
-    expect(parts[2].length).toBe(4)
+  test('有 did（uuid）：形如 ${did}-xxxxxxxx-xxxx', () => {
+    const sid = genSid('1777261806777339018')
+    expect(sid.startsWith('1777261806777339018-')).toBe(true)
+    const rest = sid.slice('1777261806777339018-'.length)
+    expect(rest).toMatch(/^[0-9a-z]{8}-[0-9a-z]{4}$/)
   })
 
-  test('无 uuid：形如 anon-${ts36}-${8}', () => {
+  test('短 uuid：仍拼接标准后缀', () => {
+    const sid = genSid('user123')
+    expect(sid.startsWith('user123-')).toBe(true)
+    const rest = sid.slice('user123-'.length)
+    expect(rest).toMatch(/^[0-9a-z]{8}-[0-9a-z]{4}$/)
+  })
+
+  test('无 uuid：数字主体 + 同形后缀', () => {
     const sid = genSid('')
-    const parts = sid.split('-')
-    expect(parts.length).toBe(3)
-    expect(parts[0]).toBe('anon')
-    expect(parts[2].length).toBe(8)
+    expect(sid).toMatch(/^\d+-[0-9a-z]{8}-[0-9a-z]{4}$/)
   })
 
   test('undefined 等价于无 uuid', () => {
     const sid = genSid(undefined)
-    expect(sid.startsWith('anon-')).toBe(true)
+    expect(sid).toMatch(/^\d+-[0-9a-z]{8}-[0-9a-z]{4}$/)
   })
 
   test('1000 次调用唯一性 ≥ 99.9%', () => {
     const seen = new Set<string>()
     for (let i = 0; i < 1000; i++) seen.add(genSid('u'))
-    // 同一 uuid 同一毫秒并发碰撞概率 1/(36^4)≈6e-7，1000 次冲突几乎不可能
     expect(seen.size).toBeGreaterThanOrEqual(999)
   })
 })

@@ -116,6 +116,32 @@ const logger = {
 };
 
 /**
+ * 解析 uni-app 运行时根对象 `uni`。
+ *
+ * - H5 / App：常见为 `globalThis.uni`。
+ * - 微信小程序等：多为 Vite/rollup 向**当前模块**注入的标识符 `uni`，
+ *   **未必**同步挂到 `globalThis`；仅读 `globalThis.uni` 会导致
+ *   `bindLifecycle` / `uni.request` / storage 等全部静默失败。
+ *
+ * 第二路依赖宿主构建对 `uni` 的注入（与业务页面同一套解析规则），
+ * 类型兜底见 `packages/uni-stat/src/uni-global.d.ts`。
+ */
+/**
+ * 返回与业务侧一致的 `uni` 运行时根对象；均不可用时返回 `undefined`。
+ */
+function resolveUniRuntime() {
+    const g = globalThis;
+    if (g.uni != null && typeof g.uni === 'object') {
+        return g.uni;
+    }
+    // 宿主注入：小程序 vendor 中常见，且不在 globalThis 上
+    if (typeof uni !== 'undefined' && uni != null && typeof uni === 'object') {
+        return uni;
+    }
+    return undefined;
+}
+
+/**
  * 公有版本地存储抽象（重写自私有版 `utils/db.js`）。
  *
  * 修复的私有版缺陷：
@@ -130,7 +156,8 @@ const logger = {
  * 命名空间：所有 key 自动加前缀 `UNI_STAT_DATA:<appid>:`；`<appid>` 取
  * `process.env.UNI_APP_ID`，缺失时退化为 `default`。
  *
- * 注意：本模块依赖 `globalThis.uni.{getStorageSync,setStorageSync,removeStorageSync}`，
+ * 注意：本模块依赖 `uni.{getStorageSync,setStorageSync,removeStorageSync}`，
+ * 解析规则见 `infra/uniRuntime.ts`（含小程序注入路径）。
  * 测试中通过 `helpers/mockUni` 注入。
  */
 /**
@@ -163,9 +190,13 @@ function fullKey(key) {
  * 取真实 uni 对象。剥离到函数里，便于测试用 mockUni 替换后立即生效。
  */
 function getUni$8() {
-    const u = globalThis.uni;
-    if (!u)
+    const raw = resolveUniRuntime();
+    const u = raw != null && typeof raw === 'object'
+        ? raw
+        : undefined;
+    if (!u || typeof u.getStorageSync !== 'function') {
         throw new Error('[uni统计公有版] uni storage API is not available');
+    }
     return u;
 }
 /**
@@ -983,14 +1014,16 @@ function readSysDeviceId() {
     return tryRun(() => { var _a; return (_a = u.getSystemInfoSync().deviceId) !== null && _a !== void 0 ? _a : ''; }, '');
 }
 /**
- * 生成 anon-${base36(now)}-${rand} 形式的兜底 uuid。
+ * 生成兜底设备 id（did）：**纯数字串**，与常见线上形态一致（毫秒时间戳 + 6 位随机数，约 19 位）。
  *
- * 与 `infra/sid.genSid` 区别：sid 每次会话都重新生成，uuid 是设备级单例，
- * 因此格式上加 `device-anon-` 前缀以便日志中分辨来源。
+ * 与 `infra/sid.genSid` 区别：uuid 设备级持久化；sid 每会话新生且带 `-xxxx-xxxx` 形后缀。
  */
 function generateAnonUuid() {
-    const r = Math.random().toString(36).slice(2, 12).padEnd(10, '0');
-    return `device-anon-${nowMs().toString(36)}-${r}`;
+    const ms = nowMs();
+    const rnd = Math.floor(Math.random() * 1000000)
+        .toString()
+        .padStart(6, '0');
+    return `${ms}${rnd}`;
 }
 /**
  * 取设备 uuid。优先级：内存缓存 → plus.runtime.getDCloudId（App）→ system.deviceId
@@ -1017,6 +1050,12 @@ function getUuid() {
     }
     const stored = storage.get(STORAGE_KEY_UUID);
     if (typeof stored === 'string' && stored.length > 0) {
+        if (stored.startsWith('device-anon-')) {
+            const upgraded = generateAnonUuid();
+            tryRun(() => storage.set(STORAGE_KEY_UUID, upgraded), undefined);
+            cachedUuid = upgraded;
+            return cachedUuid;
+        }
         cachedUuid = stored;
         return cachedUuid;
     }
@@ -1048,27 +1087,16 @@ function getOdid() {
 /**
  * 会话 ID 生成器。
  *
- * 形如：
- *   - 有 uuid：`${uuid}-${base36(now)}-${4字符 random}`
- *   - 无 uuid：`anon-${base36(now)}-${8字符 random}`
+ * 形如（与典型调试示例一致）：
+ *   - 有 did（uuid）：`${did}-${8位base36}-${4位base36}`，例如 `1777261806777339018-moih1mhr-40gn`
+ *   - 无 did：先生成与兜底 did 同形的数字主体，再拼同样后缀（避免 `anon-` 前缀）。
  *
  * 设计要点：
- *   1. 长度可控（典型 < 64 字符），避免上报字段超限。
- *   2. 仅依赖 `Math.random` 与 `Date.now`，不引入 crypto；同一毫秒并发碰撞概率
- *      ≈ 1/(36^4) ≈ 6e-7，对统计采集足够。
+ *   1. 长度可控，避免上报字段超限。
+ *   2. 仅依赖 `Math.random` 与 `Date.now`，不引入 crypto。
  */
-const RANDOM_LEN_WITH_UUID = 4;
-const RANDOM_LEN_WITHOUT_UUID = 8;
-/**
- * 生成会话 ID。`uuid` 为空字符串 / undefined 时退化为 anon 模式。
- */
-function genSid(uuid) {
-    const ts = nowMs().toString(36);
-    if (uuid && uuid.length > 0) {
-        return `${uuid}-${ts}-${randomPart(RANDOM_LEN_WITH_UUID)}`;
-    }
-    return `anon-${ts}-${randomPart(RANDOM_LEN_WITHOUT_UUID)}`;
-}
+const SUFFIX_HEAD_LEN = 8;
+const SUFFIX_TAIL_LEN = 4;
 /**
  * 生成 base36 随机串。
  *
@@ -1079,6 +1107,31 @@ function randomPart(len) {
         .toString(36)
         .slice(2, 2 + len);
     return r.length >= len ? r : r.padEnd(len, '0');
+}
+/**
+ * 会话实例后缀：`xxxxxxxx-xxxx`（与常见上报示例形态一致）。
+ */
+function sessionInstanceSuffix() {
+    return `${randomPart(SUFFIX_HEAD_LEN)}-${randomPart(SUFFIX_TAIL_LEN)}`;
+}
+/**
+ * 无设备 id 时的数字主体（与 device 兜底 did 生成规则对齐，避免引入循环依赖故略重复）。
+ */
+function anonNumericBody() {
+    const ms = nowMs();
+    const rnd = Math.floor(Math.random() * 1000000)
+        .toString()
+        .padStart(6, '0');
+    return `${ms}${rnd}`;
+}
+/**
+ * 生成会话 ID。`uuid` 为空字符串 / undefined 时退化为「数字主体 + 后缀」。
+ */
+function genSid(uuid) {
+    if (uuid && uuid.length > 0) {
+        return `${uuid}-${sessionInstanceSuffix()}`;
+    }
+    return `${anonNumericBody()}-${sessionInstanceSuffix()}`;
 }
 
 /**
@@ -1381,7 +1434,8 @@ function getCurrentRouteWithQuery(pageVm) {
  * 处理），保持单一职责。
  */
 function getUni$7() {
-    return globalThis.uni;
+    const u = resolveUniRuntime();
+    return u != null && typeof u === 'object' ? u : undefined;
 }
 /**
  * 启动时取场景值。优先级：
@@ -1432,7 +1486,8 @@ function getLaunchScene(override) {
  *   3. 不缓存：业务方需要会话维度复用时在 `domain/push.ts` 中缓存（待 Phase 5 接入）。
  */
 function getUni$6() {
-    return globalThis.uni;
+    const u = resolveUniRuntime();
+    return u != null && typeof u === 'object' ? u : undefined;
 }
 /**
  * 异步取 push clientId。
@@ -1867,7 +1922,8 @@ function handleError(app, e) {
     }, undefined);
 }
 function getUni$5() {
-    return globalThis.uni;
+    const u = resolveUniRuntime();
+    return u != null && typeof u === 'object' ? u : undefined;
 }
 /**
  * 装配 vue mixin + uni 全局生命周期。
@@ -2034,13 +2090,16 @@ function getAppId$1() {
 /**
  * 解析当前可用的 uniCloud space。
  *
- * 优先级：opts.uniCloudSpace > globalThis.uni.__stat_uniCloud_space。
+ * 优先级：opts.uniCloudSpace > uni.__stat_uniCloud_space（`uni` 解析见 `infra/uniRuntime`）。
  * 都不可用返回 undefined，由 `available()` / `send()` 自行处理。
  */
 function resolveSpace(injected) {
     if (injected)
         return injected;
-    const u = globalThis.uni;
+    const raw = resolveUniRuntime();
+    const u = raw != null && typeof raw === 'object'
+        ? raw
+        : undefined;
     return u === null || u === void 0 ? void 0 : u.__stat_uniCloud_space;
 }
 function createCloudChannel(opts = {}) {
@@ -2770,7 +2829,8 @@ function createCollector(deps) {
  *   - 不缓存任何状态；每次 `send` 是无状态的。
  */
 function getUni$4() {
-    return globalThis.uni;
+    const u = resolveUniRuntime();
+    return u != null && typeof u === 'object' ? u : undefined;
 }
 /**
  * 把 payload 拼成 query string，供 H5 image fallback 使用。
@@ -2900,7 +2960,8 @@ function createHttpChannel(opts = {}) {
  *   - 不缓存任何状态。
  */
 function getUni$3() {
-    return globalThis.uni;
+    const u = resolveUniRuntime();
+    return u != null && typeof u === 'object' ? u : undefined;
 }
 /**
  * 估算 image GET URL 中"非 Logs"部分的固定字节预算：
@@ -3408,7 +3469,8 @@ function getLocaleAndScreen() {
  */
 let cached = null;
 function getUni$2() {
-    return globalThis.uni;
+    const u = resolveUniRuntime();
+    return u != null && typeof u === 'object' ? u : undefined;
 }
 function getPlus() {
     return globalThis.plus;
@@ -3547,14 +3609,6 @@ function getPackageInfo() {
     return cached;
 }
 
-/**
- * uni.addInterceptor 的去重 / 解绑封装。
- *
- * 修复的私有版缺陷：
- *   - #26 `uni.addInterceptor(api, opts)` 多次 add 会覆盖前一次的回调；私有版若反复
- *     注册（例如 hot reload / 多入口）会丢失早期 hook。公有版用 `Map<api, Set<cb>>`
- *     去重 + 重新装配，保证多次 add 都生效，解绑时只摘除当前调用方的回调。
- */
 const registry = new Map();
 /**
  * 注册一个拦截器。同一 api 重复注册会去重，并自动按当前注册集合重装到 uni。
@@ -3646,7 +3700,10 @@ function reinstall(api) {
     }
 }
 function getUni$1() {
-    const u = globalThis.uni;
+    const raw = resolveUniRuntime();
+    const u = raw != null && typeof raw === 'object'
+        ? raw
+        : undefined;
     if (!u)
         throw new Error('[uni统计公有版] uni interceptor API is not available');
     return u;
@@ -4302,7 +4359,6 @@ class StatApp {
         var _a, _b, _c, _d, _e;
         if (this.installed)
             return;
-        this.installed = true;
         const cfg = this.normalizeConfig(config);
         this.config = cfg;
         this.statVersion = cfg.version;
@@ -4356,6 +4412,8 @@ class StatApp {
                 .recoverRetry()
                 .catch((e) => logger.warn('[uni-stat] recoverRetry failed', e));
         }
+        // 仅在 collector 与拦截器等就绪后再标记，避免中途抛错导致「已 install 却无 collector」。
+        this.installed = true;
     }
     /**
      * 业务侧 `uni.report(type, value)` 入口。
@@ -4675,7 +4733,18 @@ function pickNonNegativeNumber(...candidates) {
     return undefined;
 }
 function getUni() {
-    return globalThis.uni;
+    const u = resolveUniRuntime();
+    return u != null && typeof u === 'object' ? u : undefined;
+}
+/**
+ * 判定 `uni` 是否已具备生命周期绑定所需 API。
+ *
+ * 部分环境下 `uni` 仅作为**构建注入的模块标识符**存在，不在 `globalThis.uni`；
+ * 已统一由 `infra/uniRuntime#resolveUniRuntime` 解析（含注入路径）。
+ */
+function isUniLifecycleReady() {
+    const u = getUni();
+    return !!(u && typeof u.onAppShow === 'function');
 }
 /** install 是否已经触发过（不论成功失败）。 */
 let bootstrapped = false;
@@ -4687,7 +4756,6 @@ let lastUnbind;
  * 失败任意子步骤都吞掉日志，不抛回。
  */
 function installPublicStat(opts = {}) {
-    var _a, _b;
     if (bootstrapped)
         return;
     bootstrapped = true;
@@ -4698,42 +4766,63 @@ function installPublicStat(opts = {}) {
     const finalConfig = Object.assign({}, fromManifest, opts.config);
     const app = getStatApp();
     tryRun(() => app.install(finalConfig, opts.overrides), undefined);
-    // 把 collectItems 的开关透传给 lifecycleHooks：
-    //   - uniPushClientID → enablePush（决定是否抓取 push CID 上报 lt=101）
-    //   - uniStatPageLog  → enablePageLog（决定是否上报 lt=11 页面切换事件）
-    // 调用方通过 opts.lifecycle 显式传入的值优先级最高，未指定时用 manifest 默认。
-    const cfg = app.getConfig();
-    const lifecycleOpts = Object.assign({}, {
-        enablePush: (_a = cfg === null || cfg === void 0 ? void 0 : cfg.enablePush) !== null && _a !== void 0 ? _a : false,
-        enablePageLog: (_b = cfg === null || cfg === void 0 ? void 0 : cfg.enablePageLog) !== null && _b !== void 0 ? _b : true,
-    }, opts.lifecycle);
-    const { mixin, unbind } = bindLifecycle(app, lifecycleOpts);
-    lastUnbind = unbind;
-    if (!opts.skipVueMixin) {
-        tryRun(() => mountVueMixin(mixin), undefined);
-    }
-    if (!opts.skipUniReport) {
-        tryRun(() => mountUniReport(app), undefined);
-    }
-    // 启动摘要：debug 模式下输出一次配置概览，方便业务方确认接入状态。
-    // 非 debug 模式 logBoot 自身判断后立即返回，无副作用。
+    // 启动摘要：与生命周期解耦，保证 StatApp.install 完成后立刻可打印（不依赖 uni 是否已挂载）。
     tryRun(() => {
         var _a, _b, _c;
-        const cfg = app.getConfig();
+        const cfgBoot = app.getConfig();
         const env = (typeof process !== 'undefined' && process.env) ||
             {};
         const appName = env.UNI_APP_NAME || '';
         logBoot({
-            channel: (_a = cfg === null || cfg === void 0 ? void 0 : cfg.version) !== null && _a !== void 0 ? _a : 'image',
-            reportIntervalSec: (_b = cfg === null || cfg === void 0 ? void 0 : cfg.reportIntervalSec) !== null && _b !== void 0 ? _b : 0,
-            ak: (_c = cfg === null || cfg === void 0 ? void 0 : cfg.ak) !== null && _c !== void 0 ? _c : '',
+            channel: (_a = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.version) !== null && _a !== void 0 ? _a : 'image',
+            reportIntervalSec: (_b = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.reportIntervalSec) !== null && _b !== void 0 ? _b : 0,
+            ak: (_c = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.ak) !== null && _c !== void 0 ? _c : '',
             appName,
             debugFromManifest: env.UNI_STAT_DEBUG === 'true' ||
                 env.UNI_STAT_DEBUG === true,
-            backgroundTimeoutSec: cfg === null || cfg === void 0 ? void 0 : cfg.backgroundTimeoutSec,
-            pageInactiveTimeoutSec: cfg === null || cfg === void 0 ? void 0 : cfg.pageInactiveTimeoutSec,
+            backgroundTimeoutSec: cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.backgroundTimeoutSec,
+            pageInactiveTimeoutSec: cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.pageInactiveTimeoutSec,
         });
     }, undefined);
+    /**
+     * 装配 vue mixin 与 uni 生命周期；与 logBoot 解耦，便于在 uni 晚就绪时延后执行。
+     */
+    const finishLifecycleInstall = () => {
+        var _a, _b;
+        // 把 collectItems 的开关透传给 lifecycleHooks：
+        //   - uniPushClientID → enablePush（决定是否抓取 push CID 上报 lt=101）
+        //   - uniStatPageLog  → enablePageLog（决定是否上报 lt=11 页面切换事件）
+        // 调用方通过 opts.lifecycle 显式传入的值优先级最高，未指定时用 manifest 默认。
+        const cfg = app.getConfig();
+        const lifecycleOpts = Object.assign({}, {
+            enablePush: (_a = cfg === null || cfg === void 0 ? void 0 : cfg.enablePush) !== null && _a !== void 0 ? _a : false,
+            enablePageLog: (_b = cfg === null || cfg === void 0 ? void 0 : cfg.enablePageLog) !== null && _b !== void 0 ? _b : true,
+        }, opts.lifecycle);
+        const { mixin, unbind } = bindLifecycle(app, lifecycleOpts);
+        lastUnbind = unbind;
+        if (!opts.skipVueMixin) {
+            tryRun(() => mountVueMixin(mixin), undefined);
+        }
+        if (!opts.skipUniReport) {
+            tryRun(() => mountUniReport(app), undefined);
+        }
+    };
+    if (isUniLifecycleReady()) {
+        finishLifecycleInstall();
+        return;
+    }
+    queueMicrotask(() => {
+        if (isUniLifecycleReady()) {
+            finishLifecycleInstall();
+            return;
+        }
+        setTimeout(() => {
+            if (!isUniLifecycleReady()) {
+                logger.warn('[uni-stat] uni 运行时仍未就绪（缺少 onAppShow），统计生命周期绑定已推迟；若仍无采集日志请检查入口脚本加载顺序或延后引入 uni-stat-public');
+            }
+            finishLifecycleInstall();
+        }, 0);
+    });
 }
 /**
  * 把 mixin 装到 vue 实例上。优先走 `uni.onCreateVueApp`（VUE3）；缺失时回退
@@ -4743,8 +4832,8 @@ function mountVueMixin(mixin) {
     var _a;
     const u = getUni();
     if (u && typeof u.onCreateVueApp === 'function') {
-        u.onCreateVueApp((app) => {
-            tryRun(() => app.mixin(mixin), undefined);
+        u.onCreateVueApp((vueApp) => {
+            tryRun(() => vueApp.mixin(mixin), undefined);
         });
         return;
     }

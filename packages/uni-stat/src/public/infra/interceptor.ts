@@ -1,3 +1,5 @@
+import { resolveUniRuntime } from './uniRuntime'
+
 /**
  * uni.addInterceptor 的去重 / 解绑封装。
  *
@@ -101,7 +103,11 @@ function reinstall(api: string): void {
 }
 
 function getUni(): UniInterceptorAPI {
-  const u = (globalThis as unknown as { uni?: UniInterceptorAPI }).uni
+  const raw = resolveUniRuntime()
+  const u =
+    raw != null && typeof raw === 'object'
+      ? (raw as UniInterceptorAPI)
+      : undefined
   if (!u)
     throw new Error('[uni统计公有版] uni interceptor API is not available')
   return u

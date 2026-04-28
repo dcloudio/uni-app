@@ -156,7 +156,6 @@ export class StatApp {
     overrides: StatAppOverrides = {}
   ): void {
     if (this.installed) return
-    this.installed = true
 
     const cfg = this.normalizeConfig(config)
     this.config = cfg
@@ -229,6 +228,9 @@ export class StatApp {
         .recoverRetry()
         .catch((e) => logger.warn('[uni-stat] recoverRetry failed', e))
     }
+
+    // 仅在 collector 与拦截器等就绪后再标记，避免中途抛错导致「已 install 却无 collector」。
+    this.installed = true
   }
 
   /**
