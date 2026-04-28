@@ -69,16 +69,19 @@ export interface UniPlatform {
       osVer?: string
       uniVer?: string
       unixVer?: string
+      unixVaporVer?: string
     }
     ios?: {
       osVer?: string
       uniVer?: string
       unixVer?: string
+      unixVaporVer?: string
     }
     harmony?: {
       osVer?: string
       uniVer?: string
       unixVer?: string
+      unixVaporVer?: string
     }
   }
 }
@@ -242,15 +245,25 @@ export function supportedPropertyReason(k: string) {
   )
 }
 
+function getPlatformVersion(
+  platform: UniPlatform['app'][keyof UniPlatform['app']] | undefined
+) {
+  return isDom2() ? platform?.unixVaporVer : platform?.unixVer
+}
+
+function isDom2() {
+  return typeof process !== 'undefined' && process.env.UNI_APP_X_DOM2 === 'true'
+}
+
 export function getSupportedPlatforms(uniPlatform: UniPlatform | undefined) {
   const supportedPlatforms: string[] = []
-  if (uniPlatform?.app?.android?.unixVer !== 'x') {
+  if (getPlatformVersion(uniPlatform?.app?.android) !== 'x') {
     supportedPlatforms.push('app-android')
   }
-  if (uniPlatform?.app.ios?.unixVer !== 'x') {
+  if (getPlatformVersion(uniPlatform?.app?.ios) !== 'x') {
     supportedPlatforms.push('app-ios')
   }
-  if (uniPlatform?.app.harmony?.unixVer !== 'x') {
+  if (getPlatformVersion(uniPlatform?.app?.harmony) !== 'x') {
     supportedPlatforms.push('app-harmony')
   }
   return supportedPlatforms

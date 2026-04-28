@@ -477,6 +477,54 @@ describe('uvue-styler: normalize', () => {
       })
     )
   })
+  test('dom2 platform support uses unixVaporVer', async () => {
+    const oldDom2 = process.env.UNI_APP_X_DOM2
+    process.env.UNI_APP_X_DOM2 = 'true'
+    const { json, messages } = await objectifierRule(`
+  .foo {
+    textDecorationColor: #21ff21;
+  }
+  `)
+    if (oldDom2 === undefined) {
+      delete process.env.UNI_APP_X_DOM2
+    } else {
+      process.env.UNI_APP_X_DOM2 = oldDom2
+    }
+    expect(json).toEqual({
+      foo: {
+        '': {
+          textDecorationColor: '#21ff21',
+        },
+      },
+    })
+    expect(messages.length).toBe(0)
+  })
+  test('dom2 platform unsupported still warns', async () => {
+    const oldDom2 = process.env.UNI_APP_X_DOM2
+    process.env.UNI_APP_X_DOM2 = 'true'
+    const { json, messages } = await objectifierRule(`
+  .foo {
+    textDecorationStyle: dotted;
+  }
+  `)
+    if (oldDom2 === undefined) {
+      delete process.env.UNI_APP_X_DOM2
+    } else {
+      process.env.UNI_APP_X_DOM2 = oldDom2
+    }
+    expect(json).toEqual({
+      foo: {
+        '': {
+          textDecorationStyle: 'dotted',
+        },
+      },
+    })
+    expect(messages[0]).toEqual(
+      expect.objectContaining({
+        text: 'WARNING: `text-decoration-style` is not a standard property name (may not be supported)',
+      })
+    )
+  })
   test('complex style code', async () => {
     const { json, messages } = await objectifierRule(`
   .foo {
