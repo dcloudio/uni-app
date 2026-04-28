@@ -337,24 +337,22 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
     await drain(app)
 
     const ltPages = flatEvents(dumpSent(http)).filter((e) => e.lt === '11')
-    // lt=11 上报点位与参数文档对齐：在下一页 onShow 时上报，首次 onShow 无前页不发。
-    // 4 次 show/hide 共发出 3 条 lt=11（home 首次跳过）。
+    // 下一页 onShow 上报「离开页」；首次 home onShow 无前序页不发。共 3 条 lt=11。
     expect(ltPages).toHaveLength(3)
-    // 序列断言（`docs/uni统计上报参数.md` lt=11 / `docs/04` §4.2 标准实现）：
-    //   A    onShow → url=A,    urlref=home, iey=0, ppiey=1（前一页 home 是入口）
-    //   B    onShow → url=B,    urlref=A,    iey=0, ppiey=0（前一页 A 非入口）
-    //   home onShow → url=home, urlref=B,    iey=1, ppiey=0（前一页 B 非入口）
-    expect(ltPages[0].url).toBe('pages/A/A')
-    expect(ltPages[0].urlref).toBe('pages/home/home')
-    expect(ltPages[0].iey).toBe(0)
-    expect(ltPages[0].ppiey).toBe(1)
-    expect(ltPages[1].url).toBe('pages/B/B')
-    expect(ltPages[1].urlref).toBe('pages/A/A')
+    // A onShow：离开 home → url=home，无 urlref；iey=1（home 入口），ppiey=0
+    expect(ltPages[0].url).toBe('pages/home/home')
+    expect(ltPages[0].urlref).toBeUndefined()
+    expect(ltPages[0].iey).toBe(1)
+    expect(ltPages[0].ppiey).toBe(0)
+    // B onShow：离开 A → url=A，urlref=home；iey=0，ppiey=1
+    expect(ltPages[1].url).toBe('pages/A/A')
+    expect(ltPages[1].urlref).toBe('pages/home/home')
     expect(ltPages[1].iey).toBe(0)
-    expect(ltPages[1].ppiey).toBe(0)
-    expect(ltPages[2].url).toBe('pages/home/home')
-    expect(ltPages[2].urlref).toBe('pages/B/B')
-    expect(ltPages[2].iey).toBe(1)
+    expect(ltPages[1].ppiey).toBe(1)
+    // home onShow：离开 B → url=B，urlref=A；iey=0，ppiey=0
+    expect(ltPages[2].url).toBe('pages/B/B')
+    expect(ltPages[2].urlref).toBe('pages/A/A')
+    expect(ltPages[2].iey).toBe(0)
     expect(ltPages[2].ppiey).toBe(0)
   })
 
@@ -374,18 +372,17 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
     await drain(app)
 
     const ltPages = flatEvents(dumpSent(http)).filter((e) => e.lt === '11')
-    // 在下一页 onShow 上报：3 次 show/hide 仅产生 2 条 lt=11（home 首次跳过）。
     expect(ltPages).toHaveLength(2)
-    // A    onShow → url=A,    urlref=home, iey=0, ppiey=1（前页 home 是入口）
-    // home onShow → url=home, urlref=A,    iey=1, ppiey=0（前页 A 非入口）
-    expect(ltPages[0].url).toBe('pages/A/A')
-    expect(ltPages[0].urlref).toBe('pages/home/home')
-    expect(ltPages[0].iey).toBe(0)
-    expect(ltPages[0].ppiey).toBe(1)
-    expect(ltPages[1].url).toBe('pages/home/home')
-    expect(ltPages[1].urlref).toBe('pages/A/A')
-    expect(ltPages[1].iey).toBe(1)
-    expect(ltPages[1].ppiey).toBe(0)
+    // A onShow：离开 home
+    expect(ltPages[0].url).toBe('pages/home/home')
+    expect(ltPages[0].urlref).toBeUndefined()
+    expect(ltPages[0].iey).toBe(1)
+    expect(ltPages[0].ppiey).toBe(0)
+    // home onShow：离开 A
+    expect(ltPages[1].url).toBe('pages/A/A')
+    expect(ltPages[1].urlref).toBe('pages/home/home')
+    expect(ltPages[1].iey).toBe(0)
+    expect(ltPages[1].ppiey).toBe(1)
   })
 
   /** S7 自定义事件 uni.report('foo', {x:1})：lt=21；e_n/e_v 正确；sid/seq 单调。 */

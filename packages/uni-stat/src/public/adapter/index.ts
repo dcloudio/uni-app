@@ -62,6 +62,11 @@ export {
 } from './route'
 
 export {
+  __resetPagesTitleCache,
+  getPagesJsonNavigationTitle,
+} from './pagesTitle'
+
+export {
   type GetPushOptions,
   type PushClientResult,
   getPushClientId,

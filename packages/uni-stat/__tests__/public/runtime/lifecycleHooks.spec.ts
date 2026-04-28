@@ -9,8 +9,8 @@
  *
  * 另外验证：
  *   - app_hide：写 markBackground、发 lt=3、强制 flush。
- *   - page_show：发 lt=11（与参数文档对齐：lt=11 对应 onShow），
- *     url=新页 / urlref=上一页 / urlref_ts=上一页停留秒数；首次 onShow 不发。
+ *   - page_show：发 lt=11（进入新页 onShow 时上报**离开页**），
+ *     url=离开页 / urlref=再上一层来源（首跳可无）/ urlref_ts=离开页停留秒数；首次 onShow 不发。
  *   - onError：转给 StatApp.reportError，不抛错。
  */
 
@@ -31,6 +31,7 @@ import * as retryMod from '../../../src/public/pipeline/retry'
 import * as sessionMod from '../../../src/public/domain/session/machine'
 import * as visitMod from '../../../src/public/domain/visit/firstVisit'
 import { __resetState as resetEntry } from '../../../src/public/domain/entry/entryPage'
+import { __resetPagesTitleCache } from '../../../src/public/adapter/pagesTitle'
 import { __resetTitle } from '../../../src/public/domain/title'
 import { __resetCache as resetDevice } from '../../../src/public/adapter/device'
 import { __resetCache as resetPackage } from '../../../src/public/adapter/package'
@@ -59,6 +60,7 @@ function resetAll(): void {
   visitMod.__resetState()
   resetEntry()
   __resetTitle()
+  __resetPagesTitleCache()
   resetDevice()
   resetPackage()
   resetSystem()
@@ -170,7 +172,7 @@ describe('runtime/lifecycleHooks', () => {
     expect(http.send).toHaveBeenCalled()
   })
 
-  test('page_show：lt=11 由下一页 onShow 触发，url ≠ urlref', () => {
+  test('page_show：lt=11 由下一页 onShow 触发，描述离开页（url=上一页）', () => {
     const { app, reportSpy } = installAppWithSpyReporter()
     handleLaunch(app, {})
     // 首次 onShow：无上一页，不发 lt=11；只登记 lastRoute。
@@ -179,16 +181,15 @@ describe('runtime/lifecycleHooks', () => {
     handlePageHide(app, { route: 'pages/A' })
     reportSpy.mockClear()
 
-    // 进入下一页 B → 发 lt=11，url=B, urlref=A。
+    // 进入 B → lt=11 描述离开的 A；仅一层来源时不带 urlref。
     handlePageShow(app, { route: 'pages/B' })
     const calls = reportSpy.mock.calls.filter(
       (c) => (c[0] as ReportInput).lt === '11'
     )
     expect(calls).toHaveLength(1)
     const input = calls[0][0] as ReportInput
-    expect(input.url).toBe('pages/B')
-    expect(input.urlref).toBe('pages/A')
-    expect(input.urlref).not.toBe(input.url)
+    expect(input.url).toBe('pages/A')
+    expect(input.urlref).toBeUndefined()
     expect(input.urlref_ts).toBeGreaterThanOrEqual(0)
   })
 
@@ -198,25 +199,25 @@ describe('runtime/lifecycleHooks', () => {
 
     handlePageShow(app, { route: 'pages/home' }) // 入口页（首次，无 lt=11）
     handlePageHide(app, { route: 'pages/home' })
-    handlePageShow(app, { route: 'pages/A' }) // 发 lt=11(url=A, urlref=home)
+    handlePageShow(app, { route: 'pages/A' }) // lt=11：离开 home → url=home，无 urlref
     handlePageHide(app, { route: 'pages/A' })
-    handlePageShow(app, { route: 'pages/home' }) // 发 lt=11(url=home, urlref=A)
+    handlePageShow(app, { route: 'pages/home' }) // lt=11：离开 A → url=A，urlref=home
     handlePageHide(app, { route: 'pages/home' })
 
     const ltPages = reportSpy.mock.calls
       .map((c) => c[0] as ReportInput)
       .filter((i) => i.lt === '11')
     expect(ltPages).toHaveLength(2)
-    // 第 1 条：A 非入口 (iey=false)，前页 home 是入口 (ppiey=true)
-    expect(ltPages[0].url).toBe('pages/A')
-    expect(ltPages[0].urlref).toBe('pages/home')
-    expect(ltPages[0].iey).toBe(false)
-    expect(ltPages[0].ppiey).toBe(true)
-    // 第 2 条：home 是入口 (iey=true)，前页 A 非入口 (ppiey=false)
-    expect(ltPages[1].url).toBe('pages/home')
-    expect(ltPages[1].urlref).toBe('pages/A')
-    expect(ltPages[1].iey).toBe(true)
-    expect(ltPages[1].ppiey).toBe(false)
+    // 第 1 条：离开 home（入口 iey=1），尚无再上一层 urlref
+    expect(ltPages[0].url).toBe('pages/home')
+    expect(ltPages[0].urlref).toBeUndefined()
+    expect(ltPages[0].iey).toBe(true)
+    expect(ltPages[0].ppiey).toBe(false)
+    // 第 2 条：离开 A（非入口），urlref 指向 home（入口）
+    expect(ltPages[1].url).toBe('pages/A')
+    expect(ltPages[1].urlref).toBe('pages/home')
+    expect(ltPages[1].iey).toBe(false)
+    expect(ltPages[1].ppiey).toBe(true)
   })
 
   // 回归：enablePageLog=false 时跳过 lt=11 上报。

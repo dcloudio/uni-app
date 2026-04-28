@@ -564,12 +564,78 @@ function clearEntry() {
 }
 
 /**
+ * pages.json 导航栏标题解析（ttpj 数据源）。
+ *
+ * 私有版在 `utils/pageInfo.js` 构建阶段把 `pages.json` 各页的
+ * `style.navigationBarTitleText` / `style.navigationBar.titleText` 扫进 `titleJsons`，
+ * 运行时 `get_page_name(routepath)` 按路由 path 取值写入 `_navigationBarTitle.config`，
+ * 最终在 request 拼进上行 `ttpj`。
+ *
+ * 公有版走同一构建注入：`uni:stat` 插件（`src/plugin/index.ts`）生成
+ * `process.env.UNI_STAT_TITLE_JSON`（JSON 字符串），键为 `parsePagesJson().pages[].path`，
+ * 值为导航标题文案。本模块在运行时解析并做路由 key 归一化（有无前导 `/`、是否带 query）。
+ */
+/** 懒加载缓存；`undefined` 表示尚未解析。 */
+let titleMapCache;
+/**
+ * 解析并缓存 `UNI_STAT_TITLE_JSON`；解析失败或缺失时得到空表，避免重复 JSON.parse。
+ */
+function getTitleMap() {
+    if (titleMapCache)
+        return titleMapCache;
+    titleMapCache = {};
+    try {
+        const env = typeof process !== 'undefined' && process.env
+            ? process.env
+            : {};
+        const raw = env.UNI_STAT_TITLE_JSON;
+        if (typeof raw !== 'string' || !raw)
+            return titleMapCache;
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+            titleMapCache = parsed;
+        }
+    }
+    catch (_a) {
+        titleMapCache = {};
+    }
+    return titleMapCache;
+}
+/**
+ * 按当前页路由取 pages.json 中的导航栏标题，供 `setConfigTitle` → 上行 `ttpj`。
+ *
+ * @param routePath `getCurrentRoute()` 的典型返回值（一般无前导 `/`，与插件写入的 key 对齐）；允许含 query。
+ * @returns 未配置或查找不到时返回空串（与私有版 `get_page_name` 一致）。
+ */
+function getPagesJsonNavigationTitle(routePath) {
+    if (!routePath || typeof routePath !== 'string')
+        return '';
+    const pathOnly = routePath.split('?')[0].trim();
+    if (!pathOnly)
+        return '';
+    const map = getTitleMap();
+    const keys = [pathOnly];
+    if (pathOnly.startsWith('/')) {
+        keys.push(pathOnly.slice(1));
+    }
+    else {
+        keys.push(`/${pathOnly}`);
+    }
+    for (const k of keys) {
+        const v = map[k];
+        if (typeof v === 'string' && v.length > 0)
+            return v;
+    }
+    return '';
+}
+
+/**
  * 导航栏标题内存状态。
  *
  * 私有版 `Stat._navigationBarTitle = { page, config, report }` 三段被分散维护：
- *   - `page` 由 `addInterceptor('setNavigationBarTitle')` 写入；
- *   - `config` 由 `get_page_name(routepath)` 在 `request()` 中写入；
- *   - `report` 由 `sendEvent('title', value)` 写入。
+ *   - `page`：拦截 `uni.setNavigationBarTitle` → `ttn`；
+ *   - `config`：构建期注入的 pages.json 映射，运行时由 `getPagesJsonNavigationTitle(route)`（等价私有版 `get_page_name`）在每次 `onShow` 写入 → `ttpj`；
+ *   - `report`：`uni.report('title', value)` / `StatApp.report('title')` → `ttc`。
  *
  * 公有版集中到 `domain/title.ts`，对外仅暴露 setter / getter / clearForRoute；
  * statData 拼装时通过 `getCurrentTitle()` 一次性读出，**不再**和拦截器/路由耦合。
@@ -587,13 +653,19 @@ function setPageTitle(title) {
  * 由 collector / runtime 在 onPageShow 时写入 pages.json 配置标题。
  */
 function setConfigTitle(title) {
-    state$2.config = '';
+    state$2.config = typeof title === 'string' ? title : '';
 }
 /**
  * 业务通过 `uni.report('title', value)` 写入；与私有版 `sendEvent('title')` 行为一致。
  */
 function setReportTitle(title) {
     state$2.report = typeof title === 'string' ? title : '';
+}
+/**
+ * 取当前 title 三元组的浅拷贝；statData.builder 在拼装 ttn/ttpj/ttc 时调用。
+ */
+function getCurrentTitle() {
+    return { ttn: state$2.page, ttpj: state$2.config, ttc: state$2.report };
 }
 /**
  * 切换页面时清掉 page 维度的 title（config / report 由各自 setter 控制）。
@@ -1416,10 +1488,15 @@ function getPushClientId(opts = {}) {
  * 注意：本模块**不直接**依赖任何 adapter（除 `getCurrentRoute*` 与 `getLaunchScene`），
  * adapter 调用全部走 `tryRun` 兜底，单端缺失不影响调度。
  */
+const EMPTY_TITLE_SNAP = { ttn: '', ttpj: '', ttc: '' };
 /** 模块级状态。`bindLifecycle` 返回的 unbind 仅断订阅，不重置 state。 */
 const state$1 = {
     lastRoute: '',
+    lastRouteFull: '',
+    beforeLastRoute: '',
+    beforeLastRouteFull: '',
     lastRouteEnterTime: 0,
+    lastPageTitleSnap: Object.assign({}, EMPTY_TITLE_SNAP),
     lastIey: false,
     prevIey: false,
     isHide: false,
@@ -1548,21 +1625,17 @@ function handleAppHide(app) {
 /**
  * Page.onShow：页面前台展示。
  *
- * 与权威参数文档 `docs/uni统计上报参数.md` 对齐：`lt=11`（页面日志）对应 `onShow` 事件。
+ * `lt=11`（页面日志）在**进入新页**的 `onShow` 触发，但语义描述的是**刚刚离开的页面**
+ *（只有离开后才能闭合停留时长、导航栏标题等）：
  *
- * 流程：
- *   1. ensureSession('page_show')；命中 pageInactiveTimeout 时新 session（cst=3）。
- *   2. isNew=true 时发一条 lt=1（url=当前页 fullPath）。
- *   3. 上报 `lt=11`（仅当存在上一页）：
- *        - `url`     = 当前页 fullPath
- *        - `urlref`  = 上一页 path（state.lastRoute）
- *        - `urlref_ts` = 上一页停留秒数（now - state.lastRouteEnterTime）
- *        - `iey`     = 当前页是否入口页
- *        - `ppiey`   = 上一页是否入口页（state.lastIey）
- *      首次 onShow（无 state.lastRoute）跳过 `lt=11`，避免空 urlref。
- *   4. 更新状态：lastRoute / lastRouteEnterTime / lastIey / prevIey。
- *   5. setConfigTitle(pages.json 标题)：runtime 暂时不读 manifest，
- *      由调用方在 install 时透传，否则保持空串。
+ *   - `url`：离开页的完整路径（含 query），来自上一次 onShow 结束时登记的 `lastRouteFull`。
+ *   - `urlref`：再上一层的来源页（「上上个页面」），来自 `beforeLastRouteFull`；
+ *     首次从启动页外跳（只有一层来源）时不带 `urlref`。
+ *   - `urlref_ts`：离开页停留秒数，`now - lastRouteEnterTime`。
+ *   - `iey` / `ppiey`：分别对应**离开页**是否入口、`urlref` 指向页是否入口（与字段字典「上级页面」口径一致）。
+ *   - `ttn` / `ttpj` / `ttc`：离开页在**该页 onShow 末尾**快照的标题（避免切走后 `onHide` 清空标题导致拿不到）。
+ *
+ * 首次应用内 onShow（无前序页面）不发 `lt=11`。`enablePageLog=false` 时跳过整段 `lt=11`。
  */
 function handlePageShow(app, vm, opts = {}) {
     const c = safeCollector(app);
@@ -1574,6 +1647,10 @@ function handlePageShow(app, vm, opts = {}) {
         return;
     const route = tryRun(() => getCurrentRoute(vm), '');
     const url = tryRun(() => getCurrentRouteWithQuery(vm), '') || route;
+    // 对齐私有版 `report.js#pageShow`：每页先重置动态标题，再写入 pages.json 导航标题 → `ttpj`。
+    tryRun(() => setReportTitle(''), undefined);
+    tryRun(() => clearPageTitle(), undefined);
+    tryRun(() => setConfigTitle(getPagesJsonNavigationTitle(route)), undefined);
     if (result.isNew) {
         // 新会话：清掉旧 entry，等待 markEntryPage 重新登记
         tryRun(() => clearEntry(), undefined);
@@ -1585,31 +1662,42 @@ function handlePageShow(app, vm, opts = {}) {
     if (route) {
         tryRun(() => markEntryPage(route), undefined);
     }
-    // 上一页存在 → 发 lt=11（url=新页, urlref=上一页, urlref_ts=上一页停留时间）。
-    // 首次 onShow（state.lastRoute 为空）不发，避免 urlref 空字符串污染数据。
-    //
-    // enablePageLog=false 时跳过 lt=11 上报：与私有版 is_page_report() 拦截
-    // pageShow/pageHide 的语义完全一致；lt=1 / lt=3 / lt=21 / lt=31 不受影响。
+    // 存在上一页 → 发 lt=11：描述「离开的上一页」，而非当前 vm 所在页。
     if (state$1.lastRoute && opts.enablePageLog !== false) {
         const stayed = state$1.lastRouteEnterTime > 0
             ? Math.max(0, now - state$1.lastRouteEnterTime)
             : 0;
-        c.report({
+        const exitedUrl = state$1.lastRouteFull || state$1.lastRoute;
+        const ref = state$1.beforeLastRouteFull || state$1.beforeLastRoute || '';
+        const snap = state$1.lastPageTitleSnap;
+        const payload = {
             lt: LT.Page,
             t: now,
-            url,
-            urlref: state$1.lastRoute,
+            url: exitedUrl,
             urlref_ts: stayed,
-            iey: !!route && tryRun(() => isEntry(route), false),
-            // ppiey："上一页是否入口页" → 直接读上一次 onShow 末尾写入的 lastIey。
-            ppiey: state$1.lastIey,
-        });
+            // 离开页是否入口页 / urlref 指向页是否入口页（进入新页前状态尚未被本轮覆盖）。
+            iey: state$1.lastIey,
+            ppiey: state$1.prevIey,
+        };
+        if (ref)
+            payload.urlref = ref;
+        if (snap.ttn)
+            payload.ttn = snap.ttn;
+        if (snap.ttpj)
+            payload.ttpj = snap.ttpj;
+        if (snap.ttc)
+            payload.ttc = snap.ttc;
+        c.report(payload);
     }
-    // 状态切换：备份"上一页 iey"到 prevIey，再写入新页 iey；更新 lastRoute / 时间戳。
+    // 轮换路由链：当前页在下一轮成为「上一页」。
+    state$1.beforeLastRoute = state$1.lastRoute;
+    state$1.beforeLastRouteFull = state$1.lastRouteFull;
     state$1.prevIey = state$1.lastIey;
     state$1.lastIey = !!route && tryRun(() => isEntry(route), false);
     state$1.lastRoute = route;
+    state$1.lastRouteFull = url;
     state$1.lastRouteEnterTime = now;
+    state$1.lastPageTitleSnap = Object.assign({}, getCurrentTitle());
     state$1.isHide = false;
 }
 /**
@@ -1618,8 +1706,7 @@ function handlePageShow(app, vm, opts = {}) {
  * 私有版用 `isHide` 区分 onUnload 是隐藏还是真离开；本模块同样兼容。
  *
  * 公有版调整（与 `docs/uni统计上报参数.md` 对齐）：
- *   - `lt=11` 不再在 onHide 上报，统一在下一次 `handlePageShow` 上报，确保
- *     `url`（新页）与 `urlref`（旧页）字段不会落到同一个值。
+ *   - `lt=11` 不在 onHide 上报，统一在下一次 `handlePageShow` 上报离开页闭环数据。
  *   - onHide 仅做收尾：标记 isHide、清掉自定义 title，避免下次新页空标题。
  *   - lastRoute / lastRouteEnterTime / lastIey 保持不变，由 `handlePageShow` 统一切换。
  */
@@ -1629,8 +1716,7 @@ function handlePageHide(app, _vm) {
         return;
     state$1.isHide = true;
     tryRun(() => clearPageTitle(), undefined);
-    // setConfigTitle 由 install 在新页 onShow 时回灌；onHide 不动它，避免下次新页空标题
-    setConfigTitle();
+    // 不在此清空 ttpj：离开页 lt=11 的快照已在上一页 onShow 末尾落盘；config 由下一页 onShow 顶行重灌
 }
 /**
  * 已经被本模块"异步重抛"过的错误实例，用于阻断 `onError → 重抛 → onError` 死循环。
@@ -2160,6 +2246,32 @@ function describeError(e) {
 }
 
 /**
+ * 上行体瘦身：去掉值为空字符串 `''` 的字段。
+ *
+ * - **调试日志**：`collector.report` 在瘦身前把完整 `StatData` 交给 `logCollect`，空串字段仍会打印，
+ *   便于对照「是真的没采集到」还是「协议口径为空」。
+ * - **入队 / 发送**：经本函数后再 `queue.enqueue`，缩短 image GET URL（encode 后的 Logs），
+ *   仅减少体积，不改变非空字段语义。
+ *
+ * 注意：
+ *   - 只处理**顶层**键；`StatData` 事件对象为单层 KV。
+ *   - 仅剔除 `v === ''`，保留 `0`、`false`、`null`（若上游传入）；当前 builder 不会主动写入 null。
+ */
+/**
+ * 返回浅拷贝：值为 `''` 的键不拷贝到结果对象。
+ */
+function omitEmptyStringFieldsForUpload(data) {
+    const out = {};
+    for (const key of Object.keys(data)) {
+        const v = data[key];
+        if (v === '')
+            continue;
+        out[key] = v;
+    }
+    return out;
+}
+
+/**
  * 上报体序列化（重写私有版 `utils/pageInfo.js#handle_data`）。
  *
  * 修复缺陷 #4：私有版用 `for...in` 拿到的 key 永远是字符串，写成 `i === 0` 与 `i === 3`
@@ -2394,8 +2506,9 @@ function createCollector(deps) {
                 session: sessionForCtx,
             });
             const data = deps.builder.build(ctx);
-            deps.queue.enqueue(data);
+            // 调试日志打印完整对象（含空串）；入队发送侧去掉 '' 键以缩短 image URL
             logCollect(data);
+            deps.queue.enqueue(omitEmptyStringFieldsForUpload(data));
             if (deps.queue.shouldFlush()) {
                 flush(false).catch((e) => logger.warn('[uni-stat] auto-flush failed', e));
             }

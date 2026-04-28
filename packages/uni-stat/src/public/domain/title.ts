@@ -2,9 +2,9 @@
  * 导航栏标题内存状态。
  *
  * 私有版 `Stat._navigationBarTitle = { page, config, report }` 三段被分散维护：
- *   - `page` 由 `addInterceptor('setNavigationBarTitle')` 写入；
- *   - `config` 由 `get_page_name(routepath)` 在 `request()` 中写入；
- *   - `report` 由 `sendEvent('title', value)` 写入。
+ *   - `page`：拦截 `uni.setNavigationBarTitle` → `ttn`；
+ *   - `config`：构建期注入的 pages.json 映射，运行时由 `getPagesJsonNavigationTitle(route)`（等价私有版 `get_page_name`）在每次 `onShow` 写入 → `ttpj`；
+ *   - `report`：`uni.report('title', value)` / `StatApp.report('title')` → `ttc`。
  *
  * 公有版集中到 `domain/title.ts`，对外仅暴露 setter / getter / clearForRoute；
  * statData 拼装时通过 `getCurrentTitle()` 一次性读出，**不再**和拦截器/路由耦合。
@@ -13,7 +13,7 @@
 interface TitleState {
   /** 当前页 setNavigationBarTitle 设置的标题；切页清空。 */
   page: string
-  /** pages.json 中配置的 title；由 collector 在 onPageShow 时写入。 */
+  /** pages.json `navigationBarTitleText`；由 lifecycle `onShow` 调用 `setConfigTitle` 写入。 */
   config: string
   /** 业务通过 `uni.report('title', value)` 自定义上报标题。 */
   report: string

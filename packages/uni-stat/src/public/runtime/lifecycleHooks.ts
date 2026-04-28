@@ -24,7 +24,13 @@ import { CST } from '../domain/eventTypes'
 import { LT } from '../domain/eventTypes'
 import { buildVisitFields } from '../domain/visit/firstVisit'
 import { clearEntry, isEntry, markEntryPage } from '../domain/entry/entryPage'
-import { clearPageTitle, setConfigTitle } from '../domain/title'
+import { getPagesJsonNavigationTitle } from '../adapter/pagesTitle'
+import {
+  clearPageTitle,
+  getCurrentTitle,
+  setConfigTitle,
+  setReportTitle,
+} from '../domain/title'
 import { ensureSession, markBackground } from '../domain/session/machine'
 import { getCurrentRoute, getCurrentRouteWithQuery } from '../adapter/route'
 import { getLaunchScene } from '../adapter/lifecycle'
@@ -63,11 +69,31 @@ export interface LifecycleOptions {
   enablePageLog?: boolean
 }
 
+/** 上一页在 `onShow` 末尾快照的标题三元组，供下次进入新页时随 lt=11 上报「离开页」的 ttn/ttpj/ttc。 */
+interface TitleSnap {
+  ttn: string
+  ttpj: string
+  ttc: string
+}
+
+const EMPTY_TITLE_SNAP: TitleSnap = { ttn: '', ttpj: '', ttc: '' }
+
 interface LifecycleState {
   /** 上一个页面 path（不含 query）。 */
   lastRoute: string
-  /** 上一页 onShow 时间戳（秒）；用于计算 urlref_ts。 */
+  /** 上一页完整路径（含 query）；与 `lastRoute` 同源，用于 lt=11 的 `url`。 */
+  lastRouteFull: string
+  /**
+   * 上上个页面 path（不含 query）。
+   * lt=11 的 `urlref`：离开 `lastRoute` 进入新页时，指向「再上一层」来源页。
+   */
+  beforeLastRoute: string
+  /** 上上个页面完整路径（含 query）；优先于 `beforeLastRoute` 写入上行 `urlref`。 */
+  beforeLastRouteFull: string
+  /** 上一页 onShow 时间戳（秒）；用于计算「离开页」停留 urlref_ts。 */
   lastRouteEnterTime: number
+  /** 上一页 onShow 结束时快照的标题（对应上一页 / 即本轮 lt=11 描述对象）。 */
+  lastPageTitleSnap: TitleSnap
   /**
    * 当前页是否为入口页。
    *
@@ -89,7 +115,11 @@ interface LifecycleState {
 /** 模块级状态。`bindLifecycle` 返回的 unbind 仅断订阅，不重置 state。 */
 const state: LifecycleState = {
   lastRoute: '',
+  lastRouteFull: '',
+  beforeLastRoute: '',
+  beforeLastRouteFull: '',
   lastRouteEnterTime: 0,
+  lastPageTitleSnap: Object.assign({}, EMPTY_TITLE_SNAP),
   lastIey: false,
   prevIey: false,
   isHide: false,
@@ -255,21 +285,17 @@ export function handleAppHide(app: StatApp): void {
 /**
  * Page.onShow：页面前台展示。
  *
- * 与权威参数文档 `docs/uni统计上报参数.md` 对齐：`lt=11`（页面日志）对应 `onShow` 事件。
+ * `lt=11`（页面日志）在**进入新页**的 `onShow` 触发，但语义描述的是**刚刚离开的页面**
+ *（只有离开后才能闭合停留时长、导航栏标题等）：
  *
- * 流程：
- *   1. ensureSession('page_show')；命中 pageInactiveTimeout 时新 session（cst=3）。
- *   2. isNew=true 时发一条 lt=1（url=当前页 fullPath）。
- *   3. 上报 `lt=11`（仅当存在上一页）：
- *        - `url`     = 当前页 fullPath
- *        - `urlref`  = 上一页 path（state.lastRoute）
- *        - `urlref_ts` = 上一页停留秒数（now - state.lastRouteEnterTime）
- *        - `iey`     = 当前页是否入口页
- *        - `ppiey`   = 上一页是否入口页（state.lastIey）
- *      首次 onShow（无 state.lastRoute）跳过 `lt=11`，避免空 urlref。
- *   4. 更新状态：lastRoute / lastRouteEnterTime / lastIey / prevIey。
- *   5. setConfigTitle(pages.json 标题)：runtime 暂时不读 manifest，
- *      由调用方在 install 时透传，否则保持空串。
+ *   - `url`：离开页的完整路径（含 query），来自上一次 onShow 结束时登记的 `lastRouteFull`。
+ *   - `urlref`：再上一层的来源页（「上上个页面」），来自 `beforeLastRouteFull`；
+ *     首次从启动页外跳（只有一层来源）时不带 `urlref`。
+ *   - `urlref_ts`：离开页停留秒数，`now - lastRouteEnterTime`。
+ *   - `iey` / `ppiey`：分别对应**离开页**是否入口、`urlref` 指向页是否入口（与字段字典「上级页面」口径一致）。
+ *   - `ttn` / `ttpj` / `ttc`：离开页在**该页 onShow 末尾**快照的标题（避免切走后 `onHide` 清空标题导致拿不到）。
+ *
+ * 首次应用内 onShow（无前序页面）不发 `lt=11`。`enablePageLog=false` 时跳过整段 `lt=11`。
  */
 export function handlePageShow(
   app: StatApp,
@@ -283,6 +309,11 @@ export function handlePageShow(
   if (!result) return
   const route = tryRun(() => getCurrentRoute(vm), '')
   const url = tryRun(() => getCurrentRouteWithQuery(vm), '') || route
+  // 对齐私有版 `report.js#pageShow`：每页先重置动态标题，再写入 pages.json 导航标题 → `ttpj`。
+  tryRun(() => setReportTitle(''), undefined)
+  tryRun(() => clearPageTitle(), undefined)
+  tryRun(() => setConfigTitle(getPagesJsonNavigationTitle(route)), undefined)
+
   if (result.isNew) {
     // 新会话：清掉旧 entry，等待 markEntryPage 重新登记
     tryRun(() => clearEntry(), undefined)
@@ -301,32 +332,39 @@ export function handlePageShow(
   if (route) {
     tryRun(() => markEntryPage(route), undefined)
   }
-  // 上一页存在 → 发 lt=11（url=新页, urlref=上一页, urlref_ts=上一页停留时间）。
-  // 首次 onShow（state.lastRoute 为空）不发，避免 urlref 空字符串污染数据。
-  //
-  // enablePageLog=false 时跳过 lt=11 上报：与私有版 is_page_report() 拦截
-  // pageShow/pageHide 的语义完全一致；lt=1 / lt=3 / lt=21 / lt=31 不受影响。
+  // 存在上一页 → 发 lt=11：描述「离开的上一页」，而非当前 vm 所在页。
   if (state.lastRoute && opts.enablePageLog !== false) {
     const stayed =
       state.lastRouteEnterTime > 0
         ? Math.max(0, now - state.lastRouteEnterTime)
         : 0
-    c.report({
+    const exitedUrl = state.lastRouteFull || state.lastRoute
+    const ref = state.beforeLastRouteFull || state.beforeLastRoute || ''
+    const snap = state.lastPageTitleSnap
+    const payload: Parameters<CollectorAPI['report']>[0] = {
       lt: LT.Page,
       t: now,
-      url,
-      urlref: state.lastRoute,
+      url: exitedUrl,
       urlref_ts: stayed,
-      iey: !!route && tryRun(() => isEntry(route), false),
-      // ppiey："上一页是否入口页" → 直接读上一次 onShow 末尾写入的 lastIey。
-      ppiey: state.lastIey,
-    })
+      // 离开页是否入口页 / urlref 指向页是否入口页（进入新页前状态尚未被本轮覆盖）。
+      iey: state.lastIey,
+      ppiey: state.prevIey,
+    }
+    if (ref) payload.urlref = ref
+    if (snap.ttn) payload.ttn = snap.ttn
+    if (snap.ttpj) payload.ttpj = snap.ttpj
+    if (snap.ttc) payload.ttc = snap.ttc
+    c.report(payload)
   }
-  // 状态切换：备份"上一页 iey"到 prevIey，再写入新页 iey；更新 lastRoute / 时间戳。
+  // 轮换路由链：当前页在下一轮成为「上一页」。
+  state.beforeLastRoute = state.lastRoute
+  state.beforeLastRouteFull = state.lastRouteFull
   state.prevIey = state.lastIey
   state.lastIey = !!route && tryRun(() => isEntry(route), false)
   state.lastRoute = route
+  state.lastRouteFull = url
   state.lastRouteEnterTime = now
+  state.lastPageTitleSnap = Object.assign({}, getCurrentTitle())
   state.isHide = false
 }
 
@@ -336,8 +374,7 @@ export function handlePageShow(
  * 私有版用 `isHide` 区分 onUnload 是隐藏还是真离开；本模块同样兼容。
  *
  * 公有版调整（与 `docs/uni统计上报参数.md` 对齐）：
- *   - `lt=11` 不再在 onHide 上报，统一在下一次 `handlePageShow` 上报，确保
- *     `url`（新页）与 `urlref`（旧页）字段不会落到同一个值。
+ *   - `lt=11` 不在 onHide 上报，统一在下一次 `handlePageShow` 上报离开页闭环数据。
  *   - onHide 仅做收尾：标记 isHide、清掉自定义 title，避免下次新页空标题。
  *   - lastRoute / lastRouteEnterTime / lastIey 保持不变，由 `handlePageShow` 统一切换。
  */
@@ -346,8 +383,7 @@ export function handlePageHide(app: StatApp, _vm: PageVm | undefined): void {
   if (!c) return
   state.isHide = true
   tryRun(() => clearPageTitle(), undefined)
-  // setConfigTitle 由 install 在新页 onShow 时回灌；onHide 不动它，避免下次新页空标题
-  setConfigTitle(undefined)
+  // 不在此清空 ttpj：离开页 lt=11 的快照已在上一页 onShow 末尾落盘；config 由下一页 onShow 顶行重灌
 }
 
 /**
@@ -540,7 +576,11 @@ export function bindLifecycle(
 /** 仅供测试：清空内部 lastRoute 等状态以及"已发首批 visit 字段"哨兵。 */
 export function __resetLifecycleState(): void {
   state.lastRoute = ''
+  state.lastRouteFull = ''
+  state.beforeLastRoute = ''
+  state.beforeLastRouteFull = ''
   state.lastRouteEnterTime = 0
+  state.lastPageTitleSnap = Object.assign({}, EMPTY_TITLE_SNAP)
   state.lastIey = false
   state.prevIey = false
   state.isHide = false

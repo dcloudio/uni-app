@@ -64,8 +64,9 @@ export default () => [
             process.env.UNI_STAT_TITLE_JSON = JSON.stringify(titlesJson)
             return {
               define: {
-                'process.env.UNI_STAT_TITLE_JSON':
-                  process.env.UNI_STAT_TITLE_JSON,
+                'process.env.UNI_STAT_TITLE_JSON': JSON.stringify(
+                  process.env.UNI_STAT_TITLE_JSON ?? '{}'
+                ),
               },
             }
           }
@@ -131,7 +132,10 @@ export default () => [
         process.env.UNI_STAT_TITLE_JSON = JSON.stringify(titlesJson)
         return {
           define: {
-            'process.env.UNI_STAT_TITLE_JSON': process.env.UNI_STAT_TITLE_JSON,
+            // 与 UNI_APP_NAME 同理：外层 JSON.stringify 才能得到合法的内联字符串字面量
+            'process.env.UNI_STAT_TITLE_JSON': JSON.stringify(
+              process.env.UNI_STAT_TITLE_JSON ?? '{}'
+            ),
             'process.env.UNI_STAT_UNI_CLOUD': process.env.UNI_STAT_UNI_CLOUD,
             // 注意：define 的 value 是「替换后的源码字面量」，必须 JSON.stringify 一次，
             // 否则 'true' / 'false' 字符串会被当成布尔字面量替换进源码，导致

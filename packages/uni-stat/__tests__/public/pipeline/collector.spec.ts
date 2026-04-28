@@ -117,6 +117,30 @@ describe('pipeline/collector', () => {
       expect(deps.queue.enqueue).toHaveBeenCalledTimes(1)
     })
 
+    test('入队前剔除值为空字符串的键（调试仍走完整 builder 输出）', () => {
+      const deps = makeDeps({
+        builder: {
+          build: jest.fn(
+            () =>
+              ({
+                lt: '1',
+                t: 1,
+                ak: 'k',
+                ch: '',
+                brand: '',
+              } as StatData)
+          ),
+        },
+      })
+      const c = createCollector(deps)
+      c.report({ lt: '1' })
+      expect(deps.queue.enqueue).toHaveBeenCalledWith({
+        lt: '1',
+        t: 1,
+        ak: 'k',
+      })
+    })
+
     test('外部传入 t → 不覆盖', () => {
       const deps = makeDeps()
       const c = createCollector(deps)

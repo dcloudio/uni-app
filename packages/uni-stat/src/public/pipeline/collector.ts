@@ -25,6 +25,7 @@ import {
   logReportSummary,
 } from '../infra/debugLog'
 import { logger } from '../infra/logger'
+import { omitEmptyStringFieldsForUpload } from '../infra/omitEmptyStringFields'
 import { tryRun } from '../infra/safe'
 
 import { handleDataChunked } from './serializer'
@@ -128,8 +129,9 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
         session: sessionForCtx,
       }) as EventContext
       const data = deps.builder.build(ctx)
-      deps.queue.enqueue(data)
+      // 调试日志打印完整对象（含空串）；入队发送侧去掉 '' 键以缩短 image URL
       logCollect(data)
+      deps.queue.enqueue(omitEmptyStringFieldsForUpload(data))
       if (deps.queue.shouldFlush()) {
         flush(false).catch((e) =>
           logger.warn('[uni-stat] auto-flush failed', e)

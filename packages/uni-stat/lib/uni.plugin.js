@@ -37,7 +37,7 @@ var index = () => [
             name: 'uni:stat',
             enforce: 'pre',
             config(config, env) {
-                var _a, _b, _c;
+                var _a, _b, _c, _d, _e;
                 if (!uniCliShared.isNormalCompileTarget()) {
                     // 不需要统计
                     return;
@@ -65,7 +65,7 @@ var index = () => [
                         process.env.UNI_STAT_TITLE_JSON = JSON.stringify(titlesJson);
                         return {
                             define: {
-                                'process.env.UNI_STAT_TITLE_JSON': process.env.UNI_STAT_TITLE_JSON,
+                                'process.env.UNI_STAT_TITLE_JSON': JSON.stringify((_b = process.env.UNI_STAT_TITLE_JSON) !== null && _b !== void 0 ? _b : '{}'),
                             },
                         };
                     }
@@ -124,14 +124,15 @@ var index = () => [
                 process.env.UNI_STAT_TITLE_JSON = JSON.stringify(titlesJson);
                 return {
                     define: {
-                        'process.env.UNI_STAT_TITLE_JSON': process.env.UNI_STAT_TITLE_JSON,
+                        // 与 UNI_APP_NAME 同理：外层 JSON.stringify 才能得到合法的内联字符串字面量
+                        'process.env.UNI_STAT_TITLE_JSON': JSON.stringify((_c = process.env.UNI_STAT_TITLE_JSON) !== null && _c !== void 0 ? _c : '{}'),
                         'process.env.UNI_STAT_UNI_CLOUD': process.env.UNI_STAT_UNI_CLOUD,
                         // 注意：define 的 value 是「替换后的源码字面量」，必须 JSON.stringify 一次，
                         // 否则 'true' / 'false' 字符串会被当成布尔字面量替换进源码，导致
                         // dist 中 `process.env.UNI_STAT_DEBUG === 'true'` 永远等于 false（公有版调试日志失效根因）。
-                        'process.env.UNI_STAT_DEBUG': JSON.stringify((_b = process.env.UNI_STAT_DEBUG) !== null && _b !== void 0 ? _b : 'false'),
+                        'process.env.UNI_STAT_DEBUG': JSON.stringify((_d = process.env.UNI_STAT_DEBUG) !== null && _d !== void 0 ? _d : 'false'),
                         'process.env.UNI_STATISTICS_CONFIG': process.env.UNI_STATISTICS_CONFIG,
-                        'process.env.UNI_APP_NAME': JSON.stringify((_c = process.env.UNI_APP_NAME) !== null && _c !== void 0 ? _c : ''),
+                        'process.env.UNI_APP_NAME': JSON.stringify((_e = process.env.UNI_APP_NAME) !== null && _e !== void 0 ? _e : ''),
                     },
                 };
             },

@@ -20,3 +20,5 @@ export {
 } from './debugLog'
 export { interceptor } from './interceptor'
 export type { InterceptorHandlers } from './interceptor'
+
+export { omitEmptyStringFieldsForUpload } from './omitEmptyStringFields'
