@@ -1562,7 +1562,7 @@ function handleAppHide(app) {
  *   5. setConfigTitle(pages.json 标题)：runtime 暂时不读 manifest，
  *      由调用方在 install 时透传，否则保持空串。
  */
-function handlePageShow(app, vm, _opts = {}) {
+function handlePageShow(app, vm, opts = {}) {
     const c = safeCollector(app);
     if (!c)
         return;
@@ -1576,6 +1576,8 @@ function handlePageShow(app, vm, _opts = {}) {
         // 新会话：清掉旧 entry，等待 markEntryPage 重新登记
         tryRun(() => clearEntry(), undefined);
         // cst=3：不再携带 fvts/lvts/tvc（首批已在 cold_launch 上报过）。
+        // 注意：lt=1（新会话首报）**不受** enablePageLog 控制 —— 与私有版语义一致，
+        // is_page_report 仅拦截 pageShow/pageHide，不影响 launch/appShow/appHide。
         reportNewSession(c, result.cst || CST.PageInactiveTimeout, '', now, false, url);
     }
     if (route) {
@@ -1583,7 +1585,10 @@ function handlePageShow(app, vm, _opts = {}) {
     }
     // 上一页存在 → 发 lt=11（url=新页, urlref=上一页, urlref_ts=上一页停留时间）。
     // 首次 onShow（state.lastRoute 为空）不发，避免 urlref 空字符串污染数据。
-    if (state$1.lastRoute) {
+    //
+    // enablePageLog=false 时跳过 lt=11 上报：与私有版 is_page_report() 拦截
+    // pageShow/pageHide 的语义完全一致；lt=1 / lt=3 / lt=21 / lt=31 不受影响。
+    if (state$1.lastRoute && opts.enablePageLog !== false) {
         const stayed = state$1.lastRouteEnterTime > 0
             ? Math.max(0, now - state$1.lastRouteEnterTime)
             : 0;
@@ -4260,6 +4265,9 @@ class StatApp {
             reportIntervalSec: typeof c.reportIntervalSec === 'number'
                 ? c.reportIntervalSec
                 : REPORT_INTERVAL_SEC,
+            // collectItems 默认值与私有版严格对齐：push 默认关闭、页面日志默认开启
+            enablePush: c.enablePush === true,
+            enablePageLog: c.enablePageLog !== false,
         };
     }
     /**
@@ -4377,16 +4385,37 @@ function __resetStatApp() {
  * 从 `process.env.UNI_STATISTICS_CONFIG`（plugin 注入的 manifest.uniStatistics 序列化串）
  * 读取业务配置，把已知字段映射为 StatApp.install 的 partial config。
  *
- * 与 plugin（packages/uni-stat/src/plugin/index.ts）约定字段：
- *   - `version`：**模块版本**（1=私有 1.0 / 2=私有 2.0 / 3=公有版），由 plugin 决定加载哪个
- *     dist。本函数运行在公有版内部，已是 version=3 的语境，**不再**透传该字段。
- *   - `channelVersion`：可选；公有版**通道版本**（`'1'` = HTTP 1.0、`'2'` = uniCloud 2.0、
- *     `'image'` = 火山 TLS WebTrack.gif，公有版默认）。manifest 里没写则走默认 'image'。
- *   - `backgroundTimeoutSec / pageInactiveTimeoutSec / reportIntervalSec`：直传 number。
- *   - `ak / v / ch`：可选；测试 / 灰度需要时可手工指定。
+ * ## 字段命名严格对齐私有版
  *
- * 注意：image 通道的 `host / projectId / topicId` 是 **SDK 内部接入参数**，由维护者直接
- * 在 `public/config.ts#IMAGE_REPORT_DEFAULTS` 中维护，**不**通过 manifest 暴露给业务方。
+ * uni-app 私有版（`src/utils/pageInfo.js`）历史已对外暴露的 manifest 字段：
+ *
+ *   | manifest 字段                          | 类型     | 默认值 | 私有版语义                       |
+ *   | -------------------------------------- | -------- | ------ | -------------------------------- |
+ *   | `enable`                               | Boolean  | false  | 总开关，由 plugin 处理           |
+ *   | `version`                              | String   | "1"    | "1" / "2" / "3"（公有版新增）    |
+ *   | `debug`                                | Boolean  | false  | logger.debug 开关                |
+ *   | `reportInterval`                       | Number   | 10     | 上报间隔秒数；0 = 立即上报       |
+ *   | `collectItems.uniPushClientID`         | Boolean  | false  | 是否采集 push ClientID（lt=101） |
+ *   | `collectItems.uniStatPageLog`          | Boolean  | true   | 是否上报页面日志（lt=11）        |
+ *
+ * 公有版**新增**字段（私有版不支持）：
+ *
+ *   | manifest 字段             | 类型    | 默认值 | 说明                                                   |
+ *   | ------------------------- | ------- | ------ | ------------------------------------------------------ |
+ *   | `backgroundTimeout`       | Number  | 300    | 后台返回前台超过此秒数视为新会话（cst=2）              |
+ *   | `pageInactiveTimeout`     | Number  | 1800   | 前台连续无操作超过此秒数视为新会话（cst=3）            |
+ *   | `channelVersion`          | String  | image  | 内部调试：`image` / `1` / `2`，业务方一般不需要设置   |
+ *
+ * ## 别名兼容
+ *
+ * 公有版早期内部测试用了带 `Sec` 后缀的命名（`reportIntervalSec / backgroundTimeoutSec /
+ * pageInactiveTimeoutSec`），未对外发布但已在示例中出现过；本函数同时接受这两套写法，
+ * **优先取私有版命名**（无后缀），别名仅作向后兼容。
+ *
+ * ## 内部接入参数不可自定义
+ *
+ * image 通道的 `host / projectId / topicId` 是 SDK 内部接入参数，由维护者直接在
+ * `public/config.ts#IMAGE_REPORT_DEFAULTS` 中维护，**不**通过 manifest 暴露给业务方。
  *
  * 任意 JSON 解析 / 字段类型异常都吞掉，回到默认值；此处**不能**抛错，否则会阻塞自动 install。
  */
@@ -4406,17 +4435,28 @@ function readManifestStatConfig() {
             if (v === '1' || v === '2' || v === 'image')
                 cfg.version = v;
         }
-        if (typeof obj.backgroundTimeoutSec === 'number' &&
-            obj.backgroundTimeoutSec >= 0) {
-            cfg.backgroundTimeoutSec = obj.backgroundTimeoutSec;
-        }
-        if (typeof obj.pageInactiveTimeoutSec === 'number' &&
-            obj.pageInactiveTimeoutSec >= 0) {
-            cfg.pageInactiveTimeoutSec = obj.pageInactiveTimeoutSec;
-        }
-        if (typeof obj.reportIntervalSec === 'number' &&
-            obj.reportIntervalSec >= 0) {
-            cfg.reportIntervalSec = obj.reportIntervalSec;
+        // === 公有版扩展：backgroundTimeout / pageInactiveTimeout（私有版无此字段）===
+        // 同时兼容早期内部用的带 Sec 后缀别名；优先无后缀（与官方风格一致）。
+        const bg = pickPositiveNumber(obj.backgroundTimeout, obj.backgroundTimeoutSec);
+        if (bg !== undefined)
+            cfg.backgroundTimeoutSec = bg;
+        const pi = pickPositiveNumber(obj.pageInactiveTimeout, obj.pageInactiveTimeoutSec);
+        if (pi !== undefined)
+            cfg.pageInactiveTimeoutSec = pi;
+        // === 私有版同名字段：reportInterval（私有版默认 10）===
+        // 兼容旧公有版别名 reportIntervalSec；允许 0（私有版语义"立即上报"）。
+        const ri = pickNonNegativeNumber(obj.reportInterval, obj.reportIntervalSec);
+        if (ri !== undefined)
+            cfg.reportIntervalSec = ri;
+        // === 私有版同名字段：collectItems.{uniPushClientID, uniStatPageLog} ===
+        if (obj.collectItems && typeof obj.collectItems === 'object') {
+            const items = obj.collectItems;
+            if (typeof items.uniPushClientID === 'boolean') {
+                cfg.enablePush = items.uniPushClientID;
+            }
+            if (typeof items.uniStatPageLog === 'boolean') {
+                cfg.enablePageLog = items.uniStatPageLog;
+            }
         }
         if (typeof obj.ak === 'string' && obj.ak)
             cfg.ak = obj.ak;
@@ -4424,14 +4464,36 @@ function readManifestStatConfig() {
             cfg.v = obj.v;
         if (typeof obj.ch === 'string')
             cfg.ch = obj.ch;
-        // imageReport.host/projectId/topicId 是内部接入参数，由 SDK 维护者直接维护，
-        // 此处**不解析** manifest 中的同名字段，避免业务方误以为可以自定义后端。
         return Object.keys(cfg).length > 0 ? cfg : undefined;
     }
     catch (e) {
         logger.warn('[uni-stat] readManifestStatConfig failed', e);
         return undefined;
     }
+}
+/**
+ * 在多个候选值中按顺序取**第一个有效的正数**（> 0），其余忽略。
+ * 用于 manifest 字段的"主名 / 别名"二选一解析（如 `backgroundTimeout` / `backgroundTimeoutSec`）。
+ *
+ * 注意：私有版历史允许 `0` 表示"立即上报"，但仅 `reportInterval` 一项有此语义；
+ * timeout 类字段 0 表示"立即超时"，不合理，本函数统一过滤为 undefined。
+ */
+function pickPositiveNumber(...candidates) {
+    for (const c of candidates) {
+        if (typeof c === 'number' && c > 0)
+            return c;
+    }
+    return undefined;
+}
+/**
+ * 同 `pickPositiveNumber`，但允许 `0`（用于 `reportInterval` 表达"立即上报"语义）。
+ */
+function pickNonNegativeNumber(...candidates) {
+    for (const c of candidates) {
+        if (typeof c === 'number' && c >= 0)
+            return c;
+    }
+    return undefined;
 }
 function getUni() {
     return globalThis.uni;
@@ -4446,6 +4508,7 @@ let lastUnbind;
  * 失败任意子步骤都吞掉日志，不抛回。
  */
 function installPublicStat(opts = {}) {
+    var _a, _b;
     if (bootstrapped)
         return;
     bootstrapped = true;
@@ -4456,7 +4519,16 @@ function installPublicStat(opts = {}) {
     const finalConfig = Object.assign({}, fromManifest, opts.config);
     const app = getStatApp();
     tryRun(() => app.install(finalConfig, opts.overrides), undefined);
-    const { mixin, unbind } = bindLifecycle(app, opts.lifecycle);
+    // 把 collectItems 的开关透传给 lifecycleHooks：
+    //   - uniPushClientID → enablePush（决定是否抓取 push CID 上报 lt=101）
+    //   - uniStatPageLog  → enablePageLog（决定是否上报 lt=11 页面切换事件）
+    // 调用方通过 opts.lifecycle 显式传入的值优先级最高，未指定时用 manifest 默认。
+    const cfg = app.getConfig();
+    const lifecycleOpts = Object.assign({}, {
+        enablePush: (_a = cfg === null || cfg === void 0 ? void 0 : cfg.enablePush) !== null && _a !== void 0 ? _a : false,
+        enablePageLog: (_b = cfg === null || cfg === void 0 ? void 0 : cfg.enablePageLog) !== null && _b !== void 0 ? _b : true,
+    }, opts.lifecycle);
+    const { mixin, unbind } = bindLifecycle(app, lifecycleOpts);
     lastUnbind = unbind;
     if (!opts.skipVueMixin) {
         tryRun(() => mountVueMixin(mixin), undefined);

@@ -68,12 +68,43 @@ export interface StatAppConfig {
    *   - `'2'`    ：uniCloud 2.0（私有版兼容，需要业务侧自行注入 `__stat_uniCloud_space`）
    */
   version: StatVersion
-  /** 后台超时（秒），session 状态机 backgroundTimeoutSec。 */
+  /**
+   * 后台超时（秒），session 状态机 backgroundTimeoutSec。
+   *
+   * 对应 manifest 字段 `uniStatistics.backgroundTimeout`（公有版扩展，私有版无此字段）。
+   * 默认 300。
+   */
   backgroundTimeoutSec: number
-  /** 前台无操作超时（秒）。 */
+  /**
+   * 前台无操作超时（秒）。
+   *
+   * 对应 manifest 字段 `uniStatistics.pageInactiveTimeout`（公有版扩展，私有版无此字段）。
+   * 默认 1800。
+   */
   pageInactiveTimeoutSec: number
-  /** 上报间隔（秒）。 */
+  /**
+   * 上报间隔（秒）。
+   *
+   * 对应 manifest 字段 `uniStatistics.reportInterval`（与私有版字段同名同义）。
+   * 默认 10；`0` = 立即上报（仅调试）。
+   */
   reportIntervalSec: number
+  /**
+   * 是否采集 push ClientID（对应 lt=101）。
+   *
+   * 对应 manifest 字段 `uniStatistics.collectItems.uniPushClientID`，与私有版语义完全一致。
+   * 默认 `false`（合规要求显式开启）。
+   */
+  enablePush: boolean
+  /**
+   * 是否上报页面日志（对应 lt=11）。
+   *
+   * 对应 manifest 字段 `uniStatistics.collectItems.uniStatPageLog`，与私有版语义完全一致：
+   * 仅控制**页面切换事件 lt=11** 的上报；**不影响** lt=1（Launch）、lt=3（AppHide）、
+   * lt=21（自定义事件）、lt=31（错误）。
+   * 默认 `true`。
+   */
+  enablePageLog: boolean
 }
 
 export interface StatAppOverrides {
@@ -294,6 +325,9 @@ export class StatApp {
         typeof c.reportIntervalSec === 'number'
           ? c.reportIntervalSec
           : REPORT_INTERVAL_SEC,
+      // collectItems 默认值与私有版严格对齐：push 默认关闭、页面日志默认开启
+      enablePush: c.enablePush === true,
+      enablePageLog: c.enablePageLog !== false,
     }
   }
 

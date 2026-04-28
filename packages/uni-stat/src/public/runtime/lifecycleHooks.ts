@@ -44,10 +44,23 @@ interface PageVm {
 }
 
 export interface LifecycleOptions {
-  /** 是否开启 push CID 抓取（默认 false，符合 push 默认关闭）。 */
+  /**
+   * 是否开启 push CID 抓取（默认 false，符合 push 默认关闭）。
+   *
+   * 对应 manifest `uniStatistics.collectItems.uniPushClientID`，私有版同名同义。
+   * `false` 时 `handleLaunch` 不会调用 `getPushClientId`，也不会上报 lt=101。
+   */
   enablePush?: boolean
   /** push CID 超时（ms）。 */
   pushTimeoutMs?: number
+  /**
+   * 是否上报页面日志 lt=11（默认 true）。
+   *
+   * 对应 manifest `uniStatistics.collectItems.uniStatPageLog`，私有版同名同义：
+   * 仅控制**页面切换事件 lt=11** 的上报；**不影响** lt=1 / lt=3 / lt=21 / lt=31。
+   * 与私有版 `is_page_report()` 在 `pageShow / pageHide` 上的拦截语义完全一致。
+   */
+  enablePageLog?: boolean
 }
 
 interface LifecycleState {
@@ -261,7 +274,7 @@ export function handleAppHide(app: StatApp): void {
 export function handlePageShow(
   app: StatApp,
   vm: PageVm | undefined,
-  _opts: LifecycleOptions = {}
+  opts: LifecycleOptions = {}
 ): void {
   const c = safeCollector(app)
   if (!c) return
@@ -274,6 +287,8 @@ export function handlePageShow(
     // 新会话：清掉旧 entry，等待 markEntryPage 重新登记
     tryRun(() => clearEntry(), undefined)
     // cst=3：不再携带 fvts/lvts/tvc（首批已在 cold_launch 上报过）。
+    // 注意：lt=1（新会话首报）**不受** enablePageLog 控制 —— 与私有版语义一致，
+    // is_page_report 仅拦截 pageShow/pageHide，不影响 launch/appShow/appHide。
     reportNewSession(
       c,
       result.cst || CST.PageInactiveTimeout,
@@ -288,7 +303,10 @@ export function handlePageShow(
   }
   // 上一页存在 → 发 lt=11（url=新页, urlref=上一页, urlref_ts=上一页停留时间）。
   // 首次 onShow（state.lastRoute 为空）不发，避免 urlref 空字符串污染数据。
-  if (state.lastRoute) {
+  //
+  // enablePageLog=false 时跳过 lt=11 上报：与私有版 is_page_report() 拦截
+  // pageShow/pageHide 的语义完全一致；lt=1 / lt=3 / lt=21 / lt=31 不受影响。
+  if (state.lastRoute && opts.enablePageLog !== false) {
     const stayed =
       state.lastRouteEnterTime > 0
         ? Math.max(0, now - state.lastRouteEnterTime)

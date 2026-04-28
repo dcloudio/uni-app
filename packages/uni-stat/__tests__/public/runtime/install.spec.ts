@@ -154,4 +154,139 @@ describe('runtime/install', () => {
     // image 字段不存在于 StatAppConfig，imageReport 整个被忽略
     expect(cfg.image).toBeUndefined()
   })
+
+  // === 与私有版字段命名严格对齐的回归（reportInterval / backgroundTimeout / pageInactiveTimeout）===
+
+  test('I8 私有版字段 reportInterval 优先被识别（无 Sec 后缀）', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      JSON.stringify({
+        reportInterval: 7, // 私有版同名字段
+      })
+
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    expect(getStatApp().getConfig()!.reportIntervalSec).toBe(7)
+  })
+
+  test('I8.b reportInterval=0 表示立即上报（私有版语义保留）', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      JSON.stringify({ reportInterval: 0 })
+
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    expect(getStatApp().getConfig()!.reportIntervalSec).toBe(0)
+  })
+
+  test('I8.c 旧别名 reportIntervalSec 仍兼容（向后不破坏）', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      JSON.stringify({ reportIntervalSec: 9 })
+
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    expect(getStatApp().getConfig()!.reportIntervalSec).toBe(9)
+  })
+
+  test('I8.d reportInterval 与别名同时存在时，优先取无后缀的', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      JSON.stringify({ reportInterval: 3, reportIntervalSec: 99 })
+
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    expect(getStatApp().getConfig()!.reportIntervalSec).toBe(3)
+  })
+
+  test('I9 公有版扩展字段 backgroundTimeout / pageInactiveTimeout（无后缀）', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      JSON.stringify({
+        backgroundTimeout: 60,
+        pageInactiveTimeout: 120,
+      })
+
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    const cfg = getStatApp().getConfig()!
+    expect(cfg.backgroundTimeoutSec).toBe(60)
+    expect(cfg.pageInactiveTimeoutSec).toBe(120)
+  })
+
+  test('I9.b 旧别名 backgroundTimeoutSec / pageInactiveTimeoutSec 仍兼容', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      JSON.stringify({
+        backgroundTimeoutSec: 60,
+        pageInactiveTimeoutSec: 120,
+      })
+
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    const cfg = getStatApp().getConfig()!
+    expect(cfg.backgroundTimeoutSec).toBe(60)
+    expect(cfg.pageInactiveTimeoutSec).toBe(120)
+  })
+
+  // === collectItems：与私有版完全同名同义 ===
+
+  test('I10 collectItems.uniPushClientID=true → enablePush=true', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      JSON.stringify({
+        collectItems: { uniPushClientID: true },
+      })
+
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    expect(getStatApp().getConfig()!.enablePush).toBe(true)
+    expect(getStatApp().getConfig()!.enablePageLog).toBe(true) // 默认
+  })
+
+  test('I10.b collectItems.uniStatPageLog=false → enablePageLog=false', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      JSON.stringify({
+        collectItems: { uniStatPageLog: false },
+      })
+
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    expect(getStatApp().getConfig()!.enablePageLog).toBe(false)
+    expect(getStatApp().getConfig()!.enablePush).toBe(false) // 默认
+  })
+
+  test('I10.c collectItems 缺省 → 走私有版默认（push=false, pageLog=true）', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      JSON.stringify({})
+
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    expect(getStatApp().getConfig()!.enablePush).toBe(false)
+    expect(getStatApp().getConfig()!.enablePageLog).toBe(true)
+  })
+
+  test('I10.d collectItems 类型异常时整体跳过，不抛', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      JSON.stringify({
+        collectItems: 'not-an-object', // 非法
+      })
+
+    expect(() =>
+      installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    ).not.toThrow()
+    expect(getStatApp().getConfig()!.enablePush).toBe(false)
+    expect(getStatApp().getConfig()!.enablePageLog).toBe(true)
+  })
+
+  test('I10.e collectItems 子字段类型异常时仅忽略该子字段', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      JSON.stringify({
+        collectItems: {
+          uniPushClientID: 'yes', // 非法
+          uniStatPageLog: false, // 合法
+        },
+      })
+
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    expect(getStatApp().getConfig()!.enablePush).toBe(false) // 非法 → 默认
+    expect(getStatApp().getConfig()!.enablePageLog).toBe(false)
+  })
+
+  test('I11 timeout=0 不应被采纳（语义不合理，转为默认值）', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      JSON.stringify({
+        backgroundTimeout: 0, // 0 = 立即超时？无意义，应走默认
+        pageInactiveTimeout: 0,
+      })
+
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    const cfg = getStatApp().getConfig()!
+    expect(cfg.backgroundTimeoutSec).toBe(300) // 默认
+    expect(cfg.pageInactiveTimeoutSec).toBe(1800)
+  })
 })

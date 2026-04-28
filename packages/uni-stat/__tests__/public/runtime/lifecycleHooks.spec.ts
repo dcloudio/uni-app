@@ -219,6 +219,38 @@ describe('runtime/lifecycleHooks', () => {
     expect(ltPages[1].ppiey).toBe(false)
   })
 
+  // 回归：enablePageLog=false 时跳过 lt=11 上报。
+  // 与私有版 is_page_report() 在 pageShow/pageHide 上的拦截语义完全一致：
+  // 仅影响页面切换事件 lt=11，**不影响** lt=1（launch）/ lt=3（appHide）/ lt=21 / lt=31。
+  test('enablePageLog=false 时跳过 lt=11；lt=1 / lt=3 不受影响', async () => {
+    const { app, reportSpy, http } = installAppWithSpyReporter()
+    handleLaunch(app, {})
+    handlePageShow(app, { route: 'pages/home' }, { enablePageLog: false })
+    handlePageHide(app, { route: 'pages/home' })
+    handlePageShow(app, { route: 'pages/A' }, { enablePageLog: false })
+    handlePageHide(app, { route: 'pages/A' })
+
+    const lts = getReportedLts(reportSpy)
+    // 应包含 lt=1（launch）但不包含 lt=11（被跳过）
+    expect(lts).toContain('1')
+    expect(lts).not.toContain('11')
+
+    // app_hide 仍然发 lt=3
+    handleAppHide(app)
+    expect(getReportedLts(reportSpy)).toContain('3')
+    await Promise.resolve()
+    expect(http.send).toHaveBeenCalled()
+  })
+
+  test('enablePageLog=true（默认）时 lt=11 正常上报', () => {
+    const { app, reportSpy } = installAppWithSpyReporter()
+    handleLaunch(app, {})
+    handlePageShow(app, { route: 'pages/home' }, { enablePageLog: true })
+    handlePageHide(app, { route: 'pages/home' })
+    handlePageShow(app, { route: 'pages/A' }, { enablePageLog: true })
+    expect(getReportedLts(reportSpy)).toContain('11')
+  })
+
   test('app_hide：iey/ppiey 取自最近一次 prev 状态（修复 #PPIEY）', () => {
     const { app, reportSpy } = installAppWithSpyReporter()
     handleLaunch(app, {})

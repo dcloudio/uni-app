@@ -420,19 +420,30 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
 
   /** S8 错误：业务 throw new Error → lt=31，em 含 message。 */
   test('S8 onError throw → lt=31，em 含 message', async () => {
-    const { app, http } = installApp()
-    handleLaunch(app, {})
-    await drain(app)
-    http.send.mockClear()
+    // handleError 内部用 `setTimeout(throw e, 0)` 把原始错误异步重抛回原生
+    // Uncaught 通路（详见 lifecycleHooks.ts#handleError）。Jest 默认 timer
+    // 会让这个 throw 在事件循环中真正抛出，导致整个 Node 进程被 unhandled
+    // exception 搞挂。这里用 fake timers 把 setTimeout mock 掉，让重抛只
+    // "排队"不真触发；测试关注的是采集到的 lt=31，与"原生重抛"行为无关。
+    jest.useFakeTimers()
+    try {
+      const { app, http } = installApp()
+      handleLaunch(app, {})
+      await drain(app)
+      http.send.mockClear()
 
-    handleError(app, new Error('boom-msg'))
-    await drain(app)
+      handleError(app, new Error('boom-msg'))
+      await drain(app)
 
-    const events = flatEvents(dumpSent(http))
-    const errs = events.filter((e) => e.lt === '31')
-    expect(errs).toHaveLength(1)
-    expect(typeof errs[0].em).toBe('string')
-    expect(errs[0].em).toContain('boom-msg')
+      const events = flatEvents(dumpSent(http))
+      const errs = events.filter((e) => e.lt === '31')
+      expect(errs).toHaveLength(1)
+      expect(typeof errs[0].em).toBe('string')
+      expect(errs[0].em).toContain('boom-msg')
+    } finally {
+      jest.clearAllTimers()
+      jest.useRealTimers()
+    }
   })
 
   /** S9 弱网 100 条 + 恢复：先全部失败入 retry queue，恢复后 recoverRetry 重放。 */
