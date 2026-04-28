@@ -323,6 +323,7 @@ export interface EncryptPackageJson {
     dependencies: string[]
     artifacts: {
       env: {
+        vapor: boolean
         compilerVersion: string
       } & Record<string, any>
       apis: string[]
@@ -339,7 +340,7 @@ function findEncryptUniModuleCache(
   cacheDir: string,
   options: {
     version: string
-    env: Record<string, string>
+    env: Record<string, unknown>
   }
 ): EncryptPackageJson | undefined {
   if (!cacheDir) {
@@ -420,9 +421,10 @@ function findUniModuleFiles(
   })
 }
 
-export function initCheckEnv(): Record<string, string> {
+export function initCheckEnv(): Record<string, unknown> {
   return {
     // 云端编译的版本号不带日期及小版本
+    vapor: process.env.UNI_APP_X_DOM2 === 'true',
     compilerVersion: process.env.UNI_COMPILER_VERSION,
   }
 }

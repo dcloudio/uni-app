@@ -121,6 +121,7 @@ async function checkWithPlayground(
 
 export function initCheckOptionsEnv(): CheckOptions['env'] {
   return {
+    vapor: process.env.UNI_APP_X_DOM2 === 'true',
     compilerVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
   }
 }
