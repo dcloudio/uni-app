@@ -37,7 +37,7 @@ var index = () => [
             name: 'uni:stat',
             enforce: 'pre',
             config(config, env) {
-                var _a, _b, _c, _d, _e;
+                var _a, _b, _c, _d, _e, _f, _g;
                 if (!uniCliShared.isNormalCompileTarget()) {
                     // 不需要统计
                     return;
@@ -126,13 +126,17 @@ var index = () => [
                     define: {
                         // 与 UNI_APP_NAME 同理：外层 JSON.stringify 才能得到合法的内联字符串字面量
                         'process.env.UNI_STAT_TITLE_JSON': JSON.stringify((_c = process.env.UNI_STAT_TITLE_JSON) !== null && _c !== void 0 ? _c : '{}'),
-                        'process.env.UNI_STAT_UNI_CLOUD': process.env.UNI_STAT_UNI_CLOUD,
+                        'process.env.UNI_STAT_UNI_CLOUD': JSON.stringify((_d = process.env.UNI_STAT_UNI_CLOUD) !== null && _d !== void 0 ? _d : '{}'),
                         // 注意：define 的 value 是「替换后的源码字面量」，必须 JSON.stringify 一次，
                         // 否则 'true' / 'false' 字符串会被当成布尔字面量替换进源码，导致
                         // dist 中 `process.env.UNI_STAT_DEBUG === 'true'` 永远等于 false（公有版调试日志失效根因）。
-                        'process.env.UNI_STAT_DEBUG': JSON.stringify((_d = process.env.UNI_STAT_DEBUG) !== null && _d !== void 0 ? _d : 'false'),
-                        'process.env.UNI_STATISTICS_CONFIG': process.env.UNI_STATISTICS_CONFIG,
-                        'process.env.UNI_APP_NAME': JSON.stringify((_e = process.env.UNI_APP_NAME) !== null && _e !== void 0 ? _e : ''),
+                        'process.env.UNI_STAT_DEBUG': JSON.stringify((_e = process.env.UNI_STAT_DEBUG) !== null && _e !== void 0 ? _e : 'false'),
+                        // 与 UNI_STAT_TITLE_JSON 同理：`statConfig` 已是 JSON 字符串，若不经
+                        // JSON.stringify 再包一层，esbuild/vite define 会把串内 `"` 当成源码边界，
+                        // 运行时替换结果残缺 → JSON.parse 失败 → readManifestStatConfig 静默回退，
+                        // manifest 里的 backgroundTimeout / pageInactiveTimeout 等全部丢失（表现为默认 300/1800）。
+                        'process.env.UNI_STATISTICS_CONFIG': JSON.stringify((_f = process.env.UNI_STATISTICS_CONFIG) !== null && _f !== void 0 ? _f : '{}'),
+                        'process.env.UNI_APP_NAME': JSON.stringify((_g = process.env.UNI_APP_NAME) !== null && _g !== void 0 ? _g : ''),
                     },
                 };
             },
