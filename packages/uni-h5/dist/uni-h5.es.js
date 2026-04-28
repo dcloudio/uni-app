@@ -709,7 +709,7 @@ function checkValue$1(value, defaultValue) {
   const newValue = Number(value);
   return isNaN(newValue) ? defaultValue : newValue;
 }
-const isApple = () => /^Apple/.test(navigator.vendor);
+const isApple$1 = () => /^Apple/.test(navigator.vendor);
 function getWindowWidth$1() {
   const isApple2 = /^Apple/.test(navigator.vendor);
   const screenFix = isApple2 && window.matchMedia("(orientation:landscape)").matches;
@@ -734,7 +734,7 @@ function useRem() {
   document.addEventListener("DOMContentLoaded", updateRem);
   window.addEventListener("load", updateRem);
   window.addEventListener("resize", updateRem);
-  if (isApple()) {
+  if (isApple$1()) {
     window.addEventListener("orientationchange", () => {
       updateRem();
       setTimeout(updateRem, 50);
@@ -9287,6 +9287,7 @@ function getMentionStyleValue(node, styleKey) {
   }
   return node.style.getPropertyValue(cssName).trim();
 }
+const isApple = /^Apple/.test(navigator.vendor);
 function mention(Quill) {
   const Embed = Quill.import("blots/embed");
   class MentionBlot extends Embed {
@@ -9294,10 +9295,15 @@ function mention(Quill) {
       const node = super.create();
       const id2 = data.id == null ? "" : data.id;
       const name = data.name == null ? "" : data.name;
-      node.setAttribute("contenteditable", "false");
+      if (!isApple) {
+        node.setAttribute("contenteditable", "false");
+      }
       node.setAttribute("data-id", id2);
       node.setAttribute("data-name", name);
       let style = "";
+      if (isApple) {
+        style += "-webkit-user-select: none;";
+      }
       SupportStyleList.forEach((item) => {
         const styleName = MentionStyleMap[item] || item;
         if (data[item]) {
@@ -13988,14 +13994,14 @@ function decodeEntities(htmlString) {
         return String.fromCharCode(stage.slice(1));
       }
       if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
-        return String.fromCharCode(0 + stage.slice(1));
+        return String.fromCharCode(Number("0" + stage.slice(1)));
       }
       return match;
     }
   );
 }
 function processClickEvent(node, triggerItemClick) {
-  if (["a", "img"].includes(node.name) && triggerItemClick) {
+  if (node.name && ["a", "img"].includes(node.name) && triggerItemClick) {
     return {
       onClickCapture: (e2) => {
         triggerItemClick(e2, { node });
@@ -14006,36 +14012,43 @@ function processClickEvent(node, triggerItemClick) {
     };
   }
 }
+function normalizeValue(tagName, name, value) {
+  if (tagName === "img" && name === "src" && isString(value)) {
+    return getRealPath(value);
+  }
+  return value;
+}
 function normalizeAttrs(tagName, attrs2) {
   if (!isPlainObject(attrs2))
     return;
-  for (const key in attrs2) {
-    if (hasOwn(attrs2, key)) {
-      const value = attrs2[key];
-      if (tagName === "img" && key === "src")
-        attrs2[key] = getRealPath(value);
+  const tagAttrs = TAGS[tagName] || [];
+  const normalizedAttrs = {};
+  Object.keys(attrs2).forEach((name) => {
+    if (name === "class" || name === "style" || tagAttrs.includes(name)) {
+      normalizedAttrs[name] = normalizeValue(tagName, name, attrs2[name]);
     }
-  }
+  });
+  return normalizedAttrs;
 }
 const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
-  if (!nodeList || isArray(nodeList) && !nodeList.length)
+  if (!nodeList || Array.isArray(nodeList) && !nodeList.length)
     return [];
   return nodeList.map((node) => {
-    var _a;
     if (!isPlainObject(node)) {
       return;
     }
     if (!hasOwn(node, "type") || node.type === "node") {
-      let nodeProps = { [scopeId]: "" };
-      const tagName = (_a = node.name) == null ? void 0 : _a.toLowerCase();
+      if (!isString(node.name) || !node.name) {
+        return;
+      }
+      const tagName = node.name.toLowerCase();
       if (!hasOwn(TAGS, tagName)) {
         return;
       }
-      normalizeAttrs(tagName, node.attrs);
-      nodeProps = extend(
-        nodeProps,
+      const nodeProps = extend(
+        { [scopeId]: "" },
         processClickEvent(node, triggerItemClick),
-        node.attrs
+        normalizeAttrs(tagName, node.attrs)
       );
       return h(
         node.name,
@@ -14160,7 +14173,7 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     const vm = getCurrentInstance();
     const scopeId = vm && vm.vnode.scopeId || "";
     const rootRef = ref(null);
-    const _vnode = ref([]);
+    const _vnode = shallowRef([]);
     const trigger = useCustomEvent(rootRef, emit2);
     function triggerItemClick(e2, detail = {}) {
       trigger("itemclick", e2, detail);
