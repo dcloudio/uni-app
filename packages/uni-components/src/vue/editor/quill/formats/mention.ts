@@ -1,21 +1,25 @@
 import type QuillClass from 'quill'
 import { hyphenate } from '@vue/shared'
 
-const SupportStyleList = ['color', 'background', 'padding', 'radius']
+const SupportStyleList = ['color', 'background', 'padding', 'radius'] as const
 const MentionStyleMap = {
   color: 'color',
   background: 'background',
   padding: 'padding',
   radius: 'border-radius',
-}
+} as const
 
-function getMentionStyleValue(node, styleKey) {
+type MentionStyleKey = (typeof SupportStyleList)[number]
+
+function getMentionStyleValue(node: HTMLElement, styleKey: MentionStyleKey) {
   const cssName = MentionStyleMap[styleKey]
   if (!cssName) {
     return ''
   }
   return node.style.getPropertyValue(cssName).trim()
 }
+
+const isApple = /^Apple/.test(navigator.vendor)
 
 export default function (Quill: typeof QuillClass) {
   const Embed = Quill.import('blots/embed')
@@ -26,11 +30,17 @@ export default function (Quill: typeof QuillClass) {
       const id = data.id == null ? '' : data.id
       const name = data.name == null ? '' : data.name
 
-      node.setAttribute('contenteditable', 'false')
+      if (!isApple) {
+        node.setAttribute('contenteditable', 'false')
+      }
       node.setAttribute('data-id', id)
       node.setAttribute('data-name', name)
 
       let style = ''
+
+      if (isApple) {
+        style += '-webkit-user-select: none;'
+      }
 
       SupportStyleList.forEach((item) => {
         const styleName = MentionStyleMap[item] || item
