@@ -10,9 +10,8 @@ export function uniStatsPlugin(): Plugin {
   let resolvedConfig: ResolvedConfig
   let isManifestChanged = false
   const shouldTrackManifestChange =
-    process.env.UNI_APP_X === 'true' &&
-    (process.env.UNI_PLATFORM === 'app' ||
-      process.env.UNI_PLATFORM === 'app-harmony')
+    process.env.UNI_PLATFORM === 'app' ||
+    process.env.UNI_PLATFORM === 'app-harmony'
 
   let isVapor =
     shouldTrackManifestChange && process.env.UNI_APP_X_DOM2 === 'true'
