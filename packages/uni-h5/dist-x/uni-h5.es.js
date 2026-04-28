@@ -615,7 +615,7 @@ function checkValue$1(value, defaultValue) {
   const newValue = Number(value);
   return isNaN(newValue) ? defaultValue : newValue;
 }
-const isApple = () => /^Apple/.test(navigator.vendor);
+const isApple$1 = () => /^Apple/.test(navigator.vendor);
 function getWindowWidth$1() {
   const isApple2 = /^Apple/.test(navigator.vendor);
   const screenFix = isApple2 && window.matchMedia("(orientation:landscape)").matches;
@@ -640,7 +640,7 @@ function useRem() {
   document.addEventListener("DOMContentLoaded", updateRem);
   window.addEventListener("load", updateRem);
   window.addEventListener("resize", updateRem);
-  if (isApple()) {
+  if (isApple$1()) {
     window.addEventListener("orientationchange", () => {
       updateRem();
       setTimeout(updateRem, 50);
@@ -10943,6 +10943,7 @@ function getMentionStyleValue(node, styleKey) {
   }
   return node.style.getPropertyValue(cssName).trim();
 }
+const isApple = /^Apple/.test(navigator.vendor);
 function mention(Quill) {
   const Embed = Quill.import("blots/embed");
   class MentionBlot extends Embed {
@@ -10950,10 +10951,15 @@ function mention(Quill) {
       const node = super.create();
       const id2 = data.id == null ? "" : data.id;
       const name = data.name == null ? "" : data.name;
-      node.setAttribute("contenteditable", "false");
+      if (!isApple) {
+        node.setAttribute("contenteditable", "false");
+      }
       node.setAttribute("data-id", id2);
       node.setAttribute("data-name", name);
       let style = "";
+      if (isApple) {
+        style += "-webkit-user-select: none;";
+      }
       SupportStyleList.forEach((item) => {
         const styleName = MentionStyleMap[item] || item;
         if (data[item]) {
