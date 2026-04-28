@@ -1539,6 +1539,27 @@ function reportNewSession(c, _cst, scene, now, attachVisit, url = '') {
 /** 进程内是否已发过首批访问字段（fvts/lvts/tvc）。 */
 let firstVisitEmittedInProcess = false;
 /**
+ * 标题三元组快照代数：hide 优先写入快照并 ++；show 尾部 microtask 携带快照时的代数，
+ * 若已被 hide 抢先递增则丢弃 microtask，避免「新页刚灌的 ttpj」顶替「离开页」应有的 ttn/ttc。
+ */
+let titleSnapGeneration = 0;
+/** 在同步栈清空后再采样标题，确保晚于页面自己的 onShow / setNavigationBarTitle。 */
+function scheduleDeferredTitleSnapshot() {
+    const gen = titleSnapGeneration;
+    const run = typeof queueMicrotask === 'function'
+        ? queueMicrotask
+        : (fn) => {
+            void Promise.resolve().then(fn);
+        };
+    run(() => {
+        tryRun(() => {
+            if (gen !== titleSnapGeneration)
+                return;
+            state$1.lastPageTitleSnap = Object.assign({}, getCurrentTitle());
+        }, undefined);
+    });
+}
+/**
  * App.onLaunch：冷启动入口。
  *
  * 流程：
@@ -1633,7 +1654,9 @@ function handleAppHide(app) {
  *     首次从启动页外跳（只有一层来源）时不带 `urlref`。
  *   - `urlref_ts`：离开页停留秒数，`now - lastRouteEnterTime`。
  *   - `iey` / `ppiey`：分别对应**离开页**是否入口、`urlref` 指向页是否入口（与字段字典「上级页面」口径一致）。
- *   - `ttn` / `ttpj` / `ttc`：离开页在**该页 onShow 末尾**快照的标题（避免切走后 `onHide` 清空标题导致拿不到）。
+ *   - `ttn` / `ttpj` / `ttc`：三维独立内存（API 导航栏 / pages.json / uni.report('title')），
+ *     **同一事件可同时非空**。离开页快照优先在 **`onHide` 且 `clearPageTitle` 之前**落盘；
+ *     无 hide 场景依赖 **microtask**（晚于业务 `onShow`）— 由 `titleSnapGeneration` 防止被下一页 show 尾部误覆盖。
  *
  * 首次应用内 onShow（无前序页面）不发 `lt=11`。`enablePageLog=false` 时跳过整段 `lt=11`。
  */
@@ -1647,9 +1670,12 @@ function handlePageShow(app, vm, opts = {}) {
         return;
     const route = tryRun(() => getCurrentRoute(vm), '');
     const url = tryRun(() => getCurrentRouteWithQuery(vm), '') || route;
-    // 对齐私有版 `report.js#pageShow`：每页先重置动态标题，再写入 pages.json 导航标题 → `ttpj`。
+    // 每页重置「自定义上报标题」维（ttc）；注入 pages.json 导航标题 → `ttpj`。
+    //
+    // **禁止**在此处调用 `clearPageTitle()`：uni-app 页面 `onLoad` 早于统计 mixin 的 `onShow`，
+    // 业务常在 `onLoad` 里 `uni.setNavigationBarTitle`，拦截器已写入 `ttn`；若此处再清 page，
+    // 会把刚设好的 ttn 抹掉。**跨页**时由 `handlePageHide` 在快照后 `clearPageTitle` 即可。
     tryRun(() => setReportTitle(''), undefined);
-    tryRun(() => clearPageTitle(), undefined);
     tryRun(() => setConfigTitle(getPagesJsonNavigationTitle(route)), undefined);
     if (result.isNew) {
         // 新会话：清掉旧 entry，等待 markEntryPage 重新登记
@@ -1681,12 +1707,10 @@ function handlePageShow(app, vm, opts = {}) {
         };
         if (ref)
             payload.urlref = ref;
-        if (snap.ttn)
-            payload.ttn = snap.ttn;
-        if (snap.ttpj)
-            payload.ttpj = snap.ttpj;
-        if (snap.ttc)
-            payload.ttc = snap.ttc;
+        // 三维并列上行，不因其一存在而省略其它；空串由 builder/omit 统一处理
+        payload.ttn = snap.ttn;
+        payload.ttpj = snap.ttpj;
+        payload.ttc = snap.ttc;
         c.report(payload);
     }
     // 轮换路由链：当前页在下一轮成为「上一页」。
@@ -1697,7 +1721,9 @@ function handlePageShow(app, vm, opts = {}) {
     state$1.lastRoute = route;
     state$1.lastRouteFull = url;
     state$1.lastRouteEnterTime = now;
-    state$1.lastPageTitleSnap = Object.assign({}, getCurrentTitle());
+    // 不在此处同步快照：此时 lastRoute 已指向新页，getCurrentTitle 会是新页 ttpj+空 ttn，造成顶替。
+    // 离开页快照见 handlePageHide（优先）；否则见 scheduleDeferredTitleSnapshot。
+    scheduleDeferredTitleSnapshot();
     state$1.isHide = false;
 }
 /**
@@ -1715,8 +1741,10 @@ function handlePageHide(app, _vm) {
     if (!c)
         return;
     state$1.isHide = true;
+    // 离开前快照：此时仍保留「本页」ttpj/ttn/ttc；清空 page 维后仅丢 ttn，故必须先快照
+    titleSnapGeneration++;
+    state$1.lastPageTitleSnap = Object.assign({}, getCurrentTitle());
     tryRun(() => clearPageTitle(), undefined);
-    // 不在此清空 ttpj：离开页 lt=11 的快照已在上一页 onShow 末尾落盘；config 由下一页 onShow 顶行重灌
 }
 /**
  * 已经被本模块"异步重抛"过的错误实例，用于阻断 `onError → 重抛 → onError` 死循环。
