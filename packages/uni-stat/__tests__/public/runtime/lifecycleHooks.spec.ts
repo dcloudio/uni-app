@@ -236,13 +236,61 @@ describe('runtime/lifecycleHooks', () => {
   })
 
   test('onError：转给 StatApp.reportError，不抛错', () => {
-    const { app, reportSpy } = installAppWithSpyReporter()
-    handleLaunch(app, {})
-    reportSpy.mockClear()
+    // fakeTimers 兜住 handleError 内部 `setTimeout(throw e)` 的异步重抛，
+    // 否则 Node 事件循环会拿到 unhandled exception 把进程搞挂。
+    jest.useFakeTimers()
+    try {
+      const { app, reportSpy } = installAppWithSpyReporter()
+      handleLaunch(app, {})
+      reportSpy.mockClear()
 
-    expect(() => handleError(app, new Error('boom'))).not.toThrow()
-    const lts = getReportedLts(reportSpy)
-    expect(lts).toContain('31')
+      expect(() => handleError(app, new Error('boom'))).not.toThrow()
+      const lts = getReportedLts(reportSpy)
+      expect(lts).toContain('31')
+    } finally {
+      jest.clearAllTimers()
+      jest.useRealTimers()
+    }
+  })
+
+  // 回归保护：原始错误必须通过 setTimeout 异步重抛，让浏览器 / 端的"Uncaught
+  // Exception"通路接管。绝不能用 console.error，否则 devtools 会把 SDK 文件路径
+  // 显示在控制台日志的"来源"列，违反"旁路监听"承诺。详见 lifecycleHooks.ts#handleError。
+  test('onError：异步重抛原始 Error，让错误回归原生 Uncaught 通路', () => {
+    jest.useFakeTimers()
+    const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+    try {
+      const { app } = installAppWithSpyReporter()
+      handleLaunch(app, {})
+      const original = new Error('boom-msg')
+      handleError(app, original)
+
+      // 严格旁路：handleError 内部不得直接调 console.error（避免 SDK 文件
+      // 路径污染 devtools 控制台的"来源"列）
+      expect(errSpy).not.toHaveBeenCalled()
+
+      // 必须排了一个异步 task 重抛原对象（保留 stack）
+      expect(() => jest.runAllTimers()).toThrow(original)
+    } finally {
+      jest.useRealTimers()
+      errSpy.mockRestore()
+    }
+  })
+
+  test('onError：同一 Error 实例第二次进入时不再重抛（防重入死循环）', () => {
+    jest.useFakeTimers()
+    try {
+      const { app } = installAppWithSpyReporter()
+      handleLaunch(app, {})
+      const e = new Error('reentry')
+      handleError(app, e)
+      jest.clearAllTimers()
+      handleError(app, e) // 模拟 setTimeout 重抛后被自身的 onError 二次接住
+      // 第二次不应再排重抛 task，否则会无限循环
+      expect(jest.getTimerCount()).toBe(0)
+    } finally {
+      jest.useRealTimers()
+    }
   })
 
   test('visit 字段仅在 cold_launch 的 lt=1 携带；cst=2/3 不再带', () => {

@@ -1628,17 +1628,70 @@ function handlePageHide(app, _vm) {
     setConfigTitle();
 }
 /**
- * onError：把错误转给 StatApp.reportError。
+ * 已经被本模块"异步重抛"过的错误实例，用于阻断 `onError → 重抛 → onError` 死循环。
  *
- * 与私有版一致，外层 try/catch 防止统计自身抛错引发死循环。
+ * WeakSet 不会阻止 GC，业务方在外部 catch 这些 error 不会内存泄漏。
+ * 仅 object 类型的 error 能进 WeakSet；非 object 错误（极少见的 throw 字符串等）
+ * 重入概率极低，且重抛 string 在浏览器里也不会触发 onError，无需特殊处理。
+ */
+const rethrownErrors = new WeakSet();
+/**
+ * onError：上报错误（lt=31）+ 异步重抛，让错误回归原生 "Uncaught Error" 通路。
+ *
+ * ## 设计目标：统计是**旁路监听**，绝不侵入业务方的报错体验
+ *
+ * ### 私有版（含早期公有版）的两种错误做法都不达标
+ *
+ * 1. **私有版 `src/index.js#onError`**：仅 `stat.error(e)`，**完全吞掉错误**。
+ *    一旦 mixin 注册了 onError，uni-app/Vue 视为业务已处理 → Vue 不再 console.error
+ *    → 业务方在 H5 端排错时控制台一片空白，看不到任何 stack。
+ *
+ * 2. **早期公有版 `console.error(e)` 兜底**：能看到 stack，但 devtools 会把
+ *    `console.error` 的**调用文件**（即 SDK 路径 `uni-stat-public.es.js:行号`）
+ *    显示在控制台日志右侧的"来源"列。业务方误以为统计 SDK 出现在他们的错误栈里，
+ *    与"旁路监听"承诺相悖。
+ *
+ * ### 当前方案：`setTimeout(() => { throw e }, 0)` 异步重抛
+ *
+ * - 错误进入浏览器 / 端原生的 "Uncaught Exception" 通路（同 `window.onerror`），
+ *   与**完全没接入统计**时的默认行为像素级一致：
+ *     - devtools 红色标记 `Uncaught Error: xxx`
+ *     - stack 完全是用户代码 stack（`e.stack` 在 throw 当下已 capture，重抛不变）
+ *     - 日志"来源"列指向浏览器 task / 用户代码，**没有任何 SDK 文件路径痕迹**
+ *
+ * ### 防重入
+ *
+ * 重抛后错误会被全局 `window.onerror` 捕获；小程序端会被 `App.onError` 捕获并
+ * 二次冒泡到 vue mixin 的 `onError`，造成 `handleError → setTimeout throw →
+ * onError → handleError` 死循环。用 `rethrownErrors`(WeakSet) 标记已处理的
+ * error 实例，重入时直接返回即可。
+ *
+ * ### 顺序
+ *
+ * 1. **先标记重入防护** —— 防止极端竞态下 setTimeout 在同步上报完成前已 fire。
+ * 2. **再上报** —— 同步执行，确保 lt=31 一定入队。
+ * 3. **最后异步重抛** —— `setTimeout 0` 排到下一个 task，不阻塞业务事件循环。
+ *
+ * 外层 `try/catch` 仅兜底 `reportError` 自身抛错（与私有版一致）；`tryRun` 兜底
+ * `setTimeout` 在极端环境（如 SSR / 被 mock 的 timer）下不可用的情况。
  */
 function handleError(app, e) {
+    const isObj = typeof e === 'object' && e !== null;
+    if (isObj && rethrownErrors.has(e))
+        return;
+    if (isObj)
+        rethrownErrors.add(e);
     try {
         app.reportError(e);
     }
     catch (err) {
         logger.warn('[uni-stat] handleError failed', err);
     }
+    tryRun(() => {
+        setTimeout(() => {
+            throw e;
+        }, 0);
+    }, undefined);
 }
 function getUni$5() {
     return globalThis.uni;
