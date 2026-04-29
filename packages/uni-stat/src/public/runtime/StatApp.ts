@@ -31,7 +31,7 @@ import { createCollector } from '../pipeline/collector'
 import { createHttpChannel } from '../pipeline/channel/http'
 import { createImageChannel } from '../pipeline/channel/image'
 import { createStatDataBuilder } from '../domain/statData'
-import { getClientOs, getPlatform } from '../adapter/platform'
+import { getPlatform } from '../adapter/platform'
 import { getLocaleAndScreen, getSystemInfo } from '../adapter/system'
 import { getOdid, getUuid } from '../adapter/device'
 import { getPackageInfo } from '../adapter/package'
@@ -342,12 +342,10 @@ export class StatApp {
     patch: Partial<CollectorDeps>
   ): CollectorDeps {
     const platformShort = getPlatform()
-    const clientOs = getClientOs()
     const builder = createStatDataBuilder({
       config: { ak: cfg.ak, usv: STAT_VERSION_PUBLIC, v: cfg.v, ch: cfg.ch },
       platform: {
         ut: platformShort,
-        p: clientOs === 'unknown' ? '' : clientOs,
       },
       system: tryRun(() => getSystemInfo(), {
         brand: '',
@@ -359,6 +357,7 @@ export class StatApp {
         appWgtVersion: '',
         sdkVersion: '',
         statusBarHeight: 0,
+        osP: '',
       }),
       locale: tryRun(() => getLocaleAndScreen(), {
         lang: '',

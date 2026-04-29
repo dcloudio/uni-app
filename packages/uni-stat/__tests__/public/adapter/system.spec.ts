@@ -34,6 +34,7 @@ describe('adapter/system', () => {
         appWgtVersion: '',
         sdkVersion: '',
         statusBarHeight: 0,
+        osP: '',
       })
     })
 
@@ -51,6 +52,7 @@ describe('adapter/system', () => {
         osVersion: '17.4',
         version: '8.0.50',
         deviceType: 'phone',
+        platform: 'ios',
         SDKVersion: '3.4.2',
         statusBarHeight: 44,
       }))
@@ -62,6 +64,7 @@ describe('adapter/system', () => {
         ut: 'phone',
         sdkVersion: '3.4.2',
         statusBarHeight: 44,
+        osP: 'ios',
       })
     })
 
@@ -74,6 +77,7 @@ describe('adapter/system', () => {
       const info = getSystemInfo()
       expect(info.md).toBe('Mate60')
       expect(info.sv).toBe('Android 14')
+      expect(info.osP).toBe('android')
     })
 
     test('plus.runtime.version 优先于 sys.appVersion', () => {

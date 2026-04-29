@@ -24,6 +24,7 @@ function makeDeps(overrides: Partial<StatDataDeps> = {}): StatDataDeps {
     appWgtVersion: '1.0.1',
     sdkVersion: '3.5.0',
     statusBarHeight: 44,
+    osP: 'macos',
   }
   const locale: LocaleAndScreen = {
     lang: 'zh-CN',
@@ -44,7 +45,7 @@ function makeDeps(overrides: Partial<StatDataDeps> = {}): StatDataDeps {
   return Object.assign(
     {
       config: { ak: 'AK001', usv: '3.0.0' },
-      platform: { ut: 'h5', p: 'h' as const },
+      platform: { ut: 'h5' },
       system,
       locale,
       device: { uuid: 'uuid-1', odid: 'odid-1' },
@@ -83,7 +84,7 @@ describe('domain/statData', () => {
         mpsdk: '3.5.0',
         mpv: '1.0.1',
         ut: 'h5',
-        p: 'h',
+        p: 'macos',
         ww: 390,
         wh: 844,
         sw: 390,
@@ -315,6 +316,7 @@ describe('domain/statData', () => {
             appWgtVersion: '',
             sdkVersion: '',
             statusBarHeight: 0,
+            osP: '',
           },
         })
       )

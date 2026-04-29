@@ -11,6 +11,7 @@
 export {
   type ClientOs,
   type Platform,
+  type StatOsSlug,
   getClientOs,
   getPlatform,
   getRawPlatform,
@@ -18,6 +19,7 @@ export {
   isH5,
   isMp,
   isNvue,
+  normalizeStatOsP,
 } from './platform'
 
 export {

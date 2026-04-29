@@ -6,6 +6,7 @@ import {
   isH5,
   isMp,
   isNvue,
+  normalizeStatOsP,
 } from '../../../src/public/adapter/platform'
 
 type EnvBag = Record<string, string | undefined>
@@ -127,6 +128,39 @@ describe('adapter/platform', () => {
     test('plus 缺失 + 小程序 → unknown', () => {
       setPlatform('mp-weixin')
       expect(getClientOs()).toBe('unknown')
+    })
+  })
+
+  describe('normalizeStatOsP（上行 p，与私有版 sys.platform 同源）', () => {
+    test('platform=ios → ios', () => {
+      expect(normalizeStatOsP({ platform: 'ios' })).toBe('ios')
+    })
+
+    test('platform=android → android', () => {
+      expect(normalizeStatOsP({ platform: 'Android' })).toBe('android')
+    })
+
+    test('platform=devtools 时退 system 文案', () => {
+      expect(
+        normalizeStatOsP({ platform: 'devtools', system: 'iOS 15.0' })
+      ).toBe('ios')
+    })
+
+    test('osName=ohos → harmonyos', () => {
+      expect(normalizeStatOsP({ osName: 'ohos' })).toBe('harmonyos')
+    })
+
+    test('system 含 Android 12 → android', () => {
+      expect(normalizeStatOsP({ system: 'Android 12' })).toBe('android')
+    })
+
+    test('无信息且 plus 缺失 → 空串', () => {
+      expect(normalizeStatOsP({})).toBe('')
+    })
+
+    test('plus.os.name 兜底（App）', () => {
+      ;(globalThis as { plus?: unknown }).plus = { os: { name: 'Android' } }
+      expect(normalizeStatOsP({})).toBe('android')
     })
   })
 

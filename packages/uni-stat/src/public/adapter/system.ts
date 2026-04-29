@@ -26,7 +26,7 @@ import { logger } from '../infra/logger'
 import { tryRun } from '../infra/safe'
 import { resolveUniRuntime } from '../infra/uniRuntime'
 
-import { getRawPlatform } from './platform'
+import { getRawPlatform, normalizeStatOsP } from './platform'
 
 /** 静态系统信息（不会因系统切换语言/旋转屏幕而变）。 */
 export interface SystemInfoStatic {
@@ -43,6 +43,10 @@ export interface SystemInfoStatic {
   sdkVersion: string
   /** 状态栏高度。 */
   statusBarHeight: number
+  /**
+   * 运行设备操作系统（上行 `p`），如 `ios` / `android`；由 `normalizeStatOsP` 解析。
+   */
+  osP: string
 }
 
 /** 实时变化的字段。 */
@@ -57,6 +61,8 @@ export interface LocaleAndScreen {
 
 /** 与 uni-app `GetSystemInfoResult` 及拆分 API 返回值对齐的宽松结构。 */
 interface UniSystemInfoLike {
+  /** 客户端系统：`ios` / `android` / `ohos` …（各端与私有版 `sys.platform` 同源）。 */
+  platform?: string
   brand?: string
   deviceBrand?: string
   model?: string
@@ -205,6 +211,7 @@ function mergedSystemInfo(): UniSystemInfoLike {
             wh: o.windowHeight,
             lang: o.hostLanguage ?? o.language,
             sdk: o.hostSDKVersion ?? o.SDKVersion,
+            platform: o.platform,
           }
         : null
     logger.debug('[diag][system]', {
@@ -235,6 +242,7 @@ function mergedSystemInfo(): UniSystemInfoLike {
  * 字段映射策略：
  *   - `brand / md`：优先 `deviceBrand`/`deviceModel`（拆分 API），再退化 `brand`/`model`。
  *   - `sv / v / sdkVersion`：优先 `osVersion`、`hostVersion`、`hostSDKVersion`，兼容旧字段。
+ *   - `osP`：由 `platform` / `osName` / `system` 经 `normalizeStatOsP` 得到，供上行 `p`。
  *   - 缺失统一空字符串或 0，避免上行 JSON 丢字段语义。
  */
 export function getSystemInfo(): SystemInfoStatic {
@@ -266,6 +274,11 @@ export function getSystemInfo(): SystemInfoStatic {
     sdkVersion: sys.hostSDKVersion ?? sys.SDKVersion ?? '',
     statusBarHeight:
       typeof sys.statusBarHeight === 'number' ? sys.statusBarHeight : 0,
+    osP: normalizeStatOsP({
+      platform: sys.platform,
+      osName: sys.osName,
+      system: sys.system,
+    }),
   }
   return cachedStatic
 }

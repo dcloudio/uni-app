@@ -8,8 +8,11 @@
  *   3. `isApp / isMp / isH5 / isNvue` 一次实现，调用方不再四处 `if (platform === 'n')`。
  *
  * 上行字段约定：
- *   - `p` = `getPlatform()`（与私有版兼容；新平台扩充直接加 case 即可）。
- *   - 客户端 OS（用于风控）= `getClientOs()`：'a' / 'i' / 'h' / 'unknown'。
+ *   - `ut` = `getPlatform()`（宿主类型：wx / h5 / n …）。
+ *   - `p` = 运行设备操作系统（与私有版 `report.js` 中 `sys.platform` 语义一致），由
+ *     `normalizeStatOsP()` 从 `getSystemInfo` 合并结果解析，**不得**再用仅读 `plus` 的
+ *     `getClientOs()` 填小程序（否则恒为 `unknown` → 空串）。
+ *   - `getClientOs()`：保留为 App 端粗分字母 'a' / 'i' / 'h'（历史逻辑），与 `p` 无强绑定。
  *
  * 注意：本模块严禁缓存平台判定结果到模块级常量。`process.env.UNI_PLATFORM` 在 SSR 与
  * 单测中可能被运行时切换；缓存会让多端测试串味。
@@ -37,6 +40,71 @@ export type Platform =
   | 'unknown'
 
 export type ClientOs = 'a' | 'i' | 'h' | 'unknown'
+
+/**
+ * 上行字段 `p` 使用的操作系统小写标识（与文档及私有版 `sys.platform` 扩展对齐）。
+ */
+export type StatOsSlug =
+  | 'ios'
+  | 'android'
+  | 'windows'
+  | 'macos'
+  | 'linux'
+  | 'harmonyos'
+
+/**
+ * 将 uni 系统信息中的 `platform` / `osName` / `system` 归一为上行 `p`。
+ *
+ * 与私有版 `report.js`（`sys.platform` → `a|i|h`）数据源一致，但输出采用完整单词，
+ * 并覆盖 H5 桌面端（windows / macos / linux）。小程序依赖 `getDeviceInfo` 等合并后的
+ * `platform`（如 `ios` / `android`）；`devtools` 无有效机型时再退 `system` / `osName`。
+ *
+ * @param info 来自 `mergedSystemInfo()` 的字段子集；均可缺省。
+ * @returns 小写 OS 名；无法判断时返回空串。
+ */
+export function normalizeStatOsP(info: {
+  platform?: string
+  osName?: string
+  system?: string
+}): StatOsSlug | '' {
+  const fromToken = (raw: string): StatOsSlug | '' => {
+    const s = raw.toLowerCase().trim()
+    if (!s) return ''
+    if (s === 'devtools') return ''
+    if (s === 'android') return 'android'
+    if (s === 'ios' || s === 'iphone') return 'ios'
+    if (s.includes('android')) return 'android'
+    if (s.includes('iphone') || s === 'iphone os' || /\bios\b/.test(s))
+      return 'ios'
+    if (s.includes('harmony') || s === 'ohos' || s === 'openharmony')
+      return 'harmonyos'
+    if (s.includes('windows') || s === 'windows_nt') return 'windows'
+    if (s === 'mac' || s === 'darwin' || s.includes('mac os') || s === 'macos')
+      return 'macos'
+    if (s.includes('linux') && !s.includes('android')) return 'linux'
+    return ''
+  }
+
+  const p0 = fromToken(info.platform ?? '')
+  if (p0) return p0
+  const p1 = fromToken(info.osName ?? '')
+  if (p1) return p1
+
+  const sys = (info.system ?? '').toLowerCase()
+  if (sys.includes('android')) return 'android'
+  if (sys.includes('iphone') || /\bios\b/.test(sys)) return 'ios'
+  if (sys.includes('harmony') || sys.includes('ohos')) return 'harmonyos'
+  if (sys.includes('windows')) return 'windows'
+  if (sys.includes('mac os') || sys.includes('darwin')) return 'macos'
+  if (sys.includes('linux')) return 'linux'
+
+  const plus = (globalThis as unknown as { plus?: { os?: { name?: string } } })
+    .plus
+  const p2 = fromToken(plus?.os?.name ?? '')
+  if (p2) return p2
+
+  return ''
+}
 
 /** 私有版兼容映射：UNI_PLATFORM → 短码。 */
 const PLATFORM_MAP: Record<string, Platform> = {

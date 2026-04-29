@@ -80,8 +80,12 @@ export interface StatDataDeps {
     /** 渠道（仅 App，可空）。 */
     ch?: string
   }
-  /** 平台与 OS。 */
-  platform: { ut: Platform | string; p: 'a' | 'i' | 'h' | '' }
+  /**
+   * 平台与可选 `p` 覆盖。
+   * - `ut`：宿主类型（wx / h5 / n …）。
+   * - `p`：若需强行覆盖上行操作系统字段则传入；默认取 `system.osP`。
+   */
+  platform: { ut: Platform | string; p?: string }
   /** 设备 / 系统静态信息。 */
   system: SystemInfoStatic
   /** 实时 locale + 屏幕。 */
@@ -131,6 +135,7 @@ export function createStatDataBuilder(deps: StatDataDeps) {
    *
    * 字段映射（参考 `docs/uni统计上报参数.md`）：
    *   - `did` ← 内部 `device.uuid`（出口字段重命名为文档口径）
+   *   - `p` ← `platform.p` 或 `system.osP`（与私有版 `sys.platform` 同源语义）
    *   - `mpsdk` ← `system.sdkVersion`
    *   - `pr/ww/wh/sw/sh/lang` 来自 `locale`（实时取，修复缺陷 #18）
    *   - `lat/lng` 当前 LocationResult 仅含字符串经纬度，cn/pn/ct 留空待 adapter 扩展
@@ -155,7 +160,7 @@ export function createStatDataBuilder(deps: StatDataDeps) {
       v: s(config.v ?? system.appVersion),
       ch: s(config.ch),
       ut: s(platform.ut),
-      p: s(platform.p),
+      p: s(platform.p ?? system.osP),
       did: s(device.uuid),
       brand: s(system.brand),
       md: s(system.md),

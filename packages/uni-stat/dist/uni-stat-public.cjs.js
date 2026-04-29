@@ -872,12 +872,76 @@ function clampUrlrefStaySec(deltaSec) {
  *   3. `isApp / isMp / isH5 / isNvue` 一次实现，调用方不再四处 `if (platform === 'n')`。
  *
  * 上行字段约定：
- *   - `p` = `getPlatform()`（与私有版兼容；新平台扩充直接加 case 即可）。
- *   - 客户端 OS（用于风控）= `getClientOs()`：'a' / 'i' / 'h' / 'unknown'。
+ *   - `ut` = `getPlatform()`（宿主类型：wx / h5 / n …）。
+ *   - `p` = 运行设备操作系统（与私有版 `report.js` 中 `sys.platform` 语义一致），由
+ *     `normalizeStatOsP()` 从 `getSystemInfo` 合并结果解析，**不得**再用仅读 `plus` 的
+ *     `getClientOs()` 填小程序（否则恒为 `unknown` → 空串）。
+ *   - `getClientOs()`：保留为 App 端粗分字母 'a' / 'i' / 'h'（历史逻辑），与 `p` 无强绑定。
  *
  * 注意：本模块严禁缓存平台判定结果到模块级常量。`process.env.UNI_PLATFORM` 在 SSR 与
  * 单测中可能被运行时切换；缓存会让多端测试串味。
  */
+/**
+ * 将 uni 系统信息中的 `platform` / `osName` / `system` 归一为上行 `p`。
+ *
+ * 与私有版 `report.js`（`sys.platform` → `a|i|h`）数据源一致，但输出采用完整单词，
+ * 并覆盖 H5 桌面端（windows / macos / linux）。小程序依赖 `getDeviceInfo` 等合并后的
+ * `platform`（如 `ios` / `android`）；`devtools` 无有效机型时再退 `system` / `osName`。
+ *
+ * @param info 来自 `mergedSystemInfo()` 的字段子集；均可缺省。
+ * @returns 小写 OS 名；无法判断时返回空串。
+ */
+function normalizeStatOsP(info) {
+    var _a, _b, _c, _d, _e;
+    const fromToken = (raw) => {
+        const s = raw.toLowerCase().trim();
+        if (!s)
+            return '';
+        if (s === 'devtools')
+            return '';
+        if (s === 'android')
+            return 'android';
+        if (s === 'ios' || s === 'iphone')
+            return 'ios';
+        if (s.includes('android'))
+            return 'android';
+        if (s.includes('iphone') || s === 'iphone os' || /\bios\b/.test(s))
+            return 'ios';
+        if (s.includes('harmony') || s === 'ohos' || s === 'openharmony')
+            return 'harmonyos';
+        if (s.includes('windows') || s === 'windows_nt')
+            return 'windows';
+        if (s === 'mac' || s === 'darwin' || s.includes('mac os') || s === 'macos')
+            return 'macos';
+        if (s.includes('linux') && !s.includes('android'))
+            return 'linux';
+        return '';
+    };
+    const p0 = fromToken((_a = info.platform) !== null && _a !== void 0 ? _a : '');
+    if (p0)
+        return p0;
+    const p1 = fromToken((_b = info.osName) !== null && _b !== void 0 ? _b : '');
+    if (p1)
+        return p1;
+    const sys = ((_c = info.system) !== null && _c !== void 0 ? _c : '').toLowerCase();
+    if (sys.includes('android'))
+        return 'android';
+    if (sys.includes('iphone') || /\bios\b/.test(sys))
+        return 'ios';
+    if (sys.includes('harmony') || sys.includes('ohos'))
+        return 'harmonyos';
+    if (sys.includes('windows'))
+        return 'windows';
+    if (sys.includes('mac os') || sys.includes('darwin'))
+        return 'macos';
+    if (sys.includes('linux'))
+        return 'linux';
+    const plus = globalThis.plus;
+    const p2 = fromToken((_e = (_d = plus === null || plus === void 0 ? void 0 : plus.os) === null || _d === void 0 ? void 0 : _d.name) !== null && _e !== void 0 ? _e : '');
+    if (p2)
+        return p2;
+    return '';
+}
 /** 私有版兼容映射：UNI_PLATFORM → 短码。 */
 const PLATFORM_MAP = {
     app: 'n',
@@ -931,32 +995,6 @@ function getPlatform() {
         return 'ali';
     }
     return mapped;
-}
-/**
- * 取客户端操作系统粗分类。仅在 App 与 HarmonyOS App 上有意义：
- *   - 'a' = Android
- *   - 'i' = iOS
- *   - 'h' = HarmonyOS（plus 不可用、UNI_PLATFORM=app-harmony）
- *   - 'unknown' = 其他端
- *
- * 优先读 `globalThis.plus.os.name`；无 plus 时按 UNI_PLATFORM 退化判断。
- */
-function getClientOs() {
-    var _a, _b;
-    const raw = getRawPlatform();
-    const plus = globalThis.plus;
-    const name = (_b = (_a = plus === null || plus === void 0 ? void 0 : plus.os) === null || _a === void 0 ? void 0 : _a.name) === null || _b === void 0 ? void 0 : _b.toLowerCase();
-    if (name) {
-        if (name.includes('android'))
-            return 'a';
-        if (name === 'ios' || name === 'iphone os')
-            return 'i';
-        if (name.includes('harmony'))
-            return 'h';
-    }
-    if (raw === 'app-harmony' || raw === 'mp-harmony')
-        return 'h';
-    return 'unknown';
 }
 /** 当前是否运行在 App / nvue / HarmonyOS App 端。 */
 function isApp() {
@@ -3220,6 +3258,7 @@ function createStatDataBuilder(deps) {
      *
      * 字段映射（参考 `docs/uni统计上报参数.md`）：
      *   - `did` ← 内部 `device.uuid`（出口字段重命名为文档口径）
+     *   - `p` ← `platform.p` 或 `system.osP`（与私有版 `sys.platform` 同源语义）
      *   - `mpsdk` ← `system.sdkVersion`
      *   - `pr/ww/wh/sw/sh/lang` 来自 `locale`（实时取，修复缺陷 #18）
      *   - `lat/lng` 当前 LocationResult 仅含字符串经纬度，cn/pn/ct 留空待 adapter 扩展
@@ -3227,7 +3266,7 @@ function createStatDataBuilder(deps) {
      * 不再上行 `odid`：文档无此字段；保留 `device.odid` 仅供调试与未来兼容场景。
      */
     function baseFields() {
-        var _a, _b;
+        var _a, _b, _c;
         const { config, platform, system, locale, device, net, location, pkg, legacy, } = deps;
         return {
             ak: s(config.ak),
@@ -3235,7 +3274,7 @@ function createStatDataBuilder(deps) {
             v: s((_a = config.v) !== null && _a !== void 0 ? _a : system.appVersion),
             ch: s(config.ch),
             ut: s(platform.ut),
-            p: s(platform.p),
+            p: s((_b = platform.p) !== null && _b !== void 0 ? _b : system.osP),
             did: s(device.uuid),
             brand: s(system.brand),
             md: s(system.md),
@@ -3251,7 +3290,7 @@ function createStatDataBuilder(deps) {
             net: s(net.net, 'unknown'),
             lat: s(location.lat),
             lng: s(location.lng),
-            mpn: s((_b = legacy === null || legacy === void 0 ? void 0 : legacy.mpn) !== null && _b !== void 0 ? _b : pkg.mpn),
+            mpn: s((_c = legacy === null || legacy === void 0 ? void 0 : legacy.mpn) !== null && _c !== void 0 ? _c : pkg.mpn),
             tdaid: s(pkg.tdaid),
             pkn: s(pkg.pkn),
             an: s(pkg.an),
@@ -3480,9 +3519,7 @@ function mergedSystemInfo() {
         : null;
     const fromUni = mergeSystemSnapshots(sync, device, appBase, windowInfo);
     const fromWx = mergeWxHostSnapshots();
-    const merged = fromWx
-        ? mergeSystemSnapshots(fromUni, fromWx)
-        : fromUni;
+    const merged = fromWx ? mergeSystemSnapshots(fromUni, fromWx) : fromUni;
     if (logger.isDebug()) {
         const sample = (o) => {
             var _a, _b, _c;
@@ -3497,6 +3534,7 @@ function mergedSystemInfo() {
                     wh: o.windowHeight,
                     lang: (_b = o.hostLanguage) !== null && _b !== void 0 ? _b : o.language,
                     sdk: (_c = o.hostSDKVersion) !== null && _c !== void 0 ? _c : o.SDKVersion,
+                    platform: o.platform,
                 }
                 : null;
         };
@@ -3511,7 +3549,11 @@ function mergedSystemInfo() {
                 getWindowInfo: !!(u && typeof u.getWindowInfo === 'function'),
             },
             wxLayer: fromWx != null,
-            partials: { sync: sample(sync), fromUni: sample(fromUni), merged: sample(merged) },
+            partials: {
+                sync: sample(sync),
+                fromUni: sample(fromUni),
+                merged: sample(merged),
+            },
         });
     }
     return merged;
@@ -3522,6 +3564,7 @@ function mergedSystemInfo() {
  * 字段映射策略：
  *   - `brand / md`：优先 `deviceBrand`/`deviceModel`（拆分 API），再退化 `brand`/`model`。
  *   - `sv / v / sdkVersion`：优先 `osVersion`、`hostVersion`、`hostSDKVersion`，兼容旧字段。
+ *   - `osP`：由 `platform` / `osName` / `system` 经 `normalizeStatOsP` 得到，供上行 `p`。
  *   - 缺失统一空字符串或 0，避免上行 JSON 丢字段语义。
  */
 function getSystemInfo() {
@@ -3540,6 +3583,11 @@ function getSystemInfo() {
         appWgtVersion: (_s = (_r = (_p = (_o = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _o === void 0 ? void 0 : _o.appWgtVersion) !== null && _p !== void 0 ? _p : (_q = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _q === void 0 ? void 0 : _q.appWgtRevision) !== null && _r !== void 0 ? _r : sys.appWgtVersion) !== null && _s !== void 0 ? _s : '',
         sdkVersion: (_u = (_t = sys.hostSDKVersion) !== null && _t !== void 0 ? _t : sys.SDKVersion) !== null && _u !== void 0 ? _u : '',
         statusBarHeight: typeof sys.statusBarHeight === 'number' ? sys.statusBarHeight : 0,
+        osP: normalizeStatOsP({
+            platform: sys.platform,
+            osName: sys.osName,
+            system: sys.system,
+        }),
     };
     return cachedStatic;
 }
@@ -3717,7 +3765,9 @@ function getPackageInfo() {
         tdaid = getMpTdaid(platform);
         pkn = '';
         an = getEnvAppName();
-        mpn = tdaid || (typeof process.env.UNI_APP_ID === 'string' ? process.env.UNI_APP_ID : '');
+        mpn =
+            tdaid ||
+                (typeof process.env.UNI_APP_ID === 'string' ? process.env.UNI_APP_ID : '');
     }
     else if (isH5()) {
         tdaid = '';
@@ -4652,12 +4702,10 @@ class StatApp {
      */
     buildCollectorDeps(cfg, patch) {
         const platformShort = getPlatform();
-        const clientOs = getClientOs();
         const builder = createStatDataBuilder({
             config: { ak: cfg.ak, usv: STAT_VERSION_PUBLIC, v: cfg.v, ch: cfg.ch },
             platform: {
                 ut: platformShort,
-                p: clientOs === 'unknown' ? '' : clientOs,
             },
             system: tryRun(() => getSystemInfo(), {
                 brand: '',
@@ -4669,6 +4717,7 @@ class StatApp {
                 appWgtVersion: '',
                 sdkVersion: '',
                 statusBarHeight: 0,
+                osP: '',
             }),
             locale: tryRun(() => getLocaleAndScreen(), {
                 lang: '',
