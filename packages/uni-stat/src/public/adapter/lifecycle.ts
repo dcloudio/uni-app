@@ -6,7 +6,7 @@
  *      供 `domain/session` 与 `pipeline/collector` 复用，避免业务层直接吃 uni API。
  *   2. 兜底所有调用：uni 缺失时 unsubscribe 为 noop，订阅失败不抛。
  *   3. `getLaunchScene()`：私有版 `get_scene` 仅限 wx，公有版补全 mp-qq / mp-toutiao /
- *      mp-baidu / mp-alipay / mp-lark / mp-kuaishou，并允许覆写（页面自带 scene）。
+ *      mp-baidu / 阿里系小程序宿主 / mp-lark / mp-kuaishou，并允许覆写（页面自带 scene）。
  *
  * 注意：本模块不维护订阅注册表（去重逻辑由 `infra/interceptor` 与 `runtime/install`
  * 处理），保持单一职责。
@@ -101,7 +101,7 @@ export function onAppLaunch(cb: (e: AppShowEvent) => void): () => void {
  *   2. `uni.getLaunchOptionsSync().scene`（多端通用）。
  *   3. 不识别的平台返回空字符串。
  *
- * 公有版扩展：除 wx 外，mp-qq / mp-toutiao / mp-baidu / mp-alipay / mp-lark /
+ * 公有版扩展：除 wx 外，mp-qq / mp-toutiao / mp-baidu / 阿里系小程序 / mp-lark /
  * mp-kuaishou 都已支持 `getLaunchOptionsSync`，统一走该入口。
  */
 export function getLaunchScene(override?: string | number): string {

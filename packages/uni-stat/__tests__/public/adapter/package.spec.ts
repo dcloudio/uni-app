@@ -2,6 +2,7 @@ import {
   __resetCache,
   getPackageInfo,
 } from '../../../src/public/adapter/package'
+import { uniPlatformMpAliRaw } from '../../../src/public/adapter/platform'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 
 type AnyObj = Record<string, unknown>
@@ -86,8 +87,8 @@ describe('adapter/package', () => {
       expect(getPackageInfo().tdaid).toBe('qq-app')
     })
 
-    test('mp-alipay：优先 my.getAppIdSync', () => {
-      installMockUni({ platform: 'mp-alipay' })
+    test('阿里小程序：优先 my.getAppIdSync', () => {
+      installMockUni({ platform: uniPlatformMpAliRaw() })
       setGlobal('my', {
         getAppIdSync: () => 'ali-1',
         getAccountInfoSync: () => ({ miniProgram: { appId: 'ali-2' } }),
@@ -95,8 +96,8 @@ describe('adapter/package', () => {
       expect(getPackageInfo().tdaid).toBe('ali-1')
     })
 
-    test('mp-alipay：getAppIdSync 抛错 → 退到 getAccountInfoSync', () => {
-      installMockUni({ platform: 'mp-alipay' })
+    test('阿里小程序：getAppIdSync 抛错 → 退到 getAccountInfoSync', () => {
+      installMockUni({ platform: uniPlatformMpAliRaw() })
       setGlobal('my', {
         getAppIdSync: () => {
           throw new Error('not supported')

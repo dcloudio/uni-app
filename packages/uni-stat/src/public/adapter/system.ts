@@ -39,6 +39,11 @@ export interface SystemInfoStatic {
   appVersion: string
   /** 应用 wgt 资源版本。 */
   appWgtVersion: string
+  /**
+   * 小程序宿主客户端版本原始串（私有版 `sys.version`，即 `hostVersion ?? version`）。
+   * 上行 `mpv` 由 `formatMpvForStat(ut, osP, mpvHostVersion)` 拼装中文展示。
+   */
+  mpvHostVersion: string
   /** SDK / 基础库版本（小程序 sdkVersion；H5/App 留空）。 */
   sdkVersion: string
   /** 状态栏高度。 */
@@ -243,6 +248,7 @@ function mergedSystemInfo(): UniSystemInfoLike {
  *   - `brand / md`：优先 `deviceBrand`/`deviceModel`（拆分 API），再退化 `brand`/`model`。
  *   - `sv / v / sdkVersion`：优先 `osVersion`、`hostVersion`、`hostSDKVersion`，兼容旧字段。
  *   - `osP`：由 `platform` / `osName` / `system` 经 `normalizeStatOsP` 得到，供上行 `p`。
+ *   - `mpvHostVersion`：`hostVersion ?? version`，与私有版 `sys.version` 同源，供 `mpv` 拼装。
  *   - 缺失统一空字符串或 0，避免上行 JSON 丢字段语义。
  */
 export function getSystemInfo(): SystemInfoStatic {
@@ -271,6 +277,7 @@ export function getSystemInfo(): SystemInfoStatic {
       plus?.runtime?.appWgtRevision ??
       sys.appWgtVersion ??
       '',
+    mpvHostVersion: (sys.hostVersion ?? sys.version ?? '').trim(),
     sdkVersion: sys.hostSDKVersion ?? sys.SDKVersion ?? '',
     statusBarHeight:
       typeof sys.statusBarHeight === 'number' ? sys.statusBarHeight : 0,

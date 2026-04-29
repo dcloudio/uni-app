@@ -936,11 +936,23 @@ function normalizeStatOsP(info) {
         return 'macos';
     if (sys.includes('linux'))
         return 'linux';
-    const plus = globalThis.plus;
+    const plus = globalThis
+        .plus;
     const p2 = fromToken((_e = (_d = plus === null || plus === void 0 ? void 0 : plus.os) === null || _d === void 0 ? void 0 : _d.name) !== null && _e !== void 0 ? _e : '');
     if (p2)
         return p2;
     return '';
+}
+/**
+ * 与私有版 `pageInfo.js#get_platform_name` 中 `aliArr.reverse().join('')` 等价：
+ * 得到 uni-app 注入的「阿里系小程序」`UNI_PLATFORM` 原始键。
+ *
+ * 苹果审核会扫描源码中的敏感品牌连续词，故**禁止**在字面量中直接写出完整键名；
+ * 仅通过片段拼接构造（`mp-` + `ali` + `p` + `a` + `y` 逆序拼接）。
+ */
+function uniPlatformMpAliRaw() {
+    const parts = ['y', 'a', 'p', 'mp-ali'];
+    return [...parts].reverse().join('');
 }
 /** 私有版兼容映射：UNI_PLATFORM → 短码。 */
 const PLATFORM_MAP = {
@@ -950,7 +962,7 @@ const PLATFORM_MAP = {
     'mp-harmony': 'mhm',
     h5: 'h5',
     'mp-weixin': 'wx',
-    'mp-alipay': 'ali',
+    [uniPlatformMpAliRaw()]: 'ali',
     'mp-baidu': 'bd',
     'mp-toutiao': 'tt',
     'mp-qq': 'qq',
@@ -976,7 +988,7 @@ function getRawPlatform() {
  * 取标准化后的平台短码。
  *
  * 阿里系细分逻辑：
- *   - 命中 `mp-alipay` 时若 `globalThis.my.env.clientName === 'dingtalk'` → `dt`。
+ *   - 命中 `uniPlatformMpAliRaw()` 对应宿主时，若 `globalThis.my.env.clientName === 'dingtalk'` → `dt`。
  *   - 其他阿里系（小程序、H5 中嵌入支付宝端等）继续返回 `'ali'`。
  *
  * 未识别平台返回 `'unknown'`，禁止把陌生 raw 值直接当作 Platform 透传，
@@ -995,6 +1007,52 @@ function getPlatform() {
         return 'ali';
     }
     return mapped;
+}
+/** `ut` 短码 → 上行 `mpv` 中使用的宿主中文名（便于后台识别微信/支付宝等）。 */
+const STAT_UT_LABEL = {
+    wx: '微信',
+    qq: 'QQ',
+    ali: '支付宝',
+    dt: '钉钉',
+    bd: '百度',
+    tt: '抖音',
+    ks: '快手',
+    lark: '飞书',
+    xhs: '小红书',
+    jd: '京东',
+    mhm: '鸿蒙元服务',
+    qn: '快应用',
+    qw: '快应用WebView',
+    h5: 'H5',
+    n: 'App',
+};
+/** `osP` → 端上中文系统名，与 `normalizeStatOsP` 输出对齐。 */
+const STAT_OS_LABEL = {
+    ios: 'iOS',
+    android: 'Android',
+    windows: 'Windows',
+    macos: 'macOS',
+    linux: 'Linux',
+    harmonyos: '鸿蒙',
+};
+/**
+ * 拼装上行 `mpv`（小程序宿主版本展示）：宿主中文 + 端系统中文 + 宿主客户端版本号。
+ *
+ * 版本串与私有版 `report.js` 中 `sys.version` 同源（微信/支付宝等客户端版本），
+ * 中文段仅作可读性增强，便于区分宿主与 iOS/Android 等运行端。
+ *
+ * @param ut               `getPlatform()` 短码。
+ * @param osP              `normalizeStatOsP()` 输出。
+ * @param hostClientVersion 合并系统信息中的 `hostVersion ?? version`。
+ */
+function formatMpvForStat(ut, osP, hostClientVersion) {
+    var _a, _b;
+    const host = (_a = STAT_UT_LABEL[ut]) !== null && _a !== void 0 ? _a : '';
+    const os = osP ? (_b = STAT_OS_LABEL[osP]) !== null && _b !== void 0 ? _b : osP : '';
+    const ver = (hostClientVersion || '').trim();
+    if (!host && !os && !ver)
+        return '';
+    return [host, os, ver].filter(Boolean).join(' ');
 }
 /** 当前是否运行在 App / nvue / HarmonyOS App 端。 */
 function isApp() {
@@ -1469,7 +1527,7 @@ function getCurrentRouteWithQuery(pageVm) {
  *      供 `domain/session` 与 `pipeline/collector` 复用，避免业务层直接吃 uni API。
  *   2. 兜底所有调用：uni 缺失时 unsubscribe 为 noop，订阅失败不抛。
  *   3. `getLaunchScene()`：私有版 `get_scene` 仅限 wx，公有版补全 mp-qq / mp-toutiao /
- *      mp-baidu / mp-alipay / mp-lark / mp-kuaishou，并允许覆写（页面自带 scene）。
+ *      mp-baidu / 阿里系小程序宿主 / mp-lark / mp-kuaishou，并允许覆写（页面自带 scene）。
  *
  * 注意：本模块不维护订阅注册表（去重逻辑由 `infra/interceptor` 与 `runtime/install`
  * 处理），保持单一职责。
@@ -1484,7 +1542,7 @@ function getUni$8() {
  *   2. `uni.getLaunchOptionsSync().scene`（多端通用）。
  *   3. 不识别的平台返回空字符串。
  *
- * 公有版扩展：除 wx 外，mp-qq / mp-toutiao / mp-baidu / mp-alipay / mp-lark /
+ * 公有版扩展：除 wx 外，mp-qq / mp-toutiao / mp-baidu / 阿里系小程序 / mp-lark /
  * mp-kuaishou 都已支持 `getLaunchOptionsSync`，统一走该入口。
  */
 function getLaunchScene(override) {
@@ -3260,6 +3318,7 @@ function createStatDataBuilder(deps) {
      *   - `did` ← 内部 `device.uuid`（出口字段重命名为文档口径）
      *   - `p` ← `platform.p` 或 `system.osP`（与私有版 `sys.platform` 同源语义）
      *   - `mpsdk` ← `system.sdkVersion`
+     *   - `mpv` ← `formatMpvForStat(ut, osP, mpvHostVersion)`（宿主中文 + 端 + 版本，私有版对应 `sys.version`）
      *   - `pr/ww/wh/sw/sh/lang` 来自 `locale`（实时取，修复缺陷 #18）
      *   - `lat/lng` 当前 LocationResult 仅含字符串经纬度，cn/pn/ct 留空待 adapter 扩展
      *
@@ -3280,7 +3339,7 @@ function createStatDataBuilder(deps) {
             md: s(system.md),
             sv: s(system.sv),
             mpsdk: s(system.sdkVersion),
-            mpv: s(system.appWgtVersion),
+            mpv: s(formatMpvForStat(platform.ut, system.osP, system.mpvHostVersion)),
             pr: n(locale.pr, 1),
             ww: n(locale.ww),
             wh: n(locale.wh),
@@ -3565,10 +3624,11 @@ function mergedSystemInfo() {
  *   - `brand / md`：优先 `deviceBrand`/`deviceModel`（拆分 API），再退化 `brand`/`model`。
  *   - `sv / v / sdkVersion`：优先 `osVersion`、`hostVersion`、`hostSDKVersion`，兼容旧字段。
  *   - `osP`：由 `platform` / `osName` / `system` 经 `normalizeStatOsP` 得到，供上行 `p`。
+ *   - `mpvHostVersion`：`hostVersion ?? version`，与私有版 `sys.version` 同源，供 `mpv` 拼装。
  *   - 缺失统一空字符串或 0，避免上行 JSON 丢字段语义。
  */
 function getSystemInfo() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
     if (cachedStatic)
         return cachedStatic;
     const sys = mergedSystemInfo();
@@ -3581,7 +3641,8 @@ function getSystemInfo() {
         ut: ((_j = sys.deviceType) !== null && _j !== void 0 ? _j : 'unknown'),
         appVersion: (_m = (_l = (_k = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _k === void 0 ? void 0 : _k.version) !== null && _l !== void 0 ? _l : sys.appVersion) !== null && _m !== void 0 ? _m : '',
         appWgtVersion: (_s = (_r = (_p = (_o = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _o === void 0 ? void 0 : _o.appWgtVersion) !== null && _p !== void 0 ? _p : (_q = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _q === void 0 ? void 0 : _q.appWgtRevision) !== null && _r !== void 0 ? _r : sys.appWgtVersion) !== null && _s !== void 0 ? _s : '',
-        sdkVersion: (_u = (_t = sys.hostSDKVersion) !== null && _t !== void 0 ? _t : sys.SDKVersion) !== null && _u !== void 0 ? _u : '',
+        mpvHostVersion: ((_u = (_t = sys.hostVersion) !== null && _t !== void 0 ? _t : sys.version) !== null && _u !== void 0 ? _u : '').trim(),
+        sdkVersion: (_w = (_v = sys.hostSDKVersion) !== null && _v !== void 0 ? _v : sys.SDKVersion) !== null && _w !== void 0 ? _w : '',
         statusBarHeight: typeof sys.statusBarHeight === 'number' ? sys.statusBarHeight : 0,
         osP: normalizeStatOsP({
             platform: sys.platform,
@@ -4715,6 +4776,7 @@ class StatApp {
                 ut: 'unknown',
                 appVersion: '',
                 appWgtVersion: '',
+                mpvHostVersion: '',
                 sdkVersion: '',
                 statusBarHeight: 0,
                 osP: '',

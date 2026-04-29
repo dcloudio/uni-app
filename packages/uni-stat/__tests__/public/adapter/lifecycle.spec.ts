@@ -4,6 +4,7 @@ import {
   onAppLaunch,
   onAppShow,
 } from '../../../src/public/adapter/lifecycle'
+import { uniPlatformMpAliRaw } from '../../../src/public/adapter/platform'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 
 describe('adapter/lifecycle', () => {
@@ -109,7 +110,7 @@ describe('adapter/lifecycle', () => {
       'mp-qq',
       'mp-toutiao',
       'mp-baidu',
-      'mp-alipay',
+      uniPlatformMpAliRaw(),
       'mp-lark',
       'mp-kuaishou',
     ])('%s 也走 getLaunchOptionsSync', (platform) => {

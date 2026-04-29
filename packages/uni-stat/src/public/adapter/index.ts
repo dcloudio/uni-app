@@ -20,6 +20,8 @@ export {
   isMp,
   isNvue,
   normalizeStatOsP,
+  uniPlatformMpAliRaw,
+  formatMpvForStat,
 } from './platform'
 
 export {

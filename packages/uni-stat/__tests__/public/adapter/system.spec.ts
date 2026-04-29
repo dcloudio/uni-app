@@ -32,6 +32,7 @@ describe('adapter/system', () => {
         ut: 'unknown',
         appVersion: '',
         appWgtVersion: '',
+        mpvHostVersion: '',
         sdkVersion: '',
         statusBarHeight: 0,
         osP: '',
@@ -65,6 +66,7 @@ describe('adapter/system', () => {
         sdkVersion: '3.4.2',
         statusBarHeight: 44,
         osP: 'ios',
+        mpvHostVersion: '8.0.50',
       })
     })
 

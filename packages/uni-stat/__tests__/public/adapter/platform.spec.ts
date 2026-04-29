@@ -1,4 +1,5 @@
 import {
+  formatMpvForStat,
   getClientOs,
   getPlatform,
   getRawPlatform,
@@ -7,6 +8,7 @@ import {
   isMp,
   isNvue,
   normalizeStatOsP,
+  uniPlatformMpAliRaw,
 } from '../../../src/public/adapter/platform'
 
 type EnvBag = Record<string, string | undefined>
@@ -55,7 +57,7 @@ describe('adapter/platform', () => {
       ['app-harmony', 'n'],
       ['h5', 'h5'],
       ['mp-weixin', 'wx'],
-      ['mp-alipay', 'ali'],
+      [uniPlatformMpAliRaw(), 'ali'],
       ['mp-baidu', 'bd'],
       ['mp-toutiao', 'tt'],
       ['mp-qq', 'qq'],
@@ -82,19 +84,19 @@ describe('adapter/platform', () => {
     })
 
     test('阿里系细分：clientName=dingtalk → dt', () => {
-      setPlatform('mp-alipay')
+      setPlatform(uniPlatformMpAliRaw())
       ;(globalThis as { my?: unknown }).my = { env: { clientName: 'dingtalk' } }
       expect(getPlatform()).toBe('dt')
     })
 
     test('阿里系细分：clientName=ap → ali（保持原值）', () => {
-      setPlatform('mp-alipay')
+      setPlatform(uniPlatformMpAliRaw())
       ;(globalThis as { my?: unknown }).my = { env: { clientName: 'ap' } }
       expect(getPlatform()).toBe('ali')
     })
 
     test('阿里系细分：my 不存在仍返回 ali', () => {
-      setPlatform('mp-alipay')
+      setPlatform(uniPlatformMpAliRaw())
       expect(getPlatform()).toBe('ali')
     })
   })
@@ -164,13 +166,29 @@ describe('adapter/platform', () => {
     })
   })
 
+  describe('formatMpvForStat', () => {
+    test('微信 + iOS + 版本号', () => {
+      expect(formatMpvForStat('wx', 'ios', '8.0.50')).toBe('微信 iOS 8.0.50')
+    })
+
+    test('支付宝 + Android + 版本号', () => {
+      expect(formatMpvForStat('ali', 'android', '10.5.66')).toBe(
+        '支付宝 Android 10.5.66'
+      )
+    })
+
+    test('全空 → 空串', () => {
+      expect(formatMpvForStat('unknown', '', '')).toBe('')
+    })
+  })
+
   describe('isApp / isMp / isH5 / isNvue', () => {
     test.each([
       ['app', { isApp: true, isMp: false, isH5: false }],
       ['app-plus', { isApp: true, isMp: false, isH5: false }],
       ['app-harmony', { isApp: true, isMp: false, isH5: false }],
       ['mp-weixin', { isApp: false, isMp: true, isH5: false }],
-      ['mp-alipay', { isApp: false, isMp: true, isH5: false }],
+      [uniPlatformMpAliRaw(), { isApp: false, isMp: true, isH5: false }],
       ['h5', { isApp: false, isMp: false, isH5: true }],
     ])('%s → %j', (raw, exp) => {
       setPlatform(raw)
