@@ -31,7 +31,7 @@ export {
   getSystemInfo,
 } from './system'
 
-export { getOdid, getUuid } from './device'
+export { getUuid } from './device'
 
 export {
   type NetResult,

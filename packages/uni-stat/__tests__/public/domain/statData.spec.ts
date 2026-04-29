@@ -49,7 +49,7 @@ function makeDeps(overrides: Partial<StatDataDeps> = {}): StatDataDeps {
       platform: { ut: 'h5' },
       system,
       locale,
-      device: { uuid: 'uuid-1', odid: 'odid-1' },
+      device: { uuid: 'uuid-1' },
       net,
       location,
       pkg,

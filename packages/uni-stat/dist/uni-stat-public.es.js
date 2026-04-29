@@ -1169,25 +1169,28 @@ function isH5() {
  *   - 退化路径里 `uni.setStorageSync(UUID_KEY, UUID_VALUE)` —— 这里 `UUID_VALUE` 是
  *     字面量字符串 `'__DC_UUID_VALUE'`，会让所有"写入失败"的设备共享同一个 uuid，
  *     直接污染统计漏斗（缺陷 #28）。
- *   - `get_odid` 调用了 `getUuid()`（递归同样缺陷），但 odid 的语义本应是"老 deviceid"，
- *     新生成的 fallback 不该走 odid 路径。
  *
  * 公有版职责：
- *   1. `getUuid()`：稳定 + 持久化。优先 `plus.runtime.getDCloudId()`（App 端）；
- *      其次 `system.deviceId`（小程序基础库）；都没有则生成 `anon-...` 并落 storage。
- *   2. `getOdid()`：仅 App 端有意义（`plus.device.uuid`），其他端固定空串，**不递归**。
- *   3. 任何 storage / plus 调用全部走 `tryRun` 兜底，绝不抛出。
- *   4. 内存级缓存：避免每次构建 statData 都触发一次同步 storage IO。
- *   5. `__resetCache()` 仅供测试。
+ *   1. `getUuid()`（上行 `did`）：稳定 + 持久化。
+ *      - **App / H5 / 微信小程序（`mp-weixin`）**：优先 `uni.getDeviceInfo().deviceId`，
+ *        再退 `getSystemInfoSync().deviceId`、storage、本地 anon。
+ *      - **其余宿主**：不走 `getDeviceInfo` 首取，直接 `getSystemInfoSync().deviceId` →
+ *        storage → anon（与历史兜底一致）。
+ *   2. 任何 storage / uni 调用全部走 `tryRun` 兜底，绝不抛出。
+ *   3. 内存级缓存：避免每次构建 statData 都触发一次同步 storage IO。
+ *   4. `__resetCache()` 仅供测试。
  *
- * 与私有版上行字段兼容：仍然落到 `ud / odid` 字段（在 `domain/statData.ts` 拼装）。
+ * 说明：老版 `odid`（`plus.device.uuid`）已移除，不再参与装配与导出。
  */
 const STORAGE_KEY_UUID = 'device:uuid';
 let cachedUuid = null;
-let cachedOdid = null;
-/** 取 plus 全局，剥离到函数里便于 mock。 */
-function getPlus$1() {
-    return globalThis.plus;
+/**
+ * App、H5、微信小程序上优先用拆分 API `getDeviceInfo().deviceId`；其它平台保持原兜底顺序。
+ */
+function preferGetDeviceInfoDeviceIdFirst() {
+    if (isApp() || isH5())
+        return true;
+    return getRawPlatform() === 'mp-weixin';
 }
 /**
  * 读取 `uni.getSystemInfoSync().deviceId`；任何异常 / 缺失返回空串。
@@ -1205,6 +1208,20 @@ function readSysDeviceId() {
     return tryRun(() => { var _a; return (_a = u.getSystemInfoSync().deviceId) !== null && _a !== void 0 ? _a : ''; }, '');
 }
 /**
+ * 读取 `uni.getDeviceInfo().deviceId`（官方推荐的设备标识来源之一）。
+ *
+ * API 不存在或抛错时返回空串，由 `getUuid` 继续走 `getSystemInfoSync` / storage 兜底。
+ */
+function readGetDeviceInfoDeviceId() {
+    const root = resolveUniRuntime();
+    const u = root != null && typeof root === 'object'
+        ? root
+        : undefined;
+    if (!u || typeof u.getDeviceInfo !== 'function')
+        return '';
+    return tryRun(() => { var _a; return (_a = u.getDeviceInfo().deviceId) !== null && _a !== void 0 ? _a : ''; }, '');
+}
+/**
  * 生成兜底设备 id（did）：**纯数字串**，与常见线上形态一致（毫秒时间戳 + 6 位随机数，约 19 位）。
  *
  * 与 `infra/sid.genSid` 区别：uuid 设备级持久化；sid 每会话新生且带 `-xxxx-xxxx` 形后缀。
@@ -1217,8 +1234,10 @@ function generateAnonUuid() {
     return `${ms}${rnd}`;
 }
 /**
- * 取设备 uuid。优先级：内存缓存 → plus.runtime.getDCloudId（App）→ system.deviceId
- * → storage 历史值 → 新生成 anon 并落库。
+ * 取设备 uuid（上行映射为 `did`）。
+ *
+ * 优先级：内存缓存 →（App/H5/mp-weixin）`getDeviceInfo().deviceId` →
+ * `getSystemInfoSync().deviceId` → storage 历史值 → 新生成 anon 并落库。
  *
  * 任何环节失败都不抛错，最差情况返回新生成的 anon uuid（仅当次进程内有效），
  * 调用方据此能保证字段非空（避免私有版 `''` 上报后被丢弃）。
@@ -1226,11 +1245,10 @@ function generateAnonUuid() {
 function getUuid() {
     if (cachedUuid)
         return cachedUuid;
-    if (isApp()) {
-        const plus = getPlus$1();
-        const dcloudId = tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _a === void 0 ? void 0 : _a.getDCloudId) === null || _b === void 0 ? void 0 : _b.call(_a)) !== null && _c !== void 0 ? _c : ''; }, '');
-        if (dcloudId) {
-            cachedUuid = dcloudId;
+    if (preferGetDeviceInfoDeviceIdFirst()) {
+        const fromDeviceInfo = readGetDeviceInfoDeviceId();
+        if (fromDeviceInfo) {
+            cachedUuid = fromDeviceInfo;
             return cachedUuid;
         }
     }
@@ -1254,25 +1272,6 @@ function getUuid() {
     tryRun(() => storage.set(STORAGE_KEY_UUID, generated), undefined);
     cachedUuid = generated;
     return cachedUuid;
-}
-/**
- * 取老版 device id（odid）。仅 App 端有真值（`plus.device.uuid`），其他端固定空串。
- *
- * 对比私有版：
- *   - 不再"找不到就调 getUuid()" —— 那会让 odid 与 uuid 在小程序端一致，
- *     破坏服务端"通过 odid 识别 v1 老设备"的语义。
- *   - 任何异常返回 ''，由 `domain/statData.ts` 自行决定是否丢字段。
- */
-function getOdid() {
-    if (cachedOdid !== null)
-        return cachedOdid;
-    if (!isApp()) {
-        cachedOdid = '';
-        return cachedOdid;
-    }
-    const plus = getPlus$1();
-    cachedOdid = tryRun(() => { var _a, _b; return (_b = (_a = plus === null || plus === void 0 ? void 0 : plus.device) === null || _a === void 0 ? void 0 : _a.uuid) !== null && _b !== void 0 ? _b : ''; }, '');
-    return cachedOdid;
 }
 
 /**
@@ -3381,10 +3380,9 @@ function createImageChannel(opts = {}) {
  * 与 `docs/uni统计上报参数.md` 对齐说明：
  *   - 设备 ID 使用文档字段名 `did`（内部 SessionSnapshot/Adapter 仍以 uuid 命名，仅出口处映射）。
  *   - 会话创建类型使用文档字段名 `cst`（内部 storage 仍以 sct 命名，仅出口处映射）。
- *   - 不再上行 `sst / seq / pid / odid`：
+ *   - 不再上行 `sst / seq / pid`（及历史 `odid`）：
  *       * sst/seq 仅本地用于会话状态机，不参与服务端入库；
- *       * pid（上一会话 sid）当前后端无入库口径；
- *       * odid 由文档明确剔除。
+ *       * pid（上一会话 sid）当前后端无入库口径。
  *     这些字段在 SessionSnapshot 里仍保留，确保会话过期判断、调试日志可继续使用。
  */
 /** 字段值兜底：把 undefined / null / NaN 转为类型默认值，避免污染上行 JSON。 */
@@ -3426,7 +3424,7 @@ function createStatDataBuilder(deps) {
      *   - `pr/ww/wh/sw/sh/lang` 来自 `locale`（实时取，修复缺陷 #18）
      *   - `lat/lng` 当前 LocationResult 仅含字符串经纬度，cn/pn/ct 留空待 adapter 扩展
      *
-     * 不再上行 `odid`：文档无此字段；保留 `device.odid` 仅供调试与未来兼容场景。
+     * 不再装配 `odid`（老 App 兼容字段已移除）。
      */
     function baseFields() {
         var _a, _b, _c;
@@ -4843,7 +4841,6 @@ class StatApp {
             }),
             device: {
                 uuid: tryRun(() => getUuid(), ''),
-                odid: tryRun(() => getOdid(), ''),
             },
             net: { net: 'unknown', raw: '' },
             location: { lat: '', lng: '', ok: false },

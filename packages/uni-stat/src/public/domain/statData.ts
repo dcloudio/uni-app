@@ -15,10 +15,9 @@
  * 与 `docs/uni统计上报参数.md` 对齐说明：
  *   - 设备 ID 使用文档字段名 `did`（内部 SessionSnapshot/Adapter 仍以 uuid 命名，仅出口处映射）。
  *   - 会话创建类型使用文档字段名 `cst`（内部 storage 仍以 sct 命名，仅出口处映射）。
- *   - 不再上行 `sst / seq / pid / odid`：
+ *   - 不再上行 `sst / seq / pid`（及历史 `odid`）：
  *       * sst/seq 仅本地用于会话状态机，不参与服务端入库；
- *       * pid（上一会话 sid）当前后端无入库口径；
- *       * odid 由文档明确剔除。
+ *       * pid（上一会话 sid）当前后端无入库口径。
  *     这些字段在 SessionSnapshot 里仍保留，确保会话过期判断、调试日志可继续使用。
  */
 
@@ -91,8 +90,8 @@ export interface StatDataDeps {
   system: SystemInfoStatic
   /** 实时 locale + 屏幕。 */
   locale: LocaleAndScreen
-  /** 设备 ID。 */
-  device: { uuid: string; odid: string }
+  /** 设备 ID（`uuid` 出口映射为上行 `did`）。 */
+  device: { uuid: string }
   /** 网络快照（异步获取后由 collector 缓存）。 */
   net: NetResult
   /** 位置快照（默认全空）。 */
@@ -142,7 +141,7 @@ export function createStatDataBuilder(deps: StatDataDeps) {
    *   - `pr/ww/wh/sw/sh/lang` 来自 `locale`（实时取，修复缺陷 #18）
    *   - `lat/lng` 当前 LocationResult 仅含字符串经纬度，cn/pn/ct 留空待 adapter 扩展
    *
-   * 不再上行 `odid`：文档无此字段；保留 `device.odid` 仅供调试与未来兼容场景。
+   * 不再装配 `odid`（老 App 兼容字段已移除）。
    */
   function baseFields(): StatData {
     const {

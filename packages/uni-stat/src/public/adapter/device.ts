@@ -7,18 +7,18 @@
  *   - 退化路径里 `uni.setStorageSync(UUID_KEY, UUID_VALUE)` —— 这里 `UUID_VALUE` 是
  *     字面量字符串 `'__DC_UUID_VALUE'`，会让所有"写入失败"的设备共享同一个 uuid，
  *     直接污染统计漏斗（缺陷 #28）。
- *   - `get_odid` 调用了 `getUuid()`（递归同样缺陷），但 odid 的语义本应是"老 deviceid"，
- *     新生成的 fallback 不该走 odid 路径。
  *
  * 公有版职责：
- *   1. `getUuid()`：稳定 + 持久化。优先 `plus.runtime.getDCloudId()`（App 端）；
- *      其次 `system.deviceId`（小程序基础库）；都没有则生成 `anon-...` 并落 storage。
- *   2. `getOdid()`：仅 App 端有意义（`plus.device.uuid`），其他端固定空串，**不递归**。
- *   3. 任何 storage / plus 调用全部走 `tryRun` 兜底，绝不抛出。
- *   4. 内存级缓存：避免每次构建 statData 都触发一次同步 storage IO。
- *   5. `__resetCache()` 仅供测试。
+ *   1. `getUuid()`（上行 `did`）：稳定 + 持久化。
+ *      - **App / H5 / 微信小程序（`mp-weixin`）**：优先 `uni.getDeviceInfo().deviceId`，
+ *        再退 `getSystemInfoSync().deviceId`、storage、本地 anon。
+ *      - **其余宿主**：不走 `getDeviceInfo` 首取，直接 `getSystemInfoSync().deviceId` →
+ *        storage → anon（与历史兜底一致）。
+ *   2. 任何 storage / uni 调用全部走 `tryRun` 兜底，绝不抛出。
+ *   3. 内存级缓存：避免每次构建 statData 都触发一次同步 storage IO。
+ *   4. `__resetCache()` 仅供测试。
  *
- * 与私有版上行字段兼容：仍然落到 `ud / odid` 字段（在 `domain/statData.ts` 拼装）。
+ * 说明：老版 `odid`（`plus.device.uuid`）已移除，不再参与装配与导出。
  */
 
 import { tryRun } from '../infra/safe'
@@ -26,21 +26,18 @@ import { storage } from '../infra/storage'
 import { nowMs } from '../infra/time'
 import { resolveUniRuntime } from '../infra/uniRuntime'
 
-import { isApp } from './platform'
+import { getRawPlatform, isApp, isH5 } from './platform'
 
 const STORAGE_KEY_UUID = 'device:uuid'
 
 let cachedUuid: string | null = null
-let cachedOdid: string | null = null
 
-interface PlusRuntimeLike {
-  runtime?: { getDCloudId?: () => string }
-  device?: { uuid?: string }
-}
-
-/** 取 plus 全局，剥离到函数里便于 mock。 */
-function getPlus(): PlusRuntimeLike | undefined {
-  return (globalThis as unknown as { plus?: PlusRuntimeLike }).plus
+/**
+ * App、H5、微信小程序上优先用拆分 API `getDeviceInfo().deviceId`；其它平台保持原兜底顺序。
+ */
+function preferGetDeviceInfoDeviceIdFirst(): boolean {
+  if (isApp() || isH5()) return true
+  return getRawPlatform() === 'mp-weixin'
 }
 
 /**
@@ -60,6 +57,21 @@ function readSysDeviceId(): string {
 }
 
 /**
+ * 读取 `uni.getDeviceInfo().deviceId`（官方推荐的设备标识来源之一）。
+ *
+ * API 不存在或抛错时返回空串，由 `getUuid` 继续走 `getSystemInfoSync` / storage 兜底。
+ */
+function readGetDeviceInfoDeviceId(): string {
+  const root = resolveUniRuntime()
+  const u =
+    root != null && typeof root === 'object'
+      ? (root as { getDeviceInfo?: () => { deviceId?: string } })
+      : undefined
+  if (!u || typeof u.getDeviceInfo !== 'function') return ''
+  return tryRun(() => u.getDeviceInfo!().deviceId ?? '', '')
+}
+
+/**
  * 生成兜底设备 id（did）：**纯数字串**，与常见线上形态一致（毫秒时间戳 + 6 位随机数，约 19 位）。
  *
  * 与 `infra/sid.genSid` 区别：uuid 设备级持久化；sid 每会话新生且带 `-xxxx-xxxx` 形后缀。
@@ -73,8 +85,10 @@ function generateAnonUuid(): string {
 }
 
 /**
- * 取设备 uuid。优先级：内存缓存 → plus.runtime.getDCloudId（App）→ system.deviceId
- * → storage 历史值 → 新生成 anon 并落库。
+ * 取设备 uuid（上行映射为 `did`）。
+ *
+ * 优先级：内存缓存 →（App/H5/mp-weixin）`getDeviceInfo().deviceId` →
+ * `getSystemInfoSync().deviceId` → storage 历史值 → 新生成 anon 并落库。
  *
  * 任何环节失败都不抛错，最差情况返回新生成的 anon uuid（仅当次进程内有效），
  * 调用方据此能保证字段非空（避免私有版 `''` 上报后被丢弃）。
@@ -82,11 +96,10 @@ function generateAnonUuid(): string {
 export function getUuid(): string {
   if (cachedUuid) return cachedUuid
 
-  if (isApp()) {
-    const plus = getPlus()
-    const dcloudId = tryRun(() => plus?.runtime?.getDCloudId?.() ?? '', '')
-    if (dcloudId) {
-      cachedUuid = dcloudId
+  if (preferGetDeviceInfoDeviceIdFirst()) {
+    const fromDeviceInfo = readGetDeviceInfoDeviceId()
+    if (fromDeviceInfo) {
+      cachedUuid = fromDeviceInfo
       return cachedUuid
     }
   }
@@ -115,27 +128,7 @@ export function getUuid(): string {
   return cachedUuid
 }
 
-/**
- * 取老版 device id（odid）。仅 App 端有真值（`plus.device.uuid`），其他端固定空串。
- *
- * 对比私有版：
- *   - 不再"找不到就调 getUuid()" —— 那会让 odid 与 uuid 在小程序端一致，
- *     破坏服务端"通过 odid 识别 v1 老设备"的语义。
- *   - 任何异常返回 ''，由 `domain/statData.ts` 自行决定是否丢字段。
- */
-export function getOdid(): string {
-  if (cachedOdid !== null) return cachedOdid
-  if (!isApp()) {
-    cachedOdid = ''
-    return cachedOdid
-  }
-  const plus = getPlus()
-  cachedOdid = tryRun(() => plus?.device?.uuid ?? '', '')
-  return cachedOdid
-}
-
 /** 仅供单测：清除内存缓存。生产代码不应调用。 */
 export function __resetCache(): void {
   cachedUuid = null
-  cachedOdid = null
 }

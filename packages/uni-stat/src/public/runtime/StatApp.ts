@@ -33,7 +33,7 @@ import { createImageChannel } from '../pipeline/channel/image'
 import { createStatDataBuilder } from '../domain/statData'
 import { getPlatform } from '../adapter/platform'
 import { getLocaleAndScreen, getSystemInfo } from '../adapter/system'
-import { getOdid, getUuid } from '../adapter/device'
+import { getUuid } from '../adapter/device'
 import { getPackageInfo } from '../adapter/package'
 import { handleData } from '../pipeline/serializer'
 import { installAllInterceptors } from '../interceptors'
@@ -370,7 +370,6 @@ export class StatApp {
       }),
       device: {
         uuid: tryRun(() => getUuid(), ''),
-        odid: tryRun(() => getOdid(), ''),
       },
       net: { net: 'unknown', raw: '' },
       location: { lat: '', lng: '', ok: false },
