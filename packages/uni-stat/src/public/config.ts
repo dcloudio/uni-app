@@ -38,9 +38,9 @@ export const RETRY_BASE_DELAY_MS = 1000
  * 单条事件序列化后允许的最大字节数。
  *
  * 阈值取舍：
- *   - 6KB 是 image GET URL 上限（火山 TLS WebTrack）；扣掉 host / ProjectId / TopicId /
- *     Source / Time 等固定 query 约 200B，留给 `Logs=encodeURIComponent(payload.requests)`
- *     大约 5800B。
+ *   - **仅 H5**：`WebTrack.gif` GET 的 URL 上限约 6KB（见 `docs/image-url-too-long-修复说明.md`）；
+ *     扣掉 host / ProjectId / TopicId / Source / Time 等固定 query 后，留给
+ *     `Logs=encodeURIComponent(payload.requests)` 约 5.8KB 量级。
  *   - `encodeURIComponent` 对纯 ASCII 膨胀 ~1.05x，对中英混排 ~1.5–2x，对纯中文最坏 3x。
  *   - 取 **4KB 作为单条事件上限**：保证 ASCII 场景（含大段 Error stack）能放进单批；
  *     纯中文极端场景下，由 `chunkEvents` 单条独占一片 + image preflight 在 URL 编码后
@@ -58,10 +58,10 @@ export const SINGLE_EVENT_MAX_BYTES = 4 * 1024
 /**
  * 单批 `requests`（已 `JSON.stringify(events)`）允许的最大字节数。
  *
- * 与 `IMAGE_REPORT_DEFAULTS` 的 6KB URL 上限对应：`encodeURIComponent` 保守按 3x
- * 膨胀比估，4KB 原文恰好对应 ~12KB encoded —— 但中文场景多见 ASCII，实际膨胀 ~1.2x，
- * 留 25% buffer 后取 4KB 作为切片阈值。超阈值时 collector flush 会按事件数 + 字节数
- * 双阈值切多个 ReportPayload，逐个发送。
+ * **H5** 与 `WebTrack.gif` URL 上限相关：`encodeURIComponent` 保守按 3x 估，4KB 原文与
+ * collector、`createImageChannel` 的 `maxRequestBytes()` 取 min 后切片。
+ * **非 H5** 走 `POST /WebTracks`，单批可更大（仍受本常量与 `BATCH_MAX_EVENTS` 约束）；
+ * 详见 `docs/火山TLS-WebTracks上报说明.md`。
  */
 export const BATCH_REQUESTS_MAX_BYTES = 4 * 1024
 
@@ -86,6 +86,11 @@ export const RETRY_MAX_ATTEMPTS = 5
  *
  *   - `host`：日志服务对接的 region 域名（火山 TLS 接入点）
  *   - `projectId / topicId`：日志服务侧的项目 / 主题 ID
+ *
+ * 同 host 下双路径（见 `pipeline/channel/image.ts` 与 `docs/火山TLS-WebTracks上报说明.md`）：
+ *   - **H5**：`GET …/WebTrack.gif?…`（image 像素，与历史一致）
+ *   - **非 H5**：`POST …/WebTracks?ProjectId&TopicId`（TLS 文档：`Content-Type: application/json`、
+ *     必选头 `x-tls-bodyrawsize`、body `{ Source, Logs }`）
  *
  * 内部测试场景仍可通过 `createImageChannel({host, projectId, topicId})` 直接覆盖
  * （参见 `pipeline/channel/image.ts`），但**不会**走 `manifest` / `installPublicStat`。

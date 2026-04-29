@@ -11,6 +11,7 @@
 
 import {
   buildImageReportUrl,
+  buildWebTracksPostUrl,
   createImageChannel,
 } from '../../../../src/public/pipeline/channel/image'
 import {
@@ -69,6 +70,17 @@ describe('pipeline/channel/image', () => {
     expect(url).toContain('Logs=' + encodeURIComponent(PAYLOAD.requests))
   })
 
+  test('IM1.b buildWebTracksPostUrl 路径为 /WebTracks', () => {
+    const url = buildWebTracksPostUrl(HOST, PID, TID)
+    expect(url).toBe(
+      HOST +
+        '/WebTracks?ProjectId=' +
+        encodeURIComponent(PID) +
+        '&TopicId=' +
+        encodeURIComponent(TID)
+    )
+  })
+
   test('IM2 available()：三参齐全 → true，缺一返回 false', () => {
     expect(
       createImageChannel({
@@ -117,6 +129,7 @@ describe('pipeline/channel/image', () => {
       host: HOST,
       projectId: PID,
       topicId: TID,
+      ut: 'h5',
       sleep: noSleep,
       nowMs: () => 1700000001000,
     })
@@ -138,6 +151,7 @@ describe('pipeline/channel/image', () => {
       host: HOST,
       projectId: PID,
       topicId: TID,
+      ut: 'h5',
       preferImageBeacon: false,
       sleep: noSleep,
     })
@@ -161,6 +175,7 @@ describe('pipeline/channel/image', () => {
       host: HOST,
       projectId: PID,
       topicId: TID,
+      ut: 'h5',
       preferImageBeacon: false,
       sleep: noSleep,
       maxRetries: 3,
@@ -183,6 +198,7 @@ describe('pipeline/channel/image', () => {
       host: HOST,
       projectId: PID,
       topicId: TID,
+      ut: 'h5',
       preferImageBeacon: false,
       sleep: noSleep,
       maxUrlLength: 1024,
@@ -232,6 +248,7 @@ describe('pipeline/channel/image', () => {
       host: HOST,
       projectId: PID,
       topicId: TID,
+      ut: 'h5',
       preferImageBeacon: false,
       sleep: noSleep,
       maxRetries: 3,
@@ -246,31 +263,141 @@ describe('pipeline/channel/image', () => {
     expect((caught as Error).message).toMatch(/uni.request unavailable/)
   })
 
-  test('IM8 maxRequestBytes 按 maxUrlLength 反推原文上限', () => {
-    // 默认 maxUrlLength = 6 * 1024 = 6144
-    // (6144 - 256) / 3 = 1962.67 → floor → 1962
-    const ch = createImageChannel({ host: HOST, projectId: PID, topicId: TID })
+  test('IM8 非 H5：maxRequestBytes 为 WebTracks POST 切片上限（4MiB）', () => {
+    const ch = createImageChannel({
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      ut: 'mp-weixin',
+    })
     expect(typeof ch.maxRequestBytes).toBe('function')
+    expect(ch.maxRequestBytes!()).toBe(4 * 1024 * 1024)
+  })
+
+  test('IM8.b H5：maxRequestBytes 按 maxUrlLength 反推原文上限', () => {
+    const ch = createImageChannel({
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      ut: 'h5',
+    })
     expect(ch.maxRequestBytes!()).toBe(1962)
 
-    // 自定义 maxUrlLength，反推应同步缩放
     const ch2 = createImageChannel({
       host: HOST,
       projectId: PID,
       topicId: TID,
-      maxUrlLength: 4 * 1024, // 4096
+      ut: 'h5',
+      maxUrlLength: 4 * 1024,
     })
-    // (4096 - 256) / 3 = 1280 → floor → 1280
     expect(ch2.maxRequestBytes!()).toBe(1280)
 
-    // 极小 maxUrlLength 时被 512 下限保护
     const ch3 = createImageChannel({
       host: HOST,
       projectId: PID,
       topicId: TID,
+      ut: 'h5',
       maxUrlLength: 100,
     })
     expect(ch3.maxRequestBytes!()).toBe(512)
+  })
+
+  test('IM10 非 H5：POST /WebTracks + 必选头 + JSON body', async () => {
+    const requestSpy = jest.fn(
+      ({ success }: { success: (res: { statusCode: number }) => void }) => {
+        success({ statusCode: 200 })
+      }
+    )
+    handle.uni.request = requestSpy
+
+    const ch = createImageChannel({
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      ut: 'mp-weixin',
+      preferImageBeacon: false,
+      sleep: noSleep,
+    })
+    await ch.send(PAYLOAD)
+    expect(requestSpy).toHaveBeenCalledTimes(1)
+    const arg = requestSpy.mock.calls[0][0] as unknown as {
+      url: string
+      method: string
+      data: string
+      header: Record<string, string>
+    }
+    expect(arg.method).toBe('POST')
+    expect(arg.url).toContain('/WebTracks?')
+    expect(arg.url).toContain('ProjectId=' + encodeURIComponent(PID))
+    expect(arg.header['Content-Type']).toBe('application/json')
+    expect(arg.header['x-tls-bodyrawsize']).toMatch(/^\d+$/)
+    const body = JSON.parse(arg.data) as {
+      Source: string
+      Logs: Array<Record<string, string>>
+    }
+    expect(body.Source).toBe('webImg')
+    // 火山 WebTracks：Logs 每条 value 必须为 string（数字等需规范化）
+    expect(body.Logs).toHaveLength(1)
+    expect(body.Logs[0].lt).toBe('1')
+    expect(body.Logs[0].t).toBe('1')
+    expect(body.Logs[0].sk).toBe('s1')
+    expect(Number(arg.header['x-tls-bodyrawsize'])).toBe(
+      new TextEncoder().encode(arg.data).length
+    )
+  })
+
+  test('IM10.b 非 H5：对象/数组型字段 JSON 序列化为 string', async () => {
+    const requestSpy = jest.fn(
+      ({ success }: { success: (res: { statusCode: number }) => void }) => {
+        success({ statusCode: 200 })
+      }
+    )
+    handle.uni.request = requestSpy
+
+    const payload: ReportPayload = {
+      usv: '3',
+      t: 1700000000,
+      requests: '[{"lt":"21","t":1,"custom":{"a":1},"tags":["x","y"]}]',
+      _id: 'b2',
+    }
+    const ch = createImageChannel({
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      ut: 'mp-weixin',
+      preferImageBeacon: false,
+      sleep: noSleep,
+    })
+    await ch.send(payload)
+    const arg = requestSpy.mock.calls[0][0] as unknown as { data: string }
+    const body = JSON.parse(arg.data) as {
+      Logs: Array<Record<string, string>>
+    }
+    expect(body.Logs[0].custom).toBe('{"a":1}')
+    expect(body.Logs[0].tags).toBe('["x","y"]')
+  })
+
+  test('IM11 非 H5：requests 非法 JSON → PermanentChannelError', async () => {
+    const requestSpy = jest.fn()
+    handle.uni.request = requestSpy
+
+    const ch = createImageChannel({
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      ut: 'app',
+      sleep: noSleep,
+    })
+    const bad: ReportPayload = { ...PAYLOAD, requests: 'not-json' }
+    let caught: unknown
+    try {
+      await ch.send(bad)
+    } catch (e) {
+      caught = e
+    }
+    expect(isPermanentChannelError(caught)).toBe(true)
+    expect((caught as Error).message).toMatch(/invalid requests json/)
+    expect(requestSpy).not.toHaveBeenCalled()
   })
 
   test('IM9 切片阈值 1962B 时，事件经 encodeURIComponent 后 URL 不超 6KB（含中文）', () => {

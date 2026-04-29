@@ -204,6 +204,7 @@ export class StatApp {
         projectId: IMAGE_REPORT_DEFAULTS.projectId,
         topicId: IMAGE_REPORT_DEFAULTS.topicId,
         maxRetries: IMAGE_MAX_RETRIES,
+        ut: getPlatform(),
       })
     } else {
       this.imageChannel = undefined

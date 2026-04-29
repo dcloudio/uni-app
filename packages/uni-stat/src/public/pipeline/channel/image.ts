@@ -1,24 +1,19 @@
 /**
- * 公有版默认通道：火山 TLS WebTrack.gif 图片像素上报。
+ * 公有版默认通道：火山 TLS Web 采集。
  *
- * 上行格式：
- *   `${host}/WebTrack.gif?ProjectId=${pid}&TopicId=${tid}&Logs=${URI(JSON.stringify(logs))}&Source=webImg&Time=${Date.now()}`
+ * **H5**（`ut === 'h5'`）：
+ *   - `GET ${host}/WebTrack.gif?ProjectId&TopicId&Logs=URI(JSON)&Source=webImg&Time=…`
+ *   - 首选 `new Image().src`（无 CORS 读限制）；否则 `uni.request` GET。
+ *
+ * **非 H5**（小程序 / App 等，与 [TLS WebTracks](https://www.volcengine.com/docs/6470/141803?lang=zh) 对齐）：
+ *   - `POST ${host}/WebTracks?ProjectId&TopicId`
+ *   - Header：`Content-Type: application/json`（必选）、`x-tls-bodyrawsize` = 未压缩 body 字节数（必选）
+ *   - Body：`{ "Source": "webImg", "Logs": [...] }`，且 **每条 Log 的 value 均为 string**（服务端强校验）。
  *
  * 设计要点：
- *   - 首选 `new Image().src=...`：浏览器/H5/部分小程序均可用，**不受 CORS 限制**，命中即认为送达。
- *   - 浏览器以外环境（App / 部分小程序无 Image 全局）：退回 `uni.request({ method: 'GET' })`，
- *     成功状态码 `2xx` 视为送达。
- *   - 上行体积保护：`payload.requests` 已是 `JSON.stringify(events)`，再 `encodeURIComponent` 后塞入 URL；
- *     单条 batch 超过 `maxUrlLength`（默认 6KB）时抛出 `PermanentChannelError`，
- *     **不进入 `withRetry`**——同一份 payload 重发同一份必然再次超长，避免空转 N 次；
- *     上层 collector 捕获到 `PermanentChannelError` 后会跳过 `retry.persist`，避免反复落盘。
- *   - 配置缺失（host/projectId/topicId 任一为空）：同样抛 `PermanentChannelError`，避免脏数据持久化死循环。
- *   - 不做"重试 = 业务错"的兜底：网络抖动一律由 `withRetry` 处理；最终失败由 collector → retry.persist 接管。
- *
- * 与 cloud / http 通道一致：
- *   - `available()`：host/projectId/topicId 均非空即可（不要求 Image 一定存在，因为有 uni.request 兜底）。
- *   - `send(payload)`：成功 resolve、失败 reject。
- *   - 不缓存任何状态。
+ *   - H5 仍受 GET URL 长度约束（`maxUrlLength` / `maxRequestBytes` 反推）。
+ *   - POST 单请求文档上限 5 MiB；本实现预留余量后校验 body，超限抛 `PermanentChannelError`。
+ *   - 配置缺失、JSON 不可解析、环境无 `uni.request`：永久错误，不进无意义重试。
  */
 
 import {
@@ -37,10 +32,18 @@ import {
   isPermanentChannelError,
 } from '../types'
 
+/** POST body 上限（字节）：文档单请求 5 MiB，预留 256KiB 给编码波动与头字段。 */
+const WEBTRACKS_POST_BODY_MAX_BYTES = 5 * 1024 * 1024 - 256 * 1024
+
+/** 非 H5 时 collector 对 `requests` 原文切片上限（与 POST body 同量级，留 JSON 包装开销）。 */
+const WEBTRACKS_MAX_REQUEST_BYTES = 4 * 1024 * 1024
+
 interface UniRequestApi {
   request?: (opts: {
     url: string
     method?: 'POST' | 'GET'
+    data?: string | Record<string, unknown>
+    header?: Record<string, string>
     timeout?: number
     success?: (res: { statusCode?: number; data?: unknown }) => void
     fail?: (e: unknown) => void
@@ -53,28 +56,42 @@ function getUni(): UniRequestApi | undefined {
 }
 
 /**
+ * 计算 UTF-8 字节长度（与 `x-tls-bodyrawsize` 对齐；无 TextEncoder 时退化逐码点估算）。
+ *
+ * @param str 已序列化待发送的 JSON 串
+ */
+function utf8ByteLength(str: string): number {
+  if (typeof TextEncoder !== 'undefined') {
+    return new TextEncoder().encode(str).length
+  }
+  let n = 0
+  for (let i = 0; i < str.length; i++) {
+    const c = str.charCodeAt(i)
+    if (c < 0x80) n++
+    else if (c < 0x800) n += 2
+    else if (c < 0xd800 || c >= 0xe000) n += 3
+    else {
+      i++
+      n += 4
+    }
+  }
+  return n
+}
+
+/**
  * 估算 image GET URL 中"非 Logs"部分的固定字节预算：
- *   `https://tls-cn-beijing.volces.com/WebTrack.gif?ProjectId=<uuid>&TopicId=<uuid>&Logs=&Source=webImg&Time=<13>`
+ *   `https://…/WebTrack.gif?ProjectId=<uuid>&TopicId=<uuid>&Logs=&Source=webImg&Time=<13>`
  * 约 240B；保守取 256B，让 chunkEvents 留一点 headroom。
  */
 const IMAGE_URL_BASE_OVERHEAD = 256
 
 /**
- * `encodeURIComponent` 字节膨胀比的上界估算（取最坏值，避免任意业务下切片仍超长）：
- *   - 纯 ASCII JSON `{"a":1}` → `%7B%22a%22%3A1%7D` ≈ 2.0–2.3x
- *   - 中英混排实测 ≈ 1.8x
- *   - **纯中文 3.0x**（每个汉字 UTF-8 占 3B，`%E4%B8%AD` 占 9 字符 → 3x）
- *
- * 取 **3.0** 作为安全上界：覆盖任意 unicode 业务事件名 / 错误堆栈。
- *
- * 取 3.0 的代价：默认 `maxUrlLength=6144` 时单片原文上限 ≈ (6144-256)/3 ≈ 1962B。
- * 100 条 ~440B 中英混排事件会切成约 23 片，比理论最少（13 片）多 ~10 片，
- * 但能保证**任意业务（包括纯中文）下 URL 都不超 6KB**，无需依赖 preflight 兜底。
+ * `encodeURIComponent` 字节膨胀比的上界估算（取最坏值，避免任意业务下切片仍超长）。
  */
 const IMAGE_ENCODE_RATIO = 3.0
 
 /**
- * 拼装最终请求 URL。导出供测试/调试用。
+ * 拼装 H5 像素上报 URL。导出供测试/调试用。
  *
  * @param payload  上报 payload；其中 `requests` 已是 `JSON.stringify(events)`。
  * @param opts     host/projectId/topicId 与 nowMs。
@@ -89,7 +106,6 @@ export function buildImageReportUrl(
   }
 ): string {
   const t = (opts.nowMs ?? (() => Date.now()))()
-  // payload.requests 已经是 JSON 字符串（事件数组），无需再次 stringify
   const logs = encodeURIComponent(payload.requests)
   const host = opts.host.replace(/\/+$/, '')
   return (
@@ -108,11 +124,107 @@ export function buildImageReportUrl(
 }
 
 /**
- * 优先使用浏览器/H5 的 `new Image()`：仅触发 GET，不读响应；图片 onload/onerror 都视为已送达
- * （图片像素 1x1，服务端只关心 query 落库）。
+ * 拼装 WebTracks POST 请求 URL（query 仅 ProjectId / TopicId，与文档一致）。
  *
- * 返回 `true`：当前环境支持 Image，已发出请求。
- * 返回 `false`：缺少 Image 全局或构造抛错，调用方应退回 `uni.request`。
+ * @param host       TLS 接入点，可带末尾 `/`
+ * @param projectId  日志项目 ID
+ * @param topicId    日志主题 ID
+ */
+export function buildWebTracksPostUrl(
+  host: string,
+  projectId: string,
+  topicId: string
+): string {
+  const h = host.replace(/\/+$/, '')
+  return (
+    h +
+    '/WebTracks' +
+    '?ProjectId=' +
+    encodeURIComponent(projectId) +
+    '&TopicId=' +
+    encodeURIComponent(topicId)
+  )
+}
+
+/**
+ * 火山 WebTracks 要求 `Logs` 中每条日志的 **所有 value 均为 string**，否则返回
+ * `InvalidArgumentsTypes`（如 `Value in Logs is not string data type`）。
+ *
+ * @param entry `requests` 解析后的单条事件对象
+ * @returns 键保留、值全部转为 UTF-8 可序列化字符串后的记录
+ */
+function normalizeWebTracksLogEntry(entry: unknown): Record<string, string> {
+  if (entry === null || typeof entry !== 'object' || Array.isArray(entry)) {
+    return { _raw: String(entry) }
+  }
+  const out: Record<string, string> = {}
+  const obj = entry as Record<string, unknown>
+  for (const key of Object.keys(obj)) {
+    const v = obj[key]
+    if (v === null || v === undefined) {
+      out[key] = ''
+    } else if (typeof v === 'string') {
+      out[key] = v
+    } else if (
+      typeof v === 'number' ||
+      typeof v === 'boolean' ||
+      typeof v === 'bigint'
+    ) {
+      out[key] = String(v)
+    } else {
+      try {
+        out[key] = JSON.stringify(v)
+      } catch {
+        out[key] = ''
+      }
+    }
+  }
+  return out
+}
+
+/**
+ * 将 `ReportPayload.requests` 包装为 WebTracks POST JSON 串，并给出 UTF-8 字节长度。
+ *
+ * @param payload 批次 payload
+ * @returns 序列化后的 body 与 `x-tls-bodyrawsize` 取值
+ */
+function buildWebTracksPostBody(payload: ReportPayload): {
+  json: string
+  rawByteSize: number
+} {
+  let logs: unknown
+  try {
+    logs = JSON.parse(payload.requests) as unknown
+  } catch {
+    throw new PermanentChannelError('webtracks invalid requests json')
+  }
+  if (!Array.isArray(logs)) {
+    throw new PermanentChannelError('webtracks Logs must be a json array')
+  }
+  const normalizedLogs = logs.map((item) => normalizeWebTracksLogEntry(item))
+  const body = { Source: 'webImg', Logs: normalizedLogs }
+  let json: string
+  try {
+    json = JSON.stringify(body)
+  } catch {
+    throw new PermanentChannelError('webtracks body stringify failed')
+  }
+  const rawByteSize = utf8ByteLength(json)
+  if (rawByteSize > WEBTRACKS_POST_BODY_MAX_BYTES) {
+    throw new PermanentChannelError(
+      'webtracks body too large: ' +
+        rawByteSize +
+        ' > ' +
+        WEBTRACKS_POST_BODY_MAX_BYTES
+    )
+  }
+  return { json, rawByteSize }
+}
+
+/**
+ * 优先使用浏览器/H5 的 `new Image()`：仅触发 GET，不读响应。
+ *
+ * @returns 已发出 beacon 为 true；否则 false，由调用方退回 `uni.request`。
  */
 function tryImageBeacon(url: string): boolean {
   const ImageCtor = (
@@ -135,7 +247,12 @@ interface ImageChannelOptions {
   projectId?: string
   /** 火山 TLS 主题 ID。 */
   topicId?: string
-  /** 是否优先使用 `new Image()`，默认 true；测试可强制关闭走 uni.request 路径。 */
+  /**
+   * 宿主短码（与 `adapter/platform.getPlatform()` 一致）。
+   * **`h5`** 走 WebTrack.gif；其余走 **POST /WebTracks**。
+   */
+  ut?: string
+  /** 是否优先使用 `new Image()`（仅 H5 有意义），默认 true。 */
   preferImageBeacon?: boolean
   /** uni.request 单次超时（ms），默认 10s。 */
   timeoutMs?: number
@@ -144,8 +261,7 @@ interface ImageChannelOptions {
   /** 总重试次数。 */
   maxRetries?: number
   /**
-   * 单次 URL 长度上限；超出直接 reject 走 retry 持久化。
-   * GET 在多数 CDN 网关上 8KB 是边界，留 2KB 余量给 query schema 自身。
+   * 单次 GIF URL 长度上限（仅 H5）；超出直接抛 `PermanentChannelError`。
    */
   maxUrlLength?: number
   /** 注入 nowMs（测试可固定时间戳）。 */
@@ -161,18 +277,17 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
   const maxUrlLength = opts.maxUrlLength ?? 6 * 1024
   const preferBeacon = opts.preferImageBeacon !== false
   const nowMs = opts.nowMs
+  const ut = opts.ut ?? ''
+  const isH5 = ut === 'h5'
 
-  /** 是否填齐了发包必备参数。 */
   function configured(): boolean {
     return !!(host && projectId && topicId)
   }
 
   /**
-   * 入口预检：识别永久性错误（不可通过重试自愈），直接抛 PermanentChannelError 让上层立即丢弃。
-   *
-   * 在 send() 内做一次，比放在 once() 里更稳：永久错绝不进入 withRetry 的重试循环。
+   * H5：校验 GIF URL 长度，返回完整 URL。
    */
-  function preflight(payload: ReportPayload): string {
+  function preflightGif(payload: ReportPayload): string {
     if (!configured()) {
       throw new PermanentChannelError('image channel not configured')
     }
@@ -191,16 +306,31 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
   }
 
   /**
-   * 单次发送（已构好 URL）。**只处理网络层错误**，不再判断超长 / 配置缺失（已在 preflight）。
+   * 非 H5：组装 WebTracks POST 的 URL 与 body。
    */
-  function once(url: string): Promise<void> {
+  function preflightPost(payload: ReportPayload): {
+    url: string
+    json: string
+    rawByteSize: number
+  } {
+    if (!configured()) {
+      throw new PermanentChannelError('image channel not configured')
+    }
+    const url = buildWebTracksPostUrl(host, projectId, topicId)
+    const { json, rawByteSize } = buildWebTracksPostBody(payload)
+    return { url, json, rawByteSize }
+  }
+
+  /**
+   * H5：GET gif（Image 或 uni.request）。
+   */
+  function onceGif(url: string): Promise<void> {
     if (preferBeacon && tryImageBeacon(url)) {
       return Promise.resolve()
     }
 
     const u = getUni()
     if (!u || typeof u.request !== 'function') {
-      // 环境本身既无 Image 也无 uni.request，重试不会自愈 → 永久错
       return Promise.reject(
         new PermanentChannelError('no Image and uni.request unavailable')
       )
@@ -234,52 +364,87 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
     })
   }
 
+  /**
+   * 非 H5：POST /WebTracks，带 TLS 必选头。
+   */
+  function oncePost(
+    url: string,
+    json: string,
+    rawByteSize: number
+  ): Promise<void> {
+    const u = getUni()
+    if (!u || typeof u.request !== 'function') {
+      return Promise.reject(
+        new PermanentChannelError('uni.request unavailable')
+      )
+    }
+    return new Promise((resolve, reject) => {
+      let settled = false
+      const timer = setTimeout(() => {
+        if (settled) return
+        settled = true
+        reject(new Error('webtracks timeout'))
+      }, timeoutMs)
+      u.request!({
+        url,
+        method: 'POST',
+        data: json,
+        header: {
+          'Content-Type': 'application/json',
+          'x-tls-bodyrawsize': String(rawByteSize),
+        },
+        timeout: timeoutMs,
+        success: (res) => {
+          if (settled) return
+          settled = true
+          clearTimeout(timer)
+          const code = res?.statusCode ?? 0
+          if (code >= 200 && code < 300) resolve()
+          else reject(new Error('webtracks status ' + code))
+        },
+        fail: (e) => {
+          if (settled) return
+          settled = true
+          clearTimeout(timer)
+          reject(e instanceof Error ? e : new Error(String(e)))
+        },
+      })
+    })
+  }
+
   return {
     name: 'image',
     available(): boolean {
-      // 配置齐全即可：浏览器无 Image 时仍能走 uni.request 兜底
       return configured()
     },
-    /**
-     * 反推单批 `requests` 原文字节上限：
-     *   原文 ≤ (maxUrlLength - IMAGE_URL_BASE_OVERHEAD) / IMAGE_ENCODE_RATIO
-     *
-     * 例：默认 `maxUrlLength = 6144`，IMAGE_URL_BASE_OVERHEAD = 256，IMAGE_ENCODE_RATIO = 2.5
-     *   → 原文上限 = (6144 - 256) / 2.5 ≈ 2355 字节
-     * collector 取该值与全局 `BATCH_REQUESTS_MAX_BYTES` 的 min 作为切片阈值；
-     * 实测可让"100 条 ~440B 事件"切成 ~20 片，每片 encode 后稳定 < 6KB。
-     *
-     * 下限保护：512B（避免 `maxUrlLength` 配置过小导致单条事件都放不下）。
-     */
     maxRequestBytes(): number {
-      const raw = (maxUrlLength - IMAGE_URL_BASE_OVERHEAD) / IMAGE_ENCODE_RATIO
-      return Math.max(512, Math.floor(raw))
+      if (isH5) {
+        const raw =
+          (maxUrlLength - IMAGE_URL_BASE_OVERHEAD) / IMAGE_ENCODE_RATIO
+        return Math.max(512, Math.floor(raw))
+      }
+      return WEBTRACKS_MAX_REQUEST_BYTES
     },
     async send(payload: ReportPayload): Promise<void> {
-      // 1) 入口预检：永久错直接抛，**不进 withRetry**，避免协议层空转
-      let url: string
       try {
-        url = preflight(payload)
+        if (isH5) {
+          const url = preflightGif(payload)
+          await withRetry(() => onceGif(url), {
+            times: maxRetries,
+            baseDelayMs: RETRY_BASE_DELAY_MS,
+            sleep: opts.sleep,
+          })
+        } else {
+          const { url, json, rawByteSize } = preflightPost(payload)
+          await withRetry(() => oncePost(url, json, rawByteSize), {
+            times: maxRetries,
+            baseDelayMs: RETRY_BASE_DELAY_MS,
+            sleep: opts.sleep,
+          })
+        }
       } catch (e) {
         if (isPermanentChannelError(e)) {
           logger.warn('[uni-stat] image channel permanent error, skip retry', e)
-        }
-        throw e
-      }
-      // 2) 网络层重试
-      try {
-        await withRetry(() => once(url), {
-          times: maxRetries,
-          baseDelayMs: RETRY_BASE_DELAY_MS,
-          sleep: opts.sleep,
-        })
-      } catch (e) {
-        // 重试过程中若拿到 permanent（理论上极少：环境 API 在重试间消失），同样冒泡
-        if (isPermanentChannelError(e)) {
-          logger.warn(
-            '[uni-stat] image channel permanent error during retry',
-            e
-          )
         } else {
           logger.warn('[uni-stat] image channel send failed after retries', e)
         }
