@@ -96,16 +96,35 @@ export function initModuleAlias() {
         }
       }
     }
-
     if (
       process.env.UNI_APP_PLATFORM ||
       process.env.UNI_PLATFORM === 'app-harmony'
     ) {
-      const dynamicFilename = path.resolve(
-        process.env.UNI_INPUT_DIR,
-        '.dynamic'
-      )
-      if (fs.existsSync(dynamicFilename)) {
+      if (!process.env.UNI_APP_X_TEMPLATE_AND_STYLE_COMPILE_TARGET) {
+        // ios 和 harmony 平台强制使用 bytecode 目标，其他平台如果存在 .dynamic 文件则也使用 bytecode 目标，否则使用 native 目标
+        if (
+          process.env.UNI_APP_PLATFORM === 'ios' ||
+          process.env.UNI_APP_PLATFORM === 'harmony' ||
+          process.env.UNI_PLATFORM === 'app-harmony'
+        ) {
+          process.env.UNI_APP_X_TEMPLATE_AND_STYLE_COMPILE_TARGET = 'bytecode'
+        } else {
+          const dynamicFilename = path.resolve(
+            process.env.UNI_INPUT_DIR,
+            '.dynamic'
+          )
+          if (fs.existsSync(dynamicFilename)) {
+            process.env.UNI_APP_X_TEMPLATE_AND_STYLE_COMPILE_TARGET = 'bytecode'
+          } else {
+            process.env.UNI_APP_X_TEMPLATE_AND_STYLE_COMPILE_TARGET = 'native'
+          }
+        }
+      }
+      if (
+        process.env.UNI_APP_X_TEMPLATE_AND_STYLE_COMPILE_TARGET?.includes(
+          'bytecode'
+        )
+      ) {
         process.env.UNI_APP_X_DOM2_DYNAMIC = 'true'
       }
     }
