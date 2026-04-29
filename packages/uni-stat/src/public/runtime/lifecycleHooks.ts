@@ -7,7 +7,10 @@
  *   - 入口页登记（entryPage）。
  *   - lastRoute / urlref / urlref_ts 维护。
  *   - 新会话首报：仅发一条 `lt=1`（Launch），新会话字段（sid/cst/fvts/lvts/tvc）随之上行；
- *     与 `docs/uni统计上报参数.md` 口径对齐（不再发已废弃的 `lt=0`）。
+ *     `app_show` 新 sid 后立即 **flush(true)**；`page_show`（cst=3）新 sid 在本轮 lt=11
+ *     入队后 **flush(true)**（同批内 `LT_ORDER` 保证 lt=1 先于 lt=11）。与 `app_hide` 的
+ *     lt=3+flush 一并降低「锚点未送达、后续已用新 sid」的丢失风险（与参数文档对齐；
+ *     不再发已废弃的 `lt=0`）。
  *   - push CID 异步抓取后再发 `lt=101`，超时 / 失败静默丢弃。
  *
  * 暴露：
@@ -267,7 +270,11 @@ export function handleLaunch(
  *
  * 流程：
  *   1. ensureSession('app_show') → 命中 backgroundTimeout 时新 session（cst=2）。
- *   2. isNew=true 时发一条 lt=1；否则 noop。
+ *   2. isNew=true 时发一条 lt=1，并 **flush(true)**：避免新 sid 的 lt=1 仍等 `reportInterval`
+ *      才发出时用户已在前台产生 lt=11 等事件，进程被杀或乱序送达导致服务端缺锚点。
+ *      （进后台路径已在 `handleAppHide` 里 lt=3 + flush；冷启首条 lt=1 常因 `lastFlushAt=0`
+ *      被 `report` 内自动 flush，此处补齐「后台超时后再进前台」场景。）
+ *   3. isNew=false 时 noop。
  */
 export function handleAppShow(
   app: StatApp,
@@ -296,6 +303,11 @@ export function handleAppShow(
     false,
     url
   )
+  void c
+    .flush(true)
+    .catch((e) =>
+      logger.warn('[uni-stat] flush after new session (app_show) failed', e)
+    )
 }
 
 /**
@@ -418,6 +430,15 @@ export function handlePageShow(
   // 离开页快照见 handlePageHide（优先）；否则见 scheduleDeferredTitleSnapshot。
   scheduleDeferredTitleSnapshot()
   state.isHide = false
+  // cst=3 新会话：本 tick 内可能已入队 lt=1 与（若有上一页）lt=11；serializer 按 LT_ORDER
+  // 保证同批内 lt=1 先于 lt=11。此处强制 flush，避免仍等 reportInterval 才被杀死丢锚点。
+  if (result.isNew) {
+    void c
+      .flush(true)
+      .catch((e) =>
+        logger.warn('[uni-stat] flush after new session (page_show) failed', e)
+      )
+  }
 }
 
 /**

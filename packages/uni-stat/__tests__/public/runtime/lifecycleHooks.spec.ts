@@ -5,10 +5,12 @@
  *   T1 cold_launch  → cst=1，仅发 lt=1。
  *   T2 app_show 后台超时 → cst=2，仅发 lt=1。
  *   T3 page_show 前台无操作超时 → cst=3，仅发 lt=1。
+ *   T3.b cst=3 且有离开页：flush 后首包内 lt=1 早于 lt=11（LT_ORDER）。
  *   T4 page_show 未超时 → 不发 launch，仅维护 lastRoute / entry。
  *
  * 另外验证：
  *   - app_hide：写 markBackground、发 lt=3、强制 flush。
+ *   - app_show 新会话：lt=1 后强制 flush（与源码 `handleAppShow` 对齐）。
  *   - page_show：发 lt=11（进入新页 onShow 时上报**离开页**），
  *     url=离开页 / urlref=再上一层来源（首跳可无）/ urlref_ts=离开页停留秒数（≥1，与私有版一致）；首次 onShow 不发。
  *   - onError：转给 StatApp.reportError，不抛错。
@@ -146,6 +148,33 @@ describe('runtime/lifecycleHooks', () => {
     const lts = getReportedLts(reportSpy)
     expect(lts).toEqual(['1'])
     expect(sessionMod.getSnapshot()?.sct).toBe(3)
+  })
+
+  test('T3.b cst=3 新会话且有离开页：首包 requests 内 lt=1 早于 lt=11', async () => {
+    const { app, reportSpy, http } = installAppWithSpyReporter()
+    handleLaunch(app, {})
+    handlePageShow(app, { route: 'pages/home' })
+    handlePageHide(app, { route: 'pages/home' })
+    reportSpy.mockClear()
+    http.send.mockClear()
+
+    const snap = sessionMod.getSnapshot()!
+    snap.lastActive = Math.floor(Date.now() / 1000) - 999_999
+    handlePageShow(app, { route: 'pages/A' })
+
+    expect(getReportedLts(reportSpy)).toContain('1')
+    expect(getReportedLts(reportSpy)).toContain('11')
+
+    await Promise.resolve()
+    expect(http.send).toHaveBeenCalled()
+    const payload = http.send.mock.calls[0][0] as ReportPayload
+    const events = JSON.parse(payload.requests) as Array<{ lt?: string }>
+    const order = events.map((e) => String(e.lt ?? ''))
+    const i1 = order.indexOf('1')
+    const i11 = order.indexOf('11')
+    expect(i1).toBeGreaterThanOrEqual(0)
+    expect(i11).toBeGreaterThanOrEqual(0)
+    expect(i1).toBeLessThan(i11)
   })
 
   test('T4 page_show 未超时 → 不发 session/launch', () => {
