@@ -18402,9 +18402,12 @@ function parseElement(obj) {
         return obj;
     }
 }
-function parseComponentPublicInstance(obj) {
-    if (isComponentPublicInstance(obj)) {
-        return obj.$el;
+function serializeComponentPublicInstance(obj) {
+    if (obj.$el) {
+        return serializeUniElement(obj.$el, 'ComponentPublicInstance');
+    }
+    else {
+        return { __type__: 'ComponentPublicInstance', pageId: '', nodeId: '' };
     }
 }
 function serializeArrayBuffer(obj) {
@@ -18432,6 +18435,7 @@ function toRaw(observed) {
 }
 function normalizeArg(arg, callbacks, keepAlive, context) {
     arg = toRaw(arg);
+    const isVaporAndroid = __VAPOR__ && isUTSAndroid();
     if (typeof arg === 'function') {
         let id;
         if (keepAlive) {
@@ -18452,6 +18456,12 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
         // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
     }
     else if (arg instanceof ArrayBuffer) {
+        // android dom2 js引擎支持直接传递 ArrayBuffer
+        // nested在dom2安卓表示当前调用参数包含ArrayBuffer等不可序列化对象，不管是不是顶层参数
+        if (isVaporAndroid) {
+            context.nested = true;
+            return arg;
+        }
         if (context.depth > 0) {
             context.nested = true;
         }
@@ -18459,15 +18469,17 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
     }
     else if (isPlainObject(arg) || isUniElement(arg)) {
         const uniElement = parseElement(arg);
-        const componentPublicInstanceUniElement = !uniElement
-            ? parseComponentPublicInstance(arg)
-            : undefined;
-        const el = uniElement || componentPublicInstanceUniElement;
-        if (el) {
-            if (context.depth > 0) {
+        if (uniElement) {
+            if (context.depth > 0 || isVaporAndroid) {
                 context.nested = true;
             }
-            return serializeUniElement(el, uniElement ? 'UniElement' : 'ComponentPublicInstance');
+            return serializeUniElement(uniElement, 'UniElement');
+        }
+        else if (isComponentPublicInstance(arg)) {
+            if (context.depth > 0 || isVaporAndroid) {
+                context.nested = true;
+            }
+            return serializeComponentPublicInstance(arg);
         }
         else {
             // 必须复制，否则会污染原始对象，比如：
