@@ -1444,6 +1444,9 @@
       "OauthErrorCode"
     ],
     [
+      "OffAccelerometerChange"
+    ],
+    [
       "OffAppCrash"
     ],
     [
@@ -1478,6 +1481,9 @@
     ],
     [
       "OffPrivacyAuthorizationChange"
+    ],
+    [
+      "OnAccelerometerChange"
     ],
     [
       "OnAccelerometerChangeCallback"
@@ -2359,6 +2365,9 @@
       "SoterAuthMode"
     ],
     [
+      "StartAccelerometer"
+    ],
+    [
       "StartAccelerometerOptions"
     ],
     [
@@ -2432,6 +2441,9 @@
     ],
     [
       "Stats"
+    ],
+    [
+      "StopAccelerometer"
     ],
     [
       "StopAccelerometerOptions"
@@ -2807,18 +2819,6 @@
     ],
     [
       "ZipFileItem"
-    ],
-    [
-      "offAccelerometerChange"
-    ],
-    [
-      "onAccelerometerChange"
-    ],
-    [
-      "startAccelerometer"
-    ],
-    [
-      "stopAccelerometer"
     ]
   ]
 }
