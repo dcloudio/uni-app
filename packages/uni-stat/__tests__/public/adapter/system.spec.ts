@@ -73,6 +73,28 @@ describe('adapter/system', () => {
       })
     })
 
+    test('romName 优先作为 on（厂商定制系统，如 HyperOS）', () => {
+      installWithSys(() => ({
+        brand: 'Xiaomi',
+        osName: 'android',
+        romName: 'HyperOS',
+        romVersion: '2.0.0.0',
+        platform: 'android',
+      }))
+      const info = getSystemInfo()
+      expect(info.on).toBe('HyperOS 2.0.0.0')
+      expect(info.osP).toBe('android')
+    })
+
+    test('romName 为空串时 on 仍用 osName', () => {
+      installWithSys(() => ({
+        osName: 'Android',
+        romName: '   ',
+        platform: 'android',
+      }))
+      expect(getSystemInfo().on).toBe('Android')
+    })
+
     test('退化老字段：model/system → md/sv', () => {
       installWithSys(() => ({
         brand: 'HUAWEI',

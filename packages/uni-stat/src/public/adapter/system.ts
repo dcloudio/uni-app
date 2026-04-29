@@ -44,7 +44,8 @@ export interface SystemInfoStatic {
    */
   mpvHostVersion: string
   /**
-   * 合并系统信息中的 `osName` 原文（拆分 API / sync 合并后），上行字段 **`on`**。
+   * 上行 **`on`**：优先厂商 ROM 展示名（`romName` [+ `romVersion`]，如 HyperOS）；
+   * 无 ROM 信息时退 `osName`（小程序多为 Android/iOS）。
    */
   on: string
   /** SDK / 基础库版本（小程序 sdkVersion；H5/App 留空）。 */
@@ -80,6 +81,9 @@ interface UniSystemInfoLike {
   deviceModel?: string
   osName?: string
   osVersion?: string
+  /** App 等原生侧：厂商 ROM / 定制系统名（如 HyperOS），与 uni-app-plus `getDeviceInfo` 一致。 */
+  romName?: string
+  romVersion?: string
   appVersion?: string
   appWgtVersion?: string
   SDKVersion?: string
@@ -206,6 +210,25 @@ function mergedSystemInfo(): UniSystemInfoLike {
 }
 
 /**
+ * 组装上行 `on`：优先厂商定制系统名（ROM），否则退回操作系统名 `osName`。
+ *
+ * App 端 `uni.getDeviceInfo` 会带出 `romName`/`romVersion`（见 uni-app-plus 原生 systemInfo）；
+ * 微信等小程序沙箱通常无 ROM 字段，此时与仅 `osName` 一致。
+ *
+ * @param sys `mergedSystemInfo()` 合并结果
+ * @returns 去首尾空白后的展示串；均无则空串
+ */
+function buildOnForStat(sys: UniSystemInfoLike): string {
+  const rom = typeof sys.romName === 'string' ? sys.romName.trim() : ''
+  if (rom) {
+    const romVer =
+      typeof sys.romVersion === 'string' ? sys.romVersion.trim() : ''
+    return romVer ? `${rom} ${romVer}`.trim() : rom
+  }
+  return typeof sys.osName === 'string' ? sys.osName.trim() : ''
+}
+
+/**
  * 取静态系统信息（懒加载 + 缓存）。
  *
  * 字段映射策略：
@@ -213,7 +236,7 @@ function mergedSystemInfo(): UniSystemInfoLike {
  *   - `sv / v / sdkVersion`：优先 `osVersion`、`hostVersion`、`hostSDKVersion`，兼容旧字段。
  *   - `osP`：由 `platform` / `osName` / `system` 经 `normalizeStatOsP` 得到，供上行 `p`。
  *   - `mpvHostVersion`：`hostVersion ?? version`，与私有版 `sys.version` 同源。
- *   - `on`：合并后的 `osName` 原文，供上行 `on`；操作系统归一标识见 `osP` → 上行 `p`。
+ *   - `on`：`buildOnForStat`（优先 `romName`/`romVersion`，否则 `osName`），供上行 `on`。
  *   - 缺失统一空字符串或 0，避免上行 JSON 丢字段语义。
  */
 export function getSystemInfo(): SystemInfoStatic {
@@ -243,7 +266,7 @@ export function getSystemInfo(): SystemInfoStatic {
       sys.appWgtVersion ??
       '',
     mpvHostVersion: (sys.hostVersion ?? sys.version ?? '').trim(),
-    on: (typeof sys.osName === 'string' ? sys.osName : '').trim(),
+    on: buildOnForStat(sys),
     sdkVersion: sys.hostSDKVersion ?? sys.SDKVersion ?? '',
     statusBarHeight:
       typeof sys.statusBarHeight === 'number' ? sys.statusBarHeight : 0,

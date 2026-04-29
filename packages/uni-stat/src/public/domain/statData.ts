@@ -14,7 +14,7 @@
  *
  * 与 `docs/uni统计上报参数.md` 对齐说明：
  *   - 设备 ID 使用文档字段名 `did`（内部 SessionSnapshot/Adapter 仍以 uuid 命名，仅出口处映射）。
- *   - `on`：`getDeviceInfo`/`getSystemInfoSync` 等合并后的 **`osName` 原文**。
+ *   - `on`：优先 **`romName`**（厂商 ROM，如 HyperOS）及 **`romVersion`**，否则 **`osName`**。
  *   - 会话创建类型使用文档字段名 `cst`（内部 storage 仍以 sct 命名，仅出口处映射）。
  *   - 不再上行 `sst / seq / pid`（及历史 `odid`）：
  *       * sst/seq 仅本地用于会话状态机，不参与服务端入库；
@@ -137,7 +137,7 @@ export function createStatDataBuilder(deps: StatDataDeps) {
    * 字段映射（参考 `docs/uni统计上报参数.md`）：
    *   - `did` ← 内部 `device.uuid`（出口字段重命名为文档口径）
    *   - `p` ← `platform.p` 或 `system.osP`（仅操作系统 slug：`ios` / `android` …）
-   *   - `on` ← `system.on`（`osName` 原文）
+   *   - `on` ← `system.on`（ROM 展示名优先，否则 `osName`）
    *   - `mpsdk` ← `system.sdkVersion`
    *   - `mpv` ← `formatMpvForStat(ut)`（仅宿主类型名：微信 / 支付宝 / H5 / App …）
    *   - `pr/ww/wh/sw/sh/lang` 来自 `locale`（实时取，修复缺陷 #18）

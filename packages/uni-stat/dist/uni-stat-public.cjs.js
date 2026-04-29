@@ -1123,7 +1123,7 @@ const STAT_UT_LABEL = {
 /**
  * 拼装上行 `mpv`：**仅宿主类型**可读名（与 `ut` 对齐），如微信 / 支付宝 / H5 / App。
  *
- * 操作系统归一标识见上行 **`p`**（`system.osP`）；`osName` 原文见上行 **`on`**；
+ * 操作系统归一标识见上行 **`p`**（`system.osP`）；ROM/系统展示名见上行 **`on`**（`system.on`）；
  * 客户端版本见 **`v`** 等字段，避免与 `mpv` 混写。
  *
  * @param ut `getPlatform()` 短码（wx / ali / h5 / n …）。
@@ -3365,7 +3365,7 @@ function createImageChannel(opts = {}) {
  *
  * 与 `docs/uni统计上报参数.md` 对齐说明：
  *   - 设备 ID 使用文档字段名 `did`（内部 SessionSnapshot/Adapter 仍以 uuid 命名，仅出口处映射）。
- *   - `on`：`getDeviceInfo`/`getSystemInfoSync` 等合并后的 **`osName` 原文**。
+ *   - `on`：优先 **`romName`**（厂商 ROM，如 HyperOS）及 **`romVersion`**，否则 **`osName`**。
  *   - 会话创建类型使用文档字段名 `cst`（内部 storage 仍以 sct 命名，仅出口处映射）。
  *   - 不再上行 `sst / seq / pid`（及历史 `odid`）：
  *       * sst/seq 仅本地用于会话状态机，不参与服务端入库；
@@ -3406,7 +3406,7 @@ function createStatDataBuilder(deps) {
      * 字段映射（参考 `docs/uni统计上报参数.md`）：
      *   - `did` ← 内部 `device.uuid`（出口字段重命名为文档口径）
      *   - `p` ← `platform.p` 或 `system.osP`（仅操作系统 slug：`ios` / `android` …）
-     *   - `on` ← `system.on`（`osName` 原文）
+     *   - `on` ← `system.on`（ROM 展示名优先，否则 `osName`）
      *   - `mpsdk` ← `system.sdkVersion`
      *   - `mpv` ← `formatMpvForStat(ut)`（仅宿主类型名：微信 / 支付宝 / H5 / App …）
      *   - `pr/ww/wh/sw/sh/lang` 来自 `locale`（实时取，修复缺陷 #18）
@@ -3674,6 +3674,23 @@ function mergedSystemInfo() {
     return merged;
 }
 /**
+ * 组装上行 `on`：优先厂商定制系统名（ROM），否则退回操作系统名 `osName`。
+ *
+ * App 端 `uni.getDeviceInfo` 会带出 `romName`/`romVersion`（见 uni-app-plus 原生 systemInfo）；
+ * 微信等小程序沙箱通常无 ROM 字段，此时与仅 `osName` 一致。
+ *
+ * @param sys `mergedSystemInfo()` 合并结果
+ * @returns 去首尾空白后的展示串；均无则空串
+ */
+function buildOnForStat(sys) {
+    const rom = typeof sys.romName === 'string' ? sys.romName.trim() : '';
+    if (rom) {
+        const romVer = typeof sys.romVersion === 'string' ? sys.romVersion.trim() : '';
+        return romVer ? `${rom} ${romVer}`.trim() : rom;
+    }
+    return typeof sys.osName === 'string' ? sys.osName.trim() : '';
+}
+/**
  * 取静态系统信息（懒加载 + 缓存）。
  *
  * 字段映射策略：
@@ -3681,7 +3698,7 @@ function mergedSystemInfo() {
  *   - `sv / v / sdkVersion`：优先 `osVersion`、`hostVersion`、`hostSDKVersion`，兼容旧字段。
  *   - `osP`：由 `platform` / `osName` / `system` 经 `normalizeStatOsP` 得到，供上行 `p`。
  *   - `mpvHostVersion`：`hostVersion ?? version`，与私有版 `sys.version` 同源。
- *   - `on`：合并后的 `osName` 原文，供上行 `on`；操作系统归一标识见 `osP` → 上行 `p`。
+ *   - `on`：`buildOnForStat`（优先 `romName`/`romVersion`，否则 `osName`），供上行 `on`。
  *   - 缺失统一空字符串或 0，避免上行 JSON 丢字段语义。
  */
 function getSystemInfo() {
@@ -3699,7 +3716,7 @@ function getSystemInfo() {
         appVersion: (_m = (_l = (_k = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _k === void 0 ? void 0 : _k.version) !== null && _l !== void 0 ? _l : sys.appVersion) !== null && _m !== void 0 ? _m : '',
         appWgtVersion: (_s = (_r = (_p = (_o = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _o === void 0 ? void 0 : _o.appWgtVersion) !== null && _p !== void 0 ? _p : (_q = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _q === void 0 ? void 0 : _q.appWgtRevision) !== null && _r !== void 0 ? _r : sys.appWgtVersion) !== null && _s !== void 0 ? _s : '',
         mpvHostVersion: ((_u = (_t = sys.hostVersion) !== null && _t !== void 0 ? _t : sys.version) !== null && _u !== void 0 ? _u : '').trim(),
-        on: (typeof sys.osName === 'string' ? sys.osName : '').trim(),
+        on: buildOnForStat(sys),
         sdkVersion: (_w = (_v = sys.hostSDKVersion) !== null && _v !== void 0 ? _v : sys.SDKVersion) !== null && _w !== void 0 ? _w : '',
         statusBarHeight: typeof sys.statusBarHeight === 'number' ? sys.statusBarHeight : 0,
         osP: normalizeStatOsP({

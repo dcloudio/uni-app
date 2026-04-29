@@ -195,7 +195,7 @@ const STAT_UT_LABEL: Partial<Record<Platform, string>> = {
 /**
  * 拼装上行 `mpv`：**仅宿主类型**可读名（与 `ut` 对齐），如微信 / 支付宝 / H5 / App。
  *
- * 操作系统归一标识见上行 **`p`**（`system.osP`）；`osName` 原文见上行 **`on`**；
+ * 操作系统归一标识见上行 **`p`**（`system.osP`）；ROM/系统展示名见上行 **`on`**（`system.on`）；
  * 客户端版本见 **`v`** 等字段，避免与 `mpv` 混写。
  *
  * @param ut `getPlatform()` 短码（wx / ali / h5 / n …）。
