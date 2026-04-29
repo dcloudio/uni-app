@@ -1,4 +1,56 @@
 {
+  "uni-accelerometer": {
+    "uni": {
+      "onAccelerometerChange": {
+        "name": "onAccelerometerChange",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        },
+        "web": {
+          "js": true
+        }
+      },
+      "offAccelerometerChange": {
+        "name": "offAccelerometerChange",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        },
+        "web": {
+          "js": true
+        }
+      },
+      "startAccelerometer": {
+        "name": "startAccelerometer",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        },
+        "web": {
+          "js": true
+        }
+      },
+      "stopAccelerometer": {
+        "name": "stopAccelerometer",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        },
+        "web": {
+          "js": true
+        }
+      }
+    }
+  },
   "uni-actionSheet": {
     "uni": {
       "showActionSheet": {
@@ -71,12 +123,48 @@
       "ad"
     ]
   },
+  "uni-animation-view": {
+    "easycom": [
+      "animation-view"
+    ]
+  },
   "uni-arrayBufferToBase64": {
     "uni": {
       "arrayBufferToBase64": {
         "name": "arrayBufferToBase64",
         "app": {
           "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-authentication": {
+    "uni": {
+      "startSoterAuthentication": {
+        "name": "startSoterAuthentication",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "checkIsSupportSoterAuthentication": {
+        "name": "checkIsSupportSoterAuthentication",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "checkIsSoterEnrolledInDevice": {
+        "name": "checkIsSoterEnrolledInDevice",
+        "app": {
+          "js": true,
           "kotlin": true,
           "swift": true,
           "arkts": true
@@ -207,6 +295,58 @@
           "kotlin": true,
           "swift": true,
           "arkts": true
+        }
+      }
+    }
+  },
+  "uni-compass": {
+    "uni": {
+      "onCompassChange": {
+        "name": "onCompassChange",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        },
+        "web": {
+          "js": true
+        }
+      },
+      "offCompassChange": {
+        "name": "offCompassChange",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        },
+        "web": {
+          "js": true
+        }
+      },
+      "startCompass": {
+        "name": "startCompass",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        },
+        "web": {
+          "js": true
+        }
+      },
+      "stopCompass": {
+        "name": "stopCompass",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        },
+        "web": {
+          "js": true
         }
       }
     }
@@ -607,6 +747,58 @@
       }
     }
   },
+  "uni-gyroscope": {
+    "uni": {
+      "startGyroscope": {
+        "name": "startGyroscope",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        },
+        "web": {
+          "js": true
+        }
+      },
+      "stopGyroscope": {
+        "name": "stopGyroscope",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        },
+        "web": {
+          "js": true
+        }
+      },
+      "onGyroscopeChange": {
+        "name": "onGyroscopeChange",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        },
+        "web": {
+          "js": true
+        }
+      },
+      "offGyroscopeChange": {
+        "name": "offGyroscopeChange",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        },
+        "web": {
+          "js": true
+        }
+      }
+    }
+  },
   "uni-installApk": {
     "uni": {
       "installApk": {
@@ -920,6 +1112,34 @@
       }
     }
   },
+  "uni-memorywarning": {
+    "uni": {
+      "onMemoryWarning": {
+        "name": "onMemoryWarning",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "offMemoryWarning": {
+        "name": "offMemoryWarning",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    },
+    "mp-weixin": false,
+    "mp-alipay": false,
+    "mp-baidu": false,
+    "mp-qq": false,
+    "mp-kuaishou": false,
+    "mp-jd": false
+  },
   "uni-modal": {
     "uni": {
       "showModal": {
@@ -1064,6 +1284,32 @@
     "provider": {
       "service": "payment",
       "name": "wxpay"
+    }
+  },
+  "uni-phoneContact": {
+    "uni": {
+      "addPhoneContact": {
+        "name": "addPhoneContact",
+        "app": {
+          "web": false,
+          "mp-weixin": false,
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "chooseContact": {
+        "name": "chooseContact",
+        "app": {
+          "web": false,
+          "mp-weixin": false,
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
     }
   },
   "uni-picker": {
