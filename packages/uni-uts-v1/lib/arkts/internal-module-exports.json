@@ -49,16 +49,7 @@
       "AddPhoneContact"
     ],
     [
-      "AddPhoneContact"
-    ],
-    [
       "AddPhoneContactComplete"
-    ],
-    [
-      "AddPhoneContactComplete"
-    ],
-    [
-      "AddPhoneContactCompleteCallback"
     ],
     [
       "AddPhoneContactCompleteCallback"
@@ -70,28 +61,13 @@
       "AddPhoneContactFail"
     ],
     [
-      "AddPhoneContactFail"
-    ],
-    [
-      "AddPhoneContactFailCallback"
-    ],
-    [
       "AddPhoneContactFailCallback"
     ],
     [
       "AddPhoneContactOptions"
     ],
     [
-      "AddPhoneContactOptions"
-    ],
-    [
       "AddPhoneContactSuccess"
-    ],
-    [
-      "AddPhoneContactSuccess"
-    ],
-    [
-      "AddPhoneContactSuccessCallback"
     ],
     [
       "AddPhoneContactSuccessCallback"
@@ -1279,6 +1255,12 @@
       "OffAppThemeChange"
     ],
     [
+      "OffCompassChange"
+    ],
+    [
+      "OffGyroscopeChange"
+    ],
+    [
       "OffHostThemeChange"
     ],
     [
@@ -1322,6 +1304,9 @@
     ],
     [
       "OnCompassChangeSuccess"
+    ],
+    [
+      "OnGyroscopeChange"
     ],
     [
       "OnGyroscopeChangeCallback"
@@ -2083,7 +2068,13 @@
       "StartAccelerometerOptions"
     ],
     [
+      "StartCompass"
+    ],
+    [
       "StartCompassOptions"
+    ],
+    [
+      "StartGyroscope"
     ],
     [
       "StartGyroscopeOptions"
@@ -2176,7 +2167,13 @@
       "StopAccelerometerOptions"
     ],
     [
+      "StopCompass"
+    ],
+    [
       "StopCompassOptions"
+    ],
+    [
+      "StopGyroscope"
     ],
     [
       "StopGyroscopeOptions"
@@ -2345,6 +2342,18 @@
     ],
     [
       "ZipFileItem"
+    ],
+    [
+      "offAccelerometerChange"
+    ],
+    [
+      "onAccelerometerChange"
+    ],
+    [
+      "startAccelerometer"
+    ],
+    [
+      "stopAccelerometer"
     ]
   ]
 }
