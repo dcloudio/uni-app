@@ -14,6 +14,7 @@
  *
  * 与 `docs/uni统计上报参数.md` 对齐说明：
  *   - 设备 ID 使用文档字段名 `did`（内部 SessionSnapshot/Adapter 仍以 uuid 命名，仅出口处映射）。
+ *   - `on`：`getDeviceInfo`/`getSystemInfoSync` 等合并后的 **`osName` 原文**。
  *   - 会话创建类型使用文档字段名 `cst`（内部 storage 仍以 sct 命名，仅出口处映射）。
  *   - 不再上行 `sst / seq / pid`（及历史 `odid`）：
  *       * sst/seq 仅本地用于会话状态机，不参与服务端入库；
@@ -135,9 +136,10 @@ export function createStatDataBuilder(deps: StatDataDeps) {
    *
    * 字段映射（参考 `docs/uni统计上报参数.md`）：
    *   - `did` ← 内部 `device.uuid`（出口字段重命名为文档口径）
-   *   - `p` ← `platform.p` 或 `system.osP`（与私有版 `sys.platform` 同源语义）
+   *   - `p` ← `platform.p` 或 `system.osP`（仅操作系统 slug：`ios` / `android` …）
+   *   - `on` ← `system.on`（`osName` 原文）
    *   - `mpsdk` ← `system.sdkVersion`
-   *   - `mpv` ← `formatMpvForStat(ut, osP, mpvHostVersion)`（宿主中文 + 端 + 版本，私有版对应 `sys.version`）
+   *   - `mpv` ← `formatMpvForStat(ut)`（仅宿主类型名：微信 / 支付宝 / H5 / App …）
    *   - `pr/ww/wh/sw/sh/lang` 来自 `locale`（实时取，修复缺陷 #18）
    *   - `lat/lng` 当前 LocationResult 仅含字符串经纬度，cn/pn/ct 留空待 adapter 扩展
    *
@@ -162,12 +164,13 @@ export function createStatDataBuilder(deps: StatDataDeps) {
       ch: s(config.ch),
       ut: s(platform.ut),
       p: s(platform.p ?? system.osP),
+      on: s(system.on),
       did: s(device.uuid),
       brand: s(system.brand),
       md: s(system.md),
       sv: s(system.sv),
       mpsdk: s(system.sdkVersion),
-      mpv: s(formatMpvForStat(platform.ut, system.osP, system.mpvHostVersion)),
+      mpv: s(formatMpvForStat(platform.ut)),
       pr: n(locale.pr, 1),
       ww: n(locale.ww),
       wh: n(locale.wh),
@@ -283,6 +286,9 @@ export function createStatDataBuilder(deps: StatDataDeps) {
         'sid',
         'cst',
         'did',
+        'p',
+        'on',
+        'mpv',
         'fvts',
         'lvts',
         'tvc',

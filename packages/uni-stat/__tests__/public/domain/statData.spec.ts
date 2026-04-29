@@ -23,6 +23,7 @@ function makeDeps(overrides: Partial<StatDataDeps> = {}): StatDataDeps {
     appVersion: '1.0.0',
     appWgtVersion: '1.0.1',
     mpvHostVersion: '8.0.2',
+    on: 'macOS',
     sdkVersion: '3.5.0',
     statusBarHeight: 44,
     osP: 'macos',
@@ -83,7 +84,8 @@ describe('domain/statData', () => {
         md: 'iPhone 15',
         sv: '17.4',
         mpsdk: '3.5.0',
-        mpv: 'H5 macOS 8.0.2',
+        mpv: 'H5',
+        on: 'macOS',
         ut: 'h5',
         p: 'macos',
         ww: 390,
@@ -275,7 +277,7 @@ describe('domain/statData', () => {
       expect(data.id).toBe('btn1')
     })
 
-    test('custom 不能覆盖关键字段（lt/t/sid/cst/did/fvts/lvts/tvc/sc）', () => {
+    test('custom 不能覆盖关键字段（含 p/on/mpv）', () => {
       const builder = createStatDataBuilder(makeDeps())
       const data = builder.build({
         lt: LT.Event,
@@ -287,6 +289,9 @@ describe('domain/statData', () => {
           sid: 'evil',
           cst: 9 as unknown as number,
           did: 'evil-did',
+          p: 'freebsd',
+          on: 'evil-os',
+          mpv: 'evil-host',
           fvts: 1,
           lvts: 1,
           tvc: 999,
@@ -298,6 +303,9 @@ describe('domain/statData', () => {
       expect(data.t).toBe(1700000000)
       expect(data.sid).toBe('sid-1')
       expect(data.did).toBe('uuid-1')
+      expect(data.p).toBe('macos')
+      expect(data.on).toBe('macOS')
+      expect(data.mpv).toBe('H5')
       expect(data.legitField).toBe('ok')
     })
   })
@@ -316,6 +324,7 @@ describe('domain/statData', () => {
             appVersion: '',
             appWgtVersion: '',
             mpvHostVersion: '',
+            on: '',
             sdkVersion: '',
             statusBarHeight: 0,
             osP: '',

@@ -1120,33 +1120,17 @@ const STAT_UT_LABEL = {
     h5: 'H5',
     n: 'App',
 };
-/** `osP` → 端上中文系统名，与 `normalizeStatOsP` 输出对齐。 */
-const STAT_OS_LABEL = {
-    ios: 'iOS',
-    android: 'Android',
-    windows: 'Windows',
-    macos: 'macOS',
-    linux: 'Linux',
-    harmonyos: '鸿蒙',
-};
 /**
- * 拼装上行 `mpv`（小程序宿主版本展示）：宿主中文 + 端系统中文 + 宿主客户端版本号。
+ * 拼装上行 `mpv`：**仅宿主类型**可读名（与 `ut` 对齐），如微信 / 支付宝 / H5 / App。
  *
- * 版本串与私有版 `report.js` 中 `sys.version` 同源（微信/支付宝等客户端版本），
- * 中文段仅作可读性增强，便于区分宿主与 iOS/Android 等运行端。
+ * 操作系统归一标识见上行 **`p`**（`system.osP`）；`osName` 原文见上行 **`on`**；
+ * 客户端版本见 **`v`** 等字段，避免与 `mpv` 混写。
  *
- * @param ut               `getPlatform()` 短码。
- * @param osP              `normalizeStatOsP()` 输出。
- * @param hostClientVersion 合并系统信息中的 `hostVersion ?? version`。
+ * @param ut `getPlatform()` 短码（wx / ali / h5 / n …）。
  */
-function formatMpvForStat(ut, osP, hostClientVersion) {
-    var _a, _b;
-    const host = (_a = STAT_UT_LABEL[ut]) !== null && _a !== void 0 ? _a : '';
-    const os = osP ? (_b = STAT_OS_LABEL[osP]) !== null && _b !== void 0 ? _b : osP : '';
-    const ver = (hostClientVersion || '').trim();
-    if (!host && !os && !ver)
-        return '';
-    return [host, os, ver].filter(Boolean).join(' ');
+function formatMpvForStat(ut) {
+    var _a;
+    return (_a = STAT_UT_LABEL[ut]) !== null && _a !== void 0 ? _a : '';
 }
 /** 当前是否运行在 App / nvue / HarmonyOS App 端。 */
 function isApp() {
@@ -3381,6 +3365,7 @@ function createImageChannel(opts = {}) {
  *
  * 与 `docs/uni统计上报参数.md` 对齐说明：
  *   - 设备 ID 使用文档字段名 `did`（内部 SessionSnapshot/Adapter 仍以 uuid 命名，仅出口处映射）。
+ *   - `on`：`getDeviceInfo`/`getSystemInfoSync` 等合并后的 **`osName` 原文**。
  *   - 会话创建类型使用文档字段名 `cst`（内部 storage 仍以 sct 命名，仅出口处映射）。
  *   - 不再上行 `sst / seq / pid`（及历史 `odid`）：
  *       * sst/seq 仅本地用于会话状态机，不参与服务端入库；
@@ -3420,9 +3405,10 @@ function createStatDataBuilder(deps) {
      *
      * 字段映射（参考 `docs/uni统计上报参数.md`）：
      *   - `did` ← 内部 `device.uuid`（出口字段重命名为文档口径）
-     *   - `p` ← `platform.p` 或 `system.osP`（与私有版 `sys.platform` 同源语义）
+     *   - `p` ← `platform.p` 或 `system.osP`（仅操作系统 slug：`ios` / `android` …）
+     *   - `on` ← `system.on`（`osName` 原文）
      *   - `mpsdk` ← `system.sdkVersion`
-     *   - `mpv` ← `formatMpvForStat(ut, osP, mpvHostVersion)`（宿主中文 + 端 + 版本，私有版对应 `sys.version`）
+     *   - `mpv` ← `formatMpvForStat(ut)`（仅宿主类型名：微信 / 支付宝 / H5 / App …）
      *   - `pr/ww/wh/sw/sh/lang` 来自 `locale`（实时取，修复缺陷 #18）
      *   - `lat/lng` 当前 LocationResult 仅含字符串经纬度，cn/pn/ct 留空待 adapter 扩展
      *
@@ -3438,12 +3424,13 @@ function createStatDataBuilder(deps) {
             ch: s(config.ch),
             ut: s(platform.ut),
             p: s((_b = platform.p) !== null && _b !== void 0 ? _b : system.osP),
+            on: s(system.on),
             did: s(device.uuid),
             brand: s(system.brand),
             md: s(system.md),
             sv: s(system.sv),
             mpsdk: s(system.sdkVersion),
-            mpv: s(formatMpvForStat(platform.ut, system.osP, system.mpvHostVersion)),
+            mpv: s(formatMpvForStat(platform.ut)),
             pr: n(locale.pr, 1),
             ww: n(locale.ww),
             wh: n(locale.wh),
@@ -3564,6 +3551,9 @@ function createStatDataBuilder(deps) {
                 'sid',
                 'cst',
                 'did',
+                'p',
+                'on',
+                'mpv',
                 'fvts',
                 'lvts',
                 'tvc',
@@ -3590,7 +3580,7 @@ function createStatDataBuilder(deps) {
  *   - `lang / ww / wh` 等"可变"字段被一同缓存，用户切换系统语言或旋转屏幕后字段失真。
  *
  * 公有版职责：
- *   1. `getSystemInfo()` 懒加载 + 缓存（不可变字段：brand/md/sv/v/ut …）。
+ *   1. `getSystemInfo()` 懒加载 + 缓存（不可变字段：brand/md/sv/v/ut/on …）。
  *   2. `getLocaleAndScreen()` 实时取（lang + ww/wh + sw/sh + pr）—— 修复缺陷 #18。
  *   3. SSR/单测：任一 API 不存在或抛错时，返回安全空对象，绝不抛。
  *   4. `__resetCache()`：仅供测试，重置缓存。
@@ -3690,7 +3680,8 @@ function mergedSystemInfo() {
  *   - `brand / md`：优先 `deviceBrand`/`deviceModel`（拆分 API），再退化 `brand`/`model`。
  *   - `sv / v / sdkVersion`：优先 `osVersion`、`hostVersion`、`hostSDKVersion`，兼容旧字段。
  *   - `osP`：由 `platform` / `osName` / `system` 经 `normalizeStatOsP` 得到，供上行 `p`。
- *   - `mpvHostVersion`：`hostVersion ?? version`，与私有版 `sys.version` 同源，供 `mpv` 拼装。
+ *   - `mpvHostVersion`：`hostVersion ?? version`，与私有版 `sys.version` 同源。
+ *   - `on`：合并后的 `osName` 原文，供上行 `on`；操作系统归一标识见 `osP` → 上行 `p`。
  *   - 缺失统一空字符串或 0，避免上行 JSON 丢字段语义。
  */
 function getSystemInfo() {
@@ -3708,6 +3699,7 @@ function getSystemInfo() {
         appVersion: (_m = (_l = (_k = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _k === void 0 ? void 0 : _k.version) !== null && _l !== void 0 ? _l : sys.appVersion) !== null && _m !== void 0 ? _m : '',
         appWgtVersion: (_s = (_r = (_p = (_o = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _o === void 0 ? void 0 : _o.appWgtVersion) !== null && _p !== void 0 ? _p : (_q = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _q === void 0 ? void 0 : _q.appWgtRevision) !== null && _r !== void 0 ? _r : sys.appWgtVersion) !== null && _s !== void 0 ? _s : '',
         mpvHostVersion: ((_u = (_t = sys.hostVersion) !== null && _t !== void 0 ? _t : sys.version) !== null && _u !== void 0 ? _u : '').trim(),
+        on: (typeof sys.osName === 'string' ? sys.osName : '').trim(),
         sdkVersion: (_w = (_v = sys.hostSDKVersion) !== null && _v !== void 0 ? _v : sys.SDKVersion) !== null && _w !== void 0 ? _w : '',
         statusBarHeight: typeof sys.statusBarHeight === 'number' ? sys.statusBarHeight : 0,
         osP: normalizeStatOsP({
@@ -4829,6 +4821,7 @@ class StatApp {
                 appVersion: '',
                 appWgtVersion: '',
                 mpvHostVersion: '',
+                on: '',
                 sdkVersion: '',
                 statusBarHeight: 0,
                 osP: '',

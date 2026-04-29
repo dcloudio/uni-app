@@ -356,6 +356,7 @@ export class StatApp {
         appVersion: '',
         appWgtVersion: '',
         mpvHostVersion: '',
+        on: '',
         sdkVersion: '',
         statusBarHeight: 0,
         osP: '',

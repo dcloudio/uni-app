@@ -192,36 +192,16 @@ const STAT_UT_LABEL: Partial<Record<Platform, string>> = {
   n: 'App',
 }
 
-/** `osP` → 端上中文系统名，与 `normalizeStatOsP` 输出对齐。 */
-const STAT_OS_LABEL: Partial<Record<string, string>> = {
-  ios: 'iOS',
-  android: 'Android',
-  windows: 'Windows',
-  macos: 'macOS',
-  linux: 'Linux',
-  harmonyos: '鸿蒙',
-}
-
 /**
- * 拼装上行 `mpv`（小程序宿主版本展示）：宿主中文 + 端系统中文 + 宿主客户端版本号。
+ * 拼装上行 `mpv`：**仅宿主类型**可读名（与 `ut` 对齐），如微信 / 支付宝 / H5 / App。
  *
- * 版本串与私有版 `report.js` 中 `sys.version` 同源（微信/支付宝等客户端版本），
- * 中文段仅作可读性增强，便于区分宿主与 iOS/Android 等运行端。
+ * 操作系统归一标识见上行 **`p`**（`system.osP`）；`osName` 原文见上行 **`on`**；
+ * 客户端版本见 **`v`** 等字段，避免与 `mpv` 混写。
  *
- * @param ut               `getPlatform()` 短码。
- * @param osP              `normalizeStatOsP()` 输出。
- * @param hostClientVersion 合并系统信息中的 `hostVersion ?? version`。
+ * @param ut `getPlatform()` 短码（wx / ali / h5 / n …）。
  */
-export function formatMpvForStat(
-  ut: Platform | string,
-  osP: string,
-  hostClientVersion: string
-): string {
-  const host = STAT_UT_LABEL[ut as Platform] ?? ''
-  const os = osP ? STAT_OS_LABEL[osP] ?? osP : ''
-  const ver = (hostClientVersion || '').trim()
-  if (!host && !os && !ver) return ''
-  return [host, os, ver].filter(Boolean).join(' ')
+export function formatMpvForStat(ut: Platform | string): string {
+  return STAT_UT_LABEL[ut as Platform] ?? ''
 }
 
 /**

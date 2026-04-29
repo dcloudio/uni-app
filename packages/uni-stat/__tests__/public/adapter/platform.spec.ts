@@ -167,18 +167,16 @@ describe('adapter/platform', () => {
   })
 
   describe('formatMpvForStat', () => {
-    test('微信 + iOS + 版本号', () => {
-      expect(formatMpvForStat('wx', 'ios', '8.0.50')).toBe('微信 iOS 8.0.50')
+    test('仅宿主类型名：微信', () => {
+      expect(formatMpvForStat('wx')).toBe('微信')
     })
 
-    test('支付宝 + Android + 版本号', () => {
-      expect(formatMpvForStat('ali', 'android', '10.5.66')).toBe(
-        '支付宝 Android 10.5.66'
-      )
+    test('仅宿主类型名：支付宝', () => {
+      expect(formatMpvForStat('ali')).toBe('支付宝')
     })
 
-    test('全空 → 空串', () => {
-      expect(formatMpvForStat('unknown', '', '')).toBe('')
+    test('未知 ut → 空串', () => {
+      expect(formatMpvForStat('unknown')).toBe('')
     })
   })
 

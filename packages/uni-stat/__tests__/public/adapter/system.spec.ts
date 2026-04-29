@@ -33,6 +33,7 @@ describe('adapter/system', () => {
         appVersion: '',
         appWgtVersion: '',
         mpvHostVersion: '',
+        on: '',
         sdkVersion: '',
         statusBarHeight: 0,
         osP: '',
@@ -51,6 +52,7 @@ describe('adapter/system', () => {
         brand: 'Apple',
         deviceModel: 'iPhone 15',
         osVersion: '17.4',
+        osName: 'iOS',
         version: '8.0.50',
         deviceType: 'phone',
         platform: 'ios',
@@ -66,6 +68,7 @@ describe('adapter/system', () => {
         sdkVersion: '3.4.2',
         statusBarHeight: 44,
         osP: 'ios',
+        on: 'iOS',
         mpvHostVersion: '8.0.50',
       })
     })

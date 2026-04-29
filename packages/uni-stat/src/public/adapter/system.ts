@@ -7,7 +7,7 @@
  *   - `lang / ww / wh` 等"可变"字段被一同缓存，用户切换系统语言或旋转屏幕后字段失真。
  *
  * 公有版职责：
- *   1. `getSystemInfo()` 懒加载 + 缓存（不可变字段：brand/md/sv/v/ut …）。
+ *   1. `getSystemInfo()` 懒加载 + 缓存（不可变字段：brand/md/sv/v/ut/on …）。
  *   2. `getLocaleAndScreen()` 实时取（lang + ww/wh + sw/sh + pr）—— 修复缺陷 #18。
  *   3. SSR/单测：任一 API 不存在或抛错时，返回安全空对象，绝不抛。
  *   4. `__resetCache()`：仅供测试，重置缓存。
@@ -40,9 +40,13 @@ export interface SystemInfoStatic {
   appWgtVersion: string
   /**
    * 小程序宿主客户端版本原始串（私有版 `sys.version`，即 `hostVersion ?? version`）。
-   * 上行 `mpv` 由 `formatMpvForStat(ut, osP, mpvHostVersion)` 拼装中文展示。
+   * 仅作静态快照；上行 `v`/展示类字段按需取用，与 `mpv`（纯宿主类型名）解耦。
    */
   mpvHostVersion: string
+  /**
+   * 合并系统信息中的 `osName` 原文（拆分 API / sync 合并后），上行字段 **`on`**。
+   */
+  on: string
   /** SDK / 基础库版本（小程序 sdkVersion；H5/App 留空）。 */
   sdkVersion: string
   /** 状态栏高度。 */
@@ -208,7 +212,8 @@ function mergedSystemInfo(): UniSystemInfoLike {
  *   - `brand / md`：优先 `deviceBrand`/`deviceModel`（拆分 API），再退化 `brand`/`model`。
  *   - `sv / v / sdkVersion`：优先 `osVersion`、`hostVersion`、`hostSDKVersion`，兼容旧字段。
  *   - `osP`：由 `platform` / `osName` / `system` 经 `normalizeStatOsP` 得到，供上行 `p`。
- *   - `mpvHostVersion`：`hostVersion ?? version`，与私有版 `sys.version` 同源，供 `mpv` 拼装。
+ *   - `mpvHostVersion`：`hostVersion ?? version`，与私有版 `sys.version` 同源。
+ *   - `on`：合并后的 `osName` 原文，供上行 `on`；操作系统归一标识见 `osP` → 上行 `p`。
  *   - 缺失统一空字符串或 0，避免上行 JSON 丢字段语义。
  */
 export function getSystemInfo(): SystemInfoStatic {
@@ -238,6 +243,7 @@ export function getSystemInfo(): SystemInfoStatic {
       sys.appWgtVersion ??
       '',
     mpvHostVersion: (sys.hostVersion ?? sys.version ?? '').trim(),
+    on: (typeof sys.osName === 'string' ? sys.osName : '').trim(),
     sdkVersion: sys.hostSDKVersion ?? sys.SDKVersion ?? '',
     statusBarHeight:
       typeof sys.statusBarHeight === 'number' ? sys.statusBarHeight : 0,
