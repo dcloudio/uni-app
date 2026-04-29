@@ -49,16 +49,7 @@
       "AddPhoneContact"
     ],
     [
-      "AddPhoneContact"
-    ],
-    [
       "AddPhoneContactComplete"
-    ],
-    [
-      "AddPhoneContactComplete"
-    ],
-    [
-      "AddPhoneContactCompleteCallback"
     ],
     [
       "AddPhoneContactCompleteCallback"
@@ -70,28 +61,13 @@
       "AddPhoneContactFail"
     ],
     [
-      "AddPhoneContactFail"
-    ],
-    [
-      "AddPhoneContactFailCallback"
-    ],
-    [
       "AddPhoneContactFailCallback"
     ],
     [
       "AddPhoneContactOptions"
     ],
     [
-      "AddPhoneContactOptions"
-    ],
-    [
       "AddPhoneContactSuccess"
-    ],
-    [
-      "AddPhoneContactSuccess"
-    ],
-    [
-      "AddPhoneContactSuccessCallback"
     ],
     [
       "AddPhoneContactSuccessCallback"
