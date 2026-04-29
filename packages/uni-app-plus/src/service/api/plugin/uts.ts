@@ -28,9 +28,11 @@ function parseElement(obj: any) {
   }
 }
 
-function parseComponentPublicInstance(obj: any) {
-  if (isComponentPublicInstance(obj)) {
-    return obj.$el
+function serializeComponentPublicInstance(obj: any) {
+  if (obj.$el) {
+    return serializeUniElement(obj.$el, 'ComponentPublicInstance')
+  } else {
+    return { __type__: 'ComponentPublicInstance', pageId: '', nodeId: '' }
   }
 }
 
@@ -103,18 +105,16 @@ export function normalizeArg(
     return serializeArrayBuffer(arg)
   } else if (isPlainObject(arg) || isUniElement(arg)) {
     const uniElement = parseElement(arg)
-    const componentPublicInstanceUniElement = !uniElement
-      ? parseComponentPublicInstance(arg)
-      : undefined
-    const el = uniElement || componentPublicInstanceUniElement
-    if (el) {
+    if (uniElement) {
       if (context.depth > 0 || isVaporAndroid) {
         context.nested = true
       }
-      return serializeUniElement(
-        el,
-        uniElement ? 'UniElement' : 'ComponentPublicInstance'
-      )
+      return serializeUniElement(uniElement, 'UniElement')
+    } else if (isComponentPublicInstance(arg)) {
+      if (context.depth > 0 || isVaporAndroid) {
+        context.nested = true
+      }
+      return serializeComponentPublicInstance(arg)
     } else {
       // 必须复制，否则会污染原始对象，比如：
       // const obj = {
