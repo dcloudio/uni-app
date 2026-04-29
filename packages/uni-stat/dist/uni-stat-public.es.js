@@ -189,7 +189,7 @@ function fullKey(key) {
 /**
  * 取真实 uni 对象。剥离到函数里，便于测试用 mockUni 替换后立即生效。
  */
-function getUni$8() {
+function getUni$9() {
     const raw = resolveUniRuntime();
     const u = raw != null && typeof raw === 'object'
         ? raw
@@ -210,7 +210,7 @@ function get(key) {
     if (cache.has(fk))
         return cache.get(fk);
     try {
-        const raw = getUni$8().getStorageSync(fk);
+        const raw = getUni$9().getStorageSync(fk);
         // uni 规范：未命中返回空字符串
         if (raw === '' || raw === null || raw === undefined) {
             cache.set(fk, undefined);
@@ -237,7 +237,7 @@ function safeRead(key) {
     if (cache.has(fk))
         return { ok: true, value: cache.get(fk) };
     try {
-        const raw = getUni$8().getStorageSync(fk);
+        const raw = getUni$9().getStorageSync(fk);
         if (raw === '' || raw === null || raw === undefined) {
             cache.set(fk, undefined);
             return { ok: true, value: undefined };
@@ -265,7 +265,7 @@ function set(key, value) {
     cache.set(fk, value);
     knownKeys.add(fk);
     try {
-        getUni$8().setStorageSync(fk, value);
+        getUni$9().setStorageSync(fk, value);
     }
     catch (_a) {
         // 缓存已更新，吞掉异常；调用方如需感知请使用 try/catch 显式包裹。
@@ -278,7 +278,7 @@ function remove(key) {
     const fk = fullKey(key);
     cache.set(fk, undefined);
     try {
-        getUni$8().removeStorageSync(fk);
+        getUni$9().removeStorageSync(fk);
     }
     catch (_a) {
         // 同 set：忽略 storage 异常，缓存已置空。
@@ -309,7 +309,7 @@ function batchSet(entries) {
 function clearNamespace() {
     let uni;
     try {
-        uni = getUni$8();
+        uni = getUni$9();
     }
     catch (_a) {
         // uni 不可用：仅清缓存，无法清持久化
@@ -1006,7 +1006,10 @@ function getPlus$1() {
  * 公有版默认不暴露在 `SystemInfoStatic` 中，仅在本 adapter 内部使用。
  */
 function readSysDeviceId() {
-    const u = globalThis.uni;
+    const root = resolveUniRuntime();
+    const u = root != null && typeof root === 'object'
+        ? root
+        : undefined;
     if (!u || typeof u.getSystemInfoSync !== 'function')
         return '';
     return tryRun(() => { var _a; return (_a = u.getSystemInfoSync().deviceId) !== null && _a !== void 0 ? _a : ''; }, '');
@@ -1431,7 +1434,7 @@ function getCurrentRouteWithQuery(pageVm) {
  * 注意：本模块不维护订阅注册表（去重逻辑由 `infra/interceptor` 与 `runtime/install`
  * 处理），保持单一职责。
  */
-function getUni$7() {
+function getUni$8() {
     const u = resolveUniRuntime();
     return u != null && typeof u === 'object' ? u : undefined;
 }
@@ -1448,7 +1451,7 @@ function getLaunchScene(override) {
     if (override !== undefined && override !== null && override !== '') {
         return String(override);
     }
-    const u = getUni$7();
+    const u = getUni$8();
     if (typeof (u === null || u === void 0 ? void 0 : u.getLaunchOptionsSync) !== 'function')
         return '';
     const platform = getPlatform();
@@ -1483,7 +1486,7 @@ function getLaunchScene(override) {
  *      透传。
  *   3. 不缓存：业务方需要会话维度复用时在 `domain/push.ts` 中缓存（待 Phase 5 接入）。
  */
-function getUni$6() {
+function getUni$7() {
     const u = resolveUniRuntime();
     return u != null && typeof u === 'object' ? u : undefined;
 }
@@ -1499,7 +1502,7 @@ function getPushClientId(opts = {}) {
             resolve({ ok: false, cid: '', reason: 'disabled' });
             return;
         }
-        const u = getUni$6();
+        const u = getUni$7();
         if (!u || typeof u.getPushClientId !== 'function') {
             resolve({ ok: false, cid: '', reason: 'unsupported' });
             return;
@@ -1920,7 +1923,7 @@ function handleError(app, e) {
         }, 0);
     }, undefined);
 }
-function getUni$5() {
+function getUni$6() {
     const u = resolveUniRuntime();
     return u != null && typeof u === 'object' ? u : undefined;
 }
@@ -1959,7 +1962,7 @@ function bindLifecycle(app, opts = {}) {
             handleError(app, e);
         },
     };
-    const u = getUni$5();
+    const u = getUni$6();
     let appShowCb;
     let appHideCb;
     if (u && typeof u.onAppShow === 'function') {
@@ -1976,7 +1979,7 @@ function bindLifecycle(app, opts = {}) {
             if (!bound)
                 return;
             bound = false;
-            const cur = getUni$5();
+            const cur = getUni$6();
             if (appShowCb && cur && typeof cur.offAppShow === 'function') {
                 tryRun(() => cur.offAppShow(appShowCb), undefined);
             }
@@ -2827,7 +2830,7 @@ function createCollector(deps) {
  *   - `send(payload)`：成功 resolve；3 次重试全失败抛错（供 retry.persist 落盘）。
  *   - 不缓存任何状态；每次 `send` 是无状态的。
  */
-function getUni$4() {
+function getUni$5() {
     const u = resolveUniRuntime();
     return u != null && typeof u === 'object' ? u : undefined;
 }
@@ -2873,7 +2876,7 @@ function createHttpChannel(opts = {}) {
             if (tryImageRequest(payload, h5Url))
                 return Promise.resolve();
         }
-        const u = getUni$4();
+        const u = getUni$5();
         if (!u || typeof u.request !== 'function') {
             return Promise.reject(new Error('uni.request unavailable'));
         }
@@ -2915,7 +2918,7 @@ function createHttpChannel(opts = {}) {
     return {
         name: '1.0',
         available() {
-            const u = getUni$4();
+            const u = getUni$5();
             return !!(u && typeof u.request === 'function');
         },
         send(payload) {
@@ -2958,7 +2961,7 @@ function createHttpChannel(opts = {}) {
  *   - `send(payload)`：成功 resolve、失败 reject。
  *   - 不缓存任何状态。
  */
-function getUni$3() {
+function getUni$4() {
     const u = resolveUniRuntime();
     return u != null && typeof u === 'object' ? u : undefined;
 }
@@ -3063,7 +3066,7 @@ function createImageChannel(opts = {}) {
         if (preferBeacon && tryImageBeacon(url)) {
             return Promise.resolve();
         }
-        const u = getUni$3();
+        const u = getUni$4();
         if (!u || typeof u.request !== 'function') {
             // 环境本身既无 Image 也无 uni.request，重试不会自愈 → 永久错
             return Promise.reject(new PermanentChannelError('no Image and uni.request unavailable'));
@@ -3222,7 +3225,7 @@ function createStatDataBuilder(deps) {
      * 不再上行 `odid`：文档无此字段；保留 `device.odid` 仅供调试与未来兼容场景。
      */
     function baseFields() {
-        var _a;
+        var _a, _b;
         const { config, platform, system, locale, device, net, location, pkg, legacy, } = deps;
         return {
             ak: s(config.ak),
@@ -3246,7 +3249,7 @@ function createStatDataBuilder(deps) {
             net: s(net.net, 'unknown'),
             lat: s(location.lat),
             lng: s(location.lng),
-            mpn: s(legacy === null || legacy === void 0 ? void 0 : legacy.mpn),
+            mpn: s((_b = legacy === null || legacy === void 0 ? void 0 : legacy.mpn) !== null && _b !== void 0 ? _b : pkg.mpn),
             tdaid: s(pkg.tdaid),
             pkn: s(pkg.pkn),
             an: s(pkg.an),
@@ -3383,53 +3386,157 @@ function createStatDataBuilder(deps) {
  *   - `lang / ww / wh` 等"可变"字段被一同缓存，用户切换系统语言或旋转屏幕后字段失真。
  *
  * 公有版职责：
- *   1. `getSystemInfo()` 懒加载 + 缓存（不可变字段：brand/md/sv/v/ut/sw/sh/pr/svv …）。
+ *   1. `getSystemInfo()` 懒加载 + 缓存（不可变字段：brand/md/sv/v/ut …）。
  *   2. `getLocaleAndScreen()` 实时取（lang + ww/wh + sw/sh + pr）—— 修复缺陷 #18。
- *   3. SSR/单测：当 `uni.getSystemInfoSync` 不存在或抛错时，返回安全空对象，绝不抛。
+ *   3. SSR/单测：任一 API 不存在或抛错时，返回安全空对象，绝不抛。
  *   4. `__resetCache()`：仅供测试，重置缓存。
  *
- * 设计取舍：
- *   - 虽然 uni-app 4.x 已拆出 `getDeviceInfo / getAppBaseInfo / getWindowInfo` 等细粒度
- *     API，但公有版要兼容老基础库（私有版同款覆盖范围），统一基于 `getSystemInfoSync`
- *     做 superset 解析。后续如需细分，再扩展独立函数。
+ * 小程序新基础库对 `getSystemInfoSync` 做了能力拆分，部分字段为空或恒为 0。
+ * 因此优先通过 `uni.getDeviceInfo / getAppBaseInfo / getWindowInfo` 取对应信息，
+ * 再以 `uni.getSystemInfoSync` 合并兜底（与 uni-app 运行时、uni-api 侧实践一致）。
+ *
+ * **小程序注意**：`uni` 常由构建注入在模块作用域，仅读 `globalThis.uni` 会取不到
+ * 任何 API；必须通过 `resolveUniRuntime()` 与 `package.ts` 等 adapter 对齐。
+ * 微信系再叠一层 `wx.getDeviceInfo / getAppBaseInfo / getWindowInfo`（与 `uni-api`
+ * `upx2px` 一致），避免 `uni` 代理未就绪时宽高全 0。
  */
 let cachedStatic = null;
 /**
- * 通过 `tryRun` 安全调用 `uni.getSystemInfoSync`；失败/缺失返回 `null`。
+ * 解析 `uni` 根对象：优先 `globalThis.uni`，再回退宿主注入的模块级 `uni`。
  *
- * 不直接 `try/catch`：保持与 `infra/safe` 风格一致，错误一律走 `tryRun` 内的
- * 静默 logger，避免污染上层链路。
+ * @see `infra/uniRuntime.ts` 说明（小程序上仅读 globalThis 会静默失败）。
  */
-function safeGetSystemInfo() {
-    var _a;
-    const u = globalThis.uni;
-    if (!u || typeof u.getSystemInfoSync !== 'function')
+function getUni$3() {
+    const u = resolveUniRuntime();
+    return u != null && typeof u === 'object' ? u : undefined;
+}
+/**
+ * 微信系宿主上再取一层原生拆分 API，与 `uni` 合并结果再叠加以补全字段。
+ *
+ * @returns 已按 sync→device→app→window 合并过的一条快照；非微信系返回 `null`。
+ */
+function mergeWxHostSnapshots() {
+    const raw = getRawPlatform();
+    if (raw !== 'mp-weixin' && raw !== 'mp-qq')
         return null;
-    return (_a = tryRun(() => u.getSystemInfoSync(), null)) !== null && _a !== void 0 ? _a : null;
+    const wxHost = globalThis.wx;
+    if (!wxHost)
+        return null;
+    const sync = typeof wxHost.getSystemInfoSync === 'function'
+        ? tryRun(() => wxHost.getSystemInfoSync(), null)
+        : null;
+    const device = typeof wxHost.getDeviceInfo === 'function'
+        ? tryRun(() => wxHost.getDeviceInfo(), null)
+        : null;
+    const appBase = typeof wxHost.getAppBaseInfo === 'function'
+        ? tryRun(() => wxHost.getAppBaseInfo(), null)
+        : null;
+    const windowInfo = typeof wxHost.getWindowInfo === 'function'
+        ? tryRun(() => wxHost.getWindowInfo(), null)
+        : null;
+    return mergeSystemSnapshots(sync, device, appBase, windowInfo);
+}
+/**
+ * 从左到右浅合并多个快照：后者非 `undefined` / `null` 的键覆盖前者。
+ *
+ * 合并顺序为「sync → device → appBase → window」，使拆分 API 覆盖宿主裁剪后的
+ * `getSystemInfoSync` 残缺字段。
+ */
+function mergeSystemSnapshots(...parts) {
+    const out = {};
+    for (const p of parts) {
+        if (!p)
+            continue;
+        for (const k of Object.keys(p)) {
+            const v = p[k];
+            if (v !== undefined && v !== null)
+                out[k] = v;
+        }
+    }
+    return out;
+}
+/**
+ * 聚合当前运行时的系统信息：先 `getSystemInfoSync` 打底，再叠拆分 API。
+ *
+ * 各 API 均经 `tryRun` 包裹，任一失败不影响其余来源。
+ */
+function mergedSystemInfo() {
+    const u = getUni$3();
+    const hasGlobalUni = globalThis.uni != null &&
+        typeof globalThis.uni === 'object';
+    const sync = u && typeof u.getSystemInfoSync === 'function'
+        ? tryRun(() => u.getSystemInfoSync(), null)
+        : null;
+    const device = u && typeof u.getDeviceInfo === 'function'
+        ? tryRun(() => u.getDeviceInfo(), null)
+        : null;
+    const appBase = u && typeof u.getAppBaseInfo === 'function'
+        ? tryRun(() => u.getAppBaseInfo(), null)
+        : null;
+    const windowInfo = u && typeof u.getWindowInfo === 'function'
+        ? tryRun(() => u.getWindowInfo(), null)
+        : null;
+    const fromUni = mergeSystemSnapshots(sync, device, appBase, windowInfo);
+    const fromWx = mergeWxHostSnapshots();
+    const merged = fromWx
+        ? mergeSystemSnapshots(fromUni, fromWx)
+        : fromUni;
+    if (logger.isDebug()) {
+        const sample = (o) => {
+            var _a, _b, _c;
+            return o
+                ? {
+                    brand: o.brand,
+                    deviceBrand: o.deviceBrand,
+                    md: (_a = o.deviceModel) !== null && _a !== void 0 ? _a : o.model,
+                    sw: o.screenWidth,
+                    sh: o.screenHeight,
+                    ww: o.windowWidth,
+                    wh: o.windowHeight,
+                    lang: (_b = o.hostLanguage) !== null && _b !== void 0 ? _b : o.language,
+                    sdk: (_c = o.hostSDKVersion) !== null && _c !== void 0 ? _c : o.SDKVersion,
+                }
+                : null;
+        };
+        logger.debug('[diag][system]', {
+            UNI_PLATFORM: getRawPlatform(),
+            resolveUni: u != null,
+            globalThisUni: hasGlobalUni,
+            uniApi: {
+                getSystemInfoSync: !!(u && typeof u.getSystemInfoSync === 'function'),
+                getDeviceInfo: !!(u && typeof u.getDeviceInfo === 'function'),
+                getAppBaseInfo: !!(u && typeof u.getAppBaseInfo === 'function'),
+                getWindowInfo: !!(u && typeof u.getWindowInfo === 'function'),
+            },
+            wxLayer: fromWx != null,
+            partials: { sync: sample(sync), fromUni: sample(fromUni), merged: sample(merged) },
+        });
+    }
+    return merged;
 }
 /**
  * 取静态系统信息（懒加载 + 缓存）。
  *
  * 字段映射策略：
- *   - `brand / md / sv / v / ut`：优先取 uni-app 4.x 拆分字段（osName/deviceModel 等），
- *     退化到 system/model 兼容老基础库。
- *   - 任何字段缺失统一空字符串/0，而非 undefined，避免上行 JSON 序列化时丢字段。
+ *   - `brand / md`：优先 `deviceBrand`/`deviceModel`（拆分 API），再退化 `brand`/`model`。
+ *   - `sv / v / sdkVersion`：优先 `osVersion`、`hostVersion`、`hostSDKVersion`，兼容旧字段。
+ *   - 缺失统一空字符串或 0，避免上行 JSON 丢字段语义。
  */
 function getSystemInfo() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u;
     if (cachedStatic)
         return cachedStatic;
-    const sys = (_a = safeGetSystemInfo()) !== null && _a !== void 0 ? _a : {};
+    const sys = mergedSystemInfo();
     const plus = globalThis.plus;
     cachedStatic = {
-        brand: (_b = sys.brand) !== null && _b !== void 0 ? _b : '',
+        brand: (_b = (_a = sys.deviceBrand) !== null && _a !== void 0 ? _a : sys.brand) !== null && _b !== void 0 ? _b : '',
         md: (_d = (_c = sys.deviceModel) !== null && _c !== void 0 ? _c : sys.model) !== null && _d !== void 0 ? _d : '',
         sv: (_f = (_e = sys.osVersion) !== null && _e !== void 0 ? _e : sys.system) !== null && _f !== void 0 ? _f : '',
-        v: (_g = sys.version) !== null && _g !== void 0 ? _g : '',
-        ut: ((_h = sys.deviceType) !== null && _h !== void 0 ? _h : 'unknown'),
-        appVersion: (_l = (_k = (_j = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _j === void 0 ? void 0 : _j.version) !== null && _k !== void 0 ? _k : sys.appVersion) !== null && _l !== void 0 ? _l : '',
-        appWgtVersion: (_r = (_q = (_o = (_m = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _m === void 0 ? void 0 : _m.appWgtVersion) !== null && _o !== void 0 ? _o : (_p = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _p === void 0 ? void 0 : _p.appWgtRevision) !== null && _q !== void 0 ? _q : sys.appWgtVersion) !== null && _r !== void 0 ? _r : '',
-        sdkVersion: (_s = sys.SDKVersion) !== null && _s !== void 0 ? _s : '',
+        v: (_h = (_g = sys.hostVersion) !== null && _g !== void 0 ? _g : sys.version) !== null && _h !== void 0 ? _h : '',
+        ut: ((_j = sys.deviceType) !== null && _j !== void 0 ? _j : 'unknown'),
+        appVersion: (_m = (_l = (_k = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _k === void 0 ? void 0 : _k.version) !== null && _l !== void 0 ? _l : sys.appVersion) !== null && _m !== void 0 ? _m : '',
+        appWgtVersion: (_s = (_r = (_p = (_o = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _o === void 0 ? void 0 : _o.appWgtVersion) !== null && _p !== void 0 ? _p : (_q = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _q === void 0 ? void 0 : _q.appWgtRevision) !== null && _r !== void 0 ? _r : sys.appWgtVersion) !== null && _s !== void 0 ? _s : '',
+        sdkVersion: (_u = (_t = sys.hostSDKVersion) !== null && _t !== void 0 ? _t : sys.SDKVersion) !== null && _u !== void 0 ? _u : '',
         statusBarHeight: typeof sys.statusBarHeight === 'number' ? sys.statusBarHeight : 0,
     };
     return cachedStatic;
@@ -3437,19 +3544,23 @@ function getSystemInfo() {
 /**
  * 取实时字段（lang / 窗口尺寸 / 屏幕尺寸 / dpr）。
  *
- * 修复缺陷 #18：每次调用都重新读取 `uni.getSystemInfoSync()`，不复用任何缓存。
- * 如调用方需要"启动时一次"的语义，应在调用层显式缓存，而非依赖本模块。
+ * 每次调用重新走拆分 API + sync 合并，不复用缓存，避免旋转屏、改语言后失真。
  */
 function getLocaleAndScreen() {
     var _a, _b;
-    const sys = (_a = safeGetSystemInfo()) !== null && _a !== void 0 ? _a : {};
+    const sys = mergedSystemInfo();
+    const prRaw = typeof sys.pixelRatio === 'number'
+        ? sys.pixelRatio
+        : typeof sys.devicePixelRatio === 'number'
+            ? sys.devicePixelRatio
+            : 1;
     return {
-        lang: (_b = sys.language) !== null && _b !== void 0 ? _b : '',
+        lang: ((_b = (_a = sys.hostLanguage) !== null && _a !== void 0 ? _a : sys.language) !== null && _b !== void 0 ? _b : '').replace(/_/g, '-'),
         ww: typeof sys.windowWidth === 'number' ? sys.windowWidth : 0,
         wh: typeof sys.windowHeight === 'number' ? sys.windowHeight : 0,
         sw: typeof sys.screenWidth === 'number' ? sys.screenWidth : 0,
         sh: typeof sys.screenHeight === 'number' ? sys.screenHeight : 0,
-        pr: typeof sys.pixelRatio === 'number' ? sys.pixelRatio : 1,
+        pr: prRaw > 0 ? prRaw : 1,
     };
 }
 
@@ -3462,9 +3573,10 @@ function getLocaleAndScreen() {
  *   - 任意端、任意 API 抛错 → 一律降级为 `''`，**绝不**抛出。
  *
  * 字段语义提示：
- *   - `tdaid`：第三方平台 appid（小程序 = 平台分配的 appid；App = manifest appid）。
- *   - `pkn`：包名（App = packageName / bundleId；小程序回填 tdaid，避免空字段）。
- *   - `an`：应用名（App = plus.runtime.appname；其他端 = `process.env.UNI_APP_NAME`）。
+ *   - `mpn`：兼容字段；各端「原生包名或小程序 appid」的统一口径（与文档 `mpn` 对齐）。
+ *   - `tdaid`：第三方平台 appid（如微信小程序 appid）。
+ *   - `pkn`：原生包名 / bundleId（App）；小程序无独立包名时为空串，**不与** tdaid 混填。
+ *   - `an`：应用展示名（App = plus.runtime.appname；小程序/H5 = `process.env.UNI_APP_NAME` 等）。
  */
 let cached = null;
 function getUni$2() {
@@ -3485,15 +3597,24 @@ function getPlus() {
  * 任何分支抛错都返回 ''。
  */
 function getMpTdaid(platform) {
-    var _a;
     const u = getUni$2();
     switch (platform) {
         case 'wx':
-        case 'qq':
-            if (((_a = u === null || u === void 0 ? void 0 : u.canIUse) === null || _a === void 0 ? void 0 : _a.call(u, 'getAccountInfoSync')) && u.getAccountInfoSync) {
-                return tryRun(() => { var _a, _b; return (_b = (_a = u.getAccountInfoSync().miniProgram) === null || _a === void 0 ? void 0 : _a.appId) !== null && _b !== void 0 ? _b : ''; }, '');
+        case 'qq': {
+            if (typeof (u === null || u === void 0 ? void 0 : u.getAccountInfoSync) === 'function') {
+                const id = tryRun(() => { var _a, _b; return (_b = (_a = u.getAccountInfoSync().miniProgram) === null || _a === void 0 ? void 0 : _a.appId) !== null && _b !== void 0 ? _b : ''; }, '');
+                if (id)
+                    return id;
             }
-            return '';
+            const wxHost = globalThis.wx;
+            if (typeof (wxHost === null || wxHost === void 0 ? void 0 : wxHost.getAccountInfoSync) === 'function') {
+                const id2 = tryRun(() => { var _a, _b; return (_b = (_a = wxHost.getAccountInfoSync().miniProgram) === null || _a === void 0 ? void 0 : _a.appId) !== null && _b !== void 0 ? _b : ''; }, '');
+                if (id2)
+                    return id2;
+            }
+            const envId = process.env.UNI_APP_ID;
+            return typeof envId === 'string' ? envId : '';
+        }
         case 'ali':
         case 'dt': {
             const my = globalThis.my;
@@ -3575,10 +3696,12 @@ function getH5AppName() {
  * 所有字段保证返回 `string`；缺失统一为 `''`，符合 `domain/statData.ts` 的字段处理约定。
  */
 function getPackageInfo() {
+    var _a, _b;
     if (cached)
         return cached;
     const platform = getPlatform();
-    getRawPlatform();
+    const raw = getRawPlatform();
+    let mpn = '';
     let tdaid = '';
     let pkn = '';
     let an = '';
@@ -3586,25 +3709,40 @@ function getPackageInfo() {
         tdaid = tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = getPlus()) === null || _a === void 0 ? void 0 : _a.runtime) === null || _b === void 0 ? void 0 : _b.appid) !== null && _c !== void 0 ? _c : ''; }, '');
         pkn = getAppPkn() || tdaid;
         an = getAppName() || getEnvAppName();
+        mpn = pkn || tdaid;
     }
     else if (isMp()) {
         tdaid = getMpTdaid(platform);
-        // 小程序无包名概念，约定 pkn = tdaid，避免空字段
-        pkn = tdaid;
+        pkn = '';
         an = getEnvAppName();
+        mpn = tdaid || (typeof process.env.UNI_APP_ID === 'string' ? process.env.UNI_APP_ID : '');
     }
     else if (isH5()) {
         tdaid = '';
         pkn = '';
         an = getH5AppName();
+        mpn = '';
     }
     else {
         // unknown / 快应用等：尝试 env 注入即可
         tdaid = '';
         pkn = '';
         an = getEnvAppName();
+        mpn = '';
     }
-    cached = { tdaid, pkn, an };
+    cached = { mpn, tdaid, pkn, an };
+    if (logger.isDebug()) {
+        logger.debug('[diag][package]', {
+            UNI_PLATFORM: raw,
+            shortPlatform: platform,
+            mpn,
+            tdaid,
+            pkn,
+            an,
+            uniGetAccountInfo: typeof ((_a = getUni$2()) === null || _a === void 0 ? void 0 : _a.getAccountInfoSync) === 'function',
+            wxGetAccountInfo: typeof ((_b = globalThis.wx) === null || _b === void 0 ? void 0 : _b.getAccountInfoSync) === 'function',
+        });
+    }
     return cached;
 }
 
@@ -4544,7 +4682,12 @@ class StatApp {
             },
             net: { net: 'unknown', raw: '' },
             location: { lat: '', lng: '', ok: false },
-            pkg: tryRun(() => getPackageInfo(), { tdaid: '', pkn: '', an: '' }),
+            pkg: tryRun(() => getPackageInfo(), {
+                mpn: '',
+                tdaid: '',
+                pkn: '',
+                an: '',
+            }),
         });
         const base = {
             builder,
@@ -4727,8 +4870,7 @@ function readManifestStatConfig() {
  * @param fromManifest `readManifestStatConfig` 映射后的结果，便于对照「注入原文 → 映射结果」。
  */
 function logManifestBuildInjectDiagnostics(fromManifest) {
-    if (typeof process !== 'undefined' &&
-        process.env.NODE_ENV === 'test') {
+    if (typeof process !== 'undefined' && process.env.NODE_ENV === 'test') {
         return;
     }
     try {
@@ -4762,9 +4904,7 @@ function logManifestBuildInjectDiagnostics(fromManifest) {
             UNI_STAT_DEBUG: process.env.UNI_STAT_DEBUG,
             UNI_STATISTICS_CONFIG_type: raw === undefined ? 'undefined' : typeof raw,
             UNI_STATISTICS_CONFIG_len: typeof raw === 'string' ? raw.length : 0,
-            json_parse_ok: parseError === undefined &&
-                typeof raw === 'string' &&
-                raw.length > 0,
+            json_parse_ok: parseError === undefined && typeof raw === 'string' && raw.length > 0,
             json_parse_error: parseError,
             parsed_top_keys: parsedKeys,
             parsed_sample_stat_fields: sample,

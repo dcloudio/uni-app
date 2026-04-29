@@ -24,6 +24,7 @@
 import { tryRun } from '../infra/safe'
 import { storage } from '../infra/storage'
 import { nowMs } from '../infra/time'
+import { resolveUniRuntime } from '../infra/uniRuntime'
 
 import { isApp } from './platform'
 
@@ -49,11 +50,11 @@ function getPlus(): PlusRuntimeLike | undefined {
  * 公有版默认不暴露在 `SystemInfoStatic` 中，仅在本 adapter 内部使用。
  */
 function readSysDeviceId(): string {
-  const u = (
-    globalThis as unknown as {
-      uni?: { getSystemInfoSync?: () => { deviceId?: string } }
-    }
-  ).uni
+  const root = resolveUniRuntime()
+  const u =
+    root != null && typeof root === 'object'
+      ? (root as { getSystemInfoSync?: () => { deviceId?: string } })
+      : undefined
   if (!u || typeof u.getSystemInfoSync !== 'function') return ''
   return tryRun(() => u.getSystemInfoSync!().deviceId ?? '', '')
 }

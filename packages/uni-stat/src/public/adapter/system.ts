@@ -7,18 +7,26 @@
  *   - `lang / ww / wh` 等"可变"字段被一同缓存，用户切换系统语言或旋转屏幕后字段失真。
  *
  * 公有版职责：
- *   1. `getSystemInfo()` 懒加载 + 缓存（不可变字段：brand/md/sv/v/ut/sw/sh/pr/svv …）。
+ *   1. `getSystemInfo()` 懒加载 + 缓存（不可变字段：brand/md/sv/v/ut …）。
  *   2. `getLocaleAndScreen()` 实时取（lang + ww/wh + sw/sh + pr）—— 修复缺陷 #18。
- *   3. SSR/单测：当 `uni.getSystemInfoSync` 不存在或抛错时，返回安全空对象，绝不抛。
+ *   3. SSR/单测：任一 API 不存在或抛错时，返回安全空对象，绝不抛。
  *   4. `__resetCache()`：仅供测试，重置缓存。
  *
- * 设计取舍：
- *   - 虽然 uni-app 4.x 已拆出 `getDeviceInfo / getAppBaseInfo / getWindowInfo` 等细粒度
- *     API，但公有版要兼容老基础库（私有版同款覆盖范围），统一基于 `getSystemInfoSync`
- *     做 superset 解析。后续如需细分，再扩展独立函数。
+ * 小程序新基础库对 `getSystemInfoSync` 做了能力拆分，部分字段为空或恒为 0。
+ * 因此优先通过 `uni.getDeviceInfo / getAppBaseInfo / getWindowInfo` 取对应信息，
+ * 再以 `uni.getSystemInfoSync` 合并兜底（与 uni-app 运行时、uni-api 侧实践一致）。
+ *
+ * **小程序注意**：`uni` 常由构建注入在模块作用域，仅读 `globalThis.uni` 会取不到
+ * 任何 API；必须通过 `resolveUniRuntime()` 与 `package.ts` 等 adapter 对齐。
+ * 微信系再叠一层 `wx.getDeviceInfo / getAppBaseInfo / getWindowInfo`（与 `uni-api`
+ * `upx2px` 一致），避免 `uni` 代理未就绪时宽高全 0。
  */
 
+import { logger } from '../infra/logger'
 import { tryRun } from '../infra/safe'
+import { resolveUniRuntime } from '../infra/uniRuntime'
+
+import { getRawPlatform } from './platform'
 
 /** 静态系统信息（不会因系统切换语言/旋转屏幕而变）。 */
 export interface SystemInfoStatic {
@@ -47,8 +55,10 @@ export interface LocaleAndScreen {
   pr: number
 }
 
+/** 与 uni-app `GetSystemInfoResult` 及拆分 API 返回值对齐的宽松结构。 */
 interface UniSystemInfoLike {
   brand?: string
+  deviceBrand?: string
   model?: string
   system?: string
   version?: string
@@ -59,44 +69,177 @@ interface UniSystemInfoLike {
   appVersion?: string
   appWgtVersion?: string
   SDKVersion?: string
+  /** 小程序宿主侧 SDK（与 `hostSDKVersion` 同源场景多）。 */
+  hostSDKVersion?: string
   language?: string
+  hostLanguage?: string
+  /** 微信等宿主版本，常与 `version` 并存。 */
+  hostVersion?: string
   windowWidth?: number
   windowHeight?: number
   screenWidth?: number
   screenHeight?: number
   pixelRatio?: number
+  devicePixelRatio?: number
   statusBarHeight?: number
 }
 
 let cachedStatic: SystemInfoStatic | null = null
 
+/** 与系统信息相关的 `uni` 同步 API 子集。 */
+interface UniSysApis {
+  getSystemInfoSync?: () => UniSystemInfoLike
+  getDeviceInfo?: () => UniSystemInfoLike
+  getAppBaseInfo?: () => UniSystemInfoLike
+  getWindowInfo?: () => UniSystemInfoLike
+}
+
 /**
- * 通过 `tryRun` 安全调用 `uni.getSystemInfoSync`；失败/缺失返回 `null`。
+ * 解析 `uni` 根对象：优先 `globalThis.uni`，再回退宿主注入的模块级 `uni`。
  *
- * 不直接 `try/catch`：保持与 `infra/safe` 风格一致，错误一律走 `tryRun` 内的
- * 静默 logger，避免污染上层链路。
+ * @see `infra/uniRuntime.ts` 说明（小程序上仅读 globalThis 会静默失败）。
  */
-function safeGetSystemInfo(): UniSystemInfoLike | null {
-  const u = (
-    globalThis as unknown as {
-      uni?: { getSystemInfoSync?: () => UniSystemInfoLike }
+function getUni(): UniSysApis | undefined {
+  const u = resolveUniRuntime()
+  return u != null && typeof u === 'object' ? (u as UniSysApis) : undefined
+}
+
+/** 微信 / QQ 小程序宿主 API 子集（仅做 duck typing，避免依赖各端 .d.ts）。 */
+interface WxHostSysApis {
+  getSystemInfoSync?: () => UniSystemInfoLike
+  getDeviceInfo?: () => UniSystemInfoLike
+  getAppBaseInfo?: () => UniSystemInfoLike
+  getWindowInfo?: () => UniSystemInfoLike
+}
+
+/**
+ * 微信系宿主上再取一层原生拆分 API，与 `uni` 合并结果再叠加以补全字段。
+ *
+ * @returns 已按 sync→device→app→window 合并过的一条快照；非微信系返回 `null`。
+ */
+function mergeWxHostSnapshots(): UniSystemInfoLike | null {
+  const raw = getRawPlatform()
+  if (raw !== 'mp-weixin' && raw !== 'mp-qq') return null
+  const wxHost = (globalThis as unknown as { wx?: WxHostSysApis }).wx
+  if (!wxHost) return null
+  const sync =
+    typeof wxHost.getSystemInfoSync === 'function'
+      ? tryRun(() => wxHost.getSystemInfoSync!(), null)
+      : null
+  const device =
+    typeof wxHost.getDeviceInfo === 'function'
+      ? tryRun(() => wxHost.getDeviceInfo!(), null)
+      : null
+  const appBase =
+    typeof wxHost.getAppBaseInfo === 'function'
+      ? tryRun(() => wxHost.getAppBaseInfo!(), null)
+      : null
+  const windowInfo =
+    typeof wxHost.getWindowInfo === 'function'
+      ? tryRun(() => wxHost.getWindowInfo!(), null)
+      : null
+  return mergeSystemSnapshots(sync, device, appBase, windowInfo)
+}
+
+/**
+ * 从左到右浅合并多个快照：后者非 `undefined` / `null` 的键覆盖前者。
+ *
+ * 合并顺序为「sync → device → appBase → window」，使拆分 API 覆盖宿主裁剪后的
+ * `getSystemInfoSync` 残缺字段。
+ */
+function mergeSystemSnapshots(
+  ...parts: (UniSystemInfoLike | null | undefined)[]
+): UniSystemInfoLike {
+  const out: Record<string, unknown> = {}
+  for (const p of parts) {
+    if (!p) continue
+    for (const k of Object.keys(p) as (keyof UniSystemInfoLike)[]) {
+      const v = p[k]
+      if (v !== undefined && v !== null) out[k as string] = v
     }
-  ).uni
-  if (!u || typeof u.getSystemInfoSync !== 'function') return null
-  return tryRun(() => u.getSystemInfoSync!(), null) ?? null
+  }
+  return out as UniSystemInfoLike
+}
+
+/**
+ * 聚合当前运行时的系统信息：先 `getSystemInfoSync` 打底，再叠拆分 API。
+ *
+ * 各 API 均经 `tryRun` 包裹，任一失败不影响其余来源。
+ */
+function mergedSystemInfo(): UniSystemInfoLike {
+  const u = getUni()
+  const hasGlobalUni =
+    (globalThis as unknown as { uni?: unknown }).uni != null &&
+    typeof (globalThis as unknown as { uni?: unknown }).uni === 'object'
+
+  const sync =
+    u && typeof u.getSystemInfoSync === 'function'
+      ? tryRun(() => u.getSystemInfoSync!(), null)
+      : null
+  const device =
+    u && typeof u.getDeviceInfo === 'function'
+      ? tryRun(() => u.getDeviceInfo!(), null)
+      : null
+  const appBase =
+    u && typeof u.getAppBaseInfo === 'function'
+      ? tryRun(() => u.getAppBaseInfo!(), null)
+      : null
+  const windowInfo =
+    u && typeof u.getWindowInfo === 'function'
+      ? tryRun(() => u.getWindowInfo!(), null)
+      : null
+  const fromUni = mergeSystemSnapshots(sync, device, appBase, windowInfo)
+  const fromWx = mergeWxHostSnapshots()
+  const merged = fromWx ? mergeSystemSnapshots(fromUni, fromWx) : fromUni
+
+  if (logger.isDebug()) {
+    const sample = (o: UniSystemInfoLike | null) =>
+      o
+        ? {
+            brand: o.brand,
+            deviceBrand: o.deviceBrand,
+            md: o.deviceModel ?? o.model,
+            sw: o.screenWidth,
+            sh: o.screenHeight,
+            ww: o.windowWidth,
+            wh: o.windowHeight,
+            lang: o.hostLanguage ?? o.language,
+            sdk: o.hostSDKVersion ?? o.SDKVersion,
+          }
+        : null
+    logger.debug('[diag][system]', {
+      UNI_PLATFORM: getRawPlatform(),
+      resolveUni: u != null,
+      globalThisUni: hasGlobalUni,
+      uniApi: {
+        getSystemInfoSync: !!(u && typeof u.getSystemInfoSync === 'function'),
+        getDeviceInfo: !!(u && typeof u.getDeviceInfo === 'function'),
+        getAppBaseInfo: !!(u && typeof u.getAppBaseInfo === 'function'),
+        getWindowInfo: !!(u && typeof u.getWindowInfo === 'function'),
+      },
+      wxLayer: fromWx != null,
+      partials: {
+        sync: sample(sync),
+        fromUni: sample(fromUni),
+        merged: sample(merged),
+      },
+    })
+  }
+
+  return merged
 }
 
 /**
  * 取静态系统信息（懒加载 + 缓存）。
  *
  * 字段映射策略：
- *   - `brand / md / sv / v / ut`：优先取 uni-app 4.x 拆分字段（osName/deviceModel 等），
- *     退化到 system/model 兼容老基础库。
- *   - 任何字段缺失统一空字符串/0，而非 undefined，避免上行 JSON 序列化时丢字段。
+ *   - `brand / md`：优先 `deviceBrand`/`deviceModel`（拆分 API），再退化 `brand`/`model`。
+ *   - `sv / v / sdkVersion`：优先 `osVersion`、`hostVersion`、`hostSDKVersion`，兼容旧字段。
+ *   - 缺失统一空字符串或 0，避免上行 JSON 丢字段语义。
  */
 export function getSystemInfo(): SystemInfoStatic {
   if (cachedStatic) return cachedStatic
-  const sys = safeGetSystemInfo() ?? {}
+  const sys = mergedSystemInfo()
   const plus = (
     globalThis as unknown as {
       plus?: {
@@ -109,10 +252,10 @@ export function getSystemInfo(): SystemInfoStatic {
     }
   ).plus
   cachedStatic = {
-    brand: sys.brand ?? '',
+    brand: sys.deviceBrand ?? sys.brand ?? '',
     md: sys.deviceModel ?? sys.model ?? '',
     sv: sys.osVersion ?? sys.system ?? '',
-    v: sys.version ?? '',
+    v: sys.hostVersion ?? sys.version ?? '',
     ut: (sys.deviceType ?? 'unknown') as SystemInfoStatic['ut'],
     appVersion: plus?.runtime?.version ?? sys.appVersion ?? '',
     appWgtVersion:
@@ -120,7 +263,7 @@ export function getSystemInfo(): SystemInfoStatic {
       plus?.runtime?.appWgtRevision ??
       sys.appWgtVersion ??
       '',
-    sdkVersion: sys.SDKVersion ?? '',
+    sdkVersion: sys.hostSDKVersion ?? sys.SDKVersion ?? '',
     statusBarHeight:
       typeof sys.statusBarHeight === 'number' ? sys.statusBarHeight : 0,
   }
@@ -130,18 +273,23 @@ export function getSystemInfo(): SystemInfoStatic {
 /**
  * 取实时字段（lang / 窗口尺寸 / 屏幕尺寸 / dpr）。
  *
- * 修复缺陷 #18：每次调用都重新读取 `uni.getSystemInfoSync()`，不复用任何缓存。
- * 如调用方需要"启动时一次"的语义，应在调用层显式缓存，而非依赖本模块。
+ * 每次调用重新走拆分 API + sync 合并，不复用缓存，避免旋转屏、改语言后失真。
  */
 export function getLocaleAndScreen(): LocaleAndScreen {
-  const sys = safeGetSystemInfo() ?? {}
+  const sys = mergedSystemInfo()
+  const prRaw =
+    typeof sys.pixelRatio === 'number'
+      ? sys.pixelRatio
+      : typeof sys.devicePixelRatio === 'number'
+      ? sys.devicePixelRatio
+      : 1
   return {
-    lang: sys.language ?? '',
+    lang: (sys.hostLanguage ?? sys.language ?? '').replace(/_/g, '-'),
     ww: typeof sys.windowWidth === 'number' ? sys.windowWidth : 0,
     wh: typeof sys.windowHeight === 'number' ? sys.windowHeight : 0,
     sw: typeof sys.screenWidth === 'number' ? sys.screenWidth : 0,
     sh: typeof sys.screenHeight === 'number' ? sys.screenHeight : 0,
-    pr: typeof sys.pixelRatio === 'number' ? sys.pixelRatio : 1,
+    pr: prRaw > 0 ? prRaw : 1,
   }
 }
 

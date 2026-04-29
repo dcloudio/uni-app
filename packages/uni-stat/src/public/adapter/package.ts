@@ -7,17 +7,21 @@
  *   - 任意端、任意 API 抛错 → 一律降级为 `''`，**绝不**抛出。
  *
  * 字段语义提示：
- *   - `tdaid`：第三方平台 appid（小程序 = 平台分配的 appid；App = manifest appid）。
- *   - `pkn`：包名（App = packageName / bundleId；小程序回填 tdaid，避免空字段）。
- *   - `an`：应用名（App = plus.runtime.appname；其他端 = `process.env.UNI_APP_NAME`）。
+ *   - `mpn`：兼容字段；各端「原生包名或小程序 appid」的统一口径（与文档 `mpn` 对齐）。
+ *   - `tdaid`：第三方平台 appid（如微信小程序 appid）。
+ *   - `pkn`：原生包名 / bundleId（App）；小程序无独立包名时为空串，**不与** tdaid 混填。
+ *   - `an`：应用展示名（App = plus.runtime.appname；小程序/H5 = `process.env.UNI_APP_NAME` 等）。
  */
 
+import { logger } from '../infra/logger'
 import { resolveUniRuntime } from '../infra/uniRuntime'
 import { tryRun } from '../infra/safe'
 
 import { getPlatform, getRawPlatform, isApp, isH5, isMp } from './platform'
 
 export interface PackageInfo {
+  /** 各端包名或小程序 appid 的统一字段（`tdaid`/`pkn`/`an` 为拆分语义）。 */
+  mpn: string
   tdaid: string
   pkn: string
   an: string
@@ -75,14 +79,31 @@ function getMpTdaid(platform: string): string {
 
   switch (platform) {
     case 'wx':
-    case 'qq':
-      if (u?.canIUse?.('getAccountInfoSync') && u.getAccountInfoSync) {
-        return tryRun(
+    case 'qq': {
+      if (typeof u?.getAccountInfoSync === 'function') {
+        const id = tryRun(
           () => u.getAccountInfoSync!().miniProgram?.appId ?? '',
           ''
         )
+        if (id) return id
       }
-      return ''
+      const wxHost = (
+        globalThis as unknown as {
+          wx?: {
+            getAccountInfoSync?: () => { miniProgram?: { appId?: string } }
+          }
+        }
+      ).wx
+      if (typeof wxHost?.getAccountInfoSync === 'function') {
+        const id2 = tryRun(
+          () => wxHost.getAccountInfoSync!().miniProgram?.appId ?? '',
+          ''
+        )
+        if (id2) return id2
+      }
+      const envId = process.env.UNI_APP_ID
+      return typeof envId === 'string' ? envId : ''
+    }
     case 'ali':
     case 'dt': {
       const my = (
@@ -193,6 +214,7 @@ export function getPackageInfo(): PackageInfo {
   const platform = getPlatform()
   const raw = getRawPlatform()
 
+  let mpn = ''
   let tdaid = ''
   let pkn = ''
   let an = ''
@@ -201,25 +223,45 @@ export function getPackageInfo(): PackageInfo {
     tdaid = tryRun(() => getPlus()?.runtime?.appid ?? '', '')
     pkn = getAppPkn() || tdaid
     an = getAppName() || getEnvAppName()
+    mpn = pkn || tdaid
   } else if (isMp()) {
     tdaid = getMpTdaid(platform)
-    // 小程序无包名概念，约定 pkn = tdaid，避免空字段
-    pkn = tdaid
+    pkn = ''
     an = getEnvAppName()
+    mpn =
+      tdaid ||
+      (typeof process.env.UNI_APP_ID === 'string' ? process.env.UNI_APP_ID : '')
   } else if (isH5()) {
     tdaid = ''
     pkn = ''
     an = getH5AppName()
+    mpn = ''
   } else {
     // unknown / 快应用等：尝试 env 注入即可
     tdaid = ''
     pkn = ''
     an = getEnvAppName()
+    mpn = ''
   }
 
-  cached = { tdaid, pkn, an }
-  // raw 仅用于调试日志；公有版不写入字段，避免上行污染。
-  void raw
+  cached = { mpn, tdaid, pkn, an }
+
+  if (logger.isDebug()) {
+    logger.debug('[diag][package]', {
+      UNI_PLATFORM: raw,
+      shortPlatform: platform,
+      mpn,
+      tdaid,
+      pkn,
+      an,
+      uniGetAccountInfo: typeof getUni()?.getAccountInfoSync === 'function',
+      wxGetAccountInfo:
+        typeof (
+          globalThis as unknown as { wx?: { getAccountInfoSync?: unknown } }
+        ).wx?.getAccountInfoSync === 'function',
+    })
+  }
+
   return cached
 }
 

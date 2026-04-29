@@ -374,7 +374,12 @@ export class StatApp {
       },
       net: { net: 'unknown', raw: '' },
       location: { lat: '', lng: '', ok: false },
-      pkg: tryRun(() => getPackageInfo(), { tdaid: '', pkn: '', an: '' }),
+      pkg: tryRun(() => getPackageInfo(), {
+        mpn: '',
+        tdaid: '',
+        pkn: '',
+        an: '',
+      }),
     })
 
     const base: CollectorDeps = {

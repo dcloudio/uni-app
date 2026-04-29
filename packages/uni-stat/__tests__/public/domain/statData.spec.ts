@@ -35,7 +35,12 @@ function makeDeps(overrides: Partial<StatDataDeps> = {}): StatDataDeps {
   }
   const net: NetResult = { net: 'wifi', raw: 'wifi' }
   const location: LocationResult = { lat: '', lng: '', ok: false }
-  const pkg: PackageInfo = { tdaid: 'wxabc', pkn: 'com.x.y', an: 'AppName' }
+  const pkg: PackageInfo = {
+    mpn: 'com.x.y',
+    tdaid: 'wxabc',
+    pkn: 'com.x.y',
+    an: 'AppName',
+  }
   return Object.assign(
     {
       config: { ak: 'AK001', usv: '3.0.0' },
@@ -86,6 +91,7 @@ describe('domain/statData', () => {
         pr: 3,
         lang: 'zh-CN',
         net: 'wifi',
+        mpn: 'com.x.y',
         tdaid: 'wxabc',
         pkn: 'com.x.y',
         an: 'AppName',

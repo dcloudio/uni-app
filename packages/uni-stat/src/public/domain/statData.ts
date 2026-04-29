@@ -92,9 +92,9 @@ export interface StatDataDeps {
   net: NetResult
   /** 位置快照（默认全空）。 */
   location: LocationResult
-  /** 包信息（tdaid/pkn/an）。 */
+  /** 包信息（mpn/tdaid/pkn/an）。 */
   pkg: PackageInfo
-  /** 私有版兼容字段（如 mpn）。 */
+  /** 若需覆盖默认 `pkg.mpn`（如历史迁移），可显式传入。 */
   legacy?: { mpn?: string }
 }
 
@@ -171,7 +171,7 @@ export function createStatDataBuilder(deps: StatDataDeps) {
       net: s(net.net, 'unknown'),
       lat: s(location.lat),
       lng: s(location.lng),
-      mpn: s(legacy?.mpn),
+      mpn: s(legacy?.mpn ?? pkg.mpn),
       tdaid: s(pkg.tdaid),
       pkn: s(pkg.pkn),
       an: s(pkg.an),

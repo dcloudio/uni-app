@@ -39,8 +39,8 @@ describe('adapter/package', () => {
     }
   })
 
-  describe('小程序端：tdaid / pkn / an', () => {
-    test('mp-weixin：tdaid = getAccountInfoSync().miniProgram.appId，pkn = tdaid', () => {
+  describe('小程序端：mpn / tdaid / pkn / an', () => {
+    test('mp-weixin：tdaid = getAccountInfoSync；mpn 与 tdaid 对齐；pkn 为空', () => {
       installMockUni({
         platform: 'mp-weixin',
         patch: {
@@ -51,13 +51,14 @@ describe('adapter/package', () => {
       ;(process.env as Record<string, string | undefined>).UNI_APP_NAME =
         'MyApp'
       expect(getPackageInfo()).toEqual({
+        mpn: 'wx1234',
         tdaid: 'wx1234',
-        pkn: 'wx1234',
+        pkn: '',
         an: 'MyApp',
       })
     })
 
-    test('mp-weixin：canIUse=false → tdaid=""', () => {
+    test('mp-weixin：不再依赖 canIUse；存在 getAccountInfoSync 即可取 tdaid', () => {
       installMockUni({
         platform: 'mp-weixin',
         patch: {
@@ -65,7 +66,13 @@ describe('adapter/package', () => {
           getAccountInfoSync: () => ({ miniProgram: { appId: 'wx1234' } }),
         },
       })
-      expect(getPackageInfo()).toEqual({ tdaid: '', pkn: '', an: '' })
+      ;(process.env as Record<string, string | undefined>).UNI_APP_NAME = 'X'
+      expect(getPackageInfo()).toEqual({
+        mpn: 'wx1234',
+        tdaid: 'wx1234',
+        pkn: '',
+        an: 'X',
+      })
     })
 
     test('mp-qq：与 wx 一致路径', () => {
@@ -126,7 +133,12 @@ describe('adapter/package', () => {
         },
       })
       ;(process.env as Record<string, string | undefined>).UNI_APP_NAME = 'X'
-      expect(getPackageInfo()).toEqual({ tdaid: '', pkn: '', an: 'X' })
+      expect(getPackageInfo()).toEqual({
+        mpn: '',
+        tdaid: '',
+        pkn: '',
+        an: 'X',
+      })
     })
   })
 
@@ -141,6 +153,7 @@ describe('adapter/package', () => {
         },
       })
       expect(getPackageInfo()).toEqual({
+        mpn: 'com.demo.app',
         tdaid: '__UNI__APP1',
         pkn: 'com.demo.app',
         an: 'DemoApp',
@@ -155,6 +168,7 @@ describe('adapter/package', () => {
         ios: { bundleId: 'com.demo.bundle' },
       })
       expect(getPackageInfo()).toEqual({
+        mpn: 'com.demo.bundle',
         tdaid: '__UNI__APP1',
         pkn: 'com.demo.bundle',
         an: 'DemoApp',
@@ -169,6 +183,7 @@ describe('adapter/package', () => {
         ios: {},
       })
       expect(getPackageInfo().pkn).toBe('__UNI__APP1')
+      expect(getPackageInfo().mpn).toBe('__UNI__APP1')
     })
 
     test('Android：getPackageName 抛错 → pkn 退到 tdaid', () => {
@@ -185,6 +200,7 @@ describe('adapter/package', () => {
         },
       })
       expect(getPackageInfo().pkn).toBe('__UNI__APP1')
+      expect(getPackageInfo().mpn).toBe('__UNI__APP1')
     })
 
     test('App-Harmony：暂时取 runtime.appid', () => {
@@ -194,6 +210,7 @@ describe('adapter/package', () => {
         runtime: { appid: '__UNI__HMOS' },
       })
       expect(getPackageInfo().pkn).toBe('__UNI__HMOS')
+      expect(getPackageInfo().mpn).toBe('__UNI__HMOS')
     })
 
     test('App：appname 缺失 → 走 env UNI_APP_NAME', () => {
@@ -217,7 +234,12 @@ describe('adapter/package', () => {
       setGlobal('document', { title: 'browser-tab' })
       ;(process.env as Record<string, string | undefined>).UNI_APP_NAME =
         'EnvApp'
-      expect(getPackageInfo()).toEqual({ tdaid: '', pkn: '', an: 'EnvApp' })
+      expect(getPackageInfo()).toEqual({
+        mpn: '',
+        tdaid: '',
+        pkn: '',
+        an: 'EnvApp',
+      })
     })
 
     test('UNI_APP_NAME 缺失 → 退到 document.title', () => {
@@ -238,7 +260,12 @@ describe('adapter/package', () => {
     test('未知平台 → 全空，但 env name 仍透出', () => {
       installMockUni({ platform: 'mp-future-vendor' })
       ;(process.env as Record<string, string | undefined>).UNI_APP_NAME = 'X'
-      expect(getPackageInfo()).toEqual({ tdaid: '', pkn: '', an: 'X' })
+      expect(getPackageInfo()).toEqual({
+        mpn: '',
+        tdaid: '',
+        pkn: '',
+        an: 'X',
+      })
     })
 
     test('多次调用走缓存', () => {
