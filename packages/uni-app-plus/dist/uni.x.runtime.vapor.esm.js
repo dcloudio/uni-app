@@ -4148,9 +4148,15 @@ function parseElement(obj) {
     return obj;
   }
 }
-function parseComponentPublicInstance(obj) {
-  if (isComponentPublicInstance(obj)) {
-    return obj.$el;
+function serializeComponentPublicInstance(obj) {
+  if (obj.$el) {
+    return serializeUniElement(obj.$el, "ComponentPublicInstance");
+  } else {
+    return {
+      __type__: "ComponentPublicInstance",
+      pageId: "",
+      nodeId: ""
+    };
   }
 }
 function serializeArrayBuffer(obj) {
@@ -4210,13 +4216,16 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
     return serializeArrayBuffer(arg);
   } else if (isPlainObject(arg) || isUniElement(arg)) {
     var uniElement = parseElement(arg);
-    var componentPublicInstanceUniElement = !uniElement ? parseComponentPublicInstance(arg) : void 0;
-    var el = uniElement || componentPublicInstanceUniElement;
-    if (el) {
+    if (uniElement) {
       if (context.depth > 0 || isVaporAndroid) {
         context.nested = true;
       }
-      return serializeUniElement(el, uniElement ? "UniElement" : "ComponentPublicInstance");
+      return serializeUniElement(uniElement, "UniElement");
+    } else if (isComponentPublicInstance(arg)) {
+      if (context.depth > 0 || isVaporAndroid) {
+        context.nested = true;
+      }
+      return serializeComponentPublicInstance(arg);
     } else {
       var newArg = {};
       Object.keys(arg).forEach((name) => {
