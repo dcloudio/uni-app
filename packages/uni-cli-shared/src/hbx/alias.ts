@@ -133,6 +133,10 @@ export function initModuleAlias() {
       ) {
         process.env.UNI_APP_X_DOM2_DYNAMIC = 'true'
       }
+      // 如果是 ext-api 目标，强制使用 native 目标
+      if (process.env.UNI_COMPILE_TARGET === 'ext-api') {
+        delete process.env.UNI_APP_X_DOM2_DYNAMIC
+      }
     }
   }
   if (process.env.UNI_APP_X_DOM2 === 'true') {
