@@ -6,7 +6,7 @@
  *   D2 isDebug=true 时 logCollect 输出动作中文 + 数据 + 结束标记三段。
  *   D3 logReportStart/Success/Failure 文案包含通道、条数、用时、_id 等关键字段。
  *   D4 logRecoverStart/Item 输出续传摘要与逐条结果。
- *   D5 logBoot 摘要信息齐全。
+ *   D5 logBoot 摘要（通道 / 间隔 / ak / manifest.debug）。
  *   D6 getActionLabel 覆盖全部已知 lt + 未知 lt 兜底。
  */
 
@@ -171,20 +171,6 @@ describe('infra/debugLog', () => {
     logger.setDebug(true)
     logBoot({ channel: '1', reportIntervalSec: 10, ak: '' })
     expect(logsContaining('应用APPID: <未注入>')).toBe(true)
-  })
-
-  test('D5.c logBoot 传入会话阈值时输出 backgroundTimeout / pageInactive', () => {
-    logger.setDebug(true)
-    logBoot({
-      channel: 'image',
-      reportIntervalSec: 10,
-      ak: 'AK',
-      backgroundTimeoutSec: 10,
-      pageInactiveTimeoutSec: 60,
-    })
-    expect(logsContaining('会话阈值:')).toBe(true)
-    expect(logsContaining('backgroundTimeoutSec=10')).toBe(true)
-    expect(logsContaining('pageInactiveTimeoutSec=60')).toBe(true)
   })
 
   test('D6 getActionLabel 覆盖所有已知 lt（lt=0 已废弃，落到未知分支）', () => {

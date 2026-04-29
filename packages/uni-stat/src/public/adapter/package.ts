@@ -13,11 +13,10 @@
  *   - `an`：应用展示名（App = plus.runtime.appname；小程序/H5 = `process.env.UNI_APP_NAME` 等）。
  */
 
-import { logger } from '../infra/logger'
 import { resolveUniRuntime } from '../infra/uniRuntime'
 import { tryRun } from '../infra/safe'
 
-import { getPlatform, getRawPlatform, isApp, isH5, isMp } from './platform'
+import { getPlatform, isApp, isH5, isMp } from './platform'
 
 export interface PackageInfo {
   /** 各端包名或小程序 appid 的统一字段（`tdaid`/`pkn`/`an` 为拆分语义）。 */
@@ -212,7 +211,6 @@ function getH5AppName(): string {
 export function getPackageInfo(): PackageInfo {
   if (cached) return cached
   const platform = getPlatform()
-  const raw = getRawPlatform()
 
   let mpn = ''
   let tdaid = ''
@@ -245,22 +243,6 @@ export function getPackageInfo(): PackageInfo {
   }
 
   cached = { mpn, tdaid, pkn, an }
-
-  if (logger.isDebug()) {
-    logger.debug('[diag][package]', {
-      UNI_PLATFORM: raw,
-      shortPlatform: platform,
-      mpn,
-      tdaid,
-      pkn,
-      an,
-      uniGetAccountInfo: typeof getUni()?.getAccountInfoSync === 'function',
-      wxGetAccountInfo:
-        typeof (
-          globalThis as unknown as { wx?: { getAccountInfoSync?: unknown } }
-        ).wx?.getAccountInfoSync === 'function',
-    })
-  }
 
   return cached
 }

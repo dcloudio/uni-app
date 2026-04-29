@@ -57,6 +57,133 @@ function toIey(input) {
     return IEY.No;
 }
 
+/******************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+/* global Reflect, Promise, SuppressedError, Symbol, Iterator */
+
+
+function __awaiter(thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+}
+
+typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+};
+
+/**
+ * 安全工具集：序列化、try 包裹、指数退避重试。
+ *
+ * 修复缺陷：
+ *   - #1 `_retry` 未初始化导致重试链路 NaN（公有版直接以参数显式传 `times`）。
+ *   - #7 取值反向（私有版 `if (data.length > MAX_LENGTH)` 误判）。
+ *   - #8 循环引用导致 `JSON.stringify` 抛错（用 WeakSet replacer 兜底）。
+ */
+const DEFAULT_MAX_LENGTH = 4096;
+const TRUNCATED_SUFFIX = '…[truncated]';
+/**
+ * 序列化任意值为字符串：支持循环引用与最大长度截断。
+ *
+ * @param value 待序列化的值。`undefined` 返回 ''；string 直接返回（仍参与截断）。
+ * @param max   字符串最大长度，默认 4096；超长会截断并附 `…[truncated]`。
+ */
+function safeStringify(value, max = DEFAULT_MAX_LENGTH) {
+    var _a;
+    if (value === undefined)
+        return '';
+    let raw;
+    if (typeof value === 'string') {
+        raw = value;
+    }
+    else {
+        const seen = new WeakSet();
+        try {
+            raw =
+                (_a = JSON.stringify(value, (_key, val) => {
+                    if (typeof val === 'object' && val !== null) {
+                        if (seen.has(val))
+                            return '[Circular]';
+                        seen.add(val);
+                    }
+                    if (typeof val === 'bigint')
+                        return val.toString();
+                    if (typeof val === 'function')
+                        return `[Function ${val.name || 'anonymous'}]`;
+                    return val;
+                })) !== null && _a !== void 0 ? _a : '';
+        }
+        catch (e) {
+            raw = `[Unserializable: ${e.message}]`;
+        }
+    }
+    if (raw.length > max) {
+        return (raw.slice(0, Math.max(0, max - TRUNCATED_SUFFIX.length)) +
+            TRUNCATED_SUFFIX);
+    }
+    return raw;
+}
+/**
+ * 包裹同步函数，捕获任何抛出，返回 fallback。
+ *
+ * 不打印 console（由调用方按需 `logger.warn`）；保持纯函数风格便于热路径使用。
+ */
+function tryRun(fn, fallback) {
+    try {
+        return fn();
+    }
+    catch (_a) {
+        return fallback;
+    }
+}
+/**
+ * 指数退避重试：失败时按 `baseDelayMs * 2^(n-1)` 等待后重试，全部失败抛出最后一个错误。
+ *
+ * @example
+ *   await withRetry(() => fetch(url), { times: 3, baseDelayMs: 200 })
+ *   // 第 1 次失败 → wait 200ms；第 2 次失败 → wait 400ms；第 3 次失败 → throw
+ */
+function withRetry(fn, opts) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a;
+        const total = Math.max(1, Math.floor(opts.times));
+        const sleep = (_a = opts.sleep) !== null && _a !== void 0 ? _a : defaultSleep;
+        let lastErr;
+        for (let attempt = 1; attempt <= total; attempt++) {
+            try {
+                return yield fn();
+            }
+            catch (e) {
+                lastErr = e;
+                if (attempt >= total)
+                    break;
+                yield sleep(opts.baseDelayMs * Math.pow(2, (attempt - 1)));
+            }
+        }
+        throw lastErr;
+    });
+}
+function defaultSleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 /**
  * 公有版统一日志出口。
  *
@@ -67,15 +194,109 @@ function toIey(input) {
  *
  * 行为约定：
  *   - `debug` 受调试开关控制；其他 level 始终输出到对应的 `console.*`。
- *   - 不强制对对象 `JSON.stringify`（避免吞掉运行时类型信息，方便控制台展开）。
+ *   - **默认（非 Android / iOS 真机侧）**：`console.*(TAG, ...args)`，对象保持原生传递。
+ *   - **Android 或 iOS**（App 看 `plus.os`；`mp-*` 看 `uni.getSystemInfoSync().platform`）：
+ *     仅将 **对象类参数**（含数组、Date；`Error` 转为可读短串）用 `safeStringify` 等压成字符串；
+ *     再与 `TAG`、其它参数 **拼成单条字符串** 输出（部分真机 / HBuilderX 桥接只转发 `console.*` 的
+ *     **第一个参数**，多参会丢失）。**其它平台**仍为 `console.*(TAG, ...args)`。
  *
  * 兼容性：
  *   - 历史版本插件 define 误把 `process.env.UNI_STAT_DEBUG` 替换成布尔字面量
  *     （未 `JSON.stringify`），导致 dist 运行时该值为 `true`/`false` 而非 `'true'`/`'false'`。
- *     `isDebug()` 同时接受字符串 `'true'` 与布尔 `true`，避免历史构建产物完全失效。
+ *     `isDebug()` 同时接受字符串 `'true'` 与布尔字面量 `true`，避免历史构建产物完全失效。
  */
 const TAG = '[uni统计公有版]';
 let runtimeDebug;
+/**
+ * 是否为 App 或小程序运行在 **Android / iOS** 上（仅此类环境对对象参数做字符串化）。
+ */
+function isAndroidOrIosRuntime() {
+    var _a, _b, _c, _d, _e, _f, _g, _h;
+    const raw = (_a = process.env.UNI_PLATFORM) !== null && _a !== void 0 ? _a : '';
+    if (raw === 'app' || raw === 'app-plus' || raw === 'app-harmony') {
+        const n = (_d = (_c = (_b = globalThis.plus) === null || _b === void 0 ? void 0 : _b.os) === null || _c === void 0 ? void 0 : _c.name) === null || _d === void 0 ? void 0 : _d.toLowerCase();
+        if (!n)
+            return false;
+        if (n.includes('android'))
+            return true;
+        if (n === 'ios' || n.includes('iphone'))
+            return true;
+        return false;
+    }
+    if (raw.startsWith('mp-')) {
+        try {
+            const p = (_h = (_g = (_f = (_e = globalThis.uni) === null || _e === void 0 ? void 0 : _e.getSystemInfoSync) === null || _f === void 0 ? void 0 : _f.call(_e)) === null || _g === void 0 ? void 0 : _g.platform) === null || _h === void 0 ? void 0 : _h.toLowerCase();
+            return p === 'android' || p === 'ios';
+        }
+        catch (_j) {
+            return false;
+        }
+    }
+    return false;
+}
+/**
+ * 在 Android/iOS 上将「对象类」参数转为可打印字符串；其余类型原样返回。
+ */
+function stringifyObjectArgForNative(value) {
+    if (value === null || value === undefined)
+        return value;
+    if (typeof value !== 'object')
+        return value;
+    if (value instanceof Error)
+        return `${value.name}: ${value.message}`;
+    return safeStringify(value);
+}
+/**
+ * 将单段日志参数格式化为可拼进一行文本的片段（Android/iOS 单参输出用）。
+ */
+function formatLogArgForNativeConsole(value) {
+    if (value === null)
+        return 'null';
+    if (value === undefined)
+        return 'undefined';
+    if (typeof value === 'string')
+        return value;
+    if (typeof value === 'number' || typeof value === 'boolean') {
+        return String(value);
+    }
+    if (typeof value === 'bigint')
+        return String(value);
+    if (typeof value === 'symbol') {
+        try {
+            return value.toString();
+        }
+        catch (_a) {
+            return '?';
+        }
+    }
+    if (typeof value === 'function') {
+        const fn = value;
+        return `[Function ${fn.name || 'anonymous'}]`;
+    }
+    if (typeof value === 'object') {
+        if (value instanceof Error)
+            return `${value.name}: ${value.message}`;
+        return safeStringify(value);
+    }
+    return String(value);
+}
+/**
+ * 输出到 console：非 Android/iOS 保持多参；Android/iOS 对象转字符串并 **整行单参** 输出。
+ */
+function emitConsole(method, args) {
+    const fn = console[method];
+    if (!isAndroidOrIosRuntime()) {
+        fn.call(console, TAG, ...args);
+        return;
+    }
+    const mapped = args.map(stringifyObjectArgForNative);
+    if (mapped.length === 0) {
+        fn.call(console, TAG);
+        return;
+    }
+    const body = mapped.map(formatLogArgForNativeConsole).join(' ');
+    fn.call(console, `${TAG} ${body}`);
+}
 /**
  * 当前是否启用 debug 输出。优先级：
  *   1. `setDebug(value)` 显式设置过 → 直接返回。
@@ -99,19 +320,19 @@ const logger = {
         if (!isDebug())
             return;
         // eslint-disable-next-line no-console
-        console.log(TAG, ...args);
+        emitConsole('log', args);
     },
     info(...args) {
         // eslint-disable-next-line no-console
-        console.info(TAG, ...args);
+        emitConsole('info', args);
     },
     warn(...args) {
         // eslint-disable-next-line no-console
-        console.warn(TAG, ...args);
+        emitConsole('warn', args);
     },
     error(...args) {
         // eslint-disable-next-line no-console
-        console.error(TAG, ...args);
+        emitConsole('error', args);
     },
     setDebug,
     isDebug,
@@ -702,133 +923,6 @@ function getCurrentTitle() {
  */
 function clearPageTitle() {
     state$2.page = '';
-}
-
-/******************************************************************************
-Copyright (c) Microsoft Corporation.
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */
-/* global Reflect, Promise, SuppressedError, Symbol, Iterator */
-
-
-function __awaiter(thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-}
-
-typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
-    var e = new Error(message);
-    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
-};
-
-/**
- * 安全工具集：序列化、try 包裹、指数退避重试。
- *
- * 修复缺陷：
- *   - #1 `_retry` 未初始化导致重试链路 NaN（公有版直接以参数显式传 `times`）。
- *   - #7 取值反向（私有版 `if (data.length > MAX_LENGTH)` 误判）。
- *   - #8 循环引用导致 `JSON.stringify` 抛错（用 WeakSet replacer 兜底）。
- */
-const DEFAULT_MAX_LENGTH = 4096;
-const TRUNCATED_SUFFIX = '…[truncated]';
-/**
- * 序列化任意值为字符串：支持循环引用与最大长度截断。
- *
- * @param value 待序列化的值。`undefined` 返回 ''；string 直接返回（仍参与截断）。
- * @param max   字符串最大长度，默认 4096；超长会截断并附 `…[truncated]`。
- */
-function safeStringify(value, max = DEFAULT_MAX_LENGTH) {
-    var _a;
-    if (value === undefined)
-        return '';
-    let raw;
-    if (typeof value === 'string') {
-        raw = value;
-    }
-    else {
-        const seen = new WeakSet();
-        try {
-            raw =
-                (_a = JSON.stringify(value, (_key, val) => {
-                    if (typeof val === 'object' && val !== null) {
-                        if (seen.has(val))
-                            return '[Circular]';
-                        seen.add(val);
-                    }
-                    if (typeof val === 'bigint')
-                        return val.toString();
-                    if (typeof val === 'function')
-                        return `[Function ${val.name || 'anonymous'}]`;
-                    return val;
-                })) !== null && _a !== void 0 ? _a : '';
-        }
-        catch (e) {
-            raw = `[Unserializable: ${e.message}]`;
-        }
-    }
-    if (raw.length > max) {
-        return (raw.slice(0, Math.max(0, max - TRUNCATED_SUFFIX.length)) +
-            TRUNCATED_SUFFIX);
-    }
-    return raw;
-}
-/**
- * 包裹同步函数，捕获任何抛出，返回 fallback。
- *
- * 不打印 console（由调用方按需 `logger.warn`）；保持纯函数风格便于热路径使用。
- */
-function tryRun(fn, fallback) {
-    try {
-        return fn();
-    }
-    catch (_a) {
-        return fallback;
-    }
-}
-/**
- * 指数退避重试：失败时按 `baseDelayMs * 2^(n-1)` 等待后重试，全部失败抛出最后一个错误。
- *
- * @example
- *   await withRetry(() => fetch(url), { times: 3, baseDelayMs: 200 })
- *   // 第 1 次失败 → wait 200ms；第 2 次失败 → wait 400ms；第 3 次失败 → throw
- */
-function withRetry(fn, opts) {
-    return __awaiter(this, void 0, void 0, function* () {
-        var _a;
-        const total = Math.max(1, Math.floor(opts.times));
-        const sleep = (_a = opts.sleep) !== null && _a !== void 0 ? _a : defaultSleep;
-        let lastErr;
-        for (let attempt = 1; attempt <= total; attempt++) {
-            try {
-                return yield fn();
-            }
-            catch (e) {
-                lastErr = e;
-                if (attempt >= total)
-                    break;
-                yield sleep(opts.baseDelayMs * Math.pow(2, (attempt - 1)));
-            }
-        }
-        throw lastErr;
-    });
-}
-function defaultSleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
@@ -2343,16 +2437,11 @@ function logCollect(data) {
  * 启动 / 配置摘要。`installPublicStat` 装配完毕后调用一次，方便业务方一眼确认接入状态。
  */
 function logBoot(info) {
-    var _a, _b;
     if (!logger.isDebug())
         return;
     logger.debug('=== uni 统计公有版已启用 ===');
     // 通道: ${info.channel} |
     logger.debug(`上报间隔: ${info.reportIntervalSec}s | 应用APPID: ${info.ak || '<未注入>'}${info.appName ? ` | 应用名: ${info.appName}` : ''}`);
-    if (typeof info.backgroundTimeoutSec === 'number' ||
-        typeof info.pageInactiveTimeoutSec === 'number') {
-        logger.debug(`会话阈值: 后台超时 backgroundTimeoutSec=${(_a = info.backgroundTimeoutSec) !== null && _a !== void 0 ? _a : '?'}s | 前台无操作 pageInactiveTimeoutSec=${(_b = info.pageInactiveTimeoutSec) !== null && _b !== void 0 ? _b : '?'}s（若为 300/1800 多为 manifest 未注入 build，仍走默认值）`);
-    }
     if (info.debugFromManifest) {
         logger.debug('调试模式：已从 manifest.uniStatistics.debug 自动开启');
     }
@@ -3562,8 +3651,6 @@ function mergeSystemSnapshots(...parts) {
  */
 function mergedSystemInfo() {
     const u = getUni$3();
-    const hasGlobalUni = globalThis.uni != null &&
-        typeof globalThis.uni === 'object';
     const sync = u && typeof u.getSystemInfoSync === 'function'
         ? tryRun(() => u.getSystemInfoSync(), null)
         : null;
@@ -3579,42 +3666,6 @@ function mergedSystemInfo() {
     const fromUni = mergeSystemSnapshots(sync, device, appBase, windowInfo);
     const fromWx = mergeWxHostSnapshots();
     const merged = fromWx ? mergeSystemSnapshots(fromUni, fromWx) : fromUni;
-    if (logger.isDebug()) {
-        const sample = (o) => {
-            var _a, _b, _c;
-            return o
-                ? {
-                    brand: o.brand,
-                    deviceBrand: o.deviceBrand,
-                    md: (_a = o.deviceModel) !== null && _a !== void 0 ? _a : o.model,
-                    sw: o.screenWidth,
-                    sh: o.screenHeight,
-                    ww: o.windowWidth,
-                    wh: o.windowHeight,
-                    lang: (_b = o.hostLanguage) !== null && _b !== void 0 ? _b : o.language,
-                    sdk: (_c = o.hostSDKVersion) !== null && _c !== void 0 ? _c : o.SDKVersion,
-                    platform: o.platform,
-                }
-                : null;
-        };
-        logger.debug('[diag][system]', {
-            UNI_PLATFORM: getRawPlatform(),
-            resolveUni: u != null,
-            globalThisUni: hasGlobalUni,
-            uniApi: {
-                getSystemInfoSync: !!(u && typeof u.getSystemInfoSync === 'function'),
-                getDeviceInfo: !!(u && typeof u.getDeviceInfo === 'function'),
-                getAppBaseInfo: !!(u && typeof u.getAppBaseInfo === 'function'),
-                getWindowInfo: !!(u && typeof u.getWindowInfo === 'function'),
-            },
-            wxLayer: fromWx != null,
-            partials: {
-                sync: sample(sync),
-                fromUni: sample(fromUni),
-                merged: sample(merged),
-            },
-        });
-    }
     return merged;
 }
 /**
@@ -3807,11 +3858,9 @@ function getH5AppName() {
  * 所有字段保证返回 `string`；缺失统一为 `''`，符合 `domain/statData.ts` 的字段处理约定。
  */
 function getPackageInfo() {
-    var _a, _b;
     if (cached)
         return cached;
     const platform = getPlatform();
-    const raw = getRawPlatform();
     let mpn = '';
     let tdaid = '';
     let pkn = '';
@@ -3844,18 +3893,6 @@ function getPackageInfo() {
         mpn = '';
     }
     cached = { mpn, tdaid, pkn, an };
-    if (logger.isDebug()) {
-        logger.debug('[diag][package]', {
-            UNI_PLATFORM: raw,
-            shortPlatform: platform,
-            mpn,
-            tdaid,
-            pkn,
-            an,
-            uniGetAccountInfo: typeof ((_a = getUni$2()) === null || _a === void 0 ? void 0 : _a.getAccountInfoSync) === 'function',
-            wxGetAccountInfo: typeof ((_b = globalThis.wx) === null || _b === void 0 ? void 0 : _b.getAccountInfoSync) === 'function',
-        });
-    }
     return cached;
 }
 
@@ -4975,69 +5012,6 @@ function readManifestStatConfig() {
     }
 }
 /**
- * 构建期 manifest 注入核对（面向小程序 / H5 差异排查）。
- *
- * 使用 `logger.info` 输出（不依赖 manifest.debug），便于在微信开发者工具直接复制粘贴给维护者。
- * 仅输出类型、长度、顶层键名及对会话阈值相关的字段**原文**（不含整段 JSON，避免泄露 ak）。
- *
- * @param fromManifest `readManifestStatConfig` 映射后的结果，便于对照「注入原文 → 映射结果」。
- */
-function logManifestBuildInjectDiagnostics(fromManifest) {
-    if (typeof process !== 'undefined' && process.env.NODE_ENV === 'test') {
-        return;
-    }
-    try {
-        // 只使用 initDefine / uni:stat 已声明的 `process.env.XXX` 字面量；勿读 `UNI_APP_X` 等未进
-        // `initDefine` 的键：小程序无 `process` 时，未替换的 `process.env.*` 会直接 ReferenceError。
-        const raw = process.env.UNI_STATISTICS_CONFIG;
-        let parsedKeys = [];
-        let parseError;
-        const sample = {};
-        if (typeof raw === 'string' && raw.length > 0) {
-            try {
-                const o = JSON.parse(raw);
-                parsedKeys = Object.keys(o);
-                Object.assign(sample, {
-                    enable: o.enable,
-                    version: o.version,
-                    reportInterval: o.reportInterval,
-                    reportIntervalSec: o.reportIntervalSec,
-                    backgroundTimeout: o.backgroundTimeout,
-                    backgroundTimeoutSec: o.backgroundTimeoutSec,
-                    pageInactiveTimeout: o.pageInactiveTimeout,
-                    pageInactiveTimeoutSec: o.pageInactiveTimeoutSec,
-                });
-            }
-            catch (e) {
-                parseError = e instanceof Error ? e.message : String(e);
-            }
-        }
-        logger.info('[manifest 构建注入诊断] 请整段复制给排查（len=0：define 未替换或曾对 env 误包 typeof process）', {
-            UNI_PLATFORM: process.env.UNI_PLATFORM,
-            UNI_STAT_DEBUG: process.env.UNI_STAT_DEBUG,
-            UNI_STATISTICS_CONFIG_type: raw === undefined ? 'undefined' : typeof raw,
-            UNI_STATISTICS_CONFIG_len: typeof raw === 'string' ? raw.length : 0,
-            json_parse_ok: parseError === undefined && typeof raw === 'string' && raw.length > 0,
-            json_parse_error: parseError,
-            parsed_top_keys: parsedKeys,
-            parsed_sample_stat_fields: sample,
-            readManifestStatConfig_keys: fromManifest
-                ? Object.keys(fromManifest)
-                : [],
-            readManifestStatConfig_timeouts: fromManifest
-                ? {
-                    backgroundTimeoutSec: fromManifest.backgroundTimeoutSec,
-                    pageInactiveTimeoutSec: fromManifest.pageInactiveTimeoutSec,
-                    reportIntervalSec: fromManifest.reportIntervalSec,
-                }
-                : undefined,
-        });
-    }
-    catch (e) {
-        logger.warn('[uni-stat] manifest 构建注入诊断输出失败（小程序请勿读取未 define 的 process.env）', e);
-    }
-}
-/**
  * 将 manifest / JSON 中的数值候选标准化为正数（> 0）。
  * 兼容部分工具或手工编辑 manifest 时写成**字符串数字**（如 `"60"`）的情况。
  */
@@ -5129,7 +5103,6 @@ function installPublicStat(opts = {}) {
     // 这样业务/灰度同学既能在 manifest 里改超时阈值（生产路径），
     // 也能用 installPublicStat({ config: {...} }) 在测试环境强行覆盖（接入调试）。
     const fromManifest = readManifestStatConfig();
-    logManifestBuildInjectDiagnostics(fromManifest);
     const finalConfig = Object.assign({}, fromManifest, opts.config);
     const app = getStatApp();
     tryRun(() => app.install(finalConfig, opts.overrides), undefined);
@@ -5145,8 +5118,6 @@ function installPublicStat(opts = {}) {
             appName,
             debugFromManifest: process.env.UNI_STAT_DEBUG === 'true' ||
                 process.env.UNI_STAT_DEBUG === true,
-            backgroundTimeoutSec: cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.backgroundTimeoutSec,
-            pageInactiveTimeoutSec: cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.pageInactiveTimeoutSec,
         });
     }, undefined);
     /**

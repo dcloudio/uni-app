@@ -22,7 +22,6 @@
  * `upx2px` 一致），避免 `uni` 代理未就绪时宽高全 0。
  */
 
-import { logger } from '../infra/logger'
 import { tryRun } from '../infra/safe'
 import { resolveUniRuntime } from '../infra/uniRuntime'
 
@@ -179,10 +178,6 @@ function mergeSystemSnapshots(
  */
 function mergedSystemInfo(): UniSystemInfoLike {
   const u = getUni()
-  const hasGlobalUni =
-    (globalThis as unknown as { uni?: unknown }).uni != null &&
-    typeof (globalThis as unknown as { uni?: unknown }).uni === 'object'
-
   const sync =
     u && typeof u.getSystemInfoSync === 'function'
       ? tryRun(() => u.getSystemInfoSync!(), null)
@@ -202,41 +197,6 @@ function mergedSystemInfo(): UniSystemInfoLike {
   const fromUni = mergeSystemSnapshots(sync, device, appBase, windowInfo)
   const fromWx = mergeWxHostSnapshots()
   const merged = fromWx ? mergeSystemSnapshots(fromUni, fromWx) : fromUni
-
-  if (logger.isDebug()) {
-    const sample = (o: UniSystemInfoLike | null) =>
-      o
-        ? {
-            brand: o.brand,
-            deviceBrand: o.deviceBrand,
-            md: o.deviceModel ?? o.model,
-            sw: o.screenWidth,
-            sh: o.screenHeight,
-            ww: o.windowWidth,
-            wh: o.windowHeight,
-            lang: o.hostLanguage ?? o.language,
-            sdk: o.hostSDKVersion ?? o.SDKVersion,
-            platform: o.platform,
-          }
-        : null
-    logger.debug('[diag][system]', {
-      UNI_PLATFORM: getRawPlatform(),
-      resolveUni: u != null,
-      globalThisUni: hasGlobalUni,
-      uniApi: {
-        getSystemInfoSync: !!(u && typeof u.getSystemInfoSync === 'function'),
-        getDeviceInfo: !!(u && typeof u.getDeviceInfo === 'function'),
-        getAppBaseInfo: !!(u && typeof u.getAppBaseInfo === 'function'),
-        getWindowInfo: !!(u && typeof u.getWindowInfo === 'function'),
-      },
-      wxLayer: fromWx != null,
-      partials: {
-        sync: sample(sync),
-        fromUni: sample(fromUni),
-        merged: sample(merged),
-      },
-    })
-  }
 
   return merged
 }

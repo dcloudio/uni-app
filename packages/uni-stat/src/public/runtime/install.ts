@@ -136,81 +136,6 @@ function readManifestStatConfig(): Partial<StatAppConfig> | undefined {
 }
 
 /**
- * 构建期 manifest 注入核对（面向小程序 / H5 差异排查）。
- *
- * 使用 `logger.info` 输出（不依赖 manifest.debug），便于在微信开发者工具直接复制粘贴给维护者。
- * 仅输出类型、长度、顶层键名及对会话阈值相关的字段**原文**（不含整段 JSON，避免泄露 ak）。
- *
- * @param fromManifest `readManifestStatConfig` 映射后的结果，便于对照「注入原文 → 映射结果」。
- */
-function logManifestBuildInjectDiagnostics(
-  fromManifest: Partial<StatAppConfig> | undefined
-): void {
-  if (typeof process !== 'undefined' && process.env.NODE_ENV === 'test') {
-    return
-  }
-
-  try {
-    // 只使用 initDefine / uni:stat 已声明的 `process.env.XXX` 字面量；勿读 `UNI_APP_X` 等未进
-    // `initDefine` 的键：小程序无 `process` 时，未替换的 `process.env.*` 会直接 ReferenceError。
-    const raw = process.env.UNI_STATISTICS_CONFIG
-    let parsedKeys: string[] = []
-    let parseError: string | undefined
-    const sample: Record<string, unknown> = {}
-
-    if (typeof raw === 'string' && raw.length > 0) {
-      try {
-        const o = JSON.parse(raw) as Record<string, unknown>
-        parsedKeys = Object.keys(o)
-        Object.assign(sample, {
-          enable: o.enable,
-          version: o.version,
-          reportInterval: o.reportInterval,
-          reportIntervalSec: o.reportIntervalSec,
-          backgroundTimeout: o.backgroundTimeout,
-          backgroundTimeoutSec: o.backgroundTimeoutSec,
-          pageInactiveTimeout: o.pageInactiveTimeout,
-          pageInactiveTimeoutSec: o.pageInactiveTimeoutSec,
-        })
-      } catch (e) {
-        parseError = e instanceof Error ? e.message : String(e)
-      }
-    }
-
-    logger.info(
-      '[manifest 构建注入诊断] 请整段复制给排查（len=0：define 未替换或曾对 env 误包 typeof process）',
-      {
-        UNI_PLATFORM: process.env.UNI_PLATFORM,
-        UNI_STAT_DEBUG: process.env.UNI_STAT_DEBUG,
-        UNI_STATISTICS_CONFIG_type:
-          raw === undefined ? 'undefined' : typeof raw,
-        UNI_STATISTICS_CONFIG_len: typeof raw === 'string' ? raw.length : 0,
-        json_parse_ok:
-          parseError === undefined && typeof raw === 'string' && raw.length > 0,
-        json_parse_error: parseError,
-        parsed_top_keys: parsedKeys,
-        parsed_sample_stat_fields: sample,
-        readManifestStatConfig_keys: fromManifest
-          ? Object.keys(fromManifest)
-          : [],
-        readManifestStatConfig_timeouts: fromManifest
-          ? {
-              backgroundTimeoutSec: fromManifest.backgroundTimeoutSec,
-              pageInactiveTimeoutSec: fromManifest.pageInactiveTimeoutSec,
-              reportIntervalSec: fromManifest.reportIntervalSec,
-            }
-          : undefined,
-      }
-    )
-  } catch (e) {
-    logger.warn(
-      '[uni-stat] manifest 构建注入诊断输出失败（小程序请勿读取未 define 的 process.env）',
-      e
-    )
-  }
-}
-
-/**
  * 将 manifest / JSON 中的数值候选标准化为正数（> 0）。
  * 兼容部分工具或手工编辑 manifest 时写成**字符串数字**（如 `"60"`）的情况。
  */
@@ -328,7 +253,6 @@ export function installPublicStat(opts: InstallOptions = {}): void {
   // 这样业务/灰度同学既能在 manifest 里改超时阈值（生产路径），
   // 也能用 installPublicStat({ config: {...} }) 在测试环境强行覆盖（接入调试）。
   const fromManifest = readManifestStatConfig()
-  logManifestBuildInjectDiagnostics(fromManifest)
   const finalConfig: Partial<StatAppConfig> = Object.assign(
     {},
     fromManifest,
@@ -350,8 +274,6 @@ export function installPublicStat(opts: InstallOptions = {}): void {
       debugFromManifest:
         process.env.UNI_STAT_DEBUG === 'true' ||
         (process.env.UNI_STAT_DEBUG as unknown) === true,
-      backgroundTimeoutSec: cfgBoot?.backgroundTimeoutSec,
-      pageInactiveTimeoutSec: cfgBoot?.pageInactiveTimeoutSec,
     })
   }, undefined)
 
