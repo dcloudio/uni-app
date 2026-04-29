@@ -93,7 +93,7 @@ describe.each(TEST_PRESETS)(
       restorePreset()
     })
 
-    const isDom2Android = preset.__VAPOR__ && preset.platform === 'android'
+    const isVaporAndroid = preset.__VAPOR__ && preset.platform === 'android'
     test('normalize args', () => {
       expect(normalizeArg(1, {}, false, { depth: 0, nested: false })).toBe(1)
       expect(
@@ -158,7 +158,7 @@ describe.each(TEST_PRESETS)(
         __type__: 'UniElement',
       })
       expect(context1.depth).toBe(0)
-      expect(context1.nested).toBe(false)
+      expect(context1.nested).toBe(isVaporAndroid)
 
       const context2 = { depth: 0, nested: false }
       const obj2 = {
@@ -217,7 +217,7 @@ describe.each(TEST_PRESETS)(
       const context5 = { depth: 0, nested: false }
       const obj5 = new ArrayBuffer(0)
       expect(normalizeArg(obj5, {}, false, context5)).toEqual(
-        isDom2Android
+        isVaporAndroid
           ? obj5
           : {
               __type__: 'ArrayBuffer',
@@ -225,12 +225,12 @@ describe.each(TEST_PRESETS)(
             }
       )
       expect(context5.depth).toBe(0)
-      expect(context5.nested).toBe(false)
+      expect(context5.nested).toBe(isVaporAndroid)
 
       const context6 = { depth: 0, nested: false }
       const obj6 = new ArrayBuffer(0)
       expect(normalizeArg([obj6], {}, false, context6)).toEqual([
-        isDom2Android
+        isVaporAndroid
           ? obj6
           : {
               __type__: 'ArrayBuffer',
