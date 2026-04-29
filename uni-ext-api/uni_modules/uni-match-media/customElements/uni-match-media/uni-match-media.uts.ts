@@ -39,7 +39,7 @@ export class UniMatchMediaElement extends UniViewElementImpl implements UniCusto
             this.toggleElement(this.isValid({
                 width: this.uniPage.pageBody.width,
                 height: this.uniPage.pageBody.height,
-                orientation: globalThis.uni.getDeviceInfo().deviceOrientation as string
+                orientation: uni.getDeviceInfo().deviceOrientation as string
             }))
             // #endif
             // #ifndef APP-HARMONY
