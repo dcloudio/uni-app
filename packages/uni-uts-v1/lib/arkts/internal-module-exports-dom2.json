@@ -1408,9 +1408,6 @@
       "MediaOrientation"
     ],
     [
-      "MemoryWarningCallback"
-    ],
-    [
       "MemoryWarningCallbackResult"
     ],
     [
@@ -1532,6 +1529,9 @@
     ],
     [
       "OnMemoryWarning"
+    ],
+    [
+      "OnMemoryWarningCallback"
     ],
     [
       "OnNetworkStatusChange"
