@@ -1,6 +1,10 @@
 import * as protocols from './protocols'
-import { isFunction } from '@vue/shared'
+import { hasOwn, isFunction, isObject } from '@vue/shared'
+
 export function parseXReturnValue(methodName: string, res: any) {
+  if (isObject(res) && hasOwn(res, 'errno')) {
+    res.errCode = res.errno
+  }
   const protocol = protocols[methodName]
   if (protocol && isFunction(protocol.returnValue)) {
     return protocol.returnValue(res)
