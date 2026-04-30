@@ -954,6 +954,9 @@ var protocols$1 = /*#__PURE__*/Object.freeze({
 });
 
 function parseXReturnValue(methodName, res) {
+    if (isObject(res) && hasOwn(res, 'errno')) {
+        res.errCode = res.errno;
+    }
     const protocol = protocols$1[methodName];
     if (protocol && isFunction(protocol.returnValue)) {
         return protocol.returnValue(res);
