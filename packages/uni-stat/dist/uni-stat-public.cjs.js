@@ -2255,8 +2255,12 @@ const BATCH_MAX_EVENTS = 30;
 const RETRY_MAX_ATTEMPTS = 5;
 const IMAGE_REPORT_DEFAULTS = {
     host: 'https://tls-cn-beijing.volces.com',
-    projectId: '9fad19a2-b7f1-47f5-87ff-8621f545ab61',
-    topicId: '99b55c91-ed80-406e-b205-e9d18aca744d',
+    /** 正式环境 */
+    projectId: '964f0397-af5d-45bf-99d6-8fb3500d7849',
+    topicId: '8563e231-f4cd-4ab0-8870-917e4b04e810',
+    // 以下为历史测试环境（已停用，勿删便于回切排查）
+    // projectId: '9fad19a2-b7f1-47f5-87ff-8621f545ab61',
+    // topicId: '99b55c91-ed80-406e-b205-e9d18aca744d',
 };
 /**
  * uni-app appid。优先取构建期 `process.env.UNI_APP_ID`；未注入时返回 `''`，
