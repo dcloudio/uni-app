@@ -148,7 +148,10 @@ export function uniAppManifestPlugin(
           }
         }
       }
-
+      // TODO 目前android即使配置了vapor也不使用，后续支持后，需要移除下边的代码
+      if (process.env.UNI_APP_X_DOM2 !== 'true') {
+        delete manifest['uni-app-x']?.vapor
+      }
       fs.outputFileSync(
         path.resolve(process.env.UNI_OUTPUT_DIR, 'manifest.json'),
         JSON.stringify(manifest, null, 2)

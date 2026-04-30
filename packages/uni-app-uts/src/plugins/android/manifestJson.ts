@@ -15,6 +15,10 @@ import { isManifest, normalizeManifestJson } from '../utils'
 let outputManifestJson: Record<string, any> | undefined = undefined
 
 export function getOutputManifestJson() {
+  // TODO 目前android即使配置了vapor也不使用，后续支持后，需要移除下边的代码
+  if (outputManifestJson) {
+    delete outputManifestJson['uni-app-x']?.vapor
+  }
   return outputManifestJson
 }
 
