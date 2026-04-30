@@ -102,7 +102,7 @@ interface Meta {
   }
 }
 export interface GenProxyCodeOptions {
-  platform?: 'app-android' | 'app-ios'
+  platform: 'app-android' | 'app-ios'
   is_uni_modules: boolean
   id: string
   name: string
@@ -247,7 +247,7 @@ interface ParseInterceptorResult {
 export async function parseInterceptor(
   platform: 'app-android' | 'app-ios',
   module: string,
-  options: GenProxyCodeOptions
+  options: Omit<GenProxyCodeOptions, 'platform'>
 ): Promise<ParseInterceptorResult> {
   const interceptorFilename = resolvePlatformInterceptorFilename(
     platform,
@@ -391,7 +391,10 @@ function genCustomElementsCode(
   return codes.join('\n')
 }
 
-export function resolveRootIndex(module: string, options: GenProxyCodeOptions) {
+export function resolveRootIndex(
+  module: string,
+  options: Omit<GenProxyCodeOptions, 'platform'>
+) {
   const filename = path.resolve(
     module,
     options.is_uni_modules ? 'utssdk' : '',
@@ -402,7 +405,7 @@ export function resolveRootIndex(module: string, options: GenProxyCodeOptions) {
 
 export function resolveRootInterface(
   module: string,
-  options: GenProxyCodeOptions
+  options: Omit<GenProxyCodeOptions, 'platform'>
 ) {
   const filename = path.resolve(
     module,
@@ -415,7 +418,7 @@ export function resolveRootInterface(
 export function resolvePlatformIndexFilename(
   platform: 'app-android' | 'app-ios',
   module: string,
-  options: GenProxyCodeOptions
+  options: Omit<GenProxyCodeOptions, 'platform'>
 ) {
   return path.resolve(
     module,
@@ -428,7 +431,7 @@ export function resolvePlatformIndexFilename(
 export function resolvePlatformInterceptorFilename(
   platform: 'app-android' | 'app-ios',
   module: string,
-  options: GenProxyCodeOptions
+  options: Omit<GenProxyCodeOptions, 'platform'>
 ) {
   return path.resolve(
     module,
@@ -441,7 +444,7 @@ export function resolvePlatformInterceptorFilename(
 export function resolvePlatformIndex(
   platform: 'app-android' | 'app-ios',
   module: string,
-  options: GenProxyCodeOptions
+  options: Omit<GenProxyCodeOptions, 'platform'>
 ) {
   const filename = resolvePlatformIndexFilename(platform, module, options)
   return fs.existsSync(filename) ? filename : ''
