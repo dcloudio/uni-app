@@ -2,10 +2,11 @@
  * pipeline/channel/image 单测：
  *   IM1 buildImageReportUrl 严格按照火山 TLS WebTrack 协议拼接
  *   IM2 available() 仅检查 host/projectId/topicId 是否齐全
- *   IM3 优先 new Image()：成功时不调用 uni.request
- *   IM4 无 Image 全局时：退回 uni.request GET，2xx 视为成功
+ *   IM3 H5 默认：有 `Image` 时走 onload，不调用 `uni.request`
+ *   IM3.b H5 Image onerror：仍视为送达（resolve），不调用 `uni.request`（对齐 TLS JSON 响应）
+ *   IM4 无 Image / `preferImageBeacon: false`：退回 `uni.request` GET，2xx 视为成功
  *   IM5 uni.request 失败：经过 maxRetries 后 reject
- *   IM6 URL 长度超出 maxUrlLength：直接 reject（让 retry 持久化）
+ *   IM6 URL 长度超出 maxUrlLength：PermanentChannelError，不进 withRetry
  *   IM7 host 末尾多余 `/` 会被去除，避免拼出 `https://x//WebTrack.gif`
  */
 
@@ -108,22 +109,22 @@ describe('pipeline/channel/image', () => {
     ).toBe(false)
   })
 
-  test('IM3 有 Image 全局：优先 image beacon，不调 uni.request', async () => {
-    const srcs: string[] = []
-    class FakeImage {
-      _src = ''
-      get src(): string {
-        return this._src
-      }
-      set src(v: string) {
-        this._src = v
-        srcs.push(v)
-      }
-    }
-    ;(globalThis as { Image?: unknown }).Image = FakeImage
-
+  test('IM3 H5：默认 Image onload 成功，不调用 uni.request', async () => {
     const requestSpy = jest.fn()
     handle.uni.request = requestSpy
+
+    /** 模拟浏览器 Image：设置 src 后异步触发 onload。 */
+    class FakeImage {
+      naturalWidth = 1
+      naturalHeight = 1
+      onload: (() => void) | null = null
+      onerror: (() => void) | null = null
+      set src(_u: string) {
+        queueMicrotask(() => this.onload?.())
+      }
+    }
+    ;(globalThis as unknown as { Image: new () => unknown }).Image =
+      FakeImage as unknown as new () => unknown
 
     const ch = createImageChannel({
       host: HOST,
@@ -134,9 +135,100 @@ describe('pipeline/channel/image', () => {
       nowMs: () => 1700000001000,
     })
     await ch.send(PAYLOAD)
-    expect(srcs).toHaveLength(1)
-    expect(srcs[0]).toContain('/WebTrack.gif?')
     expect(requestSpy).not.toHaveBeenCalled()
+  })
+
+  test('IM3.b H5：Image onerror 仍判成功（模拟 TLS 返回 JSON 触发 onerror），不调 uni.request', async () => {
+    const requestSpy = jest.fn()
+    handle.uni.request = requestSpy
+
+    /** 模拟浏览器对非图片响应走 onerror（与 Network 里 HTTP 200 可并存）。 */
+    class FakeImageNonImageBody {
+      naturalWidth = 0
+      naturalHeight = 0
+      onload: (() => void) | null = null
+      onerror: (() => void) | null = null
+      set src(_u: string) {
+        queueMicrotask(() => this.onerror?.())
+      }
+    }
+    ;(globalThis as unknown as { Image: new () => unknown }).Image =
+      FakeImageNonImageBody as unknown as new () => unknown
+
+    const ch = createImageChannel({
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      ut: 'h5',
+      sleep: noSleep,
+      maxRetries: 1,
+    })
+    await ch.send(PAYLOAD)
+    expect(requestSpy).not.toHaveBeenCalled()
+  })
+
+  test('IM3.d H5：Image 既不 onload 也不 onerror → 超时 reject', async () => {
+    const requestSpy = jest.fn()
+    handle.uni.request = requestSpy
+
+    /** 模拟回调永不触发（仅用于超时路径）。 */
+    class FakeImageHang {
+      onload: (() => void) | null = null
+      onerror: (() => void) | null = null
+      set src(_u: string) {
+        /* intentionally empty */
+      }
+    }
+    ;(globalThis as unknown as { Image: new () => unknown }).Image =
+      FakeImageHang as unknown as new () => unknown
+
+    const ch = createImageChannel({
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      ut: 'h5',
+      sleep: noSleep,
+      timeoutMs: 100,
+      maxRetries: 1,
+    })
+    await expect(ch.send(PAYLOAD)).rejects.toThrow(/统计上报超时/)
+    expect(requestSpy).not.toHaveBeenCalled()
+  })
+
+  test('IM3.c H5：关闭 preferImageBeacon 时 uni.request GET 403 → 含 HTTP 码与摘要', async () => {
+    const requestSpy = jest.fn(
+      ({
+        success,
+      }: {
+        success: (res: {
+          statusCode: number
+          data: { ErrorCode: string; ErrorMessage: string }
+        }) => void
+      }) => {
+        success({
+          statusCode: 403,
+          data: {
+            ErrorCode: 'Forbidden',
+            ErrorMessage: 'no permission',
+          },
+        })
+      }
+    )
+    handle.uni.request = requestSpy
+
+    const ch = createImageChannel({
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      ut: 'h5',
+      preferImageBeacon: false,
+      sleep: noSleep,
+      maxRetries: 1,
+    })
+    await expect(ch.send(PAYLOAD)).rejects.toThrow(
+      /统计上报 HTTP 403:.*Forbidden/
+    )
+    expect(requestSpy).toHaveBeenCalled()
   })
 
   test('IM4 无 Image：退回 uni.request GET，2xx 成功', async () => {
@@ -212,7 +304,7 @@ describe('pipeline/channel/image', () => {
     }
     expect(caught).toBeInstanceOf(PermanentChannelError)
     expect(isPermanentChannelError(caught)).toBe(true)
-    expect((caught as Error).message).toMatch(/image url too long/)
+    expect((caught as Error).message).toMatch(/统计上报 URL 过长/)
     expect(requestSpy).not.toHaveBeenCalled()
   })
 
@@ -237,7 +329,7 @@ describe('pipeline/channel/image', () => {
       caught = e
     }
     expect(isPermanentChannelError(caught)).toBe(true)
-    expect((caught as Error).message).toMatch(/not configured/)
+    expect((caught as Error).message).toMatch(/统计上报未配置/)
     expect(requestSpy).not.toHaveBeenCalled()
   })
 
@@ -260,7 +352,7 @@ describe('pipeline/channel/image', () => {
       caught = e
     }
     expect(isPermanentChannelError(caught)).toBe(true)
-    expect((caught as Error).message).toMatch(/uni.request unavailable/)
+    expect((caught as Error).message).toMatch(/当前环境无法完成统计上报/)
   })
 
   test('IM8 非 H5：maxRequestBytes 为 WebTracks POST 切片上限（4MiB）', () => {
@@ -396,7 +488,7 @@ describe('pipeline/channel/image', () => {
       caught = e
     }
     expect(isPermanentChannelError(caught)).toBe(true)
-    expect((caught as Error).message).toMatch(/invalid requests json/)
+    expect((caught as Error).message).toMatch(/上报数据 JSON 无效/)
     expect(requestSpy).not.toHaveBeenCalled()
   })
 

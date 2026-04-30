@@ -161,7 +161,7 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
 
     const channel = deps.selectChannel()
     if (!channel) {
-      logger.warn('[uni-stat] no channel available, rollback batch')
+      logger.warn('[uni-stat] 无可用上报线路，本批已回滚队列')
       logNoChannel({ bucket: snapshot })
       deps.queue.rollback(snapshot)
       return
@@ -170,7 +170,7 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
     // 切片阈值 = min(全局配置, 通道物理上限)
     //   - 全局：BATCH_REQUESTS_MAX_BYTES（业务可调）
     //   - 通道：image GET URL 经 encodeURIComponent 膨胀，原文不能按 URL 上限直接用
-    //     → 由 image channel 自身反推（见 image.ts maxRequestBytes）
+    //     → 由 image 通道 maxRequestBytes() 反推（见 image.ts）
     // 这样 100 条事件在 image 通道下不会再切出"原文 4KB / encoded 7.5KB"超长片。
     const globalMaxBytes =
       deps.batchLimits?.maxBytes ?? BATCH_REQUESTS_MAX_BYTES
@@ -217,17 +217,17 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
         if (isPermanentChannelError(e)) {
           // 永久错：丢弃本片，不 persist、不污染下次冷启
           logger.warn(
-            '[uni-stat] channel send permanent error, drop slice',
+            '[uni-stat] 统计上报失败（本批已丢弃，不可重试）',
             e,
             'sliceBytes=' + requests.length
           )
           logReportFailureReason({ error: e, persistedId: undefined })
           continue
         }
-        logger.warn('[uni-stat] channel send failed; persist for retry', e)
+        logger.warn('[uni-stat] 统计上报失败（已暂存，下次启动自动重试）', e)
         const id = deps.retry.persist(payload)
         if (!id) {
-          logger.warn('[uni-stat] retry.persist returned no id, drop slice')
+          logger.warn('[uni-stat] 统计暂存重试失败（无 retryId），本批已丢弃')
         }
         logReportFailureReason({ error: e, persistedId: id })
       }
@@ -271,7 +271,7 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
     if (items.length === 0) return
     const channel = deps.selectChannel()
     if (!channel) {
-      logger.warn('[uni-stat] recoverRetry: no channel available')
+      logger.warn('[uni-stat] 续传重试跳过：当前无可用上报线路')
       return
     }
     logRecoverStart(items.length)
@@ -292,7 +292,7 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
         if (isPermanentChannelError(e)) {
           if (payload._id) deps.retry.ack(payload._id)
           logger.warn(
-            '[uni-stat] recoverRetry permanent error, ack & drop',
+            '[uni-stat] 续传重试失败（不可重试，已从队列移除）',
             e,
             'id=' + payload._id
           )
@@ -309,10 +309,7 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
           // markAttempt 内部超过 maxAttempts 会自动 ack 兜底（参见 retry.ts）
           deps.retry.markAttempt(payload._id)
         }
-        logger.warn(
-          '[uni-stat] recoverRetry item failed, will retry next launch',
-          e
-        )
+        logger.warn('[uni-stat] 续传重试失败（保留队列，下次启动再试）', e)
         logRecoverItem({
           index: i,
           total: items.length,

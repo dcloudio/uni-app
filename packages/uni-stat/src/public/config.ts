@@ -88,7 +88,7 @@ export const RETRY_MAX_ATTEMPTS = 5
  *   - `projectId / topicId`：日志服务侧的项目 / 主题 ID（当前默认 **正式环境**）
  *
  * 同 host 下双路径（见 `pipeline/channel/image.ts` 与 `docs/火山TLS-WebTracks上报说明.md`）：
- *   - **H5**：`GET …/WebTrack.gif?…`（image 像素，与历史一致）
+ *   - **H5**：`GET …/WebTrack.gif?…`（与历史 Web 采集一致）
  *   - **非 H5**：`POST …/WebTracks?ProjectId&TopicId`（TLS 文档：`Content-Type: application/json`、
  *     必选头 `x-tls-bodyrawsize`、body `{ Source, Logs }`）
  *

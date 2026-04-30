@@ -97,7 +97,7 @@ export function createCloudChannel(opts: CloudChannelOptions = {}): Channel {
           sleep: opts.sleep,
         })
       } catch (e) {
-        logger.warn('[uni-stat] cloud channel send failed after retries', e)
+        logger.warn('[uni-stat] 统计上报失败（云函数已重试）', e)
         throw e
       }
     },

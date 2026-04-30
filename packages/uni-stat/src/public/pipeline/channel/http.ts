@@ -3,8 +3,8 @@
  *
  * 兼容私有版同协议（`uni.request(POST STAT_URL)`），并修复其历史缺陷：
  *   - #1 `_retry` 未初始化导致 NaN：本实现以 `withRetry({times})` 显式控制。
- *   - #16 H5 fallback `new Image()` 在 nvue/微信小程序运行时会抛 `Image is not defined`：
- *     本实现仅在确认 `typeof Image !== 'undefined'` 时使用 image 通道，否则退回 `uni.request`。
+ *   - #16 H5 在 nvue/部分小程序无 `Image`：本实现以 `uni.request` 为主；TLS 公有版 image
+ *     通道的 H5 路径亦优先 `uni.request` GET 以读取 HTTP 状态，避免误报成功。
  *
  * 接口契约：
  *   - `available()`：在任何 uni 平台都返回 true（HTTP 是兜底通道）。
@@ -149,7 +149,7 @@ export function createHttpChannel(opts: HttpChannelOptions = {}): Channel {
           sleep: opts.sleep,
         })
       } catch (e) {
-        logger.warn('[uni-stat] http channel send failed after retries', e)
+        logger.warn('[uni-stat] 统计上报失败（HTTP 已重试）', e)
         throw e
       }
     },

@@ -3,7 +3,9 @@
  *
  * **H5**（`ut === 'h5'`）：
  *   - `GET ${host}/WebTrack.gif?ProjectId&TopicId&Logs=URI(JSON)&Source=webImg&Time=…`
- *   - 首选 `new Image().src`（无 CORS 读限制）；否则 `uni.request` GET。
+ *   - **默认**用浏览器 `Image` 触发 GET（利于跨域）；**异步** `onload` 或 `onerror` 均视为信标已发出
+ *     （TLS 常返回 JSON 导致 `onerror`，与 HTTP 200 并存，见 `imageBeaconAwait` 注释）。
+ *   - 仅当 `preferImageBeacon: false` 或环境无 `Image` 时，才用 `uni.request` GET（可带 HTTP 状态，但可能受跨域限制）。
  *
  * **非 H5**（小程序 / App 等，与 [TLS WebTracks](https://www.volcengine.com/docs/6470/141803?lang=zh) 对齐）：
  *   - `POST ${host}/WebTracks?ProjectId&TopicId`
@@ -23,7 +25,7 @@ import {
 } from '../../config'
 import { logger } from '../../infra/logger'
 import { resolveUniRuntime } from '../../infra/uniRuntime'
-import { tryRun, withRetry } from '../../infra/safe'
+import { withRetry } from '../../infra/safe'
 
 import {
   type Channel,
@@ -91,7 +93,7 @@ const IMAGE_URL_BASE_OVERHEAD = 256
 const IMAGE_ENCODE_RATIO = 3.0
 
 /**
- * 拼装 H5 像素上报 URL。导出供测试/调试用。
+ * 拼装 H5 WebTrack.gif 上报 URL。导出供测试/调试用。
  *
  * @param payload  上报 payload；其中 `requests` 已是 `JSON.stringify(events)`。
  * @param opts     host/projectId/topicId 与 nowMs。
@@ -196,10 +198,10 @@ function buildWebTracksPostBody(payload: ReportPayload): {
   try {
     logs = JSON.parse(payload.requests) as unknown
   } catch {
-    throw new PermanentChannelError('webtracks invalid requests json')
+    throw new PermanentChannelError('上报数据 JSON 无效，无法解析 requests')
   }
   if (!Array.isArray(logs)) {
-    throw new PermanentChannelError('webtracks Logs must be a json array')
+    throw new PermanentChannelError('上报数据格式错误：应为事件对象数组')
   }
   const normalizedLogs = logs.map((item) => normalizeWebTracksLogEntry(item))
   const body = { Source: 'webImg', Logs: normalizedLogs }
@@ -207,37 +209,82 @@ function buildWebTracksPostBody(payload: ReportPayload): {
   try {
     json = JSON.stringify(body)
   } catch {
-    throw new PermanentChannelError('webtracks body stringify failed')
+    throw new PermanentChannelError('上报数据序列化失败')
   }
   const rawByteSize = utf8ByteLength(json)
   if (rawByteSize > WEBTRACKS_POST_BODY_MAX_BYTES) {
     throw new PermanentChannelError(
-      'webtracks body too large: ' +
-        rawByteSize +
-        ' > ' +
-        WEBTRACKS_POST_BODY_MAX_BYTES
+      '上报数据体积过大: ' + rawByteSize + ' > ' + WEBTRACKS_POST_BODY_MAX_BYTES
     )
   }
   return { json, rawByteSize }
 }
 
 /**
- * 优先使用浏览器/H5 的 `new Image()`：仅触发 GET，不读响应。
+ * 将 `uni.request` 返回的 `data` 压成短串，便于在 Error.message 中展示（如 TLS JSON 错误体）。
  *
- * @returns 已发出 beacon 为 true；否则 false，由调用方退回 `uni.request`。
+ * @param data  success 回调中的 `res.data`
+ * @param maxLen 最大字符数
  */
-function tryImageBeacon(url: string): boolean {
-  const ImageCtor = (
-    globalThis as unknown as {
-      Image?: new () => { src: string }
-    }
-  ).Image
-  if (typeof ImageCtor !== 'function') return false
-  return tryRun(() => {
+function summarizeHttpErrorBody(data: unknown, maxLen = 320): string {
+  if (data == null) return ''
+  if (typeof data === 'string') {
+    return data.length <= maxLen ? data : data.slice(0, maxLen) + '…'
+  }
+  try {
+    const s = JSON.stringify(data)
+    return s.length <= maxLen ? s : s.slice(0, maxLen) + '…'
+  } catch {
+    return String(data).slice(0, maxLen)
+  }
+}
+
+/**
+ * H5 用 `Image` 触发 WebTrack.gif GET（信标）：须等 `onload`/`onerror` 或超时，禁止设完 `src` 立刻成功。
+ *
+ * **为何 `onerror` 仍算送达：** 火山 TLS 等接入点对 `.gif` 常返回 HTTP 200 + `Content-Type: application/json`
+ *（甚至空 body）。浏览器无法把响应当成位图解码，会走 `onerror`，但**请求已发出且服务端已处理**。
+ * 若在此 reject，会出现 Network 为 200 而 SDK 判失败。故信标语义下 **`onload` 与 `onerror` 均 resolve**，
+ * 仅**超时**（长时间无任何回调）视为失败。
+ *
+ * @param url 完整 WebTrack.gif URL
+ * @param ms  超时毫秒
+ */
+function imageBeaconAwait(url: string, ms: number): Promise<void> {
+  type Img = {
+    src: string
+    onload: (() => void) | null
+    onerror: (() => void) | null
+    naturalWidth: number
+    naturalHeight: number
+  }
+  const ImageCtor = (globalThis as unknown as { Image?: new () => Img }).Image
+  if (typeof ImageCtor !== 'function') {
+    return Promise.reject(new PermanentChannelError('当前环境无法完成统计上报'))
+  }
+  return new Promise((resolve, reject) => {
+    let settled = false
+    const timer = setTimeout(() => {
+      if (settled) return
+      settled = true
+      reject(new Error('统计上报超时'))
+    }, ms)
     const img = new ImageCtor()
+    img.onload = () => {
+      if (settled) return
+      settled = true
+      clearTimeout(timer)
+      resolve()
+    }
+    img.onerror = () => {
+      if (settled) return
+      settled = true
+      clearTimeout(timer)
+      // 见函数注释：非图片 Content-Type 时浏览器走 onerror，与 HTTP 是否 200 无关。
+      resolve()
+    }
     img.src = url
-    return true
-  }, false)
+  })
 }
 
 interface ImageChannelOptions {
@@ -252,7 +299,10 @@ interface ImageChannelOptions {
    * **`h5`** 走 WebTrack.gif；其余走 **POST /WebTracks**。
    */
   ut?: string
-  /** 是否优先使用 `new Image()`（仅 H5 有意义），默认 true。 */
+  /**
+   * H5 是否优先使用 `Image` 触发 GET（默认 true，与跨域场景一致）。
+   * 设为 `false` 时强制 `uni.request` GET（可读取 HTTP 状态，但可能受跨域策略影响）。
+   */
   preferImageBeacon?: boolean
   /** uni.request 单次超时（ms），默认 10s。 */
   timeoutMs?: number
@@ -289,7 +339,9 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
    */
   function preflightGif(payload: ReportPayload): string {
     if (!configured()) {
-      throw new PermanentChannelError('image channel not configured')
+      throw new PermanentChannelError(
+        '统计上报未配置：请设置 TLS host、projectId、topicId'
+      )
     }
     const url = buildImageReportUrl(payload, {
       host,
@@ -299,7 +351,7 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
     })
     if (url.length > maxUrlLength) {
       throw new PermanentChannelError(
-        'image url too long: ' + url.length + ' > ' + maxUrlLength
+        '统计上报 URL 过长: ' + url.length + ' > ' + maxUrlLength
       )
     }
     return url
@@ -314,7 +366,9 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
     rawByteSize: number
   } {
     if (!configured()) {
-      throw new PermanentChannelError('image channel not configured')
+      throw new PermanentChannelError(
+        '统计上报未配置：请设置 TLS host、projectId、topicId'
+      )
     }
     const url = buildWebTracksPostUrl(host, projectId, topicId)
     const { json, rawByteSize } = buildWebTracksPostBody(payload)
@@ -322,17 +376,13 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
   }
 
   /**
-   * H5：GET gif（Image 或 uni.request）。
+   * H5：无 `Image` 或关闭 `preferImageBeacon` 时，用 `uni.request` GET（可读取 HTTP 状态与错误体摘要）。
    */
-  function onceGif(url: string): Promise<void> {
-    if (preferBeacon && tryImageBeacon(url)) {
-      return Promise.resolve()
-    }
-
+  function gifGetViaRequest(url: string): Promise<void> {
     const u = getUni()
     if (!u || typeof u.request !== 'function') {
       return Promise.reject(
-        new PermanentChannelError('no Image and uni.request unavailable')
+        new PermanentChannelError('当前环境无法完成统计上报')
       )
     }
     return new Promise((resolve, reject) => {
@@ -340,7 +390,7 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
       const timer = setTimeout(() => {
         if (settled) return
         settled = true
-        reject(new Error('image timeout'))
+        reject(new Error('统计上报超时'))
       }, timeoutMs)
       u.request!({
         url,
@@ -351,8 +401,16 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
           settled = true
           clearTimeout(timer)
           const code = res?.statusCode ?? 0
-          if (code >= 200 && code < 400) resolve()
-          else reject(new Error('image status ' + code))
+          if (code >= 200 && code < 300) {
+            resolve()
+            return
+          }
+          const hint = summarizeHttpErrorBody(res?.data)
+          reject(
+            new Error(
+              hint ? `统计上报 HTTP ${code}: ${hint}` : `统计上报 HTTP ${code}`
+            )
+          )
         },
         fail: (e) => {
           if (settled) return
@@ -362,6 +420,20 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
         },
       })
     })
+  }
+
+  /**
+   * H5：默认 `Image` 触发 GET；否则 `uni.request` GET。
+   */
+  function onceGif(url: string): Promise<void> {
+    const ImageCtor = (globalThis as unknown as { Image?: new () => unknown })
+      .Image
+    const hasImage = typeof ImageCtor === 'function'
+
+    if (preferBeacon && hasImage) {
+      return imageBeaconAwait(url, timeoutMs)
+    }
+    return gifGetViaRequest(url)
   }
 
   /**
@@ -375,7 +447,7 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
     const u = getUni()
     if (!u || typeof u.request !== 'function') {
       return Promise.reject(
-        new PermanentChannelError('uni.request unavailable')
+        new PermanentChannelError('当前环境无法完成统计上报')
       )
     }
     return new Promise((resolve, reject) => {
@@ -383,7 +455,7 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
       const timer = setTimeout(() => {
         if (settled) return
         settled = true
-        reject(new Error('webtracks timeout'))
+        reject(new Error('统计上报超时'))
       }, timeoutMs)
       u.request!({
         url,
@@ -400,7 +472,16 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
           clearTimeout(timer)
           const code = res?.statusCode ?? 0
           if (code >= 200 && code < 300) resolve()
-          else reject(new Error('webtracks status ' + code))
+          else {
+            const hint = summarizeHttpErrorBody(res?.data)
+            reject(
+              new Error(
+                hint
+                  ? `统计上报 HTTP ${code}: ${hint}`
+                  : `统计上报 HTTP ${code}`
+              )
+            )
+          }
         },
         fail: (e) => {
           if (settled) return
@@ -444,9 +525,9 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
         }
       } catch (e) {
         if (isPermanentChannelError(e)) {
-          logger.warn('[uni-stat] image channel permanent error, skip retry', e)
+          logger.warn('[uni-stat] 统计上报失败（不可重试）', e)
         } else {
-          logger.warn('[uni-stat] image channel send failed after retries', e)
+          logger.warn('[uni-stat] 统计上报失败（已重试）', e)
         }
         throw e
       }

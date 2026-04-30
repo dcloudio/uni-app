@@ -20,21 +20,25 @@
 
 | 条件 | 路径 | 方法 | 典型用途 |
 |------|------|------|----------|
-| `getPlatform() === 'h5'` | `{host}/WebTrack.gif` | GET | 浏览器像素图请求，规避 CORS 读响应限制 |
+| `getPlatform() === 'h5'` | `{host}/WebTrack.gif` | GET | 默认 **`Image` 触发 GET**（异步 onload/onerror，绕跨域）；仅 `preferImageBeacon: false` 或无 `Image` 时用 `uni.request` GET |
 | 小程序 / App 等 | `{host}/WebTracks` | POST | 与官方 WebTracks 接口一致，body 可较大 |
 
 实现模块：`packages/uni-stat/src/public/pipeline/channel/image.ts`（`createImageChannel`）。`StatApp.install` 会传入 `ut: getPlatform()` 以区分上述行为。
 
 ## 3. H5：`GET …/WebTrack.gif`
 
-Query 参数（与历史像素上报一致）：
+Query 参数（与历史 WebTrack.gif 采集一致）：
 
 - `ProjectId`、`TopicId`：与配置一致  
 - `Logs`：`encodeURIComponent(payload.requests)`，`requests` 为事件数组的 **JSON 字符串**  
 - `Source`：固定 `webImg`  
 - `Time`：毫秒时间戳  
 
-发送策略：优先 `new Image().src = url`；若无 `Image` 全局，则 `uni.request` GET。
+发送策略：
+
+- **默认 `Image` 信标**：不依赖 XHR，便于跨域；TLS 对 `WebTrack.gif` 常返回 **HTTP 200 + `Content-Type: application/json`**，浏览器无法当图片解码，会走 **`onerror`**，但请求已送达。SDK 将 **`onload` 与 `onerror` 均视为信标完成**（与 Network 里 200 一致）；**仅长时间无任何回调**视为超时失败。  
+- **`preferImageBeacon: false` 或没有 `Image` 全局** 时，才用 **`uni.request` GET**：可带 **`statusCode` 与响应体摘要**（若跨域被拦则走 `fail`，与 Network 表现可能不一致）。  
+- 若以 **`uni.request` GET** 校验 HTTP，**403 等**会如实反映在控制台；信标路径下排错仍以 **Network 状态码**为准。
 
 ## 4. 非 H5：`POST …/WebTracks`
 

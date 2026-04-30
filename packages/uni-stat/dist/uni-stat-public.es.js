@@ -2337,7 +2337,7 @@ function createCloudChannel(opts = {}) {
                     });
                 }
                 catch (e) {
-                    logger.warn('[uni-stat] cloud channel send failed after retries', e);
+                    logger.warn('[uni-stat] 统计上报失败（云函数已重试）', e);
                     throw e;
                 }
             });
@@ -2728,8 +2728,8 @@ function handleDataChunked(buckets, opts = {}) {
  * 永久性通道错误：本次 payload 自身有问题（与网络无关），重试同一份 payload 永远不会过。
  *
  * 典型场景：
- *   - image 通道 GET URL 超过 `maxUrlLength`（例如 81718 > 6144），重发同一份必定再次超长；
- *   - 通道未配置（`image channel not configured`、`http endpoint missing`），换网络也救不了；
+ *   - H5 GET URL 超过 `maxUrlLength`，重发同一份必定再次超长；
+ *   - TLS host / projectId / topicId 未配置，换网络也救不了；
  *   - 浏览器内既无 `Image` 全局也没有 `uni.request`：环境本身缺失，重试无意义。
  *
  * 设计意图：
@@ -2851,7 +2851,7 @@ function createCollector(deps) {
                 return;
             const channel = deps.selectChannel();
             if (!channel) {
-                logger.warn('[uni-stat] no channel available, rollback batch');
+                logger.warn('[uni-stat] 无可用上报线路，本批已回滚队列');
                 logNoChannel({ bucket: snapshot });
                 deps.queue.rollback(snapshot);
                 return;
@@ -2859,7 +2859,7 @@ function createCollector(deps) {
             // 切片阈值 = min(全局配置, 通道物理上限)
             //   - 全局：BATCH_REQUESTS_MAX_BYTES（业务可调）
             //   - 通道：image GET URL 经 encodeURIComponent 膨胀，原文不能按 URL 上限直接用
-            //     → 由 image channel 自身反推（见 image.ts maxRequestBytes）
+            //     → 由 image 通道 maxRequestBytes() 反推（见 image.ts）
             // 这样 100 条事件在 image 通道下不会再切出"原文 4KB / encoded 7.5KB"超长片。
             const globalMaxBytes = (_b = (_a = deps.batchLimits) === null || _a === void 0 ? void 0 : _a.maxBytes) !== null && _b !== void 0 ? _b : BATCH_REQUESTS_MAX_BYTES;
             const channelMaxBytes = typeof channel.maxRequestBytes === 'function'
@@ -2904,14 +2904,14 @@ function createCollector(deps) {
                     failedEvents += sliceEvents;
                     if (isPermanentChannelError(e)) {
                         // 永久错：丢弃本片，不 persist、不污染下次冷启
-                        logger.warn('[uni-stat] channel send permanent error, drop slice', e, 'sliceBytes=' + requests.length);
+                        logger.warn('[uni-stat] 统计上报失败（本批已丢弃，不可重试）', e, 'sliceBytes=' + requests.length);
                         logReportFailureReason({ error: e, persistedId: undefined });
                         continue;
                     }
-                    logger.warn('[uni-stat] channel send failed; persist for retry', e);
+                    logger.warn('[uni-stat] 统计上报失败（已暂存，下次启动自动重试）', e);
                     const id = deps.retry.persist(payload);
                     if (!id) {
-                        logger.warn('[uni-stat] retry.persist returned no id, drop slice');
+                        logger.warn('[uni-stat] 统计暂存重试失败（无 retryId），本批已丢弃');
                     }
                     logReportFailureReason({ error: e, persistedId: id });
                 }
@@ -2954,7 +2954,7 @@ function createCollector(deps) {
                 return;
             const channel = deps.selectChannel();
             if (!channel) {
-                logger.warn('[uni-stat] recoverRetry: no channel available');
+                logger.warn('[uni-stat] 续传重试跳过：当前无可用上报线路');
                 return;
             }
             logRecoverStart(items.length);
@@ -2977,7 +2977,7 @@ function createCollector(deps) {
                     if (isPermanentChannelError(e)) {
                         if (payload._id)
                             deps.retry.ack(payload._id);
-                        logger.warn('[uni-stat] recoverRetry permanent error, ack & drop', e, 'id=' + payload._id);
+                        logger.warn('[uni-stat] 续传重试失败（不可重试，已从队列移除）', e, 'id=' + payload._id);
                         logRecoverItem({
                             index: i,
                             total: items.length,
@@ -2991,7 +2991,7 @@ function createCollector(deps) {
                         // markAttempt 内部超过 maxAttempts 会自动 ack 兜底（参见 retry.ts）
                         deps.retry.markAttempt(payload._id);
                     }
-                    logger.warn('[uni-stat] recoverRetry item failed, will retry next launch', e);
+                    logger.warn('[uni-stat] 续传重试失败（保留队列，下次启动再试）', e);
                     logRecoverItem({
                         index: i,
                         total: items.length,
@@ -3011,8 +3011,8 @@ function createCollector(deps) {
  *
  * 兼容私有版同协议（`uni.request(POST STAT_URL)`），并修复其历史缺陷：
  *   - #1 `_retry` 未初始化导致 NaN：本实现以 `withRetry({times})` 显式控制。
- *   - #16 H5 fallback `new Image()` 在 nvue/微信小程序运行时会抛 `Image is not defined`：
- *     本实现仅在确认 `typeof Image !== 'undefined'` 时使用 image 通道，否则退回 `uni.request`。
+ *   - #16 H5 在 nvue/部分小程序无 `Image`：本实现以 `uni.request` 为主；TLS 公有版 image
+ *     通道的 H5 路径亦优先 `uni.request` GET 以读取 HTTP 状态，避免误报成功。
  *
  * 接口契约：
  *   - `available()`：在任何 uni 平台都返回 true（HTTP 是兜底通道）。
@@ -3120,7 +3120,7 @@ function createHttpChannel(opts = {}) {
                     });
                 }
                 catch (e) {
-                    logger.warn('[uni-stat] http channel send failed after retries', e);
+                    logger.warn('[uni-stat] 统计上报失败（HTTP 已重试）', e);
                     throw e;
                 }
             });
@@ -3133,7 +3133,9 @@ function createHttpChannel(opts = {}) {
  *
  * **H5**（`ut === 'h5'`）：
  *   - `GET ${host}/WebTrack.gif?ProjectId&TopicId&Logs=URI(JSON)&Source=webImg&Time=…`
- *   - 首选 `new Image().src`（无 CORS 读限制）；否则 `uni.request` GET。
+ *   - **默认**用浏览器 `Image` 触发 GET（利于跨域）；**异步** `onload` 或 `onerror` 均视为信标已发出
+ *     （TLS 常返回 JSON 导致 `onerror`，与 HTTP 200 并存，见 `imageBeaconAwait` 注释）。
+ *   - 仅当 `preferImageBeacon: false` 或环境无 `Image` 时，才用 `uni.request` GET（可带 HTTP 状态，但可能受跨域限制）。
  *
  * **非 H5**（小程序 / App 等，与 [TLS WebTracks](https://www.volcengine.com/docs/6470/141803?lang=zh) 对齐）：
  *   - `POST ${host}/WebTracks?ProjectId&TopicId`
@@ -3189,7 +3191,7 @@ const IMAGE_URL_BASE_OVERHEAD = 256;
  */
 const IMAGE_ENCODE_RATIO = 3.0;
 /**
- * 拼装 H5 像素上报 URL。导出供测试/调试用。
+ * 拼装 H5 WebTrack.gif 上报 URL。导出供测试/调试用。
  *
  * @param payload  上报 payload；其中 `requests` 已是 `JSON.stringify(events)`。
  * @param opts     host/projectId/topicId 与 nowMs。
@@ -3276,10 +3278,10 @@ function buildWebTracksPostBody(payload) {
         logs = JSON.parse(payload.requests);
     }
     catch (_a) {
-        throw new PermanentChannelError('webtracks invalid requests json');
+        throw new PermanentChannelError('上报数据 JSON 无效，无法解析 requests');
     }
     if (!Array.isArray(logs)) {
-        throw new PermanentChannelError('webtracks Logs must be a json array');
+        throw new PermanentChannelError('上报数据格式错误：应为事件对象数组');
     }
     const normalizedLogs = logs.map((item) => normalizeWebTracksLogEntry(item));
     const body = { Source: 'webImg', Logs: normalizedLogs };
@@ -3288,11 +3290,11 @@ function buildWebTracksPostBody(payload) {
         json = JSON.stringify(body);
     }
     catch (_b) {
-        throw new PermanentChannelError('webtracks body stringify failed');
+        throw new PermanentChannelError('上报数据序列化失败');
     }
     const rawByteSize = utf8ByteLength(json);
     if (rawByteSize > WEBTRACKS_POST_BODY_MAX_BYTES) {
-        throw new PermanentChannelError('webtracks body too large: ' +
+        throw new PermanentChannelError('上报数据体积过大: ' +
             rawByteSize +
             ' > ' +
             WEBTRACKS_POST_BODY_MAX_BYTES);
@@ -3300,19 +3302,67 @@ function buildWebTracksPostBody(payload) {
     return { json, rawByteSize };
 }
 /**
- * 优先使用浏览器/H5 的 `new Image()`：仅触发 GET，不读响应。
+ * 将 `uni.request` 返回的 `data` 压成短串，便于在 Error.message 中展示（如 TLS JSON 错误体）。
  *
- * @returns 已发出 beacon 为 true；否则 false，由调用方退回 `uni.request`。
+ * @param data  success 回调中的 `res.data`
+ * @param maxLen 最大字符数
  */
-function tryImageBeacon(url) {
+function summarizeHttpErrorBody(data, maxLen = 320) {
+    if (data == null)
+        return '';
+    if (typeof data === 'string') {
+        return data.length <= maxLen ? data : data.slice(0, maxLen) + '…';
+    }
+    try {
+        const s = JSON.stringify(data);
+        return s.length <= maxLen ? s : s.slice(0, maxLen) + '…';
+    }
+    catch (_a) {
+        return String(data).slice(0, maxLen);
+    }
+}
+/**
+ * H5 用 `Image` 触发 WebTrack.gif GET（信标）：须等 `onload`/`onerror` 或超时，禁止设完 `src` 立刻成功。
+ *
+ * **为何 `onerror` 仍算送达：** 火山 TLS 等接入点对 `.gif` 常返回 HTTP 200 + `Content-Type: application/json`
+ *（甚至空 body）。浏览器无法把响应当成位图解码，会走 `onerror`，但**请求已发出且服务端已处理**。
+ * 若在此 reject，会出现 Network 为 200 而 SDK 判失败。故信标语义下 **`onload` 与 `onerror` 均 resolve**，
+ * 仅**超时**（长时间无任何回调）视为失败。
+ *
+ * @param url 完整 WebTrack.gif URL
+ * @param ms  超时毫秒
+ */
+function imageBeaconAwait(url, ms) {
     const ImageCtor = globalThis.Image;
-    if (typeof ImageCtor !== 'function')
-        return false;
-    return tryRun(() => {
+    if (typeof ImageCtor !== 'function') {
+        return Promise.reject(new PermanentChannelError('当前环境无法完成统计上报'));
+    }
+    return new Promise((resolve, reject) => {
+        let settled = false;
+        const timer = setTimeout(() => {
+            if (settled)
+                return;
+            settled = true;
+            reject(new Error('统计上报超时'));
+        }, ms);
         const img = new ImageCtor();
+        img.onload = () => {
+            if (settled)
+                return;
+            settled = true;
+            clearTimeout(timer);
+            resolve();
+        };
+        img.onerror = () => {
+            if (settled)
+                return;
+            settled = true;
+            clearTimeout(timer);
+            // 见函数注释：非图片 Content-Type 时浏览器走 onerror，与 HTTP 是否 200 无关。
+            resolve();
+        };
         img.src = url;
-        return true;
-    }, false);
+    });
 }
 function createImageChannel(opts = {}) {
     var _a, _b, _c, _d, _e, _f, _g;
@@ -3334,7 +3384,7 @@ function createImageChannel(opts = {}) {
      */
     function preflightGif(payload) {
         if (!configured()) {
-            throw new PermanentChannelError('image channel not configured');
+            throw new PermanentChannelError('统计上报未配置：请设置 TLS host、projectId、topicId');
         }
         const url = buildImageReportUrl(payload, {
             host,
@@ -3343,7 +3393,7 @@ function createImageChannel(opts = {}) {
             nowMs,
         });
         if (url.length > maxUrlLength) {
-            throw new PermanentChannelError('image url too long: ' + url.length + ' > ' + maxUrlLength);
+            throw new PermanentChannelError('统计上报 URL 过长: ' + url.length + ' > ' + maxUrlLength);
         }
         return url;
     }
@@ -3352,22 +3402,19 @@ function createImageChannel(opts = {}) {
      */
     function preflightPost(payload) {
         if (!configured()) {
-            throw new PermanentChannelError('image channel not configured');
+            throw new PermanentChannelError('统计上报未配置：请设置 TLS host、projectId、topicId');
         }
         const url = buildWebTracksPostUrl(host, projectId, topicId);
         const { json, rawByteSize } = buildWebTracksPostBody(payload);
         return { url, json, rawByteSize };
     }
     /**
-     * H5：GET gif（Image 或 uni.request）。
+     * H5：无 `Image` 或关闭 `preferImageBeacon` 时，用 `uni.request` GET（可读取 HTTP 状态与错误体摘要）。
      */
-    function onceGif(url) {
-        if (preferBeacon && tryImageBeacon(url)) {
-            return Promise.resolve();
-        }
+    function gifGetViaRequest(url) {
         const u = getUni$4();
         if (!u || typeof u.request !== 'function') {
-            return Promise.reject(new PermanentChannelError('no Image and uni.request unavailable'));
+            return Promise.reject(new PermanentChannelError('当前环境无法完成统计上报'));
         }
         return new Promise((resolve, reject) => {
             let settled = false;
@@ -3375,7 +3422,7 @@ function createImageChannel(opts = {}) {
                 if (settled)
                     return;
                 settled = true;
-                reject(new Error('image timeout'));
+                reject(new Error('统计上报超时'));
             }, timeoutMs);
             u.request({
                 url,
@@ -3388,10 +3435,12 @@ function createImageChannel(opts = {}) {
                     settled = true;
                     clearTimeout(timer);
                     const code = (_a = res === null || res === void 0 ? void 0 : res.statusCode) !== null && _a !== void 0 ? _a : 0;
-                    if (code >= 200 && code < 400)
+                    if (code >= 200 && code < 300) {
                         resolve();
-                    else
-                        reject(new Error('image status ' + code));
+                        return;
+                    }
+                    const hint = summarizeHttpErrorBody(res === null || res === void 0 ? void 0 : res.data);
+                    reject(new Error(hint ? `统计上报 HTTP ${code}: ${hint}` : `统计上报 HTTP ${code}`));
                 },
                 fail: (e) => {
                     if (settled)
@@ -3404,12 +3453,24 @@ function createImageChannel(opts = {}) {
         });
     }
     /**
+     * H5：默认 `Image` 触发 GET；否则 `uni.request` GET。
+     */
+    function onceGif(url) {
+        const ImageCtor = globalThis
+            .Image;
+        const hasImage = typeof ImageCtor === 'function';
+        if (preferBeacon && hasImage) {
+            return imageBeaconAwait(url, timeoutMs);
+        }
+        return gifGetViaRequest(url);
+    }
+    /**
      * 非 H5：POST /WebTracks，带 TLS 必选头。
      */
     function oncePost(url, json, rawByteSize) {
         const u = getUni$4();
         if (!u || typeof u.request !== 'function') {
-            return Promise.reject(new PermanentChannelError('uni.request unavailable'));
+            return Promise.reject(new PermanentChannelError('当前环境无法完成统计上报'));
         }
         return new Promise((resolve, reject) => {
             let settled = false;
@@ -3417,7 +3478,7 @@ function createImageChannel(opts = {}) {
                 if (settled)
                     return;
                 settled = true;
-                reject(new Error('webtracks timeout'));
+                reject(new Error('统计上报超时'));
             }, timeoutMs);
             u.request({
                 url,
@@ -3437,8 +3498,10 @@ function createImageChannel(opts = {}) {
                     const code = (_a = res === null || res === void 0 ? void 0 : res.statusCode) !== null && _a !== void 0 ? _a : 0;
                     if (code >= 200 && code < 300)
                         resolve();
-                    else
-                        reject(new Error('webtracks status ' + code));
+                    else {
+                        const hint = summarizeHttpErrorBody(res === null || res === void 0 ? void 0 : res.data);
+                        reject(new Error(hint ? `统计上报 HTTP ${code}: ${hint}` : `统计上报 HTTP ${code}`));
+                    }
                 },
                 fail: (e) => {
                     if (settled)
@@ -3484,10 +3547,10 @@ function createImageChannel(opts = {}) {
                 }
                 catch (e) {
                     if (isPermanentChannelError(e)) {
-                        logger.warn('[uni-stat] image channel permanent error, skip retry', e);
+                        logger.warn('[uni-stat] 统计上报失败（不可重试）', e);
                     }
                     else {
-                        logger.warn('[uni-stat] image channel send failed after retries', e);
+                        logger.warn('[uni-stat] 统计上报失败（已重试）', e);
                     }
                     throw e;
                 }
@@ -4423,14 +4486,14 @@ function selectChannel(opts) {
         if (opts.cloud && opts.cloud.available())
             return opts.cloud;
         if (!fallback) {
-            logger.warn('[uni-stat] cloud channel unavailable and fallback disabled, drop batch');
+            logger.warn('[uni-stat] 云函数上报不可用且已关闭 HTTP 兜底，本批已丢弃');
             return undefined;
         }
         if (opts.http && opts.http.available()) {
-            logger.warn('[uni-stat] cloud channel unavailable, fallback to http channel');
+            logger.warn('[uni-stat] 云函数上报不可用，已降级为 HTTP 上报');
             return opts.http;
         }
-        logger.warn('[uni-stat] no channel available');
+        logger.warn('[uni-stat] 无可用上报线路');
         return undefined;
     }
     // image（默认）：image > http
@@ -4439,18 +4502,18 @@ function selectChannel(opts) {
     if (!fallback) {
         if (opts.image) {
             // 仅在 image 已构造但失效时给出警告，便于排查；未构造视为正常的"未启用"
-            logger.warn('[uni-stat] image channel unavailable and fallback disabled, drop batch');
+            logger.warn('[uni-stat] 统计上报线路不可用且已关闭 HTTP 兜底，本批已丢弃');
         }
         return undefined;
     }
     if (opts.http && opts.http.available()) {
         if (opts.image) {
             // 同上，仅在 image 已构造但失效时打印降级日志
-            logger.warn('[uni-stat] image channel unavailable, fallback to http channel');
+            logger.warn('[uni-stat] 统计上报线路不可用，已降级为 HTTP 上报');
         }
         return opts.http;
     }
-    logger.warn('[uni-stat] no channel available');
+    logger.warn('[uni-stat] 无可用上报线路');
     return undefined;
 }
 

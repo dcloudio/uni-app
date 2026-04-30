@@ -33,7 +33,7 @@ export interface Channel {
    * 通道名称：
    *   - `'1.0'`  : 私有版 HTTP（兼容性保留）
    *   - `'2.0'`  : 私有版 uniCloud（兼容性保留）
-   *   - `'image'`: 公有版默认通道，火山 TLS WebTrack.gif（GET 图片像素）
+   *   - `'image'`: 公有版默认通道，火山 TLS WebTrack.gif（GET）
    */
   readonly name: '1.0' | '2.0' | 'image'
   /** 是否在当前环境可用（manifest 配置 + API 检查）。 */
@@ -71,8 +71,8 @@ export interface SendResult {
  * 永久性通道错误：本次 payload 自身有问题（与网络无关），重试同一份 payload 永远不会过。
  *
  * 典型场景：
- *   - image 通道 GET URL 超过 `maxUrlLength`（例如 81718 > 6144），重发同一份必定再次超长；
- *   - 通道未配置（`image channel not configured`、`http endpoint missing`），换网络也救不了；
+ *   - H5 GET URL 超过 `maxUrlLength`，重发同一份必定再次超长；
+ *   - TLS host / projectId / topicId 未配置，换网络也救不了；
  *   - 浏览器内既无 `Image` 全局也没有 `uni.request`：环境本身缺失，重试无意义。
  *
  * 设计意图：
