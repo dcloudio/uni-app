@@ -2216,9 +2216,9 @@ const RETRY_BASE_DELAY_MS = 1000;
  * 单条事件序列化后允许的最大字节数。
  *
  * 阈值取舍：
- *   - 6KB 是 image GET URL 上限（火山 TLS WebTrack）；扣掉 host / ProjectId / TopicId /
- *     Source / Time 等固定 query 约 200B，留给 `Logs=encodeURIComponent(payload.requests)`
- *     大约 5800B。
+ *   - **仅 H5**：`WebTrack.gif` GET 的 URL 上限约 6KB（见 `docs/image-url-too-long-修复说明.md`）；
+ *     扣掉 host / ProjectId / TopicId / Source / Time 等固定 query 后，留给
+ *     `Logs=encodeURIComponent(payload.requests)` 约 5.8KB 量级。
  *   - `encodeURIComponent` 对纯 ASCII 膨胀 ~1.05x，对中英混排 ~1.5–2x，对纯中文最坏 3x。
  *   - 取 **4KB 作为单条事件上限**：保证 ASCII 场景（含大段 Error stack）能放进单批；
  *     纯中文极端场景下，由 `chunkEvents` 单条独占一片 + image preflight 在 URL 编码后
@@ -2235,10 +2235,10 @@ const SINGLE_EVENT_MAX_BYTES = 4 * 1024;
 /**
  * 单批 `requests`（已 `JSON.stringify(events)`）允许的最大字节数。
  *
- * 与 `IMAGE_REPORT_DEFAULTS` 的 6KB URL 上限对应：`encodeURIComponent` 保守按 3x
- * 膨胀比估，4KB 原文恰好对应 ~12KB encoded —— 但中文场景多见 ASCII，实际膨胀 ~1.2x，
- * 留 25% buffer 后取 4KB 作为切片阈值。超阈值时 collector flush 会按事件数 + 字节数
- * 双阈值切多个 ReportPayload，逐个发送。
+ * **H5** 与 `WebTrack.gif` URL 上限相关：`encodeURIComponent` 保守按 3x 估，4KB 原文与
+ * collector、`createImageChannel` 的 `maxRequestBytes()` 取 min 后切片。
+ * **非 H5** 走 `POST /WebTracks`，单批可更大（仍受本常量与 `BATCH_MAX_EVENTS` 约束）；
+ * 详见 `docs/火山TLS-WebTracks上报说明.md`。
  */
 const BATCH_REQUESTS_MAX_BYTES = 4 * 1024;
 /** 单批最多容纳的事件数；与字节阈值取 min 作为切片边界。 */
@@ -3134,7 +3134,7 @@ function createHttpChannel(opts = {}) {
  * **非 H5**（小程序 / App 等，与 [TLS WebTracks](https://www.volcengine.com/docs/6470/141803?lang=zh) 对齐）：
  *   - `POST ${host}/WebTracks?ProjectId&TopicId`
  *   - Header：`Content-Type: application/json`（必选）、`x-tls-bodyrawsize` = 未压缩 body 字节数（必选）
- *   - Body：`{ "Source": "webImg", "Logs": <payload.requests 解析后的数组> }`
+ *   - Body：`{ "Source": "webImg", "Logs": [...] }`，且 **每条 Log 的 value 均为 string**（服务端强校验）。
  *
  * 设计要点：
  *   - H5 仍受 GET URL 长度约束（`maxUrlLength` / `maxRequestBytes` 反推）。
@@ -3224,6 +3224,43 @@ function buildWebTracksPostUrl(host, projectId, topicId) {
         encodeURIComponent(topicId));
 }
 /**
+ * 火山 WebTracks 要求 `Logs` 中每条日志的 **所有 value 均为 string**，否则返回
+ * `InvalidArgumentsTypes`（如 `Value in Logs is not string data type`）。
+ *
+ * @param entry `requests` 解析后的单条事件对象
+ * @returns 键保留、值全部转为 UTF-8 可序列化字符串后的记录
+ */
+function normalizeWebTracksLogEntry(entry) {
+    if (entry === null || typeof entry !== 'object' || Array.isArray(entry)) {
+        return { _raw: String(entry) };
+    }
+    const out = {};
+    const obj = entry;
+    for (const key of Object.keys(obj)) {
+        const v = obj[key];
+        if (v === null || v === undefined) {
+            out[key] = '';
+        }
+        else if (typeof v === 'string') {
+            out[key] = v;
+        }
+        else if (typeof v === 'number' ||
+            typeof v === 'boolean' ||
+            typeof v === 'bigint') {
+            out[key] = String(v);
+        }
+        else {
+            try {
+                out[key] = JSON.stringify(v);
+            }
+            catch (_a) {
+                out[key] = '';
+            }
+        }
+    }
+    return out;
+}
+/**
  * 将 `ReportPayload.requests` 包装为 WebTracks POST JSON 串，并给出 UTF-8 字节长度。
  *
  * @param payload 批次 payload
@@ -3240,7 +3277,8 @@ function buildWebTracksPostBody(payload) {
     if (!Array.isArray(logs)) {
         throw new PermanentChannelError('webtracks Logs must be a json array');
     }
-    const body = { Source: 'webImg', Logs: logs };
+    const normalizedLogs = logs.map((item) => normalizeWebTracksLogEntry(item));
+    const body = { Source: 'webImg', Logs: normalizedLogs };
     let json;
     try {
         json = JSON.stringify(body);
