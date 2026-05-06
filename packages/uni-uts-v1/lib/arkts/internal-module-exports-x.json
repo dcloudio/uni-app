@@ -541,6 +541,9 @@
       "CreateVideoContext"
     ],
     [
+      "CreateWebViewContext"
+    ],
+    [
       "CreateWebviewContext"
     ],
     [
@@ -2959,7 +2962,7 @@
       "VideoErrorCode"
     ],
     [
-      "WebviewContext"
+      "WebViewContext"
     ],
     [
       "Worker"
