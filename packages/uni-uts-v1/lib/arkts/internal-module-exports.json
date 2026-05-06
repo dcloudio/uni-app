@@ -379,6 +379,12 @@
       "CloseSyncOptions"
     ],
     [
+      "CompassAccuracy"
+    ],
+    [
+      "CompassErrorCode"
+    ],
+    [
       "CompressImage"
     ],
     [
@@ -979,6 +985,9 @@
       "IClipBoardError"
     ],
     [
+      "ICompassError"
+    ],
+    [
       "ICreateBackgroundAudioFail"
     ],
     [
@@ -1039,6 +1048,9 @@
       "IStartAccelerometerFail"
     ],
     [
+      "IStartCompassFail"
+    ],
+    [
       "IStartGyroscopeFail"
     ],
     [
@@ -1046,6 +1058,9 @@
     ],
     [
       "IStopAccelerometerFail"
+    ],
+    [
+      "IStopCompassFail"
     ],
     [
       "IStopGyroscopeFail"
@@ -1252,6 +1267,9 @@
       "OffAppThemeChange"
     ],
     [
+      "OffCompassChange"
+    ],
+    [
       "OffGyroscopeChange"
     ],
     [
@@ -1295,6 +1313,15 @@
     ],
     [
       "OnAppThemeChangeCallback"
+    ],
+    [
+      "OnCompassChange"
+    ],
+    [
+      "OnCompassChangeCallback"
+    ],
+    [
+      "OnCompassChangeCallbackResult"
     ],
     [
       "OnGyroscopeChange"
@@ -2083,6 +2110,30 @@
       "StartAccelerometerSuccessCallback"
     ],
     [
+      "StartCompass"
+    ],
+    [
+      "StartCompassComplete"
+    ],
+    [
+      "StartCompassCompleteCallback"
+    ],
+    [
+      "StartCompassFail"
+    ],
+    [
+      "StartCompassFailCallback"
+    ],
+    [
+      "StartCompassOptions"
+    ],
+    [
+      "StartCompassSuccess"
+    ],
+    [
+      "StartCompassSuccessCallback"
+    ],
+    [
       "StartGyroscope"
     ],
     [
@@ -2213,6 +2264,30 @@
     ],
     [
       "StopAccelerometerSuccessCallback"
+    ],
+    [
+      "StopCompass"
+    ],
+    [
+      "StopCompassComplete"
+    ],
+    [
+      "StopCompassCompleteCallback"
+    ],
+    [
+      "StopCompassFail"
+    ],
+    [
+      "StopCompassFailCallback"
+    ],
+    [
+      "StopCompassOptions"
+    ],
+    [
+      "StopCompassSuccess"
+    ],
+    [
+      "StopCompassSuccessCallback"
     ],
     [
       "StopGyroscope"
