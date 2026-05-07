@@ -15767,73 +15767,6 @@ function useRadioInject(radioChecked, radioValue, reset) {
     field
   };
 }
-const TAGS = {
-  a: "",
-  abbr: "",
-  address: "",
-  article: "",
-  aside: "",
-  b: "",
-  bdi: "",
-  bdo: ["dir"],
-  big: "",
-  blockquote: "",
-  br: "",
-  caption: "",
-  center: "",
-  cite: "",
-  code: "",
-  col: ["span", "width"],
-  colgroup: ["span", "width"],
-  dd: "",
-  del: "",
-  div: "",
-  dl: "",
-  dt: "",
-  em: "",
-  fieldset: "",
-  font: "",
-  footer: "",
-  h1: "",
-  h2: "",
-  h3: "",
-  h4: "",
-  h5: "",
-  h6: "",
-  header: "",
-  hr: "",
-  i: "",
-  img: ["alt", "src", "height", "width"],
-  ins: "",
-  label: "",
-  legend: "",
-  li: "",
-  mark: "",
-  nav: "",
-  ol: ["start", "type"],
-  p: "",
-  pre: "",
-  q: "",
-  rt: "",
-  ruby: "",
-  s: "",
-  section: "",
-  small: "",
-  span: "",
-  strong: "",
-  sub: "",
-  sup: "",
-  table: ["width"],
-  tbody: "",
-  td: ["colspan", "height", "rowspan", "width"],
-  tfoot: "",
-  th: ["colspan", "height", "rowspan", "width"],
-  thead: "",
-  tr: ["colspan", "height", "rowspan", "width"],
-  tt: "",
-  u: "",
-  ul: ""
-};
 const CHARS = {
   amp: "&",
   gt: ">",
@@ -15893,12 +15826,9 @@ function normalizeValue(tagName, name, value) {
 function normalizeAttrs(tagName, attrs2) {
   if (!isPlainObject(attrs2))
     return;
-  const tagAttrs = TAGS[tagName] || [];
   const normalizedAttrs = {};
   Object.keys(attrs2).forEach((name) => {
-    if (name === "class" || name === "style" || tagAttrs.includes(name)) {
-      normalizedAttrs[name] = normalizeValue(tagName, name, attrs2[name]);
-    }
+    normalizedAttrs[name] = normalizeValue(tagName, name, attrs2[name]);
   });
   return normalizedAttrs;
 }
@@ -15914,9 +15844,6 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
         return;
       }
       const tagName = node.name.toLowerCase();
-      if (!hasOwn(TAGS, tagName)) {
-        return;
-      }
       const nodeProps = extend(
         { [scopeId]: "" },
         processClickEvent(node, triggerItemClick),
