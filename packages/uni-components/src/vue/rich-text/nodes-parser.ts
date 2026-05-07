@@ -147,6 +147,10 @@ function normalizeAttrs(tagName: string, attrs?: Data) {
   const tagAttrs = TAGS[tagName as keyof typeof TAGS] || []
   const normalizedAttrs: Data = {}
   Object.keys(attrs).forEach((name) => {
+    //#if _X_
+    normalizedAttrs[name] = normalizeValue(tagName, name, attrs[name])
+    //#endif
+    //#if !_X_
     if (
       name === 'class' ||
       name === 'style' ||
@@ -154,6 +158,7 @@ function normalizeAttrs(tagName: string, attrs?: Data) {
     ) {
       normalizedAttrs[name] = normalizeValue(tagName, name, attrs[name])
     }
+    //#endif
   })
   return normalizedAttrs
 }
@@ -174,9 +179,11 @@ export const nodeList2VNode = /*#__PURE__*/ (
         return
       }
       const tagName = node.name.toLowerCase()
+      //#if !_X_
       if (!hasOwn(TAGS, tagName)) {
         return
       }
+      //#endif
       const nodeProps = extend(
         { [scopeId]: '' },
         processClickEvent(node, triggerItemClick),
