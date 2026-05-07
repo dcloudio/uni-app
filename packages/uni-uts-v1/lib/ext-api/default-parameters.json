@@ -22,6 +22,10 @@
     ]
   },
   "uni-createWebviewContext": {
+    "createWebViewContext": [
+      null,
+      "null"
+    ],
     "createWebviewContext": [
       null,
       "null"
@@ -95,9 +99,6 @@
       "null"
     ],
     "stopGyroscope": [
-      "null"
-    ],
-    "offGyroscopeChange": [
       "null"
     ]
   },
@@ -173,12 +174,6 @@
   },
   "uni-video": {
     "createVideoContext": [
-      null,
-      "null"
-    ]
-  },
-  "uni-web-view": {
-    "createWebViewContext": [
       null,
       "null"
     ]
