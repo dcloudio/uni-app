@@ -538,6 +538,9 @@
       "CreateVideoContext"
     ],
     [
+      "CreateWebViewContext"
+    ],
+    [
       "CreateWebviewContext"
     ],
     [
@@ -1435,7 +1438,16 @@
       "MemoryWarningCallbackResult"
     ],
     [
+      "MemoryWarningCallbackResult"
+    ],
+    [
       "MemoryWarningErrorCode"
+    ],
+    [
+      "MemoryWarningErrorCode"
+    ],
+    [
+      "MemoryWarningFail"
     ],
     [
       "MemoryWarningFail"
@@ -1478,6 +1490,9 @@
     ],
     [
       "OffLocationChangeError"
+    ],
+    [
+      "OffMemoryWarning"
     ],
     [
       "OffMemoryWarning"
@@ -1565,6 +1580,12 @@
     ],
     [
       "OnMemoryWarning"
+    ],
+    [
+      "OnMemoryWarning"
+    ],
+    [
+      "OnMemoryWarningCallback"
     ],
     [
       "OnMemoryWarningCallback"
@@ -2929,7 +2950,7 @@
       "VideoErrorCode"
     ],
     [
-      "WebviewContext"
+      "WebViewContext"
     ],
     [
       "Worker"
