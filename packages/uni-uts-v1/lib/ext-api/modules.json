@@ -1135,34 +1135,6 @@
     "mp-kuaishou": false,
     "mp-jd": false
   },
-  "uni-memorywarning": {
-    "uni": {
-      "onMemoryWarning": {
-        "name": "onMemoryWarning",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true,
-          "arkts": true
-        }
-      },
-      "offMemoryWarning": {
-        "name": "offMemoryWarning",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true,
-          "arkts": true
-        }
-      }
-    },
-    "mp-weixin": false,
-    "mp-alipay": false,
-    "mp-baidu": false,
-    "mp-qq": false,
-    "mp-kuaishou": false,
-    "mp-jd": false
-  },
   "uni-modal": {
     "uni": {
       "showModal": {
