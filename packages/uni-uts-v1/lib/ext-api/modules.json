@@ -123,6 +123,11 @@
       "ad"
     ]
   },
+  "uni-animation-view": {
+    "easycom": [
+      "animation-view"
+    ]
+  },
   "uni-arrayBufferToBase64": {
     "uni": {
       "arrayBufferToBase64": {
