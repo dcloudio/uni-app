@@ -1,13 +1,6 @@
 import { AppContext, ComponentInternalOptions, ComponentPropsOptions, ComponentPublicInstance, CreateAppFunction, EffectScope, EmitFn, EmitsOptions, GenericAppContext, GenericComponentInstance, LifecycleHook, NormalizedPropsOptions, ObjectEmitsOptions, SuspenseBoundary, defineComponent, defineComponent as defineVaporSharedDataComponent, ref, shallowRef } from "@vue/runtime-core";
 import { hyphenate } from "@vue/shared";
 import { EffectScope as EffectScope$1, Reactive, Ref, ShallowRef } from "@vue/reactivity";
-import "@vue/compiler-dom";
-import "@vue/compiler-vapor";
-import "@vue/compiler-sfc";
-import "@dcloudio/uni-app-x/types/dom2-internal/UniCSSTransform";
-import "@dcloudio/uni-app-x/types/dom2-internal/UniNativeDefines";
-import "@dcloudio/uni-app-x/types/dom2-internal/UniCSSProperty";
-import "@dcloudio/uni-app-x/types/dom2-internal/UniCSSTransition";
 import { Element as Element$1 } from "@dcloudio/uni-app-x/types/native";
 export * from "@vue/runtime-x";
 
@@ -19,21 +12,28 @@ declare class VaporFragment {
   insert?: (parent: ParentNode, anchor: Node | null) => void;
   remove?: (parent?: ParentNode) => void;
   onUpdated?: ((nodes?: Block) => void)[];
+  readonly slotOwner: VaporSharedDataComponentInstance | null;
   constructor(nodes: Block);
+  protected runWithRenderCtx<R>(fn: () => R): R;
 }
 declare class DynamicFragment extends VaporFragment {
   scope: EffectScope$1 | undefined;
   current?: BlockFn;
   fallback?: BlockFn;
   getScope?: (key: any) => EffectScope$1 | undefined;
-  slotOwner: VaporSharedDataComponentInstance | null;
   constructor(anchorLabel?: string);
   update(render?: BlockFn | null, key?: any): void;
   private renderBranch;
 }
 //#endregion
+//#region temp/packages/runtime-vapor-dom2/src/apiTemplateRef.d.ts
+type NodeRef = string | Ref | ((ref: Element) => void);
+type RefEl = UniElement | VaporSharedDataComponentInstance | DynamicFragment | VaporFragment;
+type setRefFn = (el: RefEl | null, ref: NodeRef, refFor?: boolean | null, refKey?: string | null) => NodeRef | undefined;
+export declare function createSharedDataTemplateRefSetter(): setRefFn;
+//#endregion
 //#region temp/packages/runtime-vapor-dom2/src/block.d.ts
-type Block = Node | VaporFragment | DynamicFragment | VaporSharedDataComponentInstance | Block[];
+type Block = Node | VaporFragment | DynamicFragment | VaporSharedDataComponentInstance | Block[] | RefEl;
 type BlockFn = (...args: any[]) => void;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/componentProps.d.ts
@@ -122,7 +122,7 @@ export declare function createSharedDataComponent<C = any, SharedData extends st
 declare class VaporSharedDataComponentInstance<SharedData extends string = string> implements GenericComponentInstance {
   pageId?: number;
   sharedData?: InferSharedData<SharedData, UniSharedDataComponent> | InferSharedData<SharedData, UniSharedDataPage>;
-  component: UniSharedDataComponent;
+  component!: UniSharedDataComponent;
   _sharedDataScope?: UniSharedDataPage;
   get sharedDataScope(): UniSharedDataPage;
   set sharedDataScope(scope: UniSharedDataPage);
@@ -281,12 +281,6 @@ declare function onReused(callback: () => void): void;
 declare function onBeforeRecycle(callback: () => void): void;
 export declare const onRecycle: typeof onBeforeRecycle;
 export declare const onReuse: typeof onReused;
-//#endregion
-//#region temp/packages/runtime-vapor-dom2/src/apiTemplateRef.d.ts
-type NodeRef = string | Ref | ((ref: Element) => void);
-type RefEl = UniElement | VaporSharedDataComponentInstance | DynamicFragment | VaporFragment;
-type setRefFn = (el: RefEl | null, ref: NodeRef, refFor?: boolean | null, refKey?: string | null) => NodeRef | undefined;
-export declare function createSharedDataTemplateRefSetter(): setRefFn;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateDynamicComponent.d.ts
 export declare function createSharedDataDynamicComponent(getter: () => any, setter: (ins: VaporSharedDataComponentInstance | null) => any, rawProps?: RawProps | null, rawSlots?: RawSlots | null, isSingleRoot?: boolean, once?: boolean): VaporSharedDataComponentInstance | null;

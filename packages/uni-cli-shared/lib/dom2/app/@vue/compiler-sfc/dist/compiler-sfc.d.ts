@@ -2,12 +2,8 @@ import * as _babel_types0 from "@babel/types";
 import { CallExpression as CallExpression$1, Expression as Expression$1, Node as Node$1, ObjectPattern, Program as Program$1, Statement as Statement$1, TSCallSignatureDeclaration, TSFunctionType, TSMethodSignature, TSModuleDeclaration, TSPropertySignature, TSType } from "@babel/types";
 import { BaseCodegenResult, BindingMetadata, BindingMetadata as BindingMetadata$1, CompilerError, CompilerError as CompilerError$1, CompilerOptions as CompilerOptions$1, CompilerOptions as CompilerOptions$2, ParserOptions, RawSourceMap, RootNode, SourceLocation, extractIdentifiers, generateCodeFrame, isInDestructureAssignment, isStaticProperty, walkIdentifiers } from "@vue/compiler-core";
 import { ParserPlugin, parse as babelParse } from "@babel/parser";
-import "source-map-js";
-import "lru-cache";
 import { LazyResult, Result } from "postcss";
 import MagicString, { default as MagicString$1 } from "magic-string";
-import "@vue/shared";
-
 //#region temp/packages/compiler-sfc/src/template/transformAssetUrl.d.ts
 export interface AssetURLTagConfig {
   [name: string]: string[];
@@ -34,6 +30,7 @@ export interface SFCTemplateCompileResults {
   code: string;
   ast?: unknown;
   preamble?: string;
+  multiRoot?: boolean;
   source: string;
   tips: string[];
   errors: (string | CompilerError$1)[];

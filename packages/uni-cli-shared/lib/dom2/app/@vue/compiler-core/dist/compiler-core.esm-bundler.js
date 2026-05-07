@@ -1,10 +1,9 @@
 /**
-  * @vue/compiler-core v3.6.0-beta.7
+  * @vue/compiler-core v3.6.0-beta.10
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
 import { EMPTY_OBJ, NO, NOOP, PatchFlagNames, camelize, capitalize, extend, generateCodeFrame, getModifierPropName, isArray, isBuiltInDirective, isObject, isOn, isReservedProp, isString, isSymbol, makeMap, slotFlagsText, toHandlerKey } from "@vue/shared";
-
 //#region packages/compiler-core/src/runtimeHelpers.ts
 const FRAGMENT = Symbol(!!(process.env.NODE_ENV !== "production") ? `Fragment` : ``);
 const TELEPORT = Symbol(!!(process.env.NODE_ENV !== "production") ? `Teleport` : ``);
@@ -98,7 +97,6 @@ function registerRuntimeHelpers(helpers) {
 		helperNameMap[s] = helpers[s];
 	});
 }
-
 //#endregion
 //#region packages/compiler-core/src/ast.ts
 const NodeTypes = {
@@ -376,7 +374,6 @@ function convertToBlock(node, { helper, removeHelper, inSSR }) {
 		helper(getVNodeBlockHelper(inSSR, node.isComponent));
 	}
 }
-
 //#endregion
 //#region packages/compiler-core/src/tokenizer.ts
 const defaultDelimitersOpen = new Uint8Array([123, 123]);
@@ -1085,7 +1082,6 @@ var Tokenizer = class {
 	}
 	emitCodePoint(cp, consumed) {}
 };
-
 //#endregion
 //#region packages/compiler-core/src/compat/compatConfig.ts
 const CompilerDeprecationTypes = {
@@ -1153,7 +1149,6 @@ function warnDeprecation(key, context, loc, ...args) {
 	if (loc) err.loc = loc;
 	context.onWarn(err);
 }
-
 //#endregion
 //#region packages/compiler-core/src/errors.ts
 function defaultOnError(error) {
@@ -1338,7 +1333,6 @@ const errorMessages = {
 	[51]: `"scopeId" option is only supported in module mode.`,
 	[54]: ``
 };
-
 //#endregion
 //#region packages/compiler-core/src/babelUtils.ts
 /**
@@ -1476,7 +1470,6 @@ function isConstantNode(node, bindings) {
 	}
 	return false;
 }
-
 //#endregion
 //#region packages/compiler-core/src/utils.ts
 const isStaticExp = (p) => p.type === 4 && p.isStatic;
@@ -1746,7 +1739,6 @@ function isWhitespaceText(node) {
 function isCommentOrWhitespace(node) {
 	return node.type === 3 || isWhitespaceText(node);
 }
-
 //#endregion
 //#region packages/compiler-core/src/parser.ts
 const defaultParserOptions = {
@@ -2289,7 +2281,6 @@ function baseParse(input, options) {
 	currentRoot = null;
 	return root;
 }
-
 //#endregion
 //#region packages/compiler-core/src/transforms/cacheStatic.ts
 function cacheStatic(root, context) {
@@ -2487,7 +2478,6 @@ function getNodeProps(node) {
 	const codegenNode = node.codegenNode;
 	if (codegenNode.type === 13) return codegenNode.props;
 }
-
 //#endregion
 //#region packages/compiler-core/src/transform.ts
 function getSelfName(filename) {
@@ -2701,7 +2691,6 @@ function createStructuralDirectiveTransform(name, fn) {
 		}
 	};
 }
-
 //#endregion
 //#region packages/compiler-core/src/codegen.ts
 const PURE_ANNOTATION = `/*@__PURE__*/`;
@@ -2951,6 +2940,7 @@ function genNode(node, context) {
 		case 24: break;
 		case 25: break;
 		case 26: break;
+		/* v8 ignore start */
 		case 10: break;
 		default: if (!!(process.env.NODE_ENV !== "production")) {
 			assert(false, `unhandled codegen node type: ${node.type}`);
@@ -3138,7 +3128,6 @@ function genCacheExpression(node, context) {
 	push(`)`);
 	if (needArraySpread) push(`)]`);
 }
-
 //#endregion
 //#region packages/compiler-core/src/validateExpression.ts
 const prohibitedKeywordRE = new RegExp("\\b" + "arguments,await,break,case,catch,class,const,continue,debugger,default,delete,do,else,export,extends,finally,for,function,if,import,let,new,return,super,switch,throw,try,var,void,while,with,yield".split(",").join("\\b|\\b") + "\\b");
@@ -3160,7 +3149,6 @@ function validateBrowserExpression(node, context, asParams = false, asRawStateme
 		context.onError(createCompilerError(46, node.loc, void 0, message));
 	}
 }
-
 //#endregion
 //#region packages/compiler-core/src/transforms/transformExpression.ts
 const isLiteralWhitelisted = /* @__PURE__ */ makeMap("true,false,null,this");
@@ -3188,7 +3176,6 @@ function stringifyExpression(exp) {
 	else if (exp.type === 4) return exp.content;
 	else return exp.children.map(stringifyExpression).join("");
 }
-
 //#endregion
 //#region packages/compiler-core/src/transforms/vIf.ts
 const transformIf = createStructuralDirectiveTransform(/^(?:if|else|else-if)$/, (node, dir, context) => {
@@ -3311,7 +3298,6 @@ function getParentCondition(node) {
 	else return node;
 	else if (node.type === 20) node = node.value;
 }
-
 //#endregion
 //#region packages/compiler-core/src/transforms/vFor.ts
 const transformFor = createStructuralDirectiveTransform("for", (node, dir, context) => {
@@ -3368,7 +3354,7 @@ const transformFor = createStructuralDirectiveTransform("for", (node, dir, conte
 						`)`
 					]),
 					createCompoundExpression([
-						`if (_cached`,
+						`if (_cached && _cached.el`,
 						...keyExp ? [` && _cached.key === `, keyExp] : [],
 						` && ${context.helperString(IS_MEMO_SAME)}(_cached, _memo)) return _cached`
 					]),
@@ -3436,7 +3422,6 @@ function createParamsList(args) {
 	while (i--) if (args[i]) break;
 	return args.slice(0, i + 1).map((arg, i) => arg || createSimpleExpression(`_`.repeat(i + 1), false));
 }
-
 //#endregion
 //#region packages/compiler-core/src/transforms/vSlot.ts
 const defaultFallback = createSimpleExpression(`undefined`, false);
@@ -3586,7 +3571,6 @@ function hasForwardedSlots(children) {
 	}
 	return false;
 }
-
 //#endregion
 //#region packages/compiler-core/src/transforms/transformElement.ts
 const directiveImportMap = /* @__PURE__ */ new WeakMap();
@@ -3881,7 +3865,6 @@ function stringifyDynamicPropNames(props) {
 function isComponentTag(tag) {
 	return tag === "component" || tag === "Component";
 }
-
 //#endregion
 //#region packages/compiler-core/src/transforms/transformSlotOutlet.ts
 const transformSlotOutlet = (node, context) => {
@@ -3939,7 +3922,6 @@ function processSlotOutlet(node, context) {
 		slotProps
 	};
 }
-
 //#endregion
 //#region packages/compiler-core/src/transforms/vOn.ts
 const transformOn = (dir, node, context, augmentor) => {
@@ -3981,7 +3963,6 @@ const transformOn = (dir, node, context, augmentor) => {
 	ret.props.forEach((p) => p.key.isHandlerKey = true);
 	return ret;
 };
-
 //#endregion
 //#region packages/compiler-core/src/transforms/vBind.ts
 const transformBind = (dir, _node, context) => {
@@ -4013,7 +3994,6 @@ const injectPrefix = (arg, prefix) => {
 		arg.children.push(`)`);
 	}
 };
-
 //#endregion
 //#region packages/compiler-core/src/transforms/transformText.ts
 const transformText = (node, context) => {
@@ -4056,7 +4036,6 @@ const transformText = (node, context) => {
 		}
 	};
 };
-
 //#endregion
 //#region packages/compiler-core/src/transforms/vOnce.ts
 const seen$1 = /* @__PURE__ */ new WeakSet();
@@ -4073,7 +4052,6 @@ const transformOnce = (node, context) => {
 		};
 	}
 };
-
 //#endregion
 //#region packages/compiler-core/src/transforms/vModel.ts
 const transformModel = (dir, node, context) => {
@@ -4116,7 +4094,6 @@ const transformModel = (dir, node, context) => {
 function createTransformProps(props = []) {
 	return { props };
 }
-
 //#endregion
 //#region packages/compiler-core/src/compat/transformFilter.ts
 const validDivisionCharRE = /[\w).+\-_$\]]/;
@@ -4230,7 +4207,6 @@ function wrapFilter(exp, filter, context) {
 		return `${toValidAssetId(name, "filter")}(${exp}${args !== ")" ? "," + args : args}`;
 	}
 }
-
 //#endregion
 //#region packages/compiler-core/src/transforms/vMemo.ts
 const seen = /* @__PURE__ */ new WeakSet();
@@ -4254,7 +4230,6 @@ const transformMemo = (node, context) => {
 		};
 	}
 };
-
 //#endregion
 //#region packages/compiler-core/src/transforms/transformVBindShorthand.ts
 const transformVBindShorthand = (node, context) => {
@@ -4271,7 +4246,6 @@ const transformVBindShorthand = (node, context) => {
 		}
 	}
 };
-
 //#endregion
 //#region packages/compiler-core/src/compile.ts
 function getBaseTransformPreset(prefixIdentifiers) {
@@ -4311,7 +4285,6 @@ function baseCompile(source, options = {}) {
 	}));
 	return generate(ast, resolvedOptions);
 }
-
 //#endregion
 //#region packages/compiler-core/src/options.ts
 const BindingTypes = {
@@ -4326,10 +4299,8 @@ const BindingTypes = {
 	"OPTIONS": "options",
 	"LITERAL_CONST": "literal-const"
 };
-
 //#endregion
 //#region packages/compiler-core/src/transforms/noopDirectiveTransform.ts
 const noopDirectiveTransform = () => ({ props: [] });
-
 //#endregion
 export { BASE_TRANSITION, BindingTypes, CAMELIZE, CAPITALIZE, CREATE_BLOCK, CREATE_COMMENT, CREATE_ELEMENT_BLOCK, CREATE_ELEMENT_VNODE, CREATE_SLOTS, CREATE_STATIC, CREATE_TEXT, CREATE_VNODE, CompilerDeprecationTypes, ConstantTypes, ElementTypes, ErrorCodes, FRAGMENT, GUARD_REACTIVE_PROPS, IS_MEMO_SAME, IS_REF, KEEP_ALIVE, MERGE_PROPS, NORMALIZE_CLASS, NORMALIZE_PROPS, NORMALIZE_STYLE, NewlineType, NodeTypes, OPEN_BLOCK, POP_SCOPE_ID, PUSH_SCOPE_ID, RENDER_LIST, RENDER_SLOT, RESOLVE_COMPONENT, RESOLVE_DIRECTIVE, RESOLVE_DYNAMIC_COMPONENT, RESOLVE_FILTER, SET_BLOCK_TRACKING, SUSPENSE, TELEPORT, TO_DISPLAY_STRING, TO_HANDLERS, TO_HANDLER_KEY, TS_NODE_TYPES, UNREF, WITH_CTX, WITH_DIRECTIVES, WITH_MEMO, advancePositionWithClone, advancePositionWithMutation, assert, baseCompile, baseParse, buildDirectiveArgs, buildProps, buildSlots, checkCompatEnabled, convertToBlock, createArrayExpression, createAssignmentExpression, createBlockStatement, createCacheExpression, createCallExpression, createCompilerError, createCompoundExpression, createConditionalExpression, createExp, createForLoopParams, createFunctionExpression, createIfStatement, createInterpolation, createObjectExpression, createObjectProperty, createReturnStatement, createRoot, createSequenceExpression, createSimpleExpression, createStructuralDirectiveTransform, createTemplateLiteral, createTransformContext, createVNodeCall, defaultOnError, defaultOnWarn, errorMessages, extractIdentifiers, filterNonCommentChildren, findDir, findProp, forAliasRE, generate, generateCodeFrame, getBaseTransformPreset, getConstantType, getMemoedVNodeCall, getSelfName, getVNodeBlockHelper, getVNodeHelper, hasDynamicKeyVBind, hasScopeRef, hasSingleChild, helperNameMap, injectProp, isAllWhitespace, isCommentOrWhitespace, isConstantNode, isCoreComponent, isFnExpression, isFnExpressionBrowser, isFnExpressionNode, isFunctionType, isInDestructureAssignment, isInNewExpression, isLiteralWhitelisted, isMemberExpression, isMemberExpressionBrowser, isMemberExpressionNode, isReferencedIdentifier, isSimpleIdentifier, isSingleIfBlock, isSlotOutlet, isStaticArgOf, isStaticExp, isStaticNode, isStaticProperty, isStaticPropertyKey, isTemplateNode, isText, isVPre, isVSlot, isWhitespaceText, locStub, noopDirectiveTransform, processExpression, processFor, processIf, processSlotOutlet, registerRuntimeHelpers, resolveComponentType, stringifyExpression, toValidAssetId, trackSlotScopes, trackVForSlotScopes, transform, transformBind, transformElement, transformExpression, transformModel, transformOn, transformVBindShorthand, traverseNode, unwrapTSNode, validFirstIdentCharRE, walkBlockDeclarations, walkFunctionParams, walkIdentifiers, warnDeprecation };
