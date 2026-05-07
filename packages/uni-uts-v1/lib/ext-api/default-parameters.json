@@ -96,9 +96,6 @@
     ],
     "stopGyroscope": [
       "null"
-    ],
-    "offGyroscopeChange": [
-      "null"
     ]
   },
   "uni-keyboard": {
