@@ -1438,16 +1438,7 @@
       "MemoryWarningCallbackResult"
     ],
     [
-      "MemoryWarningCallbackResult"
-    ],
-    [
       "MemoryWarningErrorCode"
-    ],
-    [
-      "MemoryWarningErrorCode"
-    ],
-    [
-      "MemoryWarningFail"
     ],
     [
       "MemoryWarningFail"
@@ -1490,9 +1481,6 @@
     ],
     [
       "OffLocationChangeError"
-    ],
-    [
-      "OffMemoryWarning"
     ],
     [
       "OffMemoryWarning"
@@ -1580,12 +1568,6 @@
     ],
     [
       "OnMemoryWarning"
-    ],
-    [
-      "OnMemoryWarning"
-    ],
-    [
-      "OnMemoryWarningCallback"
     ],
     [
       "OnMemoryWarningCallback"
