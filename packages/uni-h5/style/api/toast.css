@@ -80,7 +80,10 @@ uni-toast .uni-mask {
 }
 
 .uni-toast__content {
-  margin: 0 0 15px;
+  margin: 0 auto 15px;
+	width: 86%;
+	overflow: hidden;
+	white-space: nowrap;
 }
 
 @media (prefers-color-scheme: dark) {
