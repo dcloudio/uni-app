@@ -15466,7 +15466,7 @@ function compileScript(sfc, options) {
 	if (propsDecl) runtimeOptions += `\n  props: ${propsDecl},`;
 	const emitsDecl = genRuntimeEmits(ctx);
 	if (emitsDecl) runtimeOptions += `\n  emits: ${emitsDecl},`;
-	if (vapor && !ssr && sfc.template && !sfc.template.src) {
+	if (vapor && !ssr && sfc.template && !sfc.template.src && sfc.template.ast) {
 		var _options$templateOpti4;
 		runtimeOptions += `\n  __multiRoot: ${isMultiRoot(sfc.template.ast, (_options$templateOpti4 = options.templateOptions) === null || _options$templateOpti4 === void 0 ? void 0 : _options$templateOpti4.compilerOptions)},`;
 	}
