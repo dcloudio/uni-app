@@ -1,5 +1,8 @@
 {
   "uni-accelerometer": {
+    "offAccelerometerChange": [
+      "null"
+    ],
     "startAccelerometer": [
       "null"
     ],
@@ -8,6 +11,9 @@
     ]
   },
   "uni-compass": {
+    "offCompassChange": [
+      "null"
+    ],
     "startCompass": [
       "null"
     ],
@@ -100,6 +106,9 @@
     ],
     "stopGyroscope": [
       "null"
+    ],
+    "offGyroscopeChange": [
+      "null"
     ]
   },
   "uni-keyboard": {
@@ -112,6 +121,11 @@
       "null"
     ],
     "offLocationChangeError": [
+      "null"
+    ]
+  },
+  "uni-memory": {
+    "offMemoryWarning": [
       "null"
     ]
   },
