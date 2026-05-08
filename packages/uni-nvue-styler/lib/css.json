@@ -6148,9 +6148,6 @@
             "unixVaporVer": "5.0"
           }
         }
-      },
-      "defaultValue": {
-        "uvue": "0"
       }
     },
     {
@@ -8550,8 +8547,7 @@
             "unixVaporVer": "5.0"
           }
         }
-      },
-      "defaultValue": "0"
+      }
     },
     {
       "name": "border-bottom",
@@ -8606,8 +8602,7 @@
             "unixVaporVer": "5.0"
           }
         }
-      },
-      "defaultValue": "0"
+      }
     },
     {
       "name": "border-left",
@@ -8662,8 +8657,7 @@
             "unixVaporVer": "5.0"
           }
         }
-      },
-      "defaultValue": "0"
+      }
     },
     {
       "name": "border-right",
@@ -8718,8 +8712,7 @@
             "unixVaporVer": "5.0"
           }
         }
-      },
-      "defaultValue": "0"
+      }
     },
     {
       "name": "color",
@@ -9059,7 +9052,7 @@
             }
           }
         },
-        { 
+        {
           "name": "100",
           "uniPlatform": {
             "app": {
@@ -9094,7 +9087,7 @@
             }
           }
         },
-        { 
+        {
           "name": "200",
           "uniPlatform": {
             "app": {
@@ -9129,7 +9122,7 @@
             }
           }
         },
-        { 
+        {
           "name": "300",
           "uniPlatform": {
             "app": {
@@ -9304,7 +9297,7 @@
             }
           }
         },
-        { 
+        {
           "name": "800",
           "uniPlatform": {
             "app": {
@@ -9339,7 +9332,7 @@
             }
           }
         },
-        { 
+        {
           "name": "900",
           "uniPlatform": {
             "app": {
