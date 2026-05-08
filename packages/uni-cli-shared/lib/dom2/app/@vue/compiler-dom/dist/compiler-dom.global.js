@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-dom v3.6.0-beta.10
+  * @vue/compiler-dom v3.6.0-beta.11
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -48,8 +48,6 @@ var VueCompilerDOM = (function(exports) {
 	* @private
 	*/
 	const camelize = cacheStringFunction((str) => str.replace(camelizeRE, camelizeReplacer));
-	const hyphenateRE = /\B([A-Z])/g;
-	cacheStringFunction((str) => str.replace(hyphenateRE, "-$1").toLowerCase());
 	/**
 	* @private
 	*/
@@ -1684,7 +1682,7 @@ var VueCompilerDOM = (function(exports) {
 	*/
 	const isMemberExpressionBrowser = (exp) => {
 		const path = getExpSource(exp).trim().replace(whitespaceRE, (s) => s.trim());
-		let state = MemberExpLexState.inMemberExp;
+		let state = 0;
 		let stateStack = [];
 		let currentOpenBracketCount = 0;
 		let currentOpenParensCount = 0;
@@ -1692,31 +1690,31 @@ var VueCompilerDOM = (function(exports) {
 		for (let i = 0; i < path.length; i++) {
 			const char = path.charAt(i);
 			switch (state) {
-				case MemberExpLexState.inMemberExp:
+				case 0:
 					if (char === "[") {
 						stateStack.push(state);
-						state = MemberExpLexState.inBrackets;
+						state = 1;
 						currentOpenBracketCount++;
 					} else if (char === "(") {
 						stateStack.push(state);
-						state = MemberExpLexState.inParens;
+						state = 2;
 						currentOpenParensCount++;
 					} else if (!(i === 0 ? validFirstIdentCharRE : validIdentCharRE).test(char)) return false;
 					break;
-				case MemberExpLexState.inBrackets:
+				case 1:
 					if (char === `'` || char === `"` || char === "`") {
 						stateStack.push(state);
-						state = MemberExpLexState.inString;
+						state = 3;
 						currentStringType = char;
 					} else if (char === `[`) currentOpenBracketCount++;
 					else if (char === `]`) {
 						if (!--currentOpenBracketCount) state = stateStack.pop();
 					}
 					break;
-				case MemberExpLexState.inParens:
+				case 2:
 					if (char === `'` || char === `"` || char === "`") {
 						stateStack.push(state);
-						state = MemberExpLexState.inString;
+						state = 3;
 						currentStringType = char;
 					} else if (char === `(`) currentOpenParensCount++;
 					else if (char === `)`) {
@@ -1724,7 +1722,7 @@ var VueCompilerDOM = (function(exports) {
 						if (!--currentOpenParensCount) state = stateStack.pop();
 					}
 					break;
-				case MemberExpLexState.inString:
+				case 3:
 					if (char === currentStringType) {
 						state = stateStack.pop();
 						currentStringType = null;
@@ -2096,8 +2094,7 @@ var VueCompilerDOM = (function(exports) {
 						};
 						if (tokenizer.inSFCRoot && currentOpenTag.tag === "template" && currentProp.name === "lang" && currentAttrValue && currentAttrValue !== "html") tokenizer.enterRCDATA(toCharCodes(`</template`), 0);
 					} else {
-						let expParseMode = ExpParseMode.Normal;
-						currentProp.exp = createExp(currentAttrValue, false, getLoc(currentAttrStartIndex, currentAttrEndIndex), 0, expParseMode);
+						currentProp.exp = createExp(currentAttrValue, false, getLoc(currentAttrStartIndex, currentAttrEndIndex), 0, 0);
 						if (currentProp.name === "for") currentProp.forParseResult = parseForExpression(currentProp.exp);
 						let syncIndex = -1;
 						if (currentProp.name === "bind" && (syncIndex = currentProp.modifiers.findIndex((mod) => mod.content === "sync")) > -1 && checkCompatEnabled("COMPILER_V_BIND_SYNC", currentOptions, currentProp.loc, currentProp.arg.loc.source)) {
@@ -2174,7 +2171,7 @@ var VueCompilerDOM = (function(exports) {
 		const [, LHS, RHS] = inMatch;
 		const createAliasExpression = (content, offset, asParam = false) => {
 			const start = loc.start.offset + offset;
-			return createExp(content, false, getLoc(start, start + content.length), 0, asParam ? ExpParseMode.Params : ExpParseMode.Normal);
+			return createExp(content, false, getLoc(start, start + content.length), 0, asParam ? 1 : 0);
 		};
 		const result = {
 			source: createAliasExpression(RHS.trim(), exp.indexOf(RHS, LHS.length)),
@@ -2417,7 +2414,7 @@ var VueCompilerDOM = (function(exports) {
 		ExpParseMode[ExpParseMode["Skip"] = 3] = "Skip";
 		return ExpParseMode;
 	}(ExpParseMode || {});
-	function createExp(content, isStatic = false, loc, constType = 0, parseMode = ExpParseMode.Normal) {
+	function createExp(content, isStatic = false, loc, constType = 0, parseMode = 0) {
 		return createSimpleExpression(content, isStatic, loc, constType);
 	}
 	function emitError(code, index, message) {
@@ -2694,6 +2691,7 @@ var VueCompilerDOM = (function(exports) {
 			constantCache: /* @__PURE__ */ new WeakMap(),
 			temps: 0,
 			identifiers: Object.create(null),
+			identifierScopes: Object.create(null),
 			scopes: {
 				vFor: 0,
 				vSlot: 0,
@@ -2744,8 +2742,12 @@ var VueCompilerDOM = (function(exports) {
 				context.parent.children.splice(removalIndex, 1);
 			},
 			onNodeRemoved: NOOP,
-			addIdentifiers(exp) {},
+			addIdentifiers(exp, type = "local") {},
 			removeIdentifiers(exp) {},
+			isSlotScopeIdentifier(name) {
+				const scopes = context.identifierScopes[name];
+				return scopes ? scopes[scopes.length - 1] === "slot" : false;
+			},
 			hoist(exp) {
 				if (isString(exp)) exp = createSimpleExpression(exp);
 				context.hoists.push(exp);

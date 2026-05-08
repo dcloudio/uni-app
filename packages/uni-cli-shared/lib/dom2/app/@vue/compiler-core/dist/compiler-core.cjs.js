@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-core v3.6.0-beta.10
+  * @vue/compiler-core v3.6.0-beta.11
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -2140,7 +2140,7 @@ const getExpSource = (exp) => exp.type === 4 ? exp.content : exp.loc.source;
 */
 const isMemberExpressionBrowser = (exp) => {
 	const path = getExpSource(exp).trim().replace(whitespaceRE, (s) => s.trim());
-	let state = MemberExpLexState.inMemberExp;
+	let state = 0;
 	let stateStack = [];
 	let currentOpenBracketCount = 0;
 	let currentOpenParensCount = 0;
@@ -2148,31 +2148,31 @@ const isMemberExpressionBrowser = (exp) => {
 	for (let i = 0; i < path.length; i++) {
 		const char = path.charAt(i);
 		switch (state) {
-			case MemberExpLexState.inMemberExp:
+			case 0:
 				if (char === "[") {
 					stateStack.push(state);
-					state = MemberExpLexState.inBrackets;
+					state = 1;
 					currentOpenBracketCount++;
 				} else if (char === "(") {
 					stateStack.push(state);
-					state = MemberExpLexState.inParens;
+					state = 2;
 					currentOpenParensCount++;
 				} else if (!(i === 0 ? validFirstIdentCharRE : validIdentCharRE).test(char)) return false;
 				break;
-			case MemberExpLexState.inBrackets:
+			case 1:
 				if (char === `'` || char === `"` || char === "`") {
 					stateStack.push(state);
-					state = MemberExpLexState.inString;
+					state = 3;
 					currentStringType = char;
 				} else if (char === `[`) currentOpenBracketCount++;
 				else if (char === `]`) {
 					if (!--currentOpenBracketCount) state = stateStack.pop();
 				}
 				break;
-			case MemberExpLexState.inParens:
+			case 2:
 				if (char === `'` || char === `"` || char === "`") {
 					stateStack.push(state);
-					state = MemberExpLexState.inString;
+					state = 3;
 					currentStringType = char;
 				} else if (char === `(`) currentOpenParensCount++;
 				else if (char === `)`) {
@@ -2180,7 +2180,7 @@ const isMemberExpressionBrowser = (exp) => {
 					if (!--currentOpenParensCount) state = stateStack.pop();
 				}
 				break;
-			case MemberExpLexState.inString:
+			case 3:
 				if (char === currentStringType) {
 					state = stateStack.pop();
 					currentStringType = null;
@@ -2570,10 +2570,10 @@ const tokenizer = new Tokenizer(stack, {
 				};
 				if (tokenizer.inSFCRoot && currentOpenTag.tag === "template" && currentProp.name === "lang" && currentAttrValue && currentAttrValue !== "html") tokenizer.enterRCDATA(toCharCodes(`</template`), 0);
 			} else {
-				let expParseMode = ExpParseMode.Normal;
-				if (currentProp.name === "for") expParseMode = ExpParseMode.Skip;
-				else if (currentProp.name === "slot") expParseMode = ExpParseMode.Params;
-				else if (currentProp.name === "on" && currentAttrValue.includes(";")) expParseMode = ExpParseMode.Statements;
+				let expParseMode = 0;
+				if (currentProp.name === "for") expParseMode = 3;
+				else if (currentProp.name === "slot") expParseMode = 1;
+				else if (currentProp.name === "on" && currentAttrValue.includes(";")) expParseMode = 2;
 				currentProp.exp = createExp(currentAttrValue, false, getLoc(currentAttrStartIndex, currentAttrEndIndex), 0, expParseMode);
 				if (currentProp.name === "for") currentProp.forParseResult = parseForExpression(currentProp.exp);
 				let syncIndex = -1;
@@ -2650,7 +2650,7 @@ function parseForExpression(input) {
 	const [, LHS, RHS] = inMatch;
 	const createAliasExpression = (content, offset, asParam = false) => {
 		const start = loc.start.offset + offset;
-		return createExp(content, false, getLoc(start, start + content.length), 0, asParam ? ExpParseMode.Params : ExpParseMode.Normal);
+		return createExp(content, false, getLoc(start, start + content.length), 0, asParam ? 1 : 0);
 	};
 	const result = {
 		source: createAliasExpression(RHS.trim(), exp.indexOf(RHS, LHS.length)),
@@ -2889,9 +2889,9 @@ var ExpParseMode = /* @__PURE__ */ function(ExpParseMode) {
 	ExpParseMode[ExpParseMode["Skip"] = 3] = "Skip";
 	return ExpParseMode;
 }(ExpParseMode || {});
-function createExp(content, isStatic = false, loc, constType = 0, parseMode = ExpParseMode.Normal) {
+function createExp(content, isStatic = false, loc, constType = 0, parseMode = 0) {
 	const exp = createSimpleExpression(content, isStatic, loc, constType);
-	if (!isStatic && currentOptions.prefixIdentifiers && parseMode !== ExpParseMode.Skip && content.trim()) {
+	if (!isStatic && currentOptions.prefixIdentifiers && parseMode !== 3 && content.trim()) {
 		if (isSimpleIdentifier(content)) {
 			exp.ast = null;
 			return exp;
@@ -2899,8 +2899,8 @@ function createExp(content, isStatic = false, loc, constType = 0, parseMode = Ex
 		try {
 			const plugins = currentOptions.expressionPlugins;
 			const options = { plugins: plugins ? [...plugins, "typescript"] : ["typescript"] };
-			if (parseMode === ExpParseMode.Statements) exp.ast = (0, _babel_parser.parse)(` ${content} `, options).program;
-			else if (parseMode === ExpParseMode.Params) exp.ast = (0, _babel_parser.parseExpression)(`(${content})=>{}`, options);
+			if (parseMode === 2) exp.ast = (0, _babel_parser.parse)(` ${content} `, options).program;
+			else if (parseMode === 1) exp.ast = (0, _babel_parser.parseExpression)(`(${content})=>{}`, options);
 			else exp.ast = (0, _babel_parser.parseExpression)(`(${content})`, options);
 		} catch (e) {
 			exp.ast = false;
@@ -3183,6 +3183,7 @@ function createTransformContext(root, { filename = "", prefixIdentifiers = false
 		constantCache: /* @__PURE__ */ new WeakMap(),
 		temps: 0,
 		identifiers: Object.create(null),
+		identifierScopes: Object.create(null),
 		scopes: {
 			vFor: 0,
 			vSlot: 0,
@@ -3233,15 +3234,19 @@ function createTransformContext(root, { filename = "", prefixIdentifiers = false
 			context.parent.children.splice(removalIndex, 1);
 		},
 		onNodeRemoved: _vue_shared.NOOP,
-		addIdentifiers(exp) {
-			if ((0, _vue_shared.isString)(exp)) addId(exp);
-			else if (exp.identifiers) exp.identifiers.forEach(addId);
-			else if (exp.type === 4) addId(exp.content);
+		addIdentifiers(exp, type = "local") {
+			if ((0, _vue_shared.isString)(exp)) addId(exp, type);
+			else if (exp.identifiers) exp.identifiers.forEach((id) => addId(id, type));
+			else if (exp.type === 4) addId(exp.content, type);
 		},
 		removeIdentifiers(exp) {
 			if ((0, _vue_shared.isString)(exp)) removeId(exp);
 			else if (exp.identifiers) exp.identifiers.forEach(removeId);
 			else if (exp.type === 4) removeId(exp.content);
+		},
+		isSlotScopeIdentifier(name) {
+			const scopes = context.identifierScopes[name];
+			return scopes ? scopes[scopes.length - 1] === "slot" : false;
 		},
 		hoist(exp) {
 			if ((0, _vue_shared.isString)(exp)) exp = createSimpleExpression(exp);
@@ -3257,13 +3262,16 @@ function createTransformContext(root, { filename = "", prefixIdentifiers = false
 		}
 	};
 	context.filters = /* @__PURE__ */ new Set();
-	function addId(id) {
-		const { identifiers } = context;
+	function addId(id, type) {
+		const { identifiers, identifierScopes } = context;
 		if (identifiers[id] === void 0) identifiers[id] = 0;
 		identifiers[id]++;
+		(identifierScopes[id] || (identifierScopes[id] = [])).push(type);
 	}
 	function removeId(id) {
 		context.identifiers[id]--;
+		const scopes = context.identifierScopes[id];
+		if (scopes) scopes.pop();
 	}
 	return context;
 }
@@ -4346,7 +4354,7 @@ const trackSlotScopes = (node, context) => {
 		const vSlot = findDir(node, "slot");
 		if (vSlot) {
 			const slotProps = vSlot.exp;
-			if (context.prefixIdentifiers) slotProps && context.addIdentifiers(slotProps);
+			if (context.prefixIdentifiers) slotProps && context.addIdentifiers(slotProps, "slot");
 			context.scopes.vSlot++;
 			return () => {
 				if (context.prefixIdentifiers) slotProps && context.removeIdentifiers(slotProps);
@@ -4568,6 +4576,15 @@ function resolveComponentType(node, context, ssr = false) {
 		return builtIn;
 	}
 	{
+		const fromScope = resolveSlotScopeReference(tag, context);
+		if (fromScope) return fromScope;
+		const dotIndex = tag.indexOf(".");
+		if (dotIndex > 0) {
+			const ns = resolveSlotScopeReference(tag.slice(0, dotIndex), context);
+			if (ns) return ns + tag.slice(dotIndex);
+		}
+	}
+	{
 		const fromSetup = resolveSetupReference(tag, context);
 		if (fromSetup) return fromSetup;
 		const dotIndex = tag.indexOf(".");
@@ -4584,6 +4601,14 @@ function resolveComponentType(node, context, ssr = false) {
 	context.helper(RESOLVE_COMPONENT);
 	context.components.add(tag);
 	return toValidAssetId(tag, `component`);
+}
+function resolveSlotScopeReference(name, context) {
+	const camelName = (0, _vue_shared.camelize)(name);
+	const PascalName = (0, _vue_shared.capitalize)(camelName);
+	const isInSlotScope = (reference) => context.isSlotScopeIdentifier(reference);
+	if (isInSlotScope(name)) return name;
+	if (isInSlotScope(camelName)) return camelName;
+	if (isInSlotScope(PascalName)) return PascalName;
 }
 function resolveSetupReference(name, context) {
 	const bindings = context.bindingMetadata;

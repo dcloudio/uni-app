@@ -21623,7 +21623,10 @@ declare abstract class VueElementBase$1<E = Element, C = Component, Def extends 
   protected abstract _mount(def: Def): void;
   protected abstract _update(): void;
   protected abstract _unmount(): void;
-  protected abstract _updateSlotNodes(slot: Map<Node, Node[]>): void;
+  protected abstract _updateSlotNodes(slot: Map<Node, {
+    nodes: Node[];
+    usedFallback: boolean;
+  }>): void;
   constructor(def: Def, props: Record<string, any> | undefined, createAppFn: CreateAppFunction<E, C>);
   connectedCallback(): void;
   disconnectedCallback(): void;
@@ -21692,7 +21695,10 @@ declare class VueElement extends VueElementBase$1<Element, Component, InnerCompo
   /**
   * Only called when shadowRoot is false
   */
-  protected _updateSlotNodes(replacements: Map<Node, Node[]>): void;
+  protected _updateSlotNodes(replacements: Map<Node, {
+    nodes: Node[];
+    usedFallback: boolean;
+  }>): void;
   private _createVNode;
 }
 declare function useHost(caller?: string): VueElementBase$1 | null;
@@ -21784,80 +21790,13 @@ type RefEl = Element | VaporComponentInstance | DynamicFragment | VaporFragment;
 type setRefFn = (el: RefEl, ref: NodeRef, refFor?: boolean, refKey?: string) => NodeRef | undefined;
 declare function createTemplateRefSetter(): setRefFn;
 //#endregion
-//#region packages/runtime-vapor/src/componentSlots.d.ts
-type RawSlots = Record<string, VaporSlot> & {
-  $?: DynamicSlotSource[];
-};
-type StaticSlots = Record<string, VaporSlot>;
-type VaporSlot = BlockFn;
-type DynamicSlot = {
-  name: string;
-  fn: VaporSlot;
-};
-type DynamicSlotFn = () => DynamicSlot | DynamicSlot[];
-type DynamicSlotSource = StaticSlots | DynamicSlotFn;
-/**
-* Wrap a slot function to track the slot owner.
-*
-* This ensures:
-* 1. createSlot gets rawSlots from the correct instance (slot owner)
-* 2. elements inherit the slot owner's scopeId
-*/
-declare function withVaporCtx(fn: Function): BlockFn;
-declare function createSlot(name: string | (() => string), rawProps?: LooseRawProps | null, fallback?: VaporSlot, noSlotted?: boolean, once?: boolean): Block;
-//#endregion
-//#region packages/runtime-vapor/src/apiDefineComponent.d.ts
-type VaporPublicProps = ReservedProps & AllowedComponentProps & ComponentCustomProps;
-type VaporRenderResult<T = Block> = VNode | T | VaporRenderResult<T>[];
-type VaporComponentInstanceConstructor<T extends VaporComponentInstance> = {
-  __isFragment?: never;
-  __isTeleport?: never;
-  __isSuspense?: never;
-  new (...args: any[]): T;
-};
-type DefineVaporComponent<RuntimePropsOptions = {}, RuntimePropsKeys extends string = string, InferredProps = (string extends RuntimePropsKeys ? ComponentObjectPropsOptions$1 extends RuntimePropsOptions ? {} : ExtractPropTypes$1<RuntimePropsOptions> : { [key in RuntimePropsKeys]?: any }), Emits extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block, TypeRefs extends Record<string, unknown> = {}, MakeDefaultsOptional extends boolean = true, PublicProps = VaporPublicProps, ResolvedProps = InferredProps & EmitsToProps$1<Emits>, Defaults = ExtractDefaultPropTypes<RuntimePropsOptions>> = VaporComponentInstanceConstructor<VaporComponentInstance<MakeDefaultsOptional extends true ? keyof Defaults extends never ? Prettify<ResolvedProps> & PublicProps : Partial<Defaults> & Omit<Prettify<ResolvedProps> & PublicProps, keyof Defaults> : Prettify<ResolvedProps> & PublicProps, Emits, Slots, Exposed, TypeBlock, TypeRefs>> & VaporComponentOptions<RuntimePropsOptions | RuntimePropsKeys[], Emits, RuntimeEmitsKeys, Slots, Exposed>;
-type DefineVaporSetupFnComponent<Props extends Record<string, any> = {}, Emits extends EmitsOptions$1 = {}, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block, ResolvedProps extends Record<string, any> = Props & EmitsToProps$1<Emits> & VaporPublicProps> = new () => VaporComponentInstance<ResolvedProps, Emits, Slots, Exposed, TypeBlock>;
-declare function defineVaporComponent<Props extends Record<string, any>, Emits extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block>(setup: (props: Props, ctx: {
-  emit: EmitFn<Emits>;
-  slots: Slots;
-  attrs: Record<string, any>;
-  expose: (exposed: Exposed) => void;
-}) => VaporRenderResult<TypeBlock> | void, extraOptions?: VaporComponentOptions<(keyof Props)[], Emits, RuntimeEmitsKeys, Slots, Exposed> & ThisType<void>): DefineVaporSetupFnComponent<Props, Emits, Slots, Exposed, TypeBlock>;
-declare function defineVaporComponent<Props extends Record<string, any>, Emits extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block>(setup: (props: Props, ctx: {
-  emit: EmitFn<Emits>;
-  slots: Slots;
-  attrs: Record<string, any>;
-  expose: (exposed: Exposed) => void;
-}) => VaporRenderResult<TypeBlock> | void, extraOptions?: VaporComponentOptions<ComponentObjectPropsOptions$1<Props>, Emits, RuntimeEmitsKeys, Slots, Exposed> & ThisType<void>): DefineVaporSetupFnComponent<Props, Emits, Slots, Exposed, TypeBlock>;
-declare function defineVaporComponent<TypeProps, RuntimePropsOptions extends ComponentObjectPropsOptions$1 = ComponentObjectPropsOptions$1, RuntimePropsKeys extends string = string, TypeEmits extends ComponentTypeEmits = {}, RuntimeEmitsOptions extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, ResolvedEmits extends EmitsOptions$1 = ({} extends RuntimeEmitsOptions ? TypeEmitsToOptions<TypeEmits> : RuntimeEmitsOptions), InferredProps = (IsKeyValues<TypeProps> extends true ? TypeProps : string extends RuntimePropsKeys ? ComponentObjectPropsOptions$1 extends RuntimePropsOptions ? {} : ExtractPropTypes$1<RuntimePropsOptions> : { [key in RuntimePropsKeys]?: any }), TypeRefs extends Record<string, unknown> = {}, TypeBlock extends Block = Block>(options: VaporComponentOptions<RuntimePropsOptions | RuntimePropsKeys[], ResolvedEmits, RuntimeEmitsKeys, Slots, Exposed, TypeBlock, InferredProps> & {
-  [key: string]: any;
-  /**
-  * @private for language-tools use only
-  */
-  __typeProps?: TypeProps;
-  /**
-  * @private for language-tools use only
-  */
-  __typeEmits?: TypeEmits;
-  /**
-  * @private for language-tools use only
-  */
-  __typeRefs?: TypeRefs;
-  /**
-  * @private for language-tools use only
-  */
-  __typeEl?: TypeBlock;
-} & ThisType<void>): DefineVaporComponent<RuntimePropsOptions, RuntimePropsKeys, InferredProps, ResolvedEmits, RuntimeEmitsKeys, Slots, Exposed extends Block ? Record<string, any> : Exposed, TypeBlock, TypeRefs, unknown extends TypeProps ? true : false>;
-//#endregion
-//#region packages/runtime-vapor/src/components/KeepAlive.d.ts
+//#region packages/runtime-vapor/src/keepAlive.d.ts
 interface VaporKeepAliveContext {
-  processShapeFlag(block: Block): CacheKey | false;
+  processShapeFlag(block: Block): any | false;
   cacheBlock(block?: Block): void;
-  cacheScope(cacheKey: CacheKey, scopeLookupKey: any, scope: EffectScope$1): void;
+  cacheScope(cacheKey: any, scopeLookupKey: any, scope: EffectScope$1): void;
   getScope(key: any): EffectScope$1 | undefined;
 }
-type CacheKey = any;
-declare const VaporKeepAlive: DefineVaporComponent<{}, string, KeepAliveProps>;
 //#endregion
 //#region packages/runtime-vapor/src/fragment.d.ts
 declare class VaporFragment<T extends Block = Block> implements TransitionOptions {
@@ -21867,23 +21806,24 @@ declare class VaporFragment<T extends Block = Block> implements TransitionOption
   vnode?: VNode | null;
   anchor?: Node;
   parentComponent?: GenericComponentInstance$1 | null;
-  fallback?: BlockFn;
+  validityPending?: boolean;
   insert?: (parent: ParentNode, anchor: Node | null, transitionHooks?: TransitionHooks) => void;
   remove?: (parent?: ParentNode, transitionHooks?: TransitionHooks) => void;
   hydrate?: (...args: any[]) => void;
   setRef?: (instance: VaporComponentInstance, ref: NodeRef, refFor: boolean, refKey: string | undefined) => void;
   onUpdated?: ((nodes?: Block) => void)[];
+  readonly renderInstance: GenericComponentInstance$1 | null;
   readonly slotOwner: VaporComponentInstance | null;
-  readonly keepAliveCtx: VaporKeepAliveContext | null;
+  readonly keepAliveCtx?: VaporKeepAliveContext | null;
+  readonly inheritedSlotBoundary: SlotBoundaryContext | null;
   constructor(nodes: T);
-  protected runWithRenderCtx<R>(fn: () => R): R;
+  protected runWithRenderCtx<R>(fn: () => R, scope?: EffectScope$1): R;
 }
 declare class ForFragment extends VaporFragment<Block[]> {
   constructor(nodes: Block[]);
 }
 declare class DynamicFragment extends VaporFragment {
   anchor: Node;
-  isAnchorPending?: boolean;
   scope: EffectScope$1 | undefined;
   current?: BlockFn;
   pending?: {
@@ -21892,11 +21832,18 @@ declare class DynamicFragment extends VaporFragment {
   };
   anchorLabel?: string;
   keyed?: boolean;
+  inTransition?: boolean;
   attrs?: Record<string, any>;
   constructor(anchorLabel?: string, keyed?: boolean, locate?: boolean);
+  protected registerSlotBoundaryDirty(): void;
   update(render?: BlockFn, key?: any): void;
   renderBranch(render: BlockFn | undefined, transition: VaporTransitionHooks | undefined, parent: ParentNode | null, key: any): void;
   hydrate: (isEmpty?: boolean, isSlot?: boolean) => void;
+}
+interface SlotBoundaryContext {
+  parent: SlotBoundaryContext | null;
+  getLocalFallback: () => BlockFn | undefined;
+  markDirty: () => void;
 }
 declare function isFragment(val: NonNullable<unknown>): val is VaporFragment;
 //#endregion
@@ -21944,6 +21891,71 @@ declare class RenderEffect extends ReactiveEffect {
 }
 declare function renderEffect(fn: () => void, noLifecycle?: boolean): void;
 //#endregion
+//#region packages/runtime-vapor/src/componentSlots.d.ts
+type RawSlots = Record<string, VaporSlot> & {
+  $?: DynamicSlotSource[];
+};
+type StaticSlots = Record<string, VaporSlot>;
+type VaporSlot = BlockFn;
+type DynamicSlot = {
+  name: string;
+  fn: VaporSlot;
+};
+type DynamicSlotFn = () => DynamicSlot | DynamicSlot[];
+type DynamicSlotSource = StaticSlots | DynamicSlotFn;
+/**
+* Wrap a slot function to track the slot owner.
+*
+* This ensures:
+* 1. createSlot gets rawSlots from the correct instance (slot owner)
+* 2. elements inherit the slot owner's scopeId
+*/
+declare function withVaporCtx(fn: Function): BlockFn;
+declare function createSlot(name: string | (() => string), rawProps?: LooseRawProps | null, fallback?: VaporSlot, noSlotted?: boolean, once?: boolean): Block;
+//#endregion
+//#region packages/runtime-vapor/src/apiDefineComponent.d.ts
+type VaporPublicProps = ReservedProps & AllowedComponentProps & ComponentCustomProps;
+type VaporRenderResult<T = Block> = VNode | T | VaporRenderResult<T>[];
+type VaporComponentInstanceConstructor<T extends VaporComponentInstance> = {
+  __isFragment?: never;
+  __isTeleport?: never;
+  __isSuspense?: never;
+  new (...args: any[]): T;
+};
+type DefineVaporComponent<RuntimePropsOptions = {}, RuntimePropsKeys extends string = string, InferredProps = (string extends RuntimePropsKeys ? ComponentObjectPropsOptions$1 extends RuntimePropsOptions ? {} : ExtractPropTypes$1<RuntimePropsOptions> : { [key in RuntimePropsKeys]?: any }), Emits extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block, TypeRefs extends Record<string, unknown> = {}, MakeDefaultsOptional extends boolean = true, PublicProps = VaporPublicProps, ResolvedProps = InferredProps & EmitsToProps$1<Emits>, Defaults = ExtractDefaultPropTypes<RuntimePropsOptions>> = VaporComponentInstanceConstructor<VaporComponentInstance<MakeDefaultsOptional extends true ? keyof Defaults extends never ? Prettify<ResolvedProps> & PublicProps : Partial<Defaults> & Omit<Prettify<ResolvedProps> & PublicProps, keyof Defaults> : Prettify<ResolvedProps> & PublicProps, Emits, Slots, Exposed, TypeBlock, TypeRefs>> & VaporComponentOptions<RuntimePropsOptions | RuntimePropsKeys[], Emits, RuntimeEmitsKeys, Slots, Exposed>;
+type DefineVaporSetupFnComponent<Props extends Record<string, any> = {}, Emits extends EmitsOptions$1 = {}, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block, ResolvedProps extends Record<string, any> = Props & EmitsToProps$1<Emits> & VaporPublicProps> = new () => VaporComponentInstance<ResolvedProps, Emits, Slots, Exposed, TypeBlock>;
+declare function defineVaporComponent<Props extends Record<string, any>, Emits extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block>(setup: (props: Props, ctx: {
+  emit: EmitFn<Emits>;
+  slots: Slots;
+  attrs: Record<string, any>;
+  expose: (exposed: Exposed) => void;
+}) => VaporRenderResult<TypeBlock> | void, extraOptions?: VaporComponentOptions<(keyof NoInfer<Props>)[], Emits, RuntimeEmitsKeys, Slots, Exposed> & ThisType<void>): DefineVaporSetupFnComponent<Props, Emits, Slots, Exposed, TypeBlock>;
+declare function defineVaporComponent<Props extends Record<string, any>, Emits extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block>(setup: (props: Props, ctx: {
+  emit: EmitFn<Emits>;
+  slots: Slots;
+  attrs: Record<string, any>;
+  expose: (exposed: Exposed) => void;
+}) => VaporRenderResult<TypeBlock> | void, extraOptions?: VaporComponentOptions<ComponentObjectPropsOptions$1<Props>, Emits, RuntimeEmitsKeys, Slots, Exposed> & ThisType<void>): DefineVaporSetupFnComponent<Props, Emits, Slots, Exposed, TypeBlock>;
+declare function defineVaporComponent<TypeProps, RuntimePropsOptions extends ComponentObjectPropsOptions$1 = ComponentObjectPropsOptions$1, RuntimePropsKeys extends string = string, TypeEmits extends ComponentTypeEmits = {}, RuntimeEmitsOptions extends EmitsOptions$1 = {}, RuntimeEmitsKeys extends string = string, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, ResolvedEmits extends EmitsOptions$1 = ({} extends RuntimeEmitsOptions ? TypeEmitsToOptions<TypeEmits> : RuntimeEmitsOptions), InferredProps = (IsKeyValues<TypeProps> extends true ? TypeProps : string extends RuntimePropsKeys ? ComponentObjectPropsOptions$1 extends RuntimePropsOptions ? {} : ExtractPropTypes$1<RuntimePropsOptions> : { [key in RuntimePropsKeys]?: any }), TypeRefs extends Record<string, unknown> = {}, TypeBlock extends Block = Block>(options: VaporComponentOptions<RuntimePropsOptions | RuntimePropsKeys[], ResolvedEmits, RuntimeEmitsKeys, Slots, Exposed, TypeBlock, InferredProps> & {
+  [key: string]: any;
+  /**
+  * @private for language-tools use only
+  */
+  __typeProps?: TypeProps;
+  /**
+  * @private for language-tools use only
+  */
+  __typeEmits?: TypeEmits;
+  /**
+  * @private for language-tools use only
+  */
+  __typeRefs?: TypeRefs;
+  /**
+  * @private for language-tools use only
+  */
+  __typeEl?: TypeBlock;
+} & ThisType<void>): DefineVaporComponent<RuntimePropsOptions, RuntimePropsKeys, InferredProps, ResolvedEmits, RuntimeEmitsKeys, Slots, Exposed extends Block ? Record<string, any> : Exposed, TypeBlock, TypeRefs, unknown extends TypeProps ? true : false>;
+//#endregion
 //#region packages/runtime-vapor/src/components/Teleport.d.ts
 declare class TeleportFragment extends VaporFragment {
   /**
@@ -21959,6 +21971,7 @@ declare class TeleportFragment extends VaporFragment {
   private isMounted;
   private childrenInitialized;
   private readonly ownerInstance;
+  private readonly childrenScope;
   target?: ParentNode | null;
   targetAnchor?: Node | null;
   targetStart?: Node | null;
@@ -21978,7 +21991,8 @@ declare class TeleportFragment extends VaporFragment {
   private clearMainViewChildren;
   private handlePropsUpdate;
   insert: (container: ParentNode, anchor: Node | null) => void;
-  remove: (parent?: ParentNode | undefined) => void;
+  dispose: () => void;
+  remove: (_parent?: ParentNode) => void;
   private hydrateTargetAnchors;
   private hydrateDisabledTeleport;
   private mountChildren;
@@ -22142,6 +22156,9 @@ type VaporDirective = (node: Element | VaporComponentInstance, value?: () => any
 type VaporDirectiveArguments = Array<[VaporDirective | undefined] | [VaporDirective | undefined, () => any] | [VaporDirective | undefined, (() => any) | undefined, argument: string] | [VaporDirective | undefined, value: (() => any) | undefined, argument: string | undefined, modifiers: DirectiveModifiers]>;
 declare function withVaporDirectives(node: Element | VaporComponentInstance, dirs: VaporDirectiveArguments): void;
 //#endregion
+//#region packages/runtime-vapor/src/components/KeepAlive.d.ts
+declare const VaporKeepAlive: DefineVaporComponent<{}, string, KeepAliveProps>;
+//#endregion
 //#region packages/runtime-vapor/src/apiDefineCustomElement.d.ts
 type VaporElementConstructor<P = {}> = {
   new (initialProps?: Record<string, any>): VaporElement & P;
@@ -22152,7 +22169,7 @@ declare function defineVaporCustomElement<Props, RawBindings = object>(setup: (p
   emit: EmitFn;
   expose: (exposed: Record<string, any>) => void;
 }) => RawBindings | VaporRenderResult, options?: Pick<VaporComponentOptions, "name" | "inheritAttrs" | "emits"> & CustomElementOptions & {
-  props?: (keyof Props)[];
+  props?: (keyof NoInfer<Props>)[];
 }): VaporElementConstructor<Props>;
 declare function defineVaporCustomElement<Props, RawBindings = object>(setup: (props: Props, ctx: {
   attrs: Record<string, any>;
@@ -22185,7 +22202,10 @@ declare class VaporElement extends VueElementBase<ParentNode, VaporComponent, Va
   /**
   * Only called when shadowRoot is false
   */
-  protected _updateSlotNodes(replacements: Map<Node, Node[]>): void;
+  protected _updateSlotNodes(replacements: Map<Node, {
+    nodes: Node[];
+    usedFallback: boolean;
+  }>): void;
   /**
   * Replace slot nodes with their replace content
   * @internal
@@ -22206,10 +22226,10 @@ type InsertionParent = ParentNode & {
 */
 declare function setInsertionState(parent: ParentNode & {
   $fc?: Node | null;
-}, anchor?: Node | 0 | null, logicalIndex?: number, last?: boolean): void;
+}, anchor?: Node | 0 | null, logicalIndex?: number): void;
 //#endregion
 //#region packages/runtime-vapor/src/dom/template.d.ts
-declare function template(html: string, root?: boolean, ns?: Namespace): () => Node & {
+declare function template(html: string, root?: boolean, isStatic?: boolean, ns?: Namespace): () => Node & {
   $root?: true;
 };
 //#endregion
@@ -22217,7 +22237,7 @@ declare function template(html: string, root?: boolean, ns?: Namespace): () => N
 declare function createTextNode(value?: string): Text;
 declare function txt(node: ParentNode): Node;
 declare function child(node: InsertionParent, logicalIndex?: number): Node;
-declare function nthChild(node: InsertionParent, i: number): Node;
+declare function nthChild(node: InsertionParent, i: number, logicalIndex?: number): Node;
 declare function next(node: Node, logicalIndex?: number): Node;
 //#endregion
 //#region packages/runtime-vapor/src/dom/prop.d.ts
@@ -22418,6 +22438,10 @@ export interface BaseIRNode {
   node: Node$1;
   key?: SimpleExpressionNode | undefined;
 }
+export interface EffectBoundary {
+  operationIndex?: number;
+  effectIndex?: number;
+}
 export type CoreHelper = keyof typeof index_d_exports$1;
 export type VaporHelper = keyof typeof index_d_exports;
 export interface BlockIRNode extends BaseIRNode {
@@ -22433,15 +22457,23 @@ export interface RootIRNode {
   type: IRNodeTypes.ROOT;
   node: RootNode;
   source: string;
-  template: Map<string, Namespace>;
-  templateIndexMap: Map<string, number>;
-  rootTemplateIndexes: Set<number>;
+  template: TemplateRegistry;
   component: Set<string>;
   directive: Set<string>;
   block: BlockIRNode;
   hasTemplateRef: boolean;
 }
-export interface IfIRNode extends BaseIRNode {
+export interface IRTemplate {
+  content: string;
+  ns: Namespace;
+  root: boolean;
+  static: boolean;
+}
+export declare class TemplateRegistry {
+  entries: IRTemplate[];
+  keys(): string[];
+}
+export interface IfIRNode extends BaseIRNode, EffectBoundary {
   type: IRNodeTypes.IF;
   id: number;
   blockShape: number;
@@ -22454,7 +22486,6 @@ export interface IfIRNode extends BaseIRNode {
   anchor?: number;
   logicalIndex?: number;
   append?: boolean;
-  last?: boolean;
 }
 export interface IRFor {
   source: SimpleExpressionNode;
@@ -22462,7 +22493,7 @@ export interface IRFor {
   key?: SimpleExpressionNode;
   index?: SimpleExpressionNode;
 }
-export interface ForIRNode extends BaseIRNode, IRFor {
+export interface ForIRNode extends BaseIRNode, IRFor, EffectBoundary {
   type: IRNodeTypes.FOR;
   id: number;
   keyProp?: SimpleExpressionNode;
@@ -22475,9 +22506,8 @@ export interface ForIRNode extends BaseIRNode, IRFor {
   anchor?: number;
   logicalIndex?: number;
   append?: boolean;
-  last?: boolean;
 }
-export interface KeyIRNode extends BaseIRNode {
+export interface KeyIRNode extends BaseIRNode, EffectBoundary {
   type: IRNodeTypes.KEY;
   id: number;
   value: SimpleExpressionNode;
@@ -22486,7 +22516,6 @@ export interface KeyIRNode extends BaseIRNode {
   anchor?: number;
   logicalIndex?: number;
   append?: boolean;
-  last?: boolean;
 }
 export interface SetBlockKeyIRNode extends BaseIRNode {
   type: IRNodeTypes.SET_BLOCK_KEY;
@@ -22575,7 +22604,7 @@ export interface DirectiveIRNode extends BaseIRNode {
   asset?: boolean;
   modelType?: "text" | "dynamic" | "radio" | "checkbox" | "select";
 }
-export interface CreateComponentIRNode extends BaseIRNode {
+export interface CreateComponentIRNode extends BaseIRNode, EffectBoundary {
   type: IRNodeTypes.CREATE_COMPONENT_NODE;
   id: number;
   tag: string;
@@ -22585,18 +22614,17 @@ export interface CreateComponentIRNode extends BaseIRNode {
   root: boolean;
   once: boolean;
   dynamic?: SimpleExpressionNode;
-  isCustomElement: boolean;
+  useCreateElement: boolean;
   parent?: number;
   anchor?: number;
   logicalIndex?: number;
   append?: boolean;
-  last?: boolean;
   /**
   * fixed by uts 当前表达式对应的标识符
   */
   sharedData?: SimpleExpressionNode["sharedData"];
 }
-export interface SlotOutletIRNode extends BaseIRNode {
+export interface SlotOutletIRNode extends BaseIRNode, EffectBoundary {
   type: IRNodeTypes.SLOT_OUTLET_NODE;
   id: number;
   name: SimpleExpressionNode;
@@ -22608,7 +22636,6 @@ export interface SlotOutletIRNode extends BaseIRNode {
   anchor?: number;
   logicalIndex?: number;
   append?: boolean;
-  last?: boolean;
   sharedData?: SimpleExpressionNode["sharedData"];
 }
 export interface GetTextChildIRNode extends BaseIRNode {
@@ -22698,6 +22725,8 @@ export declare class TransformContext<T extends AllNode = AllNode> {
   block: BlockIRNode;
   options: Required<Omit<TransformOptions$1, "filename" | keyof CompilerCompatOptions>>;
   template: string;
+  templateRoot: boolean;
+  templateIndexMap: Map<string, number>;
   childrenTemplate: (string | null)[];
   dynamic: IRDynamicInfo;
   imports: ImportItem[];
@@ -22707,6 +22736,8 @@ export declare class TransformContext<T extends AllNode = AllNode> {
   component: Set<string>;
   directive: Set<string>;
   slots: IRSlots[];
+  effectIndex: number;
+  operationIndex: number;
   isLastEffectiveChild: boolean;
   isOnRightmostPath: boolean;
   hasInlineAncestorNeedingClose: boolean;
@@ -22719,11 +22750,24 @@ export declare class TransformContext<T extends AllNode = AllNode> {
   private initNextIdMap;
   reference(): number;
   nextIfIndex(): number;
-  pushTemplate(content: string): number;
+  private getTemplateNamespace;
+  private canUseStaticTemplate;
+  pushTemplate(content: string, {
+    root,
+    static: isStatic
+  }?: {
+    root?: boolean;
+    static?: boolean;
+  }): number;
   registerTemplate(): number;
   registerEffect(expressions: SimpleExpressionNode[], operation: OperationNode | OperationNode[], getIndex?: () => number, getOperationIndex?: () => number): void;
   registerOperation(...node: OperationNode[]): void;
+  effectBoundary(): {
+    operationIndex: number;
+    effectIndex: number;
+  };
   create<T extends TemplateChildNode>(node: T, index: number): TransformContext<T>;
+  private shiftEffectBoundaries;
   private isEffectivelyLastChild;
 }
 export declare function transform(node: RootNode, options?: TransformOptions$1): RootIRNode;

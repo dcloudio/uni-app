@@ -1799,11 +1799,15 @@ export declare function renderList<T>(source: T, renderItem: <K extends keyof T>
 export declare function toHandlers(obj: Record<string, any>, preserveCaseIfNecessary?: boolean): Record<string, any>;
 //#endregion
 //#region temp/packages/runtime-core/src/helpers/renderSlot.d.ts
+type SlotFallback = {
+  (): VNodeArrayChildren;
+  __vdom?: boolean;
+};
 /**
 * Compiler runtime helper for rendering `<slot/>`
 * @private
 */
-export declare function renderSlot(slots: Slots, name: string, props?: Data, fallback?: () => VNodeArrayChildren, noSlotted?: boolean): VNode;
+export declare function renderSlot(slots: Slots, name: string, props?: Data, fallback?: SlotFallback, noSlotted?: boolean): VNode;
 //#endregion
 //#region temp/packages/runtime-core/src/helpers/createSlots.d.ts
 type SSRSlot = (...args: any[]) => VNode[] | undefined;

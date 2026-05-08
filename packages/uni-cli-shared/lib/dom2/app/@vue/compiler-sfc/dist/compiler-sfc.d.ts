@@ -1,4 +1,4 @@
-import * as _babel_types0 from "@babel/types";
+import * as _$_babel_types0 from "@babel/types";
 import { CallExpression as CallExpression$1, Expression as Expression$1, Node as Node$1, ObjectPattern, Program as Program$1, Statement as Statement$1, TSCallSignatureDeclaration, TSFunctionType, TSMethodSignature, TSModuleDeclaration, TSPropertySignature, TSType } from "@babel/types";
 import { BaseCodegenResult, BindingMetadata, BindingMetadata as BindingMetadata$1, CompilerError, CompilerError as CompilerError$1, CompilerOptions as CompilerOptions$1, CompilerOptions as CompilerOptions$2, ParserOptions, RawSourceMap, RootNode, SourceLocation, extractIdentifiers, generateCodeFrame, isInDestructureAssignment, isStaticProperty, walkIdentifiers } from "@vue/compiler-core";
 import { ParserPlugin, parse as babelParse } from "@babel/parser";
@@ -188,8 +188,8 @@ export interface SFCScriptBlock extends SFCBlock {
   setup?: string | boolean;
   bindings?: BindingMetadata$1;
   imports?: Record<string, ImportBinding>;
-  scriptAst?: _babel_types0.Statement[];
-  scriptSetupAst?: _babel_types0.Statement[];
+  scriptAst?: _$_babel_types0.Statement[];
+  scriptSetupAst?: _$_babel_types0.Statement[];
   warnings?: string[];
   /**
   * Fully resolved dependency file paths (unix slashes) with imported types

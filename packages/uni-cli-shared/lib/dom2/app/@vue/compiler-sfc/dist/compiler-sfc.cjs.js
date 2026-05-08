@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-beta.10
+  * @vue/compiler-sfc v3.6.0-beta.11
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -14,7 +14,7 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __commonJSMin = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
+var __commonJSMin = (cb, mod) => () => (mod || (cb((mod = { exports: {} }).exports, mod), cb = null), mod.exports);
 var __copyProps = (to, from, except, desc) => {
 	if (from && typeof from === "object" || typeof from === "function") for (var keys = __getOwnPropNames(from), i = 0, n = keys.length, key; i < n; i++) {
 		key = keys[i];
@@ -134,30 +134,24 @@ function parseCssVars(sfc) {
 	});
 	return vars;
 }
-var LexerState = /* @__PURE__ */ function(LexerState) {
-	LexerState[LexerState["inParens"] = 0] = "inParens";
-	LexerState[LexerState["inSingleQuoteString"] = 1] = "inSingleQuoteString";
-	LexerState[LexerState["inDoubleQuoteString"] = 2] = "inDoubleQuoteString";
-	return LexerState;
-}(LexerState || {});
 function lexBinding(content, start) {
-	let state = LexerState.inParens;
+	let state = 0;
 	let parenDepth = 0;
 	for (let i = start; i < content.length; i++) {
 		const char = content.charAt(i);
 		switch (state) {
-			case LexerState.inParens:
-				if (char === `'`) state = LexerState.inSingleQuoteString;
-				else if (char === `"`) state = LexerState.inDoubleQuoteString;
+			case 0:
+				if (char === `'`) state = 1;
+				else if (char === `"`) state = 2;
 				else if (char === `(`) parenDepth++;
 				else if (char === `)`) if (parenDepth > 0) parenDepth--;
 				else return i;
 				break;
-			case LexerState.inSingleQuoteString:
-				if (char === `'`) state = LexerState.inParens;
+			case 1:
+				if (char === `'`) state = 0;
 				break;
-			case LexerState.inDoubleQuoteString:
-				if (char === `"`) state = LexerState.inParens;
+			case 2:
+				if (char === `"`) state = 0;
 				break;
 		}
 	}
@@ -204,33 +198,33 @@ function genNormalScriptCssVarsCode(cssVars, bindings, id, isProd, defaultVar) {
 	return `\nimport { ${CSS_VARS_HELPER} as _${CSS_VARS_HELPER} } from 'vue'\nconst __injectCSSVars__ = () => {\n${genCssVarsCode(cssVars, bindings, id, isProd)}}\nconst __setup__ = ${defaultVar}.setup\n${defaultVar}.setup = __setup__\n  ? (props, ctx) => { __injectCSSVars__();return __setup__(props, ctx) }\n  : __injectCSSVars__\n`;
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.124.0/helpers/checkPrivateRedeclaration.js
+//#region \0@oxc-project+runtime@0.129.0/helpers/checkPrivateRedeclaration.js
 function _checkPrivateRedeclaration(e, t) {
 	if (t.has(e)) throw new TypeError("Cannot initialize the same private elements twice on an object");
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.124.0/helpers/classPrivateMethodInitSpec.js
+//#region \0@oxc-project+runtime@0.129.0/helpers/classPrivateMethodInitSpec.js
 function _classPrivateMethodInitSpec(e, a) {
 	_checkPrivateRedeclaration(e, a), a.add(e);
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.124.0/helpers/classPrivateFieldInitSpec.js
+//#region \0@oxc-project+runtime@0.129.0/helpers/classPrivateFieldInitSpec.js
 function _classPrivateFieldInitSpec(e, t, a) {
 	_checkPrivateRedeclaration(e, t), t.set(e, a);
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.124.0/helpers/assertClassBrand.js
+//#region \0@oxc-project+runtime@0.129.0/helpers/assertClassBrand.js
 function _assertClassBrand(e, t, n) {
 	if ("function" == typeof e ? e === t : e.has(t)) return arguments.length < 3 ? t : n;
 	throw new TypeError("Private element is not present on this object");
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.124.0/helpers/classPrivateFieldGet2.js
+//#region \0@oxc-project+runtime@0.129.0/helpers/classPrivateFieldGet2.js
 function _classPrivateFieldGet2(s, a) {
 	return s.get(_assertClassBrand(s, a));
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.124.0/helpers/classPrivateFieldSet2.js
+//#region \0@oxc-project+runtime@0.129.0/helpers/classPrivateFieldSet2.js
 function _classPrivateFieldSet2(s, a, r) {
 	return s.set(_assertClassBrand(s, a), r), r;
 }
@@ -1952,14 +1946,14 @@ function isTemplateBlock(value) {
 const resourceUrlTagConfig = {
 	video: ["src", "poster"],
 	source: ["src"],
-	img: ["src"],
-	image: ["xlink:href", "href"]
+	img: ["src"]
 };
 const defaultAssetUrlOptions = {
 	base: null,
 	includeAbsolute: false,
 	tags: {
 		...resourceUrlTagConfig,
+		image: ["xlink:href", "href"],
 		use: ["xlink:href", "href"]
 	}
 };
@@ -2005,7 +1999,7 @@ const transformAssetUrl = (node, context, options = defaultAssetUrlOptions) => {
 			if (attr.type !== 6 || !assetAttrs.includes(attr.name) || !attr.value) return;
 			const urlValue = attr.value.content;
 			const isHashOnlyValue = urlValue[0] === "#";
-			if (isExternalUrl(urlValue) || isDataUrl(urlValue) || isHashOnlyValue && !canTransformHashImport(node.tag, attr.name) || !options.includeAbsolute && !isRelativeUrl(urlValue)) return;
+			if (isExternalUrl(urlValue) || isDataUrl(urlValue) || urlValue === "#" || isHashOnlyValue && !canTransformHashImport(node.tag, attr.name) || !options.includeAbsolute && !isRelativeUrl(urlValue)) return;
 			const url = parseUrl(urlValue);
 			if (options.base && urlValue[0] === ".") {
 				const base = parseUrl(options.base);
@@ -3549,6 +3543,7 @@ function doCompileTemplate({ filename, id, scoped, slotted, inMap, source, ast: 
 		slotted,
 		sourceMap: true,
 		...compilerOptions,
+		bindingMetadata: vapor && !ssr && compilerOptions.bindingMetadata == null ? {} : compilerOptions.bindingMetadata,
 		hmr: !isProd,
 		nodeTransforms: nodeTransforms.concat(compilerOptions.nodeTransforms || []),
 		filename,
@@ -6664,6 +6659,8 @@ function processRule(id, rule) {
 function rewriteSelector(id, rule, selector, selectorRoot, deep, slotted = false) {
 	let node = null;
 	let shouldInject = !deep;
+	let hasNestedDeep = false;
+	let splitForNestedDeep = false;
 	selector.each((n) => {
 		if (n.type === "combinator" && (n.value === ">>>" || n.value === "/deep/")) {
 			n.value = " ";
@@ -6673,6 +6670,25 @@ function rewriteSelector(id, rule, selector, selectorRoot, deep, slotted = false
 		}
 		if (n.type === "pseudo") {
 			const { value } = n;
+			if (isDeepContainerPseudo(n)) {
+				if (n.nodes.some((selector) => selector.some(isDeepSelector))) {
+					const hasScopeAnchor = !!node;
+					const hasMixedSelectors = n.nodes.some((selector) => !selector.some(isDeepSelector));
+					const hasTrailingNodes = selector.index(n) < selector.length - 1;
+					if (canSplitDeepContainerPseudo(n) && !deep && !hasScopeAnchor && hasMixedSelectors && hasTrailingNodes) {
+						splitSelectorForNestedDeep(id, rule, selector, selectorRoot, n, deep, slotted);
+						splitForNestedDeep = true;
+						return false;
+					}
+					if (value === ":not" && !deep && !hasScopeAnchor && hasMixedSelectors && hasTrailingNodes) return;
+					n.nodes.forEach((selector) => rewriteSelector(id, rule, selector, selectorRoot, deep || hasScopeAnchor, slotted));
+					if (!hasScopeAnchor) {
+						node = n;
+						shouldInject = false;
+					}
+					hasNestedDeep = true;
+				}
+			}
 			if (value === ":deep" || value === "::v-deep") {
 				rule.__deep = true;
 				if (n.nodes.length) {
@@ -6723,8 +6739,9 @@ function rewriteSelector(id, rule, selector, selectorRoot, deep, slotted = false
 			}
 			if (node) return;
 		}
-		if (n.type !== "pseudo" && n.type !== "combinator" || n.type === "pseudo" && (n.value === ":is" || n.value === ":where") && !node) node = n;
+		if (!hasNestedDeep && (n.type !== "pseudo" && n.type !== "combinator" || n.type === "pseudo" && (n.value === ":is" || n.value === ":where") && !node)) node = n;
 	});
+	if (splitForNestedDeep) return;
 	if (rule.nodes.some((node) => node.type === "rule")) {
 		const deep = rule.__deep;
 		if (!deep) {
@@ -6734,7 +6751,7 @@ function rewriteSelector(id, rule, selector, selectorRoot, deep, slotted = false
 		}
 		shouldInject = deep;
 	}
-	if (node) {
+	if (node && !hasNestedDeep) {
 		const { type, value } = node;
 		if (type === "pseudo" && (value === ":is" || value === ":where")) {
 			node.nodes.forEach((value) => rewriteSelector(id, rule, value, selectorRoot, deep, slotted));
@@ -6755,6 +6772,32 @@ function rewriteSelector(id, rule, selector, selectorRoot, deep, slotted = false
 }
 function isSpaceCombinator(node) {
 	return node.type === "combinator" && /^\s+$/.test(node.value);
+}
+function isDeepSelector(node) {
+	var _nodes;
+	if (node.type === "pseudo" && (node.value === ":deep" || node.value === "::v-deep")) return true;
+	return !!((_nodes = node.nodes) === null || _nodes === void 0 ? void 0 : _nodes.some((child) => isDeepSelector(child)));
+}
+function isDeepContainerPseudo(node) {
+	return node.type === "pseudo" && (node.value === ":is" || node.value === ":where" || node.value === ":has" || node.value === ":not");
+}
+function canSplitDeepContainerPseudo(node) {
+	return node.value === ":is" || node.value === ":where" || node.value === ":has";
+}
+function splitSelectorForNestedDeep(id, rule, selector, selectorRoot, pseudo, deep, slotted) {
+	const pseudoIndex = selector.index(pseudo);
+	const selectors = pseudo.nodes.map((branch, index) => {
+		const branchSelector = selector.clone();
+		if (branchSelector.first) branchSelector.first.spaces.before = index === 0 ? selector.first.spaces.before : " ";
+		const branchPseudo = branchSelector.at(pseudoIndex);
+		const branchClone = branch.clone();
+		if (branchClone.first) branchClone.first.spaces.before = "";
+		branchPseudo.removeAll();
+		branchPseudo.append(branchClone);
+		rewriteSelector(id, rule, branchSelector, selectorRoot, deep, slotted);
+		return branchSelector;
+	});
+	selector.replaceWith(...selectors);
 }
 function extractAndWrapNodes(parentNode) {
 	if (!parentNode.nodes) return;
@@ -13074,7 +13117,8 @@ var Minimatch = class {
 		this.pattern = pattern;
 		this.platform = options.platform || defaultPlatform;
 		this.isWindows = this.platform === "win32";
-		this.windowsPathsNoEscape = !!options.windowsPathsNoEscape || options["allowWindowsEscape"] === false;
+		const awe = "allowWindowsEscape";
+		this.windowsPathsNoEscape = !!options.windowsPathsNoEscape || options[awe] === false;
 		if (this.windowsPathsNoEscape) this.pattern = this.pattern.replace(/\\/g, "/");
 		this.preserveMultipleSlashes = !!options.preserveMultipleSlashes;
 		this.regexp = null;
@@ -13559,13 +13603,22 @@ var TypeScope = class {
 		this.exportedDeclares = Object.create(null);
 	}
 };
+function recordScopeDep(ctx, scope) {
+	if (scope && scope.filename !== ctx.filename) (ctx.deps || (ctx.deps = /* @__PURE__ */ new Set())).add(scope.filename);
+}
+function recordResolvedElementDeps(ctx, { props }) {
+	for (const key in props) recordScopeDep(ctx, props[key]._ownerScope);
+}
 /**
 * Resolve arbitrary type node to a list of type elements that can be then
 * mapped to runtime props or emits.
 */
 function resolveTypeElements(ctx, node, scope, typeParameters) {
 	const canCache = !typeParameters;
-	if (canCache && node._resolvedElements) return node._resolvedElements;
+	if (canCache && node._resolvedElements) {
+		recordResolvedElementDeps(ctx, node._resolvedElements);
+		return node._resolvedElements;
+	}
 	const resolved = innerResolveTypeElements(ctx, node, node._ownerScope || scope || ctxToScope(ctx), typeParameters);
 	return canCache ? node._resolvedElements = resolved : resolved;
 }
@@ -13837,7 +13890,10 @@ function resolveBuiltin(ctx, node, name, scope, typeParameters) {
 }
 function resolveTypeReference(ctx, node, scope, name, onlyExported = false) {
 	const canCache = !(scope === null || scope === void 0 ? void 0 : scope.isGenericScope);
-	if (canCache && node._resolvedReference) return node._resolvedReference;
+	if (canCache && node._resolvedReference) {
+		recordScopeDep(ctx, node._resolvedReference._ownerScope);
+		return node._resolvedReference;
+	}
 	const resolved = innerResolveTypeReference(ctx, scope || ctxToScope(ctx), name || getReferenceName(node), node, onlyExported);
 	return canCache ? node._resolvedReference = resolved : resolved;
 }
@@ -13852,7 +13908,9 @@ function innerResolveTypeReference(ctx, scope, name, node, onlyExported) {
 				const src = node.type === "TSTypeQuery" ? s.declares : s.types;
 				if (src[name]) {
 					(ctx.deps || (ctx.deps = /* @__PURE__ */ new Set())).add(s.filename);
-					return src[name];
+					const resolved = src[name];
+					if (resolved._ownerScope && resolved._ownerScope !== s) ctx.deps.add(resolved._ownerScope.filename);
+					return resolved;
 				}
 			}
 		}
@@ -13917,7 +13975,7 @@ function resolveTypeFromImport(ctx, node, name, scope) {
 	const { source, imported } = scope.imports[name];
 	return resolveTypeReference(ctx, node, importSourceToScope(ctx, node, scope, source), imported, true);
 }
-function importSourceToScope(ctx, node, scope, source) {
+function importSourceToScope(ctx, node, scope, source, trackDep = true) {
 	let fs;
 	try {
 		fs = resolveFS(ctx);
@@ -13937,10 +13995,16 @@ function importSourceToScope(ctx, node, scope, source) {
 			}
 			resolved = resolveWithTS(scope.filename, source, ts, fs);
 		}
+		if (!resolved && source[0] === "." && true) {
+			if (!ts) {
+				if (loadTS) ts = loadTS();
+			}
+			if (ts) resolved = resolveWithTS(scope.filename, source, ts, fs);
+		}
 		if (resolved) resolved = scope.resolvedImportSources[source] = normalizePath(resolved);
 	}
 	if (resolved) {
-		(ctx.deps || (ctx.deps = /* @__PURE__ */ new Set())).add(resolved);
+		if (trackDep) (ctx.deps || (ctx.deps = /* @__PURE__ */ new Set())).add(resolved);
 		return fileToScope(ctx, resolved);
 	} else return ctx.error(`Failed to resolve import source ${JSON.stringify(source)}.`, node, scope);
 }
@@ -14094,8 +14158,22 @@ function recordTypes(ctx, body, scope, asGlobal = false) {
 	for (const stmt of body) if (asGlobal) {
 		if (isAmbient) {
 			if (stmt.declare) recordType(stmt, types, declares);
-		} else if (stmt.type === "TSModuleDeclaration" && stmt.global) for (const s of stmt.body.body) if (s.type === "ExportNamedDeclaration" && s.declaration) recordType(s.declaration, types, declares);
-		else recordType(s, types, declares);
+		} else if (stmt.type === "TSModuleDeclaration" && stmt.global) for (const s of stmt.body.body) if (s.type === "ExportNamedDeclaration") {
+			if (s.declaration) recordType(s.declaration, types, declares);
+			else if (s.source) {
+				const sourceScope = importSourceToScope(ctx, s.source, scope, s.source.value, false);
+				for (const spec of s.specifiers) if (spec.type === "ExportSpecifier") {
+					const exported = getId(spec.exported);
+					const local = spec.local.name;
+					if (sourceScope.exportedTypes[local]) types[exported] = sourceScope.exportedTypes[local];
+					if (sourceScope.exportedDeclares[local]) declares[exported] = sourceScope.exportedDeclares[local];
+				}
+			}
+		} else if (s.type === "ExportAllDeclaration" && s.source) {
+			const sourceScope = importSourceToScope(ctx, s.source, scope, s.source.value, false);
+			Object.assign(types, sourceScope.exportedTypes);
+			Object.assign(declares, sourceScope.exportedDeclares);
+		} else recordType(s, types, declares);
 	} else recordType(stmt, types, declares);
 	if (!asGlobal) {
 		for (const stmt of body) if (stmt.type === "ExportNamedDeclaration") {
@@ -14132,10 +14210,10 @@ function recordTypes(ctx, body, scope, asGlobal = false) {
 	}
 	for (const key of Object.keys(types)) {
 		const node = types[key];
-		node._ownerScope = scope;
-		if (node._ns) node._ns._ownerScope = scope;
+		if (!node._ownerScope) node._ownerScope = scope;
+		if (node._ns && !node._ns._ownerScope) node._ns._ownerScope = scope;
 	}
-	for (const key of Object.keys(declares)) declares[key]._ownerScope = scope;
+	for (const key of Object.keys(declares)) if (!declares[key]._ownerScope) declares[key]._ownerScope = scope;
 }
 function recordType(node, types, declares, overwriteId) {
 	switch (node.type) {
@@ -14260,7 +14338,10 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 				default: return [UNKNOWN_TYPE];
 			}
 			case "TSTypeReference": {
-				const resolved = resolveTypeReference(ctx, node, scope);
+				let resolved;
+				try {
+					resolved = resolveTypeReference(ctx, node, scope);
+				} catch {}
 				if (resolved) {
 					if (resolved.type === "TSTypeAliasDeclaration") {
 						if (resolved.typeAnnotation.type === "TSFunctionType") return ["Function"];
@@ -14336,6 +14417,17 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 						case "ReadonlyArray": return ["Array"];
 						case "ReadonlyMap": return ["Map"];
 						case "ReadonlySet": return ["Set"];
+						case "Ref":
+						case "ShallowRef":
+						case "ComputedRef":
+						case "WritableComputedRef": return ["Object"];
+						case "MaybeRef":
+						case "MaybeRefOrGetter": {
+							const types = new Set(["Object"]);
+							if (node.typeName.name === "MaybeRefOrGetter") types.add("Function");
+							if (node.typeParameters && node.typeParameters.params[0]) for (const t of inferRuntimeType(ctx, node.typeParameters.params[0], scope, false, typeParameters)) types.add(t);
+							return Array.from(types);
+						}
 						case "NonNullable":
 							if (node.typeParameters && node.typeParameters.params[0]) return inferRuntimeType(ctx, node.typeParameters.params[0], scope).filter((t) => t !== "null");
 							break;
@@ -15626,7 +15718,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 }
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
-const version = "3.6.0-beta.10";
+const version = "3.6.0-beta.11";
 const parseCache = parseCache$1;
 const errorMessages = {
 	..._vue_compiler_dom.errorMessages,

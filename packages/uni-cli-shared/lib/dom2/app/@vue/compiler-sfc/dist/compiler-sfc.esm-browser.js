@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-beta.10
+  * @vue/compiler-sfc v3.6.0-beta.11
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -12,7 +12,7 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __esmMin = (fn, res) => () => (fn && (res = fn(fn = 0)), res);
-var __commonJSMin = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
+var __commonJSMin = (cb, mod) => () => (mod || (cb((mod = { exports: {} }).exports, mod), cb = null), mod.exports);
 var __exportAll = (all, no_symbols) => {
 	let target = {};
 	for (var name in all) __defProp(target, name, {
@@ -42,7 +42,7 @@ var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require
 	throw Error("Calling `require` for \"" + x + "\" in an environment that doesn't expose the `require` function. See https://rolldown.rs/in-depth/bundling-cjs#require-external-modules for more details.");
 });
 //#endregion
-//#region \0@oxc-project+runtime@0.124.0/helpers/typeof.js
+//#region \0@oxc-project+runtime@0.129.0/helpers/typeof.js
 function _typeof(o) {
 	"@babel/helpers - typeof";
 	return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o) {
@@ -53,7 +53,7 @@ function _typeof(o) {
 }
 var init_typeof = __esmMin((() => {}));
 //#endregion
-//#region \0@oxc-project+runtime@0.124.0/helpers/toPrimitive.js
+//#region \0@oxc-project+runtime@0.129.0/helpers/toPrimitive.js
 function toPrimitive(t, r) {
 	if ("object" != _typeof(t) || !t) return t;
 	var e = t[Symbol.toPrimitive];
@@ -68,7 +68,7 @@ var init_toPrimitive = __esmMin((() => {
 	init_typeof();
 }));
 //#endregion
-//#region \0@oxc-project+runtime@0.124.0/helpers/toPropertyKey.js
+//#region \0@oxc-project+runtime@0.129.0/helpers/toPropertyKey.js
 function toPropertyKey(t) {
 	var i = toPrimitive(t, "string");
 	return "symbol" == _typeof(i) ? i : i + "";
@@ -78,7 +78,7 @@ var init_toPropertyKey = __esmMin((() => {
 	init_toPrimitive();
 }));
 //#endregion
-//#region \0@oxc-project+runtime@0.124.0/helpers/defineProperty.js
+//#region \0@oxc-project+runtime@0.129.0/helpers/defineProperty.js
 function _defineProperty(e, r, t) {
 	return (r = toPropertyKey(r)) in e ? Object.defineProperty(e, r, {
 		value: t,
@@ -91,7 +91,7 @@ var init_defineProperty = __esmMin((() => {
 	init_toPropertyKey();
 }));
 //#endregion
-//#region \0@oxc-project+runtime@0.124.0/helpers/objectSpread2.js
+//#region \0@oxc-project+runtime@0.129.0/helpers/objectSpread2.js
 function ownKeys(e, r) {
 	var t = Object.keys(e);
 	if (Object.getOwnPropertySymbols) {
@@ -1070,6 +1070,12 @@ function write(buffer, value, offset, isLE, mLen, nBytes) {
 	for (; eLen > 0; buffer[offset + i] = e & 255, i += d, e /= 256, eLen -= 8);
 	buffer[offset + i - d] |= s * 128;
 }
+/*!
+* The buffer module from node.js, for the browser.
+*
+* @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+* @license  MIT
+*/
 function kMaxLength() {
 	return Buffer$1.TYPED_ARRAY_SUPPORT ? 2147483647 : 1073741823;
 }
@@ -3595,7 +3601,7 @@ const errorMessages$1 = {
 	[54]: ``
 };
 //#endregion
-//#region node_modules/.pnpm/@babel+parser@7.29.2/node_modules/@babel/parser/lib/index.js
+//#region node_modules/.pnpm/@babel+parser@7.29.3/node_modules/@babel/parser/lib/index.js
 var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	Object.defineProperty(exports, "__esModule", { value: true });
 	function _objectWithoutPropertiesLoose(r, e) {
@@ -6139,7 +6145,7 @@ var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		}
 		flowParseDeclareVariable(node) {
 			this.next();
-			node.id = this.flowParseTypeAnnotatableIdentifier(true);
+			node.id = this.flowParseTypeAnnotatableIdentifier();
 			this.scope.declareName(node.id.name, 5, node.id.loc.start);
 			this.semicolon();
 			return this.finishNode(node, "DeclareVariable");
@@ -6283,9 +6289,14 @@ var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 			if (!reservedTypes.has(word)) return;
 			this.raise(declaration ? FlowErrors.AssignReservedType : FlowErrors.UnexpectedReservedType, startLoc, { reservedType: word });
 		}
-		flowParseRestrictedIdentifier(liberal, declaration) {
+		flowParseRestrictedIdentifierName(liberal, declaration) {
 			this.checkReservedType(this.state.value, this.state.startLoc, declaration);
-			return this.parseIdentifier(liberal);
+			return this.parseIdentifierName(liberal);
+		}
+		flowParseRestrictedIdentifier(liberal, declaration) {
+			const node = this.startNode();
+			const name = this.flowParseRestrictedIdentifierName(liberal, declaration);
+			return this.createIdentifier(node, name);
 		}
 		flowParseTypeAlias(node) {
 			node.id = this.flowParseRestrictedIdentifier(false, true);
@@ -6309,14 +6320,21 @@ var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 			this.semicolon();
 			return this.finishNode(node, "OpaqueType");
 		}
+		flowParseTypeParameterBound() {
+			if (this.match(14) || this.isContextual(81)) {
+				const node = this.startNode();
+				this.next();
+				node.typeAnnotation = this.flowParseType();
+				return this.finishNode(node, "TypeAnnotation");
+			}
+		}
 		flowParseTypeParameter(requireDefault = false) {
 			const nodeStartLoc = this.state.startLoc;
 			const node = this.startNode();
 			const variance = this.flowParseVariance();
-			const ident = this.flowParseTypeAnnotatableIdentifier();
-			node.name = ident.name;
+			node.name = this.flowParseRestrictedIdentifierName();
 			node.variance = variance;
-			node.bound = ident.typeAnnotation;
+			node.bound = this.flowParseTypeParameterBound();
 			if (this.match(29)) {
 				this.eat(29);
 				node.default = this.flowParseType();
@@ -6874,13 +6892,11 @@ var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 			node.typeAnnotation = this.flowParseTypeInitialiser();
 			return this.finishNode(node, "TypeAnnotation");
 		}
-		flowParseTypeAnnotatableIdentifier(allowPrimitiveOverride) {
-			const ident = allowPrimitiveOverride ? this.parseIdentifier() : this.flowParseRestrictedIdentifier();
-			if (this.match(14)) {
-				ident.typeAnnotation = this.flowParseTypeAnnotation();
-				this.resetEndLocation(ident);
-			}
-			return ident;
+		flowParseTypeAnnotatableIdentifier() {
+			const node = this.startNode();
+			const name = this.parseIdentifierName();
+			if (this.match(14)) node.typeAnnotation = this.flowParseTypeAnnotation();
+			return this.createIdentifier(node, name);
 		}
 		typeCastToParameter(node) {
 			node.expression.typeAnnotation = node.typeAnnotation;
@@ -8676,6 +8692,7 @@ var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 						adjustInnerComments(node, node.properties, commentWS);
 						break;
 					case "CallExpression":
+					case "NewExpression":
 					case "OptionalCallExpression":
 						adjustInnerComments(node, node.arguments, commentWS);
 						break;
@@ -8688,6 +8705,7 @@ var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 					case "ObjectMethod":
 					case "ClassMethod":
 					case "ClassPrivateMethod":
+					case "TSTypeParameterDeclaration":
 						adjustInnerComments(node, node.params, commentWS);
 						break;
 					case "ArrayExpression":
@@ -8703,6 +8721,9 @@ var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 						break;
 					case "TSEnumBody":
 						adjustInnerComments(node, node.members, commentWS);
+						break;
+					case "TSInterfaceBody":
+						adjustInnerComments(node, node.body, commentWS);
 						break;
 					default:
 						if (node.type === "RecordExpression") {
@@ -10260,7 +10281,8 @@ var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 			const oldInModule = this.inModule;
 			this.inModule = inModule;
 			const oldScope = this.scope;
-			this.scope = new (this.getScopeHandler())(this, inModule);
+			const ScopeHandler = this.getScopeHandler();
+			this.scope = new ScopeHandler(this, inModule);
 			const oldProdParam = this.prodParam;
 			this.prodParam = new ProductionParameterHandler();
 			const oldClassScope = this.classScope;
@@ -16167,7 +16189,7 @@ var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.parseExpression = parseExpression;
 }));
 //#endregion
-//#region \0@oxc-project+runtime@0.124.0/helpers/asyncToGenerator.js
+//#region \0@oxc-project+runtime@0.129.0/helpers/asyncToGenerator.js
 function asyncGeneratorStep(n, t, e, r, o, a, c) {
 	try {
 		var i = n[a](c), u = i.value;
@@ -16622,7 +16644,7 @@ const getExpSource = (exp) => exp.type === 4 ? exp.content : exp.loc.source;
 */
 const isMemberExpressionBrowser = (exp) => {
 	const path = getExpSource(exp).trim().replace(whitespaceRE, (s) => s.trim());
-	let state = MemberExpLexState.inMemberExp;
+	let state = 0;
 	let stateStack = [];
 	let currentOpenBracketCount = 0;
 	let currentOpenParensCount = 0;
@@ -16630,31 +16652,31 @@ const isMemberExpressionBrowser = (exp) => {
 	for (let i = 0; i < path.length; i++) {
 		const char = path.charAt(i);
 		switch (state) {
-			case MemberExpLexState.inMemberExp:
+			case 0:
 				if (char === "[") {
 					stateStack.push(state);
-					state = MemberExpLexState.inBrackets;
+					state = 1;
 					currentOpenBracketCount++;
 				} else if (char === "(") {
 					stateStack.push(state);
-					state = MemberExpLexState.inParens;
+					state = 2;
 					currentOpenParensCount++;
 				} else if (!(i === 0 ? validFirstIdentCharRE : validIdentCharRE).test(char)) return false;
 				break;
-			case MemberExpLexState.inBrackets:
+			case 1:
 				if (char === `'` || char === `"` || char === "`") {
 					stateStack.push(state);
-					state = MemberExpLexState.inString;
+					state = 3;
 					currentStringType = char;
 				} else if (char === `[`) currentOpenBracketCount++;
 				else if (char === `]`) {
 					if (!--currentOpenBracketCount) state = stateStack.pop();
 				}
 				break;
-			case MemberExpLexState.inParens:
+			case 2:
 				if (char === `'` || char === `"` || char === "`") {
 					stateStack.push(state);
-					state = MemberExpLexState.inString;
+					state = 3;
 					currentStringType = char;
 				} else if (char === `(`) currentOpenParensCount++;
 				else if (char === `)`) {
@@ -16662,7 +16684,7 @@ const isMemberExpressionBrowser = (exp) => {
 					if (!--currentOpenParensCount) state = stateStack.pop();
 				}
 				break;
-			case MemberExpLexState.inString:
+			case 3:
 				if (char === currentStringType) {
 					state = stateStack.pop();
 					currentStringType = null;
@@ -17052,10 +17074,10 @@ const tokenizer = new Tokenizer(stack, {
 				};
 				if (tokenizer.inSFCRoot && currentOpenTag.tag === "template" && currentProp.name === "lang" && currentAttrValue && currentAttrValue !== "html") tokenizer.enterRCDATA(toCharCodes(`</template`), 0);
 			} else {
-				let expParseMode = ExpParseMode.Normal;
-				if (currentProp.name === "for") expParseMode = ExpParseMode.Skip;
-				else if (currentProp.name === "slot") expParseMode = ExpParseMode.Params;
-				else if (currentProp.name === "on" && currentAttrValue.includes(";")) expParseMode = ExpParseMode.Statements;
+				let expParseMode = 0;
+				if (currentProp.name === "for") expParseMode = 3;
+				else if (currentProp.name === "slot") expParseMode = 1;
+				else if (currentProp.name === "on" && currentAttrValue.includes(";")) expParseMode = 2;
 				currentProp.exp = createExp(currentAttrValue, false, getLoc(currentAttrStartIndex, currentAttrEndIndex), 0, expParseMode);
 				if (currentProp.name === "for") currentProp.forParseResult = parseForExpression(currentProp.exp);
 			}
@@ -17127,7 +17149,7 @@ function parseForExpression(input) {
 	const [, LHS, RHS] = inMatch;
 	const createAliasExpression = (content, offset, asParam = false) => {
 		const start = loc.start.offset + offset;
-		return createExp(content, false, getLoc(start, start + content.length), 0, asParam ? ExpParseMode.Params : ExpParseMode.Normal);
+		return createExp(content, false, getLoc(start, start + content.length), 0, asParam ? 1 : 0);
 	};
 	const result = {
 		source: createAliasExpression(RHS.trim(), exp.indexOf(RHS, LHS.length)),
@@ -17335,9 +17357,9 @@ var ExpParseMode = /* @__PURE__ */ function(ExpParseMode) {
 	ExpParseMode[ExpParseMode["Skip"] = 3] = "Skip";
 	return ExpParseMode;
 }(ExpParseMode || {});
-function createExp(content, isStatic = false, loc, constType = 0, parseMode = ExpParseMode.Normal) {
+function createExp(content, isStatic = false, loc, constType = 0, parseMode = 0) {
 	const exp = createSimpleExpression(content, isStatic, loc, constType);
-	if (!isStatic && currentOptions.prefixIdentifiers && parseMode !== ExpParseMode.Skip && content.trim()) {
+	if (!isStatic && currentOptions.prefixIdentifiers && parseMode !== 3 && content.trim()) {
 		if (isSimpleIdentifier(content)) {
 			exp.ast = null;
 			return exp;
@@ -17345,8 +17367,8 @@ function createExp(content, isStatic = false, loc, constType = 0, parseMode = Ex
 		try {
 			const plugins = currentOptions.expressionPlugins;
 			const options = { plugins: plugins ? [...plugins, "typescript"] : ["typescript"] };
-			if (parseMode === ExpParseMode.Statements) exp.ast = (0, import_lib.parse)(` ${content} `, options).program;
-			else if (parseMode === ExpParseMode.Params) exp.ast = (0, import_lib.parseExpression)(`(${content})=>{}`, options);
+			if (parseMode === 2) exp.ast = (0, import_lib.parse)(` ${content} `, options).program;
+			else if (parseMode === 1) exp.ast = (0, import_lib.parseExpression)(`(${content})=>{}`, options);
 			else exp.ast = (0, import_lib.parseExpression)(`(${content})`, options);
 		} catch (e) {
 			exp.ast = false;
@@ -17629,6 +17651,7 @@ function createTransformContext(root, { filename = "", prefixIdentifiers = false
 		constantCache: /* @__PURE__ */ new WeakMap(),
 		temps: 0,
 		identifiers: Object.create(null),
+		identifierScopes: Object.create(null),
 		scopes: {
 			vFor: 0,
 			vSlot: 0,
@@ -17679,15 +17702,19 @@ function createTransformContext(root, { filename = "", prefixIdentifiers = false
 			context.parent.children.splice(removalIndex, 1);
 		},
 		onNodeRemoved: NOOP,
-		addIdentifiers(exp) {
-			if (isString$1(exp)) addId(exp);
-			else if (exp.identifiers) exp.identifiers.forEach(addId);
-			else if (exp.type === 4) addId(exp.content);
+		addIdentifiers(exp, type = "local") {
+			if (isString$1(exp)) addId(exp, type);
+			else if (exp.identifiers) exp.identifiers.forEach((id) => addId(id, type));
+			else if (exp.type === 4) addId(exp.content, type);
 		},
 		removeIdentifiers(exp) {
 			if (isString$1(exp)) removeId(exp);
 			else if (exp.identifiers) exp.identifiers.forEach(removeId);
 			else if (exp.type === 4) removeId(exp.content);
+		},
+		isSlotScopeIdentifier(name) {
+			const scopes = context.identifierScopes[name];
+			return scopes ? scopes[scopes.length - 1] === "slot" : false;
 		},
 		hoist(exp) {
 			if (isString$1(exp)) exp = createSimpleExpression(exp);
@@ -17702,13 +17729,16 @@ function createTransformContext(root, { filename = "", prefixIdentifiers = false
 			return cacheExp;
 		}
 	};
-	function addId(id) {
-		const { identifiers } = context;
+	function addId(id, type) {
+		const { identifiers, identifierScopes } = context;
 		if (identifiers[id] === void 0) identifiers[id] = 0;
 		identifiers[id]++;
+		(identifierScopes[id] || (identifierScopes[id] = [])).push(type);
 	}
 	function removeId(id) {
 		context.identifiers[id]--;
+		const scopes = context.identifierScopes[id];
+		if (scopes) scopes.pop();
 	}
 	return context;
 }
@@ -20878,7 +20908,7 @@ const trackSlotScopes = (node, context) => {
 		const vSlot = findDir$1(node, "slot");
 		if (vSlot) {
 			const slotProps = vSlot.exp;
-			if (context.prefixIdentifiers) slotProps && context.addIdentifiers(slotProps);
+			if (context.prefixIdentifiers) slotProps && context.addIdentifiers(slotProps, "slot");
 			context.scopes.vSlot++;
 			return () => {
 				if (context.prefixIdentifiers) slotProps && context.removeIdentifiers(slotProps);
@@ -21098,6 +21128,15 @@ function resolveComponentType(node, context, ssr = false) {
 		return builtIn;
 	}
 	{
+		const fromScope = resolveSlotScopeReference(tag, context);
+		if (fromScope) return fromScope;
+		const dotIndex = tag.indexOf(".");
+		if (dotIndex > 0) {
+			const ns = resolveSlotScopeReference(tag.slice(0, dotIndex), context);
+			if (ns) return ns + tag.slice(dotIndex);
+		}
+	}
+	{
 		const fromSetup = resolveSetupReference$1(tag, context);
 		if (fromSetup) return fromSetup;
 		const dotIndex = tag.indexOf(".");
@@ -21114,6 +21153,14 @@ function resolveComponentType(node, context, ssr = false) {
 	context.helper(RESOLVE_COMPONENT);
 	context.components.add(tag);
 	return toValidAssetId(tag, `component`);
+}
+function resolveSlotScopeReference(name, context) {
+	const camelName = camelize(name);
+	const PascalName = capitalize(camelName);
+	const isInSlotScope = (reference) => context.isSlotScopeIdentifier(reference);
+	if (isInSlotScope(name)) return name;
+	if (isInSlotScope(camelName)) return camelName;
+	if (isInSlotScope(PascalName)) return PascalName;
 }
 function resolveSetupReference$1(name, context) {
 	const bindings = context.bindingMetadata;
@@ -22680,30 +22727,24 @@ function parseCssVars(sfc) {
 	});
 	return vars;
 }
-var LexerState = /* @__PURE__ */ function(LexerState) {
-	LexerState[LexerState["inParens"] = 0] = "inParens";
-	LexerState[LexerState["inSingleQuoteString"] = 1] = "inSingleQuoteString";
-	LexerState[LexerState["inDoubleQuoteString"] = 2] = "inDoubleQuoteString";
-	return LexerState;
-}(LexerState || {});
 function lexBinding(content, start) {
-	let state = LexerState.inParens;
+	let state = 0;
 	let parenDepth = 0;
 	for (let i = start; i < content.length; i++) {
 		const char = content.charAt(i);
 		switch (state) {
-			case LexerState.inParens:
-				if (char === `'`) state = LexerState.inSingleQuoteString;
-				else if (char === `"`) state = LexerState.inDoubleQuoteString;
+			case 0:
+				if (char === `'`) state = 1;
+				else if (char === `"`) state = 2;
 				else if (char === `(`) parenDepth++;
 				else if (char === `)`) if (parenDepth > 0) parenDepth--;
 				else return i;
 				break;
-			case LexerState.inSingleQuoteString:
-				if (char === `'`) state = LexerState.inParens;
+			case 1:
+				if (char === `'`) state = 0;
 				break;
-			case LexerState.inDoubleQuoteString:
-				if (char === `"`) state = LexerState.inParens;
+			case 2:
+				if (char === `"`) state = 0;
 				break;
 		}
 	}
@@ -23546,6 +23587,7 @@ function createCppBlock({ props, loc }, options) {
 }
 //#endregion
 //#region \0polyfill-node.punycode.js
+/*! https://mths.be/punycode v1.4.1 by @mathias */
 /**
 * A generic error utility function.
 * @private
@@ -24645,13 +24687,15 @@ init_objectSpread2();
 const resourceUrlTagConfig = {
 	video: ["src", "poster"],
 	source: ["src"],
-	img: ["src"],
-	image: ["xlink:href", "href"]
+	img: ["src"]
 };
 const defaultAssetUrlOptions = {
 	base: null,
 	includeAbsolute: false,
-	tags: _objectSpread2(_objectSpread2({}, resourceUrlTagConfig), {}, { use: ["xlink:href", "href"] })
+	tags: _objectSpread2(_objectSpread2({}, resourceUrlTagConfig), {}, {
+		image: ["xlink:href", "href"],
+		use: ["xlink:href", "href"]
+	})
 };
 const normalizeOptions = (options) => {
 	if (Object.keys(options).some((key) => isArray$3(options[key]))) return _objectSpread2(_objectSpread2({}, defaultAssetUrlOptions), {}, { tags: options });
@@ -24689,7 +24733,7 @@ const transformAssetUrl = (node, context, options = defaultAssetUrlOptions) => {
 			if (attr.type !== 6 || !assetAttrs.includes(attr.name) || !attr.value) return;
 			const urlValue = attr.value.content;
 			const isHashOnlyValue = urlValue[0] === "#";
-			if (isExternalUrl(urlValue) || isDataUrl(urlValue) || isHashOnlyValue && !canTransformHashImport(node.tag, attr.name) || !options.includeAbsolute && !isRelativeUrl(urlValue)) return;
+			if (isExternalUrl(urlValue) || isDataUrl(urlValue) || urlValue === "#" || isHashOnlyValue && !canTransformHashImport(node.tag, attr.name) || !options.includeAbsolute && !isRelativeUrl(urlValue)) return;
 			const url = parseUrl(urlValue);
 			if (options.base && urlValue[0] === ".") {
 				const base = parseUrl(options.base);
@@ -24853,6 +24897,94 @@ const transformSrcset = (node, context, options = defaultAssetUrlOptions) => {
 	}
 };
 //#endregion
+//#region packages/compiler-vapor/src/ir/component.ts
+const IRDynamicPropsKind = {
+	"EXPRESSION": 0,
+	"0": "EXPRESSION",
+	"ATTRIBUTE": 1,
+	"1": "ATTRIBUTE"
+};
+const IRSlotType = {
+	"STATIC": 0,
+	"0": "STATIC",
+	"DYNAMIC": 1,
+	"1": "DYNAMIC",
+	"LOOP": 2,
+	"2": "LOOP",
+	"CONDITIONAL": 3,
+	"3": "CONDITIONAL",
+	"EXPRESSION": 4,
+	"4": "EXPRESSION"
+};
+//#endregion
+//#region packages/compiler-vapor/src/ir/index.ts
+const IRNodeTypes = {
+	"ROOT": 0,
+	"0": "ROOT",
+	"BLOCK": 1,
+	"1": "BLOCK",
+	"SET_BLOCK_KEY": 2,
+	"2": "SET_BLOCK_KEY",
+	"SET_PROP": 3,
+	"3": "SET_PROP",
+	"SET_DYNAMIC_PROPS": 4,
+	"4": "SET_DYNAMIC_PROPS",
+	"SET_TEXT": 5,
+	"5": "SET_TEXT",
+	"SET_EVENT": 6,
+	"6": "SET_EVENT",
+	"SET_DYNAMIC_EVENTS": 7,
+	"7": "SET_DYNAMIC_EVENTS",
+	"SET_HTML": 8,
+	"8": "SET_HTML",
+	"SET_TEMPLATE_REF": 9,
+	"9": "SET_TEMPLATE_REF",
+	"INSERT_NODE": 10,
+	"10": "INSERT_NODE",
+	"PREPEND_NODE": 11,
+	"11": "PREPEND_NODE",
+	"CREATE_COMPONENT_NODE": 12,
+	"12": "CREATE_COMPONENT_NODE",
+	"SLOT_OUTLET_NODE": 13,
+	"13": "SLOT_OUTLET_NODE",
+	"DIRECTIVE": 14,
+	"14": "DIRECTIVE",
+	"IF": 15,
+	"15": "IF",
+	"FOR": 16,
+	"16": "FOR",
+	"KEY": 17,
+	"17": "KEY",
+	"GET_TEXT_CHILD": 18,
+	"18": "GET_TEXT_CHILD",
+	"GET_INSERTION_PARENT": 19,
+	"19": "GET_INSERTION_PARENT",
+	"SET_CHANGE_PROP": 20,
+	"20": "SET_CHANGE_PROP"
+};
+var TemplateRegistry = class {
+	constructor() {
+		this.entries = [];
+	}
+	keys() {
+		return this.entries.map(({ content }) => content);
+	}
+};
+const DynamicFlag = {
+	"NONE": 0,
+	"0": "NONE",
+	"REFERENCED": 1,
+	"1": "REFERENCED",
+	"NON_TEMPLATE": 2,
+	"2": "NON_TEMPLATE",
+	"INSERT": 4,
+	"4": "INSERT"
+};
+function isBlockOperation(op) {
+	const type = op.type;
+	return type === 12 || type === 13 || type === 15 || type === 17 || type === 16;
+}
+//#endregion
 //#region packages/compiler-vapor/src/transforms/utils.ts
 const newDynamic = () => ({
 	flags: 1,
@@ -24970,6 +25102,7 @@ function isTeleportTag(tag) {
 }
 function isBuiltInComponent(tag) {
 	if (isTeleportTag(tag)) return "VaporTeleport";
+	else if (tag === "Suspense" || tag === "suspense") return "Suspense";
 	else if (isKeepAliveTag(tag)) return "VaporKeepAlive";
 	else if (isTransitionTag(tag)) return "VaporTransition";
 	else if (isTransitionGroupTag(tag)) return "VaporTransitionGroup";
@@ -24991,6 +25124,8 @@ var TransformContext = class TransformContext {
 		this.index = 0;
 		this.block = this.ir.block;
 		this.template = "";
+		this.templateRoot = false;
+		this.templateIndexMap = /* @__PURE__ */ new Map();
 		this.childrenTemplate = [];
 		this.dynamic = this.ir.block.dynamic;
 		this.imports = [];
@@ -25000,6 +25135,8 @@ var TransformContext = class TransformContext {
 		this.component = this.ir.component;
 		this.directive = this.ir.directive;
 		this.slots = [];
+		this.effectIndex = this.block.effect.length;
+		this.operationIndex = this.block.operation.length;
 		this.isLastEffectiveChild = true;
 		this.isOnRightmostPath = true;
 		this.hasInlineAncestorNeedingClose = false;
@@ -25017,20 +25154,28 @@ var TransformContext = class TransformContext {
 		this.initNextIdMap();
 	}
 	enterBlock(ir, isVFor = false) {
-		const { block, template, dynamic, childrenTemplate, slots } = this;
+		const { block, template, templateRoot, templateIndexMap, dynamic, childrenTemplate, slots, effectIndex, operationIndex } = this;
 		this.block = ir;
 		this.dynamic = ir.dynamic;
 		this.template = "";
+		this.templateRoot = false;
+		this.templateIndexMap = templateIndexMap;
 		this.childrenTemplate = [];
 		this.slots = [];
+		this.effectIndex = ir.effect.length;
+		this.operationIndex = ir.operation.length;
 		isVFor && this.inVFor++;
 		return () => {
 			this.registerTemplate();
 			this.block = block;
 			this.template = template;
+			this.templateRoot = templateRoot;
+			this.templateIndexMap = templateIndexMap;
 			this.dynamic = dynamic;
 			this.childrenTemplate = childrenTemplate;
 			this.slots = slots;
+			this.effectIndex = effectIndex;
+			this.operationIndex = operationIndex;
 			isVFor && this.inVFor--;
 		};
 	}
@@ -25055,20 +25200,47 @@ var TransformContext = class TransformContext {
 	nextIfIndex() {
 		return this.ifIndex++;
 	}
-	pushTemplate(content) {
-		const existingIndex = this.ir.templateIndexMap.get(content);
+	getTemplateNamespace() {
+		return this.node.type === 1 ? this.node.ns : 0;
+	}
+	canUseStaticTemplate() {
+		if (!this.template) return false;
+		if (this.inVFor) return false;
+		if (this.dynamic.hasDynamicChild) return false;
+		if (this.block.effect.length !== this.effectIndex) return false;
+		if (this.block.operation.length !== this.operationIndex) return false;
+		if (this.node.type === 2 || this.node.type === 3) return true;
+		return this.node.type === 1 && this.node.tagType === 0 && !(this.options.isCustomElement(this.node.tag) || this.node.tag === "template");
+	}
+	pushTemplate(content, { root = false, static: isStatic = false } = {}) {
+		const templateKey = JSON.stringify([
+			this.getTemplateNamespace(),
+			root,
+			isStatic,
+			content
+		]);
+		const existingIndex = this.templateIndexMap.get(templateKey);
 		if (existingIndex !== void 0) return existingIndex;
-		const newIndex = this.ir.template.size;
-		this.ir.template.set(content, this.node.ns);
-		this.ir.templateIndexMap.set(content, newIndex);
+		const ns = this.getTemplateNamespace();
+		const newIndex = this.ir.template.entries.length;
+		this.ir.template.entries.push({
+			content,
+			ns,
+			root,
+			static: isStatic
+		});
+		this.templateIndexMap.set(templateKey, newIndex);
 		return newIndex;
 	}
 	registerTemplate() {
 		if (!this.template) return -1;
-		const id = this.pushTemplate(this.template);
+		const id = this.pushTemplate(this.template, {
+			root: this.templateRoot,
+			static: this.canUseStaticTemplate()
+		});
 		return this.dynamic.template = id;
 	}
-	registerEffect(expressions, operation, getIndex = () => this.block.effect.length, getOperationIndex) {
+	registerEffect(expressions, operation, getIndex, getOperationIndex) {
 		const operations = [operation].flat();
 		expressions = expressions.filter((exp) => !isConstantExpression(exp));
 		if (this.inVOnce || expressions.length === 0 || expressions.every((e) => isStaticExpression(e, this.root.options.bindingMetadata))) {
@@ -25078,13 +25250,21 @@ var TransformContext = class TransformContext {
 			}
 			return this.registerOperation(...operations);
 		}
-		this.block.effect.splice(getIndex(), 0, {
+		const index = getIndex ? getIndex() : this.block.effect.length;
+		this.block.effect.splice(index, 0, {
 			expressions,
 			operations
 		});
+		if (getIndex) this.shiftEffectBoundaries(index);
 	}
 	registerOperation(...node) {
 		this.block.operation.push(...node);
+	}
+	effectBoundary() {
+		return {
+			operationIndex: this.operationIndex,
+			effectIndex: this.effectIndex
+		};
 	}
 	create(node, index) {
 		let effectiveParent = this;
@@ -25101,13 +25281,22 @@ var TransformContext = class TransformContext {
 			parent: this,
 			index,
 			template: "",
+			templateRoot: false,
 			childrenTemplate: [],
+			templateIndexMap: this.templateIndexMap,
 			dynamic: newDynamic(),
+			effectIndex: this.block.effect.length,
+			operationIndex: this.block.operation.length,
 			effectiveParent,
 			isLastEffectiveChild,
 			isOnRightmostPath,
 			hasInlineAncestorNeedingClose
 		});
+	}
+	shiftEffectBoundaries(index, dynamic = this.dynamic) {
+		const operation = dynamic.operation;
+		if (operation && isBlockOperation(operation) && operation.effectIndex !== void 0 && operation.effectIndex >= index) operation.effectIndex++;
+		for (const child of dynamic.children) this.shiftEffectBoundaries(index, child);
 	}
 	isEffectivelyLastChild(index) {
 		const children = this.node.children;
@@ -25146,9 +25335,7 @@ function transform(node, options = {}) {
 		type: 0,
 		node,
 		source: node.source,
-		template: /* @__PURE__ */ new Map(),
-		templateIndexMap: /* @__PURE__ */ new Map(),
-		rootTemplateIndexes: /* @__PURE__ */ new Set(),
+		template: new TemplateRegistry(),
 		component: /* @__PURE__ */ new Set(),
 		directive: /* @__PURE__ */ new Set(),
 		block: newBlock(node),
@@ -25361,86 +25548,6 @@ function codeFragmentToString(code, context) {
 			name
 		});
 	}
-}
-//#endregion
-//#region packages/compiler-vapor/src/ir/component.ts
-const IRDynamicPropsKind = {
-	"EXPRESSION": 0,
-	"0": "EXPRESSION",
-	"ATTRIBUTE": 1,
-	"1": "ATTRIBUTE"
-};
-const IRSlotType = {
-	"STATIC": 0,
-	"0": "STATIC",
-	"DYNAMIC": 1,
-	"1": "DYNAMIC",
-	"LOOP": 2,
-	"2": "LOOP",
-	"CONDITIONAL": 3,
-	"3": "CONDITIONAL",
-	"EXPRESSION": 4,
-	"4": "EXPRESSION"
-};
-//#endregion
-//#region packages/compiler-vapor/src/ir/index.ts
-const IRNodeTypes = {
-	"ROOT": 0,
-	"0": "ROOT",
-	"BLOCK": 1,
-	"1": "BLOCK",
-	"SET_BLOCK_KEY": 2,
-	"2": "SET_BLOCK_KEY",
-	"SET_PROP": 3,
-	"3": "SET_PROP",
-	"SET_DYNAMIC_PROPS": 4,
-	"4": "SET_DYNAMIC_PROPS",
-	"SET_TEXT": 5,
-	"5": "SET_TEXT",
-	"SET_EVENT": 6,
-	"6": "SET_EVENT",
-	"SET_DYNAMIC_EVENTS": 7,
-	"7": "SET_DYNAMIC_EVENTS",
-	"SET_HTML": 8,
-	"8": "SET_HTML",
-	"SET_TEMPLATE_REF": 9,
-	"9": "SET_TEMPLATE_REF",
-	"INSERT_NODE": 10,
-	"10": "INSERT_NODE",
-	"PREPEND_NODE": 11,
-	"11": "PREPEND_NODE",
-	"CREATE_COMPONENT_NODE": 12,
-	"12": "CREATE_COMPONENT_NODE",
-	"SLOT_OUTLET_NODE": 13,
-	"13": "SLOT_OUTLET_NODE",
-	"DIRECTIVE": 14,
-	"14": "DIRECTIVE",
-	"IF": 15,
-	"15": "IF",
-	"FOR": 16,
-	"16": "FOR",
-	"KEY": 17,
-	"17": "KEY",
-	"GET_TEXT_CHILD": 18,
-	"18": "GET_TEXT_CHILD",
-	"GET_INSERTION_PARENT": 19,
-	"19": "GET_INSERTION_PARENT",
-	"SET_CHANGE_PROP": 20,
-	"20": "SET_CHANGE_PROP"
-};
-const DynamicFlag = {
-	"NONE": 0,
-	"0": "NONE",
-	"REFERENCED": 1,
-	"1": "REFERENCED",
-	"NON_TEMPLATE": 2,
-	"2": "NON_TEMPLATE",
-	"INSERT": 4,
-	"4": "INSERT"
-};
-function isBlockOperation(op) {
-	const type = op.type;
-	return type === 12 || type === 13 || type === 15 || type === 17 || type === 16;
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/dom.ts
@@ -26087,25 +26194,39 @@ function buildDestructureIdMap(idToPathMap, baseAccessor, plugins) {
 function matchPatterns(render, keyProp, idMap) {
 	const selectorPatterns = [];
 	const keyOnlyBindingPatterns = [];
-	render.effect = render.effect.filter((effect) => {
+	const removedEffectIndexes = [];
+	render.effect = render.effect.filter((effect, index) => {
 		if (keyProp !== void 0) {
 			const selector = matchSelectorPattern(effect, keyProp.content, idMap);
 			if (selector) {
 				selectorPatterns.push(selector);
+				removedEffectIndexes.push(index);
 				return false;
 			}
 			const keyOnly = matchKeyOnlyBindingPattern(effect, keyProp.content);
 			if (keyOnly) {
 				keyOnlyBindingPatterns.push(keyOnly);
+				removedEffectIndexes.push(index);
 				return false;
 			}
 		}
 		return true;
 	});
+	if (removedEffectIndexes.length) shiftEffectBoundaries(render.dynamic, removedEffectIndexes);
 	return {
 		keyOnlyBindingPatterns,
 		selectorPatterns
 	};
+}
+function shiftEffectBoundaries(dynamic, removedEffectIndexes) {
+	const operation = dynamic.operation;
+	if (operation && isBlockOperation(operation) && operation.effectIndex !== void 0) {
+		let offset = 0;
+		for (const removedIndex of removedEffectIndexes) if (removedIndex < operation.effectIndex) offset++;
+		else break;
+		operation.effectIndex -= offset;
+	}
+	for (const child of dynamic.children) shiftEffectBoundaries(child, removedEffectIndexes);
 }
 function matchKeyOnlyBindingPattern(effect, key) {
 	if (effect.expressions.length === 1) {
@@ -26422,11 +26543,11 @@ function genCreateComponent(operation, context) {
 			];
 		}, []),
 		`const n${operation.id} = `,
-		...genCall(operation.dynamic && !operation.dynamic.isStatic ? helper("createDynamicComponent") : operation.isCustomElement ? helper("createPlainElement") : operation.asset ? helper("createComponentWithFallback") : helper("createComponent"), tag, rawProps, rawSlots, root ? "true" : false, once && "true"),
+		...genCall(operation.dynamic && !operation.dynamic.isStatic ? helper("createDynamicComponent") : operation.useCreateElement ? helper("createPlainElement") : operation.asset ? helper("createComponentWithFallback") : helper("createComponent"), tag, rawProps, rawSlots, root ? "true" : false, once && "true"),
 		...genDirectivesForElement(operation.id, context)
 	];
 	function genTag() {
-		if (operation.isCustomElement) return JSON.stringify(operation.tag);
+		if (operation.useCreateElement) return JSON.stringify(operation.tag);
 		else if (operation.dynamic) if (operation.dynamic.isStatic) return genCall(helper("resolveDynamicComponent"), genExpression(operation.dynamic, context));
 		else return [
 			"() => (",
@@ -26864,21 +26985,24 @@ function genEffect({ operations }, context) {
 	return frag;
 }
 function genInsertionState(operation, context) {
-	const { parent, anchor, logicalIndex, append, last } = operation;
-	return [NEWLINE, ...genCall(context.helper("setInsertionState"), `n${parent}`, anchor == null ? void 0 : anchor === -1 ? `0` : append ? "null" : `n${anchor}`, logicalIndex !== void 0 ? String(logicalIndex) : void 0, last && "true")];
+	const { parent, anchor, logicalIndex, append } = operation;
+	return [NEWLINE, ...genCall(context.helper("setInsertionState"), `n${parent}`, anchor == null ? void 0 : anchor === -1 ? `0` : append ? "null" : `n${anchor}`, logicalIndex !== void 0 ? String(logicalIndex) : void 0)];
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/template.ts
-function genTemplates(templates, rootIndexes, context) {
+function genTemplates(templates, context) {
 	const result = [];
-	let i = 0;
-	templates.forEach((ns, template) => {
-		result.push(`const ${context.tName(i)} = ${context.helper("template")}(${JSON.stringify(template).replace(IMPORT_EXPR_RE, `" + $1 + "`)}${rootIndexes.has(i) ? ", true" : ns ? ", false" : ""}${ns ? `, ${ns}` : ""})\n`);
-		i++;
+	templates.forEach(({ content, ns, root, static: isStatic }, i) => {
+		let args = JSON.stringify(content).replace(IMPORT_EXPR_RE, `" + $1 + "`);
+		if (root) args += ", true";
+		else if (isStatic || ns) args += ", false";
+		if (isStatic || ns) args += `, ${isStatic ? "true" : "false"}`;
+		if (ns) args += `, ${ns}`;
+		result.push(`const ${context.tName(i)} = ${context.helper("template")}(${args})\n`);
 	});
 	return result.join("");
 }
-function genSelf(dynamic, context) {
+function genSelf(dynamic, context, flushBeforeDynamic) {
 	const [frag, push] = buildCodeFragment();
 	const { id, template, operation, hasDynamicChild } = dynamic;
 	if (id !== void 0 && template !== void 0) {
@@ -26886,10 +27010,10 @@ function genSelf(dynamic, context) {
 		push(...genDirectivesForElement(id, context));
 	}
 	if (operation) push(...genOperationWithInsertionState(operation, context));
-	if (hasDynamicChild) push(...genChildren(dynamic, context, push, `n${id}`));
+	if (hasDynamicChild) push(...genChildren(dynamic, context, push, `n${id}`, flushBeforeDynamic));
 	return frag;
 }
-function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`) {
+function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`, flushBeforeDynamic) {
 	const { helper } = context;
 	const [frag, push] = buildCodeFragment();
 	const { children } = dynamic;
@@ -26898,12 +27022,14 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`) {
 	for (const [index, child] of children.entries()) {
 		if (child.flags & 2) offset--;
 		if (child.flags & 4 && child.template != null) {
-			push(...genSelf(child, context));
+			flushBeforeDynamic && flushBeforeDynamic(child, push);
+			push(...genSelf(child, context, flushBeforeDynamic));
 			continue;
 		}
 		const id = child.flags & 1 ? child.flags & 4 ? child.anchor : child.id : void 0;
 		if (id === void 0 && !child.hasDynamicChild) {
-			push(...genSelf(child, context));
+			flushBeforeDynamic && flushBeforeDynamic(child, push);
+			push(...genSelf(child, context, flushBeforeDynamic));
 			continue;
 		}
 		const elementIndex = index + offset;
@@ -26919,10 +27045,13 @@ function genChildren(dynamic, context, pushBlock, from = `n${dynamic.id}`) {
 			else if (elementIndex > 1) init = genCall(helper("nthChild"), from, String(elementIndex), logicalIndex);
 			pushBlock(...init);
 		}
-		if (id === child.anchor && !child.hasDynamicChild) push(...genSelf(child, context));
+		if (id === child.anchor && !child.hasDynamicChild) {
+			flushBeforeDynamic && flushBeforeDynamic(child, push);
+			push(...genSelf(child, context, flushBeforeDynamic));
+		}
 		if (id !== void 0) push(...genDirectivesForElement(id, context));
 		prev = [variable, elementIndex];
-		push(...genChildren(child, context, pushBlock, variable));
+		push(...genChildren(child, context, pushBlock, variable, flushBeforeDynamic));
 	}
 	return frag;
 }
@@ -26953,10 +27082,30 @@ function genBlockContent(block, context, root, genEffectsExtraFrag) {
 		}
 		genResolveAssets("directive", "resolveDirective");
 	}
-	for (const child of dynamic.children) push(...genSelf(child, context));
-	for (const child of dynamic.children) if (!child.hasDynamicChild) push(...genChildren(child, context, push, `n${child.id}`));
-	push(...genOperations(operation, context));
-	push(...genEffects(effect, context, genEffectsExtraFrag));
+	let operationIndex = 0;
+	let effectIndex = 0;
+	const flushPendingOperations = (operationEnd, effectEnd, push) => {
+		while (operationIndex < operationEnd) {
+			push(...genOperationWithInsertionState(operation[operationIndex], context));
+			operationIndex++;
+		}
+		if (effectIndex < effectEnd) {
+			push(...genEffects(effect.slice(effectIndex, effectEnd), context));
+			effectIndex = effectEnd;
+		}
+	};
+	const flushBeforeDynamic = (dynamic, push) => {
+		const operation = dynamic.operation;
+		if (operation && isBlockOperation(operation) && operation.operationIndex !== void 0 && operation.effectIndex !== void 0) flushPendingOperations(operation.operationIndex, operation.effectIndex, push);
+	};
+	for (const child of dynamic.children) {
+		flushBeforeDynamic(child, push);
+		push(...genSelf(child, context, flushBeforeDynamic));
+	}
+	for (const child of dynamic.children) if (!child.hasDynamicChild) push(...genChildren(child, context, push, `n${child.id}`, flushBeforeDynamic));
+	if (operationIndex < operation.length) push(...genOperations(operation.slice(operationIndex), context));
+	if (effectIndex < effect.length) push(...genEffects(effect.slice(effectIndex), context, genEffectsExtraFrag));
+	else if (genEffectsExtraFrag) push(...genEffects([], context, genEffectsExtraFrag));
 	push(NEWLINE, `return `);
 	const returnNodes = returns.map((n) => `n${n}`);
 	push(...returnNodes.length > 1 ? genMulti(DELIMITERS_ARRAY, ...returnNodes) : [returnNodes[0] || "null"]);
@@ -27042,7 +27191,7 @@ var CodegenContext = class {
 		this.nextIdMap = /* @__PURE__ */ new Map();
 		this.lastIdMap = /* @__PURE__ */ new Map();
 		this.lastTIndex = -1;
-		this.options = extend({
+		const defaultOptions = {
 			mode: "module",
 			prefixIdentifiers: true,
 			sourceMap: false,
@@ -27057,7 +27206,8 @@ var CodegenContext = class {
 			inline: false,
 			bindingMetadata: {},
 			expressionPlugins: []
-		}, options);
+		};
+		this.options = extend(defaultOptions, options);
 		this.block = ir.block;
 		this.bindingNames = new Set(this.options.bindingMetadata ? Object.keys(this.options.bindingMetadata) : []);
 		this.initNextIdMap();
@@ -27078,7 +27228,7 @@ function generate(ir, options = {}) {
 	push(INDENT_END, NEWLINE);
 	if (!inline) push("}");
 	const delegates = genDelegates(context);
-	const templates = genTemplates(ir.template, ir.rootTemplateIndexes, context);
+	const templates = genTemplates(ir.template.entries, context);
 	const preamble = genHelperImports(context) + genAssetImports(context) + templates + delegates;
 	const newlineCount = [...preamble].filter((c) => c === "\n").length;
 	if (newlineCount && !inline) frag.unshift(...new Array(newlineCount).fill(LF));
@@ -27109,82 +27259,6 @@ function genAssetImports({ ir }) {
 	}
 	return imports;
 }
-//#endregion
-//#region packages/compiler-vapor/src/transforms/transformChildren.ts
-const transformChildren = (node, context) => {
-	const isFragment = node.type === 0 || node.type === 1 && (node.tagType === 3 || node.tagType === 1);
-	if (!isFragment && node.type !== 1) return;
-	for (const [i, child] of node.children.entries()) {
-		const childContext = context.create(child, i);
-		transformNode(childContext);
-		const childDynamic = childContext.dynamic;
-		if (isFragment) {
-			childContext.reference();
-			childContext.registerTemplate();
-			if (!(childDynamic.flags & 2) || childDynamic.flags & 4) context.block.returns.push(childContext.dynamic.id);
-		} else context.childrenTemplate.push(childContext.template);
-		if (childDynamic.hasDynamicChild || childDynamic.id !== void 0 || childDynamic.flags & 2 || childDynamic.flags & 4) context.dynamic.hasDynamicChild = true;
-		childDynamic.type = child.type;
-		if (child.type === 1) childDynamic.tag = child.tag;
-		context.dynamic.children[i] = childDynamic;
-	}
-	if (!isFragment) processDynamicChildren(context);
-};
-function processDynamicChildren(context) {
-	let prevDynamics = [];
-	let staticCount = 0;
-	let dynamicCount = 0;
-	let lastInsertionChild;
-	const children = context.dynamic.children;
-	let logicalIndex = 0;
-	for (const [index, child] of children.entries()) {
-		if (child.flags & 4) {
-			child.logicalIndex = logicalIndex;
-			prevDynamics.push(lastInsertionChild = child);
-			logicalIndex++;
-		}
-		if (!(child.flags & 2)) {
-			child.logicalIndex = logicalIndex;
-			if (prevDynamics.length) {
-				if (staticCount) {
-					context.childrenTemplate[index - prevDynamics.length] = `<!>`;
-					prevDynamics[0].flags -= 2;
-					const anchor = prevDynamics[0].anchor = context.increaseId();
-					registerInsertion(prevDynamics, context, anchor);
-				} else registerInsertion(prevDynamics, context, -1);
-				dynamicCount += prevDynamics.length;
-				prevDynamics = [];
-			}
-			staticCount++;
-			logicalIndex++;
-		}
-	}
-	if (prevDynamics.length) registerInsertion(prevDynamics, context, dynamicCount + staticCount, true);
-	if (lastInsertionChild && lastInsertionChild.operation) lastInsertionChild.operation.last = true;
-}
-function registerInsertion(dynamics, context, anchor, append) {
-	for (const child of dynamics) {
-		const logicalIndex = child.logicalIndex;
-		if (child.template != null) context.registerOperation({
-			type: 10,
-			node: context.node,
-			elements: dynamics.map((child) => child.id),
-			parent: context.reference(),
-			anchor: append ? void 0 : anchor
-		});
-		else if (child.operation && isBlockOperation(child.operation)) {
-			child.operation.parent = context.reference();
-			child.operation.anchor = anchor;
-			child.operation.logicalIndex = logicalIndex;
-			child.operation.append = append;
-		}
-	}
-}
-//#endregion
-//#region packages/compiler-vapor/src/transforms/vOnce.ts
-const transformVOnce = (node, context) => {
-	if (node.type === 1 && findDir$1(node, "once", true)) context.inVOnce = true;
-};
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vBind.ts
 function normalizeBindShorthand(arg, context) {
@@ -27223,6 +27297,7 @@ const transformVBind = (dir, node, context) => {
 };
 //#endregion
 //#region packages/compiler-vapor/src/transforms/transformElement.ts
+init_objectSpread2();
 const isReservedProp = /* @__PURE__ */ makeMap(",key,ref,ref_for,ref_key,");
 const transformElement = (node, context) => {
 	let effectIndex = context.block.effect.length;
@@ -27237,13 +27312,13 @@ const transformElement = (node, context) => {
 	return function postTransformElement() {
 		({node} = context);
 		if (!(node.type === 1 && (node.tagType === 0 || node.tagType === 1))) return;
-		const isCustomElement = !!context.options.isCustomElement(node.tag);
-		const isComponent = node.tagType === 1 || isCustomElement;
+		const useCreateElement = shouldUseCreateElement(node, context);
+		const isComponent = node.tagType === 1 || useCreateElement;
 		const isDynamicComponent = isComponentTag(node.tag);
 		const staticKey = resolveStaticKey(node, context, isComponent);
 		const propsResult = buildProps(node, context, isComponent, isDynamicComponent, getEffectIndex);
 		const singleRoot = isSingleRoot(context);
-		if (isComponent) transformComponentElement(node, propsResult, staticKey, singleRoot, context, isDynamicComponent, isCustomElement);
+		if (isComponent) transformComponentElement(node, propsResult, staticKey, singleRoot, context, isDynamicComponent, useCreateElement);
 		else transformNativeElement(node, propsResult, staticKey, singleRoot, context, getEffectIndex, context.root === context.effectiveParent || canOmitEndTag(node, context), getOperationIndex);
 		if (parentSlots) context.slots = parentSlots;
 	};
@@ -27267,11 +27342,11 @@ function isSingleRoot(context) {
 	}
 	return context.root === parent;
 }
-function transformComponentElement(node, propsResult, staticKey, singleRoot, context, isDynamicComponent, isCustomElement) {
+function transformComponentElement(node, propsResult, staticKey, singleRoot, context, isDynamicComponent, useCreateElement) {
 	const dynamicComponent = isDynamicComponent ? resolveDynamicComponent(node) : void 0;
 	let { tag } = node;
 	let asset = true;
-	if (!dynamicComponent && !isCustomElement) {
+	if (!dynamicComponent && !useCreateElement) {
 		const { isEasyComponent } = context.options;
 		const isEasyCom = isEasyComponent && isEasyComponent(tag);
 		if (!isEasyCom) {
@@ -27301,10 +27376,11 @@ function transformComponentElement(node, propsResult, staticKey, singleRoot, con
 	}
 	context.dynamic.flags |= 6;
 	const id = context.reference();
-	context.dynamic.operation = {
+	context.dynamic.operation = _objectSpread2(_objectSpread2({
 		type: 12,
 		node,
-		id,
+		id
+	}, context.effectBoundary()), {}, {
 		tag,
 		props: propsResult[0] ? propsResult[1] : [propsResult[1]],
 		asset,
@@ -27312,8 +27388,8 @@ function transformComponentElement(node, propsResult, staticKey, singleRoot, con
 		slots: [...context.slots],
 		once: context.inVOnce,
 		dynamic: dynamicComponent,
-		isCustomElement
-	};
+		useCreateElement
+	});
 	if (staticKey) context.registerOperation(createSetBlockKey(id, staticKey, node));
 	context.slots = [];
 }
@@ -27448,7 +27524,7 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 	}
 	template += `>` + context.childrenTemplate.join("");
 	if (!isVoidTag(tag) && !omitEndTag) template += `</${tag}>`;
-	if (singleRoot) context.ir.rootTemplateIndexes.add(context.ir.template.size);
+	context.templateRoot = singleRoot;
 	if (context.parent && context.parent.node.type === 1 && !isValidHTMLNesting(context.parent.node.tag, tag)) {
 		context.reference();
 		context.dynamic.template = context.pushTemplate(template);
@@ -27592,6 +27668,88 @@ function mergePropValues(existing, incoming) {
 function isComponentTag(tag) {
 	return tag === "component" || tag === "Component";
 }
+function shouldUseCreateElement(node, context) {
+	return context.options.isCustomElement(node.tag) || node.tagType === 0 && node.tag === "template";
+}
+//#endregion
+//#region packages/compiler-vapor/src/transforms/transformChildren.ts
+const transformChildren = (node, context) => {
+	const isFragment = node.type === 0 || node.type === 1 && (node.tagType === 3 || node.tagType === 1);
+	if (!isFragment && node.type !== 1) return;
+	const useCreateElement = node.type === 1 && shouldUseCreateElement(node, context);
+	for (const [i, child] of node.children.entries()) {
+		const childContext = context.create(child, i);
+		transformNode(childContext);
+		const childDynamic = childContext.dynamic;
+		if (isFragment) {
+			childContext.reference();
+			childContext.registerTemplate();
+			if (!(childDynamic.flags & 2) || childDynamic.flags & 4) context.block.returns.push(childContext.dynamic.id);
+		} else if (useCreateElement) {
+			if (childContext.template !== "" || childDynamic.template != null || childDynamic.id !== void 0 || childDynamic.operation !== void 0 || childDynamic.hasDynamicChild === true) {
+				childContext.reference();
+				childContext.registerTemplate();
+				childDynamic.flags |= 6;
+			}
+		} else context.childrenTemplate.push(childContext.template);
+		if (childDynamic.hasDynamicChild || childDynamic.id !== void 0 || childDynamic.flags & 2 || childDynamic.flags & 4) context.dynamic.hasDynamicChild = true;
+		childDynamic.type = child.type;
+		if (child.type === 1) childDynamic.tag = child.tag;
+		context.dynamic.children[i] = childDynamic;
+	}
+	if (!isFragment) processDynamicChildren(context);
+};
+function processDynamicChildren(context) {
+	let prevDynamics = [];
+	let staticCount = 0;
+	const children = context.dynamic.children;
+	let logicalIndex = 0;
+	for (const [index, child] of children.entries()) {
+		if (child.flags & 4) {
+			child.logicalIndex = logicalIndex;
+			prevDynamics.push(child);
+			logicalIndex++;
+		}
+		if (!(child.flags & 2)) {
+			child.logicalIndex = logicalIndex;
+			if (prevDynamics.length) {
+				if (staticCount) {
+					context.childrenTemplate[index - prevDynamics.length] = `<!>`;
+					prevDynamics[0].flags -= 2;
+					const anchor = prevDynamics[0].anchor = context.increaseId();
+					registerInsertion(prevDynamics, context, anchor);
+				} else registerInsertion(prevDynamics, context, -1);
+				prevDynamics = [];
+			}
+			staticCount++;
+			logicalIndex++;
+		}
+	}
+	if (prevDynamics.length) registerInsertion(prevDynamics, context, prevDynamics[0].logicalIndex, true);
+}
+function registerInsertion(dynamics, context, anchor, append) {
+	for (const child of dynamics) {
+		const logicalIndex = child.logicalIndex;
+		if (child.template != null) context.registerOperation({
+			type: 10,
+			node: context.node,
+			elements: dynamics.map((child) => child.id),
+			parent: context.reference(),
+			anchor: append ? void 0 : anchor
+		});
+		else if (child.operation && isBlockOperation(child.operation)) {
+			child.operation.parent = context.reference();
+			child.operation.anchor = anchor;
+			child.operation.logicalIndex = logicalIndex;
+			child.operation.append = append;
+		}
+	}
+}
+//#endregion
+//#region packages/compiler-vapor/src/transforms/vOnce.ts
+const transformVOnce = (node, context) => {
+	if (node.type === 1 && findDir$1(node, "once", true)) context.inVOnce = true;
+};
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vHtml.ts
 const transformVHtml = (dir, node, context) => {
@@ -27613,6 +27771,159 @@ const transformVHtml = (dir, node, context) => {
 	});
 };
 //#endregion
+//#region packages/compiler-vapor/src/transforms/transformText.ts
+const seen = /* @__PURE__ */ new WeakMap();
+function markNonTemplate(node, context) {
+	let seenNodes = seen.get(context.root);
+	if (!seenNodes) {
+		seenNodes = /* @__PURE__ */ new WeakSet();
+		seen.set(context.root, seenNodes);
+	}
+	seenNodes.add(node);
+}
+const transformText = (node, context) => {
+	if (!seen.has(context.root)) seen.set(context.root, /* @__PURE__ */ new WeakSet());
+	if (seen.get(context.root).has(node)) {
+		context.dynamic.flags |= 2;
+		return;
+	}
+	const isFragment = node.type === 0 || node.type === 1 && (node.tagType === 3 || node.tagType === 1);
+	if ((isFragment || node.type === 1 && node.tagType === 0) && node.children.length) {
+		let hasInterp = false;
+		let isAllTextLike = true;
+		for (const c of node.children) if (c.type === 5) hasInterp = true;
+		else if (c.type !== 2) isAllTextLike = false;
+		if (!isFragment && isAllTextLike && hasInterp) {
+			const elementContext = context;
+			if (shouldUseCreateElement(node, elementContext)) processCreateElementTextContainer(node.children, elementContext);
+			else processTextContainer(node.children, elementContext);
+		} else if (hasInterp) for (let i = 0; i < node.children.length; i++) {
+			const c = node.children[i];
+			const prev = node.children[i - 1];
+			if (c.type === 5 && prev && prev.type === 2) markNonTemplate(prev, context);
+		}
+	} else if (node.type === 5) processInterpolation(context);
+	else if (node.type === 2) {
+		var _context$parent;
+		const parent = (_context$parent = context.parent) === null || _context$parent === void 0 ? void 0 : _context$parent.node;
+		if (parent && parent.type === 1 && shouldUseCreateElement(parent, context.parent) && node.content[0] === "<") {
+			materializeLiteralTextNode(createSimpleExpression(node.content, true, node.loc), context);
+			return;
+		}
+		const isRootText = !parent || parent.type === 0 || parent.type === 1 && (parent.tagType === 3 || parent.tagType === 1);
+		context.template += isRootText ? node.content : escapeHtml(node.content);
+	}
+};
+function processInterpolation(context) {
+	const parentNode = context.parent.node;
+	const children = parentNode.children;
+	const nexts = children.slice(context.index);
+	const idx = nexts.findIndex((n) => !isTextLike(n));
+	const nodes = idx > -1 ? nexts.slice(0, idx) : nexts;
+	const prev = children[context.index - 1];
+	if (prev && prev.type === 2) nodes.unshift(prev);
+	const values = processTextLikeChildren(nodes, context);
+	if (values.length === 0 && parentNode.type !== 0) return;
+	const literalValues = values.map((v) => getLiteralExpressionValue(v));
+	if (literalValues.every((v) => v != null) && parentNode.type !== 0) {
+		const text = literalValues.join("");
+		if (parentNode.type === 1 && shouldUseCreateElement(parentNode, context.parent) && text[0] === "<") {
+			materializeLiteralTextNode(createSimpleExpression(text, true, context.node.loc), context);
+			return;
+		}
+		const isElementChild = parentNode.type === 1 && parentNode.tagType === 0;
+		context.template += isElementChild ? escapeHtml(text) : text;
+		return;
+	}
+	const isDom2 = !!context.options.platform;
+	let isTextNode = false;
+	let isInComponentSlot = false;
+	let shouldReuseParentText = false;
+	if (isDom2) {
+		const grandNode = context.parent.parent && context.parent.parent.node;
+		function isComponent(node) {
+			return !!(node && node.type === 1 && node.tagType === 1);
+		}
+		isInComponentSlot = parentNode.type === 1 && (parentNode.tagType === 1 || isTemplateNode(parentNode) && isComponent(grandNode));
+		shouldReuseParentText = !!(!isInComponentSlot && parentNode.loc.source.startsWith("<slot") && parentNode.type === 1 && parentNode.tag === "template" && grandNode && grandNode.tag === "text" && parentNode.children.every((child) => isTextLike(child)));
+		isTextNode = isInComponentSlot || shouldReuseParentText;
+	}
+	context.template += isDom2 ? isTextNode ? TEXT_NODE_PLACEHOLDER : TEXT_PLACEHOLDER : " ";
+	const id = context.reference();
+	if (values.length === 0) return;
+	context.registerEffect(values, {
+		type: 5,
+		node: context.node,
+		element: id,
+		values
+	});
+}
+function processTextContainer(children, context) {
+	const values = processTextLikeChildren(children, context);
+	const literals = values.map((value) => getLiteralExpressionValue(value));
+	if (literals.every((l) => l != null)) context.childrenTemplate = literals.map((l) => escapeHtml(String(l)));
+	else {
+		context.childrenTemplate = [context.options.platform ? TEXT_PLACEHOLDER : " "];
+		context.registerOperation({
+			type: 18,
+			node: context.node,
+			parent: context.reference()
+		});
+		context.registerEffect(values, {
+			type: 5,
+			node: context.node,
+			element: context.reference(),
+			values,
+			generated: true
+		});
+	}
+}
+function registerSyntheticTextChild(context, template, values) {
+	const id = context.increaseId();
+	context.dynamic.children[context.node.children.length] = {
+		id,
+		flags: 6,
+		children: [],
+		template: context.pushTemplate(template)
+	};
+	context.dynamic.hasDynamicChild = true;
+	if (values && values.length) context.registerEffect(values, {
+		type: 5,
+		node: context.node,
+		element: id,
+		values
+	});
+	return id;
+}
+function processCreateElementTextContainer(children, context) {
+	registerSyntheticTextChild(context, "", processTextLikeChildren(children, context));
+}
+function materializeLiteralTextNode(value, context) {
+	const id = context.reference();
+	context.dynamic.flags |= 6;
+	context.dynamic.template = context.pushTemplate("");
+	context.registerEffect([value], {
+		type: 5,
+		node: context.node,
+		element: id,
+		values: [value]
+	});
+}
+function processTextLikeChildren(nodes, context) {
+	const exps = [];
+	for (const node of nodes) {
+		let exp;
+		markNonTemplate(node, context);
+		if (node.type === 2) exp = createSimpleExpression(node.content, true, node.loc);
+		else exp = node.content;
+		if (exp.content) exps.push(exp);
+	}
+	return exps;
+}
+function isTextLike(node) {
+	return node.type === 5 || node.type === 2;
+}
+//#endregion
 //#region packages/compiler-vapor/src/transforms/vText.ts
 const transformVText = (dir, node, context) => {
 	let { exp, loc } = dir;
@@ -27623,24 +27934,45 @@ const transformVText = (dir, node, context) => {
 	if (node.children.length) {
 		context.options.onError(createDOMCompilerError(57, loc));
 		context.childrenTemplate.length = 0;
+		for (const child of node.children) markNonTemplate(child, context);
 	}
 	if (isVoidTag(context.node.tag)) return;
 	const literal = getLiteralExpressionValue(exp);
-	if (literal != null) context.childrenTemplate = [String(literal)];
-	else {
-		context.childrenTemplate = [context.options.platform ? TEXT_PLACEHOLDER : " "];
-		const isComponent = node.tagType === 1;
-		if (!isComponent) context.registerOperation({
-			type: 18,
+	const useCreateElement = shouldUseCreateElement(context.node, context);
+	if (literal != null) if (useCreateElement) {
+		const id = registerSyntheticTextChild(context, "", [exp]);
+		context.registerOperation({
+			type: 10,
 			node,
+			elements: [id],
 			parent: context.reference()
 		});
+	} else context.childrenTemplate = [String(literal)];
+	else {
+		const isComponent = node.tagType === 1;
+		let id;
+		if (useCreateElement) {
+			id = registerSyntheticTextChild(context, "");
+			context.registerOperation({
+				type: 10,
+				node,
+				elements: [id],
+				parent: context.reference()
+			});
+		} else {
+			context.childrenTemplate = [context.options.platform ? TEXT_PLACEHOLDER : " "];
+			if (!isComponent) context.registerOperation({
+				type: 18,
+				node,
+				parent: context.reference()
+			});
+		}
 		context.registerEffect([exp], {
 			type: 5,
 			node,
-			element: context.reference(),
+			element: useCreateElement ? id : context.reference(),
 			values: [exp],
-			generated: true,
+			generated: !useCreateElement,
 			isComponent
 		});
 	}
@@ -27654,6 +27986,7 @@ const transformVOn = (dir, node, context) => {
 	const isSlotOutlet = node.tag === "slot";
 	if (!exp && !modifiers.length) context.options.onError(createCompilerError(35, loc));
 	arg = resolveExpression(arg);
+	if (arg.isStatic && arg.content.startsWith("vue:")) arg = extend({}, arg, { content: `vnode-${arg.content.slice(4)}` });
 	const { keyModifiers, nonKeyModifiers, eventOptionModifiers } = resolveModifiers(arg.isStatic ? `on${arg.content}` : arg, modifiers, null, loc);
 	let keyOverride;
 	const isStaticClick = arg.isStatic && arg.content.toLowerCase() === "click";
@@ -27756,112 +28089,6 @@ const transformTemplateRef = (node, context) => {
 	};
 };
 //#endregion
-//#region packages/compiler-vapor/src/transforms/transformText.ts
-const seen = /* @__PURE__ */ new WeakMap();
-function markNonTemplate(node, context) {
-	seen.get(context.root).add(node);
-}
-const transformText = (node, context) => {
-	if (!seen.has(context.root)) seen.set(context.root, /* @__PURE__ */ new WeakSet());
-	if (seen.get(context.root).has(node)) {
-		context.dynamic.flags |= 2;
-		return;
-	}
-	const isFragment = node.type === 0 || node.type === 1 && (node.tagType === 3 || node.tagType === 1);
-	if ((isFragment || node.type === 1 && node.tagType === 0) && node.children.length) {
-		let hasInterp = false;
-		let isAllTextLike = true;
-		for (const c of node.children) if (c.type === 5) hasInterp = true;
-		else if (c.type !== 2) isAllTextLike = false;
-		if (!isFragment && isAllTextLike && hasInterp) processTextContainer(node.children, context);
-		else if (hasInterp) for (let i = 0; i < node.children.length; i++) {
-			const c = node.children[i];
-			const prev = node.children[i - 1];
-			if (c.type === 5 && prev && prev.type === 2) markNonTemplate(prev, context);
-		}
-	} else if (node.type === 5) processInterpolation(context);
-	else if (node.type === 2) {
-		var _context$parent;
-		const parent = (_context$parent = context.parent) === null || _context$parent === void 0 ? void 0 : _context$parent.node;
-		const isRootText = !parent || parent.type === 0 || parent.type === 1 && (parent.tagType === 3 || parent.tagType === 1);
-		context.template += isRootText ? node.content : escapeHtml(node.content);
-	}
-};
-function processInterpolation(context) {
-	const parentNode = context.parent.node;
-	const children = parentNode.children;
-	const nexts = children.slice(context.index);
-	const idx = nexts.findIndex((n) => !isTextLike(n));
-	const nodes = idx > -1 ? nexts.slice(0, idx) : nexts;
-	const prev = children[context.index - 1];
-	if (prev && prev.type === 2) nodes.unshift(prev);
-	const values = processTextLikeChildren(nodes, context);
-	if (values.length === 0 && parentNode.type !== 0) return;
-	const literalValues = values.map((v) => getLiteralExpressionValue(v));
-	if (literalValues.every((v) => v != null) && parentNode.type !== 0) {
-		const text = literalValues.join("");
-		const isElementChild = parentNode.type === 1 && parentNode.tagType === 0;
-		context.template += isElementChild ? escapeHtml(text) : text;
-		return;
-	}
-	const isDom2 = !!context.options.platform;
-	let isTextNode = false;
-	let isInComponentSlot = false;
-	let shouldReuseParentText = false;
-	if (isDom2) {
-		const grandNode = context.parent.parent && context.parent.parent.node;
-		function isComponent(node) {
-			return !!(node && node.type === 1 && node.tagType === 1);
-		}
-		isInComponentSlot = parentNode.type === 1 && (parentNode.tagType === 1 || isTemplateNode(parentNode) && isComponent(grandNode));
-		shouldReuseParentText = !!(!isInComponentSlot && parentNode.loc.source.startsWith("<slot") && parentNode.type === 1 && parentNode.tag === "template" && grandNode && grandNode.tag === "text" && parentNode.children.every((child) => isTextLike(child)));
-		isTextNode = isInComponentSlot || shouldReuseParentText;
-	}
-	context.template += isDom2 ? isTextNode ? TEXT_NODE_PLACEHOLDER : TEXT_PLACEHOLDER : " ";
-	const id = context.reference();
-	if (values.length === 0) return;
-	context.registerEffect(values, {
-		type: 5,
-		node: context.node,
-		element: id,
-		values
-	});
-}
-function processTextContainer(children, context) {
-	const values = processTextLikeChildren(children, context);
-	const literals = values.map((value) => getLiteralExpressionValue(value));
-	if (literals.every((l) => l != null)) context.childrenTemplate = literals.map((l) => escapeHtml(String(l)));
-	else {
-		context.childrenTemplate = [context.options.platform ? TEXT_PLACEHOLDER : " "];
-		context.registerOperation({
-			type: 18,
-			node: context.node,
-			parent: context.reference()
-		});
-		context.registerEffect(values, {
-			type: 5,
-			node: context.node,
-			element: context.reference(),
-			values,
-			generated: true
-		});
-	}
-}
-function processTextLikeChildren(nodes, context) {
-	const exps = [];
-	for (const node of nodes) {
-		let exp;
-		markNonTemplate(node, context);
-		if (node.type === 2) exp = createSimpleExpression(node.content, true, node.loc);
-		else exp = node.content;
-		if (exp.content) exps.push(exp);
-	}
-	return exps;
-}
-function isTextLike(node) {
-	return node.type === 5 || node.type === 2;
-}
-//#endregion
 //#region packages/compiler-vapor/src/transforms/vModel.ts
 const transformVModel = (dir, node, context) => {
 	const { exp, arg } = dir;
@@ -27960,6 +28187,7 @@ function getSiblingIf(context, reverse) {
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vIf.ts
+init_objectSpread2();
 const transformVIf = createStructuralDirectiveTransform([
 	"if",
 	"else",
@@ -27979,16 +28207,17 @@ function processIf(node, dir, context) {
 		const [branch, onExit] = createIfBranch(node, context);
 		return () => {
 			onExit();
-			context.dynamic.operation = {
+			context.dynamic.operation = _objectSpread2(_objectSpread2({
 				type: 15,
 				node,
-				id,
+				id
+			}, context.effectBoundary()), {}, {
 				blockShape: encodeIfBlockShape(branch, forceMultiRoot),
 				condition: dir.exp,
 				positive: branch,
 				index: context.root.nextIfIndex(),
 				once: context.inVOnce || isStaticExpression(dir.exp, context.options.bindingMetadata)
-			};
+			});
 		};
 	} else {
 		const siblingIf = getSiblingIf(context, true);
@@ -28056,6 +28285,7 @@ function shouldForceMultiRoot(context) {
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vFor.ts
+init_objectSpread2();
 const transformVFor = createStructuralDirectiveTransform("for", processFor);
 function processFor(node, dir, context) {
 	if (!dir.exp) {
@@ -28083,10 +28313,11 @@ function processFor(node, dir, context) {
 		exitBlock();
 		const { parent } = context;
 		const isOnlyChild = parent && parent.block.node !== parent.node && parent.node.children.length === 1;
-		context.dynamic.operation = {
+		context.dynamic.operation = _objectSpread2(_objectSpread2({
 			type: 16,
 			node,
-			id,
+			id
+		}, context.effectBoundary()), {}, {
 			source,
 			value,
 			key,
@@ -28097,7 +28328,7 @@ function processFor(node, dir, context) {
 			once: context.inVOnce || isStaticExpression(source, context.options.bindingMetadata),
 			component: isComponent && node.children[0].type === 1 && node.children[0].tagType === 1,
 			onlyChild: !!isOnlyChild
-		};
+		});
 	};
 }
 function isTemplateWithSingleComponent(node) {
@@ -28107,6 +28338,7 @@ function isTemplateWithSingleComponent(node) {
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/transformSlotOutlet.ts
+init_objectSpread2();
 const transformSlotOutlet = (node, context) => {
 	if (node.type !== 1 || node.tag !== "slot") return;
 	const id = context.reference();
@@ -28137,16 +28369,17 @@ const transformSlotOutlet = (node, context) => {
 	}
 	return () => {
 		exitBlock && exitBlock();
-		context.dynamic.operation = {
+		context.dynamic.operation = _objectSpread2(_objectSpread2({
 			type: 13,
 			node,
-			id,
+			id
+		}, context.effectBoundary()), {}, {
 			name: slotName,
 			props: irProps,
 			fallback,
 			noSlotted: !!(context.options.scopeId && !context.options.slotted),
 			once: context.inVOnce
-		};
+		});
 	};
 };
 function createFallback(node, context) {
@@ -28323,6 +28556,7 @@ function hasMultipleChildren(node) {
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/transformKey.ts
+init_objectSpread2();
 const transformKey = (node, context) => {
 	if (node.type !== 1 || context.inVOnce || findDir(node, "for")) return;
 	const dir = findProp(node, "key", true, true);
@@ -28337,13 +28571,14 @@ const transformKey = (node, context) => {
 	const exitBlock = context.enterBlock(block);
 	return () => {
 		exitBlock();
-		context.dynamic.operation = {
+		context.dynamic.operation = _objectSpread2(_objectSpread2({
 			type: 17,
 			node,
-			id,
+			id
+		}, context.effectBoundary()), {}, {
 			value,
 			block
-		};
+		});
 	};
 };
 //#endregion
@@ -28423,6 +28658,7 @@ var src_exports$1 = /* @__PURE__ */ __exportAll({
 	NEWLINE: () => NEWLINE,
 	TEXT_NODE_PLACEHOLDER: () => TEXT_NODE_PLACEHOLDER,
 	TEXT_PLACEHOLDER: () => TEXT_PLACEHOLDER,
+	TemplateRegistry: () => TemplateRegistry,
 	VaporErrorCodes: () => VaporErrorCodes,
 	VaporErrorMessages: () => VaporErrorMessages,
 	analyzeExpressions: () => analyzeExpressions,
@@ -29002,6 +29238,8 @@ function subTransform(node, options, parentContext) {
 	childContext.ssr = false;
 	childContext.scopes = _objectSpread2({}, parentContext.scopes);
 	childContext.identifiers = _objectSpread2({}, parentContext.identifiers);
+	childContext.identifierScopes = Object.create(null);
+	for (const name in parentContext.identifierScopes) childContext.identifierScopes[name] = parentContext.identifierScopes[name].slice();
 	childContext.imports = parentContext.imports;
 	traverseNode(childRoot, childContext);
 	[
@@ -29396,6 +29634,7 @@ function doCompileTemplate({ filename, id, scoped, slotted, inMap, source, ast: 
 		slotted,
 		sourceMap: true
 	}, compilerOptions), {}, {
+		bindingMetadata: vapor && !ssr && compilerOptions.bindingMetadata == null ? {} : compilerOptions.bindingMetadata,
 		hmr: !isProd,
 		nodeTransforms: nodeTransforms.concat(compilerOptions.nodeTransforms || []),
 		filename,
@@ -30556,7 +30795,7 @@ var require_document = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Document.default = Document;
 }));
 //#endregion
-//#region \0@oxc-project+runtime@0.124.0/helpers/objectWithoutPropertiesLoose.js
+//#region \0@oxc-project+runtime@0.129.0/helpers/objectWithoutPropertiesLoose.js
 function _objectWithoutPropertiesLoose(r, e) {
 	if (null == r) return {};
 	var t = {};
@@ -30568,7 +30807,7 @@ function _objectWithoutPropertiesLoose(r, e) {
 }
 var init_objectWithoutPropertiesLoose = __esmMin((() => {}));
 //#endregion
-//#region \0@oxc-project+runtime@0.124.0/helpers/objectWithoutProperties.js
+//#region \0@oxc-project+runtime@0.129.0/helpers/objectWithoutProperties.js
 function _objectWithoutProperties(e, t) {
 	if (null == e) return {};
 	var o, r, i = _objectWithoutPropertiesLoose(e, t);
@@ -30582,7 +30821,7 @@ var init_objectWithoutProperties = __esmMin((() => {
 	init_objectWithoutPropertiesLoose();
 }));
 //#endregion
-//#region node_modules/.pnpm/nanoid@3.3.11/node_modules/nanoid/non-secure/index.cjs
+//#region node_modules/.pnpm/nanoid@3.3.12/node_modules/nanoid/non-secure/index.cjs
 var require_non_secure = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let urlAlphabet = "useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";
 	let customAlphabet = (alphabet, defaultSize = 21) => {
@@ -35802,6 +36041,8 @@ function processRule(id, rule) {
 function rewriteSelector(id, rule, selector, selectorRoot, deep, slotted = false) {
 	let node = null;
 	let shouldInject = !deep;
+	let hasNestedDeep = false;
+	let splitForNestedDeep = false;
 	selector.each((n) => {
 		if (n.type === "combinator" && (n.value === ">>>" || n.value === "/deep/")) {
 			n.value = " ";
@@ -35811,6 +36052,25 @@ function rewriteSelector(id, rule, selector, selectorRoot, deep, slotted = false
 		}
 		if (n.type === "pseudo") {
 			const { value } = n;
+			if (isDeepContainerPseudo(n)) {
+				if (n.nodes.some((selector) => selector.some(isDeepSelector))) {
+					const hasScopeAnchor = !!node;
+					const hasMixedSelectors = n.nodes.some((selector) => !selector.some(isDeepSelector));
+					const hasTrailingNodes = selector.index(n) < selector.length - 1;
+					if (canSplitDeepContainerPseudo(n) && !deep && !hasScopeAnchor && hasMixedSelectors && hasTrailingNodes) {
+						splitSelectorForNestedDeep(id, rule, selector, selectorRoot, n, deep, slotted);
+						splitForNestedDeep = true;
+						return false;
+					}
+					if (value === ":not" && !deep && !hasScopeAnchor && hasMixedSelectors && hasTrailingNodes) return;
+					n.nodes.forEach((selector) => rewriteSelector(id, rule, selector, selectorRoot, deep || hasScopeAnchor, slotted));
+					if (!hasScopeAnchor) {
+						node = n;
+						shouldInject = false;
+					}
+					hasNestedDeep = true;
+				}
+			}
 			if (value === ":deep" || value === "::v-deep") {
 				rule.__deep = true;
 				if (n.nodes.length) {
@@ -35861,8 +36121,9 @@ function rewriteSelector(id, rule, selector, selectorRoot, deep, slotted = false
 			}
 			if (node) return;
 		}
-		if (n.type !== "pseudo" && n.type !== "combinator" || n.type === "pseudo" && (n.value === ":is" || n.value === ":where") && !node) node = n;
+		if (!hasNestedDeep && (n.type !== "pseudo" && n.type !== "combinator" || n.type === "pseudo" && (n.value === ":is" || n.value === ":where") && !node)) node = n;
 	});
+	if (splitForNestedDeep) return;
 	if (rule.nodes.some((node) => node.type === "rule")) {
 		const deep = rule.__deep;
 		if (!deep) {
@@ -35872,7 +36133,7 @@ function rewriteSelector(id, rule, selector, selectorRoot, deep, slotted = false
 		}
 		shouldInject = deep;
 	}
-	if (node) {
+	if (node && !hasNestedDeep) {
 		const { type, value } = node;
 		if (type === "pseudo" && (value === ":is" || value === ":where")) {
 			node.nodes.forEach((value) => rewriteSelector(id, rule, value, selectorRoot, deep, slotted));
@@ -35893,6 +36154,32 @@ function rewriteSelector(id, rule, selector, selectorRoot, deep, slotted = false
 }
 function isSpaceCombinator(node) {
 	return node.type === "combinator" && /^\s+$/.test(node.value);
+}
+function isDeepSelector(node) {
+	var _nodes;
+	if (node.type === "pseudo" && (node.value === ":deep" || node.value === "::v-deep")) return true;
+	return !!((_nodes = node.nodes) === null || _nodes === void 0 ? void 0 : _nodes.some((child) => isDeepSelector(child)));
+}
+function isDeepContainerPseudo(node) {
+	return node.type === "pseudo" && (node.value === ":is" || node.value === ":where" || node.value === ":has" || node.value === ":not");
+}
+function canSplitDeepContainerPseudo(node) {
+	return node.value === ":is" || node.value === ":where" || node.value === ":has";
+}
+function splitSelectorForNestedDeep(id, rule, selector, selectorRoot, pseudo, deep, slotted) {
+	const pseudoIndex = selector.index(pseudo);
+	const selectors = pseudo.nodes.map((branch, index) => {
+		const branchSelector = selector.clone();
+		if (branchSelector.first) branchSelector.first.spaces.before = index === 0 ? selector.first.spaces.before : " ";
+		const branchPseudo = branchSelector.at(pseudoIndex);
+		const branchClone = branch.clone();
+		if (branchClone.first) branchClone.first.spaces.before = "";
+		branchPseudo.removeAll();
+		branchPseudo.append(branchClone);
+		rewriteSelector(id, rule, branchSelector, selectorRoot, deep, slotted);
+		return branchSelector;
+	});
+	selector.replaceWith(...selectors);
 }
 function extractAndWrapNodes(parentNode) {
 	if (!parentNode.nodes) return;
@@ -39398,13 +39685,22 @@ var TypeScope = class {
 		this.exportedDeclares = Object.create(null);
 	}
 };
+function recordScopeDep(ctx, scope) {
+	if (scope && scope.filename !== ctx.filename) (ctx.deps || (ctx.deps = /* @__PURE__ */ new Set())).add(scope.filename);
+}
+function recordResolvedElementDeps(ctx, { props }) {
+	for (const key in props) recordScopeDep(ctx, props[key]._ownerScope);
+}
 /**
 * Resolve arbitrary type node to a list of type elements that can be then
 * mapped to runtime props or emits.
 */
 function resolveTypeElements(ctx, node, scope, typeParameters) {
 	const canCache = !typeParameters;
-	if (canCache && node._resolvedElements) return node._resolvedElements;
+	if (canCache && node._resolvedElements) {
+		recordResolvedElementDeps(ctx, node._resolvedElements);
+		return node._resolvedElements;
+	}
 	const resolved = innerResolveTypeElements(ctx, node, node._ownerScope || scope || ctxToScope(ctx), typeParameters);
 	return canCache ? node._resolvedElements = resolved : resolved;
 }
@@ -39666,7 +39962,10 @@ function resolveBuiltin(ctx, node, name, scope, typeParameters) {
 }
 function resolveTypeReference(ctx, node, scope, name, onlyExported = false) {
 	const canCache = !(scope === null || scope === void 0 ? void 0 : scope.isGenericScope);
-	if (canCache && node._resolvedReference) return node._resolvedReference;
+	if (canCache && node._resolvedReference) {
+		recordScopeDep(ctx, node._resolvedReference._ownerScope);
+		return node._resolvedReference;
+	}
 	const resolved = innerResolveTypeReference(ctx, scope || ctxToScope(ctx), name || getReferenceName(node), node, onlyExported);
 	return canCache ? node._resolvedReference = resolved : resolved;
 }
@@ -39681,7 +39980,9 @@ function innerResolveTypeReference(ctx, scope, name, node, onlyExported) {
 				const src = node.type === "TSTypeQuery" ? s.declares : s.types;
 				if (src[name]) {
 					(ctx.deps || (ctx.deps = /* @__PURE__ */ new Set())).add(s.filename);
-					return src[name];
+					const resolved = src[name];
+					if (resolved._ownerScope && resolved._ownerScope !== s) ctx.deps.add(resolved._ownerScope.filename);
+					return resolved;
 				}
 			}
 		}
@@ -39746,7 +40047,7 @@ function resolveTypeFromImport(ctx, node, name, scope) {
 	const { source, imported } = scope.imports[name];
 	return resolveTypeReference(ctx, node, importSourceToScope(ctx, node, scope, source), imported, true);
 }
-function importSourceToScope(ctx, node, scope, source) {
+function importSourceToScope(ctx, node, scope, source, trackDep = true) {
 	let fs;
 	try {
 		fs = resolveFS(ctx);
@@ -39760,10 +40061,11 @@ function importSourceToScope(ctx, node, scope, source) {
 		else if (source[0] === ".") resolved = resolveExt(joinPaths(dirname(scope.filename), source), fs);
 		else if (env.UNI_INPUT_DIR && source.startsWith("@/")) resolved = resolveExt(joinPaths(env.UNI_INPUT_DIR, source.replace("@/", "")), fs);
 		else return ctx.error(`Type import from non-relative sources is not supported in the browser build.`, node, scope);
+		if (!resolved && source[0] === "." && false);
 		if (resolved) resolved = scope.resolvedImportSources[source] = normalizePath(resolved);
 	}
 	if (resolved) {
-		(ctx.deps || (ctx.deps = /* @__PURE__ */ new Set())).add(resolved);
+		if (trackDep) (ctx.deps || (ctx.deps = /* @__PURE__ */ new Set())).add(resolved);
 		return fileToScope(ctx, resolved);
 	} else return ctx.error(`Failed to resolve import source ${JSON.stringify(source)}.`, node, scope);
 }
@@ -39861,8 +40163,22 @@ function recordTypes(ctx, body, scope, asGlobal = false) {
 	for (const stmt of body) if (asGlobal) {
 		if (isAmbient) {
 			if (stmt.declare) recordType(stmt, types, declares);
-		} else if (stmt.type === "TSModuleDeclaration" && stmt.global) for (const s of stmt.body.body) if (s.type === "ExportNamedDeclaration" && s.declaration) recordType(s.declaration, types, declares);
-		else recordType(s, types, declares);
+		} else if (stmt.type === "TSModuleDeclaration" && stmt.global) for (const s of stmt.body.body) if (s.type === "ExportNamedDeclaration") {
+			if (s.declaration) recordType(s.declaration, types, declares);
+			else if (s.source) {
+				const sourceScope = importSourceToScope(ctx, s.source, scope, s.source.value, false);
+				for (const spec of s.specifiers) if (spec.type === "ExportSpecifier") {
+					const exported = getId(spec.exported);
+					const local = spec.local.name;
+					if (sourceScope.exportedTypes[local]) types[exported] = sourceScope.exportedTypes[local];
+					if (sourceScope.exportedDeclares[local]) declares[exported] = sourceScope.exportedDeclares[local];
+				}
+			}
+		} else if (s.type === "ExportAllDeclaration" && s.source) {
+			const sourceScope = importSourceToScope(ctx, s.source, scope, s.source.value, false);
+			Object.assign(types, sourceScope.exportedTypes);
+			Object.assign(declares, sourceScope.exportedDeclares);
+		} else recordType(s, types, declares);
 	} else recordType(stmt, types, declares);
 	if (!asGlobal) {
 		for (const stmt of body) if (stmt.type === "ExportNamedDeclaration") {
@@ -39899,10 +40215,10 @@ function recordTypes(ctx, body, scope, asGlobal = false) {
 	}
 	for (const key of Object.keys(types)) {
 		const node = types[key];
-		node._ownerScope = scope;
-		if (node._ns) node._ns._ownerScope = scope;
+		if (!node._ownerScope) node._ownerScope = scope;
+		if (node._ns && !node._ns._ownerScope) node._ns._ownerScope = scope;
 	}
-	for (const key of Object.keys(declares)) declares[key]._ownerScope = scope;
+	for (const key of Object.keys(declares)) if (!declares[key]._ownerScope) declares[key]._ownerScope = scope;
 }
 function recordType(node, types, declares, overwriteId) {
 	switch (node.type) {
@@ -40027,7 +40343,10 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 				default: return [UNKNOWN_TYPE];
 			}
 			case "TSTypeReference": {
-				const resolved = resolveTypeReference(ctx, node, scope);
+				let resolved;
+				try {
+					resolved = resolveTypeReference(ctx, node, scope);
+				} catch (_unused) {}
 				if (resolved) {
 					if (resolved.type === "TSTypeAliasDeclaration") {
 						if (resolved.typeAnnotation.type === "TSFunctionType") return ["Function"];
@@ -40103,6 +40422,17 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 						case "ReadonlyArray": return ["Array"];
 						case "ReadonlyMap": return ["Map"];
 						case "ReadonlySet": return ["Set"];
+						case "Ref":
+						case "ShallowRef":
+						case "ComputedRef":
+						case "WritableComputedRef": return ["Object"];
+						case "MaybeRef":
+						case "MaybeRefOrGetter": {
+							const types = new Set(["Object"]);
+							if (node.typeName.name === "MaybeRefOrGetter") types.add("Function");
+							if (node.typeParameters && node.typeParameters.params[0]) for (const t of inferRuntimeType(ctx, node.typeParameters.params[0], scope, false, typeParameters)) types.add(t);
+							return Array.from(types);
+						}
 						case "NonNullable":
 							if (node.typeParameters && node.typeParameters.params[0]) return inferRuntimeType(ctx, node.typeParameters.params[0], scope).filter((t) => t !== "null");
 							break;
@@ -41389,7 +41719,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
 init_objectSpread2();
-const version = "3.6.0-beta.10";
+const version = "3.6.0-beta.11";
 const parseCache = parseCache$1;
 const errorMessages = _objectSpread2(_objectSpread2({}, errorMessages$1), DOMErrorMessages);
 const walk = walk$2;

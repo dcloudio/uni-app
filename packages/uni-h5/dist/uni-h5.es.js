@@ -5422,6 +5422,7 @@ const API_START_COMPASS = "startCompass";
 const API_STOP_COMPASS = "stopCompass";
 const API_VIBRATE_SHORT = "vibrateShort";
 const API_VIBRATE_LONG = "vibrateLong";
+const API_SET_KEEP_SCREEN_ON = "setKeepScreenOn";
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
   key: {
@@ -16784,7 +16785,7 @@ function setupApp(comp) {
           debounce(onResize, 50, { setTimeout, clearTimeout })
         );
         window.addEventListener("message", onMessage);
-        document.addEventListener("visibilitychange", onVisibilityChange);
+        document.addEventListener("visibilitychange", onVisibilityChange$1);
         onThemeChange$2();
       });
       return route.query;
@@ -16826,7 +16827,7 @@ function onMessage(evt) {
     );
   }
 }
-function onVisibilityChange() {
+function onVisibilityChange$1() {
   const { emit: emit2 } = UniServiceJSBridge;
   if (document.visibilityState === "visible") {
     emit2(ON_APP_ENTER_FOREGROUND, getEnterOptions());
@@ -19824,7 +19825,7 @@ const vibrateLong = /* @__PURE__ */ defineAsyncApi(
     }
   }
 );
-var __async = (__this, __arguments, generator) => {
+var __async$1 = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
     var fulfilled = (value) => {
       try {
@@ -19846,7 +19847,7 @@ var __async = (__this, __arguments, generator) => {
 };
 const getClipboardData = /* @__PURE__ */ defineAsyncApi(
   API_GET_CLIPBOARD_DATA,
-  (_0, _1) => __async(void 0, [_0, _1], function* (_, { resolve, reject }) {
+  (_0, _1) => __async$1(void 0, [_0, _1], function* (_, { resolve, reject }) {
     initI18nGetClipboardDataMsgsOnce();
     const { t: t2 } = useI18n();
     try {
@@ -19861,7 +19862,7 @@ const getClipboardData = /* @__PURE__ */ defineAsyncApi(
 );
 const setClipboardData = /* @__PURE__ */ defineAsyncApi(
   API_SET_CLIPBOARD_DATA,
-  (_0, _1) => __async(void 0, [_0, _1], function* ({ data }, { resolve, reject }) {
+  (_0, _1) => __async$1(void 0, [_0, _1], function* ({ data }, { resolve, reject }) {
     try {
       yield navigator.clipboard.writeText(data);
       resolve();
@@ -24295,6 +24296,127 @@ const getFacialRecognitionMetaInfo = /* @__PURE__ */ defineSyncApi(
     }
   }
 );
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+let keepScreenOn = false;
+let wakeLockSentinel = null;
+let wakeLockRequest = null;
+let visibilityChangeListenerAdded = false;
+function getWakeLockManager() {
+  const currentNavigator = navigator;
+  if (currentNavigator.wakeLock != null) {
+    return currentNavigator.wakeLock;
+  }
+  return null;
+}
+function getUnsupportedMessage() {
+  return `method 'uni.${API_SET_KEEP_SCREEN_ON}' not supported`;
+}
+function getErrorMessage(error) {
+  return error == null ? void 0 : `${error}`;
+}
+function onWakeLockRelease(event) {
+  const sentinel = event.target;
+  if (sentinel) {
+    sentinel.removeEventListener("release", onWakeLockRelease);
+  }
+  if (wakeLockSentinel === sentinel) {
+    wakeLockSentinel = null;
+  }
+}
+function requestWakeLock() {
+  const wakeLockManager = getWakeLockManager();
+  if (wakeLockManager == null) {
+    return Promise.reject(getUnsupportedMessage());
+  }
+  if (wakeLockSentinel && !wakeLockSentinel.released) {
+    return Promise.resolve(wakeLockSentinel);
+  }
+  if (wakeLockRequest) {
+    return wakeLockRequest;
+  }
+  wakeLockRequest = wakeLockManager.request("screen").then((sentinel) => {
+    wakeLockSentinel = sentinel;
+    sentinel.addEventListener("release", onWakeLockRelease);
+    return sentinel;
+  }).finally(() => {
+    wakeLockRequest = null;
+  });
+  return wakeLockRequest;
+}
+function releaseWakeLock() {
+  return __async(this, null, function* () {
+    if (wakeLockRequest) {
+      yield wakeLockRequest.catch(() => null);
+    }
+    const sentinel = wakeLockSentinel;
+    wakeLockSentinel = null;
+    if (sentinel == null) {
+      return;
+    }
+    sentinel.removeEventListener("release", onWakeLockRelease);
+    if (!sentinel.released) {
+      yield sentinel.release();
+    }
+  });
+}
+function onVisibilityChange() {
+  if (document.visibilityState === "visible" && keepScreenOn) {
+    requestWakeLock().catch(() => {
+    });
+  }
+}
+function addVisibilityChangeListener() {
+  if (!visibilityChangeListenerAdded) {
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    visibilityChangeListenerAdded = true;
+  }
+}
+function removeVisibilityChangeListener() {
+  if (visibilityChangeListenerAdded) {
+    document.removeEventListener("visibilitychange", onVisibilityChange);
+    visibilityChangeListenerAdded = false;
+  }
+}
+const setKeepScreenOn = /* @__PURE__ */ defineAsyncApi(
+  API_SET_KEEP_SCREEN_ON,
+  ({ keepScreenOn: value }, { resolve, reject }) => {
+    keepScreenOn = !!value;
+    if (keepScreenOn) {
+      addVisibilityChangeListener();
+      requestWakeLock().then(() => {
+        resolve();
+      }).catch((error) => {
+        keepScreenOn = false;
+        removeVisibilityChangeListener();
+        reject(getErrorMessage(error));
+      });
+    } else {
+      removeVisibilityChangeListener();
+      releaseWakeLock().then(resolve).catch((error) => {
+        reject(getErrorMessage(error));
+      });
+    }
+  }
+);
 const saveImageToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(
   API_SAVE_IMAGE_TO_PHOTOS_ALBUM,
   createUnsupportedAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM)
@@ -24372,11 +24494,6 @@ const API_GET_SCREEN_BRIGHTNESS = "getScreenBrightness";
 const getScreenBrightness = /* @__PURE__ */ defineAsyncApi(
   API_GET_SCREEN_BRIGHTNESS,
   createUnsupportedAsyncApi(API_GET_SCREEN_BRIGHTNESS)
-);
-const API_SET_KEEP_SCREEN_ON = "setKeepScreenOn";
-const setKeepScreenOn = /* @__PURE__ */ defineAsyncApi(
-  API_SET_KEEP_SCREEN_ON,
-  createUnsupportedAsyncApi(API_SET_KEEP_SCREEN_ON)
 );
 const API_ON_USER_CAPTURE_SCREEN = "onUserCaptureScreen";
 const onUserCaptureScreen = /* @__PURE__ */ defineOnApi(
