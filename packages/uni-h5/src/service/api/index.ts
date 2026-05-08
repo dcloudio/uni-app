@@ -77,6 +77,8 @@ export * from './ui/window'
 
 export * from './plugin/facialVerify'
 
+export * from './brightness/brightness'
+
 export * from './todo/index'
 
 export {

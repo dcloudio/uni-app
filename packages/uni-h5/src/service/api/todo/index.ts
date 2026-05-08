@@ -108,11 +108,6 @@ export const getScreenBrightness = defineAsyncApi<
   createUnsupportedAsyncApi(API_GET_SCREEN_BRIGHTNESS)
 )
 
-const API_SET_KEEP_SCREEN_ON = 'setKeepScreenOn'
-export const setKeepScreenOn = defineAsyncApi<typeof uni.setKeepScreenOn>(
-  API_SET_KEEP_SCREEN_ON,
-  createUnsupportedAsyncApi(API_SET_KEEP_SCREEN_ON)
-)
 const API_ON_USER_CAPTURE_SCREEN = 'onUserCaptureScreen'
 export const onUserCaptureScreen = defineOnApi<typeof uni.onUserCaptureScreen>(
   API_ON_USER_CAPTURE_SCREEN,
