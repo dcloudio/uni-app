@@ -16,7 +16,7 @@ export function uniCustomElementPlugin(): Plugin {
       if (!code.includes('$UniCustomElement$')) {
         return
       }
-      const importSpecifiers: string[] = []
+      const importSpecifiers: Set<string> = new Set()
       code = code.replace(
         /['|"]\$UniCustomElement\$([\w|-]+)['|"]/g,
         (_, name) => {
@@ -25,14 +25,14 @@ export function uniCustomElementPlugin(): Plugin {
           }
           const elementName = capitalize(camelize(name))
           const localName = '_' + elementName + 'Element'
-          importSpecifiers.push(`${elementName} as ${localName}`)
+          importSpecifiers.add(`${elementName} as ${localName}`)
           return localName
         }
       )
 
-      if (importSpecifiers.length) {
+      if (importSpecifiers.size) {
         code =
-          `import {${importSpecifiers.join(
+          `import {${Array.from(importSpecifiers).join(
             ','
           )}} from "${H5_COMPONENTS_PATH}";` + code
       }
