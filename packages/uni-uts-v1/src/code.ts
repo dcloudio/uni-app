@@ -272,10 +272,64 @@ export async function parseInterceptor(
 }
 
 export function parseInterceptorCode(code: string): ParseInterceptorResult {
+  const interceptorCode = stripInterceptorComments(code)
   return {
-    code: stripInterceptorExports(code),
-    initMethods: extractInterceptorInitMethods(code),
+    code: stripInterceptorExports(interceptorCode),
+    initMethods: extractInterceptorInitMethods(interceptorCode),
   }
+}
+
+function stripInterceptorComments(code: string) {
+  let result = ''
+  let quote: "'" | '"' | '`' | undefined
+
+  for (let i = 0; i < code.length; i++) {
+    const char = code[i]
+    const nextChar = code[i + 1]
+
+    if (quote) {
+      result += char
+      if (char === '\\') {
+        result += nextChar || ''
+        i++
+      } else if (char === quote) {
+        quote = undefined
+      }
+      continue
+    }
+
+    if (char === "'" || char === '"' || char === '`') {
+      quote = char
+      result += char
+      continue
+    }
+
+    if (char === '/' && nextChar === '/') {
+      while (i + 1 < code.length && code[i + 1] !== '\n') {
+        i++
+      }
+      continue
+    }
+
+    if (char === '/' && nextChar === '*') {
+      result += ' '
+      i++
+      while (i + 1 < code.length) {
+        i++
+        if (code[i] === '\n') {
+          result += '\n'
+        } else if (code[i] === '*' && code[i + 1] === '/') {
+          i++
+          break
+        }
+      }
+      continue
+    }
+
+    result += char
+  }
+
+  return result
 }
 
 function stripInterceptorExports(code: string) {
