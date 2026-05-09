@@ -22768,6 +22768,7 @@ export declare class TransformContext<T extends AllNode = AllNode> {
   };
   create<T extends TemplateChildNode>(node: T, index: number): TransformContext<T>;
   private shiftEffectBoundaries;
+  private shiftOperationBoundaries;
   private isEffectivelyLastChild;
 }
 export declare function transform(node: RootNode, options?: TransformOptions$1): RootIRNode;

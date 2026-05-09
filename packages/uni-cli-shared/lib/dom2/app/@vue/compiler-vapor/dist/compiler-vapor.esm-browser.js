@@ -19239,7 +19239,9 @@ var TransformContext = class TransformContext {
 		expressions = expressions.filter((exp) => !isConstantExpression(exp));
 		if (this.inVOnce || expressions.length === 0 || expressions.every((e) => isStaticExpression(e, this.root.options.bindingMetadata))) {
 			if (getOperationIndex) {
-				this.block.operation.splice(getOperationIndex(), 0, ...operations);
+				const index = getOperationIndex();
+				this.block.operation.splice(index, 0, ...operations);
+				this.shiftOperationBoundaries(index, operations.length);
 				return;
 			}
 			return this.registerOperation(...operations);
@@ -19291,6 +19293,11 @@ var TransformContext = class TransformContext {
 		const operation = dynamic.operation;
 		if (operation && isBlockOperation(operation) && operation.effectIndex !== void 0 && operation.effectIndex >= index) operation.effectIndex++;
 		for (const child of dynamic.children) this.shiftEffectBoundaries(index, child);
+	}
+	shiftOperationBoundaries(index, offset, dynamic = this.dynamic) {
+		const operation = dynamic.operation;
+		if (operation && isBlockOperation(operation) && operation.operationIndex !== void 0 && operation.operationIndex >= index) operation.operationIndex += offset;
+		for (const child of dynamic.children) this.shiftOperationBoundaries(index, offset, child);
 	}
 	isEffectivelyLastChild(index) {
 		const children = this.node.children;
