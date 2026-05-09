@@ -45,11 +45,15 @@ describe('stats', () => {
     process.env.UNI_APP_X_DOM2 = 'false' as any
 
     const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {})
+    const exitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {
+      return undefined as never
+    })
     const plugin = uniStatsPlugin()
 
     watchChange(plugin, createManifest(true))
 
     expect(warnSpy).toHaveBeenCalledWith(M['dev.watching.restart.vapor'])
+    expect(exitSpy).toHaveBeenCalledWith(0)
   })
 
   test('non app platform ignores vapor toggle restart prompt', () => {
