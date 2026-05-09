@@ -419,8 +419,10 @@
 		font-weight: 600;
 		text-align: center;
 		text-overflow: ellipsis;
-		line-height: 1;
 		lines: 2;
+		/* #ifndef APP-ANDROID */
+		line-height: 1em;
+		/* #endif */
 		/* #ifdef WEB */
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
@@ -455,7 +457,7 @@
 		font-weight: normal;
 		text-align: center;
 		color: #7f7f7f;
-		line-height: 1.5;
+		line-height: 1.5em;
 		width: 100%;
 		padding-bottom: 10px;
 	}
