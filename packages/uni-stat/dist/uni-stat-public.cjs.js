@@ -1744,6 +1744,8 @@ const state$1 = {
     lastIey: false,
     prevIey: false,
     isHide: false,
+    wasBackgrounded: false,
+    suppressNextPageLogAfterResume: false,
 };
 /**
  * 取 collector；未 install 时返回 undefined（调用方需负责 noop）。
@@ -1870,6 +1872,13 @@ function handleAppShow(app, options = {}, _opts = {}) {
     if (!c)
         return;
     const now = nowSec();
+    // 后台恢复边界：无论本次是否新会话，都先把"页面停留起点"截到恢复时刻，
+    // 并在下一个真实 pageShow 抑制一次 lt=11，避免把后台时长并入页面停留。
+    if (state$1.wasBackgrounded) {
+        state$1.wasBackgrounded = false;
+        state$1.suppressNextPageLogAfterResume = true;
+        state$1.lastRouteEnterTime = now;
+    }
     const scene = tryRun(() => getLaunchScene(options.scene), '');
     const result = tryRun(() => ensureSession('app_show', { now, scene }), null);
     if (!result || !result.isNew)
@@ -1892,17 +1901,38 @@ function handleAppShow(app, options = {}, _opts = {}) {
  *
  * 流程：
  *   1. markBackground(now)：写 bgTs，让下次 app_show 能算超时。
- *   2. 发 lt=3：`urlref` = 当前页（用户最后看到的页面），`urlref_ts` = 该页停留秒数（与私有版一致，不足 1 秒按 1 秒）。
- *   3. 进入后台后强制 flush（force=true），尽量在被 kill 前送出。
+ *   2. 若存在当前页且启用页面日志：先发一条 lt=11，闭合"离开当前页"语义（含 url/urlref/urlref_ts/iey/ppiey/title）。
+ *   3. 再发 lt=3：保留"应用进入后台"语义（urlref=urlref_ts 指向后台前最后可见页）。
+ *   4. 进入后台后强制 flush（force=true），尽量在被 kill 前送出。
  */
-function handleAppHide(app) {
+function handleAppHide(app, opts = {}) {
     const c = safeCollector(app);
     if (!c)
         return;
     const now = nowSec();
+    state$1.wasBackgrounded = true;
     tryRun(() => markBackground(now), undefined);
     const deltaStay = state$1.lastRouteEnterTime > 0 ? now - state$1.lastRouteEnterTime : 0;
     const stayed = clampUrlrefStaySec(deltaStay);
+    if (state$1.lastRoute && opts.enablePageLog !== false) {
+        const exitedUrl = state$1.lastRouteFull || state$1.lastRoute;
+        const ref = state$1.beforeLastRouteFull || state$1.beforeLastRoute || '';
+        const snap = state$1.lastPageTitleSnap;
+        const payload = {
+            lt: LT.Page,
+            t: now,
+            url: exitedUrl,
+            urlref_ts: stayed,
+            iey: state$1.lastIey,
+            ppiey: state$1.prevIey,
+            ttn: snap.ttn,
+            ttpj: snap.ttpj,
+            ttc: snap.ttc,
+        };
+        if (ref)
+            payload.urlref = ref;
+        c.report(payload);
+    }
     c.report({
         lt: LT.Hide,
         t: now,
@@ -1935,11 +1965,17 @@ function handlePageShow(app, vm, opts = {}) {
     if (!c)
         return;
     const now = nowSec();
+    const route = tryRun(() => getCurrentRoute(vm), '');
+    const url = tryRun(() => getCurrentRouteWithQuery(vm), '') || route;
+    /**
+     * H5/部分端存在"App.onShow 也会打到 mixin onShow"的情况，此时 this 并非页面 vm，
+     * route/fullPath 为空。该事件应由 `handleAppShow` 处理，不能当 page_show。
+     */
+    if (!route && !url)
+        return;
     const result = tryRun(() => ensureSession('page_show', { now }), null);
     if (!result)
         return;
-    const route = tryRun(() => getCurrentRoute(vm), '');
-    const url = tryRun(() => getCurrentRouteWithQuery(vm), '') || route;
     // 每页重置「自定义上报标题」维（ttc）；注入 pages.json 导航标题 → `ttpj`。
     //
     // **禁止**在此处调用 `clearPageTitle()`：uni-app 页面 `onLoad` 早于统计 mixin 的 `onShow`，
@@ -1961,7 +1997,8 @@ function handlePageShow(app, vm, opts = {}) {
         reportNewSession(c, result.cst || CST.PageInactiveTimeout, '', now, false, url);
     }
     // 存在上一页 → 发 lt=11：描述「离开的上一页」，而非当前 vm 所在页。
-    if (state$1.lastRoute && opts.enablePageLog !== false) {
+    const shouldSuppressPageLog = state$1.suppressNextPageLogAfterResume;
+    if (state$1.lastRoute && opts.enablePageLog !== false && !shouldSuppressPageLog) {
         const deltaStay = state$1.lastRouteEnterTime > 0 ? now - state$1.lastRouteEnterTime : 0;
         const stayed = clampUrlrefStaySec(deltaStay);
         const exitedUrl = state$1.lastRouteFull || state$1.lastRoute;
@@ -1992,6 +2029,7 @@ function handlePageShow(app, vm, opts = {}) {
     state$1.lastRoute = route;
     state$1.lastRouteFull = url;
     state$1.lastRouteEnterTime = now;
+    state$1.suppressNextPageLogAfterResume = false;
     // 不在此处同步快照：此时 lastRoute 已指向新页，getCurrentTitle 会是新页 ttpj+空 ttn，造成顶替。
     // 离开页快照见 handlePageHide（优先）；否则见 scheduleDeferredTitleSnapshot。
     scheduleDeferredTitleSnapshot();
@@ -2010,7 +2048,7 @@ function handlePageShow(app, vm, opts = {}) {
  * 私有版用 `isHide` 区分 onUnload 是隐藏还是真离开；本模块同样兼容。
  *
  * 公有版调整（与 `docs/uni统计上报参数.md` 对齐）：
- *   - `lt=11` 不在 onHide 上报，统一在下一次 `handlePageShow` 上报离开页闭环数据。
+ *   - `lt=11` 不在 onHide 上报；页面离开闭环由「下一次 `handlePageShow` 或 `handleAppHide`」触发。
  *   - onHide 仅做收尾：标记 isHide、清掉自定义 title，避免下次新页空标题。
  *   - lastRoute / lastRouteEnterTime / lastIey 保持不变，由 `handlePageShow` 统一切换。
  */
@@ -2162,7 +2200,7 @@ function bindLifecycle(app, opts = {}) {
         tryRun(() => u.onAppShow(appShowCb), undefined);
     }
     if (u && typeof u.onAppHide === 'function') {
-        appHideCb = () => handleAppHide(app);
+        appHideCb = () => handleAppHide(app, opts);
         tryRun(() => u.onAppHide(appHideCb), undefined);
     }
     return {
@@ -3296,10 +3334,7 @@ function buildWebTracksPostBody(payload) {
     }
     const rawByteSize = utf8ByteLength(json);
     if (rawByteSize > WEBTRACKS_POST_BODY_MAX_BYTES) {
-        throw new PermanentChannelError('上报数据体积过大: ' +
-            rawByteSize +
-            ' > ' +
-            WEBTRACKS_POST_BODY_MAX_BYTES);
+        throw new PermanentChannelError('上报数据体积过大: ' + rawByteSize + ' > ' + WEBTRACKS_POST_BODY_MAX_BYTES);
     }
     return { json, rawByteSize };
 }
@@ -3502,7 +3537,9 @@ function createImageChannel(opts = {}) {
                         resolve();
                     else {
                         const hint = summarizeHttpErrorBody(res === null || res === void 0 ? void 0 : res.data);
-                        reject(new Error(hint ? `统计上报 HTTP ${code}: ${hint}` : `统计上报 HTTP ${code}`));
+                        reject(new Error(hint
+                            ? `统计上报 HTTP ${code}: ${hint}`
+                            : `统计上报 HTTP ${code}`));
                     }
                 },
                 fail: (e) => {

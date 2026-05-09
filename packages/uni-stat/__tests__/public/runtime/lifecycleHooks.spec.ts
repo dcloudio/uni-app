@@ -9,7 +9,7 @@
  *   T4 page_show 未超时 → 不发 launch，仅维护 lastRoute / entry。
  *
  * 另外验证：
- *   - app_hide：写 markBackground、发 lt=3、强制 flush。
+ *   - app_hide：写 markBackground、发 lt=11+lt=3、强制 flush。
  *   - app_show 新会话：lt=1 后强制 flush（与源码 `handleAppShow` 对齐）。
  *   - page_show：发 lt=11（进入新页 onShow 时上报**离开页**），
  *     url=离开页 / urlref=再上一层来源（首跳可无）/ urlref_ts=离开页停留秒数（≥1，与私有版一致）；首次 onShow 不发。
@@ -187,19 +187,119 @@ describe('runtime/lifecycleHooks', () => {
     expect(lts).toEqual([])
   })
 
-  test('app_hide：发 lt=3，并 markBackground', async () => {
+  test('app_hide：发 lt=11 + lt=3，并 markBackground', async () => {
     const { app, reportSpy, http } = installAppWithSpyReporter()
     handleLaunch(app, {})
     handlePageShow(app, { route: 'pages/home' })
+    http.send.mockClear()
     reportSpy.mockClear()
 
     handleAppHide(app)
     const lts = getReportedLts(reportSpy)
+    expect(lts).toContain('11')
     expect(lts).toContain('3')
     expect(sessionMod.getSnapshot()?.bgTs).toBeGreaterThan(0)
-    // 强制 flush 应触发 channel.send（lt=3 + 之前 onLaunch/page_show 的事件已被 batch 出去了）
+    // 强制 flush 应触发 channel.send（本轮包含 lt=11 与 lt=3）。
     await Promise.resolve()
     expect(http.send).toHaveBeenCalled()
+    const payload = http.send.mock.calls[0][0] as ReportPayload
+    const events = JSON.parse(payload.requests) as Array<{ lt?: string }>
+    const order = events.map((e) => String(e.lt ?? ''))
+    const i11 = order.indexOf('11')
+    const i3 = order.indexOf('3')
+    expect(i11).toBeGreaterThanOrEqual(0)
+    expect(i3).toBeGreaterThanOrEqual(0)
+    expect(i11).toBeLessThan(i3)
+  })
+
+  test('后台恢复：首个 page_show 不带历史超长停留，且忽略非页面 onShow', () => {
+    jest.useFakeTimers()
+    try {
+      jest.setSystemTime(new Date('2026-05-01T00:00:00.000Z'))
+      const { app, reportSpy } = installAppWithSpyReporter()
+      handleLaunch(app, {})
+      handlePageShow(app, { route: 'pages/A' })
+      handlePageHide(app, { route: 'pages/A' })
+      jest.setSystemTime(Date.now() + 10_000)
+      handleAppHide(app)
+
+      // 进入后台后，模拟"五一假期"长时间未回前台。
+      jest.setSystemTime(Date.now() + 5 * 24 * 60 * 60 * 1000)
+      reportSpy.mockClear()
+      handleAppShow(app, {})
+
+      // H5 场景：mixin onShow 可能先收到 App 级 onShow（无 route/fullPath）。
+      handlePageShow(app, {} as unknown as { route?: string })
+      expect(getReportedLts(reportSpy)).toEqual(['1'])
+
+      // 同页恢复展示：不应补发上一页 lt=11（后台前已由 lt=3 闭合）。
+      handlePageShow(app, { route: 'pages/A' })
+      let pageLogs = reportSpy.mock.calls
+        .map((c) => c[0] as ReportInput)
+        .filter((i) => i.lt === '11')
+      expect(pageLogs).toHaveLength(0)
+
+      // 后续真实页面切换仍应正常上报 lt=11，且停留时长应为前台停留，不含后台长时间。
+      handlePageHide(app, { route: 'pages/A' })
+      jest.setSystemTime(Date.now() + 2_000)
+      handlePageShow(app, { route: 'pages/B' })
+      pageLogs = reportSpy.mock.calls
+        .map((c) => c[0] as ReportInput)
+        .filter((i) => i.lt === '11')
+      expect(pageLogs).toHaveLength(1)
+      expect(pageLogs[0].url).toBe('pages/A')
+      expect(pageLogs[0].urlref_ts).toBeGreaterThanOrEqual(1)
+      expect(pageLogs[0].urlref_ts as number).toBeLessThan(60)
+    } finally {
+      jest.useRealTimers()
+    }
+  })
+
+  test('cst=2 新会话后首个有效 lt=11 应仅统计前台停留', () => {
+    jest.useFakeTimers()
+    try {
+      jest.setSystemTime(new Date('2026-05-01T00:00:00.000Z'))
+      const { app, reportSpy } = installAppWithSpyReporter()
+      handleLaunch(app, {})
+      handlePageShow(app, { route: 'pages/home' })
+      handlePageHide(app, { route: 'pages/home' })
+
+      // 先进入后台，确保后台前页面闭环由 lt=3 完成。
+      jest.setSystemTime(Date.now() + 8_000)
+      handleAppHide(app)
+
+      // 超过 backgroundTimeout 触发 cst=2 新会话。
+      jest.setSystemTime(Date.now() + 5 * 24 * 60 * 60 * 1000)
+      reportSpy.mockClear()
+      handleAppShow(app, {})
+      const launchAfterResume = reportSpy.mock.calls
+        .map((c) => c[0] as ReportInput)
+        .find((i) => i.lt === '1')
+      expect(launchAfterResume).toBeDefined()
+      expect(sessionMod.getSnapshot()?.sct).toBe(2)
+
+      // 恢复后同页展示不应产出 lt=11（避免补发历史停留）。
+      handlePageShow(app, { route: 'pages/home' })
+      const pageLogsAfterSameRoute = reportSpy.mock.calls
+        .map((c) => c[0] as ReportInput)
+        .filter((i) => i.lt === '11')
+      expect(pageLogsAfterSameRoute).toHaveLength(0)
+
+      // 发生真实页面切换后才上报 lt=11，且 urlref_ts 只反映前台停留（这里约 3 秒）。
+      handlePageHide(app, { route: 'pages/home' })
+      jest.setSystemTime(Date.now() + 3_000)
+      handlePageShow(app, { route: 'pages/detail' })
+      const pageLogs = reportSpy.mock.calls
+        .map((c) => c[0] as ReportInput)
+        .filter((i) => i.lt === '11')
+      expect(pageLogs).toHaveLength(1)
+      expect(pageLogs[0].url).toBe('pages/home')
+      expect(pageLogs[0].urlref_ts).toBeGreaterThanOrEqual(1)
+      // 宽松上限：用于防止把 5 天后台时长并入。
+      expect(pageLogs[0].urlref_ts as number).toBeLessThan(120)
+    } finally {
+      jest.useRealTimers()
+    }
   })
 
   test('page_show：lt=11 由下一页 onShow 触发，描述离开页（url=上一页）', () => {
@@ -266,9 +366,12 @@ describe('runtime/lifecycleHooks', () => {
     expect(lts).toContain('1')
     expect(lts).not.toContain('11')
 
-    // app_hide 仍然发 lt=3
-    handleAppHide(app)
-    expect(getReportedLts(reportSpy)).toContain('3')
+    // app_hide 仍然发 lt=3；enablePageLog=false 时不补 lt=11
+    reportSpy.mockClear()
+    handleAppHide(app, { enablePageLog: false })
+    const ltsAfterHide = getReportedLts(reportSpy)
+    expect(ltsAfterHide).toContain('3')
+    expect(ltsAfterHide).not.toContain('11')
     await Promise.resolve()
     expect(http.send).toHaveBeenCalled()
   })

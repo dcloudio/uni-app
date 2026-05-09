@@ -522,8 +522,8 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
     expect(sent[0].payload.usv).toBe(process.env.UNI_COMPILER_VERSION || '')
   })
 
-  /** S11 onAppHide：发 lt=3 + 强制 flush，确保后台前最后一次送出。 */
-  test('S11 onAppHide → lt=3，flush 强制送达', async () => {
+  /** S11 onAppHide：发 lt=11+lt=3 + 强制 flush，确保后台前页面闭环与会话语义都送出。 */
+  test('S11 onAppHide → lt=11+lt=3，flush 强制送达', async () => {
     const { app, http } = installApp({ reportIntervalSec: 10 })
     handleLaunch(app, {})
     handlePageShow(app, { route: 'pages/home/home' })
@@ -535,9 +535,77 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
     await Promise.resolve()
 
     const lts = flatLts(dumpSent(http))
+    expect(lts).toContain('11')
     expect(lts).toContain('3')
-    // lt=3 必须落在 batch 的末尾（serializer 排序约束，修复缺陷 #4）
+    // 同批次顺序：lt=11 在 lt=3 之前；lt=3 落末尾（serializer 排序约束）。
     const events = flatEvents(dumpSent(http))
+    const i11 = events.findIndex((e) => e.lt === '11')
+    const i3 = events.findIndex((e) => e.lt === '3')
+    expect(i11).toBeGreaterThanOrEqual(0)
+    expect(i3).toBeGreaterThanOrEqual(0)
+    expect(i11).toBeLessThan(i3)
     expect(events[events.length - 1].lt).toBe('3')
+  })
+
+  /**
+   * S12 后台链路：onAppHide 产出 lt=11+3；超时回前台仅产出 lt=1（cst=2）；
+   * 首个同页 page_show 不重复 lt=11；后续真实切页再产出 lt=11（仅前台停留）。
+   */
+  test('S12 后台超时回前台链路：lt=11+3 -> lt=1(cst=2) -> 首个同页不重发11 -> 切页发11', async () => {
+    jest.useFakeTimers()
+    try {
+      jest.setSystemTime(new Date('2026-05-01T00:00:00.000Z'))
+      const { app, http } = installApp({
+        reportIntervalSec: 10,
+        backgroundTimeoutSec: 60,
+      })
+      handleLaunch(app, {})
+      handlePageShow(app, { route: 'pages/home/home' })
+      handlePageHide(app, { route: 'pages/home/home' })
+      await drain(app)
+      http.send.mockClear()
+
+      // 进入后台：应发 lt=11+lt=3
+      jest.setSystemTime(Date.now() + 8_000)
+      handleAppHide(app)
+      await Promise.resolve()
+      await Promise.resolve()
+      const hideEvents = flatEvents(dumpSent(http))
+      const hideLts = hideEvents.map((e) => String(e.lt))
+      expect(hideLts).toContain('11')
+      expect(hideLts).toContain('3')
+      const hide11 = hideEvents.find((e) => e.lt === '11')!
+      expect(hide11.url).toBe('pages/home/home')
+      http.send.mockClear()
+
+      // 后台超时回前台：仅 lt=1(cst=2)
+      jest.setSystemTime(Date.now() + 5 * 24 * 60 * 60 * 1000)
+      handleAppShow(app, {})
+      await drain(app)
+      let events = flatEvents(dumpSent(http))
+      expect(events.map((e) => String(e.lt))).toEqual(['1'])
+      expect(events[0].cst).toBe(2)
+      http.send.mockClear()
+
+      // 首个同页 page_show 不应重复 lt=11
+      handlePageShow(app, { route: 'pages/home/home' })
+      await drain(app)
+      events = flatEvents(dumpSent(http))
+      expect(events.filter((e) => e.lt === '11')).toHaveLength(0)
+      http.send.mockClear()
+
+      // 后续切页才重新产出 lt=11，且停留时长为前台短停留（不含 5 天后台）。
+      handlePageHide(app, { route: 'pages/home/home' })
+      jest.setSystemTime(Date.now() + 2_000)
+      handlePageShow(app, { route: 'pages/detail/detail' })
+      await drain(app)
+      events = flatEvents(dumpSent(http))
+      const page11 = events.filter((e) => e.lt === '11')
+      expect(page11).toHaveLength(1)
+      expect(page11[0].url).toBe('pages/home/home')
+      expect(Number(page11[0].urlref_ts)).toBeLessThan(120)
+    } finally {
+      jest.useRealTimers()
+    }
   })
 })

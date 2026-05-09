@@ -115,6 +115,20 @@ interface LifecycleState {
   prevIey: boolean
   /** isHide 标记：与私有版一致，用于区分 onUnload 是真离开还是隐藏。 */
   isHide: boolean
+  /**
+   * 是否经历过 `onAppHide`（进入后台）。
+   *
+   * 仅用于在 H5/部分端把 App 级 onShow 与 Page 级 onShow 混入同一 mixin 时，
+   * 识别"这是一次后台恢复链路"，从而在首个 pageShow 做边界重置。
+   */
+  wasBackgrounded: boolean
+  /**
+   * 后台恢复后的首个 pageShow 需跳过离开页上报（lt=11）。
+   *
+   * 目的：进入后台时已通过 lt=3 闭合当前页停留；恢复后若同页再次 onShow，
+   * 不能再把后台时长算进 lt=11.urlref_ts。
+   */
+  suppressNextPageLogAfterResume: boolean
 }
 
 /** 模块级状态。`bindLifecycle` 返回的 unbind 仅断订阅，不重置 state。 */
@@ -128,6 +142,8 @@ const state: LifecycleState = {
   lastIey: false,
   prevIey: false,
   isHide: false,
+  wasBackgrounded: false,
+  suppressNextPageLogAfterResume: false,
 }
 
 /**
@@ -284,6 +300,13 @@ export function handleAppShow(
   const c = safeCollector(app)
   if (!c) return
   const now = nowSec()
+  // 后台恢复边界：无论本次是否新会话，都先把"页面停留起点"截到恢复时刻，
+  // 并在下一个真实 pageShow 抑制一次 lt=11，避免把后台时长并入页面停留。
+  if (state.wasBackgrounded) {
+    state.wasBackgrounded = false
+    state.suppressNextPageLogAfterResume = true
+    state.lastRouteEnterTime = now
+  }
   const scene = tryRun(() => getLaunchScene(options.scene), '')
   const result = tryRun(() => ensureSession('app_show', { now, scene }), null)
   if (!result || !result.isNew) return
@@ -315,17 +338,37 @@ export function handleAppShow(
  *
  * 流程：
  *   1. markBackground(now)：写 bgTs，让下次 app_show 能算超时。
- *   2. 发 lt=3：`urlref` = 当前页（用户最后看到的页面），`urlref_ts` = 该页停留秒数（与私有版一致，不足 1 秒按 1 秒）。
- *   3. 进入后台后强制 flush（force=true），尽量在被 kill 前送出。
+ *   2. 若存在当前页且启用页面日志：先发一条 lt=11，闭合"离开当前页"语义（含 url/urlref/urlref_ts/iey/ppiey/title）。
+ *   3. 再发 lt=3：保留"应用进入后台"语义（urlref=urlref_ts 指向后台前最后可见页）。
+ *   4. 进入后台后强制 flush（force=true），尽量在被 kill 前送出。
  */
-export function handleAppHide(app: StatApp): void {
+export function handleAppHide(app: StatApp, opts: LifecycleOptions = {}): void {
   const c = safeCollector(app)
   if (!c) return
   const now = nowSec()
+  state.wasBackgrounded = true
   tryRun(() => markBackground(now), undefined)
   const deltaStay =
     state.lastRouteEnterTime > 0 ? now - state.lastRouteEnterTime : 0
   const stayed = clampUrlrefStaySec(deltaStay)
+  if (state.lastRoute && opts.enablePageLog !== false) {
+    const exitedUrl = state.lastRouteFull || state.lastRoute
+    const ref = state.beforeLastRouteFull || state.beforeLastRoute || ''
+    const snap = state.lastPageTitleSnap
+    const payload: Parameters<CollectorAPI['report']>[0] = {
+      lt: LT.Page,
+      t: now,
+      url: exitedUrl,
+      urlref_ts: stayed,
+      iey: state.lastIey,
+      ppiey: state.prevIey,
+      ttn: snap.ttn,
+      ttpj: snap.ttpj,
+      ttc: snap.ttc,
+    }
+    if (ref) payload.urlref = ref
+    c.report(payload)
+  }
   c.report({
     lt: LT.Hide,
     t: now,
@@ -362,10 +405,15 @@ export function handlePageShow(
   const c = safeCollector(app)
   if (!c) return
   const now = nowSec()
-  const result = tryRun(() => ensureSession('page_show', { now }), null)
-  if (!result) return
   const route = tryRun(() => getCurrentRoute(vm), '')
   const url = tryRun(() => getCurrentRouteWithQuery(vm), '') || route
+  /**
+   * H5/部分端存在"App.onShow 也会打到 mixin onShow"的情况，此时 this 并非页面 vm，
+   * route/fullPath 为空。该事件应由 `handleAppShow` 处理，不能当 page_show。
+   */
+  if (!route && !url) return
+  const result = tryRun(() => ensureSession('page_show', { now }), null)
+  if (!result) return
   // 每页重置「自定义上报标题」维（ttc）；注入 pages.json 导航标题 → `ttpj`。
   //
   // **禁止**在此处调用 `clearPageTitle()`：uni-app 页面 `onLoad` 早于统计 mixin 的 `onShow`，
@@ -395,7 +443,12 @@ export function handlePageShow(
     )
   }
   // 存在上一页 → 发 lt=11：描述「离开的上一页」，而非当前 vm 所在页。
-  if (state.lastRoute && opts.enablePageLog !== false) {
+  const shouldSuppressPageLog = state.suppressNextPageLogAfterResume
+  if (
+    state.lastRoute &&
+    opts.enablePageLog !== false &&
+    !shouldSuppressPageLog
+  ) {
     const deltaStay =
       state.lastRouteEnterTime > 0 ? now - state.lastRouteEnterTime : 0
     const stayed = clampUrlrefStaySec(deltaStay)
@@ -426,6 +479,7 @@ export function handlePageShow(
   state.lastRoute = route
   state.lastRouteFull = url
   state.lastRouteEnterTime = now
+  state.suppressNextPageLogAfterResume = false
   // 不在此处同步快照：此时 lastRoute 已指向新页，getCurrentTitle 会是新页 ttpj+空 ttn，造成顶替。
   // 离开页快照见 handlePageHide（优先）；否则见 scheduleDeferredTitleSnapshot。
   scheduleDeferredTitleSnapshot()
@@ -447,7 +501,7 @@ export function handlePageShow(
  * 私有版用 `isHide` 区分 onUnload 是隐藏还是真离开；本模块同样兼容。
  *
  * 公有版调整（与 `docs/uni统计上报参数.md` 对齐）：
- *   - `lt=11` 不在 onHide 上报，统一在下一次 `handlePageShow` 上报离开页闭环数据。
+ *   - `lt=11` 不在 onHide 上报；页面离开闭环由「下一次 `handlePageShow` 或 `handleAppHide`」触发。
  *   - onHide 仅做收尾：标记 isHide、清掉自定义 title，避免下次新页空标题。
  *   - lastRoute / lastRouteEnterTime / lastIey 保持不变，由 `handlePageShow` 统一切换。
  */
@@ -631,7 +685,7 @@ export function bindLifecycle(
     tryRun(() => u.onAppShow!(appShowCb!), undefined)
   }
   if (u && typeof u.onAppHide === 'function') {
-    appHideCb = (): void => handleAppHide(app)
+    appHideCb = (): void => handleAppHide(app, opts)
     tryRun(() => u.onAppHide!(appHideCb!), undefined)
   }
 
@@ -662,6 +716,8 @@ export function __resetLifecycleState(): void {
   state.lastIey = false
   state.prevIey = false
   state.isHide = false
+  state.wasBackgrounded = false
+  state.suppressNextPageLogAfterResume = false
   titleSnapGeneration = 0
   firstVisitEmittedInProcess = false
 }
