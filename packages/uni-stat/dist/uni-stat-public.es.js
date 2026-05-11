@@ -1996,7 +1996,9 @@ function handlePageShow(app, vm, opts = {}) {
     }
     // 存在上一页 → 发 lt=11：描述「离开的上一页」，而非当前 vm 所在页。
     const shouldSuppressPageLog = state$1.suppressNextPageLogAfterResume;
-    if (state$1.lastRoute && opts.enablePageLog !== false && !shouldSuppressPageLog) {
+    if (state$1.lastRoute &&
+        opts.enablePageLog !== false &&
+        !shouldSuppressPageLog) {
         const deltaStay = state$1.lastRouteEnterTime > 0 ? now - state$1.lastRouteEnterTime : 0;
         const stayed = clampUrlrefStaySec(deltaStay);
         const exitedUrl = state$1.lastRouteFull || state$1.lastRoute;
@@ -3178,7 +3180,8 @@ function createHttpChannel(opts = {}) {
  * **非 H5**（小程序 / App 等，与 [TLS WebTracks](https://www.volcengine.com/docs/6470/141803?lang=zh) 对齐）：
  *   - `POST ${host}/WebTracks?ProjectId&TopicId`
  *   - Header：`Content-Type: application/json`（必选）、`x-tls-bodyrawsize` = 未压缩 body 字节数（必选）
- *   - Body：`{ "Source": "webImg", "Logs": [...] }`，且 **每条 Log 的 value 均为 string**（服务端强校验）。
+ *   - Body：`{ "Source": "webImg", "Logs": [{ "Logs": "<JSON.stringify(events)>" }] }`。
+ *     `Logs` 数组固定仅 1 个对象，内层 `Logs` 保存字符串化事件数组。
  *
  * 设计要点：
  *   - H5 仍受 GET URL 长度约束（`maxUrlLength` / `maxRequestBytes` 反推）。
@@ -3268,43 +3271,6 @@ function buildWebTracksPostUrl(host, projectId, topicId) {
         encodeURIComponent(topicId));
 }
 /**
- * 火山 WebTracks 要求 `Logs` 中每条日志的 **所有 value 均为 string**，否则返回
- * `InvalidArgumentsTypes`（如 `Value in Logs is not string data type`）。
- *
- * @param entry `requests` 解析后的单条事件对象
- * @returns 键保留、值全部转为 UTF-8 可序列化字符串后的记录
- */
-function normalizeWebTracksLogEntry(entry) {
-    if (entry === null || typeof entry !== 'object' || Array.isArray(entry)) {
-        return { _raw: String(entry) };
-    }
-    const out = {};
-    const obj = entry;
-    for (const key of Object.keys(obj)) {
-        const v = obj[key];
-        if (v === null || v === undefined) {
-            out[key] = '';
-        }
-        else if (typeof v === 'string') {
-            out[key] = v;
-        }
-        else if (typeof v === 'number' ||
-            typeof v === 'boolean' ||
-            typeof v === 'bigint') {
-            out[key] = String(v);
-        }
-        else {
-            try {
-                out[key] = JSON.stringify(v);
-            }
-            catch (_a) {
-                out[key] = '';
-            }
-        }
-    }
-    return out;
-}
-/**
  * 将 `ReportPayload.requests` 包装为 WebTracks POST JSON 串，并给出 UTF-8 字节长度。
  *
  * @param payload 批次 payload
@@ -3321,13 +3287,22 @@ function buildWebTracksPostBody(payload) {
     if (!Array.isArray(logs)) {
         throw new PermanentChannelError('上报数据格式错误：应为事件对象数组');
     }
-    const normalizedLogs = logs.map((item) => normalizeWebTracksLogEntry(item));
-    const body = { Source: 'webImg', Logs: normalizedLogs };
+    let serializedLogs = '';
+    try {
+        serializedLogs = JSON.stringify(logs);
+    }
+    catch (_b) {
+        throw new PermanentChannelError('上报数据序列化失败');
+    }
+    const body = {
+        Source: 'uniapp',
+        Logs: [{ Logs: serializedLogs }],
+    };
     let json;
     try {
         json = JSON.stringify(body);
     }
-    catch (_b) {
+    catch (_c) {
         throw new PermanentChannelError('上报数据序列化失败');
     }
     const rawByteSize = utf8ByteLength(json);

@@ -394,7 +394,7 @@ describe('pipeline/channel/image', () => {
     expect(ch3.maxRequestBytes!()).toBe(512)
   })
 
-  test('IM10 非 H5：POST /WebTracks + 必选头 + JSON body', async () => {
+  test('IM10 非 H5：POST /WebTracks + 必选头 + JSON body（Logs 固定单对象字符串封装）', async () => {
     const requestSpy = jest.fn(
       ({ success }: { success: (res: { statusCode: number }) => void }) => {
         success({ statusCode: 200 })
@@ -425,20 +425,26 @@ describe('pipeline/channel/image', () => {
     expect(arg.header['x-tls-bodyrawsize']).toMatch(/^\d+$/)
     const body = JSON.parse(arg.data) as {
       Source: string
-      Logs: Array<Record<string, string>>
+      Logs: Array<{ Logs: string }>
     }
-    expect(body.Source).toBe('webImg')
-    // 火山 WebTracks：Logs 每条 value 必须为 string（数字等需规范化）
+    expect(body.Source).toBe('uniapp')
+    // Logs 固定为 1 个对象，且内层 Logs 为字符串化事件数组。
     expect(body.Logs).toHaveLength(1)
-    expect(body.Logs[0].lt).toBe('1')
-    expect(body.Logs[0].t).toBe('1')
-    expect(body.Logs[0].sk).toBe('s1')
+    const events = JSON.parse(body.Logs[0].Logs) as Array<{
+      lt: string
+      t: number
+      sk: string
+    }>
+    expect(events).toHaveLength(1)
+    expect(events[0].lt).toBe('1')
+    expect(events[0].t).toBe(1)
+    expect(events[0].sk).toBe('s1')
     expect(Number(arg.header['x-tls-bodyrawsize'])).toBe(
       new TextEncoder().encode(arg.data).length
     )
   })
 
-  test('IM10.b 非 H5：对象/数组型字段 JSON 序列化为 string', async () => {
+  test('IM10.b 非 H5：对象/数组型字段保留在内层 Logs 字符串中', async () => {
     const requestSpy = jest.fn(
       ({ success }: { success: (res: { statusCode: number }) => void }) => {
         success({ statusCode: 200 })
@@ -463,10 +469,14 @@ describe('pipeline/channel/image', () => {
     await ch.send(payload)
     const arg = requestSpy.mock.calls[0][0] as unknown as { data: string }
     const body = JSON.parse(arg.data) as {
-      Logs: Array<Record<string, string>>
+      Logs: Array<{ Logs: string }>
     }
-    expect(body.Logs[0].custom).toBe('{"a":1}')
-    expect(body.Logs[0].tags).toBe('["x","y"]')
+    const events = JSON.parse(body.Logs[0].Logs) as Array<{
+      custom: Record<string, unknown>
+      tags: string[]
+    }>
+    expect(events[0].custom).toEqual({ a: 1 })
+    expect(events[0].tags).toEqual(['x', 'y'])
   })
 
   test('IM11 非 H5：requests 非法 JSON → PermanentChannelError', async () => {
