@@ -48,11 +48,12 @@ export class UniAnimation implements IUniAnimation {
     toRaw(this.scope).setData({
       ['$eA.' + this.id]: JSON.stringify({
         id: this.id,
-        playState: 'cancel',
+        playState: 'idle',
         keyframes: this.parsedKeyframes,
         options: this.options,
       }),
     })
+    this._playState = 'idle'
   }
 
   finish(): void {
@@ -72,6 +73,7 @@ export class UniAnimation implements IUniAnimation {
         options: this.options,
       }),
     })
+    this._playState = 'running'
   }
 }
 
