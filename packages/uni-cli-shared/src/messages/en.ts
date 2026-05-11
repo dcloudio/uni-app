@@ -1,5 +1,8 @@
 export default {
   'app.compiler.version': 'Compiler version: {version}',
+  'view.render.compiler.target': 'Current view.render compile target: {target}',
+  'view.render.compiler.target.bytecode': 'bytecode',
+  'view.render.compiler.target.nativecode': 'nativecode',
   'style.isolation.version': 'Style isolation version: {version}',
   compiling: 'Compiling...',
   'dev.performance':

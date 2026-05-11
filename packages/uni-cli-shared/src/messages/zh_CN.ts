@@ -1,5 +1,8 @@
 export default {
   'app.compiler.version': '编译器版本：{version}',
+  'view.render.compiler.target': '当前视图层编译目标：{target}',
+  'view.render.compiler.target.bytecode': '字节码',
+  'view.render.compiler.target.nativecode': '机器码',
   'style.isolation.version':
     '当前样式隔离策略：{version}。详见：https://doc.dcloud.net.cn/uni-app-x/css/common/style-isolation.html',
   compiling: '正在编译中...',
