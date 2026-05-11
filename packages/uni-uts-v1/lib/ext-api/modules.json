@@ -4,49 +4,37 @@
       "onAccelerometerChange": {
         "name": "onAccelerometerChange",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
           "swift": true,
           "arkts": true
-        },
-        "web": {
-          "js": true
         }
       },
       "offAccelerometerChange": {
         "name": "offAccelerometerChange",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
           "swift": true,
           "arkts": true
-        },
-        "web": {
-          "js": true
         }
       },
       "startAccelerometer": {
         "name": "startAccelerometer",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
           "swift": true,
           "arkts": true
-        },
-        "web": {
-          "js": true
         }
       },
       "stopAccelerometer": {
         "name": "stopAccelerometer",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
           "swift": true,
           "arkts": true
-        },
-        "web": {
-          "js": true
         }
       }
     }
