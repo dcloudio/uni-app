@@ -47,10 +47,12 @@ export default {
     this._loadData()
   },
   methods: {
+    /** 对外 load：仅派发 load 事件（与历史行为一致） */
     load () {
       this._dispatchEvent(EventType.Load, {})
     },
 
+    /** 展示插屏：在 SDK 与素材就绪后调用 GDT NATIVE.renderAd */
     show () {
       this.errorMessage = null
 
@@ -71,10 +73,12 @@ export default {
       }
     },
 
+    /** 点击插屏区域时尝试展示广告 */
     _onclick () {
       this.show()
     },
 
+    /** 按 adpid 拉取 H5 广告配置并加载优量汇脚本、预请求素材 */
     _loadData (adpid) {
       this.loading = true
       const id = adpid || this.adpid
@@ -108,6 +112,7 @@ export default {
       })
     },
 
+    /** 向 TencentGDT 队列提交插屏 native 请求，onComplete 写入 _interstitialData */
     _renderGdt (data) {
       window.TencentGDT.push({
         placement_id: data.a3, // 广告位ID
@@ -122,12 +127,14 @@ export default {
       })
     },
 
+    /** 以小程序风格 detail 包装后向父组件派发事件 */
     _dispatchEvent (type, data) {
       this.$emit(type, {
         detail: data
       })
     },
 
+    /** 在容器内创建带随机 id 的 DOM 节点，供 renderAd 挂载 */
     _createView () {
       const id = this._randomId()
       const adView = document.createElement('div')
@@ -137,6 +144,7 @@ export default {
       return id
     },
 
+    /** 生成 renderAd 容器 DOM id */
     _randomId () {
       let result = ''
       for (let i = 0; i < 4; i++) {
@@ -151,6 +159,7 @@ export default {
 // let IS = 0
 
 class AdConfig {
+  /** @returns {AdConfig} 全局单例 */
   static get instance () {
     if (this._instance == null) {
       this._instance = new AdConfig()
@@ -167,10 +176,12 @@ class AdConfig {
     this._callbacks = []
   }
 
+  /** @returns 当前内存中的配置体（服务端返回的 data） */
   get adConfig () {
     return this._adConfig
   }
 
+  /** @returns {boolean} 本地缓存是否超过 CACHE_TIME */
   get isExpired () {
     if (this._adConfig == null) {
       return true
@@ -178,6 +189,7 @@ class AdConfig {
     return (Math.abs(Date.now() - this._adConfig.last) > this.CACHE_TIME)
   }
 
+  /** 从 localStorage 恢复未过期的配置到内存 */
   _init () {
     var config = this._getConfig()
     if (config === null || !config.last) {
@@ -189,6 +201,12 @@ class AdConfig {
     }
   }
 
+  /**
+   * 按 adpid 获取配置：优先内存/缓存命中，否则请求 ah5v2 并排队回调
+   * @param {string|number} adpid
+   * @param {(a: object, b: object[]) => void} success
+   * @param {(err: object) => void} fail
+   */
   get (adpid, success, fail) {
     // IC++
     if (this._adConfig != null) {
@@ -208,6 +226,7 @@ class AdConfig {
     this._loadAdConfig(adpid)
   }
 
+  /** 用当前 _adConfig 解析 adpid 并调用 success 或 fail */
   _doCallback (adpid, success, fail) {
     // IS++
     var { a, b } = this._adConfig
@@ -218,6 +237,7 @@ class AdConfig {
     }
   }
 
+  /** 请求远端 H5 广告配置并刷新内存与等待队列 */
   _loadAdConfig (adpid) {
     if (this._isLoading === true) {
       return
@@ -263,6 +283,7 @@ class AdConfig {
     })
   }
 
+  /** @returns {{ last: number, data: object }|null} localStorage 中的包装结构 */
   _getConfig () {
     if (!navigator.cookieEnabled || !window.localStorage) {
       return null
@@ -271,6 +292,7 @@ class AdConfig {
     return data ? JSON.parse(data) : null
   }
 
+  /** 将服务端 data 与当前时间写入 localStorage */
   _setConfig (data) {
     if (!navigator.cookieEnabled || !window.localStorage) {
       return null
@@ -282,7 +304,8 @@ class AdConfig {
   }
 }
 Object.assign(AdConfig.prototype, {
-  URL: 'https://hac1.dcloud.net.cn/ah5',
+  // 旧版 https://hac1.dcloud.net.cn/ah5 已废弃，配置迁移至 v2（与 Vue3 H5 插屏一致）
+  URL: 'https://hac1.dcloud.net.cn/ah5v2',
   KEY: 'uni_app_ad_config',
   CACHE_TIME: 1000 * 60 * 10,
   ERROR_INVALID_ADPID: {
@@ -291,6 +314,7 @@ Object.assign(AdConfig.prototype, {
 })
 
 class AdScript {
+  /** @returns {AdScript} 脚本加载器单例 */
   static get instance () {
     if (this._instance == null) {
       this._instance = new AdScript()
@@ -304,6 +328,10 @@ class AdScript {
     this._cache = {}
   }
 
+  /**
+   * 按渠道加载广告 SDK script，已缓存则同步 success
+   * @param {string} provider 渠道标识（如优量汇为 '2'）
+   */
   load (provider, script, success, fail) {
     if (this._cache[provider] === undefined) {
       this.loadScript(provider, script)
@@ -322,6 +350,7 @@ class AdScript {
     }
   }
 
+  /** 向 document 插入 script 节点并处理 onload/onerror 队列 */
   loadScript (provider, script) {
     this._cache[provider] = 0
     const domid = 'uniad_provider' + provider
