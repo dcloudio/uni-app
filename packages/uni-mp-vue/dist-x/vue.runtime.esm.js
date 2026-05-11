@@ -5693,11 +5693,12 @@ class UniAnimation {
         toRaw(this.scope).setData({
             ['$eA.' + this.id]: JSON.stringify({
                 id: this.id,
-                playState: 'cancel',
+                playState: 'idle',
                 keyframes: this.parsedKeyframes,
                 options: this.options,
             }),
         });
+        this._playState = 'idle';
     }
     finish() {
         throw new Error('finish not implemented.');
@@ -5714,6 +5715,7 @@ class UniAnimation {
                 options: this.options,
             }),
         });
+        this._playState = 'running';
     }
 }
 function handleDirection(keyframes, direction) {
