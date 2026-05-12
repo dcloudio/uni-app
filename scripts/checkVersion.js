@@ -1,6 +1,103 @@
 const path = require('path')
+const fs = require('fs')
 const execa = require('execa')
 const { resolvePackages } = require('./utils')
+
+const workspaceConfigPath = path.resolve(__dirname, '../pnpm-workspace.yaml')
+
+function parseYamlString(value) {
+  value = value.trim()
+  if (
+    (value.startsWith("'") && value.endsWith("'")) ||
+    (value.startsWith('"') && value.endsWith('"'))
+  ) {
+    return value.slice(1, -1)
+  }
+  return value
+}
+
+function parseYamlPair(line) {
+  const match = line.match(/^((?:'[^']+'|"[^"]+"|[^:]+)):\s*(.*)$/)
+  if (!match) {
+    return
+  }
+  return [parseYamlString(match[1]), parseYamlString(match[2])]
+}
+
+function loadCatalogs(filename) {
+  const catalogs = {
+    default: Object.create(null),
+  }
+  if (!fs.existsSync(filename)) {
+    return catalogs
+  }
+
+  let section = ''
+  let catalogName = ''
+  fs.readFileSync(filename, 'utf8')
+    .split(/\r?\n/)
+    .forEach((line) => {
+      if (!line.trim() || line.trimStart().startsWith('#')) {
+        return
+      }
+
+      const indent = line.match(/^\s*/)[0].length
+      const trimmed = line.trim()
+
+      if (indent === 0) {
+        section = ''
+        catalogName = ''
+        if (trimmed === 'catalog:') {
+          section = 'catalog'
+          catalogName = 'default'
+        } else if (trimmed === 'catalogs:') {
+          section = 'catalogs'
+        }
+        return
+      }
+
+      if (section === 'catalog' && indent === 2) {
+        const pair = parseYamlPair(trimmed)
+        if (pair) {
+          catalogs.default[pair[0]] = pair[1]
+        }
+      } else if (section === 'catalogs') {
+        if (indent === 2 && trimmed.endsWith(':')) {
+          catalogName = parseYamlString(trimmed.slice(0, -1))
+          catalogs[catalogName] = catalogs[catalogName] || Object.create(null)
+        } else if (indent === 4 && catalogName) {
+          const pair = parseYamlPair(trimmed)
+          if (pair) {
+            catalogs[catalogName][pair[0]] = pair[1]
+          }
+        }
+      }
+    })
+
+  return catalogs
+}
+
+const catalogs = loadCatalogs(workspaceConfigPath)
+
+function resolveCatalogVersion(name, version) {
+  if (typeof version !== 'string' || !version.startsWith('catalog:')) {
+    return version
+  }
+  const catalogName = version.slice('catalog:'.length) || 'default'
+  const catalog = catalogs[catalogName]
+  return (catalog && catalog[name]) || version
+}
+
+function resolvePackageVersion(name, fallback) {
+  const pkg = require('../package.json')
+  const version =
+    (pkg.dependencies && pkg.dependencies[name]) ||
+    (pkg.devDependencies && pkg.devDependencies[name]) ||
+    (pkg.peerDependencies && pkg.peerDependencies[name]) ||
+    (catalogs.default && catalogs.default[name]) ||
+    fallback
+  return resolveCatalogVersion(name, version)
+}
 
 async function getVersion(name, tag = 'latest') {
   return (
@@ -54,15 +151,16 @@ async function checkVersions() {
   for (const name of Object.keys(pkgs)) {
     for (const tag of Object.keys(pkgs[name])) {
       const oldVersion = pkgs[name][tag]
+      const currentVersion = resolvePackageVersion(name, oldVersion)
       const newVersion = await getVersion(name, tag)
-      if (oldVersion !== newVersion) {
+      if (currentVersion !== newVersion) {
         console.log(
           name +
             ':' +
             ' '.repeat(
-              80 - (name + ':' + oldVersion + ' => ' + newVersion).length
+              80 - (name + ':' + currentVersion + ' => ' + newVersion).length
             ) +
-            oldVersion +
+            currentVersion +
             ' => ' +
             newVersion
         )
@@ -91,7 +189,10 @@ function resolveDeps(owner, dependencies) {
     if (name.startsWith('@dcloudio')) {
       return
     }
-    ;(deps[name] || (deps[name] = {}))[owner] = dependencies[name]
+    ;(deps[name] || (deps[name] = {}))[owner] = resolveCatalogVersion(
+      name,
+      dependencies[name]
+    )
   })
 }
 function resolvePkgDeps(pkgPath) {
