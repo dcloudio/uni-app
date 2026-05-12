@@ -21,7 +21,7 @@ import { useCustomEvent } from '../../helpers/useEvent'
 import { UniElement } from '../../helpers/UniElement'
 import { pickerViewProps } from '../../components/pickerView'
 import type { GetPickerViewColumn, Props } from '../../components/pickerView'
-export { Props, GetPickerViewColumn }
+export type { Props, GetPickerViewColumn }
 export interface State {
   value: number[]
   height: number

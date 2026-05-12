@@ -5,7 +5,8 @@ import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
 import { labelProps, useProvideLabel } from '../../components/label'
 
-export { UniLabelCtx, uniLabelKey } from '../../components/label'
+export { uniLabelKey } from '../../components/label'
+export type { UniLabelCtx } from '../../components/label'
 
 export class UniLabelElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({

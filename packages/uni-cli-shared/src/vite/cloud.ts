@@ -154,7 +154,9 @@ export function uniEncryptUniModulesPlugin(): Plugin {
             type: 'asset',
             fileName: pkg,
             name: pkg,
+            names: [pkg],
             originalFileName: null,
+            originalFileNames: [],
             needsCodeReference: false,
             source: genUniModulesPackageJson(
               uniModuleId,

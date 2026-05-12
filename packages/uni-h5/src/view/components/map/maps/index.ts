@@ -9,7 +9,7 @@ import type { QQMaps } from './qq/types'
 import type { GoogleMaps } from './google/types'
 
 import { createCallout } from './Callout'
-export { CalloutOptions } from './Callout'
+export type { CalloutOptions } from './Callout'
 
 export type Callout = ReturnType<typeof createCallout>
 

@@ -173,6 +173,7 @@ export default defineConfig({
     lib: {
       name: 'uni-app-view',
       fileName: 'uni-app-view',
+      cssFileName: 'style',
       entry: path.resolve(__dirname, 'src/view/index.ts'),
       formats: ['umd'],
     },

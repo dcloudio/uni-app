@@ -2,7 +2,8 @@ import { defineComponent } from 'vue'
 import { useCurrentPageId } from '@dcloudio/uni-core'
 import { labelProps, useProvideLabel } from '../../components/label'
 
-export { UniLabelCtx, uniLabelKey } from '../../components/label'
+export { uniLabelKey } from '../../components/label'
+export type { UniLabelCtx } from '../../components/label'
 
 // type LabelTarget = HTMLElement & {
 //   attr: { dataUncType: string }

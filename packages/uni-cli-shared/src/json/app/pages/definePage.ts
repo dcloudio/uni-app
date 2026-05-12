@@ -58,7 +58,7 @@ export function defineNVuePageCode(pagesJson: Record<string, any>) {
     const pagePathWithExtname = normalizePagePath(page.path, 'app')
     if (pagePathWithExtname) {
       importNVuePagesCode.push(
-        `import('./${pagePathWithExtname}').then((res)=>{res()})`
+        `import('./${pagePathWithExtname}').then((res)=>res.default)`
       )
     }
   })

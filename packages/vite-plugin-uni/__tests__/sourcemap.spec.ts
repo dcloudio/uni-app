@@ -1,4 +1,4 @@
-import { shouldMoveSourceMapFromCache } from '../src'
+import { shouldMoveSourceMapFromCache } from '../src/sourcemap'
 
 describe('sourcemap', () => {
   const originalEnv = {

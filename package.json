@@ -118,6 +118,7 @@
   },
   "pnpm": {
     "overrides": {
+      "@types/node": "18.19.50",
       "postcss": "8.5.6"
     }
   },

@@ -16,9 +16,7 @@ import {
   initAutoImportOptions,
   isInHBuilderX,
   isNormalCompileTarget,
-  isUniAppXAndroidJsEngine,
   isUniAppXAndroidNative,
-  isUniAppXIOS,
   parseUniExtApisOnce,
   resolveSourceMapPath,
   rewriteExistsSyncHasRootFile,
@@ -46,7 +44,14 @@ import {
 } from './vue'
 import { initEnv } from './cli/utils'
 import { uniUVuePlugin } from './uvue/plugins'
-import path from 'path'
+import {
+  resolveSourceMapDirByCacheDir,
+  shouldMoveSourceMapFromCache,
+} from './sourcemap'
+export {
+  resolveSourceMapDirByCacheDir,
+  shouldMoveSourceMapFromCache,
+} from './sourcemap'
 
 export type ViteLegacyOptions = Parameters<typeof ViteLegacyPlugin>[0]
 
@@ -317,17 +322,4 @@ function createUVueAndroidPlugins(options: VitePluginUniResolvedOptions) {
   }
 
   return plugins
-}
-
-function resolveSourceMapDirByCacheDir() {
-  return path.resolve(process.env.UNI_APP_X_CACHE_DIR, 'sourcemap')
-}
-
-export function shouldMoveSourceMapFromCache() {
-  return (
-    process.env.UNI_APP_X === 'true' &&
-    process.env.UNI_APP_X_CACHE_DIR &&
-    process.env.NODE_ENV !== 'development' &&
-    (isUniAppXIOS() || isUniAppXAndroidJsEngine())
-  )
 }

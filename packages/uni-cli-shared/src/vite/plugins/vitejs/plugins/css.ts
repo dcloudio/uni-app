@@ -677,7 +677,7 @@ async function compileCSS(
   // 2. pre-processors: sass etc.
   if (isPreProcessor(lang)) {
     const preProcessor = preProcessors[lang]
-    let opts = (preprocessorOptions && preprocessorOptions[lang]) || {}
+    let opts: any = (preprocessorOptions && preprocessorOptions[lang]) || {}
     // support @import from node dependencies by default
     switch (lang) {
       case PreprocessLang.scss:
