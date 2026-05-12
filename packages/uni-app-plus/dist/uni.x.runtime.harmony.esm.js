@@ -1787,7 +1787,9 @@ var onThemeChange = function(themeMode) {
   var handlePage = () => {
     var pages2 = getAllPages();
     pages2.forEach((page) => {
-      var routeOptions = initRouteOptions(page.$basePage.path, "");
+      var basePage = getPage$BasePage(page);
+      var routeOptions = initRouteOptions(basePage.path, "");
+      routeOptions.meta.isQuit = basePage.meta.isQuit;
       var style = parsePageStyle(routeOptions);
       page.$page.setPageStyle(new UTSJSONObject(style));
     });
