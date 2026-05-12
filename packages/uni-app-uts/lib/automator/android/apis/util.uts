@@ -1,6 +1,8 @@
 /// <reference types="@dcloudio/uni-app-x/types/native-global" />
+// #ifndef VUE3-VAPOR
 // @ts-expect-error
 import type { IUniNativeDocument } from 'io.dcloud.uniapp.dom'
+// #endif
 
 
 function getPageId(page: UniPage): string {
