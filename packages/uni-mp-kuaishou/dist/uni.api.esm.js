@@ -1,7 +1,7 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
-import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
+import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n';
 import { injectHook } from 'vue';
-import { Emitter, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { Emitter, ON_ERROR, invokeCreateVueAppHook, onCreateVueApp } from '@dcloudio/uni-shared';
 
 function getLocaleLanguage() {
     let localeLanguage = '';
@@ -976,12 +976,7 @@ function addSafeAreaInsets(fromRes, toRes) {
 function getOSInfo(system, platform) {
     let osName = '';
     let osVersion = '';
-    if (platform &&
-        ("mp-kuaishou" === 'mp-baidu')) {
-        osName = platform;
-        osVersion = system;
-    }
-    else {
+    {
         osName = system.split(' ')[0] || platform;
         osVersion = system.split(' ')[1] || '';
     }

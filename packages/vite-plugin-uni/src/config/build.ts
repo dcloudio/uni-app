@@ -33,7 +33,7 @@ export function createBuild(
         : false,
     terserOptions:
       process.env.NODE_ENV !== 'production'
-        ? { compress: { drop_console: false } }
+        ? ({ compress: { drop_console: false } } as any)
         : undefined,
     rollupOptions: {
       onwarn(warning, warn) {

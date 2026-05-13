@@ -109,10 +109,6 @@ export function createConfig(options: {
       sourcemapPathTransform = transformSourcemapPath
     }
     return {
-      legacy: {
-        // 目前先使用旧模式
-        proxySsrExternalModules: true,
-      },
       css: {
         postcss: {
           plugins: initPostcssPlugin({
@@ -121,7 +117,9 @@ export function createConfig(options: {
         },
       },
       optimizeDeps: {
-        entries: resolveMainPathOnce(inputDir),
+        // Vite 7 treats optimizeDeps.entries as glob patterns. Escape the
+        // resolved main path so project paths with glob chars remain literal.
+        entries: escapeOptimizeDepsEntry(resolveMainPathOnce(inputDir)),
         exclude: external,
         esbuildOptions: {
           plugins: [esbuildPrePlugin()],
@@ -242,4 +240,8 @@ function transformSourcemapPath(
     return ''
   }
   return sourcePath
+}
+
+function escapeOptimizeDepsEntry(filename: string) {
+  return normalizePath(filename).replace(/([*?[\]{}()!+@])/g, '\\$1')
 }

@@ -1,6 +1,6 @@
-import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray as isArray$1, toRawType, hasOwn, isMap, makeMap, hyphenate, capitalize, isPromise, isString, camelize, EMPTY_OBJ, remove, toHandlerKey, getGlobalThis, isOn, toNumber, isSet, isPlainObject, invokeArrayFns, isRegExp, EMPTY_ARR, isModelListener, isReservedProp, parseStringStyle, normalizeStyle as normalizeStyle$1, looseToNumber, isGloballyAllowed, NO } from '@vue/shared';
+import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray as isArray$1, toRawType, hasOwn, isMap, makeMap, hyphenate, capitalize, EMPTY_OBJ, toNumber, isPromise, isString, isOn, isModelListener, toHandlerKey, EMPTY_ARR, camelize, isRegExp, getGlobalThis, looseToNumber, invokeArrayFns, isSet, isPlainObject, remove, isReservedProp, NO, isGloballyAllowed, parseStringStyle, normalizeStyle as normalizeStyle$1 } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
-import { isIntegerKey, isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle, forcePatchProp, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_LAST_PAGE_BACK_PRESS, ON_EXIT, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE } from '@dcloudio/uni-shared';
+import { isIntegerKey, normalizeClass, normalizeStyle, isRootHook, isRootImmediateHook, ON_LOAD, forcePatchProp, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_LAST_PAGE_BACK_PRESS, ON_EXIT, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
 var activeEffectScope;
 class EffectScope {
@@ -4085,8 +4085,8 @@ function injectToKeepAliveRoot(hook, type, target, keepAliveRoot) {
   }, target);
 }
 function resetShapeFlag(vnode) {
-  vnode.shapeFlag &= ~256;
-  vnode.shapeFlag &= ~512;
+  vnode.shapeFlag &= -257;
+  vnode.shapeFlag &= -513;
 }
 function getInnerChild(vnode) {
   return vnode.shapeFlag & 128 ? vnode.ssContent : vnode;
@@ -8774,7 +8774,7 @@ function patchEvent(el, rawName, prevValue, nextValue) {
   if (nextValue && existingInvoker) {
     existingInvoker.value = nextValue;
   } else {
-    var [name, options] = parseName(rawName);
+    var [name] = parseName(rawName);
     if (nextValue) {
       var invoker = invokers[rawName] = createInvoker(nextValue, instance);
       addEventListener(el, name, invoker);

@@ -88,6 +88,13 @@ const rollupPlugins = [
 ]
 
 type X_RUNTIME_PLATFORM = 'app-harmony' | 'app-ios'
+const moduleBuildTarget = [
+  'es2020',
+  'edge88',
+  'firefox78',
+  'chrome87',
+  'safari14',
+]
 
 function createConfig(
   platform: X_RUNTIME_PLATFORM,
@@ -180,9 +187,12 @@ function createConfig(
     ],
     build: {
       emptyOutDir: false,
-      target: 'modules',
+      // Vite 7 no longer expands `modules` before passing the target to esbuild.
+      target: moduleBuildTarget,
       cssTarget,
-      minify: 'terser',
+      // Keep committed x runtime artifacts readable; Vite 7 now applies terser
+      // after expanding the previous `modules` target manually.
+      minify: false,
       cssCodeSplit: false,
       lib: {
         fileName: 'uni.x.runtime',

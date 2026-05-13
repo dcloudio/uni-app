@@ -1,15 +1,12 @@
 var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
-import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
+var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, getLen, getCustomDataset, parseUrl, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, OFF_THEME_CHANGE, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, isInSSRComponentSetup, createCommentVNode, normalizeClass, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, toDisplayString } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
-import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
+import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 const realGlobal = getGlobal();
 realGlobal.UTS = UTS$1;
 realGlobal.UTSJSONObject = UTSJSONObject;
@@ -650,193 +647,201 @@ function useRem() {
 function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
 }
-var attrs = ["top", "left", "right", "bottom"];
-var inited$1;
-var elementComputedStyle = {};
-var support;
-function getSupport() {
-  if (!("CSS" in window) || typeof CSS.supports != "function") {
-    support = "";
-  } else if (CSS.supports("top: env(safe-area-inset-top)")) {
-    support = "env";
-  } else if (CSS.supports("top: constant(safe-area-inset-top)")) {
-    support = "constant";
-  } else {
-    support = "";
-  }
-  return support;
-}
-function init() {
-  support = typeof support === "string" ? support : getSupport();
-  if (!support) {
-    attrs.forEach(function(attr2) {
-      elementComputedStyle[attr2] = 0;
-    });
-    return;
-  }
-  function setStyle(el, style) {
-    var elStyle = el.style;
-    Object.keys(style).forEach(function(key) {
-      var val = style[key];
-      elStyle[key] = val;
-    });
-  }
-  var cbs = [];
-  function parentReady(callback) {
-    if (callback) {
-      cbs.push(callback);
+var out;
+var hasRequiredOut;
+function requireOut() {
+  if (hasRequiredOut) return out;
+  hasRequiredOut = 1;
+  var attrs = ["top", "left", "right", "bottom"];
+  var inited2;
+  var elementComputedStyle = {};
+  var support;
+  function getSupport() {
+    if (!("CSS" in window) || typeof CSS.supports != "function") {
+      support = "";
+    } else if (CSS.supports("top: env(safe-area-inset-top)")) {
+      support = "env";
+    } else if (CSS.supports("top: constant(safe-area-inset-top)")) {
+      support = "constant";
     } else {
-      cbs.forEach(function(cb) {
-        cb();
+      support = "";
+    }
+    return support;
+  }
+  function init() {
+    support = typeof support === "string" ? support : getSupport();
+    if (!support) {
+      attrs.forEach(function(attr2) {
+        elementComputedStyle[attr2] = 0;
+      });
+      return;
+    }
+    function setStyle(el, style) {
+      var elStyle = el.style;
+      Object.keys(style).forEach(function(key) {
+        var val = style[key];
+        elStyle[key] = val;
       });
     }
-  }
-  var passiveEvents = false;
-  try {
-    var opts = Object.defineProperty({}, "passive", {
-      get: function() {
-        passiveEvents = { passive: true };
+    var cbs = [];
+    function parentReady(callback) {
+      if (callback) {
+        cbs.push(callback);
+      } else {
+        cbs.forEach(function(cb) {
+          cb();
+        });
       }
-    });
-    window.addEventListener("test", null, opts);
-  } catch (e2) {
-  }
-  function addChild(parent, attr2) {
-    var a1 = document.createElement("div");
-    var a2 = document.createElement("div");
-    var a1Children = document.createElement("div");
-    var a2Children = document.createElement("div");
-    var W = 100;
-    var MAX = 1e4;
-    var aStyle = {
-      position: "absolute",
-      width: W + "px",
-      height: "200px",
-      boxSizing: "border-box",
-      overflow: "hidden",
-      paddingBottom: support + "(safe-area-inset-" + attr2 + ")"
-    };
-    setStyle(a1, aStyle);
-    setStyle(a2, aStyle);
-    setStyle(a1Children, {
-      transition: "0s",
-      animation: "none",
-      width: "400px",
-      height: "400px"
-    });
-    setStyle(a2Children, {
-      transition: "0s",
-      animation: "none",
-      width: "250%",
-      height: "250%"
-    });
-    a1.appendChild(a1Children);
-    a2.appendChild(a2Children);
-    parent.appendChild(a1);
-    parent.appendChild(a2);
-    parentReady(function() {
-      a1.scrollTop = a2.scrollTop = MAX;
-      var a1LastScrollTop = a1.scrollTop;
-      var a2LastScrollTop = a2.scrollTop;
-      function onScroll() {
-        if (this.scrollTop === (this === a1 ? a1LastScrollTop : a2LastScrollTop)) {
-          return;
+    }
+    var passiveEvents = false;
+    try {
+      var opts = Object.defineProperty({}, "passive", {
+        get: function() {
+          passiveEvents = { passive: true };
         }
+      });
+      window.addEventListener("test", null, opts);
+    } catch (e2) {
+    }
+    function addChild(parent, attr2) {
+      var a1 = document.createElement("div");
+      var a2 = document.createElement("div");
+      var a1Children = document.createElement("div");
+      var a2Children = document.createElement("div");
+      var W = 100;
+      var MAX = 1e4;
+      var aStyle = {
+        position: "absolute",
+        width: W + "px",
+        height: "200px",
+        boxSizing: "border-box",
+        overflow: "hidden",
+        paddingBottom: support + "(safe-area-inset-" + attr2 + ")"
+      };
+      setStyle(a1, aStyle);
+      setStyle(a2, aStyle);
+      setStyle(a1Children, {
+        transition: "0s",
+        animation: "none",
+        width: "400px",
+        height: "400px"
+      });
+      setStyle(a2Children, {
+        transition: "0s",
+        animation: "none",
+        width: "250%",
+        height: "250%"
+      });
+      a1.appendChild(a1Children);
+      a2.appendChild(a2Children);
+      parent.appendChild(a1);
+      parent.appendChild(a2);
+      parentReady(function() {
         a1.scrollTop = a2.scrollTop = MAX;
-        a1LastScrollTop = a1.scrollTop;
-        a2LastScrollTop = a2.scrollTop;
-        attrChange(attr2);
-      }
-      a1.addEventListener("scroll", onScroll, passiveEvents);
-      a2.addEventListener("scroll", onScroll, passiveEvents);
-    });
-    var computedStyle = getComputedStyle(a1);
-    Object.defineProperty(elementComputedStyle, attr2, {
-      configurable: true,
-      get: function() {
-        return parseFloat(computedStyle.paddingBottom);
-      }
-    });
-  }
-  var parentDiv = document.createElement("div");
-  setStyle(parentDiv, {
-    position: "absolute",
-    left: "0",
-    top: "0",
-    width: "0",
-    height: "0",
-    zIndex: "-1",
-    overflow: "hidden",
-    visibility: "hidden"
-  });
-  attrs.forEach(function(key) {
-    addChild(parentDiv, key);
-  });
-  document.body.appendChild(parentDiv);
-  parentReady();
-  inited$1 = true;
-}
-function getAttr(attr2) {
-  if (!inited$1) {
-    init();
-  }
-  return elementComputedStyle[attr2];
-}
-var changeAttrs = [];
-function attrChange(attr2) {
-  if (!changeAttrs.length) {
-    setTimeout(function() {
-      var style = {};
-      changeAttrs.forEach(function(attr3) {
-        style[attr3] = elementComputedStyle[attr3];
+        var a1LastScrollTop = a1.scrollTop;
+        var a2LastScrollTop = a2.scrollTop;
+        function onScroll() {
+          if (this.scrollTop === (this === a1 ? a1LastScrollTop : a2LastScrollTop)) {
+            return;
+          }
+          a1.scrollTop = a2.scrollTop = MAX;
+          a1LastScrollTop = a1.scrollTop;
+          a2LastScrollTop = a2.scrollTop;
+          attrChange(attr2);
+        }
+        a1.addEventListener("scroll", onScroll, passiveEvents);
+        a2.addEventListener("scroll", onScroll, passiveEvents);
       });
-      changeAttrs.length = 0;
-      callbacks.forEach(function(callback) {
-        callback(style);
+      var computedStyle = getComputedStyle(a1);
+      Object.defineProperty(elementComputedStyle, attr2, {
+        configurable: true,
+        get: function() {
+          return parseFloat(computedStyle.paddingBottom);
+        }
       });
-    }, 0);
+    }
+    var parentDiv = document.createElement("div");
+    setStyle(parentDiv, {
+      position: "absolute",
+      left: "0",
+      top: "0",
+      width: "0",
+      height: "0",
+      zIndex: "-1",
+      overflow: "hidden",
+      visibility: "hidden"
+    });
+    attrs.forEach(function(key) {
+      addChild(parentDiv, key);
+    });
+    document.body.appendChild(parentDiv);
+    parentReady();
+    inited2 = true;
   }
-  changeAttrs.push(attr2);
+  function getAttr(attr2) {
+    if (!inited2) {
+      init();
+    }
+    return elementComputedStyle[attr2];
+  }
+  var changeAttrs = [];
+  function attrChange(attr2) {
+    if (!changeAttrs.length) {
+      setTimeout(function() {
+        var style = {};
+        changeAttrs.forEach(function(attr3) {
+          style[attr3] = elementComputedStyle[attr3];
+        });
+        changeAttrs.length = 0;
+        callbacks.forEach(function(callback) {
+          callback(style);
+        });
+      }, 0);
+    }
+    changeAttrs.push(attr2);
+  }
+  var callbacks = [];
+  function onChange(callback) {
+    if (!getSupport()) {
+      return;
+    }
+    if (!inited2) {
+      init();
+    }
+    if (typeof callback === "function") {
+      callbacks.push(callback);
+    }
+  }
+  function offChange(callback) {
+    var index2 = callbacks.indexOf(callback);
+    if (index2 >= 0) {
+      callbacks.splice(index2, 1);
+    }
+  }
+  var safeAreaInsets2 = {
+    get support() {
+      return (typeof support === "string" ? support : getSupport()).length != 0;
+    },
+    get top() {
+      return getAttr("top");
+    },
+    get left() {
+      return getAttr("left");
+    },
+    get right() {
+      return getAttr("right");
+    },
+    get bottom() {
+      return getAttr("bottom");
+    },
+    onChange,
+    offChange
+  };
+  out = safeAreaInsets2;
+  return out;
 }
-var callbacks = [];
-function onChange(callback) {
-  if (!getSupport()) {
-    return;
-  }
-  if (!inited$1) {
-    init();
-  }
-  if (typeof callback === "function") {
-    callbacks.push(callback);
-  }
-}
-function offChange(callback) {
-  var index2 = callbacks.indexOf(callback);
-  if (index2 >= 0) {
-    callbacks.splice(index2, 1);
-  }
-}
-var safeAreaInsets = {
-  get support() {
-    return (typeof support === "string" ? support : getSupport()).length != 0;
-  },
-  get top() {
-    return getAttr("top");
-  },
-  get left() {
-    return getAttr("left");
-  },
-  get right() {
-    return getAttr("right");
-  },
-  get bottom() {
-    return getAttr("bottom");
-  },
-  onChange,
-  offChange
-};
-var out = safeAreaInsets;
-const safeAreaInsets$1 = /* @__PURE__ */ getDefaultExportFromCjs(out);
+var outExports = requireOut();
+const safeAreaInsets = /* @__PURE__ */ getDefaultExportFromCjs(outExports);
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ withModifiers(
@@ -850,7 +855,7 @@ function getWindowOffsetCssVar(style, name) {
 function getWindowTop() {
   const style = document.documentElement.style;
   const top = getWindowOffsetCssVar(style, "--window-top");
-  return top ? top + safeAreaInsets$1.top : 0;
+  return top ? top + safeAreaInsets.top : 0;
 }
 function getWindowOffset() {
   const style = document.documentElement.style;
@@ -861,9 +866,9 @@ function getWindowOffset() {
   const topWindowHeight = getWindowOffsetCssVar(style, "--top-window-height");
   return {
     top,
-    bottom: bottom ? bottom + safeAreaInsets$1.bottom : 0,
-    left: left ? left + safeAreaInsets$1.left : 0,
-    right: right ? right + safeAreaInsets$1.right : 0,
+    bottom: bottom ? bottom + safeAreaInsets.bottom : 0,
+    left: left ? left + safeAreaInsets.left : 0,
+    right: right ? right + safeAreaInsets.right : 0,
     topWindowHeight: topWindowHeight || 0
   };
 }
@@ -1154,8 +1159,7 @@ function createScrollListener({
       }
     }
     if (onReachBottom && reachBottomLocking) {
-      if (testReachBottom())
-        ;
+      if (testReachBottom()) ;
       else {
         testReachBottomTimer = setTimeout(testReachBottom, 300);
       }
@@ -1244,17 +1248,13 @@ function dialogPageTriggerParentShow(dialogPage, triggerParentHideDialogPageNum 
   );
 }
 function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle, triggerParentHideDialogPageNum = 0) {
-  if (!dialogPage.$triggerParentHide)
-    return;
+  if (!dialogPage.$triggerParentHide) return;
   const pages = getCurrentPages();
   const currentPage = pages[pages.length - 1];
-  if (!currentPage)
-    return;
+  if (!currentPage) return;
   const parentPage = dialogPage.getParentPage();
-  if (!parentPage)
-    return;
-  if (parentPage !== currentPage)
-    return;
+  if (!parentPage) return;
+  if (parentPage !== currentPage) return;
   const dialogPages = currentPage.getDialogPages();
   for (let i = 0; i < dialogPages.length; i++) {
     if (!!dialogPages[i].$triggerParentHide) {
@@ -1278,32 +1278,26 @@ function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle, triggerParentHi
   invokeHook(currentPage.vm, lifeCycle);
 }
 function getSystemDialogPages(parentPage) {
-  if (!parentPage)
-    return [];
+  if (!parentPage) return [];
   return parentPage.$getSystemDialogPages();
 }
 function dialogPageTriggerPrevDialogPageLifeCycle(parentPage, lifeCycle) {
-  if (!parentPage)
-    return;
+  if (!parentPage) return;
   const pages = getCurrentPages();
   const currentPage = pages[pages.length - 1];
-  if (!currentPage || parentPage !== currentPage)
-    return;
+  if (!currentPage || parentPage !== currentPage) return;
   let prevDialogPage = getLastDialogPage(currentPage);
   prevDialogPage && invokeHook(prevDialogPage.vm, lifeCycle);
 }
 function getLastDialogPage(parentPage) {
   var _a, _b, _c, _d;
-  if (!parentPage)
-    return null;
+  if (!parentPage) return null;
   const dialogPages = parentPage.getDialogPages();
   const systemDialogPages = getSystemDialogPages(parentPage);
   const lastSystemDialogPage = systemDialogPages[systemDialogPages.length - 1];
   const lastDialogPage = dialogPages[dialogPages.length - 1];
-  if (!lastDialogPage)
-    return lastSystemDialogPage;
-  if (!lastSystemDialogPage)
-    return lastDialogPage;
+  if (!lastDialogPage) return lastSystemDialogPage;
+  if (!lastSystemDialogPage) return lastDialogPage;
   const lastSystemDialogPageId = ((_b = (_a = lastSystemDialogPage.vm) == null ? void 0 : _a.$basePage) == null ? void 0 : _b.id) || Number.MAX_SAFE_INTEGER;
   const lastDialogPageId = ((_d = (_c = lastDialogPage.vm) == null ? void 0 : _c.$basePage) == null ? void 0 : _d.id) || Number.MAX_SAFE_INTEGER;
   return lastSystemDialogPageId > lastDialogPageId ? lastSystemDialogPage : lastDialogPage;
@@ -1341,8 +1335,7 @@ function getPageInstanceByChild(child) {
 const DIALOG_TAG = "dialog";
 const SYSTEM_DIALOG_TAG = "systemDialog";
 function isDialogPageInstance(vm) {
-  if (!vm)
-    return false;
+  if (!vm) return false;
   return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
 }
 function isNormalDialogPageInstance(vm) {
@@ -1976,7 +1969,7 @@ const animation = {
     startAnimation(this);
   }
 };
-const defineBuiltInComponent = (options) => {
+const defineBuiltInComponent = ((options) => {
   options.__reserved = true;
   const { props: props2, mixins } = options;
   if (!props2 || !props2.animation) {
@@ -1993,15 +1986,15 @@ const defineBuiltInComponent = (options) => {
     }
   }
   return defineSystemComponent(options);
-};
-const defineSystemComponent = (options) => {
+});
+const defineSystemComponent = ((options) => {
   options.__reserved = true;
   options.compatConfig = {
     MODE: 3
     // 标记为vue3
   };
   return defineComponent(options);
-};
+});
 const defineUnsupportedComponent = (name) => {
   return defineBuiltInComponent({
     name: capitalize(camelize(name)),
@@ -2220,7 +2213,7 @@ class UniElement extends HTMLElement {
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   rootElement: {
@@ -2290,7 +2283,7 @@ function useProvideLabel() {
 }
 class UniLabelElement extends UniElement {
 }
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   rootElement: {
@@ -2433,7 +2426,7 @@ const buttonProps = {
 };
 class UniButtonElement extends UniElement {
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -2449,6 +2442,9 @@ const index$s = /* @__PURE__ */ defineBuiltInComponent({
       hovering,
       binding
     } = useHover(props2);
+    const {
+      t: t2
+    } = /* @__PURE__ */ useI18n();
     const onClick = withWebEvent((e2, isLabelClick) => {
       if (props2.disabled) {
         return e2.stopImmediatePropagation();
@@ -2565,7 +2561,7 @@ const props$u = {
 };
 class UniCheckboxGroupElement extends UniElement {
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$u,
   emits: ["change"],
@@ -2676,7 +2672,7 @@ const props$t = {
 };
 class UniCheckboxElement extends UniElement {
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$t,
   rootElement: {
@@ -2702,15 +2698,11 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
       }
       const style = {};
       if (checked) {
-        if (props2.activeBorderColor)
-          style.borderColor = props2.activeBorderColor;
-        if (props2.activeBackgroundColor)
-          style.backgroundColor = props2.activeBackgroundColor;
+        if (props2.activeBorderColor) style.borderColor = props2.activeBorderColor;
+        if (props2.activeBackgroundColor) style.backgroundColor = props2.activeBackgroundColor;
       } else {
-        if (props2.borderColor)
-          style.borderColor = props2.borderColor;
-        if (props2.backgroundColor)
-          style.backgroundColor = props2.backgroundColor;
+        if (props2.borderColor) style.borderColor = props2.borderColor;
+        if (props2.backgroundColor) style.backgroundColor = props2.backgroundColor;
       }
       return style;
     }
@@ -2940,7 +2932,7 @@ function normalizePageMeta(pageMeta) {
       );
       const { type, style } = navigationBar;
       if (style !== "custom" && type !== "transparent") {
-        pullToRefresh.offset += NAVBAR_HEIGHT + safeAreaInsets$1.top;
+        pullToRefresh.offset += NAVBAR_HEIGHT + safeAreaInsets.top;
       }
       pageMeta.pullToRefresh = pullToRefresh;
     }
@@ -2981,13 +2973,13 @@ function getStateId() {
   return history.state && history.state.__id__ || 1;
 }
 var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-var lookup = /* @__PURE__ */ function() {
+var lookup = /* @__PURE__ */ (function() {
   const lookup2 = new Uint8Array(256);
   for (var i = 0; i < chars.length; i++) {
     lookup2[chars.charCodeAt(i)] = i;
   }
   return lookup2;
-}();
+})();
 function encode$1(arraybuffer) {
   var bytes = new Uint8Array(arraybuffer), i, len = bytes.length, base64 = "";
   for (i = 0; i < len; i += 3) {
@@ -3854,8 +3846,7 @@ const $once = /* @__PURE__ */ defineSyncApi(
 const $off = /* @__PURE__ */ defineSyncApi(
   API_OFF,
   (name, callback) => {
-    if (!isArray(name))
-      name = name ? [name] : [];
+    if (!isArray(name)) name = name ? [name] : [];
     name.forEach((n) => {
       eventBus.off(n, callback);
     });
@@ -4149,8 +4140,7 @@ function operateCanvas(canvasId, pageId, type, data, callback) {
     },
     pageId,
     (data2) => {
-      if (callback)
-        callback(data2);
+      if (callback) callback(data2);
     }
   );
 }
@@ -5127,13 +5117,13 @@ const innerAudioContextOffEventNames = [
   "offSeeking",
   "offSeeked"
 ];
-let index$p = 0;
+let index$q = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$p++);
+    const callbackId = String(index$q++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -5848,8 +5838,7 @@ const SetClipboardDataOptions = {
     initI18nSetClipboardDataMsgsOnce();
   },
   beforeSuccess(res, params) {
-    if (!params.showToast)
-      return;
+    if (!params.showToast) return;
     const { t: t2 } = useI18n();
     const title = t2("uni.setClipboardData.success");
     if (title) {
@@ -6033,8 +6022,7 @@ const ChooseImageOptions = {
       if (extension instanceof Array && extension.length === 0) {
         return "param extension should not be empty.";
       }
-      if (!extension)
-        params.extension = ["*"];
+      if (!extension) params.extension = ["*"];
     }
   }
 };
@@ -6057,8 +6045,7 @@ const ChooseVideoOptions = {
       if (extension instanceof Array && extension.length === 0) {
         return "param extension should not be empty.";
       }
-      if (!extension)
-        params.extension = ["*"];
+      if (!extension) params.extension = ["*"];
     }
   }
 };
@@ -6744,7 +6731,7 @@ const initIntersectionObserverPolyfill = function() {
       return null;
     }
   }
-  var document2 = function(startDoc) {
+  var document2 = (function(startDoc) {
     var doc = startDoc;
     var frame = getFrameElement(doc);
     while (frame) {
@@ -6752,7 +6739,7 @@ const initIntersectionObserverPolyfill = function() {
       frame = getFrameElement(doc);
     }
     return doc;
-  }(window.document);
+  })(window.document);
   var registry = [];
   var crossOriginUpdater = null;
   var crossOriginRect = null;
@@ -6862,8 +6849,7 @@ const initIntersectionObserverPolyfill = function() {
   };
   IntersectionObserver2.prototype._initThresholds = function(opt_threshold) {
     var threshold = opt_threshold || [0];
-    if (!Array.isArray(threshold))
-      threshold = [threshold];
+    if (!Array.isArray(threshold)) threshold = [threshold];
     return threshold.sort().filter(function(t2, i, a2) {
       if (typeof t2 != "number" || isNaN(t2) || t2 < 0 || t2 > 1) {
         throw new Error(
@@ -7019,16 +7005,14 @@ const initIntersectionObserverPolyfill = function() {
     }
   };
   IntersectionObserver2.prototype._computeTargetAndRootIntersection = function(target, targetRect, rootRect) {
-    if (window.getComputedStyle(target).display == "none")
-      return;
+    if (window.getComputedStyle(target).display == "none") return;
     var intersectionRect = targetRect;
     var parent = getParentNode(target);
     var atRoot = false;
     while (!atRoot && parent) {
       var parentRect = null;
       var parentComputedStyle = parent.nodeType == 1 ? window.getComputedStyle(parent) : {};
-      if (parentComputedStyle.display == "none")
-        return null;
+      if (parentComputedStyle.display == "none") return null;
       if (parent == this.root || parent.nodeType == /* DOCUMENT */
       9) {
         atRoot = true;
@@ -7065,8 +7049,7 @@ const initIntersectionObserverPolyfill = function() {
       if (parentRect) {
         intersectionRect = computeRectIntersection(parentRect, intersectionRect);
       }
-      if (!intersectionRect)
-        break;
+      if (!intersectionRect) break;
       parent = parent && getParentNode(parent);
     }
     return intersectionRect;
@@ -7107,8 +7090,7 @@ const initIntersectionObserverPolyfill = function() {
   IntersectionObserver2.prototype._hasCrossedThreshold = function(oldEntry, newEntry) {
     var oldRatio = oldEntry && oldEntry.isIntersecting ? oldEntry.intersectionRatio || 0 : -1;
     var newRatio = newEntry.isIntersecting ? newEntry.intersectionRatio || 0 : -1;
-    if (oldRatio === newRatio)
-      return;
+    if (oldRatio === newRatio) return;
     for (var i = 0; i < this.thresholds.length; i++) {
       var threshold = this.thresholds[i];
       if (threshold == oldRatio || threshold == newRatio || threshold < oldRatio !== threshold < newRatio) {
@@ -7130,8 +7112,7 @@ const initIntersectionObserverPolyfill = function() {
   };
   IntersectionObserver2.prototype._unregisterInstance = function() {
     var index2 = registry.indexOf(this);
-    if (index2 != -1)
-      registry.splice(index2, 1);
+    if (index2 != -1) registry.splice(index2, 1);
   };
   function now() {
     return window.performance && performance.now && performance.now();
@@ -7183,8 +7164,7 @@ const initIntersectionObserverPolyfill = function() {
       rect = el.getBoundingClientRect();
     } catch (err) {
     }
-    if (!rect)
-      return getEmptyRect();
+    if (!rect) return getEmptyRect();
     if (!(rect.width && rect.height)) {
       rect = {
         top: rect.top,
@@ -7237,8 +7217,7 @@ const initIntersectionObserverPolyfill = function() {
   function containsDeep(parent, child) {
     var node = child;
     while (node) {
-      if (node == parent)
-        return true;
+      if (node == parent) return true;
       node = getParentNode(node);
     }
     return false;
@@ -7280,8 +7259,7 @@ function rectifyIntersectionRatio(entrie) {
     boundingClientRect: { height: overAllHeight, width: overAllWidth },
     intersectionRect: { height: intersectionHeight, width: intersectionWidth }
   } = entrie;
-  if (intersectionRatio !== 0)
-    return intersectionRatio;
+  if (intersectionRatio !== 0) return intersectionRatio;
   return intersectionHeight === overAllHeight ? intersectionWidth / overAllWidth : intersectionHeight / overAllHeight;
 }
 function requestComponentObserver($el, options, callback) {
@@ -7577,10 +7555,10 @@ function getPageWrapperInfo(pageBody) {
 }
 const getSystemSafeAreaInsets = function() {
   return {
-    top: safeAreaInsets$1.top,
-    right: safeAreaInsets$1.right,
-    bottom: safeAreaInsets$1.bottom,
-    left: safeAreaInsets$1.left
+    top: safeAreaInsets.top,
+    right: safeAreaInsets.right,
+    bottom: safeAreaInsets.bottom,
+    left: safeAreaInsets.left
   };
 };
 function getSafeAreaInsets(pageBody) {
@@ -7631,7 +7609,7 @@ class UniPageImpl {
     this.$vm = vm;
   }
   get statusBarHeight() {
-    return safeAreaInsets$1.top;
+    return safeAreaInsets.top;
   }
   get width() {
     return this.pageBody.width;
@@ -7680,8 +7658,7 @@ class UniPageImpl {
   setPageStyle(style) {
     var _a;
     const pageMeta = (_a = this.vm) == null ? void 0 : _a.$basePage.meta;
-    if (!pageMeta)
-      return;
+    if (!pageMeta) return;
     for (const key in style) {
       switch (key) {
         case "navigationBarBackgroundColor":
@@ -8931,7 +8908,7 @@ function initApp$1(vm) {
   initService();
   initView();
 }
-function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, options }) {
+function wrapperComponentSetup(comp, { type, clone, init, setup, before, options }) {
   if (clone) {
     comp = extend({}, comp);
   }
@@ -8939,7 +8916,7 @@ function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, 
   const oldSetup = comp.setup;
   comp.setup = (props2, ctx) => {
     const instance2 = getCurrentInstance();
-    init2(instance2.proxy);
+    init(instance2.proxy);
     setup(instance2);
     if (oldSetup) {
       return oldSetup(props2, ctx);
@@ -9133,7 +9110,7 @@ function setupApp(comp) {
       comp2.mpType = "app";
       const { setup } = comp2;
       const render = () => {
-        return openBlock(), createBlock(LayoutComponent);
+        return openBlock(), createBlock(index$9);
       };
       comp2.setup = (props2, ctx) => {
         const res = setup && setup(props2, ctx);
@@ -9741,7 +9718,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "class": placeholderClass
   }, [createVNode("div", {
     "class": "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(__syscom_3$1, {
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(__syscom_3, {
     "disabled": true,
     "style": {
       color
@@ -9750,7 +9727,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "class": "uni-page-head-search-input",
     "confirm-type": "search",
     "onClick": onClick
-  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(__syscom_3$1, {
+  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(__syscom_3, {
     "focus": autoFocus,
     "style": {
       color
@@ -10394,8 +10371,7 @@ function assignDialogPage(ctx, parentInstance, currentInstance) {
   if (isSystemDialogPageInstance(ctx)) {
     parentDialogPages = parentInstance.$systemDialogPages.value;
   }
-  if (!parentDialogPages.length)
-    return;
+  if (!parentDialogPages.length) return;
   for (let i = 0; i < parentDialogPages.length; i++) {
     const dialogPage = parentDialogPages[i];
     if (!dialogPage.$assigned) {
@@ -10604,10 +10580,10 @@ function HTMLParser(html, handler) {
       stack.push(tagName);
     }
     if (handler.start) {
-      var attrs2 = [];
+      var attrs = [];
       rest.replace(attr, function(match2, name) {
         var value = arguments[2] ? arguments[2] : arguments[3] ? arguments[3] : arguments[4] ? arguments[4] : fillAttrs[name] ? name : "";
-        attrs2.push({
+        attrs.push({
           name,
           value,
           escaped: value.replace(/(^|[^\\])"/g, '$1\\"')
@@ -10615,7 +10591,7 @@ function HTMLParser(html, handler) {
         });
       });
       if (handler.start) {
-        handler.start(tagName, attrs2, unary);
+        handler.start(tagName, attrs, unary);
       }
     }
   }
@@ -10654,18 +10630,18 @@ function loadScript(globalName, src, callback) {
     callback();
     return;
   }
-  let callbacks2 = scripts[src];
-  if (!callbacks2) {
-    callbacks2 = scripts[src] = [];
+  let callbacks = scripts[src];
+  if (!callbacks) {
+    callbacks = scripts[src] = [];
     const script = document.createElement("script");
     script.src = src;
     document.body.appendChild(script);
     script.onload = function() {
-      callbacks2.forEach((callback2) => callback2());
+      callbacks.forEach((callback2) => callback2());
       delete scripts[src];
     };
   }
-  callbacks2.push(callback);
+  callbacks.push(callback);
 }
 function divider(Quill) {
   const BlockEmbed = Quill.import("blots/block/embed");
@@ -10723,8 +10699,7 @@ function list(Quill) {
       return node;
     }
     static formats(domNode) {
-      if (domNode.tagName === "OL")
-        return "ordered";
+      if (domNode.tagName === "OL") return "ordered";
       if (domNode.tagName === "UL") {
         if (domNode.hasAttribute("data-checked")) {
           return domNode.getAttribute("data-checked") === "true" ? "checked" : "unchecked";
@@ -10737,8 +10712,7 @@ function list(Quill) {
     constructor(domNode) {
       super(domNode);
       const listEventHandler = (e2) => {
-        if (e2.target.parentNode !== domNode)
-          return;
+        if (e2.target.parentNode !== domNode) return;
         const format = this.statics.formats(domNode);
         const blot = Parchment.find(e2.target);
         if (format === "checked") {
@@ -11079,13 +11053,13 @@ function useQuill(props2, rootRef, trigger) {
     let content = "";
     let disable;
     HTMLParser(html, {
-      start: function(tag, attrs2, unary) {
+      start: function(tag, attrs, unary) {
         if (!tags.includes(tag)) {
           disable = !unary;
           return;
         }
         disable = false;
-        const arrts = attrs2.map(({ name, value }) => `${name}="${value}"`).join(" ");
+        const arrts = attrs.map(({ name, value }) => `${name}="${value}"`).join(" ");
         const start = `<${tag} ${arrts} ${unary ? "/" : ""}>`;
         content += start;
       },
@@ -11140,8 +11114,7 @@ function useQuill(props2, rootRef, trigger) {
   function fixCursor() {
     var _a;
     const range = quill.getSelection();
-    if (!range)
-      return;
+    if (!range) return;
     const [leaf] = quill.getLeaf(range.index - 1);
     if (((_a = leaf == null ? void 0 : leaf.statics) == null ? void 0 : _a.blotName) === "mention") {
       quill.setSelection(range.index, 0, "silent");
@@ -11315,8 +11288,7 @@ function useQuill(props2, rootRef, trigger) {
             {
               range = quill.getSelection(true);
               const { text: text2 = "", href = "" } = options;
-              if (!href)
-                break;
+              if (!href) break;
               if (range.length > 0) {
                 quill.format("link", href, "user");
               } else {
@@ -11454,7 +11426,7 @@ const props$r = /* @__PURE__ */ extend({}, props$s, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$r,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -11526,7 +11498,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -11598,8 +11570,7 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
   watch(() => extend({}, size), (value) => emit2("resize", value));
   return () => {
     const rootEl = rootRef.value;
-    if (!rootEl)
-      return;
+    if (!rootEl) return;
     const rect = rootEl.getBoundingClientRect();
     size.width = rect.width;
     size.height = rect.height;
@@ -11672,7 +11643,7 @@ const IMAGE_MODES = {
 };
 class UniImageElement extends UniElement {
 }
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$q,
   rootElement: {
@@ -12292,8 +12263,7 @@ function useEvent(fieldRef, state2, props2, trigger, triggerInput, beforeInput) 
   }
   function initField() {
     const field = fieldRef.value;
-    if (!field)
-      return;
+    if (!field) return;
     const onFocus = function(event) {
       state2.focus = true;
       trigger("focus", event, {
@@ -12428,7 +12398,7 @@ class UniInputElement extends UniElement {
     (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
   }
 }
-const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$o,
   emits: ["confirm", ...emit],
@@ -12611,7 +12581,7 @@ const LISTENER_PREFIX = /^on[A-Z]+/;
 const useAttrs = (params = {}) => {
   const { excludeListeners = false, excludeKeys = [] } = params;
   const instance2 = getCurrentInstance();
-  const attrs2 = shallowRef({});
+  const attrs = shallowRef({});
   const listeners2 = shallowRef({});
   const excludeAttrs = shallowRef({});
   const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
@@ -12637,11 +12607,11 @@ const useAttrs = (params = {}) => {
         listeners: {}
       }
     );
-    attrs2.value = res.attrs;
+    attrs.value = res.attrs;
     listeners2.value = res.listeners;
     excludeAttrs.value = res.exclude;
   });
-  return { $attrs: attrs2, $listeners: listeners2, $excludeAttrs: excludeAttrs };
+  return { $attrs: attrs, $listeners: listeners2, $excludeAttrs: excludeAttrs };
 };
 function flatVNode(nodes) {
   const array = [];
@@ -14196,7 +14166,7 @@ function createNavigatorOnClick(props2) {
 }
 class UniNavigatorElement extends UniElement {
 }
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -15366,7 +15336,7 @@ const progressProps = {
 };
 class UniProgressElement extends UniElement {
 }
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   rootElement: {
@@ -15482,7 +15452,7 @@ const props$n = {
 };
 class UniRadioGroupElement extends UniElement {
 }
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$n,
   // emits: ['change'],
@@ -15651,10 +15621,8 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
         style.backgroundColor = props2.activeBackgroundColor || props2.color;
         style.borderColor = props2.activeBorderColor || style.backgroundColor;
       } else {
-        if (props2.borderColor)
-          style.borderColor = props2.borderColor;
-        if (props2.backgroundColor)
-          style.backgroundColor = props2.backgroundColor;
+        if (props2.borderColor) style.borderColor = props2.borderColor;
+        if (props2.backgroundColor) style.backgroundColor = props2.backgroundColor;
       }
       return style;
     }
@@ -15824,18 +15792,16 @@ function normalizeValue(tagName, name, value) {
   }
   return value;
 }
-function normalizeAttrs(tagName, attrs2) {
-  if (!isPlainObject(attrs2))
-    return;
+function normalizeAttrs(tagName, attrs) {
+  if (!isPlainObject(attrs)) return;
   const normalizedAttrs = {};
-  Object.keys(attrs2).forEach((name) => {
-    normalizedAttrs[name] = normalizeValue(tagName, name, attrs2[name]);
+  Object.keys(attrs).forEach((name) => {
+    normalizedAttrs[name] = normalizeValue(tagName, name, attrs[name]);
   });
   return normalizedAttrs;
 }
 const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
-  if (!nodeList || Array.isArray(nodeList) && !nodeList.length)
-    return [];
+  if (!nodeList || Array.isArray(nodeList) && !nodeList.length) return [];
   return nodeList.map((node) => {
     if (!isPlainObject(node)) {
       return;
@@ -15863,8 +15829,8 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
 function removeDOCTYPE(html) {
   return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
-function parseAttrs(attrs2) {
-  return attrs2.reduce(function(pre, attr2) {
+function parseAttrs(attrs) {
+  return attrs.reduce(function(pre, attr2) {
     let value = attr2.value;
     const name = attr2.name;
     if (value.match(/ /) && ["style", "src"].indexOf(name) === -1) {
@@ -15886,16 +15852,15 @@ function parseHtml(html) {
   html = removeDOCTYPE(html);
   const stacks = [];
   const results = {
-    node: "root",
     children: []
   };
   HTMLParser(html, {
-    start: function(tag, attrs2, unary) {
+    start: function(tag, attrs, unary) {
       const node = {
         name: tag
       };
-      if (attrs2.length !== 0) {
-        node.attrs = parseAttrs(attrs2);
+      if (attrs.length !== 0) {
+        node.attrs = parseAttrs(attrs);
       }
       if (unary) {
         const parent = stacks[0] || results;
@@ -15909,8 +15874,7 @@ function parseHtml(html) {
     },
     end: function(tag) {
       const node = stacks.shift();
-      if (node.name !== tag)
-        console.error("invalid state: mismatch end tag");
+      if (node.name !== tag) console.error("invalid state: mismatch end tag");
       if (stacks.length === 0) {
         results.children.push(node);
       } else {
@@ -15962,7 +15926,7 @@ const props$l = {
 };
 class UniRichTextElement extends UniElement {
 }
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -16104,7 +16068,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
         "style": {
           height: `${refresherThreshold}px`
         }
-      }, [slots.default && slots.default()]) : null], 4);
+      }, [slots.default && slots.default()], 4) : null], 4);
     };
   }
 });
@@ -16177,7 +16141,7 @@ const props$k = {
 };
 class UniScrollViewElement extends UniElement {
 }
-const __syscom_3 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_2$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -16358,8 +16322,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     let transform = "";
     scrollToValue < 0 ? scrollToValue = 0 : direction2 === "x" && scrollToValue > container.scrollWidth - container.offsetWidth ? scrollToValue = container.scrollWidth - container.offsetWidth : direction2 === "y" && scrollToValue > container.scrollHeight - container.offsetHeight && (scrollToValue = container.scrollHeight - container.offsetHeight);
     direction2 === "x" ? transformValue = container.scrollLeft - scrollToValue : direction2 === "y" && (transformValue = container.scrollTop - scrollToValue);
-    if (transformValue === 0)
-      return;
+    if (transformValue === 0) return;
     let _content = content.value;
     _content.style.transition = "transform .3s ease-out";
     _content.style.webkitTransition = "-webkit-transform .3s ease-out";
@@ -16494,8 +16457,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     content.value.removeEventListener("webkitTransitionEnd", __transitionEnd);
   }
   function _setRefreshState(_state) {
-    if (!props2.refresherEnabled)
-      return;
+    if (!props2.refresherEnabled) return;
     switch (_state) {
       case "refreshing":
         state2.refresherHeight = props2.refresherThreshold;
@@ -16536,7 +16498,6 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     y: 0
   };
   let touchEnd = {
-    x: 0,
     y: props2.refresherThreshold
   };
   onMounted(() => {
@@ -16552,8 +16513,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     };
     let needStop = null;
     let __handleTouchMove = function(event) {
-      if (touchStart === null)
-        return;
+      if (touchStart === null) return;
       let x = event.touches[0].pageX;
       let y = event.touches[0].pageY;
       let _main = main.value;
@@ -16574,8 +16534,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         if (realScrollY.value) {
           if (_main.scrollTop === 0 && y > touchStart.y) {
             needStop = false;
-            if (props2.refresherEnabled && event.cancelable !== false)
-              event.preventDefault();
+            if (props2.refresherEnabled && event.cancelable !== false) event.preventDefault();
           } else if (_main.scrollHeight === _main.offsetHeight + _main.scrollTop && y < touchStart.y) {
             needStop = false;
             return;
@@ -17578,8 +17537,7 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
   });
   function navigationHover(event, type) {
     const target = event.currentTarget;
-    if (!target)
-      return;
+    if (!target) return;
     target.style.backgroundColor = type === "over" ? props2.navigationActiveColor : "";
   }
   const navigationAttr = {
@@ -17588,8 +17546,7 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
   };
   function navigationClick($event, type, disabled) {
     $event.stopPropagation();
-    if (disabled)
-      return;
+    if (disabled) return;
     const swiperItemLength = swiperContext.value.length;
     let _current = state2.current;
     switch (type) {
@@ -17943,7 +17900,7 @@ function parseTextIgnoreLinefeed(text2, options) {
 }
 class UniTextElement extends UniElement {
 }
-const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_1$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   rootElement: {
     name: "uni-text",
@@ -17983,8 +17940,7 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
             })];
             const len = lines.length - 1;
             lines.forEach((line, index2) => {
-              if (index2 === 0 && !line)
-                ;
+              if (index2 === 0 && !line) ;
               else {
                 children.push(createTextVNode(line));
               }
@@ -18036,7 +17992,7 @@ class UniTextareaElement extends UniElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
-const __syscom_2$1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$f,
   emits: ["confirm", "change", "linechange", ...emit],
@@ -18092,7 +18048,7 @@ const __syscom_2$1 = /* @__PURE__ */ defineBuiltInComponent({
     }) {
       heightRef.value = height;
     }
-    function onChange2(event) {
+    function onChange(event) {
       {
         trigger("change", event, {
           value: state2.value
@@ -18185,7 +18141,7 @@ const __syscom_2$1 = /* @__PURE__ */ defineBuiltInComponent({
         },
         "onKeydown": onKeyDownEnter,
         "onKeyup": onKeyUpEnter,
-        "onChange": onChange2
+        "onChange": onChange
       }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup", "onChange"]);
       return createVNode("uni-textarea", {
         "ref": rootRef,
@@ -18346,7 +18302,7 @@ const props$e = {
 };
 class UniListViewElement extends UniElement {
 }
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
   props: props$e,
   emits: [
@@ -18621,7 +18577,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, createVNode("div", {
         "class": "uni-list-view-content",
         "style": contentStyle.value
-      }, [visibleVNode], 4)], 4), createVNode(ResizeSensor, {
+      }, [visibleVNode], 4)], 6), createVNode(ResizeSensor, {
         "onResize": onResize2
       }, null, 8, ["onResize"])], 512);
     };
@@ -18785,12 +18741,10 @@ function handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emi
     y: 0
   };
   let touchEnd = {
-    x: 0,
     y: props2.refresherThreshold
   };
   function _setRefreshState(_state) {
-    if (!props2.refresherEnabled)
-      return;
+    if (!props2.refresherEnabled) return;
     switch (_state) {
       case "refreshing":
         state2.refresherHeight = props2.refresherThreshold;
@@ -18843,8 +18797,7 @@ function handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emi
   }
   function __handleTouchMove(event) {
     const containerEl = containerRef.value;
-    if (touchStart === null)
-      return;
+    if (touchStart === null) return;
     let x = event.touches[0].pageX;
     let y = event.touches[0].pageY;
     if (!isVertical.value) {
@@ -18855,8 +18808,7 @@ function handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emi
       needStop = false;
     } else if (containerEl.scrollTop === 0 && y > touchStart.y) {
       needStop = false;
-      if (props2.refresherEnabled && event.cancelable !== false)
-        event.preventDefault();
+      if (props2.refresherEnabled && event.cancelable !== false) event.preventDefault();
     } else if (containerEl.scrollHeight === containerEl.offsetHeight + containerEl.scrollTop && y < touchStart.y) {
       needStop = false;
       return;
@@ -18936,7 +18888,7 @@ function getSize(isVertical, el) {
 }
 class UniListItemElement extends UniElement {
 }
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
+const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListItem",
   props: {},
   rootElement: {
@@ -18946,9 +18898,9 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots,
     expose,
-    attrs: attrs2
+    attrs
   }) {
-    if (attrs2.slot === "refresher") {
+    if (attrs.slot === "refresher") {
       return () => {
         return createVNode("uni-list-item", null, [slots.default && slots.default()]);
       };
@@ -18999,7 +18951,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniStickySectionElement extends UniElement {
 }
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
+const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickySection",
   props: {
     padding: {
@@ -19061,7 +19013,7 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniStickyHeaderElement extends UniElement {
 }
-const index$e = /* @__PURE__ */ defineBuiltInComponent({
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickyHeader",
   props: {
     padding: {
@@ -19466,8 +19418,7 @@ function useLoadingStyle(targetElement, bold) {
   };
   const setupObserver = (cb) => {
     const el = targetElement.value;
-    if (!el)
-      return;
+    if (!el) return;
     observer = new ResizeObserver((entries2) => {
       cb(el);
     });
@@ -19602,13 +19553,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$d = 0;
+let index$e = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$d++}`;
+  const id2 = vm.id || `context${index$e++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -19652,8 +19603,7 @@ function initHooks(options, instance2, publicThis) {
       if (true) {
         query = new UTSJSONObject(decodedQuery(query));
       }
-      if (false)
-        ;
+      if (false) ;
       invokeHook(publicThis, ON_LOAD, query);
       if (!instance2.vapor) {
         delete instance2.attrs.__pageQuery;
@@ -20057,7 +20007,7 @@ function initHistory() {
   });
   return history2;
 }
-const index$c = {
+const index$d = {
   install(app) {
     initApp(app);
     initViewPlugin(app);
@@ -20118,16 +20068,14 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
   };
   let changeToastThinTimer = null;
   const changeToastThin = () => {
-    if (state2.gestureType !== "none" && changeToastThinTimer != null)
-      return;
+    if (state2.gestureType !== "none" && changeToastThinTimer != null) return;
     changeToastThinTimer = setTimeout(() => {
       state2.toastThin = true;
     }, 500);
   };
   let showToastTimer = void 0;
   function changeShowToast() {
-    if (showToastTimer != void 0)
-      return;
+    if (showToastTimer != void 0) return;
     showToastTimer = setTimeout(() => {
       state2.toastThin = false;
       showToastTimer = void 0;
@@ -20308,7 +20256,7 @@ function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef
     exitFullScreen
   };
 }
-function useVideo(props2, attrs2, trigger) {
+function useVideo(props2, attrs, trigger) {
   const videoRef = ref(null);
   const src = computed(() => getRealPath(props2.src));
   const muted = computed(() => props2.muted === "true" || props2.muted === true);
@@ -20794,7 +20742,7 @@ const props$d = {
 };
 class UniVideoElement extends UniElement {
 }
-const index$b = /* @__PURE__ */ defineBuiltInComponent({
+const index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: props$d,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
@@ -20804,7 +20752,7 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
   },
   setup(props2, {
     emit: emit2,
-    attrs: attrs2,
+    attrs,
     slots
   }) {
     const rootRef = ref(null);
@@ -20837,7 +20785,7 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
       onPause,
       onEnded,
       onTimeUpdate
-    } = useVideo(props2, attrs2, trigger);
+    } = useVideo(props2, attrs, trigger);
     const {
       state: danmuState,
       danmuRef,
@@ -20864,9 +20812,7 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
       progressRef,
       ballRef,
       clickProgress,
-      toggleControls,
-      autoHideEnd,
-      autoHideStart
+      toggleControls
     } = useControls(props2, videoState, seek, (currentTimeNew) => {
       gestureState.currentTimeNew = currentTimeNew;
     });
@@ -21025,7 +20971,7 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
         "style": {
           width: `${gestureState.volumeNew * 100}%`
         }
-      }, null)], 2) : null]), createVNode("div", {
+      }, null, 4)], 2) : null]), createVNode("div", {
         "class": {
           "uni-video-toast": true,
           "uni-video-toast-progress": progressing.value
@@ -21041,8 +20987,7 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const onWebInvokeAppService = ({ name, arg }) => {
-  if (name === "postMessage")
-    ;
+  if (name === "postMessage") ;
   else {
     switch (name) {
       case "navigateTo":
@@ -21134,11 +21079,11 @@ const indexX = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-let index$a = 0;
+let index$b = 0;
 function getJSONP(url, options, success, error) {
   var js = document.createElement("script");
   var callbackKey = options.callback || "callback";
-  var callbackName = "__uni_jsonp_callback_" + index$a++;
+  var callbackName = "__uni_jsonp_callback_" + index$b++;
   var timeout = options.timeout || 3e4;
   var timing;
   function end() {
@@ -21351,25 +21296,25 @@ function loadMaps(libraries, callback) {
     console.error("Map key not configured.");
     return;
   }
-  const callbacks2 = callbacksMap[mapInfo.type] = callbacksMap[mapInfo.type] || [];
+  const callbacks = callbacksMap[mapInfo.type] = callbacksMap[mapInfo.type] || [];
   if (maps) {
     callback(maps);
   } else if (window[mapInfo.type] && window[mapInfo.type].maps) {
     maps = getIsAMap() || getIsBMap() ? window[mapInfo.type] : window[mapInfo.type].maps;
     maps.Callout = maps.Callout || createCallout(maps);
     callback(maps);
-  } else if (callbacks2.length) {
-    callbacks2.push(callback);
+  } else if (callbacks.length) {
+    callbacks.push(callback);
   } else {
-    callbacks2.push(callback);
+    callbacks.push(callback);
     const globalExt = window;
     const callbackName = GOOGLE_MAP_CALLBACKNAME + mapInfo.type;
     globalExt[callbackName] = function() {
       delete globalExt[callbackName];
       maps = getIsAMap() || getIsBMap() ? window[mapInfo.type] : window[mapInfo.type].maps;
       maps.Callout = createCallout(maps);
-      callbacks2.forEach((callback2) => callback2(maps));
-      callbacks2.length = 0;
+      callbacks.forEach((callback2) => callback2(maps));
+      callbacks.length = 0;
     };
     if (getIsAMap()) {
       handleAMapSecurityPolicy(mapInfo);
@@ -21847,8 +21792,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
         }
         updateMarker(props3);
         const MapsEvent = maps2.event || maps2.Event;
-        if (getIsBMap())
-          ;
+        if (getIsBMap()) ;
         else {
           MapsEvent.addListener(marker, "click", () => {
             const callout = marker.callout;
@@ -22441,14 +22385,14 @@ const getWindowInfo = /* @__PURE__ */ defineSyncApi(
     const screenHeight = getScreenHeight(screenFix, landscape);
     const windowWidth = getWindowWidth();
     let windowHeight = window.innerHeight;
-    const statusBarHeight = safeAreaInsets$1.top;
+    const statusBarHeight = safeAreaInsets.top;
     const safeArea = {
-      left: safeAreaInsets$1.left,
-      right: windowWidth - safeAreaInsets$1.right,
-      top: safeAreaInsets$1.top,
-      bottom: windowHeight - safeAreaInsets$1.bottom,
-      width: windowWidth - safeAreaInsets$1.left - safeAreaInsets$1.right,
-      height: windowHeight - safeAreaInsets$1.top - safeAreaInsets$1.bottom
+      left: safeAreaInsets.left,
+      right: windowWidth - safeAreaInsets.right,
+      top: safeAreaInsets.top,
+      bottom: windowHeight - safeAreaInsets.bottom,
+      width: windowWidth - safeAreaInsets.left - safeAreaInsets.right,
+      height: windowHeight - safeAreaInsets.top - safeAreaInsets.bottom
     };
     const { top: windowTop, bottom: windowBottom } = getWindowOffset();
     windowHeight -= windowTop;
@@ -22464,10 +22408,10 @@ const getWindowInfo = /* @__PURE__ */ defineSyncApi(
       statusBarHeight,
       safeArea,
       safeAreaInsets: {
-        top: safeAreaInsets$1.top,
-        right: safeAreaInsets$1.right,
-        bottom: safeAreaInsets$1.bottom,
-        left: safeAreaInsets$1.left
+        top: safeAreaInsets.top,
+        right: safeAreaInsets.right,
+        bottom: safeAreaInsets.bottom,
+        left: safeAreaInsets.left
       },
       screenTop: screenHeight - windowHeight
     };
@@ -22476,8 +22420,7 @@ const getWindowInfo = /* @__PURE__ */ defineSyncApi(
 let browserInfo;
 let _initBrowserInfo = true;
 function initBrowserInfo() {
-  if (!_initBrowserInfo)
-    return;
+  if (!_initBrowserInfo) return;
   browserInfo = getBrowserInfo();
 }
 const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
@@ -22581,8 +22524,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi(
     );
     delete systemInfo.screenTop;
     delete systemInfo.enableDebug;
-    if (!__uniConfig.darkmode)
-      delete systemInfo.theme;
+    if (!__uniConfig.darkmode) delete systemInfo.theme;
     return systemInfo;
   }
 );
@@ -22805,7 +22747,7 @@ var __async$1 = (__this, __arguments, generator) => {
 };
 const getClipboardData = /* @__PURE__ */ defineAsyncApi(
   API_GET_CLIPBOARD_DATA,
-  (_0, _1) => __async$1(void 0, [_0, _1], function* (_, { resolve, reject }) {
+  (_0, _1) => __async$1(null, [_0, _1], function* (_, { resolve, reject }) {
     initI18nGetClipboardDataMsgsOnce();
     const { t: t2 } = useI18n();
     try {
@@ -22820,7 +22762,7 @@ const getClipboardData = /* @__PURE__ */ defineAsyncApi(
 );
 const setClipboardData = /* @__PURE__ */ defineAsyncApi(
   API_SET_CLIPBOARD_DATA,
-  (_0, _1) => __async$1(void 0, [_0, _1], function* ({ data }, { resolve, reject }) {
+  (_0, _1) => __async$1(null, [_0, _1], function* ({ data }, { resolve, reject }) {
     try {
       yield navigator.clipboard.writeText(data);
       resolve();
@@ -23284,8 +23226,7 @@ const chooseFile = /* @__PURE__ */ defineAsyncApi(
               return filePath;
             }
           });
-          if (i < count)
-            tempFiles.push(file);
+          if (i < count) tempFiles.push(file);
         }
       }
       const res = {
@@ -23343,8 +23284,7 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(
               return filePath;
             }
           });
-          if (i < count)
-            tempFiles.push(file);
+          if (i < count) tempFiles.push(file);
         }
       }
       const res = {
@@ -23363,13 +23303,13 @@ const chooseImage = /* @__PURE__ */ defineAsyncApi(
   ChooseImageProtocol,
   ChooseImageOptions
 );
-let index$9 = 0;
+let index$a = 0;
 let overflow = "";
 function preventScroll(prevent) {
-  let before = index$9;
-  index$9 += prevent ? 1 : -1;
-  index$9 = Math.max(0, index$9);
-  if (index$9 > 0) {
+  let before = index$a;
+  index$a += prevent ? 1 : -1;
+  index$a = Math.max(0, index$a);
+  if (index$a > 0) {
     if (before === 0) {
       overflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
@@ -23541,7 +23481,7 @@ const ImagePreview = /* @__PURE__ */ defineSystemComponent({
         });
       }
     }
-    function onChange2(event) {
+    function onChange(event) {
       indexRef.value = event.detail.current;
     }
     const closeBtnStyle = {
@@ -23576,7 +23516,7 @@ const ImagePreview = /* @__PURE__ */ defineSystemComponent({
       }, [createVNode(Swiper, {
         "navigation": "auto",
         "current": indexRef.value,
-        "onChange": onChange2,
+        "onChange": onChange,
         "indicator-dots": false,
         "autoplay": false,
         "style": {
@@ -25038,8 +24978,7 @@ function watchVisible() {
       ([visible, duration]) => {
         if (visible) {
           timeoutId && clearTimeout(timeoutId);
-          if (showType === "onShowLoading")
-            return;
+          if (showType === "onShowLoading") return;
           timeoutId = setTimeout(() => {
             hidePopup("onHideToast");
           }, duration);
@@ -25704,7 +25643,7 @@ let globalLayoutState = void 0;
 function getLayoutState() {
   return globalLayoutState;
 }
-const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
+const index$9 = /* @__PURE__ */ defineSystemComponent({
   name: "Layout",
   setup(_props, {
     emit: emit2
@@ -26978,8 +26917,7 @@ function useMap(props2, rootRef, emit2) {
       });
       const bounds = new maps2.Bounds(...points);
       map.setBounds(bounds);
-    } else if (getIsBMap())
-      ;
+    } else if (getIsBMap()) ;
     else {
       const bounds = new maps2.LatLngBounds();
       state2.includePoints.forEach(({
@@ -27630,7 +27568,7 @@ const index$6 = /* @__PURE__ */ defineBuiltInComponent({
         }
       }, [typeof item === "object" ? item[rangeKey] || "" : item], 10, ["onClick"]))], 40, ["onWheel", "onTouchmove"]), createVNode("div", {
         "style": popupStyle.triangle
-      }, null, 4)], 6) : null], 40, ["onWheel", "onTouchmove"]) : null, createVNode("div", null, [slots.default && slots.default()]), system.value ? createVNode("div", {
+      }, null, 4)], 6) : null], 42, ["onWheel", "onTouchmove"]) : null, createVNode("div", null, [slots.default && slots.default()]), system.value ? createVNode("div", {
         "class": "uni-picker-system",
         "onMousemove": withWebEvent(_fixInputPosition)
       }, [createVNode("input", {
@@ -27989,6 +27927,7 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
               case "es":
               case "fr":
                 return [array[2], array[1], array[0]];
+              // case 'en':
               default:
                 return normalize ? [array[2], array[0], array[1]] : [array[1], array[2], array[0]];
             }
@@ -28015,6 +27954,7 @@ function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef
           case "fr":
             array = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
             break;
+          // case 'en':
           default:
             array = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             break;
@@ -29245,7 +29185,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
     });
     return (_ctx, _cache) => {
       const _component_view = __syscom_2;
-      const _component_text = __syscom_1;
+      const _component_text = __syscom_1$1;
       return openBlock(), createBlock(_component_view, null, {
         default: withCtx(() => [
           createVNode(_component_view, {
@@ -29414,8 +29354,7 @@ const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = "uni:actionSheet";
 const hideActionSheet$1 = () => {
   const pages = getCurrentPages();
   const currentPage = pages[pages.length - 1];
-  if (currentPage == null)
-    return;
+  if (currentPage == null) return;
   const systemDialogPages = currentPage.$getSystemDialogPages();
   systemDialogPages.forEach((page) => {
     if (page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH)) {
@@ -30034,11 +29973,11 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     });
     return (_ctx, _cache) => {
       const _component_map = __syscom_0;
-      const _component_text = __syscom_1;
+      const _component_text = __syscom_1$1;
       const _component_view = __syscom_2;
-      const _component_input = __syscom_3$1;
+      const _component_input = __syscom_3;
       const _component_loading = _sfc_main$4;
-      const _component_scroll_view = __syscom_3;
+      const _component_scroll_view = __syscom_2$1;
       return openBlock(), createBlock(_component_view, {
         class: normalizeClass(["uni-choose-location", darkClassCom.value])
       }, {
@@ -30691,7 +30630,6 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
   __name: "uniModal",
   setup(__props) {
     const theme = ref("light");
-    const isDark = computed(() => theme.value == "dark");
     const language = ref("zh-Hans");
     const i18nCancelText = {
       en: "Cancel",
@@ -30724,16 +30662,14 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     const maxScrollHeight = ref("192px");
     const inputCancelColor = ref(null);
     const inputConfirmColor = ref(null);
-    const hoverClassName = ref("uni-modal-dialog__action--hover");
+    const hoverClassName = ref("uni-modal_dialog__content__bottom__button__hover");
     const showAnim = ref(false);
     const isAutoHeight = ref(true);
-    const hasTitle = computed(() => {
-      return title.value != "";
-    });
     const instance2 = getCurrentInstance();
     const cancelText = computed(() => {
       if (inputCancelText.value != null) {
-        return inputCancelText.value;
+        const res = inputCancelText.value;
+        return res;
       }
       if (language.value.startsWith("en")) {
         return i18nCancelText["en"];
@@ -30754,7 +30690,8 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     });
     const confirmText = computed(() => {
       if (inputConfirmText.value != null) {
-        return inputConfirmText.value;
+        const res = inputConfirmText.value;
+        return res;
       }
       if (language.value.startsWith("en")) {
         return i18nConfirmText["en"];
@@ -30779,9 +30716,10 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
       }, 220);
     };
     const onInputKeyboardChange = (e2) => {
-      const keyBoardHeight = e2.detail.height;
+      let keyBoardHeight = e2.detail.height;
       if (keyBoardHeight > 0) {
-        inputBottom.value = `${keyBoardHeight / 2}px`;
+        let calcBottom = keyBoardHeight / 2;
+        inputBottom.value = `${calcBottom}px`;
       }
     };
     const isValidColor = (inputColor) => {
@@ -30811,9 +30749,9 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
         }
       }
       if (theme.value == "dark") {
-        hoverClassName.value = "uni-modal-dialog__action--hover-dark";
+        hoverClassName.value = "uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode";
       } else {
-        hoverClassName.value = "uni-modal-dialog__action--hover";
+        hoverClassName.value = "uni-modal_dialog__content__bottom__button__hover";
       }
     };
     const closeModal = () => {
@@ -30827,7 +30765,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     };
     const handleCancel = () => {
       closeModal();
-      const ret = {
+      let ret = {
         cancel: true,
         confirm: false
       };
@@ -30835,7 +30773,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     };
     const handleSure = () => {
       closeModal();
-      const ret = {
+      let ret = {
         cancel: false,
         confirm: true,
         content: editable.value ? content.value : null
@@ -30917,7 +30855,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
       uni.$off(failEventName.value, null);
     });
     onBackPress((_) => {
-      const ret = {
+      let ret = {
         cancel: false,
         confirm: false
       };
@@ -30925,62 +30863,56 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
       return false;
     });
     return (_ctx, _cache) => {
-      const _component_text = __syscom_1;
+      const _component_text = __syscom_1$1;
+      const _component_textarea = __syscom_1;
+      const _component_scroll_view = __syscom_2$1;
       const _component_view = __syscom_2;
-      const _component_textarea = __syscom_2$1;
-      const _component_scroll_view = __syscom_3;
       return openBlock(), createBlock(_component_view, {
-        class: normalizeClass(["uni-modal-mask", { "uni-modal-mask--show": showAnim.value, "uni-modal-mask--hide": !showAnim.value }])
+        class: normalizeClass(["uni-modal_dialog__mask", { "uni-modal_dialog__mask__show": showAnim.value, "uni-modal_dialog__mask__hide": !showAnim.value }])
       }, {
         default: withCtx(() => [
           createVNode(_component_view, {
-            class: normalizeClass(["uni-modal-dialog", { "uni-modal-dialog--show": showAnim.value, "uni-modal--dark": isDark.value }]),
+            class: normalizeClass(["uni-modal_dialog__container", { "uni-modal_dialog__show": showAnim.value, "uni-modal_dark__mode": theme.value == "dark" }]),
             style: normalizeStyle({ bottom: inputBottom.value })
           }, {
             default: withCtx(() => [
               createVNode(_component_view, {
-                class: normalizeClass(["uni-modal-dialog__inner", { "uni-modal--dark": isDark.value }])
+                class: normalizeClass(["uni-modal_dialog__container__wrapper", { "uni-modal_dark__mode": theme.value == "dark" }])
               }, {
                 default: withCtx(() => [
-                  createVNode(_component_view, { class: "uni-modal-dialog__title__container" }, {
+                  title.value ? (openBlock(), createBlock(_component_text, {
+                    key: 0,
+                    class: normalizeClass(["uni-modal_dialog__title__text", { "uni-modal_dark__mode": theme.value == "dark" }]),
+                    "max-lines": "2"
+                  }, {
                     default: withCtx(() => [
-                      hasTitle.value ? (openBlock(), createBlock(_component_text, {
-                        key: 0,
-                        "max-lines": "2",
-                        class: normalizeClass(["uni-modal-dialog__title", { "uni-modal--dark": isDark.value }])
-                      }, {
-                        default: withCtx(() => [
-                          createTextVNode(toDisplayString(title.value), 1)
-                        ]),
-                        _: 1
-                      }, 8, ["class"])) : createCommentVNode("", true)
+                      createTextVNode(toDisplayString(title.value), 1)
                     ]),
                     _: 1
-                  }),
-                  createVNode(_component_view, {
-                    class: normalizeClass(["uni-modal-dialog__body", { "no-title": !hasTitle.value }])
-                  }, {
+                  }, 8, ["class"])) : createCommentVNode("", true),
+                  createVNode(_component_view, { class: "uni-modal_dialog__content" }, {
                     default: withCtx(() => [
                       editable.value ? (openBlock(), createBlock(_component_textarea, {
                         key: 0,
                         modelValue: content.value,
                         "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => content.value = $event),
-                        class: normalizeClass(["uni-modal-dialog__textarea", { "uni-modal--dark": isDark.value }]),
-                        "placeholder-class": "uni-modal-dialog__textarea-placeholder",
+                        class: normalizeClass(["uni-modal_dialog__content__textarea", { "uni-modal_dark__mode": theme.value == "dark" }]),
+                        "placeholder-class": "modalContent_content_edit_placeholder",
                         focus: true,
                         "adjust-position": false,
                         onBlur: onInputBlur,
                         onKeyboardheightchange: onInputKeyboardChange,
                         "auto-height": isAutoHeight.value,
                         placeholder: placeholderText.value
-                      }, null, 8, ["modelValue", "class", "auto-height", "placeholder"])) : content.value.length > 0 ? (openBlock(), createBlock(_component_scroll_view, {
+                      }, null, 8, ["modelValue", "class", "auto-height", "placeholder"])) : createCommentVNode("", true),
+                      !editable.value && content.value.length > 0 ? (openBlock(), createBlock(_component_scroll_view, {
                         key: 1,
-                        class: "uni-modal-dialog__scroll",
+                        class: "uni-modal_dialog__content__scrollview",
                         "show-scrollbar": "true",
                         style: normalizeStyle({ maxHeight: maxScrollHeight.value })
                       }, {
                         default: withCtx(() => [
-                          createVNode(_component_text, { class: "uni-modal-dialog__message" }, {
+                          createVNode(_component_text, { class: "uni-modal_dialog__content__scrollview__text" }, {
                             default: withCtx(() => [
                               createTextVNode(toDisplayString(content.value), 1)
                             ]),
@@ -30991,15 +30923,15 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                       }, 8, ["style"])) : createCommentVNode("", true)
                     ]),
                     _: 1
-                  }, 8, ["class"]),
+                  }),
                   createVNode(_component_view, {
-                    class: normalizeClass(["uni-modal-dialog__divider", { "uni-modal--dark": isDark.value }])
+                    class: normalizeClass(["uni-modal_dialog__content__topline", { "uni-modal_dark__mode": theme.value == "dark" }])
                   }, null, 8, ["class"]),
-                  createVNode(_component_view, { class: "uni-modal-dialog__actions" }, {
+                  createVNode(_component_view, { class: "uni-modal_dialog__content__bottom" }, {
                     default: withCtx(() => [
                       showCancel.value ? (openBlock(), createBlock(_component_view, {
                         key: 0,
-                        class: "uni-modal-dialog__action uni-modal-dialog__action--cancel",
+                        class: normalizeClass(["uni-modal_dialog__content__bottom__button", { "uni-modal_dark__mode": theme.value == "dark" }]),
                         "hover-class": hoverClassName.value,
                         onClick: handleCancel
                       }, {
@@ -31007,7 +30939,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                           createVNode(_component_text, {
                             style: normalizeStyle({ color: cancelColor.value }),
                             "max-lines": "1",
-                            class: "uni-modal-dialog__action-text"
+                            class: "uni-modal_dialog__content__bottom__button__text"
                           }, {
                             default: withCtx(() => [
                               createTextVNode(toDisplayString(cancelText.value), 1)
@@ -31016,13 +30948,13 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                           }, 8, ["style"])
                         ]),
                         _: 1
-                      }, 8, ["hover-class"])) : createCommentVNode("", true),
+                      }, 8, ["class", "hover-class"])) : createCommentVNode("", true),
                       showCancel.value ? (openBlock(), createBlock(_component_view, {
                         key: 1,
-                        class: normalizeClass(["uni-modal-dialog__split", { "uni-modal--dark": isDark.value }])
+                        class: normalizeClass(["uni-modal_dialog__content__bottom__splitline", { "uni-modal_dark__mode": theme.value == "dark" }])
                       }, null, 8, ["class"])) : createCommentVNode("", true),
                       createVNode(_component_view, {
-                        class: "uni-modal-dialog__action",
+                        class: normalizeClass(["uni-modal_dialog__content__bottom__button", { "uni-modal_dark__mode": theme.value == "dark" }]),
                         "hover-class": hoverClassName.value,
                         onClick: handleSure
                       }, {
@@ -31030,7 +30962,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                           createVNode(_component_text, {
                             style: normalizeStyle({ color: confirmColor.value }),
                             "max-lines": "1",
-                            class: "uni-modal-dialog__action-text uni-modal-dialog__action-text--confirm"
+                            class: "uni-modal_dialog__content__bottom__button__text__sure"
                           }, {
                             default: withCtx(() => [
                               createTextVNode(toDisplayString(confirmText.value), 1)
@@ -31039,7 +30971,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                           }, 8, ["style"])
                         ]),
                         _: 1
-                      }, 8, ["hover-class"])
+                      }, 8, ["class", "hover-class"])
                     ]),
                     _: 1
                   })
@@ -31055,26 +30987,13 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const _style_0$1 = "\n	/**\n	 * 透明背景\n	 */\n.uni-modal-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0.55);\n		transition-property: opacity;\n}\n.uni-modal-mask--hide {\n		transition-duration: 0s;\n		opacity: 0;\n}\n.uni-modal-mask--show {\n		transition-duration: 0.1s;\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal-dialog {\n		width: 80%;\n		max-width: 90%;\n		max-height: 90%;\n		background-color: #ffffff;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 16px;\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n.uni-modal-dialog.uni-modal-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal-dialog.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__inner {\n		width: 100%;\n		height: 100%;\n		background-color: #ffffff;\n		border-radius: 8px;\n}\n.uni-modal-dialog__inner.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__title__container {\n		padding: 33px 24px 18px;\n}\n.uni-modal-dialog__title {\n		font-size: 17px;\n		font-weight: 600;\n		text-align: center;\n		text-overflow: ellipsis;\n		lines: 2;\n\n		line-height: 1em;\n\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal-dialog__title.uni-modal--dark {\n		color: #cfcfcf;\n}\n.uni-modal-dialog__body {\n		justify-content: center;\n		align-items: center;\n		padding: 0 24px;\n		margin-bottom: 13px;\n}\n.uni-modal-dialog__body.no-title {\n		margin-top: -10px;\n		margin-bottom: 20px;\n}\n.uni-modal-dialog__scroll {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal-dialog__message {\n		font-size: 17px;\n		font-weight: normal;\n		text-align: center;\n		color: #7f7f7f;\n		line-height: 1.5em;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal-dialog__textarea {\n		font-size: 17px;\n		background-color: #f6f6f6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal-dialog__textarea.uni-modal--dark {\n		background-color: #3d3d3d;\n		color: #cfcfcf;\n}\n.uni-modal-dialog__textarea-placeholder {\n		color: #808080;\n}\n.uni-modal-dialog__divider {\n		width: 100%;\n		height: 1px;\n		transform: scaleY(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__divider.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-modal-dialog__actions {\n		display: flex;\n		width: 100%;\n		height: 56px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal-dialog__action {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal-dialog__action--hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal-dialog__action--hover-dark {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1c1c1c;\n}\n.uni-modal-dialog__action-text {\n		letter-spacing: 1px;\n		font-size: 17px;\n		text-align: center;\n		lines: 1;\n		white-space: nowrap;\n		font-weight: 600;\n}\n.uni-modal-dialog__action-text--confirm {\n		color: #4A5E86;\n}\n.uni-modal-dialog__split {\n		width: 1px;\n		height: 100%;\n		transform: scaleX(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__split.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-textarea-wrapper {\n		min-height: 18px !important;\n}\n\n";
+const _style_0$1 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.5);\n		transition-property: opacity;\n}\n.uni-modal_dialog__mask__hide {\n		transition-duration: 0s;\n		opacity: 0;\n}\n.uni-modal_dialog__mask__show {\n		transition-duration: 0.1s;\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__container__wrapper {\n		width: 100%;\n		height: 100%;\n		padding-top: 10px;\n		background-color: white;\n		border-radius: 8px;\n}\n.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 18px;\n}\n.uni-modal_dialog__content__scrollview {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal_dialog__content__scrollview__text {\n		font-size: 16px;\n		font-weight: normal;\n		text-align: center;\n		color: #747474;\n		line-height: 1.5;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 0.5px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		text-align: center;\n		lines : 1;\n		white-space: nowrap;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		lines : 1;\n		white-space: nowrap;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 0.5px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-textarea-wrapper{\n		min-height: 18px!important;\n}\n\n";
 const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["styles", [_style_0$1]]]);
-class ShowModalSuccessImpl {
-  constructor(cancel, confirm, content = null, errMsg = "showModal:ok") {
-    this.errMsg = errMsg;
-    this.content = content;
-    this.cancel = cancel;
-    this.confirm = confirm;
-  }
-}
 class ShowModalFailImpl extends UniError {
   constructor(errMsg = "showModal:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
     this.errCode = errCode;
-  }
-}
-class HideModalSuccessImpl {
-  constructor(errMsg = "hideModal:ok") {
-    this.errMsg = errMsg;
   }
 }
 class HideModalFailImpl extends UniError {
@@ -31093,32 +31012,32 @@ const showModal$1 = (options) => {
   const successEventName = `${baseEventName}_success`;
   const failEventName = `${baseEventName}_fail`;
   uni.$on(readyEventName, () => {
-    uni.$emit(optionsEventName, options != null ? JSON.parse(JSON.stringify(options)) : {});
+    uni.$emit(optionsEventName, options);
   });
   uni.$on(successEventName, (inputParamStr) => {
     var _a2, _b2;
-    const inputParam = JSON.parse(inputParamStr);
-    const res2 = new ShowModalSuccessImpl(
-      inputParam["cancel"],
-      inputParam["confirm"],
-      inputParam["content"]
-    );
-    (_a2 = options == null ? void 0 : options.success) == null ? void 0 : _a2.call(options, res2);
-    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
+    let inputParam = JSON.parse(inputParamStr);
+    let res = {
+      cancel: inputParam["cancel"],
+      confirm: inputParam["confirm"],
+      content: inputParam["content"]
+    };
+    (_a2 = options.success) == null ? void 0 : _a2.call(options, res);
+    (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
   });
   uni.$on(failEventName, () => {
     var _a2, _b2;
-    const res2 = new ShowModalFailImpl();
-    (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res2);
-    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
+    const res = new ShowModalFailImpl();
+    (_a2 = options.fail) == null ? void 0 : _a2.call(options, res);
+    (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
   });
-  const openRet = uni.openDialogPage({
+  let openRet = uni.openDialogPage({
     url: `uni:uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
       var _a2, _b2;
-      const res2 = new ShowModalFailImpl(`showModal failed, ${err.errMsg}`);
-      (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res2);
-      (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
+      const res = new ShowModalFailImpl(`showModal failed, ${err.errMsg}`);
+      (_a2 = options.fail) == null ? void 0 : _a2.call(options, res);
+      (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
       uni.$off(readyEventName);
       uni.$off(successEventName);
       uni.$off(failEventName);
@@ -31126,47 +31045,60 @@ const showModal$1 = (options) => {
   });
   if (openRet != null) {
     return openRet;
+  } else {
+    const res = new ShowModalFailImpl();
+    (_a = options.fail) == null ? void 0 : _a.call(options, res);
+    (_b = options.complete) == null ? void 0 : _b.call(options, res);
+    return null;
   }
-  const res = new ShowModalFailImpl();
-  (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res);
-  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res);
-  return null;
 };
-const SYSTEM_DIALOG_MODAL_PAGE_PATH = "uni:uniModal";
-const hideModal$1 = (options) => {
-  var _a, _b, _c, _d;
+const hideModal$1 = function(options) {
+  var _a, _b, _c, _d, _e;
   const pages = getCurrentPages();
   const currentPage = pages[pages.length - 1];
-  if (currentPage == null) {
+  if (!currentPage) {
     const res2 = new HideModalFailImpl();
     (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res2);
     (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res2);
     return;
   }
-  const systemDialogPages = currentPage.$getSystemDialogPages();
-  const modalPage = options == null ? void 0 : options.modalPage;
-  for (let i = systemDialogPages.length - 1; i >= 0; i--) {
-    const page = systemDialogPages[i];
-    if (!page.route.startsWith(SYSTEM_DIALOG_MODAL_PAGE_PATH)) {
-      continue;
-    }
-    if (modalPage == null) {
-      uni.closeDialogPage({
-        dialogPage: page
-      });
-    } else {
-      if (modalPage === page) {
-        uni.closeDialogPage({
-          dialogPage: page
-        });
-        break;
+  const systemDialogPages = (_c = currentPage.vm.$pageLayoutInstance) == null ? void 0 : _c.$systemDialogPages.value;
+  let shallClosePages = [];
+  for (let perPage of systemDialogPages) {
+    if (isSystemModalDialogPage(perPage)) {
+      if ((options == null ? void 0 : options.modalPage) == null) {
+        shallClosePages.push(perPage);
+      } else {
+        if (perPage.options["optionsEventName"] === options.modalPage.options["optionsEventName"]) {
+          shallClosePages.push(perPage);
+          break;
+        }
       }
     }
   }
-  const res = new HideModalSuccessImpl();
-  (_c = options == null ? void 0 : options.success) == null ? void 0 : _c.call(options, res);
-  (_d = options == null ? void 0 : options.complete) == null ? void 0 : _d.call(options, res);
+  shallClosePages.forEach((item) => {
+    const index2 = systemDialogPages.indexOf(item);
+    if (index2 > -1) {
+      notifyClosedDialog(systemDialogPages[index2]);
+      systemDialogPages.splice(index2, 1);
+    }
+  });
+  let res = {};
+  (_d = options == null ? void 0 : options.success) == null ? void 0 : _d.call(options, res);
+  (_e = options == null ? void 0 : options.complete) == null ? void 0 : _e.call(options, res);
 };
+function notifyClosedDialog(perPage) {
+  let ret = {
+    cancel: false,
+    confirm: false
+  };
+  if (perPage.options["successEventName"] != null) {
+    uni.$emit(perPage.options["successEventName"], JSON.stringify(ret));
+  }
+}
+function isSystemModalDialogPage(page) {
+  return page.route.startsWith("uni:uniModal");
+}
 const API_HIDE_MODAL = "hideModal";
 const registerModalOnce = /* @__PURE__ */ once(() => {
   registerSystemRoute("uni:uniModal", UniModalPage);
@@ -31248,23 +31180,23 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     });
     return (_ctx, _cache) => {
       const _component_loading = _sfc_main$4;
-      const _component_text = __syscom_1;
+      const _component_text = __syscom_1$1;
       const _component_view = __syscom_2;
       return openBlock(), createBlock(_component_view, {
-        class: normalizeClass(["uni-loading-mask", { "uni-loading-mask--show": showAnim.value }])
+        class: normalizeClass(["uni-loading_dialog__mask", { "uni-loading_dialog__mask__show": showAnim.value }])
       }, {
         default: withCtx(() => [
           createVNode(_component_view, {
-            class: normalizeClass(["uni-loading-dialog", { "uni-loading-dialog--show": showAnim.value }])
+            class: normalizeClass(["uni-loading_dialog__container", { "uni-loading_dialog__show": showAnim.value }])
           }, {
             default: withCtx(() => [
               createVNode(_component_loading, {
-                class: "uni-loading-dialog__spinner",
+                class: "uni-loading_dialog__container__loading",
                 "ios-spinner": iosSpinner.value
               }, null, 8, ["ios-spinner"]),
               title.value ? (openBlock(), createBlock(_component_text, {
                 key: 0,
-                class: "uni-loading-dialog__title",
+                class: "uni-loading_dialog__container__title",
                 "max-lines": "1"
               }, {
                 default: withCtx(() => [
@@ -31281,23 +31213,13 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const _style_0 = "\n	/**\n	 * 透明背景\n	 */\n.uni-loading-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading-mask--show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading-dialog {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		min-width: 136px;\n		max-width: 600rpx;\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 1);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n.uni-loading-dialog.uni-loading-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading-dialog__spinner {\n		width: 36px;\n		height: 36px;\n		border-color: white;\n}\n.uni-loading-dialog__title {\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines: 1;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 1;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n";
+const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-loading_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading_dialog__container {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		min-width: 136px;\n		max-width: 600rpx;\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 1);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-loading_dialog__container.uni-loading_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading_dialog__container__loading{\n		width: 36px; \n		height: 36px;\n		border-color: white;\n}\n.uni-loading_dialog__container__title{\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines:1;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 1; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n\n	\n";
 const UniLoadingPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["styles", [_style_0]]]);
-class ShowLoadingSuccessImpl {
-  constructor(errMsg = "showLoading:ok") {
-    this.errMsg = errMsg;
-  }
-}
 class ShowLoadingFailImpl extends UniError {
   constructor(errMsg = "showLoading:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
     this.errCode = errCode;
-  }
-}
-class HideLoadingSuccessImpl {
-  constructor(errMsg = "hideLoading:ok") {
-    this.errMsg = errMsg;
   }
 }
 class HideLoadingFailImpl extends UniError {
@@ -31316,27 +31238,27 @@ const showLoading$1 = (options) => {
   const successEventName = `${baseEventName}_success`;
   const failEventName = `${baseEventName}_fail`;
   uni.$on(readyEventName, () => {
-    uni.$emit(optionsEventName, options != null ? JSON.parse(JSON.stringify(options)) : {});
+    uni.$emit(optionsEventName, options);
   });
-  uni.$on(successEventName, (_) => {
+  uni.$on(successEventName, (inputParamStr) => {
     var _a2, _b2;
-    const res2 = new ShowLoadingSuccessImpl();
-    (_a2 = options == null ? void 0 : options.success) == null ? void 0 : _a2.call(options, res2);
-    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
+    let res = {};
+    (_a2 = options == null ? void 0 : options.success) == null ? void 0 : _a2.call(options, res);
+    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res);
   });
   uni.$on(failEventName, () => {
     var _a2, _b2;
-    const res2 = new ShowLoadingFailImpl();
-    (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res2);
-    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
+    const res = new ShowLoadingFailImpl();
+    (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res);
+    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res);
   });
-  const openRet = uni.openDialogPage({
+  let openRet = uni.openDialogPage({
     url: `uni:showLoading?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
       var _a2, _b2;
-      const res2 = new ShowLoadingFailImpl(`showLoading failed, ${err.errMsg}`);
-      (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res2);
-      (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
+      const res = new ShowLoadingFailImpl(`showLoading failed, ${err.errMsg}`);
+      (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res);
+      (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res);
       uni.$off(readyEventName);
       uni.$off(successEventName);
       uni.$off(failEventName);
@@ -31344,47 +31266,50 @@ const showLoading$1 = (options) => {
   });
   if (openRet != null) {
     return openRet;
+  } else {
+    const res = new ShowLoadingFailImpl();
+    (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res);
+    (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res);
+    return null;
   }
-  const res = new ShowLoadingFailImpl();
-  (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res);
-  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res);
-  return null;
 };
-const SYSTEM_DIALOG_LOADING_PAGE_PATH = "uni:showLoading";
-const hideLoading$1 = (options) => {
-  var _a, _b, _c, _d;
+const hideLoading$1 = function(options) {
+  var _a, _b, _c, _d, _e;
   const pages = getCurrentPages();
   const currentPage = pages[pages.length - 1];
-  if (currentPage == null) {
+  if (!currentPage) {
     const res2 = new HideLoadingFailImpl();
     (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res2);
     (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res2);
     return;
   }
-  const loadingPage = options == null ? void 0 : options.loadingPage;
-  const systemDialogPages = currentPage.$getSystemDialogPages();
-  for (let i = systemDialogPages.length - 1; i >= 0; i--) {
-    const page = systemDialogPages[i];
-    if (!page.route.startsWith(SYSTEM_DIALOG_LOADING_PAGE_PATH)) {
-      continue;
-    }
-    if (loadingPage == null) {
-      uni.closeDialogPage({
-        dialogPage: page
-      });
-    } else {
-      if (loadingPage === page) {
-        uni.closeDialogPage({
-          dialogPage: page
-        });
-        break;
+  const systemDialogPages = (_c = currentPage.vm.$pageLayoutInstance) == null ? void 0 : _c.$systemDialogPages.value;
+  let shallClosePages = [];
+  for (let perPage of systemDialogPages) {
+    if (isSystemShowLoadingDialogPage(perPage)) {
+      if ((options == null ? void 0 : options.loadingPage) == null) {
+        shallClosePages.push(perPage);
+      } else {
+        if (perPage.options["optionsEventName"] === options.loadingPage.options["optionsEventName"]) {
+          shallClosePages.push(perPage);
+          break;
+        }
       }
     }
   }
-  const res = new HideLoadingSuccessImpl();
-  (_c = options == null ? void 0 : options.success) == null ? void 0 : _c.call(options, res);
-  (_d = options == null ? void 0 : options.complete) == null ? void 0 : _d.call(options, res);
+  shallClosePages.forEach((item) => {
+    const index2 = systemDialogPages.indexOf(item);
+    if (index2 > -1) {
+      systemDialogPages.splice(index2, 1);
+    }
+  });
+  let res = {};
+  (_d = options == null ? void 0 : options.success) == null ? void 0 : _d.call(options, res);
+  (_e = options == null ? void 0 : options.complete) == null ? void 0 : _e.call(options, res);
 };
+function isSystemShowLoadingDialogPage(page) {
+  return page.route.startsWith("uni:showLoading");
+}
 const API_HIDE_LOADING = "hideLoading";
 const registerLoadingOnce = /* @__PURE__ */ once(() => {
   registerSystemRoute("uni:showLoading", UniLoadingPage);
@@ -31692,22 +31617,22 @@ export {
   index$3 as AdDraw,
   AsyncErrorComponent,
   AsyncLoadingComponent,
-  index$s as Button,
+  index$t as Button,
   index$2 as Camera,
   indexX$4 as Canvas,
-  index$q as Checkbox,
-  index$r as CheckboxGroup,
+  index$r as Checkbox,
+  index$s as CheckboxGroup,
   index$7 as CoverImage,
   index$8 as CoverView,
-  index$o as Editor,
-  index$u as Form,
-  index$n as Icon,
-  index$m as Image,
-  __syscom_3$1 as Input,
-  index$t as Label,
-  LayoutComponent,
-  index$g as ListItem,
-  index$h as ListView,
+  index$p as Editor,
+  index$v as Form,
+  index$o as Icon,
+  index$n as Image,
+  __syscom_3 as Input,
+  index$u as Label,
+  index$9 as LayoutComponent,
+  index$h as ListItem,
+  index$i as ListView,
   index$1 as LivePlayer,
   index as LivePusher,
   _sfc_main$4 as Loading,
@@ -31715,26 +31640,26 @@ export {
   MatchMedia,
   MovableArea,
   MovableView,
-  index$l as Navigator,
+  index$m as Navigator,
   PageComponent,
   _sfc_main$5 as PageContainer,
   index$6 as Picker,
   PickerView,
   PickerViewColumn,
-  index$k as Progress,
+  index$l as Progress,
   indexX$3 as Radio,
-  index$j as RadioGroup,
+  index$k as RadioGroup,
   ResizeSensor,
-  index$i as RichText,
-  __syscom_3 as ScrollView,
+  index$j as RichText,
+  __syscom_2$1 as ScrollView,
   indexX$2 as Slider,
-  index$e as StickyHeader,
-  index$f as StickySection,
+  index$f as StickyHeader,
+  index$g as StickySection,
   Swiper,
   SwiperItem,
   indexX$1 as Switch,
-  __syscom_1 as Text,
-  __syscom_2$1 as Textarea,
+  __syscom_1$1 as Text,
+  __syscom_1 as Textarea,
   UTS2 as UTS,
   UTSJSONObject2 as UTSJSONObject,
   UTSValueIterable2 as UTSValueIterable,
@@ -31813,7 +31738,7 @@ export {
   UniViewElement as UniViewElementImpl,
   UniViewJSBridge$1 as UniViewJSBridge,
   UniWebViewElement,
-  index$b as Video,
+  index$c as Video,
   __syscom_2 as View,
   indexX as WebView,
   __f__,
@@ -31947,7 +31872,7 @@ export {
   openDocument,
   openLocation,
   pageScrollTo,
-  index$c as plugin,
+  index$d as plugin,
   preloadPage,
   previewImage,
   reLaunch,

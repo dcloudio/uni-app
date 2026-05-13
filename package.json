@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "3.0.0-alpha-4080120250820001",
+  "version": "3.0.0-alpha-1000920260513001",
   "workspaces": [
     "packages/*"
   ],
@@ -118,7 +118,7 @@
   },
   "pnpm": {
     "overrides": {
-      "@types/node": "18.19.50",
+      "@types/node": "22.19.19",
       "postcss": "8.5.6"
     }
   },

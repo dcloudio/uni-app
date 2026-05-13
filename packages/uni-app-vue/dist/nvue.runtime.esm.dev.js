@@ -1,6 +1,6 @@
-import { isFunction, isPromise, isArray, getGlobalThis, isString, camelize, capitalize, extend, NOOP, EMPTY_OBJ, remove, toHandlerKey, isObject, normalizeClass, normalizeStyle, isOn, hyphenate, hasChanged, hasOwn, toNumber, isSet, isMap, isPlainObject, invokeArrayFns, isRegExp, EMPTY_ARR, isModelListener, isBuiltInDirective, isReservedProp, makeMap, parseStringStyle, looseToNumber, isGloballyAllowed, NO, def, toRawType, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue } from '@vue/shared';
+import { EMPTY_OBJ, isString, isFunction, isPromise, isArray, getGlobalThis, isModelListener, isOn, camelize, capitalize, toNumber, extend, NOOP, isRegExp, remove, toHandlerKey, isObject, normalizeClass, normalizeStyle, hyphenate, hasChanged, hasOwn, isSet, isMap, isPlainObject, isReservedProp, invokeArrayFns, EMPTY_ARR, looseToNumber, def, isBuiltInDirective, isGloballyAllowed, NO, makeMap, parseStringStyle, toRawType, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue } from '@vue/shared';
 export { camelize, capitalize, hyphenate, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
-import { isRef, isShallow, isReactive, ReactiveEffect, getCurrentScope, ref, pauseTracking, resetTracking, isProxy, computed as computed$1, customRef, toRaw, proxyRefs, track, markRaw, isReadonly, shallowReadonly, reactive, EffectScope, shallowReactive, trigger } from '@vue/reactivity';
+import { pauseTracking, resetTracking, isRef, toRaw, isShallow, isReactive, ReactiveEffect, getCurrentScope, ref, isProxy, EffectScope, markRaw, shallowReadonly, proxyRefs, computed as computed$1, customRef, isReadonly, shallowReactive, track, reactive, trigger } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, TrackOpTypes, TriggerOpTypes, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, toValue, triggerRef, unref } from '@vue/reactivity';
 import { isRootHook, isRootImmediateHook, ON_LOAD } from '@dcloudio/uni-shared';
 
@@ -2535,8 +2535,8 @@ function injectToKeepAliveRoot(hook, type, target, keepAliveRoot) {
   }, target);
 }
 function resetShapeFlag(vnode) {
-  vnode.shapeFlag &= ~256;
-  vnode.shapeFlag &= ~512;
+  vnode.shapeFlag &= -257;
+  vnode.shapeFlag &= -513;
 }
 function getInnerChild(vnode) {
   return vnode.shapeFlag & 128 ? vnode.ssContent : vnode;
@@ -6210,8 +6210,8 @@ function isVNode(value) {
 }
 function isSameVNodeType(n1, n2) {
   if (n2.shapeFlag & 6 && hmrDirtyComponents.has(n2.type)) {
-    n1.shapeFlag &= ~256;
-    n2.shapeFlag &= ~512;
+    n1.shapeFlag &= -257;
+    n2.shapeFlag &= -513;
     return false;
   }
   return n1.type === n2.type && n1.key === n2.key;
@@ -7465,7 +7465,7 @@ function patchEvent(el, rawName, prevValue, nextValue) {
   if (nextValue && existingInvoker) {
     existingInvoker.value = nextValue;
   } else {
-    var [name, options] = parseName(rawName);
+    var [name] = parseName(rawName);
     if (nextValue) {
       var invoker = invokers[rawName] = createInvoker(nextValue, instance);
       addEventListener(el, name, invoker);

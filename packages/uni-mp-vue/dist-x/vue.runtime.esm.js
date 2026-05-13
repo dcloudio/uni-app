@@ -1,5 +1,5 @@
 import { isRootHook, normalizeClass, getValueByDataPath, isUniLifecycleHook, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, normalizeStyle as normalizeStyle$1, dynamicSlotName, getPartClass } from '@dcloudio/uni-shared';
-import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray, isPromise, camelize, capitalize, EMPTY_OBJ, remove, toHandlerKey, hasOwn, hyphenate, isReservedProp, toRawType, isString, normalizeClass as normalizeClass$1, normalizeStyle, isOn, toTypeString, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, isBuiltInDirective, looseToNumber, NO, EMPTY_ARR, isModelListener, toNumber, toDisplayString } from '@vue/shared';
+import { EMPTY_OBJ, NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray, isString, isPromise, camelize, capitalize, remove, toHandlerKey, hasOwn, hyphenate, isReservedProp, toRawType, normalizeClass as normalizeClass$1, normalizeStyle, isOn, toTypeString, isSet, isMap, isPlainObject, isIntegerKey, makeMap, invokeArrayFns, isBuiltInDirective, EMPTY_ARR, looseToNumber, NO, isModelListener, toNumber, toDisplayString } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 
 /**
@@ -3876,17 +3876,6 @@ function createBaseVNode(type, props = null, children = null, patchFlag = 0, dyn
   if (!!(process.env.NODE_ENV !== "production") && vnode.key !== vnode.key) {
     warn$1(`VNode created with invalid key (NaN). VNode type:`, vnode.type);
   }
-  if (isBlockTreeEnabled > 0 && // avoid a block node from tracking itself
-  !isBlockNode && // has current parent block
-  currentBlock && // presence of a patch flag indicates this node needs patching on updates.
-  // component nodes also should always be patched, because even if the
-  // component doesn't need to update, it needs to persist the instance on to
-  // the next vnode so that it can be properly unmounted later.
-  (vnode.patchFlag > 0 || shapeFlag & 6) && // the EVENTS flag is only for hydration and if it is the only flag, the
-  // vnode should not be considered dynamic due to handler caching.
-  vnode.patchFlag !== 32) {
-    currentBlock.push(vnode);
-  }
   return vnode;
 }
 const createVNode$1 = !!(process.env.NODE_ENV !== "production") ? createVNodeWithArgsTransform : _createVNode;
@@ -4321,8 +4310,7 @@ function handleSetupResult(instance, setupResult, isSSR) {
   }
   finishComponentSetup(instance, isSSR);
 }
-let compile;
-const isRuntimeOnly = () => !compile;
+const isRuntimeOnly = () => true;
 function finishComponentSetup(instance, isSSR, skipOptions) {
   const Component = instance.type;
   if (!instance.render) {
@@ -6542,9 +6530,7 @@ function setUniElementId(id, options, ref, refOpts) {
             // 指定了ref，则需要存储ref，使得 this.$refs 和 setup 的 ref 生效
             setUniElementRef(ins, ref, id, {
                 k: refOpts === null || refOpts === void 0 ? void 0 : refOpts.k,
-                f: refOpts === null || refOpts === void 0 ? void 0 : refOpts.f,
-                n: tagName,
-            }, tagType);
+                f: refOpts === null || refOpts === void 0 ? void 0 : refOpts.f}, tagType);
         }
         if (tagType === 2 /* SetUniElementIdTagType.BuiltInRootElement */ && ins.props.id) {
             const parent = ins.parent;

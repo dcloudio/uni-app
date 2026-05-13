@@ -35,6 +35,13 @@ function resolve(file: string) {
 }
 
 const FORMAT = process.env.FORMAT as 'es' | 'cjs'
+const moduleBuildTarget = [
+  'es2020',
+  'edge88',
+  'firefox78',
+  'chrome87',
+  'safari14',
+]
 
 const isX = process.env.UNI_APP_X === 'true'
 const isX_VAPOR = process.env.UNI_APP_X_VAPOR === 'true'
@@ -188,7 +195,8 @@ export default defineConfig({
   },
   build: {
     cssCodeSplit: true,
-    target: 'modules', // keep import.meta...
+    // Vite 7 no longer expands `modules` before passing the target to esbuild.
+    target: moduleBuildTarget, // keep import.meta...
     emptyOutDir: FORMAT === 'es',
     minify: false,
     lib: {

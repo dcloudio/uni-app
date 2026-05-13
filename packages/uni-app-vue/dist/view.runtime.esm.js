@@ -1,4 +1,4 @@
-import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray, isPromise, getGlobalThis, isString, camelize, capitalize, EMPTY_OBJ, remove, toHandlerKey, normalizeClass, normalizeStyle, isOn, hyphenate, toNumber, looseToNumber, looseIndexOf, isSet, looseEqual, isHTMLTag, isSVGTag, isMathMLTag, toRawType, isMap, isPlainObject, invokeArrayFns, isRegExp, EMPTY_ARR, isModelListener, isBuiltInDirective, hasOwn, isReservedProp, makeMap, isIntegerKey, isGloballyAllowed, NO, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, isSpecialBooleanAttr } from '@vue/shared';
+import { NOOP, EMPTY_OBJ, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray, isString, isPromise, getGlobalThis, isModelListener, isOn, camelize, capitalize, toNumber, isRegExp, remove, toHandlerKey, normalizeClass, normalizeStyle, hyphenate, looseToNumber, looseIndexOf, isSet, looseEqual, isHTMLTag, isSVGTag, isMathMLTag, toRawType, isMap, isPlainObject, isReservedProp, invokeArrayFns, EMPTY_ARR, hasOwn, isBuiltInDirective, isIntegerKey, isGloballyAllowed, NO, makeMap, includeBooleanAttr, isSpecialBooleanAttr, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, isRenderableAttrValue } from '@vue/shared';
 export { camelize, capitalize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 
 /**
@@ -4049,8 +4049,8 @@ function injectToKeepAliveRoot(hook, type, target, keepAliveRoot) {
   }, target);
 }
 function resetShapeFlag(vnode) {
-  vnode.shapeFlag &= ~256;
-  vnode.shapeFlag &= ~512;
+  vnode.shapeFlag &= -257;
+  vnode.shapeFlag &= -513;
 }
 function getInnerChild(vnode) {
   return vnode.shapeFlag & 128 ? vnode.ssContent : vnode;
@@ -8318,8 +8318,8 @@ function isVNode(value) {
 }
 function isSameVNodeType(n1, n2) {
   if (!!(process.env.NODE_ENV !== "production") && n2.shapeFlag & 6 && hmrDirtyComponents.has(n2.type)) {
-    n1.shapeFlag &= ~256;
-    n2.shapeFlag &= ~512;
+    n1.shapeFlag &= -257;
+    n2.shapeFlag &= -513;
     return false;
   }
   return n1.type === n2.type && n1.key === n2.key;

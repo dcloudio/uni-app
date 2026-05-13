@@ -187,8 +187,7 @@ function useCurrentPageId() {
   return pageId;
 }
 function getPageProxyId(proxy) {
-  var _a, _b;
-  return ((_a = proxy.$page) == null ? void 0 : _a.id) || ((_b = proxy.$basePage) == null ? void 0 : _b.id);
+  return proxy.$page?.id || proxy.$basePage?.id;
 }
 let plus_;
 let weex_;
@@ -833,14 +832,12 @@ const Button = /* @__PURE__ */ defineComponent({
       const obj = {};
       for (const eventName in $listeners.value) {
         const event = $listeners.value[eventName];
-        if (eventName !== "onClick")
-          obj[eventName] = event;
+        if (eventName !== "onClick") obj[eventName] = event;
       }
       return obj;
     });
     const wrapSlots = () => {
-      if (!slots.default)
-        return [];
+      if (!slots.default) return [];
       const vnodes = slots.default();
       if (vnodes.length === 1 && vnodes[0].type === Text$1) {
         return [createNVueTextVNode(vnodes[0].children, {
@@ -910,8 +907,7 @@ const parseStyleText = cached(function(cssText) {
 });
 const getComponentSize = (el) => {
   return new Promise((resolve, reject) => {
-    if (!el)
-      return resolve({ width: 0, height: 0, top: 0, left: 0 });
+    if (!el) return resolve({ width: 0, height: 0, top: 0, left: 0 });
     const dom2 = weex.requireModule("dom");
     dom2.getComponentRect(el, ({ size }) => {
       resolve(size);
@@ -2316,8 +2312,7 @@ const PickerView = /* @__PURE__ */ defineComponent({
           return state.value[index] || 0;
         },
         set(current) {
-          if (!columnInstance.data._isMounted)
-            return;
+          if (!columnInstance.data._isMounted) return;
           const index = getItemIndex(columnInstance.vnode);
           if (index < 0) {
             return;
@@ -2459,8 +2454,7 @@ const PickerViewColumn = /* @__PURE__ */ defineComponent({
     };
     onMounted(checkMounted);
     const createScrollViewChild = (item) => {
-      if (!item)
-        return null;
+      if (!item) return null;
       return isAndroid$1 ? createVNode("div", {
         "ref": scrollViewItemRef,
         "style": "flex-direction:column;"
@@ -2609,8 +2603,7 @@ function usePickerColumnScroll(props2, current, contentRef, indicatorHeight) {
       return;
     }
     current.value = _current;
-    if (isAndroid$1)
-      setDomScrollToElement(_current, animated);
+    if (isAndroid$1) setDomScrollToElement(_current, animated);
   };
   const onScrollend = (event) => {
     if (Date.now() - scrollToElementTime < 340) {
@@ -3430,8 +3423,7 @@ const Checkbox = /* @__PURE__ */ defineComponent({
       checkboxValue.value = newModelValue;
     });
     const wrapSlots = () => {
-      if (!slots.default)
-        return [];
+      if (!slots.default) return [];
       const vnodes = slots.default();
       if (vnodes.length === 1 && vnodes[0].type === Text) {
         return [createNVueTextVNode(vnodes[0].children, {
@@ -3667,8 +3659,7 @@ const Radio = /* @__PURE__ */ defineComponent({
       radioValue.value = newModelValue;
     });
     const wrapSlots = () => {
-      if (!slots.default)
-        return [];
+      if (!slots.default) return [];
       const vnodes = slots.default();
       if (vnodes.length === 1 && vnodes[0].type === Text) {
         return [createNVueTextVNode(vnodes[0].children, {
@@ -3757,10 +3748,7 @@ function useProvideRadioGroup(props2, trigger) {
   onMounted(() => {
     _resetRadioGroupValue(fields2.length - 1);
   });
-  const getFieldsValue = () => {
-    var _a;
-    return (_a = fields2.find((field) => field.value.radioChecked)) == null ? void 0 : _a.value.value;
-  };
+  const getFieldsValue = () => fields2.find((field) => field.value.radioChecked)?.value.value;
   provide(uniRadioGroupKey, {
     addField(field) {
       fields2.push(field);
@@ -4392,7 +4380,6 @@ function parseHtml(html) {
   html = removeDOCTYPE(html);
   const stacks = [];
   const results = {
-    node: "root",
     children: []
   };
   HTMLParser(html, {
@@ -4415,8 +4402,7 @@ function parseHtml(html) {
     },
     end: function(tag) {
       const node = stacks.shift();
-      if (node.name !== tag)
-        console.error("invalid state: mismatch end tag");
+      if (node.name !== tag) console.error("invalid state: mismatch end tag");
       if (stacks.length === 0) {
         results.children.push(node);
       } else {
@@ -4548,8 +4534,7 @@ function normalizeNodes(nodes, instance, options) {
     return node;
   }
   function heading(node, em) {
-    if (node.style)
-      !node.style.fontSize && (node.style.fontSize = options.defaultFontSize * em);
+    if (node.style) !node.style.fontSize && (node.style.fontSize = options.defaultFontSize * em);
     return block2(bold(node));
   }
   function createHeading(em) {
@@ -4558,8 +4543,7 @@ function normalizeNodes(nodes, instance, options) {
     };
   }
   function bold(node) {
-    if (node.style)
-      !node.style.fontWeight && (node.style.fontWeight = "bold");
+    if (node.style) !node.style.fontWeight && (node.style.fontWeight = "bold");
     return node;
   }
   function br(node) {

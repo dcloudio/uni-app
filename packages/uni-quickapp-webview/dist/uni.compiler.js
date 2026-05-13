@@ -155,7 +155,9 @@ const uniQuickappWebviewPlugin = {
                 type: 'asset',
                 fileName: 'quickapp.config.json',
                 originalFileName: 'quickapp.config.json',
+                originalFileNames: ['quickapp.config.json'],
                 name: 'quickapp.config.json',
+                names: ['quickapp.config.json'],
                 source: JSON.stringify({
                     quickappRoot: './',
                     packOptions: {

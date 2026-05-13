@@ -1,16 +1,13 @@
 "use strict";
 var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
+var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 const uniShared = require("@dcloudio/uni-shared");
 const vue = require("vue");
 const shared = require("@vue/shared");
-const vueRouter = require("vue-router");
 const uniI18n = require("@dcloudio/uni-i18n");
+const vueRouter = require("vue-router");
 const realGlobal = uniShared.getGlobal();
 realGlobal.UTS = uniShared.UTS;
 realGlobal.UTSJSONObject = uniShared.UTSJSONObject;
@@ -298,193 +295,201 @@ const ViewJSBridge = /* @__PURE__ */ shared.extend(
 function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
 }
-var attrs = ["top", "left", "right", "bottom"];
-var inited;
-var elementComputedStyle = {};
-var support;
-function getSupport() {
-  if (!("CSS" in window) || typeof CSS.supports != "function") {
-    support = "";
-  } else if (CSS.supports("top: env(safe-area-inset-top)")) {
-    support = "env";
-  } else if (CSS.supports("top: constant(safe-area-inset-top)")) {
-    support = "constant";
-  } else {
-    support = "";
-  }
-  return support;
-}
-function init() {
-  support = typeof support === "string" ? support : getSupport();
-  if (!support) {
-    attrs.forEach(function(attr2) {
-      elementComputedStyle[attr2] = 0;
-    });
-    return;
-  }
-  function setStyle(el, style) {
-    var elStyle = el.style;
-    Object.keys(style).forEach(function(key) {
-      var val = style[key];
-      elStyle[key] = val;
-    });
-  }
-  var cbs = [];
-  function parentReady(callback) {
-    if (callback) {
-      cbs.push(callback);
+var out;
+var hasRequiredOut;
+function requireOut() {
+  if (hasRequiredOut) return out;
+  hasRequiredOut = 1;
+  var attrs = ["top", "left", "right", "bottom"];
+  var inited;
+  var elementComputedStyle = {};
+  var support;
+  function getSupport() {
+    if (!("CSS" in window) || typeof CSS.supports != "function") {
+      support = "";
+    } else if (CSS.supports("top: env(safe-area-inset-top)")) {
+      support = "env";
+    } else if (CSS.supports("top: constant(safe-area-inset-top)")) {
+      support = "constant";
     } else {
-      cbs.forEach(function(cb) {
-        cb();
+      support = "";
+    }
+    return support;
+  }
+  function init() {
+    support = typeof support === "string" ? support : getSupport();
+    if (!support) {
+      attrs.forEach(function(attr2) {
+        elementComputedStyle[attr2] = 0;
+      });
+      return;
+    }
+    function setStyle(el, style) {
+      var elStyle = el.style;
+      Object.keys(style).forEach(function(key) {
+        var val = style[key];
+        elStyle[key] = val;
       });
     }
-  }
-  var passiveEvents = false;
-  try {
-    var opts = Object.defineProperty({}, "passive", {
-      get: function() {
-        passiveEvents = { passive: true };
+    var cbs = [];
+    function parentReady(callback) {
+      if (callback) {
+        cbs.push(callback);
+      } else {
+        cbs.forEach(function(cb) {
+          cb();
+        });
       }
-    });
-    window.addEventListener("test", null, opts);
-  } catch (e2) {
-  }
-  function addChild(parent, attr2) {
-    var a1 = document.createElement("div");
-    var a2 = document.createElement("div");
-    var a1Children = document.createElement("div");
-    var a2Children = document.createElement("div");
-    var W = 100;
-    var MAX = 1e4;
-    var aStyle = {
-      position: "absolute",
-      width: W + "px",
-      height: "200px",
-      boxSizing: "border-box",
-      overflow: "hidden",
-      paddingBottom: support + "(safe-area-inset-" + attr2 + ")"
-    };
-    setStyle(a1, aStyle);
-    setStyle(a2, aStyle);
-    setStyle(a1Children, {
-      transition: "0s",
-      animation: "none",
-      width: "400px",
-      height: "400px"
-    });
-    setStyle(a2Children, {
-      transition: "0s",
-      animation: "none",
-      width: "250%",
-      height: "250%"
-    });
-    a1.appendChild(a1Children);
-    a2.appendChild(a2Children);
-    parent.appendChild(a1);
-    parent.appendChild(a2);
-    parentReady(function() {
-      a1.scrollTop = a2.scrollTop = MAX;
-      var a1LastScrollTop = a1.scrollTop;
-      var a2LastScrollTop = a2.scrollTop;
-      function onScroll() {
-        if (this.scrollTop === (this === a1 ? a1LastScrollTop : a2LastScrollTop)) {
-          return;
+    }
+    var passiveEvents = false;
+    try {
+      var opts = Object.defineProperty({}, "passive", {
+        get: function() {
+          passiveEvents = { passive: true };
         }
+      });
+      window.addEventListener("test", null, opts);
+    } catch (e2) {
+    }
+    function addChild(parent, attr2) {
+      var a1 = document.createElement("div");
+      var a2 = document.createElement("div");
+      var a1Children = document.createElement("div");
+      var a2Children = document.createElement("div");
+      var W = 100;
+      var MAX = 1e4;
+      var aStyle = {
+        position: "absolute",
+        width: W + "px",
+        height: "200px",
+        boxSizing: "border-box",
+        overflow: "hidden",
+        paddingBottom: support + "(safe-area-inset-" + attr2 + ")"
+      };
+      setStyle(a1, aStyle);
+      setStyle(a2, aStyle);
+      setStyle(a1Children, {
+        transition: "0s",
+        animation: "none",
+        width: "400px",
+        height: "400px"
+      });
+      setStyle(a2Children, {
+        transition: "0s",
+        animation: "none",
+        width: "250%",
+        height: "250%"
+      });
+      a1.appendChild(a1Children);
+      a2.appendChild(a2Children);
+      parent.appendChild(a1);
+      parent.appendChild(a2);
+      parentReady(function() {
         a1.scrollTop = a2.scrollTop = MAX;
-        a1LastScrollTop = a1.scrollTop;
-        a2LastScrollTop = a2.scrollTop;
-        attrChange(attr2);
-      }
-      a1.addEventListener("scroll", onScroll, passiveEvents);
-      a2.addEventListener("scroll", onScroll, passiveEvents);
-    });
-    var computedStyle = getComputedStyle(a1);
-    Object.defineProperty(elementComputedStyle, attr2, {
-      configurable: true,
-      get: function() {
-        return parseFloat(computedStyle.paddingBottom);
-      }
-    });
-  }
-  var parentDiv = document.createElement("div");
-  setStyle(parentDiv, {
-    position: "absolute",
-    left: "0",
-    top: "0",
-    width: "0",
-    height: "0",
-    zIndex: "-1",
-    overflow: "hidden",
-    visibility: "hidden"
-  });
-  attrs.forEach(function(key) {
-    addChild(parentDiv, key);
-  });
-  document.body.appendChild(parentDiv);
-  parentReady();
-  inited = true;
-}
-function getAttr(attr2) {
-  if (!inited) {
-    init();
-  }
-  return elementComputedStyle[attr2];
-}
-var changeAttrs = [];
-function attrChange(attr2) {
-  if (!changeAttrs.length) {
-    setTimeout(function() {
-      var style = {};
-      changeAttrs.forEach(function(attr3) {
-        style[attr3] = elementComputedStyle[attr3];
+        var a1LastScrollTop = a1.scrollTop;
+        var a2LastScrollTop = a2.scrollTop;
+        function onScroll() {
+          if (this.scrollTop === (this === a1 ? a1LastScrollTop : a2LastScrollTop)) {
+            return;
+          }
+          a1.scrollTop = a2.scrollTop = MAX;
+          a1LastScrollTop = a1.scrollTop;
+          a2LastScrollTop = a2.scrollTop;
+          attrChange(attr2);
+        }
+        a1.addEventListener("scroll", onScroll, passiveEvents);
+        a2.addEventListener("scroll", onScroll, passiveEvents);
       });
-      changeAttrs.length = 0;
-      callbacks.forEach(function(callback) {
-        callback(style);
+      var computedStyle = getComputedStyle(a1);
+      Object.defineProperty(elementComputedStyle, attr2, {
+        configurable: true,
+        get: function() {
+          return parseFloat(computedStyle.paddingBottom);
+        }
       });
-    }, 0);
+    }
+    var parentDiv = document.createElement("div");
+    setStyle(parentDiv, {
+      position: "absolute",
+      left: "0",
+      top: "0",
+      width: "0",
+      height: "0",
+      zIndex: "-1",
+      overflow: "hidden",
+      visibility: "hidden"
+    });
+    attrs.forEach(function(key) {
+      addChild(parentDiv, key);
+    });
+    document.body.appendChild(parentDiv);
+    parentReady();
+    inited = true;
   }
-  changeAttrs.push(attr2);
+  function getAttr(attr2) {
+    if (!inited) {
+      init();
+    }
+    return elementComputedStyle[attr2];
+  }
+  var changeAttrs = [];
+  function attrChange(attr2) {
+    if (!changeAttrs.length) {
+      setTimeout(function() {
+        var style = {};
+        changeAttrs.forEach(function(attr3) {
+          style[attr3] = elementComputedStyle[attr3];
+        });
+        changeAttrs.length = 0;
+        callbacks.forEach(function(callback) {
+          callback(style);
+        });
+      }, 0);
+    }
+    changeAttrs.push(attr2);
+  }
+  var callbacks = [];
+  function onChange(callback) {
+    if (!getSupport()) {
+      return;
+    }
+    if (!inited) {
+      init();
+    }
+    if (typeof callback === "function") {
+      callbacks.push(callback);
+    }
+  }
+  function offChange(callback) {
+    var index2 = callbacks.indexOf(callback);
+    if (index2 >= 0) {
+      callbacks.splice(index2, 1);
+    }
+  }
+  var safeAreaInsets2 = {
+    get support() {
+      return (typeof support === "string" ? support : getSupport()).length != 0;
+    },
+    get top() {
+      return getAttr("top");
+    },
+    get left() {
+      return getAttr("left");
+    },
+    get right() {
+      return getAttr("right");
+    },
+    get bottom() {
+      return getAttr("bottom");
+    },
+    onChange,
+    offChange
+  };
+  out = safeAreaInsets2;
+  return out;
 }
-var callbacks = [];
-function onChange(callback) {
-  if (!getSupport()) {
-    return;
-  }
-  if (!inited) {
-    init();
-  }
-  if (typeof callback === "function") {
-    callbacks.push(callback);
-  }
-}
-function offChange(callback) {
-  var index2 = callbacks.indexOf(callback);
-  if (index2 >= 0) {
-    callbacks.splice(index2, 1);
-  }
-}
-var safeAreaInsets = {
-  get support() {
-    return (typeof support === "string" ? support : getSupport()).length != 0;
-  },
-  get top() {
-    return getAttr("top");
-  },
-  get left() {
-    return getAttr("left");
-  },
-  get right() {
-    return getAttr("right");
-  },
-  get bottom() {
-    return getAttr("bottom");
-  },
-  onChange,
-  offChange
-};
-var out = safeAreaInsets;
-const safeAreaInsets$1 = /* @__PURE__ */ getDefaultExportFromCjs(out);
+var outExports = requireOut();
+const safeAreaInsets = /* @__PURE__ */ getDefaultExportFromCjs(outExports);
 const onEventPrevent = /* @__PURE__ */ vue.withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ vue.withModifiers(
@@ -693,8 +698,7 @@ function isSystemDialogPage(page) {
   return page.route.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER);
 }
 function getSystemDialogPages(parentPage) {
-  if (!parentPage)
-    return [];
+  if (!parentPage) return [];
   return parentPage.$getSystemDialogPages();
 }
 function invokeNewDialogPageHook(page, hook) {
@@ -724,8 +728,7 @@ function getPageInstanceByChild(child) {
 const DIALOG_TAG = "dialog";
 const SYSTEM_DIALOG_TAG = "systemDialog";
 function isDialogPageInstance(vm) {
-  if (!vm)
-    return false;
+  if (!vm) return false;
   return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
 }
 function isNormalDialogPageInstance(vm) {
@@ -915,22 +918,22 @@ const animation = {
     startAnimation(this);
   }
 };
-const defineBuiltInComponent = (options) => {
+const defineBuiltInComponent = ((options) => {
   options.__reserved = true;
   const { props: props2, mixins } = options;
   if (!props2 || !props2.animation) {
     (mixins || (options.mixins = [])).push(animation);
   }
   return defineSystemComponent(options);
-};
-const defineSystemComponent = (options) => {
+});
+const defineSystemComponent = ((options) => {
   options.__reserved = true;
   options.compatConfig = {
     MODE: 3
     // 标记为vue3
   };
   return vue.defineComponent(options);
-};
+});
 const defineUnsupportedComponent = (name) => {
   return defineBuiltInComponent({
     name: shared.capitalize(shared.camelize(name)),
@@ -1147,7 +1150,7 @@ class UniElement extends Object {
   }
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-const index$z = /* @__PURE__ */ defineBuiltInComponent({
+const index$B = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup(_props, {
@@ -1207,7 +1210,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   setup(props2, {
@@ -1283,7 +1286,7 @@ const buttonProps = {
     default: false
   }
 };
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, {
@@ -1295,6 +1298,9 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
       hovering,
       binding
     } = useHover(props2);
+    const {
+      t: t2
+    } = /* @__PURE__ */ useI18n();
     const onClick = withWebEvent((e2, isLabelClick) => {
       if (props2.disabled) {
         return e2.stopImmediatePropagation();
@@ -1367,7 +1373,7 @@ const props$q = {
     default: ""
   }
 };
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$q,
   emits: ["change"],
@@ -1468,7 +1474,7 @@ const props$p = {
     default: ""
   }
 };
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$p,
   setup(props2, {
@@ -1489,15 +1495,11 @@ const index$v = /* @__PURE__ */ defineBuiltInComponent({
       }
       const style = {};
       if (checked) {
-        if (props2.activeBorderColor)
-          style.borderColor = props2.activeBorderColor;
-        if (props2.activeBackgroundColor)
-          style.backgroundColor = props2.activeBackgroundColor;
+        if (props2.activeBorderColor) style.borderColor = props2.activeBorderColor;
+        if (props2.activeBackgroundColor) style.backgroundColor = props2.activeBackgroundColor;
       } else {
-        if (props2.borderColor)
-          style.borderColor = props2.borderColor;
-        if (props2.backgroundColor)
-          style.backgroundColor = props2.backgroundColor;
+        if (props2.borderColor) style.borderColor = props2.borderColor;
+        if (props2.backgroundColor) style.backgroundColor = props2.backgroundColor;
       }
       return style;
     }
@@ -2470,7 +2472,7 @@ function useTabBar() {
 }
 const envMethod = /* @__PURE__ */ (() => "env")();
 function normalizeWindowBottom(windowBottom) {
-  return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
+  return `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))`;
 }
 const homeDialogPages = [];
 const homeSystemDialogPages = [];
@@ -2492,7 +2494,7 @@ class UniPageImpl {
     this.$vm = vm;
   }
   get statusBarHeight() {
-    return safeAreaInsets$1.top;
+    return safeAreaInsets.top;
   }
   get width() {
     return this.pageBody.width;
@@ -2541,8 +2543,7 @@ class UniPageImpl {
   setPageStyle(style) {
     var _a;
     const pageMeta = (_a = this.vm) == null ? void 0 : _a.$basePage.meta;
-    if (!pageMeta)
-      return;
+    if (!pageMeta) return;
     for (const key in style) {
       switch (key) {
         case "navigationBarBackgroundColor":
@@ -2974,7 +2975,7 @@ function initApp$1(vm) {
   initAppVm(appVm);
   defineGlobalData(appVm);
 }
-function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, options }) {
+function wrapperComponentSetup(comp, { type, clone, init, setup, before, options }) {
   if (clone) {
     comp = shared.extend({}, comp);
   }
@@ -2982,7 +2983,7 @@ function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, 
   const oldSetup = comp.setup;
   comp.setup = (props2, ctx) => {
     const instance = vue.getCurrentInstance();
-    init2(instance.proxy);
+    init(instance.proxy);
     setup(instance);
     if (oldSetup) {
       return oldSetup(props2, ctx);
@@ -3068,7 +3069,7 @@ function setupApp(comp) {
       comp2.mpType = "app";
       const { setup } = comp2;
       const render = () => {
-        return vue.openBlock(), vue.createBlock(LayoutComponent);
+        return vue.openBlock(), vue.createBlock(index);
       };
       comp2.setup = (props2, ctx) => {
         const res = setup && setup(props2, ctx);
@@ -3345,7 +3346,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "class": placeholderClass
   }, [vue.createVNode("div", {
     "class": "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text.value || composing.value ? "" : placeholder], 6), disabled ? vue.createVNode(Input, {
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text.value || composing.value ? "" : placeholder], 6), disabled ? vue.createVNode(index$t, {
     "disabled": true,
     "style": {
       color
@@ -3354,7 +3355,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "class": "uni-page-head-search-input",
     "confirm-type": "search",
     "onClick": onClick
-  }, null, 8, ["style", "placeholder-style", "onClick"]) : vue.createVNode(Input, {
+  }, null, 8, ["style", "placeholder-style", "onClick"]) : vue.createVNode(index$t, {
     "focus": autoFocus,
     "style": {
       color
@@ -3730,8 +3731,7 @@ function assignDialogPage(ctx, parentInstance, currentInstance) {
   if (isSystemDialogPageInstance(ctx)) {
     parentDialogPages = parentInstance.$systemDialogPages.value;
   }
-  if (!parentDialogPages.length)
-    return;
+  if (!parentDialogPages.length) return;
   for (let i = 0; i < parentDialogPages.length; i++) {
     const dialogPage = parentDialogPages[i];
     if (!dialogPage.$assigned) {
@@ -3893,10 +3893,10 @@ function HTMLParser(html, handler) {
       stack.push(tagName);
     }
     if (handler.start) {
-      var attrs2 = [];
+      var attrs = [];
       rest.replace(attr, function(match2, name) {
         var value = arguments[2] ? arguments[2] : arguments[3] ? arguments[3] : arguments[4] ? arguments[4] : fillAttrs[name] ? name : "";
-        attrs2.push({
+        attrs.push({
           name,
           value,
           escaped: value.replace(/(^|[^\\])"/g, '$1\\"')
@@ -3904,7 +3904,7 @@ function HTMLParser(html, handler) {
         });
       });
       if (handler.start) {
-        handler.start(tagName, attrs2, unary);
+        handler.start(tagName, attrs, unary);
       }
     }
   }
@@ -3985,7 +3985,7 @@ const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
     default: false
   }
 });
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$n,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -4046,7 +4046,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -4109,8 +4109,7 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
   vue.watch(() => shared.extend({}, size), (value) => emit2("resize", value));
   return () => {
     const rootEl = rootRef.value;
-    if (!rootEl)
-      return;
+    if (!rootEl) return;
     const rect = rootEl.getBoundingClientRect();
     size.width = rect.width;
     size.height = rect.height;
@@ -4166,7 +4165,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$m,
   setup(props2, {
@@ -4691,8 +4690,7 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
   }
   function initField() {
     const field = fieldRef.value;
-    if (!field)
-      return;
+    if (!field) return;
     const onFocus = function(event) {
       state.focus = true;
       trigger("focus", event, {
@@ -4807,7 +4805,7 @@ function useCache(props2, type) {
     return vue.ref("");
   }
 }
-const Input = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$k,
   emits: ["confirm", ...emit],
@@ -4974,7 +4972,7 @@ const LISTENER_PREFIX = /^on[A-Z]+/;
 const useAttrs = (params = {}) => {
   const { excludeListeners = false, excludeKeys = [] } = params;
   const instance = vue.getCurrentInstance();
-  const attrs2 = vue.shallowRef({});
+  const attrs = vue.shallowRef({});
   const listeners = vue.shallowRef({});
   const excludeAttrs = vue.shallowRef({});
   const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
@@ -5000,11 +4998,11 @@ const useAttrs = (params = {}) => {
         listeners: {}
       }
     );
-    attrs2.value = res.attrs;
+    attrs.value = res.attrs;
     listeners.value = res.listeners;
     excludeAttrs.value = res.exclude;
   });
-  return { $attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs };
+  return { $attrs: attrs, $listeners: listeners, $excludeAttrs: excludeAttrs };
 };
 function flatVNode(nodes) {
   const array = [];
@@ -5029,7 +5027,7 @@ const movableAreaProps = {
     default: false
   }
 };
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -5577,7 +5575,7 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -6047,29 +6045,20 @@ function useMovableViewState(props2, trigger, rootRef) {
   const {
     // scale
     _updateOldScale,
-    _endScale,
-    _setScale,
     scaleValueSync,
     // layout
     _updateBoundary,
     _updateOffset,
     _updateWH,
     _scaleOffset,
-    minX,
-    minY,
-    maxX,
-    maxY,
     // transform
     FAandSFACancel,
     _getLimitXY,
     _setTransform,
-    _revise,
-    dampingNumber,
     xMove,
     yMove,
     xSync,
-    ySync,
-    _STD
+    ySync
   } = useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA);
   function __handleTouchStart() {
     if (!_isScaling.value) {
@@ -6232,7 +6221,7 @@ function createNavigatorOnClick(props2) {
     }
   };
 }
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -6554,7 +6543,7 @@ const progressProps = {
     default: 0
   }
 };
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
@@ -6644,7 +6633,7 @@ const props$j = {
     default: ""
   }
 };
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$j,
   // emits: ['change'],
@@ -6783,10 +6772,8 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
         style.backgroundColor = props2.activeBackgroundColor || props2.color;
         style.borderColor = props2.activeBorderColor || style.backgroundColor;
       } else {
-        if (props2.borderColor)
-          style.borderColor = props2.borderColor;
-        if (props2.backgroundColor)
-          style.backgroundColor = props2.backgroundColor;
+        if (props2.borderColor) style.borderColor = props2.borderColor;
+        if (props2.backgroundColor) style.backgroundColor = props2.backgroundColor;
       }
       return style;
     }
@@ -6924,18 +6911,16 @@ function normalizeValue(tagName, name, value) {
   }
   return value;
 }
-function normalizeAttrs(tagName, attrs2) {
-  if (!shared.isPlainObject(attrs2))
-    return;
+function normalizeAttrs(tagName, attrs) {
+  if (!shared.isPlainObject(attrs)) return;
   const normalizedAttrs = {};
-  Object.keys(attrs2).forEach((name) => {
-    normalizedAttrs[name] = normalizeValue(tagName, name, attrs2[name]);
+  Object.keys(attrs).forEach((name) => {
+    normalizedAttrs[name] = normalizeValue(tagName, name, attrs[name]);
   });
   return normalizedAttrs;
 }
 const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
-  if (!nodeList || Array.isArray(nodeList) && !nodeList.length)
-    return [];
+  if (!nodeList || Array.isArray(nodeList) && !nodeList.length) return [];
   return nodeList.map((node) => {
     if (!shared.isPlainObject(node)) {
       return;
@@ -6963,8 +6948,8 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
 function removeDOCTYPE(html) {
   return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
-function parseAttrs(attrs2) {
-  return attrs2.reduce(function(pre, attr2) {
+function parseAttrs(attrs) {
+  return attrs.reduce(function(pre, attr2) {
     let value = attr2.value;
     const name = attr2.name;
     if (value.match(/ /) && ["style", "src"].indexOf(name) === -1) {
@@ -6986,16 +6971,15 @@ function parseHtml(html) {
   html = removeDOCTYPE(html);
   const stacks = [];
   const results = {
-    node: "root",
     children: []
   };
   HTMLParser(html, {
-    start: function(tag, attrs2, unary) {
+    start: function(tag, attrs, unary) {
       const node = {
         name: tag
       };
-      if (attrs2.length !== 0) {
-        node.attrs = parseAttrs(attrs2);
+      if (attrs.length !== 0) {
+        node.attrs = parseAttrs(attrs);
       }
       if (unary) {
         const parent = stacks[0] || results;
@@ -7009,8 +6993,7 @@ function parseHtml(html) {
     },
     end: function(tag) {
       const node = stacks.shift();
-      if (node.name !== tag)
-        console.error("invalid state: mismatch end tag");
+      if (node.name !== tag) console.error("invalid state: mismatch end tag");
       if (stacks.length === 0) {
         results.children.push(node);
       } else {
@@ -7060,7 +7043,7 @@ const props$h = {
     }
   }
 };
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -7194,7 +7177,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
         "style": {
           height: `${refresherThreshold}px`
         }
-      }, [slots.default && slots.default()]) : null], 4);
+      }, [slots.default && slots.default()], 4) : null], 4);
     };
   }
 });
@@ -7264,7 +7247,7 @@ const props$g = {
     default: false
   }
 };
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -7288,9 +7271,7 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     } = useScrollViewState(props2);
     const {
       realScrollX,
-      realScrollY,
-      _scrollLeftChanged,
-      _scrollTopChanged
+      realScrollY
     } = useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
     const mainStyle = vue.computed(() => {
       let style = "";
@@ -7398,8 +7379,7 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     let transform = "";
     scrollToValue < 0 ? scrollToValue = 0 : direction === "x" && scrollToValue > container.scrollWidth - container.offsetWidth ? scrollToValue = container.scrollWidth - container.offsetWidth : direction === "y" && scrollToValue > container.scrollHeight - container.offsetHeight && (scrollToValue = container.scrollHeight - container.offsetHeight);
     direction === "x" ? transformValue = container.scrollLeft - scrollToValue : direction === "y" && (transformValue = container.scrollTop - scrollToValue);
-    if (transformValue === 0)
-      return;
+    if (transformValue === 0) return;
     let _content = content.value;
     _content.style.transition = "transform .3s ease-out";
     _content.style.webkitTransition = "-webkit-transform .3s ease-out";
@@ -7493,8 +7473,7 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     content.value.removeEventListener("webkitTransitionEnd", __transitionEnd);
   }
   function _setRefreshState(_state) {
-    if (!props2.refresherEnabled)
-      return;
+    if (!props2.refresherEnabled) return;
     switch (_state) {
       case "refreshing":
         state.refresherHeight = props2.refresherThreshold;
@@ -7531,11 +7510,9 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     state.refreshState = _state;
   }
   let touchStart = {
-    x: 0,
     y: 0
   };
   let touchEnd = {
-    x: 0,
     y: props2.refresherThreshold
   };
   vue.watch(scrollTopNumber, (val) => {
@@ -8163,7 +8140,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     swiperEnabled
   };
 }
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
   props: props$e,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
@@ -8294,8 +8271,7 @@ const useSwiperNavigation = (rootRef, props2, state, onSwiperDotClick, swiperCon
   });
   function navigationHover(event, type) {
     const target = event.currentTarget;
-    if (!target)
-      return;
+    if (!target) return;
     target.style.backgroundColor = type === "over" ? props2.navigationActiveColor : "";
   }
   const navigationAttr = {
@@ -8304,8 +8280,7 @@ const useSwiperNavigation = (rootRef, props2, state, onSwiperDotClick, swiperCon
   };
   function navigationClick($event, type, disabled) {
     $event.stopPropagation();
-    if (disabled)
-      return;
+    if (disabled) return;
     const swiperItemLength = swiperContext.value.length;
     let _current = state.current;
     switch (type) {
@@ -8394,7 +8369,7 @@ const props$d = {
     default: ""
   }
 };
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
   props: props$d,
   setup(props2, {
@@ -8587,7 +8562,7 @@ function normalizeText(text, { space, decode }) {
 function parseTextIgnoreLinefeed(text, options) {
   return normalizeText(text, options);
 }
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -8619,8 +8594,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
             })];
             const len = lines.length - 1;
             lines.forEach((line, index2) => {
-              if (index2 === 0 && !line)
-                ;
+              if (index2 === 0 && !line) ;
               else {
                 children.push(vue.createTextVNode(line));
               }
@@ -8662,7 +8636,7 @@ const props$b = /* @__PURE__ */ shared.extend({}, props$l, {
 });
 let fixMargin = false;
 const ConfirmTypes = ["done", "go", "next", "search", "send"];
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$b,
   emits: ["confirm", "change", "linechange", ...emit],
@@ -8714,7 +8688,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     }) {
       heightRef.value = height;
     }
-    function onChange2(event) {
+    function onChange(event) {
       {
         trigger("change", event, {
           value: state.value
@@ -8792,7 +8766,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         },
         "onKeydown": onKeyDownEnter,
         "onKeyup": onKeyUpEnter,
-        "onChange": onChange2
+        "onChange": onChange
       }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup", "onChange"]);
       return vue.createVNode("uni-textarea", {
         "ref": rootRef,
@@ -8941,7 +8915,7 @@ const props$a = {
     default: false
   }
 };
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
+const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
   props: props$a,
   emits: [
@@ -9124,7 +9098,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, vue.createVNode("div", {
         "class": "uni-list-view-content",
         "style": contentStyle.value
-      }, [visibleVNode], 4)], 4), vue.createVNode(ResizeSensor, {
+      }, [visibleVNode], 4)], 6), vue.createVNode(ResizeSensor, {
         "onResize": onResize
       }, null, 8, ["onResize"])], 512);
     };
@@ -9276,16 +9250,13 @@ function handleTouchEvent(isVertical, containerRef, props2, state, trigger, emit
   let beforeRefreshing = false;
   let triggerAbort = false;
   let touchStart = {
-    x: 0,
     y: 0
   };
   let touchEnd = {
-    x: 0,
     y: props2.refresherThreshold
   };
   function _setRefreshState(_state) {
-    if (!props2.refresherEnabled)
-      return;
+    if (!props2.refresherEnabled) return;
     switch (_state) {
       case "refreshing":
         state.refresherHeight = props2.refresherThreshold;
@@ -9337,15 +9308,15 @@ function getSize(isVertical, el) {
     return parseFloat(style.marginLeft) + el.getBoundingClientRect().width + parseFloat(style.marginRight);
   }
 }
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
+const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListItem",
   props: {},
   setup(props2, {
     slots,
     expose,
-    attrs: attrs2
+    attrs
   }) {
-    if (attrs2.slot === "refresher") {
+    if (attrs.slot === "refresher") {
       return () => {
         return vue.createVNode("uni-list-item", null, [slots.default && slots.default()]);
       };
@@ -9388,7 +9359,7 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const index$e = /* @__PURE__ */ defineBuiltInComponent({
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickySection",
   props: {
     padding: {
@@ -9440,7 +9411,7 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const index$d = /* @__PURE__ */ defineBuiltInComponent({
+const index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickyHeader",
   props: {
     padding: {
@@ -9857,13 +9828,13 @@ function useSubscribe(callback, name, multiple, pageId) {
   instance.proxy;
   pageId = pageId == null ? useCurrentPageId() : pageId;
 }
-let index$c = 0;
+let index$d = 0;
 function useContextInfo(_id) {
   useCurrentPageId();
   const instance = vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$c++}`;
+  const id2 = vm.id || `context${index$d++}`;
   return `${type}.${id2}`;
 }
 function injectLifecycleHook(name, hook, publicThis, instance) {
@@ -9896,8 +9867,7 @@ function initHooks(options, instance, publicThis) {
       if (true) {
         query = new uniShared.UTSJSONObject(uniShared.decodedQuery(query));
       }
-      if (false)
-        ;
+      if (false) ;
       invokeHook(publicThis, uniShared.ON_LOAD, query);
       if (!instance.vapor) {
         delete instance.attrs.__pageQuery;
@@ -10105,7 +10075,7 @@ function initHistory() {
     return vueRouter.createMemoryHistory(routerBase);
   }
 }
-const index$b = {
+const index$c = {
   install(app) {
     initApp(app);
     if (!app.config.warnHandler) {
@@ -10164,16 +10134,14 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
   };
   let changeToastThinTimer = null;
   const changeToastThin = () => {
-    if (state.gestureType !== "none" && changeToastThinTimer != null)
-      return;
+    if (state.gestureType !== "none" && changeToastThinTimer != null) return;
     changeToastThinTimer = setTimeout(() => {
       state.toastThin = true;
     }, 500);
   };
   let showToastTimer = void 0;
   function changeShowToast() {
-    if (showToastTimer != void 0)
-      return;
+    if (showToastTimer != void 0) return;
     showToastTimer = setTimeout(() => {
       state.toastThin = false;
       showToastTimer = void 0;
@@ -10353,7 +10321,7 @@ function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef
     exitFullScreen
   };
 }
-function useVideo(props2, attrs2, trigger) {
+function useVideo(props2, attrs, trigger) {
   const videoRef = vue.ref(null);
   const src = vue.computed(() => getRealPath(props2.src));
   const muted = vue.computed(() => props2.muted === "true" || props2.muted === true);
@@ -10751,13 +10719,13 @@ const props$9 = {
     default: true
   }
 };
-const index$a = /* @__PURE__ */ defineBuiltInComponent({
+const index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: props$9,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   setup(props2, {
     emit: emit2,
-    attrs: attrs2,
+    attrs,
     slots
   }) {
     const rootRef = vue.ref(null);
@@ -10776,10 +10744,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
       videoRef,
       state: videoState,
       play,
-      pause,
-      stop,
       seek,
-      playbackRate,
       toggle,
       onDurationChange,
       onLoadedMetadata,
@@ -10790,21 +10755,18 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
       onPause,
       onEnded,
       onTimeUpdate
-    } = useVideo(props2, attrs2, trigger);
+    } = useVideo(props2, attrs, trigger);
     const {
       state: danmuState,
       danmuRef,
       updateDanmu,
-      toggleDanmu,
-      sendDanmu
+      toggleDanmu
     } = useDanmu(props2, videoState);
     const {
       state: fullscreenState,
       onFullscreenChange,
       emitFullscreenChange,
-      toggleFullscreen,
-      requestFullScreen,
-      exitFullScreen
+      toggleFullscreen
     } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
     const {
       state: gestureState,
@@ -10817,9 +10779,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
       progressRef,
       ballRef,
       clickProgress,
-      toggleControls,
-      autoHideEnd,
-      autoHideStart
+      toggleControls
     } = useControls(props2, videoState, seek);
     useContext();
     const progressing = useProgressing(videoState, gestureState, controlsState);
@@ -10962,7 +10922,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
         "style": {
           width: `${gestureState.volumeNew * 100}%`
         }
-      }, null)], 2) : null]), vue.createVNode("div", {
+      }, null, 4)], 2) : null]), vue.createVNode("div", {
         "class": {
           "uni-video-toast": true,
           "uni-video-toast-progress": progressing.value
@@ -10978,8 +10938,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const onWebInvokeAppService = ({ name, arg }) => {
-  if (name === "postMessage")
-    ;
+  if (name === "postMessage") ;
   else {
     switch (name) {
       case "navigateTo":
@@ -11019,7 +10978,6 @@ const indexX = /* @__PURE__ */ defineBuiltInComponent({
     const rootRef = vue.ref(null);
     vue.ref(null);
     const {
-      $attrs,
       $excludeAttrs,
       $listeners
     } = useAttrs({
@@ -11389,8 +11347,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
         }
         updateMarker(props3);
         const MapsEvent = maps.event || maps.Event;
-        if (getIsBMap())
-          ;
+        if (getIsBMap()) ;
         else {
           MapsEvent.addListener(marker, "click", () => {
             const callout = marker.callout;
@@ -12101,8 +12058,7 @@ function useMap(props2, rootRef, emit2) {
       });
       const bounds = new maps.Bounds(...points);
       map.setBounds(bounds);
-    } else if (getIsBMap())
-      ;
+    } else if (getIsBMap()) ;
     else {
       const bounds = new maps.LatLngBounds();
       state.includePoints.forEach(({
@@ -12143,8 +12099,7 @@ function useMap(props2, rootRef, emit2) {
             if (latitude && longitude) {
               state.latitude = latitude;
               state.longitude = longitude;
-              if (map)
-                ;
+              if (map) ;
               onMapReady(() => {
                 uniShared.callOptions(data, `${type}:ok`);
               });
@@ -12216,7 +12171,7 @@ function useMap(props2, rootRef, emit2) {
     trigger
   };
 }
-const index$9 = /* @__PURE__ */ defineBuiltInComponent({
+const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
   props: props$2,
   emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
@@ -12252,7 +12207,7 @@ const props$1 = {
     default: 0
   }
 };
-const index$8 = /* @__PURE__ */ defineBuiltInComponent({
+const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverView",
   compatConfig: {
     MODE: 3
@@ -12292,7 +12247,7 @@ const index$8 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const index$7 = /* @__PURE__ */ defineBuiltInComponent({
+const index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverImage",
   compatConfig: {
     MODE: 3
@@ -12546,7 +12501,7 @@ const props = {
     default: ""
   }
 };
-const index$6 = /* @__PURE__ */ defineBuiltInComponent({
+const index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Picker",
   compatConfig: {
     MODE: 3
@@ -12679,7 +12634,7 @@ const index$6 = /* @__PURE__ */ defineBuiltInComponent({
         }
       }, [typeof item === "object" ? item[rangeKey] || "" : item], 10, ["onClick"]))], 40, ["onWheel", "onTouchmove"]), vue.createVNode("div", {
         "style": popupStyle.triangle
-      }, null, 4)], 6) : null], 40, ["onWheel", "onTouchmove"]) : null, vue.createVNode("div", null, [slots.default && slots.default()]), system.value ? vue.createVNode("div", {
+      }, null, 4)], 6) : null], 42, ["onWheel", "onTouchmove"]) : null, vue.createVNode("div", null, [slots.default && slots.default()]), system.value ? vue.createVNode("div", {
         "class": "uni-picker-system",
         "onMousemove": withWebEvent(_fixInputPosition)
       }, [vue.createVNode("input", {
@@ -13021,6 +12976,7 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
               case "es":
               case "fr":
                 return [array[2], array[1], array[0]];
+              // case 'en':
               default:
                 return normalize ? [array[2], array[0], array[1]] : [array[1], array[2], array[0]];
             }
@@ -13047,6 +13003,7 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
           case "fr":
             array = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
             break;
+          // case 'en':
           default:
             array = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             break;
@@ -13751,7 +13708,7 @@ class AdRender {
   }
 }
 const DEFAULT_WIDESCREEN_WIDTH = 750;
-const index$5 = /* @__PURE__ */ defineBuiltInComponent({
+const index$6 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Ad",
   props: {
@@ -13814,11 +13771,11 @@ const index$5 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const index$4 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
-const index$3 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
-const index$2 = /* @__PURE__ */ defineUnsupportedComponent("camera");
-const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
-const index = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
+const index$5 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
+const index$4 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
+const index$3 = /* @__PURE__ */ defineUnsupportedComponent("camera");
+const index$2 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
+const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
 const UniViewJSBridge$1 = /* @__PURE__ */ shared.extend(ViewJSBridge, {
   publishHandler(event, args, pageId) {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
@@ -14759,7 +14716,7 @@ function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, 
     "src": getRealPath(iconPath)
   }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2)], 12, ["onClick"]);
 }
-const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
+const index = /* @__PURE__ */ defineSystemComponent({
   name: "Layout",
   setup(_props, {
     emit: emit2
@@ -15152,56 +15109,56 @@ Object.defineProperty(exports, "UniError", {
   enumerable: true,
   get: () => uniShared.UniError
 });
-exports.Ad = index$5;
-exports.AdContentPage = index$4;
-exports.AdDraw = index$3;
+exports.Ad = index$6;
+exports.AdContentPage = index$5;
+exports.AdDraw = index$4;
 exports.AsyncErrorComponent = AsyncErrorComponent;
 exports.AsyncLoadingComponent = AsyncLoadingComponent;
-exports.Button = index$x;
-exports.Camera = index$2;
+exports.Button = index$z;
+exports.Camera = index$3;
 exports.Canvas = indexX$4;
-exports.Checkbox = index$v;
-exports.CheckboxGroup = index$w;
-exports.CoverImage = index$7;
-exports.CoverView = index$8;
-exports.Editor = index$u;
-exports.Form = index$z;
-exports.Icon = index$t;
-exports.Image = index$s;
-exports.Input = Input;
-exports.Label = index$y;
-exports.LayoutComponent = LayoutComponent;
-exports.ListItem = index$f;
-exports.ListView = index$g;
-exports.LivePlayer = index$1;
-exports.LivePusher = index;
+exports.Checkbox = index$x;
+exports.CheckboxGroup = index$y;
+exports.CoverImage = index$8;
+exports.CoverView = index$9;
+exports.Editor = index$w;
+exports.Form = index$B;
+exports.Icon = index$v;
+exports.Image = index$u;
+exports.Input = index$t;
+exports.Label = index$A;
+exports.LayoutComponent = index;
+exports.ListItem = index$g;
+exports.ListView = index$h;
+exports.LivePlayer = index$2;
+exports.LivePusher = index$1;
 exports.Loading = _sfc_main;
-exports.Map = index$9;
-exports.MovableArea = index$r;
-exports.MovableView = index$q;
-exports.Navigator = index$p;
+exports.Map = index$a;
+exports.MovableArea = index$s;
+exports.MovableView = index$r;
+exports.Navigator = index$q;
 exports.PageComponent = PageComponent;
 exports.PageContainer = _sfc_main$1;
-exports.Picker = index$6;
+exports.Picker = index$7;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;
-exports.Progress = index$o;
+exports.Progress = index$p;
 exports.Radio = indexX$3;
-exports.RadioGroup = index$n;
+exports.RadioGroup = index$o;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = index$m;
-exports.ScrollView = index$l;
+exports.RichText = index$n;
+exports.ScrollView = index$m;
 exports.Slider = indexX$2;
-exports.StickyHeader = index$d;
-exports.StickySection = index$e;
-exports.Swiper = index$k;
-exports.SwiperItem = index$j;
+exports.StickyHeader = index$e;
+exports.StickySection = index$f;
+exports.Swiper = index$l;
+exports.SwiperItem = index$k;
 exports.Switch = indexX$1;
-exports.Text = index$i;
-exports.Textarea = index$h;
+exports.Text = index$j;
+exports.Textarea = index$i;
 exports.UniServiceJSBridge = UniServiceJSBridge$1;
 exports.UniViewJSBridge = UniViewJSBridge$1;
-exports.Video = index$a;
+exports.Video = index$b;
 exports.View = __syscom_0;
 exports.WebView = indexX;
 exports.clearStorage = clearStorage;
@@ -15216,7 +15173,7 @@ exports.getStorageInfo = getStorageInfo;
 exports.getStorageInfoSync = getStorageInfoSync;
 exports.getStorageSync = getStorageSync;
 exports.getSystemInfoSync = getSystemInfoSync;
-exports.plugin = index$b;
+exports.plugin = index$c;
 exports.removeStorage = removeStorage;
 exports.removeStorageSync = removeStorageSync;
 exports.request = request;

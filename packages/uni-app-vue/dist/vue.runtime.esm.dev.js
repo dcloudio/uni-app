@@ -1,8 +1,8 @@
-import { isFunction, isPromise, isArray, getGlobalThis, isString, camelize, capitalize, extend, NOOP, EMPTY_OBJ, remove, toHandlerKey, isObject, normalizeClass, normalizeStyle, isOn, hasChanged, toNumber, hyphenate, isHTMLTag, isSVGTag, isSet, isMap, isPlainObject, invokeArrayFns, isRegExp, EMPTY_ARR, isModelListener, isBuiltInDirective, hasOwn, isReservedProp, makeMap, looseToNumber, isGloballyAllowed, NO, def, toRawType, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue } from '@vue/shared';
+import { EMPTY_OBJ, isString, isFunction, isPromise, isArray, getGlobalThis, isModelListener, isOn, camelize, capitalize, toNumber, extend, NOOP, isRegExp, remove, toHandlerKey, isObject, normalizeClass, normalizeStyle, hyphenate, hasChanged, isHTMLTag, isSVGTag, isSet, isMap, isPlainObject, isReservedProp, invokeArrayFns, EMPTY_ARR, hasOwn, looseToNumber, def, isBuiltInDirective, isGloballyAllowed, NO, makeMap, toRawType, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue } from '@vue/shared';
 export { camelize, capitalize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
-import { isRef, isShallow, isReactive, ReactiveEffect, getCurrentScope, ref, pauseTracking, resetTracking, isProxy, computed as computed$1, toRaw, proxyRefs, track, markRaw, customRef, isReadonly, shallowReadonly, reactive, EffectScope, shallowReactive, trigger } from '@vue/reactivity';
+import { pauseTracking, resetTracking, isRef, toRaw, isShallow, isReactive, ReactiveEffect, getCurrentScope, ref, isProxy, EffectScope, markRaw, shallowReadonly, proxyRefs, computed as computed$1, customRef, isReadonly, shallowReactive, track, reactive, trigger } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, TrackOpTypes, TriggerOpTypes, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, toValue, triggerRef, unref } from '@vue/reactivity';
-import { isRootHook, isRootImmediateHook, ON_LOAD, UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode, forcePatchProp, JSON_PROTOCOL, resolveOwnerEl, ATTR_V_OWNER_ID, ATTR_V_RENDERJS } from '@dcloudio/uni-shared';
+import { isRootHook, isRootImmediateHook, ON_LOAD, UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode, forcePatchProp, resolveOwnerEl, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, JSON_PROTOCOL } from '@dcloudio/uni-shared';
 
 /**
 * @dcloudio/uni-app-service-vue v3.4.21
@@ -2543,8 +2543,8 @@ function injectToKeepAliveRoot(hook, type, target, keepAliveRoot) {
   }, target);
 }
 function resetShapeFlag(vnode) {
-  vnode.shapeFlag &= ~256;
-  vnode.shapeFlag &= ~512;
+  vnode.shapeFlag &= -257;
+  vnode.shapeFlag &= -513;
 }
 function getInnerChild(vnode) {
   return vnode.shapeFlag & 128 ? vnode.ssContent : vnode;
@@ -6228,8 +6228,8 @@ function isVNode(value) {
 }
 function isSameVNodeType(n1, n2) {
   if (n2.shapeFlag & 6 && hmrDirtyComponents.has(n2.type)) {
-    n1.shapeFlag &= ~256;
-    n2.shapeFlag &= ~512;
+    n1.shapeFlag &= -257;
+    n2.shapeFlag &= -513;
     return false;
   }
   return n1.type === n2.type && n1.key === n2.key;

@@ -2471,7 +2471,6 @@ E.prototype = {
         return this;
     },
 };
-var E$1 = E;
 
 const borderStyles = {
     black: 'rgba(0,0,0,0.4)',
@@ -2651,7 +2650,7 @@ exports.COMPONENT_NAME_PREFIX = COMPONENT_NAME_PREFIX;
 exports.COMPONENT_PREFIX = COMPONENT_PREFIX;
 exports.COMPONENT_SELECTOR_PREFIX = COMPONENT_SELECTOR_PREFIX;
 exports.DATA_RE = DATA_RE;
-exports.Emitter = E$1;
+exports.Emitter = E;
 exports.EventChannel = EventChannel;
 exports.EventModifierFlags = EventModifierFlags;
 exports.I18N_JSON_DELIMITERS = I18N_JSON_DELIMITERS;

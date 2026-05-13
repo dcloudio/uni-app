@@ -1,4 +1,4 @@
-import { isSymbol, isObject, hasOwn, def, hasChanged, isFunction, isArray as isArray$1, extend, toRawType, EMPTY_OBJ, isSet, isMap, isPlainObject, NOOP, makeMap, capitalize, hyphenate, isPromise, getGlobalThis, isString, remove as remove$1, toHandlerKey, camelize, isReservedProp, looseToNumber, isOn, isBuiltInTag, parseStringStyle, canSetValueDirectly, invokeArrayFns, isBuiltInDirective, isRegExp, toNumber, EMPTY_ARR, toDisplayString, NO, isModelListener, getSequence, normalizeStyle as normalizeStyle$2, normalizeClass as normalizeClass$1, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, normalizeCssVarValue, getEscapedCssVarName, isGloballyAllowed, YES } from '@vue/shared';
+import { isSymbol, isObject, hasOwn, def, hasChanged, isFunction, isArray as isArray$1, extend, EMPTY_OBJ, toRawType, isMap, NOOP, makeMap, isSet, isPlainObject, capitalize, hyphenate, toHandlerKey, camelize, isString, looseToNumber, isPromise, isOn, parseStringStyle, isBuiltInTag, isRegExp, toNumber, isReservedProp, isBuiltInDirective, EMPTY_ARR, NO, invokeArrayFns, getGlobalThis, canSetValueDirectly, remove as remove$1, toDisplayString, YES, getSequence, isModelListener, isGloballyAllowed, normalizeStyle as normalizeStyle$2, normalizeClass as normalizeClass$1, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, normalizeCssVarValue, getEscapedCssVarName } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
 import { isIntegerKey, isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle as normalizeStyle$1, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_EXIT, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
@@ -3691,7 +3691,7 @@ var TeleportImpl = {
       }
       if (dynamicChildren) {
         patchBlockChildren(n1.dynamicChildren, dynamicChildren, currentContainer, parentComponent, parentSuspense, namespace, slotScopeIds);
-        traverseStaticChildren(n1, n2, !!!("development" !== "production"));
+        traverseStaticChildren(n1, n2, false);
       } else if (!optimized) {
         patchChildren(n1, n2, currentContainer, currentAnchor, parentComponent, parentSuspense, namespace, slotScopeIds, false);
       }
@@ -13205,7 +13205,7 @@ function patchEvent(el, rawName, prevValue, nextValue) {
   if (nextValue && existingInvoker) {
     existingInvoker.value = nextValue;
   } else {
-    var [name, options] = parseName(rawName);
+    var [name] = parseName(rawName);
     if (nextValue) {
       var invoker = invokers[rawName] = createInvoker(nextValue, instance);
       addEventListener(el, name, invoker);

@@ -1,16 +1,13 @@
 "use strict";
 var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
+var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 const vue = require("vue");
 const shared = require("@vue/shared");
 const uniShared = require("@dcloudio/uni-shared");
-const vueRouter = require("vue-router");
 const uniI18n = require("@dcloudio/uni-i18n");
+const vueRouter = require("vue-router");
 const isEnableLocale = /* @__PURE__ */ uniShared.once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
@@ -725,22 +722,22 @@ const animation = {
     startAnimation(this);
   }
 };
-const defineBuiltInComponent = (options) => {
+const defineBuiltInComponent = ((options) => {
   options.__reserved = true;
   const { props: props2, mixins } = options;
   if (!props2 || !props2.animation) {
     (mixins || (options.mixins = [])).push(animation);
   }
   return defineSystemComponent(options);
-};
-const defineSystemComponent = (options) => {
+});
+const defineSystemComponent = ((options) => {
   options.__reserved = true;
   options.compatConfig = {
     MODE: 3
     // 标记为vue3
   };
   return vue.defineComponent(options);
-};
+});
 const defineUnsupportedComponent = (name) => {
   return defineBuiltInComponent({
     name: shared.capitalize(shared.camelize(name)),
@@ -889,7 +886,7 @@ uniShared.createRpx2Unit(
   uniShared.defaultRpx2Unit.unitPrecision
 );
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-const index$C = /* @__PURE__ */ defineBuiltInComponent({
+const index$D = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup(_props, {
@@ -949,7 +946,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const index$B = /* @__PURE__ */ defineBuiltInComponent({
+const index$C = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   setup(props2, {
@@ -1025,7 +1022,7 @@ const buttonProps = {
     default: false
   }
 };
-const index$A = /* @__PURE__ */ defineBuiltInComponent({
+const index$B = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, {
@@ -1037,6 +1034,9 @@ const index$A = /* @__PURE__ */ defineBuiltInComponent({
       hovering,
       binding
     } = useHover(props2);
+    const {
+      t: t2
+    } = /* @__PURE__ */ useI18n();
     const onClick = withWebEvent((e2, isLabelClick) => {
       if (props2.disabled) {
         return e2.stopImmediatePropagation();
@@ -1920,7 +1920,7 @@ function useTabBar() {
 }
 const envMethod = /* @__PURE__ */ (() => "env")();
 function normalizeWindowBottom(windowBottom) {
-  return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
+  return `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))`;
 }
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
@@ -2211,8 +2211,7 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
   vue.watch(() => shared.extend({}, size), (value) => emit2("resize", value));
   return () => {
     const rootEl = rootRef.value;
-    if (!rootEl)
-      return;
+    if (!rootEl) return;
     const rect = rootEl.getBoundingClientRect();
     size.width = rect.width;
     size.height = rect.height;
@@ -2278,7 +2277,7 @@ const props$q = {
     default: true
   }
 };
-const index$z = /* @__PURE__ */ defineBuiltInComponent({
+const index$A = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
@@ -2381,8 +2380,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   function _resize(size) {
     let canvas = canvasRef.value;
     var hasChanged = !size || canvas.width !== Math.floor(size.width * _pixelRatio.value) || canvas.height !== Math.floor(size.height * _pixelRatio.value);
-    if (!hasChanged)
-      return;
+    if (!hasChanged) return;
     if (canvas.width > 0 && canvas.height > 0) {
       let context = canvas.getContext("2d");
       let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
@@ -2492,7 +2490,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
       } else if (method === "fillText") {
         c2d.fillText.apply(c2d, data);
       } else if (method === "drawImage") {
-        let drawImage = function() {
+        let drawImage = (function() {
           let dataArray = [...data];
           let url = dataArray[0];
           let otherData = dataArray.slice(1);
@@ -2509,9 +2507,8 @@ function useMethods(props2, canvasRef, actionsWaiting) {
                 )
               );
             }
-          }))
-            return "break";
-        }();
+          })) return "break";
+        })();
         if (drawImage === "break") {
           break;
         }
@@ -2637,8 +2634,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
         data = newCanvas.toDataURL(`image/${type}`, quality);
       } else {
         const imgData = context.getImageData(0, 0, destWidth, destHeight);
-        if (false)
-          ;
+        if (false) ;
         else {
           data = Array.prototype.slice.call(imgData.data);
         }
@@ -2671,8 +2667,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
     compressed
   }, resolve) {
     try {
-      if (false)
-        ;
+      if (false) ;
       if (!height) {
         height = Math.round(data.length / 4 / width);
       }
@@ -2755,7 +2750,7 @@ const props$p = {
     default: ""
   }
 };
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$p,
   emits: ["change"],
@@ -2856,7 +2851,7 @@ const props$o = {
     default: ""
   }
 };
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$o,
   setup(props2, {
@@ -2877,15 +2872,11 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
       }
       const style = {};
       if (checked) {
-        if (props2.activeBorderColor)
-          style.borderColor = props2.activeBorderColor;
-        if (props2.activeBackgroundColor)
-          style.backgroundColor = props2.activeBackgroundColor;
+        if (props2.activeBorderColor) style.borderColor = props2.activeBorderColor;
+        if (props2.activeBackgroundColor) style.backgroundColor = props2.activeBackgroundColor;
       } else {
-        if (props2.borderColor)
-          style.borderColor = props2.borderColor;
-        if (props2.backgroundColor)
-          style.backgroundColor = props2.backgroundColor;
+        if (props2.borderColor) style.borderColor = props2.borderColor;
+        if (props2.backgroundColor) style.backgroundColor = props2.backgroundColor;
       }
       return style;
     }
@@ -3203,7 +3194,7 @@ const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
     default: false
   }
 });
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$m,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -3264,7 +3255,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -3331,7 +3322,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$l,
   setup(props2, {
@@ -3859,8 +3850,7 @@ function useEvent(fieldRef, state, props2, trigger, triggerInput, beforeInput) {
   }
   function initField() {
     const field = fieldRef.value;
-    if (!field)
-      return;
+    if (!field) return;
     const onFocus = function(event) {
       state.focus = true;
       trigger("focus", event, {
@@ -4086,14 +4076,12 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
             return false;
           }
           const res = resolveDigitDecimalPoint(event, cache, state2, input, resetCache);
-          if (typeof res === "boolean")
-            return res;
+          if (typeof res === "boolean") return res;
           cache.value = state2.value = input.value = cache.value === "-" ? "" : cache.value;
           return false;
         } else {
           const res = resolveDigitDecimalPoint(event, cache, state2, input, resetCache);
-          if (typeof res === "boolean")
-            return res;
+          if (typeof res === "boolean") return res;
           cache.value = input.value;
         }
         if (state2.maxlength > 0 && input.value.length > state2.maxlength && !isPaste(event)) {
@@ -4257,7 +4245,7 @@ const movableAreaProps = {
     default: false
   }
 };
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -4805,7 +4793,7 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -5275,29 +5263,20 @@ function useMovableViewState(props2, trigger, rootRef) {
   const {
     // scale
     _updateOldScale,
-    _endScale,
-    _setScale,
     scaleValueSync,
     // layout
     _updateBoundary,
     _updateOffset,
     _updateWH,
     _scaleOffset,
-    minX,
-    minY,
-    maxX,
-    maxY,
     // transform
     FAandSFACancel,
     _getLimitXY,
     _setTransform,
-    _revise,
-    dampingNumber,
     xMove,
     yMove,
     xSync,
-    ySync,
-    _STD
+    ySync
   } = useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA);
   function __handleTouchStart() {
     if (!_isScaling.value) {
@@ -5460,7 +5439,7 @@ function createNavigatorOnClick(props2) {
     }
   };
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -5782,7 +5761,7 @@ const progressProps = {
     default: 0
   }
 };
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
@@ -5872,7 +5851,7 @@ const props$i = {
     default: ""
   }
 };
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$i,
   // emits: ['change'],
@@ -5985,7 +5964,7 @@ const props$h = {
     default: "#ffffff"
   }
 };
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$h,
   setup(props2, {
@@ -6006,10 +5985,8 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
         style.backgroundColor = props2.activeBackgroundColor || props2.color;
         style.borderColor = props2.activeBorderColor || style.backgroundColor;
       } else {
-        if (props2.borderColor)
-          style.borderColor = props2.borderColor;
-        if (props2.backgroundColor)
-          style.backgroundColor = props2.backgroundColor;
+        if (props2.borderColor) style.borderColor = props2.borderColor;
+        if (props2.backgroundColor) style.backgroundColor = props2.backgroundColor;
       }
       return style;
     }
@@ -6212,8 +6189,7 @@ function normalizeValue(tagName, name, value) {
   return value;
 }
 function normalizeAttrs(tagName, attrs) {
-  if (!shared.isPlainObject(attrs))
-    return;
+  if (!shared.isPlainObject(attrs)) return;
   const tagAttrs = TAGS[tagName] || [];
   const normalizedAttrs = {};
   Object.keys(attrs).forEach((name) => {
@@ -6224,8 +6200,7 @@ function normalizeAttrs(tagName, attrs) {
   return normalizedAttrs;
 }
 const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
-  if (!nodeList || Array.isArray(nodeList) && !nodeList.length)
-    return [];
+  if (!nodeList || Array.isArray(nodeList) && !nodeList.length) return [];
   return nodeList.map((node) => {
     if (!shared.isPlainObject(node)) {
       return;
@@ -6279,7 +6254,6 @@ function parseHtml(html) {
   html = removeDOCTYPE(html);
   const stacks = [];
   const results = {
-    node: "root",
     children: []
   };
   HTMLParser(html, {
@@ -6302,8 +6276,7 @@ function parseHtml(html) {
     },
     end: function(tag) {
       const node = stacks.shift();
-      if (node.name !== tag)
-        console.error("invalid state: mismatch end tag");
+      if (node.name !== tag) console.error("invalid state: mismatch end tag");
       if (stacks.length === 0) {
         results.children.push(node);
       } else {
@@ -6353,7 +6326,7 @@ const props$g = {
     }
   }
 };
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -6487,7 +6460,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
         "style": {
           height: `${refresherThreshold}px`
         }
-      }, [slots.default && slots.default()]) : null], 4);
+      }, [slots.default && slots.default()], 4) : null], 4);
     };
   }
 });
@@ -6557,7 +6530,7 @@ const props$f = {
     default: false
   }
 };
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -6581,9 +6554,7 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
     } = useScrollViewState(props2);
     const {
       realScrollX,
-      realScrollY,
-      _scrollLeftChanged,
-      _scrollTopChanged
+      realScrollY
     } = useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
     const mainStyle = vue.computed(() => {
       let style = "";
@@ -6685,8 +6656,7 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     let transform = "";
     scrollToValue < 0 ? scrollToValue = 0 : direction === "x" && scrollToValue > container.scrollWidth - container.offsetWidth ? scrollToValue = container.scrollWidth - container.offsetWidth : direction === "y" && scrollToValue > container.scrollHeight - container.offsetHeight && (scrollToValue = container.scrollHeight - container.offsetHeight);
     direction === "x" ? transformValue = container.scrollLeft - scrollToValue : direction === "y" && (transformValue = container.scrollTop - scrollToValue);
-    if (transformValue === 0)
-      return;
+    if (transformValue === 0) return;
     let _content = content.value;
     _content.style.transition = "transform .3s ease-out";
     _content.style.webkitTransition = "-webkit-transform .3s ease-out";
@@ -6780,8 +6750,7 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     content.value.removeEventListener("webkitTransitionEnd", __transitionEnd);
   }
   function _setRefreshState(_state) {
-    if (!props2.refresherEnabled)
-      return;
+    if (!props2.refresherEnabled) return;
     switch (_state) {
       case "refreshing":
         state.refresherHeight = props2.refresherThreshold;
@@ -6818,11 +6787,9 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
     state.refreshState = _state;
   }
   let touchStart = {
-    x: 0,
     y: 0
   };
   let touchEnd = {
-    x: 0,
     y: props2.refresherThreshold
   };
   vue.watch(scrollTopNumber, (val) => {
@@ -6902,7 +6869,7 @@ const props$e = {
     default: false
   }
 };
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$e,
   emits: ["changing", "change"],
@@ -6925,8 +6892,7 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     const trigger = useCustomEvent(sliderRef, emit2);
     const state = useSliderState(props2, sliderValue);
     const {
-      _onClick,
-      _onTrack
+      _onClick
     } = useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger);
     return () => {
       const {
@@ -7461,7 +7427,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     swiperEnabled
   };
 }
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
   props: props$d,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
@@ -7592,8 +7558,7 @@ const useSwiperNavigation = (rootRef, props2, state, onSwiperDotClick, swiperCon
   });
   function navigationHover(event, type) {
     const target = event.currentTarget;
-    if (!target)
-      return;
+    if (!target) return;
     target.style.backgroundColor = type === "over" ? props2.navigationActiveColor : "";
   }
   const navigationAttr = {
@@ -7602,8 +7567,7 @@ const useSwiperNavigation = (rootRef, props2, state, onSwiperDotClick, swiperCon
   };
   function navigationClick($event, type, disabled) {
     $event.stopPropagation();
-    if (disabled)
-      return;
+    if (disabled) return;
     const swiperItemLength = swiperContext.value.length;
     let _current = state.current;
     switch (type) {
@@ -7692,7 +7656,7 @@ const props$c = {
     default: ""
   }
 };
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
   props: props$c,
   setup(props2, {
@@ -7737,7 +7701,7 @@ const props$b = {
     default: ""
   }
 };
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$b,
   emits: ["change"],
@@ -7850,7 +7814,7 @@ function normalizeText(text, { space, decode }) {
 function parseText(text, options) {
   return normalizeText(text, options).split(uniShared.LINEFEED);
 }
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -7882,8 +7846,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
             });
             const len = lines.length - 1;
             lines.forEach((line, index2) => {
-              if (index2 === 0 && !line)
-                ;
+              if (index2 === 0 && !line) ;
               else {
                 children.push(vue.createTextVNode(line));
               }
@@ -7925,7 +7888,7 @@ const props$a = /* @__PURE__ */ shared.extend({}, props$k, {
 });
 let fixMargin = false;
 const ConfirmTypes = ["done", "go", "next", "search", "send"];
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
+const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$a,
   emits: ["confirm", "change", "linechange", ...emit],
@@ -8072,7 +8035,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
+const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: /* @__PURE__ */ shared.extend({}, hoverProps),
   setup(props2, {
@@ -8102,13 +8065,13 @@ function useSubscribe(callback, name, multiple, pageId) {
   instance.proxy;
   pageId = pageId == null ? useCurrentPageId() : pageId;
 }
-let index$e = 0;
+let index$f = 0;
 function useContextInfo(_id) {
   useCurrentPageId();
   const instance = vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = _id || vm.id || `context${index$e++}`;
+  const id2 = _id || vm.id || `context${index$f++}`;
   return `${type}.${id2}`;
 }
 function injectLifecycleHook(name, hook, publicThis, instance) {
@@ -8138,10 +8101,8 @@ function initHooks(options, instance, publicThis) {
     instance.__isVisible = true;
     try {
       let query = instance.attrs.__pageQuery;
-      if (false)
-        ;
-      if (false)
-        ;
+      if (false) ;
+      if (false) ;
       invokeHook(publicThis, uniShared.ON_LOAD, query);
       if (!instance.vapor) {
         delete instance.attrs.__pageQuery;
@@ -8345,7 +8306,7 @@ function initHistory() {
     return vueRouter.createMemoryHistory(routerBase);
   }
 }
-const index$d = {
+const index$e = {
   install(app) {
     initApp$1(app);
     if (!app.config.warnHandler) {
@@ -8503,7 +8464,7 @@ function setupApp(comp) {
       comp2.mpType = "app";
       const { setup } = comp2;
       const render = () => {
-        return vue.openBlock(), vue.createBlock(LayoutComponent);
+        return vue.openBlock(), vue.createBlock(index$1);
       };
       comp2.setup = (props2, ctx) => {
         const res = setup && setup(props2, ctx);
@@ -8543,16 +8504,14 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
   };
   let changeToastThinTimer = null;
   const changeToastThin = () => {
-    if (state.gestureType !== "none" && changeToastThinTimer != null)
-      return;
+    if (state.gestureType !== "none" && changeToastThinTimer != null) return;
     changeToastThinTimer = setTimeout(() => {
       state.toastThin = true;
     }, 500);
   };
   let showToastTimer = void 0;
   function changeShowToast() {
-    if (showToastTimer != void 0)
-      return;
+    if (showToastTimer != void 0) return;
     showToastTimer = setTimeout(() => {
       state.toastThin = false;
       showToastTimer = void 0;
@@ -9130,7 +9089,7 @@ const props$9 = {
     default: true
   }
 };
-const index$c = /* @__PURE__ */ defineBuiltInComponent({
+const index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: props$9,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
@@ -9155,10 +9114,7 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
       videoRef,
       state: videoState,
       play,
-      pause,
-      stop,
       seek,
-      playbackRate,
       toggle,
       onDurationChange,
       onLoadedMetadata,
@@ -9174,16 +9130,13 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
       state: danmuState,
       danmuRef,
       updateDanmu,
-      toggleDanmu,
-      sendDanmu
+      toggleDanmu
     } = useDanmu(props2, videoState);
     const {
       state: fullscreenState,
       onFullscreenChange,
       emitFullscreenChange,
-      toggleFullscreen,
-      requestFullScreen,
-      exitFullScreen
+      toggleFullscreen
     } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
     const {
       state: gestureState,
@@ -9196,9 +9149,7 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
       progressRef,
       ballRef,
       clickProgress,
-      toggleControls,
-      autoHideEnd,
-      autoHideStart
+      toggleControls
     } = useControls(props2, videoState, seek);
     useContext();
     const progressing = useProgressing(videoState, gestureState, controlsState);
@@ -9341,7 +9292,7 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
         "style": {
           width: `${gestureState.volumeNew * 100}%`
         }
-      }, null)], 2) : null]), vue.createVNode("div", {
+      }, null, 4)], 2) : null]), vue.createVNode("div", {
         "class": {
           "uni-video-toast": true,
           "uni-video-toast-progress": progressing.value
@@ -9357,8 +9308,7 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const onWebInvokeAppService = ({ name, arg }) => {
-  if (name === "postMessage")
-    ;
+  if (name === "postMessage") ;
   else {
     switch (name) {
       case "navigateTo":
@@ -9390,7 +9340,7 @@ const props$8 = {
     default: true
   }
 };
-const index$b = /* @__PURE__ */ defineBuiltInComponent({
+const index$c = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
   props: props$8,
@@ -9402,7 +9352,6 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
     const rootRef = vue.ref(null);
     vue.ref(null);
     const {
-      $attrs,
       $excludeAttrs,
       $listeners
     } = useAttrs({
@@ -9775,8 +9724,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
         }
         updateMarker(props3);
         const MapsEvent = maps.event || maps.Event;
-        if (getIsBMap())
-          ;
+        if (getIsBMap()) ;
         else {
           MapsEvent.addListener(marker, "click", () => {
             const callout = marker.callout;
@@ -10521,8 +10469,7 @@ function useMap(props2, rootRef, emit2) {
       });
       const bounds = new maps.Bounds(...points);
       map.setBounds(bounds);
-    } else if (getIsBMap())
-      ;
+    } else if (getIsBMap()) ;
     else {
       const bounds = new maps.LatLngBounds();
       state.includePoints.forEach(({
@@ -10563,8 +10510,7 @@ function useMap(props2, rootRef, emit2) {
             if (latitude && longitude) {
               state.latitude = latitude;
               state.longitude = longitude;
-              if (map)
-                ;
+              if (map) ;
               onMapReady(() => {
                 uniShared.callOptions(data, `${type}:ok`);
               });
@@ -10636,7 +10582,7 @@ function useMap(props2, rootRef, emit2) {
     trigger
   };
 }
-const index$a = /* @__PURE__ */ defineBuiltInComponent({
+const index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
   props: props$2,
   emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
@@ -10672,7 +10618,7 @@ const props$1 = {
     default: 0
   }
 };
-const index$9 = /* @__PURE__ */ defineBuiltInComponent({
+const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverView",
   compatConfig: {
     MODE: 3
@@ -10712,7 +10658,7 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const index$8 = /* @__PURE__ */ defineBuiltInComponent({
+const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverImage",
   compatConfig: {
     MODE: 3
@@ -10966,7 +10912,7 @@ const props = {
     default: ""
   }
 };
-const index$7 = /* @__PURE__ */ defineBuiltInComponent({
+const index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Picker",
   compatConfig: {
     MODE: 3
@@ -11099,7 +11045,7 @@ const index$7 = /* @__PURE__ */ defineBuiltInComponent({
         }
       }, [typeof item === "object" ? item[rangeKey] || "" : item], 10, ["onClick"]))], 40, ["onWheel", "onTouchmove"]), vue.createVNode("div", {
         "style": popupStyle.triangle
-      }, null, 4)], 6) : null], 40, ["onWheel", "onTouchmove"]) : null, vue.createVNode("div", null, [slots.default && slots.default()]), system.value ? vue.createVNode("div", {
+      }, null, 4)], 6) : null], 42, ["onWheel", "onTouchmove"]) : null, vue.createVNode("div", null, [slots.default && slots.default()]), system.value ? vue.createVNode("div", {
         "class": "uni-picker-system",
         "onMousemove": withWebEvent(_fixInputPosition)
       }, [vue.createVNode("input", {
@@ -11441,6 +11387,7 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
               case "es":
               case "fr":
                 return [array[2], array[1], array[0]];
+              // case 'en':
               default:
                 return normalize ? [array[2], array[0], array[1]] : [array[1], array[2], array[0]];
             }
@@ -11467,6 +11414,7 @@ function usePickerMethods(props2, state, trigger, rootRef, pickerRef, selectRef,
           case "fr":
             array = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
             break;
+          // case 'en':
           default:
             array = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             break;
@@ -12171,7 +12119,7 @@ class AdRender {
   }
 }
 const DEFAULT_WIDESCREEN_WIDTH = 750;
-const index$6 = /* @__PURE__ */ defineBuiltInComponent({
+const index$7 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Ad",
   props: {
@@ -12234,11 +12182,11 @@ const index$6 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const index$5 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
-const index$4 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
-const index$3 = /* @__PURE__ */ defineUnsupportedComponent("camera");
-const index$2 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
-const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
+const index$6 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
+const index$5 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
+const index$4 = /* @__PURE__ */ defineUnsupportedComponent("camera");
+const index$3 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
+const index$2 = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
 const UniViewJSBridge$1 = /* @__PURE__ */ shared.extend(ViewJSBridge, {
   publishHandler(event, args, pageId) {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
@@ -13223,7 +13171,7 @@ function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, 
     "src": getRealPath(iconPath)
   }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2)], 12, ["onClick"]);
 }
-const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
+const index$1 = /* @__PURE__ */ defineSystemComponent({
   name: "Layout",
   setup(_props, {
     emit: emit2
@@ -14099,52 +14047,52 @@ function createPageBodyVNode(ctx) {
     }
   );
 }
-exports.Ad = index$6;
-exports.AdContentPage = index$5;
-exports.AdDraw = index$4;
+exports.Ad = index$7;
+exports.AdContentPage = index$6;
+exports.AdDraw = index$5;
 exports.AsyncErrorComponent = AsyncErrorComponent;
 exports.AsyncLoadingComponent = AsyncLoadingComponent;
-exports.Button = index$A;
-exports.Camera = index$3;
-exports.Canvas = index$z;
-exports.Checkbox = index$x;
-exports.CheckboxGroup = index$y;
-exports.CoverImage = index$8;
-exports.CoverView = index$9;
-exports.Editor = index$w;
-exports.Form = index$C;
-exports.Icon = index$v;
-exports.Image = index$u;
+exports.Button = index$B;
+exports.Camera = index$4;
+exports.Canvas = index$A;
+exports.Checkbox = index$y;
+exports.CheckboxGroup = index$z;
+exports.CoverImage = index$9;
+exports.CoverView = index$a;
+exports.Editor = index$x;
+exports.Form = index$D;
+exports.Icon = index$w;
+exports.Image = index$v;
 exports.Input = Input;
-exports.Label = index$B;
-exports.LayoutComponent = LayoutComponent;
-exports.LivePlayer = index$2;
-exports.LivePusher = index$1;
-exports.Map = index$a;
-exports.MovableArea = index$t;
-exports.MovableView = index$s;
-exports.Navigator = index$r;
+exports.Label = index$C;
+exports.LayoutComponent = index$1;
+exports.LivePlayer = index$3;
+exports.LivePusher = index$2;
+exports.Map = index$b;
+exports.MovableArea = index$u;
+exports.MovableView = index$t;
+exports.Navigator = index$s;
 exports.PageComponent = index;
-exports.Picker = index$7;
+exports.Picker = index$8;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;
-exports.Progress = index$q;
-exports.Radio = index$o;
-exports.RadioGroup = index$p;
+exports.Progress = index$r;
+exports.Radio = index$p;
+exports.RadioGroup = index$q;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = index$n;
-exports.ScrollView = index$m;
-exports.Slider = index$l;
-exports.Swiper = index$k;
-exports.SwiperItem = index$j;
-exports.Switch = index$i;
-exports.Text = index$h;
-exports.Textarea = index$g;
+exports.RichText = index$o;
+exports.ScrollView = index$n;
+exports.Slider = index$m;
+exports.Swiper = index$l;
+exports.SwiperItem = index$k;
+exports.Switch = index$j;
+exports.Text = index$i;
+exports.Textarea = index$h;
 exports.UniServiceJSBridge = UniServiceJSBridge$1;
 exports.UniViewJSBridge = UniViewJSBridge$1;
-exports.Video = index$c;
-exports.View = index$f;
-exports.WebView = index$b;
+exports.Video = index$d;
+exports.View = index$g;
+exports.WebView = index$c;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;
 exports.getApp = getApp$1;
@@ -14157,7 +14105,7 @@ exports.getStorageInfo = getStorageInfo;
 exports.getStorageInfoSync = getStorageInfoSync;
 exports.getStorageSync = getStorageSync;
 exports.getSystemInfoSync = getSystemInfoSync;
-exports.plugin = index$d;
+exports.plugin = index$e;
 exports.removeStorage = removeStorage;
 exports.removeStorageSync = removeStorageSync;
 exports.request = request;

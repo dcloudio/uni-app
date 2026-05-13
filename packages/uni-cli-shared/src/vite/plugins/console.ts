@@ -27,7 +27,8 @@ export function uniConsolePlugin(options: ConsoleOptions): Plugin {
       resolvedConfig = config
       // 理论上发行模式就不应该有这个逻辑了，只不过为了尽量不引发兼容性问题，目前严谨一些判断是否配置了 drop_console
       if (process.env.NODE_ENV !== 'development') {
-        const compressOptions = resolvedConfig.build.terserOptions?.compress
+        const compressOptions = (resolvedConfig.build.terserOptions as any)
+          ?.compress
         if (compressOptions && typeof compressOptions === 'object') {
           dropConsole = !!compressOptions.drop_console
         }

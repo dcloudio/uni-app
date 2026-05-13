@@ -1,4 +1,4 @@
-import { isArray, isPlainObject, hasOwn, extend, capitalize, isString } from 'uni-shared';
+import { isArray, isPlainObject, extend, hasOwn, capitalize, isString } from 'uni-shared';
 
 // 生成的 uts.js 需要同步到 vue2 src/platforms/app-plus/service/api/plugin
 let callbackId = 1;

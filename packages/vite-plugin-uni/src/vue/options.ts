@@ -8,7 +8,6 @@ import type {
   SFCStyleCompileOptions,
   TemplateCompiler,
 } from '@vue/compiler-sfc'
-import type { Options as VueOptions } from '@vitejs/plugin-vue'
 import {
   isBuiltInComponent,
   isDom2AppUserVueComponentTag,
@@ -35,8 +34,14 @@ import {
 import type { ViteLegacyOptions, VitePluginUniResolvedOptions } from '..'
 import { createNVueCompiler } from '../utils'
 
+type VueOptions = any
+
 const pluginVuePath = require.resolve('@vitejs/plugin-vue')
 const normalizedPluginVuePath = normalizePath(pluginVuePath)
+
+function interopDefault<T = any>(mod: any): T {
+  return mod.default || mod
+}
 /**
  * 每次创建新的 plugin-vue 实例。因为该插件内部会 cache  descriptor，而相同的vue文件在编译到vue页面和nvue页面时，不能共享缓存（条件编译，css scoped等均不同）
  * @returns
@@ -44,7 +49,9 @@ const normalizedPluginVuePath = normalizePath(pluginVuePath)
 export function createPluginVueInstance(options: VueOptions) {
   delete require.cache[pluginVuePath]
   delete require.cache[normalizedPluginVuePath]
-  const vuePlugin = require('@vitejs/plugin-vue')
+  // @vitejs/plugin-vue@6 is ESM-only. Node versions supported by Vite 7
+  // can require(esm), which lets this package keep its CJS build for now.
+  const vuePlugin = interopDefault<Function>(require('@vitejs/plugin-vue'))
   const vuePluginInstance: Plugin = vuePlugin(options)
   if (process.env.NODE_ENV === 'development') {
     // 删除 buildEnd 逻辑，因为里边清理了缓存，导致 watch 模式失效 https://github.com/vitejs/vite-plugin-vue/commit/96dbb220ff210d2f7391f43a807bcd8cfb0da776

@@ -1,4 +1,4 @@
-import { type BuildOptions, type ServerOptions, createLogger } from 'vite'
+import type { BuildOptions, LogLevel, Logger, ServerOptions } from 'vite'
 import { extend, hasOwn } from '@vue/shared'
 import {
   M,
@@ -19,6 +19,12 @@ import { buildByVite, initBuildOptions } from './build'
 import { addConfigFile, cleanOptions, printStartupDuration } from './utils'
 import { initEasycom } from '../utils/easycom'
 import { stopProfiler } from './action'
+
+function createViteLogger(level?: LogLevel): Logger {
+  // Vite 7 is ESM-only. Keep the CLI module importable in Jest/CJS tests by
+  // loading Vite lazily only when the uvue dev/build command needs a logger.
+  return require('vite').createLogger(level)
+}
 
 export function initUVueEnv() {
   // 直接指定了
@@ -75,10 +81,9 @@ export async function runUVueAndroidDev(options: CliOptions & ServerOptions) {
         // 首次全量同步
         isFirstEnd = false
         output('log', M['dev.watching.end'])
-        printStartupDuration(createLogger(options.logLevel), false)
-        await stopProfiler((message) =>
-          createLogger(options.logLevel).info(message)
-        )
+        const logger = createViteLogger(options.logLevel)
+        printStartupDuration(logger, false)
+        await stopProfiler((message) => logger.info(message))
         return
       }
       if (dex) {
@@ -111,9 +116,8 @@ export async function runUVueAndroidBuild(options: CliOptions & BuildOptions) {
       isX: true,
     })
     await buildUVue(options)
-    await stopProfiler((message) =>
-      createLogger(options.logLevel).info(message)
-    )
+    const logger = createViteLogger(options.logLevel)
+    await stopProfiler((message) => logger.info(message))
     console.log(M['build.done'])
     // 开发者可能用了三方插件，三方插件有可能阻止退出，导致HBuilderX打包状态识别不正确
     if (isInHBuilderX()) {

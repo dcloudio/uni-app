@@ -1,4 +1,4 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_SHOW, ON_HIDE, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_ERROR, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, getLen, removeLeadingSlash, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType } from "@vue/shared";
 import { createMountPage, unmountPage, ref, getCurrentGenericInstance, injectHook, defineComponent, getCurrentInstance, onMounted, camelize, createVNode, renderSlot } from "vue";
 function get$pageByPage(page) {
@@ -147,17 +147,13 @@ function dialogPageTriggerParentShow(dialogPage) {
 }
 function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle) {
   var triggerParentHideDialogPageNum = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 0;
-  if (!dialogPage.$triggerParentHide)
-    return;
+  if (!dialogPage.$triggerParentHide) return;
   var pages2 = getCurrentPages();
   var currentPage = pages2[pages2.length - 1];
-  if (!currentPage)
-    return;
+  if (!currentPage) return;
   var parentPage = dialogPage.getParentPage();
-  if (!parentPage)
-    return;
-  if (parentPage !== currentPage)
-    return;
+  if (!parentPage) return;
+  if (parentPage !== currentPage) return;
   var dialogPages = currentPage.getDialogPages();
   for (var i = 0; i < dialogPages.length; i++) {
     if (!!dialogPages[i].$triggerParentHide) {
@@ -181,34 +177,28 @@ function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle) {
   invokeHook(currentPage.vm, lifeCycle);
 }
 function getSystemDialogPages(parentPage) {
-  if (!parentPage)
-    return [];
+  if (!parentPage) return [];
   {
     return typeof parentPage.__$$getSystemDialogPages === "undefined" ? parentPage.$getSystemDialogPages() : parentPage.__$$getSystemDialogPages();
   }
 }
 function dialogPageTriggerPrevDialogPageLifeCycle(parentPage, lifeCycle) {
-  if (!parentPage)
-    return;
+  if (!parentPage) return;
   var pages2 = getCurrentPages();
   var currentPage = pages2[pages2.length - 1];
-  if (!currentPage || parentPage !== currentPage)
-    return;
+  if (!currentPage || parentPage !== currentPage) return;
   var prevDialogPage = getLastDialogPage(currentPage);
   prevDialogPage && invokeHook(prevDialogPage.vm, lifeCycle);
 }
 function getLastDialogPage(parentPage) {
   var _lastSystemDialogPage, _lastDialogPage$vm;
-  if (!parentPage)
-    return null;
+  if (!parentPage) return null;
   var dialogPages = parentPage.getDialogPages();
   var systemDialogPages = getSystemDialogPages(parentPage);
   var lastSystemDialogPage = systemDialogPages[systemDialogPages.length - 1];
   var lastDialogPage = dialogPages[dialogPages.length - 1];
-  if (!lastDialogPage)
-    return lastSystemDialogPage;
-  if (!lastSystemDialogPage)
-    return lastDialogPage;
+  if (!lastDialogPage) return lastSystemDialogPage;
+  if (!lastSystemDialogPage) return lastDialogPage;
   var lastSystemDialogPageId = ((_lastSystemDialogPage = lastSystemDialogPage.vm) === null || _lastSystemDialogPage === void 0 || (_lastSystemDialogPage = _lastSystemDialogPage.$basePage) === null || _lastSystemDialogPage === void 0 ? void 0 : _lastSystemDialogPage.id) || Number.MAX_SAFE_INTEGER;
   var lastDialogPageId = ((_lastDialogPage$vm = lastDialogPage.vm) === null || _lastDialogPage$vm === void 0 || (_lastDialogPage$vm = _lastDialogPage$vm.$basePage) === null || _lastDialogPage$vm === void 0 ? void 0 : _lastDialogPage$vm.id) || Number.MAX_SAFE_INTEGER;
   return lastSystemDialogPageId > lastDialogPageId ? lastSystemDialogPage : lastDialogPage;
@@ -878,8 +868,7 @@ function loadFontFaceByStyles(styles, global) {
       fontFaceStyle.push(...style["@FONT-FACE"]);
     }
   });
-  if (fontFaceStyle.length === 0)
-    return;
+  if (fontFaceStyle.length === 0) return;
   fontFaceStyle.forEach((style) => {
     var fontFamily = style["fontFamily"];
     var fontWeight = style["fontWeight"];
@@ -1173,8 +1162,7 @@ var $once = /* @__PURE__ */ defineSyncApi(API_ONCE, (name, callback) => {
   }
 });
 var $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
-  if (!isArray(name))
-    name = name ? [name] : [];
+  if (!isArray(name)) name = name ? [name] : [];
   name.forEach((n) => {
     eventBus.off(n, callback);
     if (
@@ -1352,7 +1340,6 @@ function createNormalizeUrl(type) {
   };
 }
 var API_LOAD_FONT_FACE = "loadFontFace";
-var FRONT_COLORS = ["#ffffff", "#000000"];
 var API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
 var SetNavigationBarColorOptions = {
   formatArgs: {
@@ -1370,29 +1357,10 @@ var SetNavigationBarColorOptions = {
     }
   }
 };
-var SetNavigationBarColorProtocol = {
-  frontColor: {
-    type: String,
-    required: true,
-    validator(frontColor) {
-      if (FRONT_COLORS.indexOf(frontColor) === -1) {
-        return 'invalid frontColor "'.concat(frontColor, '"');
-      }
-    }
-  },
-  backgroundColor: {
-    type: String,
-    required: true
-  },
-  animation: Object
-};
+var SetNavigationBarColorProtocol = {};
 var API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
 var API_PAGE_SCROLL_TO = "pageScrollTo";
-var PageScrollToProtocol = {
-  scrollTop: Number,
-  selector: String,
-  duration: Number
-};
+var PageScrollToProtocol = {};
 var PageScrollToOptions = {
   formatArgs: {
     duration: 300
@@ -1439,14 +1407,7 @@ var SetTabBarItemOptions = {
   }, IndexOptions.formatArgs)
 };
 var API_SET_TAB_BAR_STYLE = "setTabBarStyle";
-var SetTabBarStyleProtocol = {
-  color: String,
-  selectedColor: String,
-  backgroundColor: String,
-  backgroundImage: String,
-  backgroundRepeat: String,
-  borderStyle: String
-};
+var SetTabBarStyleProtocol = {};
 var SetTabBarStyleOptions = {
   beforeInvoke: IndexOptions.beforeInvoke,
   formatArgs: {
@@ -2031,8 +1992,6 @@ function registerPage(_ref, onCreated) {
     path,
     query,
     openType,
-    webview,
-    nvuePageVm,
     eventChannel,
     onRegistered
   } = _ref;
@@ -2179,8 +2138,7 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     path,
     query,
     openType,
-    eventChannel,
-    onRegistered
+    eventChannel
   } = _ref2;
   var delay = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : 0;
   var id2 = genWebviewId();
@@ -2678,7 +2636,6 @@ var $switchTab = (args, _ref) => {
     return;
   }
   _switchTab({
-    url,
     path,
     query
   }).then(resolve).catch(reject);
@@ -2687,7 +2644,6 @@ var $switchTab = (args, _ref) => {
 var switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, $switchTab, SwitchTabProtocol, SwitchTabOptions);
 function _switchTab(_ref2) {
   var {
-    url,
     path,
     query
   } = _ref2;
@@ -2778,7 +2734,7 @@ function _asyncToGenerator(n) {
   };
 }
 function initOn(app, unregisterApp2) {
-  app.addEventListener(ON_SHOW, /* @__PURE__ */ function() {
+  app.addEventListener(ON_SHOW, /* @__PURE__ */ (function() {
     var _ref = _asyncToGenerator(function* (event) {
       var _getCurrentPage;
       var app2 = getNativeApp();
@@ -2820,7 +2776,7 @@ function initOn(app, unregisterApp2) {
     return function(_x) {
       return _ref.apply(this, arguments);
     };
-  }());
+  })());
   app.addEventListener(ON_HIDE, function() {
     var _getCurrentPage2;
     var page = (_getCurrentPage2 = getCurrentPage()) === null || _getCurrentPage2 === void 0 ? void 0 : _getCurrentPage2.vm;
@@ -4912,8 +4868,7 @@ const navigator = /* @__PURE__ */ defineBuiltInComponent({
     var instance = getCurrentInstance();
     onMounted(() => {
       instance === null || instance === void 0 || instance.$waitNativeRender(() => {
-        if (!instance)
-          return;
+        if (!instance) return;
         $uniNavigatorElement.value._getAttribute = (key) => {
           var _props$keyString$toSt, _props$keyString;
           var keyString = camelize(key);

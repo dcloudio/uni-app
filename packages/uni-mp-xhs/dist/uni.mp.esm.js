@@ -1,7 +1,7 @@
-import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, customizeEvent, addLeadingSlash, stringifyQuery } from '@dcloudio/uni-shared';
-import { isArray, hasOwn, hyphenate, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
+import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, ON_READY, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_ERROR, ON_LAUNCH, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, customizeEvent, addLeadingSlash, stringifyQuery } from '@dcloudio/uni-shared';
+import { isArray, hyphenate, hasOwn, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
 import { nextTick, injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
-import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
+import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n';
 
 function initVueIds(vueIds, mpInstance) {
     if (!vueIds) {

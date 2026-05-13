@@ -1,5 +1,5 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
-import { Emitter, UTS, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { Emitter, UTS, ON_ERROR, invokeCreateVueAppHook, onCreateVueApp } from '@dcloudio/uni-shared';
 import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n';
 import { findUniElement, injectHook } from 'vue';
 

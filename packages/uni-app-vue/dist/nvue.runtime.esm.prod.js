@@ -1,6 +1,6 @@
-import { isFunction, isPromise, isArray, isString, camelize, capitalize, NOOP, EMPTY_OBJ, extend, remove, isObject, toHandlerKey, getGlobalThis, normalizeClass, normalizeStyle, isOn, hyphenate, hasChanged, hasOwn, toNumber, isSet, isMap, isPlainObject, invokeArrayFns, isRegExp, EMPTY_ARR, isModelListener, isReservedProp, parseStringStyle, looseToNumber, isGloballyAllowed, NO, def } from '@vue/shared';
+import { EMPTY_OBJ, NOOP, isFunction, isPromise, isArray, isModelListener, isOn, isString, camelize, capitalize, toNumber, extend, isRegExp, remove, isObject, toHandlerKey, getGlobalThis, normalizeClass, normalizeStyle, hyphenate, hasChanged, hasOwn, isSet, isMap, isPlainObject, isReservedProp, EMPTY_ARR, invokeArrayFns, looseToNumber, def, isGloballyAllowed, NO, parseStringStyle } from '@vue/shared';
 export { camelize, capitalize, hyphenate, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
-import { isRef, isShallow, isReactive, ReactiveEffect, getCurrentScope, ref, pauseTracking, resetTracking, isProxy, computed as computed$1, customRef, toRaw, proxyRefs, track, markRaw, reactive, EffectScope, shallowReactive, trigger } from '@vue/reactivity';
+import { isRef, isShallow, isReactive, ReactiveEffect, getCurrentScope, toRaw, ref, pauseTracking, resetTracking, isProxy, EffectScope, markRaw, proxyRefs, computed as computed$1, customRef, shallowReactive, track, reactive, trigger } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, TrackOpTypes, TriggerOpTypes, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, toValue, triggerRef, unref } from '@vue/reactivity';
 import { isRootHook, isRootImmediateHook, ON_LOAD } from '@dcloudio/uni-shared';
 
@@ -2117,8 +2117,8 @@ function injectToKeepAliveRoot(hook, type, target, keepAliveRoot) {
   }, target);
 }
 function resetShapeFlag(vnode) {
-  vnode.shapeFlag &= ~256;
-  vnode.shapeFlag &= ~512;
+  vnode.shapeFlag &= -257;
+  vnode.shapeFlag &= -513;
 }
 function getInnerChild(vnode) {
   return vnode.shapeFlag & 128 ? vnode.ssContent : vnode;
@@ -6025,7 +6025,7 @@ function patchEvent(el, rawName, prevValue, nextValue) {
   if (nextValue && existingInvoker) {
     existingInvoker.value = nextValue;
   } else {
-    var [name, options] = parseName(rawName);
+    var [name] = parseName(rawName);
     if (nextValue) {
       var invoker = invokers[rawName] = createInvoker(nextValue, instance);
       addEventListener(el, name, invoker);

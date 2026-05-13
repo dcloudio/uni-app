@@ -1,8 +1,8 @@
-import { isFunction, isPromise, isArray, isString, camelize, capitalize, NOOP, EMPTY_OBJ, extend, remove, isObject, toHandlerKey, getGlobalThis, normalizeClass, normalizeStyle, isOn, hyphenate, hasChanged, toNumber, isSet, isMap, isPlainObject, invokeArrayFns, isRegExp, EMPTY_ARR, isModelListener, isReservedProp, looseToNumber, hasOwn, isGloballyAllowed, NO, def } from '@vue/shared';
+import { EMPTY_OBJ, NOOP, isFunction, isPromise, isArray, isModelListener, isOn, isString, camelize, capitalize, toNumber, extend, isRegExp, remove, isObject, toHandlerKey, getGlobalThis, normalizeClass, normalizeStyle, hyphenate, hasChanged, isSet, isMap, isPlainObject, isReservedProp, EMPTY_ARR, invokeArrayFns, hasOwn, looseToNumber, def, isGloballyAllowed, NO } from '@vue/shared';
 export { camelize, capitalize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
-import { isRef, isShallow, isReactive, ReactiveEffect, getCurrentScope, ref, pauseTracking, resetTracking, isProxy, computed as computed$1, customRef, toRaw, proxyRefs, track, markRaw, reactive, EffectScope, shallowReactive, trigger } from '@vue/reactivity';
+import { isRef, isShallow, isReactive, ReactiveEffect, getCurrentScope, toRaw, ref, pauseTracking, resetTracking, isProxy, EffectScope, markRaw, proxyRefs, computed as computed$1, customRef, shallowReactive, track, reactive, trigger } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, TrackOpTypes, TriggerOpTypes, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, toValue, triggerRef, unref } from '@vue/reactivity';
-import { isRootHook, isRootImmediateHook, ON_LOAD, UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode, forcePatchProp, JSON_PROTOCOL, resolveOwnerEl, ATTR_V_OWNER_ID, ATTR_V_RENDERJS } from '@dcloudio/uni-shared';
+import { isRootHook, isRootImmediateHook, ON_LOAD, UniInputElement, UniTextAreaElement, UniElement, UniTextNode, UniCommentNode, forcePatchProp, resolveOwnerEl, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, JSON_PROTOCOL } from '@dcloudio/uni-shared';
 
 /**
 * @dcloudio/uni-app-service-vue v3.4.21
@@ -2149,8 +2149,8 @@ function injectToKeepAliveRoot(hook, type, target, keepAliveRoot) {
   }, target);
 }
 function resetShapeFlag(vnode) {
-  vnode.shapeFlag &= ~256;
-  vnode.shapeFlag &= ~512;
+  vnode.shapeFlag &= -257;
+  vnode.shapeFlag &= -513;
 }
 function getInnerChild(vnode) {
   return vnode.shapeFlag & 128 ? vnode.ssContent : vnode;
