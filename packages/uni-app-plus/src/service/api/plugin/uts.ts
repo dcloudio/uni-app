@@ -15,7 +15,7 @@ let proxy: any
 const keepAliveCallbacks: Record<string, Function> = {}
 
 function isUniElement(obj: any) {
-  return obj && typeof obj.tagName === 'string' && obj.tagName && obj.pageId
+  return obj && typeof obj.getNodeId === 'function' && obj.pageId
 }
 
 function isComponentPublicInstance(instance: any) {
