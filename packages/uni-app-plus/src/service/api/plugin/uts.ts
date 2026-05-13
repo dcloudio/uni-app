@@ -703,12 +703,12 @@ export function initUTSProxyClass(
       }
       const instance = this
       const proxy = new Proxy(instance, {
-        get(_target, name) {
+        get(_, name) {
           // 重要：禁止响应式
           if (name === '__v_skip') {
             return true
           }
-          if (!target[name as string] && !_target[name as string]) {
+          if (!target[name as string]) {
             //实例方法
             name = parseClassMethodName(name, methods)
             if (hasOwn(methods, name)) {
@@ -746,7 +746,7 @@ export function initUTSProxyClass(
               })
             }
           }
-          return target[name as string] || _target[name as string]
+          return target[name as string]
         },
         set(_, name, newValue) {
           if (props.includes(name as string)) {
