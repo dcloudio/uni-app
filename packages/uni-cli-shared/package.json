@@ -87,7 +87,6 @@
     "@types/mime": "catalog:",
     "@types/module-alias": "catalog:",
     "@types/resolve": "catalog:",
-    "@types/sass": "catalog:",
     "@types/stylus": "^0.48.36",
     "code-frame": "link:@types/@babel/code-frame",
     "postcss": "catalog:",

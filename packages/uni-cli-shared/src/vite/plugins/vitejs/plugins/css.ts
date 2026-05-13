@@ -1225,7 +1225,8 @@ type StylePreprocessorOptions = {
   alias: Alias[]
 }
 
-type SassStylePreprocessorOptions = StylePreprocessorOptions & Sass.Options
+type SassStylePreprocessorOptions = StylePreprocessorOptions &
+  Sass.LegacyOptions<'async'>
 
 type StylePreprocessor = (
   source: string,
@@ -1288,7 +1289,11 @@ const scss: SassStylePreprocessor = async (
   const render = loadPreprocessor(PreprocessLang.sass, root).render
   // NOTE: `sass` always runs it's own importer first, and only falls back to
   // the `importer` option when it can't resolve a path
-  const internalImporter: Sass.Importer = (url, importer, done) => {
+  const internalImporter: Sass.LegacyImporter<'async'> = (
+    url,
+    importer,
+    done
+  ) => {
     resolvers.sass(url, importer).then((resolved) => {
       if (resolved) {
         rebaseUrls(resolved, options.filename, options.alias, isNVue)
@@ -1299,7 +1304,7 @@ const scss: SassStylePreprocessor = async (
       }
     })
   }
-  const importer = [internalImporter]
+  const importer: Sass.LegacyImporter<'async'>[] = [internalImporter]
   if (options.importer) {
     isArray(options.importer)
       ? importer.push(...options.importer)
@@ -1312,7 +1317,7 @@ const scss: SassStylePreprocessor = async (
     options.additionalData,
     options.enableSourcemap
   )
-  const finalOptions: Sass.Options = {
+  const finalOptions: Sass.LegacyOptions<'async'> = {
     ...options,
     data,
     file: options.filename,
@@ -1328,10 +1333,12 @@ const scss: SassStylePreprocessor = async (
   }
 
   try {
-    const result = await new Promise<Sass.Result>((resolve, reject) => {
+    const result = await new Promise<Sass.LegacyResult>((resolve, reject) => {
       render(finalOptions, (err, res) => {
         if (err) {
           reject(err)
+        } else if (!res) {
+          reject(new Error('Sass render result is empty.'))
         } else {
           resolve(res)
         }
@@ -1395,7 +1402,7 @@ async function rebaseUrls(
   rootFile: string,
   alias: Alias[],
   isNVue: boolean = false
-): Promise<Sass.ImporterReturnType> {
+): Promise<Sass.LegacyImporterResult> {
   file = path.resolve(file) // ensure os-specific flashes
 
   // fixed by xxxxxx 条件编译

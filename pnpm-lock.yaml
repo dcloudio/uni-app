@@ -60,9 +60,6 @@ catalogs:
     '@types/resolve':
       specifier: 1.20.6
       version: 1.20.6
-    '@types/sass':
-      specifier: 1.43.1
-      version: 1.43.1
     '@vitejs/plugin-basic-ssl':
       specifier: 2.3.0
       version: 2.3.0
@@ -1568,9 +1565,6 @@ importers:
       '@types/resolve':
         specifier: 'catalog:'
         version: 1.20.6
-      '@types/sass':
-        specifier: 'catalog:'
-        version: 1.43.1
       '@types/stylus':
         specifier: ^0.48.36
         version: 0.48.42
@@ -2575,9 +2569,6 @@ importers:
       '@types/fs-extra':
         specifier: 'catalog:'
         version: 9.0.13
-      '@types/sass':
-        specifier: 'catalog:'
-        version: 1.43.1
       '@vue/babel-plugin-jsx':
         specifier: 1.2.2
         version: 1.2.2(@babel/core@7.25.2)
@@ -4763,9 +4754,6 @@ packages:
 
   '@types/resolve@1.20.6':
     resolution: {integrity: sha512-A4STmOXPhMUtHH+S6ymgE2GiBSMqf4oTvcQZMcHzokuTLVYzXTB8ttjcgxOVaAp2lGwEdzZ0J+cRbbeevQj1UQ==}
-
-  '@types/sass@1.43.1':
-    resolution: {integrity: sha512-BPdoIt1lfJ6B7rw35ncdwBZrAssjcwzI5LByIrYs+tpXlj/CAkuVdRsgZDdP4lq5EjyWzwxZCqAoFyHKFwp32g==}
 
   '@types/send@0.17.4':
     resolution: {integrity: sha512-x2EM6TJOybec7c52BX0ZspPodMsQUd5L6PRwOunVyVUhXiBSKf3AezDL8Dgvgt5o0UfKNfuA0eMLr2wLT4AiBA==}
@@ -11481,10 +11469,6 @@ snapshots:
   '@types/resolve@1.20.2': {}
 
   '@types/resolve@1.20.6': {}
-
-  '@types/sass@1.43.1':
-    dependencies:
-      '@types/node': 22.19.19
 
   '@types/send@0.17.4':
     dependencies:
