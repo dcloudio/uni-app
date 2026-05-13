@@ -18718,12 +18718,12 @@ function initUTSProxyClass(options) {
             }
             const instance = this;
             const proxy = new Proxy(instance, {
-                get(_, name) {
+                get(_target, name) {
                     // 重要：禁止响应式
                     if (name === '__v_skip') {
                         return true;
                     }
-                    if (!target[name]) {
+                    if (!target[name] && !_target[name]) {
                         //实例方法
                         name = parseClassMethodName(name, methods);
                         if (hasOwn$1(methods, name)) {
@@ -18749,7 +18749,7 @@ function initUTSProxyClass(options) {
                             });
                         }
                     }
-                    return target[name];
+                    return target[name] || _target[name];
                 },
                 set(_, name, newValue) {
                     if (props.includes(name)) {

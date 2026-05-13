@@ -4475,11 +4475,11 @@ function initUTSProxyClass(options) {
       }
       var instance = this;
       var proxy2 = new Proxy(instance, {
-        get(_, name) {
+        get(_target, name) {
           if (name === "__v_skip") {
             return true;
           }
-          if (!target[name]) {
+          if (!target[name] && !_target[name]) {
             name = parseClassMethodName(name, methods);
             if (hasOwn(methods, name)) {
               var {
@@ -4507,7 +4507,7 @@ function initUTSProxyClass(options) {
               });
             }
           }
-          return target[name];
+          return target[name] || _target[name];
         },
         set(_, name, newValue) {
           if (props.includes(name)) {
