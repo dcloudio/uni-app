@@ -18392,7 +18392,7 @@ let callbackId = 1;
 let proxy;
 const keepAliveCallbacks = {};
 function isUniElement(obj) {
-    return obj && typeof obj.tagName === 'string' && obj.tagName && obj.pageId;
+    return obj && typeof obj.getNodeId === 'function' && obj.pageId;
 }
 function isComponentPublicInstance(instance) {
     return instance && instance.$ && instance.$.proxy === instance;
@@ -18718,12 +18718,12 @@ function initUTSProxyClass(options) {
             }
             const instance = this;
             const proxy = new Proxy(instance, {
-                get(_target, name) {
+                get(_, name) {
                     // 重要：禁止响应式
                     if (name === '__v_skip') {
                         return true;
                     }
-                    if (!target[name] && !_target[name]) {
+                    if (!target[name]) {
                         //实例方法
                         name = parseClassMethodName(name, methods);
                         if (hasOwn$1(methods, name)) {
@@ -18749,7 +18749,7 @@ function initUTSProxyClass(options) {
                             });
                         }
                     }
-                    return target[name] || _target[name];
+                    return target[name];
                 },
                 set(_, name, newValue) {
                     if (props.includes(name)) {
@@ -18767,8 +18767,7 @@ function initUTSProxyClass(options) {
                         target[parseClassPropertySetter(name)](newValue);
                         return true;
                     }
-                    target[name] = newValue;
-                    return true;
+                    return false;
                 },
             });
             return Object.freeze(proxy);

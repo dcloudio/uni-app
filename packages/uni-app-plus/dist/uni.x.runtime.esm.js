@@ -4094,7 +4094,7 @@ var callbackId = 1;
 var proxy;
 var keepAliveCallbacks = {};
 function isUniElement(obj) {
-  return obj && typeof obj.tagName === "string" && obj.tagName && obj.pageId;
+  return obj && typeof obj.getNodeId === "function" && obj.pageId;
 }
 function isComponentPublicInstance(instance) {
   return instance && instance.$ && instance.$.proxy === instance;
@@ -4424,11 +4424,11 @@ function initUTSProxyClass(options) {
       }
       var instance = this;
       var proxy2 = new Proxy(instance, {
-        get(_target, name) {
+        get(_, name) {
           if (name === "__v_skip") {
             return true;
           }
-          if (!target[name] && !_target[name]) {
+          if (!target[name]) {
             name = parseClassMethodName(name, methods);
             if (hasOwn(methods, name)) {
               var {
@@ -4456,7 +4456,7 @@ function initUTSProxyClass(options) {
               });
             }
           }
-          return target[name] || _target[name];
+          return target[name];
         },
         set(_, name, newValue) {
           if (props.includes(name)) {
@@ -4474,8 +4474,7 @@ function initUTSProxyClass(options) {
             target[parseClassPropertySetter(name)](newValue);
             return true;
           }
-          target[name] = newValue;
-          return true;
+          return false;
         }
       });
       return Object.freeze(proxy2);
