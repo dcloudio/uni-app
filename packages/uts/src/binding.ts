@@ -88,7 +88,19 @@ function resolveNativeBinding() {
     default:
       throw new Error(`Unsupported OS: ${platform}, architecture: ${arch}`)
   }
-  return require('@dcloudio/' + nativeBinding)
+  try {
+    return require('@dcloudio/' + nativeBinding)
+  } catch (e: any) {
+    if (
+      process.platform === 'win32' &&
+      e &&
+      typeof e.message === 'string' &&
+      e.message.includes('The specified module could not be found')
+    ) {
+      console.error(`检测到系统缺少运行依赖库，请先安装**微软VC++运行库**。`)
+    }
+    throw e
+  }
 }
 
 export default resolveNativeBinding()
