@@ -16,6 +16,8 @@ import HTMLParser from 'uni-helpers/html-parser'
 import * as formats from './formats'
 import loadScript from './load-script'
 
+const STATUS_KEY_MAP = { 'code-block': 'codeBlock' }
+
 function isiOS () {
   if (__PLATFORM__ === 'app-plus') {
     return plus.os.name.toLowerCase() === 'ios'
@@ -414,7 +416,11 @@ export default {
       const keys = Object.keys(status)
       if (keys.length !== Object.keys(this.__status || {}).length || keys.find(key => status[key] !== this.__status[key])) {
         this.__status = status
-        this.$trigger('statuschange', {}, status)
+        const normalizedStatus = {}
+        Object.keys(status).forEach(function (k) {
+          normalizedStatus[STATUS_KEY_MAP[k] || k] = status[k]
+        })
+        this.$trigger('statuschange', {}, normalizedStatus)
       }
     }
   }
