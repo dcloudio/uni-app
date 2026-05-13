@@ -9363,6 +9363,7 @@ function register(Quill) {
   Object.values(formats).forEach((value) => extend(options, value(Quill)));
   Quill.register(options, true);
 }
+const STATUS_KEY_MAP = { "code-block": "codeBlock" };
 function useQuill(props2, rootRef, trigger) {
   let quillReady;
   let skipMatcher;
@@ -9484,7 +9485,11 @@ function useQuill(props2, rootRef, trigger) {
     const keys = Object.keys(status);
     if (keys.length !== Object.keys(oldStatus).length || keys.find((key) => status[key] !== oldStatus[key])) {
       oldStatus = status;
-      trigger("statuschange", {}, status);
+      const normalizedStatus = {};
+      Object.keys(status).forEach((k) => {
+        normalizedStatus[STATUS_KEY_MAP[k] || k] = status[k];
+      });
+      trigger("statuschange", {}, normalizedStatus);
     }
   }
   function fixCursor() {
