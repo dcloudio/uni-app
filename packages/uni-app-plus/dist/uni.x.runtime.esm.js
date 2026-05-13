@@ -4474,7 +4474,8 @@ function initUTSProxyClass(options) {
             target[parseClassPropertySetter(name)](newValue);
             return true;
           }
-          return false;
+          target[name] = newValue;
+          return true;
         }
       });
       return Object.freeze(proxy2);
