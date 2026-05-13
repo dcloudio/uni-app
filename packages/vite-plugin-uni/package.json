@@ -56,7 +56,6 @@
     "@types/estree": "catalog:",
     "@types/express": "^4.17.12",
     "@types/fs-extra": "catalog:",
-    "@types/sass": "catalog:",
     "@vue/babel-plugin-jsx": "1.2.2",
     "chokidar": "catalog:",
     "vite": "catalog:",
@@ -66,7 +65,7 @@
     "vite": "catalog:"
   },
   "uni-app": {
-    "compilerVersion": "4.81"
+    "compilerVersion": "5.11"
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da"
 }
