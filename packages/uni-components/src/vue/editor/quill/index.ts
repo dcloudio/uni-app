@@ -12,6 +12,8 @@ import { useContextInfo, useSubscribe } from '@dcloudio/uni-components'
 import { getBaseSystemInfo, getRealPath } from '@dcloudio/uni-platform'
 import type { CustomEventTrigger } from '../../../helpers/useEvent'
 import HTMLParser from '../../../helpers/html-parser'
+
+const STATUS_KEY_MAP: Record<string, string> = { 'code-block': 'codeBlock' }
 import loadScript from './loadScript'
 import * as formats from './formats'
 
@@ -194,7 +196,11 @@ export function useQuill(
       keys.find((key) => status[key] !== oldStatus[key])
     ) {
       oldStatus = status
-      trigger('statuschange', {} as Event, status)
+      const normalizedStatus: StringMap = {}
+      Object.keys(status).forEach((k) => {
+        normalizedStatus[STATUS_KEY_MAP[k] || k] = status[k]
+      })
+      trigger('statuschange', {} as Event, normalizedStatus)
     }
   }
   function fixCursor() {
