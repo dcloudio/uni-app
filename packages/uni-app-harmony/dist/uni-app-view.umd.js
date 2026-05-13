@@ -15210,6 +15210,9 @@
     Object.values(formats).forEach((value) => extend(options, value(Quill)));
     Quill.register(options, true);
   }
+  var STATUS_KEY_MAP = {
+    "code-block": "codeBlock"
+  };
   function useQuill(props2, rootRef, trigger2) {
     var quillReady;
     var skipMatcher;
@@ -15298,7 +15301,11 @@
       var keys = Object.keys(status);
       if (keys.length !== Object.keys(oldStatus).length || keys.find((key2) => status[key2] !== oldStatus[key2])) {
         oldStatus = status;
-        trigger2("statuschange", {}, status);
+        var normalizedStatus = {};
+        Object.keys(status).forEach((k) => {
+          normalizedStatus[STATUS_KEY_MAP[k] || k] = status[k];
+        });
+        trigger2("statuschange", {}, normalizedStatus);
       }
     }
     function fixCursor() {
