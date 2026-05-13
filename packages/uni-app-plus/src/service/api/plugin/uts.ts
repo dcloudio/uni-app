@@ -678,7 +678,7 @@ export function initUTSProxyClass(
       if (errMsg) {
         throw new Error(errMsg)
       }
-      const target: Record<string | number | symbol, Function> = {}
+      const target: Record<string, Function> = {}
       // 初始化实例 ID
       if (!isProxyInterface) {
         // 初始化未指定时，每次都要创建instanceId
@@ -773,8 +773,7 @@ export function initUTSProxyClass(
             target[parseClassPropertySetter(name as string)](newValue)
             return true
           }
-          target[name] = newValue
-          return true
+          return false
         },
       })
       return Object.freeze(proxy)
