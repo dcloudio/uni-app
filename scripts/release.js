@@ -195,7 +195,7 @@ async function publishPackage(pkgName, version, runIfNotDry) {
       ],
       {
         cwd: pkgRoot,
-        stdio: 'pipe',
+        stdio: 'inherit',
       }
     )
     console.log(colors.green(`Successfully published ${pkgName}@${version}`))
