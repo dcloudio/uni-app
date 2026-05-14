@@ -709,7 +709,7 @@ function copyConfigJson(
   const configJson: Record<string, any> = fs.existsSync(configJsonFilename)
     ? parseJson(fs.readFileSync(configJsonFilename, 'utf8'))
     : {}
-  let delegateClassTxt = resolveComponentDelegateClassOptions(
+  const delegateClassList = resolveComponentDelegateClassOptions(
     platform,
     namespace,
     inputDir
@@ -720,7 +720,7 @@ function copyConfigJson(
     hasCustomElements ||
     hasHookClass ||
     hasProvider ||
-    delegateClassTxt
+    delegateClassList.length
   ) {
     //存在组件
     if (hasComponents) {
@@ -767,14 +767,13 @@ function copyConfigJson(
       configJson.provider = provider
     }
 
-    if (delegateClassTxt) {
+    if (delegateClassList.length) {
       if (!configJson.components) {
-        configJson.components = [{ delegateClass: delegateClassTxt }]
+        configJson.components = delegateClassList.map((delegateClass) => ({
+          delegateClass,
+        }))
       } else if (Array.isArray(configJson.components)) {
-        const item = configJson.components[0]
-        if (!item.delegateClass) {
-          item.delegateClass = delegateClassTxt
-        }
+        addComponentDelegateClass(configJson.components, delegateClassList)
       }
     }
 
@@ -793,64 +792,66 @@ function resolveComponentDelegateClassOptions(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   namespace: string,
   inputDir: string
-): string {
+): string[] {
   const isX = process.env.UNI_APP_X === 'true'
   if (!isX) {
-    return ''
+    return []
   }
   const isIOS = platform === 'app-ios'
   const isAndroid = platform === 'app-android'
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   if (!isIOS && (!isAndroid || !isDom2)) {
-    return ''
+    return []
   }
   // 兼容通过插件 id 标识组件插件，但 config.json 中组件名不是 uni- 开头的场景
   const pluginId = resolveUniModulesPluginId(inputDir)
   if (!pluginId) {
-    return ''
+    return []
   }
   if (!pluginId.startsWith('uni-')) {
-    return ''
+    return []
   }
   const indexFile = resolve(inputDir, 'index.uts')
   if (!fs.existsSync(indexFile)) {
-    return ''
+    return []
   }
   // 通过 app-ios/index.uts 中的导出接口判断是否真的是原生 View 组件插件
   const content = fs.readFileSync(indexFile, 'utf8')
-  const className = resolveDelegateClassByName(platform, content, pluginId)
-  if (!className) {
-    return ''
-  }
-  return isAndroid ? `${namespace}${className}` : className
+  return resolveDelegateClassByName(platform, content, pluginId).map(
+    (className) => (isAndroid ? `${namespace}${className}` : className)
+  )
 }
 
 function resolveDelegateClassByName(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   content: string,
   name: string
-): string {
+): string[] {
   if (!name.startsWith('uni-')) {
-    return ''
+    return []
   }
-  const interfaceName = resolveElementDeclName(
+  const interfaceNames = resolveElementDeclNames(
     platform,
     content,
     capitalize(camelize(name)) + 'Element'
   )
-  if (!interfaceName) {
-    return ''
+  if (!interfaceNames.length) {
+    return []
   }
-  // 注册类名要跟随实际的 Element 接口名，不能再强依赖插件 id。
-  const className = interfaceName.replace(/Element$/, '')
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
-  if (isDom2) {
-    return className + 'ElementRegister'
-  }
-  return className + 'ComponentRegister'
+  return interfaceNames.map((interfaceName) => {
+    // 注册类名要跟随实际的 Element 接口名，不能再强依赖插件 id。
+    const className = interfaceName.replace(/Element$/, '')
+    return className + (isDom2 ? 'ElementRegister' : 'ComponentRegister')
+  })
 }
 
-function resolveElementDeclName(
+interface ElementDecl {
+  name: string
+  extendsText: string
+}
+
+function resolveElementDeclNames(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   content: string,
   preferredInterfaceName: string
@@ -858,22 +859,75 @@ function resolveElementDeclName(
   const isAndroid = platform === 'app-android'
   const elementDeclRE = isAndroid
     ? /class\s+(Uni[A-Za-z0-9_$]*Element)/g
-    : /interface\s+(Uni[A-Za-z0-9_$]*Element)\s+extends\b/g
-  let fallbackInterfaceName = ''
+    : /export\s+interface\s+(Uni[A-Za-z0-9_$]*Element)\s+extends\s*([^{]+)/g
+  const interfaceDecls: ElementDecl[] = []
   let match: RegExpExecArray | null
   while ((match = elementDeclRE.exec(content))) {
     const interfaceName = match[1]
-    // 先兼容历史上和插件 id 对齐的命名，避免同文件多个接口时误判。
-    if (interfaceName === preferredInterfaceName) {
-      return interfaceName
-    }
-    // 找不到精确匹配时，再兜底到第一个 Uni*Element 接口，
-    // 兼容 uni-map-tencent -> UniMapElement 这类命名不完全一致的场景。
-    if (!fallbackInterfaceName) {
-      fallbackInterfaceName = interfaceName
+    // 同名重复声明时只生成一次，避免 config.json 中出现重复 delegateClass。
+    if (!interfaceDecls.find((decl) => decl.name === interfaceName)) {
+      interfaceDecls.push({
+        name: interfaceName,
+        extendsText: match[2] || '',
+      })
     }
   }
-  return fallbackInterfaceName
+  const interfaceNames = interfaceDecls.map((decl) => decl.name)
+  // 先兼容历史上和插件 id 对齐的命名，避免同文件多个接口时误判。
+  if (interfaceNames.includes(preferredInterfaceName)) {
+    const viewInterfaceNames = interfaceDecls
+      .filter((decl) => /\bUniViewElement\b/.test(decl.extendsText))
+      .map((decl) => decl.name)
+    // 插件 id 对应的接口存在时，多个原生 View 组件接口仍需要全部注册。
+    if (
+      viewInterfaceNames.length > 1 &&
+      viewInterfaceNames.includes(preferredInterfaceName)
+    ) {
+      return viewInterfaceNames
+    }
+    return [preferredInterfaceName]
+  }
+  // 找不到精确匹配时，再兜底到所有 Uni*Element 接口，
+  // 兼容 uni-map-tencent -> UniMapElement 以及单插件多组件的场景。
+  return interfaceNames
+}
+
+function addComponentDelegateClass(
+  components: { delegateClass?: string }[],
+  delegateClassList: string[]
+) {
+  const item = components[0]
+  if (delegateClassList.length === 1) {
+    // 单个 delegateClass 保持旧逻辑：只补齐首个组件配置，不额外追加。
+    if (!item) {
+      components.push({ delegateClass: delegateClassList[0] })
+    } else if (!item.delegateClass) {
+      item.delegateClass = delegateClassList[0]
+    }
+    return
+  }
+  const existedDelegateClass = new Set(
+    components.map((component) => component.delegateClass).filter(Boolean)
+  )
+  const pendingDelegateClassList = delegateClassList.filter(
+    (delegateClass) => !existedDelegateClass.has(delegateClass)
+  )
+  if (!pendingDelegateClassList.length) {
+    return
+  }
+  if (!item) {
+    components.push(
+      ...pendingDelegateClassList.map((delegateClass) => ({ delegateClass }))
+    )
+    return
+  }
+  if (!item.delegateClass) {
+    item.delegateClass = pendingDelegateClassList.shift()
+  }
+  // 多个 Element 接口对应多个注册类，后续的追加为独立组件配置。
+  pendingDelegateClassList.forEach((delegateClass) => {
+    components.push({ delegateClass })
+  })
 }
 
 function resolveUniModulesPluginId(inputDir: string) {
