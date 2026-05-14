@@ -87,4 +87,54 @@ export interface UniWebElement extends JSExport, UniElement {}
       },
     ])
   })
+
+  test('genConfigJson 在多个 Element 接口且无插件 id 精确命中时生成多个 delegateClass', () => {
+    const configJson = genIOSConfigJson(
+      'uni-form',
+      `
+export interface UniInputElement extends JSExport, UniViewElement {
+  value: string
+  focus(): void
+}
+export interface UniTextareaElement extends JSExport, UniViewElement {
+  value: string
+  blur(): void
+}
+`
+    )
+
+    expect(configJson.components).toEqual([
+      {
+        delegateClass: 'UniInputComponentRegister',
+      },
+      {
+        delegateClass: 'UniTextareaComponentRegister',
+      },
+    ])
+  })
+
+  test('genConfigJson 在插件 id 命中且存在多个 View Element 接口时生成多个 delegateClass', () => {
+    const configJson = genIOSConfigJson(
+      'uni-input',
+      `
+export interface UniInputElement extends JSExport, UniViewElement {
+  value: string
+  focus(): void
+}
+export interface UniTextareaElement extends JSExport, UniViewElement {
+  value: string
+  blur(): void
+}
+`
+    )
+
+    expect(configJson.components).toEqual([
+      {
+        delegateClass: 'UniInputComponentRegister',
+      },
+      {
+        delegateClass: 'UniTextareaComponentRegister',
+      },
+    ])
+  })
 })
