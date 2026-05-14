@@ -7,6 +7,10 @@ import {
 import type { VitePluginUniResolvedOptions } from '..'
 import { hasOwn, isArray } from '@vue/shared'
 
+type RollupOutputOptionsWithSourcemapExcludeSources = {
+  sourcemapExcludeSources?: boolean
+}
+
 export function createBuild(
   options: VitePluginUniResolvedOptions,
   config: UserConfig
@@ -16,11 +20,17 @@ export function createBuild(
     platform: process.env.UNI_PLATFORM,
     isX: process.env.UNI_APP_X === 'true',
   })
-  const rollupOutputOption = config.build?.rollupOptions?.output
   const sourcemap =
     process.env.UNI_APP_SOURCEMAP === 'true'
       ? 'hidden'
       : config.build?.sourcemap
+  const rollupOutputOption = config.build?.rollupOptions?.output
+  const sourcemapExcludeSources =
+    !isArray(rollupOutputOption) &&
+    (rollupOutputOption as RollupOutputOptionsWithSourcemapExcludeSources)
+      ?.sourcemapExcludeSources === false
+      ? false
+      : process.env.UNI_APP_SOURCEMAP === 'true'
   return {
     sourcemap,
     cssTarget,
@@ -36,6 +46,9 @@ export function createBuild(
         ? ({ compress: { drop_console: false } } as any)
         : undefined,
     rollupOptions: {
+      moduleTypes: {
+        '.uts': 'ts',
+      },
       onwarn(warning, warn) {
         if (warning.code === 'EMPTY_BUNDLE') {
           // 忽略空包警告，通常是条件编译之类导致的
@@ -56,12 +69,10 @@ export function createBuild(
         warn(warning)
       },
       output: {
-        sourcemapExcludeSources:
-          !isArray(rollupOutputOption) &&
-          rollupOutputOption?.sourcemapExcludeSources === false
-            ? false
-            : process.env.UNI_APP_SOURCEMAP === 'true',
-      },
+        // Vite 8/Rolldown supports sourcemapExcludeSources. Keep the existing
+        // source-content policy during the rolldown-vite@7.3.1 transition.
+        sourcemapExcludeSources,
+      } as any,
     },
   }
 }

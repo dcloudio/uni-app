@@ -22,6 +22,12 @@ const BUILT_IN_MODULES = {
   'vue-router': 'dist/vue-router.esm-bundler.js',
   vuex: 'dist/vuex.esm-bundler.js',
   'vue-i18n': 'dist/vue-i18n.esm-bundler.js',
+  '@vue/devtools-api': () =>
+    require.resolve('@vue/devtools-api/lib/esm/index.js', {
+      // @vue/devtools-api is vue-router's transitive dependency. With
+      // preserveSymlinks enabled, resolve it from vue-router's real package dir.
+      paths: [path.dirname(resolveBuiltIn('vue-router/package.json'))],
+    }),
   '@dcloudio/uni-app': 'dist/uni-app.es.js',
   '@dcloudio/uni-cloud': 'dist/uni-cloud.es.js',
   '@dcloudio/uni-i18n': 'dist/uni-i18n.es.js',
@@ -32,6 +38,13 @@ const BUILT_IN_MODULES = {
 }
 
 export type BuiltInModulesKey = keyof typeof BUILT_IN_MODULES
+
+function resolveBuiltInModule(id: BuiltInModulesKey) {
+  const builtInModule = BUILT_IN_MODULES[id]
+  return typeof builtInModule === 'function'
+    ? builtInModule()
+    : resolveBuiltIn(path.join(id, builtInModule))
+}
 
 export function uniResolveIdPlugin(
   options: VitePluginUniResolvedOptions
@@ -57,8 +70,8 @@ export function uniResolveIdPlugin(
         return cache
       }
       if (BUILT_IN_MODULES[id as BuiltInModulesKey]) {
-        return (resolveCache[id] = resolveBuiltIn(
-          path.join(id, BUILT_IN_MODULES[id as BuiltInModulesKey])
+        return (resolveCache[id] = resolveBuiltInModule(
+          id as BuiltInModulesKey
         ))
       }
       if (process.env.UNI_PLATFORM !== 'app') {

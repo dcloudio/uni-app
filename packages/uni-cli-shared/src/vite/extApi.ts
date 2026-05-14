@@ -1,7 +1,6 @@
 import type { BuildOptions, Plugin } from 'vite'
 import { isUTSProxy } from '../uts'
 import { resolveMainPathOnce } from '../resolve'
-import type { RollupOptions } from 'rollup'
 import { isUniAppXAndroidJsEngine } from '../x'
 
 export function uniUniModulesExtApiPlugin(): Plugin {
@@ -9,7 +8,7 @@ export function uniUniModulesExtApiPlugin(): Plugin {
     name: 'uni:uni-modules_ext-api',
     apply: 'build',
     config() {
-      const rollupOptions: RollupOptions = {
+      const rollupOptions: NonNullable<BuildOptions['rollupOptions']> = {
         input: resolveMainPathOnce(process.env.UNI_INPUT_DIR),
         external: ['vue'],
         output: {

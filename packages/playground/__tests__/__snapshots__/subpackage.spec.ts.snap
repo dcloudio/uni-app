@@ -1,18 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`subpackage playground uni-app build:mp-weixin: uni-app build:mp-weixin common/assets.js 1`] = `
-""use strict";
-const _imports_0$1 = "/sub/static/logo.png";
-const _imports_1$1 = "/sub/static/logo.png";
-const _imports_2 = "/sub/assets/logo-dc.759742f5.png";
-const _imports_0 = "/sub/uni_modules/test-component/static/logo-hx.png";
-const _imports_1 = "/sub/uni_modules/test-module/static/logo-hx.png";
-exports._imports_0 = _imports_0$1;
-exports._imports_0$1 = _imports_0;
-exports._imports_1 = _imports_1$1;
-exports._imports_1$1 = _imports_1;
-exports._imports_2 = _imports_2;
-"
+[
+  ""/sub/assets/logo-dc.759742f5.png"",
+  ""/sub/static/logo.png"",
+  ""/sub/static/logo.png"",
+  ""/sub/uni_modules/test-component/static/logo-hx.png"",
+  ""/sub/uni_modules/test-module/static/logo-hx.png"",
+]
 `;
 
 exports[`subpackage playground uni-app build:mp-weixin: uni-app build:mp-weixin pages/index/index.wxss 1`] = `
@@ -36,18 +31,13 @@ exports[`subpackage playground uni-app build:mp-weixin: uni-app build:mp-weixin 
 `;
 
 exports[`subpackage playground uni-app dev:mp-weixin: uni-app dev:mp-weixin common/assets.js 1`] = `
-""use strict";
-const _imports_0$1 = "/sub/static/logo.png";
-const _imports_1$1 = "/sub/static/logo.png";
-const _imports_2 = "/sub/assets/logo-dc.759742f5.png";
-const _imports_0 = "/sub/uni_modules/test-component/static/logo-hx.png";
-const _imports_1 = "/sub/uni_modules/test-module/static/logo-hx.png";
-exports._imports_0 = _imports_0$1;
-exports._imports_0$1 = _imports_0;
-exports._imports_1 = _imports_1$1;
-exports._imports_1$1 = _imports_1;
-exports._imports_2 = _imports_2;
-"
+[
+  ""/sub/assets/logo-dc.759742f5.png"",
+  ""/sub/static/logo.png"",
+  ""/sub/static/logo.png"",
+  ""/sub/uni_modules/test-component/static/logo-hx.png"",
+  ""/sub/uni_modules/test-module/static/logo-hx.png"",
+]
 `;
 
 exports[`subpackage playground uni-app dev:mp-weixin: uni-app dev:mp-weixin pages/index/index.wxss 1`] = `
@@ -71,18 +61,13 @@ exports[`subpackage playground uni-app dev:mp-weixin: uni-app dev:mp-weixin uni_
 `;
 
 exports[`subpackage playground uni-app-x build:mp-weixin: uni-app-x build:mp-weixin common/assets.js 1`] = `
-""use strict";
-const _imports_0$1 = "/sub/static/logo.png";
-const _imports_1$1 = "/sub/static/logo.png";
-const _imports_2 = "/sub/assets/logo-dc.759742f5.png";
-const _imports_0 = "/sub/uni_modules/test-component/static/logo-hx.png";
-const _imports_1 = "/sub/uni_modules/test-module/static/logo-hx.png";
-exports._imports_0 = _imports_0$1;
-exports._imports_0$1 = _imports_0;
-exports._imports_1 = _imports_1$1;
-exports._imports_1$1 = _imports_1;
-exports._imports_2 = _imports_2;
-"
+[
+  ""/sub/assets/logo-dc.759742f5.png"",
+  ""/sub/static/logo.png"",
+  ""/sub/static/logo.png"",
+  ""/sub/uni_modules/test-component/static/logo-hx.png"",
+  ""/sub/uni_modules/test-module/static/logo-hx.png"",
+]
 `;
 
 exports[`subpackage playground uni-app-x build:mp-weixin: uni-app-x build:mp-weixin pages/index/index.wxss 1`] = `
@@ -114,18 +99,13 @@ exports[`subpackage playground uni-app-x build:mp-weixin: uni-app-x build:mp-wei
 `;
 
 exports[`subpackage playground uni-app-x dev:mp-weixin: uni-app-x dev:mp-weixin common/assets.js 1`] = `
-""use strict";
-const _imports_0$1 = "/sub/static/logo.png";
-const _imports_1$1 = "/sub/static/logo.png";
-const _imports_2 = "/sub/assets/logo-dc.759742f5.png";
-const _imports_0 = "/sub/uni_modules/test-component/static/logo-hx.png";
-const _imports_1 = "/sub/uni_modules/test-module/static/logo-hx.png";
-exports._imports_0 = _imports_0$1;
-exports._imports_0$1 = _imports_0;
-exports._imports_1 = _imports_1$1;
-exports._imports_1$1 = _imports_1;
-exports._imports_2 = _imports_2;
-"
+[
+  ""/sub/assets/logo-dc.759742f5.png"",
+  ""/sub/static/logo.png"",
+  ""/sub/static/logo.png"",
+  ""/sub/uni_modules/test-component/static/logo-hx.png"",
+  ""/sub/uni_modules/test-module/static/logo-hx.png"",
+]
 `;
 
 exports[`subpackage playground uni-app-x dev:mp-weixin: uni-app-x dev:mp-weixin pages/index/index.wxss 1`] = `

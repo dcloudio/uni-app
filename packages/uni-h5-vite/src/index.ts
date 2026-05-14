@@ -37,6 +37,7 @@ import { uniPostSourceMapPlugin } from './plugins/sourcemap'
 import { uniCustomElementPlugin } from './plugins/customElement'
 import { uniApiPlugin } from './plugins/api'
 import { rewriteCompilerSfcParse } from './utils/polyfill'
+import type { PluginOption } from 'vite'
 
 if (
   process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
@@ -45,7 +46,7 @@ if (
   rewriteCompilerSfcParse()
 }
 
-export default () => {
+export default (): PluginOption[] => {
   const isNewStyleIsolation =
     process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2'
   // 从 manifest.json 的 h5.devServer 中解析 HTTPS 扩展配置，按需注入 basic-ssl 插件。

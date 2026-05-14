@@ -119,7 +119,9 @@ function buildAppCss() {
   if (!fs.existsSync(appCssJsFilename)) {
     return
   }
-  const appCssJsCode = fs.readFileSync(appCssJsFilename, 'utf8')
+  const appCssJsCode = normalizeAppCssJsCode(
+    fs.readFileSync(appCssJsFilename, 'utf8')
+  )
   const appCssJsFn = new Function(
     'module',
     // vite build.target为esnext时, 生成的代码没有export default
@@ -148,6 +150,23 @@ function buildAppCss() {
     wrapperNVueAppStyles(appConfigServiceCode)
   )
   return true
+}
+
+function normalizeAppCssJsCode(code: string) {
+  return code.replace(
+    /^import\s+\{\s*\w+\s+as\s+(__commonJS(?:Min)?)\s*\}\s+from\s+['"][^'"]+['"];?\s*/m,
+    `const $1 = (factory) => {
+  let cache
+  return () => {
+    if (!cache) {
+      cache = { exports: {} }
+      factory(cache.exports, cache)
+    }
+    return cache.exports
+  }
+}
+`
+  )
 }
 
 function buildNVuePage(filename: string, options: BuildOptions) {

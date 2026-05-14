@@ -1,5 +1,5 @@
 import path from 'path'
-import type { Plugin } from 'vite'
+import type { Plugin, Rolldown } from 'vite'
 import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
 import {
   EXTNAME_VUE,
@@ -18,7 +18,6 @@ import {
   updateMiniProgramComponentsByTemplateFilename,
 } from '@dcloudio/uni-cli-shared'
 import { virtualComponentPath, virtualPagePath } from './entry'
-import type { CustomPluginOptions, ResolvedId } from 'rollup'
 
 export function uniUsingComponentsPlugin(
   options: {
@@ -52,11 +51,11 @@ export function uniUsingComponentsPlugin(
         source: string,
         importer?: string,
         options?: {
-          custom?: CustomPluginOptions
+          custom?: Rolldown.CustomPluginOptions
           isEntry?: boolean
           skipSelf?: boolean
         }
-      ): Promise<ResolvedId | null> => {
+      ): Promise<Rolldown.ResolvedId | null> => {
         const id = resolveUTSModule(
           source,
           importer || process.env.UNI_INPUT_DIR

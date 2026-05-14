@@ -1,10 +1,10 @@
 import type { SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
-import type { PluginContext, TransformPluginContext } from 'rollup'
+import type { Rolldown } from 'vite'
 import { type ResolvedOptions, setSrcDescriptor } from '../descriptorCache'
 
 export async function genJsStylesCode(
   descriptor: SFCDescriptor,
-  pluginContext: PluginContext
+  pluginContext: Rolldown.PluginContext
 ) {
   let stylesCode = ``
   if (descriptor.styles.length) {
@@ -34,7 +34,7 @@ export async function genJsStylesCode(
 async function linkSrcToDescriptor(
   src: string,
   descriptor: SFCDescriptor,
-  pluginContext: PluginContext
+  pluginContext: Rolldown.PluginContext
 ) {
   const srcFile =
     (await pluginContext.resolve(src, descriptor.filename))?.id || src
@@ -77,7 +77,7 @@ export async function transformStyle(
   descriptor: SFCDescriptor,
   index: number,
   options: ResolvedOptions,
-  pluginContext: TransformPluginContext,
+  pluginContext: Rolldown.TransformPluginContext,
   filename: string
 ): Promise<{
   code: string

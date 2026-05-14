@@ -1,15 +1,18 @@
 import path from 'path'
-import type { PluginContext } from 'rollup'
 import {
   type ImportSpecifier,
   init,
   parse as parseImports,
 } from 'es-module-lexer'
+import type { Rolldown } from 'vite'
 import { extend } from '@vue/shared'
 import { isImportDeclaration, isImportDefaultSpecifier } from '@babel/types'
 import { parse } from '@babel/parser'
 import { EXTNAME_VUE, EXTNAME_VUE_RE } from '../constants'
 import { normalizeParsePlugins } from '../utils'
+
+type PluginContext = Rolldown.PluginContext
+
 /**
  * 暂时没用
  * @param source

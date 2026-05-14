@@ -1,4 +1,5 @@
 import * as path from 'path'
+import type { PluginOption } from 'vite'
 import {
   UNI_EASYCOM_EXCLUDE,
   enableSourceMap,
@@ -31,7 +32,7 @@ import { uniAppCssPlugin, uniAppCssPrePlugin } from '../dom2/css'
 import { SHARED_DATA_LIB_NAME } from '../utils'
 import { uniAppXIOSEnginePlugin } from './plugin'
 
-export function init() {
+export function init(): PluginOption[] {
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   const isDom2Dynamic = process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
   return [

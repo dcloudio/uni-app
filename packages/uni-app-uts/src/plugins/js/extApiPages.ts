@@ -1,4 +1,3 @@
-import type { OutputChunk } from 'rollup'
 import type { Plugin } from 'vite'
 import { getUniXPagePaths } from '@dcloudio/uni-cli-shared'
 import path from 'path'
@@ -18,7 +17,10 @@ export function replaceExtApiPagePaths(): Plugin {
       if (Object.keys(systemPagePaths).length) {
         Object.keys(bundle).forEach((key) => {
           if (key.endsWith('.js')) {
-            const chunk = bundle[key] as OutputChunk
+            const chunk = bundle[key]
+            if (chunk.type !== 'chunk') {
+              return
+            }
             let newCode = chunk.code
             Object.keys(systemPagePaths).forEach((path) => {
               if (newCode.includes(path)) {

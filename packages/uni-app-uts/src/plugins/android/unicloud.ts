@@ -1,4 +1,3 @@
-import type { OutputAsset } from 'rollup'
 import type { Plugin } from 'vite'
 import path from 'path'
 import {
@@ -33,11 +32,11 @@ export function uniCloudPlugin(): Plugin {
         return
       }
 
-      if (bundle[ENTRY_FILENAME()]) {
+      const asset = bundle[ENTRY_FILENAME()]
+      if (asset?.type === 'asset' && asset.source != null) {
         const inputDir = process.env.UNI_INPUT_DIR!
         const platform = process.env.UNI_UTS_PLATFORM!
         const isSecureNetworkEnabled = isEnableSecureNetwork(inputDir, platform)
-        const asset = bundle[ENTRY_FILENAME()] as OutputAsset
         asset.source =
           asset.source +
           `

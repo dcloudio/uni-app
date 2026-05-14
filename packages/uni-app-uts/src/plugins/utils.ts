@@ -25,7 +25,7 @@ import {
   transformUTSComponent,
 } from '@dcloudio/uni-cli-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
-import type { ResolvedConfig } from 'vite'
+import type { ResolvedConfig, Rolldown } from 'vite'
 import { ElementTypes, NodeTypes } from '@vue/compiler-core'
 
 export const SHARED_DATA_LIB_NAME = 'libentry.so'
@@ -162,9 +162,41 @@ if (
 export function configResolved(config: ResolvedConfig, isAndroidX = false) {
   removePlugins(REMOVED_PLUGINS.slice(0), config)
   // console.log(plugins.map((p) => p.name))
+  normalizeRolldownExternal(config)
   // 强制不inline
   config.build.assetsInlineLimit = 0
   injectAssetPlugin(config, { isAndroidX })
+}
+
+type ExternalFunction = (
+  source: string,
+  importer: string | undefined,
+  isResolved: boolean
+) => boolean | null | void
+
+function normalizeRolldownExternal(config: ResolvedConfig) {
+  const rollupOptions = config.build.rollupOptions
+  const external = rollupOptions.external
+  if (
+    !Array.isArray(external) ||
+    !external.some((item) => typeof item === 'function')
+  ) {
+    return
+  }
+  // Rolldown 支持纯数组 external（string/RegExp patterns）和函数 external，
+  // 但不支持 Vite 多插件配置合并后产生的 [fn, string, RegExp] 混合数组。
+  // 这里仅作为过渡期兜底，把该非法混合形态还原为单一 external 回调；
+  // 长期应在 external 源头统一合并策略，避免依赖 configResolved 后置修正。
+  rollupOptions.external = ((source, importer, isResolved) =>
+    external.some((item) => {
+      if (typeof item === 'function') {
+        return (item as ExternalFunction)(source, importer, isResolved)
+      }
+      if (item instanceof RegExp) {
+        return item.test(source)
+      }
+      return item === source
+    })) as Rolldown.ExternalOption
 }
 
 export function relativeInputDir(filename: string) {

@@ -1,10 +1,11 @@
-import type { ConfigEnv, ResolvedConfig, UserConfig } from 'vite'
-import type { RollupError } from 'rollup'
+import type { ConfigEnv, ResolvedConfig, Rolldown, UserConfig } from 'vite'
 import type { CompilerError } from '@vue/compiler-sfc'
 import { extend, hasOwn } from '@vue/shared'
 import { codeFrameColumns } from '@babel/code-frame'
 import { offsetToStartAndEnd } from '../plugins/vitejs/utils'
 import { enableSourceMap } from '../../utils'
+
+type RollupError = Rolldown.RollupError
 
 export function withSourcemap(config: ResolvedConfig | UserConfig) {
   if (!process.env.UNI_APP_SOURCEMAP) {

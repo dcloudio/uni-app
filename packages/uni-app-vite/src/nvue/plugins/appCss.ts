@@ -1,5 +1,4 @@
-import type { Plugin } from 'vite'
-import type { PluginContext } from 'rollup'
+import type { Plugin, Rolldown } from 'vite'
 import fs from 'fs-extra'
 import type { SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
 import {
@@ -55,7 +54,7 @@ const defaultAppStylesCode = `exports.styles = []`
 
 async function genAppStylesCode(
   filename: string,
-  pluginContext: PluginContext
+  pluginContext: Rolldown.PluginContext
 ) {
   pluginContext.addWatchFile(filename)
   const descriptor = createAppDescriptor(filename, pluginContext)
@@ -94,7 +93,7 @@ function readAppCode(filename: string) {
 let appDescriptor: SFCDescriptor
 function createAppDescriptor(
   filename: string,
-  pluginContext: PluginContext
+  pluginContext: Rolldown.PluginContext
 ): SFCDescriptor {
   const source = readAppCode(filename)
   const id = hash(source)

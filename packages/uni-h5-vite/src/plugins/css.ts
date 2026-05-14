@@ -1,6 +1,11 @@
 import fs from 'fs'
 import path from 'path'
-import { type Plugin, type ResolvedConfig, normalizePath } from 'vite'
+import {
+  type Plugin,
+  type ResolvedConfig,
+  type Rolldown,
+  normalizePath,
+} from 'vite'
 
 import {
   H5_FRAMEWORK_STYLE_PATH,
@@ -18,7 +23,6 @@ import {
   removeExt,
   resolveBuiltIn,
 } from '@dcloudio/uni-cli-shared'
-import type { OutputOptions } from 'rollup'
 import { isFunction, isString } from '@vue/shared'
 
 function isCombineBuiltInCss(config: ResolvedConfig) {
@@ -214,7 +218,7 @@ function generateBuiltInCssCode(cssImports: string[]) {
  * @returns output filename
  */
 export function assetFileNamesToFileName(
-  assetFileNames: Exclude<OutputOptions['assetFileNames'], undefined>,
+  assetFileNames: Exclude<Rolldown.OutputOptions['assetFileNames'], undefined>,
   file: string,
   contentHash: string,
   content: string | Uint8Array

@@ -1,4 +1,4 @@
-import type { TransformPluginContext } from 'rollup'
+import type { Rolldown } from 'vite'
 import type {
   BindingMetadata,
   CompilerOptions,
@@ -37,7 +37,7 @@ export function resolveGenTemplateCodeOptions(
     preprocessLang?: string
     preprocessOptions?: any
   },
-  pluginContext?: TransformPluginContext
+  pluginContext?: Rolldown.TransformPluginContext
 ): TemplateCompilerOptions & { genDefaultAs?: string } & {
   dom2?: boolean
   r?: unknown

@@ -1,6 +1,5 @@
 import fs from 'fs-extra'
 import path from 'path'
-import type { OutputAsset, OutputChunk } from 'rollup'
 import type { Plugin } from 'vite'
 
 import debug from 'debug'
@@ -29,7 +28,10 @@ export function uniSourceMapPlugin(options: {
       const tasks = Object.entries(bundle)
         .filter(([file]) => file.endsWith('.js.map'))
         .map(async ([file, asset]) => {
-          const source = (asset as OutputAsset).source as string
+          if (asset.type !== 'asset') {
+            return
+          }
+          const source = asset.source as string
           const targetPath = path.resolve(options.sourceMapDir, file)
 
           // 快速计算内容哈希
@@ -64,8 +66,8 @@ export function uniSourceMapPlugin(options: {
 
           // 更新引用
           const jsFile = file.replace('.js.map', '.js')
-          const outputChunk = bundle[jsFile] as OutputChunk
-          if (outputChunk) {
+          const outputChunk = bundle[jsFile]
+          if (outputChunk?.type === 'chunk') {
             outputChunk.code = outputChunk.code.replace(
               /\/\/# sourceMappingURL=.*/,
               `//# sourceMappingURL=${normalizePath(

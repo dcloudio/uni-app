@@ -7,7 +7,7 @@ import type {
   TemplateCompilerOptions,
 } from '../compiler/options'
 import { genRenderFunctionDecl } from '../compiler/utils'
-import type { TransformPluginContext } from 'rollup'
+import type { Rolldown } from 'vite'
 import { getDescriptor, getResolvedOptions } from '../descriptorCache'
 
 export function genTemplate(
@@ -82,7 +82,7 @@ function preprocess(
 
 export async function tryResolveTemplateSrc(
   descriptor: SFCDescriptor,
-  pluginContext?: TransformPluginContext
+  pluginContext?: Rolldown.TransformPluginContext
 ) {
   if (!pluginContext) {
     return

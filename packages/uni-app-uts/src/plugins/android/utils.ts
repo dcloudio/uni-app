@@ -15,7 +15,7 @@ import { isArray, isPlainObject, isString } from '@vue/shared'
 
 import { type Import, createUnimport } from 'unimport'
 
-import type { /*SourceMapInput, */ PluginContext } from 'rollup'
+import type { Rolldown } from 'vite'
 import type { Position, SourceLocation } from '@vue/compiler-core'
 
 import { createCompilerError } from './uvue/compiler/errors'
@@ -26,8 +26,8 @@ export const ENTRY_FILENAME = () =>
   process.env.UNI_APP_X_TSC === 'true' ? 'main.uts.ts' : 'main.uts'
 
 export function wrapResolve(
-  resolve: PluginContext['resolve']
-): PluginContext['resolve'] {
+  resolve: Rolldown.PluginContext['resolve']
+): Rolldown.PluginContext['resolve'] {
   return async (source, importer, options) => {
     try {
       return await resolve(source, importer, options)
@@ -40,7 +40,7 @@ export function wrapResolve(
 
 export function createTryResolve(
   importer: string,
-  resolve: PluginContext['resolve'],
+  resolve: Rolldown.PluginContext['resolve'],
   offsetStart?: Position,
   origCode: string = ''
 ) {

@@ -71,7 +71,6 @@ export function buildOptions(
           }
           return 'uni-app:///' + sourcePath
         },
-        manualChunks: {},
         inlineDynamicImports: false,
         chunkFileNames(chunk) {
           if (chunk.isDynamicEntry && chunk.facadeModuleId) {

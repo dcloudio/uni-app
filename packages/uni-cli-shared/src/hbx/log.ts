@@ -1,17 +1,17 @@
 import fs from 'fs'
 import path from 'path'
 import colors from 'picocolors'
-import type { RollupError } from 'rollup'
-import type { LogErrorOptions } from 'vite'
+import type { LogErrorOptions, Rolldown } from 'vite'
 import { NodeTypes } from '@vue/compiler-core'
 import { isString } from '@vue/shared'
 import { normalizePath } from '../utils'
 import type { Formatter } from '../logs/format'
 import { isInHBuilderX } from './utils'
-
 import { EXTNAME_VUE_RE, SPECIAL_CHARS } from '../constants'
 import { parseVue } from '../vite/utils/ast'
 import { generateCodeFrame } from '../vite/plugins/vitejs/utils'
+
+type RollupError = Rolldown.RollupError
 
 const SIGNAL_H5_LOCAL = ' ➜  Local:'
 const SIGNAL_H5_NETWORK = ' ➜  Network:'

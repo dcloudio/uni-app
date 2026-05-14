@@ -20,7 +20,7 @@ import {
 } from '@babel/types'
 import { walk } from 'estree-walker'
 import MagicString from 'magic-string'
-import type { PluginContext } from 'rollup'
+import type { Rolldown } from 'vite'
 import { camelize, capitalize, hyphenate } from '@vue/shared'
 import { addLeadingSlash } from '@dcloudio/uni-shared'
 import { M } from '../messages'
@@ -28,6 +28,8 @@ import { BINDING_COMPONENTS, EXTNAME_VUE_RE } from '../constants'
 import { isAppVue, normalizeMiniProgramFilename, removeExt } from '../utils'
 import { cleanUrl, parseVueRequest } from '../vite/utils'
 import { addMiniProgramUsingComponents } from '../json/mp/jsonFile'
+
+type PluginContext = Rolldown.PluginContext
 
 type BindingComponents = Record<
   string,

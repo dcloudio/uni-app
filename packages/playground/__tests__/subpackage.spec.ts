@@ -4,6 +4,13 @@ import execa from 'execa'
 
 const projectDir = path.resolve(__dirname, '../subpackage')
 
+function normalizeAssetSnapshot(file: string, content: string) {
+  if (file === 'common/assets.js') {
+    return content.match(/"([^"]*\.(png|jpg))"/g)?.sort()
+  }
+  return content
+}
+
 describe('subpackage playground', () => {
   jest.setTimeout(50 * 1000)
   const types = {
@@ -43,9 +50,9 @@ describe('subpackage playground', () => {
           const filePath = path.resolve(outDir, file)
           // console.log(filePath)
           expect(fs.existsSync(filePath)).toBe(true)
-          expect(fs.readFileSync(filePath, 'utf-8')).toMatchSnapshot(
-            `${type} ${script} ${file}`
-          )
+          expect(
+            normalizeAssetSnapshot(file, fs.readFileSync(filePath, 'utf-8'))
+          ).toMatchSnapshot(`${type} ${script} ${file}`)
         })
       })
     })

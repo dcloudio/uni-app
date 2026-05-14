@@ -1,8 +1,6 @@
 import path from 'path'
 import type { Plugin, ResolvedConfig } from 'vite'
 
-import type { OutputChunk } from 'rollup'
-
 import {
   isSsr,
   parseRpx2UnitOnce,
@@ -73,8 +71,8 @@ export function uniSSRPlugin(): Plugin {
       }
     },
     generateBundle(_options, bundle) {
-      const chunk = bundle['entry-server.js'] as OutputChunk
-      if (chunk) {
+      const chunk = bundle['entry-server.js']
+      if (chunk?.type === 'chunk') {
         chunk.code =
           generateSsrDefineCode(
             resolvedConfig,

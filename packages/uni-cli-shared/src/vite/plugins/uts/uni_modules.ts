@@ -1,9 +1,8 @@
-import type { Plugin } from 'vite'
+import type { Plugin, Rolldown } from 'vite'
 import fs from 'fs-extra'
 import path from 'path'
 import { once, parseUrl } from '@dcloudio/uni-shared'
 import { dataToEsm } from '@rollup/pluginutils'
-import type { ChangeEvent, PluginContext } from 'rollup'
 import type {
   CompileResult,
   SyncUniModulesFilePreprocessor,
@@ -246,6 +245,8 @@ const createUniXAppHarmonyUniModulesSyncFilePreprocessorOnce = once(() => {
 
 const utsModuleCaches = new Map<string, () => Promise<void | CompileResult>>()
 
+type ChangeEvent = 'create' | 'update' | 'delete'
+
 interface UniUTSPluginOptions {
   x?: boolean
   extApis?: Record<string, [string, string]>
@@ -296,7 +297,7 @@ const emptyHarmonyCacheDirOnce = once(() => {
 
 const handleCompileResult = (
   result: CompileResult,
-  pluginContext?: PluginContext
+  pluginContext?: Rolldown.PluginContext
 ) => {
   process.env.UNI_APP_UTS_CHANGED = 'true'
   if (pluginContext) {
@@ -414,7 +415,7 @@ export function uniUTSAppUniModulesPlugin(
 
   const compilePlugin = async (
     pluginDir: string,
-    pluginContext?: PluginContext
+    pluginContext?: Rolldown.PluginContext
   ) => {
     const pluginId = path.basename(pluginDir)
 

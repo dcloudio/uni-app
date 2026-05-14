@@ -150,14 +150,9 @@ export function uniEncryptUniModulesPlugin(): Plugin {
           }
           delete bundle[fileName]
           const pkg = `uni_modules/${uniModuleId}/package.json`
-          bundle[pkg] = {
+          this.emitFile({
             type: 'asset',
             fileName: pkg,
-            name: pkg,
-            names: [pkg],
-            originalFileName: null,
-            originalFileNames: [],
-            needsCodeReference: false,
             source: genUniModulesPackageJson(
               uniModuleId,
               process.env.UNI_INPUT_DIR,
@@ -165,7 +160,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
                 env: initCheckEnv(),
               }
             ),
-          }
+          })
         } else if (fileName.endsWith('.js')) {
           if (isMp) {
             const output = bundle[fileName]

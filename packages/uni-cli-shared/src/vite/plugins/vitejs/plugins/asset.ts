@@ -4,12 +4,7 @@ import mime from 'mime/lite'
 import fs, { promises as fsp } from 'fs-extra'
 import MagicString from 'magic-string'
 import { createHash } from 'crypto'
-import type {
-  EmittedAsset,
-  OutputOptions,
-  PluginContext,
-  RenderedChunk,
-} from 'rollup'
+import type { Rolldown } from 'vite'
 import { isFunction, isString } from '@vue/shared'
 import type { Plugin } from '../plugin'
 import type { ResolvedConfig } from '../config'
@@ -21,12 +16,20 @@ import {
 } from '../../../../utils'
 import { type IsStaticFile, getIsStaticFile } from './static'
 
+type EmittedAsset = Rolldown.EmittedAsset
+type OutputOptions = Rolldown.OutputOptions
+type RenderedChunk = Rolldown.RenderedChunk
+
 export const assetUrlRE = /__VITE_ASSET__([a-z\d]{8})__(?:\$_(.*?)__)?/g
 
 const rawRE = /(\?|&)raw(?:&|$)/
 const urlRE = /(\?|&)url(?:&|$)/
 
 export const chunkToEmittedAssetsMap = new WeakMap<RenderedChunk, Set<string>>()
+
+type AssetPluginContext = {
+  emitFile(asset: EmittedAsset): string | void
+}
 
 type CacheForUrl = Map<string, string>
 type CacheForBase64 = Map<string, string>
@@ -104,7 +107,7 @@ export function assetPlugin(
                   emittedFile.source!
                 )
               },
-            } as PluginContext)
+            } as AssetPluginContext)
           : this,
         false,
         getIsStaticFile()
@@ -202,7 +205,7 @@ export function checkPublicFile(
 export function fileToUrl(
   id: string,
   config: ResolvedConfig,
-  ctx: PluginContext,
+  ctx: AssetPluginContext,
   canInline: boolean = false,
   isStaticFile: IsStaticFile
 ): string {
@@ -281,7 +284,7 @@ export function assetFileNamesToFileName(
     assetFileNames = assetFileNames({
       name: file,
       names: [file],
-      originalFileName: null,
+      originalFileName: undefined,
       originalFileNames: [],
       source: content,
       type: 'asset',
@@ -342,7 +345,7 @@ function sanitizeFileName(name: string): string {
 function fileToBuiltUrl(
   id: string,
   config: ResolvedConfig,
-  pluginContext: PluginContext,
+  pluginContext: AssetPluginContext,
   skipPublicCheck = false,
   canInline = false,
   isStaticFile: IsStaticFile
@@ -382,7 +385,10 @@ function fileToBuiltUrl(
     const { search, hash } = parseUrl(id)
     const postfix = (search || '') + (hash || '')
 
-    const output = config.build?.rollupOptions?.output
+    const output = config.build?.rollupOptions?.output as
+      | OutputOptions
+      | OutputOptions[]
+      | undefined
 
     const defaultAssetFileNames = path.posix.join(
       config.build.assetsDir,
@@ -438,7 +444,7 @@ export function urlToBuiltUrl(
   url: string,
   importer: string,
   config: ResolvedConfig,
-  pluginContext: PluginContext,
+  pluginContext: AssetPluginContext,
   isStaticFile: IsStaticFile
 ): string {
   if (checkPublicFile(url, config)) {

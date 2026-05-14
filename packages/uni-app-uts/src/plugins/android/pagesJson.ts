@@ -6,7 +6,6 @@ import {
   normalizeUniAppXAppPagesJson,
   parseArguments,
 } from '@dcloudio/uni-cli-shared'
-import type { OutputAsset } from 'rollup'
 import type { Plugin } from 'vite'
 
 import { ENTRY_FILENAME, stringifyMap } from './utils'
@@ -110,8 +109,8 @@ export function uniAppPagesPlugin(): Plugin {
       }
     },
     generateBundle(_, bundle) {
-      if (bundle[ENTRY_FILENAME()]) {
-        const asset = bundle[ENTRY_FILENAME()] as OutputAsset
+      const asset = bundle[ENTRY_FILENAME()]
+      if (asset?.type === 'asset' && asset.source != null) {
         asset.source =
           asset.source +
           `

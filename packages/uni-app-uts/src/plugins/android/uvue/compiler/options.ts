@@ -4,7 +4,7 @@ import type {
   ParserOptions,
   RootNode,
 } from '@vue/compiler-core'
-import type { TransformPluginContext } from 'rollup'
+import type { Rolldown } from 'vite'
 import type { RawSourceMap } from 'source-map-js'
 import type { DirectiveTransform, NodeTransform } from './transform'
 
@@ -166,7 +166,7 @@ export type TemplateCompilerOptions = {
 
   preprocessLang?: string
   preprocessOptions?: any
-  pluginContext?: TransformPluginContext
+  pluginContext?: Rolldown.TransformPluginContext
 } & ParserOptions &
   TransformOptions &
   CodegenOptions

@@ -78,7 +78,7 @@ describe('assets playground', () => {
               expect(path.basename(file)).toMatchSnapshot(relativePath)
             } else {
               const content = fs.readFileSync(file, 'utf8')
-              const matches = content.match(/"([^"]*\.(png|jpg))"/g)
+              const matches = content.match(/"([^"]*\.(png|jpg))"/g)?.sort()
               if (matches) {
                 const webPageJsArr = [
                   'assets/pages-index-index.',

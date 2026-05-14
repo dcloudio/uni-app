@@ -10,7 +10,6 @@ import {
   createFilter,
   makeLegalIdentifier,
 } from '@rollup/pluginutils'
-import type { AstNodeLocation } from 'rollup'
 
 import { walk } from 'estree-walker'
 import { extend, isArray, isString } from '@vue/shared'
@@ -28,6 +27,11 @@ import { isUniHelpers } from '../../uts'
 interface Scope {
   parent: Scope
   contains: (name: string) => boolean
+}
+
+type AstNodeLocation = BaseNode & {
+  start: number
+  end: number
 }
 
 type Injectment = string | [string, string]

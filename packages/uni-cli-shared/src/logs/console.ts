@@ -1,5 +1,6 @@
 import MagicString from 'magic-string'
 import type { TransformResult } from 'vite'
+import type { SourceMap } from 'magic-string'
 import type * as tsTypes from 'typescript'
 import { normalizePath } from '../utils'
 
@@ -26,10 +27,26 @@ export function rewriteConsoleExpr(
   if (s.hasChanged()) {
     return {
       code: s.toString(),
-      map: sourceMap ? s.generateMap({ hires: true }) : { mappings: '' },
+      map: sourceMap
+        ? normalizeSourceMap(s.generateMap({ hires: true }))
+        : { mappings: '' },
     }
   }
   return { code, map: null }
+}
+
+function normalizeSourceMap(
+  map: SourceMap
+): NonNullable<TransformResult['map']> {
+  return {
+    ...map,
+    file: map.file || '',
+    names: map.names || [],
+    sources: map.sources || [],
+    sourcesContent: map.sourcesContent || [],
+    toString: () => map.toString(),
+    toUrl: () => map.toUrl(),
+  }
 }
 
 export function restoreConsoleExpr(code: string): string {

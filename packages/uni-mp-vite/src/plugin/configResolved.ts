@@ -1,7 +1,6 @@
 import debug from 'debug'
 import { isString } from '@vue/shared'
 import type { Plugin, ResolvedConfig } from 'vite'
-import type { EmittedAsset } from 'rollup'
 import {
   createEncryptCssUrlReplacer,
   createShadowImageUrl,
@@ -264,9 +263,13 @@ function adjustCssExtname(extname: string): Plugin {
         const files = Object.keys(bundle)
         files.forEach((name) => {
           if (name.endsWith('.css')) {
-            const asset = bundle[name] as EmittedAsset
-            isString(asset.source) &&
-              (asset.source = asset.source.replace(/\*\,/g, 'page,'))
+            const asset = bundle[name]
+            if (asset.type !== 'asset' || asset.source == null) {
+              return
+            }
+            if (isString(asset.source)) {
+              asset.source = asset.source.replace(/\*\,/g, 'page,')
+            }
             this.emitFile({
               fileName: name.replace('.css', extname),
               type: 'asset',

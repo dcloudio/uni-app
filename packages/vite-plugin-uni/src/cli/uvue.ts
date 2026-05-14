@@ -1,4 +1,10 @@
-import type { BuildOptions, LogLevel, Logger, ServerOptions } from 'vite'
+import type {
+  BuildOptions,
+  LogLevel,
+  Logger,
+  Rolldown,
+  ServerOptions,
+} from 'vite'
 import { extend, hasOwn } from '@vue/shared'
 import {
   M,
@@ -12,10 +18,9 @@ import {
   resolveComponentsLibDirs,
   runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
-import type { RollupWatcher } from 'rollup'
 
 import type { CliOptions } from '.'
-import { buildByVite, initBuildOptions } from './build'
+import { type ViteBuildResult, buildByVite, initBuildOptions } from './build'
 import { addConfigFile, cleanOptions, printStartupDuration } from './utils'
 import { initEasycom } from '../utils/easycom'
 import { stopProfiler } from './action'
@@ -61,7 +66,7 @@ export async function runUVueAndroidDev(options: CliOptions & ServerOptions) {
     return process.exit(0)
   }
   initEasycom()
-  const watcher = (await buildUVue(options)) as RollupWatcher
+  const watcher = (await buildUVue(options)) as Rolldown.RolldownWatcher
   let isFirstStart = true
   let isFirstEnd = true
   watcher.on('event', async (event) => {
@@ -143,9 +148,7 @@ export async function runUVueAndroidBuild(options: CliOptions & BuildOptions) {
  *  4. uvue、vue、uts 文件发生变化，调用 uts 编译器
  * @param options
  */
-export async function buildUVue(
-  options: CliOptions
-): Promise<RollupWatcher | void> {
+export async function buildUVue(options: CliOptions): Promise<ViteBuildResult> {
   return buildByVite(
     addConfigFile(
       extend(
@@ -153,5 +156,5 @@ export async function buildUVue(
         initBuildOptions(options, cleanOptions(options) as BuildOptions)
       )
     )
-  ) as Promise<RollupWatcher | void>
+  )
 }

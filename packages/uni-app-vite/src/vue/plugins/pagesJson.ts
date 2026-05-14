@@ -11,7 +11,6 @@ import {
   normalizePagesJson,
   parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
-import type { OutputAsset } from 'rollup'
 import { wrapperNVueAppStyles } from '../../nvue/plugins/esbuild'
 
 export function uniPagesJsonPlugin(): Plugin {
@@ -56,9 +55,7 @@ export function uniPagesJsonPlugin(): Plugin {
         const outputFile = bundle[APP_CONFIG_SERVICE]
         if (outputFile && outputFile.type === 'asset') {
           // 补充 nvue styles
-          ;(outputFile as OutputAsset).source = wrapperNVueAppStyles(
-            (outputFile as OutputAsset).source as string
-          )
+          outputFile.source = wrapperNVueAppStyles(outputFile.source as string)
         }
       },
     }

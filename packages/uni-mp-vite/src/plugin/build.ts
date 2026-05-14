@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
-import type { BuildOptions, UserConfig } from 'vite'
+import type { BuildOptions, Rolldown, UserConfig } from 'vite'
 
 import {
   DEFAULT_ASSETS_RE,
@@ -23,7 +23,6 @@ import {
   resolveMainPathOnce,
   resolveWorkersRootDir,
 } from '@dcloudio/uni-cli-shared'
-import type { GetManualChunk, GetModuleInfo, PreRenderedChunk } from 'rollup'
 import {
   getSubPackages,
   isUniComponentUrl,
@@ -93,7 +92,7 @@ export function createBuildOptions(
         plugins: [
           {
             name: 'dynamic-import-polyfill',
-            renderDynamicImport(options) {
+            renderDynamicImport(options: { targetModuleId?: string }) {
               const { targetModuleId } = options
               if (targetModuleId && isMiniProgramAssetFile(targetModuleId)) {
                 return {
@@ -103,7 +102,7 @@ export function createBuildOptions(
               }
               return (renderDynamicImport as Function).call(this, options)
             },
-          },
+          } as any,
         ],
       },
     },
@@ -205,7 +204,9 @@ function isVueJs(id: string) {
 
 const chunkFileNameBlackList = ['main', 'pages.json', 'manifest.json']
 
-function createMoveToVendorChunkFn(): GetManualChunk | undefined {
+function createMoveToVendorChunkFn():
+  | NonNullable<Rolldown.OutputOptions['manualChunks']>
+  | undefined {
   // 云端编译时，不拆分文件
   if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
     return undefined
@@ -294,7 +295,7 @@ function resolveWorkerChunkName(chunkFileName: string) {
 
 function staticImportedByEntry(
   id: string,
-  getModuleInfo: GetModuleInfo,
+  getModuleInfo: Rolldown.GetModuleInfo,
   cache: Map<string, boolean>,
   importStack: string[] = []
 ): boolean {
@@ -330,7 +331,7 @@ function staticImportedByEntry(
 
 function createChunkFileNames(
   inputDir: string
-): (chunkInfo: PreRenderedChunk) => string {
+): (chunkInfo: Rolldown.PreRenderedChunk) => string {
   return function chunkFileNames(chunk) {
     if (chunk.isDynamicEntry && chunk.facadeModuleId) {
       let id = chunk.facadeModuleId

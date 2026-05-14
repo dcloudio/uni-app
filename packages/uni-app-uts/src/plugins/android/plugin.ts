@@ -3,7 +3,6 @@ import fs from 'fs-extra'
 import glob from 'fast-glob'
 import type { ResolvedConfig } from 'vite'
 import { extend, isString } from '@vue/shared'
-import type { ChangeEvent } from 'rollup'
 import {
   type UniVitePlugin,
   buildNonTreeShakingUniModules,
@@ -53,6 +52,8 @@ import {
 } from '../utils'
 
 const uniCloudSpaceList = getUniCloudSpaceList()
+
+type ChangeEvent = 'create' | 'update' | 'delete'
 
 let isFirst = true
 let isFirstBundleSuccess = false

@@ -14,7 +14,7 @@ import { resolveDefineCode } from './utils'
 import { resolveGenTemplateCodeOptions } from '../../template'
 import { addExtApiComponents } from '../../../../../utils'
 import { genTemplateCode } from '../../../code/template'
-import type { TransformPluginContext } from 'rollup'
+import type { Rolldown } from 'vite'
 
 export function processNormalScript(
   ctx: ScriptCompileContext,
@@ -113,7 +113,7 @@ export function processTemplate(
     rootDir: string
     sourceMap?: boolean
   },
-  pluginContext?: TransformPluginContext
+  pluginContext?: Rolldown.TransformPluginContext
 ) {
   const options = resolveGenTemplateCodeOptions(
     relativeFilename,

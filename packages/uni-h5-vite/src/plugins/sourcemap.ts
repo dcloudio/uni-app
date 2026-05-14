@@ -1,7 +1,6 @@
 import { normalizePath } from '@dcloudio/uni-cli-shared'
 import { dirname, isAbsolute, join } from 'path'
-import type { SourceMap } from 'rollup'
-import type { Plugin, TransformResult, ViteDevServer } from 'vite'
+import type { Plugin, Rolldown, TransformResult, ViteDevServer } from 'vite'
 
 export function uniPostSourceMapPlugin(): Plugin {
   return {
@@ -26,7 +25,7 @@ interface PendingRequest {
   abort: () => void
 }
 
-function isSourceMap(map: any): map is SourceMap {
+function isSourceMap(map: any): map is Rolldown.SourceMap {
   return map && map.sources
 }
 class PendingRequests extends Map<string, PendingRequest> {

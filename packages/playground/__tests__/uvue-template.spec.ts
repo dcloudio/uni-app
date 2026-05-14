@@ -4,6 +4,10 @@ import execa from 'execa'
 
 const projectDir = path.resolve(__dirname, '../uvue-template')
 
+function normalizeRolldownHelperCalls(content: string) {
+  return content.replace(/\(0, (vue\.[^)]+)\)/g, '$1')
+}
+
 const actions = {
   'uni-app-x': {
     'dev:app-harmony': [
@@ -87,7 +91,7 @@ describe('uvue-template', () => {
           const { filename, includes } = match
           const filePath = path.resolve(outDir, filename)
           const content = fs.readFileSync(filePath, 'utf-8')
-          expect(content).toContain(includes)
+          expect(normalizeRolldownHelperCalls(content)).toContain(includes)
         })
         console.log(`${type} npm run ${script} end`)
       })

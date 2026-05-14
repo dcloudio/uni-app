@@ -1,4 +1,3 @@
-import type { OutputAsset, OutputChunk } from 'rollup'
 import type { Plugin } from 'vite'
 import { isMiniProgramPageFile, relativeFile } from '@dcloudio/uni-cli-shared'
 import type { UniMiniProgramPluginOptions } from '../plugin'
@@ -28,12 +27,18 @@ export function createNonAppGenerateBundle(
       }
       // 仅页面级 wxss 需要补充 app.wxss
       if (name.endsWith(extname)) {
-        const cssFile = bundle[name] as OutputAsset
+        const cssFile = bundle[name]
+        if (cssFile.type !== 'asset' || cssFile.source == null) {
+          return
+        }
         cssFile.source =
           `@import "${relativeFile(name, appCssFile)}";\n` +
           cssFile.source.toString()
       } else if (name.endsWith('.js')) {
-        const jsFile = bundle[name] as OutputChunk
+        const jsFile = bundle[name]
+        if (jsFile.type !== 'chunk') {
+          return
+        }
         jsFile.code =
           `require('${relativeFile(name, appJsFile)}');\n` + jsFile.code
       }

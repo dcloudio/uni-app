@@ -1,10 +1,6 @@
 import path from 'path'
 import type { SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
-import type {
-  PluginContext,
-  SourceMapInput,
-  TransformPluginContext,
-} from 'rollup'
+import type { Rolldown } from 'vite'
 import { type RawSourceMap, SourceMapConsumer } from 'source-map-js'
 import type { EncodedSourceMap as TraceEncodedSourceMap } from '@jridgewell/trace-mapping'
 import { TraceMap, eachMapping } from '@jridgewell/trace-mapping'
@@ -45,7 +41,7 @@ export async function transformMain(
   code: string,
   filename: string,
   options: ResolvedOptions,
-  pluginContext?: TransformPluginContext // 该 transformMain 方法被vuejs-core使用，编译框架内置组件了，此时不会传入pluginContext
+  pluginContext?: Rolldown.TransformPluginContext // 该 transformMain 方法被vuejs-core使用，编译框架内置组件了，此时不会传入pluginContext
 ) {
   const compiler = options.compiler || require('@vue/compiler-sfc')
 
@@ -262,7 +258,7 @@ ${easyComInstance ? `export const ${easyComInstance} = {}` : ''}`)
     code: processJsCodeImport(jsCode),
     map: {
       mappings: '',
-    } as SourceMapInput,
+    } as Rolldown.SourceMapInput,
     // 这些都是 vuejs-core 需要的
     errors,
     uts: utsCode,
@@ -305,7 +301,7 @@ async function genScriptCode(
 
 async function genStyleCode(
   descriptor: SFCDescriptor,
-  pluginContext?: PluginContext
+  pluginContext?: Rolldown.PluginContext
 ) {
   let stylesCode = ``
   if (descriptor.styles.length) {
@@ -345,7 +341,7 @@ async function genStyleCode(
 async function linkSrcToDescriptor(
   src: string,
   descriptor: SFCDescriptor,
-  pluginContext: PluginContext
+  pluginContext: Rolldown.PluginContext
 ) {
   const srcFile =
     (await pluginContext.resolve(src, descriptor.filename))?.id || src
@@ -394,7 +390,7 @@ function attrsToQuery(
 
 function createTryResolve(
   importer: string,
-  resolve: PluginContext['resolve'],
+  resolve: Rolldown.PluginContext['resolve'],
   resolvedMap: RawSourceMap,
   ignore?: (source: string) => boolean,
   external: boolean = true

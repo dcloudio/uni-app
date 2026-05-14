@@ -7,7 +7,7 @@ import {
   isConfusionFile,
   removeExt,
 } from '@dcloudio/uni-cli-shared'
-import type { OutputChunk } from 'rollup'
+import type { Rolldown } from 'vite'
 
 export function uniConfusionPlugin(): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR
@@ -25,7 +25,9 @@ export function uniConfusionPlugin(): Plugin {
         build: {
           rollupOptions: {
             output: {
-              format: process.env.UNI_APP_CODE_SPLITTING ? 'amd' : 'cjs',
+              format: (process.env.UNI_APP_CODE_SPLITTING
+                ? 'amd'
+                : 'cjs') as Rolldown.OutputOptions['format'],
               manualChunks(id) {
                 if (isConfusionFile(path.relative(inputDir, id))) {
                   return removeExt(APP_CONFUSION_FILENAME)
@@ -40,13 +42,13 @@ export function uniConfusionPlugin(): Plugin {
       if (!hasConfusion) {
         return
       }
-      const appConfusionChunk = bundle[APP_CONFUSION_FILENAME] as OutputChunk
-      if (!appConfusionChunk) {
+      const appConfusionChunk = bundle[APP_CONFUSION_FILENAME]
+      if (!appConfusionChunk || appConfusionChunk.type !== 'chunk') {
         return
       }
       appConfusionChunk.code = wrapperAppConfusionCode(appConfusionChunk.code)
-      const appServiceChunk = bundle[APP_SERVICE_FILENAME] as OutputChunk
-      if (!appServiceChunk) {
+      const appServiceChunk = bundle[APP_SERVICE_FILENAME]
+      if (!appServiceChunk || appServiceChunk.type !== 'chunk') {
         return
       }
       appServiceChunk.code = wrapperAppServiceCode(appServiceChunk.code)

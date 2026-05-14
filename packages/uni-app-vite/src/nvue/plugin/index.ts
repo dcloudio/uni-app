@@ -1,5 +1,4 @@
-import type { PreRenderedChunk } from 'rollup'
-import type { Plugin } from 'vite'
+import type { Plugin, Rolldown } from 'vite'
 import path from 'path'
 import colors from 'picocolors'
 import { defaultNVueRpx2Unit } from '@dcloudio/uni-shared'
@@ -101,7 +100,7 @@ export function uniAppNVuePlugin({
                 return chunk.name + '.js'
               },
               chunkFileNames: createChunkFileNames(inputDir),
-              plugins: [dynamicImportPolyfill(true)],
+              plugins: [dynamicImportPolyfill(true) as any],
               globals: globals(appService),
             },
           },
@@ -159,7 +158,7 @@ export function uniAppNVuePlugin({
 
 function createChunkFileNames(
   inputDir: string
-): (chunkInfo: PreRenderedChunk) => string {
+): (chunkInfo: Rolldown.PreRenderedChunk) => string {
   return function chunkFileNames(chunk) {
     if (chunk.isDynamicEntry && chunk.facadeModuleId) {
       const { filename } = parseVueRequest(chunk.facadeModuleId)

@@ -2,7 +2,7 @@ import path from 'path'
 import { readFileSync } from 'fs-extra'
 import { extend } from '@vue/shared'
 import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
-import type { Plugin } from 'vite'
+import type { Plugin, PluginOption } from 'vite'
 import {
   EXTNAME_VUE,
   enableSourceMap,
@@ -46,7 +46,7 @@ import * as vueCompilerDom from '@vue/compiler-dom'
 import * as uniCliShared from '@dcloudio/uni-cli-shared'
 
 export { UniMiniProgramPluginOptions } from './plugin'
-export default (options: UniMiniProgramPluginOptions) => {
+export default (options: UniMiniProgramPluginOptions): PluginOption[] => {
   if (!options.app.subpackages) {
     delete process.env.UNI_SUBPACKAGE
   }

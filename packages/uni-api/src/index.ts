@@ -132,4 +132,4 @@ export { invokeApi, wrapperReturnValue } from './helpers/interceptor'
 export { requestComponentObserver } from './helpers/requestComponentObserver'
 // types
 
-export { DefineAsyncApiFn } from './helpers/api'
+export type { DefineAsyncApiFn } from './helpers/api'

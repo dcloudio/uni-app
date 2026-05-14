@@ -1,8 +1,7 @@
 import os from 'os'
 import fs from 'fs'
 import path from 'path'
-import type { SourcemapPathTransformOption } from 'rollup'
-import type { Plugin, ResolvedConfig, ServerOptions } from 'vite'
+import type { Plugin, ResolvedConfig, Rolldown, ServerOptions } from 'vite'
 import { extend, hasOwn, isPlainObject } from '@vue/shared'
 import {
   getDevServerOptions,
@@ -18,7 +17,7 @@ import {
   withSourcemap,
 } from '@dcloudio/uni-cli-shared'
 import { createDefine } from '../utils'
-import { esbuildPrePlugin } from './esbuild/esbuildPrePlugin'
+import { rolldownPrePlugin } from './rolldown/rolldownPrePlugin'
 import { external } from './configureServer/ssr'
 
 export interface ManifestBasicSslOptions {
@@ -98,8 +97,9 @@ export function createConfig(options: {
       }
     }
 
-    let sourcemapPathTransform: SourcemapPathTransformOption | undefined =
-      undefined
+    let sourcemapPathTransform:
+      | Rolldown.OutputOptions['sourcemapPathTransform']
+      | undefined = undefined
     if (
       // 仅在 uni-app-x 模式下，且非开发模式，且需要 sourcemap 时，才进行 sourcemap 路径转换
       process.env.UNI_APP_X === 'true' &&
@@ -121,8 +121,8 @@ export function createConfig(options: {
         // resolved main path so project paths with glob chars remain literal.
         entries: escapeOptimizeDepsEntry(resolveMainPathOnce(inputDir)),
         exclude: external,
-        esbuildOptions: {
-          plugins: [esbuildPrePlugin()],
+        rolldownOptions: {
+          plugins: [rolldownPrePlugin()],
         },
       },
       define: createDefine(env.command, config),

@@ -207,7 +207,6 @@ export default defineConfig({
     rollupOptions: {
       output: {
         dir: isX_VAPOR ? 'dist-x-vapor' : isX ? 'dist-x' : 'dist',
-        freeze: false, // uni 对象需要可被修改
         entryFileNames: 'uni-h5.' + FORMAT + '.js',
       },
       external(source) {

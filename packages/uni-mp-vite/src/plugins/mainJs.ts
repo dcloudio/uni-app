@@ -35,7 +35,7 @@ export function uniMainJsPlugin(
             }),
             {
               inputDir,
-              resolve: this.resolve,
+              resolve: this.resolve.bind(this),
               normalizeComponentName,
             }
           )

@@ -1,7 +1,6 @@
 import path from 'path'
 import debug from 'debug'
-import type { EmittedFile, GetModuleInfo } from 'rollup'
-import type { ResolvedConfig } from 'vite'
+import type { ResolvedConfig, Rolldown } from 'vite'
 import {
   type MiniProgramFilterOptions,
   addMiniProgramTemplateFile,
@@ -18,7 +17,7 @@ const debugTemplate = debug('uni:mp-template')
 
 export function getFilterFiles(
   resolvedConfig: ResolvedConfig,
-  getModuleInfo: GetModuleInfo
+  getModuleInfo: Rolldown.GetModuleInfo
 ) {
   const filters: Record<string, MiniProgramFilterOptions> = Object.create(null)
   const filtersCache = getFiltersCache(resolvedConfig)
@@ -62,7 +61,9 @@ export function getTemplateFiles(
   return files
 }
 
-export const emitFile: (emittedFile: EmittedFile) => string = (emittedFile) => {
+export const emitFile: (emittedFile: Rolldown.EmittedFile) => string = (
+  emittedFile
+) => {
   if (emittedFile.type === 'asset') {
     const filename = emittedFile.fileName!
     addMiniProgramTemplateFile(

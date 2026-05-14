@@ -1,7 +1,7 @@
 import path from 'path'
 import terser from '@rollup/plugin-terser'
 import uni from '@dcloudio/vite-plugin-uni'
-import { UserConfig } from 'vite'
+import type { UserConfig } from 'vite'
 export default {
   root: __dirname,
   logLevel: 'info',

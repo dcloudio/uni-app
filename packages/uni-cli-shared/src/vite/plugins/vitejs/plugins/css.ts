@@ -6,13 +6,7 @@ import colors from 'picocolors'
 import postcssrc from 'postcss-load-config'
 import { dataToEsm } from '@rollup/pluginutils'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
-import type {
-  EmittedAsset,
-  ExistingRawSourceMap,
-  PluginContext,
-  RollupError,
-  SourceMapInput,
-} from 'rollup'
+import type { Rolldown } from 'vite'
 import type { RawSourceMap } from '@ampproject/remapping'
 import type * as PostCSS from 'postcss'
 import {
@@ -51,6 +45,13 @@ import { createResolveErrorMsg } from '../../../../utils'
 
 import { parseVueRequest } from '../../../utils'
 import { getIsStaticFile } from './static'
+
+type EmittedAsset = Rolldown.EmittedAsset
+type ExistingRawSourceMap = Rolldown.ExistingRawSourceMap
+type PluginContext = Rolldown.PluginContext
+type RollupError = Rolldown.RollupError
+type SourceMapInput = Rolldown.SourceMapInput
+
 // const debug = createDebugger('vite:css')
 
 export interface CSSOptions {
@@ -243,7 +244,7 @@ export function cssPlugin(
               resolved,
               config,
               options?.isAndroidX
-                ? ({
+                ? {
                     emitFile(emittedFile: EmittedAsset) {
                       const fileName = path.resolve(
                         process.env.UNI_OUTPUT_DIR,
@@ -258,7 +259,7 @@ export function cssPlugin(
                       // 直接写入目标目录
                       fs.outputFileSync(fileName, emittedFile.source!)
                     },
-                  } as PluginContext)
+                  }
                 : this,
               true,
               getIsStaticFile()
@@ -907,7 +908,10 @@ export function formatPostcssSourceMap(
 ): ExistingRawSourceMap {
   const inputFileDir = path.dirname(file)
 
-  const sources = rawMap.sources.map((source) => {
+  const sources = (rawMap.sources ?? []).map((source) => {
+    if (source == null) {
+      return source
+    }
     const cleanSource = cleanUrl(decodeURIComponent(source))
 
     // postcss returns virtual files
@@ -1659,7 +1663,11 @@ function formatStylusSourceMap(
   if (map.file) {
     map.file = resolveFromRoot(map.file)
   }
-  map.sources = map.sources.map(resolveFromRoot)
+  if (map.sources) {
+    map.sources = map.sources.map((source) =>
+      source == null ? source : resolveFromRoot(source)
+    )
+  }
 
   return map
 }

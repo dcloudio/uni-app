@@ -1,5 +1,5 @@
 import path from 'path'
-import type { EmittedAsset } from 'rollup'
+import type { Rolldown } from 'vite'
 import type {
   AttributeNode,
   DirectiveNode,
@@ -9,6 +9,8 @@ import { LINEFEED } from '@dcloudio/uni-shared'
 
 import { normalizeMiniProgramFilename } from '../utils'
 import type { MiniProgramComponentsType } from '../json/mp/types'
+
+type EmittedAsset = Rolldown.EmittedAsset
 
 type LazyElementFn = (
   node: ElementNode,

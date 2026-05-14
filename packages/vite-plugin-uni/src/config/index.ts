@@ -45,10 +45,12 @@ export function createConfig(
       build: createBuild(options, config),
       css: createCss(options, config),
       esbuild: {
-        include: /\.(tsx?|jsx|uts)$/,
+        // rolldown-vite 会将 esbuild.include 迁移到 oxc.include，
+        // .uts 由 build.rollupOptions.moduleTypes 交给 Rolldown 按 ts 解析。
+        include: /\.(tsx?|jsx)$/,
         exclude: /\.js$/,
         loader: 'ts',
-      },
+      } as any,
     }
     if (isInHBuilderX()) {
       pluginConfig.cacheDir = path.resolve(

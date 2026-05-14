@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import type { Plugin } from 'vite'
-import type { EmittedAsset } from 'rollup'
+import type { Plugin, Rolldown } from 'vite'
 import type { ParserOptions } from '@vue/compiler-core'
 import type {
   CompilerOptions,
@@ -25,7 +24,7 @@ interface UniVitePluginUniOptions {
   styleOptions?: Pick<SFCStyleCompileOptions, 'postcssPlugins'>
   compilerOptions?: {
     miniProgram?: {
-      emitFile?: (emittedFile: EmittedAsset) => string
+      emitFile?: (emittedFile: Rolldown.EmittedAsset) => string
     }
     isNativeTag?: ParserOptions['isNativeTag']
     isVoidTag?: ParserOptions['isVoidTag']

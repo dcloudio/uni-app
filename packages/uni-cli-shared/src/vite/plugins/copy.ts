@@ -21,6 +21,7 @@ export function uniViteCopyPlugin({
   let isFirstBuild = true
   return {
     name: 'uni:copy',
+    enforce: 'pre',
     apply: 'build',
     configResolved(config) {
       resolvedConfig = config
