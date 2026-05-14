@@ -148,6 +148,7 @@ const REMOVED_PLUGINS = [
   'vite:dynamic-import-vars',
   'vite:import-glob',
   'vite:build-import-analysis',
+  'native:import-analysis-build',
   'vite:terser',
   'vite:reporter',
 ]
