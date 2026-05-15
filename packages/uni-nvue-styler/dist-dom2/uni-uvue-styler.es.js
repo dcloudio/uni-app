@@ -418,6 +418,11 @@ const transformFlex = (decl) => {
     value = value.trim();
     const result = [];
     const splitResult = splitValues(value);
+    const singleVarResult = tryExpandSingleValueVarShorthand(decl, [flexGrow, flexShrink, flexBasis], value);
+    // 单个 var() 无法提前拆出 grow/shrink/basis，dom2 下按 border 的兜底逻辑平铺。
+    if (singleVarResult) {
+        return singleVarResult;
+    }
     // 是否 flex-grow 的有效值 <number [0,∞]>
     const isFlexGrowValid = (v) => isNumber(Number(v)) && !Number.isNaN(Number(v));
     const isFlexShrinkValid = (v) => isNumber(Number(v)) && !Number.isNaN(Number(v)) && Number(v) >= 0;

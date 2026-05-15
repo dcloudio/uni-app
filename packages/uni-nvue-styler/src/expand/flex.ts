@@ -1,4 +1,5 @@
 import { type TransformDecl, createDecl, isNumber, splitValues } from '../utils'
+import { tryExpandSingleValueVarShorthand } from './shorthand'
 
 const flexGrow = __HYPHENATE__ ? 'flex-grow' : 'flexGrow'
 const flexShrink = __HYPHENATE__ ? 'flex-shrink' : 'flexShrink'
@@ -9,6 +10,15 @@ export const transformFlex: TransformDecl = (decl) => {
   value = value.trim()
   const result: ReturnType<TransformDecl> = []
   const splitResult = splitValues(value)
+  const singleVarResult = tryExpandSingleValueVarShorthand(
+    decl,
+    [flexGrow, flexShrink, flexBasis],
+    value
+  )
+  // 单个 var() 无法提前拆出 grow/shrink/basis，dom2 下按 border 的兜底逻辑平铺。
+  if (singleVarResult) {
+    return singleVarResult
+  }
 
   // 是否 flex-grow 的有效值 <number [0,∞]>
   const isFlexGrowValid = (v: string) =>
