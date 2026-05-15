@@ -1349,6 +1349,44 @@ describe('nvue-styler: expand', () => {
     expect(result[0]).toBe(decl)
   })
 
+  test('transform flex with single var in dom2', () => {
+    const prevRunTime = (globalThis as any).__RUN_TIME__
+    const prevHyphenate = (globalThis as any).__HYPHENATE__
+
+    ;(globalThis as any).__RUN_TIME__ = true
+    ;(globalThis as any).__HYPHENATE__ = true
+
+    try {
+      const decl = parseDecl(`.test { flex: var(--composite-flex) }`)
+      expect(transformFlex(decl)).toEqual([
+        {
+          type: 'decl',
+          prop: 'flex-grow',
+          value: 'var(--composite-flex)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'flex-shrink',
+          value: 'var(--composite-flex)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'flex-basis',
+          value: 'var(--composite-flex)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+      ])
+    } finally {
+      ;(globalThis as any).__RUN_TIME__ = prevRunTime
+      ;(globalThis as any).__HYPHENATE__ = prevHyphenate
+    }
+  })
+
   test('transform flex-flow with single var in dom2', () => {
     const prevRunTime = (globalThis as any).__RUN_TIME__
     const prevHyphenate = (globalThis as any).__HYPHENATE__
