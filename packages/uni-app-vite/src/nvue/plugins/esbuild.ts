@@ -14,6 +14,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 
 import { nvueOutDir } from '../../utils'
+import { replaceRolldownEsbuildExternalRequire } from '../../plugins/rolldown'
 import { esbuildGlobals } from '../utils'
 import { APP_CSS_JS } from './appCss'
 
@@ -154,8 +155,22 @@ function buildAppCss() {
 
 function normalizeAppCssJsCode(code: string) {
   return code.replace(
-    /^import\s+\{\s*\w+\s+as\s+(__commonJS(?:Min)?)\s*\}\s+from\s+['"][^'"]+['"];?\s*/m,
-    `const $1 = (factory) => {
+    /^import\s+\{([^}]+)\}\s+from\s+['"][^'"]+['"];?\s*/m,
+    (match, specifiers: string) => {
+      const esmHelper = specifiers.match(/\b\w+\s+as\s+(__esm(?:Min)?)\b/)
+      const commonJSHelper = specifiers.match(
+        /\b\w+\s+as\s+(__commonJS(?:Min)?)\b/
+      )
+      if (!esmHelper && !commonJSHelper) {
+        return match
+      }
+      return (
+        [
+          esmHelper
+            ? `const ${esmHelper[1]} = (fn, res) => () => (fn && (res = fn(fn = 0)), res)`
+            : '',
+          commonJSHelper
+            ? `const ${commonJSHelper[1]} = (factory) => {
   let cache
   return () => {
     if (!cache) {
@@ -164,8 +179,13 @@ function normalizeAppCssJsCode(code: string) {
     }
     return cache.exports
   }
-}
-`
+}`
+            : '',
+        ]
+          .filter(Boolean)
+          .join('\n') + '\n'
+      )
+    }
   )
 }
 
@@ -187,7 +207,7 @@ if(webview){
     options
   ).then((res) => {
     if (res.outputFiles) {
-      return res.outputFiles[0].text
+      return replaceRolldownEsbuildExternalRequire(res.outputFiles[0].text)
     }
     return ''
   })

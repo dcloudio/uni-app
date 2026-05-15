@@ -19,6 +19,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
 import { nvueOutDir } from '../../utils'
+import { replaceRolldownAppExternalRequire } from '../../plugins/rolldown'
 // import { transformRenderWhole } from './transforms/transformRenderWhole'
 // import { transformAppendAsTree } from './transforms/transformAppendAsTree'
 import { transformVideo } from './transforms/transformVideo'
@@ -153,6 +154,15 @@ export function uniAppNVuePlugin({
         }
       },
     }),
+    generateBundle(_, bundle) {
+      if (appService) {
+        Object.values(bundle).forEach((chunk) => {
+          if (chunk.type === 'chunk') {
+            chunk.code = replaceRolldownAppExternalRequire(chunk.code)
+          }
+        })
+      }
+    },
   }
 }
 

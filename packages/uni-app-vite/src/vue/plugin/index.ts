@@ -24,6 +24,7 @@ import { APP_RENDERJS_JS, APP_WXS_JS } from '../plugins/renderjs'
 
 import { createConfigResolved } from '../../plugin/configResolved'
 import { templateDir } from '../../utils'
+import { replaceRolldownAppExternalRequire } from '../../plugins/rolldown'
 
 export function uniAppVuePlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
@@ -111,6 +112,11 @@ export function uniAppVuePlugin(): UniVitePlugin {
       },
     }),
     generateBundle(_, bundle) {
+      Object.values(bundle).forEach((chunk) => {
+        if (chunk.type === 'chunk') {
+          chunk.code = replaceRolldownAppExternalRequire(chunk.code)
+        }
+      })
       if (isNormalCompileTarget()) {
         this.emitFile({
           fileName: '__uniappview.html',
