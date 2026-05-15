@@ -157,7 +157,13 @@ if (
   process.env.UNI_UTS_PLATFORM === 'app-android' &&
   process.env.UNI_APP_X_DOM2 !== 'true'
 ) {
-  REMOVED_PLUGINS.push('vite:esbuild-transpile')
+  REMOVED_PLUGINS.push(
+    // app-android 的 UTS TSC 需要保留 TS/UTS 类型信息，不能让
+    // rolldown-vite 在 uni:app-uts 前先执行 OXC/native TS strip。
+    'vite:oxc',
+    'native:transform',
+    'vite:esbuild-transpile'
+  )
 }
 
 export function configResolved(config: ResolvedConfig, isAndroidX = false) {

@@ -186,7 +186,7 @@ export async function transformMain(
       templatePreambleCode,
       createTryResolve(
         filename,
-        pluginContext.resolve,
+        pluginContext.resolve.bind(pluginContext),
         templatePreambleMap as RawSourceMap,
         // 仅需要再解析script中的import，template上边已经加入了
         (source) => source.includes('/.uvue/') || source.includes('/.tsc/'),
@@ -233,7 +233,7 @@ export async function transformMain(
         resolvedMap && pluginContext
           ? createTryResolve(
               filename,
-              pluginContext.resolve,
+              pluginContext.resolve.bind(pluginContext),
               resolvedMap,
               // 仅需要再解析script中的import，template上边已经加入了
               (source) =>
