@@ -1472,5 +1472,7 @@ export function requireUTSPluginCode(pluginId: string, _isExtApi: boolean) {
   // if (isExtApi && !process.env.UNI_COMPILE_EXT_API_INPUT) {
   //   return `export default uni`
   // }
-  return `export default uni.requireUTSPlugin('uni_modules/${pluginId}')`
+  // Rolldown 支持 CJS/ESM 互操作，named import 会转换为运行时对象属性访问。
+  // 这样可以保持 UTS 插件运行时代理对象的完整导出，避免枚举 ext-api 导出列表。
+  return `module.exports = uni.requireUTSPlugin('uni_modules/${pluginId}')`
 }

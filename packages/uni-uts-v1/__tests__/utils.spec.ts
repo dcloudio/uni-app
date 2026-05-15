@@ -1,7 +1,7 @@
 import fs from 'fs-extra'
 import { tmpdir } from 'os'
 import { join, resolve } from 'path'
-import { genConfigJson } from '../src/utils'
+import { genConfigJson, requireUTSPluginCode } from '../src/utils'
 
 describe('utils', () => {
   const originalUniAppX = process.env.UNI_APP_X
@@ -86,5 +86,11 @@ export interface UniWebElement extends JSExport, UniElement {}
         delegateClass: 'UniWebElementRegister',
       },
     ])
+  })
+
+  test('requireUTSPluginCode 生成 CJS 代理', () => {
+    expect(requireUTSPluginCode('uni-usercapturescreen', true)).toBe(
+      `module.exports = uni.requireUTSPlugin('uni_modules/uni-usercapturescreen')`
+    )
   })
 })
