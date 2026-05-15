@@ -274,6 +274,16 @@ exports[`assets playground uni-app-x build:mp-weixin: uni_modules/test-com/stati
 
 exports[`assets playground uni-app-x build:mp-weixin: uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg 1`] = `"uni_modules-test-com-static_shuijiao.jpg"`;
 
+exports[`assets playground uni-app-x dev:app-android: assets/pages-index-static_invalid-static.34ae5d3b.jpg 1`] = `"pages-index-static_invalid-static.34ae5d3b.jpg"`;
+
+exports[`assets playground uni-app-x dev:app-android: pages/sub/static/pages-sub-static_2.jpg 1`] = `"pages-sub-static_2.jpg"`;
+
+exports[`assets playground uni-app-x dev:app-android: static/static_logo.png 1`] = `"static_logo.png"`;
+
+exports[`assets playground uni-app-x dev:app-android: uni_modules/test-com/static/uni_modules-test-com-static_logo.png 1`] = `"uni_modules-test-com-static_logo.png"`;
+
+exports[`assets playground uni-app-x dev:app-android: uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg 1`] = `"uni_modules-test-com-static_shuijiao.jpg"`;
+
 exports[`assets playground uni-app-x dev:app-ios: app-service.js 1`] = `
 [
   ""/assets/pages-index-static_invalid-static.34ae5d3b.jpg"",
