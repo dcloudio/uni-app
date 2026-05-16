@@ -1,19 +1,17 @@
 import type { Logger, Plugin } from 'vite'
-import { extend, isString } from '@vue/shared'
+import { extend } from '@vue/shared'
 import {
   checkUpdate,
   formatErrMsg,
   formatInfoMsg,
   formatWarnMsg,
   isInHybridNVue,
-  isWindows,
 } from '@dcloudio/uni-cli-shared'
 import type { VitePluginUniResolvedOptions } from '..'
 
 import { initEnv } from './env'
 import { initOptions } from './options'
 import { initPlugins } from './plugins'
-import { customResolver } from '../config/resolve'
 
 export function createConfigResolved(
   options: VitePluginUniResolvedOptions
@@ -28,16 +26,6 @@ export function createConfigResolved(
     initPlugins(config, options)
     if (!isInHybridNVue(config)) {
       initCheckUpdate()
-    }
-    if (isWindows) {
-      // TODO 等 https://github.com/vitejs/vite/issues/3331 修复后，可以移除下列代码
-      // 2.8.0 已修复，但为了兼容旧版本，先不移除
-      const item = config.resolve.alias.find((item) =>
-        !isString(item.find) ? item.find.test('@/') : false
-      )
-      if (item) {
-        item.customResolver = customResolver
-      }
     }
   }
 }

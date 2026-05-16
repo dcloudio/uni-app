@@ -24,6 +24,7 @@ import {
 
 import { createConfig } from './config'
 import { createConfigResolved } from './configResolved'
+import { createUniResolveIdPlugin } from './config/resolve'
 import { uniCopyPlugin } from './plugins/copy'
 import { uniMovePlugin } from './plugins/move'
 import {
@@ -204,6 +205,7 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
     config: createConfig(options, uniPlugins),
     configResolved: createConfigResolved(options),
   })
+  plugins.push(createUniResolveIdPlugin(options))
   plugins.push(...uniPlugins)
 
   // plugins.push(...initFixedEsbuildInitTSConfck(process.env.UNI_INPUT_DIR))
@@ -308,7 +310,7 @@ function createUVueAndroidPlugins(options: VitePluginUniResolvedOptions) {
 
   options.copyOptions = uniPluginOptions.copyOptions
 
-  plugins.push(uniUVuePlugin(options))
+  plugins.push(uniUVuePlugin(options), createUniResolveIdPlugin(options))
 
   plugins.push(...uniPlugins)
 

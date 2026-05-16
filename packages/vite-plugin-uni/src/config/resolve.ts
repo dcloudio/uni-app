@@ -1,11 +1,10 @@
 import path from 'path'
-import type { Alias, ResolverFunction, UserConfig } from 'vite'
+import type { Alias, Plugin, UserConfig } from 'vite'
 import {
   extensions,
   isNormalCompileTarget,
   isWindows,
   normalizePath,
-  requireResolve,
   resolveEncryptUniModule,
   resolveUTSAppModule,
   resolveUTSModule,
@@ -24,11 +23,28 @@ function resolveUTSModuleProxyFile(id: string, importer: string) {
   }
 }
 
-export const customResolver: ResolverFunction = (updatedId, importer) => {
-  updatedId = updatedId.split('?')[0]
+function resolveUniAlias(id: string, inputDir: string) {
+  const matched = id.match(/^(~@|@)\/(.*)/)
+  if (matched) {
+    return normalizePath(path.resolve(inputDir, matched[2]))
+  }
+  const resolvedId = id.split('?')[0]
+  if (path.isAbsolute(resolvedId)) {
+    const normalizedId = normalizePath(resolvedId)
+    if (
+      normalizedId.includes('/uni_modules/') ||
+      normalizedId.includes('/utssdk/')
+    ) {
+      return normalizedId
+    }
+  }
+}
+
+export function resolveUniModuleId(id: string, importer?: string) {
+  const updatedId = id.split('?')[0]
 
   const utsImporter = importer
-    ? path.dirname(importer)
+    ? path.dirname(importer.split('?')[0])
     : process.env.UNI_INPUT_DIR
   const utsModuleFile =
     process.env.UNI_PLATFORM === 'app' ||
@@ -46,12 +62,24 @@ export const customResolver: ResolverFunction = (updatedId, importer) => {
   if (resolveId) {
     return resolveId
   }
-  if (isWindows) {
-    return normalizePath(
-      requireResolve(updatedId, importer || process.env.UNI_INPUT_DIR)
-    )
+}
+
+export function createUniResolveIdPlugin(
+  options: VitePluginUniResolvedOptions
+): Plugin {
+  return {
+    name: 'uni:resolve-id',
+    enforce: 'pre',
+    resolveId(id, importer) {
+      const resolvedId = resolveUniAlias(id, options.inputDir)
+      if (!resolvedId) {
+        return null
+      }
+      // Vite 8 deprecates alias.customResolver. Keep the plain string alias for
+      // CSS preprocessors, and resolve uni_modules/utssdk entries in this hook.
+      return resolveUniModuleId(resolvedId, importer) || null
+    },
   }
-  return requireResolve(updatedId, importer || process.env.UNI_INPUT_DIR)
 }
 
 export function createResolve(
@@ -69,14 +97,9 @@ export function createResolve(
   return {
     // 必须使用alias解析，插件定制的resolveId，不会被应用到css等预处理器中
     alias: [
-      // because @rollup/plugin-alias' type doesn't allow function
-      // replacement, but its implementation does work with function values.
       {
         find: /^(~@|@)\/(.*)/,
-        replacement(_str: string, _$1: string, $2: string) {
-          return normalizePath(path.resolve(options.inputDir, $2))
-        },
-        customResolver,
+        replacement: normalizePath(path.resolve(options.inputDir)) + '/$2',
       },
       ...alias,
     ] as Alias[],

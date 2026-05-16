@@ -18,7 +18,14 @@ interface Options {
 }
 
 if (!process.env.UNI_APP_EXT_API_DIR) {
-  const extApiDir = path.resolve(__dirname, '..', '..', 'uni-app', 'src', 'uni_modules')
+  const extApiDir = path.resolve(
+    __dirname,
+    '..',
+    '..',
+    'uni-app',
+    'src',
+    'uni_modules'
+  )
   if (fs.existsSync(extApiDir)) {
     process.env.UNI_APP_EXT_API_DIR = extApiDir
     console.log('UNI_APP_EXT_API_DIR', extApiDir)
@@ -42,6 +49,7 @@ if (!process.env.UNI_APP_EXT_API_DIR) {
 export function uts2ts({ target, platform }: Options): Plugin {
   return {
     name: 'uts2ts',
+    enforce: 'pre',
     config() {
       return {
         resolve: {
@@ -64,27 +72,20 @@ export function uts2ts({ target, platform }: Options): Plugin {
               find: '@dcloudio/uni-h5',
               replacement: resolve('../packages/uni-h5/src/index.ts'),
             },
-            {
-              find: /^@dcloudio\/uni-ext-api\/(.*)/,
-              replacement: '$1',
-              async customResolver(source) {
-                return resolveExtApi(target, platform, source).then(
-                  (fileName) => fileName.replace(/\\/g, '/')
-                )
-              },
-            },
-            {
-              find: /^@\/uni_modules\/(.*)/,
-              replacement: '$1',
-              async customResolver(source) {
-                return resolveExtApi(target, platform, source).then(
-                  (fileName) => fileName.replace(/\\/g, '/')
-                )
-              },
-            },
           ],
         },
       }
+    },
+    async resolveId(source) {
+      const matched =
+        source.match(/^@dcloudio\/uni-ext-api\/(.*)/) ||
+        source.match(/^@\/uni_modules\/(.*)/)
+      if (!matched) {
+        return null
+      }
+      return resolveExtApi(target, platform, matched[1]).then((fileName) =>
+        fileName.replace(/\\/g, '/')
+      )
     },
     buildStart() {
       // clearExtApiTempDir(target)
