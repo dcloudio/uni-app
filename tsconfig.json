@@ -30,7 +30,8 @@
       "@dcloudio/uni-app-plus/*": ["packages/uni-app-plus/src/*"],
       "@dcloudio/uni-h5/*": ["packages/uni-h5/src/*"],
       "@dcloudio/uni-platform": ["packages/uni-h5/src/platform/index.ts"],
-      "@dcloudio/uni-ext-api": ["uni-ext-api/uni_modules/*"]
+      "@dcloudio/uni-ext-api": ["uni-ext-api/uni_modules/*"],
+      "vite": ["node_modules/vite/dist/node/index.d.ts"]
     }
   },
   "files": [

@@ -187,10 +187,10 @@ function createConfig(
     ],
     build: {
       emptyOutDir: false,
-      // Vite 7 no longer expands `modules` before passing the target to esbuild.
+      // Vite 8/Rolldown no longer expands `modules` before passing the target to Oxc.
       target: moduleBuildTarget,
       cssTarget,
-      // Keep committed x runtime artifacts readable; Vite 7 now applies terser
+      // Keep committed x runtime artifacts readable; Vite 8 now applies minification
       // after expanding the previous `modules` target manually.
       minify: false,
       cssCodeSplit: false,
@@ -199,14 +199,12 @@ function createConfig(
         entry: path.resolve(__dirname, 'src/x/index.ts'),
         formats: ['es'],
       },
-      polyfillModulePreload: false,
       modulePreload: false,
       assetsDir: '.',
-      rollupOptions: {
-        treeshake: 'smallest',
+      rolldownOptions: {
+        treeshake: true,
         output: {
           dir: 'dist',
-          freeze: false,
           entryFileNames:
             platform === 'app-harmony'
               ? isVapor

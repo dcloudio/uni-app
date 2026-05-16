@@ -24,10 +24,11 @@ export function createBuild(
     process.env.UNI_APP_SOURCEMAP === 'true'
       ? 'hidden'
       : config.build?.sourcemap
-  const rollupOutputOption = config.build?.rollupOptions?.output
+  const rolldownOutputOption =
+    config.build?.rolldownOptions?.output || config.build?.rollupOptions?.output
   const sourcemapExcludeSources =
-    !isArray(rollupOutputOption) &&
-    (rollupOutputOption as RollupOutputOptionsWithSourcemapExcludeSources)
+    !isArray(rolldownOutputOption) &&
+    (rolldownOutputOption as RollupOutputOptionsWithSourcemapExcludeSources)
       ?.sourcemapExcludeSources === false
       ? false
       : process.env.UNI_APP_SOURCEMAP === 'true'
@@ -45,7 +46,7 @@ export function createBuild(
       process.env.NODE_ENV !== 'production'
         ? ({ compress: { drop_console: false } } as any)
         : undefined,
-    rollupOptions: {
+    rolldownOptions: {
       moduleTypes: {
         '.uts': 'ts',
       },
@@ -70,7 +71,7 @@ export function createBuild(
       },
       output: {
         // Vite 8/Rolldown supports sourcemapExcludeSources. Keep the existing
-        // source-content policy during the rolldown-vite@7.3.1 transition.
+        // source-content policy when generating UNI_APP_SOURCEMAP.
         sourcemapExcludeSources,
       } as any,
     },

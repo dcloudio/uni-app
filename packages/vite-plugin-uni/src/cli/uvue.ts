@@ -20,8 +20,13 @@ import {
 } from '@dcloudio/uni-cli-shared'
 
 import type { CliOptions } from '.'
-import { type ViteBuildResult, buildByVite, initBuildOptions } from './build'
-import { addConfigFile, cleanOptions, printStartupDuration } from './utils'
+import {
+  type ViteBuildResult,
+  buildByVite,
+  cleanBuildOptions,
+  initBuildOptions,
+} from './build'
+import { addConfigFile, printStartupDuration } from './utils'
 import { initEasycom } from '../utils/easycom'
 import { stopProfiler } from './action'
 
@@ -66,7 +71,12 @@ export async function runUVueAndroidDev(options: CliOptions & ServerOptions) {
     return process.exit(0)
   }
   initEasycom()
-  const watcher = (await buildUVue(options)) as Rolldown.RolldownWatcher
+  const watcher = await buildUVue(options)
+  if (!isViteWatcher(watcher)) {
+    const logger = createViteLogger(options.logLevel)
+    await stopProfiler((message) => logger.info(message))
+    return
+  }
   let isFirstStart = true
   let isFirstEnd = true
   watcher.on('event', async (event) => {
@@ -153,8 +163,17 @@ export async function buildUVue(options: CliOptions): Promise<ViteBuildResult> {
     addConfigFile(
       extend(
         { nvueAppService: true, uvue: true },
-        initBuildOptions(options, cleanOptions(options) as BuildOptions)
+        initBuildOptions(
+          options,
+          cleanBuildOptions(options, !!(options as ServerOptions).watch)
+        )
       )
     )
   )
+}
+
+function isViteWatcher(
+  result: ViteBuildResult
+): result is Rolldown.RolldownWatcher {
+  return typeof result === 'object' && !Array.isArray(result) && 'on' in result
 }

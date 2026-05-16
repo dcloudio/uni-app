@@ -44,9 +44,9 @@ export function createConfig(
       optimizeDeps: createOptimizeDeps(options),
       build: createBuild(options, config),
       css: createCss(options, config),
-      esbuild: {
-        // rolldown-vite 会将 esbuild.include 迁移到 oxc.include，
-        // .uts 由 build.rollupOptions.moduleTypes 交给 Rolldown 按 ts 解析。
+      oxc: {
+        // Vite 8 的内置 JS/TS transform 已从 esbuild 切换到 Oxc。
+        // .uts 由 build.rolldownOptions.moduleTypes 交给 Rolldown 按 ts 解析。
         include: /\.(tsx?|jsx)$/,
         exclude: /\.js$/,
         loader: 'ts',

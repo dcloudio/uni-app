@@ -159,7 +159,7 @@ export default defineConfig({
       },
     },
   ],
-  esbuild: {
+  oxc: {
     // 强制为 es2015，否则默认为 esnext，将会生成 __publicField 代码，
     // 部分 API 写的时候，使用了动态定义 prototype 的方式，与 __publicField 冲突，比如 createCanvasContext
     target: 'es2015',

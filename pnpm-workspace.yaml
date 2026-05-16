@@ -21,9 +21,9 @@ catalog:
   '@types/module-alias': 2.0.4
   '@types/pako': 1.0.2
   '@types/resolve': 1.20.6
-  '@vitejs/plugin-legacy': 7.2.1
+  '@vitejs/plugin-legacy': 8.0.2
   '@vitejs/plugin-basic-ssl': 2.3.0
-  '@vitejs/plugin-vue': 6.0.6
+  '@vitejs/plugin-vue': 6.0.7
   '@vitejs/plugin-vue-jsx': 5.1.5
   '@vue/compiler-core': 3.4.21
   '@vue/compiler-dom': 3.4.21
@@ -70,7 +70,7 @@ catalog:
   'source-map-js': 1.2.1
   'unimport': 4.1.1
   'unplugin-auto-import': 19.1.0
-  'vite': npm:rolldown-vite@7.3.1
+  'vite': 8.0.13
   'vue': 3.4.21
   'vue-i18n': 9.1.9
   'vue-router': 4.4.4

@@ -32,14 +32,28 @@ export async function build(
     await buildApp(options, callback)
     return
   }
+  const buildOptions = cleanBuildOptions(options, !!callback)
   const watcher = await buildByVite(
-    addConfigFile(
-      initBuildOptions(options, cleanOptions(options) as BuildOptions)
-    )
+    addConfigFile(initBuildOptions(options, buildOptions))
   )
   if (callback && isViteWatcher(watcher)) {
     watcher.on('event', callback)
   }
+}
+
+export function cleanBuildOptions(options: CliOptions, forceOneShot = false) {
+  const buildOptions = cleanOptions(options) as BuildOptions
+  if (forceOneShot && buildOptions.watch && isVite8()) {
+    // Vite 8's Rolldown watcher currently emits END without writing outputs.
+    // Run the initial dev compilation as a normal build so CLI dev commands
+    // still generate the expected files before watch support is adapted.
+    delete buildOptions.watch
+  }
+  return buildOptions
+}
+
+function isVite8() {
+  return /^8\./.test(require('vite/package.json').version)
 }
 
 function isViteWatcher(result: ViteBuildResult): result is ViteWatcher {
@@ -130,7 +144,8 @@ async function buildApp(
     return buildManifestJson()
   }
   let appWatcher: AppWatcher | undefined
-  if ((options as ServerOptions).watch) {
+  const forceOneShot = !!(callback && (options as ServerOptions).watch)
+  if ((options as ServerOptions).watch && !isVite8()) {
     appWatcher = new AppWatcher()
     if (callback) {
       appWatcher.on('event', callback)
@@ -144,7 +159,7 @@ async function buildApp(
       addConfigFile(
         extend(
           { nvueAppService: true, nvue: true },
-          initBuildOptions(options, cleanOptions(options) as BuildOptions)
+          initBuildOptions(options, cleanBuildOptions(options, forceOneShot))
         )
       )
     )
@@ -157,7 +172,7 @@ async function buildApp(
       addConfigFile(
         extend(
           { nvue: true },
-          initBuildOptions(options, cleanOptions(options) as BuildOptions)
+          initBuildOptions(options, cleanBuildOptions(options, forceOneShot))
         )
       )
     )
@@ -171,7 +186,7 @@ async function buildApp(
   process.env.UNI_COMPILER = 'vue'
   const vueBuilder = await buildByVite(
     addConfigFile(
-      initBuildOptions(options, cleanOptions(options) as BuildOptions)
+      initBuildOptions(options, cleanBuildOptions(options, forceOneShot))
     )
   )
   if (!isNormalCompileTarget()) {
@@ -187,7 +202,7 @@ async function buildApp(
     addConfigFile(
       extend(
         { nvue: true },
-        initBuildOptions(options, cleanOptions(options) as BuildOptions)
+        initBuildOptions(options, cleanBuildOptions(options, forceOneShot))
       )
     )
   )

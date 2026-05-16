@@ -13,13 +13,13 @@ const actions = {
     'dev:app-harmony': [
       {
         filename: 'assets/pages/index/index.js',
-        includes: `"onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $setup.value = $event)`,
+        includes: `isRef(value) ? value.value = $event : null`,
       },
     ],
     'dev:app-ios': [
       {
         filename: 'app-service.js',
-        includes: `"onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $setup.value = $event)`,
+        includes: `vue.isRef(value) ? value.value = $event : null`,
       },
     ],
     'dev:mp-weixin': [

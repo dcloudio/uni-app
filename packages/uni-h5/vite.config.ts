@@ -188,14 +188,14 @@ export default defineConfig({
     ...(isX ? [uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE })] : []),
     ...(isX ? [replacePagePaths(systemPagePaths)] : []),
   ],
-  esbuild: {
+  oxc: {
     // 强制为 es2015，否则默认为 esnext，将会生成 __publicField 代码，
     // 部分 API 写的时候，使用了动态定义 prototype 的方式，与 __publicField 冲突，比如 createCanvasContext
     target: 'es2015',
   },
   build: {
     cssCodeSplit: true,
-    // Vite 7 no longer expands `modules` before passing the target to esbuild.
+    // Vite 8/Rolldown no longer expands `modules` before passing the target to Oxc.
     target: moduleBuildTarget, // keep import.meta...
     emptyOutDir: FORMAT === 'es',
     minify: false,
