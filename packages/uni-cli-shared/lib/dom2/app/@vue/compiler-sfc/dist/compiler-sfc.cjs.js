@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-beta.11
+  * @vue/compiler-sfc v3.6.0-beta.12
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -15560,7 +15560,7 @@ function compileScript(sfc, options) {
 	if (emitsDecl) runtimeOptions += `\n  emits: ${emitsDecl},`;
 	if (vapor && !ssr && sfc.template && !sfc.template.src && sfc.template.ast) {
 		var _options$templateOpti4;
-		runtimeOptions += `\n  __multiRoot: ${isMultiRoot(sfc.template.ast, (_options$templateOpti4 = options.templateOptions) === null || _options$templateOpti4 === void 0 ? void 0 : _options$templateOpti4.compilerOptions)},`;
+		if (isMultiRoot(sfc.template.ast, (_options$templateOpti4 = options.templateOptions) === null || _options$templateOpti4 === void 0 ? void 0 : _options$templateOpti4.compilerOptions)) runtimeOptions += `\n  __multiRoot: true,`;
 	}
 	let definedOptions = "";
 	if (ctx.optionsRuntimeDecl) definedOptions = scriptSetup.content.slice(ctx.optionsRuntimeDecl.start, ctx.optionsRuntimeDecl.end).trim();
@@ -15718,7 +15718,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 }
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
-const version = "3.6.0-beta.11";
+const version = "3.6.0-beta.12";
 const parseCache = parseCache$1;
 const errorMessages = {
 	..._vue_compiler_dom.errorMessages,

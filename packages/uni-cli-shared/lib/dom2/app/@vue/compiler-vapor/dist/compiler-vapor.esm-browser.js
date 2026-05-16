@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-vapor v3.6.0-beta.11
+  * @vue/compiler-vapor v3.6.0-beta.12
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -39,6 +39,7 @@ const remove = (arr, el) => {
 };
 const isArray$1 = Array.isArray;
 const isString = (val) => typeof val === "string";
+const isObject = (val) => val !== null && typeof val === "object";
 const isBuiltInDirective = /* @__PURE__ */ makeMap("bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo");
 const cacheStringFunction = (fn) => {
 	const cache = Object.create(null);
@@ -81,6 +82,20 @@ function canSetValueDirectly(tagName) {
 	return tagName !== "PROGRESS" && !tagName.includes("-");
 }
 const isGloballyAllowed = /* @__PURE__ */ makeMap("Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt,console,Error,Symbol");
+//#endregion
+//#region packages/shared/src/normalizeProp.ts
+function normalizeClass(value) {
+	let res = "";
+	if (isString(value)) res = value;
+	else if (isArray$1(value)) for (let i = 0; i < value.length; i++) {
+		const normalized = normalizeClass(value[i]);
+		if (normalized) res += normalized + " ";
+	}
+	else if (isObject(value)) {
+		for (const name in value) if (value[name]) res += name + " ";
+	}
+	return res.trim();
+}
 //#endregion
 //#region packages/shared/src/domTagConfig.ts
 const HTML_TAGS = "html,body,base,head,link,meta,style,title,address,article,aside,footer,header,hgroup,h1,h2,h3,h4,h5,h6,nav,section,div,dd,dl,dt,figcaption,figure,picture,hr,img,li,main,ol,p,pre,ul,a,b,abbr,bdi,bdo,br,cite,code,data,dfn,em,i,kbd,mark,q,rp,rt,ruby,s,samp,small,span,strong,sub,sup,time,u,var,wbr,area,audio,map,track,video,embed,object,param,source,canvas,script,noscript,del,ins,caption,col,colgroup,table,thead,tbody,td,th,tr,button,datalist,fieldset,form,input,label,legend,meter,optgroup,option,output,progress,select,textarea,details,dialog,menu,summary,template,blockquote,iframe,tfoot";
@@ -19133,7 +19148,8 @@ var TransformContext = class TransformContext {
 		this.operationIndex = this.block.operation.length;
 		this.isLastEffectiveChild = true;
 		this.isOnRightmostPath = true;
-		this.hasInlineAncestorNeedingClose = false;
+		this.templateCloseTags = void 0;
+		this.templateCloseBlocks = false;
 		this.globalId = 0;
 		this.nextIdMap = null;
 		this.ifIndex = 0;
@@ -19267,11 +19283,6 @@ var TransformContext = class TransformContext {
 		while (effectiveParent && effectiveParent.node.type === 1 && effectiveParent.node.tagType === 3) effectiveParent = effectiveParent.parent;
 		const isLastEffectiveChild = this.isEffectivelyLastChild(index);
 		const isOnRightmostPath = this.isOnRightmostPath && isLastEffectiveChild;
-		let hasInlineAncestorNeedingClose = this.hasInlineAncestorNeedingClose;
-		if (this.node.type === 1) {
-			if (this.node.tag === "template") hasInlineAncestorNeedingClose = false;
-			else if (!hasInlineAncestorNeedingClose && !this.isOnRightmostPath && isInlineTag(this.node.tag)) hasInlineAncestorNeedingClose = true;
-		}
 		return Object.assign(Object.create(TransformContext.prototype), this, {
 			node,
 			parent: this,
@@ -19286,7 +19297,8 @@ var TransformContext = class TransformContext {
 			effectiveParent,
 			isLastEffectiveChild,
 			isOnRightmostPath,
-			hasInlineAncestorNeedingClose
+			templateCloseTags: this.templateCloseTags,
+			templateCloseBlocks: this.templateCloseBlocks
 		});
 	}
 	shiftEffectBoundaries(index, dynamic = this.dynamic) {
@@ -19487,6 +19499,9 @@ function genCall(name, ...frags) {
 		", ",
 		hasPlaceholder ? name[1] : "null"
 	], ...frags)];
+}
+function getParserOptions(plugins) {
+	return { plugins: plugins ? plugins.some((plugin) => plugin === "typescript") ? plugins : [...plugins, "typescript"] : ["typescript"] };
 }
 function codeFragmentToString(code, context) {
 	const { options: { sourceMap } } = context;
@@ -19871,10 +19886,8 @@ function escapeRegExp(string) {
 	return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 function parseExp(context, content, loc) {
-	const plugins = context.options.expressionPlugins;
-	const options = { plugins: plugins ? [...plugins, "typescript"] : ["typescript"] };
 	try {
-		return (0, import_lib.parseExpression)(`(${content})`, options);
+		return (0, import_lib.parseExpression)(`(${content})`, getParserOptions(context.options.expressionPlugins));
 	} catch (e) {
 		if (loc) {
 			const error = new SyntaxError(e.message);
@@ -20061,16 +20074,12 @@ function genFor(oper, context) {
 		idMap[rawIndex] = `${indexVar}.value`;
 		idMap[indexVar] = null;
 	}
-	const { selectorPatterns, keyOnlyBindingPatterns } = matchPatterns(render, keyProp, idMap);
+	const { selectorPatterns, keyOnlyBindingPatterns } = matchPatterns(render, keyProp, idMap, context);
 	const selectorDeclarations = [];
-	const selectorSetup = [];
+	const selectorName = (i) => selectorPatterns.length > 1 ? `_selector${id}_${i}` : `_selector${id}`;
 	for (let i = 0; i < selectorPatterns.length; i++) {
 		const { selector } = selectorPatterns[i];
-		const selectorName = `_selector${id}_${i}`;
-		selectorDeclarations.push(`let ${selectorName}`, NEWLINE);
-		if (i === 0) selectorSetup.push(`({ createSelector }) => {`, INDENT_START);
-		selectorSetup.push(NEWLINE, `${selectorName} = `, ...genCall(`createSelector`, [`() => `, ...genExpression(selector, context)]));
-		if (i === selectorPatterns.length - 1) selectorSetup.push(INDENT_END, NEWLINE, "}");
+		selectorDeclarations.push(`const ${selectorName(i)} = `, ...genCall(helper("createSelector"), [`() => `, ...genExpression(selector, context)]), NEWLINE);
 	}
 	const blockFn = context.withId(() => {
 		const frag = [];
@@ -20079,7 +20088,7 @@ function genFor(oper, context) {
 			const patternFrag = [];
 			for (let i = 0; i < selectorPatterns.length; i++) {
 				const { effect } = selectorPatterns[i];
-				patternFrag.push(NEWLINE, `_selector${id}_${i}(() => {`, INDENT_START);
+				patternFrag.push(NEWLINE, `${selectorName(i)}(`, ...genExpression(keyProp, context), `, () => {`, INDENT_START);
 				for (const oper of effect.operations) patternFrag.push(...genOperation(oper, context));
 				patternFrag.push(INDENT_END, NEWLINE, `})`);
 			}
@@ -20095,11 +20104,14 @@ function genFor(oper, context) {
 	if (onlyChild) flags |= 1;
 	if (component) flags |= 2;
 	if (once) flags |= 4;
+	const onResetCalls = [];
+	for (let i = 0; i < selectorPatterns.length; i++) onResetCalls.push(NEWLINE, `n${id}.onReset(${selectorName(i)}.reset)`);
 	return [
 		NEWLINE,
 		...selectorDeclarations,
 		`const n${id} = `,
-		...genCall([helper("createFor"), "undefined"], sourceExpr, blockFn, genCallback(keyProp), flags ? String(flags) : void 0, selectorSetup.length ? selectorSetup : void 0)
+		...genCall([helper("createFor"), "undefined"], sourceExpr, blockFn, genCallback(keyProp), flags ? String(flags) : void 0),
+		...onResetCalls
 	];
 	function genCallback(expr) {
 		if (!expr) return false;
@@ -20187,19 +20199,19 @@ function buildDestructureIdMap(idToPathMap, baseAccessor, plugins) {
 			}
 			if (pathInfo.dynamic) {
 				const node = idMap[id] = createSimpleExpression(path);
-				node.ast = (0, import_lib.parseExpression)(`(${path})`, { plugins: plugins ? [...plugins, "typescript"] : ["typescript"] });
+				node.ast = (0, import_lib.parseExpression)(`(${path})`, getParserOptions(plugins));
 			} else idMap[id] = path;
 		} else idMap[id] = path;
 	});
 	return idMap;
 }
-function matchPatterns(render, keyProp, idMap) {
+function matchPatterns(render, keyProp, idMap, context) {
 	const selectorPatterns = [];
 	const keyOnlyBindingPatterns = [];
 	const removedEffectIndexes = [];
 	render.effect = render.effect.filter((effect, index) => {
 		if (keyProp !== void 0) {
-			const selector = matchSelectorPattern(effect, keyProp.content, idMap);
+			const selector = matchSelectorPattern(effect, keyProp.content, idMap, context);
 			if (selector) {
 				selectorPatterns.push(selector);
 				removedEffectIndexes.push(index);
@@ -20238,7 +20250,7 @@ function matchKeyOnlyBindingPattern(effect, key) {
 		}
 	}
 }
-function matchSelectorPattern(effect, key, idMap) {
+function matchSelectorPattern(effect, key, idMap, context) {
 	if (effect.expressions.length === 1) {
 		const { ast, content } = effect.expressions[0];
 		if (typeof ast === "object" && ast) {
@@ -20263,17 +20275,11 @@ function matchSelectorPattern(effect, key, idMap) {
 				}, false);
 				if (!hasExtraId) {
 					const name = content.slice(selector.start - 1, selector.end - 1);
+					const selectorExpression = createSimpleExpression(name, false, selector.loc);
+					selectorExpression.ast = (0, import_lib.parseExpression)(`(${name})`, getParserOptions(context.options.expressionPlugins));
 					return {
 						effect,
-						selector: {
-							content: name,
-							ast: extend({}, selector, {
-								start: 1,
-								end: name.length + 1
-							}),
-							loc: selector.loc,
-							isStatic: false
-						}
+						selector: selectorExpression
 					};
 				}
 			}
@@ -20335,6 +20341,7 @@ const helpers = {
 	setText: { name: "setText" },
 	setHtml: { name: "setHtml" },
 	setClass: { name: "setClass" },
+	setClassName: { name: "setClassName" },
 	setStyle: { name: "setStyle" },
 	setValue: { name: "setValue" },
 	setAttr: {
@@ -20354,8 +20361,131 @@ function genSetProp(oper, context) {
 	const { helper } = context;
 	const { prop: { key, values, modifier }, tag } = oper;
 	const resolvedHelper = getRuntimeHelper(tag, key.content, modifier);
+	if (key.content === "class" && !resolvedHelper.isSVG && resolvedHelper.name === "setClass") {
+		const className = genSetClassName(oper, context);
+		if (className) return className;
+	}
 	const propValue = genPropValue(values, context);
 	return [NEWLINE, ...genCall([helper(resolvedHelper.name), null], `n${oper.element}`, resolvedHelper.needKey ? genExpression(key, context) : false, propValue, resolvedHelper.isSVG && "true")];
+}
+const MAX_CLASS_NAME_ENTRIES = 31;
+function genSetClassName(oper, context) {
+	const info = resolveClassName(oper.prop.values, context);
+	if (!info) return;
+	const { helper } = context;
+	const flags = genClassFlags(info.entries, context);
+	const classFragments = info.entries.map((entry) => JSON.stringify(!info.prefix && info.entries.length === 1 ? entry.className : ` ${entry.className}`));
+	const fragments = classFragments.length === 1 ? classFragments[0] : genMulti(DELIMITERS_ARRAY, ...classFragments);
+	return [NEWLINE, ...genCall([helper("setClassName"), "\"\""], `n${oper.element}`, flags, fragments, info.prefix && JSON.stringify(info.prefix), info.suffix && JSON.stringify(info.suffix))];
+}
+function resolveClassName(values, context) {
+	let prefix = "";
+	let suffix = "";
+	const entries = [];
+	let sawDynamic = false;
+	let sawSuffix = false;
+	for (const value of values) {
+		const staticValue = getLiteralExpressionValue(value, true);
+		if (staticValue != null) {
+			const normalized = normalizeClass(staticValue);
+			if (normalized) if (sawSuffix) suffix = appendClass(suffix, normalized);
+			else if (sawDynamic) {
+				sawSuffix = true;
+				suffix = appendClass(suffix, normalized);
+			} else prefix = appendClass(prefix, normalized);
+			continue;
+		}
+		const ast = value.ast;
+		if (!ast || sawSuffix) return;
+		sawDynamic = true;
+		if (ast.type === "ObjectExpression") {
+			if (!resolveObjectClassName(value, ast, entries, context)) return;
+		} else if (ast.type === "ConditionalExpression") {
+			if (!resolveConditionalClassName(value, ast, entries, context)) return;
+		} else return;
+	}
+	return entries.length && entries.length <= MAX_CLASS_NAME_ENTRIES ? {
+		prefix,
+		suffix,
+		entries
+	} : void 0;
+}
+function resolveObjectClassName(source, ast, entries, context) {
+	for (const prop of ast.properties) {
+		if (prop.type !== "ObjectProperty" || prop.computed) return false;
+		const rawClassName = getObjectPropertyName(prop);
+		if (rawClassName == null) return false;
+		const className = normalizeClass(rawClassName);
+		if (!className) continue;
+		const value = getBooleanValue(prop.value);
+		entries.push({
+			className,
+			value,
+			condition: value == null ? createSubExpression(source, prop.value, context) : void 0
+		});
+	}
+	return true;
+}
+function resolveConditionalClassName(source, ast, entries, context) {
+	const consequent = getStringClassValue(ast.consequent);
+	const alternate = getStringClassValue(ast.alternate);
+	if (consequent && alternate === "") {
+		entries.push({
+			className: consequent,
+			condition: createSubExpression(source, ast.test, context)
+		});
+		return true;
+	} else if (alternate && consequent === "") {
+		entries.push({
+			className: alternate,
+			condition: createSubExpression(source, ast.test, context),
+			negate: true
+		});
+		return true;
+	}
+	return false;
+}
+function genClassFlags(entries, context) {
+	const values = [];
+	entries.forEach((entry, index) => {
+		if (index) values.push(" | ");
+		const bit = 1 << index;
+		if (entry.value != null) {
+			values.push(entry.value ? String(bit) : "0");
+			return;
+		}
+		values.push("(", ...genExpression(entry.condition, context), entry.negate ? ` ? 0 : ${bit}` : ` ? ${bit} : 0`, ")");
+	});
+	return values;
+}
+function appendClass(base, value) {
+	return base ? value ? `${base} ${value}` : base : value;
+}
+function getObjectPropertyName(prop) {
+	const key = prop.key;
+	if (key.type === "Identifier") return key.name;
+	else if (key.type === "StringLiteral") return key.value;
+	else if (key.type === "NumericLiteral") return String(key.value);
+}
+function getStringClassValue(node) {
+	if (node.type === "StringLiteral") return normalizeClass(node.value);
+	else if (node.type === "TemplateLiteral" && node.expressions.length === 0) return normalizeClass(node.quasis[0].value.cooked || "");
+	else if (node.type === "NullLiteral" || node.type === "BooleanLiteral" && !node.value) return "";
+}
+function getBooleanValue(node) {
+	if (node.type === "BooleanLiteral") return node.value;
+}
+function createSubExpression(source, node, context) {
+	const start = node.start == null ? 0 : node.start - 1;
+	const end = node.end == null ? source.content.length : node.end - 1;
+	const content = source.content.slice(start, end);
+	const expression = createSimpleExpression(content, false, {
+		start: advancePositionWithClone(source.loc.start, source.content, start),
+		end: advancePositionWithClone(source.loc.start, source.content, end),
+		source: content
+	});
+	expression.ast = isSimpleIdentifier(content) ? null : (0, import_lib.parseExpression)(`(${content})`, getParserOptions(context.options.expressionPlugins));
+	return expression;
 }
 function genDynamicProps$1(oper, context) {
 	const { helper } = context;
@@ -20766,11 +20896,23 @@ function genDynamicSlot(slot, context, withFunction = false) {
 			frag = genConditionalSlot(slot, context);
 			break;
 	}
-	return withFunction ? [
+	if (!withFunction) return frag;
+	return needsDynamicSlotSourceCtx(slot) ? [
+		`${context.helper("withVaporCtx")}(() => (`,
+		...frag,
+		"))"
+	] : [
 		"() => (",
 		...frag,
 		")"
-	] : frag;
+	];
+}
+function needsDynamicSlotSourceCtx(slot) {
+	switch (slot.slotType) {
+		case 1: return needsVaporCtx(slot.fn);
+		case 2: return needsVaporCtx(slot.fn);
+		case 3: return needsDynamicSlotSourceCtx(slot.positive) || (slot.negative ? needsDynamicSlotSourceCtx(slot.negative) : false);
+	}
 }
 function genBasicDynamicSlot(slot, context) {
 	const { name, fn } = slot;
@@ -21389,10 +21531,34 @@ function canOmitEndTag(node, context) {
 	const { block, parent } = context;
 	if (!parent) return false;
 	if (block !== parent.block) return true;
+	if (context.templateCloseTags && (context.templateCloseTags.has(node.tag) || isAlwaysCloseTag(node.tag) || isFormattingTag(node.tag)) || context.templateCloseBlocks && isBlockTag(node.tag)) return false;
 	if (isAlwaysCloseTag(node.tag) && !context.isOnRightmostPath) return false;
 	if (isFormattingTag(node.tag) || parent.node.type === 1 && node.tag === parent.node.tag) return context.isOnRightmostPath;
-	if (isBlockTag(node.tag) && context.hasInlineAncestorNeedingClose) return false;
 	return context.isLastEffectiveChild;
+}
+function getChildTemplateCloseState(context) {
+	const { node } = context;
+	if (node.type !== 1 || node.tagType !== 0 || shouldUseCreateElement(node, context)) return;
+	const inSameTemplateAsParent = isInSameTemplateAsParent(context);
+	const inheritedTags = inSameTemplateAsParent ? context.templateCloseTags : void 0;
+	const inheritedBlocks = inSameTemplateAsParent && context.templateCloseBlocks;
+	if (context.root === context.effectiveParent || canOmitEndTag(node, context) || isVoidTag(node.tag)) return inheritedTags || inheritedBlocks ? {
+		tags: inheritedTags,
+		blocks: inheritedBlocks
+	} : void 0;
+	const tags = new Set(inheritedTags);
+	tags.add(node.tag);
+	return {
+		tags,
+		blocks: inheritedBlocks || isInlineTag(node.tag)
+	};
+}
+function isInSameTemplateAsParent(context) {
+	const { parent, node, block } = context;
+	if (!parent || block !== parent.block) return false;
+	const parentNode = parent.node;
+	if (parentNode.type !== 1 || parentNode.tagType !== 0) return false;
+	return !shouldUseCreateElement(parentNode, parent) && isValidHTMLNesting(parentNode.tag, node.tag);
 }
 function isSingleRoot(context) {
 	if (context.inVFor) return false;
@@ -21739,8 +21905,12 @@ const transformChildren = (node, context) => {
 	const isFragment = node.type === 0 || node.type === 1 && (node.tagType === 3 || node.tagType === 1);
 	if (!isFragment && node.type !== 1) return;
 	const useCreateElement = node.type === 1 && shouldUseCreateElement(node, context);
+	const childTemplateCloseState = !isFragment && !useCreateElement ? getChildTemplateCloseState(context) : void 0;
 	for (const [i, child] of node.children.entries()) {
 		const childContext = context.create(child, i);
+		const isInSameTemplate = childTemplateCloseState && child.type === 1 && child.tagType === 0 && isInSameTemplateAsParent(childContext);
+		childContext.templateCloseTags = isInSameTemplate ? childTemplateCloseState.tags : void 0;
+		childContext.templateCloseBlocks = isInSameTemplate ? childTemplateCloseState.blocks : false;
 		transformNode(childContext);
 		const childDynamic = childContext.dynamic;
 		if (isFragment) {
@@ -22696,4 +22866,4 @@ const VaporErrorMessages = {
 	[101]: ``
 };
 //#endregion
-export { CodegenContext, DELIMITERS_ARRAY, DELIMITERS_ARRAY_NEWLINE, DELIMITERS_OBJECT, DELIMITERS_OBJECT_NEWLINE, DynamicFlag, IMPORT_EXPR_RE, IMPORT_EXP_END, IMPORT_EXP_START, INDENT_END, INDENT_START, IRDynamicPropsKind, IRNodeTypes, IRSlotType, LF, NEWLINE, TEXT_NODE_PLACEHOLDER, TEXT_PLACEHOLDER, TemplateRegistry, VaporErrorCodes, VaporErrorMessages, analyzeExpressions, buildCodeFragment, buildDestructureIdMap, codeFragmentToString, compile, createStructuralDirectiveTransform, createVaporCompilerError, genCall, genMulti, generate, getBaseTransformPreset, getLiteralExpressionValue, isBlockOperation, isBuiltInComponent, isConstantExpression, isKeepAliveTag, isStaticExpression, isTeleportTag, isTransitionGroupTag, isTransitionTag, needsVaporCtx, parse, parseValueDestructure, propToExpression, transform, transformChildren, transformComment, transformElement, transformKey, transformSlotOutlet, transformTemplateRef, transformText, transformVBind, transformVFor, transformVHtml, transformVIf, transformVModel, transformVOn, transformVOnce, transformVShow, transformVSlot, transformVText, wrapTemplate };
+export { CodegenContext, DELIMITERS_ARRAY, DELIMITERS_ARRAY_NEWLINE, DELIMITERS_OBJECT, DELIMITERS_OBJECT_NEWLINE, DynamicFlag, IMPORT_EXPR_RE, IMPORT_EXP_END, IMPORT_EXP_START, INDENT_END, INDENT_START, IRDynamicPropsKind, IRNodeTypes, IRSlotType, LF, NEWLINE, TEXT_NODE_PLACEHOLDER, TEXT_PLACEHOLDER, TemplateRegistry, VaporErrorCodes, VaporErrorMessages, analyzeExpressions, buildCodeFragment, buildDestructureIdMap, codeFragmentToString, compile, createStructuralDirectiveTransform, createVaporCompilerError, genCall, genMulti, generate, getBaseTransformPreset, getLiteralExpressionValue, getParserOptions, isBlockOperation, isBuiltInComponent, isConstantExpression, isKeepAliveTag, isStaticExpression, isTeleportTag, isTransitionGroupTag, isTransitionTag, matchKeyOnlyBindingPattern, matchSelectorPattern, needsVaporCtx, parse, parseValueDestructure, propToExpression, transform, transformChildren, transformComment, transformElement, transformKey, transformSlotOutlet, transformTemplateRef, transformText, transformVBind, transformVFor, transformVHtml, transformVIf, transformVModel, transformVOn, transformVOnce, transformVShow, transformVSlot, transformVText, wrapTemplate };

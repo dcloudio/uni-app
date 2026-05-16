@@ -4,6 +4,7 @@ import { AllowedComponentProps, AsyncComponentInternalOptions, AsyncComponentLoa
 import { EffectScope as EffectScope$1, ReactiveEffect, Ref, ShallowRef } from "@vue/reactivity";
 import { IsKeyValues, Namespace, NormalizedStyle, Prettify } from "@vue/shared";
 import { ImportItem } from "@vue/compiler-core";
+import { ParserOptions } from "@babel/parser";
 
 //#region \0rolldown/runtime.js
 //#endregion
@@ -21820,7 +21821,9 @@ declare class VaporFragment<T extends Block = Block> implements TransitionOption
   protected runWithRenderCtx<R>(fn: () => R, scope?: EffectScope$1): R;
 }
 declare class ForFragment extends VaporFragment<Block[]> {
+  resetListeners?: (() => void)[];
   constructor(nodes: Block[]);
+  onReset(fn: () => void): void;
 }
 declare class DynamicFragment extends VaporFragment {
   anchor: Node;
@@ -21842,8 +21845,10 @@ declare class DynamicFragment extends VaporFragment {
 }
 interface SlotBoundaryContext {
   parent: SlotBoundaryContext | null;
-  getLocalFallback: () => BlockFn | undefined;
+  getFallback: () => BlockFn | undefined;
+  run<R>(fn: () => R, scope?: EffectScope$1): R;
   markDirty: () => void;
+  redirected?: SlotBoundaryContext;
 }
 declare function isFragment(val: NonNullable<unknown>): val is VaporFragment;
 //#endregion
@@ -21867,9 +21872,8 @@ declare function insert(block: Block, parent: ParentNode & {
 declare function prepend(parent: ParentNode, ...blocks: Block[]): void;
 declare function remove(block: Block, parent?: ParentNode): void;
 //#endregion
-//#region packages/runtime-vapor/src/vdomInterop.d.ts
+//#region packages/runtime-vapor/src/vdomInteropState.d.ts
 declare const interopKey: unique symbol;
-declare const vaporInteropPlugin: Plugin;
 //#endregion
 //#region packages/runtime-vapor/src/componentProps.d.ts
 type RawProps = Record<string, () => unknown> & {
@@ -21881,11 +21885,11 @@ type DynamicPropsSource = (() => Record<string, unknown>) | Record<string, () =>
 //#endregion
 //#region packages/runtime-vapor/src/renderEffect.d.ts
 declare class RenderEffect extends ReactiveEffect {
-  render: () => void;
   i: VaporComponentInstance | null;
   job: SchedulerJob;
-  updateJob: SchedulerJob;
-  constructor(render: () => void);
+  updateJob?: SchedulerJob;
+  render: () => void;
+  constructor(render: () => void, noLifecycle?: boolean);
   fn(): void;
   notify(): void;
 }
@@ -22151,6 +22155,9 @@ declare const createVaporSSRApp: CreateAppFunction$1<ParentNode, VaporComponent>
 //#region packages/runtime-vapor/src/apiDefineAsyncComponent.d.ts
 declare function defineVaporAsyncComponent<T extends VaporComponent>(source: AsyncComponentLoader<T> | AsyncComponentOptions<T>): T;
 //#endregion
+//#region packages/runtime-vapor/src/vdomInterop.d.ts
+declare const vaporInteropPlugin: Plugin;
+//#endregion
 //#region packages/runtime-vapor/src/directives/custom.d.ts
 type VaporDirective = (node: Element | VaporComponentInstance, value?: () => any, argument?: string, modifiers?: DirectiveModifiers) => (() => void) | void;
 type VaporDirectiveArguments = Array<[VaporDirective | undefined] | [VaporDirective | undefined, () => any] | [VaporDirective | undefined, (() => any) | undefined, argument: string] | [VaporDirective | undefined, value: (() => any) | undefined, argument: string | undefined, modifiers: DirectiveModifiers]>;
@@ -22245,6 +22252,7 @@ type TargetElement = Element & {
   $root?: true;
   $html?: string;
   $cls?: string;
+  $clsFlags?: number;
   $sty?: NormalizedStyle | string | undefined;
   value?: string;
   _value?: any;
@@ -22252,7 +22260,8 @@ type TargetElement = Element & {
 declare function setProp(el: any, key: string, value: any): void;
 declare function setAttr(el: any, key: string, value: any, isSVG?: boolean): void;
 declare function setDOMProp(el: any, key: string, value: any, forceHydrate?: boolean, attrName?: string): void;
-declare function setClass(el: TargetElement, value: any, isSVG?: boolean): void;
+declare function setClass(el: TargetElement, value: any, isSVG?: boolean, isNormalized?: boolean): void;
+declare function setClassName(el: TargetElement, flags: number, cls: string | string[], prefix?: string, suffix?: string): void;
 declare function setStyle(el: TargetElement, value: any): void;
 declare function setValue(el: TargetElement, value: any, forceHydrate?: boolean): void;
 /**
@@ -22305,9 +22314,29 @@ declare function createKeyedFragment(key: () => any, render: BlockFn): Block;
 //#endregion
 //#region packages/runtime-vapor/src/apiCreateFor.d.ts
 type Source = any[] | Record<any, any> | number | Set<any> | Map<any, any>;
-declare const createFor: (src: () => Source, renderItem: (item: ShallowRef<any>, key: ShallowRef<any>, index: ShallowRef<number | undefined>) => Block, getKey?: (item: any, key: any, index?: number) => any, flags?: number, setup?: (_: {
-  createSelector: (source: () => any) => (cb: () => void) => void;
-}) => void) => ForFragment;
+declare const createFor: (src: () => Source, renderItem: (item: ShallowRef<any>, key: ShallowRef<any>, index: ShallowRef<number | undefined>) => Block, getKey?: (item: any, key: any, index?: number) => any, flags?: number) => ForFragment;
+interface ForSelector {
+  (key: any, oper: () => void): void;
+  /**
+  * Bulk-reset the selector's internal state. Hook into a v-for's fast-reset
+  * paths via `forFragment.onReset(selector.reset)` so the lazy per-item
+  * `onScopeDispose` teardowns short-circuit instead of doing N individual
+  * Map.delete() calls.
+  */
+  reset(): void;
+}
+/**
+* Builds a key-indexed selector that activates only the opers registered with
+* the key matching the current source value. Compared to letting each item
+* subscribe directly, this keeps re-renders on source change O(2) instead of
+* O(N) (only previous and new active item re-run).
+*
+* Selector cleanup follows the current scope. Per-item teardown is auto-wired
+* via `onScopeDispose` so callers (typically v-for item scopes) don't need
+* explicit deregistration. For bulk-reset hot paths, attach the selector to
+* the v-for via `frag.onReset(selector.reset)` to skip the per-item Map ops.
+*/
+declare function createSelector(source: () => any): ForSelector;
 declare function createForSlots(rawSource: Source, getSlot: (item: any, key: any, index?: number) => DynamicSlot): DynamicSlot[];
 declare function getRestElement(val: any, keys: string[]): any;
 declare function getDefaultValue(val: any, defaultVal: any): any;
@@ -22343,7 +22372,7 @@ declare const VaporTransition: FunctionalVaporComponent<TransitionProps>;
 //#region packages/runtime-vapor/src/components/TransitionGroup.d.ts
 declare const VaporTransitionGroup: DefineVaporComponent<{}, string, TransitionGroupProps>;
 declare namespace index_d_exports {
-  export { Block, DefineVaporComponent, DynamicFragment, FunctionalVaporComponent, VaporComponent, VaporComponentInstance, VaporComponentOptions, VaporDirective, VaporElement, VaporElementConstructor, VaporFragment, VaporKeepAlive, VaporKeepAliveContext, VaporPublicProps, VaporRenderResult, VaporSlot, VaporTeleport, VaporTransition, VaporTransitionGroup, VaporTransitionHooks, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyVShow, child, createComponent, createComponentWithFallback, createDynamicComponent, createFor, createForSlots, createIf, createInvoker, createKeyedFragment, createPlainElement, createSlot, createTemplateRefSetter, createTextNode, createVaporApp, createVaporSSRApp, defineVaporAsyncComponent, defineVaporComponent, defineVaporCustomElement, defineVaporSSRCustomElement, delegate, delegateEvents, getDefaultValue, getRestElement, insert, isFragment, isVaporComponent, next, nthChild, on, prepend, remove, renderEffect, setAttr, setBlockHtml, setBlockKey, setBlockText, setClass, setDOMProp, setDynamicEvents, setDynamicProps, setElementText, setHtml, setInsertionState, setProp, setStyle, setText, setValue, template, txt, unmountComponent, useVaporCssVars, vaporInteropPlugin, withAsyncContext, withVaporCtx, withVaporDirectives };
+  export { Block, DefineVaporComponent, DynamicFragment, FunctionalVaporComponent, VaporComponent, VaporComponentInstance, VaporComponentOptions, VaporDirective, VaporElement, VaporElementConstructor, VaporFragment, VaporKeepAlive, VaporKeepAliveContext, VaporPublicProps, VaporRenderResult, VaporSlot, VaporTeleport, VaporTransition, VaporTransitionGroup, VaporTransitionHooks, applyCheckboxModel, applyDynamicModel, applyRadioModel, applySelectModel, applyTextModel, applyVShow, child, createComponent, createComponentWithFallback, createDynamicComponent, createFor, createForSlots, createIf, createInvoker, createKeyedFragment, createPlainElement, createSelector, createSlot, createTemplateRefSetter, createTextNode, createVaporApp, createVaporSSRApp, defineVaporAsyncComponent, defineVaporComponent, defineVaporCustomElement, defineVaporSSRCustomElement, delegate, delegateEvents, getDefaultValue, getRestElement, insert, isFragment, isVaporComponent, next, nthChild, on, prepend, remove, renderEffect, setAttr, setBlockHtml, setBlockKey, setBlockText, setClass, setClassName, setDOMProp, setDynamicEvents, setDynamicProps, setElementText, setHtml, setInsertionState, setProp, setStyle, setText, setValue, template, txt, unmountComponent, useVaporCssVars, vaporInteropPlugin, withAsyncContext, withVaporCtx, withVaporDirectives };
 }
 //#endregion
 //#region temp/packages/compiler-vapor/src/ir/component.d.ts
@@ -22740,7 +22769,8 @@ export declare class TransformContext<T extends AllNode = AllNode> {
   operationIndex: number;
   isLastEffectiveChild: boolean;
   isOnRightmostPath: boolean;
-  hasInlineAncestorNeedingClose: boolean;
+  templateCloseTags: Set<string> | undefined;
+  templateCloseBlocks: boolean;
   private globalId;
   private nextIdMap;
   private ifIndex;
@@ -22825,6 +22855,7 @@ export declare const DELIMITERS_ARRAY_NEWLINE: CodeFragmentDelimiters;
 export declare const DELIMITERS_OBJECT: CodeFragmentDelimiters;
 export declare const DELIMITERS_OBJECT_NEWLINE: CodeFragmentDelimiters;
 export declare function genCall(name: string | [name: string, placeholder?: CodeFragments], ...frags: CodeFragments[]): CodeFragment[];
+export declare function getParserOptions(plugins: CodegenContext["options"]["expressionPlugins"]): ParserOptions;
 export declare function codeFragmentToString(code: CodeFragment[], context: CodegenContext): [code: string, map: CodegenSourceMapGenerator | undefined];
 //#endregion
 //#region temp/packages/compiler-vapor/src/transforms/utils.d.ts
@@ -22937,6 +22968,13 @@ export type DestructureMapValue = {
 export type DestructureMap = Map<string, DestructureMapValue | null>;
 export declare function parseValueDestructure(value: SimpleExpressionNode | undefined, context: CodegenContext): DestructureMap;
 export declare function buildDestructureIdMap(idToPathMap: DestructureMap, baseAccessor: string, plugins: CodegenContext["options"]["expressionPlugins"]): Record<string, string | SimpleExpressionNode | null>;
+export declare function matchKeyOnlyBindingPattern(effect: IREffect, key: string): {
+  effect: IREffect;
+} | undefined;
+export declare function matchSelectorPattern(effect: IREffect, key: string, idMap: Record<string, string | SimpleExpressionNode | null>, context: CodegenContext): {
+  effect: IREffect;
+  selector: SimpleExpressionNode;
+} | undefined;
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/component.d.ts
 /**

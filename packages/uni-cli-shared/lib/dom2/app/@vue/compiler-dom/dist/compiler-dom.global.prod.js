@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-dom v3.6.0-beta.11
+  * @vue/compiler-dom v3.6.0-beta.12
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
