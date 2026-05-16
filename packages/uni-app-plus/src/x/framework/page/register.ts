@@ -1,5 +1,5 @@
 import { extend, isPromise } from '@vue/shared'
-import type { ComponentPublicInstance } from 'vue'
+import { type ComponentPublicInstance, nextTick } from 'vue'
 import type { IPage } from '@dcloudio/uni-app-x/types/native'
 import type { EventChannel, UniNode } from '@dcloudio/uni-shared'
 import {
@@ -129,6 +129,27 @@ function invokeMountedJobs(proxy: ComponentPublicInstance) {
   }
 }
 
+function invokePageOnReady(
+  pageComponentPublicInstance: ComponentPublicInstance
+) {
+  if (__VAPOR_PLATFORM__ === 'app-ios') {
+    // iOS native ready 可能早于 Vapor 自定义组件 ref 的 post-flush 赋值完成，不 nextTick 的话这样会导致自定义组件的 ref 在页面 onReady 时还没有赋值
+    nextTick(() => {
+      invokeMountedJobs(pageComponentPublicInstance)
+      invokePageReadyHooks(pageComponentPublicInstance)
+      invokeHook(pageComponentPublicInstance, ON_READY)
+      // @ts-expect-error
+    }, null)
+  } else if (__VAPOR_PLATFORM__) {
+    invokeMountedJobs(pageComponentPublicInstance)
+    invokePageReadyHooks(pageComponentPublicInstance)
+    invokeHook(pageComponentPublicInstance, ON_READY)
+  } else {
+    invokePageReadyHooks(pageComponentPublicInstance)
+    invokeHook(pageComponentPublicInstance, ON_READY)
+  }
+}
+
 export function registerPage(
   {
     url,
@@ -220,11 +241,7 @@ export function registerPage(
           invokeHook(pageComponentPublicInstance, ON_UNLOAD)
         })
         nativePage.addPageEventListener(ON_READY, (_) => {
-          if (__VAPOR__) {
-            invokeMountedJobs(pageComponentPublicInstance)
-          }
-          invokePageReadyHooks(pageComponentPublicInstance)
-          invokeHook(pageComponentPublicInstance, ON_READY)
+          invokePageOnReady(pageComponentPublicInstance)
         })
 
         nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
@@ -407,11 +424,7 @@ export function registerDialogPage(
           )
         })
         nativePage.addPageEventListener(ON_READY, (_) => {
-          if (__VAPOR__) {
-            invokeMountedJobs(pageComponentPublicInstance)
-          }
-          invokePageReadyHooks(pageComponentPublicInstance)
-          invokeHook(pageComponentPublicInstance, ON_READY)
+          invokePageOnReady(pageComponentPublicInstance)
         })
 
         nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {

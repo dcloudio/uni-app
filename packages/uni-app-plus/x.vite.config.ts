@@ -87,14 +87,25 @@ const rollupPlugins = [
   }),
 ]
 
-type X_RUNTIME_PLATFORM = 'app-harmony' | 'app-ios'
+type X_RUNTIME_PLATFORM = 'app-harmony' | 'app-ios' | 'app-android'
+
+function resolveEntryFileName(platform: X_RUNTIME_PLATFORM, isVapor: boolean) {
+  if (isVapor) {
+    return `uni.x.runtime.${platform.replace('app-', '')}.vapor.esm.js`
+  }
+  return platform === 'app-harmony'
+    ? 'uni.x.runtime.harmony.esm.js'
+    : 'uni.x.runtime.esm.js'
+}
 
 function createConfig(
   platform: X_RUNTIME_PLATFORM,
   isVapor: boolean
 ): UserConfig {
   const isNativeTag =
-    platform === 'app-ios' ? isAppIOSUVueNativeTag : isAppHarmonyUVueNativeTag
+    platform === 'app-harmony'
+      ? isAppHarmonyUVueNativeTag
+      : isAppIOSUVueNativeTag
   return {
     root: __dirname,
     define: {
@@ -110,6 +121,7 @@ function createConfig(
       __UNI_FEATURE_I18N_ZH_HANT__: true,
       __X__: true,
       __VAPOR__: isVapor,
+      __VAPOR_PLATFORM__: isVapor ? JSON.stringify(platform) : false,
     },
     resolve: {
       alias: [
@@ -197,14 +209,7 @@ function createConfig(
         output: {
           dir: 'dist',
           freeze: false,
-          entryFileNames:
-            platform === 'app-harmony'
-              ? isVapor
-                ? 'uni.x.runtime.harmony.vapor.esm.js'
-                : 'uni.x.runtime.harmony.esm.js'
-              : isVapor
-              ? 'uni.x.runtime.vapor.esm.js'
-              : 'uni.x.runtime.esm.js',
+          entryFileNames: resolveEntryFileName(platform, isVapor),
         },
         preserveEntrySignatures: 'strict',
         plugins: rollupPlugins,

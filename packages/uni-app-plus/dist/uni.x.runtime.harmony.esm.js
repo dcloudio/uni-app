@@ -2017,6 +2017,12 @@ function parsePageStyle(route) {
   }
   return style;
 }
+function invokePageOnReady(pageComponentPublicInstance) {
+  {
+    invokePageReadyHooks(pageComponentPublicInstance);
+    invokeHook(pageComponentPublicInstance, ON_READY);
+  }
+}
 function registerPage(_ref, onCreated) {
   var {
     url,
@@ -2088,8 +2094,7 @@ function registerPage(_ref, onCreated) {
         invokeHook(pageComponentPublicInstance, ON_UNLOAD);
       });
       nativePage.addPageEventListener(ON_READY, (_) => {
-        invokePageReadyHooks(pageComponentPublicInstance);
-        invokeHook(pageComponentPublicInstance, ON_READY);
+        invokePageOnReady(pageComponentPublicInstance);
       });
       nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
         invokeHook(pageComponentPublicInstance, ON_PAGE_SCROLL, {
@@ -2186,8 +2191,7 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
         dialogPageTriggerParentShow(dialogPage, isSystemDialogPage(dialogPage) ? 1 : 0);
       });
       nativePage.addPageEventListener(ON_READY, (_) => {
-        invokePageReadyHooks(pageComponentPublicInstance);
-        invokeHook(pageComponentPublicInstance, ON_READY);
+        invokePageOnReady(pageComponentPublicInstance);
       });
       nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
         invokeHook(pageComponentPublicInstance, ON_PAGE_SCROLL, arg);

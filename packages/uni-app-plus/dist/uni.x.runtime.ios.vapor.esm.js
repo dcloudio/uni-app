@@ -1,6 +1,6 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType } from "@vue/shared";
-import { createMountPage, unmountPage, ref, getCurrentGenericInstance, injectHook, markRaw, defineComponent, getCurrentInstance, onMounted, camelize, createVNode, renderSlot } from "vue";
+import { createMountPage, unmountPage, ref, getCurrentGenericInstance, injectHook, nextTick, markRaw, defineComponent, getCurrentInstance, onMounted, camelize, createVNode, renderSlot } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -2029,9 +2029,11 @@ function invokeMountedJobs(proxy2) {
 }
 function invokePageOnReady(pageComponentPublicInstance) {
   {
-    invokeMountedJobs(pageComponentPublicInstance);
-    invokePageReadyHooks(pageComponentPublicInstance);
-    invokeHook(pageComponentPublicInstance, ON_READY);
+    nextTick(() => {
+      invokeMountedJobs(pageComponentPublicInstance);
+      invokePageReadyHooks(pageComponentPublicInstance);
+      invokeHook(pageComponentPublicInstance, ON_READY);
+    }, null);
   }
 }
 function registerPage(_ref, onCreated) {
