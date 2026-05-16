@@ -163,10 +163,7 @@ export async function buildUVue(options: CliOptions): Promise<ViteBuildResult> {
     addConfigFile(
       extend(
         { nvueAppService: true, uvue: true },
-        initBuildOptions(
-          options,
-          cleanBuildOptions(options, !!(options as ServerOptions).watch)
-        )
+        initBuildOptions(options, cleanBuildOptions(options))
       )
     )
   )
