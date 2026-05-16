@@ -1,6 +1,7 @@
 import { Comment, Fragment, Text as Text$1, computed, createElementVNode, createVNode, defineComponent, getCurrentInstance, inject, isVNode, mergeProps, nextTick, onBeforeUnmount, onMounted, onUnmounted, parseClassList, provide, reactive, ref, resolveComponent, shallowRef, watch, watchEffect } from "vue";
 import { extend, hasOwn, isArray, isFunction, isPlainObject, isString } from "@vue/shared";
 import { PRIMARY_COLOR, cacheStringFunction } from "@dcloudio/uni-shared";
+//#region src/components/navigator.ts
 var OPEN_TYPES = [
 	"navigate",
 	"redirect",
@@ -30,7 +31,7 @@ var ANIMATION_OUT = [
 	"pop-out",
 	"none"
 ];
-const navigatorProps = {
+var navigatorProps = {
 	hoverClass: {
 		type: String,
 		default: "navigator-hover"
@@ -78,46 +79,46 @@ const navigatorProps = {
 		default: 300
 	}
 };
-function createNavigatorOnClick(props$3) {
+function createNavigatorOnClick(props) {
 	return () => {
-		if (props$3.openType !== "navigateBack" && !props$3.url) {
+		if (props.openType !== "navigateBack" && !props.url) {
 			console.error("<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab");
 			return;
 		}
-		const animationDuration = parseInt(props$3.animationDuration);
+		const animationDuration = parseInt(props.animationDuration);
 		const onFail = void 0;
-		switch (props$3.openType) {
+		switch (props.openType) {
 			case "navigate":
 				uni.navigateTo({
-					url: props$3.url,
-					animationType: props$3.animationType || "pop-in",
+					url: props.url,
+					animationType: props.animationType || "pop-in",
 					animationDuration,
 					fail: onFail
 				});
 				break;
 			case "redirect":
 				uni.redirectTo({
-					url: props$3.url,
-					exists: props$3.exists,
+					url: props.url,
+					exists: props.exists,
 					fail: onFail
 				});
 				break;
 			case "switchTab":
 				uni.switchTab({
-					url: props$3.url,
+					url: props.url,
 					fail: onFail
 				});
 				break;
 			case "reLaunch":
 				uni.reLaunch({
-					url: props$3.url,
+					url: props.url,
 					fail: onFail
 				});
 				break;
 			case "navigateBack":
 				uni.navigateBack({
-					delta: props$3.delta,
-					animationType: props$3.animationType || "pop-out",
+					delta: props.delta,
+					animationType: props.animationType || "pop-out",
 					animationDuration,
 					fail: onFail
 				});
@@ -126,12 +127,14 @@ function createNavigatorOnClick(props$3) {
 		}
 	};
 }
-function useHoverClass(props$3) {
-	if (props$3.hoverClass && props$3.hoverClass !== "none") {
-		const hoverAttrs = { hoverClass: props$3.hoverClass };
-		if (hasOwn(props$3, "hoverStartTime")) hoverAttrs.hoverStartTime = props$3.hoverStartTime;
-		if (hasOwn(props$3, "hoverStayTime")) hoverAttrs.hoverStayTime = props$3.hoverStayTime;
-		if (hasOwn(props$3, "hoverStopPropagation")) hoverAttrs.hoverStopPropagation = props$3.hoverStopPropagation;
+//#endregion
+//#region src/nvue/utils.ts
+function useHoverClass(props) {
+	if (props.hoverClass && props.hoverClass !== "none") {
+		const hoverAttrs = { hoverClass: props.hoverClass };
+		if (hasOwn(props, "hoverStartTime")) hoverAttrs.hoverStartTime = props.hoverStartTime;
+		if (hasOwn(props, "hoverStayTime")) hoverAttrs.hoverStayTime = props.hoverStayTime;
+		if (hasOwn(props, "hoverStopPropagation")) hoverAttrs.hoverStopPropagation = props.hoverStopPropagation;
 		return hoverAttrs;
 	}
 	return {};
@@ -146,16 +149,20 @@ var navigator_default = /* @__PURE__ */ defineComponent({
 		backgroundColor: "rgba(0,0,0,0.1)",
 		opacity: .7
 	} } }],
-	setup(props$3, { slots }) {
-		const onClick = createNavigatorOnClick(props$3);
+	setup(props, { slots }) {
+		const onClick = createNavigatorOnClick(props);
 		return () => {
-			return createVNode("view", mergeProps(useHoverClass(props$3), { "onClick": onClick }), [slots.default && slots.default()]);
+			return createVNode("view", mergeProps(useHoverClass(props), { "onClick": onClick }), [slots.default && slots.default()]);
 		};
 	}
 });
+//#endregion
+//#region ../uni-core/src/helpers/util.ts
 function PolySymbol(name) {
 	return Symbol(process.env.NODE_ENV !== "production" ? "[uni-app]: " + name : name);
 }
+//#endregion
+//#region ../uni-core/src/helpers/page.ts
 function useCurrentPageId() {
 	let pageId;
 	try {
@@ -169,6 +176,8 @@ function useCurrentPageId() {
 function getPageProxyId(proxy) {
 	return proxy.$page?.id || proxy.$basePage?.id;
 }
+//#endregion
+//#region ../uni-core/src/helpers/showPage.ts
 var plus_;
 var weex_;
 var BroadcastChannel_;
@@ -256,11 +265,13 @@ function showPage({ context = {}, url, data = {}, style = {}, onMessage, onClose
 	page.show(style.animationType, style.animationDuration);
 	return new Page(page);
 }
-const labelProps = { for: {
+//#endregion
+//#region src/components/label.ts
+var labelProps = { for: {
 	type: String,
 	default: ""
 } };
-const uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
+var uniLabelKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniLabel" : "ul");
 function useProvideLabel() {
 	const handlers = [];
 	provide(uniLabelKey, {
@@ -273,58 +284,64 @@ function useProvideLabel() {
 	});
 	return handlers;
 }
+//#endregion
+//#region src/nvue/label/index.tsx
 var label_default = /* @__PURE__ */ defineComponent({
 	name: "Label",
 	props: labelProps,
 	styles: [],
-	setup(props$3, { slots }) {
+	setup(props, { slots }) {
 		const pageId = useCurrentPageId();
 		const handlers = useProvideLabel();
 		const _onClick = ($event) => {
-			if (props$3.for) UniViewJSBridge.emit(`uni-label-click-${pageId}-${props$3.for}`, $event, true);
+			if (props.for) UniViewJSBridge.emit(`uni-label-click-${pageId}-${props.for}`, $event, true);
 			else handlers.length && handlers[0]($event, true);
 		};
 		return () => createVNode("view", { "onClick": _onClick }, [slots.default && slots.default()]);
 	}
 });
-function useListeners(props$3, listeners) {
-	_addListeners(props$3.id, listeners);
-	watch(() => props$3.id, (newId, oldId) => {
+//#endregion
+//#region src/helpers/useListeners.ts
+function useListeners(props, listeners) {
+	_addListeners(props.id, listeners);
+	watch(() => props.id, (newId, oldId) => {
 		_removeListeners(oldId, listeners, true);
 		_addListeners(newId, listeners, true);
 	});
 	onUnmounted(() => {
-		_removeListeners(props$3.id, listeners);
+		_removeListeners(props.id, listeners);
 	});
 }
-function _addListeners(id, listeners, watch$1) {
+function _addListeners(id, listeners, watch) {
 	const pageId = useCurrentPageId();
-	if (watch$1 && !id) return;
+	if (watch && !id) return;
 	if (!isPlainObject(listeners)) return;
 	Object.keys(listeners).forEach((name) => {
-		if (watch$1) {
+		if (watch) {
 			if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) UniViewJSBridge.on(`uni-${name}-${pageId}-${id}`, listeners[name]);
 		} else if (name.indexOf("uni-") === 0) UniViewJSBridge.on(name, listeners[name]);
 		else if (id) UniViewJSBridge.on(`uni-${name}-${pageId}-${id}`, listeners[name]);
 	});
 }
-function _removeListeners(id, listeners, watch$1) {
+function _removeListeners(id, listeners, watch) {
 	const pageId = useCurrentPageId();
-	if (watch$1 && !id) return;
+	if (watch && !id) return;
 	if (!isPlainObject(listeners)) return;
 	Object.keys(listeners).forEach((name) => {
-		if (watch$1) {
+		if (watch) {
 			if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) UniViewJSBridge.off(`uni-${name}-${pageId}-${id}`, listeners[name]);
 		} else if (name.indexOf("uni-") === 0) UniViewJSBridge.off(name, listeners[name]);
 		else if (id) UniViewJSBridge.off(`uni-${name}-${pageId}-${id}`, listeners[name]);
 	});
 }
+//#endregion
+//#region src/helpers/useAttrs.ts
 function entries(obj) {
 	return Object.keys(obj).map((key) => [key, obj[key]]);
 }
 var DEFAULT_EXCLUDE_KEYS = ["class", "style"];
 var LISTENER_PREFIX = /^on[A-Z]+/;
-const useAttrs = (params = {}) => {
+var useAttrs = (params = {}) => {
 	const { excludeListeners = false, excludeKeys = [] } = params;
 	const instance = getCurrentInstance();
 	const attrs = shallowRef({});
@@ -355,7 +372,9 @@ const useAttrs = (params = {}) => {
 		$excludeAttrs: excludeAttrs
 	};
 };
-const buttonProps = {
+//#endregion
+//#region src/components/button.ts
+var buttonProps = {
 	id: {
 		type: String,
 		default: ""
@@ -397,7 +416,11 @@ const buttonProps = {
 		default: false
 	}
 };
-const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
+//#endregion
+//#region src/components/form.ts
+var uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
+//#endregion
+//#region src/nvue/button/index.tsx
 var buttonStyle = [{
 	ub: { "": {
 		flexDirection: "row",
@@ -558,33 +581,33 @@ var button_default = /* @__PURE__ */ defineComponent({
 		}
 	}),
 	styles: buttonStyle,
-	setup(props$3, { slots, attrs }) {
+	setup(props, { slots, attrs }) {
 		const { $attrs, $excludeAttrs, $listeners } = useAttrs({ excludeListeners: true });
-		const type = props$3.type;
+		const type = props.type;
 		const rootRef = ref(null);
 		const uniForm = inject(uniFormKey, false);
-		const onClick = (e$1, isLabelClick) => {
+		const onClick = (e, isLabelClick) => {
 			const _onClick = $listeners.value.onClick || (() => {});
-			if (props$3.disabled) return;
-			_onClick(e$1);
-			const formType = props$3.formType;
+			if (props.disabled) return;
+			_onClick(e);
+			const formType = props.formType;
 			if (formType) {
 				if (!uniForm) return;
-				if (formType === "submit") uniForm.submit(e$1);
-				else if (formType === "reset") uniForm.reset(e$1);
+				if (formType === "submit") uniForm.submit(e);
+				else if (formType === "reset") uniForm.reset(e);
 			}
 		};
-		const _getClass = (t$1) => {
-			let cl = "ub-" + TYPES[type] + t$1;
-			props$3.disabled && (cl += "-d");
-			props$3.plain && (cl += "-plain");
-			props$3.size === "mini" && t$1 === "-t" && (cl += " ub-mini");
+		const _getClass = (t) => {
+			let cl = "ub-" + TYPES[type] + t;
+			props.disabled && (cl += "-d");
+			props.plain && (cl += "-plain");
+			props.size === "mini" && t === "-t" && (cl += " ub-mini");
 			return cl;
 		};
-		const _getHoverClass = (t$1) => {
-			if (props$3.disabled) return "";
-			let cl = "ub-" + TYPES[type] + t$1 + "-hover";
-			props$3.plain && (cl += "-plain");
+		const _getHoverClass = (t) => {
+			if (props.disabled) return "";
+			let cl = "ub-" + TYPES[type] + t + "-hover";
+			props.plain && (cl += "-plain");
 			return cl;
 		};
 		const uniLabel = inject(uniLabelKey, false);
@@ -594,7 +617,7 @@ var button_default = /* @__PURE__ */ defineComponent({
 				uniLabel.removeHandler(onClick);
 			});
 		}
-		useListeners(props$3, { "label-click": onClick });
+		useListeners(props, { "label-click": onClick });
 		const _listeners = computed(() => {
 			const obj = {};
 			for (const eventName in $listeners.value) {
@@ -610,22 +633,26 @@ var button_default = /* @__PURE__ */ defineComponent({
 			return vnodes;
 		};
 		return () => {
-			const _attrs = extend({}, useHoverClass(props$3), { hoverClass: _getHoverClass("") }, $attrs.value, $excludeAttrs.value, _listeners.value);
+			const _attrs = extend({}, useHoverClass(props), { hoverClass: _getHoverClass("") }, $attrs.value, $excludeAttrs.value, _listeners.value);
 			return createVNode("view", mergeProps({
 				"ref": rootRef,
 				"class": ["ub", _getClass("")],
 				"onClick": onClick
-			}, _attrs), [props$3.loading ? createVNode("loading-indicator", mergeProps({ "class": ["ub-loading", `ub-${TYPES[type]}-loading`] }, {
+			}, _attrs), [props.loading ? createVNode("loading-indicator", mergeProps({ "class": ["ub-loading", `ub-${TYPES[type]}-loading`] }, {
 				arrow: "false",
 				animating: "true"
 			}), null) : null, ...wrapSlots()]);
 		};
 	}
 });
-const movableAreaProps = { scaleArea: {
+//#endregion
+//#region src/components/movableArea.ts
+var movableAreaProps = { scaleArea: {
 	type: Boolean,
 	default: false
 } };
+//#endregion
+//#region src/helpers/flatVNode.ts
 function flatVNode(nodes) {
 	const array = [];
 	if (isArray(nodes)) nodes.forEach((vnode) => {
@@ -635,13 +662,15 @@ function flatVNode(nodes) {
 	});
 	return array;
 }
+//#endregion
+//#region src/nvue/helpers/common.ts
 function cached(fn) {
 	const cache = Object.create(null);
 	return function cachedFn(str) {
 		return cache[str] || (cache[str] = fn(str));
 	};
 }
-const parseStyleText = cached(function(cssText) {
+var parseStyleText = cached(function(cssText) {
 	const res = {};
 	const listDelimiter = /;(?![^(]*\))/g;
 	const propertyDelimiter = /:(.+)/;
@@ -653,10 +682,9 @@ const parseStyleText = cached(function(cssText) {
 	});
 	return res;
 });
-cached((str) => {
-	return str.charAt(0).toLowerCase() + str.slice(1);
-});
-const getComponentSize = (el) => {
+//#endregion
+//#region src/nvue/helpers/dom.ts
+var getComponentSize = (el) => {
 	return new Promise((resolve, reject) => {
 		if (!el) return resolve({
 			width: 0,
@@ -669,6 +697,8 @@ const getComponentSize = (el) => {
 		});
 	});
 };
+//#endregion
+//#region src/nvue/movable-area/index.tsx
 var movable_area_default = /* @__PURE__ */ defineComponent({
 	name: "MovableArea",
 	props: movableAreaProps,
@@ -677,7 +707,7 @@ var movable_area_default = /* @__PURE__ */ defineComponent({
 		width: "10px",
 		height: "10px"
 	} } }],
-	setup(props$3, { slots }) {
+	setup(props, { slots }) {
 		const width = ref(0);
 		const height = ref(0);
 		const top = ref(0);
@@ -711,15 +741,15 @@ var movable_area_default = /* @__PURE__ */ defineComponent({
 			}, 200);
 		});
 		const listeners = {
-			onPanstart(e$1) {
-				touchMovableView && touchMovableView.touchstart(e$1);
+			onPanstart(e) {
+				touchMovableView && touchMovableView.touchstart(e);
 			},
-			onPanmove(e$1) {
-				e$1.stopPropagation();
-				touchMovableView && touchMovableView.touchmove(e$1);
+			onPanmove(e) {
+				e.stopPropagation();
+				touchMovableView && touchMovableView.touchmove(e);
 			},
-			onPanend(e$1) {
-				touchMovableView && touchMovableView.touchend(e$1);
+			onPanend(e) {
+				touchMovableView && touchMovableView.touchend(e);
 				touchMovableView = null;
 			}
 		};
@@ -749,16 +779,18 @@ var movable_area_default = /* @__PURE__ */ defineComponent({
 		};
 	}
 });
+//#endregion
+//#region src/nvue/movable-view/useTouchtrack.ts
 function useTouchtrack(method) {
 	const __event = {};
 	function callback(type, $event) {
 		if (__event[type]) __event[type]($event);
 	}
-	function addListener(type, callback$1) {
+	function addListener(type, callback) {
 		__event[type] = function($event) {
-			if (isFunction(callback$1)) {
+			if (isFunction(callback)) {
 				$event.touches = $event.changedTouches;
-				if (callback$1($event) === false) $event.stopPropagation();
+				if (callback($event) === false) $event.stopPropagation();
 			}
 		};
 	}
@@ -820,9 +852,11 @@ function useTouchtrack(method) {
 		}
 	};
 }
-function useCustomEvent(ref$1, emit) {
+//#endregion
+//#region src/helpers/useNVueEvent.ts
+function useCustomEvent(ref, emit) {
 	return (name, detail) => {
-		if (ref$1.value) emit(name, normalizeCustomEvent(name, ref$1.value, detail || {}));
+		if (ref.value) emit(name, normalizeCustomEvent(name, ref.value, detail || {}));
 	};
 }
 function normalizeCustomEvent(name, target, detail = {}) {
@@ -840,31 +874,33 @@ var firstLetterToLowerCase = cacheStringFunction((str) => {
 });
 function processTarget(weexTarget) {
 	const { offsetLeft, offsetTop } = weexTarget;
-	const attr$1 = weexTarget.attr;
+	const attr = weexTarget.attr;
 	const dataset = {};
-	Object.keys(attr$1 || {}).forEach((key) => {
-		if (key.indexOf("data") === 0) dataset[firstLetterToLowerCase(key.replace("data", ""))] = attr$1[key];
+	Object.keys(attr || {}).forEach((key) => {
+		if (key.indexOf("data") === 0) dataset[firstLetterToLowerCase(key.replace("data", ""))] = attr[key];
 	});
 	return {
-		id: attr$1 && attr$1.id || "",
+		id: attr && attr.id || "",
 		dataset,
 		offsetLeft: offsetLeft || 0,
 		offsetTop: offsetTop || 0
 	};
 }
-function e(e$1, t$1, n) {
-	return e$1 > t$1 - n && e$1 < t$1 + n;
+//#endregion
+//#region src/components/movable-view/utils.js
+function e(e, t, n) {
+	return e > t - n && e < t + n;
 }
-function t(t$1, n) {
-	return e(t$1, 0, n);
+function t(t, n) {
+	return e(t, 0, n);
 }
 function Decline() {}
-Decline.prototype.x = function(e$1) {
-	return Math.sqrt(e$1);
+Decline.prototype.x = function(e) {
+	return Math.sqrt(e);
 };
-function Friction(e$1, t$1) {
-	this._m = e$1;
-	this._f = 1e3 * t$1;
+function Friction(e, t) {
+	this._m = e;
+	this._f = 1e3 * t;
 	this._startTime = 0;
 	this._v = 0;
 }
@@ -882,14 +918,14 @@ Friction.prototype.setS = function(x, y) {
 	this._x_s = x;
 	this._y_s = y;
 };
-Friction.prototype.s = function(t$1) {
-	if (void 0 === t$1) t$1 = (/* @__PURE__ */ (/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
-	if (t$1 > this._t) {
-		t$1 = this._t;
-		this._lastDt = t$1;
+Friction.prototype.s = function(t) {
+	if (void 0 === t) t = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+	if (t > this._t) {
+		t = this._t;
+		this._lastDt = t;
 	}
-	let x = this._x_v * t$1 + .5 * this._x_a * Math.pow(t$1, 2) + this._x_s;
-	let y = this._y_v * t$1 + .5 * this._y_a * Math.pow(t$1, 2) + this._y_s;
+	let x = this._x_v * t + .5 * this._x_a * Math.pow(t, 2) + this._x_s;
+	let y = this._y_v * t + .5 * this._y_a * Math.pow(t, 2) + this._y_s;
 	if (this._x_a > 0 && x < this._endPositionX || this._x_a < 0 && x > this._endPositionX) x = this._endPositionX;
 	if (this._y_a > 0 && y < this._endPositionY || this._y_a < 0 && y > this._endPositionY) y = this._endPositionY;
 	return {
@@ -897,12 +933,12 @@ Friction.prototype.s = function(t$1) {
 		y
 	};
 };
-Friction.prototype.ds = function(t$1) {
-	if (void 0 === t$1) t$1 = (/* @__PURE__ */ (/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
-	if (t$1 > this._t) t$1 = this._t;
+Friction.prototype.ds = function(t) {
+	if (void 0 === t) t = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+	if (t > this._t) t = this._t;
 	return {
-		dx: this._x_v + this._x_a * t$1,
-		dy: this._y_v + this._y_a * t$1
+		dx: this._x_v + this._x_a * t,
+		dy: this._y_v + this._y_a * t
 	};
 };
 Friction.prototype.delta = function() {
@@ -915,9 +951,9 @@ Friction.prototype.dt = function() {
 	return -this._x_v / this._x_a;
 };
 Friction.prototype.done = function() {
-	const t$1 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
+	const t = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
 	this._lastDt = null;
-	return t$1;
+	return t;
 };
 Friction.prototype.setEnd = function(x, y) {
 	this._endPositionX = x;
@@ -935,84 +971,84 @@ function Spring(m, k, c) {
 	this._endPosition = 0;
 	this._startTime = 0;
 }
-Spring.prototype._solve = function(e$1, t$1) {
+Spring.prototype._solve = function(e, t) {
 	const n = this._c;
 	const i = this._m;
 	const r = this._k;
 	const o = n * n - 4 * i * r;
 	if (o === 0) {
 		const a = -n / (2 * i);
-		const s = e$1;
-		const l = t$1 / (a * e$1);
+		const s = e;
+		const l = t / (a * e);
 		return {
-			x: function(e$2) {
-				return (s + l * e$2) * Math.pow(Math.E, a * e$2);
+			x: function(e) {
+				return (s + l * e) * Math.pow(Math.E, a * e);
 			},
-			dx: function(e$2) {
-				const t$2 = Math.pow(Math.E, a * e$2);
-				return a * (s + l * e$2) * t$2 + l * t$2;
+			dx: function(e) {
+				const t = Math.pow(Math.E, a * e);
+				return a * (s + l * e) * t + l * t;
 			}
 		};
 	}
 	if (o > 0) {
 		const c = (-n - Math.sqrt(o)) / (2 * i);
 		const u = (-n + Math.sqrt(o)) / (2 * i);
-		const d = (t$1 - c * e$1) / (u - c);
-		const h = e$1 - d;
+		const d = (t - c * e) / (u - c);
+		const h = e - d;
 		return {
-			x: function(e$2) {
-				let t$2;
-				let n$1;
-				if (e$2 === this._t) {
-					t$2 = this._powER1T;
-					n$1 = this._powER2T;
+			x: function(e) {
+				let t;
+				let n;
+				if (e === this._t) {
+					t = this._powER1T;
+					n = this._powER2T;
 				}
-				this._t = e$2;
-				if (!t$2) t$2 = this._powER1T = Math.pow(Math.E, c * e$2);
-				if (!n$1) n$1 = this._powER2T = Math.pow(Math.E, u * e$2);
-				return h * t$2 + d * n$1;
+				this._t = e;
+				if (!t) t = this._powER1T = Math.pow(Math.E, c * e);
+				if (!n) n = this._powER2T = Math.pow(Math.E, u * e);
+				return h * t + d * n;
 			},
-			dx: function(e$2) {
-				let t$2;
-				let n$1;
-				if (e$2 === this._t) {
-					t$2 = this._powER1T;
-					n$1 = this._powER2T;
+			dx: function(e) {
+				let t;
+				let n;
+				if (e === this._t) {
+					t = this._powER1T;
+					n = this._powER2T;
 				}
-				this._t = e$2;
-				if (!t$2) t$2 = this._powER1T = Math.pow(Math.E, c * e$2);
-				if (!n$1) n$1 = this._powER2T = Math.pow(Math.E, u * e$2);
-				return h * c * t$2 + d * u * n$1;
+				this._t = e;
+				if (!t) t = this._powER1T = Math.pow(Math.E, c * e);
+				if (!n) n = this._powER2T = Math.pow(Math.E, u * e);
+				return h * c * t + d * u * n;
 			}
 		};
 	}
 	const p = Math.sqrt(4 * i * r - n * n) / (2 * i);
 	const f = -n / 2 * i;
-	const v$1 = e$1;
-	const g$1 = (t$1 - f * e$1) / p;
+	const v = e;
+	const g = (t - f * e) / p;
 	return {
-		x: function(e$2) {
-			return Math.pow(Math.E, f * e$2) * (v$1 * Math.cos(p * e$2) + g$1 * Math.sin(p * e$2));
+		x: function(e) {
+			return Math.pow(Math.E, f * e) * (v * Math.cos(p * e) + g * Math.sin(p * e));
 		},
-		dx: function(e$2) {
-			const t$2 = Math.pow(Math.E, f * e$2);
-			const n$1 = Math.cos(p * e$2);
-			const i$1 = Math.sin(p * e$2);
-			return t$2 * (g$1 * p * n$1 - v$1 * p * i$1) + f * t$2 * (g$1 * i$1 + v$1 * n$1);
+		dx: function(e) {
+			const t = Math.pow(Math.E, f * e);
+			const n = Math.cos(p * e);
+			const i = Math.sin(p * e);
+			return t * (g * p * n - v * p * i) + f * t * (g * i + v * n);
 		}
 	};
 };
-Spring.prototype.x = function(e$1) {
-	if (void 0 === e$1) e$1 = (/* @__PURE__ */ (/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
-	return this._solution ? this._endPosition + this._solution.x(e$1) : 0;
+Spring.prototype.x = function(e) {
+	if (void 0 === e) e = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+	return this._solution ? this._endPosition + this._solution.x(e) : 0;
 };
-Spring.prototype.dx = function(e$1) {
-	if (void 0 === e$1) e$1 = (/* @__PURE__ */ (/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
-	return this._solution ? this._solution.dx(e$1) : 0;
+Spring.prototype.dx = function(e) {
+	if (void 0 === e) e = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+	return this._solution ? this._solution.dx(e) : 0;
 };
-Spring.prototype.setEnd = function(e$1, n, i) {
+Spring.prototype.setEnd = function(e, n, i) {
 	if (!i) i = (/* @__PURE__ */ new Date()).getTime();
-	if (e$1 !== this._endPosition || !t(n, .1)) {
+	if (e !== this._endPosition || !t(n, .1)) {
 		n = n || 0;
 		let r = this._endPosition;
 		if (this._solution) {
@@ -1022,16 +1058,16 @@ Spring.prototype.setEnd = function(e$1, n, i) {
 			if (t(r, .1)) r = 0;
 			r += this._endPosition;
 		}
-		if (!(this._solution && t(r - e$1, .1) && t(n, .1))) {
-			this._endPosition = e$1;
+		if (!(this._solution && t(r - e, .1) && t(n, .1))) {
+			this._endPosition = e;
 			this._solution = this._solve(r - this._endPosition, n);
 			this._startTime = i;
 		}
 	}
 };
-Spring.prototype.snap = function(e$1) {
+Spring.prototype.snap = function(e) {
 	this._startTime = (/* @__PURE__ */ new Date()).getTime();
-	this._endPosition = e$1;
+	this._endPosition = e;
 	this._solution = {
 		x: function() {
 			return 0;
@@ -1045,9 +1081,9 @@ Spring.prototype.done = function(n) {
 	if (!n) n = (/* @__PURE__ */ new Date()).getTime();
 	return e(this.x(), this._endPosition, .1) && t(this.dx(), .1);
 };
-Spring.prototype.reconfigure = function(m, t$1, c) {
+Spring.prototype.reconfigure = function(m, t, c) {
 	this._m = m;
-	this._k = t$1;
+	this._k = t;
 	this._c = c;
 	if (!this.done()) {
 		this._solution = this._solve(this.x() - this._endPosition, this.dx());
@@ -1061,57 +1097,59 @@ Spring.prototype.damping = function() {
 	return this._c;
 };
 Spring.prototype.configuration = function() {
-	function e$1(e$2, t$2) {
-		e$2.reconfigure(1, t$2, e$2.damping());
+	function e(e, t) {
+		e.reconfigure(1, t, e.damping());
 	}
-	function t$1(e$2, t$2) {
-		e$2.reconfigure(1, e$2.springConstant(), t$2);
+	function t(e, t) {
+		e.reconfigure(1, e.springConstant(), t);
 	}
 	return [{
 		label: "Spring Constant",
 		read: this.springConstant.bind(this),
-		write: e$1.bind(this, this),
+		write: e.bind(this, this),
 		min: 100,
 		max: 1e3
 	}, {
 		label: "Damping",
 		read: this.damping.bind(this),
-		write: t$1.bind(this, this),
+		write: t.bind(this, this),
 		min: 1,
 		max: 500
 	}];
 };
-function STD(e$1, t$1, n) {
-	this._springX = new Spring(e$1, t$1, n);
-	this._springY = new Spring(e$1, t$1, n);
-	this._springScale = new Spring(e$1, t$1, n);
+function STD(e, t, n) {
+	this._springX = new Spring(e, t, n);
+	this._springY = new Spring(e, t, n);
+	this._springScale = new Spring(e, t, n);
 	this._startTime = 0;
 }
-STD.prototype.setEnd = function(e$1, t$1, n, i) {
+STD.prototype.setEnd = function(e, t, n, i) {
 	const r = (/* @__PURE__ */ new Date()).getTime();
-	this._springX.setEnd(e$1, i, r);
-	this._springY.setEnd(t$1, i, r);
+	this._springX.setEnd(e, i, r);
+	this._springY.setEnd(t, i, r);
 	this._springScale.setEnd(n, i, r);
 	this._startTime = r;
 };
 STD.prototype.x = function() {
-	const e$1 = (/* @__PURE__ */ (/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+	const e = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
 	return {
-		x: this._springX.x(e$1),
-		y: this._springY.x(e$1),
-		scale: this._springScale.x(e$1)
+		x: this._springX.x(e),
+		y: this._springY.x(e),
+		scale: this._springScale.x(e)
 	};
 };
 STD.prototype.done = function() {
-	const e$1 = (/* @__PURE__ */ new Date()).getTime();
-	return this._springX.done(e$1) && this._springY.done(e$1) && this._springScale.done(e$1);
+	const e = (/* @__PURE__ */ new Date()).getTime();
+	return this._springX.done(e) && this._springY.done(e) && this._springScale.done(e);
 };
-STD.prototype.reconfigure = function(e$1, t$1, n) {
-	this._springX.reconfigure(e$1, t$1, n);
-	this._springY.reconfigure(e$1, t$1, n);
-	this._springScale.reconfigure(e$1, t$1, n);
+STD.prototype.reconfigure = function(e, t, n) {
+	this._springX.reconfigure(e, t, n);
+	this._springY.reconfigure(e, t, n);
+	this._springScale.reconfigure(e, t, n);
 };
-const movableViewProps = {
+//#endregion
+//#region src/components/movable-view/index.ts
+var movableViewProps = {
 	direction: {
 		type: String,
 		default: "none"
@@ -1168,23 +1206,25 @@ const movableViewProps = {
 function v(a, b) {
 	return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
+//#endregion
+//#region src/nvue/movable-view/index.tsx
 function g(friction, execute, endCallback) {
 	let record = {
 		id: 0,
 		cancelled: false
 	};
-	let cancel = function(record$1) {
-		if (record$1 && record$1.id) cancelAnimationFrame(record$1.id);
-		if (record$1) record$1.cancelled = true;
+	let cancel = function(record) {
+		if (record && record.id) cancelAnimationFrame(record.id);
+		if (record) record.cancelled = true;
 	};
-	function fn(record$1, friction$1, execute$1, endCallback$1) {
-		if (!record$1 || !record$1.cancelled) {
-			execute$1(friction$1);
-			let isDone = friction$1.done();
+	function fn(record, friction, execute, endCallback) {
+		if (!record || !record.cancelled) {
+			execute(friction);
+			let isDone = friction.done();
 			if (!isDone) {
-				if (!record$1.cancelled) record$1.id = requestAnimationFrame(fn.bind(null, record$1, friction$1, execute$1, endCallback$1));
+				if (!record.cancelled) record.id = requestAnimationFrame(fn.bind(null, record, friction, execute, endCallback));
 			}
-			if (isDone && endCallback$1) endCallback$1(friction$1);
+			if (isDone && endCallback) endCallback(friction);
 		}
 	}
 	fn(record, friction, execute, endCallback);
@@ -1194,11 +1234,11 @@ function g(friction, execute, endCallback) {
 	};
 }
 var requesting = false;
-function _requestAnimationFrame(e$1) {
+function _requestAnimationFrame(e) {
 	if (!requesting) {
 		requesting = true;
 		requestAnimationFrame(function() {
-			e$1();
+			e();
 			requesting = false;
 		});
 	}
@@ -1221,21 +1261,20 @@ var movable_view_default = /* @__PURE__ */ defineComponent({
 		width: "10px",
 		height: "10px"
 	} } }],
-	setup(props$3, { emit, slots }) {
+	setup(props, { emit, slots }) {
 		const rootRef = ref(null);
-		const touchStart = useMovableViewState(props$3, useCustomEvent(rootRef, emit), rootRef, inject("setTouchMovableViewContext", () => {}));
+		const touchStart = useMovableViewState(props, useCustomEvent(rootRef, emit), rootRef, inject("setTouchMovableViewContext", () => {}));
 		return () => {
-			const attrs = { preventGesture: true };
 			return createVNode("view", mergeProps({
 				"ref": rootRef,
 				"onTouchstart": touchStart,
 				"class": "uni-movable-view",
 				"style": "transform-origin: center;"
-			}, attrs), [slots.default && slots.default()]);
+			}, { preventGesture: true }), [slots.default && slots.default()]);
 		};
 	}
 });
-function useMovableViewState(props$3, trigger, rootRef, setTouchMovableViewContext) {
+function useMovableViewState(props, trigger, rootRef, setTouchMovableViewContext) {
 	const _isMounted = inject("_isMounted", ref(false));
 	const parentSize = inject("parentSize", {
 		width: ref(0),
@@ -1257,9 +1296,9 @@ function useMovableViewState(props$3, trigger, rootRef, setTouchMovableViewConte
 		val = Number(val);
 		return isNaN(val) ? 1 : val;
 	}
-	const xSync = ref(_getPx(props$3.x));
-	const ySync = ref(_getPx(props$3.y));
-	const scaleValueSync = ref(_getScaleNumber(Number(props$3.scaleValue)));
+	const xSync = ref(_getPx(props.x));
+	const ySync = ref(_getPx(props.y));
+	const scaleValueSync = ref(_getScaleNumber(Number(props.scaleValue)));
 	const width = ref(0);
 	const height = ref(0);
 	const minX = ref(0);
@@ -1298,32 +1337,32 @@ function useMovableViewState(props$3, trigger, rootRef, setTouchMovableViewConte
 		historyT: [0, 0]
 	};
 	const dampingNumber = computed(() => {
-		let val = Number(props$3.damping);
+		let val = Number(props.damping);
 		return isNaN(val) ? 20 : val;
 	});
 	const frictionNumber = computed(() => {
-		let val = Number(props$3.friction);
+		let val = Number(props.friction);
 		return isNaN(val) || val <= 0 ? 2 : val;
 	});
 	const scaleMinNumber = computed(() => {
-		let val = Number(props$3.scaleMin);
+		let val = Number(props.scaleMin);
 		return isNaN(val) ? .1 : val;
 	});
 	const scaleMaxNumber = computed(() => {
-		let val = Number(props$3.scaleMax);
+		let val = Number(props.scaleMax);
 		return isNaN(val) ? 10 : val;
 	});
-	const xMove = computed(() => props$3.direction === "all" || props$3.direction === "horizontal");
-	const yMove = computed(() => props$3.direction === "all" || props$3.direction === "vertical");
+	const xMove = computed(() => props.direction === "all" || props.direction === "horizontal");
+	const yMove = computed(() => props.direction === "all" || props.direction === "vertical");
 	const _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
 	const _friction = new Friction(1, frictionNumber.value);
-	watch(() => props$3.x, (val) => {
+	watch(() => props.x, (val) => {
 		xSync.value = _getPx(val);
 	});
-	watch(() => props$3.y, (val) => {
+	watch(() => props.y, (val) => {
 		ySync.value = _getPx(val);
 	});
-	watch(() => props$3.scaleValue, (val) => {
+	watch(() => props.scaleValue, (val) => {
 		scaleValueSync.value = _getScaleNumber(Number(val));
 	});
 	watch(xSync, _setX);
@@ -1352,19 +1391,17 @@ function useMovableViewState(props$3, trigger, rootRef, setTouchMovableViewConte
 		return val;
 	}
 	function _setScaleMinOrMax() {
-		if (!props$3.scale) return false;
+		if (!props.scale) return false;
 		_updateScale(_scale, true);
-		_updateOldScale(_scale);
 	}
 	function _setScaleValue(scale) {
-		if (!props$3.scale) return false;
+		if (!props.scale) return false;
 		scale = _adjustScale(scale);
 		_updateScale(scale, true);
-		_updateOldScale(scale);
 		return scale;
 	}
 	function __handleTouchStart() {
-		if (!props$3.disabled) {
+		if (!props.disabled) {
 			FAandSFACancel();
 			__touchInfo.historyX = [0, 0];
 			__touchInfo.historyY = [0, 0];
@@ -1377,7 +1414,7 @@ function useMovableViewState(props$3, trigger, rootRef, setTouchMovableViewConte
 		}
 	}
 	function __handleTouchMove(event) {
-		if (!props$3.disabled && _isTouching) {
+		if (!props.disabled && _isTouching) {
 			let x = _translateX;
 			let y = _translateY;
 			if (_firstMoveDirection === null) _firstMoveDirection = Math.abs(event.detail.dx / event.detail.dy) > 1 ? "htouchmove" : "vtouchmove";
@@ -1397,19 +1434,19 @@ function useMovableViewState(props$3, trigger, rootRef, setTouchMovableViewConte
 			__touchInfo.historyT.push(event.detail.timeStamp);
 			if (!_checkCanMove) {
 				let source = "touch";
-				if (x < minX.value) if (props$3.outOfBounds) {
+				if (x < minX.value) if (props.outOfBounds) {
 					source = "touch-out-of-bounds";
 					x = minX.value - _declineX.x(minX.value - x);
 				} else x = minX.value;
-				else if (x > maxX.value) if (props$3.outOfBounds) {
+				else if (x > maxX.value) if (props.outOfBounds) {
 					source = "touch-out-of-bounds";
 					x = maxX.value + _declineX.x(x - maxX.value);
 				} else x = maxX.value;
-				if (y < minY.value) if (props$3.outOfBounds) {
+				if (y < minY.value) if (props.outOfBounds) {
 					source = "touch-out-of-bounds";
 					y = minY.value - _declineY.x(minY.value - y);
 				} else y = minY.value;
-				else if (y > maxY.value) if (props$3.outOfBounds) {
+				else if (y > maxY.value) if (props.outOfBounds) {
 					source = "touch-out-of-bounds";
 					y = maxY.value + _declineY.x(y - maxY.value);
 				} else y = maxY.value;
@@ -1420,9 +1457,9 @@ function useMovableViewState(props$3, trigger, rootRef, setTouchMovableViewConte
 		}
 	}
 	function __handleTouchEnd() {
-		if (!props$3.disabled && _isTouching) {
+		if (!props.disabled && _isTouching) {
 			_isTouching = false;
-			if (!_checkCanMove && !_revise("out-of-bounds") && props$3.inertia) {
+			if (!_checkCanMove && !_revise("out-of-bounds") && props.inertia) {
 				const xv = 1e3 * (__touchInfo.historyX[1] - __touchInfo.historyX[0]) / (__touchInfo.historyT[1] - __touchInfo.historyT[0]);
 				const yv = 1e3 * (__touchInfo.historyY[1] - __touchInfo.historyY[0]) / (__touchInfo.historyT[1] - __touchInfo.historyT[0]);
 				_friction.setV(xv, yv);
@@ -1447,10 +1484,10 @@ function useMovableViewState(props$3, trigger, rootRef, setTouchMovableViewConte
 				}
 				_friction.setEnd(x, y);
 				_FA = g(_friction, function() {
-					let t$1 = _friction.s();
-					let x$1 = t$1.x;
-					let y$1 = t$1.y;
-					_setTransform(x$1, y$1, _scale, "friction");
+					let t = _friction.s();
+					let x = t.x;
+					let y = t.y;
+					_setTransform(x, y, _scale, "friction");
 				}, function() {
 					_FA.cancel();
 				});
@@ -1503,7 +1540,7 @@ function useMovableViewState(props$3, trigger, rootRef, setTouchMovableViewConte
 		maxY.value = Math.max(y, _height);
 	}
 	function _updateScale(scale, animat) {
-		if (props$3.scale) {
+		if (props.scale) {
 			scale = _adjustScale(scale);
 			_updateWH(scale);
 			_updateBoundary();
@@ -1516,7 +1553,6 @@ function useMovableViewState(props$3, trigger, rootRef, setTouchMovableViewConte
 			});
 		}
 	}
-	function _updateOldScale(scale) {}
 	function _adjustScale(scale) {
 		scale = Math.max(.1, scaleMinNumber.value, scale);
 		scale = Math.min(10, scaleMaxNumber.value, scale);
@@ -1526,11 +1562,11 @@ function useMovableViewState(props$3, trigger, rootRef, setTouchMovableViewConte
 		FAandSFACancel();
 		if (!xMove.value) x = _translateX;
 		if (!yMove.value) y = _translateY;
-		if (!props$3.scale) scale = _scale;
+		if (!props.scale) scale = _scale;
 		let limitXY = _getLimitXY(x, y);
 		x = limitXY.x;
 		y = limitXY.y;
-		if (!props$3.animation) {
+		if (!props.animation) {
 			_setTransform(x, y, scale, source, r, o);
 			return;
 		}
@@ -1543,10 +1579,10 @@ function useMovableViewState(props$3, trigger, rootRef, setTouchMovableViewConte
 		_STD.setEnd(x, y, scale, 1);
 		_SFA = g(_STD, function() {
 			let data = _STD.x();
-			let x$1 = data.x;
-			let y$1 = data.y;
-			let scale$1 = data.scale;
-			_setTransform(x$1, y$1, scale$1, source, r, o);
+			let x = data.x;
+			let y = data.y;
+			let scale = data.scale;
+			_setTransform(x, y, scale, source, r, o);
 		}, function() {
 			_SFA.cancel();
 		});
@@ -1572,7 +1608,7 @@ function useMovableViewState(props$3, trigger, rootRef, setTouchMovableViewConte
 				source
 			});
 		}
-		if (!props$3.scale) scale = _scale;
+		if (!props.scale) scale = _scale;
 		scale = _adjustScale(scale);
 		scale = +scale.toFixed(3);
 		if (o && scale !== _scale) trigger("scale", {
@@ -1598,7 +1634,7 @@ function useMovableViewState(props$3, trigger, rootRef, setTouchMovableViewConte
 	function setParent() {
 		if (!_isMounted.value) return;
 		FAandSFACancel();
-		let scale = props$3.scale ? scaleValueSync.value : 1;
+		let scale = props.scale ? scaleValueSync.value : 1;
 		_updateOffset();
 		_updateWH(scale);
 		_updateBoundary();
@@ -1608,7 +1644,6 @@ function useMovableViewState(props$3, trigger, rootRef, setTouchMovableViewConte
 		let x = limitXY.x;
 		let y = limitXY.y;
 		_setTransform(x, y, scale, "", true);
-		_updateOldScale(scale);
 	}
 	onMounted(() => {
 		movableViewContext = useTouchtrack((event) => {
@@ -1643,8 +1678,10 @@ function useMovableViewState(props$3, trigger, rootRef, setTouchMovableViewConte
 	};
 	return touchStart;
 }
+//#endregion
+//#region src/components/progress.ts
 var FONT_SIZE = 16;
-const PROGRESS_VALUES = {
+var PROGRESS_VALUES = {
 	activeColor: PRIMARY_COLOR,
 	backgroundColor: "#EBEBEB",
 	activeMode: "backwards"
@@ -1717,25 +1754,25 @@ var progress_default = /* @__PURE__ */ defineComponent({
 		"uni-progress-info": { "": { marginLeft: "15px" } }
 	}],
 	emits: ["activeend"],
-	setup(props$3, { emit }) {
+	setup(props, { emit }) {
 		const progressRef = ref(null);
 		const progressBarRef = ref(null);
 		const trigger = useCustomEvent(progressRef, emit);
-		const state = useProgressState(props$3);
+		const state = useProgressState(props);
 		watch(() => state.realPercent, (newValue, oldValue) => {
 			state.lastPercent = oldValue || 0;
-			_activeAnimation(state, props$3, trigger);
+			_activeAnimation(state, props, trigger);
 		});
 		onMounted(() => {
 			setTimeout(() => {
 				getComponentSize(progressBarRef.value).then(({ width }) => {
 					state.progressWidth = width || 0;
-					_activeAnimation(state, props$3, trigger);
+					_activeAnimation(state, props, trigger);
 				});
 			}, 50);
 		});
 		return () => {
-			const { showInfo, fontSize } = props$3;
+			const { showInfo, fontSize } = props;
 			const { outerBarStyle, innerBarStyle, currentPercent } = state;
 			return createVNode("div", {
 				"ref": progressRef,
@@ -1754,26 +1791,26 @@ var progress_default = /* @__PURE__ */ defineComponent({
 		};
 	}
 });
-function useProgressState(props$3) {
+function useProgressState(props) {
 	const currentPercent = ref(0);
 	const progressWidth = ref(0);
 	return reactive({
 		outerBarStyle: computed(() => ({
-			backgroundColor: props$3.backgroundColor,
-			borderRadius: props$3.borderRadius,
-			height: props$3.strokeWidth
+			backgroundColor: props.backgroundColor,
+			borderRadius: props.borderRadius,
+			height: props.strokeWidth
 		})),
 		innerBarStyle: computed(() => {
-			const backgroundColor = props$3.color !== PROGRESS_VALUES.activeColor && props$3.activeColor === PROGRESS_VALUES.activeColor ? props$3.color : props$3.activeColor;
+			const backgroundColor = props.color !== PROGRESS_VALUES.activeColor && props.activeColor === PROGRESS_VALUES.activeColor ? props.color : props.activeColor;
 			return {
 				width: currentPercent.value * progressWidth.value / 100,
-				height: props$3.strokeWidth,
+				height: props.strokeWidth,
 				backgroundColor,
-				borderRadius: props$3.borderRadius
+				borderRadius: props.borderRadius
 			};
 		}),
 		realPercent: computed(() => {
-			let realValue = parseFloat(props$3.percent);
+			let realValue = parseFloat(props.percent);
 			realValue < 0 && (realValue = 0);
 			realValue > 100 && (realValue = 100);
 			return realValue;
@@ -1784,17 +1821,17 @@ function useProgressState(props$3) {
 		progressWidth
 	});
 }
-function _activeAnimation(state, props$3, trigger) {
+function _activeAnimation(state, props, trigger) {
 	state.strokeTimer && clearInterval(state.strokeTimer);
-	if (props$3.active) {
-		state.currentPercent = props$3.activeMode === PROGRESS_VALUES.activeMode ? 0 : state.lastPercent;
+	if (props.active) {
+		state.currentPercent = props.activeMode === PROGRESS_VALUES.activeMode ? 0 : state.lastPercent;
 		state.strokeTimer = setInterval(() => {
 			if (state.currentPercent + 1 > state.realPercent) {
 				state.currentPercent = state.realPercent;
 				state.strokeTimer && clearInterval(state.strokeTimer);
 				trigger("activeend", {});
 			} else state.currentPercent += 1;
-		}, parseFloat(props$3.duration));
+		}, parseFloat(props.duration));
 	} else state.currentPercent = state.realPercent;
 }
 var picker_view_default = /* @__PURE__ */ defineComponent({
@@ -1806,7 +1843,7 @@ var picker_view_default = /* @__PURE__ */ defineComponent({
 				return [];
 			},
 			validator: function(val) {
-				return isArray(val) && val.filter((val$1) => typeof val$1 === "number").length === val.length;
+				return isArray(val) && val.filter((val) => typeof val === "number").length === val.length;
 			}
 		},
 		indicatorStyle: {
@@ -1840,13 +1877,13 @@ var picker_view_default = /* @__PURE__ */ defineComponent({
 		}
 	}),
 	emits: ["change", "update:value"],
-	setup(props$3, { slots, emit }) {
+	setup(props, { slots, emit }) {
 		const rootRef = ref(null);
-		const state = useState(props$3);
+		const state = useState(props);
 		const trigger = useCustomEvent(rootRef, emit);
 		let columnVNodes = [];
 		const getItemIndex = (vnode) => {
-			return Array.prototype.indexOf.call(columnVNodes.filter((vnode$1) => vnode$1.type !== Comment), vnode);
+			return Array.prototype.indexOf.call(columnVNodes.filter((vnode) => vnode.type !== Comment), vnode);
 		};
 		const getPickerViewColumn = (columnInstance) => {
 			return computed({
@@ -1868,14 +1905,13 @@ var picker_view_default = /* @__PURE__ */ defineComponent({
 			});
 		};
 		provide("getPickerViewColumn", getPickerViewColumn);
-		provide("pickerViewProps", props$3);
+		provide("pickerViewProps", props);
 		return () => {
 			columnVNodes = flatVNode(slots.default && slots.default());
-			const style = props$3.height ? { height: `${parseFloat(props$3.height)}px` } : {};
 			return createVNode("view", mergeProps({
 				"ref": rootRef,
 				"class": "uni-picker-view",
-				"style": style
+				"style": props.height ? { height: `${parseFloat(props.height)}px` } : {}
 			}, { preventGesture: true }), [createVNode("view", { "class": "uni-picker-view-wrapper" }, [columnVNodes])]);
 		};
 	},
@@ -1893,18 +1929,20 @@ var picker_view_default = /* @__PURE__ */ defineComponent({
 		} }
 	}]
 });
-function useState(props$3) {
-	const state = reactive({ value: reactive([...props$3.value]) });
-	watch(() => props$3.value, (val) => {
+function useState(props) {
+	const state = reactive({ value: reactive([...props.value]) });
+	watch(() => props.value, (val) => {
 		state.value.length = val.length;
 		nextTick(() => {
-			val.forEach((val$1, index) => {
-				if (val$1 !== state.value[index]) state.value.splice(index, 1, val$1);
+			val.forEach((val, index) => {
+				if (val !== state.value[index]) state.value.splice(index, 1, val);
 			});
 		});
 	});
 	return state;
 }
+//#endregion
+//#region src/nvue/picker-view-column/index.tsx
 var dom = weex.requireModule("dom");
 var isAndroid$1 = weex.config.env.platform.toLowerCase() === "android";
 function getStyle(val) {
@@ -1917,30 +1955,30 @@ var picker_view_column_default = /* @__PURE__ */ defineComponent({
 		default: 0
 	} },
 	data: () => ({ _isMounted: false }),
-	setup(props$3, { slots }) {
+	setup(props, { slots }) {
 		const instance = getCurrentInstance();
 		const rootRef = ref(null);
 		const contentRef = ref(null);
 		const scrollViewItemRef = ref(null);
 		const indicatorRef = ref(null);
-		const pickerViewProps$1 = inject("pickerViewProps");
+		const pickerViewProps = inject("pickerViewProps");
 		const current = inject("getPickerViewColumn")(instance);
-		const indicatorStyle = computed(() => getStyle(pickerViewProps$1.indicatorStyle));
-		const maskTopStyle = computed(() => getStyle(pickerViewProps$1.maskTopStyle));
-		const maskBottomStyle = computed(() => getStyle(pickerViewProps$1.maskBottomStyle));
+		const indicatorStyle = computed(() => getStyle(pickerViewProps.indicatorStyle));
+		const maskTopStyle = computed(() => getStyle(pickerViewProps.maskTopStyle));
+		const maskBottomStyle = computed(() => getStyle(pickerViewProps.maskBottomStyle));
 		let indicatorHeight = ref(0);
 		indicatorHeight.value = getHeight(indicatorStyle.value);
 		let pickerViewHeight = ref(0);
-		pickerViewHeight.value = parseFloat(pickerViewProps$1.height);
-		const { setCurrent, onScrollend } = usePickerColumnScroll(props$3, current, contentRef, indicatorHeight);
+		pickerViewHeight.value = parseFloat(pickerViewProps.height);
+		const { setCurrent, onScrollend } = usePickerColumnScroll(props, current, contentRef, indicatorHeight);
 		const checkMounted = () => {
 			let height_;
 			let indicatorHeight_;
 			setTimeout(() => {
 				Promise.all([getComponentSize(rootRef.value).then(({ height }) => {
 					height_ = pickerViewHeight.value = height;
-				}), isAndroid$1 && props$3.length ? getComponentSize(scrollViewItemRef.value).then(({ height }) => {
-					indicatorHeight_ = indicatorHeight.value = height / parseFloat(props$3.length);
+				}), isAndroid$1 && props.length ? getComponentSize(scrollViewItemRef.value).then(({ height }) => {
+					indicatorHeight_ = indicatorHeight.value = height / parseFloat(props.length);
 				}) : getComponentSize(indicatorRef.value).then(({ height }) => {
 					indicatorHeight_ = indicatorHeight.value = height;
 				})]).then(() => {
@@ -2058,7 +2096,7 @@ function getHeight(style) {
 	if (res) value = parseFloat(res[1]);
 	return value;
 }
-function usePickerColumnScroll(props$3, current, contentRef, indicatorHeight) {
+function usePickerColumnScroll(props, current, contentRef, indicatorHeight) {
 	let scrollToElementTime;
 	function setDomScrollToElement(_current, animated = true) {
 		dom.scrollToElement(contentRef.value, {
@@ -2067,7 +2105,7 @@ function usePickerColumnScroll(props$3, current, contentRef, indicatorHeight) {
 		});
 		if (animated) scrollToElementTime = Date.now();
 	}
-	watch(() => props$3.length, () => {
+	watch(() => props.length, () => {
 		setTimeout(() => {
 			setCurrent(current.value, true, true);
 		}, 150);
@@ -2090,6 +2128,8 @@ function usePickerColumnScroll(props$3, current, contentRef, indicatorHeight) {
 		onScrollend
 	};
 }
+//#endregion
+//#region src/nvue/picker/index.tsx
 var mode = {
 	SELECTOR: "selector",
 	MULTISELECTOR: "multiSelector",
@@ -2116,11 +2156,11 @@ function getDate(str, _mode) {
 	}
 	return date;
 }
-function getDefaultStartValue(props$3) {
-	if (props$3.mode === mode.TIME) return "00:00";
-	if (props$3.mode === mode.DATE) {
+function getDefaultStartValue(props) {
+	if (props.mode === mode.TIME) return "00:00";
+	if (props.mode === mode.DATE) {
 		const year = (/* @__PURE__ */ new Date()).getFullYear() - 100;
-		switch (props$3.fields) {
+		switch (props.fields) {
 			case fields.YEAR: return year;
 			case fields.MONTH: return year + "-01";
 			default: return year + "-01-01";
@@ -2128,11 +2168,11 @@ function getDefaultStartValue(props$3) {
 	}
 	return "";
 }
-function getDefaultEndValue(props$3) {
-	if (props$3.mode === mode.TIME) return "23:59";
-	if (props$3.mode === mode.DATE) {
+function getDefaultEndValue(props) {
+	if (props.mode === mode.TIME) return "23:59";
+	if (props.mode === mode.DATE) {
 		const year = (/* @__PURE__ */ new Date()).getFullYear() + 100;
-		switch (props$3.fields) {
+		switch (props.fields) {
 			case fields.YEAR: return year;
 			case fields.MONTH: return year + "-12";
 			default: return year + "-12-31";
@@ -2194,19 +2234,19 @@ var picker_default = /* @__PURE__ */ defineComponent({
 		"cancel",
 		"columnchange"
 	],
-	setup(props$3, { slots, emit }) {
+	setup(props, { slots, emit }) {
 		const rootRef = ref(null);
 		const trigger = useCustomEvent(rootRef, emit);
 		const valueSync = ref(null);
 		const page = ref(null);
 		const _setValueSync = () => {
-			let val = props$3.value;
-			switch (props$3.mode) {
+			let val = props.value;
+			switch (props.mode) {
 				case mode.MULTISELECTOR:
 					{
 						if (!isArray(val)) val = [];
 						if (!isArray(valueSync.value)) valueSync.value = [];
-						const length = valueSync.value.length = Math.max(val.length, props$3.range.length);
+						const length = valueSync.value.length = Math.max(val.length, props.range.length);
 						for (let index = 0; index < length; index++) {
 							const val0 = Number(val[index]);
 							const val1 = Number(valueSync.value[index]);
@@ -2263,15 +2303,15 @@ var picker_default = /* @__PURE__ */ defineComponent({
 			});
 		};
 		const _showNativePicker = (data) => {
-			plus.nativeUI[props$3.mode === mode.TIME ? "pickTime" : "pickDate"]((res) => {
+			plus.nativeUI[props.mode === mode.TIME ? "pickTime" : "pickDate"]((res) => {
 				const date = res.date;
-				trigger("change", { value: props$3.mode === mode.TIME ? `${padLeft(date.getHours())}:${padLeft(date.getMinutes())}` : `${date.getUTCFullYear()}-${padLeft(date.getUTCMonth() + 1)}-${padLeft(date.getUTCDate())}` });
+				trigger("change", { value: props.mode === mode.TIME ? `${padLeft(date.getHours())}:${padLeft(date.getMinutes())}` : `${date.getUTCFullYear()}-${padLeft(date.getUTCMonth() + 1)}-${padLeft(date.getUTCDate())}` });
 			}, () => {
 				trigger("cancel", {});
-			}, props$3.mode === mode.TIME ? { time: getDate(props$3.value, mode.TIME) } : {
-				date: getDate(props$3.value, mode.DATE),
-				minDate: getDate(props$3.start, mode.DATE),
-				maxDate: getDate(props$3.end, mode.DATE)
+			}, props.mode === mode.TIME ? { time: getDate(props.value, mode.TIME) } : {
+				date: getDate(props.value, mode.DATE),
+				minDate: getDate(props.start, mode.DATE),
+				maxDate: getDate(props.end, mode.DATE)
 			});
 		};
 		const _showPicker = (data) => {
@@ -2282,22 +2322,22 @@ var picker_default = /* @__PURE__ */ defineComponent({
 			}
 		};
 		const _show = (event) => {
-			if (props$3.disabled) return;
-			_showPicker(extend({}, props$3, {
+			if (props.disabled) return;
+			_showPicker(extend({}, props, {
 				value: valueSync.value,
 				locale: uni.getLocale()
 			}));
 		};
 		const uniForm = inject(uniFormKey, false);
 		const formField = {
-			submit: () => [props$3.name, valueSync.value],
+			submit: () => [props.name, valueSync.value],
 			reset: () => {
-				switch (props$3.mode) {
+				switch (props.mode) {
 					case mode.SELECTOR:
 						valueSync.value = 0;
 						break;
 					case mode.MULTISELECTOR:
-						isArray(props$3.value) && (valueSync.value = props$3.value.map((val) => 0));
+						isArray(props.value) && (valueSync.value = props.value.map((val) => 0));
 						break;
 					case mode.DATE:
 					case mode.TIME:
@@ -2311,14 +2351,14 @@ var picker_default = /* @__PURE__ */ defineComponent({
 			uniForm.addField(formField);
 			onBeforeUnmount(() => uniForm.removeField(formField));
 		}
-		Object.keys(props$3).forEach((key) => {
-			watch(() => props$3[key], (val) => {
+		Object.keys(props).forEach((key) => {
+			watch(() => props[key], (val) => {
 				const data = {};
 				data[key] = val;
 				_updatePicker(data);
 			}, { deep: true });
 		});
-		watch(() => props$3.value, _setValueSync, { deep: true });
+		watch(() => props.value, _setValueSync, { deep: true });
 		_setValueSync();
 		return () => {
 			return createVNode("view", {
@@ -2430,14 +2470,14 @@ var slider_default = /* @__PURE__ */ defineComponent({
 			width: "30"
 		} }
 	}],
-	setup(props$3, { emit }) {
+	setup(props, { emit }) {
 		const sliderRef = ref(null);
 		const sliderTrackRef = ref(null);
 		const trigger = useCustomEvent(sliderRef, emit);
-		const state = useSliderState(props$3);
-		const listeners = useSliderListeners(props$3, state, trigger);
-		useSliderInject(props$3, state);
-		watch(() => props$3.value, (val) => {
+		const state = useSliderState(props);
+		const listeners = useSliderListeners(props, state, trigger);
+		useSliderInject(props, state);
+		watch(() => props.value, (val) => {
 			state.sliderValue = Number(val);
 		});
 		onMounted(() => {
@@ -2445,12 +2485,12 @@ var slider_default = /* @__PURE__ */ defineComponent({
 				getComponentSize(sliderTrackRef.value).then(({ width, left }) => {
 					state.sliderLeft = left;
 					state.sliderWidth = width || 0;
-					state.sliderValue = Number(props$3.value);
+					state.sliderValue = Number(props.value);
 				});
 			}, 100);
 		});
 		return () => {
-			const { showValue } = props$3;
+			const { showValue } = props;
 			const { trackTapStyle, trackStyle, trackActiveStyle, thumbStyle, sliderValue } = state;
 			return createVNode("div", {
 				"class": "uni-slider",
@@ -2472,22 +2512,22 @@ var slider_default = /* @__PURE__ */ defineComponent({
 		};
 	}
 });
-function useSliderState(props$3) {
+function useSliderState(props) {
 	const sliderLeft = ref(0);
 	const sliderWidth = ref(0);
 	const sliderValue = ref(0);
 	const _getBgColor = () => {
-		return props$3.backgroundColor !== "#e9e9e9" ? props$3.backgroundColor : props$3.color !== "#007aff" ? props$3.color : "#007aff";
+		return props.backgroundColor !== "#e9e9e9" ? props.backgroundColor : props.color !== "#007aff" ? props.color : "#007aff";
 	};
 	const _getActiveColor = () => {
-		return props$3.activeColor !== "#007aff" ? props$3.activeColor : props$3.selectedColor !== "#e9e9e9" ? props$3.selectedColor : "#e9e9e9";
+		return props.activeColor !== "#007aff" ? props.activeColor : props.selectedColor !== "#e9e9e9" ? props.selectedColor : "#e9e9e9";
 	};
 	const _getValueWidth = () => {
-		const max = Number(props$3.max);
-		const min = Number(props$3.min);
+		const max = Number(props.max);
+		const min = Number(props.min);
 		return (sliderValue.value - min) / (max - min) * sliderWidth.value;
 	};
-	const sliderThumbOffset = Number(props$3.blockSize) / 2;
+	const sliderThumbOffset = Number(props.blockSize) / 2;
 	return reactive({
 		sliderLeft,
 		sliderWidth,
@@ -2507,17 +2547,17 @@ function useSliderState(props$3) {
 			width: _getValueWidth()
 		})),
 		thumbStyle: computed(() => ({
-			width: props$3.blockSize,
-			height: props$3.blockSize,
-			backgroundColor: props$3.blockColor,
+			width: props.blockSize,
+			height: props.blockSize,
+			backgroundColor: props.blockColor,
 			left: _getValueWidth()
 		}))
 	});
 }
-function useSliderListeners(props$3, state, trigger) {
+function useSliderListeners(props, state, trigger) {
 	let eventOld = null;
 	function onTrack(action, x) {
-		if (!props$3.disabled) {
+		if (!props.disabled) {
 			if (action === "move") {
 				changedValue(x);
 				trigger("changing", { value: state.sliderValue });
@@ -2531,45 +2571,45 @@ function useSliderListeners(props$3, state, trigger) {
 		x -= state.sliderThumbOffset;
 		if (x < 0) x = 0;
 		if (x > state.sliderWidth) x = state.sliderWidth;
-		const max = Number(props$3.max);
-		const min = Number(props$3.min);
-		const step = Number(props$3.step);
+		const max = Number(props.max);
+		const min = Number(props.min);
+		const step = Number(props.step);
 		let value = x / state.sliderWidth * (max - min);
 		if (step > 0 && value > step && value % step / step !== 0) value -= value % step;
 		else value = parseInt(value + "");
 		state.sliderValue = value + min;
 	}
 	return {
-		onTouchstart(e$1) {
-			if (e$1.changedTouches.length === 1 && !eventOld) {
-				eventOld = e$1;
-				onTrack("start", e$1.changedTouches[0].pageX);
+		onTouchstart(e) {
+			if (e.changedTouches.length === 1 && !eventOld) {
+				eventOld = e;
+				onTrack("start", e.changedTouches[0].pageX);
 			}
 		},
-		onTouchmove(e$1) {
-			if (e$1.changedTouches.length === 1 && eventOld) onTrack("move", e$1.changedTouches[0].pageX);
+		onTouchmove(e) {
+			if (e.changedTouches.length === 1 && eventOld) onTrack("move", e.changedTouches[0].pageX);
 		},
-		onTouchend(e$1) {
-			if (e$1.changedTouches.length === 1 && eventOld) {
+		onTouchend(e) {
+			if (e.changedTouches.length === 1 && eventOld) {
 				eventOld = null;
-				onTrack("end", e$1.changedTouches[0].pageX);
+				onTrack("end", e.changedTouches[0].pageX);
 			}
 		}
 	};
 }
-function useSliderInject(props$3, state) {
+function useSliderInject(props, state) {
 	const uniForm = inject(uniFormKey, false);
 	const formField = {
 		submit: () => {
 			const data = ["", null];
-			if (props$3.name) {
-				data[0] = props$3.name;
+			if (props.name) {
+				data[0] = props.name;
 				data[1] = state.sliderValue;
 			}
 			return data;
 		},
 		reset: () => {
-			state.sliderValue = Number(props$3.value);
+			state.sliderValue = Number(props.value);
 		}
 	};
 	if (!!uniForm) {
@@ -2579,7 +2619,9 @@ function useSliderInject(props$3, state) {
 		});
 	}
 }
-const switchProps = {
+//#endregion
+//#region src/components/switch.ts
+var switchProps = {
 	name: {
 		type: String,
 		default: ""
@@ -2605,6 +2647,8 @@ const switchProps = {
 		default: "#007aff"
 	}
 };
+//#endregion
+//#region src/nvue/switch/index.tsx
 var SwitchType = {
 	switch: "switch",
 	checkbox: "checkbox"
@@ -2617,16 +2661,16 @@ var switch_default = /* @__PURE__ */ defineComponent({
 	name: "Switch",
 	props: switchProps,
 	emits: ["change"],
-	setup(props$3, { emit }) {
+	setup(props, { emit }) {
 		const rootRef = ref(null);
-		const switchChecked = ref(props$3.checked);
-		const uniLabel = useSwitchInject(props$3, switchChecked);
+		const switchChecked = ref(props.checked);
+		const uniLabel = useSwitchInject(props, switchChecked);
 		const trigger = useCustomEvent(rootRef, emit);
-		watch(() => props$3.checked, (val) => {
+		watch(() => props.checked, (val) => {
 			switchChecked.value = val;
 		});
 		const _onClick = ($event, isLabelClick) => {
-			if (props$3.disabled) return;
+			if (props.disabled) return;
 			if (isLabelClick) {}
 			switchChecked.value = $event.detail ? $event.detail.value : !switchChecked.value;
 			trigger("change", { value: switchChecked.value });
@@ -2637,9 +2681,9 @@ var switch_default = /* @__PURE__ */ defineComponent({
 				uniLabel.removeHandler(_onClick);
 			});
 		}
-		useListeners(props$3, { "label-click": _onClick });
+		useListeners(props, { "label-click": _onClick });
 		return () => {
-			const { color, type, disabled } = props$3;
+			const { color, type, disabled } = props;
 			return createVNode("div", { "ref": rootRef }, [type === SwitchType.switch ? createVNode("dc-switch", mergeProps({ dataUncType: "uni-switch" }, { "onChange": _onClick }, {
 				checked: switchChecked.value,
 				color,
@@ -2651,14 +2695,14 @@ var switch_default = /* @__PURE__ */ defineComponent({
 		};
 	}
 });
-function useSwitchInject(props$3, switchChecked) {
+function useSwitchInject(props, switchChecked) {
 	const uniForm = inject(uniFormKey, false);
 	const uniLabel = inject(uniLabelKey, false);
 	const formField = {
 		submit: () => {
 			const data = ["", null];
-			if (props$3.name) {
-				data[0] = props$3.name;
+			if (props.name) {
+				data[0] = props.name;
 				data[1] = switchChecked.value;
 			}
 			return data;
@@ -2675,7 +2719,9 @@ function useSwitchInject(props$3, switchChecked) {
 	}
 	return uniLabel;
 }
-const checkboxProps = {
+//#endregion
+//#region src/components/checkbox.ts
+var checkboxProps = {
 	checked: {
 		type: [Boolean, String],
 		default: false
@@ -2697,8 +2743,10 @@ const checkboxProps = {
 		default: ""
 	}
 };
-const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const checkboxGroupProps = { name: {
+//#endregion
+//#region src/components/checkbox-group.ts
+var uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
+var checkboxGroupProps = { name: {
 	type: String,
 	default: ""
 } };
@@ -2736,16 +2784,16 @@ var checkbox_default = /* @__PURE__ */ defineComponent({
 			marginLeft: "5"
 		} }
 	}],
-	setup(props$3, { slots }) {
+	setup(props, { slots }) {
 		const rootRef = ref(null);
-		const checkboxChecked = ref(props$3.checked);
-		const checkboxValue = ref(props$3.value);
-		const checkboxColor = computed(() => props$3.disabled ? "#adadad" : props$3.color);
+		const checkboxChecked = ref(props.checked);
+		const checkboxValue = ref(props.value);
+		const checkboxColor = computed(() => props.disabled ? "#adadad" : props.color);
 		const reset = () => {
 			checkboxChecked.value = false;
 		};
 		const _onClick = ($event, isLabelClick) => {
-			if (props$3.disabled) return;
+			if (props.disabled) return;
 			if (isLabelClick) {}
 			checkboxChecked.value = !checkboxChecked.value;
 			uniCheckGroup && uniCheckGroup.checkboxChange($event);
@@ -2757,8 +2805,8 @@ var checkbox_default = /* @__PURE__ */ defineComponent({
 				uniLabel.removeHandler(_onClick);
 			});
 		}
-		useListeners(props$3, { "label-click": _onClick });
-		watch([() => props$3.checked, () => props$3.value], ([newChecked, newModelValue]) => {
+		useListeners(props, { "label-click": _onClick });
+		watch([() => props.checked, () => props.value], ([newChecked, newModelValue]) => {
 			checkboxChecked.value = newChecked;
 			checkboxValue.value = newModelValue;
 		});
@@ -2772,7 +2820,7 @@ var checkbox_default = /* @__PURE__ */ defineComponent({
 			return createVNode("div", mergeProps({ "ref": rootRef }, { dataUncType: "uni-checkbox" }, {
 				"onClick": _onClick,
 				"class": "uni-checkbox"
-			}), [createVNode("div", { "class": ["uni-checkbox-input", { "uni-checkbox-input-disabled": props$3.disabled }] }, [checkboxChecked.value ? createNVueTextVNode("", {
+			}), [createVNode("div", { "class": ["uni-checkbox-input", { "uni-checkbox-input-disabled": props.disabled }] }, [checkboxChecked.value ? createNVueTextVNode("", {
 				class: "uni-icon",
 				style: { color: checkboxColor.value }
 			}) : null]), ...wrapSlots()]);
@@ -2800,13 +2848,15 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 		uniLabel
 	};
 }
+//#endregion
+//#region src/nvue/checkbox-group/index.tsx
 var checkbox_group_default = /* @__PURE__ */ defineComponent({
 	name: "CheckboxGroup",
 	props: checkboxGroupProps,
 	emits: ["change"],
-	setup(props$3, { slots, emit }) {
+	setup(props, { slots, emit }) {
 		const rootRef = ref(null);
-		useProvideCheckGroup(props$3, useCustomEvent(rootRef, emit));
+		useProvideCheckGroup(props, useCustomEvent(rootRef, emit));
 		return () => {
 			return createVNode("div", {
 				"ref": rootRef,
@@ -2815,18 +2865,18 @@ var checkbox_group_default = /* @__PURE__ */ defineComponent({
 		};
 	}
 });
-function useProvideCheckGroup(props$3, trigger) {
-	const fields$1 = [];
-	const getFieldsValue = () => fields$1.reduce((res, field) => {
+function useProvideCheckGroup(props, trigger) {
+	const fields = [];
+	const getFieldsValue = () => fields.reduce((res, field) => {
 		if (field.value.checkboxChecked) res.push(field.value.value);
 		return res;
 	}, new Array());
 	provide(uniCheckGroupKey, {
 		addField(field) {
-			fields$1.push(field);
+			fields.push(field);
 		},
 		removeField(field) {
-			fields$1.splice(fields$1.indexOf(field), 1);
+			fields.splice(fields.indexOf(field), 1);
 		},
 		checkboxChange($event) {
 			trigger("change", { value: getFieldsValue() });
@@ -2835,15 +2885,17 @@ function useProvideCheckGroup(props$3, trigger) {
 	const uniForm = inject(uniFormKey, false);
 	if (uniForm) uniForm.addField({ submit: () => {
 		let data = ["", null];
-		if (props$3.name !== "") {
-			data[0] = props$3.name;
+		if (props.name !== "") {
+			data[0] = props.name;
 			data[1] = getFieldsValue();
 		}
 		return data;
 	} });
 	return getFieldsValue;
 }
-const radioProps = {
+//#endregion
+//#region src/components/radio.ts
+var radioProps = {
 	checked: {
 		type: [Boolean, String],
 		default: false
@@ -2865,8 +2917,10 @@ const radioProps = {
 		default: ""
 	}
 };
-const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniRadioGroup" : "ucg");
-const radioGroupProps = { name: {
+//#endregion
+//#region src/components/radio-group.ts
+var uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniRadioGroup" : "ucg");
+var radioGroupProps = { name: {
 	type: String,
 	default: ""
 } };
@@ -2907,12 +2961,12 @@ var radio_default = /* @__PURE__ */ defineComponent({
 		} }
 	}],
 	emits: ["change"],
-	setup(props$3, { slots }) {
+	setup(props, { slots }) {
 		const rootRef = ref(null);
-		const radioChecked = ref(props$3.checked);
-		const radioValue = ref(props$3.value);
+		const radioChecked = ref(props.checked);
+		const radioValue = ref(props.value);
 		const radioStyle = computed(() => {
-			const color = props$3.disabled ? "#adadad" : props$3.color;
+			const color = props.disabled ? "#adadad" : props.color;
 			if (radioChecked.value) return {
 				backgroundColor: color,
 				borderColor: color
@@ -2924,7 +2978,7 @@ var radio_default = /* @__PURE__ */ defineComponent({
 		};
 		const { uniCheckGroup, uniLabel, field } = useRadioInject(radioChecked, radioValue, reset);
 		const _onClick = ($event, isLabelClick) => {
-			if (props$3.disabled || radioChecked.value) return;
+			if (props.disabled || radioChecked.value) return;
 			if (isLabelClick) {}
 			radioChecked.value = !radioChecked.value;
 			uniCheckGroup && uniCheckGroup.radioChange($event, field);
@@ -2935,8 +2989,8 @@ var radio_default = /* @__PURE__ */ defineComponent({
 				uniLabel.removeHandler(_onClick);
 			});
 		}
-		useListeners(props$3, { "label-click": _onClick });
-		watch([() => props$3.checked, () => props$3.value], ([newChecked, newModelValue]) => {
+		useListeners(props, { "label-click": _onClick });
+		watch([() => props.checked, () => props.value], ([newChecked, newModelValue]) => {
 			radioChecked.value = newChecked;
 			radioValue.value = newModelValue;
 		});
@@ -2947,7 +3001,7 @@ var radio_default = /* @__PURE__ */ defineComponent({
 			return vnodes;
 		};
 		return () => {
-			const { disabled } = props$3;
+			const { disabled } = props;
 			return createVNode("div", mergeProps({ "ref": rootRef }, { dataUncType: "uni-radio" }, {
 				"onClick": _onClick,
 				"class": "uni-radio"
@@ -2985,41 +3039,43 @@ function useRadioInject(radioChecked, radioValue, reset) {
 		field
 	};
 }
+//#endregion
+//#region src/nvue/radio-group/index.tsx
 var radio_group_default = /* @__PURE__ */ defineComponent({
 	name: "RadioGroup",
 	props: radioGroupProps,
 	emits: ["change"],
-	setup(props$3, { slots, emit }) {
+	setup(props, { slots, emit }) {
 		const rootRef = ref(null);
-		useProvideRadioGroup(props$3, useCustomEvent(rootRef, emit));
+		useProvideRadioGroup(props, useCustomEvent(rootRef, emit));
 		return () => {
 			return createVNode("div", { "ref": rootRef }, [slots.default && slots.default()]);
 		};
 	}
 });
-function useProvideRadioGroup(props$3, trigger) {
-	const fields$1 = [];
+function useProvideRadioGroup(props, trigger) {
+	const fields = [];
 	onMounted(() => {
-		_resetRadioGroupValue(fields$1.length - 1);
+		_resetRadioGroupValue(fields.length - 1);
 	});
-	const getFieldsValue = () => fields$1.find((field) => field.value.radioChecked)?.value.value;
+	const getFieldsValue = () => fields.find((field) => field.value.radioChecked)?.value.value;
 	provide(uniRadioGroupKey, {
 		addField(field) {
-			fields$1.push(field);
+			fields.push(field);
 		},
 		removeField(field) {
-			fields$1.splice(fields$1.indexOf(field), 1);
+			fields.splice(fields.indexOf(field), 1);
 		},
 		radioChange($event, field) {
-			_resetRadioGroupValue(fields$1.indexOf(field), true);
+			_resetRadioGroupValue(fields.indexOf(field), true);
 			trigger("change", { value: getFieldsValue() });
 		}
 	});
 	const uniForm = inject(uniFormKey, false);
 	const formField = { submit: () => {
 		let data = ["", null];
-		if (props$3.name !== "") {
-			data[0] = props$3.name;
+		if (props.name !== "") {
+			data[0] = props.name;
 			data[1] = getFieldsValue();
 		}
 		return data;
@@ -3037,13 +3093,15 @@ function useProvideRadioGroup(props$3, trigger) {
 		};
 	}
 	function _resetRadioGroupValue(key, change) {
-		fields$1.forEach((value, index) => {
+		fields.forEach((value, index) => {
 			if (index === key) return;
-			if (change) setFieldChecked(fields$1[index], false);
+			if (change) setFieldChecked(fields[index], false);
 		});
 	}
-	return fields$1;
+	return fields;
 }
+//#endregion
+//#region src/nvue/form/index.tsx
 var NATIVE_COMPONENTS = ["u-input", "u-textarea"];
 var form_default = /* @__PURE__ */ defineComponent({
 	name: "Form",
@@ -3051,19 +3109,19 @@ var form_default = /* @__PURE__ */ defineComponent({
 	setup({}, { slots, emit }) {
 		const rootRef = ref(null);
 		const trigger = useCustomEvent(rootRef, emit);
-		const fields$1 = [];
+		const fields = [];
 		let resetNative;
 		provide(uniFormKey, {
 			addField(field) {
-				fields$1.push(field);
+				fields.push(field);
 			},
 			removeField(field) {
-				fields$1.splice(fields$1.indexOf(field), 1);
+				fields.splice(fields.indexOf(field), 1);
 			},
 			submit(evt) {
 				let outFormData = {};
 				resetNative && resetNative(outFormData);
-				let formData = fields$1.reduce((res, field) => {
+				let formData = fields.reduce((res, field) => {
 					if (field.submit) {
 						const [name, value] = field.submit();
 						name && (res[name] = value);
@@ -3075,7 +3133,7 @@ var form_default = /* @__PURE__ */ defineComponent({
 			},
 			reset(evt) {
 				resetNative && resetNative();
-				fields$1.forEach((field) => field.reset && field.reset());
+				fields.forEach((field) => field.reset && field.reset());
 				trigger("reset", evt);
 			}
 		});
@@ -3097,7 +3155,9 @@ function useResetNative(children) {
 	};
 	return getOrClearNativeValue;
 }
-const iconProps = {
+//#endregion
+//#region src/components/icon.ts
+var iconProps = {
 	type: {
 		type: String,
 		default: ""
@@ -3111,7 +3171,7 @@ const iconProps = {
 		default: ""
 	}
 };
-const iconColors = {
+var iconColors = {
 	success: "#09bb07",
 	info: "#10aeff",
 	warn: "#f76260",
@@ -3128,6 +3188,8 @@ const iconColors = {
 	search: "#b2b2b2",
 	clear: "#b2b2b2"
 };
+//#endregion
+//#region src/nvue/icon/index.tsx
 var iconChars = {
 	success: "",
 	info: "",
@@ -3149,19 +3211,21 @@ var icon_default = /* @__PURE__ */ defineComponent({
 	name: "Icon",
 	props: iconProps,
 	styles: [{ "uni-icon": { "": { fontFamily: "unincomponents" } } }],
-	setup(props$3, {}) {
+	setup(props, {}) {
 		return () => {
-			return createNVueTextVNode(iconChars[props$3.type], {
+			return createNVueTextVNode(iconChars[props.type], {
 				class: "uni-icon",
 				style: {
-					color: props$3.color || iconColors[props$3.type],
-					fontSize: props$3.size
+					color: props.color || iconColors[props.type],
+					fontSize: props.size
 				}
 			});
 		};
 	}
 });
-const swiperProps = {
+//#endregion
+//#region src/components/swiper.ts
+var swiperProps = {
 	indicatorDots: {
 		type: [Boolean, String],
 		default: false
@@ -3223,6 +3287,8 @@ const swiperProps = {
 		default: false
 	}
 };
+//#endregion
+//#region src/nvue/swiper/index.tsx
 var isAndroid = weex.config.env.platform.toLowerCase() === "android";
 var swiper_default = /* @__PURE__ */ defineComponent({
 	name: "Swiper",
@@ -3252,14 +3318,14 @@ var swiper_default = /* @__PURE__ */ defineComponent({
 		"transition",
 		"animationfinish"
 	],
-	setup(props$3, { slots, emit }) {
+	setup(props, { slots, emit }) {
 		const rootRef = ref(null);
 		let swiperItems = [];
 		const trigger = useCustomEvent(rootRef, emit);
-		const state = useSwiperState(props$3);
-		const listeners = useSwiperListeners(state, props$3, swiperItems, trigger);
-		watch([() => props$3.current, () => props$3.currentItemId], ([newChecked, newModelValue]) => {
-			currentCheck(state, props$3, swiperItems);
+		const state = useSwiperState(props);
+		const listeners = useSwiperListeners(state, props, swiperItems, trigger);
+		watch([() => props.current, () => props.currentItemId], ([newChecked, newModelValue]) => {
+			currentCheck(state, props, swiperItems);
 		});
 		onMounted(() => {
 			setTimeout(() => {
@@ -3277,14 +3343,14 @@ var swiper_default = /* @__PURE__ */ defineComponent({
 				"ref": rootRef,
 				"class": "uni-swiper"
 			}, [createVNode("slider", mergeProps({ "class": "uni-swiper-slider" }, {
-				autoPlay: props$3.autoplay,
-				interval: props$3.interval,
+				autoPlay: props.autoplay,
+				interval: props.interval,
 				index: currentSync,
 				keepIndex: true,
-				showIndicators: props$3.indicatorDots,
-				infinite: props$3.circular,
-				vertical: props$3.vertical,
-				scrollable: !props$3.disableTouch
+				showIndicators: props.indicatorDots,
+				infinite: props.circular,
+				vertical: props.vertical,
+				scrollable: !props.disableTouch
 			}, listeners), [swiperItems, createVNode("indicator", {
 				"class": "uni-swiper-dots",
 				"style": indicatorStyle
@@ -3292,29 +3358,29 @@ var swiper_default = /* @__PURE__ */ defineComponent({
 		};
 	}
 });
-function useSwiperState(props$3) {
+function useSwiperState(props) {
 	let swiperWidth = ref(0);
 	let swiperHeight = ref(0);
-	const currentSync = ref(props$3.current);
+	const currentSync = ref(props.current);
 	const currentChangeSource = ref("autoplay");
 	return reactive({
 		swiperWidth,
 		swiperHeight,
 		indicatorStyle: computed(() => ({
-			itemColor: props$3.indicatorColor,
-			itemSelectedColor: props$3.indicatorActiveColor,
+			itemColor: props.indicatorColor,
+			itemSelectedColor: props.indicatorActiveColor,
 			itemSize: 8,
-			opacity: props$3.indicatorDots ? 1 : 0
+			opacity: props.indicatorDots ? 1 : 0
 		})),
 		currentSync,
 		currentChangeSource
 	});
 }
-function useSwiperListeners(state, props$3, swiperItems, trigger) {
+function useSwiperListeners(state, props, swiperItems, trigger) {
 	let lastOffsetRatio = 0;
 	const onScroll = (event) => {
 		const detail = event.detail;
-		const isVertical = props$3.vertical;
+		const isVertical = props.vertical;
 		let offsetRatio = (isVertical ? detail.offsetYRatio : detail.offsetXRatio) || 0;
 		if (event.drag || event.drag) state.currentChangeSource = "touch";
 		if (offsetRatio === 0) {
@@ -3359,29 +3425,31 @@ function useSwiperListeners(state, props$3, swiperItems, trigger) {
 		onChange
 	};
 }
-function currentCheck(state, props$3, swiperItems) {
+function currentCheck(state, props, swiperItems) {
 	let current = -1;
-	if (props$3.currentItemId) for (let i = 0, items = swiperItems; i < items.length; i++) {
+	if (props.currentItemId) for (let i = 0, items = swiperItems; i < items.length; i++) {
 		const componentInstance = items[i].componentInstance;
-		if (componentInstance && componentInstance.itemId === props$3.currentItemId) {
+		if (componentInstance && componentInstance.itemId === props.currentItemId) {
 			current = i;
 			break;
 		}
 	}
-	if (current < 0) current = Math.round(Number(props$3.current)) || 0;
+	if (current < 0) current = Math.round(Number(props.current)) || 0;
 	current = current < 0 ? 0 : current;
 	if (state.currentSync !== current) {
 		state.currentChangeSource = "";
 		state.currentSync = current;
 	}
 }
+//#endregion
+//#region src/nvue/swiper-item/index.tsx
 var swiper_item_default = /* @__PURE__ */ defineComponent({
 	name: "SwiperItem",
 	props: { itemId: {
 		type: String,
 		default: ""
 	} },
-	setup(props$3, { slots }) {
+	setup(props, { slots }) {
 		return () => {
 			return createVNode("div", {
 				"class": "uni-swiper-item",
@@ -3397,6 +3465,8 @@ var swiper_item_default = /* @__PURE__ */ defineComponent({
 		};
 	}
 });
+//#endregion
+//#region src/helpers/html-parser.js
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
@@ -3447,9 +3517,9 @@ function HTMLParser(html, handler) {
 				if (handler.chars) handler.chars(text);
 			}
 		} else {
-			html = html.replace(/* @__PURE__ */ new RegExp("([\\s\\S]*?)</" + stack.last() + "[^>]*>"), function(all, text$1) {
-				text$1 = text$1.replace(/<!--([\s\S]*?)-->|<!\[CDATA\[([\s\S]*?)]]>/g, "$1$2");
-				if (handler.chars) handler.chars(text$1);
+			html = html.replace(new RegExp("([\\s\\S]*?)</" + stack.last() + "[^>]*>"), function(all, text) {
+				text = text.replace(/<!--([\s\S]*?)-->|<!\[CDATA\[([\s\S]*?)]]>/g, "$1$2");
+				if (handler.chars) handler.chars(text);
 				return "";
 			});
 			parseEndTag("", stack.last());
@@ -3466,7 +3536,7 @@ function HTMLParser(html, handler) {
 		if (!unary) stack.push(tagName);
 		if (handler.start) {
 			var attrs = [];
-			rest.replace(attr, function(match$1, name) {
+			rest.replace(attr, function(match, name) {
 				var value = arguments[2] ? arguments[2] : arguments[3] ? arguments[3] : arguments[4] ? arguments[4] : fillAttrs[name] ? name : "";
 				attrs.push({
 					name,
@@ -3492,13 +3562,15 @@ function makeMap(str) {
 	for (var i = 0; i < items.length; i++) obj[items[i]] = true;
 	return obj;
 }
+//#endregion
+//#region src/components/rich-text/html-parser.js
 function removeDOCTYPE(html) {
 	return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
 function parseAttrs(attrs) {
-	return attrs.reduce(function(pre, attr$1) {
-		let value = attr$1.value;
-		const name = attr$1.name;
+	return attrs.reduce(function(pre, attr) {
+		let value = attr.value;
+		const name = attr.name;
 		if (value.match(/ /) && ["style", "src"].indexOf(name) === -1) value = value.split(" ");
 		if (pre[name]) if (Array.isArray(pre[name])) pre[name].push(value);
 		else pre[name] = [pre[name], value];
@@ -3559,20 +3631,24 @@ function parseHtml(html) {
 	});
 	return results.children;
 }
+//#endregion
+//#region src/components/rich-text/index.ts
 var props = { nodes: {
 	type: [Array, String],
 	default: function() {
 		return [];
 	}
 } };
+//#endregion
+//#region src/nvue/rich-text/index.tsx
 var defaultFontSize = 16;
 var rich_text_default = /* @__PURE__ */ defineComponent({
 	name: "RichText",
 	props,
-	setup(props$3) {
+	setup(props) {
 		const instance = getCurrentInstance();
 		return () => {
-			let nodes = props$3.nodes;
+			let nodes = props.nodes;
 			if (isString(nodes)) nodes = parseHtml(nodes);
 			return createVNode("u-rich-text", { value: normalizeNodes(nodes || [], instance.root, { defaultFontSize }) }, null);
 		};
@@ -3586,25 +3662,25 @@ function normalizeNodes(nodes, instance, options) {
 		"img"
 	];
 	const strategies = {
-		blockquote: block$1,
+		blockquote: block,
 		br,
-		div: block$1,
-		dl: block$1,
+		div: block,
+		dl: block,
 		h1: createHeading(2),
 		h2: createHeading(1.5),
 		h3: createHeading(1.17),
 		h4: createHeading(1),
 		h5: createHeading(.83),
 		h6: createHeading(.67),
-		hr: block$1,
-		ol: block$1,
-		p: block$1,
+		hr: block,
+		ol: block,
+		p: block,
 		strong: bold,
-		table: block$1,
-		tbody: block$1,
-		tfoot: block$1,
-		thead: block$1,
-		ul: block$1
+		table: block,
+		tbody: block,
+		tfoot: block,
+		thead: block,
+		ul: block
 	};
 	const HTML_RE = /&(amp|gt|lt|nbsp|quot|apos);/g;
 	const CHARS = {
@@ -3639,13 +3715,13 @@ function normalizeNodes(nodes, instance, options) {
 		}
 		return styles;
 	}
-	function block$1(node) {
+	function block(node) {
 		node.__block = true;
 		return node;
 	}
 	function heading(node, em) {
 		if (node.style) !node.style.fontSize && (node.style.fontSize = options.defaultFontSize * em);
-		return block$1(bold(node));
+		return block(bold(node));
 	}
 	function createHeading(em) {
 		return function(node) {
@@ -3658,7 +3734,7 @@ function normalizeNodes(nodes, instance, options) {
 	}
 	function br(node) {
 		node.__value = " ";
-		return block$1(node);
+		return block(node);
 	}
 	function normalizeText(str) {
 		return str.replace(HTML_RE, function(match, entity) {
@@ -3690,24 +3766,26 @@ function normalizeNodes(nodes, instance, options) {
 		}
 		lastNode = nvueNode;
 		if (lastNode.__value || lastNode.type === "image" && lastNode.attr.src) breakNodes = null;
-		nvueNode.children = normalizeNodes$1(node.children);
+		nvueNode.children = normalizeNodes(node.children);
 		lastNode = nvueNode;
 		if (lastNode.__block && lastNode.style.height && !/^0(px)?$/.test(lastNode.style.height)) breakNodes = null;
 		return nvueNode;
 	}
-	function normalizeNodes$1(nodes$1) {
-		if (isArray(nodes$1)) return nodes$1.map((node) => normalizeNode(node));
+	function normalizeNodes(nodes) {
+		if (isArray(nodes)) return nodes.map((node) => normalizeNode(node));
 		return [];
 	}
-	const nvueNodes = normalizeNodes$1(nodes);
+	const nvueNodes = normalizeNodes(nodes);
 	if (breakNodes) {
-		const [lastNode$1, breakNode$1] = breakNodes;
-		const children = lastNode$1.children;
-		const index = children.indexOf(breakNode$1);
+		const [lastNode, breakNode] = breakNodes;
+		const children = lastNode.children;
+		const index = children.indexOf(breakNode);
 		children.splice(index, 1);
 	}
 	return nvueNodes;
 }
+//#endregion
+//#region src/components/ad.ts
 var _adDataCache$1 = {};
 function getAdData$1(data, onsuccess, onerror) {
 	const { adpid, width } = data;
@@ -3728,7 +3806,7 @@ function getAdData$1(data, onsuccess, onerror) {
 		});
 	});
 }
-const adProps = {
+var adProps = {
 	adpid: {
 		type: [Number, String],
 		default: ""
@@ -3746,6 +3824,8 @@ const adProps = {
 		default: ""
 	}
 };
+//#endregion
+//#region src/nvue/ad/index.tsx
 var AdEventType$1 = {
 	load: "load",
 	close: "close",
@@ -3761,30 +3841,30 @@ var ad_default = /* @__PURE__ */ defineComponent({
 		AdEventType$1.error,
 		AdEventType$1.downloadchange
 	],
-	setup(props$3, { emit }) {
+	setup(props, { emit }) {
 		const adRef = ref(null);
 		const trigger = useCustomEvent(adRef, emit);
-		const state = useAdState(props$3);
-		watch(() => props$3.adpid, (value) => {
-			_loadAdData$1(state, props$3, trigger);
+		const state = useAdState(props);
+		watch(() => props.adpid, (value) => {
+			_loadAdData$1(state, props, trigger);
 		});
-		watch(() => props$3.data, (value) => {
+		watch(() => props.data, (value) => {
 			state.data = value;
 		});
 		onMounted(() => {
 			setTimeout(() => {
 				getComponentSize(adRef.value).then(({ width }) => {
 					state.width = width === 0 ? -1 : width;
-					_loadAdData$1(state, props$3, trigger);
+					_loadAdData$1(state, props, trigger);
 				});
 			}, 50);
 		});
 		const listeners = {
-			onDownloadchange(e$1) {
-				trigger(AdEventType$1.downloadchange, e$1);
+			onDownloadchange(e) {
+				trigger(AdEventType$1.downloadchange, e);
 			},
-			onDislike(e$1) {
-				trigger(AdEventType$1.close, e$1);
+			onDislike(e) {
+				trigger(AdEventType$1.close, e);
 			}
 		};
 		return () => {
@@ -3795,15 +3875,15 @@ var ad_default = /* @__PURE__ */ defineComponent({
 		};
 	}
 });
-function useAdState(props$3) {
+function useAdState(props) {
 	return reactive({
 		width: 0,
 		data: ref("")
 	});
 }
-function _loadAdData$1(state, props$3, trigger) {
+function _loadAdData$1(state, props, trigger) {
 	getAdData$1({
-		adpid: props$3.adpid,
+		adpid: props.adpid,
 		width: state.width
 	}, (res) => {
 		state.data = res;
@@ -3812,6 +3892,8 @@ function _loadAdData$1(state, props$3, trigger) {
 		trigger(AdEventType$1.error, err);
 	});
 }
+//#endregion
+//#region src/components/ad-draw.ts
 var _adDataCache = {};
 function getAdData(adpid, width, height, onsuccess, onerror) {
 	const key = adpid + "-" + width;
@@ -3835,7 +3917,7 @@ function getAdData(adpid, width, height, onsuccess, onerror) {
 		});
 	});
 }
-const adDrawProps = {
+var adDrawProps = {
 	adpid: {
 		type: [Number, String],
 		default: ""
@@ -3849,6 +3931,8 @@ const adDrawProps = {
 		default: ""
 	}
 };
+//#endregion
+//#region src/nvue/ad-draw/index.tsx
 var AdEventType = {
 	load: "load",
 	close: "close",
@@ -3862,25 +3946,25 @@ var ad_draw_default = /* @__PURE__ */ defineComponent({
 		AdEventType.close,
 		AdEventType.error
 	],
-	setup(props$3, { emit }) {
+	setup(props, { emit }) {
 		const adRef = ref(null);
 		const trigger = useCustomEvent(adRef, emit);
-		const state = useAdDrawState(props$3);
-		watch(() => props$3.adpid, (value) => {
-			_loadAdData(state, props$3, trigger);
+		const state = useAdDrawState(props);
+		watch(() => props.adpid, (value) => {
+			_loadAdData(state, props, trigger);
 		});
-		watch(() => props$3.data, (value) => {
+		watch(() => props.data, (value) => {
 			state.data = value;
 		});
-		const listeners = { onDislike(e$1) {
-			trigger(AdEventType.close, e$1);
+		const listeners = { onDislike(e) {
+			trigger(AdEventType.close, e);
 		} };
 		onMounted(() => {
 			setTimeout(() => {
 				getComponentSize(adRef.value).then(({ width, height }) => {
 					state.width = width === 0 ? -1 : width;
 					state.height = height === 0 ? -1 : height;
-					_loadAdData(state, props$3, trigger);
+					_loadAdData(state, props, trigger);
 				});
 			}, 50);
 		});
@@ -3893,21 +3977,23 @@ var ad_draw_default = /* @__PURE__ */ defineComponent({
 		};
 	}
 });
-function useAdDrawState(props$3) {
+function useAdDrawState(props) {
 	return reactive({
 		width: 0,
 		height: 0,
 		data: ref("")
 	});
 }
-function _loadAdData(state, props$3, trigger) {
-	getAdData(props$3.adpid, state.width, state.height, (res) => {
+function _loadAdData(state, props, trigger) {
+	getAdData(props.adpid, state.width, state.height, (res) => {
 		state.data = res;
 		trigger(AdEventType.load, {});
 	}, (err) => {
 		trigger(AdEventType.error, err);
 	});
 }
+//#endregion
+//#region src/nvue/components.ts
 var components_default = {
 	Navigator: navigator_default,
 	Label: label_default,
@@ -3932,4 +4018,5 @@ var components_default = {
 	Ad: ad_default,
 	AdDraw: ad_draw_default
 };
+//#endregion
 export { components_default as default };

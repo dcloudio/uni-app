@@ -1,80 +1,101 @@
-import { DATA_RE, Emitter, EventChannel, LINEFEED, ON_BACK_PRESS, ON_ERROR, ON_EXIT, ON_HIDE, ON_LAST_PAGE_BACK_PRESS, ON_LAUNCH, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_READY, ON_RESIZE, ON_SHOW, ON_UNHANDLE_REJECTION, ON_UNLOAD, PRIMARY_COLOR, SCHEME_RE, UTSJSONObject, addLeadingSlash, cacheStringFunction, createRpx2Unit, defaultRpx2Unit, getLen, invokeArrayFns, invokeArrayFnsWithResults, normalizeStyles, once, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash } from "@dcloudio/uni-shared";
-import { camelize, capitalize, extend, hasOwn, hyphenate, invokeArrayFns as invokeArrayFns$1, isArray, isFunction, isPlainObject, isPromise, isString, remove, toRawType, toTypeString } from "@vue/shared";
-import { Fragment, camelize as camelize$1, computed, createCommentVNode, createElementBlock, createElementVNode, createMountPage, createVNode, defineComponent, getCurrentGenericInstance, getCurrentInstance, inject, injectHook, isInSSRComponentSetup, mergeProps, nextTick, normalizeClass, normalizeStyle, onActivated, onBeforeMount, onBeforeUnmount, onMounted, onUnmounted, openBlock, reactive, ref, renderSlot, resolveComponent, unmountPage, vShow, watch, watchEffect, withDirectives, withModifiers } from "vue";
+import { Emitter, EventChannel, ON_BACK_PRESS, ON_ERROR, ON_EXIT, ON_HIDE, ON_LAST_PAGE_BACK_PRESS, ON_LAUNCH, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_READY, ON_RESIZE, ON_SHOW, ON_UNHANDLE_REJECTION, ON_UNLOAD, PRIMARY_COLOR, UTSJSONObject, addLeadingSlash, cacheStringFunction, createRpx2Unit, defaultRpx2Unit, getLen, invokeArrayFns, invokeArrayFnsWithResults, normalizeStyles, once, parseQuery, parseUrl, plusReady, removeLeadingSlash } from "@dcloudio/uni-shared";
+import { camelize, capitalize, extend, hasOwn, invokeArrayFns as invokeArrayFns$1, isArray, isFunction, isPlainObject, isPromise, isString, remove, toRawType, toTypeString } from "@vue/shared";
+import { Fragment, camelize as camelize$1, computed, createCommentVNode, createElementBlock, createElementVNode, createMountPage, createVNode, defineComponent, getCurrentGenericInstance, getCurrentInstance, injectHook, isInSSRComponentSetup, nextTick, normalizeClass, normalizeStyle, onBeforeUnmount, onMounted, onUnmounted, openBlock, reactive, ref, renderSlot, unmountPage, watch, watchEffect, withModifiers } from "vue";
+//#region \0rolldown/runtime.js
 var __defProp = Object.defineProperty;
 var __esmMin = (fn, res) => () => (fn && (res = fn(fn = 0)), res);
-var __commonJSMin = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
-var __export = (all, symbols) => {
+var __commonJSMin = (cb, mod) => () => (mod || (cb((mod = { exports: {} }).exports, mod), cb = null), mod.exports);
+var __exportAll = (all, no_symbols) => {
 	let target = {};
 	for (var name in all) __defProp(target, name, {
 		get: all[name],
 		enumerable: true
 	});
-	if (symbols) __defProp(target, Symbol.toStringTag, { value: "Module" });
+	if (!no_symbols) __defProp(target, Symbol.toStringTag, { value: "Module" });
 	return target;
 };
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_core.js
 var require__core = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	var core$2 = module.exports = { version: "2.6.12" };
-	if (typeof __e == "number") __e = core$2;
+	var core = module.exports = { version: "2.6.12" };
+	if (typeof __e == "number") __e = core;
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_global.js
 var require__global = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	var global$4 = module.exports = typeof window != "undefined" && window.Math == Math ? window : typeof self != "undefined" && self.Math == Math ? self : Function("return this")();
-	if (typeof __g == "number") __g = global$4;
+	var global = module.exports = typeof window != "undefined" && window.Math == Math ? window : typeof self != "undefined" && self.Math == Math ? self : Function("return this")();
+	if (typeof __g == "number") __g = global;
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_library.js
 var require__library = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = false;
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_shared.js
 var require__shared = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	var core$1 = require__core();
-	var global$3 = require__global();
+	var core = require__core();
+	var global = require__global();
 	var SHARED = "__core-js_shared__";
-	var store$1 = global$3[SHARED] || (global$3[SHARED] = {});
-	(module.exports = function(key$1, value) {
-		return store$1[key$1] || (store$1[key$1] = value !== void 0 ? value : {});
+	var store = global[SHARED] || (global[SHARED] = {});
+	(module.exports = function(key, value) {
+		return store[key] || (store[key] = value !== void 0 ? value : {});
 	})("versions", []).push({
-		version: core$1.version,
+		version: core.version,
 		mode: require__library() ? "pure" : "global",
 		copyright: "© 2020 Denis Pushkarev (zloirock.ru)"
 	});
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_uid.js
 var require__uid = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	var id$1 = 0;
+	var id = 0;
 	var px = Math.random();
-	module.exports = function(key$1) {
-		return "Symbol(".concat(key$1 === void 0 ? "" : key$1, ")_", (++id$1 + px).toString(36));
+	module.exports = function(key) {
+		return "Symbol(".concat(key === void 0 ? "" : key, ")_", (++id + px).toString(36));
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_wks.js
 var require__wks = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var store = require__shared()("wks");
-	var uid$1 = require__uid();
-	var Symbol$1 = require__global().Symbol;
-	var USE_SYMBOL = typeof Symbol$1 == "function";
+	var uid = require__uid();
+	var Symbol = require__global().Symbol;
+	var USE_SYMBOL = typeof Symbol == "function";
 	var $exports = module.exports = function(name) {
-		return store[name] || (store[name] = USE_SYMBOL && Symbol$1[name] || (USE_SYMBOL ? Symbol$1 : uid$1)("Symbol." + name));
+		return store[name] || (store[name] = USE_SYMBOL && Symbol[name] || (USE_SYMBOL ? Symbol : uid)("Symbol." + name));
 	};
 	$exports.store = store;
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_is-object.js
 var require__is_object = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = function(it) {
 		return typeof it === "object" ? it !== null : typeof it === "function";
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_an-object.js
 var require__an_object = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	var isObject$2 = require__is_object();
+	var isObject = require__is_object();
 	module.exports = function(it) {
-		if (!isObject$2(it)) throw TypeError(it + " is not an object!");
+		if (!isObject(it)) throw TypeError(it + " is not an object!");
 		return it;
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_fails.js
 var require__fails = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = function(exec) {
 		try {
 			return !!exec();
-		} catch (e$1) {
+		} catch (e) {
 			return true;
 		}
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_descriptors.js
 var require__descriptors = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = !require__fails()(function() {
 		return Object.defineProperty({}, "a", { get: function() {
@@ -82,14 +103,18 @@ var require__descriptors = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		} }).a != 7;
 	});
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_dom-create.js
 var require__dom_create = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	var isObject$1 = require__is_object();
-	var document$2 = require__global().document;
-	var is = isObject$1(document$2) && isObject$1(document$2.createElement);
+	var isObject = require__is_object();
+	var document = require__global().document;
+	var is = isObject(document) && isObject(document.createElement);
 	module.exports = function(it) {
-		return is ? document$2.createElement(it) : {};
+		return is ? document.createElement(it) : {};
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_ie8-dom-define.js
 var require__ie8_dom_define = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = !require__descriptors() && !require__fails()(function() {
 		return Object.defineProperty(require__dom_create()("div"), "a", { get: function() {
@@ -97,6 +122,8 @@ var require__ie8_dom_define = /* @__PURE__ */ __commonJSMin(((exports, module) =
 		} }).a != 7;
 	});
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_to-primitive.js
 var require__to_primitive = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var isObject = require__is_object();
 	module.exports = function(it, S) {
@@ -108,23 +135,27 @@ var require__to_primitive = /* @__PURE__ */ __commonJSMin(((exports, module) => 
 		throw TypeError("Can't convert object to primitive value");
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_object-dp.js
 var require__object_dp = /* @__PURE__ */ __commonJSMin(((exports) => {
-	var anObject$2 = require__an_object();
+	var anObject = require__an_object();
 	var IE8_DOM_DEFINE = require__ie8_dom_define();
 	var toPrimitive = require__to_primitive();
-	var dP$2 = Object.defineProperty;
+	var dP = Object.defineProperty;
 	exports.f = require__descriptors() ? Object.defineProperty : function defineProperty(O, P, Attributes) {
-		anObject$2(O);
+		anObject(O);
 		P = toPrimitive(P, true);
-		anObject$2(Attributes);
+		anObject(Attributes);
 		if (IE8_DOM_DEFINE) try {
-			return dP$2(O, P, Attributes);
-		} catch (e$1) {}
+			return dP(O, P, Attributes);
+		} catch (e) {}
 		if ("get" in Attributes || "set" in Attributes) throw TypeError("Accessors not supported!");
 		if ("value" in Attributes) O[P] = Attributes.value;
 		return O;
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_property-desc.js
 var require__property_desc = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = function(bitmap, value) {
 		return {
@@ -135,24 +166,30 @@ var require__property_desc = /* @__PURE__ */ __commonJSMin(((exports, module) =>
 		};
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_hide.js
 var require__hide = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	var dP$1 = require__object_dp();
+	var dP = require__object_dp();
 	var createDesc = require__property_desc();
-	module.exports = require__descriptors() ? function(object, key$1, value) {
-		return dP$1.f(object, key$1, createDesc(1, value));
-	} : function(object, key$1, value) {
-		object[key$1] = value;
+	module.exports = require__descriptors() ? function(object, key, value) {
+		return dP.f(object, key, createDesc(1, value));
+	} : function(object, key, value) {
+		object[key] = value;
 		return object;
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_add-to-unscopables.js
 var require__add_to_unscopables = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var UNSCOPABLES = require__wks()("unscopables");
 	var ArrayProto = Array.prototype;
 	if (ArrayProto[UNSCOPABLES] == void 0) require__hide()(ArrayProto, UNSCOPABLES, {});
-	module.exports = function(key$1) {
-		ArrayProto[UNSCOPABLES][key$1] = true;
+	module.exports = function(key) {
+		ArrayProto[UNSCOPABLES][key] = true;
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_iter-step.js
 var require__iter_step = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = function(done, value) {
 		return {
@@ -161,47 +198,63 @@ var require__iter_step = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_iterators.js
 var require__iterators = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = {};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_cof.js
 var require__cof = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var toString = {}.toString;
 	module.exports = function(it) {
 		return toString.call(it).slice(8, -1);
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_iobject.js
 var require__iobject = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var cof = require__cof();
 	module.exports = Object("z").propertyIsEnumerable(0) ? Object : function(it) {
 		return cof(it) == "String" ? it.split("") : Object(it);
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_defined.js
 var require__defined = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = function(it) {
 		if (it == void 0) throw TypeError("Can't call method on  " + it);
 		return it;
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_to-iobject.js
 var require__to_iobject = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var IObject = require__iobject();
-	var defined$1 = require__defined();
+	var defined = require__defined();
 	module.exports = function(it) {
-		return IObject(defined$1(it));
+		return IObject(defined(it));
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_has.js
 var require__has = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var hasOwnProperty = {}.hasOwnProperty;
-	module.exports = function(it, key$1) {
-		return hasOwnProperty.call(it, key$1);
+	module.exports = function(it, key) {
+		return hasOwnProperty.call(it, key);
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_function-to-string.js
 var require__function_to_string = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = require__shared()("native-function-to-string", Function.toString);
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_redefine.js
 var require__redefine = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	var global$2 = require__global();
-	var hide$3 = require__hide();
-	var has$3 = require__has();
+	var global = require__global();
+	var hide = require__hide();
+	var has = require__has();
 	var SRC = require__uid()("src");
 	var $toString = require__function_to_string();
 	var TO_STRING = "toString";
@@ -209,27 +262,31 @@ var require__redefine = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	require__core().inspectSource = function(it) {
 		return $toString.call(it);
 	};
-	(module.exports = function(O, key$1, val, safe) {
-		var isFunction$1 = typeof val == "function";
-		if (isFunction$1) has$3(val, "name") || hide$3(val, "name", key$1);
-		if (O[key$1] === val) return;
-		if (isFunction$1) has$3(val, SRC) || hide$3(val, SRC, O[key$1] ? "" + O[key$1] : TPL.join(String(key$1)));
-		if (O === global$2) O[key$1] = val;
+	(module.exports = function(O, key, val, safe) {
+		var isFunction = typeof val == "function";
+		if (isFunction) has(val, "name") || hide(val, "name", key);
+		if (O[key] === val) return;
+		if (isFunction) has(val, SRC) || hide(val, SRC, O[key] ? "" + O[key] : TPL.join(String(key)));
+		if (O === global) O[key] = val;
 		else if (!safe) {
-			delete O[key$1];
-			hide$3(O, key$1, val);
-		} else if (O[key$1]) O[key$1] = val;
-		else hide$3(O, key$1, val);
-	})(Function.prototype, TO_STRING, function toString$1() {
+			delete O[key];
+			hide(O, key, val);
+		} else if (O[key]) O[key] = val;
+		else hide(O, key, val);
+	})(Function.prototype, TO_STRING, function toString() {
 		return typeof this == "function" && this[SRC] || $toString.call(this);
 	});
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_a-function.js
 var require__a_function = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = function(it) {
 		if (typeof it != "function") throw TypeError(it + " is not a function!");
 		return it;
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_ctx.js
 var require__ctx = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var aFunction = require__a_function();
 	module.exports = function(fn, that, length) {
@@ -251,44 +308,48 @@ var require__ctx = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_export.js
 var require__export = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	var global$1 = require__global();
+	var global = require__global();
 	var core = require__core();
-	var hide$2 = require__hide();
-	var redefine$2 = require__redefine();
+	var hide = require__hide();
+	var redefine = require__redefine();
 	var ctx = require__ctx();
-	var PROTOTYPE$1 = "prototype";
-	var $export$2 = function(type, name, source) {
-		var IS_FORCED = type & $export$2.F;
-		var IS_GLOBAL = type & $export$2.G;
-		var IS_STATIC = type & $export$2.S;
-		var IS_PROTO = type & $export$2.P;
-		var IS_BIND = type & $export$2.B;
-		var target = IS_GLOBAL ? global$1 : IS_STATIC ? global$1[name] || (global$1[name] = {}) : (global$1[name] || {})[PROTOTYPE$1];
+	var PROTOTYPE = "prototype";
+	var $export = function(type, name, source) {
+		var IS_FORCED = type & $export.F;
+		var IS_GLOBAL = type & $export.G;
+		var IS_STATIC = type & $export.S;
+		var IS_PROTO = type & $export.P;
+		var IS_BIND = type & $export.B;
+		var target = IS_GLOBAL ? global : IS_STATIC ? global[name] || (global[name] = {}) : (global[name] || {})[PROTOTYPE];
 		var exports$1 = IS_GLOBAL ? core : core[name] || (core[name] = {});
-		var expProto = exports$1[PROTOTYPE$1] || (exports$1[PROTOTYPE$1] = {});
-		var key$1, own, out, exp;
+		var expProto = exports$1[PROTOTYPE] || (exports$1[PROTOTYPE] = {});
+		var key, own, out, exp;
 		if (IS_GLOBAL) source = name;
-		for (key$1 in source) {
-			own = !IS_FORCED && target && target[key$1] !== void 0;
-			out = (own ? target : source)[key$1];
-			exp = IS_BIND && own ? ctx(out, global$1) : IS_PROTO && typeof out == "function" ? ctx(Function.call, out) : out;
-			if (target) redefine$2(target, key$1, out, type & $export$2.U);
-			if (exports$1[key$1] != out) hide$2(exports$1, key$1, exp);
-			if (IS_PROTO && expProto[key$1] != out) expProto[key$1] = out;
+		for (key in source) {
+			own = !IS_FORCED && target && target[key] !== void 0;
+			out = (own ? target : source)[key];
+			exp = IS_BIND && own ? ctx(out, global) : IS_PROTO && typeof out == "function" ? ctx(Function.call, out) : out;
+			if (target) redefine(target, key, out, type & $export.U);
+			if (exports$1[key] != out) hide(exports$1, key, exp);
+			if (IS_PROTO && expProto[key] != out) expProto[key] = out;
 		}
 	};
-	global$1.core = core;
-	$export$2.F = 1;
-	$export$2.G = 2;
-	$export$2.S = 4;
-	$export$2.P = 8;
-	$export$2.B = 16;
-	$export$2.W = 32;
-	$export$2.U = 64;
-	$export$2.R = 128;
-	module.exports = $export$2;
+	global.core = core;
+	$export.F = 1;
+	$export.G = 2;
+	$export.S = 4;
+	$export.P = 8;
+	$export.B = 16;
+	$export.W = 32;
+	$export.U = 64;
+	$export.R = 128;
+	module.exports = $export;
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_to-integer.js
 var require__to_integer = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var ceil = Math.ceil;
 	var floor = Math.floor;
@@ -296,103 +357,123 @@ var require__to_integer = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_to-length.js
 var require__to_length = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	var toInteger$1 = require__to_integer();
-	var min$1 = Math.min;
+	var toInteger = require__to_integer();
+	var min = Math.min;
 	module.exports = function(it) {
-		return it > 0 ? min$1(toInteger$1(it), 9007199254740991) : 0;
+		return it > 0 ? min(toInteger(it), 9007199254740991) : 0;
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_to-absolute-index.js
 var require__to_absolute_index = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var toInteger = require__to_integer();
 	var max = Math.max;
 	var min = Math.min;
-	module.exports = function(index$1, length) {
-		index$1 = toInteger(index$1);
-		return index$1 < 0 ? max(index$1 + length, 0) : min(index$1, length);
+	module.exports = function(index, length) {
+		index = toInteger(index);
+		return index < 0 ? max(index + length, 0) : min(index, length);
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_array-includes.js
 var require__array_includes = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	var toIObject$3 = require__to_iobject();
+	var toIObject = require__to_iobject();
 	var toLength = require__to_length();
 	var toAbsoluteIndex = require__to_absolute_index();
 	module.exports = function(IS_INCLUDES) {
 		return function($this, el, fromIndex) {
-			var O = toIObject$3($this);
+			var O = toIObject($this);
 			var length = toLength(O.length);
-			var index$1 = toAbsoluteIndex(fromIndex, length);
+			var index = toAbsoluteIndex(fromIndex, length);
 			var value;
-			if (IS_INCLUDES && el != el) while (length > index$1) {
-				value = O[index$1++];
+			if (IS_INCLUDES && el != el) while (length > index) {
+				value = O[index++];
 				if (value != value) return true;
 			}
-			else for (; length > index$1; index$1++) if (IS_INCLUDES || index$1 in O) {
-				if (O[index$1] === el) return IS_INCLUDES || index$1 || 0;
+			else for (; length > index; index++) if (IS_INCLUDES || index in O) {
+				if (O[index] === el) return IS_INCLUDES || index || 0;
 			}
 			return !IS_INCLUDES && -1;
 		};
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_shared-key.js
 var require__shared_key = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var shared = require__shared()("keys");
 	var uid = require__uid();
-	module.exports = function(key$1) {
-		return shared[key$1] || (shared[key$1] = uid(key$1));
+	module.exports = function(key) {
+		return shared[key] || (shared[key] = uid(key));
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_object-keys-internal.js
 var require__object_keys_internal = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	var has$2 = require__has();
-	var toIObject$2 = require__to_iobject();
+	var has = require__has();
+	var toIObject = require__to_iobject();
 	var arrayIndexOf = require__array_includes()(false);
-	var IE_PROTO$2 = require__shared_key()("IE_PROTO");
+	var IE_PROTO = require__shared_key()("IE_PROTO");
 	module.exports = function(object, names) {
-		var O = toIObject$2(object);
-		var i$1 = 0;
+		var O = toIObject(object);
+		var i = 0;
 		var result = [];
-		var key$1;
-		for (key$1 in O) if (key$1 != IE_PROTO$2) has$2(O, key$1) && result.push(key$1);
-		while (names.length > i$1) if (has$2(O, key$1 = names[i$1++])) ~arrayIndexOf(result, key$1) || result.push(key$1);
+		var key;
+		for (key in O) if (key != IE_PROTO) has(O, key) && result.push(key);
+		while (names.length > i) if (has(O, key = names[i++])) ~arrayIndexOf(result, key) || result.push(key);
 		return result;
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_enum-bug-keys.js
 var require__enum_bug_keys = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = "constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf".split(",");
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_object-keys.js
 var require__object_keys = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var $keys = require__object_keys_internal();
-	var enumBugKeys$1 = require__enum_bug_keys();
+	var enumBugKeys = require__enum_bug_keys();
 	module.exports = Object.keys || function keys(O) {
-		return $keys(O, enumBugKeys$1);
+		return $keys(O, enumBugKeys);
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_object-dps.js
 var require__object_dps = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var dP = require__object_dp();
-	var anObject$1 = require__an_object();
-	var getKeys$2 = require__object_keys();
+	var anObject = require__an_object();
+	var getKeys = require__object_keys();
 	module.exports = require__descriptors() ? Object.defineProperties : function defineProperties(O, Properties) {
-		anObject$1(O);
-		var keys = getKeys$2(Properties);
+		anObject(O);
+		var keys = getKeys(Properties);
 		var length = keys.length;
-		var i$1 = 0;
+		var i = 0;
 		var P;
-		while (length > i$1) dP.f(O, P = keys[i$1++], Properties[P]);
+		while (length > i) dP.f(O, P = keys[i++], Properties[P]);
 		return O;
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_html.js
 var require__html = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	var document$1 = require__global().document;
-	module.exports = document$1 && document$1.documentElement;
+	var document = require__global().document;
+	module.exports = document && document.documentElement;
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_object-create.js
 var require__object_create = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var anObject = require__an_object();
 	var dPs = require__object_dps();
 	var enumBugKeys = require__enum_bug_keys();
-	var IE_PROTO$1 = require__shared_key()("IE_PROTO");
+	var IE_PROTO = require__shared_key()("IE_PROTO");
 	var Empty = function() {};
 	var PROTOTYPE = "prototype";
 	var createDict = function() {
 		var iframe = require__dom_create()("iframe");
-		var i$1 = enumBugKeys.length;
+		var i = enumBugKeys.length;
 		var lt = "<";
 		var gt = ">";
 		var iframeDocument;
@@ -404,50 +485,58 @@ var require__object_create = /* @__PURE__ */ __commonJSMin(((exports, module) =>
 		iframeDocument.write(lt + "script" + gt + "document.F=Object" + lt + "/script" + gt);
 		iframeDocument.close();
 		createDict = iframeDocument.F;
-		while (i$1--) delete createDict[PROTOTYPE][enumBugKeys[i$1]];
+		while (i--) delete createDict[PROTOTYPE][enumBugKeys[i]];
 		return createDict();
 	};
-	module.exports = Object.create || function create$1(O, Properties) {
+	module.exports = Object.create || function create(O, Properties) {
 		var result;
 		if (O !== null) {
 			Empty[PROTOTYPE] = anObject(O);
 			result = new Empty();
 			Empty[PROTOTYPE] = null;
-			result[IE_PROTO$1] = O;
+			result[IE_PROTO] = O;
 		} else result = createDict();
 		return Properties === void 0 ? result : dPs(result, Properties);
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_set-to-string-tag.js
 var require__set_to_string_tag = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var def = require__object_dp().f;
-	var has$1 = require__has();
+	var has = require__has();
 	var TAG = require__wks()("toStringTag");
 	module.exports = function(it, tag, stat) {
-		if (it && !has$1(it = stat ? it : it.prototype, TAG)) def(it, TAG, {
+		if (it && !has(it = stat ? it : it.prototype, TAG)) def(it, TAG, {
 			configurable: true,
 			value: tag
 		});
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_iter-create.js
 var require__iter_create = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var create = require__object_create();
 	var descriptor = require__property_desc();
-	var setToStringTag$1 = require__set_to_string_tag();
+	var setToStringTag = require__set_to_string_tag();
 	var IteratorPrototype = {};
 	require__hide()(IteratorPrototype, require__wks()("iterator"), function() {
 		return this;
 	});
-	module.exports = function(Constructor, NAME$1, next) {
+	module.exports = function(Constructor, NAME, next) {
 		Constructor.prototype = create(IteratorPrototype, { next: descriptor(1, next) });
-		setToStringTag$1(Constructor, NAME$1 + " Iterator");
+		setToStringTag(Constructor, NAME + " Iterator");
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_to-object.js
 var require__to_object = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var defined = require__defined();
 	module.exports = function(it) {
 		return Object(defined(it));
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_object-gpo.js
 var require__object_gpo = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var has = require__has();
 	var toObject = require__to_object();
@@ -460,17 +549,19 @@ var require__object_gpo = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		return O instanceof Object ? ObjectProto : null;
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_iter-define.js
 var require__iter_define = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init_web_dom_iterable();
 	var LIBRARY = require__library();
-	var $export$1 = require__export();
-	var redefine$1 = require__redefine();
-	var hide$1 = require__hide();
-	var Iterators$2 = require__iterators();
+	var $export = require__export();
+	var redefine = require__redefine();
+	var hide = require__hide();
+	var Iterators = require__iterators();
 	var $iterCreate = require__iter_create();
 	var setToStringTag = require__set_to_string_tag();
 	var getPrototypeOf = require__object_gpo();
-	var ITERATOR$1 = require__wks()("iterator");
+	var ITERATOR = require__wks()("iterator");
 	var BUGGY = !([].keys && "next" in [].keys());
 	var FF_ITERATOR = "@@iterator";
 	var KEYS = "keys";
@@ -478,10 +569,10 @@ var require__iter_define = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var returnThis = function() {
 		return this;
 	};
-	module.exports = function(Base, NAME$1, Constructor, next, DEFAULT, IS_SET, FORCED) {
-		$iterCreate(Constructor, NAME$1, next);
+	module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED) {
+		$iterCreate(Constructor, NAME, next);
 		var getMethod = function(kind) {
-			if (!BUGGY && kind in proto$1) return proto$1[kind];
+			if (!BUGGY && kind in proto) return proto[kind];
 			switch (kind) {
 				case KEYS: return function keys() {
 					return new Constructor(this, kind);
@@ -494,20 +585,20 @@ var require__iter_define = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 				return new Constructor(this, kind);
 			};
 		};
-		var TAG$1 = NAME$1 + " Iterator";
+		var TAG = NAME + " Iterator";
 		var DEF_VALUES = DEFAULT == VALUES;
 		var VALUES_BUG = false;
-		var proto$1 = Base.prototype;
-		var $native = proto$1[ITERATOR$1] || proto$1[FF_ITERATOR] || DEFAULT && proto$1[DEFAULT];
+		var proto = Base.prototype;
+		var $native = proto[ITERATOR] || proto[FF_ITERATOR] || DEFAULT && proto[DEFAULT];
 		var $default = $native || getMethod(DEFAULT);
 		var $entries = DEFAULT ? !DEF_VALUES ? $default : getMethod("entries") : void 0;
-		var $anyNative = NAME$1 == "Array" ? proto$1.entries || $native : $native;
-		var methods, key$1, IteratorPrototype$1;
+		var $anyNative = NAME == "Array" ? proto.entries || $native : $native;
+		var methods, key, IteratorPrototype;
 		if ($anyNative) {
-			IteratorPrototype$1 = getPrototypeOf($anyNative.call(new Base()));
-			if (IteratorPrototype$1 !== Object.prototype && IteratorPrototype$1.next) {
-				setToStringTag(IteratorPrototype$1, TAG$1, true);
-				if (!LIBRARY && typeof IteratorPrototype$1[ITERATOR$1] != "function") hide$1(IteratorPrototype$1, ITERATOR$1, returnThis);
+			IteratorPrototype = getPrototypeOf($anyNative.call(new Base()));
+			if (IteratorPrototype !== Object.prototype && IteratorPrototype.next) {
+				setToStringTag(IteratorPrototype, TAG, true);
+				if (!LIBRARY && typeof IteratorPrototype[ITERATOR] != "function") hide(IteratorPrototype, ITERATOR, returnThis);
 			}
 		}
 		if (DEF_VALUES && $native && $native.name !== VALUES) {
@@ -516,9 +607,9 @@ var require__iter_define = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 				return $native.call(this);
 			};
 		}
-		if ((!LIBRARY || FORCED) && (BUGGY || VALUES_BUG || !proto$1[ITERATOR$1])) hide$1(proto$1, ITERATOR$1, $default);
-		Iterators$2[NAME$1] = $default;
-		Iterators$2[TAG$1] = returnThis;
+		if ((!LIBRARY || FORCED) && (BUGGY || VALUES_BUG || !proto[ITERATOR])) hide(proto, ITERATOR, $default);
+		Iterators[NAME] = $default;
+		Iterators[TAG] = returnThis;
 		if (DEFAULT) {
 			methods = {
 				values: DEF_VALUES ? $default : getMethod(VALUES),
@@ -526,42 +617,46 @@ var require__iter_define = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 				entries: $entries
 			};
 			if (FORCED) {
-				for (key$1 in methods) if (!(key$1 in proto$1)) redefine$1(proto$1, key$1, methods[key$1]);
-			} else $export$1($export$1.P + $export$1.F * (BUGGY || VALUES_BUG), NAME$1, methods);
+				for (key in methods) if (!(key in proto)) redefine(proto, key, methods[key]);
+			} else $export($export.P + $export.F * (BUGGY || VALUES_BUG), NAME, methods);
 		}
 		return methods;
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/es6.array.iterator.js
 var require_es6_array_iterator = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var addToUnscopables = require__add_to_unscopables();
 	var step = require__iter_step();
-	var Iterators$1 = require__iterators();
-	var toIObject$1 = require__to_iobject();
+	var Iterators = require__iterators();
+	var toIObject = require__to_iobject();
 	module.exports = require__iter_define()(Array, "Array", function(iterated, kind) {
-		this._t = toIObject$1(iterated);
+		this._t = toIObject(iterated);
 		this._i = 0;
 		this._k = kind;
 	}, function() {
 		var O = this._t;
 		var kind = this._k;
-		var index$1 = this._i++;
-		if (!O || index$1 >= O.length) {
+		var index = this._i++;
+		if (!O || index >= O.length) {
 			this._t = void 0;
 			return step(1);
 		}
-		if (kind == "keys") return step(0, index$1);
-		if (kind == "values") return step(0, O[index$1]);
-		return step(0, [index$1, O[index$1]]);
+		if (kind == "keys") return step(0, index);
+		if (kind == "values") return step(0, O[index]);
+		return step(0, [index, O[index]]);
 	}, "values");
-	Iterators$1.Arguments = Iterators$1.Array;
+	Iterators.Arguments = Iterators.Array;
 	addToUnscopables("keys");
 	addToUnscopables("values");
 	addToUnscopables("entries");
 }));
-var $iterators, getKeys$1, redefine, global, hide, Iterators, wks, ITERATOR, TO_STRING_TAG, ArrayValues, DOMIterables, collections, i, NAME, explicit, Collection, proto, key;
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/web.dom.iterable.js
+var $iterators, getKeys, redefine, global, hide, Iterators, wks, ITERATOR, TO_STRING_TAG, ArrayValues, DOMIterables, collections, i, NAME, explicit, Collection, proto, key;
 var init_web_dom_iterable = __esmMin((() => {
 	$iterators = require_es6_array_iterator();
-	getKeys$1 = require__object_keys();
+	getKeys = require__object_keys();
 	redefine = require__redefine();
 	global = require__global();
 	hide = require__hide();
@@ -603,7 +698,7 @@ var init_web_dom_iterable = __esmMin((() => {
 		TextTrackList: false,
 		TouchList: false
 	};
-	for (collections = getKeys$1(DOMIterables), i = 0; i < collections.length; i++) {
+	for (collections = getKeys(DOMIterables), i = 0; i < collections.length; i++) {
 		NAME = collections[i];
 		explicit = DOMIterables[NAME];
 		Collection = global[NAME];
@@ -618,6 +713,8 @@ var init_web_dom_iterable = __esmMin((() => {
 		}
 	}
 }));
+//#endregion
+//#region ../uni-core/src/helpers/util.ts
 function PolySymbol(name) {
 	return Symbol(name);
 }
@@ -625,9 +722,9 @@ function get$pageByPage(page) {
 	return page.vm.$basePage;
 }
 function getCurrentPage() {
-	var pages$1 = getCurrentPages();
-	var len = pages$1.length;
-	if (len) return pages$1[len - 1];
+	var pages = getCurrentPages();
+	var len = pages.length;
+	if (len) return pages[len - 1];
 }
 function getCurrentPageMeta() {
 	var _getCurrentPage;
@@ -643,9 +740,9 @@ var PAGE_META_KEYS = ["navigationBar", "pullToRefresh"];
 function initGlobalStyle() {
 	return JSON.parse(JSON.stringify(__uniConfig.globalStyle || {}));
 }
-function initRouteMeta(pageMeta, id$2) {
+function initRouteMeta(pageMeta, id) {
 	var globalStyle = initGlobalStyle();
-	var res = extend({ id: id$2 }, globalStyle, pageMeta);
+	var res = extend({ id }, globalStyle, pageMeta);
 	PAGE_META_KEYS.forEach((name) => {
 		res[name] = extend({}, globalStyle[name], pageMeta[name]);
 	});
@@ -654,10 +751,10 @@ function initRouteMeta(pageMeta, id$2) {
 	return res;
 }
 function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, themeMode) {
-	var { id: id$2, route } = meta;
+	var { id, route } = meta;
 	var titleColor = normalizeStyles(meta.navigationBar, __uniConfig.themeConfig, themeMode).titleColor;
 	return {
-		id: id$2,
+		id,
 		path: addLeadingSlash(route),
 		route,
 		fullPath: url,
@@ -668,13 +765,15 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, 
 		statusBarStyle: titleColor === "#ffffff" ? "light" : "dark"
 	};
 }
+//#endregion
+//#region ../uni-core/src/helpers/hook.ts
 function invokeHook(vm, name, args) {
 	if (isString(vm)) {
 		args = name;
 		name = vm;
 		vm = getCurrentPageVm();
 	} else if (typeof vm === "number") {
-		var page = getCurrentPages().find((page$1) => get$pageByPage(page$1).id === vm);
+		var page = getCurrentPages().find((page) => get$pageByPage(page).id === vm);
 		if (page) vm = page.$vm;
 		else vm = getCurrentPageVm();
 	}
@@ -684,11 +783,13 @@ function invokeHook(vm, name, args) {
 	if (name === ON_BACK_PRESS) return hooks && invokeArrayFnsWithResults(hooks, args).some((ret) => ret === true);
 	return hooks && invokeArrayFns(hooks, args);
 }
+//#endregion
+//#region ../uni-core/src/helpers/route.ts
 function normalizeRoute(toRoute) {
 	if (toRoute.indexOf("/") === 0 || toRoute.indexOf("uni:") === 0) return toRoute;
 	var fromRoute = "";
-	var pages$1 = getCurrentPages();
-	if (pages$1.length) fromRoute = get$pageByPage(pages$1[pages$1.length - 1]).route;
+	var pages = getCurrentPages();
+	if (pages.length) fromRoute = get$pageByPage(pages[pages.length - 1]).route;
 	return getRealRoute(fromRoute, toRoute);
 }
 function getRealRoute(fromRoute, toRoute) {
@@ -696,12 +797,12 @@ function getRealRoute(fromRoute, toRoute) {
 	if (toRoute.indexOf("./") === 0) return getRealRoute(fromRoute, toRoute.slice(2));
 	var toRouteArray = toRoute.split("/");
 	var toRouteLength = toRouteArray.length;
-	var i$1 = 0;
-	for (; i$1 < toRouteLength && toRouteArray[i$1] === ".."; i$1++);
-	toRouteArray.splice(0, i$1);
+	var i = 0;
+	for (; i < toRouteLength && toRouteArray[i] === ".."; i++);
+	toRouteArray.splice(0, i);
 	toRoute = toRouteArray.join("/");
 	var fromRouteArray = fromRoute.length > 0 ? fromRoute.split("/") : [];
-	fromRouteArray.splice(fromRouteArray.length - i$1 - 1, i$1 + 1);
+	fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
 	return addLeadingSlash(fromRouteArray.concat(toRouteArray).join("/"));
 }
 function getRouteOptions(path) {
@@ -712,6 +813,8 @@ function getRouteMeta(path) {
 	var routeOptions = getRouteOptions(path);
 	if (routeOptions) return routeOptions.meta;
 }
+//#endregion
+//#region ../uni-core/src/helpers/dialogPage.ts
 var SYSTEM_DIALOG_PAGE_PATH_STARTER = "uni:";
 var SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = "uni:actionSheet";
 function isSystemDialogPage(page) {
@@ -729,14 +832,14 @@ function dialogPageTriggerParentShow(dialogPage) {
 function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle) {
 	var triggerParentHideDialogPageNum = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 0;
 	if (!dialogPage.$triggerParentHide) return;
-	var pages$1 = getCurrentPages();
-	var currentPage = pages$1[pages$1.length - 1];
+	var pages = getCurrentPages();
+	var currentPage = pages[pages.length - 1];
 	if (!currentPage) return;
 	var parentPage = dialogPage.getParentPage();
 	if (!parentPage) return;
 	if (parentPage !== currentPage) return;
 	var dialogPages = currentPage.getDialogPages();
-	for (var i$1 = 0; i$1 < dialogPages.length; i$1++) if (!!dialogPages[i$1].$triggerParentHide) {
+	for (var i = 0; i < dialogPages.length; i++) if (!!dialogPages[i].$triggerParentHide) {
 		triggerParentHideDialogPageNum++;
 		if (triggerParentHideDialogPageNum > 1) return;
 	}
@@ -755,8 +858,8 @@ function getSystemDialogPages(parentPage) {
 }
 function dialogPageTriggerPrevDialogPageLifeCycle(parentPage, lifeCycle) {
 	if (!parentPage) return;
-	var pages$1 = getCurrentPages();
-	var currentPage = pages$1[pages$1.length - 1];
+	var pages = getCurrentPages();
+	var currentPage = pages[pages.length - 1];
 	if (!currentPage || parentPage !== currentPage) return;
 	var prevDialogPage = getLastDialogPage(currentPage);
 	prevDialogPage && invokeHook(prevDialogPage.vm, lifeCycle);
@@ -776,6 +879,8 @@ function invokeLastDialogPageHookByUniPage(parentPage, hook) {
 	var lastDialogPage = getLastDialogPage(parentPage);
 	if (lastDialogPage) invokeHook(lastDialogPage.vm, hook);
 }
+//#endregion
+//#region ../uni-core/src/service/init/index.ts
 init_web_dom_iterable();
 function initPageVm(pageVm, page) {
 	pageVm.route = page.route;
@@ -788,6 +893,8 @@ function initPageVm(pageVm, page) {
 		pageVm.$.__isActive = true;
 	}
 }
+//#endregion
+//#region ../uni-core/src/service/utils.ts
 function createLaunchOptions() {
 	return {
 		path: "",
@@ -811,43 +918,47 @@ function defineGlobalData(app, defaultGlobalData) {
 		}
 	});
 }
+//#endregion
+//#region ../uni-api/src/helpers/api/catch.ts
 function tryCatch(fn) {
 	return function() {
 		try {
 			return fn.apply(fn, arguments);
-		} catch (e$1) {
-			console.error(e$1);
+		} catch (e) {
+			console.error(e);
 		}
 	};
 }
+//#endregion
+//#region ../uni-api/src/helpers/api/callback.ts
 var invokeCallbackId = 1;
 var invokeCallbacks = {};
-function addInvokeCallback(id$2, name, callback) {
-	invokeCallbacks[id$2] = {
+function addInvokeCallback(id, name, callback) {
+	invokeCallbacks[id] = {
 		name,
 		keepAlive: arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false,
 		callback
 	};
-	return id$2;
+	return id;
 }
-function invokeCallback(id$2, res, extras) {
-	if (typeof id$2 === "number") {
-		var opts = invokeCallbacks[id$2];
+function invokeCallback(id, res, extras) {
+	if (typeof id === "number") {
+		var opts = invokeCallbacks[id];
 		if (opts) {
-			if (!opts.keepAlive) delete invokeCallbacks[id$2];
+			if (!opts.keepAlive) delete invokeCallbacks[id];
 			return opts.callback(res, extras);
 		}
 	}
 	return res;
 }
 function findInvokeCallbackByName(name) {
-	for (var key$1 in invokeCallbacks) if (invokeCallbacks[key$1].name === name) return true;
+	for (var key in invokeCallbacks) if (invokeCallbacks[key].name === name) return true;
 	return false;
 }
 function removeKeepAliveApiCallback(name, callback) {
-	for (var key$1 in invokeCallbacks) {
-		var item = invokeCallbacks[key$1];
-		if (item.callback === callback && item.name === name) delete invokeCallbacks[key$1];
+	for (var key in invokeCallbacks) {
+		var item = invokeCallbacks[key];
+		if (item.callback === callback && item.name === name) delete invokeCallbacks[key];
 	}
 }
 function offKeepAliveApiCallback(name) {
@@ -855,8 +966,8 @@ function offKeepAliveApiCallback(name) {
 }
 function onKeepAliveApiCallback(name) {
 	UniServiceJSBridge.on("api." + name, (res) => {
-		for (var key$1 in invokeCallbacks) {
-			var opts = invokeCallbacks[key$1];
+		for (var key in invokeCallbacks) {
+			var opts = invokeCallbacks[key];
 			if (opts.name === name) opts.callback(res);
 		}
 	});
@@ -887,8 +998,8 @@ function createAsyncApiCallback(name) {
 	var hasSuccess = isFunction(success);
 	var hasFail = isFunction(fail);
 	var hasComplete = isFunction(complete);
-	var callbackId$1 = invokeCallbackId++;
-	addInvokeCallback(callbackId$1, name, (res) => {
+	var callbackId = invokeCallbackId++;
+	addInvokeCallback(callbackId, name, (res) => {
 		res = res || {};
 		res.errMsg = normalizeErrMsg(res.errMsg, name);
 		isFunction(beforeAll) && beforeAll(res);
@@ -898,8 +1009,10 @@ function createAsyncApiCallback(name) {
 		} else hasFail && fail(res);
 		hasComplete && complete(res);
 	});
-	return callbackId$1;
+	return callbackId;
 }
+//#endregion
+//#region ../uni-api/src/helpers/interceptor.ts
 var HOOK_SUCCESS = "success";
 var HOOK_FAIL = "fail";
 var HOOK_COMPLETE = "complete";
@@ -912,8 +1025,8 @@ function wrapperHook(hook, params) {
 }
 function queue(hooks, data, params) {
 	var promise = false;
-	for (var i$1 = 0; i$1 < hooks.length; i$1++) {
-		var hook = hooks[i$1];
+	for (var i = 0; i < hooks.length; i++) {
+		var hook = hooks[i];
 		if (promise) promise = Promise.resolve(wrapperHook(hook, params));
 		else {
 			var res = hook(data, params);
@@ -942,8 +1055,8 @@ function wrapperOptions(interceptors) {
 		if (!isArray(hooks)) return;
 		var oldCallback = options[name];
 		options[name] = function callbackInterceptor(res) {
-			queue(hooks, res, options).then((res$1) => {
-				return isFunction(oldCallback) && oldCallback(res$1) || res$1;
+			queue(hooks, res, options).then((res) => {
+				return isFunction(oldCallback) && oldCallback(res) || res;
 			});
 		};
 	});
@@ -972,12 +1085,14 @@ function getApiInterceptorHooks(method) {
 }
 function invokeApi(method, api, options, params) {
 	var interceptor = getApiInterceptorHooks(method);
-	if (interceptor && Object.keys(interceptor).length) if (isArray(interceptor.invoke)) return queue(interceptor.invoke, options).then((options$1) => {
-		return api(wrapperOptions(getApiInterceptorHooks(method), options$1), ...params);
+	if (interceptor && Object.keys(interceptor).length) if (isArray(interceptor.invoke)) return queue(interceptor.invoke, options).then((options) => {
+		return api(wrapperOptions(getApiInterceptorHooks(method), options), ...params);
 	});
 	else return api(wrapperOptions(interceptor, options), ...params);
 	return api(options, ...params);
 }
+//#endregion
+//#region ../uni-api/src/helpers/api/promise.ts
 function hasCallback(args) {
 	if (isPlainObject(args) && [
 		"success",
@@ -1002,13 +1117,15 @@ function promisify(name, fn) {
 		})));
 	};
 }
+//#endregion
+//#region ../uni-api/src/helpers/api/index.ts
 function formatApiArgs(args, options) {
 	var params = args[0];
 	if (!options || !options.formatArgs || !isPlainObject(options.formatArgs) && isPlainObject(params)) return;
 	var formatArgs = options.formatArgs;
 	var keys = Object.keys(formatArgs);
-	for (var i$1 = 0; i$1 < keys.length; i$1++) {
-		var name = keys[i$1];
+	for (var i = 0; i < keys.length; i++) {
+		var name = keys[i];
 		var formatterOrDefaultValue = formatArgs[name];
 		if (isFunction(formatterOrDefaultValue)) {
 			var errMsg = formatterOrDefaultValue(args[0][name], params);
@@ -1016,12 +1133,12 @@ function formatApiArgs(args, options) {
 		} else if (!hasOwn(params, name)) params[name] = formatterOrDefaultValue;
 	}
 }
-function invokeSuccess(id$2, name, res) {
+function invokeSuccess(id, name, res) {
 	var result = { errMsg: name + ":ok" };
 	result.errSubject = name;
-	return invokeCallback(id$2, extend(res || {}, result));
+	return invokeCallback(id, extend(res || {}, result));
 }
-function invokeFail(id$2, name, errMsg) {
+function invokeFail(id, name, errMsg) {
 	var errRes = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : {};
 	var errMsgPrefix = name + ":fail";
 	var apiErrMsg = "";
@@ -1030,7 +1147,7 @@ function invokeFail(id$2, name, errMsg) {
 	else apiErrMsg = errMsgPrefix + " " + errMsg;
 	var res = extend({ errMsg: apiErrMsg }, errRes);
 	if (typeof UniError !== "undefined") res = typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes);
-	return invokeCallback(id$2, res);
+	return invokeCallback(id, res);
 }
 function beforeInvokeApi(name, args, protocol, options) {
 	if (options && options.beforeInvoke) {
@@ -1076,12 +1193,12 @@ function parseErrMsg(errMsg) {
 }
 function wrapperTaskApi(name, fn, protocol, options) {
 	return (args) => {
-		var id$2 = createAsyncApiCallback(name, args, options);
+		var id = createAsyncApiCallback(name, args, options);
 		var errMsg = beforeInvokeApi(name, [args], protocol, options);
-		if (errMsg) return invokeFail(id$2, name, errMsg);
+		if (errMsg) return invokeFail(id, name, errMsg);
 		return fn(args, {
-			resolve: (res) => invokeSuccess(id$2, name, res),
-			reject: (errMsg$1, errRes) => invokeFail(id$2, name, parseErrMsg(errMsg$1), errRes)
+			resolve: (res) => invokeSuccess(id, name, res),
+			reject: (errMsg, errRes) => invokeFail(id, name, parseErrMsg(errMsg), errRes)
 		});
 	};
 }
@@ -1111,6 +1228,8 @@ function defineSyncApi(name, fn, protocol, options) {
 function defineAsyncApi(name, fn, protocol, options) {
 	return promisify(name, wrapperAsyncApi(name, fn, void 0, options));
 }
+//#endregion
+//#region src/service/framework/app/vueApp.ts
 var vueApp;
 function getVueApp() {
 	return vueApp;
@@ -1131,6 +1250,8 @@ function initVueApp(appVm) {
 		}
 	});
 }
+//#endregion
+//#region src/service/framework/page/getCurrentPages.ts
 function getPage$BasePage(page) {
 	return page.$basePage;
 }
@@ -1138,8 +1259,8 @@ var pages = [];
 function addCurrentPage(page) {
 	var $page = getPage$BasePage(page);
 	if (!$page.meta.isNVue) return pages.push(page);
-	var index$1 = pages.findIndex((p) => getPage$BasePage(p).id === $page.id);
-	if (index$1 > -1) pages.splice(index$1, 1, page);
+	var index = pages.findIndex((p) => getPage$BasePage(p).id === $page.id);
+	if (index > -1) pages.splice(index, 1, page);
 	else pages.push(page);
 }
 function getAllPages() {
@@ -1158,10 +1279,10 @@ function getCurrentBasePages() {
 	return curPages;
 }
 function removePage(curPage) {
-	var index$1 = pages.findIndex((page) => page === curPage);
-	if (index$1 === -1) return;
+	var index = pages.findIndex((page) => page === curPage);
+	if (index === -1) return;
 	if (!getPage$BasePage(curPage).meta.isNVue) getVueApp().unmountPage(curPage);
-	pages.splice(index$1, 1);
+	pages.splice(index, 1);
 	var ins = curPage;
 	if (ins.$.page) {
 		ins.$.page.vm = null;
@@ -1171,6 +1292,8 @@ function removePage(curPage) {
 cacheStringFunction((filepath) => {
 	return plus.io.convertLocalFileSystemURL(filepath).replace(/^\/?apps\//, "/android_asset/apps/").replace(/\/$/, "");
 });
+//#endregion
+//#region src/service/framework/app/utils.ts
 function backbuttonListener() {
 	uni.navigateBack({
 		from: "backbutton",
@@ -1197,9 +1320,13 @@ function initLaunchOptions(_ref2) {
 	extend(enterOptions$1, launchOptions$1);
 	return enterOptions$1;
 }
+//#endregion
+//#region src/x/constants.ts
 var ON_BACK_BUTTON = "onBackButton";
 var ON_POP_GESTURE = "onPopGesture";
 var OPEN_DIALOG_PAGE = "openDialogPage";
+//#endregion
+//#region src/x/framework/page/dialogPage.ts
 var homeDialogPages = [];
 var homeSystemDialogPages = [];
 var currentNormalDialogPage = null;
@@ -1216,6 +1343,8 @@ function setCurrentSystemDialogPage(value) {
 function getCurrentSystemDialogPage() {
 	return currentSystemDialogPage;
 }
+//#endregion
+//#region src/x/framework/page/setup.ts
 function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
 	instance.$dialogPages = ref([]);
 	var uniPage;
@@ -1237,6 +1366,8 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
 	uniPage.$vm = pageVm;
 	if (getPage$BasePage(pageVm).openType !== "openDialogPage") addCurrentPageWithInitScope(pageId, pageVm, pageInstance);
 }
+//#endregion
+//#region src/x/framework/app/app.ts
 var nativeApp;
 function getNativeApp() {
 	return nativeApp;
@@ -1247,6 +1378,8 @@ function setNativeApp(app) {
 function getPageManager() {
 	return nativeApp.pageManager;
 }
+//#endregion
+//#region src/x/api/ui/loadFontFace.ts
 function removeUrlWrap(source) {
 	if (source.startsWith("url(")) {
 		if (source.split("format(").length > 1) source = source.split("format(")[0].trim();
@@ -1267,6 +1400,11 @@ function getLoadFontFaceOptions(options, res) {
 		}
 	};
 }
+/**
+* uni.loadFontFace
+* 注意：iOS 目前不支持页面级别的加载，功能实际不生效。
+* 只支持全局加载
+*/
 var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, res) => {
 	options.source = removeUrlWrap(options.source);
 	if (options.global === true) {
@@ -1285,7 +1423,15 @@ var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, 
 		page.$nativePage.loadFontFace(_fontInfo);
 	}
 }, LoadFontFaceProtocol);
-function loadFontFaceByStyles(styles, global$5) {
+//#endregion
+//#region src/x/framework/utils.ts
+/**
+* 解析 css 中的 @font-face 规则，并加载字体
+* todo: 目前 ios 中的样式后续可能会调整为 map
+* @param styles 用户自定义样式
+* @param global 是否全局生效
+*/
+function loadFontFaceByStyles(styles, global) {
 	styles = Array.isArray(styles) ? styles : [styles];
 	var fontFaceStyle = [];
 	styles.forEach((style) => {
@@ -1299,7 +1445,7 @@ function loadFontFaceByStyles(styles, global$5) {
 		var fontVariant = style["fontVariant"];
 		var src = style["src"];
 		if (fontFamily != null && src != null) loadFontFace({
-			global: global$5,
+			global,
 			family: fontFamily,
 			source: src,
 			desc: {
@@ -1311,6 +1457,8 @@ function loadFontFaceByStyles(styles, global$5) {
 		else console.warn("loadFontFace: fail, font-family or src is null");
 	});
 }
+//#endregion
+//#region src/x/framework/app/initComponentInstance.ts
 function initNativePage(vm) {
 	var instance = vm.$;
 	if (instance.type.mpType === "app") return;
@@ -1338,8 +1486,10 @@ function initComponentInstance(app) {
 		}
 	});
 }
-var beforeSetupPage = (props$5, ctx$1) => {
-	var { attrs: { __pageId, __pagePath, __pageInstance } } = ctx$1;
+//#endregion
+//#region src/service/framework/page/setup.ts
+var beforeSetupPage = (props, ctx) => {
+	var { attrs: { __pageId, __pagePath, __pageInstance } } = ctx;
 	var instance = getCurrentGenericInstance();
 	var pageVm = instance.proxy;
 	initPageVm(pageVm, __pageInstance);
@@ -1350,9 +1500,9 @@ function setupPage(component) {
 	if (!component.__vapor) {
 		var oldSetup = component.setup;
 		component.inheritAttrs = false;
-		component.setup = (props$5, ctx$1) => {
-			beforeSetupPage(props$5, ctx$1);
-			if (oldSetup) return oldSetup(props$5, ctx$1);
+		component.setup = (props, ctx) => {
+			beforeSetupPage(props, ctx);
+			if (oldSetup) return oldSetup(props, ctx);
 		};
 	}
 	return component;
@@ -1376,6 +1526,8 @@ function initScope(pageId, vm, pageInstance) {
 function addCurrentPageWithInitScope(pageId, pageVm, pageInstance) {
 	addCurrentPage(initScope(pageId, pageVm, pageInstance));
 }
+//#endregion
+//#region src/service/framework/page/define.ts
 init_web_dom_iterable();
 function isVuePageAsyncComponent(component) {
 	return isFunction(component);
@@ -1386,13 +1538,15 @@ function definePage(pagePath, asyncComponent) {
 }
 function createPageFactory(component) {
 	return () => {
-		if (isVuePageAsyncComponent(component)) return component().then((component$1) => setupPage(clonedPageComponent(component$1.default || component$1)));
+		if (isVuePageAsyncComponent(component)) return component().then((component) => setupPage(clonedPageComponent(component.default || component)));
 		return setupPage(clonedPageComponent(component));
 	};
 }
 function clonedPageComponent(component) {
 	return extend({}, component);
 }
+//#endregion
+//#region src/service/framework/page/routeOptions.ts
 function initRouteOptions(path, openType) {
 	var routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)));
 	routeOptions.meta = initRouteMeta(routeOptions.meta);
@@ -1400,6 +1554,8 @@ function initRouteOptions(path, openType) {
 	else if (!routeOptions.meta.isTabBar) routeOptions.meta.isQuit = false;
 	return routeOptions;
 }
+//#endregion
+//#region src/service/framework/webview/utils.ts
 var id = 1;
 function getWebviewId() {
 	return id;
@@ -1410,13 +1566,17 @@ function genWebviewId() {
 function resetWebviewId() {
 	id = 1;
 }
+//#endregion
+//#region src/service/constants.ts
 var downgrade = false;
 var ANI_SHOW = downgrade ? "slide-in-right" : "pop-in";
 var ANI_CLOSE = downgrade ? "slide-out-right" : "pop-out";
+//#endregion
+//#region src/x/framework/route/index.ts
 function hasLeadingSlash(str) {
 	return str.indexOf("/") == 0;
 }
-function getRealPath$1(path) {
+function getRealPath(path) {
 	var fix = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
 	if (hasLeadingSlash(path)) return path;
 	if (fix && path.indexOf(".") !== 0) return "/" + path;
@@ -1424,8 +1584,8 @@ function getRealPath$1(path) {
 	var currentPathArray = (!currentPage ? "/" : parseUrl(currentPage.route).path).split("/");
 	var pathArray = path.split("/");
 	var resultArray = [];
-	for (var index$1 = 0; index$1 < pathArray.length; index$1++) {
-		var element = pathArray[index$1];
+	for (var index = 0; index < pathArray.length; index++) {
+		var element = pathArray[index];
 		if (element == "..") currentPathArray.pop();
 		else if (element != ".") resultArray.push(element);
 	}
@@ -1446,6 +1606,8 @@ function registerSystemRoute(route, page) {
 	});
 	definePage(route, page);
 }
+//#endregion
+//#region ../uni-api/src/protocols/base/interceptor.ts
 var API_ADD_INTERCEPTOR = "addInterceptor";
 var API_REMOVE_INTERCEPTOR = "removeInterceptor";
 var AddInterceptorProtocol = [{
@@ -1454,6 +1616,8 @@ var AddInterceptorProtocol = [{
 	required: true
 }];
 var RemoveInterceptorProtocol = AddInterceptorProtocol;
+//#endregion
+//#region ../uni-api/src/service/base/interceptor.ts
 function mergeInterceptorHook(interceptors, interceptor) {
 	Object.keys(interceptor).forEach((hook) => {
 		if (isFunction(interceptor[hook])) interceptors[hook] = mergeHook(interceptors[hook], interceptor[hook]);
@@ -1473,7 +1637,7 @@ function mergeHook(parentVal, childVal) {
 }
 function dedupeHooks(hooks) {
 	var res = [];
-	for (var i$1 = 0; i$1 < hooks.length; i$1++) if (res.indexOf(hooks[i$1]) === -1) res.push(hooks[i$1]);
+	for (var i = 0; i < hooks.length; i++) if (res.indexOf(hooks[i]) === -1) res.push(hooks[i]);
 	return res;
 }
 var addInterceptor = /* @__PURE__ */ defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
@@ -1485,6 +1649,8 @@ var removeInterceptor = /* @__PURE__ */ defineSyncApi(API_REMOVE_INTERCEPTOR, (m
 	else delete scopedInterceptors[method];
 	else if (isPlainObject(method)) removeInterceptorHook(globalInterceptors, method);
 }, RemoveInterceptorProtocol);
+//#endregion
+//#region ../uni-api/src/protocols/base/eventBus.ts
 var OnProtocol = [{
 	name: "event",
 	type: String,
@@ -1510,6 +1676,8 @@ var EmitProtocol = [{
 	type: String,
 	required: true
 }];
+//#endregion
+//#region ../uni-api/src/service/base/eventBus.ts
 var EventBus = class {
 	constructor() {
 		this.$emitter = new Emitter();
@@ -1550,14 +1718,20 @@ var $emit = /* @__PURE__ */ defineSyncApi(API_EMIT, function(name) {
 	for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) args[_key2 - 1] = arguments[_key2];
 	eventBus.emit(name, ...args);
 }, EmitProtocol);
+//#endregion
+//#region ../uni-api/src/service/base/__f__.ts
 function __f__(type, filename) {
 	for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) args[_key - 2] = arguments[_key];
 	if (filename) args.push(filename);
 	console[type].apply(console, args);
 }
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_object-pie.js
 var require__object_pie = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.f = {}.propertyIsEnumerable;
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_object-to-array.js
 var require__object_to_array = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var DESCRIPTORS = require__descriptors();
 	var getKeys = require__object_keys();
@@ -1568,22 +1742,26 @@ var require__object_to_array = /* @__PURE__ */ __commonJSMin(((exports, module) 
 			var O = toIObject(it);
 			var keys = getKeys(O);
 			var length = keys.length;
-			var i$1 = 0;
+			var i = 0;
 			var result = [];
-			var key$1;
-			while (length > i$1) {
-				key$1 = keys[i$1++];
-				if (!DESCRIPTORS || isEnum.call(O, key$1)) result.push(isEntries ? [key$1, O[key$1]] : O[key$1]);
+			var key;
+			while (length > i) {
+				key = keys[i++];
+				if (!DESCRIPTORS || isEnum.call(O, key)) result.push(isEntries ? [key, O[key]] : O[key]);
 			}
 			return result;
 		};
 	};
 }));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/es7.object.values.js
 var $export = require__export();
 var $values = require__object_to_array()(false);
 $export($export.S, "Object", { values: function values(it) {
 	return $values(it);
 } });
+//#endregion
+//#region ../uni-api/src/service/lifecycle/app.ts
 var appHooks = {
 	[ON_UNHANDLE_REJECTION]: [],
 	[ON_PAGE_NOT_FOUND]: [],
@@ -1598,22 +1776,26 @@ function injectAppHooks(appInstance) {
 		});
 	});
 }
+//#endregion
+//#region ../uni-api/src/protocols/route/encodeQueryString.ts
 function encodeQueryString(url) {
 	if (!isString(url)) return url;
-	var index$1 = url.indexOf("?");
-	if (index$1 === -1) return url;
-	var query = url.slice(index$1 + 1).trim().replace(/^(\?|#|&)/, "");
+	var index = url.indexOf("?");
+	if (index === -1) return url;
+	var query = url.slice(index + 1).trim().replace(/^(\?|#|&)/, "");
 	if (!query) return url;
-	url = url.slice(0, index$1);
+	url = url.slice(0, index);
 	var params = [];
 	query.split("&").forEach((param) => {
 		var parts = param.replace(/\+/g, " ").split("=");
-		var key$1 = parts.shift();
+		var key = parts.shift();
 		var val = parts.length > 0 ? parts.join("=") : "";
-		params.push(key$1 + "=" + encodeURIComponent(val));
+		params.push(key + "=" + encodeURIComponent(val));
 	});
 	return params.length ? url + "?" + params.join("&") : url;
 }
+//#endregion
+//#region ../uni-api/src/protocols/route/route.ts
 var ANIMATION_IN = [
 	"slide-in-right",
 	"slide-in-left",
@@ -1698,9 +1880,9 @@ function createNormalizeUrl(type) {
 		else if (type === "preloadPage") {
 			if (!routeOptions.meta.isNVue) return "can not preload vue page";
 			if (routeOptions.meta.isTabBar) {
-				var pages$1 = getCurrentPages();
+				var pages = getCurrentPages();
 				var tabBarPagePath = routeOptions.path.slice(1);
-				if (pages$1.find((page) => page.route === tabBarPagePath)) return "tabBar page `" + tabBarPagePath + "` already exists";
+				if (pages.find((page) => page.route === tabBarPagePath)) return "tabBar page `" + tabBarPagePath + "` already exists";
 			}
 			return;
 		}
@@ -1708,6 +1890,8 @@ function createNormalizeUrl(type) {
 		if (__uniConfig.ready) navigatorLock = url;
 	};
 }
+//#endregion
+//#region ../uni-api/src/protocols/ui/loadFontFace.ts
 var API_LOAD_FONT_FACE = "loadFontFace";
 var LoadFontFaceProtocol = {
 	family: {
@@ -1720,6 +1904,8 @@ var LoadFontFaceProtocol = {
 	},
 	desc: Object
 };
+//#endregion
+//#region ../uni-api/src/protocols/ui/navigationBar.ts
 var FRONT_COLORS = ["#ffffff", "#000000"];
 var API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
 var SetNavigationBarColorOptions = { formatArgs: { animation(animation, params) {
@@ -1751,6 +1937,8 @@ var SetNavigationBarTitleProtocol = { title: {
 	type: String,
 	required: true
 } };
+//#endregion
+//#region ../uni-api/src/protocols/ui/pageScrollTo.ts
 var API_PAGE_SCROLL_TO = "pageScrollTo";
 var PageScrollToProtocol = {
 	scrollTop: Number,
@@ -1758,8 +1946,14 @@ var PageScrollToProtocol = {
 	duration: Number
 };
 var PageScrollToOptions = { formatArgs: { duration: 300 } };
+//#endregion
+//#region ../uni-api/src/protocols/ui/startPullDownRefresh.ts
 var API_START_PULL_DOWN_REFRESH = "startPullDownRefresh";
+//#endregion
+//#region ../uni-api/src/protocols/ui/stopPullDownRefresh.ts
 var API_STOP_PULL_DOWN_REFRESH = "stopPullDownRefresh";
+//#endregion
+//#region ../uni-api/src/protocols/ui/tabBar.ts
 var IndexProtocol = { index: {
 	type: Number,
 	required: true
@@ -1830,6 +2024,8 @@ var SetTabBarBadgeOptions = {
 		if (getLen(value) >= 4) params.text = "...";
 	} }, IndexOptions.formatArgs)
 };
+//#endregion
+//#region src/x/api/route/webview.ts
 init_web_dom_iterable();
 function showWebview(nPage, animationType, animationDuration, showCallback) {
 	nPage.show(new Map([["animationType", animationType], ["animationDuration", animationDuration]]), showCallback);
@@ -1839,6 +2035,8 @@ function closeWebview(nPage, animationType, animationDuration, callback) {
 	if (typeof animationDuration === "number") options.set("animationDuration", animationDuration);
 	nPage.close(options, callback);
 }
+//#endregion
+//#region src/x/api/route/performance.ts
 var beforeRouteHooks = [];
 var afterRouteHooks = [];
 var pageReadyHooks = [];
@@ -1860,6 +2058,8 @@ function invokeAfterRouteHooks(type) {
 function invokePageReadyHooks(page) {
 	invokeArrayFns$1(pageReadyHooks, page);
 }
+//#endregion
+//#region src/x/framework/app/utils.ts
 init_web_dom_iterable();
 var BORDER_COLORS = new Map([["white", "rgba(255, 255, 255, 0.33)"], ["black", "rgba(0, 0, 0, 0.33)"]]);
 function getBorderStyle(borderStyle) {
@@ -1897,6 +2097,8 @@ function parseRedirectInfo(app) {
 		appLink
 	};
 }
+//#endregion
+//#region src/x/framework/app/tabBar.ts
 init_web_dom_iterable();
 var onTabBarMidButtonTapCallback = [];
 var tabBar0 = null;
@@ -1904,7 +2106,7 @@ var selected0 = -1;
 var tabs = /* @__PURE__ */ new Map();
 function getTabList() {
 	var tabConfig = __uniConfig.tabBar ? /* @__PURE__ */ new Map() : null;
-	if (__uniConfig.tabBar) for (var key$1 in __uniConfig.tabBar) tabConfig.set(key$1, __uniConfig.tabBar[key$1]);
+	if (__uniConfig.tabBar) for (var key in __uniConfig.tabBar) tabConfig.set(key, __uniConfig.tabBar[key]);
 	if (tabConfig === null) return null;
 	return tabConfig.get("list");
 }
@@ -1915,21 +2117,21 @@ function init() {
 	style.set("navigationStyle", "custom");
 	style.set("pageOrientation", (_uniConfig$globalSty = (_uniConfig$globalSty2 = __uniConfig.globalStyle) === null || _uniConfig$globalSty2 === void 0 ? void 0 : _uniConfig$globalSty2.pageOrientation) !== null && _uniConfig$globalSty !== void 0 ? _uniConfig$globalSty : "portrait");
 	var page = getPageManager().createPage("tabBar", "tabBar_".concat(Date.now()), style);
-	var document$3 = page.createDocument(new NodeData("root", "view", /* @__PURE__ */ new Map(), new Map([["flex", "1"]])));
-	var tabParent = document$3.createElement(new NodeData("tabs", "tabs", /* @__PURE__ */ new Map(), new Map([["overflow", "hidden"], ["flex", "1"]])));
-	document$3.appendChild(tabParent);
-	tabBar0 = document$3.getRealDomNodeById("tabs");
+	var document = page.createDocument(new NodeData("root", "view", /* @__PURE__ */ new Map(), new Map([["flex", "1"]])));
+	var tabParent = document.createElement(new NodeData("tabs", "tabs", /* @__PURE__ */ new Map(), new Map([["overflow", "hidden"], ["flex", "1"]])));
+	document.appendChild(tabParent);
+	tabBar0 = document.getRealDomNodeById("tabs");
 	var _tabBarConfig = extend({}, __uniConfig.tabBar);
 	normalizeTabBarStyles(_tabBarConfig, __uniConfig.themeConfig, getAppThemeFallbackOS());
 	var tabBarConfig = /* @__PURE__ */ new Map();
-	for (var key$1 in _tabBarConfig) tabBarConfig.set(key$1, _tabBarConfig[key$1]);
+	for (var key in _tabBarConfig) tabBarConfig.set(key, _tabBarConfig[key]);
 	fixBorderStyle(tabBarConfig);
 	tabBar0.initTabBar(tabBarConfig);
 	tabBar0.addEventListener("tabBarItemTap", function(event) {
-		var index$1 = event.index;
-		if (index$1 !== selected0) {
-			var path = list[index$1].pagePath;
-			if (isString(path) && findPageRoute(getRealPath$1(path, true))) uni.switchTab({ url: getRealPath$1(path, true) });
+		var index = event.index;
+		if (index !== selected0) {
+			var path = list[index].pagePath;
+			if (isString(path) && findPageRoute(getRealPath(path, true))) uni.switchTab({ url: getRealPath(path, true) });
 			else console.error("switchTab: pagePath not found");
 		}
 	});
@@ -1947,7 +2149,7 @@ function clearTabBarStatus() {
 	tabs.clear();
 }
 function removeTabBarPage(page) {
-	var pagePath = getRealPath$1(page.route, true);
+	var pagePath = getRealPath(page.route, true);
 	if (tabs.get(pagePath) === page) {
 		tabs.delete(pagePath);
 		if (getTabIndex(pagePath) === selected0) selected0 = -1;
@@ -1959,10 +2161,10 @@ function getTabBar() {
 function getTabIndex(path) {
 	var list = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : getTabList();
 	var selected = -1;
-	if (list && list.length !== 0) for (var index$1 = 0; index$1 < list.length; index$1++) {
-		var pagePath = list[index$1].pagePath;
-		if (isString(pagePath) && getRealPath$1(pagePath, true) == getRealPath$1(path, true)) {
-			selected = index$1;
+	if (list && list.length !== 0) for (var index = 0; index < list.length; index++) {
+		var pagePath = list[index].pagePath;
+		if (isString(pagePath) && getRealPath(pagePath, true) == getRealPath(path, true)) {
+			selected = index;
 			break;
 		}
 	}
@@ -1987,23 +2189,23 @@ function createTab(path, query, callback) {
 function findTabPage(path) {
 	var _tabs$get;
 	var page = (_tabs$get = tabs.get(path)) !== null && _tabs$get !== void 0 ? _tabs$get : null;
-	var pages$1 = getAllPages();
-	pages$1.forEach((item) => item.$.__isActive = item === page);
+	var pages = getAllPages();
+	pages.forEach((item) => item.$.__isActive = item === page);
 	if (page !== null) {
-		var index$1 = pages$1.indexOf(page);
-		if (index$1 !== pages$1.length - 1) {
-			pages$1.splice(index$1, 1);
-			pages$1.push(page);
+		var index = pages.indexOf(page);
+		if (index !== pages.length - 1) {
+			pages.splice(index, 1);
+			pages.push(page);
 		}
 	}
 	return page;
 }
 function isTabPage(page) {
-	var has$4 = false;
-	tabs.forEach((value, key$1) => {
-		if (value === page) has$4 = true;
+	var has = false;
+	tabs.forEach((value, key) => {
+		if (value === page) has = true;
 	});
-	return has$4;
+	return has;
 }
 var TabPageInfo = class {
 	constructor(page, isFirst) {
@@ -2019,12 +2221,15 @@ function getTabPage(path) {
 	var isFirst = false;
 	if (page === null || rebuild) {
 		isFirst = true;
-		createTab(path, query, (page$1) => {
-			tabs.set(path, page$1);
-			callback(new TabPageInfo(page$1, isFirst));
+		createTab(path, query, (page) => {
+			tabs.set(path, page);
+			callback(new TabPageInfo(page, isFirst));
 		});
 	} else callback(new TabPageInfo(page, isFirst));
 }
+/**
+* switchSelect 切换 tab
+*/
 function switchSelect(selected, path) {
 	var _getCurrentPage;
 	var query = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
@@ -2035,7 +2240,7 @@ function switchSelect(selected, path) {
 	var currentPage = (_getCurrentPage = getCurrentPage()) === null || _getCurrentPage === void 0 ? void 0 : _getCurrentPage.vm;
 	var type = currentPage == null ? "appLaunch" : "switchTab";
 	invokeBeforeRouteHooks(type);
-	getTabPage(getRealPath$1(path, true), query, rebuild, (pageInfo) => {
+	getTabPage(getRealPath(path, true), query, rebuild, (pageInfo) => {
 		callback === null || callback === void 0 || callback();
 		var page = pageInfo.page;
 		if (currentPage !== page) {
@@ -2048,6 +2253,8 @@ function switchSelect(selected, path) {
 		invokeAfterRouteHooks(type);
 	});
 }
+//#endregion
+//#region src/x/framework/theme.ts
 init_web_dom_iterable();
 var APP_THEME_AUTO = "auto";
 function getAppThemeFallbackOS() {
@@ -2057,8 +2264,8 @@ function getAppThemeFallbackOS() {
 		fallbackOSTheme = appTheme;
 		if (appTheme === APP_THEME_AUTO) fallbackOSTheme = uni.getDeviceInfo().osTheme;
 		return fallbackOSTheme;
-	} catch (e$1) {
-		console.error(e$1);
+	} catch (e) {
+		console.error(e);
 		return fallbackOSTheme;
 	}
 }
@@ -2076,7 +2283,7 @@ function registerThemeChange(callback) {
 			var appThemeMode = res1["appTheme"];
 			callback(appThemeMode);
 		});
-	} catch (e$1) {}
+	} catch (e) {}
 }
 var onThemeChange = function(themeMode) {
 	var handlePage = () => {
@@ -2092,20 +2299,20 @@ var onThemeChange = function(themeMode) {
 			var tabBarConfig = __uniConfig.getTabBarConfig();
 			normalizeTabBarStyles(tabBarConfig, __uniConfig.themeConfig, themeMode);
 			var tabBarStyle = /* @__PURE__ */ new Map();
-			Object.keys(tabBarConfig).forEach((key$1) => {
-				var value = tabBarConfig[key$1];
-				if (isString(value)) tabBarStyle.set(key$1, value);
+			Object.keys(tabBarConfig).forEach((key) => {
+				var value = tabBarConfig[key];
+				if (isString(value)) tabBarStyle.set(key, value);
 				else if (isArray(value)) {
 					var valueAsArray = value;
-					var index$1 = 0;
+					var index = 0;
 					valueAsArray.forEach((item) => {
 						var tabBarItemMap = /* @__PURE__ */ new Map();
-						tabBarItemMap.set("index", index$1);
+						tabBarItemMap.set("index", index);
 						Object.keys(item).forEach((tabBarItemkey) => {
 							if (item[tabBarItemkey] != null) tabBarItemMap.set(tabBarItemkey, item[tabBarItemkey]);
 						});
 						tabBar.setTabBarItem(tabBarItemMap);
-						index$1++;
+						index++;
 					});
 				}
 			});
@@ -2121,13 +2328,13 @@ function normalizePageStyles(pageStyle, themeConfig, themeMode) {
 	normalizeStyles$1(pageStyle, themeMap);
 }
 function normalizeStyles$1(style, themeMap) {
-	Object.keys(style).forEach((key$1) => {
-		var value = style[key$1];
+	Object.keys(style).forEach((key) => {
+		var value = style[key];
 		if (isString(value)) {
 			var valueAsString = value;
 			if (valueAsString.startsWith("@")) {
 				var configValue = themeMap[valueAsString.slice(1)];
-				if (configValue != null) style[key$1] = configValue;
+				if (configValue != null) style[key] = configValue;
 			}
 		} else if (isArray(value)) value.forEach((item) => {
 			normalizeStyles$1(item, themeMap);
@@ -2144,6 +2351,8 @@ function normalizeTabBarStyles(tabBar, themeConfig, themeMode) {
 function useTheme() {
 	registerThemeChange(onThemeChange);
 }
+//#endregion
+//#region src/x/statusBar.ts
 function setStatusBarStyle() {
 	var page;
 	var currentPage = getCurrentPage();
@@ -2158,6 +2367,8 @@ function setStatusBarStyle() {
 	else page = currentPage === null || currentPage === void 0 ? void 0 : currentPage.vm;
 	if (page) page.$nativePage.applyStatusBarStyle();
 }
+//#endregion
+//#region src/x/api/route/closeNativeDialogPage.ts
 function closeNativeDialogPage(dialogPage, animationType, animationDuration, callback) {
 	var _dialogPage$vm;
 	var webview = getNativeApp().pageManager.findPageById(((_dialogPage$vm = dialogPage.vm) === null || _dialogPage$vm === void 0 ? void 0 : _dialogPage$vm.$basePage.id) + "");
@@ -2167,7 +2378,8 @@ function closeNativeDialogPage(dialogPage, animationType, animationDuration, cal
 		callback === null || callback === void 0 || callback();
 	});
 }
-var closeNativeDialogPage_default = closeNativeDialogPage;
+//#endregion
+//#region src/x/api/route/closeDialogPage.ts
 var closeDialogPage = (options) => {
 	var _options$success, _options$complete;
 	var currentPages = getCurrentPages();
@@ -2186,10 +2398,10 @@ var closeDialogPage = (options) => {
 		var parentPage = dialogPage.getParentPage();
 		if (!isSystemDialogPage(dialogPage)) if (parentPage && (isTabPage(parentPage.vm) || currentPages.indexOf(parentPage) !== -1)) {
 			var parentDialogPages = parentPage.getDialogPages();
-			var index$1 = parentDialogPages.indexOf(dialogPage);
-			closeNativeDialogPage_default(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || 300);
-			parentDialogPages.splice(index$1, 1);
-			if (index$1 === parentDialogPages.length) dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW);
+			var index = parentDialogPages.indexOf(dialogPage);
+			closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || 300);
+			parentDialogPages.splice(index, 1);
+			if (index === parentDialogPages.length) dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW);
 		} else {
 			triggerFailCallback$1(options, "dialogPage is not a valid page");
 			return;
@@ -2199,7 +2411,7 @@ var closeDialogPage = (options) => {
 			if (systemDialogPages) {
 				var _index = systemDialogPages.indexOf(dialogPage);
 				if (_index > -1) {
-					closeNativeDialogPage_default(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || 300);
+					closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || 300);
 					systemDialogPages.splice(_index, 1);
 					if (_index === systemDialogPages.length) dialogPageTriggerPrevDialogPageLifeCycle(parentPage, ON_SHOW);
 				} else triggerFailCallback$1(options, "dialogPage is not a valid page");
@@ -2208,10 +2420,10 @@ var closeDialogPage = (options) => {
 		}
 	} else {
 		var dialogPages = currentPage.getDialogPages();
-		for (var i$1 = dialogPages.length - 1; i$1 >= 0; i$1--) {
-			closeNativeDialogPage_default(dialogPages[i$1], (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || 300);
-			if (i$1 > 0) invokeHook(dialogPages[i$1 - 1].$vm, ON_SHOW);
-			dialogPages[i$1] = null;
+		for (var i = dialogPages.length - 1; i >= 0; i--) {
+			closeNativeDialogPage(dialogPages[i], (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || 300);
+			if (i > 0) invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
+			dialogPages[i] = null;
 		}
 		dialogPages.length = 0;
 	}
@@ -2225,6 +2437,8 @@ function triggerFailCallback$1(options, errMsg) {
 	options === null || options === void 0 || (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, failOptions);
 	options === null || options === void 0 || (_options$complete2 = options.complete) === null || _options$complete2 === void 0 || _options$complete2.call(options, failOptions);
 }
+//#endregion
+//#region src/x/framework/page/register.ts
 init_web_dom_iterable();
 function parsePageStyle(route) {
 	var style = /* @__PURE__ */ new Map();
@@ -2252,17 +2466,17 @@ function parsePageStyle(route) {
 		"navigationStyle"
 	];
 	normalizePageStyles(routeMeta, __uniConfig.themeConfig, getAppThemeFallbackOS());
-	Object.keys(routeMeta).forEach((key$1) => {
-		if (!routeKeys.includes(key$1) && !navKeys.includes(key$1)) style.set(key$1, routeMeta[key$1]);
+	Object.keys(routeMeta).forEach((key) => {
+		if (!routeKeys.includes(key) && !navKeys.includes(key)) style.set(key, routeMeta[key]);
 	});
 	var navigationBar = {};
-	navKeys.forEach((key$1) => {
-		if (key$1 in routeMeta) navigationBar[key$1] = routeMeta[key$1];
+	navKeys.forEach((key) => {
+		if (key in routeMeta) navigationBar[key] = routeMeta[key];
 	});
 	if (Object.keys(navigationBar).length > 0) {
 		if (navigationBar.navigationBarTextStyle !== "custom" && !routeMeta.isQuit && routeMeta.route !== __uniConfig.realEntryPagePath) style.set("navigationBarAutoBackButton", true);
-		Object.keys(navigationBar).forEach((key$1) => {
-			style.set(key$1, navigationBar[key$1]);
+		Object.keys(navigationBar).forEach((key) => {
+			style.set(key, navigationBar[key]);
 		});
 	}
 	return style;
@@ -2270,11 +2484,11 @@ function parsePageStyle(route) {
 function registerPage(_ref, onCreated) {
 	var { url, path, query, openType, webview, nvuePageVm, eventChannel, onRegistered } = _ref;
 	var delay = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 0;
-	var id$2 = genWebviewId();
+	var id = genWebviewId();
 	var routeOptions = initRouteOptions(path, openType);
 	var pageStyle = parsePageStyle(routeOptions);
 	if (openType === "reLaunch") pageStyle.set("disableSwipeBack", true);
-	var nativePage = getPageManager().createPage(url, id$2.toString(), pageStyle);
+	var nativePage = getPageManager().createPage(url, id.toString(), pageStyle);
 	if (onCreated) onCreated(nativePage);
 	routeOptions.meta.id = parseInt(nativePage.pageId);
 	var route = path.slice(1);
@@ -2287,10 +2501,10 @@ function registerPage(_ref, onCreated) {
 		sourceDialogPages.length = 0;
 	}
 	function fn() {
-		createVuePage(id$2, route, query, pageInstance, {}, nativePage).then((pageComponentPublicInstance) => {
-			var pages$1 = getCurrentPages();
-			if (pages$1.length === 1) {
-				var homePage = pages$1[0];
+		createVuePage(id, route, query, pageInstance, {}, nativePage).then((pageComponentPublicInstance) => {
+			var pages = getCurrentPages();
+			if (pages.length === 1) {
+				var homePage = pages[0];
 				var sourceDialogPages = [];
 				var targetDialogPages = [];
 				if (homeDialogPages.length) {
@@ -2303,11 +2517,11 @@ function registerPage(_ref, onCreated) {
 				}
 				handleHomeDialogPages(homePage, sourceDialogPages, targetDialogPages);
 			}
-			nativePage.addPageEventListener(ON_POP_GESTURE, function(e$1) {
+			nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
 				uni.navigateBack({
 					from: "popGesture",
-					fail(e$2) {
-						if (e$2.errMsg.endsWith("cancel")) nativePage.show();
+					fail(e) {
+						if (e.errMsg.endsWith("cancel")) nativePage.show();
 					}
 				});
 			});
@@ -2350,24 +2564,24 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
 	var _uniRoutes$find;
 	var { url, path, query, openType, eventChannel, onRegistered } = _ref2;
 	var delay = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : 0;
-	var id$2 = genWebviewId();
+	var id = genWebviewId();
 	var routeOptions = initRouteOptions(path, openType);
 	var pageStyle = parsePageStyle(routeOptions);
-	var routePageMeta = (_uniRoutes$find = __uniRoutes.find((route$1) => route$1.path === path)) === null || _uniRoutes$find === void 0 ? void 0 : _uniRoutes$find.meta;
+	var routePageMeta = (_uniRoutes$find = __uniRoutes.find((route) => route.path === path)) === null || _uniRoutes$find === void 0 ? void 0 : _uniRoutes$find.meta;
 	if (!(routePageMeta !== null && routePageMeta !== void 0 && routePageMeta.navigationStyle)) pageStyle.set("navigationStyle", "custom");
 	if (!(routePageMeta !== null && routePageMeta !== void 0 && routePageMeta.backgroundColorContent)) pageStyle.set("backgroundColorContent", "transparent");
 	if (typeof pageStyle.get("disableSwipeBack") !== "boolean") pageStyle.set("disableSwipeBack", true);
 	var parentPage = dialogPage.getParentPage();
 	var pageManager = getPageManager();
 	var createDialogPage = pageManager.createDialogPage.bind(pageManager);
-	var nativePage = createDialogPage.length === 6 ? createDialogPage(url, id$2.toString(), pageStyle, parentPage === null || parentPage === void 0 ? void 0 : parentPage.getNativePage()) : createDialogPage(parentPage ? parentPage.__nativePageId : "", id$2.toString(), url, pageStyle);
+	var nativePage = createDialogPage.length === 6 ? createDialogPage(url, id.toString(), pageStyle, parentPage === null || parentPage === void 0 ? void 0 : parentPage.getNativePage()) : createDialogPage(parentPage ? parentPage.__nativePageId : "", id.toString(), url, pageStyle);
 	if (onCreated) onCreated(nativePage);
 	routeOptions.meta.id = parseInt(nativePage.pageId);
 	var route = path.startsWith("uni:") ? path : path.slice(1);
 	var pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel, "light");
 	function fn() {
-		createVuePage(id$2, route, query, pageInstance, {}, nativePage).then((pageComponentPublicInstance) => {
-			nativePage.addPageEventListener(ON_POP_GESTURE, function(e$1) {
+		createVuePage(id, route, query, pageInstance, {}, nativePage).then((pageComponentPublicInstance) => {
+			nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
 				closeDialogPage({ dialogPage });
 			});
 			nativePage.addPageEventListener(ON_UNLOAD, (_) => {
@@ -2409,13 +2623,13 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
 	var pageNode = nativePage.document.body;
 	var app = getVueApp();
 	var component = pagesMap.get(__pagePath)();
-	var mountPage = (component$1) => app.mountPage(component$1, extend({
+	var mountPage = (component) => app.mountPage(component, extend({
 		__pageId,
 		__pagePath,
 		__pageQuery,
 		__pageInstance
 	}, __pageQuery), pageNode);
-	if (isPromise(component)) return component.then((component$1) => mountPage(component$1)).catch((err) => {
+	if (isPromise(component)) return component.then((component) => mountPage(component)).catch((err) => {
 		console.error(err);
 		throw err;
 	});
@@ -2423,6 +2637,8 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
 		return fn(mountPage(component));
 	} };
 }
+//#endregion
+//#region src/x/framework/app/initEntry.ts
 var isInitEntryPage = false;
 function initEntry(app) {
 	if (isInitEntryPage) return;
@@ -2446,6 +2662,8 @@ function initEntry(app) {
 	__uniConfig.entryPagePath = entryPagePath;
 	__uniConfig.entryPageQuery = entryPageQuery;
 }
+//#endregion
+//#region src/x/framework/app/initGlobalEvent.ts
 function initGlobalEvent(app) {
 	app.addKeyEventListener(ON_BACK_BUTTON, () => {
 		var currentPage = getCurrentPage();
@@ -2466,6 +2684,15 @@ function handleDialogPageBack(dialogPage) {
 		animationType: "auto"
 	});
 }
+//#endregion
+//#region src/x/api/base/getLaunchOptionsSync.ts
+/**
+* uni.getLaunchOptionsSync()
+* 获取本次启动时的参数。返回值与App.onLaunch的回调参数一致 onLaunch(res)
+* 通过通用链接打开返回 appLink
+* 通过 appSchema打开返回 appScheme
+* onHide - onShow 信息清除
+*/
 var API_GET_LAUNCH_OPTIONS_SYNC = "getLaunchOptionsSync";
 var launchOptions = {
 	path: "",
@@ -2479,6 +2706,8 @@ var getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_LAUNCH_OPTIONS_
 	var baseInfo = getLaunchOptions();
 	return Object.assign({}, baseInfo, launchOptions);
 });
+//#endregion
+//#region src/x/api/base/getEnterOptionsSync.ts
 var API_GET_ENTER_OPTIONS_SYNC = "getEnterOptionsSync";
 var enterOptions = {
 	path: "",
@@ -2492,6 +2721,8 @@ var getEnterOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_ENTER_OPTIONS_SY
 	var baseInfo = getLaunchOptions();
 	return Object.assign({}, baseInfo, enterOptions);
 });
+//#endregion
+//#region src/x/framework/app/initAppLaunch.ts
 function initAppLaunch(appVm) {
 	var _app$getLaunchOptions;
 	injectAppHooks(appVm.$);
@@ -2518,11 +2749,15 @@ function initAppLaunch(appVm) {
 	if (appStyle) loadFontFaceByStyles(appStyle, true);
 	useTheme();
 }
-function initAppError(appVm, nativeApp$1) {
-	nativeApp$1.addEventListener(ON_ERROR, function(errorEvent) {
+//#endregion
+//#region src/x/framework/app/initAppError.ts
+function initAppError(appVm, nativeApp) {
+	nativeApp.addEventListener(ON_ERROR, function(errorEvent) {
 		invokeHook(appVm, ON_ERROR, errorEvent.error);
 	});
 }
+//#endregion
+//#region src/x/api/route/redirectTo.ts
 var redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, (_ref, _ref2) => {
 	var { url } = _ref;
 	var { resolve, reject } = _ref2;
@@ -2584,6 +2819,8 @@ function removePages(currentPage) {
 	});
 	else closePage(currentPage, "none");
 }
+//#endregion
+//#region src/x/api/route/reLaunch.ts
 var $reLaunch = (_ref, _ref2) => {
 	var { url } = _ref;
 	var { resolve, reject } = _ref2;
@@ -2608,14 +2845,14 @@ function _reLaunch(_ref3) {
 	var { url, path, query } = _ref3;
 	return new Promise((resolve) => {
 		setTimeout(() => {
-			var pages$1 = getAllPages().slice(0);
+			var pages = getAllPages().slice(0);
 			var selected = getTabIndex(path);
 			var isRegistered = false;
 			var isShown = false;
 			function callback() {
 				if (!isRegistered || !isShown) return;
-				pages$1.forEach((page) => closePage(page, "none"));
-				pages$1.length = 0;
+				pages.forEach((page) => closePage(page, "none"));
+				pages.length = 0;
 				resolve(void 0);
 				setStatusBarStyle();
 			}
@@ -2641,6 +2878,8 @@ function _reLaunch(_ref3) {
 	});
 }
 var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
+//#endregion
+//#region src/x/api/route/utils.ts
 function closePage(page, animationType, animationDuration) {
 	if (page.$page) clearDialogPages(page.$page);
 	var nativePage = page.$nativePage;
@@ -2682,20 +2921,22 @@ function handleBeforeEntryPageRoutes() {
 function closePreSystemDialogPage(dialogPages, type) {
 	var targetSystemDialogPages = dialogPages.filter((page) => page.route.startsWith(type));
 	if (targetSystemDialogPages.length > 1) setTimeout(() => {
-		closeNativeDialogPage_default(targetSystemDialogPages[0]);
+		closeNativeDialogPage(targetSystemDialogPages[0]);
 		dialogPages.splice(dialogPages.indexOf(targetSystemDialogPages[0]), 1);
 	}, 150);
 }
 function clearDialogPages(uniPage) {
 	var dialogPages = uniPage.getDialogPages();
-	for (var i$1 = dialogPages.length - 1; i$1 >= 0; i$1--) {
-		closeNativeDialogPage_default(dialogPages[i$1]);
-		if (i$1 > 0) invokeHook(dialogPages[i$1 - 1].vm, ON_SHOW);
+	for (var i = dialogPages.length - 1; i >= 0; i--) {
+		closeNativeDialogPage(dialogPages[i]);
+		if (i > 0) invokeHook(dialogPages[i - 1].vm, ON_SHOW);
 	}
 	var systemDialogPages = getSystemDialogPages(uniPage);
-	for (var _i = 0; _i < systemDialogPages.length; _i++) closeNativeDialogPage_default(systemDialogPages[_i]);
+	for (var _i = 0; _i < systemDialogPages.length; _i++) closeNativeDialogPage(systemDialogPages[_i]);
 	systemDialogPages.length = 0;
 }
+//#endregion
+//#region src/x/api/route/switchTab.ts
 var $switchTab = (args, _ref) => {
 	var { resolve, reject } = _ref;
 	var { url } = args;
@@ -2723,12 +2964,12 @@ function _switchTab(_ref2) {
 	var { url, path, query } = _ref2;
 	var selected = getTabIndex(path);
 	if (selected == -1) return Promise.reject("tab ".concat(path, " not found"));
-	var pages$1 = getCurrentBasePages();
+	var pages = getCurrentBasePages();
 	return new Promise((resolve) => {
 		setTimeout(() => {
 			switchSelect(selected, path, query);
-			for (var index$1 = pages$1.length - 1; index$1 >= 0; index$1--) {
-				var page = pages$1[index$1];
+			for (var index = pages.length - 1; index >= 0; index--) {
+				var page = pages[index];
 				if (isTabPage(page)) break;
 				closePage(page, "none");
 			}
@@ -2736,6 +2977,8 @@ function _switchTab(_ref2) {
 		}, 0);
 	});
 }
+//#endregion
+//#region src/x/framework/app/subscriber/webviewReady.ts
 var isLaunchWebviewReady = false;
 function subscribeWebviewReady(_data, pageId) {
 	var isLaunchWebview = pageId === "1";
@@ -2768,100 +3011,105 @@ function onLaunchWebviewReady() {
 function clearWebviewReady() {
 	isLaunchWebviewReady = false;
 }
+//#endregion
+//#region src/x/framework/app/subscriber/index.ts
 function initSubscribeHandlers() {
 	subscribeWebviewReady({}, "1");
 }
-function _OverloadYield(e$1, d) {
-	this.v = e$1, this.k = d;
+//#endregion
+//#region \0rollupPluginBabelHelpers.js
+function _OverloadYield(e, d) {
+	this.v = e, this.k = d;
 }
-function asyncGeneratorStep(n, t$1, e$1, r, o, a, c) {
+function asyncGeneratorStep(n, t, e, r, o, a, c) {
 	try {
-		var i$1 = n[a](c), u = i$1.value;
-	} catch (n$1) {
-		e$1(n$1);
+		var i = n[a](c), u = i.value;
+	} catch (n) {
+		e(n);
 		return;
 	}
-	i$1.done ? t$1(u) : Promise.resolve(u).then(r, o);
+	i.done ? t(u) : Promise.resolve(u).then(r, o);
 }
 function _asyncToGenerator(n) {
 	return function() {
-		var t$1 = this, e$1 = arguments;
+		var t = this, e = arguments;
 		return new Promise(function(r, o) {
-			var a = n.apply(t$1, e$1);
-			function _next(n$1) {
-				asyncGeneratorStep(a, r, o, _next, _throw, "next", n$1);
+			var a = n.apply(t, e);
+			function _next(n) {
+				asyncGeneratorStep(a, r, o, _next, _throw, "next", n);
 			}
-			function _throw(n$1) {
-				asyncGeneratorStep(a, r, o, _next, _throw, "throw", n$1);
+			function _throw(n) {
+				asyncGeneratorStep(a, r, o, _next, _throw, "throw", n);
 			}
 			_next(void 0);
 		});
 	};
 }
-function _defineProperty(e$1, r, t$1) {
-	return (r = _toPropertyKey(r)) in e$1 ? Object.defineProperty(e$1, r, {
-		value: t$1,
+function _defineProperty(e, r, t) {
+	return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, {
+		value: t,
 		enumerable: !0,
 		configurable: !0,
 		writable: !0
-	}) : e$1[r] = t$1, e$1;
+	}) : e[r] = t, e;
 }
-function ownKeys(e$1, r) {
-	var t$1 = Object.keys(e$1);
+function ownKeys(e, r) {
+	var t = Object.keys(e);
 	if (Object.getOwnPropertySymbols) {
-		var o = Object.getOwnPropertySymbols(e$1);
-		r && (o = o.filter(function(r$1) {
-			return Object.getOwnPropertyDescriptor(e$1, r$1).enumerable;
-		})), t$1.push.apply(t$1, o);
+		var o = Object.getOwnPropertySymbols(e);
+		r && (o = o.filter(function(r) {
+			return Object.getOwnPropertyDescriptor(e, r).enumerable;
+		})), t.push.apply(t, o);
 	}
-	return t$1;
+	return t;
 }
-function _objectSpread2(e$1) {
+function _objectSpread2(e) {
 	for (var r = 1; r < arguments.length; r++) {
-		var t$1 = null != arguments[r] ? arguments[r] : {};
-		r % 2 ? ownKeys(Object(t$1), !0).forEach(function(r$1) {
-			_defineProperty(e$1, r$1, t$1[r$1]);
-		}) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e$1, Object.getOwnPropertyDescriptors(t$1)) : ownKeys(Object(t$1)).forEach(function(r$1) {
-			Object.defineProperty(e$1, r$1, Object.getOwnPropertyDescriptor(t$1, r$1));
+		var t = null != arguments[r] ? arguments[r] : {};
+		r % 2 ? ownKeys(Object(t), !0).forEach(function(r) {
+			_defineProperty(e, r, t[r]);
+		}) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function(r) {
+			Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r));
 		});
 	}
-	return e$1;
+	return e;
 }
-function _toPrimitive(t$1, r) {
-	if ("object" != typeof t$1 || !t$1) return t$1;
-	var e$1 = t$1[Symbol.toPrimitive];
-	if (void 0 !== e$1) {
-		var i$1 = e$1.call(t$1, r || "default");
-		if ("object" != typeof i$1) return i$1;
+/*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */
+function _toPrimitive(t, r) {
+	if ("object" != typeof t || !t) return t;
+	var e = t[Symbol.toPrimitive];
+	if (void 0 !== e) {
+		var i = e.call(t, r || "default");
+		if ("object" != typeof i) return i;
 		throw new TypeError("@@toPrimitive must return a primitive value.");
 	}
-	return ("string" === r ? String : Number)(t$1);
+	return ("string" === r ? String : Number)(t);
 }
-function _toPropertyKey(t$1) {
-	var i$1 = _toPrimitive(t$1, "string");
-	return "symbol" == typeof i$1 ? i$1 : i$1 + "";
+function _toPropertyKey(t) {
+	var i = _toPrimitive(t, "string");
+	return "symbol" == typeof i ? i : i + "";
 }
-function AsyncGenerator(e$1) {
-	var r, t$1;
-	function resume(r$1, t$2) {
+function AsyncGenerator(e) {
+	var r, t;
+	function resume(r, t) {
 		try {
-			var n = e$1[r$1](t$2), o = n.value, u = o instanceof _OverloadYield;
-			Promise.resolve(u ? o.v : o).then(function(t$3) {
+			var n = e[r](t), o = n.value, u = o instanceof _OverloadYield;
+			Promise.resolve(u ? o.v : o).then(function(t) {
 				if (u) {
-					var i$1 = "return" === r$1 ? "return" : "next";
-					if (!o.k || t$3.done) return resume(i$1, t$3);
-					t$3 = e$1[i$1](t$3).value;
+					var i = "return" === r ? "return" : "next";
+					if (!o.k || t.done) return resume(i, t);
+					t = e[i](t).value;
 				}
-				settle(n.done ? "return" : "normal", t$3);
-			}, function(e$2) {
-				resume("throw", e$2);
+				settle(n.done ? "return" : "normal", t);
+			}, function(e) {
+				resume("throw", e);
 			});
-		} catch (e$2) {
-			settle("throw", e$2);
+		} catch (e) {
+			settle("throw", e);
 		}
 	}
-	function settle(e$2, n) {
-		switch (e$2) {
+	function settle(e, n) {
+		switch (e) {
 			case "return":
 				r.resolve({
 					value: n,
@@ -2876,35 +3124,37 @@ function AsyncGenerator(e$1) {
 				done: !1
 			});
 		}
-		(r = r.next) ? resume(r.key, r.arg) : t$1 = null;
+		(r = r.next) ? resume(r.key, r.arg) : t = null;
 	}
-	this._invoke = function(e$2, n) {
+	this._invoke = function(e, n) {
 		return new Promise(function(o, u) {
-			var i$1 = {
-				key: e$2,
+			var i = {
+				key: e,
 				arg: n,
 				resolve: o,
 				reject: u,
 				next: null
 			};
-			t$1 ? t$1 = t$1.next = i$1 : (r = t$1 = i$1, resume(e$2, n));
+			t ? t = t.next = i : (r = t = i, resume(e, n));
 		});
-	}, "function" != typeof e$1.return && (this.return = void 0);
+	}, "function" != typeof e.return && (this.return = void 0);
 }
 AsyncGenerator.prototype["function" == typeof Symbol && Symbol.asyncIterator || "@@asyncIterator"] = function() {
 	return this;
-}, AsyncGenerator.prototype.next = function(e$1) {
-	return this._invoke("next", e$1);
-}, AsyncGenerator.prototype.throw = function(e$1) {
-	return this._invoke("throw", e$1);
-}, AsyncGenerator.prototype.return = function(e$1) {
-	return this._invoke("return", e$1);
+}, AsyncGenerator.prototype.next = function(e) {
+	return this._invoke("next", e);
+}, AsyncGenerator.prototype.throw = function(e) {
+	return this._invoke("throw", e);
+}, AsyncGenerator.prototype.return = function(e) {
+	return this._invoke("return", e);
 };
-function initOn(app, unregisterApp$1) {
+//#endregion
+//#region src/x/framework/app/initService.ts
+function initOn(app, unregisterApp) {
 	app.addEventListener(ON_SHOW, /* @__PURE__ */ function() {
 		var _ref = _asyncToGenerator(function* (event) {
 			var _getCurrentPage;
-			var app$1 = getNativeApp();
+			var app = getNativeApp();
 			var MAX_TIMEOUT = 200;
 			function getNewIntent() {
 				return new Promise((resolve, reject) => {
@@ -2912,15 +3162,15 @@ function initOn(app, unregisterApp$1) {
 					var handleNewIntent = (newIntent) => {
 						var _newIntent$appScheme, _newIntent$appLink;
 						clearTimeout(timeout);
-						app$1.removeEventListener("onNewIntent", callbackWrapper);
+						app.removeEventListener("onNewIntent", callbackWrapper);
 						resolve({
 							appScheme: (_newIntent$appScheme = newIntent.appScheme) !== null && _newIntent$appScheme !== void 0 ? _newIntent$appScheme : null,
 							appLink: (_newIntent$appLink = newIntent.appLink) !== null && _newIntent$appLink !== void 0 ? _newIntent$appLink : null
 						});
 					};
-					callbackWrapper = app$1.addEventListener("onNewIntent", handleNewIntent);
+					callbackWrapper = app.addEventListener("onNewIntent", handleNewIntent);
 					var timeout = setTimeout(() => {
-						app$1.removeEventListener("onNewIntent", callbackWrapper);
+						app.removeEventListener("onNewIntent", callbackWrapper);
 						resolve({
 							appScheme: null,
 							appLink: null
@@ -2952,12 +3202,14 @@ function initOn(app, unregisterApp$1) {
 		clearWebviewReady();
 		resetWebviewId();
 		invokeHook(appInstance, ON_EXIT);
-		unregisterApp$1();
+		unregisterApp();
 	});
 }
-function initService(app, unregisterApp$1) {
-	initOn(app, unregisterApp$1);
+function initService(app, unregisterApp) {
+	initOn(app, unregisterApp);
 }
+//#endregion
+//#region src/x/framework/app/index.ts
 init_web_dom_iterable();
 var appCtx;
 var entryPageState = {
@@ -2979,8 +3231,13 @@ function initUniApp(uniApp) {
 		return appCtx.globalData || {};
 	} });
 }
-function registerApp(appVm, nativeApp$1, uniApp) {
-	setNativeApp(nativeApp$1);
+/**
+* registerApp
+* @param appVm
+* @param nativeApp
+*/
+function registerApp(appVm, nativeApp, uniApp) {
+	setNativeApp(nativeApp);
 	initVueApp(appVm);
 	appCtx = appVm;
 	initAppVm(appCtx);
@@ -2988,12 +3245,12 @@ function registerApp(appVm, nativeApp$1, uniApp) {
 	var defaultApp = { globalData: {} };
 	extend(appCtx, defaultApp);
 	defineGlobalData(appCtx, defaultApp.globalData);
-	initService(nativeApp$1, unregisterApp);
-	initEntry(nativeApp$1);
-	initEntryPagePath(nativeApp$1);
-	initGlobalEvent(nativeApp$1);
+	initService(nativeApp, unregisterApp);
+	initEntry(nativeApp);
+	initEntryPagePath(nativeApp);
+	initGlobalEvent(nativeApp);
 	initAppLaunch(appVm);
-	initAppError(appVm, nativeApp$1);
+	initAppError(appVm, nativeApp);
 	initSubscribeHandlers();
 	__uniConfig.ready = true;
 }
@@ -3025,6 +3282,8 @@ function initEntryPagePath(app) {
 		if (_query) __uniConfig.entryPageQuery = "?".concat(_query);
 	}
 }
+//#endregion
+//#region src/x/api/route/navigateTo.ts
 init_web_dom_iterable();
 var $navigateTo = (args, _ref) => {
 	var { resolve, reject } = _ref;
@@ -3091,6 +3350,8 @@ function initAnimation$1(path, animationType, animationDuration) {
 	var meta = getRouteMeta(path);
 	return [animationType || meta.animationType || globalStyle.animationType || ANI_SHOW, animationDuration || meta.animationDuration || globalStyle.animationDuration || 300];
 }
+//#endregion
+//#region src/x/api/route/direct.ts
 function isDirectPage(page) {
 	var _getCurrentPages$;
 	return !!__uniConfig.realEntryPagePath && ((_getCurrentPages$ = getCurrentPages$1()[0]) === null || _getCurrentPages$ === void 0 ? void 0 : _getCurrentPages$.vm) === page;
@@ -3101,6 +3362,8 @@ function reLaunchEntryPage() {
 	__uniConfig.realEntryPagePath = "";
 	reLaunch({ url: (_uniConfig$entryPage = __uniConfig.entryPagePath) !== null && _uniConfig$entryPage !== void 0 && _uniConfig$entryPage.startsWith("/") ? __uniConfig.entryPagePath : "/" + __uniConfig.entryPagePath });
 }
+//#endregion
+//#region src/x/api/route/navigateBack.ts
 var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref) => {
 	var { resolve, reject } = _ref;
 	var page = getCurrentPage().vm;
@@ -3131,22 +3394,22 @@ var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref
 	return resolve();
 }, NavigateBackProtocol, NavigateBackOptions);
 function back(delta, animationType, animationDuration) {
-	var pages$1 = getCurrentBasePages();
-	var len = pages$1.length;
-	var currentPage = pages$1[len - 1];
-	if (delta > 1) pages$1.slice(len - delta, len - 1).reverse().forEach((deltaPage) => {
+	var pages = getCurrentBasePages();
+	var len = pages.length;
+	var currentPage = pages[len - 1];
+	if (delta > 1) pages.slice(len - delta, len - 1).reverse().forEach((deltaPage) => {
 		clearDialogPages(deltaPage.$page);
-		var webview$1 = getNativeApp().pageManager.findPageById(deltaPage.$basePage.id + "");
-		if (webview$1) closeWebview(webview$1, "none", 0);
+		var webview = getNativeApp().pageManager.findPageById(deltaPage.$basePage.id + "");
+		if (webview) closeWebview(webview, "none", 0);
 	});
-	var backPage = function(webview$1) {
+	var backPage = function(webview) {
 		if (animationType) animationDuration = animationDuration || 300;
 		else if (currentPage.$basePage.openType === "redirectTo") {
 			animationType = ANI_CLOSE;
 			animationDuration = 300;
 		} else animationType = "auto";
-		closeWebview(webview$1, animationType, animationDuration, () => {
-			pages$1.slice(len - delta, len).forEach((page) => removePage(page));
+		closeWebview(webview, animationType, animationDuration, () => {
+			pages.slice(len - delta, len).forEach((page) => removePage(page));
 			invokeHook(ON_SHOW);
 			invokeLastDialogPageHookByUniPage(getCurrentPage(), ON_SHOW);
 			setStatusBarStyle();
@@ -3156,6 +3419,8 @@ function back(delta, animationType, animationDuration) {
 	clearDialogPages(currentPage.$page);
 	webview && backPage(webview);
 }
+//#endregion
+//#region src/x/api/route/openDialogPage.ts
 init_web_dom_iterable();
 var openDialogPage = (options) => {
 	var _options$success, _options$complete;
@@ -3208,8 +3473,8 @@ var openDialogPage = (options) => {
 	}
 	var [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
 	var noAnimation = aniType === "none" || aniDuration === 0;
-	function callback(page$1) {
-		showWebview(page$1, aniType, aniDuration, () => {
+	function callback(page) {
+		showWebview(page, aniType, aniDuration, () => {
 			beforeRoute();
 			dialogPageTriggerParentHide(dialogPage);
 		});
@@ -3241,33 +3506,39 @@ function initAnimation(path, animationType, animationDuration) {
 	if (_animationType == "pop-in") _animationType = "none";
 	return [_animationType, animationDuration || meta.animationDuration || globalStyle.animationDuration || 300];
 }
+//#endregion
+//#region src/x/api/tabBar/setTabBarBadge.ts
 init_web_dom_iterable();
 var setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (_ref, _ref2) => {
-	var { index: index$1, text } = _ref;
+	var { index, text } = _ref;
 	var { resolve, reject } = _ref2;
 	var tabBar = getTabBar();
 	if (tabBar === null) {
 		reject("tabBar is not exist");
 		return;
 	}
-	tabBar.setTabBarBadge(new Map([["index", index$1], ["text", text]]));
+	tabBar.setTabBarBadge(new Map([["index", index], ["text", text]]));
 	resolve();
 }, SetTabBarBadgeProtocol, SetTabBarBadgeOptions);
+//#endregion
+//#region src/x/api/tabBar/removeTabBarBadge.ts
 init_web_dom_iterable();
 var removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_REMOVE_TAB_BAR_BADGE, (_ref, _ref2) => {
-	var { index: index$1 } = _ref;
+	var { index } = _ref;
 	var { resolve, reject } = _ref2;
 	var tabBar = getTabBar();
 	if (tabBar === null) {
 		reject("tabBar is not exist");
 		return;
 	}
-	tabBar.removeTabBarBadge(new Map([["index", index$1]]));
+	tabBar.removeTabBarBadge(new Map([["index", index]]));
 	resolve();
 }, RemoveTabBarBadgeProtocol, RemoveTabBarBadgeOptions);
+//#endregion
+//#region src/x/api/tabBar/setTabBarItem.ts
 init_web_dom_iterable();
 var setTabBarItem = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_ITEM, (_ref, _ref2) => {
-	var { index: index$1, text, iconPath, selectedIconPath, pagePath, visible, iconfont } = _ref;
+	var { index, text, iconPath, selectedIconPath, pagePath, visible, iconfont } = _ref;
 	var { resolve, reject } = _ref2;
 	var tabBar = getTabBar();
 	if (tabBar === null) {
@@ -3275,7 +3546,7 @@ var setTabBarItem = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_ITEM, (_ref, 
 		return;
 	}
 	var item = /* @__PURE__ */ new Map();
-	item.set("index", index$1);
+	item.set("index", index);
 	if (typeof text === "string") item.set("text", text);
 	if (typeof iconPath === "string") item.set("iconPath", iconPath);
 	if (typeof selectedIconPath === "string") item.set("selectedIconPath", selectedIconPath);
@@ -3295,6 +3566,8 @@ var setTabBarItem = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_ITEM, (_ref, 
 	tabBar.setTabBarItem(item);
 	resolve();
 }, SetTabBarItemProtocol, SetTabBarItemOptions);
+//#endregion
+//#region src/x/api/tabBar/setTabBarStyle.ts
 init_web_dom_iterable();
 var setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (options, _ref) => {
 	var { resolve, reject } = _ref;
@@ -3340,6 +3613,8 @@ var setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (opti
 	tabBar.setTabBarStyle(style);
 	resolve();
 }, SetTabBarStyleProtocol, SetTabBarStyleOptions);
+//#endregion
+//#region src/x/api/tabBar/hideTabBar.ts
 init_web_dom_iterable();
 var hideTabBar = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR, (options, _ref) => {
 	var { resolve, reject } = _ref;
@@ -3351,6 +3626,8 @@ var hideTabBar = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR, (options, _ref
 	tabBar.hideTabBar(new Map([["animation", options === null || options === void 0 ? void 0 : options.animation]]));
 	resolve();
 }, HideTabBarProtocol);
+//#endregion
+//#region src/x/api/tabBar/showTabBar.ts
 init_web_dom_iterable();
 var showTabBar = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR, (args, _ref) => {
 	var { resolve, reject } = _ref;
@@ -3363,33 +3640,41 @@ var showTabBar = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR, (args, _ref) =
 	tabBar.showTabBar(new Map([["animation", animation]]));
 	resolve();
 }, ShowTabBarProtocol);
+//#endregion
+//#region src/x/api/tabBar/showTabBarRedDot.ts
 init_web_dom_iterable();
 var showTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR_RED_DOT, (_ref, _ref2) => {
-	var { index: index$1 } = _ref;
+	var { index } = _ref;
 	var { resolve, reject } = _ref2;
 	var tabBar = getTabBar();
 	if (tabBar === null) {
 		reject("tabBar is not exist");
 		return;
 	}
-	tabBar.showTabBarRedDot(new Map([["index", index$1]]));
+	tabBar.showTabBarRedDot(new Map([["index", index]]));
 	resolve();
 }, ShowTabBarRedDotProtocol, ShowTabBarRedDotOptions);
+//#endregion
+//#region src/x/api/tabBar/hideTabBarRedDot.ts
 init_web_dom_iterable();
 var hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, (_ref, _ref2) => {
-	var { index: index$1 } = _ref;
+	var { index } = _ref;
 	var { resolve, reject } = _ref2;
 	var tabBar = getTabBar();
 	if (tabBar === null) {
 		reject("tabBar is not exist");
 		return;
 	}
-	tabBar.hideTabBarRedDot(new Map([["index", index$1]]));
+	tabBar.hideTabBarRedDot(new Map([["index", index]]));
 	resolve();
 }, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
+//#endregion
+//#region src/x/api/tabBar/onTabBarMidButtonTap.ts
 var onTabBarMidButtonTap = (cb) => {
 	onTabBarMidButtonTapCallback.push(cb);
 };
+//#endregion
+//#region src/x/api/navigationBar/setNavigationBarColor.ts
 init_web_dom_iterable();
 var setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, (_ref, _ref2) => {
 	var { frontColor, backgroundColor } = _ref;
@@ -3399,6 +3684,8 @@ var setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
 	page.vm.$nativePage.updateStyle(new Map([["navigationBarTextStyle", frontColor == "#000000" ? "black" : "white"], ["navigationBarBackgroundColor", backgroundColor]]));
 	resolve();
 }, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
+//#endregion
+//#region src/x/api/navigationBar/setNavigationBarTitle.ts
 init_web_dom_iterable();
 var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (options, _ref) => {
 	var { resolve, reject } = _ref;
@@ -3410,11 +3697,15 @@ var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
 	page.$nativePage.updateStyle(new Map([["navigationBarTitleText", options.title]]));
 	resolve();
 }, SetNavigationBarTitleProtocol);
-var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id$2) => {
+//#endregion
+//#region src/x/api/dom/getElementById.ts
+var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id) => {
 	var page = getCurrentPage();
 	if (page == null) return null;
-	return page.getElementById(id$2);
+	return page.getElementById(id);
 });
+//#endregion
+//#region src/x/api/dom/createSelectorQuery.ts
 function isVueComponent(comp) {
 	var has$instance = typeof comp.$ === "object";
 	var has$el = typeof comp.$el === "object";
@@ -3454,6 +3745,9 @@ var NodesRefImpl = class {
 		this._selectorQuery._push(this._selector, this._component, this._single, { context: true }, callback);
 		return this._selectorQuery;
 	}
+	/**
+	* fields({node:true})
+	*/
 	node(_callback) {
 		this._selectorQuery._push(this._selector, this._component, this._single, { node: true }, _callback);
 		return this._selectorQuery;
@@ -3506,15 +3800,27 @@ var SelectorQueryImpl = class {
 		this._queueCb.push(callback);
 	}
 };
+/**
+* QuerySelectorHelper
+*/
 var QuerySelectorHelper = class QuerySelectorHelper {
 	constructor(element, vnode, fields) {
 		this._element = element;
 		this._commentStartVNode = vnode;
 		this._fields = fields;
 	}
+	/**
+	* entry
+	*/
 	static queryElement(element, selector, all, vnode, fields) {
 		return new QuerySelectorHelper(element, vnode, fields).query(selector, all);
 	}
+	/**
+	* 执行查询
+	* @param selector 选择器
+	* @param all 是否查询所有 selectAll
+	* @returns
+	*/
 	query(selector, all) {
 		if (this._element.nodeName == "#comment") return this.queryFragment(this._element, selector, all);
 		else return all ? this.querySelectorAll(this._element, selector) : this.querySelector(this._element, selector);
@@ -3565,6 +3871,11 @@ var QuerySelectorHelper = class QuerySelectorHelper {
 		if (selector.toUpperCase() == element.nodeName.toUpperCase()) return element;
 		return null;
 	}
+	/**
+	* 查询元素信息
+	* @param element
+	* @returns
+	*/
 	getNodeInfo(element) {
 		var _element$getAttribute;
 		if (this._fields.node == true) {
@@ -3589,19 +3900,30 @@ var QuerySelectorHelper = class QuerySelectorHelper {
 		};
 	}
 };
-function requestComponentInfo(vueComponent, queue$1, callback) {
+/**
+* requestComponentInfo
+* @param vueComponent
+* @param queue
+* @param callback
+*/
+function requestComponentInfo(vueComponent, queue, callback) {
 	var result = [];
 	var el = vueComponent === null || vueComponent === void 0 ? void 0 : vueComponent.$el;
-	if (el != null) queue$1.forEach((item) => {
+	if (el != null) queue.forEach((item) => {
 		var queryResult = QuerySelectorHelper.queryElement(el, item.selector, !item.single, vueComponent === null || vueComponent === void 0 ? void 0 : vueComponent.$.subTree, item.fields);
 		if (queryResult != null) result.push(queryResult);
 	});
 	callback(result);
 }
+/**
+* createSelectorQuery
+*/
 var createSelectorQuery = function() {
 	var instance = getCurrentPage().vm;
 	return new SelectorQueryImpl(instance);
 };
+//#endregion
+//#region src/x/api/dom/createCanvasContextAsync.ts
 var CanvasContextImpl = class {
 	constructor(element) {
 		this._element = element;
@@ -3638,6 +3960,8 @@ var createCanvasContextAsync = /* @__PURE__ */ defineAsyncApi("createCanvasConte
 		else reject(new UniError("uni-createCanvasContextAsync", -1, "canvas id invalid.").errMsg);
 	}).exec();
 });
+//#endregion
+//#region src/x/api/ui/pageScrollTo.ts
 function queryElementTop(component, selector) {
 	var _component$$el;
 	var scrollNode = (_component$$el = component.$el) === null || _component$$el === void 0 ? void 0 : _component$$el.querySelector(selector);
@@ -3667,6 +3991,8 @@ var pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, (options, 
 	scrollViewNode.scrollTop = top;
 	res.resolve();
 }, PageScrollToProtocol, PageScrollToOptions);
+//#endregion
+//#region src/x/api/ui/startPullDownRefresh.ts
 var startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_options, res) => {
 	var page = getCurrentPage().vm;
 	if (page === null) {
@@ -3680,6 +4006,8 @@ var startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_RE
 		}
 	});
 });
+//#endregion
+//#region src/x/api/ui/stopPullDownRefresh.ts
 var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, res) => {
 	var page = getCurrentPage().vm;
 	if (page === null) {
@@ -3689,6 +4017,8 @@ var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFR
 	page.$nativePage.stopPullDownRefresh();
 	res.resolve();
 });
+//#endregion
+//#region src/x/api/base/env.ts
 var env = {
 	USER_DATA_PATH: "unifile://usr/",
 	CACHE_PATH: "unifile://cache/",
@@ -3696,6 +4026,8 @@ var env = {
 	TEMP_PATH: "unifile://temp/",
 	ANDROID_INTERNAL_SANDBOX_PATH: "unifile://androidInternalSandbox/"
 };
+//#endregion
+//#region src/x/api/performance/index.ts
 var _PerformanceEntryStatus;
 var APP_LAUNCH = "appLaunch";
 var PERFORMANCE_BUFFER_SIZE = 30;
@@ -3974,8 +4306,8 @@ var PerformanceImpl = class {
 		if (this._observerList.indexOf(observer) < 0) this._observerList.push(observer);
 	}
 	disconnect(observer) {
-		var index$1 = this._observerList.indexOf(observer);
-		if (index$1 >= 0) this._observerList.splice(index$1, 1);
+		var index = this._observerList.indexOf(observer);
+		if (index >= 0) this._observerList.splice(index, 1);
 	}
 	getEntries() {
 		return this._allEntryList.getEntries();
@@ -3993,6 +4325,8 @@ var PerformanceImpl = class {
 var getPerformance = function() {
 	return new PerformanceImpl();
 };
+//#endregion
+//#region src/service/api/plugin/uts.ts
 var callbackId = 1;
 var proxy;
 var keepAliveCallbacks = {};
@@ -4044,16 +4378,16 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
 	arg = toRaw(arg);
 	var isVaporAndroid = false;
 	if (typeof arg === "function") {
-		var id$2;
+		var id;
 		if (keepAlive) {
-			var oldId = Object.keys(callbacks).find((id$3) => callbacks[id$3] === arg);
-			id$2 = oldId ? parseInt(oldId) : callbackId++;
-			callbacks[id$2] = arg;
+			var oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
+			id = oldId ? parseInt(oldId) : callbackId++;
+			callbacks[id] = arg;
 		} else {
-			id$2 = callbackId++;
-			callbacks[id$2] = arg;
+			id = callbackId++;
+			callbacks[id] = arg;
 		}
-		return id$2;
+		return id;
 	} else if (isArray(arg)) {
 		context.depth++;
 		return arg.map((item) => normalizeArg(item, callbacks, keepAlive, context));
@@ -4083,8 +4417,8 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
 	}
 	return arg;
 }
-function initUTSInstanceMethod(async, opts, instanceId, proxy$1) {
-	return initProxyFunction("method", async, opts, instanceId, proxy$1);
+function initUTSInstanceMethod(async, opts, instanceId, proxy) {
+	return initProxyFunction("method", async, opts, instanceId, proxy);
 }
 function getProxy() {
 	if (!proxy) proxy = {
@@ -4097,18 +4431,18 @@ function getProxy() {
 	};
 	return proxy;
 }
-function resolveSyncResult(args, res, returnOptions, instanceId, proxy$1) {
+function resolveSyncResult(args, res, returnOptions, instanceId, proxy) {
 	if (!res) throw new Error("返回值为：" + JSON.stringify(res) + "；请求参数为：" + JSON.stringify(args));
 	if (isString(res)) try {
 		res = JSON.parse(res);
-	} catch (e$1) {
-		throw new Error("JSON.parse(".concat(res, "): ") + e$1);
+	} catch (e) {
+		throw new Error("JSON.parse(".concat(res, "): ") + e);
 	}
 	if (res.errMsg) throw new Error(res.errMsg);
 	if (returnOptions) {
 		if (returnOptions.type === "interface" && typeof res.params === "number") {
 			if (!res.params) return null;
-			if (res.params === instanceId && proxy$1) return proxy$1;
+			if (res.params === instanceId && proxy) return proxy;
 			if (interfaceDefines[returnOptions.options]) return new (initUTSProxyClass(extend({ instanceId: res.params }, interfaceDefines[returnOptions.options])))();
 		}
 	}
@@ -4119,7 +4453,7 @@ function invokePropGetter(args) {
 	delete args.errMsg;
 	return resolveSyncResult(args, getProxy().invokeSync(args, () => {}));
 }
-function initProxyFunction(type, async, _ref, instanceId, proxy$1) {
+function initProxyFunction(type, async, _ref, instanceId, proxy) {
 	var { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, keepAlive, params: methodParams, return: returnOptions, errMsg } = _ref;
 	if (!keepAlive) keepAlive = (methodName.indexOf("on") === 0 || methodName.indexOf("off") === 0) && methodParams.length === 1 && methodParams[0].type === "UTSCallback";
 	var baseArgs = instanceId ? {
@@ -4146,12 +4480,12 @@ function initProxyFunction(type, async, _ref, instanceId, proxy$1) {
 	return function() {
 		if (errMsg) throw new Error(errMsg);
 		var callbacks = keepAlive ? keepAliveCallbacks : {};
-		var invokeCallback$1 = (_ref2) => {
-			var { id: id$2, name, params } = _ref2;
-			var callback = callbacks[id$2];
+		var invokeCallback = (_ref2) => {
+			var { id, name, params } = _ref2;
+			var callback = callbacks[id];
 			if (callback) {
 				callback(...params);
-				if (!keepAlive) delete callbacks[id$2];
+				if (!keepAlive) delete callbacks[id];
 			} else console.error("uts插件[".concat(moduleName, "] ").concat(pkg).concat(cls, ".").concat(methodName.replace("ByJs", ""), " ").concat(name, "回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive"));
 		};
 		var context = {
@@ -4163,12 +4497,12 @@ function initProxyFunction(type, async, _ref, instanceId, proxy$1) {
 		invokeArgs.nested = context.nested;
 		if (async) return new Promise((resolve, reject) => {
 			getProxy().invokeAsync(invokeArgs, (res) => {
-				if (res.type !== "return") invokeCallback$1(res);
+				if (res.type !== "return") invokeCallback(res);
 				else if (res.errMsg) reject(res.errMsg);
 				else resolve(res.params);
 			});
 		});
-		return resolveSyncResult(invokeArgs, getProxy().invokeSync(invokeArgs, invokeCallback$1), returnOptions, instanceId, proxy$1);
+		return resolveSyncResult(invokeArgs, getProxy().invokeSync(invokeArgs, invokeCallback), returnOptions, instanceId, proxy);
 	};
 }
 function initUTSStaticMethod(async, opts) {
@@ -4192,7 +4526,7 @@ function parseClassPropertySetter(name) {
 	return "__$set" + capitalize(name);
 }
 function initUTSProxyClass(options) {
-	var { moduleName, moduleType, package: pkg, class: cls, methods, props: props$5, setters, errMsg } = options;
+	var { moduleName, moduleType, package: pkg, class: cls, methods, props, setters, errMsg } = options;
 	var baseOptions = {
 		moduleName,
 		moduleType,
@@ -4236,7 +4570,7 @@ function initUTSProxyClass(options) {
 			} else if (typeof instanceId === "number") this.__instanceId = instanceId;
 			if (!this.__instanceId) throw new Error("new ".concat(cls, " is failed"));
 			var instance = this;
-			var proxy$1 = new Proxy(instance, {
+			var proxy = new Proxy(instance, {
 				get(_, name) {
 					if (name === "__v_skip") return true;
 					if (!target[name]) {
@@ -4248,8 +4582,8 @@ function initUTSProxyClass(options) {
 								keepAlive,
 								params: _params,
 								return: returnOptions
-							}, baseOptions), instance.__instanceId, proxy$1);
-						} else if (props$5.includes(name)) return invokePropGetter({
+							}, baseOptions), instance.__instanceId, proxy);
+						} else if (props.includes(name)) return invokePropGetter({
 							moduleName,
 							moduleType,
 							id: instance.__instanceId,
@@ -4263,7 +4597,7 @@ function initUTSProxyClass(options) {
 					return target[name];
 				},
 				set(_, name, newValue) {
-					if (props$5.includes(name)) {
+					if (props.includes(name)) {
 						var setter = parseClassPropertySetter(name);
 						if (!target[setter]) {
 							var param = setters[name];
@@ -4271,7 +4605,7 @@ function initUTSProxyClass(options) {
 								name,
 								keepAlive: false,
 								params: [param]
-							}, baseOptions), instance.__instanceId, proxy$1);
+							}, baseOptions), instance.__instanceId, proxy);
 						}
 						target[parseClassPropertySetter(name)](newValue);
 						return true;
@@ -4279,7 +4613,7 @@ function initUTSProxyClass(options) {
 					return false;
 				}
 			});
-			return Object.freeze(proxy$1);
+			return Object.freeze(proxy);
 		}
 	};
 	var staticPropSetterCache = {};
@@ -4359,6 +4693,8 @@ function requireUTSPlugin(name) {
 	}
 	return define;
 }
+//#endregion
+//#region src/service/api/plugin/log.ts
 function __log__(type, filename) {
 	for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) args[_key - 2] = arguments[_key];
 	var res = normalizeLog(type, filename, args);
@@ -4379,15 +4715,15 @@ function normalizeLog(type, filename, args) {
 		return console[type].apply(console, args);
 	}
 	return args.map(function(v) {
-		var type$1 = toTypeString(v).toLowerCase();
+		var type = toTypeString(v).toLowerCase();
 		if ([
 			"[object object]",
 			"[object array]",
 			"[object module]"
-		].indexOf(type$1) !== -1) try {
+		].indexOf(type) !== -1) try {
 			v = "---BEGIN:JSON---" + JSON.stringify(v, jsonStringifyReplacer) + "---END:JSON---";
-		} catch (e$1) {
-			v = type$1;
+		} catch (e) {
+			v = type;
 		}
 		else if (v === null) v = "---NULL---";
 		else if (v === void 0) v = "---UNDEFINED---";
@@ -4399,7 +4735,9 @@ function normalizeLog(type, filename, args) {
 		return v;
 	}).join("---COMMA---") + " " + filename;
 }
-var api_exports = /* @__PURE__ */ __export({
+//#endregion
+//#region src/x/api/index.ts
+var api_exports = /* @__PURE__ */ __exportAll({
 	$emit: () => $emit,
 	$off: () => $off,
 	$on: () => $on,
@@ -4445,7 +4783,9 @@ var api_exports = /* @__PURE__ */ __export({
 	startPullDownRefresh: () => startPullDownRefresh,
 	stopPullDownRefresh: () => stopPullDownRefresh,
 	switchTab: () => switchTab
-}, 1);
+});
+//#endregion
+//#region ../uni-components/src/helpers/animation.ts
 function converPx(value) {
 	if (/^-?\d+[ur]px$/i.test(value)) return value.replace(/(^-?\d+)[ur]px$/i, (text, num) => {
 		return "".concat(uni.upx2px(parseFloat(num)), "px");
@@ -4501,7 +4841,7 @@ function getStyle(action) {
 		var type = animate.type;
 		var args = [...animate.args];
 		if (animateTypes1.concat(animateTypes2).includes(type)) {
-			if (type.startsWith("rotate") || type.startsWith("skew")) args = args.map((value$1) => parseFloat(value$1) + "deg");
+			if (type.startsWith("rotate") || type.startsWith("skew")) args = args.map((value) => parseFloat(value) + "deg");
 			else if (type.startsWith("translate")) args = args.map(converPx);
 			if (animateTypes2.indexOf(type) >= 0) args.length = 1;
 			transform.push("".concat(type, "(").concat(args.join(","), ")"));
@@ -4519,18 +4859,18 @@ function getStyle(action) {
 function startAnimation(context) {
 	var animation = context.animation;
 	if (!animation || !animation.actions || !animation.actions.length) return;
-	var index$1 = 0;
+	var index = 0;
 	var actions = animation.actions;
 	var length = animation.actions.length;
 	function animate() {
-		var action = actions[index$1];
+		var action = actions[index];
 		var transition = action.option.transition;
 		var style = getStyle(action);
-		Object.keys(style).forEach((key$1) => {
-			context.$el.style[key$1] = style[key$1];
+		Object.keys(style).forEach((key) => {
+			context.$el.style[key] = style[key];
 		});
-		index$1 += 1;
-		if (index$1 < length) setTimeout(animate, transition.duration + transition.delay);
+		index += 1;
+		if (index < length) setTimeout(animate, transition.duration + transition.delay);
 	}
 	setTimeout(() => {
 		animate();
@@ -4548,19 +4888,33 @@ var animation_default = {
 		startAnimation(this);
 	}
 };
+//#endregion
+//#region ../uni-components/src/helpers/component.ts
+/**
+* 内置组件（对外，比如view）
+* @param options
+* @returns
+*/
 var defineBuiltInComponent = (options) => {
 	options.__reserved = true;
-	var { props: props$5, mixins } = options;
-	if (!props$5 || !props$5.animation) (mixins || (options.mixins = [])).push(animation_default);
+	var { props, mixins } = options;
+	if (!props || !props.animation) (mixins || (options.mixins = [])).push(animation_default);
 	var rootElement = options.rootElement;
 	if (rootElement) customElements.define(rootElement.name, rootElement.class, rootElement.options);
 	return defineSystemComponent(options);
 };
+/**
+* 系统组件（不对外，比如App,Page等）
+* @param options
+* @returns
+*/
 var defineSystemComponent = (options) => {
 	options.__reserved = true;
 	options.compatConfig = { MODE: 3 };
 	return defineComponent(options);
 };
+//#endregion
+//#region ../uni-components/src/helpers/UniElement.ts
 var rpx2Unit = createRpx2Unit(defaultRpx2Unit.unit, defaultRpx2Unit.unitRatio, defaultRpx2Unit.unitPrecision);
 function transformRpx(value) {
 	if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
@@ -4574,13 +4928,13 @@ var UniElement = class extends HTMLElement {
 		this._props = {};
 		this.__isUniElement = true;
 	}
-	attachVmProps(props$5) {
-		this._props = props$5;
+	attachVmProps(props) {
+		this._props = props;
 	}
 	getAttribute(qualifiedName) {
 		var name = camelize(qualifiedName);
-		var attr$1 = name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName);
-		return attr$1 === void 0 ? null : attr$1;
+		var attr = name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName);
+		return attr === void 0 ? null : attr;
 	}
 	getPage() {
 		var _this$__vnode;
@@ -4627,10 +4981,14 @@ var UniElement = class extends HTMLElement {
 		return super.nodeName.replace(/^UNI-/, "");
 	}
 };
+//#endregion
+//#region ../uni-components/src/vue/form/index.tsx
 init_web_dom_iterable();
 PolySymbol("uf");
 PolySymbol("ul");
 PolySymbol("ucg");
+//#endregion
+//#region ../uni-components/src/vue/checkbox/index.tsx
 init_web_dom_iterable();
 var keyboardChangeCallback;
 plusReady(() => {
@@ -4641,15 +4999,13 @@ document.addEventListener("keyboardchange", function(event) {
 	event.height;
 	keyboardChangeCallback && keyboardChangeCallback();
 }, false);
-Number, String, Boolean, String, Boolean, String, Boolean, String;
 var emit$1 = ["keyboardheightchange"];
 /^Apple/.test(navigator.vendor);
+//#endregion
+//#region ../uni-components/src/vue/editor/quill/index.ts
 init_web_dom_iterable();
-String, Boolean, String, String, String, Boolean, String, Boolean, String, Boolean, String;
 [...emit$1];
-Boolean;
 navigator.vendor;
-String, String, Number, String, Number, Boolean, String, Boolean, String, Boolean, String, Number, String, Number, String, Number, String, String, Boolean, String, String, String, String, Number, String, String, Boolean, Boolean, String, String, String;
 var emit = [
 	"input",
 	"focus",
@@ -4663,25 +5019,28 @@ var emit = [
 	...emit$1
 ];
 once(() => {
-	var osVersion$1 = plus.os.version;
-	return plus.os.name === "iOS" && !!osVersion$1 && parseInt(osVersion$1) >= 16 && parseFloat(osVersion$1) < 17.2;
+	var osVersion = plus.os.version;
+	return plus.os.name === "iOS" && !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2;
 });
-String, String;
 [...emit];
+//#endregion
+//#region ../uni-components/src/helpers/useAttrs.ts
 init_web_dom_iterable();
-function e(e$1, t$1, n) {
-	return e$1 > t$1 - n && e$1 < t$1 + n;
+//#endregion
+//#region ../uni-components/src/components/movable-view/utils.js
+function e(e, t, n) {
+	return e > t - n && e < t + n;
 }
-function t(t$1, n) {
-	return e(t$1, 0, n);
+function t(t, n) {
+	return e(t, 0, n);
 }
 function Decline() {}
-Decline.prototype.x = function(e$1) {
-	return Math.sqrt(e$1);
+Decline.prototype.x = function(e) {
+	return Math.sqrt(e);
 };
-function Friction(e$1, t$1) {
-	this._m = e$1;
-	this._f = 1e3 * t$1;
+function Friction(e, t) {
+	this._m = e;
+	this._f = 1e3 * t;
 	this._startTime = 0;
 	this._v = 0;
 }
@@ -4699,14 +5058,14 @@ Friction.prototype.setS = function(x, y) {
 	this._x_s = x;
 	this._y_s = y;
 };
-Friction.prototype.s = function(t$1) {
-	if (void 0 === t$1) t$1 = (/* @__PURE__ */ (/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
-	if (t$1 > this._t) {
-		t$1 = this._t;
-		this._lastDt = t$1;
+Friction.prototype.s = function(t) {
+	if (void 0 === t) t = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+	if (t > this._t) {
+		t = this._t;
+		this._lastDt = t;
 	}
-	var x = this._x_v * t$1 + .5 * this._x_a * Math.pow(t$1, 2) + this._x_s;
-	var y = this._y_v * t$1 + .5 * this._y_a * Math.pow(t$1, 2) + this._y_s;
+	var x = this._x_v * t + .5 * this._x_a * Math.pow(t, 2) + this._x_s;
+	var y = this._y_v * t + .5 * this._y_a * Math.pow(t, 2) + this._y_s;
 	if (this._x_a > 0 && x < this._endPositionX || this._x_a < 0 && x > this._endPositionX) x = this._endPositionX;
 	if (this._y_a > 0 && y < this._endPositionY || this._y_a < 0 && y > this._endPositionY) y = this._endPositionY;
 	return {
@@ -4714,12 +5073,12 @@ Friction.prototype.s = function(t$1) {
 		y
 	};
 };
-Friction.prototype.ds = function(t$1) {
-	if (void 0 === t$1) t$1 = (/* @__PURE__ */ (/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
-	if (t$1 > this._t) t$1 = this._t;
+Friction.prototype.ds = function(t) {
+	if (void 0 === t) t = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+	if (t > this._t) t = this._t;
 	return {
-		dx: this._x_v + this._x_a * t$1,
-		dy: this._y_v + this._y_a * t$1
+		dx: this._x_v + this._x_a * t,
+		dy: this._y_v + this._y_a * t
 	};
 };
 Friction.prototype.delta = function() {
@@ -4732,9 +5091,9 @@ Friction.prototype.dt = function() {
 	return -this._x_v / this._x_a;
 };
 Friction.prototype.done = function() {
-	var t$1 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
+	var t = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
 	this._lastDt = null;
-	return t$1;
+	return t;
 };
 Friction.prototype.setEnd = function(x, y) {
 	this._endPositionX = x;
@@ -4752,103 +5111,103 @@ function Spring(m, k, c) {
 	this._endPosition = 0;
 	this._startTime = 0;
 }
-Spring.prototype._solve = function(e$1, t$1) {
+Spring.prototype._solve = function(e, t) {
 	var n = this._c;
-	var i$1 = this._m;
+	var i = this._m;
 	var r = this._k;
-	var o = n * n - 4 * i$1 * r;
+	var o = n * n - 4 * i * r;
 	if (o === 0) {
-		var a = -n / (2 * i$1);
-		var s = e$1;
-		var l = t$1 / (a * e$1);
+		var a = -n / (2 * i);
+		var s = e;
+		var l = t / (a * e);
 		return {
-			x: function(e$2) {
-				return (s + l * e$2) * Math.pow(Math.E, a * e$2);
+			x: function(e) {
+				return (s + l * e) * Math.pow(Math.E, a * e);
 			},
-			dx: function(e$2) {
-				var t$2 = Math.pow(Math.E, a * e$2);
-				return a * (s + l * e$2) * t$2 + l * t$2;
+			dx: function(e) {
+				var t = Math.pow(Math.E, a * e);
+				return a * (s + l * e) * t + l * t;
 			}
 		};
 	}
 	if (o > 0) {
-		var c = (-n - Math.sqrt(o)) / (2 * i$1);
-		var u = (-n + Math.sqrt(o)) / (2 * i$1);
-		var d = (t$1 - c * e$1) / (u - c);
-		var h = e$1 - d;
+		var c = (-n - Math.sqrt(o)) / (2 * i);
+		var u = (-n + Math.sqrt(o)) / (2 * i);
+		var d = (t - c * e) / (u - c);
+		var h = e - d;
 		return {
-			x: function(e$2) {
-				var t$2;
-				var n$1;
-				if (e$2 === this._t) {
-					t$2 = this._powER1T;
-					n$1 = this._powER2T;
+			x: function(e) {
+				var t;
+				var n;
+				if (e === this._t) {
+					t = this._powER1T;
+					n = this._powER2T;
 				}
-				this._t = e$2;
-				if (!t$2) t$2 = this._powER1T = Math.pow(Math.E, c * e$2);
-				if (!n$1) n$1 = this._powER2T = Math.pow(Math.E, u * e$2);
-				return h * t$2 + d * n$1;
+				this._t = e;
+				if (!t) t = this._powER1T = Math.pow(Math.E, c * e);
+				if (!n) n = this._powER2T = Math.pow(Math.E, u * e);
+				return h * t + d * n;
 			},
-			dx: function(e$2) {
-				var t$2;
-				var n$1;
-				if (e$2 === this._t) {
-					t$2 = this._powER1T;
-					n$1 = this._powER2T;
+			dx: function(e) {
+				var t;
+				var n;
+				if (e === this._t) {
+					t = this._powER1T;
+					n = this._powER2T;
 				}
-				this._t = e$2;
-				if (!t$2) t$2 = this._powER1T = Math.pow(Math.E, c * e$2);
-				if (!n$1) n$1 = this._powER2T = Math.pow(Math.E, u * e$2);
-				return h * c * t$2 + d * u * n$1;
+				this._t = e;
+				if (!t) t = this._powER1T = Math.pow(Math.E, c * e);
+				if (!n) n = this._powER2T = Math.pow(Math.E, u * e);
+				return h * c * t + d * u * n;
 			}
 		};
 	}
-	var p = Math.sqrt(4 * i$1 * r - n * n) / (2 * i$1);
-	var f = -n / 2 * i$1;
-	var v = e$1;
-	var g = (t$1 - f * e$1) / p;
+	var p = Math.sqrt(4 * i * r - n * n) / (2 * i);
+	var f = -n / 2 * i;
+	var v = e;
+	var g = (t - f * e) / p;
 	return {
-		x: function(e$2) {
-			return Math.pow(Math.E, f * e$2) * (v * Math.cos(p * e$2) + g * Math.sin(p * e$2));
+		x: function(e) {
+			return Math.pow(Math.E, f * e) * (v * Math.cos(p * e) + g * Math.sin(p * e));
 		},
-		dx: function(e$2) {
-			var t$2 = Math.pow(Math.E, f * e$2);
-			var n$1 = Math.cos(p * e$2);
-			var i$2 = Math.sin(p * e$2);
-			return t$2 * (g * p * n$1 - v * p * i$2) + f * t$2 * (g * i$2 + v * n$1);
+		dx: function(e) {
+			var t = Math.pow(Math.E, f * e);
+			var n = Math.cos(p * e);
+			var i = Math.sin(p * e);
+			return t * (g * p * n - v * p * i) + f * t * (g * i + v * n);
 		}
 	};
 };
-Spring.prototype.x = function(e$1) {
-	if (void 0 === e$1) e$1 = (/* @__PURE__ */ (/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
-	return this._solution ? this._endPosition + this._solution.x(e$1) : 0;
+Spring.prototype.x = function(e) {
+	if (void 0 === e) e = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+	return this._solution ? this._endPosition + this._solution.x(e) : 0;
 };
-Spring.prototype.dx = function(e$1) {
-	if (void 0 === e$1) e$1 = (/* @__PURE__ */ (/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
-	return this._solution ? this._solution.dx(e$1) : 0;
+Spring.prototype.dx = function(e) {
+	if (void 0 === e) e = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+	return this._solution ? this._solution.dx(e) : 0;
 };
-Spring.prototype.setEnd = function(e$1, n, i$1) {
-	if (!i$1) i$1 = (/* @__PURE__ */ new Date()).getTime();
-	if (e$1 !== this._endPosition || !t(n, .1)) {
+Spring.prototype.setEnd = function(e, n, i) {
+	if (!i) i = (/* @__PURE__ */ new Date()).getTime();
+	if (e !== this._endPosition || !t(n, .1)) {
 		n = n || 0;
 		var r = this._endPosition;
 		if (this._solution) {
-			if (t(n, .1)) n = this._solution.dx((i$1 - this._startTime) / 1e3);
-			r = this._solution.x((i$1 - this._startTime) / 1e3);
+			if (t(n, .1)) n = this._solution.dx((i - this._startTime) / 1e3);
+			r = this._solution.x((i - this._startTime) / 1e3);
 			if (t(n, .1)) n = 0;
 			if (t(r, .1)) r = 0;
 			r += this._endPosition;
 		}
-		if (!(this._solution && t(r - e$1, .1) && t(n, .1))) {
-			this._endPosition = e$1;
+		if (!(this._solution && t(r - e, .1) && t(n, .1))) {
+			this._endPosition = e;
 			this._solution = this._solve(r - this._endPosition, n);
-			this._startTime = i$1;
+			this._startTime = i;
 		}
 	}
 };
-Spring.prototype.snap = function(e$1) {
+Spring.prototype.snap = function(e) {
 	this._startTime = (/* @__PURE__ */ new Date()).getTime();
-	this._endPosition = e$1;
+	this._endPosition = e;
 	this._solution = {
 		x: function() {
 			return 0;
@@ -4862,9 +5221,9 @@ Spring.prototype.done = function(n) {
 	if (!n) n = (/* @__PURE__ */ new Date()).getTime();
 	return e(this.x(), this._endPosition, .1) && t(this.dx(), .1);
 };
-Spring.prototype.reconfigure = function(m, t$1, c) {
+Spring.prototype.reconfigure = function(m, t, c) {
 	this._m = m;
-	this._k = t$1;
+	this._k = t;
 	this._c = c;
 	if (!this.done()) {
 		this._solution = this._solve(this.x() - this._endPosition, this.dx());
@@ -4878,68 +5237,75 @@ Spring.prototype.damping = function() {
 	return this._c;
 };
 Spring.prototype.configuration = function() {
-	function e$1(e$2, t$2) {
-		e$2.reconfigure(1, t$2, e$2.damping());
+	function e(e, t) {
+		e.reconfigure(1, t, e.damping());
 	}
-	function t$1(e$2, t$2) {
-		e$2.reconfigure(1, e$2.springConstant(), t$2);
+	function t(e, t) {
+		e.reconfigure(1, e.springConstant(), t);
 	}
 	return [{
 		label: "Spring Constant",
 		read: this.springConstant.bind(this),
-		write: e$1.bind(this, this),
+		write: e.bind(this, this),
 		min: 100,
 		max: 1e3
 	}, {
 		label: "Damping",
 		read: this.damping.bind(this),
-		write: t$1.bind(this, this),
+		write: t.bind(this, this),
 		min: 1,
 		max: 500
 	}];
 };
-function STD(e$1, t$1, n) {
-	this._springX = new Spring(e$1, t$1, n);
-	this._springY = new Spring(e$1, t$1, n);
-	this._springScale = new Spring(e$1, t$1, n);
+function STD(e, t, n) {
+	this._springX = new Spring(e, t, n);
+	this._springY = new Spring(e, t, n);
+	this._springScale = new Spring(e, t, n);
 	this._startTime = 0;
 }
-STD.prototype.setEnd = function(e$1, t$1, n, i$1) {
+STD.prototype.setEnd = function(e, t, n, i) {
 	var r = (/* @__PURE__ */ new Date()).getTime();
-	this._springX.setEnd(e$1, i$1, r);
-	this._springY.setEnd(t$1, i$1, r);
-	this._springScale.setEnd(n, i$1, r);
+	this._springX.setEnd(e, i, r);
+	this._springY.setEnd(t, i, r);
+	this._springScale.setEnd(n, i, r);
 	this._startTime = r;
 };
 STD.prototype.x = function() {
-	var e$1 = (/* @__PURE__ */ (/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+	var e = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
 	return {
-		x: this._springX.x(e$1),
-		y: this._springY.x(e$1),
-		scale: this._springScale.x(e$1)
+		x: this._springX.x(e),
+		y: this._springY.x(e),
+		scale: this._springScale.x(e)
 	};
 };
 STD.prototype.done = function() {
-	var e$1 = (/* @__PURE__ */ new Date()).getTime();
-	return this._springX.done(e$1) && this._springY.done(e$1) && this._springScale.done(e$1);
+	var e = (/* @__PURE__ */ new Date()).getTime();
+	return this._springX.done(e) && this._springY.done(e) && this._springScale.done(e);
 };
-STD.prototype.reconfigure = function(e$1, t$1, n) {
-	this._springX.reconfigure(e$1, t$1, n);
-	this._springY.reconfigure(e$1, t$1, n);
-	this._springScale.reconfigure(e$1, t$1, n);
+STD.prototype.reconfigure = function(e, t, n) {
+	this._springX.reconfigure(e, t, n);
+	this._springY.reconfigure(e, t, n);
+	this._springScale.reconfigure(e, t, n);
 };
+//#endregion
+//#region ../uni-components/src/vue/picker-view/index.tsx
 init_web_dom_iterable();
 var PROGRESS_VALUES = {
 	activeColor: PRIMARY_COLOR,
 	backgroundColor: "#EBEBEB",
 	activeMode: "backwards"
 };
-Number, String, String, Number, Boolean, String, Number, String, String, PROGRESS_VALUES.activeColor, String, PROGRESS_VALUES.activeColor, String, PROGRESS_VALUES.backgroundColor, Boolean, String, String, PROGRESS_VALUES.activeMode, Number, String, Number, String;
+PROGRESS_VALUES.activeColor, PROGRESS_VALUES.activeColor, PROGRESS_VALUES.backgroundColor, PROGRESS_VALUES.activeMode;
 PolySymbol("ucg");
+//#endregion
+//#region ../uni-components/src/vue/radio/index-x.tsx
 init_web_dom_iterable();
+//#endregion
+//#region ../uni-components/src/helpers/text.ts
 init_web_dom_iterable();
-String, Boolean, String, String;
 [...emit];
+//#endregion
+//#region ../uni-app/dist/uni-app.es.js
 var createLifeCycleHook = function(lifecycle) {
 	arguments.length > 1 && arguments[1] !== void 0 && arguments[1];
 	return function(hook) {
@@ -4948,7 +5314,11 @@ var createLifeCycleHook = function(lifecycle) {
 	};
 };
 var onBackPress = /* @__PURE__ */ createLifeCycleHook(ON_BACK_PRESS, 2);
+//#endregion
+//#region ../uni-components/src/vue/page-container/element.ts
 var UniPageContainerElement = class extends UniElement {};
+//#endregion
+//#region ../uni-components/src/vue/page-container/index.vue?vue&type=script&setup=true&lang.ts
 var MAX_SLIDER_DISTANCE = 100;
 var MIN_SLIDER_VELOCITY = .3;
 _objectSpread2(_objectSpread2({}, {
@@ -5008,7 +5378,7 @@ _objectSpread2(_objectSpread2({}, {
 	],
 	setup(__props, _ref) {
 		var { emit: __emit } = _ref;
-		var props$5 = __props;
+		var props = __props;
 		var emits = __emit;
 		var showPageContainer = ref(false);
 		var isAnimating = ref(false);
@@ -5021,8 +5391,8 @@ _objectSpread2(_objectSpread2({}, {
 		var translateValue = ref(0);
 		var overlayStyleMap = computed(() => {
 			var styleObj = {
-				"z-index": props$5.zIndex,
-				"transition-duration": props$5.duration + "ms"
+				"z-index": props.zIndex,
+				"transition-duration": props.duration + "ms"
 			};
 			if (isEntered.value) {
 				styleObj["opacity"] = "1";
@@ -5032,12 +5402,12 @@ _objectSpread2(_objectSpread2({}, {
 		});
 		var innerStyleMap = computed(() => {
 			var styleObj = {
-				"z-index": props$5.zIndex + 1,
-				"transition-duration": props$5.duration + "ms"
+				"z-index": props.zIndex + 1,
+				"transition-duration": props.duration + "ms"
 			};
 			if (translateValue.value != 0 && isDragging) {
 				var transformValue = "";
-				switch (props$5.position) {
+				switch (props.position) {
 					case "bottom":
 					case "top":
 						transformValue = "translateY(".concat(translateValue.value, "px)");
@@ -5051,13 +5421,13 @@ _objectSpread2(_objectSpread2({}, {
 					styleObj["transform"] = transformValue;
 					styleObj["transition"] = "none";
 				}
-			} else if (translateValue.value != 0 && !isDragging) styleObj["transition"] = "transform ".concat(props$5.duration, "ms ease");
+			} else if (translateValue.value != 0 && !isDragging) styleObj["transition"] = "transform ".concat(props.duration, "ms ease");
 			return styleObj;
 		});
 		var popupClasses = computed(() => {
 			var classes = [];
-			if (props$5.position != null) classes.push("uni-page-container-popup-".concat(props$5.position));
-			if (props$5.round) classes.push("uni-page-container-popup-round");
+			if (props.position != null) classes.push("uni-page-container-popup-".concat(props.position));
+			if (props.round) classes.push("uni-page-container-popup-round");
 			if (isEntered.value) classes.push("uni-page-container-popup-enter");
 			return classes;
 		});
@@ -5080,7 +5450,7 @@ _objectSpread2(_objectSpread2({}, {
 			clearTransitionTimer();
 			transitionTimer.value = setTimeout(() => {
 				onAnimationEnd(type);
-			}, props$5.duration);
+			}, props.duration);
 		}
 		function resetDragState() {
 			isDragging = false;
@@ -5112,7 +5482,7 @@ _objectSpread2(_objectSpread2({}, {
 				listenTransitionEnd("leave");
 			});
 		}
-		watch(() => props$5.show, (newVal) => {
+		watch(() => props.show, (newVal) => {
 			if (newVal && !showPageContainer.value) openContainer();
 			else if (!newVal && showPageContainer.value) closeContainer();
 		});
@@ -5123,29 +5493,29 @@ _objectSpread2(_objectSpread2({}, {
 				closeContainer();
 			});
 		}
-		function onTouchStart(e$1) {
-			if (!props$5.closeOnSlideDown) return;
-			if (e$1.touches.length > 0) {
-				var { clientX, clientY } = e$1.touches[0];
+		function onTouchStart(e) {
+			if (!props.closeOnSlideDown) return;
+			if (e.touches.length > 0) {
+				var { clientX, clientY } = e.touches[0];
 				touchStartX = clientX;
 				touchStartY = clientY;
 				touchStartTime = Date.now();
 				isDragging = false;
 			}
 		}
-		function onTouchMove(e$1) {
-			if (!props$5.closeOnSlideDown) {
-				e$1.preventDefault();
-				e$1.stopPropagation();
+		function onTouchMove(e) {
+			if (!props.closeOnSlideDown) {
+				e.preventDefault();
+				e.stopPropagation();
 				return;
 			}
-			if (e$1.touches.length > 0) {
-				var { clientX, clientY } = e$1.touches[0];
+			if (e.touches.length > 0) {
+				var { clientX, clientY } = e.touches[0];
 				var deltaX = clientX - touchStartX;
 				var deltaY = clientY - touchStartY;
 				var shouldDrag = false;
 				var dragValue = 0;
-				switch (props$5.position) {
+				switch (props.position) {
 					case "bottom":
 						if (deltaY > 0) {
 							shouldDrag = true;
@@ -5174,13 +5544,13 @@ _objectSpread2(_objectSpread2({}, {
 				if (shouldDrag) {
 					isDragging = true;
 					translateValue.value = dragValue;
-					e$1.preventDefault();
-					e$1.stopPropagation();
+					e.preventDefault();
+					e.stopPropagation();
 				}
 			}
 		}
 		function onTouchEnd() {
-			if (!props$5.closeOnSlideDown) return;
+			if (!props.closeOnSlideDown) return;
 			if (isDragging) {
 				var deltaTime = Date.now() - touchStartTime;
 				var velocity = Math.abs(translateValue.value) / deltaTime;
@@ -5191,7 +5561,7 @@ _objectSpread2(_objectSpread2({}, {
 			}
 		}
 		function onTouchCancel() {
-			if (!props$5.closeOnSlideDown) return;
+			if (!props.closeOnSlideDown) return;
 			if (isDragging) resetDragState();
 		}
 		onBackPress(() => {
@@ -5202,7 +5572,7 @@ _objectSpread2(_objectSpread2({}, {
 			return false;
 		});
 		onMounted(() => {
-			if (props$5.show) openContainer();
+			if (props.show) openContainer();
 		});
 		onBeforeUnmount(() => {
 			clearTransitionTimer();
@@ -5226,16 +5596,20 @@ _objectSpread2(_objectSpread2({}, {
 		};
 	}
 });
+//#endregion
+//#region ../uni-components/src/vue/loading/element.ts
 var UniVueElement = class extends HTMLElement {};
 var UniLoadingElement = class extends UniVueElement {};
+//#endregion
+//#region ../uni-components/src/vue/loading/useLoadingStyle.ts
 function useLoadingStyle(targetElement, bold) {
 	var loadingSize = ref("16px");
 	var loadingBorderWidth = ref("1px");
 	var loadingBorderRadius = ref("8px");
 	var observer = null;
-	var calculateLoadingWidth = (element, bold$1) => {
+	var calculateLoadingWidth = (element, bold) => {
 		var { width, height } = element.getBoundingClientRect();
-		var coefficient = bold$1 ? 2 : 1;
+		var coefficient = bold ? 2 : 1;
 		var minSide = Math.min(width, height);
 		var calculatedWidth = minSide / 16 * coefficient;
 		loadingSize.value = "".concat(minSide, "px");
@@ -5288,9 +5662,9 @@ _objectSpread2(_objectSpread2({}, {
 		}
 	},
 	setup(__props) {
-		var props$5 = __props;
+		var props = __props;
 		var LoadingRef = ref(null);
-		var loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props$5.bold)));
+		var loadingStyle = reactive(useLoadingStyle(LoadingRef, computed(() => props.bold)));
 		return (_ctx, _cache) => {
 			return openBlock(), createElementBlock("view", {
 				class: "__uni_loading_container__",
@@ -5298,7 +5672,7 @@ _objectSpread2(_objectSpread2({}, {
 				ref: LoadingRef,
 				style: { "display": "flex" }
 			}, [createElementVNode("view", {
-				class: normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props$5.paused }]),
+				class: normalizeClass(["__uni-loading__ __loading-4-3__", { "__uni-loading__paused": props.paused }]),
 				style: normalizeStyle([{ "box-sizing": "border-box" }, {
 					width: loadingStyle.size,
 					height: loadingStyle.size,
@@ -5308,21 +5682,23 @@ _objectSpread2(_objectSpread2({}, {
 		};
 	}
 });
-var UniNavigatorElement = /* @__PURE__ */ (() => class extends UniElementImpl {
+//#endregion
+//#region src/x/components/navigator/model.ts
+var UniNavigatorElement = class extends UniElementImpl {
 	constructor(data, pageNode) {
 		super(data, pageNode);
 		this.tagName = "NAVIGATOR";
 		this.nodeName = this.tagName;
-		this._getAttribute = (key$1) => {
+		this._getAttribute = (key) => {
 			return null;
 		};
 	}
-	getAnyAttribute(key$1) {
-		var value = this._getAttribute(key$1);
+	getAnyAttribute(key) {
+		var value = this._getAttribute(key);
 		if (value != null) return value;
-		return super.getAnyAttribute(key$1);
+		return super.getAnyAttribute(key);
 	}
-})();
+};
 var navigatorProps = {
 	url: {
 		type: String,
@@ -5361,10 +5737,12 @@ var navigatorProps = {
 		default: 600
 	}
 };
-var navigator_exports = /* @__PURE__ */ __export({
+//#endregion
+//#region src/x/components/navigator/navigator.tsx
+var navigator_exports = /* @__PURE__ */ __exportAll({
 	UniNavigatorElement: () => UniNavigatorElement,
 	default: () => navigator_default
-}, 1);
+});
 var navigator_default = /* @__PURE__ */ defineBuiltInComponent({
 	name: "Navigator",
 	rootElement: {
@@ -5373,32 +5751,32 @@ var navigator_default = /* @__PURE__ */ defineBuiltInComponent({
 	},
 	props: navigatorProps,
 	emits: ["click"],
-	setup(props$5, _ref) {
-		var { emit: emit$2, slots } = _ref;
+	setup(props, _ref) {
+		var { emit, slots } = _ref;
 		var $uniNavigatorElement = ref();
 		var instance = getCurrentInstance();
 		onMounted(() => {
 			instance === null || instance === void 0 || instance.$waitNativeRender(() => {
 				if (!instance) return;
-				$uniNavigatorElement.value._getAttribute = (key$1) => {
+				$uniNavigatorElement.value._getAttribute = (key) => {
 					var _props$keyString$toSt, _props$keyString;
-					var keyString = camelize$1(key$1);
-					return props$5[keyString] !== null ? (_props$keyString$toSt = (_props$keyString = props$5[keyString]) === null || _props$keyString === void 0 ? void 0 : _props$keyString.toString()) !== null && _props$keyString$toSt !== void 0 ? _props$keyString$toSt : null : null;
+					var keyString = camelize$1(key);
+					return props[keyString] !== null ? (_props$keyString$toSt = (_props$keyString = props[keyString]) === null || _props$keyString === void 0 ? void 0 : _props$keyString.toString()) !== null && _props$keyString$toSt !== void 0 ? _props$keyString$toSt : null : null;
 				};
 			});
 		});
 		var _onClick = ($event) => {
-			var url = props$5.url;
-			emit$2("click", $event);
-			var animationDuration = props$5.animationDuration;
+			var url = props.url;
+			emit("click", $event);
+			var animationDuration = props.animationDuration;
 			var onFail = (res) => {
 				console.error(res.errMsg);
 			};
-			switch (props$5.openType) {
+			switch (props.openType) {
 				case "navigate":
 					uni.navigateTo({
 						url,
-						animationType: props$5.animationType.length > 0 ? props$5.animationType : "pop-in",
+						animationType: props.animationType.length > 0 ? props.animationType : "pop-in",
 						animationDuration,
 						fail: onFail
 					});
@@ -5423,8 +5801,8 @@ var navigator_default = /* @__PURE__ */ defineBuiltInComponent({
 					break;
 				case "navigateBack":
 					uni.navigateBack({
-						delta: props$5.delta,
-						animationType: props$5.animationType.length > 0 ? props$5.animationType : "pop-out",
+						delta: props.delta,
+						animationType: props.animationType.length > 0 ? props.animationType : "pop-out",
 						animationDuration,
 						fail: onFail
 					});
@@ -5438,10 +5816,10 @@ var navigator_default = /* @__PURE__ */ defineBuiltInComponent({
 			return createVNode("uni-navigator-element", {
 				"ref": $uniNavigatorElement,
 				"onClick": _onClick,
-				"hoverClass": props$5.hoverClass,
-				"hoverStopPropagation": props$5.hoverStopPropagation,
-				"hoverStartTime": props$5.hoverStartTime,
-				"hoverStayTime": props$5.hoverStayTime
+				"hoverClass": props.hoverClass,
+				"hoverStopPropagation": props.hoverStopPropagation,
+				"hoverStartTime": props.hoverStartTime,
+				"hoverStayTime": props.hoverStayTime
 			}, [renderSlot(slots, "default")], 8, [
 				"onClick",
 				"hoverClass",
@@ -5452,5 +5830,8 @@ var navigator_default = /* @__PURE__ */ defineBuiltInComponent({
 		};
 	}
 });
-var components_exports = /* @__PURE__ */ __export({ Navigator: () => navigator_exports }, 1);
+//#endregion
+//#region src/x/components/index.ts
+var components_exports = /* @__PURE__ */ __exportAll({ Navigator: () => navigator_exports });
+//#endregion
 export { definePage as __definePage, registerApp as __registerApp, registerSystemRoute as __registerSystemRoute, systemRoutes as __uniSystemRoutes, components_exports as components, defineAsyncApi, defineOffApi, defineOnApi, defineSyncApi, defineTaskApi, getCurrentPages$1 as getCurrentPages, initApp, api_exports as uni };
