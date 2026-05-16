@@ -26817,7 +26817,7 @@ function genDynamicProps(props, context) {
 			];
 			entries.push([
 				...updateKey,
-				": () => ",
+				": ",
 				...genModelHandler(p.values[0], context)
 			]);
 			const { modelModifiers } = p;
@@ -26828,10 +26828,10 @@ function genDynamicProps(props, context) {
 					" + \"Modifiers\"]"
 				];
 				const modifiersVal = genDirectiveModifiers(modelModifiers);
-				entries.push([...modifiersKey, `: () => ({ ${modifiersVal} })`]);
+				entries.push([...modifiersKey, `: { ${modifiersVal} }`]);
 			}
 			expr = genMulti(DELIMITERS_OBJECT_NEWLINE, ...entries);
-		} else expr = genMulti(DELIMITERS_OBJECT, genProp(p, context));
+		} else expr = genMulti(DELIMITERS_OBJECT, genProp(p, context, false, false));
 		else {
 			expr = genExpression(p.value, context);
 			if (p.handler) expr = genCall(helper("toHandlers"), expr);
@@ -26844,12 +26844,12 @@ function genDynamicProps(props, context) {
 	}
 	if (frags.length) return genMulti(DELIMITERS_ARRAY_NEWLINE, ...frags);
 }
-function genProp(prop, context, isStatic) {
+function genProp(prop, context, isStatic, wrapHandler = true) {
 	const values = genPropValue(prop.values, context);
 	return [
 		...genPropKey(prop, context),
 		": ",
-		...prop.handler ? genEventHandler(context, prop.values, prop.handlerModifiers, true, true) : isStatic ? [
+		...prop.handler ? genEventHandler(context, prop.values, prop.handlerModifiers, true, wrapHandler) : isStatic ? [
 			"() => (",
 			...values,
 			")"
