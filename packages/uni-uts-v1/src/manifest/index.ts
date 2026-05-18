@@ -2,6 +2,7 @@ import { emptyDirSync, existsSync, readFileSync } from 'fs-extra'
 import { join } from 'path'
 import { parseJson } from '../shared'
 import {
+  checkDependenciesCache,
   checkManifest,
   hasCustomResources,
   isCustomResources,
@@ -14,6 +15,7 @@ import {
   type CheckResult,
   customResourceChangedTips,
   customResourceTips,
+  dependencyChangedTips,
 } from './utils'
 
 export { genManifestFile } from './manifest'
@@ -104,6 +106,19 @@ async function checkWithPlayground(
   if (!manifest) {
     return { expired: true, tips, files }
   }
+  // 自定义基座需要额外比较原生依赖，依赖变化时不复用旧缓存，避免编译使用旧依赖报错。
+  const dependenciesMatched =
+    type !== 'custom' ||
+    checkDependenciesCache(
+      platform,
+      pluginRelativeDir,
+      cacheDir,
+      pluginDir,
+      is_uni_modules
+    )
+  if (!dependenciesMatched) {
+    tips = dependencyChangedTips(id)
+  }
   // 第四步：检查文件变更
   const res = await checkManifest(manifest, { env, files, pluginDir })
   // 自定义基座检查原生资源/配置是否发生变化
@@ -113,7 +128,7 @@ async function checkWithPlayground(
     }
   }
   return {
-    expired: res !== true,
+    expired: !dependenciesMatched || res !== true,
     tips,
     files,
   }
