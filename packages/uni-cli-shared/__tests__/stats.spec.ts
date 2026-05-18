@@ -8,15 +8,17 @@ describe('stats', () => {
   const originalAppX = process.env.UNI_APP_X
   const originalPlatform = process.env.UNI_PLATFORM
   const originalDom2 = process.env.UNI_APP_X_DOM2
+  const originalVaporRenderTarget = process.env.UNI_APP_X_VAPOR_RENDER_TARGET
 
   afterEach(() => {
     process.env.UNI_APP_X = originalAppX
     process.env.UNI_PLATFORM = originalPlatform
     process.env.UNI_APP_X_DOM2 = originalDom2
+    process.env.UNI_APP_X_VAPOR_RENDER_TARGET = originalVaporRenderTarget
     jest.restoreAllMocks()
   })
 
-  function createManifest(vapor: boolean) {
+  function createManifest(vapor: boolean, vaporRenderTarget?: string) {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-stats-'))
     const file = path.join(dir, 'manifest.json')
     fs.writeFileSync(
@@ -24,6 +26,7 @@ describe('stats', () => {
       JSON.stringify({
         'uni-app-x': {
           vapor,
+          'vapor-render-target': vaporRenderTarget,
         },
       })
     )
@@ -65,6 +68,38 @@ describe('stats', () => {
     const plugin = uniStatsPlugin()
 
     watchChange(plugin, createManifest(true))
+
+    expect(warnSpy).not.toHaveBeenCalled()
+  })
+
+  test('app x warns when manifest vapor render target differs from running target', () => {
+    process.env.UNI_APP_X = 'true'
+    process.env.UNI_PLATFORM = 'app'
+    process.env.UNI_APP_X_DOM2 = 'true'
+    process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'nativecode'
+
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {})
+    const plugin = uniStatsPlugin()
+
+    watchChange(plugin, createManifest(true, 'bytecode'))
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      M['dev.watching.vapor.render.target']
+        .replace('{manifestTarget}', M['view.render.compiler.target.bytecode'])
+        .replace('{runtimeTarget}', M['view.render.compiler.target.nativecode'])
+    )
+  })
+
+  test('app x skips vapor render target warning when it matches running target', () => {
+    process.env.UNI_APP_X = 'true'
+    process.env.UNI_PLATFORM = 'app'
+    process.env.UNI_APP_X_DOM2 = 'true'
+    process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'bytecode'
+
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {})
+    const plugin = uniStatsPlugin()
+
+    watchChange(plugin, createManifest(true, 'bytecode'))
 
     expect(warnSpy).not.toHaveBeenCalled()
   })
