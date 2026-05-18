@@ -419,10 +419,10 @@
 		font-weight: 600;
 		text-align: center;
 		text-overflow: ellipsis;
+		/* #ifndef VUE3-VAPOR */
 		lines: 2;
-		/* #ifndef APP-ANDROID */
-		line-height: 1em;
 		/* #endif */
+		line-height: 22px;
 		/* #ifdef WEB */
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
@@ -535,7 +535,9 @@
 		letter-spacing: 1px;
 		font-size: 17px;
 		text-align: center;
+		/* #ifndef VUE3-VAPOR */
 		lines: 1;
+		/* #endif */
 		white-space: nowrap;
 		font-weight: 600;
 	}
