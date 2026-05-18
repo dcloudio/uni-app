@@ -447,7 +447,7 @@
         "name": "createEditorContextAsync",
         "app": {
           "js": false,
-          "kotlin": true,
+          "kotlin": "dom1",
           "swift": true,
           "arkts": true
         }
