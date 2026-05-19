@@ -78,8 +78,11 @@ export function uniViteInjectPlugin(
     normalizeModulesMap(namespaceModulesMap)
   }
 
+  // 仅匹配独立标识符，避免 uni/wx 等短名称命中 function、undefined 等普通单词。
   const firstpass = new RegExp(
-    `(?:${Array.from(modulesMap.keys()).map(escape).join('|')})`,
+    `(?:^|[^\\w$])(?:${Array.from(modulesMap.keys())
+      .map(escape)
+      .join('|')})(?![\\w$])`,
     'g'
   )
   const firstpassFilter = new RegExp(firstpass.source)
