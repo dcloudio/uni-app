@@ -27,36 +27,43 @@ export function uniPrePlugin(options: UniPrePluginOptions = {}): Plugin {
   return {
     name: 'uni:pre-android',
     enforce: 'pre',
-    transform(code, id) {
-      if (!filter(id)) {
-        return
-      }
-      const { filename } = parseVueRequest(id)
-      const extname = path.extname(filename)
-      const isHtml = PRE_HTML_EXTNAME.includes(extname)
-      const isJs = PRE_JS_EXTNAME.includes(extname)
-      const isPre = isHtml || isJs
-      if (isPre) {
-        // debugPreJsTry(id)
-      }
-      const hasEndif = isPre && code.includes('#endif')
-      if (!hasEndif) {
-        return
-      }
-      if (isHtml) {
-        code = preHtmlFile(code, id)
-        debugPreHtml(id)
-      }
-      if (isJs) {
-        code = preJsFile(code, id)
-        debugPreJs(id)
-      }
-      return {
-        code,
-        map: {
-          mappings: '',
-        },
-      }
+    transform: {
+      // Android 条件编译只处理包含 #endif 的指定源码类型。
+      filter: {
+        id: /\.(?:json|css|uts|ts|vue|uvue)(?:\?|$)/,
+        code: /#endif/,
+      },
+      handler(code, id) {
+        if (!filter(id)) {
+          return
+        }
+        const { filename } = parseVueRequest(id)
+        const extname = path.extname(filename)
+        const isHtml = PRE_HTML_EXTNAME.includes(extname)
+        const isJs = PRE_JS_EXTNAME.includes(extname)
+        const isPre = isHtml || isJs
+        if (isPre) {
+          // debugPreJsTry(id)
+        }
+        const hasEndif = isPre && code.includes('#endif')
+        if (!hasEndif) {
+          return
+        }
+        if (isHtml) {
+          code = preHtmlFile(code, id)
+          debugPreHtml(id)
+        }
+        if (isJs) {
+          code = preJsFile(code, id)
+          debugPreJs(id)
+        }
+        return {
+          code,
+          map: {
+            mappings: '',
+          },
+        }
+      },
     },
   }
 }
