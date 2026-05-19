@@ -44,85 +44,92 @@ export function uniAppPagesPlugin(): Plugin {
         return fs.readFileSync(pagesJsonPath, 'utf8')
       }
     },
-    transform(code, id) {
-      if (isFirst && allPagePaths.length) {
-        const { filename } = parseVueRequest(id)
-        if (isVue(filename)) {
-          const vueFilename = removeExt(
-            normalizePath(path.relative(process.env.UNI_INPUT_DIR, filename))
-          )
-          // 项目内的
-          if (!vueFilename.startsWith('.')) {
-            // const index = allPagePaths.indexOf(pagePath)
-            // if (index > -1) {
-            if (runByHBuilderX()) {
-              console.log(
-                `当前工程${
-                  allPagePaths.length
-                }个页面，正在编译${vueFilename}...${'\u200D'}`
-              )
+    transform: {
+      filter: { id: /pages-json-uts(?:\?|$)/ },
+      handler(code, id) {
+        if (isFirst && allPagePaths.length) {
+          const { filename } = parseVueRequest(id)
+          if (isVue(filename)) {
+            const vueFilename = removeExt(
+              normalizePath(path.relative(process.env.UNI_INPUT_DIR, filename))
+            )
+            // 项目内的
+            if (!vueFilename.startsWith('.')) {
+              // const index = allPagePaths.indexOf(pagePath)
+              // if (index > -1) {
+              if (runByHBuilderX()) {
+                console.log(
+                  `当前工程${
+                    allPagePaths.length
+                  }个页面，正在编译${vueFilename}...${'\u200D'}`
+                )
+              }
+              // }
             }
-            // }
           }
         }
-      }
-      if (isPages(id)) {
-        this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'))
-        // dark mode
-        this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'theme.json'))
-        // 调整换行符，确保 parseTree 的loc正确
-        const jsonCode = code.replace(/\r\n/g, '\n')
-        checkPagesJson(
-          preUVueJson(jsonCode, 'pages.json'),
-          process.env.UNI_INPUT_DIR
-        )
+        if (isPages(id)) {
+          this.addWatchFile(
+            path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')
+          )
+          // dark mode
+          this.addWatchFile(
+            path.resolve(process.env.UNI_INPUT_DIR, 'theme.json')
+          )
+          // 调整换行符，确保 parseTree 的loc正确
+          const jsonCode = code.replace(/\r\n/g, '\n')
+          checkPagesJson(
+            preUVueJson(jsonCode, 'pages.json'),
+            process.env.UNI_INPUT_DIR
+          )
 
-        // pages.json
-        const pagesJson = normalizeUniAppXAppPagesJson(code)
+          // pages.json
+          const pagesJson = normalizeUniAppXAppPagesJson(code)
 
-        // Android/iOS vapor 暂不支持 tabBar，HarmonyOS 已支持
-        if (isDom2 && process.env.UNI_PLATFORM !== 'app-harmony') {
-          if (pagesJson.tabBar) {
-            hasTabBar = true
-            delete pagesJson.tabBar
+          // Android/iOS vapor 暂不支持 tabBar，HarmonyOS 已支持
+          if (isDom2 && process.env.UNI_PLATFORM !== 'app-harmony') {
+            if (pagesJson.tabBar) {
+              hasTabBar = true
+              delete pagesJson.tabBar
+            }
           }
-        }
-        // add themeConfig - can move to uni-x/index.ts
-        pagesJson.themeConfig = readThemeJSONFile()
+          // add themeConfig - can move to uni-x/index.ts
+          pagesJson.themeConfig = readThemeJSONFile()
 
-        setGlobalPageOrientation(pagesJson.globalStyle?.pageOrientation || '')
+          setGlobalPageOrientation(pagesJson.globalStyle?.pageOrientation || '')
 
-        allPagePaths = pagesJson.pages.map((p) => p.path)
+          allPagePaths = pagesJson.pages.map((p) => p.path)
 
-        this.emitFile({
-          fileName: APP_CONFIG,
-          type: 'asset',
-          // 生成 app-config.js
-          source: normalizeUniAppXAppConfig(
-            pagesJson,
-            parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-          ),
-        })
-        if (process.env.UNI_PLATFORM === 'app-harmony') {
           this.emitFile({
+            fileName: APP_CONFIG,
             type: 'asset',
-            fileName: 'import/dynamic.ets',
-            source:
-              process.env.UNI_APP_DYNAMIC_IMPORT === 'true'
-                ? staticImportPageCode(pagesJson)
-                : '',
+            // 生成 app-config.js
+            source: normalizeUniAppXAppConfig(
+              pagesJson,
+              parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+            ),
           })
+          if (process.env.UNI_PLATFORM === 'app-harmony') {
+            this.emitFile({
+              type: 'asset',
+              fileName: 'import/dynamic.ets',
+              source:
+                process.env.UNI_APP_DYNAMIC_IMPORT === 'true'
+                  ? staticImportPageCode(pagesJson)
+                  : '',
+            })
+          }
+          return {
+            code: normalizeAppPagesJson(
+              pagesJson,
+              'app',
+              process.env.UNI_APP_DYNAMIC_IMPORT === 'true' ||
+                process.env.UNI_APP_CODE_SPLITTING === 'true'
+            ),
+            map: { mappings: '' },
+          }
         }
-        return {
-          code: normalizeAppPagesJson(
-            pagesJson,
-            'app',
-            process.env.UNI_APP_DYNAMIC_IMPORT === 'true' ||
-              process.env.UNI_APP_CODE_SPLITTING === 'true'
-          ),
-          map: { mappings: '' },
-        }
-      }
+      },
     },
     buildEnd() {
       if (isFirst && hasTabBar) {

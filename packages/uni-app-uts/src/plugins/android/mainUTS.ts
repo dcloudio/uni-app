@@ -13,19 +13,22 @@ export function uniAppMainPlugin(): Plugin {
   return {
     name: 'uni:app-main',
     apply: 'build',
-    async transform(code, id) {
-      if (normalizePath(id) === mainUTS) {
-        code = await parseImports(
-          code,
-          createTryResolve(id, this.resolve.bind(this))
-        )
-        return {
-          code: `import './${MANIFEST_JSON_UTS}';import './${PAGES_JSON_UTS}';${code}`,
-          map: {
-            mappings: '',
-          },
+    transform: {
+      filter: { id: /main\.uts(?:\?|$)/ },
+      async handler(code, id) {
+        if (normalizePath(id) === mainUTS) {
+          code = await parseImports(
+            code,
+            createTryResolve(id, this.resolve.bind(this))
+          )
+          return {
+            code: `import './${MANIFEST_JSON_UTS}';import './${PAGES_JSON_UTS}';${code}`,
+            map: {
+              mappings: '',
+            },
+          }
         }
-      }
+      },
     },
   }
 }

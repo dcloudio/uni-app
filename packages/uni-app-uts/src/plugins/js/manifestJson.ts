@@ -57,19 +57,22 @@ export function uniAppManifestPlugin(
         return fs.readFileSync(manifestJsonPath, 'utf8')
       }
     },
-    transform(code, id) {
-      if (isManifest(id)) {
-        this.addWatchFile(
-          path.resolve(process.env.UNI_INPUT_DIR, 'manifest.json')
-        )
-        manifestJson = parseJson(code, false, id)
-        return {
-          code: `export default ${JSON.stringify(manifestJson)}`,
-          map: {
-            mappings: '',
-          },
+    transform: {
+      filter: { id: /manifest-json-uts(?:\?|$)/ },
+      handler(code, id) {
+        if (isManifest(id)) {
+          this.addWatchFile(
+            path.resolve(process.env.UNI_INPUT_DIR, 'manifest.json')
+          )
+          manifestJson = parseJson(code, false, id)
+          return {
+            code: `export default ${JSON.stringify(manifestJson)}`,
+            map: {
+              mappings: '',
+            },
+          }
         }
-      }
+      },
     },
     writeBundle() {
       if (

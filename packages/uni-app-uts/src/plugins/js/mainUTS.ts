@@ -12,15 +12,17 @@ export function uniAppJsEngineMainPlugin(): Plugin {
   return {
     name: 'uni:app-main',
     apply: 'build',
-    async transform(code, id) {
-      if (normalizePath(id) === mainUTS) {
-        const styleIsolationCode =
-          process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
-          process.env.UNI_APP_X_DOM2 !== 'true'
-            ? 'enableStyleIsolation();\n'
-            : ''
-        return {
-          code: `
+    transform: {
+      filter: { id: /main\.uts(?:\?|$)/ },
+      async handler(code, id) {
+        if (normalizePath(id) === mainUTS) {
+          const styleIsolationCode =
+            process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
+            process.env.UNI_APP_X_DOM2 !== 'true'
+              ? 'enableStyleIsolation();\n'
+              : ''
+          return {
+            code: `
 import './${MANIFEST_JSON_UTS}'
 import './${PAGES_JSON_UTS}'
 ${styleIsolationCode}const __global__ = typeof globalThis === 'undefined' ? Function('return this')() : globalThis
@@ -32,11 +34,12 @@ ${
     : 'createApp().app.mount("#app");'
 }
 `,
-          map: {
-            mappings: '',
-          },
+            map: {
+              mappings: '',
+            },
+          }
         }
-      }
+      },
     },
   }
 }

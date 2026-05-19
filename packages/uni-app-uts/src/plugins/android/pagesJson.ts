@@ -39,74 +39,81 @@ export function uniAppPagesPlugin(): Plugin {
         return fs.readFileSync(pagesJsonPath, 'utf8')
       }
     },
-    transform(code, id) {
-      if (isPages(id)) {
-        this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'))
-        this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'theme.json'))
-        let pagesJson: UniApp.PagesJson = {
-          pages: [],
-          globalStyle: {
-            navigationBar: {},
-          },
-        }
-        // 调整换行符，确保 parseTree 的loc正确
-        code = code.replace(/\r\n/g, '\n')
-        pagesJson = normalizeUniAppXAppPagesJson(code)
-        imports = []
-        routes = []
-
-        process.env.UNI_APP_X_PAGE_COUNT = pagesJson.pages.length + ''
-
-        setGlobalPageOrientation(pagesJson.globalStyle?.pageOrientation || '')
-
-        pagesJson.pages.forEach((page, index) => {
-          const className = genUTSClassName(page.path)
-          let isQuit = index === 0
-          imports.push(page.path)
-          routes.push(
-            `{ path: "${
-              page.path
-            }", component: ${className}Class, meta: { isQuit: ${isQuit} } as UniPageMeta, style: ${stringifyPageStyle(
-              page.style
-            )}${
-              page.needLogin === undefined
-                ? ''
-                : ', needLogin: ' + page.needLogin
-            } } as UniPageRoute`
+    transform: {
+      filter: { id: /pages-json-uts(?:\?|$)/ },
+      handler(code, id) {
+        if (isPages(id)) {
+          this.addWatchFile(
+            path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')
           )
-        })
-        if (pagesJson.globalStyle) {
-          globalStyle = stringifyPageStyle(pagesJson.globalStyle)
-        }
-        if (pagesJson.tabBar) {
-          tabBar = stringifyMap(pagesJson.tabBar)
-        }
-        if (process.env.UNI_CLI_LAUNCH_PAGE_PATH || pagesJson.condition) {
-          const conditionInfo = parseArguments(pagesJson)
-          if (conditionInfo) {
-            const { path, query } = JSON.parse(conditionInfo)
-            conditionUrl = `${path}${query ? '?' + query : ''}`
+          this.addWatchFile(
+            path.resolve(process.env.UNI_INPUT_DIR, 'theme.json')
+          )
+          let pagesJson: UniApp.PagesJson = {
+            pages: [],
+            globalStyle: {
+              navigationBar: {},
+            },
+          }
+          // 调整换行符，确保 parseTree 的loc正确
+          code = code.replace(/\r\n/g, '\n')
+          pagesJson = normalizeUniAppXAppPagesJson(code)
+          imports = []
+          routes = []
+
+          process.env.UNI_APP_X_PAGE_COUNT = pagesJson.pages.length + ''
+
+          setGlobalPageOrientation(pagesJson.globalStyle?.pageOrientation || '')
+
+          pagesJson.pages.forEach((page, index) => {
+            const className = genUTSClassName(page.path)
+            let isQuit = index === 0
+            imports.push(page.path)
+            routes.push(
+              `{ path: "${
+                page.path
+              }", component: ${className}Class, meta: { isQuit: ${isQuit} } as UniPageMeta, style: ${stringifyPageStyle(
+                page.style
+              )}${
+                page.needLogin === undefined
+                  ? ''
+                  : ', needLogin: ' + page.needLogin
+              } } as UniPageRoute`
+            )
+          })
+          if (pagesJson.globalStyle) {
+            globalStyle = stringifyPageStyle(pagesJson.globalStyle)
+          }
+          if (pagesJson.tabBar) {
+            tabBar = stringifyMap(pagesJson.tabBar)
+          }
+          if (process.env.UNI_CLI_LAUNCH_PAGE_PATH || pagesJson.condition) {
+            const conditionInfo = parseArguments(pagesJson)
+            if (conditionInfo) {
+              const { path, query } = JSON.parse(conditionInfo)
+              conditionUrl = `${path}${query ? '?' + query : ''}`
+            }
+          }
+          if (pagesJson.uniIdRouter) {
+            uniIdRouter = stringifyMap(pagesJson.uniIdRouter)
+          }
+          launchPage = stringifyLaunchPage(pagesJson.pages[0])
+
+          codes.length = 0
+          // theme.json
+          themeConfig = readThemeJSONFileAsStringifyMap()
+          if (themeConfig) {
+            codes.push(`__uniConfig.themeConfig = ${themeConfig}`)
+          }
+          return {
+            code: `${imports.map((p) => `import './${p}.uvue'`).join('\n')}
+          export default 'pages.json'`,
+            map: {
+              mappings: '',
+            },
           }
         }
-        if (pagesJson.uniIdRouter) {
-          uniIdRouter = stringifyMap(pagesJson.uniIdRouter)
-        }
-        launchPage = stringifyLaunchPage(pagesJson.pages[0])
-
-        codes.length = 0
-        // theme.json
-        themeConfig = readThemeJSONFileAsStringifyMap()
-        if (themeConfig) {
-          codes.push(`__uniConfig.themeConfig = ${themeConfig}`)
-        }
-        return {
-          code: `${imports.map((p) => `import './${p}.uvue'`).join('\n')}
-          export default 'pages.json'`,
-          map: {
-            mappings: '',
-          },
-        }
-      }
+      },
     },
     generateBundle(_, bundle) {
       const asset = bundle[ENTRY_FILENAME()]
