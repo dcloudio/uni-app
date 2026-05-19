@@ -8,23 +8,26 @@ const debugRenderjs = debug('uni:h5-renderjs')
 export function uniRenderjsPlugin(): Plugin {
   return {
     name: 'uni:h5-renderjs',
-    transform(code, id) {
-      const { type, name } = parseRenderjs(id)
-      if (!type) {
-        return
-      }
-      debugRenderjs(id)
-      if (!name) {
-        this.error(missingModuleName(type, code))
-      }
-      return {
-        code: `${require('@vue/compiler-sfc').rewriteDefault(
-          code.replace(/module\.exports\s*=/, 'export default '),
-          '_sfc_' + type
-        )}
+    transform: {
+      filter: { id: /vue&type=(?:wxs|renderjs|sjs)/ },
+      handler(code, id) {
+        const { type, name } = parseRenderjs(id)
+        if (!type) {
+          return
+        }
+        debugRenderjs(id)
+        if (!name) {
+          this.error(missingModuleName(type, code))
+        }
+        return {
+          code: `${require('@vue/compiler-sfc').rewriteDefault(
+            code.replace(/module\.exports\s*=/, 'export default '),
+            '_sfc_' + type
+          )}
 ${type === 'renderjs' ? genRenderjsCode(name) : genWxsCode(name)}`,
-        map: { mappings: '' },
-      }
+          map: { mappings: '' },
+        }
+      },
     },
   }
 }

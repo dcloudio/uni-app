@@ -25,40 +25,43 @@ export function uniRenderjsPlugin({ lang }: { lang?: string }): Plugin {
       resolvedConfig = config
       filtersCache.set(resolvedConfig, [])
     },
-    transform(code, id) {
-      const { type, name } = parseRenderjs(id)
-      if (!type) {
-        return null
-      }
-      debugRenderjs(id)
-      if (type !== lang) {
+    transform: {
+      filter: { id: /vue&type=(?:wxs|renderjs|sjs)/ },
+      handler(code, id) {
+        const { type, name } = parseRenderjs(id)
+        if (!type) {
+          return null
+        }
+        debugRenderjs(id)
+        if (type !== lang) {
+          return {
+            code: 'export default {}',
+            map: { mappings: '' },
+          }
+        }
+        this.addWatchFile(cleanUrl(id))
+        if (!name) {
+          this.error(missingModuleName(type, code))
+        } else {
+          let cache = filtersCache.get(resolvedConfig)
+          if (cache) {
+            const index = cache.findIndex((item) => item.id === id)
+            if (index > -1) {
+              cache.splice(index, 1)
+            }
+            cache.push({
+              id,
+              type,
+              name,
+              code,
+            })
+          }
+        }
         return {
-          code: 'export default {}',
+          code: genWxsCallMethodsCode(code),
           map: { mappings: '' },
         }
-      }
-      this.addWatchFile(cleanUrl(id))
-      if (!name) {
-        this.error(missingModuleName(type, code))
-      } else {
-        let cache = filtersCache.get(resolvedConfig)
-        if (cache) {
-          const index = cache.findIndex((item) => item.id === id)
-          if (index > -1) {
-            cache.splice(index, 1)
-          }
-          cache.push({
-            id,
-            type,
-            name,
-            code,
-          })
-        }
-      }
-      return {
-        code: genWxsCallMethodsCode(code),
-        map: { mappings: '' },
-      }
+      },
     },
   }
 }

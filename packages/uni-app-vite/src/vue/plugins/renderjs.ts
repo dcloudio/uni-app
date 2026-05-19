@@ -34,58 +34,63 @@ export function uniRenderjsPlugin(): Plugin {
       wxsModulesCache.set(resolvedConfig, new Map<string, string>())
       renderjsModulesCache.set(resolvedConfig, new Map<string, string>())
     },
-    async transform(code, id) {
-      const { type, name, filename } = parseRenderjs(id)
-      if (!type) {
-        return
-      }
-      if (type !== 'wxs' && type !== 'renderjs') {
-        return
-      }
-      debugRenderjs(id)
-      this.addWatchFile(cleanUrl(id))
-      if (!name) {
-        this.error(missingModuleName(type, code))
-      }
-      const modulePath = normalizePath(
-        path.normalize(path.relative(process.env.UNI_INPUT_DIR, id))
-      )
-      const moduleHashId = hash(modulePath)
-      const globalName = type === 'wxs' ? WXS_MODULES : RENDERJS_MODULES
-      const { isProduction } = resolvedConfig
-      const resultCode = normalizeCode(
-        type === 'wxs'
-          ? await transformWxs(
-              code,
-              filename,
-              `__${globalName}['${moduleHashId}']`,
-              isProduction,
-              userConfig
-            )
-          : await transformRenderjs(
-              code,
-              filename,
-              `__${globalName}['${moduleHashId}']`,
-              isProduction,
-              userConfig
-            ),
-        globalName,
-        isProduction
-      )
-      if (type === 'wxs') {
-        wxsModulesCache.get(resolvedConfig)!.set(moduleHashId, resultCode)
-      } else {
-        renderjsModulesCache.get(resolvedConfig)!.set(moduleHashId, resultCode)
-      }
-      changed = true
-      debugRenderjs(type, modulePath, moduleHashId)
-      return {
-        code: `export default Comp => {
+    transform: {
+      filter: { id: /vue&type=(?:wxs|renderjs|sjs)/ },
+      async handler(code, id) {
+        const { type, name, filename } = parseRenderjs(id)
+        if (!type) {
+          return
+        }
+        if (type !== 'wxs' && type !== 'renderjs') {
+          return
+        }
+        debugRenderjs(id)
+        this.addWatchFile(cleanUrl(id))
+        if (!name) {
+          this.error(missingModuleName(type, code))
+        }
+        const modulePath = normalizePath(
+          path.normalize(path.relative(process.env.UNI_INPUT_DIR, id))
+        )
+        const moduleHashId = hash(modulePath)
+        const globalName = type === 'wxs' ? WXS_MODULES : RENDERJS_MODULES
+        const { isProduction } = resolvedConfig
+        const resultCode = normalizeCode(
+          type === 'wxs'
+            ? await transformWxs(
+                code,
+                filename,
+                `__${globalName}['${moduleHashId}']`,
+                isProduction,
+                userConfig
+              )
+            : await transformRenderjs(
+                code,
+                filename,
+                `__${globalName}['${moduleHashId}']`,
+                isProduction,
+                userConfig
+              ),
+          globalName,
+          isProduction
+        )
+        if (type === 'wxs') {
+          wxsModulesCache.get(resolvedConfig)!.set(moduleHashId, resultCode)
+        } else {
+          renderjsModulesCache
+            .get(resolvedConfig)!
+            .set(moduleHashId, resultCode)
+        }
+        changed = true
+        debugRenderjs(type, modulePath, moduleHashId)
+        return {
+          code: `export default Comp => {
           ;(Comp.$${type} || (Comp.$${type} = [])).push('${name}')
           ;(Comp.$${globalName} || (Comp.$${globalName} = {}))['${name}'] = '${moduleHashId}'
         }`,
-        map: { mappings: '' },
-      }
+          map: { mappings: '' },
+        }
+      },
     },
     generateBundle() {
       if (!changed) {
