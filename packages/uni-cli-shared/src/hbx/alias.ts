@@ -19,6 +19,13 @@ export function initModuleAlias() {
   const compilerSfcPath = path.resolve(libDir, '@vue/compiler-sfc')
   const serverRendererPath = require.resolve('@vue/server-renderer')
 
+  if (process.env.UNI_OUTPUT_DIR) {
+    const baseOutDir = path.basename(process.env.UNI_OUTPUT_DIR)
+    process.env.UNI_APP_X_CACHE_DIR =
+      process.env.UNI_APP_X_CACHE_DIR ||
+      path.resolve(process.env.UNI_OUTPUT_DIR, '../cache/.' + baseOutDir)
+  }
+
   // 对路径进行兼容
   if (
     !process.env.UNI_APP_X_DOM2_CPP_DIR &&
