@@ -60,43 +60,47 @@ export function uniAppUVuePlugin(): Plugin {
         }
       }
     },
-    async transform(code, id) {
-      const { filename, query } = parseVueRequest(id)
-      if (!isVue(filename)) {
-        return
-      }
-      if (!query.vue) {
-        // main request
-        return transformMain(
-          transformUniCloudMixinDataCom(code),
-          filename,
-          {
-            ...options,
-            componentType: isAppVue(filename)
-              ? 'app'
-              : query.type === 'page'
-              ? 'page'
-              : 'component',
-          },
-          this
-        )
-      } else {
-        // sub block request
-        const descriptor = query.src
-          ? getSrcDescriptor(filename)!
-          : getDescriptor(filename, options)!
-
-        if (query.type === 'style') {
-          return transformStyle(
-            code,
-            descriptor,
-            Number(query.index),
-            options,
-            this,
-            filename
-          )
+    transform: {
+      // uvue 编译只处理 Vue SFC 主模块和样式子模块。
+      filter: { id: /\.(?:vue|uvue)(?:\?|$)/ },
+      async handler(code, id) {
+        const { filename, query } = parseVueRequest(id)
+        if (!isVue(filename)) {
+          return
         }
-      }
+        if (!query.vue) {
+          // main request
+          return transformMain(
+            transformUniCloudMixinDataCom(code),
+            filename,
+            {
+              ...options,
+              componentType: isAppVue(filename)
+                ? 'app'
+                : query.type === 'page'
+                ? 'page'
+                : 'component',
+            },
+            this
+          )
+        } else {
+          // sub block request
+          const descriptor = query.src
+            ? getSrcDescriptor(filename)!
+            : getDescriptor(filename, options)!
+
+          if (query.type === 'style') {
+            return transformStyle(
+              code,
+              descriptor,
+              Number(query.index),
+              options,
+              this,
+              filename
+            )
+          }
+        }
+      },
     },
     generateBundle(_, bundle) {
       // 遍历vue文件，填充style，尽量减少全局变量
