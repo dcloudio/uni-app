@@ -19,7 +19,8 @@ export function uniPreVuePlugin(): Plugin {
       isNVue = (config as any).nvue
     },
     transform: {
-      filter: { id: /\.(vue|uvue)(\?|$)/ },
+      // 仅 SFC 主模块需要 parseVueCode，跳过 script/style/template 等子模块。
+      filter: { id: /\.(?:vue|uvue)(?:$|\?(?!vue(?:&|=|$)))/ },
       async handler(code, id) {
         const { filename, query } = parseVueRequest(id)
         if (query.vue) {
