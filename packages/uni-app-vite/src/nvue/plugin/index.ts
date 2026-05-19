@@ -116,36 +116,40 @@ export function uniAppNVuePlugin({
             // 用于覆盖原始插件方法
             // noop
           },
-          async transform(source, filename) {
-            if (!cssLangRE.test(filename) || commonjsProxyRE.test(filename)) {
-              return
-            }
-            const nvuePages = nvuePagesCache.get(config)
-            if (!nvuePages || !Object.keys(nvuePages).length) {
-              // 当前项目没有 nvue 文件
-              return { code: `export default {}`, map: { mappings: '' } }
-            }
-            const { code, messages } = await parse(source, {
-              filename,
-              logLevel: 'WARNING',
-            })
-            messages.forEach((message) => {
-              if (message.type === 'warning') {
-                config.logger.warn(
-                  colors.yellow(`[plugin:vite:nvue-css] ${message.text}`)
-                )
-                let msg = ''
-                if (message.line && message.column) {
-                  msg += `\n${generateCodeFrame(source, {
-                    line: message.line,
-                    column: message.column,
-                  })}\n`
-                }
-                msg += `${formatAtFilename(filename)}`
-                config.logger.warn(msg)
+          transform: {
+            // nvue css-post 只处理样式请求，跳过普通 JS/SFC 模块空转。
+            filter: { id: cssLangRE },
+            async handler(source, filename) {
+              if (!cssLangRE.test(filename) || commonjsProxyRE.test(filename)) {
+                return
               }
-            })
-            return { code: `export default ${code}`, map: { mappings: '' } }
+              const nvuePages = nvuePagesCache.get(config)
+              if (!nvuePages || !Object.keys(nvuePages).length) {
+                // 当前项目没有 nvue 文件
+                return { code: `export default {}`, map: { mappings: '' } }
+              }
+              const { code, messages } = await parse(source, {
+                filename,
+                logLevel: 'WARNING',
+              })
+              messages.forEach((message) => {
+                if (message.type === 'warning') {
+                  config.logger.warn(
+                    colors.yellow(`[plugin:vite:nvue-css] ${message.text}`)
+                  )
+                  let msg = ''
+                  if (message.line && message.column) {
+                    msg += `\n${generateCodeFrame(source, {
+                      line: message.line,
+                      column: message.column,
+                    })}\n`
+                  }
+                  msg += `${formatAtFilename(filename)}`
+                  config.logger.warn(msg)
+                }
+              })
+              return { code: `export default ${code}`, map: { mappings: '' } }
+            },
           },
           generateBundle() {
             // 用于覆盖原始插件方法
