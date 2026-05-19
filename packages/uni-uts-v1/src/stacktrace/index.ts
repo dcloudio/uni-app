@@ -96,8 +96,7 @@ export async function parseRuntimeStacktrace(
 ) {
   initEnv(options)
   if (
-    (options.platform === 'app-android' &&
-      (options.language === 'kotlin' || options.language === 'javascript')) ||
+    options.platform === 'app-android' ||
     (options.platform === 'app-ios' && options.language === 'javascript') ||
     options.platform === 'app-harmony'
   ) {
@@ -126,12 +125,25 @@ export function parseUTSRuntimeStacktrace(
       stacktrace,
       options as GenerateAppHarmonyCodeFrameOptions
     )
-  } else if (options.language === 'kotlin') {
-    return parseUTSKotlinRuntimeStacktrace(stacktrace, options)
+  } else if (options.platform === 'app-android') {
+    if (isAndroidJavaScriptRuntimeStacktrace(stacktrace)) {
+      return parseUTSJavaScriptRuntimeStacktrace(stacktrace, {
+        ...options,
+        language: 'javascript',
+      })
+    }
+    return parseUTSKotlinRuntimeStacktrace(stacktrace, {
+      ...(options as GenerateAppAndroidKotlinRuntimeCodeFrameOptions),
+      language: 'kotlin',
+    })
   } else if (options.language === 'javascript') {
     return parseUTSJavaScriptRuntimeStacktrace(stacktrace, options)
   }
   return stacktrace
+}
+
+function isAndroidJavaScriptRuntimeStacktrace(stacktrace: string) {
+  return /(?:^|\n).*?@(?:.*?\/www\/)?[^\s/]+\.js:\d+:\d+/.test(stacktrace)
 }
 
 export function parseUTSSyntaxError(
