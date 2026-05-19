@@ -83,6 +83,8 @@ export function uniViteInjectPlugin(
     'g'
   )
   const firstpassFilter = new RegExp(firstpass.source)
+  const jsIdFilter =
+    /(?:\.(?:js|jsx|ts|uts|tsx|mjs)(?:$|\?)|\.(?:vue|nvue|uvue)(?:$|\?)|\?uni_helpers$)/
   const sourceMap = options.sourceMap !== false
   const callback = options.callback
   return {
@@ -90,7 +92,7 @@ export function uniViteInjectPlugin(
     // 确保在 commonjs 之后，否则会混合 es6 module 与 cjs 的代码，导致 commonjs 失效
     enforce: options.enforce ?? 'post',
     transform: {
-      filter: { code: firstpassFilter },
+      filter: { id: jsIdFilter, code: firstpassFilter },
       handler(code, id) {
         if (!filter(id)) return null
         // 加密插件也要走后续注入逻辑
