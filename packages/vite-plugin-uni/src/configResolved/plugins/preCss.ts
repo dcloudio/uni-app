@@ -22,22 +22,25 @@ export function uniPreCssPlugin(
   const preJsFile = isNVue ? preNVueJs : preJs
   return {
     name: 'uni:pre-css',
-    transform(code, id) {
-      if (!cssLangRE.test(id)) {
-        return
-      }
-      if (!filter(id)) {
-        return
-      }
-      // debugPreTry(id)
-      if (!code.includes('#endif')) {
-        return
-      }
-      debugPre(id)
-      return {
-        code: preJsFile(code, id),
-        map: withSourcemap(config) ? this.getCombinedSourcemap() : null,
-      }
+    transform: {
+      filter: { id: cssLangRE },
+      handler(code, id) {
+        if (!cssLangRE.test(id)) {
+          return
+        }
+        if (!filter(id)) {
+          return
+        }
+        // debugPreTry(id)
+        if (!code.includes('#endif')) {
+          return
+        }
+        debugPre(id)
+        return {
+          code: preJsFile(code, id),
+          map: withSourcemap(config) ? this.getCombinedSourcemap() : null,
+        }
+      },
     },
   }
 }
