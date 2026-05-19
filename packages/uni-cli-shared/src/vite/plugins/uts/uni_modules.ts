@@ -778,57 +778,61 @@ export function uniUTSAppUniModulesPlugin(
         }
       }
     },
-    async transform(_, id, opts) {
-      if (opts && opts.ssr) {
-        return
-      }
-      if (!isUTSProxy(id)) {
-        return
-      }
-      const { filename } = parseVueRequest(id.replace('\0', ''))
-      // 当 vue 和 nvue 均引用了相同 uts 插件，解决两套编译器会编译两次 uts 插件的问题
-      // 通过缓存，保证同一个 uts 插件只编译一次
-      const pluginDir = normalizePath(filename)
-      const pluginId = path.basename(pluginDir)
-      const cachedResult = utsModuleResultCaches.get(pluginDir)
-      if (cachedResult && !changedFiles.has(pluginId)) {
-        handleCompileResult(cachedResult, this, false)
-        return {
-          code: cachedResult.code,
-          map: null,
-          syntheticNamedExports: cachedResult.encrypt,
-          meta: cachedResult.meta,
+    transform: {
+      // 只有 uts-proxy 虚拟模块需要触发 uni_modules 编译，避免普通模块进入该 transform。
+      filter: { id: /\?uts-proxy$/ },
+      async handler(_, id, opts) {
+        if (opts && opts.ssr) {
+          return
         }
-      }
-      if (utsModuleCaches.get(pluginDir)) {
-        return utsModuleCaches.get(pluginDir)!().then((result) => {
-          if (result) {
-            utsModuleResultCaches.set(pluginDir, result)
-            handleCompileResult(result, this)
-            return {
-              code: result.code,
-              map: null,
-              syntheticNamedExports: result.encrypt,
-              meta: result.meta,
-            }
+        if (!isUTSProxy(id)) {
+          return
+        }
+        const { filename } = parseVueRequest(id.replace('\0', ''))
+        // 当 vue 和 nvue 均引用了相同 uts 插件，解决两套编译器会编译两次 uts 插件的问题
+        // 通过缓存，保证同一个 uts 插件只编译一次
+        const pluginDir = normalizePath(filename)
+        const pluginId = path.basename(pluginDir)
+        const cachedResult = utsModuleResultCaches.get(pluginDir)
+        if (cachedResult && !changedFiles.has(pluginId)) {
+          handleCompileResult(cachedResult, this, false)
+          return {
+            code: cachedResult.code,
+            map: null,
+            syntheticNamedExports: cachedResult.encrypt,
+            meta: cachedResult.meta,
           }
-        })
-      }
-      const compile = once(() => {
-        return compilePlugin(pluginDir, this)
-      })
-      utsModuleCaches.set(pluginDir, compile)
-      const result = await compile()
-      if (result) {
-        utsModuleResultCaches.set(pluginDir, result)
-        handleCompileResult(result, this)
-        return {
-          code: result.code,
-          map: null,
-          syntheticNamedExports: result.encrypt,
-          meta: result.meta,
         }
-      }
+        if (utsModuleCaches.get(pluginDir)) {
+          return utsModuleCaches.get(pluginDir)!().then((result) => {
+            if (result) {
+              utsModuleResultCaches.set(pluginDir, result)
+              handleCompileResult(result, this)
+              return {
+                code: result.code,
+                map: null,
+                syntheticNamedExports: result.encrypt,
+                meta: result.meta,
+              }
+            }
+          })
+        }
+        const compile = once(() => {
+          return compilePlugin(pluginDir, this)
+        })
+        utsModuleCaches.set(pluginDir, compile)
+        const result = await compile()
+        if (result) {
+          utsModuleResultCaches.set(pluginDir, result)
+          handleCompileResult(result, this)
+          return {
+            code: result.code,
+            map: null,
+            syntheticNamedExports: result.encrypt,
+            meta: result.meta,
+          }
+        }
+      },
     },
   }
 }
