@@ -6,10 +6,14 @@ export function uniValidateFunctionPlugin(): Plugin {
   return {
     name: 'uni:cloud-vf',
     enforce: 'pre',
-    transform(code, id) {
-      if (id.includes('validator/validateFunction')) {
-        return replaceModuleExports(code)
-      }
+    transform: {
+      // 仅 validator/validateFunction 需要将 CommonJS 导出改为 ESM。
+      filter: { id: /validator\/validateFunction/ },
+      handler(code, id) {
+        if (id.includes('validator/validateFunction')) {
+          return replaceModuleExports(code)
+        }
+      },
     },
   }
 }
