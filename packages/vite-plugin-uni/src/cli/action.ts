@@ -96,11 +96,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
             const files = process.env.UNI_APP_CHANGED_FILES
             const pages = process.env.UNI_APP_CHANGED_PAGES
             const dex = process.env.UNI_APP_UTS_CHANGED_FILES
-            const binFiles =
-              process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
-                ? process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES
-                : ''
-            hasBinFiles = !!(binFiles && binFiles !== '[]')
+            hasBinFiles = getHasBinFiles()
             changedFiles = pages || files
             process.env.UNI_APP_CHANGED_PAGES = ''
             process.env.UNI_APP_CHANGED_FILES = ''
@@ -139,6 +135,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
             options.platform === 'app-harmony' ||
             options.platform === 'mp-harmony'
           ) {
+            hasBinFiles = getHasBinFiles()
             // 动态化且没有uts插件变更时，输出变更文件列表
             if (process.env.UNI_APP_X_DOM2_DYNAMIC === 'true' && !utsChanged) {
               const changed: string[] = []
@@ -291,4 +288,12 @@ export const stopProfiler = (
       }
     })
   })
+}
+
+function getHasBinFiles() {
+  const binFiles =
+    process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
+      ? process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES
+      : ''
+  return !!(binFiles && binFiles !== '[]')
 }
