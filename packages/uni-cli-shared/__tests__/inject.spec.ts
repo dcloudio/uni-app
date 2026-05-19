@@ -17,11 +17,15 @@ describe('inject', () => {
   const context = {
     parse: (code: string) => parse(code).program,
   } as unknown as TransformPluginContext
+  function transform(plugin: ReturnType<typeof uniViteInjectPlugin>) {
+    const transform = plugin.transform as any
+    return typeof transform === 'function' ? transform : transform.handler
+  }
   test(`basic`, () => {
     const plugin = uniViteInjectPlugin('uni:inject', injectOptions)
     expect(
       (
-        (plugin.transform as Function).call(
+        transform(plugin).call(
           context,
           `uni.test();uni.reLaunch();`,
           filename
@@ -33,7 +37,7 @@ describe('inject', () => {
     const plugin = uniViteInjectPlugin('uni:inject', injectOptions)
     expect(
       (
-        (plugin.transform as Function).call(
+        transform(plugin).call(
           context,
           `uni.reLaunch();uni.reLaunch=()=>{};uni.reLaunch();uni.navigateTo();const temp = uni.navigateTo;uni.navigateTo();temp();`,
           filename

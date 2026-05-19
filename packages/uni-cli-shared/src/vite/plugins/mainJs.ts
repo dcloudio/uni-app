@@ -17,6 +17,13 @@ export function defineUniMainJsPlugin(
   } as UniViteFilterPluginOptions
 
   const plugin = createUniMainJsPlugin(opts)
+  if (typeof plugin.transform === 'function') {
+    const transform = plugin.transform
+    plugin.transform = {
+      filter: { id: /\/main\.(?:js|ts|uts)(?:\?|$)/ },
+      handler: transform,
+    }
+  }
   const origConfigResolved = plugin.configResolved as Function
 
   let mainJsPath = ''

@@ -22,6 +22,13 @@ function createDefineJsonJsPlugin(name: 'pages.json' | 'manifest.json') {
     } as UniViteFilterPluginOptions
 
     const plugin = createVitePlugin(opts)
+    if (typeof plugin.transform === 'function') {
+      const transform = plugin.transform
+      plugin.transform = {
+        filter: { id: new RegExp(`${JSON_JS}(?:\\?|$)`) },
+        handler: transform,
+      }
+    }
     const origLoad = plugin.load as Function
     const origResolveId = plugin.resolveId as Function
     const origConfigResolved = plugin.configResolved as Function
