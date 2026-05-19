@@ -137,7 +137,11 @@ export async function runDev(options: CliOptions & ServerOptions) {
           ) {
             hasBinFiles = getHasBinFiles()
             // 动态化且没有uts插件变更时，输出变更文件列表
-            if (process.env.UNI_APP_X_DOM2_DYNAMIC === 'true' && !utsChanged) {
+            if (
+              process.env.UNI_APP_X_DOM2_DYNAMIC === 'true' &&
+              !utsChanged &&
+              !hasBinFiles
+            ) {
               const changed: string[] = []
               const files = process.env.UNI_APP_CHANGED_FILES
               process.env.UNI_APP_CHANGED_PAGES = ''
@@ -167,7 +171,8 @@ export async function runDev(options: CliOptions & ServerOptions) {
             // 鸿蒙平台cpp/uts插件变更需要整体编译
             if (
               process.env.UNI_APP_X_DOM2_CPP_CHANGED !== 'true' &&
-              !utsChanged
+              !utsChanged &&
+              !hasBinFiles
             ) {
               const files = process.env.UNI_APP_CHANGED_FILES
               process.env.UNI_APP_CHANGED_FILES = ''
