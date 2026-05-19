@@ -121,49 +121,53 @@ export function uniAppCssPlugin(): Plugin {
     configResolved(config) {
       resolvedConfig = config
     },
-    async transform(source, filename) {
-      if (!cssLangRE.test(filename) || commonjsProxyRE.test(filename)) {
-        return
-      }
-      if (filename.endsWith('__uno.css')) {
-        return
-      }
-      if (source.includes('#endif')) {
-        source = preUVueCss(source, filename)
-      }
-      source = parseAssets(resolvedConfig, source)
-      // 仅做校验使用
-      const { messages } = await parse(source, {
-        filename,
-        logLevel: 'WARNING',
-        map: true,
-        ts: true,
-        noCode: true,
-        type: 'uvue',
-        platform: process.env.UNI_UTS_PLATFORM,
-      })
-      messages.forEach((message) => {
-        if (message.type === 'warning') {
-          // 拆分成多行，第一行输出信息（有颜色），后续输出错误代码+文件行号
-          onCompileLog(
-            'warn',
-            { name: 'CSSWarning', message: message.text },
-            source,
-            filename,
-            {
-              plugin: 'uni:app-uvue-css',
-              line: message.line,
-              column: message.column,
-            }
-          )
+    transform: {
+      // 仅 CSS 请求需要进入 uvue 样式校验，避免每个模块都触发空转。
+      filter: { id: cssLangRE },
+      async handler(source, filename) {
+        if (!cssLangRE.test(filename) || commonjsProxyRE.test(filename)) {
+          return
         }
-      })
-      return {
-        code: source,
-        map: {
-          mappings: '',
-        },
-      }
+        if (filename.endsWith('__uno.css')) {
+          return
+        }
+        if (source.includes('#endif')) {
+          source = preUVueCss(source, filename)
+        }
+        source = parseAssets(resolvedConfig, source)
+        // 仅做校验使用
+        const { messages } = await parse(source, {
+          filename,
+          logLevel: 'WARNING',
+          map: true,
+          ts: true,
+          noCode: true,
+          type: 'uvue',
+          platform: process.env.UNI_UTS_PLATFORM,
+        })
+        messages.forEach((message) => {
+          if (message.type === 'warning') {
+            // 拆分成多行，第一行输出信息（有颜色），后续输出错误代码+文件行号
+            onCompileLog(
+              'warn',
+              { name: 'CSSWarning', message: message.text },
+              source,
+              filename,
+              {
+                plugin: 'uni:app-uvue-css',
+                line: message.line,
+                column: message.column,
+              }
+            )
+          }
+        })
+        return {
+          code: source,
+          map: {
+            mappings: '',
+          },
+        }
+      },
     },
   }
 }
