@@ -2173,8 +2173,13 @@ function initVaporPageLifeCycle(pageComponentPublicInstance, nativePage) {
           }
         }
       });
+      var pullDownRefreshEventId = "uni-pull-down-refresh-".concat(nativePage.pageId);
+      uni.$on(pullDownRefreshEventId, () => {
+        invokeHook(pageComponentPublicInstance, ON_PULL_DOWN_REFRESH);
+      });
       nativePage.addPageEventListener(ON_UNLOAD, (_) => {
         pageRootEl.removeEventListener("scroll", scrollEventId);
+        uni.$off(pullDownRefreshEventId);
       });
     }
   }
