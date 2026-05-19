@@ -3,13 +3,19 @@ import type { Node } from '@babel/types'
 import { walk } from 'estree-walker'
 import { parse } from '@babel/parser'
 
+const UNI_EXT_API_RE = /\b(?:uni|uniCloud)\./
+
 export function uniAppJsPlugin(resolvedConfig: ResolvedConfig): Plugin {
   return {
     name: 'uni:app-js',
     transform: {
-      filter: { id: /\.js(\?|$)/ },
+      // 该插件只收集 uni/uniCloud API 调用，先过滤不含相关调用的 JS，避免无意义 AST 解析。
+      filter: { id: /\.js(\?|$)/, code: UNI_EXT_API_RE },
       async handler(source, filename) {
         if (!filename.endsWith('.js')) {
+          return
+        }
+        if (!UNI_EXT_API_RE.test(source)) {
           return
         }
         const parseResult = parse(source, {
