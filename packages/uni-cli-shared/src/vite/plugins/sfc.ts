@@ -32,7 +32,7 @@ export function uniViteSfcSrcImportPlugin(
   const { parse } = require('@vue/compiler-sfc')
   const hasImport = onlyVue ? isSrcImportVue : isSrcImport
   const isValidSrc = onlyVue ? isVueSfcFile : () => true
-  return {
+  const plugin: Plugin = {
     name: 'uni:sfc-src-import',
     async transform(code, id) {
       if (!isVueSfcFile(id)) {
@@ -167,6 +167,16 @@ export function uniViteSfcSrcImportPlugin(
       }
     },
   }
+  const transform = plugin.transform as any
+  plugin.transform = {
+    // 仅含 template/script/style src 引用的 SFC 需要内联外部块。
+    filter: {
+      id: /\.(?:vue|uvue)(?:\?|$)/,
+      code: /<(?:template|script|style)[^>]*src\s*=/,
+    },
+    handler: transform,
+  }
+  return plugin
 }
 
 function overwriteContent(
