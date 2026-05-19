@@ -12,8 +12,13 @@ import {
 
 export interface GenerateJavaScriptRuntimeCodeFrameOptions
   extends GenerateRuntimeCodeFrameOptions {
-  platform: 'app-ios' | 'app-harmony'
+  platform: 'app-android' | 'app-ios' | 'app-harmony'
   language: 'javascript'
+}
+
+export interface GenerateAppAndroidJavaScriptRuntimeCodeFrameOptions
+  extends GenerateJavaScriptRuntimeCodeFrameOptions {
+  platform: 'app-android'
 }
 
 export interface GenerateAppIOSJavaScriptRuntimeCodeFrameOptions
@@ -33,6 +38,8 @@ const APP_IOS_VUE_ERROR_RE = /@([^\s]+\.js)\:(\d+)\:(\d+)/
 // app-harmony aaa\n    at testArr (entry/src/main/resources/resfile/uni-app-x/apps/HBuilder/www/app-service.js:530:15)
 const APP_HARMONY_JS_ERROR_RE =
   /(.*?)\s*at\s+(?:.*?)\s+\(.*?\/www\/(.*?\.js):(\d+):(\d+)\)/
+// app-android Error: aaa\n@/data/data/io.dcloud.uniappx/apps/__UNI__49FE874/www/app-service.js:115:24
+const APP_ANDROID_VUE_ERROR_RE = /@(?:.*?\/www\/)?([^\s/]+\.js):(\d+):(\d+)/
 
 export function parseUTSJavaScriptRuntimeStacktrace(
   stacktrace: string,
@@ -83,6 +90,12 @@ export function parseUTSJavaScriptRuntimeStacktrace(
         line,
         sourceMapDir
       )
+    } else if (options.platform === 'app-android') {
+      codes = parseUTSJavaScriptRuntimeStacktraceVueErrorLine(
+        line,
+        sourceMapDir,
+        APP_ANDROID_VUE_ERROR_RE
+      )
     }
     if (codes.length && res.length) {
       const color = options.logType
@@ -115,10 +128,11 @@ export function parseUTSJavaScriptRuntimeStacktrace(
 // callWithErrorHandling@uni-app-x-framework.js:2279:23
 function parseUTSJavaScriptRuntimeStacktraceVueErrorLine(
   lineStr: string,
-  sourceMapDir: string
+  sourceMapDir: string,
+  re = APP_IOS_VUE_ERROR_RE
 ) {
   const lines: string[] = []
-  const matches = lineStr.match(APP_IOS_VUE_ERROR_RE)
+  const matches = lineStr.match(re)
   if (!matches) {
     return lines
   }

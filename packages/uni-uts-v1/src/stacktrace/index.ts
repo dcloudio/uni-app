@@ -8,6 +8,7 @@ import {
   parseUTSHarmonyRuntimeStacktrace,
 } from './arkts'
 import {
+  type GenerateAppAndroidJavaScriptRuntimeCodeFrameOptions,
   type GenerateAppIOSJavaScriptRuntimeCodeFrameOptions,
   type GenerateJavaScriptRuntimeCodeFrameOptions,
   parseUTSJavaScriptRuntimeStacktrace,
@@ -88,13 +89,15 @@ export async function parseRuntimeStacktrace(
   stacktrace: string,
   options:
     | GenerateAppAndroidKotlinRuntimeCodeFrameOptions
+    | GenerateAppAndroidJavaScriptRuntimeCodeFrameOptions
     | GenerateAppIOSJavaScriptRuntimeCodeFrameOptions
     | GenerateAppHarmonyCodeFrameOptions
     | GenerateMiniProgramRuntimeCodeFrameOptions
 ) {
   initEnv(options)
   if (
-    (options.platform === 'app-android' && options.language === 'kotlin') ||
+    (options.platform === 'app-android' &&
+      (options.language === 'kotlin' || options.language === 'javascript')) ||
     (options.platform === 'app-ios' && options.language === 'javascript') ||
     options.platform === 'app-harmony'
   ) {
