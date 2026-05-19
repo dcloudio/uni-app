@@ -10,6 +10,7 @@ import { parseVueRequest, withSourcemap } from '../utils'
 const debugPreJs = debug('uni:pre-js')
 const debugPreHtml = debug('uni:pre-html')
 // const debugPreJsTry = debug('uni:pre-js-try')
+const PRE_ID_RE = /\.(?:json|css|vue|nvue|uvue|js|jsx|ts|tsx|uts|mjs)(?:\?|$)/
 
 export function uniPrePlugin(
   config: ResolvedConfig,
@@ -28,7 +29,8 @@ export function uniPrePlugin(
   return {
     name: 'uni:pre',
     transform: {
-      filter: { code: /#endif/ },
+      // 条件编译只处理支持预处理的源码类型，避免其他资源命中 #endif 后空转。
+      filter: { id: PRE_ID_RE, code: /#endif/ },
       handler(code, id) {
         if (!filter(id)) {
           return
