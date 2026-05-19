@@ -97,7 +97,6 @@ export interface ImportItem {
   exp: SimpleExpressionNode;
   path: string;
 }
-type IdentifierScopeType = "local" | "slot";
 export interface TransformContext extends Required<Omit<TransformOptions, keyof CompilerCompatOptions>>, CompilerCompatOptions {
   selfName: string | null;
   root: RootNode;
@@ -110,9 +109,6 @@ export interface TransformContext extends Required<Omit<TransformOptions, keyof 
   cached: (CacheExpression | null)[];
   identifiers: {
     [name: string]: number | undefined;
-  };
-  identifierScopes: {
-    [name: string]: IdentifierScopeType[] | undefined;
   };
   scopes: {
     vFor: number;
@@ -131,9 +127,8 @@ export interface TransformContext extends Required<Omit<TransformOptions, keyof 
   replaceNode(node: TemplateChildNode): void;
   removeNode(node?: TemplateChildNode): void;
   onNodeRemoved(): void;
-  addIdentifiers(exp: ExpressionNode | string, type?: IdentifierScopeType): void;
+  addIdentifiers(exp: ExpressionNode | string): void;
   removeIdentifiers(exp: ExpressionNode | string): void;
-  isSlotScopeIdentifier(name: string): boolean;
   hoist(exp: string | JSChildNode | ArrayExpression): SimpleExpressionNode;
   cache(exp: JSChildNode, isVNode?: boolean, inVOnce?: boolean): CacheExpression;
   constantCache: WeakMap<TemplateChildNode, ConstantTypes>;
