@@ -34,36 +34,39 @@ export function uniConsolePlugin(options: ConsoleOptions): Plugin {
         }
       }
     },
-    transform(code, id) {
-      if (dropConsole) {
-        return
-      }
-      if (isRenderjs(id) || isWxs(id)) {
-        return {
-          code: restoreConsoleExpr(code),
-          map: null,
+    transform: {
+      filter: { code: /console\.|__f__/ },
+      handler(code, id) {
+        if (dropConsole) {
+          return
         }
-      }
-      if (!filter(id)) return null
-      if (!isJsFile(id)) return null
-      let { filename } = parseVueRequest(id)
-      if (options.filename) {
-        filename = options.filename(filename)
-      }
-      if (!filename) {
-        return null
-      }
-      if (!code.includes('console.')) {
-        return null
-      }
-      debugConsole(id)
-      return rewriteConsoleExpr(
-        options.method,
-        id,
-        filename,
-        code,
-        withSourcemap(resolvedConfig)
-      )
+        if (isRenderjs(id) || isWxs(id)) {
+          return {
+            code: restoreConsoleExpr(code),
+            map: null,
+          }
+        }
+        if (!filter(id)) return null
+        if (!isJsFile(id)) return null
+        let { filename } = parseVueRequest(id)
+        if (options.filename) {
+          filename = options.filename(filename)
+        }
+        if (!filename) {
+          return null
+        }
+        if (!code.includes('console.')) {
+          return null
+        }
+        debugConsole(id)
+        return rewriteConsoleExpr(
+          options.method,
+          id,
+          filename,
+          code,
+          withSourcemap(resolvedConfig)
+        )
+      },
     },
   }
 }

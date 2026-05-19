@@ -27,37 +27,40 @@ export function uniPrePlugin(
   const preHtmlFile = isNVue ? preNVueHtml : preHtml
   return {
     name: 'uni:pre',
-    transform(code, id) {
-      if (!filter(id)) {
-        return
-      }
-      const { filename, query } = parseVueRequest(id)
-      const extname = path.extname(filename)
-      const isHtml =
-        query.type === 'template' || PRE_HTML_EXTNAME.includes(extname)
-      const isJs = PRE_JS_EXTNAME.includes(extname)
-      const isPre = isHtml || isJs
-      if (isPre) {
-        // debugPreJsTry(id)
-      }
-      const hasEndif = isPre && code.includes('#endif')
-      if (!hasEndif) {
-        return
-      }
-      // 因为完整的 vue 会先条件编译，而 vue&type=template 等会再次条件编译，如果走error模式会报两次错误，且第二次错误没有正确的位置映射
-      const unbalanced = query.vue ? 'skip' : 'error'
-      if (isHtml) {
-        code = preHtmlFile(code, id, { unbalanced })
-        debugPreHtml(id)
-      }
-      if (isJs) {
-        code = preJsFile(code, id, { unbalanced })
-        debugPreJs(id)
-      }
-      return {
-        code,
-        map: withSourcemap(config) ? this.getCombinedSourcemap() : null,
-      }
+    transform: {
+      filter: { code: /#endif/ },
+      handler(code, id) {
+        if (!filter(id)) {
+          return
+        }
+        const { filename, query } = parseVueRequest(id)
+        const extname = path.extname(filename)
+        const isHtml =
+          query.type === 'template' || PRE_HTML_EXTNAME.includes(extname)
+        const isJs = PRE_JS_EXTNAME.includes(extname)
+        const isPre = isHtml || isJs
+        if (isPre) {
+          // debugPreJsTry(id)
+        }
+        const hasEndif = isPre && code.includes('#endif')
+        if (!hasEndif) {
+          return
+        }
+        // 因为完整的 vue 会先条件编译，而 vue&type=template 等会再次条件编译，如果走error模式会报两次错误，且第二次错误没有正确的位置映射
+        const unbalanced = query.vue ? 'skip' : 'error'
+        if (isHtml) {
+          code = preHtmlFile(code, id, { unbalanced })
+          debugPreHtml(id)
+        }
+        if (isJs) {
+          code = preJsFile(code, id, { unbalanced })
+          debugPreJs(id)
+        }
+        return {
+          code,
+          map: withSourcemap(config) ? this.getCombinedSourcemap() : null,
+        }
+      },
     },
   }
 }

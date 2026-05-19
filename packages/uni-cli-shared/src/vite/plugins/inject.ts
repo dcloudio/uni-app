@@ -82,165 +82,173 @@ export function uniViteInjectPlugin(
     `(?:${Array.from(modulesMap.keys()).map(escape).join('|')})`,
     'g'
   )
+  const firstpassFilter = new RegExp(firstpass.source)
   const sourceMap = options.sourceMap !== false
   const callback = options.callback
   return {
     name,
     // 确保在 commonjs 之后，否则会混合 es6 module 与 cjs 的代码，导致 commonjs 失效
     enforce: options.enforce ?? 'post',
-    transform(code, id) {
-      if (!filter(id)) return null
-      // 加密插件也要走后续注入逻辑
-      if (!isJsFile(id) && !isUniHelpers(id)) return null
+    transform: {
+      filter: { code: firstpassFilter },
+      handler(code, id) {
+        if (!filter(id)) return null
+        // 加密插件也要走后续注入逻辑
+        if (!isJsFile(id) && !isUniHelpers(id)) return null
 
-      // debugInjectTry(id)
-      if (code.search(firstpass) === -1) return null
-      if (sep !== '/') id = id.split(sep).join('/')
+        // debugInjectTry(id)
+        if (code.search(firstpass) === -1) return null
+        if (sep !== '/') id = id.split(sep).join('/')
 
-      const ast = this.parse(code)
+        const ast = this.parse(code)
 
-      const imports = new Set()
-      ;(ast as unknown as Program).body.forEach((node) => {
-        if (node.type === 'ImportDeclaration') {
-          node.specifiers.forEach((specifier) => {
-            imports.add(specifier.local.name)
-          })
-        }
-      })
+        const imports = new Set()
+        ;(ast as unknown as Program).body.forEach((node) => {
+          if (node.type === 'ImportDeclaration') {
+            node.specifiers.forEach((specifier) => {
+              imports.add(specifier.local.name)
+            })
+          }
+        })
 
-      // analyse scopes
-      let scope = attachScopes(ast, 'scope') as Scope
+        // analyse scopes
+        let scope = attachScopes(ast, 'scope') as Scope
 
-      const magicString = new MagicString(code)
+        const magicString = new MagicString(code)
 
-      const newImports = new Map()
+        const newImports = new Map()
 
-      function handleReference(
-        node: BaseNode,
-        name: string,
-        keypath: string,
-        parent?: BaseNode
-      ) {
-        let mod = modulesMap.get(keypath)
-        if (!mod && hasNamespace) {
-          const mods = keypath.split('.')
-          if (mods.length === 2) {
-            mod = namespaceModulesMap.get(mods[0] + '.')
-            if (mod) {
-              if (isArray(mod)) {
-                const testFn = mod[1] as unknown as (method: string) => boolean
-                if (testFn(mods[1])) {
-                  mod = [mod[0], mods[1]]
+        function handleReference(
+          node: BaseNode,
+          name: string,
+          keypath: string,
+          parent?: BaseNode
+        ) {
+          let mod = modulesMap.get(keypath)
+          if (!mod && hasNamespace) {
+            const mods = keypath.split('.')
+            if (mods.length === 2) {
+              mod = namespaceModulesMap.get(mods[0] + '.')
+              if (mod) {
+                if (isArray(mod)) {
+                  const testFn = mod[1] as unknown as (
+                    method: string
+                  ) => boolean
+                  if (testFn(mods[1])) {
+                    mod = [mod[0], mods[1]]
+                  } else {
+                    mod = undefined
+                  }
                 } else {
-                  mod = undefined
+                  mod = [mod, mods[1]]
                 }
+              }
+            }
+          }
+          if (mod && !imports.has(name) && !scope.contains(name)) {
+            if (isString(mod)) mod = [mod, 'default']
+            if (mod[0] === id) return false
+            const hash = `${keypath}:${mod[0]}:${mod[1]}`
+            // 当 API 被覆盖定义后，不再摇树
+            if (reassignments.has(hash)) {
+              return false
+            }
+            if (
+              parent &&
+              isAssignmentExpression(parent) &&
+              parent.left === node
+            ) {
+              reassignments.add(hash)
+              return false
+            }
+
+            const importLocalName =
+              name === keypath
+                ? name
+                : makeLegalIdentifier(`$inject_${keypath}`)
+
+            if (!newImports.has(hash)) {
+              if (mod[1] === '*') {
+                newImports.set(
+                  hash,
+                  `import * as ${importLocalName} from '${mod[0]}';`
+                )
               } else {
-                mod = [mod, mods[1]]
+                newImports.set(
+                  hash,
+                  `import { ${mod[1]} as ${importLocalName} } from '${mod[0]}';`
+                )
+                callback && callback(newImports, mod)
               }
             }
-          }
-        }
-        if (mod && !imports.has(name) && !scope.contains(name)) {
-          if (isString(mod)) mod = [mod, 'default']
-          if (mod[0] === id) return false
-          const hash = `${keypath}:${mod[0]}:${mod[1]}`
-          // 当 API 被覆盖定义后，不再摇树
-          if (reassignments.has(hash)) {
-            return false
-          }
-          if (
-            parent &&
-            isAssignmentExpression(parent) &&
-            parent.left === node
-          ) {
-            reassignments.add(hash)
-            return false
-          }
 
-          const importLocalName =
-            name === keypath ? name : makeLegalIdentifier(`$inject_${keypath}`)
-
-          if (!newImports.has(hash)) {
-            if (mod[1] === '*') {
-              newImports.set(
-                hash,
-                `import * as ${importLocalName} from '${mod[0]}';`
+            if (name !== keypath) {
+              magicString.overwrite(
+                (node as unknown as AstNodeLocation).start,
+                (node as unknown as AstNodeLocation).end,
+                importLocalName,
+                {
+                  storeName: true,
+                }
               )
-            } else {
-              newImports.set(
-                hash,
-                `import { ${mod[1]} as ${importLocalName} } from '${mod[0]}';`
-              )
-              callback && callback(newImports, mod)
             }
+            return true
           }
-
-          if (name !== keypath) {
-            magicString.overwrite(
-              (node as unknown as AstNodeLocation).start,
-              (node as unknown as AstNodeLocation).end,
-              importLocalName,
-              {
-                storeName: true,
-              }
-            )
-          }
-          return true
+          return false
         }
-        return false
-      }
 
-      walk(ast, {
-        enter(node, parent) {
-          if (sourceMap) {
-            magicString.addSourcemapLocation((node as AstNodeLocation).start)
-            magicString.addSourcemapLocation((node as AstNodeLocation).end)
-          }
+        walk(ast, {
+          enter(node, parent) {
+            if (sourceMap) {
+              magicString.addSourcemapLocation((node as AstNodeLocation).start)
+              magicString.addSourcemapLocation((node as AstNodeLocation).end)
+            }
 
-          if ((node as any).scope) {
-            scope = (node as any).scope
-          }
+            if ((node as any).scope) {
+              scope = (node as any).scope
+            }
 
-          if (isProperty(node) && (node as Property).shorthand) {
-            const { name } = (node as Property).key as Identifier
-            handleReference(node, name, name)
-            this.skip()
-            return
-          }
-
-          if (isReference(node, parent!)) {
-            const { name, keypath } = flatten(node)
-            const handled = handleReference(node, name, keypath, parent)
-            if (handled) {
+            if (isProperty(node) && (node as Property).shorthand) {
+              const { name } = (node as Property).key as Identifier
+              handleReference(node, name, name)
               this.skip()
+              return
             }
+
+            if (isReference(node, parent!)) {
+              const { name, keypath } = flatten(node)
+              const handled = handleReference(node, name, keypath, parent)
+              if (handled) {
+                this.skip()
+              }
+            }
+          },
+          leave(node) {
+            if ((node as any).scope) {
+              scope = scope.parent
+            }
+          },
+        })
+        debugInject(id, newImports.size)
+        if (newImports.size === 0) {
+          return {
+            code,
+            // 不能返回 ast ，否则会导致代码不能被再次修改
+            // 比如 App.vue 中，console.log('uniCloud') 触发了 inject 检测，检测完，发现不需要
+            // 此时返回 ast，会导致 import { setupApp } from '@dcloudio/uni-h5' 不会被编译
+            // ast
+            map: null,
           }
-        },
-        leave(node) {
-          if ((node as any).scope) {
-            scope = scope.parent
-          }
-        },
-      })
-      debugInject(id, newImports.size)
-      if (newImports.size === 0) {
-        return {
-          code,
-          // 不能返回 ast ，否则会导致代码不能被再次修改
-          // 比如 App.vue 中，console.log('uniCloud') 触发了 inject 检测，检测完，发现不需要
-          // 此时返回 ast，会导致 import { setupApp } from '@dcloudio/uni-h5' 不会被编译
-          // ast
-          map: null,
         }
-      }
-      const importBlock = Array.from(newImports.values()).join('\n\n')
+        const importBlock = Array.from(newImports.values()).join('\n\n')
 
-      magicString.prepend(`${importBlock}\n\n`)
+        magicString.prepend(`${importBlock}\n\n`)
 
-      return {
-        code: magicString.toString(),
-        map: sourceMap ? magicString.generateMap({ hires: true }) : null,
-      }
+        return {
+          code: magicString.toString(),
+          map: sourceMap ? magicString.generateMap({ hires: true }) : null,
+        }
+      },
     },
   }
 }

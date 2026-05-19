@@ -14,40 +14,46 @@ export function uniUTSUVueJavaScriptPlugin(options = {}): Plugin {
         config.plugins.splice(index, 1)
       }
     },
-    transform(code, id) {
-      if (!isVueSfcFile(id)) {
-        return
-      }
-      const platform = process.env.UNI_PLATFORM
-      const isApp =
-        platform === 'app' ||
-        platform === 'app-plus' ||
-        platform === 'app-harmony'
-      return {
-        code: code.replace(/<script([^>]*)>/gi, (match, attributes) => {
-          let vapor = false
-          if (process.env.UNI_APP_X_DOM2 === 'true') {
-            if (attributes.includes('setup') && !attributes.includes('vapor')) {
-              vapor = true
+    transform: {
+      filter: { id: /\.(vue|uvue)(\?|$)/ },
+      handler(code, id) {
+        if (!isVueSfcFile(id)) {
+          return
+        }
+        const platform = process.env.UNI_PLATFORM
+        const isApp =
+          platform === 'app' ||
+          platform === 'app-plus' ||
+          platform === 'app-harmony'
+        return {
+          code: code.replace(/<script([^>]*)>/gi, (match, attributes) => {
+            let vapor = false
+            if (process.env.UNI_APP_X_DOM2 === 'true') {
+              if (
+                attributes.includes('setup') &&
+                !attributes.includes('vapor')
+              ) {
+                vapor = true
+              }
             }
-          }
-          let result = ''
-          // 如果 <script> 标签中没有 lang 属性，添加 lang="uts"
-          if (!/lang=["']?[^"']*["']?/.test(attributes)) {
-            result = `<script${attributes} lang="uts">`
-          } else {
-            // 否则，将现有的 lang 属性替换为 lang="uts"
-            result = match.replace(/lang=["']?ts["']?/, 'lang="uts"')
-          }
-          if (vapor) {
-            // 追加 vapor 属性
-            result = result.replace('lang=', 'vapor lang=')
-          }
-          return result
-        }),
-        // app平台不可返回null，否则会报错“Multiple conflicting contents for sourcemap source”
-        map: isApp ? { mappings: '' } : null,
-      }
+            let result = ''
+            // 如果 <script> 标签中没有 lang 属性，添加 lang="uts"
+            if (!/lang=["']?[^"']*["']?/.test(attributes)) {
+              result = `<script${attributes} lang="uts">`
+            } else {
+              // 否则，将现有的 lang 属性替换为 lang="uts"
+              result = match.replace(/lang=["']?ts["']?/, 'lang="uts"')
+            }
+            if (vapor) {
+              // 追加 vapor 属性
+              result = result.replace('lang=', 'vapor lang=')
+            }
+            return result
+          }),
+          // app平台不可返回null，否则会报错“Multiple conflicting contents for sourcemap source”
+          map: isApp ? { mappings: '' } : null,
+        }
+      },
     },
   }
 }
@@ -62,21 +68,24 @@ export function uniUVueTypeScriptPlugin(options = {}): Plugin {
   return {
     name: 'uni:uvue-ts',
     enforce: 'pre',
-    transform(code, id) {
-      if (!isVueSfcFile(id)) {
-        return
-      }
-      return {
-        code: code.replace(/<script([^>]*)>/gi, (match, attributes) => {
-          // 如果 <script> 标签中没有 lang 属性，添加 lang="uts"
-          if (!/lang=["']?[^"']*["']?/.test(attributes)) {
-            return `<script${attributes} lang="ts">`
-          }
-          // 否则，将现有的 lang 属性替换为 lang="uts"
-          return match.replace(/lang=["']?uts["']?/, 'lang="ts"')
-        }),
-        map: { mappings: '' },
-      }
+    transform: {
+      filter: { id: /\.(vue|uvue)(\?|$)/ },
+      handler(code, id) {
+        if (!isVueSfcFile(id)) {
+          return
+        }
+        return {
+          code: code.replace(/<script([^>]*)>/gi, (match, attributes) => {
+            // 如果 <script> 标签中没有 lang 属性，添加 lang="uts"
+            if (!/lang=["']?[^"']*["']?/.test(attributes)) {
+              return `<script${attributes} lang="ts">`
+            }
+            // 否则，将现有的 lang 属性替换为 lang="uts"
+            return match.replace(/lang=["']?uts["']?/, 'lang="ts"')
+          }),
+          map: { mappings: '' },
+        }
+      },
     },
   }
 }

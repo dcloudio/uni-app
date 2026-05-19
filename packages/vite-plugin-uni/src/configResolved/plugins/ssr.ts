@@ -26,41 +26,44 @@ export function uniSSRPlugin(
   const filter = createFilter(options.include, options.exclude)
   return {
     name: 'uni:ssr:ref',
-    transform(code, id) {
-      if (!filter(id)) return null
-      if (!KEYED_FUNC_RE.test(code)) {
-        return
-      }
-      debugSSR('try', id)
-      const ast = this.parse(code)
-      const s = new MagicString(code)
-      walk(ast, {
-        enter(node) {
-          if (!isCallExpression(node)) {
-            return
-          }
-          const { callee, arguments: args } = node as CallExpression
-          if (args.length !== 1) {
-            return
-          }
-          const name = isIdentifier(callee)
-            ? callee.name
-            : isMemberExpression(callee) && isIdentifier(callee.property)
-            ? callee.property.name
-            : ''
-          if (name !== 'ssrRef' && name !== 'shallowSsrRef') {
-            return
-          }
-          const { end } = node as unknown as { end: number }
-          const key = id + '-' + (node as any).end
-          debugSSR(key, name)
-          s.appendLeft(end - 1, ", '" + createKey(`${id}-${end}`) + "'")
-        },
-      })
-      return {
-        code: s.toString(),
-        map: withSourcemap(config) ? s.generateMap().toString() : null,
-      }
+    transform: {
+      filter: { code: KEYED_FUNC_RE },
+      handler(code, id) {
+        if (!filter(id)) return null
+        if (!KEYED_FUNC_RE.test(code)) {
+          return
+        }
+        debugSSR('try', id)
+        const ast = this.parse(code)
+        const s = new MagicString(code)
+        walk(ast, {
+          enter(node) {
+            if (!isCallExpression(node)) {
+              return
+            }
+            const { callee, arguments: args } = node as CallExpression
+            if (args.length !== 1) {
+              return
+            }
+            const name = isIdentifier(callee)
+              ? callee.name
+              : isMemberExpression(callee) && isIdentifier(callee.property)
+              ? callee.property.name
+              : ''
+            if (name !== 'ssrRef' && name !== 'shallowSsrRef') {
+              return
+            }
+            const { end } = node as unknown as { end: number }
+            const key = id + '-' + (node as any).end
+            debugSSR(key, name)
+            s.appendLeft(end - 1, ", '" + createKey(`${id}-${end}`) + "'")
+          },
+        })
+        return {
+          code: s.toString(),
+          map: withSourcemap(config) ? s.generateMap().toString() : null,
+        }
+      },
     },
   }
 }

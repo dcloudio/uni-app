@@ -20,26 +20,29 @@ export function uniJsonPlugin(options: VitePluginUniResolvedOptions): Plugin {
       // 这里沿用 Node 读取行为，避免历史项目中的非 UTF-8 语言包直接构建失败。
       return fs.readFileSync(filename, 'utf8')
     },
-    transform(code, id) {
-      if (!jsonExtRE.test(id)) return null
-      if (SPECIAL_QUERY_RE.test(id)) return null
-      if (id.endsWith('.json.js')) return null
-      const isLocaleFile = isUniAppLocaleFile(id)
-      if (!code.includes('#endif') && !isLocaleFile) {
-        return null
-      }
-      // preprocess
-      if (code.includes('#endif')) {
-        code = preJs(code, id)
-      }
-      let jsonObj = parse(code)
-      if (isLocaleFile) {
-        jsonObj = jsonObj.common || {}
-      }
-      return {
-        code: JSON.stringify(jsonObj),
-        map: null,
-      }
+    transform: {
+      filter: { id: jsonExtRE },
+      handler(code, id) {
+        if (!jsonExtRE.test(id)) return null
+        if (SPECIAL_QUERY_RE.test(id)) return null
+        if (id.endsWith('.json.js')) return null
+        const isLocaleFile = isUniAppLocaleFile(id)
+        if (!code.includes('#endif') && !isLocaleFile) {
+          return null
+        }
+        // preprocess
+        if (code.includes('#endif')) {
+          code = preJs(code, id)
+        }
+        let jsonObj = parse(code)
+        if (isLocaleFile) {
+          jsonObj = jsonObj.common || {}
+        }
+        return {
+          code: JSON.stringify(jsonObj),
+          map: null,
+        }
+      },
     },
   }
 }
