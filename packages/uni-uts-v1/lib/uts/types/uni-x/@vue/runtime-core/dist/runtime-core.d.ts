@@ -263,22 +263,6 @@ export declare function defineOptions<RawBindings = {}, D = {}, C extends Comput
   */
   slots?: never;
 }): void;
-/**
-* Vue `<script setup>` compiler macro for providing type hints to IDEs for
-* slot name and slot props type checking.
-*
-* Example usage:
-* ```ts
-* const slots = defineSlots<{
-*   default(props: { msg: string }): any
-* }>()
-* ```
-*
-* This is only usable inside `<script setup>`, is compiled away in the
-* output and should **not** be actually called at runtime.
-*
-* @see {@link https://vuejs.org/api/sfc-script-setup.html#defineslots}
-*/
 export declare function defineSlots<S extends Record<string, any> = Record<string, any>>(): StrictUnwrapSlotsType<SlotsType<S>>;
 export type ModelRef<T, M extends PropertyKey = string, G = T, S = T> = Ref$1<G> & [ModelRef<T, M, G, S>, Record<M, true | undefined>];
 type DefineModelOptions<T = any, G = T, S = T> = {
@@ -460,7 +444,7 @@ export type ComponentPublicInstance<P = {}, B = {}, D = {}, C extends ComputedOp
   $: ComponentInternalInstance;
   $data: D;
   $props: MakeDefaultsOptional extends true ? Partial<Defaults> & Omit<Prettify<P> & PublicProps, keyof Defaults> : Prettify<P> & PublicProps;
-  $attrs: Attrs;
+  $attrs: Data;
   $refs: Data & TypeRefs;
   $slots: UnwrapSlotsType<S>;
   $root: ComponentPublicInstance | null;
@@ -504,10 +488,6 @@ export interface SuspenseProps {
   onResolve?: () => void;
   onPending?: () => void;
   onFallback?: () => void;
-  /**
-  * Switch to fallback content if it takes longer than `timeout` milliseconds to render the new default content.
-  * A `timeout` value of `0` will cause the fallback content to be displayed immediately when default content is replaced.
-  */
   timeout?: string | number;
   /**
   * Allow suspense to be captured by parent suspense
@@ -541,7 +521,6 @@ export interface SuspenseBoundary {
   container: RendererElement;
   hiddenContainer: RendererElement;
   activeBranch: VNode | null;
-  isFallbackMountPending: boolean;
   pendingBranch: VNode | null;
   deps: number;
   pendingId: number;
@@ -996,7 +975,7 @@ export type DefineComponent<PropsOrPropOptions = {}, RawBindings = {}, D = {}, C
 export type DefineSetupFnComponent<P extends Record<string, any>, E extends EmitsOptions = {}, S extends SlotsType = SlotsType, Props = P & EmitsToProps<E>, PP = PublicProps> = new (props: Props & PP) => CreateComponentPublicInstanceWithMixins<Props, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, E, PP, {}, false, {}, S>;
 type ToResolvedProps<Props, Emits extends EmitsOptions> = Readonly<Props> & Readonly<EmitsToProps<Emits>>;
 export declare function defineComponent<Props extends Record<string, any>, E extends EmitsOptions = {}, EE extends string = string, S extends SlotsType = {}>(setup: (props: Props, ctx: SetupContext<E, S>) => RenderFunction | Promise<RenderFunction>, options?: Pick<ComponentOptions, "name" | "inheritAttrs"> & {
-  props?: (keyof NoInfer<Props>)[];
+  props?: (keyof Props)[];
   emits?: E | EE[];
   slots?: S;
 }): DefineSetupFnComponent<Props, E, S>;
@@ -1364,11 +1343,6 @@ export declare let isInSSRComponentSetup: boolean;
 //#region temp/packages/runtime-core/src/component.d.ts
 type Data = Record<string, unknown>;
 /**
-* For extending allowed non-declared attrs on components in TSX
-*/
-export interface AllowedAttrs {}
-export type Attrs = Data & AllowedAttrs;
-/**
 * Public utility type for extracting the instance type of a component.
 * Works with all valid component definition types. This is intended to replace
 * the usage of `InstanceType<typeof Comp>` which only works for
@@ -1439,10 +1413,6 @@ export interface ComponentInternalOptions {
   */
   __vapor?: boolean;
   /**
-  * whether this vapor component has multiple root nodes
-  */
-  __multiRoot?: boolean;
-  /**
   * indicates keep-alive component
   */
   __isKeepAlive?: boolean;
@@ -1495,7 +1465,7 @@ export type ConcreteComponent<Props = {}, RawBindings = any, D = any, C extends 
 export type Component<PropsOrInstance = any, RawBindings = any, D = any, C extends ComputedOptions = ComputedOptions, M extends MethodOptions = MethodOptions, E extends EmitsOptions | Record<string, any[]> = {}, S extends Record<string, any> = any> = ConcreteComponent<PropsOrInstance, RawBindings, D, C, M, E, S> | ComponentPublicInstanceConstructor<PropsOrInstance>;
 export type LifecycleHook<TFn = Function> = (TFn & SchedulerJob)[] | null;
 export type SetupContext<E = EmitsOptions, S extends SlotsType = {}> = E extends any ? {
-  attrs: Attrs;
+  attrs: Data;
   slots: UnwrapSlotsType<S>;
   emit: EmitFn<E>;
   expose: <Exposed extends Record<string, any> = Record<string, any>>(exposed?: Exposed) => void;
@@ -1799,15 +1769,11 @@ export declare function renderList<T>(source: T, renderItem: <K extends keyof T>
 export declare function toHandlers(obj: Record<string, any>, preserveCaseIfNecessary?: boolean): Record<string, any>;
 //#endregion
 //#region temp/packages/runtime-core/src/helpers/renderSlot.d.ts
-type SlotFallback = {
-  (): VNodeArrayChildren;
-  __vdom?: boolean;
-};
 /**
 * Compiler runtime helper for rendering `<slot/>`
 * @private
 */
-export declare function renderSlot(slots: Slots, name: string, props?: Data, fallback?: SlotFallback, noSlotted?: boolean): VNode;
+export declare function renderSlot(slots: Slots, name: string, props?: Data, fallback?: () => VNodeArrayChildren, noSlotted?: boolean): VNode;
 //#endregion
 //#region temp/packages/runtime-core/src/helpers/createSlots.d.ts
 type SSRSlot = (...args: any[]) => VNode[] | undefined;

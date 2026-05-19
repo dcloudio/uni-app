@@ -409,9 +409,4 @@ export declare enum VaporVForFlags {
   */
   ONCE = 4
 }
-export declare enum VaporBlockShape {
-  EMPTY = 0,
-  SINGLE_ROOT = 1,
-  MULTI_ROOT = 2
-}
 //#endregion
