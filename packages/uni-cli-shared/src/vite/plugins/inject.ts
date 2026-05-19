@@ -78,11 +78,17 @@ export function uniViteInjectPlugin(
     normalizeModulesMap(namespaceModulesMap)
   }
 
+  const namespaceKeys = Array.from(namespaceModulesMap.keys())
+  const exactKeys = Array.from(modulesMap.keys()).filter(
+    (name) => !name.endsWith('.')
+  )
   // 仅匹配独立标识符，避免 uni/wx 等短名称命中 function、undefined 等普通单词。
+  // namespace 配置以 "." 结尾，后面会继续跟方法名，不能统一追加右边界。
   const firstpass = new RegExp(
-    `(?:^|[^\\w$])(?:${Array.from(modulesMap.keys())
-      .map(escape)
-      .join('|')})(?![\\w$])`,
+    `(?:^|[^\\w$])(?:${[
+      ...namespaceKeys.map(escape),
+      ...exactKeys.map((name) => `${escape(name)}(?![\\w$])`),
+    ].join('|')})`,
     'g'
   )
   const firstpassFilter = new RegExp(firstpass.source)
