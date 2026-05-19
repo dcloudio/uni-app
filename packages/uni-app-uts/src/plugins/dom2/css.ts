@@ -173,71 +173,76 @@ export function uniAppCssPlugin(): Plugin {
     configResolved(config) {
       resolvedConfig = config
     },
-    async transform(source, filename) {
-      if (!cssLangRE.test(filename) || commonjsProxyRE.test(filename)) {
-        return
-      }
-      if (filename.endsWith('__uno.css')) {
-        return
-      }
-      if (source.includes('#endif')) {
-        source = preUVueCss(source, filename)
-      }
-      source = parseAssets(resolvedConfig, source)
-      // 仅做校验使用
-      const { messages } = await parseCss(source, {
-        platform: process.env.UNI_UTS_PLATFORM,
-        helper: requireUniHelpers(),
-        output: process.env.UNI_APP_X_DOM2_DYNAMIC === 'true' ? 'bin' : 'code',
-      })
-      let cssSourceMap: SourceMapInput | undefined
-      if (messages.find((m) => m.type === 'warning')) {
-        const moduleInfo = this.getModuleInfo(filename)
-        cssSourceMap = moduleInfo?.meta.uni?.cssSourceMap
-      }
-      const sourceMap: TraceMap = (
-        cssSourceMap ? new TraceMap(cssSourceMap) : undefined
-      ) as TraceMap
-      messages.forEach((message) => {
-        if (message.type === 'warning') {
-          // 拆分成多行，第一行输出信息（有颜色），后续输出错误代码+文件行号
-          const originalPos = originalPositionFor(sourceMap, {
-            line: message.line,
-            column: message.column,
-          })
-          let code = source
-          let line = message.line
-          let column = message.column
-          if (originalPos.source) {
-            const sourceContent = sourceContentFor(
-              sourceMap,
-              originalPos.source
-            )
-            if (sourceContent) {
-              code = sourceContent
-              line = originalPos.line
-              column = originalPos.column
-            }
-          }
-          onCompileLog(
-            'warn',
-            { name: 'CSSWarning', message: message.text },
-            code,
-            filename,
-            {
-              plugin: 'uni:app-uvue-css',
-              line,
-              column,
-            }
-          )
+    transform: {
+      // dom2 css 只处理样式请求，跳过普通 JS/SFC 模块空转。
+      filter: { id: cssLangRE },
+      async handler(source, filename) {
+        if (!cssLangRE.test(filename) || commonjsProxyRE.test(filename)) {
+          return
         }
-      })
-      return {
-        code: source,
-        map: {
-          mappings: '',
-        },
-      }
+        if (filename.endsWith('__uno.css')) {
+          return
+        }
+        if (source.includes('#endif')) {
+          source = preUVueCss(source, filename)
+        }
+        source = parseAssets(resolvedConfig, source)
+        // 仅做校验使用
+        const { messages } = await parseCss(source, {
+          platform: process.env.UNI_UTS_PLATFORM,
+          helper: requireUniHelpers(),
+          output:
+            process.env.UNI_APP_X_DOM2_DYNAMIC === 'true' ? 'bin' : 'code',
+        })
+        let cssSourceMap: SourceMapInput | undefined
+        if (messages.find((m) => m.type === 'warning')) {
+          const moduleInfo = this.getModuleInfo(filename)
+          cssSourceMap = moduleInfo?.meta.uni?.cssSourceMap
+        }
+        const sourceMap: TraceMap = (
+          cssSourceMap ? new TraceMap(cssSourceMap) : undefined
+        ) as TraceMap
+        messages.forEach((message) => {
+          if (message.type === 'warning') {
+            // 拆分成多行，第一行输出信息（有颜色），后续输出错误代码+文件行号
+            const originalPos = originalPositionFor(sourceMap, {
+              line: message.line,
+              column: message.column,
+            })
+            let code = source
+            let line = message.line
+            let column = message.column
+            if (originalPos.source) {
+              const sourceContent = sourceContentFor(
+                sourceMap,
+                originalPos.source
+              )
+              if (sourceContent) {
+                code = sourceContent
+                line = originalPos.line
+                column = originalPos.column
+              }
+            }
+            onCompileLog(
+              'warn',
+              { name: 'CSSWarning', message: message.text },
+              code,
+              filename,
+              {
+                plugin: 'uni:app-uvue-css',
+                line,
+                column,
+              }
+            )
+          }
+        })
+        return {
+          code: source,
+          map: {
+            mappings: '',
+          },
+        }
+      },
     },
   }
 }
