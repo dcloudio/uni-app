@@ -190,48 +190,54 @@ export function uniAppPlugin(): UniVitePlugin {
         await uniXKotlinCompiler.init()
       }
     },
-    async transform(code, id) {
-      const { filename } = parseVueRequest(id)
-      if (!filename.endsWith('.uts') && !filename.endsWith('.ts')) {
-        if (filename.endsWith('.json')) {
+    transform: {
+      // 仅 Android 原生编译需要处理 uts/ts 源码以及透传 json 资源。
+      filter: { id: /\.(?:uts|ts|json)(?:\?|$)/ },
+      async handler(code, id) {
+        const { filename } = parseVueRequest(id)
+        if (!filename.endsWith('.uts') && !filename.endsWith('.ts')) {
+          if (filename.endsWith('.json')) {
+            this.emitFile({
+              type: 'asset',
+              fileName: normalizeEmitAssetFileName(
+                normalizeFilename(id, false)
+              ),
+              source: code,
+            })
+          }
+          return
+        }
+        // 仅处理 uts 文件
+        // 忽略 uni-app-uts/lib/automator/index.uts
+        if (!filename.includes('uni-app-uts')) {
+          code = (
+            await transformAutoImport(
+              transformUniCloudMixinDataCom(
+                rewriteUniModulesConsoleExpr(id, code)
+              ),
+              id
+            )
+          ).code
+          const isMainUTS = normalizePath(id) === mainUTS
           this.emitFile({
             type: 'asset',
-            fileName: normalizeEmitAssetFileName(normalizeFilename(id, false)),
-            source: code,
+            fileName: normalizeEmitAssetFileName(
+              normalizeFilename(id, isMainUTS)
+            ),
+            source: normalizeCode(code, isMainUTS),
           })
         }
-        return
-      }
-      // 仅处理 uts 文件
-      // 忽略 uni-app-uts/lib/automator/index.uts
-      if (!filename.includes('uni-app-uts')) {
-        code = (
-          await transformAutoImport(
-            transformUniCloudMixinDataCom(
-              rewriteUniModulesConsoleExpr(id, code)
-            ),
-            id
-          )
-        ).code
-        const isMainUTS = normalizePath(id) === mainUTS
-        this.emitFile({
-          type: 'asset',
-          fileName: normalizeEmitAssetFileName(
-            normalizeFilename(id, isMainUTS)
-          ),
-          source: normalizeCode(code, isMainUTS),
-        })
-      }
-      code = await parseImports(
-        code,
-        createTryResolve(id, this.resolve.bind(this))
-      )
-      return {
-        code,
-        map: {
-          mappings: '',
-        },
-      }
+        code = await parseImports(
+          code,
+          createTryResolve(id, this.resolve.bind(this))
+        )
+        return {
+          code,
+          map: {
+            mappings: '',
+          },
+        }
+      },
     },
     generateBundle(_, bundle) {
       if (!isNormalCompileTarget()) {
