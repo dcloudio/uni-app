@@ -10,6 +10,7 @@ import { isVueSfcFile } from '../../vue/utils'
 const debugScoped = debug('uni:scoped')
 
 const SCOPED_RE = /<style\s[^>]*scoped[^>]*>/i
+const VUE_SFC_ID_RE = /\.(?:vue|nvue|uvue)(?:$|\?(?!vue(?:&|=|$)))/
 
 export function addScoped(code: string) {
   return code.replace(/(<style\b[^><]*)>/gi, (str, $1) => {
@@ -56,13 +57,17 @@ export function uniCssScopedPlugin(
   return {
     name: 'uni:css-scoped',
     enforce: 'pre',
-    transform(code, id) {
-      if (!filter(id)) return null
-      debugScoped(id)
-      return {
-        code: addScoped(code),
-        map: null,
-      }
+    transform: {
+      // 仅 SFC 主模块需要补 scoped，跳过 script/style/template 等子模块。
+      filter: { id: VUE_SFC_ID_RE },
+      handler(code, id) {
+        if (!filter(id)) return null
+        debugScoped(id)
+        return {
+          code: addScoped(code),
+          map: null,
+        }
+      },
     },
     // 仅 h5
     handleHotUpdate(ctx) {
