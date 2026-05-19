@@ -398,29 +398,34 @@ export function cssPostPlugin(
     buildStart() {
       cssChunks = new Map<string, string[]>()
     },
-    async transform(css, id) {
-      if (!cssLangRE.test(id) || commonjsProxyRE.test(id)) {
-        return
-      }
-      const modules = cssModulesCache.get(config)!.get(id)
-      const modulesCode =
-        modules && dataToEsm(modules, { namedExports: true, preferConst: true })
+    transform: {
+      // vite:css-post 只处理样式请求，跳过普通模块空转。
+      filter: { id: cssLangRE },
+      async handler(css, id) {
+        if (!cssLangRE.test(id) || commonjsProxyRE.test(id)) {
+          return
+        }
+        const modules = cssModulesCache.get(config)!.get(id)
+        const modulesCode =
+          modules &&
+          dataToEsm(modules, { namedExports: true, preferConst: true })
 
-      // build CSS handling ----------------------------------------------------
-      styles.set(id, css)
-      return {
-        code:
-          modulesCode ||
-          (isJsCode
-            ? isDom2App
-              ? `export default ${createJsStylePlaceholder(id)}`
-              : 'export default {}'
-            : ''),
-        map: { mappings: '' },
-        // avoid the css module from being tree-shaken so that we can retrieve
-        // it in renderChunk()
-        moduleSideEffects: 'no-treeshake',
-      }
+        // build CSS handling ----------------------------------------------------
+        styles.set(id, css)
+        return {
+          code:
+            modulesCode ||
+            (isJsCode
+              ? isDom2App
+                ? `export default ${createJsStylePlaceholder(id)}`
+                : 'export default {}'
+              : ''),
+          map: { mappings: '' },
+          // avoid the css module from being tree-shaken so that we can retrieve
+          // it in renderChunk()
+          moduleSideEffects: 'no-treeshake',
+        }
+      },
     },
     async renderChunk(_code, chunk, _opts) {
       if (isDom2) {
