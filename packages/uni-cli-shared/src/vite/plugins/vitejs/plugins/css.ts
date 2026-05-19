@@ -221,95 +221,102 @@ export function cssPlugin(
       cssModulesCache.set(config, moduleCache)
     },
 
-    async transform(raw, id) {
-      if (!cssLangRE.test(id) || commonjsProxyRE.test(id)) {
-        return
-      }
+    transform: {
+      // vite:css 只编译样式请求，避免 Rolldown watch 下普通模块反复进入空转。
+      filter: { id: cssLangRE },
+      async handler(raw, id) {
+        if (!cssLangRE.test(id) || commonjsProxyRE.test(id)) {
+          return
+        }
 
-      const urlReplacer: CssUrlReplacer =
-        (options.createUrlReplacer && options.createUrlReplacer(resolveUrl)) ||
-        (async (url, importer, source) => {
-          if (url.startsWith('/') && !url.startsWith('//')) {
-            // /static/logo.png => @/static/logo.png
-            url = '@' + url
-          }
-          const resolved = await wrapResolve(
-            resolveUrl,
-            source?.input.css || raw,
-            source,
-            options.getDescriptor
-          )(url, importer)
-          if (resolved) {
-            return fileToUrl(
-              resolved,
-              config,
-              options?.isAndroidX
-                ? {
-                    emitFile(emittedFile: EmittedAsset) {
-                      const fileName = path.resolve(
-                        process.env.UNI_OUTPUT_DIR,
-                        emittedFile.fileName!
-                      )
-                      // 忽略static（可能有只读文件，写入覆盖只读会报错权限）
-                      if (
-                        getIsStaticFile()(normalizePath(emittedFile.fileName!))
-                      ) {
-                        return
-                      }
-                      // 直接写入目标目录
-                      fs.outputFileSync(fileName, emittedFile.source!)
-                    },
-                  }
-                : this,
-              true,
-              getIsStaticFile()
-            )
-          }
-          return url
-        })
-
-      const {
-        code: css,
-        map,
-        modules,
-        deps,
-      } = await compileCSS(
-        id,
-        raw,
-        config,
-        urlReplacer,
-        atImportResolvers,
-        server
-      )
-      if (modules) {
-        moduleCache.set(id, modules)
-      }
-
-      // track deps for build watch mode
-      if (config.command === 'build' && config.build.watch && deps) {
-        const normalizedId = normalizePath(id.split('?')[0])
-        for (const file of deps) {
-          this.addWatchFile(file)
-          if (options.isAndroidX) {
-            const normalizedFile = normalizePath(file.split('?')[0])
-            if (!depMap.has(normalizedFile)) {
-              depMap.set(normalizedFile, new Set())
+        const urlReplacer: CssUrlReplacer =
+          (options.createUrlReplacer &&
+            options.createUrlReplacer(resolveUrl)) ||
+          (async (url, importer, source) => {
+            if (url.startsWith('/') && !url.startsWith('//')) {
+              // /static/logo.png => @/static/logo.png
+              url = '@' + url
             }
-            depMap.get(normalizedFile)!.add(normalizedId)
+            const resolved = await wrapResolve(
+              resolveUrl,
+              source?.input.css || raw,
+              source,
+              options.getDescriptor
+            )(url, importer)
+            if (resolved) {
+              return fileToUrl(
+                resolved,
+                config,
+                options?.isAndroidX
+                  ? {
+                      emitFile(emittedFile: EmittedAsset) {
+                        const fileName = path.resolve(
+                          process.env.UNI_OUTPUT_DIR,
+                          emittedFile.fileName!
+                        )
+                        // 忽略static（可能有只读文件，写入覆盖只读会报错权限）
+                        if (
+                          getIsStaticFile()(
+                            normalizePath(emittedFile.fileName!)
+                          )
+                        ) {
+                          return
+                        }
+                        // 直接写入目标目录
+                        fs.outputFileSync(fileName, emittedFile.source!)
+                      },
+                    }
+                  : this,
+                true,
+                getIsStaticFile()
+              )
+            }
+            return url
+          })
+
+        const {
+          code: css,
+          map,
+          modules,
+          deps,
+        } = await compileCSS(
+          id,
+          raw,
+          config,
+          urlReplacer,
+          atImportResolvers,
+          server
+        )
+        if (modules) {
+          moduleCache.set(id, modules)
+        }
+
+        // track deps for build watch mode
+        if (config.command === 'build' && config.build.watch && deps) {
+          const normalizedId = normalizePath(id.split('?')[0])
+          for (const file of deps) {
+            this.addWatchFile(file)
+            if (options.isAndroidX) {
+              const normalizedFile = normalizePath(file.split('?')[0])
+              if (!depMap.has(normalizedFile)) {
+                depMap.set(normalizedFile, new Set())
+              }
+              depMap.get(normalizedFile)!.add(normalizedId)
+            }
           }
         }
-      }
 
-      return {
-        code: css,
-        map: null,
-        meta: {
-          uni: {
-            // 向后传递用于合并
-            cssPreprocessorSourceMap: map,
+        return {
+          code: css,
+          map: null,
+          meta: {
+            uni: {
+              // 向后传递用于合并
+              cssPreprocessorSourceMap: map,
+            },
           },
-        },
-      }
+        }
+      },
     },
   }
 }
