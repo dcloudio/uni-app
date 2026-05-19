@@ -244,6 +244,10 @@ const createUniXAppHarmonyUniModulesSyncFilePreprocessorOnce = once(() => {
 })
 
 const utsModuleCaches = new Map<string, () => Promise<void | CompileResult>>()
+// Rolldown watch 当前会重新 transform 未变化的 ?uts-proxy 模块。
+// 这里仅缓存 UTS 插件编译结果，避免普通 uvue 热更新重复触发 UTS 编译副作用；
+// 后续 Rolldown watch 恢复类似 Rollup 的 transform cache 行为后，可评估移除。
+const utsModuleResultCaches = new Map<string, CompileResult>()
 
 type ChangeEvent = 'create' | 'update' | 'delete'
 
@@ -297,9 +301,14 @@ const emptyHarmonyCacheDirOnce = once(() => {
 
 const handleCompileResult = (
   result: CompileResult,
-  pluginContext?: Rolldown.PluginContext
+  pluginContext?: Rolldown.PluginContext,
+  changed: boolean = true
 ) => {
-  process.env.UNI_APP_UTS_CHANGED = 'true'
+  // Rolldown watch 会重新 transform 未变化的 ?uts-proxy 模块。
+  // 只有 UTS 插件真实变化时，才标记 UTS changed，避免普通 uvue 热更新误触发 UTS 差量流程。
+  if (changed) {
+    process.env.UNI_APP_UTS_CHANGED = 'true'
+  }
   if (pluginContext) {
     result.deps.forEach((dep) => {
       pluginContext.addWatchFile(dep)
@@ -737,6 +746,7 @@ export function uniUTSAppUniModulesPlugin(
       utsModuleCaches.clear()
       changedFiles.clear()
       if (process.env.NODE_ENV !== 'development' || !isNormalCompileTarget()) {
+        utsModuleResultCaches.clear()
         if (uniXKotlinCompiler) {
           await uniXKotlinCompiler.close()
         }
@@ -756,6 +766,9 @@ export function uniUTSAppUniModulesPlugin(
           const plugin = fileName.slice(uniModulesDir.length + 1).split('/')[0]
           if (utsPlugins.has(plugin)) {
             const changeFile = { fileName, event: change.event }
+            utsModuleResultCaches.delete(
+              normalizePath(path.resolve(uniModulesDir, plugin))
+            )
             if (!changedFiles.has(plugin)) {
               changedFiles.set(plugin, [changeFile])
             } else {
@@ -776,9 +789,21 @@ export function uniUTSAppUniModulesPlugin(
       // 当 vue 和 nvue 均引用了相同 uts 插件，解决两套编译器会编译两次 uts 插件的问题
       // 通过缓存，保证同一个 uts 插件只编译一次
       const pluginDir = normalizePath(filename)
+      const pluginId = path.basename(pluginDir)
+      const cachedResult = utsModuleResultCaches.get(pluginDir)
+      if (cachedResult && !changedFiles.has(pluginId)) {
+        handleCompileResult(cachedResult, this, false)
+        return {
+          code: cachedResult.code,
+          map: null,
+          syntheticNamedExports: cachedResult.encrypt,
+          meta: cachedResult.meta,
+        }
+      }
       if (utsModuleCaches.get(pluginDir)) {
         return utsModuleCaches.get(pluginDir)!().then((result) => {
           if (result) {
+            utsModuleResultCaches.set(pluginDir, result)
             handleCompileResult(result, this)
             return {
               code: result.code,
@@ -795,6 +820,7 @@ export function uniUTSAppUniModulesPlugin(
       utsModuleCaches.set(pluginDir, compile)
       const result = await compile()
       if (result) {
+        utsModuleResultCaches.set(pluginDir, result)
         handleCompileResult(result, this)
         return {
           code: result.code,
