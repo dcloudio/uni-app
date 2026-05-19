@@ -18,6 +18,9 @@ export function uniUTSExtApiReplace(): Plugin {
   )
   const injectApis = Object.keys(injects)
   const firstPass = new RegExp(`(?:${injectApis.map(escape).join('|')})`, 'g')
+  const firstPassFilter = injectApis.length ? firstPass : /$^/
+  const jsIdFilter =
+    /(?:\.(?:js|jsx|ts|uts|tsx|mjs)(?:$|\?)|\.(?:vue|nvue|uvue)(?:$|\?))/
   return {
     name: 'uni:uts-ext-api-replace',
     configResolved(config) {
@@ -38,23 +41,27 @@ export function uniUTSExtApiReplace(): Plugin {
         }
       }
     },
-    transform(code, id) {
-      if (!injectApis.length) {
-        return
-      }
-      if (!isJsFile(id)) {
-        return
-      }
-      if (code.search(firstPass) === -1) {
-        return
-      }
-      injectApis.forEach((api) => {
-        code = code.replaceAll(api, api.replace('.', '_'))
-      })
-      return {
-        code,
-        map: null,
-      }
+    transform: {
+      // 仅包含 ext-api 调用的 JS/SFC 模块才需要做替换。
+      filter: { id: jsIdFilter, code: firstPassFilter },
+      handler(code, id) {
+        if (!injectApis.length) {
+          return
+        }
+        if (!isJsFile(id)) {
+          return
+        }
+        if (code.search(firstPass) === -1) {
+          return
+        }
+        injectApis.forEach((api) => {
+          code = code.replaceAll(api, api.replace('.', '_'))
+        })
+        return {
+          code,
+          map: null,
+        }
+      },
     },
   }
 }
