@@ -97,6 +97,9 @@
       "AddPhoneRepeatCalendarSuccessCallback"
     ],
     [
+      "AgreePrivacyAuthorization"
+    ],
+    [
       "AppCrashInfo"
     ],
     [
@@ -1045,6 +1048,9 @@
       "HideLoading"
     ],
     [
+      "HideLoadingComplete"
+    ],
+    [
       "HideLoadingCompleteCallback"
     ],
     [
@@ -1069,6 +1075,9 @@
       "HideLoadingSuccessCallback"
     ],
     [
+      "HideLoadingSuccessImpl"
+    ],
+    [
       "HideModal"
     ],
     [
@@ -1084,7 +1093,10 @@
       "HideModalOptions"
     ],
     [
-      "HideModalResult"
+      "HideModalSuccess"
+    ],
+    [
+      "HideModalSuccessImpl"
     ],
     [
       "HideNavigationBarLoading"
@@ -1702,6 +1714,27 @@
       "OpenFileSyncOptions"
     ],
     [
+      "OpenLocation"
+    ],
+    [
+      "OpenLocationComplete"
+    ],
+    [
+      "OpenLocationErrorCode"
+    ],
+    [
+      "OpenLocationFail"
+    ],
+    [
+      "OpenLocationOptions"
+    ],
+    [
+      "OpenLocationSuccess"
+    ],
+    [
+      "OpenLocationSuccessImpl"
+    ],
+    [
       "OsThemeChangeResult"
     ],
     [
@@ -2293,6 +2326,9 @@
       "ShowLoading"
     ],
     [
+      "ShowLoadingComplete"
+    ],
+    [
       "ShowLoadingCompleteCallback"
     ],
     [
@@ -2317,6 +2353,9 @@
       "ShowLoadingSuccessCallback"
     ],
     [
+      "ShowLoadingSuccessImpl"
+    ],
+    [
       "ShowModal"
     ],
     [
@@ -2332,7 +2371,10 @@
       "ShowModalOptions"
     ],
     [
-      "ShowModalResult"
+      "ShowModalSuccess"
+    ],
+    [
+      "ShowModalSuccessImpl"
     ],
     [
       "ShowNavigationBarLoading"
@@ -2650,15 +2692,6 @@
       "UniEditorElementSetContentsOptions"
     ],
     [
-      "UniHideModalFail"
-    ],
-    [
-      "UniHideModalResult"
-    ],
-    [
-      "UniInputElement"
-    ],
-    [
       "UniLoadingElement"
     ],
     [
@@ -2672,15 +2705,6 @@
     ],
     [
       "UniShareProvider"
-    ],
-    [
-      "UniShowModalFail"
-    ],
-    [
-      "UniShowModalResult"
-    ],
-    [
-      "UniTextareaElement"
     ],
     [
       "UniVerifyButtonListItem"

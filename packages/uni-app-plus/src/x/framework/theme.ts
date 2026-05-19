@@ -1,5 +1,8 @@
 import { isArray, isPlainObject, isString } from '@vue/shared'
-import { getAllPages } from '../../service/framework/page/getCurrentPages'
+import {
+  getAllPages,
+  getPage$BasePage,
+} from '../../service/framework/page/getCurrentPages'
 import { getTabBar } from './app/tabBar'
 import { parsePageStyle } from './page/register'
 import { initRouteOptions } from '../../service/framework/page/routeOptions'
@@ -64,7 +67,9 @@ export const onThemeChange = function (themeMode: IThemeMode) {
     const pages = getAllPages()
 
     pages.forEach((page) => {
-      const routeOptions = initRouteOptions(page.$basePage.path, '')
+      const basePage = getPage$BasePage(page)
+      const routeOptions = initRouteOptions(basePage.path, '')
+      routeOptions.meta.isQuit = basePage.meta.isQuit
       const style = parsePageStyle(routeOptions)
 
       ;(page.$page as UniPage).setPageStyle(new UTSJSONObject(style))

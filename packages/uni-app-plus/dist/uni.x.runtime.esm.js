@@ -1,6 +1,6 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType } from "@vue/shared";
-import { createMountPage, unmountPage, ref, onMounted, onBeforeUnmount, getCurrentGenericInstance, injectHook, defineComponent, getCurrentInstance, camelize, createVNode, renderSlot } from "vue";
+import { createMountPage, unmountPage, ref, getCurrentGenericInstance, injectHook, markRaw, defineComponent, getCurrentInstance, onMounted, camelize, createVNode, renderSlot } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -809,22 +809,6 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
   uniPage.$vm = pageVm;
   if (getPage$BasePage(pageVm).openType !== OPEN_DIALOG_PAGE) {
     addCurrentPageWithInitScope(pageId, pageVm, pageInstance);
-  }
-  {
-    onMounted(() => {
-      var _pageVm$$el;
-      var rootElement = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el.parentElement;
-      if (rootElement) {
-        rootElement._page = pageVm.$page;
-      }
-    });
-    onBeforeUnmount(() => {
-      var _pageVm$$el2;
-      var rootElement = (_pageVm$$el2 = pageVm.$el) === null || _pageVm$$el2 === void 0 ? void 0 : _pageVm$$el2.parentElement;
-      if (rootElement) {
-        rootElement._page = null;
-      }
-    });
   }
 }
 var nativeApp;
@@ -1803,7 +1787,9 @@ var onThemeChange = function(themeMode) {
   var handlePage = () => {
     var pages2 = getAllPages();
     pages2.forEach((page) => {
-      var routeOptions = initRouteOptions(page.$basePage.path, "");
+      var basePage = getPage$BasePage(page);
+      var routeOptions = initRouteOptions(basePage.path, "");
+      routeOptions.meta.isQuit = basePage.meta.isQuit;
       var style = parsePageStyle(routeOptions);
       page.$page.setPageStyle(new UTSJSONObject(style));
     });
@@ -2031,6 +2017,12 @@ function parsePageStyle(route) {
   }
   return style;
 }
+function invokePageOnReady(pageComponentPublicInstance) {
+  {
+    invokePageReadyHooks(pageComponentPublicInstance);
+    invokeHook(pageComponentPublicInstance, ON_READY);
+  }
+}
 function registerPage(_ref, onCreated) {
   var {
     url,
@@ -2102,8 +2094,7 @@ function registerPage(_ref, onCreated) {
         invokeHook(pageComponentPublicInstance, ON_UNLOAD);
       });
       nativePage.addPageEventListener(ON_READY, (_) => {
-        invokePageReadyHooks(pageComponentPublicInstance);
-        invokeHook(pageComponentPublicInstance, ON_READY);
+        invokePageOnReady(pageComponentPublicInstance);
       });
       nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
         invokeHook(pageComponentPublicInstance, ON_PAGE_SCROLL, {
@@ -2200,8 +2191,7 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
         dialogPageTriggerParentShow(dialogPage, isSystemDialogPage(dialogPage) ? 1 : 0);
       });
       nativePage.addPageEventListener(ON_READY, (_) => {
-        invokePageReadyHooks(pageComponentPublicInstance);
-        invokeHook(pageComponentPublicInstance, ON_READY);
+        invokePageOnReady(pageComponentPublicInstance);
       });
       nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
         invokeHook(pageComponentPublicInstance, ON_PAGE_SCROLL, arg);
@@ -2425,6 +2415,18 @@ function _redirectTo(_ref3) {
   return new Promise((resolve) => {
     setTimeout(() => {
       var lastPage = getCurrentPage().vm;
+      var isRegistered = false;
+      var isShown = false;
+      function callback() {
+        if (!(isRegistered && isShown)) {
+          return;
+        }
+        if (lastPage) {
+          removePages(lastPage);
+        }
+        resolve(void 0);
+        setStatusBarStyle();
+      }
       invokeAfterRouteHooks(API_REDIRECT_TO);
       showWebview(registerPage({
         url,
@@ -2432,13 +2434,13 @@ function _redirectTo(_ref3) {
         query,
         openType: isTabPage(lastPage) || getAllPages().length === 1 ? "reLaunch" : "redirectTo",
         onRegistered() {
-          if (lastPage) {
-            removePages(lastPage);
-          }
-          resolve(void 0);
-          setStatusBarStyle();
+          isRegistered = true;
+          callback();
         }
-      }), "none", 0);
+      }), "none", 0, () => {
+        isShown = true;
+        callback();
+      });
       invokeBeforeRouteHooks(API_REDIRECT_TO);
     }, 0);
   });
@@ -2493,7 +2495,12 @@ function _reLaunch(_ref3) {
     setTimeout(() => {
       var pages2 = getAllPages().slice(0);
       var selected = getTabIndex(path);
+      var isRegistered = false;
+      var isShown = false;
       function callback() {
+        if (!isRegistered || !isShown) {
+          return;
+        }
         pages2.forEach((page) => closePage(page, "none"));
         pages2.length = 0;
         resolve(void 0);
@@ -2505,9 +2512,17 @@ function _reLaunch(_ref3) {
           path,
           query,
           openType: "reLaunch",
-          onRegistered: callback
-        }), "none", 0);
+          onRegistered() {
+            isRegistered = true;
+            callback();
+          }
+        }), "none", 0, () => {
+          isShown = true;
+          callback();
+        });
       } else {
+        isRegistered = true;
+        isShown = true;
         switchSelect(selected, path, query, true, callback);
       }
     }, 0);
@@ -3085,7 +3100,7 @@ var openDialogPage = (options) => {
   if (currentPages.length && !parentPage) {
     parentPage = currentPages[currentPages.length - 1];
   }
-  var dialogPage = new UniDialogPageImpl();
+  var dialogPage = markRaw(new UniDialogPageImpl());
   dialogPage.route = path;
   dialogPage.getParentPage = () => parentPage;
   dialogPage.$component = null;
@@ -3225,8 +3240,24 @@ var setTabBarItem = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_ITEM, (_ref, 
     reject("tabBar is not exist");
     return;
   }
-  var item = /* @__PURE__ */ new Map([["index", index2], ["text", text], ["iconPath", iconPath], ["selectedIconPath", selectedIconPath], ["pagePath", pagePath], ["visible", visible]]);
-  if (!!iconfont) {
+  var item = /* @__PURE__ */ new Map();
+  item.set("index", index2);
+  if (typeof text === "string") {
+    item.set("text", text);
+  }
+  if (typeof iconPath === "string") {
+    item.set("iconPath", iconPath);
+  }
+  if (typeof selectedIconPath === "string") {
+    item.set("selectedIconPath", selectedIconPath);
+  }
+  if (typeof pagePath === "string") {
+    item.set("pagePath", pagePath);
+  }
+  if (typeof visible === "boolean") {
+    item.set("visible", visible);
+  }
+  if (iconfont != null) {
     var iconfontOptions = iconfont;
     var _iconfont = /* @__PURE__ */ new Map([["text", iconfontOptions.text], ["selectedText", iconfontOptions.selectedText], ["fontSize", iconfontOptions.fontSize], ["color", iconfontOptions.color], ["selectedColor", iconfontOptions.selectedColor]]);
     item.set("iconfont", _iconfont);
@@ -3721,7 +3752,8 @@ var env = {
   USER_DATA_PATH: "unifile://usr/",
   CACHE_PATH: "unifile://cache/",
   SANDBOX_PATH: "unifile://sandbox/",
-  TEMP_PATH: "unifile://temp/"
+  TEMP_PATH: "unifile://temp/",
+  ANDROID_INTERNAL_SANDBOX_PATH: "unifile://androidInternalSandbox/"
 };
 var _PerformanceEntryStatus;
 var APP_LAUNCH = "appLaunch";

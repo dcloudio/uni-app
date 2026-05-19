@@ -186,9 +186,6 @@ export function setupPage(comp: any, path: string) {
       })
       onMounted(() => {
         if (__X__) {
-          if (instance.subTree.el) {
-            instance.subTree.el._page = instance.proxy?.$page as UniPage
-          }
           const pageInstance = getPageInstanceByChild(instance)
           if (isDialogPageInstance(pageInstance)) {
             useBackgroundColorContent(instance.proxy)
@@ -247,11 +244,6 @@ export function setupPage(comp: any, path: string) {
       subscribeViewMethod(pageId)
       onBeforeUnmount(() => {
         unsubscribeViewMethod(pageId)
-        if (__X__) {
-          if (instance.subTree.el) {
-            instance.subTree.el._page = null
-          }
-        }
       })
 
       return query

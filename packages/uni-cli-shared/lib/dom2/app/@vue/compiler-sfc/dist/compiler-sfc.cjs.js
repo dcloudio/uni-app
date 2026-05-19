@@ -1,9 +1,12 @@
 /**
-  * @vue/compiler-sfc v3.6.0-beta.7
+  * @vue/compiler-sfc v3.6.0-beta.12
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
-Object.defineProperties(exports, { __esModule: { value: true }, [Symbol.toStringTag]: { value: 'Module' } });
+Object.defineProperties(exports, {
+	__esModule: { value: true },
+	[Symbol.toStringTag]: { value: "Module" }
+});
 //#region \0rolldown/runtime.js
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -11,18 +14,14 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __commonJSMin = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
+var __commonJSMin = (cb, mod) => () => (mod || (cb((mod = { exports: {} }).exports, mod), cb = null), mod.exports);
 var __copyProps = (to, from, except, desc) => {
-	if (from && typeof from === "object" || typeof from === "function") {
-		for (var keys = __getOwnPropNames(from), i = 0, n = keys.length, key; i < n; i++) {
-			key = keys[i];
-			if (!__hasOwnProp.call(to, key) && key !== except) {
-				__defProp(to, key, {
-					get: ((k) => from[k]).bind(null, key),
-					enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable
-				});
-			}
-		}
+	if (from && typeof from === "object" || typeof from === "function") for (var keys = __getOwnPropNames(from), i = 0, n = keys.length, key; i < n; i++) {
+		key = keys[i];
+		if (!__hasOwnProp.call(to, key) && key !== except) __defProp(to, key, {
+			get: ((k) => from[k]).bind(null, key),
+			enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable
+		});
 	}
 	return to;
 };
@@ -30,7 +29,6 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 	value: mod,
 	enumerable: true
 }) : target, mod));
-
 //#endregion
 let _vue_compiler_core = require("@vue/compiler-core");
 let _vue_compiler_dom = require("@vue/compiler-dom");
@@ -53,9 +51,9 @@ magic_string = __toESM(magic_string);
 let _babel_parser = require("@babel/parser");
 let process$1 = require("process");
 process$1 = __toESM(process$1);
-
-//#region node_modules/.pnpm/hash-sum@2.0.0/node_modules/hash-sum/hash-sum.js
-var require_hash_sum = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+//#endregion
+//#region packages/compiler-sfc/src/style/cssVars.ts
+var import_hash_sum = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exports, module) => {
 	function pad(hash, len) {
 		while (hash.length < len) hash = "0" + hash;
 		return hash;
@@ -102,11 +100,7 @@ var require_hash_sum = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		return pad(foldValue(0, o, "", []).toString(16), 8);
 	}
 	module.exports = sum;
-}));
-
-//#endregion
-//#region packages/compiler-sfc/src/style/cssVars.ts
-var import_hash_sum = /* @__PURE__ */ __toESM(require_hash_sum());
+})))());
 const CSS_VARS_HELPER = `useCssVars`;
 function getCssVarsHelper(vapor) {
 	return vapor ? `useVaporCssVars` : CSS_VARS_HELPER;
@@ -140,30 +134,24 @@ function parseCssVars(sfc) {
 	});
 	return vars;
 }
-var LexerState = /* @__PURE__ */ function(LexerState) {
-	LexerState[LexerState["inParens"] = 0] = "inParens";
-	LexerState[LexerState["inSingleQuoteString"] = 1] = "inSingleQuoteString";
-	LexerState[LexerState["inDoubleQuoteString"] = 2] = "inDoubleQuoteString";
-	return LexerState;
-}(LexerState || {});
 function lexBinding(content, start) {
-	let state = LexerState.inParens;
+	let state = 0;
 	let parenDepth = 0;
 	for (let i = start; i < content.length; i++) {
 		const char = content.charAt(i);
 		switch (state) {
-			case LexerState.inParens:
-				if (char === `'`) state = LexerState.inSingleQuoteString;
-				else if (char === `"`) state = LexerState.inDoubleQuoteString;
+			case 0:
+				if (char === `'`) state = 1;
+				else if (char === `"`) state = 2;
 				else if (char === `(`) parenDepth++;
 				else if (char === `)`) if (parenDepth > 0) parenDepth--;
 				else return i;
 				break;
-			case LexerState.inSingleQuoteString:
-				if (char === `'`) state = LexerState.inParens;
+			case 1:
+				if (char === `'`) state = 0;
 				break;
-			case LexerState.inDoubleQuoteString:
-				if (char === `"`) state = LexerState.inParens;
+			case 2:
+				if (char === `"`) state = 0;
 				break;
 		}
 	}
@@ -209,44 +197,37 @@ function genCssVarsCode(vars, bindings, id, isProd, vapor) {
 function genNormalScriptCssVarsCode(cssVars, bindings, id, isProd, defaultVar) {
 	return `\nimport { ${CSS_VARS_HELPER} as _${CSS_VARS_HELPER} } from 'vue'\nconst __injectCSSVars__ = () => {\n${genCssVarsCode(cssVars, bindings, id, isProd)}}\nconst __setup__ = ${defaultVar}.setup\n${defaultVar}.setup = __setup__\n  ? (props, ctx) => { __injectCSSVars__();return __setup__(props, ctx) }\n  : __injectCSSVars__\n`;
 }
-
 //#endregion
-//#region \0@oxc-project+runtime@0.111.0/helpers/checkPrivateRedeclaration.js
+//#region \0@oxc-project+runtime@0.129.0/helpers/checkPrivateRedeclaration.js
 function _checkPrivateRedeclaration(e, t) {
 	if (t.has(e)) throw new TypeError("Cannot initialize the same private elements twice on an object");
 }
-
 //#endregion
-//#region \0@oxc-project+runtime@0.111.0/helpers/classPrivateMethodInitSpec.js
+//#region \0@oxc-project+runtime@0.129.0/helpers/classPrivateMethodInitSpec.js
 function _classPrivateMethodInitSpec(e, a) {
 	_checkPrivateRedeclaration(e, a), a.add(e);
 }
-
 //#endregion
-//#region \0@oxc-project+runtime@0.111.0/helpers/classPrivateFieldInitSpec.js
+//#region \0@oxc-project+runtime@0.129.0/helpers/classPrivateFieldInitSpec.js
 function _classPrivateFieldInitSpec(e, t, a) {
 	_checkPrivateRedeclaration(e, t), t.set(e, a);
 }
-
 //#endregion
-//#region \0@oxc-project+runtime@0.111.0/helpers/assertClassBrand.js
+//#region \0@oxc-project+runtime@0.129.0/helpers/assertClassBrand.js
 function _assertClassBrand(e, t, n) {
 	if ("function" == typeof e ? e === t : e.has(t)) return arguments.length < 3 ? t : n;
 	throw new TypeError("Private element is not present on this object");
 }
-
 //#endregion
-//#region \0@oxc-project+runtime@0.111.0/helpers/classPrivateFieldGet2.js
+//#region \0@oxc-project+runtime@0.129.0/helpers/classPrivateFieldGet2.js
 function _classPrivateFieldGet2(s, a) {
 	return s.get(_assertClassBrand(s, a));
 }
-
 //#endregion
-//#region \0@oxc-project+runtime@0.111.0/helpers/classPrivateFieldSet2.js
+//#region \0@oxc-project+runtime@0.129.0/helpers/classPrivateFieldSet2.js
 function _classPrivateFieldSet2(s, a, r) {
 	return s.set(_assertClassBrand(s, a), r), r;
 }
-
 //#endregion
 //#region node_modules/.pnpm/lru-cache@10.1.0/node_modules/lru-cache/dist/esm/index.js
 let _Symbol$iterator;
@@ -1319,13 +1300,11 @@ function _moveToTail(index) {
 		_classPrivateFieldSet2(_tail, this, index);
 	}
 }
-
 //#endregion
 //#region packages/compiler-sfc/src/cache.ts
 function createCache(max = 500) {
 	return new LRUCache({ max });
 }
-
 //#endregion
 //#region packages/compiler-sfc/src/script/importUsageCheck.ts
 /**
@@ -1403,7 +1382,6 @@ function extractIdentifiers$2(ids, node) {
 	if (node.ast) (0, _vue_compiler_dom.walkIdentifiers)(node.ast, (n) => ids.add(n.name));
 	else if (node.ast === null) ids.add(node.content);
 }
-
 //#endregion
 //#region packages/compiler-sfc/src/script/utils.ts
 const UNKNOWN_TYPE = "Unknown";
@@ -1467,7 +1445,6 @@ function getEscapedPropName(key) {
 }
 const isJS = (...langs) => langs.some((lang) => lang === "js" || lang === "jsx");
 const isTS = (...langs) => langs.some((lang) => lang === "ts" || lang === "tsx" || lang === "uts");
-
 //#endregion
 //#region packages/compiler-sfc/src/parse.ts
 const DEFAULT_FILENAME = "anonymous.vue";
@@ -1852,12 +1829,11 @@ function createCppBlock({ props, loc }, options) {
 		errors
 	};
 }
-
 //#endregion
 //#region packages/compiler-sfc/src/template/templateUtils.ts
 function isRelativeUrl(url$1) {
 	const firstChar = url$1.charAt(0);
-	return firstChar === "." || firstChar === "~" || firstChar === "@";
+	return firstChar === "." || firstChar === "~" || firstChar === "@" || firstChar === "#";
 }
 const externalRE = /^(?:https?:)?\/\//;
 function isExternalUrl(url$2) {
@@ -1866,6 +1842,13 @@ function isExternalUrl(url$2) {
 const dataUrlRE = /^\s*data:/i;
 function isDataUrl(url$3) {
 	return dataUrlRE.test(url$3);
+}
+function normalizeDecodedImportPath(source) {
+	try {
+		return decodeURIComponent(source);
+	} catch {
+		return source;
+	}
 }
 /**
 * Parses string url into URL object.
@@ -1884,16 +1867,92 @@ function parseUrl(url$4) {
 function parseUriParts(urlString) {
 	return (0, url.parse)((0, _vue_shared.isString)(urlString) ? urlString : "", false, true);
 }
-
+/**
+* Whether the current component should be treated as multi-root at the
+* component boundary.
+*
+* This is currently only attached to Vapor components. During Vapor hydration,
+* components hydrate while they are being created, so the runtime needs this
+* metadata to know whether the current SSR `<!--[--> ... <!--]-->` belongs to
+* the component itself and should be consumed before hydrating its children.
+*
+* The inference is aligned with compile-ssr's ownership semantics: it answers
+* whether the component root itself owns an outer fragment wrapper.
+*/
+function isMultiRoot(template, parserOptions) {
+	const preserveComments = (parserOptions === null || parserOptions === void 0 ? void 0 : parserOptions.comments) !== false;
+	if (typeof template === "string") return countRootUnits(parse(`<template>${template}</template>`, {
+		sourceMap: false,
+		ignoreEmpty: false,
+		templateParseOptions: parserOptions
+	}).descriptor.template.ast, preserveComments) > 1;
+	if (isTemplateBlock(template)) return countRootUnits(template.ast, preserveComments) > 1;
+	return countRootUnits(template, preserveComments) > 1;
+}
+function countRootUnits(parent, preserveComments) {
+	const { children } = parent;
+	let count = 0;
+	for (let i = 0; i < children.length; i++) {
+		const child = children[i];
+		if (isWhitespaceRootText(child)) continue;
+		if (isIfBranchStart(child)) {
+			count++;
+			let lastBranchIndex = i;
+			let nextIndex = i + 1;
+			while (nextIndex < children.length) {
+				let continuationIndex = nextIndex;
+				while (continuationIndex < children.length && isIgnorableIfChainSeparator(children[continuationIndex])) continuationIndex++;
+				if (continuationIndex < children.length && isIfBranchContinuation(children[continuationIndex])) {
+					lastBranchIndex = continuationIndex;
+					nextIndex = continuationIndex + 1;
+					continue;
+				}
+				break;
+			}
+			i = lastBranchIndex;
+			continue;
+		}
+		count += countRootUnit(child, preserveComments);
+	}
+	return count;
+}
+function countRootUnit(node, preserveComments) {
+	if (node.type !== 1) return node.type === 3 && !preserveComments ? 0 : 1;
+	if (hasStructuralDirective(node, "if") || hasStructuralDirective(node, "for")) return 1;
+	if (node.tag === "slot" || node.tagType === 1) return 1;
+	if (node.tagType === 3) return countRootUnits(node, preserveComments);
+	return 1;
+}
+function hasStructuralDirective(node, name) {
+	return !!(0, _vue_compiler_dom.findDir)(node, name);
+}
+function isIfBranchStart(node) {
+	return node.type === 1 && hasStructuralDirective(node, "if");
+}
+function isIfBranchContinuation(node) {
+	return node.type === 1 && !!(0, _vue_compiler_dom.findDir)(node, /^else(-if)?$/, true);
+}
+function isWhitespaceRootText(node) {
+	return node.type === 2 && !node.content.trim();
+}
+function isIgnorableIfChainSeparator(node) {
+	return isWhitespaceRootText(node) || node.type === 3;
+}
+function isTemplateBlock(value) {
+	return "content" in value && "attrs" in value;
+}
 //#endregion
 //#region packages/compiler-sfc/src/template/transformAssetUrl.ts
+const resourceUrlTagConfig = {
+	video: ["src", "poster"],
+	source: ["src"],
+	img: ["src"]
+};
 const defaultAssetUrlOptions = {
 	base: null,
 	includeAbsolute: false,
 	tags: {
-		video: ["src", "poster"],
-		source: ["src"],
-		img: ["src"],
+		...resourceUrlTagConfig,
 		image: ["xlink:href", "href"],
 		use: ["xlink:href", "href"]
 	}
@@ -1911,6 +1970,10 @@ const normalizeOptions = (options) => {
 const createAssetUrlTransformWithOptions = (options) => {
 	return (node, context) => transformAssetUrl(node, context, options);
 };
+function canTransformHashImport(tag, attrName) {
+	var _resourceUrlTagConfig;
+	return !!((_resourceUrlTagConfig = resourceUrlTagConfig[tag]) === null || _resourceUrlTagConfig === void 0 ? void 0 : _resourceUrlTagConfig.includes(attrName));
+}
 /**
 * A `@vue/compiler-core` plugin that transforms relative asset urls into
 * either imports or absolute urls.
@@ -1933,9 +1996,12 @@ const transformAssetUrl = (node, context, options = defaultAssetUrlOptions) => {
 		if (!attrs && !wildCardAttrs) return;
 		const assetAttrs = (attrs || []).concat(wildCardAttrs || []);
 		node.props.forEach((attr, index) => {
-			if (attr.type !== 6 || !assetAttrs.includes(attr.name) || !attr.value || isExternalUrl(attr.value.content) || isDataUrl(attr.value.content) || attr.value.content[0] === "#" || !options.includeAbsolute && !isRelativeUrl(attr.value.content)) return;
-			const url = parseUrl(attr.value.content);
-			if (options.base && attr.value.content[0] === ".") {
+			if (attr.type !== 6 || !assetAttrs.includes(attr.name) || !attr.value) return;
+			const urlValue = attr.value.content;
+			const isHashOnlyValue = urlValue[0] === "#";
+			if (isExternalUrl(urlValue) || isDataUrl(urlValue) || urlValue === "#" || isHashOnlyValue && !canTransformHashImport(node.tag, attr.name) || !options.includeAbsolute && !isRelativeUrl(urlValue)) return;
+			const url = parseUrl(urlValue);
+			if (options.base && urlValue[0] === ".") {
 				const base = parseUrl(options.base);
 				const protocol = base.protocol || "";
 				const host = base.host ? protocol + "//" + base.host : "";
@@ -1955,34 +2021,54 @@ const transformAssetUrl = (node, context, options = defaultAssetUrlOptions) => {
 		});
 	}
 };
-function getImportsExpressionExp(path$24, hash, loc, context) {
-	if (path$24) {
-		let name;
-		let exp;
-		const existingIndex = context.imports.findIndex((i) => i.path === path$24);
-		if (existingIndex > -1) {
-			name = `_imports_${existingIndex}`;
-			exp = context.imports[existingIndex].exp;
-		} else {
-			name = `_imports_${context.imports.length}`;
-			exp = (0, _vue_compiler_core.createSimpleExpression)(name, false, loc, 3);
-			context.imports.push({
-				exp,
-				path: decodeURIComponent(path$24)
-			});
-		}
-		if (!hash) return exp;
-		const hashExp = `${name} + '${hash}'`;
-		const finalExp = (0, _vue_compiler_core.createSimpleExpression)(hashExp, false, loc, 3);
-		if (!context.hoistStatic) return finalExp;
-		const existingHoistIndex = context.hoists.findIndex((h) => {
-			return h && h.type === 4 && !h.isStatic && h.content === hashExp;
-		});
-		if (existingHoistIndex > -1) return (0, _vue_compiler_core.createSimpleExpression)(`_hoisted_${existingHoistIndex + 1}`, false, loc, 3);
-		return context.hoist(finalExp);
-	} else return (0, _vue_compiler_core.createSimpleExpression)(`''`, false, loc, 3);
+/**
+* Resolves or registers an import for the given source path
+* @param source - Path to resolve import for
+* @param loc - Source location
+* @param context - Transform context
+* @returns Object containing import name and expression
+*/
+function resolveOrRegisterImport(source, loc, context) {
+	const normalizedSource = normalizeDecodedImportPath(source);
+	const existingIndex = context.imports.findIndex((i) => i.path === normalizedSource);
+	if (existingIndex > -1) return {
+		name: `_imports_${existingIndex}`,
+		exp: context.imports[existingIndex].exp
+	};
+	const name = `_imports_${context.imports.length}`;
+	const exp = (0, _vue_compiler_core.createSimpleExpression)(name, false, loc, 3);
+	context.imports.push({
+		exp,
+		path: normalizedSource
+	});
+	return {
+		name,
+		exp
+	};
 }
-
+/**
+* Transforms asset URLs into import expressions or string literals
+*/
+function getImportsExpressionExp(path$24, hash, loc, context) {
+	if (!path$24 && !hash) return (0, _vue_compiler_core.createSimpleExpression)(`''`, false, loc, 3);
+	if (!path$24 && hash) {
+		const { exp } = resolveOrRegisterImport(hash, loc, context);
+		return exp;
+	}
+	if (path$24 && !hash) {
+		const { exp } = resolveOrRegisterImport(path$24, loc, context);
+		return exp;
+	}
+	const { name } = resolveOrRegisterImport(path$24, loc, context);
+	const hashExp = `${name} + '${hash}'`;
+	const finalExp = (0, _vue_compiler_core.createSimpleExpression)(hashExp, false, loc, 3);
+	if (!context.hoistStatic) return finalExp;
+	const existingHoistIndex = context.hoists.findIndex((h) => {
+		return h && h.type === 4 && !h.isStatic && h.content === hashExp;
+	});
+	if (existingHoistIndex > -1) return (0, _vue_compiler_core.createSimpleExpression)(`_hoisted_${existingHoistIndex + 1}`, false, loc, 3);
+	return context.hoist(finalExp);
+}
 //#endregion
 //#region packages/compiler-sfc/src/template/transformSrcset.ts
 const srcsetTags = ["img", "source"];
@@ -2036,18 +2122,21 @@ const transformSrcset = (node, context, options = defaultAssetUrlOptions) => {
 				let content = "";
 				imageCandidates.forEach(({ url, descriptor }, index) => {
 					if (shouldProcessUrl(url)) {
-						const { path: path$23 } = parseUrl(url);
-						if (path$23) {
+						const { path: path$23, hash } = parseUrl(url);
+						const source = path$23 ? path$23 : hash;
+						if (source) {
 							let exp = "";
-							const existingImportsIndex = context.imports.findIndex((i) => i.path === path$23);
+							const normalizedSource = normalizeDecodedImportPath(source);
+							const existingImportsIndex = context.imports.findIndex((i) => i.path === normalizedSource);
 							if (existingImportsIndex > -1) exp = `_imports_${existingImportsIndex}`;
 							else {
 								exp = `_imports_${context.imports.length}`;
 								context.imports.push({
 									exp: (0, _vue_compiler_core.createSimpleExpression)(exp, false, attr.loc, 3),
-									path: path$23
+									path: normalizedSource
 								});
 							}
+							if (path$23 && hash) exp = `${exp} + '${hash}'`;
 							content += exp;
 						}
 					} else content += `"${url}"`;
@@ -2072,7 +2161,6 @@ const transformSrcset = (node, context, options = defaultAssetUrlOptions) => {
 		});
 	}
 };
-
 //#endregion
 //#region node_modules/.pnpm/@vue+consolidate@1.0.0/node_modules/@vue/consolidate/lib/consolidate.js
 var require_consolidate$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -3366,16 +3454,11 @@ var require_consolidate$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => 
 	*/
 	exports.requires = requires;
 }));
-
-//#endregion
-//#region node_modules/.pnpm/@vue+consolidate@1.0.0/node_modules/@vue/consolidate/index.js
-var require_consolidate = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	module.exports = require_consolidate$1();
-}));
-
 //#endregion
 //#region packages/compiler-sfc/src/warn.ts
-var import_consolidate = /* @__PURE__ */ __toESM(require_consolidate());
+var import_consolidate = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exports, module) => {
+	module.exports = require_consolidate$1();
+})))());
 const hasWarned = {};
 function warnOnce(msg) {
 	if (!(typeof process !== "undefined" && process.env.NODE_ENV === "production") && !hasWarned[msg]) {
@@ -3386,7 +3469,6 @@ function warnOnce(msg) {
 function warn(msg) {
 	console.warn(`\x1b[1m\x1b[33m[@vue/compiler-sfc]\x1b[0m\x1b[33m ${msg}\x1b[0m\n`);
 }
-
 //#endregion
 //#region packages/compiler-sfc/src/compileTemplate.ts
 function preprocess$1({ source, filename, preprocessOptions }, preprocessor) {
@@ -3461,6 +3543,7 @@ function doCompileTemplate({ filename, id, scoped, slotted, inMap, source, ast: 
 		slotted,
 		sourceMap: true,
 		...compilerOptions,
+		bindingMetadata: vapor && !ssr && compilerOptions.bindingMetadata == null ? {} : compilerOptions.bindingMetadata,
 		hmr: !isProd,
 		nodeTransforms: nodeTransforms.concat(compilerOptions.nodeTransforms || []),
 		filename,
@@ -3479,17 +3562,19 @@ function doCompileTemplate({ filename, id, scoped, slotted, inMap, source, ast: 
 			warnings.length = 0;
 		}
 	}
+	const tips = warnings.map((w) => {
+		let msg = w.message;
+		if (w.loc) msg += `\n${(0, _vue_shared.generateCodeFrame)((inAST === null || inAST === void 0 ? void 0 : inAST.source) || source, w.loc.start.offset, w.loc.end.offset)}`;
+		return msg;
+	});
 	return {
 		code,
 		ast,
 		preamble,
+		multiRoot: vapor ? isMultiRoot(inAST || source, compilerOptions) : void 0,
 		source,
 		errors,
-		tips: warnings.map((w) => {
-			let msg = w.message;
-			if (w.loc) msg += `\n${(0, _vue_shared.generateCodeFrame)((inAST === null || inAST === void 0 ? void 0 : inAST.source) || source, w.loc.start.offset, w.loc.end.offset)}`;
-			return msg;
-		}),
+		tips,
 		map,
 		helpers
 	};
@@ -3545,7 +3630,6 @@ function patchErrors(errors, source, inMap) {
 		}
 	});
 }
-
 //#endregion
 //#region packages/compiler-sfc/src/style/pluginTrim.ts
 const trimPlugin = () => {
@@ -3562,8 +3646,6 @@ const trimPlugin = () => {
 	};
 };
 trimPlugin.postcss = true;
-var pluginTrim_default = trimPlugin;
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/util/unesc.js
 var require_unesc = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -3616,7 +3698,6 @@ var require_unesc = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	}
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/util/getProp.js
 var require_getProp = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -3633,7 +3714,6 @@ var require_getProp = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	}
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/util/ensureObject.js
 var require_ensureObject = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -3649,7 +3729,6 @@ var require_ensureObject = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	}
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/util/stripComments.js
 var require_stripComments = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -3671,25 +3750,19 @@ var require_stripComments = /* @__PURE__ */ __commonJSMin(((exports, module) => 
 	}
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/util/index.js
 var require_util$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.__esModule = true;
 	exports.unesc = exports.stripComments = exports.getProp = exports.ensureObject = void 0;
-	var _unesc = _interopRequireDefault(require_unesc());
-	exports.unesc = _unesc["default"];
-	var _getProp = _interopRequireDefault(require_getProp());
-	exports.getProp = _getProp["default"];
-	var _ensureObject = _interopRequireDefault(require_ensureObject());
-	exports.ensureObject = _ensureObject["default"];
-	var _stripComments = _interopRequireDefault(require_stripComments());
-	exports.stripComments = _stripComments["default"];
+	exports.unesc = _interopRequireDefault(require_unesc())["default"];
+	exports.getProp = _interopRequireDefault(require_getProp())["default"];
+	exports.ensureObject = _interopRequireDefault(require_ensureObject())["default"];
+	exports.stripComments = _interopRequireDefault(require_stripComments())["default"];
 	function _interopRequireDefault(obj) {
 		return obj && obj.__esModule ? obj : { "default": obj };
 	}
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/selectors/node.js
 var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -3726,7 +3799,7 @@ var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}
 		return cloned;
 	};
-	var Node = /* @__PURE__ */ function() {
+	exports["default"] = /* @__PURE__ */ function() {
 		function Node(opts) {
 			if (opts === void 0) opts = {};
 			Object.assign(this, opts);
@@ -3823,41 +3896,26 @@ var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}]);
 		return Node;
 	}();
-	exports["default"] = Node;
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/selectors/types.js
 var require_types = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.__esModule = true;
 	exports.UNIVERSAL = exports.TAG = exports.STRING = exports.SELECTOR = exports.ROOT = exports.PSEUDO = exports.NESTING = exports.ID = exports.COMMENT = exports.COMBINATOR = exports.CLASS = exports.ATTRIBUTE = void 0;
-	var TAG = "tag";
-	exports.TAG = TAG;
-	var STRING = "string";
-	exports.STRING = STRING;
-	var SELECTOR = "selector";
-	exports.SELECTOR = SELECTOR;
-	var ROOT = "root";
-	exports.ROOT = ROOT;
-	var PSEUDO = "pseudo";
-	exports.PSEUDO = PSEUDO;
-	var NESTING = "nesting";
-	exports.NESTING = NESTING;
-	var ID = "id";
-	exports.ID = ID;
-	var COMMENT = "comment";
-	exports.COMMENT = COMMENT;
-	var COMBINATOR = "combinator";
-	exports.COMBINATOR = COMBINATOR;
-	var CLASS = "class";
-	exports.CLASS = CLASS;
-	var ATTRIBUTE = "attribute";
-	exports.ATTRIBUTE = ATTRIBUTE;
-	var UNIVERSAL = "universal";
-	exports.UNIVERSAL = UNIVERSAL;
+	exports.TAG = "tag";
+	exports.STRING = "string";
+	exports.SELECTOR = "selector";
+	exports.ROOT = "root";
+	exports.PSEUDO = "pseudo";
+	exports.NESTING = "nesting";
+	exports.ID = "id";
+	exports.COMMENT = "comment";
+	exports.COMBINATOR = "combinator";
+	exports.CLASS = "class";
+	exports.ATTRIBUTE = "attribute";
+	exports.UNIVERSAL = "universal";
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/selectors/container.js
 var require_container = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -3948,7 +4006,7 @@ var require_container = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 		return _setPrototypeOf(o, p);
 	}
-	var Container = /* @__PURE__ */ function(_Node) {
+	exports["default"] = /* @__PURE__ */ function(_Node) {
 		_inheritsLoose(Container, _Node);
 		function Container(opts) {
 			var _this = _Node.call(this, opts) || this;
@@ -4195,10 +4253,8 @@ var require_container = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		]);
 		return Container;
 	}(_node["default"]);
-	exports["default"] = Container;
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/selectors/root.js
 var require_root = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -4236,7 +4292,7 @@ var require_root = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 		return _setPrototypeOf(o, p);
 	}
-	var Root = /* @__PURE__ */ function(_Container) {
+	exports["default"] = /* @__PURE__ */ function(_Container) {
 		_inheritsLoose(Root, _Container);
 		function Root(opts) {
 			var _this = _Container.call(this, opts) || this;
@@ -4263,10 +4319,8 @@ var require_root = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}]);
 		return Root;
 	}(_container["default"]);
-	exports["default"] = Root;
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/selectors/selector.js
 var require_selector = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -4289,7 +4343,7 @@ var require_selector = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 		return _setPrototypeOf(o, p);
 	}
-	var Selector = /* @__PURE__ */ function(_Container) {
+	exports["default"] = /* @__PURE__ */ function(_Container) {
 		_inheritsLoose(Selector, _Container);
 		function Selector(opts) {
 			var _this = _Container.call(this, opts) || this;
@@ -4298,10 +4352,8 @@ var require_selector = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}
 		return Selector;
 	}(_container["default"]);
-	exports["default"] = Selector;
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/cssesc@3.0.0/node_modules/cssesc/cssesc.js
 /*! https://mths.be/cssesc v3.0.0 by @mathias */
@@ -4363,7 +4415,6 @@ var require_cssesc = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	cssesc.version = "3.0.0";
 	module.exports = cssesc;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/selectors/className.js
 var require_className = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -4403,7 +4454,7 @@ var require_className = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 		return _setPrototypeOf(o, p);
 	}
-	var ClassName = /* @__PURE__ */ function(_Node) {
+	exports["default"] = /* @__PURE__ */ function(_Node) {
 		_inheritsLoose(ClassName, _Node);
 		function ClassName(opts) {
 			var _this = _Node.call(this, opts) || this;
@@ -4433,10 +4484,8 @@ var require_className = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}]);
 		return ClassName;
 	}(_node["default"]);
-	exports["default"] = ClassName;
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/selectors/comment.js
 var require_comment = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -4459,7 +4508,7 @@ var require_comment = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 		return _setPrototypeOf(o, p);
 	}
-	var Comment = /* @__PURE__ */ function(_Node) {
+	exports["default"] = /* @__PURE__ */ function(_Node) {
 		_inheritsLoose(Comment, _Node);
 		function Comment(opts) {
 			var _this = _Node.call(this, opts) || this;
@@ -4468,10 +4517,8 @@ var require_comment = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}
 		return Comment;
 	}(_node["default"]);
-	exports["default"] = Comment;
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/selectors/id.js
 var require_id = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -4494,7 +4541,7 @@ var require_id = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 		return _setPrototypeOf(o, p);
 	}
-	var ID = /* @__PURE__ */ function(_Node) {
+	exports["default"] = /* @__PURE__ */ function(_Node) {
 		_inheritsLoose(ID, _Node);
 		function ID(opts) {
 			var _this = _Node.call(this, opts) || this;
@@ -4507,10 +4554,8 @@ var require_id = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 		return ID;
 	}(_node["default"]);
-	exports["default"] = ID;
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/selectors/namespace.js
 var require_namespace = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -4549,7 +4594,7 @@ var require_namespace = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 		return _setPrototypeOf(o, p);
 	}
-	var Namespace = /* @__PURE__ */ function(_Node) {
+	exports["default"] = /* @__PURE__ */ function(_Node) {
 		_inheritsLoose(Namespace, _Node);
 		function Namespace() {
 			return _Node.apply(this, arguments) || this;
@@ -4604,10 +4649,8 @@ var require_namespace = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		]);
 		return Namespace;
 	}(_node["default"]);
-	exports["default"] = Namespace;
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/selectors/tag.js
 var require_tag = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -4630,7 +4673,7 @@ var require_tag = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 		return _setPrototypeOf(o, p);
 	}
-	var Tag = /* @__PURE__ */ function(_Namespace) {
+	exports["default"] = /* @__PURE__ */ function(_Namespace) {
 		_inheritsLoose(Tag, _Namespace);
 		function Tag(opts) {
 			var _this = _Namespace.call(this, opts) || this;
@@ -4639,10 +4682,8 @@ var require_tag = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}
 		return Tag;
 	}(_namespace["default"]);
-	exports["default"] = Tag;
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/selectors/string.js
 var require_string = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -4665,7 +4706,7 @@ var require_string = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 		return _setPrototypeOf(o, p);
 	}
-	var String = /* @__PURE__ */ function(_Node) {
+	exports["default"] = /* @__PURE__ */ function(_Node) {
 		_inheritsLoose(String, _Node);
 		function String(opts) {
 			var _this = _Node.call(this, opts) || this;
@@ -4674,10 +4715,8 @@ var require_string = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}
 		return String;
 	}(_node["default"]);
-	exports["default"] = String;
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/selectors/pseudo.js
 var require_pseudo = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -4700,7 +4739,7 @@ var require_pseudo = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 		return _setPrototypeOf(o, p);
 	}
-	var Pseudo = /* @__PURE__ */ function(_Container) {
+	exports["default"] = /* @__PURE__ */ function(_Container) {
 		_inheritsLoose(Pseudo, _Container);
 		function Pseudo(opts) {
 			var _this = _Container.call(this, opts) || this;
@@ -4719,10 +4758,8 @@ var require_pseudo = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 		return Pseudo;
 	}(_container["default"]);
-	exports["default"] = Pseudo;
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/util-deprecate@1.0.2/node_modules/util-deprecate/node.js
 var require_node = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -4731,7 +4768,6 @@ var require_node = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	*/
 	module.exports = require("util").deprecate;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/selectors/attribute.js
 var require_attribute = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -5058,7 +5094,6 @@ var require_attribute = /* @__PURE__ */ __commonJSMin(((exports) => {
 		return "" + attrSpaces.before + attrValue + attrSpaces.after;
 	}
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/selectors/universal.js
 var require_universal = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -5081,7 +5116,7 @@ var require_universal = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 		return _setPrototypeOf(o, p);
 	}
-	var Universal = /* @__PURE__ */ function(_Namespace) {
+	exports["default"] = /* @__PURE__ */ function(_Namespace) {
 		_inheritsLoose(Universal, _Namespace);
 		function Universal(opts) {
 			var _this = _Namespace.call(this, opts) || this;
@@ -5091,10 +5126,8 @@ var require_universal = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}
 		return Universal;
 	}(_namespace["default"]);
-	exports["default"] = Universal;
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/selectors/combinator.js
 var require_combinator = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -5117,7 +5150,7 @@ var require_combinator = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 		return _setPrototypeOf(o, p);
 	}
-	var Combinator = /* @__PURE__ */ function(_Node) {
+	exports["default"] = /* @__PURE__ */ function(_Node) {
 		_inheritsLoose(Combinator, _Node);
 		function Combinator(opts) {
 			var _this = _Node.call(this, opts) || this;
@@ -5126,10 +5159,8 @@ var require_combinator = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}
 		return Combinator;
 	}(_node["default"]);
-	exports["default"] = Combinator;
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/selectors/nesting.js
 var require_nesting = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -5152,7 +5183,7 @@ var require_nesting = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 		return _setPrototypeOf(o, p);
 	}
-	var Nesting = /* @__PURE__ */ function(_Node) {
+	exports["default"] = /* @__PURE__ */ function(_Node) {
 		_inheritsLoose(Nesting, _Node);
 		function Nesting(opts) {
 			var _this = _Node.call(this, opts) || this;
@@ -5162,10 +5193,8 @@ var require_nesting = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}
 		return Nesting;
 	}(_node["default"]);
-	exports["default"] = Nesting;
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/sortAscending.js
 var require_sortAscending = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -5178,76 +5207,44 @@ var require_sortAscending = /* @__PURE__ */ __commonJSMin(((exports, module) => 
 	}
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/tokenTypes.js
 var require_tokenTypes = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.__esModule = true;
 	exports.word = exports.tilde = exports.tab = exports.str = exports.space = exports.slash = exports.singleQuote = exports.semicolon = exports.plus = exports.pipe = exports.openSquare = exports.openParenthesis = exports.newline = exports.greaterThan = exports.feed = exports.equals = exports.doubleQuote = exports.dollar = exports.cr = exports.comment = exports.comma = exports.combinator = exports.colon = exports.closeSquare = exports.closeParenthesis = exports.caret = exports.bang = exports.backslash = exports.at = exports.asterisk = exports.ampersand = void 0;
-	var ampersand = 38;
-	exports.ampersand = ampersand;
-	var asterisk = 42;
-	exports.asterisk = asterisk;
-	var at = 64;
-	exports.at = at;
-	var comma = 44;
-	exports.comma = comma;
-	var colon = 58;
-	exports.colon = colon;
-	var semicolon = 59;
-	exports.semicolon = semicolon;
-	var openParenthesis = 40;
-	exports.openParenthesis = openParenthesis;
-	var closeParenthesis = 41;
-	exports.closeParenthesis = closeParenthesis;
-	var openSquare = 91;
-	exports.openSquare = openSquare;
-	var closeSquare = 93;
-	exports.closeSquare = closeSquare;
-	var dollar = 36;
-	exports.dollar = dollar;
-	var tilde = 126;
-	exports.tilde = tilde;
-	var caret = 94;
-	exports.caret = caret;
-	var plus = 43;
-	exports.plus = plus;
-	var equals = 61;
-	exports.equals = equals;
-	var pipe = 124;
-	exports.pipe = pipe;
-	var greaterThan = 62;
-	exports.greaterThan = greaterThan;
-	var space = 32;
-	exports.space = space;
+	exports.ampersand = 38;
+	exports.asterisk = 42;
+	exports.at = 64;
+	exports.comma = 44;
+	exports.colon = 58;
+	exports.semicolon = 59;
+	exports.openParenthesis = 40;
+	exports.closeParenthesis = 41;
+	exports.openSquare = 91;
+	exports.closeSquare = 93;
+	exports.dollar = 36;
+	exports.tilde = 126;
+	exports.caret = 94;
+	exports.plus = 43;
+	exports.equals = 61;
+	exports.pipe = 124;
+	exports.greaterThan = 62;
+	exports.space = 32;
 	var singleQuote = 39;
 	exports.singleQuote = singleQuote;
-	var doubleQuote = 34;
-	exports.doubleQuote = doubleQuote;
-	var slash = 47;
-	exports.slash = slash;
-	var bang = 33;
-	exports.bang = bang;
-	var backslash = 92;
-	exports.backslash = backslash;
-	var cr = 13;
-	exports.cr = cr;
-	var feed = 12;
-	exports.feed = feed;
-	var newline = 10;
-	exports.newline = newline;
-	var tab = 9;
-	exports.tab = tab;
-	var str = singleQuote;
-	exports.str = str;
-	var comment = -1;
-	exports.comment = comment;
-	var word = -2;
-	exports.word = word;
-	var combinator = -3;
-	exports.combinator = combinator;
+	exports.doubleQuote = 34;
+	exports.slash = 47;
+	exports.bang = 33;
+	exports.backslash = 92;
+	exports.cr = 13;
+	exports.feed = 12;
+	exports.newline = 10;
+	exports.tab = 9;
+	exports.str = singleQuote;
+	exports.comment = -1;
+	exports.word = -2;
+	exports.combinator = -3;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/tokenize.js
 var require_tokenize = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -5320,7 +5317,7 @@ var require_tokenize = /* @__PURE__ */ __commonJSMin(((exports) => {
 		} else next++;
 		return next;
 	}
-	var FIELDS = {
+	exports.FIELDS = {
 		TYPE: 0,
 		START_LINE: 1,
 		START_COL: 2,
@@ -5329,7 +5326,6 @@ var require_tokenize = /* @__PURE__ */ __commonJSMin(((exports) => {
 		START_POS: 5,
 		END_POS: 6
 	};
-	exports.FIELDS = FIELDS;
 	function tokenize(input) {
 		var tokens = [];
 		var css = input.css.valueOf();
@@ -5474,7 +5470,6 @@ var require_tokenize = /* @__PURE__ */ __commonJSMin(((exports) => {
 		return tokens;
 	}
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/parser.js
 var require_parser = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -5595,7 +5590,7 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			return i === list.indexOf(item);
 		});
 	}
-	var Parser = /* @__PURE__ */ function() {
+	exports["default"] = /* @__PURE__ */ function() {
 		function Parser(rule, options) {
 			if (options === void 0) options = {};
 			this.rule = rule;
@@ -6333,10 +6328,8 @@ var require_parser = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		]);
 		return Parser;
 	}();
-	exports["default"] = Parser;
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/processor.js
 var require_processor = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -6346,7 +6339,7 @@ var require_processor = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	function _interopRequireDefault(obj) {
 		return obj && obj.__esModule ? obj : { "default": obj };
 	}
-	var Processor = /* @__PURE__ */ function() {
+	exports["default"] = /* @__PURE__ */ function() {
 		function Processor(func, options) {
 			this.func = func || function noop() {};
 			this.funcRes = null;
@@ -6437,10 +6430,8 @@ var require_processor = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 		return Processor;
 	}();
-	exports["default"] = Processor;
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/selectors/constructors.js
 var require_constructors = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -6461,56 +6452,43 @@ var require_constructors = /* @__PURE__ */ __commonJSMin(((exports) => {
 	function _interopRequireDefault(obj) {
 		return obj && obj.__esModule ? obj : { "default": obj };
 	}
-	var attribute = function attribute(opts) {
+	exports.attribute = function attribute(opts) {
 		return new _attribute["default"](opts);
 	};
-	exports.attribute = attribute;
-	var className = function className(opts) {
+	exports.className = function className(opts) {
 		return new _className["default"](opts);
 	};
-	exports.className = className;
-	var combinator = function combinator(opts) {
+	exports.combinator = function combinator(opts) {
 		return new _combinator["default"](opts);
 	};
-	exports.combinator = combinator;
-	var comment = function comment(opts) {
+	exports.comment = function comment(opts) {
 		return new _comment["default"](opts);
 	};
-	exports.comment = comment;
-	var id = function id(opts) {
+	exports.id = function id(opts) {
 		return new _id["default"](opts);
 	};
-	exports.id = id;
-	var nesting = function nesting(opts) {
+	exports.nesting = function nesting(opts) {
 		return new _nesting["default"](opts);
 	};
-	exports.nesting = nesting;
-	var pseudo = function pseudo(opts) {
+	exports.pseudo = function pseudo(opts) {
 		return new _pseudo["default"](opts);
 	};
-	exports.pseudo = pseudo;
-	var root = function root(opts) {
+	exports.root = function root(opts) {
 		return new _root["default"](opts);
 	};
-	exports.root = root;
-	var selector = function selector(opts) {
+	exports.selector = function selector(opts) {
 		return new _selector["default"](opts);
 	};
-	exports.selector = selector;
-	var string = function string(opts) {
+	exports.string = function string(opts) {
 		return new _string["default"](opts);
 	};
-	exports.string = string;
-	var tag = function tag(opts) {
+	exports.tag = function tag(opts) {
 		return new _tag["default"](opts);
 	};
-	exports.tag = tag;
-	var universal = function universal(opts) {
+	exports.universal = function universal(opts) {
 		return new _universal["default"](opts);
 	};
-	exports.universal = universal;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/selectors/guards.js
 var require_guards = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -6536,28 +6514,19 @@ var require_guards = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 	var isAttribute = isNodeType.bind(null, _types.ATTRIBUTE);
 	exports.isAttribute = isAttribute;
-	var isClassName = isNodeType.bind(null, _types.CLASS);
-	exports.isClassName = isClassName;
-	var isCombinator = isNodeType.bind(null, _types.COMBINATOR);
-	exports.isCombinator = isCombinator;
-	var isComment = isNodeType.bind(null, _types.COMMENT);
-	exports.isComment = isComment;
-	var isIdentifier = isNodeType.bind(null, _types.ID);
-	exports.isIdentifier = isIdentifier;
-	var isNesting = isNodeType.bind(null, _types.NESTING);
-	exports.isNesting = isNesting;
+	exports.isClassName = isNodeType.bind(null, _types.CLASS);
+	exports.isCombinator = isNodeType.bind(null, _types.COMBINATOR);
+	exports.isComment = isNodeType.bind(null, _types.COMMENT);
+	exports.isIdentifier = isNodeType.bind(null, _types.ID);
+	exports.isNesting = isNodeType.bind(null, _types.NESTING);
 	var isPseudo = isNodeType.bind(null, _types.PSEUDO);
 	exports.isPseudo = isPseudo;
-	var isRoot = isNodeType.bind(null, _types.ROOT);
-	exports.isRoot = isRoot;
-	var isSelector = isNodeType.bind(null, _types.SELECTOR);
-	exports.isSelector = isSelector;
-	var isString = isNodeType.bind(null, _types.STRING);
-	exports.isString = isString;
+	exports.isRoot = isNodeType.bind(null, _types.ROOT);
+	exports.isSelector = isNodeType.bind(null, _types.SELECTOR);
+	exports.isString = isNodeType.bind(null, _types.STRING);
 	var isTag = isNodeType.bind(null, _types.TAG);
 	exports.isTag = isTag;
-	var isUniversal = isNodeType.bind(null, _types.UNIVERSAL);
-	exports.isUniversal = isUniversal;
+	exports.isUniversal = isNodeType.bind(null, _types.UNIVERSAL);
 	function isPseudoElement(node) {
 		return isPseudo(node) && node.value && (node.value.startsWith("::") || node.value.toLowerCase() === ":before" || node.value.toLowerCase() === ":after" || node.value.toLowerCase() === ":first-letter" || node.value.toLowerCase() === ":first-line");
 	}
@@ -6571,7 +6540,6 @@ var require_guards = /* @__PURE__ */ __commonJSMin(((exports) => {
 		return isAttribute(node) || isTag(node);
 	}
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/selectors/index.js
 var require_selectors = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -6595,7 +6563,6 @@ var require_selectors = /* @__PURE__ */ __commonJSMin(((exports) => {
 		exports[key] = _guards[key];
 	});
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-selector-parser@7.1.1/node_modules/postcss-selector-parser/dist/index.js
 var require_dist = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -6635,11 +6602,9 @@ var require_dist = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 	Object.assign(parser, selectors);
 	delete parser.__esModule;
-	var _default = parser;
-	exports["default"] = _default;
+	exports["default"] = parser;
 	module.exports = exports.default;
 }));
-
 //#endregion
 //#region packages/compiler-sfc/src/style/pluginScoped.ts
 var import_dist = /* @__PURE__ */ __toESM(require_dist());
@@ -6694,6 +6659,8 @@ function processRule(id, rule) {
 function rewriteSelector(id, rule, selector, selectorRoot, deep, slotted = false) {
 	let node = null;
 	let shouldInject = !deep;
+	let hasNestedDeep = false;
+	let splitForNestedDeep = false;
 	selector.each((n) => {
 		if (n.type === "combinator" && (n.value === ">>>" || n.value === "/deep/")) {
 			n.value = " ";
@@ -6703,6 +6670,25 @@ function rewriteSelector(id, rule, selector, selectorRoot, deep, slotted = false
 		}
 		if (n.type === "pseudo") {
 			const { value } = n;
+			if (isDeepContainerPseudo(n)) {
+				if (n.nodes.some((selector) => selector.some(isDeepSelector))) {
+					const hasScopeAnchor = !!node;
+					const hasMixedSelectors = n.nodes.some((selector) => !selector.some(isDeepSelector));
+					const hasTrailingNodes = selector.index(n) < selector.length - 1;
+					if (canSplitDeepContainerPseudo(n) && !deep && !hasScopeAnchor && hasMixedSelectors && hasTrailingNodes) {
+						splitSelectorForNestedDeep(id, rule, selector, selectorRoot, n, deep, slotted);
+						splitForNestedDeep = true;
+						return false;
+					}
+					if (value === ":not" && !deep && !hasScopeAnchor && hasMixedSelectors && hasTrailingNodes) return;
+					n.nodes.forEach((selector) => rewriteSelector(id, rule, selector, selectorRoot, deep || hasScopeAnchor, slotted));
+					if (!hasScopeAnchor) {
+						node = n;
+						shouldInject = false;
+					}
+					hasNestedDeep = true;
+				}
+			}
 			if (value === ":deep" || value === "::v-deep") {
 				rule.__deep = true;
 				if (n.nodes.length) {
@@ -6753,8 +6739,9 @@ function rewriteSelector(id, rule, selector, selectorRoot, deep, slotted = false
 			}
 			if (node) return;
 		}
-		if (n.type !== "pseudo" && n.type !== "combinator" || n.type === "pseudo" && (n.value === ":is" || n.value === ":where") && !node) node = n;
+		if (!hasNestedDeep && (n.type !== "pseudo" && n.type !== "combinator" || n.type === "pseudo" && (n.value === ":is" || n.value === ":where") && !node)) node = n;
 	});
+	if (splitForNestedDeep) return;
 	if (rule.nodes.some((node) => node.type === "rule")) {
 		const deep = rule.__deep;
 		if (!deep) {
@@ -6764,7 +6751,7 @@ function rewriteSelector(id, rule, selector, selectorRoot, deep, slotted = false
 		}
 		shouldInject = deep;
 	}
-	if (node) {
+	if (node && !hasNestedDeep) {
 		const { type, value } = node;
 		if (type === "pseudo" && (value === ":is" || value === ":where")) {
 			node.nodes.forEach((value) => rewriteSelector(id, rule, value, selectorRoot, deep, slotted));
@@ -6786,6 +6773,32 @@ function rewriteSelector(id, rule, selector, selectorRoot, deep, slotted = false
 function isSpaceCombinator(node) {
 	return node.type === "combinator" && /^\s+$/.test(node.value);
 }
+function isDeepSelector(node) {
+	var _nodes;
+	if (node.type === "pseudo" && (node.value === ":deep" || node.value === "::v-deep")) return true;
+	return !!((_nodes = node.nodes) === null || _nodes === void 0 ? void 0 : _nodes.some((child) => isDeepSelector(child)));
+}
+function isDeepContainerPseudo(node) {
+	return node.type === "pseudo" && (node.value === ":is" || node.value === ":where" || node.value === ":has" || node.value === ":not");
+}
+function canSplitDeepContainerPseudo(node) {
+	return node.value === ":is" || node.value === ":where" || node.value === ":has";
+}
+function splitSelectorForNestedDeep(id, rule, selector, selectorRoot, pseudo, deep, slotted) {
+	const pseudoIndex = selector.index(pseudo);
+	const selectors = pseudo.nodes.map((branch, index) => {
+		const branchSelector = selector.clone();
+		if (branchSelector.first) branchSelector.first.spaces.before = index === 0 ? selector.first.spaces.before : " ";
+		const branchPseudo = branchSelector.at(pseudoIndex);
+		const branchClone = branch.clone();
+		if (branchClone.first) branchClone.first.spaces.before = "";
+		branchPseudo.removeAll();
+		branchPseudo.append(branchClone);
+		rewriteSelector(id, rule, branchSelector, selectorRoot, deep, slotted);
+		return branchSelector;
+	});
+	selector.replaceWith(...selectors);
+}
 function extractAndWrapNodes(parentNode) {
 	if (!parentNode.nodes) return;
 	const nodes = parentNode.nodes.filter((node) => node.type === "decl" || node.type === "comment");
@@ -6799,8 +6812,6 @@ function extractAndWrapNodes(parentNode) {
 	}
 }
 scopedPlugin.postcss = true;
-var pluginScoped_default = scopedPlugin;
-
 //#endregion
 //#region node_modules/.pnpm/source-map@0.6.1/node_modules/source-map/lib/base64.js
 var require_base64 = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -6835,7 +6846,6 @@ var require_base64 = /* @__PURE__ */ __commonJSMin(((exports) => {
 		return -1;
 	};
 }));
-
 //#endregion
 //#region node_modules/.pnpm/source-map@0.6.1/node_modules/source-map/lib/base64-vlq.js
 var require_base64_vlq = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -6901,7 +6911,6 @@ var require_base64_vlq = /* @__PURE__ */ __commonJSMin(((exports) => {
 		aOutParam.rest = aIndex;
 	};
 }));
-
 //#endregion
 //#region node_modules/.pnpm/source-map@0.6.1/node_modules/source-map/lib/util.js
 var require_util = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -7184,7 +7193,6 @@ var require_util = /* @__PURE__ */ __commonJSMin(((exports) => {
 	}
 	exports.computeSourceURL = computeSourceURL;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/source-map@0.6.1/node_modules/source-map/lib/array-set.js
 var require_array_set = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -7277,7 +7285,6 @@ var require_array_set = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 	exports.ArraySet = ArraySet;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/source-map@0.6.1/node_modules/source-map/lib/mapping-list.js
 var require_mapping_list = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -7347,7 +7354,6 @@ var require_mapping_list = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 	exports.MappingList = MappingList;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/source-map@0.6.1/node_modules/source-map/lib/source-map-generator.js
 var require_source_map_generator = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -7617,7 +7623,6 @@ var require_source_map_generator = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 	exports.SourceMapGenerator = SourceMapGenerator;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/source-map@0.6.1/node_modules/source-map/lib/binary-search.js
 var require_binary_search = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -7679,7 +7684,6 @@ var require_binary_search = /* @__PURE__ */ __commonJSMin(((exports) => {
 		return index;
 	};
 }));
-
 //#endregion
 //#region node_modules/.pnpm/source-map@0.6.1/node_modules/source-map/lib/quick-sort.js
 var require_quick_sort = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -7749,7 +7753,6 @@ var require_quick_sort = /* @__PURE__ */ __commonJSMin(((exports) => {
 		doQuickSort(ary, comparator, 0, ary.length - 1);
 	};
 }));
-
 //#endregion
 //#region node_modules/.pnpm/source-map@0.6.1/node_modules/source-map/lib/source-map-consumer.js
 var require_source_map_consumer = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -8499,7 +8502,6 @@ var require_source_map_consumer = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 	exports.IndexedSourceMapConsumer = IndexedSourceMapConsumer;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/source-map@0.6.1/node_modules/source-map/lib/source-node.js
 var require_source_node = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -8784,7 +8786,6 @@ var require_source_node = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 	exports.SourceNode = SourceNode;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/source-map@0.6.1/node_modules/source-map/source-map.js
 var require_source_map = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -8792,10 +8793,9 @@ var require_source_map = /* @__PURE__ */ __commonJSMin(((exports) => {
 	exports.SourceMapConsumer = require_source_map_consumer().SourceMapConsumer;
 	exports.SourceNode = require_source_node().SourceNode;
 }));
-
 //#endregion
-//#region node_modules/.pnpm/merge-source-map@1.1.0/node_modules/merge-source-map/index.js
-var require_merge_source_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+//#region packages/compiler-sfc/src/style/preprocessors.ts
+var import_merge_source_map = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var sourceMap = require_source_map();
 	var SourceMapConsumer = sourceMap.SourceMapConsumer;
 	var SourceMapGenerator = sourceMap.SourceMapGenerator;
@@ -8845,11 +8845,7 @@ var require_merge_source_map = /* @__PURE__ */ __commonJSMin(((exports, module) 
 		mergedMapGenerator._file = oldMap.file;
 		return JSON.parse(mergedMapGenerator.toString());
 	}
-}));
-
-//#endregion
-//#region packages/compiler-sfc/src/style/preprocessors.ts
-var import_merge_source_map = /* @__PURE__ */ __toESM(require_merge_source_map());
+})))());
 const scss = (source, map, options, load = require) => {
 	const { compileString, renderSync } = load("sass");
 	const data = getSource(source, options.filename, options.additionalData);
@@ -8972,7 +8968,6 @@ const processors = {
 	styl,
 	stylus: styl
 };
-
 //#endregion
 //#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.6/node_modules/postcss-modules/build/fs.js
 var require_fs = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -8995,7 +8990,6 @@ var require_fs = /* @__PURE__ */ __commonJSMin(((exports) => {
 		return fileSystem;
 	}
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.6/node_modules/postcss-modules/build/unquote.js
 var require_unquote = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -9009,7 +9003,6 @@ var require_unquote = /* @__PURE__ */ __commonJSMin(((exports) => {
 		return str;
 	}
 }));
-
 //#endregion
 //#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.6/node_modules/icss-utils/src/replaceValueSymbols.js
 var require_replaceValueSymbols = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -9027,7 +9020,6 @@ var require_replaceValueSymbols = /* @__PURE__ */ __commonJSMin(((exports, modul
 	};
 	module.exports = replaceValueSymbols;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.6/node_modules/icss-utils/src/replaceSymbols.js
 var require_replaceSymbols = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -9041,7 +9033,6 @@ var require_replaceSymbols = /* @__PURE__ */ __commonJSMin(((exports, module) =>
 	};
 	module.exports = replaceSymbols;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.6/node_modules/icss-utils/src/extractICSS.js
 var require_extractICSS = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -9096,7 +9087,6 @@ var require_extractICSS = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 	module.exports = extractICSS;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.6/node_modules/icss-utils/src/createICSSRules.js
 var require_createICSSRules = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -9141,22 +9131,16 @@ var require_createICSSRules = /* @__PURE__ */ __commonJSMin(((exports, module) =
 	const createICSSRules = (imports, exports$8, postcss, mode) => [...createImports(imports, postcss, mode), ...createExports(exports$8, postcss, mode)];
 	module.exports = createICSSRules;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/icss-utils@5.1.0_postcss@8.5.6/node_modules/icss-utils/src/index.js
 var require_src$4 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	const replaceValueSymbols = require_replaceValueSymbols();
-	const replaceSymbols = require_replaceSymbols();
-	const extractICSS = require_extractICSS();
-	const createICSSRules = require_createICSSRules();
 	module.exports = {
-		replaceValueSymbols,
-		replaceSymbols,
-		extractICSS,
-		createICSSRules
+		replaceValueSymbols: require_replaceValueSymbols(),
+		replaceSymbols: require_replaceSymbols(),
+		extractICSS: require_extractICSS(),
+		createICSSRules: require_createICSSRules()
 	};
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.6/node_modules/postcss-modules/build/Parser.js
 var require_Parser = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -9225,7 +9209,6 @@ var require_Parser = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 	exports.default = Parser;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.6/node_modules/postcss-modules/build/saveJSON.js
 var require_saveJSON = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -9239,7 +9222,6 @@ var require_saveJSON = /* @__PURE__ */ __commonJSMin(((exports) => {
 		});
 	}
 }));
-
 //#endregion
 //#region node_modules/.pnpm/lodash.camelcase@4.3.0/node_modules/lodash.camelcase/index.js
 var require_lodash_camelcase = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -9883,7 +9865,6 @@ var require_lodash_camelcase = /* @__PURE__ */ __commonJSMin(((exports, module) 
 	}
 	module.exports = camelCase;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.6/node_modules/postcss-modules/build/localsConvention.js
 var require_localsConvention = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -9924,7 +9905,6 @@ var require_localsConvention = /* @__PURE__ */ __commonJSMin(((exports) => {
 		};
 	}
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.6/node_modules/postcss-modules/build/FileSystemLoader.js
 var require_FileSystemLoader = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -10010,7 +9990,6 @@ var require_FileSystemLoader = /* @__PURE__ */ __commonJSMin(((exports) => {
 	};
 	exports.default = FileSystemLoader;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-modules-extract-imports@3.1.0_postcss@8.5.6/node_modules/postcss-modules-extract-imports/src/topologicalSort.js
 var require_topologicalSort = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -10050,7 +10029,6 @@ var require_topologicalSort = /* @__PURE__ */ __commonJSMin(((exports, module) =
 	}
 	module.exports = topologicalSort;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-modules-extract-imports@3.1.0_postcss@8.5.6/node_modules/postcss-modules-extract-imports/src/index.js
 var require_src$3 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -10179,7 +10157,6 @@ var require_src$3 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 	module.exports.postcss = true;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/loader-utils@3.3.1/node_modules/loader-utils/lib/hash/wasm-hash.js
 var require_wasm_hash = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -10314,7 +10291,6 @@ var require_wasm_hash = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = create;
 	module.exports.MAX_SHORT_STRING = MAX_SHORT_STRING;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/loader-utils@3.3.1/node_modules/loader-utils/lib/hash/xxhash64.js
 var require_xxhash64 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -10322,7 +10298,6 @@ var require_xxhash64 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const xxhash64 = new WebAssembly.Module(Buffer.from("AGFzbQEAAAABCAJgAX8AYAAAAwQDAQAABQMBAAEGGgV+AUIAC34BQgALfgFCAAt+AUIAC34BQgALByIEBGluaXQAAAZ1cGRhdGUAAQVmaW5hbAACBm1lbW9yeQIACrUIAzAAQtbrgu7q/Yn14AAkAELP1tO+0ser2UIkAUIAJAJC+erQ0OfJoeThACQDQgAkBAvUAQIBfwR+IABFBEAPCyMEIACtfCQEIwAhAiMBIQMjAiEEIwMhBQNAIAIgASkDAELP1tO+0ser2UJ+fEIfiUKHla+vmLbem55/fiECIAMgASkDCELP1tO+0ser2UJ+fEIfiUKHla+vmLbem55/fiEDIAQgASkDEELP1tO+0ser2UJ+fEIfiUKHla+vmLbem55/fiEEIAUgASkDGELP1tO+0ser2UJ+fEIfiUKHla+vmLbem55/fiEFIAAgAUEgaiIBSw0ACyACJAAgAyQBIAQkAiAFJAMLqwYCAX8EfiMEQgBSBH4jACICQgGJIwEiA0IHiXwjAiIEQgyJfCMDIgVCEol8IAJCz9bTvtLHq9lCfkIfiUKHla+vmLbem55/foVCh5Wvr5i23puef35CnaO16oOxjYr6AH0gA0LP1tO+0ser2UJ+Qh+JQoeVr6+Ytt6bnn9+hUKHla+vmLbem55/fkKdo7Xqg7GNivoAfSAEQs/W077Sx6vZQn5CH4lCh5Wvr5i23puef36FQoeVr6+Ytt6bnn9+Qp2jteqDsY2K+gB9IAVCz9bTvtLHq9lCfkIfiUKHla+vmLbem55/foVCh5Wvr5i23puef35CnaO16oOxjYr6AH0FQsXP2bLx5brqJwsjBCAArXx8IQIDQCABQQhqIABNBEAgAiABKQMAQs/W077Sx6vZQn5CH4lCh5Wvr5i23puef36FQhuJQoeVr6+Ytt6bnn9+Qp2jteqDsY2K+gB9IQIgAUEIaiEBDAELCyABQQRqIABNBEACfyACIAE1AgBCh5Wvr5i23puef36FQheJQs/W077Sx6vZQn5C+fPd8Zn2masWfCECIAFBBGoLIQELA0AgACABRwRAIAIgATEAAELFz9my8eW66id+hUILiUKHla+vmLbem55/fiECIAFBAWohAQwBCwtBACACIAJCIYiFQs/W077Sx6vZQn4iAiACQh2IhUL5893xmfaZqxZ+IgIgAkIgiIUiAkIgiCIDQv//A4NCIIYgA0KAgPz/D4NCEIiEIgNC/4GAgPAfg0IQhiADQoD+g4CA4D+DQgiIhCIDQo+AvIDwgcAHg0IIhiADQvCBwIeAnoD4AINCBIiEIgNChoyYsODAgYMGfEIEiEKBgoSIkKDAgAGDQid+IANCsODAgYOGjJgwhHw3AwBBCCACQv////8PgyICQv//A4NCIIYgAkKAgPz/D4NCEIiEIgJC/4GAgPAfg0IQhiACQoD+g4CA4D+DQgiIhCICQo+AvIDwgcAHg0IIhiACQvCBwIeAnoD4AINCBIiEIgJChoyYsODAgYMGfEIEiEKBgoSIkKDAgAGDQid+IAJCsODAgYOGjJgwhHw3AwAL", "base64"));
 	module.exports = create.bind(null, xxhash64, [], 32, 16);
 }));
-
 //#endregion
 //#region node_modules/.pnpm/loader-utils@3.3.1/node_modules/loader-utils/lib/hash/BatchedHash.js
 var require_BatchedHash = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -10367,7 +10342,6 @@ var require_BatchedHash = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 	module.exports = BatchedHash;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/loader-utils@3.3.1/node_modules/loader-utils/lib/hash/md4.js
 var require_md4 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -10375,7 +10349,6 @@ var require_md4 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const md4 = new WebAssembly.Module(Buffer.from("AGFzbQEAAAABCAJgAX8AYAAAAwUEAQAAAAUDAQABBhoFfwFBAAt/AUEAC38BQQALfwFBAAt/AUEACwciBARpbml0AAAGdXBkYXRlAAIFZmluYWwAAwZtZW1vcnkCAAqFEAQmAEGBxpS6BiQBQYnXtv5+JAJB/rnrxXkkA0H2qMmBASQEQQAkAAvMCgEYfyMBIQojAiEGIwMhByMEIQgDQCAAIAVLBEAgBSgCCCINIAcgBiAFKAIEIgsgCCAHIAUoAgAiDCAKIAggBiAHIAhzcXNqakEDdyIDIAYgB3Nxc2pqQQd3IgEgAyAGc3FzampBC3chAiAFKAIUIg8gASACIAUoAhAiCSADIAEgBSgCDCIOIAYgAyACIAEgA3Nxc2pqQRN3IgQgASACc3FzampBA3ciAyACIARzcXNqakEHdyEBIAUoAiAiEiADIAEgBSgCHCIRIAQgAyAFKAIYIhAgAiAEIAEgAyAEc3FzampBC3ciAiABIANzcXNqakETdyIEIAEgAnNxc2pqQQN3IQMgBSgCLCIVIAQgAyAFKAIoIhQgAiAEIAUoAiQiEyABIAIgAyACIARzcXNqakEHdyIBIAMgBHNxc2pqQQt3IgIgASADc3FzampBE3chBCAPIBAgCSAVIBQgEyAFKAI4IhYgAiAEIAUoAjQiFyABIAIgBSgCMCIYIAMgASAEIAEgAnNxc2pqQQN3IgEgAiAEc3FzampBB3ciAiABIARzcXNqakELdyIDIAkgAiAMIAEgBSgCPCIJIAQgASADIAEgAnNxc2pqQRN3IgEgAiADcnEgAiADcXJqakGZ84nUBWpBA3ciAiABIANycSABIANxcmpqQZnzidQFakEFdyIEIAEgAnJxIAEgAnFyaiASakGZ84nUBWpBCXciAyAPIAQgCyACIBggASADIAIgBHJxIAIgBHFyampBmfOJ1AVqQQ13IgEgAyAEcnEgAyAEcXJqakGZ84nUBWpBA3ciAiABIANycSABIANxcmpqQZnzidQFakEFdyIEIAEgAnJxIAEgAnFyampBmfOJ1AVqQQl3IgMgECAEIAIgFyABIAMgAiAEcnEgAiAEcXJqakGZ84nUBWpBDXciASADIARycSADIARxcmogDWpBmfOJ1AVqQQN3IgIgASADcnEgASADcXJqakGZ84nUBWpBBXciBCABIAJycSABIAJxcmpqQZnzidQFakEJdyIDIBEgBCAOIAIgFiABIAMgAiAEcnEgAiAEcXJqakGZ84nUBWpBDXciASADIARycSADIARxcmpqQZnzidQFakEDdyICIAEgA3JxIAEgA3FyampBmfOJ1AVqQQV3IgQgASACcnEgASACcXJqakGZ84nUBWpBCXciAyAMIAIgAyAJIAEgAyACIARycSACIARxcmpqQZnzidQFakENdyIBcyAEc2pqQaHX5/YGakEDdyICIAQgASACcyADc2ogEmpBodfn9gZqQQl3IgRzIAFzampBodfn9gZqQQt3IgMgAiADIBggASADIARzIAJzampBodfn9gZqQQ93IgFzIARzaiANakGh1+f2BmpBA3ciAiAUIAQgASACcyADc2pqQaHX5/YGakEJdyIEcyABc2pqQaHX5/YGakELdyIDIAsgAiADIBYgASADIARzIAJzampBodfn9gZqQQ93IgFzIARzampBodfn9gZqQQN3IgIgEyAEIAEgAnMgA3NqakGh1+f2BmpBCXciBHMgAXNqakGh1+f2BmpBC3chAyAKIA4gAiADIBcgASADIARzIAJzampBodfn9gZqQQ93IgFzIARzampBodfn9gZqQQN3IgJqIQogBiAJIAEgESADIAIgFSAEIAEgAnMgA3NqakGh1+f2BmpBCXciBHMgAXNqakGh1+f2BmpBC3ciAyAEcyACc2pqQaHX5/YGakEPd2ohBiADIAdqIQcgBCAIaiEIIAVBQGshBQwBCwsgCiQBIAYkAiAHJAMgCCQECw0AIAAQASMAIABqJAAL/wQCA38BfiMAIABqrUIDhiEEIABByABqQUBxIgJBCGshAyAAIgFBAWohACABQYABOgAAA0AgACACSUEAIABBB3EbBEAgAEEAOgAAIABBAWohAAwBCwsDQCAAIAJJBEAgAEIANwMAIABBCGohAAwBCwsgAyAENwMAIAIQAUEAIwGtIgRC//8DgyAEQoCA/P8Pg0IQhoQiBEL/gYCA8B+DIARCgP6DgIDgP4NCCIaEIgRCj4C8gPCBwAeDQgiGIARC8IHAh4CegPgAg0IEiIQiBEKGjJiw4MCBgwZ8QgSIQoGChIiQoMCAAYNCJ34gBEKw4MCBg4aMmDCEfDcDAEEIIwKtIgRC//8DgyAEQoCA/P8Pg0IQhoQiBEL/gYCA8B+DIARCgP6DgIDgP4NCCIaEIgRCj4C8gPCBwAeDQgiGIARC8IHAh4CegPgAg0IEiIQiBEKGjJiw4MCBgwZ8QgSIQoGChIiQoMCAAYNCJ34gBEKw4MCBg4aMmDCEfDcDAEEQIwOtIgRC//8DgyAEQoCA/P8Pg0IQhoQiBEL/gYCA8B+DIARCgP6DgIDgP4NCCIaEIgRCj4C8gPCBwAeDQgiGIARC8IHAh4CegPgAg0IEiIQiBEKGjJiw4MCBgwZ8QgSIQoGChIiQoMCAAYNCJ34gBEKw4MCBg4aMmDCEfDcDAEEYIwStIgRC//8DgyAEQoCA/P8Pg0IQhoQiBEL/gYCA8B+DIARCgP6DgIDgP4NCCIaEIgRCj4C8gPCBwAeDQgiGIARC8IHAh4CegPgAg0IEiIQiBEKGjJiw4MCBgwZ8QgSIQoGChIiQoMCAAYNCJ34gBEKw4MCBg4aMmDCEfDcDAAs=", "base64"));
 	module.exports = create.bind(null, md4, [], 64, 32);
 }));
-
 //#endregion
 //#region node_modules/.pnpm/loader-utils@3.3.1/node_modules/loader-utils/lib/hash/BulkUpdateDecorator.js
 var require_BulkUpdateDecorator = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -10445,7 +10418,6 @@ var require_BulkUpdateDecorator = /* @__PURE__ */ __commonJSMin(((exports, modul
 	};
 	module.exports = BulkUpdateDecorator;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/loader-utils@3.3.1/node_modules/loader-utils/lib/getHashDigest.js
 var require_getHashDigest = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -10524,7 +10496,6 @@ var require_getHashDigest = /* @__PURE__ */ __commonJSMin(((exports, module) => 
 	}
 	module.exports = getHashDigest;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/loader-utils@3.3.1/node_modules/loader-utils/lib/interpolateName.js
 var require_interpolateName = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -10577,7 +10548,6 @@ var require_interpolateName = /* @__PURE__ */ __commonJSMin(((exports, module) =
 	}
 	module.exports = interpolateName;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/generic-names@4.0.0/node_modules/generic-names/index.js
 var require_generic_names = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -10608,7 +10578,6 @@ var require_generic_names = /* @__PURE__ */ __commonJSMin(((exports, module) => 
 		};
 	};
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-value-parser@4.2.0/node_modules/postcss-value-parser/lib/parse.js
 var require_parse = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -10840,7 +10809,6 @@ var require_parse = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		return stack[0].nodes;
 	};
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-value-parser@4.2.0/node_modules/postcss-value-parser/lib/walk.js
 var require_walk = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -10854,7 +10822,6 @@ var require_walk = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}
 	};
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-value-parser@4.2.0/node_modules/postcss-value-parser/lib/stringify.js
 var require_stringify = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -10888,7 +10855,6 @@ var require_stringify = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	}
 	module.exports = stringify;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-value-parser@4.2.0/node_modules/postcss-value-parser/lib/unit.js
 var require_unit = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -10956,7 +10922,6 @@ var require_unit = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 	};
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-value-parser@4.2.0/node_modules/postcss-value-parser/lib/index.js
 var require_lib = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -10982,7 +10947,6 @@ var require_lib = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	ValueParser.stringify = stringify;
 	module.exports = ValueParser;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-modules-local-by-default@4.2.0_postcss@8.5.6/node_modules/postcss-modules-local-by-default/src/index.js
 var require_src$2 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -11382,7 +11346,6 @@ var require_src$2 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 	module.exports.postcss = true;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-modules-scope@3.2.1_postcss@8.5.6/node_modules/postcss-modules-scope/src/index.js
 var require_src$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -11406,7 +11369,7 @@ var require_src$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			return node.value;
 		});
 	}
-	const unescapeRegExp = new RegExp("\\\\([\\da-f]{1,6}[\\x20\\t\\r\\n\\f]?|([\\x20\\t\\r\\n\\f])|.)", "ig");
+	const unescapeRegExp = /* @__PURE__ */ new RegExp("\\\\([\\da-f]{1,6}[\\x20\\t\\r\\n\\f]?|([\\x20\\t\\r\\n\\f])|.)", "ig");
 	function unescape(str) {
 		return str.replace(unescapeRegExp, (_, escaped, escapedWhitespace) => {
 			const high = "0x" + escaped - 65536;
@@ -11553,7 +11516,6 @@ var require_src$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 	module.exports = plugin;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/string-hash@1.1.3/node_modules/string-hash/index.js
 var require_string_hash = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -11564,7 +11526,6 @@ var require_string_hash = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	}
 	module.exports = hash;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-modules-values@4.0.0_postcss@8.5.6/node_modules/postcss-modules-values/src/index.js
 var require_src = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -11652,7 +11613,6 @@ var require_src = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 	module.exports.postcss = true;
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.6/node_modules/postcss-modules/build/scoping.js
 var require_scoping = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -11715,7 +11675,6 @@ var require_scoping = /* @__PURE__ */ __commonJSMin(((exports) => {
 		});
 	}
 }));
-
 //#endregion
 //#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.6/node_modules/postcss-modules/build/pluginFactory.js
 var require_pluginFactory = /* @__PURE__ */ __commonJSMin(((exports) => {
@@ -11790,10 +11749,9 @@ var require_pluginFactory = /* @__PURE__ */ __commonJSMin(((exports) => {
 		};
 	}
 }));
-
 //#endregion
-//#region node_modules/.pnpm/postcss-modules@6.0.1_postcss@8.5.6/node_modules/postcss-modules/build/index.js
-var require_build = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+//#region packages/compiler-sfc/src/compileStyle.ts
+var import_build = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var _fs = require("fs");
 	var _fs2 = require_fs();
 	var _pluginFactory = require_pluginFactory();
@@ -11803,11 +11761,7 @@ var require_build = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	});
 	module.exports = (opts = {}) => (0, _pluginFactory.makePlugin)(opts);
 	module.exports.postcss = true;
-}));
-
-//#endregion
-//#region packages/compiler-sfc/src/compileStyle.ts
-var import_build = /* @__PURE__ */ __toESM(require_build());
+})))());
 function compileStyle(options) {
 	return doCompileStyle({
 		...options,
@@ -11833,8 +11787,8 @@ function doCompileStyle(options) {
 		id: shortId,
 		isProd
 	}));
-	if (trim) plugins.push(pluginTrim_default());
-	if (scoped) plugins.push(pluginScoped_default(longId));
+	if (trim) plugins.push(trimPlugin());
+	if (scoped) plugins.push(scopedPlugin(longId));
 	let cssModules;
 	if (modules) {
 		if (!options.isAsync) throw new Error("[@vue/compiler-sfc] `modules` option can only be used with compileStyleAsync().");
@@ -11904,7 +11858,6 @@ function preprocess(options, preprocessor) {
 		...options.preprocessOptions
 	}, options.preprocessCustomRequire);
 }
-
 //#endregion
 //#region packages/compiler-sfc/src/script/analyzeScriptBindings.ts
 /**
@@ -11950,7 +11903,6 @@ function getObjectOrArrayExpressionKeys(value) {
 	if (value.type === "ObjectExpression") return getObjectExpressionKeys(value);
 	return [];
 }
-
 //#endregion
 //#region packages/compiler-sfc/src/script/context.ts
 var ScriptCompileContext = class {
@@ -12032,7 +11984,6 @@ function resolveParserPlugins(lang, userPlugins, dts = false) {
 	if (userPlugins) plugins.push(...userPlugins);
 	return plugins;
 }
-
 //#endregion
 //#region packages/compiler-sfc/src/rewriteDefault.ts
 function rewriteDefault(input, as, parserPlugins) {
@@ -12097,7 +12048,6 @@ function specifierEnd(s, end, nodeEnd) {
 	} else if (s.slice(end, end + 1) === "}") break;
 	return hasCommas ? end : oldEnd;
 }
-
 //#endregion
 //#region packages/compiler-sfc/src/script/normalScript.ts
 const normalScriptDefaultVar = `__default__`;
@@ -12139,7 +12089,6 @@ function processNormalScript(ctx, scopeId) {
 		return script;
 	}
 }
-
 //#endregion
 //#region node_modules/.pnpm/balanced-match@4.0.4/node_modules/balanced-match/dist/esm/index.js
 const balanced = (a, b, str) => {
@@ -12188,9 +12137,8 @@ const range = (a, b, str) => {
 	}
 	return result;
 };
-
 //#endregion
-//#region node_modules/.pnpm/brace-expansion@5.0.3/node_modules/brace-expansion/dist/esm/index.js
+//#region node_modules/.pnpm/brace-expansion@5.0.5/node_modules/brace-expansion/dist/esm/index.js
 const escSlash = "\0SLASH" + Math.random() + "\0";
 const escOpen = "\0OPEN" + Math.random() + "\0";
 const escClose = "\0CLOSE" + Math.random() + "\0";
@@ -12205,7 +12153,7 @@ const slashPattern = /\\\\/g;
 const openPattern = /\\{/g;
 const closePattern = /\\}/g;
 const commaPattern = /\\,/g;
-const periodPattern = /\\./g;
+const periodPattern = /\\\./g;
 const EXPANSION_MAX = 1e5;
 function numeric(str) {
 	return !isNaN(str) ? parseInt(str, 10) : str.charCodeAt(0);
@@ -12293,7 +12241,7 @@ function expand_(str, max, isTop) {
 			const x = numeric(n[0]);
 			const y = numeric(n[1]);
 			const width = Math.max(n[0].length, n[1].length);
-			let incr = n.length === 3 && n[2] !== void 0 ? Math.abs(numeric(n[2])) : 1;
+			let incr = n.length === 3 && n[2] !== void 0 ? Math.max(Math.abs(numeric(n[2])), 1) : 1;
 			let test = lte;
 			if (y < x) {
 				incr *= -1;
@@ -12330,17 +12278,15 @@ function expand_(str, max, isTop) {
 	}
 	return expansions;
 }
-
 //#endregion
-//#region node_modules/.pnpm/minimatch@10.2.4/node_modules/minimatch/dist/esm/assert-valid-pattern.js
+//#region node_modules/.pnpm/minimatch@10.2.5/node_modules/minimatch/dist/esm/assert-valid-pattern.js
 const MAX_PATTERN_LENGTH = 1024 * 64;
 const assertValidPattern = (pattern) => {
 	if (typeof pattern !== "string") throw new TypeError("invalid pattern");
 	if (pattern.length > MAX_PATTERN_LENGTH) throw new TypeError("pattern is too long");
 };
-
 //#endregion
-//#region node_modules/.pnpm/minimatch@10.2.4/node_modules/minimatch/dist/esm/brace-expressions.js
+//#region node_modules/.pnpm/minimatch@10.2.5/node_modules/minimatch/dist/esm/brace-expressions.js
 const posixClasses = {
 	"[:alnum:]": ["\\p{L}\\p{Nl}\\p{Nd}", true],
 	"[:alpha:]": ["\\p{L}\\p{Nl}", true],
@@ -12460,9 +12406,8 @@ const parseClass = (glob, position) => {
 		true
 	];
 };
-
 //#endregion
-//#region node_modules/.pnpm/minimatch@10.2.4/node_modules/minimatch/dist/esm/unescape.js
+//#region node_modules/.pnpm/minimatch@10.2.5/node_modules/minimatch/dist/esm/unescape.js
 /**
 * Un-escape a string that has been escaped with {@link escape}.
 *
@@ -12483,12 +12428,11 @@ const parseClass = (glob, position) => {
 * unescaped.
 */
 const unescape = (s, { windowsPathsNoEscape = false, magicalBraces = true } = {}) => {
-	if (magicalBraces) return windowsPathsNoEscape ? s.replace(/\[([^\/\\])\]/g, "$1") : s.replace(/((?!\\).|^)\[([^\/\\])\]/g, "$1$2").replace(/\\([^\/])/g, "$1");
-	return windowsPathsNoEscape ? s.replace(/\[([^\/\\{}])\]/g, "$1") : s.replace(/((?!\\).|^)\[([^\/\\{}])\]/g, "$1$2").replace(/\\([^\/{}])/g, "$1");
+	if (magicalBraces) return windowsPathsNoEscape ? s.replace(/\[([^/\\])\]/g, "$1") : s.replace(/((?!\\).|^)\[([^/\\])\]/g, "$1$2").replace(/\\([^/])/g, "$1");
+	return windowsPathsNoEscape ? s.replace(/\[([^/\\{}])\]/g, "$1") : s.replace(/((?!\\).|^)\[([^/\\{}])\]/g, "$1$2").replace(/\\([^/{}])/g, "$1");
 };
-
 //#endregion
-//#region node_modules/.pnpm/minimatch@10.2.4/node_modules/minimatch/dist/esm/ast.js
+//#region node_modules/.pnpm/minimatch@10.2.5/node_modules/minimatch/dist/esm/ast.js
 var _AST;
 let _Symbol$for;
 var _a;
@@ -12622,9 +12566,7 @@ var AST = class AST {
 		return _classPrivateFieldGet2(_hasMagic2, this);
 	}
 	toString() {
-		if (_classPrivateFieldGet2(_toString, this) !== void 0) return _classPrivateFieldGet2(_toString, this);
-		if (!this.type) return _classPrivateFieldSet2(_toString, this, _classPrivateFieldGet2(_parts, this).map((p) => String(p)).join(""));
-		else return _classPrivateFieldSet2(_toString, this, this.type + "(" + _classPrivateFieldGet2(_parts, this).map((p) => String(p)).join("|") + ")");
+		return _classPrivateFieldGet2(_toString, this) !== void 0 ? _classPrivateFieldGet2(_toString, this) : !this.type ? _classPrivateFieldSet2(_toString, this, _classPrivateFieldGet2(_parts, this).map((p) => String(p)).join("")) : _classPrivateFieldSet2(_toString, this, this.type + "(" + _classPrivateFieldGet2(_parts, this).map((p) => String(p)).join("|") + ")");
 	}
 	push(...parts) {
 		for (const p of parts) {
@@ -13023,9 +12965,8 @@ function _parseGlob(glob, hasMagic, noEmpty = false) {
 	];
 }
 _a = AST;
-
 //#endregion
-//#region node_modules/.pnpm/minimatch@10.2.4/node_modules/minimatch/dist/esm/escape.js
+//#region node_modules/.pnpm/minimatch@10.2.5/node_modules/minimatch/dist/esm/escape.js
 /**
 * Escape all magic characters in a glob pattern.
 *
@@ -13042,15 +12983,14 @@ const escape = (s, { windowsPathsNoEscape = false, magicalBraces = false } = {})
 	if (magicalBraces) return windowsPathsNoEscape ? s.replace(/[?*()[\]{}]/g, "[$&]") : s.replace(/[?*()[\]\\{}]/g, "\\$&");
 	return windowsPathsNoEscape ? s.replace(/[?*()[\]]/g, "[$&]") : s.replace(/[?*()[\]\\]/g, "\\$&");
 };
-
 //#endregion
-//#region node_modules/.pnpm/minimatch@10.2.4/node_modules/minimatch/dist/esm/index.js
+//#region node_modules/.pnpm/minimatch@10.2.5/node_modules/minimatch/dist/esm/index.js
 const minimatch = (p, pattern, options = {}) => {
 	assertValidPattern(pattern);
 	if (!options.nocomment && pattern.charAt(0) === "#") return false;
 	return new Minimatch(pattern, options).match(p);
 };
-const starDotExtRE = /^\*+([^+@!?\*\[\(]*)$/;
+const starDotExtRE = /^\*+([^+@!?*[(]*)$/;
 const starDotExtTest = (ext) => (f) => !f.startsWith(".") && f.endsWith(ext);
 const starDotExtTestDot = (ext) => (f) => f.endsWith(ext);
 const starDotExtTestNocase = (ext) => {
@@ -13069,7 +13009,7 @@ const dotStarTest = (f) => f !== "." && f !== ".." && f.startsWith(".");
 const starRE = /^\*+$/;
 const starTest = (f) => f.length !== 0 && !f.startsWith(".");
 const starTestDot = (f) => f.length !== 0 && f !== "." && f !== "..";
-const qmarksRE = /^\?+([^+@!?\*\[\(]*)?$/;
+const qmarksRE = /^\?+([^+@!?*[(]*)?$/;
 const qmarksTestNocase = ([$0, ext = ""]) => {
 	const noext = qmarksTestNoExt([$0]);
 	if (!ext) return noext;
@@ -13104,9 +13044,7 @@ const path$1 = {
 	win32: { sep: "\\" },
 	posix: { sep: "/" }
 };
-/* c8 ignore stop */
-const sep = defaultPlatform === "win32" ? path$1.win32.sep : path$1.posix.sep;
-minimatch.sep = sep;
+minimatch.sep = defaultPlatform === "win32" ? path$1.win32.sep : path$1.posix.sep;
 const GLOBSTAR = Symbol("globstar **");
 minimatch.GLOBSTAR = GLOBSTAR;
 const star = "[^/]*?";
@@ -13179,7 +13117,8 @@ var Minimatch = class {
 		this.pattern = pattern;
 		this.platform = options.platform || defaultPlatform;
 		this.isWindows = this.platform === "win32";
-		this.windowsPathsNoEscape = !!options.windowsPathsNoEscape || options["allowWindowsEscape"] === false;
+		const awe = "allowWindowsEscape";
+		this.windowsPathsNoEscape = !!options.windowsPathsNoEscape || options[awe] === false;
 		if (this.windowsPathsNoEscape) this.pattern = this.pattern.replace(/\\/g, "/");
 		this.preserveMultipleSlashes = !!options.preserveMultipleSlashes;
 		this.regexp = null;
@@ -13238,7 +13177,7 @@ var Minimatch = class {
 	}
 	preprocess(globParts) {
 		if (this.options.noglobstar) {
-			for (let i = 0; i < globParts.length; i++) for (let j = 0; j < globParts[i].length; j++) if (globParts[i][j] === "**") globParts[i][j] = "*";
+			for (const partset of globParts) for (let j = 0; j < partset.length; j++) if (partset[j] === "**") partset[j] = "*";
 		}
 		const { optimizationLevel = 1 } = this.options;
 		if (optimizationLevel >= 2) {
@@ -13299,7 +13238,7 @@ var Minimatch = class {
 			let dd = 0;
 			while (-1 !== (dd = parts.indexOf("..", dd + 1))) {
 				const p = parts[dd - 1];
-				if (p && p !== "." && p !== ".." && p !== "**") {
+				if (p && p !== "." && p !== ".." && p !== "**" && !(this.isWindows && /^[a-z]:$/i.test(p))) {
 					didSomething = true;
 					parts.splice(dd - 1, 2);
 					dd -= 2;
@@ -13497,7 +13436,7 @@ var Minimatch = class {
 		if (this.negate) re = "^(?!" + re + ").+$";
 		try {
 			this.regexp = new RegExp(re, [...flags].join(""));
-		} catch (ex) {
+		} catch {
 			this.regexp = false;
 		}
 		/* c8 ignore stop */
@@ -13505,7 +13444,7 @@ var Minimatch = class {
 	}
 	slashSplit(p) {
 		if (this.preserveMultipleSlashes) return p.split("/");
-		else if (this.isWindows && /^\/\/[^\/]+/.test(p)) return ["", ...p.split(/\/+/)];
+		else if (this.isWindows && /^\/\/[^/]+/.test(p)) return ["", ...p.split(/\/+/)];
 		else return p.split(/\/+/);
 	}
 	match(f, partial = this.partial) {
@@ -13521,8 +13460,7 @@ var Minimatch = class {
 		this.debug(this.pattern, "set", set);
 		let filename = ff[ff.length - 1];
 		if (!filename) for (let i = ff.length - 2; !filename && i >= 0; i--) filename = ff[i];
-		for (let i = 0; i < set.length; i++) {
-			const pattern = set[i];
+		for (const pattern of set) {
 			let file = ff;
 			if (options.matchBase && pattern.length === 1) file = [filename];
 			if (this.matchOne(file, pattern, partial)) {
@@ -13649,7 +13587,6 @@ minimatch.AST = AST;
 minimatch.Minimatch = Minimatch;
 minimatch.escape = escape;
 minimatch.unescape = unescape;
-
 //#endregion
 //#region packages/compiler-sfc/src/script/resolveType.ts
 var TypeScope = class {
@@ -13666,13 +13603,22 @@ var TypeScope = class {
 		this.exportedDeclares = Object.create(null);
 	}
 };
+function recordScopeDep(ctx, scope) {
+	if (scope && scope.filename !== ctx.filename) (ctx.deps || (ctx.deps = /* @__PURE__ */ new Set())).add(scope.filename);
+}
+function recordResolvedElementDeps(ctx, { props }) {
+	for (const key in props) recordScopeDep(ctx, props[key]._ownerScope);
+}
 /**
 * Resolve arbitrary type node to a list of type elements that can be then
 * mapped to runtime props or emits.
 */
 function resolveTypeElements(ctx, node, scope, typeParameters) {
 	const canCache = !typeParameters;
-	if (canCache && node._resolvedElements) return node._resolvedElements;
+	if (canCache && node._resolvedElements) {
+		recordResolvedElementDeps(ctx, node._resolvedElements);
+		return node._resolvedElements;
+	}
 	const resolved = innerResolveTypeElements(ctx, node, node._ownerScope || scope || ctxToScope(ctx), typeParameters);
 	return canCache ? node._resolvedElements = resolved : resolved;
 }
@@ -13944,7 +13890,10 @@ function resolveBuiltin(ctx, node, name, scope, typeParameters) {
 }
 function resolveTypeReference(ctx, node, scope, name, onlyExported = false) {
 	const canCache = !(scope === null || scope === void 0 ? void 0 : scope.isGenericScope);
-	if (canCache && node._resolvedReference) return node._resolvedReference;
+	if (canCache && node._resolvedReference) {
+		recordScopeDep(ctx, node._resolvedReference._ownerScope);
+		return node._resolvedReference;
+	}
 	const resolved = innerResolveTypeReference(ctx, scope || ctxToScope(ctx), name || getReferenceName(node), node, onlyExported);
 	return canCache ? node._resolvedReference = resolved : resolved;
 }
@@ -13959,7 +13908,9 @@ function innerResolveTypeReference(ctx, scope, name, node, onlyExported) {
 				const src = node.type === "TSTypeQuery" ? s.declares : s.types;
 				if (src[name]) {
 					(ctx.deps || (ctx.deps = /* @__PURE__ */ new Set())).add(s.filename);
-					return src[name];
+					const resolved = src[name];
+					if (resolved._ownerScope && resolved._ownerScope !== s) ctx.deps.add(resolved._ownerScope.filename);
+					return resolved;
 				}
 			}
 		}
@@ -14024,7 +13975,7 @@ function resolveTypeFromImport(ctx, node, name, scope) {
 	const { source, imported } = scope.imports[name];
 	return resolveTypeReference(ctx, node, importSourceToScope(ctx, node, scope, source), imported, true);
 }
-function importSourceToScope(ctx, node, scope, source) {
+function importSourceToScope(ctx, node, scope, source, trackDep = true) {
 	let fs;
 	try {
 		fs = resolveFS(ctx);
@@ -14044,10 +13995,16 @@ function importSourceToScope(ctx, node, scope, source) {
 			}
 			resolved = resolveWithTS(scope.filename, source, ts, fs);
 		}
+		if (!resolved && source[0] === "." && true) {
+			if (!ts) {
+				if (loadTS) ts = loadTS();
+			}
+			if (ts) resolved = resolveWithTS(scope.filename, source, ts, fs);
+		}
 		if (resolved) resolved = scope.resolvedImportSources[source] = normalizePath(resolved);
 	}
 	if (resolved) {
-		(ctx.deps || (ctx.deps = /* @__PURE__ */ new Set())).add(resolved);
+		if (trackDep) (ctx.deps || (ctx.deps = /* @__PURE__ */ new Set())).add(resolved);
 		return fileToScope(ctx, resolved);
 	} else return ctx.error(`Failed to resolve import source ${JSON.stringify(source)}.`, node, scope);
 }
@@ -14201,8 +14158,22 @@ function recordTypes(ctx, body, scope, asGlobal = false) {
 	for (const stmt of body) if (asGlobal) {
 		if (isAmbient) {
 			if (stmt.declare) recordType(stmt, types, declares);
-		} else if (stmt.type === "TSModuleDeclaration" && stmt.global) for (const s of stmt.body.body) if (s.type === "ExportNamedDeclaration" && s.declaration) recordType(s.declaration, types, declares);
-		else recordType(s, types, declares);
+		} else if (stmt.type === "TSModuleDeclaration" && stmt.global) for (const s of stmt.body.body) if (s.type === "ExportNamedDeclaration") {
+			if (s.declaration) recordType(s.declaration, types, declares);
+			else if (s.source) {
+				const sourceScope = importSourceToScope(ctx, s.source, scope, s.source.value, false);
+				for (const spec of s.specifiers) if (spec.type === "ExportSpecifier") {
+					const exported = getId(spec.exported);
+					const local = spec.local.name;
+					if (sourceScope.exportedTypes[local]) types[exported] = sourceScope.exportedTypes[local];
+					if (sourceScope.exportedDeclares[local]) declares[exported] = sourceScope.exportedDeclares[local];
+				}
+			}
+		} else if (s.type === "ExportAllDeclaration" && s.source) {
+			const sourceScope = importSourceToScope(ctx, s.source, scope, s.source.value, false);
+			Object.assign(types, sourceScope.exportedTypes);
+			Object.assign(declares, sourceScope.exportedDeclares);
+		} else recordType(s, types, declares);
 	} else recordType(stmt, types, declares);
 	if (!asGlobal) {
 		for (const stmt of body) if (stmt.type === "ExportNamedDeclaration") {
@@ -14239,10 +14210,10 @@ function recordTypes(ctx, body, scope, asGlobal = false) {
 	}
 	for (const key of Object.keys(types)) {
 		const node = types[key];
-		node._ownerScope = scope;
-		if (node._ns) node._ns._ownerScope = scope;
+		if (!node._ownerScope) node._ownerScope = scope;
+		if (node._ns && !node._ns._ownerScope) node._ns._ownerScope = scope;
 	}
-	for (const key of Object.keys(declares)) declares[key]._ownerScope = scope;
+	for (const key of Object.keys(declares)) if (!declares[key]._ownerScope) declares[key]._ownerScope = scope;
 }
 function recordType(node, types, declares, overwriteId) {
 	switch (node.type) {
@@ -14344,7 +14315,7 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 					const annotation = m.parameters[0].typeAnnotation;
 					if (annotation && annotation.type !== "Noop") {
 						const type = inferRuntimeType(ctx, annotation.typeAnnotation, scope)[0];
-						if (type === UNKNOWN_TYPE) return [UNKNOWN_TYPE];
+						if (type === "Unknown") return [UNKNOWN_TYPE];
 						types.add(type);
 					}
 				} else types.add("String");
@@ -14367,7 +14338,10 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 				default: return [UNKNOWN_TYPE];
 			}
 			case "TSTypeReference": {
-				const resolved = resolveTypeReference(ctx, node, scope);
+				let resolved;
+				try {
+					resolved = resolveTypeReference(ctx, node, scope);
+				} catch {}
 				if (resolved) {
 					if (resolved.type === "TSTypeAliasDeclaration") {
 						if (resolved.typeAnnotation.type === "TSFunctionType") return ["Function"];
@@ -14443,6 +14417,17 @@ function inferRuntimeType(ctx, node, scope = node._ownerScope || ctxToScope(ctx)
 						case "ReadonlyArray": return ["Array"];
 						case "ReadonlyMap": return ["Map"];
 						case "ReadonlySet": return ["Set"];
+						case "Ref":
+						case "ShallowRef":
+						case "ComputedRef":
+						case "WritableComputedRef": return ["Object"];
+						case "MaybeRef":
+						case "MaybeRefOrGetter": {
+							const types = new Set(["Object"]);
+							if (node.typeName.name === "MaybeRefOrGetter") types.add("Function");
+							if (node.typeParameters && node.typeParameters.params[0]) for (const t of inferRuntimeType(ctx, node.typeParameters.params[0], scope, false, typeParameters)) types.add(t);
+							return Array.from(types);
+						}
 						case "NonNullable":
 							if (node.typeParameters && node.typeParameters.params[0]) return inferRuntimeType(ctx, node.typeParameters.params[0], scope).filter((t) => t !== "null");
 							break;
@@ -14600,20 +14585,19 @@ function resolveUnionType(ctx, node, scope) {
 	else types = [node];
 	return types;
 }
-
 //#endregion
 //#region packages/compiler-sfc/src/script/defineModel.ts
 const DEFINE_MODEL = "defineModel";
 function processDefineModel(ctx, node, declId) {
-	if (!isCallOf(node, DEFINE_MODEL)) return false;
+	if (!isCallOf(node, "defineModel")) return false;
 	ctx.hasDefineModelCall = true;
 	const type = node.typeParameters && node.typeParameters.params[0] || void 0;
 	let modelName;
 	let options;
 	const arg0 = node.arguments[0] && (0, _vue_compiler_dom.unwrapTSNode)(node.arguments[0]);
-	const hasName = arg0 && arg0.type === "StringLiteral";
+	const hasName = arg0 && (arg0.type === "StringLiteral" || arg0.type === "TemplateLiteral" && arg0.expressions.length === 0);
 	if (hasName) {
-		modelName = arg0.value;
+		modelName = arg0.type === "StringLiteral" ? arg0.value : arg0.quasis[0].value.cooked;
 		options = node.arguments[1];
 	} else {
 		modelName = "modelValue";
@@ -14664,7 +14648,7 @@ function genModelProps(ctx) {
 		if (runtimeTypes) {
 			const hasBoolean = runtimeTypes.includes("Boolean");
 			const hasFunction = runtimeTypes.includes("Function");
-			if (runtimeTypes.includes(UNKNOWN_TYPE)) if (hasBoolean || hasFunction) {
+			if (runtimeTypes.includes("Unknown")) if (hasBoolean || hasFunction) {
 				runtimeTypes = runtimeTypes.filter((t) => t !== UNKNOWN_TYPE);
 				skipCheck = true;
 			} else runtimeTypes = ["null"];
@@ -14682,13 +14666,12 @@ function genModelProps(ctx) {
 	}
 	return `{${modelPropsDecl}\n  }`;
 }
-
 //#endregion
 //#region packages/compiler-sfc/src/script/defineProps.ts
 const DEFINE_PROPS = "defineProps";
 const WITH_DEFAULTS = "withDefaults";
 function processDefineProps(ctx, node, declId, isWithDefaults = false) {
-	if (!isCallOf(node, DEFINE_PROPS)) return processWithDefaults(ctx, node, declId);
+	if (!isCallOf(node, "defineProps")) return processWithDefaults(ctx, node, declId);
 	if (ctx.hasDefinePropsCall) ctx.error(`duplicate ${DEFINE_PROPS}() call`, node);
 	ctx.hasDefinePropsCall = true;
 	ctx.propsRuntimeDecl = node.arguments[0];
@@ -14709,7 +14692,7 @@ function processDefineProps(ctx, node, declId, isWithDefaults = false) {
 	return true;
 }
 function processWithDefaults(ctx, node, declId) {
-	if (!isCallOf(node, WITH_DEFAULTS)) return false;
+	if (!isCallOf(node, "withDefaults")) return false;
 	if (!processDefineProps(ctx, node.arguments[0], declId, true)) ctx.error(`${WITH_DEFAULTS}' first argument must be a ${DEFINE_PROPS} call.`, node.arguments[0] || node);
 	if (ctx.propsRuntimeDecl) ctx.error(`${WITH_DEFAULTS} can only be used with type-based ${DEFINE_PROPS} declaration.`, node);
 	if (declId && declId.type === "ObjectPattern") ctx.warn(`${WITH_DEFAULTS}() is unnecessary when using destructure with ${DEFINE_PROPS}().\nReactive destructure will be disabled when using withDefaults().\nPrefer using destructure default values, e.g. const { foo = 1 } = defineProps(...). `, node.callee);
@@ -14754,7 +14737,7 @@ function resolveRuntimePropsFromType(ctx, node) {
 		const e = elements.props[key];
 		let type = inferRuntimeType(ctx, e);
 		let skipCheck = false;
-		if (type.includes(UNKNOWN_TYPE)) if (type.includes("Boolean") || type.includes("Function")) {
+		if (type.includes("Unknown")) if (type.includes("Boolean") || type.includes("Function")) {
 			type = type.filter((t) => t !== UNKNOWN_TYPE);
 			skipCheck = true;
 		} else type = ["null"];
@@ -14840,7 +14823,6 @@ function inferValueType(node) {
 		case "ArrowFunctionExpression": return "Function";
 	}
 }
-
 //#endregion
 //#region packages/compiler-sfc/src/script/definePropsDestructure.ts
 function processPropsDestructure(ctx, declId) {
@@ -14968,12 +14950,11 @@ function transformDestructuredProps(ctx, vueImportAliases) {
 		}
 	});
 }
-
 //#endregion
 //#region packages/compiler-sfc/src/script/defineEmits.ts
 const DEFINE_EMITS = "defineEmits";
 function processDefineEmits(ctx, node, declId) {
-	if (!isCallOf(node, DEFINE_EMITS)) return false;
+	if (!isCallOf(node, "defineEmits")) return false;
 	if (ctx.hasDefineEmitCall) ctx.error(`duplicate ${DEFINE_EMITS}() call`, node);
 	ctx.hasDefineEmitCall = true;
 	ctx.emitsRuntimeDecl = node.arguments[0];
@@ -15024,31 +15005,28 @@ function extractEventNames(ctx, eventName, emits) {
 		}
 	}
 }
-
 //#endregion
 //#region packages/compiler-sfc/src/script/defineExpose.ts
 const DEFINE_EXPOSE = "defineExpose";
 function processDefineExpose(ctx, node) {
-	if (isCallOf(node, DEFINE_EXPOSE)) {
+	if (isCallOf(node, "defineExpose")) {
 		if (ctx.hasDefineExposeCall) ctx.error(`duplicate ${DEFINE_EXPOSE}() call`, node);
 		ctx.hasDefineExposeCall = true;
 		return true;
 	}
 	return false;
 }
-
 //#endregion
 //#region packages/compiler-sfc/src/script/defineSlots.ts
 const DEFINE_SLOTS = "defineSlots";
 function processDefineSlots(ctx, node, declId) {
-	if (!isCallOf(node, DEFINE_SLOTS)) return false;
+	if (!isCallOf(node, "defineSlots")) return false;
 	if (ctx.hasDefineSlotsCall) ctx.error(`duplicate ${DEFINE_SLOTS}() call`, node);
 	ctx.hasDefineSlotsCall = true;
 	if (node.arguments.length > 0) ctx.error(`${DEFINE_SLOTS}() cannot accept arguments`, node);
 	if (declId) ctx.s.overwrite(ctx.startOffset + node.start, ctx.startOffset + node.end, `${ctx.helper("useSlots")}()`);
 	return true;
 }
-
 //#endregion
 //#region packages/compiler-sfc/src/script/defineOptions.ts
 const DEFINE_OPTIONS = "defineOptions";
@@ -15065,7 +15043,7 @@ function resolveRootElementClassBindingName(node) {
 	}
 }
 function processDefineOptions(ctx, node) {
-	if (!isCallOf(node, DEFINE_OPTIONS)) return false;
+	if (!isCallOf(node, "defineOptions")) return false;
 	if (ctx.hasDefineOptionsCall) ctx.error(`duplicate ${DEFINE_OPTIONS}() call`, node);
 	if (node.typeParameters) ctx.error(`${DEFINE_OPTIONS}() cannot accept type arguments`, node);
 	if (!node.arguments[0]) return true;
@@ -15116,7 +15094,6 @@ function processDefineOptions(ctx, node) {
 	if (slotsOption) ctx.error(`${DEFINE_OPTIONS}() cannot be used to declare slots. Use ${DEFINE_SLOTS}() instead.`, slotsOption);
 	return true;
 }
-
 //#endregion
 //#region packages/compiler-sfc/src/script/topLevelAwait.ts
 /**
@@ -15160,7 +15137,6 @@ function processAwait(ctx, node, needSemi, isStatement) {
 	ctx.s.overwrite(node.start + startOffset, argumentStart + startOffset, `${needSemi ? `;` : ``}(\n  ([__temp,__restore] = ${ctx.helper(`withAsyncContext`)}(${containsNestedAwait ? `async ` : ``}() => `);
 	ctx.s.appendLeft(node.end + startOffset, `)),\n  ${isStatement ? `` : `__temp = `}await __temp,\n  __restore()${isStatement ? `` : `,\n  __temp`}\n)`);
 }
-
 //#endregion
 //#region packages/compiler-sfc/src/compileScript.ts
 const MACROS = [
@@ -15574,7 +15550,7 @@ function compileScript(sfc, options) {
 			runtimeOptions += `\n  __filename: '${((_options$templateOpti3 = options.templateOptions) === null || _options$templateOpti3 === void 0 ? void 0 : _options$templateOpti3.compilerOptions).relativeFilename || ""}',`;
 		}
 	}
-	if (!ctx.hasDefaultExportName && filename && filename !== DEFAULT_FILENAME) {
+	if (!ctx.hasDefaultExportName && filename && filename !== "anonymous.vue") {
 		const match = filename.match(/([^/\\]+)\.\w+$/);
 		if (match) runtimeOptions += `\n  __name: '${match[1]}',`;
 	}
@@ -15582,6 +15558,10 @@ function compileScript(sfc, options) {
 	if (propsDecl) runtimeOptions += `\n  props: ${propsDecl},`;
 	const emitsDecl = genRuntimeEmits(ctx);
 	if (emitsDecl) runtimeOptions += `\n  emits: ${emitsDecl},`;
+	if (vapor && !ssr && sfc.template && !sfc.template.src && sfc.template.ast) {
+		var _options$templateOpti4;
+		if (isMultiRoot(sfc.template.ast, (_options$templateOpti4 = options.templateOptions) === null || _options$templateOpti4 === void 0 ? void 0 : _options$templateOpti4.compilerOptions)) runtimeOptions += `\n  __multiRoot: true,`;
+	}
 	let definedOptions = "";
 	if (ctx.optionsRuntimeDecl) definedOptions = scriptSetup.content.slice(ctx.optionsRuntimeDecl.start, ctx.optionsRuntimeDecl.end).trim();
 	if (!ctx.hasDefineExposeCall && !inlineMode) setupPreambleLines.push(`__expose();`);
@@ -15602,8 +15582,8 @@ function compileScript(sfc, options) {
 		}
 	}
 	if (ctx.helperImports.size > 0) {
-		var _options$templateOpti4;
-		const runtimeModuleName = (_options$templateOpti4 = options.templateOptions) === null || _options$templateOpti4 === void 0 || (_options$templateOpti4 = _options$templateOpti4.compilerOptions) === null || _options$templateOpti4 === void 0 ? void 0 : _options$templateOpti4.runtimeModuleName;
+		var _options$templateOpti5;
+		const runtimeModuleName = (_options$templateOpti5 = options.templateOptions) === null || _options$templateOpti5 === void 0 || (_options$templateOpti5 = _options$templateOpti5.compilerOptions) === null || _options$templateOpti5 === void 0 ? void 0 : _options$templateOpti5.runtimeModuleName;
 		const importSrc = runtimeModuleName ? JSON.stringify(runtimeModuleName) : `'vue'`;
 		ctx.s.prepend(`import { ${[...ctx.helperImports].map((h) => `${h} as _${h}`).join(", ")} } from ${importSrc}\n`);
 	}
@@ -15639,19 +15619,19 @@ function walkDeclaration(from, node, bindings, userImportAliases, hoistStatic, i
 		isAllLiteral = isConst && node.declarations.every((decl) => decl.id.type === "Identifier" && (0, _vue_compiler_dom.isStaticNode)(decl.init));
 		for (const { id, init: _init } of node.declarations) {
 			const init = _init && (0, _vue_compiler_dom.unwrapTSNode)(_init);
-			const isConstMacroCall = isConst && isCallOf(init, (c) => c === DEFINE_PROPS || c === DEFINE_EMITS || c === WITH_DEFAULTS || c === DEFINE_SLOTS);
+			const isConstMacroCall = isConst && isCallOf(init, (c) => c === "defineProps" || c === "defineEmits" || c === "withDefaults" || c === "defineSlots");
 			if (id.type === "Identifier") {
 				let bindingType;
 				const userReactiveBinding = userImportAliases["reactive"];
 				if ((hoistStatic || from === "script") && (isAllLiteral || isConst && (0, _vue_compiler_dom.isStaticNode)(init))) bindingType = "literal-const";
 				else if (isCallOf(init, userReactiveBinding)) bindingType = isConst ? "setup-reactive-const" : "setup-let";
-				else if (isConstMacroCall || isConst && canNeverBeRef(init, userReactiveBinding)) bindingType = isCallOf(init, DEFINE_PROPS) ? "setup-reactive-const" : "setup-const";
-				else if (isConst) if (isCallOf(init, (m) => m === userImportAliases["ref"] || m === userImportAliases["computed"] || m === userImportAliases["shallowRef"] || m === userImportAliases["customRef"] || m === userImportAliases["toRef"] || m === userImportAliases["useTemplateRef"] || m === DEFINE_MODEL)) bindingType = "setup-ref";
+				else if (isConstMacroCall || isConst && canNeverBeRef(init, userReactiveBinding)) bindingType = isCallOf(init, "defineProps") ? "setup-reactive-const" : "setup-const";
+				else if (isConst) if (isCallOf(init, (m) => m === userImportAliases["ref"] || m === userImportAliases["computed"] || m === userImportAliases["shallowRef"] || m === userImportAliases["customRef"] || m === userImportAliases["toRef"] || m === userImportAliases["useTemplateRef"] || m === "defineModel")) bindingType = "setup-ref";
 				else bindingType = "setup-maybe-ref";
 				else bindingType = "setup-let";
 				registerBinding(bindings, id, bindingType);
 			} else {
-				if (isCallOf(init, DEFINE_PROPS) && isPropsDestructureEnabled) continue;
+				if (isCallOf(init, "defineProps") && isPropsDestructureEnabled) continue;
 				if (id.type === "ObjectPattern") walkObjectPattern(id, bindings, isConst, isConstMacroCall);
 				else if (id.type === "ArrayPattern") walkArrayPattern(id, bindings, isConst, isConstMacroCall);
 			}
@@ -15736,10 +15716,9 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 	generator._file = scriptMap.file;
 	return generator.toJSON();
 }
-
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
-const version = "3.6.0-beta.7";
+const version = "3.6.0-beta.12";
 const parseCache = parseCache$1;
 const errorMessages = {
 	..._vue_compiler_dom.errorMessages,
@@ -15752,7 +15731,6 @@ const walk = estree_walker.walk;
 * ignoring the option instead of breaking.
 */
 const shouldTransformRef = () => false;
-
 //#endregion
 exports.MagicString = magic_string.default;
 exports.babelParse = _babel_parser.parse;

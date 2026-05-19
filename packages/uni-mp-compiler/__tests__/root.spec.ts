@@ -1,7 +1,30 @@
 import { assert } from './testUtils'
 
 describe('compiler: root', () => {
-  test('root without style', () => {
+  test('root styles', () => {
+    assert(
+      `<view/>`,
+      `<view/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<view style="color:red"/>`,
+      `<view style="color:red"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<comp style="color:red"><text>test</text></comp>`,
+      `<comp u-s="{{['d']}}" style="color:red" u-i="2a9ec0b0-0"><text>test</text></comp>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
+  test('x: root styles', () => {
     assert(
       `<view/>`,
       `<view style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,

@@ -1,5 +1,5 @@
 /**
-  * @vue/shared v3.6.0-beta.7
+  * @vue/shared v3.6.0-beta.12
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -17,7 +17,6 @@ function makeMap(str) {
 	for (const key of str.split(",")) map[key] = 1;
 	return (val) => val in map;
 }
-
 //#endregion
 //#region packages/shared/src/general.ts
 const EMPTY_OBJ = !!(process.env.NODE_ENV !== "production") ? Object.freeze({}) : {};
@@ -143,7 +142,6 @@ function genCacheKey(source, options) {
 function canSetValueDirectly(tagName) {
 	return tagName !== "PROGRESS" && !tagName.includes("-");
 }
-
 //#endregion
 //#region packages/shared/src/patchFlags.ts
 /**
@@ -213,7 +211,6 @@ const PatchFlagNames = {
 	[-1]: `CACHED`,
 	[-2]: `BAIL`
 };
-
 //#endregion
 //#region packages/shared/src/shapeFlags.ts
 const ShapeFlags = {
@@ -240,7 +237,6 @@ const ShapeFlags = {
 	"COMPONENT": 6,
 	"6": "COMPONENT"
 };
-
 //#endregion
 //#region packages/shared/src/slotFlags.ts
 const SlotFlags = {
@@ -259,14 +255,9 @@ const slotFlagsText = {
 	[2]: "DYNAMIC",
 	[3]: "FORWARDED"
 };
-
-//#endregion
-//#region packages/shared/src/globalsAllowList.ts
-const GLOBALS_ALLOWED = "Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt,console,Error,Symbol";
-const isGloballyAllowed = /* @__PURE__ */ makeMap(GLOBALS_ALLOWED);
+const isGloballyAllowed = /* @__PURE__ */ makeMap("Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt,console,Error,Symbol");
 /** @deprecated use `isGloballyAllowed` instead */
 const isGloballyWhitelisted = isGloballyAllowed;
-
 //#endregion
 //#region packages/shared/src/codeframe.ts
 const range = 2;
@@ -305,7 +296,6 @@ function generateCodeFrame(source, start = 0, end = source.length) {
 	}
 	return res.join("\n");
 }
-
 //#endregion
 //#region packages/shared/src/normalizeProp.ts
 function normalizeStyle(value) {
@@ -364,7 +354,6 @@ function normalizeProps(props) {
 	if (style) props.style = normalizeStyle(style);
 	return props;
 }
-
 //#endregion
 //#region packages/shared/src/domTagConfig.ts
 const HTML_TAGS = "html,body,base,head,link,meta,style,title,address,article,aside,footer,header,hgroup,h1,h2,h3,h4,h5,h6,nav,section,div,dd,dl,dt,figcaption,figure,picture,hr,img,li,main,ol,p,pre,ul,a,b,abbr,bdi,bdo,br,cite,code,data,dfn,em,i,kbd,mark,q,rp,rt,ruby,s,samp,small,span,strong,sub,sup,time,u,var,wbr,area,audio,map,track,video,embed,object,param,source,canvas,script,noscript,del,ins,caption,col,colgroup,table,thead,tbody,td,th,tr,button,datalist,fieldset,form,input,label,legend,meter,optgroup,option,output,progress,select,textarea,details,dialog,menu,summary,template,blockquote,iframe,tfoot";
@@ -415,7 +404,6 @@ const isInlineTag = /* @__PURE__ */ makeMap(INLINE_TAGS);
 * Do NOT use in runtime code paths unless behind `!!(process.env.NODE_ENV !== 'production')` flag.
 */
 const isBlockTag = /* @__PURE__ */ makeMap(BLOCK_TAGS);
-
 //#endregion
 //#region packages/shared/src/domAttrConfig.ts
 /**
@@ -488,7 +476,6 @@ function shouldSetAsAttr(tagName, key) {
 	if (key === "sandbox" && tagName === "IFRAME") return true;
 	return false;
 }
-
 //#endregion
 //#region packages/shared/src/domNamespace.ts
 const Namespaces = {
@@ -499,7 +486,6 @@ const Namespaces = {
 	"MATH_ML": 2,
 	"2": "MATH_ML"
 };
-
 //#endregion
 //#region packages/shared/src/escapeHtml.ts
 const escapeRE = /["'&<>]/;
@@ -544,7 +530,6 @@ const cssVarNameEscapeSymbolsRE = /[ !"#$%&'()*+,./:;<=>?@[\\\]^`{|}~]/g;
 function getEscapedCssVarName(key, doubleEscape) {
 	return key.replace(cssVarNameEscapeSymbolsRE, (s) => doubleEscape ? s === "\"" ? "\\\\\\\"" : `\\\\${s}` : `\\${s}`);
 }
-
 //#endregion
 //#region packages/shared/src/looseEqual.ts
 function looseCompareArrays(a, b) {
@@ -580,7 +565,6 @@ function looseEqual(a, b) {
 function looseIndexOf(arr, val) {
 	return arr.findIndex((item) => looseEqual(item, val));
 }
-
 //#endregion
 //#region packages/shared/src/toDisplayString.ts
 const isRef = (val) => {
@@ -615,7 +599,6 @@ const stringifySymbol = (v, i = "") => {
 	var _description;
 	return isSymbol(v) ? `Symbol(${(_description = v.description) !== null && _description !== void 0 ? _description : i})` : v;
 };
-
 //#endregion
 //#region packages/shared/src/subSequence.ts
 function getSequence(arr) {
@@ -653,7 +636,6 @@ function getSequence(arr) {
 	}
 	return result;
 }
-
 //#endregion
 //#region packages/shared/src/cssVars.ts
 /**
@@ -668,7 +650,6 @@ function normalizeCssVarValue(value) {
 	}
 	return String(value);
 }
-
 //#endregion
 //#region packages/shared/src/vaporFlags.ts
 /**
@@ -683,6 +664,13 @@ const VaporVForFlags = {
 	"ONCE": 4,
 	"4": "ONCE"
 };
-
+const VaporBlockShape = {
+	"EMPTY": 0,
+	"0": "EMPTY",
+	"SINGLE_ROOT": 1,
+	"1": "SINGLE_ROOT",
+	"MULTI_ROOT": 2,
+	"2": "MULTI_ROOT"
+};
 //#endregion
-export { EMPTY_ARR, EMPTY_OBJ, NO, NOOP, Namespaces, PatchFlagNames, PatchFlags, ShapeFlags, SlotFlags, VaporVForFlags, YES, camelize, canSetValueDirectly, capitalize, cssVarNameEscapeSymbolsRE, def, escapeHtml, escapeHtmlComment, extend, genCacheKey, genPropsAccessExp, generateCodeFrame, getEscapedCssVarName, getGlobalThis, getModifierPropName, getSequence, hasChanged, hasOwn, hyphenate, includeBooleanAttr, invokeArrayFns, isAlwaysCloseTag, isArray, isBlockTag, isBooleanAttr, isBuiltInDirective, isBuiltInTag, isDate, isFormattingTag, isFunction, isGloballyAllowed, isGloballyWhitelisted, isHTMLTag, isInlineTag, isIntegerKey, isKnownHtmlAttr, isKnownMathMLAttr, isKnownSvgAttr, isMap, isMathMLTag, isModelListener, isNativeOn, isObject, isOn, isPlainObject, isPromise, isRegExp, isRenderableAttrValue, isReservedProp, isSSRSafeAttrName, isSVGTag, isSet, isSpecialBooleanAttr, isString, isSymbol, isVoidTag, looseEqual, looseIndexOf, looseToNumber, makeMap, normalizeClass, normalizeCssVarValue, normalizeProps, normalizeStyle, objectToString, parseStringStyle, propsToAttrMap, remove, shouldSetAsAttr, slotFlagsText, stringifyStyle, toDisplayString, toHandlerKey, toNumber, toRawType, toTypeString };
+export { EMPTY_ARR, EMPTY_OBJ, NO, NOOP, Namespaces, PatchFlagNames, PatchFlags, ShapeFlags, SlotFlags, VaporBlockShape, VaporVForFlags, YES, camelize, canSetValueDirectly, capitalize, cssVarNameEscapeSymbolsRE, def, escapeHtml, escapeHtmlComment, extend, genCacheKey, genPropsAccessExp, generateCodeFrame, getEscapedCssVarName, getGlobalThis, getModifierPropName, getSequence, hasChanged, hasOwn, hyphenate, includeBooleanAttr, invokeArrayFns, isAlwaysCloseTag, isArray, isBlockTag, isBooleanAttr, isBuiltInDirective, isBuiltInTag, isDate, isFormattingTag, isFunction, isGloballyAllowed, isGloballyWhitelisted, isHTMLTag, isInlineTag, isIntegerKey, isKnownHtmlAttr, isKnownMathMLAttr, isKnownSvgAttr, isMap, isMathMLTag, isModelListener, isNativeOn, isObject, isOn, isPlainObject, isPromise, isRegExp, isRenderableAttrValue, isReservedProp, isSSRSafeAttrName, isSVGTag, isSet, isSpecialBooleanAttr, isString, isSymbol, isVoidTag, looseEqual, looseIndexOf, looseToNumber, makeMap, normalizeClass, normalizeCssVarValue, normalizeProps, normalizeStyle, objectToString, parseStringStyle, propsToAttrMap, remove, shouldSetAsAttr, slotFlagsText, stringifyStyle, toDisplayString, toHandlerKey, toNumber, toRawType, toTypeString };

@@ -6342,7 +6342,8 @@
             "unixVaporVer": "5.0"
           }
         }
-      }
+      },
+      "defaultValue": "none"
     },
     {
       "name": "border-left-style",
@@ -6536,7 +6537,8 @@
             "unixVaporVer": "5.0"
           }
         }
-      }
+      },
+      "defaultValue": "none"
     },
     {
       "name": "border-top-style",
@@ -6730,7 +6732,8 @@
             "unixVaporVer": "5.0"
           }
         }
-      }
+      },
+      "defaultValue": "none"
     },
     {
       "name": "border-right-style",
@@ -6924,7 +6927,8 @@
             "unixVaporVer": "5.0"
           }
         }
-      }
+      },
+      "defaultValue": "none"
     },
     {
       "name": "border-bottom-style",
@@ -7118,7 +7122,8 @@
             "unixVaporVer": "5.0"
           }
         }
-      }
+      },
+      "defaultValue": "none"
     },
     {
       "name": "border-width",
@@ -8280,7 +8285,8 @@
             "unixVaporVer": "5.0"
           }
         }
-      }
+      },
+      "defaultValue": "0"
     },
     {
       "name": "border-top-left-radius",
@@ -8333,7 +8339,8 @@
             "unixVaporVer": "5.0"
           }
         }
-      }
+      },
+      "defaultValue": "0"
     },
     {
       "name": "border-top-right-radius",
@@ -8386,7 +8393,8 @@
             "unixVaporVer": "5.0"
           }
         }
-      }
+      },
+      "defaultValue": "0"
     },
     {
       "name": "border-bottom-left-radius",
@@ -8439,7 +8447,8 @@
             "unixVaporVer": "5.0"
           }
         }
-      }
+      },
+      "defaultValue": "0"
     },
     {
       "name": "border-bottom-right-radius",
@@ -8492,7 +8501,8 @@
             "unixVaporVer": "5.0"
           }
         }
-      }
+      },
+      "defaultValue": "0"
     },
     {
       "name": "border-top",
@@ -9713,13 +9723,13 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x",
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.1"
           },
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
             "unixVer": "x",
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.0"
           }
         },
         "mp": {
@@ -9739,10 +9749,10 @@
             "unixVaporVer": "x"
           },
           "ios": {
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.1"
           },
           "harmony": {
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.0"
           }
         }
       },

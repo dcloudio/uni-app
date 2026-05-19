@@ -1,0 +1,11 @@
+// #ifdef WEB
+// vapor 临时处理
+class UniVueElement extends HTMLElement { }
+// #endif
+
+// #ifdef MP
+// vapor 临时处理
+class UniVueElement extends UniElement { }
+// #endif
+
+export class UniLoadingElement extends UniVueElement { }

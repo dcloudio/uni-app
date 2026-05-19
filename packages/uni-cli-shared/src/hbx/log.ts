@@ -7,6 +7,7 @@ import { NodeTypes } from '@vue/compiler-core'
 import { isString } from '@vue/shared'
 import { normalizePath } from '../utils'
 import type { Formatter } from '../logs/format'
+import { isInHBuilderX } from './utils'
 
 import { EXTNAME_VUE_RE, SPECIAL_CHARS } from '../constants'
 import { parseVue } from '../vite/utils/ast'
@@ -40,6 +41,12 @@ function overridedConsole(
       this,
       args.map((arg) => {
         let item
+        if (isInHBuilderX() && typeof arg === 'string' && arg.includes('\n')) {
+          arg = arg
+            .split('\n')
+            .map((line) => `${char}${line}${char}`)
+            .join('\n')
+        }
         if (typeof arg !== 'object') {
           item = `${char}${arg}${char}`
         } else {

@@ -1564,11 +1564,18 @@ var transformBorderStyle = transformBorderColor;
 var transformBorderStyleNvue = transformBorderColorNvue;
 var transformBorderWidth = transformBorderColor;
 var transformBorderWidthNvue = transformBorderColorNvue;
+function tryExpandSingleValueVarShorthand(decl, props, value) {
+  // 只在 dom2 运行时兜底展开，避免影响其它平台现有行为。
+  {
+    return null;
+  }
+}
 var borderWidth = 'Width';
 var borderStyle = 'Style';
 var borderColor = 'Color';
 var BORDER_WIDTH_REGEXP = /^(?:[\d.]+\S*|thin|medium|thick)$/;
-var BORDER_STYLE_REGEXP = /^(?:solid|dashed|dotted|none)$/;
+// 这里按完整 CSS line-style 识别，后续再交给 border-*-style 的既有校验逻辑报精确错误。
+var BORDER_STYLE_REGEXP = /^(?:none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset)$/;
 var BORDER_SHORTHAND_VAR_ORDER_WARNING = '__borderShorthandVarOrderWarning';
 function createBorderVarOrderWarning(prop, value) {
   return supportedValueWithTipsReason(prop, value, '(border shorthand with CSS variables must follow `width style color`, for example: `1px solid var(--color, #999999)`)');
@@ -1594,6 +1601,11 @@ function createTransformBorder(options) {
       raws,
       source
     } = decl;
+    var singleVarResult = tryExpandSingleValueVarShorthand();
+    // 单个 var() 无法提前判断是 width/style/color，dom2 下先平铺后继续展开。
+    if (singleVarResult) {
+      return [...transformBorderWidth(singleVarResult[0]), ...transformBorderStyle(singleVarResult[1]), ...transformBorderColor(singleVarResult[2])];
+    }
     var splitResult = splitValues(value);
     var havVar = splitResult.some(str => str.startsWith('var('));
     var result = [];
@@ -1606,7 +1618,7 @@ function createTransformBorder(options) {
       result = splitResult;
       splitResult = [];
     } else {
-      result = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
+      result = [BORDER_WIDTH_REGEXP, BORDER_STYLE_REGEXP, /\S+/].map(item => {
         var index = splitResult.findIndex(str => item.test(str));
         return index < 0 ? null : splitResult.splice(index, 1)[0];
       });
@@ -1715,36 +1727,29 @@ var transformBorderRadiusNvue = decl => {
 };
 var flexDirection = 'flexDirection';
 var flexWrap = 'flexWrap';
-function createFlexFlowDecls(decl, values) {
+var transformFlexFlow = decl => {
   var {
+    value,
     important,
     raws,
     source
   } = decl;
-  return [createDecl(flexDirection, values[0] || 'column', important, raws, source), createDecl(flexWrap, values[1] || 'nowrap', important, raws, source)];
-}
-function transformFlexFlowImpl(decl) {
-  var allowSingleUnknownValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  var {
-    value
-  } = decl;
   value = value.trim();
   var splitResult = splitValues(value);
+  var singleVarResult = tryExpandSingleValueVarShorthand();
+  // 单个 var() 无法提前判断是 direction 还是 wrap，dom2 下直接平铺。
+  if (singleVarResult) {
+    return singleVarResult;
+  }
   var result = [/^(column|column-reverse|row|row-reverse)$/, /^(nowrap|wrap|wrap-reverse)$/].map(item => {
     var index = splitResult.findIndex(str => item.test(str));
     return index < 0 ? null : splitResult.splice(index, 1)[0];
   });
   if (splitResult.length) {
-    if (allowSingleUnknownValue && splitResult.length === 1 && result.some(item => item === null)) {
-      result[result.findIndex(item => item === null)] = splitResult[0];
-    } else {
-      return [decl];
-    }
+    return [decl];
   }
-  return createFlexFlowDecls(decl, result);
-}
-var transformFlexFlow = decl => transformFlexFlowImpl(decl);
-var transformFlexFlowUvue = decl => transformFlexFlowImpl(decl, true);
+  return [createDecl(flexDirection, result[0] || 'column', important, raws, source), createDecl(flexWrap, result[1] || 'nowrap', important, raws, source)];
+};
 var top = 'Top';
 var right = 'Right';
 var bottom = 'Bottom';
@@ -1819,6 +1824,11 @@ var transformFlex = decl => {
   value = value.trim();
   var result = [];
   var splitResult = splitValues(value);
+  var singleVarResult = tryExpandSingleValueVarShorthand();
+  // 单个 var() 无法提前拆出 grow/shrink/basis，dom2 下按 border 的兜底逻辑平铺。
+  if (singleVarResult) {
+    return singleVarResult;
+  }
   // 是否 flex-grow 的有效值 <number [0,∞]>
   var isFlexGrowValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v));
   var isFlexShrinkValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v)) && Number(v) >= 0;
@@ -1897,7 +1907,7 @@ function getDeclTransforms(options) {
     // margin,padding继续展开，确保样式的优先级
     margin: transformMargin,
     padding: transformPadding,
-    ['flexFlow']: options.type === 'uvue' ? transformFlexFlowUvue : transformFlexFlow
+    ['flexFlow']: transformFlexFlow
   };
   if (options.type === 'uvue') {
     styleMap.flex = transformFlex;

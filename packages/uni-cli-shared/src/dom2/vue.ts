@@ -15,8 +15,14 @@ export function initVueTemplateCompilerExtraOptions(descriptor: SFCDescriptor) {
   const isDevX =
     process.env.UNI_HX_VERSION_DEV === 'true' &&
     process.env.UNI_APP_X === 'true'
+  const isDynamic = process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
   let disableStaticStyle = false
-  if (isDevX && process.env.NODE_ENV === 'development') {
+  if (
+    isDevX &&
+    // 动态渲染时，仍旧使用静态样式，避免性能问题。
+    !isDynamic &&
+    process.env.NODE_ENV === 'development'
+  ) {
     if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
       // 开发版本、开发模式下，非鸿蒙release模式打包
       disableStaticStyle = process.env.UNI_APP_HARMONY_RUN_MODE !== 'release'
@@ -45,6 +51,6 @@ export function initVueTemplateCompilerExtraOptions(descriptor: SFCDescriptor) {
     },
     r: helper.K,
     className: helper.GCN(descriptor.filename, process.env.UNI_INPUT_DIR),
-    inlineRender: process.env.UNI_UTS_PLATFORM === 'app-android',
+    inlineRender: !isDynamic && process.env.UNI_UTS_PLATFORM === 'app-android',
   }
 }

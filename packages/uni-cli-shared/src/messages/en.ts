@@ -1,5 +1,8 @@
 export default {
   'app.compiler.version': 'Compiler version: {version}',
+  'view.render.compiler.target': 'Current view.render compile target: {target}',
+  'view.render.compiler.target.bytecode': 'bytecode',
+  'view.render.compiler.target.nativecode': 'nativecode',
   'style.isolation.version': 'Style isolation version: {version}',
   compiling: 'Compiling...',
   'dev.performance':
@@ -17,6 +20,8 @@ export default {
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
   'dev.watching.restart.vapor':
     'DONE  Restart required. Switching vapor mode requires restarting to take effect.',
+  'dev.watching.vapor.render.target':
+    'vapor-render-target in manifest.json was changed to {manifestTarget}, but the running console is still {runtimeTarget}.',
   'build.failed': 'DONE  Build failed.',
   'compiler.build.failed': 'Build failed with errors.',
   'stat.warn.appid':

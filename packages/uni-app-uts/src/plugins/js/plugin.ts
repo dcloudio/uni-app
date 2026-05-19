@@ -222,7 +222,7 @@ export function createUniAppJsEnginePlugin(
         // x 上暂时编译所有uni ext api，不管代码里是否调用了
         // 框架内部编译时，不需要
         if (process.env.UNI_COMPILE_TARGET !== 'ext-api') {
-          await buildUniExtApis()
+          await buildUniExtApis(process.env.UNI_UTS_PLATFORM === 'app-harmony')
           await buildNonTreeShakingUniModules()
         }
       },

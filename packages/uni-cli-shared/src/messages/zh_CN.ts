@@ -1,5 +1,8 @@
 export default {
   'app.compiler.version': '编译器版本：{version}',
+  'view.render.compiler.target': '当前视图层编译目标：{target}',
+  'view.render.compiler.target.bytecode': '字节码',
+  'view.render.compiler.target.nativecode': '机器码',
   'style.isolation.version':
     '当前样式隔离策略：{version}。详见：https://doc.dcloud.net.cn/uni-app-x/css/common/style-isolation.html',
   compiling: '正在编译中...',
@@ -17,6 +20,8 @@ export default {
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
   'dev.watching.restart.vapor':
     'DONE  Restart required. 切换蒸汽模式需要重新运行才能生效。',
+  'dev.watching.vapor.render.target':
+    'manifest.json 中更改了视图层编译目标为{manifestTarget}，但注意运行控制台还是{runtimeTarget}。',
   'build.failed': 'DONE  Build failed.',
   'compiler.build.failed': '编译失败',
   'stat.warn.appid':

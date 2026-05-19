@@ -91,19 +91,31 @@ export async function runDev(options: CliOptions & ServerOptions) {
           const utsChanged = process.env.UNI_APP_UTS_CHANGED === 'true'
           process.env.UNI_APP_UTS_CHANGED = ''
           let changedFiles = ''
+          let hasBinFiles = false
           if (options.platform === 'app') {
             const files = process.env.UNI_APP_CHANGED_FILES
             const pages = process.env.UNI_APP_CHANGED_PAGES
             const dex = process.env.UNI_APP_UTS_CHANGED_FILES
+            const binFiles =
+              process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
+                ? process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES
+                : ''
+            hasBinFiles = !!(binFiles && binFiles !== '[]')
             changedFiles = pages || files
             process.env.UNI_APP_CHANGED_PAGES = ''
             process.env.UNI_APP_CHANGED_FILES = ''
             process.env.UNI_APP_UTS_CHANGED_FILES = ''
+            if (process.env.UNI_APP_X_DOM2_DYNAMIC === 'true') {
+              process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES = ''
+            }
+            const hasIncrementalFiles =
+              changedFiles &&
+              !changedFiles.includes(APP_CONFIG_SERVICE) &&
+              !changedFiles.includes(APP_SERVICE_FILENAME)
             if (
-              (changedFiles &&
-                !changedFiles.includes(APP_CONFIG_SERVICE) &&
-                !changedFiles.includes(APP_SERVICE_FILENAME)) ||
-              dex
+              // 目前动态渲染下，只要bin有变更，就需要全量同步，后续可以优化成bin变更时输出bin变更文件列表
+              !hasBinFiles &&
+              (hasIncrementalFiles || dex)
             ) {
               if (pages) {
                 return output(
@@ -127,12 +139,41 @@ export async function runDev(options: CliOptions & ServerOptions) {
             options.platform === 'app-harmony' ||
             options.platform === 'mp-harmony'
           ) {
+            // 动态化且没有uts插件变更时，输出变更文件列表
+            if (process.env.UNI_APP_X_DOM2_DYNAMIC === 'true' && !utsChanged) {
+              const changed: string[] = []
+              const files = process.env.UNI_APP_CHANGED_FILES
+              process.env.UNI_APP_CHANGED_PAGES = ''
+              if (files) {
+                try {
+                  changed.push(...JSON.parse(files))
+                } catch {}
+              }
+              // 鸿蒙平台暂不启用 bin 文件热更新，先不合并到 changes 中。
+              // const binFiles = process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES
+              process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES = ''
+              // if (binFiles) {
+              //   try {
+              //     changed.push(...JSON.parse(binFiles))
+              //   } catch {}
+              // }
+              if (changed.length) {
+                return output(
+                  'log',
+                  M['dev.watching.end.files'].replace(
+                    '{files}',
+                    JSON.stringify(changed)
+                  )
+                )
+              }
+            }
             // 鸿蒙平台cpp/uts插件变更需要整体编译
             if (
               process.env.UNI_APP_X_DOM2_CPP_CHANGED !== 'true' &&
               !utsChanged
             ) {
               const files = process.env.UNI_APP_CHANGED_FILES
+              process.env.UNI_APP_CHANGED_FILES = ''
               if (files) {
                 return output(
                   'log',
@@ -151,8 +192,8 @@ export async function runDev(options: CliOptions & ServerOptions) {
             ) {
               return output('log', M['dev.watching.end'])
             }
-            // 没有cpp/uts插件变更，且没有增量js文件变更，就输出无变更
-            if (!changedFiles) {
+            // 没有cpp/uts插件变更，且没有增量js/bin文件变更，就输出无变更
+            if (!changedFiles && !hasBinFiles) {
               return output('log', M['uvue.dev.watching.end.empty'])
             }
           }

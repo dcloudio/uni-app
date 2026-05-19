@@ -56,6 +56,18 @@ export function _redirectTo({
   return new Promise((resolve) => {
     setTimeout(() => {
       const lastPage = (getCurrentPage() as unknown as UniPage).vm
+      let isRegistered = false
+      let isShown = false
+      function callback() {
+        if (!(isRegistered && isShown)) {
+          return
+        }
+        if (lastPage) {
+          removePages(lastPage)
+        }
+        resolve(undefined)
+        setStatusBarStyle()
+      }
       invokeAfterRouteHooks(API_REDIRECT_TO)
       showWebview(
         registerPage({
@@ -67,15 +79,16 @@ export function _redirectTo({
               ? 'reLaunch'
               : 'redirectTo',
           onRegistered() {
-            if (lastPage) {
-              removePages(lastPage)
-            }
-            resolve(undefined)
-            setStatusBarStyle()
+            isRegistered = true
+            callback()
           },
         }),
         'none',
-        0
+        0,
+        () => {
+          isShown = true
+          callback()
+        }
       )
       invokeBeforeRouteHooks(API_REDIRECT_TO)
     }, 0)

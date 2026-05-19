@@ -6,13 +6,38 @@ import { M } from '../../messages'
 
 const emittedHashMap = new WeakMap<ResolvedConfig, Map<string, string>>()
 
+type VaporRenderTarget = 'bytecode' | 'nativecode'
+
+function normalizeVaporRenderTarget(
+  target: unknown
+): VaporRenderTarget | undefined {
+  if (typeof target !== 'string') {
+    return
+  }
+  if (target.includes('bytecode')) {
+    return 'bytecode'
+  }
+  if (target.includes('nativecode')) {
+    return 'nativecode'
+  }
+}
+
+function formatVaporRenderTarget(target: VaporRenderTarget) {
+  return M[`view.render.compiler.target.${target}`]
+}
+
+function getManifestVaporRenderTarget(manifest: Record<string, any>) {
+  return normalizeVaporRenderTarget(
+    manifest['uni-app-x']?.['vapor-render-target']
+  )
+}
+
 export function uniStatsPlugin(): Plugin {
   let resolvedConfig: ResolvedConfig
   let isManifestChanged = false
   const shouldTrackManifestChange =
-    process.env.UNI_APP_X === 'true' &&
-    (process.env.UNI_PLATFORM === 'app' ||
-      process.env.UNI_PLATFORM === 'app-harmony')
+    process.env.UNI_PLATFORM === 'app' ||
+    process.env.UNI_PLATFORM === 'app-harmony'
 
   let isVapor =
     shouldTrackManifestChange && process.env.UNI_APP_X_DOM2 === 'true'
@@ -34,9 +59,32 @@ export function uniStatsPlugin(): Plugin {
             'manifest.json'
           )
           const uniAppX = manifest['uni-app-x'] || {}
+          const vaporRenderTarget = getManifestVaporRenderTarget(manifest)
+          const runtimeVaporRenderTarget = normalizeVaporRenderTarget(
+            process.env.UNI_APP_X_VAPOR_RENDER_TARGET
+          )
+          if (
+            vaporRenderTarget &&
+            runtimeVaporRenderTarget &&
+            vaporRenderTarget !== runtimeVaporRenderTarget
+          ) {
+            console.warn(
+              M['dev.watching.vapor.render.target']
+                .replace(
+                  '{manifestTarget}',
+                  formatVaporRenderTarget(vaporRenderTarget)
+                )
+                .replace(
+                  '{runtimeTarget}',
+                  formatVaporRenderTarget(runtimeVaporRenderTarget)
+                )
+            )
+          }
           if (uniAppX.vapor !== isVapor) {
             isVapor = uniAppX.vapor === true
             console.warn(M['dev.watching.restart.vapor'])
+            // 主动退出，避免后续会打印正在编译中等日志
+            process.exit(0)
           }
         } catch (e) {}
       }

@@ -336,6 +336,20 @@ export function initEnv(
         (process.env.UNI_APP_X_DOM2 === 'true' ? '蒸汽模式' : '')
     )
   )
+  if (
+    isUniAppXVapor() &&
+    (process.env.UNI_PLATFORM === 'app' ||
+      process.env.UNI_PLATFORM === 'app-harmony')
+  ) {
+    console.log(
+      M['view.render.compiler.target'].replace(
+        '{target}',
+        process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
+          ? M['view.render.compiler.target.bytecode']
+          : M['view.render.compiler.target.nativecode']
+      )
+    )
+  }
   if (isX && !isUniAppXVapor()) {
     console.log(
       M['style.isolation.version'].replace(

@@ -2156,7 +2156,6 @@ class UniElement extends HTMLElement {
   constructor() {
     super();
     this._props = {};
-    this._page = null;
     this.__isUniElement = true;
   }
   attachVmProps(props2) {
@@ -2168,14 +2167,8 @@ class UniElement extends HTMLElement {
     return attr2 === void 0 ? null : attr2;
   }
   getPage() {
-    if (this._page) {
-      return this._page;
-    }
-    let parent = this.parentNode;
-    while (parent && !parent._page) {
-      parent = parent.parentNode;
-    }
-    return (parent == null ? void 0 : parent._page) || null;
+    var _a, _b;
+    return ((_b = (_a = this.__vnode) == null ? void 0 : _a.ctx) == null ? void 0 : _b.page) || null;
   }
   get uniPage() {
     return this.getPage();
@@ -9028,16 +9021,13 @@ function setupPage(comp, path) {
         onPageShow(instance2, pageMeta);
       });
       onMounted(() => {
-        var _a, _b;
+        var _a;
         {
-          if (instance2.subTree.el) {
-            instance2.subTree.el._page = (_a = instance2.proxy) == null ? void 0 : _a.$page;
-          }
           const pageInstance = getPageInstanceByChild(instance2);
           if (isDialogPageInstance(pageInstance)) {
             useBackgroundColorContent$1(instance2.proxy);
           }
-          dialogPageTriggerParentHide((_b = instance2.proxy) == null ? void 0 : _b.$page);
+          dialogPageTriggerParentHide((_a = instance2.proxy) == null ? void 0 : _a.$page);
         }
         onPageReady(instance2);
         const { onReady: onReady2 } = instance2;
@@ -9086,11 +9076,6 @@ function setupPage(comp, path) {
       subscribeViewMethod(pageId);
       onBeforeUnmount(() => {
         unsubscribeViewMethod(pageId);
-        {
-          if (instance2.subTree.el) {
-            instance2.subTree.el._page = null;
-          }
-        }
       });
       return query;
     }
@@ -9756,7 +9741,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "class": placeholderClass
   }, [createVNode("div", {
     "class": "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(__syscom_3, {
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(__syscom_3$1, {
     "disabled": true,
     "style": {
       color
@@ -9765,7 +9750,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "class": "uni-page-head-search-input",
     "confirm-type": "search",
     "onClick": onClick
-  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(__syscom_3, {
+  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(__syscom_3$1, {
     "focus": autoFocus,
     "style": {
       color
@@ -12448,7 +12433,7 @@ class UniInputElement extends UniElement {
     (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
   }
 }
-const __syscom_3 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$o,
   emits: ["confirm", ...emit],
@@ -15788,73 +15773,6 @@ function useRadioInject(radioChecked, radioValue, reset) {
     field
   };
 }
-const TAGS = {
-  a: "",
-  abbr: "",
-  address: "",
-  article: "",
-  aside: "",
-  b: "",
-  bdi: "",
-  bdo: ["dir"],
-  big: "",
-  blockquote: "",
-  br: "",
-  caption: "",
-  center: "",
-  cite: "",
-  code: "",
-  col: ["span", "width"],
-  colgroup: ["span", "width"],
-  dd: "",
-  del: "",
-  div: "",
-  dl: "",
-  dt: "",
-  em: "",
-  fieldset: "",
-  font: "",
-  footer: "",
-  h1: "",
-  h2: "",
-  h3: "",
-  h4: "",
-  h5: "",
-  h6: "",
-  header: "",
-  hr: "",
-  i: "",
-  img: ["alt", "src", "height", "width"],
-  ins: "",
-  label: "",
-  legend: "",
-  li: "",
-  mark: "",
-  nav: "",
-  ol: ["start", "type"],
-  p: "",
-  pre: "",
-  q: "",
-  rt: "",
-  ruby: "",
-  s: "",
-  section: "",
-  small: "",
-  span: "",
-  strong: "",
-  sub: "",
-  sup: "",
-  table: ["width"],
-  tbody: "",
-  td: ["colspan", "height", "rowspan", "width"],
-  tfoot: "",
-  th: ["colspan", "height", "rowspan", "width"],
-  thead: "",
-  tr: ["colspan", "height", "rowspan", "width"],
-  tt: "",
-  u: "",
-  ul: ""
-};
 const CHARS = {
   amp: "&",
   gt: ">",
@@ -15914,12 +15832,9 @@ function normalizeValue(tagName, name, value) {
 function normalizeAttrs(tagName, attrs2) {
   if (!isPlainObject(attrs2))
     return;
-  const tagAttrs = TAGS[tagName] || [];
   const normalizedAttrs = {};
   Object.keys(attrs2).forEach((name) => {
-    if (name === "class" || name === "style" || tagAttrs.includes(name)) {
-      normalizedAttrs[name] = normalizeValue(tagName, name, attrs2[name]);
-    }
+    normalizedAttrs[name] = normalizeValue(tagName, name, attrs2[name]);
   });
   return normalizedAttrs;
 }
@@ -15935,9 +15850,6 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
         return;
       }
       const tagName = node.name.toLowerCase();
-      if (!hasOwn(TAGS, tagName)) {
-        return;
-      }
       const nodeProps = extend(
         { [scopeId]: "" },
         processClickEvent(node, triggerItemClick),
@@ -16270,7 +16182,7 @@ const props$k = {
 };
 class UniScrollViewElement extends UniElement {
 }
-const __syscom_2$1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -18036,7 +17948,7 @@ function parseTextIgnoreLinefeed(text2, options) {
 }
 class UniTextElement extends UniElement {
 }
-const __syscom_1$1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   rootElement: {
     name: "uni-text",
@@ -18129,7 +18041,7 @@ class UniTextareaElement extends UniElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
-const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_2$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$f,
   emits: ["confirm", "change", "linechange", ...emit],
@@ -28225,7 +28137,673 @@ function usePickerForm(_resetFormData, _getFormData) {
     });
   }
 }
-const index$5 = /* @__PURE__ */ defineUnsupportedComponent("ad");
+const _AdConfig = class _AdConfig {
+  constructor() {
+    __publicField(this, "_adConfig", null);
+    __publicField(this, "_isLoading", false);
+    __publicField(this, "_callbacks", []);
+    __publicField(this, "_configLast", 0);
+  }
+  static get instance() {
+    if (!_AdConfig._instance) {
+      _AdConfig._instance = new _AdConfig();
+      _AdConfig._instance._init();
+    }
+    return _AdConfig._instance;
+  }
+  get adConfig() {
+    return this._adConfig;
+  }
+  get isExpired() {
+    if (this._adConfig == null) {
+      return true;
+    }
+    if (!this._configLast) {
+      return true;
+    }
+    return Math.abs(Date.now() - this._configLast) > _AdConfig.CACHE_TIME;
+  }
+  _init() {
+    var config = this._getConfig();
+    if (config === null || !config.last) {
+      return;
+    }
+    if (Math.abs(Date.now() - config.last) <= _AdConfig.CACHE_TIME) {
+      this._adConfig = config.data;
+      this._configLast = config.last;
+    }
+  }
+  get(adpid, success, fail) {
+    _AdConfig.IC++;
+    if (this._adConfig != null) {
+      this._doCallback(adpid, success, fail);
+      if (this.isExpired) {
+        this._loadAdConfig(adpid);
+      }
+      return;
+    }
+    this._callbacks.push({
+      adpid,
+      success,
+      fail
+    });
+    this._loadAdConfig(adpid);
+  }
+  _doCallback(adpid, success, fail) {
+    _AdConfig.IS++;
+    var {
+      a: a2,
+      b
+    } = this._adConfig;
+    const adData = a2[adpid];
+    if (adData) {
+      success(b, Array.isArray(adData) ? adData : [adData]);
+    } else {
+      fail(_AdConfig.ERROR_INVALID_ADPID);
+    }
+  }
+  _loadAdConfig(adpid) {
+    if (this._isLoading === true) {
+      return;
+    }
+    this._isLoading = true;
+    const appid = typeof __uniConfig !== "undefined" ? __uniConfig.appId ?? "" : "";
+    uni.request({
+      url: _AdConfig.URL,
+      method: "GET",
+      timeout: 8e3,
+      data: {
+        d: location.hostname,
+        a: adpid,
+        appid
+      },
+      dataType: "json",
+      success: (res) => {
+        const rd = res.data;
+        if (rd.ret === 0) {
+          const data = rd.data;
+          this._adConfig = data;
+          this._configLast = Date.now();
+          this._setConfig(data);
+          this._callbacks.forEach(({
+            adpid: adpid2,
+            success,
+            fail
+          }) => {
+            this._doCallback(adpid2, success, fail);
+          });
+        } else {
+          this._callbacks.forEach((i) => {
+            i.fail({
+              errCode: rd.ret,
+              errMsg: rd.msg
+            });
+          });
+        }
+        this._callbacks = [];
+      },
+      fail: (err) => {
+        this._callbacks.forEach((i) => {
+          i.fail(err);
+        });
+        this._callbacks = [];
+      },
+      complete: (c) => {
+        this._isLoading = false;
+      }
+    });
+  }
+  _getConfig() {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null;
+    }
+    var data = localStorage.getItem(_AdConfig.KEY);
+    return data ? JSON.parse(data) : null;
+  }
+  _setConfig(data) {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null;
+    }
+    localStorage.setItem(_AdConfig.KEY, JSON.stringify({
+      last: Date.now(),
+      data
+    }));
+  }
+};
+__publicField(_AdConfig, "IC", 0);
+__publicField(_AdConfig, "IS", 0);
+// 生产环境地址
+// private static readonly URL: string = 'https://hac1.dcloud.net.cn/ah5'
+// 生产环境地址v2
+__publicField(_AdConfig, "URL", "https://hac1.dcloud.net.cn/ah5v2");
+// 测试环境地址
+// private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5'
+// private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5v2'
+__publicField(_AdConfig, "KEY", "uni_app_ad_config");
+__publicField(_AdConfig, "CACHE_TIME", 1e3 * 60 * 10);
+__publicField(_AdConfig, "ERROR_INVALID_ADPID", {
+  "-5002": "invalid adpid"
+});
+let AdConfig = _AdConfig;
+const _AdReport = class _AdReport {
+  static get instance() {
+    if (!_AdReport._instance) {
+      _AdReport._instance = new _AdReport();
+    }
+    return _AdReport._instance;
+  }
+  constructor() {
+    var config = this._getConfig();
+    if (config && config.guid) {
+      this._guid = config.guid;
+      return;
+    }
+    this._guid = this._newGUID();
+    this._setConfig(this._guid);
+  }
+  get(data) {
+    this._process(Object.assign(data, {
+      d: location.hostname,
+      i: this._guid
+    }));
+  }
+  _process(data) {
+    uni.request({
+      url: _AdReport.URL,
+      method: "GET",
+      data,
+      dataType: "json",
+      success: () => {
+      }
+    });
+  }
+  _newGUID() {
+    let guid = "";
+    const format = "xxxxxxxx-xxxx-4xxx-xxxx-xxxxxxxxxxxx";
+    for (let i = 0; i < format.length; i++) {
+      if (format[i] === "x") {
+        guid += (Math.random() * 16 | 0).toString(16);
+      } else {
+        guid += format[i];
+      }
+    }
+    return guid.toUpperCase();
+  }
+  _getConfig() {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null;
+    }
+    var data = localStorage.getItem(_AdReport.KEY);
+    return data ? JSON.parse(data) : null;
+  }
+  _setConfig(guid) {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null;
+    }
+    localStorage.setItem(_AdReport.KEY, JSON.stringify({
+      last: Date.now(),
+      guid
+    }));
+  }
+};
+__publicField(_AdReport, "URL", "https://has1.dcloud.net.cn/ahl");
+__publicField(_AdReport, "KEY", "uni_app_ad_guid");
+let AdReport = _AdReport;
+class AdScript {
+  static get instance() {
+    if (!AdScript._instance) {
+      AdScript._instance = new AdScript();
+    }
+    return AdScript._instance;
+  }
+  constructor() {
+    this._callback = {};
+    this._cache = {};
+  }
+  load(data, success, fail) {
+    const provider = data.provider;
+    if (this._cache[provider] === void 0) {
+      this.loadScript(data);
+    }
+    if (this._cache[provider] === 1) {
+      success();
+    } else {
+      if (!this._callback[provider]) {
+        this._callback[provider] = [];
+      }
+      this._callback[provider].push({
+        success,
+        fail
+      });
+    }
+  }
+  loadScript(data) {
+    const provider = data.provider;
+    this._cache[provider] = 0;
+    const domid = "uniad_provider" + provider;
+    const adScriptDom = document.getElementById(domid);
+    const src = adScriptDom && adScriptDom.getAttribute("src");
+    if (src) {
+      this._cache[provider] = 1;
+      return;
+    }
+    var ads = document.createElement("script");
+    ads.setAttribute("id", domid);
+    const script = data.script;
+    for (const var1 in script) {
+      ads.setAttribute(var1, script[var1]);
+    }
+    ads.onload = () => {
+      this._cache[provider] = 1;
+      this._callback[provider].forEach(({
+        success
+      }) => {
+        success();
+      });
+      this._callback[provider].length = 0;
+    };
+    ads.onerror = (err) => {
+      this._cache[provider] = void 0;
+      this._callback[provider].forEach(({
+        fail
+      }) => {
+        fail(err);
+      });
+      this._callback[provider].length = 0;
+    };
+    document.body.append(ads);
+  }
+}
+const CHECK_RENDER_DELAY = 1e3;
+const CHECK_RENDER_RETRY = 5;
+const AD_PROVIDER = {
+  GDT: "2",
+  TUIA: "10035"
+};
+class AdRender {
+  constructor(props2, trigger, rootRef, options) {
+    __publicField(this, "_pi", 0);
+    __publicField(this, "_pl", []);
+    __publicField(this, "_b", {});
+    __publicField(this, "_checkTimerCount", 0);
+    __publicField(this, "_currentChannel", null);
+    __publicField(this, "_tuiaData", null);
+    this._checkTimer = null;
+    this._adpid = props2.adpid;
+    this._adpidWidescreen = props2.adpidWidescreen;
+    this._widescreenWidth = props2.widescreenWidth;
+    this._trigger = trigger;
+    this._rootRef = rootRef;
+    this._currentAdpid = this._adpid;
+    this._hasCustomTuiaMaterial = options.hasCustomTuiaMaterial;
+    this._setCustomTuiaVisible = options.setCustomTuiaVisible;
+  }
+  renderTuiaFromCustomMaterial() {
+    if (!this._tuiaData) {
+      return;
+    }
+    this._renderTuia(this._tuiaData);
+  }
+  get isWidescreen() {
+    return this._rootRef.value && this._rootRef.value.clientWidth > this._widescreenWidth;
+  }
+  load(adpid) {
+    this._currentAdpid = adpid || (this.isWidescreen ? this._adpidWidescreen : this._adpid);
+    this._reset();
+    AdConfig.instance.get(this._currentAdpid, (b, a2) => {
+      this._b = b;
+      this._pl = a2;
+      this._renderAd();
+    }, (err) => {
+      this._trigger("error", {}, err);
+    });
+  }
+  dispose() {
+    this._clearCheckTimer();
+    if (this._rootRef.value) {
+      this._rootRef.value.innerHTML = "";
+    }
+  }
+  _renderAd() {
+    if (this._pi > this._pl.length - 1) {
+      return;
+    }
+    const data = this._pl[this._pi];
+    if (!data) {
+      this._renderNext();
+      return;
+    }
+    const providerId = String(data.a1);
+    const providerConfig = this._b[providerId];
+    if (!providerConfig) {
+      this._renderNext();
+      return;
+    }
+    const script = providerConfig.script || providerConfig.s;
+    this._currentChannel = providerId;
+    const id2 = this._randomId();
+    this._createView(id2);
+    if (providerId === AD_PROVIDER.GDT) {
+      window.TencentGDT = window.TencentGDT || [];
+      AdScript.instance.load({
+        provider: providerId,
+        script
+      }, () => {
+        this._renderGdt(id2, data);
+      }, (err) => {
+        this._trigger("error", {}, err);
+        this._renderNext();
+      });
+      return;
+    }
+    if (providerId === AD_PROVIDER.TUIA) {
+      AdScript.instance.load({
+        provider: providerId,
+        script
+      }, () => {
+        this._renderTuiaMaterial(id2, data);
+      }, (err) => {
+        this._trigger("error", {}, err);
+        this._renderNext();
+      });
+      return;
+    }
+    this._renderNext();
+  }
+  _createView(id2) {
+    if (!this._rootRef.value) {
+      return null;
+    }
+    var adView = document.createElement("div");
+    adView.setAttribute("id", id2);
+    adView.setAttribute("class", id2);
+    this._rootRef.value.innerHTML = "";
+    this._rootRef.value.append(adView);
+    return adView;
+  }
+  _renderGdt(id2, data) {
+    window.TencentGDT.push({
+      placement_id: data.a3,
+      app_id: data.a2,
+      type: "native",
+      count: 1,
+      onComplete: (res) => {
+        if (res && res.constructor === Array && res.length > 0) {
+          window.TencentGDT.NATIVE.renderAd(res[0], id2);
+          this._trigger("load", {}, {});
+        } else {
+          this._trigger("error", {}, res || {
+            errMsg: "No advertisement"
+          });
+          this._renderNext();
+        }
+      }
+    });
+    this._startCheckTimer();
+  }
+  _renderTuiaMaterial(id2, data) {
+    const adView = document.getElementById(id2);
+    if (!adView) {
+      this._trigger("error", {}, {
+        errMsg: "Invalid ad container"
+      });
+      this._renderNext();
+      return;
+    }
+    this._tuiaData = data;
+    if (this._hasCustomTuiaMaterial()) {
+      adView.innerHTML = "";
+      this._setCustomTuiaVisible(true);
+      this.report(40, this._currentChannel || void 0);
+      this._trigger("load", {}, {});
+      return;
+    }
+    this._setCustomTuiaVisible(false);
+    const materialSrc = this._getRandomTuiaMaterial(data == null ? void 0 : data.imgs, data == null ? void 0 : data.img);
+    if (!materialSrc) {
+      this._trigger("error", {}, {
+        errMsg: "Invalid tuia material imgs/img"
+      });
+      this._renderNext();
+      return;
+    }
+    const img = document.createElement("img");
+    img.src = materialSrc;
+    img.onerror = () => {
+      this._trigger("error", {}, {
+        errMsg: "Tuia material load fail"
+      });
+      this._renderNext();
+    };
+    img.alt = "ad";
+    img.setAttribute("draggable", "false");
+    img.style.width = "100%";
+    img.style.height = "auto";
+    img.style.display = "block";
+    img.style.cursor = "pointer";
+    img.onclick = () => {
+      this._renderTuia(data);
+    };
+    adView.innerHTML = "";
+    adView.append(img);
+    this.report(40, this._currentChannel || void 0);
+    this._trigger("load", {}, {});
+  }
+  _getRandomTuiaMaterial(imgs, img) {
+    if (Array.isArray(imgs)) {
+      const list2 = imgs.filter((item) => typeof item === "string" && item);
+      if (list2.length) {
+        const index2 = Math.floor(Math.random() * list2.length);
+        return list2[index2];
+      }
+    }
+    if (typeof img === "string") {
+      return img;
+    }
+    return "";
+  }
+  _renderTuia(data) {
+    this._setCustomTuiaVisible(false);
+    const tuia = window.TuiaSDKLite;
+    if (!tuia || typeof tuia.execute !== "function") {
+      this._trigger("error", {}, {
+        errMsg: "Invalid TuiaSDKLite"
+      });
+      this._renderNext();
+      return;
+    }
+    tuia.execute({
+      data: {
+        pid: data.a3,
+        fail_message: "ad load fail",
+        product_name: document.title || location.hostname
+      },
+      success: (res) => {
+        this._trigger("load", {}, res || {});
+      },
+      fail: (err) => {
+        this._trigger("error", {}, err || {
+          errMsg: "TuiaSDKLite execute fail"
+        });
+        this._renderNext();
+      }
+    });
+  }
+  _renderAdView(provider, data) {
+    var randomId = this._randomId();
+    var adView = document.createElement("div");
+    adView.setAttribute("class", randomId);
+    this._rootRef.value.innerHTML = "";
+    this._rootRef.value.append(adView);
+    const scriptPath = provider.s || provider.script;
+    if (!scriptPath || typeof scriptPath !== "string") {
+      this._trigger("error", {}, {
+        errMsg: "Invalid provider script"
+      });
+      this._renderNext();
+      return;
+    }
+    try {
+      let bindThis = window;
+      const fn = scriptPath.split(".").reduce((total, currentValue) => {
+        bindThis = total;
+        return total[currentValue];
+      }, window);
+      fn.bind(bindThis)(data.a2, randomId, 2);
+    } catch (err) {
+      this._trigger("error", {}, err);
+      this._renderNext();
+      return;
+    }
+    this._startCheckTimer();
+  }
+  _renderNext() {
+    if (this._pi >= this._pl.length - 1) {
+      return;
+    }
+    this._pi++;
+    this._renderAd();
+  }
+  _checkRender() {
+    if (!this._rootRef.value) {
+      return false;
+    }
+    var hasContent = this._rootRef.value.children.length > 0 && this._rootRef.value.clientHeight > 40;
+    if (hasContent) {
+      this.report(40, this._currentChannel || void 0);
+    }
+    return hasContent;
+  }
+  _startCheckTimer() {
+    this._clearCheckTimer();
+    this._checkTimer = setInterval(() => {
+      this._checkTimerCount++;
+      if (this._checkTimerCount >= CHECK_RENDER_RETRY) {
+        this._clearCheckTimer();
+        this._renderNext();
+        return;
+      }
+      if (this._checkRender()) {
+        this._clearCheckTimer();
+      }
+    }, CHECK_RENDER_DELAY);
+  }
+  _clearCheckTimer() {
+    this._checkTimerCount = 0;
+    if (this._checkTimer != null) {
+      window.clearInterval(this._checkTimer);
+      this._checkTimer = null;
+    }
+  }
+  report(type, currentChannel) {
+    const compilerVersion = typeof __uniConfig !== "undefined" ? __uniConfig.compilerVersion ?? "" : "";
+    const reportData = {
+      h: compilerVersion,
+      a: this._currentAdpid,
+      at: type
+    };
+    if (currentChannel) {
+      reportData.t = currentChannel;
+    }
+    AdReport.instance.get(reportData);
+  }
+  _randomId() {
+    var result = "";
+    for (let i = 0; i < 4; i++) {
+      result += (65536 * (1 + Math.random()) | 0).toString(16).substring(1);
+    }
+    return "_u" + result;
+  }
+  _reset() {
+    this._b = {};
+    this._pl = [];
+    this._pi = 0;
+    this._tuiaData = null;
+    this._setCustomTuiaVisible(false);
+    this._clearCheckTimer();
+    if (this._rootRef.value) {
+      this._rootRef.value.innerHTML = "";
+    }
+  }
+}
+const DEFAULT_WIDESCREEN_WIDTH = 750;
+const index$5 = /* @__PURE__ */ defineBuiltInComponent({
+  inheritAttrs: false,
+  name: "Ad",
+  props: {
+    adpid: {
+      type: String,
+      default: ""
+    },
+    adpidWidescreen: {
+      type: String,
+      default: ""
+    },
+    widescreenWidth: {
+      type: Number,
+      default: DEFAULT_WIDESCREEN_WIDTH
+    }
+  },
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
+    const rootRef = ref(null);
+    const customTuiaVisible = ref(false);
+    const {
+      $excludeAttrs,
+      $listeners
+    } = useAttrs({
+      excludeListeners: true
+    });
+    const trigger = useCustomEvent(rootRef, emit2);
+    const ad = new AdRender(props2, trigger, rootRef, {
+      hasCustomTuiaMaterial: () => Boolean(slots.default && slots.default().length),
+      setCustomTuiaVisible: (visible) => {
+        customTuiaVisible.value = visible;
+      }
+    });
+    watch(() => props2.adpid, (val) => {
+      ad.load(val);
+    });
+    watch(() => props2.adpidWidescreen, (val) => {
+      ad.load(val);
+    });
+    onMounted(() => {
+      const compilerVersion = typeof __uniConfig !== "undefined" ? __uniConfig.compilerVersion ?? "" : "";
+      ad.load(null);
+      AdReport.instance.get({
+        h: compilerVersion,
+        a: props2.adpid,
+        at: -3,
+        ic: AdConfig.IC,
+        is: AdConfig.IS
+      });
+    });
+    onBeforeUnmount(() => {
+      ad.dispose();
+    });
+    return () => {
+      const {
+        adpid,
+        adpidWidescreen,
+        widescreenWidth
+      } = props2;
+      return createVNode(Fragment, null, [createVNode("uni-ad", mergeProps($listeners.value, $excludeAttrs.value, {
+        "adpid": adpid,
+        "adpidWidescreen": adpidWidescreen,
+        "widescreenWidth": widescreenWidth
+      }), [createVNode("div", {
+        "ref": rootRef,
+        "class": "uni-ad-container",
+        "onClick": () => ad.report(41)
+      }, null, 8, ["onClick"]), customTuiaVisible.value && slots.default ? createVNode("div", {
+        "class": "uni-ad-custom-material",
+        "onClick": () => ad.renderTuiaFromCustomMaterial()
+      }, [slots.default()], 8, ["onClick"]) : null], 16, ["adpid", "adpidWidescreen", "widescreenWidth"])]);
+    };
+  }
+});
 const index$4 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
 const index$3 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
 const index$2 = /* @__PURE__ */ defineUnsupportedComponent("camera");
@@ -28366,14 +28944,16 @@ const openDialogPage = (options) => {
   const targetRoute = __uniRoutes.find((route) => {
     return route.path === path || `/${route.meta.route}` === path;
   });
-  const dialogPage = new UniDialogPageImpl({
-    route: removeLeadingSlash(path),
-    options: new UTSJSONObject(query),
-    $component: targetRoute.component,
-    getParentPage: () => null,
-    $disableEscBack: options.disableEscBack,
-    $triggerParentHide: !!options.triggerParentHide
-  });
+  const dialogPage = markRaw(
+    new UniDialogPageImpl({
+      route: removeLeadingSlash(path),
+      options: new UTSJSONObject(query),
+      $component: targetRoute.component,
+      getParentPage: () => null,
+      $disableEscBack: options.disableEscBack,
+      $triggerParentHide: !!options.triggerParentHide
+    })
+  );
   let parentPage = options.parentPage;
   const currentPages = getCurrentPages();
   if (parentPage) {
@@ -28670,7 +29250,7 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
     });
     return (_ctx, _cache) => {
       const _component_view = __syscom_2;
-      const _component_text = __syscom_1$1;
+      const _component_text = __syscom_1;
       return openBlock(), createBlock(_component_view, null, {
         default: withCtx(() => [
           createVNode(_component_view, {
@@ -29459,11 +30039,11 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     });
     return (_ctx, _cache) => {
       const _component_map = __syscom_0;
-      const _component_text = __syscom_1$1;
+      const _component_text = __syscom_1;
       const _component_view = __syscom_2;
-      const _component_input = __syscom_3;
+      const _component_input = __syscom_3$1;
       const _component_loading = _sfc_main$4;
-      const _component_scroll_view = __syscom_2$1;
+      const _component_scroll_view = __syscom_3;
       return openBlock(), createBlock(_component_view, {
         class: normalizeClass(["uni-choose-location", darkClassCom.value])
       }, {
@@ -30116,6 +30696,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
   __name: "uniModal",
   setup(__props) {
     const theme = ref("light");
+    const isDark = computed(() => theme.value == "dark");
     const language = ref("zh-Hans");
     const i18nCancelText = {
       en: "Cancel",
@@ -30148,14 +30729,16 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     const maxScrollHeight = ref("192px");
     const inputCancelColor = ref(null);
     const inputConfirmColor = ref(null);
-    const hoverClassName = ref("uni-modal_dialog__content__bottom__button__hover");
+    const hoverClassName = ref("uni-modal-dialog__action--hover");
     const showAnim = ref(false);
     const isAutoHeight = ref(true);
+    const hasTitle = computed(() => {
+      return title.value != "";
+    });
     const instance2 = getCurrentInstance();
     const cancelText = computed(() => {
       if (inputCancelText.value != null) {
-        const res = inputCancelText.value;
-        return res;
+        return inputCancelText.value;
       }
       if (language.value.startsWith("en")) {
         return i18nCancelText["en"];
@@ -30176,8 +30759,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     });
     const confirmText = computed(() => {
       if (inputConfirmText.value != null) {
-        const res = inputConfirmText.value;
-        return res;
+        return inputConfirmText.value;
       }
       if (language.value.startsWith("en")) {
         return i18nConfirmText["en"];
@@ -30202,10 +30784,9 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
       }, 220);
     };
     const onInputKeyboardChange = (e2) => {
-      let keyBoardHeight = e2.detail.height;
+      const keyBoardHeight = e2.detail.height;
       if (keyBoardHeight > 0) {
-        let calcBottom = keyBoardHeight / 2;
-        inputBottom.value = `${calcBottom}px`;
+        inputBottom.value = `${keyBoardHeight / 2}px`;
       }
     };
     const isValidColor = (inputColor) => {
@@ -30235,9 +30816,9 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
         }
       }
       if (theme.value == "dark") {
-        hoverClassName.value = "uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode";
+        hoverClassName.value = "uni-modal-dialog__action--hover-dark";
       } else {
-        hoverClassName.value = "uni-modal_dialog__content__bottom__button__hover";
+        hoverClassName.value = "uni-modal-dialog__action--hover";
       }
     };
     const closeModal = () => {
@@ -30251,7 +30832,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     };
     const handleCancel = () => {
       closeModal();
-      let ret = {
+      const ret = {
         cancel: true,
         confirm: false
       };
@@ -30259,7 +30840,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     };
     const handleSure = () => {
       closeModal();
-      let ret = {
+      const ret = {
         cancel: false,
         confirm: true,
         content: editable.value ? content.value : null
@@ -30341,7 +30922,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
       uni.$off(failEventName.value, null);
     });
     onBackPress((_) => {
-      let ret = {
+      const ret = {
         cancel: false,
         confirm: false
       };
@@ -30349,56 +30930,62 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
       return false;
     });
     return (_ctx, _cache) => {
-      const _component_text = __syscom_1$1;
-      const _component_textarea = __syscom_1;
-      const _component_scroll_view = __syscom_2$1;
+      const _component_text = __syscom_1;
       const _component_view = __syscom_2;
+      const _component_textarea = __syscom_2$1;
+      const _component_scroll_view = __syscom_3;
       return openBlock(), createBlock(_component_view, {
-        class: normalizeClass(["uni-modal_dialog__mask", { "uni-modal_dialog__mask__show": showAnim.value, "uni-modal_dialog__mask__hide": !showAnim.value }])
+        class: normalizeClass(["uni-modal-mask", { "uni-modal-mask--show": showAnim.value, "uni-modal-mask--hide": !showAnim.value }])
       }, {
         default: withCtx(() => [
           createVNode(_component_view, {
-            class: normalizeClass(["uni-modal_dialog__container", { "uni-modal_dialog__show": showAnim.value, "uni-modal_dark__mode": theme.value == "dark" }]),
+            class: normalizeClass(["uni-modal-dialog", { "uni-modal-dialog--show": showAnim.value, "uni-modal--dark": isDark.value }]),
             style: normalizeStyle({ bottom: inputBottom.value })
           }, {
             default: withCtx(() => [
               createVNode(_component_view, {
-                class: normalizeClass(["uni-modal_dialog__container__wrapper", { "uni-modal_dark__mode": theme.value == "dark" }])
+                class: normalizeClass(["uni-modal-dialog__inner", { "uni-modal--dark": isDark.value }])
               }, {
                 default: withCtx(() => [
-                  title.value ? (openBlock(), createBlock(_component_text, {
-                    key: 0,
-                    class: normalizeClass(["uni-modal_dialog__title__text", { "uni-modal_dark__mode": theme.value == "dark" }]),
-                    "max-lines": "2"
-                  }, {
+                  createVNode(_component_view, { class: "uni-modal-dialog__title__container" }, {
                     default: withCtx(() => [
-                      createTextVNode(toDisplayString(title.value), 1)
+                      hasTitle.value ? (openBlock(), createBlock(_component_text, {
+                        key: 0,
+                        "max-lines": "2",
+                        class: normalizeClass(["uni-modal-dialog__title", { "uni-modal--dark": isDark.value }])
+                      }, {
+                        default: withCtx(() => [
+                          createTextVNode(toDisplayString(title.value), 1)
+                        ]),
+                        _: 1
+                      }, 8, ["class"])) : createCommentVNode("", true)
                     ]),
                     _: 1
-                  }, 8, ["class"])) : createCommentVNode("", true),
-                  createVNode(_component_view, { class: "uni-modal_dialog__content" }, {
+                  }),
+                  createVNode(_component_view, {
+                    class: normalizeClass(["uni-modal-dialog__body", { "no-title": !hasTitle.value }])
+                  }, {
                     default: withCtx(() => [
                       editable.value ? (openBlock(), createBlock(_component_textarea, {
                         key: 0,
                         modelValue: content.value,
                         "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => content.value = $event),
-                        class: normalizeClass(["uni-modal_dialog__content__textarea", { "uni-modal_dark__mode": theme.value == "dark" }]),
-                        "placeholder-class": "modalContent_content_edit_placeholder",
+                        class: normalizeClass(["uni-modal-dialog__textarea", { "uni-modal--dark": isDark.value }]),
+                        "placeholder-class": "uni-modal-dialog__textarea-placeholder",
                         focus: true,
                         "adjust-position": false,
                         onBlur: onInputBlur,
                         onKeyboardheightchange: onInputKeyboardChange,
                         "auto-height": isAutoHeight.value,
                         placeholder: placeholderText.value
-                      }, null, 8, ["modelValue", "class", "auto-height", "placeholder"])) : createCommentVNode("", true),
-                      !editable.value && content.value.length > 0 ? (openBlock(), createBlock(_component_scroll_view, {
+                      }, null, 8, ["modelValue", "class", "auto-height", "placeholder"])) : content.value.length > 0 ? (openBlock(), createBlock(_component_scroll_view, {
                         key: 1,
-                        class: "uni-modal_dialog__content__scrollview",
+                        class: "uni-modal-dialog__scroll",
                         "show-scrollbar": "true",
                         style: normalizeStyle({ maxHeight: maxScrollHeight.value })
                       }, {
                         default: withCtx(() => [
-                          createVNode(_component_text, { class: "uni-modal_dialog__content__scrollview__text" }, {
+                          createVNode(_component_text, { class: "uni-modal-dialog__message" }, {
                             default: withCtx(() => [
                               createTextVNode(toDisplayString(content.value), 1)
                             ]),
@@ -30409,15 +30996,15 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                       }, 8, ["style"])) : createCommentVNode("", true)
                     ]),
                     _: 1
-                  }),
+                  }, 8, ["class"]),
                   createVNode(_component_view, {
-                    class: normalizeClass(["uni-modal_dialog__content__topline", { "uni-modal_dark__mode": theme.value == "dark" }])
+                    class: normalizeClass(["uni-modal-dialog__divider", { "uni-modal--dark": isDark.value }])
                   }, null, 8, ["class"]),
-                  createVNode(_component_view, { class: "uni-modal_dialog__content__bottom" }, {
+                  createVNode(_component_view, { class: "uni-modal-dialog__actions" }, {
                     default: withCtx(() => [
                       showCancel.value ? (openBlock(), createBlock(_component_view, {
                         key: 0,
-                        class: normalizeClass(["uni-modal_dialog__content__bottom__button", { "uni-modal_dark__mode": theme.value == "dark" }]),
+                        class: "uni-modal-dialog__action uni-modal-dialog__action--cancel",
                         "hover-class": hoverClassName.value,
                         onClick: handleCancel
                       }, {
@@ -30425,7 +31012,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                           createVNode(_component_text, {
                             style: normalizeStyle({ color: cancelColor.value }),
                             "max-lines": "1",
-                            class: "uni-modal_dialog__content__bottom__button__text"
+                            class: "uni-modal-dialog__action-text"
                           }, {
                             default: withCtx(() => [
                               createTextVNode(toDisplayString(cancelText.value), 1)
@@ -30434,13 +31021,13 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                           }, 8, ["style"])
                         ]),
                         _: 1
-                      }, 8, ["class", "hover-class"])) : createCommentVNode("", true),
+                      }, 8, ["hover-class"])) : createCommentVNode("", true),
                       showCancel.value ? (openBlock(), createBlock(_component_view, {
                         key: 1,
-                        class: normalizeClass(["uni-modal_dialog__content__bottom__splitline", { "uni-modal_dark__mode": theme.value == "dark" }])
+                        class: normalizeClass(["uni-modal-dialog__split", { "uni-modal--dark": isDark.value }])
                       }, null, 8, ["class"])) : createCommentVNode("", true),
                       createVNode(_component_view, {
-                        class: normalizeClass(["uni-modal_dialog__content__bottom__button", { "uni-modal_dark__mode": theme.value == "dark" }]),
+                        class: "uni-modal-dialog__action",
                         "hover-class": hoverClassName.value,
                         onClick: handleSure
                       }, {
@@ -30448,7 +31035,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                           createVNode(_component_text, {
                             style: normalizeStyle({ color: confirmColor.value }),
                             "max-lines": "1",
-                            class: "uni-modal_dialog__content__bottom__button__text__sure"
+                            class: "uni-modal-dialog__action-text uni-modal-dialog__action-text--confirm"
                           }, {
                             default: withCtx(() => [
                               createTextVNode(toDisplayString(confirmText.value), 1)
@@ -30457,7 +31044,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
                           }, 8, ["style"])
                         ]),
                         _: 1
-                      }, 8, ["class", "hover-class"])
+                      }, 8, ["hover-class"])
                     ]),
                     _: 1
                   })
@@ -30473,13 +31060,26 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const _style_0$1 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.5);\n		transition-property: opacity;\n}\n.uni-modal_dialog__mask__hide {\n		transition-duration: 0s;\n		opacity: 0;\n}\n.uni-modal_dialog__mask__show {\n		transition-duration: 0.1s;\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__container__wrapper {\n		width: 100%;\n		height: 100%;\n		padding-top: 10px;\n		background-color: white;\n		border-radius: 8px;\n}\n.uni-modal_dialog__container__wrapper.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 18px;\n}\n.uni-modal_dialog__content__scrollview {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal_dialog__content__scrollview__text {\n		font-size: 16px;\n		font-weight: normal;\n		text-align: center;\n		color: #747474;\n		line-height: 1.5;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 0.5px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		text-align: center;\n		lines : 1;\n		white-space: nowrap;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		lines : 1;\n		white-space: nowrap;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 0.5px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-textarea-wrapper{\n		min-height: 18px!important;\n}\n\n";
+const _style_0$1 = "\n	/**\n	 * 透明背景\n	 */\n.uni-modal-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0.55);\n		transition-property: opacity;\n}\n.uni-modal-mask--hide {\n		transition-duration: 0s;\n		opacity: 0;\n}\n.uni-modal-mask--show {\n		transition-duration: 0.1s;\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal-dialog {\n		width: 80%;\n		max-width: 90%;\n		max-height: 90%;\n		background-color: #ffffff;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 16px;\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n.uni-modal-dialog.uni-modal-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal-dialog.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__inner {\n		width: 100%;\n		height: 100%;\n		background-color: #ffffff;\n		border-radius: 8px;\n}\n.uni-modal-dialog__inner.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__title__container {\n		padding: 33px 24px 18px;\n}\n.uni-modal-dialog__title {\n		font-size: 17px;\n		font-weight: 600;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		lines: 2;\n\n		line-height: 22px;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal-dialog__title.uni-modal--dark {\n		color: #cfcfcf;\n}\n.uni-modal-dialog__body {\n		justify-content: center;\n		align-items: center;\n		padding: 0 24px;\n		margin-bottom: 13px;\n}\n.uni-modal-dialog__body.no-title {\n		margin-top: -10px;\n		margin-bottom: 20px;\n}\n.uni-modal-dialog__scroll {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal-dialog__message {\n		font-size: 17px;\n		font-weight: normal;\n		text-align: center;\n		color: #7f7f7f;\n		line-height: 1.5em;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal-dialog__textarea {\n		font-size: 17px;\n		background-color: #f6f6f6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal-dialog__textarea.uni-modal--dark {\n		background-color: #3d3d3d;\n		color: #cfcfcf;\n}\n.uni-modal-dialog__textarea-placeholder {\n		color: #808080;\n}\n.uni-modal-dialog__divider {\n		width: 100%;\n		height: 1px;\n		transform: scaleY(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__divider.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-modal-dialog__actions {\n		display: flex;\n		width: 100%;\n		height: 56px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal-dialog__action {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal-dialog__action--hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal-dialog__action--hover-dark {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1c1c1c;\n}\n.uni-modal-dialog__action-text {\n		letter-spacing: 1px;\n		font-size: 17px;\n		text-align: center;\n\n		lines: 1;\n\n		white-space: nowrap;\n		font-weight: 600;\n}\n.uni-modal-dialog__action-text--confirm {\n		color: #4A5E86;\n}\n.uni-modal-dialog__split {\n		width: 1px;\n		height: 100%;\n		transform: scaleX(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__split.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-textarea-wrapper {\n		min-height: 18px !important;\n}\n\n";
 const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["styles", [_style_0$1]]]);
+class ShowModalSuccessImpl {
+  constructor(cancel, confirm, content = null, errMsg = "showModal:ok") {
+    this.errMsg = errMsg;
+    this.content = content;
+    this.cancel = cancel;
+    this.confirm = confirm;
+  }
+}
 class ShowModalFailImpl extends UniError {
   constructor(errMsg = "showModal:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
     this.errCode = errCode;
+  }
+}
+class HideModalSuccessImpl {
+  constructor(errMsg = "hideModal:ok") {
+    this.errMsg = errMsg;
   }
 }
 class HideModalFailImpl extends UniError {
@@ -30498,32 +31098,32 @@ const showModal$1 = (options) => {
   const successEventName = `${baseEventName}_success`;
   const failEventName = `${baseEventName}_fail`;
   uni.$on(readyEventName, () => {
-    uni.$emit(optionsEventName, options);
+    uni.$emit(optionsEventName, options != null ? JSON.parse(JSON.stringify(options)) : {});
   });
   uni.$on(successEventName, (inputParamStr) => {
     var _a2, _b2;
-    let inputParam = JSON.parse(inputParamStr);
-    let res = {
-      cancel: inputParam["cancel"],
-      confirm: inputParam["confirm"],
-      content: inputParam["content"]
-    };
-    (_a2 = options.success) == null ? void 0 : _a2.call(options, res);
-    (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
+    const inputParam = JSON.parse(inputParamStr);
+    const res2 = new ShowModalSuccessImpl(
+      inputParam["cancel"],
+      inputParam["confirm"],
+      inputParam["content"]
+    );
+    (_a2 = options == null ? void 0 : options.success) == null ? void 0 : _a2.call(options, res2);
+    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
   });
   uni.$on(failEventName, () => {
     var _a2, _b2;
-    const res = new ShowModalFailImpl();
-    (_a2 = options.fail) == null ? void 0 : _a2.call(options, res);
-    (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
+    const res2 = new ShowModalFailImpl();
+    (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res2);
+    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
   });
-  let openRet = uni.openDialogPage({
+  const openRet = uni.openDialogPage({
     url: `uni:uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
       var _a2, _b2;
-      const res = new ShowModalFailImpl(`showModal failed, ${err.errMsg}`);
-      (_a2 = options.fail) == null ? void 0 : _a2.call(options, res);
-      (_b2 = options.complete) == null ? void 0 : _b2.call(options, res);
+      const res2 = new ShowModalFailImpl(`showModal failed, ${err.errMsg}`);
+      (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res2);
+      (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
       uni.$off(readyEventName);
       uni.$off(successEventName);
       uni.$off(failEventName);
@@ -30531,60 +31131,47 @@ const showModal$1 = (options) => {
   });
   if (openRet != null) {
     return openRet;
-  } else {
-    const res = new ShowModalFailImpl();
-    (_a = options.fail) == null ? void 0 : _a.call(options, res);
-    (_b = options.complete) == null ? void 0 : _b.call(options, res);
-    return null;
   }
+  const res = new ShowModalFailImpl();
+  (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res);
+  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res);
+  return null;
 };
-const hideModal$1 = function(options) {
-  var _a, _b, _c, _d, _e;
+const SYSTEM_DIALOG_MODAL_PAGE_PATH = "uni:uniModal";
+const hideModal$1 = (options) => {
+  var _a, _b, _c, _d;
   const pages = getCurrentPages();
   const currentPage = pages[pages.length - 1];
-  if (!currentPage) {
+  if (currentPage == null) {
     const res2 = new HideModalFailImpl();
     (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res2);
     (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res2);
     return;
   }
-  const systemDialogPages = (_c = currentPage.vm.$pageLayoutInstance) == null ? void 0 : _c.$systemDialogPages.value;
-  let shallClosePages = [];
-  for (let perPage of systemDialogPages) {
-    if (isSystemModalDialogPage(perPage)) {
-      if ((options == null ? void 0 : options.modalPage) == null) {
-        shallClosePages.push(perPage);
-      } else {
-        if (perPage.options["optionsEventName"] === options.modalPage.options["optionsEventName"]) {
-          shallClosePages.push(perPage);
-          break;
-        }
+  const systemDialogPages = currentPage.$getSystemDialogPages();
+  const modalPage = options == null ? void 0 : options.modalPage;
+  for (let i = systemDialogPages.length - 1; i >= 0; i--) {
+    const page = systemDialogPages[i];
+    if (!page.route.startsWith(SYSTEM_DIALOG_MODAL_PAGE_PATH)) {
+      continue;
+    }
+    if (modalPage == null) {
+      uni.closeDialogPage({
+        dialogPage: page
+      });
+    } else {
+      if (modalPage === page) {
+        uni.closeDialogPage({
+          dialogPage: page
+        });
+        break;
       }
     }
   }
-  shallClosePages.forEach((item) => {
-    const index2 = systemDialogPages.indexOf(item);
-    if (index2 > -1) {
-      notifyClosedDialog(systemDialogPages[index2]);
-      systemDialogPages.splice(index2, 1);
-    }
-  });
-  let res = {};
-  (_d = options == null ? void 0 : options.success) == null ? void 0 : _d.call(options, res);
-  (_e = options == null ? void 0 : options.complete) == null ? void 0 : _e.call(options, res);
+  const res = new HideModalSuccessImpl();
+  (_c = options == null ? void 0 : options.success) == null ? void 0 : _c.call(options, res);
+  (_d = options == null ? void 0 : options.complete) == null ? void 0 : _d.call(options, res);
 };
-function notifyClosedDialog(perPage) {
-  let ret = {
-    cancel: false,
-    confirm: false
-  };
-  if (perPage.options["successEventName"] != null) {
-    uni.$emit(perPage.options["successEventName"], JSON.stringify(ret));
-  }
-}
-function isSystemModalDialogPage(page) {
-  return page.route.startsWith("uni:uniModal");
-}
 const API_HIDE_MODAL = "hideModal";
 const registerModalOnce = /* @__PURE__ */ once(() => {
   registerSystemRoute("uni:uniModal", UniModalPage);
@@ -30612,7 +31199,7 @@ const showModal = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_MODAL,
   (args, { resolve, reject }) => {
     registerModalOnce();
-    showModal$1(
+    return showModal$1(
       extend(
         {
           success: (res) => {
@@ -30666,23 +31253,23 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     });
     return (_ctx, _cache) => {
       const _component_loading = _sfc_main$4;
-      const _component_text = __syscom_1$1;
+      const _component_text = __syscom_1;
       const _component_view = __syscom_2;
       return openBlock(), createBlock(_component_view, {
-        class: normalizeClass(["uni-loading_dialog__mask", { "uni-loading_dialog__mask__show": showAnim.value }])
+        class: normalizeClass(["uni-loading-mask", { "uni-loading-mask--show": showAnim.value }])
       }, {
         default: withCtx(() => [
           createVNode(_component_view, {
-            class: normalizeClass(["uni-loading_dialog__container", { "uni-loading_dialog__show": showAnim.value }])
+            class: normalizeClass(["uni-loading-dialog", { "uni-loading-dialog--show": showAnim.value }])
           }, {
             default: withCtx(() => [
               createVNode(_component_loading, {
-                class: "uni-loading_dialog__container__loading",
+                class: "uni-loading-dialog__spinner",
                 "ios-spinner": iosSpinner.value
               }, null, 8, ["ios-spinner"]),
               title.value ? (openBlock(), createBlock(_component_text, {
                 key: 0,
-                class: "uni-loading_dialog__container__title",
+                class: "uni-loading-dialog__title",
                 "max-lines": "1"
               }, {
                 default: withCtx(() => [
@@ -30699,13 +31286,23 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-loading_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading_dialog__mask__show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading_dialog__container {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		min-width: 136px;\n		max-width: 600rpx;\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 1);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity,transform;\n}\n.uni-loading_dialog__container.uni-loading_dialog__show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading_dialog__container__loading{\n		width: 36px; \n		height: 36px;\n		border-color: white;\n}\n.uni-loading_dialog__container__title{\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines:1;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 1; /* 限制显示两行 */\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n\n	\n";
+const _style_0 = "\n	/**\n	 * 透明背景\n	 */\n.uni-loading-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0);\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-loading-mask--show {\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-loading-dialog {\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		min-width: 136px;\n		max-width: 600rpx;\n		height: 136px;\n		padding: 10px;\n		background-color: rgba(76, 76, 76, 1);\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 8px;\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n.uni-loading-dialog.uni-loading-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-loading-dialog__spinner {\n		width: 36px;\n		height: 36px;\n		border-color: white;\n}\n.uni-loading-dialog__title {\n		margin-top: 14px;\n		color: white;\n		font-size: 16px;\n		lines: 1;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 1;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n";
 const UniLoadingPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["styles", [_style_0]]]);
+class ShowLoadingSuccessImpl {
+  constructor(errMsg = "showLoading:ok") {
+    this.errMsg = errMsg;
+  }
+}
 class ShowLoadingFailImpl extends UniError {
   constructor(errMsg = "showLoading:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
     this.errCode = errCode;
+  }
+}
+class HideLoadingSuccessImpl {
+  constructor(errMsg = "hideLoading:ok") {
+    this.errMsg = errMsg;
   }
 }
 class HideLoadingFailImpl extends UniError {
@@ -30724,27 +31321,27 @@ const showLoading$1 = (options) => {
   const successEventName = `${baseEventName}_success`;
   const failEventName = `${baseEventName}_fail`;
   uni.$on(readyEventName, () => {
-    uni.$emit(optionsEventName, options);
+    uni.$emit(optionsEventName, options != null ? JSON.parse(JSON.stringify(options)) : {});
   });
-  uni.$on(successEventName, (inputParamStr) => {
+  uni.$on(successEventName, (_) => {
     var _a2, _b2;
-    let res = {};
-    (_a2 = options == null ? void 0 : options.success) == null ? void 0 : _a2.call(options, res);
-    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res);
+    const res2 = new ShowLoadingSuccessImpl();
+    (_a2 = options == null ? void 0 : options.success) == null ? void 0 : _a2.call(options, res2);
+    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
   });
   uni.$on(failEventName, () => {
     var _a2, _b2;
-    const res = new ShowLoadingFailImpl();
-    (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res);
-    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res);
+    const res2 = new ShowLoadingFailImpl();
+    (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res2);
+    (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
   });
-  let openRet = uni.openDialogPage({
+  const openRet = uni.openDialogPage({
     url: `uni:showLoading?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
       var _a2, _b2;
-      const res = new ShowLoadingFailImpl(`showLoading failed, ${err.errMsg}`);
-      (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res);
-      (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res);
+      const res2 = new ShowLoadingFailImpl(`showLoading failed, ${err.errMsg}`);
+      (_a2 = options == null ? void 0 : options.fail) == null ? void 0 : _a2.call(options, res2);
+      (_b2 = options == null ? void 0 : options.complete) == null ? void 0 : _b2.call(options, res2);
       uni.$off(readyEventName);
       uni.$off(successEventName);
       uni.$off(failEventName);
@@ -30752,50 +31349,47 @@ const showLoading$1 = (options) => {
   });
   if (openRet != null) {
     return openRet;
-  } else {
-    const res = new ShowLoadingFailImpl();
-    (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res);
-    (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res);
-    return null;
   }
+  const res = new ShowLoadingFailImpl();
+  (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res);
+  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res);
+  return null;
 };
-const hideLoading$1 = function(options) {
-  var _a, _b, _c, _d, _e;
+const SYSTEM_DIALOG_LOADING_PAGE_PATH = "uni:showLoading";
+const hideLoading$1 = (options) => {
+  var _a, _b, _c, _d;
   const pages = getCurrentPages();
   const currentPage = pages[pages.length - 1];
-  if (!currentPage) {
+  if (currentPage == null) {
     const res2 = new HideLoadingFailImpl();
     (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, res2);
     (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, res2);
     return;
   }
-  const systemDialogPages = (_c = currentPage.vm.$pageLayoutInstance) == null ? void 0 : _c.$systemDialogPages.value;
-  let shallClosePages = [];
-  for (let perPage of systemDialogPages) {
-    if (isSystemShowLoadingDialogPage(perPage)) {
-      if ((options == null ? void 0 : options.loadingPage) == null) {
-        shallClosePages.push(perPage);
-      } else {
-        if (perPage.options["optionsEventName"] === options.loadingPage.options["optionsEventName"]) {
-          shallClosePages.push(perPage);
-          break;
-        }
+  const loadingPage = options == null ? void 0 : options.loadingPage;
+  const systemDialogPages = currentPage.$getSystemDialogPages();
+  for (let i = systemDialogPages.length - 1; i >= 0; i--) {
+    const page = systemDialogPages[i];
+    if (!page.route.startsWith(SYSTEM_DIALOG_LOADING_PAGE_PATH)) {
+      continue;
+    }
+    if (loadingPage == null) {
+      uni.closeDialogPage({
+        dialogPage: page
+      });
+    } else {
+      if (loadingPage === page) {
+        uni.closeDialogPage({
+          dialogPage: page
+        });
+        break;
       }
     }
   }
-  shallClosePages.forEach((item) => {
-    const index2 = systemDialogPages.indexOf(item);
-    if (index2 > -1) {
-      systemDialogPages.splice(index2, 1);
-    }
-  });
-  let res = {};
-  (_d = options == null ? void 0 : options.success) == null ? void 0 : _d.call(options, res);
-  (_e = options == null ? void 0 : options.complete) == null ? void 0 : _e.call(options, res);
+  const res = new HideLoadingSuccessImpl();
+  (_c = options == null ? void 0 : options.success) == null ? void 0 : _c.call(options, res);
+  (_d = options == null ? void 0 : options.complete) == null ? void 0 : _d.call(options, res);
 };
-function isSystemShowLoadingDialogPage(page) {
-  return page.route.startsWith("uni:showLoading");
-}
 const API_HIDE_LOADING = "hideLoading";
 const registerLoadingOnce = /* @__PURE__ */ once(() => {
   registerSystemRoute("uni:showLoading", UniLoadingPage);
@@ -31114,7 +31708,7 @@ export {
   index$u as Form,
   index$n as Icon,
   index$m as Image,
-  __syscom_3 as Input,
+  __syscom_3$1 as Input,
   index$t as Label,
   LayoutComponent,
   index$g as ListItem,
@@ -31137,15 +31731,15 @@ export {
   index$j as RadioGroup,
   ResizeSensor,
   index$i as RichText,
-  __syscom_2$1 as ScrollView,
+  __syscom_3 as ScrollView,
   indexX$2 as Slider,
   index$e as StickyHeader,
   index$f as StickySection,
   Swiper,
   SwiperItem,
   indexX$1 as Switch,
-  __syscom_1$1 as Text,
-  __syscom_1 as Textarea,
+  __syscom_1 as Text,
+  __syscom_2$1 as Textarea,
   UTS2 as UTS,
   UTSJSONObject2 as UTSJSONObject,
   UTSValueIterable2 as UTSValueIterable,

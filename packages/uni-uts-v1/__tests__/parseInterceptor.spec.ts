@@ -34,4 +34,25 @@ function run() {
       initMethods: [],
     })
   })
+
+  test('strips comments before parsing interceptor code', () => {
+    const result = parseInterceptorCode(`// export const initComment = () => {}
+export /* comment */ const initRequest = () => {
+  const url = 'https://example.com/path//keep'
+  const block = "/* keep */"
+  return url + block
+}
+/*
+export const initShare = () => {}
+*/
+`)
+
+    expect(result.initMethods).toEqual(['initRequest'])
+    expect(result.code).toContain(`const initRequest = () => {`)
+    expect(result.code).toContain(`https://example.com/path//keep`)
+    expect(result.code).toContain(`/* keep */`)
+    expect(result.code).not.toContain(`initComment`)
+    expect(result.code).not.toContain(`initShare`)
+    expect(result.code).not.toContain(`export /* comment */ const initRequest`)
+  })
 })

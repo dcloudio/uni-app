@@ -46,7 +46,7 @@ function handleStartAnimation (newValue, _ownerInstance, instance) {
   }
 
   function step () {
-    var isCancelled = state.playState === 'cancel'
+    var isCancelled = state.playState === 'idle'
     var currentTime = Date.now()
     if (startTime === null) {
       startTime = currentTime

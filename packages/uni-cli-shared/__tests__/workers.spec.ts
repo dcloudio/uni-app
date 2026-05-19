@@ -1,5 +1,5 @@
 import path from 'path'
-import { initWorkers } from '../src/workers'
+import { initWorkers, normalizeJavaScriptWorkerSource } from '../src/workers'
 
 describe('workers', () => {
   test('initWorkers', () => {
@@ -13,5 +13,13 @@ describe('workers', () => {
       'uni_modules/test-workers/workers/request/index.uts': 'RequestTask',
       'uni_modules/test-workers/workers/response/index.uts': 'ResponseTask',
     })
+  })
+
+  test('normalizeJavaScriptWorkerSource keeps worker task scoped to module', () => {
+    expect(
+      normalizeJavaScriptWorkerSource(
+        'export class HelloWorkerTask extends WorkerTaskImpl {\n}'
+      )
+    ).toContain('class HelloWorkerTask extends WorkerTaskImpl {\n}\nexport {}')
   })
 })

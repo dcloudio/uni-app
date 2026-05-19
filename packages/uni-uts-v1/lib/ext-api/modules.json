@@ -86,6 +86,31 @@
       "ad"
     ]
   },
+  "uni-ad-dom2": {
+    "uni": {
+      "createRewardedVideoAd": {
+        "name": "createRewardedVideoAd",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "createInterstitialAd": {
+        "name": "createInterstitialAd",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    },
+    "easycom": [
+      "ad"
+    ]
+  },
   "uni-arrayBufferToBase64": {
     "uni": {
       "arrayBufferToBase64": {
@@ -203,7 +228,7 @@
           "js": false,
           "x-js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       }
@@ -399,7 +424,7 @@
         "app": {
           "js": false,
           "x-js": false,
-          "kotlin": false,
+          "kotlin": "dom2",
           "swift": true,
           "arkts": false
         }
@@ -409,7 +434,7 @@
         "app": {
           "js": false,
           "x-js": false,
-          "kotlin": false,
+          "kotlin": "dom2",
           "swift": true,
           "arkts": false
         }
@@ -422,7 +447,7 @@
         "name": "createEditorContextAsync",
         "app": {
           "js": false,
-          "kotlin": true,
+          "kotlin": "dom1",
           "swift": true,
           "arkts": true
         }
@@ -439,7 +464,7 @@
         "app": {
           "js": false,
           "x-js": false,
-          "kotlin": false,
+          "kotlin": "dom2",
           "swift": true,
           "arkts": true
         }
@@ -449,7 +474,7 @@
         "app": {
           "js": false,
           "x-js": false,
-          "kotlin": false,
+          "kotlin": "dom2",
           "swift": true,
           "arkts": true
         }
@@ -459,7 +484,7 @@
         "app": {
           "js": false,
           "x-js": false,
-          "kotlin": false,
+          "kotlin": "dom2",
           "swift": true,
           "arkts": true
         }
@@ -469,7 +494,7 @@
         "app": {
           "js": false,
           "x-js": false,
-          "kotlin": false,
+          "kotlin": "dom2",
           "swift": true,
           "arkts": true
         }
@@ -490,10 +515,26 @@
     }
   },
   "uni-facialVerify": {
-    "uni": [
-      "startFacialRecognitionVerify",
-      "getFacialRecognitionMetaInfo"
-    ]
+    "uni": {
+      "startFacialRecognitionVerify": {
+        "name": "startFacialRecognitionVerify",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "getFacialRecognitionMetaInfo": {
+        "name": "getFacialRecognitionMetaInfo",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
   },
   "uni-fileSystemManager": {
     "uni": {
@@ -588,7 +629,7 @@
         "app": {
           "js": false,
           "x-js": false,
-          "kotlin": false,
+          "kotlin": "dom2",
           "swift": true,
           "arkts": true
         }
@@ -1182,6 +1223,19 @@
       }
     }
   },
+  "uni-openLocation": {
+    "uni": {
+      "openLocation": {
+        "name": "openLocation",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-page-container": {
     "easycom": [
       "page-container"
@@ -1298,6 +1352,15 @@
       },
       "resetPrivacyAuthorization": {
         "name": "resetPrivacyAuthorization",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "agreePrivacyAuthorization": {
+        "name": "agreePrivacyAuthorization",
         "app": {
           "js": true,
           "kotlin": true,
@@ -1765,8 +1828,7 @@
           "x-js": true,
           "kotlin": false,
           "swift": false,
-          "arkts": false,
-          "mp-weixin": true
+          "arkts": false
         }
       },
       "offThemeChange": {
@@ -1776,8 +1838,7 @@
           "x-js": true,
           "kotlin": false,
           "swift": false,
-          "arkts": false,
-          "mp-weixin": true
+          "arkts": false
         }
       },
       "onHostThemeChange": {
@@ -1787,8 +1848,7 @@
           "x-js": true,
           "kotlin": true,
           "swift": true,
-          "arkts": true,
-          "mp-weixin": true
+          "arkts": true
         }
       },
       "offHostThemeChange": {
@@ -1798,8 +1858,7 @@
           "x-js": true,
           "kotlin": true,
           "swift": true,
-          "arkts": true,
-          "mp-weixin": true
+          "arkts": true
         }
       }
     }

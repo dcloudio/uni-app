@@ -1,6 +1,5 @@
 import { camelize } from '@vue/shared'
 import { createRpx2Unit, defaultRpx2Unit } from '@dcloudio/uni-shared'
-import { getCurrentPage } from '@dcloudio/uni-core'
 
 const rpx2Unit = createRpx2Unit(
   defaultRpx2Unit.unit,
@@ -19,9 +18,6 @@ function transformRpx(value: string) {
 
 export class UniElement extends HTMLElement {
   private _props: Record<string, any> = {}
-  //#if _X_
-  _page: UniPage | null = null
-  //#endif
   public __isUniElement: boolean
   constructor() {
     super()
@@ -42,14 +38,8 @@ export class UniElement extends HTMLElement {
   }
   //#if _X_
   getPage() {
-    if (this._page) {
-      return this._page
-    }
-    let parent = this.parentNode as UniElement | null
-    while (parent && !parent._page) {
-      parent = parent.parentNode as UniElement | null
-    }
-    return parent?._page || null
+    // @ts-expect-error
+    return this.__vnode?.ctx?.page || null
   }
   get uniPage() {
     return this.getPage()

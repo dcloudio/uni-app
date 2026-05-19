@@ -9,7 +9,8 @@ export function uniAppXIOSEnginePlugin(): UniVitePlugin {
   const { getSwiftCompilerServer } = resolveUTSCompiler()
   const compilerServer = getSwiftCompilerServer()
   if (!compilerServer) {
-    throw new Error(`项目使用了uts插件，正在安装 uts iOS 运行扩展...`)
+    console.error(`项目使用了uts插件，正在安装 uts iOS 运行扩展...`)
+    process.exit(0)
   }
   if (compilerServer.checkEnv) {
     const { code, msg } = compilerServer.checkEnv()
@@ -22,7 +23,7 @@ export function uniAppXIOSEnginePlugin(): UniVitePlugin {
   return {
     name: 'uni:app-x-ios',
     async writeBundle() {
-      if (!compilerServer) {
+      if (!compilerServer || process.env.NODE_ENV !== 'development') {
         return
       }
       if (process.env.UNI_APP_X_DOM2_CPP_CHANGED === 'true') {
@@ -32,7 +33,7 @@ export function uniAppXIOSEnginePlugin(): UniVitePlugin {
           cppPath: process.env.UNI_APP_X_DOM2_CPP_DIR!,
         })
         if (res.code) {
-          console.error(res.msg)
+          throw new Error(res.msg)
         }
       }
     },

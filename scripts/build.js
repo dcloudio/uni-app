@@ -256,6 +256,15 @@ async function build(target) {
         ['build', '--config', path.resolve(pkgDir, 'x.vite.config.ts')],
         {
           stdio: 'inherit',
+          env: Object.assign({ FORMAT: 'es', X_RUNTIME_PLATFORM: 'app-android', X_VAPOR: 'true' }, process.env, env),
+          cwd: pkgDir,
+        }
+      )
+      await execa(
+        'vite',
+        ['build', '--config', path.resolve(pkgDir, 'x.vite.config.ts')],
+        {
+          stdio: 'inherit',
           env: Object.assign({ FORMAT: 'es', X_RUNTIME_PLATFORM: 'app-harmony' }, process.env, env),
           cwd: pkgDir,
         }

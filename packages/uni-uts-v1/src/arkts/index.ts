@@ -105,6 +105,7 @@ export async function compileArkTSExtApi(
 
   const buildOptions: UTSBundleOptions = {
     hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
+    vapor: process.env.UNI_APP_X_DOM2 === 'true',
     input: {
       root: rootDir,
       filename: resolveBundleInputFileName('app-harmony', filename),

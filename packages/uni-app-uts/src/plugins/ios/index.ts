@@ -33,6 +33,7 @@ import { uniAppXIOSEnginePlugin } from './plugin'
 
 export function init() {
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+  const isDom2Dynamic = process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
   return [
     ...(isDom2 ? [uniAppCssPrePlugin()] : []),
     ...(isNormalCompileTarget()
@@ -67,7 +68,8 @@ export function init() {
       version: process.env.UNI_COMPILER_VERSION,
       cacheRoot: path.resolve(process.env.UNI_APP_X_CACHE_DIR, '.uts2js/cache'),
       sourceMap: enableSourceMap(),
-      sharedDataLibName: isDom2 ? SHARED_DATA_LIB_NAME : undefined,
+      sharedDataLibName:
+        isDom2 && !isDom2Dynamic ? SHARED_DATA_LIB_NAME : undefined,
       sharedData: initUts2jsSharedDataOptions(),
       modules: {
         vueCompilerDom,
@@ -85,6 +87,8 @@ export function init() {
       : []),
     ...(isDom2 ? [uniAppCssPlugin()] : []),
     ...(isNormalCompileTarget() ? [uniStatsPlugin()] : []),
-    ...(isDom2 && isNormalCompileTarget() ? [uniAppXIOSEnginePlugin()] : []),
+    ...(isDom2 && !isDom2Dynamic && isNormalCompileTarget()
+      ? [uniAppXIOSEnginePlugin()]
+      : []),
   ]
 }

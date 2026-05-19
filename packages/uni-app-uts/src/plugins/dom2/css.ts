@@ -67,11 +67,13 @@ export function uniAppCssPrePlugin(): Plugin {
         async chunkCssCode(filename, cssCode) {
           // filename
           cssCode = parseAssets(config, cssCode)
-          const { code, messages, fontFaces } = await parseCss(cssCode, {
+          const { code, bytes, messages, fontFaces } = await parseCss(cssCode, {
             platform: process.env.UNI_UTS_PLATFORM,
             helper: requireUniHelpers(),
+            output:
+              process.env.UNI_APP_X_DOM2_DYNAMIC === 'true' ? 'bin' : 'code',
           })
-          if (isDom2 && fontFaces) {
+          if (isDom2 && fontFaces?.length) {
             const id = CSS_FILE_ID_MAP.get(filename)
             if (id) {
               const cloneFontFaces = fontFaces.reduce(
@@ -86,11 +88,10 @@ export function uniAppCssPrePlugin(): Plugin {
                 },
                 [] as any[]
               )
+              // 没有 @font-face 的占位符不写入缓存，后面统一清理成 {}，避免对大 chunk 反复 replace。
               DOM2_CSS_CACHE_MAP.set(
                 id,
-                cloneFontFaces.length
-                  ? JSON.stringify({ '@FONT-FACE': cloneFontFaces })
-                  : '{}'
+                JSON.stringify({ '@FONT-FACE': cloneFontFaces })
               )
             }
           }
@@ -109,11 +110,11 @@ export function uniAppCssPrePlugin(): Plugin {
               )
             }
           })
-          return code
+          return code || bytes
         },
         emitFile(filename, cssCode) {
           const { ASDSF } = requireUniHelpers()
-          ASDSF(normalizePath(filename), cssCode)
+          ASDSF(normalizePath(filename), cssCode, process.env.UNI_UTS_PLATFORM)
         },
       })
       const uvueCssInlinePostPlugin: Plugin = {
@@ -121,19 +122,20 @@ export function uniAppCssPrePlugin(): Plugin {
         apply: 'build',
         generateBundle(_, bundle) {
           if (isDom2) {
-            Object.entries(bundle).forEach(([file, asset]) => {
+            Object.entries(bundle).forEach(([, asset]) => {
               // 不支持多style标签
               if (asset.type === 'chunk') {
-                let fontFaces: string | undefined
-                for (let i = 0; i < asset.moduleIds.length; i++) {
-                  const moduleId = asset.moduleIds[i]
-                  if (DOM2_CSS_CACHE_MAP.has(moduleId)) {
-                    fontFaces = DOM2_CSS_CACHE_MAP.get(moduleId)!
-                    asset.code = asset.code.replace(
-                      createJsStylePlaceholderRegExp(moduleId),
-                      fontFaces
-                    )
-                    DOM2_CSS_CACHE_MAP.delete(moduleId)
+                if (DOM2_CSS_CACHE_MAP.size) {
+                  for (let i = 0; i < asset.moduleIds.length; i++) {
+                    const moduleId = asset.moduleIds[i]
+                    if (DOM2_CSS_CACHE_MAP.has(moduleId)) {
+                      const fontFaces = DOM2_CSS_CACHE_MAP.get(moduleId)!
+                      asset.code = asset.code.replace(
+                        createJsStylePlaceholderRegExp(moduleId),
+                        fontFaces
+                      )
+                      DOM2_CSS_CACHE_MAP.delete(moduleId)
+                    }
                   }
                 }
                 // 清理无用占位符
@@ -186,6 +188,7 @@ export function uniAppCssPlugin(): Plugin {
       const { messages } = await parseCss(source, {
         platform: process.env.UNI_UTS_PLATFORM,
         helper: requireUniHelpers(),
+        output: process.env.UNI_APP_X_DOM2_DYNAMIC === 'true' ? 'bin' : 'code',
       })
       let cssSourceMap: SourceMapInput | undefined
       if (messages.find((m) => m.type === 'warning')) {

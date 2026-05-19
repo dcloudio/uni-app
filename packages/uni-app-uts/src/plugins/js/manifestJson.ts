@@ -41,6 +41,7 @@ export function uniAppManifestPlugin(
     process.env.UNI_INPUT_DIR,
     MANIFEST_JSON_UTS
   )
+  const isDom2Dynamic = process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
   let manifestJson: Record<string, any> = {}
   let kotlinCode = ''
   return {
@@ -71,7 +72,11 @@ export function uniAppManifestPlugin(
       }
     },
     writeBundle() {
-      if (isUniAppXAndroidJsEngine() && process.env.UNI_APP_X_DOM2_KT_DIR) {
+      if (
+        isUniAppXAndroidJsEngine() &&
+        process.env.UNI_APP_X_DOM2_KT_DIR &&
+        !isDom2Dynamic
+      ) {
         const newKotlinCode = genUniAppXJsEngineIndexKotlinCode(manifestJson)
         if (kotlinCode !== newKotlinCode) {
           fs.outputFileSync(
@@ -143,7 +148,10 @@ export function uniAppManifestPlugin(
           }
         }
       }
-
+      // TODO 目前android即使配置了vapor也不使用，后续支持后，需要移除下边的代码
+      if (process.env.UNI_APP_X_DOM2 !== 'true') {
+        delete manifest['uni-app-x']?.vapor
+      }
       fs.outputFileSync(
         path.resolve(process.env.UNI_OUTPUT_DIR, 'manifest.json'),
         JSON.stringify(manifest, null, 2)

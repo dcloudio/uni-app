@@ -2,6 +2,13 @@ import { HTML_TO_MINI_PROGRAM_TAGS } from './tags'
 import { output } from '../logs'
 import { getPartClass } from '@dcloudio/uni-shared'
 
+const HTML_TAG_SELECTOR_RE = new RegExp(
+  `/\\*[\\s\\S]*?(?:\\*/|$)|[\\s,}](${Object.keys(
+    HTML_TO_MINI_PROGRAM_TAGS
+  ).join('|')})\\s*(?=,|\\{)`,
+  'g'
+)
+
 export function transformScopedCss(cssCode: string) {
   checkHtmlTagSelector(cssCode)
 
@@ -17,8 +24,11 @@ export function transformPartSelector(cssCode: string) {
 }
 
 function checkHtmlTagSelector(cssCode: string) {
-  for (const tag in HTML_TO_MINI_PROGRAM_TAGS) {
-    if (new RegExp(`( |\n|\t|,|})${tag}( *)(,|{)`, 'g').test(cssCode)) {
+  HTML_TAG_SELECTOR_RE.lastIndex = 0
+  let match: RegExpExecArray | null
+  while ((match = HTML_TAG_SELECTOR_RE.exec(cssCode))) {
+    const tag = match[1]
+    if (tag) {
       output(
         'warn',
         `小程序端 style 暂不支持 ${tag} 标签选择器，推荐使用 class 选择器，详情参考：https://uniapp.dcloud.net.cn/tutorial/migration-to-vue3.html#style`

@@ -81,6 +81,7 @@ export type UTSOutputOptions = {
     uvueOutDir: string
   }
   transform?: {
+    objToMap?: boolean
     disableUTSBooleanConversion?: boolean
     enableSwiftUtsArray?: boolean
     enableSwiftUtsMap?: boolean
@@ -123,6 +124,7 @@ export type UTSOutputOptions = {
 export interface UTSOptions {
   mode?: string
   hbxVersion: string
+  vapor?: boolean
   input: UTSInputOptions
   output: UTSOutputOptions
 }
