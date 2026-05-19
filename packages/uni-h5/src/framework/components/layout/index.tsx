@@ -469,6 +469,10 @@ function useTopWindow(layoutState: LayoutState): WindowComponentInfo {
     () => layoutState.showTopWindow || layoutState.apiShowTopWindow,
     () => nextTick(updateWindow)
   )
+  watch(
+    () => layoutState.topWindowStyle,
+    () => nextTick(updateWindow)
+  )
   layoutState.topWindowStyle = style
   return {
     component,
@@ -508,6 +512,10 @@ function useLeftWindow(layoutState: LayoutState): WindowComponentInfo {
     () => layoutState.showLeftWindow || layoutState.apiShowLeftWindow,
     () => nextTick(updateWindow)
   )
+  watch(
+    () => layoutState.leftWindowStyle,
+    () => nextTick(updateWindow)
+  )
   layoutState.leftWindowStyle = style
   return {
     component,
@@ -545,6 +553,10 @@ function useRightWindow(layoutState: LayoutState): WindowComponentInfo {
   )
   watch(
     () => layoutState.showRightWindow || layoutState.apiShowRightWindow,
+    () => nextTick(updateWindow)
+  )
+  watch(
+    () => layoutState.rightWindowStyle,
     () => nextTick(updateWindow)
   )
   layoutState.rightWindowStyle = style
