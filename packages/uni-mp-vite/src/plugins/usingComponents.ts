@@ -36,100 +36,105 @@ export function uniUsingComponentsPlugin(
   return {
     name: 'uni:mp-using-component',
     enforce: 'post',
-    async transform(source, id) {
-      const { filename, query } = parseVueRequest(id)
-      if (isAppVue(filename)) {
-        return null
-      }
-      const sourceMap = enableSourceMap()
-      const dynamicImportOptions = {
-        id,
-        sourceMap,
-        dynamicImport,
-      }
-      const resolve = async (
-        source: string,
-        importer?: string,
-        options?: {
-          custom?: Rolldown.CustomPluginOptions
-          isEntry?: boolean
-          skipSelf?: boolean
+    transform: {
+      filter: {
+        id: /\.(?:vue|nvue|uvue)(?:$|\?vue&type=(?:script|template))/,
+      },
+      async handler(source, id) {
+        const { filename, query } = parseVueRequest(id)
+        if (isAppVue(filename)) {
+          return null
         }
-      ): Promise<Rolldown.ResolvedId | null> => {
-        const id = resolveUTSModule(
-          source,
-          importer || process.env.UNI_INPUT_DIR
+        const sourceMap = enableSourceMap()
+        const dynamicImportOptions = {
+          id,
+          sourceMap,
+          dynamicImport,
+        }
+        const resolve = async (
+          source: string,
+          importer?: string,
+          options?: {
+            custom?: Rolldown.CustomPluginOptions
+            isEntry?: boolean
+            skipSelf?: boolean
+          }
+        ): Promise<Rolldown.ResolvedId | null> => {
+          const id = resolveUTSModule(
+            source,
+            importer || process.env.UNI_INPUT_DIR
+          )
+          if (id) {
+            source = id
+          }
+          return this.resolve(source, importer, options)
+        }
+        if (query.vue) {
+          if (query.type === 'script') {
+            // 需要主动监听
+            this.addWatchFile(filename)
+            const descriptor = await parseScriptDescriptor(
+              filename,
+              parseAst(source, id),
+              {
+                resolve,
+                isExternal: true,
+              }
+            )
+            updateMiniProgramComponentsByScriptFilename(
+              filename,
+              inputDir,
+              normalizeComponentName
+            )
+            return transformDynamicImports(
+              source,
+              descriptor.imports,
+              dynamicImportOptions
+            )
+          } else if (query.type === 'template') {
+            // 需要主动监听
+            this.addWatchFile(filename)
+            const descriptor = await parseTemplateDescriptor(
+              filename,
+              parseAst(source, id),
+              {
+                resolve,
+                isExternal: true,
+              }
+            )
+            updateMiniProgramComponentsByTemplateFilename(
+              filename,
+              inputDir,
+              normalizeComponentName
+            )
+            return transformDynamicImports(
+              source,
+              descriptor.imports,
+              dynamicImportOptions
+            )
+          }
+          return null
+        }
+        if (!EXTNAME_VUE.includes(path.extname(filename))) {
+          return null
+        }
+
+        const ast = parseAst(source, id)
+
+        const descriptor = await parseMainDescriptor(filename, ast, resolve)
+
+        updateMiniProgramComponentsByMainFilename(
+          filename,
+          inputDir,
+          normalizeComponentName
         )
-        if (id) {
-          source = id
-        }
-        return this.resolve(source, importer, options)
-      }
-      if (query.vue) {
-        if (query.type === 'script') {
-          // 需要主动监听
-          this.addWatchFile(filename)
-          const descriptor = await parseScriptDescriptor(
-            filename,
-            parseAst(source, id),
-            {
-              resolve,
-              isExternal: true,
-            }
-          )
-          updateMiniProgramComponentsByScriptFilename(
-            filename,
-            inputDir,
-            normalizeComponentName
-          )
-          return transformDynamicImports(
-            source,
-            descriptor.imports,
-            dynamicImportOptions
-          )
-        } else if (query.type === 'template') {
-          // 需要主动监听
-          this.addWatchFile(filename)
-          const descriptor = await parseTemplateDescriptor(
-            filename,
-            parseAst(source, id),
-            {
-              resolve,
-              isExternal: true,
-            }
-          )
-          updateMiniProgramComponentsByTemplateFilename(
-            filename,
-            inputDir,
-            normalizeComponentName
-          )
-          return transformDynamicImports(
-            source,
-            descriptor.imports,
-            dynamicImportOptions
-          )
-        }
-        return null
-      }
-      if (!EXTNAME_VUE.includes(path.extname(filename))) {
-        return null
-      }
 
-      const ast = parseAst(source, id)
-
-      const descriptor = await parseMainDescriptor(filename, ast, resolve)
-
-      updateMiniProgramComponentsByMainFilename(
-        filename,
-        inputDir,
-        normalizeComponentName
-      )
-
-      return transformDynamicImports(
-        source,
-        descriptor.imports,
-        dynamicImportOptions
-      )
+        return transformDynamicImports(
+          source,
+          descriptor.imports,
+          dynamicImportOptions
+        )
+      },
     },
   }
 }
