@@ -1,14 +1,14 @@
 import path from 'path'
 import fs from 'fs-extra'
 
-import type { OutputAsset, OutputBundle } from 'rollup'
+import type { Rolldown } from 'vite'
 
 let isFixed = false
-export function fix2648(bundle: OutputBundle) {
+export function fix2648(bundle: Rolldown.OutputBundle) {
   if (isFixed) {
     return
   }
-  const appJsonAsset = bundle['app.json'] as OutputAsset
+  const appJsonAsset = bundle['app.json'] as Rolldown.OutputAsset
   if (!appJsonAsset) {
     return
   }

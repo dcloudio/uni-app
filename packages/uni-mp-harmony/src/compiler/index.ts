@@ -1,5 +1,4 @@
-import type { Plugin } from 'vite'
-import type { OutputAsset } from 'rollup'
+import type { Plugin, Rolldown } from 'vite'
 import { ASSETS_INLINE_LIMIT, uniStatsPlugin } from '@dcloudio/uni-cli-shared'
 import initMiniProgramPlugin from '@dcloudio/uni-mp-vite'
 import { options } from './options'
@@ -18,7 +17,7 @@ const uniMiniProgramHarmonyPlugin: Plugin = {
     }
   },
   generateBundle(_, bundle) {
-    const appJson = bundle['app.json'] as OutputAsset
+    const appJson = bundle['app.json'] as Rolldown.OutputAsset
     if (appJson) {
       const appJsonStr = appJson.source.toString()
       if (appJsonStr.includes('subPackages')) {

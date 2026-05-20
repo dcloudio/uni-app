@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "dist",
+    "baseUrl": "../..",
     "sourceMap": false,
     "target": "es2015",
     "module": "esnext",
@@ -12,7 +13,10 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "removeComments": false,
-    "lib": ["ESNext", "DOM"]
+    "lib": ["ESNext", "DOM"],
+    "paths": {
+      "vite": ["node_modules/vite/dist/node/index.d.ts"]
+    }
   },
   "include": ["src"]
 }

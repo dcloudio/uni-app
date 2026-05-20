@@ -2,7 +2,8 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "paths": {
-      "@dcloudio/*": ["packages/*/src"]
+      "@dcloudio/*": ["packages/*/src"],
+      "vite": ["node_modules/vite/dist/node/index.d.ts"]
     }
   },
   "include": ["src"]

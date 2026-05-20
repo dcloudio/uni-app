@@ -11,7 +11,7 @@ const uniMiniProgramAlipayPlugin: Plugin = {
       buildOptions.terserOptions = {
         compress: false,
         mangle: false,
-      }
+      } as any
     }
     return {
       define: {

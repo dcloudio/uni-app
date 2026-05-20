@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "dist",
+    "baseUrl": "../..",
     "sourceMap": false,
     "target": "es2015",
     "module": "esnext",
@@ -13,7 +14,10 @@
     "esModuleInterop": true,
     "removeComments": false,
     "lib": ["ESNext", "DOM"],
-    "types": ["@dcloudio/types"]
+    "types": ["@dcloudio/types"],
+    "paths": {
+      "vite": ["node_modules/vite/dist/node/index.d.ts"]
+    }
   },
   "include": ["src"]
 }
