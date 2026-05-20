@@ -57,11 +57,22 @@ export function isUniAppLocaleFile(filepath: string) {
   return localeJsonRE.test(path.basename(filepath))
 }
 
+const localeJsonCache = new Map<
+  string,
+  { mtimeMs: number; size: number; json: Record<string, string> }
+>()
+
 function parseLocaleJson(filepath: string) {
+  const { mtimeMs, size } = fs.statSync(filepath)
+  const cached = localeJsonCache.get(filepath)
+  if (cached && cached.mtimeMs === mtimeMs && cached.size === size) {
+    return cached.json
+  }
   let jsonObj = parseJson(fs.readFileSync(filepath, 'utf8'), false, filepath)
   if (isUniAppLocaleFile(filepath)) {
     jsonObj = jsonObj.common || {}
   }
+  localeJsonCache.set(filepath, { mtimeMs, size, json: jsonObj })
   return jsonObj
 }
 
@@ -84,25 +95,16 @@ export function getLocaleFiles(cwd: string) {
 }
 
 export function initLocales(dir: string, withMessages: boolean = true) {
-  if (!fs.existsSync(dir)) {
-    return {}
-  }
-  return fs.readdirSync(dir).reduce((res, filename) => {
-    if (path.extname(filename) === '.json') {
-      try {
-        const locale = path
-          .basename(filename)
-          .replace(/(uni-app.)?(.*).json/, '$2')
-        if (withMessages) {
-          extend(
-            res[locale] || (res[locale] = {}),
-            parseLocaleJson(path.join(dir, filename))
-          )
-        } else {
-          res[locale] = {}
-        }
-      } catch (e) {}
-    }
+  return getLocaleFiles(dir).reduce((res, filepath) => {
+    const filename = path.basename(filepath)
+    try {
+      const locale = filename.replace(/(uni-app.)?(.*).json/, '$2')
+      if (withMessages) {
+        extend(res[locale] || (res[locale] = {}), parseLocaleJson(filepath))
+      } else {
+        res[locale] = {}
+      }
+    } catch {}
     return res
   }, {} as Record<string, Record<string, string>>)
 }
