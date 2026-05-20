@@ -3,6 +3,8 @@ import { AliYunCloudAuthWebSDK } from '../utils'
 import { normalizePath } from '@dcloudio/uni-cli-shared'
 
 let enableFacialRecognition = false
+const FACIAL_RECOGNITION_ID_RE =
+  /\.(?:js|jsx|ts|uts|tsx|mjs|vue|nvue|uvue)(?:$|\?)/
 const FACIAL_RECOGNITION_RE = /getFacialRecognitionMetaInfo/
 
 function isEnableFacialRecognition() {
@@ -31,7 +33,7 @@ export function uniApiPlugin(): Plugin {
       viteServer = server
     },
     transform: {
-      filter: { code: FACIAL_RECOGNITION_RE },
+      filter: { id: FACIAL_RECOGNITION_ID_RE, code: FACIAL_RECOGNITION_RE },
       handler(code, id) {
         if (!viteServer) return
         // 通过transform阶段识别，仅判断inputDir内部的文件，避免框架文件影响
