@@ -108,30 +108,8 @@ export function initModuleAlias() {
       process.env.UNI_PLATFORM === 'app-harmony'
     ) {
       if (!process.env.UNI_APP_X_VAPOR_RENDER_TARGET) {
-        // ios 和 harmony 平台默认使用 bytecode 目标，存在 .native 文件时使用 native 目标；其他平台如果存在 .dynamic 文件则使用 bytecode 目标，否则使用 native 目标
-        if (
-          process.env.UNI_APP_PLATFORM === 'ios' ||
-          process.env.UNI_APP_PLATFORM === 'harmony' ||
-          process.env.UNI_PLATFORM === 'app-harmony'
-        ) {
-          if (
-            process.env.UNI_INPUT_DIR &&
-            fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, '.native'))
-          ) {
-            process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'nativecode'
-          } else {
-            process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'bytecode'
-          }
-        } else {
-          if (
-            process.env.UNI_INPUT_DIR &&
-            fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, '.dynamic'))
-          ) {
-            process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'bytecode'
-          } else {
-            process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'nativecode'
-          }
-        }
+        // 默认 app 平台使用 bytecode 目标
+        process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'bytecode'
       }
       if (process.env.UNI_APP_X_VAPOR_RENDER_TARGET?.includes('bytecode')) {
         process.env.UNI_APP_X_DOM2_DYNAMIC = 'true'
