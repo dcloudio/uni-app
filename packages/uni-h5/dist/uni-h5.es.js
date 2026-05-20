@@ -24028,6 +24028,7 @@ function useTopWindow(layoutState) {
     updateWindow();
   });
   watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => nextTick(updateWindow));
+  watch(() => layoutState.topWindowStyle, () => nextTick(updateWindow));
   layoutState.topWindowStyle = style;
   return {
     component,
@@ -24060,6 +24061,7 @@ function useLeftWindow(layoutState) {
     updateWindow();
   });
   watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => nextTick(updateWindow));
+  watch(() => layoutState.leftWindowStyle, () => nextTick(updateWindow));
   layoutState.leftWindowStyle = style;
   return {
     component,
@@ -24092,6 +24094,7 @@ function useRightWindow(layoutState) {
     updateWindow();
   });
   watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => nextTick(updateWindow));
+  watch(() => layoutState.rightWindowStyle, () => nextTick(updateWindow));
   layoutState.rightWindowStyle = style;
   return {
     component,

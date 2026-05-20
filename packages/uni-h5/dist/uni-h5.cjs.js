@@ -13472,6 +13472,7 @@ function useTopWindow(layoutState) {
     updateWindow();
   });
   vue.watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => vue.nextTick(updateWindow));
+  vue.watch(() => layoutState.topWindowStyle, () => vue.nextTick(updateWindow));
   layoutState.topWindowStyle = style;
   return {
     component,
@@ -13504,6 +13505,7 @@ function useLeftWindow(layoutState) {
     updateWindow();
   });
   vue.watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => vue.nextTick(updateWindow));
+  vue.watch(() => layoutState.leftWindowStyle, () => vue.nextTick(updateWindow));
   layoutState.leftWindowStyle = style;
   return {
     component,
@@ -13536,6 +13538,7 @@ function useRightWindow(layoutState) {
     updateWindow();
   });
   vue.watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => vue.nextTick(updateWindow));
+  vue.watch(() => layoutState.rightWindowStyle, () => vue.nextTick(updateWindow));
   layoutState.rightWindowStyle = style;
   return {
     component,
