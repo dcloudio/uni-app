@@ -5,7 +5,7 @@ import {
   resolveUTSCompiler,
 } from '@dcloudio/uni-cli-shared'
 
-export function uniAppXIOSEnginePlugin(): UniVitePlugin {
+export function uniAppXIOSEngineDevPlugin(): UniVitePlugin {
   const { getSwiftCompilerServer } = resolveUTSCompiler()
   const compilerServer = getSwiftCompilerServer()
   if (!compilerServer) {
@@ -21,9 +21,9 @@ export function uniAppXIOSEnginePlugin(): UniVitePlugin {
   const appId =
     parseManifestJsonOnce(process.env.UNI_INPUT_DIR).appid || DEFAULT_APPID
   return {
-    name: 'uni:app-x-ios',
+    name: 'uni:app-x-ios-dev',
     async writeBundle() {
-      if (!compilerServer || process.env.NODE_ENV !== 'development') {
+      if (!compilerServer) {
         return
       }
       if (process.env.UNI_APP_X_DOM2_CPP_CHANGED === 'true') {

@@ -29,11 +29,12 @@ import { uniAppManifestPlugin } from '../js/manifestJson'
 import { uniAppPagesPlugin } from '../js/pagesJson'
 import { createUniAppJsEnginePlugin } from '../js/plugin'
 import { SHARED_DATA_LIB_NAME } from '../utils'
-import { uniAppXAndroidEnginePlugin } from './plugin'
+import { uniAppXAndroidEngineDevPlugin } from './devPlugin'
 
 export function init() {
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   const isDom2Dynamic = process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
+  const isDev = process.env.NODE_ENV === 'development'
   return [
     ...(isDom2 ? [uniAppCssPrePlugin()] : []),
     ...(isNormalCompileTarget()
@@ -88,7 +89,7 @@ export function init() {
     ...(isNormalCompileTarget()
       ? [
           uniStatsPlugin(),
-          ...(isDom2Dynamic ? [] : [uniAppXAndroidEnginePlugin()]),
+          ...(isDom2Dynamic || !isDev ? [] : [uniAppXAndroidEngineDevPlugin()]),
         ]
       : []),
   ]
