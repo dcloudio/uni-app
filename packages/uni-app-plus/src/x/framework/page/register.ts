@@ -291,55 +291,63 @@ function initVaporPageLifeCycle(
   pageComponentPublicInstance: ComponentPublicInstance,
   nativePage: UniNativePage
 ) {
+  const pageRootEl = pageComponentPublicInstance.$el
+  if (!pageRootEl) return
+
+  // 处理 蒸汽模式下页面 onPageScroll 和 onReachBottom 生命周期触发
+  const pageScrollElementTags = ['LIST-VIEW', 'SCROLL-VIEW', 'WATERFLOW']
   if (
     // @ts-expect-error
-    pageComponentPublicInstance._.onReachBottom ||
-    // @ts-expect-error
-    pageComponentPublicInstance._.onPageScroll
+    (pageComponentPublicInstance._.onReachBottom ||
+      // @ts-expect-error
+      pageComponentPublicInstance._.onPageScroll) &&
+    pageScrollElementTags.includes(pageRootEl.tagName)
   ) {
-    const pageRootEl = pageComponentPublicInstance.$el
-    if (pageRootEl.tagName === 'SCROLL-VIEW') {
-      let triggeredReachBottom = false
-      const scrollEventId = pageRootEl.addEventListener(
-        'scroll',
-        (e: Event) => {
-          const scrollTop = (e.target as Element).scrollTop
-          // @ts-expect-error
-          if (pageComponentPublicInstance._.onPageScroll) {
-            invokeHook(pageComponentPublicInstance, ON_PAGE_SCROLL, {
-              scrollTop,
-            })
-          }
-          // @ts-expect-error
-          if (pageComponentPublicInstance._.onReachBottom) {
-            const scrollHeight = (e.target as Element).scrollHeight
-            const pageRootElHeight = pageRootEl.getBoundingClientRect().height
-            if (
-              scrollTop + pageRootElHeight >=
-              scrollHeight -
-                (pageComponentPublicInstance.$basePage.meta
-                  .onReachBottomDistance || 50)
-            ) {
-              !triggeredReachBottom &&
-                invokeHook(pageComponentPublicInstance, ON_REACH_BOTTOM)
-              triggeredReachBottom = true
-            } else {
-              triggeredReachBottom = false
-            }
-          }
+    let triggeredReachBottom = false
+    const scrollEventId = pageRootEl.addEventListener('scroll', (e: Event) => {
+      const scrollTop = (e.target as Element).scrollTop
+      // @ts-expect-error
+      if (pageComponentPublicInstance._.onPageScroll) {
+        invokeHook(pageComponentPublicInstance, ON_PAGE_SCROLL, {
+          scrollTop,
+        })
+      }
+      // @ts-expect-error
+      if (pageComponentPublicInstance._.onReachBottom) {
+        const scrollHeight = (e.target as Element).scrollHeight
+        const pageRootElHeight = pageRootEl.getBoundingClientRect().height
+        if (
+          scrollTop + pageRootElHeight >=
+          scrollHeight -
+            (pageComponentPublicInstance.$basePage.meta.onReachBottomDistance ||
+              50)
+        ) {
+          !triggeredReachBottom &&
+            invokeHook(pageComponentPublicInstance, ON_REACH_BOTTOM)
+          triggeredReachBottom = true
+        } else {
+          triggeredReachBottom = false
         }
-      )
+      }
+    })
 
-      const pullDownRefreshEventId = `uni-pull-down-refresh-${nativePage.pageId}`
-      uni.$on(pullDownRefreshEventId, () => {
-        invokeHook(pageComponentPublicInstance, ON_PULL_DOWN_REFRESH)
-      })
+    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+      pageRootEl.removeEventListener('scroll', scrollEventId)
+    })
+  }
 
-      nativePage.addPageEventListener(ON_UNLOAD, (_) => {
-        pageRootEl.removeEventListener('scroll', scrollEventId)
-        uni.$off(pullDownRefreshEventId)
-      })
-    }
+  const SCROLL_VIEW_INSERT_BY_PULL_DOWN_REFRESH_ID = 'uni-pdr-root'
+  if (
+    pageRootEl.tagName === 'SCROLL-VIEW' &&
+    pageRootEl.getAttribute('id') === SCROLL_VIEW_INSERT_BY_PULL_DOWN_REFRESH_ID
+  ) {
+    const pullDownRefreshEventId = `uni-pull-down-refresh-${nativePage.pageId}`
+    uni.$on(pullDownRefreshEventId, () => {
+      invokeHook(pageComponentPublicInstance, ON_PULL_DOWN_REFRESH)
+    })
+    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+      uni.$off(pullDownRefreshEventId)
+    })
   }
 }
 
