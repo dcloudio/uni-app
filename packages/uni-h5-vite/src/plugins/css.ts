@@ -72,14 +72,16 @@ export function uniCssPlugin(): Plugin {
         injectAssetPlugin(config)
       }
     },
-    transform(code, id) {
-      id = normalizePath(id)
-      if (id.endsWith(H5_FRAMEWORK_STYLE_PATH + 'shadow.css')) {
-        const url = createShadowImageUrl(0, 'grey', isInternational)
-        return {
-          code:
-            code +
-            `
+    transform: {
+      filter: { id: /(?:shadow|pageHead)\.css(?:\?|$)/ },
+      handler(code, id) {
+        id = normalizePath(id)
+        if (id.endsWith(H5_FRAMEWORK_STYLE_PATH + 'shadow.css')) {
+          const url = createShadowImageUrl(0, 'grey', isInternational)
+          return {
+            code:
+              code +
+              `
 @keyframes shadow-preload {
   0% {
     background-image: url(${url});
@@ -89,13 +91,13 @@ export function uniCssPlugin(): Plugin {
   }
 }
 `,
-          map: { mappings: '' },
-        }
-      } else if (id.endsWith(H5_FRAMEWORK_STYLE_PATH + 'pageHead.css')) {
-        return {
-          code:
-            code +
-            `
+            map: { mappings: '' },
+          }
+        } else if (id.endsWith(H5_FRAMEWORK_STYLE_PATH + 'pageHead.css')) {
+          return {
+            code:
+              code +
+              `
 .uni-page-head-shadow-grey::after {
   background-image: url('${createShadowImageUrl(0, 'grey', isInternational)}');
 }
@@ -129,9 +131,10 @@ export function uniCssPlugin(): Plugin {
 }
             
 `,
-          map: { mappings: '' },
+            map: { mappings: '' },
+          }
         }
-      }
+      },
     },
     async generateBundle() {
       if (!isCombineBuiltInCss(resolvedConfig) || !buildInCssSet.size) {
