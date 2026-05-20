@@ -3,6 +3,7 @@ import { AliYunCloudAuthWebSDK } from '../utils'
 import { normalizePath } from '@dcloudio/uni-cli-shared'
 
 let enableFacialRecognition = false
+const FACIAL_RECOGNITION_RE = /getFacialRecognitionMetaInfo/
 
 function isEnableFacialRecognition() {
   return enableFacialRecognition
@@ -29,22 +30,25 @@ export function uniApiPlugin(): Plugin {
     configureServer(server) {
       viteServer = server
     },
-    transform(code, id) {
-      if (!viteServer) return
-      // 通过transform阶段识别，仅判断inputDir内部的文件，避免框架文件影响
-      if (
-        !isEnableFacialRecognition() &&
-        normalizePath(id).startsWith(inputDir)
-      ) {
-        if (checkFacialRecognition(code)) {
-          setEnableFacialRecognition(true)
-          // 开发模式触发重新刷新
-          viteServer.hot.send({
-            type: 'full-reload',
-            path: '*',
-          })
+    transform: {
+      filter: { code: FACIAL_RECOGNITION_RE },
+      handler(code, id) {
+        if (!viteServer) return
+        // 通过transform阶段识别，仅判断inputDir内部的文件，避免框架文件影响
+        if (
+          !isEnableFacialRecognition() &&
+          normalizePath(id).startsWith(inputDir)
+        ) {
+          if (checkFacialRecognition(code)) {
+            setEnableFacialRecognition(true)
+            // 开发模式触发重新刷新
+            viteServer.hot.send({
+              type: 'full-reload',
+              path: '*',
+            })
+          }
         }
-      }
+      },
     },
     generateBundle(_options, bundle) {
       if (viteServer) return

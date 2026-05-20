@@ -20,6 +20,10 @@ const apiJson = require(path.resolve(
     ? '../../lib/api.x.json'
     : '../../lib/api.json'
 ))
+const H5_INJECT_ID_RE =
+  /(?:\.(?:js|jsx|ts|uts|tsx|mjs)(?:$|\?)|\.(?:vue|nvue|uvue)(?:$|\?)|\?uni_helpers$)/
+const H5_INJECT_CODE_RE =
+  /(?:^|[^\w$])(?:uni\.|wx\.|getApp(?![\w$])|getCurrentPages(?![\w$])|UniServiceJSBridge(?![\w$])|UniViewJSBridge(?![\w$]))/
 const uniInjectPluginOptions: Partial<InjectOptions> = {
   exclude: [...COMMON_EXCLUDE],
   'uni.': [
@@ -82,11 +86,14 @@ export function uniInjectPlugin(): Plugin {
         })
       )
     },
-    transform(code, id) {
-      const transform = injectPlugin.transform as any
-      return (
-        typeof transform === 'function' ? transform : transform.handler
-      ).call(this, code, id)
+    transform: {
+      filter: { id: H5_INJECT_ID_RE, code: H5_INJECT_CODE_RE },
+      handler(code, id) {
+        const transform = injectPlugin.transform as any
+        return (
+          typeof transform === 'function' ? transform : transform.handler
+        ).call(this, code, id)
+      },
     },
   }
 }

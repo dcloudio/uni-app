@@ -38,13 +38,17 @@ export function uniRemoveCssScopedPlugin(
   return {
     name: 'uni:css-remove-scoped',
     enforce: 'pre',
-    transform(code, id) {
-      if (!isVueSfcFile(id)) return null
-      debugScoped(id)
-      return {
-        code: removeScoped(code),
-        map: null,
-      }
+    transform: {
+      // 仅 SFC 主模块需要移除 scoped，跳过 script/style/template 等子模块。
+      filter: { id: VUE_SFC_ID_RE },
+      handler(code, id) {
+        if (!isVueSfcFile(id)) return null
+        debugScoped(id)
+        return {
+          code: removeScoped(code),
+          map: null,
+        }
+      },
     },
   }
 }

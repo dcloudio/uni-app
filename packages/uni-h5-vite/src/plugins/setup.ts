@@ -7,6 +7,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 
 const debugSetup = debug('uni:setup')
+const APP_VUE_RE = /\/App\.(?:vue|uvue)(?:\?|$)/
 
 export function uniSetupPlugin(): Plugin {
   let appVuePath: string
@@ -17,19 +18,22 @@ export function uniSetupPlugin(): Plugin {
       resolvedConfig = config
       appVuePath = resolveAppVue(process.env.UNI_INPUT_DIR)
     },
-    transform(code, id) {
-      const { filename, query } = parseVueRequest(id)
-      if (filename === appVuePath && !query.vue) {
-        debugSetup(filename)
-        return {
-          code:
-            code +
-            `;import { setupApp } from '@dcloudio/uni-h5';setupApp(_sfc_main);`,
-          map: withSourcemap(resolvedConfig)
-            ? this.getCombinedSourcemap()
-            : null,
+    transform: {
+      filter: { id: APP_VUE_RE },
+      handler(code, id) {
+        const { filename, query } = parseVueRequest(id)
+        if (filename === appVuePath && !query.vue) {
+          debugSetup(filename)
+          return {
+            code:
+              code +
+              `;import { setupApp } from '@dcloudio/uni-h5';setupApp(_sfc_main);`,
+            map: withSourcemap(resolvedConfig)
+              ? this.getCombinedSourcemap()
+              : null,
+          }
         }
-      }
+      },
     },
   }
 }
