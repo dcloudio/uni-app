@@ -14,14 +14,7 @@ export interface VueQuery {
   'lang.js'?: string
 }
 
-const vueRequestCache = new Map<string, { filename: string; query: VueQuery }>()
-const VUE_REQUEST_CACHE_LIMIT = 2048
-
 export function parseVueRequest(id: string) {
-  const cached = vueRequestCache.get(id)
-  if (cached) {
-    return cached
-  }
   const [filename, rawQuery] = id.split(`?`, 2)
   const query = Object.fromEntries(new URLSearchParams(rawQuery)) as VueQuery
   if (query.vue != null) {
@@ -36,15 +29,10 @@ export function parseVueRequest(id: string) {
   if (query.raw != null) {
     query.raw = true
   }
-  const parsed = {
+  return {
     filename,
     query,
   }
-  if (vueRequestCache.size >= VUE_REQUEST_CACHE_LIMIT) {
-    vueRequestCache.clear()
-  }
-  vueRequestCache.set(id, parsed)
-  return parsed
 }
 
 const importQueryRE = /(\?|&)import=?(?:&|$)/
