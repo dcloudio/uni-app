@@ -249,10 +249,7 @@ var ExternalModulesDom2 = [
 const ComponentsWithProvider = [];
 const ComponentsWithProviderX = ['uni-map'];
 const ExtApiBlackListX = ['uni-pullDownRefresh'];
-const ExtApiBlackListDom2 = [
-    ...ExtApiBlackListX,
-    'uni-createWebviewContext',
-];
+const ExtApiBlackListDom2 = ['uni-createWebviewContext'];
 const ExtApiBlackList = [
     'uni-loadFontFace',
     'uni-getElementById',
