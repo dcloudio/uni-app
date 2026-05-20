@@ -5,10 +5,7 @@ export const ComponentsWithProvider = []
 export const ComponentsWithProviderX = ['uni-map']
 
 export const ExtApiBlackListX = ['uni-pullDownRefresh']
-export const ExtApiBlackListDom2 = [
-  ...ExtApiBlackListX,
-  'uni-createWebviewContext',
-]
+export const ExtApiBlackListDom2 = ['uni-createWebviewContext']
 export const ExtApiBlackList = [
   'uni-loadFontFace',
   'uni-getElementById',
