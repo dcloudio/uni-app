@@ -31,7 +31,7 @@
 
   // #ifdef APP-ANDROID
   onPageShow(() => {
-    webviewElement.value!.enableWholeDraw()
+    UniWebViewElement.enableWholeDraw()
   })
   // #endif
   onReady(() => {
