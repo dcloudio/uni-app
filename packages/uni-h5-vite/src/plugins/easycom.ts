@@ -79,105 +79,108 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
     configResolved(config) {
       needCombineBuiltInCss = isCombineBuiltInCss(config)
     },
-    transform(code, id) {
-      if (!filter(id)) {
-        return
-      }
-      const { filename } = parseVueRequest(id)
-      if (!EXTNAME_VUE_TEMPLATE.includes(path.extname(filename))) {
-        return
-      }
-      if (!code.includes('_resolveComponent')) {
-        return
-      }
-      let i = 0
-      const importDeclarations: string[] = []
-      code = code.replace(
-        /_resolveComponent\("(.+?)"(, true)?\)/g,
-        (str, name) => {
-          if (name && !name.startsWith('_')) {
-            // 为了兼容性，仅处理dev模式
-            if (!isDevX) {
-              const result = buildInComponent()
-              if (result) {
-                return result
+    transform: {
+      filter: { id: /\.(vue|uvue)(\?|$)/, code: /_resolveComponent/ },
+      handler(code, id) {
+        if (!filter(id)) {
+          return
+        }
+        const { filename } = parseVueRequest(id)
+        if (!EXTNAME_VUE_TEMPLATE.includes(path.extname(filename))) {
+          return
+        }
+        if (!code.includes('_resolveComponent')) {
+          return
+        }
+        let i = 0
+        const importDeclarations: string[] = []
+        code = code.replace(
+          /_resolveComponent\("(.+?)"(, true)?\)/g,
+          (str, name) => {
+            if (name && !name.startsWith('_')) {
+              // 为了兼容性，仅处理dev模式
+              if (!isDevX) {
+                const result = buildInComponent()
+                if (result) {
+                  return result
+                }
               }
-            }
-            if (isDevX && name.startsWith('v-uni-')) {
-              name = name.replace('v-uni-', '')
-            }
-            const source = matchEasycom(name)
-            if (source) {
-              const isHelpers = source.includes('?uni_helpers')
-              if (isHelpers) {
-                const cssFilename = path.join(
-                  process.env.UNI_MODULES_ENCRYPT_CACHE_DIR!,
-                  path.relative(
-                    process.env.UNI_INPUT_DIR,
-                    source.replace(
-                      '?uni_helpers',
-                      '/components/' + name + '/' + name + '.css'
+              if (isDevX && name.startsWith('v-uni-')) {
+                name = name.replace('v-uni-', '')
+              }
+              const source = matchEasycom(name)
+              if (source) {
+                const isHelpers = source.includes('?uni_helpers')
+                if (isHelpers) {
+                  const cssFilename = path.join(
+                    process.env.UNI_MODULES_ENCRYPT_CACHE_DIR!,
+                    path.relative(
+                      process.env.UNI_INPUT_DIR,
+                      source.replace(
+                        '?uni_helpers',
+                        '/components/' + name + '/' + name + '.css'
+                      )
                     )
                   )
-                )
-                if (fs.existsSync(cssFilename)) {
-                  importDeclarations.push(
-                    `import "${normalizePath(cssFilename)}";`
+                  if (fs.existsSync(cssFilename)) {
+                    importDeclarations.push(
+                      `import "${normalizePath(cssFilename)}";`
+                    )
+                  }
+                }
+                // 处理easycom组件优先级
+                return genResolveEasycomCode(
+                  importDeclarations,
+                  str,
+                  addImportDeclaration(
+                    importDeclarations,
+                    `__easycom_${i++}`,
+                    source,
+                    isHelpers ? capitalize(camelize(name)) : ''
                   )
+                )
+              }
+              if (isDevX) {
+                const result = buildInComponent()
+                if (result) {
+                  return result
                 }
               }
-              // 处理easycom组件优先级
-              return genResolveEasycomCode(
-                importDeclarations,
-                str,
-                addImportDeclaration(
-                  importDeclarations,
-                  `__easycom_${i++}`,
-                  source,
-                  isHelpers ? capitalize(camelize(name)) : ''
-                )
-              )
-            }
-            if (isDevX) {
-              const result = buildInComponent()
-              if (result) {
-                return result
-              }
-            }
-            function buildInComponent() {
-              if (isBuiltInComponent(name)) {
-                name = name.replace(COMPONENT_PREFIX, '')
-                const local = `__syscom_${i++}`
-                if (needCombineBuiltInCss) {
-                  // 发行模式下，应该将内置组件css输出到入口css中
-                  resolveBuiltInCssImport(name).forEach((cssImport) =>
-                    buildInCssSet.add(cssImport)
-                  )
-                  return addImportDeclaration(
+              function buildInComponent() {
+                if (isBuiltInComponent(name)) {
+                  name = name.replace(COMPONENT_PREFIX, '')
+                  const local = `__syscom_${i++}`
+                  if (needCombineBuiltInCss) {
+                    // 发行模式下，应该将内置组件css输出到入口css中
+                    resolveBuiltInCssImport(name).forEach((cssImport) =>
+                      buildInCssSet.add(cssImport)
+                    )
+                    return addImportDeclaration(
+                      importDeclarations,
+                      local,
+                      H5_COMPONENTS_PATH,
+                      capitalize(camelize(name))
+                    )
+                  }
+                  return addBuiltInImportDeclaration(
                     importDeclarations,
                     local,
-                    H5_COMPONENTS_PATH,
-                    capitalize(camelize(name))
+                    name
                   )
                 }
-                return addBuiltInImportDeclaration(
-                  importDeclarations,
-                  local,
-                  name
-                )
               }
             }
+            return str
           }
-          return str
+        )
+        if (importDeclarations.length) {
+          code = importDeclarations.join('') + code
         }
-      )
-      if (importDeclarations.length) {
-        code = importDeclarations.join('') + code
-      }
-      return {
-        code,
-        map: null,
-      }
+        return {
+          code,
+          map: null,
+        }
+      },
     },
   }
 }
