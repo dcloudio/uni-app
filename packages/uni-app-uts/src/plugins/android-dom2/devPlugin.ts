@@ -9,7 +9,7 @@ import {
 import path from 'path'
 import fs from 'fs-extra'
 
-export function uniAppXAndroidEnginePlugin(): UniVitePlugin {
+export function uniAppXAndroidEngineDevPlugin(): UniVitePlugin {
   const { compileVaporApp, getKotlinCompilerServer } = resolveUTSCompiler()
   const compilerServer = getKotlinCompilerServer()
   if (!compilerServer) {
@@ -22,9 +22,9 @@ export function uniAppXAndroidEnginePlugin(): UniVitePlugin {
   const appId =
     parseManifestJsonOnce(process.env.UNI_INPUT_DIR).appid || DEFAULT_APPID
   return {
-    name: 'uni:app-x-android',
+    name: 'uni:app-x-android-dev',
     async writeBundle() {
-      if (!compilerServer || process.env.NODE_ENV !== 'development') {
+      if (!compilerServer) {
         return
       }
       if (

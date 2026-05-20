@@ -49,8 +49,8 @@ jest.mock('../../src/plugins/js/plugin', () => ({
   createUniAppJsEnginePlugin: () => () => ({ name: 'js-engine' }),
 }))
 
-jest.mock('../../src/plugins/android-dom2/plugin', () => ({
-  uniAppXAndroidEnginePlugin: () => ({ name: 'android-engine' }),
+jest.mock('../../src/plugins/android-dom2/devPlugin', () => ({
+  uniAppXAndroidEngineDevPlugin: () => ({ name: 'android-engine-dev' }),
 }))
 
 jest.mock('../../src/plugins/utils', () => ({
@@ -68,6 +68,7 @@ describe('android-dom2 plugin init', () => {
     UNI_APP_X_SINGLE_THREAD: process.env.UNI_APP_X_SINGLE_THREAD,
     UNI_UTS_PLATFORM: process.env.UNI_UTS_PLATFORM,
     UNI_UTS_TARGET_LANGUAGE: process.env.UNI_UTS_TARGET_LANGUAGE,
+    NODE_ENV: process.env.NODE_ENV,
   }
 
   afterEach(() => {
@@ -107,6 +108,16 @@ describe('android-dom2 plugin init', () => {
 
     expect(plugins.map((plugin: { name: string }) => plugin.name)).toContain(
       'css'
+    )
+  })
+
+  test('development includes android engine dev plugin', () => {
+    process.env.NODE_ENV = 'development'
+
+    const plugins = initPlugins()
+
+    expect(plugins.map((plugin: { name: string }) => plugin.name)).toContain(
+      'android-engine-dev'
     )
   })
 

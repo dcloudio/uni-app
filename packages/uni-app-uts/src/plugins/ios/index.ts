@@ -29,11 +29,12 @@ import { uniAppPagesPlugin } from '../js/pagesJson'
 import { replaceExtApiPagePaths } from '../js/extApiPages'
 import { uniAppCssPlugin, uniAppCssPrePlugin } from '../dom2/css'
 import { SHARED_DATA_LIB_NAME } from '../utils'
-import { uniAppXIOSEnginePlugin } from './plugin'
+import { uniAppXIOSEngineDevPlugin } from './devPlugin'
 
 export function init() {
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   const isDom2Dynamic = process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
+  const isDev = process.env.NODE_ENV === 'development'
   return [
     ...(isDom2 ? [uniAppCssPrePlugin()] : []),
     ...(isNormalCompileTarget()
@@ -87,8 +88,8 @@ export function init() {
       : []),
     ...(isDom2 ? [uniAppCssPlugin()] : []),
     ...(isNormalCompileTarget() ? [uniStatsPlugin()] : []),
-    ...(isDom2 && !isDom2Dynamic && isNormalCompileTarget()
-      ? [uniAppXIOSEnginePlugin()]
+    ...(isDom2 && !isDom2Dynamic && isNormalCompileTarget() && isDev
+      ? [uniAppXIOSEngineDevPlugin()]
       : []),
   ]
 }
