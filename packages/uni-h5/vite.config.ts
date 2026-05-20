@@ -205,6 +205,9 @@ export default defineConfig({
     },
     assetsDir: '.',
     rollupOptions: {
+      // UTS 允许使用 `export { TypeName } from './xxx.uts'` 重新导出类型。
+      // Rolldown 会按运行时导出校验，先启用缺失导出 shim 保持兼容。
+      shimMissingExports: true,
       output: {
         dir: isX_VAPOR ? 'dist-x-vapor' : isX ? 'dist-x' : 'dist',
         entryFileNames: 'uni-h5.' + FORMAT + '.js',
