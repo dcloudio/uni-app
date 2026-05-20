@@ -9,14 +9,24 @@ describe('stats', () => {
   const originalPlatform = process.env.UNI_PLATFORM
   const originalDom2 = process.env.UNI_APP_X_DOM2
   const originalVaporRenderTarget = process.env.UNI_APP_X_VAPOR_RENDER_TARGET
+  const originalChangedFiles = process.env.UNI_APP_CHANGED_FILES
 
   afterEach(() => {
-    process.env.UNI_APP_X = originalAppX
-    process.env.UNI_PLATFORM = originalPlatform
-    process.env.UNI_APP_X_DOM2 = originalDom2
-    process.env.UNI_APP_X_VAPOR_RENDER_TARGET = originalVaporRenderTarget
+    restoreEnv('UNI_APP_X', originalAppX)
+    restoreEnv('UNI_PLATFORM', originalPlatform)
+    restoreEnv('UNI_APP_X_DOM2', originalDom2)
+    restoreEnv('UNI_APP_X_VAPOR_RENDER_TARGET', originalVaporRenderTarget)
+    restoreEnv('UNI_APP_CHANGED_FILES', originalChangedFiles)
     jest.restoreAllMocks()
   })
+
+  function restoreEnv(name: string, value: string | undefined) {
+    if (value === undefined) {
+      Reflect.deleteProperty(process.env, name)
+    } else {
+      process.env[name] = value
+    }
+  }
 
   function createManifest(vapor: boolean, vaporRenderTarget?: string) {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-stats-'))
@@ -102,5 +112,23 @@ describe('stats', () => {
     watchChange(plugin, createManifest(true, 'bytecode'))
 
     expect(warnSpy).not.toHaveBeenCalled()
+  })
+
+  test('manifest only mode skips changed files collection', () => {
+    process.env.UNI_APP_CHANGED_FILES = 'previous'
+    const plugin = uniStatsPlugin({ manifestOnly: true })
+
+    ;(plugin.configResolved as any)({ isProduction: false })
+    ;(plugin.writeBundle as any)(
+      {},
+      {
+        'app.js': {
+          type: 'chunk',
+          code: 'console.log(1)',
+        },
+      }
+    )
+
+    expect(process.env.UNI_APP_CHANGED_FILES).toBe('previous')
   })
 })
