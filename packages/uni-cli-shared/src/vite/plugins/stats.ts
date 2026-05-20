@@ -8,6 +8,10 @@ const emittedHashMap = new WeakMap<ResolvedConfig, Map<string, string>>()
 
 type VaporRenderTarget = 'bytecode' | 'nativecode'
 
+interface UniStatsPluginOptions {
+  manifestOnly?: boolean
+}
+
 function normalizeVaporRenderTarget(
   target: unknown
 ): VaporRenderTarget | undefined {
@@ -32,7 +36,7 @@ function getManifestVaporRenderTarget(manifest: Record<string, any>) {
   )
 }
 
-export function uniStatsPlugin(): Plugin {
+export function uniStatsPlugin(options: UniStatsPluginOptions = {}): Plugin {
   let resolvedConfig: ResolvedConfig
   let isManifestChanged = false
   const shouldTrackManifestChange =
@@ -90,6 +94,9 @@ export function uniStatsPlugin(): Plugin {
       }
     },
     writeBundle(_, bundle) {
+      if (options.manifestOnly) {
+        return
+      }
       if (resolvedConfig.isProduction) {
         // 仅dev生效
         return

@@ -4,6 +4,7 @@ import {
   uniDecryptUniModulesPlugin,
   uniEncryptUniModulesPlugin,
   uniSharedDataPlugin,
+  uniStatsPlugin,
   uniUTSAppUniModulesPlugin,
   uniUniModulesExtApiPlugin,
   uniViteSfcSrcImportPlugin,
@@ -61,5 +62,8 @@ export function init() {
     uniViteSfcSrcImportPlugin({ onlyVue: false }),
     uniAppUVuePlugin(),
     uniCloudPlugin(),
+    ...(isNormalCompileTarget()
+      ? [uniStatsPlugin({ manifestOnly: true })]
+      : []),
   ]
 }
