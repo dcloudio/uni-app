@@ -65,8 +65,22 @@ function parseLocaleJson(filepath: string) {
   return jsonObj
 }
 
+const localeFilesCache = new Map<string, { mtimeMs: number; files: string[] }>()
+
 export function getLocaleFiles(cwd: string) {
-  return sync('*.json', { cwd, absolute: true })
+  let mtimeMs: number
+  try {
+    mtimeMs = fs.statSync(cwd).mtimeMs
+  } catch {
+    return []
+  }
+  const cached = localeFilesCache.get(cwd)
+  if (cached && cached.mtimeMs === mtimeMs) {
+    return cached.files
+  }
+  const files = sync('*.json', { cwd, absolute: true })
+  localeFilesCache.set(cwd, { mtimeMs, files })
+  return files
 }
 
 export function initLocales(dir: string, withMessages: boolean = true) {
