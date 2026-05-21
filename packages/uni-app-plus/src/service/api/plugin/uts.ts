@@ -142,10 +142,10 @@ export function normalizeArg(
 function initUTSInstanceMethod(
   async: boolean,
   opts: ProxyFunctionOptions,
-  instanceId: number,
+  instanceIdOrInstance: number | Instance,
   proxy: unknown
 ) {
-  return initProxyFunction('method', async, opts, instanceId, proxy)
+  return initProxyFunction('method', async, opts, instanceIdOrInstance, proxy)
 }
 
 interface Parameter {
@@ -259,6 +259,8 @@ interface ProxyClassOptions extends ModuleOptions {
 }
 
 type InvokeType = 'getter' | 'setter' | 'method' | 'constructor'
+// TODO 确定类型
+type Instance = Object
 
 interface InvokeInstanceArgs extends ModuleOptions {
   id: number
@@ -291,6 +293,39 @@ interface InvokeInstanceArgs extends ModuleOptions {
    */
   errMsg?: string
 }
+
+interface InvokeInstanceWithInstanceArgs extends ModuleOptions {
+  ins: Instance
+  /**
+   * 属性名或方法名
+   */
+  name: string
+  /**
+   * 属性|方法
+   */
+  type: InvokeType
+  /**
+   * 回调是否持久保留
+   */
+  keepAlive: boolean
+  /**
+   * 参数中是否包含嵌套序列化对象
+   */
+  nested: boolean
+  /**
+   * 执行方法时的真实参数列表
+   */
+  params?: unknown[]
+  /**
+   * 方法定义的参数列表
+   */
+  method?: Parameter[]
+  /**
+   * 运行时提示的错误信息
+   */
+  errMsg?: string
+}
+
 interface InvokeStaticArgs extends ModuleOptions {
   /**
    * 包名
@@ -334,7 +369,10 @@ interface InvokeStaticArgs extends ModuleOptions {
   errMsg?: string
 }
 
-type InvokeArgs = InvokeInstanceArgs | InvokeStaticArgs
+type InvokeArgs =
+  | InvokeInstanceArgs
+  | InvokeInstanceWithInstanceArgs
+  | InvokeStaticArgs
 
 interface InvokeCallbackReturnRes {
   // 异步 API return 的返回值
@@ -406,13 +444,13 @@ function resolveSyncResult(
   args: InvokeArgs,
   res: InvokeSyncRes,
   returnOptions?: ProxyFunctionReturnOptions,
-  instanceId?: number,
+  instanceIdOrInstance?: number | Instance,
   proxy?: unknown
 ) {
   if (__DEV__) {
     console.log(
       'uts.invokeSync.result',
-      JSON.stringify([res, returnOptions, instanceId, typeof proxy])
+      JSON.stringify([res, returnOptions, instanceIdOrInstance, typeof proxy])
     )
   }
   if (!res) {
@@ -440,6 +478,10 @@ function resolveSyncResult(
       if (!res.params) {
         return null
       }
+      let instanceId =
+        typeof instanceIdOrInstance === 'number'
+          ? instanceIdOrInstance
+          : undefined
       if (res.params === instanceId && proxy) {
         return proxy
       }
@@ -487,7 +529,7 @@ function initProxyFunction(
     return: returnOptions,
     errMsg,
   }: ProxyFunctionOptions,
-  instanceId: number,
+  instanceIdOrInstance: number | Instance,
   proxy?: unknown
 ) {
   if (!keepAlive) {
@@ -496,29 +538,45 @@ function initProxyFunction(
       methodParams.length === 1 &&
       methodParams[0].type === 'UTSCallback'
   }
-  const baseArgs: InvokeArgs = instanceId
-    ? {
-        moduleName,
-        moduleType,
-        id: instanceId,
-        type,
-        name: methodName,
-        method: methodParams,
-        nested: false,
-        keepAlive,
-      }
-    : {
-        moduleName,
-        moduleType,
-        package: pkg,
-        class: cls,
-        name: method || methodName,
-        type,
-        companion,
-        method: methodParams,
-        nested: false,
-        keepAlive,
-      }
+  let instanceId =
+    typeof instanceIdOrInstance === 'number' ? instanceIdOrInstance : undefined
+  let instance =
+    typeof instanceIdOrInstance === 'number' ? undefined : instanceIdOrInstance
+  const baseArgs: InvokeArgs =
+    instanceId != null
+      ? {
+          moduleName,
+          moduleType,
+          id: instanceId,
+          type,
+          name: methodName,
+          method: methodParams,
+          nested: false,
+          keepAlive,
+        }
+      : instance != null
+      ? {
+          moduleName,
+          moduleType,
+          ins: instance,
+          type,
+          name: methodName,
+          method: methodParams,
+          nested: false,
+          keepAlive,
+        }
+      : {
+          moduleName,
+          moduleType,
+          package: pkg,
+          class: cls,
+          name: method || methodName,
+          type,
+          companion,
+          method: methodParams,
+          nested: false,
+          keepAlive,
+        }
   return (...args: unknown[]) => {
     if (errMsg) {
       throw new Error(errMsg)
@@ -582,7 +640,7 @@ function initProxyFunction(
       invokeArgs,
       getProxy().invokeSync(invokeArgs, invokeCallback),
       returnOptions,
-      instanceId,
+      instanceIdOrInstance,
       proxy
     )
   }
@@ -766,6 +824,195 @@ export function initUTSProxyClass(
                     baseOptions
                   ),
                   instance.__instanceId,
+                  proxy
+                )
+              }
+            }
+            target[parseClassPropertySetter(name as string)](newValue)
+            return true
+          }
+          return false
+        },
+      })
+      return Object.freeze(proxy)
+    }
+  }
+  const staticPropSetterCache: Record<string, Function> = {}
+  const staticMethodCache: Record<string, Function> = {}
+  return Object.freeze(
+    new Proxy(ProxyClass, {
+      get(target, name, receiver) {
+        name = parseClassMethodName(name, staticMethods)
+        if (hasOwn(staticMethods, name)) {
+          if (!staticMethodCache[name as string]) {
+            const {
+              async,
+              keepAlive,
+              params,
+              return: returnOptions,
+            } = staticMethods[name]
+            // 静态方法
+            staticMethodCache[name] = initUTSStaticMethod(
+              !!async,
+              extend(
+                {
+                  name,
+                  companion: true,
+                  keepAlive,
+                  params,
+                  return: returnOptions,
+                },
+                baseOptions
+              )
+            )
+          }
+          return staticMethodCache[name]
+        }
+        if (staticProps.includes(name as string)) {
+          return invokePropGetter(
+            extend(
+              {
+                name: name as string,
+                companion: true,
+                type: 'getter',
+              },
+              baseOptions
+            ) as InvokeStaticArgs
+          )
+        }
+        return Reflect.get(target, name, receiver)
+      },
+      set(_, name, newValue) {
+        if (staticProps.includes(name as string)) {
+          // 静态属性
+          const setter = parseClassPropertySetter(name as string)
+          if (!staticPropSetterCache[setter]) {
+            const param = staticSetters[name as string]
+            if (param) {
+              staticPropSetterCache[setter] = initProxyFunction(
+                'setter',
+                false,
+                extend(
+                  {
+                    name: name as string,
+                    keepAlive: false,
+                    params: [param],
+                  },
+                  baseOptions
+                ),
+                0
+              )
+            }
+          }
+          staticPropSetterCache[parseClassPropertySetter(name as string)](
+            newValue
+          )
+          return true
+        }
+        return false
+      },
+    })
+  )
+}
+
+export function initUTSElementProxyClass(options: ProxyClassOptions): any {
+  const {
+    moduleName,
+    moduleType,
+    package: pkg,
+    class: cls,
+    methods,
+    props,
+    setters,
+    errMsg,
+  } = options
+
+  const baseOptions = {
+    moduleName,
+    moduleType,
+    package: pkg,
+    class: cls,
+    errMsg,
+  }
+
+  const staticMethods = options.staticMethods || {}
+  const staticProps = options.staticProps || []
+  const staticSetters = options.staticSetters || {}
+
+  const ProxyClass = class UTSClass {
+    // page: UniNativePageImpl
+    constructor(nodeId: number, page: any, tagName: string) {
+      const pageId = page.pageId
+      const element = { __type__: 'UniElement', pageId, nodeId }
+      const target: Record<string, Function> = {}
+      const instance = __VAPOR__
+        ? // @ts-expect-error UniElementImpl构造参数调整
+          new UniElementImpl(nodeId, page, tagName)
+        : {}
+      const proxy = new Proxy(instance, {
+        get(_, name) {
+          // 重要：禁止响应式
+          if (name === '__v_skip') {
+            return true
+          }
+          if (!target[name as string]) {
+            //实例方法
+            name = parseClassMethodName(name, methods)
+            if (hasOwn(methods, name)) {
+              const {
+                async,
+                keepAlive,
+                params,
+                return: returnOptions,
+              } = methods[name]
+              target[name] = initUTSInstanceMethod(
+                !!async,
+                extend(
+                  {
+                    name,
+                    keepAlive,
+                    params,
+                    return: returnOptions,
+                  },
+                  baseOptions
+                ),
+                element,
+                proxy
+              )
+            } else if (props.includes(name as string)) {
+              // 实例属性
+              return invokePropGetter({
+                moduleName,
+                moduleType,
+                ins: element,
+                type: 'getter',
+                keepAlive: false,
+                nested: false,
+                name: name as string,
+                errMsg,
+              })
+            }
+          }
+          return target[name as string]
+        },
+        set(_, name, newValue) {
+          if (props.includes(name as string)) {
+            const setter = parseClassPropertySetter(name as string)
+            if (!target[setter]) {
+              const param = setters[name as string]
+              if (param) {
+                target[setter] = initProxyFunction(
+                  'setter',
+                  false,
+                  extend(
+                    {
+                      name: name as string,
+                      keepAlive: false,
+                      params: [param],
+                    },
+                    baseOptions
+                  ),
+                  element,
                   proxy
                 )
               }

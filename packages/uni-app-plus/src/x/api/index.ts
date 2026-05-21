@@ -43,6 +43,7 @@ export * from './performance'
 
 export {
   initUTSProxyClass,
+  initUTSElementProxyClass,
   initUTSProxyFunction,
   initUTSIndexClassName,
   initUTSClassName,
