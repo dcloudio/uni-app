@@ -18493,8 +18493,8 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
     }
     return arg;
 }
-function initUTSInstanceMethod(async, opts, instanceId, proxy) {
-    return initProxyFunction('method', async, opts, instanceId, proxy);
+function initUTSInstanceMethod(async, opts, instanceIdOrInstance, proxy) {
+    return initProxyFunction('method', async, opts, instanceIdOrInstance, proxy);
 }
 function getProxy() {
     if (!proxy) {
@@ -18504,9 +18504,9 @@ function getProxy() {
     }
     return proxy;
 }
-function resolveSyncResult(args, res, returnOptions, instanceId, proxy) {
+function resolveSyncResult(args, res, returnOptions, instanceIdOrInstance, proxy) {
     if ((process.env.NODE_ENV !== 'production')) {
-        console.log('uts.invokeSync.result', JSON.stringify([res, returnOptions, instanceId, typeof proxy]));
+        console.log('uts.invokeSync.result', JSON.stringify([res, returnOptions, instanceIdOrInstance, typeof proxy]));
     }
     if (!res) {
         throw new Error('返回值为：' +
@@ -18532,6 +18532,9 @@ function resolveSyncResult(args, res, returnOptions, instanceId, proxy) {
             if (!res.params) {
                 return null;
             }
+            let instanceId = typeof instanceIdOrInstance === 'number'
+                ? instanceIdOrInstance
+                : undefined;
             if (res.params === instanceId && proxy) {
                 return proxy;
             }
@@ -18553,14 +18556,16 @@ function invokePropGetter(args) {
     }
     return resolveSyncResult(args, getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, keepAlive, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
+function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, keepAlive, params: methodParams, return: returnOptions, errMsg, }, instanceIdOrInstance, proxy) {
     if (!keepAlive) {
         keepAlive =
             (methodName.indexOf('on') === 0 || methodName.indexOf('off') === 0) &&
                 methodParams.length === 1 &&
                 methodParams[0].type === 'UTSCallback';
     }
-    const baseArgs = instanceId
+    let instanceId = typeof instanceIdOrInstance === 'number' ? instanceIdOrInstance : undefined;
+    let instance = typeof instanceIdOrInstance === 'number' ? undefined : instanceIdOrInstance;
+    const baseArgs = instanceId != null
         ? {
             moduleName,
             moduleType,
@@ -18571,18 +18576,29 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             nested: false,
             keepAlive,
         }
-        : {
-            moduleName,
-            moduleType,
-            package: pkg,
-            class: cls,
-            name: method || methodName,
-            type,
-            companion,
-            method: methodParams,
-            nested: false,
-            keepAlive,
-        };
+        : instance != null
+            ? {
+                moduleName,
+                moduleType,
+                ins: instance,
+                type,
+                name: methodName,
+                method: methodParams,
+                nested: true,
+                keepAlive,
+            }
+            : {
+                moduleName,
+                moduleType,
+                package: pkg,
+                class: cls,
+                name: method || methodName,
+                type,
+                companion,
+                method: methodParams,
+                nested: false,
+                keepAlive,
+            };
     return (...args) => {
         if (errMsg) {
             throw new Error(errMsg);
@@ -18636,7 +18652,7 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
         if ((process.env.NODE_ENV !== 'production')) {
             console.log('uts.invokeSync.args', invokeArgs);
         }
-        return resolveSyncResult(invokeArgs, getProxy().invokeSync(invokeArgs, invokeCallback), returnOptions, instanceId, proxy);
+        return resolveSyncResult(invokeArgs, getProxy().invokeSync(invokeArgs, invokeCallback), returnOptions, instanceIdOrInstance, proxy);
     };
 }
 function initUTSStaticMethod(async, opts) {

@@ -106,8 +106,8 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
     }
     return arg;
 }
-function initUTSInstanceMethod(async, opts, instanceId, proxy) {
-    return initProxyFunction('method', async, opts, instanceId, proxy);
+function initUTSInstanceMethod(async, opts, instanceIdOrInstance, proxy) {
+    return initProxyFunction('method', async, opts, instanceIdOrInstance, proxy);
 }
 function getProxy() {
     if (!proxy) {
@@ -117,9 +117,9 @@ function getProxy() {
     }
     return proxy;
 }
-function resolveSyncResult(args, res, returnOptions, instanceId, proxy) {
+function resolveSyncResult(args, res, returnOptions, instanceIdOrInstance, proxy) {
     if ((process.env.NODE_ENV !== 'production')) {
-        console.log('uts.invokeSync.result', JSON.stringify([res, returnOptions, instanceId, typeof proxy]));
+        console.log('uts.invokeSync.result', JSON.stringify([res, returnOptions, instanceIdOrInstance, typeof proxy]));
     }
     if (!res) {
         throw new Error('返回值为：' +
@@ -145,6 +145,9 @@ function resolveSyncResult(args, res, returnOptions, instanceId, proxy) {
             if (!res.params) {
                 return null;
             }
+            let instanceId = typeof instanceIdOrInstance === 'number'
+                ? instanceIdOrInstance
+                : undefined;
             if (res.params === instanceId && proxy) {
                 return proxy;
             }
@@ -166,14 +169,16 @@ function invokePropGetter(args) {
     }
     return resolveSyncResult(args, getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, keepAlive, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
+function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, keepAlive, params: methodParams, return: returnOptions, errMsg, }, instanceIdOrInstance, proxy) {
     if (!keepAlive) {
         keepAlive =
             (methodName.indexOf('on') === 0 || methodName.indexOf('off') === 0) &&
                 methodParams.length === 1 &&
                 methodParams[0].type === 'UTSCallback';
     }
-    const baseArgs = instanceId
+    let instanceId = typeof instanceIdOrInstance === 'number' ? instanceIdOrInstance : undefined;
+    let instance = typeof instanceIdOrInstance === 'number' ? undefined : instanceIdOrInstance;
+    const baseArgs = instanceId != null
         ? {
             moduleName,
             moduleType,
@@ -184,18 +189,29 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             nested: false,
             keepAlive,
         }
-        : {
-            moduleName,
-            moduleType,
-            package: pkg,
-            class: cls,
-            name: method || methodName,
-            type,
-            companion,
-            method: methodParams,
-            nested: false,
-            keepAlive,
-        };
+        : instance != null
+            ? {
+                moduleName,
+                moduleType,
+                ins: instance,
+                type,
+                name: methodName,
+                method: methodParams,
+                nested: true,
+                keepAlive,
+            }
+            : {
+                moduleName,
+                moduleType,
+                package: pkg,
+                class: cls,
+                name: method || methodName,
+                type,
+                companion,
+                method: methodParams,
+                nested: false,
+                keepAlive,
+            };
     return (...args) => {
         if (errMsg) {
             throw new Error(errMsg);
@@ -249,7 +265,7 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
         if ((process.env.NODE_ENV !== 'production')) {
             console.log('uts.invokeSync.args', invokeArgs);
         }
-        return resolveSyncResult(invokeArgs, getProxy().invokeSync(invokeArgs, invokeCallback), returnOptions, instanceId, proxy);
+        return resolveSyncResult(invokeArgs, getProxy().invokeSync(invokeArgs, invokeCallback), returnOptions, instanceIdOrInstance, proxy);
     };
 }
 function initUTSStaticMethod(async, opts) {
@@ -435,6 +451,131 @@ function initUTSProxyClass(options) {
         },
     }));
 }
+function initUTSElementProxyClass(options) {
+    const { moduleName, moduleType, package: pkg, class: cls, methods, props, setters, errMsg, } = options;
+    const baseOptions = {
+        moduleName,
+        moduleType,
+        package: pkg,
+        class: cls,
+        errMsg,
+    };
+    const staticMethods = options.staticMethods || {};
+    const staticProps = options.staticProps || [];
+    const staticSetters = options.staticSetters || {};
+    const ProxyClass = class UTSClass {
+        // page: UniNativePageImpl
+        constructor(nodeId, page, tagName) {
+            const pageId = page.pageId;
+            const element = { __type__: 'UniElement', pageId, nodeId };
+            const target = {};
+            const instance = {};
+            const proxy = new Proxy(instance, {
+                get(_target, name) {
+                    // 重要：禁止响应式
+                    if (name === '__v_skip') {
+                        return true;
+                    }
+                    if (!target[name]) {
+                        //实例方法
+                        name = parseClassMethodName(name, methods);
+                        if (hasOwn(methods, name)) {
+                            const { async, keepAlive, params, return: returnOptions, } = methods[name];
+                            target[name] = initUTSInstanceMethod(!!async, extend({
+                                name,
+                                keepAlive,
+                                params,
+                                return: returnOptions,
+                            }, baseOptions), element, proxy);
+                        }
+                        else if (props.includes(name)) {
+                            // 实例属性
+                            return invokePropGetter({
+                                moduleName,
+                                moduleType,
+                                ins: element,
+                                type: 'getter',
+                                keepAlive: false,
+                                nested: true,
+                                name: name,
+                                errMsg,
+                            });
+                        }
+                    }
+                    return target[name] || _target[name];
+                },
+                set(_target, name, newValue) {
+                    if (props.includes(name)) {
+                        const setter = parseClassPropertySetter(name);
+                        if (!target[setter]) {
+                            const param = setters[name];
+                            if (param) {
+                                target[setter] = initProxyFunction('setter', false, extend({
+                                    name: name,
+                                    keepAlive: false,
+                                    params: [param],
+                                }, baseOptions), element, proxy);
+                            }
+                        }
+                        target[parseClassPropertySetter(name)](newValue);
+                        return true;
+                    }
+                    _target[name] = newValue;
+                    return true;
+                },
+            });
+            return Object.freeze(proxy);
+        }
+    };
+    const staticPropSetterCache = {};
+    const staticMethodCache = {};
+    return Object.freeze(new Proxy(ProxyClass, {
+        get(target, name, receiver) {
+            name = parseClassMethodName(name, staticMethods);
+            if (hasOwn(staticMethods, name)) {
+                if (!staticMethodCache[name]) {
+                    const { async, keepAlive, params, return: returnOptions, } = staticMethods[name];
+                    // 静态方法
+                    staticMethodCache[name] = initUTSStaticMethod(!!async, extend({
+                        name,
+                        companion: true,
+                        keepAlive,
+                        params,
+                        return: returnOptions,
+                    }, baseOptions));
+                }
+                return staticMethodCache[name];
+            }
+            if (staticProps.includes(name)) {
+                return invokePropGetter(extend({
+                    name: name,
+                    companion: true,
+                    type: 'getter',
+                }, baseOptions));
+            }
+            return Reflect.get(target, name, receiver);
+        },
+        set(_, name, newValue) {
+            if (staticProps.includes(name)) {
+                // 静态属性
+                const setter = parseClassPropertySetter(name);
+                if (!staticPropSetterCache[setter]) {
+                    const param = staticSetters[name];
+                    if (param) {
+                        staticPropSetterCache[setter] = initProxyFunction('setter', false, extend({
+                            name: name,
+                            keepAlive: false,
+                            params: [param],
+                        }, baseOptions), 0);
+                    }
+                }
+                staticPropSetterCache[parseClassPropertySetter(name)](newValue);
+                return true;
+            }
+            return false;
+        },
+    }));
+}
 function isUTSAndroid() {
     return typeof plus !== 'undefined' && plus.os.name === 'Android';
 }
@@ -477,4 +618,4 @@ function requireUTSPlugin(name, silent = false) {
     return define;
 }
 
-export { initUTSClassName, initUTSIndexClassName, initUTSPackageName, initUTSProxyClass, initUTSProxyFunction, normalizeArg, registerUTSInterface, registerUTSPlugin, requireUTSPlugin };
+export { initUTSClassName, initUTSElementProxyClass, initUTSIndexClassName, initUTSPackageName, initUTSProxyClass, initUTSProxyFunction, normalizeArg, registerUTSInterface, registerUTSPlugin, requireUTSPlugin };

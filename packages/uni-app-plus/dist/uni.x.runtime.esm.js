@@ -4193,8 +4193,8 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
   }
   return arg;
 }
-function initUTSInstanceMethod(async, opts, instanceId, proxy2) {
-  return initProxyFunction("method", async, opts, instanceId, proxy2);
+function initUTSInstanceMethod(async, opts, instanceIdOrInstance, proxy2) {
+  return initProxyFunction("method", async, opts, instanceIdOrInstance, proxy2);
 }
 function getProxy() {
   if (!proxy) {
@@ -4211,7 +4211,7 @@ function getProxy() {
   }
   return proxy;
 }
-function resolveSyncResult(args, res, returnOptions, instanceId, proxy2) {
+function resolveSyncResult(args, res, returnOptions, instanceIdOrInstance, proxy2) {
   if (!res) {
     throw new Error("返回值为：" + JSON.stringify(res) + "；请求参数为：" + JSON.stringify(args));
   }
@@ -4230,6 +4230,7 @@ function resolveSyncResult(args, res, returnOptions, instanceId, proxy2) {
       if (!res.params) {
         return null;
       }
+      var instanceId = typeof instanceIdOrInstance === "number" ? instanceIdOrInstance : void 0;
       if (res.params === instanceId && proxy2) {
         return proxy2;
       }
@@ -4251,7 +4252,7 @@ function invokePropGetter(args) {
   return resolveSyncResult(args, getProxy().invokeSync(args, () => {
   }));
 }
-function initProxyFunction(type, async, _ref, instanceId, proxy2) {
+function initProxyFunction(type, async, _ref, instanceIdOrInstance, proxy2) {
   var {
     moduleName,
     moduleType,
@@ -4268,7 +4269,9 @@ function initProxyFunction(type, async, _ref, instanceId, proxy2) {
   if (!keepAlive) {
     keepAlive = (methodName.indexOf("on") === 0 || methodName.indexOf("off") === 0) && methodParams.length === 1 && methodParams[0].type === "UTSCallback";
   }
-  var baseArgs = instanceId ? {
+  var instanceId = typeof instanceIdOrInstance === "number" ? instanceIdOrInstance : void 0;
+  var instance = typeof instanceIdOrInstance === "number" ? void 0 : instanceIdOrInstance;
+  var baseArgs = instanceId != null ? {
     moduleName,
     moduleType,
     id: instanceId,
@@ -4276,6 +4279,15 @@ function initProxyFunction(type, async, _ref, instanceId, proxy2) {
     name: methodName,
     method: methodParams,
     nested: false,
+    keepAlive
+  } : instance != null ? {
+    moduleName,
+    moduleType,
+    ins: instance,
+    type,
+    name: methodName,
+    method: methodParams,
+    nested: true,
     keepAlive
   } : {
     moduleName,
@@ -4336,7 +4348,7 @@ function initProxyFunction(type, async, _ref, instanceId, proxy2) {
         });
       });
     }
-    return resolveSyncResult(invokeArgs, getProxy().invokeSync(invokeArgs, invokeCallback2), returnOptions, instanceId, proxy2);
+    return resolveSyncResult(invokeArgs, getProxy().invokeSync(invokeArgs, invokeCallback2), returnOptions, instanceIdOrInstance, proxy2);
   };
 }
 function initUTSStaticMethod(async, opts) {
@@ -4536,6 +4548,148 @@ function initUTSProxyClass(options) {
     }
   }));
 }
+function initUTSElementProxyClass(options) {
+  var {
+    moduleName,
+    moduleType,
+    package: pkg,
+    class: cls,
+    methods,
+    props,
+    setters,
+    errMsg
+  } = options;
+  var baseOptions = {
+    moduleName,
+    moduleType,
+    package: pkg,
+    class: cls,
+    errMsg
+  };
+  var staticMethods = options.staticMethods || {};
+  var staticProps = options.staticProps || [];
+  var staticSetters = options.staticSetters || {};
+  var ProxyClass = class UTSClass {
+    // page: UniNativePageImpl
+    constructor(nodeId, page, tagName) {
+      var pageId = page.pageId;
+      var element = {
+        __type__: "UniElement",
+        pageId,
+        nodeId
+      };
+      var target = {};
+      var instance = {};
+      var proxy2 = new Proxy(instance, {
+        get(_target, name) {
+          if (name === "__v_skip") {
+            return true;
+          }
+          if (!target[name]) {
+            name = parseClassMethodName(name, methods);
+            if (hasOwn(methods, name)) {
+              var {
+                async,
+                keepAlive,
+                params,
+                return: returnOptions
+              } = methods[name];
+              target[name] = initUTSInstanceMethod(!!async, extend({
+                name,
+                keepAlive,
+                params,
+                return: returnOptions
+              }, baseOptions), element, proxy2);
+            } else if (props.includes(name)) {
+              return invokePropGetter({
+                moduleName,
+                moduleType,
+                ins: element,
+                type: "getter",
+                keepAlive: false,
+                nested: true,
+                name,
+                errMsg
+              });
+            }
+          }
+          return target[name] || _target[name];
+        },
+        set(_target, name, newValue) {
+          if (props.includes(name)) {
+            var setter = parseClassPropertySetter(name);
+            if (!target[setter]) {
+              var param = setters[name];
+              if (param) {
+                target[setter] = initProxyFunction("setter", false, extend({
+                  name,
+                  keepAlive: false,
+                  params: [param]
+                }, baseOptions), element, proxy2);
+              }
+            }
+            target[parseClassPropertySetter(name)](newValue);
+            return true;
+          }
+          _target[name] = newValue;
+          return true;
+        }
+      });
+      return Object.freeze(proxy2);
+    }
+  };
+  var staticPropSetterCache = {};
+  var staticMethodCache = {};
+  return Object.freeze(new Proxy(ProxyClass, {
+    get(target, name, receiver) {
+      name = parseClassMethodName(name, staticMethods);
+      if (hasOwn(staticMethods, name)) {
+        if (!staticMethodCache[name]) {
+          var {
+            async,
+            keepAlive,
+            params,
+            return: returnOptions
+          } = staticMethods[name];
+          staticMethodCache[name] = initUTSStaticMethod(!!async, extend({
+            name,
+            companion: true,
+            keepAlive,
+            params,
+            return: returnOptions
+          }, baseOptions));
+        }
+        return staticMethodCache[name];
+      }
+      if (staticProps.includes(name)) {
+        return invokePropGetter(extend({
+          name,
+          companion: true,
+          type: "getter"
+        }, baseOptions));
+      }
+      return Reflect.get(target, name, receiver);
+    },
+    set(_, name, newValue) {
+      if (staticProps.includes(name)) {
+        var setter = parseClassPropertySetter(name);
+        if (!staticPropSetterCache[setter]) {
+          var param = staticSetters[name];
+          if (param) {
+            staticPropSetterCache[setter] = initProxyFunction("setter", false, extend({
+              name,
+              keepAlive: false,
+              params: [param]
+            }, baseOptions), 0);
+          }
+        }
+        staticPropSetterCache[parseClassPropertySetter(name)](newValue);
+        return true;
+      }
+      return false;
+    }
+  }));
+}
 function isUTSAndroid() {
   {
     if (
@@ -4654,6 +4808,7 @@ const index$1 = /* @__PURE__ */ Object.defineProperty({
   hideTabBar,
   hideTabBarRedDot,
   initUTSClassName,
+  initUTSElementProxyClass,
   initUTSIndexClassName,
   initUTSPackageName,
   initUTSProxyClass,
