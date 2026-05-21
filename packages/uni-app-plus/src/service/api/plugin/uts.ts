@@ -950,7 +950,7 @@ export function initUTSElementProxyClass(options: ProxyClassOptions): any {
           new UniElementImpl(nodeId, page, tagName)
         : {}
       const proxy = new Proxy(instance, {
-        get(_, name) {
+        get(_target, name) {
           // 重要：禁止响应式
           if (name === '__v_skip') {
             return true
@@ -993,9 +993,9 @@ export function initUTSElementProxyClass(options: ProxyClassOptions): any {
               })
             }
           }
-          return target[name as string]
+          return target[name as string] || _target[name as string]
         },
-        set(_, name, newValue) {
+        set(_target, name, newValue) {
           if (props.includes(name as string)) {
             const setter = parseClassPropertySetter(name as string)
             if (!target[setter]) {
@@ -1020,7 +1020,8 @@ export function initUTSElementProxyClass(options: ProxyClassOptions): any {
             target[parseClassPropertySetter(name as string)](newValue)
             return true
           }
-          return false
+          _target[name as string] = newValue
+          return true
         },
       })
       return Object.freeze(proxy)
