@@ -168,7 +168,7 @@ export function getBrowserInfo () {
         osversion += ` x${framework[1]}`
       }
     } else if (isMac) {
-      osname = 'macOS'
+      osname = 'mac'
       osversion = osversionFind.match(/Mac OS X (.+)/) || ''
 
       if (osversion) {
