@@ -538,45 +538,44 @@ function initProxyFunction(
       methodParams.length === 1 &&
       methodParams[0].type === 'UTSCallback'
   }
-  let instanceId =
-    typeof instanceIdOrInstance === 'number' ? instanceIdOrInstance : undefined
-  let instance =
-    typeof instanceIdOrInstance === 'number' ? undefined : instanceIdOrInstance
-  const baseArgs: InvokeArgs =
-    instanceId != null
-      ? {
-          moduleName,
-          moduleType,
-          id: instanceId,
-          type,
-          name: methodName,
-          method: methodParams,
-          nested: false,
-          keepAlive,
-        }
-      : instance != null
-      ? {
-          moduleName,
-          moduleType,
-          ins: instance,
-          type,
-          name: methodName,
-          method: methodParams,
-          nested: true,
-          keepAlive,
-        }
-      : {
-          moduleName,
-          moduleType,
-          package: pkg,
-          class: cls,
-          name: method || methodName,
-          type,
-          companion,
-          method: methodParams,
-          nested: false,
-          keepAlive,
-        }
+  // id: 0为非法instanceId
+  const isNumber = typeof instanceIdOrInstance === 'number'
+  let instanceId = isNumber ? instanceIdOrInstance : undefined
+  let instance = isNumber ? undefined : instanceIdOrInstance
+  const baseArgs: InvokeArgs = instanceId
+    ? {
+        moduleName,
+        moduleType,
+        id: instanceId,
+        type,
+        name: methodName,
+        method: methodParams,
+        nested: false,
+        keepAlive,
+      }
+    : instance
+    ? {
+        moduleName,
+        moduleType,
+        ins: instance,
+        type,
+        name: methodName,
+        method: methodParams,
+        nested: true,
+        keepAlive,
+      }
+    : {
+        moduleName,
+        moduleType,
+        package: pkg,
+        class: cls,
+        name: method || methodName,
+        type,
+        companion,
+        method: methodParams,
+        nested: false,
+        keepAlive,
+      }
   return (...args: unknown[]) => {
     if (errMsg) {
       throw new Error(errMsg)
