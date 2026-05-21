@@ -60,6 +60,8 @@ const TEST_PRESETS = [
   },
 ]
 
+const uniElementText = new WeakMap<object, string>()
+
 function applyTestPreset(preset: any) {
   const originalVapor = (globalThis as any).__VAPOR__
   const originalX = (globalThis as any).__X__
@@ -88,7 +90,21 @@ function applyTestPreset(preset: any) {
       public nodeId: number,
       public page: any,
       public tagName: string
-    ) {}
+    ) {
+      uniElementText.set(this, '')
+    }
+    getNodeId() {
+      return this.nodeId
+    }
+    hasTagName(tagName: string) {
+      return this.tagName === tagName
+    }
+    get text() {
+      return uniElementText.get(this) || ''
+    }
+    set text(value: string) {
+      uniElementText.set(this, value)
+    }
   }
   return () => {
     ;(globalThis as any).__VAPOR__ = originalVapor
@@ -432,6 +448,13 @@ describe.each(TEST_PRESETS)(
       invokeSync.mockClear()
 
       expect(element.__v_skip).toBe(true)
+      if (preset.__VAPOR__) {
+        expect(element.tagName).toBe('view')
+        expect(element.getNodeId()).toBe(200)
+        expect(element.hasTagName('view')).toBe(true)
+        element.text = 'hello'
+        expect(element.text).toBe('hello')
+      }
       element.scrollTo({ top: 10 })
       expect(invokeSync).toHaveBeenLastCalledWith(
         'APP-SERVICE',
@@ -466,7 +489,7 @@ describe.each(TEST_PRESETS)(
           type: 'getter',
           name: 'dataset',
           keepAlive: false,
-          nested: false,
+          nested: true,
         }),
         expect.any(Function)
       )
