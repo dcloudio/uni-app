@@ -2147,41 +2147,47 @@ function registerPage(_ref, onCreated) {
   return nativePage;
 }
 function initVaporPageLifeCycle(pageComponentPublicInstance, nativePage) {
+  var pageRootEl = pageComponentPublicInstance.$el;
+  if (!pageRootEl)
+    return;
+  var pageScrollElementTags = ["LIST-VIEW", "SCROLL-VIEW", "WATERFLOW"];
   if (
     // @ts-expect-error
-    pageComponentPublicInstance._.onReachBottom || // @ts-expect-error
-    pageComponentPublicInstance._.onPageScroll
+    (pageComponentPublicInstance._.onReachBottom || // @ts-expect-error
+    pageComponentPublicInstance._.onPageScroll) && pageScrollElementTags.includes(pageRootEl.tagName)
   ) {
-    var pageRootEl = pageComponentPublicInstance.$el;
-    if (pageRootEl.tagName === "SCROLL-VIEW") {
-      var triggeredReachBottom = false;
-      var scrollEventId = pageRootEl.addEventListener("scroll", (e) => {
-        var scrollTop = e.target.scrollTop;
-        if (pageComponentPublicInstance._.onPageScroll) {
-          invokeHook(pageComponentPublicInstance, ON_PAGE_SCROLL, {
-            scrollTop
-          });
+    var triggeredReachBottom = false;
+    var scrollEventId = pageRootEl.addEventListener("scroll", (e) => {
+      var scrollTop = e.target.scrollTop;
+      if (pageComponentPublicInstance._.onPageScroll) {
+        invokeHook(pageComponentPublicInstance, ON_PAGE_SCROLL, {
+          scrollTop
+        });
+      }
+      if (pageComponentPublicInstance._.onReachBottom) {
+        var scrollHeight = e.target.scrollHeight;
+        var pageRootElHeight = pageRootEl.getBoundingClientRect().height;
+        if (scrollTop + pageRootElHeight >= scrollHeight - (pageComponentPublicInstance.$basePage.meta.onReachBottomDistance || 50)) {
+          !triggeredReachBottom && invokeHook(pageComponentPublicInstance, ON_REACH_BOTTOM);
+          triggeredReachBottom = true;
+        } else {
+          triggeredReachBottom = false;
         }
-        if (pageComponentPublicInstance._.onReachBottom) {
-          var scrollHeight = e.target.scrollHeight;
-          var pageRootElHeight = pageRootEl.getBoundingClientRect().height;
-          if (scrollTop + pageRootElHeight >= scrollHeight - (pageComponentPublicInstance.$basePage.meta.onReachBottomDistance || 50)) {
-            !triggeredReachBottom && invokeHook(pageComponentPublicInstance, ON_REACH_BOTTOM);
-            triggeredReachBottom = true;
-          } else {
-            triggeredReachBottom = false;
-          }
-        }
-      });
-      var pullDownRefreshEventId = "uni-pull-down-refresh-".concat(nativePage.pageId);
-      uni.$on(pullDownRefreshEventId, () => {
-        invokeHook(pageComponentPublicInstance, ON_PULL_DOWN_REFRESH);
-      });
-      nativePage.addPageEventListener(ON_UNLOAD, (_) => {
-        pageRootEl.removeEventListener("scroll", scrollEventId);
-        uni.$off(pullDownRefreshEventId);
-      });
-    }
+      }
+    });
+    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+      pageRootEl.removeEventListener("scroll", scrollEventId);
+    });
+  }
+  var SCROLL_VIEW_INSERT_BY_PULL_DOWN_REFRESH_ID = "uni-pdr-root";
+  if (pageRootEl.tagName === "SCROLL-VIEW" && pageRootEl.getAttribute("id") === SCROLL_VIEW_INSERT_BY_PULL_DOWN_REFRESH_ID) {
+    var pullDownRefreshEventId = "uni-pull-down-refresh-".concat(nativePage.pageId);
+    uni.$on(pullDownRefreshEventId, () => {
+      invokeHook(pageComponentPublicInstance, ON_PULL_DOWN_REFRESH);
+    });
+    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+      uni.$off(pullDownRefreshEventId);
+    });
   }
 }
 function registerDialogPage(_ref2, dialogPage, onCreated) {
