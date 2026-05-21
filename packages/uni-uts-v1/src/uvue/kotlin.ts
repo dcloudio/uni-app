@@ -164,10 +164,7 @@ export async function runUVueKotlinDev(
           }
           result.changed = []
         }
-
-        if (msg) {
-          console.error(msg)
-        }
+        throw new Error(msg || 'kotlin编译失败')
       }
     }
   }

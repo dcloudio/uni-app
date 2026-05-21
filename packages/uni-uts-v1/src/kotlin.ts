@@ -388,14 +388,9 @@ export async function runKotlinDev(
           normalizePath(path.relative(outputDir, newDexFile || dexFile)),
         ]
       }
-    } else if (msg) {
-      console.error(msg)
+    } else {
+      throw new Error(msg || 'kotlin编译失败')
     }
-    // else {
-    //   throw `${normalizePath(
-    //     path.relative(process.env.UNI_INPUT_DIR, filename)
-    //   )} 编译失败`
-    // }
   }
   return result
 }
