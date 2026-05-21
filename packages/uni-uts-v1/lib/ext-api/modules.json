@@ -129,7 +129,7 @@
       "startSoterAuthentication": {
         "name": "startSoterAuthentication",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
           "swift": true,
           "arkts": true
@@ -138,7 +138,7 @@
       "checkIsSupportSoterAuthentication": {
         "name": "checkIsSupportSoterAuthentication",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
           "swift": true,
           "arkts": true
@@ -147,7 +147,7 @@
       "checkIsSoterEnrolledInDevice": {
         "name": "checkIsSoterEnrolledInDevice",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
           "swift": true,
           "arkts": true
@@ -173,7 +173,7 @@
       "addPhoneCalendar": {
         "name": "addPhoneCalendar",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
           "swift": true,
           "arkts": true
@@ -182,7 +182,7 @@
       "addPhoneRepeatCalendar": {
         "name": "addPhoneRepeatCalendar",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
           "swift": true,
           "arkts": true
@@ -287,7 +287,7 @@
       "onCompassChange": {
         "name": "onCompassChange",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
           "swift": true,
           "arkts": true
@@ -299,7 +299,7 @@
       "offCompassChange": {
         "name": "offCompassChange",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
           "swift": true,
           "arkts": true
@@ -311,7 +311,7 @@
       "startCompass": {
         "name": "startCompass",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
           "swift": true,
           "arkts": true
@@ -323,7 +323,7 @@
       "stopCompass": {
         "name": "stopCompass",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
           "swift": true,
           "arkts": true
@@ -735,7 +735,7 @@
       "startGyroscope": {
         "name": "startGyroscope",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
           "swift": true,
           "arkts": true
@@ -747,7 +747,7 @@
       "stopGyroscope": {
         "name": "stopGyroscope",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
           "swift": true,
           "arkts": true
@@ -759,7 +759,7 @@
       "onGyroscopeChange": {
         "name": "onGyroscopeChange",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
           "swift": true,
           "arkts": true
@@ -771,7 +771,7 @@
       "offGyroscopeChange": {
         "name": "offGyroscopeChange",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
           "swift": true,
           "arkts": true
@@ -1274,8 +1274,6 @@
       "addPhoneContact": {
         "name": "addPhoneContact",
         "app": {
-          "web": false,
-          "mp-weixin": false,
           "js": false,
           "kotlin": true,
           "swift": true,
@@ -1285,8 +1283,6 @@
       "chooseContact": {
         "name": "chooseContact",
         "app": {
-          "web": false,
-          "mp-weixin": false,
           "js": false,
           "kotlin": true,
           "swift": true,
@@ -1576,7 +1572,7 @@
       "setKeepScreenOn": {
         "name": "setKeepScreenOn",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
           "swift": true,
           "arkts": true
