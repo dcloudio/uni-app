@@ -383,6 +383,25 @@ describe.each(TEST_PRESETS)(
         staticSetters: { staticCount: { name: 'staticCount', type: 'number' } },
       })
       const wifi = new WifiManager()
+      const invokeSync = jest.spyOn(preset.nativeChannel, 'invokeSync')
+      invokeSync.mockClear()
+      const wifiWithConstructorArgs = new WifiManager()
+      expect(wifiWithConstructorArgs).toBeDefined()
+      expect(invokeSync).toHaveBeenLastCalledWith(
+        'APP-SERVICE',
+        expect.objectContaining({
+          moduleName: 'Wifi管理',
+          moduleType: '',
+          package: 'uni.modules.TestPlugin',
+          class: 'WifiManager',
+          type: 'constructor',
+          name: 'constructor',
+          params: [],
+        }),
+        expect.any(Function)
+      )
+      expect(invokeSync.mock.calls[0][1]).not.toHaveProperty('id')
+      invokeSync.mockRestore()
       wifi.preparePermission(1, 2, 3, () => {})
       wifi.count = 1
       WifiManager.staticCount = 2
@@ -511,15 +530,20 @@ describe.each(TEST_PRESETS)(
       expect(invokeSync).toHaveBeenLastCalledWith(
         'APP-SERVICE',
         expect.objectContaining({
-          id: 0,
+          package: 'uni.modules.TestPlugin',
+          class: 'UniViewElement',
           moduleName: 'Element扩展',
           moduleType: '',
           type: 'method',
           name: 'staticPreparePermission',
+          companion: true,
           params: [1],
         }),
         expect.any(Function)
       )
+      expect(
+        invokeSync.mock.calls[invokeSync.mock.calls.length - 1][1]
+      ).not.toHaveProperty('id')
       void UniViewElement.staticCount
       expect(invokeSync).toHaveBeenLastCalledWith(
         'APP-SERVICE',
@@ -536,7 +560,8 @@ describe.each(TEST_PRESETS)(
       expect(invokeSync).toHaveBeenLastCalledWith(
         'APP-SERVICE',
         expect.objectContaining({
-          id: 0,
+          package: 'uni.modules.TestPlugin',
+          class: 'UniViewElement',
           moduleName: 'Element扩展',
           moduleType: '',
           type: 'setter',
@@ -545,6 +570,9 @@ describe.each(TEST_PRESETS)(
         }),
         expect.any(Function)
       )
+      expect(
+        invokeSync.mock.calls[invokeSync.mock.calls.length - 1][1]
+      ).not.toHaveProperty('id')
 
       expect(invokeSync).toHaveBeenCalledTimes(7)
       invokeSync.mockRestore()
