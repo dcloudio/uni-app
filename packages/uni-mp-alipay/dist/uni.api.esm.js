@@ -1027,7 +1027,6 @@ function populateParameters(fromRes, toRes) {
     // SDKVersion
     let _SDKVersion = SDKVersion;
     {
-        // @ts-expect-error
         _SDKVersion = my.SDKVersion;
     }
     // hostLanguage
