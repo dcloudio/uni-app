@@ -1,4 +1,5 @@
 import {
+  initUTSElementProxyClass,
   initUTSProxyClass,
   initUTSProxyFunction,
   normalizeArg,
@@ -63,16 +64,39 @@ function applyTestPreset(preset: any) {
   const originalVapor = (globalThis as any).__VAPOR__
   const originalX = (globalThis as any).__X__
   const originalPlus = (globalThis as any).plus
+  const originalUni = (globalThis as any).uni
   const originalNativeChannel = (globalThis as any).nativeChannel
+  const originalUniElementImpl = (globalThis as any).UniElementImpl
   ;(globalThis as any).__VAPOR__ = preset.__VAPOR__
   ;(globalThis as any).__X__ = preset.__X__
   ;(globalThis as any).plus = preset.plus
+  ;(globalThis as any).uni = {
+    requireNativePlugin() {
+      return {
+        invokeSync(args: any, callback: any) {
+          return preset.nativeChannel.invokeSync('APP-SERVICE', args, callback)
+        },
+        invokeAsync(args: any, callback: any) {
+          return preset.nativeChannel.invokeAsync('APP-SERVICE', args, callback)
+        },
+      }
+    },
+  }
   ;(globalThis as any).nativeChannel = preset.nativeChannel
+  ;(globalThis as any).UniElementImpl = class UniElementImpl {
+    constructor(
+      public nodeId: number,
+      public page: any,
+      public tagName: string
+    ) {}
+  }
   return () => {
     ;(globalThis as any).__VAPOR__ = originalVapor
     ;(globalThis as any).__X__ = originalX
     ;(globalThis as any).plus = originalPlus
+    ;(globalThis as any).uni = originalUni
     ;(globalThis as any).nativeChannel = originalNativeChannel
+    ;(globalThis as any).UniElementImpl = originalUniElementImpl
   }
 }
 
@@ -246,6 +270,14 @@ describe.each(TEST_PRESETS)(
 describe.each(TEST_PRESETS)(
   'uts-module mock module (__VAPOR__=$__VAPOR__, __X__=$__X__, platform=$platform)',
   (preset) => {
+    let restorePreset: () => void
+    beforeAll(() => {
+      restorePreset = applyTestPreset(preset)
+    })
+    afterAll(() => {
+      restorePreset()
+    })
+
     test(`initProxyFunction`, () => {
       const onMemory = initUTSProxyFunction(false, {
         moduleName: '内存监控',
@@ -360,6 +392,159 @@ describe.each(TEST_PRESETS)(
       expect(() => {
         WifiManagerError.staticCount
       }).toThrowError(errMsg)
+    })
+
+    test(`initUTSElementProxyClass`, () => {
+      const UniViewElement = initUTSElementProxyClass({
+        moduleName: 'Element扩展',
+        moduleType: '',
+        package: 'uni.modules.TestPlugin',
+        class: 'UniViewElement',
+        constructor: {
+          params: [],
+        },
+        methods: {
+          scrollTo: {
+            keepAlive: false,
+            params: [{ name: 'options', type: 'JSONObject' }],
+          },
+          measureByJs: {
+            keepAlive: false,
+            params: [{ name: 'callback', type: 'UTSCallback' }],
+          },
+        },
+        staticMethods: {
+          staticPreparePermission: {
+            async: false,
+            keepAlive: false,
+            params: [{ name: 'num', type: 'number' }],
+          },
+        },
+        props: ['dataset'],
+        staticProps: ['staticCount'],
+        setters: { dataset: { name: 'dataset', type: 'JSONObject' } },
+        staticSetters: { staticCount: { name: 'staticCount', type: 'number' } },
+      })
+      const page = { pageId: 100 }
+      const element = new UniViewElement(200, page, 'view')
+      const ins = { __type__: 'UniElement', pageId: 100, nodeId: 200 }
+      const invokeSync = jest.spyOn(preset.nativeChannel, 'invokeSync')
+      invokeSync.mockClear()
+
+      expect(element.__v_skip).toBe(true)
+      element.scrollTo({ top: 10 })
+      expect(invokeSync).toHaveBeenLastCalledWith(
+        'APP-SERVICE',
+        expect.objectContaining({
+          moduleName: 'Element扩展',
+          moduleType: '',
+          ins,
+          type: 'method',
+          name: 'scrollTo',
+          keepAlive: false,
+          nested: false,
+          params: [{ top: 10 }],
+        }),
+        expect.any(Function)
+      )
+      element.measure(() => {})
+      expect(invokeSync).toHaveBeenLastCalledWith(
+        'APP-SERVICE',
+        expect.objectContaining({
+          ins,
+          type: 'method',
+          name: 'measureByJs',
+          method: [{ name: 'callback', type: 'UTSCallback' }],
+        }),
+        expect.any(Function)
+      )
+      void element.dataset
+      expect(invokeSync).toHaveBeenLastCalledWith(
+        'APP-SERVICE',
+        expect.objectContaining({
+          ins,
+          type: 'getter',
+          name: 'dataset',
+          keepAlive: false,
+          nested: false,
+        }),
+        expect.any(Function)
+      )
+      element.dataset = { id: 'box' }
+      expect(invokeSync).toHaveBeenLastCalledWith(
+        'APP-SERVICE',
+        expect.objectContaining({
+          ins,
+          type: 'setter',
+          name: 'dataset',
+          keepAlive: false,
+          nested: false,
+          params: [{ id: 'box' }],
+        }),
+        expect.any(Function)
+      )
+
+      UniViewElement.staticPreparePermission(1)
+      expect(invokeSync).toHaveBeenLastCalledWith(
+        'APP-SERVICE',
+        expect.objectContaining({
+          id: 0,
+          moduleName: 'Element扩展',
+          moduleType: '',
+          type: 'method',
+          name: 'staticPreparePermission',
+          params: [1],
+        }),
+        expect.any(Function)
+      )
+      void UniViewElement.staticCount
+      expect(invokeSync).toHaveBeenLastCalledWith(
+        'APP-SERVICE',
+        expect.objectContaining({
+          package: 'uni.modules.TestPlugin',
+          class: 'UniViewElement',
+          type: 'getter',
+          name: 'staticCount',
+          companion: true,
+        }),
+        expect.any(Function)
+      )
+      UniViewElement.staticCount = 2
+      expect(invokeSync).toHaveBeenLastCalledWith(
+        'APP-SERVICE',
+        expect.objectContaining({
+          id: 0,
+          moduleName: 'Element扩展',
+          moduleType: '',
+          type: 'setter',
+          name: 'staticCount',
+          params: [2],
+        }),
+        expect.any(Function)
+      )
+
+      expect(invokeSync).toHaveBeenCalledTimes(7)
+      invokeSync.mockRestore()
+
+      const ElementError = initUTSElementProxyClass({
+        constructor: {
+          params: [],
+        },
+        methods: {
+          scrollTo: {
+            keepAlive: false,
+            params: [],
+          },
+        },
+        props: ['dataset'],
+        setters: {},
+        errMsg: 'xx插件编译失败，无法使用',
+      } as any)
+      const errorElement = new ElementError(200, page, 'view')
+      expect(errorElement.scrollTo).toThrowError('xx插件编译失败，无法使用')
+      expect(() => {
+        errorElement.dataset
+      }).toThrowError('xx插件编译失败，无法使用')
     })
   }
 )
