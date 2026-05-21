@@ -64,6 +64,8 @@ const isIPadOS = isMac && navigator.maxTouchPoints > 0
  * 是否是鸿蒙
  */
 const isHarmony = /OpenHarmony/i.test(ua)
+const isHarmony2in1 = isHarmony && /PC/i.test(ua)
+const isHarmonyTablet = isHarmony && /Tablet/i.test(ua)
 
 /**
  * 获取系统信息-同步
@@ -191,13 +193,12 @@ export function getBrowserInfo () {
       }
     }
   } else if (isHarmony) {
-    osname = 'Harmony'
+    osname = isHarmony2in1 ? 'ohos_pc' : 'Harmony'
+    deviceType = isHarmony2in1 ? 'pc' : isHarmonyTablet ? 'pad' : 'phone'
     const versionMatch = ua.match(/OpenHarmony\s([\d.]+)/i)
     if (versionMatch) {
       osversion = versionMatch[1]
     }
-    // 不区分 pad/phone，统一按手机处理
-    deviceType = 'phone'
     model = undefined
   } else {
     osname = 'Other'
