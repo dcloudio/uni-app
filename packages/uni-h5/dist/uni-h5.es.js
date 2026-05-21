@@ -7461,6 +7461,8 @@ const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
 const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
 const isIPadOS = isMac && navigator.maxTouchPoints > 0;
 const isHarmony = /OpenHarmony/i.test(ua);
+const isHarmony2in1 = isHarmony && /PC/i.test(ua);
+const isHarmonyTablet = isHarmony && /Tablet/i.test(ua);
 function getScreenFix() {
   return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
 }
@@ -19400,7 +19402,7 @@ function getBrowserInfo() {
         osversion += ` x${framework[1]}`;
       }
     } else if (isMac) {
-      osname = "macOS";
+      osname = "mac";
       const _osversion = osversionFind && osversionFind.match(/Mac OS X (.+)/) || "";
       if (osversion) {
         osversion = _osversion[1].replace(/_/g, ".");
@@ -19419,8 +19421,8 @@ function getBrowserInfo() {
       }
     }
   } else if (isHarmony) {
-    osname = "Harmony";
-    deviceType = "phone";
+    osname = isHarmony2in1 ? "ohos_pc" : "Harmony";
+    deviceType = isHarmony2in1 ? "pc" : isHarmonyTablet ? "pad" : "phone";
     const osversionFind = ua.match(/OpenHarmony\s([\d\.]+)/);
     if (osversionFind) {
       osversion = osversionFind[1];
