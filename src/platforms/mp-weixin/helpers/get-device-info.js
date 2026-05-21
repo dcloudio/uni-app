@@ -1,5 +1,9 @@
-import { useDeviceId, getGetDeviceType, getDeviceBrand, getOSInfo } from './enhance-system-info'
+import { useDeviceId, getGetDeviceType, getDeviceBrand, getOSInfo, getPlatform } from './enhance-system-info'
 
+/**
+ * 目前仅 weixin、toutiao/douyin 支持 deviceInfo。
+ * system: 操作系统及版本
+ */
 export default {
   returnValue: function (result) {
     const { brand, model, system = '', platform = '' } = result
@@ -14,7 +18,8 @@ export default {
       deviceBrand,
       deviceModel: model,
       osName,
-      osVersion
+      osVersion,
+      platform: getPlatform(platform)
     })
   }
 }
