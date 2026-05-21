@@ -1140,21 +1140,40 @@ function addSafeAreaInsets(fromRes, toRes) {
     }
 }
 function getOSInfo(system, platform) {
+    /**
+     * system 枚举值说明：
+     *
+     * weixin: 操作系统及版本
+     * qq: 操作系统及版本
+     * kuaishou: 操作系统及版本
+     *
+     * alipay、dingding: 系统版本
+     * baidu: 操作系统版本
+     * toutiao/douyin: 操作系统版本
+     * jd: 操作系统版本
+     * harmony: 操作系统版本
+     *
+     * lark: 文档无此字段
+     */
     let osName = '';
     let osVersion = '';
     if (platform &&
-        ("mp-weixin" === 'mp-baidu')) {
+        ("mp-weixin" === 'mp-harmony')) {
         osName = platform;
         osVersion = system;
+        system = `${osName} ${osVersion}`;
     }
     else {
-        osName = system.split(' ')[0] || platform;
+        {
+            osName = platform;
+        }
         osVersion = system.split(' ')[1] || '';
     }
     osName = osName.toLowerCase();
     switch (osName) {
         case 'harmony': // alipay
-        case 'ohos': // weixin
+        case 'ohos': // weixin harmony
+        case 'openharmonyos': // weixin 由 HarmonyOS 改为了 OpenHarmonyOS
         case 'openharmony': // feishu
             osName = 'harmonyos';
             break;
@@ -1172,13 +1191,38 @@ function getOSInfo(system, platform) {
     return {
         osName,
         osVersion,
+        system,
     };
+}
+function getPlatform(platform) {
+    /**
+     * platform 枚举值说明：
+     *
+     * weixin：ios、android、windows、mac、ohos、ohos_pc、devtools
+     * alipay、dingding：Android，iOS / iPhone OS，Harmony
+     * harmony: 固定 ohos
+     *
+     * toutiao: Android，iOS 无 harmony 平台，暂不处理
+     * lark: 'pc' | 'mobile' | 'android' | 'ios', 无 harmony 平台，暂不处理
+     *
+     * baidu：无相关描述
+     * qq: 无相关描述
+     * kuaishou: 无相关描述
+     * jd: 无相关描述
+     */
+    platform = platform.toLowerCase();
+    {
+        if (platform === 'ohos') {
+            platform = 'harmonyos';
+        }
+    }
+    return platform;
 }
 function populateParameters(fromRes, toRes) {
     const { brand = '', model = '', system = '', language = '', theme, version, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, } = fromRes;
     // const isQuickApp = "mp-weixin".indexOf('quickapp-webview') !== -1
     // osName osVersion
-    const { osName, osVersion } = getOSInfo(system, platform);
+    const { osName, osVersion, system: updatedSystem, } = getOSInfo(system, platform);
     let hostVersion = version;
     // deviceType
     let deviceType = getGetDeviceType(fromRes, model);
@@ -1220,6 +1264,8 @@ function populateParameters(fromRes, toRes) {
         hostFontSizeSetting: fontSizeSetting,
         windowTop: 0,
         windowBottom: 0,
+        platform: getPlatform(platform),
+        system: updatedSystem,
         // TODO
         osLanguage: undefined,
         osTheme: undefined,
@@ -1239,6 +1285,7 @@ function populateParameters(fromRes, toRes) {
     extend(toRes, parameters);
 }
 function getGetDeviceType(fromRes, model) {
+    const platform = fromRes.platform || '';
     // deviceType
     let deviceType = fromRes.deviceType || 'phone';
     {
@@ -1246,6 +1293,8 @@ function getGetDeviceType(fromRes, model) {
             ipad: 'pad',
             windows: 'pc',
             mac: 'pc',
+            linux: 'pc',
+            pc: 'pc',
         };
         const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
         const _model = model.toLowerCase();
@@ -1255,6 +1304,11 @@ function getGetDeviceType(fromRes, model) {
                 deviceType = deviceTypeMaps[_m];
                 break;
             }
+        }
+    }
+    {
+        if (platform === 'ohos_pc') {
+            deviceType = 'pc';
         }
     }
     return deviceType;
@@ -1337,6 +1391,10 @@ const showActionSheet = {
     },
 };
 
+/**
+ * 目前仅 weixin、toutiao/douyin 支持 deviceInfo。
+ * system: 操作系统及版本
+ */
 const getDeviceInfo = {
     returnValue: (fromRes, toRes) => {
         const { brand, model, system = '', platform = '' } = fromRes;
@@ -1350,6 +1408,7 @@ const getDeviceInfo = {
             deviceModel: model,
             osName,
             osVersion,
+            platform: getPlatform(platform),
         });
     },
 };
