@@ -23,7 +23,7 @@
 
   const src = ref(process.env.UNI_AUTOMATOR_APP_WEBVIEW_SRC)
   const webviewElement = ref<UniWebViewElement | null>(null)
-  const webviewContext = ref<WebviewContext | null>(null)
+  const webviewContext = ref<WebViewContext | null>(null)
   const webviewStyles = ref({
     progress: false
   })
@@ -37,7 +37,7 @@
   onReady(() => {
     const windowInfo = uni.getWindowInfo()
     safeAreaTop.value = windowInfo.safeAreaInsets.top
-    webviewContext.value = uni.createWebviewContext('webview')
+    webviewContext.value = uni.createWebViewContext('webview')
   })
   
   const initAutomator = () => {
