@@ -9730,7 +9730,7 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x",
-            "unixVaporVer": "5.1"
+            "unixVaporVer": "5.11"
           },
           "harmony": {
             "osVer": "5.0.0",
@@ -9756,7 +9756,7 @@
             "unixVaporVer": "x"
           },
           "ios": {
-            "unixVaporVer": "5.1"
+            "unixVaporVer": "5.11"
           },
           "harmony": {
             "unixVaporVer": "5.0"
