@@ -25,8 +25,16 @@ const uniStatLog = once((text) => {
 });
 var index = () => [
     uniCliShared.defineUniMainJsPlugin((opts) => {
-        // 公有版（version === '3'）走 uni-stat-public，与 1/2 私有版并存。
-        let statVersion = '1';
+        /**
+         * 统计类型（仅用于新编译器）：
+         * - public：公有版（uni-stat-public）
+         * - private：私有版（uni-cloud-stat）
+         *
+         * 兼容策略：
+         * - 优先读取 manifest.uniStatistics.type（public/private）
+         * - type 缺失或非法时，回退旧版 version（2=private，其余=public）
+         */
+        let statType = 'public';
         let isEnable = false;
         const stats = {
             '@dcloudio/uni-stat': uniCliShared.resolveBuiltIn('@dcloudio/uni-stat/dist/uni-stat.es.js'),
@@ -71,9 +79,14 @@ var index = () => [
                         const uniCloudConfig = statConfig.uniCloud || {};
                         // 获取manifest.json 统计配置，插入环境变量中
                         process.env.UNI_STATISTICS_CONFIG = JSON.stringify(statConfig);
-                        // version=3 走公有版；2 走 uniCloud 私有版；其它统一回退到 1.0。
-                        const versionNum = Number(statConfig.version);
-                        statVersion = versionNum === 3 ? '3' : versionNum === 2 ? '2' : '1';
+                        const type = String(statConfig.type || '').trim();
+                        if (type === 'public' || type === 'private') {
+                            statType = type;
+                        }
+                        else {
+                            const versionNum = Number(statConfig.version);
+                            statType = versionNum === 2 ? 'private' : 'public';
+                        }
                         process.env.UNI_STAT_UNI_CLOUD = JSON.stringify(uniCloudConfig);
                         process.env.UNI_STAT_DEBUG = statConfig.debug ? 'true' : 'false';
                         // 公有版字段 `an` 兜底：注入 manifest.json#name 到 process.env.UNI_APP_NAME，
@@ -95,24 +108,24 @@ var index = () => [
                                 isEnable = false;
                             }
                             else {
-                                if (!statConfig.version) {
+                                if (!statConfig.type && !statConfig.version) {
                                     uniStatLog(uniCliShared.M['stat.warn.version']);
                                 }
                                 else {
-                                    uniStatLog(`已开启 uni统计${statVersion === '3' ? '公有版(3)' : `${statVersion}.0`} 版本`);
+                                    uniStatLog(`已开启 uni统计${statType === 'public' ? '公有版' : '私有版'}`);
                                 }
                             }
                         }
                         else {
-                            if (!statConfig.version) {
+                            if (!statConfig.type && !statConfig.version) {
                                 uniStatLog(uniCliShared.M['stat.warn.version']);
                             }
                             else {
-                                uniStatLog(uniCliShared.M['stat.warn.tip'].replace('{version}', statVersion === '3' ? '公有版(3)' : `${statVersion}.0`));
+                                uniStatLog(uniCliShared.M['stat.warn.tip'].replace('{type}', statType === 'public' ? '公有版' : '私有版'));
                             }
                         }
                     }
-                    debug__default.default('uni:stat')('isEnable', isEnable, 'version', statVersion);
+                    debug__default.default('uni:stat')('isEnable', isEnable, 'type', statType);
                 }
                 process.env.UNI_STAT_TITLE_JSON = JSON.stringify(titlesJson);
                 return {
@@ -138,15 +151,15 @@ var index = () => [
             },
             transform(code, id) {
                 if (isEnable && opts.filter(id)) {
-                    // 三种版本对应不同的运行时入口：
-                    //   '1' → @dcloudio/uni-stat（HTTP 1.0）
-                    //   '2' → @dcloudio/uni-cloud-stat（uniCloud 2.0，私有版默认）
-                    //   '3' → @dcloudio/uni-stat-public（公有版，本次 Phase 11 新增）
-                    const importPath = statVersion === '3'
-                        ? '@dcloudio/uni-stat-public'
-                        : statVersion === '2'
-                            ? '@dcloudio/uni-cloud-stat'
-                            : '@dcloudio/uni-stat';
+                    // 新编译器只保留类型分流：
+                    //   public  → @dcloudio/uni-stat-public
+                    //   private → @dcloudio/uni-cloud-stat
+                    //
+                    // 兼容旧配置：
+                    //   type 缺失时回退 version（2=private，其余=public）
+                    const importPath = statType === 'private'
+                        ? '@dcloudio/uni-cloud-stat'
+                        : '@dcloudio/uni-stat-public';
                     return {
                         code: code + `;import '${importPath}';`,
                         map: null,

@@ -22,8 +22,8 @@ export default {
   'stat.warn.appid':
     'The current application is not configured with Appid, and uni statistics cannot be used. For details, see https://ask.dcloud.net.cn/article/36303',
   'stat.warn.version':
-    'The uni statistics version is not configured. The default version is 1.0.uni statistics version 2.0 is recommended, private deployment data is more secure and code is open source and customizable. details: https://uniapp.dcloud.io/uni-stat',
-  'stat.warn.tip': 'uni statistics version: {version}',
+    'The uni statistics type is not configured. The default type is public. You can set it to public or private. Details: https://uniapp.dcloud.io/uni-stat',
+  'stat.warn.tip': 'uni statistics enabled: {type}',
   'i18n.fallbackLocale.default':
     'fallbackLocale is missing in manifest.json, use: {locale}',
   'i18n.fallbackLocale.missing': './local/{locale}.json is missing',

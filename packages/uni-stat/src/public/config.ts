@@ -11,8 +11,8 @@
  * 由 uni-cli 在用户应用打包阶段通过 vite `define` 替换成字面量字符串；
  * 运行时取不到时回退为空串，避免拼到 URL 时变成 `undefined`。
  *
- * 注意：这里**不再**硬编码 `'3'`。`'3'` 是统计 SDK 协议版本（用于私有版 1/2/3
- * 三套实现的入口分发），由 `src/plugin/index.ts` 的 `statVersion` 控制；
+ * 注意：这里**不再**硬编码统计实现版本。统计入口由 `src/plugin/index.ts`
+ * 的统计类型（`public` / `private`）控制；
  * 与 `usv` 字段无关。
  */
 export const STAT_VERSION_PUBLIC: string =
