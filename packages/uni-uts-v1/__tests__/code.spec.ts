@@ -9,6 +9,10 @@ const uniModuleKeepAliveDir = resolve(
   __dirname,
   'examples/uts/uni_modules/test-keepAlive'
 )
+const pluginElementProxyDir = resolve(
+  __dirname,
+  'examples/uts/utssdk/test-element-proxy'
+)
 describe('code', () => {
   test('genProxyCode', async () => {
     const options: GenProxyCodeOptions = {
@@ -79,5 +83,33 @@ describe('code', () => {
         })
       ).replace(ERR_MSG_PLACEHOLDER, '')
     ).toMatchSnapshot()
+  })
+
+  test('genProxyCode uses element proxy class for Uni*Element and Uni*ElementImpl classes', async () => {
+    const res = await genProxyCode(pluginElementProxyDir, {
+      id: 'test-element',
+      is_uni_modules: false,
+      name: 'test-element',
+      namespace: 'uts.sdk.testElement',
+      extname: '.uts',
+      androidComponents: {},
+      inputDir,
+      platform: 'app-android',
+    })
+
+    expect(res).toContain('initUTSElementProxyClass')
+    expect(res).toContain(
+      'export const UniViewElement = /*#__PURE__*/ initUTSElementProxyClass'
+    )
+    expect(res).toContain(
+      'export const UniCanvasElementImpl = /*#__PURE__*/ initUTSElementProxyClass'
+    )
+    expect(res).toContain(
+      'export const ViewController = /*#__PURE__*/ initUTSProxyClass'
+    )
+    expect(res).toContain('export default /*#__PURE__*/ initUTSProxyClass')
+    expect(res).not.toContain(
+      'export default /*#__PURE__*/ initUTSElementProxyClass'
+    )
   })
 })

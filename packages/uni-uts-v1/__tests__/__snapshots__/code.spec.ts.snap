@@ -2,7 +2,7 @@
 
 exports[`code genProxyCode 1`] = `
 "
-const { registerUTSInterface, initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
+const { registerUTSInterface, initUTSProxyClass, initUTSElementProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
 const name = 'test-uts'
 const moduleName = '测试'
 const moduleType = 'built-in'
@@ -319,7 +319,7 @@ exports[`code genProxyCode 3`] = `
 
 exports[`code genProxyCode cjs 1`] = `
 "
-const { registerUTSInterface, initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
+const { registerUTSInterface, initUTSProxyClass, initUTSElementProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
 const name = 'test-uts'
 const moduleName = ''
 const moduleType = ''
@@ -351,7 +351,7 @@ uni.registerUTSPlugin('utssdk/test-uts', exports)
 
 exports[`code genProxyCode uni_modules 1`] = `
 "
-const { registerUTSInterface, initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
+const { registerUTSInterface, initUTSProxyClass, initUTSElementProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
 const name = 'test-uts'
 const moduleName = ''
 const moduleType = ''
@@ -372,7 +372,7 @@ export const testA3 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, mo
 
 exports[`code genProxyCode uni_modules keepAlive 1`] = `
 "
-const { registerUTSInterface, initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
+const { registerUTSInterface, initUTSProxyClass, initUTSElementProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
 const name = 'test-keepAlive'
 const moduleName = ''
 const moduleType = ''
