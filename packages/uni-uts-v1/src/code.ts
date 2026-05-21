@@ -208,7 +208,7 @@ export async function genProxyCode(
     return false
   })
   return `
-const { registerUTSInterface, initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
+const { registerUTSInterface, initUTSProxyClass, initUTSElementProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
 const name = '${name}'
 const moduleName = '${moduleName || ''}'
 const moduleType = '${moduleType || ''}'
@@ -564,16 +564,20 @@ function genModuleCode(
       }
 
       if (decl.isDefault) {
+        // initUTSElementProxyClass不会进入此分支
         codes.push(
           `${exportDefault}initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, '${
             decl.cls
           }ByJs', is_uni_modules) }, ${genClassOptionsCode(decl.options)} ))`
         )
       } else {
+        const initProxyMethodName = /^Uni.*Element(?:Impl)?$/.test(decl.cls)
+          ? 'initUTSElementProxyClass'
+          : 'initUTSProxyClass'
         codes.push(
           `${exportConst}${
             decl.cls
-          } = /*#__PURE__*/ initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, '${
+          } = /*#__PURE__*/ ${initProxyMethodName}(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, '${
             decl.cls
           }ByJs', is_uni_modules) }, ${genClassOptionsCode(decl.options)} ))`
         )
