@@ -4328,9 +4328,10 @@ function initProxyFunction(type, async, _ref, instanceIdOrInstance, proxy2) {
   if (!keepAlive) {
     keepAlive = (methodName.indexOf("on") === 0 || methodName.indexOf("off") === 0) && methodParams.length === 1 && methodParams[0].type === "UTSCallback";
   }
-  var instanceId = typeof instanceIdOrInstance === "number" ? instanceIdOrInstance : void 0;
-  var instance = typeof instanceIdOrInstance === "number" ? void 0 : instanceIdOrInstance;
-  var baseArgs = instanceId != null ? {
+  var isNumber = typeof instanceIdOrInstance === "number";
+  var instanceId = isNumber ? instanceIdOrInstance : void 0;
+  var instance = isNumber ? void 0 : instanceIdOrInstance;
+  var baseArgs = instanceId ? {
     moduleName,
     moduleType,
     id: instanceId,
@@ -4339,7 +4340,7 @@ function initProxyFunction(type, async, _ref, instanceIdOrInstance, proxy2) {
     method: methodParams,
     nested: false,
     keepAlive
-  } : instance != null ? {
+  } : instance ? {
     moduleName,
     moduleType,
     ins: instance,

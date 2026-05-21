@@ -18563,9 +18563,11 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
                 methodParams.length === 1 &&
                 methodParams[0].type === 'UTSCallback';
     }
-    let instanceId = typeof instanceIdOrInstance === 'number' ? instanceIdOrInstance : undefined;
-    let instance = typeof instanceIdOrInstance === 'number' ? undefined : instanceIdOrInstance;
-    const baseArgs = instanceId != null
+    // id: 0为非法instanceId
+    const isNumber = typeof instanceIdOrInstance === 'number';
+    let instanceId = isNumber ? instanceIdOrInstance : undefined;
+    let instance = isNumber ? undefined : instanceIdOrInstance;
+    const baseArgs = instanceId
         ? {
             moduleName,
             moduleType,
@@ -18576,7 +18578,7 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             nested: false,
             keepAlive,
         }
-        : instance != null
+        : instance
             ? {
                 moduleName,
                 moduleType,
