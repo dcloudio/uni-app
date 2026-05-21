@@ -562,7 +562,7 @@ function initProxyFunction(
           type,
           name: methodName,
           method: methodParams,
-          nested: false,
+          nested: true,
           keepAlive,
         }
       : {
@@ -987,7 +987,7 @@ export function initUTSElementProxyClass(options: ProxyClassOptions): any {
                 ins: element,
                 type: 'getter',
                 keepAlive: false,
-                nested: false,
+                nested: true,
                 name: name as string,
                 errMsg,
               })
