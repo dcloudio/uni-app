@@ -22,6 +22,7 @@ import {
 import { type IsStaticFile, getIsStaticFile } from './static'
 
 export const assetUrlRE = /__VITE_ASSET__([a-z\d]{8})__(?:\$_(.*?)__)?/g
+const assetUrlMarker = '__VITE_ASSET__'
 
 const rawRE = /(\?|&)raw(?:&|$)/
 const urlRE = /(\?|&)url(?:&|$)/
@@ -125,6 +126,10 @@ export function assetPlugin(
       let match: RegExpExecArray | null
       let s: MagicString | undefined
       assetUrlRE.lastIndex = 0
+      // 部分 chunk 不包含资源占位符，先用低成本字符串查找跳过正则扫描。
+      if (code.indexOf(assetUrlMarker) === -1) {
+        return null
+      }
       // Urls added with JS using e.g.
       // imgElement.src = "__VITE_ASSET__5aa0ddc0__" are using quotes
 
