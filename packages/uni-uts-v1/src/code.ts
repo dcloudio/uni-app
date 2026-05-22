@@ -571,9 +571,11 @@ function genModuleCode(
           }ByJs', is_uni_modules) }, ${genClassOptionsCode(decl.options)} ))`
         )
       } else {
-        const initProxyMethodName = /^Uni.*Element(?:Impl)?$/.test(decl.cls)
-          ? 'initUTSElementProxyClass'
-          : 'initUTSProxyClass'
+        const initProxyMethodName =
+          process.env.UNI_APP_X_DOM2 === 'true' &&
+          /^Uni.*Element(?:Impl)?$/.test(decl.cls)
+            ? 'initUTSElementProxyClass'
+            : 'initUTSProxyClass'
         codes.push(
           `${exportConst}${
             decl.cls
