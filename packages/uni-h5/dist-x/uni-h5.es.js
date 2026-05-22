@@ -9252,10 +9252,13 @@ function getTheme() {
 function getBrowserInfo() {
   let osname;
   let osversion = "0";
-  let model = "";
+  let model;
   let deviceType = "phone";
+  let platform = "";
+  let deviceBrand;
   const language = navigator.language;
   if (isIOS) {
+    deviceBrand = "iPhone";
     osname = "iOS";
     const osversionFind = ua.match(/OS\s([\w_]+)\slike/);
     if (osversionFind) {
@@ -9311,6 +9314,7 @@ function getBrowserInfo() {
       }
     }
   } else if (isIPadOS) {
+    deviceBrand = "iPad";
     model = "iPad";
     osname = "iOS";
     deviceType = "pad";
@@ -9354,7 +9358,8 @@ function getBrowserInfo() {
         osversion += ` x${framework[1]}`;
       }
     } else if (isMac) {
-      osname = "mac";
+      osname = "macos";
+      platform = "mac";
       const _osversion = osversionFind && osversionFind.match(/Mac OS X (.+)/) || "";
       if (osversion) {
         osversion = _osversion[1].replace(/_/g, ".");
@@ -9373,20 +9378,22 @@ function getBrowserInfo() {
       }
     }
   } else if (isHarmony) {
-    osname = isHarmony2in1 ? "ohos_pc" : "Harmony";
+    deviceBrand = "HUAWEI";
+    osname = "harmonyos";
     deviceType = isHarmony2in1 ? "pc" : isHarmonyTablet ? "pad" : "phone";
     const osversionFind = ua.match(/OpenHarmony\s([\d\.]+)/);
     if (osversionFind) {
       osversion = osversionFind[1];
     }
-    model = "";
+    model = void 0;
   } else {
     osname = "Other";
     osversion = "0";
     deviceType = "unknown";
   }
   const system = `${osname} ${osversion}`;
-  const platform = osname.toLowerCase();
+  if (!platform)
+    platform = osname.toLowerCase();
   let browserName = "";
   let browserVersion = String(IEVersion());
   if (browserVersion !== "-1") {
@@ -9419,8 +9426,8 @@ function getBrowserInfo() {
     deviceOrientation = Math.abs(window.orientation) === 90 ? "landscape" : "portrait";
   }
   return {
-    deviceBrand: void 0,
-    brand: void 0,
+    deviceBrand,
+    brand: deviceBrand,
     deviceModel: model,
     deviceOrientation,
     model,
