@@ -1,4 +1,5 @@
 import path from 'path'
+import { createHash } from 'node:crypto'
 import fs from 'fs-extra'
 import type { ResolvedConfig } from 'vite'
 import {
@@ -27,6 +28,112 @@ import {
 import { uniAppCssPlugin } from './css'
 import { uniAppJsPlugin } from './js'
 import { rewriteImportVuePlugin } from './rewriteImportVue'
+
+const HARMONY_DOM2_ESBUILD_TRANSPILE_CACHE_MAX = 2048
+const HARMONY_DOM2_ESBUILD_TRANSPILE_CACHE_FLAG =
+  '__uni_harmony_dom2_esbuild_transpile_cache__'
+
+// 鸿蒙 dom2 增量编译时，Rollup 每次 generate 都会让 vite:esbuild-transpile
+// 对所有 chunk 重新执行 renderChunk。多数未变更 chunk 的 code、fileName、format 都相同，
+// 这部分 esbuild 转译是重复开销，性能报告里它也是 generate 阶段最大的单点耗时。
+//
+// 这里不替换 Vite 的实现，只在鸿蒙 dom2 下包装原 renderChunk：
+// 1. 命中缓存时直接复用原 renderChunk 的返回值，跳过重复 esbuild transform；
+// 2. 未命中时仍调用 Vite 原逻辑，保证功能和 sourcemap 处理不变；
+// 3. 缓存只放在当前 Vite 配置实例内，不跨进程、不落盘，避免引入额外失效问题。
+function initHarmonyDom2EsbuildTranspileCache(config: ResolvedConfig) {
+  const plugin = config.plugins.find((p) => p.name === 'vite:esbuild-transpile')
+  if (
+    !plugin ||
+    !plugin.renderChunk ||
+    (plugin as any)[HARMONY_DOM2_ESBUILD_TRANSPILE_CACHE_FLAG]
+  ) {
+    return
+  }
+  const rawRenderChunk = plugin.renderChunk as any
+  const rawHandler =
+    typeof rawRenderChunk === 'function'
+      ? rawRenderChunk
+      : rawRenderChunk.handler
+  if (typeof rawHandler !== 'function') {
+    return
+  }
+
+  const cache = new Map<string, Promise<any> | any>()
+  const renderChunk = function (
+    this: any,
+    code: string,
+    chunk: any,
+    opts: any
+  ) {
+    // plugin-legacy 会通过该标记跳过 esbuild，保持原逻辑直接透传。
+    if (opts?.__vite_skip_esbuild__) {
+      return rawHandler.call(this, code, chunk, opts)
+    }
+
+    const cacheKey = createEsbuildTranspileCacheKey(code, chunk, opts)
+    if (cache.has(cacheKey)) {
+      const cached = cache.get(cacheKey)
+      // Map 充当简单 LRU：命中后挪到末尾，避免热 chunk 被淘汰。
+      cache.delete(cacheKey)
+      cache.set(cacheKey, cached)
+      return cached
+    }
+
+    const result = Promise.resolve(rawHandler.call(this, code, chunk, opts))
+      .then((res) => {
+        // 缓存原 hook 的完整结果，而不是只缓存 code，避免遗漏 map 等字段。
+        cache.set(cacheKey, res)
+        return res
+      })
+      .catch((err) => {
+        // 转译失败不能污染缓存，避免后续修复代码后仍复用错误结果。
+        cache.delete(cacheKey)
+        throw err
+      })
+    cache.set(cacheKey, result)
+    trimEsbuildTranspileCache(cache)
+    return result
+  }
+
+  plugin.renderChunk =
+    typeof rawRenderChunk === 'function'
+      ? renderChunk
+      : { ...rawRenderChunk, handler: renderChunk }
+  // 标记已包装，避免多个插件或重复 configResolved 时二次包裹。
+  ;(plugin as any)[HARMONY_DOM2_ESBUILD_TRANSPILE_CACHE_FLAG] = true
+}
+
+function createEsbuildTranspileCacheKey(
+  code: string,
+  chunk: { fileName?: string },
+  opts: { format?: string; sourcemap?: boolean | string }
+) {
+  // renderChunk 的输出主要由 chunk 内容和输出参数决定：
+  // - code hash/length：判断 chunk 内容是否真的没变；
+  // - fileName：Vite 会作为 esbuild sourcefile，影响 sourcemap；
+  // - format/sourcemap：影响 esbuild 输出格式和 map 结果。
+  // 只把 hash 放入 key，避免把大段 chunk code 长期挂在 Map key 上。
+  const hash = createHash('sha1').update(code).digest('hex')
+  return [
+    opts?.format,
+    opts?.sourcemap,
+    chunk?.fileName,
+    code.length,
+    hash,
+  ].join('|')
+}
+
+function trimEsbuildTranspileCache(cache: Map<string, any>) {
+  // watch 场景中 chunk 会随编辑持续产生新内容，限制上限避免缓存无限增长。
+  while (cache.size > HARMONY_DOM2_ESBUILD_TRANSPILE_CACHE_MAX) {
+    const firstKey = cache.keys().next().value
+    if (!firstKey) {
+      break
+    }
+    cache.delete(firstKey)
+  }
+}
 
 export function initUniAppJsEngineDom1CssPlugin(config: ResolvedConfig) {
   injectCssPlugin(
@@ -196,6 +303,12 @@ export function createUniAppJsEnginePlugin(
             // 使用内部自己定义的 transformAssetUrls
             plugin.api.options.template.transformAssetUrls = false
           }
+        }
+        if (isDom2 && isHarmony) {
+          // 仅鸿蒙 dom2 开启：该模式会拆出大量 ESM chunk，
+          // 增量编译时未变更 chunk 也会反复走 Vite 的 esbuild renderChunk。
+          // 其他平台/模式先不改，避免扩大影响面。
+          initHarmonyDom2EsbuildTranspileCache(config)
         }
       },
       generateBundle(_, bundle) {
