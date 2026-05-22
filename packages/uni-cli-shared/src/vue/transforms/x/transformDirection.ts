@@ -1,15 +1,23 @@
-import { isElementNode } from '../../../vite'
+import {
+  isAttributeNode,
+  isCompoundExpressionNode,
+  isElementNode,
+  isSimpleExpressionNode,
+} from '../../../vite'
 import {
   createAttributeNode,
   createBindDirectiveNode,
   isPropNameEquals,
 } from '../../utils'
 import {
+  type CompoundExpressionNode,
+  type ExpressionNode,
   NodeTypes,
   type RootNode,
   type TemplateChildNode,
   type TransformContext,
 } from '@vue/compiler-core'
+import { isString, isSymbol } from '@vue/shared'
 
 /**
  * 将direction属性转化为scroll-x和scroll-y
@@ -45,7 +53,7 @@ export const transformDirection = function (
     return
   }
   const directionProp = node.props[directionPropIndex]
-  if (directionProp.type === NodeTypes.ATTRIBUTE) {
+  if (isAttributeNode(directionProp)) {
     const directionValue = directionProp.value?.content
     const scrollX = directionValue === 'horizontal' || directionValue === 'all'
     const scrollY =
@@ -58,17 +66,53 @@ export const transformDirection = function (
   } else if (directionProp.type === NodeTypes.DIRECTIVE) {
     if (
       !directionProp.arg ||
-      directionProp.arg.type !== NodeTypes.SIMPLE_EXPRESSION ||
+      !isSimpleExpressionNode(directionProp.arg) ||
       !directionProp.exp ||
-      directionProp.exp.type !== NodeTypes.SIMPLE_EXPRESSION
+      !(
+        isSimpleExpressionNode(directionProp.exp) ||
+        isCompoundExpressionNode(directionProp.exp)
+      )
     ) {
       return
     }
-    const exp = directionProp.exp.content
+    const exp = stringifyExpression(directionProp.exp)
+    if (!exp) {
+      return
+    }
     const scrollX = `(${exp}) === 'horizontal' || (${exp}) === 'all'`
     const scrollY = `!(${exp}) || (${exp}) === 'vertical' || (${exp}) === 'all'`
     node.props.splice(directionPropIndex, 1)
     node.props.push(createBindDirectiveNode('scroll-x', scrollX))
     node.props.push(createBindDirectiveNode('scroll-y', scrollY))
+  }
+}
+
+type CompoundExpressionChild = Exclude<
+  CompoundExpressionNode['children'][number],
+  string | symbol
+>
+
+function stringifyExpression(
+  exp: ExpressionNode | CompoundExpressionChild
+): string | undefined {
+  if (isSimpleExpressionNode(exp)) {
+    return exp.content
+  }
+  if (isCompoundExpressionNode(exp)) {
+    const children: string[] = []
+    for (const child of exp.children) {
+      if (isString(child)) {
+        children.push(child)
+      } else if (isSymbol(child)) {
+        return
+      } else {
+        const content = stringifyExpression(child)
+        if (content === undefined) {
+          return
+        }
+        children.push(content)
+      }
+    }
+    return children.join('')
   }
 }
