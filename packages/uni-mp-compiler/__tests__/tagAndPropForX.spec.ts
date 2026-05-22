@@ -61,6 +61,20 @@ describe('compiler: transform tagAndProp', () => {
       }
     )
   })
+  test('scroll-view dynamic member direction', () => {
+    assert(
+      `<scroll-view :direction="data.direction" />`,
+      `<scroll-view style=\"{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}\" enable-flex=\"true\" enhanced=\"true\" scroll-x=\"{{c}}\" scroll-y=\"{{d}}\"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\`, c: _ctx.data.direction === 'horizontal' || _ctx.data.direction === 'all', d: !_ctx.data.direction || _ctx.data.direction === 'vertical' || _ctx.data.direction === 'all' }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag, transformDirection],
+      }
+    )
+  })
   test('canvas', () => {
     assert(
       `<canvas />`,
