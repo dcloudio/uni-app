@@ -123,16 +123,6 @@ const camelize = cached((str) => {
   return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
 });
 
-function sortObject (obj) {
-  const sortObj = {};
-  if (isPlainObject(obj)) {
-    Object.keys(obj).sort().forEach(key => {
-      sortObj[key] = obj[key];
-    });
-  }
-  return !Object.keys(sortObj) ? obj : sortObj
-}
-
 const HOOKS = [
   'invoke',
   'success',
@@ -741,24 +731,44 @@ function addSafeAreaInsets (result) {
 }
 
 function getOSInfo (system, platform) {
+  /**
+   * system 枚举值说明：
+   *
+   * weixin: 操作系统及版本
+   * qq: 操作系统及版本
+   * kuaishou: 操作系统及版本
+   *
+   * alipay、dingding: 系统版本
+   * baidu: 操作系统版本
+   * toutiao/douyin: 操作系统版本
+   * jd: 操作系统版本
+   * harmony: 操作系统版本
+   *
+   * lark: 文档无此字段
+   */
   let osName = '';
   let osVersion = '';
 
   if (
     platform &&
-    ( "mp-weixin" === 'mp-baidu')
+    ( "mp-weixin" === 'mp-harmony')
   ) {
     osName = platform;
     osVersion = system;
+    system = `${osName} ${osVersion}`;
   } else {
-    osName = system.split(' ')[0] || platform;
+    {
+      osName = platform;
+    }
     osVersion = system.split(' ')[1] || '';
   }
 
   osName = osName.toLocaleLowerCase();
+
   switch (osName) {
     case 'harmony': // alipay
-    case 'ohos': // weixin
+    case 'ohos': // weixin harmony
+    case 'openharmonyos': // weixin 由 HarmonyOS 改为了 OpenHarmonyOS
     case 'openharmony': // feishu
       osName = 'harmonyos';
       break
@@ -776,8 +786,34 @@ function getOSInfo (system, platform) {
 
   return {
     osName,
-    osVersion
+    osVersion,
+    system
   }
+}
+
+function getPlatform (platform) {
+  /**
+   * platform 枚举值说明：
+   *
+   * weixin：ios、android、windows、mac、ohos、ohos_pc、devtools
+   * alipay、dingding：Android，iOS / iPhone OS，Harmony
+   * harmony: 固定 ohos
+   *
+   * toutiao: Android，iOS 无 harmony 平台，暂不处理
+   * lark: 'pc' | 'mobile' | 'android' | 'ios', 无 harmony 平台，暂不处理
+   *
+   * baidu：无相关描述
+   * qq: 无相关描述
+   * kuaishou: 无相关描述
+   * jd: 无相关描述
+   */
+  platform = platform.toLowerCase();
+  {
+    if (platform === 'ohos') {
+      platform = 'harmonyos';
+    }
+  }
+  return platform
 }
 
 function populateParameters (result) {
@@ -792,7 +828,7 @@ function populateParameters (result) {
   const extraParam = {};
 
   // osName osVersion
-  const { osName, osVersion } = getOSInfo(system, platform);
+  const { osName, osVersion, system: updatedSystem } = getOSInfo(system, platform);
   let hostVersion = version;
 
   // deviceType
@@ -843,6 +879,8 @@ function populateParameters (result) {
     hostFontSizeSetting: fontSizeSetting,
     windowTop: 0,
     windowBottom: 0,
+    platform: getPlatform(platform),
+    system: updatedSystem,
     // TODO
     osLanguage: undefined,
     osTheme: undefined,
@@ -857,12 +895,15 @@ function populateParameters (result) {
 }
 
 function getGetDeviceType (result, model) {
+  const platform = result.platform || '';
   let deviceType = result.deviceType || 'phone';
   {
     const deviceTypeMaps = {
       ipad: 'pad',
       windows: 'pc',
-      mac: 'pc'
+      mac: 'pc',
+      linux: 'pc',
+      pc: 'pc'
     };
     const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
     const _model = model.toLocaleLowerCase();
@@ -872,6 +913,11 @@ function getGetDeviceType (result, model) {
         deviceType = deviceTypeMaps[_m];
         break
       }
+    }
+  }
+  {
+    if (platform === 'ohos_pc') {
+      deviceType = 'pc';
     }
   }
   return deviceType
@@ -931,7 +977,7 @@ var getAppBaseInfo = {
 
     const hostLanguage = (language || '').replace('_', '-');
 
-    result = sortObject(Object.assign(result, {
+    result = Object.assign(result, {
       appId: process.env.UNI_APP_ID,
       appName: process.env.UNI_APP_NAME,
       appVersion: process.env.UNI_APP_VERSION_NAME,
@@ -947,10 +993,14 @@ var getAppBaseInfo = {
       uniCompileVersion: process.env.UNI_COMPILER_VERSION,
       uniCompilerVersion: process.env.UNI_COMPILER_VERSION,
       uniRuntimeVersion: process.env.UNI_COMPILER_VERSION
-    }));
+    });
   }
 };
 
+/**
+ * 目前仅 weixin、toutiao/douyin 支持 deviceInfo。
+ * system: 操作系统及版本
+ */
 var getDeviceInfo = {
   returnValue: function (result) {
     const { brand, model, system = '', platform = '' } = result;
@@ -960,13 +1010,14 @@ var getDeviceInfo = {
 
     const { osName, osVersion } = getOSInfo(system, platform);
 
-    result = sortObject(Object.assign(result, {
+    result = Object.assign(result, {
       deviceType,
       deviceBrand,
       deviceModel: model,
       osName,
-      osVersion
-    }));
+      osVersion,
+      platform: getPlatform(platform)
+    });
   }
 };
 
@@ -974,10 +1025,10 @@ var getWindowInfo = {
   returnValue: function (result) {
     addSafeAreaInsets(result);
 
-    result = sortObject(Object.assign(result, {
+    result = Object.assign(result, {
       windowTop: 0,
       windowBottom: 0
-    }));
+    });
   }
 };
 
