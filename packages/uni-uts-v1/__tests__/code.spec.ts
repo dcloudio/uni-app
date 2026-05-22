@@ -13,6 +13,28 @@ const pluginElementProxyDir = resolve(
   __dirname,
   'examples/uts/utssdk/test-element-proxy'
 )
+
+async function withUniAppXDom2<T>(
+  value: 'true' | undefined,
+  run: () => Promise<T>
+) {
+  const originalUniAppXDom2 = process.env.UNI_APP_X_DOM2
+  if (value === undefined) {
+    delete process.env.UNI_APP_X_DOM2
+  } else {
+    process.env.UNI_APP_X_DOM2 = value
+  }
+  try {
+    return await run()
+  } finally {
+    if (originalUniAppXDom2 === undefined) {
+      delete process.env.UNI_APP_X_DOM2
+    } else {
+      process.env.UNI_APP_X_DOM2 = originalUniAppXDom2
+    }
+  }
+}
+
 describe('code', () => {
   test('genProxyCode', async () => {
     const options: GenProxyCodeOptions = {
@@ -85,8 +107,8 @@ describe('code', () => {
     ).toMatchSnapshot()
   })
 
-  test('genProxyCode uses element proxy class for Uni*Element and Uni*ElementImpl classes', async () => {
-    const res = await genProxyCode(pluginElementProxyDir, {
+  function genElementProxyCode() {
+    return genProxyCode(pluginElementProxyDir, {
       id: 'test-element',
       is_uni_modules: false,
       name: 'test-element',
@@ -96,6 +118,10 @@ describe('code', () => {
       inputDir,
       platform: 'app-android',
     })
+  }
+
+  test('genProxyCode uses element proxy class for Uni*Element and Uni*ElementImpl classes in DOM2', async () => {
+    const res = await withUniAppXDom2('true', genElementProxyCode)
 
     expect(res).toContain('initUTSElementProxyClass')
     expect(res).toContain(
@@ -110,6 +136,27 @@ describe('code', () => {
     expect(res).toContain('export default /*#__PURE__*/ initUTSProxyClass')
     expect(res).not.toContain(
       'export default /*#__PURE__*/ initUTSElementProxyClass'
+    )
+  })
+
+  test('genProxyCode uses normal proxy class for Uni*Element and Uni*ElementImpl classes outside DOM2', async () => {
+    const res = await withUniAppXDom2(undefined, genElementProxyCode)
+
+    expect(res).toContain(
+      'export const UniViewElement = /*#__PURE__*/ initUTSProxyClass'
+    )
+    expect(res).toContain(
+      'export const UniCanvasElementImpl = /*#__PURE__*/ initUTSProxyClass'
+    )
+    expect(res).toContain(
+      'export const ViewController = /*#__PURE__*/ initUTSProxyClass'
+    )
+    expect(res).toContain('export default /*#__PURE__*/ initUTSProxyClass')
+    expect(res).not.toContain(
+      'export const UniViewElement = /*#__PURE__*/ initUTSElementProxyClass'
+    )
+    expect(res).not.toContain(
+      'export const UniCanvasElementImpl = /*#__PURE__*/ initUTSElementProxyClass'
     )
   })
 })
