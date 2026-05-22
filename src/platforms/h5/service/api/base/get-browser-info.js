@@ -76,8 +76,11 @@ export function getBrowserInfo () {
   var osversion
   var model
   let deviceType = 'phone'
+  let deviceBrand
+  let platform = ''
 
   if (isIOS) {
+    deviceBrand = 'iPhone'
     osname = 'iOS'
     const osversionFind = ua.match(/OS\s([\w_]+)\slike/)
     if (osversionFind) {
@@ -125,6 +128,7 @@ export function getBrowserInfo () {
       }
     }
   } else if (isIPadOS) {
+    deviceBrand = 'iPad'
     model = 'iPad'
     osname = 'iOS'
     osversion = typeof window.BigInt === 'function' ? '14.0' : '13.0'
@@ -170,7 +174,8 @@ export function getBrowserInfo () {
         osversion += ` x${framework[1]}`
       }
     } else if (isMac) {
-      osname = 'mac'
+      osname = 'macos'
+      platform = 'mac'
       osversion = osversionFind.match(/Mac OS X (.+)/) || ''
 
       if (osversion) {
@@ -193,7 +198,8 @@ export function getBrowserInfo () {
       }
     }
   } else if (isHarmony) {
-    osname = isHarmony2in1 ? 'ohos_pc' : 'Harmony'
+    deviceBrand = 'HUAWEI'
+    osname = 'harmonyos'
     deviceType = isHarmony2in1 ? 'pc' : isHarmonyTablet ? 'pad' : 'phone'
     const versionMatch = ua.match(/OpenHarmony\s([\d.]+)/i)
     if (versionMatch) {
@@ -207,7 +213,7 @@ export function getBrowserInfo () {
   }
 
   var system = `${osname} ${osversion}`
-  var platform = osname.toLocaleLowerCase()
+  if (!platform) platform = osname.toLocaleLowerCase()
 
   let browserName = ''
   let browserVersion = String(IEVersion())
@@ -243,8 +249,8 @@ export function getBrowserInfo () {
   }
 
   return {
-    deviceBrand: undefined,
-    brand: undefined,
+    deviceBrand,
+    brand: deviceBrand,
     deviceModel: model,
     deviceOrientation,
     model,
