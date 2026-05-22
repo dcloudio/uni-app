@@ -205,6 +205,9 @@ export default defineConfig({
     },
     assetsDir: '.',
     rollupOptions: {
+      // UTS 允许将类型声明按值导出重导出。
+      // Rollup 4.45.3+ 会校验缺失导出，开启 shim 兼容生成的 ext-api 模块。
+      shimMissingExports: true,
       output: {
         dir: isX_VAPOR ? 'dist-x-vapor' : isX ? 'dist-x' : 'dist',
         freeze: false, // uni 对象需要可被修改
