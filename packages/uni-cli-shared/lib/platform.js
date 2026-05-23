@@ -81,7 +81,9 @@ function isEnableConsole () {
     process.env.NODE_ENV === 'development' &&
     process.env.UNI_SOCKET_HOSTS &&
     process.env.UNI_SOCKET_PORT &&
-    process.env.UNI_SOCKET_ID
+    process.env.UNI_SOCKET_ID &&
+    // 环境变量传入有bug，临时屏蔽安卓平台开启 uni-console
+    process.env.UNI_APP_PLATFORM !== 'android'
   )
 }
 
