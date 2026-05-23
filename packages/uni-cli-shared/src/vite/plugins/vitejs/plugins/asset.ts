@@ -14,6 +14,7 @@ import {
   normalizeEmitAssetFileName,
   normalizeNodeModules,
 } from '../../../../utils'
+import { shouldUseHighResolutionSourceMap } from '../../../../x'
 import { type IsStaticFile, getIsStaticFile } from './static'
 
 type EmittedAsset = Rolldown.EmittedAsset
@@ -148,7 +149,9 @@ export function assetPlugin(
       if (s) {
         return {
           code: s.toString(),
-          map: withSourcemap(config) ? s.generateMap({ hires: true }) : null,
+          map: withSourcemap(config)
+            ? s.generateMap({ hires: shouldUseHighResolutionSourceMap() })
+            : null,
         }
       } else {
         return null

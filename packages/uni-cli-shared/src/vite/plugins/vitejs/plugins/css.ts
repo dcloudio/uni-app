@@ -36,6 +36,7 @@ import { isArray, isFunction, isString } from '@vue/shared'
 import { preCss, preNVueCss } from '../../../../preprocess'
 import { filterPrefersColorScheme } from '../../../../postcss/plugins/uniapp'
 import { emptyCssComments } from '../cleanString'
+import { shouldUseHighResolutionSourceMap } from '../../../../x'
 
 import { PAGES_JSON_JS, PAGES_JSON_UTS } from '../../../../constants'
 import { createJsStylePlaceholder } from '../../../../dom2/fontFamily'
@@ -1711,7 +1712,7 @@ async function getSource(
   ms.appendLeft(0, sep)
   ms.appendLeft(0, additionalData)
 
-  const map = ms.generateMap({ hires: true })
+  const map = ms.generateMap({ hires: shouldUseHighResolutionSourceMap() })
   map.file = filename
   map.sources = [filename]
 

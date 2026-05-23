@@ -3,6 +3,7 @@ import type { TransformResult } from 'vite'
 import type { SourceMap } from 'magic-string'
 import type * as tsTypes from 'typescript'
 import { normalizePath } from '../utils'
+import { shouldUseHighResolutionSourceMap } from '../x'
 
 export function rewriteConsoleExpr(
   method: string,
@@ -28,7 +29,9 @@ export function rewriteConsoleExpr(
     return {
       code: s.toString(),
       map: sourceMap
-        ? normalizeSourceMap(s.generateMap({ hires: true }))
+        ? normalizeSourceMap(
+            s.generateMap({ hires: shouldUseHighResolutionSourceMap() })
+          )
         : { mappings: '' },
     }
   }
