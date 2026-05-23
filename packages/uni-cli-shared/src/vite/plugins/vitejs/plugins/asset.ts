@@ -19,6 +19,7 @@ import {
   normalizeEmitAssetFileName,
   normalizeNodeModules,
 } from '../../../../utils'
+import { shouldUseHighResolutionSourceMap } from '../../../../x'
 import { type IsStaticFile, getIsStaticFile } from './static'
 
 export const assetUrlRE = /__VITE_ASSET__([a-z\d]{8})__(?:\$_(.*?)__)?/g
@@ -150,7 +151,9 @@ export function assetPlugin(
       if (s) {
         return {
           code: s.toString(),
-          map: withSourcemap(config) ? s.generateMap({ hires: true }) : null,
+          map: withSourcemap(config)
+            ? s.generateMap({ hires: shouldUseHighResolutionSourceMap() })
+            : null,
         }
       } else {
         return null

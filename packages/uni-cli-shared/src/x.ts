@@ -20,6 +20,10 @@ export function isUniAppXVapor() {
   return isUniAppX() && process.env.UNI_APP_X_DOM2 === 'true'
 }
 
+export function shouldUseHighResolutionSourceMap() {
+  return !(process.env.NODE_ENV === 'development' && isUniAppXVapor())
+}
+
 export function isUniAppXAndroidVapor(
   platform: AppXPlatform = process.env.UNI_UTS_PLATFORM
 ) {
