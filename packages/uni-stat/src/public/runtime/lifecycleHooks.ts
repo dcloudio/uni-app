@@ -169,6 +169,53 @@ const state: LifecycleState = {
 /** Vue2 H5 hide 过程中偶发 page onShow（间隔≈0s），低于此阈值不消费 pending。 */
 const BACKGROUND_RESUME_DEBOUNCE_SEC = 1
 
+// #ifndef VUE3
+/** Vue2：page onHide 延迟判定「真进后台」；切页会在短时内 onShow 并取消。 */
+let vue2AppHideFromPageTimer: ReturnType<typeof setTimeout> | undefined
+
+/**
+ * 取消 Vue2 page onHide 触发的延迟进后台判定。
+ */
+function cancelVue2AppHideFromPageDefer(): void {
+  if (vue2AppHideFromPageTimer !== undefined) {
+    clearTimeout(vue2AppHideFromPageTimer)
+    vue2AppHideFromPageTimer = undefined
+  }
+}
+
+/**
+ * Vue2 部分端进后台只触发 page onHide，须在此时补 `handleAppHide`。
+ *
+ * 普通切页也会触发 page onHide，**不能**无条件补记（否则多报 lt=3）。
+ * 对齐私有版 `pageHide`：仅当 `__licationHide` 为真时不再发页面离开；此处等价于：
+ *   - H5：`document.visibilityState === 'hidden'` 才补记；
+ *   - 其它端：短时延迟，若下一页 onShow 则取消（切页），否则视为进后台。
+ */
+function tryVue2AppHideFromPageOnHide(
+  app: StatApp,
+  opts: LifecycleOptions
+): void {
+  if (state.pendingBackgroundResume) return
+
+  if (isH5()) {
+    const vis = (
+      globalThis as unknown as { document?: { visibilityState?: string } }
+    ).document?.visibilityState
+    if (vis === 'hidden') {
+      handleAppHide(app, opts)
+    }
+    return
+  }
+
+  cancelVue2AppHideFromPageDefer()
+  vue2AppHideFromPageTimer = setTimeout(() => {
+    vue2AppHideFromPageTimer = undefined
+    if (state.pendingBackgroundResume) return
+    handleAppHide(app, opts)
+  }, 120)
+}
+// #endif
+
 /**
  * 取 collector；未 install 时返回 undefined（调用方需负责 noop）。
  */
@@ -827,6 +874,9 @@ export function bindLifecycle(
     },
     onShow(this: PageVm): void {
       const vmType = getPageVmType(this)
+      // #ifndef VUE3
+      cancelVue2AppHideFromPageDefer()
+      // #endif
       if (state.pendingBackgroundResume) {
         tryConsumeBackgroundResume(app, {}, opts, 'mixin.onShow')
       }
@@ -843,10 +893,7 @@ export function bindLifecycle(
       if (getPageVmType(this) === 'page') {
         handlePageHide(app, this)
         // #ifndef VUE3
-        // Vue2 H5 部分工程仅触发 page onHide；补记后台，避免无 pending / 无 lt=3。
-        if (!state.pendingBackgroundResume) {
-          handleAppHide(app, opts)
-        }
+        tryVue2AppHideFromPageOnHide(app, opts)
         // #endif
       }
       if (
@@ -903,4 +950,7 @@ export function __resetLifecycleState(): void {
   titleSnapGeneration = 0
   firstVisitEmittedInProcess = false
   unbindUniAppLifecycle()
+  // #ifndef VUE3
+  cancelVue2AppHideFromPageDefer()
+  // #endif
 }

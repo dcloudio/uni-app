@@ -220,6 +220,35 @@ describe('runtime/lifecycleHooks', () => {
     expect(sessionMod.getSnapshot()?.sct).toBe(3)
   })
 
+  test('T3.c Vue2 mixin：前台无操作超时后切页不应多报 lt=3', () => {
+    installMockUni({ platform: 'h5' })
+    const { app, reportSpy } = installAppWithSpyReporter()
+    const { mixin } = bindLifecycle(app)
+    const pageOnHide = mixin.onHide as (this: {
+      mpType: string
+      route?: string
+    }) => void
+    const pageOnShow = mixin.onShow as (this: {
+      mpType: string
+      route?: string
+    }) => void
+
+    handleLaunch(app, {})
+    pageOnShow.call({ mpType: 'page', route: 'pages/home' })
+    reportSpy.mockClear()
+
+    const snap = sessionMod.getSnapshot()!
+    snap.lastActive = Math.floor(Date.now() / 1000) - 999_999
+
+    pageOnHide.call({ mpType: 'page', route: 'pages/home' })
+    pageOnShow.call({ mpType: 'page', route: 'pages/B' })
+
+    const lts = getReportedLts(reportSpy)
+    expect(lts).toContain('1')
+    expect(lts).toContain('11')
+    expect(lts.filter((lt) => lt === '3')).toHaveLength(0)
+  })
+
   test('T3.b cst=3 新会话且有离开页：首包 requests 内 lt=1 早于 lt=11', async () => {
     const { app, reportSpy, http } = installAppWithSpyReporter()
     handleLaunch(app, {})
