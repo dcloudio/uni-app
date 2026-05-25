@@ -17,7 +17,11 @@
  *   - `getMixin()`：返回 vue mixin 对象，供宿主自行 `app.mixin(...)`。
  */
 
-import { bindLifecycle } from './lifecycleHooks'
+import {
+  bindLifecycle,
+  shouldBindUniAppLifecycle,
+  tryBindUniAppLifecycle,
+} from './lifecycleHooks'
 import {
   type StatAppConfig,
   type StatAppOverrides,
@@ -81,12 +85,32 @@ import type { LifecycleOptions } from './lifecycleHooks'
  * 已内联的 JSON 字符串，表现为 `UNI_STATISTICS_CONFIG_len=0`、会话阈值永远默认。
  * 因此必须**直接**书写 `process.env.UNI_STATISTICS_CONFIG`（无任何 `typeof process` 包裹）。
  */
+/**
+ * 解析构建期注入的 `UNI_STATISTICS_CONFIG`。
+ * 正常为 JSON 字符串；少数打包配置会误注入为对象字面量，此处一并兼容。
+ */
+function parseInjectedUniStatistics(): Record<string, unknown> | undefined {
+  const raw = process.env.UNI_STATISTICS_CONFIG as unknown
+  if (raw == null) return undefined
+  if (typeof raw === 'object' && !Array.isArray(raw)) {
+    return raw as Record<string, unknown>
+  }
+  if (typeof raw !== 'string') return undefined
+  const trimmed = raw.trim()
+  if (!trimmed || trimmed === 'undefined') return undefined
+  try {
+    const obj = JSON.parse(trimmed) as unknown
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return undefined
+    return obj as Record<string, unknown>
+  } catch (_e) {
+    return undefined
+  }
+}
+
 function readManifestStatConfig(): Partial<StatAppConfig> | undefined {
   try {
-    const raw = process.env.UNI_STATISTICS_CONFIG
-    if (!raw || typeof raw !== 'string') return undefined
-    const obj = JSON.parse(raw) as Record<string, unknown>
-    if (!obj || typeof obj !== 'object') return undefined
+    const obj = parseInjectedUniStatistics()
+    if (!obj) return undefined
     const cfg: Partial<StatAppConfig> = {}
 
     if (obj.channelVersion != null) {
@@ -211,21 +235,20 @@ function getUni(): UniGlobal | undefined {
   return u != null && typeof u === 'object' ? (u as UniGlobal) : undefined
 }
 
-/**
- * 判定 `uni` 是否已具备生命周期绑定所需 API。
- *
- * 部分环境下 `uni` 仅作为**构建注入的模块标识符**存在，不在 `globalThis.uni`；
- * 已统一由 `infra/uniRuntime#resolveUniRuntime` 解析（含注入路径）。
- */
-function isUniLifecycleReady(): boolean {
-  const u = getUni()
-  return !!(u && typeof u.onAppShow === 'function')
-}
+/** Vue3 下晚就绪 API 重试次数（50ms 间隔，约 1s）。 */
+const UNI_HOOK_RETRY_MAX = 20
+const UNI_HOOK_RETRY_MS = 50
+
+/** 已排队或已执行的 vue mixin 注入，避免重复。 */
+let vueMixinMounted = false
+let vueMixinRetryTimer: ReturnType<typeof setTimeout> | undefined
 
 /** install 是否已经触发过（不论成功失败）。 */
 let bootstrapped = false
 /** 已注册到全局的 unbind，便于 __reset。 */
 let lastUnbind: (() => void) | undefined
+/** 晚就绪时重试 `uni.onAppShow` 的定时器。 */
+let uniHookRetryTimer: ReturnType<typeof setTimeout> | undefined
 
 export interface InstallOptions {
   /** StatApp.install 的业务配置。 */
@@ -266,15 +289,35 @@ export function installPublicStat(opts: InstallOptions = {}): void {
   tryRun(() => {
     const cfgBoot = app.getConfig()
     const appName = process.env.UNI_APP_NAME || ''
-    logBoot({
+    if (logger.isDebug()) {
+      const injected = parseInjectedUniStatistics()
+      const hasBg =
+        injected != null &&
+        (injected.backgroundTimeout != null ||
+          injected.backgroundTimeoutSec != null)
+      if (!hasBg) {
+        logger.debug(
+          '[uni-stat] manifest 未配置 backgroundTimeout 或构建注入为空，后台新会话阈值使用默认 300s（请确认 uniStatistics 配置后重新编译）'
+        )
+      }
+    }
+    const bootBase = {
       channel: cfgBoot?.version ?? 'image',
       reportIntervalSec: cfgBoot?.reportIntervalSec ?? 0,
+      backgroundTimeoutSec: cfgBoot?.backgroundTimeoutSec ?? 300,
+      pageInactiveTimeoutSec: cfgBoot?.pageInactiveTimeoutSec ?? 1800,
       ak: cfgBoot?.ak ?? '',
       appName,
       debugFromManifest:
         process.env.UNI_STAT_DEBUG === 'true' ||
         (process.env.UNI_STAT_DEBUG as unknown) === true,
-    })
+    }
+    // #ifndef VUE3
+    logBoot(Object.assign({}, bootBase, { vueMode: 'Vue2' }))
+    // #endif
+    // #ifdef VUE3
+    logBoot(Object.assign({}, bootBase, { vueMode: 'Vue3' }))
+    // #endif
   }, undefined)
 
   /**
@@ -298,6 +341,7 @@ export function installPublicStat(opts: InstallOptions = {}): void {
     const { mixin, unbind } = bindLifecycle(app, lifecycleOpts)
     lastUnbind = unbind
 
+    // 与私有版 load_stat 一致：同步注入 mixin，不等待 uni.onAppShow（Vue2 根本不注册该项）。
     if (!opts.skipVueMixin) {
       tryRun(() => mountVueMixin(mixin), undefined)
     }
@@ -305,61 +349,122 @@ export function installPublicStat(opts: InstallOptions = {}): void {
     if (!opts.skipUniReport) {
       tryRun(() => mountUniReport(app), undefined)
     }
-  }
 
-  if (isUniLifecycleReady()) {
-    finishLifecycleInstall()
-    return
-  }
-
-  queueMicrotask(() => {
-    if (isUniLifecycleReady()) {
-      finishLifecycleInstall()
-      return
+    // 私有版：仅 Vue3 且非 H5/nvue 注册 uni 应用前后台。
+    if (
+      shouldBindUniAppLifecycle() &&
+      !tryBindUniAppLifecycle(app, lifecycleOpts)
+    ) {
+      scheduleUniAppHookRetry(() => tryBindUniAppLifecycle(app, lifecycleOpts))
     }
-    setTimeout(() => {
-      if (!isUniLifecycleReady()) {
-        logger.warn(
-          '[uni-stat] uni 运行时仍未就绪（缺少 onAppShow），统计生命周期绑定已推迟；若仍无采集日志请检查入口脚本加载顺序或延后引入 uni-stat-public'
-        )
-      }
-      finishLifecycleInstall()
-    }, 0)
-  })
+  }
+
+  finishLifecycleInstall()
 }
 
 /**
- * 把 mixin 装到 vue 实例上。优先走 `uni.onCreateVueApp`（VUE3）；缺失时回退
- * `require('vue').mixin`（VUE2 / 兼容层）。两者都没有则记录 warn，不抛。
+ * 仅 Vue3 小程序等重试 `uni.onAppShow` / `onAppHide`；Vue2 不调用。
+ */
+function scheduleUniAppHookRetry(tryBind: () => boolean): void {
+  if (uniHookRetryTimer) {
+    clearTimeout(uniHookRetryTimer)
+    uniHookRetryTimer = undefined
+  }
+  let attempts = 0
+  const tick = (): void => {
+    if (tryBind()) return
+    if (++attempts >= UNI_HOOK_RETRY_MAX) {
+      logger.warn(
+        '[uni-stat] Vue3 小程序：uni.onAppShow 暂不可用，应用前后台统计可能缺失'
+      )
+      return
+    }
+    uniHookRetryTimer = setTimeout(tick, UNI_HOOK_RETRY_MS)
+  }
+  uniHookRetryTimer = setTimeout(tick, UNI_HOOK_RETRY_MS)
+}
+
+/**
+ * 把 mixin 装到 vue 实例上。
+ *
+ * 与私有版 `src/index.js#load_stat` 一致，必须用条件编译区分：
+ *   - VUE3：`uni.onCreateVueApp` → `app.mixin`（运行时若存在 `onCreateVueApp` 会误走此分支，
+ *     但 Vue2 真机构造器全局 mixin 才生效，导致页面 onShow/onHide 永不触发）。
+ *   - VUE2：`require('vue').mixin`（由应用打包器静态解析，勿用 `globalThis.require`）。
+ *
+ * `#ifdef` 保留到 dist，由宿主 `uni:pre` 在打包阶段剔除分支（同私有版 dist）。
  */
 function mountVueMixin(mixin: Record<string, unknown>): void {
+  if (vueMixinMounted) return
+
+  // #ifndef VUE3
+  if (mountVue2GlobalMixin(mixin)) {
+    vueMixinMounted = true
+  }
+  // #endif
+
+  // #ifdef VUE3
   const u = getUni()
   if (u && typeof u.onCreateVueApp === 'function') {
     u.onCreateVueApp((vueApp) => {
       tryRun(() => vueApp.mixin(mixin), undefined)
     })
+    vueMixinMounted = true
     return
   }
-  // VUE2 兼容；用 eval('require') 防止打包工具静态解析失败。
-  const req = (globalThis as unknown as { require?: (m: string) => unknown })
-    .require
-  if (typeof req === 'function') {
-    const Vue = tryRun<{
-      default?: { mixin?: (m: Record<string, unknown>) => void }
-      mixin?: (m: Record<string, unknown>) => void
-    }>(
-      () => req('vue') as { mixin?: (m: Record<string, unknown>) => void },
-      {} as { mixin?: (m: Record<string, unknown>) => void }
-    )
-    const target = Vue?.default ?? Vue
-    if (target && typeof target.mixin === 'function') {
-      tryRun(() => target.mixin!(mixin), undefined)
+  scheduleVueAppMixinRetry(mixin)
+  // #endif
+}
+
+// #ifdef VUE3
+/**
+ * Vue3：`onCreateVueApp` 晚就绪时短重试。
+ */
+function scheduleVueAppMixinRetry(mixin: Record<string, unknown>): void {
+  if (vueMixinMounted) return
+  if (vueMixinRetryTimer) return
+  let attempts = 0
+  const tick = (): void => {
+    vueMixinRetryTimer = undefined
+    if (vueMixinMounted) return
+    const u = getUni()
+    if (u && typeof u.onCreateVueApp === 'function') {
+      u.onCreateVueApp((vueApp) => {
+        tryRun(() => vueApp.mixin(mixin), undefined)
+      })
+      vueMixinMounted = true
       return
     }
+    if (++attempts >= UNI_HOOK_RETRY_MAX) {
+      logger.warn(
+        '[uni-stat] Vue3: onCreateVueApp 在重试后仍不可用，页面级 mixin 未注入'
+      )
+      return
+    }
+    vueMixinRetryTimer = setTimeout(tick, UNI_HOOK_RETRY_MS)
   }
-  logger.warn(
-    '[uni-stat] no vue mixin entry available; lifecycle not bound to vue'
-  )
+  vueMixinRetryTimer = setTimeout(tick, UNI_HOOK_RETRY_MS)
+}
+// #endif
+
+/**
+ * Vue2 全局 mixin（与私有版 `index.js` 中 `require('vue').mixin` 一致）。
+ *
+ * @returns 是否注入成功
+ */
+function mountVue2GlobalMixin(mixin: Record<string, unknown>): boolean {
+  // eslint-disable-next-line no-restricted-globals
+  const Vue = require('vue') as {
+    default?: { mixin?: (m: Record<string, unknown>) => void }
+    mixin?: (m: Record<string, unknown>) => void
+  }
+  const target = Vue.default ?? Vue
+  if (target && typeof target.mixin === 'function') {
+    tryRun(() => target.mixin!(mixin), undefined)
+    return true
+  }
+  logger.warn('[uni-stat] Vue2: vue.mixin 不可用，请检查是否已安装 vue 依赖')
+  return false
 }
 
 /**
@@ -378,6 +483,15 @@ function mountUniReport(app: ReturnType<typeof getStatApp>): void {
 
 /** 仅供测试：重置 install 哨兵；调用方应同时调 `__resetStatApp()`。 */
 export function __resetInstall(): void {
+  if (uniHookRetryTimer) {
+    clearTimeout(uniHookRetryTimer)
+    uniHookRetryTimer = undefined
+  }
+  if (vueMixinRetryTimer) {
+    clearTimeout(vueMixinRetryTimer)
+    vueMixinRetryTimer = undefined
+  }
+  vueMixinMounted = false
   if (lastUnbind) tryRun(() => lastUnbind!(), undefined)
   lastUnbind = undefined
   bootstrapped = false

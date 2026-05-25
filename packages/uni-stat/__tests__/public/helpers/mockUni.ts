@@ -50,9 +50,19 @@ export function installMockUni(options: MockUniOptions = {}): MockUniHandle {
     ...options.patch,
   }
 
-  // installPublicStat 依赖 `uni.onAppShow` 判定就绪；Jest 预置的 uni 可能不含该项。
+  // installPublicStat / bindLifecycle 依赖 onAppShow|onAppHide 判定就绪。
+  const lifecycleHooks: Array<(...args: unknown[]) => void> = []
   if (typeof uni.onAppShow !== 'function') {
-    uni.onAppShow = (): void => {}
+    uni.onAppShow = (cb: (...args: unknown[]) => void): (() => void) => {
+      lifecycleHooks.push(cb)
+      return () => {}
+    }
+  }
+  if (typeof uni.onAppHide !== 'function') {
+    uni.onAppHide = (cb: () => void): (() => void) => {
+      lifecycleHooks.push(cb as (...args: unknown[]) => void)
+      return () => {}
+    }
   }
 
   ;(globalThis as unknown as { uni: UniGlobal }).uni = uni

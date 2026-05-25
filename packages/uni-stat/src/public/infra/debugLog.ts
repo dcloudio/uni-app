@@ -103,17 +103,27 @@ export function logCollect(data: StatData): void {
 export function logBoot(info: {
   channel: string
   reportIntervalSec: number
+  /** 后台回前台新会话阈值（秒），对应 manifest `backgroundTimeout`，非 `reportInterval`。 */
+  backgroundTimeoutSec?: number
+  pageInactiveTimeoutSec?: number
   ak: string
   appName?: string
   debugFromManifest?: boolean
+  /** 装配路径摘要：Vue2/Vue3 + manifest/runtime 主版本，便于排查误走 onCreateVueApp。 */
+  vueMode?: string
 }): void {
   if (!logger.isDebug()) return
   logger.debug('=== uni 统计公有版已启用 ===')
-  // 通道: ${info.channel} |
+  const bgSec = info.backgroundTimeoutSec ?? 300
+  const piSec = info.pageInactiveTimeoutSec ?? 1800
   logger.debug(
-    `上报间隔: ${info.reportIntervalSec}s | 应用APPID: ${
+    `上报间隔: ${
+      info.reportIntervalSec
+    }s | 后台超时(新会话): ${bgSec}s | 前台无操作超时: ${piSec}s | 应用APPID: ${
       info.ak || '<未注入>'
-    }${info.appName ? ` | 应用名: ${info.appName}` : ''}`
+    }${info.appName ? ` | 应用名: ${info.appName}` : ''}${
+      info.vueMode ? ` | ${info.vueMode}` : ''
+    }`
   )
   if (info.debugFromManifest) {
     logger.debug('调试模式：已从 manifest.uniStatistics.debug 自动开启')

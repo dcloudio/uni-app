@@ -2,6 +2,7 @@ import {
   getCurrentQuery,
   getCurrentRoute,
   getCurrentRouteWithQuery,
+  getPageVmType,
   getTopPageVm,
   parseQuery,
 } from '../../../src/public/adapter/route'
@@ -180,6 +181,16 @@ describe('adapter/route', () => {
 
     test('全空 → {}', () => {
       expect(getCurrentQuery({})).toEqual({})
+    })
+  })
+
+  describe('getPageVmType', () => {
+    test('page / app / 未知', () => {
+      expect(getPageVmType({ mpType: 'page' })).toBe('page')
+      expect(getPageVmType({ $mpType: 'app' })).toBe('app')
+      expect(getPageVmType({ $mp: { mpType: 'page' } })).toBe('page')
+      expect(getPageVmType({ $options: { mpType: 'app' } })).toBe('app')
+      expect(getPageVmType({})).toBeNull()
     })
   })
 })

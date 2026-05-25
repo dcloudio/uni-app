@@ -70,6 +70,13 @@ export interface EnsureContext {
   now: number
   /** wx scene；仅 wx_scene_changed / app_show 触发时有意义。 */
   scene?: string
+  /**
+   * 进入后台时刻（秒）；由 lifecycle `handleAppHide` 写入。
+   *
+   * 对齐私有版 `set_first_time` + `get_residence_time('app')`：即使 session 的
+   * `bgTs` 未落盘，只要 lifecycle 确认走过 hide，仍可按 `backgroundTimeout` 判 cst=2。
+   */
+  backgroundEnteredAt?: number
 }
 
 export interface EnsureResult {
@@ -189,11 +196,21 @@ export function ensureSession(t: Trigger, ctx: EnsureContext): EnsureResult {
   }
 
   if (t === 'app_show') {
-    const elapsed = now - (snap.bgTs || snap.lastActive)
+    const enterCandidates: number[] = []
+    if (ctx.backgroundEnteredAt && ctx.backgroundEnteredAt > 0) {
+      enterCandidates.push(ctx.backgroundEnteredAt)
+    }
+    if (snap.bgTs > 0) {
+      enterCandidates.push(snap.bgTs)
+    }
+    const enterTs =
+      enterCandidates.length > 0 ? Math.min(...enterCandidates) : 0
+    const elapsed = enterTs > 0 ? now - enterTs : now - snap.lastActive
     const sceneChanged = !!scene && !!snap.lastScene && scene !== snap.lastScene
+    const fromBackground = enterTs > 0
     if (
       sceneChanged ||
-      (snap.bgTs > 0 && elapsed >= config.backgroundTimeoutSec)
+      (fromBackground && elapsed >= config.backgroundTimeoutSec)
     ) {
       const created = createNew(now, CST.BackgroundTimeout, scene)
       return { snapshot: created, isNew: true, cst: CST.BackgroundTimeout }

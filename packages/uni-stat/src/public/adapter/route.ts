@@ -24,13 +24,49 @@ import { getPlatform } from './platform'
 
 interface PageVmLike {
   route?: string
+  mpType?: string
+  $mpType?: string
+  $options?: { mpType?: string }
   $page?: { route?: string; fullPath?: string }
-  $mp?: { page?: { route?: string; is?: string } }
+  $mp?: { mpType?: string; page?: { route?: string; is?: string } }
   $scope?: {
     route?: string
     is?: string
     $page?: { route?: string; fullPath?: string }
   }
+}
+
+export type PageVmType = 'page' | 'app' | null
+
+/**
+ * 判定当前 vm 是页面还是应用（对齐私有版 `pageInfo.js#get_page_types`）。
+ *
+ * Vue2 下应用前后台走 mixin 的 App `onShow` / `onHide`，不能仅靠 `uni.onAppShow`。
+ */
+export function getPageVmType(vm?: PageVmLike): PageVmType {
+  if (!vm) return null
+  const internalMpType =
+    (vm as { $?: { type?: { mpType?: string } }; type?: { mpType?: string } }).$
+      ?.type?.mpType ?? (vm as { type?: { mpType?: string } }).type?.mpType
+  if (
+    vm.mpType === 'page' ||
+    vm.$mpType === 'page' ||
+    vm.$mp?.mpType === 'page' ||
+    vm.$options?.mpType === 'page' ||
+    internalMpType === 'page'
+  ) {
+    return 'page'
+  }
+  if (
+    vm.mpType === 'app' ||
+    vm.$mpType === 'app' ||
+    vm.$mp?.mpType === 'app' ||
+    vm.$options?.mpType === 'app' ||
+    internalMpType === 'app'
+  ) {
+    return 'app'
+  }
+  return null
 }
 
 interface PageEntry {

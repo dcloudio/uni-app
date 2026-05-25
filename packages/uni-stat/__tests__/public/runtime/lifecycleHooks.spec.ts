@@ -25,6 +25,8 @@ import {
   handleLaunch,
   handlePageHide,
   handlePageShow,
+  shouldBindUniAppLifecycle,
+  shouldMixinDispatchAppLifecycle,
 } from '../../../src/public/runtime/lifecycleHooks'
 import { __resetStatApp, getStatApp } from '../../../src/public/runtime/StatApp'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
@@ -137,6 +139,74 @@ describe('runtime/lifecycleHooks', () => {
     expect(sessionMod.getSnapshot()?.sct).toBe(2)
   })
 
+  test('T2.c App onShow：storage bgTs 丢失时靠 backgroundEnteredAt 仍 cst=2', () => {
+    jest.useFakeTimers()
+    try {
+      jest.setSystemTime(new Date('2026-01-01T00:00:00.000Z'))
+      const { app, reportSpy } = installAppWithSpyReporter()
+      sessionMod.configure({ backgroundTimeoutSec: 10 })
+      handleLaunch(app, {})
+      handlePageShow(app, { route: 'pages/home' })
+      jest.setSystemTime(Date.now() + 5_000)
+      handleAppHide(app)
+      reportSpy.mockClear()
+      const snap = sessionMod.getSnapshot()!
+      snap.bgTs = 0
+      jest.setSystemTime(Date.now() + 15_000)
+      handleAppShow(app, {})
+      expect(getReportedLts(reportSpy)).toEqual(['1'])
+      expect(sessionMod.getSnapshot()?.sct).toBe(2)
+    } finally {
+      jest.useRealTimers()
+    }
+  })
+
+  test('T2.d Vue2：hide 后误触发 page onShow 不应消费 pending，真正回前台仍 cst=2', () => {
+    jest.useFakeTimers()
+    try {
+      jest.setSystemTime(new Date('2026-01-01T00:00:00.000Z'))
+      const { app, reportSpy } = installAppWithSpyReporter()
+      sessionMod.configure({ backgroundTimeoutSec: 10 })
+      const { mixin } = bindLifecycle(app)
+      const pageOnShow = mixin.onShow as (this: { mpType: string }) => void
+      handleLaunch(app, {})
+      pageOnShow.call({ mpType: 'page', route: 'pages/home' })
+      jest.setSystemTime(Date.now() + 5_000)
+      handleAppHide(app)
+      reportSpy.mockClear()
+      pageOnShow.call({ mpType: 'page', route: 'pages/home' })
+      expect(getReportedLts(reportSpy)).toEqual([])
+      jest.setSystemTime(Date.now() + 15_000)
+      pageOnShow.call({ mpType: 'page', route: 'pages/home' })
+      expect(getReportedLts(reportSpy)).toEqual(['1'])
+      expect(sessionMod.getSnapshot()?.sct).toBe(2)
+    } finally {
+      jest.useRealTimers()
+    }
+  })
+
+  test('T2.b 仅页面 onShow 恢复（无 App onShow）后台超时仍应 cst=2', () => {
+    jest.useFakeTimers()
+    try {
+      jest.setSystemTime(new Date('2026-01-01T00:00:00.000Z'))
+      const { app, reportSpy } = installAppWithSpyReporter()
+      sessionMod.configure({ backgroundTimeoutSec: 10 })
+      const { mixin } = bindLifecycle(app)
+      const pageOnShow = mixin.onShow as (this: { mpType: string }) => void
+      handleLaunch(app, {})
+      pageOnShow.call({ mpType: 'page', route: 'pages/home' })
+      jest.setSystemTime(Date.now() + 5_000)
+      handleAppHide(app)
+      reportSpy.mockClear()
+      jest.setSystemTime(Date.now() + 20_000)
+      pageOnShow.call({ mpType: 'page', route: 'pages/home' })
+      expect(getReportedLts(reportSpy)).toEqual(['1'])
+      expect(sessionMod.getSnapshot()?.sct).toBe(2)
+    } finally {
+      jest.useRealTimers()
+    }
+  })
+
   test('T3 page_show 前台无操作超时 → cst=3，仅发 lt=1', () => {
     const { app, reportSpy } = installAppWithSpyReporter()
     handleLaunch(app, {})
@@ -210,6 +280,36 @@ describe('runtime/lifecycleHooks', () => {
     expect(i11).toBeGreaterThanOrEqual(0)
     expect(i3).toBeGreaterThanOrEqual(0)
     expect(i11).toBeLessThan(i3)
+  })
+
+  test('Vue2：不注册 uni.onAppHide，App onHide 走 mixin', () => {
+    installMockUni({ platform: 'h5' })
+    expect(shouldBindUniAppLifecycle()).toBe(false)
+    expect(shouldMixinDispatchAppLifecycle()).toBe(true)
+    const { app, reportSpy } = installAppWithSpyReporter()
+    const { mixin } = bindLifecycle(app)
+    handleLaunch(app, {})
+    reportSpy.mockClear()
+    ;(mixin.onHide as (this: { mpType: string }) => void).call({
+      mpType: 'app',
+    })
+    expect(getReportedLts(reportSpy)).toContain('3')
+  })
+
+  test('Vue2：无 uni.onAppHide 时 mixin App onHide 兜底', () => {
+    const { uni } = installMockUni({
+      platform: 'h5',
+      patch: { onAppShow: () => () => {} },
+    })
+    delete uni.onAppHide
+    const { app, reportSpy } = installAppWithSpyReporter()
+    const { mixin } = bindLifecycle(app)
+    handleLaunch(app, {})
+    reportSpy.mockClear()
+    ;(mixin.onHide as (this: { mpType: string }) => void).call({
+      mpType: 'app',
+    })
+    expect(getReportedLts(reportSpy)).toContain('3')
   })
 
   test('后台恢复：首个 page_show 不带历史超长停留，且忽略非页面 onShow', () => {
@@ -510,26 +610,16 @@ describe('runtime/lifecycleHooks', () => {
     expect(() => bound.unbind()).not.toThrow()
   })
 
-  test('bindLifecycle：onAppShow 桥接 uni.onAppShow', () => {
-    let registered: ((e: { scene?: number }) => void) | undefined
-    installMockUni({
-      patch: {
-        onAppShow: jest.fn((cb: (e: { scene?: number }) => void) => {
-          registered = cb
-        }),
-      },
-    })
+  test('后台超时恢复：handleAppShow 上报 lt=1（与 uni.onAppShow 回调同路径）', () => {
+    installMockUni({ platform: 'mp-weixin' })
     try {
       resetAll()
       const { app, reportSpy } = installAppWithSpyReporter()
       handleLaunch(app, {})
       reportSpy.mockClear()
-      bindLifecycle(app)
-      // 模拟 uni 触发后台超时 → app_show
       sessionMod.markBackground(Math.floor(Date.now() / 1000) - 10_000)
-      registered?.({ scene: 1037 })
-      const lts = getReportedLts(reportSpy)
-      expect(lts).toEqual(['1'])
+      handleAppShow(app, { scene: 1037 })
+      expect(getReportedLts(reportSpy)).toEqual(['1'])
     } finally {
       restoreMockUni()
     }

@@ -1443,10 +1443,19 @@ function ensureSession(t, ctx) {
         return { snapshot: created, isNew: true, cst: CST.ColdLaunch };
     }
     if (t === 'app_show') {
-        const elapsed = now - (snap.bgTs || snap.lastActive);
+        const enterCandidates = [];
+        if (ctx.backgroundEnteredAt && ctx.backgroundEnteredAt > 0) {
+            enterCandidates.push(ctx.backgroundEnteredAt);
+        }
+        if (snap.bgTs > 0) {
+            enterCandidates.push(snap.bgTs);
+        }
+        const enterTs = enterCandidates.length > 0 ? Math.min(...enterCandidates) : 0;
+        const elapsed = enterTs > 0 ? now - enterTs : now - snap.lastActive;
         const sceneChanged = !!scene && !!snap.lastScene && scene !== snap.lastScene;
+        const fromBackground = enterTs > 0;
         if (sceneChanged ||
-            (snap.bgTs > 0 && elapsed >= config$1.backgroundTimeoutSec)) {
+            (fromBackground && elapsed >= config$1.backgroundTimeoutSec)) {
             const created = createNew(now, CST.BackgroundTimeout, scene);
             return { snapshot: created, isNew: true, cst: CST.BackgroundTimeout };
         }
@@ -1534,6 +1543,32 @@ function getSnapshot() {
  * 与私有版兼容：上行字段 `url`（不含 query）/ `urlref`（前页 url）等仍由
  * `domain/statData` 拼装，本层只提供原料。
  */
+/**
+ * 判定当前 vm 是页面还是应用（对齐私有版 `pageInfo.js#get_page_types`）。
+ *
+ * Vue2 下应用前后台走 mixin 的 App `onShow` / `onHide`，不能仅靠 `uni.onAppShow`。
+ */
+function getPageVmType(vm) {
+    var _a, _b, _c, _d, _e, _f, _g, _h;
+    if (!vm)
+        return null;
+    const internalMpType = (_c = (_b = (_a = vm.$) === null || _a === void 0 ? void 0 : _a.type) === null || _b === void 0 ? void 0 : _b.mpType) !== null && _c !== void 0 ? _c : (_d = vm.type) === null || _d === void 0 ? void 0 : _d.mpType;
+    if (vm.mpType === 'page' ||
+        vm.$mpType === 'page' ||
+        ((_e = vm.$mp) === null || _e === void 0 ? void 0 : _e.mpType) === 'page' ||
+        ((_f = vm.$options) === null || _f === void 0 ? void 0 : _f.mpType) === 'page' ||
+        internalMpType === 'page') {
+        return 'page';
+    }
+    if (vm.mpType === 'app' ||
+        vm.$mpType === 'app' ||
+        ((_g = vm.$mp) === null || _g === void 0 ? void 0 : _g.mpType) === 'app' ||
+        ((_h = vm.$options) === null || _h === void 0 ? void 0 : _h.mpType) === 'app' ||
+        internalMpType === 'app') {
+        return 'app';
+    }
+    return null;
+}
 /**
  * 取栈顶页面实例（vm）。
  *
@@ -1743,8 +1778,12 @@ const state$1 = {
     prevIey: false,
     isHide: false,
     wasBackgrounded: false,
+    pendingBackgroundResume: false,
+    backgroundEnteredAt: 0,
     suppressNextPageLogAfterResume: false,
 };
+/** Vue2 H5 hide 过程中偶发 page onShow（间隔≈0s），低于此阈值不消费 pending。 */
+const BACKGROUND_RESUME_DEBOUNCE_SEC = 1;
 /**
  * 取 collector；未 install 时返回 undefined（调用方需负责 noop）。
  */
@@ -1855,35 +1894,76 @@ function handleLaunch(app, options = {}, opts = {}) {
     }
 }
 /**
+ * 消费「从后台回前台」会话判定（cst=2）；返回 true 表示已处理（含防抖跳过但仍保留 pending）。
+ *
+ * Vue2：Page onShow 常早于 App onShow，且 hide 过程中可能误触发一次 page onShow，
+ * 若在那时清空 pending/wasBackgrounded，App onShow 将看不到后台标记（用户截图现象）。
+ */
+function tryConsumeBackgroundResume(app, options = {}, _opts = {}, _from = 'unknown') {
+    if (!state$1.pendingBackgroundResume) {
+        return false;
+    }
+    const bgEnterAt = state$1.backgroundEnteredAt;
+    if (bgEnterAt <= 0) {
+        return false;
+    }
+    const c = safeCollector(app);
+    if (!c) {
+        return false;
+    }
+    const now = nowSec();
+    const elapsed = now - bgEnterAt;
+    if (elapsed < BACKGROUND_RESUME_DEBOUNCE_SEC) {
+        state$1.suppressNextPageLogAfterResume = true;
+        return true;
+    }
+    state$1.wasBackgrounded = false;
+    state$1.suppressNextPageLogAfterResume = true;
+    state$1.lastRouteEnterTime = now;
+    const scene = tryRun(() => getLaunchScene(options.scene), '');
+    const result = tryRun(() => ensureSession('app_show', {
+        now,
+        scene,
+        backgroundEnteredAt: bgEnterAt,
+    }), null);
+    state$1.pendingBackgroundResume = false;
+    state$1.backgroundEnteredAt = 0;
+    if (!result || !result.isNew) {
+        return true;
+    }
+    tryRun(() => clearEntry(), undefined);
+    const url = options.path || state$1.lastRoute || '';
+    const entryKey = normalizePathForEntryMark(url);
+    if (entryKey) {
+        tryRun(() => markEntryPage(entryKey), undefined);
+    }
+    reportNewSession(c, result.cst || CST.BackgroundTimeout, scene, now, false, url);
+    void c
+        .flush(true)
+        .catch((e) => logger.warn('[uni-stat] flush after new session (app_show) failed', e));
+    return true;
+}
+/**
  * 应用从后台进入前台。
  *
  * 流程：
- *   1. ensureSession('app_show') → 命中 backgroundTimeout 时新 session（cst=2）。
- *   2. isNew=true 时发一条 lt=1，并 **flush(true)**：避免新 sid 的 lt=1 仍等 `reportInterval`
- *      才发出时用户已在前台产生 lt=11 等事件，进程被杀或乱序送达导致服务端缺锚点。
- *      （进后台路径已在 `handleAppHide` 里 lt=3 + flush；冷启首条 lt=1 常因 `lastFlushAt=0`
- *      被 `report` 内自动 flush，此处补齐「后台超时后再进前台」场景。）
- *   3. isNew=false 时 noop。
+ *   1. `tryConsumeBackgroundResume`（pending）→ ensureSession('app_show') / cst=2。
+ *   2. isNew=true 时发一条 lt=1，并 **flush(true)**。
+ *   3. 无 pending 时仅处理 scene 变化等（少见）。
  */
-function handleAppShow(app, options = {}, _opts = {}) {
+function handleAppShow(app, options = {}, opts = {}) {
+    if (tryConsumeBackgroundResume(app, options, opts, 'handleAppShow'))
+        return;
     const c = safeCollector(app);
     if (!c)
         return;
     const now = nowSec();
-    // 后台恢复边界：无论本次是否新会话，都先把"页面停留起点"截到恢复时刻，
-    // 并在下一个真实 pageShow 抑制一次 lt=11，避免把后台时长并入页面停留。
-    if (state$1.wasBackgrounded) {
-        state$1.wasBackgrounded = false;
-        state$1.suppressNextPageLogAfterResume = true;
-        state$1.lastRouteEnterTime = now;
-    }
     const scene = tryRun(() => getLaunchScene(options.scene), '');
     const result = tryRun(() => ensureSession('app_show', { now, scene }), null);
-    if (!result || !result.isNew)
+    if (!result || !result.isNew) {
         return;
+    }
     tryRun(() => clearEntry(), undefined);
-    // cst=2：不再携带 fvts/lvts/tvc（首批已在 cold_launch 上报过）。
-    // url 优先取 options.path；拿不到就用上次记录的 lastRoute（用户回到的页面通常即此）。
     const url = options.path || state$1.lastRoute || '';
     const entryKey = normalizePathForEntryMark(url);
     if (entryKey) {
@@ -1909,6 +1989,8 @@ function handleAppHide(app, opts = {}) {
         return;
     const now = nowSec();
     state$1.wasBackgrounded = true;
+    state$1.pendingBackgroundResume = true;
+    state$1.backgroundEnteredAt = now;
     tryRun(() => markBackground(now), undefined);
     const deltaStay = state$1.lastRouteEnterTime > 0 ? now - state$1.lastRouteEnterTime : 0;
     const stayed = clampUrlrefStaySec(deltaStay);
@@ -1962,6 +2044,9 @@ function handlePageShow(app, vm, opts = {}) {
     const c = safeCollector(app);
     if (!c)
         return;
+    if (state$1.pendingBackgroundResume) {
+        tryConsumeBackgroundResume(app, {}, opts, 'handlePageShow');
+    }
     const now = nowSec();
     const route = tryRun(() => getCurrentRoute(vm), '');
     const url = tryRun(() => getCurrentRouteWithQuery(vm), '') || route;
@@ -2158,13 +2243,72 @@ function getUni$6() {
     return u != null && typeof u === 'object' ? u : undefined;
 }
 /**
- * 装配 vue mixin + uni 全局生命周期。
+ * 是否由 mixin 分发 App 级 onShow/onHide（对齐私有版 `stat.show` / `stat.hide`）。
  *
- * 与私有版 `src/index.js` 行为差异：
- *   - 拆 onLaunch / onAppShow / onAppHide / onPageShow / onPageHide 五个独立调度，
- *     避免 mixin 内夹带"如何判定 page/app"的脏逻辑。
- *   - vue mixin 仍维持 `onLaunch/onLoad/onShow/onHide/onUnload/onError` 五段，与 vue
- *     生命周期 1:1，便于上层调试。
+ * - Vue2：始终走 mixin（`load_stat` 不注册 uni.onAppShow/Hide）。
+ * - Vue3：仅 H5 / nvue 走 mixin；小程序等走 `uni.onAppShow` / `onAppHide`。
+ */
+function shouldMixinDispatchAppLifecycle() {
+    // #ifndef VUE3
+    return true;
+    // #endif
+}
+/**
+ * 是否注册 `uni.onAppShow` / `onAppHide`（对齐私有版 `index.js#load_stat` VUE3 分支）。
+ *
+ * 仅 Vue3 且非 H5、非 nvue（即小程序等）为 true；Vue2 必须为 false。
+ */
+function shouldBindUniAppLifecycle() {
+    // #ifndef VUE3
+    return false;
+    // #endif
+}
+const uniAppHookRegistry = {
+    bound: false,
+    appShowCb: undefined,
+    appHideCb: undefined,
+};
+/**
+ * 订阅应用级 `uni.onAppShow` / `onAppHide`；`uni` 或 API 未就绪时返回 false，可稍后重试。
+ */
+function tryBindUniAppLifecycle(app, opts = {}) {
+    if (!shouldBindUniAppLifecycle())
+        return false;
+    if (uniAppHookRegistry.bound)
+        return true;
+    const u = getUni$6();
+    if (!u || typeof u.onAppShow !== 'function')
+        return false;
+    if (typeof u.onAppHide !== 'function')
+        return false;
+    uniAppHookRegistry.appShowCb = (e) => handleAppShow(app, e !== null && e !== void 0 ? e : {}, opts);
+    uniAppHookRegistry.appHideCb = () => handleAppHide(app, opts);
+    tryRun(() => u.onAppShow(uniAppHookRegistry.appShowCb), undefined);
+    tryRun(() => u.onAppHide(uniAppHookRegistry.appHideCb), undefined);
+    uniAppHookRegistry.bound = true;
+    return true;
+}
+/** 解绑 `tryBindUniAppLifecycle` 注册的回调。 */
+function unbindUniAppLifecycle() {
+    if (!uniAppHookRegistry.bound)
+        return;
+    const cur = getUni$6();
+    if (uniAppHookRegistry.appShowCb && (cur === null || cur === void 0 ? void 0 : cur.offAppShow)) {
+        tryRun(() => cur.offAppShow(uniAppHookRegistry.appShowCb), undefined);
+    }
+    if (uniAppHookRegistry.appHideCb && (cur === null || cur === void 0 ? void 0 : cur.offAppHide)) {
+        tryRun(() => cur.offAppHide(uniAppHookRegistry.appHideCb), undefined);
+    }
+    uniAppHookRegistry.bound = false;
+    uniAppHookRegistry.appShowCb = undefined;
+    uniAppHookRegistry.appHideCb = undefined;
+}
+/**
+ * 装配 vue mixin；Vue3 小程序等另由 `tryBindUniAppLifecycle` 订阅 uni 应用前后台。
+ *
+ * 与私有版 `src/index.js` + `core/stat.js#show|hide` 对齐：
+ *   - Vue2：仅 `Vue.mixin`，App/Page 均在 mixin 的 onShow/onHide 内分支。
+ *   - Vue3：H5/nvue 的 App 前后台在 mixin；其它端用 uni.onAppShow/onAppHide。
  */
 function bindLifecycle(app, opts = {}) {
     let bound = true;
@@ -2176,10 +2320,34 @@ function bindLifecycle(app, opts = {}) {
             // 保留钩子位，用于未来扩展（query 收集等）；当前 noop。
         },
         onShow() {
-            handlePageShow(app, this, opts);
+            const vmType = getPageVmType(this);
+            if (state$1.pendingBackgroundResume) {
+                tryConsumeBackgroundResume(app, {}, opts, 'mixin.onShow');
+            }
+            state$1.isHide = false;
+            if (vmType === 'page') {
+                handlePageShow(app, this, opts);
+            }
+            if (shouldMixinDispatchAppLifecycle() && vmType === 'app') {
+                handleAppShow(app, {}, opts);
+            }
         },
         onHide() {
-            handlePageHide(app);
+            state$1.isHide = true;
+            if (getPageVmType(this) === 'page') {
+                handlePageHide(app);
+                // #ifndef VUE3
+                // Vue2 H5 部分工程仅触发 page onHide；补记后台，避免无 pending / 无 lt=3。
+                if (!state$1.pendingBackgroundResume) {
+                    handleAppHide(app, opts);
+                }
+                // #endif
+            }
+            if (shouldMixinDispatchAppLifecycle() &&
+                getPageVmType(this) === 'app' &&
+                !state$1.pendingBackgroundResume) {
+                handleAppHide(app, opts);
+            }
         },
         onUnload() {
             if (state$1.isHide) {
@@ -2192,30 +2360,17 @@ function bindLifecycle(app, opts = {}) {
             handleError(app, e);
         },
     };
-    const u = getUni$6();
-    let appShowCb;
-    let appHideCb;
-    if (u && typeof u.onAppShow === 'function') {
-        appShowCb = (e) => handleAppShow(app, e !== null && e !== void 0 ? e : {}, opts);
-        tryRun(() => u.onAppShow(appShowCb), undefined);
-    }
-    if (u && typeof u.onAppHide === 'function') {
-        appHideCb = () => handleAppHide(app, opts);
-        tryRun(() => u.onAppHide(appHideCb), undefined);
+    if (shouldBindUniAppLifecycle()) {
+        tryBindUniAppLifecycle(app, opts);
     }
     return {
         mixin,
+        tryBindUniAppHooks: () => shouldBindUniAppLifecycle() && tryBindUniAppLifecycle(app, opts),
         unbind() {
             if (!bound)
                 return;
             bound = false;
-            const cur = getUni$6();
-            if (appShowCb && cur && typeof cur.offAppShow === 'function') {
-                tryRun(() => cur.offAppShow(appShowCb), undefined);
-            }
-            if (appHideCb && cur && typeof cur.offAppHide === 'function') {
-                tryRun(() => cur.offAppHide(appHideCb), undefined);
-            }
+            unbindUniAppLifecycle();
         },
     };
 }
@@ -2479,11 +2634,13 @@ function logCollect(data) {
  * 启动 / 配置摘要。`installPublicStat` 装配完毕后调用一次，方便业务方一眼确认接入状态。
  */
 function logBoot(info) {
+    var _a, _b;
     if (!logger.isDebug())
         return;
     logger.debug('=== uni 统计公有版已启用 ===');
-    // 通道: ${info.channel} |
-    logger.debug(`上报间隔: ${info.reportIntervalSec}s | 应用APPID: ${info.ak || '<未注入>'}${info.appName ? ` | 应用名: ${info.appName}` : ''}`);
+    const bgSec = (_a = info.backgroundTimeoutSec) !== null && _a !== void 0 ? _a : 300;
+    const piSec = (_b = info.pageInactiveTimeoutSec) !== null && _b !== void 0 ? _b : 1800;
+    logger.debug(`上报间隔: ${info.reportIntervalSec}s | 后台超时(新会话): ${bgSec}s | 前台无操作超时: ${piSec}s | 应用APPID: ${info.ak || '<未注入>'}${info.appName ? ` | 应用名: ${info.appName}` : ''}${info.vueMode ? ` | ${info.vueMode}` : ''}`);
     if (info.debugFromManifest) {
         logger.debug('调试模式：已从 manifest.uniStatistics.debug 自动开启');
     }
@@ -5208,13 +5365,36 @@ function __resetStatApp() {
  * 已内联的 JSON 字符串，表现为 `UNI_STATISTICS_CONFIG_len=0`、会话阈值永远默认。
  * 因此必须**直接**书写 `process.env.UNI_STATISTICS_CONFIG`（无任何 `typeof process` 包裹）。
  */
+/**
+ * 解析构建期注入的 `UNI_STATISTICS_CONFIG`。
+ * 正常为 JSON 字符串；少数打包配置会误注入为对象字面量，此处一并兼容。
+ */
+function parseInjectedUniStatistics() {
+    const raw = process.env.UNI_STATISTICS_CONFIG;
+    if (raw == null)
+        return undefined;
+    if (typeof raw === 'object' && !Array.isArray(raw)) {
+        return raw;
+    }
+    if (typeof raw !== 'string')
+        return undefined;
+    const trimmed = raw.trim();
+    if (!trimmed || trimmed === 'undefined')
+        return undefined;
+    try {
+        const obj = JSON.parse(trimmed);
+        if (!obj || typeof obj !== 'object' || Array.isArray(obj))
+            return undefined;
+        return obj;
+    }
+    catch (_e) {
+        return undefined;
+    }
+}
 function readManifestStatConfig() {
     try {
-        const raw = process.env.UNI_STATISTICS_CONFIG;
-        if (!raw || typeof raw !== 'string')
-            return undefined;
-        const obj = JSON.parse(raw);
-        if (!obj || typeof obj !== 'object')
+        const obj = parseInjectedUniStatistics();
+        if (!obj)
             return undefined;
         const cfg = {};
         if (obj.channelVersion != null) {
@@ -5323,20 +5503,18 @@ function getUni() {
     const u = resolveUniRuntime();
     return u != null && typeof u === 'object' ? u : undefined;
 }
-/**
- * 判定 `uni` 是否已具备生命周期绑定所需 API。
- *
- * 部分环境下 `uni` 仅作为**构建注入的模块标识符**存在，不在 `globalThis.uni`；
- * 已统一由 `infra/uniRuntime#resolveUniRuntime` 解析（含注入路径）。
- */
-function isUniLifecycleReady() {
-    const u = getUni();
-    return !!(u && typeof u.onAppShow === 'function');
-}
+/** Vue3 下晚就绪 API 重试次数（50ms 间隔，约 1s）。 */
+const UNI_HOOK_RETRY_MAX = 20;
+const UNI_HOOK_RETRY_MS = 50;
+/** 已排队或已执行的 vue mixin 注入，避免重复。 */
+let vueMixinMounted = false;
+let vueMixinRetryTimer;
 /** install 是否已经触发过（不论成功失败）。 */
 let bootstrapped = false;
 /** 已注册到全局的 unbind，便于 __reset。 */
 let lastUnbind;
+/** 晚就绪时重试 `uni.onAppShow` 的定时器。 */
+let uniHookRetryTimer;
 /**
  * 入口装配。重复调用时立即返回。
  *
@@ -5355,17 +5533,34 @@ function installPublicStat(opts = {}) {
     tryRun(() => app.install(finalConfig, opts.overrides), undefined);
     // 启动摘要：与生命周期解耦，保证 StatApp.install 完成后立刻可打印（不依赖 uni 是否已挂载）。
     tryRun(() => {
-        var _a, _b, _c;
+        var _a, _b, _c, _d, _f;
         const cfgBoot = app.getConfig();
         const appName = process.env.UNI_APP_NAME || '';
-        logBoot({
+        if (logger.isDebug()) {
+            const injected = parseInjectedUniStatistics();
+            const hasBg = injected != null &&
+                (injected.backgroundTimeout != null ||
+                    injected.backgroundTimeoutSec != null);
+            if (!hasBg) {
+                logger.debug('[uni-stat] manifest 未配置 backgroundTimeout 或构建注入为空，后台新会话阈值使用默认 300s（请确认 uniStatistics 配置后重新编译）');
+            }
+        }
+        const bootBase = {
             channel: (_a = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.version) !== null && _a !== void 0 ? _a : 'image',
             reportIntervalSec: (_b = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.reportIntervalSec) !== null && _b !== void 0 ? _b : 0,
-            ak: (_c = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.ak) !== null && _c !== void 0 ? _c : '',
+            backgroundTimeoutSec: (_c = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.backgroundTimeoutSec) !== null && _c !== void 0 ? _c : 300,
+            pageInactiveTimeoutSec: (_d = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.pageInactiveTimeoutSec) !== null && _d !== void 0 ? _d : 1800,
+            ak: (_f = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.ak) !== null && _f !== void 0 ? _f : '',
             appName,
             debugFromManifest: process.env.UNI_STAT_DEBUG === 'true' ||
                 process.env.UNI_STAT_DEBUG === true,
-        });
+        };
+        // #ifndef VUE3
+        logBoot(Object.assign({}, bootBase, { vueMode: 'Vue2' }));
+        // #endif
+        // #ifdef VUE3
+        logBoot(Object.assign({}, bootBase, { vueMode: 'Vue3' }));
+        // #endif
     }, undefined);
     /**
      * 装配 vue mixin 与 uni 生命周期；与 logBoot 解耦，便于在 uni 晚就绪时延后执行。
@@ -5383,55 +5578,118 @@ function installPublicStat(opts = {}) {
         }, opts.lifecycle);
         const { mixin, unbind } = bindLifecycle(app, lifecycleOpts);
         lastUnbind = unbind;
+        // 与私有版 load_stat 一致：同步注入 mixin，不等待 uni.onAppShow（Vue2 根本不注册该项）。
         if (!opts.skipVueMixin) {
             tryRun(() => mountVueMixin(mixin), undefined);
         }
         if (!opts.skipUniReport) {
             tryRun(() => mountUniReport(app), undefined);
         }
-    };
-    if (isUniLifecycleReady()) {
-        finishLifecycleInstall();
-        return;
-    }
-    queueMicrotask(() => {
-        if (isUniLifecycleReady()) {
-            finishLifecycleInstall();
-            return;
+        // 私有版：仅 Vue3 且非 H5/nvue 注册 uni 应用前后台。
+        if (shouldBindUniAppLifecycle() &&
+            !tryBindUniAppLifecycle(app, lifecycleOpts)) {
+            scheduleUniAppHookRetry(() => tryBindUniAppLifecycle(app, lifecycleOpts));
         }
-        setTimeout(() => {
-            if (!isUniLifecycleReady()) {
-                logger.warn('[uni-stat] uni 运行时仍未就绪（缺少 onAppShow），统计生命周期绑定已推迟；若仍无采集日志请检查入口脚本加载顺序或延后引入 uni-stat-public');
-            }
-            finishLifecycleInstall();
-        }, 0);
-    });
+    };
+    finishLifecycleInstall();
 }
 /**
- * 把 mixin 装到 vue 实例上。优先走 `uni.onCreateVueApp`（VUE3）；缺失时回退
- * `require('vue').mixin`（VUE2 / 兼容层）。两者都没有则记录 warn，不抛。
+ * 仅 Vue3 小程序等重试 `uni.onAppShow` / `onAppHide`；Vue2 不调用。
+ */
+function scheduleUniAppHookRetry(tryBind) {
+    if (uniHookRetryTimer) {
+        clearTimeout(uniHookRetryTimer);
+        uniHookRetryTimer = undefined;
+    }
+    let attempts = 0;
+    const tick = () => {
+        if (tryBind())
+            return;
+        if (++attempts >= UNI_HOOK_RETRY_MAX) {
+            logger.warn('[uni-stat] Vue3 小程序：uni.onAppShow 暂不可用，应用前后台统计可能缺失');
+            return;
+        }
+        uniHookRetryTimer = setTimeout(tick, UNI_HOOK_RETRY_MS);
+    };
+    uniHookRetryTimer = setTimeout(tick, UNI_HOOK_RETRY_MS);
+}
+/**
+ * 把 mixin 装到 vue 实例上。
+ *
+ * 与私有版 `src/index.js#load_stat` 一致，必须用条件编译区分：
+ *   - VUE3：`uni.onCreateVueApp` → `app.mixin`（运行时若存在 `onCreateVueApp` 会误走此分支，
+ *     但 Vue2 真机构造器全局 mixin 才生效，导致页面 onShow/onHide 永不触发）。
+ *   - VUE2：`require('vue').mixin`（由应用打包器静态解析，勿用 `globalThis.require`）。
+ *
+ * `#ifdef` 保留到 dist，由宿主 `uni:pre` 在打包阶段剔除分支（同私有版 dist）。
  */
 function mountVueMixin(mixin) {
-    var _a;
+    if (vueMixinMounted)
+        return;
+    // #ifndef VUE3
+    if (mountVue2GlobalMixin(mixin)) {
+        vueMixinMounted = true;
+    }
+    // #endif
+    // #ifdef VUE3
     const u = getUni();
     if (u && typeof u.onCreateVueApp === 'function') {
         u.onCreateVueApp((vueApp) => {
             tryRun(() => vueApp.mixin(mixin), undefined);
         });
+        vueMixinMounted = true;
         return;
     }
-    // VUE2 兼容；用 eval('require') 防止打包工具静态解析失败。
-    const req = globalThis
-        .require;
-    if (typeof req === 'function') {
-        const Vue = tryRun(() => req('vue'), {});
-        const target = (_a = Vue === null || Vue === void 0 ? void 0 : Vue.default) !== null && _a !== void 0 ? _a : Vue;
-        if (target && typeof target.mixin === 'function') {
-            tryRun(() => target.mixin(mixin), undefined);
+    scheduleVueAppMixinRetry(mixin);
+    // #endif
+}
+// #ifdef VUE3
+/**
+ * Vue3：`onCreateVueApp` 晚就绪时短重试。
+ */
+function scheduleVueAppMixinRetry(mixin) {
+    if (vueMixinMounted)
+        return;
+    if (vueMixinRetryTimer)
+        return;
+    let attempts = 0;
+    const tick = () => {
+        vueMixinRetryTimer = undefined;
+        if (vueMixinMounted)
+            return;
+        const u = getUni();
+        if (u && typeof u.onCreateVueApp === 'function') {
+            u.onCreateVueApp((vueApp) => {
+                tryRun(() => vueApp.mixin(mixin), undefined);
+            });
+            vueMixinMounted = true;
             return;
         }
+        if (++attempts >= UNI_HOOK_RETRY_MAX) {
+            logger.warn('[uni-stat] Vue3: onCreateVueApp 在重试后仍不可用，页面级 mixin 未注入');
+            return;
+        }
+        vueMixinRetryTimer = setTimeout(tick, UNI_HOOK_RETRY_MS);
+    };
+    vueMixinRetryTimer = setTimeout(tick, UNI_HOOK_RETRY_MS);
+}
+// #endif
+/**
+ * Vue2 全局 mixin（与私有版 `index.js` 中 `require('vue').mixin` 一致）。
+ *
+ * @returns 是否注入成功
+ */
+function mountVue2GlobalMixin(mixin) {
+    var _a;
+    // eslint-disable-next-line no-restricted-globals
+    const Vue = require('vue');
+    const target = (_a = Vue.default) !== null && _a !== void 0 ? _a : Vue;
+    if (target && typeof target.mixin === 'function') {
+        tryRun(() => target.mixin(mixin), undefined);
+        return true;
     }
-    logger.warn('[uni-stat] no vue mixin entry available; lifecycle not bound to vue');
+    logger.warn('[uni-stat] Vue2: vue.mixin 不可用，请检查是否已安装 vue 依赖');
+    return false;
 }
 /**
  * 把 `uni.report` 桥到 StatApp.report。
@@ -5446,6 +5704,15 @@ function mountUniReport(app) {
 }
 /** 仅供测试：重置 install 哨兵；调用方应同时调 `__resetStatApp()`。 */
 function __resetInstall() {
+    if (uniHookRetryTimer) {
+        clearTimeout(uniHookRetryTimer);
+        uniHookRetryTimer = undefined;
+    }
+    if (vueMixinRetryTimer) {
+        clearTimeout(vueMixinRetryTimer);
+        vueMixinRetryTimer = undefined;
+    }
+    vueMixinMounted = false;
     if (lastUnbind)
         tryRun(() => lastUnbind(), undefined);
     lastUnbind = undefined;

@@ -99,6 +99,17 @@ describe('domain/session/machine', () => {
       expect(r.cst).toBe(CST.BackgroundTimeout)
     })
 
+    test('app_show：lifecycle backgroundEnteredAt 可兜底 bgTs 未写入', () => {
+      configure({ backgroundTimeoutSec: 10 })
+      ensureSession('cold_launch', { now: T0 })
+      const r = ensureSession('app_show', {
+        now: T0 + 20,
+        backgroundEnteredAt: T0,
+      })
+      expect(r.isNew).toBe(true)
+      expect(r.cst).toBe(CST.BackgroundTimeout)
+    })
+
     test('app_show wx scene 变化 → 新 session, cst=2', () => {
       ensureSession('cold_launch', { now: T0, scene: '1001' })
       markBackground(T0 + 5)

@@ -74,11 +74,14 @@ var index = () => [
                 // ssr 时不开启
                 if (!uniCliShared.isSsr(env.command, config)) {
                     const statConfig = uniCliShared.getUniStatistics(inputDir, platform);
+                    // 始终注入完整 manifest.uniStatistics（与 enable 无关）。
+                    // enable 仅控制是否自动 import 统计入口；业务手动 import 或 enable:false 调试时，
+                    // 运行时仍须能读到 backgroundTimeout / reportInterval 等字段。
+                    process.env.UNI_STATISTICS_CONFIG = JSON.stringify(statConfig);
+                    process.env.UNI_STAT_DEBUG = statConfig.debug ? 'true' : 'false';
                     isEnable = statConfig.enable === true;
                     if (isEnable) {
                         const uniCloudConfig = statConfig.uniCloud || {};
-                        // 获取manifest.json 统计配置，插入环境变量中
-                        process.env.UNI_STATISTICS_CONFIG = JSON.stringify(statConfig);
                         const type = String(statConfig.type || '').trim();
                         if (type === 'public' || type === 'private') {
                             statType = type;
@@ -88,7 +91,6 @@ var index = () => [
                             statType = versionNum === 2 ? 'private' : 'public';
                         }
                         process.env.UNI_STAT_UNI_CLOUD = JSON.stringify(uniCloudConfig);
-                        process.env.UNI_STAT_DEBUG = statConfig.debug ? 'true' : 'false';
                         // 公有版字段 `an` 兜底：注入 manifest.json#name 到 process.env.UNI_APP_NAME，
                         // 由 `public/adapter/package.ts#getEnvAppName` 读取。任意阶段读 manifest 失败
                         // 都走 try/catch，不阻断构建。

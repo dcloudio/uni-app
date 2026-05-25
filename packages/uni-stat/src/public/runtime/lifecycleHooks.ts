@@ -35,8 +35,12 @@ import {
   setReportTitle,
 } from '../domain/title'
 import { ensureSession, markBackground } from '../domain/session/machine'
-import { getCurrentRoute, getCurrentRouteWithQuery } from '../adapter/route'
-import { isMp } from '../adapter/platform'
+import {
+  getCurrentRoute,
+  getCurrentRouteWithQuery,
+  getPageVmType,
+} from '../adapter/route'
+import { getPlatform, isH5, isMp, isNvue } from '../adapter/platform'
 import { getLaunchScene } from '../adapter/lifecycle'
 import { getPushClientId } from '../adapter/push'
 import { logger } from '../infra/logger'
@@ -49,9 +53,12 @@ import type { StatApp } from './StatApp'
 
 interface PageVm {
   route?: string
+  mpType?: string
+  $mpType?: string
+  $options?: { mpType?: string }
   $page?: { route?: string; fullPath?: string }
   $scope?: { route?: string }
-  $mp?: { page?: { route?: string; is?: string } }
+  $mp?: { mpType?: string; page?: { route?: string; is?: string } }
 }
 
 export interface LifecycleOptions {
@@ -118,10 +125,21 @@ interface LifecycleState {
   /**
    * 是否经历过 `onAppHide`（进入后台）。
    *
-   * 仅用于在 H5/部分端把 App 级 onShow 与 Page 级 onShow 混入同一 mixin 时，
-   * 识别"这是一次后台恢复链路"，从而在首个 pageShow 做边界重置。
+   * 用于后台恢复链路：截断页面停留、抑制误发 lt=11；与 `backgroundEnteredAt` 配合。
    */
   wasBackgrounded: boolean
+  /**
+   * 是否存在待处理的后台恢复（Vue2 H5 常在 hide 过程中误触发 page onShow，
+   * 过早清空 wasBackgrounded；用本标记保证真正回前台时再消费一次）。
+   */
+  pendingBackgroundResume: boolean
+  /**
+   * 最近一次进入后台的时间戳（秒）；对齐私有版 `set_first_time`。
+   *
+   * `handleAppShow` 传给 `ensureSession('app_show')`，避免仅依赖 storage `bgTs`
+   * 未写入时无法判 `backgroundTimeout`（cst=2）。
+   */
+  backgroundEnteredAt: number
   /**
    * 后台恢复后的首个 pageShow 需跳过离开页上报（lt=11）。
    *
@@ -143,8 +161,13 @@ const state: LifecycleState = {
   prevIey: false,
   isHide: false,
   wasBackgrounded: false,
+  pendingBackgroundResume: false,
+  backgroundEnteredAt: 0,
   suppressNextPageLogAfterResume: false,
 }
+
+/** Vue2 H5 hide 过程中偶发 page onShow（间隔≈0s），低于此阈值不消费 pending。 */
+const BACKGROUND_RESUME_DEBOUNCE_SEC = 1
 
 /**
  * 取 collector；未 install 时返回 undefined（调用方需负责 noop）。
@@ -282,37 +305,105 @@ export function handleLaunch(
 }
 
 /**
+ * 消费「从后台回前台」会话判定（cst=2）；返回 true 表示已处理（含防抖跳过但仍保留 pending）。
+ *
+ * Vue2：Page onShow 常早于 App onShow，且 hide 过程中可能误触发一次 page onShow，
+ * 若在那时清空 pending/wasBackgrounded，App onShow 将看不到后台标记（用户截图现象）。
+ */
+function tryConsumeBackgroundResume(
+  app: StatApp,
+  options: { scene?: string | number; path?: string } = {},
+  _opts: LifecycleOptions = {},
+  _from: string = 'unknown'
+): boolean {
+  if (!state.pendingBackgroundResume) {
+    return false
+  }
+  const bgEnterAt = state.backgroundEnteredAt
+  if (bgEnterAt <= 0) {
+    return false
+  }
+
+  const c = safeCollector(app)
+  if (!c) {
+    return false
+  }
+
+  const now = nowSec()
+  const elapsed = now - bgEnterAt
+  if (elapsed < BACKGROUND_RESUME_DEBOUNCE_SEC) {
+    state.suppressNextPageLogAfterResume = true
+    return true
+  }
+
+  state.wasBackgrounded = false
+  state.suppressNextPageLogAfterResume = true
+  state.lastRouteEnterTime = now
+
+  const scene = tryRun(() => getLaunchScene(options.scene), '')
+  const result = tryRun(
+    () =>
+      ensureSession('app_show', {
+        now,
+        scene,
+        backgroundEnteredAt: bgEnterAt,
+      }),
+    null
+  )
+
+  state.pendingBackgroundResume = false
+  state.backgroundEnteredAt = 0
+
+  if (!result || !result.isNew) {
+    return true
+  }
+
+  tryRun(() => clearEntry(), undefined)
+  const url = options.path || state.lastRoute || ''
+  const entryKey = normalizePathForEntryMark(url)
+  if (entryKey) {
+    tryRun(() => markEntryPage(entryKey), undefined)
+  }
+  reportNewSession(
+    c,
+    result.cst || CST.BackgroundTimeout,
+    scene,
+    now,
+    false,
+    url
+  )
+  void c
+    .flush(true)
+    .catch((e) =>
+      logger.warn('[uni-stat] flush after new session (app_show) failed', e)
+    )
+  return true
+}
+
+/**
  * 应用从后台进入前台。
  *
  * 流程：
- *   1. ensureSession('app_show') → 命中 backgroundTimeout 时新 session（cst=2）。
- *   2. isNew=true 时发一条 lt=1，并 **flush(true)**：避免新 sid 的 lt=1 仍等 `reportInterval`
- *      才发出时用户已在前台产生 lt=11 等事件，进程被杀或乱序送达导致服务端缺锚点。
- *      （进后台路径已在 `handleAppHide` 里 lt=3 + flush；冷启首条 lt=1 常因 `lastFlushAt=0`
- *      被 `report` 内自动 flush，此处补齐「后台超时后再进前台」场景。）
- *   3. isNew=false 时 noop。
+ *   1. `tryConsumeBackgroundResume`（pending）→ ensureSession('app_show') / cst=2。
+ *   2. isNew=true 时发一条 lt=1，并 **flush(true)**。
+ *   3. 无 pending 时仅处理 scene 变化等（少见）。
  */
 export function handleAppShow(
   app: StatApp,
   options: { scene?: string | number; path?: string } = {},
-  _opts: LifecycleOptions = {}
+  opts: LifecycleOptions = {}
 ): void {
+  if (tryConsumeBackgroundResume(app, options, opts, 'handleAppShow')) return
+
   const c = safeCollector(app)
   if (!c) return
   const now = nowSec()
-  // 后台恢复边界：无论本次是否新会话，都先把"页面停留起点"截到恢复时刻，
-  // 并在下一个真实 pageShow 抑制一次 lt=11，避免把后台时长并入页面停留。
-  if (state.wasBackgrounded) {
-    state.wasBackgrounded = false
-    state.suppressNextPageLogAfterResume = true
-    state.lastRouteEnterTime = now
-  }
   const scene = tryRun(() => getLaunchScene(options.scene), '')
   const result = tryRun(() => ensureSession('app_show', { now, scene }), null)
-  if (!result || !result.isNew) return
+  if (!result || !result.isNew) {
+    return
+  }
   tryRun(() => clearEntry(), undefined)
-  // cst=2：不再携带 fvts/lvts/tvc（首批已在 cold_launch 上报过）。
-  // url 优先取 options.path；拿不到就用上次记录的 lastRoute（用户回到的页面通常即此）。
   const url = options.path || state.lastRoute || ''
   const entryKey = normalizePathForEntryMark(url)
   if (entryKey) {
@@ -347,6 +438,8 @@ export function handleAppHide(app: StatApp, opts: LifecycleOptions = {}): void {
   if (!c) return
   const now = nowSec()
   state.wasBackgrounded = true
+  state.pendingBackgroundResume = true
+  state.backgroundEnteredAt = now
   tryRun(() => markBackground(now), undefined)
   const deltaStay =
     state.lastRouteEnterTime > 0 ? now - state.lastRouteEnterTime : 0
@@ -404,6 +497,9 @@ export function handlePageShow(
 ): void {
   const c = safeCollector(app)
   if (!c) return
+  if (state.pendingBackgroundResume) {
+    tryConsumeBackgroundResume(app, {}, opts, 'handlePageShow')
+  }
   const now = nowSec()
   const route = tryRun(() => getCurrentRoute(vm), '')
   const url = tryRun(() => getCurrentRouteWithQuery(vm), '') || route
@@ -625,27 +721,100 @@ function getUni(): UniLifecycleApi | undefined {
   return u != null && typeof u === 'object' ? (u as UniLifecycleApi) : undefined
 }
 
+/**
+ * 是否由 mixin 分发 App 级 onShow/onHide（对齐私有版 `stat.show` / `stat.hide`）。
+ *
+ * - Vue2：始终走 mixin（`load_stat` 不注册 uni.onAppShow/Hide）。
+ * - Vue3：仅 H5 / nvue 走 mixin；小程序等走 `uni.onAppShow` / `onAppHide`。
+ */
+export function shouldMixinDispatchAppLifecycle(): boolean {
+  // #ifndef VUE3
+  return true
+  // #endif
+  // #ifdef VUE3
+  return isH5() || getPlatform() === 'n' || isNvue()
+  // #endif
+}
+
+/**
+ * 是否注册 `uni.onAppShow` / `onAppHide`（对齐私有版 `index.js#load_stat` VUE3 分支）。
+ *
+ * 仅 Vue3 且非 H5、非 nvue（即小程序等）为 true；Vue2 必须为 false。
+ */
+export function shouldBindUniAppLifecycle(): boolean {
+  // #ifndef VUE3
+  return false
+  // #endif
+  // #ifdef VUE3
+  return !isH5() && getPlatform() !== 'n' && !isNvue()
+  // #endif
+}
+
+const uniAppHookRegistry = {
+  bound: false,
+  appShowCb: undefined as
+    | ((e: { scene?: string | number; path?: string }) => void)
+    | undefined,
+  appHideCb: undefined as (() => void) | undefined,
+}
+
+/**
+ * 订阅应用级 `uni.onAppShow` / `onAppHide`；`uni` 或 API 未就绪时返回 false，可稍后重试。
+ */
+export function tryBindUniAppLifecycle(
+  app: StatApp,
+  opts: LifecycleOptions = {}
+): boolean {
+  if (!shouldBindUniAppLifecycle()) return false
+  if (uniAppHookRegistry.bound) return true
+  const u = getUni()
+  if (!u || typeof u.onAppShow !== 'function') return false
+  if (typeof u.onAppHide !== 'function') return false
+  uniAppHookRegistry.appShowCb = (e): void => handleAppShow(app, e ?? {}, opts)
+  uniAppHookRegistry.appHideCb = (): void => handleAppHide(app, opts)
+  tryRun(() => u.onAppShow!(uniAppHookRegistry.appShowCb!), undefined)
+  tryRun(() => u.onAppHide!(uniAppHookRegistry.appHideCb!), undefined)
+  uniAppHookRegistry.bound = true
+  return true
+}
+
+/** 解绑 `tryBindUniAppLifecycle` 注册的回调。 */
+function unbindUniAppLifecycle(): void {
+  if (!uniAppHookRegistry.bound) return
+  const cur = getUni()
+  if (uniAppHookRegistry.appShowCb && cur?.offAppShow) {
+    tryRun(() => cur.offAppShow!(uniAppHookRegistry.appShowCb!), undefined)
+  }
+  if (uniAppHookRegistry.appHideCb && cur?.offAppHide) {
+    tryRun(() => cur.offAppHide!(uniAppHookRegistry.appHideCb!), undefined)
+  }
+  uniAppHookRegistry.bound = false
+  uniAppHookRegistry.appShowCb = undefined
+  uniAppHookRegistry.appHideCb = undefined
+}
+
 export interface BindLifecycleResult {
   /** vue.mixin(...) 入参。 */
   mixin: Record<string, unknown>
   /** 解绑 uni.onAppShow / onAppHide。多次调用 noop。 */
   unbind: () => void
+  /** 在 `uni.onAppShow` 晚就绪时重试订阅；已成功则返回 true。 */
+  tryBindUniAppHooks: () => boolean
 }
 
 /**
- * 装配 vue mixin + uni 全局生命周期。
+ * 装配 vue mixin；Vue3 小程序等另由 `tryBindUniAppLifecycle` 订阅 uni 应用前后台。
  *
- * 与私有版 `src/index.js` 行为差异：
- *   - 拆 onLaunch / onAppShow / onAppHide / onPageShow / onPageHide 五个独立调度，
- *     避免 mixin 内夹带"如何判定 page/app"的脏逻辑。
- *   - vue mixin 仍维持 `onLaunch/onLoad/onShow/onHide/onUnload/onError` 五段，与 vue
- *     生命周期 1:1，便于上层调试。
+ * 与私有版 `src/index.js` + `core/stat.js#show|hide` 对齐：
+ *   - Vue2：仅 `Vue.mixin`，App/Page 均在 mixin 的 onShow/onHide 内分支。
+ *   - Vue3：H5/nvue 的 App 前后台在 mixin；其它端用 uni.onAppShow/onAppHide。
  */
 export function bindLifecycle(
   app: StatApp,
   opts: LifecycleOptions = {}
 ): BindLifecycleResult {
   let bound = true
+
   const mixin: Record<string, unknown> = {
     onLaunch(
       this: unknown,
@@ -657,10 +826,36 @@ export function bindLifecycle(
       // 保留钩子位，用于未来扩展（query 收集等）；当前 noop。
     },
     onShow(this: PageVm): void {
-      handlePageShow(app, this, opts)
+      const vmType = getPageVmType(this)
+      if (state.pendingBackgroundResume) {
+        tryConsumeBackgroundResume(app, {}, opts, 'mixin.onShow')
+      }
+      state.isHide = false
+      if (vmType === 'page') {
+        handlePageShow(app, this, opts)
+      }
+      if (shouldMixinDispatchAppLifecycle() && vmType === 'app') {
+        handleAppShow(app, {}, opts)
+      }
     },
     onHide(this: PageVm): void {
-      handlePageHide(app, this)
+      state.isHide = true
+      if (getPageVmType(this) === 'page') {
+        handlePageHide(app, this)
+        // #ifndef VUE3
+        // Vue2 H5 部分工程仅触发 page onHide；补记后台，避免无 pending / 无 lt=3。
+        if (!state.pendingBackgroundResume) {
+          handleAppHide(app, opts)
+        }
+        // #endif
+      }
+      if (
+        shouldMixinDispatchAppLifecycle() &&
+        getPageVmType(this) === 'app' &&
+        !state.pendingBackgroundResume
+      ) {
+        handleAppHide(app, opts)
+      }
     },
     onUnload(this: PageVm): void {
       if (state.isHide) {
@@ -674,33 +869,18 @@ export function bindLifecycle(
     },
   }
 
-  const u = getUni()
-  let appShowCb:
-    | ((e: { scene?: string | number; path?: string }) => void)
-    | undefined
-  let appHideCb: (() => void) | undefined
-
-  if (u && typeof u.onAppShow === 'function') {
-    appShowCb = (e): void => handleAppShow(app, e ?? {}, opts)
-    tryRun(() => u.onAppShow!(appShowCb!), undefined)
-  }
-  if (u && typeof u.onAppHide === 'function') {
-    appHideCb = (): void => handleAppHide(app, opts)
-    tryRun(() => u.onAppHide!(appHideCb!), undefined)
+  if (shouldBindUniAppLifecycle()) {
+    tryBindUniAppLifecycle(app, opts)
   }
 
   return {
     mixin,
+    tryBindUniAppHooks: (): boolean =>
+      shouldBindUniAppLifecycle() && tryBindUniAppLifecycle(app, opts),
     unbind(): void {
       if (!bound) return
       bound = false
-      const cur = getUni()
-      if (appShowCb && cur && typeof cur.offAppShow === 'function') {
-        tryRun(() => cur.offAppShow!(appShowCb!), undefined)
-      }
-      if (appHideCb && cur && typeof cur.offAppHide === 'function') {
-        tryRun(() => cur.offAppHide!(appHideCb!), undefined)
-      }
+      unbindUniAppLifecycle()
     },
   }
 }
@@ -717,7 +897,10 @@ export function __resetLifecycleState(): void {
   state.prevIey = false
   state.isHide = false
   state.wasBackgrounded = false
+  state.pendingBackgroundResume = false
+  state.backgroundEnteredAt = 0
   state.suppressNextPageLogAfterResume = false
   titleSnapGeneration = 0
   firstVisitEmittedInProcess = false
+  unbindUniAppLifecycle()
 }

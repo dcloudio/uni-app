@@ -232,6 +232,39 @@ describe('runtime/install', () => {
     expect(cfg.reportIntervalSec).toBe(8)
   })
 
+  test('I9.d 构建误注入为对象字面量时仍能解析 backgroundTimeout', () => {
+    // Node 对 process.env 赋值会转成 "[object Object]"，须用 defineProperty 模拟 define 内联对象。
+    Object.defineProperty(process.env, 'UNI_STATISTICS_CONFIG', {
+      value: {
+        enable: false,
+        debug: true,
+        backgroundTimeout: 10,
+        pageInactiveTimeout: 10,
+      },
+      writable: true,
+      configurable: true,
+      enumerable: true,
+    })
+
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    const cfg = getStatApp().getConfig()!
+    expect(cfg.backgroundTimeoutSec).toBe(10)
+    expect(cfg.pageInactiveTimeoutSec).toBe(10)
+  })
+
+  test('I9.e enable:false 但注入含 backgroundTimeout 时仍生效（手动 import 场景）', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      JSON.stringify({
+        enable: false,
+        debug: true,
+        type: 'public',
+        backgroundTimeout: 10,
+      })
+
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    expect(getStatApp().getConfig()!.backgroundTimeoutSec).toBe(10)
+  })
+
   // === collectItems：与私有版完全同名同义 ===
 
   test('I10 collectItems.uniPushClientID=true → enablePush=true', () => {
@@ -290,6 +323,19 @@ describe('runtime/install', () => {
     installPublicStat({ skipVueMixin: true, skipUniReport: true })
     expect(getStatApp().getConfig()!.enablePush).toBe(false) // 非法 → 默认
     expect(getStatApp().getConfig()!.enablePageLog).toBe(false)
+  })
+
+  test('I12 Vue2：缺少 onAppShow 时仍同步装配 mixin，且不打印「推迟绑定」告警', () => {
+    const { uni } = installMockUni({ platform: 'h5' })
+    delete uni.onAppShow
+    delete uni.onAppHide
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {})
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    const deferredWarn = warnSpy.mock.calls.some((args) =>
+      String(args.join(' ')).includes('统计生命周期绑定已推迟')
+    )
+    expect(deferredWarn).toBe(false)
+    warnSpy.mockRestore()
   })
 
   test('I11 timeout=0 不应被采纳（语义不合理，转为默认值）', () => {
