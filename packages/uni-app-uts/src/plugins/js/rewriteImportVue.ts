@@ -1,6 +1,11 @@
 import { parse } from '@babel/parser'
+import {
+  type ImportSpecifier,
+  init as initEsModuleLexer,
+  parse as parseImports,
+} from 'es-module-lexer'
 import MagicString from 'magic-string'
-import type { Identifier } from '@babel/types'
+import type { Identifier, ImportDeclaration } from '@babel/types'
 import type { Plugin } from 'vite'
 
 /**
@@ -19,7 +24,18 @@ export function rewriteImportVuePlugin(): Plugin {
     enforce: 'post',
     async renderChunk(source, chunk) {
       if (chunk.fileName.endsWith('.js')) {
-        const rewritten = rewriteImportVue(source)
+        if (!source.includes('vue')) {
+          return
+        }
+        await initEsModuleLexer
+        const [imports] = parseImports(source)
+        const vueImportRanges = imports.filter(
+          (specifier) => specifier.n === 'vue' && specifier.d === -1
+        )
+        if (!vueImportRanges.length) {
+          return
+        }
+        const rewritten = rewriteImportVue(source, vueImportRanges)
         if (rewritten.hasChanged()) {
           return {
             code: rewritten.toString(),
@@ -36,43 +52,67 @@ export function rewriteImportVuePlugin(): Plugin {
  * import { xx as yy, zz } from 'vue' =>
  * const { xx: yy, zz } = globalThis.Vue
  */
-export function rewriteImportVue(input: string) {
-  const ast = parse(input, {
-    sourceType: 'module',
-  }).program.body
+export function rewriteImportVue(
+  input: string,
+  importRanges?: Pick<ImportSpecifier, 'ss' | 'se'>[]
+) {
   const s = new MagicString(input)
-  ast.forEach((node) => {
-    if (node.type === 'ImportDeclaration' && node.source.value === 'vue') {
-      const specifiers = node.specifiers
-      const imports: string[] = []
-      specifiers.forEach((specifier) => {
-        if (specifier.type === 'ImportSpecifier') {
-          const imported = (specifier.imported as Identifier).name
-          const local = specifier.local.name
-          if (imported === local) {
-            imports.push(imported)
-          } else {
-            imports.push(`${imported}: ${local}`)
-          }
-        } else if (specifier.type === 'ImportDefaultSpecifier') {
-          const local = specifier.local.name
-          imports.push(`default: ${local}`)
-        } else if (specifier.type === 'ImportNamespaceSpecifier') {
-          const local = specifier.local.name
-          s.overwrite(node.start!, node.end!, `const ${local} = globalThis.Vue`)
-          return
-        }
-      })
-      if (imports.length > 0) {
-        s.overwrite(
-          node.start!,
-          node.end!,
-          `const { ${imports.join(', ')} } = globalThis.Vue`
-        )
-      } else {
-        s.remove(node.start!, node.end!)
+
+  if (importRanges) {
+    importRanges.forEach(({ ss, se }) => {
+      const rewritten = rewriteImportVueStatement(input.slice(ss, se))
+      if (rewritten !== undefined) {
+        s.overwrite(ss, se, rewritten)
       }
+    })
+  } else {
+    const ast = parse(input, {
+      sourceType: 'module',
+    }).program.body
+    ast.forEach((node) => {
+      if (node.type === 'ImportDeclaration' && node.source.value === 'vue') {
+        const rewritten = createImportVueReplacement(node)
+        if (rewritten !== undefined) {
+          s.overwrite(node.start!, node.end!, rewritten)
+        }
+      }
+    })
+  }
+
+  return s
+}
+
+function rewriteImportVueStatement(input: string) {
+  const node = parse(input, {
+    sourceType: 'module',
+  }).program.body[0]
+  if (node?.type === 'ImportDeclaration' && node.source.value === 'vue') {
+    return createImportVueReplacement(node)
+  }
+}
+
+function createImportVueReplacement(node: ImportDeclaration) {
+  const imports: string[] = []
+  const declarations: string[] = []
+  node.specifiers.forEach((specifier) => {
+    if (specifier.type === 'ImportSpecifier') {
+      const imported = (specifier.imported as Identifier).name
+      const local = specifier.local.name
+      if (imported === local) {
+        imports.push(imported)
+      } else {
+        imports.push(`${imported}: ${local}`)
+      }
+    } else if (specifier.type === 'ImportDefaultSpecifier') {
+      const local = specifier.local.name
+      imports.push(`default: ${local}`)
+    } else if (specifier.type === 'ImportNamespaceSpecifier') {
+      const local = specifier.local.name
+      declarations.push(`const ${local} = globalThis.Vue`)
     }
   })
-  return s
+  if (imports.length > 0) {
+    declarations.push(`const { ${imports.join(', ')} } = globalThis.Vue`)
+  }
+  return declarations.join(';')
 }
