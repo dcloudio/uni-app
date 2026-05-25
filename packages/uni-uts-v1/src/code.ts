@@ -587,9 +587,7 @@ function genModuleCode(
             decl.cls
           } = /*#__PURE__*/ ${initProxyMethodName}(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, '${
             decl.cls
-          }${
-            isElement ? '' : 'ByJs'
-          }', is_uni_modules) }, ${genClassOptionsCode(decl.options)} ))`
+          }ByJs', is_uni_modules) }, ${genClassOptionsCode(decl.options)} ))`
         )
       }
     } else if (decl.type === 'FunctionDeclaration') {
@@ -1650,7 +1648,7 @@ function genClassDeclaration(
             return: returnOptions,
           }
           if (item.isStatic) {
-            staticMethods[name + (isElement ? '' : 'ByJs')] = value
+            staticMethods[name + 'ByJs'] = value
           } else {
             methods[name + (isElement ? '' : 'ByJs')] = value
           }
