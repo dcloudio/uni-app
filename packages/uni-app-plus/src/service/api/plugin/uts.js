@@ -453,6 +453,15 @@ function initUTSProxyClass(options) {
         },
     }));
 }
+// UniElementImpl基类优先方法列表
+const uniElementImplPriorityMethods = [
+    'hasAttribute',
+    'getAttribute',
+    'setAttribute',
+    'removeAttribute',
+    'getAnyAttribute',
+    'setAnyAttribute',
+];
 function initUTSElementProxyClass(options) {
     const { moduleName, moduleType, package: pkg, class: cls, methods, props, setters, errMsg, } = options;
     const baseOptions = {
@@ -478,9 +487,12 @@ function initUTSElementProxyClass(options) {
                     if (name === '__v_skip') {
                         return true;
                     }
+                    if (uniElementImplPriorityMethods.includes(name) &&
+                        name in _target) {
+                        return _target[name];
+                    }
                     if (!target[name]) {
                         //实例方法
-                        name = parseClassMethodName(name, methods);
                         if (hasOwn(methods, name)) {
                             const { async, keepAlive, params, return: returnOptions, } = methods[name];
                             target[name] = initUTSInstanceMethod(!!async, extend({

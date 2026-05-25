@@ -4549,6 +4549,7 @@ function initUTSProxyClass(options) {
     }
   }));
 }
+var uniElementImplPriorityMethods = ["hasAttribute", "getAttribute", "setAttribute", "removeAttribute", "getAnyAttribute", "setAnyAttribute"];
 function initUTSElementProxyClass(options) {
   var {
     moduleName,
@@ -4586,8 +4587,10 @@ function initUTSElementProxyClass(options) {
           if (name === "__v_skip") {
             return true;
           }
+          if (uniElementImplPriorityMethods.includes(name) && name in _target) {
+            return _target[name];
+          }
           if (!target[name]) {
-            name = parseClassMethodName(name, methods);
             if (hasOwn(methods, name)) {
               var {
                 async,
