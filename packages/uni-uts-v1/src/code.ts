@@ -125,6 +125,12 @@ export interface GenProxyCodeOptions {
   iosPreprocessor?: SyncUniModulesFilePreprocessor
 }
 
+function isElementClass(cls: string) {
+  return (
+    process.env.UNI_APP_X_DOM2 === 'true' && /^Uni.*Element(?:Impl)?$/.test(cls)
+  )
+}
+
 export async function genProxyCode(
   module: string,
   options: GenProxyCodeOptions
@@ -368,8 +374,9 @@ function normalizeInterfaceKeepAlive(decls: ProxyDecl[], types: Types) {
       classNames.find((n) => {
         const classMeta = classTypes[n]
         if (classMeta.interfaces && classMeta.interfaces.includes(decl.cls)) {
+          const isElement = isElementClass(decl.cls)
           classMeta.keepAliveMethods.forEach((method) => {
-            const jsMethod = method + 'ByJs'
+            const jsMethod = method + (isElement ? '' : 'ByJs')
             if (decl.options.methods[jsMethod]) {
               decl.options.methods[jsMethod].keepAlive = true
             }
@@ -571,17 +578,18 @@ function genModuleCode(
           }ByJs', is_uni_modules) }, ${genClassOptionsCode(decl.options)} ))`
         )
       } else {
-        const initProxyMethodName =
-          process.env.UNI_APP_X_DOM2 === 'true' &&
-          /^Uni.*Element(?:Impl)?$/.test(decl.cls)
-            ? 'initUTSElementProxyClass'
-            : 'initUTSProxyClass'
+        const isElement = isElementClass(decl.cls)
+        const initProxyMethodName = isElement
+          ? 'initUTSElementProxyClass'
+          : 'initUTSProxyClass'
         codes.push(
           `${exportConst}${
             decl.cls
           } = /*#__PURE__*/ ${initProxyMethodName}(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, '${
             decl.cls
-          }ByJs', is_uni_modules) }, ${genClassOptionsCode(decl.options)} ))`
+          }${
+            isElement ? '' : 'ByJs'
+          }', is_uni_modules) }, ${genClassOptionsCode(decl.options)} ))`
         )
       }
     } else if (decl.type === 'FunctionDeclaration') {
@@ -1492,6 +1500,7 @@ function genInterfaceDeclaration(
   const props: string[] = []
   const setters: Record<string, Parameter> = {}
   const elements = parseInterfaceBody(types, decl)
+  const isElement = isElementClass(cls)
 
   elements.forEach((item) => {
     if (item.type === 'TsMethodSignature') {
@@ -1521,7 +1530,7 @@ function genInterfaceDeclaration(
           ),
           return: returnOptions,
         }
-        methods[name + 'ByJs'] = value
+        methods[name + (isElement ? '' : 'ByJs')] = value
       }
     } else if (item.type === 'TsPropertySignature') {
       if (item.key.type === 'Identifier') {
@@ -1585,6 +1594,8 @@ function genClassDeclaration(
       implement.expression.type === 'Identifier' &&
       isHookClass(implement.expression.value)
   )
+  const isElement = isElementClass(cls)
+
   const interfaces = parseImplements(decl)
   decl.body.forEach((item) => {
     if (item.type === 'Constructor') {
@@ -1639,9 +1650,9 @@ function genClassDeclaration(
             return: returnOptions,
           }
           if (item.isStatic) {
-            staticMethods[name + 'ByJs'] = value
+            staticMethods[name + (isElement ? '' : 'ByJs')] = value
           } else {
-            methods[name + 'ByJs'] = value
+            methods[name + (isElement ? '' : 'ByJs')] = value
           }
         }
       }
@@ -1699,6 +1710,7 @@ function genClassDeclarationFromInterface(
   const props: string[] = []
   const setters: Record<string, Parameter> = {}
   const elements = parseInterfaceBody(types, decl)
+  const isElement = isElementClass(cls)
 
   elements.forEach((item) => {
     if (item.type === 'TsMethodSignature') {
@@ -1718,7 +1730,7 @@ function genClassDeclarationFromInterface(
         }
 
         const name = item.key.value
-        methods[name + 'ByJs'] = {
+        methods[name + (isElement ? '' : 'ByJs')] = {
           async: isReturnPromise(item.typeAnn),
           keepAlive: false,
           params: resolveFunctionParams(
