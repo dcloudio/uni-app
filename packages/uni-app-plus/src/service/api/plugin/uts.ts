@@ -914,6 +914,16 @@ export function initUTSProxyClass(
   )
 }
 
+// UniElementImpl基类优先方法列表
+const uniElementImplPriorityMethods = [
+  'hasAttribute',
+  'getAttribute',
+  'setAttribute',
+  'removeAttribute',
+  'getAnyAttribute',
+  'setAnyAttribute',
+]
+
 export function initUTSElementProxyClass(options: ProxyClassOptions): any {
   const {
     moduleName,
@@ -954,9 +964,14 @@ export function initUTSElementProxyClass(options: ProxyClassOptions): any {
           if (name === '__v_skip') {
             return true
           }
+          if (
+            uniElementImplPriorityMethods.includes(name as string) &&
+            name in _target
+          ) {
+            return _target[name]
+          }
           if (!target[name as string]) {
             //实例方法
-            name = parseClassMethodName(name, methods)
             if (hasOwn(methods, name)) {
               const {
                 async,
