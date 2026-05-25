@@ -2197,9 +2197,6 @@
       "StartPullDownRefreshFailCallback"
     ],
     [
-      "StartPullDownRefreshFailImpl"
-    ],
-    [
       "StartPullDownRefreshOptions"
     ],
     [
@@ -2207,9 +2204,6 @@
     ],
     [
       "StartPullDownRefreshSuccessCallback"
-    ],
-    [
-      "StartPullDownRefreshSuccessImpl"
     ],
     [
       "StartSoterAuthentication"
