@@ -8,11 +8,8 @@
  *
  * 行为约定：
  *   - `debug` 受调试开关控制；其他 level 始终输出到对应的 `console.*`。
- *   - **默认（非 Android / iOS 真机侧）**：`console.*(TAG, ...args)`，对象保持原生传递。
- *   - **Android 或 iOS**（App 看 `plus.os`；`mp-*` 看 `uni.getSystemInfoSync().platform`）：
- *     仅将 **对象类参数**（含数组、Date；`Error` 转为可读短串）用 `safeStringify` 等压成字符串；
- *     再与 `TAG`、其它参数 **拼成单条字符串** 输出（部分真机 / HBuilderX 桥接只转发 `console.*` 的
- *     **第一个参数**，多参会丢失）。**其它平台**仍为 `console.*(TAG, ...args)`。
+ *   - **Android / iOS 真机**：`TAG` 与正文拼成单条字符串，避免桥接丢弃第二参起。
+ *   - **其它平台**：`console.*(TAG, ...args)`，对象保持原生传递。
  *
  * 兼容性：
  *   - 历史版本插件 define 误把 `process.env.UNI_STAT_DEBUG` 替换成布尔字面量
@@ -25,6 +22,13 @@ import { safeStringify } from './safe'
 const TAG = '[uni统计公有版]'
 
 let runtimeDebug: boolean | undefined
+
+/**
+ * 是否将日志合并为单行（Android / iOS 真机侧）。
+ */
+function preferSingleLineConsole(): boolean {
+  return isAndroidOrIosRuntime()
+}
 
 /**
  * 是否为 App 或小程序运行在 **Android / iOS** 上（仅此类环境对对象参数做字符串化）。
@@ -97,18 +101,20 @@ function formatLogArgForNativeConsole(value: unknown): string {
 }
 
 /**
- * 输出到 console：非 Android/iOS 保持多参；Android/iOS 对象转字符串并 **整行单参** 输出。
+ * 输出到 console：Android/iOS 真机整行单参；其余平台 `TAG` + 多参。
  */
 function emitConsole(
   method: 'log' | 'info' | 'warn' | 'error',
   args: unknown[]
 ): void {
   const fn = console[method]
-  if (!isAndroidOrIosRuntime()) {
+  if (!preferSingleLineConsole()) {
     fn.call(console, TAG, ...args)
     return
   }
-  const mapped = args.map(stringifyObjectArgForNative)
+  const mapped = isAndroidOrIosRuntime()
+    ? args.map(stringifyObjectArgForNative)
+    : args
   if (mapped.length === 0) {
     fn.call(console, TAG)
     return

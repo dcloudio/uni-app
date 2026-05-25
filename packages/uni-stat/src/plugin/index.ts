@@ -18,6 +18,13 @@ const uniStatLog = once((text: string) => {
   console.log()
 })
 
+/**
+ * 构建期「统计已开启」提示文案（不依赖 i18n 占位符，避免 HBuilderX 内置文案仍为 `{version}` 时原样输出）。
+ */
+function formatStatEnabledTip(statType: 'public' | 'private'): string {
+  return `已开启 uni统计${statType === 'public' ? '公有版' : '私有版'}`
+}
+
 export default () => [
   defineUniMainJsPlugin((opts) => {
     /**
@@ -110,23 +117,14 @@ export default () => [
                 if (!statConfig.type && !statConfig.version) {
                   uniStatLog(M['stat.warn.version'])
                 } else {
-                  uniStatLog(
-                    `已开启 uni统计${
-                      statType === 'public' ? '公有版' : '私有版'
-                    }`
-                  )
+                  uniStatLog(formatStatEnabledTip(statType))
                 }
               }
             } else {
               if (!statConfig.type && !statConfig.version) {
                 uniStatLog(M['stat.warn.version'])
               } else {
-                uniStatLog(
-                  M['stat.warn.tip'].replace(
-                    '{type}',
-                    statType === 'public' ? '公有版' : '私有版'
-                  )
-                )
+                uniStatLog(formatStatEnabledTip(statType))
               }
             }
           }

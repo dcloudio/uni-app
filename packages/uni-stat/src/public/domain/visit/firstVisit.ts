@@ -120,9 +120,13 @@ export function loadVisitSnapshot(): VisitSnapshot {
     degraded,
   }
   if (degraded) {
-    logger.warn(
-      '[uni-stat] visit snapshot degraded; some storage keys read failed'
-    )
+    const likelyFresh =
+      fvts === 0 && lvts === 0 && tvc === 0 && snapshot.isNewUser
+    if (!likelyFresh) {
+      logger.warn(
+        '[uni-stat] visit snapshot degraded; some storage keys read failed'
+      )
+    }
   }
   loaded = snapshot
   return snapshot

@@ -27,6 +27,8 @@ import {
   type StatAppOverrides,
   getStatApp,
 } from './StatApp'
+import { onCreateVueApp as registerOnCreateVueApp } from '@dcloudio/uni-shared'
+
 import { logBoot } from '../infra/debugLog'
 import { logger } from '../infra/logger'
 import { resolveUniRuntime } from '../infra/uniRuntime'
@@ -289,28 +291,30 @@ export function installPublicStat(opts: InstallOptions = {}): void {
   tryRun(() => {
     const cfgBoot = app.getConfig()
     const appName = process.env.UNI_APP_NAME || ''
-    if (logger.isDebug()) {
-      const injected = parseInjectedUniStatistics()
-      const hasBg =
-        injected != null &&
-        (injected.backgroundTimeout != null ||
-          injected.backgroundTimeoutSec != null)
-      if (!hasBg) {
-        logger.debug(
-          '[uni-stat] manifest 未配置 backgroundTimeout 或构建注入为空，后台新会话阈值使用默认 300s（请确认 uniStatistics 配置后重新编译）'
-        )
-      }
-    }
-    const bootBase = {
+    const injected = parseInjectedUniStatistics()
+    const bootBase: Parameters<typeof logBoot>[0] = {
       channel: cfgBoot?.version ?? 'image',
       reportIntervalSec: cfgBoot?.reportIntervalSec ?? 0,
-      backgroundTimeoutSec: cfgBoot?.backgroundTimeoutSec ?? 300,
-      pageInactiveTimeoutSec: cfgBoot?.pageInactiveTimeoutSec ?? 1800,
       ak: cfgBoot?.ak ?? '',
       appName,
       debugFromManifest:
         process.env.UNI_STAT_DEBUG === 'true' ||
         (process.env.UNI_STAT_DEBUG as unknown) === true,
+    }
+    // 仅当 manifest 显式配置了超时项时才在 debug 启动摘要中展示（默认值 300/1800 不刷屏）。
+    if (injected != null) {
+      if (
+        injected.backgroundTimeout != null ||
+        injected.backgroundTimeoutSec != null
+      ) {
+        bootBase.backgroundTimeoutSec = cfgBoot?.backgroundTimeoutSec
+      }
+      if (
+        injected.pageInactiveTimeout != null ||
+        injected.pageInactiveTimeoutSec != null
+      ) {
+        bootBase.pageInactiveTimeoutSec = cfgBoot?.pageInactiveTimeoutSec
+      }
     }
     // #ifndef VUE3
     logBoot(Object.assign({}, bootBase, { vueMode: 'Vue2' }))
@@ -384,6 +388,24 @@ function scheduleUniAppHookRetry(tryBind: () => boolean): void {
   uniHookRetryTimer = setTimeout(tick, UNI_HOOK_RETRY_MS)
 }
 
+// #ifdef VUE3
+/**
+ * 通过 `@dcloudio/uni-shared` 注册 mixin（与运行时 createApp 共用同一钩子队列）。
+ *
+ * 若 App 已创建会**同步**执行回调；不依赖 `globalThis.uni.onCreateVueApp` 是否已挂载。
+ */
+function mountVue3MixinViaUniShared(mixin: Record<string, unknown>): boolean {
+  try {
+    registerOnCreateVueApp((vueApp) => {
+      tryRun(() => vueApp.mixin(mixin), undefined)
+    })
+    return true
+  } catch (_e) {
+    return false
+  }
+}
+// #endif
+
 /**
  * 把 mixin 装到 vue 实例上。
  *
@@ -404,6 +426,13 @@ function mountVueMixin(mixin: Record<string, unknown>): void {
   // #endif
 
   // #ifdef VUE3
+  if (vueMixinMounted) return
+
+  if (mountVue3MixinViaUniShared(mixin)) {
+    vueMixinMounted = true
+    return
+  }
+
   const u = getUni()
   if (u && typeof u.onCreateVueApp === 'function') {
     u.onCreateVueApp((vueApp) => {
@@ -427,6 +456,12 @@ function scheduleVueAppMixinRetry(mixin: Record<string, unknown>): void {
   const tick = (): void => {
     vueMixinRetryTimer = undefined
     if (vueMixinMounted) return
+
+    if (mountVue3MixinViaUniShared(mixin)) {
+      vueMixinMounted = true
+      return
+    }
+
     const u = getUni()
     if (u && typeof u.onCreateVueApp === 'function') {
       u.onCreateVueApp((vueApp) => {
@@ -436,9 +471,11 @@ function scheduleVueAppMixinRetry(mixin: Record<string, unknown>): void {
       return
     }
     if (++attempts >= UNI_HOOK_RETRY_MAX) {
-      logger.warn(
-        '[uni-stat] Vue3: onCreateVueApp 在重试后仍不可用，页面级 mixin 未注入'
-      )
+      if (!vueMixinMounted) {
+        logger.warn(
+          '[uni-stat] Vue3: onCreateVueApp 在重试后仍不可用，页面级 mixin 未注入'
+        )
+      }
       return
     }
     vueMixinRetryTimer = setTimeout(tick, UNI_HOOK_RETRY_MS)

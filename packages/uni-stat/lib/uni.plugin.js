@@ -23,6 +23,12 @@ const uniStatLog = once((text) => {
     console.warn(text);
     console.log();
 });
+/**
+ * 构建期「统计已开启」提示文案（不依赖 i18n 占位符，避免 HBuilderX 内置文案仍为 `{version}` 时原样输出）。
+ */
+function formatStatEnabledTip(statType) {
+    return `已开启 uni统计${statType === 'public' ? '公有版' : '私有版'}`;
+}
 var index = () => [
     uniCliShared.defineUniMainJsPlugin((opts) => {
         /**
@@ -114,7 +120,7 @@ var index = () => [
                                     uniStatLog(uniCliShared.M['stat.warn.version']);
                                 }
                                 else {
-                                    uniStatLog(`已开启 uni统计${statType === 'public' ? '公有版' : '私有版'}`);
+                                    uniStatLog(formatStatEnabledTip(statType));
                                 }
                             }
                         }
@@ -123,7 +129,7 @@ var index = () => [
                                 uniStatLog(uniCliShared.M['stat.warn.version']);
                             }
                             else {
-                                uniStatLog(uniCliShared.M['stat.warn.tip'].replace('{type}', statType === 'public' ? '公有版' : '私有版'));
+                                uniStatLog(formatStatEnabledTip(statType));
                             }
                         }
                     }

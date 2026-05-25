@@ -113,22 +113,28 @@ export function logBoot(info: {
   vueMode?: string
 }): void {
   if (!logger.isDebug()) return
-  logger.debug('=== uni 统计公有版已启用 ===')
-  const bgSec = info.backgroundTimeoutSec ?? 300
-  const piSec = info.pageInactiveTimeoutSec ?? 1800
-  logger.debug(
-    `上报间隔: ${
-      info.reportIntervalSec
-    }s | 后台超时(新会话): ${bgSec}s | 前台无操作超时: ${piSec}s | 应用APPID: ${
+  const timeoutParts: string[] = []
+  if (info.backgroundTimeoutSec != null) {
+    timeoutParts.push(`后台超时(新会话): ${info.backgroundTimeoutSec}s`)
+  }
+  if (info.pageInactiveTimeoutSec != null) {
+    timeoutParts.push(`前台无操作超时: ${info.pageInactiveTimeoutSec}s`)
+  }
+  const timeoutSeg =
+    timeoutParts.length > 0 ? ` | ${timeoutParts.join(' | ')}` : ''
+  const lines = [
+    '=== uni 统计公有版已启用 ===',
+    `上报间隔: ${info.reportIntervalSec}s${timeoutSeg} | 应用APPID: ${
       info.ak || '<未注入>'
     }${info.appName ? ` | 应用名: ${info.appName}` : ''}${
       info.vueMode ? ` | ${info.vueMode}` : ''
-    }`
-  )
+    }`,
+  ]
   if (info.debugFromManifest) {
-    logger.debug('调试模式：已从 manifest.uniStatistics.debug 自动开启')
+    lines.push('调试模式：已从 manifest.uniStatistics.debug 自动开启')
   }
-  logger.debug('=== 后续将在每次采集 / 上报时输出过程日志 ===')
+  lines.push('=== 后续将在每次采集 / 上报时输出过程日志 ===')
+  logger.debug(lines.join('\n'))
 }
 
 /**

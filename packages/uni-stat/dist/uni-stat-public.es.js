@@ -1,3 +1,5 @@
+import { onCreateVueApp } from '@dcloudio/uni-shared';
+
 /**
  * 事件类型与会话创建类型常量。
  *
@@ -192,11 +194,8 @@ function defaultSleep(ms) {
  *
  * 行为约定：
  *   - `debug` 受调试开关控制；其他 level 始终输出到对应的 `console.*`。
- *   - **默认（非 Android / iOS 真机侧）**：`console.*(TAG, ...args)`，对象保持原生传递。
- *   - **Android 或 iOS**（App 看 `plus.os`；`mp-*` 看 `uni.getSystemInfoSync().platform`）：
- *     仅将 **对象类参数**（含数组、Date；`Error` 转为可读短串）用 `safeStringify` 等压成字符串；
- *     再与 `TAG`、其它参数 **拼成单条字符串** 输出（部分真机 / HBuilderX 桥接只转发 `console.*` 的
- *     **第一个参数**，多参会丢失）。**其它平台**仍为 `console.*(TAG, ...args)`。
+ *   - **Android / iOS 真机**：`TAG` 与正文拼成单条字符串，避免桥接丢弃第二参起。
+ *   - **其它平台**：`console.*(TAG, ...args)`，对象保持原生传递。
  *
  * 兼容性：
  *   - 历史版本插件 define 误把 `process.env.UNI_STAT_DEBUG` 替换成布尔字面量
@@ -205,6 +204,12 @@ function defaultSleep(ms) {
  */
 const TAG = '[uni统计公有版]';
 let runtimeDebug;
+/**
+ * 是否将日志合并为单行（Android / iOS 真机侧）。
+ */
+function preferSingleLineConsole() {
+    return isAndroidOrIosRuntime();
+}
 /**
  * 是否为 App 或小程序运行在 **Android / iOS** 上（仅此类环境对对象参数做字符串化）。
  */
@@ -279,15 +284,17 @@ function formatLogArgForNativeConsole(value) {
     return String(value);
 }
 /**
- * 输出到 console：非 Android/iOS 保持多参；Android/iOS 对象转字符串并 **整行单参** 输出。
+ * 输出到 console：Android/iOS 真机整行单参；其余平台 `TAG` + 多参。
  */
 function emitConsole(method, args) {
     const fn = console[method];
-    if (!isAndroidOrIosRuntime()) {
+    if (!preferSingleLineConsole()) {
         fn.call(console, TAG, ...args);
         return;
     }
-    const mapped = args.map(stringifyObjectArgForNative);
+    const mapped = isAndroidOrIosRuntime()
+        ? args.map(stringifyObjectArgForNative)
+        : args;
     if (mapped.length === 0) {
         fn.call(console, TAG);
         return;
@@ -654,7 +661,10 @@ function loadVisitSnapshot() {
         degraded,
     };
     if (degraded) {
-        logger.warn('[uni-stat] visit snapshot degraded; some storage keys read failed');
+        const likelyFresh = fvts === 0 && lvts === 0 && tvc === 0 && snapshot.isNewUser;
+        if (!likelyFresh) {
+            logger.warn('[uni-stat] visit snapshot degraded; some storage keys read failed');
+        }
     }
     loaded = snapshot;
     return snapshot;
@@ -2674,17 +2684,25 @@ function logCollect(data) {
  * 启动 / 配置摘要。`installPublicStat` 装配完毕后调用一次，方便业务方一眼确认接入状态。
  */
 function logBoot(info) {
-    var _a, _b;
     if (!logger.isDebug())
         return;
-    logger.debug('=== uni 统计公有版已启用 ===');
-    const bgSec = (_a = info.backgroundTimeoutSec) !== null && _a !== void 0 ? _a : 300;
-    const piSec = (_b = info.pageInactiveTimeoutSec) !== null && _b !== void 0 ? _b : 1800;
-    logger.debug(`上报间隔: ${info.reportIntervalSec}s | 后台超时(新会话): ${bgSec}s | 前台无操作超时: ${piSec}s | 应用APPID: ${info.ak || '<未注入>'}${info.appName ? ` | 应用名: ${info.appName}` : ''}${info.vueMode ? ` | ${info.vueMode}` : ''}`);
-    if (info.debugFromManifest) {
-        logger.debug('调试模式：已从 manifest.uniStatistics.debug 自动开启');
+    const timeoutParts = [];
+    if (info.backgroundTimeoutSec != null) {
+        timeoutParts.push(`后台超时(新会话): ${info.backgroundTimeoutSec}s`);
     }
-    logger.debug('=== 后续将在每次采集 / 上报时输出过程日志 ===');
+    if (info.pageInactiveTimeoutSec != null) {
+        timeoutParts.push(`前台无操作超时: ${info.pageInactiveTimeoutSec}s`);
+    }
+    const timeoutSeg = timeoutParts.length > 0 ? ` | ${timeoutParts.join(' | ')}` : '';
+    const lines = [
+        '=== uni 统计公有版已启用 ===',
+        `上报间隔: ${info.reportIntervalSec}s${timeoutSeg} | 应用APPID: ${info.ak || '<未注入>'}${info.appName ? ` | 应用名: ${info.appName}` : ''}${info.vueMode ? ` | ${info.vueMode}` : ''}`,
+    ];
+    if (info.debugFromManifest) {
+        lines.push('调试模式：已从 manifest.uniStatistics.debug 自动开启');
+    }
+    lines.push('=== 后续将在每次采集 / 上报时输出过程日志 ===');
+    logger.debug(lines.join('\n'));
 }
 /**
  * 即将上报：取出 batch、选定 channel 后调用。
@@ -5573,28 +5591,29 @@ function installPublicStat(opts = {}) {
     tryRun(() => app.install(finalConfig, opts.overrides), undefined);
     // 启动摘要：与生命周期解耦，保证 StatApp.install 完成后立刻可打印（不依赖 uni 是否已挂载）。
     tryRun(() => {
-        var _a, _b, _c, _d, _f;
+        var _a, _b, _c;
         const cfgBoot = app.getConfig();
         const appName = process.env.UNI_APP_NAME || '';
-        if (logger.isDebug()) {
-            const injected = parseInjectedUniStatistics();
-            const hasBg = injected != null &&
-                (injected.backgroundTimeout != null ||
-                    injected.backgroundTimeoutSec != null);
-            if (!hasBg) {
-                logger.debug('[uni-stat] manifest 未配置 backgroundTimeout 或构建注入为空，后台新会话阈值使用默认 300s（请确认 uniStatistics 配置后重新编译）');
-            }
-        }
+        const injected = parseInjectedUniStatistics();
         const bootBase = {
             channel: (_a = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.version) !== null && _a !== void 0 ? _a : 'image',
             reportIntervalSec: (_b = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.reportIntervalSec) !== null && _b !== void 0 ? _b : 0,
-            backgroundTimeoutSec: (_c = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.backgroundTimeoutSec) !== null && _c !== void 0 ? _c : 300,
-            pageInactiveTimeoutSec: (_d = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.pageInactiveTimeoutSec) !== null && _d !== void 0 ? _d : 1800,
-            ak: (_f = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.ak) !== null && _f !== void 0 ? _f : '',
+            ak: (_c = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.ak) !== null && _c !== void 0 ? _c : '',
             appName,
             debugFromManifest: process.env.UNI_STAT_DEBUG === 'true' ||
                 process.env.UNI_STAT_DEBUG === true,
         };
+        // 仅当 manifest 显式配置了超时项时才在 debug 启动摘要中展示（默认值 300/1800 不刷屏）。
+        if (injected != null) {
+            if (injected.backgroundTimeout != null ||
+                injected.backgroundTimeoutSec != null) {
+                bootBase.backgroundTimeoutSec = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.backgroundTimeoutSec;
+            }
+            if (injected.pageInactiveTimeout != null ||
+                injected.pageInactiveTimeoutSec != null) {
+                bootBase.pageInactiveTimeoutSec = cfgBoot === null || cfgBoot === void 0 ? void 0 : cfgBoot.pageInactiveTimeoutSec;
+            }
+        }
         // #ifndef VUE3
         logBoot(Object.assign({}, bootBase, { vueMode: 'Vue2' }));
         // #endif
@@ -5653,6 +5672,24 @@ function scheduleUniAppHookRetry(tryBind) {
     };
     uniHookRetryTimer = setTimeout(tick, UNI_HOOK_RETRY_MS);
 }
+// #ifdef VUE3
+/**
+ * 通过 `@dcloudio/uni-shared` 注册 mixin（与运行时 createApp 共用同一钩子队列）。
+ *
+ * 若 App 已创建会**同步**执行回调；不依赖 `globalThis.uni.onCreateVueApp` 是否已挂载。
+ */
+function mountVue3MixinViaUniShared(mixin) {
+    try {
+        onCreateVueApp((vueApp) => {
+            tryRun(() => vueApp.mixin(mixin), undefined);
+        });
+        return true;
+    }
+    catch (_e) {
+        return false;
+    }
+}
+// #endif
 /**
  * 把 mixin 装到 vue 实例上。
  *
@@ -5672,6 +5709,12 @@ function mountVueMixin(mixin) {
     }
     // #endif
     // #ifdef VUE3
+    if (vueMixinMounted)
+        return;
+    if (mountVue3MixinViaUniShared(mixin)) {
+        vueMixinMounted = true;
+        return;
+    }
     const u = getUni();
     if (u && typeof u.onCreateVueApp === 'function') {
         u.onCreateVueApp((vueApp) => {
@@ -5697,6 +5740,10 @@ function scheduleVueAppMixinRetry(mixin) {
         vueMixinRetryTimer = undefined;
         if (vueMixinMounted)
             return;
+        if (mountVue3MixinViaUniShared(mixin)) {
+            vueMixinMounted = true;
+            return;
+        }
         const u = getUni();
         if (u && typeof u.onCreateVueApp === 'function') {
             u.onCreateVueApp((vueApp) => {
@@ -5706,7 +5753,9 @@ function scheduleVueAppMixinRetry(mixin) {
             return;
         }
         if (++attempts >= UNI_HOOK_RETRY_MAX) {
-            logger.warn('[uni-stat] Vue3: onCreateVueApp 在重试后仍不可用，页面级 mixin 未注入');
+            if (!vueMixinMounted) {
+                logger.warn('[uni-stat] Vue3: onCreateVueApp 在重试后仍不可用，页面级 mixin 未注入');
+            }
             return;
         }
         vueMixinRetryTimer = setTimeout(tick, UNI_HOOK_RETRY_MS);
