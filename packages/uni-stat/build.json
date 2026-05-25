@@ -22,5 +22,13 @@
 		"replacements": {
 			"__STAT_VERSION__": "'2'"
 		}
+	},
+	{
+		"input": {
+			"src/public/index.ts": ["dist/uni-stat-public.es.js", "dist/uni-stat-public.cjs.js"]
+		},
+		"replacements": {
+			"__STAT_VERSION__": "'3'"
+		}
 	}
 ]
