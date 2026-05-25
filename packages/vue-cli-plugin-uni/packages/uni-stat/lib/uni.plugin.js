@@ -47,9 +47,12 @@ module.exports = [
       },
       transform(code, id) {
         if (isEnable && opts.filter(id)) {
+          const importPath = process.env.UNI_USING_STAT === 'private'
+            ? '@dcloudio/uni-stat/dist/uni-cloud-stat.es.js'
+            : '@dcloudio/uni-stat/dist/uni-stat-public.es.js'
           return {
-            code: code + `;import '@dcloudio/uni-stat';`,
-            map: null,
+            code: code + `;import '${importPath}';`,
+            map: null
           }
         }
       },
