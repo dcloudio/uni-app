@@ -21425,7 +21425,8 @@ const transformVBind = (dir, node, context) => {
 		exp = createSimpleExpression("", true, loc);
 	}
 	const isComponent = node.tagType === 1;
-	exp = resolveExpression(exp, isComponent);
+	const isDom2DataAttr = context.options.platform && arg.isStatic && arg.content.length > 5 && arg.content.startsWith("data-");
+	exp = resolveExpression(exp, isComponent || isDom2DataAttr);
 	arg = resolveExpression(arg);
 	if (arg.isStatic && isReservedProp(arg.content)) return;
 	let camel = false;
@@ -21636,6 +21637,10 @@ function resolveSetupReference(name, context) {
 }
 const dynamicKeys = ["indeterminate"];
 const NEEDS_QUOTES_RE = /[\s"'`=<>]/;
+function isDataProp(prop) {
+	const name = prop.key.content;
+	return prop.key.isStatic && name.length > 5 && name.startsWith("data-");
+}
 function transformNativeElement(node, propsResult, staticKey, singleRoot, context, getEffectIndex, omitEndTag, getOperationIndex) {
 	const isDom2 = !!context.options.platform;
 	if (isDom2) omitEndTag = false;
@@ -21675,8 +21680,9 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 				const props = propsResult[1];
 				const indicesToRemove = [];
 				for (let i = 0; i < props.length; i++) {
-					const { key, values } = props[i];
-					if (key.content.startsWith("change:") || changeProps.includes(key.content)) continue;
+					const prop = props[i];
+					const { key, values } = prop;
+					if (isDataProp(prop) || key.content.startsWith("change:") || changeProps.includes(key.content)) continue;
 					if (key.isStatic && values.length === 1 && !["class", "style"].includes(key.content)) {
 						let endLoc = values[0].loc;
 						if (endLoc === locStub) endLoc = key.loc;
@@ -21691,10 +21697,15 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 		}
 		let hasStaticStyle = false;
 		let hasClass = false;
+		const datasetProps = [];
 		let prevWasQuoted = false;
 		for (const prop of propsResult[1]) {
 			const { key, values } = prop;
 			if (isDom2) {
+				if (isDataProp(prop)) {
+					datasetProps.push(prop);
+					continue;
+				}
 				if (key.content.startsWith("change:")) {
 					dynamicProps.push(key.content);
 					values[0].isStatic = false;
@@ -21749,6 +21760,17 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 			}
 		}
 		if (hasStaticStyle && hasClass) template += ` ext:style`;
+		if (datasetProps.length) {
+			const expressions = datasetProps.flatMap((prop) => prop.values);
+			context.registerEffect(expressions, {
+				type: 3,
+				node,
+				element: context.reference(),
+				prop: _objectSpread2(_objectSpread2({}, datasetProps[0]), {}, { datasetProps }),
+				tag,
+				root: singleRoot && context.effectiveParent === context.root && context.options.componentType === "component"
+			}, getEffectIndex);
+		}
 	}
 	template += `>` + context.childrenTemplate.join("");
 	if (!isVoidTag(tag) && !omitEndTag) template += `</${tag}>`;

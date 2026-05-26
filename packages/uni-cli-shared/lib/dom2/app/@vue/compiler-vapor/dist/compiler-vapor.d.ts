@@ -22385,6 +22385,10 @@ export interface IRProp extends Omit<DirectiveTransformResult, "value"> {
     ident?: string;
     classRef?: string;
   };
+  /**
+  * fixed by uts synthetic data-* group for dom2 dataset callbacks.
+  */
+  datasetProps?: IRProp[];
 }
 export declare enum IRDynamicPropsKind {
   EXPRESSION = 0,
@@ -22556,6 +22560,10 @@ export interface SetPropIRNode extends BaseIRNode {
   element: number;
   prop: IRProp;
   tag: string;
+  /**
+  * fixed by uts 当前操作的目标元素是否为组件模板单根根节点，可用于后续 root-only 逻辑。
+  */
+  root?: boolean;
   isChangeProp?: boolean;
 }
 export interface SetDynamicPropsIRNode extends BaseIRNode {
