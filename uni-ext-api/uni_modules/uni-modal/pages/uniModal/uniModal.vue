@@ -12,7 +12,7 @@
 
 				<view class="uni-modal-dialog__body" :class="{'no-title' : !hasTitle}">
 					<textarea v-if="editable" v-model="content" class="uni-modal-dialog__textarea"
-						placeholder-class="uni-modal-dialog__textarea-placeholder" :class="{ 'uni-modal-dialog__textarea--dark': isDark }"
+						placeholder-class="uni-modal-dialog__textarea-placeholder" :class="{ 'uni-modal--dark': isDark }"
 						:focus="true" :adjust-position="false" @blur="onInputBlur"
 						@keyboardheightchange="onInputKeyboardChange" :auto-height="isAutoHeight"
 						:placeholder="placeholderText" />
@@ -476,7 +476,7 @@
 		/* #endif */
 	}
 
-	.uni-modal-dialog__textarea--dark {
+	.uni-modal-dialog__textarea.uni-modal--dark {
 		background-color: #3d3d3d;
 		color: #cfcfcf;
 	}
