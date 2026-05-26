@@ -15,7 +15,7 @@ import type { Plugin } from 'vite'
  * 3. onLoad等从@dcloudio/uni-app导入的api等
  * 4. 用户代码script中import vue的api
  *
- * 如果在transform中处理，此时2、3尚未生成import vue的代码。
+ * 如果在transform中处理，需要确保此插件在autoImport之后，否则此时2、3尚未生成import vue的代码。
  * 如果在renderChunk中处理，能保证所有代码都已经生成import vue的代码，但是此时热更新会触发所有文件重新处理import vue。
  */
 export function rewriteImportVuePlugin(): Plugin {
