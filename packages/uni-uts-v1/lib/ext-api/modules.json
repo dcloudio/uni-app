@@ -39,6 +39,28 @@
       }
     }
   },
+  "uni-actionSheet": {
+    "uni": {
+      "showActionSheet": {
+        "name": "showActionSheet",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "hideActionSheet": {
+        "name": "hideActionSheet",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-ad": {
     "uni": {
       "createRewardedVideoAd": {
@@ -89,6 +111,19 @@
       "ad"
     ]
   },
+  "uni-arrayBufferToBase64": {
+    "uni": {
+      "arrayBufferToBase64": {
+        "name": "arrayBufferToBase64",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-authentication": {
     "uni": {
       "startSoterAuthentication": {
@@ -120,6 +155,19 @@
       }
     }
   },
+  "uni-base64ToArrayBuffer": {
+    "uni": {
+      "base64ToArrayBuffer": {
+        "name": "base64ToArrayBuffer",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-calendar": {
     "uni": {
       "addPhoneCalendar": {
@@ -133,6 +181,98 @@
       },
       "addPhoneRepeatCalendar": {
         "name": "addPhoneRepeatCalendar",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-camera": {
+    "uni": {
+      "createCameraContext": {
+        "name": "createCameraContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    },
+    "easycom": [
+      "camera"
+    ]
+  },
+  "uni-canvas": {
+    "uni": {
+      "createCanvasContextAsync": {
+        "name": "createCanvasContextAsync",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-canvas-dom2": {
+    "uni": {
+      "createCanvasContextAsync": {
+        "name": "createCanvasContextAsync",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-chooseLocation": {
+    "uni": {
+      "chooseLocation": {
+        "name": "chooseLocation",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-chooseMedia": {
+    "uni": {
+      "chooseMedia": {
+        "name": "chooseMedia",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-clipboard": {
+    "uni": {
+      "getClipboardData": {
+        "name": "getClipboardData",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "setClipboardData": {
+        "name": "setClipboardData",
         "app": {
           "js": false,
           "kotlin": true,
@@ -243,6 +383,137 @@
       }
     }
   },
+  "uni-createInnerAudioContext": {
+    "uni": {
+      "createInnerAudioContext": {
+        "name": "createInnerAudioContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "setInnerAudioOption": {
+        "name": "setInnerAudioOption",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-createRequestPermissionListener": {
+    "uni": {
+      "createRequestPermissionListener": {
+        "name": "createRequestPermissionListener",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
+  "uni-dialogPage": {
+    "uni": {
+      "openDialogPage": {
+        "name": "openDialogPage",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": "dom2",
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "closeDialogPage": {
+        "name": "closeDialogPage",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": "dom2",
+          "swift": true,
+          "arkts": false
+        }
+      }
+    }
+  },
+  "uni-editor": {
+    "uni": {
+      "createEditorContextAsync": {
+        "name": "createEditorContextAsync",
+        "app": {
+          "js": false,
+          "kotlin": "dom1",
+          "swift": true,
+          "arkts": true
+        }
+      }
+    },
+    "easycom": [
+      "editor"
+    ]
+  },
+  "uni-event": {
+    "uni": {
+      "$on": {
+        "name": "$on",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": "dom2",
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "$once": {
+        "name": "$once",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": "dom2",
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "$off": {
+        "name": "$off",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": "dom2",
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "$emit": {
+        "name": "$emit",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": "dom2",
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-exit": {
+    "uni": {
+      "exit": {
+        "name": "exit",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-facialVerify": {
     "uni": {
       "startFacialRecognitionVerify": {
@@ -258,6 +529,200 @@
         "name": "getFacialRecognitionMetaInfo",
         "app": {
           "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-fileSystemManager": {
+    "uni": {
+      "getFileSystemManager": {
+        "name": "getFileSystemManager",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-form": {},
+  "uni-getAccessibilityInfo": {
+    "uni": {
+      "getAccessibilityInfo": {
+        "name": "getAccessibilityInfo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
+  "uni-getAppAuthorizeSetting": {
+    "uni": {
+      "getAppAuthorizeSetting": {
+        "name": "getAppAuthorizeSetting",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-getAppBaseInfo": {
+    "uni": {
+      "getAppBaseInfo": {
+        "name": "getAppBaseInfo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      }
+    }
+  },
+  "uni-getBackgroundAudioManager": {
+    "uni": {
+      "getBackgroundAudioManager": {
+        "name": "getBackgroundAudioManager",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-getDeviceInfo": {
+    "uni": {
+      "getDeviceInfo": {
+        "name": "getDeviceInfo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "isSimulator": {
+        "name": "isSimulator",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    }
+  },
+  "uni-getElementById": {
+    "uni": {
+      "getElementById": {
+        "name": "getElementById",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": "dom2",
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-getNetworkType": {
+    "uni": {
+      "getNetworkType": {
+        "name": "getNetworkType",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "onNetworkStatusChange": {
+        "name": "onNetworkStatusChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "offNetworkStatusChange": {
+        "name": "offNetworkStatusChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-getProvider": {
+    "uni": {
+      "getProvider": {
+        "name": "getProvider",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "getProviderSync": {
+        "name": "getProviderSync",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-getSystemInfo": {
+    "uni": {
+      "getSystemInfo": {
+        "name": "getSystemInfo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "getSystemInfoSync": {
+        "name": "getSystemInfoSync",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "getWindowInfo": {
+        "name": "getWindowInfo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      }
+    }
+  },
+  "uni-getSystemSetting": {
+    "uni": {
+      "getSystemSetting": {
+        "name": "getSystemSetting",
+        "app": {
+          "js": false,
           "kotlin": true,
           "swift": true,
           "arkts": true
@@ -317,6 +782,50 @@
       }
     }
   },
+  "uni-installApk": {
+    "uni": {
+      "installApk": {
+        "name": "installApk",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
+  "uni-keyboard": {
+    "uni": {
+      "hideKeyboard": {
+        "name": "hideKeyboard",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "onKeyboardHeightChange": {
+        "name": "onKeyboardHeightChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "offKeyboardHeightChange": {
+        "name": "offKeyboardHeightChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-list-view": {},
   "uni-live-player": {
     "uni": {
       "createLivePlayerContext": {
@@ -349,6 +858,117 @@
       "live-pusher"
     ]
   },
+  "uni-loading": {
+    "easycom": [
+      "loading"
+    ]
+  },
+  "uni-location": {
+    "provider": {
+      "service": "location"
+    },
+    "uni": {
+      "getLocation": {
+        "name": "getLocation",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "startLocationUpdate": {
+        "name": "startLocationUpdate",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "stopLocationUpdate": {
+        "name": "stopLocationUpdate",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "onLocationChange": {
+        "name": "onLocationChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "offLocationChange": {
+        "name": "offLocationChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "startLocationUpdateBackground": {
+        "name": "startLocationUpdateBackground",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "onLocationChangeError": {
+        "name": "onLocationChangeError",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "offLocationChangeError": {
+        "name": "offLocationChangeError",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-location-system": {
+    "provider": {
+      "service": "location",
+      "name": "system",
+      "servicePlugin": "uni-location"
+    }
+  },
+  "uni-location-tencent": {
+    "provider": {
+      "service": "location",
+      "name": "tencent",
+      "servicePlugin": "uni-location"
+    }
+  },
+  "uni-makePhoneCall": {
+    "uni": {
+      "makePhoneCall": {
+        "name": "makePhoneCall",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-map-tencent": {
     "uni": {
       "createMapContext": {
@@ -363,6 +983,11 @@
     },
     "easycom": [
       "map"
+    ]
+  },
+  "uni-match-media": {
+    "easycom": [
+      "match-media"
     ]
   },
   "uni-media": {
@@ -498,6 +1123,152 @@
     "mp-kuaishou": false,
     "mp-jd": false
   },
+  "uni-modal": {
+    "uni": {
+      "showModal": {
+        "name": "showModal",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "hideModal": {
+        "name": "hideModal",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-navigator": {},
+  "uni-network": {
+    "uni": {
+      "request": {
+        "name": "request",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "uploadFile": {
+        "name": "uploadFile",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "downloadFile": {
+        "name": "downloadFile",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "configMTLS": {
+        "name": "configMTLS",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-oauth-weixin": {
+    "provider": {
+      "service": "oauth",
+      "name": "weixin",
+      "app": {
+        "js": false,
+        "kotlin": true,
+        "swift": true,
+        "arkts": true
+      }
+    }
+  },
+  "uni-openAppAuthorizeSetting": {
+    "uni": {
+      "openAppAuthorizeSetting": {
+        "name": "openAppAuthorizeSetting",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      }
+    }
+  },
+  "uni-openDocument": {
+    "uni": {
+      "openDocument": {
+        "name": "openDocument",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-openLocation": {
+    "uni": {
+      "openLocation": {
+        "name": "openLocation",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-page-container": {
+    "easycom": [
+      "page-container"
+    ]
+  },
+  "uni-payment": {
+    "provider": {
+      "service": "payment"
+    },
+    "uni": {
+      "requestPayment": {
+        "name": "requestPayment",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-payment-alipay": {
+    "provider": {
+      "service": "payment",
+      "name": "alipay"
+    }
+  },
+  "uni-payment-wxpay": {
+    "provider": {
+      "service": "payment",
+      "name": "wxpay"
+    }
+  },
   "uni-phoneContact": {
     "uni": {
       "addPhoneContact": {
@@ -516,6 +1287,139 @@
           "kotlin": true,
           "swift": true,
           "arkts": true
+        }
+      }
+    }
+  },
+  "uni-picker": {
+    "uni": {},
+    "easycom": [
+      "picker"
+    ]
+  },
+  "uni-previewImage": {
+    "uni": {
+      "previewImage": {
+        "name": "previewImage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "closePreviewImage": {
+        "name": "closePreviewImage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      }
+    }
+  },
+  "uni-privacy": {
+    "uni": {
+      "onPrivacyAuthorizationChange": {
+        "name": "onPrivacyAuthorizationChange",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "offPrivacyAuthorizationChange": {
+        "name": "offPrivacyAuthorizationChange",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "getPrivacySetting": {
+        "name": "getPrivacySetting",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "resetPrivacyAuthorization": {
+        "name": "resetPrivacyAuthorization",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "agreePrivacyAuthorization": {
+        "name": "agreePrivacyAuthorization",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-progress": {},
+  "uni-prompt": {
+    "uni": {
+      "showToast": {
+        "name": "showToast",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "hideToast": {
+        "name": "hideToast",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "showLoading": {
+        "name": "showLoading",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "x-arkts": false
+        }
+      },
+      "hideLoading": {
+        "name": "hideLoading",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "x-arkts": false
+        }
+      },
+      "showModal": {
+        "name": "showModal",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "x-arkts": false
+        }
+      },
+      "showActionSheet": {
+        "name": "showActionSheet",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "x-arkts": false
         }
       }
     }
@@ -587,6 +1491,64 @@
       }
     }
   },
+  "uni-recorder": {
+    "uni": {
+      "getRecorderManager": {
+        "name": "getRecorderManager",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-requestMerchantTransfer": {
+    "uni": {
+      "requestMerchantTransfer": {
+        "name": "requestMerchantTransfer",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    }
+  },
+  "uni-rich-text": {
+    "uni": {},
+    "easycom": [
+      "rich-text"
+    ]
+  },
+  "uni-rpx2px": {
+    "uni": {
+      "rpx2px": {
+        "name": "rpx2px",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-scanCode": {
+    "uni": {
+      "scanCode": {
+        "name": "scanCode",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-screenBrightness": {
     "uni": {
       "setScreenBrightness": {
@@ -631,6 +1593,272 @@
       }
     }
   },
+  "uni-share": {
+    "provider": {
+      "service": "share",
+      "app": {
+        "js": false,
+        "kotlin": true,
+        "swift": true,
+        "arkts": true
+      }
+    },
+    "uni": {
+      "share": {
+        "name": "share",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-share-weixin": {
+    "provider": {
+      "service": "share",
+      "name": "weixin",
+      "app": {
+        "js": false,
+        "kotlin": true,
+        "swift": true,
+        "arkts": true
+      }
+    }
+  },
+  "uni-shareWithSystem": {
+    "uni": {
+      "shareWithSystem": {
+        "name": "shareWithSystem",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-showLoading": {
+    "uni": {
+      "showLoading": {
+        "name": "showLoading",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "hideLoading": {
+        "name": "hideLoading",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-sse": {
+    "uni": {
+      "connectEventSource": {
+        "name": "connectEventSource",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    }
+  },
+  "uni-storage": {
+    "uni": {
+      "setStorage": {
+        "name": "setStorage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "setStorageSync": {
+        "name": "setStorageSync",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "getStorage": {
+        "name": "getStorage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "getStorageSync": {
+        "name": "getStorageSync",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "getStorageInfo": {
+        "name": "getStorageInfo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "getStorageInfoSync": {
+        "name": "getStorageInfoSync",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "removeStorage": {
+        "name": "removeStorage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "removeStorageSync": {
+        "name": "removeStorageSync",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "clearStorage": {
+        "name": "clearStorage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "clearStorageSync": {
+        "name": "clearStorageSync",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-swiper": {},
+  "uni-theme": {
+    "uni": {
+      "onOsThemeChange": {
+        "name": "onOsThemeChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "offOsThemeChange": {
+        "name": "offOsThemeChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "setAppTheme": {
+        "name": "setAppTheme",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "onAppThemeChange": {
+        "name": "onAppThemeChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "offAppThemeChange": {
+        "name": "offAppThemeChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "onThemeChange": {
+        "name": "onThemeChange",
+        "app": {
+          "js": true,
+          "x-js": true,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false
+        }
+      },
+      "offThemeChange": {
+        "name": "offThemeChange",
+        "app": {
+          "js": true,
+          "x-js": true,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false
+        }
+      },
+      "onHostThemeChange": {
+        "name": "onHostThemeChange",
+        "app": {
+          "js": false,
+          "x-js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "offHostThemeChange": {
+        "name": "offHostThemeChange",
+        "app": {
+          "js": false,
+          "x-js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-verify": {
     "uni": {
       "getUniverifyManager": {
@@ -666,6 +1894,134 @@
       },
       "vibrateLong": {
         "name": "vibrateLong",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-video": {
+    "uni": {
+      "createVideoContext": {
+        "name": "createVideoContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      }
+    },
+    "easycom": [
+      "video"
+    ]
+  },
+  "uni-virtualPayment": {
+    "uni": {
+      "requestVirtualPayment": {
+        "name": "requestVirtualPayment",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true
+        }
+      },
+      "getVirtualPaymentManager": {
+        "name": "getVirtualPaymentManager",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true
+        }
+      }
+    }
+  },
+  "uni-waterflow": {},
+  "uni-web-view": {
+    "uni": {
+      "createWebViewContext": {
+        "name": "createWebViewContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": "dom2"
+        }
+      },
+      "createWebviewContext": {
+        "name": "createWebviewContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": "dom2"
+        }
+      }
+    },
+    "easycom": [
+      "web-view"
+    ]
+  },
+  "uni-websocket": {
+    "uni": {
+      "connectSocket": {
+        "name": "connectSocket",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "sendSocketMessage": {
+        "name": "sendSocketMessage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "closeSocket": {
+        "name": "closeSocket",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "onSocketOpen": {
+        "name": "onSocketOpen",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "onSocketMessage": {
+        "name": "onSocketMessage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "onSocketClose": {
+        "name": "onSocketClose",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "onSocketError": {
+        "name": "onSocketError",
         "app": {
           "js": false,
           "kotlin": true,
