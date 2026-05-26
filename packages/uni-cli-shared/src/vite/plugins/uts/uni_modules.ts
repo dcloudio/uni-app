@@ -855,6 +855,7 @@ export function uniDecryptUniModulesPlugin(): Plugin {
           appname: manifest.name,
           platform: process.env.UNI_UTS_PLATFORM,
           'uni-app-x': isX,
+          vapor: process.env.UNI_APP_X_DOM2 === 'true',
           env,
         }
         // 鸿蒙平台需要拆分两次云编译

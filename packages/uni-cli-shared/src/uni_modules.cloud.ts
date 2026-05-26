@@ -521,6 +521,7 @@ export interface CloudCompileParams {
   appname: string
   platform: typeof process.env.UNI_UTS_PLATFORM // app-android | app-ios | web
   'uni-app-x': boolean
+  vapor: boolean
   env: Record<string, string>
 }
 
