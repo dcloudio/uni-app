@@ -918,11 +918,13 @@ export function initUTSProxyClass(
 const uniElementImplPriorityMethods = [
   'hasAttribute',
   'getAttribute',
-  'setAttribute',
-  'removeAttribute',
+  // 'setAttribute',
+  // 'removeAttribute',
   'getAnyAttribute',
-  'setAnyAttribute',
+  // 'setAnyAttribute',
 ]
+
+let elementClassDefineId = 0
 
 export function initUTSElementProxyClass(options: ProxyClassOptions): any {
   const {
@@ -948,7 +950,12 @@ export function initUTSElementProxyClass(options: ProxyClassOptions): any {
   const staticProps = options.staticProps || []
   const staticSetters = options.staticSetters || {}
 
+  const classId = ++elementClassDefineId
+
   const ProxyClass = class UTSClass {
+    static [Symbol.hasInstance](instance) {
+      return instance && instance.__element_class_id__ === classId
+    }
     // page: UniNativePageImpl
     constructor(nodeId: number, page: any, tagName: string) {
       const pageId = page.pageId
@@ -963,6 +970,9 @@ export function initUTSElementProxyClass(options: ProxyClassOptions): any {
           // 重要：禁止响应式
           if (name === '__v_skip') {
             return true
+          }
+          if (name === '__element_class_id__') {
+            return classId
           }
           if (
             uniElementImplPriorityMethods.includes(name as string) &&
@@ -1038,7 +1048,7 @@ export function initUTSElementProxyClass(options: ProxyClassOptions): any {
           return true
         },
       })
-      return Object.freeze(proxy)
+      return proxy
     }
   }
   const staticPropSetterCache: Record<string, Function> = {}
