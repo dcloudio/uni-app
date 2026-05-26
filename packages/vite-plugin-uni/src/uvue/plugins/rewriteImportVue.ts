@@ -22,26 +22,21 @@ export function rewriteImportVuePlugin(): Plugin {
   return {
     name: 'uni:rewrite-import-vue',
     enforce: 'post',
-    async renderChunk(source, chunk) {
-      if (chunk.fileName.endsWith('.js')) {
-        if (!source.includes('vue')) {
-          return
-        }
-        await initEsModuleLexer
-        const [imports] = parseImports(source)
-        const vueImportRanges = imports.filter(
-          (specifier) => specifier.n === 'vue' && specifier.d === -1
-        )
-        if (!vueImportRanges.length) {
-          return
-        }
-        const rewritten = rewriteImportVue(source, vueImportRanges)
-        if (rewritten.hasChanged()) {
-          return {
-            code: rewritten.toString(),
-            // 必须指定hires，不然部分情况可能会无法正确映射行号。
-            map: rewritten.generateMap({ hires: 'boundary' }),
-          }
+    async transform(source, id) {
+      await initEsModuleLexer
+      const [imports] = parseImports(source)
+      const vueImportRanges = imports.filter(
+        (specifier) => specifier.n === 'vue' && specifier.d === -1
+      )
+      if (!vueImportRanges.length) {
+        return
+      }
+      const rewritten = rewriteImportVue(source, vueImportRanges)
+      if (rewritten.hasChanged()) {
+        return {
+          code: rewritten.toString(),
+          // 必须指定hires，不然部分情况可能会无法正确映射行号。
+          map: rewritten.generateMap({ hires: 'boundary' }),
         }
       }
     },

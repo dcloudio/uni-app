@@ -1,6 +1,6 @@
 import { SourceMapConsumer } from 'source-map-js'
 
-import { rewriteImportVue } from '../../src/plugins/js/rewriteImportVue'
+import { rewriteImportVue } from '../src/uvue/plugins/rewriteImportVue'
 
 function generatedPositionFor(code: string, pattern: string) {
   const index = code.indexOf(pattern)

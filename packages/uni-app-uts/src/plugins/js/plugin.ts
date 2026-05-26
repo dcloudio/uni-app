@@ -27,7 +27,6 @@ import {
 } from '../utils'
 import { uniAppCssPlugin } from './css'
 import { uniAppJsPlugin } from './js'
-import { rewriteImportVuePlugin } from './rewriteImportVue'
 
 const HARMONY_DOM2_ESBUILD_TRANSPILE_CACHE_MAX = 2048
 const HARMONY_DOM2_ESBUILD_TRANSPILE_CACHE_FLAG =
@@ -243,7 +242,6 @@ export function createUniAppJsEnginePlugin(
                 entryFileNames: APP_SERVICE_FILENAME,
                 globals,
                 paths,
-                plugins: isESM ? [rewriteImportVuePlugin()] : [],
                 manualChunks(id) {
                   if (isESM) {
                     const chunkName = normalizePath(id.split('?')[0])
