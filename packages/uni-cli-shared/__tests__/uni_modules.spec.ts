@@ -361,6 +361,7 @@ module.exports = {
         appname: 'test',
         platform,
         'uni-app-x': true,
+        vapor: isDom2,
         env: {},
       })
       return fs.existsSync(markerFile)
@@ -496,6 +497,7 @@ describe('uni_modules:cloud harmony split state', () => {
         appname: 'test',
         platform: 'app-harmony' as const,
         'uni-app-x': true,
+        vapor: false,
         env: {},
       }
 
