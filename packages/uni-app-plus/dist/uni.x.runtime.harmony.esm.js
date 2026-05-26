@@ -4549,7 +4549,15 @@ function initUTSProxyClass(options) {
     }
   }));
 }
-var uniElementImplPriorityMethods = ["hasAttribute", "getAttribute", "setAttribute", "removeAttribute", "getAnyAttribute", "setAnyAttribute"];
+var uniElementImplPriorityMethods = [
+  "hasAttribute",
+  "getAttribute",
+  // 'setAttribute',
+  // 'removeAttribute',
+  "getAnyAttribute"
+  // 'setAnyAttribute',
+];
+var elementClassDefineId = 0;
 function initUTSElementProxyClass(options) {
   var {
     moduleName,
@@ -4571,7 +4579,11 @@ function initUTSElementProxyClass(options) {
   var staticMethods = options.staticMethods || {};
   var staticProps = options.staticProps || [];
   var staticSetters = options.staticSetters || {};
+  var classId = ++elementClassDefineId;
   var ProxyClass = class UTSClass {
+    static [Symbol.hasInstance](instance) {
+      return instance && instance.__element_class_id__ === classId;
+    }
     // page: UniNativePageImpl
     constructor(nodeId, page, tagName) {
       var pageId = page.pageId;
@@ -4586,6 +4598,9 @@ function initUTSElementProxyClass(options) {
         get(_target, name) {
           if (name === "__v_skip") {
             return true;
+          }
+          if (name === "__element_class_id__") {
+            return classId;
           }
           if (uniElementImplPriorityMethods.includes(name) && name in _target) {
             return _target[name];
@@ -4639,7 +4654,7 @@ function initUTSElementProxyClass(options) {
           return true;
         }
       });
-      return Object.freeze(proxy2);
+      return proxy2;
     }
   };
   var staticPropSetterCache = {};

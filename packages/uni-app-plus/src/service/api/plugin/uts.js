@@ -457,11 +457,12 @@ function initUTSProxyClass(options) {
 const uniElementImplPriorityMethods = [
     'hasAttribute',
     'getAttribute',
-    'setAttribute',
-    'removeAttribute',
+    // 'setAttribute',
+    // 'removeAttribute',
     'getAnyAttribute',
-    'setAnyAttribute',
+    // 'setAnyAttribute',
 ];
+let elementClassDefineId = 0;
 function initUTSElementProxyClass(options) {
     const { moduleName, moduleType, package: pkg, class: cls, methods, props, setters, errMsg, } = options;
     const baseOptions = {
@@ -474,7 +475,11 @@ function initUTSElementProxyClass(options) {
     const staticMethods = options.staticMethods || {};
     const staticProps = options.staticProps || [];
     const staticSetters = options.staticSetters || {};
+    const classId = ++elementClassDefineId;
     const ProxyClass = class UTSClass {
+        static [Symbol.hasInstance](instance) {
+            return instance && instance.__element_class_id__ === classId;
+        }
         // page: UniNativePageImpl
         constructor(nodeId, page, tagName) {
             const pageId = page.pageId;
@@ -486,6 +491,9 @@ function initUTSElementProxyClass(options) {
                     // 重要：禁止响应式
                     if (name === '__v_skip') {
                         return true;
+                    }
+                    if (name === '__element_class_id__') {
+                        return classId;
                     }
                     if (uniElementImplPriorityMethods.includes(name) &&
                         name in _target) {
@@ -538,7 +546,7 @@ function initUTSElementProxyClass(options) {
                     return true;
                 },
             });
-            return Object.freeze(proxy);
+            return proxy;
         }
     };
     const staticPropSetterCache = {};
