@@ -9,6 +9,7 @@ import {
   buildUniExtApis,
   createEncryptCssUrlReplacer,
   emptyDir,
+  hash,
   injectCssPlugin,
   injectCssPostPlugin,
   insertBeforePlugin,
@@ -200,6 +201,11 @@ export function createUniAppJsEnginePlugin(
     const isAndroid = platform === 'app-android'
     const isIOS = platform === 'app-ios'
     const isHarmony = platform === 'app-harmony'
+    // 只缓存 sourcemap 内容 hash，不缓存完整内容，避免用空间换时间。
+    const sourceMapHashCache: Map<string, string> = new Map<string, string>()
+    // 仅限定鸿蒙 DOM2 开发模式，避免影响其它平台和生产构建。
+    const enableSourceMapIncremental =
+      process.env.NODE_ENV === 'development' && isDom2 && isHarmony
     const globals = {
       vue: 'Vue',
       '@vue/shared': 'uni.VueShared',
@@ -312,8 +318,22 @@ export function createUniAppJsEnginePlugin(
       generateBundle(_, bundle) {
         // 调整所有sourceMap文件
         const sourceRoot = normalizePath(inputDir)
+        const currentSourceMapFiles = enableSourceMapIncremental
+          ? new Set<string>()
+          : undefined
         Object.entries(bundle).forEach(([file, asset]) => {
           if (file.endsWith('.js.map') && asset.type === 'asset') {
+            currentSourceMapFiles?.add(file)
+            const sourceMapHash = enableSourceMapIncremental
+              ? hash(asset.source)
+              : ''
+            // 鸿蒙 DOM2 开发模式下，内容未变化的 sourcemap 无需重复 parse 和写入。
+            if (
+              enableSourceMapIncremental &&
+              sourceMapHashCache.get(file) === sourceMapHash
+            ) {
+              return
+            }
             const source = JSON.parse(asset.source as string)
             source.sourceRoot = sourceRoot
             const newSourceMapFileName = path.resolve(
@@ -326,8 +346,18 @@ export function createUniAppJsEnginePlugin(
             if (process.env.UNI_PLATFORM !== 'app-harmony') {
               delete bundle[file]
             }
+            if (enableSourceMapIncremental) {
+              sourceMapHashCache.set(file, sourceMapHash)
+            }
           }
         })
+        if (currentSourceMapFiles) {
+          sourceMapHashCache.forEach((_, file) => {
+            if (!currentSourceMapFiles.has(file)) {
+              sourceMapHashCache.delete(file)
+            }
+          })
+        }
       },
       async writeBundle() {
         // x 上暂时编译所有uni ext api，不管代码里是否调用了
