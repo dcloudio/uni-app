@@ -4709,7 +4709,10 @@ function getH5AppName() {
     const env = getEnvAppName();
     if (env)
         return env;
-    return tryRun(() => { var _a, _b; return (_b = (_a = getGlobalObject().document) === null || _a === void 0 ? void 0 : _a.title) !== null && _b !== void 0 ? _b : ''; }, '');
+    return tryRun(() => {
+        var _a, _b;
+        return (_b = (_a = getGlobalObject().document) === null || _a === void 0 ? void 0 : _a.title) !== null && _b !== void 0 ? _b : '';
+    }, '');
 }
 /**
  * 启动时获取一次包信息；结果缓存于内存。
