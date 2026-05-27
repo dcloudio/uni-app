@@ -4580,6 +4580,46 @@ function mergedSystemInfo() {
     return merged;
 }
 /**
+ * 读取 H5 运行时 `__uniConfig.appVersion`（manifest.versionName）。
+ *
+ * H5 发行摇树时模块加载期 `window.uni` 可能仍是 `{}` 空桩，`resolveUniRuntime`
+ * 无法调用 `getAppBaseInfo`；此时 `__uniConfig` 仍已由构建注入，可作为应用版本兜底。
+ */
+function resolveUniConfigAppVersion() {
+    return tryRun(() => {
+        const cfg = getGlobalObject().__uniConfig;
+        return typeof (cfg === null || cfg === void 0 ? void 0 : cfg.appVersion) === 'string' ? cfg.appVersion : '';
+    }, '');
+}
+/**
+ * 读取构建期注入的 `UNI_APP_VERSION_NAME`（manifest.versionName）。
+ *
+ * 须**直接**访问 `process.env.UNI_APP_VERSION_NAME`，以便 Vite define 静态替换；
+ * 经中间变量读取会导致发行包内始终为空（与 `install.ts#parseInjectedUniStatistics` 同理）。
+ */
+function resolveBuildTimeAppVersion() {
+    const raw = process.env.UNI_APP_VERSION_NAME;
+    return typeof raw === 'string' ? raw : '';
+}
+/**
+ * 解析上行用的应用版本 `appVersion`（对应 statData 字段 `v` 的主要回退来源）。
+ *
+ * 优先级：App 原生 `plus.runtime.version` → uni 拆分 API → H5 `__uniConfig` → 构建期 env。
+ */
+function resolveAppVersionForStat(plus, sys) {
+    var _a;
+    const fromPlus = (_a = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _a === void 0 ? void 0 : _a.version;
+    if (typeof fromPlus === 'string' && fromPlus)
+        return fromPlus;
+    const fromSys = sys.appVersion;
+    if (typeof fromSys === 'string' && fromSys)
+        return fromSys;
+    const fromUniConfig = resolveUniConfigAppVersion();
+    if (fromUniConfig)
+        return fromUniConfig;
+    return resolveBuildTimeAppVersion();
+}
+/**
  * 组装上行 `on`：优先厂商定制系统名（ROM），否则退回操作系统名 `osName`。
  *
  * App 端 `uni.getDeviceInfo` 会带出 `romName`/`romVersion`（见 uni-app-plus 原生 systemInfo）；
@@ -4605,25 +4645,27 @@ function buildOnForStat(sys) {
  *   - `osP`：由 `platform` / `osName` / `system` 经 `normalizeStatOsP` 得到，供上行 `p`。
  *   - `mpvHostVersion`：`hostVersion ?? version`，与私有版 `sys.version` 同源。
  *   - `on`：`buildOnForStat`（优先 `romName`/`romVersion`，否则 `osName`），供上行 `on`。
+ *   - `appVersion`：见 `resolveAppVersionForStat`（H5 发行空桩时回退 `__uniConfig` / 构建 env）。
  *   - 缺失统一空字符串或 0，避免上行 JSON 丢字段语义。
  */
 function getSystemInfo() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
     if (cachedStatic)
         return cachedStatic;
     const sys = mergedSystemInfo();
     const plus = getGlobalObject().plus;
+    const appVersion = resolveAppVersionForStat(plus, sys);
     cachedStatic = {
         brand: (_b = (_a = sys.deviceBrand) !== null && _a !== void 0 ? _a : sys.brand) !== null && _b !== void 0 ? _b : '',
         md: (_d = (_c = sys.deviceModel) !== null && _c !== void 0 ? _c : sys.model) !== null && _d !== void 0 ? _d : '',
         sv: (_f = (_e = sys.osVersion) !== null && _e !== void 0 ? _e : sys.system) !== null && _f !== void 0 ? _f : '',
         v: (_h = (_g = sys.hostVersion) !== null && _g !== void 0 ? _g : sys.version) !== null && _h !== void 0 ? _h : '',
         ut: ((_j = sys.deviceType) !== null && _j !== void 0 ? _j : 'unknown'),
-        appVersion: (_m = (_l = (_k = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _k === void 0 ? void 0 : _k.version) !== null && _l !== void 0 ? _l : sys.appVersion) !== null && _m !== void 0 ? _m : '',
-        appWgtVersion: (_s = (_r = (_p = (_o = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _o === void 0 ? void 0 : _o.appWgtVersion) !== null && _p !== void 0 ? _p : (_q = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _q === void 0 ? void 0 : _q.appWgtRevision) !== null && _r !== void 0 ? _r : sys.appWgtVersion) !== null && _s !== void 0 ? _s : '',
-        mpvHostVersion: ((_u = (_t = sys.hostVersion) !== null && _t !== void 0 ? _t : sys.version) !== null && _u !== void 0 ? _u : '').trim(),
+        appVersion,
+        appWgtVersion: (_p = (_o = (_l = (_k = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _k === void 0 ? void 0 : _k.appWgtVersion) !== null && _l !== void 0 ? _l : (_m = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _m === void 0 ? void 0 : _m.appWgtRevision) !== null && _o !== void 0 ? _o : sys.appWgtVersion) !== null && _p !== void 0 ? _p : '',
+        mpvHostVersion: ((_r = (_q = sys.hostVersion) !== null && _q !== void 0 ? _q : sys.version) !== null && _r !== void 0 ? _r : '').trim(),
         on: buildOnForStat(sys),
-        sdkVersion: (_w = (_v = sys.hostSDKVersion) !== null && _v !== void 0 ? _v : sys.SDKVersion) !== null && _w !== void 0 ? _w : '',
+        sdkVersion: (_t = (_s = sys.hostSDKVersion) !== null && _s !== void 0 ? _s : sys.SDKVersion) !== null && _t !== void 0 ? _t : '',
         statusBarHeight: typeof sys.statusBarHeight === 'number' ? sys.statusBarHeight : 0,
         osP: normalizeStatOsP({
             platform: sys.platform,

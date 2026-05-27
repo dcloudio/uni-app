@@ -210,6 +210,56 @@ function mergedSystemInfo(): UniSystemInfoLike {
 }
 
 /**
+ * 读取 H5 运行时 `__uniConfig.appVersion`（manifest.versionName）。
+ *
+ * H5 发行摇树时模块加载期 `window.uni` 可能仍是 `{}` 空桩，`resolveUniRuntime`
+ * 无法调用 `getAppBaseInfo`；此时 `__uniConfig` 仍已由构建注入，可作为应用版本兜底。
+ */
+function resolveUniConfigAppVersion(): string {
+  return tryRun(() => {
+    const cfg = getGlobalObject().__uniConfig as
+      | { appVersion?: string }
+      | undefined
+    return typeof cfg?.appVersion === 'string' ? cfg.appVersion : ''
+  }, '')
+}
+
+/**
+ * 读取构建期注入的 `UNI_APP_VERSION_NAME`（manifest.versionName）。
+ *
+ * 须**直接**访问 `process.env.UNI_APP_VERSION_NAME`，以便 Vite define 静态替换；
+ * 经中间变量读取会导致发行包内始终为空（与 `install.ts#parseInjectedUniStatistics` 同理）。
+ */
+function resolveBuildTimeAppVersion(): string {
+  const raw = process.env.UNI_APP_VERSION_NAME
+  return typeof raw === 'string' ? raw : ''
+}
+
+/**
+ * 解析上行用的应用版本 `appVersion`（对应 statData 字段 `v` 的主要回退来源）。
+ *
+ * 优先级：App 原生 `plus.runtime.version` → uni 拆分 API → H5 `__uniConfig` → 构建期 env。
+ */
+function resolveAppVersionForStat(
+  plus:
+    | {
+        runtime?: {
+          version?: string
+        }
+      }
+    | undefined,
+  sys: UniSystemInfoLike
+): string {
+  const fromPlus = plus?.runtime?.version
+  if (typeof fromPlus === 'string' && fromPlus) return fromPlus
+  const fromSys = sys.appVersion
+  if (typeof fromSys === 'string' && fromSys) return fromSys
+  const fromUniConfig = resolveUniConfigAppVersion()
+  if (fromUniConfig) return fromUniConfig
+  return resolveBuildTimeAppVersion()
+}
+
+/**
  * 组装上行 `on`：优先厂商定制系统名（ROM），否则退回操作系统名 `osName`。
  *
  * App 端 `uni.getDeviceInfo` 会带出 `romName`/`romVersion`（见 uni-app-plus 原生 systemInfo）；
@@ -237,6 +287,7 @@ function buildOnForStat(sys: UniSystemInfoLike): string {
  *   - `osP`：由 `platform` / `osName` / `system` 经 `normalizeStatOsP` 得到，供上行 `p`。
  *   - `mpvHostVersion`：`hostVersion ?? version`，与私有版 `sys.version` 同源。
  *   - `on`：`buildOnForStat`（优先 `romName`/`romVersion`，否则 `osName`），供上行 `on`。
+ *   - `appVersion`：见 `resolveAppVersionForStat`（H5 发行空桩时回退 `__uniConfig` / 构建 env）。
  *   - 缺失统一空字符串或 0，避免上行 JSON 丢字段语义。
  */
 export function getSystemInfo(): SystemInfoStatic {
@@ -251,13 +302,14 @@ export function getSystemInfo(): SystemInfoStatic {
         }
       }
     | undefined
+  const appVersion = resolveAppVersionForStat(plus, sys)
   cachedStatic = {
     brand: sys.deviceBrand ?? sys.brand ?? '',
     md: sys.deviceModel ?? sys.model ?? '',
     sv: sys.osVersion ?? sys.system ?? '',
     v: sys.hostVersion ?? sys.version ?? '',
     ut: (sys.deviceType ?? 'unknown') as SystemInfoStatic['ut'],
-    appVersion: plus?.runtime?.version ?? sys.appVersion ?? '',
+    appVersion,
     appWgtVersion:
       plus?.runtime?.appWgtVersion ??
       plus?.runtime?.appWgtRevision ??

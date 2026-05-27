@@ -19,6 +19,9 @@ describe('adapter/system', () => {
     __resetCache()
     restoreMockUni()
     delete (globalThis as { plus?: unknown }).plus
+    delete (globalThis as { __uniConfig?: unknown }).__uniConfig
+    delete (process.env as Record<string, string | undefined>)
+      .UNI_APP_VERSION_NAME
   })
 
   describe('getSystemInfo（静态字段，懒加载 + 缓存）', () => {
@@ -115,6 +118,42 @@ describe('adapter/system', () => {
       const info = getSystemInfo()
       expect(info.appVersion).toBe('2.5.7')
       expect(info.appWgtVersion).toBe('2.5.8')
+    })
+
+    test('uni 不可用 + __uniConfig.appVersion → 回退应用版本（H5 发行空桩）', () => {
+      delete (globalThis as { uni?: unknown }).uni
+      ;(globalThis as { __uniConfig?: unknown }).__uniConfig = {
+        appVersion: '1.0.0',
+      }
+      expect(getSystemInfo().appVersion).toBe('1.0.0')
+    })
+
+    test('uni 不可用 + UNI_APP_VERSION_NAME 构建注入 → 回退应用版本', () => {
+      delete (globalThis as { uni?: unknown }).uni
+      delete (globalThis as { __uniConfig?: unknown }).__uniConfig
+      ;(
+        process.env as Record<string, string | undefined>
+      ).UNI_APP_VERSION_NAME = '2.3.4'
+      expect(getSystemInfo().appVersion).toBe('2.3.4')
+    })
+
+    test('__uniConfig.appVersion 优先于 UNI_APP_VERSION_NAME', () => {
+      delete (globalThis as { uni?: unknown }).uni
+      ;(globalThis as { __uniConfig?: unknown }).__uniConfig = {
+        appVersion: '1.0.0',
+      }
+      ;(
+        process.env as Record<string, string | undefined>
+      ).UNI_APP_VERSION_NAME = '9.9.9'
+      expect(getSystemInfo().appVersion).toBe('1.0.0')
+    })
+
+    test('H5 空桩 global.uni={} 时仍可从 __uniConfig 取 appVersion', () => {
+      ;(globalThis as unknown as { uni: unknown }).uni = {}
+      ;(globalThis as { __uniConfig?: unknown }).__uniConfig = {
+        appVersion: '1.0.0',
+      }
+      expect(getSystemInfo().appVersion).toBe('1.0.0')
     })
 
     test('多次调用走缓存（getSystemInfoSync 只调一次）', () => {
