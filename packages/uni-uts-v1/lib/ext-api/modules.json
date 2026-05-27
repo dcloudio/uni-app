@@ -212,7 +212,6 @@
         "name": "createCanvasContextAsync",
         "app": {
           "js": false,
-          "x-js": false,
           "kotlin": true,
           "swift": false,
           "arkts": true
@@ -1821,7 +1820,6 @@
         "name": "onThemeChange",
         "app": {
           "js": true,
-          "x-js": true,
           "kotlin": false,
           "swift": false,
           "arkts": false
@@ -1831,7 +1829,6 @@
         "name": "offThemeChange",
         "app": {
           "js": true,
-          "x-js": true,
           "kotlin": false,
           "swift": false,
           "arkts": false
@@ -1841,7 +1838,6 @@
         "name": "onHostThemeChange",
         "app": {
           "js": false,
-          "x-js": true,
           "kotlin": true,
           "swift": true,
           "arkts": true
@@ -1851,7 +1847,6 @@
         "name": "offHostThemeChange",
         "app": {
           "js": false,
-          "x-js": true,
           "kotlin": true,
           "swift": true,
           "arkts": true
