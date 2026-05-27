@@ -5522,8 +5522,7 @@ class StatApp {
             config: { usv: STAT_VERSION_PUBLIC },
             nowMs,
             nowSec,
-            firstFlushDeferMs: getRawPlatform() === 'mp-weixin' &&
-                MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT
+            firstFlushDeferMs: getRawPlatform() === 'mp-weixin' && MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT
                 ? MP_WEIXIN_PRELOAD_FIRST_FLUSH_DELAY_MS
                 : 0,
         };

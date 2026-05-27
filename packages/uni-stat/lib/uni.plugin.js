@@ -18,6 +18,31 @@ function once(fn, ctx = null) {
     });
 }
 
+/**
+ * 根据 manifest 根节点 `uniStatistics` 判定统计是否开启。
+ * 逻辑内聚在 uni-stat 插件内，避免依赖 HBuilderX 内置旧版 uni-cli-shared 的新导出。
+ */
+function isUniStatisticsEnabled(inputDir) {
+    const manifest = uniCliShared.parseManifestJsonOnce(inputDir);
+    const root = manifest === null || manifest === void 0 ? void 0 : manifest.uniStatistics;
+    if (!root) {
+        return true;
+    }
+    return root.enable !== false;
+}
+/**
+ * 解析统计版本类型（公有版 / 私有版）。
+ * - 优先 `type`；缺失时回退旧版 `version`（2=private，其余=public）。
+ */
+function resolveUniStatisticsType(statConfig) {
+    var _a;
+    const type = String((_a = statConfig === null || statConfig === void 0 ? void 0 : statConfig.type) !== null && _a !== void 0 ? _a : '').trim();
+    if (type === 'public' || type === 'private') {
+        return type;
+    }
+    const versionNum = Number(statConfig === null || statConfig === void 0 ? void 0 : statConfig.version);
+    return versionNum === 2 ? 'private' : 'public';
+}
 const uniStatLog = once((text) => {
     console.log();
     console.warn(text);
@@ -85,17 +110,11 @@ var index = () => [
                     // 运行时仍须能读到 backgroundTimeout / reportInterval 等字段。
                     process.env.UNI_STATISTICS_CONFIG = JSON.stringify(statConfig);
                     process.env.UNI_STAT_DEBUG = statConfig.debug ? 'true' : 'false';
-                    isEnable = statConfig.enable === true;
+                    // 仅 manifest 根节点 `enable === false` 关闭统计；无节点或未配置 enable 默认开启。
+                    isEnable = isUniStatisticsEnabled(inputDir);
+                    statType = resolveUniStatisticsType(statConfig);
                     if (isEnable) {
                         const uniCloudConfig = statConfig.uniCloud || {};
-                        const type = String(statConfig.type || '').trim();
-                        if (type === 'public' || type === 'private') {
-                            statType = type;
-                        }
-                        else {
-                            const versionNum = Number(statConfig.version);
-                            statType = versionNum === 2 ? 'private' : 'public';
-                        }
                         process.env.UNI_STAT_UNI_CLOUD = JSON.stringify(uniCloudConfig);
                         // 公有版字段 `an` 兜底：注入 manifest.json#name 到 process.env.UNI_APP_NAME，
                         // 由 `public/adapter/package.ts#getEnvAppName` 读取。任意阶段读 manifest 失败
@@ -116,21 +135,11 @@ var index = () => [
                                 isEnable = false;
                             }
                             else {
-                                if (!statConfig.type && !statConfig.version) {
-                                    uniStatLog(uniCliShared.M['stat.warn.version']);
-                                }
-                                else {
-                                    uniStatLog(formatStatEnabledTip(statType));
-                                }
+                                uniStatLog(formatStatEnabledTip(statType));
                             }
                         }
                         else {
-                            if (!statConfig.type && !statConfig.version) {
-                                uniStatLog(uniCliShared.M['stat.warn.version']);
-                            }
-                            else {
-                                uniStatLog(formatStatEnabledTip(statType));
-                            }
+                            uniStatLog(formatStatEnabledTip(statType));
                         }
                     }
                     debug__default.default('uni:stat')('isEnable', isEnable, 'type', statType);

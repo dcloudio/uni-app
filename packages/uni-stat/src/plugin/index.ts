@@ -12,6 +12,37 @@ import {
   resolveBuiltIn,
 } from '@dcloudio/uni-cli-shared'
 import type { ConfigEnv, UserConfig } from 'vite'
+
+type StatType = 'public' | 'private'
+
+/**
+ * 根据 manifest 根节点 `uniStatistics` 判定统计是否开启。
+ * 逻辑内聚在 uni-stat 插件内，避免依赖 HBuilderX 内置旧版 uni-cli-shared 的新导出。
+ */
+function isUniStatisticsEnabled(inputDir: string): boolean {
+  const manifest = parseManifestJsonOnce(inputDir)
+  const root = manifest?.uniStatistics
+  if (!root) {
+    return true
+  }
+  return root.enable !== false
+}
+
+/**
+ * 解析统计版本类型（公有版 / 私有版）。
+ * - 优先 `type`；缺失时回退旧版 `version`（2=private，其余=public）。
+ */
+function resolveUniStatisticsType(
+  statConfig: Record<string, unknown>
+): StatType {
+  const type = String(statConfig?.type ?? '').trim()
+  if (type === 'public' || type === 'private') {
+    return type
+  }
+  const versionNum = Number(statConfig?.version)
+  return versionNum === 2 ? 'private' : 'public'
+}
+
 const uniStatLog = once((text: string) => {
   console.log()
   console.warn(text)
@@ -21,7 +52,7 @@ const uniStatLog = once((text: string) => {
 /**
  * 构建期「统计已开启」提示文案（不依赖 i18n 占位符，避免 HBuilderX 内置文案仍为 `{version}` 时原样输出）。
  */
-function formatStatEnabledTip(statType: 'public' | 'private'): string {
+function formatStatEnabledTip(statType: StatType): string {
   return `已开启 uni统计${statType === 'public' ? '公有版' : '私有版'}`
 }
 
@@ -36,7 +67,7 @@ export default () => [
      * - 优先读取 manifest.uniStatistics.type（public/private）
      * - type 缺失或非法时，回退旧版 version（2=private，其余=public）
      */
-    let statType: 'public' | 'private' = 'public'
+    let statType: StatType = 'public'
     let isEnable = false
     const stats: Record<string, string> = {
       '@dcloudio/uni-stat': resolveBuiltIn(
@@ -85,17 +116,12 @@ export default () => [
           // 运行时仍须能读到 backgroundTimeout / reportInterval 等字段。
           process.env.UNI_STATISTICS_CONFIG = JSON.stringify(statConfig)
           process.env.UNI_STAT_DEBUG = statConfig.debug ? 'true' : 'false'
-          isEnable = statConfig.enable === true
+          // 仅 manifest 根节点 `enable === false` 关闭统计；无节点或未配置 enable 默认开启。
+          isEnable = isUniStatisticsEnabled(inputDir)
+          statType = resolveUniStatisticsType(statConfig)
 
           if (isEnable) {
             const uniCloudConfig = statConfig.uniCloud || {}
-            const type = String(statConfig.type || '').trim()
-            if (type === 'public' || type === 'private') {
-              statType = type
-            } else {
-              const versionNum = Number(statConfig.version)
-              statType = versionNum === 2 ? 'private' : 'public'
-            }
             process.env.UNI_STAT_UNI_CLOUD = JSON.stringify(uniCloudConfig)
             // 公有版字段 `an` 兜底：注入 manifest.json#name 到 process.env.UNI_APP_NAME，
             // 由 `public/adapter/package.ts#getEnvAppName` 读取。任意阶段读 manifest 失败
@@ -114,18 +140,10 @@ export default () => [
                 uniStatLog(M['stat.warn.appid'])
                 isEnable = false
               } else {
-                if (!statConfig.type && !statConfig.version) {
-                  uniStatLog(M['stat.warn.version'])
-                } else {
-                  uniStatLog(formatStatEnabledTip(statType))
-                }
-              }
-            } else {
-              if (!statConfig.type && !statConfig.version) {
-                uniStatLog(M['stat.warn.version'])
-              } else {
                 uniStatLog(formatStatEnabledTip(statType))
               }
+            } else {
+              uniStatLog(formatStatEnabledTip(statType))
             }
           }
 
