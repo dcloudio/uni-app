@@ -64,8 +64,7 @@ const {
   getPlatformStat,
   getPlatformPush,
   getPlatformUniCloud,
-  getDevUniConsoleCode,
-  resolveUniStatType
+  getDevUniConsoleCode
 } = require('./platform')
 
 const uts = require('./uts')
@@ -137,7 +136,6 @@ module.exports = {
   getPlatformStat,
   getPlatformPush,
   getPlatformUniCloud,
-  resolveUniStatType,
   parseTheme,
   initTheme,
   getDevUniConsoleCode,

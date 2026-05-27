@@ -98,23 +98,8 @@ const {
   nvueContext: nvuePreprocessContext
 } = global.uniPlugin.preprocess
 
-/**
- * 解析 manifest.uniStatistics 的统计类型。
- * 优先 type（public/private）；缺失或非法时回退 version（2=private，其余=public）。
- * @param {Record<string, unknown>} uniStatistics manifest 统计配置
- * @returns {'public'|'private'}
- */
-function resolveUniStatType (uniStatistics) {
-  const type = String(uniStatistics.type || '').trim()
-  if (type === 'public' || type === 'private') {
-    return type
-  }
-  return Number(uniStatistics.version) === 2 ? 'private' : 'public'
-}
-
 // TODO 暂时保留原有导出，减少影响，后续再整理一下
 module.exports = {
-  resolveUniStatType,
   normalizeNodeModules,
   isInHBuilderX,
   isInHBuilderXAlpha,
