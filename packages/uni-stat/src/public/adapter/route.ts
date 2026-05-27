@@ -19,6 +19,7 @@
  */
 
 import { tryRun } from '../infra/safe'
+import { getGlobalObject } from '../infra/uniRuntime'
 
 import { getPlatform } from './platform'
 
@@ -83,8 +84,9 @@ declare const getCurrentPages: () => PageEntry[]
  * 优先 `getCurrentPages()`；若不可用或栈为空返回 `undefined`。
  */
 export function getTopPageVm(): PageVmLike | undefined {
-  const fn = (globalThis as unknown as { getCurrentPages?: () => PageEntry[] })
-    .getCurrentPages
+  const fn = getGlobalObject().getCurrentPages as
+    | (() => PageEntry[])
+    | undefined
   if (typeof fn !== 'function') return undefined
   const pages = tryRun(() => fn(), [] as PageEntry[]) || []
   if (!Array.isArray(pages) || pages.length === 0) return undefined

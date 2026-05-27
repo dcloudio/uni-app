@@ -830,14 +830,19 @@ function getUni(): UniLifecycleApi | undefined {
  *
  * - Vue2：始终走 mixin（`load_stat` 不注册 uni.onAppShow/Hide）。
  * - Vue3：仅 H5 / nvue 走 mixin；小程序等走 `uni.onAppShow` / `onAppHide`。
+ *
+ * 使用赋值而非连续 `return`：公有版 dist 经 Rollup 打包时，连续 return 会导致
+ * `#ifdef VUE3` 分支被 tree-shake；应用构建再剥离 `#ifndef VUE3` 后函数体为空 → undefined。
  */
 export function shouldMixinDispatchAppLifecycle(): boolean {
+  let result = isH5() || getPlatform() === 'n' || isNvue()
   // #ifndef VUE3
-  return true
+  result = true
   // #endif
   // #ifdef VUE3
-  return isH5() || getPlatform() === 'n' || isNvue()
+  result = isH5() || getPlatform() === 'n' || isNvue()
   // #endif
+  return result
 }
 
 /**
@@ -846,12 +851,14 @@ export function shouldMixinDispatchAppLifecycle(): boolean {
  * 仅 Vue3 且非 H5、非 nvue（即小程序等）为 true；Vue2 必须为 false。
  */
 export function shouldBindUniAppLifecycle(): boolean {
+  let result = !isH5() && getPlatform() !== 'n' && !isNvue()
   // #ifndef VUE3
-  return false
+  result = false
   // #endif
   // #ifdef VUE3
-  return !isH5() && getPlatform() !== 'n' && !isNvue()
+  result = !isH5() && getPlatform() !== 'n' && !isNvue()
   // #endif
+  return result
 }
 
 const uniAppHookRegistry = {

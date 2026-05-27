@@ -33,7 +33,7 @@ import {
   RETRY_BASE_DELAY_MS,
 } from '../../config'
 import { logger } from '../../infra/logger'
-import { resolveUniRuntime } from '../../infra/uniRuntime'
+import { getGlobalObject, resolveUniRuntime } from '../../infra/uniRuntime'
 import { withRetry } from '../../infra/safe'
 
 import {
@@ -239,7 +239,7 @@ function imageBeaconAwait(url: string, ms: number): Promise<void> {
     naturalWidth: number
     naturalHeight: number
   }
-  const ImageCtor = (globalThis as unknown as { Image?: new () => Img }).Image
+  const ImageCtor = getGlobalObject().Image as (new () => Img) | undefined
   if (typeof ImageCtor !== 'function') {
     return Promise.reject(new PermanentChannelError('当前环境无法完成统计上报'))
   }
@@ -281,7 +281,7 @@ interface WxPreloadAssetsApi {
  * 读取微信基础库 `wx.preloadAssets`（仅 mp-weixin 预加载信标路径使用）。
  */
 function getWxPreloadAssets(): WxPreloadAssetsApi['preloadAssets'] | undefined {
-  const wx = (globalThis as { wx?: WxPreloadAssetsApi }).wx
+  const wx = getGlobalObject().wx as WxPreloadAssetsApi | undefined
   return typeof wx?.preloadAssets === 'function' ? wx.preloadAssets : undefined
 }
 
@@ -526,8 +526,7 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
    * H5：默认 `Image` 触发 GET；否则 `uni.request` GET。
    */
   function onceGif(url: string): Promise<void> {
-    const ImageCtor = (globalThis as unknown as { Image?: new () => unknown })
-      .Image
+    const ImageCtor = getGlobalObject().Image as (new () => unknown) | undefined
     const hasImage = typeof ImageCtor === 'function'
 
     if (preferBeacon && hasImage) {

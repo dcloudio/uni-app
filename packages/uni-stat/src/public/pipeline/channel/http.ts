@@ -19,7 +19,7 @@ import {
   STAT_URL,
 } from '../../config'
 import { logger } from '../../infra/logger'
-import { resolveUniRuntime } from '../../infra/uniRuntime'
+import { getGlobalObject, resolveUniRuntime } from '../../infra/uniRuntime'
 import { tryRun, withRetry } from '../../infra/safe'
 
 import type { Channel, ReportPayload } from '../types'
@@ -62,9 +62,9 @@ function toQuery(payload: ReportPayload): string {
  * 若 `new Image()` 本身抛错也吞掉，转给 fallback。
  */
 function tryImageRequest(payload: ReportPayload, h5Url = STAT_H5_URL): boolean {
-  const ImageCtor = (
-    globalThis as unknown as { Image?: new () => { src: string } }
-  ).Image
+  const ImageCtor = getGlobalObject().Image as
+    | (new () => { src: string })
+    | undefined
   if (typeof ImageCtor !== 'function') return false
   return tryRun(() => {
     const img = new ImageCtor()

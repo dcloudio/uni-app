@@ -13,7 +13,7 @@
  *   - `an`：应用展示名（App = plus.runtime.appname；小程序/H5 = `process.env.UNI_APP_NAME` 等）。
  */
 
-import { resolveUniRuntime } from '../infra/uniRuntime'
+import { getGlobalObject, resolveUniRuntime } from '../infra/uniRuntime'
 import { tryRun } from '../infra/safe'
 
 import { getPlatform, isApp, isH5, isMp } from './platform'
@@ -55,7 +55,7 @@ function getUni(): UniWithCanIUse | undefined {
 }
 
 function getPlus(): PlusLike | undefined {
-  return (globalThis as unknown as { plus?: PlusLike }).plus
+  return getGlobalObject().plus as PlusLike | undefined
 }
 
 /**
@@ -86,13 +86,11 @@ function getMpTdaid(platform: string): string {
         )
         if (id) return id
       }
-      const wxHost = (
-        globalThis as unknown as {
-          wx?: {
+      const wxHost = getGlobalObject().wx as
+        | {
             getAccountInfoSync?: () => { miniProgram?: { appId?: string } }
           }
-        }
-      ).wx
+        | undefined
       if (typeof wxHost?.getAccountInfoSync === 'function') {
         const id2 = tryRun(
           () => wxHost.getAccountInfoSync!().miniProgram?.appId ?? '',
@@ -105,14 +103,12 @@ function getMpTdaid(platform: string): string {
     }
     case 'ali':
     case 'dt': {
-      const my = (
-        globalThis as unknown as {
-          my?: {
+      const my = getGlobalObject().my as
+        | {
             getAppIdSync?: () => string
             getAccountInfoSync?: () => { miniProgram?: { appId?: string } }
           }
-        }
-      ).my
+        | undefined
       if (!my) return ''
       const v1 = tryRun(() => my.getAppIdSync?.() ?? '', '')
       if (v1) return v1
@@ -123,19 +119,15 @@ function getMpTdaid(platform: string): string {
     }
     case 'tt':
     case 'lark': {
-      const tt = (
-        globalThis as unknown as {
-          tt?: { getEnvInfoSync?: () => { microapp?: { appId?: string } } }
-        }
-      ).tt
+      const tt = getGlobalObject().tt as
+        | { getEnvInfoSync?: () => { microapp?: { appId?: string } } }
+        | undefined
       return tryRun(() => tt?.getEnvInfoSync?.().microapp?.appId ?? '', '')
     }
     case 'bd': {
-      const swan = (
-        globalThis as unknown as {
-          swan?: { getEnvInfoSync?: () => { common?: { appKey?: string } } }
-        }
-      ).swan
+      const swan = getGlobalObject().swan as
+        | { getEnvInfoSync?: () => { common?: { appKey?: string } } }
+        | undefined
       return tryRun(() => swan?.getEnvInfoSync?.().common?.appKey ?? '', '')
     }
     default:
@@ -198,7 +190,8 @@ function getH5AppName(): string {
   if (env) return env
   return tryRun(
     () =>
-      (globalThis as { document?: { title?: string } }).document?.title ?? '',
+      (getGlobalObject().document as { title?: string } | undefined)?.title ??
+      '',
     ''
   )
 }

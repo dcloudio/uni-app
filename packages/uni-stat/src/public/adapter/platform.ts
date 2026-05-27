@@ -18,6 +18,8 @@
  * 单测中可能被运行时切换；缓存会让多端测试串味。
  */
 
+import { getGlobalObject } from '../infra/uniRuntime'
+
 /**
  * 公有版收敛后的平台 ID。新增平台需同步更新 `04-字段字典与平台获取矩阵.md`。
  */
@@ -98,8 +100,7 @@ export function normalizeStatOsP(info: {
   if (sys.includes('mac os') || sys.includes('darwin')) return 'macos'
   if (sys.includes('linux')) return 'linux'
 
-  const plus = (globalThis as unknown as { plus?: { os?: { name?: string } } })
-    .plus
+  const plus = getGlobalObject().plus as { os?: { name?: string } } | undefined
   const p2 = fromToken(plus?.os?.name ?? '')
   if (p2) return p2
 
@@ -164,9 +165,9 @@ export function getPlatform(): Platform {
   const mapped = PLATFORM_MAP[raw]
   if (!mapped) return 'unknown'
   if (mapped === 'ali') {
-    const my = (
-      globalThis as unknown as { my?: { env?: { clientName?: string } } }
-    ).my
+    const my = getGlobalObject().my as
+      | { env?: { clientName?: string } }
+      | undefined
     if (my?.env?.clientName === 'dingtalk') return 'dt'
     return 'ali'
   }
@@ -215,11 +216,7 @@ export function formatMpvForStat(ut: Platform | string): string {
  */
 export function getClientOs(): ClientOs {
   const raw = getRawPlatform()
-  const plus = (
-    globalThis as unknown as {
-      plus?: { os?: { name?: string } }
-    }
-  ).plus
+  const plus = getGlobalObject().plus as { os?: { name?: string } } | undefined
   const name = plus?.os?.name?.toLowerCase()
   if (name) {
     if (name.includes('android')) return 'a'
@@ -254,5 +251,5 @@ export function isH5(): boolean {
  * 没有注入则保守返回 false。
  */
 export function isNvue(): boolean {
-  return Boolean((globalThis as unknown as { __NVUE__?: boolean }).__NVUE__)
+  return Boolean(getGlobalObject().__NVUE__)
 }

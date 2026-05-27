@@ -24,6 +24,7 @@
 import { LEGACY_NAMESPACE_ROOT, storage } from '../infra/storage'
 import { logger } from '../infra/logger'
 import { tryRun } from '../infra/safe'
+import { resolveUniRuntime } from '../infra/uniRuntime'
 
 /** 已迁移哨兵 key（写到新命名空间）。值固定为 1。 */
 const KEY_DONE = 'migration:done'
@@ -53,11 +54,9 @@ function getAppId(): string {
  * 任何异常一律返回 `null`，由调用方决定 noop。
  */
 function readLegacyAggregate(): Record<string, unknown> | null {
-  const u = (
-    globalThis as unknown as {
-      uni?: { getStorageSync?: (k: string) => unknown }
-    }
-  ).uni
+  const u = resolveUniRuntime() as
+    | { getStorageSync?: (k: string) => unknown }
+    | undefined
   if (!u || typeof u.getStorageSync !== 'function') return null
   const key = `${LEGACY_NAMESPACE_ROOT}:${getAppId()}`
   const raw = tryRun(() => u.getStorageSync!(key), null)

@@ -325,6 +325,12 @@ describe('runtime/lifecycleHooks', () => {
     expect(getReportedLts(reportSpy)).toContain('3')
   })
 
+  test('Vue3 小程序：应注册 uni.onAppShow/Hide，mixin 不分发 App 前后台', () => {
+    installMockUni({ platform: 'mp-alipay' })
+    expect(shouldBindUniAppLifecycle()).toBe(true)
+    expect(shouldMixinDispatchAppLifecycle()).toBe(false)
+  })
+
   test('Vue2：无 uni.onAppHide 时 mixin App onHide 兜底', () => {
     const { uni } = installMockUni({
       platform: 'h5',

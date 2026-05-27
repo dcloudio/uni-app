@@ -185,6 +185,106 @@ function defaultSleep(ms) {
 }
 
 /**
+ * 解析 uni-app 运行时根对象 `uni`。
+ *
+ * - H5 / App：常见为 `globalThis.uni`。
+ * - 微信小程序等：多为 Vite/rollup 向**当前模块**注入的标识符 `uni`，
+ *   **未必**同步挂到 `globalThis`；仅读 `globalThis.uni` 会导致
+ *   `bindLifecycle` / `uni.request` / storage 等全部静默失败。
+ * - 支付宝等旧版小程序：**无 `globalThis` 标识符**，须用 `getGlobalObject()` 兜底。
+ *
+ * 第二路依赖宿主构建对 `uni` 的注入（与业务页面同一套解析规则），
+ * 类型兜底见 `packages/uni-stat/src/uni-global.d.ts`。
+ */
+/**
+ * H5 兜底：在 `globalThis` / `self` 不可用时尝试读取 `window`。
+ *
+ * 通过 `Function` 间接访问，避免 ESLint `no-restricted-globals` 对 `window` 标识符的限制；
+ * 小程序等环境执行失败时返回 `undefined`。
+ */
+function getWindowObject() {
+    try {
+        const w = Function('return typeof window !== "undefined" ? window : undefined')();
+        return w != null ? w : undefined;
+    }
+    catch (_a) {
+        return undefined;
+    }
+}
+/**
+ * 安全获取全局对象。
+ *
+ * 支付宝 / 部分旧版小程序运行时未提供 `globalThis`，直接写 `globalThis` 会
+ * `ReferenceError: globalThis is not defined`，导致 install 阶段整包崩溃。
+ */
+function getGlobalObject() {
+    if (typeof globalThis !== 'undefined' && globalThis != null) {
+        return globalThis;
+    }
+    if (typeof global !== 'undefined' && global != null) {
+        return global;
+    }
+    if (typeof self !== 'undefined' && self != null) {
+        return self;
+    }
+    const win = getWindowObject();
+    if (win)
+        return win;
+    return {};
+}
+/**
+ * 探测 `uni` 解析路径（不改变 `resolveUniRuntime` 行为，仅用于 debug 诊断）。
+ */
+function probeUniRuntime() {
+    const globalThisAvailable = typeof globalThis !== 'undefined';
+    const g = getGlobalObject();
+    const globalUni = g.uni;
+    const globalThisHasUni = globalUni != null && typeof globalUni === 'object';
+    const moduleUniDefined = typeof uni !== 'undefined' && uni != null && typeof uni === 'object';
+    if (globalThisHasUni) {
+        return {
+            resolved: true,
+            source: 'globalThis',
+            globalThisHasUni: true,
+            moduleUniDefined,
+            globalThisAvailable,
+            uni: globalUni,
+        };
+    }
+    if (moduleUniDefined) {
+        return {
+            resolved: true,
+            source: 'module',
+            globalThisHasUni: false,
+            moduleUniDefined: true,
+            globalThisAvailable,
+            uni,
+        };
+    }
+    return {
+        resolved: false,
+        source: 'none',
+        globalThisHasUni: false,
+        moduleUniDefined: false,
+        globalThisAvailable,
+        uni: undefined,
+    };
+}
+/**
+ * 返回与业务侧一致的 `uni` 运行时根对象；均不可用时返回 `undefined`。
+ */
+function resolveUniRuntime() {
+    const probe = probeUniRuntime();
+    if (probe.source === 'globalThis') {
+        return getGlobalObject().uni;
+    }
+    if (probe.source === 'module') {
+        return uni;
+    }
+    return undefined;
+}
+
+/**
  * 公有版统一日志出口。
  *
  * 修复的私有版缺陷：
@@ -216,8 +316,9 @@ function preferSingleLineConsole() {
 function isAndroidOrIosRuntime() {
     var _a, _b, _c, _d, _e, _f, _g, _h;
     const raw = (_a = process.env.UNI_PLATFORM) !== null && _a !== void 0 ? _a : '';
+    const g = getGlobalObject();
     if (raw === 'app' || raw === 'app-plus' || raw === 'app-harmony') {
-        const n = (_d = (_c = (_b = globalThis.plus) === null || _b === void 0 ? void 0 : _b.os) === null || _c === void 0 ? void 0 : _c.name) === null || _d === void 0 ? void 0 : _d.toLowerCase();
+        const n = (_d = (_c = (_b = g.plus) === null || _b === void 0 ? void 0 : _b.os) === null || _c === void 0 ? void 0 : _c.name) === null || _d === void 0 ? void 0 : _d.toLowerCase();
         if (!n)
             return false;
         if (n.includes('android'))
@@ -228,7 +329,7 @@ function isAndroidOrIosRuntime() {
     }
     if (raw.startsWith('mp-')) {
         try {
-            const p = (_h = (_g = (_f = (_e = globalThis.uni) === null || _e === void 0 ? void 0 : _e.getSystemInfoSync) === null || _f === void 0 ? void 0 : _f.call(_e)) === null || _g === void 0 ? void 0 : _g.platform) === null || _h === void 0 ? void 0 : _h.toLowerCase();
+            const p = (_h = (_g = (_f = (_e = g.uni) === null || _e === void 0 ? void 0 : _e.getSystemInfoSync) === null || _f === void 0 ? void 0 : _f.call(_e)) === null || _g === void 0 ? void 0 : _g.platform) === null || _h === void 0 ? void 0 : _h.toLowerCase();
             return p === 'android' || p === 'ios';
         }
         catch (_j) {
@@ -342,32 +443,6 @@ const logger = {
     setDebug,
     isDebug,
 };
-
-/**
- * 解析 uni-app 运行时根对象 `uni`。
- *
- * - H5 / App：常见为 `globalThis.uni`。
- * - 微信小程序等：多为 Vite/rollup 向**当前模块**注入的标识符 `uni`，
- *   **未必**同步挂到 `globalThis`；仅读 `globalThis.uni` 会导致
- *   `bindLifecycle` / `uni.request` / storage 等全部静默失败。
- *
- * 第二路依赖宿主构建对 `uni` 的注入（与业务页面同一套解析规则），
- * 类型兜底见 `packages/uni-stat/src/uni-global.d.ts`。
- */
-/**
- * 返回与业务侧一致的 `uni` 运行时根对象；均不可用时返回 `undefined`。
- */
-function resolveUniRuntime() {
-    const g = globalThis;
-    if (g.uni != null && typeof g.uni === 'object') {
-        return g.uni;
-    }
-    // 宿主注入：小程序 vendor 中常见，且不在 globalThis 上
-    if (typeof uni !== 'undefined' && uni != null && typeof uni === 'object') {
-        return uni;
-    }
-    return undefined;
-}
 
 /**
  * 公有版本地存储抽象（重写自私有版 `utils/db.js`）。
@@ -1101,8 +1176,7 @@ function normalizeStatOsP(info) {
         return 'macos';
     if (sys.includes('linux'))
         return 'linux';
-    const plus = globalThis
-        .plus;
+    const plus = getGlobalObject().plus;
     const p2 = fromToken((_e = (_d = plus === null || plus === void 0 ? void 0 : plus.os) === null || _d === void 0 ? void 0 : _d.name) !== null && _e !== void 0 ? _e : '');
     if (p2)
         return p2;
@@ -1166,7 +1240,7 @@ function getPlatform() {
     if (!mapped)
         return 'unknown';
     if (mapped === 'ali') {
-        const my = globalThis.my;
+        const my = getGlobalObject().my;
         if (((_a = my === null || my === void 0 ? void 0 : my.env) === null || _a === void 0 ? void 0 : _a.clientName) === 'dingtalk')
             return 'dt';
         return 'ali';
@@ -1215,6 +1289,16 @@ function isMp() {
 /** 当前是否运行在 H5 端。 */
 function isH5() {
     return getRawPlatform() === 'h5';
+}
+/**
+ * 当前页面/上下文是否为 nvue。
+ *
+ * uni-app nvue 页面的 `__UNI_FEATURE_NVUE__` 编译期常量为 true；
+ * 运行时无可靠 API，统一通过编译期 define 注入的 `globalThis.__NVUE__` 判断。
+ * 没有注入则保守返回 false。
+ */
+function isNvue() {
+    return Boolean(getGlobalObject().__NVUE__);
 }
 
 /**
@@ -1649,8 +1733,7 @@ function getPageVmType(vm) {
  */
 function getTopPageVm() {
     var _a;
-    const fn = globalThis
-        .getCurrentPages;
+    const fn = getGlobalObject().getCurrentPages;
     if (typeof fn !== 'function')
         return undefined;
     const pages = tryRun(() => fn(), []) || [];
@@ -2404,11 +2487,19 @@ function getUni$6() {
  *
  * - Vue2：始终走 mixin（`load_stat` 不注册 uni.onAppShow/Hide）。
  * - Vue3：仅 H5 / nvue 走 mixin；小程序等走 `uni.onAppShow` / `onAppHide`。
+ *
+ * 使用赋值而非连续 `return`：公有版 dist 经 Rollup 打包时，连续 return 会导致
+ * `#ifdef VUE3` 分支被 tree-shake；应用构建再剥离 `#ifndef VUE3` 后函数体为空 → undefined。
  */
 function shouldMixinDispatchAppLifecycle() {
+    let result = isH5() || getPlatform() === 'n' || isNvue();
     // #ifndef VUE3
-    return true;
+    result = true;
     // #endif
+    // #ifdef VUE3
+    result = isH5() || getPlatform() === 'n' || isNvue();
+    // #endif
+    return result;
 }
 /**
  * 是否注册 `uni.onAppShow` / `onAppHide`（对齐私有版 `index.js#load_stat` VUE3 分支）。
@@ -2416,9 +2507,14 @@ function shouldMixinDispatchAppLifecycle() {
  * 仅 Vue3 且非 H5、非 nvue（即小程序等）为 true；Vue2 必须为 false。
  */
 function shouldBindUniAppLifecycle() {
+    let result = !isH5() && getPlatform() !== 'n' && !isNvue();
     // #ifndef VUE3
-    return false;
+    result = false;
     // #endif
+    // #ifdef VUE3
+    result = !isH5() && getPlatform() !== 'n' && !isNvue();
+    // #endif
+    return result;
 }
 const uniAppHookRegistry = {
     showBound: false,
@@ -3477,7 +3573,7 @@ function toQuery(payload) {
  * 若 `new Image()` 本身抛错也吞掉，转给 fallback。
  */
 function tryImageRequest(payload, h5Url = STAT_H5_URL) {
-    const ImageCtor = globalThis.Image;
+    const ImageCtor = getGlobalObject().Image;
     if (typeof ImageCtor !== 'function')
         return false;
     return tryRun(() => {
@@ -3741,7 +3837,7 @@ function summarizeHttpErrorBody(data, maxLen = 320) {
  * @param ms  超时毫秒
  */
 function imageBeaconAwait(url, ms) {
-    const ImageCtor = globalThis.Image;
+    const ImageCtor = getGlobalObject().Image;
     if (typeof ImageCtor !== 'function') {
         return Promise.reject(new PermanentChannelError('当前环境无法完成统计上报'));
     }
@@ -3776,7 +3872,7 @@ function imageBeaconAwait(url, ms) {
  * 读取微信基础库 `wx.preloadAssets`（仅 mp-weixin 预加载信标路径使用）。
  */
 function getWxPreloadAssets() {
-    const wx = globalThis.wx;
+    const wx = getGlobalObject().wx;
     return typeof (wx === null || wx === void 0 ? void 0 : wx.preloadAssets) === 'function' ? wx.preloadAssets : undefined;
 }
 /**
@@ -3959,8 +4055,7 @@ function createImageChannel(opts = {}) {
      * H5：默认 `Image` 触发 GET；否则 `uni.request` GET。
      */
     function onceGif(url) {
-        const ImageCtor = globalThis
-            .Image;
+        const ImageCtor = getGlobalObject().Image;
         const hasImage = typeof ImageCtor === 'function';
         if (preferBeacon && hasImage) {
             return imageBeaconAwait(url, timeoutMs);
@@ -4353,7 +4448,7 @@ function mergeWxHostSnapshots() {
     const raw = getRawPlatform();
     if (raw !== 'mp-weixin' && raw !== 'mp-qq')
         return null;
-    const wxHost = globalThis.wx;
+    const wxHost = getGlobalObject().wx;
     if (!wxHost)
         return null;
     const sync = typeof wxHost.getSystemInfoSync === 'function'
@@ -4446,7 +4541,7 @@ function getSystemInfo() {
     if (cachedStatic)
         return cachedStatic;
     const sys = mergedSystemInfo();
-    const plus = globalThis.plus;
+    const plus = getGlobalObject().plus;
     cachedStatic = {
         brand: (_b = (_a = sys.deviceBrand) !== null && _a !== void 0 ? _a : sys.brand) !== null && _b !== void 0 ? _b : '',
         md: (_d = (_c = sys.deviceModel) !== null && _c !== void 0 ? _c : sys.model) !== null && _d !== void 0 ? _d : '',
@@ -4510,7 +4605,7 @@ function getUni$2() {
     return u != null && typeof u === 'object' ? u : undefined;
 }
 function getPlus() {
-    return globalThis.plus;
+    return getGlobalObject().plus;
 }
 /**
  * 取小程序系列的 tdaid。各端 API 不同：
@@ -4532,7 +4627,7 @@ function getMpTdaid(platform) {
                 if (id)
                     return id;
             }
-            const wxHost = globalThis.wx;
+            const wxHost = getGlobalObject().wx;
             if (typeof (wxHost === null || wxHost === void 0 ? void 0 : wxHost.getAccountInfoSync) === 'function') {
                 const id2 = tryRun(() => { var _a, _b; return (_b = (_a = wxHost.getAccountInfoSync().miniProgram) === null || _a === void 0 ? void 0 : _a.appId) !== null && _b !== void 0 ? _b : ''; }, '');
                 if (id2)
@@ -4543,7 +4638,7 @@ function getMpTdaid(platform) {
         }
         case 'ali':
         case 'dt': {
-            const my = globalThis.my;
+            const my = getGlobalObject().my;
             if (!my)
                 return '';
             const v1 = tryRun(() => { var _a, _b; return (_b = (_a = my.getAppIdSync) === null || _a === void 0 ? void 0 : _a.call(my)) !== null && _b !== void 0 ? _b : ''; }, '');
@@ -4553,11 +4648,11 @@ function getMpTdaid(platform) {
         }
         case 'tt':
         case 'lark': {
-            const tt = globalThis.tt;
+            const tt = getGlobalObject().tt;
             return tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = tt === null || tt === void 0 ? void 0 : tt.getEnvInfoSync) === null || _a === void 0 ? void 0 : _a.call(tt).microapp) === null || _b === void 0 ? void 0 : _b.appId) !== null && _c !== void 0 ? _c : ''; }, '');
         }
         case 'bd': {
-            const swan = globalThis.swan;
+            const swan = getGlobalObject().swan;
             return tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = swan === null || swan === void 0 ? void 0 : swan.getEnvInfoSync) === null || _a === void 0 ? void 0 : _a.call(swan).common) === null || _b === void 0 ? void 0 : _b.appKey) !== null && _c !== void 0 ? _c : ''; }, '');
         }
         default:
@@ -4614,7 +4709,7 @@ function getH5AppName() {
     const env = getEnvAppName();
     if (env)
         return env;
-    return tryRun(() => { var _a, _b; return (_b = (_a = globalThis.document) === null || _a === void 0 ? void 0 : _a.title) !== null && _b !== void 0 ? _b : ''; }, '');
+    return tryRun(() => { var _a, _b; return (_b = (_a = getGlobalObject().document) === null || _a === void 0 ? void 0 : _a.title) !== null && _b !== void 0 ? _b : ''; }, '');
 }
 /**
  * 启动时获取一次包信息；结果缓存于内存。
@@ -4933,7 +5028,7 @@ function getAppId() {
  * 任何异常一律返回 `null`，由调用方决定 noop。
  */
 function readLegacyAggregate() {
-    const u = globalThis.uni;
+    const u = resolveUniRuntime();
     if (!u || typeof u.getStorageSync !== 'function')
         return null;
     const key = `${LEGACY_NAMESPACE_ROOT}:${getAppId()}`;

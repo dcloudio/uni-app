@@ -23,7 +23,7 @@
  */
 
 import { tryRun } from '../infra/safe'
-import { resolveUniRuntime } from '../infra/uniRuntime'
+import { getGlobalObject, resolveUniRuntime } from '../infra/uniRuntime'
 
 import { getRawPlatform, normalizeStatOsP } from './platform'
 
@@ -138,7 +138,7 @@ interface WxHostSysApis {
 function mergeWxHostSnapshots(): UniSystemInfoLike | null {
   const raw = getRawPlatform()
   if (raw !== 'mp-weixin' && raw !== 'mp-qq') return null
-  const wxHost = (globalThis as unknown as { wx?: WxHostSysApis }).wx
+  const wxHost = getGlobalObject().wx as WxHostSysApis | undefined
   if (!wxHost) return null
   const sync =
     typeof wxHost.getSystemInfoSync === 'function'
@@ -242,17 +242,15 @@ function buildOnForStat(sys: UniSystemInfoLike): string {
 export function getSystemInfo(): SystemInfoStatic {
   if (cachedStatic) return cachedStatic
   const sys = mergedSystemInfo()
-  const plus = (
-    globalThis as unknown as {
-      plus?: {
+  const plus = getGlobalObject().plus as
+    | {
         runtime?: {
           version?: string
           appWgtVersion?: string
           appWgtRevision?: string
         }
       }
-    }
-  ).plus
+    | undefined
   cachedStatic = {
     brand: sys.deviceBrand ?? sys.brand ?? '',
     md: sys.deviceModel ?? sys.model ?? '',

@@ -18,6 +18,7 @@
  */
 
 import { safeStringify } from './safe'
+import { getGlobalObject } from './uniRuntime'
 
 const TAG = '[uni统计公有版]'
 
@@ -35,10 +36,11 @@ function preferSingleLineConsole(): boolean {
  */
 function isAndroidOrIosRuntime(): boolean {
   const raw = process.env.UNI_PLATFORM ?? ''
+  const g = getGlobalObject()
   if (raw === 'app' || raw === 'app-plus' || raw === 'app-harmony') {
     const n = (
-      globalThis as unknown as { plus?: { os?: { name?: string } } }
-    ).plus?.os?.name?.toLowerCase()
+      g.plus as { os?: { name?: string } } | undefined
+    )?.os?.name?.toLowerCase()
     if (!n) return false
     if (n.includes('android')) return true
     if (n === 'ios' || n.includes('iphone')) return true
@@ -47,10 +49,8 @@ function isAndroidOrIosRuntime(): boolean {
   if (raw.startsWith('mp-')) {
     try {
       const p = (
-        globalThis as unknown as {
-          uni?: { getSystemInfoSync?: () => { platform?: string } }
-        }
-      ).uni
+        g.uni as { getSystemInfoSync?: () => { platform?: string } } | undefined
+      )
         ?.getSystemInfoSync?.()
         ?.platform?.toLowerCase()
       return p === 'android' || p === 'ios'
