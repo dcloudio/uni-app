@@ -2368,14 +2368,12 @@ function tryBindUniAppLifecycle(app, opts = {}) {
     const u = getUni$6();
     if (!u)
         return false;
-    if (!uniAppHookRegistry.showBound &&
-        typeof u.onAppShow === 'function') {
+    if (!uniAppHookRegistry.showBound && typeof u.onAppShow === 'function') {
         uniAppHookRegistry.appShowCb = (e) => handleAppShow(app, e !== null && e !== void 0 ? e : {}, opts);
         tryRun(() => u.onAppShow(uniAppHookRegistry.appShowCb), undefined);
         uniAppHookRegistry.showBound = true;
     }
-    if (!uniAppHookRegistry.hideBound &&
-        typeof u.onAppHide === 'function') {
+    if (!uniAppHookRegistry.hideBound && typeof u.onAppHide === 'function') {
         uniAppHookRegistry.appHideCb = () => handleAppHide(app, opts);
         tryRun(() => u.onAppHide(uniAppHookRegistry.appHideCb), undefined);
         uniAppHookRegistry.hideBound = true;
@@ -2387,10 +2385,14 @@ function unbindUniAppLifecycle() {
     if (!uniAppHookRegistry.showBound && !uniAppHookRegistry.hideBound)
         return;
     const cur = getUni$6();
-    if (uniAppHookRegistry.showBound && uniAppHookRegistry.appShowCb && (cur === null || cur === void 0 ? void 0 : cur.offAppShow)) {
+    if (uniAppHookRegistry.showBound &&
+        uniAppHookRegistry.appShowCb &&
+        (cur === null || cur === void 0 ? void 0 : cur.offAppShow)) {
         tryRun(() => cur.offAppShow(uniAppHookRegistry.appShowCb), undefined);
     }
-    if (uniAppHookRegistry.hideBound && uniAppHookRegistry.appHideCb && (cur === null || cur === void 0 ? void 0 : cur.offAppHide)) {
+    if (uniAppHookRegistry.hideBound &&
+        uniAppHookRegistry.appHideCb &&
+        (cur === null || cur === void 0 ? void 0 : cur.offAppHide)) {
         tryRun(() => cur.offAppHide(uniAppHookRegistry.appHideCb), undefined);
     }
     uniAppHookRegistry.showBound = false;
