@@ -4,7 +4,7 @@ import type { Plugin } from 'vite'
 import { type FilterPattern, createFilter } from '@rollup/pluginutils'
 import { camelize, capitalize } from '@vue/shared'
 
-import { COMPONENT_PREFIX, isBuiltInComponent } from '@dcloudio/uni-shared'
+import { COMPONENT_PREFIX, isWebBuiltInComponent } from '@dcloudio/uni-shared'
 import {
   BASE_COMPONENTS_STYLE_PATH,
   COMPONENT_DEPS_CSS,
@@ -24,7 +24,7 @@ const H5_COMPONENTS_PATH = '@dcloudio/uni-h5'
 
 const xBaseComponents = ['slider', 'switch', 'loading', 'page-container']
 const baseComponents = [
-  'audio',
+  // 'audio',
   'button',
   'canvas',
   'checkbox',
@@ -145,7 +145,7 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
               }
             }
             function buildInComponent() {
-              if (isBuiltInComponent(name)) {
+              if (isWebBuiltInComponent(name)) {
                 name = name.replace(COMPONENT_PREFIX, '')
                 const local = `__syscom_${i++}`
                 if (needCombineBuiltInCss) {
