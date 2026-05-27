@@ -283,6 +283,19 @@ export function getSnapshot(): SessionSnapshot | null {
   return ensureCache()
 }
 
+/**
+ * 同步更新 session 的 lastScene，不触发新会话。
+ *
+ * 用于同一次回前台多 hook 携带不同 scene 时，避免重复 lt=1 后补写正确 scene。
+ */
+export function syncLastScene(scene: string): void {
+  if (!scene) return
+  if (!cached) cached = loadFromStorage()
+  if (!cached) return
+  storage.set(KEY_LAST_SCENE, scene)
+  cached.lastScene = scene
+}
+
 /** 仅供测试：清空内部缓存与配置。 */
 export function __resetState(): void {
   cached = null

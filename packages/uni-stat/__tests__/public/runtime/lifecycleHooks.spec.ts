@@ -783,4 +783,33 @@ describe('runtime/lifecycleHooks', () => {
       restoreMockUni()
     }
   })
+
+  test('Vue3 QQ：mixin App onShow + uni.onAppShow 同次回前台仅一条 lt=1', () => {
+    jest.useFakeTimers()
+    try {
+      jest.setSystemTime(new Date('2026-01-01T00:00:00.000Z'))
+      installMockUni({ platform: 'mp-qq' })
+      resetAll()
+      const { app, reportSpy } = installAppWithSpyReporter()
+      sessionMod.configure({ backgroundTimeoutSec: 10 })
+      expect(shouldBindUniAppLifecycle()).toBe(true)
+      const { mixin } = bindLifecycle(app)
+      const appOnShow = mixin.onShow as (this: { mpType: string }) => void
+      handleLaunch(app, { scene: 2001 })
+      handlePageShow(app, { route: 'pages/index/index' })
+      jest.setSystemTime(Date.now() + 5_000)
+      handleAppHide(app)
+      reportSpy.mockClear()
+      jest.setSystemTime(Date.now() + 15_000)
+      appOnShow.call({ mpType: 'app' })
+      handleAppShow(app, { scene: 1011, path: 'pages/index/index' })
+      expect(getReportedLts(reportSpy).filter((lt) => lt === '1')).toHaveLength(
+        1
+      )
+      expect(sessionMod.getSnapshot()?.sct).toBe(2)
+    } finally {
+      jest.useRealTimers()
+      restoreMockUni()
+    }
+  })
 })

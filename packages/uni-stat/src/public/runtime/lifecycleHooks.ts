@@ -37,7 +37,11 @@ import {
   setConfigTitle,
   setReportTitle,
 } from '../domain/title'
-import { ensureSession, markBackground } from '../domain/session/machine'
+import {
+  ensureSession,
+  markBackground,
+  syncLastScene,
+} from '../domain/session/machine'
 import {
   getCurrentRoute,
   getCurrentRouteWithQuery,
@@ -150,6 +154,13 @@ interface LifecycleState {
    * 不能再把后台时长算进 lt=11.urlref_ts。
    */
   suppressNextPageLogAfterResume: boolean
+  /**
+   * 最近一次后台恢复 lt=1 上报时刻（秒）。
+   *
+   * QQ 等 Vue3 小程序同次回前台会先后触发 mixin App.onShow 与 `uni.onAppShow`，
+   * 且 scene 可能不一致；用于 `handleAppShow` fallback 去重。
+   */
+  backgroundResumeLt1At: number
 }
 
 /** 模块级状态。`bindLifecycle` 返回的 unbind 仅断订阅，不重置 state。 */
@@ -167,14 +178,45 @@ const state: LifecycleState = {
   pendingBackgroundResume: false,
   backgroundEnteredAt: 0,
   suppressNextPageLogAfterResume: false,
+  backgroundResumeLt1At: 0,
 }
 
 /** Vue2 H5 hide 过程中偶发 page onShow（间隔≈0s），低于此阈值不消费 pending。 */
 const BACKGROUND_RESUME_DEBOUNCE_SEC = 1
 
+/** 同一次回前台多 hook 重复 lt=1 的去重窗口（秒）。 */
+const BACKGROUND_RESUME_LT1_DEDUP_SEC = 3
+
 /** 小程序等：page onHide 延迟判定「真进后台」；切页会在短时内 onShow 并取消。 */
 const PAGE_APP_HIDE_DEFER_MS = 120
 let pageAppHideDeferTimer: ReturnType<typeof setTimeout> | undefined
+
+/**
+ * Vue3 小程序等已绑定 `uni.onAppShow` 时，后台恢复应仅由 `handleAppShow` 消费。
+ *
+ * mixin / page onShow 过早消费会在 QQ 等端与 uni 回调形成双 hook，且 scene 不一致
+ * （如 2001 vs 1011）导致重复 lt=1。Vue2 / H5 仍走 mixin 提前消费以适配 Page 先于 App onShow。
+ */
+function shouldEarlyConsumeBackgroundResumeInMixin(): boolean {
+  return !shouldBindUniAppLifecycle()
+}
+
+/**
+ * 记录本进程内最近一次后台恢复 lt=1 上报时刻。
+ */
+function markBackgroundResumeLt1Emitted(now: number): void {
+  state.backgroundResumeLt1At = now
+}
+
+/**
+ * 同一次回前台是否已在去重窗口内上报过后台恢复 lt=1。
+ */
+function shouldSkipDuplicateBackgroundResumeLt1(now: number): boolean {
+  return (
+    state.backgroundResumeLt1At > 0 &&
+    now - state.backgroundResumeLt1At <= BACKGROUND_RESUME_LT1_DEDUP_SEC
+  )
+}
 
 /**
  * 取消 page onHide 触发的延迟进后台判定（Vue2/Vue3 共用）。
@@ -475,6 +517,7 @@ function tryConsumeBackgroundResume(
     false,
     url
   )
+  markBackgroundResumeLt1Emitted(now)
   void c
     .flush(true)
     .catch((e) =>
@@ -502,6 +545,10 @@ export function handleAppShow(
   if (!c) return
   const now = nowSec()
   const scene = tryRun(() => getLaunchScene(options.scene), '')
+  if (shouldSkipDuplicateBackgroundResumeLt1(now)) {
+    tryRun(() => syncLastScene(scene), undefined)
+    return
+  }
   const result = tryRun(() => ensureSession('app_show', { now, scene }), null)
   if (!result || !result.isNew) {
     return
@@ -520,6 +567,7 @@ export function handleAppShow(
     false,
     url
   )
+  markBackgroundResumeLt1Emitted(now)
   void c
     .flush(true)
     .catch((e) =>
@@ -601,7 +649,10 @@ export function handlePageShow(
 ): void {
   const c = safeCollector(app)
   if (!c) return
-  if (state.pendingBackgroundResume) {
+  if (
+    state.pendingBackgroundResume &&
+    shouldEarlyConsumeBackgroundResumeInMixin()
+  ) {
     tryConsumeBackgroundResume(app, {}, opts, 'handlePageShow')
   }
   const now = nowSec()
@@ -958,7 +1009,10 @@ export function bindLifecycle(
     onShow(this: PageVm): void {
       const vmType = getPageVmType(this)
       cancelPageAppHideDefer()
-      if (state.pendingBackgroundResume) {
+      if (
+        state.pendingBackgroundResume &&
+        shouldEarlyConsumeBackgroundResumeInMixin()
+      ) {
         tryConsumeBackgroundResume(app, {}, opts, 'mixin.onShow')
       }
       state.isHide = false
@@ -1031,6 +1085,7 @@ export function __resetLifecycleState(): void {
   state.pendingBackgroundResume = false
   state.backgroundEnteredAt = 0
   state.suppressNextPageLogAfterResume = false
+  state.backgroundResumeLt1At = 0
   titleSnapGeneration = 0
   firstVisitEmittedInProcess = false
   unbindUniAppLifecycle()
