@@ -6,6 +6,8 @@
  *   **未必**同步挂到 `globalThis`；仅读 `globalThis.uni` 会导致
  *   `bindLifecycle` / `uni.request` / storage 等全部静默失败。
  * - 支付宝等旧版小程序：**无 `globalThis` 标识符**，须用 `getGlobalObject()` 兜底。
+ * - H5 发行摇树：`pages.json.js` 会先把 `window.uni = {}` 占位；若仍按「有 object 即用」
+ *   会误把空桩当真 uni。须用 `isUsableUniRuntime` 过滤后再择源。
  *
  * 第二路依赖宿主构建对 `uni` 的注入（与业务页面同一套解析规则），
  * 类型兜底见 `packages/uni-stat/src/uni-global.d.ts`。
@@ -19,10 +21,39 @@ export interface UniRuntimeProbe {
   resolved: boolean
   source: UniRuntimeSource
   globalThisHasUni: boolean
+  /** `globalThis.uni` 存在但缺少统计所需 API（典型：H5 发行 `{}` 空桩）。 */
+  globalThisUniStub: boolean
   moduleUniDefined: boolean
   /** 是否能在当前宿主访问 `globalThis` 标识符（支付宝等为 false）。 */
   globalThisAvailable: boolean
   uni: unknown
+}
+
+/**
+ * 判断候选 `uni` 是否具备统计 SDK 可用的最小 API 集合（排除 H5 摇树空桩 `{}`）。
+ *
+ * 任一核心 API 存在即视为可用；与具体平台无关，微信/QQ/抖音/支付宝/百度等
+ * 完整 runtime 均满足，仅「占位空对象」会被过滤。
+ */
+export function isUsableUniRuntime(candidate: unknown): boolean {
+  if (candidate == null || typeof candidate !== 'object') return false
+  const u = candidate as Record<string, unknown>
+  return (
+    typeof u.getStorageSync === 'function' ||
+    typeof u.onCreateVueApp === 'function' ||
+    typeof u.request === 'function' ||
+    typeof u.onAppShow === 'function'
+  )
+}
+
+/**
+ * 读取宿主向当前模块注入的 `uni`（小程序等）；不可用时返回 `undefined`。
+ */
+function getModuleUniCandidate(): unknown {
+  if (typeof uni === 'undefined' || uni == null || typeof uni !== 'object') {
+    return undefined
+  }
+  return uni
 }
 
 /**
@@ -71,34 +102,38 @@ export function probeUniRuntime(): UniRuntimeProbe {
   const g = getGlobalObject()
   const globalUni = g.uni
   const globalThisHasUni = globalUni != null && typeof globalUni === 'object'
-  const moduleUniDefined =
-    typeof uni !== 'undefined' && uni != null && typeof uni === 'object'
+  const globalThisUniStub = globalThisHasUni && !isUsableUniRuntime(globalUni)
+  const moduleUni = getModuleUniCandidate()
+  const moduleUniDefined = moduleUni != null
 
-  if (globalThisHasUni) {
+  if (isUsableUniRuntime(globalUni)) {
     return {
       resolved: true,
       source: 'globalThis',
       globalThisHasUni: true,
+      globalThisUniStub: false,
       moduleUniDefined,
       globalThisAvailable,
       uni: globalUni,
     }
   }
-  if (moduleUniDefined) {
+  if (isUsableUniRuntime(moduleUni)) {
     return {
       resolved: true,
       source: 'module',
-      globalThisHasUni: false,
+      globalThisHasUni,
+      globalThisUniStub,
       moduleUniDefined: true,
       globalThisAvailable,
-      uni,
+      uni: moduleUni,
     }
   }
   return {
     resolved: false,
     source: 'none',
-    globalThisHasUni: false,
-    moduleUniDefined: false,
+    globalThisHasUni,
+    globalThisUniStub,
+    moduleUniDefined,
     globalThisAvailable,
     uni: undefined,
   }
@@ -109,11 +144,5 @@ export function probeUniRuntime(): UniRuntimeProbe {
  */
 export function resolveUniRuntime(): unknown {
   const probe = probeUniRuntime()
-  if (probe.source === 'globalThis') {
-    return getGlobalObject().uni
-  }
-  if (probe.source === 'module') {
-    return uni
-  }
-  return undefined
+  return probe.resolved ? probe.uni : undefined
 }

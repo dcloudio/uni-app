@@ -350,4 +350,46 @@ describe('runtime/install', () => {
     expect(cfg.backgroundTimeoutSec).toBe(300) // 默认
     expect(cfg.pageInactiveTimeoutSec).toBe(1800)
   })
+
+  test('I13 Vue3：resolveUniRuntime 可用时通过 onCreateVueApp 注入 mixin', () => {
+    const mixinApplied = jest.fn()
+    const prev = (globalThis as unknown as { uni?: unknown }).uni
+    try {
+      ;(globalThis as unknown as { uni: unknown }).uni = {
+        getStorageSync: () => '',
+        setStorageSync: () => undefined,
+        removeStorageSync: () => undefined,
+        onCreateVueApp: (
+          cb: (app: { mixin: (m: unknown) => void }) => void
+        ) => {
+          cb({ mixin: mixinApplied })
+        },
+      }
+      installPublicStat({ skipUniReport: true })
+      expect(mixinApplied).toHaveBeenCalled()
+    } finally {
+      resetAll()
+      ;(globalThis as unknown as { uni?: unknown }).uni = prev
+    }
+  })
+
+  test('I14 Vue3：H5 空桩 global.uni={} 且无 onCreateVueApp 时告警', () => {
+    const prev = (globalThis as unknown as { uni?: unknown }).uni
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {})
+    jest.useFakeTimers()
+    try {
+      ;(globalThis as unknown as { uni: unknown }).uni = {}
+      installPublicStat({ skipUniReport: true })
+      jest.advanceTimersByTime(50 * 21)
+      const warned = warnSpy.mock.calls.some((args) =>
+        String(args.join(' ')).includes('onCreateVueApp 在重试后仍不可用')
+      )
+      expect(warned).toBe(true)
+    } finally {
+      jest.useRealTimers()
+      warnSpy.mockRestore()
+      resetAll()
+      ;(globalThis as unknown as { uni?: unknown }).uni = prev
+    }
+  })
 })

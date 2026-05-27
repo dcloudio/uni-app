@@ -190,10 +190,36 @@ function defaultSleep(ms) {
  *   **未必**同步挂到 `globalThis`；仅读 `globalThis.uni` 会导致
  *   `bindLifecycle` / `uni.request` / storage 等全部静默失败。
  * - 支付宝等旧版小程序：**无 `globalThis` 标识符**，须用 `getGlobalObject()` 兜底。
+ * - H5 发行摇树：`pages.json.js` 会先把 `window.uni = {}` 占位；若仍按「有 object 即用」
+ *   会误把空桩当真 uni。须用 `isUsableUniRuntime` 过滤后再择源。
  *
  * 第二路依赖宿主构建对 `uni` 的注入（与业务页面同一套解析规则），
  * 类型兜底见 `packages/uni-stat/src/uni-global.d.ts`。
  */
+/**
+ * 判断候选 `uni` 是否具备统计 SDK 可用的最小 API 集合（排除 H5 摇树空桩 `{}`）。
+ *
+ * 任一核心 API 存在即视为可用；与具体平台无关，微信/QQ/抖音/支付宝/百度等
+ * 完整 runtime 均满足，仅「占位空对象」会被过滤。
+ */
+function isUsableUniRuntime(candidate) {
+    if (candidate == null || typeof candidate !== 'object')
+        return false;
+    const u = candidate;
+    return (typeof u.getStorageSync === 'function' ||
+        typeof u.onCreateVueApp === 'function' ||
+        typeof u.request === 'function' ||
+        typeof u.onAppShow === 'function');
+}
+/**
+ * 读取宿主向当前模块注入的 `uni`（小程序等）；不可用时返回 `undefined`。
+ */
+function getModuleUniCandidate() {
+    if (typeof uni === 'undefined' || uni == null || typeof uni !== 'object') {
+        return undefined;
+    }
+    return uni;
+}
 /**
  * H5 兜底：在 `globalThis` / `self` 不可用时尝试读取 `window`。
  *
@@ -238,32 +264,37 @@ function probeUniRuntime() {
     const g = getGlobalObject();
     const globalUni = g.uni;
     const globalThisHasUni = globalUni != null && typeof globalUni === 'object';
-    const moduleUniDefined = typeof uni !== 'undefined' && uni != null && typeof uni === 'object';
-    if (globalThisHasUni) {
+    const globalThisUniStub = globalThisHasUni && !isUsableUniRuntime(globalUni);
+    const moduleUni = getModuleUniCandidate();
+    const moduleUniDefined = moduleUni != null;
+    if (isUsableUniRuntime(globalUni)) {
         return {
             resolved: true,
             source: 'globalThis',
             globalThisHasUni: true,
+            globalThisUniStub: false,
             moduleUniDefined,
             globalThisAvailable,
             uni: globalUni,
         };
     }
-    if (moduleUniDefined) {
+    if (isUsableUniRuntime(moduleUni)) {
         return {
             resolved: true,
             source: 'module',
-            globalThisHasUni: false,
+            globalThisHasUni,
+            globalThisUniStub,
             moduleUniDefined: true,
             globalThisAvailable,
-            uni,
+            uni: moduleUni,
         };
     }
     return {
         resolved: false,
         source: 'none',
-        globalThisHasUni: false,
-        moduleUniDefined: false,
+        globalThisHasUni,
+        globalThisUniStub,
+        moduleUniDefined,
         globalThisAvailable,
         uni: undefined,
     };
@@ -273,13 +304,7 @@ function probeUniRuntime() {
  */
 function resolveUniRuntime() {
     const probe = probeUniRuntime();
-    if (probe.source === 'globalThis') {
-        return getGlobalObject().uni;
-    }
-    if (probe.source === 'module') {
-        return uni;
-    }
-    return undefined;
+    return probe.resolved ? probe.uni : undefined;
 }
 
 /**
@@ -6132,6 +6157,36 @@ function scheduleUniAppHookRetry(tryBind) {
  *
  * `#ifdef` 保留到 dist，由宿主 `uni:pre` 在打包阶段剔除分支（同私有版 dist）。
  */
+// #ifdef VUE3
+/**
+ * 注册 `onCreateVueApp` 以注入页面 mixin。
+ *
+ * **必须**写字面量 `uni.onCreateVueApp(...)`（与私有版 `index.js#load_stat` 完全一致），
+ * 供 H5 发行 inject 插件静态替换为 `@dcloudio/uni-h5` 真实 API。
+ * 动态 `u.onCreateVueApp` 无法被 inject 识别，会导致 build 后 mixin 未注入。
+ * 第二路回退 resolveUniRuntime（dev 全量 window.uni、单测 mock）。
+ */
+function tryRegisterVueAppMixin(mixin) {
+    try {
+        ;
+        uni.onCreateVueApp((vueApp) => {
+            tryRun(() => vueApp.mixin(mixin), undefined);
+        });
+        return true;
+    }
+    catch (_e) {
+        // uni 未声明且未经 inject 替换（单测等）
+    }
+    const u = getUni();
+    if (u && typeof u.onCreateVueApp === 'function') {
+        u.onCreateVueApp((vueApp) => {
+            tryRun(() => vueApp.mixin(mixin), undefined);
+        });
+        return true;
+    }
+    return false;
+}
+// #endif
 function mountVueMixin(mixin) {
     if (vueMixinMounted)
         return;
@@ -6141,11 +6196,7 @@ function mountVueMixin(mixin) {
     }
     // #endif
     // #ifdef VUE3
-    const u = getUni();
-    if (u && typeof u.onCreateVueApp === 'function') {
-        u.onCreateVueApp((vueApp) => {
-            tryRun(() => vueApp.mixin(mixin), undefined);
-        });
+    if (tryRegisterVueAppMixin(mixin)) {
         vueMixinMounted = true;
         return;
     }
@@ -6166,11 +6217,7 @@ function scheduleVueAppMixinRetry(mixin) {
         vueMixinRetryTimer = undefined;
         if (vueMixinMounted)
             return;
-        const u = getUni();
-        if (u && typeof u.onCreateVueApp === 'function') {
-            u.onCreateVueApp((vueApp) => {
-                tryRun(() => vueApp.mixin(mixin), undefined);
-            });
+        if (tryRegisterVueAppMixin(mixin)) {
             vueMixinMounted = true;
             return;
         }
@@ -6204,10 +6251,15 @@ function mountVue2GlobalMixin(mixin) {
 }
 /**
  * 把 `uni.report` 桥到 StatApp.report。
+ *
+ * H5 发行摇树时 `resolveUniRuntime` 会跳过 `{}` 空桩，但业务仍可能通过
+ * `window.uni.report` 调用；故在可用 runtime 缺失时回退 `getGlobalObject().uni`。
  */
 function mountUniReport(app) {
-    const u = getUni();
-    if (!u)
+    var _a;
+    const g = getGlobalObject();
+    const u = ((_a = getUni()) !== null && _a !== void 0 ? _a : g.uni);
+    if (!u || typeof u !== 'object')
         return;
     u.report = (type, value) => {
         app.report(type, value);

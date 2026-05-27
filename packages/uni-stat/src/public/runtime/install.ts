@@ -30,7 +30,7 @@ import {
 
 import { logBoot } from '../infra/debugLog'
 import { logger } from '../infra/logger'
-import { resolveUniRuntime } from '../infra/uniRuntime'
+import { getGlobalObject, resolveUniRuntime } from '../infra/uniRuntime'
 import { tryRun } from '../infra/safe'
 
 import type { LifecycleOptions } from './lifecycleHooks'
@@ -396,6 +396,35 @@ function scheduleUniAppHookRetry(tryBind: () => boolean): void {
  *
  * `#ifdef` 保留到 dist，由宿主 `uni:pre` 在打包阶段剔除分支（同私有版 dist）。
  */
+// #ifdef VUE3
+/**
+ * 注册 `onCreateVueApp` 以注入页面 mixin。
+ *
+ * **必须**写字面量 `uni.onCreateVueApp(...)`（与私有版 `index.js#load_stat` 完全一致），
+ * 供 H5 发行 inject 插件静态替换为 `@dcloudio/uni-h5` 真实 API。
+ * 动态 `u.onCreateVueApp` 无法被 inject 识别，会导致 build 后 mixin 未注入。
+ * 第二路回退 resolveUniRuntime（dev 全量 window.uni、单测 mock）。
+ */
+function tryRegisterVueAppMixin(mixin: Record<string, unknown>): boolean {
+  try {
+    ;(uni as UniGlobal).onCreateVueApp!((vueApp) => {
+      tryRun(() => vueApp.mixin(mixin), undefined)
+    })
+    return true
+  } catch (_e) {
+    // uni 未声明且未经 inject 替换（单测等）
+  }
+  const u = getUni()
+  if (u && typeof u.onCreateVueApp === 'function') {
+    u.onCreateVueApp((vueApp) => {
+      tryRun(() => vueApp.mixin(mixin), undefined)
+    })
+    return true
+  }
+  return false
+}
+// #endif
+
 function mountVueMixin(mixin: Record<string, unknown>): void {
   if (vueMixinMounted) return
 
@@ -406,11 +435,7 @@ function mountVueMixin(mixin: Record<string, unknown>): void {
   // #endif
 
   // #ifdef VUE3
-  const u = getUni()
-  if (u && typeof u.onCreateVueApp === 'function') {
-    u.onCreateVueApp((vueApp) => {
-      tryRun(() => vueApp.mixin(mixin), undefined)
-    })
+  if (tryRegisterVueAppMixin(mixin)) {
     vueMixinMounted = true
     return
   }
@@ -429,11 +454,7 @@ function scheduleVueAppMixinRetry(mixin: Record<string, unknown>): void {
   const tick = (): void => {
     vueMixinRetryTimer = undefined
     if (vueMixinMounted) return
-    const u = getUni()
-    if (u && typeof u.onCreateVueApp === 'function') {
-      u.onCreateVueApp((vueApp) => {
-        tryRun(() => vueApp.mixin(mixin), undefined)
-      })
+    if (tryRegisterVueAppMixin(mixin)) {
       vueMixinMounted = true
       return
     }
@@ -473,10 +494,14 @@ function mountVue2GlobalMixin(mixin: Record<string, unknown>): boolean {
 
 /**
  * 把 `uni.report` 桥到 StatApp.report。
+ *
+ * H5 发行摇树时 `resolveUniRuntime` 会跳过 `{}` 空桩，但业务仍可能通过
+ * `window.uni.report` 调用；故在可用 runtime 缺失时回退 `getGlobalObject().uni`。
  */
 function mountUniReport(app: ReturnType<typeof getStatApp>): void {
-  const u = getUni()
-  if (!u) return
+  const g = getGlobalObject()
+  const u = (getUni() ?? g.uni) as UniGlobal | undefined
+  if (!u || typeof u !== 'object') return
   ;(u as { report?: (type: string, value?: unknown) => void }).report = (
     type,
     value
