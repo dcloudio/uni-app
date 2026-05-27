@@ -362,6 +362,7 @@ module.exports = {
         platform,
         'uni-app-x': true,
         vapor: isDom2,
+        ...(isDom2 ? { vaporRenderTarget: 'bytecode' as const } : {}),
         env: {},
       })
       return fs.existsSync(markerFile)

@@ -512,6 +512,7 @@ export function resolveEncryptUniModule(
 }
 
 type CloudCompileSdkType = 'utssdk' | 'easycom' | 'all'
+type VaporRenderTarget = 'bytecode' | 'nativecode'
 
 export interface CloudCompileParams {
   mode: 'development' | 'production'
@@ -522,6 +523,7 @@ export interface CloudCompileParams {
   platform: typeof process.env.UNI_UTS_PLATFORM // app-android | app-ios | web
   'uni-app-x': boolean
   vapor: boolean
+  vaporRenderTarget?: VaporRenderTarget
   env: Record<string, string>
 }
 
