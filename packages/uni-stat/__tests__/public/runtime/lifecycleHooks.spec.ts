@@ -341,6 +341,130 @@ describe('runtime/lifecycleHooks', () => {
     expect(getReportedLts(reportSpy)).toContain('3')
   })
 
+  test('H5：page onHide 且 visibility=hidden 时补记 lt=3（Vue3 进后台兜底）', () => {
+    installMockUni({ platform: 'h5' })
+    const origDoc = (globalThis as { document?: { visibilityState?: string } })
+      .document
+    Object.defineProperty(globalThis, 'document', {
+      value: { visibilityState: 'hidden' },
+      configurable: true,
+    })
+    try {
+      const { app, reportSpy } = installAppWithSpyReporter()
+      const { mixin } = bindLifecycle(app)
+      handleLaunch(app, {})
+      reportSpy.mockClear()
+      ;(
+        mixin.onHide as (this: { mpType: string; route?: string }) => void
+      ).call({
+        mpType: 'page',
+        route: 'pages/home',
+      })
+      expect(getReportedLts(reportSpy)).toContain('3')
+    } finally {
+      if (origDoc === undefined) {
+        delete (globalThis as { document?: unknown }).document
+      } else {
+        Object.defineProperty(globalThis, 'document', {
+          value: origDoc,
+          configurable: true,
+        })
+      }
+    }
+  })
+
+  test('小程序：page onHide 延迟 120ms 后补记 lt=3', () => {
+    jest.useFakeTimers()
+    try {
+      installMockUni({ platform: 'mp-weixin' })
+      const { app, reportSpy } = installAppWithSpyReporter()
+      const { mixin } = bindLifecycle(app)
+      const pageOnHide = mixin.onHide as (this: {
+        mpType: string
+        route?: string
+      }) => void
+      const pageOnShow = mixin.onShow as (this: {
+        mpType: string
+        route?: string
+      }) => void
+
+      handleLaunch(app, {})
+      pageOnShow.call({ mpType: 'page', route: 'pages/home' })
+      reportSpy.mockClear()
+      pageOnHide.call({ mpType: 'page', route: 'pages/home' })
+      expect(getReportedLts(reportSpy)).not.toContain('3')
+      jest.advanceTimersByTime(120)
+      expect(getReportedLts(reportSpy)).toContain('3')
+    } finally {
+      jest.useRealTimers()
+    }
+  })
+
+  test('小程序：切页 onShow 取消 page onHide 延迟，不应多报 lt=3', () => {
+    jest.useFakeTimers()
+    try {
+      installMockUni({ platform: 'mp-weixin' })
+      const { app, reportSpy } = installAppWithSpyReporter()
+      const { mixin } = bindLifecycle(app)
+      const pageOnHide = mixin.onHide as (this: {
+        mpType: string
+        route?: string
+      }) => void
+      const pageOnShow = mixin.onShow as (this: {
+        mpType: string
+        route?: string
+      }) => void
+
+      handleLaunch(app, {})
+      pageOnShow.call({ mpType: 'page', route: 'pages/home' })
+      reportSpy.mockClear()
+      pageOnHide.call({ mpType: 'page', route: 'pages/home' })
+      pageOnShow.call({ mpType: 'page', route: 'pages/B' })
+      jest.advanceTimersByTime(120)
+      expect(getReportedLts(reportSpy).filter((lt) => lt === '3')).toHaveLength(
+        0
+      )
+    } finally {
+      jest.useRealTimers()
+    }
+  })
+
+  test('小程序：uni.onAppHide 与 page 延迟兜底不重复 lt=3', () => {
+    jest.useFakeTimers()
+    try {
+      const hideCallbacks: Array<() => void> = []
+      installMockUni({
+        platform: 'mp-weixin',
+        patch: {
+          onAppHide: (cb: () => void) => {
+            hideCallbacks.push(cb)
+            return () => {}
+          },
+        },
+      })
+      const { app, reportSpy } = installAppWithSpyReporter()
+      const { mixin } = bindLifecycle(app)
+      handleLaunch(app, {})
+      ;(
+        mixin.onShow as (this: { mpType: string; route?: string }) => void
+      ).call({ mpType: 'page', route: 'pages/home' })
+      reportSpy.mockClear()
+      hideCallbacks[0]?.()
+      expect(getReportedLts(reportSpy).filter((lt) => lt === '3')).toHaveLength(
+        1
+      )
+      ;(
+        mixin.onHide as (this: { mpType: string; route?: string }) => void
+      ).call({ mpType: 'page', route: 'pages/home' })
+      jest.advanceTimersByTime(120)
+      expect(getReportedLts(reportSpy).filter((lt) => lt === '3')).toHaveLength(
+        1
+      )
+    } finally {
+      jest.useRealTimers()
+    }
+  })
+
   test('后台恢复：首个 page_show 不带历史超长停留，且忽略非页面 onShow', () => {
     jest.useFakeTimers()
     try {

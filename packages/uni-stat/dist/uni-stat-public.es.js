@@ -1,5 +1,3 @@
-import { onCreateVueApp } from '@dcloudio/uni-shared';
-
 /**
  * 事件类型与会话创建类型常量。
  *
@@ -1794,18 +1792,50 @@ const state$1 = {
 };
 /** Vue2 H5 hide 过程中偶发 page onShow（间隔≈0s），低于此阈值不消费 pending。 */
 const BACKGROUND_RESUME_DEBOUNCE_SEC = 1;
-// #ifndef VUE3
-/** Vue2：page onHide 延迟判定「真进后台」；切页会在短时内 onShow 并取消。 */
-let vue2AppHideFromPageTimer;
+/** 小程序等：page onHide 延迟判定「真进后台」；切页会在短时内 onShow 并取消。 */
+const PAGE_APP_HIDE_DEFER_MS = 120;
+let pageAppHideDeferTimer;
 /**
- * 取消 Vue2 page onHide 触发的延迟进后台判定。
+ * 取消 page onHide 触发的延迟进后台判定（Vue2/Vue3 共用）。
  */
-function cancelVue2AppHideFromPageDefer() {
-    if (vue2AppHideFromPageTimer !== undefined) {
-        clearTimeout(vue2AppHideFromPageTimer);
-        vue2AppHideFromPageTimer = undefined;
+function cancelPageAppHideDefer() {
+    if (pageAppHideDeferTimer !== undefined) {
+        clearTimeout(pageAppHideDeferTimer);
+        pageAppHideDeferTimer = undefined;
     }
 }
+/**
+ * H5 进后台时部分工程只触发 page onHide（Vue2/Vue3 均可能出现），
+ * 需在 visibility 已为 hidden 时补记 lt=3；普通切页不会满足 hidden。
+ */
+function tryAppHideFromPageOnHideWhenH5Hidden(app, opts) {
+    var _a;
+    if (!isH5())
+        return;
+    if (state$1.pendingBackgroundResume)
+        return;
+    const vis = (_a = globalThis.document) === null || _a === void 0 ? void 0 : _a.visibilityState;
+    if (vis === 'hidden') {
+        handleAppHide(app, opts);
+    }
+}
+/**
+ * 小程序等非 H5：page onHide 后短时延迟补记 lt=3；若随后 page onShow 则取消（切页）。
+ */
+function tryAppHideFromPageOnHideWhenMpDefer(app, opts) {
+    if (isH5())
+        return;
+    if (state$1.pendingBackgroundResume)
+        return;
+    cancelPageAppHideDefer();
+    pageAppHideDeferTimer = setTimeout(() => {
+        pageAppHideDeferTimer = undefined;
+        if (state$1.pendingBackgroundResume)
+            return;
+        handleAppHide(app, opts);
+    }, PAGE_APP_HIDE_DEFER_MS);
+}
+// #ifndef VUE3
 /**
  * Vue2 部分端进后台只触发 page onHide，须在此时补 `handleAppHide`。
  *
@@ -1815,23 +1845,29 @@ function cancelVue2AppHideFromPageDefer() {
  *   - 其它端：短时延迟，若下一页 onShow 则取消（切页），否则视为进后台。
  */
 function tryVue2AppHideFromPageOnHide(app, opts) {
-    var _a;
     if (state$1.pendingBackgroundResume)
         return;
     if (isH5()) {
-        const vis = (_a = globalThis.document) === null || _a === void 0 ? void 0 : _a.visibilityState;
-        if (vis === 'hidden') {
-            handleAppHide(app, opts);
-        }
+        tryAppHideFromPageOnHideWhenH5Hidden(app, opts);
         return;
     }
-    cancelVue2AppHideFromPageDefer();
-    vue2AppHideFromPageTimer = setTimeout(() => {
-        vue2AppHideFromPageTimer = undefined;
-        if (state$1.pendingBackgroundResume)
-            return;
-        handleAppHide(app, opts);
-    }, 120);
+    tryAppHideFromPageOnHideWhenMpDefer(app, opts);
+}
+// #endif
+// #ifdef VUE3
+/**
+ * Vue3 进后台补记 lt=3：
+ *   - H5：page onHide + visibility hidden（App onHide 常不触发）；
+ *   - 小程序等：`uni.onAppHide` 为主路径，page onHide 延迟为兜底（部分端/时序不触发 uni 回调）。
+ */
+function tryVue3AppHideFromPageOnHide(app, opts) {
+    if (state$1.pendingBackgroundResume)
+        return;
+    if (isH5()) {
+        tryAppHideFromPageOnHideWhenH5Hidden(app, opts);
+        return;
+    }
+    tryAppHideFromPageOnHideWhenMpDefer(app, opts);
 }
 // #endif
 /**
@@ -2034,6 +2070,8 @@ function handleAppShow(app, options = {}, opts = {}) {
  *   4. 进入后台后强制 flush（force=true），尽量在被 kill 前送出。
  */
 function handleAppHide(app, opts = {}) {
+    if (state$1.pendingBackgroundResume)
+        return;
     const c = safeCollector(app);
     if (!c)
         return;
@@ -2314,42 +2352,49 @@ function shouldBindUniAppLifecycle() {
     // #endif
 }
 const uniAppHookRegistry = {
-    bound: false,
+    showBound: false,
+    hideBound: false,
     appShowCb: undefined,
     appHideCb: undefined,
 };
 /**
  * 订阅应用级 `uni.onAppShow` / `onAppHide`；`uni` 或 API 未就绪时返回 false，可稍后重试。
+ *
+ * show/hide 分别绑定：避免 `onAppShow` 晚就绪时连 `onAppHide` 也无法注册（lt=3 缺失）。
  */
 function tryBindUniAppLifecycle(app, opts = {}) {
     if (!shouldBindUniAppLifecycle())
         return false;
-    if (uniAppHookRegistry.bound)
-        return true;
     const u = getUni$6();
-    if (!u || typeof u.onAppShow !== 'function')
+    if (!u)
         return false;
-    if (typeof u.onAppHide !== 'function')
-        return false;
-    uniAppHookRegistry.appShowCb = (e) => handleAppShow(app, e !== null && e !== void 0 ? e : {}, opts);
-    uniAppHookRegistry.appHideCb = () => handleAppHide(app, opts);
-    tryRun(() => u.onAppShow(uniAppHookRegistry.appShowCb), undefined);
-    tryRun(() => u.onAppHide(uniAppHookRegistry.appHideCb), undefined);
-    uniAppHookRegistry.bound = true;
-    return true;
+    if (!uniAppHookRegistry.showBound &&
+        typeof u.onAppShow === 'function') {
+        uniAppHookRegistry.appShowCb = (e) => handleAppShow(app, e !== null && e !== void 0 ? e : {}, opts);
+        tryRun(() => u.onAppShow(uniAppHookRegistry.appShowCb), undefined);
+        uniAppHookRegistry.showBound = true;
+    }
+    if (!uniAppHookRegistry.hideBound &&
+        typeof u.onAppHide === 'function') {
+        uniAppHookRegistry.appHideCb = () => handleAppHide(app, opts);
+        tryRun(() => u.onAppHide(uniAppHookRegistry.appHideCb), undefined);
+        uniAppHookRegistry.hideBound = true;
+    }
+    return uniAppHookRegistry.showBound && uniAppHookRegistry.hideBound;
 }
 /** 解绑 `tryBindUniAppLifecycle` 注册的回调。 */
 function unbindUniAppLifecycle() {
-    if (!uniAppHookRegistry.bound)
+    if (!uniAppHookRegistry.showBound && !uniAppHookRegistry.hideBound)
         return;
     const cur = getUni$6();
-    if (uniAppHookRegistry.appShowCb && (cur === null || cur === void 0 ? void 0 : cur.offAppShow)) {
+    if (uniAppHookRegistry.showBound && uniAppHookRegistry.appShowCb && (cur === null || cur === void 0 ? void 0 : cur.offAppShow)) {
         tryRun(() => cur.offAppShow(uniAppHookRegistry.appShowCb), undefined);
     }
-    if (uniAppHookRegistry.appHideCb && (cur === null || cur === void 0 ? void 0 : cur.offAppHide)) {
+    if (uniAppHookRegistry.hideBound && uniAppHookRegistry.appHideCb && (cur === null || cur === void 0 ? void 0 : cur.offAppHide)) {
         tryRun(() => cur.offAppHide(uniAppHookRegistry.appHideCb), undefined);
     }
-    uniAppHookRegistry.bound = false;
+    uniAppHookRegistry.showBound = false;
+    uniAppHookRegistry.hideBound = false;
     uniAppHookRegistry.appShowCb = undefined;
     uniAppHookRegistry.appHideCb = undefined;
 }
@@ -2371,9 +2416,7 @@ function bindLifecycle(app, opts = {}) {
         },
         onShow() {
             const vmType = getPageVmType(this);
-            // #ifndef VUE3
-            cancelVue2AppHideFromPageDefer();
-            // #endif
+            cancelPageAppHideDefer();
             if (state$1.pendingBackgroundResume) {
                 tryConsumeBackgroundResume(app, {}, opts, 'mixin.onShow');
             }
@@ -2391,6 +2434,9 @@ function bindLifecycle(app, opts = {}) {
                 handlePageHide(app);
                 // #ifndef VUE3
                 tryVue2AppHideFromPageOnHide(app, opts);
+                // #endif
+                // #ifdef VUE3
+                tryVue3AppHideFromPageOnHide(app, opts);
                 // #endif
             }
             if (shouldMixinDispatchAppLifecycle() &&
@@ -5862,30 +5908,11 @@ function scheduleUniAppHookRetry(tryBind) {
     };
     uniHookRetryTimer = setTimeout(tick, UNI_HOOK_RETRY_MS);
 }
-// #ifdef VUE3
-/**
- * 通过 `@dcloudio/uni-shared` 注册 mixin（与运行时 createApp 共用同一钩子队列）。
- *
- * 若 App 已创建会**同步**执行回调；不依赖 `globalThis.uni.onCreateVueApp` 是否已挂载。
- */
-function mountVue3MixinViaUniShared(mixin) {
-    try {
-        onCreateVueApp((vueApp) => {
-            tryRun(() => vueApp.mixin(mixin), undefined);
-        });
-        return true;
-    }
-    catch (_e) {
-        return false;
-    }
-}
-// #endif
 /**
  * 把 mixin 装到 vue 实例上。
  *
  * 与私有版 `src/index.js#load_stat` 一致，必须用条件编译区分：
- *   - VUE3：`uni.onCreateVueApp` → `app.mixin`（运行时若存在 `onCreateVueApp` 会误走此分支，
- *     但 Vue2 真机构造器全局 mixin 才生效，导致页面 onShow/onHide 永不触发）。
+ *   - VUE3：`uni.onCreateVueApp` → `app.mixin`（与私有版相同，不引 `@dcloudio/uni-shared`）。
  *   - VUE2：`require('vue').mixin`（由应用打包器静态解析，勿用 `globalThis.require`）。
  *
  * `#ifdef` 保留到 dist，由宿主 `uni:pre` 在打包阶段剔除分支（同私有版 dist）。
@@ -5899,12 +5926,6 @@ function mountVueMixin(mixin) {
     }
     // #endif
     // #ifdef VUE3
-    if (vueMixinMounted)
-        return;
-    if (mountVue3MixinViaUniShared(mixin)) {
-        vueMixinMounted = true;
-        return;
-    }
     const u = getUni();
     if (u && typeof u.onCreateVueApp === 'function') {
         u.onCreateVueApp((vueApp) => {
@@ -5918,7 +5939,7 @@ function mountVueMixin(mixin) {
 }
 // #ifdef VUE3
 /**
- * Vue3：`onCreateVueApp` 晚就绪时短重试。
+ * Vue3：`onCreateVueApp` 晚就绪时短重试（对齐私有版仅注册一次 hook 的语义）。
  */
 function scheduleVueAppMixinRetry(mixin) {
     if (vueMixinMounted)
@@ -5930,10 +5951,6 @@ function scheduleVueAppMixinRetry(mixin) {
         vueMixinRetryTimer = undefined;
         if (vueMixinMounted)
             return;
-        if (mountVue3MixinViaUniShared(mixin)) {
-            vueMixinMounted = true;
-            return;
-        }
         const u = getUni();
         if (u && typeof u.onCreateVueApp === 'function') {
             u.onCreateVueApp((vueApp) => {

@@ -27,7 +27,6 @@ import {
   type StatAppOverrides,
   getStatApp,
 } from './StatApp'
-import { onCreateVueApp as registerOnCreateVueApp } from '@dcloudio/uni-shared'
 
 import { logBoot } from '../infra/debugLog'
 import { logger } from '../infra/logger'
@@ -388,30 +387,11 @@ function scheduleUniAppHookRetry(tryBind: () => boolean): void {
   uniHookRetryTimer = setTimeout(tick, UNI_HOOK_RETRY_MS)
 }
 
-// #ifdef VUE3
-/**
- * 通过 `@dcloudio/uni-shared` 注册 mixin（与运行时 createApp 共用同一钩子队列）。
- *
- * 若 App 已创建会**同步**执行回调；不依赖 `globalThis.uni.onCreateVueApp` 是否已挂载。
- */
-function mountVue3MixinViaUniShared(mixin: Record<string, unknown>): boolean {
-  try {
-    registerOnCreateVueApp((vueApp) => {
-      tryRun(() => vueApp.mixin(mixin), undefined)
-    })
-    return true
-  } catch (_e) {
-    return false
-  }
-}
-// #endif
-
 /**
  * 把 mixin 装到 vue 实例上。
  *
  * 与私有版 `src/index.js#load_stat` 一致，必须用条件编译区分：
- *   - VUE3：`uni.onCreateVueApp` → `app.mixin`（运行时若存在 `onCreateVueApp` 会误走此分支，
- *     但 Vue2 真机构造器全局 mixin 才生效，导致页面 onShow/onHide 永不触发）。
+ *   - VUE3：`uni.onCreateVueApp` → `app.mixin`（与私有版相同，不引 `@dcloudio/uni-shared`）。
  *   - VUE2：`require('vue').mixin`（由应用打包器静态解析，勿用 `globalThis.require`）。
  *
  * `#ifdef` 保留到 dist，由宿主 `uni:pre` 在打包阶段剔除分支（同私有版 dist）。
@@ -426,13 +406,6 @@ function mountVueMixin(mixin: Record<string, unknown>): void {
   // #endif
 
   // #ifdef VUE3
-  if (vueMixinMounted) return
-
-  if (mountVue3MixinViaUniShared(mixin)) {
-    vueMixinMounted = true
-    return
-  }
-
   const u = getUni()
   if (u && typeof u.onCreateVueApp === 'function') {
     u.onCreateVueApp((vueApp) => {
@@ -447,7 +420,7 @@ function mountVueMixin(mixin: Record<string, unknown>): void {
 
 // #ifdef VUE3
 /**
- * Vue3：`onCreateVueApp` 晚就绪时短重试。
+ * Vue3：`onCreateVueApp` 晚就绪时短重试（对齐私有版仅注册一次 hook 的语义）。
  */
 function scheduleVueAppMixinRetry(mixin: Record<string, unknown>): void {
   if (vueMixinMounted) return
@@ -456,12 +429,6 @@ function scheduleVueAppMixinRetry(mixin: Record<string, unknown>): void {
   const tick = (): void => {
     vueMixinRetryTimer = undefined
     if (vueMixinMounted) return
-
-    if (mountVue3MixinViaUniShared(mixin)) {
-      vueMixinMounted = true
-      return
-    }
-
     const u = getUni()
     if (u && typeof u.onCreateVueApp === 'function') {
       u.onCreateVueApp((vueApp) => {

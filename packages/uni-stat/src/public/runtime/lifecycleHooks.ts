@@ -169,20 +169,56 @@ const state: LifecycleState = {
 /** Vue2 H5 hide 过程中偶发 page onShow（间隔≈0s），低于此阈值不消费 pending。 */
 const BACKGROUND_RESUME_DEBOUNCE_SEC = 1
 
-// #ifndef VUE3
-/** Vue2：page onHide 延迟判定「真进后台」；切页会在短时内 onShow 并取消。 */
-let vue2AppHideFromPageTimer: ReturnType<typeof setTimeout> | undefined
+/** 小程序等：page onHide 延迟判定「真进后台」；切页会在短时内 onShow 并取消。 */
+const PAGE_APP_HIDE_DEFER_MS = 120
+let pageAppHideDeferTimer: ReturnType<typeof setTimeout> | undefined
 
 /**
- * 取消 Vue2 page onHide 触发的延迟进后台判定。
+ * 取消 page onHide 触发的延迟进后台判定（Vue2/Vue3 共用）。
  */
-function cancelVue2AppHideFromPageDefer(): void {
-  if (vue2AppHideFromPageTimer !== undefined) {
-    clearTimeout(vue2AppHideFromPageTimer)
-    vue2AppHideFromPageTimer = undefined
+function cancelPageAppHideDefer(): void {
+  if (pageAppHideDeferTimer !== undefined) {
+    clearTimeout(pageAppHideDeferTimer)
+    pageAppHideDeferTimer = undefined
   }
 }
 
+/**
+ * H5 进后台时部分工程只触发 page onHide（Vue2/Vue3 均可能出现），
+ * 需在 visibility 已为 hidden 时补记 lt=3；普通切页不会满足 hidden。
+ */
+function tryAppHideFromPageOnHideWhenH5Hidden(
+  app: StatApp,
+  opts: LifecycleOptions
+): void {
+  if (!isH5()) return
+  if (state.pendingBackgroundResume) return
+  const vis = (
+    globalThis as unknown as { document?: { visibilityState?: string } }
+  ).document?.visibilityState
+  if (vis === 'hidden') {
+    handleAppHide(app, opts)
+  }
+}
+
+/**
+ * 小程序等非 H5：page onHide 后短时延迟补记 lt=3；若随后 page onShow 则取消（切页）。
+ */
+function tryAppHideFromPageOnHideWhenMpDefer(
+  app: StatApp,
+  opts: LifecycleOptions
+): void {
+  if (isH5()) return
+  if (state.pendingBackgroundResume) return
+  cancelPageAppHideDefer()
+  pageAppHideDeferTimer = setTimeout(() => {
+    pageAppHideDeferTimer = undefined
+    if (state.pendingBackgroundResume) return
+    handleAppHide(app, opts)
+  }, PAGE_APP_HIDE_DEFER_MS)
+}
+
+// #ifndef VUE3
 /**
  * Vue2 部分端进后台只触发 page onHide，须在此时补 `handleAppHide`。
  *
@@ -196,23 +232,30 @@ function tryVue2AppHideFromPageOnHide(
   opts: LifecycleOptions
 ): void {
   if (state.pendingBackgroundResume) return
-
   if (isH5()) {
-    const vis = (
-      globalThis as unknown as { document?: { visibilityState?: string } }
-    ).document?.visibilityState
-    if (vis === 'hidden') {
-      handleAppHide(app, opts)
-    }
+    tryAppHideFromPageOnHideWhenH5Hidden(app, opts)
     return
   }
+  tryAppHideFromPageOnHideWhenMpDefer(app, opts)
+}
+// #endif
 
-  cancelVue2AppHideFromPageDefer()
-  vue2AppHideFromPageTimer = setTimeout(() => {
-    vue2AppHideFromPageTimer = undefined
-    if (state.pendingBackgroundResume) return
-    handleAppHide(app, opts)
-  }, 120)
+// #ifdef VUE3
+/**
+ * Vue3 进后台补记 lt=3：
+ *   - H5：page onHide + visibility hidden（App onHide 常不触发）；
+ *   - 小程序等：`uni.onAppHide` 为主路径，page onHide 延迟为兜底（部分端/时序不触发 uni 回调）。
+ */
+function tryVue3AppHideFromPageOnHide(
+  app: StatApp,
+  opts: LifecycleOptions
+): void {
+  if (state.pendingBackgroundResume) return
+  if (isH5()) {
+    tryAppHideFromPageOnHideWhenH5Hidden(app, opts)
+    return
+  }
+  tryAppHideFromPageOnHideWhenMpDefer(app, opts)
 }
 // #endif
 
@@ -481,6 +524,7 @@ export function handleAppShow(
  *   4. 进入后台后强制 flush（force=true），尽量在被 kill 前送出。
  */
 export function handleAppHide(app: StatApp, opts: LifecycleOptions = {}): void {
+  if (state.pendingBackgroundResume) return
   const c = safeCollector(app)
   if (!c) return
   const now = nowSec()
@@ -798,7 +842,8 @@ export function shouldBindUniAppLifecycle(): boolean {
 }
 
 const uniAppHookRegistry = {
-  bound: false,
+  showBound: false,
+  hideBound: false,
   appShowCb: undefined as
     | ((e: { scene?: string | number; path?: string }) => void)
     | undefined,
@@ -807,35 +852,53 @@ const uniAppHookRegistry = {
 
 /**
  * 订阅应用级 `uni.onAppShow` / `onAppHide`；`uni` 或 API 未就绪时返回 false，可稍后重试。
+ *
+ * show/hide 分别绑定：避免 `onAppShow` 晚就绪时连 `onAppHide` 也无法注册（lt=3 缺失）。
  */
 export function tryBindUniAppLifecycle(
   app: StatApp,
   opts: LifecycleOptions = {}
 ): boolean {
   if (!shouldBindUniAppLifecycle()) return false
-  if (uniAppHookRegistry.bound) return true
   const u = getUni()
-  if (!u || typeof u.onAppShow !== 'function') return false
-  if (typeof u.onAppHide !== 'function') return false
-  uniAppHookRegistry.appShowCb = (e): void => handleAppShow(app, e ?? {}, opts)
-  uniAppHookRegistry.appHideCb = (): void => handleAppHide(app, opts)
-  tryRun(() => u.onAppShow!(uniAppHookRegistry.appShowCb!), undefined)
-  tryRun(() => u.onAppHide!(uniAppHookRegistry.appHideCb!), undefined)
-  uniAppHookRegistry.bound = true
-  return true
+  if (!u) return false
+
+  if (!uniAppHookRegistry.showBound && typeof u.onAppShow === 'function') {
+    uniAppHookRegistry.appShowCb = (e): void =>
+      handleAppShow(app, e ?? {}, opts)
+    tryRun(() => u.onAppShow!(uniAppHookRegistry.appShowCb!), undefined)
+    uniAppHookRegistry.showBound = true
+  }
+
+  if (!uniAppHookRegistry.hideBound && typeof u.onAppHide === 'function') {
+    uniAppHookRegistry.appHideCb = (): void => handleAppHide(app, opts)
+    tryRun(() => u.onAppHide!(uniAppHookRegistry.appHideCb!), undefined)
+    uniAppHookRegistry.hideBound = true
+  }
+
+  return uniAppHookRegistry.showBound && uniAppHookRegistry.hideBound
 }
 
 /** 解绑 `tryBindUniAppLifecycle` 注册的回调。 */
 function unbindUniAppLifecycle(): void {
-  if (!uniAppHookRegistry.bound) return
+  if (!uniAppHookRegistry.showBound && !uniAppHookRegistry.hideBound) return
   const cur = getUni()
-  if (uniAppHookRegistry.appShowCb && cur?.offAppShow) {
+  if (
+    uniAppHookRegistry.showBound &&
+    uniAppHookRegistry.appShowCb &&
+    cur?.offAppShow
+  ) {
     tryRun(() => cur.offAppShow!(uniAppHookRegistry.appShowCb!), undefined)
   }
-  if (uniAppHookRegistry.appHideCb && cur?.offAppHide) {
+  if (
+    uniAppHookRegistry.hideBound &&
+    uniAppHookRegistry.appHideCb &&
+    cur?.offAppHide
+  ) {
     tryRun(() => cur.offAppHide!(uniAppHookRegistry.appHideCb!), undefined)
   }
-  uniAppHookRegistry.bound = false
+  uniAppHookRegistry.showBound = false
+  uniAppHookRegistry.hideBound = false
   uniAppHookRegistry.appShowCb = undefined
   uniAppHookRegistry.appHideCb = undefined
 }
@@ -874,9 +937,7 @@ export function bindLifecycle(
     },
     onShow(this: PageVm): void {
       const vmType = getPageVmType(this)
-      // #ifndef VUE3
-      cancelVue2AppHideFromPageDefer()
-      // #endif
+      cancelPageAppHideDefer()
       if (state.pendingBackgroundResume) {
         tryConsumeBackgroundResume(app, {}, opts, 'mixin.onShow')
       }
@@ -894,6 +955,9 @@ export function bindLifecycle(
         handlePageHide(app, this)
         // #ifndef VUE3
         tryVue2AppHideFromPageOnHide(app, opts)
+        // #endif
+        // #ifdef VUE3
+        tryVue3AppHideFromPageOnHide(app, opts)
         // #endif
       }
       if (
@@ -950,7 +1014,5 @@ export function __resetLifecycleState(): void {
   titleSnapGeneration = 0
   firstVisitEmittedInProcess = false
   unbindUniAppLifecycle()
-  // #ifndef VUE3
-  cancelVue2AppHideFromPageDefer()
-  // #endif
+  cancelPageAppHideDefer()
 }
