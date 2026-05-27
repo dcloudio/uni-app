@@ -17,8 +17,9 @@
  *      - 不存在 → `lvts=0`，按新用户路径走（Yes new user）。
  *      - 异常   → 内存有上次 snapshot 时复用之；首次启动且异常 → fallback `lvts=0`，
  *        但**记录** `degraded=true`，上层可决定是否仍上报（Phase 5 collector 用）。
- *   4. 同一进程内只允许一次 `buildVisitFields`；后续 cst=2/3 触发的事件**不调用**本函数，
- *      由 collector 直接复用 `getCommitted()` 的内存 snapshot 继续推进 tvc/lvts。
+ *   4. 同一进程内只允许一次 `buildVisitFields`；后续 cst=2/3 触发的新会话 lt=1
+ *      调用 `buildVisitFieldsForSessionRenewal`，复用 committed / lastBuilt 推进 tvc，
+ *      并保证 lvts 仍随 lt=1 上行（缺失会被服务端误判为新用户）。
  *
  * 与 `pipeline/collector.ts` 的契约见 `05-公有版重构开发计划.md` §4.1.5。
  */
@@ -67,6 +68,9 @@ let loaded: VisitSnapshot | null = null
 
 /** `buildVisitFields` 生成；`commitVisitOnAck` 落库后清空。 */
 let pending: PendingVisit | null = null
+
+/** cst=2/3 新会话 lt=1 生成；`commitVisitOnAck` 落库后清空。 */
+let pendingRenewal: PendingVisit | null = null
 
 /** `commitVisitOnAck` 落库后写入；同进程内 cst=2/3 后续事件复用此 snapshot。 */
 let committed: VisitSnapshot | null = null
@@ -150,9 +154,9 @@ function ensureLoaded(): VisitSnapshot {
  *   - 新用户（loaded.isNewUser）：本次 fvts=now, lvts=0（仍上报 0 表示新用户），tvc=1。
  *   - 老用户：fvts 维持 loaded.fvts；lvts 上报 loaded.lvts（"上一次"，不是 now）；tvc=loaded.tvc+1。
  *
- * 注意：同一进程内只允许调用一次（参考 `domain/session` 设计），后续 cst=2/3 事件
- * 不携带 fvts/lvts/tvc。这里通过 `buildCalledInProcess` 哨兵防止误用，二次调用返回
- * 与首次相同的结果但发出 warn，便于排查上层 collector bug。
+ * 注意：同一进程内只允许调用一次（参考 `domain/session` 设计）；cst=2/3 新会话应走
+ * `buildVisitFieldsForSessionRenewal`。这里通过 `buildCalledInProcess` 哨兵防止误用，
+ * 二次调用返回与首次相同的结果但发出 warn，便于排查上层 collector bug。
  */
 export function buildVisitFields(now: number): {
   fvts: number
@@ -183,6 +187,51 @@ export function buildVisitFields(now: number): {
 }
 
 /**
+ * 为 cst=2/3 新会话 lt=1 生成本次要上报的 visit 字段（**不写 storage**）。
+ *
+ * 与私有版 `sendReportRequest` 对齐：后台/前台超时触发的新会话仍携带 fvts/lvts/tvc，
+ * 避免 lvts 缺失被服务端按新用户入库。
+ *
+ * 推进规则：
+ *   - 已有 committed：fvts 不变，lvts 上报 committed.lvts，tvc=committed.tvc+1。
+ *   - 冷启动 lt=1 尚未 ack：复用 lastBuilt，不重复递增 tvc。
+ *   - 兜底读 loaded snapshot，逻辑同 buildVisitFields 的老用户路径。
+ */
+export function buildVisitFieldsForSessionRenewal(now: number): {
+  fvts: number
+  lvts: number
+  tvc: number
+} {
+  let fvts: number
+  let lvts: number
+  let tvc: number
+
+  if (committed) {
+    fvts = committed.fvts
+    lvts = committed.lvts
+    tvc = committed.tvc + 1
+  } else if (lastBuilt) {
+    fvts = lastBuilt.fvts
+    lvts = lastBuilt.lvts
+    tvc = lastBuilt.tvc
+  } else {
+    const snap = ensureLoaded()
+    if (snap.isNewUser) {
+      fvts = now
+      lvts = 0
+      tvc = 1
+    } else {
+      fvts = snap.fvts
+      lvts = snap.lvts
+      tvc = snap.tvc + 1
+    }
+  }
+
+  pendingRenewal = { fvts, lvts, tvc, now }
+  return { fvts, lvts, tvc }
+}
+
+/**
  * 上报 ack 成功后落库。
  *
  * 实际写入：
@@ -192,11 +241,33 @@ export function buildVisitFields(now: number): {
  * pending 为空 / commit 重复调用一律 noop（保持幂等，便于 collector 重试逻辑）。
  */
 export function commitVisitOnAck(now: number): void {
-  if (!pending) return
-  const snap = ensureLoaded()
-  const newFvts = snap.fvts === 0 ? now : snap.fvts
+  if (pending) {
+    const snap = ensureLoaded()
+    const newFvts = snap.fvts === 0 ? now : snap.fvts
+    const newLvts = now
+    const newTvc = pending.tvc
+
+    storage.set(KEY_FVTS, newFvts)
+    storage.set(KEY_LVTS, newLvts)
+    storage.set(KEY_TVC, newTvc)
+
+    committed = {
+      fvts: newFvts,
+      lvts: newLvts,
+      tvc: newTvc,
+      isNewUser: false,
+      degraded: false,
+    }
+    loaded = committed
+    pending = null
+    return
+  }
+
+  if (!pendingRenewal) return
+
+  const newFvts = pendingRenewal.fvts
   const newLvts = now
-  const newTvc = pending.tvc
+  const newTvc = pendingRenewal.tvc
 
   storage.set(KEY_FVTS, newFvts)
   storage.set(KEY_LVTS, newLvts)
@@ -210,7 +281,7 @@ export function commitVisitOnAck(now: number): void {
     degraded: false,
   }
   loaded = committed
-  pending = null
+  pendingRenewal = null
 }
 
 /**
@@ -221,6 +292,7 @@ export function commitVisitOnAck(now: number): void {
  */
 export function rollbackPendingVisit(): void {
   pending = null
+  pendingRenewal = null
 }
 
 /** 取已 commit 的 snapshot（cst=2/3 复用）。 */
@@ -232,6 +304,7 @@ export function getCommitted(): VisitSnapshot | null {
 export function __resetState(): void {
   loaded = null
   pending = null
+  pendingRenewal = null
   committed = null
   lastBuilt = null
   buildCalledInProcess = false

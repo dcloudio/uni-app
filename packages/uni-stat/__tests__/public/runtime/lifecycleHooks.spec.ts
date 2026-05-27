@@ -736,7 +736,7 @@ describe('runtime/lifecycleHooks', () => {
     }
   })
 
-  test('visit 字段仅在 cold_launch 的 lt=1 携带；cst=2/3 不再带', () => {
+  test('visit 字段：cold_launch 与 cst=2/3 新会话 lt=1 均携带', () => {
     const { app, reportSpy } = installAppWithSpyReporter()
     handleLaunch(app, {})
     const launchInputs = reportSpy.mock.calls.map((c) => c[0] as ReportInput)
@@ -747,9 +747,9 @@ describe('runtime/lifecycleHooks', () => {
     sessionMod.markBackground(Math.floor(Date.now() / 1000) - 10_000)
     handleAppShow(app, {})
     const appShowInputs = reportSpy.mock.calls.map((c) => c[0] as ReportInput)
-    for (const i of appShowInputs) {
-      expect(i.visit).toBeUndefined()
-    }
+    const ltAppShow = appShowInputs.find((i) => i.lt === '1')!
+    expect(ltAppShow.visit).toBeDefined()
+    expect(ltAppShow.visit!.lvts).toBeDefined()
   })
 
   test('bindLifecycle：返回 mixin 包含 6 个钩子，unbind 幂等', () => {

@@ -1,6 +1,7 @@
 import {
   __resetState,
   buildVisitFields,
+  buildVisitFieldsForSessionRenewal,
   commitVisitOnAck,
   getCommitted,
   loadVisitSnapshot,
@@ -197,7 +198,7 @@ describe('domain/visit/firstVisit（缺陷 #5 修复矩阵 T1~T9）', () => {
   })
 
   describe('T5 同进程冷启动 + 后台超时 cst=2', () => {
-    test('buildVisitFields 同进程内只允许一次；cst=2 不再调用 build', () => {
+    test('buildVisitFields 同进程内只允许一次；cst=2 走 sessionRenewal', () => {
       handle.storage.setStorageSync(KFV, T1)
       handle.storage.setStorageSync(KLV, T1)
       handle.storage.setStorageSync(KTV, 1)
@@ -208,27 +209,29 @@ describe('domain/visit/firstVisit（缺陷 #5 修复矩阵 T1~T9）', () => {
       commitVisitOnAck(T2)
       expect(getCommitted()?.lvts).toBe(T2)
 
-      // cst=2 触发 → collector 不应再调 build；这里如果误调，应该返回 cached pending 并 warn
-      const fields2 = buildVisitFields(T3)
-      expect(fields2).toEqual(fields1)
-      expect(warnSpy).toHaveBeenCalled()
+      const fields2 = buildVisitFieldsForSessionRenewal(T3)
+      expect(fields2).toEqual({ fvts: T1, lvts: T2, tvc: 3 })
 
-      // storage 不能被 T3 覆盖
-      expect(handle.storage.__inspect()[KLV]).toBe(T2)
+      commitVisitOnAck(T3)
+      expect(getCommitted()?.lvts).toBe(T3)
+      expect(handle.storage.__inspect()[KLV]).toBe(T3)
     })
   })
 
   describe('T6 同进程冷启动 + 前台无操作超时 cst=3', () => {
-    test('与 T5 等价：buildVisitFields 仅一次，storage lvts=T2 不变', () => {
+    test('与 T5 等价：sessionRenewal 推进 tvc 且 ack 后更新 lvts', () => {
       handle.storage.setStorageSync(KFV, T1)
       handle.storage.setStorageSync(KLV, T1)
       handle.storage.setStorageSync(KTV, 1)
       loadVisitSnapshot()
       buildVisitFields(T2)
       commitVisitOnAck(T2)
-      // cst=3 不再 build
-      expect(getCommitted()?.lvts).toBe(T2)
-      expect(handle.storage.__inspect()[KLV]).toBe(T2)
+
+      const fields = buildVisitFieldsForSessionRenewal(T3)
+      expect(fields).toEqual({ fvts: T1, lvts: T2, tvc: 3 })
+      commitVisitOnAck(T3)
+      expect(getCommitted()?.lvts).toBe(T3)
+      expect(handle.storage.__inspect()[KLV]).toBe(T3)
     })
   })
 

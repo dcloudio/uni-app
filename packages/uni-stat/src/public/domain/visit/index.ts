@@ -3,6 +3,7 @@ export type { VisitSnapshot } from './firstVisit'
 export {
   __resetState,
   buildVisitFields,
+  buildVisitFieldsForSessionRenewal,
   commitVisitOnAck,
   getCommitted,
   loadVisitSnapshot,

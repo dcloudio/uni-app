@@ -25,7 +25,10 @@
 
 import { CST } from '../domain/eventTypes'
 import { LT } from '../domain/eventTypes'
-import { buildVisitFields } from '../domain/visit/firstVisit'
+import {
+  buildVisitFields,
+  buildVisitFieldsForSessionRenewal,
+} from '../domain/visit/firstVisit'
 import { clearEntry, isEntry, markEntryPage } from '../domain/entry/entryPage'
 import { getPagesJsonNavigationTitle } from '../adapter/pagesTitle'
 import {
@@ -280,10 +283,11 @@ function normalizePathForEntryMark(raw: string): string {
 /**
  * 新会话首报：仅发一条 `lt=1`（Launch），新会话字段随之上行。
  *
- * 重要约束（修复 lvts=0 缺陷）：
- *   - `fvts/lvts/tvc` **只在进程首报**（cold_launch 触发的首次 ensureSession）携带；
- *     cst=2（后台超时）/ cst=3（前台无操作超时）创建的新 session **不**带。
- *   - 通过 `firstVisitEmittedInProcess` 哨兵保证全进程只调用一次 `buildVisitFields`。
+ * 重要约束（修复 lvts=0 / lvts 缺失缺陷）：
+ *   - 进程内首次 lt=1（cold_launch）调用 `buildVisitFields`；
+ *   - cst=2/3 新会话 lt=1 调用 `buildVisitFieldsForSessionRenewal`，仍携带 fvts/lvts/tvc，
+ *     避免 lvts 缺失被服务端误判为新用户。
+ *   - 通过 `firstVisitEmittedInProcess` 哨兵区分上述两条路径。
  *   - `cst` 入参仅用于将来可能的本地侧打印 / 监控；上行字段已由 statData 从 session
  *     snapshot 中读取（出口字段名为 `cst`）。
  *   - `url` 参数：参数文档要求 `lt=1` 携带当前启动页的完整 url；冷启动 / app_show
@@ -302,6 +306,15 @@ function reportNewSession(
     firstVisitEmittedInProcess = true
     visit = tryRun(
       () => buildVisitFields(now),
+      undefined as unknown as {
+        fvts: number
+        lvts: number
+        tvc: number
+      }
+    )
+  } else if (!attachVisit) {
+    visit = tryRun(
+      () => buildVisitFieldsForSessionRenewal(now),
       undefined as unknown as {
         fvts: number
         lvts: number
@@ -617,7 +630,7 @@ export function handlePageShow(
     tryRun(() => markEntryPage(route), undefined)
   }
   if (result.isNew) {
-    // cst=3：不再携带 fvts/lvts/tvc（首批已在 cold_launch 上报过）。
+    // cst=3：复用 committed visit 字段，与私有版 sendReportRequest 对齐。
     // 注意：lt=1（新会话首报）**不受** enablePageLog 控制 —— 与私有版语义一致，
     // is_page_report 仅拦截 pageShow/pageHide，不影响 launch/appShow/appHide。
     reportNewSession(

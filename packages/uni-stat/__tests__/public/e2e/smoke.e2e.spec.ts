@@ -8,7 +8,7 @@
  * 覆盖矩阵（与 `docs/05-公有版重构开发计划.md` Phase 12 §测试矩阵 1:1）：
  *   S1 冷启动                 → 仅发 lt=1；sid 新生成；lt=1 携带 sid/cst/fvts/lvts/tvc
  *   S2 热启动短（不超时）     → 不发新会话事件；sid 不变
- *   S3 热启动长（后台超时）   → 仅发 lt=1，cst=2；不带 fvts/lvts/tvc
+ *   S3 热启动长（后台超时）   → 仅发 lt=1，cst=2；仍携带 fvts/lvts/tvc
  *   S4 长时无操作（前台超时） → 仅发 lt=1，cst=3
  *   S5 wx scene 切换          → 仅发 lt=1，cst=2
  *   S6 入口页 iey/ppiey 序列  → 首页 → A → B → 首页 → 序列符合 §4.2
@@ -273,8 +273,10 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
     expect(events[0].cst).toBe(2)
     // pid 已废弃：参数文档无该字段
     expect(events[0].pid).toBeUndefined()
-    // cst=2 不再携带 fvts/lvts/tvc（修复 lvts=0 缺陷的关键约束）
-    expect(events[0].fvts).toBeUndefined()
+    // cst=2 仍携带 fvts/lvts/tvc，避免 lvts 缺失被服务端误判为新用户
+    expect(events[0].fvts).toBeDefined()
+    expect(events[0].lvts).toBeDefined()
+    expect(events[0].tvc).toBeDefined()
   })
 
   /** S4 长时无操作（前台无操作超时）：cst=3。 */
@@ -295,7 +297,9 @@ describe('e2e/smoke：端到端冒烟（10 个核心场景）', () => {
     expect(sessionMod.getSnapshot()!.sct).toBe(3)
     const ltLaunch = events.find((e) => e.lt === '1')!
     expect(ltLaunch.cst).toBe(3)
-    expect(ltLaunch.fvts).toBeUndefined()
+    expect(ltLaunch.fvts).toBeDefined()
+    expect(ltLaunch.lvts).toBeDefined()
+    expect(ltLaunch.tvc).toBeDefined()
   })
 
   /** S5 wx scene 切换：app_show 时 scene 与上次不同 → cst=2 新 session。 */

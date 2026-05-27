@@ -592,8 +592,9 @@ const storage = {
  *      - 不存在 → `lvts=0`，按新用户路径走（Yes new user）。
  *      - 异常   → 内存有上次 snapshot 时复用之；首次启动且异常 → fallback `lvts=0`，
  *        但**记录** `degraded=true`，上层可决定是否仍上报（Phase 5 collector 用）。
- *   4. 同一进程内只允许一次 `buildVisitFields`；后续 cst=2/3 触发的事件**不调用**本函数，
- *      由 collector 直接复用 `getCommitted()` 的内存 snapshot 继续推进 tvc/lvts。
+ *   4. 同一进程内只允许一次 `buildVisitFields`；后续 cst=2/3 触发的新会话 lt=1
+ *      调用 `buildVisitFieldsForSessionRenewal`，复用 committed / lastBuilt 推进 tvc，
+ *      并保证 lvts 仍随 lt=1 上行（缺失会被服务端误判为新用户）。
  *
  * 与 `pipeline/collector.ts` 的契约见 `05-公有版重构开发计划.md` §4.1.5。
  */
@@ -611,6 +612,8 @@ const EMPTY_SNAPSHOT = {
 let loaded = null;
 /** `buildVisitFields` 生成；`commitVisitOnAck` 落库后清空。 */
 let pending = null;
+/** cst=2/3 新会话 lt=1 生成；`commitVisitOnAck` 落库后清空。 */
+let pendingRenewal = null;
 /** `commitVisitOnAck` 落库后写入；同进程内 cst=2/3 后续事件复用此 snapshot。 */
 let committed = null;
 /**
@@ -687,9 +690,9 @@ function ensureLoaded() {
  *   - 新用户（loaded.isNewUser）：本次 fvts=now, lvts=0（仍上报 0 表示新用户），tvc=1。
  *   - 老用户：fvts 维持 loaded.fvts；lvts 上报 loaded.lvts（"上一次"，不是 now）；tvc=loaded.tvc+1。
  *
- * 注意：同一进程内只允许调用一次（参考 `domain/session` 设计），后续 cst=2/3 事件
- * 不携带 fvts/lvts/tvc。这里通过 `buildCalledInProcess` 哨兵防止误用，二次调用返回
- * 与首次相同的结果但发出 warn，便于排查上层 collector bug。
+ * 注意：同一进程内只允许调用一次（参考 `domain/session` 设计）；cst=2/3 新会话应走
+ * `buildVisitFieldsForSessionRenewal`。这里通过 `buildCalledInProcess` 哨兵防止误用，
+ * 二次调用返回与首次相同的结果但发出 warn，便于排查上层 collector bug。
  */
 function buildVisitFields(now) {
     const snap = ensureLoaded();
@@ -713,6 +716,47 @@ function buildVisitFields(now) {
     return Object.assign({}, lastBuilt);
 }
 /**
+ * 为 cst=2/3 新会话 lt=1 生成本次要上报的 visit 字段（**不写 storage**）。
+ *
+ * 与私有版 `sendReportRequest` 对齐：后台/前台超时触发的新会话仍携带 fvts/lvts/tvc，
+ * 避免 lvts 缺失被服务端按新用户入库。
+ *
+ * 推进规则：
+ *   - 已有 committed：fvts 不变，lvts 上报 committed.lvts，tvc=committed.tvc+1。
+ *   - 冷启动 lt=1 尚未 ack：复用 lastBuilt，不重复递增 tvc。
+ *   - 兜底读 loaded snapshot，逻辑同 buildVisitFields 的老用户路径。
+ */
+function buildVisitFieldsForSessionRenewal(now) {
+    let fvts;
+    let lvts;
+    let tvc;
+    if (committed) {
+        fvts = committed.fvts;
+        lvts = committed.lvts;
+        tvc = committed.tvc + 1;
+    }
+    else if (lastBuilt) {
+        fvts = lastBuilt.fvts;
+        lvts = lastBuilt.lvts;
+        tvc = lastBuilt.tvc;
+    }
+    else {
+        const snap = ensureLoaded();
+        if (snap.isNewUser) {
+            fvts = now;
+            lvts = 0;
+            tvc = 1;
+        }
+        else {
+            fvts = snap.fvts;
+            lvts = snap.lvts;
+            tvc = snap.tvc + 1;
+        }
+    }
+    pendingRenewal = { fvts, lvts, tvc, now };
+    return { fvts, lvts, tvc };
+}
+/**
  * 上报 ack 成功后落库。
  *
  * 实际写入：
@@ -722,12 +766,30 @@ function buildVisitFields(now) {
  * pending 为空 / commit 重复调用一律 noop（保持幂等，便于 collector 重试逻辑）。
  */
 function commitVisitOnAck(now) {
-    if (!pending)
+    if (pending) {
+        const snap = ensureLoaded();
+        const newFvts = snap.fvts === 0 ? now : snap.fvts;
+        const newLvts = now;
+        const newTvc = pending.tvc;
+        storage.set(KEY_FVTS, newFvts);
+        storage.set(KEY_LVTS, newLvts);
+        storage.set(KEY_TVC, newTvc);
+        committed = {
+            fvts: newFvts,
+            lvts: newLvts,
+            tvc: newTvc,
+            isNewUser: false,
+            degraded: false,
+        };
+        loaded = committed;
+        pending = null;
         return;
-    const snap = ensureLoaded();
-    const newFvts = snap.fvts === 0 ? now : snap.fvts;
+    }
+    if (!pendingRenewal)
+        return;
+    const newFvts = pendingRenewal.fvts;
     const newLvts = now;
-    const newTvc = pending.tvc;
+    const newTvc = pendingRenewal.tvc;
     storage.set(KEY_FVTS, newFvts);
     storage.set(KEY_LVTS, newLvts);
     storage.set(KEY_TVC, newTvc);
@@ -739,7 +801,7 @@ function commitVisitOnAck(now) {
         degraded: false,
     };
     loaded = committed;
-    pending = null;
+    pendingRenewal = null;
 }
 /**
  * 上报失败回滚：清掉 pending，下次再 build 仍基于 loaded snapshot 推进。
@@ -749,6 +811,7 @@ function commitVisitOnAck(now) {
  */
 function rollbackPendingVisit() {
     pending = null;
+    pendingRenewal = null;
 }
 
 /**
@@ -1893,10 +1956,11 @@ function normalizePathForEntryMark(raw) {
 /**
  * 新会话首报：仅发一条 `lt=1`（Launch），新会话字段随之上行。
  *
- * 重要约束（修复 lvts=0 缺陷）：
- *   - `fvts/lvts/tvc` **只在进程首报**（cold_launch 触发的首次 ensureSession）携带；
- *     cst=2（后台超时）/ cst=3（前台无操作超时）创建的新 session **不**带。
- *   - 通过 `firstVisitEmittedInProcess` 哨兵保证全进程只调用一次 `buildVisitFields`。
+ * 重要约束（修复 lvts=0 / lvts 缺失缺陷）：
+ *   - 进程内首次 lt=1（cold_launch）调用 `buildVisitFields`；
+ *   - cst=2/3 新会话 lt=1 调用 `buildVisitFieldsForSessionRenewal`，仍携带 fvts/lvts/tvc，
+ *     避免 lvts 缺失被服务端误判为新用户。
+ *   - 通过 `firstVisitEmittedInProcess` 哨兵区分上述两条路径。
  *   - `cst` 入参仅用于将来可能的本地侧打印 / 监控；上行字段已由 statData 从 session
  *     snapshot 中读取（出口字段名为 `cst`）。
  *   - `url` 参数：参数文档要求 `lt=1` 携带当前启动页的完整 url；冷启动 / app_show
@@ -1907,6 +1971,9 @@ function reportNewSession(c, _cst, scene, now, attachVisit, url = '') {
     if (attachVisit && !firstVisitEmittedInProcess) {
         firstVisitEmittedInProcess = true;
         visit = tryRun(() => buildVisitFields(now), undefined);
+    }
+    else if (!attachVisit) {
+        visit = tryRun(() => buildVisitFieldsForSessionRenewal(now), undefined);
     }
     const payload = {
         lt: LT.Launch,
@@ -2164,7 +2231,7 @@ function handlePageShow(app, vm, opts = {}) {
         tryRun(() => markEntryPage(route), undefined);
     }
     if (result.isNew) {
-        // cst=3：不再携带 fvts/lvts/tvc（首批已在 cold_launch 上报过）。
+        // cst=3：复用 committed visit 字段，与私有版 sendReportRequest 对齐。
         // 注意：lt=1（新会话首报）**不受** enablePageLog 控制 —— 与私有版语义一致，
         // is_page_report 仅拦截 pageShow/pageHide，不影响 launch/appShow/appHide。
         reportNewSession(c, result.cst || CST.PageInactiveTimeout, '', now, false, url);
