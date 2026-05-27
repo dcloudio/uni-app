@@ -268,8 +268,7 @@ const {
   normalizePath,
   isSupportSubPackages,
   runByHBuilderX,
-  getPagesJson,
-  resolveUniStatType
+  getPagesJson
 } = require('@dcloudio/uni-cli-shared')
 
 process.env.RUN_BY_HBUILDERX = JSON.stringify(runByHBuilderX)
@@ -479,20 +478,29 @@ if (
   process.env.UNI_USING_COMPONENTS ||
   process.env.UNI_PLATFORM === 'h5'
 ) { // 自定义组件模式或 h5 平台
+  const rootStat = manifestJsonObj.uniStatistics
   const uniStatistics = Object.assign(
-    manifestJsonObj.uniStatistics || {},
+    {},
+    rootStat || {},
     platformOptions.uniStatistics || {}
   )
 
-  if (uniStatistics.enable === true) {
+  // 无统计节点或未配 enable 默认开启；仅根节点 enable === false 关闭
+  if (!rootStat || rootStat.enable !== false) {
     const uniStatLog = (text) => {
       console.log()
       console.warn(text)
       console.log()
     }
-    const statType = resolveUniStatType(uniStatistics)
+    // type 优先；version 1 → 公有版；version 2 且无 type → 私有版；其余默认公有版
+    let statType = 'public'
+    const type = String(uniStatistics.type || '').trim()
+    if (type === 'public' || type === 'private') {
+      statType = type
+    } else if (Number(uniStatistics.version) === 2) {
+      statType = 'private'
+    }
     process.env.UNI_USING_STAT = statType
-    // 获取服务空间配置信息
     const uniCloudConfig = uniStatistics.uniCloud || {}
     process.env.UNI_STATISTICS_CONFIG = JSON.stringify(uniStatistics)
     process.env.UNI_STAT_UNI_CLOUD = JSON.stringify(uniCloudConfig)
@@ -505,31 +513,19 @@ if (
           0: 'https://ask.dcloud.net.cn/article/36303'
         }))
       } else {
-        if (!uniStatistics.type && !uniStatistics.version) {
-          uniStatLog(uniI18n.__('pluginUni.uniStatisticsNoVersion', {
-            0: 'https://uniapp.dcloud.io/uni-stat-v2.html'
-          }))
-        } else {
-          uniStatLog(`已开启 uni统计${statTypeLabel}`)
-          if (statType === 'private') {
-            uniStatLog(
-              '【重要】因 HBuilderX 3.4.9 版本起，uni统计2.0 调整了安卓端 deviceId 获取方式，导致 uni统计2.0 App-Android平台部分统计数据不准确。如使用了HBuilderX 3.4.9 - 3.6.4版本且开通了uni统计2.0的应用，需要使用HBuilderX3.6.7及以上版本重新发布应用并升级 uniAdmin 云函数解决，详见：https://ask.dcloud.net.cn/article/40097'
-            )
-          }
-        }
-      }
-    } else {
-      if (!uniStatistics.type && !uniStatistics.version) {
-        uniStatLog(uniI18n.__('pluginUni.uniStatisticsNoVersion', {
-          0: 'https://uniapp.dcloud.io/uni-stat-v2.html'
-        }))
-      } else {
         uniStatLog(`已开启 uni统计${statTypeLabel}`)
         if (statType === 'private') {
           uniStatLog(
             '【重要】因 HBuilderX 3.4.9 版本起，uni统计2.0 调整了安卓端 deviceId 获取方式，导致 uni统计2.0 App-Android平台部分统计数据不准确。如使用了HBuilderX 3.4.9 - 3.6.4版本且开通了uni统计2.0的应用，需要使用HBuilderX3.6.7及以上版本重新发布应用并升级 uniAdmin 云函数解决，详见：https://ask.dcloud.net.cn/article/40097'
           )
         }
+      }
+    } else {
+      uniStatLog(`已开启 uni统计${statTypeLabel}`)
+      if (statType === 'private') {
+        uniStatLog(
+          '【重要】因 HBuilderX 3.4.9 版本起，uni统计2.0 调整了安卓端 deviceId 获取方式，导致 uni统计2.0 App-Android平台部分统计数据不准确。如使用了HBuilderX 3.4.9 - 3.6.4版本且开通了uni统计2.0的应用，需要使用HBuilderX3.6.7及以上版本重新发布应用并升级 uniAdmin 云函数解决，详见：https://ask.dcloud.net.cn/article/40097'
+        )
       }
     }
   }
