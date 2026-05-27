@@ -85,6 +85,11 @@ export interface CollectorDeps {
   nowSec: () => number
   /** 生成 payload _id 的可选函数；缺省用 'p-<base36(now)>-<rand4>'。 */
   genPayloadId?: () => string
+  /**
+   * 进程内**首次**自动 flush（`report` → `shouldFlush`）延迟毫秒数。
+   * 仅微信小程序 preload 验证用；`flush(true)` 不受此延迟。`0` 表示不延迟。
+   */
+  firstFlushDeferMs?: number
 }
 
 export interface CollectorAPI {
@@ -105,10 +110,42 @@ function defaultGenPayloadId(nowMs: number): string {
   )
 }
 
-/**
- * 构建 collector。返回 API 对象，所有方法绑定 deps 闭包。
- */
 export function createCollector(deps: CollectorDeps): CollectorAPI {
+  /** 是否已完成进程内首次 flush（含延迟触发的那一次）。 */
+  let firstFlushDone = false
+  /** 已安排的延迟 flush 定时器，避免重复 schedule。 */
+  let deferredFlushTimer: ReturnType<typeof setTimeout> | null = null
+
+  /** 取消已安排的延迟首 flush（`flush(true)` 等显式调用前使用）。 */
+  function cancelDeferredFlush(): void {
+    if (deferredFlushTimer == null) return
+    clearTimeout(deferredFlushTimer)
+    deferredFlushTimer = null
+  }
+
+  /**
+   * `report` 达到阈值后的自动 flush 入口；仅此处做冷启动延迟（方案 C）。
+   */
+  function triggerAutoFlush(): void {
+    const deferMs = Math.max(0, Math.floor(deps.firstFlushDeferMs ?? 0))
+    if (!firstFlushDone && deferMs > 0) {
+      if (deferredFlushTimer != null) return
+      deferredFlushTimer = setTimeout(() => {
+        deferredFlushTimer = null
+        firstFlushDone = true
+        void flushImpl(false).catch((e) =>
+          logger.warn('[uni-stat] auto-flush failed', e)
+        )
+      }, deferMs)
+      return
+    }
+
+    firstFlushDone = true
+    void flushImpl(false).catch((e) =>
+      logger.warn('[uni-stat] auto-flush failed', e)
+    )
+  }
+
   /**
    * 构造 EventContext 并入队。
    *
@@ -133,9 +170,7 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
       logCollect(data)
       deps.queue.enqueue(omitEmptyStringFieldsForUpload(data))
       if (deps.queue.shouldFlush()) {
-        flush(false).catch((e) =>
-          logger.warn('[uni-stat] auto-flush failed', e)
-        )
+        triggerAutoFlush()
       }
     }, undefined as void)
   }
@@ -154,7 +189,7 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
    *
    * @param force 强制 flush（忽略节流阈值）。
    */
-  async function flush(force = false): Promise<void> {
+  async function flushImpl(force = false): Promise<void> {
     if (!deps.queue.shouldFlush(force)) return
     const snapshot = deps.queue.flush()
     if (!snapshot) return
@@ -319,6 +354,15 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
         })
       }
     }
+  }
+
+  /**
+   * 对外 flush：显式调用（含 `flush(true)`）立即发送，并取消尚未触发的延迟首 flush。
+   */
+  async function flush(force = false): Promise<void> {
+    cancelDeferredFlush()
+    firstFlushDone = true
+    return flushImpl(force)
   }
 
   return { report, flush, recoverRetry }

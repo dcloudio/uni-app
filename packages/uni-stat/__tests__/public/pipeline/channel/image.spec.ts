@@ -52,6 +52,7 @@ describe('pipeline/channel/image', () => {
   afterEach(() => {
     restoreMockUni()
     delete (globalThis as { Image?: unknown }).Image
+    delete (globalThis as { wx?: unknown }).wx
   })
 
   test('IM1 buildImageReportUrl 拼接合规', () => {
@@ -355,14 +356,38 @@ describe('pipeline/channel/image', () => {
     expect((caught as Error).message).toMatch(/当前环境无法完成统计上报/)
   })
 
-  test('IM8 非 H5：maxRequestBytes 为 WebTracks POST 切片上限（4MiB）', () => {
+  test('IM8 微信 preload 开启：maxRequestBytes 按 URL 反推（与 H5 一致）', () => {
     const ch = createImageChannel({
       host: HOST,
       projectId: PID,
       topicId: TID,
-      ut: 'mp-weixin',
+      ut: 'wx',
+      rawPlatform: 'mp-weixin',
+      mpWeixinPreloadReport: true,
     })
-    expect(typeof ch.maxRequestBytes).toBe('function')
+    expect(ch.maxRequestBytes!()).toBe(1962)
+  })
+
+  test('IM8.post 微信 preload 关闭：maxRequestBytes 为 POST 切片上限（4MiB）', () => {
+    const ch = createImageChannel({
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      ut: 'wx',
+      rawPlatform: 'mp-weixin',
+      mpWeixinPreloadReport: false,
+    })
+    expect(ch.maxRequestBytes!()).toBe(4 * 1024 * 1024)
+  })
+
+  test('IM8.other 其它小程序：maxRequestBytes 为 POST 切片上限（4MiB）', () => {
+    const ch = createImageChannel({
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      ut: 'ali',
+      rawPlatform: 'mp-alipay',
+    })
     expect(ch.maxRequestBytes!()).toBe(4 * 1024 * 1024)
   })
 
@@ -406,7 +431,9 @@ describe('pipeline/channel/image', () => {
       host: HOST,
       projectId: PID,
       topicId: TID,
-      ut: 'mp-weixin',
+      ut: 'wx',
+      rawPlatform: 'mp-weixin',
+      mpWeixinPreloadReport: false,
       preferImageBeacon: false,
       sleep: noSleep,
     })
@@ -462,7 +489,9 @@ describe('pipeline/channel/image', () => {
       host: HOST,
       projectId: PID,
       topicId: TID,
-      ut: 'mp-weixin',
+      ut: 'wx',
+      rawPlatform: 'mp-weixin',
+      mpWeixinPreloadReport: false,
       preferImageBeacon: false,
       sleep: noSleep,
     })
@@ -529,6 +558,91 @@ describe('pipeline/channel/image', () => {
       nowMs: () => 1700000000000,
     })
     expect(url.length).toBeLessThanOrEqual(6 * 1024)
+  })
+
+  test('IM12 微信 preload：success 即成功，不调用 uni.request', async () => {
+    const requestSpy = jest.fn()
+    handle.uni.request = requestSpy
+    const preloadSpy = jest.fn(
+      ({
+        data,
+        success,
+      }: {
+        data: Array<{ type: string; src: string }>
+        success: () => void
+      }) => {
+        expect(data).toHaveLength(1)
+        expect(data[0].type).toBe('image')
+        expect(data[0].src).toContain('/WebTrack.gif?')
+        success()
+      }
+    )
+    ;(globalThis as { wx?: { preloadAssets: typeof preloadSpy } }).wx = {
+      preloadAssets: preloadSpy,
+    }
+
+    const ch = createImageChannel({
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      ut: 'wx',
+      rawPlatform: 'mp-weixin',
+      mpWeixinPreloadReport: true,
+      sleep: noSleep,
+    })
+    await ch.send(PAYLOAD)
+    expect(preloadSpy).toHaveBeenCalledTimes(1)
+    expect(requestSpy).not.toHaveBeenCalled()
+    delete (globalThis as { wx?: unknown }).wx
+  })
+
+  test('IM13 微信 preload：fail → reject 且可重试', async () => {
+    const preloadSpy = jest.fn(
+      ({ fail }: { fail: (e: { errMsg: string }) => void }) => {
+        fail({ errMsg: 'preload fail' })
+      }
+    )
+    ;(globalThis as { wx?: { preloadAssets: typeof preloadSpy } }).wx = {
+      preloadAssets: preloadSpy,
+    }
+
+    const ch = createImageChannel({
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      ut: 'wx',
+      rawPlatform: 'mp-weixin',
+      mpWeixinPreloadReport: true,
+      sleep: noSleep,
+      maxRetries: 2,
+    })
+    await expect(ch.send(PAYLOAD)).rejects.toThrow()
+    expect(preloadSpy).toHaveBeenCalledTimes(2)
+    delete (globalThis as { wx?: unknown }).wx
+  })
+
+  test('IM14 微信 preload 开启但无 API：回退 POST', async () => {
+    delete (globalThis as { wx?: unknown }).wx
+    const requestSpy = jest.fn(
+      ({ success }: { success: (res: { statusCode: number }) => void }) => {
+        success({ statusCode: 200 })
+      }
+    )
+    handle.uni.request = requestSpy
+
+    const ch = createImageChannel({
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      ut: 'wx',
+      rawPlatform: 'mp-weixin',
+      mpWeixinPreloadReport: true,
+      sleep: noSleep,
+    })
+    await ch.send(PAYLOAD)
+    expect(requestSpy).toHaveBeenCalledTimes(1)
+    const arg = requestSpy.mock.calls[0][0] as unknown as { method: string }
+    expect(arg.method).toBe('POST')
   })
 
   test('IM7 host 末尾斜杠会被裁剪', () => {

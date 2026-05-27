@@ -163,6 +163,50 @@ describe('pipeline/collector', () => {
       expect(deps.queue.flush).toHaveBeenCalled()
     })
 
+    test('firstFlushDeferMs>0 → 入队后不立即 flush，延迟后再 flush（方案 C）', async () => {
+      jest.useFakeTimers()
+      const queueFlush = jest.fn(() => undefined)
+      const deps = makeDeps({
+        firstFlushDeferMs: 2000,
+        queue: {
+          enqueue: jest.fn(),
+          flush: queueFlush,
+          rollback: jest.fn(),
+          shouldFlush: jest.fn(() => true),
+        } as MockedDeps['queue'],
+      })
+      const c = createCollector(deps)
+      c.report({ lt: '1' })
+      expect(queueFlush).not.toHaveBeenCalled()
+      jest.advanceTimersByTime(2000)
+      await Promise.resolve()
+      expect(queueFlush).toHaveBeenCalledTimes(1)
+      jest.useRealTimers()
+    })
+
+    test('firstFlushDeferMs>0 时 flush(true) 立即 flush 并取消延迟任务', async () => {
+      jest.useFakeTimers()
+      const queueFlush = jest.fn(() => undefined)
+      const deps = makeDeps({
+        firstFlushDeferMs: 2000,
+        queue: {
+          enqueue: jest.fn(),
+          flush: queueFlush,
+          rollback: jest.fn(),
+          shouldFlush: jest.fn(() => true),
+        } as MockedDeps['queue'],
+      })
+      const c = createCollector(deps)
+      c.report({ lt: '1' })
+      expect(queueFlush).not.toHaveBeenCalled()
+      await c.flush(true)
+      expect(queueFlush).toHaveBeenCalledTimes(1)
+      jest.advanceTimersByTime(3000)
+      await Promise.resolve()
+      expect(queueFlush).toHaveBeenCalledTimes(1)
+      jest.useRealTimers()
+    })
+
     test('builder 抛错 → 不传播', () => {
       const deps = makeDeps({
         builder: {

@@ -21,6 +21,8 @@ import {
   HTTP_MAX_RETRIES,
   IMAGE_MAX_RETRIES,
   IMAGE_REPORT_DEFAULTS,
+  MP_WEIXIN_PRELOAD_FIRST_FLUSH_DELAY_MS,
+  MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT,
   REPORT_INTERVAL_SEC,
   STAT_VERSION_PUBLIC,
   getAppId,
@@ -31,7 +33,7 @@ import { createCollector } from '../pipeline/collector'
 import { createHttpChannel } from '../pipeline/channel/http'
 import { createImageChannel } from '../pipeline/channel/image'
 import { createStatDataBuilder } from '../domain/statData'
-import { getPlatform } from '../adapter/platform'
+import { getPlatform, getRawPlatform } from '../adapter/platform'
 import { getLocaleAndScreen, getSystemInfo } from '../adapter/system'
 import { getUuid } from '../adapter/device'
 import { getPackageInfo } from '../adapter/package'
@@ -205,6 +207,7 @@ export class StatApp {
         topicId: IMAGE_REPORT_DEFAULTS.topicId,
         maxRetries: IMAGE_MAX_RETRIES,
         ut: getPlatform(),
+        rawPlatform: getRawPlatform(),
       })
     } else {
       this.imageChannel = undefined
@@ -416,6 +419,10 @@ export class StatApp {
       config: { usv: STAT_VERSION_PUBLIC },
       nowMs,
       nowSec,
+      firstFlushDeferMs:
+        getRawPlatform() === 'mp-weixin' && MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT
+          ? MP_WEIXIN_PRELOAD_FIRST_FLUSH_DELAY_MS
+          : 0,
     }
 
     return Object.assign(base, patch)

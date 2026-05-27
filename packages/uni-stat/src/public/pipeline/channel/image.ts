@@ -7,21 +7,29 @@
  *     （TLS 常返回 JSON 导致 `onerror`，与 HTTP 200 并存，见 `imageBeaconAwait` 注释）。
  *   - 仅当 `preferImageBeacon: false` 或环境无 `Image` 时，才用 `uni.request` GET（可带 HTTP 状态，但可能受跨域限制）。
  *
- * **非 H5**（小程序 / App 等，与 [TLS WebTracks](https://www.volcengine.com/docs/6470/141803?lang=zh) 对齐）：
+ * **微信小程序**（`UNI_PLATFORM === 'mp-weixin'` 且 `MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT` 为 true）：
+ *   - 与 H5 相同拼 `WebTrack.gif` GET URL，经 `wx.preloadAssets({ type:'image', src:url })` 发出；
+ *   - **`success` 即视为送达**（与 H5 `Image` 的 onload/onerror 语义不同）；`fail` / 超时走重试；
+ *   - 无 `wx.preloadAssets`（基础库 &lt; 2.22.1）时自动 **回退 POST /WebTracks**。
+ *
+ * **其它非 H5**（支付宝等小程序 / App，与 [TLS WebTracks](https://www.volcengine.com/docs/6470/141803?lang=zh) 对齐）：
  *   - `POST ${host}/WebTracks?ProjectId&TopicId`
  *   - Header：`Content-Type: application/json`（必选）、`x-tls-bodyrawsize` = 未压缩 body 字节数（必选）
  *   - Body：`{ "Source": "webImg", "Logs": [{ "Logs": "<JSON.stringify(events)>" }] }`。
  *     `Logs` 数组固定仅 1 个对象，内层 `Logs` 保存字符串化事件数组。
  *
  * 设计要点：
- *   - H5 仍受 GET URL 长度约束（`maxUrlLength` / `maxRequestBytes` 反推）。
+ *   - H5 / 微信 preload 仍受 GET URL 长度约束（`maxUrlLength` / `maxRequestBytes` 反推）。
  *   - POST 单请求文档上限 5 MiB；本实现预留余量后校验 body，超限抛 `PermanentChannelError`。
  *   - 配置缺失、JSON 不可解析、环境无 `uni.request`：永久错误，不进无意义重试。
  */
 
+import { getRawPlatform } from '../../adapter/platform'
 import {
   IMAGE_MAX_RETRIES,
   IMAGE_REPORT_DEFAULTS,
+  MP_WEIXIN_PRELOAD_TIMEOUT_MS,
+  MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT,
   RETRY_BASE_DELAY_MS,
 } from '../../config'
 import { logger } from '../../infra/logger'
@@ -260,6 +268,116 @@ function imageBeaconAwait(url: string, ms: number): Promise<void> {
   })
 }
 
+interface WxPreloadAssetsApi {
+  preloadAssets?: (opts: {
+    data: Array<{ type: 'image'; src: string }>
+    success?: (resp: unknown) => void
+    fail?: (err: unknown) => void
+    complete?: () => void
+  }) => void
+}
+
+/**
+ * 读取微信基础库 `wx.preloadAssets`（仅 mp-weixin 预加载信标路径使用）。
+ */
+function getWxPreloadAssets(): WxPreloadAssetsApi['preloadAssets'] | undefined {
+  const wx = (globalThis as { wx?: WxPreloadAssetsApi }).wx
+  return typeof wx?.preloadAssets === 'function' ? wx.preloadAssets : undefined
+}
+
+/**
+ * 规范化 `wx.preloadAssets` 的 fail 入参，避免业务侧访问 `err.errMsg` 时 err 为 undefined。
+ */
+function formatWxPreloadFail(err: unknown): Error {
+  if (err instanceof Error) return err
+  if (err != null && typeof err === 'object' && 'errMsg' in err) {
+    const msg = (err as { errMsg?: unknown }).errMsg
+    if (typeof msg === 'string' && msg.length > 0) return new Error(msg)
+  }
+  if (err == null) return new Error('preloadAssets fail (empty err)')
+  return new Error(String(err))
+}
+
+/**
+ * 微信小程序：`wx.preloadAssets` 拉取 WebTrack.gif URL；**仅 `success` 视为送达**。
+ *
+ * @param url 完整 WebTrack.gif URL（与 H5 相同）
+ * @param ms  超时毫秒
+ */
+function mpWeixinPreloadAssetsBeaconAwait(
+  url: string,
+  ms: number
+): Promise<void> {
+  const preload = getWxPreloadAssets()
+  if (!preload) {
+    return Promise.reject(
+      new PermanentChannelError(
+        '当前环境无法完成统计上报（无 wx.preloadAssets）'
+      )
+    )
+  }
+  return new Promise((resolve, reject) => {
+    let settled = false
+    const timer = setTimeout(() => {
+      if (settled) return
+      settled = true
+      reject(new Error('统计上报超时(preloadAssets)'))
+    }, ms)
+    try {
+      preload({
+        data: [{ type: 'image', src: url }],
+        success: () => {
+          if (settled) return
+          settled = true
+          clearTimeout(timer)
+          resolve()
+        },
+        fail: (err) => {
+          if (settled) return
+          settled = true
+          clearTimeout(timer)
+          reject(formatWxPreloadFail(err))
+        },
+      })
+    } catch (e) {
+      if (settled) return
+      settled = true
+      clearTimeout(timer)
+      reject(e instanceof Error ? e : new Error(String(e)))
+    }
+  })
+}
+
+/**
+ * 是否对当前宿主走 WebTrack.gif GET 信标路径（H5 `Image` 或微信 `preloadAssets`）。
+ */
+function useGifReportPath(opts: {
+  ut?: string
+  rawPlatform?: string
+  mpWeixinPreloadReport?: boolean
+}): boolean {
+  if (opts.ut === 'h5') return true
+  const enabled =
+    opts.mpWeixinPreloadReport ?? MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT
+  if (!enabled) return false
+  const raw = opts.rawPlatform ?? getRawPlatform()
+  return raw === 'mp-weixin'
+}
+
+/**
+ * 微信小程序是否启用 preload 信标（开关开且宿主为 mp-weixin）。
+ */
+function isMpWeixinPreloadEnabled(opts: {
+  rawPlatform?: string
+  mpWeixinPreloadReport?: boolean
+}): boolean {
+  const enabled =
+    opts.mpWeixinPreloadReport ?? MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT
+  if (!enabled) return false
+  const raw = opts.rawPlatform ?? getRawPlatform()
+  return raw === 'mp-weixin'
+}
+
 interface ImageChannelOptions {
   /** 上报 host，例如 `https://tls-cn-beijing.volces.com`。缺省走 IMAGE_REPORT_DEFAULTS。 */
   host?: string
@@ -269,9 +387,16 @@ interface ImageChannelOptions {
   topicId?: string
   /**
    * 宿主短码（与 `adapter/platform.getPlatform()` 一致）。
-   * **`h5`** 走 WebTrack.gif；其余走 **POST /WebTracks**。
+   * **`h5`** 走 WebTrack.gif；**`mp-weixin` + preload 开关** 同 GIF；其余 POST。
    */
   ut?: string
+  /** `process.env.UNI_PLATFORM` 原值；用于识别 mp-weixin（`ut` 为 `wx`）。 */
+  rawPlatform?: string
+  /**
+   * 微信小程序是否用 `wx.preloadAssets` 走 GIF 信标。
+   * 缺省读 `config.MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT`（默认 true）。
+   */
+  mpWeixinPreloadReport?: boolean
   /**
    * H5 是否优先使用 `Image` 触发 GET（默认 true，与跨域场景一致）。
    * 设为 `false` 时强制 `uni.request` GET（可读取 HTTP 状态，但可能受跨域策略影响）。
@@ -302,6 +427,8 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
   const nowMs = opts.nowMs
   const ut = opts.ut ?? ''
   const isH5 = ut === 'h5'
+  const gifPath = useGifReportPath(opts)
+  const mpWeixinPreload = isMpWeixinPreloadEnabled(opts)
 
   function configured(): boolean {
     return !!(host && projectId && topicId)
@@ -410,6 +537,24 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
   }
 
   /**
+   * 微信：优先 `wx.preloadAssets`；API 不可用时回退 POST（保证旧基础库可上报）。
+   */
+  async function onceMpWeixin(
+    url: string,
+    payload: ReportPayload
+  ): Promise<void> {
+    const preloadFn = getWxPreloadAssets()
+    if (mpWeixinPreload && preloadFn) {
+      return mpWeixinPreloadAssetsBeaconAwait(url, MP_WEIXIN_PRELOAD_TIMEOUT_MS)
+    }
+    if (mpWeixinPreload && !preloadFn) {
+      logger.warn('[uni-stat] wx.preloadAssets 不可用，回退 POST /WebTracks')
+    }
+    const { url: postUrl, json, rawByteSize } = preflightPost(payload)
+    return oncePost(postUrl, json, rawByteSize)
+  }
+
+  /**
    * 非 H5：POST /WebTracks，带 TLS 必选头。
    */
   function oncePost(
@@ -472,7 +617,7 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
       return configured()
     },
     maxRequestBytes(): number {
-      if (isH5) {
+      if (gifPath) {
         const raw =
           (maxUrlLength - IMAGE_URL_BASE_OVERHEAD) / IMAGE_ENCODE_RATIO
         return Math.max(512, Math.floor(raw))
@@ -481,13 +626,21 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
     },
     async send(payload: ReportPayload): Promise<void> {
       try {
-        if (isH5) {
+        if (gifPath) {
           const url = preflightGif(payload)
-          await withRetry(() => onceGif(url), {
-            times: maxRetries,
-            baseDelayMs: RETRY_BASE_DELAY_MS,
-            sleep: opts.sleep,
-          })
+          if (isH5) {
+            await withRetry(() => onceGif(url), {
+              times: maxRetries,
+              baseDelayMs: RETRY_BASE_DELAY_MS,
+              sleep: opts.sleep,
+            })
+          } else {
+            await withRetry(() => onceMpWeixin(url, payload), {
+              times: maxRetries,
+              baseDelayMs: RETRY_BASE_DELAY_MS,
+              sleep: opts.sleep,
+            })
+          }
         } else {
           const { url, json, rawByteSize } = preflightPost(payload)
           await withRetry(() => oncePost(url, json, rawByteSize), {
