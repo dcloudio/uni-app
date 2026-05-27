@@ -858,6 +858,10 @@ export function uniDecryptUniModulesPlugin(): Plugin {
           vapor: process.env.UNI_APP_X_DOM2 === 'true',
           env,
         }
+        if (options.vapor) {
+          options.vaporRenderTarget =
+            process.env.UNI_APP_X_VAPOR_RENDER_TARGET || 'bytecode'
+        }
         // 鸿蒙平台需要拆分两次云编译
         if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
           const harmonyEnv = {
