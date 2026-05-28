@@ -1,6 +1,7 @@
 import path from 'path'
 import fs from 'fs-extra'
 import { sync } from 'fast-glob'
+import type { Plugin } from 'vite'
 import { camelize, capitalize, normalizePath, requireUniHelpers } from './utils'
 import { genUTSComponentPublicInstanceIdent } from './easycom'
 import { M } from './messages'
@@ -647,6 +648,39 @@ export function parseUniModulesArtifacts() {
     }
   })
   return res
+}
+
+export function copyEncryptUniModulesDom2Bytes() {
+  if (process.env.UNI_APP_X_DOM2 !== 'true') {
+    return false
+  }
+  const cacheDir = process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
+  const outputDir = process.env.UNI_OUTPUT_DIR
+  if (!cacheDir || !outputDir) {
+    return false
+  }
+  // 只依赖编译环境变量定位缓存目录和输出目录，避免拼接具体 unpackage/dist 路径。
+  const sourceBytesDir = path.resolve(cacheDir, 'bytes')
+  if (
+    !fs.existsSync(sourceBytesDir) ||
+    !fs.statSync(sourceBytesDir).isDirectory()
+  ) {
+    return false
+  }
+  const outputBytesDir = path.resolve(outputDir, 'bytes')
+  // 云编译产出的 bytecode 在缓存目录中，这里只合并复制到当前编译输出目录。
+  fs.copySync(sourceBytesDir, outputBytesDir, { overwrite: true })
+  return true
+}
+
+export function uniEncryptUniModulesDom2BytesPlugin(): Plugin {
+  return {
+    name: 'uni:uni_modules-d-dom2-bytes',
+    apply: 'build',
+    writeBundle() {
+      copyEncryptUniModulesDom2Bytes()
+    },
+  }
 }
 
 const uniComponentPrefix = 'uniComponent://'

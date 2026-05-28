@@ -12,6 +12,7 @@ jest.mock('@dcloudio/uni-cli-shared', () => {
     }),
     uniDecryptUniModulesPlugin: plugin('decrypt'),
     uniEasycomPlugin: plugin('easycom'),
+    uniEncryptUniModulesDom2BytesPlugin: plugin('dom2-bytes'),
     uniEncryptUniModulesAssetsPlugin: plugin('encrypt-assets'),
     uniEncryptUniModulesPlugin: plugin('encrypt'),
     uniHBuilderXConsolePlugin: plugin('console'),
@@ -100,6 +101,16 @@ describe('ios plugin init', () => {
 
     expect(plugins.map((plugin: { name: string }) => plugin.name)).toContain(
       'stats'
+    )
+  })
+
+  test('normal compile target includes dom2 bytes plugin', () => {
+    Reflect.deleteProperty(process.env, 'UNI_COMPILE_TARGET')
+
+    const plugins = initPlugins()
+
+    expect(plugins.map((plugin: { name: string }) => plugin.name)).toContain(
+      'dom2-bytes'
     )
   })
 

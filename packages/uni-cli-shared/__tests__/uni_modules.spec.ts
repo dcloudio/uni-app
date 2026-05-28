@@ -3,6 +3,7 @@ import os from 'os'
 import fs from 'fs-extra'
 import {
   checkEncryptUniModules,
+  copyEncryptUniModulesDom2Bytes,
   findCloudEncryptUniModules,
   findUploadEncryptUniModulesFiles,
   getUniModulesEncryptType,
@@ -82,6 +83,96 @@ describe('uni_modules:cloud', () => {
       } else {
         process.env.UNI_APP_X_DOM2 = dom2
       }
+    }
+  })
+})
+
+describe('uni_modules:cloud dom2 bytes', () => {
+  test('copies cloud compile bytes to output dir in dom2', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-dom2-bytes-'))
+    const cacheDir = path.join(tempDir, 'cache')
+    const outputDir = path.join(tempDir, 'output')
+    const oldDom2 = process.env.UNI_APP_X_DOM2
+    const oldCacheDir = process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
+    const oldOutputDir = process.env.UNI_OUTPUT_DIR
+
+    try {
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = cacheDir
+      process.env.UNI_OUTPUT_DIR = outputDir
+
+      fs.outputFileSync(path.join(cacheDir, 'bytes', 'app.bin'), 'app')
+      fs.outputFileSync(
+        path.join(cacheDir, 'bytes', 'pages', 'index.bin'),
+        'page'
+      )
+
+      expect(copyEncryptUniModulesDom2Bytes()).toBe(true)
+      expect(
+        fs.readFileSync(path.join(outputDir, 'bytes', 'app.bin'), 'utf8')
+      ).toBe('app')
+      expect(
+        fs.readFileSync(
+          path.join(outputDir, 'bytes', 'pages', 'index.bin'),
+          'utf8'
+        )
+      ).toBe('page')
+    } finally {
+      if (oldDom2 === undefined) {
+        Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+      } else {
+        process.env.UNI_APP_X_DOM2 = oldDom2
+      }
+      if (oldCacheDir === undefined) {
+        Reflect.deleteProperty(process.env, 'UNI_MODULES_ENCRYPT_CACHE_DIR')
+      } else {
+        process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = oldCacheDir
+      }
+      if (oldOutputDir === undefined) {
+        Reflect.deleteProperty(process.env, 'UNI_OUTPUT_DIR')
+      } else {
+        process.env.UNI_OUTPUT_DIR = oldOutputDir
+      }
+      fs.removeSync(tempDir)
+    }
+  })
+
+  test('skips copy when dom2 is disabled', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-dom2-bytes-'))
+    const cacheDir = path.join(tempDir, 'cache')
+    const outputDir = path.join(tempDir, 'output')
+    const oldDom2 = process.env.UNI_APP_X_DOM2
+    const oldCacheDir = process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
+    const oldOutputDir = process.env.UNI_OUTPUT_DIR
+
+    try {
+      Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+      process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = cacheDir
+      process.env.UNI_OUTPUT_DIR = outputDir
+
+      fs.outputFileSync(path.join(cacheDir, 'bytes', 'app.bin'), 'app')
+
+      expect(copyEncryptUniModulesDom2Bytes()).toBe(false)
+      expect(fs.existsSync(path.join(outputDir, 'bytes', 'app.bin'))).toBe(
+        false
+      )
+    } finally {
+      if (oldDom2 === undefined) {
+        Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+      } else {
+        process.env.UNI_APP_X_DOM2 = oldDom2
+      }
+      if (oldCacheDir === undefined) {
+        Reflect.deleteProperty(process.env, 'UNI_MODULES_ENCRYPT_CACHE_DIR')
+      } else {
+        process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = oldCacheDir
+      }
+      if (oldOutputDir === undefined) {
+        Reflect.deleteProperty(process.env, 'UNI_OUTPUT_DIR')
+      } else {
+        process.env.UNI_OUTPUT_DIR = oldOutputDir
+      }
+      fs.removeSync(tempDir)
     }
   })
 })
