@@ -253,6 +253,10 @@ export declare function getPartClass(partName: string): string;
 
 export declare function getValueByDataPath(obj: any, path: string): unknown;
 
+export declare const H5_BUILT_IN_TAG_NAMES: string[];
+
+export declare const H5_BUILT_IN_TAGS: string[];
+
 declare interface HTMLElementWithDataset extends HTMLElement {
     __uniDataset?: Record<string, any>;
 }

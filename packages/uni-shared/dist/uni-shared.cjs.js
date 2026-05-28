@@ -50,6 +50,8 @@ const BUILT_IN_TAG_NAMES = [
     'location-view',
 ];
 const BUILT_IN_TAGS = BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
+const H5_BUILT_IN_TAG_NAMES = BUILT_IN_TAG_NAMES.filter((tag) => tag !== 'audio');
+const H5_BUILT_IN_TAGS = H5_BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
 const TAGS = [
     'app',
     'layout',
@@ -218,9 +220,9 @@ function isWebBuiltInComponent(tag) {
     // h5 平台会被转换为 v-uni-
     const realTag = 'uni-' + tag.replace('v-uni-', '');
     if (process.env.UNI_APP_X !== 'true') {
-        return BUILT_IN_TAGS.indexOf(realTag) !== -1;
+        return H5_BUILT_IN_TAGS.indexOf(realTag) !== -1;
     }
-    return (BUILT_IN_TAGS.indexOf(realTag) !== -1 ||
+    return (H5_BUILT_IN_TAGS.indexOf(realTag) !== -1 ||
         UVUE_WEB_BUILT_IN_TAGS.indexOf(realTag) !== -1);
 }
 function isMPBuiltInComponent(tag) {
@@ -237,7 +239,7 @@ function isH5CustomElement(tag, isX = false) {
     if (isX && UVUE_WEB_BUILT_IN_TAGS.indexOf(tag) !== -1) {
         return true;
     }
-    return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1;
+    return TAGS.indexOf(tag) !== -1 || H5_BUILT_IN_TAGS.indexOf(tag) !== -1;
 }
 function isUniXElement(name) {
     return /^I?Uni.*Element(?:Impl)?$/.test(name);
@@ -2654,6 +2656,8 @@ exports.DATA_RE = DATA_RE;
 exports.Emitter = E$1;
 exports.EventChannel = EventChannel;
 exports.EventModifierFlags = EventModifierFlags;
+exports.H5_BUILT_IN_TAGS = H5_BUILT_IN_TAGS;
+exports.H5_BUILT_IN_TAG_NAMES = H5_BUILT_IN_TAG_NAMES;
 exports.I18N_JSON_DELIMITERS = I18N_JSON_DELIMITERS;
 exports.JSON_PROTOCOL = JSON_PROTOCOL;
 exports.LINEFEED = LINEFEED;
