@@ -10,6 +10,7 @@ import {
   uniDecryptUniModulesPlugin,
   uniEasycomPlugin,
   uniEncryptUniModulesAssetsPlugin,
+  uniEncryptUniModulesDom2BytesPlugin,
   uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
   uniSharedDataPlugin,
@@ -89,6 +90,7 @@ export function init() {
     ...(isNormalCompileTarget()
       ? [
           uniStatsPlugin(),
+          uniEncryptUniModulesDom2BytesPlugin(),
           ...(isDom2Dynamic || !isDev ? [] : [uniAppXAndroidEngineDevPlugin()]),
         ]
       : []),

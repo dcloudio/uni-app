@@ -37,9 +37,11 @@ export {
   formatExtApiProviderName,
 } from './uni_modules'
 export {
+  copyEncryptUniModulesDom2Bytes,
   getUniModulesEncryptType,
   parseUniModulesArtifacts,
   resolveEncryptUniModule,
+  uniEncryptUniModulesDom2BytesPlugin,
 } from './uni_modules.cloud'
 import type { EncryptPackageJson } from './uni_modules.cloud'
 export type EncryptArtifacts = EncryptPackageJson['uni_modules']['artifacts']

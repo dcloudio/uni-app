@@ -10,6 +10,7 @@ import {
   uniDecryptUniModulesPlugin,
   uniEasycomPlugin,
   uniEncryptUniModulesAssetsPlugin,
+  uniEncryptUniModulesDom2BytesPlugin,
   uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
   uniSharedDataPlugin,
@@ -86,6 +87,8 @@ export function init() {
       ? [replaceExtApiPagePaths()]
       : []),
     ...(isDom2 ? [uniAppCssPlugin()] : []),
-    ...(isNormalCompileTarget() ? [uniStatsPlugin()] : []),
+    ...(isNormalCompileTarget()
+      ? [uniStatsPlugin(), uniEncryptUniModulesDom2BytesPlugin()]
+      : []),
   ]
 }
