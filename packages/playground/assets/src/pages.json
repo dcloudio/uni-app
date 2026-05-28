@@ -2,6 +2,9 @@
   "pages": [
     {
       "path": "pages/index/index"
+    },
+    {
+      "path": "pages/interceptor/interceptor"
     }
   ],
   "subPackages": [
