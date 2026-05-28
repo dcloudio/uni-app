@@ -31,6 +31,24 @@ function isUniStatisticsEnabled(inputDir) {
     return root.enable !== false;
 }
 /**
+ * 当前是否为 uni-app x 编译目标。
+ * x 运行时暂无 `onCreateVueApp` / `vue.mixin` 等页面统计注入能力。
+ */
+function isUniAppXCompile() {
+    return process.env.UNI_APP_X === 'true';
+}
+/**
+ * 是否应向 main 入口自动 import 统计运行时。
+ * uni-app x 一律跳过自动 import；define 配置注入仍保留，供后续适配或业务手动 import。
+ */
+function shouldAutoImportStatRuntime(inputDir) {
+    if (isUniAppXCompile()) {
+        return false;
+    }
+    return isUniStatisticsEnabled(inputDir);
+}
+
+/**
  * 解析统计版本类型（公有版 / 私有版）。
  * - 优先 `type`；缺失时回退旧版 `version`（2=private，其余=public）。
  */
@@ -145,7 +163,8 @@ var index = () => [
                     process.env.UNI_STATISTICS_CONFIG = JSON.stringify(statConfig);
                     process.env.UNI_STAT_DEBUG = statConfig.debug ? 'true' : 'false';
                     // 仅 manifest 根节点 `enable === false` 关闭统计；无节点或未配置 enable 默认开启。
-                    isEnable = isUniStatisticsEnabled(inputDir);
+                    // uni-app x 不支持自动 import（见 shouldAutoImportStatRuntime），但仍注入 define 配置。
+                    isEnable = shouldAutoImportStatRuntime(inputDir);
                     statType = resolveUniStatisticsType(statConfig);
                     if (isEnable) {
                         const uniCloudConfig = statConfig.uniCloud || {};

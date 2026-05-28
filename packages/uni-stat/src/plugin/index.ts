@@ -13,20 +13,9 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import type { ConfigEnv, UserConfig } from 'vite'
 
-type StatType = 'public' | 'private'
+import { shouldAutoImportStatRuntime } from './runtimeEnable'
 
-/**
- * 根据 manifest 根节点 `uniStatistics` 判定统计是否开启。
- * 逻辑内聚在 uni-stat 插件内，避免依赖 HBuilderX 内置旧版 uni-cli-shared 的新导出。
- */
-function isUniStatisticsEnabled(inputDir: string): boolean {
-  const manifest = parseManifestJsonOnce(inputDir)
-  const root = manifest?.uniStatistics
-  if (!root) {
-    return true
-  }
-  return root.enable !== false
-}
+type StatType = 'public' | 'private'
 
 /**
  * 解析统计版本类型（公有版 / 私有版）。
@@ -157,7 +146,8 @@ export default () => [
           process.env.UNI_STATISTICS_CONFIG = JSON.stringify(statConfig)
           process.env.UNI_STAT_DEBUG = statConfig.debug ? 'true' : 'false'
           // 仅 manifest 根节点 `enable === false` 关闭统计；无节点或未配置 enable 默认开启。
-          isEnable = isUniStatisticsEnabled(inputDir)
+          // uni-app x 不支持自动 import（见 shouldAutoImportStatRuntime），但仍注入 define 配置。
+          isEnable = shouldAutoImportStatRuntime(inputDir)
           statType = resolveUniStatisticsType(statConfig)
 
           if (isEnable) {
