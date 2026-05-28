@@ -646,6 +646,9 @@
       "GetDeviceInfoResult"
     ],
     [
+      "GetEnterOptionsSync"
+    ],
+    [
       "GetFileInfo"
     ],
     [
@@ -680,6 +683,9 @@
     ],
     [
       "GetImageInfoSuccessCallback"
+    ],
+    [
+      "GetLaunchOptionsSync"
     ],
     [
       "GetLocation"
@@ -1351,6 +1357,9 @@
       "OnKeyboardHeightChangeCallbackResult"
     ],
     [
+      "OnLaunchOptions"
+    ],
+    [
       "OnLocationChange"
     ],
     [
@@ -1391,6 +1400,9 @@
     ],
     [
       "OnProgressUpdateResult"
+    ],
+    [
+      "OnShowOptions"
     ],
     [
       "OnSocketClose"
