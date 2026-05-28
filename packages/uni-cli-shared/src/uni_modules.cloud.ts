@@ -1,7 +1,6 @@
 import path from 'path'
 import fs from 'fs-extra'
 import { sync } from 'fast-glob'
-import type { Plugin } from 'vite'
 import { camelize, capitalize, normalizePath, requireUniHelpers } from './utils'
 import { genUTSComponentPublicInstanceIdent } from './easycom'
 import { M } from './messages'
@@ -596,6 +595,7 @@ export async function checkEncryptUniModules(
       const AdmZip = require('adm-zip')
       const zip = new AdmZip(downloadFile)
       zip.extractAllTo(cacheDir, true)
+      copyEncryptUniModulesDom2Bytes()
       fs.unlinkSync(zipFile)
       fs.unlinkSync(downloadFile)
       R({
@@ -654,6 +654,16 @@ export function copyEncryptUniModulesDom2Bytes() {
   if (process.env.UNI_APP_X_DOM2 !== 'true') {
     return false
   }
+  if (process.env.UNI_APP_X_VAPOR_RENDER_TARGET !== 'bytecode') {
+    return false
+  }
+  if (
+    !['app-android', 'app-ios', 'app-harmony'].includes(
+      process.env.UNI_UTS_PLATFORM
+    )
+  ) {
+    return false
+  }
   const cacheDir = process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   if (!cacheDir || !outputDir) {
@@ -671,16 +681,6 @@ export function copyEncryptUniModulesDom2Bytes() {
   // 云编译产出的 bytecode 在缓存目录中，这里只合并复制到当前编译输出目录。
   fs.copySync(sourceBytesDir, outputBytesDir, { overwrite: true })
   return true
-}
-
-export function uniEncryptUniModulesDom2BytesPlugin(): Plugin {
-  return {
-    name: 'uni:uni_modules-d-dom2-bytes',
-    apply: 'build',
-    writeBundle() {
-      copyEncryptUniModulesDom2Bytes()
-    },
-  }
 }
 
 const uniComponentPrefix = 'uniComponent://'
