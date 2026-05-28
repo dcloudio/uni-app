@@ -391,6 +391,14 @@
 		transition-property: opacity, transform;
 	}
 
+	/* #ifdef WEB */
+	@media screen and (min-width: 768px) {
+		.uni-modal-dialog {
+			max-width: 556px;
+		}
+	}
+	/* #endif */
+
 	.uni-modal-dialog.uni-modal-dialog--show {
 		opacity: 1;
 		transform: scale(1);
