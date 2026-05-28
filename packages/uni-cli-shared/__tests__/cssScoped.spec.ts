@@ -12,6 +12,9 @@ describe('css scoped', () => {
     ).toBe(
       `<style scoped></style><style scoped></style><style  scoped></style>`
     )
+    expect(addScoped(`<style></style><style scoped lang="scss"></style>`)).toBe(
+      `<style scoped></style><style scoped lang="scss"></style>`
+    )
     expect(
       addScoped(`<template><view>{{ '<style>12</style>' }}</view></template>`)
     ).toBe(`<template><view>{{ '<style>12</style>' }}</view></template>`)
