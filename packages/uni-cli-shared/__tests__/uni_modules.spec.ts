@@ -88,16 +88,46 @@ describe('uni_modules:cloud', () => {
 })
 
 describe('uni_modules:cloud dom2 bytes', () => {
+  const envKeys = [
+    'UNI_APP_X_DOM2',
+    'UNI_APP_X_VAPOR_RENDER_TARGET',
+    'UNI_UTS_PLATFORM',
+    'UNI_MODULES_ENCRYPT_CACHE_DIR',
+    'UNI_OUTPUT_DIR',
+    'UNI_COMPILER_VERSION',
+    'UNI_HELPERS_DIR',
+    'UNI_HBUILDERX_PLUGINS',
+    'UNI_INPUT_DIR',
+  ] as const
+
+  function snapshotEnv() {
+    return envKeys.reduce((res, key) => {
+      res[key] = process.env[key]
+      return res
+    }, {} as Record<(typeof envKeys)[number], string | undefined>)
+  }
+
+  function restoreEnv(env: ReturnType<typeof snapshotEnv>) {
+    envKeys.forEach((key) => {
+      const value = env[key]
+      if (value === undefined) {
+        Reflect.deleteProperty(process.env, key)
+      } else {
+        ;(process.env as Record<string, string | undefined>)[key] = value
+      }
+    })
+  }
+
   test('copies cloud compile bytes to output dir in dom2', () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-dom2-bytes-'))
     const cacheDir = path.join(tempDir, 'cache')
     const outputDir = path.join(tempDir, 'output')
-    const oldDom2 = process.env.UNI_APP_X_DOM2
-    const oldCacheDir = process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
-    const oldOutputDir = process.env.UNI_OUTPUT_DIR
+    const oldEnv = snapshotEnv()
 
     try {
       process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'bytecode'
+      process.env.UNI_UTS_PLATFORM = 'app-android'
       process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = cacheDir
       process.env.UNI_OUTPUT_DIR = outputDir
 
@@ -118,21 +148,7 @@ describe('uni_modules:cloud dom2 bytes', () => {
         )
       ).toBe('page')
     } finally {
-      if (oldDom2 === undefined) {
-        Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
-      } else {
-        process.env.UNI_APP_X_DOM2 = oldDom2
-      }
-      if (oldCacheDir === undefined) {
-        Reflect.deleteProperty(process.env, 'UNI_MODULES_ENCRYPT_CACHE_DIR')
-      } else {
-        process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = oldCacheDir
-      }
-      if (oldOutputDir === undefined) {
-        Reflect.deleteProperty(process.env, 'UNI_OUTPUT_DIR')
-      } else {
-        process.env.UNI_OUTPUT_DIR = oldOutputDir
-      }
+      restoreEnv(oldEnv)
       fs.removeSync(tempDir)
     }
   })
@@ -141,12 +157,12 @@ describe('uni_modules:cloud dom2 bytes', () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-dom2-bytes-'))
     const cacheDir = path.join(tempDir, 'cache')
     const outputDir = path.join(tempDir, 'output')
-    const oldDom2 = process.env.UNI_APP_X_DOM2
-    const oldCacheDir = process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
-    const oldOutputDir = process.env.UNI_OUTPUT_DIR
+    const oldEnv = snapshotEnv()
 
     try {
       Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+      process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'bytecode'
+      process.env.UNI_UTS_PLATFORM = 'app-android'
       process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = cacheDir
       process.env.UNI_OUTPUT_DIR = outputDir
 
@@ -157,21 +173,145 @@ describe('uni_modules:cloud dom2 bytes', () => {
         false
       )
     } finally {
-      if (oldDom2 === undefined) {
-        Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
-      } else {
-        process.env.UNI_APP_X_DOM2 = oldDom2
-      }
-      if (oldCacheDir === undefined) {
-        Reflect.deleteProperty(process.env, 'UNI_MODULES_ENCRYPT_CACHE_DIR')
-      } else {
-        process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = oldCacheDir
-      }
-      if (oldOutputDir === undefined) {
-        Reflect.deleteProperty(process.env, 'UNI_OUTPUT_DIR')
-      } else {
-        process.env.UNI_OUTPUT_DIR = oldOutputDir
-      }
+      restoreEnv(oldEnv)
+      fs.removeSync(tempDir)
+    }
+  })
+
+  test('skips copy on non app platform', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-dom2-bytes-'))
+    const cacheDir = path.join(tempDir, 'cache')
+    const outputDir = path.join(tempDir, 'output')
+    const oldEnv = snapshotEnv()
+
+    try {
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'bytecode'
+      process.env.UNI_UTS_PLATFORM = 'web'
+      process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = cacheDir
+      process.env.UNI_OUTPUT_DIR = outputDir
+
+      fs.outputFileSync(path.join(cacheDir, 'bytes', 'app.bin'), 'app')
+
+      expect(copyEncryptUniModulesDom2Bytes()).toBe(false)
+      expect(fs.existsSync(path.join(outputDir, 'bytes', 'app.bin'))).toBe(
+        false
+      )
+    } finally {
+      restoreEnv(oldEnv)
+      fs.removeSync(tempDir)
+    }
+  })
+
+  test('skips copy when vapor render target is nativecode', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-dom2-bytes-'))
+    const cacheDir = path.join(tempDir, 'cache')
+    const outputDir = path.join(tempDir, 'output')
+    const oldEnv = snapshotEnv()
+
+    try {
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'nativecode'
+      process.env.UNI_UTS_PLATFORM = 'app-android'
+      process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = cacheDir
+      process.env.UNI_OUTPUT_DIR = outputDir
+
+      fs.outputFileSync(path.join(cacheDir, 'bytes', 'app.bin'), 'app')
+
+      expect(copyEncryptUniModulesDom2Bytes()).toBe(false)
+      expect(fs.existsSync(path.join(outputDir, 'bytes', 'app.bin'))).toBe(
+        false
+      )
+    } finally {
+      restoreEnv(oldEnv)
+      fs.removeSync(tempDir)
+    }
+  })
+
+  test('copies bytes right after cloud download', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-dom2-bytes-'))
+    const inputDir = path.join(tempDir, 'input')
+    const cacheDir = path.join(tempDir, 'cache')
+    const outputDir = path.join(tempDir, 'output')
+    const helpersDir = path.join(tempDir, 'helpers')
+    const hbxPluginsDir = path.join(tempDir, 'hbx-plugins')
+    const pluginId = 'test-cloud-bytes'
+    const oldEnv = snapshotEnv()
+
+    try {
+      fs.ensureDirSync(cacheDir)
+      fs.ensureDirSync(path.join(inputDir, 'uni_modules', pluginId, 'encrypt'))
+      fs.outputJsonSync(
+        path.join(inputDir, 'uni_modules', pluginId, 'package.json'),
+        {
+          name: pluginId,
+          version: '1.0.0',
+        }
+      )
+      fs.outputFileSync(
+        path.join(
+          inputDir,
+          'uni_modules',
+          pluginId,
+          'components',
+          pluginId,
+          `${pluginId}.uvue`
+        ),
+        '<template />'
+      )
+      fs.outputFileSync(
+        path.join(helpersDir, 'index.js'),
+        `
+module.exports = {
+  R() {},
+  async C() {
+    return true
+  },
+  async D(url, file) {
+    const AdmZip = require('adm-zip')
+    const zip = new AdmZip()
+    zip.addFile('bytes/app.bin', Buffer.from('app'))
+    zip.writeZip(file)
+  },
+  async U() {
+    return 'https://example.com/download.zip'
+  },
+}
+`
+      )
+      fs.outputFileSync(
+        path.join(hbxPluginsDir, 'uni_helpers/lib/bytenode.js'),
+        'module.exports = {}'
+      )
+
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'bytecode'
+      process.env.UNI_UTS_PLATFORM = 'app-android'
+      process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = cacheDir
+      process.env.UNI_OUTPUT_DIR = outputDir
+      process.env.UNI_COMPILER_VERSION = '4.17-test'
+      process.env.UNI_HELPERS_DIR = helpersDir
+      process.env.UNI_HBUILDERX_PLUGINS = hbxPluginsDir
+      process.env.UNI_INPUT_DIR = inputDir
+
+      await checkEncryptUniModules(inputDir, {
+        mode: 'development',
+        packType: 'debug',
+        compilerVersion: '4.17-test',
+        appid: '__UNI__TEST',
+        appname: 'test',
+        platform: 'app-android',
+        'uni-app-x': true,
+        vapor: true,
+        vaporRenderTarget: 'bytecode',
+        env: {},
+      })
+
+      expect(
+        fs.readFileSync(path.join(outputDir, 'bytes', 'app.bin'), 'utf8')
+      ).toBe('app')
+    } finally {
+      restoreEnv(oldEnv)
       fs.removeSync(tempDir)
     }
   })
