@@ -21637,10 +21637,6 @@ function resolveSetupReference(name, context) {
 }
 const dynamicKeys = ["indeterminate"];
 const NEEDS_QUOTES_RE = /[\s"'`=<>]/;
-function isDataProp(prop) {
-	const name = prop.key.content;
-	return prop.key.isStatic && name.length > 5 && name.startsWith("data-");
-}
 function transformNativeElement(node, propsResult, staticKey, singleRoot, context, getEffectIndex, omitEndTag, getOperationIndex) {
 	const isDom2 = !!context.options.platform;
 	if (isDom2) omitEndTag = false;
@@ -21681,9 +21677,8 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 				const props = propsResult[1];
 				const indicesToRemove = [];
 				for (let i = 0; i < props.length; i++) {
-					const prop = props[i];
-					const { key, values } = prop;
-					if (isDataProp(prop) || key.content.startsWith("change:") || changeProps.includes(key.content)) continue;
+					const { key, values } = props[i];
+					if (key.content.startsWith("change:") || changeProps.includes(key.content)) continue;
 					if (key.isStatic && values.length === 1 && !["class", "style"].includes(key.content)) {
 						let endLoc = values[0].loc;
 						if (endLoc === locStub) endLoc = key.loc;
@@ -21703,10 +21698,6 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 		for (const prop of propsResult[1]) {
 			const { key, values } = prop;
 			if (isDom2) {
-				if (isDataProp(prop)) {
-					datasetProps.push(prop);
-					continue;
-				}
 				if (key.content.startsWith("change:")) {
 					dynamicProps.push(key.content);
 					values[0].isStatic = false;
