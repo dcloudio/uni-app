@@ -354,7 +354,10 @@ function reportNewSession(
         tvc: number
       }
     )
-  } else if (!attachVisit) {
+  } else {
+    // 续会话（attachVisit=false），或同进程内冷启 lt=1 已发过又被二次触发
+    // （attachVisit=true 但 firstVisitEmittedInProcess 已 true）：都复用 renewal 字段，
+    // 确保 lt=1 始终携带 fvts/lvts/tvc，杜绝"裸 lt=1 缺 lvts 被服务端按新增计入"。
     visit = tryRun(
       () => buildVisitFieldsForSessionRenewal(now),
       undefined as unknown as {

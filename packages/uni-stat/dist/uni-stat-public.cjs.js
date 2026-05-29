@@ -684,10 +684,13 @@ const storage = {
  *   3. 写入早于上报，上报失败时无法回滚，下次启动状态错乱。
  *
  * 公有版严格契约：
- *   1. 三段拆分：`loadVisitSnapshot()` 纯读、`buildVisitFields()` 仅生成本次待写、
- *      `commitVisitOnAck()` 在上报 ack 后才落 storage。
- *   2. **禁止**任何函数同时写 fvts 与 lvts；fvts 仅在 `commitVisitOnAck` 中且只在
- *      "首次启动" 路径写一次，永不主动清 lvts。
+ *   1. 老用户三段拆分：`loadVisitSnapshot()` 纯读、`buildVisitFields()` 仅生成本次待写、
+ *      `commitVisitOnAck()` 在上报 ack 后才落 storage（仅推进 lvts，永不主动清 lvts）。
+ *   2. **新用户首条 lt=1 例外（保证"一生只计一次新增"）**：本条仍上报 `lvts=0`，但
+ *      `buildVisitFields` 会**立即**把基线 `fvts/lvts/tvc=now/now/1` 落库（对齐私有版
+ *      `get_last_visit_time` 的"读即写"）。这样本进程后续续会话、以及下次冷启动都会读到
+ *      `lvts=now`（非 0），不再被重复计为新增；首条即便上报失败也已由 retry 暂存重试，
+ *      不会丢失这唯一一次新增信号。**唯有卸载应用 / 清空缓存**清掉基线后才会重新计一次。
  *   3. `loadVisitSnapshot` 区分 "key 不存在" 与 "storage 异常"：
  *      - 不存在 → `lvts=0`，按新用户路径走（Yes new user）。
  *      - 异常   → 内存有上次 snapshot 时复用之；首次启动且异常 → fallback `lvts=0`，
@@ -760,7 +763,7 @@ function loadVisitSnapshot() {
         fvts,
         lvts,
         tvc,
-        isNewUser: fvts === 0 || lvts === 0,
+        isNewUser: lvts === 0,
         degraded,
     };
     if (degraded) {
@@ -784,11 +787,41 @@ function ensureLoaded() {
     return loaded;
 }
 /**
- * 生成本次启动要上报的 fvts/lvts/tvc 三元组（**不写 storage**）。
+ * 新用户首条 lt=1 的**乐观落库**：立即把基线 `fvts/lvts/tvc=now/now/1` 写入 storage，
+ * 并把内存 `loaded`/`committed` 刷新为"非新用户"基线。
+ *
+ * 目的：保证一台设备一生只上报一次 `lvts=0`（=只计一次新增）。对齐私有版
+ * `get_first_visit_time`/`get_last_visit_time` 的"读即写"语义。
+ *
+ * 与 ack-commit 的关系：
+ *   - 首条 lt=1 仍按 `lvts=0` 上报（在 `buildVisitFields` 里单独构造 pending 返回）；
+ *     即便该条上报失败，也已由 `pipeline/retry` 暂存重试，唯一一次新增信号不丢。
+ *   - 本进程后续续会话（`buildVisitFieldsForSessionRenewal`）命中 `committed` → lvts=now（非 0）；
+ *     下次冷启动 `loadVisitSnapshot` 读到 storage 里的 lvts=now → `isNewUser=false`。
+ *   - 唯有卸载应用 / 清空缓存清掉基线后，才会重新计一次新增。
+ */
+function persistNewUserBaseline(now) {
+    storage.set(KEY_FVTS, now);
+    storage.set(KEY_LVTS, now);
+    storage.set(KEY_TVC, 1);
+    const baseline = {
+        fvts: now,
+        lvts: now,
+        tvc: 1,
+        isNewUser: false,
+        degraded: false,
+    };
+    loaded = baseline;
+    committed = baseline;
+}
+/**
+ * 生成本次启动要上报的 fvts/lvts/tvc 三元组。
  *
  * 推进规则：
- *   - 新用户（loaded.isNewUser）：本次 fvts=now, lvts=0（仍上报 0 表示新用户），tvc=1。
- *   - 老用户：fvts 维持 loaded.fvts；lvts 上报 loaded.lvts（"上一次"，不是 now）；tvc=loaded.tvc+1。
+ *   - 新用户（loaded.isNewUser）：本次上报 fvts=now, lvts=0（0 表示新增），tvc=1；
+ *     **同时立即落库基线**（见 `persistNewUserBaseline`），确保后续不再重复计新增。
+ *   - 老用户：**不写 storage**；fvts 维持 loaded.fvts；lvts 上报 loaded.lvts（"上一次"，
+ *     不是 now）；tvc=loaded.tvc+1；真正落库由 `commitVisitOnAck` 在 ack 后推进。
  *
  * 注意：同一进程内只允许调用一次（参考 `domain/session` 设计）；cst=2/3 新会话应走
  * `buildVisitFieldsForSessionRenewal`。这里通过 `buildCalledInProcess` 哨兵防止误用，
@@ -803,6 +836,7 @@ function buildVisitFields(now) {
     buildCalledInProcess = true;
     if (snap.isNewUser) {
         pending = { fvts: now, lvts: 0, tvc: 1, now };
+        persistNewUserBaseline(now);
     }
     else {
         pending = {
@@ -837,15 +871,21 @@ function buildVisitFieldsForSessionRenewal(now) {
     }
     else if (lastBuilt) {
         fvts = lastBuilt.fvts;
-        lvts = lastBuilt.lvts;
+        // 防御：新用户冷启首条 lt=1（lvts=0）尚未 ack 时，本进程后续续会话不能再上报 lvts=0，
+        // 否则同一新设备被重复计新增。此时用"本次启动时间"(=fvts) 作为上一次访问时间。
+        // 正常路径下 buildVisitFields 已落库基线并置 committed，会走上面的 committed 分支。
+        lvts = lastBuilt.lvts !== 0 ? lastBuilt.lvts : lastBuilt.fvts;
         tvc = lastBuilt.tvc;
     }
     else {
         const snap = ensureLoaded();
         if (snap.isNewUser) {
+            // 续会话成为本进程首条 lt=1 且命中新用户（罕见：未走过冷启 build）：本条仍按
+            // lvts=0 计一次新增，并立即落库基线，保证只计一次。
             fvts = now;
             lvts = 0;
             tvc = 1;
+            persistNewUserBaseline(now);
         }
         else {
             fvts = snap.fvts;
@@ -2120,7 +2160,10 @@ function reportNewSession(c, _cst, scene, now, attachVisit, url = '') {
         firstVisitEmittedInProcess = true;
         visit = tryRun(() => buildVisitFields(now), undefined);
     }
-    else if (!attachVisit) {
+    else {
+        // 续会话（attachVisit=false），或同进程内冷启 lt=1 已发过又被二次触发
+        // （attachVisit=true 但 firstVisitEmittedInProcess 已 true）：都复用 renewal 字段，
+        // 确保 lt=1 始终携带 fvts/lvts/tvc，杜绝"裸 lt=1 缺 lvts 被服务端按新增计入"。
         visit = tryRun(() => buildVisitFieldsForSessionRenewal(now), undefined);
     }
     const payload = {

@@ -117,15 +117,31 @@ describe('domain/visit/firstVisit（缺陷 #5 修复矩阵 T1~T9）', () => {
       removeSpy.mockRestore()
     })
 
-    test('build/load 期间不调 setStorageSync', () => {
+    test('老用户 build 期间不调 setStorageSync（仅 ack 后才落库）', () => {
+      handle.storage.setStorageSync(KFV, T1)
+      handle.storage.setStorageSync(KLV, T1)
+      handle.storage.setStorageSync(KTV, 1)
       loadVisitSnapshot()
       const setSpy = jest.spyOn(
         handle.uni as { setStorageSync: jest.Mock },
         'setStorageSync'
       )
-      buildVisitFields(T1)
+      buildVisitFields(T2)
       expect(setSpy).not.toHaveBeenCalled()
       setSpy.mockRestore()
+    })
+
+    test('新用户 build 立即落库基线 {fvts:now, lvts:now, tvc:1}（一生只计一次新增）', () => {
+      loadVisitSnapshot()
+      const fields = buildVisitFields(T1)
+      // 首条 lt=1 仍上报 lvts=0（唯一一次新增）
+      expect(fields).toEqual({ fvts: T1, lvts: 0, tvc: 1 })
+      // 但 storage 已被乐观写入基线，使后续不再被算成新增
+      expect(handle.storage.__inspect()).toEqual({
+        [KFV]: T1,
+        [KLV]: T1,
+        [KTV]: 1,
+      })
     })
   })
 
@@ -143,23 +159,30 @@ describe('domain/visit/firstVisit（缺陷 #5 修复矩阵 T1~T9）', () => {
     })
   })
 
-  describe('T2 新用户首启 + 上报失败', () => {
-    test('上报 lvts=0；rollback 后 storage 仍为空', () => {
+  describe('T2 新用户首启 + 上报失败（乐观落库，确保只计一次新增）', () => {
+    test('首条上报 lvts=0；build 已落库基线，rollback 不回滚 storage', () => {
       loadVisitSnapshot()
       const fields = buildVisitFields(T1)
       expect(fields.lvts).toBe(0)
       rollbackPendingVisit()
-      expect(handle.storage.__inspect()).toEqual({})
+      // 与旧契约相反：基线已在 build 落库，首条上报失败也不会丢失这唯一一次新增信号
+      // （失败批次由 pipeline/retry 暂存重试），且下次启动不再重复计新增。
+      expect(handle.storage.__inspect()).toEqual({
+        [KFV]: T1,
+        [KLV]: T1,
+        [KTV]: 1,
+      })
     })
 
-    test('rollback 后下次启动 loadVisitSnapshot 仍按新用户', () => {
+    test('rollback 后下次启动按老用户（不再重复计新增）', () => {
       loadVisitSnapshot()
       buildVisitFields(T1)
       rollbackPendingVisit()
       __resetState()
       storage.__resetCache()
       const snap = loadVisitSnapshot()
-      expect(snap.isNewUser).toBe(true)
+      expect(snap.isNewUser).toBe(false)
+      expect(snap.lvts).toBe(T1)
     })
   })
 
@@ -311,12 +334,49 @@ describe('domain/visit/firstVisit（缺陷 #5 修复矩阵 T1~T9）', () => {
       expect(handle.storage.__inspect()).toEqual({})
     })
 
-    test('rollback 后 commit → noop', () => {
+    test('rollback 后 commit → noop（新用户基线已在 build 落库，commit 不再额外写）', () => {
       loadVisitSnapshot()
       buildVisitFields(T1)
       rollbackPendingVisit()
       commitVisitOnAck(T1)
-      expect(handle.storage.__inspect()).toEqual({})
+      expect(handle.storage.__inspect()).toEqual({
+        [KFV]: T1,
+        [KLV]: T1,
+        [KTV]: 1,
+      })
+    })
+  })
+
+  describe('一生只计一次新增（新增>活跃 修复回归）', () => {
+    test('路径A：新用户首条 lt=1 未 ack，进程内续会话(cst=2/3)不再上报 lvts=0', () => {
+      loadVisitSnapshot()
+      const first = buildVisitFields(T1)
+      expect(first.lvts).toBe(0)
+      // 故意不 commit（模拟首条尚未 ack）
+      const renewal = buildVisitFieldsForSessionRenewal(T2)
+      expect(renewal.lvts).not.toBe(0)
+      expect(renewal.lvts).toBe(T1)
+    })
+
+    test('路径B：新用户首条 lt=1 未 ack，进程被杀重启后不再算新增', () => {
+      loadVisitSnapshot()
+      buildVisitFields(T1)
+      // 不 commit，直接模拟下次冷启动（清内存状态，但 storage 保留 build 落库的基线）
+      __resetState()
+      const snap = loadVisitSnapshot()
+      expect(snap.isNewUser).toBe(false)
+      const fields = buildVisitFields(T2)
+      expect(fields.lvts).toBe(T1)
+      expect(fields.lvts).not.toBe(0)
+    })
+
+    test('lvts 有效但 fvts 缺失（迁移脏数据）→ 仍按老用户上报真实 lvts，不计新增', () => {
+      handle.storage.setStorageSync(KLV, T1)
+      handle.storage.setStorageSync(KTV, 3)
+      const snap = loadVisitSnapshot()
+      expect(snap.isNewUser).toBe(false)
+      const fields = buildVisitFields(T2)
+      expect(fields.lvts).toBe(T1)
     })
   })
 })
