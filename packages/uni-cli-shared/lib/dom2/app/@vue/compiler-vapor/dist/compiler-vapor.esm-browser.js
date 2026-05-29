@@ -21668,7 +21668,8 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 			node,
 			element: context.reference(),
 			props: dynamicArgs,
-			tag
+			tag,
+			root: singleRoot && context.effectiveParent === context.root && context.options.componentType === "component"
 		}, getEffectIndex);
 	} else {
 		const changeProps = [];
