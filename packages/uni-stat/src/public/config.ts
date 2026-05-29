@@ -129,7 +129,7 @@ export interface ImageReportDefaults {
 }
 
 export const IMAGE_REPORT_DEFAULTS: ImageReportDefaults = {
-  host: 'https://tls-cn-beijing.volces.com',
+  host: 'https://tongji-collector.dcloud.net.cn',
   /** 正式环境 */
   projectId: '964f0397-af5d-45bf-99d6-8fb3500d7849',
   topicId: '8563e231-f4cd-4ab0-8870-917e4b04e810',

@@ -34,7 +34,7 @@ const PAYLOAD: ReportPayload = {
   _id: 'b1',
 }
 
-const HOST = 'https://tls-cn-beijing.volces.com'
+const HOST = 'https://tongji-collector.dcloud.net.cn'
 const PID = 'pid-x'
 const TID = 'tid-y'
 const noSleep = (): Promise<void> => Promise.resolve()

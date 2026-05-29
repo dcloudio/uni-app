@@ -42,7 +42,7 @@ const uniStatLog = once((text: string) => {
 const MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT = true
 
 /** 公有版小程序 POST 上报域名（与 `public/config.ts#IMAGE_REPORT_DEFAULTS.host` 一致）。 */
-const STAT_MP_REQUEST_DOMAIN = 'tls-cn-beijing.volces.com'
+const STAT_MP_REQUEST_DOMAIN = 'tongji-collector.dcloud.net.cn'
 
 const STAT_MP_DOMAIN_DOC_URL = 'https://uniapp.dcloud.net.cn/uni-stat-v2.html'
 

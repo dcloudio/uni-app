@@ -379,7 +379,7 @@ function isMpWeixinPreloadEnabled(opts: {
 }
 
 interface ImageChannelOptions {
-  /** 上报 host，例如 `https://tls-cn-beijing.volces.com`。缺省走 IMAGE_REPORT_DEFAULTS。 */
+  /** 上报 host，例如 `https://tongji-collector.dcloud.net.cn`。缺省走 IMAGE_REPORT_DEFAULTS。 */
   host?: string
   /** 火山 TLS 项目 ID。 */
   projectId?: string
