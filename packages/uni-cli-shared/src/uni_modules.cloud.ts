@@ -611,6 +611,7 @@ export async function checkEncryptUniModules(
       process.exit(0)
     }
   } else {
+    copyEncryptUniModulesDom2Bytes()
     const useUniAppXAndroidNative = isUniAppXAndroidNative(params.platform)
     // 仅旧版 Android x 需要在缓存命中时额外初始化
     if (useUniAppXAndroidNative) {
