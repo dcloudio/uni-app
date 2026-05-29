@@ -21425,7 +21425,8 @@ const transformVBind = (dir, node, context) => {
 		exp = createSimpleExpression("", true, loc);
 	}
 	const isComponent = node.tagType === 1;
-	exp = resolveExpression(exp, isComponent);
+	const isDom2DataAttr = context.options.platform && arg.isStatic && arg.content.length > 5 && arg.content.startsWith("data-");
+	exp = resolveExpression(exp, isComponent || isDom2DataAttr);
 	arg = resolveExpression(arg);
 	if (arg.isStatic && isReservedProp(arg.content)) return;
 	let camel = false;
@@ -21663,7 +21664,8 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 			node,
 			element: context.reference(),
 			props: dynamicArgs,
-			tag
+			tag,
+			root: singleRoot && context.effectiveParent === context.root && context.options.componentType === "component"
 		}, getEffectIndex);
 	} else {
 		const changeProps = [];
@@ -21691,6 +21693,7 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 		}
 		let hasStaticStyle = false;
 		let hasClass = false;
+		const datasetProps = [];
 		let prevWasQuoted = false;
 		for (const prop of propsResult[1]) {
 			const { key, values } = prop;
@@ -21749,6 +21752,17 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 			}
 		}
 		if (hasStaticStyle && hasClass) template += ` ext:style`;
+		if (datasetProps.length) {
+			const expressions = datasetProps.flatMap((prop) => prop.values);
+			context.registerEffect(expressions, {
+				type: 3,
+				node,
+				element: context.reference(),
+				prop: _objectSpread2(_objectSpread2({}, datasetProps[0]), {}, { datasetProps }),
+				tag,
+				root: singleRoot && context.effectiveParent === context.root && context.options.componentType === "component"
+			}, getEffectIndex);
+		}
 	}
 	template += `>` + context.childrenTemplate.join("");
 	if (!isVoidTag(tag) && !omitEndTag) template += `</${tag}>`;

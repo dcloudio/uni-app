@@ -22385,6 +22385,10 @@ export interface IRProp extends Omit<DirectiveTransformResult, "value"> {
     ident?: string;
     classRef?: string;
   };
+  /**
+  * fixed by uts synthetic data-* group for dom2 dataset callbacks.
+  */
+  datasetProps?: IRProp[];
 }
 export declare enum IRDynamicPropsKind {
   EXPRESSION = 0,
@@ -22556,6 +22560,10 @@ export interface SetPropIRNode extends BaseIRNode {
   element: number;
   prop: IRProp;
   tag: string;
+  /**
+  * fixed by uts 当前操作的目标元素是否为组件模板单根根节点，可用于后续 root-only 逻辑。
+  */
+  root?: boolean;
   isChangeProp?: boolean;
 }
 export interface SetDynamicPropsIRNode extends BaseIRNode {
@@ -22563,6 +22571,10 @@ export interface SetDynamicPropsIRNode extends BaseIRNode {
   element: number;
   props: IRProps[];
   tag: string;
+  /**
+  * fixed by uts 当前操作的目标元素是否为组件模板单根根节点，可用于后续 root-only 逻辑。
+  */
+  root?: boolean;
   /**
   * fixed by uts 当前整个动态绑定表达式对应的标识符，因为动态绑定需要在sharedData层对数据做格式化，不能单个生成标识符，不然需要在c层再格式化一次
   */

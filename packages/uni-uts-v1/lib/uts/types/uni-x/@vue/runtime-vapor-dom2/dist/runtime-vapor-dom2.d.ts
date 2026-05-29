@@ -322,8 +322,9 @@ export declare function renderSharedDataEffect(fn: () => void, noLifecycle?: boo
 export declare function nextSharedDataTick(fn: () => void): Promise<void>;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/sharedData/index.d.ts
+type SharedDataRootDatasetSource = "own" | "fallthrough";
 export declare function setSharedData<S extends UniSharedData, V>(sharedData: S, key: string, value: V): V;
-export declare function setSharedDataDynamicProps<S extends UniSharedData>(sharedData: S, key: string, value: any[]): UniSharedDataJSONObject;
+export declare function setSharedDataDynamicProps<S extends UniSharedData>(sharedData: S, key: string, value: any[], root?: boolean): UniSharedDataJSONObject;
 export declare function setSharedDataDynamicEvents<S extends UniSharedData>(sharedData: S, key: string, events: Record<string, (...args: any[]) => any>): UniSharedDataJSONObject;
 export declare function setSharedDataClass<S extends UniSharedData, V>(sharedData: S, key: string, value: V): string[];
 export declare function setSharedDataStyle<S extends UniSharedData, V>(sharedData: S, key: string, value: V): UniElementStyles;
@@ -332,6 +333,9 @@ export declare function setSharedDataEvent<S extends UniSharedData>(sharedData: 
 export declare function setSharedDataModel<S extends UniSharedData, V>(sharedData: S, key: string, get: () => V, set: (v: V) => void, modifiers?: {
   [key: string]: true;
 }): UniSharedDataFunctionEventListener;
+export declare function setSharedDataDataset(dataset: Record<string, unknown>): UniSharedDataFunctionSetTemplateRef;
+export declare function setSharedDataRootDataset(dataset: Record<string, unknown>, source: SharedDataRootDatasetSource): UniSharedDataFunctionSetTemplateRef;
+export declare function setSharedDataElementCallback<S extends UniSharedData>(sharedData: S, key: string, value: UniSharedDataFunctionSetTemplateRef): UniSharedDataFunctionSetTemplateRef;
 export declare function setSharedDataTemplateRef<S extends UniSharedData>(sharedData: S, key: string, value: UniSharedDataFunctionSetTemplateRef): UniSharedDataFunctionSetTemplateRef;
 export declare function toSharedDataBoolean(value: any | null): boolean;
 export declare function toSharedDataAttrBoolean(value: any | null, defaultValue?: boolean): boolean;
