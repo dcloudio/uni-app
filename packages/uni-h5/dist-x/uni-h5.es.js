@@ -8188,6 +8188,9 @@ function onPageShow(instance2, pageMeta) {
   updateBodyScopeId(instance2);
   updateCurPageCssVar(pageMeta);
   updateCurPageAttrs();
+  if (isDialogPageInstance(getPageInstanceByChild(instance2))) {
+    return;
+  }
   initPageScrollListener(instance2, pageMeta);
 }
 function onPageReady(instance2) {
