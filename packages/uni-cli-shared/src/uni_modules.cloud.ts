@@ -595,7 +595,7 @@ export async function checkEncryptUniModules(
       const AdmZip = require('adm-zip')
       const zip = new AdmZip(downloadFile)
       zip.extractAllTo(cacheDir, true)
-      copyEncryptUniModulesDom2Bytes()
+      await Promise.resolve(copyEncryptUniModulesDom2Bytes())
       fs.unlinkSync(zipFile)
       fs.unlinkSync(downloadFile)
       R({
@@ -611,7 +611,7 @@ export async function checkEncryptUniModules(
       process.exit(0)
     }
   } else {
-    copyEncryptUniModulesDom2Bytes()
+    await Promise.resolve(copyEncryptUniModulesDom2Bytes())
     const useUniAppXAndroidNative = isUniAppXAndroidNative(params.platform)
     // 仅旧版 Android x 需要在缓存命中时额外初始化
     if (useUniAppXAndroidNative) {
@@ -655,9 +655,6 @@ export function copyEncryptUniModulesDom2Bytes() {
   if (process.env.UNI_APP_X_DOM2 !== 'true') {
     return false
   }
-  if (process.env.UNI_APP_X_VAPOR_RENDER_TARGET !== 'bytecode') {
-    return false
-  }
   if (
     !['app-android', 'app-ios', 'app-harmony'].includes(
       process.env.UNI_UTS_PLATFORM
@@ -670,6 +667,19 @@ export function copyEncryptUniModulesDom2Bytes() {
   if (!cacheDir || !outputDir) {
     return false
   }
+  if (process.env.UNI_APP_X_VAPOR_RENDER_TARGET === 'bytecode') {
+    return copyEncryptUniModulesDom2BytesTarget(cacheDir, outputDir)
+  }
+  if (process.env.UNI_APP_X_VAPOR_RENDER_TARGET === 'nativecode') {
+    return copyEncryptUniModulesDom2CppTarget(cacheDir, outputDir)
+  }
+  return false
+}
+
+function copyEncryptUniModulesDom2BytesTarget(
+  cacheDir: string,
+  outputDir: string
+) {
   // 只依赖编译环境变量定位缓存目录和输出目录，避免拼接具体 unpackage/dist 路径。
   const sourceBytesDir = path.resolve(cacheDir, 'bytes')
   if (
@@ -682,6 +692,60 @@ export function copyEncryptUniModulesDom2Bytes() {
   // 云编译产出的 bytecode 在缓存目录中，这里只合并复制到当前编译输出目录。
   fs.copySync(sourceBytesDir, outputBytesDir, { overwrite: true })
   return true
+}
+
+async function copyEncryptUniModulesDom2CppTarget(
+  cacheDir: string,
+  outputDir: string
+) {
+  const sourceCppDir = path.resolve(cacheDir, 'cpp')
+  if (
+    !fs.existsSync(sourceCppDir) ||
+    !fs.statSync(sourceCppDir).isDirectory()
+  ) {
+    return false
+  }
+  const outputCppDir =
+    process.env.UNI_APP_X_DOM2_CPP_DIR || path.resolve(outputDir, 'cpp')
+
+  // nativecode 的 cpp/h 暂时不走 DUM 解密，直接复制云端产物。
+  // const cppFiles = sync('**/*.{cpp,h}', {
+  //   absolute: false,
+  //   cwd: sourceCppDir,
+  //   onlyFiles: true,
+  // }).filter((file) => !isIgnoreDom2CppFile(file))
+  // if (cppFiles.length) {
+  //   const files = cppFiles.reduce((files, file) => {
+  //     files[path.resolve(sourceCppDir, file)] = path.resolve(outputCppDir, file)
+  //     return files
+  //   }, {} as Record<string, string>)
+  //   const { DUM } = requireUniHelpers()
+  //   const errMsg = await DUM(path.basename(sourceCppDir), files)
+  //   if (errMsg) {
+  //     console.error(errMsg)
+  //     process.exit(0)
+  //   }
+  // }
+
+  // cpp 目录保持原目录结构直接复制，shared_data_init.h 由当前编译流程生成，不复制云端缓存版本。
+  fs.copySync(sourceCppDir, outputCppDir, {
+    filter(src) {
+      if (fs.statSync(src).isDirectory()) {
+        return true
+      }
+      // shared_data_init.h 由当前编译生成，不能复制云端缓存里的旧文件覆盖本地结果。
+      if (isIgnoreDom2CppFile(src)) {
+        return false
+      }
+      return true
+    },
+    overwrite: true,
+  })
+  return true
+}
+
+function isIgnoreDom2CppFile(filename: string) {
+  return path.basename(filename) === 'shared_data_init.h'
 }
 
 const uniComponentPrefix = 'uniComponent://'
