@@ -98,6 +98,7 @@ describe('uni_modules:cloud dom2 bytes', () => {
     'UNI_HELPERS_DIR',
     'UNI_HBUILDERX_PLUGINS',
     'UNI_INPUT_DIR',
+    'UNI_APP_X_DOM2_CPP_DIR',
   ] as const
 
   function snapshotEnv() {
@@ -116,6 +117,14 @@ describe('uni_modules:cloud dom2 bytes', () => {
         ;(process.env as Record<string, string | undefined>)[key] = value
       }
     })
+  }
+
+  function mockCloudHelperCode(extraMethods = '') {
+    return `
+module.exports = {
+${extraMethods}
+}
+`
   }
 
   test('copies cloud compile bytes to output dir in dom2', () => {
@@ -203,7 +212,7 @@ describe('uni_modules:cloud dom2 bytes', () => {
     }
   })
 
-  test('skips copy when vapor render target is nativecode', () => {
+  test('skips copy when nativecode cpp cache is missing', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-dom2-bytes-'))
     const cacheDir = path.join(tempDir, 'cache')
     const outputDir = path.join(tempDir, 'output')
@@ -218,10 +227,63 @@ describe('uni_modules:cloud dom2 bytes', () => {
 
       fs.outputFileSync(path.join(cacheDir, 'bytes', 'app.bin'), 'app')
 
-      expect(copyEncryptUniModulesDom2Bytes()).toBe(false)
+      await expect(
+        Promise.resolve(copyEncryptUniModulesDom2Bytes())
+      ).resolves.toBe(false)
       expect(fs.existsSync(path.join(outputDir, 'bytes', 'app.bin'))).toBe(
         false
       )
+    } finally {
+      restoreEnv(oldEnv)
+      fs.removeSync(tempDir)
+    }
+  })
+
+  test('copies cloud compile cpp to dom2 cpp dir in nativecode', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-dom2-cpp-'))
+    const cacheDir = path.join(tempDir, 'cache')
+    const outputDir = path.join(tempDir, 'output')
+    const cppDir = path.join(tempDir, 'dom2-cpp')
+    const helpersDir = path.join(tempDir, 'helpers')
+    const oldEnv = snapshotEnv()
+
+    try {
+      fs.outputFileSync(path.join(cacheDir, 'cpp', 'App.cpp'), 'app-cpp')
+      fs.outputFileSync(path.join(cacheDir, 'cpp', 'include', 'App.h'), 'app-h')
+      fs.outputFileSync(
+        path.join(cacheDir, 'cpp', 'shared_data_init.h'),
+        'shared-data'
+      )
+      fs.outputFileSync(
+        path.join(cacheDir, 'cpp', 'assets', 'config.json'),
+        '{"name":"app"}'
+      )
+      fs.outputFileSync(
+        path.join(helpersDir, 'index.js'),
+        mockCloudHelperCode()
+      )
+
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'nativecode'
+      process.env.UNI_UTS_PLATFORM = 'app-android'
+      process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = cacheDir
+      process.env.UNI_OUTPUT_DIR = outputDir
+      process.env.UNI_APP_X_DOM2_CPP_DIR = cppDir
+      process.env.UNI_HELPERS_DIR = helpersDir
+
+      await expect(
+        Promise.resolve(copyEncryptUniModulesDom2Bytes())
+      ).resolves.toBe(true)
+      expect(fs.readFileSync(path.join(cppDir, 'App.cpp'), 'utf8')).toBe(
+        'app-cpp'
+      )
+      expect(
+        fs.readFileSync(path.join(cppDir, 'include', 'App.h'), 'utf8')
+      ).toBe('app-h')
+      expect(
+        fs.readFileSync(path.join(cppDir, 'assets', 'config.json'), 'utf8')
+      ).toBe('{"name":"app"}')
+      expect(fs.existsSync(path.join(cppDir, 'shared_data_init.h'))).toBe(false)
     } finally {
       restoreEnv(oldEnv)
       fs.removeSync(tempDir)
@@ -310,6 +372,99 @@ module.exports = {
       expect(
         fs.readFileSync(path.join(outputDir, 'bytes', 'app.bin'), 'utf8')
       ).toBe('app')
+    } finally {
+      restoreEnv(oldEnv)
+      fs.removeSync(tempDir)
+    }
+  })
+
+  test('copies cpp right after cloud download in nativecode', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-dom2-cpp-'))
+    const inputDir = path.join(tempDir, 'input')
+    const cacheDir = path.join(tempDir, 'cache')
+    const outputDir = path.join(tempDir, 'output')
+    const cppDir = path.join(tempDir, 'dom2-cpp')
+    const helpersDir = path.join(tempDir, 'helpers')
+    const hbxPluginsDir = path.join(tempDir, 'hbx-plugins')
+    const pluginId = 'test-cloud-cpp'
+    const oldEnv = snapshotEnv()
+
+    try {
+      fs.ensureDirSync(cacheDir)
+      fs.ensureDirSync(path.join(inputDir, 'uni_modules', pluginId, 'encrypt'))
+      fs.outputJsonSync(
+        path.join(inputDir, 'uni_modules', pluginId, 'package.json'),
+        {
+          name: pluginId,
+          version: '1.0.0',
+        }
+      )
+      fs.outputFileSync(
+        path.join(
+          inputDir,
+          'uni_modules',
+          pluginId,
+          'components',
+          pluginId,
+          `${pluginId}.uvue`
+        ),
+        '<template />'
+      )
+      fs.outputFileSync(
+        path.join(helpersDir, 'index.js'),
+        mockCloudHelperCode(`  R() {},
+  async C() {
+    return true
+  },
+  async D(url, file) {
+    const AdmZip = require('adm-zip')
+    const zip = new AdmZip()
+    zip.addFile('cpp/App.cpp', Buffer.from('app-cpp'))
+    zip.addFile('cpp/include/App.h', Buffer.from('app-h'))
+    zip.addFile('cpp/shared_data_init.h', Buffer.from('shared-data'))
+    zip.writeZip(file)
+  },
+  async U() {
+    return 'https://example.com/download.zip'
+  },
+`)
+      )
+      fs.outputFileSync(
+        path.join(hbxPluginsDir, 'uni_helpers/lib/bytenode.js'),
+        'module.exports = {}'
+      )
+
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'nativecode'
+      process.env.UNI_UTS_PLATFORM = 'app-android'
+      process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = cacheDir
+      process.env.UNI_OUTPUT_DIR = outputDir
+      process.env.UNI_APP_X_DOM2_CPP_DIR = cppDir
+      process.env.UNI_COMPILER_VERSION = '4.17-test'
+      process.env.UNI_HELPERS_DIR = helpersDir
+      process.env.UNI_HBUILDERX_PLUGINS = hbxPluginsDir
+      process.env.UNI_INPUT_DIR = inputDir
+
+      await checkEncryptUniModules(inputDir, {
+        mode: 'development',
+        packType: 'debug',
+        compilerVersion: '4.17-test',
+        appid: '__UNI__TEST',
+        appname: 'test',
+        platform: 'app-android',
+        'uni-app-x': true,
+        vapor: true,
+        vaporRenderTarget: 'nativecode',
+        env: {},
+      })
+
+      expect(fs.readFileSync(path.join(cppDir, 'App.cpp'), 'utf8')).toBe(
+        'app-cpp'
+      )
+      expect(
+        fs.readFileSync(path.join(cppDir, 'include', 'App.h'), 'utf8')
+      ).toBe('app-h')
+      expect(fs.existsSync(path.join(cppDir, 'shared_data_init.h'))).toBe(false)
     } finally {
       restoreEnv(oldEnv)
       fs.removeSync(tempDir)
