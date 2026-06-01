@@ -443,7 +443,7 @@ describe.each(TEST_PRESETS)(
             keepAlive: false,
             params: [{ name: 'options', type: 'JSONObject' }],
           },
-          measureByJs: {
+          measure: {
             keepAlive: false,
             params: [{ name: 'callback', type: 'UTSCallback' }],
           },
@@ -495,7 +495,7 @@ describe.each(TEST_PRESETS)(
         expect.objectContaining({
           ins,
           type: 'method',
-          name: 'measureByJs',
+          name: 'measure',
           method: [{ name: 'callback', type: 'UTSCallback' }],
         }),
         expect.any(Function)
