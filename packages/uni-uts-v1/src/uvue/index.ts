@@ -27,8 +27,6 @@ import {
   runUVueKotlinDev,
 } from './kotlin'
 
-export * from './transforms'
-
 const DEFAULT_IMPORTS = [
   'kotlin.properties.Delegates',
   'io.dcloud.uts.Map',
