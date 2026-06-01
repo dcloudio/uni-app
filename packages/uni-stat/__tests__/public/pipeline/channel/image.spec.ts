@@ -12,7 +12,7 @@
 
 import {
   buildImageReportUrl,
-  buildWebTracksPostUrl,
+  buildWebTrackGetUrl,
   createImageChannel,
 } from '../../../../src/public/pipeline/channel/image'
 import {
@@ -55,14 +55,13 @@ describe('pipeline/channel/image', () => {
     delete (globalThis as { wx?: unknown }).wx
   })
 
-  test('IM1 buildImageReportUrl 拼接合规', () => {
+  test('IM1 buildImageReportUrl 信标路径为 /WebTrack.gif', () => {
     const url = buildImageReportUrl(PAYLOAD, {
       host: HOST,
       projectId: PID,
       topicId: TID,
       nowMs: () => 1700000001000,
     })
-    // 必带固定 query
     expect(url).toContain(HOST + '/WebTrack.gif?')
     expect(url).toContain('ProjectId=' + encodeURIComponent(PID))
     expect(url).toContain('TopicId=' + encodeURIComponent(TID))
@@ -72,15 +71,17 @@ describe('pipeline/channel/image', () => {
     expect(url).toContain('Logs=' + encodeURIComponent(PAYLOAD.requests))
   })
 
-  test('IM1.b buildWebTracksPostUrl 路径为 /WebTracks', () => {
-    const url = buildWebTracksPostUrl(HOST, PID, TID)
-    expect(url).toBe(
-      HOST +
-        '/WebTracks?ProjectId=' +
-        encodeURIComponent(PID) +
-        '&TopicId=' +
-        encodeURIComponent(TID)
-    )
+  test('IM1.b buildWebTrackGetUrl 官方路径为 /WebTrack', () => {
+    const url = buildWebTrackGetUrl(PAYLOAD, {
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      nowMs: () => 1700000001000,
+    })
+    expect(url).toContain(HOST + '/WebTrack?')
+    expect(url).not.toContain('.gif')
+    expect(url).toContain('ProjectId=' + encodeURIComponent(PID))
+    expect(url).toContain('Logs=' + encodeURIComponent(PAYLOAD.requests))
   })
 
   test('IM2 available()：三参齐全 → true，缺一返回 false', () => {
@@ -255,7 +256,8 @@ describe('pipeline/channel/image', () => {
       method: string
     }
     expect(arg.method).toBe('GET')
-    expect(arg.url).toContain('/WebTrack.gif?')
+    expect(arg.url).toContain('/WebTrack?')
+    expect(arg.url).not.toContain('.gif')
   })
 
   test('IM5 uni.request 失败 N 次 → 经 maxRetries 后 reject', async () => {
@@ -368,7 +370,7 @@ describe('pipeline/channel/image', () => {
     expect(ch.maxRequestBytes!()).toBe(1962)
   })
 
-  test('IM8.post 微信 preload 关闭：maxRequestBytes 为 POST 切片上限（4MiB）', () => {
+  test('IM8.post 微信 preload 关闭：maxRequestBytes 与 H5 一致（URL 反推）', () => {
     const ch = createImageChannel({
       host: HOST,
       projectId: PID,
@@ -377,18 +379,18 @@ describe('pipeline/channel/image', () => {
       rawPlatform: 'mp-weixin',
       mpWeixinPreloadReport: false,
     })
-    expect(ch.maxRequestBytes!()).toBe(4 * 1024 * 1024)
+    expect(ch.maxRequestBytes!()).toBe(1962)
   })
 
-  test('IM8.other 其它小程序：maxRequestBytes 为 POST 切片上限（4MiB）', () => {
+  test('IM8.other App：maxRequestBytes 与 H5 一致（URL 反推）', () => {
     const ch = createImageChannel({
       host: HOST,
       projectId: PID,
       topicId: TID,
-      ut: 'ali',
-      rawPlatform: 'mp-alipay',
+      ut: 'n',
+      rawPlatform: 'app',
     })
-    expect(ch.maxRequestBytes!()).toBe(4 * 1024 * 1024)
+    expect(ch.maxRequestBytes!()).toBe(1962)
   })
 
   test('IM8.b H5：maxRequestBytes 按 maxUrlLength 反推原文上限', () => {
@@ -419,7 +421,7 @@ describe('pipeline/channel/image', () => {
     expect(ch3.maxRequestBytes!()).toBe(512)
   })
 
-  test('IM10 非 H5：POST /WebTracks + 必选头 + JSON body（Logs 固定单对象字符串封装）', async () => {
+  test('IM10 App：uni.request GET /WebTrack（官方路径）', async () => {
     const requestSpy = jest.fn(
       ({ success }: { success: (res: { statusCode: number }) => void }) => {
         success({ statusCode: 200 })
@@ -431,10 +433,8 @@ describe('pipeline/channel/image', () => {
       host: HOST,
       projectId: PID,
       topicId: TID,
-      ut: 'wx',
-      rawPlatform: 'mp-weixin',
-      mpWeixinPreloadReport: false,
-      preferImageBeacon: false,
+      ut: 'n',
+      rawPlatform: 'app',
       sleep: noSleep,
     })
     await ch.send(PAYLOAD)
@@ -442,36 +442,15 @@ describe('pipeline/channel/image', () => {
     const arg = requestSpy.mock.calls[0][0] as unknown as {
       url: string
       method: string
-      data: string
-      header: Record<string, string>
     }
-    expect(arg.method).toBe('POST')
-    expect(arg.url).toContain('/WebTracks?')
-    expect(arg.url).toContain('ProjectId=' + encodeURIComponent(PID))
-    expect(arg.header['Content-Type']).toBe('application/json')
-    expect(arg.header['x-tls-bodyrawsize']).toMatch(/^\d+$/)
-    const body = JSON.parse(arg.data) as {
-      Source: string
-      Logs: Array<{ Logs: string }>
-    }
-    expect(body.Source).toBe('uniapp')
-    // Logs 固定为 1 个对象，且内层 Logs 为字符串化事件数组。
-    expect(body.Logs).toHaveLength(1)
-    const events = JSON.parse(body.Logs[0].Logs) as Array<{
-      lt: string
-      t: number
-      sk: string
-    }>
-    expect(events).toHaveLength(1)
-    expect(events[0].lt).toBe('1')
-    expect(events[0].t).toBe(1)
-    expect(events[0].sk).toBe('s1')
-    expect(Number(arg.header['x-tls-bodyrawsize'])).toBe(
-      new TextEncoder().encode(arg.data).length
-    )
+    expect(arg.method).toBe('GET')
+    expect(arg.url).toContain('/WebTrack?')
+    expect(arg.url).not.toContain('.gif')
+    expect(arg.url).toContain('Source=webImg')
+    expect(arg.url).toContain('Logs=' + encodeURIComponent(PAYLOAD.requests))
   })
 
-  test('IM10.b 非 H5：对象/数组型字段保留在内层 Logs 字符串中', async () => {
+  test('IM10.b 支付宝小程序：GET /WebTrack 保留 requests 原文中的嵌套字段', async () => {
     const requestSpy = jest.fn(
       ({ success }: { success: (res: { statusCode: number }) => void }) => {
         success({ statusCode: 200 })
@@ -489,46 +468,14 @@ describe('pipeline/channel/image', () => {
       host: HOST,
       projectId: PID,
       topicId: TID,
-      ut: 'wx',
-      rawPlatform: 'mp-weixin',
-      mpWeixinPreloadReport: false,
-      preferImageBeacon: false,
+      ut: 'ali',
+      rawPlatform: 'mp-alipay',
       sleep: noSleep,
     })
     await ch.send(payload)
-    const arg = requestSpy.mock.calls[0][0] as unknown as { data: string }
-    const body = JSON.parse(arg.data) as {
-      Logs: Array<{ Logs: string }>
-    }
-    const events = JSON.parse(body.Logs[0].Logs) as Array<{
-      custom: Record<string, unknown>
-      tags: string[]
-    }>
-    expect(events[0].custom).toEqual({ a: 1 })
-    expect(events[0].tags).toEqual(['x', 'y'])
-  })
-
-  test('IM11 非 H5：requests 非法 JSON → PermanentChannelError', async () => {
-    const requestSpy = jest.fn()
-    handle.uni.request = requestSpy
-
-    const ch = createImageChannel({
-      host: HOST,
-      projectId: PID,
-      topicId: TID,
-      ut: 'app',
-      sleep: noSleep,
-    })
-    const bad: ReportPayload = { ...PAYLOAD, requests: 'not-json' }
-    let caught: unknown
-    try {
-      await ch.send(bad)
-    } catch (e) {
-      caught = e
-    }
-    expect(isPermanentChannelError(caught)).toBe(true)
-    expect((caught as Error).message).toMatch(/上报数据 JSON 无效/)
-    expect(requestSpy).not.toHaveBeenCalled()
+    const arg = requestSpy.mock.calls[0][0] as unknown as { url: string }
+    expect(arg.url).toContain('/WebTrack?')
+    expect(arg.url).toContain('Logs=' + encodeURIComponent(payload.requests))
   })
 
   test('IM9 切片阈值 1962B 时，事件经 encodeURIComponent 后 URL 不超 6KB（含中文）', () => {
@@ -551,7 +498,7 @@ describe('pipeline/channel/image', () => {
       requests: json,
       _id: 'p1',
     }
-    const url = buildImageReportUrl(payload, {
+    const url = buildWebTrackGetUrl(payload, {
       host: HOST,
       projectId: PID,
       topicId: TID,
@@ -621,7 +568,7 @@ describe('pipeline/channel/image', () => {
     delete (globalThis as { wx?: unknown }).wx
   })
 
-  test('IM14 微信 preload 开启但无 API：回退 POST', async () => {
+  test('IM14 微信 preload 开启但无 API：回退 uni.request GET /WebTrack', async () => {
     delete (globalThis as { wx?: unknown }).wx
     const requestSpy = jest.fn(
       ({ success }: { success: (res: { statusCode: number }) => void }) => {
@@ -641,8 +588,13 @@ describe('pipeline/channel/image', () => {
     })
     await ch.send(PAYLOAD)
     expect(requestSpy).toHaveBeenCalledTimes(1)
-    const arg = requestSpy.mock.calls[0][0] as unknown as { method: string }
-    expect(arg.method).toBe('POST')
+    const arg = requestSpy.mock.calls[0][0] as unknown as {
+      method: string
+      url: string
+    }
+    expect(arg.method).toBe('GET')
+    expect(arg.url).toContain('/WebTrack?')
+    expect(arg.url).not.toContain('.gif')
   })
 
   test('IM7 host 末尾斜杠会被裁剪', () => {

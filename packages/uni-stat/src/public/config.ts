@@ -35,12 +35,12 @@ export const IMAGE_MAX_RETRIES = 2
 export const RETRY_BASE_DELAY_MS = 1000
 
 /**
- * 微信小程序是否用 `wx.preloadAssets` + `WebTrack.gif` GET 上报（与 H5 信标同路径）。
+ * 微信小程序是否用 `wx.preloadAssets` + `WebTrack.gif` GET 上报。
  *
- * - `true`（默认）：仅 `UNI_PLATFORM === 'mp-weixin'` 走 preload；其余小程序仍 POST。
- * - `false`：微信与其它非 H5 宿主统一走 `POST /WebTracks`。
+ * - `true`（默认）：`mp-weixin` 走 preload 信标；无 API 时回退 `uni.request` GET。
+ * - `false`：微信与其它宿主一样走 `uni.request` GET（query 与 H5 一致）。
  *
- * 可在 `createImageChannel({ mpWeixinPreloadReport: false })` 覆盖（测试 / 临时回退）。
+ * 可在 `createImageChannel({ mpWeixinPreloadReport: false })` 覆盖。
  */
 export const MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT = true
 
@@ -48,7 +48,7 @@ export const MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT = true
  * 微信 `wx.preloadAssets` 单次等待上限（ms）。
  *
  * 冷启动首包常慢于 10s（DNS/TLS/首连），而 image 通道默认 `timeoutMs=10000` 会先于
- * `success` 触发 SDK 超时；Network 里请求可能已是 200。默认放宽到 30s，POST 仍用 10s。
+ * `success` 触发 SDK 超时；Network 里请求可能已是 200。默认放宽到 30s，`uni.request` GET 仍用 10s。
  */
 export const MP_WEIXIN_PRELOAD_TIMEOUT_MS = 30_000
 
@@ -65,7 +65,7 @@ export const MP_WEIXIN_PRELOAD_FIRST_FLUSH_DELAY_MS = 2_000
  * 单条事件序列化后允许的最大字节数。
  *
  * 阈值取舍：
- *   - **仅 H5**：`WebTrack.gif` GET 的 URL 上限约 6KB（见 `docs/image-url-too-long-修复说明.md`）；
+ *   - GET 上报（`/WebTrack` / `/WebTrack.gif`）URL 上限约 6KB（见 `docs/image-url-too-long-修复说明.md`）；
  *     扣掉 host / ProjectId / TopicId / Source / Time 等固定 query 后，留给
  *     `Logs=encodeURIComponent(payload.requests)` 约 5.8KB 量级。
  *   - `encodeURIComponent` 对纯 ASCII 膨胀 ~1.05x，对中英混排 ~1.5–2x，对纯中文最坏 3x。
@@ -85,10 +85,8 @@ export const SINGLE_EVENT_MAX_BYTES = 4 * 1024
 /**
  * 单批 `requests`（已 `JSON.stringify(events)`）允许的最大字节数。
  *
- * **H5 / 微信 preload 信标** 与 `WebTrack.gif` URL 上限相关：`encodeURIComponent` 保守按 3x 估，
- * 4KB 原文与 collector、`createImageChannel` 的 `maxRequestBytes()` 取 min 后切片。
- * **其它非 H5** 走 `POST /WebTracks`，单批可更大（仍受本常量与 `BATCH_MAX_EVENTS` 约束）；
- * 详见 `docs/火山TLS-WebTracks上报说明.md`。
+ * 与 GET URL 长度上限相关：`encodeURIComponent` 保守按 3x 估，
+ * 本常量与 `createImageChannel.maxRequestBytes()` 取 min 后由 collector 切片。
  */
 export const BATCH_REQUESTS_MAX_BYTES = 4 * 1024
 
@@ -114,10 +112,9 @@ export const RETRY_MAX_ATTEMPTS = 5
  *   - `host`：日志服务对接的 region 域名（火山 TLS 接入点）
  *   - `projectId / topicId`：日志服务侧的项目 / 主题 ID（当前默认 **正式环境**）
  *
- * 同 host 下双路径（见 `pipeline/channel/image.ts` 与 `docs/火山TLS-WebTracks上报说明.md`）：
- *   - **H5 / 微信（`MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT`）**：`GET …/WebTrack.gif?…`
- *   - **其它非 H5**：`POST …/WebTracks?ProjectId&TopicId`（TLS 文档：`Content-Type: application/json`、
- *     必选头 `x-tls-bodyrawsize`、body `{ Source, Logs }`）
+ * 普通 GET：`/WebTrack?ProjectId&TopicId&Logs=…&Source=webImg&Time=…`（`uni.request`）。
+ * 信标：`/WebTrack.gif` 同参（H5 `Image`、微信 `preloadAssets`）。
+ * （原 POST 为 `/WebTracks` + JSON body，已废弃。）
  *
  * 内部测试场景仍可通过 `createImageChannel({host, projectId, topicId})` 直接覆盖
  * （参见 `pipeline/channel/image.ts`），但**不会**走 `manifest` / `installPublicStat`。

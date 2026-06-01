@@ -2,7 +2,7 @@ export { createCloudChannel } from './cloud'
 export { createHttpChannel } from './http'
 export {
   buildImageReportUrl,
-  buildWebTracksPostUrl,
+  buildWebTrackGetUrl,
   createImageChannel,
 } from './image'
 export { selectChannel } from './selector'
