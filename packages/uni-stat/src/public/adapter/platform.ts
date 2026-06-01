@@ -174,7 +174,7 @@ export function getPlatform(): Platform {
   return mapped
 }
 
-/** `ut` 短码 → 上行 `mpv` 中使用的宿主中文名（便于后台识别微信/支付宝等）。 */
+/** `ut` 短码 → 宿主中文可读名（历史遗留，上行 `mpv` 已改为宿主客户端版本号）。 */
 const STAT_UT_LABEL: Partial<Record<Platform, string>> = {
   wx: '微信',
   qq: 'QQ',
@@ -194,10 +194,7 @@ const STAT_UT_LABEL: Partial<Record<Platform, string>> = {
 }
 
 /**
- * 拼装上行 `mpv`：**仅宿主类型**可读名（与 `ut` 对齐），如微信 / 支付宝 / H5 / App。
- *
- * 操作系统归一标识见上行 **`p`**（`system.osP`）；ROM/系统展示名见上行 **`on`**（`system.on`）；
- * 客户端版本见 **`v`** 等字段，避免与 `mpv` 混写。
+ * 将 `ut` 短码映射为宿主中文可读名（历史遗留工具函数，上行 `mpv` 已改为宿主客户端版本号）。
  *
  * @param ut `getPlatform()` 短码（wx / ali / h5 / n …）。
  */

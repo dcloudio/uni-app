@@ -84,7 +84,7 @@ describe('domain/statData', () => {
         md: 'iPhone 15',
         sv: '17.4',
         mpsdk: '3.5.0',
-        mpv: 'H5',
+        mpv: '8.0.2',
         on: 'macOS',
         ut: 'h5',
         p: 'macos',
@@ -305,7 +305,7 @@ describe('domain/statData', () => {
       expect(data.did).toBe('uuid-1')
       expect(data.p).toBe('macos')
       expect(data.on).toBe('macOS')
-      expect(data.mpv).toBe('H5')
+      expect(data.mpv).toBe('8.0.2')
       expect(data.legitField).toBe('ok')
     })
   })

@@ -29,7 +29,6 @@ import type { LocationResult } from '../adapter/location'
 import type { NetResult } from '../adapter/network'
 import type { PackageInfo } from '../adapter/package'
 import type { Platform } from '../adapter/platform'
-import { formatMpvForStat } from '../adapter/platform'
 import type { SessionSnapshot } from './session/machine'
 
 /** 由 collector 在每次事件时构造，传入 builder。 */
@@ -139,7 +138,7 @@ export function createStatDataBuilder(deps: StatDataDeps) {
    *   - `p` ← `platform.p` 或 `system.osP`（仅操作系统 slug：`ios` / `android` …）
    *   - `on` ← `system.on`（ROM 展示名优先，否则 `osName`）
    *   - `mpsdk` ← `system.sdkVersion`
-   *   - `mpv` ← `formatMpvForStat(ut)`（仅宿主类型名：微信 / 支付宝 / H5 / App …）
+   *   - `mpv` ← `system.mpvHostVersion`（宿主客户端版本，与私有版 `sys.version` 同源）
    *   - `pr/ww/wh/sw/sh/lang` 来自 `locale`（实时取，修复缺陷 #18）
    *   - `lat/lng` 当前 LocationResult 仅含字符串经纬度，cn/pn/ct 留空待 adapter 扩展
    *
@@ -170,7 +169,7 @@ export function createStatDataBuilder(deps: StatDataDeps) {
       md: s(system.md),
       sv: s(system.sv),
       mpsdk: s(system.sdkVersion),
-      mpv: s(formatMpvForStat(platform.ut)),
+      mpv: s(system.mpvHostVersion),
       pr: n(locale.pr, 1),
       ww: n(locale.ww),
       wh: n(locale.wh),

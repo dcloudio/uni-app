@@ -39,8 +39,8 @@ export interface SystemInfoStatic {
   /** 应用 wgt 资源版本。 */
   appWgtVersion: string
   /**
-   * 小程序宿主客户端版本原始串（私有版 `sys.version`，即 `hostVersion ?? version`）。
-   * 仅作静态快照；上行 `v`/展示类字段按需取用，与 `mpv`（纯宿主类型名）解耦。
+   * 宿主客户端版本（私有版 `sys.version`，即 `hostVersion ?? version`）。
+   * 上行字段 `mpv` 直接使用此值（如微信 8.0.50、浏览器 UA 版本等）。
    */
   mpvHostVersion: string
   /**
