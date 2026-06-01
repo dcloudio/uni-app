@@ -29,6 +29,7 @@ import type { LocationResult } from '../adapter/location'
 import type { NetResult } from '../adapter/network'
 import type { PackageInfo } from '../adapter/package'
 import type { Platform } from '../adapter/platform'
+import type { WebInfo } from '../adapter/web'
 import type { SessionSnapshot } from './session/machine'
 
 /** 由 collector 在每次事件时构造，传入 builder。 */
@@ -98,6 +99,8 @@ export interface StatDataDeps {
   location: LocationResult
   /** 包信息（mpn/tdaid/pkn/an）。 */
   pkg: PackageInfo
+  /** H5 专用 Web 信息；非 H5 传 `{ domain: '' }`。 */
+  web: WebInfo
   /** 若需覆盖默认 `pkg.mpn`（如历史迁移），可显式传入。 */
   legacy?: { mpn?: string }
 }
@@ -139,6 +142,7 @@ export function createStatDataBuilder(deps: StatDataDeps) {
    *   - `on` ← `system.on`（ROM 展示名优先，否则 `osName`）
    *   - `mpsdk` ← `system.sdkVersion`
    *   - `mpv` ← `system.mpvHostVersion`（宿主客户端版本，与私有版 `sys.version` 同源）
+   *   - `domain` ← `web.domain`（H5 含协议域名，如 `https://www.example.com`，非 H5 为空串）
    *   - `pr/ww/wh/sw/sh/lang` 来自 `locale`（实时取，修复缺陷 #18）
    *   - `lat/lng` 当前 LocationResult 仅含字符串经纬度，cn/pn/ct 留空待 adapter 扩展
    *
@@ -155,6 +159,7 @@ export function createStatDataBuilder(deps: StatDataDeps) {
       location,
       pkg,
       legacy,
+      web,
     } = deps
     return {
       ak: s(config.ak),
@@ -183,6 +188,7 @@ export function createStatDataBuilder(deps: StatDataDeps) {
       tdaid: s(pkg.tdaid),
       pkn: s(pkg.pkn),
       an: s(pkg.an),
+      domain: s(web.domain),
     }
   }
 
@@ -288,6 +294,7 @@ export function createStatDataBuilder(deps: StatDataDeps) {
         'p',
         'on',
         'mpv',
+        'domain',
         'fvts',
         'lvts',
         'tvc',

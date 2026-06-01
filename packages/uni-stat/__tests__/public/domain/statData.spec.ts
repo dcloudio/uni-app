@@ -54,6 +54,7 @@ function makeDeps(overrides: Partial<StatDataDeps> = {}): StatDataDeps {
       net,
       location,
       pkg,
+      web: { domain: 'https://example.com' },
     } as StatDataDeps,
     overrides
   )
@@ -99,6 +100,7 @@ describe('domain/statData', () => {
         tdaid: 'wxabc',
         pkn: 'com.x.y',
         an: 'AppName',
+        domain: 'https://example.com',
       })
       // 旧字段不再出现在上行体（uuid/odid 已剔除）
       expect((data as Record<string, unknown>).uuid).toBeUndefined()
@@ -277,7 +279,7 @@ describe('domain/statData', () => {
       expect(data.id).toBe('btn1')
     })
 
-    test('custom 不能覆盖关键字段（含 p/on/mpv）', () => {
+    test('custom 不能覆盖关键字段（含 p/on/mpv/domain）', () => {
       const builder = createStatDataBuilder(makeDeps())
       const data = builder.build({
         lt: LT.Event,
@@ -292,6 +294,7 @@ describe('domain/statData', () => {
           p: 'freebsd',
           on: 'evil-os',
           mpv: 'evil-host',
+          domain: 'http://evil.com',
           fvts: 1,
           lvts: 1,
           tvc: 999,
@@ -306,7 +309,19 @@ describe('domain/statData', () => {
       expect(data.p).toBe('macos')
       expect(data.on).toBe('macOS')
       expect(data.mpv).toBe('8.0.2')
+      expect(data.domain).toBe('https://example.com')
       expect(data.legitField).toBe('ok')
+    })
+
+    test('非 H5 平台 domain 为空字符串', () => {
+      const builder = createStatDataBuilder(
+        makeDeps({
+          platform: { ut: 'wx' },
+          web: { domain: '' },
+        })
+      )
+      const data = builder.build({ lt: LT.Page, t: 1 })
+      expect(data.domain).toBe('')
     })
   })
 

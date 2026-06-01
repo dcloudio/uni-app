@@ -37,6 +37,7 @@ import { getPlatform, getRawPlatform } from '../adapter/platform'
 import { getLocaleAndScreen, getSystemInfo } from '../adapter/system'
 import { getUuid } from '../adapter/device'
 import { getPackageInfo } from '../adapter/package'
+import { getWebInfo } from '../adapter/web'
 import { handleData } from '../pipeline/serializer'
 import { installAllInterceptors } from '../interceptors'
 import { logger } from '../infra/logger'
@@ -384,6 +385,7 @@ export class StatApp {
         pkn: '',
         an: '',
       }),
+      web: tryRun(() => getWebInfo(), { domain: '' }),
     })
 
     const base: CollectorDeps = {

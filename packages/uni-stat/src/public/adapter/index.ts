@@ -75,3 +75,5 @@ export {
   type PushClientResult,
   getPushClientId,
 } from './push'
+
+export { type WebInfo, getWebDomain, getWebInfo } from './web'

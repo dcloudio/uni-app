@@ -974,7 +974,7 @@ function rollbackPendingVisit() {
  * 当前路由职责耦合。
  */
 const KEY_ENTRY = 'session:entryRoute';
-let cached$2;
+let cached$3;
 /**
  * 标记当前页为入口页。
  *
@@ -989,23 +989,23 @@ function markEntryPage(route) {
     if (existing)
         return;
     storage.set(KEY_ENTRY, route);
-    cached$2 = route;
+    cached$3 = route;
 }
 /**
  * 当前会话的入口路径；从内存优先取，未命中读 storage。
  */
 function getEntryRoute() {
-    if (cached$2 !== undefined)
-        return cached$2 || undefined;
+    if (cached$3 !== undefined)
+        return cached$3 || undefined;
     const r = storage.safeRead(KEY_ENTRY);
     if (!r.ok)
         return undefined;
     if (typeof r.value === 'string' && r.value.length > 0) {
-        cached$2 = r.value;
+        cached$3 = r.value;
         return r.value;
     }
     // 标注已查过，避免下次再 IO
-    cached$2 = '';
+    cached$3 = '';
     return undefined;
 }
 /**
@@ -1023,7 +1023,7 @@ function isEntry(route) {
  * session 切换时调用：清掉 entry，等待新会话第一次 pageShow 重新登记。
  */
 function clearEntry() {
-    cached$2 = '';
+    cached$3 = '';
     storage.remove(KEY_ENTRY);
 }
 
@@ -1536,7 +1536,7 @@ const DEFAULT_CONFIG = {
     pageInactiveTimeoutSec: 1800,
 };
 let config$1 = Object.assign({}, DEFAULT_CONFIG);
-let cached$1 = null;
+let cached$2 = null;
 /** 配置注入（runtime/install.ts 在启动时调一次）。 */
 function configure$1(c) {
     config$1 = Object.assign({}, DEFAULT_CONFIG, c);
@@ -1582,10 +1582,10 @@ function loadFromStorage() {
     };
 }
 function ensureCache() {
-    if (cached$1 !== null)
-        return cached$1;
-    cached$1 = loadFromStorage();
-    return cached$1;
+    if (cached$2 !== null)
+        return cached$2;
+    cached$2 = loadFromStorage();
+    return cached$2;
 }
 /**
  * 创建一个新 session，写入 storage 并返回新的 snapshot。
@@ -1614,7 +1614,7 @@ function createNew(now, sct, scene) {
     storage.set(KEY_LAST_ACTIVE, now);
     storage.set(KEY_BG_TS, 0);
     storage.set(KEY_LAST_SCENE, scene);
-    cached$1 = next;
+    cached$2 = next;
     return next;
 }
 /**
@@ -1654,9 +1654,9 @@ function ensureSession(t, ctx) {
         // 未超时：清 bgTs，更新 lastActive
         touch(now);
         storage.set(KEY_BG_TS, 0);
-        if (cached$1)
-            cached$1.bgTs = 0;
-        return { snapshot: cached$1, isNew: false, cst: 0 };
+        if (cached$2)
+            cached$2.bgTs = 0;
+        return { snapshot: cached$2, isNew: false, cst: 0 };
     }
     if (t === 'wx_scene_changed') {
         if (scene && scene !== snap.lastScene) {
@@ -1672,29 +1672,29 @@ function ensureSession(t, ctx) {
         return { snapshot: created, isNew: true, cst: CST.PageInactiveTimeout };
     }
     touch(now);
-    return { snapshot: cached$1, isNew: false, cst: 0 };
+    return { snapshot: cached$2, isNew: false, cst: 0 };
 }
 /**
  * 标记应用进入后台。写入 bgTs，供下次 app_show 判定超时。
  */
 function markBackground(now) {
-    if (!cached$1)
-        cached$1 = loadFromStorage();
-    if (!cached$1)
+    if (!cached$2)
+        cached$2 = loadFromStorage();
+    if (!cached$2)
         return;
     storage.set(KEY_BG_TS, now);
-    cached$1.bgTs = now;
+    cached$2.bgTs = now;
 }
 /**
  * 更新 lastActive；page_show / 用户操作时调用。
  */
 function touch(now) {
-    if (!cached$1)
-        cached$1 = loadFromStorage();
-    if (!cached$1)
+    if (!cached$2)
+        cached$2 = loadFromStorage();
+    if (!cached$2)
         return;
     storage.set(KEY_LAST_ACTIVE, now);
-    cached$1.lastActive = now;
+    cached$2.lastActive = now;
 }
 /**
  * 取下一个 seq；先递增 storage 中的 seq，再返回新值。
@@ -1702,12 +1702,12 @@ function touch(now) {
  * 失败兜底：若 storage 异常，仍以内存 cached.seq 自增；保证序号单调，但跨进程可能跳号。
  */
 function nextSeq() {
-    if (!cached$1)
-        cached$1 = loadFromStorage();
-    if (!cached$1)
+    if (!cached$2)
+        cached$2 = loadFromStorage();
+    if (!cached$2)
         return 0;
-    const next = cached$1.seq + 1;
-    cached$1.seq = next;
+    const next = cached$2.seq + 1;
+    cached$2.seq = next;
     storage.set(KEY_SEQ, next);
     return next;
 }
@@ -1723,12 +1723,12 @@ function getSnapshot() {
 function syncLastScene(scene) {
     if (!scene)
         return;
-    if (!cached$1)
-        cached$1 = loadFromStorage();
-    if (!cached$1)
+    if (!cached$2)
+        cached$2 = loadFromStorage();
+    if (!cached$2)
         return;
     storage.set(KEY_LAST_SCENE, scene);
-    cached$1.lastScene = scene;
+    cached$2.lastScene = scene;
 }
 
 /**
@@ -4330,6 +4330,7 @@ function createStatDataBuilder(deps) {
      *   - `on` ← `system.on`（ROM 展示名优先，否则 `osName`）
      *   - `mpsdk` ← `system.sdkVersion`
      *   - `mpv` ← `system.mpvHostVersion`（宿主客户端版本，与私有版 `sys.version` 同源）
+     *   - `domain` ← `web.domain`（H5 含协议域名，如 `https://www.example.com`，非 H5 为空串）
      *   - `pr/ww/wh/sw/sh/lang` 来自 `locale`（实时取，修复缺陷 #18）
      *   - `lat/lng` 当前 LocationResult 仅含字符串经纬度，cn/pn/ct 留空待 adapter 扩展
      *
@@ -4337,7 +4338,7 @@ function createStatDataBuilder(deps) {
      */
     function baseFields() {
         var _a, _b, _c;
-        const { config, platform, system, locale, device, net, location, pkg, legacy, } = deps;
+        const { config, platform, system, locale, device, net, location, pkg, legacy, web, } = deps;
         return {
             ak: s(config.ak),
             usv: s(config.usv),
@@ -4365,6 +4366,7 @@ function createStatDataBuilder(deps) {
             tdaid: s(pkg.tdaid),
             pkn: s(pkg.pkn),
             an: s(pkg.an),
+            domain: s(web.domain),
         };
     }
     /**
@@ -4475,6 +4477,7 @@ function createStatDataBuilder(deps) {
                 'p',
                 'on',
                 'mpv',
+                'domain',
                 'fvts',
                 'lvts',
                 'tvc',
@@ -4727,7 +4730,7 @@ function getLocaleAndScreen() {
  *   - `pkn`：原生包名 / bundleId（App）；小程序无独立包名时为空串，**不与** tdaid 混填。
  *   - `an`：应用展示名（App = plus.runtime.appname；小程序/H5 = `process.env.UNI_APP_NAME` 等）。
  */
-let cached = null;
+let cached$1 = null;
 function getUni$2() {
     const u = resolveUniRuntime();
     return u != null && typeof u === 'object' ? u : undefined;
@@ -4848,8 +4851,8 @@ function getH5AppName() {
  * 所有字段保证返回 `string`；缺失统一为 `''`，符合 `domain/statData.ts` 的字段处理约定。
  */
 function getPackageInfo() {
-    if (cached)
-        return cached;
+    if (cached$1)
+        return cached$1;
     const platform = getPlatform();
     let mpn = '';
     let tdaid = '';
@@ -4882,7 +4885,57 @@ function getPackageInfo() {
         an = getEnvAppName();
         mpn = '';
     }
-    cached = { mpn, tdaid, pkn, an };
+    cached$1 = { mpn, tdaid, pkn, an };
+    return cached$1;
+}
+
+/**
+ * H5 / Web 平台适配。
+ *
+ * 职责：采集仅 Web 端有意义的上行字段原料（如含协议的页面域名 `domain`）。
+ * 非 H5 或运行时无 `window.location` 时一律返回空串，不抛错。
+ */
+const EMPTY_WEB_INFO = { domain: '' };
+let cached = null;
+/**
+ * 从 `location` 解析上行 `domain`（`https://host` / `http://host` 形式）。
+ *
+ * 仅 `http:` / `https:` 协议有效；`file:` 等返回空串。
+ */
+function readWebDomainFromLocation(loc) {
+    const protocol = typeof loc.protocol === 'string' ? loc.protocol.toLowerCase() : '';
+    if (protocol !== 'http:' && protocol !== 'https:')
+        return '';
+    if (typeof loc.origin === 'string' && loc.origin.trim()) {
+        return loc.origin.trim();
+    }
+    const host = typeof loc.host === 'string' && loc.host.trim()
+        ? loc.host.trim()
+        : typeof loc.hostname === 'string'
+            ? loc.hostname.trim()
+            : '';
+    if (!host)
+        return '';
+    return `${protocol}//${host}`;
+}
+/**
+ * 读取 H5 页面 Web 信息。
+ *
+ * 非 H5、SSR 或无 `location` 时 `domain` 为空串。
+ * 结果在进程内缓存（SPA 内 origin 通常不变）。
+ */
+function getWebInfo() {
+    if (!isH5())
+        return EMPTY_WEB_INFO;
+    if (cached !== null)
+        return cached;
+    cached = tryRun(() => {
+        const win = getGlobalObject();
+        const loc = win.location;
+        if (!loc)
+            return EMPTY_WEB_INFO;
+        return { domain: readWebDomainFromLocation(loc) };
+    }, EMPTY_WEB_INFO);
     return cached;
 }
 
@@ -5830,6 +5883,7 @@ class StatApp {
                 pkn: '',
                 an: '',
             }),
+            web: tryRun(() => getWebInfo(), { domain: '' }),
         });
         const base = {
             builder,
