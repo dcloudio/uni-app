@@ -183,6 +183,131 @@ function defaultSleep(ms) {
 }
 
 /**
+ * 解析 uni-app 运行时根对象 `uni`。
+ *
+ * - H5 / App：常见为 `globalThis.uni`。
+ * - 微信小程序等：多为 Vite/rollup 向**当前模块**注入的标识符 `uni`，
+ *   **未必**同步挂到 `globalThis`；仅读 `globalThis.uni` 会导致
+ *   `bindLifecycle` / `uni.request` / storage 等全部静默失败。
+ * - 支付宝等旧版小程序：**无 `globalThis` 标识符**，须用 `getGlobalObject()` 兜底。
+ * - H5 发行摇树：`pages.json.js` 会先把 `window.uni = {}` 占位；若仍按「有 object 即用」
+ *   会误把空桩当真 uni。须用 `isUsableUniRuntime` 过滤后再择源。
+ *
+ * 第二路依赖宿主构建对 `uni` 的注入（与业务页面同一套解析规则），
+ * 类型兜底见 `packages/uni-stat/src/uni-global.d.ts`。
+ */
+/**
+ * 判断候选 `uni` 是否具备统计 SDK 可用的最小 API 集合（排除 H5 摇树空桩 `{}`）。
+ *
+ * 任一核心 API 存在即视为可用；与具体平台无关，微信/QQ/抖音/支付宝/百度等
+ * 完整 runtime 均满足，仅「占位空对象」会被过滤。
+ */
+function isUsableUniRuntime(candidate) {
+    if (candidate == null || typeof candidate !== 'object')
+        return false;
+    const u = candidate;
+    return (typeof u.getStorageSync === 'function' ||
+        typeof u.onCreateVueApp === 'function' ||
+        typeof u.request === 'function' ||
+        typeof u.onAppShow === 'function');
+}
+/**
+ * 读取宿主向当前模块注入的 `uni`（小程序等）；不可用时返回 `undefined`。
+ */
+function getModuleUniCandidate() {
+    if (typeof uni === 'undefined' || uni == null || typeof uni !== 'object') {
+        return undefined;
+    }
+    return uni;
+}
+/**
+ * H5 兜底：在 `globalThis` / `self` 不可用时尝试读取 `window`。
+ *
+ * 通过 `Function` 间接访问，避免 ESLint `no-restricted-globals` 对 `window` 标识符的限制；
+ * 小程序等环境执行失败时返回 `undefined`。
+ */
+function getWindowObject() {
+    try {
+        const w = Function('return typeof window !== "undefined" ? window : undefined')();
+        return w != null ? w : undefined;
+    }
+    catch (_a) {
+        return undefined;
+    }
+}
+/**
+ * 安全获取全局对象。
+ *
+ * 支付宝 / 部分旧版小程序运行时未提供 `globalThis`，直接写 `globalThis` 会
+ * `ReferenceError: globalThis is not defined`，导致 install 阶段整包崩溃。
+ */
+function getGlobalObject() {
+    if (typeof globalThis !== 'undefined' && globalThis != null) {
+        return globalThis;
+    }
+    if (typeof global !== 'undefined' && global != null) {
+        return global;
+    }
+    if (typeof self !== 'undefined' && self != null) {
+        return self;
+    }
+    const win = getWindowObject();
+    if (win)
+        return win;
+    return {};
+}
+/**
+ * 探测 `uni` 解析路径（不改变 `resolveUniRuntime` 行为，仅用于 debug 诊断）。
+ */
+function probeUniRuntime() {
+    const globalThisAvailable = typeof globalThis !== 'undefined';
+    const g = getGlobalObject();
+    const globalUni = g.uni;
+    const globalThisHasUni = globalUni != null && typeof globalUni === 'object';
+    const globalThisUniStub = globalThisHasUni && !isUsableUniRuntime(globalUni);
+    const moduleUni = getModuleUniCandidate();
+    const moduleUniDefined = moduleUni != null;
+    if (isUsableUniRuntime(globalUni)) {
+        return {
+            resolved: true,
+            source: 'globalThis',
+            globalThisHasUni: true,
+            globalThisUniStub: false,
+            moduleUniDefined,
+            globalThisAvailable,
+            uni: globalUni,
+        };
+    }
+    if (isUsableUniRuntime(moduleUni)) {
+        return {
+            resolved: true,
+            source: 'module',
+            globalThisHasUni,
+            globalThisUniStub,
+            moduleUniDefined: true,
+            globalThisAvailable,
+            uni: moduleUni,
+        };
+    }
+    return {
+        resolved: false,
+        source: 'none',
+        globalThisHasUni,
+        globalThisUniStub,
+        moduleUniDefined,
+        globalThisAvailable,
+        uni: undefined,
+    };
+}
+/**
+ * 返回与业务侧一致的 `uni` 运行时根对象；均不可用时返回 `undefined`。
+ */
+function resolveUniRuntime() {
+    const probe = probeUniRuntime();
+    return probe.resolved ? probe.uni : undefined;
+}
+
+/**
  * 公有版统一日志出口。
  *
  * 修复的私有版缺陷：
@@ -214,8 +339,9 @@ function preferSingleLineConsole() {
 function isAndroidOrIosRuntime() {
     var _a, _b, _c, _d, _e, _f, _g, _h;
     const raw = (_a = process.env.UNI_PLATFORM) !== null && _a !== void 0 ? _a : '';
+    const g = getGlobalObject();
     if (raw === 'app' || raw === 'app-plus' || raw === 'app-harmony') {
-        const n = (_d = (_c = (_b = globalThis.plus) === null || _b === void 0 ? void 0 : _b.os) === null || _c === void 0 ? void 0 : _c.name) === null || _d === void 0 ? void 0 : _d.toLowerCase();
+        const n = (_d = (_c = (_b = g.plus) === null || _b === void 0 ? void 0 : _b.os) === null || _c === void 0 ? void 0 : _c.name) === null || _d === void 0 ? void 0 : _d.toLowerCase();
         if (!n)
             return false;
         if (n.includes('android'))
@@ -226,7 +352,7 @@ function isAndroidOrIosRuntime() {
     }
     if (raw.startsWith('mp-')) {
         try {
-            const p = (_h = (_g = (_f = (_e = globalThis.uni) === null || _e === void 0 ? void 0 : _e.getSystemInfoSync) === null || _f === void 0 ? void 0 : _f.call(_e)) === null || _g === void 0 ? void 0 : _g.platform) === null || _h === void 0 ? void 0 : _h.toLowerCase();
+            const p = (_h = (_g = (_f = (_e = g.uni) === null || _e === void 0 ? void 0 : _e.getSystemInfoSync) === null || _f === void 0 ? void 0 : _f.call(_e)) === null || _g === void 0 ? void 0 : _g.platform) === null || _h === void 0 ? void 0 : _h.toLowerCase();
             return p === 'android' || p === 'ios';
         }
         catch (_j) {
@@ -340,32 +466,6 @@ const logger = {
     setDebug,
     isDebug,
 };
-
-/**
- * 解析 uni-app 运行时根对象 `uni`。
- *
- * - H5 / App：常见为 `globalThis.uni`。
- * - 微信小程序等：多为 Vite/rollup 向**当前模块**注入的标识符 `uni`，
- *   **未必**同步挂到 `globalThis`；仅读 `globalThis.uni` 会导致
- *   `bindLifecycle` / `uni.request` / storage 等全部静默失败。
- *
- * 第二路依赖宿主构建对 `uni` 的注入（与业务页面同一套解析规则），
- * 类型兜底见 `packages/uni-stat/src/uni-global.d.ts`。
- */
-/**
- * 返回与业务侧一致的 `uni` 运行时根对象；均不可用时返回 `undefined`。
- */
-function resolveUniRuntime() {
-    const g = globalThis;
-    if (g.uni != null && typeof g.uni === 'object') {
-        return g.uni;
-    }
-    // 宿主注入：小程序 vendor 中常见，且不在 globalThis 上
-    if (typeof uni !== 'undefined' && uni != null && typeof uni === 'object') {
-        return uni;
-    }
-    return undefined;
-}
 
 /**
  * 公有版本地存储抽象（重写自私有版 `utils/db.js`）。
@@ -582,16 +682,20 @@ const storage = {
  *   3. 写入早于上报，上报失败时无法回滚，下次启动状态错乱。
  *
  * 公有版严格契约：
- *   1. 三段拆分：`loadVisitSnapshot()` 纯读、`buildVisitFields()` 仅生成本次待写、
- *      `commitVisitOnAck()` 在上报 ack 后才落 storage。
- *   2. **禁止**任何函数同时写 fvts 与 lvts；fvts 仅在 `commitVisitOnAck` 中且只在
- *      "首次启动" 路径写一次，永不主动清 lvts。
+ *   1. 老用户三段拆分：`loadVisitSnapshot()` 纯读、`buildVisitFields()` 仅生成本次待写、
+ *      `commitVisitOnAck()` 在上报 ack 后才落 storage（仅推进 lvts，永不主动清 lvts）。
+ *   2. **新用户首条 lt=1 例外（保证"一生只计一次新增"）**：本条仍上报 `lvts=0`，但
+ *      `buildVisitFields` 会**立即**把基线 `fvts/lvts/tvc=now/now/1` 落库（对齐私有版
+ *      `get_last_visit_time` 的"读即写"）。这样本进程后续续会话、以及下次冷启动都会读到
+ *      `lvts=now`（非 0），不再被重复计为新增；首条即便上报失败也已由 retry 暂存重试，
+ *      不会丢失这唯一一次新增信号。**唯有卸载应用 / 清空缓存**清掉基线后才会重新计一次。
  *   3. `loadVisitSnapshot` 区分 "key 不存在" 与 "storage 异常"：
  *      - 不存在 → `lvts=0`，按新用户路径走（Yes new user）。
  *      - 异常   → 内存有上次 snapshot 时复用之；首次启动且异常 → fallback `lvts=0`，
  *        但**记录** `degraded=true`，上层可决定是否仍上报（Phase 5 collector 用）。
- *   4. 同一进程内只允许一次 `buildVisitFields`；后续 cst=2/3 触发的事件**不调用**本函数，
- *      由 collector 直接复用 `getCommitted()` 的内存 snapshot 继续推进 tvc/lvts。
+ *   4. 同一进程内只允许一次 `buildVisitFields`；后续 cst=2/3 触发的新会话 lt=1
+ *      调用 `buildVisitFieldsForSessionRenewal`，复用 committed / lastBuilt 推进 tvc，
+ *      并保证 lvts 仍随 lt=1 上行（缺失会被服务端误判为新用户）。
  *
  * 与 `pipeline/collector.ts` 的契约见 `05-公有版重构开发计划.md` §4.1.5。
  */
@@ -609,6 +713,8 @@ const EMPTY_SNAPSHOT = {
 let loaded = null;
 /** `buildVisitFields` 生成；`commitVisitOnAck` 落库后清空。 */
 let pending = null;
+/** cst=2/3 新会话 lt=1 生成；`commitVisitOnAck` 落库后清空。 */
+let pendingRenewal = null;
 /** `commitVisitOnAck` 落库后写入；同进程内 cst=2/3 后续事件复用此 snapshot。 */
 let committed = null;
 /**
@@ -655,7 +761,7 @@ function loadVisitSnapshot() {
         fvts,
         lvts,
         tvc,
-        isNewUser: fvts === 0 || lvts === 0,
+        isNewUser: lvts === 0,
         degraded,
     };
     if (degraded) {
@@ -679,15 +785,45 @@ function ensureLoaded() {
     return loaded;
 }
 /**
- * 生成本次启动要上报的 fvts/lvts/tvc 三元组（**不写 storage**）。
+ * 新用户首条 lt=1 的**乐观落库**：立即把基线 `fvts/lvts/tvc=now/now/1` 写入 storage，
+ * 并把内存 `loaded`/`committed` 刷新为"非新用户"基线。
+ *
+ * 目的：保证一台设备一生只上报一次 `lvts=0`（=只计一次新增）。对齐私有版
+ * `get_first_visit_time`/`get_last_visit_time` 的"读即写"语义。
+ *
+ * 与 ack-commit 的关系：
+ *   - 首条 lt=1 仍按 `lvts=0` 上报（在 `buildVisitFields` 里单独构造 pending 返回）；
+ *     即便该条上报失败，也已由 `pipeline/retry` 暂存重试，唯一一次新增信号不丢。
+ *   - 本进程后续续会话（`buildVisitFieldsForSessionRenewal`）命中 `committed` → lvts=now（非 0）；
+ *     下次冷启动 `loadVisitSnapshot` 读到 storage 里的 lvts=now → `isNewUser=false`。
+ *   - 唯有卸载应用 / 清空缓存清掉基线后，才会重新计一次新增。
+ */
+function persistNewUserBaseline(now) {
+    storage.set(KEY_FVTS, now);
+    storage.set(KEY_LVTS, now);
+    storage.set(KEY_TVC, 1);
+    const baseline = {
+        fvts: now,
+        lvts: now,
+        tvc: 1,
+        isNewUser: false,
+        degraded: false,
+    };
+    loaded = baseline;
+    committed = baseline;
+}
+/**
+ * 生成本次启动要上报的 fvts/lvts/tvc 三元组。
  *
  * 推进规则：
- *   - 新用户（loaded.isNewUser）：本次 fvts=now, lvts=0（仍上报 0 表示新用户），tvc=1。
- *   - 老用户：fvts 维持 loaded.fvts；lvts 上报 loaded.lvts（"上一次"，不是 now）；tvc=loaded.tvc+1。
+ *   - 新用户（loaded.isNewUser）：本次上报 fvts=now, lvts=0（0 表示新增），tvc=1；
+ *     **同时立即落库基线**（见 `persistNewUserBaseline`），确保后续不再重复计新增。
+ *   - 老用户：**不写 storage**；fvts 维持 loaded.fvts；lvts 上报 loaded.lvts（"上一次"，
+ *     不是 now）；tvc=loaded.tvc+1；真正落库由 `commitVisitOnAck` 在 ack 后推进。
  *
- * 注意：同一进程内只允许调用一次（参考 `domain/session` 设计），后续 cst=2/3 事件
- * 不携带 fvts/lvts/tvc。这里通过 `buildCalledInProcess` 哨兵防止误用，二次调用返回
- * 与首次相同的结果但发出 warn，便于排查上层 collector bug。
+ * 注意：同一进程内只允许调用一次（参考 `domain/session` 设计）；cst=2/3 新会话应走
+ * `buildVisitFieldsForSessionRenewal`。这里通过 `buildCalledInProcess` 哨兵防止误用，
+ * 二次调用返回与首次相同的结果但发出 warn，便于排查上层 collector bug。
  */
 function buildVisitFields(now) {
     const snap = ensureLoaded();
@@ -698,6 +834,7 @@ function buildVisitFields(now) {
     buildCalledInProcess = true;
     if (snap.isNewUser) {
         pending = { fvts: now, lvts: 0, tvc: 1, now };
+        persistNewUserBaseline(now);
     }
     else {
         pending = {
@@ -711,6 +848,53 @@ function buildVisitFields(now) {
     return Object.assign({}, lastBuilt);
 }
 /**
+ * 为 cst=2/3 新会话 lt=1 生成本次要上报的 visit 字段（**不写 storage**）。
+ *
+ * 与私有版 `sendReportRequest` 对齐：后台/前台超时触发的新会话仍携带 fvts/lvts/tvc，
+ * 避免 lvts 缺失被服务端按新用户入库。
+ *
+ * 推进规则：
+ *   - 已有 committed：fvts 不变，lvts 上报 committed.lvts，tvc=committed.tvc+1。
+ *   - 冷启动 lt=1 尚未 ack：复用 lastBuilt，不重复递增 tvc。
+ *   - 兜底读 loaded snapshot，逻辑同 buildVisitFields 的老用户路径。
+ */
+function buildVisitFieldsForSessionRenewal(now) {
+    let fvts;
+    let lvts;
+    let tvc;
+    if (committed) {
+        fvts = committed.fvts;
+        lvts = committed.lvts;
+        tvc = committed.tvc + 1;
+    }
+    else if (lastBuilt) {
+        fvts = lastBuilt.fvts;
+        // 防御：新用户冷启首条 lt=1（lvts=0）尚未 ack 时，本进程后续续会话不能再上报 lvts=0，
+        // 否则同一新设备被重复计新增。此时用"本次启动时间"(=fvts) 作为上一次访问时间。
+        // 正常路径下 buildVisitFields 已落库基线并置 committed，会走上面的 committed 分支。
+        lvts = lastBuilt.lvts !== 0 ? lastBuilt.lvts : lastBuilt.fvts;
+        tvc = lastBuilt.tvc;
+    }
+    else {
+        const snap = ensureLoaded();
+        if (snap.isNewUser) {
+            // 续会话成为本进程首条 lt=1 且命中新用户（罕见：未走过冷启 build）：本条仍按
+            // lvts=0 计一次新增，并立即落库基线，保证只计一次。
+            fvts = now;
+            lvts = 0;
+            tvc = 1;
+            persistNewUserBaseline(now);
+        }
+        else {
+            fvts = snap.fvts;
+            lvts = snap.lvts;
+            tvc = snap.tvc + 1;
+        }
+    }
+    pendingRenewal = { fvts, lvts, tvc, now };
+    return { fvts, lvts, tvc };
+}
+/**
  * 上报 ack 成功后落库。
  *
  * 实际写入：
@@ -720,12 +904,30 @@ function buildVisitFields(now) {
  * pending 为空 / commit 重复调用一律 noop（保持幂等，便于 collector 重试逻辑）。
  */
 function commitVisitOnAck(now) {
-    if (!pending)
+    if (pending) {
+        const snap = ensureLoaded();
+        const newFvts = snap.fvts === 0 ? now : snap.fvts;
+        const newLvts = now;
+        const newTvc = pending.tvc;
+        storage.set(KEY_FVTS, newFvts);
+        storage.set(KEY_LVTS, newLvts);
+        storage.set(KEY_TVC, newTvc);
+        committed = {
+            fvts: newFvts,
+            lvts: newLvts,
+            tvc: newTvc,
+            isNewUser: false,
+            degraded: false,
+        };
+        loaded = committed;
+        pending = null;
         return;
-    const snap = ensureLoaded();
-    const newFvts = snap.fvts === 0 ? now : snap.fvts;
+    }
+    if (!pendingRenewal)
+        return;
+    const newFvts = pendingRenewal.fvts;
     const newLvts = now;
-    const newTvc = pending.tvc;
+    const newTvc = pendingRenewal.tvc;
     storage.set(KEY_FVTS, newFvts);
     storage.set(KEY_LVTS, newLvts);
     storage.set(KEY_TVC, newTvc);
@@ -737,7 +939,7 @@ function commitVisitOnAck(now) {
         degraded: false,
     };
     loaded = committed;
-    pending = null;
+    pendingRenewal = null;
 }
 /**
  * 上报失败回滚：清掉 pending，下次再 build 仍基于 loaded snapshot 推进。
@@ -747,6 +949,7 @@ function commitVisitOnAck(now) {
  */
 function rollbackPendingVisit() {
     pending = null;
+    pendingRenewal = null;
 }
 
 /**
@@ -769,7 +972,7 @@ function rollbackPendingVisit() {
  * 当前路由职责耦合。
  */
 const KEY_ENTRY = 'session:entryRoute';
-let cached$2;
+let cached$3;
 /**
  * 标记当前页为入口页。
  *
@@ -784,23 +987,23 @@ function markEntryPage(route) {
     if (existing)
         return;
     storage.set(KEY_ENTRY, route);
-    cached$2 = route;
+    cached$3 = route;
 }
 /**
  * 当前会话的入口路径；从内存优先取，未命中读 storage。
  */
 function getEntryRoute() {
-    if (cached$2 !== undefined)
-        return cached$2 || undefined;
+    if (cached$3 !== undefined)
+        return cached$3 || undefined;
     const r = storage.safeRead(KEY_ENTRY);
     if (!r.ok)
         return undefined;
     if (typeof r.value === 'string' && r.value.length > 0) {
-        cached$2 = r.value;
+        cached$3 = r.value;
         return r.value;
     }
     // 标注已查过，避免下次再 IO
-    cached$2 = '';
+    cached$3 = '';
     return undefined;
 }
 /**
@@ -818,7 +1021,7 @@ function isEntry(route) {
  * session 切换时调用：清掉 entry，等待新会话第一次 pageShow 重新登记。
  */
 function clearEntry() {
-    cached$2 = '';
+    cached$3 = '';
     storage.remove(KEY_ENTRY);
 }
 
@@ -1036,8 +1239,7 @@ function normalizeStatOsP(info) {
         return 'macos';
     if (sys.includes('linux'))
         return 'linux';
-    const plus = globalThis
-        .plus;
+    const plus = getGlobalObject().plus;
     const p2 = fromToken((_e = (_d = plus === null || plus === void 0 ? void 0 : plus.os) === null || _d === void 0 ? void 0 : _d.name) !== null && _e !== void 0 ? _e : '');
     if (p2)
         return p2;
@@ -1101,42 +1303,12 @@ function getPlatform() {
     if (!mapped)
         return 'unknown';
     if (mapped === 'ali') {
-        const my = globalThis.my;
+        const my = getGlobalObject().my;
         if (((_a = my === null || my === void 0 ? void 0 : my.env) === null || _a === void 0 ? void 0 : _a.clientName) === 'dingtalk')
             return 'dt';
         return 'ali';
     }
     return mapped;
-}
-/** `ut` 短码 → 上行 `mpv` 中使用的宿主中文名（便于后台识别微信/支付宝等）。 */
-const STAT_UT_LABEL = {
-    wx: '微信',
-    qq: 'QQ',
-    ali: '支付宝',
-    dt: '钉钉',
-    bd: '百度',
-    tt: '抖音',
-    ks: '快手',
-    lark: '飞书',
-    xhs: '小红书',
-    jd: '京东',
-    mhm: '鸿蒙元服务',
-    qn: '快应用',
-    qw: '快应用WebView',
-    h5: 'H5',
-    n: 'App',
-};
-/**
- * 拼装上行 `mpv`：**仅宿主类型**可读名（与 `ut` 对齐），如微信 / 支付宝 / H5 / App。
- *
- * 操作系统归一标识见上行 **`p`**（`system.osP`）；ROM/系统展示名见上行 **`on`**（`system.on`）；
- * 客户端版本见 **`v`** 等字段，避免与 `mpv` 混写。
- *
- * @param ut `getPlatform()` 短码（wx / ali / h5 / n …）。
- */
-function formatMpvForStat(ut) {
-    var _a;
-    return (_a = STAT_UT_LABEL[ut]) !== null && _a !== void 0 ? _a : '';
 }
 /** 当前是否运行在 App / nvue / HarmonyOS App 端。 */
 function isApp() {
@@ -1150,6 +1322,16 @@ function isMp() {
 /** 当前是否运行在 H5 端。 */
 function isH5() {
     return getRawPlatform() === 'h5';
+}
+/**
+ * 当前页面/上下文是否为 nvue。
+ *
+ * uni-app nvue 页面的 `__UNI_FEATURE_NVUE__` 编译期常量为 true；
+ * 运行时无可靠 API，统一通过编译期 define 注入的 `globalThis.__NVUE__` 判断。
+ * 没有注入则保守返回 false。
+ */
+function isNvue() {
+    return Boolean(getGlobalObject().__NVUE__);
 }
 
 /**
@@ -1352,7 +1534,7 @@ const DEFAULT_CONFIG = {
     pageInactiveTimeoutSec: 1800,
 };
 let config$1 = Object.assign({}, DEFAULT_CONFIG);
-let cached$1 = null;
+let cached$2 = null;
 /** 配置注入（runtime/install.ts 在启动时调一次）。 */
 function configure$1(c) {
     config$1 = Object.assign({}, DEFAULT_CONFIG, c);
@@ -1398,10 +1580,10 @@ function loadFromStorage() {
     };
 }
 function ensureCache() {
-    if (cached$1 !== null)
-        return cached$1;
-    cached$1 = loadFromStorage();
-    return cached$1;
+    if (cached$2 !== null)
+        return cached$2;
+    cached$2 = loadFromStorage();
+    return cached$2;
 }
 /**
  * 创建一个新 session，写入 storage 并返回新的 snapshot。
@@ -1430,7 +1612,7 @@ function createNew(now, sct, scene) {
     storage.set(KEY_LAST_ACTIVE, now);
     storage.set(KEY_BG_TS, 0);
     storage.set(KEY_LAST_SCENE, scene);
-    cached$1 = next;
+    cached$2 = next;
     return next;
 }
 /**
@@ -1470,9 +1652,9 @@ function ensureSession(t, ctx) {
         // 未超时：清 bgTs，更新 lastActive
         touch(now);
         storage.set(KEY_BG_TS, 0);
-        if (cached$1)
-            cached$1.bgTs = 0;
-        return { snapshot: cached$1, isNew: false, cst: 0 };
+        if (cached$2)
+            cached$2.bgTs = 0;
+        return { snapshot: cached$2, isNew: false, cst: 0 };
     }
     if (t === 'wx_scene_changed') {
         if (scene && scene !== snap.lastScene) {
@@ -1488,29 +1670,29 @@ function ensureSession(t, ctx) {
         return { snapshot: created, isNew: true, cst: CST.PageInactiveTimeout };
     }
     touch(now);
-    return { snapshot: cached$1, isNew: false, cst: 0 };
+    return { snapshot: cached$2, isNew: false, cst: 0 };
 }
 /**
  * 标记应用进入后台。写入 bgTs，供下次 app_show 判定超时。
  */
 function markBackground(now) {
-    if (!cached$1)
-        cached$1 = loadFromStorage();
-    if (!cached$1)
+    if (!cached$2)
+        cached$2 = loadFromStorage();
+    if (!cached$2)
         return;
     storage.set(KEY_BG_TS, now);
-    cached$1.bgTs = now;
+    cached$2.bgTs = now;
 }
 /**
  * 更新 lastActive；page_show / 用户操作时调用。
  */
 function touch(now) {
-    if (!cached$1)
-        cached$1 = loadFromStorage();
-    if (!cached$1)
+    if (!cached$2)
+        cached$2 = loadFromStorage();
+    if (!cached$2)
         return;
     storage.set(KEY_LAST_ACTIVE, now);
-    cached$1.lastActive = now;
+    cached$2.lastActive = now;
 }
 /**
  * 取下一个 seq；先递增 storage 中的 seq，再返回新值。
@@ -1518,18 +1700,33 @@ function touch(now) {
  * 失败兜底：若 storage 异常，仍以内存 cached.seq 自增；保证序号单调，但跨进程可能跳号。
  */
 function nextSeq() {
-    if (!cached$1)
-        cached$1 = loadFromStorage();
-    if (!cached$1)
+    if (!cached$2)
+        cached$2 = loadFromStorage();
+    if (!cached$2)
         return 0;
-    const next = cached$1.seq + 1;
-    cached$1.seq = next;
+    const next = cached$2.seq + 1;
+    cached$2.seq = next;
     storage.set(KEY_SEQ, next);
     return next;
 }
 /** 取当前 snapshot；未初始化时尝试从 storage 加载，仍为空返回 null。 */
 function getSnapshot() {
     return ensureCache();
+}
+/**
+ * 同步更新 session 的 lastScene，不触发新会话。
+ *
+ * 用于同一次回前台多 hook 携带不同 scene 时，避免重复 lt=1 后补写正确 scene。
+ */
+function syncLastScene(scene) {
+    if (!scene)
+        return;
+    if (!cached$2)
+        cached$2 = loadFromStorage();
+    if (!cached$2)
+        return;
+    storage.set(KEY_LAST_SCENE, scene);
+    cached$2.lastScene = scene;
 }
 
 /**
@@ -1584,8 +1781,7 @@ function getPageVmType(vm) {
  */
 function getTopPageVm() {
     var _a;
-    const fn = globalThis
-        .getCurrentPages;
+    const fn = getGlobalObject().getCurrentPages;
     if (typeof fn !== 'function')
         return undefined;
     const pages = tryRun(() => fn(), []) || [];
@@ -1789,12 +1985,37 @@ const state$1 = {
     pendingBackgroundResume: false,
     backgroundEnteredAt: 0,
     suppressNextPageLogAfterResume: false,
+    backgroundResumeLt1At: 0,
 };
 /** Vue2 H5 hide 过程中偶发 page onShow（间隔≈0s），低于此阈值不消费 pending。 */
 const BACKGROUND_RESUME_DEBOUNCE_SEC = 1;
+/** 同一次回前台多 hook 重复 lt=1 的去重窗口（秒）。 */
+const BACKGROUND_RESUME_LT1_DEDUP_SEC = 3;
 /** 小程序等：page onHide 延迟判定「真进后台」；切页会在短时内 onShow 并取消。 */
 const PAGE_APP_HIDE_DEFER_MS = 120;
 let pageAppHideDeferTimer;
+/**
+ * Vue3 小程序等已绑定 `uni.onAppShow` 时，后台恢复应仅由 `handleAppShow` 消费。
+ *
+ * mixin / page onShow 过早消费会在 QQ 等端与 uni 回调形成双 hook，且 scene 不一致
+ * （如 2001 vs 1011）导致重复 lt=1。Vue2 / H5 仍走 mixin 提前消费以适配 Page 先于 App onShow。
+ */
+function shouldEarlyConsumeBackgroundResumeInMixin() {
+    return !shouldBindUniAppLifecycle();
+}
+/**
+ * 记录本进程内最近一次后台恢复 lt=1 上报时刻。
+ */
+function markBackgroundResumeLt1Emitted(now) {
+    state$1.backgroundResumeLt1At = now;
+}
+/**
+ * 同一次回前台是否已在去重窗口内上报过后台恢复 lt=1。
+ */
+function shouldSkipDuplicateBackgroundResumeLt1(now) {
+    return (state$1.backgroundResumeLt1At > 0 &&
+        now - state$1.backgroundResumeLt1At <= BACKGROUND_RESUME_LT1_DEDUP_SEC);
+}
 /**
  * 取消 page onHide 触发的延迟进后台判定（Vue2/Vue3 共用）。
  */
@@ -1891,10 +2112,11 @@ function normalizePathForEntryMark(raw) {
 /**
  * 新会话首报：仅发一条 `lt=1`（Launch），新会话字段随之上行。
  *
- * 重要约束（修复 lvts=0 缺陷）：
- *   - `fvts/lvts/tvc` **只在进程首报**（cold_launch 触发的首次 ensureSession）携带；
- *     cst=2（后台超时）/ cst=3（前台无操作超时）创建的新 session **不**带。
- *   - 通过 `firstVisitEmittedInProcess` 哨兵保证全进程只调用一次 `buildVisitFields`。
+ * 重要约束（修复 lvts=0 / lvts 缺失缺陷）：
+ *   - 进程内首次 lt=1（cold_launch）调用 `buildVisitFields`；
+ *   - cst=2/3 新会话 lt=1 调用 `buildVisitFieldsForSessionRenewal`，仍携带 fvts/lvts/tvc，
+ *     避免 lvts 缺失被服务端误判为新用户。
+ *   - 通过 `firstVisitEmittedInProcess` 哨兵区分上述两条路径。
  *   - `cst` 入参仅用于将来可能的本地侧打印 / 监控；上行字段已由 statData 从 session
  *     snapshot 中读取（出口字段名为 `cst`）。
  *   - `url` 参数：参数文档要求 `lt=1` 携带当前启动页的完整 url；冷启动 / app_show
@@ -1905,6 +2127,12 @@ function reportNewSession(c, _cst, scene, now, attachVisit, url = '') {
     if (attachVisit && !firstVisitEmittedInProcess) {
         firstVisitEmittedInProcess = true;
         visit = tryRun(() => buildVisitFields(now), undefined);
+    }
+    else {
+        // 续会话（attachVisit=false），或同进程内冷启 lt=1 已发过又被二次触发
+        // （attachVisit=true 但 firstVisitEmittedInProcess 已 true）：都复用 renewal 字段，
+        // 确保 lt=1 始终携带 fvts/lvts/tvc，杜绝"裸 lt=1 缺 lvts 被服务端按新增计入"。
+        visit = tryRun(() => buildVisitFieldsForSessionRenewal(now), undefined);
     }
     const payload = {
         lt: LT.Launch,
@@ -2024,6 +2252,7 @@ function tryConsumeBackgroundResume(app, options = {}, _opts = {}, _from = 'unkn
         tryRun(() => markEntryPage(entryKey), undefined);
     }
     reportNewSession(c, result.cst || CST.BackgroundTimeout, scene, now, false, url);
+    markBackgroundResumeLt1Emitted(now);
     void c
         .flush(true)
         .catch((e) => logger.warn('[uni-stat] flush after new session (app_show) failed', e));
@@ -2045,6 +2274,10 @@ function handleAppShow(app, options = {}, opts = {}) {
         return;
     const now = nowSec();
     const scene = tryRun(() => getLaunchScene(options.scene), '');
+    if (shouldSkipDuplicateBackgroundResumeLt1(now)) {
+        tryRun(() => syncLastScene(scene), undefined);
+        return;
+    }
     const result = tryRun(() => ensureSession('app_show', { now, scene }), null);
     if (!result || !result.isNew) {
         return;
@@ -2056,6 +2289,7 @@ function handleAppShow(app, options = {}, opts = {}) {
         tryRun(() => markEntryPage(entryKey), undefined);
     }
     reportNewSession(c, result.cst || CST.BackgroundTimeout, scene, now, false, url);
+    markBackgroundResumeLt1Emitted(now);
     void c
         .flush(true)
         .catch((e) => logger.warn('[uni-stat] flush after new session (app_show) failed', e));
@@ -2132,7 +2366,8 @@ function handlePageShow(app, vm, opts = {}) {
     const c = safeCollector(app);
     if (!c)
         return;
-    if (state$1.pendingBackgroundResume) {
+    if (state$1.pendingBackgroundResume &&
+        shouldEarlyConsumeBackgroundResumeInMixin()) {
         tryConsumeBackgroundResume(app, {}, opts, 'handlePageShow');
     }
     const now = nowSec();
@@ -2162,7 +2397,7 @@ function handlePageShow(app, vm, opts = {}) {
         tryRun(() => markEntryPage(route), undefined);
     }
     if (result.isNew) {
-        // cst=3：不再携带 fvts/lvts/tvc（首批已在 cold_launch 上报过）。
+        // cst=3：复用 committed visit 字段，与私有版 sendReportRequest 对齐。
         // 注意：lt=1（新会话首报）**不受** enablePageLog 控制 —— 与私有版语义一致，
         // is_page_report 仅拦截 pageShow/pageHide，不影响 launch/appShow/appHide。
         reportNewSession(c, result.cst || CST.PageInactiveTimeout, '', now, false, url);
@@ -2335,11 +2570,19 @@ function getUni$6() {
  *
  * - Vue2：始终走 mixin（`load_stat` 不注册 uni.onAppShow/Hide）。
  * - Vue3：仅 H5 / nvue 走 mixin；小程序等走 `uni.onAppShow` / `onAppHide`。
+ *
+ * 使用赋值而非连续 `return`：公有版 dist 经 Rollup 打包时，连续 return 会导致
+ * `#ifdef VUE3` 分支被 tree-shake；应用构建再剥离 `#ifndef VUE3` 后函数体为空 → undefined。
  */
 function shouldMixinDispatchAppLifecycle() {
+    let result = isH5() || getPlatform() === 'n' || isNvue();
     // #ifndef VUE3
-    return true;
+    result = true;
     // #endif
+    // #ifdef VUE3
+    result = isH5() || getPlatform() === 'n' || isNvue();
+    // #endif
+    return result;
 }
 /**
  * 是否注册 `uni.onAppShow` / `onAppHide`（对齐私有版 `index.js#load_stat` VUE3 分支）。
@@ -2347,9 +2590,14 @@ function shouldMixinDispatchAppLifecycle() {
  * 仅 Vue3 且非 H5、非 nvue（即小程序等）为 true；Vue2 必须为 false。
  */
 function shouldBindUniAppLifecycle() {
+    let result = !isH5() && getPlatform() !== 'n' && !isNvue();
     // #ifndef VUE3
-    return false;
+    result = false;
     // #endif
+    // #ifdef VUE3
+    result = !isH5() && getPlatform() !== 'n' && !isNvue();
+    // #endif
+    return result;
 }
 const uniAppHookRegistry = {
     showBound: false,
@@ -2368,14 +2616,12 @@ function tryBindUniAppLifecycle(app, opts = {}) {
     const u = getUni$6();
     if (!u)
         return false;
-    if (!uniAppHookRegistry.showBound &&
-        typeof u.onAppShow === 'function') {
+    if (!uniAppHookRegistry.showBound && typeof u.onAppShow === 'function') {
         uniAppHookRegistry.appShowCb = (e) => handleAppShow(app, e !== null && e !== void 0 ? e : {}, opts);
         tryRun(() => u.onAppShow(uniAppHookRegistry.appShowCb), undefined);
         uniAppHookRegistry.showBound = true;
     }
-    if (!uniAppHookRegistry.hideBound &&
-        typeof u.onAppHide === 'function') {
+    if (!uniAppHookRegistry.hideBound && typeof u.onAppHide === 'function') {
         uniAppHookRegistry.appHideCb = () => handleAppHide(app, opts);
         tryRun(() => u.onAppHide(uniAppHookRegistry.appHideCb), undefined);
         uniAppHookRegistry.hideBound = true;
@@ -2387,10 +2633,14 @@ function unbindUniAppLifecycle() {
     if (!uniAppHookRegistry.showBound && !uniAppHookRegistry.hideBound)
         return;
     const cur = getUni$6();
-    if (uniAppHookRegistry.showBound && uniAppHookRegistry.appShowCb && (cur === null || cur === void 0 ? void 0 : cur.offAppShow)) {
+    if (uniAppHookRegistry.showBound &&
+        uniAppHookRegistry.appShowCb &&
+        (cur === null || cur === void 0 ? void 0 : cur.offAppShow)) {
         tryRun(() => cur.offAppShow(uniAppHookRegistry.appShowCb), undefined);
     }
-    if (uniAppHookRegistry.hideBound && uniAppHookRegistry.appHideCb && (cur === null || cur === void 0 ? void 0 : cur.offAppHide)) {
+    if (uniAppHookRegistry.hideBound &&
+        uniAppHookRegistry.appHideCb &&
+        (cur === null || cur === void 0 ? void 0 : cur.offAppHide)) {
         tryRun(() => cur.offAppHide(uniAppHookRegistry.appHideCb), undefined);
     }
     uniAppHookRegistry.showBound = false;
@@ -2417,7 +2667,8 @@ function bindLifecycle(app, opts = {}) {
         onShow() {
             const vmType = getPageVmType(this);
             cancelPageAppHideDefer();
-            if (state$1.pendingBackgroundResume) {
+            if (state$1.pendingBackgroundResume &&
+                shouldEarlyConsumeBackgroundResumeInMixin()) {
                 tryConsumeBackgroundResume(app, {}, opts, 'mixin.onShow');
             }
             state$1.isHide = false;
@@ -2567,7 +2818,7 @@ const BATCH_MAX_EVENTS = 30;
  */
 const RETRY_MAX_ATTEMPTS = 5;
 const IMAGE_REPORT_DEFAULTS = {
-    host: 'https://tls-cn-beijing.volces.com',
+    host: 'https://tongji-collector.dcloud.net.cn',
     /** 正式环境 */
     projectId: '964f0397-af5d-45bf-99d6-8fb3500d7849',
     topicId: '8563e231-f4cd-4ab0-8870-917e4b04e810',
@@ -3406,7 +3657,7 @@ function toQuery(payload) {
  * 若 `new Image()` 本身抛错也吞掉，转给 fallback。
  */
 function tryImageRequest(payload, h5Url = STAT_H5_URL) {
-    const ImageCtor = globalThis.Image;
+    const ImageCtor = getGlobalObject().Image;
     if (typeof ImageCtor !== 'function')
         return false;
     return tryRun(() => {
@@ -3670,7 +3921,7 @@ function summarizeHttpErrorBody(data, maxLen = 320) {
  * @param ms  超时毫秒
  */
 function imageBeaconAwait(url, ms) {
-    const ImageCtor = globalThis.Image;
+    const ImageCtor = getGlobalObject().Image;
     if (typeof ImageCtor !== 'function') {
         return Promise.reject(new PermanentChannelError('当前环境无法完成统计上报'));
     }
@@ -3705,7 +3956,7 @@ function imageBeaconAwait(url, ms) {
  * 读取微信基础库 `wx.preloadAssets`（仅 mp-weixin 预加载信标路径使用）。
  */
 function getWxPreloadAssets() {
-    const wx = globalThis.wx;
+    const wx = getGlobalObject().wx;
     return typeof (wx === null || wx === void 0 ? void 0 : wx.preloadAssets) === 'function' ? wx.preloadAssets : undefined;
 }
 /**
@@ -3888,8 +4139,7 @@ function createImageChannel(opts = {}) {
      * H5：默认 `Image` 触发 GET；否则 `uni.request` GET。
      */
     function onceGif(url) {
-        const ImageCtor = globalThis
-            .Image;
+        const ImageCtor = getGlobalObject().Image;
         const hasImage = typeof ImageCtor === 'function';
         if (preferBeacon && hasImage) {
             return imageBeaconAwait(url, timeoutMs);
@@ -4077,7 +4327,8 @@ function createStatDataBuilder(deps) {
      *   - `p` ← `platform.p` 或 `system.osP`（仅操作系统 slug：`ios` / `android` …）
      *   - `on` ← `system.on`（ROM 展示名优先，否则 `osName`）
      *   - `mpsdk` ← `system.sdkVersion`
-     *   - `mpv` ← `formatMpvForStat(ut)`（仅宿主类型名：微信 / 支付宝 / H5 / App …）
+     *   - `mpv` ← `system.mpvHostVersion`（宿主客户端版本，与私有版 `sys.version` 同源）
+     *   - `domain` ← `web.domain`（H5 含协议域名，如 `https://www.example.com`，非 H5 为空串）
      *   - `pr/ww/wh/sw/sh/lang` 来自 `locale`（实时取，修复缺陷 #18）
      *   - `lat/lng` 当前 LocationResult 仅含字符串经纬度，cn/pn/ct 留空待 adapter 扩展
      *
@@ -4085,7 +4336,7 @@ function createStatDataBuilder(deps) {
      */
     function baseFields() {
         var _a, _b, _c;
-        const { config, platform, system, locale, device, net, location, pkg, legacy, } = deps;
+        const { config, platform, system, locale, device, net, location, pkg, legacy, web, } = deps;
         return {
             ak: s(config.ak),
             usv: s(config.usv),
@@ -4099,7 +4350,7 @@ function createStatDataBuilder(deps) {
             md: s(system.md),
             sv: s(system.sv),
             mpsdk: s(system.sdkVersion),
-            mpv: s(formatMpvForStat(platform.ut)),
+            mpv: s(system.mpvHostVersion),
             pr: n(locale.pr, 1),
             ww: n(locale.ww),
             wh: n(locale.wh),
@@ -4113,6 +4364,7 @@ function createStatDataBuilder(deps) {
             tdaid: s(pkg.tdaid),
             pkn: s(pkg.pkn),
             an: s(pkg.an),
+            domain: s(web.domain),
         };
     }
     /**
@@ -4223,6 +4475,7 @@ function createStatDataBuilder(deps) {
                 'p',
                 'on',
                 'mpv',
+                'domain',
                 'fvts',
                 'lvts',
                 'tvc',
@@ -4282,7 +4535,7 @@ function mergeWxHostSnapshots() {
     const raw = getRawPlatform();
     if (raw !== 'mp-weixin' && raw !== 'mp-qq')
         return null;
-    const wxHost = globalThis.wx;
+    const wxHost = getGlobalObject().wx;
     if (!wxHost)
         return null;
     const sync = typeof wxHost.getSystemInfoSync === 'function'
@@ -4343,6 +4596,46 @@ function mergedSystemInfo() {
     return merged;
 }
 /**
+ * 读取 H5 运行时 `__uniConfig.appVersion`（manifest.versionName）。
+ *
+ * H5 发行摇树时模块加载期 `window.uni` 可能仍是 `{}` 空桩，`resolveUniRuntime`
+ * 无法调用 `getAppBaseInfo`；此时 `__uniConfig` 仍已由构建注入，可作为应用版本兜底。
+ */
+function resolveUniConfigAppVersion() {
+    return tryRun(() => {
+        const cfg = getGlobalObject().__uniConfig;
+        return typeof (cfg === null || cfg === void 0 ? void 0 : cfg.appVersion) === 'string' ? cfg.appVersion : '';
+    }, '');
+}
+/**
+ * 读取构建期注入的 `UNI_APP_VERSION_NAME`（manifest.versionName）。
+ *
+ * 须**直接**访问 `process.env.UNI_APP_VERSION_NAME`，以便 Vite define 静态替换；
+ * 经中间变量读取会导致发行包内始终为空（与 `install.ts#parseInjectedUniStatistics` 同理）。
+ */
+function resolveBuildTimeAppVersion() {
+    const raw = process.env.UNI_APP_VERSION_NAME;
+    return typeof raw === 'string' ? raw : '';
+}
+/**
+ * 解析上行用的应用版本 `appVersion`（对应 statData 字段 `v` 的主要回退来源）。
+ *
+ * 优先级：App 原生 `plus.runtime.version` → uni 拆分 API → H5 `__uniConfig` → 构建期 env。
+ */
+function resolveAppVersionForStat(plus, sys) {
+    var _a;
+    const fromPlus = (_a = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _a === void 0 ? void 0 : _a.version;
+    if (typeof fromPlus === 'string' && fromPlus)
+        return fromPlus;
+    const fromSys = sys.appVersion;
+    if (typeof fromSys === 'string' && fromSys)
+        return fromSys;
+    const fromUniConfig = resolveUniConfigAppVersion();
+    if (fromUniConfig)
+        return fromUniConfig;
+    return resolveBuildTimeAppVersion();
+}
+/**
  * 组装上行 `on`：优先厂商定制系统名（ROM），否则退回操作系统名 `osName`。
  *
  * App 端 `uni.getDeviceInfo` 会带出 `romName`/`romVersion`（见 uni-app-plus 原生 systemInfo）；
@@ -4368,25 +4661,27 @@ function buildOnForStat(sys) {
  *   - `osP`：由 `platform` / `osName` / `system` 经 `normalizeStatOsP` 得到，供上行 `p`。
  *   - `mpvHostVersion`：`hostVersion ?? version`，与私有版 `sys.version` 同源。
  *   - `on`：`buildOnForStat`（优先 `romName`/`romVersion`，否则 `osName`），供上行 `on`。
+ *   - `appVersion`：见 `resolveAppVersionForStat`（H5 发行空桩时回退 `__uniConfig` / 构建 env）。
  *   - 缺失统一空字符串或 0，避免上行 JSON 丢字段语义。
  */
 function getSystemInfo() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
     if (cachedStatic)
         return cachedStatic;
     const sys = mergedSystemInfo();
-    const plus = globalThis.plus;
+    const plus = getGlobalObject().plus;
+    const appVersion = resolveAppVersionForStat(plus, sys);
     cachedStatic = {
         brand: (_b = (_a = sys.deviceBrand) !== null && _a !== void 0 ? _a : sys.brand) !== null && _b !== void 0 ? _b : '',
         md: (_d = (_c = sys.deviceModel) !== null && _c !== void 0 ? _c : sys.model) !== null && _d !== void 0 ? _d : '',
         sv: (_f = (_e = sys.osVersion) !== null && _e !== void 0 ? _e : sys.system) !== null && _f !== void 0 ? _f : '',
         v: (_h = (_g = sys.hostVersion) !== null && _g !== void 0 ? _g : sys.version) !== null && _h !== void 0 ? _h : '',
         ut: ((_j = sys.deviceType) !== null && _j !== void 0 ? _j : 'unknown'),
-        appVersion: (_m = (_l = (_k = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _k === void 0 ? void 0 : _k.version) !== null && _l !== void 0 ? _l : sys.appVersion) !== null && _m !== void 0 ? _m : '',
-        appWgtVersion: (_s = (_r = (_p = (_o = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _o === void 0 ? void 0 : _o.appWgtVersion) !== null && _p !== void 0 ? _p : (_q = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _q === void 0 ? void 0 : _q.appWgtRevision) !== null && _r !== void 0 ? _r : sys.appWgtVersion) !== null && _s !== void 0 ? _s : '',
-        mpvHostVersion: ((_u = (_t = sys.hostVersion) !== null && _t !== void 0 ? _t : sys.version) !== null && _u !== void 0 ? _u : '').trim(),
+        appVersion,
+        appWgtVersion: (_p = (_o = (_l = (_k = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _k === void 0 ? void 0 : _k.appWgtVersion) !== null && _l !== void 0 ? _l : (_m = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _m === void 0 ? void 0 : _m.appWgtRevision) !== null && _o !== void 0 ? _o : sys.appWgtVersion) !== null && _p !== void 0 ? _p : '',
+        mpvHostVersion: ((_r = (_q = sys.hostVersion) !== null && _q !== void 0 ? _q : sys.version) !== null && _r !== void 0 ? _r : '').trim(),
         on: buildOnForStat(sys),
-        sdkVersion: (_w = (_v = sys.hostSDKVersion) !== null && _v !== void 0 ? _v : sys.SDKVersion) !== null && _w !== void 0 ? _w : '',
+        sdkVersion: (_t = (_s = sys.hostSDKVersion) !== null && _s !== void 0 ? _s : sys.SDKVersion) !== null && _t !== void 0 ? _t : '',
         statusBarHeight: typeof sys.statusBarHeight === 'number' ? sys.statusBarHeight : 0,
         osP: normalizeStatOsP({
             platform: sys.platform,
@@ -4433,13 +4728,13 @@ function getLocaleAndScreen() {
  *   - `pkn`：原生包名 / bundleId（App）；小程序无独立包名时为空串，**不与** tdaid 混填。
  *   - `an`：应用展示名（App = plus.runtime.appname；小程序/H5 = `process.env.UNI_APP_NAME` 等）。
  */
-let cached = null;
+let cached$1 = null;
 function getUni$2() {
     const u = resolveUniRuntime();
     return u != null && typeof u === 'object' ? u : undefined;
 }
 function getPlus() {
-    return globalThis.plus;
+    return getGlobalObject().plus;
 }
 /**
  * 取小程序系列的 tdaid。各端 API 不同：
@@ -4461,7 +4756,7 @@ function getMpTdaid(platform) {
                 if (id)
                     return id;
             }
-            const wxHost = globalThis.wx;
+            const wxHost = getGlobalObject().wx;
             if (typeof (wxHost === null || wxHost === void 0 ? void 0 : wxHost.getAccountInfoSync) === 'function') {
                 const id2 = tryRun(() => { var _a, _b; return (_b = (_a = wxHost.getAccountInfoSync().miniProgram) === null || _a === void 0 ? void 0 : _a.appId) !== null && _b !== void 0 ? _b : ''; }, '');
                 if (id2)
@@ -4472,7 +4767,7 @@ function getMpTdaid(platform) {
         }
         case 'ali':
         case 'dt': {
-            const my = globalThis.my;
+            const my = getGlobalObject().my;
             if (!my)
                 return '';
             const v1 = tryRun(() => { var _a, _b; return (_b = (_a = my.getAppIdSync) === null || _a === void 0 ? void 0 : _a.call(my)) !== null && _b !== void 0 ? _b : ''; }, '');
@@ -4482,11 +4777,11 @@ function getMpTdaid(platform) {
         }
         case 'tt':
         case 'lark': {
-            const tt = globalThis.tt;
+            const tt = getGlobalObject().tt;
             return tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = tt === null || tt === void 0 ? void 0 : tt.getEnvInfoSync) === null || _a === void 0 ? void 0 : _a.call(tt).microapp) === null || _b === void 0 ? void 0 : _b.appId) !== null && _c !== void 0 ? _c : ''; }, '');
         }
         case 'bd': {
-            const swan = globalThis.swan;
+            const swan = getGlobalObject().swan;
             return tryRun(() => { var _a, _b, _c; return (_c = (_b = (_a = swan === null || swan === void 0 ? void 0 : swan.getEnvInfoSync) === null || _a === void 0 ? void 0 : _a.call(swan).common) === null || _b === void 0 ? void 0 : _b.appKey) !== null && _c !== void 0 ? _c : ''; }, '');
         }
         default:
@@ -4543,7 +4838,10 @@ function getH5AppName() {
     const env = getEnvAppName();
     if (env)
         return env;
-    return tryRun(() => { var _a, _b; return (_b = (_a = globalThis.document) === null || _a === void 0 ? void 0 : _a.title) !== null && _b !== void 0 ? _b : ''; }, '');
+    return tryRun(() => {
+        var _a, _b;
+        return (_b = (_a = getGlobalObject().document) === null || _a === void 0 ? void 0 : _a.title) !== null && _b !== void 0 ? _b : '';
+    }, '');
 }
 /**
  * 启动时获取一次包信息；结果缓存于内存。
@@ -4551,8 +4849,8 @@ function getH5AppName() {
  * 所有字段保证返回 `string`；缺失统一为 `''`，符合 `domain/statData.ts` 的字段处理约定。
  */
 function getPackageInfo() {
-    if (cached)
-        return cached;
+    if (cached$1)
+        return cached$1;
     const platform = getPlatform();
     let mpn = '';
     let tdaid = '';
@@ -4585,7 +4883,57 @@ function getPackageInfo() {
         an = getEnvAppName();
         mpn = '';
     }
-    cached = { mpn, tdaid, pkn, an };
+    cached$1 = { mpn, tdaid, pkn, an };
+    return cached$1;
+}
+
+/**
+ * H5 / Web 平台适配。
+ *
+ * 职责：采集仅 Web 端有意义的上行字段原料（如含协议的页面域名 `domain`）。
+ * 非 H5 或运行时无 `window.location` 时一律返回空串，不抛错。
+ */
+const EMPTY_WEB_INFO = { domain: '' };
+let cached = null;
+/**
+ * 从 `location` 解析上行 `domain`（`https://host` / `http://host` 形式）。
+ *
+ * 仅 `http:` / `https:` 协议有效；`file:` 等返回空串。
+ */
+function readWebDomainFromLocation(loc) {
+    const protocol = typeof loc.protocol === 'string' ? loc.protocol.toLowerCase() : '';
+    if (protocol !== 'http:' && protocol !== 'https:')
+        return '';
+    if (typeof loc.origin === 'string' && loc.origin.trim()) {
+        return loc.origin.trim();
+    }
+    const host = typeof loc.host === 'string' && loc.host.trim()
+        ? loc.host.trim()
+        : typeof loc.hostname === 'string'
+            ? loc.hostname.trim()
+            : '';
+    if (!host)
+        return '';
+    return `${protocol}//${host}`;
+}
+/**
+ * 读取 H5 页面 Web 信息。
+ *
+ * 非 H5、SSR 或无 `location` 时 `domain` 为空串。
+ * 结果在进程内缓存（SPA 内 origin 通常不变）。
+ */
+function getWebInfo() {
+    if (!isH5())
+        return EMPTY_WEB_INFO;
+    if (cached !== null)
+        return cached;
+    cached = tryRun(() => {
+        const win = getGlobalObject();
+        const loc = win.location;
+        if (!loc)
+            return EMPTY_WEB_INFO;
+        return { domain: readWebDomainFromLocation(loc) };
+    }, EMPTY_WEB_INFO);
     return cached;
 }
 
@@ -4862,7 +5210,7 @@ function getAppId() {
  * 任何异常一律返回 `null`，由调用方决定 noop。
  */
 function readLegacyAggregate() {
-    const u = globalThis.uni;
+    const u = resolveUniRuntime();
     if (!u || typeof u.getStorageSync !== 'function')
         return null;
     const key = `${LEGACY_NAMESPACE_ROOT}:${getAppId()}`;
@@ -5533,6 +5881,7 @@ class StatApp {
                 pkn: '',
                 an: '',
             }),
+            web: tryRun(() => getWebInfo(), { domain: '' }),
         });
         const base = {
             builder,
@@ -5917,6 +6266,36 @@ function scheduleUniAppHookRetry(tryBind) {
  *
  * `#ifdef` 保留到 dist，由宿主 `uni:pre` 在打包阶段剔除分支（同私有版 dist）。
  */
+// #ifdef VUE3
+/**
+ * 注册 `onCreateVueApp` 以注入页面 mixin。
+ *
+ * **必须**写字面量 `uni.onCreateVueApp(...)`（与私有版 `index.js#load_stat` 完全一致），
+ * 供 H5 发行 inject 插件静态替换为 `@dcloudio/uni-h5` 真实 API。
+ * 动态 `u.onCreateVueApp` 无法被 inject 识别，会导致 build 后 mixin 未注入。
+ * 第二路回退 resolveUniRuntime（dev 全量 window.uni、单测 mock）。
+ */
+function tryRegisterVueAppMixin(mixin) {
+    try {
+        ;
+        uni.onCreateVueApp((vueApp) => {
+            tryRun(() => vueApp.mixin(mixin), undefined);
+        });
+        return true;
+    }
+    catch (_e) {
+        // uni 未声明且未经 inject 替换（单测等）
+    }
+    const u = getUni();
+    if (u && typeof u.onCreateVueApp === 'function') {
+        u.onCreateVueApp((vueApp) => {
+            tryRun(() => vueApp.mixin(mixin), undefined);
+        });
+        return true;
+    }
+    return false;
+}
+// #endif
 function mountVueMixin(mixin) {
     if (vueMixinMounted)
         return;
@@ -5926,11 +6305,7 @@ function mountVueMixin(mixin) {
     }
     // #endif
     // #ifdef VUE3
-    const u = getUni();
-    if (u && typeof u.onCreateVueApp === 'function') {
-        u.onCreateVueApp((vueApp) => {
-            tryRun(() => vueApp.mixin(mixin), undefined);
-        });
+    if (tryRegisterVueAppMixin(mixin)) {
         vueMixinMounted = true;
         return;
     }
@@ -5951,11 +6326,7 @@ function scheduleVueAppMixinRetry(mixin) {
         vueMixinRetryTimer = undefined;
         if (vueMixinMounted)
             return;
-        const u = getUni();
-        if (u && typeof u.onCreateVueApp === 'function') {
-            u.onCreateVueApp((vueApp) => {
-                tryRun(() => vueApp.mixin(mixin), undefined);
-            });
+        if (tryRegisterVueAppMixin(mixin)) {
             vueMixinMounted = true;
             return;
         }
@@ -5989,10 +6360,15 @@ function mountVue2GlobalMixin(mixin) {
 }
 /**
  * 把 `uni.report` 桥到 StatApp.report。
+ *
+ * H5 发行摇树时 `resolveUniRuntime` 会跳过 `{}` 空桩，但业务仍可能通过
+ * `window.uni.report` 调用；故在可用 runtime 缺失时回退 `getGlobalObject().uni`。
  */
 function mountUniReport(app) {
-    const u = getUni();
-    if (!u)
+    var _a;
+    const g = getGlobalObject();
+    const u = ((_a = getUni()) !== null && _a !== void 0 ? _a : g.uni);
+    if (!u || typeof u !== 'object')
         return;
     u.report = (type, value) => {
         app.report(type, value);
