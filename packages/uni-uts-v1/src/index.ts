@@ -97,6 +97,7 @@ export {
 export { parseInjectModules, parseExtApiProviders } from './utils'
 
 export * from './sourceMap'
+export * from './uvue/transforms'
 
 export {
   parseUTSSyntaxError,
