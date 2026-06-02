@@ -330,6 +330,11 @@ function resolveUniRuntime() {
 const TAG = '[uni统计公有版]';
 let runtimeDebug;
 /**
+ * 是否屏蔽 info / warn / error。
+ * `undefined`：自动——`NODE_ENV === 'test'` 时默认屏蔽，避免 Jest 用例预期失败路径刷屏。
+ */
+let muteNonDebug;
+/**
  * 是否将日志合并为单行（Android / iOS 真机侧）。
  */
 function preferSingleLineConsole() {
@@ -410,9 +415,27 @@ function formatLogArgForNativeConsole(value) {
     return String(value);
 }
 /**
+ * 当前是否应屏蔽 info / warn / error（debug 仍由 `isDebug()` 单独控制）。
+ */
+function isNonDebugMuted() {
+    if (muteNonDebug !== undefined)
+        return muteNonDebug;
+    return process.env.NODE_ENV === 'test';
+}
+/**
+ * 测试 / CI 下临时恢复 warn 等输出（如断言 install 告警文案）。
+ *
+ * @param value `true` 屏蔽；`false` 允许；`undefined` 恢复为按 NODE_ENV 自动判定。
+ */
+function setMuteNonDebug(value) {
+    muteNonDebug = value;
+}
+/**
  * 输出到 console：Android/iOS 真机整行单参；其余平台 `TAG` + 多参。
  */
 function emitConsole(method, args) {
+    if (method !== 'log' && isNonDebugMuted())
+        return;
     const fn = console[method];
     if (!preferSingleLineConsole()) {
         fn.call(console, TAG, ...args);
@@ -467,6 +490,7 @@ const logger = {
     },
     setDebug,
     isDebug,
+    setMuteNonDebug,
 };
 
 /**
