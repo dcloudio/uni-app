@@ -3,6 +3,10 @@ import {
   getPagesJsonNavigationTitle,
 } from '../../../src/public/adapter/pagesTitle'
 
+/**
+ * 覆盖 VUE3 路径（`UNI_STAT_TITLE_JSON`）。
+ * VUE2 在应用打包阶段走 `uni-pages` 虚拟模块，单测环境无法模拟，由构建对齐私有版。
+ */
 describe('adapter/pagesTitle', () => {
   const prev = process.env.UNI_STAT_TITLE_JSON
 
