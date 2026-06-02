@@ -97,6 +97,9 @@
       "AddPhoneRepeatCalendarSuccessCallback"
     ],
     [
+      "AgreePrivacyAuthorization"
+    ],
+    [
       "AppCrashInfo"
     ],
     [
@@ -115,7 +118,13 @@
       "AppleLoginAppleInfo"
     ],
     [
+      "ArrayBufferToBase64"
+    ],
+    [
       "BackgroundAudioManager"
+    ],
+    [
+      "Base64ToArrayBuffer"
     ],
     [
       "CalendarErrorCode"
@@ -646,6 +655,9 @@
       "GetDeviceInfoResult"
     ],
     [
+      "GetElementById"
+    ],
+    [
       "GetFileInfo"
     ],
     [
@@ -719,6 +731,24 @@
     ],
     [
       "GetNetworkTypeSuccessCallback"
+    ],
+    [
+      "GetPrivacySetting"
+    ],
+    [
+      "GetPrivacySettingCompleteCallback"
+    ],
+    [
+      "GetPrivacySettingFailCallback"
+    ],
+    [
+      "GetPrivacySettingOptions"
+    ],
+    [
+      "GetPrivacySettingSuccessCallback"
+    ],
+    [
+      "GetPrivacySettingSuccessResult"
     ],
     [
       "GetProvider"
@@ -949,6 +979,24 @@
       "HideLoading"
     ],
     [
+      "HideNavigationBarLoading"
+    ],
+    [
+      "HideNavigationBarLoadingFail"
+    ],
+    [
+      "HideNavigationBarLoadingFailCallback"
+    ],
+    [
+      "HideNavigationBarLoadingOptions"
+    ],
+    [
+      "HideNavigationBarLoadingSuccess"
+    ],
+    [
+      "HideNavigationBarLoadingSuccessCallback"
+    ],
+    [
       "HideToast"
     ],
     [
@@ -1171,6 +1219,36 @@
       "LegacySavedFileListItem"
     ],
     [
+      "LoadFontFace"
+    ],
+    [
+      "LoadFontFaceComplete"
+    ],
+    [
+      "LoadFontFaceCompleteCallback"
+    ],
+    [
+      "LoadFontFaceErrCode"
+    ],
+    [
+      "LoadFontFaceFail"
+    ],
+    [
+      "LoadFontFaceFailCallback"
+    ],
+    [
+      "LoadFontFaceOptionDesc"
+    ],
+    [
+      "LoadFontFaceOptions"
+    ],
+    [
+      "LoadFontFaceSuccess"
+    ],
+    [
+      "LoadFontFaceSuccessCallback"
+    ],
+    [
       "LocationErrorCode"
     ],
     [
@@ -1294,6 +1372,9 @@
       "OffOsThemeChange"
     ],
     [
+      "OffPrivacyAuthorizationChange"
+    ],
+    [
       "OnAccelerometerChange"
     ],
     [
@@ -1385,6 +1466,12 @@
     ],
     [
       "OnOsThemeChangeCallback"
+    ],
+    [
+      "OnPrivacyAuthorizationChange"
+    ],
+    [
+      "OnPrivacyAuthorizationChangeCallback"
     ],
     [
       "OnProgressDownloadResult"
@@ -1520,6 +1607,9 @@
     ],
     [
       "PreviewImageSuccessCallback"
+    ],
+    [
+      "PrivacyChangeResult"
     ],
     [
       "PromptErrorCode"
@@ -1690,6 +1780,9 @@
       "RequestTaskOnHeadersReceivedListenerResult"
     ],
     [
+      "ResetPrivacyAuthorization"
+    ],
+    [
       "RmDirOptions"
     ],
     [
@@ -1754,30 +1847,6 @@
     ],
     [
       "SaveVideoToPhotosAlbumSuccessCallback"
-    ],
-    [
-      "ScanCode"
-    ],
-    [
-      "ScanCodeCompleteCallback"
-    ],
-    [
-      "ScanCodeFail"
-    ],
-    [
-      "ScanCodeFailCallback"
-    ],
-    [
-      "ScanCodeOptions"
-    ],
-    [
-      "ScanCodeSuccess"
-    ],
-    [
-      "ScanCodeSuccessCallback"
-    ],
-    [
-      "ScanCodeSupportedTypes"
     ],
     [
       "SendSocketMessage"
@@ -1880,6 +1949,60 @@
     ],
     [
       "SetKeepScreenOnSuccessCallback"
+    ],
+    [
+      "SetNavigationBarColor"
+    ],
+    [
+      "SetNavigationBarColorComplete"
+    ],
+    [
+      "SetNavigationBarColorCompleteCallback"
+    ],
+    [
+      "SetNavigationBarColorErrorCode"
+    ],
+    [
+      "SetNavigationBarColorFail"
+    ],
+    [
+      "SetNavigationBarColorFailCallback"
+    ],
+    [
+      "SetNavigationBarColorOptions"
+    ],
+    [
+      "SetNavigationBarColorSuccess"
+    ],
+    [
+      "SetNavigationBarColorSuccessCallback"
+    ],
+    [
+      "SetNavigationBarTitle"
+    ],
+    [
+      "SetNavigationBarTitleComplete"
+    ],
+    [
+      "SetNavigationBarTitleCompleteCallback"
+    ],
+    [
+      "SetNavigationBarTitleErrorCode"
+    ],
+    [
+      "SetNavigationBarTitleFail"
+    ],
+    [
+      "SetNavigationBarTitleFailCallback"
+    ],
+    [
+      "SetNavigationBarTitleOptions"
+    ],
+    [
+      "SetNavigationBarTitleSuccess"
+    ],
+    [
+      "SetNavigationBarTitleSuccessCallback"
     ],
     [
       "SetScreenBrightness"
@@ -2054,6 +2177,24 @@
     ],
     [
       "ShowModalSuccessCallback"
+    ],
+    [
+      "ShowNavigationBarLoading"
+    ],
+    [
+      "ShowNavigationBarLoadingFail"
+    ],
+    [
+      "ShowNavigationBarLoadingFailCallback"
+    ],
+    [
+      "ShowNavigationBarLoadingOptions"
+    ],
+    [
+      "ShowNavigationBarLoadingSuccess"
+    ],
+    [
+      "ShowNavigationBarLoadingSuccessCallback"
     ],
     [
       "ShowToast"

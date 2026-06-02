@@ -136,6 +136,9 @@
       "CanvasContext"
     ],
     [
+      "CanvasContext"
+    ],
+    [
       "Certificate"
     ],
     [
@@ -514,13 +517,28 @@
       "CreateCanvasContextAsync"
     ],
     [
+      "CreateCanvasContextAsync"
+    ],
+    [
+      "CreateCanvasContextAsyncCompleteCallback"
+    ],
+    [
       "CreateCanvasContextAsyncCompleteCallback"
     ],
     [
       "CreateCanvasContextAsyncFailCallback"
     ],
     [
+      "CreateCanvasContextAsyncFailCallback"
+    ],
+    [
       "CreateCanvasContextAsyncOptions"
+    ],
+    [
+      "CreateCanvasContextAsyncOptions"
+    ],
+    [
+      "CreateCanvasContextAsyncSuccessCallback"
     ],
     [
       "CreateCanvasContextAsyncSuccessCallback"
@@ -1774,6 +1792,9 @@
       "ProviderErrorCode"
     ],
     [
+      "PullDownRefreshErrorCode"
+    ],
+    [
       "ReadCompressedFileCallback"
     ],
     [
@@ -1862,6 +1883,9 @@
     ],
     [
       "RenameOptions"
+    ],
+    [
+      "RequestAnimationFrameCallback"
     ],
     [
       "RequestAnimationFrameCallback"
@@ -2521,6 +2545,36 @@
       "StartLocationUpdateSuccess"
     ],
     [
+      "StartPullDownRefresh"
+    ],
+    [
+      "StartPullDownRefreshComplete"
+    ],
+    [
+      "StartPullDownRefreshCompleteCallback"
+    ],
+    [
+      "StartPullDownRefreshFail"
+    ],
+    [
+      "StartPullDownRefreshFailCallback"
+    ],
+    [
+      "StartPullDownRefreshFailImpl"
+    ],
+    [
+      "StartPullDownRefreshOptions"
+    ],
+    [
+      "StartPullDownRefreshSuccess"
+    ],
+    [
+      "StartPullDownRefreshSuccessCallback"
+    ],
+    [
+      "StartPullDownRefreshSuccessImpl"
+    ],
+    [
       "StartSoterAuthentication"
     ],
     [
@@ -2636,6 +2690,9 @@
     ],
     [
       "StopLocationUpdateSuccess"
+    ],
+    [
+      "StopPullDownRefresh"
     ],
     [
       "TruncateFileOptions"

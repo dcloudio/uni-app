@@ -2728,6 +2728,9 @@
       "UniEditorElementSetContentsOptions"
     ],
     [
+      "UniInputElement"
+    ],
+    [
       "UniLoadingElement"
     ],
     [
@@ -2741,6 +2744,9 @@
     ],
     [
       "UniShareProvider"
+    ],
+    [
+      "UniTextareaElement"
     ],
     [
       "UniVerifyButtonListItem"
