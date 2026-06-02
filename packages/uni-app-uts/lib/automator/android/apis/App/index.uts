@@ -453,6 +453,129 @@ export const callUniMethod = (
       // @ts-expect-error
       success(uni.getWindowInfo())
       break
+    case 'setTabBarItem': {
+			const options = new UTSJSONObject(args[0])
+			uni.setTabBarItem({
+				index: options['index'] as number,
+				text: options['text'] != null ? (options['text'] as string) : null,
+				iconPath: options['iconPath'] != null ? (options['iconPath'] as string) : null,
+				selectedIconPath: options['selectedIconPath'] != null ? (options['selectedIconPath'] as string) : null,
+				pagePath: options['pagePath'] != null ? (options['pagePath'] as string) : null,
+				iconfont: options['iconfont'] != null ? ({
+					text: (options['iconfont'] as UTSJSONObject)['text'] as string,
+					selectedText: (options['iconfont'] as UTSJSONObject)['selectedText'] as string,
+					fontSize: (options['iconfont'] as UTSJSONObject)['fontSize'] != null ? ((options['iconfont'] as UTSJSONObject)['fontSize'] as string) : null,
+					color: (options['iconfont'] as UTSJSONObject)['color'] != null ? ((options['iconfont'] as UTSJSONObject)['color'] as string) : null,
+					selectedColor: (options['iconfont'] as UTSJSONObject)['selectedColor'] != null ? ((options['iconfont'] as UTSJSONObject)['selectedColor'] as string) : null,
+				} as SetTabBarItemIconFontOptions) : null,
+				visible: options['visible'] != null ? (options['visible'] as boolean) : null,
+			  success,
+			  // @ts-expect-error
+			  fail(error: SetTabBarItemFail) {
+			    error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+			    callback(null, error)
+			  },
+			})
+			break
+		}
+		case 'showTabBar': {
+			const options = new UTSJSONObject(args[0])
+			uni.showTabBar({
+				animation: options['animation'] != null ? (options['animation'] as boolean) : null,
+				success,
+				// @ts-expect-error
+				fail(error) {
+					error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+					callback(null, error)
+				},
+			})
+			break
+		}
+		case 'hideTabBar': {
+			const options = new UTSJSONObject(args[0])
+			uni.hideTabBar({
+				animation: options['animation'] != null ? (options['animation'] as boolean) : null,
+				success,
+				// @ts-expect-error
+				fail(error) {
+					error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+					callback(null, error)
+				},
+			})
+			break
+		}
+		case 'setTabBarBadge': {
+			const options = new UTSJSONObject(args[0])
+			uni.setTabBarBadge({
+				index: options['index'] as number,
+				text: options['text'] as string,
+				success,
+				// @ts-expect-error
+				fail(error) {
+					error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+					callback(null, error)
+				},
+			})
+			break
+		}
+		case 'removeTabBarBadge': {
+			const options = new UTSJSONObject(args[0])
+			uni.removeTabBarBadge({
+				index: options['index'] as number,
+				success,
+				// @ts-expect-error
+				fail(error) {
+					error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+					callback(null, error)
+				},
+			})
+			break
+		}
+		case 'showTabBarRedDot': {
+			const options = new UTSJSONObject(args[0])
+			uni.showTabBarRedDot({
+				index: options['index'] as number,
+				success,
+				// @ts-expect-error
+				fail(error) {
+					error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+					callback(null, error)
+				},
+			})
+			break
+		}
+		case 'hideTabBarRedDot': {
+			const options = new UTSJSONObject(args[0])
+			uni.hideTabBarRedDot({
+				index: options['index'] as number,
+				success,
+				// @ts-expect-error
+				fail(error) {
+					error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+					callback(null, error)
+				},
+			})
+			break
+		}
+		case 'setTabBarStyle': {
+			const options = new UTSJSONObject(args[0])
+			uni.setTabBarStyle({
+				color: options['color'] != null ? (options['color'] as string) : null,
+				selectedColor: options['selectedColor'] != null ? (options['selectedColor'] as string) : null,
+				backgroundColor: options['backgroundColor'] != null ? (options['backgroundColor'] as string) : null,
+				backgroundImage: options['backgroundImage'] != null ? (options['backgroundImage'] as string) : null,
+				backgroundRepeat: options['backgroundRepeat'] != null ? (options['backgroundRepeat'] as string) : null,
+				borderColor: options['borderColor'] != null ? (options['borderColor'] as string) : null,
+				borderStyle: options['borderStyle'] != null ? (options['borderStyle'] as string) : null,
+				success,
+				// @ts-expect-error
+				fail(error) {
+					error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+					callback(null, error)
+				},
+			})
+			break
+		}
     default:
       callback(null, { errMsg: 'uni.' + method + ' not exists.' })
       break
