@@ -538,7 +538,7 @@ foo
       prefixIdentifiers: true,
       cacheHandlers: true,
     })
-    expect(root.cached).toBe(1)
+    expect(root.cached.length).toBe(1)
     const codegen = (root.children[0] as PlainElementNode)
       .codegenNode as VNodeCall
     // should not list cached prop in dynamicProps
@@ -556,7 +556,7 @@ foo
         cacheHandlers: true,
       }
     )
-    expect(root.cached).toBe(0)
+    expect(root.cached.length).toBe(0)
     const codegen = (
       (root.children[0] as ForNode).children[0] as PlainElementNode
     ).codegenNode as VNodeCall
@@ -574,8 +574,8 @@ foo
         cacheHandlers: true,
       }
     )
-    expect(root.cached).not.toBe(2)
-    expect(root.cached).toBe(1)
+    expect(root.cached.length).not.toBe(2)
+    expect(root.cached.length).toBe(1)
   })
 
   test('should mark update handler dynamic if it refers slot scope variables', () => {

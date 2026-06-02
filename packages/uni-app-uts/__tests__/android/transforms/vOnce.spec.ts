@@ -22,7 +22,7 @@ function transformWithOnce(
 describe('compiler: v-once transform', () => {
   test('as root node', () => {
     const root = transformWithOnce(`<view :id="foo" v-once />`)
-    expect(root.cached).toBe(1)
+    expect(root.cached.length).toBe(1)
     expect(root.helpers).toContain(SET_BLOCK_TRACKING)
     expect(root.codegenNode).toMatchObject({
       type: NodeTypes.JS_CACHE_EXPRESSION,
@@ -37,7 +37,7 @@ describe('compiler: v-once transform', () => {
 
   test('on nested plain element', () => {
     const root = transformWithOnce(`<view><view :id="foo" v-once /></view>`)
-    expect(root.cached).toBe(1)
+    expect(root.cached.length).toBe(1)
     expect(root.helpers).toContain(SET_BLOCK_TRACKING)
     expect((root.children[0] as any).children[0].codegenNode).toMatchObject({
       type: NodeTypes.JS_CACHE_EXPRESSION,
@@ -52,7 +52,7 @@ describe('compiler: v-once transform', () => {
 
   test('on component', () => {
     const root = transformWithOnce(`<view><Comp :id="foo" v-once /></view>`)
-    expect(root.cached).toBe(1)
+    expect(root.cached.length).toBe(1)
     expect(root.helpers).toContain(SET_BLOCK_TRACKING)
     expect((root.children[0] as any).children[0].codegenNode).toMatchObject({
       type: NodeTypes.JS_CACHE_EXPRESSION,
@@ -67,7 +67,7 @@ describe('compiler: v-once transform', () => {
 
   test('on slot outlet', () => {
     const root = transformWithOnce(`<view><slot v-once /></view>`)
-    expect(root.cached).toBe(1)
+    expect(root.cached.length).toBe(1)
     expect(root.helpers).toContain(SET_BLOCK_TRACKING)
     expect((root.children[0] as any).children[0].codegenNode).toMatchObject({
       type: NodeTypes.JS_CACHE_EXPRESSION,
@@ -83,8 +83,8 @@ describe('compiler: v-once transform', () => {
   // v-once inside v-once should not be cached
   test('inside v-once', () => {
     const root = transformWithOnce(`<view v-once><view v-once/></view>`)
-    expect(root.cached).not.toBe(2)
-    expect(root.cached).toBe(1)
+    expect(root.cached.length).not.toBe(2)
+    expect(root.cached.length).toBe(1)
   })
 
   // cached nodes should be ignored by hoistStatic transform
@@ -92,7 +92,7 @@ describe('compiler: v-once transform', () => {
   //   const root = transformWithOnce(`<view><view v-once /></view>`, {
   //     hoistStatic: true,
   //   })
-  //   expect(root.cached).toBe(1)
+  //   expect(root.cached.length).toBe(1)
   //   expect(root.helpers).toContain(SET_BLOCK_TRACKING)
   //   expect(root.hoists.length).toBe(0)
   //   expect((root.children[0] as any).children[0].codegenNode).toMatchObject({
@@ -108,7 +108,7 @@ describe('compiler: v-once transform', () => {
 
   test('with v-if/else', () => {
     const root = transformWithOnce(`<view v-if="BOOLEAN" v-once /><p v-else/>`)
-    expect(root.cached).toBe(1)
+    expect(root.cached.length).toBe(1)
     expect(root.helpers).toContain(SET_BLOCK_TRACKING)
     expect(root.children[0]).toMatchObject({
       type: NodeTypes.IF,
@@ -132,7 +132,7 @@ describe('compiler: v-once transform', () => {
 
   test('with v-for', () => {
     const root = transformWithOnce(`<view v-for="i in list" v-once />`)
-    expect(root.cached).toBe(1)
+    expect(root.cached.length).toBe(1)
     expect(root.helpers).toContain(SET_BLOCK_TRACKING)
     expect(root.children[0]).toMatchObject({
       type: NodeTypes.FOR,

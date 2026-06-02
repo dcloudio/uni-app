@@ -661,7 +661,7 @@ _ctx.bar()
         prefixIdentifiers: true,
         cacheHandlers: true,
       })
-      expect(root.cached).toBe(1)
+      expect(root.cached.length).toBe(1)
       const vnodeCall = node.codegenNode as VNodeCall
       // should not treat cached handler as dynamicProp, so no flags
       expect(vnodeCall.patchFlag).toBeUndefined()
@@ -682,7 +682,7 @@ _ctx.bar()
         prefixIdentifiers: true,
         cacheHandlers: true,
       })
-      expect(root.cached).toBe(1)
+      expect(root.cached.length).toBe(1)
       const vnodeCall = node.codegenNode as VNodeCall
       // should not treat cached handler as dynamicProp, so no flags
       expect(vnodeCall.patchFlag).toBeUndefined()
@@ -707,7 +707,7 @@ _ctx.bar()
         prefixIdentifiers: true,
         cacheHandlers: true,
       })
-      expect(root.cached).toBe(1)
+      expect(root.cached.length).toBe(1)
       const vnodeCall = node.codegenNode as VNodeCall
       // should not treat cached handler as dynamicProp, so no flags
       expect(vnodeCall.patchFlag).toBeUndefined()
@@ -744,7 +744,7 @@ _ctx.bar()
         cacheHandlers: true,
         isNativeTag: (tag: string) => tag === 'view',
       })
-      expect(root.cached).toBe(0)
+      expect(root.cached.length).toBe(0)
     })
 
     test('should not be cached inside v-once', () => {
@@ -755,8 +755,8 @@ _ctx.bar()
           cacheHandlers: true,
         }
       )
-      expect(root.cached).not.toBe(2)
-      expect(root.cached).toBe(1)
+      expect(root.cached.length).not.toBe(2)
+      expect(root.cached.length).toBe(1)
     })
 
     test('inline function expression handler', () => {
@@ -764,7 +764,7 @@ _ctx.bar()
         prefixIdentifiers: true,
         cacheHandlers: true,
       })
-      expect(root.cached).toBe(1)
+      expect(root.cached.length).toBe(1)
       const vnodeCall = node.codegenNode as VNodeCall
       // should not treat cached handler as dynamicProp, so no flags
       expect(vnodeCall.patchFlag).toBeUndefined()
@@ -788,7 +788,7 @@ _ctx.bar()
           cacheHandlers: true,
         }
       )
-      expect(root.cached).toBe(1)
+      expect(root.cached.length).toBe(1)
       const vnodeCall = node.codegenNode as VNodeCall
       // should not treat cached handler as dynamicProp, so no flags
       expect(vnodeCall.patchFlag).toBeUndefined()
@@ -812,7 +812,7 @@ _ctx.bar()
           cacheHandlers: true,
         }
       )
-      expect(root.cached).toBe(1)
+      expect(root.cached.length).toBe(1)
       const vnodeCall = node.codegenNode as VNodeCall
       // should not treat cached handler as dynamicProp, so no flags
       expect(vnodeCall.patchFlag).toBeUndefined()
@@ -837,8 +837,8 @@ _ctx.bar()
         prefixIdentifiers: true,
         cacheHandlers: true,
       })
-      expect(root.cached).toBe(1)
-      expect(root.cached).toBe(1)
+      expect(root.cached.length).toBe(1)
+      expect(root.cached.length).toBe(1)
       const vnodeCall = node.codegenNode as VNodeCall
       // should not treat cached handler as dynamicProp, so no flags
       expect(vnodeCall.patchFlag).toBeUndefined()

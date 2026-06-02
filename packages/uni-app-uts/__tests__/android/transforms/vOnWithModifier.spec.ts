@@ -207,7 +207,7 @@ describe('compiler-dom: transform v-on', () => {
         warnings.push(warning.message)
       },
     })
-    expect(root.cached).toBe(1)
+    expect(root.cached.length).toBe(1)
     expect(warnings).toEqual([
       '.enter is not supported',
       '.capture is not supported',

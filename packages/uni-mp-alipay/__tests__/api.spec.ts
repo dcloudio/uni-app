@@ -1,4 +1,4 @@
-/// <reference path="../node_modules/mini-types/types/api/index.d.ts" />
+/// <reference path="../node_modules/mini-types/types/index.d.ts" />
 
 // type IA = my.IGetAuthCodeOptions
 

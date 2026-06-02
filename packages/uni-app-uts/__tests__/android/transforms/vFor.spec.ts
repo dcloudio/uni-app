@@ -18,7 +18,7 @@ import { transformFor } from '../../../src/plugins/android/uvue/compiler/transfo
 import { transformSlotOutlet } from '../../../src/plugins/android/uvue/compiler/transforms/transformSlotOutlet'
 import { transformExpression } from '../../../src/plugins/android/uvue/compiler/transforms/transformExpression'
 import { transformBind } from '../../../src/plugins/android/uvue/compiler/transforms/vBind'
-import { assert, createObjectMatcher, genFlagText } from '../testUtils'
+import { assert, createObjectMatcher } from '../testUtils'
 import { generate } from '../../../src/plugins/android/uvue/compiler/codegen'
 import {
   FRAGMENT,
@@ -953,10 +953,10 @@ describe('compiler: v-for', () => {
         tag: FRAGMENT,
         disableTracking,
         patchFlag: !disableTracking
-          ? genFlagText(PatchFlags.STABLE_FRAGMENT)
+          ? PatchFlags.STABLE_FRAGMENT
           : keyed
-          ? genFlagText(PatchFlags.KEYED_FRAGMENT)
-          : genFlagText(PatchFlags.UNKEYED_FRAGMENT),
+          ? PatchFlags.KEYED_FRAGMENT
+          : PatchFlags.UNKEYED_FRAGMENT,
         children: {
           type: NodeTypes.JS_CALL_EXPRESSION,
           callee: RENDER_LIST,
@@ -1109,7 +1109,7 @@ describe('compiler: v-for', () => {
               constType: ConstantTypes.NOT_CONSTANT,
             },
           },
-          patchFlag: genFlagText(PatchFlags.TEXT),
+          patchFlag: PatchFlags.TEXT,
         },
       })
       expect(generate(root, {} as any).code).toMatchSnapshot()
@@ -1138,7 +1138,7 @@ describe('compiler: v-for', () => {
             { type: NodeTypes.TEXT, content: `hello` },
             { type: NodeTypes.ELEMENT, tag: `text` },
           ],
-          patchFlag: genFlagText(PatchFlags.STABLE_FRAGMENT),
+          patchFlag: PatchFlags.STABLE_FRAGMENT,
         },
       })
       expect(generate(root, {} as any).code).toMatchSnapshot()
@@ -1267,7 +1267,7 @@ describe('compiler: v-for', () => {
             { type: NodeTypes.TEXT, content: `hello` },
             { type: NodeTypes.ELEMENT, tag: `text` },
           ],
-          patchFlag: genFlagText(PatchFlags.STABLE_FRAGMENT),
+          patchFlag: PatchFlags.STABLE_FRAGMENT,
         },
       })
       expect(generate(root, {} as any).code).toMatchSnapshot()
@@ -1288,7 +1288,7 @@ describe('compiler: v-for', () => {
           }),
           isBlock: true,
           disableTracking: true,
-          patchFlag: genFlagText(PatchFlags.UNKEYED_FRAGMENT),
+          patchFlag: PatchFlags.UNKEYED_FRAGMENT,
           children: {
             type: NodeTypes.JS_CALL_EXPRESSION,
             callee: RENDER_LIST,
@@ -1331,7 +1331,7 @@ describe('compiler: v-for', () => {
           }),
           isBlock: true,
           disableTracking: true,
-          patchFlag: genFlagText(PatchFlags.UNKEYED_FRAGMENT),
+          patchFlag: PatchFlags.UNKEYED_FRAGMENT,
           children: {
             type: NodeTypes.JS_CALL_EXPRESSION,
             callee: RENDER_LIST,
