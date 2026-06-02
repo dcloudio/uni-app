@@ -136,9 +136,6 @@
       "CanvasContext"
     ],
     [
-      "CanvasContext"
-    ],
-    [
       "Certificate"
     ],
     [
@@ -517,28 +514,13 @@
       "CreateCanvasContextAsync"
     ],
     [
-      "CreateCanvasContextAsync"
-    ],
-    [
-      "CreateCanvasContextAsyncCompleteCallback"
-    ],
-    [
       "CreateCanvasContextAsyncCompleteCallback"
     ],
     [
       "CreateCanvasContextAsyncFailCallback"
     ],
     [
-      "CreateCanvasContextAsyncFailCallback"
-    ],
-    [
       "CreateCanvasContextAsyncOptions"
-    ],
-    [
-      "CreateCanvasContextAsyncOptions"
-    ],
-    [
-      "CreateCanvasContextAsyncSuccessCallback"
     ],
     [
       "CreateCanvasContextAsyncSuccessCallback"
@@ -1883,9 +1865,6 @@
     ],
     [
       "RenameOptions"
-    ],
-    [
-      "RequestAnimationFrameCallback"
     ],
     [
       "RequestAnimationFrameCallback"
