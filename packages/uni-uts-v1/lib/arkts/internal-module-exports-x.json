@@ -1774,9 +1774,6 @@
       "ProviderErrorCode"
     ],
     [
-      "PullDownRefreshErrorCode"
-    ],
-    [
       "ReadCompressedFileCallback"
     ],
     [
@@ -2524,36 +2521,6 @@
       "StartLocationUpdateSuccess"
     ],
     [
-      "StartPullDownRefresh"
-    ],
-    [
-      "StartPullDownRefreshComplete"
-    ],
-    [
-      "StartPullDownRefreshCompleteCallback"
-    ],
-    [
-      "StartPullDownRefreshFail"
-    ],
-    [
-      "StartPullDownRefreshFailCallback"
-    ],
-    [
-      "StartPullDownRefreshFailImpl"
-    ],
-    [
-      "StartPullDownRefreshOptions"
-    ],
-    [
-      "StartPullDownRefreshSuccess"
-    ],
-    [
-      "StartPullDownRefreshSuccessCallback"
-    ],
-    [
-      "StartPullDownRefreshSuccessImpl"
-    ],
-    [
       "StartSoterAuthentication"
     ],
     [
@@ -2669,9 +2636,6 @@
     ],
     [
       "StopLocationUpdateSuccess"
-    ],
-    [
-      "StopPullDownRefresh"
     ],
     [
       "TruncateFileOptions"
