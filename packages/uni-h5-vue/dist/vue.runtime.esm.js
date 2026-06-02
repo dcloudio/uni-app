@@ -1,5 +1,5 @@
 /**
-* @dcloudio/uni-h5-vue v3.5.34
+* @dcloudio/uni-h5-vue v3.5.35
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -1356,9 +1356,6 @@ function targetTypeMap(rawType) {
       return 0 /* INVALID */;
   }
 }
-function getTargetType(value) {
-  return value["__v_skip"] || !Object.isExtensible(value) ? 0 /* INVALID */ : targetTypeMap(toRawType(value));
-}
 // @__NO_SIDE_EFFECTS__
 function reactive(target) {
   if (/* @__PURE__ */ isReadonly(target)) {
@@ -1416,13 +1413,16 @@ function createReactiveObject(target, isReadonly2, baseHandlers, collectionHandl
   if (target["__v_raw"] && !(isReadonly2 && target["__v_isReactive"])) {
     return target;
   }
-  const targetType = getTargetType(target);
-  if (targetType === 0 /* INVALID */) {
+  if (target["__v_skip"] || !Object.isExtensible(target)) {
     return target;
   }
   const existingProxy = proxyMap.get(target);
   if (existingProxy) {
     return existingProxy;
+  }
+  const targetType = targetTypeMap(toRawType(target));
+  if (targetType === 0 /* INVALID */) {
+    return target;
   }
   const proxy = new Proxy(
     target,
@@ -3128,19 +3128,18 @@ const TeleportImpl = {
       target,
       props
     } = vnode;
-    let shouldRemove = doRemove || !isTeleportDisabled(props);
+    const shouldRemove = doRemove || !isTeleportDisabled(props);
     const pendingMount = pendingMounts.get(vnode);
     if (pendingMount) {
       pendingMount.flags |= 8;
       pendingMounts.delete(vnode);
-      shouldRemove = false;
     }
     if (target) {
       hostRemove(targetStart);
       hostRemove(targetAnchor);
     }
     doRemove && hostRemove(anchor);
-    if (shapeFlag & 16) {
+    if (!pendingMount && shapeFlag & 16) {
       for (let i = 0; i < children.length; i++) {
         const child = children[i];
         unmount(
@@ -4109,20 +4108,16 @@ function createHydrationFunctions(rendererInternals) {
           slotScopeIds,
           optimized
         );
-        let hasWarned = false;
-        while (next) {
-          if (!isMismatchAllowed(el, 1 /* CHILDREN */)) {
-            if ((!!(process.env.NODE_ENV !== "production") || __VUE_PROD_HYDRATION_MISMATCH_DETAILS__) && !hasWarned) {
-              warn$1(
-                `Hydration children mismatch on`,
-                el,
-                `
+        if (next && !isMismatchAllowed(el, 1 /* CHILDREN */)) {
+          (!!(process.env.NODE_ENV !== "production") || __VUE_PROD_HYDRATION_MISMATCH_DETAILS__) && warn$1(
+            `Hydration children mismatch on`,
+            el,
+            `
 Server rendered element contains more child nodes than client vdom.`
-              );
-              hasWarned = true;
-            }
-            logMismatchError();
-          }
+          );
+          logMismatchError();
+        }
+        while (next) {
           const cur = next;
           next = next.nextSibling;
           remove(cur);
@@ -4198,7 +4193,7 @@ Server rendered element contains more child nodes than client vdom.`
     optimized = optimized || !!parentVNode.dynamicChildren;
     const children = parentVNode.children;
     const l = children.length;
-    let hasWarned = false;
+    let hasCheckedMismatch = false;
     for (let i = 0; i < l; i++) {
       const vnode = optimized ? children[i] : children[i] = normalizeVNode(children[i]);
       const isText = vnode.type === Text;
@@ -4226,17 +4221,17 @@ Server rendered element contains more child nodes than client vdom.`
       } else if (isText && !vnode.children) {
         insert(vnode.el = createText(""), container);
       } else {
-        if (!isMismatchAllowed(container, 1 /* CHILDREN */)) {
-          if ((!!(process.env.NODE_ENV !== "production") || __VUE_PROD_HYDRATION_MISMATCH_DETAILS__) && !hasWarned) {
-            warn$1(
+        if (!hasCheckedMismatch) {
+          hasCheckedMismatch = true;
+          if (!isMismatchAllowed(container, 1 /* CHILDREN */)) {
+            (!!(process.env.NODE_ENV !== "production") || __VUE_PROD_HYDRATION_MISMATCH_DETAILS__) && warn$1(
               `Hydration children mismatch on`,
               container,
               `
 Server rendered element contains fewer child nodes than client vdom.`
             );
-            hasWarned = true;
+            logMismatchError();
           }
-          logMismatchError();
         }
         patch(
           null,
@@ -4785,8 +4780,10 @@ class Cache {
       _keys.add(key);
       if (_max && _keys.size > _max) {
         const staleKey = _keys.values().next().value;
-        this.pruneCacheEntry(_cache.get(staleKey));
-        this.delete(staleKey);
+        if (staleKey !== void 0) {
+          this.pruneCacheEntry(_cache.get(staleKey));
+          this.delete(staleKey);
+        }
       }
     }
     return cached;
@@ -5362,7 +5359,6 @@ const getPublicInstance = (i) => {
 };
 const createForceUpdate = (i) => {
   return function() {
-    i.effect.flags |= 16;
     queueJob(i.update);
     {
       return;
@@ -8693,9 +8689,13 @@ function baseCreateRenderer(options, createHydrationFns) {
     const needTransition2 = moveType !== 2 && shapeFlag & 1 && transition;
     if (needTransition2) {
       if (moveType === 0) {
-        transition.beforeEnter(el);
-        hostInsert(el, container, anchor);
-        queuePostRenderEffect(() => transition.enter(el), parentSuspense);
+        if (transition.persisted && !el[leaveCbKey]) {
+          hostInsert(el, container, anchor);
+        } else {
+          transition.beforeEnter(el);
+          hostInsert(el, container, anchor);
+          queuePostRenderEffect(() => transition.enter(el), parentSuspense);
+        }
       } else {
         const { leave, delayLeave, afterLeave } = transition;
         const remove2 = () => {
@@ -8706,16 +8706,21 @@ function baseCreateRenderer(options, createHydrationFns) {
           }
         };
         const performLeave = () => {
+          const wasLeaving = el._isLeaving || !!el[leaveCbKey];
           if (el._isLeaving) {
             el[leaveCbKey](
               true
               /* cancelled */
             );
           }
-          leave(el, () => {
+          if (transition.persisted && !wasLeaving) {
             remove2();
-            afterLeave && afterLeave();
-          });
+          } else {
+            leave(el, () => {
+              remove2();
+              afterLeave && afterLeave();
+            });
+          }
         };
         if (delayLeave) {
           delayLeave(el, remove2, performLeave);
@@ -10750,7 +10755,7 @@ function isMemoSame(cached, memo) {
   return true;
 }
 
-const version = "3.5.34";
+const version = "3.5.35";
 const warn = !!(process.env.NODE_ENV !== "production") ? warn$1 : NOOP;
 const ErrorTypeStrings = ErrorTypeStrings$1 ;
 const devtools = !!(process.env.NODE_ENV !== "production") || true ? devtools$1 : void 0;
@@ -11535,26 +11540,38 @@ function createInvoker(initialValue, instance) {
     const proxy = instance && instance.proxy;
     const normalizeNativeEvent = proxy && proxy.$nne;
     const { value } = invoker;
-    if (normalizeNativeEvent && isArray(value)) {
-      const fns = patchStopImmediatePropagation(e, value);
-      for (let i = 0; i < fns.length; i++) {
-        const fn = fns[i];
-        callWithAsyncErrorHandling(
-          fn,
-          instance,
-          5,
-          !fn.__wwe ? normalizeNativeEvent(e) : [e]
-        );
+    if (isArray(value)) {
+      const originalStop = e.stopImmediatePropagation;
+      e.stopImmediatePropagation = () => {
+        originalStop.call(e);
+        e._stopped = true;
+      };
+      const handlers = value.slice();
+      const args = [e];
+      for (let i = 0; i < handlers.length; i++) {
+        if (e._stopped) {
+          break;
+        }
+        const handler = handlers[i];
+        if (handler) {
+          callWithAsyncErrorHandling(
+            handler,
+            instance,
+            5,
+            // fixed by xxxxxx
+            normalizeNativeEvent && !handler.__wwe ? normalizeNativeEvent(e) : args
+          );
+        }
       }
-      return;
+    } else {
+      callWithAsyncErrorHandling(
+        value,
+        instance,
+        5,
+        // fixed by xxxxxx
+        normalizeNativeEvent && !value.__wwe ? normalizeNativeEvent(e, value, instance) : [e]
+      );
     }
-    callWithAsyncErrorHandling(
-      patchStopImmediatePropagation(e, invoker.value),
-      instance,
-      5,
-      // fixed by xxxxxx
-      normalizeNativeEvent && !value.__wwe ? normalizeNativeEvent(e, value, instance) : [e]
-    );
   };
   invoker.value = initialValue;
   invoker.attached = getNow();
@@ -11569,22 +11586,6 @@ function sanitizeEventValue(value, propName) {
 Expected function or array of functions, received type ${typeof value}.`
   );
   return NOOP;
-}
-function patchStopImmediatePropagation(e, value) {
-  if (isArray(value)) {
-    const originalStop = e.stopImmediatePropagation;
-    e.stopImmediatePropagation = () => {
-      originalStop.call(e);
-      e._stopped = true;
-    };
-    return value.map((fn) => {
-      const patchedFn = (e2) => !e2._stopped && fn && fn(e2);
-      patchedFn.__wwe = fn.__wwe;
-      return patchedFn;
-    });
-  } else {
-    return value;
-  }
 }
 
 function patchWxs(el, rawName, nextValue, instance = null) {
