@@ -474,6 +474,72 @@ process.env.MERGE_VIRTUAL_HOST_ATTRIBUTES = (!!platformOptions.mergeVirtualHostA
 process.env.UNI_STATISTICS_CONFIG = '""'
 process.env.UNI_STAT_UNI_CLOUD = '""'
 process.env.UNI_STAT_DEBUG = '""'
+
+/** 公有版小程序 GET 上报域名 */
+const STAT_MP_REQUEST_DOMAIN = 'tongji-collector.dcloud.net.cn'
+const STAT_MP_DOMAIN_DOC_URL = 'https://uniapp.dcloud.net.cn/uni-stat-v2.html'
+const STAT_WARN_NO_APPID =
+  '当前应用未配置 appid，无法使用 uni 统计，详情参考：https://ask.dcloud.net.cn/article/36303'
+const STAT_PRIVATE_ANDROID_WARN =
+  '【重要】因 HBuilderX 3.4.9 版本起，uni统计2.0 调整了安卓端 deviceId 获取方式，导致 uni统计2.0 App-Android平台部分统计数据不准确。如使用了HBuilderX 3.4.9 - 3.6.4版本且开通了uni统计2.0的应用，需要使用HBuilderX3.6.7及以上版本重新发布应用并升级 uniAdmin 云函数解决，详见：https://ask.dcloud.net.cn/article/40097'
+
+/**
+ * 解析 manifest.uniStatistics 的统计类型。
+ * 优先 type（public/private）；缺失或非法时回退 version（2=private，其余=public）。
+ */
+function resolveUniStatType (uniStatistics) {
+  const type = String(uniStatistics.type || '').trim()
+  if (type === 'public' || type === 'private') {
+    return type
+  }
+  return Number(uniStatistics.version) === 2 ? 'private' : 'public'
+}
+
+/**
+ * 是否应向 main 入口自动 import 统计运行时。
+ * uni-app x 暂不自动 import；无统计节点或未配 enable 默认开启，仅根节点 enable === false 关闭。
+ */
+function shouldAutoImportStatRuntime (rootStat) {
+  if (process.env.UNI_APP_X === 'true') {
+    return false
+  }
+  if (!rootStat) {
+    return true
+  }
+  return rootStat.enable !== false
+}
+
+/** 构建期统计提示输出（与 uni-stat vite 插件 uniStatLog 一致） */
+function uniStatLog (text) {
+  console.log()
+  console.warn(text)
+  console.log()
+}
+
+/** 构建期「统计已开启」简短提示 */
+function formatStatEnabledTip (statType) {
+  return `已开启 uni统计${statType === 'public' ? '公有版' : '私有版'}`
+}
+
+/** 小程序公有版 request 合法域名提示（合并「已开启」与域名说明） */
+function formatMpStatDomainTip () {
+  return `已开启 uni统计公有版，为保障数据正常上报，请在小程序后台配置 request 合法域名：${STAT_MP_REQUEST_DOMAIN}。详情：${STAT_MP_DOMAIN_DOC_URL}`
+}
+
+/** 小程序公有版是否需输出域名配置提示 */
+function shouldShowMpDomainTip (platform, statType) {
+  return statType === 'public' && platform.startsWith('mp-')
+}
+
+/** 输出构建期「统计已开启」提示 */
+function logStatEnabledTip (platform, statType) {
+  if (shouldShowMpDomainTip(platform, statType)) {
+    uniStatLog(formatMpStatDomainTip())
+    return
+  }
+  uniStatLog(formatStatEnabledTip(statType))
+}
+
 if (
   process.env.UNI_USING_COMPONENTS ||
   process.env.UNI_PLATFORM === 'h5'
@@ -484,49 +550,38 @@ if (
     rootStat || {},
     platformOptions.uniStatistics || {}
   )
+  const statExplicitlyDisabled = !!(rootStat && rootStat.enable === false)
 
-  // 无统计节点或未配 enable 默认开启；仅根节点 enable === false 关闭
-  if (!rootStat || rootStat.enable !== false) {
-    const uniStatLog = (text) => {
-      console.log()
-      console.warn(text)
-      console.log()
-    }
-    // type 优先；version 1 → 公有版；version 2 且无 type → 私有版；其余默认公有版
-    let statType = 'public'
-    const type = String(uniStatistics.type || '').trim()
-    if (type === 'public' || type === 'private') {
-      statType = type
-    } else if (Number(uniStatistics.version) === 2) {
-      statType = 'private'
-    }
-    process.env.UNI_USING_STAT = statType
-    const uniCloudConfig = uniStatistics.uniCloud || {}
-    process.env.UNI_STATISTICS_CONFIG = JSON.stringify(uniStatistics)
-    process.env.UNI_STAT_UNI_CLOUD = JSON.stringify(uniCloudConfig)
-    process.env.UNI_STAT_DEBUG = uniStatistics.debug === true ? 'true' : 'false'
-    const statTypeLabel = statType === 'public' ? '公有版' : '私有版'
+  // 始终注入完整 manifest.uniStatistics；enable 仅控制是否自动 import
+  process.env.UNI_STATISTICS_CONFIG = JSON.stringify(uniStatistics)
+  process.env.UNI_STAT_DEBUG = uniStatistics.debug === true ? 'true' : 'false'
+
+  if (!statExplicitlyDisabled && shouldAutoImportStatRuntime(rootStat)) {
+    const statType = resolveUniStatType(uniStatistics)
+    const platform = process.env.UNI_PLATFORM
+    let autoImport = true
 
     if (process.env.NODE_ENV === 'production') {
       if (!process.UNI_STAT_CONFIG.appid) {
-        uniStatLog(uniI18n.__('pluginUni.uniStatisticsNoAppid', {
-          0: 'https://ask.dcloud.net.cn/article/36303'
-        }))
+        uniStatLog(STAT_WARN_NO_APPID)
+        autoImport = false
       } else {
-        uniStatLog(`已开启 uni统计${statTypeLabel}`)
+        logStatEnabledTip(platform, statType)
         if (statType === 'private') {
-          uniStatLog(
-            '【重要】因 HBuilderX 3.4.9 版本起，uni统计2.0 调整了安卓端 deviceId 获取方式，导致 uni统计2.0 App-Android平台部分统计数据不准确。如使用了HBuilderX 3.4.9 - 3.6.4版本且开通了uni统计2.0的应用，需要使用HBuilderX3.6.7及以上版本重新发布应用并升级 uniAdmin 云函数解决，详见：https://ask.dcloud.net.cn/article/40097'
-          )
+          uniStatLog(STAT_PRIVATE_ANDROID_WARN)
         }
       }
     } else {
-      uniStatLog(`已开启 uni统计${statTypeLabel}`)
+      logStatEnabledTip(platform, statType)
       if (statType === 'private') {
-        uniStatLog(
-          '【重要】因 HBuilderX 3.4.9 版本起，uni统计2.0 调整了安卓端 deviceId 获取方式，导致 uni统计2.0 App-Android平台部分统计数据不准确。如使用了HBuilderX 3.4.9 - 3.6.4版本且开通了uni统计2.0的应用，需要使用HBuilderX3.6.7及以上版本重新发布应用并升级 uniAdmin 云函数解决，详见：https://ask.dcloud.net.cn/article/40097'
-        )
+        uniStatLog(STAT_PRIVATE_ANDROID_WARN)
       }
+    }
+
+    if (autoImport) {
+      process.env.UNI_USING_STAT = statType
+      const uniCloudConfig = uniStatistics.uniCloud || {}
+      process.env.UNI_STAT_UNI_CLOUD = JSON.stringify(uniCloudConfig)
     }
   }
 }
