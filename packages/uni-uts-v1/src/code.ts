@@ -859,7 +859,6 @@ function createParams(tsParams: TsFnParameter[]) {
 }
 
 async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
-  const isX = process.env.UNI_APP_X === 'true'
   // 优先合并 ios + android，如果没有，查找根目录 index.uts
   const iosDecls = (
     await parseFile(
@@ -896,13 +895,8 @@ async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
     }
     return true
   })
-  let decls: ProxyDecl[] = []
-  if (isX) {
-    decls = options.platform === 'app-android' ? androidDecls : iosDecls
-  } else {
-    // 优先使用 app-ios，因为 app-ios 平台函数类型需要正确的参数列表
-    decls = mergeDecls(androidDecls, iosDecls)
-  }
+  // 优先使用 app-ios，因为 app-ios 平台函数类型需要正确的参数列表
+  const decls = mergeDecls(androidDecls, iosDecls)
   // 如果没有平台特有，查找 root index.uts
   if (!decls.length) {
     return await parseFile(true, resolveRootIndex(module, options), options)
