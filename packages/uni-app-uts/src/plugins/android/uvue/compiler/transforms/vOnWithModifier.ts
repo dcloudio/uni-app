@@ -73,7 +73,7 @@ const resolveModifiers = (
 
 export const transformOn: DirectiveTransform = (dir, node, context) => {
   return baseTransform(dir, node, context, (baseResult) => {
-    const { modifiers } = dir
+    const modifiers = dir.modifiers.map((modifier) => modifier.content)
     if (!modifiers.length) return baseResult
 
     let { key, value: handlerExp } = baseResult.props[0]

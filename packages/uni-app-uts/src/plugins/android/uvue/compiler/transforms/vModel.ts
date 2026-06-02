@@ -22,7 +22,7 @@ import type { Node } from '@babel/types'
 import { parseExpression } from '@babel/parser'
 import { isCompoundExpressionNode } from '@dcloudio/uni-cli-shared'
 
-import type { DirectiveTransform } from '../transform'
+import { type DirectiveTransform, toVueTransformContext } from '../transform'
 
 import { ErrorCodes, createCompilerError } from '../errors'
 import { LOOSE_TO_NUMBER, TRY_SET_REF_VALUE } from '../runtimeHelpers'
@@ -92,7 +92,7 @@ export const transformModel: DirectiveTransform = (dir, node, context) => {
 
   if (
     !expString.trim() ||
-    (!isMemberExpression(expString, context as any) && !maybeRef)
+    (!isMemberExpression(exp, toVueTransformContext(context)) && !maybeRef)
   ) {
     context.onError(
       createCompilerError(ErrorCodes.X_V_MODEL_MALFORMED_EXPRESSION, exp.loc)
@@ -186,7 +186,12 @@ export const transformModel: DirectiveTransform = (dir, node, context) => {
   // modelModifiers: { foo: true, "bar-baz": true }
   if (dir.modifiers.length && node.tagType === ElementTypes.COMPONENT) {
     const modifiers = dir.modifiers
-      .map((m) => (isSimpleIdentifier(m) ? m : JSON.stringify(m)) + `: true`)
+      .map(
+        (m) =>
+          (isSimpleIdentifier(m.content)
+            ? m.content
+            : JSON.stringify(m.content)) + `: true`
+      )
       .join(`, `)
     const modifiersKey = arg
       ? isStaticExp(arg)
@@ -200,7 +205,7 @@ export const transformModel: DirectiveTransform = (dir, node, context) => {
           `{ ${modifiers} }`,
           false,
           dir.loc,
-          ConstantTypes.CAN_HOIST
+          ConstantTypes.CAN_CACHE
         )
       )
     )
@@ -222,15 +227,15 @@ function getEventParamsType(dir: DirectiveNode): string {
 }
 
 function withLazy(dir: DirectiveNode): boolean {
-  return dir.modifiers.includes('lazy')
+  return dir.modifiers.some((modifier) => modifier.content === 'lazy')
 }
 
 function withNumber(dir: DirectiveNode): boolean {
-  return dir.modifiers.includes('number')
+  return dir.modifiers.some((modifier) => modifier.content === 'number')
 }
 
 function withTrim(dir: DirectiveNode): boolean {
-  return dir.modifiers.includes('trim')
+  return dir.modifiers.some((modifier) => modifier.content === 'trim')
 }
 
 function getModelValueWithModifiers(

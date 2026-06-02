@@ -245,7 +245,7 @@ export function processExpression(
       if (isLiteral) {
         node.constType = ConstantTypes.CAN_STRINGIFY
       } else {
-        node.constType = ConstantTypes.CAN_HOIST
+        node.constType = ConstantTypes.CAN_CACHE
       }
     }
     return node
@@ -295,7 +295,7 @@ export function processExpression(
           // we rewrite the value
           ;(node as QualifiedId).prefix = `${node.name}: `
         }
-        node.name = rewriteIdentifier(node.name, parent, node)
+        node.name = rewriteIdentifier(node.name, parent || undefined, node)
         ids.push(node as QualifiedId)
       } else {
         // The identifier is considered constant unless it's pointing to a

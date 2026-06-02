@@ -86,7 +86,12 @@ export const transformModel: DirectiveTransform = (
   if (dir.modifiers.length) {
     const arg = dir.arg
     const modifiers = dir.modifiers
-      .map((m) => (isSimpleIdentifier(m) ? m : JSON.stringify(m)) + `: true`)
+      .map(
+        (m) =>
+          (isSimpleIdentifier(m.content)
+            ? m.content
+            : JSON.stringify(m.content)) + `: true`
+      )
       .join(`, `)
     const modifiersKey = arg
       ? isStaticExp(arg)
@@ -100,7 +105,7 @@ export const transformModel: DirectiveTransform = (
           `{ ${modifiers} }`,
           false,
           dir.loc,
-          ConstantTypes.CAN_HOIST
+          ConstantTypes.CAN_CACHE
         )
       )
     )

@@ -1,4 +1,8 @@
-import type { DirectiveTransform, DirectiveTransformResult } from '../transform'
+import {
+  type DirectiveTransform,
+  type DirectiveTransformResult,
+  toVueTransformContext,
+} from '../transform'
 import {
   type DirectiveNode,
   ElementTypes,
@@ -86,8 +90,7 @@ export const transformOn: DirectiveTransform = (
 
   let shouldCache: boolean = context.cacheHandlers && !exp && !context.inVOnce
   if (exp) {
-    // @ts-expect-error
-    const isMemberExp = isMemberExpression(exp.content, context)
+    const isMemberExp = isMemberExpression(exp, toVueTransformContext(context))
     const isInlineStatement = !(isMemberExp || fnExpRE.test(exp.content))
     const hasMultipleStatements = exp.content.includes(`;`)
 

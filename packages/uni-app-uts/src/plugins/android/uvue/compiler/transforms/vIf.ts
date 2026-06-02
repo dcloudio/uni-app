@@ -1,4 +1,4 @@
-import { PatchFlagNames, PatchFlags } from '@vue/shared'
+import { PatchFlags } from '@vue/shared'
 import {
   type AttributeNode,
   type BlockCodegenNode,
@@ -33,6 +33,7 @@ import {
 import {
   type TransformContext,
   createStructuralDirectiveTransform,
+  toVueTransformContext,
   traverseNode,
 } from '../transform'
 import { ErrorCodes, createCompilerError } from '../errors'
@@ -232,7 +233,7 @@ function createChildrenCodegenNode(
       `${keyIndex}`,
       false,
       locStub,
-      ConstantTypes.CAN_HOIST
+      ConstantTypes.CAN_CACHE
     )
   )
   const { children } = branch
@@ -243,20 +244,19 @@ function createChildrenCodegenNode(
     if (children.length === 1 && firstChild.type === NodeTypes.FOR) {
       // optimize away nested fragments when child is a ForNode
       const vnodeCall = firstChild.codegenNode!
-      injectProp(vnodeCall, keyProperty, context as any)
+      injectProp(vnodeCall, keyProperty, toVueTransformContext(context))
       return vnodeCall
     } else {
-      let patchFlag = PatchFlags.STABLE_FRAGMENT
-      let patchFlagText = PatchFlagNames[PatchFlags.STABLE_FRAGMENT]
+      const patchFlag = PatchFlags.STABLE_FRAGMENT
       // check if the fragment actually contains a single valid child with
       // the rest being comments
 
       return createVNodeCall(
-        context as any,
+        toVueTransformContext(context),
         helper(FRAGMENT),
         createObjectExpression([keyProperty]),
         children,
-        patchFlag + ` /* ${patchFlagText} */`,
+        patchFlag,
         undefined,
         undefined,
         true,
@@ -272,10 +272,10 @@ function createChildrenCodegenNode(
     const vnodeCall = getMemoedVNodeCall(ret)
     // Change createVNode to createBlock.
     if (vnodeCall.type === NodeTypes.VNODE_CALL) {
-      convertToBlock(vnodeCall, context as any)
+      convertToBlock(vnodeCall, toVueTransformContext(context))
     }
     // inject branch key
-    injectProp(vnodeCall, keyProperty, context as any)
+    injectProp(vnodeCall, keyProperty, toVueTransformContext(context))
     return ret
   }
 }

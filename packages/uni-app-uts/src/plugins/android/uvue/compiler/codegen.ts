@@ -36,6 +36,8 @@ import {
 } from '@vue/compiler-core'
 import {
   NOOP,
+  PatchFlagNames,
+  type PatchFlags,
   camelize,
   capitalize,
   isArray,
@@ -645,6 +647,8 @@ function genVNodeCall(node: VNodeCall, context: CodegenContext) {
     disableTracking,
     isComponent,
   } = node
+  const normalizedPatchFlag =
+    typeof patchFlag === 'number' ? genPatchFlag(patchFlag) : patchFlag
   if (directives) {
     push(helper(WITH_DIRECTIVES) + `(`)
   }
@@ -661,7 +665,7 @@ function genVNodeCall(node: VNodeCall, context: CodegenContext) {
       parseTag(tag, node, context),
       props,
       children,
-      patchFlag,
+      normalizedPatchFlag,
       dynamicProps,
     ]),
     context
@@ -675,6 +679,18 @@ function genVNodeCall(node: VNodeCall, context: CodegenContext) {
     genNode(directives, context)
     push(`)`)
   }
+}
+
+function genPatchFlag(patchFlag: PatchFlags) {
+  const flagText =
+    patchFlag < 0
+      ? PatchFlagNames[patchFlag]
+      : Object.keys(PatchFlagNames)
+          .map(Number)
+          .filter((n) => n > 0 && patchFlag & n)
+          .map((n) => PatchFlagNames[n as PatchFlags])
+          .join(', ')
+  return `${patchFlag} /* ${flagText} */`
 }
 
 function genNullableArgs(args: any[]): CallExpression['arguments'] {
@@ -784,7 +800,11 @@ function genFunctionExpression(
             plugins: context.expressionPlugins,
           })
           // 判断是否已经指定了类型
-          if (isArrowFunctionExpression(ast) && ast.params[0].typeAnnotation) {
+          if (
+            isArrowFunctionExpression(ast) &&
+            'typeAnnotation' in ast.params[0] &&
+            ast.params[0].typeAnnotation
+          ) {
             code = `): any[] => `
           }
         }
@@ -900,15 +920,16 @@ function genConditionalExpression(
 
 function genCacheExpression(node: CacheExpression, context: CodegenContext) {
   const { push, helper, indent, deindent, newline } = context
+  const { needPauseTracking, inVOnce } = node
   push(`${helperNameMap[RESOLVE_CACHE]}(_cache, ${node.index}, (): VNode => {`)
-  if (node.isVNode) {
+  if (needPauseTracking) {
     indent()
-    push(`${helper(SET_BLOCK_TRACKING)}(-1)`)
+    push(`${helper(SET_BLOCK_TRACKING)}(-1${inVOnce ? ', true' : ''})`)
     newline()
   }
   push(`_cache[${node.index}] = `)
   genNode(node.value, context)
-  if (node.isVNode) {
+  if (needPauseTracking) {
     newline()
     push(`${helper(SET_BLOCK_TRACKING)}(1)`)
     newline()

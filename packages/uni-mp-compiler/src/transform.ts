@@ -33,6 +33,7 @@ import {
   type RootNode,
   TO_DISPLAY_STRING,
   type TemplateChildNode,
+  type TransformContext as VueTransformContext,
   helperNameMap,
   locStub,
 } from '@vue/compiler-core'
@@ -111,6 +112,7 @@ export interface TransformContext
   >
   identifiers: { [name: string]: number | undefined }
   cached: number
+  cacheExpressions: (CacheExpression | null)[]
   scopes: {
     vFor: number
     vueId: number
@@ -174,8 +176,17 @@ export function transform(root: CodegenRootNode, options: TransformOptions) {
   root.helpers = new Set([...context.helpers.keys()])
   root.components = [...context.components]
   root.imports = context.imports
-  root.cached = context.cached
+  root.cached = Array.from(
+    { length: context.cached },
+    (_, index) => context.cacheExpressions[index] || null
+  )
   return context
+}
+
+export function toVueTransformContext(
+  context: TransformContext
+): VueTransformContext {
+  return context as unknown as VueTransformContext
 }
 
 function findRootNode(root: RootNode, context: TransformContext) {
@@ -382,6 +393,7 @@ export function createTransformContext(
     imports: [],
     bindingComponents: Object.create(null),
     cached: 0,
+    cacheExpressions: [],
     identifiers,
     scope: rootScope,
     scopes: {
@@ -499,7 +511,10 @@ export function createTransformContext(
       }
     },
     cache(exp, isVNode = false) {
-      return createCacheExpression(context.cached++, exp, isVNode)
+      const index = context.cached++
+      const cached = createCacheExpression(index, exp, isVNode)
+      context.cacheExpressions[index] = cached
+      return cached
     },
     isMiniProgramComponent(name) {
       return miniProgramComponents[name]
@@ -532,7 +547,9 @@ function createCacheExpression(
     type: NodeTypes.JS_CACHE_EXPRESSION,
     index,
     value,
-    isVNode,
+    needPauseTracking: isVNode,
+    inVOnce: false,
+    needArraySpread: false,
     loc: locStub,
   }
 }

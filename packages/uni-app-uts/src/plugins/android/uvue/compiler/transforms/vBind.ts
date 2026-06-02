@@ -14,7 +14,8 @@ import { ErrorCodes, createCompilerError } from '../errors'
 // codegen for the entire props object. This transform here is only for v-bind
 // *with* args.
 export const transformBind: DirectiveTransform = (dir, _node, context) => {
-  const { exp, modifiers, loc } = dir
+  const { exp, loc } = dir
+  const modifiers = dir.modifiers.map((modifier) => modifier.content)
   const arg = dir.arg!
 
   if (arg.type !== NodeTypes.SIMPLE_EXPRESSION) {

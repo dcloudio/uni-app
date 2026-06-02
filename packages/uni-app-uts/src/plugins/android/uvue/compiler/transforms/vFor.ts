@@ -48,10 +48,11 @@ import {
 } from '../runtimeHelpers'
 import { processExpression } from './transformExpression'
 // import { validateBrowserExpression } from '../validateExpression'
-import { PatchFlagNames, PatchFlags } from '@vue/shared'
+import { PatchFlags } from '@vue/shared'
 import {
   type TransformContext,
   createStructuralDirectiveTransform,
+  toVueTransformContext,
 } from '../transform'
 import { __BROWSER__, __DEV__ } from '../utils'
 
@@ -105,13 +106,11 @@ export const transformFor = createStructuralDirectiveTransform(
         : PatchFlags.UNKEYED_FRAGMENT
 
       forNode.codegenNode = createVNodeCall(
-        context as any,
+        toVueTransformContext(context),
         helper(FRAGMENT),
         undefined,
         renderExp,
-        fragmentFlag +
-          // (__DEV__ ? ` /* ${PatchFlagNames[fragmentFlag]} */` : ``),
-          ` /* ${PatchFlagNames[fragmentFlag]} */`,
+        fragmentFlag,
         undefined,
         undefined,
         true /* isBlock */,
@@ -173,21 +172,17 @@ export const transformFor = createStructuralDirectiveTransform(
             // <template v-for="..." :key="..."><slot/></template>
             // we need to inject the key to the renderSlot() call.
             // the props for renderSlot is passed as the 3rd argument.
-            injectProp(childBlock, keyProperty, context as any)
+            injectProp(childBlock, keyProperty, toVueTransformContext(context))
           }
         } else if (needFragmentWrapper) {
           // <template v-for="..."> with text or multi-elements
           // should generate a fragment block for each loop
           childBlock = createVNodeCall(
-            context as any,
+            toVueTransformContext(context),
             helper(FRAGMENT),
             keyProperty ? createObjectExpression([keyProperty]) : undefined,
             node.children,
-            PatchFlags.STABLE_FRAGMENT +
-              // (__DEV__
-              //   ? ` /* ${PatchFlagNames[PatchFlags.STABLE_FRAGMENT]} */`
-              //   : ``),
-              ` /* ${PatchFlagNames[PatchFlags.STABLE_FRAGMENT]} */`,
+            PatchFlags.STABLE_FRAGMENT,
             undefined,
             undefined,
             true,
@@ -200,7 +195,7 @@ export const transformFor = createStructuralDirectiveTransform(
           childBlock = (children[0] as PlainElementNode)
             .codegenNode as VNodeCall
           if (isTemplate && keyProperty) {
-            injectProp(childBlock, keyProperty, context as any)
+            injectProp(childBlock, keyProperty, toVueTransformContext(context))
           }
           if (childBlock.isBlock !== !isStableFragment) {
             if (childBlock.isBlock) {

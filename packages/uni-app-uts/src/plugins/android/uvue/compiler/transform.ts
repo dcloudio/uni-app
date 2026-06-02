@@ -15,6 +15,7 @@ import {
   type TemplateChildNode,
   type TemplateLiteral,
   type TemplateNode,
+  type TransformContext as VueTransformContext,
   convertToBlock,
   createCacheExpression,
   createVNodeCall,
@@ -25,7 +26,6 @@ import {
 import {
   EMPTY_OBJ,
   NOOP,
-  PatchFlagNames,
   PatchFlags,
   camelize,
   capitalize,
@@ -78,6 +78,8 @@ export interface ImportItem {
   path: string
 }
 
+type UniRootNode = RootNode & { elements?: string[] }
+
 export interface TransformContext
   extends Required<Omit<TransformOptions, 'className'>> {
   inSSR?: false
@@ -89,6 +91,7 @@ export interface TransformContext
   imports: ImportItem[]
   temps: number
   cached: number
+  cacheExpressions: (CacheExpression | null)[]
   identifiers: { [name: string]: number | undefined }
   scopes: {
     vFor: number
@@ -173,6 +176,7 @@ export function createTransformContext(
     constantCache: new Map(),
     temps: 0,
     cached: 0,
+    cacheExpressions: [],
     identifiers: Object.create(null),
     scopes: {
       vFor: 0,
@@ -264,7 +268,10 @@ export function createTransformContext(
       }
     },
     cache(exp, isVNode = false) {
-      return createCacheExpression(context.cached++, exp, isVNode)
+      const index = context.cached++
+      const cached = createCacheExpression(index, exp, isVNode, context.inVOnce)
+      context.cacheExpressions[index] = cached
+      return cached
     },
   }
 
@@ -296,10 +303,17 @@ export function transform(root: RootNode, options: TransformOptions) {
   root.imports = context.imports
   // root.hoists = context.hoists
   root.temps = context.temps
-  root.cached = context.cached
+  root.cached = Array.from(
+    { length: context.cached },
+    (_, index) => context.cacheExpressions[index] || null
+  )
+  ;(root as UniRootNode).elements = Array.from(context.elements)
+}
 
-  // @ts-expect-error
-  root.elements = Array.from(context.elements)
+export function toVueTransformContext(
+  context: TransformContext
+): VueTransformContext {
+  return context as unknown as VueTransformContext
 }
 
 export function isSingleElementRoot(
@@ -325,7 +339,7 @@ function createRootCodegen(root: RootNode, context: TransformContext) {
       // SimpleExpressionNode
       const codegenNode = child.codegenNode
       if (codegenNode.type === NodeTypes.VNODE_CALL) {
-        convertToBlock(codegenNode, context as any)
+        convertToBlock(codegenNode, toVueTransformContext(context))
       }
       root.codegenNode = codegenNode
     } else {
@@ -337,20 +351,17 @@ function createRootCodegen(root: RootNode, context: TransformContext) {
   } else if (children.length > 1) {
     // root has multiple nodes - return a fragment block.
     let patchFlag = PatchFlags.STABLE_FRAGMENT
-    let patchFlagText = PatchFlagNames[PatchFlags.STABLE_FRAGMENT]
     // check if the fragment actually contains a single valid child with
     // the rest being comments
     if (children.filter((c) => c.type !== NodeTypes.COMMENT).length === 1) {
       patchFlag |= PatchFlags.DEV_ROOT_FRAGMENT
-      patchFlagText += `, ${PatchFlagNames[PatchFlags.DEV_ROOT_FRAGMENT]}`
     }
     root.codegenNode = createVNodeCall(
-      // @ts-expect-error
-      context,
+      toVueTransformContext(context),
       helper(FRAGMENT),
       undefined,
       root.children,
-      patchFlag + ` /* ${patchFlagText} */`,
+      patchFlag,
       undefined,
       undefined,
       true,

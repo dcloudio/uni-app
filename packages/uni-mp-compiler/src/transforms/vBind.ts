@@ -10,7 +10,8 @@ import type { DirectiveTransform } from '../transform'
 import { MPErrorCodes, createMPCompilerError } from '../errors'
 
 export const transformBind: DirectiveTransform = (dir, _node, context) => {
-  const { exp, modifiers, loc } = dir
+  const { exp, loc } = dir
+  const modifiers = dir.modifiers.map((modifier) => modifier.content)
   const arg = dir.arg!
 
   if (arg.type !== NodeTypes.SIMPLE_EXPRESSION) {

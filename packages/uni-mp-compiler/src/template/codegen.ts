@@ -621,7 +621,7 @@ function genOn(
   }
   const arg = (prop.arg as SimpleExpressionNode).content
   const exp = prop.exp as SimpleExpressionNode
-  const modifiers = prop.modifiers
+  const modifiers = prop.modifiers.map((modifier) => modifier.content)
   const name = (event?.format || formatMiniProgramEvent)(arg, {
     isCatch: modifiers.includes('stop') || modifiers.includes('prevent'),
     isCapture: modifiers.includes('capture'),

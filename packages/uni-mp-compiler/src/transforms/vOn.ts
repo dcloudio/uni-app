@@ -21,7 +21,7 @@ import { camelize, toHandlerKey } from '@vue/shared'
 import crypto from 'crypto'
 import { genExpr } from '..'
 import { V_ON } from '../runtimeHelpers'
-import type { TransformContext } from '../transform'
+import { type TransformContext, toVueTransformContext } from '../transform'
 import type { DirectiveTransformResult } from './transformElement'
 import { isBuiltInIdentifier, processExpression } from './transformExpression'
 import { parseVForScope } from './vFor'
@@ -85,7 +85,7 @@ export const transformOn: DirectiveTransform = (
   }
   let shouldCache: boolean = context.cacheHandlers && !exp && !context.inVOnce
   if (exp) {
-    const isMemberExp = isMemberExpression(exp.content, context as any)
+    const isMemberExp = isMemberExpression(exp, toVueTransformContext(context))
     const isInlineStatement = !(isMemberExp || fnExpRE.test(exp.content))
     const hasMultipleStatements = exp.content.includes(`;`)
 

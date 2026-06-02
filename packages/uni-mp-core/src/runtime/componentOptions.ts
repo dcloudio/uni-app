@@ -68,7 +68,6 @@ export function initPropsObserver(componentOptions: MPComponentOptions) {
           return
         }
         const instance = this.$vm.$
-        instance.effect.dirty = true
         if (hasQueueJob(instance.update)) {
           invalidateJob(instance.update)
         }

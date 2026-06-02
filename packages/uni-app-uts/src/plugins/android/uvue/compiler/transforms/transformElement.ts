@@ -1,4 +1,8 @@
-import type { NodeTransform, TransformContext } from '../transform'
+import {
+  type NodeTransform,
+  type TransformContext,
+  toVueTransformContext,
+} from '../transform'
 import {
   type ArrayExpression,
   type CallExpression,
@@ -23,7 +27,6 @@ import {
   createVNodeCall,
 } from '@vue/compiler-core'
 import {
-  PatchFlagNames,
   PatchFlags,
   camelize,
   capitalize,
@@ -188,7 +191,8 @@ export const transformElement: NodeTransform = (node, context) => {
           type === NodeTypes.COMPOUND_EXPRESSION
         if (
           hasDynamicTextChild &&
-          getConstantType(child, context as any) === ConstantTypes.NOT_CONSTANT
+          getConstantType(child, toVueTransformContext(context)) ===
+            ConstantTypes.NOT_CONSTANT
         ) {
           patchFlag |= PatchFlags.TEXT
         }
@@ -209,19 +213,13 @@ export const transformElement: NodeTransform = (node, context) => {
       if (__DEV__) {
         if (patchFlag < 0) {
           // special flags (negative and mutually exclusive)
-          vnodePatchFlag =
-            patchFlag + ` /* ${PatchFlagNames[patchFlag as PatchFlags]} */`
+          vnodePatchFlag = patchFlag
         } else {
           // bitwise flags
-          const flagNames = Object.keys(PatchFlagNames)
-            .map(Number)
-            .filter((n) => n > 0 && patchFlag & n)
-            .map((n) => PatchFlagNames[n as PatchFlags])
-            .join(`, `)
-          vnodePatchFlag = patchFlag + ` /* ${flagNames} */`
+          vnodePatchFlag = patchFlag
         }
       } else {
-        vnodePatchFlag = String(patchFlag)
+        vnodePatchFlag = patchFlag
       }
       if (dynamicPropNames && dynamicPropNames.length) {
         vnodeDynamicProps = stringifyDynamicPropNames(dynamicPropNames)
@@ -229,7 +227,7 @@ export const transformElement: NodeTransform = (node, context) => {
     }
 
     node.codegenNode = createVNodeCall(
-      context as any,
+      toVueTransformContext(context),
       vnodeTag,
       vnodeProps,
       vnodeChildren,
@@ -466,7 +464,7 @@ export function buildProps(
         value.type === NodeTypes.JS_CACHE_EXPRESSION ||
         ((value.type === NodeTypes.SIMPLE_EXPRESSION ||
           value.type === NodeTypes.COMPOUND_EXPRESSION) &&
-          getConstantType(value, context as any) > 0)
+          getConstantType(value, toVueTransformContext(context)) > 0)
       ) {
         // skip if the prop is a cached handler or has constant value
         return
@@ -556,7 +554,8 @@ export function buildProps(
       )
     } else {
       // directives
-      const { name, arg, exp, loc, modifiers } = prop
+      const { name, arg, exp, loc } = prop
+      const modifiers = prop.modifiers.map((modifier) => modifier.content)
       const isVBind = name === 'bind'
       const isVOn = name === 'on'
 
@@ -644,7 +643,7 @@ export function buildProps(
                 if (hasOverridableKeys) {
                   checkCompatEnabled(
                     CompilerDeprecationTypes.COMPILER_V_BIND_OBJECT_ORDER,
-                    context as any,
+                    toVueTransformContext(context),
                     loc
                   )
                 }
@@ -941,7 +940,7 @@ export function buildDirectiveArgs(
     }
     dirArgs.push(dir.arg)
   }
-  if (Object.keys(dir.modifiers).length) {
+  if (dir.modifiers.length) {
     if (!dir.arg) {
       if (!dir.exp) {
         dirArgs.push(`void 0`)
@@ -952,7 +951,7 @@ export function buildDirectiveArgs(
     dirArgs.push(
       createObjectExpression(
         dir.modifiers.map((modifier) =>
-          createObjectProperty(modifier, trueExpression)
+          createObjectProperty(modifier.content, trueExpression)
         ),
         loc
       )

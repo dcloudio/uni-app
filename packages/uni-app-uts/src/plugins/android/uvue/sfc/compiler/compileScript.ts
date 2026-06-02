@@ -15,6 +15,7 @@ import type {
   ObjectPattern,
   Statement,
 } from '@babel/types'
+import { isLVal } from '@babel/types'
 import { walk } from 'estree-walker'
 import {
   type RawSourceMap,
@@ -128,7 +129,7 @@ export interface SFCScriptCompileOptions {
    * (**Experimental**) Enable reactive destructure for `defineProps`
    * @default false
    */
-  propsDestructure?: boolean
+  propsDestructure?: boolean | 'error'
   /**
    * File system access methods to be used when resolving types
    * imported in SFC macros. Defaults to ts.sys in Node.js, can be overwritten
@@ -628,6 +629,7 @@ export function compileScript(
       for (let i = 0; i < total; i++) {
         const decl = node.declarations[i]
         const init = decl.init && unwrapTSNode(decl.init)
+        const declId = isLVal(decl.id) ? decl.id : undefined
         if (init) {
           if (processDefineOptions(ctx, init)) {
             ctx.error(
@@ -637,12 +639,12 @@ export function compileScript(
           }
 
           // defineProps / defineEmits
-          const isDefineProps = processDefineProps(ctx, init, decl.id)
+          const isDefineProps = processDefineProps(ctx, init, declId)
           const isDefineEmits =
-            !isDefineProps && processDefineEmits(ctx, init, decl.id)
+            !isDefineProps && processDefineEmits(ctx, init, declId)
           !isDefineEmits &&
-            (processDefineSlots(ctx, init, decl.id) ||
-              processDefineModel(ctx, init, decl.id))
+            (processDefineSlots(ctx, init, declId) ||
+              processDefineModel(ctx, init, declId))
 
           if (
             isDefineProps &&
