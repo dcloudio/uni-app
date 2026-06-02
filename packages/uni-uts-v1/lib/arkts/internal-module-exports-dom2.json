@@ -2728,6 +2728,12 @@
       "UniEditorElementSetContentsOptions"
     ],
     [
+      "UniInputElement"
+    ],
+    [
+      "UniLoadingElement"
+    ],
+    [
       "UniLocationProvider"
     ],
     [
@@ -2738,6 +2744,9 @@
     ],
     [
       "UniShareProvider"
+    ],
+    [
+      "UniTextareaElement"
     ],
     [
       "UniVerifyButtonListItem"
