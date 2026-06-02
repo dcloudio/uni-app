@@ -4,11 +4,11 @@ packages:
   - 'packages/uni-cli-utils/__tests__/examples/easycom'
 catalog:
   '@amap/amap-jsapi-types': 0.0.8
-  '@babel/code-frame': 7.24.7
-  '@babel/generator': 7.25.6
-  '@babel/core': 7.25.2
-  '@babel/parser': 7.25.6
-  '@babel/types': 7.25.6
+  '@babel/code-frame': 7.29.0
+  '@babel/generator': 7.29.1
+  '@babel/core': 7.29.0
+  '@babel/parser': 7.29.3
+  '@babel/types': 7.29.0
   '@dcloudio/types': 3.4.31
   '@dcloudio/uni-app-x': 0.7.114
   '@rollup/pluginutils': 5.1.0
@@ -25,16 +25,16 @@ catalog:
   '@vitejs/plugin-basic-ssl': 2.3.0
   '@vitejs/plugin-vue': 6.0.6
   '@vitejs/plugin-vue-jsx': 5.1.5
-  '@vue/compiler-core': 3.4.21
-  '@vue/compiler-dom': 3.4.21
-  '@vue/compiler-sfc': 3.4.21
-  '@vue/compiler-ssr': 3.4.21
+  '@vue/compiler-core': 3.5.35
+  '@vue/compiler-dom': 3.5.35
+  '@vue/compiler-sfc': 3.5.35
+  '@vue/compiler-ssr': 3.5.35
   '@vue/consolidate': 1.0.0
-  '@vue/reactivity': 3.4.21
-  '@vue/runtime-core': 3.4.21
-  '@vue/runtime-dom': 3.4.21
-  '@vue/shared': 3.4.21
-  '@vue/server-renderer': 3.4.21
+  '@vue/reactivity': 3.5.35
+  '@vue/runtime-core': 3.5.35
+  '@vue/runtime-dom': 3.5.35
+  '@vue/shared': 3.5.35
+  '@vue/server-renderer': 3.5.35
   'adm-zip': 0.5.16
   'autoprefixer': 10.4.20
   'chokidar': 3.6.0
@@ -71,7 +71,7 @@ catalog:
   'unimport': 4.1.1
   'unplugin-auto-import': 19.1.0
   'vite': 7.3.3
-  'vue': 3.4.21
+  'vue': 3.5.35
   'vue-i18n': 9.1.9
   'vue-router': 4.4.4
   'vuex': 4.1.0
