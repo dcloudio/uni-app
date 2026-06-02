@@ -27,6 +27,7 @@ import {
 import { __resetLifecycleState } from '../../../src/public/runtime/lifecycleHooks'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
 import { storage } from '../../../src/public/infra/storage'
+import { logger } from '../../../src/public/infra/logger'
 
 function resetAll(): void {
   __resetInstall()
@@ -378,6 +379,7 @@ describe('runtime/install', () => {
     const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {})
     jest.useFakeTimers()
     try {
+      logger.setMuteNonDebug(false)
       ;(globalThis as unknown as { uni: unknown }).uni = {}
       installPublicStat({ skipUniReport: true })
       jest.advanceTimersByTime(50 * 21)
@@ -386,6 +388,7 @@ describe('runtime/install', () => {
       )
       expect(warned).toBe(true)
     } finally {
+      logger.setMuteNonDebug(undefined)
       jest.useRealTimers()
       warnSpy.mockRestore()
       resetAll()

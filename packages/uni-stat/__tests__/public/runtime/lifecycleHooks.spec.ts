@@ -713,6 +713,9 @@ describe('runtime/lifecycleHooks', () => {
     try {
       const { app, reportSpy } = installAppWithSpyReporter()
       handleLaunch(app, {})
+      // mp-weixin 冷启动会 schedule 首 flush 延迟（firstFlushDeferMs），与 handleError 无关；
+      // 清掉后只断言 onError 不会额外 setTimeout 重抛。
+      jest.clearAllTimers()
       reportSpy.mockClear()
 
       expect(() => handleError(app, new Error('mp-boom'))).not.toThrow()

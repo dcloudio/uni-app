@@ -14,6 +14,7 @@ describe('infra/logger', () => {
     envBackup = process.env.UNI_STAT_DEBUG
     uniBackup = (globalThis as { uni?: unknown }).uni
     logger.setDebug(undefined)
+    logger.setMuteNonDebug(false)
     delete (globalThis as { plus?: unknown }).plus
     delete (process.env as Env).UNI_PLATFORM
     logSpy = jest.spyOn(console, 'log').mockImplementation(() => {})
@@ -29,6 +30,7 @@ describe('infra/logger', () => {
       ;(process.env as Env).UNI_STAT_DEBUG = envBackup
     }
     logger.setDebug(undefined)
+    logger.setMuteNonDebug(undefined)
     delete (globalThis as { plus?: unknown }).plus
     if (uniBackup === undefined) {
       delete (globalThis as { uni?: unknown }).uni
@@ -90,6 +92,15 @@ describe('infra/logger', () => {
     logger.setDebug(false)
     logger.debug('off')
     expect(logSpy).not.toHaveBeenCalled()
+  })
+
+  test('NODE_ENV=test 时默认屏蔽 info/warn/error', () => {
+    logger.setMuteNonDebug(undefined)
+    logger.warn('muted')
+    expect(warnSpy).not.toHaveBeenCalled()
+    logger.setMuteNonDebug(false)
+    logger.warn('visible')
+    expect(warnSpy).toHaveBeenCalledWith('[uni统计公有版]', 'visible')
   })
 
   test('info / warn / error 始终输出（非 Android/iOS：TAG + 多参）', () => {
