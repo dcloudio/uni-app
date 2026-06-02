@@ -1028,21 +1028,51 @@ function clearEntry() {
 /**
  * pages.json 导航栏标题解析（ttpj 数据源）。
  *
- * 私有版在 `utils/pageInfo.js` 构建阶段把 `pages.json` 各页的
- * `style.navigationBarTitleText` / `style.navigationBar.titleText` 扫进 `titleJsons`，
- * 运行时 `get_page_name(routepath)` 按路由 path 取值写入 `_navigationBarTitle.config`，
- * 最终在 request 拼进上行 `ttpj`。
+ * 与私有版 `utils/pageInfo.js` 对齐，按 Vue 版本分两套构建期数据源：
+ *   - VUE3：`uni:stat` 插件注入 `process.env.UNI_STAT_TITLE_JSON`（JSON 字符串）；
+ *   - VUE2：`require('uni-pages?{"type":"style"}')` 在应用打包阶段解析 pages.json（公有版 dist
+ *     拷贝进 Vue2 工程后无法依赖 define 注入，须与私有版同路径）。
  *
- * 公有版走同一构建注入：`uni:stat` 插件（`src/plugin/index.ts`）生成
- * `process.env.UNI_STAT_TITLE_JSON`（JSON 字符串），键为 `parsePagesJson().pages[].path`，
- * 值为导航标题文案。本模块在运行时解析并做路由 key 归一化（有无前导 `/`、是否带 query）。
+ * 运行时 `getPagesJsonNavigationTitle` 等价私有版 `get_page_name`。
  */
-/** 懒加载缓存；`undefined` 表示尚未解析。 */
+/** VUE3 懒加载缓存；`undefined` 表示尚未解析。 */
 let titleMapCache;
 /**
- * 解析并缓存 `UNI_STAT_TITLE_JSON`；解析失败或缺失时得到空表，避免重复 JSON.parse。
+ * VUE2 构建期：由 `uni-pages` 虚拟模块解析出的 path → title 表（模块加载时即确定）。
  */
-function getTitleMap() {
+// #ifndef VUE3
+function buildVue2TitleMapFromUniPages() {
+    const titleMap = {};
+    try {
+        // eslint-disable-next-line no-restricted-globals
+        const pagesTitle = require('uni-pages?{"type":"style"}').default;
+        const pagesData = pagesTitle === null || pagesTitle === void 0 ? void 0 : pagesTitle.pages;
+        if (!pagesData || typeof pagesData !== 'object')
+            return titleMap;
+        for (const path in pagesData) {
+            const style = pagesData[path];
+            const navigationBar = style.navigationBar;
+            const titleText = style.navigationBarTitleText ||
+                style.defaultTitle ||
+                (navigationBar === null || navigationBar === void 0 ? void 0 : navigationBar.titleText) ||
+                '';
+            if (titleText) {
+                titleMap[path] = titleText;
+            }
+        }
+    }
+    catch (_a) {
+        // uni-pages 不可用时（单测、非 uni 打包上下文）保持空表
+    }
+    return titleMap;
+}
+const vue2TitleMap = buildVue2TitleMapFromUniPages();
+// #endif
+/**
+ * VUE3：解析并缓存 `UNI_STAT_TITLE_JSON`；解析失败或缺失时得到空表，避免重复 JSON.parse。
+ */
+// #ifdef VUE3
+function getVue3TitleMap() {
     if (titleMapCache)
         return titleMapCache;
     titleMapCache = {};
@@ -1061,10 +1091,24 @@ function getTitleMap() {
     }
     return titleMapCache;
 }
+// #endif
+/**
+ * 取当前编译目标下的标题映射表。
+ */
+function getTitleMap() {
+    let map = {};
+    // #ifndef VUE3
+    map = vue2TitleMap;
+    // #endif
+    // #ifdef VUE3
+    map = getVue3TitleMap();
+    // #endif
+    return map;
+}
 /**
  * 按当前页路由取 pages.json 中的导航栏标题，供 `setConfigTitle` → 上行 `ttpj`。
  *
- * @param routePath `getCurrentRoute()` 的典型返回值（一般无前导 `/`，与插件写入的 key 对齐）；允许含 query。
+ * @param routePath `getCurrentRoute()` 的典型返回值（一般无前导 `/`）；允许含 query。
  * @returns 未配置或查找不到时返回空串（与私有版 `get_page_name` 一致）。
  */
 function getPagesJsonNavigationTitle(routePath) {
@@ -1074,6 +1118,12 @@ function getPagesJsonNavigationTitle(routePath) {
     if (!pathOnly)
         return '';
     const map = getTitleMap();
+    let result = '';
+    // #ifndef VUE3
+    const direct = map[pathOnly];
+    result = typeof direct === 'string' && direct.length > 0 ? direct : '';
+    // #endif
+    // #ifdef VUE3
     const keys = [pathOnly];
     if (pathOnly.startsWith('/')) {
         keys.push(pathOnly.slice(1));
@@ -1083,10 +1133,13 @@ function getPagesJsonNavigationTitle(routePath) {
     }
     for (const k of keys) {
         const v = map[k];
-        if (typeof v === 'string' && v.length > 0)
-            return v;
+        if (typeof v === 'string' && v.length > 0) {
+            result = v;
+            break;
+        }
     }
-    return '';
+    // #endif
+    return result;
 }
 
 /**
