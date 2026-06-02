@@ -1846,6 +1846,57 @@ function genVariableDeclaration(
         false,
         true
       )
+    } else if (
+      id.type === 'Identifier' &&
+      init &&
+      init.type === 'CallExpression' &&
+      init.callee.type === 'Identifier' &&
+      /^define.*Api/.test(init.callee.value)
+    ) {
+      // TODO 合并重复逻辑
+      /**
+       * 例：export const getElementById = defineSyncApi<GetElementById>(
+       *        'getElementById',
+       *        (id: string.IDString | string): UniElement | null => {
+       *            const pages = getCurrentPages();
+       *            if (pages.length == 0) {
+       *                return null;
+       *            }
+       *            const page = pages[pages.length - 1];
+       *            if (page == null) {
+       *                console.warn('page is null');
+       *                return null;
+       *            }
+       *            return page.getElementById(id)
+       *        },
+       *    )
+       */
+      // 根据类型信息查找参数列表
+      let params: Param[] | undefined
+      const typeAnn = init.typeArguments?.[0]
+      if (typeAnn && typeAnn.type === 'TsTypeReference') {
+        const { typeName } = typeAnn
+        if (typeName.type === 'Identifier') {
+          const value = types.fn[typeName.value]
+          if (isArray(value)) {
+            params = value
+          }
+        }
+      }
+
+      return genFunctionDeclaration(
+        types,
+        createFunctionDeclaration(
+          id.value,
+          init.arguments?.[1].expression as
+            | FunctionExpression
+            | ArrowFunctionExpression,
+          params
+        ),
+        resolveTypeReferenceName,
+        false,
+        true
+      )
     }
   }
 }
