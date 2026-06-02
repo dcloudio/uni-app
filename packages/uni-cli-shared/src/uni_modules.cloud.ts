@@ -527,6 +527,24 @@ export interface CloudCompileParams {
   env: Record<string, string>
 }
 
+export function validateCloudCompileAppInfo(
+  params: Pick<CloudCompileParams, 'appid' | 'appname'>
+) {
+  const missingFields: string[] = []
+  if (!String(params.appid || '').trim()) {
+    missingFields.push('appid')
+  }
+  if (!String(params.appname || '').trim()) {
+    missingFields.push('name')
+  }
+  if (missingFields.length) {
+    return `云编译插件失败：manifest.json 缺少 ${missingFields.join(
+      '、'
+    )}，请先配置后重新编译。`
+  }
+  return ''
+}
+
 export async function checkEncryptUniModules(
   inputDir: string,
   params: CloudCompileParams,
@@ -556,6 +574,16 @@ export async function checkEncryptUniModules(
   }
 
   const cacheDir = process.env.UNI_MODULES_ENCRYPT_CACHE_DIR!
+  const needsCloudCompile = Object.keys(curEncryptUniModules).some(
+    (uniModuleId) => !curEncryptUniModules[uniModuleId]
+  )
+  if (params.vapor && needsCloudCompile) {
+    const validateAppInfoError = validateCloudCompileAppInfo(params)
+    if (validateAppInfoError) {
+      console.error(validateAppInfoError)
+      return process.exit(0)
+    }
+  }
   const { zipFile, modules } = packUploadEncryptUniModules(
     curEncryptUniModules,
     params.platform,

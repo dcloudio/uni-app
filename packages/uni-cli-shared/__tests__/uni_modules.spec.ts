@@ -9,6 +9,7 @@ import {
   getUniModulesEncryptType,
   parseUniModulesWithComponents,
   resolveEncryptUniModule,
+  validateCloudCompileAppInfo,
 } from '../src/uni_modules.cloud'
 import { normalizePath } from '../src/utils'
 import { isNonTreeShakingPlugin } from '../src/uni_modules'
@@ -126,6 +127,94 @@ ${extraMethods}
 }
 `
   }
+
+  test('validates appid and appname before cloud compile upload', () => {
+    expect(
+      validateCloudCompileAppInfo({
+        appid: '',
+        appname: ' ',
+      })
+    ).toBe(
+      '云编译插件失败：manifest.json 缺少 appid、appname，请先配置后重新编译。'
+    )
+    expect(
+      validateCloudCompileAppInfo({
+        appid: '__UNI__TEST',
+        appname: 'test',
+      })
+    ).toBe('')
+  })
+
+  test('stops cloud compile upload when dom2 app info is invalid', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-cloud-'))
+    const inputDir = path.join(tempDir, 'input')
+    const cacheDir = path.join(tempDir, 'cache')
+    const hbxPluginsDir = path.join(tempDir, 'hbx-plugins')
+    const pluginId = 'test-cloud-invalid-app-info'
+    const oldEnv = snapshotEnv()
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+    const exitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {
+      return undefined as never
+    })
+
+    try {
+      fs.ensureDirSync(cacheDir)
+      fs.ensureDirSync(path.join(inputDir, 'uni_modules', pluginId, 'encrypt'))
+      fs.outputJsonSync(
+        path.join(inputDir, 'uni_modules', pluginId, 'package.json'),
+        {
+          name: pluginId,
+          version: '1.0.0',
+        }
+      )
+      fs.outputFileSync(
+        path.join(
+          inputDir,
+          'uni_modules',
+          pluginId,
+          'components',
+          pluginId,
+          `${pluginId}.uvue`
+        ),
+        '<template />'
+      )
+
+      process.env.UNI_APP_X_DOM2 = 'true'
+      process.env.UNI_APP_X_VAPOR_RENDER_TARGET = 'bytecode'
+      process.env.UNI_UTS_PLATFORM = 'app-android'
+      process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = cacheDir
+      process.env.UNI_OUTPUT_DIR = path.join(tempDir, 'output')
+      process.env.UNI_COMPILER_VERSION = '4.17-test'
+      process.env.UNI_HBUILDERX_PLUGINS = hbxPluginsDir
+      process.env.UNI_INPUT_DIR = inputDir
+
+      await checkEncryptUniModules(inputDir, {
+        mode: 'development',
+        packType: 'debug',
+        compilerVersion: '4.17-test',
+        appid: '',
+        appname: '',
+        platform: 'app-android',
+        'uni-app-x': true,
+        vapor: true,
+        vaporRenderTarget: 'bytecode',
+        env: {},
+      })
+
+      expect(errorSpy).toHaveBeenCalledWith(
+        '云编译插件失败：manifest.json 缺少 appid、appname，请先配置后重新编译。'
+      )
+      expect(exitSpy).toHaveBeenCalledWith(0)
+      expect(
+        fs.existsSync(path.join(cacheDir, 'cloud-compile-plugins.zip'))
+      ).toBe(false)
+    } finally {
+      errorSpy.mockRestore()
+      exitSpy.mockRestore()
+      restoreEnv(oldEnv)
+      fs.removeSync(tempDir)
+    }
+  })
 
   test('copies cloud compile bytes to output dir in dom2', () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-dom2-bytes-'))
@@ -372,6 +461,87 @@ module.exports = {
       expect(
         fs.readFileSync(path.join(outputDir, 'bytes', 'app.bin'), 'utf8')
       ).toBe('app')
+    } finally {
+      restoreEnv(oldEnv)
+      fs.removeSync(tempDir)
+    }
+  })
+
+  test('skips app info validation before cloud compile upload when dom2 is disabled', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-cloud-'))
+    const inputDir = path.join(tempDir, 'input')
+    const cacheDir = path.join(tempDir, 'cache')
+    const helpersDir = path.join(tempDir, 'helpers')
+    const hbxPluginsDir = path.join(tempDir, 'hbx-plugins')
+    const markerFile = path.join(tempDir, 'upload.log')
+    const pluginId = 'test-cloud-non-dom2'
+    const oldEnv = snapshotEnv()
+
+    try {
+      fs.ensureDirSync(cacheDir)
+      fs.ensureDirSync(path.join(inputDir, 'uni_modules', pluginId, 'encrypt'))
+      fs.outputJsonSync(
+        path.join(inputDir, 'uni_modules', pluginId, 'package.json'),
+        {
+          name: pluginId,
+          version: '1.0.0',
+        }
+      )
+      fs.outputFileSync(
+        path.join(
+          inputDir,
+          'uni_modules',
+          pluginId,
+          'components',
+          pluginId,
+          `${pluginId}.uvue`
+        ),
+        '<template />'
+      )
+      fs.outputFileSync(
+        path.join(helpersDir, 'index.js'),
+        mockCloudHelperCode(`  async C() {
+    return true
+  },
+  R() {},
+  async D(url, file) {
+    const AdmZip = require('adm-zip')
+    const zip = new AdmZip()
+    zip.writeZip(file)
+  },
+  async U() {
+    require('fs').writeFileSync(${JSON.stringify(markerFile)}, 'uploaded')
+    return 'https://example.com/download.zip'
+  },
+`)
+      )
+      fs.outputFileSync(
+        path.join(hbxPluginsDir, 'uni_helpers/lib/bytenode.js'),
+        'module.exports = {}'
+      )
+
+      Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
+      Reflect.deleteProperty(process.env, 'UNI_APP_X_VAPOR_RENDER_TARGET')
+      process.env.UNI_UTS_PLATFORM = 'app-ios'
+      process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = cacheDir
+      process.env.UNI_COMPILER_VERSION = '4.17-test'
+      process.env.UNI_HELPERS_DIR = helpersDir
+      process.env.UNI_HBUILDERX_PLUGINS = hbxPluginsDir
+      process.env.UNI_INPUT_DIR = inputDir
+
+      await checkEncryptUniModules(inputDir, {
+        mode: 'development',
+        packType: 'debug',
+        compilerVersion: '4.17-test',
+        appid: '',
+        appname: '',
+        platform: 'app-ios',
+        'uni-app-x': true,
+        vapor: false,
+        env: {},
+      })
+
+      expect(fs.readFileSync(markerFile, 'utf8')).toBe('uploaded')
     } finally {
       restoreEnv(oldEnv)
       fs.removeSync(tempDir)
@@ -688,7 +858,11 @@ describe('uni_modules:cloud cache init', () => {
 
   async function runCheck(
     platform: 'app-android' | 'app-ios',
-    isDom2: boolean
+    isDom2: boolean,
+    appInfo = {
+      appid: '__UNI__TEST',
+      appname: 'test',
+    }
   ) {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-modules-cloud-'))
     const helpersDir = path.join(tempDir, 'helpers')
@@ -743,8 +917,8 @@ module.exports = {
         mode: 'development',
         packType: 'debug',
         compilerVersion,
-        appid: '__UNI__TEST',
-        appname: 'test',
+        appid: appInfo.appid,
+        appname: appInfo.appname,
         platform,
         'uni-app-x': true,
         vapor: isDom2,
@@ -799,6 +973,15 @@ module.exports = {
 
   test('app-ios skips cache init on cache hit', async () => {
     await expect(runCheck('app-ios', false)).resolves.toHaveLength(0)
+  })
+
+  test('skips app info validation on cache hit', async () => {
+    await expect(
+      runCheck('app-ios', false, {
+        appid: '',
+        appname: '',
+      })
+    ).resolves.toHaveLength(0)
   })
 })
 
