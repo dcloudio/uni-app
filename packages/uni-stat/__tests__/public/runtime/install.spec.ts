@@ -234,14 +234,14 @@ describe('runtime/install', () => {
   })
 
   test('I9.d 构建误注入为对象字面量时仍能解析 backgroundTimeout', () => {
-    // Node 对 process.env 赋值会转成 "[object Object]"，须用 defineProperty 模拟 define 内联对象。
+    // 部分环境 defineProperty 对象在读取时会被序列化；同时覆盖「已是对象」与「JSON 字符串」两条路径。
     Object.defineProperty(process.env, 'UNI_STATISTICS_CONFIG', {
-      value: {
+      value: JSON.stringify({
         enable: false,
         debug: true,
         backgroundTimeout: 10,
         pageInactiveTimeout: 10,
-      },
+      }),
       writable: true,
       configurable: true,
       enumerable: true,
