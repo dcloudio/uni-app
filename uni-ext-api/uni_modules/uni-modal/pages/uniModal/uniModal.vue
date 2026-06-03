@@ -513,33 +513,22 @@
 	}
 
 	.uni-modal-dialog__action {
-		display: flex;
 		justify-content: center;
 		flex-grow: 1;
 	}
 	
 	.uni-modal-dialog__action--cancel{
-		margin: 0 4px 0 10px;
+		padding: 0 4px 0 10px;
 	}
 	.uni-modal-dialog__action--confirm{
-		margin: 0 10px 0 4px;
+		padding: 0 10px 0 4px;
 	}
 
 	.uni-modal-dialog__action--hover {
-		width: 50%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
 		background-color: #efefef;
 	}
 
 	.uni-modal-dialog__action--hover-dark {
-		width: 50%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
 		background-color: #1c1c1c;
 	}
 
