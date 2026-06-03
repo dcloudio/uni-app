@@ -4295,11 +4295,34 @@ function resolveSyncResult(args, res, returnOptions, instanceIdOrInstance, proxy
         var ProxyClass = initUTSProxyClass(extend({
           instanceId: res.params
         }, interfaceDefines[returnOptions.options]));
-        return new ProxyClass();
+        var result = new ProxyClass();
+        if (typeof FinalizationRegistry !== "undefined") {
+          var registry = new FinalizationRegistry((id2) => {
+            unregisterInstance(id2);
+          });
+          registry.register(result, res.params);
+        }
+        return result;
       }
     }
   }
   return res.params;
+}
+function unregisterInstance(id2) {
+  var isAndroid = isUTSAndroid();
+  var args = {
+    moduleName: "",
+    moduleType: "built-in",
+    package: isAndroid ? "io.dcloud.uts" : "",
+    class: "UTSBridge",
+    name: "unregisterJavaScriptClassInstance",
+    type: "method",
+    keepAlive: false,
+    nested: false,
+    params: [id2]
+  };
+  getProxy().invokeAsync(args, () => {
+  });
 }
 function invokePropGetter(args) {
   if (args.errMsg) {

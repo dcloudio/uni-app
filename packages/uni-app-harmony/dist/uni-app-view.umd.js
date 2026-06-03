@@ -22667,12 +22667,7 @@
             resolve(embed[HarmonyNativeMethodMap[methodName]](data.url, data.headers));
             break;
           case "loadData": {
-            var _data$encoding;
-            var _data = data.data;
-            if (((_data$encoding = data.encoding) === null || _data$encoding === void 0 ? void 0 : _data$encoding.toLowerCase()) !== "base64") {
-              _data = _data.replace(/#/g, "%23");
-            }
-            resolve(embed[HarmonyNativeMethodMap[methodName]](_data, data.mimeType, data.encoding, data.baseUrl));
+            resolve(embed[HarmonyNativeMethodMap[methodName]](data));
             break;
           }
           case "clear":

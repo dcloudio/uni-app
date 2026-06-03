@@ -153,7 +153,8 @@ function resolveSyncResult(args, res, returnOptions, instanceIdOrInstance, proxy
             }
             if (interfaceDefines[returnOptions.options]) {
                 const ProxyClass = initUTSProxyClass(extend({ instanceId: res.params }, interfaceDefines[returnOptions.options]));
-                return new ProxyClass();
+                const result = new ProxyClass();
+                return result;
             }
         }
     }

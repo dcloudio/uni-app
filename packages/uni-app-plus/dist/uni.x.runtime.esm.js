@@ -4238,7 +4238,8 @@ function resolveSyncResult(args, res, returnOptions, instanceIdOrInstance, proxy
         var ProxyClass = initUTSProxyClass(extend({
           instanceId: res.params
         }, interfaceDefines[returnOptions.options]));
-        return new ProxyClass();
+        var result = new ProxyClass();
+        return result;
       }
     }
   }
