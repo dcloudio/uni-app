@@ -492,11 +492,34 @@ function resolveSyncResult(
             interfaceDefines[returnOptions.options]
           )
         )
-        return new ProxyClass()
+        const result = new ProxyClass()
+        if (__VAPOR__ && typeof FinalizationRegistry !== 'undefined') {
+          const registry = new FinalizationRegistry((id) => {
+            unregisterInstance(id as number)
+          })
+          registry.register(result, res.params)
+        }
+        return result
       }
     }
   }
   return res.params
+}
+
+function unregisterInstance(id: number) {
+  const isAndroid = isUTSAndroid()
+  const args: InvokeStaticArgs = {
+    moduleName: '',
+    moduleType: 'built-in',
+    package: isAndroid ? 'io.dcloud.uts' : '',
+    class: 'UTSBridge',
+    name: 'unregisterJavaScriptClassInstance',
+    type: 'method',
+    keepAlive: false,
+    nested: false,
+    params: [id],
+  }
+  getProxy().invokeAsync(args, () => {})
 }
 
 function invokePropGetter(args: InvokeArgs) {
