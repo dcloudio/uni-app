@@ -37,10 +37,10 @@ type Block = Node | VaporFragment | DynamicFragment | VaporSharedDataComponentIn
 type BlockFn = (...args: any[]) => void;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/componentProps.d.ts
-type RawProps = Record<string, () => unknown> & {
+type RawProps = Record<string, unknown> & {
   $?: DynamicPropsSource[];
 };
-type DynamicPropsSource = (() => Record<string, unknown>) | Record<string, () => unknown>;
+type DynamicPropsSource = (() => Record<string, unknown>) | Record<string, unknown>;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/componentSlots.d.ts
 type RawSlots = Record<string, VaporSlot> & {
@@ -67,7 +67,7 @@ export type DynamicSlotSource = StaticSlots | DynamicSlotFn;
 * 2. elements inherit the slot owner's scopeId
 */
 export declare function withSharedDataVaporCtx(fn: (...args: any[]) => any, type?: "string"): BlockFn;
-export declare function createSharedDataSlot(name: string | (() => string), rawProps?: LooseRawProps | null, setSharedDataSlotProps?: ((data: UniSharedData) => void) | null, fallback?: VaporSlot, noSlotted?: boolean, once?: boolean): void;
+export declare function createSharedDataSlot(name?: string | (() => string), rawProps?: LooseRawProps | null, setSharedDataSlotProps?: ((data: UniSharedData) => void) | null, fallback?: VaporSlot, flags?: number): void;
 export declare function createSharedDataScopedSlot<S extends UniSharedData>(sharedDataVFor: UniSharedDataVFor<S>, fn: VaporScopedSlot<S>): VaporScopedSlot<S>;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/component.d.ts
@@ -110,7 +110,7 @@ interface SharedInternalOptions {
   */
   __externalClassesOptions?: string[];
 }
-type LooseRawProps = Record<string, (() => unknown) | DynamicPropsSource[]> & {
+type LooseRawProps = Record<string, unknown> & {
   $?: DynamicPropsSource[];
 };
 type LooseRawSlots = Record<string, VaporSlot | DynamicSlotSource[]> & {
@@ -159,6 +159,7 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
   hasFallthrough: boolean;
   shapeFlag?: number;
   oncePropsCache?: Record<string | symbol, any>;
+  isOnce: boolean;
   isMounted: boolean;
   isUnmounted: boolean;
   isDeactivated: boolean;

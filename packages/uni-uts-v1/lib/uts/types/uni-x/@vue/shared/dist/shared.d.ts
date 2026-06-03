@@ -401,17 +401,84 @@ export declare enum VaporVForFlags {
   FAST_REMOVE = 1,
   /**
   * v-for used on component - we can skip creating child scopes for each block
-  * because the component itself already has a scope.
+  * because the component itself already has a scope. This does not guarantee
+  * the item block is a VaporComponentInstance: component fallback paths may
+  * still return a DOM Node.
   */
   IS_COMPONENT = 2,
   /**
   * v-for inside v-once
   */
-  ONCE = 4
+  ONCE = 4,
+  /**
+  * v-for item block is a single DOM Node.
+  */
+  IS_SINGLE_NODE = 8,
+  /**
+  * v-for item block is known to be a VaporFragment, so runtime can use
+  * fragment-specific insert/remove helpers.
+  */
+  IS_FRAGMENT = 16
 }
 export declare enum VaporBlockShape {
   EMPTY = 0,
   SINGLE_ROOT = 1,
   MULTI_ROOT = 2
+}
+/**
+* Bit layout for vapor `createIf` flags.
+*
+* - bits 0-1: true branch VaporBlockShape
+* - bits 2-3: false branch VaporBlockShape
+* - bit 4: v-once
+* - bit 5: true branch does not need EffectScope
+* - bit 6: false branch does not need EffectScope
+* - bits 7+: branch index + 1 for keyed dynamic fragments
+*
+* Examples:
+* - v-once, true single-root, no false branch: 1 | ONCE = 17
+* - keyed index 0, true/false single-root: 1 | (1 << 2) | (1 << 7) = 133
+*/
+export declare enum VaporIfFlags {
+  /**
+  * Documents the packed true/false branch shape bits. Runtime decode shifts
+  * to the selected branch first, then masks with 0b11 for one VaporBlockShape.
+  */
+  BLOCK_SHAPE = 15,
+  /**
+  * Marks a branch that is created once and never updated.
+  */
+  ONCE = 16,
+  /**
+  * The compiler proved that the true branch does not create branch-owned
+  * effects or disposers.
+  */
+  TRUE_NO_SCOPE = 32,
+  /**
+  * The compiler proved that the false branch does not create branch-owned
+  * effects or disposers.
+  */
+  FALSE_NO_SCOPE = 64,
+  /**
+  * Shift for keyed branch index. The encoded value is index + 1, so decoded
+  * zero means "not keyed" and source index 0 still round-trips.
+  */
+  INDEX_SHIFT = 7
+}
+/**
+* Flags used by vapor template factories, shared between the compiler and the
+* runtime.
+*/
+export declare enum TemplateFlags {
+  ROOT = 1,
+  STATIC = 2
+}
+/**
+* Flags used by vapor slot outlets, shared between the compiler and the
+* runtime.
+*/
+export declare enum VaporSlotFlags {
+  NO_SLOTTED = 1,
+  ONCE = 2
 }
 //#endregion

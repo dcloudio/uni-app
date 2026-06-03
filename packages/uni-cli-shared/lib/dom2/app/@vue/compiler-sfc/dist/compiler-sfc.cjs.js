@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-beta.12
+  * @vue/compiler-sfc v3.6.0-beta.13
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -14080,25 +14080,28 @@ function loadTSConfig(configPath, ts, fs, visited = /* @__PURE__ */ new Set()) {
 	return res;
 }
 const fileToScopeCache = createCache();
+const fileToGlobalScopeCache = createCache();
 /**
 * @private
 */
 function invalidateTypeCache(filename) {
 	filename = normalizePath(filename);
 	fileToScopeCache.delete(filename);
+	fileToGlobalScopeCache.delete(filename);
 	tsConfigCache.delete(filename);
 	const affectedConfig = tsConfigRefMap.get(filename);
 	if (affectedConfig) tsConfigCache.delete(affectedConfig);
 }
 function fileToScope(ctx, filename, asGlobal = false) {
-	const cached = fileToScopeCache.get(filename);
+	const cache = asGlobal ? fileToGlobalScopeCache : fileToScopeCache;
+	const cached = cache.get(filename);
 	if (cached) return cached;
 	const fs = resolveFS(ctx);
 	const source = fs.readFile(filename) || "";
 	const body = parseFile(filename, source, fs, ctx.options.babelParserPlugins);
 	const scope = new TypeScope(filename, source, 0, recordImports(body));
 	recordTypes(ctx, body, scope, asGlobal);
-	fileToScopeCache.set(filename, scope);
+	cache.set(filename, scope);
 	return scope;
 }
 function parseFile(filename, content, fs, parserPlugins) {
@@ -15718,7 +15721,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 }
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
-const version = "3.6.0-beta.12";
+const version = "3.6.0-beta.13";
 const parseCache = parseCache$1;
 const errorMessages = {
 	..._vue_compiler_dom.errorMessages,

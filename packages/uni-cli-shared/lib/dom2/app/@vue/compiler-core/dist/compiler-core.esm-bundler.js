@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-core v3.6.0-beta.12
+  * @vue/compiler-core v3.6.0-beta.13
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -3311,10 +3311,9 @@ const transformFor = createStructuralDirectiveTransform("for", (node, dir, conte
 		const isTemplate = isTemplateNode(node);
 		const memo = findDir(node, "memo");
 		const keyProp = findProp(node, `key`, false, true);
-		const isDirKey = keyProp && keyProp.type === 7;
+		keyProp && keyProp.type;
 		let keyExp = keyProp && (keyProp.type === 6 ? keyProp.value ? createSimpleExpression(keyProp.value.content, true) : void 0 : keyProp.exp);
-		if (memo && keyExp && isDirKey) {}
-		const keyProperty = keyProp && keyExp ? createObjectProperty(`key`, keyExp) : null;
+		const keyProperty = keyExp ? createObjectProperty(`key`, keyExp) : null;
 		const isStableFragment = forNode.source.type === 4 && forNode.source.constType > 0;
 		const fragmentFlag = isStableFragment ? 64 : keyProp ? 128 : 256;
 		forNode.codegenNode = createVNodeCall(context, helper(FRAGMENT), void 0, renderExp, fragmentFlag, void 0, void 0, true, !isStableFragment, false, node.loc);
