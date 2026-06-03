@@ -233,26 +233,6 @@ describe('runtime/install', () => {
     expect(cfg.reportIntervalSec).toBe(8)
   })
 
-  test('I9.d 构建误注入为对象字面量时仍能解析 backgroundTimeout', () => {
-    // 部分环境 defineProperty 对象在读取时会被序列化；同时覆盖「已是对象」与「JSON 字符串」两条路径。
-    Object.defineProperty(process.env, 'UNI_STATISTICS_CONFIG', {
-      value: JSON.stringify({
-        enable: false,
-        debug: true,
-        backgroundTimeout: 10,
-        pageInactiveTimeout: 10,
-      }),
-      writable: true,
-      configurable: true,
-      enumerable: true,
-    })
-
-    installPublicStat({ skipVueMixin: true, skipUniReport: true })
-    const cfg = getStatApp().getConfig()!
-    expect(cfg.backgroundTimeoutSec).toBe(10)
-    expect(cfg.pageInactiveTimeoutSec).toBe(10)
-  })
-
   test('I9.e enable:false 但注入含 backgroundTimeout 时仍生效（手动 import 场景）', () => {
     ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
       JSON.stringify({
