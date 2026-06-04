@@ -48,4 +48,4 @@ Directory structure of the `uni-app x` branch:
 
 Actual runtime result (click to enlarge):
 
-![](https://web-ext-storage.dcloud.net.cn/doc/uni-app-multiport-202478.png)#{.zooming}
+![](https://web-ext-storage.dcloud.net.cn/doc/uni-app-multiport-202478.png)
