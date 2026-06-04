@@ -516,14 +516,23 @@ function uniStatLog (text) {
   console.log()
 }
 
-/** 构建期「统计已开启」简短提示 */
+/** uni 统计 2.0 构建期「已开启」基础文案 */
+const STAT_ENABLED_TIP_BASE = '已开启 uni统计 2.0'
+
+/**
+ * 构建期「统计已开启」简短提示。
+ * public → 已开启uni 统计 2.0；private → 已开启uni 统计 2.0（私有版）
+ */
 function formatStatEnabledTip (statType) {
-  return `已开启 uni统计${statType === 'public' ? '公有版' : '私有版'}`
+  if (statType === 'private') {
+    return `${STAT_ENABLED_TIP_BASE}（私有版）`
+  }
+  return STAT_ENABLED_TIP_BASE
 }
 
 /** 小程序公有版 request 合法域名提示（合并「已开启」与域名说明） */
 function formatMpStatDomainTip () {
-  return `已开启 uni统计公有版，为保障数据正常上报，请在小程序后台配置 request 合法域名：${STAT_MP_REQUEST_DOMAIN}。详情：${STAT_MP_DOMAIN_DOC_URL}`
+  return `${STAT_ENABLED_TIP_BASE}，为保障数据正常上报，请在小程序后台配置 request 合法域名：${STAT_MP_REQUEST_DOMAIN}。详情：${STAT_MP_DOMAIN_DOC_URL}`
 }
 
 /** 小程序公有版是否需输出域名配置提示 */
