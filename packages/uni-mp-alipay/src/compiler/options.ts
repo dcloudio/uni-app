@@ -11,6 +11,7 @@ import {
   createTransformComponentLink,
   getNativeTags,
   transformDirection,
+  transformTeleport,
   // transformMatchMedia,
 } from '@dcloudio/uni-cli-shared'
 import {
@@ -68,6 +69,7 @@ const nodeTransforms = [
   transformOpenType,
   // transformMatchMedia,
   createTransformComponentLink(COMPONENT_ON_LINK, NodeTypes.ATTRIBUTE),
+  transformTeleport,
 ]
 if (process.env.UNI_APP_X === 'true') {
   nodeTransforms.push(
