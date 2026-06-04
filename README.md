@@ -48,4 +48,4 @@ uni-app x分支目录说明：
 
 实际运行效果如下（点击图片可放大）：
 
-![](https://web-ext-storage.dcloud.net.cn/doc/uni-app-multiport-202478.png)#{.zooming}
+![](https://web-ext-storage.dcloud.net.cn/doc/uni-app-multiport-202478.png)
