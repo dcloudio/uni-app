@@ -45,16 +45,20 @@ const STAT_MP_DOMAIN_DOC_URL = 'https://uniapp.dcloud.net.cn/uni-stat-v2.html'
 
 /**
  * 构建期「统计已开启」提示文案（不依赖 i18n 占位符，避免 HBuilderX 内置文案仍为 `{version}` 时原样输出）。
+ * - public：已开启 uni 统计 2.0
+ * - private：已开启 uni 统计 2.0（私有版）
  */
 function formatStatEnabledTip(statType: StatType): string {
-  return `已开启 uni统计${statType === 'public' ? '公有版' : '私有版'}`
+  return statType === 'private'
+    ? '已开启uni 统计 2.0（私有版）'
+    : '已开启uni 统计 2.0'
 }
 
 /**
  * 构建期小程序 request 合法域名提示（单条合并「已开启」与域名说明）。
  */
 function formatMpStatDomainTip(): string {
-  return `已开启 uni统计公有版，为保障数据正常上报，请在小程序后台配置 request 合法域名：${STAT_MP_REQUEST_DOMAIN}。详情：${STAT_MP_DOMAIN_DOC_URL}`
+  return `已开启uni 统计 2.0，为保障数据正常上报，请在小程序后台配置 request 合法域名：${STAT_MP_REQUEST_DOMAIN}。详情：${STAT_MP_DOMAIN_DOC_URL}`
 }
 
 /**

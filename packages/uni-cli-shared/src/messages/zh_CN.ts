@@ -28,7 +28,7 @@ export default {
     '当前应用未配置 appid，无法使用 uni 统计，详情参考：https://ask.dcloud.net.cn/article/36303',
   'stat.warn.version':
     '当前应用未配置 uni 统计版本，默认使用公有版；可配置为公有版或私有版。详情：https://uniapp.dcloud.io/uni-stat',
-  'stat.warn.tip': '已开启 uni统计{type}',
+  'stat.warn.tip': '已开启uni 统计 2.0{type}',
   'i18n.fallbackLocale.default':
     '当前应用未在 manifest.json 配置 fallbackLocale，默认使用：{locale}',
   'i18n.fallbackLocale.missing':
