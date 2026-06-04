@@ -50,3 +50,4 @@ export const transformComponentLink =
 
 export * from './x/transformMPBuiltInTag'
 export * from './x/transformDirection'
+export * from './transformTeleport'
