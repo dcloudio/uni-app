@@ -11,6 +11,7 @@ import {
   createTransformComponentLink,
   getNativeTags,
   transformDirection,
+  transformTeleport,
   // transformMatchMedia,
 } from '@dcloudio/uni-cli-shared'
 import {

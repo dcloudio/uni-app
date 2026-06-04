@@ -11,6 +11,7 @@ import {
   transformDirection,
   transformMPBuiltInTag,
   transformRef,
+  transformTeleport,
 } from '@dcloudio/uni-cli-shared'
 import {
   type UniMiniProgramPluginOptions,

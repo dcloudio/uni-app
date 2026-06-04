@@ -8,6 +8,7 @@ import {
   getNativeTags,
   transformComponentLink,
   transformRef,
+  transformTeleport,
   // transformMatchMedia,
 } from '@dcloudio/uni-cli-shared'
 import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
@@ -22,6 +23,7 @@ const nodeTransforms = [
   transformRef,
   // transformMatchMedia,
   transformComponentLink,
+  transformTeleport,
 ]
 const directiveTransforms = {
   on: transformOn,
