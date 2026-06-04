@@ -110,6 +110,26 @@ function toNum(v: unknown): number {
 }
 
 /**
+ * snapshot 是否「确实是一台全新设备」：三字段全 0。
+ *
+ * 用于消费 `degraded`：storage 读取异常时 `lvts` 会退化为 0 而误判 `isNewUser=true`。
+ * 若此时 `fvts/tvc` 仍读到非 0（说明是老用户、只是 lvts 这一项读失败），就**不能**当新增，
+ * 也不能落库覆盖真实持久值；只有三字段都为 0 才是可信的全新设备。
+ */
+function isLikelyFreshDevice(snap: VisitSnapshot): boolean {
+  return snap.fvts === 0 && snap.lvts === 0 && snap.tvc === 0
+}
+
+/**
+ * 是否为「可信的新用户」：非 degraded 直接信任 `isNewUser`；degraded 时仅当三字段全 0
+ * （`isLikelyFreshDevice`）才信任，否则视为「读失败的老用户」，走老用户兜底路径。
+ */
+function isTrustworthyNewUser(snap: VisitSnapshot): boolean {
+  if (!snap.isNewUser) return false
+  return !snap.degraded || isLikelyFreshDevice(snap)
+}
+
+/**
  * 从 storage 读取 snapshot。**纯读，无副作用**（spy `storage.set` 必须 not.toHaveBeenCalled）。
  *
  * 异常处理：
@@ -211,9 +231,17 @@ export function buildVisitFields(now: number): {
   }
   buildCalledInProcess = true
 
-  if (snap.isNewUser) {
+  if (isTrustworthyNewUser(snap)) {
     pending = { fvts: now, lvts: 0, tvc: 1, now }
     persistNewUserBaseline(now)
+  } else if (snap.isNewUser) {
+    // degraded 且非全新设备：lvts 读失败被误当 0。按老用户兜底，**不**上报 lvts=0、
+    // **不**落库基线（storage 不可靠），避免新增虚高与覆盖真实持久值。
+    logger.warn(
+      '[uni-stat] visit degraded: lvts 读取失败但检测到历史数据，按老用户处理以避免新增虚高'
+    )
+    const fvts = snap.fvts > 0 ? snap.fvts : now
+    pending = { fvts, lvts: fvts, tvc: snap.tvc + 1, now }
   } else {
     pending = {
       fvts: snap.fvts,
@@ -259,13 +287,18 @@ export function buildVisitFieldsForSessionRenewal(now: number): {
     tvc = lastBuilt.tvc
   } else {
     const snap = ensureLoaded()
-    if (snap.isNewUser) {
+    if (isTrustworthyNewUser(snap)) {
       // 续会话成为本进程首条 lt=1 且命中新用户（罕见：未走过冷启 build）：本条仍按
       // lvts=0 计一次新增，并立即落库基线，保证只计一次。
       fvts = now
       lvts = 0
       tvc = 1
       persistNewUserBaseline(now)
+    } else if (snap.isNewUser) {
+      // degraded 且非全新设备：按老用户兜底，不上报 lvts=0、不落库基线。
+      fvts = snap.fvts > 0 ? snap.fvts : now
+      lvts = fvts
+      tvc = snap.tvc + 1
     } else {
       fvts = snap.fvts
       lvts = snap.lvts

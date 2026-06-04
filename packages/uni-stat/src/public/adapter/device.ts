@@ -110,22 +110,34 @@ export function getUuid(): string {
     return cachedUuid
   }
 
-  const stored = storage.get<string>(STORAGE_KEY_UUID)
-  if (typeof stored === 'string' && stored.length > 0) {
-    if (stored.startsWith('device-anon-')) {
-      const upgraded = generateAnonUuid()
-      tryRun(() => storage.set(STORAGE_KEY_UUID, upgraded), undefined)
-      cachedUuid = upgraded
+  // 用 safeRead 区分「确无历史值」与「storage 读取异常」：
+  //   - 读取异常时**绝不**重新生成并落库，否则会覆盖磁盘上可能仍存在的真实 did，
+  //     导致同一设备跨进程 did 漂移（设备去重失真）。改为生成**仅本进程有效**的临时
+  //     did，不持久化；待 storage 恢复后下次冷启仍读回原值。
+  const storedRead = storage.safeRead<string>(STORAGE_KEY_UUID)
+  if (storedRead.ok) {
+    const stored = storedRead.value
+    if (typeof stored === 'string' && stored.length > 0) {
+      if (stored.startsWith('device-anon-')) {
+        const upgraded = generateAnonUuid()
+        tryRun(() => storage.set(STORAGE_KEY_UUID, upgraded), undefined)
+        cachedUuid = upgraded
+        return cachedUuid
+      }
+      cachedUuid = stored
       return cachedUuid
     }
-    cachedUuid = stored
+    // 读取成功且确实无历史值 → 首次生成并落库。
+    const generated = generateAnonUuid()
+    tryRun(() => storage.set(STORAGE_KEY_UUID, generated), undefined)
+    cachedUuid = generated
     return cachedUuid
   }
 
-  const generated = generateAnonUuid()
-  tryRun(() => storage.set(STORAGE_KEY_UUID, generated), undefined)
-  cachedUuid = generated
-  return cachedUuid
+  // storage 读取异常：生成临时 did（不落库），保证本次上报字段非空，且不污染持久值。
+  const ephemeral = generateAnonUuid()
+  cachedUuid = ephemeral
+  return ephemeral
 }
 
 /** 仅供单测：清除内存缓存。生产代码不应调用。 */

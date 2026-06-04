@@ -15,7 +15,7 @@
 import { resolveUniRuntime } from '../infra/uniRuntime'
 import { tryRun } from '../infra/safe'
 
-import { getPlatform } from './platform'
+import { isMp } from './platform'
 
 export interface AppShowEvent {
   /** uni 透传的 path 字段（小程序场景），其他端可能为空。 */
@@ -101,8 +101,9 @@ export function onAppLaunch(cb: (e: AppShowEvent) => void): () => void {
  *   2. `uni.getLaunchOptionsSync().scene`（多端通用）。
  *   3. 不识别的平台返回空字符串。
  *
- * 公有版扩展：除 wx 外，mp-qq / mp-toutiao / mp-baidu / 阿里系小程序 / mp-lark /
- * mp-kuaishou 都已支持 `getLaunchOptionsSync`，统一走该入口。
+ * 公有版扩展：所有小程序宿主（`mp-*`，含 wx/qq/tt/bd/阿里系/lark/ks/xhs/jd/harmony 等）
+ * 均支持 `getLaunchOptionsSync().scene`，故统一以 `isMp()` 判定，避免逐个平台维护白名单时
+ * 漏掉新增小程序端导致 scene 恒为空（H5 / App / 快应用无场景值，返回空串）。
  */
 export function getLaunchScene(override?: string | number): string {
   if (override !== undefined && override !== null && override !== '') {
@@ -110,18 +111,8 @@ export function getLaunchScene(override?: string | number): string {
   }
   const u = getUni()
   if (typeof u?.getLaunchOptionsSync !== 'function') return ''
-  const platform = getPlatform()
-  if (
-    platform !== 'wx' &&
-    platform !== 'qq' &&
-    platform !== 'tt' &&
-    platform !== 'bd' &&
-    platform !== 'ali' &&
-    platform !== 'lark' &&
-    platform !== 'ks'
-  ) {
-    return ''
-  }
+  // 仅小程序宿主有有意义的 scene；其它端即便存在 getLaunchOptionsSync 也无场景值。
+  if (!isMp()) return ''
   return tryRun(() => {
     const opts = u.getLaunchOptionsSync!()
     const scene = opts?.scene

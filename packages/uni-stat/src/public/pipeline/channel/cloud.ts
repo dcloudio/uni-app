@@ -39,6 +39,28 @@ interface UniCloudReceiver {
  * 优先级：opts.uniCloudSpace > uni.__stat_uniCloud_space（`uni` 解析见 `infra/uniRuntime`）。
  * 都不可用返回 undefined，由 `available()` / `send()` 自行处理。
  */
+/**
+ * 校验云对象返回值是否表示业务失败。**只识别 uniCloud 标准失败约定，默认成功**，
+ * 以避免把成功返回误判为失败而触发无谓重试：
+ *   - `success === false`（显式布尔失败）
+ *   - `errCode` 为非 0 的 number（uniCloud 云对象错误码约定；0 / 缺省 = 成功）
+ *
+ * **刻意不判断通用 `code` 字段**：部分接口用 `code: 200` 表示成功，若按「非 0 即失败」
+ * 处理会把成功误判为失败、误入重试队列。未知返回形态一律视为成功（保守）。
+ *
+ * 命中失败约定时抛错，交由 `withRetry` / collector 走重试链路。
+ */
+function assertCloudResultOk(res: unknown): void {
+  if (!res || typeof res !== 'object') return
+  const r = res as Record<string, unknown>
+  if (r.success === false) {
+    throw new Error('cloud receiver reported success=false')
+  }
+  if (typeof r.errCode === 'number' && r.errCode !== 0) {
+    throw new Error('cloud receiver reported errCode=' + String(r.errCode))
+  }
+}
+
 function resolveSpace(injected?: UniCloudSpace): UniCloudSpace | undefined {
   if (injected) return injected
   const raw = resolveUniRuntime()
@@ -80,7 +102,12 @@ export function createCloudChannel(opts: CloudChannelOptions = {}): Channel {
     if (!receiver || typeof receiver.report !== 'function') {
       return Promise.reject(new Error('uniCloud space unavailable'))
     }
-    return Promise.resolve(receiver.report(payload)).then(() => undefined)
+    return Promise.resolve(receiver.report(payload)).then((res) => {
+      // 云对象未 throw 但**业务结果显式失败**时，仍按失败处理以触发重试，
+      // 避免"resolve 即成功"漏掉服务端拒收。仅识别明确的失败约定，默认视为成功，
+      // 防止把未知返回形态误判为失败（保守）。
+      assertCloudResultOk(res)
+    })
   }
 
   return {

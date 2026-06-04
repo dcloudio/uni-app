@@ -134,5 +134,29 @@ describe('adapter/device', () => {
       const uuid = getUuid()
       expect(uuid).toMatch(/^\d{18,21}$/)
     })
+
+    test('storage 读取异常 → 临时 uuid 不落库，不覆盖持久值（P3-10）', () => {
+      const handle = installMockUni({
+        platform: 'mp-weixin',
+        patch: { getSystemInfoSync: () => ({}) },
+      })
+      // 磁盘上已有真实 did（模拟老设备）
+      storage.set('device:uuid', 'real-persisted-did')
+      // 清模块缓存，强制下一次走 getStorageSync；并注入一次读失败
+      storage.__resetCache()
+      resetDeviceCache()
+      handle.storage.__failNext({ get: new Error('read boom') })
+
+      const uuid = getUuid()
+      // 生成临时 did 兜底（数字串），但不是覆盖也不是复用磁盘值
+      expect(uuid).toMatch(/^\d{18,21}$/)
+      expect(uuid).not.toBe('real-persisted-did')
+      // 关键：磁盘上的真实 did 未被临时值覆盖
+      const snap = handle.storage.__inspect()
+      const stored = Object.entries(snap).find(([k]) =>
+        k.includes('device:uuid')
+      )
+      expect(stored?.[1]).toBe('real-persisted-did')
+    })
   })
 })

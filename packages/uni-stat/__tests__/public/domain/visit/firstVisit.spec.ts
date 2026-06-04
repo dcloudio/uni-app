@@ -327,6 +327,40 @@ describe('domain/visit/firstVisit（缺陷 #5 修复矩阵 T1~T9）', () => {
     })
   })
 
+  describe('P2-7 degraded 消费：读失败但非全新设备 → 不当新增', () => {
+    test('degraded + tvc 有历史值（lvts 读 0）→ 按老用户兜底，不上报 lvts=0、不落库基线', () => {
+      // tvc 在 storage 中有值（=5）；fvts/lvts 未设。让首个 get（fvts）读失败 → degraded。
+      handle.storage.setStorageSync(KTV, 5)
+      storage.__resetCache()
+      __resetState()
+      handle.storage.__failNext({ get: new Error('fvts read boom') })
+
+      const snap = loadVisitSnapshot()
+      expect(snap.degraded).toBe(true)
+      expect(snap.isNewUser).toBe(true) // lvts=0 → 表面像新用户
+      expect(snap.tvc).toBe(5) // 但 tvc 有历史 → 非全新设备
+
+      const fields = buildVisitFields(T2)
+      // 保护：不当新增（lvts 不为 0），tvc 在历史基础上 +1
+      expect(fields.lvts).not.toBe(0)
+      expect(fields.tvc).toBe(6)
+      // 不落库基线：storage 中 fvts/lvts 仍未被写入
+      const after = handle.storage.__inspect()
+      expect(after[KFV]).toBeUndefined()
+      expect(after[KLV]).toBeUndefined()
+    })
+
+    test('degraded 但全字段 0（全新设备）→ 仍按新用户计一次新增（兼容 T7）', () => {
+      storage.__resetCache()
+      __resetState()
+      handle.storage.__failNext({ get: new Error('boom') })
+      const snap = loadVisitSnapshot()
+      expect(snap.degraded).toBe(true)
+      const fields = buildVisitFields(T2)
+      expect(fields).toEqual({ fvts: T2, lvts: 0, tvc: 1 })
+    })
+  })
+
   describe('辅助：commit 与 rollback 的幂等', () => {
     test('未 build 直接 commit → noop', () => {
       loadVisitSnapshot()

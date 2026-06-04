@@ -31,6 +31,8 @@ import { tryRun } from '../infra/safe'
 import { handleDataChunked } from './serializer'
 import { isPermanentChannelError } from './types'
 
+import { LT } from '../domain/eventTypes'
+
 import type { Bucket } from './queue'
 import type { Channel, ReportPayload } from './types'
 import type { EventContext, StatData } from '../domain/statData'
@@ -76,6 +78,12 @@ export interface CollectorDeps {
   session: {
     getSnapshot: () => SessionSnapshot | null
     nextSeq: () => number
+    /**
+     * 刷新 `lastActive`（前台无操作超时计时器）。可选：缺省时不刷新（兼容旧测试桩）。
+     * collector 在收到用户主动行为事件（lt=21 自定义事件 / 拦截器事件）时调用，
+     * 使「前台无操作超时（cst=3）」与文档「无任何 page/event 触达」语义一致。
+     */
+    touch?: (now: number) => void
   }
   /** 报文版本。 */
   config: { usv: string }
@@ -99,6 +107,13 @@ export interface CollectorAPI {
   flush: (force?: boolean) => Promise<void>
   /** 冷启续传未送达的 retry payload。 */
   recoverRetry: () => Promise<void>
+  /**
+   * 释放内部资源（取消尚未触发的延迟首 flush 定时器）。
+   *
+   * 由 `StatApp.uninstall` 在卸载 / 热重载 / 测试 teardown 时调用，避免延迟定时器
+   * 在 collector 已被丢弃后仍 fire（幽灵 flush，闭包持有旧 deps）。
+   */
+  destroy: () => void
 }
 
 /**
@@ -161,6 +176,12 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
         const seq = deps.session.nextSeq()
         sessionForCtx = Object.assign({}, snap, { seq })
       }
+      // 用户主动行为事件（lt=21：自定义事件 / login / pay / share 拦截器）刷新
+      // 前台无操作计时器，避免用户持续操作却无翻页时被误判「无操作超时」开新会话（cst=3）。
+      // 仅 lt=21 视为「用户触达」；lt=1/3/11/31/101 由会话状态机自身管理。
+      if (snap && input.lt === LT.Event && deps.session.touch) {
+        deps.session.touch(t)
+      }
       const ctx: EventContext = Object.assign({}, input, {
         t,
         session: sessionForCtx,
@@ -218,7 +239,13 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
       maxBytes: Math.min(globalMaxBytes, channelMaxBytes),
     }
     const chunks = handleDataChunked(snapshot, limits)
-    if (chunks.length === 0) return
+    if (chunks.length === 0) {
+      // 快照已被 flush() 从队列摘除，但切片结果为空（极端：桶内全是空数组 key，
+      // 或所有事件 JSON.stringify 失败）。若直接 return 会**静默丢数**，故回滚回队列等待下次。
+      logger.warn('[uni-stat] flush 切片结果为空，已回滚队列', snapshot)
+      deps.queue.rollback(snapshot)
+      return
+    }
 
     const startMs = deps.nowMs()
     let totalCount = 0
@@ -231,9 +258,19 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
     // 切片是适配 image URL 长度限制 / 全局 batch 字节阈值的内部分批策略，业务方
     // 不应感知。统计维度统一为**事件数**：成功片累计 okEvents、失败片累计 failedEvents
     // + per-slice logReportFailure（保留原因）；末尾由 logReportSummary 输出统一汇总。
+    // visit 字段（fvts/lvts/tvc）只随 lt=1 上行，而 serializer 已按 LT_ORDER 把 lt=1
+    // 排到最前 → 必定落在第一片（chunks[0]）。因此「访问是否被服务端接收」只取决于
+    // 第一片是否成功，与后续 lt=21/31 等切片成败无关。
+    //   - 桶内有 lt=1：以 chunks[0] 成功与否决定 commit / rollback（部分成功也可 commit，
+    //     避免后续片失败把已被接收的访问回滚，造成本地与服务端口径偏差）。
+    //   - 桶内无 lt=1：visit pending 本就为空，commit/rollback 均为 noop；沿用「全部成功才 commit」
+    //     的旧语义，保持既有行为与测试稳定。
+    const hasLaunch =
+      Array.isArray(snapshot['1']) && (snapshot['1'] as unknown[]).length > 0
     let okEvents = 0
     let failedEvents = 0
     let allOk = true
+    let firstChunkOk = true
     for (let i = 0; i < chunks.length; i++) {
       const requests = chunks[i]
       const payload: ReportPayload = {
@@ -248,6 +285,7 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
         okEvents += sliceEvents
       } catch (e) {
         allOk = false
+        if (i === 0) firstChunkOk = false
         failedEvents += sliceEvents
         if (isPermanentChannelError(e)) {
           // 永久错：丢弃本片，不 persist、不污染下次冷启
@@ -268,7 +306,8 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
       }
     }
 
-    if (allOk) {
+    const visitAccepted = hasLaunch ? firstChunkOk : allOk
+    if (visitAccepted) {
       tryRun(
         () => deps.visit.commitVisitOnAck(deps.nowSec()),
         undefined as void
@@ -365,5 +404,12 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
     return flushImpl(force)
   }
 
-  return { report, flush, recoverRetry }
+  /** 取消延迟首 flush 定时器，防止 collector 被弃后仍触发幽灵 flush。 */
+  function destroy(): void {
+    cancelDeferredFlush()
+    // 置为「已完成首 flush」，即便有残留闭包再次调用 triggerAutoFlush 也不会重排定时器。
+    firstFlushDone = true
+  }
+
+  return { report, flush, recoverRetry, destroy }
 }

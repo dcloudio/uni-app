@@ -27,7 +27,11 @@
  *   - 持久化 key：`UNI_STAT_DATA:<appid>:queue`。
  */
 
-import { REPORT_INTERVAL_SEC, SINGLE_EVENT_MAX_BYTES } from '../config'
+import {
+  QUEUE_MAX_EVENTS,
+  REPORT_INTERVAL_SEC,
+  SINGLE_EVENT_MAX_BYTES,
+} from '../config'
 import { logger } from '../infra/logger'
 import { nowMs } from '../infra/time'
 import { storage } from '../infra/storage'
@@ -53,7 +57,10 @@ const state: QueueState = {
 
 let intervalSec = REPORT_INTERVAL_SEC
 let singleEventMaxBytes = DEFAULT_SINGLE_EVENT_MAX_BYTES
+let maxEvents = QUEUE_MAX_EVENTS
 let restored = false
+/** 容量超限 warn 节流：持续离线积压时仅首次告警，回落到上限内后复位。 */
+let capacityWarned = false
 
 /**
  * 配置上报间隔；运行时可在 runtime/StatApp 初始化时注入。
@@ -61,6 +68,7 @@ let restored = false
 export function configure(opts: {
   intervalSec?: number
   singleEventMaxBytes?: number
+  maxEvents?: number
 }): void {
   if (typeof opts.intervalSec === 'number' && opts.intervalSec >= 0) {
     intervalSec = Math.floor(opts.intervalSec)
@@ -70,6 +78,50 @@ export function configure(opts: {
     opts.singleEventMaxBytes > 0
   ) {
     singleEventMaxBytes = Math.floor(opts.singleEventMaxBytes)
+  }
+  if (typeof opts.maxEvents === 'number' && opts.maxEvents > 0) {
+    maxEvents = Math.floor(opts.maxEvents)
+  }
+}
+
+/**
+ * 强制把内存桶事件总数压到 `maxEvents` 以内（FIFO 丢弃最旧）。
+ *
+ * 丢弃策略：每轮从**当前事件数最多的桶**头部移除一条（最旧），直到总数达标。
+ * 这样长期离线时疯涨的 lt=21/lt=31 会先被裁剪，体量通常很小的 lt=1（会话锚点）/
+ * lt=3（后台闭合）更可能被保留。仅在超限时打一次 warn，避免刷屏。
+ */
+function enforceCapacity(): void {
+  let total = size()
+  if (total <= maxEvents) {
+    // 回落到上限内 → 复位告警节流，下次再超限时可再次提示。
+    capacityWarned = false
+    return
+  }
+  const dropped = total - maxEvents
+  while (total > maxEvents) {
+    let largestLt = ''
+    let largestLen = 0
+    for (const lt of Object.keys(state.bucket)) {
+      const len = state.bucket[lt].length
+      if (len > largestLen) {
+        largestLen = len
+        largestLt = lt
+      }
+    }
+    if (!largestLt || largestLen === 0) break
+    state.bucket[largestLt].shift()
+    if (state.bucket[largestLt].length === 0) delete state.bucket[largestLt]
+    total--
+  }
+  // 节流：持续离线积压时每次 enqueue 都会触发裁剪，但仅首次告警，避免刷屏。
+  if (!capacityWarned) {
+    capacityWarned = true
+    logger.warn(
+      '[uni-stat] 上报队列超过容量上限，已丢弃最旧事件',
+      'dropped=' + dropped,
+      'limit=' + maxEvents
+    )
   }
 }
 
@@ -143,6 +195,7 @@ export function enqueue(data: StatData): void {
   restoreOnce()
   if (!state.bucket[lt]) state.bucket[lt] = []
   state.bucket[lt].push(data)
+  enforceCapacity()
   persistBucket()
 }
 
@@ -189,6 +242,7 @@ export function rollback(snapshot: Bucket): void {
     if (!state.bucket[lt]) state.bucket[lt] = []
     state.bucket[lt] = arr.concat(state.bucket[lt])
   }
+  enforceCapacity()
   persistBucket()
 }
 
@@ -211,6 +265,8 @@ export function __reset(): void {
   state.lastFlushAt = 0
   intervalSec = REPORT_INTERVAL_SEC
   singleEventMaxBytes = DEFAULT_SINGLE_EVENT_MAX_BYTES
+  maxEvents = QUEUE_MAX_EVENTS
+  capacityWarned = false
   restored = false
   storage.remove(STORAGE_KEY)
 }

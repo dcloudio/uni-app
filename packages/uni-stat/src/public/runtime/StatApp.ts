@@ -311,6 +311,10 @@ export class StatApp {
       tryRun(() => this.uninstallInterceptors!(), undefined)
     }
     this.uninstallInterceptors = undefined
+    // 先释放 collector 内部定时器（取消延迟首 flush），再丢弃引用，避免幽灵 flush。
+    if (this.collector) {
+      tryRun(() => this.collector!.destroy(), undefined)
+    }
     this.collector = undefined
     this.collectorDeps = undefined
     this.httpChannel = undefined
@@ -417,6 +421,7 @@ export class StatApp {
       session: {
         getSnapshot: session.getSnapshot,
         nextSeq: session.nextSeq,
+        touch: session.touch,
       },
       config: { usv: STAT_VERSION_PUBLIC },
       nowMs,

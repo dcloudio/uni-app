@@ -122,6 +122,18 @@ function readStr(key: string): string {
 }
 
 /**
+ * 计算 `now - from` 的非负秒差，防止设备时钟回拨（NTP 校时 / 用户手动改时间）导致
+ * `elapsed < 0` 使后台 / 无操作超时判定**永不触发**、会话被异常拉长。
+ *
+ * 与 `infra/time.elapsedSec` 同语义（负值钳零），此处因状态机入参 `now` 由调用方注入、
+ * 不直接走 `nowSec()`，故就地实现保持纯函数可测。
+ */
+function elapsedNonNeg(now: number, from: number): number {
+  const diff = now - from
+  return diff > 0 ? diff : 0
+}
+
+/**
  * 从 storage 重建 snapshot；任意字段缺失返回 null。
  */
 function loadFromStorage(): SessionSnapshot | null {
@@ -205,7 +217,10 @@ export function ensureSession(t: Trigger, ctx: EnsureContext): EnsureResult {
     }
     const enterTs =
       enterCandidates.length > 0 ? Math.min(...enterCandidates) : 0
-    const elapsed = enterTs > 0 ? now - enterTs : now - snap.lastActive
+    const elapsed =
+      enterTs > 0
+        ? elapsedNonNeg(now, enterTs)
+        : elapsedNonNeg(now, snap.lastActive)
     const sceneChanged = !!scene && !!snap.lastScene && scene !== snap.lastScene
     const fromBackground = enterTs > 0
     if (
@@ -231,7 +246,7 @@ export function ensureSession(t: Trigger, ctx: EnsureContext): EnsureResult {
   }
 
   // page_show：判定前台无操作超时
-  const elapsed = now - snap.lastActive
+  const elapsed = elapsedNonNeg(now, snap.lastActive)
   if (elapsed >= config.pageInactiveTimeoutSec) {
     const created = createNew(
       now,
@@ -255,7 +270,9 @@ export function markBackground(now: number): void {
 }
 
 /**
- * 更新 lastActive；page_show / 用户操作时调用。
+ * 更新 lastActive；page_show 与**用户主动行为事件**（collector 在收到 lt=21 自定义/
+ * 拦截器事件时调用）触发。这样「前台无操作超时（cst=3）」与文档「无任何 page/event
+ * 触达」语义一致：用户持续点按但不翻页时不会被误判为无操作而开新会话。
  */
 export function touch(now: number): void {
   if (!cached) cached = loadFromStorage()

@@ -82,6 +82,39 @@ describe('pipeline/queue', () => {
       enqueue(makeEvt('1'))
       expect(size()).toBe(1)
     })
+
+    test('超过容量上限 → FIFO 丢弃最旧，从最大的桶裁剪（P3-9）', () => {
+      configure({ maxEvents: 5 })
+      // 关键的 lt=1 / lt=3 各 1 条；lt=21 灌满
+      enqueue(makeEvt('1', { e: 'launch' }))
+      enqueue(makeEvt('3', { e: 'hide' }))
+      for (let i = 0; i < 10; i++) enqueue(makeEvt('21', { e: 'c' + i }))
+      // 总数被压到上限
+      expect(size()).toBe(5)
+      const snap = flush()!
+      // 体量小但关键的 lt=1 / lt=3 被保留，丢弃的是最大桶 lt=21 的最旧条目
+      expect(snap['1']).toHaveLength(1)
+      expect(snap['3']).toHaveLength(1)
+      expect(snap['21']).toHaveLength(3)
+      // 保留的是较新的 lt=21（最旧的 c0..c6 被丢）
+      const kept = (snap['21'] as { e: string }[]).map((x) => x.e)
+      expect(kept).toEqual(['c7', 'c8', 'c9'])
+    })
+
+    test('rollback 也受容量上限约束（P3-9）', () => {
+      configure({ maxEvents: 3 })
+      const big: Record<string, StatData[]> = {
+        '21': [
+          makeEvt('21', { e: 'a' }),
+          makeEvt('21', { e: 'b' }),
+          makeEvt('21', { e: 'c' }),
+          makeEvt('21', { e: 'd' }),
+          makeEvt('21', { e: 'e' }),
+        ],
+      }
+      rollback(big)
+      expect(size()).toBe(3)
+    })
   })
 
   describe('修复缺陷 #3：flush 期间并发入队不应被误删', () => {

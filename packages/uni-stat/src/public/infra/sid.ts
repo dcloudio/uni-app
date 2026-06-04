@@ -18,7 +18,7 @@ const SUFFIX_TAIL_LEN = 4
 /**
  * 生成 base36 随机串。
  *
- * @param len 期望长度；不足时用 '0' 左填充以保证视觉与碰撞概率稳定。
+ * @param len 期望长度；不足时用 '0' **末尾填充**（`padEnd`）补齐，保证长度稳定。
  */
 function randomPart(len: number): string {
   const r = Math.random()

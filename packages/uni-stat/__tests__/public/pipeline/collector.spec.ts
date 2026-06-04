@@ -34,6 +34,7 @@ interface MockedDeps extends CollectorDeps {
   session: {
     getSnapshot: jest.Mock
     nextSeq: jest.Mock
+    touch: jest.Mock
   }
   nowMs: jest.Mock
   nowSec: jest.Mock
@@ -79,6 +80,7 @@ function makeDeps(overrides: Partial<MockedDeps> = {}): MockedDeps {
       session: {
         getSnapshot: jest.fn(() => session),
         nextSeq: jest.fn(() => 1),
+        touch: jest.fn(),
       },
       config: { usv: '3' },
       nowMs: jest.fn(() => 1700000000_000),
@@ -318,6 +320,113 @@ describe('pipeline/collector', () => {
       expect(deps.retry.persist).not.toHaveBeenCalled()
       expect(deps.visit.commitVisitOnAck).not.toHaveBeenCalled()
       expect(deps.visit.rollbackPendingVisit).toHaveBeenCalledTimes(1)
+    })
+
+    test('切片结果为空 → 回滚队列，不静默丢数（P1-1）', async () => {
+      const deps = makeDeps()
+      deps.queue.shouldFlush.mockReturnValue(true)
+      // 桶非空（通过 lts 判空）但全是空数组 → flatten 后 chunkEvents 产出 0 片
+      const emptyBucket = { '21': [] } as unknown as Bucket
+      deps.queue.flush.mockReturnValue(emptyBucket)
+      const channel = deps.selectChannel()!
+      const c = createCollector(deps)
+      await c.flush(true)
+      expect(deps.queue.rollback).toHaveBeenCalledWith(emptyBucket)
+      expect((channel.send as jest.Mock).mock.calls.length).toBe(0)
+    })
+
+    test('切片部分成功：含 lt=1 的首片成功 → 即使后续片失败也 commit visit（P2-4）', async () => {
+      // 桶含 lt=1（首片）与大量 lt=21（后续片）；让第 2 片起失败（可重试）
+      let call = 0
+      const channel: Channel = {
+        name: '2.0',
+        available: () => true,
+        send: jest.fn(() => {
+          call++
+          return call === 1
+            ? Promise.resolve()
+            : Promise.reject(new Error('later chunk fail'))
+        }),
+      }
+      const deps = makeDeps({
+        selectChannel: jest.fn(() => channel) as MockedDeps['selectChannel'],
+      })
+      deps.queue.shouldFlush.mockReturnValue(true)
+      const lt21: StatData[] = []
+      for (let i = 0; i < 20; i++) lt21.push({ lt: '21', a: i } as StatData)
+      deps.queue.flush.mockReturnValue({
+        '1': [{ lt: '1' } as StatData],
+        '21': lt21,
+      })
+      deps.batchLimits = { maxEvents: 5, maxBytes: 1024 * 1024 }
+      const c = createCollector(deps)
+      await c.flush(true)
+      // 首片（lt=1）成功 → 访问被服务端接收 → commit；后续片失败只进 retry
+      expect(deps.visit.commitVisitOnAck).toHaveBeenCalledTimes(1)
+      expect(deps.visit.rollbackPendingVisit).not.toHaveBeenCalled()
+      expect(deps.retry.persist).toHaveBeenCalled()
+    })
+
+    test('切片部分成功：含 lt=1 的首片失败 → rollback visit（P2-4）', async () => {
+      const channel: Channel = {
+        name: '2.0',
+        available: () => true,
+        send: jest.fn((p: ReportPayload) =>
+          // 首片含 lt=1 → 失败；其余成功
+          p.requests.indexOf('"lt":"1"') >= 0
+            ? Promise.reject(new Error('first chunk fail'))
+            : Promise.resolve()
+        ),
+      }
+      const deps = makeDeps({
+        selectChannel: jest.fn(() => channel) as MockedDeps['selectChannel'],
+      })
+      deps.queue.shouldFlush.mockReturnValue(true)
+      const lt21: StatData[] = []
+      for (let i = 0; i < 10; i++) lt21.push({ lt: '21', a: i } as StatData)
+      deps.queue.flush.mockReturnValue({
+        '1': [{ lt: '1' } as StatData],
+        '21': lt21,
+      })
+      deps.batchLimits = { maxEvents: 5, maxBytes: 1024 * 1024 }
+      const c = createCollector(deps)
+      await c.flush(true)
+      expect(deps.visit.commitVisitOnAck).not.toHaveBeenCalled()
+      expect(deps.visit.rollbackPendingVisit).toHaveBeenCalledTimes(1)
+    })
+
+    test('lt=21 自定义事件 → 刷新 session.touch（P1-2）', () => {
+      const deps = makeDeps()
+      const c = createCollector(deps)
+      c.report({ lt: '21', custom: { e_n: 'click' } })
+      expect(deps.session.touch).toHaveBeenCalledTimes(1)
+      expect(deps.session.touch).toHaveBeenCalledWith(1700000000)
+    })
+
+    test('非 lt=21 事件（lt=1/lt=3）→ 不调用 session.touch（P1-2）', () => {
+      const deps = makeDeps()
+      const c = createCollector(deps)
+      c.report({ lt: '1' })
+      c.report({ lt: '3' })
+      expect(deps.session.touch).not.toHaveBeenCalled()
+    })
+
+    test('destroy() → 取消延迟首 flush，幽灵定时器不再触发（P3-8）', () => {
+      jest.useFakeTimers()
+      try {
+        const deps = makeDeps({ firstFlushDeferMs: 2000 })
+        deps.queue.shouldFlush.mockReturnValue(true)
+        deps.queue.flush.mockReturnValue({ '1': [{ lt: '1' } as StatData] })
+        const c = createCollector(deps)
+        // 触发自动 flush（进入延迟分支，安排定时器）
+        c.report({ lt: '21', custom: { e_n: 'x' } })
+        c.destroy()
+        jest.advanceTimersByTime(5000)
+        // destroy 已取消延迟定时器 → flush 不会被触发，队列未被取出
+        expect(deps.queue.flush).not.toHaveBeenCalled()
+      } finally {
+        jest.useRealTimers()
+      }
     })
 
     test('多事件 → 触发切片，channel.send 被多次调用', async () => {

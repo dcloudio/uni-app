@@ -94,6 +94,19 @@ export const BATCH_REQUESTS_MAX_BYTES = 4 * 1024
 export const BATCH_MAX_EVENTS = 30
 
 /**
+ * 内存上报桶（主队列）允许容纳的事件总数上限。
+ *
+ * 设置原因：通道长期不可用时，失败批次会反复 `rollback` 回桶，且每次 `enqueue`/`rollback`
+ * 都会 `persistBucket` 落盘。若无上限，内存与 storage 会随离线时长无界增长，最终可能触发
+ * 小程序 storage 配额异常甚至 OOM。超过本上限时，`enqueue` 按 FIFO 丢弃**最旧**事件
+ * （优先从当前最大的桶丢，尽量保住体量小但关键的 lt=1/lt=3），并 warn。
+ *
+ * 取值 1000：以单条均值约 0.5–1KB 估算，约占 0.5–1MB，远低于各端 storage 配额；
+ * 正常在线（10s flush）场景永远触不到，仅在长时间离线积压时生效。
+ */
+export const QUEUE_MAX_EVENTS = 1000
+
+/**
  * 单条 retry 队列条目允许的最大重放次数。
  *
  * 设置原因：`recoverRetry` 每次冷启串行重放历史 payload，对永久错误（例如曾经误塞入

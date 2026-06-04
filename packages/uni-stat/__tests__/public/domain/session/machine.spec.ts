@@ -110,6 +110,18 @@ describe('domain/session/machine', () => {
       expect(r.cst).toBe(CST.BackgroundTimeout)
     })
 
+    test('时钟回拨：backgroundEnteredAt 在未来（now < enterTs）→ 不误判后台超时（P1-3）', () => {
+      configure({ backgroundTimeoutSec: 10 })
+      ensureSession('cold_launch', { now: T0 })
+      // now 比进入后台时刻还早（时钟回拨）→ elapsed 钳零 → 不超时
+      const r = ensureSession('app_show', {
+        now: T0 - 100,
+        backgroundEnteredAt: T0,
+      })
+      expect(r.isNew).toBe(false)
+      expect(r.cst).toBe(0)
+    })
+
     test('app_show wx scene 变化 → 新 session, cst=2', () => {
       ensureSession('cold_launch', { now: T0, scene: '1001' })
       markBackground(T0 + 5)
@@ -155,6 +167,14 @@ describe('domain/session/machine', () => {
       const r = ensureSession('page_show', { now: T0 + 1800 })
       expect(r.isNew).toBe(true)
       expect(r.cst).toBe(CST.PageInactiveTimeout)
+    })
+
+    test('时钟回拨（now < lastActive）→ elapsed 钳零，不误判无操作超时（P1-3）', () => {
+      ensureSession('cold_launch', { now: T0 })
+      // 设备时钟回拨 1 小时：now 远小于 lastActive
+      const r = ensureSession('page_show', { now: T0 - 3600 })
+      expect(r.isNew).toBe(false)
+      expect(r.cst).toBe(0)
     })
   })
 

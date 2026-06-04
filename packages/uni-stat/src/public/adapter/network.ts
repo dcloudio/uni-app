@@ -137,7 +137,8 @@ export function onChange(cb: (r: NetResult) => void): () => void {
     const net = res?.isConnected === false ? 'none' : normalizeNet(raw)
     tryRun(() => cb({ net, raw }), undefined)
   }
-  u.onNetworkStatusChange(wrapped)
+  // 注册本身也兜底：个别端 onNetworkStatusChange 同步抛错不应冒泡到调用方（与解绑对称）。
+  tryRun(() => u.onNetworkStatusChange!(wrapped), undefined)
   return () => {
     if (typeof u.offNetworkStatusChange === 'function') {
       tryRun(() => u.offNetworkStatusChange!(wrapped), undefined)
