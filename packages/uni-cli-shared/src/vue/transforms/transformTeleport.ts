@@ -1,3 +1,4 @@
+import { createBindDirectiveNode } from '../utils'
 import {
   isAttributeNode,
   isCompoundExpressionNode,
@@ -9,7 +10,6 @@ import {
   type CompoundExpressionNode,
   ElementTypes,
   type ExpressionNode,
-  NodeTypes,
   type RootNode,
   type TemplateChildNode,
   createSimpleExpression,
@@ -32,12 +32,15 @@ export const transformTeleport = function (node: RootNode | TemplateChildNode) {
   if (disabledProp) {
     // transform `disabled` prop to `enable` prop with inverse value
     if (isAttributeNode(disabledProp)) {
-      disabledProp.name = 'enable'
-      disabledProp.value = {
-        type: NodeTypes.TEXT,
-        content: '{{false}}',
-        loc: disabledProp.loc,
-      }
+      const disabledPropIndex = node.props.indexOf(disabledProp)
+      node.props.splice(
+        disabledPropIndex,
+        1,
+        createBindDirectiveNode(
+          'enable',
+          createSimpleExpression('false', false)
+        )
+      )
     } else if (isDirectiveNode(disabledProp)) {
       disabledProp.arg = createSimpleExpression('enable', true)
       disabledProp.exp = createEnableExpression(disabledProp.exp)
