@@ -3946,8 +3946,10 @@ function createHttpChannel(opts = {}) {
  *   `GET ${host}/WebTrack?ProjectId&TopicId&Logs&Source&Time&…`
  *   与文档 `curl GET 'http://${host}/WebTrack?ProjectId=…&TopicId=…&key=val'` 一致。
  *
- * **信标 GET**（仅 H5 `Image`、微信 `preloadAssets`）：
+ * **信标 GET**（H5 `fetch`/`Image`、微信 `preloadAssets`）：
  *   `GET ${host}/WebTrack.gif?…`（query 与 `/WebTrack` 相同，路径为 1×1 像素接口）。
+ *   H5 优先 `fetch(keepalive)` 读真实状态码；采集端返回 `200 application/json` 且带
+ *   `Access-Control-Allow-Origin: *`，故可跨域判定成败（旧 `<img>` 信标无法读状态，降级兜底）。
  *
  * **已废弃 POST**：`POST ${host}/WebTracks?ProjectId&TopicId` + JSON body。
  */
@@ -4010,7 +4012,17 @@ function summarizeHttpErrorBody(data, maxLen = 320) {
     }
 }
 /**
- * H5：`Image` 触发 `/WebTrack.gif`；`onload` / `onerror` 均 resolve，仅超时 reject。
+ * H5 最后兜底：`Image` 触发 `/WebTrack.gif`；`onload` / `onerror` 均 resolve，仅超时 reject。
+ *
+ * ## 为什么 onload/onerror 都判成功（且为何不再作为首选）
+ *
+ * 采集端 `/WebTrack.gif` 成功时返回 `200 application/json`（空体），**并非合法图片**，
+ * 浏览器无法把响应解码为图片 → 即便上报成功也会触发 `onerror`。因此 `<img>` 信标
+ * 物理上**无法区分**「成功（JSON 响应）」与「真实失败（DNS/网络/拦截/4xx/5xx）」，
+ * 只能一律 resolve，否则每次成功都会被误判失败并重试。
+ *
+ * 这是一个有损降级：仅在**既无 `fetch` 又无 `uni.request`** 的极旧 H5 环境才会走到。
+ * 正常环境优先 `fetchBeaconAwait`（读真实状态码），次选 `uni.request` GET（读 statusCode）。
  *
  * @param url 完整信标 URL
  * @param ms  超时毫秒
@@ -4044,6 +4056,67 @@ function imageBeaconAwait(url, ms) {
             resolve();
         };
         img.src = url;
+    });
+}
+/**
+ * H5 首选：`fetch` 触发 `/WebTrack.gif`，读取真实 HTTP 状态码判定成败。
+ *
+ * ## 为什么用 fetch 替代 `<img>` 信标
+ *
+ * 采集端 `/WebTrack.gif` 成功返回 `200 application/json`（空体），且响应头带
+ * `Access-Control-Allow-Origin: *`，因此 H5 可**跨域读取** `res.ok`：
+ *   - 2xx → 送达成功，resolve；
+ *   - 其余状态码 / 网络异常（DNS、断网、CSP/拦截、4xx/5xx）→ reject，交由
+ *     `withRetry` 重试，最终失败落盘 retry，**不再被静默 ACK**。
+ *
+ * `keepalive: true` 保证页面卸载（如 `lt=3` hide 期）请求仍能发出，等价于
+ * `<img>` 信标的「卸载存活」能力，因此可安全取代旧的 onerror=成功 兜底。
+ *
+ * `credentials: 'omit'`：仅需读状态码，无需携带 cookie；同时规避
+ * `Allow-Origin:*` 与 `include` 凭证模式在浏览器侧的冲突。
+ *
+ * @param url 完整信标 URL
+ * @param ms  超时毫秒
+ */
+function fetchBeaconAwait(url, ms) {
+    const g = getGlobalObject();
+    const fetchFn = g.fetch;
+    if (typeof fetchFn !== 'function') {
+        return Promise.reject(new Error('fetch unavailable'));
+    }
+    const controller = typeof g.AbortController === 'function' ? new g.AbortController() : undefined;
+    return new Promise((resolve, reject) => {
+        let settled = false;
+        const timer = setTimeout(() => {
+            if (settled)
+                return;
+            settled = true;
+            if (controller)
+                tryRun(() => controller.abort(), undefined);
+            reject(new Error('统计上报超时'));
+        }, ms);
+        fetchFn(url, {
+            method: 'GET',
+            keepalive: true,
+            credentials: 'omit',
+            signal: controller ? controller.signal : undefined,
+        }).then((res) => {
+            if (settled)
+                return;
+            settled = true;
+            clearTimeout(timer);
+            if (res && res.ok) {
+                resolve();
+                return;
+            }
+            reject(new Error('统计上报 HTTP ' + (res ? res.status : 0)));
+        }, (e) => {
+            if (settled)
+                return;
+            settled = true;
+            clearTimeout(timer);
+            reject(e instanceof Error ? e : new Error(String(e)));
+        });
     });
 }
 /**
@@ -4207,14 +4280,28 @@ function createImageChannel(opts = {}) {
         });
     }
     /**
-     * H5：默认 `/WebTrack.gif` 信标；否则 `uni.request` GET `/WebTrack`。
+     * H5 发送方式选择（均能判定真实成败，失败进 retry）：
+     *   1. 首选 `fetch` 信标 `/WebTrack.gif`：跨域读 `res.ok`，`keepalive` 保证卸载期送达；
+     *   2. 次选 `uni.request` GET `/WebTrack`：读 `statusCode`；
+     *   3. 末选 `Image` 信标 `/WebTrack.gif`：仅极旧环境（无 fetch、无 uni.request）兜底，
+     *      无法读状态，发出即视为送达（有损）。
+     *
+     * `preferImageBeacon: false` 时跳过信标，强制走 `uni.request` GET（测试/特殊场景）。
      */
     function onceH5(payload) {
-        const ImageCtor = getGlobalObject().Image;
-        if (preferBeacon && typeof ImageCtor === 'function') {
+        const g = getGlobalObject();
+        const u = getUni$4();
+        const hasRequest = !!(u && typeof u.request === 'function');
+        if (preferBeacon && typeof g.fetch === 'function') {
+            return fetchBeaconAwait(preflightUrl(payload, WEBTRACK_BEACON_PATH), timeoutMs);
+        }
+        if (hasRequest) {
+            return webTrackGetViaRequest(preflightUrl(payload, WEBTRACK_API_PATH));
+        }
+        if (preferBeacon && typeof g.Image === 'function') {
             return imageBeaconAwait(preflightUrl(payload, WEBTRACK_BEACON_PATH), timeoutMs);
         }
-        return webTrackGetViaRequest(preflightUrl(payload, WEBTRACK_API_PATH));
+        return Promise.reject(new PermanentChannelError('当前环境无法完成统计上报'));
     }
     /**
      * 微信：优先 `/WebTrack.gif` preload；否则 `uni.request` GET `/WebTrack`。

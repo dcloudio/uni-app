@@ -2,9 +2,12 @@
  * pipeline/channel/image 单测：
  *   IM1 buildImageReportUrl 严格按照火山 TLS WebTrack 协议拼接
  *   IM2 available() 仅检查 host/projectId/topicId 是否齐全
- *   IM3 H5 默认：有 `Image` 时走 onload，不调用 `uni.request`
- *   IM3.b H5 Image onerror：仍视为送达（resolve），不调用 `uni.request`（对齐 TLS JSON 响应）
- *   IM4 无 Image / `preferImageBeacon: false`：退回 `uni.request` GET，2xx 视为成功
+ *   IM3 H5 默认：`fetch` res.ok=2xx 视为成功，不调用 `uni.request`
+ *   IM3.b H5 `fetch` 非 2xx（如 500）→ reject 重试，失败不被静默 ACK（P1 修复核心）
+ *   IM3.b2 H5 `fetch` 网络异常（reject，如 DNS/断网/拦截）→ reject 重试
+ *   IM3.d H5 `fetch` 永不返回 → 超时 reject
+ *   IM3.e H5 兜底：无 `fetch` 且无 `uni.request`，仅 `Image` → onerror 仍 resolve（有损降级）
+ *   IM4 无 fetch / `preferImageBeacon: false`：退回 `uni.request` GET，2xx 视为成功
  *   IM5 uni.request 失败：经过 maxRetries 后 reject
  *   IM6 URL 长度超出 maxUrlLength：PermanentChannelError，不进 withRetry
  *   IM7 host 末尾多余 `/` 会被去除，避免拼出 `https://x//WebTrack.gif`
@@ -39,20 +42,36 @@ const PID = 'pid-x'
 const TID = 'tid-y'
 const noSleep = (): Promise<void> => Promise.resolve()
 
+/** `fetch` 成功响应替身。 */
+function fakeFetchOk(status = 200): jest.Mock {
+  return jest.fn(() =>
+    Promise.resolve({ ok: status >= 200 && status < 300, status })
+  )
+}
+
 describe('pipeline/channel/image', () => {
   let handle: MockUniHandle
+  let savedFetch: unknown
 
   beforeEach(() => {
     handle = installMockUni({
       platform: 'mp-weixin',
       patch: { request: () => undefined },
     })
+    // Node 18+ 自带全局 fetch；删除以保证默认路径确定，由各用例按需注入。
+    savedFetch = (globalThis as { fetch?: unknown }).fetch
+    delete (globalThis as { fetch?: unknown }).fetch
   })
 
   afterEach(() => {
     restoreMockUni()
     delete (globalThis as { Image?: unknown }).Image
     delete (globalThis as { wx?: unknown }).wx
+    if (savedFetch === undefined) {
+      delete (globalThis as { fetch?: unknown }).fetch
+    } else {
+      ;(globalThis as { fetch?: unknown }).fetch = savedFetch
+    }
   })
 
   test('IM1 buildImageReportUrl 信标路径为 /WebTrack.gif', () => {
@@ -111,22 +130,11 @@ describe('pipeline/channel/image', () => {
     ).toBe(false)
   })
 
-  test('IM3 H5：默认 Image onload 成功，不调用 uni.request', async () => {
+  test('IM3 H5：默认 fetch res.ok=200 成功，命中信标路径，不调用 uni.request', async () => {
     const requestSpy = jest.fn()
     handle.uni.request = requestSpy
-
-    /** 模拟浏览器 Image：设置 src 后异步触发 onload。 */
-    class FakeImage {
-      naturalWidth = 1
-      naturalHeight = 1
-      onload: (() => void) | null = null
-      onerror: (() => void) | null = null
-      set src(_u: string) {
-        queueMicrotask(() => this.onload?.())
-      }
-    }
-    ;(globalThis as unknown as { Image: new () => unknown }).Image =
-      FakeImage as unknown as new () => unknown
+    const fetchSpy = fakeFetchOk(200)
+    ;(globalThis as { fetch?: unknown }).fetch = fetchSpy
 
     const ch = createImageChannel({
       host: HOST,
@@ -137,17 +145,80 @@ describe('pipeline/channel/image', () => {
       nowMs: () => 1700000001000,
     })
     await ch.send(PAYLOAD)
+    expect(fetchSpy).toHaveBeenCalledTimes(1)
+    const url = fetchSpy.mock.calls[0][0] as string
+    expect(url).toContain('/WebTrack.gif?')
+    const init = fetchSpy.mock.calls[0][1] as {
+      method: string
+      keepalive: boolean
+    }
+    expect(init.method).toBe('GET')
+    expect(init.keepalive).toBe(true)
     expect(requestSpy).not.toHaveBeenCalled()
   })
 
-  test('IM3.b H5：Image onerror 仍判成功（模拟 TLS 返回 JSON 触发 onerror），不调 uni.request', async () => {
+  test('IM3.b H5：fetch 非 2xx（500）→ reject 重试，失败不被静默 ACK', async () => {
     const requestSpy = jest.fn()
     handle.uni.request = requestSpy
+    const fetchSpy = fakeFetchOk(500)
+    ;(globalThis as { fetch?: unknown }).fetch = fetchSpy
 
-    /** 模拟浏览器对非图片响应走 onerror（与 Network 里 HTTP 200 可并存）。 */
+    const ch = createImageChannel({
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      ut: 'h5',
+      sleep: noSleep,
+      maxRetries: 3,
+    })
+    await expect(ch.send(PAYLOAD)).rejects.toThrow(/统计上报 HTTP 500/)
+    expect(fetchSpy).toHaveBeenCalledTimes(3)
+    expect(requestSpy).not.toHaveBeenCalled()
+  })
+
+  test('IM3.b2 H5：fetch 网络异常（reject，模拟 DNS/断网/拦截）→ reject 重试', async () => {
+    const requestSpy = jest.fn()
+    handle.uni.request = requestSpy
+    const fetchSpy = jest.fn(() => Promise.reject(new Error('Failed to fetch')))
+    ;(globalThis as { fetch?: unknown }).fetch = fetchSpy
+
+    const ch = createImageChannel({
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      ut: 'h5',
+      sleep: noSleep,
+      maxRetries: 2,
+    })
+    await expect(ch.send(PAYLOAD)).rejects.toThrow(/Failed to fetch/)
+    expect(fetchSpy).toHaveBeenCalledTimes(2)
+    expect(requestSpy).not.toHaveBeenCalled()
+  })
+
+  test('IM3.d H5：fetch 永不返回 → 超时 reject', async () => {
+    const requestSpy = jest.fn()
+    handle.uni.request = requestSpy
+    const fetchSpy = jest.fn(() => new Promise(() => {}))
+    ;(globalThis as { fetch?: unknown }).fetch = fetchSpy
+
+    const ch = createImageChannel({
+      host: HOST,
+      projectId: PID,
+      topicId: TID,
+      ut: 'h5',
+      sleep: noSleep,
+      timeoutMs: 100,
+      maxRetries: 1,
+    })
+    await expect(ch.send(PAYLOAD)).rejects.toThrow(/统计上报超时/)
+    expect(requestSpy).not.toHaveBeenCalled()
+  })
+
+  test('IM3.e H5 兜底：无 fetch 且无 uni.request，仅 Image → onerror 仍 resolve（有损降级）', async () => {
+    handle.uni.request = undefined as unknown as typeof handle.uni.request
+
+    /** 模拟非图片响应触发 onerror：兜底场景下仍判送达。 */
     class FakeImageNonImageBody {
-      naturalWidth = 0
-      naturalHeight = 0
       onload: (() => void) | null = null
       onerror: (() => void) | null = null
       set src(_u: string) {
@@ -165,36 +236,7 @@ describe('pipeline/channel/image', () => {
       sleep: noSleep,
       maxRetries: 1,
     })
-    await ch.send(PAYLOAD)
-    expect(requestSpy).not.toHaveBeenCalled()
-  })
-
-  test('IM3.d H5：Image 既不 onload 也不 onerror → 超时 reject', async () => {
-    const requestSpy = jest.fn()
-    handle.uni.request = requestSpy
-
-    /** 模拟回调永不触发（仅用于超时路径）。 */
-    class FakeImageHang {
-      onload: (() => void) | null = null
-      onerror: (() => void) | null = null
-      set src(_u: string) {
-        /* intentionally empty */
-      }
-    }
-    ;(globalThis as unknown as { Image: new () => unknown }).Image =
-      FakeImageHang as unknown as new () => unknown
-
-    const ch = createImageChannel({
-      host: HOST,
-      projectId: PID,
-      topicId: TID,
-      ut: 'h5',
-      sleep: noSleep,
-      timeoutMs: 100,
-      maxRetries: 1,
-    })
-    await expect(ch.send(PAYLOAD)).rejects.toThrow(/统计上报超时/)
-    expect(requestSpy).not.toHaveBeenCalled()
+    await expect(ch.send(PAYLOAD)).resolves.toBeUndefined()
   })
 
   test('IM3.c H5：关闭 preferImageBeacon 时 uni.request GET 403 → 含 HTTP 码与摘要', async () => {

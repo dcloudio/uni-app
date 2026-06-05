@@ -54,4 +54,49 @@ describe('plugin/index', () => {
     })
     expect(shouldAutoImportStatRuntime('/project')).toBe(false)
   })
+
+  test('根 enable=false、平台 enable=true：分平台覆盖后自动 import（mp-weixin）', () => {
+    process.env.UNI_APP_X = 'false'
+    mockedParseManifestJsonOnce.mockReturnValue({
+      uniStatistics: { enable: false },
+      'mp-weixin': { uniStatistics: { enable: true } },
+    })
+    expect(shouldAutoImportStatRuntime('/project', 'mp-weixin')).toBe(true)
+  })
+
+  test('根 enable=true、平台 enable=false：分平台覆盖后不自动 import（mp-weixin）', () => {
+    process.env.UNI_APP_X = 'false'
+    mockedParseManifestJsonOnce.mockReturnValue({
+      uniStatistics: { enable: true },
+      'mp-weixin': { uniStatistics: { enable: false } },
+    })
+    expect(shouldAutoImportStatRuntime('/project', 'mp-weixin')).toBe(false)
+  })
+
+  test('h5 平台节点取 web/h5：根 enable=true、web enable=false 时不自动 import', () => {
+    process.env.UNI_APP_X = 'false'
+    mockedParseManifestJsonOnce.mockReturnValue({
+      uniStatistics: { enable: true },
+      web: { uniStatistics: { enable: false } },
+    })
+    expect(shouldAutoImportStatRuntime('/project', 'h5')).toBe(false)
+  })
+
+  test('app 平台节点取 app-plus：根 enable=false、app-plus enable=true 时自动 import', () => {
+    process.env.UNI_APP_X = 'false'
+    mockedParseManifestJsonOnce.mockReturnValue({
+      uniStatistics: { enable: false },
+      'app-plus': { uniStatistics: { enable: true } },
+    })
+    expect(shouldAutoImportStatRuntime('/project', 'app')).toBe(true)
+  })
+
+  test('平台节点未配置 enable 时回退根节点', () => {
+    process.env.UNI_APP_X = 'false'
+    mockedParseManifestJsonOnce.mockReturnValue({
+      uniStatistics: { enable: false },
+      'mp-weixin': { uniStatistics: { debug: true } },
+    })
+    expect(shouldAutoImportStatRuntime('/project', 'mp-weixin')).toBe(false)
+  })
 })

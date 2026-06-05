@@ -19,16 +19,64 @@ function once(fn, ctx = null) {
 }
 
 /**
- * 根据 manifest 根节点 `uniStatistics` 判定统计是否开启。
- * 逻辑内聚在 uni-stat 插件内，避免依赖 HBuilderX 内置旧版 uni-cli-shared 的新导出。
+ * 解析当前平台对应的 manifest 平台节点。
+ *
+ * 与 `uni-cli-shared#getPlatformManifestJson` 行为保持一致：app → app-plus/plus，
+ * h5 → web/h5，uni-app x 的 app-android/app-ios/app 走各自分支，其余平台取同名节点。
+ *
+ * 逻辑内聚在 uni-stat 插件内（仅依赖 `parseManifestJsonOnce`），避免依赖
+ * HBuilderX 内置旧版 uni-cli-shared 可能缺失的新导出（如 `getUniStatistics`）。
+ *
+ * @param manifest 已解析的 manifest.json 对象
+ * @param platform 目标平台；缺省读 `process.env.UNI_PLATFORM`
  */
-function isUniStatisticsEnabled(inputDir) {
+function getPlatformManifest(manifest, platform) {
+    const isX = process.env.UNI_APP_X === 'true';
+    if (!platform) {
+        platform = process.env.UNI_PLATFORM;
+    }
+    if (isX) {
+        if (platform === 'app-android' || platform === 'app-ios') {
+            return (manifest === null || manifest === void 0 ? void 0 : manifest[platform]) || (manifest === null || manifest === void 0 ? void 0 : manifest['app']) || {};
+        }
+        else if (platform === 'app') {
+            return ((manifest === null || manifest === void 0 ? void 0 : manifest[process.env.UNI_UTS_PLATFORM]) || (manifest === null || manifest === void 0 ? void 0 : manifest['app']) || {});
+        }
+    }
+    if (platform === 'app') {
+        return (manifest === null || manifest === void 0 ? void 0 : manifest['app-plus']) || (manifest === null || manifest === void 0 ? void 0 : manifest['plus']) || {};
+    }
+    if (platform === 'h5') {
+        return (manifest === null || manifest === void 0 ? void 0 : manifest.web) || (manifest === null || manifest === void 0 ? void 0 : manifest.h5) || {};
+    }
+    return (platform && (manifest === null || manifest === void 0 ? void 0 : manifest[platform])) || {};
+}
+/**
+ * 根据 manifest 判定统计是否开启，遵循「分平台节点优先覆盖全局根节点」的文档语义。
+ *
+ * 判定优先级（与 `getUniStatistics` 的 `extend(root, platform)` 合并口径一致）：
+ *   1. 平台节点 `uniStatistics.enable` 显式存在 → 以平台为准；
+ *   2. 否则回退根节点 `uniStatistics.enable`；
+ *   3. 两者均未配置 → 默认开启。
+ *
+ * 这样既支持「根 enable=false、某平台 enable=true」开启注入，也支持
+ * 「根 enable=true、某平台 enable=false」关闭该平台，避免破坏用户的关闭配置。
+ *
+ * @param inputDir 工程输入目录
+ * @param platform 目标平台；缺省读 `process.env.UNI_PLATFORM`
+ */
+function isUniStatisticsEnabled(inputDir, platform) {
+    var _a;
     const manifest = uniCliShared.parseManifestJsonOnce(inputDir);
     const root = manifest === null || manifest === void 0 ? void 0 : manifest.uniStatistics;
-    if (!root) {
-        return true;
+    const platformStat = (_a = getPlatformManifest(manifest, platform)) === null || _a === void 0 ? void 0 : _a.uniStatistics;
+    if (platformStat && platformStat.enable !== undefined) {
+        return platformStat.enable !== false;
     }
-    return root.enable !== false;
+    if (root && root.enable !== undefined) {
+        return root.enable !== false;
+    }
+    return true;
 }
 /**
  * 当前是否为 uni-app x 编译目标。
@@ -40,12 +88,15 @@ function isUniAppXCompile() {
 /**
  * 是否应向 main 入口自动 import 统计运行时。
  * uni-app x 一律跳过自动 import；define 配置注入仍保留，供后续适配或业务手动 import。
+ *
+ * @param inputDir 工程输入目录
+ * @param platform 目标平台；缺省读 `process.env.UNI_PLATFORM`。传入以支持分平台 enable 覆盖。
  */
-function shouldAutoImportStatRuntime(inputDir) {
+function shouldAutoImportStatRuntime(inputDir, platform) {
     if (isUniAppXCompile()) {
         return false;
     }
-    return isUniStatisticsEnabled(inputDir);
+    return isUniStatisticsEnabled(inputDir, platform);
 }
 
 /**
@@ -76,14 +127,14 @@ const STAT_MP_DOMAIN_DOC_URL = 'https://uniapp.dcloud.net.cn/uni-stat-v2.html';
  */
 function formatStatEnabledTip(statType) {
     return statType === 'private'
-        ? '已开启uni 统计 2.0（私有版）'
-        : '已开启uni 统计 2.0';
+        ? '已开启 uni统计 2.0（私有版）'
+        : '已开启 uni统计 2.0';
 }
 /**
  * 构建期小程序 request 合法域名提示（单条合并「已开启」与域名说明）。
  */
 function formatMpStatDomainTip() {
-    return `已开启uni 统计 2.0，为保障数据正常上报，请在小程序后台配置 request 合法域名：${STAT_MP_REQUEST_DOMAIN}。详情：${STAT_MP_DOMAIN_DOC_URL}`;
+    return `已开启 uni统计 2.0，为保障数据正常上报，请在小程序后台配置 request 合法域名：${STAT_MP_REQUEST_DOMAIN}。详情：${STAT_MP_DOMAIN_DOC_URL}`;
 }
 /**
  * 是否需要在构建期提示配置小程序 request 合法域名。
@@ -158,9 +209,10 @@ var index = () => [
                     // 运行时仍须能读到 backgroundTimeout / reportInterval 等字段。
                     process.env.UNI_STATISTICS_CONFIG = JSON.stringify(statConfig);
                     process.env.UNI_STAT_DEBUG = statConfig.debug ? 'true' : 'false';
-                    // 仅 manifest 根节点 `enable === false` 关闭统计；无节点或未配置 enable 默认开启。
+                    // 分平台 `uniStatistics.enable` 优先覆盖根节点：平台显式 enable 时以平台为准，
+                    // 否则回退根节点，均未配置默认开启（与运行时配置注入的平台合并口径一致）。
                     // uni-app x 不支持自动 import（见 shouldAutoImportStatRuntime），但仍注入 define 配置。
-                    isEnable = shouldAutoImportStatRuntime(inputDir);
+                    isEnable = shouldAutoImportStatRuntime(inputDir, platform);
                     statType = resolveUniStatisticsType(statConfig);
                     if (isEnable) {
                         const uniCloudConfig = statConfig.uniCloud || {};

@@ -50,15 +50,15 @@ const STAT_MP_DOMAIN_DOC_URL = 'https://uniapp.dcloud.net.cn/uni-stat-v2.html'
  */
 function formatStatEnabledTip(statType: StatType): string {
   return statType === 'private'
-    ? '已开启uni 统计 2.0（私有版）'
-    : '已开启uni 统计 2.0'
+    ? '已开启 uni统计 2.0（私有版）'
+    : '已开启 uni统计 2.0'
 }
 
 /**
  * 构建期小程序 request 合法域名提示（单条合并「已开启」与域名说明）。
  */
 function formatMpStatDomainTip(): string {
-  return `已开启uni 统计 2.0，为保障数据正常上报，请在小程序后台配置 request 合法域名：${STAT_MP_REQUEST_DOMAIN}。详情：${STAT_MP_DOMAIN_DOC_URL}`
+  return `已开启 uni统计 2.0，为保障数据正常上报，请在小程序后台配置 request 合法域名：${STAT_MP_REQUEST_DOMAIN}。详情：${STAT_MP_DOMAIN_DOC_URL}`
 }
 
 /**
@@ -140,9 +140,10 @@ export default () => [
           // 运行时仍须能读到 backgroundTimeout / reportInterval 等字段。
           process.env.UNI_STATISTICS_CONFIG = JSON.stringify(statConfig)
           process.env.UNI_STAT_DEBUG = statConfig.debug ? 'true' : 'false'
-          // 仅 manifest 根节点 `enable === false` 关闭统计；无节点或未配置 enable 默认开启。
+          // 分平台 `uniStatistics.enable` 优先覆盖根节点：平台显式 enable 时以平台为准，
+          // 否则回退根节点，均未配置默认开启（与运行时配置注入的平台合并口径一致）。
           // uni-app x 不支持自动 import（见 shouldAutoImportStatRuntime），但仍注入 define 配置。
-          isEnable = shouldAutoImportStatRuntime(inputDir)
+          isEnable = shouldAutoImportStatRuntime(inputDir, platform)
           statType = resolveUniStatisticsType(statConfig)
 
           if (isEnable) {
