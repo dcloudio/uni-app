@@ -99,4 +99,28 @@ describe('plugin/index', () => {
     })
     expect(shouldAutoImportStatRuntime('/project', 'mp-weixin')).toBe(false)
   })
+
+  test('根无 uniStatistics、子 enable=true：以子为准自动 import', () => {
+    process.env.UNI_APP_X = 'false'
+    mockedParseManifestJsonOnce.mockReturnValue({
+      'mp-weixin': { uniStatistics: { enable: true } },
+    })
+    expect(shouldAutoImportStatRuntime('/project', 'mp-weixin')).toBe(true)
+  })
+
+  test('根无 uniStatistics、子 enable=false：以子为准不自动 import', () => {
+    process.env.UNI_APP_X = 'false'
+    mockedParseManifestJsonOnce.mockReturnValue({
+      'mp-weixin': { uniStatistics: { enable: false } },
+    })
+    expect(shouldAutoImportStatRuntime('/project', 'mp-weixin')).toBe(false)
+  })
+
+  test('根无 uniStatistics、子仅有 debug 等非 enable 字段：默认自动 import', () => {
+    process.env.UNI_APP_X = 'false'
+    mockedParseManifestJsonOnce.mockReturnValue({
+      'mp-weixin': { uniStatistics: { debug: true } },
+    })
+    expect(shouldAutoImportStatRuntime('/project', 'mp-weixin')).toBe(true)
+  })
 })

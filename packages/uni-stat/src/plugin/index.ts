@@ -140,8 +140,8 @@ export default () => [
           // 运行时仍须能读到 backgroundTimeout / reportInterval 等字段。
           process.env.UNI_STATISTICS_CONFIG = JSON.stringify(statConfig)
           process.env.UNI_STAT_DEBUG = statConfig.debug ? 'true' : 'false'
-          // 分平台 `uniStatistics.enable` 优先覆盖根节点：平台显式 enable 时以平台为准，
-          // 否则回退根节点，均未配置默认开启（与运行时配置注入的平台合并口径一致）。
+          // enable 开关：仅以子/根 `enable` 是否显式存在为准（子优先 → 继承根 → 默认开启），
+          // 详见 `runtimeEnable.ts#isUniStatisticsEnabled` 用例矩阵。
           // uni-app x 不支持自动 import（见 shouldAutoImportStatRuntime），但仍注入 define 配置。
           isEnable = shouldAutoImportStatRuntime(inputDir, platform)
           statType = resolveUniStatisticsType(statConfig)

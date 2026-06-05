@@ -52,15 +52,36 @@ function getPlatformManifest(manifest, platform) {
     return (platform && (manifest === null || manifest === void 0 ? void 0 : manifest[platform])) || {};
 }
 /**
- * 根据 manifest 判定统计是否开启，遵循「分平台节点优先覆盖全局根节点」的文档语义。
+ * 根据 manifest 判定是否自动开启统计（是否向 main 注入统计运行时）。
  *
- * 判定优先级（与 `getUniStatistics` 的 `extend(root, platform)` 合并口径一致）：
- *   1. 平台节点 `uniStatistics.enable` 显式存在 → 以平台为准；
- *   2. 否则回退根节点 `uniStatistics.enable`；
- *   3. 两者均未配置 → 默认开启。
+ * ## 范围
  *
- * 这样既支持「根 enable=false、某平台 enable=true」开启注入，也支持
- * 「根 enable=true、某平台 enable=false」关闭该平台，避免破坏用户的关闭配置。
+ * 仅控制 `shouldAutoImportStatRuntime`；**不**影响 `plugin/index.ts` 对
+ * `UNI_STATISTICS_CONFIG` 等 define 的注入（配置合并仍走 `getUniStatistics`）。
+ *
+ * ## enable 判定规则（仅以 `enable` 是否显式存在作为覆盖条件）
+ *
+ * 子平台存在 `uniStatistics` 但只配置了 `debug` / `reportInterval` 等、未写 `enable` 时，
+ * **不视为**子节点覆盖，仍继承根节点 `enable`。
+ *
+ * 判定顺序：
+ *   1. 子平台 `uniStatistics.enable` 已显式配置（`true` / `false`）→ 以子为准；
+ *   2. 否则，根 `uniStatistics.enable` 已显式配置 → 继承根；
+ *   3. 否则（根/子均无 `enable`，或均无 `uniStatistics` 节点）→ **默认开启**。
+ *
+ * ## 用例矩阵
+ *
+ * | 根 enable | 子 uniStatistics | 子 enable | 结果   |
+ * |-----------|------------------|-----------|--------|
+ * | false     | 有               | true      | 开启   |
+ * | true      | 有               | false     | 关闭   |
+ * | true      | 无               | —         | 开启   |
+ * | false     | 无               | —         | 关闭   |
+ * | false     | 有（仅 debug 等）| 未配置    | 关闭   |
+ * | 无节点    | 有               | true      | 开启   |
+ * | 无节点    | 有               | false     | 关闭   |
+ * | 无节点    | 无               | —         | 开启   |
+ * | 无节点    | 有（仅非 enable）| 未配置    | 开启   |
  *
  * @param inputDir 工程输入目录
  * @param platform 目标平台；缺省读 `process.env.UNI_PLATFORM`
@@ -209,8 +230,8 @@ var index = () => [
                     // 运行时仍须能读到 backgroundTimeout / reportInterval 等字段。
                     process.env.UNI_STATISTICS_CONFIG = JSON.stringify(statConfig);
                     process.env.UNI_STAT_DEBUG = statConfig.debug ? 'true' : 'false';
-                    // 分平台 `uniStatistics.enable` 优先覆盖根节点：平台显式 enable 时以平台为准，
-                    // 否则回退根节点，均未配置默认开启（与运行时配置注入的平台合并口径一致）。
+                    // enable 开关：仅以子/根 `enable` 是否显式存在为准（子优先 → 继承根 → 默认开启），
+                    // 详见 `runtimeEnable.ts#isUniStatisticsEnabled` 用例矩阵。
                     // uni-app x 不支持自动 import（见 shouldAutoImportStatRuntime），但仍注入 define 配置。
                     isEnable = shouldAutoImportStatRuntime(inputDir, platform);
                     statType = resolveUniStatisticsType(statConfig);
