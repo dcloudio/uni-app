@@ -69,7 +69,7 @@ function getUni(): {
         })
       : undefined
   if (!u || typeof u.getStorageSync !== 'function') {
-    throw new Error('[uni统计公有版] uni storage API is not available')
+    throw new Error('[uni统计 2.0] uni storage API is not available')
   }
   return u
 }

@@ -155,7 +155,7 @@ function readManifestStatConfig(): Partial<StatAppConfig> | undefined {
 
     return Object.keys(cfg).length > 0 ? cfg : undefined
   } catch (e) {
-    logger.warn('[uni-stat] readManifestStatConfig failed', e)
+    logger.warn('[uni统计 2.0] readManifestStatConfig failed', e)
     return undefined
   }
 }
@@ -378,7 +378,7 @@ function scheduleUniAppHookRetry(tryBind: () => boolean): void {
     if (tryBind()) return
     if (++attempts >= UNI_HOOK_RETRY_MAX) {
       logger.warn(
-        '[uni-stat] Vue3 小程序：uni.onAppShow 暂不可用，应用前后台统计可能缺失'
+        '[uni统计 2.0] Vue3 小程序：uni.onAppShow 暂不可用，应用前后台统计可能缺失'
       )
       return
     }
@@ -461,7 +461,7 @@ function scheduleVueAppMixinRetry(mixin: Record<string, unknown>): void {
     if (++attempts >= UNI_HOOK_RETRY_MAX) {
       if (!vueMixinMounted) {
         logger.warn(
-          '[uni-stat] Vue3: onCreateVueApp 在重试后仍不可用，页面级 mixin 未注入'
+          '[uni统计 2.0] Vue3: onCreateVueApp 在重试后仍不可用，页面级 mixin 未注入'
         )
       }
       return
@@ -488,7 +488,7 @@ function mountVue2GlobalMixin(mixin: Record<string, unknown>): boolean {
     tryRun(() => target.mixin!(mixin), undefined)
     return true
   }
-  logger.warn('[uni-stat] Vue2: vue.mixin 不可用，请检查是否已安装 vue 依赖')
+  logger.warn('[uni统计 2.0] Vue2: vue.mixin 不可用，请检查是否已安装 vue 依赖')
   return false
 }
 

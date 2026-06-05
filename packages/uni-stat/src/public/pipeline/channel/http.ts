@@ -149,7 +149,7 @@ export function createHttpChannel(opts: HttpChannelOptions = {}): Channel {
           sleep: opts.sleep,
         })
       } catch (e) {
-        logger.warn('[uni-stat] 统计上报失败（HTTP 已重试）', e)
+        logger.warn('[uni统计 2.0] 统计上报失败（HTTP 已重试）', e)
         throw e
       }
     },

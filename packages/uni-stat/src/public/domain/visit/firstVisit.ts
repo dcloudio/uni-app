@@ -156,7 +156,7 @@ export function loadVisitSnapshot(): VisitSnapshot {
       fvts === 0 && lvts === 0 && tvc === 0 && snapshot.isNewUser
     if (!likelyFresh) {
       logger.warn(
-        '[uni-stat] visit snapshot degraded; some storage keys read failed'
+        '[uni统计 2.0] visit snapshot degraded; some storage keys read failed'
       )
     }
   }
@@ -225,7 +225,7 @@ export function buildVisitFields(now: number): {
   const snap = ensureLoaded()
   if (buildCalledInProcess && lastBuilt) {
     logger.warn(
-      '[uni-stat] buildVisitFields() called twice in same process; returning cached fields'
+      '[uni统计 2.0] buildVisitFields() called twice in same process; returning cached fields'
     )
     return Object.assign({}, lastBuilt)
   }
@@ -238,7 +238,7 @@ export function buildVisitFields(now: number): {
     // degraded 且非全新设备：lvts 读失败被误当 0。按老用户兜底，**不**上报 lvts=0、
     // **不**落库基线（storage 不可靠），避免新增虚高与覆盖真实持久值。
     logger.warn(
-      '[uni-stat] visit degraded: lvts 读取失败但检测到历史数据，按老用户处理以避免新增虚高'
+      '[uni统计 2.0] visit degraded: lvts 读取失败但检测到历史数据，按老用户处理以避免新增虚高'
     )
     const fvts = snap.fvts > 0 ? snap.fvts : now
     pending = { fvts, lvts: fvts, tvc: snap.tvc + 1, now }

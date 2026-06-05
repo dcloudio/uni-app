@@ -148,8 +148,7 @@ function getUni(): UniInterceptorAPI {
     raw != null && typeof raw === 'object'
       ? (raw as UniInterceptorAPI)
       : undefined
-  if (!u)
-    throw new Error('[uni统计公有版] uni interceptor API is not available')
+  if (!u) throw new Error('[uni统计 2.0] uni interceptor API is not available')
   return u
 }
 

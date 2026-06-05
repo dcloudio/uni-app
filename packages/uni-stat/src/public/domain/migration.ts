@@ -101,7 +101,7 @@ export function migrateLegacyData(): boolean {
 
   storage.set(KEY_DONE, 1)
   if (migrated > 0) {
-    logger.info('[uni-stat] migrated legacy keys', migrated)
+    logger.info('[uni统计 2.0] migrated legacy keys', migrated)
   }
   return migrated > 0
 }

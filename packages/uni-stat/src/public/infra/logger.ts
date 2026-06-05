@@ -20,7 +20,7 @@
 import { safeStringify } from './safe'
 import { getGlobalObject } from './uniRuntime'
 
-const TAG = '[uni统计公有版]'
+const TAG = '[uni统计 2.0]'
 
 let runtimeDebug: boolean | undefined
 

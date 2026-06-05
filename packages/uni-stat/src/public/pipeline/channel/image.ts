@@ -540,7 +540,7 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
       )
     }
     logger.warn(
-      '[uni-stat] wx.preloadAssets 不可用，回退 uni.request GET /WebTrack'
+      '[uni统计 2.0] wx.preloadAssets 不可用，回退 uni.request GET /WebTrack'
     )
     return webTrackGetViaRequest(preflightUrl(payload, WEBTRACK_API_PATH))
   }
@@ -573,9 +573,9 @@ export function createImageChannel(opts: ImageChannelOptions = {}): Channel {
         })
       } catch (e) {
         if (isPermanentChannelError(e)) {
-          logger.warn('[uni-stat] 统计上报失败（不可重试）', e)
+          logger.warn('[uni统计 2.0] 统计上报失败（不可重试）', e)
         } else {
-          logger.warn('[uni-stat] 统计上报失败（已重试）', e)
+          logger.warn('[uni统计 2.0] 统计上报失败（已重试）', e)
         }
         throw e
       }

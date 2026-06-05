@@ -122,7 +122,7 @@ export function persist(payload: ReportPayload): string | undefined {
   items.push(item)
   while (items.length > config.maxItems) {
     const dropped = items.shift()
-    logger.warn('[uni-stat] retry queue overflow, drop oldest', dropped?.id)
+    logger.warn('[uni统计 2.0] retry queue overflow, drop oldest', dropped?.id)
   }
   writeQueue(items)
   return id
@@ -140,7 +140,7 @@ export function loadAll(): ReportPayload[] {
   const alive: RetryItem[] = []
   for (const it of items) {
     if (it.createdAt < cutoff) {
-      logger.warn('[uni-stat] retry item expired, drop', it.id)
+      logger.warn('[uni统计 2.0] retry item expired, drop', it.id)
       continue
     }
     alive.push(it)
@@ -178,7 +178,7 @@ export function markAttempt(id: string): void {
     it.attempts++
     if (it.attempts >= config.maxAttempts) {
       logger.warn(
-        '[uni-stat] retry item exceeded maxAttempts, drop as dead letter',
+        '[uni统计 2.0] retry item exceeded maxAttempts, drop as dead letter',
         id,
         'attempts=' + it.attempts
       )

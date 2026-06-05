@@ -53,14 +53,16 @@ export function selectChannel(opts: SelectChannelOptions): Channel | undefined {
   if (version === '2') {
     if (opts.cloud && opts.cloud.available()) return opts.cloud
     if (!fallback) {
-      logger.warn('[uni-stat] 云函数上报不可用且已关闭 HTTP 兜底，本批已丢弃')
+      logger.warn(
+        '[uni统计 2.0] 云函数上报不可用且已关闭 HTTP 兜底，本批已丢弃'
+      )
       return undefined
     }
     if (opts.http && opts.http.available()) {
-      logger.warn('[uni-stat] 云函数上报不可用，已降级为 HTTP 上报')
+      logger.warn('[uni统计 2.0] 云函数上报不可用，已降级为 HTTP 上报')
       return opts.http
     }
-    logger.warn('[uni-stat] 无可用上报线路')
+    logger.warn('[uni统计 2.0] 无可用上报线路')
     return undefined
   }
 
@@ -69,17 +71,19 @@ export function selectChannel(opts: SelectChannelOptions): Channel | undefined {
   if (!fallback) {
     if (opts.image) {
       // 仅在 image 已构造但失效时给出警告，便于排查；未构造视为正常的"未启用"
-      logger.warn('[uni-stat] 统计上报线路不可用且已关闭 HTTP 兜底，本批已丢弃')
+      logger.warn(
+        '[uni统计 2.0] 统计上报线路不可用且已关闭 HTTP 兜底，本批已丢弃'
+      )
     }
     return undefined
   }
   if (opts.http && opts.http.available()) {
     if (opts.image) {
       // 同上，仅在 image 已构造但失效时打印降级日志
-      logger.warn('[uni-stat] 统计上报线路不可用，已降级为 HTTP 上报')
+      logger.warn('[uni统计 2.0] 统计上报线路不可用，已降级为 HTTP 上报')
     }
     return opts.http
   }
-  logger.warn('[uni-stat] 无可用上报线路')
+  logger.warn('[uni统计 2.0] 无可用上报线路')
   return undefined
 }

@@ -92,7 +92,7 @@ export function createCloudChannel(opts: CloudChannelOptions = {}): Channel {
     try {
       return space.importObject(receiverName, { customUI: true })
     } catch (e) {
-      logger.warn('[uni-stat] cloud importObject threw', e)
+      logger.warn('[uni统计 2.0] cloud importObject threw', e)
       return undefined
     }
   }
@@ -124,7 +124,7 @@ export function createCloudChannel(opts: CloudChannelOptions = {}): Channel {
           sleep: opts.sleep,
         })
       } catch (e) {
-        logger.warn('[uni-stat] 统计上报失败（云函数已重试）', e)
+        logger.warn('[uni统计 2.0] 统计上报失败（云函数已重试）', e)
         throw e
       }
     },

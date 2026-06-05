@@ -118,7 +118,7 @@ function enforceCapacity(): void {
   if (!capacityWarned) {
     capacityWarned = true
     logger.warn(
-      '[uni-stat] 上报队列超过容量上限，已丢弃最旧事件',
+      '[uni统计 2.0] 上报队列超过容量上限，已丢弃最旧事件',
       'dropped=' + dropped,
       'limit=' + maxEvents
     )
@@ -136,7 +136,7 @@ function persistBucket(): void {
   try {
     storage.set(STORAGE_KEY, state.bucket)
   } catch (e) {
-    logger.warn('[uni-stat] queue persist failed', e)
+    logger.warn('[uni统计 2.0] queue persist failed', e)
   }
 }
 
@@ -173,19 +173,19 @@ export function enqueue(data: StatData): void {
   if (!data || typeof data !== 'object') return
   const lt = String(data.lt ?? '')
   if (!lt) {
-    logger.warn('[uni-stat] enqueue dropped: missing lt', data)
+    logger.warn('[uni统计 2.0] enqueue dropped: missing lt', data)
     return
   }
   let serialized = ''
   try {
     serialized = JSON.stringify(data)
   } catch (e) {
-    logger.warn('[uni-stat] enqueue dropped: stringify failed', e)
+    logger.warn('[uni统计 2.0] enqueue dropped: stringify failed', e)
     return
   }
   if (serialized.length > singleEventMaxBytes) {
     logger.warn(
-      '[uni-stat] enqueue dropped: single event too large',
+      '[uni统计 2.0] enqueue dropped: single event too large',
       'lt=' + lt,
       'bytes=' + serialized.length,
       'limit=' + singleEventMaxBytes

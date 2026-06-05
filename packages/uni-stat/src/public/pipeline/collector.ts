@@ -149,7 +149,7 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
         deferredFlushTimer = null
         firstFlushDone = true
         void flushImpl(false).catch((e) =>
-          logger.warn('[uni-stat] auto-flush failed', e)
+          logger.warn('[uni统计 2.0] auto-flush failed', e)
         )
       }, deferMs)
       return
@@ -157,7 +157,7 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
 
     firstFlushDone = true
     void flushImpl(false).catch((e) =>
-      logger.warn('[uni-stat] auto-flush failed', e)
+      logger.warn('[uni统计 2.0] auto-flush failed', e)
     )
   }
 
@@ -217,7 +217,7 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
 
     const channel = deps.selectChannel()
     if (!channel) {
-      logger.warn('[uni-stat] 无可用上报线路，本批已回滚队列')
+      logger.warn('[uni统计 2.0] 无可用上报线路，本批已回滚队列')
       logNoChannel({ bucket: snapshot })
       deps.queue.rollback(snapshot)
       return
@@ -242,7 +242,7 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
     if (chunks.length === 0) {
       // 快照已被 flush() 从队列摘除，但切片结果为空（极端：桶内全是空数组 key，
       // 或所有事件 JSON.stringify 失败）。若直接 return 会**静默丢数**，故回滚回队列等待下次。
-      logger.warn('[uni-stat] flush 切片结果为空，已回滚队列', snapshot)
+      logger.warn('[uni统计 2.0] flush 切片结果为空，已回滚队列', snapshot)
       deps.queue.rollback(snapshot)
       return
     }
@@ -290,17 +290,19 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
         if (isPermanentChannelError(e)) {
           // 永久错：丢弃本片，不 persist、不污染下次冷启
           logger.warn(
-            '[uni-stat] 统计上报失败（本批已丢弃，不可重试）',
+            '[uni统计 2.0] 统计上报失败（本批已丢弃，不可重试）',
             e,
             'sliceBytes=' + requests.length
           )
           logReportFailureReason({ error: e, persistedId: undefined })
           continue
         }
-        logger.warn('[uni-stat] 统计上报失败（已暂存，下次启动自动重试）', e)
+        logger.warn('[uni统计 2.0] 统计上报失败（已暂存，下次启动自动重试）', e)
         const id = deps.retry.persist(payload)
         if (!id) {
-          logger.warn('[uni-stat] 统计暂存重试失败（无 retryId），本批已丢弃')
+          logger.warn(
+            '[uni统计 2.0] 统计暂存重试失败（无 retryId），本批已丢弃'
+          )
         }
         logReportFailureReason({ error: e, persistedId: id })
       }
@@ -345,7 +347,7 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
     if (items.length === 0) return
     const channel = deps.selectChannel()
     if (!channel) {
-      logger.warn('[uni-stat] 续传重试跳过：当前无可用上报线路')
+      logger.warn('[uni统计 2.0] 续传重试跳过：当前无可用上报线路')
       return
     }
     logRecoverStart(items.length)
@@ -366,7 +368,7 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
         if (isPermanentChannelError(e)) {
           if (payload._id) deps.retry.ack(payload._id)
           logger.warn(
-            '[uni-stat] 续传重试失败（不可重试，已从队列移除）',
+            '[uni统计 2.0] 续传重试失败（不可重试，已从队列移除）',
             e,
             'id=' + payload._id
           )
@@ -383,7 +385,7 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
           // markAttempt 内部超过 maxAttempts 会自动 ack 兜底（参见 retry.ts）
           deps.retry.markAttempt(payload._id)
         }
-        logger.warn('[uni-stat] 续传重试失败（保留队列，下次启动再试）', e)
+        logger.warn('[uni统计 2.0] 续传重试失败（保留队列，下次启动再试）', e)
         logRecoverItem({
           index: i,
           total: items.length,

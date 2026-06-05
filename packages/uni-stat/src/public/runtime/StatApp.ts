@@ -231,7 +231,7 @@ export class StatApp {
     if (!overrides.skipRecoverRetry) {
       void this.collector
         .recoverRetry()
-        .catch((e) => logger.warn('[uni-stat] recoverRetry failed', e))
+        .catch((e) => logger.warn('[uni统计 2.0] recoverRetry failed', e))
     }
 
     // 仅在 collector 与拦截器等就绪后再标记，避免中途抛错导致「已 install 却无 collector」。

@@ -158,7 +158,7 @@ describe('infra/debugLog', () => {
       appName: 'demo',
       debugFromManifest: true,
     })
-    expect(logsContaining('uni 统计公有版已启用')).toBe(true)
+    expect(logsContaining('uni统计 2.0 已启用')).toBe(true)
     expect(
       logsContaining('上报间隔: 10s | 应用APPID: MY_AK | 应用名: demo')
     ).toBe(true)

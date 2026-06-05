@@ -83,9 +83,9 @@ function bucketSummary(bucket: Record<string, StatData[]>): string {
  *
  * 文案示意：
  *   ```text
- *   [uni统计公有版] === 统计数据采集：应用启动 (lt=1) ===
- *   [uni统计公有版] {lt: '1', t: 1714123456, ut: 'h5', ...}
- *   [uni统计公有版] === 采集结束 ===
+ *   [uni统计 2.0] === 统计数据采集：应用启动 (lt=1) ===
+ *   [uni统计 2.0] {lt: '1', t: 1714123456, ut: 'h5', ...}
+ *   [uni统计 2.0] === 采集结束 ===
  *   ```
  */
 export function logCollect(data: StatData): void {
@@ -123,7 +123,7 @@ export function logBoot(info: {
   const timeoutSeg =
     timeoutParts.length > 0 ? ` | ${timeoutParts.join(' | ')}` : ''
   const lines = [
-    '=== uni 统计公有版已启用 ===',
+    '=== uni统计 2.0 已启用 ===',
     `上报间隔: ${info.reportIntervalSec}s${timeoutSeg} | 应用APPID: ${
       info.ak || '<未注入>'
     }${info.appName ? ` | 应用名: ${info.appName}` : ''}${
@@ -143,7 +143,7 @@ export function logBoot(info: {
  * 文案示意：
  *   ```text
  *   // 通道=${info.channel}
- *   [uni统计公有版] === 准备上报： 共 4 条事件 (lt=1×1, lt=11×2, lt=21×1) [_id=p-xxxx] ===
+ *   [uni统计 2.0] === 准备上报： 共 4 条事件 (lt=1×1, lt=11×2, lt=21×1) [_id=p-xxxx] ===
  *   ```
  */
 export function logReportStart(info: {

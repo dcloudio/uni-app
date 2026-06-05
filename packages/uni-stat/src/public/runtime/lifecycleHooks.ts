@@ -448,7 +448,7 @@ export function handleLaunch(
         if (!c2) return
         c2.report({ lt: LT.Push, cid: r.cid, t: nowSec() })
       })
-      .catch((e) => logger.warn('[uni-stat] push cid fetch failed', e))
+      .catch((e) => logger.warn('[uni统计 2.0] push cid fetch failed', e))
   }
 }
 
@@ -524,7 +524,7 @@ function tryConsumeBackgroundResume(
   void c
     .flush(true)
     .catch((e) =>
-      logger.warn('[uni-stat] flush after new session (app_show) failed', e)
+      logger.warn('[uni统计 2.0] flush after new session (app_show) failed', e)
     )
   return true
 }
@@ -574,7 +574,7 @@ export function handleAppShow(
   void c
     .flush(true)
     .catch((e) =>
-      logger.warn('[uni-stat] flush after new session (app_show) failed', e)
+      logger.warn('[uni统计 2.0] flush after new session (app_show) failed', e)
     )
 }
 
@@ -625,7 +625,7 @@ export function handleAppHide(app: StatApp, opts: LifecycleOptions = {}): void {
   })
   void c
     .flush(true)
-    .catch((e) => logger.warn('[uni-stat] flush on hide failed', e))
+    .catch((e) => logger.warn('[uni统计 2.0] flush on hide failed', e))
 }
 
 /**
@@ -744,7 +744,10 @@ export function handlePageShow(
     void c
       .flush(true)
       .catch((e) =>
-        logger.warn('[uni-stat] flush after new session (page_show) failed', e)
+        logger.warn(
+          '[uni统计 2.0] flush after new session (page_show) failed',
+          e
+        )
       )
   }
 }
@@ -849,7 +852,7 @@ export function handleError(app: StatApp, e: unknown): void {
   try {
     app.reportError(e)
   } catch (err) {
-    logger.warn('[uni-stat] handleError failed', err)
+    logger.warn('[uni统计 2.0] handleError failed', err)
   }
 
   if (isMp()) {

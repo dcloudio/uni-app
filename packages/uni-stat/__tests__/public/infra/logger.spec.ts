@@ -53,7 +53,7 @@ describe('infra/logger', () => {
   test('UNI_STAT_DEBUG === "true" 时 debug 输出（非 Android/iOS：TAG + 原始参数）', () => {
     ;(process.env as Env).UNI_STAT_DEBUG = 'true'
     logger.debug('visible')
-    expect(logSpy).toHaveBeenCalledWith('[uni统计公有版]', 'visible')
+    expect(logSpy).toHaveBeenCalledWith('[uni统计 2.0]', 'visible')
   })
 
   test('UNI_STAT_DEBUG === "false" 字符串时 debug 不输出（修复缺陷 #19）', () => {
@@ -71,7 +71,7 @@ describe('infra/logger', () => {
   test('UNI_STAT_DEBUG 为布尔 true 时也开启（兼容历史插件 define 误替换）', () => {
     ;(process.env as unknown as Record<string, unknown>).UNI_STAT_DEBUG = true
     logger.debug('visible')
-    expect(logSpy).toHaveBeenCalledWith('[uni统计公有版]', 'visible')
+    expect(logSpy).toHaveBeenCalledWith('[uni统计 2.0]', 'visible')
   })
 
   test('UNI_STAT_DEBUG 为布尔 false 时不开启', () => {
@@ -100,23 +100,23 @@ describe('infra/logger', () => {
     expect(warnSpy).not.toHaveBeenCalled()
     logger.setMuteNonDebug(false)
     logger.warn('visible')
-    expect(warnSpy).toHaveBeenCalledWith('[uni统计公有版]', 'visible')
+    expect(warnSpy).toHaveBeenCalledWith('[uni统计 2.0]', 'visible')
   })
 
   test('info / warn / error 始终输出（非 Android/iOS：TAG + 多参）', () => {
     logger.info('i')
     logger.warn('w')
     logger.error('e')
-    expect(infoSpy).toHaveBeenCalledWith('[uni统计公有版]', 'i')
-    expect(warnSpy).toHaveBeenCalledWith('[uni统计公有版]', 'w')
-    expect(errSpy).toHaveBeenCalledWith('[uni统计公有版]', 'e')
+    expect(infoSpy).toHaveBeenCalledWith('[uni统计 2.0]', 'i')
+    expect(warnSpy).toHaveBeenCalledWith('[uni统计 2.0]', 'w')
+    expect(errSpy).toHaveBeenCalledWith('[uni统计 2.0]', 'e')
   })
 
   test('非 Android/iOS：对象参数原样传递', () => {
     ;(process.env as Env).UNI_STAT_DEBUG = 'true'
     const o = { lt: '1' }
     logger.debug('a', o, 'b')
-    expect(logSpy).toHaveBeenCalledWith('[uni统计公有版]', 'a', o, 'b')
+    expect(logSpy).toHaveBeenCalledWith('[uni统计 2.0]', 'a', o, 'b')
   })
 
   describe('Android / iOS：仅对象类参数转为字符串', () => {
@@ -126,7 +126,7 @@ describe('infra/logger', () => {
       ;(process.env as Env).UNI_STAT_DEBUG = 'true'
       const o = { x: 1 }
       logger.debug('m', o)
-      expect(logSpy).toHaveBeenCalledWith('[uni统计公有版] m {"x":1}')
+      expect(logSpy).toHaveBeenCalledWith('[uni统计 2.0] m {"x":1}')
     })
 
     test('App iOS：对象 → JSON，整行单参', () => {
@@ -135,7 +135,7 @@ describe('infra/logger', () => {
       ;(process.env as Env).UNI_STAT_DEBUG = 'true'
       const o = { y: 2 }
       logger.debug(o)
-      expect(logSpy).toHaveBeenCalledWith('[uni统计公有版] {"y":2}')
+      expect(logSpy).toHaveBeenCalledWith('[uni统计 2.0] {"y":2}')
     })
 
     test('mp-weixin + platform=android', () => {
@@ -146,7 +146,7 @@ describe('infra/logger', () => {
       ;(process.env as Env).UNI_STAT_DEBUG = 'true'
       const o = { z: 3 }
       logger.debug('x', o)
-      expect(logSpy).toHaveBeenCalledWith('[uni统计公有版] x {"z":3}')
+      expect(logSpy).toHaveBeenCalledWith('[uni统计 2.0] x {"z":3}')
     })
 
     test('mp-weixin + platform=ios', () => {
@@ -157,7 +157,7 @@ describe('infra/logger', () => {
       ;(process.env as Env).UNI_STAT_DEBUG = 'true'
       const o = { k: 1 }
       logger.debug(o)
-      expect(logSpy).toHaveBeenCalledWith('[uni统计公有版] {"k":1}')
+      expect(logSpy).toHaveBeenCalledWith('[uni统计 2.0] {"k":1}')
     })
 
     test('Error 转为短字符串', () => {
@@ -165,7 +165,7 @@ describe('infra/logger', () => {
       ;(globalThis as { plus?: unknown }).plus = { os: { name: 'Android' } }
       ;(process.env as Env).UNI_STAT_DEBUG = 'true'
       logger.debug(new Error('boom'))
-      expect(logSpy).toHaveBeenCalledWith('[uni统计公有版] Error: boom')
+      expect(logSpy).toHaveBeenCalledWith('[uni统计 2.0] Error: boom')
     })
   })
 })
