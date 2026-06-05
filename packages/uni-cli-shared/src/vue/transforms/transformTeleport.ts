@@ -49,6 +49,7 @@ export const transformTeleport = function (node: RootNode | TemplateChildNode) {
 
   const toProp = findProp(node, 'to')
   if (toProp) {
+    // delete `to` prop since it is not supported in mini program
     node.props.splice(node.props.indexOf(toProp), 1)
   }
 }
