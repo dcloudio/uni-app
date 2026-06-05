@@ -69,7 +69,6 @@ const nodeTransforms = [
   transformOpenType,
   // transformMatchMedia,
   createTransformComponentLink(COMPONENT_ON_LINK, NodeTypes.ATTRIBUTE),
-  transformTeleport,
 ]
 if (process.env.UNI_APP_X === 'true') {
   nodeTransforms.push(
@@ -77,7 +76,10 @@ if (process.env.UNI_APP_X === 'true') {
     transformDirection,
     transformLoading
   )
+} else {
+  nodeTransforms.push(transformTeleport)
 }
+
 export const compilerOptions: CompilerOptions = {
   nodeTransforms,
 }
