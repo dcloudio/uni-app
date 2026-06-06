@@ -97,9 +97,6 @@
       "AddPhoneRepeatCalendarSuccessCallback"
     ],
     [
-      "AgreePrivacyAuthorization"
-    ],
-    [
       "AppCrashInfo"
     ],
     [
@@ -118,13 +115,7 @@
       "AppleLoginAppleInfo"
     ],
     [
-      "ArrayBufferToBase64"
-    ],
-    [
       "BackgroundAudioManager"
-    ],
-    [
-      "Base64ToArrayBuffer"
     ],
     [
       "CalendarErrorCode"
@@ -490,21 +481,6 @@
       "CreateInnerAudioContextErrorCode"
     ],
     [
-      "CreateIntersectionObserver"
-    ],
-    [
-      "CreateIntersectionObserverOptions"
-    ],
-    [
-      "CreateSelectorQuery"
-    ],
-    [
-      "CreateWebViewContext"
-    ],
-    [
-      "CreateWebviewContext"
-    ],
-    [
       "CreateWorker"
     ],
     [
@@ -670,9 +646,6 @@
       "GetDeviceInfoResult"
     ],
     [
-      "GetElementById"
-    ],
-    [
       "GetFileInfo"
     ],
     [
@@ -746,24 +719,6 @@
     ],
     [
       "GetNetworkTypeSuccessCallback"
-    ],
-    [
-      "GetPrivacySetting"
-    ],
-    [
-      "GetPrivacySettingCompleteCallback"
-    ],
-    [
-      "GetPrivacySettingFailCallback"
-    ],
-    [
-      "GetPrivacySettingOptions"
-    ],
-    [
-      "GetPrivacySettingSuccessCallback"
-    ],
-    [
-      "GetPrivacySettingSuccessResult"
     ],
     [
       "GetProvider"
@@ -994,72 +949,6 @@
       "HideLoading"
     ],
     [
-      "HideNavigationBarLoading"
-    ],
-    [
-      "HideNavigationBarLoadingFail"
-    ],
-    [
-      "HideNavigationBarLoadingFailCallback"
-    ],
-    [
-      "HideNavigationBarLoadingOptions"
-    ],
-    [
-      "HideNavigationBarLoadingSuccess"
-    ],
-    [
-      "HideNavigationBarLoadingSuccessCallback"
-    ],
-    [
-      "HideTabBar"
-    ],
-    [
-      "HideTabBarComplete"
-    ],
-    [
-      "HideTabBarCompleteCallback"
-    ],
-    [
-      "HideTabBarFail"
-    ],
-    [
-      "HideTabBarFailCallback"
-    ],
-    [
-      "HideTabBarOptions"
-    ],
-    [
-      "HideTabBarRedDot"
-    ],
-    [
-      "HideTabBarRedDotComplete"
-    ],
-    [
-      "HideTabBarRedDotCompleteCallback"
-    ],
-    [
-      "HideTabBarRedDotFail"
-    ],
-    [
-      "HideTabBarRedDotFailCallback"
-    ],
-    [
-      "HideTabBarRedDotOptions"
-    ],
-    [
-      "HideTabBarRedDotSuccess"
-    ],
-    [
-      "HideTabBarRedDotSuccessCallback"
-    ],
-    [
-      "HideTabBarSuccess"
-    ],
-    [
-      "HideTabBarSuccessCallback"
-    ],
-    [
       "HideToast"
     ],
     [
@@ -1189,9 +1078,6 @@
       "InnerAudioContext"
     ],
     [
-      "IntersectionObserver"
-    ],
-    [
       "LegacyGetFileInfoCompleteCallback"
     ],
     [
@@ -1285,36 +1171,6 @@
       "LegacySavedFileListItem"
     ],
     [
-      "LoadFontFace"
-    ],
-    [
-      "LoadFontFaceComplete"
-    ],
-    [
-      "LoadFontFaceCompleteCallback"
-    ],
-    [
-      "LoadFontFaceErrCode"
-    ],
-    [
-      "LoadFontFaceFail"
-    ],
-    [
-      "LoadFontFaceFailCallback"
-    ],
-    [
-      "LoadFontFaceOptionDesc"
-    ],
-    [
-      "LoadFontFaceOptions"
-    ],
-    [
-      "LoadFontFaceSuccess"
-    ],
-    [
-      "LoadFontFaceSuccessCallback"
-    ],
-    [
       "LocationErrorCode"
     ],
     [
@@ -1393,37 +1249,13 @@
       "MemoryWarningFail"
     ],
     [
-      "MidButtonIconFont"
-    ],
-    [
-      "MidButtonOptions"
-    ],
-    [
       "MkDirOptions"
     ],
     [
       "MkDirSuccessCallback"
     ],
     [
-      "NodeField"
-    ],
-    [
-      "NodeInfo"
-    ],
-    [
-      "NodesRef"
-    ],
-    [
       "OauthErrorCode"
-    ],
-    [
-      "ObserveCallback"
-    ],
-    [
-      "ObserveNodeRect"
-    ],
-    [
-      "ObserveResult"
     ],
     [
       "OffAccelerometerChange"
@@ -1460,9 +1292,6 @@
     ],
     [
       "OffOsThemeChange"
-    ],
-    [
-      "OffPrivacyAuthorizationChange"
     ],
     [
       "OnAccelerometerChange"
@@ -1558,12 +1387,6 @@
       "OnOsThemeChangeCallback"
     ],
     [
-      "OnPrivacyAuthorizationChange"
-    ],
-    [
-      "OnPrivacyAuthorizationChangeCallback"
-    ],
-    [
       "OnProgressDownloadResult"
     ],
     [
@@ -1604,9 +1427,6 @@
     ],
     [
       "OnSocketOpenCallbackResult"
-    ],
-    [
-      "OnTabBarMidButtonTapCallback"
     ],
     [
       "OnThemeChangeCallbackResult"
@@ -1700,9 +1520,6 @@
     ],
     [
       "PreviewImageSuccessCallback"
-    ],
-    [
-      "PrivacyChangeResult"
     ],
     [
       "PromptErrorCode"
@@ -1801,30 +1618,6 @@
       "RemoveStorageSync"
     ],
     [
-      "RemoveTabBarBadge"
-    ],
-    [
-      "RemoveTabBarBadgeComplete"
-    ],
-    [
-      "RemoveTabBarBadgeCompleteCallback"
-    ],
-    [
-      "RemoveTabBarBadgeFail"
-    ],
-    [
-      "RemoveTabBarBadgeFailCallback"
-    ],
-    [
-      "RemoveTabBarBadgeOptions"
-    ],
-    [
-      "RemoveTabBarBadgeSuccess"
-    ],
-    [
-      "RemoveTabBarBadgeSuccessCallback"
-    ],
-    [
       "RenameOptions"
     ],
     [
@@ -1897,9 +1690,6 @@
       "RequestTaskOnHeadersReceivedListenerResult"
     ],
     [
-      "ResetPrivacyAuthorization"
-    ],
-    [
       "RmDirOptions"
     ],
     [
@@ -1964,12 +1754,6 @@
     ],
     [
       "SaveVideoToPhotosAlbumSuccessCallback"
-    ],
-    [
-      "SelectorQuery"
-    ],
-    [
-      "SelectorQueryNodeInfoCallback"
     ],
     [
       "SendSocketMessage"
@@ -2074,60 +1858,6 @@
       "SetKeepScreenOnSuccessCallback"
     ],
     [
-      "SetNavigationBarColor"
-    ],
-    [
-      "SetNavigationBarColorComplete"
-    ],
-    [
-      "SetNavigationBarColorCompleteCallback"
-    ],
-    [
-      "SetNavigationBarColorErrorCode"
-    ],
-    [
-      "SetNavigationBarColorFail"
-    ],
-    [
-      "SetNavigationBarColorFailCallback"
-    ],
-    [
-      "SetNavigationBarColorOptions"
-    ],
-    [
-      "SetNavigationBarColorSuccess"
-    ],
-    [
-      "SetNavigationBarColorSuccessCallback"
-    ],
-    [
-      "SetNavigationBarTitle"
-    ],
-    [
-      "SetNavigationBarTitleComplete"
-    ],
-    [
-      "SetNavigationBarTitleCompleteCallback"
-    ],
-    [
-      "SetNavigationBarTitleErrorCode"
-    ],
-    [
-      "SetNavigationBarTitleFail"
-    ],
-    [
-      "SetNavigationBarTitleFailCallback"
-    ],
-    [
-      "SetNavigationBarTitleOptions"
-    ],
-    [
-      "SetNavigationBarTitleSuccess"
-    ],
-    [
-      "SetNavigationBarTitleSuccessCallback"
-    ],
-    [
       "SetScreenBrightness"
     ],
     [
@@ -2171,87 +1901,6 @@
     ],
     [
       "SetStorageSync"
-    ],
-    [
-      "SetTabBarBadge"
-    ],
-    [
-      "SetTabBarBadgeComplete"
-    ],
-    [
-      "SetTabBarBadgeCompleteCallback"
-    ],
-    [
-      "SetTabBarBadgeFail"
-    ],
-    [
-      "SetTabBarBadgeFailCallback"
-    ],
-    [
-      "SetTabBarBadgeOptions"
-    ],
-    [
-      "SetTabBarBadgeSuccess"
-    ],
-    [
-      "SetTabBarBadgeSuccessCallback"
-    ],
-    [
-      "SetTabBarErrorCode"
-    ],
-    [
-      "SetTabBarFail"
-    ],
-    [
-      "SetTabBarItem"
-    ],
-    [
-      "SetTabBarItemComplete"
-    ],
-    [
-      "SetTabBarItemCompleteCallback"
-    ],
-    [
-      "SetTabBarItemFail"
-    ],
-    [
-      "SetTabBarItemFailCallback"
-    ],
-    [
-      "SetTabBarItemIconFontOptions"
-    ],
-    [
-      "SetTabBarItemOptions"
-    ],
-    [
-      "SetTabBarItemSuccess"
-    ],
-    [
-      "SetTabBarItemSuccessCallback"
-    ],
-    [
-      "SetTabBarStyle"
-    ],
-    [
-      "SetTabBarStyleComplete"
-    ],
-    [
-      "SetTabBarStyleCompleteCallback"
-    ],
-    [
-      "SetTabBarStyleFail"
-    ],
-    [
-      "SetTabBarStyleFailCallback"
-    ],
-    [
-      "SetTabBarStyleOptions"
-    ],
-    [
-      "SetTabBarStyleSuccess"
-    ],
-    [
-      "SetTabBarStyleSuccessCallback"
     ],
     [
       "Share"
@@ -2381,72 +2030,6 @@
     ],
     [
       "ShowModalSuccessCallback"
-    ],
-    [
-      "ShowNavigationBarLoading"
-    ],
-    [
-      "ShowNavigationBarLoadingFail"
-    ],
-    [
-      "ShowNavigationBarLoadingFailCallback"
-    ],
-    [
-      "ShowNavigationBarLoadingOptions"
-    ],
-    [
-      "ShowNavigationBarLoadingSuccess"
-    ],
-    [
-      "ShowNavigationBarLoadingSuccessCallback"
-    ],
-    [
-      "ShowTabBar"
-    ],
-    [
-      "ShowTabBarComplete"
-    ],
-    [
-      "ShowTabBarCompleteCallback"
-    ],
-    [
-      "ShowTabBarFail"
-    ],
-    [
-      "ShowTabBarFailCallback"
-    ],
-    [
-      "ShowTabBarOptions"
-    ],
-    [
-      "ShowTabBarRedDot"
-    ],
-    [
-      "ShowTabBarRedDotComplete"
-    ],
-    [
-      "ShowTabBarRedDotCompleteCallback"
-    ],
-    [
-      "ShowTabBarRedDotFail"
-    ],
-    [
-      "ShowTabBarRedDotFailCallback"
-    ],
-    [
-      "ShowTabBarRedDotOptions"
-    ],
-    [
-      "ShowTabBarRedDotSuccess"
-    ],
-    [
-      "ShowTabBarRedDotSuccessCallback"
-    ],
-    [
-      "ShowTabBarSuccess"
-    ],
-    [
-      "ShowTabBarSuccessCallback"
     ],
     [
       "ShowToast"
@@ -2752,9 +2335,6 @@
       "UniVerifyButtonsStyles"
     ],
     [
-      "UniWebviewContextLoadDataOptions"
-    ],
-    [
       "UniverifyAuthButtonStyles"
     ],
     [
@@ -2867,9 +2447,6 @@
     ],
     [
       "VibrateShortType"
-    ],
-    [
-      "WebViewContext"
     ],
     [
       "Worker"

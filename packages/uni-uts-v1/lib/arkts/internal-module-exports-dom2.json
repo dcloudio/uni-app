@@ -136,9 +136,6 @@
       "CanvasContext"
     ],
     [
-      "CanvasContext"
-    ],
-    [
       "Certificate"
     ],
     [
@@ -517,28 +514,13 @@
       "CreateCanvasContextAsync"
     ],
     [
-      "CreateCanvasContextAsync"
-    ],
-    [
-      "CreateCanvasContextAsyncCompleteCallback"
-    ],
-    [
       "CreateCanvasContextAsyncCompleteCallback"
     ],
     [
       "CreateCanvasContextAsyncFailCallback"
     ],
     [
-      "CreateCanvasContextAsyncFailCallback"
-    ],
-    [
       "CreateCanvasContextAsyncOptions"
-    ],
-    [
-      "CreateCanvasContextAsyncOptions"
-    ],
-    [
-      "CreateCanvasContextAsyncSuccessCallback"
     ],
     [
       "CreateCanvasContextAsyncSuccessCallback"
@@ -556,25 +538,10 @@
       "CreateInnerAudioContextErrorCode"
     ],
     [
-      "CreateIntersectionObserver"
-    ],
-    [
-      "CreateIntersectionObserverOptions"
-    ],
-    [
-      "CreateSelectorQuery"
-    ],
-    [
       "CreateVideoContext"
     ],
     [
       "CreateWebViewContext"
-    ],
-    [
-      "CreateWebViewContext"
-    ],
-    [
-      "CreateWebviewContext"
     ],
     [
       "CreateWebviewContext"
@@ -1150,54 +1117,6 @@
       "HideNavigationBarLoadingSuccessCallback"
     ],
     [
-      "HideTabBar"
-    ],
-    [
-      "HideTabBarComplete"
-    ],
-    [
-      "HideTabBarCompleteCallback"
-    ],
-    [
-      "HideTabBarFail"
-    ],
-    [
-      "HideTabBarFailCallback"
-    ],
-    [
-      "HideTabBarOptions"
-    ],
-    [
-      "HideTabBarRedDot"
-    ],
-    [
-      "HideTabBarRedDotComplete"
-    ],
-    [
-      "HideTabBarRedDotCompleteCallback"
-    ],
-    [
-      "HideTabBarRedDotFail"
-    ],
-    [
-      "HideTabBarRedDotFailCallback"
-    ],
-    [
-      "HideTabBarRedDotOptions"
-    ],
-    [
-      "HideTabBarRedDotSuccess"
-    ],
-    [
-      "HideTabBarRedDotSuccessCallback"
-    ],
-    [
-      "HideTabBarSuccess"
-    ],
-    [
-      "HideTabBarSuccessCallback"
-    ],
-    [
       "HideToast"
     ],
     [
@@ -1331,9 +1250,6 @@
     ],
     [
       "InnerAudioContext"
-    ],
-    [
-      "IntersectionObserver"
     ],
     [
       "LegacyGetFileInfoCompleteCallback"
@@ -1540,12 +1456,6 @@
       "MemoryWarningFail"
     ],
     [
-      "MidButtonIconFont"
-    ],
-    [
-      "MidButtonOptions"
-    ],
-    [
       "MkDirOptions"
     ],
     [
@@ -1555,25 +1465,7 @@
       "ModalPage"
     ],
     [
-      "NodeField"
-    ],
-    [
-      "NodeInfo"
-    ],
-    [
-      "NodesRef"
-    ],
-    [
       "OauthErrorCode"
-    ],
-    [
-      "ObserveCallback"
-    ],
-    [
-      "ObserveNodeRect"
-    ],
-    [
-      "ObserveResult"
     ],
     [
       "OffAccelerometerChange"
@@ -1754,9 +1646,6 @@
     ],
     [
       "OnSocketOpenCallbackResult"
-    ],
-    [
-      "OnTabBarMidButtonTapCallback"
     ],
     [
       "OnThemeChangeCallbackResult"
@@ -1975,34 +1864,7 @@
       "RemoveStorageSync"
     ],
     [
-      "RemoveTabBarBadge"
-    ],
-    [
-      "RemoveTabBarBadgeComplete"
-    ],
-    [
-      "RemoveTabBarBadgeCompleteCallback"
-    ],
-    [
-      "RemoveTabBarBadgeFail"
-    ],
-    [
-      "RemoveTabBarBadgeFailCallback"
-    ],
-    [
-      "RemoveTabBarBadgeOptions"
-    ],
-    [
-      "RemoveTabBarBadgeSuccess"
-    ],
-    [
-      "RemoveTabBarBadgeSuccessCallback"
-    ],
-    [
       "RenameOptions"
-    ],
-    [
-      "RequestAnimationFrameCallback"
     ],
     [
       "RequestAnimationFrameCallback"
@@ -2171,12 +2033,6 @@
     ],
     [
       "ScanCodeSupportedTypes"
-    ],
-    [
-      "SelectorQuery"
-    ],
-    [
-      "SelectorQueryNodeInfoCallback"
     ],
     [
       "SendSocketMessage"
@@ -2380,87 +2236,6 @@
       "SetStorageSync"
     ],
     [
-      "SetTabBarBadge"
-    ],
-    [
-      "SetTabBarBadgeComplete"
-    ],
-    [
-      "SetTabBarBadgeCompleteCallback"
-    ],
-    [
-      "SetTabBarBadgeFail"
-    ],
-    [
-      "SetTabBarBadgeFailCallback"
-    ],
-    [
-      "SetTabBarBadgeOptions"
-    ],
-    [
-      "SetTabBarBadgeSuccess"
-    ],
-    [
-      "SetTabBarBadgeSuccessCallback"
-    ],
-    [
-      "SetTabBarErrorCode"
-    ],
-    [
-      "SetTabBarFail"
-    ],
-    [
-      "SetTabBarItem"
-    ],
-    [
-      "SetTabBarItemComplete"
-    ],
-    [
-      "SetTabBarItemCompleteCallback"
-    ],
-    [
-      "SetTabBarItemFail"
-    ],
-    [
-      "SetTabBarItemFailCallback"
-    ],
-    [
-      "SetTabBarItemIconFontOptions"
-    ],
-    [
-      "SetTabBarItemOptions"
-    ],
-    [
-      "SetTabBarItemSuccess"
-    ],
-    [
-      "SetTabBarItemSuccessCallback"
-    ],
-    [
-      "SetTabBarStyle"
-    ],
-    [
-      "SetTabBarStyleComplete"
-    ],
-    [
-      "SetTabBarStyleCompleteCallback"
-    ],
-    [
-      "SetTabBarStyleFail"
-    ],
-    [
-      "SetTabBarStyleFailCallback"
-    ],
-    [
-      "SetTabBarStyleOptions"
-    ],
-    [
-      "SetTabBarStyleSuccess"
-    ],
-    [
-      "SetTabBarStyleSuccessCallback"
-    ],
-    [
       "Share"
     ],
     [
@@ -2621,54 +2396,6 @@
     ],
     [
       "ShowNavigationBarLoadingSuccessCallback"
-    ],
-    [
-      "ShowTabBar"
-    ],
-    [
-      "ShowTabBarComplete"
-    ],
-    [
-      "ShowTabBarCompleteCallback"
-    ],
-    [
-      "ShowTabBarFail"
-    ],
-    [
-      "ShowTabBarFailCallback"
-    ],
-    [
-      "ShowTabBarOptions"
-    ],
-    [
-      "ShowTabBarRedDot"
-    ],
-    [
-      "ShowTabBarRedDotComplete"
-    ],
-    [
-      "ShowTabBarRedDotCompleteCallback"
-    ],
-    [
-      "ShowTabBarRedDotFail"
-    ],
-    [
-      "ShowTabBarRedDotFailCallback"
-    ],
-    [
-      "ShowTabBarRedDotOptions"
-    ],
-    [
-      "ShowTabBarRedDotSuccess"
-    ],
-    [
-      "ShowTabBarRedDotSuccessCallback"
-    ],
-    [
-      "ShowTabBarSuccess"
-    ],
-    [
-      "ShowTabBarSuccessCallback"
     ],
     [
       "ShowToast"
@@ -2959,12 +2686,6 @@
       "UniCanvasElement"
     ],
     [
-      "UniCanvasElement"
-    ],
-    [
-      "UniCanvasRenderingContext2D"
-    ],
-    [
       "UniEditorElement"
     ],
     [
@@ -3083,9 +2804,6 @@
     ],
     [
       "UniWebViewElementLoadDataOptions"
-    ],
-    [
-      "UniWebviewContextLoadDataOptions"
     ],
     [
       "UniWebviewContextLoadDataOptions"
@@ -3212,9 +2930,6 @@
     ],
     [
       "VideoErrorCode"
-    ],
-    [
-      "WebViewContext"
     ],
     [
       "WebViewContext"
