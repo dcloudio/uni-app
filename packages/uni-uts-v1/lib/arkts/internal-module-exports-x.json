@@ -22,6 +22,18 @@
       "AccessOptions"
     ],
     [
+      "AdCallBackEvent"
+    ],
+    [
+      "AdCloseCallBackEvent"
+    ],
+    [
+      "AdErrorCallBackEvent"
+    ],
+    [
+      "AdVerifyCallBackEvent"
+    ],
+    [
       "AddPhoneCalendar"
     ],
     [
@@ -131,6 +143,9 @@
     ],
     [
       "CalendarRepeatInterval"
+    ],
+    [
+      "CanvasContext"
     ],
     [
       "CanvasContext"
@@ -514,13 +529,28 @@
       "CreateCanvasContextAsync"
     ],
     [
+      "CreateCanvasContextAsync"
+    ],
+    [
+      "CreateCanvasContextAsyncCompleteCallback"
+    ],
+    [
       "CreateCanvasContextAsyncCompleteCallback"
     ],
     [
       "CreateCanvasContextAsyncFailCallback"
     ],
     [
+      "CreateCanvasContextAsyncFailCallback"
+    ],
+    [
       "CreateCanvasContextAsyncOptions"
+    ],
+    [
+      "CreateCanvasContextAsyncOptions"
+    ],
+    [
+      "CreateCanvasContextAsyncSuccessCallback"
     ],
     [
       "CreateCanvasContextAsyncSuccessCallback"
@@ -538,10 +568,37 @@
       "CreateInnerAudioContextErrorCode"
     ],
     [
+      "CreateIntersectionObserver"
+    ],
+    [
+      "CreateIntersectionObserverOptions"
+    ],
+    [
+      "CreateInterstitialAd"
+    ],
+    [
+      "CreateInterstitialAdOptions"
+    ],
+    [
+      "CreateRewardedVideoAd"
+    ],
+    [
+      "CreateRewardedVideoAdOptions"
+    ],
+    [
+      "CreateSelectorQuery"
+    ],
+    [
       "CreateVideoContext"
     ],
     [
       "CreateWebViewContext"
+    ],
+    [
+      "CreateWebViewContext"
+    ],
+    [
+      "CreateWebviewContext"
     ],
     [
       "CreateWebviewContext"
@@ -1117,6 +1174,54 @@
       "HideNavigationBarLoadingSuccessCallback"
     ],
     [
+      "HideTabBar"
+    ],
+    [
+      "HideTabBarComplete"
+    ],
+    [
+      "HideTabBarCompleteCallback"
+    ],
+    [
+      "HideTabBarFail"
+    ],
+    [
+      "HideTabBarFailCallback"
+    ],
+    [
+      "HideTabBarOptions"
+    ],
+    [
+      "HideTabBarRedDot"
+    ],
+    [
+      "HideTabBarRedDotComplete"
+    ],
+    [
+      "HideTabBarRedDotCompleteCallback"
+    ],
+    [
+      "HideTabBarRedDotFail"
+    ],
+    [
+      "HideTabBarRedDotFailCallback"
+    ],
+    [
+      "HideTabBarRedDotOptions"
+    ],
+    [
+      "HideTabBarRedDotSuccess"
+    ],
+    [
+      "HideTabBarRedDotSuccessCallback"
+    ],
+    [
+      "HideTabBarSuccess"
+    ],
+    [
+      "HideTabBarSuccessCallback"
+    ],
+    [
       "HideToast"
     ],
     [
@@ -1204,6 +1309,9 @@
       "IRequestPaymentFail"
     ],
     [
+      "IRewardedVideoAd"
+    ],
+    [
       "ISetKeepScreenOnFail"
     ],
     [
@@ -1237,6 +1345,9 @@
       "IStopGyroscopeFail"
     ],
     [
+      "IUniAdError"
+    ],
+    [
       "IUniEditorElement"
     ],
     [
@@ -1246,10 +1357,19 @@
       "IVibrateShortFail"
     ],
     [
+      "IVideoAd"
+    ],
+    [
       "Icon"
     ],
     [
       "InnerAudioContext"
+    ],
+    [
+      "IntersectionObserver"
+    ],
+    [
+      "InterstitialAd"
     ],
     [
       "LegacyGetFileInfoCompleteCallback"
@@ -1456,6 +1576,12 @@
       "MemoryWarningFail"
     ],
     [
+      "MidButtonIconFont"
+    ],
+    [
+      "MidButtonOptions"
+    ],
+    [
       "MkDirOptions"
     ],
     [
@@ -1465,7 +1591,25 @@
       "ModalPage"
     ],
     [
+      "NodeField"
+    ],
+    [
+      "NodeInfo"
+    ],
+    [
+      "NodesRef"
+    ],
+    [
       "OauthErrorCode"
+    ],
+    [
+      "ObserveCallback"
+    ],
+    [
+      "ObserveNodeRect"
+    ],
+    [
+      "ObserveResult"
     ],
     [
       "OffAccelerometerChange"
@@ -1648,6 +1792,9 @@
       "OnSocketOpenCallbackResult"
     ],
     [
+      "OnTabBarMidButtonTapCallback"
+    ],
+    [
       "OnThemeChangeCallbackResult"
     ],
     [
@@ -1774,6 +1921,9 @@
       "ProviderErrorCode"
     ],
     [
+      "PullDownRefreshErrorCode"
+    ],
+    [
       "ReadCompressedFileCallback"
     ],
     [
@@ -1861,7 +2011,34 @@
       "RemoveStorageSync"
     ],
     [
+      "RemoveTabBarBadge"
+    ],
+    [
+      "RemoveTabBarBadgeComplete"
+    ],
+    [
+      "RemoveTabBarBadgeCompleteCallback"
+    ],
+    [
+      "RemoveTabBarBadgeFail"
+    ],
+    [
+      "RemoveTabBarBadgeFailCallback"
+    ],
+    [
+      "RemoveTabBarBadgeOptions"
+    ],
+    [
+      "RemoveTabBarBadgeSuccess"
+    ],
+    [
+      "RemoveTabBarBadgeSuccessCallback"
+    ],
+    [
       "RenameOptions"
+    ],
+    [
+      "RequestAnimationFrameCallback"
     ],
     [
       "RequestAnimationFrameCallback"
@@ -1940,6 +2117,12 @@
     ],
     [
       "ResetPrivacyAuthorization"
+    ],
+    [
+      "RewardedVideoAd"
+    ],
+    [
+      "RewardedVideoAdClose"
     ],
     [
       "RmDirOptions"
@@ -2030,6 +2213,12 @@
     ],
     [
       "ScanCodeSupportedTypes"
+    ],
+    [
+      "SelectorQuery"
+    ],
+    [
+      "SelectorQueryNodeInfoCallback"
     ],
     [
       "SendSocketMessage"
@@ -2233,6 +2422,87 @@
       "SetStorageSync"
     ],
     [
+      "SetTabBarBadge"
+    ],
+    [
+      "SetTabBarBadgeComplete"
+    ],
+    [
+      "SetTabBarBadgeCompleteCallback"
+    ],
+    [
+      "SetTabBarBadgeFail"
+    ],
+    [
+      "SetTabBarBadgeFailCallback"
+    ],
+    [
+      "SetTabBarBadgeOptions"
+    ],
+    [
+      "SetTabBarBadgeSuccess"
+    ],
+    [
+      "SetTabBarBadgeSuccessCallback"
+    ],
+    [
+      "SetTabBarErrorCode"
+    ],
+    [
+      "SetTabBarFail"
+    ],
+    [
+      "SetTabBarItem"
+    ],
+    [
+      "SetTabBarItemComplete"
+    ],
+    [
+      "SetTabBarItemCompleteCallback"
+    ],
+    [
+      "SetTabBarItemFail"
+    ],
+    [
+      "SetTabBarItemFailCallback"
+    ],
+    [
+      "SetTabBarItemIconFontOptions"
+    ],
+    [
+      "SetTabBarItemOptions"
+    ],
+    [
+      "SetTabBarItemSuccess"
+    ],
+    [
+      "SetTabBarItemSuccessCallback"
+    ],
+    [
+      "SetTabBarStyle"
+    ],
+    [
+      "SetTabBarStyleComplete"
+    ],
+    [
+      "SetTabBarStyleCompleteCallback"
+    ],
+    [
+      "SetTabBarStyleFail"
+    ],
+    [
+      "SetTabBarStyleFailCallback"
+    ],
+    [
+      "SetTabBarStyleOptions"
+    ],
+    [
+      "SetTabBarStyleSuccess"
+    ],
+    [
+      "SetTabBarStyleSuccessCallback"
+    ],
+    [
       "Share"
     ],
     [
@@ -2395,6 +2665,54 @@
       "ShowNavigationBarLoadingSuccessCallback"
     ],
     [
+      "ShowTabBar"
+    ],
+    [
+      "ShowTabBarComplete"
+    ],
+    [
+      "ShowTabBarCompleteCallback"
+    ],
+    [
+      "ShowTabBarFail"
+    ],
+    [
+      "ShowTabBarFailCallback"
+    ],
+    [
+      "ShowTabBarOptions"
+    ],
+    [
+      "ShowTabBarRedDot"
+    ],
+    [
+      "ShowTabBarRedDotComplete"
+    ],
+    [
+      "ShowTabBarRedDotCompleteCallback"
+    ],
+    [
+      "ShowTabBarRedDotFail"
+    ],
+    [
+      "ShowTabBarRedDotFailCallback"
+    ],
+    [
+      "ShowTabBarRedDotOptions"
+    ],
+    [
+      "ShowTabBarRedDotSuccess"
+    ],
+    [
+      "ShowTabBarRedDotSuccessCallback"
+    ],
+    [
+      "ShowTabBarSuccess"
+    ],
+    [
+      "ShowTabBarSuccessCallback"
+    ],
+    [
       "ShowToast"
     ],
     [
@@ -2521,6 +2839,36 @@
       "StartLocationUpdateSuccess"
     ],
     [
+      "StartPullDownRefresh"
+    ],
+    [
+      "StartPullDownRefreshComplete"
+    ],
+    [
+      "StartPullDownRefreshCompleteCallback"
+    ],
+    [
+      "StartPullDownRefreshFail"
+    ],
+    [
+      "StartPullDownRefreshFailCallback"
+    ],
+    [
+      "StartPullDownRefreshFailImpl"
+    ],
+    [
+      "StartPullDownRefreshOptions"
+    ],
+    [
+      "StartPullDownRefreshSuccess"
+    ],
+    [
+      "StartPullDownRefreshSuccessCallback"
+    ],
+    [
+      "StartPullDownRefreshSuccessImpl"
+    ],
+    [
       "StartSoterAuthentication"
     ],
     [
@@ -2638,6 +2986,9 @@
       "StopLocationUpdateSuccess"
     ],
     [
+      "StopPullDownRefresh"
+    ],
+    [
       "TruncateFileOptions"
     ],
     [
@@ -2645,6 +2996,15 @@
     ],
     [
       "UnLinkSuccessCallback"
+    ],
+    [
+      "UniAdErrorCode"
+    ],
+    [
+      "UniAdErrorEvent"
+    ],
+    [
+      "UniAdEvent"
     ],
     [
       "UniButtonElement"
@@ -2836,6 +3196,15 @@
       "UniVideoTimeUpdateEventDetail"
     ],
     [
+      "UniWebViewContextLoadDataOptions"
+    ],
+    [
+      "UniWebViewElementLoadDataOptions"
+    ],
+    [
+      "UniWebviewContextLoadDataOptions"
+    ],
+    [
       "UniWebviewContextLoadDataOptions"
     ],
     [
@@ -2896,6 +3265,9 @@
       "UploadTask"
     ],
     [
+      "UrlCallbackOptions"
+    ],
+    [
       "UserInfo"
     ],
     [
@@ -2953,6 +3325,9 @@
       "VibrateShortType"
     ],
     [
+      "VideoAdClose"
+    ],
+    [
       "VideoContext"
     ],
     [
@@ -2963,6 +3338,18 @@
     ],
     [
       "WebViewContext"
+    ],
+    [
+      "WebViewContext"
+    ],
+    [
+      "WebViewProgressStyles"
+    ],
+    [
+      "WebViewStyles"
+    ],
+    [
+      "WebviewContext"
     ],
     [
       "Worker"
