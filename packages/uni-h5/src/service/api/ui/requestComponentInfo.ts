@@ -98,10 +98,10 @@ function getNodeInfo(
     }
   }
   if (isArray(fields.computedStyle)) {
-    const sytle = getComputedStyle(el)
+    const style = getComputedStyle(el)
     fields.computedStyle.forEach((name) => {
       info[name as keyof CSSStyleDeclaration] =
-        sytle[name as keyof CSSStyleDeclaration]
+        style[name as keyof CSSStyleDeclaration]
     })
   }
   if (fields.context) {
