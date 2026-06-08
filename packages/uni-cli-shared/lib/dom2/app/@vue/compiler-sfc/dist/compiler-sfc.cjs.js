@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-beta.13
+  * @vue/compiler-sfc v3.6.0-beta.14
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -15263,7 +15263,6 @@ function compileScript(sfc, options) {
 			const local = specifier.local.name;
 			const imported = getImportedName(specifier);
 			const source = node.source.value;
-			if (vapor && ssr && specifier.type === "ImportSpecifier" && source === "vue" && imported === "defineVaporAsyncComponent") ctx.s.overwrite(specifier.start + startOffset, specifier.end + startOffset, `defineAsyncComponent as ${local}`);
 			const existing = ctx.userImports[local];
 			if (source === "vue" && MACROS.includes(imported)) {
 				if (local === imported) warnOnce(`\`${imported}\` is a compiler macro and no longer needs to be imported.`);
@@ -15721,7 +15720,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 }
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
-const version = "3.6.0-beta.13";
+const version = "3.6.0-beta.14";
 const parseCache = parseCache$1;
 const errorMessages = {
 	..._vue_compiler_dom.errorMessages,

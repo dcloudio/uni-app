@@ -418,7 +418,12 @@ export declare enum VaporVForFlags {
   * v-for item block is known to be a VaporFragment, so runtime can use
   * fragment-specific insert/remove helpers.
   */
-  IS_FRAGMENT = 16
+  IS_FRAGMENT = 16,
+  /**
+  * v-for sits on a slot content/fallback root chain and can change slot
+  * validity.
+  */
+  SLOT_ROOT = 32
 }
 export declare enum VaporBlockShape {
   EMPTY = 0,
@@ -433,11 +438,12 @@ export declare enum VaporBlockShape {
 * - bit 4: v-once
 * - bit 5: true branch does not need EffectScope
 * - bit 6: false branch does not need EffectScope
-* - bits 7+: branch index + 1 for keyed dynamic fragments
+* - bit 7: v-if sits on a slot content/fallback root chain
+* - bits 8+: branch index + 1 for keyed dynamic fragments
 *
 * Examples:
 * - v-once, true single-root, no false branch: 1 | ONCE = 17
-* - keyed index 0, true/false single-root: 1 | (1 << 2) | (1 << 7) = 133
+* - keyed index 0, true/false single-root: 1 | (1 << 2) | (1 << 8) = 261
 */
 export declare enum VaporIfFlags {
   /**
@@ -460,10 +466,15 @@ export declare enum VaporIfFlags {
   */
   FALSE_NO_SCOPE = 64,
   /**
+  * v-if sits on a slot content/fallback root chain and can change slot
+  * validity.
+  */
+  SLOT_ROOT = 128,
+  /**
   * Shift for keyed branch index. The encoded value is index + 1, so decoded
   * zero means "not keyed" and source index 0 still round-trips.
   */
-  INDEX_SHIFT = 7
+  INDEX_SHIFT = 8
 }
 /**
 * Flags used by vapor template factories, shared between the compiler and the
@@ -479,6 +490,12 @@ export declare enum TemplateFlags {
 */
 export declare enum VaporSlotFlags {
   NO_SLOTTED = 1,
-  ONCE = 2
+  ONCE = 2,
+  SLOT_ROOT = 4
+}
+export declare enum VaporDynamicComponentFlags {
+  SINGLE_ROOT = 1,
+  ONCE = 2,
+  SLOT_ROOT = 4
 }
 //#endregion

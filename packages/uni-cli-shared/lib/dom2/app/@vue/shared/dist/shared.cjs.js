@@ -1,5 +1,5 @@
 /**
-  * @vue/shared v3.6.0-beta.13
+  * @vue/shared v3.6.0-beta.14
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -668,7 +668,9 @@ const VaporVForFlags = {
 	"IS_SINGLE_NODE": 8,
 	"8": "IS_SINGLE_NODE",
 	"IS_FRAGMENT": 16,
-	"16": "IS_FRAGMENT"
+	"16": "IS_FRAGMENT",
+	"SLOT_ROOT": 32,
+	"32": "SLOT_ROOT"
 };
 const VaporBlockShape = {
 	"EMPTY": 0,
@@ -686,11 +688,12 @@ const VaporBlockShape = {
 * - bit 4: v-once
 * - bit 5: true branch does not need EffectScope
 * - bit 6: false branch does not need EffectScope
-* - bits 7+: branch index + 1 for keyed dynamic fragments
+* - bit 7: v-if sits on a slot content/fallback root chain
+* - bits 8+: branch index + 1 for keyed dynamic fragments
 *
 * Examples:
 * - v-once, true single-root, no false branch: 1 | ONCE = 17
-* - keyed index 0, true/false single-root: 1 | (1 << 2) | (1 << 7) = 133
+* - keyed index 0, true/false single-root: 1 | (1 << 2) | (1 << 8) = 261
 */
 const VaporIfFlags = {
 	"BLOCK_SHAPE": 15,
@@ -701,8 +704,10 @@ const VaporIfFlags = {
 	"32": "TRUE_NO_SCOPE",
 	"FALSE_NO_SCOPE": 64,
 	"64": "FALSE_NO_SCOPE",
-	"INDEX_SHIFT": 7,
-	"7": "INDEX_SHIFT"
+	"SLOT_ROOT": 128,
+	"128": "SLOT_ROOT",
+	"INDEX_SHIFT": 8,
+	"8": "INDEX_SHIFT"
 };
 /**
 * Flags used by vapor template factories, shared between the compiler and the
@@ -722,7 +727,17 @@ const VaporSlotFlags = {
 	"NO_SLOTTED": 1,
 	"1": "NO_SLOTTED",
 	"ONCE": 2,
-	"2": "ONCE"
+	"2": "ONCE",
+	"SLOT_ROOT": 4,
+	"4": "SLOT_ROOT"
+};
+const VaporDynamicComponentFlags = {
+	"SINGLE_ROOT": 1,
+	"1": "SINGLE_ROOT",
+	"ONCE": 2,
+	"2": "ONCE",
+	"SLOT_ROOT": 4,
+	"4": "SLOT_ROOT"
 };
 //#endregion
 exports.EMPTY_ARR = EMPTY_ARR;
@@ -736,6 +751,7 @@ exports.ShapeFlags = ShapeFlags;
 exports.SlotFlags = SlotFlags;
 exports.TemplateFlags = TemplateFlags;
 exports.VaporBlockShape = VaporBlockShape;
+exports.VaporDynamicComponentFlags = VaporDynamicComponentFlags;
 exports.VaporIfFlags = VaporIfFlags;
 exports.VaporSlotFlags = VaporSlotFlags;
 exports.VaporVForFlags = VaporVForFlags;

@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-vapor v3.6.0-beta.13
+  * @vue/compiler-vapor v3.6.0-beta.14
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -1175,7 +1175,7 @@ function isConstantBinding(value, context) {
 //#region packages/compiler-vapor/src/generators/for.ts
 function genFor(oper, context) {
 	const { helper } = context;
-	const { source, value, key, index, render, keyProp, once, id, component, onlyChild } = oper;
+	const { source, value, key, index, render, keyProp, once, id, component, onlyChild, slotRoot } = oper;
 	const rawValue = value && value.content;
 	const rawKey = key && key.content;
 	const rawIndex = index && index.content;
@@ -1234,6 +1234,7 @@ function genFor(oper, context) {
 	if (isFragmentBlock(render)) flags |= 16;
 	if (!component && isSingleNodeBlock(render)) flags |= 8;
 	if (once) flags |= 4;
+	if (slotRoot) flags |= 32;
 	const onResetCalls = [];
 	for (let i = 0; i < selectorPatterns.length; i++) onResetCalls.push(NEWLINE, `n${id}.onReset(${selectorName(i)}.reset)`);
 	return [
@@ -1317,7 +1318,8 @@ function parseValueDestructure(value, context) {
 						if (child.type === "AssignmentPattern" && (parent.type === "ObjectProperty" || parent.type === "ArrayPattern")) {
 							isDynamic = true;
 							helper = isDom2 ? context.helper("getSharedDataDefaultValue") : context.helper("getDefaultValue");
-							helperArgs = rawValue.slice(child.right.start - 1, child.right.end - 1);
+							const rawDefault = rawValue.slice(child.right.start - 1, child.right.end - 1);
+							helperArgs = isDom2 ? rawDefault : `() => (${rawDefault})`;
 						}
 					}
 					map.set(id.name, {
@@ -1465,9 +1467,9 @@ function genSetHtml(oper, context) {
 //#region packages/compiler-vapor/src/generators/if.ts
 function genIf(oper, context, isNested = false) {
 	const { helper } = context;
-	const { condition, positive, negative, once, index, blockShape } = oper;
+	const { condition, positive, negative, once, slotRoot, index, blockShape } = oper;
 	const [frag, push] = buildCodeFragment();
-	const flags = genIfFlags(blockShape, once, negative ? index : void 0);
+	const flags = genIfFlags(blockShape, once, slotRoot, negative ? index : void 0);
 	const conditionExpr = [
 		"() => (",
 		...genExpression(condition, context),
@@ -1481,19 +1483,21 @@ function genIf(oper, context, isNested = false) {
 	push(...genCall(helper("createIf"), conditionExpr, positiveArg, negativeArg, flags));
 	return frag;
 }
-function genIfFlags(blockShape, once, index) {
+function genIfFlags(blockShape, once, slotRoot, index) {
 	let flags = blockShape;
+	if (slotRoot) flags |= 128;
 	if (once) flags |= 16;
-	else if (index !== void 0) flags |= index + 1 << 7;
+	else if (index !== void 0) flags |= index + 1 << 8;
 	if (flags === 1) return false;
-	return `${flags} /* ${genIfFlagNames(once, index, blockShape)} */`;
+	return `${flags} /* ${genIfFlagNames(once, slotRoot, index, blockShape)} */`;
 }
-function genIfFlagNames(once, index, blockShape) {
+function genIfFlagNames(once, slotRoot, index, blockShape) {
 	const names = ["BLOCK_SHAPE"];
 	if (blockShape & 32) names.push("TRUE_NO_SCOPE");
 	if (blockShape & 64) names.push("FALSE_NO_SCOPE");
 	if (once) names.push("ONCE");
-	else if (index !== void 0) names.push("INDEX_SHIFT");
+	if (slotRoot) names.push("SLOT_ROOT");
+	if (!once && index !== void 0) names.push("INDEX_SHIFT");
 	return names.join(", ");
 }
 //#endregion
@@ -1839,7 +1843,9 @@ function genCreateComponent(operation, context) {
 	const useAssetComponentHelper = operation.asset && !operation.dynamic && context.block === context.ir.block && !!singleUseAssetComponentNames && singleUseAssetComponentNames.has(operation.tag);
 	const maybeSelfReference = useAssetComponentHelper && operation.tag.endsWith("__self");
 	const tag = genTag();
-	const { root, props, slots, once } = operation;
+	const { root, props, slots, once, slotRoot } = operation;
+	const isRuntimeDynamicComponent = !!(operation.dynamic && !operation.dynamic.isStatic);
+	const dynamicComponentFlags = isRuntimeDynamicComponent ? (root ? 1 : 0) | (once ? 2 : 0) | (slotRoot ? 4 : 0) : 0;
 	const rawSlots = genRawSlots(slots, context);
 	const [ids, handlers] = processInlineHandlers(props, context);
 	const rawProps = context.withId(() => genRawProps(props, context, true), ids);
@@ -1855,7 +1861,7 @@ function genCreateComponent(operation, context) {
 			];
 		}, []),
 		`const n${operation.id} = `,
-		...genCall(operation.dynamic && !operation.dynamic.isStatic ? helper("createDynamicComponent") : operation.useCreateElement ? helper("createPlainElement") : useAssetComponentHelper ? helper("createAssetComponent") : operation.asset ? helper("createComponentWithFallback") : helper("createComponent"), tag, rawProps, rawSlots, root ? "true" : false, once && "true", maybeSelfReference && "true"),
+		...genCall(isRuntimeDynamicComponent ? helper("createDynamicComponent") : operation.useCreateElement ? helper("createPlainElement") : useAssetComponentHelper ? helper("createAssetComponent") : operation.asset ? helper("createComponentWithFallback") : helper("createComponent"), tag, rawProps, rawSlots, isRuntimeDynamicComponent ? dynamicComponentFlags ? String(dynamicComponentFlags) : false : root ? "true" : false, isRuntimeDynamicComponent ? false : once && "true", isRuntimeDynamicComponent ? false : maybeSelfReference && "true"),
 		...genDirectivesForElement(operation.id, context)
 	];
 	function genTag() {
@@ -2132,22 +2138,11 @@ function genDynamicSlot(slot, context, withFunction = false) {
 			break;
 	}
 	if (!withFunction) return frag;
-	return needsDynamicSlotSourceCtx(slot) ? [
-		`${context.helper("withVaporCtx")}(() => (`,
-		...frag,
-		"))"
-	] : [
+	return [
 		"() => (",
 		...frag,
 		")"
 	];
-}
-function needsDynamicSlotSourceCtx(slot) {
-	switch (slot.slotType) {
-		case 1: return needsVaporCtx(slot.fn);
-		case 2: return needsVaporCtx(slot.fn);
-		case 3: return needsDynamicSlotSourceCtx(slot.positive) || (slot.negative ? needsDynamicSlotSourceCtx(slot.negative) : false);
-	}
 }
 function genBasicDynamicSlot(slot, context) {
 	const { name, fn } = slot;
@@ -2193,7 +2188,7 @@ function genSlotBlockWithProps(oper, context) {
 	let propsName;
 	let exitScope;
 	let depth;
-	const { props, node } = oper;
+	const { props } = oper;
 	const idToPathMap = props ? parseValueDestructure(props, context) : /* @__PURE__ */ new Map();
 	if (props) if (props.ast) {
 		[depth, exitScope] = context.enterScope();
@@ -2202,24 +2197,12 @@ function genSlotBlockWithProps(oper, context) {
 	const idMap = idToPathMap.size ? buildDestructureIdMap(idToPathMap, propsName || "", context.options.expressionPlugins) : {};
 	if (propsName) idMap[propsName] = null;
 	const exitSlotBlock = context.enterSlotBlock();
+	markSlotRootOperations(oper);
 	let blockFn = context.withId(() => genBlock(oper, context, propsName ? [propsName] : []), idMap);
 	exitSlotBlock();
 	exitScope && exitScope();
-	if (node.type === 1) {
-		if (needsVaporCtx(oper)) blockFn = [
-			`${context.helper("withVaporCtx")}(`,
-			...blockFn,
-			`)`
-		];
-	}
 	return blockFn;
 }
-/**
-* Check if a slot block needs withVaporCtx wrapper.
-* Returns true if the block contains:
-* - Component creation (needs scopeId inheritance)
-* - Slot outlet (needs rawSlots from slot owner)
-*/
 function needsVaporCtx(block) {
 	return hasComponentOrSlotInBlock(block);
 }
@@ -2267,7 +2250,10 @@ function genSlotOutlet(oper, context) {
 	const { id, name, fallback, flags } = oper;
 	const [frag, push] = buildCodeFragment();
 	let fallbackArg;
-	if (fallback) fallbackArg = genBlock(fallback, context);
+	if (fallback) {
+		markSlotRootOperations(fallback);
+		fallbackArg = genBlock(fallback, context);
+	}
 	const createSlot = helper("createSlot");
 	const rawPropsArg = genRawProps(oper.props, context, true);
 	const nameArg = name.isStatic && name.content === "default" && !rawPropsArg && !fallbackArg && !flags ? void 0 : name.isStatic ? genExpression(name, context) : [
@@ -2601,6 +2587,42 @@ function genBlockContent(block, context, root, genEffectsExtraFrag) {
 	return frag;
 	function genResolveAssets(kind, helper) {
 		for (const name of context.ir[kind]) push(NEWLINE, `const ${(0, _vue_compiler_dom.toValidAssetId)(name, kind)} = `, ...genCall(context.helper(helper), JSON.stringify(name)));
+	}
+}
+function markSlotRootOperations(block) {
+	for (let i = 0; i < block.returns.length; i++) {
+		const child = findReturnedDynamic$1(block, block.returns[i]);
+		const operation = child && child.operation;
+		if (!operation) continue;
+		if (operation.type === 15) markSlotRootIf(operation);
+		else if (operation.type === 16) markSlotRootFor(operation);
+		else if (operation.type === 13) markSlotRootSlotOutlet(operation);
+		else if (operation.type === 12) markSlotRootComponent(operation);
+	}
+}
+function markSlotRootIf(operation) {
+	if (!operation.once) operation.slotRoot = true;
+	markSlotRootOperations(operation.positive);
+	const negative = operation.negative;
+	if (!negative) return;
+	if (negative.type === 15) markSlotRootIf(negative);
+	else markSlotRootOperations(negative);
+}
+function markSlotRootFor(operation) {
+	if (!operation.once) operation.slotRoot = true;
+	markSlotRootOperations(operation.render);
+}
+function markSlotRootSlotOutlet(operation) {
+	operation.flags |= 4;
+	if (operation.fallback) markSlotRootOperations(operation.fallback);
+}
+function markSlotRootComponent(operation) {
+	if (!operation.once && operation.dynamic && !operation.dynamic.isStatic) operation.slotRoot = true;
+}
+function findReturnedDynamic$1(block, id) {
+	for (let i = 0; i < block.dynamic.children.length; i++) {
+		const child = block.dynamic.children[i];
+		if (child.id === id) return child;
 	}
 }
 function collectSingleUseAssetComponents(block) {
@@ -4701,6 +4723,7 @@ exports.isStaticExpression = isStaticExpression;
 exports.isTeleportTag = isTeleportTag;
 exports.isTransitionGroupTag = isTransitionGroupTag;
 exports.isTransitionTag = isTransitionTag;
+exports.markSlotRootOperations = markSlotRootOperations;
 exports.matchKeyOnlyBindingPattern = matchKeyOnlyBindingPattern;
 exports.matchSelectorPattern = matchSelectorPattern;
 exports.needsVaporCtx = needsVaporCtx;

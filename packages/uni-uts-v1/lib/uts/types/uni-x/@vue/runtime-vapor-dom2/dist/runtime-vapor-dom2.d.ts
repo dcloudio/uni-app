@@ -59,15 +59,8 @@ type DynamicSlot = {
 };
 type DynamicSlotFn = () => DynamicSlot | DynamicSlot[];
 export type DynamicSlotSource = StaticSlots | DynamicSlotFn;
-/**
-* Wrap a slot function to track the slot owner.
-*
-* This ensures:
-* 1. createSlot gets rawSlots from the correct instance (slot owner)
-* 2. elements inherit the slot owner's scopeId
-*/
 export declare function withSharedDataVaporCtx(fn: (...args: any[]) => any, type?: "string"): BlockFn;
-export declare function createSharedDataSlot(name?: string | (() => string), rawProps?: LooseRawProps | null, setSharedDataSlotProps?: ((data: UniSharedData) => void) | null, fallback?: VaporSlot, flags?: number): void;
+export declare function createSharedDataSlot(name?: string | (() => string), rawProps?: LooseRawProps | null, setSharedDataSlotProps?: ((data: UniSharedData) => void) | null, fallback?: VaporSlot | null, flags?: number): void;
 export declare function createSharedDataScopedSlot<S extends UniSharedData>(sharedDataVFor: UniSharedDataVFor<S>, fn: VaporScopedSlot<S>): VaporScopedSlot<S>;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/component.d.ts
@@ -253,7 +246,7 @@ export declare function createMountPage(appContext: AppContext): (pageComponent:
 export declare function unmountPage(pageInstance: ComponentPublicInstance): void;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateIf.d.ts
-export declare function createSharedDataIf(condition: () => any, b1: () => void, b2?: (() => void) | null, once?: boolean): void;
+export declare function createSharedDataIf(condition: () => any, b1: () => void, b2?: (() => void) | null, flags?: number): void;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateFor.d.ts
 type ItemOf<S> = S extends readonly (infer T)[] ? T : S extends Reactive<readonly (infer T)[]> ? T : S extends Set<infer T> ? T : S extends Map<infer K, infer V> ? [K, V] : S extends string ? string : S extends number ? number : S extends Record<any, infer V> ? V : S extends Iterable<infer T> ? T : any;
@@ -289,7 +282,7 @@ export declare const onRecycle: typeof onBeforeRecycle;
 export declare const onReuse: typeof onReused;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateDynamicComponent.d.ts
-export declare function createSharedDataDynamicComponent(getter: () => any, setter: (ins: VaporSharedDataComponentInstance | null) => any, rawProps?: RawProps | null, rawSlots?: RawSlots | null, isSingleRoot?: boolean, once?: boolean): VaporSharedDataComponentInstance | null;
+export declare function createSharedDataDynamicComponent(getter: () => any, setter: (ins: VaporSharedDataComponentInstance | null) => any, rawProps?: RawProps | null, rawSlots?: RawSlots | null, flags?: number): VaporSharedDataComponentInstance | null;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateFragment.d.ts
 /**

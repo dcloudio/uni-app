@@ -21810,6 +21810,7 @@ declare class VaporFragment<T extends Block = Block> implements TransitionOption
   anchor?: Node;
   parentComponent?: GenericComponentInstance$1 | null;
   validityPending?: boolean;
+  isBlockValid?: () => boolean;
   insert?: (parent: ParentNode, anchor: Node | null, transitionHooks?: TransitionHooks) => void;
   remove?: (parent?: ParentNode, transitionHooks?: TransitionHooks) => void;
   hydrate?(...args: any[]): void;
@@ -21827,7 +21828,7 @@ declare class VaporFragment<T extends Block = Block> implements TransitionOption
 }
 declare class ForFragment extends VaporFragment<Block[]> {
   resetListeners?: (() => void)[];
-  constructor(nodes: Block[]);
+  constructor(nodes: Block[], trackSlotBoundary: boolean);
   onReset(fn: () => void): void;
 }
 declare class DynamicFragment extends VaporFragment {
@@ -21841,12 +21842,13 @@ declare class DynamicFragment extends VaporFragment {
   };
   anchorLabel?: string;
   keyed?: boolean;
+  isSlot?: boolean;
   inTransition?: boolean;
   hasFallthroughAttrs?: true;
   constructor(anchorLabel?: string, keyed?: boolean, locate?: boolean, trackSlotBoundary?: boolean);
-  update(render?: BlockFn, key?: any, noScope?: boolean): void;
-  renderBranch(render: BlockFn | undefined, transition: VaporTransitionHooks | undefined, parent: ParentNode | null, key: any, noScope?: boolean): void;
-  hydrate(isEmpty?: boolean, isSlot?: boolean): void;
+  update(render?: BlockFn, key?: any, noScope?: boolean, shouldInsert?: boolean): void;
+  renderBranch(render: BlockFn | undefined, transition: VaporTransitionHooks | undefined, parent: ParentNode | null, key: any, noScope?: boolean, notifyUpdated?: boolean): void;
+  hydrate(isEmpty?: boolean): void;
 }
 interface SlotBoundaryContext {
   parent: SlotBoundaryContext | null;
@@ -21904,6 +21906,9 @@ declare function renderEffect(fn: () => void, noLifecycle?: boolean): void;
 type RawSlots = Record<string, VaporSlot> & {
   $?: DynamicSlotSource[];
 };
+type LooseRawSlots = VaporSlot | (Record<string, VaporSlot | DynamicSlotSource[]> & {
+  $?: DynamicSlotSource[];
+});
 type StaticSlots = Record<string, VaporSlot>;
 type VaporSlot = BlockFn;
 type DynamicSlot = {
@@ -21912,13 +21917,6 @@ type DynamicSlot = {
 };
 type DynamicSlotFn = () => DynamicSlot | DynamicSlot[];
 type DynamicSlotSource = StaticSlots | DynamicSlotFn;
-/**
-* Wrap a slot function to track the slot owner.
-*
-* This ensures:
-* 1. createSlot gets rawSlots from the correct instance (slot owner)
-* 2. elements inherit the slot owner's scopeId
-*/
 declare function withVaporCtx(fn: Function): BlockFn;
 declare function createSlot(name?: string | (() => string), rawProps?: LooseRawProps | null, fallback?: VaporSlot, flags?: number): Block;
 //#endregion
@@ -21965,50 +21963,6 @@ declare function defineVaporComponent<TypeProps, RuntimePropsOptions extends Com
   __typeEl?: TypeBlock;
 } & ThisType<void>): DefineVaporComponent<RuntimePropsOptions, RuntimePropsKeys, InferredProps, ResolvedEmits, RuntimeEmitsKeys, Slots, Exposed extends Block ? Record<string, any> : Exposed, TypeBlock, TypeRefs, unknown extends TypeProps ? true : false>;
 //#endregion
-//#region packages/runtime-vapor/src/components/Teleport.d.ts
-declare class TeleportFragment extends VaporFragment {
-  /**
-  * @internal marker for duck typing to avoid direct instanceof check
-  * which prevents tree-shaking of TeleportFragment
-  */
-  readonly __isTeleportFragment = true;
-  anchor?: Node;
-  private rawProps?;
-  private resolvedProps?;
-  private rawSlots?;
-  isDisabled?: boolean;
-  private isMounted;
-  private childrenInitialized;
-  private readonly ownerInstance;
-  private readonly childrenScope;
-  target?: ParentNode | null;
-  targetAnchor?: Node | null;
-  targetStart?: Node | null;
-  placeholder?: Node;
-  mountContainer?: ParentNode | null;
-  mountAnchor?: Node | null;
-  private mountToTargetJob?;
-  constructor(props: LooseRawProps, slots?: RawSlots | null);
-  get parent(): ParentNode | null;
-  private initChildren;
-  private ensureChildrenInitialized;
-  private registerUpdateCssVars;
-  private bindChildren;
-  private handleChildrenUpdate;
-  private mount;
-  private mountToTarget;
-  private clearMainViewChildren;
-  private handlePropsUpdate;
-  insert: (container: ParentNode, anchor: Node | null) => void;
-  dispose: () => void;
-  remove: (_parent?: ParentNode) => void;
-  private hydrateTargetAnchors;
-  private hydrateDisabledTeleport;
-  private mountChildren;
-  hydrate: () => void;
-}
-declare const VaporTeleport: DefineVaporSetupFnComponent<TeleportProps>;
-//#endregion
 //#region packages/runtime-vapor/src/component.d.ts
 type VaporComponent = FunctionalVaporComponent<any> | VaporComponentOptions | DefineVaporComponent;
 type FunctionalVaporComponent<Props = {}, Emits extends EmitsOptions$1 = {}, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>> = ((props: Props & EmitsToProps$1<Emits>, ctx: {
@@ -22034,10 +21988,6 @@ interface VaporComponentOptions<Props = {}, Emits extends EmitsOptions$1 = {}, R
   name?: string;
   vapor?: boolean;
   components?: Record<string, VaporComponent>;
-  /**
-  * @internal custom element interception hook
-  */
-  ce?: (instance: VaporComponentInstance) => void;
 }
 interface SharedInternalOptions {
   /**
@@ -22058,10 +22008,7 @@ interface SharedInternalOptions {
 type LooseRawProps = Record<string, unknown> & {
   $?: DynamicPropsSource[];
 };
-type LooseRawSlots = VaporSlot | (Record<string, VaporSlot | DynamicSlotSource[]> & {
-  $?: DynamicSlotSource[];
-});
-declare function createComponent(component: VaporComponent, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean, once?: boolean, appContext?: GenericAppContext, managedMount?: boolean): VaporComponentInstance;
+declare function createComponent(component: VaporComponent, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean, once?: boolean, appContext?: GenericAppContext, managedMount?: boolean, ce?: (instance: VaporComponentInstance) => void): VaporComponentInstance;
 declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emits extends EmitsOptions$1 = {}, Slots extends StaticSlots = StaticSlots, Exposed extends Record<string, any> = Record<string, any>, TypeBlock extends Block = Block, TypeRefs extends Record<string, any> = Record<string, any>> implements GenericComponentInstance$1 {
   vapor: true;
   uid: number;
@@ -22094,7 +22041,6 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   asyncResolved: boolean;
   restoreAsyncContext?: () => void | (() => void);
   deferredHydrationBoundary?: () => void;
-  renderEffects?: RenderEffect[];
   hasFallthrough: boolean;
   shapeFlag?: number;
   $key?: any;
@@ -22122,10 +22068,10 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   devtoolsRawSetupState?: any;
   hmrRerender?: () => void;
   hmrReload?: (newComp: VaporComponent) => void;
-  parentTeleport?: TeleportFragment | null;
   propsOptions?: NormalizedPropsOptions;
   emitsOptions?: ObjectEmitsOptions | null;
   isSingleRoot?: boolean;
+  renderEffects?: RenderEffect[];
   /**
   * dev only flag to track whether $attrs was used during render.
   * If $attrs was used during render then the warning for failed attrs
@@ -22136,7 +22082,7 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   * @deprecated only used for JSX to detect props types.
   */
   $props: Props;
-  constructor(comp: VaporComponent, rawProps?: RawProps | null, rawSlots?: LooseRawSlots | null, appContext?: GenericAppContext, once?: boolean);
+  constructor(comp: VaporComponent, rawProps?: RawProps | null, rawSlots?: LooseRawSlots | null, appContext?: GenericAppContext, once?: boolean, ce?: (instance: VaporComponentInstance) => void);
   /**
   * Expose `getKeysFromRawProps` on the instance so it can be used in code
   * paths where it's needed, e.g. `useModel`
@@ -22174,6 +22120,9 @@ declare const vaporInteropPlugin: Plugin;
 type VaporDirective = (node: Element | VaporComponentInstance, value?: () => any, argument?: string, modifiers?: DirectiveModifiers) => (() => void) | void;
 type VaporDirectiveArguments = Array<[VaporDirective | undefined] | [VaporDirective | undefined, () => any] | [VaporDirective | undefined, (() => any) | undefined, argument: string] | [VaporDirective | undefined, value: (() => any) | undefined, argument: string | undefined, modifiers: DirectiveModifiers]>;
 declare function withVaporDirectives(node: Element | VaporComponentInstance, dirs: VaporDirectiveArguments): void;
+//#endregion
+//#region packages/runtime-vapor/src/components/Teleport.d.ts
+declare const VaporTeleport: DefineVaporSetupFnComponent<TeleportProps>;
 //#endregion
 //#region packages/runtime-vapor/src/components/KeepAlive.d.ts
 declare const VaporKeepAlive: DefineVaporComponent<{}, string, KeepAliveProps>;
@@ -22355,7 +22304,7 @@ interface ForSelector {
 declare function createSelector(source: () => any): ForSelector;
 declare function createForSlots(rawSource: Source, getSlot: (item: any, key: any, index?: number) => DynamicSlot): DynamicSlot[];
 declare function getRestElement(val: any, keys: string[]): any;
-declare function getDefaultValue(val: any, defaultVal: any): any;
+declare function getDefaultValue(val: any, getDefaultVal: () => any): any;
 //#endregion
 //#region packages/runtime-vapor/src/helpers/useCssVars.d.ts
 declare function useVaporCssVars(getter: () => Record<string, string>): void;
@@ -22366,7 +22315,7 @@ declare function setBlockKey(block: (Block & {
 }) | null | undefined, key: any): void;
 //#endregion
 //#region packages/runtime-vapor/src/apiCreateDynamicComponent.d.ts
-declare function createDynamicComponent(getter: () => any, rawProps?: RawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean, once?: boolean): VaporFragment;
+declare function createDynamicComponent(getter: () => any, rawProps?: RawProps | null, rawSlots?: LooseRawSlots | null, flags?: number): VaporFragment;
 //#endregion
 //#region packages/runtime-vapor/src/apiSetupHelpers.d.ts
 declare function withAsyncContext(getAwaitable: () => any): [any, () => void];
@@ -22530,6 +22479,7 @@ export interface IfIRNode extends BaseIRNode, EffectBoundary {
   positive: BlockIRNode;
   negative?: BlockIRNode | IfIRNode;
   once?: boolean;
+  slotRoot?: boolean;
   index?: number;
   parent?: number;
   anchor?: number;
@@ -22549,6 +22499,7 @@ export interface ForIRNode extends BaseIRNode, IRFor, EffectBoundary {
   typeProp?: SimpleExpressionNode;
   render: BlockIRNode;
   once: boolean;
+  slotRoot?: boolean;
   component: boolean;
   onlyChild: boolean;
   parent?: number;
@@ -22670,6 +22621,7 @@ export interface CreateComponentIRNode extends BaseIRNode, EffectBoundary {
   asset: boolean;
   root: boolean;
   once: boolean;
+  slotRoot?: boolean;
   dynamic?: SimpleExpressionNode;
   useCreateElement: boolean;
   parent?: number;
@@ -23012,13 +22964,10 @@ export declare function matchSelectorPattern(effect: IREffect, key: string, idMa
   selector: SimpleExpressionNode;
 } | undefined;
 //#endregion
+//#region temp/packages/compiler-vapor/src/generators/block.d.ts
+export declare function markSlotRootOperations(block: BlockIRNode): void;
+//#endregion
 //#region temp/packages/compiler-vapor/src/generators/component.d.ts
-/**
-* Check if a slot block needs withVaporCtx wrapper.
-* Returns true if the block contains:
-* - Component creation (needs scopeId inheritance)
-* - Slot outlet (needs rawSlots from slot owner)
-*/
 export declare function needsVaporCtx(block: BlockIRNode): boolean;
 //#endregion
 export { parse,  };
