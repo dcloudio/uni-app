@@ -144,7 +144,18 @@ function initUniStatistics(manifestJson: Record<string, any>) {
   if (!uniStatistics) {
     return
   }
-  if (uniStatistics.version === 2 || uniStatistics.version === '2') {
+
+  /**
+   * 判断是否为私有版统计：
+   * - 新配置：type === 'private'
+   * - 旧配置兼容：version === 2
+   */
+  const isPrivateStat =
+    uniStatistics.type === 'private' ||
+    uniStatistics.version === 2 ||
+    uniStatistics.version === '2'
+
+  if (isPrivateStat) {
     if (uniStatistics.uniCloud && uniStatistics.uniCloud.spaceId) {
       return
     }
