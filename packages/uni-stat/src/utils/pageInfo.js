@@ -1,6 +1,8 @@
 import { sys } from './util.js'
 
 import { DIFF_TIME, STAT_URL, STAT_VERSION } from '../config.ts'
+import { logCollect } from '../public/infra/debugLog.ts'
+import { logger } from '../public/infra/logger.ts'
 import {
 	dbGet,
 	dbSet,
@@ -11,7 +13,9 @@ let statConfig = {
   appid: process.env.UNI_APP_ID,
 }
 let titleJsons = {}
-let debug = !!process.env.UNI_STAT_DEBUG || false
+let debug =
+  process.env.UNI_STAT_DEBUG === 'true' ||
+  process.env.UNI_STAT_DEBUG === true
 // #ifdef VUE3
 titleJsons = process.env.UNI_STAT_TITLE_JSON
 // #endif
@@ -505,52 +509,18 @@ export const get_space = (config) => {
 export const is_debug = debug
 
 /**
- * 日志输出
- * @param {*} data
+ * 日志输出（采集 / 上报过程日志，文案与公有版 `debugLog` 对齐）。
+ * @param {*} data 采集事件或上报 payload
+ * @param {*} type 为真时表示上报阶段
  */
 export const log = (data, type) => {
-  let msg_type = ''
-  switch (data.lt) {
-    case '1':
-      msg_type = '应用启动'
-      break
-    case '3':
-      msg_type = '应用进入后台'
-      break
-
-    case '11':
-      msg_type = '页面切换'
-      break
-    case '21':
-      msg_type = '事件触发'
-      break
-    case '31':
-      msg_type = '应用错误'
-      break
-    case '101':
-      msg_type = 'PUSH'
-      break
-  }
-
-  // #ifdef APP
-  // 在 app 中，日志转为 字符串
-  if (typeof data === 'object') {
-    data = JSON.stringify(data)
-  }
-  // #endif
-
+  if (!logger.isDebug()) return
   if (type) {
-    console.log(`=== 统计队列数据上报 ===`)
-    console.log(data)
-    console.log(`=== 上报结束 ===`)
+    logger.debug('=== 准备上报 ===')
+    logger.debug(data)
     return
   }
-
-  if (msg_type) {
-    console.log(`=== 统计数据采集：${msg_type} ===`)
-    console.log(data)
-    console.log(`=== 采集结束 ===`)
-  }
+  logCollect(data)
 }
 
 /**

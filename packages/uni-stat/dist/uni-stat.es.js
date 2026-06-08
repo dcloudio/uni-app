@@ -21,6 +21,409 @@ const APP_PVER_TIME = 300; // 应用在后台结束访问时间 单位s
 const OPERATING_TIME = 10; // 数据上报时间 单位s
 const DIFF_TIME = 60 * 1000 * 60 * 24;
 
+/**
+ * 事件类型与会话创建类型常量。
+ *
+ * 与私有版 / 文档 `uni统计上报参数.md` 的兼容关系：
+ *   - 上行参数文档明确：`lt` 仅取 `1 / 3 / 11 / 21 / 31 / 41`，**没有** `lt=0`。
+ *   - 历史架构文档（03-公有版架构设计.md §3.2）曾设计 `lt=0` 作为"客户端 session 边界"事件，
+ *     但与服务端入库口径不一致（会话日志 = lt=1），已**整体移除**：
+ *     新会话直接发一条 lt=1，会话字段（`sid / cst / fvts / lvts / tvc`）随 lt=1 上行。
+ *   - 因此 `LT` 不再包含 `Session`；删除 lt=0 不影响老接收端。
+ */
+/**
+ * Log Type（事件类型）。统一在此声明，禁止其他模块裸写字符串。
+ *
+ * 注：`lt=41`（uni-app x 原生崩溃日志）暂未在公有版实现，详见 `docs/暂未实现字段说明.md`。
+ */
+const LT = {
+    Launch: '1',
+    Hide: '3',
+    Page: '11',
+    Event: '21',
+    Error: '31',
+    Push: '101',
+};
+
+/******************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+/* global Reflect, Promise, SuppressedError, Symbol, Iterator */
+
+
+typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+};
+
+/**
+ * 安全工具集：序列化、try 包裹、指数退避重试。
+ *
+ * 修复缺陷：
+ *   - #1 `_retry` 未初始化导致重试链路 NaN（公有版直接以参数显式传 `times`）。
+ *   - #7 取值反向（私有版 `if (data.length > MAX_LENGTH)` 误判）。
+ *   - #8 循环引用导致 `JSON.stringify` 抛错（用 WeakSet replacer 兜底）。
+ */
+const DEFAULT_MAX_LENGTH = 4096;
+const TRUNCATED_SUFFIX = '…[truncated]';
+/**
+ * 序列化任意值为字符串：支持循环引用与最大长度截断。
+ *
+ * @param value 待序列化的值。`undefined` 返回 ''；string 直接返回（仍参与截断）。
+ * @param max   字符串最大长度，默认 4096；超长会截断并附 `…[truncated]`。
+ */
+function safeStringify(value, max = DEFAULT_MAX_LENGTH) {
+    var _a;
+    if (value === undefined)
+        return '';
+    let raw;
+    if (typeof value === 'string') {
+        raw = value;
+    }
+    else {
+        const seen = new WeakSet();
+        try {
+            raw =
+                (_a = JSON.stringify(value, (_key, val) => {
+                    if (typeof val === 'object' && val !== null) {
+                        if (seen.has(val))
+                            return '[Circular]';
+                        seen.add(val);
+                    }
+                    if (typeof val === 'bigint')
+                        return val.toString();
+                    if (typeof val === 'function')
+                        return `[Function ${val.name || 'anonymous'}]`;
+                    return val;
+                })) !== null && _a !== void 0 ? _a : '';
+        }
+        catch (e) {
+            raw = `[Unserializable: ${e.message}]`;
+        }
+    }
+    if (raw.length > max) {
+        return (raw.slice(0, Math.max(0, max - TRUNCATED_SUFFIX.length)) +
+            TRUNCATED_SUFFIX);
+    }
+    return raw;
+}
+
+/**
+ * 解析 uni-app 运行时根对象 `uni`。
+ *
+ * - H5 / App：常见为 `globalThis.uni`。
+ * - 微信小程序等：多为 Vite/rollup 向**当前模块**注入的标识符 `uni`，
+ *   **未必**同步挂到 `globalThis`；仅读 `globalThis.uni` 会导致
+ *   `bindLifecycle` / `uni.request` / storage 等全部静默失败。
+ * - 支付宝等旧版小程序：**无 `globalThis` 标识符**，须用 `getGlobalObject()` 兜底。
+ * - H5 发行摇树：`pages.json.js` 会先把 `window.uni = {}` 占位；若仍按「有 object 即用」
+ *   会误把空桩当真 uni。须用 `isUsableUniRuntime` 过滤后再择源。
+ *
+ * 第二路依赖宿主构建对 `uni` 的注入（与业务页面同一套解析规则），
+ * 类型兜底见 `packages/uni-stat/src/uni-global.d.ts`。
+ */
+/**
+ * 判断候选 `uni` 是否具备统计 SDK 可用的最小 API 集合（排除 H5 摇树空桩 `{}`）。
+ *
+ * 任一核心 API 存在即视为可用；与具体平台无关，微信/QQ/抖音/支付宝/百度等
+ * 完整 runtime 均满足，仅「占位空对象」会被过滤。
+ */
+/**
+ * H5 兜底：在 `globalThis` / `self` 不可用时尝试读取 `window`。
+ *
+ * 通过 `Function` 间接访问，避免 ESLint `no-restricted-globals` 对 `window` 标识符的限制；
+ * 小程序等环境执行失败时返回 `undefined`。
+ */
+function getWindowObject() {
+    try {
+        const w = Function('return typeof window !== "undefined" ? window : undefined')();
+        return w != null ? w : undefined;
+    }
+    catch (_a) {
+        return undefined;
+    }
+}
+/**
+ * 安全获取全局对象。
+ *
+ * 支付宝 / 部分旧版小程序运行时未提供 `globalThis`，直接写 `globalThis` 会
+ * `ReferenceError: globalThis is not defined`，导致 install 阶段整包崩溃。
+ */
+function getGlobalObject() {
+    if (typeof globalThis !== 'undefined' && globalThis != null) {
+        return globalThis;
+    }
+    if (typeof global !== 'undefined' && global != null) {
+        return global;
+    }
+    if (typeof self !== 'undefined' && self != null) {
+        return self;
+    }
+    const win = getWindowObject();
+    if (win)
+        return win;
+    return {};
+}
+
+/**
+ * 公有版统一日志出口。
+ *
+ * 修复的私有版缺陷：
+ *   - #19 `!!process.env.UNI_STAT_DEBUG` 在构建时若被替换为字符串 `"false"` 仍是 truthy。
+ *     公有版严格使用 `=== 'true'` 判定，并允许在运行时通过 `setDebug()` 临时打开
+ *     （供调试 / 灰度小流量验证）。
+ *
+ * 行为约定：
+ *   - `debug` 受调试开关控制；其他 level 始终输出到对应的 `console.*`。
+ *   - **Android / iOS 真机**：`TAG` 与正文拼成单条字符串，避免桥接丢弃第二参起。
+ *   - **其它平台**：`console.*(TAG, ...args)`，对象保持原生传递。
+ *
+ * 兼容性：
+ *   - 历史版本插件 define 误把 `process.env.UNI_STAT_DEBUG` 替换成布尔字面量
+ *     （未 `JSON.stringify`），导致 dist 运行时该值为 `true`/`false` 而非 `'true'`/`'false'`。
+ *     `isDebug()` 同时接受字符串 `'true'` 与布尔字面量 `true`，避免历史构建产物完全失效。
+ */
+const TAG = '[uni统计 2.0]';
+let runtimeDebug;
+/**
+ * 是否屏蔽 info / warn / error。
+ * `undefined`：自动——`NODE_ENV === 'test'` 时默认屏蔽，避免 Jest 用例预期失败路径刷屏。
+ */
+let muteNonDebug;
+/**
+ * 是否将日志合并为单行（Android / iOS 真机侧）。
+ */
+function preferSingleLineConsole() {
+    return isAndroidOrIosRuntime();
+}
+/**
+ * 是否为 App 或小程序运行在 **Android / iOS** 上（仅此类环境对对象参数做字符串化）。
+ */
+function isAndroidOrIosRuntime() {
+    var _a, _b, _c, _d, _e, _f, _g, _h;
+    const raw = (_a = process.env.UNI_PLATFORM) !== null && _a !== void 0 ? _a : '';
+    const g = getGlobalObject();
+    if (raw === 'app' || raw === 'app-plus' || raw === 'app-harmony') {
+        const n = (_d = (_c = (_b = g.plus) === null || _b === void 0 ? void 0 : _b.os) === null || _c === void 0 ? void 0 : _c.name) === null || _d === void 0 ? void 0 : _d.toLowerCase();
+        if (!n)
+            return false;
+        if (n.includes('android'))
+            return true;
+        if (n === 'ios' || n.includes('iphone'))
+            return true;
+        return false;
+    }
+    if (raw.startsWith('mp-')) {
+        try {
+            const p = (_h = (_g = (_f = (_e = g.uni) === null || _e === void 0 ? void 0 : _e.getSystemInfoSync) === null || _f === void 0 ? void 0 : _f.call(_e)) === null || _g === void 0 ? void 0 : _g.platform) === null || _h === void 0 ? void 0 : _h.toLowerCase();
+            return p === 'android' || p === 'ios';
+        }
+        catch (_j) {
+            return false;
+        }
+    }
+    return false;
+}
+/**
+ * 在 Android/iOS 上将「对象类」参数转为可打印字符串；其余类型原样返回。
+ */
+function stringifyObjectArgForNative(value) {
+    if (value === null || value === undefined)
+        return value;
+    if (typeof value !== 'object')
+        return value;
+    if (value instanceof Error)
+        return `${value.name}: ${value.message}`;
+    return safeStringify(value);
+}
+/**
+ * 将单段日志参数格式化为可拼进一行文本的片段（Android/iOS 单参输出用）。
+ */
+function formatLogArgForNativeConsole(value) {
+    if (value === null)
+        return 'null';
+    if (value === undefined)
+        return 'undefined';
+    if (typeof value === 'string')
+        return value;
+    if (typeof value === 'number' || typeof value === 'boolean') {
+        return String(value);
+    }
+    if (typeof value === 'bigint')
+        return String(value);
+    if (typeof value === 'symbol') {
+        try {
+            return value.toString();
+        }
+        catch (_a) {
+            return '?';
+        }
+    }
+    if (typeof value === 'function') {
+        const fn = value;
+        return `[Function ${fn.name || 'anonymous'}]`;
+    }
+    if (typeof value === 'object') {
+        if (value instanceof Error)
+            return `${value.name}: ${value.message}`;
+        return safeStringify(value);
+    }
+    return String(value);
+}
+/**
+ * 当前是否应屏蔽 info / warn / error（debug 仍由 `isDebug()` 单独控制）。
+ */
+function isNonDebugMuted() {
+    if (muteNonDebug !== undefined)
+        return muteNonDebug;
+    return process.env.NODE_ENV === 'test';
+}
+/**
+ * 测试 / CI 下临时恢复 warn 等输出（如断言 install 告警文案）。
+ *
+ * @param value `true` 屏蔽；`false` 允许；`undefined` 恢复为按 NODE_ENV 自动判定。
+ */
+function setMuteNonDebug(value) {
+    muteNonDebug = value;
+}
+/**
+ * 输出到 console：Android/iOS 真机整行单参；其余平台 `TAG` + 多参。
+ */
+function emitConsole(method, args) {
+    if (method !== 'log' && isNonDebugMuted())
+        return;
+    const fn = console[method];
+    if (!preferSingleLineConsole()) {
+        fn.call(console, TAG, ...args);
+        return;
+    }
+    const mapped = isAndroidOrIosRuntime()
+        ? args.map(stringifyObjectArgForNative)
+        : args;
+    if (mapped.length === 0) {
+        fn.call(console, TAG);
+        return;
+    }
+    const body = mapped.map(formatLogArgForNativeConsole).join(' ');
+    fn.call(console, `${TAG} ${body}`);
+}
+/**
+ * 当前是否启用 debug 输出。优先级：
+ *   1. `setDebug(value)` 显式设置过 → 直接返回。
+ *   2. `process.env.UNI_STAT_DEBUG === 'true'` 或被构建期替换为布尔字面量 `true`
+ *      （历史插件兼容路径）。
+ */
+function isDebug() {
+    if (runtimeDebug !== undefined)
+        return runtimeDebug;
+    const v = process.env.UNI_STAT_DEBUG;
+    return v === 'true' || v === true;
+}
+/**
+ * 运行时切换 debug 开关；传 `undefined` 恢复为「按 process.env 判断」。
+ */
+function setDebug(value) {
+    runtimeDebug = value;
+}
+const logger = {
+    debug(...args) {
+        if (!isDebug())
+            return;
+        // eslint-disable-next-line no-console
+        emitConsole('log', args);
+    },
+    info(...args) {
+        // eslint-disable-next-line no-console
+        emitConsole('info', args);
+    },
+    warn(...args) {
+        // eslint-disable-next-line no-console
+        emitConsole('warn', args);
+    },
+    error(...args) {
+        // eslint-disable-next-line no-console
+        emitConsole('error', args);
+    },
+    setDebug,
+    isDebug,
+    setMuteNonDebug,
+};
+
+/**
+ * 公有版调试日志：面向业务方的"采集 / 上报"过程日志封装。
+ *
+ * 与 `logger.debug` 的差异：
+ *   - `logger.debug` 是底层 console.log + 闸门；调用点散落，文案随意。
+ *   - 本模块提供**统一文案 / 统一格式**的高层包装，覆盖：
+ *       1. 采集动作：每个 lt 都有中文动作名 +「采集 → 数据」标记。
+ *       2. 上报生命周期：开始 / 成功 / 失败 / 冷启续传。
+ *       3. 启动摘要：通道版本、上报间隔、ak 是否就位等。
+ *   - 所有 helper 都内嵌 `logger.isDebug()` 判断；非 debug 模式下零开销，
+ *     调用方无需再写 `if (logger.isDebug()) ...`。
+ *
+ * 文案风格参考私有版 `utils/pageInfo.js#log`：直接面向业务调试，**中文**为主，
+ * 关键字段（lt / 通道 / 用时 / 错误原因）一目了然。
+ *
+ * 注意：不在此处吞错；任意 console.log 异常仍会冒泡。运行时调用方需要 `tryRun` 兜底
+ * 时自行处理（一般 console.log 不会抛错，故未做包装）。
+ */
+/**
+ * `lt` → 用户友好的中文动作名映射。
+ *
+ * 与私有版 `pageInfo.js#log` 的 msg_type 对齐。
+ * 注：`lt=0` 已废弃（详见 `domain/eventTypes.ts` 头注释），新会话信息直接随 lt=1 上行。
+ *
+ * 未知 lt 走默认 "未知事件 (lt=X)"，便于排查异常上行。
+ */
+function getActionLabel(lt) {
+    switch (lt) {
+        case LT.Launch:
+            return '应用启动';
+        case LT.Hide:
+            return '应用进入后台';
+        case LT.Page:
+            return '页面切换';
+        case LT.Event:
+            return '事件触发';
+        case LT.Error:
+            return '应用错误';
+        case LT.Push:
+            return 'PUSH 设备标识';
+        default:
+            return `未知事件 (lt=${String(lt !== null && lt !== void 0 ? lt : '?')})`;
+    }
+}
+/**
+ * 单次事件采集日志。
+ *
+ * 文案示意：
+ *   ```text
+ *   [uni统计 2.0] === 统计数据采集：应用启动 (lt=1) ===
+ *   [uni统计 2.0] {lt: '1', t: 1714123456, ut: 'h5', ...}
+ *   [uni统计 2.0] === 采集结束 ===
+ *   ```
+ */
+function logCollect(data) {
+    if (!logger.isDebug())
+        return;
+    const lt = data.lt;
+    const label = getActionLabel(lt);
+    logger.debug(`=== 统计数据采集：${label} (lt=${String(lt !== null && lt !== void 0 ? lt : '?')}) ===`);
+    logger.debug(data);
+    logger.debug('=== 采集结束 ===');
+}
+
 const appid = process.env.UNI_APP_ID; // 做应用隔离
 const dbSet = (name, value) => {
   let data = uni.getStorageSync('$$STAT__DBDATA:'+appid) || {};
@@ -67,7 +470,9 @@ let statConfig = {
   appid: process.env.UNI_APP_ID,
 };
 let titleJsons = {};
-let debug = !!process.env.UNI_STAT_DEBUG || false;
+let debug =
+  process.env.UNI_STAT_DEBUG === 'true' ||
+  process.env.UNI_STAT_DEBUG === true;
 // #ifdef VUE3
 titleJsons = process.env.UNI_STAT_TITLE_JSON;
 // #endif
@@ -517,52 +922,18 @@ const requestData = (done) => {
 const is_debug = debug;
 
 /**
- * 日志输出
- * @param {*} data
+ * 日志输出（采集 / 上报过程日志，文案与公有版 `debugLog` 对齐）。
+ * @param {*} data 采集事件或上报 payload
+ * @param {*} type 为真时表示上报阶段
  */
 const log = (data, type) => {
-  let msg_type = '';
-  switch (data.lt) {
-    case '1':
-      msg_type = '应用启动';
-      break
-    case '3':
-      msg_type = '应用进入后台';
-      break
-
-    case '11':
-      msg_type = '页面切换';
-      break
-    case '21':
-      msg_type = '事件触发';
-      break
-    case '31':
-      msg_type = '应用错误';
-      break
-    case '101':
-      msg_type = 'PUSH';
-      break
-  }
-
-  // #ifdef APP
-  // 在 app 中，日志转为 字符串
-  if (typeof data === 'object') {
-    data = JSON.stringify(data);
-  }
-  // #endif
-
+  if (!logger.isDebug()) return
   if (type) {
-    console.log(`=== 统计队列数据上报 ===`);
-    console.log(data);
-    console.log(`=== 上报结束 ===`);
+    logger.debug('=== 准备上报 ===');
+    logger.debug(data);
     return
   }
-
-  if (msg_type) {
-    console.log(`=== 统计数据采集：${msg_type} ===`);
-    console.log(data);
-    console.log(`=== 采集结束 ===`);
-  }
+  logCollect(data);
 };
 
 /**
@@ -1579,7 +1950,7 @@ function main() {
   if (is_debug) {
     {
       // #ifndef APP-NVUE
-      console.log('=== uni统计开启,version:1.0 ===');
+      logger.debug('=== uni统计 1.0 已启用 ===');
       // #endif
     }
     load_stat();
