@@ -35,6 +35,9 @@ const {
   hasPushModule,
   isEnableSecureNetwork
 } = require('@dcloudio/uni-cli-shared/lib/manifest')
+const {
+  resolveStatEnable
+} = require('@dcloudio/uni-cli-shared/lib/stat')
 
 const manifestJsonObj = getManifestJson()
 
@@ -497,16 +500,13 @@ function resolveUniStatType (uniStatistics) {
 
 /**
  * 是否应向 main 入口自动 import 统计运行时。
- * uni-app x 暂不自动 import；无统计节点或未配 enable 默认开启，仅根节点 enable === false 关闭。
+ * uni-app x 暂不自动 import；enable 按子→根→默认(true) 三级规则解析。
  */
-function shouldAutoImportStatRuntime (rootStat) {
+function shouldAutoImportStatRuntime (rootStat, platformStat) {
   if (process.env.UNI_APP_X === 'true') {
     return false
   }
-  if (!rootStat) {
-    return true
-  }
-  return rootStat.enable !== false
+  return resolveStatEnable(rootStat, platformStat)
 }
 
 /** 构建期统计提示输出（与 uni-stat vite 插件 uniStatLog 一致） */
@@ -554,18 +554,18 @@ if (
   process.env.UNI_PLATFORM === 'h5'
 ) { // 自定义组件模式或 h5 平台
   const rootStat = manifestJsonObj.uniStatistics
+  const platformStat = platformOptions.uniStatistics
   const uniStatistics = Object.assign(
     {},
     rootStat || {},
-    platformOptions.uniStatistics || {}
+    platformStat || {}
   )
-  const statExplicitlyDisabled = !!(rootStat && rootStat.enable === false)
 
   // 始终注入完整 manifest.uniStatistics；enable 仅控制是否自动 import
   process.env.UNI_STATISTICS_CONFIG = JSON.stringify(uniStatistics)
   process.env.UNI_STAT_DEBUG = uniStatistics.debug === true ? 'true' : 'false'
 
-  if (!statExplicitlyDisabled && shouldAutoImportStatRuntime(rootStat)) {
+  if (shouldAutoImportStatRuntime(rootStat, platformStat)) {
     const statType = resolveUniStatType(uniStatistics)
     const platform = process.env.UNI_PLATFORM
     let autoImport = true
