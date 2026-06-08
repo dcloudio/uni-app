@@ -327,8 +327,13 @@ function resolveUniRuntime() {
  *     （未 `JSON.stringify`），导致 dist 运行时该值为 `true`/`false` 而非 `'true'`/`'false'`。
  *     `isDebug()` 同时接受字符串 `'true'` 与布尔字面量 `true`，避免历史构建产物完全失效。
  */
-const TAG = '[uni统计公有版]';
+const TAG = '[uni统计 2.0]';
 let runtimeDebug;
+/**
+ * 是否屏蔽 info / warn / error。
+ * `undefined`：自动——`NODE_ENV === 'test'` 时默认屏蔽，避免 Jest 用例预期失败路径刷屏。
+ */
+let muteNonDebug;
 /**
  * 是否将日志合并为单行（Android / iOS 真机侧）。
  */
@@ -410,9 +415,27 @@ function formatLogArgForNativeConsole(value) {
     return String(value);
 }
 /**
+ * 当前是否应屏蔽 info / warn / error（debug 仍由 `isDebug()` 单独控制）。
+ */
+function isNonDebugMuted() {
+    if (muteNonDebug !== undefined)
+        return muteNonDebug;
+    return process.env.NODE_ENV === 'test';
+}
+/**
+ * 测试 / CI 下临时恢复 warn 等输出（如断言 install 告警文案）。
+ *
+ * @param value `true` 屏蔽；`false` 允许；`undefined` 恢复为按 NODE_ENV 自动判定。
+ */
+function setMuteNonDebug(value) {
+    muteNonDebug = value;
+}
+/**
  * 输出到 console：Android/iOS 真机整行单参；其余平台 `TAG` + 多参。
  */
 function emitConsole(method, args) {
+    if (method !== 'log' && isNonDebugMuted())
+        return;
     const fn = console[method];
     if (!preferSingleLineConsole()) {
         fn.call(console, TAG, ...args);
@@ -467,6 +490,7 @@ const logger = {
     },
     setDebug,
     isDebug,
+    setMuteNonDebug,
 };
 
 /**
@@ -523,7 +547,7 @@ function getUni$9() {
         ? raw
         : undefined;
     if (!u || typeof u.getStorageSync !== 'function') {
-        throw new Error('[uni统计公有版] uni storage API is not available');
+        throw new Error('[uni统计 2.0] uni storage API is not available');
     }
     return u;
 }
@@ -745,6 +769,25 @@ function toNum(v) {
     return 0;
 }
 /**
+ * snapshot 是否「确实是一台全新设备」：三字段全 0。
+ *
+ * 用于消费 `degraded`：storage 读取异常时 `lvts` 会退化为 0 而误判 `isNewUser=true`。
+ * 若此时 `fvts/tvc` 仍读到非 0（说明是老用户、只是 lvts 这一项读失败），就**不能**当新增，
+ * 也不能落库覆盖真实持久值；只有三字段都为 0 才是可信的全新设备。
+ */
+function isLikelyFreshDevice(snap) {
+    return snap.fvts === 0 && snap.lvts === 0 && snap.tvc === 0;
+}
+/**
+ * 是否为「可信的新用户」：非 degraded 直接信任 `isNewUser`；degraded 时仅当三字段全 0
+ * （`isLikelyFreshDevice`）才信任，否则视为「读失败的老用户」，走老用户兜底路径。
+ */
+function isTrustworthyNewUser(snap) {
+    if (!snap.isNewUser)
+        return false;
+    return !snap.degraded || isLikelyFreshDevice(snap);
+}
+/**
  * 从 storage 读取 snapshot。**纯读，无副作用**（spy `storage.set` 必须 not.toHaveBeenCalled）。
  *
  * 异常处理：
@@ -769,7 +812,7 @@ function loadVisitSnapshot() {
     if (degraded) {
         const likelyFresh = fvts === 0 && lvts === 0 && tvc === 0 && snapshot.isNewUser;
         if (!likelyFresh) {
-            logger.warn('[uni-stat] visit snapshot degraded; some storage keys read failed');
+            logger.warn('[uni统计 2.0] visit snapshot degraded; some storage keys read failed');
         }
     }
     loaded = snapshot;
@@ -830,13 +873,20 @@ function persistNewUserBaseline(now) {
 function buildVisitFields(now) {
     const snap = ensureLoaded();
     if (buildCalledInProcess && lastBuilt) {
-        logger.warn('[uni-stat] buildVisitFields() called twice in same process; returning cached fields');
+        logger.warn('[uni统计 2.0] buildVisitFields() called twice in same process; returning cached fields');
         return Object.assign({}, lastBuilt);
     }
     buildCalledInProcess = true;
-    if (snap.isNewUser) {
+    if (isTrustworthyNewUser(snap)) {
         pending = { fvts: now, lvts: 0, tvc: 1, now };
         persistNewUserBaseline(now);
+    }
+    else if (snap.isNewUser) {
+        // degraded 且非全新设备：lvts 读失败被误当 0。按老用户兜底，**不**上报 lvts=0、
+        // **不**落库基线（storage 不可靠），避免新增虚高与覆盖真实持久值。
+        logger.warn('[uni统计 2.0] visit degraded: lvts 读取失败但检测到历史数据，按老用户处理以避免新增虚高');
+        const fvts = snap.fvts > 0 ? snap.fvts : now;
+        pending = { fvts, lvts: fvts, tvc: snap.tvc + 1, now };
     }
     else {
         pending = {
@@ -879,13 +929,19 @@ function buildVisitFieldsForSessionRenewal(now) {
     }
     else {
         const snap = ensureLoaded();
-        if (snap.isNewUser) {
+        if (isTrustworthyNewUser(snap)) {
             // 续会话成为本进程首条 lt=1 且命中新用户（罕见：未走过冷启 build）：本条仍按
             // lvts=0 计一次新增，并立即落库基线，保证只计一次。
             fvts = now;
             lvts = 0;
             tvc = 1;
             persistNewUserBaseline(now);
+        }
+        else if (snap.isNewUser) {
+            // degraded 且非全新设备：按老用户兜底，不上报 lvts=0、不落库基线。
+            fvts = snap.fvts > 0 ? snap.fvts : now;
+            lvts = fvts;
+            tvc = snap.tvc + 1;
         }
         else {
             fvts = snap.fvts;
@@ -1486,21 +1542,33 @@ function getUuid() {
         cachedUuid = sysDeviceId;
         return cachedUuid;
     }
-    const stored = storage.get(STORAGE_KEY_UUID);
-    if (typeof stored === 'string' && stored.length > 0) {
-        if (stored.startsWith('device-anon-')) {
-            const upgraded = generateAnonUuid();
-            tryRun(() => storage.set(STORAGE_KEY_UUID, upgraded), undefined);
-            cachedUuid = upgraded;
+    // 用 safeRead 区分「确无历史值」与「storage 读取异常」：
+    //   - 读取异常时**绝不**重新生成并落库，否则会覆盖磁盘上可能仍存在的真实 did，
+    //     导致同一设备跨进程 did 漂移（设备去重失真）。改为生成**仅本进程有效**的临时
+    //     did，不持久化；待 storage 恢复后下次冷启仍读回原值。
+    const storedRead = storage.safeRead(STORAGE_KEY_UUID);
+    if (storedRead.ok) {
+        const stored = storedRead.value;
+        if (typeof stored === 'string' && stored.length > 0) {
+            if (stored.startsWith('device-anon-')) {
+                const upgraded = generateAnonUuid();
+                tryRun(() => storage.set(STORAGE_KEY_UUID, upgraded), undefined);
+                cachedUuid = upgraded;
+                return cachedUuid;
+            }
+            cachedUuid = stored;
             return cachedUuid;
         }
-        cachedUuid = stored;
+        // 读取成功且确实无历史值 → 首次生成并落库。
+        const generated = generateAnonUuid();
+        tryRun(() => storage.set(STORAGE_KEY_UUID, generated), undefined);
+        cachedUuid = generated;
         return cachedUuid;
     }
-    const generated = generateAnonUuid();
-    tryRun(() => storage.set(STORAGE_KEY_UUID, generated), undefined);
-    cachedUuid = generated;
-    return cachedUuid;
+    // storage 读取异常：生成临时 did（不落库），保证本次上报字段非空，且不污染持久值。
+    const ephemeral = generateAnonUuid();
+    cachedUuid = ephemeral;
+    return ephemeral;
 }
 
 /**
@@ -1519,7 +1587,7 @@ const SUFFIX_TAIL_LEN = 4;
 /**
  * 生成 base36 随机串。
  *
- * @param len 期望长度；不足时用 '0' 左填充以保证视觉与碰撞概率稳定。
+ * @param len 期望长度；不足时用 '0' **末尾填充**（`padEnd`）补齐，保证长度稳定。
  */
 function randomPart(len) {
     const r = Math.random()
@@ -1618,6 +1686,17 @@ function readStr(key) {
     return typeof r.value === 'string' ? r.value : '';
 }
 /**
+ * 计算 `now - from` 的非负秒差，防止设备时钟回拨（NTP 校时 / 用户手动改时间）导致
+ * `elapsed < 0` 使后台 / 无操作超时判定**永不触发**、会话被异常拉长。
+ *
+ * 与 `infra/time.elapsedSec` 同语义（负值钳零），此处因状态机入参 `now` 由调用方注入、
+ * 不直接走 `nowSec()`，故就地实现保持纯函数可测。
+ */
+function elapsedNonNeg(now, from) {
+    const diff = now - from;
+    return diff > 0 ? diff : 0;
+}
+/**
  * 从 storage 重建 snapshot；任意字段缺失返回 null。
  */
 function loadFromStorage() {
@@ -1696,7 +1775,9 @@ function ensureSession(t, ctx) {
             enterCandidates.push(snap.bgTs);
         }
         const enterTs = enterCandidates.length > 0 ? Math.min(...enterCandidates) : 0;
-        const elapsed = enterTs > 0 ? now - enterTs : now - snap.lastActive;
+        const elapsed = enterTs > 0
+            ? elapsedNonNeg(now, enterTs)
+            : elapsedNonNeg(now, snap.lastActive);
         const sceneChanged = !!scene && !!snap.lastScene && scene !== snap.lastScene;
         const fromBackground = enterTs > 0;
         if (sceneChanged ||
@@ -1719,7 +1800,7 @@ function ensureSession(t, ctx) {
         return { snapshot: snap, isNew: false, cst: 0 };
     }
     // page_show：判定前台无操作超时
-    const elapsed = now - snap.lastActive;
+    const elapsed = elapsedNonNeg(now, snap.lastActive);
     if (elapsed >= config$1.pageInactiveTimeoutSec) {
         const created = createNew(now, CST.PageInactiveTimeout, scene || snap.lastScene);
         return { snapshot: created, isNew: true, cst: CST.PageInactiveTimeout };
@@ -1739,7 +1820,9 @@ function markBackground(now) {
     cached$2.bgTs = now;
 }
 /**
- * 更新 lastActive；page_show / 用户操作时调用。
+ * 更新 lastActive；page_show 与**用户主动行为事件**（collector 在收到 lt=21 自定义/
+ * 拦截器事件时调用）触发。这样「前台无操作超时（cst=3）」与文档「无任何 page/event
+ * 触达」语义一致：用户持续点按但不翻页时不会被误判为无操作而开新会话。
  */
 function touch(now) {
     if (!cached$2)
@@ -1911,8 +1994,9 @@ function getUni$8() {
  *   2. `uni.getLaunchOptionsSync().scene`（多端通用）。
  *   3. 不识别的平台返回空字符串。
  *
- * 公有版扩展：除 wx 外，mp-qq / mp-toutiao / mp-baidu / 阿里系小程序 / mp-lark /
- * mp-kuaishou 都已支持 `getLaunchOptionsSync`，统一走该入口。
+ * 公有版扩展：所有小程序宿主（`mp-*`，含 wx/qq/tt/bd/阿里系/lark/ks/xhs/jd/harmony 等）
+ * 均支持 `getLaunchOptionsSync().scene`，故统一以 `isMp()` 判定，避免逐个平台维护白名单时
+ * 漏掉新增小程序端导致 scene 恒为空（H5 / App / 快应用无场景值，返回空串）。
  */
 function getLaunchScene(override) {
     if (override !== undefined && override !== null && override !== '') {
@@ -1921,16 +2005,9 @@ function getLaunchScene(override) {
     const u = getUni$8();
     if (typeof (u === null || u === void 0 ? void 0 : u.getLaunchOptionsSync) !== 'function')
         return '';
-    const platform = getPlatform();
-    if (platform !== 'wx' &&
-        platform !== 'qq' &&
-        platform !== 'tt' &&
-        platform !== 'bd' &&
-        platform !== 'ali' &&
-        platform !== 'lark' &&
-        platform !== 'ks') {
+    // 仅小程序宿主有有意义的 scene；其它端即便存在 getLaunchOptionsSync 也无场景值。
+    if (!isMp())
         return '';
-    }
     return tryRun(() => {
         const opts = u.getLaunchOptionsSync();
         const scene = opts === null || opts === void 0 ? void 0 : opts.scene;
@@ -2259,7 +2336,7 @@ function handleLaunch(app, options = {}, opts = {}) {
                 return;
             c2.report({ lt: LT.Push, cid: r.cid, t: nowSec() });
         })
-            .catch((e) => logger.warn('[uni-stat] push cid fetch failed', e));
+            .catch((e) => logger.warn('[uni统计 2.0] push cid fetch failed', e));
     }
 }
 /**
@@ -2310,7 +2387,7 @@ function tryConsumeBackgroundResume(app, options = {}, _opts = {}, _from = 'unkn
     markBackgroundResumeLt1Emitted(now);
     void c
         .flush(true)
-        .catch((e) => logger.warn('[uni-stat] flush after new session (app_show) failed', e));
+        .catch((e) => logger.warn('[uni统计 2.0] flush after new session (app_show) failed', e));
     return true;
 }
 /**
@@ -2347,7 +2424,7 @@ function handleAppShow(app, options = {}, opts = {}) {
     markBackgroundResumeLt1Emitted(now);
     void c
         .flush(true)
-        .catch((e) => logger.warn('[uni-stat] flush after new session (app_show) failed', e));
+        .catch((e) => logger.warn('[uni统计 2.0] flush after new session (app_show) failed', e));
 }
 /**
  * 应用进入后台。
@@ -2398,7 +2475,7 @@ function handleAppHide(app, opts = {}) {
     });
     void c
         .flush(true)
-        .catch((e) => logger.warn('[uni-stat] flush on hide failed', e));
+        .catch((e) => logger.warn('[uni统计 2.0] flush on hide failed', e));
 }
 /**
  * Page.onShow：页面前台展示。
@@ -2502,7 +2579,7 @@ function handlePageShow(app, vm, opts = {}) {
     if (result.isNew) {
         void c
             .flush(true)
-            .catch((e) => logger.warn('[uni-stat] flush after new session (page_show) failed', e));
+            .catch((e) => logger.warn('[uni统计 2.0] flush after new session (page_show) failed', e));
     }
 }
 /**
@@ -2605,7 +2682,7 @@ function handleError(app, e) {
         app.reportError(e);
     }
     catch (err) {
-        logger.warn('[uni-stat] handleError failed', err);
+        logger.warn('[uni统计 2.0] handleError failed', err);
     }
     if (isMp()) {
         return;
@@ -2863,6 +2940,18 @@ const BATCH_REQUESTS_MAX_BYTES = 4 * 1024;
 /** 单批最多容纳的事件数；与字节阈值取 min 作为切片边界。 */
 const BATCH_MAX_EVENTS = 30;
 /**
+ * 内存上报桶（主队列）允许容纳的事件总数上限。
+ *
+ * 设置原因：通道长期不可用时，失败批次会反复 `rollback` 回桶，且每次 `enqueue`/`rollback`
+ * 都会 `persistBucket` 落盘。若无上限，内存与 storage 会随离线时长无界增长，最终可能触发
+ * 小程序 storage 配额异常甚至 OOM。超过本上限时，`enqueue` 按 FIFO 丢弃**最旧**事件
+ * （优先从当前最大的桶丢，尽量保住体量小但关键的 lt=1/lt=3），并 warn。
+ *
+ * 取值 1000：以单条均值约 0.5–1KB 估算，约占 0.5–1MB，远低于各端 storage 配额；
+ * 正常在线（10s flush）场景永远触不到，仅在长时间离线积压时生效。
+ */
+const QUEUE_MAX_EVENTS = 1000;
+/**
  * 单条 retry 队列条目允许的最大重放次数。
  *
  * 设置原因：`recoverRetry` 每次冷启串行重放历史 payload，对永久错误（例如曾经误塞入
@@ -2908,6 +2997,28 @@ function getAppId$1() {
  * 优先级：opts.uniCloudSpace > uni.__stat_uniCloud_space（`uni` 解析见 `infra/uniRuntime`）。
  * 都不可用返回 undefined，由 `available()` / `send()` 自行处理。
  */
+/**
+ * 校验云对象返回值是否表示业务失败。**只识别 uniCloud 标准失败约定，默认成功**，
+ * 以避免把成功返回误判为失败而触发无谓重试：
+ *   - `success === false`（显式布尔失败）
+ *   - `errCode` 为非 0 的 number（uniCloud 云对象错误码约定；0 / 缺省 = 成功）
+ *
+ * **刻意不判断通用 `code` 字段**：部分接口用 `code: 200` 表示成功，若按「非 0 即失败」
+ * 处理会把成功误判为失败、误入重试队列。未知返回形态一律视为成功（保守）。
+ *
+ * 命中失败约定时抛错，交由 `withRetry` / collector 走重试链路。
+ */
+function assertCloudResultOk(res) {
+    if (!res || typeof res !== 'object')
+        return;
+    const r = res;
+    if (r.success === false) {
+        throw new Error('cloud receiver reported success=false');
+    }
+    if (typeof r.errCode === 'number' && r.errCode !== 0) {
+        throw new Error('cloud receiver reported errCode=' + String(r.errCode));
+    }
+}
 function resolveSpace(injected) {
     if (injected)
         return injected;
@@ -2929,7 +3040,7 @@ function createCloudChannel(opts = {}) {
             return space.importObject(receiverName, { customUI: true });
         }
         catch (e) {
-            logger.warn('[uni-stat] cloud importObject threw', e);
+            logger.warn('[uni统计 2.0] cloud importObject threw', e);
             return undefined;
         }
     }
@@ -2938,7 +3049,12 @@ function createCloudChannel(opts = {}) {
         if (!receiver || typeof receiver.report !== 'function') {
             return Promise.reject(new Error('uniCloud space unavailable'));
         }
-        return Promise.resolve(receiver.report(payload)).then(() => undefined);
+        return Promise.resolve(receiver.report(payload)).then((res) => {
+            // 云对象未 throw 但**业务结果显式失败**时，仍按失败处理以触发重试，
+            // 避免"resolve 即成功"漏掉服务端拒收。仅识别明确的失败约定，默认视为成功，
+            // 防止把未知返回形态误判为失败（保守）。
+            assertCloudResultOk(res);
+        });
     }
     return {
         name: '2.0',
@@ -2956,7 +3072,7 @@ function createCloudChannel(opts = {}) {
                     });
                 }
                 catch (e) {
-                    logger.warn('[uni-stat] 统计上报失败（云函数已重试）', e);
+                    logger.warn('[uni统计 2.0] 统计上报失败（云函数已重试）', e);
                     throw e;
                 }
             });
@@ -3040,9 +3156,9 @@ function bucketSummary(bucket) {
  *
  * 文案示意：
  *   ```text
- *   [uni统计公有版] === 统计数据采集：应用启动 (lt=1) ===
- *   [uni统计公有版] {lt: '1', t: 1714123456, ut: 'h5', ...}
- *   [uni统计公有版] === 采集结束 ===
+ *   [uni统计 2.0] === 统计数据采集：应用启动 (lt=1) ===
+ *   [uni统计 2.0] {lt: '1', t: 1714123456, ut: 'h5', ...}
+ *   [uni统计 2.0] === 采集结束 ===
  *   ```
  */
 function logCollect(data) {
@@ -3069,7 +3185,7 @@ function logBoot(info) {
     }
     const timeoutSeg = timeoutParts.length > 0 ? ` | ${timeoutParts.join(' | ')}` : '';
     const lines = [
-        '=== uni 统计公有版已启用 ===',
+        '=== uni统计 2.0 已启用 ===',
         `上报间隔: ${info.reportIntervalSec}s${timeoutSeg} | 应用APPID: ${info.ak || '<未注入>'}${info.appName ? ` | 应用名: ${info.appName}` : ''}${info.vueMode ? ` | ${info.vueMode}` : ''}`,
     ];
     if (info.debugFromManifest) {
@@ -3084,7 +3200,7 @@ function logBoot(info) {
  * 文案示意：
  *   ```text
  *   // 通道=${info.channel}
- *   [uni统计公有版] === 准备上报： 共 4 条事件 (lt=1×1, lt=11×2, lt=21×1) [_id=p-xxxx] ===
+ *   [uni统计 2.0] === 准备上报： 共 4 条事件 (lt=1×1, lt=11×2, lt=21×1) [_id=p-xxxx] ===
  *   ```
  */
 function logReportStart(info) {
@@ -3448,12 +3564,12 @@ function createCollector(deps) {
             deferredFlushTimer = setTimeout(() => {
                 deferredFlushTimer = null;
                 firstFlushDone = true;
-                void flushImpl(false).catch((e) => logger.warn('[uni-stat] auto-flush failed', e));
+                void flushImpl(false).catch((e) => logger.warn('[uni统计 2.0] auto-flush failed', e));
             }, deferMs);
             return;
         }
         firstFlushDone = true;
-        void flushImpl(false).catch((e) => logger.warn('[uni-stat] auto-flush failed', e));
+        void flushImpl(false).catch((e) => logger.warn('[uni统计 2.0] auto-flush failed', e));
     }
     /**
      * 构造 EventContext 并入队。
@@ -3469,6 +3585,12 @@ function createCollector(deps) {
             if (snap) {
                 const seq = deps.session.nextSeq();
                 sessionForCtx = Object.assign({}, snap, { seq });
+            }
+            // 用户主动行为事件（lt=21：自定义事件 / login / pay / share 拦截器）刷新
+            // 前台无操作计时器，避免用户持续操作却无翻页时被误判「无操作超时」开新会话（cst=3）。
+            // 仅 lt=21 视为「用户触达」；lt=1/3/11/31/101 由会话状态机自身管理。
+            if (snap && input.lt === LT.Event && deps.session.touch) {
+                deps.session.touch(t);
             }
             const ctx = Object.assign({}, input, {
                 t,
@@ -3507,7 +3629,7 @@ function createCollector(deps) {
                 return;
             const channel = deps.selectChannel();
             if (!channel) {
-                logger.warn('[uni-stat] 无可用上报线路，本批已回滚队列');
+                logger.warn('[uni统计 2.0] 无可用上报线路，本批已回滚队列');
                 logNoChannel({ bucket: snapshot });
                 deps.queue.rollback(snapshot);
                 return;
@@ -3526,8 +3648,13 @@ function createCollector(deps) {
                 maxBytes: Math.min(globalMaxBytes, channelMaxBytes),
             };
             const chunks = handleDataChunked(snapshot, limits);
-            if (chunks.length === 0)
+            if (chunks.length === 0) {
+                // 快照已被 flush() 从队列摘除，但切片结果为空（极端：桶内全是空数组 key，
+                // 或所有事件 JSON.stringify 失败）。若直接 return 会**静默丢数**，故回滚回队列等待下次。
+                logger.warn('[uni统计 2.0] flush 切片结果为空，已回滚队列', snapshot);
+                deps.queue.rollback(snapshot);
                 return;
+            }
             const startMs = deps.nowMs();
             let totalCount = 0;
             for (const lt of Object.keys(snapshot)) {
@@ -3539,9 +3666,18 @@ function createCollector(deps) {
             // 切片是适配 image URL 长度限制 / 全局 batch 字节阈值的内部分批策略，业务方
             // 不应感知。统计维度统一为**事件数**：成功片累计 okEvents、失败片累计 failedEvents
             // + per-slice logReportFailure（保留原因）；末尾由 logReportSummary 输出统一汇总。
+            // visit 字段（fvts/lvts/tvc）只随 lt=1 上行，而 serializer 已按 LT_ORDER 把 lt=1
+            // 排到最前 → 必定落在第一片（chunks[0]）。因此「访问是否被服务端接收」只取决于
+            // 第一片是否成功，与后续 lt=21/31 等切片成败无关。
+            //   - 桶内有 lt=1：以 chunks[0] 成功与否决定 commit / rollback（部分成功也可 commit，
+            //     避免后续片失败把已被接收的访问回滚，造成本地与服务端口径偏差）。
+            //   - 桶内无 lt=1：visit pending 本就为空，commit/rollback 均为 noop；沿用「全部成功才 commit」
+            //     的旧语义，保持既有行为与测试稳定。
+            const hasLaunch = Array.isArray(snapshot['1']) && snapshot['1'].length > 0;
             let okEvents = 0;
             let failedEvents = 0;
             let allOk = true;
+            let firstChunkOk = true;
             for (let i = 0; i < chunks.length; i++) {
                 const requests = chunks[i];
                 const payload = {
@@ -3557,22 +3693,25 @@ function createCollector(deps) {
                 }
                 catch (e) {
                     allOk = false;
+                    if (i === 0)
+                        firstChunkOk = false;
                     failedEvents += sliceEvents;
                     if (isPermanentChannelError(e)) {
                         // 永久错：丢弃本片，不 persist、不污染下次冷启
-                        logger.warn('[uni-stat] 统计上报失败（本批已丢弃，不可重试）', e, 'sliceBytes=' + requests.length);
+                        logger.warn('[uni统计 2.0] 统计上报失败（本批已丢弃，不可重试）', e, 'sliceBytes=' + requests.length);
                         logReportFailureReason({ error: e, persistedId: undefined });
                         continue;
                     }
-                    logger.warn('[uni-stat] 统计上报失败（已暂存，下次启动自动重试）', e);
+                    logger.warn('[uni统计 2.0] 统计上报失败（已暂存，下次启动自动重试）', e);
                     const id = deps.retry.persist(payload);
                     if (!id) {
-                        logger.warn('[uni-stat] 统计暂存重试失败（无 retryId），本批已丢弃');
+                        logger.warn('[uni统计 2.0] 统计暂存重试失败（无 retryId），本批已丢弃');
                     }
                     logReportFailureReason({ error: e, persistedId: id });
                 }
             }
-            if (allOk) {
+            const visitAccepted = hasLaunch ? firstChunkOk : allOk;
+            if (visitAccepted) {
                 tryRun(() => deps.visit.commitVisitOnAck(deps.nowSec()), undefined);
             }
             else {
@@ -3610,7 +3749,7 @@ function createCollector(deps) {
                 return;
             const channel = deps.selectChannel();
             if (!channel) {
-                logger.warn('[uni-stat] 续传重试跳过：当前无可用上报线路');
+                logger.warn('[uni统计 2.0] 续传重试跳过：当前无可用上报线路');
                 return;
             }
             logRecoverStart(items.length);
@@ -3633,7 +3772,7 @@ function createCollector(deps) {
                     if (isPermanentChannelError(e)) {
                         if (payload._id)
                             deps.retry.ack(payload._id);
-                        logger.warn('[uni-stat] 续传重试失败（不可重试，已从队列移除）', e, 'id=' + payload._id);
+                        logger.warn('[uni统计 2.0] 续传重试失败（不可重试，已从队列移除）', e, 'id=' + payload._id);
                         logRecoverItem({
                             index: i,
                             total: items.length,
@@ -3647,7 +3786,7 @@ function createCollector(deps) {
                         // markAttempt 内部超过 maxAttempts 会自动 ack 兜底（参见 retry.ts）
                         deps.retry.markAttempt(payload._id);
                     }
-                    logger.warn('[uni-stat] 续传重试失败（保留队列，下次启动再试）', e);
+                    logger.warn('[uni统计 2.0] 续传重试失败（保留队列，下次启动再试）', e);
                     logRecoverItem({
                         index: i,
                         total: items.length,
@@ -3669,7 +3808,13 @@ function createCollector(deps) {
             return flushImpl(force);
         });
     }
-    return { report, flush, recoverRetry };
+    /** 取消延迟首 flush 定时器，防止 collector 被弃后仍触发幽灵 flush。 */
+    function destroy() {
+        cancelDeferredFlush();
+        // 置为「已完成首 flush」，即便有残留闭包再次调用 triggerAutoFlush 也不会重排定时器。
+        firstFlushDone = true;
+    }
+    return { report, flush, recoverRetry, destroy };
 }
 
 /**
@@ -3786,7 +3931,7 @@ function createHttpChannel(opts = {}) {
                     });
                 }
                 catch (e) {
-                    logger.warn('[uni-stat] 统计上报失败（HTTP 已重试）', e);
+                    logger.warn('[uni统计 2.0] 统计上报失败（HTTP 已重试）', e);
                     throw e;
                 }
             });
@@ -3801,8 +3946,10 @@ function createHttpChannel(opts = {}) {
  *   `GET ${host}/WebTrack?ProjectId&TopicId&Logs&Source&Time&…`
  *   与文档 `curl GET 'http://${host}/WebTrack?ProjectId=…&TopicId=…&key=val'` 一致。
  *
- * **信标 GET**（仅 H5 `Image`、微信 `preloadAssets`）：
+ * **信标 GET**（H5 `fetch`/`Image`、微信 `preloadAssets`）：
  *   `GET ${host}/WebTrack.gif?…`（query 与 `/WebTrack` 相同，路径为 1×1 像素接口）。
+ *   H5 优先 `fetch(keepalive)` 读真实状态码；采集端返回 `200 application/json` 且带
+ *   `Access-Control-Allow-Origin: *`，故可跨域判定成败（旧 `<img>` 信标无法读状态，降级兜底）。
  *
  * **已废弃 POST**：`POST ${host}/WebTracks?ProjectId&TopicId` + JSON body。
  */
@@ -3865,7 +4012,17 @@ function summarizeHttpErrorBody(data, maxLen = 320) {
     }
 }
 /**
- * H5：`Image` 触发 `/WebTrack.gif`；`onload` / `onerror` 均 resolve，仅超时 reject。
+ * H5 最后兜底：`Image` 触发 `/WebTrack.gif`；`onload` / `onerror` 均 resolve，仅超时 reject。
+ *
+ * ## 为什么 onload/onerror 都判成功（且为何不再作为首选）
+ *
+ * 采集端 `/WebTrack.gif` 成功时返回 `200 application/json`（空体），**并非合法图片**，
+ * 浏览器无法把响应解码为图片 → 即便上报成功也会触发 `onerror`。因此 `<img>` 信标
+ * 物理上**无法区分**「成功（JSON 响应）」与「真实失败（DNS/网络/拦截/4xx/5xx）」，
+ * 只能一律 resolve，否则每次成功都会被误判失败并重试。
+ *
+ * 这是一个有损降级：仅在**既无 `fetch` 又无 `uni.request`** 的极旧 H5 环境才会走到。
+ * 正常环境优先 `fetchBeaconAwait`（读真实状态码），次选 `uni.request` GET（读 statusCode）。
  *
  * @param url 完整信标 URL
  * @param ms  超时毫秒
@@ -3899,6 +4056,69 @@ function imageBeaconAwait(url, ms) {
             resolve();
         };
         img.src = url;
+    });
+}
+/**
+ * H5 首选：`fetch` 触发 `/WebTrack.gif`，读取真实 HTTP 状态码判定成败。
+ *
+ * ## 为什么用 fetch 替代 `<img>` 信标
+ *
+ * 采集端 `/WebTrack.gif` 成功返回 `200 application/json`（空体），且响应头带
+ * `Access-Control-Allow-Origin: *`，因此 H5 可**跨域读取** `res.ok`：
+ *   - 2xx → 送达成功，resolve；
+ *   - 其余状态码 / 网络异常（DNS、断网、CSP/拦截、4xx/5xx）→ reject，交由
+ *     `withRetry` 重试，最终失败落盘 retry，**不再被静默 ACK**。
+ *
+ * `keepalive: true` 保证页面卸载（如 `lt=3` hide 期）请求仍能发出，等价于
+ * `<img>` 信标的「卸载存活」能力，因此可安全取代旧的 onerror=成功 兜底。
+ *
+ * `credentials: 'omit'`：仅需读状态码，无需携带 cookie；同时规避
+ * `Allow-Origin:*` 与 `include` 凭证模式在浏览器侧的冲突。
+ *
+ * @param url 完整信标 URL
+ * @param ms  超时毫秒
+ */
+function fetchBeaconAwait(url, ms) {
+    const g = getGlobalObject();
+    const fetchFn = g.fetch;
+    if (typeof fetchFn !== 'function') {
+        return Promise.reject(new Error('fetch unavailable'));
+    }
+    const controller = typeof g.AbortController === 'function'
+        ? new g.AbortController()
+        : undefined;
+    return new Promise((resolve, reject) => {
+        let settled = false;
+        const timer = setTimeout(() => {
+            if (settled)
+                return;
+            settled = true;
+            if (controller)
+                tryRun(() => controller.abort(), undefined);
+            reject(new Error('统计上报超时'));
+        }, ms);
+        fetchFn(url, {
+            method: 'GET',
+            keepalive: true,
+            credentials: 'omit',
+            signal: controller ? controller.signal : undefined,
+        }).then((res) => {
+            if (settled)
+                return;
+            settled = true;
+            clearTimeout(timer);
+            if (res && res.ok) {
+                resolve();
+                return;
+            }
+            reject(new Error('统计上报 HTTP ' + (res ? res.status : 0)));
+        }, (e) => {
+            if (settled)
+                return;
+            settled = true;
+            clearTimeout(timer);
+            reject(e instanceof Error ? e : new Error(String(e)));
+        });
     });
 }
 /**
@@ -4062,14 +4282,28 @@ function createImageChannel(opts = {}) {
         });
     }
     /**
-     * H5：默认 `/WebTrack.gif` 信标；否则 `uni.request` GET `/WebTrack`。
+     * H5 发送方式选择（均能判定真实成败，失败进 retry）：
+     *   1. 首选 `fetch` 信标 `/WebTrack.gif`：跨域读 `res.ok`，`keepalive` 保证卸载期送达；
+     *   2. 次选 `uni.request` GET `/WebTrack`：读 `statusCode`；
+     *   3. 末选 `Image` 信标 `/WebTrack.gif`：仅极旧环境（无 fetch、无 uni.request）兜底，
+     *      无法读状态，发出即视为送达（有损）。
+     *
+     * `preferImageBeacon: false` 时跳过信标，强制走 `uni.request` GET（测试/特殊场景）。
      */
     function onceH5(payload) {
-        const ImageCtor = getGlobalObject().Image;
-        if (preferBeacon && typeof ImageCtor === 'function') {
+        const g = getGlobalObject();
+        const u = getUni$4();
+        const hasRequest = !!(u && typeof u.request === 'function');
+        if (preferBeacon && typeof g.fetch === 'function') {
+            return fetchBeaconAwait(preflightUrl(payload, WEBTRACK_BEACON_PATH), timeoutMs);
+        }
+        if (hasRequest) {
+            return webTrackGetViaRequest(preflightUrl(payload, WEBTRACK_API_PATH));
+        }
+        if (preferBeacon && typeof g.Image === 'function') {
             return imageBeaconAwait(preflightUrl(payload, WEBTRACK_BEACON_PATH), timeoutMs);
         }
-        return webTrackGetViaRequest(preflightUrl(payload, WEBTRACK_API_PATH));
+        return Promise.reject(new PermanentChannelError('当前环境无法完成统计上报'));
     }
     /**
      * 微信：优先 `/WebTrack.gif` preload；否则 `uni.request` GET `/WebTrack`。
@@ -4079,7 +4313,7 @@ function createImageChannel(opts = {}) {
         if (preloadFn) {
             return mpWeixinPreloadAssetsBeaconAwait(preflightUrl(payload, WEBTRACK_BEACON_PATH), MP_WEIXIN_PRELOAD_TIMEOUT_MS, preloadFn);
         }
-        logger.warn('[uni-stat] wx.preloadAssets 不可用，回退 uni.request GET /WebTrack');
+        logger.warn('[uni统计 2.0] wx.preloadAssets 不可用，回退 uni.request GET /WebTrack');
         return webTrackGetViaRequest(preflightUrl(payload, WEBTRACK_API_PATH));
     }
     /**
@@ -4112,10 +4346,10 @@ function createImageChannel(opts = {}) {
                 }
                 catch (e) {
                     if (isPermanentChannelError(e)) {
-                        logger.warn('[uni-stat] 统计上报失败（不可重试）', e);
+                        logger.warn('[uni统计 2.0] 统计上报失败（不可重试）', e);
                     }
                     else {
-                        logger.warn('[uni-stat] 统计上报失败（已重试）', e);
+                        logger.warn('[uni统计 2.0] 统计上报失败（已重试）', e);
                     }
                     throw e;
                 }
@@ -4795,6 +5029,11 @@ function getWebInfo() {
 
 const registry = new Map();
 /**
+ * 本模块每个 api 最近一次装入 uni 的 fanout 引用。
+ * 用于重装 / 解绑时按引用精准 `removeInterceptor(api, prevFanout)`，不波及第三方拦截器。
+ */
+const installedFanout = new Map();
+/**
  * 注册一个拦截器。同一 api 重复注册会去重，并自动按当前注册集合重装到 uni。
  *
  * @returns 解绑函数。调用后从集合中移除本次的 handlers，并按剩余集合重新装配。
@@ -4812,11 +5051,16 @@ function add(api, handlers) {
         cur.delete(handlers);
         if (cur.size === 0) {
             registry.delete(api);
-            try {
-                getUni$1().removeInterceptor(api);
-            }
-            catch (_a) {
-                // 即使解绑失败也应保证下次重装时不带本次 handlers
+            const prev = installedFanout.get(api);
+            installedFanout.delete(api);
+            if (prev) {
+                try {
+                    // 精准移除本模块的 fanout，保留第三方在同一 api 上的拦截器。
+                    getUni$1().removeInterceptor(api, prev);
+                }
+                catch (_a) {
+                    // 即使解绑失败也应保证下次重装时不带本次 handlers
+                }
             }
         }
         else {
@@ -4825,13 +5069,12 @@ function add(api, handlers) {
     };
 }
 /**
- * 把 registry 中某个 api 的全部 handlers 合并成一个 fanout 拦截器，重新挂到 uni。
+ * 把某个 api 的全部 handlers 合并成单个 fanout 拦截器。
+ *
+ * 闭包持有 `set` 引用（registry 内的同一 Set），故 fanout 会实时反映集合的增删。
  */
-function reinstall(api) {
-    const set = registry.get(api);
-    if (!set || set.size === 0)
-        return;
-    const fanout = {
+function buildFanout(set) {
+    return {
         invoke(args) {
             let blocked = false;
             for (const h of set) {
@@ -4868,19 +5111,35 @@ function reinstall(api) {
             return v;
         },
     };
+}
+/**
+ * 把 registry 中某个 api 的全部 handlers 合并成一个 fanout 拦截器，重新挂到 uni。
+ *
+ * 精准重装：先按引用移除本模块**上一次**装入的 fanout（若有），再装入新 fanout；
+ * 全程不调用「不带第二参数」的 blanket remove，故业务方 / 其它插件在同一 api 上的
+ * 拦截器不会被波及。
+ */
+function reinstall(api) {
+    const set = registry.get(api);
+    if (!set || set.size === 0)
+        return;
+    const fanout = buildFanout(set);
     try {
         const uni = getUni$1();
-        // 先 remove 再 add，避免不同 uni 实现对"重复 add"行为不一致
-        try {
-            uni.removeInterceptor(api);
-        }
-        catch (_a) {
-            /* ignore */
+        const prev = installedFanout.get(api);
+        if (prev) {
+            try {
+                uni.removeInterceptor(api, prev);
+            }
+            catch (_a) {
+                /* ignore：旧 fanout 移除失败不阻断新 fanout 装入 */
+            }
         }
         uni.addInterceptor(api, fanout);
+        installedFanout.set(api, fanout);
     }
     catch (_b) {
-        // uni 不可用（例如 nvue 早期阶段）：保留 registry，等下次 reinstall 时再尝试
+        // uni 不可用（例如 nvue 早期阶段）：保留 registry 与 installedFanout，等下次 reinstall 再试
     }
 }
 function getUni$1() {
@@ -4889,7 +5148,7 @@ function getUni$1() {
         ? raw
         : undefined;
     if (!u)
-        throw new Error('[uni统计公有版] uni interceptor API is not available');
+        throw new Error('[uni统计 2.0] uni interceptor API is not available');
     return u;
 }
 /**
@@ -4897,6 +5156,7 @@ function getUni$1() {
  */
 function __reset() {
     registry.clear();
+    installedFanout.clear();
 }
 const interceptor = { add, __reset };
 
@@ -5111,7 +5371,7 @@ function migrateLegacyData() {
     }
     storage.set(KEY_DONE, 1);
     if (migrated > 0) {
-        logger.info('[uni-stat] migrated legacy keys', migrated);
+        logger.info('[uni统计 2.0] migrated legacy keys', migrated);
     }
     return migrated > 0;
 }
@@ -5149,14 +5409,14 @@ function selectChannel(opts) {
         if (opts.cloud && opts.cloud.available())
             return opts.cloud;
         if (!fallback) {
-            logger.warn('[uni-stat] 云函数上报不可用且已关闭 HTTP 兜底，本批已丢弃');
+            logger.warn('[uni统计 2.0] 云函数上报不可用且已关闭 HTTP 兜底，本批已丢弃');
             return undefined;
         }
         if (opts.http && opts.http.available()) {
-            logger.warn('[uni-stat] 云函数上报不可用，已降级为 HTTP 上报');
+            logger.warn('[uni统计 2.0] 云函数上报不可用，已降级为 HTTP 上报');
             return opts.http;
         }
-        logger.warn('[uni-stat] 无可用上报线路');
+        logger.warn('[uni统计 2.0] 无可用上报线路');
         return undefined;
     }
     // image（默认）：image > http
@@ -5165,18 +5425,18 @@ function selectChannel(opts) {
     if (!fallback) {
         if (opts.image) {
             // 仅在 image 已构造但失效时给出警告，便于排查；未构造视为正常的"未启用"
-            logger.warn('[uni-stat] 统计上报线路不可用且已关闭 HTTP 兜底，本批已丢弃');
+            logger.warn('[uni统计 2.0] 统计上报线路不可用且已关闭 HTTP 兜底，本批已丢弃');
         }
         return undefined;
     }
     if (opts.http && opts.http.available()) {
         if (opts.image) {
             // 同上，仅在 image 已构造但失效时打印降级日志
-            logger.warn('[uni-stat] 统计上报线路不可用，已降级为 HTTP 上报');
+            logger.warn('[uni统计 2.0] 统计上报线路不可用，已降级为 HTTP 上报');
         }
         return opts.http;
     }
-    logger.warn('[uni-stat] 无可用上报线路');
+    logger.warn('[uni统计 2.0] 无可用上报线路');
     return undefined;
 }
 
@@ -5216,7 +5476,10 @@ const state = {
 };
 let intervalSec = REPORT_INTERVAL_SEC;
 let singleEventMaxBytes = DEFAULT_SINGLE_EVENT_MAX_BYTES;
+let maxEvents = QUEUE_MAX_EVENTS;
 let restored = false;
+/** 容量超限 warn 节流：持续离线积压时仅首次告警，回落到上限内后复位。 */
+let capacityWarned = false;
 /**
  * 配置上报间隔；运行时可在 runtime/StatApp 初始化时注入。
  */
@@ -5227,6 +5490,47 @@ function configure(opts) {
     if (typeof opts.singleEventMaxBytes === 'number' &&
         opts.singleEventMaxBytes > 0) {
         singleEventMaxBytes = Math.floor(opts.singleEventMaxBytes);
+    }
+    if (typeof opts.maxEvents === 'number' && opts.maxEvents > 0) {
+        maxEvents = Math.floor(opts.maxEvents);
+    }
+}
+/**
+ * 强制把内存桶事件总数压到 `maxEvents` 以内（FIFO 丢弃最旧）。
+ *
+ * 丢弃策略：每轮从**当前事件数最多的桶**头部移除一条（最旧），直到总数达标。
+ * 这样长期离线时疯涨的 lt=21/lt=31 会先被裁剪，体量通常很小的 lt=1（会话锚点）/
+ * lt=3（后台闭合）更可能被保留。仅在超限时打一次 warn，避免刷屏。
+ */
+function enforceCapacity() {
+    let total = size();
+    if (total <= maxEvents) {
+        // 回落到上限内 → 复位告警节流，下次再超限时可再次提示。
+        capacityWarned = false;
+        return;
+    }
+    const dropped = total - maxEvents;
+    while (total > maxEvents) {
+        let largestLt = '';
+        let largestLen = 0;
+        for (const lt of Object.keys(state.bucket)) {
+            const len = state.bucket[lt].length;
+            if (len > largestLen) {
+                largestLen = len;
+                largestLt = lt;
+            }
+        }
+        if (!largestLt || largestLen === 0)
+            break;
+        state.bucket[largestLt].shift();
+        if (state.bucket[largestLt].length === 0)
+            delete state.bucket[largestLt];
+        total--;
+    }
+    // 节流：持续离线积压时每次 enqueue 都会触发裁剪，但仅首次告警，避免刷屏。
+    if (!capacityWarned) {
+        capacityWarned = true;
+        logger.warn('[uni统计 2.0] 上报队列超过容量上限，已丢弃最旧事件', 'dropped=' + dropped, 'limit=' + maxEvents);
     }
 }
 /**
@@ -5241,7 +5545,7 @@ function persistBucket() {
         storage.set(STORAGE_KEY$1, state.bucket);
     }
     catch (e) {
-        logger.warn('[uni-stat] queue persist failed', e);
+        logger.warn('[uni统计 2.0] queue persist failed', e);
     }
 }
 /**
@@ -5282,7 +5586,7 @@ function enqueue(data) {
         return;
     const lt = String((_a = data.lt) !== null && _a !== void 0 ? _a : '');
     if (!lt) {
-        logger.warn('[uni-stat] enqueue dropped: missing lt', data);
+        logger.warn('[uni统计 2.0] enqueue dropped: missing lt', data);
         return;
     }
     let serialized = '';
@@ -5290,17 +5594,18 @@ function enqueue(data) {
         serialized = JSON.stringify(data);
     }
     catch (e) {
-        logger.warn('[uni-stat] enqueue dropped: stringify failed', e);
+        logger.warn('[uni统计 2.0] enqueue dropped: stringify failed', e);
         return;
     }
     if (serialized.length > singleEventMaxBytes) {
-        logger.warn('[uni-stat] enqueue dropped: single event too large', 'lt=' + lt, 'bytes=' + serialized.length, 'limit=' + singleEventMaxBytes);
+        logger.warn('[uni统计 2.0] enqueue dropped: single event too large', 'lt=' + lt, 'bytes=' + serialized.length, 'limit=' + singleEventMaxBytes);
         return;
     }
     restoreOnce();
     if (!state.bucket[lt])
         state.bucket[lt] = [];
     state.bucket[lt].push(data);
+    enforceCapacity();
     persistBucket();
 }
 /**
@@ -5350,7 +5655,18 @@ function rollback(snapshot) {
             state.bucket[lt] = [];
         state.bucket[lt] = arr.concat(state.bucket[lt]);
     }
+    enforceCapacity();
     persistBucket();
+}
+/**
+ * 当前桶内事件总数（按 lt 加总）。
+ */
+function size() {
+    let n = 0;
+    for (const lt of Object.keys(state.bucket)) {
+        n += state.bucket[lt].length;
+    }
+    return n;
 }
 
 /**
@@ -5433,7 +5749,7 @@ function persist(payload) {
     items.push(item);
     while (items.length > config.maxItems) {
         const dropped = items.shift();
-        logger.warn('[uni-stat] retry queue overflow, drop oldest', dropped === null || dropped === void 0 ? void 0 : dropped.id);
+        logger.warn('[uni统计 2.0] retry queue overflow, drop oldest', dropped === null || dropped === void 0 ? void 0 : dropped.id);
     }
     writeQueue(items);
     return id;
@@ -5451,7 +5767,7 @@ function loadAll() {
     const alive = [];
     for (const it of items) {
         if (it.createdAt < cutoff) {
-            logger.warn('[uni-stat] retry item expired, drop', it.id);
+            logger.warn('[uni统计 2.0] retry item expired, drop', it.id);
             continue;
         }
         alive.push(it);
@@ -5491,7 +5807,7 @@ function markAttempt(id) {
             continue;
         it.attempts++;
         if (it.attempts >= config.maxAttempts) {
-            logger.warn('[uni-stat] retry item exceeded maxAttempts, drop as dead letter', id, 'attempts=' + it.attempts);
+            logger.warn('[uni统计 2.0] retry item exceeded maxAttempts, drop as dead letter', id, 'attempts=' + it.attempts);
             nextItems = items.slice(0, i).concat(items.slice(i + 1));
         }
         else {
@@ -5596,7 +5912,7 @@ class StatApp {
         if (!overrides.skipRecoverRetry) {
             void this.collector
                 .recoverRetry()
-                .catch((e) => logger.warn('[uni-stat] recoverRetry failed', e));
+                .catch((e) => logger.warn('[uni统计 2.0] recoverRetry failed', e));
         }
         // 仅在 collector 与拦截器等就绪后再标记，避免中途抛错导致「已 install 却无 collector」。
         this.installed = true;
@@ -5668,6 +5984,10 @@ class StatApp {
             tryRun(() => this.uninstallInterceptors(), undefined);
         }
         this.uninstallInterceptors = undefined;
+        // 先释放 collector 内部定时器（取消延迟首 flush），再丢弃引用，避免幽灵 flush。
+        if (this.collector) {
+            tryRun(() => this.collector.destroy(), undefined);
+        }
         this.collector = undefined;
         this.collectorDeps = undefined;
         this.httpChannel = undefined;
@@ -5767,6 +6087,7 @@ class StatApp {
             session: {
                 getSnapshot: getSnapshot,
                 nextSeq: nextSeq,
+                touch: touch,
             },
             config: { usv: STAT_VERSION_PUBLIC },
             nowMs,
@@ -5933,7 +6254,7 @@ function readManifestStatConfig() {
         return Object.keys(cfg).length > 0 ? cfg : undefined;
     }
     catch (e) {
-        logger.warn('[uni-stat] readManifestStatConfig failed', e);
+        logger.warn('[uni统计 2.0] readManifestStatConfig failed', e);
         return undefined;
     }
 }
@@ -6106,7 +6427,7 @@ function scheduleUniAppHookRetry(tryBind) {
         if (tryBind())
             return;
         if (++attempts >= UNI_HOOK_RETRY_MAX) {
-            logger.warn('[uni-stat] Vue3 小程序：uni.onAppShow 暂不可用，应用前后台统计可能缺失');
+            logger.warn('[uni统计 2.0] Vue3 小程序：uni.onAppShow 暂不可用，应用前后台统计可能缺失');
             return;
         }
         uniHookRetryTimer = setTimeout(tick, UNI_HOOK_RETRY_MS);
@@ -6188,7 +6509,7 @@ function scheduleVueAppMixinRetry(mixin) {
         }
         if (++attempts >= UNI_HOOK_RETRY_MAX) {
             if (!vueMixinMounted) {
-                logger.warn('[uni-stat] Vue3: onCreateVueApp 在重试后仍不可用，页面级 mixin 未注入');
+                logger.warn('[uni统计 2.0] Vue3: onCreateVueApp 在重试后仍不可用，页面级 mixin 未注入');
             }
             return;
         }
@@ -6211,7 +6532,7 @@ function mountVue2GlobalMixin(mixin) {
         tryRun(() => target.mixin(mixin), undefined);
         return true;
     }
-    logger.warn('[uni-stat] Vue2: vue.mixin 不可用，请检查是否已安装 vue 依赖');
+    logger.warn('[uni统计 2.0] Vue2: vue.mixin 不可用，请检查是否已安装 vue 依赖');
     return false;
 }
 /**
