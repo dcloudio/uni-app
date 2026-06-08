@@ -5851,6 +5851,10 @@ class UniElement {
         this.dataset = {};
         this.offsetTop = NaN;
         this.offsetLeft = NaN;
+        this.scrollTop = NaN;
+        this.scrollLeft = NaN;
+        this.scrollHeight = NaN;
+        this.scrollWidth = NaN;
         this.id = id;
         this.tagName = name.toUpperCase();
         this.nodeName = this.tagName;
@@ -6152,7 +6156,7 @@ function initMiniProgramNode(uniElement, ins) {
                     .createSelectorQuery()
                     .in(ins.proxy)
                     .select('#' + uniElement.id)
-                    .fields({ node: true }, (res) => {
+                    .fields({ node: true, scrollOffset: true }, (res) => {
                     const node = res.node;
                     resolve(node);
                     // 实现一个假的Promise，确保同步调用
@@ -6161,11 +6165,25 @@ function initMiniProgramNode(uniElement, ins) {
                             fn(node);
                         },
                     };
+                    setUniElementScrollOffset(uniElement, res);
                 })
                     .exec();
             }, 2);
         });
     }
+}
+function setUniElementScrollOffset(uniElement, res) {
+    const properties = [
+        'scrollTop',
+        'scrollLeft',
+        'scrollHeight',
+        'scrollWidth',
+    ];
+    properties.forEach((prop) => {
+        if (res[prop] !== undefined) {
+            uniElement[prop] = res[prop];
+        }
+    });
 }
 
 function vOn(value, key) {
