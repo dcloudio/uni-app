@@ -7596,9 +7596,9 @@ function getNodeInfo(el, fields2) {
     }
   }
   if (isArray(fields2.computedStyle)) {
-    const sytle = getComputedStyle(el);
+    const style = getComputedStyle(el);
     fields2.computedStyle.forEach((name) => {
-      info[name] = sytle[name];
+      info[name] = style[name];
     });
   }
   if (fields2.context) {

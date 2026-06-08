@@ -6053,10 +6053,13 @@ function createUniElement(id, tagName, ins) {
     }
     const uniElement = new (customElements.get(tagName) || UniElement)(id, tagName);
     uniElement.$vm = ins.proxy;
-    // 目前只有微信小程序支持获取 ScrollViewContext
-    if (ins.proxy
-        .$mpPlatform === 'mp-weixin') {
+    const mpPlatform = ins.proxy.$mpPlatform;
+    if (mpPlatform === 'mp-weixin') {
         initMiniProgramNode(uniElement, ins);
+    }
+    else if (mpPlatform === 'mp-alipay') {
+        // 支付宝小程序不支持获取 ScrollViewContext，仅设置 scroll offset 相关属性
+        syncUniElementScrollOffset(uniElement);
     }
     uniElement.$onStyleChange((styles) => {
         var _a;
@@ -6170,6 +6173,17 @@ function initMiniProgramNode(uniElement, ins) {
                     .exec();
             }, 2);
         });
+    }
+}
+function syncUniElementScrollOffset(uniElement) {
+    if (uniElement.tagName === 'SCROLL-VIEW') {
+        uni
+            .createSelectorQuery()
+            .select('#' + uniElement.id)
+            .fields({ scrollOffset: true }, (res) => {
+            setUniElementScrollOffset(uniElement, res);
+        })
+            .exec();
     }
 }
 function setUniElementScrollOffset(uniElement, res) {
