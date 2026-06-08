@@ -102,11 +102,16 @@ function useGesture(
     touchStartOrigin.y = toucher.pageY
     state.gestureType = 'none'
     state.volumeOld = 0
+    if (fullscreenState.fullscreen) {
+      event.stopPropagation()
+    }
     // state.currentTimeOld = state.currentTimeNew = 0
   }
   function onTouchmove(event: TouchEvent) {
     function stop() {
-      event.stopPropagation()
+      if (fullscreenState.fullscreen) {
+        event.stopPropagation()
+      }
       event.preventDefault()
     }
     if (fullscreenState.fullscreen) {
@@ -128,6 +133,8 @@ function useGesture(
       changeVolume(pageY - origin.y)
     }
     if (gestureType !== 'none') {
+      // 非全屏滑动说阻止默认事件，避免和页面滑动冲突
+      stop()
       return
     }
     if (Math.abs(pageX - origin.x) > Math.abs(pageY - origin.y)) {
@@ -156,7 +163,9 @@ function useGesture(
   function onTouchend(event: TouchEvent) {
     const video = videoRef.value as HTMLVideoElement
     if (state.gestureType !== 'none' && state.gestureType !== 'stop') {
-      event.stopPropagation()
+      if (fullscreenState.fullscreen) {
+        event.stopPropagation()
+      }
       event.preventDefault()
     }
     if (
