@@ -71,6 +71,7 @@ const nodeTransforms: NodeTransform[] = [
   transformRef,
   transformComponentLink,
   transformAd,
+  transformTeleport,
 ]
 if (process.env.UNI_APP_X === 'true') {
   nodeTransforms.push(
