@@ -13,98 +13,98 @@
 从本地相册选择图片或使用相机拍照
 
 ### chooseImage 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **ChooseImageOptions** | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| options | **ChooseImageOptions** | 是 |  |   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| pageOrientation | string | 否 | - | Web: x; 微信小程序: x; Android: 4.33; iOS: 4.33; HarmonyOS: x | 屏幕方向。默认为page.json中的pageOrientation。 |
-| albumMode | string | 否 | "custom" | Web: x; 微信小程序: x; Android: 4.33; iOS: x; HarmonyOS: x | 图片选择模式 |
-| count | number | 否 | 9 | Web: -; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: - | 最多可以选择的图片张数，app端不限制，微信小程序最多可支持20个。 |
-| sizeType | Array&lt;string&gt; | 否 | ['original','compressed'\] | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | original 原图，compressed 压缩图，默认二者都有 |
-| sourceType | Array&lt;string&gt; | 否 | ['album','camera'\] | Web: -; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: - | album 从相册选图，camera 使用相机，默认二者都有 |
-| extension | Array&lt;string&gt; | 否 | - | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 根据文件拓展名过滤，每一项都不能是空字符串。默认不过滤。仅H5支持 |
-| crop | **ChooseImageCropOptions** | 否 | - | Web: x; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: x | 图像裁剪参数，设置后 sizeType 失效。 |
-| success | (callback: [ChooseImageSuccess](#chooseimagesuccess-values)) => void | 否 | - | Web: -; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: - | 成功则返回图片的本地文件路径列表 tempFilePaths |
-| fail | (callback: [ChooseImageFail](#chooseimagefail-values)) => void | 否 | - | Web: -; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: - | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 | - | Web: -; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: - | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| pageOrientation | string | 否 |  | Web: x; 微信小程序: x; Android: 4.33; iOS 系统版本: 10.0; iOS: 4.33; HarmonyOS: x | 屏幕方向。默认为page.json中的pageOrientation。 |
+| albumMode | string | 否 | "custom" | Web: x; 微信小程序: x; Android: 4.33; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 图片选择模式 |
+| count | number | 否 | 9 | Android: 3.9; iOS: 4.11 | 最多可以选择的图片张数，app端不限制，微信小程序最多可支持20个。 |
+| sizeType | Array&lt;string&gt; | 否 | ['original','compressed'\] | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | original 原图，compressed 压缩图，默认二者都有 |
+| sourceType | Array&lt;string&gt; | 否 | ['album','camera'\] | Android: 3.9; iOS: 4.11 | album 从相册选图，camera 使用相机，默认二者都有 |
+| extension | Array&lt;string&gt; | 否 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 根据文件拓展名过滤，每一项都不能是空字符串。默认不过滤。仅H5支持 |
+| crop | **ChooseImageCropOptions** | 否 |  | Web: x; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 图像裁剪参数，设置后 sizeType 失效。 |
+| success | (callback: [ChooseImageSuccess](#chooseimagesuccess-values)) => void | 否 |  | Android: 3.9; iOS: 4.11 | 成功则返回图片的本地文件路径列表 tempFilePaths |
+| fail | (callback: [ChooseImageFail](#chooseimagefail-values)) => void | 否 |  | Android: 3.9; iOS: 4.11 | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 |  | Android: 3.9; iOS: 4.11 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### pageOrientation 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| auto | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 自动 |
-| portrait | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 竖屏显示 |
-| landscape | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 横屏显示 |
+| 合法值 | 描述 |
+| :- | :- |
+| auto | 自动 |
+| portrait | 竖屏显示 |
+| landscape | 横屏显示 |
 
 ##### albumMode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| custom | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 自定义媒体选择器 |
-| system | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 系统媒体选择器 |
+| 合法值 | 描述 |
+| :- | :- |
+| custom | 自定义媒体选择器 |
+| system | 系统媒体选择器 |
 
 ##### crop 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| width | number | 是 | - | Web: -; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: - | 裁剪的宽度，单位为px，用于计算裁剪宽高比。 |
-| height | number | 是 | - | Web: -; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: - | 裁剪的高度，单位为px，用于计算裁剪宽高比。 |
-| quality | number | 否 | 80 | Web: -; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: - | 取值范围为1-100，数值越小，质量越低（仅对jpg格式有效）。默认值为80。 |
-| resize | boolean | 否 | - | Web: -; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: - | 是否将width和height作为裁剪保存图片真实的像素值。默认值为true。注：设置为false时在裁剪编辑界面显示图片的像素值，设置为true时不显示。 |
+| width | number | 是 |  | Android: 3.9; iOS: 4.11 | 裁剪的宽度，单位为px，用于计算裁剪宽高比。 |
+| height | number | 是 |  | Android: 3.9; iOS: 4.11 | 裁剪的高度，单位为px，用于计算裁剪宽高比。 |
+| quality | number | 否 | 80 | Android: 3.9; iOS: 4.11 | 取值范围为1-100，数值越小，质量越低（仅对jpg格式有效）。默认值为80。 |
+| resize | boolean | 否 |  | Android: 3.9; iOS: 4.11 | 是否将width和height作为裁剪保存图片真实的像素值。默认值为true。注：设置为false时在裁剪编辑界面显示图片的像素值，设置为true时不显示。 |
 
 #### ChooseImageSuccess 的属性值 @chooseimagesuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errSubject | string | 是 | - | Web: -; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: - | 调用API的名称 |
-| errMsg | string | 是 | - | Web: -; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: - | 描述信息 |
-| tempFilePaths | Array&lt;string&gt; | 是 | - | Web: -; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: - | 图片的本地文件路径列表 |
-| tempFiles | Array&lt;**ChooseImageTempFile**&gt; | 是 | - | Web: -; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: - | 图片的本地文件列表 |
+| errSubject | string | 是 |  | Android: 3.9; iOS: 4.11 | 调用API的名称 |
+| errMsg | string | 是 |  | Android: 3.9; iOS: 4.11 | 描述信息 |
+| tempFilePaths | Array&lt;string&gt; | 是 |  | Android: 3.9; iOS: 4.11 | 图片的本地文件路径列表 |
+| tempFiles | Array&lt;**ChooseImageTempFile**&gt; | 是 |  | Android: 3.9; iOS: 4.11 | 图片的本地文件列表 |
 
 #### tempFiles 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| path | string | 是 | - | Web: -; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: - | 本地文件路径 |
-| size | number | 是 | - | Web: -; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: - | 本地文件大小，单位：B |
-| name | string | 否 | - | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: - | 包含扩展名的文件名称，仅H5支持 |
-| type | string | 否 | - | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: - | 文件类型，仅H5支持 |
+| path | string | 是 |  | Android: 3.9; iOS: 4.11 | 本地文件路径 |
+| size | number | 是 |  | Android: 3.9; iOS: 4.11 | 本地文件大小，单位：B |
+| name | string | 否 |  | Android: x; iOS: x | 包含扩展名的文件名称，仅H5支持 |
+| type | string | 否 |  | Android: x; iOS: x | 文件类型，仅H5支持 |
 
 #### ChooseImageFail 的属性值 @chooseimagefail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误码 |
-| errSubject | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 统一错误主题（模块）名称 |
-| data | any | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| errCode | number | 是 |  |   | 错误码 |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| 1101001 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 用户取消 |
-| 1101002 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | urls至少包含一张图片地址 |
-| 1101003 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 文件不存在 |
-| 1101004 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 图片加载失败 |
-| 1101005 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 未获取权限 |
-| 1101006 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 图片或视频保存失败 |
-| 1101007 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 图片裁剪失败 |
-| 1101008 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 拍照或录像失败 |
-| 1101009 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 图片压缩失败 |
-| 1101010 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 其他错误 |
+| 合法值 | 描述 |
+| :- | :- |
+| 1101001 | 用户取消 |
+| 1101002 | urls至少包含一张图片地址 |
+| 1101003 | 文件不存在 |
+| 1101004 | 图片加载失败 |
+| 1101005 | 未获取权限 |
+| 1101006 | 图片或视频保存失败 |
+| 1101007 | 图片裁剪失败 |
+| 1101008 | 拍照或录像失败 |
+| 1101009 | 图片压缩失败 |
+| 1101010 | 其他错误 |
 
 
 
@@ -233,13 +233,13 @@
       </view>
 
       <view class="uni-list list-pd" style="padding: 15px;">
-        <view class="uni-flex" style="margin-bottom: 10px;">
+        <view class="uni-row" style="margin-bottom: 10px;">
           <view class="uni-list-cell-left">点击可预览选好的图片</view>
           <view style="margin-left: auto;">
             <text class="click-t">{{imageList.length}}/{{count}}</text>
           </view>
         </view>
-        <view class="uni-flex" style="flex-wrap: wrap;">
+        <view class="uni-row" style="flex-wrap: wrap;">
           <view v-for="(image,index) in imageList" :key="index" class="uni-uploader__input-box" style="border: 0;">
             <image style="width: 104px; height: 104px;" :src="image" @tap="previewImage(index)">
             </image>
@@ -513,13 +513,13 @@ const previewImage = (index: number) => {
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 
 
 ## 相册选择的2种方式
 App平台的相册选择，有custom自定义方式和system系统方式。这2种方式有不少区别：
 - custom方式
-1. app读取相册文件，所以app需要申请相册/本地文件访问权限。而google play目前仅对合理需要相册权限的应用才开放相册权限。如无法向google证明获取相册权限的合理性，则需要使用system方式。google play 政策详见：[google play 照片和视频权限](https://support.google.com/googleplay/android-developer/answer/14115180)，使用custom方式在上架google play时需要提交一份声明以获得试用的资格，谷歌允许延长声明的提交时间到2025年1月22日。uni-app x的开发者可升级HBuilderX 4.41后使用system方式，而uni-app的开发者遇到此问题可以使用插件[uni-chooseSystemMedia](https://ext.dcloud.net.cn/plugin?id=20744)。
+1. app读取相册文件，所以app需要申请相册/本地文件访问权限。而google play目前仅对合理需要相册权限的应用才开放相册权限。如无法向google证明获取相册权限的合理性，则需要使用system方式。google play 政策详见：[google play 照片和视频权限](https://support.google.com/googleplay/android-developer/answer/14115180)，使用custom方式在上架google play时需要提交一份声明以获得试用的资格。uni-app x的开发者可升级HBuilderX 4.41后使用system方式，而uni-app的开发者遇到此问题可以使用插件[uni-chooseSystemMedia](https://ext.dcloud.net.cn/plugin?id=20744)。
 2. 支持“原图”选项。
 3. 使用非原图，即压缩图片时，会在应用沙盒目录的cache目录产生临时文件（压缩后的图片），位置[详见](file-system-spec.md#cache)
 4. 在4.41以前，Android无论如何都会在应用沙盒目录的cache目录产生临时文件。从4.41起，chooseImage支持了contentURI，选择照片时如果不压缩图片，会返回contentURI，不再向cache目录写临时文件了。

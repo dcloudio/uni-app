@@ -5,11 +5,17 @@
 border-bottom 简写属性把下边框的所有属性：border-bottom-color，border-bottom-style 与 border-bottom-width 设置到了一个声明中。这些属性描述了元素的下边框样式。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -29,8 +35,7 @@ border-bottom: <line-width> || <line-style> || <color>;
 
 
 
-### 默认值 @default-value 
- `0`
+
 
 
 
@@ -76,10 +81,10 @@ border-bottom: <line-width> || <line-style> || <color>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{borderBottom}}</text>
-          <text class="uni-info">获取值: {{borderBottomActual}}</text>
+          <text class="uni-info">设置值: {{data.borderBottom}}</text>
+          <text class="uni-info">获取值: {{data.borderBottomActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-dynamic test-view" :style="{ borderBottom: borderBottom }">
+            <view ref="viewRef" class="common-dynamic test-view" :style="{ borderBottom: data.borderBottom }">
               <text>view</text>
             </view>
           </view>
@@ -87,19 +92,19 @@ border-bottom: <line-width> || <line-style> || <color>;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{borderBottom}}</text>
-          <text class="uni-info">获取值: {{borderBottomActualText}}</text>
+          <text class="uni-info">设置值: {{data.borderBottom}}</text>
+          <text class="uni-info">获取值: {{data.borderBottomActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-dynamic test-text" :style="{ borderBottom: borderBottom }">text</text>
+            <text ref="textRef" class="common-dynamic test-text" :style="{ borderBottom: data.borderBottom }">text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{borderBottom}}</text>
-          <text class="uni-info">获取值: {{borderBottomActualImage}}</text>
+          <text class="uni-info">设置值: {{data.borderBottom}}</text>
+          <text class="uni-info">获取值: {{data.borderBottomActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-image test-image" :style="{ borderBottom: borderBottom }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image test-image" :style="{ borderBottom: data.borderBottom }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -108,10 +113,10 @@ border-bottom: <line-width> || <line-style> || <color>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{borderBottom}}</text>
-          <text class="uni-info">获取值: {{borderBottomActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.borderBottom}}</text>
+          <text class="uni-info">获取值: {{data.borderBottomActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ borderBottom: borderBottom }" flatten>
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ borderBottom: data.borderBottom }" flatten>
               <text>view</text>
             </view>
           </view>
@@ -119,19 +124,19 @@ border-bottom: <line-width> || <line-style> || <color>;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{borderBottom}}</text>
-          <text class="uni-info">获取值: {{borderBottomActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.borderBottom}}</text>
+          <text class="uni-info">获取值: {{data.borderBottomActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ borderBottom: borderBottom }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ borderBottom: data.borderBottom }" flatten>text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{borderBottom}}</text>
-          <text class="uni-info">获取值: {{borderBottomActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.borderBottom}}</text>
+          <text class="uni-info">获取值: {{data.borderBottomActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ borderBottom: borderBottom }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ borderBottom: data.borderBottom }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -139,7 +144,7 @@ border-bottom: <line-width> || <line-style> || <color>;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="borderBottomEnum" title="border-bottom 枚举值" @change="radioChangeBorderBottom" :compact="true"></enum-data>
-        <input-data :defaultValue="borderBottom" title="border-bottom 自定义值" type="text" @confirm="inputChangeBorderBottom"></input-data>
+        <input-data :defaultValue="data.borderBottom" title="border-bottom 自定义值" type="text" @confirm="inputChangeBorderBottom"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -166,13 +171,15 @@ border-bottom: <line-width> || <line-style> || <color>;
     { value: 4, name: '3px dotted green' }
   ]
 
-  const borderBottom = ref('5px solid purple')
-  const borderBottomActual = ref('')
-  const borderBottomActualText = ref('')
-  const borderBottomActualImage = ref('')
-  const borderBottomActualFlat = ref('')
-  const borderBottomActualTextFlat = ref('')
-  const borderBottomActualImageFlat = ref('')
+  const data = reactive({
+    borderBottom: '5px solid purple',
+    borderBottomActual: '',
+    borderBottomActualText: '',
+    borderBottomActualImage: '',
+    borderBottomActualFlat: '',
+    borderBottomActualTextFlat: '',
+    borderBottomActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -181,16 +188,17 @@ border-bottom: <line-width> || <line-style> || <color>;
   const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    borderBottomActual.value = viewRef.value?.style.getPropertyValue('border-bottom') ?? ''
-    borderBottomActualFlat.value = viewRefFlat.value?.style.getPropertyValue('border-bottom') ?? ''
-    borderBottomActualText.value = textRef.value?.style.getPropertyValue('border-bottom') ?? ''
-    borderBottomActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('border-bottom') ?? ''
-    borderBottomActualImage.value = imageRef.value?.style.getPropertyValue('border-bottom') ?? ''
-    borderBottomActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('border-bottom') ?? ''
+    data.borderBottomActual = viewRef.value?.style.getPropertyValue('border-bottom') ?? ''
+    data.borderBottomActualFlat = viewRefFlat.value?.style.getPropertyValue('border-bottom') ?? ''
+    data.borderBottomActualText = textRef.value?.style.getPropertyValue('border-bottom') ?? ''
+    data.borderBottomActualTextFlat = textRefFlat.value?.style.getPropertyValue('border-bottom') ?? ''
+    data.borderBottomActualImage = imageRef.value?.style.getPropertyValue('border-bottom') ?? ''
+    data.borderBottomActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border-bottom') ?? ''
   }
 
+  const ins = getCurrentInstance()
   const changeBorderBottom = (value: string) => {
-    borderBottom.value = value
+    data.borderBottom = value
     viewRef.value?.style.setProperty('border-bottom', value)
     viewRefFlat.value?.style.setProperty('border-bottom', value)
     textRef.value?.style.setProperty('border-bottom', value)
@@ -200,7 +208,7 @@ border-bottom: <line-width> || <line-style> || <color>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeBorderBottom = (index: number) => {
@@ -219,7 +227,8 @@ border-bottom: <line-width> || <line-style> || <color>;
   })
 
   defineExpose({
-    radioChangeBorderBottom
+    radioChangeBorderBottom,
+    data
   })
 </script>
 

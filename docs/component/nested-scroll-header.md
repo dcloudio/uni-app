@@ -6,13 +6,13 @@
 
 > 组件类型：UniNestedScrollHeaderElement 
 
-  scroll-view 嵌套模式场景中属于外层 scroll-view 的节点，仅支持作为 <scroll-view type='nested'> 嵌套模式的直接子节点。不支持复数子节点，渲染时会取其第一个子节点来渲染
+  scroll-view 嵌套模式场景中属于外层 scroll-view 的节点，仅支持作为 <scroll-view type='nested'\> 嵌套模式的直接子节点。不支持复数子节点，渲染时会取其第一个子节点来渲染
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 4.11 | 4.61 | - |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS 系统版本 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 4.11 | 5.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 |
 
 
 
@@ -30,6 +30,9 @@ scroll-view 嵌套场景中。外层 scroll-view 滚动时无法与内层 scroll
 + `nested-scroll-header` 组件不支持设置css样式，不要通过 class 和 style 设置样式  
 + `nested-scroll-header` 组件应该放在 `nested-scroll-body` 组件前面（上面）  
 + `nested-scroll-header` 组件不支持多个子节点，渲染时只会取第一个子节点来渲染  
+
+> 蒸汽模式下此组件已无实际意义，仅为向下兼容而支持。  
+
 
 ### 子组件 @children-tags
 支持所有组件

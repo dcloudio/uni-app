@@ -12,7 +12,7 @@ app-android平台专有内置对象。在uni-app和uni-app x的uts环境中均�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | - | - | - | 
+| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 |  |   | - | 
 
 
 **返回值**
@@ -24,9 +24,9 @@ app-android平台专有内置对象。在uni-app和uni-app x的uts环境中均�
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -44,7 +44,7 @@ onAppConfigChange 对应的反注册函数
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 否 | - | - | - | 
+| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 否 |  |   | - | 
 
 
 **返回值**
@@ -56,9 +56,9 @@ onAppConfigChange 对应的反注册函数
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -75,7 +75,7 @@ onAppConfigChange 对应的反注册函数
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (res: Number) => void | 否 | - | - | - | 
+| callback | (res: Number) => void | 否 |  |   | - | 
 
 
 **返回值**
@@ -87,9 +87,9 @@ onAppConfigChange 对应的反注册函数
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -107,7 +107,7 @@ onAppTrimMemory 对应的反注册函数。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (res: Number) => void | 否 | - | - | - | 
+| callback | (res: Number) => void | 否 |  |   | - | 
 
 
 **返回值**
@@ -119,9 +119,9 @@ onAppTrimMemory 对应的反注册函数。
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -139,7 +139,7 @@ onAppTrimMemory 对应的反注册函数。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 是 | - | - | - | 
+| callback | () => void | 是 |  |   | - | 
 
 
 **返回值**
@@ -151,9 +151,9 @@ onAppTrimMemory 对应的反注册函数。
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -177,7 +177,7 @@ onAppActivityPause 对应的反注册函数
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 否 | - | - | - | 
+| callback | () => void | 否 |  |   | - | 
 
 
 **返回值**
@@ -189,9 +189,9 @@ onAppActivityPause 对应的反注册函数
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -216,7 +216,7 @@ UTSAndroid.offAppActivityPause(() => {
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 是 | - | - | - | 
+| callback | () => void | 是 |  |   | - | 
 
 
 **返回值**
@@ -228,9 +228,9 @@ UTSAndroid.offAppActivityPause(() => {
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -257,7 +257,7 @@ onAppActivityResume 对应的反注册函数
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 否 | - | - | - | 
+| callback | () => void | 否 |  |   | - | 
 
 
 **返回值**
@@ -269,9 +269,9 @@ onAppActivityResume 对应的反注册函数
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -298,7 +298,7 @@ UTSAndroid.onAppActivityResume(() => {
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 是 | - | - | - | 
+| callback | () => void | 是 |  |   | - | 
 
 
 **返回值**
@@ -310,9 +310,9 @@ UTSAndroid.onAppActivityResume(() => {
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -336,7 +336,7 @@ onAppActivityDestroy 对应的反注册函数。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 否 | - | - | - | 
+| callback | () => void | 否 |  |   | - | 
 
 
 **返回值**
@@ -348,9 +348,9 @@ onAppActivityDestroy 对应的反注册函数。
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -376,7 +376,7 @@ UTSAndroid.offAppActivityDestroy(() => {
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (requestCode: Int, resultCode: Int, data: any) => void | 是 | - | - | 用于监听的响应函数 | 
+| callback | (requestCode: Int, resultCode: Int, data: any) => void | 是 |  |   | 用于监听的响应函数 | 
 
 
 **返回值**
@@ -388,9 +388,9 @@ UTSAndroid.offAppActivityDestroy(() => {
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -427,7 +427,7 @@ onAppActivityResult 对应的反注册函数。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (requestCode: Int, resultCode: Int, data: any) => void | 否 | - | - | - | 
+| callback | (requestCode: Int, resultCode: Int, data: any) => void | 否 |  |   | - | 
 
 
 **返回值**
@@ -439,9 +439,9 @@ onAppActivityResult 对应的反注册函数。
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -467,7 +467,7 @@ UTSAndroid.offAppActivityResult(() => {
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 是 | - | - | 用于监听的响应函数 | 
+| callback | () => void | 是 |  |   | 用于监听的响应函数 | 
 
 
 **返回值**
@@ -479,9 +479,9 @@ UTSAndroid.offAppActivityResult(() => {
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -506,7 +506,7 @@ UTSAndroid.onAppActivityBack(() => {
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 否 | - | - | - | 
+| callback | () => void | 否 |  |   | - | 
 
 
 **返回值**
@@ -518,9 +518,9 @@ UTSAndroid.onAppActivityBack(() => {
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -555,9 +555,9 @@ UTSAndroid.offAppActivityBack(() => {
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -590,9 +590,9 @@ console.log("packageName",packageName)
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -618,7 +618,7 @@ if (takePictureIntent.resolveActivity(UTSAndroid.getUniActivity()!.getPackageMan
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| resourceName | string | 是 | - | - | 资源文件相对于项目的绝对路径, 如：“/static/logo.png” | 
+| resourceName | string | 是 |  |   | 资源文件相对于项目的绝对路径, 如：“/static/logo.png” | 
 
 
 **返回值**
@@ -630,9 +630,9 @@ if (takePictureIntent.resolveActivity(UTSAndroid.getUniActivity()!.getPackageMan
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -696,9 +696,9 @@ console.log(UTSAndroid.getResourcePath('/storage/emulated/0/Android/data/io.dclo
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.99 | 3.99 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.99 | 3.99 |
 
 
 **uni-app 兼容性**
@@ -726,9 +726,9 @@ console.log(UTSAndroid.getResourcePath('/storage/emulated/0/Android/data/io.dclo
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -749,7 +749,7 @@ console.log(UTSAndroid.getResourcePath('/storage/emulated/0/Android/data/io.dclo
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| threadName | string \| null | 否 | - | - | 任务组名称，可能为：<br/>main: ui thread / dom: 仅uni-app x环境生效，uni-app 环境会自动切换到 ui<br/>io : io thread<br/>匿名线程 null 或者 '': 来源线程，如果来源线程不支持任务分发，则会在当前线程执行执行. 这个场景下要求第一个参数必须是线程环境 | 
+| threadName | string \| null | 否 |  |   | 任务组名称，可能为：<br/>main: ui thread / dom: 仅uni-app x环境生效，uni-app 环境会自动切换到 ui<br/>io : io thread<br/>匿名线程 null 或者 '': 来源线程，如果来源线程不支持任务分发，则会在当前线程执行执行. 这个场景下要求第一个参数必须是线程环境 | 
 
 
 **返回值**
@@ -764,26 +764,23 @@ console.log(UTSAndroid.getResourcePath('/storage/emulated/0/Android/data/io.dclo
 ##### async(action : (action : any \| null) => void, param ?: any \| null) : void @async
 async
 在当前任务分发器 异步执行任务
-###### async 兼容性 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| action | (action?: any) => void | 是 | - | - | 任务函数 |
-| param | any | 否 | - | - | 任务函数需要的参数 | 
+| action | (action?: any) => void | 是 |  |   | 任务函数 |
+| param | any | 否 |  |   | 任务函数需要的参数 | 
+
 
 
 
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -829,9 +826,9 @@ UTSAndroid.getDispatcher("io").async(function(_){
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -859,9 +856,9 @@ UTSAndroid.getDispatcher("io").async(function(_){
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -889,9 +886,9 @@ UTSAndroid.getDispatcher("io").async(function(_){
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -919,9 +916,9 @@ UTSAndroid.getDispatcher("io").async(function(_){
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -949,9 +946,9 @@ UTSAndroid.getDispatcher("io").async(function(_){
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -979,9 +976,9 @@ UTSAndroid.getDispatcher("io").async(function(_){
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -1009,9 +1006,9 @@ UTSAndroid.getDispatcher("io").async(function(_){
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -1029,7 +1026,7 @@ UTSAndroid.getDispatcher("io").async(function(_){
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| devicePX | number | 是 | - | - | 待转换的物理像素 | 
+| devicePX | number | 是 |  |   | 待转换的物理像素 | 
 
 
 **返回值**
@@ -1041,9 +1038,9 @@ UTSAndroid.getDispatcher("io").async(function(_){
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.95 | 3.95 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.95 | 3.95 |
 
 
 **uni-app 兼容性**
@@ -1067,11 +1064,11 @@ console.log("pagePX",pagePX)
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| context | Activity | 是 | - | - | - |
-| requestPermission | Array&lt;string&gt;\<string> | 是 | - | - | 期望请求的权限 |
-| success | (allRight: boolean, grantedList: Array&lt;string&gt;) => void | 是 | - | - | - |
-| fail | (doNotAskAgain: boolean, grantedList: Array&lt;string&gt;) => void | 是 | - | - | - |
-| shallUnCheck | boolean | 否 | false | - | 是否忽略权限检查，需要HBuilder X 4.25 之后版本 | 
+| context | Activity | 是 |  |   | - |
+| requestPermission | Array&lt;string&gt;\<string> | 是 |  |   | 期望请求的权限 |
+| success | (allRight: boolean, grantedList: Array&lt;string&gt;) => void | 是 |  |   | - |
+| fail | (doNotAskAgain: boolean, grantedList: Array&lt;string&gt;) => void | 是 |  |   | - |
+| shallUnCheck | boolean | 否 | false |   | 是否忽略权限检查，需要HBuilder X 4.25 之后版本 | 
 
 
 **返回值**
@@ -1083,9 +1080,9 @@ console.log("pagePX",pagePX)
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -1126,8 +1123,8 @@ console.log("pagePX",pagePX)
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| context | Activity | 是 | - | - | - |
-| requestPermission | Array&lt;string&gt;\<string> | 是 | - | - | 期望具备的权限 | 
+| context | Activity | 是 |  |   | - |
+| requestPermission | Array&lt;string&gt;\<string> | 是 |  |   | 期望具备的权限 | 
 
 
 **返回值**
@@ -1139,9 +1136,9 @@ console.log("pagePX",pagePX)
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -1168,8 +1165,8 @@ if (UTSAndroid.checkSystemPermissionGranted(UTSAndroid.getUniActivity()!, permis
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| context | Activity | 是 | - | - | - |
-| requestPermission | Array&lt;string&gt;\<string> | 是 | - | - | 期望请求的权限 | 
+| context | Activity | 是 |  |   | - |
+| requestPermission | Array&lt;string&gt;\<string> | 是 |  |   | 期望请求的权限 | 
 
 
 **返回值**
@@ -1181,9 +1178,9 @@ if (UTSAndroid.checkSystemPermissionGranted(UTSAndroid.getUniActivity()!, permis
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -1206,8 +1203,8 @@ UTSAndroid.gotoSystemPermissionActivity(UTSAndroid.getUniActivity()!,permissionN
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| context | Activity | 是 | - | - | - |
-| requestPermission | Array&lt;string&gt;\<string> | 是 | - | - | 期望请求的权限 | 
+| context | Activity | 是 |  |   | - |
+| requestPermission | Array&lt;string&gt;\<string> | 是 |  |   | 期望请求的权限 | 
 
 
 **返回值**
@@ -1219,9 +1216,9 @@ UTSAndroid.gotoSystemPermissionActivity(UTSAndroid.getUniActivity()!,permissionN
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -1245,7 +1242,7 @@ UTSAndroid.gotoSystemPermissionActivity(UTSAndroid.getUniActivity()!,permissionN
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| inputPath | string | 是 | - | - | 待转换的文件相对路径 | 
+| inputPath | string | 是 |  |   | 待转换的文件相对路径 | 
 
 
 **返回值**
@@ -1257,9 +1254,9 @@ UTSAndroid.gotoSystemPermissionActivity(UTSAndroid.getUniActivity()!,permissionN
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.90 | 3.90 |
 
 
 **uni-app 兼容性**
@@ -1325,7 +1322,7 @@ console.log(UTSAndroid.convert2AbsFullPath('../../../io.dcloud.HBuilder/apps/HBu
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| file | File | 是 | - | - | 待转换的私有文件 | 
+| file | File | 是 |  |   | 待转换的私有文件 | 
 
 
 **返回值**
@@ -1337,9 +1334,9 @@ console.log(UTSAndroid.convert2AbsFullPath('../../../io.dcloud.HBuilder/apps/HBu
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 3.99 | 3.99 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 3.99 | 3.99 |
 
 
 **uni-app 兼容性**
@@ -1366,8 +1363,8 @@ context.startActivity(intent);
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| service | string | 是 | - | - | 指定的服务名称 |
-| providerName | string | 是 | - | - | 指定provider名称 | 
+| service | string | 是 |  |   | 指定的服务名称 |
+| providerName | string | 是 |  |   | 指定provider名称 | 
 
 
 **返回值**
@@ -1401,7 +1398,7 @@ context.startActivity(intent);
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| input | any | 是 | - | - | 任意不为空对象，如果传入一个Class类型，则返回该Class对应的jvm class实例 | 
+| input | any | 是 |  |   | 任意不为空对象，如果传入一个Class类型，则返回该Class对应的jvm class实例 | 
 
 
 **返回值**
@@ -1413,9 +1410,9 @@ context.startActivity(intent);
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 4.0 | 4.0 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 4.0 | 4.0 |
 
 
 **uni-app 兼容性**
@@ -1453,7 +1450,7 @@ export function getJavaClassTest() : boolean {
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| input | any | 是 | - | - | 任意不为空对象，如果传入一个Class类型，则返回该Class对应的 KClasss实例 | 
+| input | any | 是 |  |   | 任意不为空对象，如果传入一个Class类型，则返回该Class对应的 KClasss实例 | 
 
 
 **返回值**
@@ -1465,9 +1462,9 @@ export function getJavaClassTest() : boolean {
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 4.65 | 4.65 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 4.65 | 4.65 |
 
 
 **uni-app 兼容性**
@@ -1492,9 +1489,9 @@ export function getJavaClassTest() : boolean {
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
-| :- | :- |
-| 4.0 | 4.0 |
+| Android 系统版本 | Android | Android UTS 插件 |
+| :- | :- | :- |
+| 4.4 | 4.0 | 4.0 |
 
 
 **uni-app 兼容性**
@@ -1516,8 +1513,8 @@ console.log(UTSAndroid.getTopPageActivity())
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | IUniActivityCallback | 是 | - | - | 回调方法，[查看具体子类实现](https://doc.dcloud.net.cn/uni-app-x/uts/utsactivitycallback.html) |
-| pageRoute | string \| null | 否 | - | - | [页面的路由地址route](https://doc.dcloud.net.cn/uni-app-x/api/get-current-pages.html#getcurrentpages),注意如果是tabBar页面,请传'tabBar'字符串 | 
+| callback | IUniActivityCallback | 是 |  |   | 回调方法，[查看具体子类实现](https://doc.dcloud.net.cn/uni-app-x/uts/utsactivitycallback.html) |
+| pageRoute | string \| null | 否 |  |   | [页面的路由地址route](https://doc.dcloud.net.cn/uni-app-x/api/get-current-pages.html#getcurrentpages),注意如果是tabBar页面,请传'tabBar'字符串 | 
 
 
 **返回值**
@@ -1548,7 +1545,7 @@ onActivityCallback对应的反注册函数。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | IUniActivityCallback | 是 | - | - | onActivityCallback传入的callback | 
+| callback | IUniActivityCallback | 是 |  |   | onActivityCallback传入的callback | 
 
 
 **返回值**

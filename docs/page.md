@@ -109,6 +109,89 @@ uvue页面基于 vue 单文件组件规范。一个页面内，有3个根节点�
 
 页面内容构成，另有[详细文档](./vue/README.md)
 
+## 页面的可滚动性@disablescroll
+
+web及使用webview的小程序，页面默认是可滚动的。
+而标准原生应用中的页面默认是不可滚动的，需要滚动时需显式的在template中写scroll-view等滚动容器的代码。
+
+uni-app中，vue页面默认可滚动，nvue为了多端一致性默认给页面套了一个scroll-view。
+
+uni-app x中，App平台的页面是一个原生页面，
+- VDOM模式中，App平台的页面默认不可滚动，需要开发者在页面中显示使用scroll-view。
+- 蒸汽模式中，App平台的页面默认可滚动，与web和小程序拉齐。需HBuilder 5.12+
+
+在uni-app x的vdom模式中，出于性能考虑，app平台默认没有隐式给页面套scroll-view，所以新建页面时，选择可滚动页面会出现下面的代码
+```vue
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+
+ <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+```
+
+uni-app x的蒸汽模式，因为已经做到比原生渲染更快，套一层scroll-view对性能影响很小，所以拉平了多端一致性。
+
+如果开发者希望页面不可滚动，那么可以在[pages.json](./collocation/pagesjson.md#pagesoptionspage-style)的页面Style中配置`disableScroll:true`禁用页面滚动。此配置项不影响页面中自行写scroll-view。
+
+如下几种情况，推荐禁用页面滚动：
+1. 使用了自定义导航栏、自定义tabbar。如果不禁用页面滚动，bounce回弹效果会在导航栏上面和tabbar下面。
+2. 页面根组件是 scroll-view、list-view、waterflow 等滚动容器。如果不禁用页面滚动，会发生嵌套滚动。
+
+uni-app x在编译期间，会对上述情况进行静态检查和告警。
+
+如果是vdom模式页面升级为蒸汽模式时，控制台收到编译告警，建议去掉这段条件编译套scroll-view的代码：
+```vue
+	<!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+
+ <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+```
+
+注意：
+- 只有滚动区的子内容高度大于滚动容器，才能发生滚动。
+
+写如下代码，页面实际上无法滚动，因为这个view占据所有剩余空间，导致滚动区内容的高度永远无法超过滚动容器的高度。
+```vue
+<template>
+  <view style="flex:1">
+  </view>
+</template>
+```
+
+- 当页面Style中开启了页面下拉刷新，即enablePullDownRefresh为true时，且`disableScroll:true`，此时页面仍无法滚动，但是否同时还支持下拉刷新，各平台有差异。
+
+此时微信小程序在Android、iOS、鸿蒙上的表现也不同。
+App平台的策略是`disableScroll:true`时不能下拉刷新。
+
+### 页面滚动相关的生命周期、api
+
+页面滚动有一批相关的生命周期、api，比如：`onPageScroll`、`onReachBottom`、`uni.pageScrollTo()`
+
+如果页面不可滚动，这些生命周期不会触发，相关API不可用。
+
+在app平台vdom模式，由于页面不可滚动，会判断页面根节点是否为scroll-view（不认list-view等其他滚动容器）。
+
+* 如果是，页面滚动相关的生命周期和API继续生效，效果如前。
+* 如果不是scroll-view，全部失效。
+
+### 页面无法滚动引起的position差异
+
+app平台vdom模式无页面滚动，且其根节点高度为从导航栏底部到tabBar顶部。如果在页面根节点的子元素使用`position: absolute;`，页面内部scroll-view滚动时不会改变此元素位置。
+
+有页面滚动时，如果在页面根节点的子元素使用`position: absolute;`页面滚动会改变此元素的位置。
+
+在app平台vdom模式下，如果有不随页面滚动变化位置的需求，建议使用`position: fixed`。
+
+注意：web端需要使用[css安全区变量](./css/common/function.md)使元素不覆盖在navigationBar和tabBar上。
+
+
 ## 页面对象实例
 
 运行时每个打开的页面，都有一个[UniPage](./api/unipage.md)实例。
@@ -123,27 +206,27 @@ uvue页面基于 vue 单文件组件规范。一个页面内，有3个根节点�
 
 ## 页面生命周期 @lifecycle
 
-| 组合式 | 选项式 | Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) | 描述 |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| onLoad | onLoad | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | - | 生命周期回调 监听页面加载<br/><br/>页面加载时触发。一个页面只会调用一次，可以在 onLoad 的参数中获取打开当前页面路径中的参数。 |
-| onPageShow | onShow | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | - | 生命周期回调 监听页面显示<br/><br/>页面显示/切入前台时触发。<br/> |
-| onReady | onReady | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | - | 生命周期回调 监听页面初次渲染完成<br/><br/>页面初次渲染完成时触发。一个页面只会调用一次，代表页面已经准备妥当，可以和视图层进行交互。<br/> |
-| onPageHide | onHide | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | - | 生命周期回调 监听页面隐藏<br/><br/>页面隐藏/切入后台时触发。 如 `navigateTo` 或底部 `tab` 切换到其他页面，应用切入后台等。<br/> |
-| onUnload | onUnload | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | - | 生命周期回调 监听页面卸载<br/><br/>页面卸载时触发。如 `redirectTo` 或 `navigateBack` 到其他页面时。<br/> |
-| onPullDownRefresh | onPullDownRefresh | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | - | 监听用户下拉动作<br/>- 需要在 `pages.json` 的页面配置中开启 `enablePullDownRefresh` 。<br/>- 可以通过 `uni.startPullDownRefresh` 触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。<br/>- 当处理完数据刷新后，`uni.stopPullDownRefresh` 可以停止当前页面的下拉刷新。<br/> |
-| onReachBottom | onReachBottom | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | - | 页面上拉触底事件的处理函数<br/>- 可以在 `pages.json` 的页面配置中设置触发距离 `onReachBottomDistance` 。<br/>- 在触发距离内滑动期间，本事件只会被触发一次。<br/> |
-| onPageScroll | onPageScroll | 4.0 | 4.41 | 3.9 | 4.13 | 4.61 | - | 页面滚动触发事件的处理函数<br/><br/>监听用户滑动页面事件。 |
-| onResize | onResize | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | - | 页面尺寸改变时触发 |
-| onBackPress | onBackPress | 4.0 | x | 3.9 | 4.11 | 4.61 | - | 监听页面返回 |
-| onInit | onInit | x | x | x | x | 4.61 | - | 生命周期回调 监听页面初始化<br/><br/>页面初始化时触发。一个页面只会调用一次，可以在 onInit 的参数中获取打开当前页面路径中的参数。 |
-| onShareAppMessage | onShareAppMessage | x | 4.41 | x | x | 4.61 | - | 用户点击右上角转发<br/><br/>监听用户点击页面内转发按钮（`<button>` 组件 `open-type="share"`）或右上角菜单“转发”按钮的行为，并自定义转发内容。 |
-| onShareTimeline | onShareTimeline | x | 4.41 | x | x | 4.61 | - | 用户点击右上角转发到朋友圈<br/><br/>监听右上角菜单“分享到朋友圈”按钮的行为，并自定义发享内容。<br/> |
-| onAddToFavorites | onAddToFavorites | x | 4.41 | x | x | 4.61 | - | 用户点击右上角收藏<br/><br/>监听用户点击右上角菜单“收藏”按钮的行为，并自定义收藏内容。<br/> |
-| onTabItemTap | onTabItemTap | 4.0 | 4.41 | x | x | 4.61 | - | 当前是 tab 页时，点击 tab 时触发 |
-| onNavigationBarButtonTap | onNavigationBarButtonTap | 4.0 | x | x | x | 4.61 | - | 监听原生标题栏按钮点击事件 |
-| onNavigationBarSearchInputChanged | onNavigationBarSearchInputChanged | 4.0 | x | x | x | 4.61 | - | 监听原生标题栏搜索输入框输入内容变化事件<br/> |
-| onNavigationBarSearchInputConfirmed | onNavigationBarSearchInputConfirmed | 4.0 | x | x | x | 4.61 | - | 监听原生标题栏搜索输入框搜索事件，用户点击软键盘上的“搜索”按钮时触发。<br/> |
-| onNavigationBarSearchInputClicked | onNavigationBarSearchInputClicked | 4.0 | x | x | x | 4.61 | - | 监听原生标题栏搜索输入框点击事件<br/> |
+| 组合式 | 选项式 | 兼容性 | 描述 |
+| :- | :- | :- | :- |
+| onLoad | onLoad | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面加载<br/><br/>页面加载时触发。一个页面只会调用一次，可以在 onLoad 的参数中获取打开当前页面路径中的参数。 |
+| onPageShow | onShow | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面显示<br/><br/>页面显示/切入前台时触发。<br/> |
+| onReady | onReady | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面初次渲染完成<br/><br/>页面初次渲染完成时触发。一个页面只会调用一次，代表页面已经准备妥当，可以和视图层进行交互。<br/> |
+| onPageHide | onHide | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面隐藏<br/><br/>页面隐藏/切入后台时触发。 如 `navigateTo` 或底部 `tab` 切换到其他页面，应用切入后台等。<br/> |
+| onUnload | onUnload | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面卸载<br/><br/>页面卸载时触发。如 `redirectTo` 或 `navigateBack` 到其他页面时。<br/> |
+| onPullDownRefresh | onPullDownRefresh | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 监听用户下拉动作<br/>- 需要在 `pages.json` 的页面配置中开启 `enablePullDownRefresh` 。<br/>- 可以通过 `uni.startPullDownRefresh` 触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。<br/>- 当处理完数据刷新后，`uni.stopPullDownRefresh` 可以停止当前页面的下拉刷新。<br/> |
+| onReachBottom | onReachBottom | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件的处理函数<br/>- 可以在 `pages.json` 的页面配置中设置触发距离 `onReachBottomDistance` 。<br/>- 在触发距离内滑动期间，本事件只会被触发一次。<br/> |
+| onPageScroll | onPageScroll | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.13; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动触发事件的处理函数<br/><br/>监听用户滑动页面事件。 |
+| onResize | onResize | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.03 | 页面尺寸改变时触发 |
+| onBackPress | onBackPress | Web: 4.0; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 监听页面返回 |
+| onInit | onInit | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 生命周期回调 监听页面初始化<br/><br/>页面初始化时触发。一个页面只会调用一次，可以在 onInit 的参数中获取打开当前页面路径中的参数。 |
+| onShareAppMessage | onShareAppMessage | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 用户点击右上角转发<br/><br/>监听用户点击页面内转发按钮（`<button>` 组件 `open-type="share"`）或右上角菜单“转发”按钮的行为，并自定义转发内容。 |
+| onShareTimeline | onShareTimeline | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 用户点击右上角转发到朋友圈<br/><br/>监听右上角菜单“分享到朋友圈”按钮的行为，并自定义发享内容。<br/> |
+| onAddToFavorites | onAddToFavorites | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 用户点击右上角收藏<br/><br/>监听用户点击右上角菜单“收藏”按钮的行为，并自定义收藏内容。<br/> |
+| onTabItemTap | onTabItemTap | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 当前是 tab 页时，点击 tab 时触发 |
+| onNavigationBarButtonTap | onNavigationBarButtonTap | Web: 4.0; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 监听原生标题栏按钮点击事件 |
+| onNavigationBarSearchInputChanged | onNavigationBarSearchInputChanged | Web: 4.0; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框输入内容变化事件<br/> |
+| onNavigationBarSearchInputConfirmed | onNavigationBarSearchInputConfirmed | Web: 4.0; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框搜索事件，用户点击软键盘上的“搜索”按钮时触发。<br/> |
+| onNavigationBarSearchInputClicked | onNavigationBarSearchInputClicked | Web: 4.0; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框点击事件<br/> |
 
 在 Vue 中，页面也是一种组件，所以也同时支持[组件生命周期](./vue/options-api.md#page-component-options)。
 
@@ -210,90 +293,94 @@ onShow和onHide是成对出现的。
 ### 页面 onResize 生命周期 @onresize
 
 #### onResize 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | - |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | x | 10.0 | 4.11 | x | 4.61 | 5.03 |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **OnResizeOptions** | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 页面尺寸改变时回调参数  |
+| options | **OnResizeOptions** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 页面尺寸改变时回调参数  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| deviceOrientation | string | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 屏幕方向 |
-| size | **OnResizeSize** | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 新的显示区域尺寸 |
+| deviceOrientation | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 屏幕方向 |
+| size | **OnResizeSize** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 新的显示区域尺寸 |
 
 ##### size 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| screenHeight | number | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 新的屏幕高度 |
-| screenWidth | number | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 新的屏幕宽度 |
-| windowHeight | number | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 新的显示区域高度 |
-| windowWidth | number | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 新的显示区域宽度 | 
+| screenHeight | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 新的屏幕高度 |
+| screenWidth | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 新的屏幕宽度 |
+| windowHeight | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 新的显示区域高度 |
+| windowWidth | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 新的显示区域宽度 | 
 
 
 
 
 ### onReachBottom
 
-可在pages.json里定义具体页面底部的触发距离[onReachBottomDistance](/collocation/pagesjson#pages-globalstyle)，
+可在pages.json里定义具体页面底部的触发距离[onReachBottomDistance](./collocation/pagesjson#pages-globalstyle)，
 比如设为50，那么滚动页面到距离底部50px时，就会触发onReachBottom事件。
 
 ### 页面 onPageScroll 生命周期 @onpagescroll
 
 #### onPageScroll 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.13 | 4.61 | - |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | x | 10.0 | 4.13 | x | 4.61 | 5.08 |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **OnPageScrollOptions** | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.13; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 页面滚动参数 |
+| options | **OnPageScrollOptions** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.13; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| scrollTop | number | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.13; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 页面在垂直方向已滚动的距离（单位 px） | 
+| scrollTop | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.13; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 页面在垂直方向已滚动的距离（单位 px） | 
 
 
 
+
+::: warning 注意
+- iOS 平台蒸汽模式开启下拉刷新会触发页面 `onPageScroll` 生命周期，此时 `scrollTop` 为负值。
+:::
 
 ### 页面 onBackPress 生命周期 @onbackpress
 
 #### onBackPress 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | 3.9 | 4.11 | 4.61 | - |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 3.9 | x | 10.0 | 4.11 | 5.11 | 4.61 |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **OnBackPressOptions** | 是 | - | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 监听页面返回回调参数  |
+| options | **OnBackPressOptions** | 是 |  | Web: 4.0; 微信小程序: x; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 监听页面返回回调参数  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| from | string | 是 | - | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | - backbutton 顶部导航栏左边的返回按钮或 Android 实体返回键<br/>- navigateBack 返回 API，即 uni.navigateBack() |
+| from | string | 是 |  | Web: 4.0; 微信小程序: x; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | - backbutton 顶部导航栏左边的返回按钮或 Android 实体返回键<br/>- navigateBack 返回 API，即 uni.navigateBack() |
 
 ##### from 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| backbutton | Web: -; 微信小程序: x; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | - |
-| navigateBack | Web: -; 微信小程序: x; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | - | 
+| backbutton | 微信小程序: x |  |
+| navigateBack | 微信小程序: x |  | 
 
 
 #### 返回值 
@@ -306,7 +393,7 @@ onShow和onHide是成对出现的。
 
 ::: warning 注意
 - `onBackPress`上不可使用`async`，会导致无法阻止默认返回
-- - iOS 端侧滑返回不会触发 `onBackPress`
+- iOS 端侧滑返回不会触发 `onBackPress`
 :::
 
 #### 示例
@@ -388,24 +475,24 @@ onShow和onHide是成对出现的。
 ### 页面 onTabItemTap 生命周期 @ontabitemtap
 
 #### onTabItemTap 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | x | 4.61 | - |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | x | x | 10.0 | x | x | 4.61 | x |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **OnTabItemTapOption** | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 监听 tab 点击回调参数 |
+| options | **OnTabItemTapOption** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 监听 tab 点击回调参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| index | number | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 被点击 tabItem 的序号，从0开始 |
-| pagePath | string | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 被点击 tabItem 的页面路径 |
-| text | string | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 被点击 tabItem 的按钮文字 | 
+| index | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 被点击 tabItem 的序号，从0开始 |
+| pagePath | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 被点击 tabItem 的页面路径 |
+| text | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 被点击 tabItem 的按钮文字 | 
 
 
 
@@ -417,22 +504,22 @@ onShow和onHide是成对出现的。
 ### 页面 onNavigationBarButtonTap 生命周期 @onnavigationbarbuttontap
 
 #### onNavigationBarButtonTap 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 | - |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | 10.0 | x | x | 4.61 | x |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **OnNavigationBarButtonTapOption** | 是 | - | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 原生标题栏按钮点击回调参数  |
+| options | **OnNavigationBarButtonTapOption** | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 原生标题栏按钮点击回调参数  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| index | number | 是 | - | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 原生标题栏按钮数组的下标 | 
+| index | number | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 原生标题栏按钮数组的下标 | 
 
 
 
@@ -440,22 +527,22 @@ onShow和onHide是成对出现的。
 ### 页面 onNavigationBarSearchInputChanged 生命周期 @onnavigationbarsearchinputchanged
 
 #### onNavigationBarSearchInputChanged 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 | - |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | 10.0 | x | x | 4.61 | x |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| event | **NavigationBarSearchInputEvent** | 是 | - | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 监听原生标题栏搜索输入框搜索回调参数  |
+| event | **NavigationBarSearchInputEvent** | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框搜索回调参数  |
 
 #### event 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| text | string | 是 | - | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 搜索输入框输入内容 | 
+| text | string | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 搜索输入框输入内容 | 
 
 
 
@@ -463,22 +550,22 @@ onShow和onHide是成对出现的。
 ### 页面 onNavigationBarSearchInputConfirmed 生命周期 @onnavigationbarsearchinputconfirmed
 
 #### onNavigationBarSearchInputConfirmed 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 4.61 | - |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | 10.0 | x | x | 4.61 | x |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| event | **NavigationBarSearchInputEvent** | 是 | - | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 监听原生标题栏搜索输入框搜索回调参数  |
+| event | **NavigationBarSearchInputEvent** | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框搜索回调参数  |
 
 #### event 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| text | string | 是 | - | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 搜索输入框输入内容 | 
+| text | string | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 搜索输入框输入内容 | 
 
 
 
@@ -661,7 +748,7 @@ defineExpose({
 
 <style>
 .container {
-  height: 1200px;
+  height: 2200px;
 }
 </style>
 

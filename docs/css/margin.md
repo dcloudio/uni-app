@@ -5,11 +5,17 @@
 margin 属性为给定元素设置所有四个（上下左右）方向的外边距属性。也就是 margin-top，margin-right，margin-bottom，和 margin-left 四个外边距属性设置的简写。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -29,7 +35,7 @@ margin: [ <length> | <percentage> | auto ]{1,4};
 ### margin 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 让浏览器自己选择一个合适的外边距。有时，在一些特殊情况下，该值可以使元素居中。 |
+| auto | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 让浏览器自己选择一个合适的外边距。有时，在一些特殊情况下，该值可以使元素居中。 |
 
 
 ### 默认值 @default-value 
@@ -97,11 +103,11 @@ margin: [ <length> | <percentage> | auto ]{1,4};
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{margin}}</text>
-          <text class="uni-info">获取值: {{marginActual}}</text>
+          <text class="uni-info">设置值: {{data.margin}}</text>
+          <text class="uni-info">获取值: {{data.marginActual}}</text>
           <view class="test-box">
             <view class="common-view" style="background-color: red;"></view>
-            <view ref="viewRef" class="common-view test-view" :style="{ margin: margin }">
+            <view ref="viewRef" class="common-view test-view" :style="{ margin: data.margin }">
               <text class="common-text">view</text>
             </view>
             <view class="common-view" style="background-color: blue;"></view>
@@ -110,22 +116,22 @@ margin: [ <length> | <percentage> | auto ]{1,4};
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{margin}}</text>
-          <text class="uni-info">获取值: {{marginActualText}}</text>
+          <text class="uni-info">设置值: {{data.margin}}</text>
+          <text class="uni-info">获取值: {{data.marginActualText}}</text>
           <view class="test-box">
             <text class="common-view common-text" style="background-color: red;">红色</text>
-            <text ref="textRef" class="common-view common-text test-text" :style="{ margin: margin }">text</text>
+            <text ref="textRef" class="common-view common-text test-text" :style="{ margin: data.margin }">text</text>
             <text class="common-view common-text" style="background-color: blue;">蓝色</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{margin}}</text>
-          <text class="uni-info">获取值: {{marginActualImage}}</text>
+          <text class="uni-info">设置值: {{data.margin}}</text>
+          <text class="uni-info">获取值: {{data.marginActualImage}}</text>
           <view class="test-box">
             <image class="common-image" style="background-color: red;" src="/static/test-image/logo.png"></image>
-            <image ref="imageRef" class="common-image test-image" :style="{ margin: margin }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image test-image" :style="{ margin: data.margin }" src="/static/test-image/logo.png"></image>
             <image class="common-image" style="background-color: blue;" src="/static/test-image/logo.png"></image>
           </view>
         </view>
@@ -134,11 +140,11 @@ margin: [ <length> | <percentage> | auto ]{1,4};
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{margin}}</text>
-          <text class="uni-info">获取值: {{marginActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.margin}}</text>
+          <text class="uni-info">获取值: {{data.marginActualFlat}}</text>
           <view class="test-box">
             <view class="common-view" style="background-color: red;"></view>
-            <view ref="viewRefFlat" class="common-view test-view-flatten" :style="{ margin: margin }" flatten>
+            <view ref="viewRefFlat" class="common-view test-view-flatten" :style="{ margin: data.margin }" flatten>
               <text class="common-text">view</text>
             </view>
             <view class="common-view" style="background-color: blue;"></view>
@@ -147,22 +153,22 @@ margin: [ <length> | <percentage> | auto ]{1,4};
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{margin}}</text>
-          <text class="uni-info">获取值: {{marginActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.margin}}</text>
+          <text class="uni-info">获取值: {{data.marginActualTextFlat}}</text>
           <view class="test-box">
             <text class="common-view common-text" style="background-color: red;">红色</text>
-            <text ref="textRefFlat" class="common-view common-text test-text-flatten" :style="{ margin: margin }" flatten>text</text>
+            <text ref="textRefFlat" class="common-view common-text test-text-flatten" :style="{ margin: data.margin }" flatten>text</text>
             <text class="common-view common-text" style="background-color: blue;">蓝色</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{margin}}</text>
-          <text class="uni-info">获取值: {{marginActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.margin}}</text>
+          <text class="uni-info">获取值: {{data.marginActualImageFlat}}</text>
           <view class="test-box">
             <image class="common-image" style="background-color: red;" src="/static/test-image/logo.png"></image>
-            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ margin: margin }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ margin: data.margin }" flatten src="/static/test-image/logo.png"></image>
             <image class="common-image" style="background-color: blue;" src="/static/test-image/logo.png"></image>
           </view>
         </view>
@@ -174,11 +180,11 @@ margin: [ <length> | <percentage> | auto ]{1,4};
 
       <view class="test-container">
         <view class="test-item">
-          <text class="uni-info">设置值: {{margin}}</text>
-          <text class="uni-info">获取值: {{marginActualScrollView}}</text>
+          <text class="uni-info">设置值: {{data.margin}}</text>
+          <text class="uni-info">获取值: {{data.marginActualScrollView}}</text>
           <view class="test-box" style="height: 180px;">
             <view class="common-view" style="background-color: red;"></view>
-            <scroll-view ref="scrollViewRef" class="common-scroll-view" :style="{ margin: margin }">
+            <scroll-view ref="scrollViewRef" class="common-scroll-view" :style="{ margin: data.margin }">
               <view class="scroll-view-content">
                 <text class="common-text">scroll-view1</text>
               </view>
@@ -197,7 +203,7 @@ margin: [ <length> | <percentage> | auto ]{1,4};
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :compact="true" :items="marginEnum" title="margin 枚举值" @change="radioChangeMargin"></enum-data>
-        <input-data :defaultValue="margin" title="margin 自定义值" type="text" @confirm="inputChangeMargin"></input-data>
+        <input-data :defaultValue="data.margin" title="margin 自定义值" type="text" @confirm="inputChangeMargin"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -225,14 +231,16 @@ margin: [ <length> | <percentage> | auto ]{1,4};
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const margin = ref('25px')
-  const marginActual = ref('')
-  const marginActualText = ref('')
-  const marginActualImage = ref('')
-  const marginActualFlat = ref('')
-  const marginActualTextFlat = ref('')
-  const marginActualImageFlat = ref('')
-  const marginActualScrollView = ref('')
+  const data = reactive({
+    margin: '25px',
+    marginActual: '',
+    marginActualText: '',
+    marginActualImage: '',
+    marginActualFlat: '',
+    marginActualTextFlat: '',
+    marginActualImageFlat: '',
+    marginActualScrollView: ''
+  })
 
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
@@ -253,17 +261,19 @@ margin: [ <length> | <percentage> | auto ]{1,4};
   ]
 
   const getPropertyValues = () => {
-    marginActual.value = viewRef.value?.style.getPropertyValue('margin') ?? ''
-    marginActualFlat.value = viewRefFlat.value?.style.getPropertyValue('margin') ?? ''
-    marginActualText.value = textRef.value?.style.getPropertyValue('margin') ?? ''
-    marginActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('margin') ?? ''
-    marginActualImage.value = imageRef.value?.style.getPropertyValue('margin') ?? ''
-    marginActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('margin') ?? ''
-    marginActualScrollView.value = scrollViewRef.value?.style.getPropertyValue('margin') ?? ''
+    data.marginActual = viewRef.value?.style.getPropertyValue('margin') ?? ''
+    data.marginActualFlat = viewRefFlat.value?.style.getPropertyValue('margin') ?? ''
+    data.marginActualText = textRef.value?.style.getPropertyValue('margin') ?? ''
+    data.marginActualTextFlat = textRefFlat.value?.style.getPropertyValue('margin') ?? ''
+    data.marginActualImage = imageRef.value?.style.getPropertyValue('margin') ?? ''
+    data.marginActualImageFlat = imageRefFlat.value?.style.getPropertyValue('margin') ?? ''
+    data.marginActualScrollView = scrollViewRef.value?.style.getPropertyValue('margin') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeMargin = (value: string) => {
-    margin.value = value
+    data.margin = value
     viewRef.value?.style.setProperty('margin', value)
     viewRefFlat.value?.style.setProperty('margin', value)
     textRef.value?.style.setProperty('margin', value)
@@ -274,7 +284,7 @@ margin: [ <length> | <percentage> | auto ]{1,4};
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeMargin = (index: number) => {
@@ -293,7 +303,8 @@ margin: [ <length> | <percentage> | auto ]{1,4};
   })
 
   defineExpose({
-    radioChangeMargin
+    radioChangeMargin,
+    data
   })
 </script>
 

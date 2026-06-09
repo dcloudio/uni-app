@@ -5,11 +5,17 @@
 CSS 的transition-delay属性规定了在过渡效果开始作用之前需要等待的时间。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| x | x | x |
 
 
 
@@ -88,10 +94,10 @@ transition-delay: <time>#;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{transitionDelayDynamic}}</text>
-          <text class="uni-info">获取值: {{transitionDelayActual}}</text>
+          <text class="uni-info">设置值: {{data.transitionDelayDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transitionDelayActual}}</text>
           <view class="test-box">
-            <view ref="viewRefDynamic" class="common-image test-view" :style="{ transitionDelay: transitionDelayDynamic, transitionProperty: 'width', transitionDuration: '1s' }" @click="triggerTransitionDynamic">
+            <view ref="viewRefDynamic" class="common-image test-view" :style="{ transitionDelay: data.transitionDelayDynamic, transitionProperty: 'width', transitionDuration: '1s' }" @click="triggerTransitionDynamic">
               <text style="font-size: 12px;">点击view</text>
             </view>
           </view>
@@ -99,19 +105,19 @@ transition-delay: <time>#;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{transitionDelayDynamic}}</text>
-          <text class="uni-info">获取值: {{transitionDelayActualText}}</text>
+          <text class="uni-info">设置值: {{data.transitionDelayDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transitionDelayActualText}}</text>
           <view class="test-box">
-            <text ref="textRefDynamic" class="common-text test-text" :style="{ transitionDelay: transitionDelayDynamic, transitionProperty: 'width', transitionDuration: '1s' }" @click="triggerTransitionTextDynamic">点击text</text>
+            <text ref="textRefDynamic" class="common-text test-text" :style="{ transitionDelay: data.transitionDelayDynamic, transitionProperty: 'width', transitionDuration: '1s' }" @click="triggerTransitionTextDynamic">点击text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{transitionDelayDynamic}}</text>
-          <text class="uni-info">获取值: {{transitionDelayActualImage}}</text>
+          <text class="uni-info">设置值: {{data.transitionDelayDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transitionDelayActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRefDynamic" class="common-image test-image" :style="{ transitionDelay: transitionDelayDynamic, transitionProperty: 'width', transitionDuration: '1s' }" @click="triggerTransitionImageDynamic" src="/static/test-image/logo.png"></image>
+            <image ref="imageRefDynamic" class="common-image test-image" :style="{ transitionDelay: data.transitionDelayDynamic, transitionProperty: 'width', transitionDuration: '1s' }" @click="triggerTransitionImageDynamic" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -119,7 +125,7 @@ transition-delay: <time>#;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="transitionDelayEnum" title="transition-delay 枚举值" @change="radioChangeTransitionDelay" :compact="true"></enum-data>
-        <input-data :defaultValue="transitionDelayDynamic" title="transition-delay 自定义值" type="text" @confirm="inputChangeTransitionDelay"></input-data>
+        <input-data :defaultValue="data.transitionDelayDynamic" title="transition-delay 自定义值" type="text" @confirm="inputChangeTransitionDelay"></input-data>
       </view>
 
       <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件 transition-delay：1s</text>
@@ -193,10 +199,12 @@ transition-delay: <time>#;
 
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const transitionDelayDynamic = ref('1s')
-  const transitionDelayActual = ref('')
-  const transitionDelayActualText = ref('')
-  const transitionDelayActualImage = ref('')
+  const data = reactive({
+    transitionDelayDynamic: '1s',
+    transitionDelayActual: '',
+    transitionDelayActualText: '',
+    transitionDelayActualImage: ''
+  })
   const viewRefDynamic = ref(null as UniElement | null)
   const textRefDynamic = ref(null as UniTextElement | null)
   const imageRefDynamic = ref(null as UniImageElement | null)
@@ -215,13 +223,14 @@ transition-delay: <time>#;
   ]
 
   const getPropertyValues = () => {
-    transitionDelayActual.value = viewRefDynamic.value?.style.getPropertyValue('transition-delay') ?? ''
-    transitionDelayActualText.value = textRefDynamic.value?.style.getPropertyValue('transition-delay') ?? ''
-    transitionDelayActualImage.value = imageRefDynamic.value?.style.getPropertyValue('transition-delay') ?? ''
+    data.transitionDelayActual = viewRefDynamic.value?.style.getPropertyValue('transition-delay') ?? ''
+    data.transitionDelayActualText = textRefDynamic.value?.style.getPropertyValue('transition-delay') ?? ''
+    data.transitionDelayActualImage = imageRefDynamic.value?.style.getPropertyValue('transition-delay') ?? ''
   }
 
+  const ins = getCurrentInstance()
   const changeTransitionDelayDynamic = (value: string) => {
-    transitionDelayDynamic.value = value
+    data.transitionDelayDynamic = value
     viewRefDynamic.value?.style.setProperty('transition-delay', value)
     textRefDynamic.value?.style.setProperty('transition-delay', value)
     imageRefDynamic.value?.style.setProperty('transition-delay', value)
@@ -229,7 +238,7 @@ transition-delay: <time>#;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeTransitionDelay = (index: number) => {
@@ -270,7 +279,7 @@ transition-delay: <time>#;
   onReady(() => {
     getPropertyValues()
     if (scrollViewRefDynamic.value != null) {
-      scrollViewRefDynamic.value.style.setProperty('transition-delay', transitionDelayDynamic.value)
+      scrollViewRefDynamic.value.style.setProperty('transition-delay', data.transitionDelayDynamic)
       scrollViewRefDynamic.value.style.setProperty('transition-property', 'width')
       scrollViewRefDynamic.value.style.setProperty('transition-duration', '1s')
     }
@@ -279,7 +288,8 @@ transition-delay: <time>#;
   defineExpose({
     jest_start,
     jest_reset,
-    radioChangeTransitionDelay
+    radioChangeTransitionDelay,
+    data
   })
 
 </script>

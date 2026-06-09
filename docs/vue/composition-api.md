@@ -11,16 +11,16 @@
 
 ## 响应式: 核心
 
-|  | Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| ref() | 4.0 | 4.41 | √ | 4.11 | 4.61 |
-| computed() | 4.0 | 4.41 | √ | 4.11 | 4.61 |
-| reactive() | 4.0 | 4.41 | √ | 4.11 | 4.61 |
-| readonly() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
-| watchEffect() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
-| watchPostEffect() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
-| watchSyncEffect() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
-| watch() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
+|  | Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| ref() | 4.0 | 4.41 | √ | 10.0 | 4.11 | 4.61 |
+| computed() | 4.0 | 4.41 | √ | 10.0 | 4.11 | 4.61 |
+| reactive() | 4.0 | 4.41 | √ | 10.0 | 4.11 | 4.61 |
+| readonly() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
+| watchEffect() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
+| watchPostEffect() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
+| watchSyncEffect() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
+| watch() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
 
 ### 示例代码 @example
 
@@ -385,11 +385,11 @@ const obj = reactive({
   arr: [0]
 } as Obj)
 
-// immediate: true 第一次触发, 旧值应该是 undefined, 现在 app 是初始值
 const watchObjRes = ref('')
 watch(obj, (obj : Obj, prevObj ?: Obj) => {
   watchObjRes.value = `obj: ${JSON.stringify(obj)}, prevObj: ${JSON.stringify(prevObj)}`
 }, { immediate: true })
+// TODO: 设置 immediate: true 第一次触发时，app 端原始值不对
 
 const objStrRef = ref<UniTextElement | null>(null)
 const watchObjStrRes = ref('')
@@ -448,6 +448,21 @@ const updateObj = () => {
 ```
 
 :::
+
+##### 即时回调的侦听器​
+`watch` 默认是懒执行的：仅当数据源变化时，才会执行回调。但在某些场景中，我们希望在创建侦听器时，立即执行一遍回调。举例来说，我们想请求一些初始数据，然后在相关状态更改时重新请求数据。
+
+我们可以通过传入 `immediate: true` 选项来强制侦听器的回调立即执行：
+
+```js
+watch(
+  source,
+  (newValue, oldValue) => {
+    // 立即执行，且当 `source` 改变时再次执行
+  },
+  { immediate: true }
+)
+```
 
 
 #### computed
@@ -571,227 +586,233 @@ const stateText = computed(() => {
 
 ```vue
 <template>
-	<scroll-view direction="vertical" style="flex: 1;">
-		<view class="flex justify-between flex-row mb-10">
-			<text>count:</text>
-			<text id="count">{{ count }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>obj.str:</text>
-			<text id="obj-str">{{ obj['str'] }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>obj.num:</text>
-			<text id="obj-num">{{ obj['num'] }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>obj.arr:</text>
-			<text id="obj-arr">{{ JSON.stringify(obj['arr']) }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>count1:</text>
-			<text id="count1">{{ count1 }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>obj1.a.b.c:</text>
-			<text id="obj1-a-b-c">{{ obj1.getString('a.b.c') }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>arr1(spread):</text>
-			<text id="arr1">{{ JSON.stringify(arr1) }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>arr2ForEachEffectCount:</text>
-			<text id="arr2">{{ arr2ForEachEffectCount }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>arr3(reverse):</text>
-			<text id="arr3">{{ JSON.stringify(arr3) }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>arr4(sort):</text>
-			<text id="arr4">{{ JSON.stringify(computedArr4) }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>arr5:</text>
-			<text id="arr5">{{ JSON.stringify(arr5Result) }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>map2ForEachEffectCount:</text>
-			<text id="map2">{{ map2ForEachEffectCount }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>map3ForOfEffectCount:</text>
-			<text id="map3">{{ map3ForOfEffectCount }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>set2ForEachEffectCount:</text>
-			<text id="set2">{{ set2ForEachEffectCount }}</text>
-		</view>
-		<view class="flex justify-between flex-row mb-10">
-			<text>set3ForOfEffectCount:</text>
-			<text id="set3">{{ set3ForOfEffectCount }}</text>
-		</view>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+    <!-- #endif -->
+		<view class="page">
+      <view class="flex justify-between flex-row mb-10">
+        <text>count:</text>
+        <text id="count">{{ count }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>obj.str:</text>
+        <text id="obj-str">{{ obj['str'] }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>obj.num:</text>
+        <text id="obj-num">{{ obj['num'] }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>obj.arr:</text>
+        <text id="obj-arr">{{ JSON.stringify(obj['arr']) }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>count1:</text>
+        <text id="count1">{{ count1 }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>obj1.a.b.c:</text>
+        <text id="obj1-a-b-c">{{ obj1.getString('a.b.c') }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>arr1(spread):</text>
+        <text id="arr1">{{ JSON.stringify(arr1) }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>arr2ForEachEffectCount:</text>
+        <text id="arr2">{{ arr2ForEachEffectCount }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>arr3(reverse):</text>
+        <text id="arr3">{{ JSON.stringify(arr3) }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>arr4(sort):</text>
+        <text id="arr4">{{ JSON.stringify(computedArr4) }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>arr5:</text>
+        <text id="arr5">{{ JSON.stringify(arr5Result) }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>map2ForEachEffectCount:</text>
+        <text id="map2">{{ map2ForEachEffectCount }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>map3ForOfEffectCount:</text>
+        <text id="map3">{{ map3ForOfEffectCount }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>set2ForEachEffectCount:</text>
+        <text id="set2">{{ set2ForEachEffectCount }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>set3ForOfEffectCount:</text>
+        <text id="set3">{{ set3ForOfEffectCount }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>response.data.success:</text>
+        <text id="generic">{{ response.data.success }}</text>
+      </view>
     <view class="flex justify-between flex-row mb-10">
-    	<text>response.data.success:</text>
-    	<text id="generic">{{ response.data.success }}</text>
-    </view>
-	<view class="flex justify-between flex-row mb-10">
-		<text>reactive-str-id:</text>
-		<text id="reactive-str-id">{{ r1.getString(('id')) }}</text>
-	</view>
-	<view class="flex justify-between flex-row mb-10">
-		<text>reactive-str-boolean :</text>
-		<text id="reactive-str-boolean">{{ r1.getBoolean(('bl')) }}</text>
-	</view>
-	<view class="flex justify-between flex-row mb-10">
-		<text>reactive-str-number :</text>
-		<text id="reactive-str-number">{{ r1.getNumber(('n')) }}</text>
-	</view>
-	<view class="flex justify-between flex-row mb-10">
-		<text>reactive-str-any :</text>
-		<text id="reactive-str-any">{{ r1.getAny(('id')) }}</text>
-	</view>
-	<view class="flex justify-between flex-row mb-10">
-		<text>reactive-str-arr :</text>
-		<text id="reactive-str-arr">{{ r1.getArray(('arr'))![0] }}</text>
-	</view>
-	<view class="flex justify-between flex-row mb-10">
-		<text>reactive-str-json :</text>
-		<text id="reactive-str-json">{{ r1.getJSON(('cars[0]'))!['name'] }}</text>
-	</view>
-	<view class="flex justify-between flex-row mb-10">
-		<text>reactive-str:</text>
-		<text id="reactive-str">{{ r2.getString("msg") }}</text>
-	</view>
-		<button class='mb-10' id="update-count-btn" @click="updateCount">update count</button>
-		<button class='mb-10' id="update-obj-str-btn" @click="updateObjStr">update obj.str</button>
-		<button class='mb-10' id="update-obj-num-btn" @click="updateObjNum">update obj.num</button>
-		<button class='mb-10' id="update-obj-arr-btn" @click="updateObjArr">update obj.arr</button>
-		<button class='mb-10' id="update-obj1-a-b-c-btn" @click="updateObj1_A_B_C">update obj1.a.b.c</button>
-		<button class='mb-10' id="update-arr1-btn" @click="updateArr1(false)">update arr1 without reactive</button>
-		<button class='mb-10' id="update-arr1-reactive-btn" @click="updateArr1(true)">update arr1 with reactive</button>
-		<button class='mb-10' id="update-arr2-forEach-effect-btn" @click="updateArr2()">update arr2</button>
-		<button class='mb-10' id="update-arr4-btn" @click="updateArr4()">update arr4</button>
-		<button class='mb-10' id="update-map2-forEach-effect-btn" @click="updateMap2()">update map2 for each</button>
-		<button class='mb-10' id="update-map3-forOf-effect-btn" @click="updateMap3()">update map3 for of</button>
-		<button class='mb-10' id="update-set2-forEach-effect-btn" @click="updateSet2()">update set2 for each</button>
-		<button class='mb-10' id="update-set3-forOf-effect-btn" @click="updateSet3()">update set3 for of</button>
-    <button class='mb-10' id="update-generic" @click="updateResponse()">response.data.success</button>
-    
-    <!-- 复杂场景测试 -->
-    <view class="flex justify-between flex-row mb-10 mt-20">
-      <text class="section-title">复杂场景</text>
-    </view>
-    
-    <!-- 1. 数组嵌套对象测试 -->
-    <view class="mb-10">
-      <text>arrWithObj[0].name:</text>
-      <text id="arr-with-obj-name">{{ arrWithObj[0].name }}</text>
+      <text>reactive-str-id:</text>
+      <text id="reactive-str-id">{{ r1.getString(('id')) }}</text>
     </view>
     <view class="flex justify-between flex-row mb-10">
-      <text>arrWithObj[0].count:</text>
-      <text id="arr-with-obj-count">{{ arrWithObj[0].count }}</text>
+      <text>reactive-str-boolean :</text>
+      <text id="reactive-str-boolean">{{ r1.getBoolean(('bl')) }}</text>
     </view>
     <view class="flex justify-between flex-row mb-10">
-      <text>arrWithObj length:</text>
-      <text id="arr-with-obj-length">{{ arrWithObj.length }}</text>
-    </view>
-    <button class='mb-10' id="update-arr-with-obj-name-btn" @click="updateArrWithObjName()">update arrWithObj[0].name</button>
-    <button class='mb-10' id="update-arr-with-obj-count-btn" @click="updateArrWithObjCount()">update arrWithObj[0].count</button>
-    <button class='mb-10' id="push-arr-with-obj-btn" @click="pushArrWithObj()">push new obj to arrWithObj</button>
-    
-    <!-- 2. 对象嵌套数组测试 -->
-    <view class="mb-10">
-      <text>objWithArr.items:</text>
-      <text id="obj-with-arr-items">{{ JSON.stringify(objWithArr.items) }}</text>
-    </view>
-    <view class="mb-10">
-      <text>objWithArr.items[0]:</text>
-      <text id="obj-with-arr-items-0">{{ (objWithArr['items'] as string[])[0] }}</text>
+      <text>reactive-str-number :</text>
+      <text id="reactive-str-number">{{ r1.getNumber(('n')) }}</text>
     </view>
     <view class="flex justify-between flex-row mb-10">
-      <text>objWithArr.items.length:</text>
-      <text id="obj-with-arr-items-length">{{ (objWithArr['items'] as string[]).length }}</text>
-    </view>
-    <button class='mb-10' id="update-obj-with-arr-items-0-btn" @click="updateObjWithArrItems0()">update objWithArr.items[0]</button>
-    <button class='mb-10' id="push-obj-with-arr-items-btn" @click="pushObjWithArrItems()">push to objWithArr.items</button>
-    
-    <!-- 3. JSON.parse + reactive 联合测试 -->
-    <view class="flex justify-between flex-row mb-10">
-      <text>jsonParsedData.user.name:</text>
-      <text id="json-parsed-user-name">{{ jsonParsedData.getString('user.name') }}</text>
+      <text>reactive-str-any :</text>
+      <text id="reactive-str-any">{{ r1.getAny(('id')) }}</text>
     </view>
     <view class="flex justify-between flex-row mb-10">
-      <text>jsonParsedData.user.age:</text>
-      <text id="json-parsed-user-age">{{ jsonParsedData.getNumber('user.age') }}</text>
-    </view>
-    <view class="mb-10">
-      <text>jsonParsedData.tags:</text>
-      <text id="json-parsed-tags">{{ JSON.stringify(jsonParsedData.tags) }}</text>
-    </view>
-    <view class="mb-10">
-      <text>jsonParsedData.items[0].title:</text>
-      <text id="json-parsed-items-0-title">{{ jsonParsedData.getJSON('items[0]')!.title }}</text>
-    </view>
-    <button class='mb-10' id="update-json-parsed-user-name-btn" @click="updateJsonParsedUserName()">update jsonParsedData.user.name</button>
-    <button class='mb-10' id="update-json-parsed-user-age-btn" @click="updateJsonParsedUserAge()">update jsonParsedData.user.age</button>
-    <button class='mb-10' id="push-json-parsed-tags-btn" @click="pushJsonParsedTags()">push to jsonParsedData.tags</button>
-    <button class='mb-10' id="update-json-parsed-items-0-title-btn" @click="updateJsonParsedItems0Title()">update jsonParsedData.items[0].title</button>
-    
-    <!-- 4. 多层嵌套复杂结构测试 -->
-    <view class="mb-10">
-      <text>complexData.users[0].profile.name:</text>
-      <text id="complex-users-0-profile-name">{{ ((complexData['users'] as UTSJSONObject[])[0] as UTSJSONObject).getString('profile.name') }}</text>
-    </view>
-    <view class="mb-10">
-      <text>complexData.users[0].hobbies[0]:</text>
-      <text id="complex-users-0-hobbies-0">{{ (((complexData['users'] as UTSJSONObject[])[0] as UTSJSONObject)['hobbies'] as string[])[0] }}</text>
+      <text>reactive-str-arr :</text>
+      <text id="reactive-str-arr">{{ r1.getArray(('arr'))![0] }}</text>
     </view>
     <view class="flex justify-between flex-row mb-10">
-      <text>complexData.users[0].hobbies.length:</text>
-      <text id="complex-users-0-hobbies-length">{{ (((complexData['users'] as UTSJSONObject[])[0] as UTSJSONObject)['hobbies'] as string[]).length }}</text>
+      <text>reactive-str-json :</text>
+      <text id="reactive-str-json">{{ r1.getJSON(('cars[0]'))!['name'] }}</text>
     </view>
     <view class="flex justify-between flex-row mb-10">
-      <text>complexData.meta.count:</text>
-      <text id="complex-meta-count">{{ (complexData['meta'] as UTSJSONObject)['count'] }}</text>
+      <text>reactive-str:</text>
+      <text id="reactive-str">{{ r2.getString("msg") }}</text>
     </view>
-    <button class='mb-10' id="update-complex-users-0-profile-name-btn" @click="updateComplexUsers0ProfileName()">update complexData.users[0].profile.name</button>
-    <button class='mb-10' id="update-complex-users-0-hobbies-0-btn" @click="updateComplexUsers0Hobbies0()">update complexData.users[0].hobbies[0]</button>
-    <button class='mb-10' id="push-complex-users-0-hobbies-btn" @click="pushComplexUsers0Hobbies()">push to complexData.users[0].hobbies</button>
-    <button class='mb-10' id="update-complex-meta-count-btn" @click="updateComplexMetaCount()">update complexData.meta.count</button>
-    
-    <!-- 5. watchEffect 追踪复杂结构 -->
-    <view class="flex justify-between flex-row mb-10">
-      <text>complexEffectCount:</text>
-      <text id="complex-effect-count">{{ complexEffectCount }}</text>
+      <button class='mb-10' id="update-count-btn" @click="updateCount">update count</button>
+      <button class='mb-10' id="update-obj-str-btn" @click="updateObjStr">update obj.str</button>
+      <button class='mb-10' id="update-obj-num-btn" @click="updateObjNum">update obj.num</button>
+      <button class='mb-10' id="update-obj-arr-btn" @click="updateObjArr">update obj.arr</button>
+      <button class='mb-10' id="update-obj1-a-b-c-btn" @click="updateObj1_A_B_C">update obj1.a.b.c</button>
+      <button class='mb-10' id="update-arr1-btn" @click="updateArr1(false)">update arr1 without reactive</button>
+      <button class='mb-10' id="update-arr1-reactive-btn" @click="updateArr1(true)">update arr1 with reactive</button>
+      <button class='mb-10' id="update-arr2-forEach-effect-btn" @click="updateArr2()">update arr2</button>
+      <button class='mb-10' id="update-arr4-btn" @click="updateArr4()">update arr4</button>
+      <button class='mb-10' id="update-map2-forEach-effect-btn" @click="updateMap2()">update map2 for each</button>
+      <button class='mb-10' id="update-map3-forOf-effect-btn" @click="updateMap3()">update map3 for of</button>
+      <button class='mb-10' id="update-set2-forEach-effect-btn" @click="updateSet2()">update set2 for each</button>
+      <button class='mb-10' id="update-set3-forOf-effect-btn" @click="updateSet3()">update set3 for of</button>
+      <button class='mb-10' id="update-generic" @click="updateResponse()">response.data.success</button>
+      
+      <!-- 复杂场景测试 -->
+      <view class="flex justify-between flex-row mb-10 mt-20">
+        <text class="section-title">复杂场景</text>
+      </view>
+      
+      <!-- 1. 数组嵌套对象测试 -->
+      <view class="mb-10">
+        <text>arrWithObj[0].name:</text>
+        <text id="arr-with-obj-name">{{ arrWithObj[0].name }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>arrWithObj[0].count:</text>
+        <text id="arr-with-obj-count">{{ arrWithObj[0].count }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>arrWithObj length:</text>
+        <text id="arr-with-obj-length">{{ arrWithObj.length }}</text>
+      </view>
+      <button class='mb-10' id="update-arr-with-obj-name-btn" @click="updateArrWithObjName()">update arrWithObj[0].name</button>
+      <button class='mb-10' id="update-arr-with-obj-count-btn" @click="updateArrWithObjCount()">update arrWithObj[0].count</button>
+      <button class='mb-10' id="push-arr-with-obj-btn" @click="pushArrWithObj()">push new obj to arrWithObj</button>
+      
+      <!-- 2. 对象嵌套数组测试 -->
+      <view class="mb-10">
+        <text>objWithArr.items:</text>
+        <text id="obj-with-arr-items">{{ JSON.stringify(objWithArr.items) }}</text>
+      </view>
+      <view class="mb-10">
+        <text>objWithArr.items[0]:</text>
+        <text id="obj-with-arr-items-0">{{ (objWithArr['items'] as string[])[0] }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>objWithArr.items.length:</text>
+        <text id="obj-with-arr-items-length">{{ (objWithArr['items'] as string[]).length }}</text>
+      </view>
+      <button class='mb-10' id="update-obj-with-arr-items-0-btn" @click="updateObjWithArrItems0()">update objWithArr.items[0]</button>
+      <button class='mb-10' id="push-obj-with-arr-items-btn" @click="pushObjWithArrItems()">push to objWithArr.items</button>
+      
+      <!-- 3. JSON.parse + reactive 联合测试 -->
+      <view class="flex justify-between flex-row mb-10">
+        <text>jsonParsedData.user.name:</text>
+        <text id="json-parsed-user-name">{{ jsonParsedData.getString('user.name') }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>jsonParsedData.user.age:</text>
+        <text id="json-parsed-user-age">{{ jsonParsedData.getNumber('user.age') }}</text>
+      </view>
+      <view class="mb-10">
+        <text>jsonParsedData.tags:</text>
+        <text id="json-parsed-tags">{{ JSON.stringify(jsonParsedData.tags) }}</text>
+      </view>
+      <view class="mb-10">
+        <text>jsonParsedData.items[0].title:</text>
+        <text id="json-parsed-items-0-title">{{ jsonParsedData.getJSON('items[0]')!.title }}</text>
+      </view>
+      <button class='mb-10' id="update-json-parsed-user-name-btn" @click="updateJsonParsedUserName()">update jsonParsedData.user.name</button>
+      <button class='mb-10' id="update-json-parsed-user-age-btn" @click="updateJsonParsedUserAge()">update jsonParsedData.user.age</button>
+      <button class='mb-10' id="push-json-parsed-tags-btn" @click="pushJsonParsedTags()">push to jsonParsedData.tags</button>
+      <button class='mb-10' id="update-json-parsed-items-0-title-btn" @click="updateJsonParsedItems0Title()">update jsonParsedData.items[0].title</button>
+      
+      <!-- 4. 多层嵌套复杂结构测试 -->
+      <view class="mb-10">
+        <text>complexData.users[0].profile.name:</text>
+        <text id="complex-users-0-profile-name">{{ ((complexData['users'] as UTSJSONObject[])[0] as UTSJSONObject).getString('profile.name') }}</text>
+      </view>
+      <view class="mb-10">
+        <text>complexData.users[0].hobbies[0]:</text>
+        <text id="complex-users-0-hobbies-0">{{ (((complexData['users'] as UTSJSONObject[])[0] as UTSJSONObject)['hobbies'] as string[])[0] }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>complexData.users[0].hobbies.length:</text>
+        <text id="complex-users-0-hobbies-length">{{ (((complexData['users'] as UTSJSONObject[])[0] as UTSJSONObject)['hobbies'] as string[]).length }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>complexData.meta.count:</text>
+        <text id="complex-meta-count">{{ (complexData['meta'] as UTSJSONObject)['count'] }}</text>
+      </view>
+      <button class='mb-10' id="update-complex-users-0-profile-name-btn" @click="updateComplexUsers0ProfileName()">update complexData.users[0].profile.name</button>
+      <button class='mb-10' id="update-complex-users-0-hobbies-0-btn" @click="updateComplexUsers0Hobbies0()">update complexData.users[0].hobbies[0]</button>
+      <button class='mb-10' id="push-complex-users-0-hobbies-btn" @click="pushComplexUsers0Hobbies()">push to complexData.users[0].hobbies</button>
+      <button class='mb-10' id="update-complex-meta-count-btn" @click="updateComplexMetaCount()">update complexData.meta.count</button>
+      
+      <!-- 5. watchEffect 追踪复杂结构 -->
+      <view class="flex justify-between flex-row mb-10">
+        <text>complexEffectCount:</text>
+        <text id="complex-effect-count">{{ complexEffectCount }}</text>
+      </view>
+      <view class="flex justify-between flex-row mb-10">
+        <text>jsonParsedEffectCount:</text>
+        <text id="json-parsed-effect-count">{{ jsonParsedEffectCount }}</text>
+      </view>
+      <button class='mb-10' id="trigger-complex-effect-btn" @click="triggerComplexEffect()">trigger complex effect</button>
+      <button class='mb-10' id="trigger-json-parsed-effect-btn" @click="triggerJsonParsedEffect()">trigger jsonParsed effect</button>
+      
+      <!-- 6. 数组嵌套对象 + forEach 响应式 -->
+      <view class="flex justify-between flex-row mb-10">
+        <text>arrWithObjForEachCount:</text>
+        <text id="arr-with-obj-forEach-count">{{ arrWithObjForEachCount }}</text>
+      </view>
+      <button class='mb-10' id="update-arr-with-obj-forEach-btn" @click="updateArrWithObjForEach()">update arrWithObj (forEach effect)</button>
+      
+      <!-- 7. 对象嵌套数组 + JSON.parse 联合测试 -->
+      <view class="mb-10">
+        <text>jsonObjWithArr.data.list:</text>
+        <text id="json-obj-with-arr-list">{{ JSON.stringify((jsonObjWithArr['data'] as UTSJSONObject)['list']) }}</text>
+      </view>
+      <view class="mb-10">
+        <text>jsonObjWithArr.data.list[0].value:</text>
+        <text id="json-obj-with-arr-list-0-value">{{ (((jsonObjWithArr['data'] as UTSJSONObject)['list'] as UTSJSONObject[])[0] as UTSJSONObject)['value'] }}</text>
+      </view>
+      <button class='mb-10' id="update-json-obj-with-arr-list-0-value-btn" @click="updateJsonObjWithArrList0Value()">update jsonObjWithArr.data.list[0].value</button>
+      <button class='mb-10' id="push-json-obj-with-arr-list-btn" @click="pushJsonObjWithArrList()">push to jsonObjWithArr.data.list</button>
     </view>
-    <view class="flex justify-between flex-row mb-10">
-      <text>jsonParsedEffectCount:</text>
-      <text id="json-parsed-effect-count">{{ jsonParsedEffectCount }}</text>
-    </view>
-    <button class='mb-10' id="trigger-complex-effect-btn" @click="triggerComplexEffect()">trigger complex effect</button>
-    <button class='mb-10' id="trigger-json-parsed-effect-btn" @click="triggerJsonParsedEffect()">trigger jsonParsed effect</button>
-    
-    <!-- 6. 数组嵌套对象 + forEach 响应式 -->
-    <view class="flex justify-between flex-row mb-10">
-      <text>arrWithObjForEachCount:</text>
-      <text id="arr-with-obj-forEach-count">{{ arrWithObjForEachCount }}</text>
-    </view>
-    <button class='mb-10' id="update-arr-with-obj-forEach-btn" @click="updateArrWithObjForEach()">update arrWithObj (forEach effect)</button>
-    
-    <!-- 7. 对象嵌套数组 + JSON.parse 联合测试 -->
-    <view class="mb-10">
-      <text>jsonObjWithArr.data.list:</text>
-      <text id="json-obj-with-arr-list">{{ JSON.stringify((jsonObjWithArr['data'] as UTSJSONObject)['list']) }}</text>
-    </view>
-    <view class="mb-10">
-      <text>jsonObjWithArr.data.list[0].value:</text>
-      <text id="json-obj-with-arr-list-0-value">{{ (((jsonObjWithArr['data'] as UTSJSONObject)['list'] as UTSJSONObject[])[0] as UTSJSONObject)['value'] }}</text>
-    </view>
-    <button class='mb-10' id="update-json-obj-with-arr-list-0-value-btn" @click="updateJsonObjWithArrList0Value()">update jsonObjWithArr.data.list[0].value</button>
-    <button class='mb-10' id="push-json-obj-with-arr-list-btn" @click="pushJsonObjWithArrList()">push to jsonObjWithArr.data.list</button>
+  <!-- #ifdef APP -->
 	</scroll-view>
+  <!-- #endif -->
 </template>
 
 <script setup lang="uts">
@@ -1821,16 +1842,16 @@ const updateReadonlyData = () => {
 
 ## 响应式: 工具
 
-|  | Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| isRef() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
-| unref() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
-| toRef() | 4.11 | 4.41 | 4.0 | 4.11 | 4.61 |
-| toValue() | 4.11 | 4.41 | 4.0 | 4.11 | 4.61 |
-| toRefs() | 4.11 | 4.41 | 4.0 | 4.11 | 4.61 |
-| isProxy() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
-| isReactive() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
-| isReadonly() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
+|  | Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| isRef() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
+| unref() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
+| toRef() | 4.11 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
+| toValue() | 4.11 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
+| toRefs() | 4.11 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
+| isProxy() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
+| isReactive() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
+| isReadonly() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
 
 
 ::: warning 注意
@@ -2317,18 +2338,18 @@ const isReactiveShallowReadonlyCount = isReactive(shallowReadonlyCount);
 
 ## 响应式: 进阶
 
-|  | Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| shallowRef() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
-| triggerRef() | x | 4.41 | 4.0 | 4.11 | 4.61 |
-| customRef() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
-| shallowReactive() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
-| shallowReadonly() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
-| toRaw() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
-| markRaw() | - | - | - | - | - |
-| effectScope() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
-| getCurrentScope() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
-| onScopeDispose() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
+|  | 兼容性 |
+| :- | :- |
+| shallowRef() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
+| triggerRef() | Web: x; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
+| customRef() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
+| shallowReactive() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
+| shallowReadonly() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
+| toRaw() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
+| markRaw() |   |
+| effectScope() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
+| getCurrentScope() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
+| onScopeDispose() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
 
 
 ### 示例代码 @example
@@ -2854,12 +2875,12 @@ const triggerRefState = () => {
 
 ## 组合选项 @options-composition
 
-|  | Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| provide | 4.0 | 4.41 | 3.99 | 4.11 | 4.61 |
-| inject | 4.0 | 4.41 | 3.99 | 4.11 | 4.61 |
-| mixins | 4.0 | 4.41 | 3.99 | 4.11 | 4.61 |
-| extends | - | - | - | - | - |
+|  | Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| provide | 4.0 | 4.41 | 3.99 |   | 10.0 | 4.11 |   | 4.61 |   |
+| inject | 4.0 | 4.41 | 3.99 |   | 10.0 | 4.11 |   | 4.61 |   |
+| mixins | 4.0 | 4.41 | 3.99 | x | 10.0 | 4.11 | x | 4.61 | x |
+| extends |   |   |   |   |   |   |   |   |   |
 
 ### inject
 
@@ -3126,7 +3147,7 @@ defineExpose({
 
 <style>
 .container {
-  height: 1200px;
+  height: 2200px;
 }
 </style>
 
@@ -3138,26 +3159,35 @@ defineExpose({
 
 #### 兼容性 @component-lifecycle-compatibility
 
-|  | Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) | 描述 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| onMounted() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | - | el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
-| onUpdated() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | - | 由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子。 |
-| onUnmounted() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | - | 在一个组件实例被卸载之后调用。 |
-| onBeforeMount() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | - | 在挂载开始之前被调用：相关的 render 函数首次被调用。 |
-| onBeforeUpdate() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | - | 数据更新时调用，发生在虚拟 DOM 打补丁之前。<br/>这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。 |
-| onBeforeUnmount() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | - | 在一个组件实例被卸载之前调用。 |
-| onErrorCaptured() | x | - | x | x | x | - | 注册一个钩子，在捕获了后代组件传递的错误时调用。 |
-| onRenderTracked() | x | - | x | x | x | - | 注册一个调试钩子，当组件渲染过程中追踪到响应式依赖时调用。 |
-| onRenderTriggered() | x | - | x | x | x | - | 注册一个调试钩子，当响应式依赖的变更触发了组件渲染时调用。 |
-| onActivated() | 4.0 | x | x | x | x | - | keep-alive 组件激活时调用。 |
-| onDeactivated() | 4.0 | x | x | x | x | - | keep-alive 组件停用时调用。 |
-| onServerPrefetch() | x | x | x | x | x | - | 注册一个异步函数，在组件实例在服务器上被渲染之前调用。<br/>如果这个钩子返回了一个 Promise，服务端渲染会在渲染该组件前等待该 Promise 完成。<br/>这个钩子仅会在服务端渲染中执行，可以用于执行一些仅存在于服务端的数据抓取过程。 |
-| onRecycle() | x | x | x | x | x | 5.0 | 组件回收时的生命周期钩子 |
-| onReuse() | x | x | x | x | x | 5.0 | 组件复用时的生命周期钩子 |
+|  | 兼容性 | 描述 |
+| :- | :- | :- |
+| onMounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
+| onUpdated() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子。 |
+| onUnmounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之后调用。 |
+| onBeforeMount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 在挂载开始之前被调用：相关的 render 函数首次被调用。 |
+| onBeforeUpdate() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 数据更新时调用，发生在虚拟 DOM 打补丁之前。<br/>这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。 |
+| onBeforeUnmount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之前调用。 |
+| onErrorCaptured() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个钩子，在捕获了后代组件传递的错误时调用。 |
+| onRenderTracked() | Web: x; 微信小程序: -; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个调试钩子，当组件渲染过程中追踪到响应式依赖时调用。 |
+| onRenderTriggered() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个调试钩子，当响应式依赖的变更触发了组件渲染时调用。 |
+| onActivated() | Web: 4.0; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | keep-alive 组件激活时调用。 |
+| onDeactivated() | Web: 4.0; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | keep-alive 组件停用时调用。 |
+| onServerPrefetch() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个异步函数，在组件实例在服务器上被渲染之前调用。<br/>如果这个钩子返回了一个 Promise，服务端渲染会在渲染该组件前等待该 Promise 完成。<br/>这个钩子仅会在服务端渲染中执行，可以用于执行一些仅存在于服务端的数据抓取过程。 |
+| onRecycle() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 组件回收时的生命周期钩子 |
+| onReuse() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 组件复用时的生命周期钩子 |
+| onLoad() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面加载<br/><br/>页面加载时触发。一个页面只会调用一次，可以在 onLoad 的参数中获取打开当前页面路径中的参数。 |
+| onReady() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面初次渲染完成<br/><br/>页面初次渲染完成时触发。一个页面只会调用一次，代表页面已经准备妥当，可以和视图层进行交互。<br/> |
+| onUnload() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面卸载<br/><br/>页面卸载时触发。如 `redirectTo` 或 `navigateBack` 到其他页面时。<br/> |
+| onPageShow() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面显示<br/><br/>页面显示/切入前台时触发。<br/> |
+| onPageHide() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面隐藏<br/><br/>页面隐藏/切入后台时触发。 如 `navigateTo` 或底部 `tab` 切换到其他页面，应用切入后台等。<br/> |
+| onPageScroll() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.13; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动触发事件的处理函数<br/><br/>监听用户滑动页面事件。 |
+| onBackPress() | Web: 4.0; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 监听页面返回 |
+| onReachBottom() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件的处理函数<br/>- 可以在 `pages.json` 的页面配置中设置触发距离 `onReachBottomDistance` 。<br/>- 在触发距离内滑动期间，本事件只会被触发一次。<br/> |
+| onPullDownRefresh() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 监听用户下拉动作<br/>- 需要在 `pages.json` 的页面配置中开启 `enablePullDownRefresh` 。<br/>- 可以通过 `uni.startPullDownRefresh` 触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。<br/>- 当处理完数据刷新后，`uni.stopPullDownRefresh` 可以停止当前页面的下拉刷新。<br/> |
 
 #### onMounted、onUnmounted 使用注意事项 @mounted-unmounted-tips
 
-目前 App平台 onMounted、onUnmounted 可以保证当前数据已经同步到 DOM，但是由于排版和渲染是异步的的，所以 onMounted、onUnmounted 不能保证 DOM 排版以及渲染完毕。\
+目前 App平台 onMounted、onUnmounted 可以保证当前数据已经同步到 DOM，但是由于排版和渲染是异步的，所以 onMounted、onUnmounted 不能保证 DOM 排版以及渲染完毕。\
 如果需要获取排版后的节点信息推荐使用 [uni.createSelectorQuery](../api/nodes-info.md) 不推荐直接使用 [Element](../dom/unielement.md) 对象。\
 在修改 DOM 后，立刻使用 [Element](../dom/unielement.md) 对象的同步接口获取 DOM 状态可能获取到的是排版之前的，而 [uni.createSelectorQuery](../api/nodes-info.md) 可以保障获取到的节点信息是排版之后的。
 
@@ -3330,30 +3360,30 @@ const updateTitle = () => {
     }
   </script>
   ```
--
+
+
+
+##### 兼容性
+| Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | √ | 3.9 | 10.0 | 4.11 | 4.61 |
+
 
 ##### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| setup | Any | - | Web: 4.0; 微信小程序: -; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | - |
-| lang | Any | - | Web: 4.0; 微信小程序: -; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |  |
+| setup | Any |   | Web: 4.0; 微信小程序: √; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |   |
+| lang | Any |   | Web: 4.0; 微信小程序: √; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |  |
 
 #### lang 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ts | Web: x; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | typescript |
-| uts | Web: 4.0; 微信小程序: -; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | uts |
+| ts | Web: x; 微信小程序: √; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | typescript |
+| uts | Web: 4.0; 微信小程序: √; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | uts |
 
 
 
-
-
-
-##### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | - | 3.9 | 4.11 | 4.61 |
 
 
 
@@ -3477,17 +3507,17 @@ export default {
 
 ## 单文件组件中方法兼容性 @single-file-component-script-methods
 
-|  | Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| defineProps() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | - |
-| defineEmits() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | - |
-| defineModel() | 4.11 | 4.41 | 4.0 | 4.11 | 4.61 | - |
-| defineExpose() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | - |
-| defineOptions() | 4.11 | 4.41 | 4.0 | 4.11 | 4.61 | - |
-| defineSlots() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | - |
-| useSlots() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | - |
-| useAttrs() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | - |
-| useRecycleState() | x | x | x | x | x | 5.0 |
+|  | 兼容性 |
+| :- | :- |
+| defineProps() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
+| defineEmits() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
+| defineModel() | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
+| defineExpose() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
+| defineOptions() | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
+| defineSlots() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
+| useSlots() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
+| useAttrs() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
+| useRecycleState() | Web: x; 微信小程序: x; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |
 
 
 ### defineProps()
@@ -3902,6 +3932,9 @@ const updateValue = () => {
     <slot name="msgTrue" :msg="msg"></slot>
     <slot name="msgFalse" :msg="msg"></slot>
     <slot name="footer" :arr="arr"></slot>
+    <template v-for="item in 2">
+      <slot name="withFor" :item="item"></slot>
+    </template>
   </view>
 </template>
 
@@ -3975,6 +4008,12 @@ const updateValue = () => {
         <view class="mb-10 flex justify-between flex-row">
           <text>footer slot arr:</text>
           <text id="slot-footer">{{ JSON.stringify(arr) }}</text>
+        </view>
+      </template>
+      <template #withFor="{ item }">
+        <view class="mb-10 flex justify-between flex-row">
+          <text>v-for slot item:</text>
+          <text :id="`slot-for-${item}`">{{ item }}</text>
         </view>
       </template>
     </Foo>

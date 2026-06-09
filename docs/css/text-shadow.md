@@ -5,11 +5,17 @@
 text-shadow 为文字添加阴影。可以为文字与 decoration 添加多个阴影，阴影值之间用逗号隔开。每个阴影值由元素在 X 和 Y 方向的偏移量、模糊半径和颜色值组成。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.61 | 4.61 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.61 | 5.21 | 4.61 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -31,7 +37,7 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
 ### text-shadow 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| none | Web: 4.0; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | No shadow. |
+| none | Web: 4.0; Android: 4.61; Android(Vapor): 5.21; iOS: 4.61; iOS(Vapor): 5.11; HarmonyOS: 4.61 | No shadow. |
 
 
 ### 默认值 @default-value 
@@ -57,7 +63,7 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
   <!-- #endif -->
     <view class="container">
       <text class="text" style="text-shadow: 1px 1px 2px pink;">text-shadow: 1px 1px 2px pink</text>
-      <text class="text" style="text-shadow: #fc0 1px 0 10px;">text-shadow: #fc0 1px 0 10px</text>
+      <!-- <text class="text" style="text-shadow: #fc0 1px 0 10px;">text-shadow: #fc0 1px 0 10px</text> -->
       <text class="text" style="text-shadow: 5px 5px #558abb;">text-shadow: 5px 5px #558abb</text>
       <text class="text" style="text-shadow: cyan 2px 5px;">text-shadow: cyan 2px 5px</text>
       <text class="text" style="text-shadow: 5px 10px;">text-shadow: 5px 10px</text>
@@ -66,7 +72,7 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
 
       <text class="uni-title-text">【拍平版本】</text>
       <text class="text" style="text-shadow: 1px 1px 2px pink;" flatten>text-shadow: 1px 1px 2px pink</text>
-      <text class="text" style="text-shadow: #fc0 1px 0 10px;" flatten>text-shadow: #fc0 1px 0 10px</text>
+      <!-- <text class="text" style="text-shadow: #fc0 1px 0 10px;" flatten>text-shadow: #fc0 1px 0 10px</text> -->
       <text class="text" style="text-shadow: 5px 5px #558abb;" flatten>text-shadow: 5px 5px #558abb</text>
       <text class="text" style="text-shadow: cyan 2px 5px;" flatten>text-shadow: cyan 2px 5px</text>
       <text class="text" style="text-shadow: 5px 10px;" flatten>text-shadow: 5px 10px</text>
@@ -81,20 +87,20 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
         <!-- 普通版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">text-shadow</text>
-          <text class="uni-info">设置值: {{textShadow}}</text>
-          <text class="uni-info">获取值: {{textShadowActual}}</text>
+          <text class="uni-info">设置值: {{data.textShadow}}</text>
+          <text class="uni-info">获取值: {{data.textShadowActual}}</text>
           <view class="test-box">
-            <text ref="textRef" class="text test-text" :style="{ textShadow: textShadow }">当前 text-shadow: {{textShadow}}</text>
+            <text ref="textRef" class="text test-text" :style="{ textShadow: data.textShadow }">当前 text-shadow: {{data.textShadow}}</text>
           </view>
         </view>
 
         <!-- 拍平版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">拍平</text>
-          <text class="uni-info">设置值: {{textShadow}}</text>
-          <text class="uni-info">获取值: {{textShadowActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.textShadow}}</text>
+          <text class="uni-info">获取值: {{data.textShadowActualFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="text test-text-flatten" :style="{ textShadow: textShadow }" flatten>当前 text-shadow: {{textShadow}}</text>
+            <text ref="textRefFlat" class="text test-text-flatten" :style="{ textShadow: data.textShadow }" flatten>当前 text-shadow: {{data.textShadow}}</text>
           </view>
         </view>
       </view>
@@ -102,7 +108,7 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="textShadowEnum" title="text-shadow 枚举值" @change="radioChangeTextShadow" :compact="true"></enum-data>
-        <input-data :defaultValue="textShadow" title="text-shadow 自定义值" type="text" @confirm="inputChangeTextShadow"></input-data>
+        <input-data :defaultValue="data.textShadow" title="text-shadow 自定义值" type="text" @confirm="inputChangeTextShadow"></input-data>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -116,7 +122,7 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
   const textShadowEnum: ItemType[] = [
     { value: 0, name: '' },
     { value: 1, name: '1px 1px 2px pink' },
-    { value: 2, name: '#fc0 1px 0 10px' },
+    // { value: 2, name: '#fc0 1px 0 10px' },
     { value: 3, name: '5px 5px #558abb' },
     { value: 4, name: 'cyan 2px 5px' },
     { value: 5, name: '5px 10px' },
@@ -124,25 +130,29 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
     { value: 7, name: '2px 4px rgba(202, 207, 17, 0.5)' }
   ]
 
-  const textShadow = ref('1px 1px 2px pink')
-  const textShadowActual = ref('')
-  const textShadowActualFlat = ref('')
+  const data = reactive({
+    textShadow: '1px 1px 2px pink',
+    textShadowActual: '',
+    textShadowActualFlat: ''
+  })
   const textRef = ref(null as UniTextElement | null)
   const textRefFlat = ref(null as UniTextElement | null)
 
   const getPropertyValues = () => {
-    textShadowActual.value = textRef.value?.style.getPropertyValue('text-shadow') ?? ''
-    textShadowActualFlat.value = textRefFlat.value?.style.getPropertyValue('text-shadow') ?? ''
+    data.textShadowActual = textRef.value?.style.getPropertyValue('text-shadow') ?? ''
+    data.textShadowActualFlat = textRefFlat.value?.style.getPropertyValue('text-shadow') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeTextShadow = (value: string) => {
-    textShadow.value = value
+    data.textShadow = value
     textRef.value?.style.setProperty('text-shadow', value)
     textRefFlat.value?.style.setProperty('text-shadow', value)
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeTextShadow = (index: number) => {
@@ -161,7 +171,8 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
   })
 
   defineExpose({
-    radioChangeTextShadow
+    radioChangeTextShadow,
+    data
   })
 </script>
 

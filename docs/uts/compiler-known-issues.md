@@ -889,6 +889,39 @@ defineProps({
 })
 ```
 
+#### 组件尚未发布，相关事件类型不可用
+
+复现代码:
+
+```vue
+<template>
+	<view>
+		<picker :value="index" :range="list" @change="onChange">
+			<view class="picker-text">当前选择：{{ currentText }}</view>
+		</picker>
+	</view>
+</template>
+
+<script setup>
+const list = ref(['苹果', '香蕉', '橙子', '葡萄', '西瓜'])
+const index = ref(0)
+const currentText = ref(list.value[0])
+
+function onChange(e: UniPickerChangeEvent) {
+	console.log(e)
+}
+</script>
+```
+
+原因说明：
+
+- 当前 `picker` 组件尚未发布，因此 `UniPickerChangeEvent` 等相关类型目前不可用；
+- 此时即使在代码中声明事件参数类型，也会提示 `Unresolved reference 'UniPickerChangeEvent'`。
+
+修复代码:
+
+- 使用条件编译或升级最新版HBuilderX
+
 #### 使用不支持的特性
 
 复现代码

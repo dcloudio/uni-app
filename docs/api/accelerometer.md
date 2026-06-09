@@ -1,29 +1,26 @@
 ## uni.onAccelerometerChange(callback) @onaccelerometerchange
 
-监听加速度数据
-
+监听加速度数据变化事件
 
 ### onAccelerometerChange 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 |
 
-
-App平台请搜索[插件市场](https://ext.dcloud.net.cn/search?q=%E9%99%80%E8%9E%BA%E4%BB%AA&orderBy=Relevance&uni-appx=1&uni-app-platforms=&uni-app-x-platforms=)
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnAccelerometerChangeCallbackResult](#onaccelerometerchangecallbackresult-values)) => void | 是 | - | Web: x; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x |  | 
+| callback | (result: [OnAccelerometerChangeCallbackResult](#onaccelerometerchangecallbackresult-values)) => void | 是 |  |   | 加速度数据事件的监听函数 | 
 
 ### OnAccelerometerChangeCallbackResult 的属性值 @onaccelerometerchangecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | X 轴 |
-| y | number | 是 | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | Y 轴 |
-| z | number | 是 | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | Z 轴 |
+| x | number | 是 |  |   | X 轴加速度数据 |
+| y | number | 是 |  |   | Y 轴加速度数据 |
+| z | number | 是 |  |   | Z 轴加速度数据 |
 
 
 
@@ -33,9 +30,8 @@ App平台请搜索[插件市场](https://ext.dcloud.net.cn/search?q=%E9%99%80%E8
 
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.onAccelerometerChange)
-- [参见uni-app相关文档](https://uniapp.dcloud.io/api/system/accelerometer.html#onaccelerometerchange)
-- [参见uni-app相关文档](https://uniapp.dcloud.io/api/system/accelerometer.html#onaccelerometerchange)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/accelerometer/wx.onAccelerometerChange.html)
+- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/accelerometer.html#onaccelerometerchange)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=onAccelerometerChange&doc_type=miniprogram)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onAccelerometerChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onAccelerometerChange&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onAccelerometerChange&secondType=all&type=1)
@@ -47,22 +43,33 @@ App平台请搜索[插件市场](https://ext.dcloud.net.cn/search?q=%E9%99%80%E8
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+### 注意
+
+<md-hperm :permissions="[{ name: 'ohos.permission.ACCELEROMETER', desc: '注册监听时如果当前未启动，会自动调用 startAccelerometer()，因此间接触发权限申请。' }]" />
+
 ## uni.offAccelerometerChange(callback) @offaccelerometerchange
 
-取消监听加速度数据
-
+监听加速度数据变化事件
 
 ### offAccelerometerChange 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: x; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x |  | 
+| callback | (result: [OnAccelerometerChangeCallbackResult](#onaccelerometerchangecallbackresult-values)) => void | 否 |  |   | onAccelerometerChange 传入的监听函数。不传此参数则移除所有监听函数。 | 
+
+### OnAccelerometerChangeCallbackResult 的属性值 @onaccelerometerchangecallbackresult-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| x | number | 是 |  |   | X 轴加速度数据 |
+| y | number | 是 |  |   | Y 轴加速度数据 |
+| z | number | 是 |  |   | Z 轴加速度数据 |
 
 
 
@@ -72,9 +79,8 @@ App平台请搜索[插件市场](https://ext.dcloud.net.cn/search?q=%E9%99%80%E8
 
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.offAccelerometerChange)
-- [参见uni-app相关文档](https://uniapp.dcloud.io/api/system/accelerometer.html#offaccelerometerchange)
-- [参见uni-app相关文档](https://uniapp.dcloud.io/api/system/accelerometer.html#offaccelerometerchange)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/accelerometer/wx.offAccelerometerChange.html)
+- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/accelerometer.html#offaccelerometerchange)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=offAccelerometerChange&doc_type=miniprogram)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offAccelerometerChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offAccelerometerChange&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offAccelerometerChange&secondType=all&type=1)
@@ -88,43 +94,73 @@ App平台请搜索[插件市场](https://ext.dcloud.net.cn/search?q=%E9%99%80%E8
 
 ## uni.startAccelerometer(options) @startaccelerometer
 
-开始监听加速度数据
+开始监听加速度数据变化事件
 
 
 ### startAccelerometer 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **StartAccelerometerOptions** | 是 | - | Web: x; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x |  |
+| options | **StartAccelerometerOptions** | 否 |  |   | 开始监听加速度数据的参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| interval | string | 否 | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 回调频率 |
-| success | (result: [StartAccelerometerSuccess](#startaccelerometersuccess-values)) => void | 否 | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 成功返回的回调函数 |
-| fail | (result: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 失败的回调函数 |
-| complete | (result: any) => void | 否 | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 结束的回调函数（调用成功、失败都会执行） | 
+| interval | string | 否 |  |   | 监听加速度数据回调函数的执行频率 |
+| success | (res: [StartAccelerometerSuccess](#startaccelerometersuccess-values)) => void | 否 |  |   | 监听加速度数据调用成功的回调函数 |
+| fail | (res: [StartAccelerometerFail](#startaccelerometerfail-values)) => void | 否 |  |   | 监听加速度数据调用失败的回调函数 |
+| complete | (res: [StartAccelerometerSuccess](#startaccelerometersuccess-values) \| [StartAccelerometerFail](#startaccelerometerfail-values)) => void | 否 |  |   | 监听加速度数据调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### interval 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| game | Web: x; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 适用于更新游戏的回调频率，在 20ms/次 左右 |
-| ui | Web: x; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 适用于更新游戏的回调频率，在 20ms/次 左右 |
-| normal | Web: x; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 普通的回调频率，在 200ms/次 左右 |
+| 合法值 | 描述 |
+| :- | :- |
+| game | 适用于更新游戏的回调频率，约 20ms/次 左右 |
+| ui | 适用于更新 UI 的回调频率，约 60ms/次 左右 |
+| normal | 普通的回调频率，约 200ms/次 左右 |
 
 #### StartAccelerometerSuccess 的属性值 @startaccelerometersuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 否 | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 错误信息<br/> |
+| errMsg | string | 否 |  |   |  |
+
+#### StartAccelerometerFail 的属性值 @startaccelerometerfail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  |   |  |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 描述 |
+| :- | :- |
+| 501 |  |
+| 502 |  |
+| 503 |  |
+| 601 |  |
+| 602 |  |
+| 603 |  |
+| 604 |  |
+| 701 |  |
+| 702 |  |
+| 703 |  |
+| 801 |  |
+| 802 |  |
+| 803 |  |
+| 804 |  |
+| 901 |  |
 
 
 
@@ -134,9 +170,8 @@ App平台请搜索[插件市场](https://ext.dcloud.net.cn/search?q=%E9%99%80%E8
 
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.startAccelerometer)
-- [参见uni-app相关文档](https://uniapp.dcloud.io/api/system/accelerometer.html#startaccelerometer)
-- [参见uni-app相关文档](https://uniapp.dcloud.io/api/system/accelerometer.html#startaccelerometer)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/accelerometer/wx.startAccelerometer.html)
+- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/accelerometer.html#startaccelerometer)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=startAccelerometer&doc_type=miniprogram)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=startAccelerometer&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=startAccelerometer&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=startAccelerometer&secondType=all&type=1)
@@ -148,36 +183,70 @@ App平台请搜索[插件市场](https://ext.dcloud.net.cn/search?q=%E9%99%80%E8
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+### 注意
+
+<md-hperm permissions="ohos.permission.ACCELEROMETER" />
+
 ## uni.stopAccelerometer(options) @stopaccelerometer
 
-停止监听加速度数据
+停止监听加速度数据变化事件
 
 
 ### stopAccelerometer 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **StopAccelerometerOptions** | 是 | - | Web: x; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x |  |
+| options | **StopAccelerometerOptions** | 否 |  |   | 停止监听加速度数据的参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | (result: [StopAccelerometerSuccess](#stopaccelerometersuccess-values)) => void | 否 | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 成功返回的回调函数 |
-| fail | (result: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 失败的回调函数 |
-| complete | (result: any) => void | 否 | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 结束的回调函数（调用成功、失败都会执行） | 
+| success | (res: [StopAccelerometerSuccess](#stopaccelerometersuccess-values)) => void | 否 |  |   | 停止监听加速度数据调用成功的回调函数 |
+| fail | (res: [StopAccelerometerFail](#stopaccelerometerfail-values)) => void | 否 |  |   | 停止监听加速度数据调用失败的回调函数 |
+| complete | (res: [StopAccelerometerSuccess](#stopaccelerometersuccess-values) \| [StopAccelerometerFail](#stopaccelerometerfail-values)) => void | 否 |  |   | 停止监听加速度数据调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### StopAccelerometerSuccess 的属性值 @stopaccelerometersuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 否 | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 错误信息<br/> |
+| errMsg | string | 否 |  |   |  |
+
+#### StopAccelerometerFail 的属性值 @stopaccelerometerfail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  |   |  |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 描述 |
+| :- | :- |
+| 501 |  |
+| 502 |  |
+| 503 |  |
+| 601 |  |
+| 602 |  |
+| 603 |  |
+| 604 |  |
+| 701 |  |
+| 702 |  |
+| 703 |  |
+| 801 |  |
+| 802 |  |
+| 803 |  |
+| 804 |  |
+| 901 |  |
 
 
 
@@ -187,9 +256,8 @@ App平台请搜索[插件市场](https://ext.dcloud.net.cn/search?q=%E9%99%80%E8
 
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.stopAccelerometer)
-- [参见uni-app相关文档](https://uniapp.dcloud.io/api/system/accelerometer.html#stopaccelerometer)
-- [参见uni-app相关文档](https://uniapp.dcloud.io/api/system/accelerometer.html#stopaccelerometer)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/accelerometer/wx.stopAccelerometer.html)
+- [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/accelerometer.html#stopaccelerometer)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=stopAccelerometer&doc_type=miniprogram)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=stopAccelerometer&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=stopAccelerometer&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=stopAccelerometer&secondType=all&type=1)
@@ -201,7 +269,165 @@ App平台请搜索[插件市场](https://ext.dcloud.net.cn/search?q=%E9%99%80%E8
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
-<!-- UTSAPIJSON.accelerometer.example -->
+## 示例
+
+示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/API/accelerometer/accelerometer.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/API/accelerometer/accelerometer.uvue) 
+::: preview https://hellouniappx.dcloud.net.cn/web/#/pages/API/accelerometer/accelerometer
+
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/accelerometer/accelerometer
+
+>示例
+```vue
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex: 1;padding: 6px;">
+	<!-- #endif -->
+		<text class="uni-h2">加速度计</text>
+		<text>开始监听后可实时查看设备在 X、Y、Z 轴上的加速度数据。</text>
+		<text class="margin-v">当前状态：{{ statusText }}</text>
+
+		<text class="uni-h3">采样频率</text>
+		<radio-group class="option-group" @change="handleIntervalChange">
+			<view class="option-item" v-for="item in intervalOptions" :key="item.value">
+				<radio :value="item.value" :checked="activeInterval == item.value">
+					<text class="option-text">{{ item.label }}</text>
+				</radio>
+			</view>
+		</radio-group>
+		<button class="margin-v" type="primary" @tap="startListen">开始监听</button>
+		<button class="margin-v" @tap="stopListen">停止监听</button>
+		<button class="margin-v" @tap="navigateToShake">跳转摇一摇</button>
+
+		<text class="uni-h3">实时数据</text>
+		<view class="log-list">
+			<text class="log-item" v-for="item in axisItems" :key="item.key">{{ item.key }}：{{ item.value }}</text>
+		</view>
+
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script setup lang="uts">
+	type PageAccelerometerInterval = 'game' | 'ui' | 'normal'
+
+	type IntervalOption = {
+		value : PageAccelerometerInterval
+		label : string
+	}
+
+	type AxisItem = {
+		key : string
+		value : string
+	}
+
+	const intervalOptions : IntervalOption[] = [
+		{ value: 'normal', label: 'normal' },
+		{ value: 'ui', label: 'ui' },
+		{ value: 'game', label: 'game' }
+	]
+	const activeInterval = ref<PageAccelerometerInterval>('normal')
+	const statusText = ref('未启动')
+	const axisX = ref('0.000')
+	const axisY = ref('0.000')
+	const axisZ = ref('0.000')
+	const axisItems = computed((): AxisItem[] => {
+		return [
+			{ key: 'X', value: axisX.value },
+			{ key: 'Y', value: axisY.value },
+			{ key: 'Z', value: axisZ.value }
+		]
+	})
+
+	function formatAxisValue(value : number) : string {
+		return value.toFixed(3)
+	}
+
+	const accelerometerListener : OnAccelerometerChangeCallback = (result : OnAccelerometerChangeCallbackResult) => {
+		axisX.value = formatAxisValue(result.x)
+		axisY.value = formatAxisValue(result.y)
+		axisZ.value = formatAxisValue(result.z)
+	}
+
+	function handleIntervalChange(event : UniRadioGroupChangeEvent) : void {
+		activeInterval.value = event.detail.value as PageAccelerometerInterval
+	}
+
+	function startListen() : void {
+		uni.onAccelerometerChange(accelerometerListener)
+		uni.startAccelerometer({
+			interval: activeInterval.value,
+			success: () => {
+				statusText.value = `监听中 (${activeInterval.value})`
+			},
+			fail: (error) => {
+				statusText.value = error.errMsg != null ? error.errMsg : '启动失败'
+				console.error('startAccelerometer:fail', error)
+			}
+		})
+	}
+
+	function stopListen() : void {
+		uni.stopAccelerometer({
+			success: () => {
+				statusText.value = '已停止'
+			}
+		})
+	}
+
+	function navigateToShake() : void {
+		uni.navigateTo({
+			url: '/pages/API/accelerometer/shake'
+		})
+	}
+
+	onUnload(() => {
+		uni.offAccelerometerChange(accelerometerListener)
+		uni.stopAccelerometer()
+	})
+</script>
+
+<style>
+	.margin-v {
+		margin: 5px 0;
+	}
+
+	.option-group {
+		margin: 5px 0;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.option-item {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin-right: 18px;
+		margin-top: 8px;
+	}
+
+	.option-text {
+		font-size: 14px;
+	}
+
+	.log-list {
+		margin: 5px 0;
+		padding: 10px;
+		border: 1px solid #ccc;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.log-item {
+		font-size: 14px;
+		margin: 4px 0;
+	}
+</style>
+
+```
+
+:::
 
 ## 通用类型
 
@@ -210,5 +436,8 @@ App平台请搜索[插件市场](https://ext.dcloud.net.cn/search?q=%E9%99%80%E8
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 
+
+### tips
+- 和微信小程序平台不同，app 平台调用 `uni.onAccelerometerChange` 时不会自动启动加速器，需要调用 `uni.startAccelerometer()` 才能正常启动加速器。这个问题会在后续版本处理，app 平台在 `5.09+` 版本中将和微信小程序行为保持一致。

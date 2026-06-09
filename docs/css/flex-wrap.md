@@ -5,11 +5,17 @@
 flex-wrap 属性设置弹性容器中的子元素在主轴方向是单行（列）还是多行（列）显示，以及多行（列）显示时的堆叠方向。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,9 +34,9 @@ flex-wrap: nowrap | wrap | wrap-reverse;
 ### flex-wrap 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| nowrap | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | flex 的元素被摆放到到一行，这可能导致 flex 容器溢出。cross-start 会根据 flex-direction 的值等价于 start 或 before。为该属性的默认值。 |
-| wrap | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 换行，第一行在上方。 |
-| wrap-reverse | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 和 wrap 的行为一样，但是 cross-start 和 cross-end 互换。 |
+| nowrap | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | flex 的元素被摆放到到一行，这可能导致 flex 容器溢出。cross-start 会根据 flex-direction 的值等价于 start 或 before。为该属性的默认值。 |
+| wrap | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 换行，第一行在上方。 |
+| wrap-reverse | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 和 wrap 的行为一样，但是 cross-start 和 cross-end 互换。 |
 
 
 ### 默认值 @default-value 
@@ -157,10 +163,10 @@ flex-wrap: nowrap | wrap | wrap-reverse;
         <!-- 普通版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">flex-wrap</text>
-          <text class="uni-info">设置值: {{flexWrap}}</text>
-          <text class="uni-info">获取值: {{flexWrapActual}}</text>
+          <text class="uni-info">设置值: {{data.flexWrap}}</text>
+          <text class="uni-info">获取值: {{data.flexWrapActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="test-flex-container test-view" :style="{ flexWrap: flexWrap }">
+            <view ref="viewRef" class="test-flex-container test-view" :style="{ flexWrap: data.flexWrap }">
               <view class="common-item red"></view>
               <view class="common-item green"></view>
               <view class="common-item blue"></view>
@@ -174,10 +180,10 @@ flex-wrap: nowrap | wrap | wrap-reverse;
         <!-- 拍平版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">拍平</text>
-          <text class="uni-info">设置值: {{flexWrap}}</text>
-          <text class="uni-info">获取值: {{flexWrapActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.flexWrap}}</text>
+          <text class="uni-info">获取值: {{data.flexWrapActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="test-flex-container test-view-flatten" :style="{ flexWrap: flexWrap }" flatten>
+            <view ref="viewRefFlat" class="test-flex-container test-view-flatten" :style="{ flexWrap: data.flexWrap }" flatten>
               <view class="common-item red"></view>
               <view class="common-item green"></view>
               <view class="common-item blue"></view>
@@ -193,7 +199,7 @@ flex-wrap: nowrap | wrap | wrap-reverse;
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="flexWrapEnum" title="flex-wrap 枚举值" @change="radioChangeFlexWrap"
           :compact="true"></enum-data>
-        <input-data :defaultValue="flexWrap" title="flex-wrap 自定义值" type="text"
+        <input-data :defaultValue="data.flexWrap" title="flex-wrap 自定义值" type="text"
           @confirm="inputChangeFlexWrap"></input-data>
       </view>
     </view>
@@ -212,25 +218,29 @@ flex-wrap: nowrap | wrap | wrap-reverse;
     { value: 3, name: 'wrap-reverse' }
   ]
 
-  const flexWrap = ref('nowrap')
-  const flexWrapActual = ref('')
-  const flexWrapActualFlat = ref('')
+  const data = reactive({
+    flexWrap: 'nowrap',
+    flexWrapActual: '',
+    flexWrapActualFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const viewRefFlat = ref(null as UniElement | null)
 
   const getPropertyValues = () => {
-    flexWrapActual.value = viewRef.value?.style.getPropertyValue('flex-wrap') ?? ''
-    flexWrapActualFlat.value = viewRefFlat.value?.style.getPropertyValue('flex-wrap') ?? ''
+    data.flexWrapActual = viewRef.value?.style.getPropertyValue('flex-wrap') ?? ''
+    data.flexWrapActualFlat = viewRefFlat.value?.style.getPropertyValue('flex-wrap') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeFlexWrap = (value : string) => {
-    flexWrap.value = value
+    data.flexWrap = value
     viewRef.value?.style.setProperty('flex-wrap', value)
     viewRefFlat.value?.style.setProperty('flex-wrap', value)
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeFlexWrap = (index : number) => {
@@ -249,7 +259,8 @@ flex-wrap: nowrap | wrap | wrap-reverse;
   })
 
   defineExpose({
-    radioChangeFlexWrap
+    radioChangeFlexWrap,
+    data
   })
 </script>
 

@@ -14,40 +14,40 @@
 
 
 ### getClipboardData 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.71 | 4.71 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.71 | 4.71 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **GetClipboardDataOptions** | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| options | **GetClipboardDataOptions** | 是 |  |   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | (result: [GetClipboardDataSuccess](#getclipboarddatasuccess-values)) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 成功返回的回调函数 |
-| fail | (result: [GetClipboardDataFail](#getclipboarddatafail-values)) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 失败的回调函数 |
-| complete | (result: any) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 结束的回调函数（调用成功、失败都会执行） | 
+| success | (result: [GetClipboardDataSuccess](#getclipboarddatasuccess-values)) => void | 否 |  | 微信小程序: 4.41 | 成功返回的回调函数 |
+| fail | (result: [GetClipboardDataFail](#getclipboarddatafail-values)) => void | 否 |  | 微信小程序: 4.41 | 失败的回调函数 |
+| complete | (result: any) => void | 否 |  | 微信小程序: 4.41 | 结束的回调函数（调用成功、失败都会执行） | 
 
 #### GetClipboardDataSuccess 的属性值 @getclipboarddatasuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 剪贴板的内容 |
+| data | string | 是 |  | 微信小程序: 4.41 | 剪贴板的内容 |
 
 #### GetClipboardDataFail 的属性值 @getclipboarddatafail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
-| errSubject | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 统一错误主题（模块）名称 |
-| data | any | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| errCode | number | 是 |  |   |  |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
 
 
 
@@ -59,6 +59,8 @@
 - App（除 HarmonyOS）平台暂未内置，[见插件市场](https://ext.dcloud.net.cn/search?q=%E5%89%AA%E5%88%87%E6%9D%BF&orderBy=Relevance&cat1=8&cat2=81)
 - 读取剪贴板，在一些新的Android设备上，被列为单独的权限，如没有相关权限，则无法读取剪贴板。
 - 在鸿蒙上，读取剪贴板是一个高敏感权限，较难申请，参考[鸿蒙文档](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/get-pastedata-permission-guidelines?ha_source=Dcloud&ha_sourceId=89000448)
+
+<md-hperm permissions="ohos.permission.READ_PASTEBOARD" />
 
 
 ### 参见
@@ -92,36 +94,36 @@
 
 
 ### setClipboardData 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.71 | 4.71 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.71 | 4.71 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **SetClipboardDataOptions** | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| options | **SetClipboardDataOptions** | 是 |  |   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 需要设置的内容 |
-| showToast | boolean | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 是否弹出提示，默认弹出提示 |
-| success | (result: SetClipboardDataSuccess) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 成功返回的回调函数 |
-| fail | (result: [SetClipboardDataFail](#setclipboarddatafail-values)) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 失败的回调函数 |
-| complete | (result: any) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 结束的回调函数（调用成功、失败都会执行） | 
+| data | string | 是 |  | 微信小程序: 4.41 | 需要设置的内容 |
+| showToast | boolean | 否 |  | 微信小程序: 4.41 | 是否弹出提示，默认弹出提示 |
+| success | (result: SetClipboardDataSuccess) => void | 否 |  | 微信小程序: 4.41 | 成功返回的回调函数 |
+| fail | (result: [SetClipboardDataFail](#setclipboarddatafail-values)) => void | 否 |  | 微信小程序: 4.41 | 失败的回调函数 |
+| complete | (result: any) => void | 否 |  | 微信小程序: 4.41 | 结束的回调函数（调用成功、失败都会执行） | 
 
 #### SetClipboardDataFail 的属性值 @setclipboarddatafail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
-| errSubject | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 统一错误主题（模块）名称 |
-| data | any | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| errCode | number | 是 |  |   |  |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
 
 
 
@@ -270,5 +272,5 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 

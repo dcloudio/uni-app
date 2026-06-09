@@ -13,78 +13,78 @@
 发起网络请求。
 
 ### request 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android 系统版本 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 | 5.0 |
+| 4.0 | 4.41 | 4.4 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| param | [RequestOptions\<T>](#requestoptions-values) | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 网络请求参数 |
+| param | [RequestOptions\<T>](#requestoptions-values) | 是 |  |   | 网络请求参数 |
 
 #### param 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| url | string | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 开发者服务器接口地址<br/> |
-| data | any | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 请求的参数 在`app-android端，参数类型只能为`UTSJSONObject`或者`string`类型,app-android平台从 4.51版本开始支持ArrayBuffer, app-ios平台从 4.61版本开始支持ArrayBuffer |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置请求的 header，header 中不能设置 Referer |
-| method | string | 否 | "GET" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 请求方法 |
-| timeout | number | 否 | 60000 | Web: -; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: - | 超时时间，单位 ms |
-| enableQuic | boolean | 否 | false | Web: √; 微信小程序: √; Android 系统版本: 6.0; Android: 5.0; iOS: 5.0; iOS uni-app x UTS 插件: 5.0; HarmonyOS: 5.0; HarmonyOS(Vapor): 5.0 | 是否开启 Quic/h3 协议<br/>`web` 端由服务端和浏览器共同决定是否启用 Quic/h3 协议，无需设置此参数 |
-| withCredentials | boolean | 否 | - | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 跨域请求时是否携带凭证（cookies）<br/> |
-| firstIpv4 | boolean | 否 | false | Web: x; 微信小程序: 4.41; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | DNS解析时优先使用ipv4 |
-| enableChunked | boolean | 否 | - | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS uni-app x UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS uni-app x UTS 插件: 4.71 | 开启 transfer-encoding chunked。 |
-| success | (option: [RequestSuccess\<T>](#requestsuccess-values)) => void | 否 | null | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 网络请求成功回调。 |
-| fail | (option: [RequestFail](#requestfail-values)) => void | 否 | null | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 网络请求失败回调。 |
-| complete | (option: any) => void | 否 | null | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 网络请求完成回调，成功或者失败都会调用。 | 
+| url | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器接口地址<br/> |
+| data | any | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 请求的参数 在`app-android端，参数类型只能为`UTSJSONObject`或者`string`类型,app-android平台从 4.51版本开始支持ArrayBuffer, app-ios平台从 4.61版本开始支持ArrayBuffer |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 设置请求的 header，header 中不能设置 Referer |
+| method | string | 否 | "GET" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 请求方法 |
+| timeout | number | 否 | 60000 | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11 | 超时时间，单位 ms |
+| enableQuic | boolean | 否 | false | Web: √; 微信小程序: √; Android 系统版本: 6.0; Android: 5.0; iOS 系统版本: x; iOS: 5.0; iOS uni-app x UTS 插件: 5.0; HarmonyOS: 5.0 | 是否开启 Quic/h3 协议<br/>`web` 端由服务端和浏览器共同决定是否启用 Quic/h3 协议，无需设置此参数 |
+| withCredentials | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android 系统版本: 4.4; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: x; HarmonyOS: x | 跨域请求时是否携带凭证（cookies）<br/> |
+| firstIpv4 | boolean | 否 | false | Web: x; 微信小程序: 4.41; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: x; HarmonyOS: x | DNS解析时优先使用ipv4 |
+| enableChunked | boolean | 否 |  | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS uni-app x UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS uni-app x UTS 插件: 4.71 | 开启 transfer-encoding chunked。 |
+| success | (option: [RequestSuccess\<T>](#requestsuccess-values)) => void | 否 | null |   | 网络请求成功回调。 |
+| fail | (option: [RequestFail](#requestfail-values)) => void | 否 | null |   | 网络请求失败回调。 |
+| complete | (option: any) => void | 否 | null |   | 网络请求完成回调，成功或者失败都会调用。 | 
 
 ##### method 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| GET | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | GET方法请求一个指定资源的表示形式，使用 GET 的请求应该只被用于获取数据。 |
-| POST | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | POST方法用于将实体提交到指定的资源，通常导致在服务器上的状态变化或副作用。 |
-| PUT | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | PUT方法用有效载荷请求替换目标资源的所有当前表示。 |
-| PATCH | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | PATCH方法用于对资源应用部分修改。 |
-| DELETE | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | DELETE方法删除指定的资源。 |
-| HEAD | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | HEAD方法请求一个与GET请求的响应相同的响应，但没有响应体。 |
-| OPTIONS | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | OPTIONS 方法用于描述目标资源的通信选项。 |
+| 合法值 | 描述 |
+| :- | :- |
+| GET | GET方法请求一个指定资源的表示形式，使用 GET 的请求应该只被用于获取数据。 |
+| POST | POST方法用于将实体提交到指定的资源，通常导致在服务器上的状态变化或副作用。 |
+| PUT | PUT方法用有效载荷请求替换目标资源的所有当前表示。 |
+| PATCH | PATCH方法用于对资源应用部分修改。 |
+| DELETE | DELETE方法删除指定的资源。 |
+| HEAD | HEAD方法请求一个与GET请求的响应相同的响应，但没有响应体。 |
+| OPTIONS | OPTIONS 方法用于描述目标资源的通信选项。 |
 
 #### RequestSuccess\<T> 的属性值 @requestsuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | T | 否 | - | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 开发者服务器返回的数据, app-android平台从 4.51版本开始支持ArrayBuffer, app-ios平台从 4.61版本开始支持ArrayBuffer |
-| statusCode | number | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 开发者服务器返回的 HTTP 状态码 |
-| header | any | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 开发者服务器返回的 HTTP Response Header |
-| cookies | Array&lt;string&gt; | 是 | - | Web: x; 微信小程序: -; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 开发者服务器返回的 cookies，格式为字符串数组 |
+| data | T | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的数据, app-android平台从 4.51版本开始支持ArrayBuffer, app-ios平台从 4.61版本开始支持ArrayBuffer |
+| statusCode | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP 状态码 |
+| header | any | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP Response Header |
+| cookies | Array&lt;string&gt; | 是 |  | Web: x; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 cookies，格式为字符串数组 |
 
 #### RequestFail 的属性值 @requestfail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误码 |
-| errSubject | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 统一错误主题（模块）名称 |
-| data | any | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| errCode | number | 是 |  |   | 错误码 |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| 5 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 接口超时 |
-| 1000 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 服务端系统错误 |
-| 100001 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | json数据解析错误 |
-| 100002 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误信息json解析失败 |
-| 100003 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | json解析类型转换失败 |
-| 600003 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 网络中断 |
-| 600008 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | data参数类型不合法 |
-| 600009 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | URL格式不合法 |
-| 602001 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | request系统错误 |
+| 合法值 | 描述 |
+| :- | :- |
+| 5 | 接口超时 |
+| 1000 | 服务端系统错误 |
+| 100001 | json数据解析错误 |
+| 100002 | 错误信息json解析失败 |
+| 100003 | json解析类型转换失败 |
+| 600003 | 网络中断 |
+| 600008 | data参数类型不合法 |
+| 600009 | URL格式不合法 |
+| 602001 | request系统错误 |
 
 
 ### 返回值 
@@ -99,9 +99,10 @@
 abort
 中断网络请求。
 ##### abort 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
+
 
 
 
@@ -117,13 +118,14 @@ onChunkReceived
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| listener | (result: [RequestTaskOnChunkReceivedListenerResult](#requesttaskonchunkreceivedlistenerresult-values)) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| listener | (result: [RequestTaskOnChunkReceivedListenerResult](#requesttaskonchunkreceivedlistenerresult-values)) => void | 是 |  |   |  | 
 
 ##### RequestTaskOnChunkReceivedListenerResult 的属性值 @requesttaskonchunkreceivedlistenerresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | - | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS uni-app x UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS uni-app x UTS 插件: 4.71 | 返回的chunk buffer |
+| data | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 |  | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS uni-app x UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS uni-app x UTS 插件: 4.71 | 返回的chunk buffer |
+
 
 ##### 返回值 
 
@@ -144,7 +146,8 @@ offChunkReceived
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| listener | number \| (result: [RequestTaskOnChunkReceivedListenerResult](#requesttaskonchunkreceivedlistenerresult-values)) => void | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| listener | number \| (result: [RequestTaskOnChunkReceivedListenerResult](#requesttaskonchunkreceivedlistenerresult-values)) => void | 否 |  |   |  | 
+
 
 
 #### onHeadersReceived(listener: RequestTaskOnHeadersReceivedCallback): number @onheadersreceived
@@ -159,15 +162,16 @@ onHeadersReceived
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| listener | (result: [RequestTaskOnHeadersReceivedListenerResult](#requesttaskonheadersreceivedlistenerresult-values)) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | HTTP Response Header 事件的监听函数 | 
+| listener | (result: [RequestTaskOnHeadersReceivedListenerResult](#requesttaskonheadersreceivedlistenerresult-values)) => void | 是 |  |   | HTTP Response Header 事件的监听函数 | 
 
 ##### RequestTaskOnHeadersReceivedListenerResult 的属性值 @requesttaskonheadersreceivedlistenerresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| cookies | Array&lt;string&gt; | 是 | - | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS uni-app x UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS uni-app x UTS 插件: 4.71 | 开发者服务器返回的 cookies，格式为字符串数组 |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | - | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS uni-app x UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS uni-app x UTS 插件: 4.71 | 开发者服务器返回的 HTTP Response Header |
-| statusCode | number | 是 | - | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS uni-app x UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS uni-app x UTS 插件: 4.71 | 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） |
+| cookies | Array&lt;string&gt; | 是 |  | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS uni-app x UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS uni-app x UTS 插件: 4.71 | 开发者服务器返回的 cookies，格式为字符串数组 |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS uni-app x UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS uni-app x UTS 插件: 4.71 | 开发者服务器返回的 HTTP Response Header |
+| statusCode | number | 是 |  | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS uni-app x UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS uni-app x UTS 插件: 4.71 | 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） |
+
 
 ##### 返回值 
 
@@ -188,7 +192,8 @@ offHeadersReceived
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| listener | number \| (result: [RequestTaskOnHeadersReceivedListenerResult](#requesttaskonheadersreceivedlistenerresult-values)) => void | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| listener | number \| (result: [RequestTaskOnHeadersReceivedListenerResult](#requesttaskonheadersreceivedlistenerresult-values)) => void | 否 |  |   |  | 
+
 
  
 
@@ -220,6 +225,7 @@ offHeadersReceived
 ```vue
 <template>
   <view style="flex: 1;">
+    <page-intro content="本页演示 uni.request：设置请求方式（GET/POST/PUT 等）、请求地址与参数，发起请求后在上方查看返回内容；可切换错误码接口、不同 header、超时等，并展示请求任务与拦截器用法。"></page-intro>
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-common-mt" style="border-width: 2px;border-style: solid; border-radius: 4px;">
         <textarea :value="data.res" class="uni-textarea" style="width: 100%"></textarea>
@@ -232,7 +238,7 @@ offHeadersReceived
         <button type="primary" @click="sendRequest">发起请求</button>
       </view>
     </view>
-    <scroll-view style="flex: 1;" show-scrollbar="true">
+    <scroll-view style="flex: 1;" :show-scrollbar="true">
       <view style="padding: 20px;">
         <text>设置请求方式</text>
         <view class="uni-common-pb"></view>
@@ -268,6 +274,13 @@ offHeadersReceived
             @click="changeUrl(item)">{{item}}</button>
         </view>
       </view>
+      <!-- #ifdef APP-ANDROID || APP-IOS || APP-HARMONY || WEB -->
+      <view style="padding: 20px;">
+        <text>检测请求 header 键是否为小写</text>
+        <view class="uni-common-pb"></view>
+        <button type="primary" size="mini" @click="checkHeaderLowerCase">检测 header 键小写</button>
+      </view>
+      <!-- #endif -->
       <view style="padding: 20px;">
         <text>请求不同content-type的接口（默认为GET）</text>
         <view class="uni-common-pb"></view>
@@ -536,6 +549,54 @@ offHeadersReceived
         data.data = "hello=world";
         break;
     }
+  }
+
+  function getResponseHeaderObject(header : any): UTSJSONObject {
+    return JSON.parse(JSON.stringify(header)) as UTSJSONObject
+  }
+
+  const checkHeaderLowerCase = () => {
+    uni.showLoading({
+      title: "请求中..."
+    })
+    uni.request<UTSJSONObject>({
+      url: data.host + "/api/http/contentType/json",
+      method: "POST",
+      header: {
+        "Content-Type": "application/json"
+      },
+      data: {
+        "hello": "world"
+      },
+      timeout: 6000,
+      sslVerify: false,
+      withCredentials: false,
+      firstIpv4: false,
+      success: (res : RequestSuccess<UTSJSONObject>) => {
+        const responseHeader = getResponseHeaderObject(res.header)
+        const lowerCaseValue = responseHeader.getString("content-type") ?? ""
+        const upperCaseValue = responseHeader.getString("Content-Type")
+        data.jest_result = lowerCaseValue == "application/json" && upperCaseValue == null
+        data.res = '请求结果 : ' + JSON.stringify(res.data)
+        uni.showToast({
+          title: data.jest_result ? '检测成功' : '检测失败',
+          icon: data.jest_result ? 'success' : 'error',
+          duration: duration
+        })
+      },
+      fail: (err : RequestFail) => {
+        data.jest_result = false
+        data.res = err.errMsg
+        uni.showToast({
+          title: '请求失败',
+          icon: 'error',
+          duration: duration
+        })
+      },
+      complete: () => {
+        uni.hideLoading()
+      }
+    })
   }
 
   // #ifdef APP | MP-WEIXIN | WEB
@@ -879,14 +940,15 @@ offHeadersReceived
   const jest_uts_module_invoked = () => {
     // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
     data.jest_result = false
-    testInovkeRequest({
+    const options : CommonOptions = {
       success: (res : any) => {
         data.jest_result = true
       },
       fail: (err : any) => {
         data.jest_result = false
       }
-    } as CommonOptions)
+    }
+    testInovkeRequest(options)
     // #endif
   }
 
@@ -960,6 +1022,32 @@ offHeadersReceived
     });
   }
 
+  const jest_check_header_lowercase = () => {
+    uni.request<UTSJSONObject>({
+      url: data.host + "/api/http/contentType/json",
+      method: "POST",
+      header: {
+        "Content-Type": "application/json"
+      },
+      data: {
+        "hello": "world"
+      },
+      timeout: 6000,
+      sslVerify: false,
+      withCredentials: false,
+      firstIpv4: false,
+      success: (res : RequestSuccess<UTSJSONObject>) => {
+        const responseHeader = getResponseHeaderObject(res.header)
+        const lowerCaseValue = responseHeader.getString("content-type") ?? ""
+        const upperCaseValue = responseHeader.getString("Content-Type")
+        data.jest_result = lowerCaseValue == "application/json" && upperCaseValue == null
+      },
+      fail: () => {
+        data.jest_result = false
+      },
+    })
+  }
+
   defineExpose({
     data,
     sendArrayBuffer,
@@ -978,8 +1066,10 @@ offHeadersReceived
     jest_respone_with_404_and_string_generics,
     jest_issue_19687,
     jest_test_issue21823_crash,
+    jest_check_header_lowercase,
     sendGzipRequest,
-    checkQuery
+    checkQuery,
+    checkHeaderLowerCase
   })
 </script>
 
@@ -1052,5 +1142,5 @@ complete: () => {
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 

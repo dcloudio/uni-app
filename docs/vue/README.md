@@ -162,14 +162,16 @@ vue3新增的组合式API，是纯编程的，解决了选项式不够灵活的�
 但注意不支持一个页面/组件有2个script，分别写选项式和组合式。
 
 开发者可以根据自己的喜好选择2种写法，但还有几个差别需要注意：
+1. vue推出了蒸汽模式，该模式抛弃了VNode，让页面加载速度更快。但该模式仅支持组合式。为了更高的性能，推荐使用组合式。
 1. 组合式API的组件，可以监听引用其页面的页面级生命周期。而选项式是不能的。有相关需求的组件，需使用组合式API，或在选项式中使用setup函数。[详见](./component.md#component-page-lifecycle)
 2. 选项式的type类型定义在`export default {}`外，这些都是应用级全局的，略微影响性能。[见下](#export-default-out)
-3. app.uvue和uts组件插件的index.vue，目前只支持选项式。
-4. vue即将发布蒸汽模式，该模式抛弃了VNode，让页面加载速度更快。但该模式仅支持组合式。
+3. uts插件的兼容模式组件，其中的根index.vue，只支持选项式。兼容模式组件已经不再推荐使用，推荐使用标准模式组件。
+
 
 一般推荐的建议是：
 1. 如果有历史的选项式代码需要复用，这些选项式代码仍然可以使用。
 2. 如果新写页面和组件，建议直接使用组合式。
+3. 虽然选项式可以用，但强烈推荐通过[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)来转换选项式代码为组合式，可以使用如下提示词：[见下](#ai)
 
 ### 组合式API
 组合式 API，也称 Composition API，或 setup函数。
@@ -300,32 +302,32 @@ style通过lang属性，可以支持less、scss、stylus等css预处理语言。
 
 ### style 标签 @style
 
--
+
+
+
+##### 兼容性
+| Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | √ | 3.9 | 10.0 | 4.11 | 4.61 |
+
 
 ##### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| lang | string | - | Web: 4.0; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |  |
-| scoped | boolean | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| module | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
+| lang | string |   | Web: 4.0; 微信小程序: √; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |  |
+| scoped | boolean |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| module | Any |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
 
 #### lang 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| scss | Web: 4.0; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | - |
-| less | Web: 4.0; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | - |
-| stylus | Web: 4.0; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | - |
+| scss | Web: 4.0; 微信小程序: √; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |  |
+| less | Web: 4.0; 微信小程序: √; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |  |
+| stylus | Web: 4.0; 微信小程序: √; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |  |
 
 
 
-
-
-
-##### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | - | 3.9 | 4.11 | 4.61 |
 
 
 
@@ -394,9 +396,11 @@ style通过lang属性，可以支持less、scss、stylus等css预处理语言。
 </style>
 ```
 
-在 uni-app x 项目中，页面默认可以影响组件样式，组件之间样式彼此隔离。深度选择器 `:deep()` / `::v-deep` 只在 Web 平台有实际含义。
-> [HBuilderX 5+ 隔离策略文档](../css/common/style-isolation.md)
+在 uni-app x 项目中，深度选择器 `:deep()` / `::v-deep` 只在 Web 平台生效。
 
+但一般推荐使用[uni-app x样式隔离策略2.0](../css/common/style-isolation.md)，而不是深度选择器。
+
+如果使用样式隔离策略1.0，需注意如下：
 - 在 Web 平台，uni-app x 中 style 会自动添加 `scoped`（因为web端最终是编译成单页应用SPA，需要隔离不同页面间的样式），因此需要使用深度选择器，来影响子组件样式。
 - 微信小程序、App 平台页面可直接影响子组件，添加 scoped、使用深度选择器无意义
 
@@ -504,11 +508,16 @@ const theme = {
 ```
 
 
-## 利用API将选项式转换为组合式
+## 利用AI将选项式转换为组合式@ai
 
-把页面改成组合式写法
+推荐使用[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)，可以直接转换选项式代码为组合式代码，并自动监控控制台报错然后自动修复。
+官方的很多页面如hello uni-app x，都是这样转的。
+
+如果您使用其他AI，可以使用下面的提示词：
+
+把本项目下的页面改成组合式写法
 1. 在进行“选项式 API → 组合式 API”改造时，只做语法层面的转换，保证代码不报错，避免引入业务逻辑变更。
-2. 在改造过程中，不要删除或遗漏任何已有代码和注释，也不要新增任何注释，确保代码完整性。
+2. 在改造过程中，不要删除或遗漏任何已有代码和注释，确保代码完整性。
 3. 在组合式 API 中，必须保证所有函数和变量在调用前已定义，如顺序不对，要根据依赖关系调整函数定义顺序，避免未定义前调用。
 4. 在组合式 API 中，不需要 import 所有 vue 的 API 和 uni-app-x 的生命周期函数（如 `ref、computed、watch、onLoad、onMounted` 等），uni-app x 会自动引入。
 5. 在选项式 API 中的 `onShow、onHide` 页面生命周期，改为组合式 API 时，分别改成 `onPageShow、onPageHide`。
@@ -521,3 +530,4 @@ const theme = {
 9. 在组合式 API 下，子组件方法不会自动暴露给父组件，只有通过 `defineExpose` 显式暴露的方法，父组件才能通过 ref 调用，避免父组件无法访问子组件方法。
 10. 在测试例页面用到页面中的数据或方法时，必须通过 `defineExpose` 显式暴露数据和方法，避免测试无法访问。
 11. 在页面生命周期中，`onPullDownRefresh` 应作为页面生命周期函数处理，而不是写成普通方法。
+12. 检查控制台的编译报错，如果有报错自行修复，并再次检查编译报错，直到无报错编译通过。

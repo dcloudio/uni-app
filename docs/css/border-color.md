@@ -5,11 +5,17 @@
 CSS 属性 border-color 是一个用于设置元素四个边框颜色的快捷属性： border-top-color、border-right-color、border-bottom-color、border-left-color。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,17 +34,23 @@ border-color: <color>{1,4};
 ### border-color 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| color | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 使用 \<color> 来表示四个边框的颜色，仅用于单值语法。 |
-| horizontal | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 使用 \<color> 来表示水平（左边框和右边框）边框的颜色，仅用于双值语法。 |
-| vertical | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 使用 \<color> 来表示垂直（上边框和下边框）边框的颜色，仅用于双值或三值语法。 |
-| top | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 使用 \<color> 来表示上边框的颜色，仅用于三值或四值语法。 |
-| bottom | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 使用 \<color> 来表示下边框的颜色，仅用于三值或四值语法。 |
-| right | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 使用 \<color> 来表示右边框的颜色，仅用于四值语法。 |
-| left | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 使用 \<color> 来表示左边框的颜色，仅用于四值语法。 |
-| inherit | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 这是一个关键词，用于指示四边的颜色值均继承自父元素的计算值。 |
+| color | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 使用 \<color> 来表示四个边框的颜色，仅用于单值语法。 |
+| horizontal | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 使用 \<color> 来表示水平（左边框和右边框）边框的颜色，仅用于双值语法。 |
+| vertical | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 使用 \<color> 来表示垂直（上边框和下边框）边框的颜色，仅用于双值或三值语法。 |
+| top | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 使用 \<color> 来表示上边框的颜色，仅用于三值或四值语法。 |
+| bottom | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 使用 \<color> 来表示下边框的颜色，仅用于三值或四值语法。 |
+| right | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 使用 \<color> 来表示右边框的颜色，仅用于四值语法。 |
+| left | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 使用 \<color> 来表示左边框的颜色，仅用于四值语法。 |
+| inherit | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 这是一个关键词，用于指示四边的颜色值均继承自父元素的计算值。 |
 
 
+### 默认值 @default-value 
+ | 平台 | 默认值 |
+| :- | :- |
+| uvue-app | #000000 |
+| uvue-web | currentcolor |
 
+ **注意**：W3C 默认值为：currentcolor
 
 
 
@@ -141,10 +153,10 @@ border-color: <color>{1,4};
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{borderColor}}</text>
-          <text class="uni-info">获取值: {{borderColorActual}}</text>
+          <text class="uni-info">设置值: {{data.borderColor}}</text>
+          <text class="uni-info">获取值: {{data.borderColorActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-dynamic test-view" :style="{ borderWidth: '5px', borderColor: borderColor, borderStyle: 'solid' }">
+            <view ref="viewRef" class="common-dynamic test-view" :style="{ borderWidth: '5px', borderColor: data.borderColor, borderStyle: 'solid' }">
               <view style="flex-grow: 1;background-color: green;"><text>view</text></view>
             </view>
           </view>
@@ -152,19 +164,19 @@ border-color: <color>{1,4};
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{borderColor}}</text>
-          <text class="uni-info">获取值: {{borderColorActualText}}</text>
+          <text class="uni-info">设置值: {{data.borderColor}}</text>
+          <text class="uni-info">获取值: {{data.borderColorActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-dynamic test-text" :style="{ borderWidth: '5px', borderColor: borderColor, borderStyle: 'solid' }">text</text>
+            <text ref="textRef" class="common-dynamic test-text" :style="{ borderWidth: '5px', borderColor: data.borderColor, borderStyle: 'solid' }">text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{borderColor}}</text>
-          <text class="uni-info">获取值: {{borderColorActualImage}}</text>
+          <text class="uni-info">设置值: {{data.borderColor}}</text>
+          <text class="uni-info">获取值: {{data.borderColorActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-image test-image" :style="{ borderWidth: '5px', borderColor: borderColor, borderStyle: 'solid' }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image test-image" :style="{ borderWidth: '5px', borderColor: data.borderColor, borderStyle: 'solid' }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -173,10 +185,10 @@ border-color: <color>{1,4};
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{borderColor}}</text>
-          <text class="uni-info">获取值: {{borderColorActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.borderColor}}</text>
+          <text class="uni-info">获取值: {{data.borderColorActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ borderWidth: '5px', borderColor: borderColor, borderStyle: 'solid' }" flatten>
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ borderWidth: '5px', borderColor: data.borderColor, borderStyle: 'solid' }" flatten>
               <view style="flex-grow: 1;background-color: green;"><text>view</text></view>
             </view>
           </view>
@@ -184,19 +196,19 @@ border-color: <color>{1,4};
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{borderColor}}</text>
-          <text class="uni-info">获取值: {{borderColorActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.borderColor}}</text>
+          <text class="uni-info">获取值: {{data.borderColorActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ borderWidth: '5px', borderColor: borderColor, borderStyle: 'solid' }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ borderWidth: '5px', borderColor: data.borderColor, borderStyle: 'solid' }" flatten>text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{borderColor}}</text>
-          <text class="uni-info">获取值: {{borderColorActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.borderColor}}</text>
+          <text class="uni-info">获取值: {{data.borderColorActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ borderWidth: '5px', borderColor: borderColor, borderStyle: 'solid' }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ borderWidth: '5px', borderColor: data.borderColor, borderStyle: 'solid' }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -204,7 +216,7 @@ border-color: <color>{1,4};
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="borderColorEnum" title="border-color 枚举值" @change="radioChangeBorderColor" :compact="true"></enum-data>
-        <input-data :defaultValue="borderColor" title="border-color 自定义值" type="text" @confirm="inputChangeBorderColor"></input-data>
+        <input-data :defaultValue="data.borderColor" title="border-color 自定义值" type="text" @confirm="inputChangeBorderColor"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -232,13 +244,15 @@ border-color: <color>{1,4};
     { value: 5, name: 'transparent' }
   ]
 
-  const borderColor = ref('blue')
-  const borderColorActual = ref('')
-  const borderColorActualText = ref('')
-  const borderColorActualImage = ref('')
-  const borderColorActualFlat = ref('')
-  const borderColorActualTextFlat = ref('')
-  const borderColorActualImageFlat = ref('')
+  const data = reactive({
+    borderColor: 'blue',
+    borderColorActual: '',
+    borderColorActualText: '',
+    borderColorActualImage: '',
+    borderColorActualFlat: '',
+    borderColorActualTextFlat: '',
+    borderColorActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -247,16 +261,17 @@ border-color: <color>{1,4};
   const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    borderColorActual.value = viewRef.value?.style.getPropertyValue('border-color') ?? ''
-    borderColorActualFlat.value = viewRefFlat.value?.style.getPropertyValue('border-color') ?? ''
-    borderColorActualText.value = textRef.value?.style.getPropertyValue('border-color') ?? ''
-    borderColorActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('border-color') ?? ''
-    borderColorActualImage.value = imageRef.value?.style.getPropertyValue('border-color') ?? ''
-    borderColorActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('border-color') ?? ''
+    data.borderColorActual = viewRef.value?.style.getPropertyValue('border-color') ?? ''
+    data.borderColorActualFlat = viewRefFlat.value?.style.getPropertyValue('border-color') ?? ''
+    data.borderColorActualText = textRef.value?.style.getPropertyValue('border-color') ?? ''
+    data.borderColorActualTextFlat = textRefFlat.value?.style.getPropertyValue('border-color') ?? ''
+    data.borderColorActualImage = imageRef.value?.style.getPropertyValue('border-color') ?? ''
+    data.borderColorActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border-color') ?? ''
   }
 
+  const ins = getCurrentInstance()
   const changeBorderColor = (value: string) => {
-    borderColor.value = value
+    data.borderColor = value
     viewRef.value?.style.setProperty('border-color', value)
     viewRefFlat.value?.style.setProperty('border-color', value)
     textRef.value?.style.setProperty('border-color', value)
@@ -266,7 +281,7 @@ border-color: <color>{1,4};
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeBorderColor = (index: number) => {
@@ -285,7 +300,8 @@ border-color: <color>{1,4};
   })
 
   defineExpose({
-    radioChangeBorderColor
+    radioChangeBorderColor,
+    data
   })
 </script>
 

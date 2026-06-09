@@ -13,45 +13,33 @@
 获取网络类型
 
 ### getNetworkType 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **GetNetworkTypeOptions** | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| options | **GetNetworkTypeOptions** | 是 |  |   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | (result: [GetNetworkTypeSuccess](#getnetworktypesuccess-values)) => void | 否 | null | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 接口调用成功的回调函数 |
-| fail | (result: [GetNetworkTypeFail](#getnetworktypefail-values)) => void | 否 | null | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (result: [GetNetworkTypeSuccess](#getnetworktypesuccess-values)) => void | 否 | null | 微信小程序: 4.41 | 接口调用成功的回调函数 |
+| fail | (result: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | null | 微信小程序: 4.41 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### GetNetworkTypeSuccess 的属性值 @getnetworktypesuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| networkType | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 网络类型 |
-| hasSystemProxy | boolean | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 需要基础库： `2.22.1`<br/><br/>设备是否使用了网络代理<br/> |
-| signalStrength | number | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 信号强弱，单位 dbm<br/> |
-| weakNet | boolean | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 需要基础库： `3.5.3`<br/><br/>是否处于弱网环境<br/> |
-
-#### GetNetworkTypeFail 的属性值 @getnetworktypefail-values 
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errSubject | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 统一错误主题（模块）名称 |
-| errCode | number | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 统一错误码 |
-| errMsg | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 统一错误描述信息 |
-| data | any | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 源错误信息，可以包含多个错误，详见SourceError |
-| name | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
-| message | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| networkType | string | 是 |  | 微信小程序: 4.41 | 网络类型 |
+| hasSystemProxy | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.22.1`<br/><br/>设备是否使用了网络代理<br/> |
+| signalStrength | number | 否 |  | 微信小程序: 4.41 | 信号强弱，单位 dbm<br/> |
+| weakNet | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `3.5.3`<br/><br/>是否处于弱网环境<br/> |
 
 
 
@@ -171,6 +159,10 @@
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+### 注意
+
+<md-hperm permissions="ohos.permission.GET_NETWORK_INFO" />
+
 ## 通用类型
 
 
@@ -178,5 +170,5 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 

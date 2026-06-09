@@ -146,7 +146,7 @@ flutter的自渲染引擎，在技术上是不错的。但在生态兼容上有�
 
 flutter开发者都知道的一个常见坑是输入法，因为输入法是典型的原生UI，它和flutter自绘UI并存时各种兼容问题，输入框被遮挡、窗体resize适应，输入法有很多种，很难适配。
 
-混合渲染，还有信息流广告、map、图表、动画等很多三方sdk涉及。这个时候内存占用高、渲染帧率下降、不同渲染方式字体不一致、暗黑主题不一致、国际化、无障碍、UI自动化测试，各种不一致。。。
+混合渲染，还有信息流广告、map、图表、动画等很多三方sdk涉及。这个时候内存占用高、渲染帧率下降、不同渲染方式字体不一致、暗黑主题不一致、国际化、无障碍、UI自动化测试，各种不一致……
 
 这里没有提供开源示例，因为flutter官方是承认这个问题的，它提供了2种方式：混合集成模式和虚拟显示模式。
 
@@ -154,21 +154,21 @@ flutter开发者都知道的一个常见坑是输入法，因为输入法是典�
 详见flutter官网：[https://docs.flutter.dev/platform-integration/android/platform-views#performance](https://docs.flutter.dev/platform-integration/android/platform-views#performance)。
 这个是中文翻译：[https://flutter.cn/docs/platform-integration/android/platform-views#performance](https://flutter.cn/docs/platform-integration/android/platform-views#performance)
 
-在各大App中，微信的小程序首页是为数不多的使用flutter UI的界面，已经上线1年以上。
+在各大App中，微信的小程序首页是为数不多的使用自渲染界面。
 
 下面是微信8.0.44（此刻最新版），从微信的发现页面进入小程序首页。
 
 <video id="video" preload="none" controls="controls" width="185px" height="400px" poster="https://web-ext-storage.dcloud.net.cn/doc/weixin_dark-poster.png" src="https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app-x/test-cross/weixin_dark.mp4"></video>
 
-视频中手机切换暗黑主题后，这个UI却还是白的，而且flutter的父容器原生view已经变黑了，它又在黑底上绘制了一个白色界面，体验非常差。
+视频中手机切换暗黑主题后，这个UI却还是白的，而且父容器原生view已经变黑了，它又在黑底上绘制了一个白色界面，体验非常差。
 
 这个小程序首页界面很简单，没有输入框，规避了混合渲染，点击搜索图标后又跳转到了黑色的原生渲染的界面里。
 
 假使这个界面再内嵌一个原生的信息流SDK，那会看到白色UI中的信息流广告是黑底的，更无法接受。
 
-当然这不是说flutter没法做暗黑主题，重启微信后这个界面会变黑。这里只是说明渲染引擎不一致带来的各种问题。
+当然这不是说自渲染没法做暗黑主题，重启微信后这个界面会变黑。这里只是说明渲染引擎不一致带来的各种问题。
 
-> 注：如何识别一个界面是不是用flutter开发的？在手机设置的开发者选项里，有一个GPU呈现模式分析，flutter的UI不触发这个分析。且无法审查布局边界。
+> 注：如何识别一个界面是不是用flutter开发的？在手机设置的开发者选项里，有一个GPU呈现模式分析，自渲染的UI不触发这个分析。且无法审查布局边界。
 
 flutter的混合渲染的问题，在所有使用原生渲染的跨平台开发框架中都不存在，比如react native、weex、uni-app x。
 

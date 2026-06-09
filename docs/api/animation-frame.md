@@ -5,7 +5,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (task: number) => void | 是 | - | - | - | 
+| callback | (task: number) => void | 是 |  |   | - | 
 
 
 **返回值**
@@ -21,13 +21,13 @@
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.25 | 4.25 | 4.61 | 4.25 | x | - |
+| 4.0 | 4.25 | 4.25 | 4.61 | 4.25 | x |  |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| x | x | - |
+| Android UTS 插件 | iOS UTS 插件 |
+| :- | :- |
+| x | x |
 
 
 
@@ -42,7 +42,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| taskId | number | 是 | - | - | - | 
+| taskId | number | 是 |  |   | - | 
 
 
 **返回值**
@@ -58,13 +58,13 @@
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.25 | 4.25 | 4.61 | 4.25 | x | - |
+| 4.0 | 4.25 | 4.25 | 4.61 | 4.25 | x |  |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| x | x | - |
+| Android UTS 插件 | iOS UTS 插件 |
+| :- | :- |
+| x | x |
 
 
 

@@ -16,12 +16,11 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.21 | 4.41 | 4.25 | 4.25 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.21 | 4.41 | 4.25 | 10.0 | 4.25 | 4.61 | 5.0 |
 
 
-App平台4.25之前没有完整的canvas组件，但提供了`DrawableContext`。
 * 截图或海报需求，无需像webview那样通过canvas中转，app平台view直接提供截图API，[takesnapshot](../dom/unielement.html#takesnapshot)。
 
 在绘制形状、文字、图片方面，uni-app x有2种解决方案：`canvas组件`和 [DOM的DrawableContext API](../dom/drawablecontext.md)
@@ -37,17 +36,17 @@ App平台4.25之前没有完整的canvas组件，但提供了`DrawableContext`�
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| type | string | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | *(string)*<br/>指定 canvas 类型，支持 2d (2.9.0) 和 webgl (2.7.0) |
-| canvas-id | string | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: x; HarmonyOS(Vapor): - | *(string)*<br/>canvas 组件的唯一标识符，若指定了 type 则无需再指定该属性 |
-| disable-scroll | boolean | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | *(boolean)*<br/>当在 canvas 中移动时且有绑定手势事件时，禁止屏幕滚动以及下拉刷新 |
-| width | number | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): 5.0 | - |
-| height | number | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): 5.0 | - |
-| @touchstart | eventhandle | - | Web: 4.21; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61; HarmonyOS(Vapor): - | *(eventhandle)*<br/>手指触摸动作开始 |
-| @touchmove | eventhandle | - | Web: 4.21; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61; HarmonyOS(Vapor): - | *(eventhandle)*<br/>手指触摸后移动 |
-| @touchend | eventhandle | - | Web: 4.21; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61; HarmonyOS(Vapor): - | *(eventhandle)*<br/>手指触摸动作结束 |
-| @touchcancel | eventhandle | - | Web: 4.21; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61; HarmonyOS(Vapor): - | *(eventhandle)*<br/>手指触摸动作被打断，如来电提醒，弹窗 |
-| @longtap | eventhandle | - | Web: 4.21; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61; HarmonyOS(Vapor): - | *(eventhandle)*<br/>手指长按 500ms 之后触发，触发了长按事件后进行移动不会触发屏幕的滚动 |
-| @error | eventhandle | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | *(eventhandle)*<br/>当发生错误时触发 error 事件，detail = {errMsg} |
+| type | string |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(string)*<br/>指定 canvas 类型，支持 2d (2.9.0) 和 webgl (2.7.0) |
+| canvas-id | string |   | Web: -; 微信小程序: 4.41; Android 系统版本: x; Android: -; iOS 系统版本: x; iOS: -; HarmonyOS 系统版本: x; HarmonyOS: x | *(string)*<br/>canvas 组件的唯一标识符，若指定了 type 则无需再指定该属性 |
+| disable-scroll | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(boolean)*<br/>当在 canvas 中移动时且有绑定手势事件时，禁止屏幕滚动以及下拉刷新 |
+| width | number | 0 | HarmonyOS(Vapor): 5.0 |   |
+| height | number | 0 | HarmonyOS(Vapor): 5.0 |   |
+| @touchstart | eventhandle |   | Web: 4.21; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | *(eventhandle)*<br/>手指触摸动作开始 |
+| @touchmove | eventhandle |   | Web: 4.21; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | *(eventhandle)*<br/>手指触摸后移动 |
+| @touchend | eventhandle |   | Web: 4.21; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | *(eventhandle)*<br/>手指触摸动作结束 |
+| @touchcancel | eventhandle |   | Web: 4.21; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | *(eventhandle)*<br/>手指触摸动作被打断，如来电提醒，弹窗 |
+| @longtap | eventhandle |   | Web: 4.21; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | *(eventhandle)*<br/>手指长按 500ms 之后触发，触发了长按事件后进行移动不会触发屏幕的滚动 |
+| @error | eventhandle |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(eventhandle)*<br/>当发生错误时触发 error 事件，detail = {errMsg} |
 
 注意：Android平台默认会开启硬件加速无需额外设置
 
@@ -60,7 +59,7 @@ App平台4.25之前没有完整的canvas组件，但提供了`DrawableContext`�
 
 ## API
 
-老版 uni-app 的 canvas 使用了微信小程序的的旧版规范，和 W3C 规范有差异。微信小程序新版的 canvas 规范已经与 W3C 规范拉齐。
+老版 uni-app 的 canvas 使用了微信小程序的旧版规范，和 W3C 规范有差异。微信小程序新版的 canvas 规范已经与 W3C 规范拉齐。
 
 uni-app x 中废弃了老版方案，使用了 W3C 规范和微信小程序的新版规范。
 
@@ -184,6 +183,7 @@ canvas相关的API较多，参考如下：
 ```vue
 <template>
   <view class="page" id="page-canvas">
+    <page-intro content="本页演示 canvas 画布组件：toDataURL、createImage、createPath2D、requestAnimationFrame 等；可跳转 CanvasContext API 子页，展示绘图与异步上下文。"></page-intro>
     <canvas id="canvas" class="canvas-element"></canvas>
     <scroll-view class="scroll-view">
       <!-- #ifdef WEB -->
@@ -486,7 +486,7 @@ canvas相关的API较多，参考如下：
 
 canvas有很多应用场景，插件市场有很多封装好的插件：
 
-* 图表需求：[xCharts 基于原生canvas的图表方案](https://ext.dcloud.net.cn/plugin?id=21099)。插件市场还有基于webview的图表插件：[echart](https://ext.dcloud.net.cn/search?q=chart&orderBy=Relevance&uni-appx=1)、[F2](https://ext.dcloud.net.cn/search?q=f2&orderBy=Relevance&uni-appx=1)
+* 图表需求：[echart](https://ext.dcloud.net.cn/search?q=chart&orderBy=Relevance&uni-appx=1)、[F2](https://ext.dcloud.net.cn/search?q=f2&orderBy=Relevance&uni-appx=1)
 * 二维码展示：[见插件市场](https://ext.dcloud.net.cn/search?q=%E4%BA%8C%E7%BB%B4%E7%A0%81&uni-appx=1)
 * 手写签名：[见插件市场](https://ext.dcloud.net.cn/search?q=%E7%AD%BE%E5%90%8D&orderBy=Relevance&uni-appx=1)
 * 抽奖转盘：[见插件市场](https://ext.dcloud.net.cn/search?q=%E8%BD%AC%E7%9B%98&orderBy=Relevance&uni-appx=1)

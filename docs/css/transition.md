@@ -5,11 +5,17 @@
 transition CSS 属性是 transition-property、transition-duration、transition-timing-function 和 transition-delay 的一个简写属性 (en-US)。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| x | x | x |
 
 
 
@@ -29,8 +35,8 @@ transition: <single-transition>#;
 ### transition 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| all | Web: 4.0; Android: 4.13; iOS: 4.13; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 每一个能够进行过渡动画的属性都会进行过渡动画。 |
-| none | Web: 4.0; Android: 4.13; iOS: 4.13; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 没有属性会进行过渡动画。 |
+| all | Web: 4.0; Android: 4.13; Android(Vapor): 5.21; iOS: 4.13; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 每一个能够进行过渡动画的属性都会进行过渡动画。 |
+| none | Web: 4.0; Android: 4.13; Android(Vapor): 5.21; iOS: 4.13; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 没有属性会进行过渡动画。 |
 
 
 #### App平台
@@ -134,6 +140,12 @@ transition暂不支持结束属性值为百分比。
       <view class="base-style transition-position" id="stylePosition" @click="changestylePosition"></view>
     </view>
     <view class="container">
+      <text class="text">点击修改bottom</text>
+      <view>
+        <view class="base-style transition-bottom" id="styleBottom" @click="changeStyleBottom"></view>
+      </view>
+    </view>
+    <view class="container">
       <text class="text">点击修改Scale
       </text>
       <view class="base-style transition-transform" id="styleChangScale" @click="changestyleScale"></view>
@@ -162,6 +174,14 @@ transition暂不支持结束属性值为百分比。
       <text class="text">测试在style中同时修改transform和width</text>
       <view style="width:100%;height: 100%;">
         <view class="base-style transition-transform-width" :style="{transform:`translateX(${lineLeft}px)`,width:`${lineWidth}px`}" @click="changeTransform61">
+        </view>
+      </view>
+    </view>
+
+    <view class="container">
+      <text class="text">测试在style中同时修改transform的translateX/Y的百分比</text>
+      <view style="width:100%;height: 100%;">
+        <view class="base-style transition-transform-translate" :style="{transform:`translateX(${translatePercent}) translateY(${translatePercent})`}" @click="changeTransform27520">
         </view>
       </view>
     </view>
@@ -238,10 +258,10 @@ transition暂不支持结束属性值为百分比。
     <view class="test-container">
       <view class="test-item">
         <text class="uni-subtitle-text">view 组件</text>
-        <text class="uni-info">设置值: {{transitionValue}}</text>
-        <text class="uni-info">获取值: {{transitionActual}}</text>
+        <text class="uni-info">设置值: {{data.transitionValue}}</text>
+        <text class="uni-info">获取值: {{data.transitionActual}}</text>
         <view class="test-box">
-          <view ref="viewRefTransition" class="common-image" :style="{ transition: transitionValue }" @click="triggerTransitionView">
+          <view ref="viewRefTransition" class="common-image" :style="{ transition: data.transitionValue }" @click="triggerTransitionView">
             <text style="font-size: 12px;">点击view</text>
           </view>
         </view>
@@ -249,19 +269,19 @@ transition暂不支持结束属性值为百分比。
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件</text>
-        <text class="uni-info">设置值: {{transitionValue}}</text>
-        <text class="uni-info">获取值: {{transitionActualText}}</text>
+        <text class="uni-info">设置值: {{data.transitionValue}}</text>
+        <text class="uni-info">获取值: {{data.transitionActualText}}</text>
         <view class="test-box">
-          <text ref="textRefTransition" class="common-text" :style="{ transition: transitionValue }" @click="triggerTransitionText">点击text</text>
+          <text ref="textRefTransition" class="common-text" :style="{ transition: data.transitionValue }" @click="triggerTransitionText">点击text</text>
         </view>
       </view>
 
       <view class="test-item">
         <text class="uni-subtitle-text">image 组件</text>
-        <text class="uni-info">设置值: {{transitionValue}}</text>
-        <text class="uni-info">获取值: {{transitionActualImage}}</text>
+        <text class="uni-info">设置值: {{data.transitionValue}}</text>
+        <text class="uni-info">获取值: {{data.transitionActualImage}}</text>
         <view class="test-box">
-          <image ref="imageRefTransition" class="common-image" :style="{ transition: transitionValue }" @click="triggerTransitionImage" src="/static/test-image/logo.png"></image>
+          <image ref="imageRefTransition" class="common-image" :style="{ transition: data.transitionValue }" @click="triggerTransitionImage" src="/static/test-image/logo.png"></image>
         </view>
       </view>
     </view>
@@ -269,10 +289,10 @@ transition暂不支持结束属性值为百分比。
     <view class="test-container">
       <view class="test-item">
         <text class="uni-subtitle-text">view 组件拍平</text>
-        <text class="uni-info">设置值: {{transitionValue}}</text>
-        <text class="uni-info">获取值: {{transitionActualFlat}}</text>
+        <text class="uni-info">设置值: {{data.transitionValue}}</text>
+        <text class="uni-info">获取值: {{data.transitionActualFlat}}</text>
         <view class="test-box">
-          <view ref="viewRefTransitionFlat" class="common-image" :style="{ transition: transitionValue }" @click="triggerTransitionView" flatten>
+          <view ref="viewRefTransitionFlat" class="common-image" :style="{ transition: data.transitionValue }" @click="triggerTransitionView" flatten>
             <text style="font-size: 12px;">点击view</text>
           </view>
         </view>
@@ -280,19 +300,19 @@ transition暂不支持结束属性值为百分比。
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件拍平</text>
-        <text class="uni-info">设置值: {{transitionValue}}</text>
-        <text class="uni-info">获取值: {{transitionActualTextFlat}}</text>
+        <text class="uni-info">设置值: {{data.transitionValue}}</text>
+        <text class="uni-info">获取值: {{data.transitionActualTextFlat}}</text>
         <view class="test-box">
-          <text ref="textRefTransitionFlat" class="common-text" :style="{ transition: transitionValue }" @click="triggerTransitionText" flatten>点击text</text>
+          <text ref="textRefTransitionFlat" class="common-text" :style="{ transition: data.transitionValue }" @click="triggerTransitionText" flatten>点击text</text>
         </view>
       </view>
 
       <view class="test-item">
         <text class="uni-subtitle-text">image 组件拍平</text>
-        <text class="uni-info">设置值: {{transitionValue}}</text>
-        <text class="uni-info">获取值: {{transitionActualImageFlat}}</text>
+        <text class="uni-info">设置值: {{data.transitionValue}}</text>
+        <text class="uni-info">获取值: {{data.transitionActualImageFlat}}</text>
         <view class="test-box">
-          <image ref="imageRefTransitionFlat" class="common-image" :style="{ transition: transitionValue }" @click="triggerTransitionImage" src="/static/test-image/logo.png" flatten></image>
+          <image ref="imageRefTransitionFlat" class="common-image" :style="{ transition: data.transitionValue }" @click="triggerTransitionImage" src="/static/test-image/logo.png" flatten></image>
         </view>
       </view>
     </view>
@@ -300,7 +320,7 @@ transition暂不支持结束属性值为百分比。
     <view class="uni-common-mt uni-common-mb">
       <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
       <enum-data :items="transitionEnum" title="transition 枚举值" @change="radioChangeTransition" :compact="true"></enum-data>
-      <input-data :defaultValue="transitionValue" title="transition 自定义值" type="text" @confirm="inputChangeTransition"></input-data>
+      <input-data :defaultValue="data.transitionValue" title="transition 自定义值" type="text" @confirm="inputChangeTransition"></input-data>
     </view>
 
     <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件</text>
@@ -352,6 +372,8 @@ transition暂不支持结束属性值为百分比。
   let styleBorder: UniElement | null = null
   let isTransitionstylePosition = false
   let stylePosition: UniElement | null = null
+  let isTransitionStyleBottom = false
+  let styleBottom: UniElement | null = null
   let isSetTransition = false
   let isTransitionpropertystyleBackground = false
   let propertyStyleBackground: UniElement | null = null
@@ -368,6 +390,7 @@ transition暂不支持结束属性值为百分比。
   let isTransitionAll = false
   const lineLeft = ref(0)
   const lineWidth = ref(200)
+  const translatePercent = ref('0%')
   let changeWidthInEnd: UniElement | null = null
   let changeWidthInEndCount = 0
   let isTextTransform = false
@@ -401,6 +424,7 @@ transition暂不支持结束属性值为百分比。
     styleTransform = uni.getElementById("styleTransform")
     styleBorder = uni.getElementById("styleBorder")
     stylePosition = uni.getElementById("stylePosition")
+    styleBottom = uni.getElementById("styleBottom")
     propertyStyleBackground = uni.getElementById("propertyStyleBackground")
     styleTransformWithOrigin = uni.getElementById("styleTransformWithOrigin")
     styleTransformWithWidth = uni.getElementById("styleTransformWithWidth")
@@ -417,6 +441,8 @@ transition暂不支持结束属性值为百分比。
     imageScale = uni.getElementById("imageScale")
     elChangeBorderAndBackgroundColor = uni.getElementById("borderAndBackgroundColor")
   })
+
+  const ins = getCurrentInstance()
 
   const changeWidthOrHeight = () => {
     widthOrHeight?.style?.setProperty("width", isTranstionWidthOrHeight
@@ -530,7 +556,7 @@ transition暂不支持结束属性值为百分比。
   const changeTransform = () => {
     styleTransform?.style?.setProperty("transform", isTransitionStyleTransform
       ? 'rotate(0deg)'
-      : 'rotate(135deg)'
+      : 'rotate(370deg)'
     )
     isTransitionStyleTransform = !isTransitionStyleTransform
   }
@@ -575,6 +601,18 @@ transition暂不支持结束属性值为百分比。
       : '100px'
     )
     isTransitionstylePosition = !isTransitionstylePosition
+  }
+
+  const changeStyleBottom = () => {
+    styleBottom?.style?.setProperty("bottom", isTransitionStyleBottom
+      ? '0px'
+      : '-60px'
+    )
+    isTransitionStyleBottom = !isTransitionStyleBottom
+  }
+
+  const getStyleBottom = (): string => {
+    return styleBottom?.style?.getPropertyValue('bottom') ?? ''
   }
 
   const changestyleScale = () => {
@@ -637,6 +675,14 @@ transition暂不支持结束属性值为百分比。
     } else {
       lineLeft.value = 0
       lineWidth.value = 200
+    }
+  }
+
+  const changeTransform27520 = () => {
+    if (translatePercent.value === '0%') {
+      translatePercent.value = '50%'
+    } else {
+      translatePercent.value = '0%'
     }
   }
 
@@ -703,13 +749,25 @@ transition暂不支持结束属性值为百分比。
     isChangeBorderAndBackgroundColor = !isChangeBorderAndBackgroundColor
   }
 
-  const transitionValue = ref('width 1s')
-  const transitionActual = ref('')
-  const transitionActualText = ref('')
-  const transitionActualImage = ref('')
-  const transitionActualFlat = ref('')
-  const transitionActualTextFlat = ref('')
-  const transitionActualImageFlat = ref('')
+  type TransitionData = {
+    transitionValue: string
+    transitionActual: string
+    transitionActualText: string
+    transitionActualImage: string
+    transitionActualFlat: string
+    transitionActualTextFlat: string
+    transitionActualImageFlat: string
+  }
+  const data = reactive({
+    transitionValue: 'width 1s',
+    transitionActual: '',
+    transitionActualText: '',
+    transitionActualImage: '',
+    transitionActualFlat: '',
+    transitionActualTextFlat: '',
+    transitionActualImageFlat: ''
+  } as TransitionData)
+
   const viewRefTransition = ref(null as UniElement | null)
   const textRefTransition = ref(null as UniTextElement | null)
   const imageRefTransition = ref(null as UniImageElement | null)
@@ -730,16 +788,16 @@ transition暂不支持结束属性值为百分比。
   ]
 
   const getPropertyValues = () => {
-    transitionActual.value = viewRefTransition.value?.style.getPropertyValue('transition') ?? ''
-    transitionActualFlat.value = viewRefTransitionFlat.value?.style.getPropertyValue('transition') ?? ''
-    transitionActualText.value = textRefTransition.value?.style.getPropertyValue('transition') ?? ''
-    transitionActualTextFlat.value = textRefTransitionFlat.value?.style.getPropertyValue('transition') ?? ''
-    transitionActualImage.value = imageRefTransition.value?.style.getPropertyValue('transition') ?? ''
-    transitionActualImageFlat.value = imageRefTransitionFlat.value?.style.getPropertyValue('transition') ?? ''
+    data.transitionActual = viewRefTransition.value?.style.getPropertyValue('transition') ?? ''
+    data.transitionActualFlat = viewRefTransitionFlat.value?.style.getPropertyValue('transition') ?? ''
+    data.transitionActualText = textRefTransition.value?.style.getPropertyValue('transition') ?? ''
+    data.transitionActualTextFlat = textRefTransitionFlat.value?.style.getPropertyValue('transition') ?? ''
+    data.transitionActualImage = imageRefTransition.value?.style.getPropertyValue('transition') ?? ''
+    data.transitionActualImageFlat = imageRefTransitionFlat.value?.style.getPropertyValue('transition') ?? ''
   }
 
   const changeTransition = (value: string) => {
-    transitionValue.value = value
+    data.transitionValue = value
     viewRefTransition.value?.style.setProperty('transition', value)
     viewRefTransitionFlat.value?.style.setProperty('transition', value)
     textRefTransition.value?.style.setProperty('transition', value)
@@ -749,7 +807,7 @@ transition暂不支持结束属性值为百分比。
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeTransition = (index: number) => {
@@ -764,7 +822,7 @@ transition暂不支持结束属性值为百分比。
   }
 
   const triggerTransitionView = () => {
-    const transition = transitionValue.value
+    const transition: string = data.transitionValue
     isExpandedTransition.value = !isExpandedTransition.value
 
     if (transition.includes('background-color')) {
@@ -790,7 +848,7 @@ transition暂不支持结束属性值为百分比。
   }
 
   const triggerTransitionText = () => {
-    const transition = transitionValue.value
+    const transition: string = data.transitionValue
     isExpandedTransitionText.value = !isExpandedTransitionText.value
 
     if (transition.includes('background-color')) {
@@ -816,7 +874,7 @@ transition暂不支持结束属性值为百分比。
   }
 
   const triggerTransitionImage = () => {
-    const transition = transitionValue.value
+    const transition: string = data.transitionValue
     isExpandedTransitionImage.value = !isExpandedTransitionImage.value
 
     if (transition.includes('background-color')) {
@@ -860,10 +918,13 @@ transition暂不支持结束属性值为百分比。
 	  changeTransformWithOrigin,
 	  changeBorder,
 	  changestylePosition,
+	  changeStyleBottom,
 	  changeTransitionAll,
 	  changeWidthInEndFun,
 	  getChangeWidthInEndCount,
-    changeBorderAndBackgroundColor
+    getStyleBottom,
+    changeBorderAndBackgroundColor,
+	  data
 	})
 
 </script>
@@ -894,6 +955,7 @@ transition暂不支持结束属性值为百分比。
   .width-progress {
     width: 100px;
     height: 100px;
+    border-radius: 100px;
     background-color: brown;
   }
 
@@ -947,9 +1009,21 @@ transition暂不支持结束属性值为百分比。
     transition-duration: 1s;
   }
 
+  .transition-bottom {
+    position: relative;
+    bottom: 0px;
+    transition-property: bottom;
+    transition-duration: 1s;
+  }
+
   .transition-transform-width {
     transform: rotate(0deg);
     transition-property: transform, width;
+    transition-duration: 1s;
+  }
+
+  .transition-transform-translate {
+    transition-property: transform;
     transition-duration: 1s;
   }
 

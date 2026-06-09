@@ -5,11 +5,17 @@
 CSS 属性 border-top是属性 border-top-color, border-top-style, 和border-top-width 的三者的缩写。这些属性都是在描述一个元素的上方的边框border。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -29,8 +35,7 @@ border-top: <line-width> || <line-style> || <color>;
 
 
 
-### 默认值 @default-value 
- `0`
+
 
 
 
@@ -76,10 +81,10 @@ border-top: <line-width> || <line-style> || <color>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{borderTop}}</text>
-          <text class="uni-info">获取值: {{borderTopActual}}</text>
+          <text class="uni-info">设置值: {{data.borderTop}}</text>
+          <text class="uni-info">获取值: {{data.borderTopActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-dynamic test-view" :style="{ borderTop: borderTop }">
+            <view ref="viewRef" class="common-dynamic test-view" :style="{ borderTop: data.borderTop }">
               <text>view</text>
             </view>
           </view>
@@ -87,19 +92,19 @@ border-top: <line-width> || <line-style> || <color>;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{borderTop}}</text>
-          <text class="uni-info">获取值: {{borderTopActualText}}</text>
+          <text class="uni-info">设置值: {{data.borderTop}}</text>
+          <text class="uni-info">获取值: {{data.borderTopActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-dynamic test-text" :style="{ borderTop: borderTop }">text</text>
+            <text ref="textRef" class="common-dynamic test-text" :style="{ borderTop: data.borderTop }">text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{borderTop}}</text>
-          <text class="uni-info">获取值: {{borderTopActualImage}}</text>
+          <text class="uni-info">设置值: {{data.borderTop}}</text>
+          <text class="uni-info">获取值: {{data.borderTopActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-image test-image" :style="{ borderTop: borderTop }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image test-image" :style="{ borderTop: data.borderTop }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -108,10 +113,10 @@ border-top: <line-width> || <line-style> || <color>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{borderTop}}</text>
-          <text class="uni-info">获取值: {{borderTopActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.borderTop}}</text>
+          <text class="uni-info">获取值: {{data.borderTopActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ borderTop: borderTop }" flatten>
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ borderTop: data.borderTop }" flatten>
               <text>view</text>
             </view>
           </view>
@@ -119,19 +124,19 @@ border-top: <line-width> || <line-style> || <color>;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{borderTop}}</text>
-          <text class="uni-info">获取值: {{borderTopActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.borderTop}}</text>
+          <text class="uni-info">获取值: {{data.borderTopActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ borderTop: borderTop }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ borderTop: data.borderTop }" flatten>text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{borderTop}}</text>
-          <text class="uni-info">获取值: {{borderTopActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.borderTop}}</text>
+          <text class="uni-info">获取值: {{data.borderTopActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ borderTop: borderTop }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ borderTop: data.borderTop }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -139,7 +144,7 @@ border-top: <line-width> || <line-style> || <color>;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="borderTopEnum" title="border-top 枚举值" @change="radioChangeBorderTop" :compact="true"></enum-data>
-        <input-data :defaultValue="borderTop" title="border-top 自定义值" type="text" @confirm="inputChangeBorderTop"></input-data>
+        <input-data :defaultValue="data.borderTop" title="border-top 自定义值" type="text" @confirm="inputChangeBorderTop"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -166,13 +171,15 @@ border-top: <line-width> || <line-style> || <color>;
     { value: 4, name: '3px dotted yellow' }
   ]
 
-  const borderTop = ref('5px solid purple')
-  const borderTopActual = ref('')
-  const borderTopActualText = ref('')
-  const borderTopActualImage = ref('')
-  const borderTopActualFlat = ref('')
-  const borderTopActualTextFlat = ref('')
-  const borderTopActualImageFlat = ref('')
+  const data = reactive({
+    borderTop: '5px solid purple',
+    borderTopActual: '',
+    borderTopActualText: '',
+    borderTopActualImage: '',
+    borderTopActualFlat: '',
+    borderTopActualTextFlat: '',
+    borderTopActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -181,16 +188,17 @@ border-top: <line-width> || <line-style> || <color>;
   const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    borderTopActual.value = viewRef.value?.style.getPropertyValue('border-top') ?? ''
-    borderTopActualFlat.value = viewRefFlat.value?.style.getPropertyValue('border-top') ?? ''
-    borderTopActualText.value = textRef.value?.style.getPropertyValue('border-top') ?? ''
-    borderTopActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('border-top') ?? ''
-    borderTopActualImage.value = imageRef.value?.style.getPropertyValue('border-top') ?? ''
-    borderTopActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('border-top') ?? ''
+    data.borderTopActual = viewRef.value?.style.getPropertyValue('border-top') ?? ''
+    data.borderTopActualFlat = viewRefFlat.value?.style.getPropertyValue('border-top') ?? ''
+    data.borderTopActualText = textRef.value?.style.getPropertyValue('border-top') ?? ''
+    data.borderTopActualTextFlat = textRefFlat.value?.style.getPropertyValue('border-top') ?? ''
+    data.borderTopActualImage = imageRef.value?.style.getPropertyValue('border-top') ?? ''
+    data.borderTopActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border-top') ?? ''
   }
 
+  const ins = getCurrentInstance()
   const changeBorderTop = (value: string) => {
-    borderTop.value = value
+    data.borderTop = value
     viewRef.value?.style.setProperty('border-top', value)
     viewRefFlat.value?.style.setProperty('border-top', value)
     textRef.value?.style.setProperty('border-top', value)
@@ -200,7 +208,7 @@ border-top: <line-width> || <line-style> || <color>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeBorderTop = (index: number) => {
@@ -219,7 +227,8 @@ border-top: <line-width> || <line-style> || <color>;
   })
 
   defineExpose({
-    radioChangeBorderTop
+    radioChangeBorderTop,
+    data
   })
 </script>
 

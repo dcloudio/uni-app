@@ -5,11 +5,17 @@
 CSS 属性 padding-top 是指一个元素在内边距区域（padding area）中上方的高度。内边距（padding）是指一个元素的内容和边框之间的区域。和外边距（margin）不同，内边距（padding）是不允许有负值的。内边距（padding）可以用四个值声明一个元素的四个方向的内边距（paddings），这是一种 CSS 缩写属性。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -99,10 +105,10 @@ padding-top: <length> | <percentage>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{paddingTop}}</text>
-          <text class="uni-info">获取值: {{paddingTopActual}}</text>
+          <text class="uni-info">设置值: {{data.paddingTop}}</text>
+          <text class="uni-info">获取值: {{data.paddingTopActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-dynamic test-view" :style="{ paddingTop: paddingTop }">
+            <view ref="viewRef" class="common-dynamic test-view" :style="{ paddingTop: data.paddingTop }">
               <view style="flex-grow: 1;background-color: cyan;"><text>view</text></view>
             </view>
           </view>
@@ -110,19 +116,19 @@ padding-top: <length> | <percentage>;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{paddingTop}}</text>
-          <text class="uni-info">获取值: {{paddingTopActualText}}</text>
+          <text class="uni-info">设置值: {{data.paddingTop}}</text>
+          <text class="uni-info">获取值: {{data.paddingTopActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-dynamic test-text" :style="{ paddingTop: paddingTop }">text</text>
+            <text ref="textRef" class="common-dynamic test-text" :style="{ paddingTop: data.paddingTop }">text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{paddingTop}}</text>
-          <text class="uni-info">获取值: {{paddingTopActualImage}}</text>
+          <text class="uni-info">设置值: {{data.paddingTop}}</text>
+          <text class="uni-info">获取值: {{data.paddingTopActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-image test-image" :style="{ paddingTop: paddingTop }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image test-image" :style="{ paddingTop: data.paddingTop }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -131,10 +137,10 @@ padding-top: <length> | <percentage>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{paddingTop}}</text>
-          <text class="uni-info">获取值: {{paddingTopActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.paddingTop}}</text>
+          <text class="uni-info">获取值: {{data.paddingTopActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ paddingTop: paddingTop }" flatten>
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ paddingTop: data.paddingTop }" flatten>
               <view style="flex-grow: 1;background-color: cyan;"><text>view</text></view>
             </view>
           </view>
@@ -142,19 +148,19 @@ padding-top: <length> | <percentage>;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{paddingTop}}</text>
-          <text class="uni-info">获取值: {{paddingTopActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.paddingTop}}</text>
+          <text class="uni-info">获取值: {{data.paddingTopActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ paddingTop: paddingTop }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ paddingTop: data.paddingTop }" flatten>text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{paddingTop}}</text>
-          <text class="uni-info">获取值: {{paddingTopActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.paddingTop}}</text>
+          <text class="uni-info">获取值: {{data.paddingTopActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ paddingTop: paddingTop }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ paddingTop: data.paddingTop }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -162,7 +168,7 @@ padding-top: <length> | <percentage>;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="paddingTopEnum" title="padding-top 枚举值" @change="radioChangePaddingTop" :compact="true"></enum-data>
-        <input-data :defaultValue="paddingTop" title="padding-top 自定义值" type="text" @confirm="inputChangePaddingTop"></input-data>
+        <input-data :defaultValue="data.paddingTop" title="padding-top 自定义值" type="text" @confirm="inputChangePaddingTop"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -187,13 +193,15 @@ padding-top: <length> | <percentage>;
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const paddingTop = ref('25px')
-  const paddingTopActual = ref('')
-  const paddingTopActualText = ref('')
-  const paddingTopActualImage = ref('')
-  const paddingTopActualFlat = ref('')
-  const paddingTopActualTextFlat = ref('')
-  const paddingTopActualImageFlat = ref('')
+  const data = reactive({
+    paddingTop: '25px',
+    paddingTopActual: '',
+    paddingTopActualText: '',
+    paddingTopActualImage: '',
+    paddingTopActualFlat: '',
+    paddingTopActualTextFlat: '',
+    paddingTopActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -211,16 +219,18 @@ padding-top: <length> | <percentage>;
   ]
 
   const getPropertyValues = () => {
-    paddingTopActual.value = viewRef.value?.style.getPropertyValue('padding-top') ?? ''
-    paddingTopActualFlat.value = viewRefFlat.value?.style.getPropertyValue('padding-top') ?? ''
-    paddingTopActualText.value = textRef.value?.style.getPropertyValue('padding-top') ?? ''
-    paddingTopActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('padding-top') ?? ''
-    paddingTopActualImage.value = imageRef.value?.style.getPropertyValue('padding-top') ?? ''
-    paddingTopActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('padding-top') ?? ''
+    data.paddingTopActual = viewRef.value?.style.getPropertyValue('padding-top') ?? ''
+    data.paddingTopActualFlat = viewRefFlat.value?.style.getPropertyValue('padding-top') ?? ''
+    data.paddingTopActualText = textRef.value?.style.getPropertyValue('padding-top') ?? ''
+    data.paddingTopActualTextFlat = textRefFlat.value?.style.getPropertyValue('padding-top') ?? ''
+    data.paddingTopActualImage = imageRef.value?.style.getPropertyValue('padding-top') ?? ''
+    data.paddingTopActualImageFlat = imageRefFlat.value?.style.getPropertyValue('padding-top') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changePaddingTop = (value: string) => {
-    paddingTop.value = value
+    data.paddingTop = value
     viewRef.value?.style.setProperty('padding-top', value)
     viewRefFlat.value?.style.setProperty('padding-top', value)
     textRef.value?.style.setProperty('padding-top', value)
@@ -230,7 +240,7 @@ padding-top: <length> | <percentage>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangePaddingTop = (index: number) => {
@@ -249,7 +259,8 @@ padding-top: <length> | <percentage>;
   })
 
   defineExpose({
-    radioChangePaddingTop
+    radioChangePaddingTop,
+    data
   })
 </script>
 

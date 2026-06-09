@@ -8,25 +8,25 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.24 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | - |
+| Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS 系统版本 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.24 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 9.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| direction | string | - | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 选项的排列方向 |
-| show-icon | boolean | - | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 是否显示icon |
-| selected | number | - | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 选中的tabBar选项索引值 |
-| @onTabItemTap | (event: [OnTabItemTapOption](#ontabitemtapoption)) => void | - | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 点击自定义 tabBar 触发事件，detail = {index, pagePath, text} |
+| direction | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x | 选项的排列方向 |
+| show-icon | boolean |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x | 是否显示icon |
+| selected | number |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x | 选中的tabBar选项索引值 |
+| @onTabItemTap | (event: [OnTabItemTapOption](#ontabitemtapoption)) => void |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x | 点击自定义 tabBar 触发事件，detail = {index, pagePath, text} |
 
 #### direction 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| horizontal | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 选项的排列方向水平 |
-| vertical | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 选项的排列方向水平 |
+| horizontal | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 选项的排列方向水平 |
+| vertical | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 选项的排列方向垂直 |
 
 
 

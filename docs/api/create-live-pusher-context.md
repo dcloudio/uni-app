@@ -19,8 +19,8 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| livePusherId | string | 是 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: x |  |
-| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: x |  | 
+| livePusherId | string | 是 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
+| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  | 
 
 
 ### 返回值 
@@ -43,15 +43,16 @@ start
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: x |  |
+| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 | - | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 | - | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 | - | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+
 
 
 #### stop(options? : LivePusherOptions) : void @stop
@@ -66,7 +67,8 @@ stop
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | [LivePusherOptions](#livepusheroptions-values) | 否 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: x | - | 
+| options | [LivePusherOptions](#livepusheroptions-values) | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x | - | 
+
 
 
 #### switchCamera(options? : LivePusherOptions) : void @switchcamera
@@ -81,7 +83,8 @@ switchCamera
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | [LivePusherOptions](#livepusheroptions-values) | 否 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: x | - | 
+| options | [LivePusherOptions](#livepusheroptions-values) | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x | - | 
+
 
 
 #### toggleTorch(options? : LivePusherOptions) : void @toggletorch
@@ -96,7 +99,8 @@ toggleTorch
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | [LivePusherOptions](#livepusheroptions-values) | 否 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: x | - | 
+| options | [LivePusherOptions](#livepusheroptions-values) | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x | - | 
+
 
 
 #### pause(options? : LivePusherOptions) : void @pause
@@ -111,7 +115,8 @@ pause
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | [LivePusherOptions](#livepusheroptions-values) | 否 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: x | - | 
+| options | [LivePusherOptions](#livepusheroptions-values) | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x | - | 
+
 
 
 #### resume(options? : LivePusherOptions) : void @resume
@@ -126,7 +131,8 @@ resume
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | [LivePusherOptions](#livepusheroptions-values) | 否 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: x | - | 
+| options | [LivePusherOptions](#livepusheroptions-values) | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x | - | 
+
 
 
 #### getMaxZoom(options? : LivePusherOptions) : void @getmaxzoom
@@ -141,7 +147,8 @@ getMaxZoom
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | [LivePusherOptions](#livepusheroptions-values) | 否 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: x | - | 
+| options | [LivePusherOptions](#livepusheroptions-values) | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x | - | 
+
 
 
 #### setZoom(zoom : number, options? : LivePusherOptions) : void @setzoom
@@ -156,8 +163,9 @@ setZoom
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| zoom | number | 是 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: x |  |
-| options | [LivePusherOptions](#livepusheroptions-values) | 否 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: x | - | 
+| zoom | number | 是 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
+| options | [LivePusherOptions](#livepusheroptions-values) | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x | - | 
+
 
 
 #### startPreview(options? : LivePusherOptions) : void @startpreview
@@ -172,7 +180,8 @@ startPreview
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | [LivePusherOptions](#livepusheroptions-values) | 否 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: x | - | 
+| options | [LivePusherOptions](#livepusheroptions-values) | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x | - | 
+
 
 
 #### stopPreview(options? : LivePusherOptions) : void @stoppreview
@@ -187,7 +196,8 @@ stopPreview
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | [LivePusherOptions](#livepusheroptions-values) | 否 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: x | - | 
+| options | [LivePusherOptions](#livepusheroptions-values) | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x | - | 
+
 
 
 #### snapshot(options? : LivePusherOptions) : void @snapshot
@@ -202,23 +212,25 @@ snapshot
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | [LivePusherOptions](#livepusheroptions-values) | 否 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: x | - | 
+| options | [LivePusherOptions](#livepusheroptions-values) | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x | - | 
+
 
 
 #### sendMessage(message : string, options? : LivePusherOptions) : void @sendmessage
 sendMessage
 
 ##### sendMessage 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | - | - | x |
+| Web | 微信小程序 | HarmonyOS |
+| :- | :- | :- |
+| x | x | x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| message | string | 是 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: x |  |
-| options | [LivePusherOptions](#livepusheroptions-values) | 否 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: x | - | 
+| message | string | 是 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
+| options | [LivePusherOptions](#livepusheroptions-values) | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x | - | 
+
 
  
 
@@ -252,5 +264,5 @@ sendMessage
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 

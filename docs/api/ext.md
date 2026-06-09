@@ -3,17 +3,10 @@
 在App平台，与uni-app相比，uni-app x多了不少API，但也还有一些API没有，需要通过插件市场的插件替代。
 
 ## uni api替代@uni
-- 微信登录、分享、企业客服：[见插件市场](https://ext.dcloud.net.cn/search?q=%E5%BE%AE%E4%BF%A1%E7%99%BB%E5%BD%95&orderBy=Relevance&cat1=8&cat2=81&uni-appx=1)
 - 谷歌登录：[见插件市场](https://ext.dcloud.net.cn/search?q=%E8%B0%B7%E6%AD%8C%E7%99%BB%E5%BD%95&orderBy=Relevance&uni-appx=1)
 - 谷歌支付：[见插件市场](https://ext.dcloud.net.cn/search?q=%E8%B0%B7%E6%AD%8C%E6%94%AF%E4%BB%98&orderBy=Relevance&uni-appx=1)
 - 蓝牙：Bluetooth。[见插件市场](https://ext.dcloud.net.cn/search?q=%E8%93%9D%E7%89%99&orderBy=Relevance&cat1=8&cat2=81)
 - NFC：[见插件市场](https://ext.dcloud.net.cn/search?q=nfc&orderBy=Relevance&cat1=8&cat2=81)
-- 陀螺仪：`uni.onGyroscopeChange`、`uni.startGyroscope`、`uni.stopGyroscope` [见插件市场](https://ext.dcloud.net.cn/plugin?id=17540)
-- 生物识别：指纹识别。`uni.startSoterAuthentication` [见插件市场](https://ext.dcloud.net.cn/search?q=%E7%94%9F%E7%89%A9%E8%AE%A4%E8%AF%81&uni-appx=1)
-- 震动：`uni.vibrate` [见插件市场](https://ext.dcloud.net.cn/search?q=%E9%9C%87%E5%8A%A8&uni-appx=1)
-- 亮度：`uni.setScreenBrightness`、`uni.getScreenBrightness`、`uni.setKeepScreenOn` [见插件市场](https://ext.dcloud.net.cn/search?q=%E4%BA%AE%E5%BA%A6&uni-appx=1)
-- 直播推流拉流：`uni.createLivePusherContext` [见插件市场](https://ext.dcloud.net.cn/search?q=%E7%9B%B4%E6%92%AD&uni-appx=1)
-
 
 ## plus api替代@plus
 uni-app x 中不再支持plus和weex的API。对于plus api中一些常用的api，在uni-app x中进行了替换增补。
@@ -58,7 +51,7 @@ uni-app x 中不再支持plus和weex的API。对于plus api中一些常用的api
 
 ## kotlin代码转uts简易指南@kt2uts
 
-扩展原生API在uni-app x中很简单，把kotlin代码简单的转换为uts代码，以上面的打开schema代码为例。
+扩展原生API在uni-app x中很简单，以上面的打开schema代码为例。
 
 1. 打开一个靠谱的ai，询问："kotlin中打开系统浏览器的代码"，得到如下代码：
 ```kotlin
@@ -71,7 +64,7 @@ fun openSystemBrowser(url: String) {
 }
 ```
 
-2. 再问ai："把上述代码转为ts代码""
+2. 然后新建一个uni_modules，选uts插件，定义下如何在你的代码中调用这个原生能力，然后通过uts混编的方式调用kt代码，或者通过ai转换为uts代码。
 ```ts
 import Intent from 'android.content.Intent';
 import Uri from 'android.net.Uri';
@@ -89,10 +82,8 @@ function openSystemBrowser(url: string): void {
 - uts中实例化对象需要使用new关键字。
 - kotlin中是自己创建activity、自己管理。而uts中activity已经被uni-app x框架创建好了，要获取当前activity，有专门的api，`const context = UTSAndroid.getUniActivity()!`
 
-有时你得到的kotlin代码可能是简写，或者ai转ts时搞错了，需要自己推理一下缺什么，简单补补改改。
+一般推荐使用[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)，只需要告诉uni-agent你的需求，定义好调用方式、说明要调用的原生能力，uni-agent就可以给你写出原生插件。
 
-官方的uni api，都是uts代码调用系统api，这里面很多例子可以参考：[https://gitcode.com/dcloud/uni-api](https://gitcode.com/dcloud/uni-api)
-
-当然如果你不想转换代码，也可以把kotlin、java、swift、ets直接放入utssdk下，和入口的uts文件混编。
+官方的uni api，都是uts插件，这里面很多例子可以参考：[https://gitcode.com/dcloud/uni-api](https://gitcode.com/dcloud/uni-api)
 
 完整的uts插件开发指南，[详见](../plugin/uts-plugin.md)

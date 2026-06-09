@@ -23,15 +23,15 @@
 createObserver
 创建全局性能事件监听器
 ##### createObserver 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | - | - | - |
+| Web | 微信小程序 |
+| :- | :- |
+| x | 4.41 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (entries: [PerformanceObserverEntryList](#performanceobserverentrylist-values)) => void | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (entries: [PerformanceObserverEntryList](#performanceobserverentrylist-values)) => void | 是 |  | Web: x |  | 
 
 ##### PerformanceObserverEntryList 的方法 @performanceobserverentrylist-values 
 
@@ -39,9 +39,10 @@ createObserver
 getEntries
 该方法返回当前列表中的所有性能数据
 ###### getEntries 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | - | - | - | - |
+| Web |
+| :- |
+| x |
+
 
 
 ###### 返回值 
@@ -54,32 +55,33 @@ getEntries
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 指标类型 |
-| name | string | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 指标名称 |
-| duration | number | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 耗时 ms。仅对于表示阶段的指标有效。 |
-| startTime | number | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 开始时间，不同指标的具体含义会有差异。 |
-| path | string | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 页面路径。仅 render 和 navigation 类型指标有效。 |
-| referrerPath | string | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 页面跳转来源页面路径。仅 route 指标有效。 |
-| pageId | number | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
-| referrerPageId | number | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
-| navigationStart | number | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
-| navigationType | string | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
-| initDataRecvTime | number | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
-| viewLayerRenderEndTime | number | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
+| entryType | string | 是 |  | Web: x | 指标类型 |
+| name | string | 是 |  | Web: x | 指标名称 |
+| duration | number | 是 |  | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
+| startTime | number | 是 |  | Web: x | 开始时间，不同指标的具体含义会有差异。 |
+| path | string | 否 |  | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
+| referrerPath | string | 否 |  | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
+| pageId | number | 否 |  | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
+| referrerPageId | number | 否 |  | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
+| navigationStart | number | 否 |  | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
+| navigationType | string | 否 |  | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
+| initDataRecvTime | number | 否 |  | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
+| viewLayerRenderEndTime | number | 否 |  | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
 
 ##### getEntriesByType(entryType: string): PerformanceEntry[\] @getentriesbytype
 getEntriesByType
 获取当前列表中所有类型为 \[entryType]的性能数据
 ###### getEntriesByType 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | - | - | - | - |
+| Web |
+| :- |
+| x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| entryType | string | 是 |  | Web: x |  | 
+
 
 ###### 返回值 
 
@@ -92,16 +94,17 @@ getEntriesByType
 getEntriesByName
 获取当前列表中所有名称为 \[name] 且类型为 [entryType]的性能数据
 ###### getEntriesByName 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | - | - | - | - |
+| Web |
+| :- |
+| x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| name | string | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
-| entryType | string | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| name | string | 是 |  | Web: x |  |
+| entryType | string | 是 |  | Web: x |  | 
+
 
 ###### 返回值 
 
@@ -109,6 +112,7 @@ getEntriesByName
 | :- |
 | Array&lt;[PerformanceEntry](#performanceentry-values)&gt; |
  
+
 
 ##### 返回值 
 
@@ -122,32 +126,34 @@ getEntriesByName
 observe
 开始监听
 ###### observe 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | - | - | - | - |
+| Web |
+| :- |
+| x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **PerformanceObserverOptions** | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| options | **PerformanceObserverOptions** | 是 |  | Web: x |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| buffered | boolean | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
-| entryTypes | Array&lt;string&gt; | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
-| type | string | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| buffered | boolean | 否 |  | Web: x |  |
+| entryTypes | Array&lt;string&gt; | 否 |  | Web: x |  |
+| type | string | 否 |  | Web: x |  | 
+
 
 
 ###### disconnect(): void @disconnect
 disconnect
 停止监听
 ###### disconnect 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | - | - | - | - |
+| Web |
+| :- |
+| x |
+
 
 
  
@@ -156,9 +162,10 @@ disconnect
 getEntries
 该方法返回当前缓冲区中的所有性能数据
 ##### getEntries 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | - | - | - |
+| Web | 微信小程序 |
+| :- | :- |
+| x | 4.41 |
+
 
 
 ##### 返回值 
@@ -172,15 +179,16 @@ getEntries
 getEntriesByType
 获取当前缓冲区中所有类型为 \[entryType]的性能数据
 ##### getEntriesByType 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | - | - | - |
+| Web | 微信小程序 |
+| :- | :- |
+| x | 4.41 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| entryType | string | 是 |  | Web: x |  | 
+
 
 ##### 返回值 
 
@@ -193,16 +201,17 @@ getEntriesByType
 getEntriesByName
 获取当前缓冲区中所有名称为 \[name] 且类型为 [entryType]的性能数据
 ##### getEntriesByName 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | - | - | - |
+| Web | 微信小程序 |
+| :- | :- |
+| x | 4.41 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| name | string | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
-| entryType | string | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| name | string | 是 |  | Web: x |  |
+| entryType | string | 是 |  | Web: x |  | 
+
 
 ##### 返回值 
 
@@ -215,15 +224,16 @@ getEntriesByName
 setBufferSize
 设置缓冲区大小，默认缓冲 30 条性能数据
 ##### setBufferSize 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | - | - | - |
+| Web | 微信小程序 |
+| :- | :- |
+| x | 4.41 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| size | number | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| size | number | 是 |  | Web: x |  | 
+
 
  
 
@@ -252,5 +262,5 @@ setBufferSize
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 

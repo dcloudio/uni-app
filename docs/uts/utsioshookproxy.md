@@ -22,13 +22,11 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 ### applicationDidFinishLaunchingWithOptions(application, launchOptions)
@@ -38,8 +36,8 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| application | UIApplication | 否 | - | - | App 的 UIApplicationDelegate 对象。 |
-| launchOptions | Map\<UIApplication.LaunchOptionsKey, any> | 否 | - | - | 启动参数。默认值为 null (用户通过点击 push 通知启动应用时，该参数内会包含通知的信息) | 
+| application | UIApplication | 否 |  |   | App 的 UIApplicationDelegate 对象。 |
+| launchOptions | Map\<UIApplication.LaunchOptionsKey, any> | 否 |  |   | 启动参数。默认值为 null (用户通过点击 push 通知启动应用时，该参数内会包含通知的信息) | 
 
 
 **返回值**
@@ -53,13 +51,11 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 ### didRegisterForRemoteNotifications(deviceToken)
@@ -69,7 +65,7 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| deviceToken | Data | 否 | - | - | 设备的推送令牌 | 
+| deviceToken | Data | 否 |  |   | 设备的推送令牌 | 
 
 
 **返回值**
@@ -83,13 +79,11 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.18 | - |
+| 4.18 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 ### didFailToRegisterForRemoteNotifications(error)
@@ -99,7 +93,7 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| error | NSError | 否 | - | - | 失败的原因。 | 
+| error | NSError | 否 |  |   | 失败的原因。 | 
 
 
 **返回值**
@@ -113,13 +107,11 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.18 | - |
+| 4.18 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 ### didReceiveRemoteNotification(userInfo)
@@ -129,7 +121,7 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| userInfo | Map\<AnyHashable, any> | 否 | - | - | 收到的远程通知信息。 | 
+| userInfo | Map\<AnyHashable, any> | 否 |  |   | 收到的远程通知信息。 | 
 
 
 **返回值**
@@ -143,13 +135,11 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.18 | - |
+| 4.18 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 ### didReceiveLocalNotification(notification)
@@ -159,7 +149,7 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| notification | UILocalNotification | 否 | - | - | 接收到的本地通知 | 
+| notification | UILocalNotification | 否 |  |   | 接收到的本地通知 | 
 
 
 **返回值**
@@ -173,13 +163,11 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.18 | - |
+| 4.18 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 ### applicationHandleOpenURL(application, url)
@@ -189,8 +177,8 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| application | UIApplication | 否 | - | - | App 的 UIApplicationDelegate 对象。 |
-| url | URL | 否 | - | - | 要打开的URL资源。该资源可以是网络资源或文件。 | 
+| application | UIApplication | 否 |  |   | App 的 UIApplicationDelegate 对象。 |
+| url | URL | 否 |  |   | 要打开的URL资源。该资源可以是网络资源或文件。 | 
 
 
 **返回值**
@@ -204,13 +192,11 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 ### applicationOpenURLOptions(app, url, options)
@@ -220,9 +206,9 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| app | UIApplication | 否 | - | - | - |
-| url | URL | 否 | - | - | 要打开的URL资源。该资源可以是网络资源或文件。 |
-| options | Map\<UIApplication.OpenURLOptionsKey, any> | 否 | - | - | URL处理选项的字典, 默认值为 null 。 | 
+| app | UIApplication | 否 |  |   | - |
+| url | URL | 否 |  |   | 要打开的URL资源。该资源可以是网络资源或文件。 |
+| options | Map\<UIApplication.OpenURLOptionsKey, any> | 否 |  |   | URL处理选项的字典, 默认值为 null 。 | 
 
 
 **返回值**
@@ -236,13 +222,11 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 ### applicationWillResignActive(application)
@@ -252,7 +236,7 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| application | UIApplication | 否 | - | - | - | 
+| application | UIApplication | 否 |  |   | - | 
 
 
 **返回值**
@@ -266,13 +250,11 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 ### applicationDidBecomeActive(application)
@@ -282,7 +264,7 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| application | UIApplication | 否 | - | - | - | 
+| application | UIApplication | 否 |  |   | - | 
 
 
 **返回值**
@@ -296,13 +278,11 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 ### applicationDidEnterBackground(application)
@@ -312,7 +292,7 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| application | UIApplication | 否 | - | - | - | 
+| application | UIApplication | 否 |  |   | - | 
 
 
 **返回值**
@@ -326,13 +306,11 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 ### applicationWillEnterForeground(application)
@@ -342,7 +320,7 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| application | UIApplication | 否 | - | - | - | 
+| application | UIApplication | 否 |  |   | - | 
 
 
 **返回值**
@@ -356,13 +334,11 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 ### applicationMain(argc, argv)
@@ -372,8 +348,8 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| argc | Int32 | 是 | - | - | - |
-| argv | UnsafeMutablePointer\<UnsafeMutablePointer\<CChar> \| null> | 是 | - | - | - | 
+| argc | Int32 | 是 |  |   | - |
+| argv | UnsafeMutablePointer\<UnsafeMutablePointer\<CChar> \| null> | 是 |  |   | - | 
 
 
 **返回值**
@@ -387,13 +363,11 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 ### applicationContinueUserActivityRestorationHandler(application, userActivity, restorationHandler)
@@ -403,9 +377,9 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| application | UIApplication | 否 | - | - | App 的 UIApplicationDelegate 对象。 |
-| userActivity | NSUserActivity | 否 | - | - | 包含与用户正在执行的任务相关联的数据的活动对象。使用这些数据来继续用户在iOS应用中的活动。 |
-| restorationHandler | (res?: any) => void | 否 | - | - | 需要执行的回调，该回调是可选的，默认值为 null。 | 
+| application | UIApplication | 否 |  |   | App 的 UIApplicationDelegate 对象。 |
+| userActivity | NSUserActivity | 否 |  |   | 包含与用户正在执行的任务相关联的数据的活动对象。使用这些数据来继续用户在iOS应用中的活动。 |
+| restorationHandler | (res?: any) => void | 否 |  |   | 需要执行的回调，该回调是可选的，默认值为 null。 | 
 
 
 **返回值**
@@ -419,13 +393,11 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 

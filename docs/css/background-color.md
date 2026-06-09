@@ -5,11 +5,17 @@
 background-color 属性用于设置元素的背景色，属性的值为颜色值或关键字"transparent"。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -216,10 +222,10 @@ background-color: <color>;
         <!-- view 组件测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{backgroundColor}}</text>
-          <text class="uni-info">获取值: {{backgroundColorActual}}</text>
+          <text class="uni-info">设置值: {{data.backgroundColor}}</text>
+          <text class="uni-info">获取值: {{data.backgroundColorActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-view test-view" :style="{ backgroundColor: backgroundColor }">
+            <view ref="viewRef" class="common-view test-view" :style="{ backgroundColor: data.backgroundColor }">
               <text style="font-size: 12px;">view</text>
             </view>
           </view>
@@ -228,20 +234,20 @@ background-color: <color>;
         <!-- text 组件测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{backgroundColor}}</text>
-          <text class="uni-info">获取值: {{backgroundColorActualText}}</text>
+          <text class="uni-info">设置值: {{data.backgroundColor}}</text>
+          <text class="uni-info">获取值: {{data.backgroundColorActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-text test-text" :style="{ backgroundColor: backgroundColor }">text</text>
+            <text ref="textRef" class="common-text test-text" :style="{ backgroundColor: data.backgroundColor }">text</text>
           </view>
         </view>
 
         <!-- image 组件测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{backgroundColor}}</text>
-          <text class="uni-info">获取值: {{backgroundColorActualImage}}</text>
+          <text class="uni-info">设置值: {{data.backgroundColor}}</text>
+          <text class="uni-info">获取值: {{data.backgroundColorActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-image test-image" :style="{ backgroundColor: backgroundColor }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image test-image" :style="{ backgroundColor: data.backgroundColor }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -251,10 +257,10 @@ background-color: <color>;
         <!-- view 组件拍平测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{backgroundColor}}</text>
-          <text class="uni-info">获取值: {{backgroundColorActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.backgroundColor}}</text>
+          <text class="uni-info">获取值: {{data.backgroundColorActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-view test-view-flatten" :style="{ backgroundColor: backgroundColor }" flatten>
+            <view ref="viewRefFlat" class="common-view test-view-flatten" :style="{ backgroundColor: data.backgroundColor }" flatten>
               <text style="font-size: 12px;">view</text>
             </view>
           </view>
@@ -263,20 +269,20 @@ background-color: <color>;
         <!-- text 组件拍平测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{backgroundColor}}</text>
-          <text class="uni-info">获取值: {{backgroundColorActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.backgroundColor}}</text>
+          <text class="uni-info">获取值: {{data.backgroundColorActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-text test-text-flatten" :style="{ backgroundColor: backgroundColor }" flatten>text</text>
+            <text ref="textRefFlat" class="common-text test-text-flatten" :style="{ backgroundColor: data.backgroundColor }" flatten>text</text>
           </view>
         </view>
 
         <!-- image 组件拍平测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{backgroundColor}}</text>
-          <text class="uni-info">获取值: {{backgroundColorActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.backgroundColor}}</text>
+          <text class="uni-info">获取值: {{data.backgroundColorActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ backgroundColor: backgroundColor }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ backgroundColor: data.backgroundColor }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -285,7 +291,7 @@ background-color: <color>;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :compact="true" :items="backgroundColorEnum" title="background-color 枚举值" @change="radioChangeBackgroundColor"></enum-data>
-        <input-data :defaultValue="backgroundColor" title="background-color 自定义值" type="text" @confirm="inputChangeBackgroundColor"></input-data>
+        <input-data :defaultValue="data.backgroundColor" title="background-color 自定义值" type="text" @confirm="inputChangeBackgroundColor"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -304,14 +310,16 @@ background-color: <color>;
 
 <script setup>
   import { ItemType } from '@/components/enum-data/enum-data-types'
-
-  const backgroundColor = ref('cyan')
-  const backgroundColorActual = ref('')
-  const backgroundColorActualText = ref('')
-  const backgroundColorActualImage = ref('')
-  const backgroundColorActualFlat = ref('')
-  const backgroundColorActualTextFlat = ref('')
-  const backgroundColorActualImageFlat = ref('')
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const data = reactive({
+    backgroundColor: 'cyan',
+    backgroundColorActual: '',
+    backgroundColorActualText: '',
+    backgroundColorActualImage: '',
+    backgroundColorActualFlat: '',
+    backgroundColorActualTextFlat: '',
+    backgroundColorActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -330,16 +338,17 @@ background-color: <color>;
   ]
 
   const getPropertyValues = () => {
-    backgroundColorActual.value = viewRef.value?.style.getPropertyValue('background-color') ?? ''
-    backgroundColorActualFlat.value = viewRefFlat.value?.style.getPropertyValue('background-color') ?? ''
-    backgroundColorActualText.value = textRef.value?.style.getPropertyValue('background-color') ?? ''
-    backgroundColorActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('background-color') ?? ''
-    backgroundColorActualImage.value = imageRef.value?.style.getPropertyValue('background-color') ?? ''
-    backgroundColorActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('background-color') ?? ''
+    data.backgroundColorActual = viewRef.value?.style.getPropertyValue('background-color') ?? ''
+    data.backgroundColorActualFlat = viewRefFlat.value?.style.getPropertyValue('background-color') ?? ''
+    data.backgroundColorActualText = textRef.value?.style.getPropertyValue('background-color') ?? ''
+    data.backgroundColorActualTextFlat = textRefFlat.value?.style.getPropertyValue('background-color') ?? ''
+    data.backgroundColorActualImage = imageRef.value?.style.getPropertyValue('background-color') ?? ''
+    data.backgroundColorActualImageFlat = imageRefFlat.value?.style.getPropertyValue('background-color') ?? ''
   }
 
+  const ins = getCurrentInstance()
   const changeBackgroundColor = (color: string) => {
-    backgroundColor.value = color
+    data.backgroundColor = color
     viewRef.value?.style.setProperty('background-color', color)
     viewRefFlat.value?.style.setProperty('background-color', color)
     textRef.value?.style.setProperty('background-color', color)
@@ -349,7 +358,7 @@ background-color: <color>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeBackgroundColor = (index: number) => {
@@ -374,7 +383,8 @@ background-color: <color>;
   })
 
   defineExpose({
-    radioChangeBackgroundColor
+    radioChangeBackgroundColor,
+    data
   })
 </script>
 

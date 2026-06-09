@@ -5,11 +5,17 @@
 bottom样式属性定义了定位元素下外边距边界与其包含块下边界之间的偏移，非定位元素设置此属性无效。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -29,7 +35,7 @@ bottom: <length> | <percentage> | auto;
 ### bottom 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 对于绝对定位元素，元素将忽略此属性而以top属性为准，如果此时设置height: auto，将基于内容需要的高度设置宽度；如果top也为auto的话，元素的垂直位置就是它假如作为静态 (即 static) 元素时该在的位置。<br/>对于相对定位元素，元素相对正常位置的偏移量将基于top属性；如果top也为auto的话，元素将不会有偏移。 |
+| auto | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 对于绝对定位元素，元素将忽略此属性而以top属性为准，如果此时设置height: auto，将基于内容需要的高度设置宽度；如果top也为auto的话，元素的垂直位置就是它假如作为静态 (即 static) 元素时该在的位置。<br/>对于相对定位元素，元素相对正常位置的偏移量将基于top属性；如果top也为auto的话，元素将不会有偏移。 |
 
 
 ### 默认值 @default-value 
@@ -121,10 +127,10 @@ bottom: <length> | <percentage> | auto;
     <view class="test-container">
       <view class="test-item">
         <text class="uni-subtitle-text">view 组件</text>
-        <text class="uni-info">设置值: {{bottom}}</text>
-        <text class="uni-info">获取值: {{bottomActual}}</text>
+        <text class="uni-info">设置值: {{data.bottom}}</text>
+        <text class="uni-info">获取值: {{data.bottomActual}}</text>
         <view class="test-box">
-          <view ref="viewRef" class="common test-view" :style="{ bottom: bottom }">
+          <view ref="viewRef" class="common test-view" :style="{ bottom: data.bottom }">
             <text class="common-text">view</text>
           </view>
         </view>
@@ -132,19 +138,19 @@ bottom: <length> | <percentage> | auto;
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件</text>
-        <text class="uni-info">设置值: {{bottom}}</text>
-        <text class="uni-info">获取值: {{bottomActualText}}</text>
+        <text class="uni-info">设置值: {{data.bottom}}</text>
+        <text class="uni-info">获取值: {{data.bottomActualText}}</text>
         <view class="test-box">
-          <text ref="textRef" class="common common-text test-text" :style="{ bottom: bottom }">text</text>
+          <text ref="textRef" class="common common-text test-text" :style="{ bottom: data.bottom }">text</text>
         </view>
       </view>
 
       <view class="test-item">
         <text class="uni-subtitle-text">image 组件</text>
-        <text class="uni-info">设置值: {{bottom}}</text>
-        <text class="uni-info">获取值: {{bottomActualImage}}</text>
+        <text class="uni-info">设置值: {{data.bottom}}</text>
+        <text class="uni-info">获取值: {{data.bottomActualImage}}</text>
         <view class="test-box">
-          <image ref="imageRef" class="common test-image" :style="{ bottom: bottom }" src="/static/test-image/logo.png"></image>
+          <image ref="imageRef" class="common test-image" :style="{ bottom: data.bottom }" src="/static/test-image/logo.png"></image>
         </view>
       </view>
     </view>
@@ -153,10 +159,10 @@ bottom: <length> | <percentage> | auto;
     <view class="test-container">
       <view class="test-item">
         <text class="uni-subtitle-text">view 组件拍平</text>
-        <text class="uni-info">设置值: {{bottom}}</text>
-        <text class="uni-info">获取值: {{bottomActualFlat}}</text>
+        <text class="uni-info">设置值: {{data.bottom}}</text>
+        <text class="uni-info">获取值: {{data.bottomActualFlat}}</text>
         <view class="test-box">
-          <view ref="viewRefFlat" class="common test-view-flatten" :style="{ bottom: bottom }" flatten>
+          <view ref="viewRefFlat" class="common test-view-flatten" :style="{ bottom: data.bottom }" flatten>
             <text class="common-text">view</text>
           </view>
         </view>
@@ -164,19 +170,19 @@ bottom: <length> | <percentage> | auto;
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件拍平</text>
-        <text class="uni-info">设置值: {{bottom}}</text>
-        <text class="uni-info">获取值: {{bottomActualTextFlat}}</text>
+        <text class="uni-info">设置值: {{data.bottom}}</text>
+        <text class="uni-info">获取值: {{data.bottomActualTextFlat}}</text>
         <view class="test-box">
-          <text ref="textRefFlat" class="common common-text test-text-flatten" :style="{ bottom: bottom }" flatten>text</text>
+          <text ref="textRefFlat" class="common common-text test-text-flatten" :style="{ bottom: data.bottom }" flatten>text</text>
         </view>
       </view>
 
       <view class="test-item">
         <text class="uni-subtitle-text">image 组件拍平</text>
-        <text class="uni-info">设置值: {{bottom}}</text>
-        <text class="uni-info">获取值: {{bottomActualImageFlat}}</text>
+        <text class="uni-info">设置值: {{data.bottom}}</text>
+        <text class="uni-info">获取值: {{data.bottomActualImageFlat}}</text>
         <view class="test-box">
-          <image ref="imageRefFlat" class="common test-image-flatten" :style="{ bottom: bottom }" flatten src="/static/test-image/logo.png"></image>
+          <image ref="imageRefFlat" class="common test-image-flatten" :style="{ bottom: data.bottom }" flatten src="/static/test-image/logo.png"></image>
         </view>
       </view>
     </view>
@@ -184,7 +190,7 @@ bottom: <length> | <percentage> | auto;
     <view class="uni-common-mt uni-common-mb">
       <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
       <enum-data :items="bottomEnum" title="bottom 枚举值" @change="radioChangeBottom" :compact="true"></enum-data>
-      <input-data :defaultValue="bottom" title="bottom 自定义值" type="text" @confirm="inputChangeBottom"></input-data>
+      <input-data :defaultValue="data.bottom" title="bottom 自定义值" type="text" @confirm="inputChangeBottom"></input-data>
     </view>
 
     <view class="uni-common-mb">
@@ -218,13 +224,15 @@ bottom: <length> | <percentage> | auto;
     { value: 7, name: 'auto' }
   ]
 
-  const bottom = ref('10px')
-  const bottomActual = ref('')
-  const bottomActualText = ref('')
-  const bottomActualImage = ref('')
-  const bottomActualFlat = ref('')
-  const bottomActualTextFlat = ref('')
-  const bottomActualImageFlat = ref('')
+  const data = reactive({
+    bottom: '10px',
+    bottomActual: '',
+    bottomActualText: '',
+    bottomActualImage: '',
+    bottomActualFlat: '',
+    bottomActualTextFlat: '',
+    bottomActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -233,16 +241,18 @@ bottom: <length> | <percentage> | auto;
   const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    bottomActual.value = viewRef.value?.style.getPropertyValue('bottom') ?? ''
-    bottomActualFlat.value = viewRefFlat.value?.style.getPropertyValue('bottom') ?? ''
-    bottomActualText.value = textRef.value?.style.getPropertyValue('bottom') ?? ''
-    bottomActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('bottom') ?? ''
-    bottomActualImage.value = imageRef.value?.style.getPropertyValue('bottom') ?? ''
-    bottomActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('bottom') ?? ''
+    data.bottomActual = viewRef.value?.style.getPropertyValue('bottom') ?? ''
+    data.bottomActualFlat = viewRefFlat.value?.style.getPropertyValue('bottom') ?? ''
+    data.bottomActualText = textRef.value?.style.getPropertyValue('bottom') ?? ''
+    data.bottomActualTextFlat = textRefFlat.value?.style.getPropertyValue('bottom') ?? ''
+    data.bottomActualImage = imageRef.value?.style.getPropertyValue('bottom') ?? ''
+    data.bottomActualImageFlat = imageRefFlat.value?.style.getPropertyValue('bottom') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeBottom = (value: string) => {
-    bottom.value = value
+    data.bottom = value
     viewRef.value?.style.setProperty('bottom', value)
     viewRefFlat.value?.style.setProperty('bottom', value)
     textRef.value?.style.setProperty('bottom', value)
@@ -252,7 +262,7 @@ bottom: <length> | <percentage> | auto;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeBottom = (index: number) => {
@@ -271,7 +281,8 @@ bottom: <length> | <percentage> | auto;
   })
 
   defineExpose({
-    radioChangeBottom
+    radioChangeBottom,
+    data
   })
 </script>
 

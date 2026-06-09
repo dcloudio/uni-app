@@ -5,11 +5,17 @@
 background-clip 属性用于设置元素的背景（背景图片或颜色）是否延伸到边框区域、内边距区域、内容区域下面。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | x | x | x |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | x | x | x | x |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| x | x | x |
 
 
 
@@ -28,9 +34,9 @@ background-clip: <box>#;
 ### background-clip 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| border-box | Web: 4.0; Android: 3.9; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 背景延伸到边框区域，被边框覆盖 |
-| padding-box | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 背景延伸到内边距（padding）区域，不会绘制到边框区域 |
-| content-box | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 背景仅绘制到内容区（content box）区域 |
+| border-box | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 背景延伸到边框区域，被边框覆盖 |
+| padding-box | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 背景延伸到内边距（padding）区域，不会绘制到边框区域 |
+| content-box | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 背景仅绘制到内容区（content box）区域 |
 
 
 ### 默认值 @default-value 

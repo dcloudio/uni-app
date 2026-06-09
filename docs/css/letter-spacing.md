@@ -5,11 +5,17 @@
 letter-spacing 属性用于设置文本字符的间距表现，正值会导致字符分布得更远，而负值会使字符更接近。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,7 +34,7 @@ letter-spacing: normal | <length>;
 ### letter-spacing 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| normal | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 此间距是按照当前字体的正常间距确定的。和 0 不同的是，normal 会让用户代理调整文字之间空间来对齐文字。 |
+| normal | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 此间距是按照当前字体的正常间距确定的。和 0 不同的是，normal 会让用户代理调整文字之间空间来对齐文字。 |
 
 
 ### 默认值 @default-value 
@@ -89,20 +95,20 @@ letter-spacing: normal | <length>;
         <!-- 普通版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">letter-spacing</text>
-          <text class="uni-info">设置值: {{letterSpacing}}</text>
-          <text class="uni-info">获取值: {{letterSpacingActual}}</text>
+          <text class="uni-info">设置值: {{data.letterSpacing}}</text>
+          <text class="uni-info">获取值: {{data.letterSpacingActual}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-text" :style="{ letterSpacing: letterSpacing }">当前 letter-spacing: {{letterSpacing}}</text>
+            <text ref="textRef" class="common-text" :style="{ letterSpacing: data.letterSpacing }">当前 letter-spacing: {{data.letterSpacing}}</text>
           </view>
         </view>
 
         <!-- 拍平版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">拍平</text>
-          <text class="uni-info">设置值: {{letterSpacing}}</text>
-          <text class="uni-info">获取值: {{letterSpacingActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.letterSpacing}}</text>
+          <text class="uni-info">获取值: {{data.letterSpacingActualFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-text" :style="{ letterSpacing: letterSpacing }" flatten>当前 letter-spacing: {{letterSpacing}}</text>
+            <text ref="textRefFlat" class="common-text" :style="{ letterSpacing: data.letterSpacing }" flatten>当前 letter-spacing: {{data.letterSpacing}}</text>
           </view>
         </view>
       </view>
@@ -110,7 +116,7 @@ letter-spacing: normal | <length>;
       <view class="uni-common-mt uni-common-mb">
           <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
           <enum-data :items="letterSpacingEnum" title="letter-spacing 枚举值" @change="radioChangeLetterSpacing" :compact="true"></enum-data>
-          <input-data :defaultValue="letterSpacing" title="letter-spacing 自定义值" type="text" @confirm="inputChangeLetterSpacing"></input-data>
+          <input-data :defaultValue="data.letterSpacing" title="letter-spacing 自定义值" type="text" @confirm="inputChangeLetterSpacing"></input-data>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -131,25 +137,30 @@ letter-spacing: normal | <length>;
 		{ value: 6, name: '10px' }
 	]
 
-	const letterSpacing = ref('0px')
-	const letterSpacingActual = ref('')
-	const letterSpacingActualFlat = ref('')
+	const data = reactive({
+		letterSpacing: '0px',
+		letterSpacingActual: '',
+		letterSpacingActualFlat: ''
+	})
+	const letterSpacing_mix = ref(1)
 	const textRef = ref(null as UniTextElement | null)
 	const textRefFlat = ref(null as UniTextElement | null)
 
 	const getPropertyValues = () => {
-		letterSpacingActual.value = textRef.value?.style.getPropertyValue('letter-spacing') ?? ''
-		letterSpacingActualFlat.value = textRefFlat.value?.style.getPropertyValue('letter-spacing') ?? ''
+		data.letterSpacingActual = textRef.value?.style.getPropertyValue('letter-spacing') ?? ''
+		data.letterSpacingActualFlat = textRefFlat.value?.style.getPropertyValue('letter-spacing') ?? ''
 	}
 
+	const ins = getCurrentInstance()
+
 	const changeLetterSpacing = (value: string) => {
-		letterSpacing.value = value
+		data.letterSpacing = value
 		textRef.value?.style.setProperty('letter-spacing', value)
 		textRefFlat.value?.style.setProperty('letter-spacing', value)
 		// 使用 nextTick 确保样式已应用后再获取值
 		nextTick(() => {
 			getPropertyValues()
-		})
+		}, ins)
 	}
 
 	const radioChangeLetterSpacing = (index: number) => {
@@ -175,8 +186,6 @@ letter-spacing: normal | <length>;
     begin: false
   } as AutoTextData)
 
-  const letterSpacing_mix = ref(1)
-
   function plusLetterSpacing() {
     letterSpacing_mix.value += 0.2
   }
@@ -195,7 +204,9 @@ letter-spacing: normal | <length>;
     autoTestData,
     getLetterSpacing,
     plusLetterSpacing,
-    minusLetterSpacing
+    minusLetterSpacing,
+    radioChangeLetterSpacing,
+    data
   })
   /**
    * * * * * * * * * * * * * *

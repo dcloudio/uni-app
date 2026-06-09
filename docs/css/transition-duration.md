@@ -5,11 +5,17 @@
 transition-duration 属性以秒或毫秒为单位指定过渡动画所需的时间。默认值为 0s，表示不出现过渡动画。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| x | x | x |
 
 
 
@@ -81,10 +87,10 @@ transition-duration: <time>#;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{transitionDurationDynamic}}</text>
-          <text class="uni-info">获取值: {{transitionDurationActual}}</text>
+          <text class="uni-info">设置值: {{data.transitionDurationDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transitionDurationActual}}</text>
           <view class="test-box">
-            <view ref="viewRefDynamic" class="common-image" :style="{ transitionDuration: transitionDurationDynamic, transitionProperty: 'width' }" @click="triggerTransitionDynamic">
+            <view ref="viewRefDynamic" class="common-image" :style="{ transitionDuration: data.transitionDurationDynamic, transitionProperty: 'width' }" @click="triggerTransitionDynamic">
               <text style="font-size: 12px;">点击view</text>
             </view>
           </view>
@@ -92,19 +98,19 @@ transition-duration: <time>#;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{transitionDurationDynamic}}</text>
-          <text class="uni-info">获取值: {{transitionDurationActualText}}</text>
+          <text class="uni-info">设置值: {{data.transitionDurationDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transitionDurationActualText}}</text>
           <view class="test-box">
-            <text ref="textRefDynamic" class="common-text" :style="{ transitionDuration: transitionDurationDynamic, transitionProperty: 'width' }" @click="triggerTransitionTextDynamic">点击text</text>
+            <text ref="textRefDynamic" class="common-text" :style="{ transitionDuration: data.transitionDurationDynamic, transitionProperty: 'width' }" @click="triggerTransitionTextDynamic">点击text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{transitionDurationDynamic}}</text>
-          <text class="uni-info">获取值: {{transitionDurationActualImage}}</text>
+          <text class="uni-info">设置值: {{data.transitionDurationDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transitionDurationActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRefDynamic" class="common-image" :style="{ transitionDuration: transitionDurationDynamic, transitionProperty: 'width' }" @click="triggerTransitionImageDynamic" src="/static/test-image/logo.png"></image>
+            <image ref="imageRefDynamic" class="common-image" :style="{ transitionDuration: data.transitionDurationDynamic, transitionProperty: 'width' }" @click="triggerTransitionImageDynamic" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -112,10 +118,10 @@ transition-duration: <time>#;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{transitionDurationDynamic}}</text>
-          <text class="uni-info">获取值: {{transitionDurationActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.transitionDurationDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transitionDurationActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefDynamicFlat" class="common-image" :style="{ transitionDuration: transitionDurationDynamic, transitionProperty: 'width' }" @click="triggerTransitionDynamic" flatten>
+            <view ref="viewRefDynamicFlat" class="common-image" :style="{ transitionDuration: data.transitionDurationDynamic, transitionProperty: 'width' }" @click="triggerTransitionDynamic" flatten>
               <text style="font-size: 12px;">点击view</text>
             </view>
           </view>
@@ -123,19 +129,19 @@ transition-duration: <time>#;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{transitionDurationDynamic}}</text>
-          <text class="uni-info">获取值: {{transitionDurationActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.transitionDurationDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transitionDurationActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefDynamicFlat" class="common-text" :style="{ transitionDuration: transitionDurationDynamic, transitionProperty: 'width' }" @click="triggerTransitionTextDynamic" flatten>点击text</text>
+            <text ref="textRefDynamicFlat" class="common-text" :style="{ transitionDuration: data.transitionDurationDynamic, transitionProperty: 'width' }" @click="triggerTransitionTextDynamic" flatten>点击text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{transitionDurationDynamic}}</text>
-          <text class="uni-info">获取值: {{transitionDurationActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.transitionDurationDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transitionDurationActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefDynamicFlat" class="common-image" :style="{ transitionDuration: transitionDurationDynamic, transitionProperty: 'width' }" @click="triggerTransitionImageDynamic" src="/static/test-image/logo.png" flatten></image>
+            <image ref="imageRefDynamicFlat" class="common-image" :style="{ transitionDuration: data.transitionDurationDynamic, transitionProperty: 'width' }" @click="triggerTransitionImageDynamic" src="/static/test-image/logo.png" flatten></image>
           </view>
         </view>
       </view>
@@ -143,7 +149,7 @@ transition-duration: <time>#;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="transitionDurationEnum" title="transition-duration 枚举值" @change="radioChangeTransitionDuration" :compact="true"></enum-data>
-        <input-data :defaultValue="transitionDurationDynamic" title="transition-duration 自定义值" type="text" @confirm="inputChangeTransitionDuration"></input-data>
+        <input-data :defaultValue="data.transitionDurationDynamic" title="transition-duration 自定义值" type="text" @confirm="inputChangeTransitionDuration"></input-data>
       </view>
 
       <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件 transition-duration: 2s</text>
@@ -218,20 +224,17 @@ transition-duration: <time>#;
     imageReset()
   }
 
-	defineExpose({
-	  jest_start,
-	  jest_reset
-	})
-
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const transitionDurationDynamic = ref('2s')
-  const transitionDurationActual = ref('')
-  const transitionDurationActualText = ref('')
-  const transitionDurationActualImage = ref('')
-  const transitionDurationActualFlat = ref('')
-  const transitionDurationActualTextFlat = ref('')
-  const transitionDurationActualImageFlat = ref('')
+  const data = reactive({
+    transitionDurationDynamic: '2s',
+    transitionDurationActual: '',
+    transitionDurationActualText: '',
+    transitionDurationActualImage: '',
+    transitionDurationActualFlat: '',
+    transitionDurationActualTextFlat: '',
+    transitionDurationActualImageFlat: ''
+  })
   const viewRefDynamic = ref(null as UniElement | null)
   const textRefDynamic = ref(null as UniTextElement | null)
   const imageRefDynamic = ref(null as UniImageElement | null)
@@ -253,16 +256,18 @@ transition-duration: <time>#;
   ]
 
   const getPropertyValues = () => {
-    transitionDurationActual.value = viewRefDynamic.value?.style.getPropertyValue('transition-duration') ?? ''
-    transitionDurationActualFlat.value = viewRefDynamicFlat.value?.style.getPropertyValue('transition-duration') ?? ''
-    transitionDurationActualText.value = textRefDynamic.value?.style.getPropertyValue('transition-duration') ?? ''
-    transitionDurationActualTextFlat.value = textRefDynamicFlat.value?.style.getPropertyValue('transition-duration') ?? ''
-    transitionDurationActualImage.value = imageRefDynamic.value?.style.getPropertyValue('transition-duration') ?? ''
-    transitionDurationActualImageFlat.value = imageRefDynamicFlat.value?.style.getPropertyValue('transition-duration') ?? ''
+    data.transitionDurationActual = viewRefDynamic.value?.style.getPropertyValue('transition-duration') ?? ''
+    data.transitionDurationActualFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transition-duration') ?? ''
+    data.transitionDurationActualText = textRefDynamic.value?.style.getPropertyValue('transition-duration') ?? ''
+    data.transitionDurationActualTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transition-duration') ?? ''
+    data.transitionDurationActualImage = imageRefDynamic.value?.style.getPropertyValue('transition-duration') ?? ''
+    data.transitionDurationActualImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transition-duration') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeTransitionDurationDynamic = (value: string) => {
-    transitionDurationDynamic.value = value
+    data.transitionDurationDynamic = value
     viewRefDynamic.value?.style.setProperty('transition-duration', value)
     viewRefDynamicFlat.value?.style.setProperty('transition-duration', value)
     textRefDynamic.value?.style.setProperty('transition-duration', value)
@@ -273,7 +278,7 @@ transition-duration: <time>#;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeTransitionDuration = (index: number) => {
@@ -317,9 +322,15 @@ transition-duration: <time>#;
   onReady(() => {
     getPropertyValues()
     if (scrollViewRefDynamic.value != null) {
-      scrollViewRefDynamic.value.style.setProperty('transition-duration', transitionDurationDynamic.value)
+      scrollViewRefDynamic.value.style.setProperty('transition-duration', data.transitionDurationDynamic)
       scrollViewRefDynamic.value.style.setProperty('transition-property', 'width')
     }
+  })
+
+  defineExpose({
+    jest_start,
+    jest_reset,
+    data
   })
 
 </script>

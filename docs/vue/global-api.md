@@ -4,36 +4,30 @@
 
 ### 兼容性 @compatibility
 
-|  | Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| createApp() | 4.0 | 4.41 | √ | 4.11 | 4.61 |
-| createSSRApp() | 4.0 | 4.41 | √ | 4.11 | 4.61 |
-| app.mount() | 4.0 | 4.41 | √ | 4.11 | 4.61 |
-| app.unmount() | 4.0 | 4.41 | √ | 4.11 | 4.61 |
-| app.component() | 4.0 | 4.41 | √ | 4.11 | 4.61 |
-| app.directive() | - | - | - | - | - |
-| app.use() | 4.0 | 4.41 | 3.99 | 4.11 | 4.61 |
-| app.mixin() | 4.0 | 4.41 | 3.99 | 4.11 | 4.61 |
-| app.provide() | 4.0 | 4.41 | 3.99 | 4.11 | 4.61 |
-| app.runWithContext() | - | - | - | - | - |
-| app.version | 4.0 | 4.41 | √ | 4.11 | 4.61 |
-| app.config | 4.0 | 4.41 | √ | 4.11 | 4.61 |
-| app.config.errorHandler | 4.0 | 4.41 | x | 4.11 | 4.61 |
-| app.config.warnHandler | - | - | - | - | - |
-| app.config.performance | - | - | - | - | - |
-| app.config.compilerOptions | - | - | - | - | - |
-| app.config.globalProperties | 4.0 | 4.41 | 3.99 | 4.11 | 4.61 |
-| app.config.optionMergeStrategies | - | - | - | - | - |
-| globalData | 4.0 | 4.41 | 3.9 | 4.0 | 4.61 |
-| onLaunch() | 4.0 | 4.41 | 3.9 | 4.0 | 4.61 |
-| onShow() | 4.0 | 4.41 | 3.9 | 4.0 | 4.61 |
-| onHide() | 4.0 | 4.41 | 3.9 | 4.0 | 4.61 |
-| onLastPageBackPress() | x | x | 3.9 | x | 4.71 |
-| onExit() | x | x | 3.9 | x | 4.72 |
-| onError() | 4.0 | 4.41 | 4.21 | 4.21 | 4.61 |
-| onPageNotFound() | 4.0 | 4.41 | x | x | x |
-| onUniNViewMessage() | - | - | - | - | - |
-| onThemeChange() | x | 4.41 | x | x | x |
+|  | 兼容性 |
+| :- | :- |
+| createApp() | Web: 4.0; 微信小程序: 4.41; Android: √; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |
+| createSSRApp() | Web: 4.0; 微信小程序: 4.41; Android: √; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |
+| app.mount() | Web: 4.0; 微信小程序: 4.41; Android: √; Android(Vapor): 5.11; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.11 |
+| app.unmount() | Web: 4.0; 微信小程序: 4.41; Android: √; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |
+| app.component() | Web: 4.0; 微信小程序: 4.41; Android: √; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |
+| app.use() | Web: 4.0; 微信小程序: 4.41; Android: 3.99; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x |
+| app.mixin() | Web: 4.0; 微信小程序: 4.41; Android: 3.99; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x |
+| app.provide() | Web: 4.0; 微信小程序: 4.41; Android: 3.99; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |
+| app.version | Web: 4.0; 微信小程序: 4.41; Android: √; Android(Vapor): 5.11; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |
+| app.config | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
+| app.config.errorHandler | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |
+| app.config.globalProperties | Web: 4.0; 微信小程序: 4.41; Android: 3.99; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
+| globalData | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.0; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x |
+| onLaunch() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.0; iOS(Vapor): 5.11; HarmonyOS: 4.61 |
+| onShow() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.0; iOS(Vapor): 5.11; HarmonyOS: 4.61 |
+| onHide() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.0; iOS(Vapor): 5.11; HarmonyOS: 4.61 |
+| onLastPageBackPress() | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: 4.71 |
+| onExit() | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: 4.72 |
+| onError() | Web: 4.0; 微信小程序: 4.41; Android: 4.21; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.21; iOS(Vapor): 5.11; HarmonyOS: 4.61 |
+| onPageNotFound() | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |
+| onUniNViewMessage() | Web: 4.0; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |
+| onThemeChange() | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |
 
 ### app.component
 
@@ -466,18 +460,22 @@ uni-app x 新增了 [onLastPageBackPress](../collocation/App.md#applifecycle) �
   let firstBackTime = 0
   // #endif
 
-  // #ifndef APP-ANDROID || VUE3-VAPOR
   defineOptions({
-  mixins: [
-    {
+		globalData: {
+			str: 'globalData str',
+			num: 1,
+			boolean: true
+		}
+  	// #ifndef APP-ANDROID || VUE3-VAPOR
+		,mixins: [{
       data() {
         return {
           appMixinDataMsg: 'App.uvue mixin data msg'
         }
       }
     }]
+  	// #endif
   })
-  // #endif
 	onLaunch((options) => {
 		// 自动化测试
 		setLifeCycleNum(state.lifeCycleNum + 1000)
@@ -589,13 +587,13 @@ uni-app x 新增了 [onLastPageBackPress](../collocation/App.md#applifecycle) �
 
 ## 通用 @general
 
-|  | Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| version | 4.0 | 4.41 | √ | 4.11 | 4.61 |
-| nextTick() | 4.0 | 4.41 | √ | 4.11 | 4.61 |
-| defineComponent() | 4.0 | 4.41 | x | x | x |
-| defineAsyncComponent() | - | - | - | - | - |
-| defineCustomElement() | - | - | - | - | - |
+|  | Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS 系统版本 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| version | 4.0 | 4.41 | √ | 5.11 | 10.0 | 4.11 | 5.11 | 5.0.0 | 4.61 |
+| nextTick() | 4.0 | 4.41 | √ |   | 10.0 | 4.11 |   | 5.0.0 | 4.61 |
+| defineComponent() | 4.0 | 4.41 | x |   | 10.0 | x |   | 3.0 | x |
+| defineAsyncComponent() |   |   |   |   |   |   |   |   |   |
+| defineCustomElement() |   |   |   |   |   |   |   |   |   |
 
 
 

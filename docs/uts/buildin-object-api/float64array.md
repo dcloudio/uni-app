@@ -7,7 +7,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| length | number | 是 | - | - | 当使用非对象调用时，该参数将被视为指定类型化数组长度的数字。在内存中创建一个内部数组缓冲区，大小长度乘以 BYTES_PER_ELEMENT 字节，用 0 填充。省略所有参数，等同于使用 0 作为参数。 | 
+| length | number | 是 |  |   | 当使用非对象调用时，该参数将被视为指定类型化数组长度的数字。在内存中创建一个内部数组缓冲区，大小长度乘以 BYTES_PER_ELEMENT 字节，用 0 填充。省略所有参数，等同于使用 0 作为参数。 | 
 
 
 **返回值**
@@ -41,7 +41,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| array | ArrayLike\<number> \| ArrayBufferLike | 是 | - | - | 当使用 TypedArray 子类的实例调用时，typedArray 会被拷贝到一个新的类型数组中。对于非 bigint TypeedArray 构造函数，typedArray 参数仅可以是非 bigint 类型（例如 Int32Array）。同样，对于 bigint TypedArray 构造函数（BigInt64Array 或 BigUint64Array），typedArray 参数仅可以是 bigint 类型。typedArray 中的每个值在拷贝到新数组之前都转换为构造函数的相应类型。新的类型化数组的长度与 typedArray 参数的长度相同。 | 
+| array | ArrayLike\<number> \| ArrayBufferLike | 是 |  |   | 当使用 TypedArray 子类的实例调用时，typedArray 会被拷贝到一个新的类型数组中。对于非 bigint TypeedArray 构造函数，typedArray 参数仅可以是非 bigint 类型（例如 Int32Array）。同样，对于 bigint TypedArray 构造函数（BigInt64Array 或 BigUint64Array），typedArray 参数仅可以是 bigint 类型。typedArray 中的每个值在拷贝到新数组之前都转换为构造函数的相应类型。新的类型化数组的长度与 typedArray 参数的长度相同。 | 
 
 
 **返回值**
@@ -75,9 +75,9 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| buffer | [ArrayBufferLike](#arraybufferlike-values) | 是 | - | - | ArrayBuffer实例 |
-| byteOffset | number | 否 | - | - | 可选，偏移量，单位字节 |
-| length | number | 否 | - | - | 可选，长度 | 
+| buffer | [ArrayBufferLike](#arraybufferlike-values) | 是 |  |   | ArrayBuffer实例 |
+| byteOffset | number | 否 |  |   | 可选，偏移量，单位字节 |
+| length | number | 否 |  |   | 可选，长度 | 
 
 
 **返回值**
@@ -141,7 +141,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| items | number[\] | 是 | - | - | 要包含在新数组对象中的一组元素。 | 
+| items | number[\] | 是 |  |   | 要包含在新数组对象中的一组元素。 | 
 
 
 **返回值**
@@ -183,8 +183,8 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| arrayLike | [ArrayLike\<number>](#arraylike-values) | 是 | - | - | 要转换为数组的类似数组或可迭代对象。 |
-| mapfn | (v: number, k: number) => number | 否 | - | - | 可选参数。如果指定了该参数，则最后生成的类型数组会经过该函数的加工处理后再返回。 | 
+| arrayLike | [ArrayLike\<number>](#arraylike-values) | 是 |  |   | 要转换为数组的类似数组或可迭代对象。 |
+| mapfn | (v: number, k: number) => number | 否 |  |   | 可选参数。如果指定了该参数，则最后生成的类型数组会经过该函数的加工处理后再返回。 | 
 
 
 **返回值**

@@ -23,7 +23,9 @@
 
 | 源文件 | 依赖库 | 资源文件 |
 | ---   | ---| ---|
-| UTSOC.h <br> UTSOC.mm <br> uni-getAppAuthorizeSetting-index.swift <br> uni-getAppBaseInfo-index.swift <br> uni-getDeviceInfo-index.swift <br> uni-getSystemInfo-index.swift <br> uni-getSystemSetting-index.swift <br> uni-openAppAuthorizeSetting-index.swift <br> uni-prompt-index.swift <br> uni-rpx2px-index.swift <br> uni-storage-index.swift <br> uni-theme-index.swift <br> uni-getElementById-DCUniGetElementById.swift <br> uni-getElementById-index.swift <br> uni-crash-index.swift <br> uni-crash-UniCrashManager.swift <br> uni-privacy-index.swift <br> uni-dialogPage-index.swift <br> uni-dialogPage-native.swift <br> uni-event-index.swift <br> uni-event-native.swift <br> uni-exit-index.swift <br> uni-actionSheet-index.swift <br> uni-modal-index(4.61+)  <br> uni-prompt-UniAlert-DCActionSheetActionCell.swift(4.61+) <br> uni-prompt-UniAlert-DCActionSheetController.swift(4.61+) <br> uni-prompt-UniAlert-DCActionSheetHeader.swift(4.61+) <br> uni-prompt-UniAlert-DCAlertContentView.swift(4.61+) <br> uni-prompt-UniAlert-DCAlertControllerUtil.swift(4.61+) <br> uni-prompt-UniAlert-DCAlertView.Blocks.swift(4.61+) <br> uni-prompt-UniAlert-DCAlertViewController.swift(4.61+) <br> uni-prompt-UniAlert-DCBottomMenuController.swift(4.61+) <br> uni-prompt-UniAlert-DCloudAlertControllerComponents.swift(4.61+) <br> uni-prompt-UniAlert-DCloudTextView.swift(4.61+) <br> uni-prompt-UniAlert-DCRIButtonItem.swift(4.61+) <br> uni-prompt-UniAlert-UIView.Layout.swift(4.61+) <br> uni-prompt-UniToast-MCToast.swift(4.61+) <br> uni-prompt-UniToast-MCToast+Loading.swift(4.61+) <br> uni-prompt-UniToast-MCToast+Remove.swift(4.61+) <br> uni-prompt-UniToast-MCToast+Status.swift(4.61+) <br> uni-prompt-UniToast-MCToast+StatusBar.swift(4.61+) <br> uni-prompt-UniToast-MCToast+Text.swift(4.61+) <br> uni-prompt-UniToast-MCToastConfig.swift(4.61+) <br> uni-prompt-UniToast-MCToastHelper.swift(4.61+) <br>| DCloudUniappRuntime.xcframework <br> DCloudUTSFoundation.xcframework <br> DCUniToast.xcframework <br> DCloudAlertController.xcframework <br> KSCrash.xcframework <br> storage.framework| uts-config.json |
+| UTSOC.h <br> UTSOC.mm <br> uni-getAppAuthorizeSetting-index.swift <br> uni-getAppBaseInfo-index.swift <br> uni-getDeviceInfo-index.swift <br> uni-getSystemInfo-index.swift <br> uni-getSystemSetting-index.swift <br> uni-openAppAuthorizeSetting-index.swift <br> uni-prompt-index.swift <br> uni-rpx2px-index.swift <br> uni-storage-index.swift <br> uni-theme-index.swift <br> uni-getElementById-DCUniGetElementById.swift <br> uni-getElementById-index.swift <br> uni-crash-index.swift <br> uni-crash-UniCrashManager.swift <br> uni-privacy-index.swift <br> uni-dialogPage-index.swift <br> uni-dialogPage-native.swift <br> uni-event-index.swift <br> uni-event-native.swift <br> uni-exit-index.swift <br> uni-actionSheet-index.swift <br> uni-modal-index(4.61+)  <br> uni-prompt-UniAlert-DCActionSheetActionCell.swift(4.61+) <br> uni-prompt-UniAlert-DCActionSheetController.swift(4.61+) <br> uni-prompt-UniAlert-DCActionSheetHeader.swift(4.61+) <br> uni-prompt-UniAlert-DCAlertContentView.swift(4.61+) <br> uni-prompt-UniAlert-DCAlertControllerUtil.swift(4.61+) <br> uni-prompt-UniAlert-DCAlertView.Blocks.swift(4.61+) <br> uni-prompt-UniAlert-DCAlertViewController.swift(4.61+) <br> uni-prompt-UniAlert-DCBottomMenuController.swift(4.61+) <br> uni-prompt-UniAlert-DCloudAlertControllerComponents.swift(4.61+) <br> uni-prompt-UniAlert-DCloudTextView.swift(4.61+) <br> uni-prompt-UniAlert-DCRIButtonItem.swift(4.61+) <br> uni-prompt-UniAlert-UIView.Layout.swift(4.61+) <br> uni-prompt-UniToast-MCToast.swift(4.61+) <br> uni-prompt-UniToast-MCToast+Loading.swift(4.61+) <br> uni-prompt-UniToast-MCToast+Remove.swift(4.61+) <br> uni-prompt-UniToast-MCToast+Status.swift(4.61+) <br> uni-prompt-UniToast-MCToast+StatusBar.swift(4.61+) <br> uni-prompt-UniToast-MCToast+Text.swift(4.61+) <br> uni-prompt-UniToast-MCToastConfig.swift(4.61+) <br> uni-prompt-UniToast-MCToastHelper.swift(4.61+) <br> uni-form-index.swift <br>| DCloudUniappRuntime.xcframework <br> DCloudUTSFoundation.xcframework <br> DCUniToast.xcframework <br> DCloudAlertController.xcframework <br> KSCrash.xcframework <br> storage.framework| uts-config.json |
+
+* 注意： checkbox-group、form、picker-view、radio、textarea、checkbox、input、picker、picker-view-column、radio-group、switch 组件均依赖 uni-form-index.swift 
 
 ### 配置其他模块(可选)
 根据资源文件中的`manifest.json`文件包含的模块名称，选择以下源文件(`SDK/ExtApiSrc 目录下`)、依赖库(`SDK/Libs 目录下`)添加到DCloudUTSExtAPI工程中，依赖库均设置为`Do Not Embed`
@@ -37,11 +39,12 @@
 | uni-canvas |  | DCloudUniCanvas.xcframework | |
 | uni-media | uni-media-index.swift <br>uni-media-utils-UniChooseFileManager.swift(4.61+)| DCloudMediaPicker.xcframework |  AssetsLibrary <br> Photos <br> AVFoundation <br> CoreServices <br> CoreFoundation <br> CoreGraphics <br> CoreImage <br> GLKit <br> MetalKit <br> MobileCoreServices <br> QuartzCore <br> ImageIO <br> MediaPlayer <br> CoreText  |
 | uni-payment-alipay | uni-payment-alipay-index.swift <br> uni-payment-index.swift | AlipaySDK.xcframework |c++ <br> z <br> SystemConfiguration <br> CoreTelephony <br> QuartzCore <br> CoreText <br> CoreGraphics <br> CFNetwork <br> CoreMotion |
-| uni-payment-wxpay | uni-payment-wxpay-index.swift <br> uni-payment-index.swift | libWeChatSDK.a | CoreGraphics <br> WebKit <br> Security |
+| uni-payment-wxpay | uni-payment-wxpay-index.swift <br> uni-payment-index.swift | libWeChatSDK.a | CoreGraphics.framework <br> WebKit.framework <br> Security.framework |
 | uni-virtualPayment | uni-virtualPayment-index.swift <br> uni-virtualPayment-ProductService.swift <br> uni-virtualPayment-PurchaseService.swift <br> uni-virtualPayment-Types.swift <br> uni-virtualPayment-UniProduct.swift <br> uni-virtualPayment-UniPurchase.swift <br> uni-virtualPayment-UniStoreKit+Closure.swift <br> uni-virtualPayment-UniStoreKit.swift | | StoreKit |
 | uni-getLocation-system | ~~uni-getLocation-system-index.swift~~ <br> ~~uni-getLocation-index.swift~~ <br>(4.61+使用) <br> uni-location-index.swift <br> uni-location-system-index <br> | | |
 | uni-getLocation-tencent | ~~uni-getLocation-tencent-index.swift~~ <br> ~~uni-getLocation-index.swift~~ <br> (4.61+使用) <br> uni-location-tencent-index.swift <br> uni-location-index.swift | TencentLBS.framework | libz.1.2.5.tbd |
-| uni-video | uni-video-index.swift | DCUniVideo.xcframework、IJKMediaFrameworkWithSSL.xcframework、UniDCSVProgressHUD.xcframework | |
+| ~~uni-video~~(5.08之前使用) | ~~uni-video-index.swift~~ | ~~DCUniVideo.xcframework~~、~~IJKMediaFrameworkWithSSL.xcframework~~、~~UniDCSVProgressHUD.xcframework~~ | |
+| uni-video(5.08+) | uni-video-index.swift <br> uni-video-VideoPlayer-Core-UniVideoPlayerActor.swift <br> uni-video-VideoPlayer-Managers-BrightnessHandler.swift <br> uni-video-VideoPlayer-Managers-CacheManager.swift <br> uni-video-VideoPlayer-Managers-DRMContentKeyDelegate.swift <br> uni-video-VideoPlayer-Managers-DRMManager.swift <br> uni-video-VideoPlayer-Managers-GestureManager.swift <br> uni-video-VideoPlayer-Managers-LocalM3U8Handler.swift <br> uni-video-VideoPlayer-Managers-PIPManager.swift <br> uni-video-VideoPlayer-Managers-UniVideoPlayerManager.swift <br> uni-video-VideoPlayer-Managers-VolumeHandler.swift <br> uni-video-VideoPlayer-Models-UniVideoPlayerConfiguration.swift <br> uni-video-VideoPlayer-Models-UniVideoPlayerEvent.swift <br> uni-video-VideoPlayer-Models-UniVideoPlayerState.swift <br> uni-video-VideoPlayer-Protocols-M3U8ResourceLoaderDelegate.swift <br> uni-video-VideoPlayer-Protocols-UniVideoPlayerDelegate.swift <br> uni-video-VideoPlayer-UniVideoPlayerInstance.swift <br> uni-video-VideoPlayer-UniVideoPlayerView.swift | KTVHTTPCache.xcframework | |
 | uni-push | uni-push-index.swift | GTCommonSDK.xcframework <br> GTSDK.xcframework <br> ZXSDK.framework | c++ <br> resolv <br> z <br> sqlite3 <br> MobileCoreServices <br> Security <br> SystemConfiguration <br> CoreTelephony <br> AVFoundation <br> UserNotifications <br> AdSupport |
 | uni-verify | uni-verify-index.swift <br> uni-network-index.swift | GTCommonSDK.xcframework <br> GeYanSdk.xcframework | resolv.9 <br> c++ <br> z <br> sqlite3.0、WebKit <br> CoreFoundation <br> Network <br> AdSupport |
 | uni-ad | uni-ad-index.swift | DCUniAdFoundation.xcframework | |
@@ -57,21 +60,83 @@
 | uni-requestMerchantTransfer(4.61+) | uni-requestMerchantTransfer-index.swift | libWeChatSDK.a | CoreGraphics <br> WebKit <br> Security <br> |
 | uni-recorder(4.61+) | uni-recorder-index.swift <br> uni-recorder-UniAudioRecorderManager.swift| | |
 | uni-camera(4.61+) (依赖uni-media) | uni-camera-index.swift <br>  uni-camera-CameraImpl.swift <br> uni-camera-CameraManager.swift |||
-| uni-fileSystemManager(4.61+) | uni-fileSystemManager-index.swift <br> uni-fileSystemManager-InnerFileSystemManager.swift <br> uni-fileSystemManager-UniFileSystemManager.swift <br> uni-fileSystemManager-UniFileSystemManagerStats.swift| pod 'ZIPFoundation', '~> 0.9' |  |
+| uni-fileSystemManager(4.61+) | uni-fileSystemManager-index.swift <br> uni-fileSystemManager-UniFileSystemManager.swift <br> (4.87+使用)uni-fileSystemManager-UniFileTools.swift <br> ~~uni-fileSystemManager-InnerFileSystemManager.swift~~ <br> ~~uni-fileSystemManager-UniFileSystemManagerStats.swift~~ | pod 'ZIPFoundation', '~> 0.9' |  |
 | uni-sse(4.63+) | uni-sse-index.swift <br> uni-sse-EventSource-Event.swift <br> uni-sse-EventSource-EventSource.swift <br> uni-sse-EventSource-EventStreamParser.swift| | |
 | uni-makePhoneCall(4.63+) | uni-makePhoneCall-index.swift | | |
 | uni-barcode-scanning(4.71+)(依赖uni-camera) | uni-barcode-scanning-index.swift <br> uni-barcode-scanning-Scanner.swift| pod 'GoogleMLKit/BarcodeScanning', '~> 6.0.0' | |
 | uni-scanCode(4.71+)(依赖uni-barcode-scanning) | uni-scanCode-index.swift| | |
 | uni-clipboard(4.71+) | uni-clipboard-index.swift | | |
 | uni-keyboard(4.71+) | uni-keyboard-index.swift | | |
-| uni-rich-text(4.71+) | uni-rich-text-index.swift | | |
+| uni-rich-text(4.71+) | (5.0后废弃，不需要添加文件) ~~uni-rich-text-index.swift~~ | | |
 | uni-openDocument(4.71+)(依赖uni-fileSystemManager) | uni-openDocument-index.swift | | |
 | uni-live-pusher(4.81+) | uni-live-pusher-index.swift | HappyDNS.framework <br> PLMediaStreamingKit.xcframework | |
 | uni-live-player(4.81+) | uni-live-player-index.swift | qplayer2_core.xcframework | AVFoundation <br> AudioToolbox <br> QuartzCore<br> OpenGLES <br> CoreVideo<br> CoreMedia <br> VideoToolbox <br> c++ <br> bz2 <br> iconv <br> z <br> |
+| uni-loading(5.0+) | uni-loading-index.swift <br> uni-loading-SpinnerView.swift <br> uni-loading-UniLoadingComponentRegister.swift | | |
+| uni-showLoading(5.0+) | uni-showLoading-index.swift | | |
+| uni-web-view(5.0+) | uni-web-view-index.swift <br> uni-web-view-InnerWebView.swift <br> uni-web-view-Snapshot.swift <br> uni-web-view-UniBaseWebView.swift <br> uni-web-view-UniViewLifecycle.swift <br> uni-web-view-UniWebComponentRegister.swift | | |
+| uni-accelerometer(5.08+) | uni-accelerometer-index.swift <br> AccelerometerNative.swift | | |
+| uni-authentication(5.08+) | uni-authentication-index.swift | | |
+| uni-calendar(5.08+) | uni-calendar-index.swift <br> UniCalendarNative.swift | | |
+| uni-compass(5.08+) | uni-compass-index.swift <br> CompassNative.swift | | |
+| uni-gyroscope(5.08+) | uni-gyroscope-index.swift <br> UniGyroscopeNative.swift | | |
+| uni-memory(5.08+) | uni-memory-index.swift | | |
+| uni-phoneContact(5.08+) | uni-phoneContact-index.swift <br> AddPhoneContactNative.swift | | |
+| uni-screenBrightness(5.08+) | uni-screenBrightness-index.swift | | |
+| uni-vibrate(5.08+) | uni-screenBrightness-index.swift <br> VibrateNative.swift | | |
+| uni-oauth-weixin(5.08+) | uni-oauth-weixin-index.swift <br> uni-oauth-index.swift| libWeChatSDK | CoreGraphics.framework <br> WebKit.framework <br> Security.framework |
+| uni-share-weixin(5.08+) | uni-share-weixin-index.swift <br> uni-share-index.swift | libWeChatSDK.a | CoreGraphics.framework <br> WebKit.framework <br> Security.framework |
+
 
 ### 配置uts-config.json(可选)
 
 在`DCloudUTSExtAPI`工程中新建 `uts-config.json` 文件，
+`uni-oauth-weixin`模块需要添加如下配置
+```
+{
+	"hooksClasses": [
+		"UTSSDKModulesDCloudUniOauthWeixinWxloginHookProxy"
+	],
+	"providers": [{
+		"name": "weixin",
+		"service": "oauth", 
+		"class": "UTSSDKModulesDCloudUniOauthWeixinUniOAuthWeixinProviderImpl"
+	}]
+}
+```  
+`uni-share-weixin`模块需要添加如下配置
+```
+{
+	"hooksClasses": [
+		"UTSSDKModulesDCloudUniShareWeixinWxShareHookProxy"
+	],
+	"providers": [{
+		"name": "wxpay",
+		"service": "share",
+		"class": "UTSSDKModulesDCloudUniShareWeixinUniShareWeixinProviderImpl"
+	}]
+}
+```  
+`uni-loading`模块需要添加如下配置
+```
+{
+	"components": [{
+	"name": "loading",
+	"class": "UTSSDKModulesDCloudUniLoadingLoadingComponent",
+	"delegateClass": "UniLoadingComponentRegister"
+	}]
+}
+```
+`uni-web-view`模块需要添加如下配置
+```
+{
+	"components": [{
+		"name": "webview",
+		"class": "UTSSDKModulesDCloudUniWebWebComponent",
+		"delegateClass": "UniWebComponentRegister"
+	}]
+}
+```
+
 `uni-video`模块需要添加如下配置
 ```
 {
@@ -79,6 +144,17 @@
 		"name": "video",
 		"class": "UTSSDKModulesDCloudUniVideoVideoComponent",
 		"delegateClass": "VideoComponentRegister"
+	}]
+}
+```
+
+5.08之后应该如下配置
+```
+{
+	"components": [{
+		"name": "video",
+		"class": "UTSSDKModulesDCloudUniVideoVideoComponent",
+		"delegateClass": "UniVideoComponentRegister"
 	}]
 }
 ```
@@ -183,8 +259,9 @@
 }
 ```  
 
-`uni-rich-text`模块需要添加如下配置
+`uni-rich-text`模块需要添加如下配置（4.71～5.0使用，5.0后不需要配置）
   ```
+	// 4.71～5.0使用，5.0后不需要配置）
 {
     "components": [{
       "type": "customElement",
@@ -207,7 +284,7 @@
 集成`uni-media`模块需要填写如下隐私清单
 ![](https://web-ext-storage.dcloud.net.cn/native/doc/iOS/unimedia_privacyinfo.png)
 
-集成`uni-payment-wxpay`模块需要填写如下隐私清单
+集成`uni-payment-wxpay`、`uni-oauth-weixin`、`uni-share-weixin`模块需要填写如下隐私清单
 ![](https://web-ext-storage.dcloud.net.cn/native/doc/iOS/uniwxpay_privacyinfo.png)
 
 
@@ -227,6 +304,84 @@ xcodebuild -create-xcframework -framework 真机路径/DCloudUTSExtAPI.framework
 
 ## 主工程配置
 根据资源文件中的`manifest.json`文件包含的模块名称，根据下述相关模块文档向`主工程`添加依赖以及工程配置
+
+## uni-phoneContact
+
+### Info.plist
+添加`通讯录访问验证权限描述(NSContactsUsageDescription)`
+```  
+<dict>
+	<key>NSContactsUsageDescription</key>
+	<string>需要访问通讯录以选择或保存联系人信息</string>
+</dict>
+```
+![](https://web-ext-storage.dcloud.net.cn/native/doc/iOS/uni_phoneContact_permission.png)
+
+## uni-gyroscope
+
+### Info.plist
+添加`需要访问运动传感器以获取陀螺仪数据验证权限描述(NSMotionUsageDescription)`
+```  
+<dict>
+	<key>NSMotionUsageDescription</key>
+	<string>需要访问运动传感器以获取陀螺仪数据</string>
+</dict>
+```
+![](https://web-ext-storage.dcloud.net.cn/native/doc/iOS/uni_gyroscope_permission.png)
+
+## uni-compass
+
+### Info.plist
+添加`需要访问位置信息以获取指南针数据验证权限描述(NSLocationWhenInUseUsageDescription)`
+```  
+<dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>应用需要访问位置信息以获取指南针数据</string>
+</dict>
+```
+![](https://web-ext-storage.dcloud.net.cn/native/doc/iOS/uni_compass_permission.png)
+
+## uni-calendar
+
+### Info.plist
+添加`运行期间访问用户的日历数据验证权限描述(NSCalendarsUsageDescription)`
+添加`项目真机运行期间需要完全访问用户的日历数据验证权限描述(NSCalendarsFullAccessUsageDescription)`
+添加`运行期间向日历中添加事件验证权限描述(NSCalendarsWriteOnlyAccessUsageDescription)`
+```  
+<dict>
+	<key>NSCalendarsUsageDescription</key>
+	<string>项目真机运行期间访问用户的日历数据</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>项目真机运行期间需要完全访问用户的日历数据（读取、修改、删除和添加）</string>
+	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
+	<string>项目真机运行期间向日历中添加事件</string>
+</dict>
+```
+![](https://web-ext-storage.dcloud.net.cn/native/doc/iOS/uni_calendar_permission.png)
+
+## uni-authentication
+
+### Info.plist
+添加`Face ID身份验证权限描述(NSFaceIDUsageDescription)`
+```  
+<dict>
+	<key>NSFaceIDUsageDescription</key>
+	<string>应用需要使用 Face ID 进行身份验证</string>
+</dict>
+```
+![](https://web-ext-storage.dcloud.net.cn/native/doc/iOS/uni_authentication_permission.png)
+
+## uni-accelerometer
+
+### Info.plist
+添加`运动传感器权限描述(NSMotionUsageDescription)`
+```  
+<dict>
+	<key>NSMotionUsageDescription</key>
+	<string>需要访问运动传感器以获取加速度数据</string>
+</dict>
+```
+![](https://web-ext-storage.dcloud.net.cn/native/doc/iOS/uni_accelerometer_permission.png)
 
 ## uni-prompt
 ### 添加依赖库以及资源文件
@@ -404,7 +559,7 @@ xcodebuild -create-xcframework -framework 真机路径/DCloudUTSExtAPI.framework
 ![](https://web-ext-storage.dcloud.net.cn/native/doc/iOS/associated_domains.png)
 
 
-## uni-payment-wxpay
+## uni-payment-wxpay、uni-oauth-weixin、uni-share-weixin
 
 ### Info.plist
 1. 添加 `白名单(LSApplicationQueriesSchemes)`

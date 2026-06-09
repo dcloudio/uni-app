@@ -250,6 +250,33 @@ uni.request({
 })
 ```
 
+## 配置开发 HTTPS@https
+
+在 HBuilderX 中通过 `manifest.json` 启用 web 端 HTTPS 时，开发服务器使用的是仅用于调试的证书，浏览器通常不会将其识别为受信任证书，因此可能出现“连接不安全”之类的提示。该方式适合快速启动本地 HTTPS 调试，但不适用于需要指定证书文件、对接本地受信任证书链，或进行更严格联调验证的场景。
+
+如果需要使用开发者自行生成的证书，请不要继续在 `manifest.json` 中配置 HTTPS，而应改为在项目根目录新增 `vite.config.js`，通过 Vite 的 `server.https` 进行显式配置。同时，请删除 `manifest.json` 中与 web 端 HTTPS 相关的配置，避免与 `vite.config.js` 中的设置重复或产生冲突。
+
+示例配置如下：
+
+```js
+// vite.config.js
+import fs from 'fs'
+import { defineConfig } from 'vite'
+import uni from '@dcloudio/vite-plugin-uni'
+
+export default defineConfig({
+  plugins: [uni()],
+  server: {
+    https: {
+      key: fs.readFileSync('./cert/localhost-key.pem'),
+      cert: fs.readFileSync('./cert/localhost.pem'),
+    },
+  },
+})
+```
+
+证书文件路径请按项目实际情况调整。完成配置后，重新运行到 web 端即可使开发服务器使用指定证书。
+
 ## 其他注意事项
 
 - 4.02之前的版本内置组件的tagName、nodeName与安卓端不同，web端和安卓端相比多了`UNI-`前缀，例如web端为`UNI-VIEW`、`UNI-IMAGE`，安卓端为`VIEW`、`IMAGE`。此问题已在HBuilderX 4.02版本修复，web端移除了UNI-前缀。

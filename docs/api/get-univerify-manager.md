@@ -3,9 +3,9 @@
 获取一键登录管理对象
 
 ### getUniVerifyManager 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | - | 4.42 | 4.42 | 4.61 | 5.0 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.42 | 4.42 | 4.61 |
 
 
 ::: info
@@ -80,166 +80,170 @@ uni-id-pages插件，已经内置一键登录，从云端到客户端均已开�
 preLogin
 预登录
 ##### preLogin 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| x | - | 3.99 | 4.18 | 4.61 | 5.0 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 3.99 | 4.18 | 4.61 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **UniVerifyManagerPreLoginOptions** | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 预登录参数 |
+| options | **UniVerifyManagerPreLoginOptions** | 是 |  | Web: x | 预登录参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniVerifyManagerPreLoginSuccess](#univerifymanagerpreloginsuccess-values)) => void | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
-| fail | (err: [UniVerifyManagerPreLoginFail](#univerifymanagerpreloginfail-values)) => void | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
-| complete | (res: any) => void | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| success | (res: [UniVerifyManagerPreLoginSuccess](#univerifymanagerpreloginsuccess-values)) => void | 否 |  | Web: x |  |
+| fail | (err: [UniVerifyManagerPreLoginFail](#univerifymanagerpreloginfail-values)) => void | 否 |  | Web: x |  |
+| complete | (res: any) => void | 否 |  | Web: x |  | 
 
 ###### UniVerifyManagerPreLoginSuccess 的属性值 @univerifymanagerpreloginsuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| number | string | 是 | - | Web: x; 微信小程序: -; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 手机号（脱敏） |
-| slogan | string | 是 | - | Web: x; 微信小程序: -; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 运营商slogan，如移动：中国移动提供认证服务，联通：认证服务由联通统一认证提供，电信：天翼账号提供认证服务 |
-| privacyName | string | 是 | - | Web: x; 微信小程序: -; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71; HarmonyOS(Vapor): 5.0 | 运营商隐私协议名称，如移动：中国移动认证服务条款，联通：联通统一认证服务条款，电信：天翼账号服务与隐私协议 |
-| privacyUrl | string | 是 | - | Web: x; 微信小程序: -; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71; HarmonyOS(Vapor): 5.0 | 运营商隐私协议url地址 |
+| number | string | 是 |  | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61 | 手机号（脱敏） |
+| slogan | string | 是 |  | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61 | 运营商slogan，如移动：中国移动提供认证服务，联通：认证服务由联通统一认证提供，电信：天翼账号提供认证服务 |
+| privacyName | string | 是 |  | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71 | 运营商隐私协议名称，如移动：中国移动认证服务条款，联通：联通统一认证服务条款，电信：天翼账号服务与隐私协议 |
+| privacyUrl | string | 是 |  | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71 | 运营商隐私协议url地址 |
 
 ###### UniVerifyManagerPreLoginFail 的属性值 @univerifymanagerpreloginfail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误码 |
-| errSubject | string | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 统一错误主题（模块）名称 |
-| data | any | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| errCode | number | 是 |  | Web: x | 错误码 |
+| errSubject | string | 是 |  | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1000 | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 当前应用appid尚未开通uni一键登录 |
-| 1001 | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 应用所有者账号信息异常，请检查账号一键登录服务是否正常 |
-| 1002 | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 应用所有者账号信息异常，请检查账号余额是否充足 |
-| 1004 | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | uni一键登录应用不存在 |
-| 4001 | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 参数异常 |
-| 30001 | Web: x; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 取消登录 |
-| 30004 | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 其他错误 |
-| 30005 | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 预登录失败 |
-| 30006 | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 一键登录失败 |
-| 30007 | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.51; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 预登录失效 |
-| 30008 | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.51; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 上一个请求正在进行中，请稍后重试 |
-| 40001 | Web: x; 微信小程序: -; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71; HarmonyOS(Vapor): 5.0 | 自定义授权页面未同意隐私条款 |
-| 40002 | Web: x; 微信小程序: -; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71; HarmonyOS(Vapor): 5.0 | 自定义授权页不合规，请参考文档修改 |
+| 1000 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 当前应用appid尚未开通uni一键登录 |
+| 1001 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 应用所有者账号信息异常，请检查账号一键登录服务是否正常 |
+| 1002 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 应用所有者账号信息异常，请检查账号余额是否充足 |
+| 1004 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | uni一键登录应用不存在 |
+| 4001 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 参数异常 |
+| 30001 | Web: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 取消登录 |
+| 30004 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 其他错误 |
+| 30005 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 预登录失败 |
+| 30006 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 一键登录失败 |
+| 30007 | Web: x; Android: 3.99; iOS: 4.51; HarmonyOS: 4.61 | 预登录失效 |
+| 30008 | Web: x; Android: 3.99; iOS: 4.51; HarmonyOS: 4.61 | 上一个请求正在进行中，请稍后重试 |
+| 40001 | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71 | 自定义授权页面未同意隐私条款 |
+| 40002 | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71 | 自定义授权页不合规，请参考文档修改 |
+
 
 
 #### login(options : UniVerifyManagerLoginOptions) : void @login
 login
 标准登录
 ##### login 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| x | - | 3.99 | 4.18 | 4.61 | 5.0 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 3.99 | 4.18 | 4.61 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **UniVerifyManagerLoginOptions** | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 登录参数 |
+| options | **UniVerifyManagerLoginOptions** | 是 |  | Web: x | 登录参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| uniVerifyStyle | **UniVerifyManagerLoginStyle** | 否 | - | Web: x; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 登录页样式 |
-| success | (res: [UniVerifyManagerLoginSuccess](#univerifymanagerloginsuccess-values)) => void | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
-| fail | (err: [UniVerifyManagerLoginFail](#univerifymanagerloginfail-values)) => void | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
-| complete | (res: any) => void | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
-| ~~univerifyStyle~~ | [UniVerifyManagerLoginStyle](#univerifymanagerloginstyle-values) | 否 | - | Web: x; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 |   **已废弃，建议使用 uniVerifyStyle** | 
+| uniVerifyStyle | **UniVerifyManagerLoginStyle** | 否 |  | Web: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 登录页样式 |
+| success | (res: [UniVerifyManagerLoginSuccess](#univerifymanagerloginsuccess-values)) => void | 否 |  | Web: x |  |
+| fail | (err: [UniVerifyManagerLoginFail](#univerifymanagerloginfail-values)) => void | 否 |  | Web: x |  |
+| complete | (res: any) => void | 否 |  | Web: x |  |
+| ~~univerifyStyle~~ | [UniVerifyManagerLoginStyle](#univerifymanagerloginstyle-values) | 否 |  | Web: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 |   **已废弃，建议使用 uniVerifyStyle** | 
 
 ##### uniVerifyStyle 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| fullScreen | boolean | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 是否全屏 |
-| logoPath | string | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | logo路径 |
-| backgroundColor | string | 否 | - | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.18; HarmonyOS: 4.71; HarmonyOS(Vapor): 5.0 | 登录页背景色 |
-| loginBtnText | string | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 登录按钮文字 |
+| fullScreen | boolean | 否 |  | Web: x | 是否全屏 |
+| logoPath | string | 否 |  | Web: x | logo路径 |
+| backgroundColor | string | 否 |  | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.71 | 登录页背景色 |
+| loginBtnText | string | 否 |  | Web: x | 登录按钮文字 |
 
 ###### UniVerifyManagerLoginSuccess 的属性值 @univerifymanagerloginsuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| openId | string | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 登录授权唯一标识 |
-| accessToken | string | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | token |
+| openId | string | 是 |  | Web: x | 登录授权唯一标识 |
+| accessToken | string | 是 |  | Web: x | token |
 
 ###### UniVerifyManagerLoginFail 的属性值 @univerifymanagerloginfail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误码 |
-| errSubject | string | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 统一错误主题（模块）名称 |
-| data | any | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| errCode | number | 是 |  | Web: x | 错误码 |
+| errSubject | string | 是 |  | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  | Web: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1000 | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 当前应用appid尚未开通uni一键登录 |
-| 1001 | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 应用所有者账号信息异常，请检查账号一键登录服务是否正常 |
-| 1002 | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 应用所有者账号信息异常，请检查账号余额是否充足 |
-| 1004 | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | uni一键登录应用不存在 |
-| 4001 | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 参数异常 |
-| 30001 | Web: x; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 取消登录 |
-| 30004 | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 其他错误 |
-| 30005 | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 预登录失败 |
-| 30006 | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 一键登录失败 |
-| 30007 | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.51; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 预登录失效 |
-| 30008 | Web: x; 微信小程序: -; Android: 3.99; iOS: 4.51; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 上一个请求正在进行中，请稍后重试 |
-| 40001 | Web: x; 微信小程序: -; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71; HarmonyOS(Vapor): 5.0 | 自定义授权页面未同意隐私条款 |
-| 40002 | Web: x; 微信小程序: -; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71; HarmonyOS(Vapor): 5.0 | 自定义授权页不合规，请参考文档修改 |
+| 1000 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 当前应用appid尚未开通uni一键登录 |
+| 1001 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 应用所有者账号信息异常，请检查账号一键登录服务是否正常 |
+| 1002 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 应用所有者账号信息异常，请检查账号余额是否充足 |
+| 1004 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | uni一键登录应用不存在 |
+| 4001 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 参数异常 |
+| 30001 | Web: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 取消登录 |
+| 30004 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 其他错误 |
+| 30005 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 预登录失败 |
+| 30006 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 一键登录失败 |
+| 30007 | Web: x; Android: 3.99; iOS: 4.51; HarmonyOS: 4.61 | 预登录失效 |
+| 30008 | Web: x; Android: 3.99; iOS: 4.51; HarmonyOS: 4.61 | 上一个请求正在进行中，请稍后重试 |
+| 40001 | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71 | 自定义授权页面未同意隐私条款 |
+| 40002 | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71 | 自定义授权页不合规，请参考文档修改 |
+
 
 
 #### customLogin(options : UniVerifyManagerCustomLoginOptions) : void @customlogin
 customLogin
 自定义授权页登录
 ##### customLogin 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| x | - | 4.41 | 4.41 | 4.71 | 5.0 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.41 | 4.41 | 4.71 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **UniVerifyManagerCustomLoginOptions** | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 自定义登录页登录参数 |
+| options | **UniVerifyManagerCustomLoginOptions** | 是 |  | Web: x | 自定义登录页登录参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| numberTextElement | [UniElement](/api/dom/unielement.md) | 是 | - | Web: x; 微信小程序: -; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 号码栏，仅支持使用text组件 |
-| sloganTextElement | [UniElement](/api/dom/unielement.md) | 是 | - | Web: x; 微信小程序: -; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 品牌露出，仅支持使用text组件 |
-| loginButtonElement | [UniElement](/api/dom/unielement.md) | 是 | - | Web: x; 微信小程序: -; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 登录按钮，仅支持使用button组件 |
-| privacyCheckBoxElement | [UniElement](/api/dom/unielement.md) | 是 | - | Web: x; 微信小程序: -; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 隐私确认，仅支持使用checkbox组件 |
-| privacyTextElement | [UniElement](/api/dom/unielement.md) | 是 | - | Web: x; 微信小程序: -; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 隐私标题，仅支持使用text组件 |
-| success | (res: [UniVerifyManagerLoginSuccess](#univerifymanagerloginsuccess-values)) => void | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | - |
-| fail | (err: [UniVerifyManagerLoginFail](#univerifymanagerloginfail-values)) => void | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | - |
-| complete | (res: any) => void | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | - | 
+| numberTextElement | [UniElement](/api/dom/unielement.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 号码栏，仅支持使用text组件 |
+| sloganTextElement | [UniElement](/api/dom/unielement.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 品牌露出，仅支持使用text组件 |
+| loginButtonElement | [UniElement](/api/dom/unielement.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 登录按钮，仅支持使用button组件 |
+| privacyCheckBoxElement | [UniElement](/api/dom/unielement.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 隐私确认，仅支持使用checkbox组件 |
+| privacyTextElement | [UniElement](/api/dom/unielement.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 隐私标题，仅支持使用text组件 |
+| success | (res: [UniVerifyManagerLoginSuccess](#univerifymanagerloginsuccess-values)) => void | 否 |  | Web: x |  |
+| fail | (err: [UniVerifyManagerLoginFail](#univerifymanagerloginfail-values)) => void | 否 |  | Web: x |  |
+| complete | (res: any) => void | 否 |  | Web: x |  | 
+
 
 
 #### close() : void @close
 close
 关闭授权页(仅支持标准登录)
 ##### close 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| x | - | 3.99 | 4.18 | 4.61 | 5.0 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 3.99 | 4.18 | 4.61 |
+
 
 
 
@@ -247,9 +251,10 @@ close
 isPreLoginValid
 预登录是否有效
 ##### isPreLoginValid 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| x | - | 3.99 | 4.18 | 4.61 | 5.0 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 3.99 | 4.18 | 4.61 |
+
 
 
 ##### 返回值 
@@ -452,6 +457,10 @@ isPreLoginValid
 
 ```
 :::
+
+### 注意
+
+<md-hperm permissions="ohos.permission.APP_TRACKING_CONSENT" />
 
 ## cause个推sdk错误码及运营商错误码汇总
 
@@ -674,8 +683,8 @@ uvue页面放置好上述5个UniElement后，在页面的登录按钮点击事�
 登录成功后通过`uni.navigateBack()`或`uni.closeDialogPage()`等方式关闭授权页。
 
 hello uni-app x里有完整的自定义登录的示例代码，该示例中：
-1. 首先在[预登录页面](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/API/get-univerify-manager/get-univerify-manager.uvue)获取运营商返回的4项内容。点击自定义一键登录后弹出[dialogPage](./dialog-page.md)，并通过页面地址传参方式，将4项内容传给自定义登录页面。实际开发中，你可以使用dialogPage，也可以使用一个普通页面。
-2. 在[自定义一键登录页面](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/API/get-univerify-manager/univerify-custom-page.uvue)，按规范放置合适的UniElement，点击登录后调用`customLogin`方法。登录成功后调用`uni.closeDialogPage()`关闭。
+1. 首先在[预登录页面](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/API/get-uni-verify-manager/get-uni-verify-manager.uvue)获取运营商返回的4项内容。点击自定义一键登录后弹出[dialogPage](./dialog-page.md)，并通过页面地址传参方式，将4项内容传给自定义登录页面。实际开发中，你可以使用dialogPage，也可以使用一个普通页面。
+2. 在[自定义一键登录页面](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/API/get-uni-verify-manager/uni-verify-custom-page.uvue)，按规范放置合适的UniElement，点击登录后调用`customLogin`方法。登录成功后调用`uni.closeDialogPage()`关闭。
 
 ## Tips
 - 一键登录并非100%成功，手机没有sim卡、蜂窝网络未开启、当时手机没有蜂窝网信号是最常见的原因，更多错误见上方的错误码列表。在一键登录无法使用时，可转为短信验证码登录。在[uni-id-pages](https://doc.dcloud.net.cn/uniCloud/uni-id/app-x.html)里已经集成了相关逻辑，无需自己开发。[详情](https://doc.dcloud.net.cn/uniCloud/uni-id/app-x.html)
@@ -688,5 +697,5 @@ hello uni-app x里有完整的自定义登录的示例代码，该示例中：
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 

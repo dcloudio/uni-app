@@ -5,6 +5,8 @@ uni-app的API，统一了多平台的差异。但某个API，可以由很多三�
 比如
 - 支付API：有支付宝支持、微信支付
 - 定位API：有系统定位、腾讯定位
+- 登录API：微信登录
+- 分享API： 微信分享
 
 不同的SDK，本身的API是完全不同的，甚至同一个SDK的Android和iOS的API也不一样。
 
@@ -36,6 +38,10 @@ uni-app 通过 provider 机制来统一不同的SDK，屏蔽他们的差异。
 
 - [自定义定位provider](get-location.md#customprovider)
 
+- [自定义分享provider](share.md#customprovider)
+
+- [自定义登录provider](sign-in.md#customprovider)
+
 **注意**
 
 - 标准基座android需要在manifest.json中配置才能获取到对应的provider，ios不需要。自定义基座都需要配置
@@ -54,30 +60,31 @@ uni-app 通过 provider 机制来统一不同的SDK，屏蔽他们的差异。
 getProvider的同步方法
 
 ### getProviderSync 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.25 | 4.25 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.25 | 4.25 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **GetProviderSyncOptions** | 是 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: - |  |
+| options | **GetProviderSyncOptions** | 是 |  | Web: x; 微信小程序: x |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| service | string | 是 | - | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: - | 服务类型<br/> |
+| service | string | 是 |  | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25 | 服务类型<br/> |
 
 ##### service 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| payment | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: - | 支付 (alipay、wxpay) |
-| location | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: - | 定位 (system、tencent) |
-| oauth | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 授权登录 | 
+| payment | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25 | 支付 (alipay、wxpay) |
+| location | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25 | 定位 (system、tencent) |
+| oauth | Web: x; 微信小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 (weixin) |
+| share | Web: x; 微信小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享 (weixin) | 
 
 
 ### 返回值 
@@ -90,17 +97,18 @@ getProvider的同步方法
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| service | string | 是 | - | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: - | 服务类型<br/> |
-| providerIds | Array&lt;string&gt; | 是 | - | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 得到的服务供应商 |
-| providerObjects | Array&lt;[UniProvider](/api/provider.md#uniprovider)&gt; | 是 | - | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 得到的服务供应商服务对象 | 
+| service | string | 是 |  | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25 | 服务类型<br/> |
+| providerIds | Array&lt;string&gt; | 是 |  | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 得到的服务供应商 |
+| providerObjects | Array&lt;[UniProvider](/api/provider.md#uniprovider)&gt; | 是 |  | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 得到的服务供应商服务对象 | 
 
 ##### service 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| payment | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 支付 (alipay、wxpay) |
-| location | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 定位 (system、tencent) |
-| oauth | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 授权登录 |
+| payment | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 支付 (alipay、wxpay) |
+| location | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 定位 (system、tencent) |
+| oauth | Web: x; 微信小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 （weixin） |
+| share | Web: x; 微信小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 分享（weixin） |
 
 
 
@@ -117,6 +125,10 @@ getProvider的同步方法
 
 - 定位Provider：[UniLocationSystemProvider](./get-location.md#providerdes),[UniLocationTencentProvider](./get-location.md#providerdes)
 
+- 分享Provider：[UniShareWeixinProvider](./share.md#providerdes)
+
+- 登录Provider：[UniOAuthWeixinProvider](./sign-in.md#providerdes)
+
 ## UniProvider
 
 服务供应商
@@ -127,15 +139,15 @@ getProvider的同步方法
 ### UniProvider 的属性值 @uniprovider-values
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | string | 是 | - | - | 服务供应商标识 |
-| description | string | 是 | - | - | 服务供应商描述 |
-| ~~isAppExist~~ | boolean | 是 | - | - | 判断服务供应商依赖的App是否安装（仅支持微信支付） |
+| id | string | 是 |  |   | 服务供应商标识 |
+| description | string | 是 |  |   | 服务供应商描述 |
+| ~~isAppExist~~ | boolean | 是 |  |   | 判断服务供应商依赖的App是否安装（仅支持微信支付） |
 
 
 ### UniProvider 兼容性 
- | Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| - | - | 4.18 | 4.18 | - |
+ | Android | iOS |
+| :- | :- |
+| 4.18 | 4.18 |
 
 <!-- CUSTOMTYPEJSON.UniProvider.example -->
 
@@ -192,12 +204,8 @@ getProvider的同步方法
     serviceList: [
       { service: "payment", name: "支付", provider: [], providerObj: [] },
       { service: "location", name: "定位", provider: [], providerObj: [] },
-      // #ifdef APP-HARMONY
       { service: "oauth", name: "登录", provider: [], providerObj: [] },
-      // #endif
-      // #ifdef APP-HARMONY
       { service: "share", name: "分享", provider: [], providerObj: [] }
-      // #endif
     ],
     //自动化测试使用
     providerIds: [],
@@ -274,7 +282,7 @@ getProvider的同步方法
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 
 
 
@@ -291,58 +299,61 @@ getProvider的同步方法
 获取服务供应商  **已废弃，4.25及以后版本请使用getProviderSync()方法代替**
 
 ### getProvider 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 4.18 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 4.18 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **GetProviderOptions** | 是 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: - |  |
+| options | **GetProviderOptions** | 是 |  | Web: x; 微信小程序: x |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| service | string | 是 | - | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: - | 服务类型：支付 (payment)<br/> |
-| success | (result: [GetProviderSuccess](#getprovidersuccess-values)) => void | 否 | - | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: - | 接口调用成功的回调 |
-| fail | (result: [GetProviderFail](#getproviderfail-values)) => void | 否 | - | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: - | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | - | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: - | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| service | string | 是 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18 | 服务类型：支付 (payment)<br/> |
+| success | (result: [GetProviderSuccess](#getprovidersuccess-values)) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18 | 接口调用成功的回调 |
+| fail | (result: [GetProviderFail](#getproviderfail-values)) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### service 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| payment | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.18; HarmonyOS: - | 支付 (alipay、wxpay) |
-| oauth | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 授权登录 |
+| payment | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.18 | 支付 (alipay、wxpay) |
+| location | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.18 | 定位 (system、tencent) |
+| oauth | Web: x; 微信小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 (weixin) |
+| share | Web: x; 微信小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 分享 (weixin) |
 
 #### GetProviderSuccess 的属性值 @getprovidersuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| service | string | 是 | - | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: - | 服务类型：支付 (payment)<br/> |
-| provider | Array&lt;string&gt; | 是 | - | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: - | 得到的服务供应商 |
-| providers | Array&lt;[UniProvider](/api/provider.md#uniprovider)&gt; | 是 | - | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: - | 得到的服务供应商服务对象 |
+| service | string | 是 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18 | 服务类型：支付 (payment)<br/> |
+| provider | Array&lt;string&gt; | 是 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18 | 得到的服务供应商 |
+| providers | Array&lt;[UniProvider](/api/provider.md#uniprovider)&gt; | 是 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18 | 得到的服务供应商服务对象 |
 
 #### service 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| payment | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 支付 (alipay、wxpay) |
-| oauth | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 授权登录 |
-| share | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.66; HarmonyOS(Vapor): 5.0 | 分享 |
+| payment | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.18; HarmonyOS: 4.61 | 支付 (alipay、wxpay) |
+| location | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.18; HarmonyOS: 4.61 | 定位 (system、tencent) |
+| oauth | Web: x; 微信小程序: x; Android: x; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 |
+| share | Web: x; 微信小程序: x; Android: 5.08; iOS 系统版本: 13.0; iOS: 5.08; HarmonyOS: 4.66 | 分享 |
 
 #### GetProviderFail 的属性值 @getproviderfail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: - | 错误码：<br/>110600：服务类型参数无效。 |
-| errSubject | string | 是 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: - | 统一错误主题（模块）名称 |
-| data | any | 否 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: - | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: - | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | - | Web: x; 微信小程序: x; Android: -; iOS: -; HarmonyOS: - |  |
+| errCode | number | 是 |  | Web: x; 微信小程序: x | 错误码：<br/>110600：服务类型参数无效。 |
+| errSubject | string | 是 |  | Web: x; 微信小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  | Web: x; 微信小程序: x |  |
 
 
 
@@ -351,6 +362,8 @@ getProvider的同步方法
 1. 目前标准基座中注册的 provider 返回顺序如下：
     支付： 微信支付、支付宝；
     定位： 系统定位、腾讯定位
+    分享： 微信分享
+    登录： 微信登录
 
 2. 相同 service 下，其他的自注册 provider，返回顺序在官方预置的 provider 之后
 
@@ -420,12 +433,8 @@ getProvider的同步方法
     serviceList: [
       { service: "payment", name: "支付", provider: [], providerObj: [] },
       { service: "location", name: "定位", provider: [], providerObj: [] },
-      // #ifdef APP-HARMONY
       { service: "oauth", name: "登录", provider: [], providerObj: [] },
-      // #endif
-      // #ifdef APP-HARMONY
       { service: "share", name: "分享", provider: [], providerObj: [] }
-      // #endif
     ],
     //自动化测试使用
     providerIds: [],

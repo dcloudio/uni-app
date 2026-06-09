@@ -5,11 +5,17 @@
 CSS 中的 box-sizing 属性定义了 user agent 应该如何计算一个元素的总宽度和总高度。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,8 +34,8 @@ box-sizing: content-box | border-box;
 ### box-sizing 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| content-box | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 默认值，标准盒子模型。width 与 height 只包括内容的宽和高，不包括边框（border），内边距（padding），外边距（margin）。注意：内边距、边框和外边距都在这个盒子的外部。比如说，.box {width: 350px; border: 10px solid black;} 在浏览器中的渲染的实际宽度将是 370px。<br/>    尺寸计算公式：<br/>    <br/>      width = 内容的宽度<br/>      height = 内容的高度<br/>    <br/>    宽度和高度的计算值都不包含内容的边框（border）和内边距（padding）。 |
-| border-box | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | width 和 height 属性包括内容，内边距和边框，但不包括外边距。这是当文档处于 Quirks 模式 时 Internet Explorer 使用的盒模型。注意，填充和边框将在盒子内 , 例如， .box {width: 350px; border: 10px solid black;} 导致在浏览器中呈现的宽度为 350px 的盒子。内容框不能为负，并且被分配到 0，使得不可能使用 border-box 使元素消失。<br/>    尺寸计算公式：<br/>    <br/>      width = border + padding + 内容的宽度<br/>      height = border + padding + 内容的高度 |
+| content-box | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 默认值，标准盒子模型。width 与 height 只包括内容的宽和高，不包括边框（border），内边距（padding），外边距（margin）。注意：内边距、边框和外边距都在这个盒子的外部。比如说，.box {width: 350px; border: 10px solid black;} 在浏览器中的渲染的实际宽度将是 370px。<br/>    尺寸计算公式：<br/>    <br/>      width = 内容的宽度<br/>      height = 内容的高度<br/>    <br/>    宽度和高度的计算值都不包含内容的边框（border）和内边距（padding）。 |
+| border-box | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | width 和 height 属性包括内容，内边距和边框，但不包括外边距。这是当文档处于 Quirks 模式 时 Internet Explorer 使用的盒模型。注意，填充和边框将在盒子内 , 例如， .box {width: 350px; border: 10px solid black;} 导致在浏览器中呈现的宽度为 350px 的盒子。内容框不能为负，并且被分配到 0，使得不可能使用 border-box 使元素消失。<br/>    尺寸计算公式：<br/>    <br/>      width = border + padding + 内容的宽度<br/>      height = border + padding + 内容的高度 |
 
 
 ### 默认值 @default-value 
@@ -143,10 +149,10 @@ box-sizing: content-box | border-box;
     <view class="test-container">
       <view class="test-item">
         <text class="uni-subtitle-text">view 组件</text>
-        <text class="uni-info">设置值: {{boxSizing}}</text>
-        <text class="uni-info">获取值: {{boxSizingActual}}</text>
+        <text class="uni-info">设置值: {{data.boxSizing}}</text>
+        <text class="uni-info">获取值: {{data.boxSizingActual}}</text>
         <view class="test-box">
-          <view ref="viewRef" class="common" :style="{ boxSizing: boxSizing }">
+          <view ref="viewRef" class="common" :style="{ boxSizing: data.boxSizing }">
             <text class="common-text font-size-12">view</text>
           </view>
         </view>
@@ -154,19 +160,19 @@ box-sizing: content-box | border-box;
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件</text>
-        <text class="uni-info">设置值: {{boxSizing}}</text>
-        <text class="uni-info">获取值: {{boxSizingActualText}}</text>
+        <text class="uni-info">设置值: {{data.boxSizing}}</text>
+        <text class="uni-info">获取值: {{data.boxSizingActualText}}</text>
         <view class="test-box">
-          <text ref="textRef" class="common font-size-12" :style="{ boxSizing: boxSizing }">text</text>
+          <text ref="textRef" class="common font-size-12" :style="{ boxSizing: data.boxSizing }">text</text>
         </view>
       </view>
 
       <view class="test-item">
         <text class="uni-subtitle-text">image 组件</text>
-        <text class="uni-info">设置值: {{boxSizing}}</text>
-        <text class="uni-info">获取值: {{boxSizingActualImage}}</text>
+        <text class="uni-info">设置值: {{data.boxSizing}}</text>
+        <text class="uni-info">获取值: {{data.boxSizingActualImage}}</text>
         <view class="test-box">
-          <image ref="imageRef" class="common" :style="{ boxSizing: boxSizing }" src="/static/test-image/logo.png"></image>
+          <image ref="imageRef" class="common" :style="{ boxSizing: data.boxSizing }" src="/static/test-image/logo.png"></image>
         </view>
       </view>
     </view>
@@ -175,10 +181,10 @@ box-sizing: content-box | border-box;
     <view class="test-container">
       <view class="test-item">
         <text class="uni-subtitle-text">view 组件拍平</text>
-        <text class="uni-info">设置值: {{boxSizing}}</text>
-        <text class="uni-info">获取值: {{boxSizingActualFlat}}</text>
+        <text class="uni-info">设置值: {{data.boxSizing}}</text>
+        <text class="uni-info">获取值: {{data.boxSizingActualFlat}}</text>
         <view class="test-box">
-          <view ref="viewRefFlat" class="common" :style="{ boxSizing: boxSizing }" flatten>
+          <view ref="viewRefFlat" class="common" :style="{ boxSizing: data.boxSizing }" flatten>
             <text class="common-text font-size-12">view</text>
           </view>
         </view>
@@ -186,19 +192,19 @@ box-sizing: content-box | border-box;
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件拍平</text>
-        <text class="uni-info">设置值: {{boxSizing}}</text>
-        <text class="uni-info">获取值: {{boxSizingActualTextFlat}}</text>
+        <text class="uni-info">设置值: {{data.boxSizing}}</text>
+        <text class="uni-info">获取值: {{data.boxSizingActualTextFlat}}</text>
         <view class="test-box">
-          <text ref="textRefFlat" class="common font-size-12" :style="{ boxSizing: boxSizing }" flatten>text</text>
+          <text ref="textRefFlat" class="common font-size-12" :style="{ boxSizing: data.boxSizing }" flatten>text</text>
         </view>
       </view>
 
       <view class="test-item">
         <text class="uni-subtitle-text">image 组件拍平</text>
-        <text class="uni-info">设置值: {{boxSizing}}</text>
-        <text class="uni-info">获取值: {{boxSizingActualImageFlat}}</text>
+        <text class="uni-info">设置值: {{data.boxSizing}}</text>
+        <text class="uni-info">获取值: {{data.boxSizingActualImageFlat}}</text>
         <view class="test-box">
-          <image ref="imageRefFlat" class="common" :style="{ boxSizing: boxSizing }" flatten src="/static/test-image/logo.png"></image>
+          <image ref="imageRefFlat" class="common" :style="{ boxSizing: data.boxSizing }" flatten src="/static/test-image/logo.png"></image>
         </view>
       </view>
     </view>
@@ -206,7 +212,7 @@ box-sizing: content-box | border-box;
     <view class="uni-common-mt uni-common-mb">
       <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
       <enum-data :items="boxSizingEnum" title="box-sizing 枚举值" @change="radioChangeBoxSizing" :compact="true"></enum-data>
-      <input-data :defaultValue="boxSizing" title="box-sizing 自定义值" type="text" @confirm="inputChangeBoxSizing"></input-data>
+      <input-data :defaultValue="data.boxSizing" title="box-sizing 自定义值" type="text" @confirm="inputChangeBoxSizing"></input-data>
     </view>
 
     <view class="uni-common-mb">
@@ -232,13 +238,15 @@ box-sizing: content-box | border-box;
     { value: 2, name: 'border-box' }
   ]
 
-  const boxSizing = ref('content-box')
-  const boxSizingActual = ref('')
-  const boxSizingActualText = ref('')
-  const boxSizingActualImage = ref('')
-  const boxSizingActualFlat = ref('')
-  const boxSizingActualTextFlat = ref('')
-  const boxSizingActualImageFlat = ref('')
+  const data = reactive({
+    boxSizing: 'content-box',
+    boxSizingActual: '',
+    boxSizingActualText: '',
+    boxSizingActualImage: '',
+    boxSizingActualFlat: '',
+    boxSizingActualTextFlat: '',
+    boxSizingActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -247,16 +255,17 @@ box-sizing: content-box | border-box;
   const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    boxSizingActual.value = viewRef.value?.style.getPropertyValue('box-sizing') ?? ''
-    boxSizingActualFlat.value = viewRefFlat.value?.style.getPropertyValue('box-sizing') ?? ''
-    boxSizingActualText.value = textRef.value?.style.getPropertyValue('box-sizing') ?? ''
-    boxSizingActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('box-sizing') ?? ''
-    boxSizingActualImage.value = imageRef.value?.style.getPropertyValue('box-sizing') ?? ''
-    boxSizingActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('box-sizing') ?? ''
+    data.boxSizingActual = viewRef.value?.style.getPropertyValue('box-sizing') ?? ''
+    data.boxSizingActualFlat = viewRefFlat.value?.style.getPropertyValue('box-sizing') ?? ''
+    data.boxSizingActualText = textRef.value?.style.getPropertyValue('box-sizing') ?? ''
+    data.boxSizingActualTextFlat = textRefFlat.value?.style.getPropertyValue('box-sizing') ?? ''
+    data.boxSizingActualImage = imageRef.value?.style.getPropertyValue('box-sizing') ?? ''
+    data.boxSizingActualImageFlat = imageRefFlat.value?.style.getPropertyValue('box-sizing') ?? ''
   }
 
+  const ins = getCurrentInstance()
   const changeBoxSizing = (value: string) => {
-    boxSizing.value = value
+    data.boxSizing = value
     viewRef.value?.style.setProperty('box-sizing', value)
     viewRefFlat.value?.style.setProperty('box-sizing', value)
     textRef.value?.style.setProperty('box-sizing', value)
@@ -266,7 +275,7 @@ box-sizing: content-box | border-box;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeBoxSizing = (index: number) => {
@@ -282,6 +291,11 @@ box-sizing: content-box | border-box;
 
   onReady(() => {
     getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeBoxSizing,
+    data
   })
 </script>
 

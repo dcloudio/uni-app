@@ -4,29 +4,24 @@
   * 视图容器
     * [view | 基本视图容器](view.md)
     * [scroll-view | 可滚动视图容器](scroll-view.md)
-    * swiper | 滑块视图组件
-      * [swiper | 滑块视图容器](swiper.md)
-      * [swiper-item | 滑块视图容器子项](swiper-item.md)
-    * [match-media | 匹配检测节点](match-media.md)
+    * [swiper | 滑块视图容器](swiper.md)
+    * [list-view | 列表容器](list-view.md)
+    * [waterflow | 瀑布流容器](waterflow.md)
+    * nested-scroll | 嵌套滚动
+      * [nested-scroll-header](nested-scroll-header.md)
+      * [nested-scroll-body](nested-scroll-body.md)
+    * sticky | 粘性布局组件
+      * [sticky-header | 吸顶布局容器](sticky-header.md)
+      * [sticky-section | 吸顶布局容器](sticky-section.md)
+		* [page-container | 弹层容器](page-container.md)
+		* [match-media | 匹配检测节点](match-media.md)
+    * [share-element | 共享元素视图容器](share-element.md)
     * movable | 可拖动组件
       * [movable-area | 可拖动区域](movable-area.md)
       * [movable-view | 可拖动视图容器](movable-view.md)
     * cover
       * [~~cover-view~~](cover-view.md)
       * [~~cover-image~~](cover-image.md)
-    * list-view | 列表布局组件
-      * [list-view | 列表容器](list-view.md)
-      * [list-item | 列表容器子项](list-item.md)
-    * waterflow | 瀑布流布局组件
-      * [waterflow | 瀑布流容器](waterflow.md)
-      * [flow-item | 瀑布流容器子项](flow-item.md)
-    * sticky | 粘性布局组件
-      * [sticky-header | 吸顶布局容器](sticky-header.md)
-      * [sticky-section | 吸顶布局容器](sticky-section.md)
-    * nested-scroll | 嵌套滚动
-      * [nested-scroll-header](nested-scroll-header.md)
-      * [nested-scroll-body](nested-scroll-body.md)
-    * [share-element | 共享元素视图容器](share-element.md)
   * 基础内容
     * [icon | 图标](icon.md)
     * [text | 文本](text.md)
@@ -37,19 +32,17 @@
   * 表单组件
     * [button | 按钮](button.md)
     * checkbox | 多选框
-      * [checkbox-group | 多选框组](checkbox-group.md)
       * [checkbox | 多选框](checkbox.md)
+      * [checkbox-group | 多选框组](checkbox-group.md)
     * [form | 表单](form.md)
     * [input | 输入框](input.md)
     * [editor | 富文本编辑器](editor.md)
     * [label](label.md)
     * [picker | 底部弹出滚动选择器](picker.md)
-    * picker-view | 滚动选择器组件
-      * [picker-view | 嵌入页面的滚动选择器](picker-view.md)
-      * [picker-view-column | 滚动选择器子项](picker-view-column.md)
+    * [picker-view | 嵌入页面的滚动选择器](picker-view.md)
     * radio | 单选框
-      * [radio-group | 单选框组](radio-group.md)
       * [radio | 单选框](radio.md)
+      * [radio-group | 单选框组](radio-group.md)
     * [slider | 滑动选择器](slider.md)
     * [switch | 开关选择器](switch.md)
     * [textarea | 多行输入框](textarea.md)
@@ -58,10 +51,10 @@
   * 媒体组件
     * [image | 图片](image.md)
     * [video | 视频](video.md)
-    * [animation-view | Lottie动画](animation-view.md)
     * [camera | 相机](camera.md)
     * [live-player | 拉流](live-player.md)
     * [live-pusher | 推流](live-pusher.md)
+    * [animation-view | Lottie动画](animation-view.md)
   * 地图
     * [map | 地图](map.md)
   * 画布
@@ -72,8 +65,22 @@
     * [web-view](web-view.md)
   * 页面属性配置节点
     * [custom-tab-bar](custom-tab-bar.md)
+    * [page-meta](page-meta.md)
   * unicloud
     * [unicloud-db](unicloud-db.md)
+* [uni-ui x 扩展组件](./uni-ui-x/README.md)
+  * [uni-badge-view | 数字角标](./uni-ui-x/uni-badge-view.md)
+  * [uni-collapse | 折叠面板容器](./uni-ui-x/uni-collapse.md)
+  * [uni-drag-cell | 可拖拽排序](./uni-ui-x/uni-drag-cell.md)
+  * [uni-fab-button | 悬浮按钮](./uni-ui-x/uni-fab-button.md)
+  * [uni-index-bar | 索引条](./uni-ui-x/uni-index-bar.md)
+  * [uni-link | 链接](./uni-ui-x/uni-link.md)
+  * [uni-number-box | 数字输入框](./uni-ui-x/uni-number-box.md)
+  * [uni-nav-bar | 自定义导航栏](./uni-ui-x/uni-nav-bar.md)
+  * [uni-rate | 评分](./uni-ui-x/uni-rate.md)
+  * [uni-time-format | 时间格式化](./uni-ui-x/uni-time-format.md)
+  * [uni-tab-bar | 选项卡容器](./uni-ui-x/uni-tab.md)
+  * [uni-refresh-box | 自定义下拉刷新](./uni-ui-x/uni-refresh-box.md)
 * 微信专用组件
   * Skyline
     * 手势系统
@@ -105,6 +112,5 @@
     * [channel-video](channel-video.md)
     * [voip-room](voip-room.md)
     * [keyboard-accessory](keyboard-accessory.md)
-    * [page-container](page-container.md)
     * [root-portal](root-portal.md)
     * [functional-page-navigator](functional-page-navigator.md)

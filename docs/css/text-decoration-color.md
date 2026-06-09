@@ -5,11 +5,17 @@
 text-decoration-color 属性用于设置元素中文本的修饰线颜色。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | x | x |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| x | x | x |
 
 
 
@@ -37,7 +43,9 @@ text-decoration-color: <color>;
 
 
 #### App平台差异
-+ App平台默认颜色为文字颜色，暂不支持设置
++ App平台默认颜色为文字颜色  
++ App-Android平台不支持设置修饰线颜色，修饰性颜色与文字颜色一致  
++ App-iOS平台非蒸汽模式不支持设置修饰线颜色，修饰性颜色与文字颜色一致，蒸汽模式支持设置修饰线颜色  
 
 
 ### 参见

@@ -2,23 +2,23 @@
 
 ## 指令 @directives
 
-|  | Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| v-text | 4.0 | - | x | x | x |
-| v-html | 4.0 | - | 3.99 | x | x |
-| v-show | 4.0 | 4.11 | 3.9 | 4.11 | 4.61 |
-| v-if | 4.0 | 4.11 | 3.9 | 4.11 | 4.61 |
-| v-else | 4.0 | 4.11 | 3.9 | 4.11 | 4.61 |
-| v-else-if | 4.0 | 4.11 | 3.9 | 4.11 | 4.61 |
-| v-for | 4.0 | 4.11 | 3.9 | 4.11 | 4.61 |
-| v-on | 4.0 | 4.11 | 3.9 | 4.11 | 4.61 |
-| v-bind | 4.0 | 4.11 | 3.9 | 4.11 | 4.61 |
-| v-model | 4.0 | 4.11 | 3.9 | 4.11 | 4.61 |
-| v-slot | 4.0 | 4.11 | 3.9 | 4.11 | 4.61 |
-| v-pre | 4.0 | - | 3.99 | 4.11 | 4.61 |
-| v-once | x | - | 3.99 | 4.11 | 4.61 |
-| v-memo | x | - | 3.99 | 4.11 | 4.61 |
-| v-cloak | 4.0 | - | x | x | x |
+|  | 兼容性 |
+| :- | :- |
+| v-text | Web: 4.0; 微信小程序: x; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |
+| v-html | Web: 4.0; 微信小程序: x; Android: 3.99; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |
+| v-show | Web: 4.0; 微信小程序: 4.11; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |
+| v-if | Web: 4.0; 微信小程序: 4.11; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |
+| v-else | Web: 4.0; 微信小程序: 4.11; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |
+| v-else-if | Web: 4.0; 微信小程序: 4.11; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |
+| v-for | Web: 4.0; 微信小程序: 4.11; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |
+| v-on | Web: 4.0; 微信小程序: 4.11; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |
+| v-bind | Web: 4.0; 微信小程序: 4.11; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |
+| v-model | Web: 4.0; 微信小程序: 4.11; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |
+| v-slot | Web: 4.0; 微信小程序: 4.11; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |
+| v-pre | Web: 4.0; 微信小程序: x; Android: 3.99; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x |
+| v-once | Web: x; 微信小程序: x; Android: 3.99; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x |
+| v-memo | Web: x; 微信小程序: x; Android: 3.99; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x |
+| v-cloak | Web: 4.0; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |
 
 ### v-text
 
@@ -962,7 +962,7 @@ export default {
       } as BtnPreventRect
     }
   },
-	// #ifdef APP-ANDROID || APP-IOS
+	// #ifdef APP
   onReady(){
     const btnPrevent = uni.getElementById("btn-prevent")
     console.log('btnPrevent', btnPrevent);
@@ -1039,7 +1039,7 @@ type BtnPreventRect = {
 let btnPreventRect = reactive({
   value: null
 } as BtnPreventRect)
-// #ifdef APP-ANDROID || APP-IOS
+// #ifdef APP
 onReady(() => {
   const btnPrevent = uni.getElementById("btn-prevent")
   btnPreventRect.value = btnPrevent!.getBoundingClientRect()
@@ -1683,6 +1683,12 @@ export default {
           <text id="slot-footer">{{ JSON.stringify(arr) }}</text>
         </view>
       </template>
+      <template #withFor="{ item }">
+        <view class="mb-10 flex justify-between flex-row">
+          <text>v-for slot item:</text>
+          <text :id="`slot-for-${item}`">{{ item }}</text>
+        </view>
+      </template>
     </Foo>
   </view>
 </template>
@@ -1750,6 +1756,12 @@ export default {
         <view class="mb-10 flex justify-between flex-row">
           <text>footer slot arr:</text>
           <text id="slot-footer">{{ JSON.stringify(arr) }}</text>
+        </view>
+      </template>
+      <template #withFor="{ item }">
+        <view class="mb-10 flex justify-between flex-row">
+          <text>v-for slot item:</text>
+          <text :id="`slot-for-${item}`">{{ item }}</text>
         </view>
       </template>
     </Foo>
@@ -1938,22 +1950,22 @@ const incrementNum = () =>{
 
  <keep-alive> 包裹动态组件时，会缓存不活动的组件实例，而不是销毁它们。和 <transition> 相似，<keep-alive> 是一个抽象组件：它自身不会渲染一个 DOM 元素，也不会出现在父组件链中。
 
+
+##### 兼容性
+| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | - | 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 10.0 | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+
+
 ##### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| include | string | - | Web: 4.0; 微信小程序: -; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 字符串或正则表达式。只有名称匹配的组件会被缓存。 |
-| exclude | string | - | Web: 4.0; 微信小程序: -; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 字符串或正则表达式。任何名称匹配的组件都不会被缓存。 |
-| max | string | - | Web: 4.0; 微信小程序: -; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 最多可以缓存多少组件实例。 |
+| include | string |   | Web: 4.0; 微信小程序: -; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 字符串或正则表达式。只有名称匹配的组件会被缓存。 |
+| exclude | string |   | Web: 4.0; 微信小程序: -; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 字符串或正则表达式。任何名称匹配的组件都不会被缓存。 |
+| max | string |   | Web: 4.0; 微信小程序: -; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 最多可以缓存多少组件实例。 |
 
 
 
-
-
-
-##### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | - | 4.0 | 4.11 | 4.61 |
 
 
 
@@ -1968,60 +1980,60 @@ const incrementNum = () =>{
 
  <transition> 元素作为单个元素/组件的过渡效果。<transition> 只会把过渡效果应用到其包裹的内容上，而不会额外渲染 DOM 元素，也不会出现在检测过的组件层级中。
 
+
+##### 兼容性
+| Web | 微信小程序 | Android | iOS 系统版本 | iOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | - | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 10.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+
+
 ##### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| name | string | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 用于自动生成 CSS 过渡类名。例如：name: 'fade' 将自动拓展为.fade-enter，.fade-enter-active等。默认类名为 "v" |
-| appear | boolean | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 是否在初始渲染时使用过渡。默认为 false。 |
-| css | boolean | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 是否使用 CSS 过渡类。默认为 true。如果设置为 false，将只通过组件事件触发注册的 JavaScript 钩子。 |
-| type | string | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 指定过渡事件类型，侦听过渡何时结束。有效值为 "transition" 和 "animation"。默认 Vue.js 将自动检测出持续时间长的为过渡事件类型。 |
-| mode | string | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 控制离开/进入的过渡时间序列。有效的模式有 "out-in" 和 "in-out"；默认同时生效。 |
-| duration | string | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 指定过渡的持续时间。默认情况下，Vue 会等待过渡所在根元素的第一个 transitionend 或 animationend 事件。 |
-| enter-class | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| leave-class | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| appear-class | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| enter-to-class | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| leave-to-class | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| appear-to-class | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| enter-active-class | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| leave-active-class | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| appear-active-class | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @before-enter | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @before-leave | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @before-appear | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @enter | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @leave | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @appear | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @after-enter | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @after-leave | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @after-appear | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @enter-cancelled | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @leave-cancelled | string | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | v-show only |
-| @appear-cancelled | Any | - | - | - |
+| name | string |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 用于自动生成 CSS 过渡类名。例如：name: 'fade' 将自动拓展为.fade-enter，.fade-enter-active等。默认类名为 "v" |
+| appear | boolean |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 是否在初始渲染时使用过渡。默认为 false。 |
+| css | boolean |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 是否使用 CSS 过渡类。默认为 true。如果设置为 false，将只通过组件事件触发注册的 JavaScript 钩子。 |
+| type | string |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 指定过渡事件类型，侦听过渡何时结束。有效值为 "transition" 和 "animation"。默认 Vue.js 将自动检测出持续时间长的为过渡事件类型。 |
+| mode | string |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 控制离开/进入的过渡时间序列。有效的模式有 "out-in" 和 "in-out"；默认同时生效。 |
+| duration | string |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 指定过渡的持续时间。默认情况下，Vue 会等待过渡所在根元素的第一个 transitionend 或 animationend 事件。 |
+| enter-class | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| leave-class | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| appear-class | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| enter-to-class | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| leave-to-class | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| appear-to-class | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| enter-active-class | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| leave-active-class | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| appear-active-class | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @before-enter | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @before-leave | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @before-appear | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @enter | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @leave | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @appear | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @after-enter | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @after-leave | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @after-appear | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @enter-cancelled | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @leave-cancelled | string |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | v-show only |
+| @appear-cancelled | Any |   |   |   |
 
 #### type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| transition | - | - |
-| animation | - | - |
+| transition |   |  |
+| animation |   |  |
 
 #### mode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| out-in | - | - |
-| in-out | - | - |
+| out-in |   |  |
+| in-out |   |  |
 
 
 
-
-
-
-##### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | - | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | - |
 
 
 
@@ -2037,55 +2049,55 @@ const incrementNum = () =>{
 
  <transition-group> 元素作为多个元素/组件的过渡效果。<transition-group> 渲染一个真实的 DOM 元素。默认渲染 <span>，可以通过 tag 属性配置哪个元素应该被渲染。
 
+
+##### 兼容性
+| Web | 微信小程序 | Android | iOS 系统版本 | iOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | - | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 10.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+
+
 ##### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| tag | string | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 默认为 span。 |
-| move-class | string | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 覆盖移动过渡期间应用的 CSS 类。 |
-| name | string | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 用于自动生成 CSS 过渡类名。例如：name: 'fade' 将自动拓展为.fade-enter，.fade-enter-active等。默认类名为 "v" |
-| appear | boolean | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 是否在初始渲染时使用过渡。默认为 false。 |
-| css | boolean | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 是否使用 CSS 过渡类。默认为 true。如果设置为 false，将只通过组件事件触发注册的 JavaScript 钩子。 |
-| type | string | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 指定过渡事件类型，侦听过渡何时结束。有效值为 "transition" 和 "animation"。默认 Vue.js 将自动检测出持续时间长的为过渡事件类型。 |
-| mode | Any | - | - | - |
-| duration | string | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 指定过渡的持续时间。默认情况下，Vue 会等待过渡所在根元素的第一个 transitionend 或 animationend 事件。 |
-| enter-class | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| leave-class | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| appear-class | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| enter-to-class | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| leave-to-class | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| appear-to-class | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| enter-active-class | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| leave-active-class | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| appear-active-class | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @before-enter | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @before-leave | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @before-appear | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @enter | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @leave | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @appear | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @after-enter | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @after-leave | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @after-appear | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @enter-cancelled | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
-| @leave-cancelled | string | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | v-show only |
-| @appear-cancelled | Any | - | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
+| tag | string |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 默认为 span。 |
+| move-class | string |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 覆盖移动过渡期间应用的 CSS 类。 |
+| name | string |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 用于自动生成 CSS 过渡类名。例如：name: 'fade' 将自动拓展为.fade-enter，.fade-enter-active等。默认类名为 "v" |
+| appear | boolean |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 是否在初始渲染时使用过渡。默认为 false。 |
+| css | boolean |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 是否使用 CSS 过渡类。默认为 true。如果设置为 false，将只通过组件事件触发注册的 JavaScript 钩子。 |
+| type | string |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 指定过渡事件类型，侦听过渡何时结束。有效值为 "transition" 和 "animation"。默认 Vue.js 将自动检测出持续时间长的为过渡事件类型。 |
+| mode | Any |   |   |   |
+| duration | string |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 指定过渡的持续时间。默认情况下，Vue 会等待过渡所在根元素的第一个 transitionend 或 animationend 事件。 |
+| enter-class | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| leave-class | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| appear-class | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| enter-to-class | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| leave-to-class | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| appear-to-class | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| enter-active-class | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| leave-active-class | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| appear-active-class | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @before-enter | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @before-leave | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @before-appear | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @enter | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @leave | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @appear | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @after-enter | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @after-leave | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @after-appear | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @enter-cancelled | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| @leave-cancelled | string |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | v-show only |
+| @appear-cancelled | Any |   | Web: 4.0; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
 
 #### type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| transition | - | - |
-| animation | - | - |
+| transition |   |  |
+| animation |   |  |
 
 
 
-
-
-
-##### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | - | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | - |
 
 
 
@@ -2101,24 +2113,24 @@ const incrementNum = () =>{
 
  Teleport 提供了一种干净的方法，允许我们控制在 DOM 中哪个父节点下呈现 HTML，而不必求助于全局状态或将其拆分为两个组件。
 
+
+##### 兼容性
+| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | - | 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 10.0 | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+
+
 ##### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| to | string | - | Web: 4.0; 微信小程序: -; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 必须是有效的查询选择器或 HTMLElement (如果在浏览器环境中使用)。指定将在其中移动 \<teleport> 内容的目标元素 |
-| disabled | boolean | - | Web: 4.0; 微信小程序: -; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 此可选属性可用于禁用 \<teleport> 的功能，这意味着其插槽内容将不会移动到任何位置，而是在您在周围父组件中指定了 \<teleport> 的位置渲染。 |
+| to | string |   | Web: 4.0; 微信小程序: -; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 必须是有效的查询选择器或 HTMLElement (如果在浏览器环境中使用)。指定将在其中移动 \<teleport> 内容的目标元素 |
+| disabled | boolean |   | Web: 4.0; 微信小程序: -; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 此可选属性可用于禁用 \<teleport> 的功能，这意味着其插槽内容将不会移动到任何位置，而是在您在周围父组件中指定了 \<teleport> 的位置渲染。 |
 
 **注意：**
 - App-Android 平台暂不支持动态修改 `to` 属性。
 
 
 
-
-
-
-##### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | - | 4.0 | 4.11 | 4.61 |
 
 
 
@@ -2134,6 +2146,13 @@ const incrementNum = () =>{
 > 组件类型：string 
 
  当我们想要使用内置指令而不在 DOM 中渲染元素时，<template> 标签可以作为占位符使用。
+
+
+##### 兼容性
+| Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | - | 3.9 | 10.0 | 4.11 | 4.61 |
+
 
 `<template>` 有2个用途：
 1. 作为单文件组件规范的模板根节点。在 `<template>` 下面放置页面模板真正的组件内容。
@@ -2172,24 +2191,17 @@ const incrementNum = () =>{
 ##### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| lang | string | - | Web: 4.0; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |  |
+| lang | string |   | Web: 4.0; 微信小程序: -; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |  |
 
 #### lang 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| html | Web: 4.0; 微信小程序: 4.11; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | html |
-| pug | Web: x; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | pug |
+| html | Web: 4.0; 微信小程序: 4.11; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | html |
+| pug | Web: x; 微信小程序: -; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | pug |
 
 
 
-
-
-
-##### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | - | 3.9 | 4.11 | 4.61 |
 
 
 
@@ -2205,20 +2217,20 @@ const incrementNum = () =>{
 
  <slot> 元素作为组件模板之中的内容分发插槽。<slot> 元素自身将被替换。
 
+
+##### 兼容性
+| Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.11 | 3.9 | 10.0 | 4.11 | 4.61 |
+
+
 ##### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| name | string | - | Web: 4.0; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 用于命名插槽。 |
+| name | string |   | Web: 4.0; 微信小程序: -; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 用于命名插槽。 |
 
 
 
-
-
-
-##### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.11 | 3.9 | 4.11 | 4.61 |
 
 
 
@@ -2233,21 +2245,21 @@ const incrementNum = () =>{
 
  渲染一个“元组件”为动态组件。依 is 的值，来决定哪个组件被渲染。
 
+
+##### 兼容性
+| Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | - | 3.99 | 10.0 | 4.11 | 4.61 |
+
+
 ##### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| is | Any | - | Web: 4.0; 微信小程序: -; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 | - |
-| inline-template | boolean | - | Web: 4.0; 微信小程序: -; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 | - |
+| is | Any |   | Web: 4.0; 微信小程序: -; Android: 3.99; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |   |
+| inline-template | boolean |   | Web: 4.0; 微信小程序: -; Android: 3.99; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |   |
 
 
 
-
-
-
-##### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | - | 3.99 | 4.11 | 4.61 |
 
 
 
@@ -2258,11 +2270,11 @@ const incrementNum = () =>{
 
 ## 特殊 Attributes @special-attributes
 
-|  | Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| key | 4.0 | - | 3.9 | 4.11 | 4.61 |
-| ref | 4.0 | - | 3.9 | 4.11 | 4.61 |
-| is | 4.0 | - | 3.99 | 4.11 | 4.61 |
+|  | Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| key | 4.0 | - | 3.9 | 10.0 | 4.11 | 4.61 |
+| ref | 4.0 | - | 3.9 | 10.0 | 4.11 | 4.61 |
+| is | 4.0 | - | 3.99 | 10.0 | 4.11 | 4.61 |
 
 
 

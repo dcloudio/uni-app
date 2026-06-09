@@ -5,11 +5,17 @@
 flex 属性设置弹性元素如何增大或缩小以适应其弹性容器中可用的空间，是 flex-grow、flex-shrink、flex-basis 的简写。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -30,9 +36,9 @@ flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ];
 ### flex 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| initial | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 元素会根据自身宽高设置尺寸。它会缩短自身以适应 flex 容器，但不会伸长并吸收 flex 容器中的额外自由空间来适应 flex 容器。相当于将属性设置为"flex: 0 1 auto"。 |
-| auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 元素会根据自身的宽度与高度来确定尺寸，但是会伸长并吸收 flex 容器中额外的自由空间，也会缩短自身来适应 flex 容器。这相当于将属性设置为 "flex: 1 1 auto". |
-| none | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 元素会根据自身宽高来设置尺寸。它是完全非弹性的：既不会缩短，也不会伸长来适应 flex 容器。相当于将属性设置为"flex: 0 0 auto"。 |
+| initial | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素会根据自身宽高设置尺寸。它会缩短自身以适应 flex 容器，但不会伸长并吸收 flex 容器中的额外自由空间来适应 flex 容器。相当于将属性设置为"flex: 0 1 auto"。 |
+| auto | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素会根据自身的宽度与高度来确定尺寸，但是会伸长并吸收 flex 容器中额外的自由空间，也会缩短自身来适应 flex 容器。这相当于将属性设置为 "flex: 1 1 auto". |
+| none | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素会根据自身宽高来设置尺寸。它是完全非弹性的：既不会缩短，也不会伸长来适应 flex 容器。相当于将属性设置为"flex: 0 0 auto"。 |
 
 
 ### 默认值 @default-value 
@@ -61,9 +67,9 @@ flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ];
     <view>
       <view class="head">
         <text class="tip">下面有一个灰色区域，display默认值为flex</text>
-        <text class="tip">当前display值：{{display}}</text>
+        <text class="tip">当前display值：{{data.display}}</text>
       </view>
-      <view class="content" :style="{display:display}">
+      <view class="content" :style="{display:data.display}">
         <text style="background-color: aquamarine;">展示display区域</text>
         <scroll-view>
           <text class="common-text" style="height: 20px;">scroll-view</text>
@@ -92,10 +98,10 @@ flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ];
         <!-- view 组件测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{displayProp}}</text>
-          <text class="uni-info">获取值: {{displayActual}}</text>
+          <text class="uni-info">设置值: {{data.displayProp}}</text>
+          <text class="uni-info">获取值: {{data.displayActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-view test-view" :style="{ display: displayProp }">
+            <view ref="viewRef" class="common-view test-view" :style="{ display: data.displayProp }">
               <text class="common-text">view</text>
             </view>
           </view>
@@ -104,20 +110,20 @@ flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ];
         <!-- text 组件测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{displayProp}}</text>
-          <text class="uni-info">获取值: {{displayActualText}}</text>
+          <text class="uni-info">设置值: {{data.displayProp}}</text>
+          <text class="uni-info">获取值: {{data.displayActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-text test-text" :style="{ display: displayProp }">text</text>
+            <text ref="textRef" class="common-text test-text" :style="{ display: data.displayProp }">text</text>
           </view>
         </view>
 
         <!-- image 组件测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{displayProp}}</text>
-          <text class="uni-info">获取值: {{displayActualImage}}</text>
+          <text class="uni-info">设置值: {{data.displayProp}}</text>
+          <text class="uni-info">获取值: {{data.displayActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-image test-image" :style="{ display: displayProp }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image test-image" :style="{ display: data.displayProp }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -126,7 +132,7 @@ flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ];
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="displayEnum" title="display 枚举值" @change="radioChangeDisplay" :compact="true"></enum-data>
-        <input-data :defaultValue="displayProp" title="display 自定义值" type="text" @confirm="inputChangeDisplay"></input-data>
+        <input-data :defaultValue="data.displayProp" title="display 自定义值" type="text" @confirm="inputChangeDisplay"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -145,10 +151,16 @@ flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ];
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const display = ref('flex')
+  const data = reactive({
+    display: 'flex',
+    displayProp: 'flex',
+    displayActual: '',
+    displayActualText: '',
+    displayActualImage: ''
+  })
 
   const switchDisplay = () => {
-    display.value = ('flex' == display.value) ? 'none' : 'flex'
+    data.display = ('flex' == data.display) ? 'none' : 'flex'
   }
 
   const displayEnum: ItemType[] = [
@@ -157,29 +169,26 @@ flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ];
     { value: 2, name: 'none' }
   ]
 
-  const displayProp = ref('flex')
-  const displayActual = ref('')
-  const displayActualText = ref('')
-  const displayActualImage = ref('')
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    displayActual.value = viewRef.value?.style.getPropertyValue('display') ?? ''
-    displayActualText.value = textRef.value?.style.getPropertyValue('display') ?? ''
-    displayActualImage.value = imageRef.value?.style.getPropertyValue('display') ?? ''
+    data.displayActual = viewRef.value?.style.getPropertyValue('display') ?? ''
+    data.displayActualText = textRef.value?.style.getPropertyValue('display') ?? ''
+    data.displayActualImage = imageRef.value?.style.getPropertyValue('display') ?? ''
   }
 
+  const ins = getCurrentInstance()
   const changeDisplay = (value: string) => {
-    displayProp.value = value
+    data.displayProp = value
     viewRef.value?.style.setProperty('display', value)
     textRef.value?.style.setProperty('display', value)
     imageRef.value?.style.setProperty('display', value)
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeDisplay = (index: number) => {
@@ -198,7 +207,8 @@ flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ];
   })
 
   defineExpose({
-    radioChangeDisplay
+    radioChangeDisplay,
+    data
   })
 </script>
 

@@ -36,17 +36,17 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数,包括页面路由地址与方法返回值 |
-| fragment | Fragment | 是 | - | - | 即将附加的Fragment对象。这允许Activity在Fragment完全附加之前与之交互。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数,包括页面路由地址与方法返回值 |
+| fragment | Fragment | 是 |  |   | 即将附加的Fragment对象。这允许Activity在Fragment完全附加之前与之交互。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -78,17 +78,17 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
-| fragment | Fragment | 是 | - | - | 被附加的 Fragment 实例 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
+| fragment | Fragment | 是 |  |   | 被附加的 Fragment 实例 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -120,16 +120,16 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数,包括页面路由地址与方法返回值 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数,包括页面路由地址与方法返回值 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -161,16 +161,16 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -202,16 +202,16 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -243,16 +243,16 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数,包括页面路由地址与方法返回值 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数,包括页面路由地址与方法返回值 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -284,16 +284,16 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -325,19 +325,19 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数,包括页面路由地址与方法返回值 |
-| requestCode | Int | 是 | - | - | 请求代码，标识发送请求的Activity |
-| resultCode | Int | 是 | - | - | 结果代码，表明操作是否成功或取消 |
-| data | Intent \| null | 是 | - | - | 含返回数据的Intent对象或null | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数,包括页面路由地址与方法返回值 |
+| requestCode | Int | 是 |  |   | 请求代码，标识发送请求的Activity |
+| resultCode | Int | 是 |  |   | 结果代码，表明操作是否成功或取消 |
+| data | Intent \| null | 是 |  |   | 含返回数据的Intent对象或null | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -369,19 +369,19 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
-| requestCode | Int | 是 | - | - | 请求代码 |
-| resultCode | Int | 是 | - | - | 结果代码 |
-| data | Intent \| null | 是 | - | - | 返回的数据 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
+| requestCode | Int | 是 |  |   | 请求代码 |
+| resultCode | Int | 是 |  |   | 结果代码 |
+| data | Intent \| null | 是 |  |   | 返回的数据 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -425,19 +425,19 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
-| requestCode | Int | 是 | - | - | 请求代码 |
-| permissions | MutableList\<String> | 是 | - | - | 请求的权限 |
-| grantResults | IntArray | 是 | - | - | 权限请求结果 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
+| requestCode | Int | 是 |  |   | 请求代码 |
+| permissions | MutableList\<String> | 是 |  |   | 请求的权限 |
+| grantResults | IntArray | 是 |  |   | 权限请求结果 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -469,19 +469,19 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值 |
-| theme | Resources.Theme | 是 | - | - | 当前 Activity 即将应用的主题资源 |
-| resid | Int | 是 | - | - | 用于应用主题的资源ID |
-| first | Boolean | 是 | - | - | 是否为第一次应用该主题 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值 |
+| theme | Resources.Theme | 是 |  |   | 当前 Activity 即将应用的主题资源 |
+| resid | Int | 是 |  |   | 用于应用主题的资源ID |
+| first | Boolean | 是 |  |   | 是否为第一次应用该主题 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -513,19 +513,19 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
-| theme | Resources.Theme | 是 | - | - | 要应用的主题资源 |
-| resid | Int | 是 | - | - | 资源ID |
-| first | Boolean | 是 | - | - | 是否为首次应用 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
+| theme | Resources.Theme | 是 |  |   | 要应用的主题资源 |
+| resid | Int | 是 |  |   | 资源ID |
+| first | Boolean | 是 |  |   | 是否为首次应用 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -557,20 +557,20 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值 |
-| parent | View \| null | 是 | - | - | 即将创建视图的父视图 |
-| name | [String](#string-values) | 是 | - | - | 视图的标识名 |
-| context | Context | 是 | - | - | 视图创建时的上下文 |
-| attrs | AttributeSet | 是 | - | - | 视图的属性集 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值 |
+| parent | View \| null | 是 |  |   | 即将创建视图的父视图 |
+| name | [String](#string-values) | 是 |  |   | 视图的标识名 |
+| context | Context | 是 |  |   | 视图创建时的上下文 |
+| attrs | AttributeSet | 是 |  |   | 视图的属性集 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 ##### String 的方法 @string-values 
 
@@ -579,16 +579,13 @@ at
 Takes an integer value and returns the item at that index,
 allowing for positive and negative integers.
 Negative integers count back from the last item in the array.
-###### at 兼容性 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| index | number | 是 | - | - | - | 
+| index | number | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -627,20 +624,20 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
-| parent | View \| null | 是 | - | - | 父视图 |
-| name | string | 是 | - | - | 视图名称 |
-| context | Context | 是 | - | - | 上下文环境 |
-| attrs | AttributeSet | 是 | - | - | 属性集 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
+| parent | View \| null | 是 |  |   | 父视图 |
+| name | string | 是 |  |   | 视图名称 |
+| context | Context | 是 |  |   | 上下文环境 |
+| attrs | AttributeSet | 是 |  |   | 属性集 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -672,18 +669,18 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。 |
-| title | [String](#string-values) | 是 | - | - | 即将设置的新标题。 |
-| color | Int | 是 | - | - | 标题的颜色。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。 |
+| title | [String](#string-values) | 是 |  |   | 即将设置的新标题。 |
+| color | Int | 是 |  |   | 标题的颜色。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -715,18 +712,18 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数包括页面路由地址与方法返回值 |
-| title | string | 是 | - | - | 新的标题字符 |
-| color | Int | 是 | - | - | 新的标题颜色 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数包括页面路由地址与方法返回值 |
+| title | string | 是 |  |   | 新的标题字符 |
+| color | Int | 是 |  |   | 新的标题颜色 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -758,18 +755,18 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。 |
-| childActivity | Activity | 是 | - | - | 标题变更的子Activity。 |
-| title | [String](#string-values) | 是 | - | - | 即将设置的新标题。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。 |
+| childActivity | Activity | 是 |  |   | 标题变更的子Activity。 |
+| title | [String](#string-values) | 是 |  |   | 即将设置的新标题。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -801,18 +798,18 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数包括页面路由地址与方法返回值 |
-| childActivity | Activity | 是 | - | - | 子Activity的实例 |
-| title | string | 是 | - | - | 新的子Activity标题字符 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数包括页面路由地址与方法返回值 |
+| childActivity | Activity | 是 |  |   | 子Activity的实例 |
+| title | string | 是 |  |   | 新的子Activity标题字符 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -844,17 +841,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。 |
-| menu | Menu | 是 | - | - | 引发上下文菜单关闭事件的菜单。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。 |
+| menu | Menu | 是 |  |   | 引发上下文菜单关闭事件的菜单。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -886,17 +883,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数,包括页面路由地址与方法返回值 |
-| menu | Menu | 是 | - | - | 关闭的菜单 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数,包括页面路由地址与方法返回值 |
+| menu | Menu | 是 |  |   | 关闭的菜单 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -928,19 +925,19 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。 |
-| menu | ContextMenu | 是 | - | - | 要创建的上下文菜单。 |
-| v | View | 是 | - | - | 引发上下文菜单的视图。 |
-| menuInfo | ContextMenu.ContextMenuInfo \| null | 是 | - | - | 与上下文菜单关联的上下文菜单信息，如果没有则为 null。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。 |
+| menu | ContextMenu | 是 |  |   | 要创建的上下文菜单。 |
+| v | View | 是 |  |   | 引发上下文菜单的视图。 |
+| menuInfo | ContextMenu.ContextMenuInfo \| null | 是 |  |   | 与上下文菜单关联的上下文菜单信息，如果没有则为 null。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -972,19 +969,19 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数,包括页面路由地址与方法返回值 |
-| menu | ContextMenu | 是 | - | - | 要创建的上下文菜单 |
-| v | View | 是 | - | - | 与上下文菜单相关联的视图 |
-| menuInfo | ContextMenu.ContextMenuInfo \| null | 是 | - | - | 关联上下文菜单的附加信息，可为空 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数,包括页面路由地址与方法返回值 |
+| menu | ContextMenu | 是 |  |   | 要创建的上下文菜单 |
+| v | View | 是 |  |   | 与上下文菜单相关联的视图 |
+| menuInfo | ContextMenu.ContextMenuInfo \| null | 是 |  |   | 关联上下文菜单的附加信息，可为空 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1016,17 +1013,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值。 |
-| menu | Menu | 是 | - | - | 被关闭的选项菜单。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值。 |
+| menu | Menu | 是 |  |   | 被关闭的选项菜单。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1058,17 +1055,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数,包括页面路由地址与方法返回值 |
-| menu | Menu | 是 | - | - | 关闭的菜单 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数,包括页面路由地址与方法返回值 |
+| menu | Menu | 是 |  |   | 关闭的菜单 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1100,17 +1097,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值。 |
-| builder | TaskStackBuilder | 是 | - | - | 用于构建向上导航任务栈的 TaskStackBuilder 实例。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值。 |
+| builder | TaskStackBuilder | 是 |  |   | 用于构建向上导航任务栈的 TaskStackBuilder 实例。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1142,17 +1139,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数,包括页面路由地址与方法返回值 |
-| builder | TaskStackBuilder | 是 | - | - | 返回栈建造者，用于构造导航返回栈 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数,包括页面路由地址与方法返回值 |
+| builder | TaskStackBuilder | 是 |  |   | 返回栈建造者，用于构造导航返回栈 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1184,17 +1181,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值。 |
-| data | Bundle | 是 | - | - | 辅助数据的捆绑包。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值。 |
+| data | Bundle | 是 |  |   | 辅助数据的捆绑包。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1226,17 +1223,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数,包括页面路由地址与方法返回值 |
-| data | Bundle | 是 | - | - | 提供辅助数据的 Bundle | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数,包括页面路由地址与方法返回值 |
+| data | Bundle | 是 |  |   | 提供辅助数据的 Bundle | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1268,17 +1265,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值。 |
-| outContent | AssistContent | 是 | - | - | 辅助内容的对象。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值。 |
+| outContent | AssistContent | 是 |  |   | 辅助内容的对象。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1310,17 +1307,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数,包括页面路由地址与方法返回值 |
-| outContent | AssistContent | 是 | - | - | 通过这个参数，Activity可以提供有关其内容的结构化信息。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数,包括页面路由地址与方法返回值 |
+| outContent | AssistContent | 是 |  |   | 通过这个参数，Activity可以提供有关其内容的结构化信息。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1358,17 +1355,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。这为开发者提供了一个机会，让他们能够在配置更改生效之前对其进行预处理。 |
-| newConfig | Configuration | 是 | - | - | 提供了新的设备配置信息，允许开发者根据这些信息调整应用行为。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。这为开发者提供了一个机会，让他们能够在配置更改生效之前对其进行预处理。 |
+| newConfig | Configuration | 是 |  |   | 提供了新的设备配置信息，允许开发者根据这些信息调整应用行为。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1400,17 +1397,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。这允许开发者在处理配置更改时访问特定的环境信息。 |
-| newConfig | Configuration | 是 | - | - | 新的设备配置数据。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。这允许开发者在处理配置更改时访问特定的环境信息。 |
+| newConfig | Configuration | 是 |  |   | 新的设备配置数据。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1442,16 +1439,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。它们可以被用来做出更加上下文相关的响应。 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。它们可以被用来做出更加上下文相关的响应。 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -1483,16 +1480,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。这提供了一个机会，让开发者能够在应用面临低内存情况时执行特定逻辑。 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。这提供了一个机会，让开发者能够在应用面临低内存情况时执行特定逻辑。 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -1524,17 +1521,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。使用这些信息，可以选择性地进行内存优化。 |
-| level | Int | 是 | - | - | 系统传递的当前内存清理级别的枚举值。开发者可以基于这个级别来调整他们的内存管理策略。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。使用这些信息，可以选择性地进行内存优化。 |
+| level | Int | 是 |  |   | 系统传递的当前内存清理级别的枚举值。开发者可以基于这个级别来调整他们的内存管理策略。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1566,17 +1563,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。这使得开发者能够基于应用的当前状态适当地响应内存清理需求。 |
-| level | Int | 是 | - | - | 提供了当前内存清理级别的指示，开发者可以根据这个级别确定清理资源的紧迫性。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。这使得开发者能够基于应用的当前状态适当地响应内存清理需求。 |
+| level | Int | 是 |  |   | 提供了当前内存清理级别的指示，开发者可以根据这个级别确定清理资源的紧迫性。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1614,18 +1611,18 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。便于开发者获取上下文信息和返回的数据。 |
-| keyCode | Int | 是 | - | - | 按下的键的键码。 |
-| event | KeyEvent \| null | 是 | - | - | 提供按键事件的详细信息。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。便于开发者获取上下文信息和返回的数据。 |
+| keyCode | Int | 是 |  |   | 按下的键的键码。 |
+| event | KeyEvent \| null | 是 |  |   | 提供按键事件的详细信息。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1657,18 +1654,18 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。这些参数为开发者提供了当前活动上下文以及任何先前操作的结果。 |
-| keyCode | Int | 是 | - | - | 表明被按下的键的键码。 |
-| event | KeyEvent \| null | 是 | - | - | 提供了关于按键事件的详细信息，包括按键的动作和代码。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。这些参数为开发者提供了当前活动上下文以及任何先前操作的结果。 |
+| keyCode | Int | 是 |  |   | 表明被按下的键的键码。 |
+| event | KeyEvent \| null | 是 |  |   | 提供了关于按键事件的详细信息，包括按键的动作和代码。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1700,18 +1697,18 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。开发者可以利用这些返回值进行进一步处理。 |
-| keyCode | Int | 是 | - | - | 长按的键的键码。 |
-| event | KeyEvent \| null | 是 | - | - | 提供长按键事件的详细信息。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。开发者可以利用这些返回值进行进一步处理。 |
+| keyCode | Int | 是 |  |   | 长按的键的键码。 |
+| event | KeyEvent \| null | 是 |  |   | 提供长按键事件的详细信息。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1743,18 +1740,18 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。这样，开发者可以利用设置的返回参数执行上下文相关的操作。 |
-| keyCode | Int | 是 | - | - | 表明长按的键的键码。 |
-| event | KeyEvent \| null | 是 | - | - | 提供关于长按键事件的额外信息，允许开发者根据需要来响应事件。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。这样，开发者可以利用设置的返回参数执行上下文相关的操作。 |
+| keyCode | Int | 是 |  |   | 表明长按的键的键码。 |
+| event | KeyEvent \| null | 是 |  |   | 提供关于长按键事件的额外信息，允许开发者根据需要来响应事件。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1786,18 +1783,18 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。便于开发者获取和处理返回的数据。 |
-| keyCode | Int | 是 | - | - | 松开的键的键码。 |
-| event | KeyEvent \| null | 是 | - | - | 提供按键抬起事件的详细信息。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。便于开发者获取和处理返回的数据。 |
+| keyCode | Int | 是 |  |   | 松开的键的键码。 |
+| event | KeyEvent \| null | 是 |  |   | 提供按键抬起事件的详细信息。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1829,18 +1826,18 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。这些参数为开发者提供当前上下文及函数调用的相关结果。 |
-| keyCode | Int | 是 | - | - | 表示松开的键的键码。 |
-| event | KeyEvent \| null | 是 | - | - | 提供了关于按键事件的详细信息，包含按键的动作和代码等。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。这些参数为开发者提供当前上下文及函数调用的相关结果。 |
+| keyCode | Int | 是 |  |   | 表示松开的键的键码。 |
+| event | KeyEvent \| null | 是 |  |   | 提供了关于按键事件的详细信息，包含按键的动作和代码等。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1872,19 +1869,19 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。开发者可以根据这些返回值对按键事件进行处理。 |
-| keyCode | Int | 是 | - | - | 表示触发多次的键的键码。 |
-| repeatCount | Int | 是 | - | - | 按键重复的次数。 |
-| event | KeyEvent \| null | 是 | - | - | 提供多个按键事件的详细信息。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。开发者可以根据这些返回值对按键事件进行处理。 |
+| keyCode | Int | 是 |  |   | 表示触发多次的键的键码。 |
+| repeatCount | Int | 是 |  |   | 按键重复的次数。 |
+| event | KeyEvent \| null | 是 |  |   | 提供多个按键事件的详细信息。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1916,19 +1913,19 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。可以用来执行基于当前应用状态的操作。 |
-| keyCode | Int | 是 | - | - | 表示重复按下的键的键码。 |
-| repeatCount | Int | 是 | - | - | 表明此键的重复次数。 |
-| event | KeyEvent \| null | 是 | - | - | 提供按键事件的详细信息。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。可以用来执行基于当前应用状态的操作。 |
+| keyCode | Int | 是 |  |   | 表示重复按下的键的键码。 |
+| repeatCount | Int | 是 |  |   | 表明此键的重复次数。 |
+| event | KeyEvent \| null | 是 |  |   | 提供按键事件的详细信息。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1966,17 +1963,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。这些参数为开发者提供了当前的上下文信息和方法调用的结果。 |
-| savedInstanceState | Bundle \| null | 是 | - | - | 如果 Activity 正在重新创建，则此参数包含之前保存的状态信息。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。这些参数为开发者提供了当前的上下文信息和方法调用的结果。 |
+| savedInstanceState | Bundle \| null | 是 |  |   | 如果 Activity 正在重新创建，则此参数包含之前保存的状态信息。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -2008,17 +2005,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值，这些参数为开发者提供了当前上下文及函数调用的相关结果。 |
-| savedInstanceState | Bundle \| null | 是 | - | - | 如果Activity在之前被销毁，现在正在重新创建，这个Bundle将包含上次保存的状态数据。如果Activity是首次创建，则为null。 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值，这些参数为开发者提供了当前上下文及函数调用的相关结果。 |
+| savedInstanceState | Bundle \| null | 是 |  |   | 如果Activity在之前被销毁，现在正在重新创建，这个Bundle将包含上次保存的状态数据。如果Activity是首次创建，则为null。 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -2050,16 +2047,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。这些参数为开发者提供了进行操作所需的上下文信息。 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。这些参数为开发者提供了进行操作所需的上下文信息。 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2091,16 +2088,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数,包括页面路由地址与方法返回值 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数,包括页面路由地址与方法返回值 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2132,16 +2129,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2173,16 +2170,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数,包括页面路由地址与方法返回值 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数,包括页面路由地址与方法返回值 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2214,16 +2211,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。借助这些参数，开发者可以对 Activity 的恢复行为进行定制。 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。借助这些参数，开发者可以对 Activity 的恢复行为进行定制。 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2255,16 +2252,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2296,16 +2293,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。这些参数提供了进行必要操作所需的上下文。 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。这些参数提供了进行必要操作所需的上下文。 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2337,16 +2334,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2378,16 +2375,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。利用这些返回参数，开发者可以优化 Activity 的停止过程。 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。利用这些返回参数，开发者可以优化 Activity 的停止过程。 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2419,16 +2416,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2460,16 +2457,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。这为开发者提供了一个机会，在 Activity 销毁之前做必要的资源释放与保存。 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。这为开发者提供了一个机会，在 Activity 销毁之前做必要的资源释放与保存。 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2501,16 +2498,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值。这些参数为开发者提供了当前的上下文信息和方法调用的结果。 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值。这些参数为开发者提供了当前的上下文信息和方法调用的结果。 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2548,16 +2545,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2589,16 +2586,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2630,16 +2627,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2671,16 +2668,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2712,17 +2709,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
-| attrs | WindowManager.LayoutParams | 是 | - | - | 窗口属性 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
+| attrs | WindowManager.LayoutParams | 是 |  |   | 窗口属性 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -2754,17 +2751,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值 |
-| attrs | WindowManager.LayoutParams | 是 | - | - | 新的窗口属性 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值 |
+| attrs | WindowManager.LayoutParams | 是 |  |   | 新的窗口属性 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -2796,17 +2793,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
-| hasFocus | Boolean | 是 | - | - | 窗口是否获得焦点 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
+| hasFocus | Boolean | 是 |  |   | 窗口是否获得焦点 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -2838,17 +2835,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值 |
-| hasFocus | Boolean | 是 | - | - | 窗口是否获得了焦点 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值 |
+| hasFocus | Boolean | 是 |  |   | 窗口是否获得了焦点 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -2880,16 +2877,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2921,16 +2918,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2962,18 +2959,18 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
-| featureId | Int | 是 | - | - | 面板的特征标识 |
-| menu | Menu | 是 | - | - | 面板的菜单 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
+| featureId | Int | 是 |  |   | 面板的特征标识 |
+| menu | Menu | 是 |  |   | 面板的菜单 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3005,18 +3002,18 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值 |
-| featureId | Int | 是 | - | - | 面板编号 |
-| menu | Menu | 是 | - | - | 面板的菜单 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值 |
+| featureId | Int | 是 |  |   | 面板编号 |
+| menu | Menu | 是 |  |   | 面板的菜单 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3048,16 +3045,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -3089,16 +3086,16 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值 |
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值 |
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -3130,17 +3127,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
-| callback | ActionMode.Callback \| null | 是 | - | - | 操作模式的回调函数 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
+| callback | ActionMode.Callback \| null | 是 |  |   | 操作模式的回调函数 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3172,17 +3169,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值 |
-| callback | ActionMode.Callback \| null | 是 | - | - | 操作模式的回调 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值 |
+| callback | ActionMode.Callback \| null | 是 |  |   | 操作模式的回调 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3214,17 +3211,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
-| callback | ActionMode.Callback \| null | 是 | - | - | 操作模式的回调函数 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
+| callback | ActionMode.Callback \| null | 是 |  |   | 操作模式的回调函数 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3256,18 +3253,18 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值 |
-| callback | ActionMode.Callback \| null | 是 | - | - | 操作模式的回调 |
-| type | Int | 是 | - | - | 操作模式的类型 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值 |
+| callback | ActionMode.Callback \| null | 是 |  |   | 操作模式的回调 |
+| type | Int | 是 |  |   | 操作模式的类型 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3299,17 +3296,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
-| mode | ActionMode \| null | 是 | - | - | 结束的操作模式 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
+| mode | ActionMode \| null | 是 |  |   | 结束的操作模式 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3341,17 +3338,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值 |
-| mode | ActionMode \| null | 是 | - | - | 结束的操作模式 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值 |
+| mode | ActionMode \| null | 是 |  |   | 结束的操作模式 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3383,17 +3380,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
-| mode | ActionMode \| null | 是 | - | - | 开始的操作模式 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
+| mode | ActionMode \| null | 是 |  |   | 开始的操作模式 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3425,17 +3422,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值 |
-| mode | ActionMode \| null | 是 | - | - | 开始的操作模式 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值 |
+| mode | ActionMode \| null | 是 |  |   | 开始的操作模式 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3467,19 +3464,19 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
-| data | MutableList\<KeyboardShortcutGroup> \| null | 是 | - | - | 键盘快捷键列表 |
-| menu | Menu \| null | 是 | - | - | 菜单 |
-| deviceId | Int | 是 | - | - | 设备ID | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
+| data | MutableList\<KeyboardShortcutGroup> \| null | 是 |  |   | 键盘快捷键列表 |
+| menu | Menu \| null | 是 |  |   | 菜单 |
+| deviceId | Int | 是 |  |   | 设备ID | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3511,19 +3508,19 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值 |
-| data | MutableList\<KeyboardShortcutGroup> \| null | 是 | - | - | 键盘快捷方式群组的列表 |
-| menu | Menu \| null | 是 | - | - | 相关联的菜单 |
-| deviceId | Int | 是 | - | - | 设备ID | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值 |
+| data | MutableList\<KeyboardShortcutGroup> \| null | 是 |  |   | 键盘快捷方式群组的列表 |
+| menu | Menu \| null | 是 |  |   | 相关联的菜单 |
+| deviceId | Int | 是 |  |   | 设备ID | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3555,17 +3552,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
-| hasCapture | Boolean | 是 | - | - | 是否捕获了输入指针 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
+| hasCapture | Boolean | 是 |  |   | 是否捕获了输入指针 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3597,17 +3594,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数, 包括页面路由地址与方法返回值 |
-| hasCapture | Boolean | 是 | - | - | 是否启用了指针捕获 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数, 包括页面路由地址与方法返回值 |
+| hasCapture | Boolean | 是 |  |   | 是否启用了指针捕获 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3639,17 +3636,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
-| event | KeyEvent \| null | 是 | - | - | 按键事件 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
+| event | KeyEvent \| null | 是 |  |   | 按键事件 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3681,17 +3678,17 @@ Negative integers count back from the last item in the array.
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| params | **UniActivityParams** | 是 | - | - | 统一返回参数，包括页面路由地址与方法返回值 |
-| event | KeyEvent \| null | 是 | - | - | 按键事件 | 
+| params | **UniActivityParams** | 是 |  |   | 统一返回参数，包括页面路由地址与方法返回值 |
+| event | KeyEvent \| null | 是 |  |   | 按键事件 | 
 
 #### params 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 | - | Web: -; Android: 4.62; iOS: x; HarmonyOS: - | 当前activity示例 |
-| pageRoute | string | 是 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 页面路由地址 |
-| result | any | 否 | - | Web: -; Android: 4.18; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 | - | Web: -; Android: 5.01; iOS: x; HarmonyOS: - | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截 |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**

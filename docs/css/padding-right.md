@@ -5,11 +5,17 @@
 CSS 属性 padding-right 是指一个元素在内边距区域（padding area）中右边的宽度。内边距（padding）是指一个元素的内容和边框之间的区域。和外边距（margin）不同，内边距（padding）是不允许有负值的。内边距（padding）可以用四个值声明一个元素的四个方向的内边距（paddings），这是一种 CSS 缩写属性。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -99,10 +105,10 @@ padding-right: <length> | <percentage>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{paddingRight}}</text>
-          <text class="uni-info">获取值: {{paddingRightActual}}</text>
+          <text class="uni-info">设置值: {{data.paddingRight}}</text>
+          <text class="uni-info">获取值: {{data.paddingRightActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-view test-view" :style="{ paddingRight: paddingRight }">
+            <view ref="viewRef" class="common-view test-view" :style="{ paddingRight: data.paddingRight }">
               <view style="flex-grow: 1;background-color: cyan;"><text>view</text></view>
             </view>
           </view>
@@ -110,19 +116,19 @@ padding-right: <length> | <percentage>;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{paddingRight}}</text>
-          <text class="uni-info">获取值: {{paddingRightActualText}}</text>
+          <text class="uni-info">设置值: {{data.paddingRight}}</text>
+          <text class="uni-info">获取值: {{data.paddingRightActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-text test-text" :style="{ paddingRight: paddingRight }">当前为text组件</text>
+            <text ref="textRef" class="common-text test-text" :style="{ paddingRight: data.paddingRight }">当前为text组件</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{paddingRight}}</text>
-          <text class="uni-info">获取值: {{paddingRightActualImage}}</text>
+          <text class="uni-info">设置值: {{data.paddingRight}}</text>
+          <text class="uni-info">获取值: {{data.paddingRightActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-image test-image" :style="{ paddingRight: paddingRight }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image test-image" :style="{ paddingRight: data.paddingRight }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -131,10 +137,10 @@ padding-right: <length> | <percentage>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{paddingRight}}</text>
-          <text class="uni-info">获取值: {{paddingRightActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.paddingRight}}</text>
+          <text class="uni-info">获取值: {{data.paddingRightActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-view test-view-flatten" :style="{ paddingRight: paddingRight }" flatten>
+            <view ref="viewRefFlat" class="common-view test-view-flatten" :style="{ paddingRight: data.paddingRight }" flatten>
               <view style="flex-grow: 1;background-color: cyan;"><text>view</text></view>
             </view>
           </view>
@@ -142,19 +148,19 @@ padding-right: <length> | <percentage>;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{paddingRight}}</text>
-          <text class="uni-info">获取值: {{paddingRightActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.paddingRight}}</text>
+          <text class="uni-info">获取值: {{data.paddingRightActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-text test-text-flatten" :style="{ paddingRight: paddingRight }" flatten>当前为text组件</text>
+            <text ref="textRefFlat" class="common-text test-text-flatten" :style="{ paddingRight: data.paddingRight }" flatten>当前为text组件</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{paddingRight}}</text>
-          <text class="uni-info">获取值: {{paddingRightActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.paddingRight}}</text>
+          <text class="uni-info">获取值: {{data.paddingRightActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ paddingRight: paddingRight }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ paddingRight: data.paddingRight }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -162,7 +168,7 @@ padding-right: <length> | <percentage>;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="paddingRightEnum" title="padding-right 枚举值" @change="radioChangePaddingRight" :compact="true"></enum-data>
-        <input-data :defaultValue="paddingRight" title="padding-right 自定义值" type="text" @confirm="inputChangePaddingRight"></input-data>
+        <input-data :defaultValue="data.paddingRight" title="padding-right 自定义值" type="text" @confirm="inputChangePaddingRight"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -186,13 +192,15 @@ padding-right: <length> | <percentage>;
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const paddingRight = ref('25px')
-  const paddingRightActual = ref('')
-  const paddingRightActualText = ref('')
-  const paddingRightActualImage = ref('')
-  const paddingRightActualFlat = ref('')
-  const paddingRightActualTextFlat = ref('')
-  const paddingRightActualImageFlat = ref('')
+  const data = reactive({
+    paddingRight: '25px',
+    paddingRightActual: '',
+    paddingRightActualText: '',
+    paddingRightActualImage: '',
+    paddingRightActualFlat: '',
+    paddingRightActualTextFlat: '',
+    paddingRightActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -210,16 +218,18 @@ padding-right: <length> | <percentage>;
   ]
 
   const getPropertyValues = () => {
-    paddingRightActual.value = viewRef.value?.style.getPropertyValue('padding-right') ?? ''
-    paddingRightActualFlat.value = viewRefFlat.value?.style.getPropertyValue('padding-right') ?? ''
-    paddingRightActualText.value = textRef.value?.style.getPropertyValue('padding-right') ?? ''
-    paddingRightActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('padding-right') ?? ''
-    paddingRightActualImage.value = imageRef.value?.style.getPropertyValue('padding-right') ?? ''
-    paddingRightActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('padding-right') ?? ''
+    data.paddingRightActual = viewRef.value?.style.getPropertyValue('padding-right') ?? ''
+    data.paddingRightActualFlat = viewRefFlat.value?.style.getPropertyValue('padding-right') ?? ''
+    data.paddingRightActualText = textRef.value?.style.getPropertyValue('padding-right') ?? ''
+    data.paddingRightActualTextFlat = textRefFlat.value?.style.getPropertyValue('padding-right') ?? ''
+    data.paddingRightActualImage = imageRef.value?.style.getPropertyValue('padding-right') ?? ''
+    data.paddingRightActualImageFlat = imageRefFlat.value?.style.getPropertyValue('padding-right') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changePaddingRight = (value: string) => {
-    paddingRight.value = value
+    data.paddingRight = value
     viewRef.value?.style.setProperty('padding-right', value)
     viewRefFlat.value?.style.setProperty('padding-right', value)
     textRef.value?.style.setProperty('padding-right', value)
@@ -229,7 +239,7 @@ padding-right: <length> | <percentage>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangePaddingRight = (index: number) => {
@@ -248,7 +258,8 @@ padding-right: <length> | <percentage>;
   })
 
   defineExpose({
-    radioChangePaddingRight
+    radioChangePaddingRight,
+    data
   })
 </script>
 

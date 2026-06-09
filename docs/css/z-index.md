@@ -28,11 +28,17 @@ root
 z-index 属性设定了一个定位元素及其后代元素的 z-order。当元素之间重叠的时候，z-index 较大的元素会覆盖较小的元素在上层进行显示。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| x | x | x |
 
 
 
@@ -51,7 +57,7 @@ z-index: auto | <integer>;
 ### z-index 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| auto | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 盒子不会创建一个新的局部层叠上下文。盒子在当前层叠上下文的层叠等级是 0。 |
+| auto | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 盒子不会创建一个新的局部层叠上下文。盒子在当前层叠上下文的层叠等级是 0。 |
 
 
 ### 默认值 @default-value 
@@ -121,15 +127,15 @@ z-index: auto | <integer>;
     </view>
     <view style="top: 50px;">
       <text class="uni-title-text uni-common-mt">text 组件</text>
-      <text class="common" style="background-color: cyan;z-index: 10;text-align: right;">text组件: z-index: 10</text>
-      <text class="common" style="background-color: green;top: -37px;left: 87px;z-index: 5;text-align: right;">text组件: z-index: 5</text>
-      <text class="common" style="background-color: blue;top: -75px;left: 175px;z-index: 0;text-align: right;">text组件: z-index: 0</text>
+      <text class="common-text" style="background-color: cyan;z-index: 10;text-align: right;">text组件: z-index: 10</text>
+      <text class="common-text" style="background-color: green;top: -37px;left: 87px;z-index: 5;text-align: right;">text组件: z-index: 5</text>
+      <text class="common-text" style="background-color: blue;top: -75px;left: 175px;z-index: 0;text-align: right;">text组件: z-index: 0</text>
     </view>
     <view style="top: 50px;">
       <text class="uni-title-text uni-common-mt">image 组件</text>
-      <image class="common image-zindex" style="background-color: cyan;z-index: 10;" src="/static/test-image/logo.png"></image>
-      <image class="common image-zindex" style="background-color: green;top: -37px;left: 87px;z-index: 5;" src="/static/test-image/logo.png"></image>
-      <image class="common image-zindex" style="background-color: blue;top: -75px;left: 175px;z-index: 0;" src="/static/test-image/logo.png"></image>
+      <image class="common-text image-zindex" style="background-color: cyan;z-index: 10;" src="/static/test-image/logo.png"></image>
+      <image class="common-text image-zindex" style="background-color: green;top: -37px;left: 87px;z-index: 5;" src="/static/test-image/logo.png"></image>
+      <image class="common-text image-zindex" style="background-color: blue;top: -75px;left: 175px;z-index: 0;" src="/static/test-image/logo.png"></image>
     </view>
 
     <view class="uni-common-mb" style="top: 50px;">
@@ -148,13 +154,13 @@ z-index: auto | <integer>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{zIndexValue}}</text>
-          <text class="uni-info">获取值: {{zIndexActual}}</text>
+          <text class="uni-info">设置值: {{data.zIndexValue}}</text>
+          <text class="uni-info">获取值: {{data.zIndexActual}}</text>
           <view class="test-box">
             <view class="common-bg" style="background-color: blue; z-index: 1;">
               <text class="common-text-bg">蓝色view</text>
             </view>
-            <view ref="viewRef" class="common-dynamic test-view" style="background-color: cyan;" :style="{ zIndex: zIndexValue }">
+            <view ref="viewRef" class="common-dynamic test-view" style="background-color: cyan;" :style="{ zIndex: data.zIndexValue }">
               <text class="common-text-bg">青色view</text>
             </view>
           </view>
@@ -162,21 +168,21 @@ z-index: auto | <integer>;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{zIndexValue}}</text>
-          <text class="uni-info">获取值: {{zIndexActualText}}</text>
+          <text class="uni-info">设置值: {{data.zIndexValue}}</text>
+          <text class="uni-info">获取值: {{data.zIndexActualText}}</text>
           <view class="test-box">
             <text class="common-bg common-text-bg" style="background-color: blue; z-index: 1;">蓝色text</text>
-            <text ref="textRef" class="common-dynamic common-text-bg test-text" style="background-color: cyan;" :style="{ zIndex: zIndexValue }">青色text</text>
+            <text ref="textRef" class="common-dynamic common-text-bg test-text" style="background-color: cyan;" :style="{ zIndex: data.zIndexValue }">青色text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{zIndexValue}}</text>
-          <text class="uni-info">获取值: {{zIndexActualImage}}</text>
+          <text class="uni-info">设置值: {{data.zIndexValue}}</text>
+          <text class="uni-info">获取值: {{data.zIndexActualImage}}</text>
           <view class="test-box">
             <image class="common-bg common-image-bg" style="z-index: 1;" src="/static/test-image/logo.png"></image>
-            <image ref="imageRef" class="common-dynamic common-image-bg test-image" :style="{ zIndex: zIndexValue }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-dynamic common-image-bg test-image" :style="{ zIndex: data.zIndexValue }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -184,13 +190,13 @@ z-index: auto | <integer>;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="zIndexEnum" title="z-index 枚举值" @change="radioChangeZIndex" :compact="true"></enum-data>
-        <input-data :defaultValue="zIndexValue.toString()" title="z-index 自定义值" type="number" @confirm="inputChangeZIndex"></input-data>
+        <input-data :defaultValue="data.zIndexValue.toString()" title="z-index 自定义值" type="number" @confirm="inputChangeZIndex"></input-data>
       </view>
 
       <view class="uni-common-mb" style="top: 50px;">
         <text>native-view组件: z-index: 10 和 z-index: 5</text>
-        <native-view class="common" style="z-index: 10; background-color: cyan;"></native-view>
-        <native-view class="common" style="top: -40px;left: 30px;z-index: 5;background-color: green;"></native-view>
+        <native-view class="common-text" style="z-index: 10; background-color: cyan;"></native-view>
+        <native-view class="common-text" style="top: -40px;left: 30px;z-index: 5;background-color: green;"></native-view>
       </view>
     </view>
 
@@ -205,11 +211,19 @@ z-index: auto | <integer>;
   type DataType = {
     zIndex: number
     autoTest: boolean
+    zIndexValue: number
+    zIndexActual: string
+    zIndexActualText: string
+    zIndexActualImage: string
   }
 
   const data = reactive({
     zIndex: 5,
-    autoTest: false
+    autoTest: false,
+    zIndexValue: 5,
+    zIndexActual: '',
+    zIndexActualText: '',
+    zIndexActualImage: ''
   } as DataType)
 
   const view = ref(null as UniElement | null)
@@ -227,29 +241,26 @@ z-index: auto | <integer>;
     { value: 4, name: '10' },
   ]
 
-  const zIndexValue = ref(5)
-  const zIndexActual = ref('')
-  const zIndexActualText = ref('')
-  const zIndexActualImage = ref('')
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    zIndexActual.value = viewRef.value?.style.getPropertyValue('z-index') ?? ''
-    zIndexActualText.value = textRef.value?.style.getPropertyValue('z-index') ?? ''
-    zIndexActualImage.value = imageRef.value?.style.getPropertyValue('z-index') ?? ''
+    data.zIndexActual = viewRef.value?.style.getPropertyValue('z-index') ?? ''
+    data.zIndexActualText = textRef.value?.style.getPropertyValue('z-index') ?? ''
+    data.zIndexActualImage = imageRef.value?.style.getPropertyValue('z-index') ?? ''
   }
 
+  const ins = getCurrentInstance()
   const changeZIndexProperty = (value: number) => {
-    zIndexValue.value = value
+    data.zIndexValue = value
     viewRef.value?.style.setProperty('z-index', value)
     textRef.value?.style.setProperty('z-index', value.toString())
     imageRef.value?.style.setProperty('z-index', value.toString())
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeZIndex = (index: number) => {
@@ -284,6 +295,10 @@ z-index: auto | <integer>;
     height: 125px;
     justify-content: center;
     align-items: center;
+  }
+  .common-text{
+    width: 125px;
+    height: 125px;
   }
 
   .fixed {

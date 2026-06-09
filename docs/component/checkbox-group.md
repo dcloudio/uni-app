@@ -12,16 +12,16 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 5.11 | 4.61 | 5.0 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| name | string | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
-| @change | (event: [UniCheckboxGroupChangeEvent](#unicheckboxgroupchangeevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | checkbox-group中选中项发生改变是触发 change 事件，detail = {value:\[选中的checkbox的value的数组] |
+| name | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
+| @change | (event: [UniCheckboxGroupChangeEvent](#unicheckboxgroupchangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | checkbox-group中选中项发生改变是触发 change 事件，detail = {value:\[选中的checkbox的value的数组] |
 
 
 ### 事件
@@ -40,7 +40,7 @@ UniCheckboxGroupChangeEvent -- Extends --> UniCustomEvent&ltUniCheckboxGroupChan
 ###### UniCheckboxGroupChangeEventDetail 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | Array&lt;string&gt; | 是 | - | - | - |
+| value | Array&lt;string&gt; | 是 |  |   |  |
 
 
 

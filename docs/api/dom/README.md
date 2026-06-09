@@ -52,6 +52,19 @@ app-uvue 页面中可以为页面元素节点设置 id 属性，然后通过 [un
 ```
 
 在页面`onReady` 后（太早组件可能没有创建），通过 `uni.getElementById` 获取。如果长期使用，可以保存在vue的 data 中。
+::: preview
+
+> 组合式 API
+```ts
+const color = ref('red')
+const myView = ref<UniElement | null>(null)
+
+onReady(() => {
+	myView.value = uni.getElementById('myView')
+})
+```
+
+> 选项式 API
 ```ts
 export default {
 	data() {
@@ -66,6 +79,8 @@ export default {
 	},
 }
 ```
+:::
+
 
 ### 通过this.$refs获取DOM元素@refs
 uvue页面中可以通过 vue 框架中的组件实例对象 [this.$refs](https://uniapp.dcloud.net.cn/tutorial/vue3-api.html#%E5%AE%9E%E4%BE%8B-property) 获取 DOM 元素对象。
@@ -79,6 +94,19 @@ uvue页面中可以通过 vue 框架中的组件实例对象 [this.$refs](https:
 ```
 
 在页面`onReady` 后（太早组件可能没有创建），通过 `this.$refs` 获取。如果长期使用，可以保存在vue的 data 中。
+::: preview
+
+> 组合式 API
+```ts
+const color = ref('red')
+const myView = ref<UniElement | null>(null)
+
+onReady(() => {
+	// 通过模板 ref 获取时，myView.value 即为组件对象
+})
+```
+
+> 选项式 API
 ```ts
 export default {
 	data() {
@@ -93,6 +121,8 @@ export default {
 	},
 }
 ```
+:::
+
 
 ### 操作DOM元素对象
 获取DOM元素对象Elment后，可通过其属性或方法操作组件，完整API参考[UniElement对象文档](unielement.md)
@@ -104,6 +134,54 @@ this.myView?.style?.setProperty('background-color', 'red');
 
 ### 示例
 以下是完整的操作示例：
+::: preview
+
+> 组合式 API
+```vue
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex:1;">
+	<!-- #endif -->
+		<view id="myView" ref="myView" class="container">
+			<text>Hello World</text>
+		</view>
+		<button class="button" @tap="updateElement">操作UniElement</button>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script setup lang="uts">
+	const color = ref('red')
+	const myView = ref<UniElement | null>(null)
+
+	onReady(() => {
+		myView.value = uni.getElementById('myView')
+		// 也可以通过模板 ref 获取 myView.value
+	})
+
+	function updateElement() {
+		color.value = 'red' == color.value ? 'blue' : 'red'
+		myView.value?.style?.setProperty('background-color', color.value)
+	}
+</script>
+
+<style>
+	.container {
+		align-self: center;
+		align-items: center;
+		justify-content: center;
+		background-color: lightgray;
+		width: 100%;
+		height: 200px;
+	}
+	.button {
+		margin: 10px auto;
+	}
+</style>
+```
+
+> 选项式 API
 ```vue
 <template>
 	<!-- #ifdef APP -->
@@ -155,6 +233,8 @@ this.myView?.style?.setProperty('background-color', 'red');
 	}
 </style>
 ```
+:::
+
 
 >以上例子仅为演示DOM API的使用，实际上点击按钮修改背景色这种简单场景，使用数据绑定更简单，class绑定到一个data上，动态修改data即可。
 
@@ -167,6 +247,24 @@ uni-app x 在 app 端提供 DrawableContext 绘制内容到 uvue 页面的`view`
 
 DrawableContext 可通过`view`组件节点对象（UniElement）的`getDrawableContext()`方法获取
 
+::: preview
+
+> 组合式 API
+```vue
+<template>
+	<view ref="drawable" class="drawableView"></view>
+</template>
+
+<script setup lang="uts">
+	const drawable = ref<UniElement | null>(null)
+
+	onReady(() => {
+		var ctx = drawable.value!.getDrawableContext()!
+	})
+</script>
+```
+
+> 选项式 API
 ```vue
 <template>
 	<view ref="drawable" class="drawableView"></view>
@@ -181,6 +279,8 @@ DrawableContext 可通过`view`组件节点对象（UniElement）的`getDrawable
 	}
 </script>
 ```
+:::
+
 
 **注意**  
 `DrawableContext` 对象需等元素渲染到页面后才能正常使用，要在页面 `onReady` 生命周期后获取。  
@@ -189,6 +289,23 @@ DrawableContext 可通过`view`组件节点对象（UniElement）的`getDrawable
 
 通过 DrawableContext 提供的 Draw API 绘制文本、形状等内容
 
+::: preview
+
+> 组合式 API
+```vue
+<script setup lang="uts">
+	const drawable = ref<UniElement | null>(null)
+
+	onReady(() => {
+		var ctx = drawable.value!.getDrawableContext()!
+		ctx.moveTo(50, 40)
+		ctx.lineTo(200, 40)
+		ctx.stroke()
+	})
+</script>
+```
+
+> 选项式 API
 ```ts
 <script>
 	export default {
@@ -203,11 +320,31 @@ DrawableContext 可通过`view`组件节点对象（UniElement）的`getDrawable
 	}
 </script>
 ```
+:::
+
 
 ### 更新到画布
 
 DrawableContext 在调用 API 之后不会主动更新到画布上，需要主动调用`update()`方法更新。
 
+::: preview
+
+> 组合式 API
+```vue
+<script setup lang="uts">
+	const drawable = ref<UniElement | null>(null)
+
+	onReady(() => {
+		var ctx = drawable.value!.getDrawableContext()!
+		ctx.moveTo(50, 40)
+		ctx.lineTo(200, 40)
+		ctx.stroke()
+		ctx.update()
+	})
+</script>
+```
+
+> 选项式 API
 ```ts
 <script>
 	export default {
@@ -224,11 +361,28 @@ DrawableContext 在调用 API 之后不会主动更新到画布上，需要主�
 	}
 </script>
 ```
+:::
+
 
 ### 清除画布内容
 
 如果清除已经绘制的内容重新绘制，需要调用`reset()`方法清除内容再进行绘制。
 
+::: preview
+
+> 组合式 API
+```vue
+<script setup lang="uts">
+	const drawable = ref<UniElement | null>(null)
+
+	function refreshDrawable() {
+		var ctx = drawable.value!.getDrawableContext()!
+		ctx.reset()
+	}
+</script>
+```
+
+> 选项式 API
 ```vue
 <script>
 	export default {
@@ -244,10 +398,62 @@ DrawableContext 在调用 API 之后不会主动更新到画布上，需要主�
 	}
 </script>
 ```
+:::
+
 
 ### 示例
 以下是完整的操作示例：
 
+::: preview
+
+> 组合式 API
+```vue
+<template>
+	<view ref="drawable" class="drawableView"></view>
+	<button class="button" @tap="refreshDrawable">重新绘制</button>
+</template>
+
+<script setup lang="uts">
+	const change = ref(false)
+	const drawable = ref<UniElement | null>(null)
+
+	onReady(() => {
+		var ctx = drawable.value!.getDrawableContext()!
+		ctx.moveTo(50, 40)
+		ctx.lineTo(200, 40)
+		ctx.stroke()
+		ctx.update()
+	})
+
+	function refreshDrawable() {
+		var ctx = drawable.value!.getDrawableContext()!
+		ctx.reset()
+		change.value = !change.value
+		if(change.value) {
+			ctx.strokeStyle = "#FF0000"
+			ctx.lineWidth = 10
+		}
+		ctx.moveTo(50, 40)
+		ctx.lineTo(200, 40)
+		ctx.stroke()
+		ctx.update()
+	}
+</script>
+
+<style>
+	.drawableView {
+		width: 750rpx;
+		height: 750rpx;
+		background-color: #FFFFFF;
+	}
+	.button {
+		margin: 10px auto;
+		width: 50%;
+	}
+</style>
+```
+
+> 选项式 API
 ```vue
 <template>
 	<view ref="drawable" class="drawableView"></view>
@@ -306,7 +512,9 @@ DrawableContext 在调用 API 之后不会主动更新到画布上，需要主�
 	}
 </style>
 ```
+:::
+
 
 ## 注意事项
 
-由于排版和渲染是异步的的，在修改 DOM 后，立刻使用 DOM 的同步接口获取 DOM 状态可能获取到的是排版之前的，如果需要及时准确的获取到排版之后的 DOM 状态需要使用 [uni.createSelectorQuery](../api/nodes-info.md) 。
+由于排版和渲染是异步的，在修改 DOM 后，立刻使用 DOM 的同步接口获取 DOM 状态可能获取到的是排版之前的，如果需要及时准确的获取到排版之后的 DOM 状态需要使用 [uni.createSelectorQuery](../api/nodes-info.md) 。

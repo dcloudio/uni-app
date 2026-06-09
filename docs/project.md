@@ -63,9 +63,9 @@ uni-app x的项目结构与[uni-app老版的项目结构](https://uniapp.dcloud.
 ├─wxcomponents          微信小程序平台wxml组件专用目录
 ├─unpackage             非工程代码，一般存放运行或发行的编译结果、App自定义基座。默认应配置git忽略
 ├─main.uts              Vue初始化入口文件
-├─App.uvue              应用配置，用来配置App全局样式以及监听 <a href="/collocation/App#应用生命周期">详见</a>
-├─pages.json            配置页面路由、导航条、选项卡等页面类信息，<a href="/collocation/pages">详见</a>
-├─manifest.json         配置应用名称、appid、logo、版本等打包信息，<a href="/collocation/manifest">详见</a>
+├─App.uvue              应用配置，用来配置App全局样式以及监听 <a href="./collocation/App#应用生命周期">详见</a>
+├─pages.json            配置页面路由、导航条、选项卡等页面类信息，<a href="./collocation/pages">详见</a>
+├─manifest.json         配置应用名称、appid、logo、版本等打包信息，<a href="./collocation/manifest">详见</a>
 ├─AndroidManifest.xml   Android原生应用清单文件 <a href="https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android">详见</a>
 ├─Info.plist            iOS原生应用配置文件 <a href="https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios">详见</a>
 └─uni.scss              内置的常用样式变量

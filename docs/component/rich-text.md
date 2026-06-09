@@ -16,9 +16,9 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 5.11 | 4.61 | 5.0 |
 
 
 ### 支持的HTML标签和属性
@@ -45,27 +45,27 @@
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| nodes | array \| string | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 节点列表 \| HTML String |
-| selectable | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 文本是否可选 |
-| mode | string | "web" | Web: x; 微信小程序: x; Android: 4.71; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 渲染模式 |
-| space | string | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | *(string)*<br/>显示连续空格 |
-| ~~user-select~~ | boolean | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | *(boolean)*<br/>文本是否可选，该属性会使节点显示为 block。已废弃，请使用 selectable |
-| @itemclick | (event: [UniRichTextItemClickEvent](#unirichtextitemclickevent)) => void | - | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.71; HarmonyOS(Vapor): 5.0 | 拦截点击事件（只支持 a、img标签），返回img标签的src属性或a标签的href属性。event.detail={ src \| href } |
+| nodes | any |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 节点列表 \| HTML String |
+| selectable | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 文本是否可选 |
+| mode | string | "web" | Web: x; 微信小程序: x; Android: 4.71; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 渲染模式 |
+| space | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(string)*<br/>显示连续空格 |
+| ~~user-select~~ | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(boolean)*<br/>文本是否可选，该属性会使节点显示为 block。已废弃，请使用 selectable |
+| @itemclick | (event: [UniRichTextItemClickEvent](#unirichtextitemclickevent)) => void |   | Web: 4.0; 微信小程序: x; Android: 3.9; iOS 系统版本: 9.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.71; HarmonyOS(Vapor): 5.0 | 拦截点击事件（只支持 a、img标签），返回img标签的src属性或a标签的href属性。event.detail={ src \| href } |
 
 #### mode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| web | Web: x; 微信小程序: x; Android: 4.71; iOS: x; HarmonyOS 系统版本: 6.0; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 使用webview渲染 |
-| native | Web: x; 微信小程序: x; Android: 4.71; iOS: x; HarmonyOS 系统版本: 6.0; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 使用原生渲染 |
+| web | Web: x; 微信小程序: x; Android: 4.71; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 使用webview渲染 |
+| native | Web: x; 微信小程序: x; Android: 4.71; iOS: x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 使用原生渲染 |
 
 #### space 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ensp | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 中文字符空格一半大小 |
-| emsp | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 中文字符空格大小 |
-| nbsp | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 根据字体设置的空格大小 |
+| ensp | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 中文字符空格一半大小 |
+| emsp | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 中文字符空格大小 |
+| nbsp | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 根据字体设置的空格大小 |
 
 ### 节点列表数据结构
 ``` json
@@ -110,14 +110,14 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 ##### UniRichTextItemClickEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniRichTextItemClickEventDetail** | 是 | - | - |  |
+| detail | **UniRichTextItemClickEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| src | string | 否 | - | - | \<img/>图片链接 |
-| href | string | 否 | - | - | \<a/>超链接 |
+| src | string | 否 |  |   | \<img/>图片链接 |
+| href | string | 否 |  |   | \<a/>超链接 |
 
 
 
@@ -148,11 +148,6 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
       <navigator url="/pages/template/long-rich-text/long-rich-text" class="uni-btn-v">
         <button class="uni-btn">组件性能测试</button>
       </navigator>
-      <!-- #ifdef APP-HARMONY || WEB -->
-      <navigator url="/pages/component/rich-text/rich-text-test-cases" class="uni-btn-v">
-        <button class="uni-btn">rich-text测试用例</button>
-      </navigator>
-      <!-- #endif -->
 			<view class="uni-title">
 				<button type="default" @click="changeText">修改文本内容</button>
 			</view>
@@ -183,8 +178,6 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
   <!-- #ifdef APP -->
   </scroll-view style="flex: 1;">
   <!-- #endif -->
-	<rich-text v-if="data.autoTest" id="test-rich-text" :nodes="data.testNodes" :selectable="true"
-		@itemclick="itemClickForTest" style="position: fixed;width: 100px;height: 100px;"></rich-text>
 </template>
 
 <script setup lang="uts">
@@ -192,9 +185,6 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 		text : string;
 		richTextHeight : number;
 		richTextElement : UniElement | null;
-		autoTest : boolean;
-		testNodes : string;
-		isItemClickTrigger : boolean;
 		richTextStr : boolean;
 		richTextStyle : string;
 		currentFontSize : string;
@@ -214,10 +204,6 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 		text: "<span>hello uni-app x!</span><br/><span>uni-app x，终极跨平台方案</span>",
 		richTextHeight: 0,
 		richTextElement: null,
-		// 自动化测试
-		autoTest: false,
-		testNodes: '<img src="https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png"></img>',
-		isItemClickTrigger: false,
 		richTextStr: false,
 		richTextStyle: "border: 1px; border-style: solid; border-color: red;",
 		currentFontSize: "默认",
@@ -298,10 +284,6 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 		updateRichTextStyle()
 	}
 
-	// 自动化测试
-	const itemClickForTest = (_ : UniRichTextItemClickEvent) => {
-		data.isItemClickTrigger = true;
-	}
 
 	const getBoundingClientRectForTest = () : DOMRect => {
 		return uni.getElementById('test-rich-text')?.getBoundingClientRect()!;
@@ -311,13 +293,25 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 		data.richTextStr = true;
 	}
 
+	const testOpenDialogPage = () => {
+		uni.openDialogPage({
+			url: '/pages/API/dialog-page/rich-text-in-dialog-page'
+		});
+	}
+
+	const testCloseDialogPage = () => {
+		uni.closeDialogPage();
+	}
+
 	defineExpose({
 		data,
 		changeText,
 		changeFontSize,
 		changeLineHeight,
 		changeFontFamily,
-		getBoundingClientRectForTest
+		getBoundingClientRectForTest,
+		testOpenDialogPage,
+		testCloseDialogPage
 	})
 </script>
 
@@ -371,7 +365,7 @@ rich-text组件是一个比较重的组件，需要注意适用场景。
 
 从uni-app x4.7+，3个App平台统一使用web-view实现。鸿蒙平台直接替换了之前的实现，而Android平台则新增了mode属性配置，默认是web-view实现，但也可以通过mode=native继续使用之前的原生方式。
 
-从5.0版本开始，鸿蒙平台新增支持原生实现的 rich-text。鸿蒙平台新增支持了 mode 属性配置，默认是 `web-view` 实现，可以通过设置 `mode=native` 使用原生方式。
+从5.0版本开始，鸿蒙平台蒸汽模式新增支持c语言实现的 rich-text。鸿蒙平台新增支持了 mode 属性配置，默认是 `web-view` 实现，可以通过设置 `mode=native` 使用原生方式。
 
 ## Bug & Tips@tips
 

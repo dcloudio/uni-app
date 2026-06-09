@@ -23,7 +23,7 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 **注意：** \
 uni是全局api，本方法获取的元素，是页面栈栈顶（不包括 dialogPage）的页面的元素，而不是执行本方法代码所在的页面的元素。\
-如果A页面被栈顶的B页面盖住，在A页面执行`uni.getElementById`会访问到B页面的元素。
+如果A页面被栈顶的B页面盖住，在A页面执行`uni.getElementById`会访问到B页面的元素。[详见](./README.md#toppage)
 
 如需寻找特定页面上的Element，应使用[UniPage对象的getElementById方法](../api/get-current-pages.md#getelementbyid)
 
@@ -35,7 +35,7 @@ uni是全局api，本方法获取的元素，是页面栈栈顶（不包括 dial
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | [string.IDString](/uts/data-type.md#ide-string) \| string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| id | [string.IDString](/uts/data-type.md#ide-string) \| string | 是 |  |   |  | 
 
 
 `3.93+` 支持泛型，可通过 `uni.getElementById<ElementType>(id)` 获取指定类型的元素。对于组件有自带方法的情况，通过泛型指定具体的元素类型，就可以调用该类型组件的专用方法，比如unicloud-db组件。\
@@ -66,9 +66,9 @@ uni是全局api，本方法获取的元素，是页面栈栈顶（不包括 dial
 
 ### 返回值 
 
-| 类型 | 描述 | 必备 |
-| :- | :- | :- |
-| [UniElement](/api/dom/unielement.md) | 当前组件<br/> | 否 |
+| 类型 | 必备 |
+| :- | :- |
+| [UniElement](/api/dom/unielement.md) | 否 |
  
 
 
@@ -191,5 +191,5 @@ uni是全局api，本方法获取的元素，是页面栈栈顶（不包括 dial
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 

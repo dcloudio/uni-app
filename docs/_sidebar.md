@@ -1,6 +1,7 @@
 * [概述](README.md)
 * [项目](project.md)
 * [页面](page.md)
+* [蒸汽模式](app-vapor.md)
 * 教程
   * [与js开发的差别](tutorial/codegap.md)
   * [request联网教程](tutorial/request.md)
@@ -9,8 +10,8 @@
   * [几种组件标记的概念澄清](tutorial/idref.md)
 * web平台专题指南
   * [概述](web/README.md)
-  * [跨域](https://uniapp.dcloud.net.cn/tutorial/CORS.html)
-  * [宽屏适配](https://uniapp.dcloud.net.cn/tutorial/adapt.html)
+  * [跨域](tutorial/CORS.md)
+  * [宽屏适配](tutorial/adapt.md)
   * [服务端渲染ssr](web/ssr.md)
   * [前端网页托管](https://doc.dcloud.net.cn/uniCloud/hosting.html)
 * Android/iOS平台专题指南
@@ -52,7 +53,6 @@
   * [iOS逻辑层使用注意](native/iosReadme.md)
 * 鸿蒙next平台专题指南
   * [概述](app-harmony/README.md)
-	* [蒸汽模式](app-harmony/harmony-vapor.md)
   * [应用合规指南](tutorial/compliance.md)
   * uni-app x 原生SDK
     * [概述](native/README.md)
@@ -64,22 +64,23 @@
 * 小程序平台专题指南
   * [概述](mp/README.md)
 * 运行和调试
-  * [Android/iOS运行](https://uniapp.dcloud.net.cn/tutorial/run/run-app.html)
-  * [uts插件Android运行配置](https://uniapp.dcloud.net.cn/tutorial/run/uts-development-android.html)
+  * [Android/iOS运行](tutorial/run-app.md)
+  * [uts插件Android运行配置](tutorial/uts-development-android.md)
   * [Android 审查元素](debug/android-inspector.md)
-  * [Android Debug断点](https://uniapp.dcloud.net.cn/tutorial/debug/uni-uts-debug.html)
+  * [Android Debug断点](tutorial/uni-uts-debug.md)
   * [Android 内存泄漏排查](tutorial/android-memoryleak.md)
-  * [uts插件iOS运行配置](https://uniapp.dcloud.net.cn/tutorial/run/uts-development-ios.html)
-  * [uts插件iOS Debug](https://uniapp.dcloud.net.cn/tutorial/debug/uni-uts-debug-ios.html)
-  * [鸿蒙运行](https://uniapp.dcloud.net.cn/tutorial/harmony/runbuild.html)
-  * [鸿蒙Debug断点](https://uniapp.dcloud.net.cn/tutorial/debug/uni-uts-debug-harmony.html)
+  * [uts插件iOS运行配置](tutorial/uts-development-ios.md)
+  * [uts插件iOS Debug](tutorial/uni-uts-debug-ios.md)
+  * [鸿蒙运行](tutorial/runbuild.md)
+  * [鸿蒙Debug断点](tutorial/uni-uts-debug-harmony.md)
   * [AI纠错](tutorial/bug_repair.md)
 * [性能优化](performance.md)
-* [uni错误规范](https://uniapp.dcloud.net.cn/tutorial/err-spec.html)
+* [uni错误规范](err-spec.md)
 * [暗黑模式](api/theme-change.md)
 * [宽屏适配](adapt.md)
 * [国际化](i18n.md)
 * [源码和示例](sample.md)
+* [benchmark](vapor-benchmark.md)
 * [跨平台框架及原生对比](select.md)
 * cursor/vscode插件
   * [语言服务插件](tutorial/ls-plugin.md)

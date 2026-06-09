@@ -5,11 +5,17 @@
 margin-top CSS 属性用于设置元素的顶部外边距外边距区域。正值使它离相邻元素更远，而负值使它更靠近相邻元素。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -29,7 +35,7 @@ margin-top: <length> | <percentage> | auto;
 ### margin-top 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 浏览器选择一个合适的值来使用。参见 margin。 |
+| auto | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 浏览器选择一个合适的值来使用。参见 margin。 |
 
 
 ### 默认值 @default-value 
@@ -116,11 +122,11 @@ margin-top: <length> | <percentage> | auto;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{marginTop}}</text>
-          <text class="uni-info">获取值: {{marginTopActual}}</text>
+          <text class="uni-info">设置值: {{data.marginTop}}</text>
+          <text class="uni-info">获取值: {{data.marginTopActual}}</text>
           <view class="test-box">
             <view class="common-view" style="background-color: red;"></view>
-            <view ref="viewRef" class="common-view test-view" :style="{ marginTop: marginTop }">
+            <view ref="viewRef" class="common-view test-view" :style="{ marginTop: data.marginTop }">
               <text class="common-text">view</text>
             </view>
             <view class="common-view" style="background-color: blue;"></view>
@@ -129,22 +135,22 @@ margin-top: <length> | <percentage> | auto;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{marginTop}}</text>
-          <text class="uni-info">获取值: {{marginTopActualText}}</text>
+          <text class="uni-info">设置值: {{data.marginTop}}</text>
+          <text class="uni-info">获取值: {{data.marginTopActualText}}</text>
           <view class="test-box">
             <text class="common-view common-text" style="background-color: red;">红色</text>
-            <text ref="textRef" class="common-view common-text test-text" :style="{ marginTop: marginTop }">text</text>
+            <text ref="textRef" class="common-view common-text test-text" :style="{ marginTop: data.marginTop }">text</text>
             <text class="common-view common-text" style="background-color: blue;">蓝色</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{marginTop}}</text>
-          <text class="uni-info">获取值: {{marginTopActualImage}}</text>
+          <text class="uni-info">设置值: {{data.marginTop}}</text>
+          <text class="uni-info">获取值: {{data.marginTopActualImage}}</text>
           <view class="test-box">
             <image class="common-image" style="background-color: red;" src="/static/test-image/logo.png"></image>
-            <image ref="imageRef" class="common-image test-image" :style="{ marginTop: marginTop }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image test-image" :style="{ marginTop: data.marginTop }" src="/static/test-image/logo.png"></image>
             <image class="common-image" style="background-color: blue;" src="/static/test-image/logo.png"></image>
           </view>
         </view>
@@ -153,11 +159,11 @@ margin-top: <length> | <percentage> | auto;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{marginTop}}</text>
-          <text class="uni-info">获取值: {{marginTopActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.marginTop}}</text>
+          <text class="uni-info">获取值: {{data.marginTopActualFlat}}</text>
           <view class="test-box">
             <view class="common-view" style="background-color: red;"></view>
-            <view ref="viewRefFlat" class="common-view test-view-flatten" :style="{ marginTop: marginTop }" flatten>
+            <view ref="viewRefFlat" class="common-view test-view-flatten" :style="{ marginTop: data.marginTop }" flatten>
               <text class="common-text">view</text>
             </view>
             <view class="common-view" style="background-color: blue;"></view>
@@ -166,22 +172,22 @@ margin-top: <length> | <percentage> | auto;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{marginTop}}</text>
-          <text class="uni-info">获取值: {{marginTopActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.marginTop}}</text>
+          <text class="uni-info">获取值: {{data.marginTopActualTextFlat}}</text>
           <view class="test-box">
             <text class="common-view common-text" style="background-color: red;">红色</text>
-            <text ref="textRefFlat" class="common-view common-text test-text-flatten" :style="{ marginTop: marginTop }" flatten>text</text>
+            <text ref="textRefFlat" class="common-view common-text test-text-flatten" :style="{ marginTop: data.marginTop }" flatten>text</text>
             <text class="common-view common-text" style="background-color: blue;">蓝色</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{marginTop}}</text>
-          <text class="uni-info">获取值: {{marginTopActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.marginTop}}</text>
+          <text class="uni-info">获取值: {{data.marginTopActualImageFlat}}</text>
           <view class="test-box">
             <image class="common-image" style="background-color: red;" src="/static/test-image/logo.png"></image>
-            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ marginTop: marginTop }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ marginTop: data.marginTop }" flatten src="/static/test-image/logo.png"></image>
             <image class="common-image" style="background-color: blue;" src="/static/test-image/logo.png"></image>
           </view>
         </view>
@@ -190,7 +196,7 @@ margin-top: <length> | <percentage> | auto;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="marginTopEnum" title="margin-top 枚举值" @change="radioChangeMarginTop" :compact="true"></enum-data>
-        <input-data :defaultValue="marginTop" title="margin-top 自定义值" type="text" @confirm="inputChangeMarginTop"></input-data>
+        <input-data :defaultValue="data.marginTop" title="margin-top 自定义值" type="text" @confirm="inputChangeMarginTop"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -217,13 +223,15 @@ margin-top: <length> | <percentage> | auto;
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const marginTop = ref('25px')
-  const marginTopActual = ref('')
-  const marginTopActualText = ref('')
-  const marginTopActualImage = ref('')
-  const marginTopActualFlat = ref('')
-  const marginTopActualTextFlat = ref('')
-  const marginTopActualImageFlat = ref('')
+  const data = reactive({
+    marginTop: '25px',
+    marginTopActual: '',
+    marginTopActualText: '',
+    marginTopActualImage: '',
+    marginTopActualFlat: '',
+    marginTopActualTextFlat: '',
+    marginTopActualImageFlat: ''
+  })
 
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
@@ -243,16 +251,18 @@ margin-top: <length> | <percentage> | auto;
   ]
 
   const getPropertyValues = () => {
-    marginTopActual.value = viewRef.value?.style.getPropertyValue('margin-top') ?? ''
-    marginTopActualFlat.value = viewRefFlat.value?.style.getPropertyValue('margin-top') ?? ''
-    marginTopActualText.value = textRef.value?.style.getPropertyValue('margin-top') ?? ''
-    marginTopActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('margin-top') ?? ''
-    marginTopActualImage.value = imageRef.value?.style.getPropertyValue('margin-top') ?? ''
-    marginTopActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('margin-top') ?? ''
+    data.marginTopActual = viewRef.value?.style.getPropertyValue('margin-top') ?? ''
+    data.marginTopActualFlat = viewRefFlat.value?.style.getPropertyValue('margin-top') ?? ''
+    data.marginTopActualText = textRef.value?.style.getPropertyValue('margin-top') ?? ''
+    data.marginTopActualTextFlat = textRefFlat.value?.style.getPropertyValue('margin-top') ?? ''
+    data.marginTopActualImage = imageRef.value?.style.getPropertyValue('margin-top') ?? ''
+    data.marginTopActualImageFlat = imageRefFlat.value?.style.getPropertyValue('margin-top') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeMarginTop = (value: string) => {
-    marginTop.value = value
+    data.marginTop = value
     viewRef.value?.style.setProperty('margin-top', value)
     viewRefFlat.value?.style.setProperty('margin-top', value)
     textRef.value?.style.setProperty('margin-top', value)
@@ -262,7 +272,7 @@ margin-top: <length> | <percentage> | auto;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeMarginTop = (index: number) => {
@@ -281,7 +291,8 @@ margin-top: <length> | <percentage> | auto;
   })
 
   defineExpose({
-    radioChangeMarginTop
+    radioChangeMarginTop,
+    data
   })
 </script>
 

@@ -20,52 +20,52 @@ CSS 长度数据类型 `<percentage>` 表述一个百分比值。许多 CSS 属�
 ### 兼容性
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| px | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | - |
-| rpx | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | - |
-| em | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| rem | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| cap | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| ch | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| cm | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| cqb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| cqh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| cqi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| cqmax | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| cqmin | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| cqw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| dvb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| dvh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| dvi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| dvw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| ex | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| ic | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| in | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| lh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| lvb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| lvh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| lvi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| lvw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| mm | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| pc | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| pt | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| q | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| rcap | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| rch | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| rex | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| ric | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| rlh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| svb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| svh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| svi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| svw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| vb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| vh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| vi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| vmax | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| vmin | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| vw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| % | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | app平台仅width、height、padding(-*)、margin(-*)、top、left、right、bottom、flex-basis等属性支持 |
-| fr | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
+| px | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |   |
+| rpx | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |   |
+| em | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| rem | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| cap | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| ch | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| cm | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| cqb | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| cqh | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| cqi | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| cqmax | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| cqmin | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| cqw | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| dvb | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| dvh | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| dvi | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| dvw | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| ex | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| ic | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| in | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| lh | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| lvb | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| lvh | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| lvi | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| lvw | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| mm | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| pc | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| pt | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| q | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| rcap | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| rch | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| rex | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| ric | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| rlh | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| svb | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| svh | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| svi | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| svw | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| vb | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| vh | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| vi | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| vmax | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| vmin | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| vw | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| % | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | app平台仅width、height、padding(-*)、margin(-*)、top、left、right、bottom、flex-basis等属性支持 |
+| fr | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
 
 ### rpx
 `rpx` 是一个以设备750px为基准的单位，`750rpx`即为屏幕宽度，相当于100%；`375rpx`即为屏幕一半宽度，相当于50%。
@@ -119,47 +119,47 @@ rpx比较适合的场景是view的宽度width设置。
 
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| px | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | - |
-| rpx | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | - |
-| em | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | app平台仅line-height属性支持 |
-| rem | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| cap | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| ch | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| cm | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| cqb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| cqh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| cqi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| cqmax | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| cqmin | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| cqw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| dvb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| dvh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| dvi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| dvw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| ex | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| ic | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| in | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| lh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| lvb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| lvh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| lvi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| lvw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| mm | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| pc | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| pt | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| q | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| rcap | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| rch | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| rex | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| ric | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| rlh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| svb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| svh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| svi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| svw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| vb | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| vh | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| vi | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| vmax | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| vmin | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
-| vw | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | - |
+| px | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |   |
+| rpx | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |   |
+| em | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | app平台仅line-height属性支持 |
+| rem | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| cap | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| ch | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| cm | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| cqb | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| cqh | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| cqi | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| cqmax | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| cqmin | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| cqw | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| dvb | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| dvh | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| dvi | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| dvw | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| ex | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| ic | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| in | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| lh | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| lvb | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| lvh | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| lvi | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| lvw | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| mm | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| pc | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| pt | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| q | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| rcap | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| rch | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| rex | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| ric | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| rlh | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| svb | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| svh | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| svi | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| svw | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| vb | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| vh | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| vi | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| vmax | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| vmin | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| vw | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |

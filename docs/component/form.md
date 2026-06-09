@@ -16,19 +16,19 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.97 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.97 | 4.11 | 5.11 | 4.61 | 5.0 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| disabled | boolean | - | Web: 4.0; 微信小程序: x; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否禁用 |
-| report-submit | boolean | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 是否返回 formId 用于发送模板消息 |
-| report-submit-timeout | number | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | *(number)*<br/>等待一段时间（毫秒数）以确认 formId 是否生效。如果未指定这个参数，formId 有很小的概率是无效的（如遇到网络失败的情况）。指定这个参数将可以检测 formId 是否有效，以这个参数的时间作为这项检测的超时时间。如果失败，将返回 requestFormId:fail 开头的 formId |
-| @submit | (event: [UniFormSubmitEvent](#uniformsubmitevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 携带 form 中的数据触发 submit 事件，event.detail = {value : {'name': 'value'}} |
-| @reset | (event: [UniFormResetEvent](#uniformresetevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表单重置时会触发 reset 事件 |
+| disabled | boolean | false | Web: 4.0; 微信小程序: x; Android: 3.97; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否禁用 |
+| report-submit | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 是否返回 formId 用于发送模板消息 |
+| report-submit-timeout | number |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(number)*<br/>等待一段时间（毫秒数）以确认 formId 是否生效。如果未指定这个参数，formId 有很小的概率是无效的（如遇到网络失败的情况）。指定这个参数将可以检测 formId 是否有效，以这个参数的时间作为这项检测的超时时间。如果失败，将返回 requestFormId:fail 开头的 formId |
+| @submit | (event: [UniFormSubmitEvent](#uniformsubmitevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 携带 form 中的数据触发 submit 事件，event.detail = {value : {'name': 'value'}} |
+| @reset | (event: [UniFormResetEvent](#uniformresetevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表单重置时会触发 reset 事件 |
 
 
 ### 事件
@@ -47,7 +47,7 @@ UniFormSubmitEvent -- Extends --> UniCustomEvent&ltUniFormSubmitEventDetail&gt
 ###### UniFormSubmitEventDetail 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | - | - | - |
+| value | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  |   |  |
 
 
 #### UniFormResetEvent
@@ -209,7 +209,6 @@ reset在浏览器W3C的策略是还原、重置。
           <!-- <textarea class="uni-input" name="comment" :value="comment" placeholder="这个class的写法，导致iOS和Android产生了高度差异"/> -->
         </view>
         <!-- picker -->
-        <!-- #ifdef APP-HARMONY || WEB || MP -->
         <view class="uni-form-item flex-row">
           <text class="picker-title">时区</text>
           <picker class="picker" name="timeZone" @change="onTimeZoneChange" :value="data.timeZoneIndex" :range="data.timeZoneList">
@@ -218,7 +217,7 @@ reset在浏览器W3C的策略是还原、重置。
         </view>
         <view class="uni-form-item flex-row">
           <text class="picker-title">多列选择器</text>
-          <picker class="picker pickerMulti" mode="multiSelector" @columnchange="onMultiPickerColumnChange"
+          <picker class="picker pickerMulti" name="picker-mode-multiSelector" mode="multiSelector" @columnchange="onMultiPickerColumnChange"
             :value="data.multiIndex" :range="data.multiArray">
             <view class="uni-picker-select-value pickerMultiValue">
               {{data.multiArray[0][data.multiIndex[0]]}}，{{data.multiArray[1][data.multiIndex[1]]}}，{{data.multiArray[2][data.multiIndex[2]]}}
@@ -227,18 +226,17 @@ reset在浏览器W3C的策略是还原、重置。
         </view>
         <view class="uni-form-item flex-row">
           <text class="picker-title">时间选择器</text>
-          <picker class="picker pickerTime" mode="time" :value="data.timePickerValue" start="09:01" end="21:01" @change="onTimeChange">
+          <picker class="picker pickerTime" name="picker-mode-time" mode="time" :value="data.timePickerValue" start="09:01" end="21:01" @change="onTimeChange">
             <view class="uni-picker-select-value">{{data.timePickerValue}}</view>
           </picker>
         </view>
         <view class="uni-form-item flex-row">
           <text class="picker-title">日期选择器</text>
-          <picker class="picker pickerDate" mode="date" :value="data.datePickerValue" :start="data.startDate" :end="data.endDate"
+          <picker class="picker pickerDate" name="picker-mode-date" mode="date" :value="data.datePickerValue" :start="data.startDate" :end="data.endDate"
             @change="onDateChange">
             <view class="uni-picker-select-value">{{data.datePickerValue}}</view>
           </picker>
         </view>
-        <!-- #endif -->
         <view class="uni-form-item">
           <text class="title">时间</text>
           <picker-view class="picker-view" name="time" :value="data.time" indicator-style="height:50px">
@@ -353,7 +351,6 @@ reset在浏览器W3C的策略是还原、重置。
     return JSON.stringify(data.formData)
   })
 
-  // #ifdef APP-HARMONY
   const onTimeZoneChange = (e: UniPickerChangeEvent) => {
     data.timeZoneIndex = e.detail.value as number
     console.log('时区选择改变，携带值为：' + e.detail.value)
@@ -412,7 +409,6 @@ reset在浏览器W3C的策略是还原、重置。
   const onTimeChange = (e: UniPickerChangeEvent) => {
     data.timePickerValue = e.detail.value as string
   }
-  // #endif
 
   const onFormSubmit = (e: UniFormSubmitEvent) => {
     data.formData = e.detail.value
@@ -511,12 +507,7 @@ reset在浏览器W3C的策略是还原、重置。
     height: 41px;
     padding: 0 13px;
     font-size: 14px;
-    /* #ifndef VUE3-VAPOR */
     background: var(--list-background-color,#ffffff);
-    /* #endif */
-    /* #ifdef VUE3-VAPOR */
-    background: #ffffff;
-    /* #endif */
     justify-content: center;
   }
 </style>

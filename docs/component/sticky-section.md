@@ -12,16 +12,16 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.02 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.98 | 4.11 | 5.0.5 | 4.71 | - |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.02 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.98 | 4.11 | 5.11 | 5.0.5 | 4.71 | 5.08 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| push-pinned-header | boolean | true | Web: x; 微信小程序: x; Android: 3.98; iOS: 4.11; HarmonyOS: x; HarmonyOS(Vapor): - | sticky-section元素重叠时是否继续上推 |
-| padding | Array\<number> | [0,0,0,0\] | Web: 4.02; 微信小程序: x; Android: 3.98; iOS: 4.11; HarmonyOS: x; HarmonyOS(Vapor): - | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距  |
+| push-pinned-header | boolean | true | Web: x; 微信小程序: x; Android: 3.98; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | sticky-section元素重叠时是否继续上推 |
+| padding | Array\<number> | [0,0,0,0\] | Web: 4.02; 微信小程序: x; Android: 3.98; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距  |
 
 
 
@@ -54,15 +54,19 @@
 + `sticky-section` 组件，不支持设置css样式，不要通过 class 和 style 设置样式  
 + Android平台 `sticky-section` 组件作为 list-view 的子元素时需要注意，sticky-section子元素仅支持sticky-header、list-item，其他元素无法正常显示
 + 鸿蒙平台暂不支持 `padding` 属性，可通过设置子元素样式来实现类似效果  
++ 蒸汽模式 sticky-section内的list-item必须使用v-for、不能使用v-if，且此v-for必须有key
 
 ### 子组件 @children-tags
 支持所有组件
 
 ### 示例
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/component/sticky-section/sticky-section.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/component/sticky-section/sticky-section.uvue) 
->
-> 该 API 不支持 Web，请运行 hello uni-app x 到 App 平台体验 
-```uvue
+::: preview https://hellouniappx.dcloud.net.cn/web/#/pages/component/sticky-section/sticky-section
+
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/component/sticky-section/sticky-section
+
+>示例
+```vue
 <template>
   <page-head title="sticky-section"></page-head>
   <list-view id="list-view" ref="listViewRef" show-scrollbar=false class="page" :scroll-into-view="pageData.scrollIntoView"
@@ -159,11 +163,8 @@
   }
 
   const gotoStickyHeader = (id : string) => {
-    // #ifdef APP
+    // #ifdef APP || WEB
     pageData.scrollIntoView = id
-    // #endif
-    // #ifdef WEB
-    console.log("web端不支持该功能")
     // #endif
   }
 
@@ -234,6 +235,8 @@
 </style>
 
 ```
+
+:::
 
 
 ### 参见

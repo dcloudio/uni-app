@@ -5,11 +5,17 @@
 flex-grow 属性设置弹性元素在主轴方向的增长系数。此属性定义了元素在弹性容器中分配主轴方向剩余空间的相对比例（即弹性增长因子），增长的可能是弹性元素的宽度或高度，取决于 flex-direction 值。<br/>剩余空间是指弹性容器尺寸减去所有子元素尺寸之和后的空间。若所有子元素有相同的增长系数，则各子元素将获得等量的剩余空间，否则按不同增长系数的比例进行分配。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -105,13 +111,13 @@ flex-grow: <number>;
         <!-- view 组件测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{flexGrow}}</text>
-          <text class="uni-info">获取值: {{flexGrowActual}}</text>
+          <text class="uni-info">设置值: {{data.flexGrow}}</text>
+          <text class="uni-info">获取值: {{data.flexGrowActual}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <view class="common-image red"></view>
-              <view ref="viewRef" class="common-image green test-view" :style="{ flexGrow: flexGrow }">
-                <text class="common-text">{{flexGrow}}</text>
+              <view ref="viewRef" class="common-image green test-view" :style="{ flexGrow: data.flexGrow }">
+                <text class="common-text">{{data.flexGrow}}</text>
               </view>
               <view class="common-image blue"></view>
             </view>
@@ -121,12 +127,12 @@ flex-grow: <number>;
         <!-- text 组件测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{flexGrow}}</text>
-          <text class="uni-info">获取值: {{flexGrowActualText}}</text>
+          <text class="uni-info">设置值: {{data.flexGrow}}</text>
+          <text class="uni-info">获取值: {{data.flexGrowActualText}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <text class="common-text red">红色</text>
-              <text ref="textRef" class="common-text green test-text" :style="{ flexGrow: flexGrow }">text</text>
+              <text ref="textRef" class="common-text green test-text" :style="{ flexGrow: data.flexGrow }">text</text>
               <text class="common-text blue">蓝色</text>
             </view>
           </view>
@@ -135,12 +141,12 @@ flex-grow: <number>;
         <!-- image 组件测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{flexGrow}}</text>
-          <text class="uni-info">获取值: {{flexGrowActualImage}}</text>
+          <text class="uni-info">设置值: {{data.flexGrow}}</text>
+          <text class="uni-info">获取值: {{data.flexGrowActualImage}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <image class="common-image red" src="/static/test-image/logo.png"></image>
-              <image ref="imageRef" class="common-image green test-image" :style="{ flexGrow: flexGrow }" src="/static/test-image/logo.png"></image>
+              <image ref="imageRef" class="common-image green test-image" :style="{ flexGrow: data.flexGrow }" src="/static/test-image/logo.png"></image>
               <image class="common-image blue" src="/static/test-image/logo.png"></image>
             </view>
           </view>
@@ -152,13 +158,13 @@ flex-grow: <number>;
         <!-- view 组件拍平测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{flexGrow}}</text>
-          <text class="uni-info">获取值: {{flexGrowActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.flexGrow}}</text>
+          <text class="uni-info">获取值: {{data.flexGrowActualFlat}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <view class="common-image red"></view>
-              <view ref="viewRefFlat" class="common-image green test-view-flatten" :style="{ flexGrow: flexGrow }" flatten>
-                <text class="common-text">{{flexGrow}}</text>
+              <view ref="viewRefFlat" class="common-image green test-view-flatten" :style="{ flexGrow: data.flexGrow }" flatten>
+                <text class="common-text">{{data.flexGrow}}</text>
               </view>
               <view class="common-image blue"></view>
             </view>
@@ -168,12 +174,12 @@ flex-grow: <number>;
         <!-- text 组件拍平测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{flexGrow}}</text>
-          <text class="uni-info">获取值: {{flexGrowActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.flexGrow}}</text>
+          <text class="uni-info">获取值: {{data.flexGrowActualTextFlat}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <text class="common-text red">红色</text>
-              <text ref="textRefFlat" class="common-text green test-text-flatten" :style="{ flexGrow: flexGrow }" flatten>text</text>
+              <text ref="textRefFlat" class="common-text green test-text-flatten" :style="{ flexGrow: data.flexGrow }" flatten>text</text>
               <text class="common-text blue">蓝色</text>
             </view>
           </view>
@@ -182,12 +188,12 @@ flex-grow: <number>;
         <!-- image 组件拍平测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{flexGrow}}</text>
-          <text class="uni-info">获取值: {{flexGrowActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.flexGrow}}</text>
+          <text class="uni-info">获取值: {{data.flexGrowActualImageFlat}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <image class="common-image red" src="/static/test-image/logo.png"></image>
-              <image ref="imageRefFlat" class="common-image green test-image-flatten" :style="{ flexGrow: flexGrow }" flatten src="/static/test-image/logo.png"></image>
+              <image ref="imageRefFlat" class="common-image green test-image-flatten" :style="{ flexGrow: data.flexGrow }" flatten src="/static/test-image/logo.png"></image>
               <image class="common-image blue" src="/static/test-image/logo.png"></image>
             </view>
           </view>
@@ -197,7 +203,7 @@ flex-grow: <number>;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="flexGrowEnum" title="flex-grow 枚举值" @change="radioChangeFlexGrow" :compact="true"></enum-data>
-        <input-data :defaultValue="flexGrow" title="flex-grow 自定义值" type="text" @confirm="inputChangeFlexGrow"></input-data>
+        <input-data :defaultValue="data.flexGrow" title="flex-grow 自定义值" type="text" @confirm="inputChangeFlexGrow"></input-data>
       </view>
 
       <text class="uni-title-text uni-common-mt">native-view 组件：flex-grow: 0.5 和 flex-grow: 1</text>
@@ -230,13 +236,15 @@ flex-grow: <number>;
     { value: 4, name: '2' },
   ]
 
-  const flexGrow = ref('0')
-  const flexGrowActual = ref('')
-  const flexGrowActualFlat = ref('')
-  const flexGrowActualText = ref('')
-  const flexGrowActualImage = ref('')
-  const flexGrowActualTextFlat = ref('')
-  const flexGrowActualImageFlat = ref('')
+  const data = reactive({
+    flexGrow: '0',
+    flexGrowActual: '',
+    flexGrowActualFlat: '',
+    flexGrowActualText: '',
+    flexGrowActualImage: '',
+    flexGrowActualTextFlat: '',
+    flexGrowActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const viewRefFlat = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
@@ -245,16 +253,18 @@ flex-grow: <number>;
   const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    flexGrowActual.value = viewRef.value?.style.getPropertyValue('flex-grow') ?? ''
-    flexGrowActualFlat.value = viewRefFlat.value?.style.getPropertyValue('flex-grow') ?? ''
-    flexGrowActualText.value = textRef.value?.style.getPropertyValue('flex-grow') ?? ''
-    flexGrowActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('flex-grow') ?? ''
-    flexGrowActualImage.value = imageRef.value?.style.getPropertyValue('flex-grow') ?? ''
-    flexGrowActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('flex-grow') ?? ''
+    data.flexGrowActual = viewRef.value?.style.getPropertyValue('flex-grow') ?? ''
+    data.flexGrowActualFlat = viewRefFlat.value?.style.getPropertyValue('flex-grow') ?? ''
+    data.flexGrowActualText = textRef.value?.style.getPropertyValue('flex-grow') ?? ''
+    data.flexGrowActualTextFlat = textRefFlat.value?.style.getPropertyValue('flex-grow') ?? ''
+    data.flexGrowActualImage = imageRef.value?.style.getPropertyValue('flex-grow') ?? ''
+    data.flexGrowActualImageFlat = imageRefFlat.value?.style.getPropertyValue('flex-grow') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeFlexGrow = (value: string) => {
-    flexGrow.value = value
+    data.flexGrow = value
     viewRef.value?.style.setProperty('flex-grow', value)
     viewRefFlat.value?.style.setProperty('flex-grow', value)
     textRef.value?.style.setProperty('flex-grow', value)
@@ -264,7 +274,7 @@ flex-grow: <number>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeFlexGrow = (index: number) => {
@@ -283,7 +293,8 @@ flex-grow: <number>;
   })
 
   defineExpose({
-    radioChangeFlexGrow
+    radioChangeFlexGrow,
+    data
   })
 </script>
 
@@ -378,8 +389,6 @@ flex-grow: <number>;
 
   .native-view-grow {
     height: 50px;
-    justify-content: center;
-    align-items: center;
   }
 
   .width-30-no-grow {

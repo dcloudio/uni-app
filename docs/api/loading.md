@@ -15,38 +15,50 @@
 它是一个悬浮弹出的、非组件内嵌的加载中提示。
 
 ### showLoading 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.61 | 4.61 | 4.61 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **ShowLoadingOptions** | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | uni.showLoading参数定义 |
+| options | **ShowLoadingOptions** | 否 |  |   | uni.showLoading参数定义 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| title | string | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 提示的内容，长度与 icon 取值有关。 |
-| mask | boolean | 否 | - | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否显示透明蒙层，防止触摸穿透，默认：false |
-| success | (res: ShowLoadingSuccess) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.showLoading成功回调函数定义 |
-| fail | (res: [ShowLoadingFail](#showloadingfail-values)) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.showLoading失败回调函数定义 |
-| complete | (res: any) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.showLoading完成回调函数定义 | 
+| title | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 提示的内容，长度与 icon 取值有关。 |
+| mask | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 是否显示透明蒙层，防止触摸穿透，默认：false |
+| success | (res: [ShowLoadingSuccess](#showloadingsuccess-values)) => void | 否 |  | 微信小程序: 4.41 | uni.showLoading成功回调函数定义 |
+| fail | (res: [ShowLoadingFail](#showloadingfail-values)) => void | 否 |  | 微信小程序: 4.41 | uni.showLoading失败回调函数定义 |
+| complete | (res: any) => void | 否 |  | 微信小程序: 4.41 | uni.showLoading完成回调函数定义 | 
+
+#### ShowLoadingSuccess 的属性值 @showloadingsuccess-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 错误信息 |
 
 #### ShowLoadingFail 的属性值 @showloadingfail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | uni.showLoading失败回调参数 |
-| errSubject | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 统一错误主题（模块）名称 |
-| data | any | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| errCode | number | 是 |  |   | uni.showLoading失败回调参数 |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
 
 
+### 返回值 
+
+| 类型 | 必备 |
+| :- | :- |
+| [UniPage](/api/unipage.md) | 否 |
+ 
 
 
 <!-- UTSAPIJSON.showLoading.example -->
@@ -82,36 +94,42 @@
 隐藏 loading 提示框。
 
 ### hideLoading 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.61 | 4.61 | 4.61 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **HideLoadingOptions** | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | uni.showLoading参数定义 |
+| options | **HideLoadingOptions** | 否 |  |   | uni.hideLoading参数定义 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| loadingPage | [UniPage](/api/unipage.md) | 否 | - | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: 12; HarmonyOS: x | 期望隐藏的目标LoadingPage 如果为null 会关闭当前栈顶全部LoadingPage |
-| success | (res: HideLoadingSuccess) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.hideLoading成功回调函数定义 |
-| fail | (res: [HideLoadingFail](#hideloadingfail-values)) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.hideLoading失败回调函数定义 |
-| complete | (res: any) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.hideLoading完成回调函数定义 |
-| noConflict | boolean | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 需要基础库： `2.22.1`<br/><br/>目前 toast 和 loading 相关接口可以相互混用，此参数可用于取消混用特性<br/> | 
+| loadingPage | [UniPage](/api/unipage.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: 12; HarmonyOS: 4.61 | 期望隐藏的目标LoadingPage 如果为null 会关闭当前栈顶全部LoadingPage |
+| success | (res: [HideLoadingSuccess](#hideloadingsuccess-values)) => void | 否 |  | 微信小程序: 4.41 | uni.hideLoading成功回调函数定义 |
+| fail | (res: [HideLoadingFail](#hideloadingfail-values)) => void | 否 |  | 微信小程序: 4.41 | uni.hideLoading失败回调函数定义 |
+| complete | (res: any) => void | 否 |  | 微信小程序: 4.41 | uni.hideLoading完成回调函数定义 |
+| noConflict | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.22.1`<br/><br/>目前 toast 和 loading 相关接口可以相互混用，此参数可用于取消混用特性<br/> | 
+
+#### HideLoadingSuccess 的属性值 @hideloadingsuccess-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 错误信息 |
 
 #### HideLoadingFail 的属性值 @hideloadingfail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | uni.showLoading失败回调参数 |
-| errSubject | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 统一错误主题（模块）名称 |
-| data | any | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| errCode | number | 是 |  |   | uni.hideLoading失败回调参数 |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
 
 
 
@@ -352,10 +370,10 @@
 	}
 
 	onLoad(() => {
-		// uni.showLoading()
-		// setTimeout(() => {
-		// 	uni.hideLoading()
-		// }, 2000);
+		uni.showLoading()
+		setTimeout(() => {
+			uni.hideLoading()
+		}, 2000);
 	})
 
 	defineExpose({
@@ -378,7 +396,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 
 
 ## Tips@tips
@@ -395,3 +413,10 @@
 * 当前页面（包括 dialogPage）关闭时，弹出的 loading 都会被自动取消
 	+ 如需在dialogPage关闭后，仍然弹出 Loading，需要在关闭dialogPage后再次调用 showLoading
 + 注意在支持 dialogPage 的平台（Web和App），[uni.showModal](./modal.md)、[uni.showActionSheet](./action-sheet.md) 也是 dialogPage 实现的，此时 showLoading 会绑定到这些 dialogPage 上
+* 在 Web 平台，如果希望通过 `const loadingPage = uni.showLoading(...)` 获取 `loadingPage` 对象，需要至少传入一个回调函数，例如：
+```ts
+uni.showLoading({
+	success: function (showRet : ShowLoadingSuccess) {
+	}
+})
+```

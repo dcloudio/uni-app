@@ -11,7 +11,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| length | number | 是 | - | - | 当使用非对象调用时，该参数将被视为指定类型化数组长度的数字。在内存中创建一个内部数组缓冲区，大小长度乘以 BYTES_PER_ELEMENT 字节，用 0 填充。省略所有参数，等同于使用 0 作为参数。 | 
+| length | number | 是 |  |   | 当使用非对象调用时，该参数将被视为指定类型化数组长度的数字。在内存中创建一个内部数组缓冲区，大小长度乘以 BYTES_PER_ELEMENT 字节，用 0 填充。省略所有参数，等同于使用 0 作为参数。 | 
 
 
 **返回值**
@@ -45,7 +45,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| array | ArrayLike\<number> \| ArrayBufferLike | 是 | - | - | 当使用 TypedArray 子类的实例调用时，typedArray 会被拷贝到一个新的类型数组中。对于非 bigint TypeedArray 构造函数，typedArray 参数仅可以是非 bigint 类型（例如 Int32Array）。同样，对于 bigint TypedArray 构造函数（BigInt64Array 或 BigUint64Array），typedArray 参数仅可以是 bigint 类型。typedArray 中的每个值在拷贝到新数组之前都转换为构造函数的相应类型。新的类型化数组的长度与 typedArray 参数的长度相同。 | 
+| array | ArrayLike\<number> \| ArrayBufferLike | 是 |  |   | 当使用 TypedArray 子类的实例调用时，typedArray 会被拷贝到一个新的类型数组中。对于非 bigint TypeedArray 构造函数，typedArray 参数仅可以是非 bigint 类型（例如 Int32Array）。同样，对于 bigint TypedArray 构造函数（BigInt64Array 或 BigUint64Array），typedArray 参数仅可以是 bigint 类型。typedArray 中的每个值在拷贝到新数组之前都转换为构造函数的相应类型。新的类型化数组的长度与 typedArray 参数的长度相同。 | 
 
 
 **返回值**
@@ -79,9 +79,9 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| buffer | [ArrayBufferLike](#arraybufferlike-values) | 是 | - | - | ArrayBuffer实例 |
-| byteOffset | number | 否 | - | - | 可选，偏移量，单位字节 |
-| length | number | 否 | - | - | 可选，长度 | 
+| buffer | [ArrayBufferLike](#arraybufferlike-values) | 是 |  |   | ArrayBuffer实例 |
+| byteOffset | number | 否 |  |   | 可选，偏移量，单位字节 |
+| length | number | 否 |  |   | 可选，长度 | 
 
 
 **返回值**
@@ -149,7 +149,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| items | number[\] | 是 | - | - | 要包含在新数组对象中的一组元素。 | 
+| items | number[\] | 是 |  |   | 要包含在新数组对象中的一组元素。 | 
 
 
 **返回值**
@@ -191,8 +191,8 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| arrayLike | [ArrayLike\<number>](#arraylike-values) | 是 | - | - | 要转换为数组的类似数组或可迭代对象。 |
-| mapfn | (v: number, k: number) => number | 否 | - | - | 可选参数。如果指定了该参数，则最后生成的类型数组会经过该函数的加工处理后再返回。 | 
+| arrayLike | [ArrayLike\<number>](#arraylike-values) | 是 |  |   | 要转换为数组的类似数组或可迭代对象。 |
+| mapfn | (v: number, k: number) => number | 否 |  |   | 可选参数。如果指定了该参数，则最后生成的类型数组会经过该函数的加工处理后再返回。 | 
 
 
 **返回值**
@@ -373,9 +373,9 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| target | number | 是 | - | - | 如果target为负数，则视为length+target，其中length为数组的长度。 |
-| start | number | 是 | - | - | 如果start为负数，则视为length+start。如果省略end，则使用this对象的长度作为其默认值。 |
-| end | number | 否 | - | - | 如果未指定，默认使用this对象的长度。 | 
+| target | number | 是 |  |   | 如果target为负数，则视为length+target，其中length为数组的长度。 |
+| start | number | 是 |  |   | 如果start为负数，则视为length+start。如果省略end，则使用this对象的长度作为其默认值。 |
+| end | number | 否 |  |   | 如果未指定，默认使用this对象的长度。 | 
 
 
 **返回值**
@@ -421,7 +421,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| predicate | (value: number, index: number, array: [Uint32Array](/uts/buildin-object-api/uint32array.md)) => boolean | 是 | - | - | 一个最多接受三个参数的函数。every方法对数组中的每个元素调用predicate函数，直到predicate返回一个可转换为布尔值false的值，或者直到数组结束。 | 
+| predicate | (value: number, index: number, array: [Uint32Array](/uts/buildin-object-api/uint32array.md)) => boolean | 是 |  |   | 一个最多接受三个参数的函数。every方法对数组中的每个元素调用predicate函数，直到predicate返回一个可转换为布尔值false的值，或者直到数组结束。 | 
 
 
 **返回值**
@@ -463,9 +463,9 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | number | 是 | - | - | 用于填充数组部分的值。 |
-| start | number | 否 | - | - | 开始填充数组的索引。如果start为负数，则视为length+start，其中length为数组的长度。 |
-| end | number | 否 | - | - | 停止填充数组的索引。如果end为负数，则视为length+end。 | 
+| value | number | 是 |  |   | 用于填充数组部分的值。 |
+| start | number | 否 |  |   | 开始填充数组的索引。如果start为负数，则视为length+start，其中length为数组的长度。 |
+| end | number | 否 |  |   | 停止填充数组的索引。如果end为负数，则视为length+end。 | 
 
 
 **返回值**
@@ -525,7 +525,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| predicate | (value: number, index: number, array: [Uint32Array](/uts/buildin-object-api/uint32array.md)) => any | 是 | - | - | 一个最多接受三个参数的函数。filter方法对数组中的每个元素调用predicate函数。 | 
+| predicate | (value: number, index: number, array: [Uint32Array](/uts/buildin-object-api/uint32array.md)) => any | 是 |  |   | 一个最多接受三个参数的函数。filter方法对数组中的每个元素调用predicate函数。 | 
 
 
 **返回值**
@@ -567,7 +567,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| predicate | (value: number, index: number, obj: [Uint32Array](/uts/buildin-object-api/uint32array.md)) => boolean | 是 | - | - | 对数组中的每个元素调用一次predicate，直到找到一个使predicate返回true的元素为止。 | 
+| predicate | (value: number, index: number, obj: [Uint32Array](/uts/buildin-object-api/uint32array.md)) => boolean | 是 |  |   | 对数组中的每个元素调用一次predicate，直到找到一个使predicate返回true的元素为止。 | 
 
 
 **返回值**
@@ -610,7 +610,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| predicate | (value: number, index: number, obj: [Uint32Array](/uts/buildin-object-api/uint32array.md)) => boolean | 是 | - | - | 对数组中的每个元素调用一次predicate，直到找到一个使predicate返回true的元素为止。 | 
+| predicate | (value: number, index: number, obj: [Uint32Array](/uts/buildin-object-api/uint32array.md)) => boolean | 是 |  |   | 对数组中的每个元素调用一次predicate，直到找到一个使predicate返回true的元素为止。 | 
 
 
 **返回值**
@@ -658,7 +658,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callbackfn | (value: number, index: number, array: [Uint32Array](/uts/buildin-object-api/uint32array.md)) => void | 是 | - | - | 一个最多接受三个参数的函数。forEach方法对数组中的每个元素调用callbackfn函数。 | 
+| callbackfn | (value: number, index: number, array: [Uint32Array](/uts/buildin-object-api/uint32array.md)) => void | 是 |  |   | 一个最多接受三个参数的函数。forEach方法对数组中的每个元素调用callbackfn函数。 | 
 
 
 **返回值**
@@ -701,8 +701,8 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| searchElement | number | 是 | - | - | 要在数组中查找的值。 |
-| fromIndex | number | 否 | - | - | 开始搜索的数组索引。如果省略，则从索引0开始搜索。 | 
+| searchElement | number | 是 |  |   | 要在数组中查找的值。 |
+| fromIndex | number | 否 |  |   | 开始搜索的数组索引。如果省略，则从索引0开始搜索。 | 
 
 
 **返回值**
@@ -759,7 +759,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| separator | string | 否 | - | - | 用于分隔数组元素的字符串。如果省略，则使用逗号分隔数组元素。 | 
+| separator | string | 否 |  |   | 用于分隔数组元素的字符串。如果省略，则使用逗号分隔数组元素。 | 
 
 
 **返回值**
@@ -810,7 +810,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callbackfn | (value: number, index: number, array: [Uint32Array](/uts/buildin-object-api/uint32array.md)) => number | 是 | - | - | 一个最多接受三个参数的函数。map方法对数组中的每个元素调用callbackfn函数。 | 
+| callbackfn | (value: number, index: number, array: [Uint32Array](/uts/buildin-object-api/uint32array.md)) => number | 是 |  |   | 一个最多接受三个参数的函数。map方法对数组中的每个元素调用callbackfn函数。 | 
 
 
 **返回值**
@@ -854,7 +854,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callbackfn | (previousValue: number, currentValue: number, currentIndex: number, array: [Uint32Array](/uts/buildin-object-api/uint32array.md)) => number | 是 | - | - | 一个最多接受四个参数的函数。reduce方法对数组中的每个元素调用callbackfn函数。 | 
+| callbackfn | (previousValue: number, currentValue: number, currentIndex: number, array: [Uint32Array](/uts/buildin-object-api/uint32array.md)) => number | 是 |  |   | 一个最多接受四个参数的函数。reduce方法对数组中的每个元素调用callbackfn函数。 | 
 
 
 **返回值**
@@ -903,7 +903,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callbackfn | (previousValue: number, currentValue: number, currentIndex: number, array: [Uint32Array](/uts/buildin-object-api/uint32array.md)) => number | 是 | - | - | 一个最多接受四个参数的函数。reduceRight方法从数组的最后一个元素向第一个元素逐个调用callbackfn函数。 | 
+| callbackfn | (previousValue: number, currentValue: number, currentIndex: number, array: [Uint32Array](/uts/buildin-object-api/uint32array.md)) => number | 是 |  |   | 一个最多接受四个参数的函数。reduceRight方法从数组的最后一个元素向第一个元素逐个调用callbackfn函数。 | 
 
 
 **返回值**
@@ -991,8 +991,8 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| array | [ArrayLike\<number>](#arraylike-values) | 是 | - | - | 要设置的值或数组。 |
-| offset | number | 否 | - | - | 要写入值的当前数组中的索引。 | 
+| array | [ArrayLike\<number>](#arraylike-values) | 是 |  |   | 要设置的值或数组。 |
+| offset | number | 否 |  |   | 要写入值的当前数组中的索引。 | 
 
 
 **返回值**
@@ -1036,8 +1036,8 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| start | number | 否 | - | - | 指定部分的起始索引。 |
-| end | number | 否 | - | - | 指定部分的结束索引。不包括索引'end'处的元素。 | 
+| start | number | 否 |  |   | 指定部分的起始索引。 |
+| end | number | 否 |  |   | 指定部分的结束索引。不包括索引'end'处的元素。 | 
 
 
 **返回值**
@@ -1095,7 +1095,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| predicate | (value: number, index: number, array: [Uint32Array](/uts/buildin-object-api/uint32array.md)) => boolean | 是 | - | - | 一个最多接受三个参数的函数。some方法对数组中的每个元素调用predicate函数，直到predicate返回一个可转换为布尔值true的值，或者直到数组结束。 | 
+| predicate | (value: number, index: number, array: [Uint32Array](/uts/buildin-object-api/uint32array.md)) => boolean | 是 |  |   | 一个最多接受三个参数的函数。some方法对数组中的每个元素调用predicate函数，直到predicate返回一个可转换为布尔值true的值，或者直到数组结束。 | 
 
 
 **返回值**
@@ -1147,7 +1147,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| compareFn | (a: number, b: number) => number | 否 | - | - | 用于确定元素顺序的函数。如果省略，则元素按升序排序。 | 
+| compareFn | (a: number, b: number) => number | 否 |  |   | 用于确定元素顺序的函数。如果省略，则元素按升序排序。 | 
 
 
 **返回值**
@@ -1194,8 +1194,8 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| begin | number | 否 | - | - | 开始数组的索引。 |
-| end | number | 否 | - | - | 结束数组的索引。 | 
+| begin | number | 否 |  |   | 开始数组的索引。 |
+| end | number | 否 |  |   | 结束数组的索引。 | 
 
 
 **返回值**

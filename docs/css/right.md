@@ -5,11 +5,17 @@
 right CSS 属性定义了定位元素的右外边距边界与其包含块右边界之间的偏移，非定位元素设置此属性无效。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -29,7 +35,7 @@ right: <length> | <percentage> | auto;
 ### right 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 这个关键字表示：<br/>    <br/>      对于绝对定位元素，元素将忽略此属性而以 left 属性为准，如果此时设置 width: auto，将基于内容需要的宽度设置宽度；如果 left 也为 auto 的话，元素的水平位置就是它假如作为静态（即 static）元素时该在的位置。<br/>      对于相对定位元素，元素相对正常位置的偏移量将基于 left 属性；如果 left 也为 auto 的话，元素将不会有偏移。 |
+| auto | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 这个关键字表示：<br/>    <br/>      对于绝对定位元素，元素将忽略此属性而以 left 属性为准，如果此时设置 width: auto，将基于内容需要的宽度设置宽度；如果 left 也为 auto 的话，元素的水平位置就是它假如作为静态（即 static）元素时该在的位置。<br/>      对于相对定位元素，元素相对正常位置的偏移量将基于 left 属性；如果 left 也为 auto 的话，元素将不会有偏移。 |
 
 
 ### 默认值 @default-value 
@@ -122,10 +128,10 @@ right: <length> | <percentage> | auto;
     <view class="test-container">
       <view class="test-item">
         <text class="uni-subtitle-text">view 组件</text>
-        <text class="uni-info">设置值: {{right}}</text>
-        <text class="uni-info">获取值: {{rightActual}}</text>
+        <text class="uni-info">设置值: {{data.right}}</text>
+        <text class="uni-info">获取值: {{data.rightActual}}</text>
         <view class="test-box">
-          <view ref="viewRef" class="common test-view" :style="{ right: right }">
+          <view ref="viewRef" class="common test-view" :style="{ right: data.right }">
             <text class="common-text">view</text>
           </view>
         </view>
@@ -133,19 +139,19 @@ right: <length> | <percentage> | auto;
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件</text>
-        <text class="uni-info">设置值: {{right}}</text>
-        <text class="uni-info">获取值: {{rightActualText}}</text>
+        <text class="uni-info">设置值: {{data.right}}</text>
+        <text class="uni-info">获取值: {{data.rightActualText}}</text>
         <view class="test-box">
-          <text ref="textRef" class="common common-text test-text" :style="{ right: right }">text</text>
+          <text ref="textRef" class="common common-text test-text" :style="{ right: data.right }">text</text>
         </view>
       </view>
 
       <view class="test-item">
         <text class="uni-subtitle-text">image 组件</text>
-        <text class="uni-info">设置值: {{right}}</text>
-        <text class="uni-info">获取值: {{rightActualImage}}</text>
+        <text class="uni-info">设置值: {{data.right}}</text>
+        <text class="uni-info">获取值: {{data.rightActualImage}}</text>
         <view class="test-box">
-          <image ref="imageRef" class="common test-image" :style="{ right: right }" src="/static/test-image/logo.png"></image>
+          <image ref="imageRef" class="common test-image" :style="{ right: data.right }" src="/static/test-image/logo.png"></image>
         </view>
       </view>
     </view>
@@ -154,10 +160,10 @@ right: <length> | <percentage> | auto;
     <view class="test-container">
       <view class="test-item">
         <text class="uni-subtitle-text">view 组件拍平</text>
-        <text class="uni-info">设置值: {{right}}</text>
-        <text class="uni-info">获取值: {{rightActualFlat}}</text>
+        <text class="uni-info">设置值: {{data.right}}</text>
+        <text class="uni-info">获取值: {{data.rightActualFlat}}</text>
         <view class="test-box">
-          <view ref="viewRefFlat" class="common test-view-flatten" :style="{ right: right }" flatten>
+          <view ref="viewRefFlat" class="common test-view-flatten" :style="{ right: data.right }" flatten>
             <text class="common-text">view</text>
           </view>
         </view>
@@ -165,19 +171,19 @@ right: <length> | <percentage> | auto;
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件拍平</text>
-        <text class="uni-info">设置值: {{right}}</text>
-        <text class="uni-info">获取值: {{rightActualTextFlat}}</text>
+        <text class="uni-info">设置值: {{data.right}}</text>
+        <text class="uni-info">获取值: {{data.rightActualTextFlat}}</text>
         <view class="test-box">
-          <text ref="textRefFlat" class="common common-text test-text-flatten" :style="{ right: right }" flatten>text</text>
+          <text ref="textRefFlat" class="common common-text test-text-flatten" :style="{ right: data.right }" flatten>text</text>
         </view>
       </view>
 
       <view class="test-item">
         <text class="uni-subtitle-text">image 组件拍平</text>
-        <text class="uni-info">设置值: {{right}}</text>
-        <text class="uni-info">获取值: {{rightActualImageFlat}}</text>
+        <text class="uni-info">设置值: {{data.right}}</text>
+        <text class="uni-info">获取值: {{data.rightActualImageFlat}}</text>
         <view class="test-box">
-          <image ref="imageRefFlat" class="common test-image-flatten" :style="{ right: right }" flatten src="/static/test-image/logo.png"></image>
+          <image ref="imageRefFlat" class="common test-image-flatten" :style="{ right: data.right }" flatten src="/static/test-image/logo.png"></image>
         </view>
       </view>
     </view>
@@ -185,7 +191,7 @@ right: <length> | <percentage> | auto;
     <view class="uni-common-mt uni-common-mb">
       <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
       <enum-data :items="rightEnum" title="right 枚举值" @change="radioChangeRight" :compact="true"></enum-data>
-      <input-data :defaultValue="right" title="right 自定义值" type="text" @confirm="inputChangeRight"></input-data>
+      <input-data :defaultValue="data.right" title="right 自定义值" type="text" @confirm="inputChangeRight"></input-data>
     </view>
 
     <view class="uni-common-mb">
@@ -219,13 +225,15 @@ right: <length> | <percentage> | auto;
     { value: 7, name: 'auto' }
   ]
 
-  const right = ref('10px')
-  const rightActual = ref('')
-  const rightActualText = ref('')
-  const rightActualImage = ref('')
-  const rightActualFlat = ref('')
-  const rightActualTextFlat = ref('')
-  const rightActualImageFlat = ref('')
+  const data = reactive({
+    right: '10px',
+    rightActual: '',
+    rightActualText: '',
+    rightActualImage: '',
+    rightActualFlat: '',
+    rightActualTextFlat: '',
+    rightActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -234,16 +242,18 @@ right: <length> | <percentage> | auto;
   const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    rightActual.value = viewRef.value?.style.getPropertyValue('right') ?? ''
-    rightActualFlat.value = viewRefFlat.value?.style.getPropertyValue('right') ?? ''
-    rightActualText.value = textRef.value?.style.getPropertyValue('right') ?? ''
-    rightActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('right') ?? ''
-    rightActualImage.value = imageRef.value?.style.getPropertyValue('right') ?? ''
-    rightActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('right') ?? ''
+    data.rightActual = viewRef.value?.style.getPropertyValue('right') ?? ''
+    data.rightActualFlat = viewRefFlat.value?.style.getPropertyValue('right') ?? ''
+    data.rightActualText = textRef.value?.style.getPropertyValue('right') ?? ''
+    data.rightActualTextFlat = textRefFlat.value?.style.getPropertyValue('right') ?? ''
+    data.rightActualImage = imageRef.value?.style.getPropertyValue('right') ?? ''
+    data.rightActualImageFlat = imageRefFlat.value?.style.getPropertyValue('right') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeRight = (value: string) => {
-    right.value = value
+    data.right = value
     viewRef.value?.style.setProperty('right', value)
     viewRefFlat.value?.style.setProperty('right', value)
     textRef.value?.style.setProperty('right', value)
@@ -253,7 +263,7 @@ right: <length> | <percentage> | auto;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeRight = (index: number) => {
@@ -272,7 +282,8 @@ right: <length> | <percentage> | auto;
   })
 
   defineExpose({
-    radioChangeRight
+    radioChangeRight,
+    data
   })
 </script>
 

@@ -5,11 +5,17 @@
 border-bottom-color 属性设置一个元素底部边框的颜色。应当指出，在多数情况下，CSS 简写属性 border-color 或 border-bottom 更方便实用。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,10 +34,16 @@ border-bottom-color: <'border-top-color'>;
 ### border-bottom-color 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| inherit | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 一个代表父元素底边颜色的关键字（可能和 border-bottom-color 默认值不同） |
+| inherit | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 一个代表父元素底边颜色的关键字（可能和 border-bottom-color 默认值不同） |
 
 
+### 默认值 @default-value 
+ | 平台 | 默认值 |
+| :- | :- |
+| uvue-app | #000000 |
+| uvue-web | currentcolor |
 
+ **注意**：W3C 默认值为：currentcolor
 
 
 

@@ -16,54 +16,54 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 5.11 | 4.61 | 5.0 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| indicator-dots | string \| boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否显示面板指示点 |
+| indicator-dots | string \| boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否显示面板指示点 |
 | indicator-color | string([string.ColorString](/uts/data-type.md#ide-string)) | "rgba(0, 0, 0, .3)" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 指示点颜色，蒸汽模式推荐使用 indicator-style 定制指示点颜色 |
 | indicator-active-color | string([string.ColorString](/uts/data-type.md#ide-string)) | "#000000" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 当前选中的指示点颜色，蒸汽模式推荐使用 indicator-active-style 定制指示点颜色 |
-| active-class | string | - | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | swiper-item 可见时的 class |
-| changing-class | boolean | - | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | acceleration 设置为 {{true}} 时且处于滑动过程中，中间若干屏处于可见时的class |
-| acceleration | boolean | - | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 当开启时，会根据滑动速度，连续滑动多屏 |
-| disable-programmatic-animation | boolean | - | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 是否禁用代码变动触发 swiper 切换时使用动画。 |
-| disable-touch | string \| boolean | false | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否禁止用户 touch 操作 |
-| touchable | boolean | - | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 是否监听用户的触摸事件 |
-| easing-function | string | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定 swiper 切换缓动动画类型，有效值：default、linear、easeInCubic、easeOutCubic、easeInOutCubic |
-| autoplay | string \| boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否自动切换 |
-| current | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 当前所在滑块的 index |
-| current-item-id | string | - | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 当前所在滑块的 item-id ，不能与 current 被同时指定 |
-| interval | number | 3000 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 自动切换时间间隔 |
-| duration | number | 500 | Web: 4.0; 微信小程序: 4.41; Android: 4.44; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 滑动动画时长（Android平台仅autoplay模式下生效） |
-| circular | string \| boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否采用衔接滑动 |
-| vertical | string \| boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 滑动方向是否为纵向 |
-| rebound | boolean | true | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 控制是否回弹效果 |
-| previous-margin | string | - | Web: -; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 前边距，可用于露出前一项的一小部分，接受 px 和 rpx 值 |
-| next-margin | string | - | Web: -; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 后边距，可用于露出后一项的一小部分，接受 px 和 rpx 值 |
-| display-multiple-items | number | - | Web: -; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 同时显示的滑块数量 |
-| auto-height | string \| boolean | false | Web: -; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 自动高度。设置为 true 时，swiper 高度会随当前 item 的高度变化而变化。 |
-| disable-bounce | string \| boolean | false | Web: -; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 控制是否回弹效果 |
-| indicator-class | [string.ClassString](/uts/data-type.md#ide-string) | - | Web: -; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 指示点绑定的 class |
-| indicator-active-class | [string.ClassString](/uts/data-type.md#ide-string) | - | Web: -; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 当前选中的指示点绑定的 class |
-| indicator-style | string | - | Web: -; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 指示点样式 |
-| indicator-active-style | string | - | Web: -; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 当前选中的指示点样式 |
-| @change | (event: [UniSwiperChangeEvent](#uniswiperchangeevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | current 改变时会触发 change 事件，event.detail = {current: current, source: source} |
-| @transition | (event: [UniSwiperTransitionEvent](#uniswipertransitionevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | swiper-item 的位置发生改变时会触发 transition 事件，event.detail = {dx: dx, dy: dy} |
-| @animationfinish | (event: [UniSwiperAnimationFinishEvent](#uniswiperanimationfinishevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 动画结束时会触发 animationfinish 事件，event.detail = {current: current, source: source} |
+| active-class | string |   | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | swiper-item 可见时的 class |
+| changing-class | boolean |   | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | acceleration 设置为 {{true}} 时且处于滑动过程中，中间若干屏处于可见时的class |
+| acceleration | boolean |   | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 当开启时，会根据滑动速度，连续滑动多屏 |
+| disable-programmatic-animation | boolean |   | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 是否禁用代码变动触发 swiper 切换时使用动画。 |
+| disable-touch | string \| boolean | false | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否禁止用户 touch 操作 |
+| touchable | boolean |   | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 是否监听用户的触摸事件 |
+| easing-function | string | "default" | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定 swiper 切换缓动动画类型，有效值：default、linear、easeInCubic、easeOutCubic、easeInOutCubic |
+| autoplay | string \| boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否自动切换 |
+| current | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 当前所在滑块的 index |
+| current-item-id | string |   | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 当前所在滑块的 item-id ，不能与 current 被同时指定 |
+| interval | number | 3000 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 自动切换时间间隔 |
+| duration | number | 500 | Web: 4.0; 微信小程序: 4.41; Android: 4.44; iOS 系统版本: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 滑动动画时长（Android平台仅autoplay模式下生效） |
+| circular | string \| boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否采用衔接滑动 |
+| vertical | string \| boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 滑动方向是否为纵向 |
+| rebound | boolean | true | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 控制是否回弹效果 |
+| previous-margin | string | "0px" | 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 前边距，可用于露出前一项的一小部分，接受 px 和 rpx 值 |
+| next-margin | string | "0px" | 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 后边距，可用于露出后一项的一小部分，接受 px 和 rpx 值 |
+| display-multiple-items | number |   | 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 同时显示的滑块数量 |
+| auto-height | string \| boolean | false | 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 自动高度。设置为 true 时，swiper 高度会随当前 item 的高度变化而变化。 |
+| disable-bounce | string \| boolean | false | 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 控制是否回弹效果 |
+| indicator-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 指示点绑定的 class |
+| indicator-active-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 当前选中的指示点绑定的 class |
+| indicator-style | string |   | 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 指示点样式 |
+| indicator-active-style | string |   | 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 当前选中的指示点样式 |
+| @change | (event: [UniSwiperChangeEvent](#uniswiperchangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | current 改变时会触发 change 事件，event.detail = {current: current, source: source} |
+| @transition | (event: [UniSwiperTransitionEvent](#uniswipertransitionevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | swiper-item 的位置发生改变时会触发 transition 事件，event.detail = {dx: dx, dy: dy} |
+| @animationfinish | (event: [UniSwiperAnimationFinishEvent](#uniswiperanimationfinishevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 动画结束时会触发 animationfinish 事件，event.detail = {current: current, source: source} |
 
 #### easing-function 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| default | Web: -; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | - |
-| linear | Web: -; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | - |
-| easeInCubic | Web: -; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | - |
-| easeOutCubic | Web: -; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | - |
-| easeInOutCubic | Web: -; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | - |
+| default | 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 |  |
+| linear | 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x |  |
+| easeInCubic | 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x |  |
+| easeOutCubic | 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x |  |
+| easeInOutCubic | 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x |  |
 
 
 ### 事件
@@ -79,15 +79,15 @@ UniSwiperChangeEvent -- Extends --> UniEvent
 ##### UniSwiperChangeEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniSwiperChangeEventDetail** | 是 | - | - | - |
+| detail | **UniSwiperChangeEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| current | number | 是 | - | - | 发生change事件的滑块下标 |
-| currentItemId | string | 否 | - | Web: √; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 切换结束的 swiper-item 的 item-id 属性值 |
-| source | string | 是 | - | - | autoplay 自动播放导致swiper变化；touch 用户划动引起swiper变化 |
+| current | number | 是 |  |   | 发生change事件的滑块下标 |
+| currentItemId | string | 否 |  | Web: √; 微信小程序: 4.41; Android: x; iOS 系统版本: √; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 切换结束的 swiper-item 的 item-id 属性值 |
+| source | string | 是 |  |   | autoplay 自动播放导致swiper变化；touch 用户划动引起swiper变化 |
 
 
 #### UniSwiperTransitionEvent
@@ -102,14 +102,14 @@ UniSwiperTransitionEvent -- Extends --> UniEvent
 ##### UniSwiperTransitionEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniSwiperTransitionEventDetail** | 是 | - | - | - |
+| detail | **UniSwiperTransitionEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| dx | number | 是 | - | - | 横向偏移量，单位是逻辑像素px |
-| dy | number | 是 | - | - | 纵向偏移量，单位是逻辑像素px |
+| dx | number | 是 |  |   | 横向偏移量，单位是逻辑像素px |
+| dy | number | 是 |  |   | 纵向偏移量，单位是逻辑像素px |
 
 
 #### UniSwiperAnimationFinishEvent
@@ -124,15 +124,15 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
 ##### UniSwiperAnimationFinishEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniSwiperAnimationFinishEventDetail** | 是 | - | - | - |
+| detail | **UniSwiperAnimationFinishEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| current | number | 是 | - | - | 发生动画结束事件的滑块下标 |
-| currentItemId | string | 否 | - | Web: √; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 动画结束的 swiper-item 的 item-id 属性值 |
-| source | string | 是 | - | - | autoplay 自动播放导致swiper变化；touch 用户划动引起swiper变化 |
+| current | number | 是 |  |   | 发生动画结束事件的滑块下标 |
+| currentItemId | string | 否 |  | Web: √; 微信小程序: 4.41; Android: x; iOS 系统版本: √; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 动画结束的 swiper-item 的 item-id 属性值 |
+| source | string | 是 |  |   | autoplay 自动播放导致swiper变化；touch 用户划动引起swiper变化 |
 
 
 
@@ -268,11 +268,14 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
         	</button>
         </navigator>
         <!-- #endif -->
-        <!-- #ifdef VUE3-VAPOR && APP-HARMONY -->
+        <!-- #ifdef VUE3-VAPOR -->
         <navigator url="/pages/component/swiper/swiper-more" style="margin-top: 10px;">
         	<button type="primary">
         		更多 swiper
         	</button>
+        </navigator>
+        <navigator url="/pages/component/swiper/swiper-item-100" style="margin-top: 10px;">
+          <button>组件性能测试</button>
         </navigator>
         <!-- #endif -->
       </view>
@@ -562,7 +565,7 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
 - 使用 `auto-height` 属性时，`swiper-item` 组件外层容器和 slot 内容之间会增加一层 `view`，这会导致设置在 `swiper-item` 上的布局样式无法直接影响插槽内的元素（比如 `align-items: center`），请注意避免影响布局。
 - 蒸汽模式不再支持 `rebound` 属性，如需控制是否回弹效果，请使用 `disable-bounce` 属性。
 - 蒸汽模式不再支持 `indicator-color` 和 `indicator-active-color` 属性，如需自定义指示点颜色及其他样式，请使用 `indicator-style`、`indicator-class` 和 `indicator-active-style`、`indicator-active-class` 属性。
-- 蒸汽模式新增通过 `indicator` 具名插槽自定义指示点，示例代码如下：
+- 蒸汽模式新增通过 `<template v-slot:indicator>` 具名插槽自定义指示点，示例代码如下：
 :::
 ```vue
 <template>
@@ -626,8 +629,8 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| item-id | string | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 该 swiper-item 的标识符 |
-| skip-hidden-item-layout | boolean | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | *(boolean)*<br/>是否跳过未显示的滑块布局，设为 true 可优化复杂情况下的滑动性能，但会丢失隐藏状态滑块的布局信息 |
+| item-id | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 该 swiper-item 的标识符 |
+| skip-hidden-item-layout | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(boolean)*<br/>是否跳过未显示的滑块布局，设为 true 可优化复杂情况下的滑动性能，但会丢失隐藏状态滑块的布局信息 |
 
 
 

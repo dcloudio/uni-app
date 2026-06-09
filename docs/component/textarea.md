@@ -16,77 +16,77 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 5.11 | 4.61 | 5.0 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| name | string | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
+| name | string | "textarea" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
 | disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否禁用 |
 | value | string | "" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 输入框的初始内容 |
 | placeholder | string | "" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 输入框为空时占位符 |
 | placeholder-style | string | "" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定 placeholder 的样式 |
 | placeholder-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定 placeholder 的样式类 |
-| maxlength | number | "不限制长度" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 最大输入长度，0和正数为合法值，非法值的时候不限制最大长度 |
+| maxlength | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 最大输入长度，0和正数为合法值，非法值的时候不限制最大长度 |
 | auto-focus | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 自动获取焦点，与`focus`属性对比，此属性只会首次生效。 |
 | focus | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 获取焦点 |
-| confirm-type | return \| send \| search \| next \| go \| done | "return" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.15; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置键盘右下角按钮的文字 |
+| confirm-type | string | "return" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.15; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置键盘右下角按钮的文字 |
 | cursor | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定focus时的光标位置 |
 | confirm-hold | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 点击键盘右下角按钮时是否保持键盘不收起 |
 | auto-height | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.65; HarmonyOS(Vapor): 5.0 | 是否自动增高，设置auto-height时，style.height不生效 |
-| cursor-spacing | number | 0 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x; HarmonyOS(Vapor): x | 指定光标与键盘的距离，单位 px 。取 textarea 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离 |
-| cursor-color | string([string.ColorString](/uts/data-type.md#ide-string)) | "" | Web: -; 微信小程序: 4.41; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定光标颜色 |
+| cursor-spacing | number | 0 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指定光标与键盘的距离，单位 px 。取 textarea 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离 |
+| cursor-color | string([string.ColorString](/uts/data-type.md#ide-string)) | "" | 微信小程序: 4.41; Android: 3.99; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定光标颜色 |
 | selection-start | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 光标起始位置，自动聚集时有效，需与selection-end搭配使用 |
 | selection-end | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 光标结束位置，自动聚集时有效，需与selection-satrt搭配使用 |
-| adjust-position | boolean | true | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 键盘弹起时，是否自动上推页面 |
-| hold-keyboard | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | focus时，点击页面的时候不收起键盘 |
-| inputmode | none \| text \| decimal \| numeric \| tel \| search \| email \| url | "text" | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 是一个枚举属性，它提供了用户在编辑元素或其内容时可能输入的数据类型的提示。在符合条件的高版本webview里，uni-app的 web 和 app-vue 平台中可使用本属性。 |
-| fixed | boolean | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true |
-| show-confirm-bar | boolean | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 是否显示键盘上方带有”完成“按钮那一栏 |
-| disabled | boolean | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | *(boolean)*<br/>是否禁用 |
-| disable-default-padding | boolean | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | *(boolean)*<br/>是否去掉 iOS 下的默认内边距 |
-| adjust-keyboard-to | boolean | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | *(boolean)*<br/>键盘对齐位置 |
-| @confirm | (event: [UniInputConfirmEvent](#uniinputconfirmevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.73; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 点击完成时， 触发 confirm 事件，event.detail = {value: value} |
-| @input | (event: [UniInputEvent](#uniinputevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 当键盘输入时，触发 input 事件，event.detail = {value, cursor}， @input 处理函数的返回值并不会反映到 textarea 上 |
-| @linechange | (event: [UniTextareaLineChangeEvent](#unitextarealinechangeevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.65; HarmonyOS(Vapor): - | 输入框行数变化时调用，event.detail = {height: 0, heightRpx: 0, lineCount: 0} |
-| @blur | (event: [UniTextareaBlurEvent](#unitextareablurevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 输入框失去焦点时触发，event.detail = {value, cursor} |
-| @keyboardheightchange | (event: [UniInputKeyboardHeightChangeEvent](#uniinputkeyboardheightchangeevent)) => void | - | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 键盘高度发生变化的时候触发此事件，event.detail = {height: height, duration: duration} |
-| @focus | (event: [UniTextareaFocusEvent](#unitextareafocusevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度，在基础库 1.9.90 起支持 |
-| @change | (event: [UniInputChangeEvent](#uniinputchangeevent)) => void | - | Web: 4.81; 微信小程序: 4.41; Android: 4.73; iOS: 4.73; HarmonyOS: 4.73; HarmonyOS(Vapor): - | 非聚焦状态内容改变时触发（仅组件失去焦点时且用户输入改变内容才触发） |
+| adjust-position | boolean | true | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 键盘弹起时，是否自动上推页面 |
+| hold-keyboard | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | focus时，点击页面的时候不收起键盘 |
+| inputmode | none \| text \| decimal \| numeric \| tel \| search \| email \| url | "text" | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 是一个枚举属性，它提供了用户在编辑元素或其内容时可能输入的数据类型的提示。在符合条件的高版本webview里，uni-app的 web 和 app-vue 平台中可使用本属性。 |
+| fixed | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true |
+| show-confirm-bar | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 是否显示键盘上方带有”完成“按钮那一栏 |
+| disabled | boolean |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(boolean)*<br/>是否禁用 |
+| disable-default-padding | boolean |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(boolean)*<br/>是否去掉 iOS 下的默认内边距 |
+| adjust-keyboard-to | boolean |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(boolean)*<br/>键盘对齐位置 |
+| @confirm | (event: [UniInputConfirmEvent](#uniinputconfirmevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.73; HarmonyOS: 4.61 | 点击完成时， 触发 confirm 事件，event.detail = {value: value} |
+| @input | (event: [UniInputEvent](#uniinputevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 当键盘输入时，触发 input 事件，event.detail = {value, cursor}， @input 处理函数的返回值并不会反映到 textarea 上 |
+| @linechange | (event: [UniTextareaLineChangeEvent](#unitextarealinechangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.65 | 输入框行数变化时调用，event.detail = {height: 0, heightRpx: 0, lineCount: 0} |
+| @blur | (event: [UniTextareaBlurEvent](#unitextareablurevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 输入框失去焦点时触发，event.detail = {value, cursor} |
+| @keyboardheightchange | (event: [UniInputKeyboardHeightChangeEvent](#uniinputkeyboardheightchangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 键盘高度发生变化的时候触发此事件，event.detail = {height: height, duration: duration} |
+| @focus | (event: [UniTextareaFocusEvent](#unitextareafocusevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度，在基础库 1.9.90 起支持 |
+| @change | (event: [UniInputChangeEvent](#uniinputchangeevent)) => void |   | Web: 4.81; 微信小程序: 4.41; Android: 4.73; iOS: 4.73; HarmonyOS: 4.73 | 非聚焦状态内容改变时触发（仅组件失去焦点时且用户输入改变内容才触发） |
 
 #### confirm-type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| return | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.15; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 换行 |
-| send | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 发送 |
-| search | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 搜索 |
-| next | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 下一个 |
-| go | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 前往 |
-| done | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 完成 |
+| return | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.15; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 换行 |
+| send | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 发送 |
+| search | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 搜索 |
+| next | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 下一个 |
+| go | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 前往 |
+| done | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 完成 |
 
 #### inputmode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| none | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 无虚拟键盘。在应用程序或者站点需要实现自己的键盘输入控件时很有用。 |
-| text | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 使用用户本地区域设置的标准文本输入键盘。 |
-| decimal | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 小数输入键盘，包含数字和分隔符（通常是“ . ”或者“ , ”），设备可能也可能不显示减号键。 |
-| numeric | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 数字输入键盘，所需要的就是 0 到 9 的数字，设备可能也可能不显示减号键。 |
-| tel | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 电话输入键盘，包含 0 到 9 的数字、星号（*）和井号（#）键。表单输入里面的电话输入通常应该使用 \<input type="tel"\> 。 |
-| search | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 为搜索输入优化的虚拟键盘，比如，返回键可能被重新标记为“搜索”，也可能还有其他的优化。 |
-| email | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 为邮件地址输入优化的虚拟键盘，通常包含"@"符号和其他优化。表单里面的邮件地址输入应该使用 \<input type="email"\> 。 |
-| url | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 为网址输入优化的虚拟键盘，比如，“/”键会更加明显、历史记录访问等。表单里面的网址输入通常应该使用 \<input type="url"\> 。 |
+| none | Android: x; iOS: x | 无虚拟键盘。在应用程序或者站点需要实现自己的键盘输入控件时很有用。 |
+| text | Android: x; iOS: x | 使用用户本地区域设置的标准文本输入键盘。 |
+| decimal | Android: x; iOS: x | 小数输入键盘，包含数字和分隔符（通常是“ . ”或者“ , ”），设备可能也可能不显示减号键。 |
+| numeric | Android: x; iOS: x | 数字输入键盘，所需要的就是 0 到 9 的数字，设备可能也可能不显示减号键。 |
+| tel | Android: x; iOS: x | 电话输入键盘，包含 0 到 9 的数字、星号（*）和井号（#）键。表单输入里面的电话输入通常应该使用 \<input type="tel"\> 。 |
+| search | Android: x; iOS: x | 为搜索输入优化的虚拟键盘，比如，返回键可能被重新标记为“搜索”，也可能还有其他的优化。 |
+| email | Android: x; iOS: x | 为邮件地址输入优化的虚拟键盘，通常包含"@"符号和其他优化。表单里面的邮件地址输入应该使用 \<input type="email"\> 。 |
+| url | Android: x; iOS: x | 为网址输入优化的虚拟键盘，比如，“/”键会更加明显、历史记录访问等。表单里面的网址输入通常应该使用 \<input type="url"\> 。 |
 
 #### adjust-keyboard-to 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| cursor | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 对齐光标位置 |
-| bottom | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 对齐输入框底部 |
+| cursor | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 对齐光标位置 |
+| bottom | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 对齐输入框底部 |
 
 
 ### 事件
@@ -102,13 +102,13 @@ UniInputConfirmEvent -- Extends --> UniEvent
 ##### UniInputConfirmEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniInputConfirmEventDetail** | 是 | - | - | - |
+| detail | **UniInputConfirmEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | string | 是 | - | - | 输入框内容 |
+| value | string | 是 |  |   | 输入框内容 |
 
 
 #### UniInputEvent
@@ -123,15 +123,15 @@ UniInputEvent -- Extends --> UniEvent
 ##### UniInputEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniInputEventDetail** | 是 | - | - | - |
+| detail | **UniInputEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | string | 是 | - | - | 输入框内容 |
-| cursor | number | 是 | - | - | 光标的位置 |
-| keyCode | number | 是 | - | - | 输入字符的Unicode值 |
+| value | string | 是 |  |   | 输入框内容 |
+| cursor | number | 是 |  |   | 光标的位置 |
+| keyCode | number | 是 |  |   | 输入字符的Unicode值 |
 
 
 #### UniTextareaLineChangeEvent
@@ -146,15 +146,15 @@ UniTextareaLineChangeEvent -- Extends --> UniEvent
 ##### UniTextareaLineChangeEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniTextareaLineChangeEventDetail** | 是 | - | - | - |
+| detail | **UniTextareaLineChangeEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| lineCount | number | 是 | - | - | 行数 |
-| heightRpx | number | 是 | - | - | textarea的高度 |
-| height | number | 是 | - | - | textarea的高度 |
+| lineCount | number | 是 |  |   | 行数 |
+| heightRpx | number | 是 |  |   | textarea的高度 |
+| height | number | 是 |  |   | textarea的高度 |
 
 
 #### UniTextareaBlurEvent
@@ -169,14 +169,14 @@ UniTextareaBlurEvent -- Extends --> UniEvent
 ##### UniTextareaBlurEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniTextareaBlurEventDetail** | 是 | - | - | - |
+| detail | **UniTextareaBlurEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | string | 是 | - | - | 输入框内容 |
-| cursor | number | 是 | - | - | 选择区域的起始位置 |
+| value | string | 是 |  |   | 输入框内容 |
+| cursor | number | 是 |  |   | 选择区域的起始位置 |
 
 
 #### UniInputKeyboardHeightChangeEvent
@@ -191,14 +191,14 @@ UniInputKeyboardHeightChangeEvent -- Extends --> UniEvent
 ##### UniInputKeyboardHeightChangeEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniInputKeyboardHeightChangeEventDetail** | 是 | - | - | - |
+| detail | **UniInputKeyboardHeightChangeEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| height | number | 是 | - | - | 键盘高度 |
-| duration | number | 是 | - | - | 持续时间 |
+| height | number | 是 |  |   | 键盘高度 |
+| duration | number | 是 |  |   | 持续时间 |
 
 
 #### UniTextareaFocusEvent
@@ -213,14 +213,14 @@ UniTextareaFocusEvent -- Extends --> UniEvent
 ##### UniTextareaFocusEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniTextareaFocusEventDetail** | 是 | - | - | - |
+| detail | **UniTextareaFocusEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| height | number | 是 | - | Web: x; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: -; HarmonyOS(Vapor): - | 键盘高度 |
-| value | string | 是 | - | - | 输入框内容 |
+| height | number | 是 |  | Web: x; Android: 3.9; iOS: 4.11 | 键盘高度 |
+| value | string | 是 |  |   | 输入框内容 |
 
 
 #### UniInputChangeEvent
@@ -235,17 +235,18 @@ UniInputChangeEvent -- Extends --> UniEvent
 ##### UniInputChangeEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniInputChangeEventDetail** | 是 | - | - | - |
+| detail | **UniInputChangeEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | string | 是 | - | - | 输入框内容 |
+| value | string | 是 |  |   | 输入框内容 |
 
 
 
 <!-- UTSCOMJSON.textarea.component_type-->
+
 
 #### 获取原生view对象
 
@@ -325,6 +326,7 @@ if (view != null && view instanceof UITextView) {
     placeholder_value: string;
     defaultModel: string;
     textareaMaxLengthValue: string;
+    textareaPlaceholderClass: string.ClassString;
     isSelectionFocus: boolean;
     selectionStart: number;
     selectionEnd: number;
@@ -356,6 +358,7 @@ if (view != null && view instanceof UITextView) {
     placeholder_value: "请输入",
     defaultModel: '123',
     textareaMaxLengthValue: "",
+    textareaPlaceholderClass: "placeholder-class",
     isSelectionFocus: false,
     selectionStart: -1,
     selectionEnd: -1,
@@ -376,6 +379,10 @@ if (view != null && view instanceof UITextView) {
     data.textareaRect!.y += uni.getSystemInfoSync().safeArea.top + 44
   })
   // #endif
+
+  const togglePlaceholderClass = () => {
+    data.textareaPlaceholderClass = data.textareaPlaceholderClass == "placeholder-class" ? "" : "placeholder-class"
+  }
 
   const textarea_click = () => { console.log("组件被点击时触发") }
   const textarea_touchstart = () => { console.log("手指触摸动作开始") }
@@ -603,7 +610,16 @@ if (view != null && view instanceof UITextView) {
         <textarea class="textarea-instance" @confirm="()=>{}"></textarea>
       </view>
 
-      <view class="title-wrap">
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" placeholder="占位符字体大小为15px" />
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" :placeholder="`占位符字体大小为${data.textareaPlaceholderClass == '' ? '15px' : '30px'}`" :placeholder-class="data.textareaPlaceholderClass"  />
+      </view>
+      <view class="textarea-wrap">
+        <button @click="togglePlaceholderClass">切换 placeholder-class</button>
+      </view>
+      <view class="uni-title-text">
         <text>style 设置 font-size:20px</text>
       </view>
       <view class="textarea-wrap">
@@ -614,7 +630,8 @@ if (view != null && view instanceof UITextView) {
         <text>placeholder-class 设置 30px</text>
       </view>
       <view class="textarea-wrap">
-        <textarea class="textarea-instance" style="height: 60px;font-size:20px" placeholder-class="placeholder-class" placeholder="placeholder" />
+        <textarea id="textarea-placeholder-class-dynamic" class="textarea-instance" style="height: 60px;font-size:20px"
+          :placeholder-class="data.textareaPlaceholderClass" placeholder="placeholder" />
       </view>
       <view style="padding-left: 10px;flex-direction: column;">
         <text>style 设置 font-size:20px</text>
@@ -623,6 +640,15 @@ if (view != null && view instanceof UITextView) {
       </view>
       <view class="textarea-wrap">
         <textarea class="textarea-instance" style="height: 60px;font-size:20px" placeholder-class="placeholder-class" placeholder-style="font-size:40px" placeholder="placeholder" />
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" style="font-size: 20px;padding-top: 5px;" :auto-height="true" value="font-size: 20px;padding-top: 5px;" />
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" style="font-size: 20px;padding-bottom: 5px;" :auto-height="true" value="font-size: 20px;padding-bottom: 5px;" />
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" style="font-size: 20px;padding: 5px;" :auto-height="true" value="font-size: 20px;padding: 5px;" />
       </view>
 
       <text class="uni-title-text">textarea样式大合集</text>
@@ -671,6 +697,7 @@ if (view != null && view instanceof UITextView) {
     flex: 1;
     border: 1px solid #666;
     margin: 10px;
+    font-size: 15px;
   }
 
   .placeholder {
@@ -744,4 +771,6 @@ inputmode 兼容性：Chrome >= 66、Edge >= 79、Firefox >= 95、Chrome Android
 * uni-app x 4.15 起，App-iOS平台 textarea 软键盘默认右下角改为 return(换行) ，换行时，键盘不会收起。
 * 由于Android系统限制，textarea的键盘右下角按钮只能是`换行`，所以暂时不提供`confirm-type`属性。
 * 当软键盘右下角为 换行 时，confirm-hold 恒为 true，设置为false也不生效，即按下 换行 时，软键盘不会消失。
-* 在Android 9以下的系统版本，样式`line-height`点击键盘换行时行间距设置无效，此问题是Android系统的的bug，后续解决。
+* 在Android 9以下的系统版本，样式`line-height`点击键盘换行时行间距设置无效，此问题是Android系统的bug，后续解决。
+* App平台蒸汽模式样式设置暂不支持 css 变量。
+* 所有 boolean 类型的属性，只有设置为布尔类型的 false 才会关闭该属性，其他任何值（包括字符串 "false"）都会被当做 true 处理（微信小程序中空字符串会被视为 false）。

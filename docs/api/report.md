@@ -19,56 +19,56 @@ uni统计自定义上报方法。
 `uni.report` 需要依赖 [`uni统计`](https://ext.dcloud.net.cn?name=uni-stat)，集成方式请查看[文档](https://uniapp.dcloud.net.cn/uni-stat-uniappx)。
 
 ### report 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.33 | - | 4.33 | 4.33 | - |
+| Web | Android | iOS |
+| :- | :- | :- |
+| 4.33 | 4.33 | 4.33 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **ReportOptions** | 是 | - | - | 自定义事件参数 |
+| options | **ReportOptions** | 是 |  |   | 自定义事件参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| name | string | 是 | - | - | 自定义事件名称，内置名称不允许覆盖，可选值:<br/>`uni-app-launch`：应用启动，options 参数必填，值为 onLaunch 返回值<br/>`uni-app-show`：应用进入前台<br/>`uni-app-hide`：应用进入后台<br/>`uni-app-error`：应用发生错误，options 参数必填，值为错误信息，类型为String<br/>`title`：标题采集<br/>`自定义name`：用户自定义 |
-| options | any | 否 | - | - | 额外参数 |
-| success | (res: [ReportSuccess](#reportsuccess-values)) => void | 否 | - | - | 接口调用成功回调 |
-| fail | (err: [ReportFail](#reportfail-values)) => void | 否 | - | - | 接口调用失败回调 |
-| complete | (res: any) => void | 否 | - | - | 接口调用结束回调（调用成功、失败都会执行） | 
+| name | string | 是 |  |   | 自定义事件名称，内置名称不允许覆盖，可选值:<br/>`uni-app-launch`：应用启动，options 参数必填，值为 onLaunch 返回值<br/>`uni-app-show`：应用进入前台<br/>`uni-app-hide`：应用进入后台<br/>`uni-app-error`：应用发生错误，options 参数必填，值为错误信息，类型为String<br/>`title`：标题采集<br/>`自定义name`：用户自定义 |
+| options | any | 否 |  |   | 额外参数 |
+| success | (res: [ReportSuccess](#reportsuccess-values)) => void | 否 |  |   | 接口调用成功回调 |
+| fail | (err: [ReportFail](#reportfail-values)) => void | 否 |  |   | 接口调用失败回调 |
+| complete | (res: any) => void | 否 |  |   | 接口调用结束回调（调用成功、失败都会执行） | 
 
 #### ReportSuccess 的属性值 @reportsuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | - | 成功的详细信息 |
+| errMsg | string | 是 |  |   | 成功的详细信息 |
 
 #### ReportFail 的属性值 @reportfail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | - | - | 错误码 |
-| errSubject | string | 是 | - | - | 统一错误主题（模块）名称 |
-| data | any | 否 | - | - | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | - | - | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | - | - | - |
+| errCode | number | 是 |  |   | 错误码 |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| 61000 | - | 应用已集成uni统计，但未关联服务空间，请在uniCloud目录右键关联服务空间 |
-| 61001 | - | 统计服务尚未初始化，需在`main.uts`中引入统计插件 |
-| 61002 | - | name参数是uni-app-launch时， options 参数未填写 |
-| 61003 | - | name参数未填写 |
-| 61004 | - | name参数类型错误，应为`String`类型 |
-| 61005 | - | name参数长度超限，最大不超过255 |
-| 61006 | - | options参数错误，应为String或Object类型 |
-| 61007 | - | options参数为String类型时，长度超限，最大不超过255 |
-| 61008 | - | name参数为title时，options参数类型错误，应为String |
+| 合法值 | 描述 |
+| :- | :- |
+| 61000 | 应用已集成uni统计，但未关联服务空间，请在uniCloud目录右键关联服务空间 |
+| 61001 | 统计服务尚未初始化，需在`main.uts`中引入统计插件 |
+| 61002 | name参数是uni-app-launch时， options 参数未填写 |
+| 61003 | name参数未填写 |
+| 61004 | name参数类型错误，应为`String`类型 |
+| 61005 | name参数长度超限，最大不超过255 |
+| 61006 | options参数错误，应为String或Object类型 |
+| 61007 | options参数为String类型时，长度超限，最大不超过255 |
+| 61008 | name参数为title时，options参数类型错误，应为String |
 
 
 
@@ -109,7 +109,6 @@ uni.report({
   <scroll-view style="flex:1">
   <!-- #endif -->
     <page-head title="report"></page-head>
-
     <view class="tips">
       <view class="tips-title">调用信息：</view>
       <view class="tips-content">{{msg.value}}</view>
@@ -159,14 +158,18 @@ uni.report({
   })
 
   onUnmounted(() => {
+    // #ifndef APP-IOS
     uni.report({
       name: '自定义上报-report页面关闭',
       options: '1'
     })
+    // #endif
+
   })
 
   const handleAppLaunch = () => {
     const options = uni.getLaunchOptionsSync()
+    // #ifndef APP-IOS
     uni.report({
       name: 'uni-app-launch',
       options: options,
@@ -178,9 +181,12 @@ uni.report({
         console.log(err);
       }
     })
+    // #endif
+
   }
 
   const handleAppHide = () => {
+    // #ifndef APP-IOS
     uni.report({
       name: 'uni-app-hide',
       success: (res) => {
@@ -191,10 +197,13 @@ uni.report({
         console.log(err);
       }
     })
+    // #endif
+
   }
 
   const handleAppShow = () => {
     // const options = uni.getLaunchOptionsSync()
+    // #ifndef APP-IOS
     uni.report({
       name: 'uni-app-show',
       success: (res) => {
@@ -205,10 +214,13 @@ uni.report({
         console.log(err);
       }
     })
+    // #endif
+
   }
 
   const handleAppError = () => {
     const errmsg = '测试错误'
+    // #ifndef APP-IOS
     uni.report({
       name: 'uni-app-error',
       options: errmsg,
@@ -220,10 +232,13 @@ uni.report({
         console.log(err);
       }
     })
+    // #endif
+
   }
 
   const handleEvent = () => {
     // 此处name为用户自定义
+    // #ifndef APP-IOS
     uni.report({
       name: 'custom-event',
       options: {
@@ -238,10 +253,13 @@ uni.report({
         console.log(err);
       }
     })
+    // #endif
+
   }
 
   const handleTitle = () => {
     // 此处name为用户自定义
+    // #ifndef APP-IOS
     uni.report({
       name: 'title',
       options: '自定义title测试上报',
@@ -253,6 +271,8 @@ uni.report({
         console.log(err);
       }
     })
+    // #endif
+
   }
 
   defineExpose({
@@ -331,5 +351,5 @@ uni.report({
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 

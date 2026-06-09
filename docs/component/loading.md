@@ -12,17 +12,17 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 5.0 | 5.0 | 5.0 | 5.0 | 5.0 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 5.0 | 5.0 | 5.0 | 5.0 | 5.11 | 5.0 | 5.0 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| paused | boolean | false | Web: 5.0; 微信小程序: 5.0; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0; HarmonyOS(Vapor): 5.0 | 是否暂停动画 |
-| bold | boolean | false | Web: 5.0; 微信小程序: x; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0; HarmonyOS(Vapor): 5.0 | 是否加粗线条 |
-| ios-spinner | boolean | false | Web: x; 微信小程序: x; Android: x; iOS: 5.0; HarmonyOS: x; HarmonyOS(Vapor): x | iOS是否采用系统雪花状样式 |
+| paused | boolean | false | Web: 5.0; 微信小程序: 5.0; Android: 5.0; iOS: 5.0; iOS(Vapor): 5.11; HarmonyOS: 5.0; HarmonyOS(Vapor): 5.0 | 是否暂停动画 |
+| bold | boolean | false | Web: 5.0; 微信小程序: x; Android: 5.0; iOS: 5.0; iOS(Vapor): 5.11; HarmonyOS: 5.0; HarmonyOS(Vapor): 5.0 | 是否加粗线条 |
+| ios-spinner | boolean | false | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS: 5.0; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | iOS是否采用系统雪花状样式 |
 
 
 
@@ -40,7 +40,9 @@
 3. loading组件默认是旋转的，不使用时应v-if删除或设置paused。请注意勿在隐藏或被遮挡的区域让loading持续旋转。
 4. 当 ios-spinner = true 时，由于iOS系统雪花非矢量概念，该组件随着 CSS width、height 动态调整大小时会模糊，建议 CSS width、height 不超过 37px；
 5. [uni.showLoading API](https://doc.dcloud.net.cn/uni-app-x/api/loading.html#showloading) 从HBuilderX 5.0+ ，在非小程序上通过本内置loading组件实现,
-
+6. 不支持以下css 变量：
+	* border-color：加载框线条的颜色，默认值为 #000000；
+    * color：仅 ios-spinner = true 时，color的优先级大于border-color； ios-spinner = false 时， color无效；
 ### 示例
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/component/loading/loading.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/component/loading/loading.uvue) 
 ::: preview https://hellouniappx.dcloud.net.cn/web/#/pages/component/loading/loading

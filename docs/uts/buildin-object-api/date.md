@@ -100,7 +100,7 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | number \| string | 是 | - | - | 为整数时，代表自 UTC 1970 年 1 月 1 日 00:00:00 （ECMAScript 纪元，与 UNIX 纪元相同）以来的毫秒数，忽略闰秒。请记住，大多数 UNIX 时间戳函数只精确到最近的秒。为字符串时：代表日期的字符串值，其格式由 Date.parse() 方法所识别。 | 
+| value | number \| string | 是 |  |   | 为整数时，代表自 UTC 1970 年 1 月 1 日 00:00:00 （ECMAScript 纪元，与 UNIX 纪元相同）以来的毫秒数，忽略闰秒。请记住，大多数 UNIX 时间戳函数只精确到最近的秒。为字符串时：代表日期的字符串值，其格式由 Date.parse() 方法所识别。 | 
 
 
 **返回值**
@@ -142,13 +142,13 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| year | number | 是 | - | - | 表示年的整数。从 0 到 99 的值映射了 1900 到 1999 年。其他值对应真实的年份。 |
-| monthIndex | number | 是 | - | - | 表示月份的整数，从代表一月的 0 开始到代表十二月的 11 结束。 |
-| date | number | 否 | - | - | 可选：表示一个月中第几天的整数。默认为 1。 |
-| hours | number | 否 | - | - | 可选：表示一天中的小时数的整数值，在 0 到 23 之间。默认值为 0。 |
-| minutes | number | 否 | - | - | 可选：表示时间的分钟段的整数值。默认为小时后的 0 分钟。 |
-| seconds | number | 否 | - | - | 可选：表示时间的秒数段的整数值。默认为分钟后的 0 秒。 |
-| ms | number | 否 | - | - | 可选：表示时间的毫秒段的整数值。默认为 0 毫秒的秒数。 | 
+| year | number | 是 |  |   | 表示年的整数。从 0 到 99 的值映射了 1900 到 1999 年。其他值对应真实的年份。 |
+| monthIndex | number | 是 |  |   | 表示月份的整数，从代表一月的 0 开始到代表十二月的 11 结束。 |
+| date | number | 否 |  |   | 可选：表示一个月中第几天的整数。默认为 1。 |
+| hours | number | 否 |  |   | 可选：表示一天中的小时数的整数值，在 0 到 23 之间。默认值为 0。 |
+| minutes | number | 否 |  |   | 可选：表示时间的分钟段的整数值。默认为小时后的 0 分钟。 |
+| seconds | number | 否 |  |   | 可选：表示时间的秒数段的整数值。默认为分钟后的 0 秒。 |
+| ms | number | 否 |  |   | 可选：表示时间的毫秒段的整数值。默认为 0 毫秒的秒数。 | 
 
 
 **返回值**
@@ -236,13 +236,13 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| year | number | 是 | - | - | 一个表示年份的整数值。从 0 到 99 的值会被映射到 1900 至 1999 年。其他的值则代表实际的年份。 |
-| monthIndex | number | 是 | - | - | 0（一月）到 11（十二月）之间的一个整数，表示月份。从 ECMAScript 2017 开始，如果忽略该值，则默认为 0。（直到 ECMAScript 2016，month 都是必须的参数。而从 ES2017 开始，它不再是必须的。） |
-| date | number | 否 | - | - | 1 到 31 之间的一个整数，表示某月当中的第几天。如果忽略该值，则默认为 1。 |
-| hours | number | 否 | - | - | 0 到 23 之间的一个整数，表示小时。如果忽略该值，则默认为 0。 |
-| minutes | number | 否 | - | - | 0 到 59 之间的一个整数，表示分钟。如果忽略该值，则默认为 0。 |
-| seconds | number | 否 | - | - | 0 到 59 之间的一个整数，表示秒。如果忽略该值，则默认为 0。 |
-| ms | number | 否 | - | - | 0 到 999 之间的一个整数，表示毫秒。如果忽略该值，则默认为 0。 | 
+| year | number | 是 |  |   | 一个表示年份的整数值。从 0 到 99 的值会被映射到 1900 至 1999 年。其他的值则代表实际的年份。 |
+| monthIndex | number | 是 |  |   | 0（一月）到 11（十二月）之间的一个整数，表示月份。从 ECMAScript 2017 开始，如果忽略该值，则默认为 0。（直到 ECMAScript 2016，month 都是必须的参数。而从 ES2017 开始，它不再是必须的。） |
+| date | number | 否 |  |   | 1 到 31 之间的一个整数，表示某月当中的第几天。如果忽略该值，则默认为 1。 |
+| hours | number | 否 |  |   | 0 到 23 之间的一个整数，表示小时。如果忽略该值，则默认为 0。 |
+| minutes | number | 否 |  |   | 0 到 59 之间的一个整数，表示分钟。如果忽略该值，则默认为 0。 |
+| seconds | number | 否 |  |   | 0 到 59 之间的一个整数，表示秒。如果忽略该值，则默认为 0。 |
+| ms | number | 否 |  |   | 0 到 999 之间的一个整数，表示毫秒。如果忽略该值，则默认为 0。 | 
 
 
 **返回值**
@@ -256,9 +256,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | 4.71 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.71 | x | x | 4.61 | 4.71 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -370,9 +370,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | x | 4.61 | 3.90 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.90 | x | x | 4.61 | 3.90 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -400,9 +400,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | 4.71 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.71 | x | x | 4.61 | 4.71 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -430,9 +430,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | 4.71 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.71 | x | x | 4.61 | 4.71 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -460,9 +460,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | 4.71 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.71 | x | x | 4.61 | 4.71 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -498,9 +498,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | 4.71 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.71 | x | x | 4.61 | 4.71 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -536,9 +536,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.11 | x | 4.61 | 4.11 | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.4 | 4.11 | x | x | 4.61 | 4.11 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -564,9 +564,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | 4.71 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.71 | x | x | 4.61 | 4.71 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -584,7 +584,7 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | any | 否 | - | - | - | 
+| key | any | 否 |  |   | - | 
 
 
 **返回值**
@@ -606,9 +606,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.11 | x | 4.61 | 4.11 | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.4 | 4.11 | x | x | 4.61 | 4.11 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -723,9 +723,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | 4.71 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.71 | x | x | 4.61 | 4.71 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -800,9 +800,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | 4.71 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.71 | x | x | 4.61 | 4.71 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -894,9 +894,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | 4.71 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.71 | x | x | 4.61 | 4.71 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -981,9 +981,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | 4.71 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.71 | x | x | 4.61 | 4.71 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1057,9 +1057,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | 4.71 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.71 | x | x | 4.61 | 4.71 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1133,9 +1133,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | 4.71 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.71 | x | x | 4.61 | 4.71 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1209,9 +1209,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | 4.71 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.71 | x | x | 4.61 | 4.71 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1229,7 +1229,7 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| time | number | 是 | - | - | 一个整数，表示从 1970-1-1 00:00:00 UTC 开始计时的毫秒数。 | 
+| time | number | 是 |  |   | 一个整数，表示从 1970-1-1 00:00:00 UTC 开始计时的毫秒数。 | 
 
 
 **返回值**
@@ -1272,7 +1272,7 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| ms | number | 是 | - | - | 一个 0 到 999 的数字，表示豪秒数。 | 
+| ms | number | 是 |  |   | 一个 0 到 999 的数字，表示豪秒数。 | 
 
 
 **返回值**
@@ -1315,7 +1315,7 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| ms | number | 是 | - | - | 0 - 999 之间的数值，代表毫秒数。 | 
+| ms | number | 是 |  |   | 0 - 999 之间的数值，代表毫秒数。 | 
 
 
 **返回值**
@@ -1329,9 +1329,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | 4.71 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.71 | x | x | 4.61 | 4.71 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1349,7 +1349,7 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| sec | number | 是 | - | - | 一个 0 到 59 的整数。 | 
+| sec | number | 是 |  |   | 一个 0 到 59 的整数。 | 
 
 
 **返回值**
@@ -1392,7 +1392,7 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| sec | number | 是 | - | - | 一个在 0 到 59 之间的整数，表示秒数。 | 
+| sec | number | 是 |  |   | 一个在 0 到 59 之间的整数，表示秒数。 | 
 
 
 **返回值**
@@ -1406,9 +1406,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | 4.71 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.71 | x | x | 4.61 | 4.71 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1426,7 +1426,7 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| min | number | 是 | - | - | 一个 0 到 59 的整数，表示分钟数。 | 
+| min | number | 是 |  |   | 一个 0 到 59 的整数，表示分钟数。 | 
 
 
 **返回值**
@@ -1469,7 +1469,7 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| min | number | 是 | - | - | 必填，表示要设置的分钟数，是一个介于 0 和 59 之间的整数。 | 
+| min | number | 是 |  |   | 必填，表示要设置的分钟数，是一个介于 0 和 59 之间的整数。 | 
 
 
 **返回值**
@@ -1483,9 +1483,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | 4.71 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.71 | x | x | 4.61 | 4.71 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1503,7 +1503,7 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| hours | number | 是 | - | - | 必填，一个 0 到 23 的整数，表示小时。 | 
+| hours | number | 是 |  |   | 必填，一个 0 到 23 的整数，表示小时。 | 
 
 
 **返回值**
@@ -1546,7 +1546,7 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| hours | number | 是 | - | - | 必填，表示小时的整数，取值 0 到 23 之间。 | 
+| hours | number | 是 |  |   | 必填，表示小时的整数，取值 0 到 23 之间。 | 
 
 
 **返回值**
@@ -1560,9 +1560,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | 4.71 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.71 | x | x | 4.61 | 4.71 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1580,7 +1580,7 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| date | number | 是 | - | - | 一个整数，表示该月的第几天。 | 
+| date | number | 是 |  |   | 一个整数，表示该月的第几天。 | 
 
 
 **返回值**
@@ -1626,7 +1626,7 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| date | number | 是 | - | - | 一个 1-31 的整形数字，用来指定日期。 | 
+| date | number | 是 |  |   | 一个 1-31 的整形数字，用来指定日期。 | 
 
 
 **返回值**
@@ -1640,9 +1640,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | 4.71 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.71 | x | x | 4.61 | 4.71 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1660,7 +1660,7 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| month | number | 是 | - | - | 必填参数，介于 0 到 11 之间的整数（表示一月到十二月）。 | 
+| month | number | 是 |  |   | 必填参数，介于 0 到 11 之间的整数（表示一月到十二月）。 | 
 
 
 **返回值**
@@ -1703,7 +1703,7 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| month | number | 是 | - | - | 必填参数，一个 0-11 的整数，代表 1 月到 12 月。 | 
+| month | number | 是 |  |   | 必填参数，一个 0-11 的整数，代表 1 月到 12 月。 | 
 
 
 **返回值**
@@ -1717,9 +1717,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | 4.71 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.71 | x | x | 4.61 | 4.71 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1739,7 +1739,7 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| year | number | 是 | - | - | 指定年份的整数值，例如 1995。 | 
+| year | number | 是 |  |   | 指定年份的整数值，例如 1995。 | 
 
 
 **返回值**
@@ -1781,7 +1781,7 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| year | number | 是 | - | - | 指定年份整数值，例如，1995 | 
+| year | number | 是 |  |   | 指定年份整数值，例如，1995 | 
 
 
 **返回值**
@@ -1795,9 +1795,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.71 | x | 4.61 | x | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.71 | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1815,7 +1815,7 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| s | string | 是 | - | - | 一个符合 RFC2822 或 ISO 8601 日期格式的字符串（其他格式也许也支持，但结果可能与预期不符）。 | 
+| s | string | 是 |  |   | 一个符合 RFC2822 或 ISO 8601 日期格式的字符串（其他格式也许也支持，但结果可能与预期不符）。 | 
 
 
 **返回值**

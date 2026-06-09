@@ -14,23 +14,23 @@
 
 
 ### onNetworkStatusChange 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.81 | 4.81 | 4.81 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.81 | 4.81 | 4.81 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| listener | (result: [OnNetworkStatusChangeCallbackResult](#onnetworkstatuschangecallbackresult-values)) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| listener | (result: [OnNetworkStatusChangeCallbackResult](#onnetworkstatuschangecallbackresult-values)) => void | 是 |  |   |  | 
 
 ### OnNetworkStatusChangeCallbackResult 的属性值 @onnetworkstatuschangecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| isConnected | boolean | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 4.81; Android uni-app x UTS 插件: 4.81; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 当前是否有网络连接<br/> |
-| networkType | string | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 4.81; Android uni-app x UTS 插件: 4.81; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 网络类型(wifi、2g、3g、4g、5g、unknown、none)<br/> |
+| isConnected | boolean | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.81; Android uni-app x UTS 插件: 4.81; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: 4.61 | 当前是否有网络连接<br/> |
+| networkType | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.81; Android uni-app x UTS 插件: 4.81; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: 4.61 | 网络类型(wifi、2g、3g、4g、5g、unknown、none)<br/> |
 
 
 ### 返回值 
@@ -59,6 +59,10 @@
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
+### 注意
+
+<md-hperm permissions="ohos.permission.GET_NETWORK_INFO" />
+
 <!-- ## uni.offNetworkStatusChange(callback) @offnetworkstatuschange -->
 
 ::: sourceCode
@@ -75,23 +79,23 @@
 
 
 ### offNetworkStatusChange 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.81 | 4.81 | 4.81 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.81 | 4.81 | 4.81 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| listener | number \| (result: [OnNetworkStatusChangeCallbackResult](#onnetworkstatuschangecallbackresult-values)) => void | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| listener | number \| (result: [OnNetworkStatusChangeCallbackResult](#onnetworkstatuschangecallbackresult-values)) => void | 否 |  |   |  | 
 
 ### OnNetworkStatusChangeCallbackResult 的属性值 @onnetworkstatuschangecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| isConnected | boolean | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 4.81; Android uni-app x UTS 插件: 4.81; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 当前是否有网络连接<br/> |
-| networkType | string | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 4.81; Android uni-app x UTS 插件: 4.81; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 网络类型(wifi、2g、3g、4g、5g、unknown、none)<br/> |
+| isConnected | boolean | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.81; Android uni-app x UTS 插件: 4.81; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: 4.61 | 当前是否有网络连接<br/> |
+| networkType | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.81; Android uni-app x UTS 插件: 4.81; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: 4.61 | 网络类型(wifi、2g、3g、4g、5g、unknown、none)<br/> |
 
 
 
@@ -221,5 +225,5 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 

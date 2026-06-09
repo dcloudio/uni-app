@@ -10,9 +10,9 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 5.11 | 4.61 | 5.0 |
 
 
 在app-uvue和app-nvue中，文本只能写在text中，而不能写在view的text区域。文本样式的控制也应该在text组件上写style，而不是在view的样式里写。
@@ -22,24 +22,24 @@
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| selectable | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 文本是否可选 |
-| space | string | - | Web: 4.0; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 显示连续空格，App平台蒸汽模式（Vapor）将废弃此属性 |
-| decode | boolean | false | Web: 4.0; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 是否解码，App平台蒸汽模式（Vapor）将废弃此属性 |
-| user-select | boolean | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | *(boolean)*<br/>文本是否可选，该属性会使文本节点显示为 inline-block |
-| hover-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "none" | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: 6.0; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果 |
-| hover-stop-propagation | boolean | false | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: 6.0; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 指定是否阻止本节点的祖先节点出现点击态(祖先节点：指根节点到该节点路径上的所有节点都是这个节点的祖先节点) |
-| hover-start-time | number | 50 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: 6.0; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 按住后多久出现点击态，单位毫秒 |
-| hover-stay-time | number | 400 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: 6.0; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 手指松开后点击态保留时间，单位毫秒 |
-| max-lines | number | - | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: 6.0; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 文本的最大行数，默认不限制最大行数 |
-| flatten | boolean | false | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: 6.0; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
+| selectable | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 文本是否可选 |
+| space | string |   | Web: 4.0; 微信小程序: -; Android: 3.9; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 显示连续空格，App平台蒸汽模式（Vapor）将废弃此属性 |
+| decode | boolean | false | Web: 4.0; 微信小程序: -; Android: 3.9; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 是否解码，App平台蒸汽模式（Vapor）将废弃此属性 |
+| user-select | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | *(boolean)*<br/>文本是否可选，该属性会使文本节点显示为 inline-block |
+| hover-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "none" | Web: x; 微信小程序: x; Android: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果 |
+| hover-stop-propagation | boolean | false | Web: x; 微信小程序: x; Android: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 指定是否阻止本节点的祖先节点出现点击态(祖先节点：指根节点到该节点路径上的所有节点都是这个节点的祖先节点) |
+| hover-start-time | number | 50 | Web: x; 微信小程序: x; Android: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 按住后多久出现点击态，单位毫秒 |
+| hover-stay-time | number | 400 | Web: x; 微信小程序: x; Android: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 手指松开后点击态保留时间，单位毫秒 |
+| max-lines | number |   | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 文本的最大行数，默认不限制最大行数 |
+| flatten | boolean | false | Web: x; 微信小程序: x; Android: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
 
 #### space 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ensp | Web: 4.0; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 中文字符空格一半大小 |
-| emsp | Web: 4.0; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 中文字符空格大小 |
-| nbsp | Web: 4.0; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 根据字体设置的空格大小 |
+| ensp | Web: 4.0; Android: 3.9; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 中文字符空格一半大小 |
+| emsp | Web: 4.0; Android: 3.9; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 中文字符空格大小 |
+| nbsp | Web: 4.0; Android: 3.9; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 根据字体设置的空格大小 |
 
 
 
@@ -174,7 +174,7 @@ web的默认值preline，虽然支持\n换行，同时会合并\n以外的其他
 ### 子组件 @children-tags
 | 子组件 | 兼容性 |
 | :- | :- |
-| [text](text.md) | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 |
+| [text](text.md) | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 |
 
 text组件在web浏览器渲染（含浏览器、小程序webview渲染模式、app-vue）和uvue中，可以并只能嵌套text组件。
 
@@ -803,25 +803,25 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
           <text class="uni-subtitle-text">selectable属性（鸿蒙蒸汽暂不支持）</text>
         </view>
         <view class="text-box">
-          <!-- #ifndef VUE3-VAPOR && APP-HARMONY -->
+          <!-- #ifdef APP-ANDROID -->
           <text :selectable="true">{{ singleLineText }}</text>
           <!-- #endif -->
-          <!-- #ifdef VUE3-VAPOR && APP-HARMONY -->
+          <!-- #ifndef APP-ANDROID -->
           <text>{{ singleLineText }}</text>
           <!-- #endif -->
         </view>
 
         <view class="uni-title">
-          <text class="uni-subtitle-text">space属性（鸿蒙蒸汽不支持，推荐改用css white-space）</text>
+          <text class="uni-subtitle-text">space属性（App平台蒸汽模式不支持，推荐改用css white-space）</text>
           <text class="uni-subtitle-text">依次为nbsp ensp emsp效果</text>
         </view>
         <view class="text-box">
-          <!-- #ifndef VUE3-VAPOR && APP-HARMONY -->
+          <!-- #ifndef VUE3-VAPOR && APP -->
           <text space="nbsp">{{ singleLineText }}</text>
           <text space="ensp">{{ singleLineText }}</text>
           <text space="emsp">{{ singleLineText }}</text>
           <!-- #endif -->
-          <!-- #ifdef VUE3-VAPOR && APP-HARMONY -->
+          <!-- #ifdef VUE3-VAPOR && APP -->
           <text>{{ singleLineText }}</text>
           <text>{{ singleLineText }}</text>
           <text>{{ singleLineText }}</text>
@@ -829,17 +829,17 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
         </view>
 
         <view class="uni-title">
-          <text class="uni-subtitle-text">decode属性（鸿蒙蒸汽暂不支持）</text>
+          <text class="uni-subtitle-text">decode属性（App平台蒸汽模式不支持）</text>
           <text class="uni-subtitle-text">依次为lt gt amp apos nbsp ensp emsp效果</text>
         </view>
         <view class="text-box">
-          <!-- #ifndef VUE3-VAPOR && APP-HARMONY -->
-          <text :decode="true">{{ decodeStr }}</text>
-          <text :decode="true">uni-app&nbsp;x，终极跨平台方案</text>
-          <text :decode="true">uni-app&ensp;x，终极跨平台方案</text>
-          <text :decode="true">uni-app&emsp;x，终极跨平台方案</text>
+          <!-- #ifndef VUE3-VAPOR && APP -->
+          <text :decode="data.decode">{{ decodeStr }}</text>
+          <text :decode="data.decode">uni-app&nbsp;x，终极跨平台方案</text>
+          <text :decode="data.decode">uni-app&ensp;x，终极跨平台方案</text>
+          <text :decode="data.decode">uni-app&emsp;x，终极跨平台方案</text>
           <!-- #endif -->
-          <!-- #ifdef VUE3-VAPOR && APP-HARMONY -->
+          <!-- #ifdef VUE3-VAPOR && APP -->
           <text>{{ decodeStr }}</text>
           <text>uni-app&nbsp;x，终极跨平台方案</text>
           <text>uni-app&ensp;x，终极跨平台方案</text>
@@ -1016,6 +1016,7 @@ type DataType = {
   heightText: string,
   isNestedText1TapTriggered: boolean,
   isNestedText2TapTriggered: boolean,
+  decode: boolean
 }
 
 // 自动化测试
@@ -1026,6 +1027,7 @@ const data = reactive({
   heightText: '设置高度文本',
   isNestedText1TapTriggered: false,
   isNestedText2TapTriggered: false,
+  decode: true
 } as DataType)
 
 function nestedText1Tap() {
@@ -1157,7 +1159,9 @@ defineExpose({
 ```
 
 ::: warning 注意
-App 端不支持 `text` 组件中渲染多段文本，如果 `text` 组件中的文本是动态的，可以将计算后的结果通过数据给到 `text` 组件, 而不是在模板中通过 `template` 拼接多段文本, 以免出现渲染异常，例如：
+App 端不支持 `text` 组件中渲染多段文本，如果 `text` 组件中的文本是动态的，可以将计算后的结果通过数据给到 `text` 组件, 而不是在模板中通过 `template` 拼接多段文本, 以免出现渲染异常。
+
+错误写法：
 ```vue
 <template>
   <view>
@@ -1185,7 +1189,8 @@ App 端不支持 `text` 组件中渲染多段文本，如果 `text` 组件中的
 
 </script>
 ```
-上述代码应调整为：
+
+正确写法：
 ```vue
 <template>
   <view>

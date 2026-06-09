@@ -24,9 +24,9 @@ createSelectorQuery是小程序的API，因小程序未开放DOM，且视图层�
 小程序下有时用本API获取部分组件的上下文context，但这个写法不跨平台。跨平台的获取组件context，应该使用uni.createXXContext()。
 
 ### createSelectorQuery 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 |
 
 
 
@@ -49,15 +49,16 @@ createSelectorQuery是小程序的API，因小程序未开放DOM，且视图层�
 in
 将选择器的选取范围更改为自定义组件component内
 ##### in 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| - | 4.41 | - | - | - |
+| 微信小程序 |
+| :- |
+| 4.41 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| component | any | 否 | - | - |  | 
+| component | any | 否 |  |   |  | 
+
 
 ##### 返回值 
 
@@ -70,15 +71,16 @@ in
 select
 在当前页面下选择第一个匹配选择器selector的节点
 ##### select 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| - | 4.41 | - | - | - |
+| 微信小程序 |
+| :- |
+| 4.41 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| selector | string | 是 | - | - | - | 
+| selector | string | 是 |  |   | - | 
+
 
 ##### 返回值 
 
@@ -91,16 +93,13 @@ select
 ###### boundingClientRect( callback: SelectorQueryNodeInfoCallback \| null,    ): SelectorQuery @boundingclientrect
 boundingClientRect
 添加节点的布局位置的查询请求，相对于显示区域，以像素为单位
-###### boundingClientRect 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 否 | - | - |  | 
+| callback | (result: any) => void | 否 |  |   |  | 
+
 
 ###### 返回值 
 
@@ -112,16 +111,13 @@ boundingClientRect
 ###### scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery @scrolloffset
 scrollOffset
 添加节点的滚动位置查询请求，以像素为单位
-###### scrollOffset 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
 ###### 返回值 
 
@@ -134,30 +130,31 @@ scrollOffset
 fields
 获取节点的相关信息，需要获取的字段在fields中指定
 ###### fields 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.25 | 4.25 | - |
+| Web | 微信小程序 | Android | iOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.25 | 4.25 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| fields | **NodeField** | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
-| callback | (result: any) => void | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| fields | **NodeField** | 是 |  |   |  |
+| callback | (result: any) => void | 否 |  |   |  | 
 
 #### fields 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | boolean | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 是否返回节点 id |
-| dataset | boolean | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 是否返回节点 dataset |
-| rect | boolean | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 是否返回节点布局位置（left right top bottom） |
-| size | boolean | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 是否返回节点尺寸（width height） |
-| scrollOffset | boolean | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
-| properties | Array&lt;string&gt; | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
-| computedStyle | Array&lt;string&gt; | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 指定样式名列表，返回节点对应样式名的当前值 |
-| context | boolean | 否 | - | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: - | 是否返回节点对应的 Context 对象 |
-| node | boolean | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 是否返回节点对应的 Node 实例 |
+| id | boolean | 否 |  |   | 是否返回节点 id |
+| dataset | boolean | 否 |  |   | 是否返回节点 dataset |
+| rect | boolean | 否 |  |   | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 |  |   | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
+| computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
+| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 10.0; iOS: x | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
+
 
 ###### 返回值 
 
@@ -168,17 +165,18 @@ fields
 
 ###### context(callback: SelectorQueryNodeInfoCallback): SelectorQuery @context
 context
-添加节点的 Context 对象查询请求
+添加节点的 Context 对象查询请求（uni-app x 暂仅支持获取 EditorContext）
 ###### context 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | x | - |
+| Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.04 | 10.0 | 5.04 | 5.04 | 5.04 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
 ###### 返回值 
 
@@ -192,15 +190,16 @@ node
 获取 Node 节点实例。目前支持 Canvas 的获取。
 获取节点的相关信息，需要获取的字段在fields中指定
 ###### node 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.25 | 4.25 | - |
+| Web | 微信小程序 | Android | iOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.25 | 4.25 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
 ###### 返回值 
 
@@ -214,15 +213,16 @@ node
 selectAll
 在当前页面下选择匹配选择器selector的所有节点
 ##### selectAll 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| - | 4.41 | - | - | - |
+| 微信小程序 |
+| :- |
+| 4.41 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| selector | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| selector | string | 是 |  |   |  | 
+
 
 ##### 返回值 
 
@@ -235,9 +235,10 @@ selectAll
 selectViewport
 选择显示区域
 ##### selectViewport 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| - | 4.41 | - | - | - |
+| 微信小程序 |
+| :- |
+| 4.41 |
+
 
 
 ##### 返回值 
@@ -251,15 +252,16 @@ selectViewport
 exec
 执行所有的请求
 ##### exec 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| - | 4.41 | - | - | - |
+| 微信小程序 |
+| :- |
+| 4.41 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: Array&lt;any&gt;) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: Array&lt;any&gt;) => void | 是 |  |   |  | 
+
 
 ##### 返回值 
 
@@ -348,6 +350,7 @@ exec
   <!-- #endif -->
     <view class="page uni-list-cell-db-text" id="page">
       <page-head :title="data.title"></page-head>
+      <page-intro content="本页演示 uni.createSelectorQuery：通过 select/selectAll 与 boundingClientRect 获取节点布局信息（left、top、right、bottom、width、height）；含 view、text、image、scroll-view 及子组件多根节点等查询示例，可测试 .fields/.node 结果；底部可跳转「滚动容器中的 createSelectorQuery」子页。"></page-intro>
       <button class="btn btn-get-node-info" @click="getNodeInfo">getNodeInfo</button>
       <button class="btn btn-get-all-node-info" @click="getAllNodeInfo">getAllNodeInfo</button>
       <view id="rect-1-2" class="rect-1-2">
@@ -900,5 +903,5 @@ uni.createSelectorQuery().select('.rect1').selectAll('.rect2').boundingClientRec
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 

@@ -5,11 +5,17 @@
 CSS **left**属性定义了定位元素的左外边距边界与其包含块左边界之间的偏移，非定位元素设置此属性无效。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -29,7 +35,7 @@ left: <length> | <percentage> | auto;
 ### left 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 这个关键字表示：<br/>    <br/>      对于绝对定位元素，元素将忽略此属性而以right属性为准，如果此时设置width: auto，将基于内容需要的宽度设置宽度；如果right也为auto的话，元素的水平位置就是它假如作为静态 (即 static) 元素时该在的位置。<br/>      对于相对定位元素，元素相对正常位置的偏移量将基于right属性；如果right也为auto的话，元素将不会有偏移。 |
+| auto | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 这个关键字表示：<br/>    <br/>      对于绝对定位元素，元素将忽略此属性而以right属性为准，如果此时设置width: auto，将基于内容需要的宽度设置宽度；如果right也为auto的话，元素的水平位置就是它假如作为静态 (即 static) 元素时该在的位置。<br/>      对于相对定位元素，元素相对正常位置的偏移量将基于right属性；如果right也为auto的话，元素将不会有偏移。 |
 
 
 ### 默认值 @default-value 
@@ -122,10 +128,10 @@ left: <length> | <percentage> | auto;
     <view class="test-container">
       <view class="test-item">
         <text class="uni-subtitle-text">view 组件</text>
-        <text class="uni-info">设置值: {{left}}</text>
-        <text class="uni-info">获取值: {{leftActual}}</text>
+        <text class="uni-info">设置值: {{data.left}}</text>
+        <text class="uni-info">获取值: {{data.leftActual}}</text>
         <view class="test-box">
-          <view ref="viewRef" class="common test-view" :style="{ left: left }">
+          <view ref="viewRef" class="common test-view" :style="{ left: data.left }">
             <text class="common-text">view</text>
           </view>
         </view>
@@ -133,19 +139,19 @@ left: <length> | <percentage> | auto;
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件</text>
-        <text class="uni-info">设置值: {{left}}</text>
-        <text class="uni-info">获取值: {{leftActualText}}</text>
+        <text class="uni-info">设置值: {{data.left}}</text>
+        <text class="uni-info">获取值: {{data.leftActualText}}</text>
         <view class="test-box">
-          <text ref="textRef" class="common common-text test-text" :style="{ left: left }">text</text>
+          <text ref="textRef" class="common common-text test-text" :style="{ left: data.left }">text</text>
         </view>
       </view>
 
       <view class="test-item">
         <text class="uni-subtitle-text">image 组件</text>
-        <text class="uni-info">设置值: {{left}}</text>
-        <text class="uni-info">获取值: {{leftActualImage}}</text>
+        <text class="uni-info">设置值: {{data.left}}</text>
+        <text class="uni-info">获取值: {{data.leftActualImage}}</text>
         <view class="test-box">
-          <image ref="imageRef" class="common test-image" :style="{ left: left }" src="/static/test-image/logo.png"></image>
+          <image ref="imageRef" class="common test-image" :style="{ left: data.left }" src="/static/test-image/logo.png"></image>
         </view>
       </view>
     </view>
@@ -154,10 +160,10 @@ left: <length> | <percentage> | auto;
     <view class="test-container">
       <view class="test-item">
         <text class="uni-subtitle-text">view 组件拍平</text>
-        <text class="uni-info">设置值: {{left}}</text>
-        <text class="uni-info">获取值: {{leftActualFlat}}</text>
+        <text class="uni-info">设置值: {{data.left}}</text>
+        <text class="uni-info">获取值: {{data.leftActualFlat}}</text>
         <view class="test-box">
-          <view ref="viewRefFlat" class="common test-view-flatten" :style="{ left: left }" flatten>
+          <view ref="viewRefFlat" class="common test-view-flatten" :style="{ left: data.left }" flatten>
             <text class="common-text">view</text>
           </view>
         </view>
@@ -165,19 +171,19 @@ left: <length> | <percentage> | auto;
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件拍平</text>
-        <text class="uni-info">设置值: {{left}}</text>
-        <text class="uni-info">获取值: {{leftActualTextFlat}}</text>
+        <text class="uni-info">设置值: {{data.left}}</text>
+        <text class="uni-info">获取值: {{data.leftActualTextFlat}}</text>
         <view class="test-box">
-          <text ref="textRefFlat" class="common common-text test-text-flatten" :style="{ left: left }" flatten>text</text>
+          <text ref="textRefFlat" class="common common-text test-text-flatten" :style="{ left: data.left }" flatten>text</text>
         </view>
       </view>
 
       <view class="test-item">
         <text class="uni-subtitle-text">image 组件拍平</text>
-        <text class="uni-info">设置值: {{left}}</text>
-        <text class="uni-info">获取值: {{leftActualImageFlat}}</text>
+        <text class="uni-info">设置值: {{data.left}}</text>
+        <text class="uni-info">获取值: {{data.leftActualImageFlat}}</text>
         <view class="test-box">
-          <image ref="imageRefFlat" class="common test-image-flatten" :style="{ left: left }" flatten src="/static/test-image/logo.png"></image>
+          <image ref="imageRefFlat" class="common test-image-flatten" :style="{ left: data.left }" flatten src="/static/test-image/logo.png"></image>
         </view>
       </view>
     </view>
@@ -185,7 +191,7 @@ left: <length> | <percentage> | auto;
     <view class="uni-common-mt uni-common-mb">
       <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
       <enum-data :items="leftEnum" title="left 枚举值" @change="radioChangeLeft" :compact="true"></enum-data>
-      <input-data :defaultValue="left" title="left 自定义值" type="text" @confirm="inputChangeLeft"></input-data>
+      <input-data :defaultValue="data.left" title="left 自定义值" type="text" @confirm="inputChangeLeft"></input-data>
     </view>
 
     <view class="uni-common-mb">
@@ -219,13 +225,15 @@ left: <length> | <percentage> | auto;
     { value: 7, name: 'auto' }
   ]
 
-  const left = ref('10px')
-  const leftActual = ref('')
-  const leftActualText = ref('')
-  const leftActualImage = ref('')
-  const leftActualFlat = ref('')
-  const leftActualTextFlat = ref('')
-  const leftActualImageFlat = ref('')
+  const data = reactive({
+    left: '10px',
+    leftActual: '',
+    leftActualText: '',
+    leftActualImage: '',
+    leftActualFlat: '',
+    leftActualTextFlat: '',
+    leftActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -234,16 +242,18 @@ left: <length> | <percentage> | auto;
   const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    leftActual.value = viewRef.value?.style.getPropertyValue('left') ?? ''
-    leftActualFlat.value = viewRefFlat.value?.style.getPropertyValue('left') ?? ''
-    leftActualText.value = textRef.value?.style.getPropertyValue('left') ?? ''
-    leftActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('left') ?? ''
-    leftActualImage.value = imageRef.value?.style.getPropertyValue('left') ?? ''
-    leftActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('left') ?? ''
+    data.leftActual = viewRef.value?.style.getPropertyValue('left') ?? ''
+    data.leftActualFlat = viewRefFlat.value?.style.getPropertyValue('left') ?? ''
+    data.leftActualText = textRef.value?.style.getPropertyValue('left') ?? ''
+    data.leftActualTextFlat = textRefFlat.value?.style.getPropertyValue('left') ?? ''
+    data.leftActualImage = imageRef.value?.style.getPropertyValue('left') ?? ''
+    data.leftActualImageFlat = imageRefFlat.value?.style.getPropertyValue('left') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeLeft = (value: string) => {
-    left.value = value
+    data.left = value
     viewRef.value?.style.setProperty('left', value)
     viewRefFlat.value?.style.setProperty('left', value)
     textRef.value?.style.setProperty('left', value)
@@ -253,7 +263,7 @@ left: <length> | <percentage> | auto;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeLeft = (index: number) => {
@@ -272,7 +282,8 @@ left: <length> | <percentage> | auto;
   })
 
   defineExpose({
-    radioChangeLeft
+    radioChangeLeft,
+    data
   })
 </script>
 

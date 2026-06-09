@@ -5,11 +5,17 @@
 CSS 的 border 是设置元素边框属性的简写形式，用于设置一个或多个以下属性的值：border-width、border-style、border-color。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -29,10 +35,7 @@ border: <line-width> || <line-style> || <color>;
 
 
 
-### 默认值 @default-value 
- | 平台 | 默认值 |
-| :- | :- |
-| uvue | 0 |
+
 
 
 
@@ -129,10 +132,10 @@ border: <line-width> || <line-style> || <color>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{border}}</text>
-          <text class="uni-info">获取值: {{borderActual}}</text>
+          <text class="uni-info">设置值: {{data.border}}</text>
+          <text class="uni-info">获取值: {{data.borderActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-dynamic" :style="{ border: border }">
+            <view ref="viewRef" class="common-dynamic" :style="{ border: data.border }">
               <text>view</text>
             </view>
           </view>
@@ -140,19 +143,19 @@ border: <line-width> || <line-style> || <color>;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{border}}</text>
-          <text class="uni-info">获取值: {{borderActualText}}</text>
+          <text class="uni-info">设置值: {{data.border}}</text>
+          <text class="uni-info">获取值: {{data.borderActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-dynamic" :style="{ border: border }">text</text>
+            <text ref="textRef" class="common-dynamic" :style="{ border: data.border }">text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{border}}</text>
-          <text class="uni-info">获取值: {{borderActualImage}}</text>
+          <text class="uni-info">设置值: {{data.border}}</text>
+          <text class="uni-info">获取值: {{data.borderActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-image" :style="{ border: border }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image" :style="{ border: data.border }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -160,28 +163,28 @@ border: <line-width> || <line-style> || <color>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{border}}</text>
-          <text class="uni-info">获取值: {{borderActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.border}}</text>
+          <text class="uni-info">获取值: {{data.borderActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic" :style="{ border: border }" flatten>
+            <view ref="viewRefFlat" class="common-dynamic" :style="{ border: data.border }" flatten>
               <text>view</text>
             </view>
           </view>
         </view>
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{border}}</text>
-          <text class="uni-info">获取值: {{borderActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.border}}</text>
+          <text class="uni-info">获取值: {{data.borderActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic" :style="{ border: border }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic" :style="{ border: data.border }" flatten>text</text>
           </view>
         </view>
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{border}}</text>
-          <text class="uni-info">获取值: {{borderActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.border}}</text>
+          <text class="uni-info">获取值: {{data.borderActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-image" :style="{ border: border }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image" :style="{ border: data.border }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -189,7 +192,7 @@ border: <line-width> || <line-style> || <color>;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="borderEnum" title="border 枚举值" @change="radioChangeBorder" :compact="true"></enum-data>
-        <input-data :defaultValue="border" title="border 自定义值" type="text" @confirm="inputChangeBorder"></input-data>
+        <input-data :defaultValue="data.border" title="border 自定义值" type="text" @confirm="inputChangeBorder"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -222,13 +225,15 @@ border: <line-width> || <line-style> || <color>;
     { value: 4, name: '3px dotted green' }
   ]
 
-  const border = ref('5px solid cyan')
-  const borderActual = ref('')
-  const borderActualText = ref('')
-  const borderActualImage = ref('')
-  const borderActualFlat = ref('')
-  const borderActualTextFlat = ref('')
-  const borderActualImageFlat = ref('')
+  const data = reactive({
+    border: '5px solid cyan',
+    borderActual: '',
+    borderActualText: '',
+    borderActualImage: '',
+    borderActualFlat: '',
+    borderActualTextFlat: '',
+    borderActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -238,16 +243,17 @@ border: <line-width> || <line-style> || <color>;
 
   const getPropertyValues = () => {
     const actualValue = viewRef.value?.style.getPropertyValue('border')
-    borderActual.value = actualValue ?? ''
-    borderActualFlat.value = viewRefFlat.value?.style.getPropertyValue('border') ?? ''
-    borderActualText.value = textRef.value?.style.getPropertyValue('border') ?? ''
-    borderActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('border') ?? ''
-    borderActualImage.value = imageRef.value?.style.getPropertyValue('border') ?? ''
-    borderActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('border') ?? ''
+    data.borderActual = actualValue ?? ''
+    data.borderActualFlat = viewRefFlat.value?.style.getPropertyValue('border') ?? ''
+    data.borderActualText = textRef.value?.style.getPropertyValue('border') ?? ''
+    data.borderActualTextFlat = textRefFlat.value?.style.getPropertyValue('border') ?? ''
+    data.borderActualImage = imageRef.value?.style.getPropertyValue('border') ?? ''
+    data.borderActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border') ?? ''
   }
 
+  const ins = getCurrentInstance()
   const changeBorder = (value: string) => {
-    border.value = value
+    data.border = value
     viewRef.value?.style.setProperty('border', value)
     viewRefFlat.value?.style.setProperty('border', value)
     textRef.value?.style.setProperty('border', value)
@@ -257,7 +263,7 @@ border: <line-width> || <line-style> || <color>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeBorder = (index: number) => {
@@ -273,6 +279,11 @@ border: <line-width> || <line-style> || <color>;
 
   onReady(() => {
     getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeBorder,
+    data
   })
 </script>
 

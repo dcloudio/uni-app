@@ -2,6 +2,8 @@
 
 uniCloud.databaseForJQL()是客户端访问云数据库的API，即[clientDB](https://doc.dcloud.net.cn/uniCloud/clientdb.html)。
 
+非蒸汽模式安卓平台有如下限制：
+
 - 暂不支持泛型传递
 - 暂不支持getOne
 - 暂不支持调用`db.command.aggregate`
@@ -15,9 +17,9 @@ uniCloud.databaseForJQL()是客户端访问云数据库的API，即[clientDB](ht
 获取数据库操作实例
 
 ### databaseForJQL 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 阿里云 3.91，腾讯云 3.91，支付宝云 3.98 | 4.11 | 4.61 | - |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 阿里云 3.91，腾讯云 3.91，支付宝云 3.98 | 4.11 | 4.61 |
 
 
 
@@ -32,23 +34,20 @@ uniCloud.databaseForJQL()是客户端访问云数据库的API，即[clientDB](ht
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| command | any | 是 | - | - | - |
-| Geo | any | 是 | - | - | - |
+| command | any | 是 |  |   |  |
+| Geo | any | 是 |  |   |  |
 #### Database 的方法 @database-values 
 
 #### collection(...args: Array\<any>): Collection; @collection
 collection
 
-##### collection 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| args | Array&lt;any&gt; | 否 | - | - | - | 
+| args | Array&lt;any&gt; | 否 |  |   | - | 
+
 
 ##### 返回值 
 
@@ -61,16 +60,13 @@ collection
 ###### where(condition: any): UniCloudDBFilter; @where
 where
 
-###### where 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| condition | any | 是 | - | - | - | 
+| condition | any | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -83,16 +79,13 @@ where
 ###### get(arg?: UTSJSONObject \| null): Promise\<UniCloudDBGetResult>; @get
 get
 
-###### get 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| arg | any | 否 | - | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x; HarmonyOS(Vapor): - |  | 
+| arg | any | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x |  | 
+
 
 ###### 返回值 
 
@@ -104,17 +97,14 @@ get
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | Array&lt;any&gt; | 是 | - | - | 添加的记录的id列表 |
-| count | number | 否 | - | - | 匹配到的数据总量 |
-| requestId | string | 否 | - | - | 请求id | 
+| data | Array&lt;any&gt; | 是 |  |   | 添加的记录的id列表 |
+| count | number | 否 |  |   | 匹配到的数据总量 |
+| requestId | string | 否 |  |   | 请求id | 
 
 ###### count(): Promise\<UniCloudDBCountResult>; @count
 count
 
-###### count 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
+
 
 
 ###### 返回值 
@@ -127,22 +117,19 @@ count
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| total | number | 是 | - | - | 添加的记录的id列表 |
-| requestId | string | 否 | - | - | 请求id | 
+| total | number | 是 |  |   | 添加的记录的id列表 |
+| requestId | string | 否 |  |   | 请求id | 
 
 ###### update(data: UTSJSONObject): Promise\<UniCloudDBUpdateResult>; @update
 update
 
-###### update 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | any | 是 | - | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x; HarmonyOS(Vapor): - |  | 
+| data | any | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x |  | 
+
 
 ###### 返回值 
 
@@ -154,16 +141,13 @@ update
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| updated | number | 是 | - | - | 更新成功的记录数 |
-| requestId | string | 否 | - | - | 请求id | 
+| updated | number | 是 |  |   | 更新成功的记录数 |
+| requestId | string | 否 |  |   | 请求id | 
 
 ###### remove(): Promise\<UniCloudDBRemoveResult>; @remove
 remove
 
-###### remove 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
+
 
 
 ###### 返回值 
@@ -176,16 +160,13 @@ remove
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| deleted | number | 是 | - | - | 删除成功的记录数 |
-| requestId | string | 否 | - | - | 请求id | 
+| deleted | number | 是 |  |   | 删除成功的记录数 |
+| requestId | string | 否 |  |   | 请求id | 
 
 ###### getTemp(): UTSJSONObject; @gettemp
 getTemp
 
-###### getTemp 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
+
 
 
 ###### 返回值 
@@ -198,16 +179,13 @@ getTemp
 ###### where(condition: any): UniCloudDBFilter; @where
 where
 
-###### where 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| condition | any | 是 | - | - | - | 
+| condition | any | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -219,16 +197,13 @@ where
 ###### doc(docId: string): UniCloudDBFilter; @doc
 doc
 
-###### doc 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| docId | string | 是 | - | - | - | 
+| docId | string | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -240,16 +215,13 @@ doc
 ###### field(filed: string): UniCloudDBQuery; @field
 field
 
-###### field 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| filed | string | 是 | - | - | - | 
+| filed | string | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -262,16 +234,13 @@ field
 ###### get(arg?: UTSJSONObject \| null): Promise\<UniCloudDBGetResult>; @get
 get
 
-###### get 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| arg | any | 否 | - | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x; HarmonyOS(Vapor): - |  | 
+| arg | any | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x |  | 
+
 
 ###### 返回值 
 
@@ -283,10 +252,7 @@ get
 ###### count(): Promise\<UniCloudDBCountResult>; @count
 count
 
-###### count 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
+
 
 
 ###### 返回值 
@@ -299,10 +265,7 @@ count
 ###### getTemp(): UTSJSONObject; @gettemp
 getTemp
 
-###### getTemp 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
+
 
 
 ###### 返回值 
@@ -315,16 +278,13 @@ getTemp
 ###### field(filed: string): UniCloudDBQuery; @field
 field
 
-###### field 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| filed | string | 是 | - | - | - | 
+| filed | string | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -336,16 +296,13 @@ field
 ###### skip(num: number): UniCloudDBQuery; @skip
 skip
 
-###### skip 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| num | number | 是 | - | - | - | 
+| num | number | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -357,16 +314,13 @@ skip
 ###### limit(num: number): UniCloudDBQuery; @limit
 limit
 
-###### limit 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| num | number | 是 | - | - | - | 
+| num | number | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -378,16 +332,13 @@ limit
 ###### orderBy(order: string): UniCloudDBQuery; @orderby
 orderBy
 
-###### orderBy 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| order | string | 是 | - | - | - | 
+| order | string | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -399,16 +350,13 @@ orderBy
 ###### groupBy(field: string): UniCloudDBQuery; @groupby
 groupBy
 
-###### groupBy 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| field | string | 是 | - | - | - | 
+| field | string | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -420,16 +368,13 @@ groupBy
 ###### groupField(field: string): UniCloudDBQuery; @groupfield
 groupField
 
-###### groupField 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| field | string | 是 | - | - | - | 
+| field | string | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -441,16 +386,13 @@ groupField
 ###### distinct(field: string): UniCloudDBQuery; @distinct
 distinct
 
-###### distinct 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| field | string | 是 | - | - | - | 
+| field | string | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -462,16 +404,13 @@ distinct
 ###### geoNear(options: UTSJSONObject): UniCloudDBQuery; @geonear
 geoNear
 
-###### geoNear 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | any | 是 | - | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x; HarmonyOS(Vapor): - |  | 
+| options | any | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x |  | 
+
 
 ###### 返回值 
 
@@ -484,16 +423,13 @@ geoNear
 ###### skip(num: number): UniCloudDBQuery; @skip
 skip
 
-###### skip 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| num | number | 是 | - | - | - | 
+| num | number | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -505,16 +441,13 @@ skip
 ###### limit(num: number): UniCloudDBQuery; @limit
 limit
 
-###### limit 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| num | number | 是 | - | - | - | 
+| num | number | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -526,16 +459,13 @@ limit
 ###### orderBy(order: string): UniCloudDBQuery; @orderby
 orderBy
 
-###### orderBy 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| order | string | 是 | - | - | - | 
+| order | string | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -547,16 +477,13 @@ orderBy
 ###### groupBy(field: string): UniCloudDBQuery; @groupby
 groupBy
 
-###### groupBy 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| field | string | 是 | - | - | - | 
+| field | string | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -568,16 +495,13 @@ groupBy
 ###### groupField(field: string): UniCloudDBQuery; @groupfield
 groupField
 
-###### groupField 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| field | string | 是 | - | - | - | 
+| field | string | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -589,16 +513,13 @@ groupField
 ###### distinct(field: string): UniCloudDBQuery; @distinct
 distinct
 
-###### distinct 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| field | string | 是 | - | - | - | 
+| field | string | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -610,16 +531,13 @@ distinct
 ###### geoNear(options: UTSJSONObject): UniCloudDBQuery; @geonear
 geoNear
 
-###### geoNear 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | any | 是 | - | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x; HarmonyOS(Vapor): - |  | 
+| options | any | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x |  | 
+
 
 ###### 返回值 
 
@@ -632,16 +550,13 @@ geoNear
 ###### doc(docId: string): UniCloudDBFilter; @doc
 doc
 
-###### doc 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| docId | string | 是 | - | - | - | 
+| docId | string | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -653,10 +568,7 @@ doc
 ###### aggregate(): UniCloudDBFilter; @aggregate
 aggregate
 
-###### aggregate 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
+
 
 
 ###### 返回值 
@@ -669,16 +581,13 @@ aggregate
 ###### foreignKey(foreignKey: string): UniCloudDBFilter; @foreignkey
 foreignKey
 
-###### foreignKey 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| foreignKey | string | 是 | - | - | - | 
+| foreignKey | string | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -690,16 +599,13 @@ foreignKey
 ###### add(data: UTSJSONObject): Promise\<UniCloudDBAddResult>; @add
 add
 
-###### add 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | any | 是 | - | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x; HarmonyOS(Vapor): - |  | 
+| data | any | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x |  | 
+
 
 ###### 返回值 
 
@@ -711,22 +617,19 @@ add
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | string | 是 | - | - | 添加的记录的id |
-| requestId | string | 否 | - | - | 请求id | 
+| id | string | 是 |  |   | 添加的记录的id |
+| requestId | string | 否 |  |   | 请求id | 
 
 ###### get(arg?: UTSJSONObject \| null): Promise\<UniCloudDBGetResult>; @get
 get
 
-###### get 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| arg | any | 否 | - | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x; HarmonyOS(Vapor): - |  | 
+| arg | any | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x |  | 
+
 
 ###### 返回值 
 
@@ -738,10 +641,7 @@ get
 ###### count(): Promise\<UniCloudDBCountResult>; @count
 count
 
-###### count 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
+
 
 
 ###### 返回值 
@@ -754,10 +654,7 @@ count
 ###### getTemp(): UTSJSONObject; @gettemp
 getTemp
 
-###### getTemp 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
+
 
 
 ###### 返回值 
@@ -770,16 +667,13 @@ getTemp
 ###### field(filed: string): UniCloudDBQuery; @field
 field
 
-###### field 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| filed | string | 是 | - | - | - | 
+| filed | string | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -791,16 +685,13 @@ field
 ###### skip(num: number): UniCloudDBQuery; @skip
 skip
 
-###### skip 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| num | number | 是 | - | - | - | 
+| num | number | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -812,16 +703,13 @@ skip
 ###### limit(num: number): UniCloudDBQuery; @limit
 limit
 
-###### limit 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| num | number | 是 | - | - | - | 
+| num | number | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -833,16 +721,13 @@ limit
 ###### orderBy(order: string): UniCloudDBQuery; @orderby
 orderBy
 
-###### orderBy 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | - | - | - | - |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| order | string | 是 | - | - | - | 
+| order | string | 是 |  |   | - | 
+
 
 ###### 返回值 
 
@@ -856,15 +741,16 @@ orderBy
 multiSend
 合并查询请求
 ##### multiSend 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.16 | 4.11 | 4.61 | - |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.16 | 4.11 | 4.61 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| args | Array&lt;any&gt; | 否 | - | - | - | 
+| args | Array&lt;any&gt; | 否 |  |   | - | 
+
 
 ##### 返回值 
 
@@ -876,16 +762,16 @@ multiSend
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| dataList | Array&lt;**UniCloudDBMultiSendResultItem**&gt; | 是 | - | - | 数据列表 |
-| requestId | string | 否 | - | - | 请求id | 
+| dataList | Array&lt;**UniCloudDBMultiSendResultItem**&gt; | 是 |  |   | 数据列表 |
+| requestId | string | 否 |  |   | 请求id | 
 
 ##### dataList 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | any | 是 | - | - | 错误码，可能为字符串或数字，数字0表示成功 |
-| errMsg | string | 是 | - | - | 错误信息 |
-| data | Array&lt;any&gt; | 否 | - | - | 数据 |
+| errCode | any | 是 |  |   | 错误码，可能为字符串或数字，数字0表示成功 |
+| errMsg | string | 是 |  |   | 错误信息 |
+| data | Array&lt;any&gt; | 否 |  |   | 数据 |
  
 
 

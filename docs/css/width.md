@@ -5,11 +5,17 @@
 width 属性用于设置元素的宽度。width 默认设置内容区域的宽度，但如果 box-sizing 属性被设置为 border-box，就转而设置边框区域的宽度。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -29,10 +35,10 @@ width: <viewport-length>{1,2};
 ### width 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 浏览器将会为指定的元素计算并选择一个宽度。 |
-| fit-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 取以下两种值中的较大值：<br/>    <br/>      固有的最小宽度<br/>      固有首选宽度（max-content）和可用宽度（available）两者中的较小值<br/>    <br/>    可表示为：min(max-content, max(min-content, \<length-percentage>)) |
-| max-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 元素内容固有的（intrinsic）合适宽度。 |
-| min-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 元素内容固有的最小宽度。 |
+| auto | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 浏览器将会为指定的元素计算并选择一个宽度。 |
+| fit-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 取以下两种值中的较大值：<br/>    <br/>      固有的最小宽度<br/>      固有首选宽度（max-content）和可用宽度（available）两者中的较小值<br/>    <br/>    可表示为：min(max-content, max(min-content, \<length-percentage>)) |
+| max-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 元素内容固有的（intrinsic）合适宽度。 |
+| min-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 元素内容固有的最小宽度。 |
 
 
 **注意**
@@ -104,10 +110,10 @@ width: <viewport-length>{1,2};
     <view class="test-container">
       <view class="test-item">
         <text class="uni-subtitle-text">view 组件</text>
-        <text class="uni-info">设置值: {{width}}</text>
-        <text class="uni-info">获取值: {{widthActual}}</text>
+        <text class="uni-info">设置值: {{data.width}}</text>
+        <text class="uni-info">获取值: {{data.widthActual}}</text>
         <view class="test-box">
-          <view ref="viewRef" class="common test-view" :style="{ width: width }">
+          <view ref="viewRef" class="common test-view" :style="{ width: data.width }">
             <text>view</text>
           </view>
         </view>
@@ -115,19 +121,19 @@ width: <viewport-length>{1,2};
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件</text>
-        <text class="uni-info">设置值: {{width}}</text>
-        <text class="uni-info">获取值: {{widthActualText}}</text>
+        <text class="uni-info">设置值: {{data.width}}</text>
+        <text class="uni-info">获取值: {{data.widthActualText}}</text>
         <view class="test-box">
-          <text ref="textRef" class="common test-text" :style="{ width: width }">text</text>
+          <text ref="textRef" class="common test-text" :style="{ width: data.width }">text</text>
         </view>
       </view>
 
       <view class="test-item">
         <text class="uni-subtitle-text">image 组件</text>
-        <text class="uni-info">设置值: {{width}}</text>
-        <text class="uni-info">获取值: {{widthActualImage}}</text>
+        <text class="uni-info">设置值: {{data.width}}</text>
+        <text class="uni-info">获取值: {{data.widthActualImage}}</text>
         <view class="test-box">
-          <image ref="imageRef" class="common test-image" :style="{ width: width }" src="/static/test-image/logo.png"></image>
+          <image ref="imageRef" class="common test-image" :style="{ width: data.width }" src="/static/test-image/logo.png"></image>
         </view>
       </view>
     </view>
@@ -136,10 +142,10 @@ width: <viewport-length>{1,2};
     <view class="test-container">
       <view class="test-item">
         <text class="uni-subtitle-text">view 组件拍平</text>
-        <text class="uni-info">设置值: {{width}}</text>
-        <text class="uni-info">获取值: {{widthActualFlat}}</text>
+        <text class="uni-info">设置值: {{data.width}}</text>
+        <text class="uni-info">获取值: {{data.widthActualFlat}}</text>
         <view class="test-box">
-          <view ref="viewRefFlat" class="common test-view-flatten" :style="{ width: width }" flatten>
+          <view ref="viewRefFlat" class="common test-view-flatten" :style="{ width: data.width }" flatten>
             <text>view</text>
           </view>
         </view>
@@ -147,19 +153,19 @@ width: <viewport-length>{1,2};
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件拍平</text>
-        <text class="uni-info">设置值: {{width}}</text>
-        <text class="uni-info">获取值: {{widthActualTextFlat}}</text>
+        <text class="uni-info">设置值: {{data.width}}</text>
+        <text class="uni-info">获取值: {{data.widthActualTextFlat}}</text>
         <view class="test-box">
-          <text ref="textRefFlat" class="common test-text-flatten" :style="{ width: width }" flatten>text</text>
+          <text ref="textRefFlat" class="common test-text-flatten" :style="{ width: data.width }" flatten>text</text>
         </view>
       </view>
 
       <view class="test-item">
         <text class="uni-subtitle-text">image 组件拍平</text>
-        <text class="uni-info">设置值: {{width}}</text>
-        <text class="uni-info">获取值: {{widthActualImageFlat}}</text>
+        <text class="uni-info">设置值: {{data.width}}</text>
+        <text class="uni-info">获取值: {{data.widthActualImageFlat}}</text>
         <view class="test-box">
-          <image ref="imageRefFlat" class="common test-image-flatten" :style="{ width: width }" flatten src="/static/test-image/logo.png"></image>
+          <image ref="imageRefFlat" class="common test-image-flatten" :style="{ width: data.width }" flatten src="/static/test-image/logo.png"></image>
         </view>
       </view>
     </view>
@@ -167,7 +173,7 @@ width: <viewport-length>{1,2};
     <view class="uni-common-mt uni-common-mb">
       <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
       <enum-data :items="widthEnum" title="width 枚举值" @change="radioChangeWidth" :compact="true"></enum-data>
-      <input-data :defaultValue="width" title="width 自定义值" type="text" @confirm="inputChangeWidth"></input-data>
+      <input-data :defaultValue="data.width" title="width 自定义值" type="text" @confirm="inputChangeWidth"></input-data>
     </view>
 
     <view class="uni-common-mt uni-common-mb">
@@ -253,13 +259,15 @@ width: <viewport-length>{1,2};
     { value: 6, name: 'auto' }
   ]
 
-  const width = ref('100px')
-  const widthActual = ref('')
-  const widthActualText = ref('')
-  const widthActualImage = ref('')
-  const widthActualFlat = ref('')
-  const widthActualTextFlat = ref('')
-  const widthActualImageFlat = ref('')
+  const data = reactive({
+    width: '100px',
+    widthActual: '',
+    widthActualText: '',
+    widthActualImage: '',
+    widthActualFlat: '',
+    widthActualTextFlat: '',
+    widthActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -317,16 +325,18 @@ width: <viewport-length>{1,2};
   }
 
   const getPropertyValues = () => {
-    widthActual.value = viewRef.value?.style.getPropertyValue('width') ?? ''
-    widthActualFlat.value = viewRefFlat.value?.style.getPropertyValue('width') ?? ''
-    widthActualText.value = textRef.value?.style.getPropertyValue('width') ?? ''
-    widthActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('width') ?? ''
-    widthActualImage.value = imageRef.value?.style.getPropertyValue('width') ?? ''
-    widthActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('width') ?? ''
+    data.widthActual = viewRef.value?.style.getPropertyValue('width') ?? ''
+    data.widthActualFlat = viewRefFlat.value?.style.getPropertyValue('width') ?? ''
+    data.widthActualText = textRef.value?.style.getPropertyValue('width') ?? ''
+    data.widthActualTextFlat = textRefFlat.value?.style.getPropertyValue('width') ?? ''
+    data.widthActualImage = imageRef.value?.style.getPropertyValue('width') ?? ''
+    data.widthActualImageFlat = imageRefFlat.value?.style.getPropertyValue('width') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeWidth = (value: string) => {
-    width.value = value
+    data.width = value
     viewRef.value?.style.setProperty('width', value)
     viewRefFlat.value?.style.setProperty('width', value)
     textRef.value?.style.setProperty('width', value)
@@ -336,7 +346,7 @@ width: <viewport-length>{1,2};
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeWidth = (index: number) => {
@@ -357,7 +367,8 @@ width: <viewport-length>{1,2};
 
   defineExpose({
     radioChangeWidth,
-    emptyElementValues
+    emptyElementValues,
+    data
   })
 </script>
 

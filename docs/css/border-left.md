@@ -5,11 +5,17 @@
 CSS 属性 border-left 是属性border-left-color, border-left-style, 和border-left-width的三者的缩写。这些属性都是在描述一个元素的左边的边框border。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -29,8 +35,7 @@ border-left: <line-width> || <line-style> || <color>;
 
 
 
-### 默认值 @default-value 
- `0`
+
 
 
 
@@ -76,10 +81,10 @@ border-left: <line-width> || <line-style> || <color>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{borderLeft}}</text>
-          <text class="uni-info">获取值: {{borderLeftActual}}</text>
+          <text class="uni-info">设置值: {{data.borderLeft}}</text>
+          <text class="uni-info">获取值: {{data.borderLeftActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-dynamic test-view" :style="{ borderLeft: borderLeft }">
+            <view ref="viewRef" class="common-dynamic test-view" :style="{ borderLeft: data.borderLeft }">
               <text>view</text>
             </view>
           </view>
@@ -87,19 +92,19 @@ border-left: <line-width> || <line-style> || <color>;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{borderLeft}}</text>
-          <text class="uni-info">获取值: {{borderLeftActualText}}</text>
+          <text class="uni-info">设置值: {{data.borderLeft}}</text>
+          <text class="uni-info">获取值: {{data.borderLeftActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-dynamic test-text" :style="{ borderLeft: borderLeft }">text</text>
+            <text ref="textRef" class="common-dynamic test-text" :style="{ borderLeft: data.borderLeft }">text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{borderLeft}}</text>
-          <text class="uni-info">获取值: {{borderLeftActualImage}}</text>
+          <text class="uni-info">设置值: {{data.borderLeft}}</text>
+          <text class="uni-info">获取值: {{data.borderLeftActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-image test-image" :style="{ borderLeft: borderLeft }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image test-image" :style="{ borderLeft: data.borderLeft }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -108,10 +113,10 @@ border-left: <line-width> || <line-style> || <color>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{borderLeft}}</text>
-          <text class="uni-info">获取值: {{borderLeftActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.borderLeft}}</text>
+          <text class="uni-info">获取值: {{data.borderLeftActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ borderLeft: borderLeft }" flatten>
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ borderLeft: data.borderLeft }" flatten>
               <text>view</text>
             </view>
           </view>
@@ -119,19 +124,19 @@ border-left: <line-width> || <line-style> || <color>;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{borderLeft}}</text>
-          <text class="uni-info">获取值: {{borderLeftActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.borderLeft}}</text>
+          <text class="uni-info">获取值: {{data.borderLeftActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ borderLeft: borderLeft }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ borderLeft: data.borderLeft }" flatten>text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{borderLeft}}</text>
-          <text class="uni-info">获取值: {{borderLeftActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.borderLeft}}</text>
+          <text class="uni-info">获取值: {{data.borderLeftActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ borderLeft: borderLeft }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ borderLeft: data.borderLeft }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -139,7 +144,7 @@ border-left: <line-width> || <line-style> || <color>;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="borderLeftEnum" title="border-left 枚举值" @change="radioChangeBorderLeft" :compact="true"></enum-data>
-        <input-data :defaultValue="borderLeft" title="border-left 自定义值" type="text" @confirm="inputChangeBorderLeft"></input-data>
+        <input-data :defaultValue="data.borderLeft" title="border-left 自定义值" type="text" @confirm="inputChangeBorderLeft"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -166,13 +171,15 @@ border-left: <line-width> || <line-style> || <color>;
     { value: 4, name: '3px dotted green' }
   ]
 
-  const borderLeft = ref('5px solid pink')
-  const borderLeftActual = ref('')
-  const borderLeftActualText = ref('')
-  const borderLeftActualImage = ref('')
-  const borderLeftActualFlat = ref('')
-  const borderLeftActualTextFlat = ref('')
-  const borderLeftActualImageFlat = ref('')
+  const data = reactive({
+    borderLeft: '5px solid pink',
+    borderLeftActual: '',
+    borderLeftActualText: '',
+    borderLeftActualImage: '',
+    borderLeftActualFlat: '',
+    borderLeftActualTextFlat: '',
+    borderLeftActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -181,16 +188,17 @@ border-left: <line-width> || <line-style> || <color>;
   const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    borderLeftActual.value = viewRef.value?.style.getPropertyValue('border-left') ?? ''
-    borderLeftActualFlat.value = viewRefFlat.value?.style.getPropertyValue('border-left') ?? ''
-    borderLeftActualText.value = textRef.value?.style.getPropertyValue('border-left') ?? ''
-    borderLeftActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('border-left') ?? ''
-    borderLeftActualImage.value = imageRef.value?.style.getPropertyValue('border-left') ?? ''
-    borderLeftActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('border-left') ?? ''
+    data.borderLeftActual = viewRef.value?.style.getPropertyValue('border-left') ?? ''
+    data.borderLeftActualFlat = viewRefFlat.value?.style.getPropertyValue('border-left') ?? ''
+    data.borderLeftActualText = textRef.value?.style.getPropertyValue('border-left') ?? ''
+    data.borderLeftActualTextFlat = textRefFlat.value?.style.getPropertyValue('border-left') ?? ''
+    data.borderLeftActualImage = imageRef.value?.style.getPropertyValue('border-left') ?? ''
+    data.borderLeftActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border-left') ?? ''
   }
 
+  const ins = getCurrentInstance()
   const changeBorderLeft = (value: string) => {
-    borderLeft.value = value
+    data.borderLeft = value
     viewRef.value?.style.setProperty('border-left', value)
     viewRefFlat.value?.style.setProperty('border-left', value)
     textRef.value?.style.setProperty('border-left', value)
@@ -200,7 +208,7 @@ border-left: <line-width> || <line-style> || <color>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeBorderLeft = (index: number) => {
@@ -219,7 +227,8 @@ border-left: <line-width> || <line-style> || <color>;
   })
 
   defineExpose({
-    radioChangeBorderLeft
+    radioChangeBorderLeft,
+    data
   })
 </script>
 

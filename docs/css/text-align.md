@@ -5,11 +5,17 @@
 text-align 属性设置元素中文本内容的水平对齐方式。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,9 +34,9 @@ text-align: start | end | left | right | center | justify | match-parent;
 ### text-align 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| left | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 行内内容向左侧边对齐。 |
-| center | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 行内内容居中。 |
-| right | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 行内内容向右侧边对齐。 |
+| left | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 行内内容向左侧边对齐。 |
+| center | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 行内内容居中。 |
+| right | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 行内内容向右侧边对齐。 |
 
 
 ### 默认值 @default-value 
@@ -81,20 +87,20 @@ text-align: start | end | left | right | center | justify | match-parent;
 			<!-- 普通版本 -->
 			<view class="uni-common-mt">
 				<text class="uni-title-text">text-align</text>
-				<text class="uni-info">设置值: {{textAlign}}</text>
-				<text class="uni-info">获取值: {{textAlignActual}}</text>
+				<text class="uni-info">设置值: {{data.textAlign}}</text>
+				<text class="uni-info">获取值: {{data.textAlignActual}}</text>
 				<view class="test-box">
-					<text ref="textRef" class="common-text test-text" :style="{ textAlign: textAlign }">当前 text-align: {{textAlign}}</text>
+					<text ref="textRef" class="common-text test-text" :style="{ textAlign: data.textAlign }">当前 text-align: {{data.textAlign}}</text>
 				</view>
 			</view>
 
 			<!-- 拍平版本 -->
 			<view class="uni-common-mt">
 				<text class="uni-title-text">拍平</text>
-				<text class="uni-info">设置值: {{textAlign}}</text>
-				<text class="uni-info">获取值: {{textAlignActualFlat}}</text>
+				<text class="uni-info">设置值: {{data.textAlign}}</text>
+				<text class="uni-info">获取值: {{data.textAlignActualFlat}}</text>
 				<view class="test-box">
-					<text ref="textRefFlat" class="common-text test-text-flatten" :style="{ textAlign: textAlign }" flatten>当前 text-align: {{textAlign}}</text>
+					<text ref="textRefFlat" class="common-text test-text-flatten" :style="{ textAlign: data.textAlign }" flatten>当前 text-align: {{data.textAlign}}</text>
 				</view>
 			</view>
 		</view>
@@ -102,7 +108,7 @@ text-align: start | end | left | right | center | justify | match-parent;
 		<view class="uni-common-mt uni-common-mb">
 				<text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
 				<enum-data :items="textAlignEnum" title="text-align 枚举值" @change="radioChangeTextAlign" :compact="true"></enum-data>
-				<input-data :defaultValue="textAlign" title="text-align 自定义值" type="text" @confirm="inputChangeTextAlign"></input-data>
+				<input-data :defaultValue="data.textAlign" title="text-align 自定义值" type="text" @confirm="inputChangeTextAlign"></input-data>
 		</view>
 	</view>
 </template>
@@ -117,25 +123,29 @@ text-align: start | end | left | right | center | justify | match-parent;
 		{ value: 3, name: 'right' }
 	]
 
-	const textAlign = ref('left')
-	const textAlignActual = ref('')
-	const textAlignActualFlat = ref('')
+	const data = reactive({
+		textAlign: 'left',
+		textAlignActual: '',
+		textAlignActualFlat: ''
+	})
 	const textRef = ref(null as UniTextElement | null)
 	const textRefFlat = ref(null as UniTextElement | null)
 
 	const getPropertyValues = () => {
-		textAlignActual.value = textRef.value?.style.getPropertyValue('text-align') ?? ''
-		textAlignActualFlat.value = textRefFlat.value?.style.getPropertyValue('text-align') ?? ''
+		data.textAlignActual = textRef.value?.style.getPropertyValue('text-align') ?? ''
+		data.textAlignActualFlat = textRefFlat.value?.style.getPropertyValue('text-align') ?? ''
 	}
 
+	const ins = getCurrentInstance()
+
 	const changeTextAlign = (value: string) => {
-		textAlign.value = value
+		data.textAlign = value
 		textRef.value?.style.setProperty('text-align', value)
 		textRefFlat.value?.style.setProperty('text-align', value)
 		// 使用 nextTick 确保样式已应用后再获取值
 		nextTick(() => {
 			getPropertyValues()
-		})
+		}, ins)
 	}
 
 	const radioChangeTextAlign = (index: number) => {
@@ -154,7 +164,8 @@ text-align: start | end | left | right | center | justify | match-parent;
 	})
 
 	defineExpose({
-		radioChangeTextAlign
+		radioChangeTextAlign,
+		data
 	})
 </script>
 

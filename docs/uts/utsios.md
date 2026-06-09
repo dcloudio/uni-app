@@ -24,13 +24,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 ### getKeyWindow()
@@ -52,13 +50,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 ### colorWithString(value)
@@ -68,7 +64,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | string | 是 | - | - | 需要转换的代表色值的字符串，支持一下格式：精简写法的十六进制 如：#f00，十六进制 如：#ff0000，RGB 如：rgb(255, 0, 0)，RGBA 如:rgba(255, 0, 0, 0.5)，色值关键字，如： red | 
+| value | string | 是 |  |   | 需要转换的代表色值的字符串，支持一下格式：精简写法的十六进制 如：#f00，十六进制 如：#ff0000，RGB 如：rgb(255, 0, 0)，RGBA 如:rgba(255, 0, 0, 0.5)，色值关键字，如： red | 
 
 
 **返回值**
@@ -84,13 +80,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 ### getResourcePath(resourceName)
@@ -100,7 +94,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| resourceName | string | 是 | - | - | 资源文件相对于项目的绝对路径, 如：“/static/logo.png” | 
+| resourceName | string | 是 |  |   | 资源文件相对于项目的绝对路径, 如：“/static/logo.png” | 
 
 
 **返回值**
@@ -116,13 +110,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 ### getUserAgent()
@@ -144,13 +136,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 ### getDataPath()
@@ -172,13 +162,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 ### convert2AbsFullPath()
@@ -188,7 +176,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| inputPath | string | 是 | - | - | 待转换的文件相对路径 | 
+| inputPath | string | 是 |  |   | 待转换的文件相对路径 | 
 
 
 **返回值**
@@ -204,13 +192,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 ### destroyInstance()
@@ -220,7 +206,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| obj | AnyObject | 是 | - | - | 要销毁的对象。 | 
+| obj | AnyObject | 是 |  |   | 要销毁的对象。 | 
 
 
 **返回值**
@@ -236,13 +222,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.25 | - |
+| 4.25 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 
@@ -265,13 +249,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 <!-- UTSJSON.UTSiOS.isSimulator.tutorial -->
@@ -295,13 +277,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 <!-- UTSJSON.UTSiOS.getDeviceId.tutorial -->
@@ -325,13 +305,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 <!-- UTSJSON.UTSiOS.getModel.tutorial -->
@@ -355,13 +333,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 <!-- UTSJSON.UTSiOS.getAppId.tutorial -->
@@ -385,13 +361,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 <!-- UTSJSON.UTSiOS.isUniMp.tutorial -->
@@ -415,13 +389,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 <!-- UTSJSON.UTSiOS.getAppName.tutorial -->
@@ -445,13 +417,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 <!-- UTSJSON.UTSiOS.getAppVersion.tutorial -->
@@ -475,13 +445,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 <!-- UTSJSON.UTSiOS.getAppVersionCode.tutorial -->
@@ -505,13 +473,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 <!-- UTSJSON.UTSiOS.getOsLanguage.tutorial -->
@@ -535,13 +501,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 <!-- UTSJSON.UTSiOS.getAppWgtVersion.tutorial -->
@@ -565,13 +529,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 <!-- UTSJSON.UTSiOS.getInnerVersion.tutorial -->
@@ -595,13 +557,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.11 | - |
+| 4.11 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 <!-- UTSJSON.UTSiOS.getSystemSetting.tutorial -->
@@ -625,13 +585,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.18 | - |
+| 4.18 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 <!-- UTSJSON.UTSiOS.getOsTheme.tutorial -->
@@ -643,7 +601,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (theme: string) => void | 是 | - | - | 监听函数 | 
+| callback | (theme: string) => void | 是 |  |   | 监听函数 | 
 
 
 **返回值**
@@ -659,13 +617,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.18 | - |
+| 4.18 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 <!-- UTSJSON.UTSiOS.onOsThemeChange.tutorial -->
@@ -677,7 +633,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callbackId | number | 是 | - | - | 监听id | 
+| callbackId | number | 是 |  |   | 监听id | 
 
 
 **返回值**
@@ -693,13 +649,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.18 | - |
+| 4.18 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 <!-- UTSJSON.UTSiOS.offOsThemeChange.tutorial -->
@@ -723,13 +677,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.18 | - |
+| 4.18 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 <!-- UTSJSON.UTSiOS.getAppTheme.tutorial -->
@@ -741,7 +693,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| theme | string | 是 | - | - | 要设置的主题信息 | 
+| theme | string | 是 |  |   | 要设置的主题信息 | 
 
 
 **返回值**
@@ -757,13 +709,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.18 | - |
+| 4.18 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 <!-- UTSJSON.UTSiOS.setAppTheme.tutorial -->
@@ -775,7 +725,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (theme: string) => void | 是 | - | - | 监听函数 | 
+| callback | (theme: string) => void | 是 |  |   | 监听函数 | 
 
 
 **返回值**
@@ -791,13 +741,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.18 | - |
+| 4.18 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 <!-- UTSJSON.UTSiOS.onAppThemeChange.tutorial -->
@@ -809,7 +757,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callbackId | number | 是 | - | - | 监听id | 
+| callbackId | number | 是 |  |   | 监听id | 
 
 
 **返回值**
@@ -825,13 +773,11 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 **uni-app x 兼容性**
 | iOS | iOS UTS 插件 |
 | :- | :- |
-| 4.18 | - |
+| 4.18 |  |
 
 
 **uni-app 兼容性**
-| iOS UTS 插件 |
-| :- |
-| - |
+
 
 
 <!-- UTSJSON.UTSiOS.offAppThemeChange.tutorial -->
