@@ -35,6 +35,8 @@ export default {
   'easycom.conflict': 'easycom component conflict: ',
   'dom2.compatible.component':
     'Vapor mode does not support the uni-app compatibility component {name}. The implementation file {file} was detected. Please use the standard UTS component implementation for this purpose.',
+  'dom2.root.scroll.view':
+    'Pages are scrollable in Vapor mode. Remove the root scroll-view to avoid nested scrolling. Details: https://doc.dcloud.net.cn/uni-app-x/page.html#disablescroll',
   'mp.component.args[0]': 'The first parameter of {0} must be a static string',
   'mp.component.args[1]': '{0} requires two parameters',
   'mp.360.unsupported': '360 is unsupported',

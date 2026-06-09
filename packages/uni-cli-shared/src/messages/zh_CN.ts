@@ -36,6 +36,8 @@ export default {
   'easycom.conflict': 'easycom组件冲突：',
   'dom2.compatible.component':
     '蒸汽模式不支持 uni-app 兼容模式组件 {name}，检测到其实现文件为 {file}。请改用标准模式的UTS组件实现来实现。',
+  'dom2.root.scroll.view':
+    '蒸汽模式下页面可滚动，建议移除根节点 scroll-view，以避免嵌套滚动。详情: https://doc.dcloud.net.cn/uni-app-x/page.html#disablescroll',
   'mp.component.args[0]': '{0}的第一个参数必须为静态字符串',
   'mp.component.args[1]': '{0}需要两个参数',
   'mp.360.unsupported': 'vue3暂不支持360小程序',
