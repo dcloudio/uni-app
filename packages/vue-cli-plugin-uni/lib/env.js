@@ -478,9 +478,11 @@ process.env.UNI_STATISTICS_CONFIG = '""'
 process.env.UNI_STAT_UNI_CLOUD = '""'
 process.env.UNI_STAT_DEBUG = '""'
 
+const MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT = true
+
 /** 公有版小程序 GET 上报域名 */
 const STAT_MP_REQUEST_DOMAIN = 'tongji-collector.dcloud.net.cn'
-const STAT_MP_DOMAIN_DOC_URL = 'https://uniapp.dcloud.net.cn/uni-stat-v2.html'
+const STAT_MP_DOMAIN_DOC_URL = 'https://uniapp.dcloud.net.cn/uni-stat-public.html'
 const STAT_WARN_NO_APPID =
   '当前应用未配置 appid，无法使用 uni 统计，详情参考：https://ask.dcloud.net.cn/article/36303'
 const STAT_PRIVATE_ANDROID_WARN =
@@ -535,9 +537,18 @@ function formatMpStatDomainTip () {
   return `${STAT_ENABLED_TIP_BASE}，为保障数据正常上报，请在小程序后台配置 request 合法域名：${STAT_MP_REQUEST_DOMAIN}。详情：${STAT_MP_DOMAIN_DOC_URL}`
 }
 
-/** 小程序公有版是否需输出域名配置提示 */
+/**
+ * 是否需要在构建期提示配置小程序 request 合法域名。
+ * 微信默认 preload 信标不走 uni.request，无需配置；开关关闭时与其它小程序一致。
+ */
 function shouldShowMpDomainTip (platform, statType) {
-  return statType === 'public' && platform.startsWith('mp-')
+  if (statType !== 'public' || !platform.startsWith('mp-')) {
+    return false
+  }
+  if (platform === 'mp-weixin' && MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT) {
+    return false
+  }
+  return true
 }
 
 /** 输出构建期「统计已开启」提示 */
