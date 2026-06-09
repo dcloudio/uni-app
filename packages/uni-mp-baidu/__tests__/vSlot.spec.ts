@@ -57,9 +57,9 @@ describe('compiler: transform v-slot', () => {
   test('v-if + scoped slots', () => {
     assert(
       `<custom><template v-if="ok" v-slot:default="slotProps"><view>{{ slotProps.item }}</view></template></custom>`,
-      `<custom u-s="{{['d']}}" u-i="2a9ec0b0-0"><view s-if="{{a}}"><block s-for="slotProps in b trackBy slotProps.a"><view>{{slotProps.b}}</view></block></view></custom>`,
+      `<custom u-s="{{c}}" u-i="2a9ec0b0-0"><view s-if="{{a}}"><block s-for="slotProps in b trackBy slotProps.a"><view>{{slotProps.b}}</view></block></view></custom>`,
       `(_ctx, _cache) => {
-  return _e({ a: _ctx.ok }, _ctx.ok ? { b: _w((slotProps, s0, i0) => { return { a: i0, b: _t(slotProps.item) }; }, { name: 'd', path: 'b', vueId: '2a9ec0b0-0' }) } : {})
+  return _e({ a: _ctx.ok }, _ctx.ok ? { b: _w((slotProps, s0, i0) => { return { a: i0, b: _t(slotProps.item) }; }, { name: 'd', path: 'b', vueId: '2a9ec0b0-0' }) } : {}, { c: [_ctx.ok ? 'd' : ''] })
 }`
     )
   })
