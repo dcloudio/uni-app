@@ -80,8 +80,8 @@ export function uniAppPagesPlugin(): Plugin {
         // pages.json
         const pagesJson = normalizeUniAppXAppPagesJson(code)
 
-        // Android/iOS vapor 暂不支持 tabBar，HarmonyOS 已支持
-        if (isDom2 && process.env.UNI_PLATFORM !== 'app-harmony') {
+        // Android vapor 暂不支持 tabBar，iOS/HarmonyOS 已支持
+        if (isDom2 && process.env.UNI_PLATFORM === 'app-android') {
           if (pagesJson.tabBar) {
             hasTabBar = true
             delete pagesJson.tabBar
@@ -127,7 +127,7 @@ export function uniAppPagesPlugin(): Plugin {
     buildEnd() {
       if (isFirst && hasTabBar) {
         console.warn(
-          `当前 vapor 模式下非 HarmonyOS 平台暂不支持 pages.json 的 tabBar 配置，已忽略。`
+          `当前 vapor 模式下 Android 平台暂不支持 pages.json 的 tabBar 配置，已忽略。`
         )
       }
       isFirst = false
