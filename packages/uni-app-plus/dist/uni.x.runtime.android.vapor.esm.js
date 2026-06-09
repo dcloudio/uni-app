@@ -2212,6 +2212,9 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
   if (typeof pageStyle.get("disableSwipeBack") !== "boolean") {
     pageStyle.set("disableSwipeBack", true);
   }
+  if (typeof pageStyle.get("androidThreeButtonNavigationTranslucent") !== "boolean") {
+    pageStyle.set("androidThreeButtonNavigationTranslucent", true);
+  }
   var parentPage = dialogPage.getParentPage();
   var pageManager = getPageManager();
   var createDialogPage = pageManager.createDialogPage.bind(pageManager);
