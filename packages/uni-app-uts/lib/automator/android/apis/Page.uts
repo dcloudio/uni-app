@@ -45,7 +45,7 @@ export const callMethod = (params: CallMethodParams, callback: Callback): void =
   } else if (findVueMethod(page.vm!.$.type.type, params.method, page.vm!) == null) {
     callback(null, { errMsg: `Page.${params.method} not exists` })
   } else {
-    const result = params.args.length > 0 ? page.vm!.$callMethod(params.method, params.args[0]) : page.vm!.$callMethod(params.method)
+    const result = params.args.length > 0 ? page.vm!.$callMethod(params.method, ...params.args) : page.vm!.$callMethod(params.method)
     // @ts-expect-error
     if (result instanceof Promise<unknown>) {
       (result as Promise<any>).then((res: any) => {
