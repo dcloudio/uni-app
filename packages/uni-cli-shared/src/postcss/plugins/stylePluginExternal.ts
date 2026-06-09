@@ -4,18 +4,17 @@ import { isUniPageFile } from '../../json/pages'
 import { findPageExternalClasses } from '../../mp/externalClasses'
 
 /**
- * PostCSS plugin to boost specificity for page CSS based on externalClasses usage
+ * 基于页面 externalClasses 使用情况提升页面样式优先级
  *
- * For mini-program platforms (mp-*):
- *   - If page has no externalClasses usage: no transformation
- *   - If page has dynamic externalClasses: all selectors get page prefix
- *     .a -> page .a
- *   - If page has only static externalClasses: only matching selectors get page prefix
- *     .foo -> page .foo (if "foo" is in staticClasses)
- *     .bar -> .bar (unchanged, if "bar" is not in staticClasses)
+ * 小程序平台（mp-*）：
+ *   - 页面没有使用 externalClasses：不做转换
+ *   - 页面存在动态 externalClasses：选择器最后一个 class 追加 [class]
+ *     .a -> .a[class]
+ *   - 页面只有静态 externalClasses：仅命中静态 class 的选择器追加 [class]
+ *     .foo -> .foo[class]（foo 在 staticClasses 中）
+ *     .bar -> .bar（bar 不在 staticClasses 中）
  *
- * This ensures page styles have higher specificity than component styles
- * while minimizing unnecessary transformations for performance
+ * 追加 [class] 可以提升 class 选择器优先级，同时避免原先插入 page 带来的结构影响。
  */
 const externalPlugin: PluginCreator<void> = () => {
   return {
@@ -25,23 +24,23 @@ const externalPlugin: PluginCreator<void> = () => {
 
       return {
         OnceExit(root: Root) {
-          // Only mini-program platforms need page selector prepend
+          // 只有小程序平台需要处理 externalClasses 的样式优先级
           const platform = process.env.UNI_PLATFORM || ''
           if (!platform.startsWith('mp-')) {
             return
           }
 
-          // Get file path from postcss source
+          // 从 postcss source 中获取当前样式所属文件
           const filePath = root.source?.input?.file
           if (!filePath) {
             return
           }
-          // Only process page files
+          // 只处理页面文件，组件文件保持原样
           if (!isUniPageFile(filePath)) {
             return
           }
 
-          // Get page's externalClasses info
+          // 获取页面中收集到的 externalClasses 使用信息
           const externalClassesInfo = findPageExternalClasses(filePath)
 
           let staticClasses = new Set<string>()
@@ -59,7 +58,7 @@ const externalPlugin: PluginCreator<void> = () => {
             }
           }
 
-          // If no static classes and no dynamic, skip processing
+          // 没有静态 class，也没有动态绑定时，直接跳过，避免无意义遍历
           if (staticClasses.size === 0 && !hasDynamic) {
             return
           }
@@ -79,11 +78,11 @@ function processRule(
   staticClasses: Set<string>,
   hasDynamic: boolean
 ) {
-  // Skip already processed rules
+  // 同一个 Rule 只处理一次，避免被重复追加 [class]
   if (processedRules.has(rule)) {
     return
   }
-  // Skip keyframes rules
+  // keyframes 内部的 from/to 不是普通选择器，不能处理
   if (
     rule.parent &&
     rule.parent.type === 'atrule' &&
@@ -93,54 +92,66 @@ function processRule(
   }
   processedRules.add(rule)
 
-  // Process selector based on externalClasses info
+  // 根据 externalClasses 情况处理选择器
   rule.selector = selectorParser((selectorRoot) => {
     selectorRoot.each((selector) => {
+      let classNode: selectorParser.ClassName | undefined
       if (hasDynamic) {
-        // Dynamic externalClasses: prepend page to all selectors
-        prependPageSelector(selector)
+        // 动态绑定无法提前知道具体 class，所有包含 class 的选择器都提升优先级
+        classNode = findLastClassNode(selector)
       } else {
-        // Static only: only prepend page if selector contains any staticClasses
-        if (selectorContainsClasses(selector, staticClasses)) {
-          prependPageSelector(selector)
-        }
+        // 静态绑定只处理命中 staticClasses 的选择器，减少无关 CSS 变更
+        classNode = findLastClassNode(selector, staticClasses)
+      }
+      if (classNode) {
+        appendClassAttribute(selector, classNode)
       }
     })
   }).processSync(rule.selector)
 }
 
 /**
- * Check if selector contains any of the specified classes
+ * 找到选择器最右侧的 class 节点。
+ * 传入 classes 时，仅在选择器包含目标 class 后才返回最右侧 class，
+ * 这样 .a .b 在命中 .a 时也能输出 .a .b[class]，符合整体提权预期。
  */
-function selectorContainsClasses(
+function findLastClassNode(
   selector: selectorParser.Selector,
-  classes: Set<string>
-): boolean {
-  let found = false
-  selector.walk((node) => {
-    if (node.type === 'class' && classes.has(node.value)) {
-      found = true
-      return false // stop walking
+  classes?: Set<string>
+): selectorParser.ClassName | undefined {
+  let lastClassNode: selectorParser.ClassName | undefined
+  for (let i = selector.nodes.length - 1; i >= 0; i--) {
+    const node = selector.nodes[i]
+    if (node.type !== 'class') {
+      continue
     }
-  })
-  return found
+    if (!lastClassNode) {
+      lastClassNode = node
+    }
+    if (!classes || classes.has(node.value)) {
+      return lastClassNode
+    }
+  }
 }
 
 /**
- * Prepend 'page' selector for mini-program platforms
- * .a -> page .a
- * .b .c -> page .b .c
+ * 在 class 后追加 [class] 提升优先级。
+ * .a -> .a[class]
+ * .a[class] -> .a[class][class]
+ * .a .b -> .a .b[class]
  */
-function prependPageSelector(selector: selectorParser.Selector) {
-  // Skip if selector already starts with 'page'
-  const firstNode = selector.first
-  if (firstNode && firstNode.type === 'tag' && firstNode.value === 'page') {
-    return
-  }
-
-  // Insert 'page' tag and a combinator (space) at the beginning
-  selector.prepend(selectorParser.combinator({ value: ' ' }))
-  selector.prepend(selectorParser.tag({ value: 'page' }))
+function appendClassAttribute(
+  selector: selectorParser.Selector,
+  classNode: selectorParser.ClassName
+) {
+  selector.insertAfter(
+    classNode,
+    selectorParser.attribute({
+      attribute: 'class',
+      value: undefined,
+      raws: {},
+    })
+  )
 }
 
 externalPlugin.postcss = true
