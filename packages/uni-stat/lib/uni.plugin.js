@@ -138,6 +138,8 @@ const uniStatLog = once((text) => {
     console.warn(text);
     console.log();
 });
+/** 与 `public/config.ts#MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT` 保持一致。 */
+const MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT = true;
 /** 公有版小程序 GET 上报域名（与 `public/config.ts#IMAGE_REPORT_DEFAULTS.host` 一致）。 */
 const STAT_MP_REQUEST_DOMAIN = 'tongji-collector.dcloud.net.cn';
 const STAT_MP_DOMAIN_DOC_URL = 'https://uniapp.dcloud.net.cn/uni-stat-v2.html';
@@ -159,10 +161,16 @@ function formatMpStatDomainTip() {
 }
 /**
  * 是否需要在构建期提示配置小程序 request 合法域名。
- * 公有版小程序在 preload 不可用或关闭时走 `uni.request` GET，需配置合法域名。
+ * 微信默认 preload 信标不走 uni.request，无需配置；开关关闭时与其它小程序一致。
  */
 function shouldShowMpDomainTip(platform, statType) {
-    return statType === 'public' && platform.startsWith('mp-');
+    if (statType !== 'public' || !platform.startsWith('mp-')) {
+        return false;
+    }
+    if (platform === 'mp-weixin' && MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT) {
+        return false;
+    }
+    return true;
 }
 /**
  * 输出构建期「统计已开启」提示：小程序公有版（需配置域名）走合并文案，其余走简短文案。
