@@ -97,7 +97,7 @@ declare namespace NodeJS {
     UNI_OUTPUT_DIR: string // 输出目录
     UNI_MINIMIZE?: 'true' // 是否压缩
     UNI_MP_PLUGIN?: string // 发行小程序插件的插件名
-    UNI_PLATFORM: UniApp.PLATFORM // 目标平台
+    UNI_PLATFORM: Exclude<UniApp.PLATFORM, 'app-android' | 'app-ios'> // 目标平台
     UNI_SUBPACKGE?: string // 发行子包名
     // uniCloud相关
     UNI_CLOUD_SPACES?: string // uniCloud服务空间

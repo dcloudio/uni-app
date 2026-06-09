@@ -81,7 +81,7 @@ export function uniAppPagesPlugin(): Plugin {
         const pagesJson = normalizeUniAppXAppPagesJson(code)
 
         // Android vapor 暂不支持 tabBar，iOS/HarmonyOS 已支持
-        if (isDom2 && process.env.UNI_PLATFORM === 'app-android') {
+        if (isDom2 && process.env.UNI_UTS_PLATFORM === 'app-android') {
           if (pagesJson.tabBar) {
             hasTabBar = true
             delete pagesJson.tabBar
