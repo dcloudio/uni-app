@@ -142,7 +142,7 @@ const uniStatLog = once((text) => {
 const MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT = true;
 /** 公有版小程序 GET 上报域名（与 `public/config.ts#IMAGE_REPORT_DEFAULTS.host` 一致）。 */
 const STAT_MP_REQUEST_DOMAIN = 'tongji-collector.dcloud.net.cn';
-const STAT_MP_DOMAIN_DOC_URL = 'https://uniapp.dcloud.net.cn/uni-stat-v2.html';
+const STAT_MP_DOMAIN_DOC_URL = 'https://uniapp.dcloud.net.cn/uni-stat-public.html';
 /**
  * 构建期「统计已开启」提示文案（不依赖 i18n 占位符，避免 HBuilderX 内置文案仍为 `{version}` 时原样输出）。
  * - public：已开启 uni 统计 2.0
