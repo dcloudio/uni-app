@@ -2,16 +2,16 @@
 
 ## 渲染函数
 
-|  | Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| h() | 4.0 | x | 3.99 | 4.11 | 4.61 |
-| mergeProps() | 4.0 | - | 4.0 | 4.11 | 4.61 |
-| cloneVNode() | 4.0 | - | 4.0 | x | x |
-| isVNode() | 4.0 | - | √ | 4.11 | 4.61 |
-| resolveComponent() | 4.0 | x | √ | 4.11 | 4.61 |
-| resolveDirective() | - | - | - | - | - |
-| withDirectives() | 4.0 | 4.41 | x | 4.11 | 4.61 |
-| withModifiers() | 4.0 | - | √ | 4.11 | 4.61 |
+|  | Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| h() | 4.0 | x | 3.99 |   | 10.0 | 4.11 |   | 4.61 |   |
+| mergeProps() | 4.0 | - | 4.0 |   | 10.0 | 4.11 |   | 4.61 | x |
+| cloneVNode() | 4.0 | - | 4.0 |   | 10.0 | x |   | x | x |
+| isVNode() | 4.0 | - | √ | x | 10.0 | 4.11 | x | 4.61 | x |
+| resolveComponent() | 4.0 | x | √ |   | 10.0 | 4.11 |   | 4.61 |   |
+| resolveDirective() |   |   |   |   |   |   |   |   |   |
+| withDirectives() | 4.0 | 4.41 | x |   | 10.0 | 4.11 |   | 4.61 |   |
+| withModifiers() | 4.0 | - | √ |   | 10.0 | 4.11 |   | 4.61 | 5.0 |
 
 ### 示例代码 @example
 

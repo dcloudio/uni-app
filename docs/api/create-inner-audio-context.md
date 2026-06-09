@@ -14,7 +14,7 @@
 
 
 :::warning 注意
-使用完后，必须调用destory方法将资源进行释放
+使用完后，必须调用 destroy 方法将资源进行释放
 :::
 
 **支持格式**
@@ -61,19 +61,19 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| duration | number | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 当前音频的长度（单位：s），只有在当前有合法的 src 时返回 |
-| currentTime | number | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 当前音频的播放位置（单位：s），只有在当前有合法的 src 时返回 |
-| paused | boolean | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 当前是是否暂停或停止状态，true 表示暂停或停止，false 表示正在播放 |
-| src | string | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 音频的数据链接，用于直接播放 |
-| startTime | number | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 音频开始播放的位置（单位：s） |
-| buffered | number | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: x | 音频缓冲的时间点，仅保证当前播放时间点到此时间点内容已缓冲 |
+| duration | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 当前音频的长度（单位：s），只有在当前有合法的 src 时返回 |
+| currentTime | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 当前音频的播放位置（单位：s），只有在当前有合法的 src 时返回 |
+| paused | boolean | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 当前是是否暂停或停止状态，true 表示暂停或停止，false 表示正在播放 |
+| src | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 音频的数据链接，用于直接播放 |
+| startTime | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 音频开始播放的位置（单位：s） |
+| buffered | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: x | 音频缓冲的时间点，仅保证当前播放时间点到此时间点内容已缓冲 |
 | autoplay | boolean | 是 | false | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 是否自动开始播放，默认 false |
 | loop | boolean | 是 | false | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 是否循环播放，默认 false |
-| obeyMuteSwitch | boolean | 是 | - | Web: x; 微信小程序: 4.41; Android: x; iOS: 5.0; iOS uni-app x UTS 插件: 5.0; HarmonyOS: x | 是否遵循系统静音开关，当此参数为 false 时，即使用户打开了静音开关，也能继续发出声音，默认值 true |
-| volume | number | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 音量。范围 0~1。 |
+| obeyMuteSwitch | boolean | 是 |  | Web: x; 微信小程序: 4.41; Android: x; iOS: 5.0; iOS uni-app x UTS 插件: 5.0; HarmonyOS: x | 是否遵循系统静音开关，当此参数为 false 时，即使用户打开了静音开关，也能继续发出声音，默认值 true |
+| volume | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 音量。范围 0~1。 |
 | playbackRate | number | 否 | 1.0 | Web: x; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: x | 播放的倍率。可取值： 0.5/0.8/1.0/1.25/1.5/2.0，默认值为1.0。（仅 App 支持） |
-| cache | boolean | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS uni-app x UTS 插件: 4.71; HarmonyOS: x | 是否缓存线上音频资源，默认值为true，当设置false时，不会缓存资源到本地，直播地址需要主动设置为false |
-| referrerPolicy | string | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 需要基础库： `2.13.0`<br/><br/>`origin`: 发送完整的referrer; `no-referrer`: 不发送。格式固定为 `https://servicewechat.com/{appid}/{version}/page-frame.html`，其中 {appid} 为小程序的 appid，{version} 为小程序的版本号，版本号为 0 表示为开发版、体验版以及审核版本，版本号为 devtools 表示为开发者工具，其余为正式版本；<br/> |
+| cache | boolean | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS uni-app x UTS 插件: 4.71; HarmonyOS: x | 是否缓存线上音频资源，默认值为true，当设置false时，不会缓存资源到本地，直播地址需要主动设置为false |
+| referrerPolicy | string | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.13.0`<br/><br/>`origin`: 发送完整的referrer; `no-referrer`: 不发送。格式固定为 `https://servicewechat.com/{appid}/{version}/page-frame.html`，其中 {appid} 为小程序的 appid，{version} 为小程序的版本号，版本号为 0 表示为开发版、体验版以及审核版本，版本号为 devtools 表示为开发者工具，其余为正式版本；<br/> |
 #### InnerAudioContext 的方法 @inneraudiocontext-values 
 
 #### pause(): void; @pause
@@ -83,6 +83,7 @@ pause
 | Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
+
 
 
 
@@ -96,6 +97,7 @@ stop
 
 
 
+
 #### play(): void; @play
 play
 播放
@@ -103,6 +105,7 @@ play
 | Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
+
 
 
 
@@ -118,16 +121,18 @@ seek
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| position | number | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| position | number | 是 |  |   |  | 
+
 
 
 #### destroy(): void; @destroy
 destroy
 销毁当前实例
 ##### destroy 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | - | 4.33 | 4.41 | 4.41 | 4.61 |
+| Web | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.33 | 4.41 | 4.41 | 4.61 |
+
 
 
 
@@ -143,22 +148,24 @@ onCanplay
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
 
 #### onPlay(callback: (result: any) => void): void; @onplay
 onPlay
 音频播放事件
 ##### onPlay 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | - | 4.33 | 4.41 | 4.41 | 4.61 |
+| Web | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.33 | 4.41 | 4.41 | 4.61 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
 
 #### onPause(callback: (result: any) => void): void; @onpause
@@ -173,7 +180,8 @@ onPause
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
 
 #### onStop(callback: (result: any) => void): void; @onstop
@@ -188,7 +196,8 @@ onStop
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
 
 #### onEnded(callback: (result: any) => void): void; @onended
@@ -203,7 +212,8 @@ onEnded
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
 
 #### onTimeUpdate(callback: (result: any) => void): void; @ontimeupdate
@@ -218,7 +228,8 @@ onTimeUpdate
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
 
 #### onError(callback: (result: ICreateInnerAudioContextFail) => void): void; @onerror
@@ -233,28 +244,29 @@ onError
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [ICreateInnerAudioContextFail](#icreateinneraudiocontextfail-values)) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: [ICreateInnerAudioContextFail](#icreateinneraudiocontextfail-values)) => void | 是 |  |   |  | 
 
 ##### ICreateInnerAudioContextFail 的属性值 @icreateinneraudiocontextfail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误码 |
-| errSubject | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 统一错误主题（模块）名称 |
-| data | any | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| errCode | number | 是 |  |   | 错误码 |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1107601 | Web: x; 微信小程序: -; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 系统错误 |
-| 1107602 | Web: x; 微信小程序: -; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 网络错误 |
-| 1107603 | Web: x; 微信小程序: -; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 文件错误 |
-| 1107604 | Web: x; 微信小程序: -; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 格式错误 |
-| 1107605 | Web: x; 微信小程序: -; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 未知错误 |
-| 1107609 | Web: x; 微信小程序: -; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 播放路径不能为空 |
+| 1107601 | Web: x; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 系统错误 |
+| 1107602 | Web: x; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 网络错误 |
+| 1107603 | Web: x; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 文件错误 |
+| 1107604 | Web: x; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 格式错误 |
+| 1107605 | Web: x; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 未知错误 |
+| 1107609 | Web: x; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 播放路径不能为空 |
+
 
 
 #### onWaiting(callback: (result: any) => void): void; @onwaiting
@@ -269,7 +281,8 @@ onWaiting
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
 
 #### onSeeking(callback: (result: any) => void): void; @onseeking
@@ -284,7 +297,8 @@ onSeeking
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
 
 #### onSeeked(callback: (result: any) => void): void; @onseeked
@@ -299,7 +313,8 @@ onSeeked
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
 
 #### offCanplay(callback: (result: any) => void): void; @offcanplay
@@ -314,7 +329,8 @@ offCanplay
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
 
 #### offPlay(callback: (result: any) => void): void; @offplay
@@ -329,7 +345,8 @@ offPlay
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
 
 #### offPause(callback: (result: any) => void): void; @offpause
@@ -344,7 +361,8 @@ offPause
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
 
 #### offStop(callback: (result: any) => void): void; @offstop
@@ -359,7 +377,8 @@ offStop
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
 
 #### offEnded(callback: (result: any) => void): void; @offended
@@ -374,7 +393,8 @@ offEnded
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
 
 #### offTimeUpdate(callback: (result: any) => void): void; @offtimeupdate
@@ -389,7 +409,8 @@ offTimeUpdate
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
 
 #### offError(callback: (result: ICreateInnerAudioContextFail) => void): void; @offerror
@@ -404,22 +425,24 @@ offError
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [ICreateInnerAudioContextFail](#icreateinneraudiocontextfail-values)) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: [ICreateInnerAudioContextFail](#icreateinneraudiocontextfail-values)) => void | 是 |  |   |  | 
+
 
 
 #### offWaiting(callback: (result: any) => void): void; @offwaiting
 offWaiting
 取消监听 onWaiting 事件
 ##### offWaiting 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | - | 4.33 | 4.41 | 4.41 | 4.61 |
+| Web | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.33 | 4.41 | 4.41 | 4.61 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
 
 #### offSeeking(callback: (result: any) => void): void; @offseeking
@@ -434,7 +457,8 @@ offSeeking
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
 
 #### offSeeked(callback: (result: any) => void): void; @offseeked
@@ -449,7 +473,8 @@ offSeeked
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| callback | (result: any) => void | 是 |  |   |  | 
+
 
  
 
@@ -511,7 +536,7 @@ offSeeked
 
       <text class="uni-subtitle-text uni-title"
         style="padding-left: 10px;padding-top: 10px;padding-right: 10px;">播放倍率(Web/HarmonyOS 不支持)</text>
-      <radio-group class="uni-flex uni-row radio-group" @change="playbackRateChange"
+      <radio-group class="uni-row radio-group" @change="playbackRateChange"
         style="flex-wrap: wrap;padding: 10px;">
         <radio value="0.5" style="margin-right: 3px">0.5
         </radio>
@@ -551,6 +576,8 @@ offSeeked
         <button @click="pause">多音频同时播放</button>
       </navigator>
     </view>
+
+    <bottom-safe-area />
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -893,18 +920,18 @@ offSeeked
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| option | **SetInnerAudioOptionOptions** | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: x |  |
+| option | **SetInnerAudioOptionOptions** | 是 |  | HarmonyOS: x |  |
 
 #### option 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| mixWithOther | boolean | 否 | true | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: x | 是否与其他音频混播，设置为 true 之后，不会终止其他应用或应用内的音频； 设置为false之后，会暂停背景音频和三方app音频 |
-| speakerOn | boolean | 否 | true | Web: 4.0; 微信小程序: 4.41; Android: 5.0; iOS: 5.0; iOS uni-app x UTS 插件: 5.0; HarmonyOS: x | true 代表用扬声器播放，false 代表听筒播放 |
-| obeyMuteSwitch | boolean | 否 | true | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: 5.0; iOS uni-app x UTS 插件: 5.0; HarmonyOS: x | （仅在 iOS 生效）是否遵循静音开关，设置为 false 之后，即使是在静音模式下，也能播放声音 |
-| success | (result: SetInnerAudioOptionSuccess) => void | 否 | - | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (result: [ICreateInnerAudioContextFail](#icreateinneraudiocontextfail-values)) => void | 否 | - | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | - | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| mixWithOther | boolean | 否 | true | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS 系统版本: 5.0.0(12); HarmonyOS: x | 是否与其他音频混播，设置为 true 之后，不会终止其他应用或应用内的音频； 设置为false之后，会暂停背景音频和三方app音频 |
+| speakerOn | boolean | 否 | true | Web: 4.0; 微信小程序: 4.41; Android: 5.0; iOS: 5.0; iOS uni-app x UTS 插件: 5.0; HarmonyOS 系统版本: 5.0.0(12); HarmonyOS: x | true 代表用扬声器播放，false 代表听筒播放 |
+| obeyMuteSwitch | boolean | 否 | true | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: 5.0; iOS uni-app x UTS 插件: 5.0; HarmonyOS 系统版本: 5.0.0(12); HarmonyOS: x | （仅在 iOS 生效）是否遵循静音开关，设置为 false 之后，即使是在静音模式下，也能播放声音 |
+| success | (result: SetInnerAudioOptionSuccess) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (result: [ICreateInnerAudioContextFail](#icreateinneraudiocontextfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -939,20 +966,20 @@ offSeeked
   <!-- #endif -->
     <page-head title="setInnerAudioOption"></page-head>
     <text class="labelText">是否允许与其他音频同时播放</text>
-    <radio-group class="uni-flex radioGroup" @change="(event:UniRadioGroupChangeEvent)=>handleRadioChange(event, 'mixWithOther')">
+    <radio-group class="uni-row radioGroup" @change="(event:UniRadioGroupChangeEvent)=>handleRadioChange(event, 'mixWithOther')">
       <radio value="1" :checked="true">是</radio>
       <radio value="0" class="radioItem">否</radio>
     </radio-group>
 
     <text class="labelText">是否允许扬声器播放</text>
-    <radio-group class="uni-flex radioGroup" @change="(event:UniRadioGroupChangeEvent)=>handleRadioChange(event, 'speakerOn')">
+    <radio-group class="uni-row radioGroup" @change="(event:UniRadioGroupChangeEvent)=>handleRadioChange(event, 'speakerOn')">
       <radio value="1" :checked="true">是</radio>
       <radio value="0" class="radioItem">否</radio>
     </radio-group>
 
 <!-- #ifdef APP-IOS -->
     <text class="labelText">（仅在 iOS 生效）是否遵循静音开关，设置为 false 之后，即使是在静音模式下，也能播放声音</text>
-    <radio-group class="uni-flex radioGroup" @change="(event:UniRadioGroupChangeEvent)=>handleRadioChange(event, 'obeyMuteSwitch')">
+    <radio-group class="uni-row radioGroup" @change="(event:UniRadioGroupChangeEvent)=>handleRadioChange(event, 'obeyMuteSwitch')">
       <radio value="1" :checked="true">是</radio>
       <radio value="0" class="radioItem">否</radio>
     </radio-group>
@@ -1112,5 +1139,5 @@ offSeeked
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 

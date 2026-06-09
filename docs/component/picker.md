@@ -14,62 +14,62 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.08 | 10.0 | 5.08 | 5.11 | 4.61 | 5.0 |
 
 
 picker组件其实是基于[picker-view组件](picker-view.md)封装了一个弹出形态。
 
-Android/iOS平台可改用[picker-view组件](picker-view.md)、或[uni.showActionSheet](../api/action-sheet.md)。
+5.08版本以前的Android/iOS平台可改用[picker-view组件](picker-view.md)、或[uni.showActionSheet](../api/action-sheet.md)。
 
 或者使用开源组件[uni-data-picker](https://ext.dcloud.net.cn/plugin?id=3796)。这是也是基于[picker-view组件](picker-view.md)封装的云端一体组件，如果需要选择城市，那么推荐使用该组件。
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| disabled | boolean | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否禁用 |
-| mode | string | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 选择器类型 |
-| range | array | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | mode为 selector 或 multiSelector 时，range 有效 |
-| range-key | string | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 当 range 是一个 Object Array 时，通过 range-key 来指定 Object 中 key 的值作为选择器显示内容 |
-| value | string | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表示选择了 range 中的第几个（下标从 0 开始） |
-| start | string | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表示有效时间范围的开始 |
-| end | string | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表示有效时间范围的结束 |
-| fields | string | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 有效值 year,month,day，表示选择器的粒度 |
-| custom-item | string | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 可为每一列的顶部添加一个自定义的项 |
-| header-text | string | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 选择器的标题，仅微信小程序安卓端可用 |
-| level | string | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | mode="region" 时有效，选择器层级 |
-| name | string | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): 5.0 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
-| @change | (event: [UniPickerChangeEvent](#unipickerchangeevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | value 改变时触发 change 事件，event.detail = {value: value} |
-| @columnchange | (event: [UniPickerColumnChangeEvent](#unipickercolumnchangeevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 某一列的值改变时触发 columnchange 事件，event.detail = {column: column, value: value}，column 的值表示改变了第几列（下标从0开始），value 的值表示变更值的下标 |
-| @cancel | (event: [UniPickerCancelEvent](#unipickercancelevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 取消选择时触发 |
+| disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS 系统版本: 10.0; iOS: 5.08; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否禁用 |
+| mode | String as PropType\<Mode> | "selector" | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS 系统版本: 10.0; iOS: 5.08; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 选择器类型 |
+| range | string[\] | [\] | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS 系统版本: 10.0; iOS: 5.08; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | mode为 selector 或 multiSelector 时，range 有效 |
+| range-key | string |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS 系统版本: 10.0; iOS: 5.08; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 当 range 是一个 Object Array 时，通过 range-key 来指定 Object 中 key 的值作为选择器显示内容 |
+| value | string \| number \| number[\] |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS 系统版本: 10.0; iOS: 5.08; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表示选择了 range 中的第几个（下标从 0 开始） |
+| start | string |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS 系统版本: 10.0; iOS: 5.08; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表示有效时间范围的开始 |
+| end | string |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS 系统版本: 10.0; iOS: 5.08; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表示有效时间范围的结束 |
+| fields | String as PropType\<Fields> | "day" | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS 系统版本: 10.0; iOS: 5.08; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 有效值 year,month,day，表示选择器的粒度 |
+| custom-item | string |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: 4.61 | 可为每一列的顶部添加一个自定义的项 |
+| header-text | string |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 选择器的标题，仅微信小程序安卓端可用 |
+| level | string |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | mode="region" 时有效，选择器层级 |
+| name | string |   | HarmonyOS(Vapor): 5.0 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
+| @change | (event: [UniPickerChangeEvent](#unipickerchangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS 系统版本: 10.0; iOS: 5.08; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | value 改变时触发 change 事件，event.detail = {value: value} |
+| @columnchange | (event: [UniPickerColumnChangeEvent](#unipickercolumnchangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS 系统版本: 10.0; iOS: 5.08; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 某一列的值改变时触发 columnchange 事件，event.detail = {column: column, value: value}，column 的值表示改变了第几列（下标从0开始），value 的值表示变更值的下标 |
+| @cancel | (event: [UniPickerCancelEvent](#unipickercancelevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS 系统版本: 10.0; iOS: 5.08; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 取消选择时触发 |
 
 #### mode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| selector | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 普通选择器 |
-| multiSelector | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 多列选择器 |
-| time | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 时间选择器 |
-| date | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 日期选择器 |
-| region | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 省市选择器 |
+| selector | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: 5.08; iOS 系统版本: -; iOS: 5.08; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 普通选择器 |
+| multiSelector | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: 5.08; iOS 系统版本: -; iOS: 5.08; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 多列选择器 |
+| time | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: 5.08; iOS 系统版本: -; iOS: 5.08; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 时间选择器 |
+| date | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: 5.08; iOS 系统版本: -; iOS: 5.08; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 日期选择器 |
+| region | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 省市选择器 |
 
 #### fields 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| year | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 选择器粒度为年 |
-| month | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 选择器粒度为月份 |
-| day | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 选择器粒度为天 |
+| year | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: 5.08; iOS 系统版本: -; iOS: 5.08; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 选择器粒度为年 |
+| month | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: 5.08; iOS 系统版本: -; iOS: 5.08; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 选择器粒度为月份 |
+| day | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: 5.08; iOS 系统版本: -; iOS: 5.08; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 选择器粒度为天 |
 
 #### level 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| province | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 省级选择器 |
-| city | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 市级选择器 |
-| region | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 区级选择器 |
-| sub-district | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 街道选择器 |
+| province | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 省级选择器 |
+| city | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 市级选择器 |
+| region | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 区级选择器 |
+| sub-district | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 街道选择器 |
 
 
 ### 事件
@@ -88,7 +88,7 @@ UniPickerChangeEvent -- Extends --> UniCustomEvent&ltUniPickerChangeEventDetail&
 ###### UniPickerChangeEventDetail 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | any | 是 | - | - | - |
+| value | any | 是 |  |   |  |
 
 
 #### UniPickerColumnChangeEvent
@@ -106,10 +106,19 @@ UniPickerColumnChangeEvent -- Extends --> UniCustomEvent&ltUniPickerColumnChange
 ###### UniPickerColumnChangeEventDetail 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | number | 是 | - | - | - |
-| column | number | 是 | - | - | - |
+| value | number | 是 |  |   |  |
+| column | number | 是 |  |   |  |
 
 
+#### UniPickerCancelEvent
+取消事件触发
+```mermaid
+graph LR
+  
+UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&gt
+  style UniCustomEvent&ltUniPickerCancelEventDetail&gt color:#42b983
+  click UniCustomEvent&ltUniPickerCancelEventDetail&gt "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unicustomevent"
+```
 
 <!-- UTSCOMJSON.picker.component_type -->
 
@@ -118,6 +127,8 @@ UniPickerColumnChangeEvent -- Extends --> UniCustomEvent&ltUniPickerColumnChange
 ### 示例
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/component/picker/picker.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/component/picker/picker.uvue) 
 ::: preview https://hellouniappx.dcloud.net.cn/web/#/pages/component/picker/picker
+
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/component/picker/picker
 
 >示例
 ```vue
@@ -131,7 +142,8 @@ UniPickerColumnChangeEvent -- Extends --> UniCustomEvent&ltUniPickerColumnChange
       <view class="uni-list-cell">
         <view class="uni-list-cell-left">当前选择</view>
         <view class="uni-list-cell-db">
-          <picker class="picker-selector--test" @change="bindPickerChange" :value="data.index" :range="data.selectorArray" range-key="name">
+          <picker class="picker-selector--test" @change="bindPickerChange" :value="data.index"
+            :range="data.selectorArray" range-key="name">
             <text class="uni-input picker-selector--value">{{data.selectorArray[data.index].name}}</text>
           </picker>
         </view>
@@ -143,7 +155,8 @@ UniPickerColumnChangeEvent -- Extends --> UniCustomEvent&ltUniPickerColumnChange
       <view class="uni-list-cell">
         <text class="uni-list-cell-left">当前选择</text>
         <view class="uni-list-cell-db">
-          <picker class="picker-multi--test" mode="multiSelector" @columnchange="bindMultiPickerColumnChange" :value="data.multiIndex" :range="data.multiArray">
+          <picker class="picker-multi--test" mode="multiSelector" @columnchange="bindMultiPickerColumnChange"
+            :value="data.multiIndex" :range="data.multiArray">
             <text class="uni-input picker-multi--value">
               {{data.multiArray[0][data.multiIndex[0]]}}，{{data.multiArray[1][data.multiIndex[1]]}}，{{data.multiArray[2][data.multiIndex[2]]}}
             </text>
@@ -157,7 +170,8 @@ UniPickerColumnChangeEvent -- Extends --> UniCustomEvent&ltUniPickerColumnChange
       <view class="uni-list-cell">
         <view class="uni-list-cell-left">当前选择</view>
         <view class="uni-list-cell-db">
-          <picker class="picker-time--test" mode="time" :value="data.time" start="09:01" end="21:01" @change="bindTimeChange">
+          <picker class="picker-time--test" mode="time" :value="data.time" start="09:01" end="21:01"
+            @change="bindTimeChange">
             <text class="uni-input">{{data.time}}</text>
           </picker>
         </view>
@@ -170,7 +184,8 @@ UniPickerColumnChangeEvent -- Extends --> UniCustomEvent&ltUniPickerColumnChange
       <view class="uni-list-cell">
         <text class="uni-list-cell-left">当前选择 </text>
         <view class="uni-list-cell-db">
-          <picker class="picker-date-day--test" mode="date" :value="data.dayDate" :start="data.startDate" :end="data.endDate" @change="bindDayDateChange">
+          <picker class="picker-date-day--test" mode="date" :value="data.dayDate" :start="data.startDate"
+            :end="data.endDate" @change="bindDayDateChange">
             <text class="uni-input">{{data.dayDate}}</text>
           </picker>
         </view>
@@ -183,7 +198,8 @@ UniPickerColumnChangeEvent -- Extends --> UniCustomEvent&ltUniPickerColumnChange
       <view class="uni-list-cell">
         <text class="uni-list-cell-left">当前选择 </text>
         <view class="uni-list-cell-db">
-          <picker class="picker-date-month--test" mode="date" fields="month" :value="data.monthDate" :start="data.startDate" :end="data.endDate" @change="bindMonthDateChange">
+          <picker class="picker-date-month--test" mode="date" fields="month" :value="data.monthDate"
+            :start="data.startDate" :end="data.endDate" @change="bindMonthDateChange">
             <text class="uni-input">{{data.monthDate}}</text>
           </picker>
         </view>
@@ -196,7 +212,8 @@ UniPickerColumnChangeEvent -- Extends --> UniCustomEvent&ltUniPickerColumnChange
       <view class="uni-list-cell">
         <text class="uni-list-cell-left">当前选择 </text>
         <view class="uni-list-cell-db">
-          <picker class="picker-date-year--test" mode="date" fields="year" :value="data.yearDate" :start="data.startDate" :end="data.endDate" @change="bindYearDateChange">
+          <picker class="picker-date-year--test" mode="date" fields="year" :value="data.yearDate"
+            :start="data.startDate" :end="data.endDate" @change="bindYearDateChange">
             <text class="uni-input">{{data.yearDate}}</text>
           </picker>
         </view>
@@ -210,18 +227,19 @@ UniPickerColumnChangeEvent -- Extends --> UniCustomEvent&ltUniPickerColumnChange
         <text class="uni-list-cell-left">当前选择</text>
         <view class="uni-list-cell-db" @click="initCityData">
           <!-- #ifndef MP-WEIXIN -->
-            <picker class="picker-city--test" mode="multiSelector" @columnchange="bindCityPickerColumnChange" :value="data.cityIndex" :range="data.cityArray">
-              <text class="uni-input picker-city--value">
-                {{data.cityArray[0][data.cityIndex[0]]}}{{data.cityArray[1][data.cityIndex[1]] ? '，' : ''}}{{data.cityArray[1][data.cityIndex[1]]}}{{data.cityArray[2][data.cityIndex[2]] ? '，' : ''}}{{data.cityArray[2][data.cityIndex[2]]}}
-              </text>
-            </picker>
+          <picker class="picker-city--test" mode="multiSelector" @columnchange="bindCityPickerColumnChange"
+            :value="data.cityIndex" :range="data.cityArray">
+            <text class="uni-input picker-city--value">
+              {{getCityDisplayText()}}
+            </text>
+          </picker>
           <!-- #endif -->
           <!-- #ifdef MP-WEIXIN -->
-            <picker class="picker-city--test" mode="region" @change="bindRegionChange" :value="data.region" >
-              <text class="uni-input picker-city--value">
-                {{data.region[0]}}{{data.region[1] ? '，' : ''}}{{data.region[1]}}{{data.region[2] ? '，' : ''}}{{data.region[2]}}
-              </text>
-            </picker>
+          <picker class="picker-city--test" mode="region" @change="bindRegionChange" :value="data.region">
+            <text class="uni-input picker-city--value">
+              {{data.region[0]}}{{data.region[1] ? '，' : ''}}{{data.region[1]}}{{data.region[2] ? '，' : ''}}{{data.region[2]}}
+            </text>
+          </picker>
           <!-- #endif -->
         </view>
       </view>
@@ -233,7 +251,8 @@ UniPickerColumnChangeEvent -- Extends --> UniCustomEvent&ltUniPickerColumnChange
       <view class="uni-list-cell">
         <view class="uni-list-cell-left">当前选择</view>
         <view class="uni-list-cell-db">
-          <picker class="picker-disabled--test" @change="bindPickerChange" disabled :value="data.index" :range="data.selectorArray" range-key="name">
+          <picker class="picker-disabled--test" @change="bindPickerChange" disabled :value="data.index"
+            :range="data.selectorArray" range-key="name">
             <text class="uni-input picker-disabled--value">{{data.selectorArray[data.index].name}}</text>
           </picker>
         </view>
@@ -246,7 +265,6 @@ UniPickerColumnChangeEvent -- Extends --> UniCustomEvent&ltUniPickerColumnChange
   <!-- #endif -->
 </template>
 <script setup lang="uts">
-  import { state, setEventCallbackNum } from '@/store/index.uts'
   // #ifndef MP-WEIXIN
   import { cityData } from './city.uts'
   // #endif
@@ -256,28 +274,28 @@ UniPickerColumnChangeEvent -- Extends --> UniCustomEvent&ltUniPickerColumnChange
   }
 
   type CityItemData = {
-    title: string
-    id: string
-    disabled?: boolean
-    children: Array<CityItemData>
+    title : string
+    id : string
+    disabled ?: boolean
+    children : Array<CityItemData>
   }
 
   type PageDataType = {
-    title: string;
-    selectorArray: DataType[];
-    index: number;
-    multiArray: Array<string[]>;
-    multiIndex: number[];
-    cityArray: Array<string[]>;
-    allCityData: CityItemData[];
-    cityIndex: number[];
-    region: string[];
-    dayDate: string;
-    monthDate: string;
-    yearDate: string;
-    startDate: string;
-    endDate: string;
-    time: string;
+    title : string;
+    selectorArray : DataType[];
+    index : number;
+    multiArray : Array<string[]>;
+    multiIndex : number[];
+    cityArray : Array<string[]>;
+    allCityData : CityItemData[];
+    cityIndex : number[];
+    region : string[];
+    dayDate : string;
+    monthDate : string;
+    yearDate : string;
+    startDate : string;
+    endDate : string;
+    time : string;
   }
 
   function getDate(date_text : string = 'day', type ?: string) : string {
@@ -313,21 +331,49 @@ UniPickerColumnChangeEvent -- Extends --> UniCustomEvent&ltUniPickerColumnChange
       ['北京', '上海', '广州']
     ],
     multiIndex: [0, 0, 0],
-    cityArray: [[],[],[]],
+    cityArray: [[], [], []],
     allCityData: [],
     region: [],
     cityIndex: [0, 0, 0],
-    dayDate: getDate('day'),
-    monthDate: getDate('month'),
-    yearDate: getDate('year'),
+    dayDate: getDate('day', ''),
+    monthDate: getDate('month', ''),
+    yearDate: getDate('year', ''),
     startDate: getDate('day', 'start'),
     endDate: getDate('day', 'end'),
     time: '12:01'
   } as PageDataType)
 
   // #ifndef MP-WEIXIN
+  function getSafeCityValue(column : number, index : number) : string {
+    if (column < 0 || column >= data.cityArray.length) {
+      return ''
+    }
+    const columnData = data.cityArray[column]
+    if (index < 0 || index >= columnData.length) {
+      return ''
+    }
+    return columnData[index]
+  }
+
+  function getCityDisplayText() : string {
+    const province = getSafeCityValue(0, data.cityIndex[0])
+    const city = getSafeCityValue(1, data.cityIndex[1])
+    const district = getSafeCityValue(2, data.cityIndex[2])
+    let text = province
+    if (city != '') {
+      text += '，' + city
+    }
+    if (district != '') {
+      text += '，' + district
+    }
+    return text
+  }
+
   function initCityData() {
-    const cityDataList = JSON.parse(cityData) as CityItemData[]
+    const cityDataList = JSON.parse<CityItemData[]>(cityData)
+    if (cityDataList == null) {
+      return
+    }
     data.allCityData = cityDataList
     data.cityArray[0] = cityDataList.map(item => item.title)
     // 使用当前选择的省份索引来初始化城市数据
@@ -356,7 +402,7 @@ UniPickerColumnChangeEvent -- Extends --> UniCustomEvent&ltUniPickerColumnChange
 
   const bindPickerChange = (e : UniPickerChangeEvent) => {
     console.log('picker发送选择改变，携带值为：' + e.detail.value)
-    data.index = e.detail.value
+    data.index = e.detail.value as number
   }
 
   const bindMultiPickerColumnChange = (e : UniPickerColumnChangeEvent) => {
@@ -459,15 +505,6 @@ UniPickerColumnChangeEvent -- Extends --> UniCustomEvent&ltUniPickerColumnChange
   // 自动化函数
   const setSelectorValue = () => {
     data.index = 2
-  }
-
-  const getEventCallbackNum = () : number => {
-    return state.eventCallbackNum
-  }
-
-  // 自动化测试
-  const setEventCallbackNum = (num : number) => {
-    setEventCallbackNum(num)
   }
 
   defineExpose({

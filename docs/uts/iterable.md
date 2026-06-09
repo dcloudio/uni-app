@@ -7,7 +7,7 @@
 
 在HBuilderX 4.41版本之前，UTS并未对 for ..of 做特殊处理：开发者调用 for..of 会编译报错，无法使用
 
-从HBuilderX 4.41开始，UTS语言支持了[可迭代协议](https://issues.dcloud.net.cn/pages/issues/detail?id=6511). 以 [web的可迭代](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Iteration_protocols)为标准，保证了可迭代协议行为(即for..of)的的全端一致，并开放了可迭代协议的扩展能力。
+从HBuilderX 4.41开始，UTS语言支持了[可迭代协议](https://issues.dcloud.net.cn/pages/issues/detail?id=6511). 以 [web的可迭代](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Iteration_protocols)为标准，保证了可迭代协议行为(即for..of)的全端一致，并开放了可迭代协议的扩展能力。
 
 也就是说，在HBuilderX 4.41之后版本，UTS内置的for..of 语法执行效果与web标准一致。
 

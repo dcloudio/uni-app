@@ -5,11 +5,17 @@
 padding CSS 简写属性控制元素所有四条边的内边距区域。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -110,10 +116,10 @@ padding: [ <length> | <percentage> ]{1,4};
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{padding}}</text>
-          <text class="uni-info">获取值: {{paddingActual}}</text>
+          <text class="uni-info">设置值: {{data.padding}}</text>
+          <text class="uni-info">获取值: {{data.paddingActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-dynamic test-view" :style="{ padding: padding }">
+            <view ref="viewRef" class="common-dynamic test-view" :style="{ padding: data.padding }">
               <view style="flex-grow: 1;background-color: cyan;">
                 <text class="common-text">view</text>
               </view>
@@ -123,19 +129,19 @@ padding: [ <length> | <percentage> ]{1,4};
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{padding}}</text>
-          <text class="uni-info">获取值: {{paddingActualText}}</text>
+          <text class="uni-info">设置值: {{data.padding}}</text>
+          <text class="uni-info">获取值: {{data.paddingActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-dynamic common-text test-text" :style="{ padding: padding }">text</text>
+            <text ref="textRef" class="common-dynamic common-text test-text" :style="{ padding: data.padding }">text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{padding}}</text>
-          <text class="uni-info">获取值: {{paddingActualImage}}</text>
+          <text class="uni-info">设置值: {{data.padding}}</text>
+          <text class="uni-info">获取值: {{data.paddingActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-image test-image" :style="{ padding: padding }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image test-image" :style="{ padding: data.padding }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -144,10 +150,10 @@ padding: [ <length> | <percentage> ]{1,4};
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{padding}}</text>
-          <text class="uni-info">获取值: {{paddingActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.padding}}</text>
+          <text class="uni-info">获取值: {{data.paddingActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ padding: padding }" flatten>
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ padding: data.padding }" flatten>
               <view style="flex-grow: 1;background-color: cyan;">
                 <text class="common-text">view</text>
               </view>
@@ -157,19 +163,19 @@ padding: [ <length> | <percentage> ]{1,4};
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{padding}}</text>
-          <text class="uni-info">获取值: {{paddingActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.padding}}</text>
+          <text class="uni-info">获取值: {{data.paddingActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic common-text test-text-flatten" :style="{ padding: padding }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic common-text test-text-flatten" :style="{ padding: data.padding }" flatten>text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{padding}}</text>
-          <text class="uni-info">获取值: {{paddingActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.padding}}</text>
+          <text class="uni-info">获取值: {{data.paddingActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ padding: padding }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ padding: data.padding }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -180,10 +186,10 @@ padding: [ <length> | <percentage> ]{1,4};
 
       <view class="test-container">
         <view class="test-item">
-          <text class="uni-info">设置值: {{padding}}</text>
-          <text class="uni-info">获取值: {{paddingActualScrollView}}</text>
+          <text class="uni-info">设置值: {{data.padding}}</text>
+          <text class="uni-info">获取值: {{data.paddingActualScrollView}}</text>
           <view class="test-box" style="height: 150px;">
-            <scroll-view ref="scrollViewRef" class="common-scroll-view" :style="{ padding: padding }">
+            <scroll-view ref="scrollViewRef" class="common-scroll-view" :style="{ padding: data.padding }">
               <view class="scroll-view-content">
                 <text class="common-text">scroll-view1</text>
               </view>
@@ -201,7 +207,7 @@ padding: [ <length> | <percentage> ]{1,4};
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="paddingEnum" title="padding 枚举值" @change="radioChangePadding" :compact="true"></enum-data>
-        <input-data :defaultValue="padding" title="padding 自定义值" type="text" @confirm="inputChangePadding"></input-data>
+        <input-data :defaultValue="data.padding" title="padding 自定义值" type="text" @confirm="inputChangePadding"></input-data>
       </view>
     </view>
 
@@ -226,14 +232,16 @@ padding: [ <length> | <percentage> ]{1,4};
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const padding = ref('20px')
-  const paddingActual = ref('')
-  const paddingActualText = ref('')
-  const paddingActualImage = ref('')
-  const paddingActualFlat = ref('')
-  const paddingActualTextFlat = ref('')
-  const paddingActualImageFlat = ref('')
-  const paddingActualScrollView = ref('')
+  const data = reactive({
+    padding: '20px',
+    paddingActual: '',
+    paddingActualText: '',
+    paddingActualImage: '',
+    paddingActualFlat: '',
+    paddingActualTextFlat: '',
+    paddingActualImageFlat: '',
+    paddingActualScrollView: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -252,17 +260,19 @@ padding: [ <length> | <percentage> ]{1,4};
   ]
 
   const getPropertyValues = () => {
-    paddingActual.value = viewRef.value?.style.getPropertyValue('padding') ?? ''
-    paddingActualFlat.value = viewRefFlat.value?.style.getPropertyValue('padding') ?? ''
-    paddingActualText.value = textRef.value?.style.getPropertyValue('padding') ?? ''
-    paddingActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('padding') ?? ''
-    paddingActualImage.value = imageRef.value?.style.getPropertyValue('padding') ?? ''
-    paddingActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('padding') ?? ''
-    paddingActualScrollView.value = scrollViewRef.value?.style.getPropertyValue('padding') ?? ''
+    data.paddingActual = viewRef.value?.style.getPropertyValue('padding') ?? ''
+    data.paddingActualFlat = viewRefFlat.value?.style.getPropertyValue('padding') ?? ''
+    data.paddingActualText = textRef.value?.style.getPropertyValue('padding') ?? ''
+    data.paddingActualTextFlat = textRefFlat.value?.style.getPropertyValue('padding') ?? ''
+    data.paddingActualImage = imageRef.value?.style.getPropertyValue('padding') ?? ''
+    data.paddingActualImageFlat = imageRefFlat.value?.style.getPropertyValue('padding') ?? ''
+    data.paddingActualScrollView = scrollViewRef.value?.style.getPropertyValue('padding') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changePadding = (value: string) => {
-    padding.value = value
+    data.padding = value
     viewRef.value?.style.setProperty('padding', value)
     viewRefFlat.value?.style.setProperty('padding', value)
     textRef.value?.style.setProperty('padding', value)
@@ -273,7 +283,7 @@ padding: [ <length> | <percentage> ]{1,4};
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangePadding = (index: number) => {
@@ -292,7 +302,8 @@ padding: [ <length> | <percentage> ]{1,4};
   })
 
   defineExpose({
-    radioChangePadding
+    radioChangePadding,
+    data
   })
 </script>
 

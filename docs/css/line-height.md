@@ -5,11 +5,17 @@
 line-height 属性用于设置多行文本的间距。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -29,7 +35,7 @@ line-height: normal | <number> | <length> | <percentage>;
 ### line-height 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| normal | Web: 4.0; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0; HarmonyOS(Vapor): 5.0 | 由各平台实现，约为 1.2，取决于元素的 font-family。 |
+| normal | Web: 4.0; Android: 5.0; Android(Vapor): 5.21; iOS: 5.0; iOS(Vapor): 5.11; HarmonyOS: 5.0 | 由各平台实现，约为 1.2，取决于元素的 font-family。 |
 
 
 ### 默认值 @default-value 
@@ -72,7 +78,7 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
     <template v-if="autoTestData.begin">
       <view>
         <text id="testText"
-          :style="`line-height: ${lineHeight_mix};`">
+          :style="`line-height: ${data.lineHeight_mix};`">
           uni-app 是一个使用 Vue.js
           开发所有前端应用的框架，开发者编写一套代码，可发布到iOS、Android、鸿蒙Next、Web（响应式）、以及各种小程序（微信/支付宝/百度/抖音/飞书/QQ/快手/钉钉/淘宝/京东/小红书）、快应用、鸿蒙元服务等多个平台。</text>
         <view style="flex-direction: row;">
@@ -105,20 +111,20 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
       <!-- 普通版本 -->
       <view class="uni-common-mt">
         <text class="uni-title-text">line-height</text>
-        <text class="uni-info">设置值: {{lineHeight}}</text>
-        <text class="uni-info">获取值: {{lineHeightActual}}</text>
+        <text class="uni-info">设置值: {{data.lineHeight}}</text>
+        <text class="uni-info">获取值: {{data.lineHeightActual}}</text>
         <view class="test-box">
-          <text ref="textRef" class="common" :style="{ lineHeight: lineHeight }">当前 line-height: {{lineHeight}}</text>
+          <text ref="textRef" class="common" :style="{ lineHeight: data.lineHeight }">当前 line-height: {{data.lineHeight}}</text>
         </view>
       </view>
 
       <!-- 拍平版本 -->
       <view class="uni-common-mt">
         <text class="uni-title-text">拍平</text>
-        <text class="uni-info">设置值: {{lineHeight}}</text>
-        <text class="uni-info">获取值: {{lineHeightActualFlat}}</text>
+        <text class="uni-info">设置值: {{data.lineHeight}}</text>
+        <text class="uni-info">获取值: {{data.lineHeightActualFlat}}</text>
         <view class="test-box">
-          <text ref="textRefFlat" class="common" :style="{ lineHeight: lineHeight }" flatten>当前 line-height: {{lineHeight}}</text>
+          <text ref="textRefFlat" class="common" :style="{ lineHeight: data.lineHeight }" flatten>当前 line-height: {{data.lineHeight}}</text>
         </view>
       </view>
     </view>
@@ -126,7 +132,7 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
     <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="lineHeightEnum" title="line-height 枚举值" @change="radioChangeLineHeight" :compact="true"></enum-data>
-        <input-data :defaultValue="lineHeight" title="line-height 自定义值" type="text" @confirm="inputChangeLineHeight"></input-data>
+        <input-data :defaultValue="data.lineHeight" title="line-height 自定义值" type="text" @confirm="inputChangeLineHeight"></input-data>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -146,25 +152,36 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
     { value: 6, name: '2em' }
   ]
 
-  const lineHeight = ref('20px')
-  const lineHeightActual = ref('')
-  const lineHeightActualFlat = ref('')
+  type LineHeightData = {
+    lineHeight: string
+    lineHeightActual: string
+    lineHeightActualFlat: string
+    lineHeight_mix: number
+  }
+  const data = reactive({
+    lineHeight: '20px',
+    lineHeightActual: '',
+    lineHeightActualFlat: '',
+    lineHeight_mix: 1.5
+  } as LineHeightData)
   const textRef = ref(null as UniTextElement | null)
   const textRefFlat = ref(null as UniTextElement | null)
 
   const getPropertyValues = () => {
-    lineHeightActual.value = textRef.value?.style.getPropertyValue('line-height') ?? ''
-    lineHeightActualFlat.value = textRefFlat.value?.style.getPropertyValue('line-height') ?? ''
+    data.lineHeightActual = textRef.value?.style.getPropertyValue('line-height') ?? ''
+    data.lineHeightActualFlat = textRefFlat.value?.style.getPropertyValue('line-height') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeLineHeight = (value: string) => {
-    lineHeight.value = value
+    data.lineHeight = value
     textRef.value?.style.setProperty('line-height', value)
     textRefFlat.value?.style.setProperty('line-height', value)
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeLineHeight = (index: number) => {
@@ -191,13 +208,11 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
     begin: false
   } as AutoTextData)
 
-  const lineHeight_mix = ref(1.5)
-
   function plusLineHeight() {
-    lineHeight_mix.value += 0.2
+    data.lineHeight_mix = data.lineHeight_mix + 0.2
   }
   function minusLineHeight() {
-    lineHeight_mix.value -= 0.2
+    data.lineHeight_mix = data.lineHeight_mix - 0.2
   }
   function getLineHeight() {
     const testText = uni.getElementById('testText')
@@ -211,7 +226,9 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
     autoTestData,
     getLineHeight,
     plusLineHeight,
-    minusLineHeight
+    minusLineHeight,
+    radioChangeLineHeight,
+    data
   })
   /**
    * * * * * * * * * * * * * *

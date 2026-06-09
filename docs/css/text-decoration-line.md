@@ -5,11 +5,17 @@
 text-decoration-line 属性用于设置元素中文本的修饰线类型。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,10 +34,10 @@ text-decoration-line: none | [ underline || overline || line-through || blink ] 
 ### text-decoration-line 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| underline | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 在文本的下方有一条修饰线。 |
-| line-through | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 有一条贯穿文本中间的修饰线。 |
-| overline | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 在文本的上方有一条修饰线。 |
-| none | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表示没有文本修饰效果。 |
+| underline | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 在文本的下方有一条修饰线。 |
+| line-through | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 有一条贯穿文本中间的修饰线。 |
+| overline | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 在文本的上方有一条修饰线。 |
+| none | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 表示没有文本修饰效果。 |
 
 
 ### 默认值 @default-value 
@@ -64,14 +70,16 @@ text-decoration-line: none | [ underline || overline || line-through || blink ] 
         <text style="text-decoration-line: underline;" flatten>text-decoration-line: underline flatten</text>
         <text style="text-decoration-line: line-through;" flatten>text-decoration-line: line-through flatten</text>
       </view>
-      <view class="content">
-        <text class="common" style="text-decoration-line: underline;color: blue;text-overflow: ellipsis;width: 200px;white-space: nowrap;">下划线颜色和ellipsis组合</text>
-        <text class="common" style="text-decoration-line: line-through;color: blue;text-overflow: ellipsis;width: 200px;white-space: nowrap;">删除线颜色和ellipsis组合</text>
-      </view>
       <view style="background-color: gray;justify-content: center;align-items: center;margin-bottom: 16px;">
         <text class="common" style="text-decoration-line: underline;color: blue;" flatten>text-decoration-line: underline 自适应宽高且拍平</text>
         <text class="common" style="text-decoration-line: line-through;color: blue;" flatten>text-decoration-line: line-through 自适应宽高且拍平</text>
       </view>
+      <!-- #ifndef APP-ANDROID || (APP-HARMONY && !VUE3-VAPOR) || (APP-IOS && !VUE3-VAPOR) -->
+      <view class="content">
+        <text class="common" style="text-decoration-line: underline;color: blue; text-decoration-color: red; text-overflow: ellipsis;width: 200px;white-space: nowrap;">下划线颜色和ellipsis组合</text>
+        <text class="common" style="text-decoration-line: line-through;color: blue; text-decoration-color: blue; text-overflow: ellipsis;width: 200px;white-space: nowrap;">删除线颜色和ellipsis组合</text>
+      </view>
+      <!-- #endif -->
 
       <view class="uni-common-mt">
         <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 text-decoration-line </text>
@@ -81,20 +89,20 @@ text-decoration-line: none | [ underline || overline || line-through || blink ] 
         <!-- 普通版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">text-decoration-line</text>
-          <text class="uni-info">设置值: {{textDecorationLine}}</text>
-          <text class="uni-info">获取值: {{textDecorationLineActual}}</text>
+          <text class="uni-info">设置值: {{data.textDecorationLine}}</text>
+          <text class="uni-info">获取值: {{data.textDecorationLineActual}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common test-text" :style="{ textDecorationLine: textDecorationLine }">当前 text-decoration-line: {{textDecorationLine}}</text>
+            <text ref="textRef" class="common test-text" :style="{ textDecorationLine: data.textDecorationLine }">当前 text-decoration-line: {{data.textDecorationLine}}</text>
           </view>
         </view>
 
         <!-- 拍平版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">拍平</text>
-          <text class="uni-info">设置值: {{textDecorationLine}}</text>
-          <text class="uni-info">获取值: {{textDecorationLineActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.textDecorationLine}}</text>
+          <text class="uni-info">获取值: {{data.textDecorationLineActualFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common test-text-flatten" :style="{ textDecorationLine: textDecorationLine }" flatten>当前 text-decoration-line: {{textDecorationLine}}</text>
+            <text ref="textRefFlat" class="common test-text-flatten" :style="{ textDecorationLine: data.textDecorationLine }" flatten>当前 text-decoration-line: {{data.textDecorationLine}}</text>
           </view>
         </view>
       </view>
@@ -102,7 +110,7 @@ text-decoration-line: none | [ underline || overline || line-through || blink ] 
       <view class="uni-common-mt uni-common-mb">
           <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
           <enum-data :items="textDecorationLineEnum" title="text-decoration-line 枚举值" @change="radioChangeTextDecorationLine" :compact="true"></enum-data>
-          <input-data :defaultValue="textDecorationLine" title="text-decoration-line 自定义值" type="text" @confirm="inputChangeTextDecorationLine"></input-data>
+          <input-data :defaultValue="data.textDecorationLine" title="text-decoration-line 自定义值" type="text" @confirm="inputChangeTextDecorationLine"></input-data>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -120,25 +128,29 @@ text-decoration-line: none | [ underline || overline || line-through || blink ] 
 		{ value: 3, name: 'line-through' }
 	]
 
-	const textDecorationLine = ref('none')
-	const textDecorationLineActual = ref('')
-	const textDecorationLineActualFlat = ref('')
+	const data = reactive({
+		textDecorationLine: 'none',
+		textDecorationLineActual: '',
+		textDecorationLineActualFlat: ''
+	})
 	const textRef = ref(null as UniTextElement | null)
 	const textRefFlat = ref(null as UniTextElement | null)
 
 	const getPropertyValues = () => {
-		textDecorationLineActual.value = textRef.value?.style.getPropertyValue('text-decoration-line') ?? ''
-		textDecorationLineActualFlat.value = textRefFlat.value?.style.getPropertyValue('text-decoration-line') ?? ''
+		data.textDecorationLineActual = textRef.value?.style.getPropertyValue('text-decoration-line') ?? ''
+		data.textDecorationLineActualFlat = textRefFlat.value?.style.getPropertyValue('text-decoration-line') ?? ''
 	}
 
+	const ins = getCurrentInstance()
+
 	const changeTextDecorationLine = (value: string) => {
-		textDecorationLine.value = value
+		data.textDecorationLine = value
 		textRef.value?.style.setProperty('text-decoration-line', value)
 		textRefFlat.value?.style.setProperty('text-decoration-line', value)
 		// 使用 nextTick 确保样式已应用后再获取值
 		nextTick(() => {
 			getPropertyValues()
-		})
+		}, ins)
 	}
 
 	const radioChangeTextDecorationLine = (index: number) => {
@@ -157,7 +169,8 @@ text-decoration-line: none | [ underline || overline || line-through || blink ] 
 	})
 
 	defineExpose({
-		radioChangeTextDecorationLine
+		radioChangeTextDecorationLine,
+		data
 	})
 </script>
 

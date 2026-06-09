@@ -5,11 +5,17 @@
 position 属性用于指定元素在页面中的定位方式。与 top、right、bottom、left 等属性决定该元素的最终位置。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,11 +34,11 @@ position: static | relative | absolute | sticky | fixed;
 ### position 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| relative | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 当前元素将参与父节点布局，根据 top、right、bottom、left 等属性相对于自身偏移。 |
-| absolute | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 当前元素将不参与父节点布局，布局时不会为该元素创建任何空间，在父元素的内容区域中进行绝对布局，根据 top、right、bottom、left 等属性决定其位置。 |
-| fixed | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 当前元素将不参与父节点布局，将被视为页面根节点的子元素进行绝对布局，根据 top、right、bottom、left 等属性决定其位置。 |
-| static | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 该关键字指定元素使用正常的布局行为，即元素在文档常规流中当前的布局位置。此时 top, right, bottom, left 和 z-index 属性无效。 |
-| sticky | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 元素根据正常文档流进行定位，然后相对它的最近滚动祖先（nearest scrolling ancestor）和 containing block（最近块级祖先 nearest block-level ancestor），包括 table-related 元素，基于 top、right、bottom 和 left 的值进行偏移。偏移值不会影响任何其他元素的位置。<br/>      该值总是创建一个新的层叠上下文（stacking context）。注意，一个 sticky 元素会“固定”在离它最近的一个拥有“滚动机制”的祖先上（当该祖先的 overflow 是 hidden、scroll、auto 或 overlay 时），即便这个祖先不是最近的真实可滚动祖先。这有效地抑制了任何“sticky”行为（详情见 Github issue on W3C CSSWG）。 |
+| relative | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 当前元素将参与父节点布局，根据 top、right、bottom、left 等属性相对于自身偏移。 |
+| absolute | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 当前元素将不参与父节点布局，布局时不会为该元素创建任何空间，在父元素的内容区域中进行绝对布局，根据 top、right、bottom、left 等属性决定其位置。 |
+| fixed | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 当前元素将不参与父节点布局，将被视为页面根节点的子元素进行绝对布局，根据 top、right、bottom、left 等属性决定其位置。 |
+| static | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 该关键字指定元素使用正常的布局行为，即元素在文档常规流中当前的布局位置。此时 top, right, bottom, left 和 z-index 属性无效。 |
+| sticky | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 元素根据正常文档流进行定位，然后相对它的最近滚动祖先（nearest scrolling ancestor）和 containing block（最近块级祖先 nearest block-level ancestor），包括 table-related 元素，基于 top、right、bottom 和 left 的值进行偏移。偏移值不会影响任何其他元素的位置。<br/>      该值总是创建一个新的层叠上下文（stacking context）。注意，一个 sticky 元素会“固定”在离它最近的一个拥有“滚动机制”的祖先上（当该祖先的 overflow 是 hidden、scroll、auto 或 overlay 时），即便这个祖先不是最近的真实可滚动祖先。这有效地抑制了任何“sticky”行为（详情见 Github issue on W3C CSSWG）。 |
 
 
 ### 默认值 @default-value 
@@ -214,11 +220,11 @@ position: static | relative | absolute | sticky | fixed;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{position}}</text>
-          <text class="uni-info">获取值: {{positionActual}}</text>
+          <text class="uni-info">设置值: {{data.position}}</text>
+          <text class="uni-info">获取值: {{data.positionActual}}</text>
           <view class="test-box">
             <view class="test-block-small red"></view>
-            <view ref="viewRef" class="common-dynamic test-view" style="top: 10px; left: 10px;" :style="{ position: position }">
+            <view ref="viewRef" class="common-dynamic test-view" style="top: 10px; left: 10px;" :style="{ position: data.position }">
               <text style="font-size: 10px;">view</text>
             </view>
             <view class="test-block-small blue"></view>
@@ -227,22 +233,22 @@ position: static | relative | absolute | sticky | fixed;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{position}}</text>
-          <text class="uni-info">获取值: {{positionActualText}}</text>
+          <text class="uni-info">设置值: {{data.position}}</text>
+          <text class="uni-info">获取值: {{data.positionActualText}}</text>
           <view class="test-box">
             <text class="test-block-small red test-block-small-text">红</text>
-            <text ref="textRef" class="common-dynamic common-text-dynamic test-text" style="top: 10px; left: 10px;" :style="{ position: position }">text</text>
+            <text ref="textRef" class="common-dynamic common-text-dynamic test-text" style="top: 10px; left: 10px;" :style="{ position: data.position }">text</text>
             <text class="test-block-small blue test-block-small-text">蓝</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{position}}</text>
-          <text class="uni-info">获取值: {{positionActualImage}}</text>
+          <text class="uni-info">设置值: {{data.position}}</text>
+          <text class="uni-info">获取值: {{data.positionActualImage}}</text>
           <view class="test-box">
             <image class="common-image-static" src="/static/test-image/logo.png"></image>
-            <image ref="imageRef" class="common-dynamic test-image" style="top: 10px; left: 10px;" :style="{ position: position }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-dynamic test-image" style="top: 10px; left: 10px;" :style="{ position: data.position }" src="/static/test-image/logo.png"></image>
             <image class="common-image-static" src="/static/test-image/logo.png"></image>
           </view>
         </view>
@@ -251,7 +257,7 @@ position: static | relative | absolute | sticky | fixed;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="positionEnum" title="position 枚举值" @change="radioChangePosition" :compact="true"></enum-data>
-        <input-data :defaultValue="position" title="position 自定义值" type="text" @confirm="inputChangePosition"></input-data>
+        <input-data :defaultValue="data.position" title="position 自定义值" type="text" @confirm="inputChangePosition"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -279,29 +285,33 @@ position: static | relative | absolute | sticky | fixed;
     { value: 4, name: 'fixed' }
   ]
 
-  const position = ref('relative')
-  const positionActual = ref('')
-  const positionActualText = ref('')
-  const positionActualImage = ref('')
+  const data = reactive({
+    position: 'relative',
+    positionActual: '',
+    positionActualText: '',
+    positionActualImage: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    positionActual.value = viewRef.value?.style.getPropertyValue('position') ?? ''
-    positionActualText.value = textRef.value?.style.getPropertyValue('position') ?? ''
-    positionActualImage.value = imageRef.value?.style.getPropertyValue('position') ?? ''
+    data.positionActual = viewRef.value?.style.getPropertyValue('position') ?? ''
+    data.positionActualText = textRef.value?.style.getPropertyValue('position') ?? ''
+    data.positionActualImage = imageRef.value?.style.getPropertyValue('position') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changePosition = (value: string) => {
-    position.value = value
+    data.position = value
     viewRef.value?.style.setProperty('position', value)
     textRef.value?.style.setProperty('position', value)
     imageRef.value?.style.setProperty('position', value)
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangePosition = (index: number) => {
@@ -320,7 +330,8 @@ position: static | relative | absolute | sticky | fixed;
   })
 
   defineExpose({
-    radioChangePosition
+    radioChangePosition,
+    data
   })
 </script>
 
@@ -392,7 +403,7 @@ position: static | relative | absolute | sticky | fixed;
 
   .combo-all-sides {
     top: 60px;
-    left: 220px;
+    left: 45%;
     bottom: 40px;
     right: 40px;
   }
@@ -400,7 +411,7 @@ position: static | relative | absolute | sticky | fixed;
   .fixed-combo {
     /* #ifdef WEB*/
     top: calc(var(--uni-safe-area-inset-top) + 60px);
-    left: calc(var(--uni-safe-area-inset-left) + 220px);
+    left: calc(var(--uni-safe-area-inset-left) + 45%);
     bottom: calc(var(--uni-safe-area-inset-bottom) + 40px);
     right: calc(var(--uni-safe-area-inset-right) + 40px);
     /* #endif */
@@ -462,8 +473,6 @@ position: static | relative | absolute | sticky | fixed;
   .scroll-view-common {
     width: 80px;
     height: 60px;
-    justify-content: center;
-    align-items: center;
   }
 
 </style>

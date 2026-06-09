@@ -28,34 +28,34 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **MakePhoneCallOptions** | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| options | **MakePhoneCallOptions** | 是 |  |   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| phoneNumber | string | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS uni-app x UTS 插件: 4.61 | 需要拨打的电话号码 |
-| success | (result: MakePhoneCallSuccess) => void | 否 | - | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS uni-app x UTS 插件: 4.61 | 成功返回的回调函数 |
-| fail | (result: [MakePhoneCallFail](#makephonecallfail-values)) => void | 否 | - | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS uni-app x UTS 插件: 4.61 | 失败的回调函数 |
-| complete | (result: any) => void | 否 | - | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS uni-app x UTS 插件: 4.61 | 结束的回调函数（调用成功、失败都会执行） | 
+| phoneNumber | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS uni-app x UTS 插件: 4.61 | 需要拨打的电话号码 |
+| success | (result: MakePhoneCallSuccess) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS uni-app x UTS 插件: 4.61 | 成功返回的回调函数 |
+| fail | (result: [MakePhoneCallFail](#makephonecallfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS uni-app x UTS 插件: 4.61 | 失败的回调函数 |
+| complete | (result: any) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS uni-app x UTS 插件: 4.61 | 结束的回调函数（调用成功、失败都会执行） | 
 
 #### MakePhoneCallFail 的属性值 @makephonecallfail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
-| errSubject | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 统一错误主题（模块）名称 |
-| data | any | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| errCode | number | 是 |  |   |  |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| 1500601 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 当前设备不支持此功能 |
-| 1500602 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 无效号码 |
-| 1500603 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 内部错误 |
+| 合法值 | 描述 |
+| :- | :- |
+| 1500601 | 当前设备不支持此功能 |
+| 1500602 | 无效号码 |
+| 1500603 | 内部错误 |
 
 
 
@@ -157,5 +157,5 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 

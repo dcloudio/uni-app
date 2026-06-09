@@ -10,7 +10,7 @@ eval() 函数会将传入的字符串当做 JavaScript 代码进行执行。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| x | string | 是 | - | - | 一个表示 JavaScript 表达式、语句或一系列语句的字符串。表达式可以包含变量与已存在对象的属性。 | 
+| x | string | 是 |  |   | 一个表示 JavaScript 表达式、语句或一系列语句的字符串。表达式可以包含变量与已存在对象的属性。 | 
 
 
 **返回值**
@@ -24,9 +24,9 @@ eval() 函数会将传入的字符串当做 JavaScript 代码进行执行。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x | x |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | x | x | x |
 
 
 **uni-app 兼容性**
@@ -47,8 +47,8 @@ parseInt(string, radix) 解析一个字符串并返回指定基数的十进制�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| string | string | 是 | - | - | 要被解析的值。字符串开头的空白符将会被忽略。（注意：只接收字符串类型的参数，其他类型将编译报错。） |
-| radix | number | 否 | - | - | 从 2 到 36 的整数，表示进制的基数。例如指定 16 表示被解析值是十六进制数。如果超出这个范围，将返回 NaN。假如指定 0 或未指定，基数将会根据字符串的值进行推算。注意，推算的结果不会永远是默认值 10！ | 
+| string | string | 是 |  |   | 要被解析的值。字符串开头的空白符将会被忽略。（注意：只接收字符串类型的参数，其他类型将编译报错。） |
+| radix | number | 否 |  |   | 从 2 到 36 的整数，表示进制的基数。例如指定 16 表示被解析值是十六进制数。如果超出这个范围，将返回 NaN。假如指定 0 或未指定，基数将会根据字符串的值进行推算。注意，推算的结果不会永远是默认值 10！ | 
 
 
 **返回值**
@@ -151,7 +151,7 @@ parseFloat() 函数解析一个参数（直接收字符串类型的参数，其�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| string | string | 是 | - | - | 需要被解析成为浮点数的值。 | 
+| string | string | 是 |  |   | 需要被解析成为浮点数的值。 | 
 
 
 **返回值**
@@ -208,7 +208,7 @@ isNaN() 函数用来确定一个值是否为NaN 。注：isNaN函数内包含一
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| number | number | 是 | - | - | 要被检测的值。 | 
+| number | number | 是 |  |   | 要被检测的值。 | 
 
 
 **返回值**
@@ -286,7 +286,7 @@ isFinite() 函数用来判断被传入的参数值是否为一个有限数值（
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| number | number | 是 | - | - | 要被检测的值。 | 
+| number | number | 是 |  |   | 要被检测的值。 | 
 
 
 **返回值**
@@ -323,7 +323,7 @@ decodeURI() 函数能解码由encodeURI 创建或其他流程得到的统一资�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| encodedURI | string | 是 | - | - | 一个完整的编码过的 URI | 
+| encodedURI | string | 是 |  |   | 一个完整的编码过的 URI | 
 
 
 **返回值**
@@ -370,7 +370,7 @@ decodeURIComponent() 方法用于解码由 encodeURIComponent 方法或者其他
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| encodedURIComponent | string | 是 | - | - | 编码后的部分 URI | 
+| encodedURIComponent | string | 是 |  |   | 编码后的部分 URI | 
 
 
 **返回值**
@@ -417,7 +417,7 @@ encodeURI() 函数通过将特定字符的每个实例替换为一个、两个�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| uri | string | 是 | - | - | 一个完整的 URI。 | 
+| uri | string | 是 |  |   | 一个完整的 URI。 | 
 
 
 **返回值**
@@ -1454,7 +1454,7 @@ encodeURIComponent() 函数通过将特定字符的每个实例替换成代表�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| uriComponent | string | 是 | - | - | 要被检测的 string 值。 | 
+| uriComponent | string | 是 |  |   | 要被检测的 string 值。 | 
 
 
 **返回值**
@@ -1501,7 +1501,7 @@ atob() 函数会对经过 Base64 编码的字符串进行解码
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| encodedData | string | 是 | - | - | 一个包含 base64 编码数据的二进制字符串（即字符串中的每个字符都被视为一字节的二进制数据）。 | 
+| encodedData | string | 是 |  |   | 一个包含 base64 编码数据的二进制字符串（即字符串中的每个字符都被视为一字节的二进制数据）。 | 
 
 
 **返回值**
@@ -1514,7 +1514,7 @@ atob() 函数会对经过 Base64 编码的字符串进行解码
 
 >UTS
 ```uts
-      // #ifdef APP-ANDROID || APP-IOS || WEB
+      // #ifdef APP-ANDROID
       console.log(atob("")) // '';
       console.log(atob('aGVsbG8gd29ybGQ=')) // 'hello world';
       console.log(atob("QC0xMjM0NTY3ODkwcXdlcnR5dWlvcGFzZGZnaGprbHp4Y3Zibm0tUVdFUlRZVUlPUEFTREZHSEpLTFpYQ1ZCTk1ALTEyMzQ1Njc4OTBxd2VydHl1aW9wYXNkZmdoamtsenhjdmJubS1RV0VSVFlVSU9QQVNERkdISktMWlhDVkJOTUAtMTIzNDU2Nzg5MHF3ZXJ0eXVpb3Bhc2RmZ2hqa2x6eGN2Ym5tLVFXRVJUWVVJT1BBU0RGR0hKS0xaWENWQk5NQC0xMjM0NTY3ODkwcXdlcnR5dWlvcGFzZGZnaGprbHp4Y3Zibm0tUVdFUlRZVUlPUEFTREZHSEpLTFpYQ1ZCTk1ALTEyMzQ1Njc4OTBxd2VydHl1aW9wYXNkZmdoamtsenhjdmJubS1RV0VSVFlVSU9QQVNERkdISktMWlhDVkJOTQ==")) // '@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM';
@@ -1553,7 +1553,7 @@ btoa() 方法可以将一个二进制字符串（例如，将字符串中的每�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| stringToEncode | string | 是 | - | - | 一个需要编码的二进制字符串 | 
+| stringToEncode | string | 是 |  |   | 一个需要编码的二进制字符串 | 
 
 
 **返回值**
@@ -1566,7 +1566,7 @@ btoa() 方法可以将一个二进制字符串（例如，将字符串中的每�
 
 >UTS
 ```uts
-      // #ifdef APP-ANDROID || APP-IOS || WEB
+      // #ifdef APP-ANDROID
       console.log(btoa("")) // '';
       console.log(btoa("hello world")) // 'aGVsbG8gd29ybGQ=';
       console.log(btoa("@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM@-1234567890qwertyuiopasdfghjklzxcvbnm-QWERTYUIOPASDFGHJKLZXCVBNM")) // 'QC0xMjM0NTY3ODkwcXdlcnR5dWlvcGFzZGZnaGprbHp4Y3Zibm0tUVdFUlRZVUlPUEFTREZHSEpLTFpYQ1ZCTk1ALTEyMzQ1Njc4OTBxd2VydHl1aW9wYXNkZmdoamtsenhjdmJubS1RV0VSVFlVSU9QQVNERkdISktMWlhDVkJOTUAtMTIzNDU2Nzg5MHF3ZXJ0eXVpb3Bhc2RmZ2hqa2x6eGN2Ym5tLVFXRVJUWVVJT1BBU0RGR0hKS0xaWENWQk5NQC0xMjM0NTY3ODkwcXdlcnR5dWlvcGFzZGZnaGprbHp4Y3Zibm0tUVdFUlRZVUlPUEFTREZHSEpLTFpYQ1ZCTk1ALTEyMzQ1Njc4OTBxd2VydHl1aW9wYXNkZmdoamtsenhjdmJubS1RV0VSVFlVSU9QQVNERkdISktMWlhDVkJOTQ==';
@@ -1605,7 +1605,7 @@ btoa() 方法可以将一个二进制字符串（例如，将字符串中的每�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (task: number) => void | 是 | - | - | - | 
+| callback | (task: number) => void | 是 |  |   | - | 
 
 
 **返回值**
@@ -1621,13 +1621,13 @@ btoa() 方法可以将一个二进制字符串（例如，将字符串中的每�
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.25 | 4.25 | 4.61 | 4.25 | x | - |
+| 4.0 | 4.25 | 4.25 | 4.61 | 4.25 | x |  |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| x | x | - |
+| Android UTS 插件 | iOS UTS 插件 |
+| :- | :- |
+| x | x |
 
 
 
@@ -1642,7 +1642,7 @@ btoa() 方法可以将一个二进制字符串（例如，将字符串中的每�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| taskId | number | 是 | - | - | - | 
+| taskId | number | 是 |  |   | - | 
 
 
 **返回值**
@@ -1658,13 +1658,13 @@ btoa() 方法可以将一个二进制字符串（例如，将字符串中的每�
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.25 | 4.25 | 4.61 | 4.25 | x | - |
+| 4.0 | 4.25 | 4.25 | 4.61 | 4.25 | x |  |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| x | x | - |
+| Android UTS 插件 | iOS UTS 插件 |
+| :- | :- |
+| x | x |
 
 
 

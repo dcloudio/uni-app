@@ -23,37 +23,37 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **StartPullDownRefreshOptions** | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| options | **StartPullDownRefreshOptions** | 否 |  |   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | (result: [StartPullDownRefreshSuccess](#startpulldownrefreshsuccess-values)) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 接口调用成功的回调函数 |
-| fail | (result: [StartPullDownRefreshFail](#startpulldownrefreshfail-values)) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 接口调用失败的回调函数 |
-| complete | (result: [StartPullDownRefreshComplete](#startpulldownrefreshcomplete-values)) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (result: [StartPullDownRefreshSuccess](#startpulldownrefreshsuccess-values)) => void | 否 |  | 微信小程序: 4.41 | 接口调用成功的回调函数 |
+| fail | (result: [StartPullDownRefreshFail](#startpulldownrefreshfail-values)) => void | 否 |  | 微信小程序: 4.41 | 接口调用失败的回调函数 |
+| complete | (result: [StartPullDownRefreshComplete](#startpulldownrefreshcomplete-values)) => void | 否 |  | 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### StartPullDownRefreshSuccess 的属性值 @startpulldownrefreshsuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| errMsg | string | 是 |  |   |  |
 
 #### StartPullDownRefreshFail 的属性值 @startpulldownrefreshfail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 下拉刷新错误码<br/>- 4: 框架内部异常 |
-| errSubject | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 统一错误主题（模块）名称 |
-| data | any | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| errCode | number | 是 |  |   | 下拉刷新错误码<br/>- 4: 框架内部异常 |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
 
 #### StartPullDownRefreshComplete 的属性值 @startpulldownrefreshcomplete-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| errMsg | string | 是 |  |   |  |
 
 
 ### 返回值 
@@ -66,7 +66,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| errMsg | string | 是 |  |   |  | 
 
 
 
@@ -138,9 +138,12 @@
 ## 示例
 
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/API/pull-down-refresh/pull-down-refresh.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/API/pull-down-refresh/pull-down-refresh.uvue) 
->
-> 该 API 不支持 Web，请运行 hello uni-app x 到 App 平台体验 
-```uvue
+::: preview https://hellouniappx.dcloud.net.cn/web/#/pages/API/pull-down-refresh/pull-down-refresh
+
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/pull-down-refresh/pull-down-refresh
+
+>示例
+```vue
 <template>
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1;">
@@ -251,6 +254,8 @@
 
 ```
 
+:::
+
 ## 通用类型
 
 
@@ -258,5 +263,9 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 
+
+## Tips
+- 本API默认处理栈顶页面，而不是代码所在页面。[详见](./README.md#toppage)
+- iOS 平台蒸汽模式开启下拉刷新会触发页面 `onPageScroll` 生命周期，此时 `scrollTop` 为负值。

@@ -13,9 +13,9 @@
 创建一个监听权限申请的对象。
 
 ### createRequestPermissionListener 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| Web | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
 | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | - | 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 app-android平台，可使用本API监听应用权限申请确认框的弹出和关闭。不管是哪处的业务代码在申请权限，当弹出和关闭权限申请确认框时均会触发本监听事件。
@@ -41,54 +41,58 @@ app-android平台，可使用本API监听应用权限申请确认框的弹出和
 onRequest
 监听申请系统权限
 ##### onRequest 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | - | - | x | x |
+| Web | iOS | HarmonyOS |
+| :- | :- | :- |
+| x | x | x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (permissions: Array&lt;string&gt;) => void | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: x; HarmonyOS: x | 申请系统权限回调，permissions为触发权限申请的所有权限 | 
+| callback | (permissions: Array&lt;string&gt;) => void | 是 |  | Web: x; iOS: x; HarmonyOS: x | 申请系统权限回调，permissions为触发权限申请的所有权限 | 
+
 
 
 #### onConfirm(callback : RequestPermissionListenerConfirmCallback) : void @onconfirm
 onConfirm
 监听弹出系统权限授权框
 ##### onConfirm 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | - | - | x | x |
+| Web | iOS | HarmonyOS |
+| :- | :- | :- |
+| x | x | x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (permissions: Array&lt;string&gt;) => void | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: x; HarmonyOS: x | 弹出系统权限授权框回调，permissions为触发弹出权限授权框的所有权限 | 
+| callback | (permissions: Array&lt;string&gt;) => void | 是 |  | Web: x; iOS: x; HarmonyOS: x | 弹出系统权限授权框回调，permissions为触发弹出权限授权框的所有权限 | 
+
 
 
 #### onComplete(callback : RequestPermissionListenerCompleteCallback) : void @oncomplete
 onComplete
 监听权限申请完成
 ##### onComplete 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | - | - | x | x |
+| Web | iOS | HarmonyOS |
+| :- | :- | :- |
+| x | x | x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (permissions: Array&lt;string&gt;) => void | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: x; HarmonyOS: x | 权限申请完成回调，permissions为申请完成的所有权限 | 
+| callback | (permissions: Array&lt;string&gt;) => void | 是 |  | Web: x; iOS: x; HarmonyOS: x | 权限申请完成回调，permissions为申请完成的所有权限 | 
+
 
 
 #### stop() : void @stop
 stop
 取消所有监听
 ##### stop 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | - | - | x | x |
+| Web | iOS | HarmonyOS |
+| :- | :- | :- |
+| x | x | x |
+
 
 
  
@@ -205,7 +209,7 @@ stop
 - uni-app x 中如果请求一个已经被永久拒绝的权限，可能会触发`onConfirm`。目前的临时方案是做延时处理，如下面示例代码。后续会修复此问题。
 - 权限列表参考：[https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)
 - 全局监听权限申请可参考插件[uni-registerRequestPermissionTips](https://ext.dcloud.net.cn/plugin?name=uni-registerRequestPermissionTips)。
--
+
 ## 通用类型
 
 
@@ -213,5 +217,5 @@ stop
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 

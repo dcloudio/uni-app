@@ -5,11 +5,17 @@
 font-family 属性用于设置元素使用的字体，允许通过给定一个有先后顺序的，由字体名或者字体族名组成的列表来为元素设置字体。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,12 +34,12 @@ font-family: <family-name>;
 ### font-family 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| cursive | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 草书字体。这种字体有的有连笔，有的还有特殊的斜体效果。因为一般这种字体都有一点连笔效果，所以会给人一种手写的感觉。<br/>        例如：Brush Script MT、Brush Script Std、Lucida Calligraphy、Lucida Handwriting、Apple Chancery、cursive。 |
-| fantasy | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | Fantasy 字体主要是那些具有特殊艺术效果的字体。<br/>        例如：Papyrus、Herculanum、Party LET、Curlz MT、Harrington、fantasy。 |
-| monospace | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 等宽字体，即字体中每个字宽度相同。<br/>        例如：Fira Mono、DejaVu Sans Mono、Menlo、Consolas、Liberation Mono、Monaco、Lucida Console、monospace。 |
-| sans-serif | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 无衬线字体，即笔画结尾是平滑的字体。<br/>        例如：Open Sans、Fira Sans、Lucida Sans、Lucida Sans Unicode、Trebuchet MS、Liberation Sans、Nimbus Sans L、sans-serif。 |
-| serif | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 带衬线字体，笔画结尾有特殊的装饰线或衬线。<br/>        例如：Lucida Bright、Lucida Fax、Palatino、Palatino Linotype、Palladio、URW Palladio、serif。 |
-| uni-icon | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | uni-app x 内置字体图标 uni-icon |
+| cursive | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 草书字体。这种字体有的有连笔，有的还有特殊的斜体效果。因为一般这种字体都有一点连笔效果，所以会给人一种手写的感觉。<br/>        例如：Brush Script MT、Brush Script Std、Lucida Calligraphy、Lucida Handwriting、Apple Chancery、cursive。 |
+| fantasy | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | Fantasy 字体主要是那些具有特殊艺术效果的字体。<br/>        例如：Papyrus、Herculanum、Party LET、Curlz MT、Harrington、fantasy。 |
+| monospace | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 等宽字体，即字体中每个字宽度相同。<br/>        例如：Fira Mono、DejaVu Sans Mono、Menlo、Consolas、Liberation Mono、Monaco、Lucida Console、monospace。 |
+| sans-serif | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 无衬线字体，即笔画结尾是平滑的字体。<br/>        例如：Open Sans、Fira Sans、Lucida Sans、Lucida Sans Unicode、Trebuchet MS、Liberation Sans、Nimbus Sans L、sans-serif。 |
+| serif | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 带衬线字体，笔画结尾有特殊的装饰线或衬线。<br/>        例如：Lucida Bright、Lucida Fax、Palatino、Palatino Linotype、Palladio、URW Palladio、serif。 |
+| uni-icon | Web: x; Android: 4.33; Android(Vapor): 5.21; iOS: 4.33; iOS(Vapor): 5.11; HarmonyOS: 4.61 | uni-app x 内置字体图标 uni-icon |
 
 
 
@@ -87,19 +93,19 @@ font-family: <family-name>;
         <text class="uni-title-text title-color">setProperty 设置与 getPropertyValue 获取 font-family 测试</text>
 
         <!-- 普通版本 -->
-        <text class="uni-info">设置值: {{fontFamily}}</text>
-        <text class="uni-info">获取值: {{fontFamilyActual}}</text>
-        <text ref="textRef" class="common" :style="{ fontFamily: fontFamily }">当前 font-family: {{fontFamily}}</text>
+        <text class="uni-info">设置值: {{data.fontFamily}}</text>
+        <text class="uni-info">获取值: {{data.fontFamilyActual}}</text>
+        <text ref="textRef" class="common" :style="{ fontFamily: data.fontFamily }">当前 font-family: {{data.fontFamily}}</text>
 
         <!-- 拍平版本 -->
-        <text class="uni-info">设置值: {{fontFamily}}</text>
-        <text class="uni-info">获取值: {{fontFamilyActualFlat}}</text>
-        <text ref="textRefFlat" class="common" :style="{ fontFamily: fontFamily }" flatten>当前 font-family: {{fontFamily}}</text>
+        <text class="uni-info">设置值: {{data.fontFamily}}</text>
+        <text class="uni-info">获取值: {{data.fontFamilyActualFlat}}</text>
+        <text ref="textRefFlat" class="common" :style="{ fontFamily: data.fontFamily }" flatten>当前 font-family: {{data.fontFamily}}</text>
 
         <view class="uni-common-mt uni-common-mb">
           <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
           <enum-data :items="fontFamilyEnum" title="font-family 枚举值" @change="radioChangeFontFamily" :compact="true"></enum-data>
-          <input-data :defaultValue="fontFamily" title="font-family 自定义值" type="text" @confirm="inputChangeFontFamily"></input-data>
+          <input-data :defaultValue="data.fontFamily" title="font-family 自定义值" type="text" @confirm="inputChangeFontFamily"></input-data>
         </view>
       </view>
     </view>
@@ -132,25 +138,29 @@ font-family: <family-name>;
     { value: 5, name: 'UniFontFamily' }
   ]
 
-  const fontFamily = ref('monospace')
-  const fontFamilyActual = ref('')
-  const fontFamilyActualFlat = ref('')
+  const data = reactive({
+    fontFamily: 'monospace',
+    fontFamilyActual: '',
+    fontFamilyActualFlat: ''
+  })
   const textRef = ref(null as UniTextElement | null)
   const textRefFlat = ref(null as UniTextElement | null)
 
   const getPropertyValues = () => {
-    fontFamilyActual.value = textRef.value?.style.getPropertyValue('font-family') ?? ''
-    fontFamilyActualFlat.value = textRefFlat.value?.style.getPropertyValue('font-family') ?? ''
+    data.fontFamilyActual = textRef.value?.style.getPropertyValue('font-family') ?? ''
+    data.fontFamilyActualFlat = textRefFlat.value?.style.getPropertyValue('font-family') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeFontFamily = (value: string) => {
-    fontFamily.value = value
+    data.fontFamily = value
     textRef.value?.style.setProperty('font-family', value)
     textRefFlat.value?.style.setProperty('font-family', value)
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeFontFamily = (index: number) => {
@@ -166,6 +176,11 @@ font-family: <family-name>;
 
   onReady(() => {
     getPropertyValues()
+  })
+
+  defineExpose({
+    data,
+    radioChangeFontFamily
   })
 </script>
 

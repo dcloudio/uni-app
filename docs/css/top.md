@@ -5,11 +5,17 @@
 top样式属性定义了定位元素的上外边距边界与其包含块上边界之间的偏移，非定位元素设置此属性无效。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -29,7 +35,7 @@ top: <length> | <percentage> | auto;
 ### top 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 这个关键字表示：<br/>    <br/>      对于绝对定位元素，元素将忽略此属性已bottom属性为准，如果此时设置height: auto，将基于内容需要的高度设置高度；如果bottom也为auto的话，元素的垂直位置就是它假如作为静态 (即 static) 元素时该在的位置。<br/>      对于相对定位元素，元素相对正常位置的偏移量将基于bottom属性；如果bottom也为auto的话，元素将不会有偏移。 |
+| auto | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 这个关键字表示：<br/>    <br/>      对于绝对定位元素，元素将忽略此属性已bottom属性为准，如果此时设置height: auto，将基于内容需要的高度设置高度；如果bottom也为auto的话，元素的垂直位置就是它假如作为静态 (即 static) 元素时该在的位置。<br/>      对于相对定位元素，元素相对正常位置的偏移量将基于bottom属性；如果bottom也为auto的话，元素将不会有偏移。 |
 
 
 ### 默认值 @default-value 
@@ -120,10 +126,10 @@ top: <length> | <percentage> | auto;
     <view class="test-container">
       <view class="test-item">
         <text class="uni-subtitle-text">view 组件</text>
-        <text class="uni-info">设置值: {{top}}</text>
-        <text class="uni-info">获取值: {{topActual}}</text>
+        <text class="uni-info">设置值: {{data.top}}</text>
+        <text class="uni-info">获取值: {{data.topActual}}</text>
         <view class="test-box">
-          <view ref="viewRef" class="common test-view" :style="{ top: top }">
+          <view ref="viewRef" class="common test-view" :style="{ top: data.top }">
             <text class="common-text">view</text>
           </view>
         </view>
@@ -131,19 +137,19 @@ top: <length> | <percentage> | auto;
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件</text>
-        <text class="uni-info">设置值: {{top}}</text>
-        <text class="uni-info">获取值: {{topActualText}}</text>
+        <text class="uni-info">设置值: {{data.top}}</text>
+        <text class="uni-info">获取值: {{data.topActualText}}</text>
         <view class="test-box">
-          <text ref="textRef" class="common common-text test-text" :style="{ top: top }">text</text>
+          <text ref="textRef" class="common common-text test-text" :style="{ top: data.top }">text</text>
         </view>
       </view>
 
       <view class="test-item">
         <text class="uni-subtitle-text">image 组件</text>
-        <text class="uni-info">设置值: {{top}}</text>
-        <text class="uni-info">获取值: {{topActualImage}}</text>
+        <text class="uni-info">设置值: {{data.top}}</text>
+        <text class="uni-info">获取值: {{data.topActualImage}}</text>
         <view class="test-box">
-          <image ref="imageRef" class="common test-image" :style="{ top: top }" src="/static/test-image/logo.png"></image>
+          <image ref="imageRef" class="common test-image" :style="{ top: data.top }" src="/static/test-image/logo.png"></image>
         </view>
       </view>
     </view>
@@ -152,10 +158,10 @@ top: <length> | <percentage> | auto;
     <view class="test-container">
       <view class="test-item">
         <text class="uni-subtitle-text">view 组件拍平</text>
-        <text class="uni-info">设置值: {{top}}</text>
-        <text class="uni-info">获取值: {{topActualFlat}}</text>
+        <text class="uni-info">设置值: {{data.top}}</text>
+        <text class="uni-info">获取值: {{data.topActualFlat}}</text>
         <view class="test-box">
-          <view ref="viewRefFlat" class="common test-view-flatten" :style="{ top: top }" flatten>
+          <view ref="viewRefFlat" class="common test-view-flatten" :style="{ top: data.top }" flatten>
             <text class="common-text">view</text>
           </view>
         </view>
@@ -163,19 +169,19 @@ top: <length> | <percentage> | auto;
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件拍平</text>
-        <text class="uni-info">设置值: {{top}}</text>
-        <text class="uni-info">获取值: {{topActualTextFlat}}</text>
+        <text class="uni-info">设置值: {{data.top}}</text>
+        <text class="uni-info">获取值: {{data.topActualTextFlat}}</text>
         <view class="test-box">
-          <text ref="textRefFlat" class="common common-text test-text-flatten" :style="{ top: top }" flatten>text</text>
+          <text ref="textRefFlat" class="common common-text test-text-flatten" :style="{ top: data.top }" flatten>text</text>
         </view>
       </view>
 
       <view class="test-item">
         <text class="uni-subtitle-text">image 组件拍平</text>
-        <text class="uni-info">设置值: {{top}}</text>
-        <text class="uni-info">获取值: {{topActualImageFlat}}</text>
+        <text class="uni-info">设置值: {{data.top}}</text>
+        <text class="uni-info">获取值: {{data.topActualImageFlat}}</text>
         <view class="test-box">
-          <image ref="imageRefFlat" class="common test-image-flatten" :style="{ top: top }" flatten src="/static/test-image/logo.png"></image>
+          <image ref="imageRefFlat" class="common test-image-flatten" :style="{ top: data.top }" flatten src="/static/test-image/logo.png"></image>
         </view>
       </view>
     </view>
@@ -183,7 +189,7 @@ top: <length> | <percentage> | auto;
     <view class="uni-common-mt uni-common-mb">
       <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
       <enum-data :items="topEnum" title="top 枚举值" @change="radioChangeTop" :compact="true"></enum-data>
-      <input-data :defaultValue="top" title="top 自定义值" type="text" @confirm="inputChangeTop"></input-data>
+      <input-data :defaultValue="data.top" title="top 自定义值" type="text" @confirm="inputChangeTop"></input-data>
     </view>
 
     <view class="uni-common-mb">
@@ -217,13 +223,15 @@ top: <length> | <percentage> | auto;
     { value: 7, name: 'auto' }
   ]
 
-  const top = ref('10px')
-  const topActual = ref('')
-  const topActualText = ref('')
-  const topActualImage = ref('')
-  const topActualFlat = ref('')
-  const topActualTextFlat = ref('')
-  const topActualImageFlat = ref('')
+  const data = reactive({
+    top: '10px',
+    topActual: '',
+    topActualText: '',
+    topActualImage: '',
+    topActualFlat: '',
+    topActualTextFlat: '',
+    topActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -232,16 +240,18 @@ top: <length> | <percentage> | auto;
   const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    topActual.value = viewRef.value?.style.getPropertyValue('top') ?? ''
-    topActualFlat.value = viewRefFlat.value?.style.getPropertyValue('top') ?? ''
-    topActualText.value = textRef.value?.style.getPropertyValue('top') ?? ''
-    topActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('top') ?? ''
-    topActualImage.value = imageRef.value?.style.getPropertyValue('top') ?? ''
-    topActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('top') ?? ''
+    data.topActual = viewRef.value?.style.getPropertyValue('top') ?? ''
+    data.topActualFlat = viewRefFlat.value?.style.getPropertyValue('top') ?? ''
+    data.topActualText = textRef.value?.style.getPropertyValue('top') ?? ''
+    data.topActualTextFlat = textRefFlat.value?.style.getPropertyValue('top') ?? ''
+    data.topActualImage = imageRef.value?.style.getPropertyValue('top') ?? ''
+    data.topActualImageFlat = imageRefFlat.value?.style.getPropertyValue('top') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeTop = (value: string) => {
-    top.value = value
+    data.top = value
     viewRef.value?.style.setProperty('top', value)
     viewRefFlat.value?.style.setProperty('top', value)
     textRef.value?.style.setProperty('top', value)
@@ -251,7 +261,7 @@ top: <length> | <percentage> | auto;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeTop = (index: number) => {
@@ -270,7 +280,8 @@ top: <length> | <percentage> | auto;
   })
 
   defineExpose({
-    radioChangeTop
+    radioChangeTop,
+    data
   })
 </script>
 

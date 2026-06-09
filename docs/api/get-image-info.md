@@ -3,73 +3,73 @@
 获取图片信息
 
 ### getImageInfo 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.18 | 4.25 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.18 | 4.25 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **GetImageInfoOptions** | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| options | **GetImageInfoOptions** | 是 |  |   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| src | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 | - | Web: -; 微信小程序: -; Android: 4.18; iOS: 4.25; HarmonyOS: - | 图片的路径，可以是相对路径，临时文件路径，存储文件路径，网络图片路径 |
-| success | (callback: [GetImageInfoSuccess](#getimageinfosuccess-values)) => void | 否 | - | Web: -; 微信小程序: -; Android: 4.18; iOS: 4.25; HarmonyOS: - | 接口调用成功的回调函数 |
-| fail | (callback: [GetImageInfoFail](#getimageinfofail-values)) => void | 否 | - | Web: -; 微信小程序: -; Android: 4.18; iOS: 4.25; HarmonyOS: - | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 | - | Web: -; 微信小程序: -; Android: 4.18; iOS: 4.25; HarmonyOS: - | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| src | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 |  | Android: 4.18; iOS: 4.25 | 图片的路径，可以是相对路径，临时文件路径，存储文件路径，网络图片路径 |
+| success | (callback: [GetImageInfoSuccess](#getimageinfosuccess-values)) => void | 否 |  | Android: 4.18; iOS: 4.25 | 接口调用成功的回调函数 |
+| fail | (callback: [GetImageInfoFail](#getimageinfofail-values)) => void | 否 |  | Android: 4.18; iOS: 4.25 | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 |  | Android: 4.18; iOS: 4.25 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### GetImageInfoSuccess 的属性值 @getimageinfosuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| width | number | 是 | - | Web: -; 微信小程序: -; Android: 4.18; iOS: 4.25; HarmonyOS: - | 图片宽度，单位px |
-| height | number | 是 | - | Web: -; 微信小程序: -; Android: 4.18; iOS: 4.25; HarmonyOS: - | 图片高度，单位px |
-| path | string | 是 | - | Web: -; 微信小程序: -; Android: 4.18; iOS: 4.25; HarmonyOS: - | 返回图片的本地路径 |
-| orientation | string | 否 | - | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS: - | 返回图片的方向 |
-| type | string | 否 | - | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS: - | 返回图片的格式 |
+| width | number | 是 |  | Android: 4.18; iOS: 4.25 | 图片宽度，单位px |
+| height | number | 是 |  | Android: 4.18; iOS: 4.25 | 图片高度，单位px |
+| path | string | 是 |  | Android: 4.18; iOS: 4.25 | 返回图片的本地路径 |
+| orientation | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 返回图片的方向 |
+| type | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 返回图片的格式 |
 
 #### orientation 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| up | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | - |
-| down | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | - |
-| left | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | - |
-| right | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | - |
-| up-mirrored | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | - |
-| down-mirrored | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | - |
-| left-mirrored | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | - |
-| right-mirrored | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | - |
+| 合法值 | 描述 |
+| :- | :- |
+| up |  |
+| down |  |
+| left |  |
+| right |  |
+| up-mirrored |  |
+| down-mirrored |  |
+| left-mirrored |  |
+| right-mirrored |  |
 
 #### GetImageInfoFail 的属性值 @getimageinfofail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误码 |
-| errSubject | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 统一错误主题（模块）名称 |
-| data | any | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| errCode | number | 是 |  |   | 错误码 |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| 1101001 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 用户取消 |
-| 1101002 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | urls至少包含一张图片地址 |
-| 1101003 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 文件不存在 |
-| 1101004 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 图片加载失败 |
-| 1101005 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 未获取权限 |
-| 1101006 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 图片或视频保存失败 |
-| 1101007 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 图片裁剪失败 |
-| 1101008 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 拍照或录像失败 |
-| 1101009 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 图片压缩失败 |
-| 1101010 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 其他错误 |
+| 合法值 | 描述 |
+| :- | :- |
+| 1101001 | 用户取消 |
+| 1101002 | urls至少包含一张图片地址 |
+| 1101003 | 文件不存在 |
+| 1101004 | 图片加载失败 |
+| 1101005 | 未获取权限 |
+| 1101006 | 图片或视频保存失败 |
+| 1101007 | 图片裁剪失败 |
+| 1101008 | 拍照或录像失败 |
+| 1101009 | 图片压缩失败 |
+| 1101010 | 其他错误 |
 
 
 
@@ -240,5 +240,5 @@ web平台读取图片的exif信息，需要引入三方库。考虑到影响web 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 

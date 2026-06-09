@@ -22,9 +22,9 @@ list-view和scroll-view都是滚动组件，list适用于长列表场景，其�
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.02 | 4.41 | 3.9 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.02 | 4.41 | 3.9 | 4.11 | 5.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | 5.0 |
 
 
 目前微信小程序下，list-view被编译为scroll-view。目前uni-app x还未优化skyline的配置，未来会把list-view编译为skyline的list-view。
@@ -32,58 +32,59 @@ list-view和scroll-view都是滚动组件，list适用于长列表场景，其�
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| direction | string | "vertical" | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 滚动方向，可取值 none、horizontal、vertical，默认值vertical。注：iOS 平台仅支持vertical |
-| ~~scroll-x~~ | boolean | false | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 允许横向滚动，不支持同时设置scroll-y属性为true，同时设置true时scroll-y生效。已废弃，请改用direction |
-| ~~scroll-y~~ | boolean | true | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x; HarmonyOS(Vapor): - | 允许纵向滚动，不支持同时设置scroll-x属性为true，同时设置true时scroll-y生效。已废弃，请改用direction |
-| ~~rebound~~ | boolean | true | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 控制是否回弹效果。已废弃，请改用bounces |
-| associative-container | string | "" | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 关联的滚动容器 |
-| bounces | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 控制是否回弹效果 优先级高于rebound |
-| upper-threshold | number | 50 | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 距顶部/左边多远时（单位px），触发 scrolltoupper 事件 |
-| lower-threshold | number | 50 | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 距底部/右边多远时（单位px），触发 scrolltolower 事件 |
-| scroll-top | number | 0 | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 设置竖向滚动条位置 |
-| scroll-left | number | 0 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x; HarmonyOS(Vapor): - | 设置横向滚动条位置 |
-| show-scrollbar | boolean | true | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 控制是否出现滚动条 |
-| scroll-into-view | string([string.IDString](/uts/data-type.md#ide-string)) | - | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素起始位置 |
-| scroll-with-animation | boolean | false | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 是否在设置滚动条位置时使用滚动动画，设置false没有滚动动画 |
-| refresher-enabled | boolean | false | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 开启下拉刷新，暂时不支持scroll-x = true横向刷新 |
-| refresher-threshold | number | 45 | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 设置下拉刷新阈值, 仅 refresher-default-style = 'none' 自定义样式下生效 |
-| refresher-max-drag-distance | number | - | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 设置下拉最大拖拽距离（单位px），默认是下拉刷新控件高度的2.5倍 |
-| refresher-default-style | string | "black" | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 设置下拉刷新默认样式，支持设置 black \| white \| none， none 表示不使用默认样式 |
-| refresher-background | string([string.ColorString](/uts/data-type.md#ide-string)) | "transparent" | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 设置下拉刷新区域背景颜色，默认透明 |
-| refresher-triggered | boolean | false | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发 |
-| enable-back-to-top | boolean | false | Web: x; 微信小程序: x; Android: x; iOS: 4.11; HarmonyOS: x; HarmonyOS(Vapor): - | iOS点击顶部状态栏滚动条返回顶部，只支持竖向 |
-| custom-nested-scroll | boolean | false | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 子元素是否开启嵌套滚动 将滚动事件与父元素协商处理 |
-| padding | Array | - | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | *(Array)*<br/>长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距 |
-| @refresherpulling | (event: [UniRefresherEvent](#unirefresherevent)) => void | - | Web: 4.11; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 下拉刷新控件被下拉 |
-| @refresherrefresh | (event: [UniRefresherEvent](#unirefresherevent)) => void | - | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 下拉刷新被触发 |
-| @refresherrestore | (event: [UniRefresherEvent](#unirefresherevent)) => void | - | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 下拉刷新被复位 |
-| @refresherabort | (event: [UniRefresherEvent](#unirefresherevent)) => void | - | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 下拉刷新被中止 |
-| @scrolltoupper | (event: [UniScrollToUpperEvent](#uniscrolltoupperevent)) => void | - | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 滚动到顶部/左边，会触发 scrolltoupper 事件 |
-| @scrolltolower | (event: [UniScrollToLowerEvent](#uniscrolltolowerevent)) => void | - | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 滚动到底部/右边，会触发 scrolltolower 事件 |
-| @scroll | (event: [UniScrollEvent](#uniscrollevent)) => void | - | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 滚动时触发，event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY} |
-| @scrollend | (event: [UniScrollEvent](#uniscrollevent)) => void | - | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 滚动结束时触发，event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY} |
+| direction | string | "vertical" | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 滚动方向，可取值 none、horizontal、vertical，默认值vertical。注：iOS 平台仅支持vertical |
+| ~~scroll-x~~ | boolean | false | Web: x; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 允许横向滚动，不支持同时设置scroll-y属性为true，同时设置true时scroll-y生效。已废弃，请改用direction |
+| ~~scroll-y~~ | boolean | true | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 允许纵向滚动，不支持同时设置scroll-x属性为true，同时设置true时scroll-y生效。已废弃，请改用direction |
+| ~~rebound~~ | boolean | true | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 控制是否回弹效果。已废弃，请改用bounces |
+| associative-container | string | "" | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 关联的滚动容器 |
+| bounces | boolean \| string | true | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 控制是否回弹效果 优先级高于rebound |
+| upper-threshold | number | 50 | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 距顶部/左边多远时（单位px），触发 scrolltoupper 事件 |
+| lower-threshold | number | 50 | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 距底部/右边多远时（单位px），触发 scrolltolower 事件 |
+| scroll-top | number | 0 | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置竖向滚动条位置 |
+| scroll-left | number | 0 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 设置横向滚动条位置 |
+| show-scrollbar | boolean \| string | true | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 控制是否出现滚动条 |
+| scroll-into-view | string([string.IDString](/uts/data-type.md#ide-string)) |   | Web: 5.08; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.08 | 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素起始位置 |
+| scroll-with-animation | boolean \| string | false | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.08 | 是否在设置滚动条位置时使用滚动动画，设置false没有滚动动画 |
+| refresher-enabled | boolean \| string | false | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 开启下拉刷新，暂时不支持scroll-x = true横向刷新 |
+| refresher-threshold | number | 45 | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置下拉刷新阈值, 仅 refresher-default-style = 'none' 自定义样式下生效 |
+| refresher-max-drag-distance | number |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置下拉最大拖拽距离（单位px），默认是下拉刷新控件高度的2.5倍 |
+| refresher-default-style | string | "black" | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设置下拉刷新默认样式，支持设置 black \| white \| none， none 表示不使用默认样式 |
+| refresher-background | string([string.ColorString](/uts/data-type.md#ide-string)) | "transparent" | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置下拉刷新区域背景颜色，默认透明 |
+| refresher-triggered | boolean \| string | false | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发 |
+| enable-back-to-top | boolean \| string | false | Web: x; 微信小程序: x; Android: x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: x | iOS点击顶部状态栏滚动条返回顶部，只支持竖向 |
+| custom-nested-scroll | boolean \| string | false | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 子元素是否开启嵌套滚动 将滚动事件与父元素协商处理 |
+| padding | Array |   | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | *(Array)*<br/>长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距 |
+| nested-scroll-child | string |   |   |   |
+| @refresherpulling | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: 4.11; 微信小程序: x; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 下拉刷新控件被下拉 |
+| @refresherrefresh | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 下拉刷新被触发 |
+| @refresherrestore | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 下拉刷新被复位 |
+| @refresherabort | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 下拉刷新被中止 |
+| @scrolltoupper | (event: [UniScrollToUpperEvent](#uniscrolltoupperevent)) => void |   | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 滚动到顶部/左边，会触发 scrolltoupper 事件 |
+| @scrolltolower | (event: [UniScrollToLowerEvent](#uniscrolltolowerevent)) => void |   | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 滚动到底部/右边，会触发 scrolltolower 事件 |
+| @scroll | (event: [UniScrollEvent](#uniscrollevent)) => void |   | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 滚动时触发，event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY} |
+| @scrollend | (event: [UniScrollEvent](#uniscrollevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 滚动结束时触发，event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY} |
 
 #### direction 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| none | Web: 4.02; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 禁止滚动 |
-| horizontal | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 横向滚动 |
-| vertical | Web: 4.02; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 竖向滚动 |
+| none | Web: 4.02; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 禁止滚动 |
+| horizontal | Web: x; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 横向滚动 |
+| vertical | Web: 4.02; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 竖向滚动 |
 
 #### associative-container 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| nested-scroll-view | Web: x; 微信小程序: -; Android: 4.11; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 嵌套滚动 |
+| nested-scroll-view | Web: x; Android: 4.11; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 嵌套滚动 |
 
 #### refresher-default-style 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| black | Web: -; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 深颜色雪花样式 |
-| white | Web: -; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 浅白色雪花样式 |
-| none | Web: 4.11; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 不使用默认样式 |
+| black | 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 深颜色雪花样式 |
+| white | 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 浅白色雪花样式 |
+| none | Web: 4.11; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不使用默认样式 |
 
 
 ### 事件
@@ -99,13 +100,13 @@ UniRefresherEvent -- Extends --> UniEvent
 ##### UniRefresherEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniRefresherEventDetail** | 是 | - | - | - |
+| detail | **UniRefresherEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| dy | number | 是 | - | - | - |
+| dy | number | 是 |  |   |  |
 
 
 #### UniScrollToUpperEvent
@@ -120,13 +121,13 @@ UniScrollToUpperEvent -- Extends --> UniEvent
 ##### UniScrollToUpperEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniScrollToUpperEventDetail** | 是 | - | - |  |
+| detail | **UniScrollToUpperEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| direction | string | 是 | - | - | 滚动方向 top 或 left |
+| direction | string | 是 |  |   | 滚动方向 top 或 left |
 
 
 #### UniScrollToLowerEvent
@@ -141,13 +142,13 @@ UniScrollToLowerEvent -- Extends --> UniEvent
 ##### UniScrollToLowerEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniScrollToLowerEventDetail** | 是 | - | - |  |
+| detail | **UniScrollToLowerEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| direction | string | 是 | - | - | 滚动方向 bottom 或 right |
+| direction | string | 是 |  |   | 滚动方向 bottom 或 right |
 
 
 #### UniScrollEvent
@@ -162,18 +163,18 @@ UniScrollEvent -- Extends --> UniEvent
 ##### UniScrollEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniScrollEventDetail** | 是 | - | - |  |
+| detail | **UniScrollEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| scrollTop | number | 是 | - | - | 竖向滚动的距离 |
-| scrollLeft | number | 是 | - | - | 横向滚动的距离 |
-| scrollHeight | number | 是 | - | - | 滚动区域的高度 |
-| scrollWidth | number | 是 | - | - | 滚动区域的宽度 |
-| deltaY | number | 是 | - | - | 当次滚动事件竖向滚动量 |
-| deltaX | number | 是 | - | - | 当次滚动事件横向滚动量 |
+| scrollTop | number | 是 |  |   | 竖向滚动的距离 |
+| scrollLeft | number | 是 |  |   | 横向滚动的距离 |
+| scrollHeight | number | 是 |  |   | 滚动区域的高度 |
+| scrollWidth | number | 是 |  |   | 滚动区域的宽度 |
+| deltaY | number | 是 |  |   | 当次滚动事件竖向滚动量 |
+| deltaX | number | 是 |  |   | 当次滚动事件横向滚动量 |
 
 
 
@@ -217,7 +218,7 @@ scroll-view开启嵌套模式后，list-view 可作为内层滚动视图与外�
 ### 子组件 @children-tags
 | 子组件 | 兼容性 |
 | :- | :- |
-| [list-item](list-item.md)<br/>[sticky-header](sticky-header.md)<br/>[sticky-section](sticky-section.md) | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - |
+| [list-item](list-item.md)<br/>[sticky-header](sticky-header.md)<br/>[sticky-section](sticky-section.md) | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 |
 
 子组件sticky-header/section用于处理吸顶的场景。
 
@@ -673,6 +674,110 @@ scroll-view开启嵌套模式后，list-view 可作为内层滚动视图与外�
 - 不支持scroll-into-view属性
 - 不支持横向滚动
 
+<!-- ## list-item -->
+
+::: sourceCode
+## list-item
+:::
+
+> 组件类型：UniListItemElement 
+
+ list-view组件的子组件。每个item是一行
+
+
+### 兼容性
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.02 | 4.41 | 3.9 | 4.11 | 5.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | 5.0 |
+
+
+### 属性 
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| type | number | 0 | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.25; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 对应list-item的类型 list-view 将对同类型条目进行复用，所以合理的类型拆分，可以很好地提升 list-view 性能 |
+| item-key | string \| number |   |   |   |
+| item-height | number |   |   |   |
+
+### list-item复用机制
+
+> 仅App平台支持复用 (iOS 4.25+版本支持)。Web平台仅渲染当前屏幕及上下一定高度内的元素，没有对list-item进行复用。
+
++ 良好的复用，需要在list-item上使用v-for且配置:key。
++ type属性定义list-item组件类型。不赋值type属性默认值为0，每一个type类型都会有对应的list-item组件缓存池。
++ 鸿蒙平台在非蒸汽模式不支持type属性，会将一个list-view下所有list-item放在一个缓存池进行复用。蒸汽模式支持type分类复用。
++ list-view组件加载list-item组件时，会优先查询对应type缓存池是否存在可复用的list-item组件。有则复用没有则创建新的list-item组件。
++ list-item组件被滑动出屏幕则会优先添加到对应类型的list-item缓存池，每个类型缓存最大5~8个（不同平台缓存最大值不固定），如果缓存池已满则进行组件销毁！
++ 部分list-item组件存在子元素个数差异时。请尽可能的配置不同的type，可以规避获取相同type类型的list-item组件因子元素个数差异导致重新创建，增加性能消耗。
+	* 举例1：list-item里放置banner图，该list-item应该设置独立的type，不需要复用，每次从缓存池拿出即可，触发复用反而会出现滚动位置异常图片重新加载等异常情况。
+	* 举例2：list-item子元素个数存在差异应设置不同的type，type相同则会导致list-item复用时因子元素个数差异复用失败，元素重新创建增加性能消耗。具体可参考示例：
+
+```html
+	<template>
+	  <view class="content">
+		<list-view ref="listView" class="list" :scroll-y="true">
+		  <list-item v-for="(item,index) in list" :key="item" class="content-item1" type=1>
+			<text class="text">title-{{item}}</text>
+			<text class="text">content-{{item}}</text>
+		  </list-item>
+		  <list-item v-for="(item,index) in list" :key="item" class="content-item2" type=2>
+		  	<image class="image" src ="/static/test-image/logo.png"></image>
+		  </list-item>
+		  <list-item type=3>
+			<text class="loading">{{text}}</text>
+		  </list-item>
+		</list-view>
+	  </view>
+	</template>
+```
+
+示例中有三种类型的list-item组件。如果type都是默认值0，list-item组件滑动出屏幕后都归类到type=0的缓存池。当触发list-item组件重新加载时，获取type=0的缓存池的组件，获取到的list-item组件可能是两个text子组件也可能是一个image子组件或一个text子组件，底层复用判断时则认为该情况异常不复用，重新创建新的list-item组件！复用失败未能优化性能。正确的方式则是不同的类型设置不同的type。加载时则会获取对应type类型缓存池中的list-item组件实现复用。
+
+**注意：**
+
+1. 避免对list-item组件的子元素设置event事件，复用后list-item组件部分子元素可能无法正常响应event，有相关业务需要对子元素设置event事件，可对list-item组件设置独立的type实现不复用。
+2. App-iOS平台：使用 v-for 遍历集合方式创建 list-item 时，需要绑定 :key 并要保证值唯一，最好不要使用 index，否则可能会引起 list-item 显示顺序错乱的问题；
+
+
+
+<!-- UTSCOMJSON.list-item.component_type-->
+
+### 子组件 @children-tags
+支持所有组件
+
+
+
+
+### 参见
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=component.view-container.list-view.list-item)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=list-item&doc_type=miniprogram)
+- [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=list-item&pageIndex=1&pageSize=10&source=doc_top&type=all)
+- [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=list-item&scope=devdocs&source=docs)
+- [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=list-item&secondType=all&type=1)
+- [飞书小程序文档](https://open.feishu.cn/search?from=header&page=1&pageSize=10&q=list-item&topicFilter=)
+- [钉钉小程序文档](https://open.dingtalk.com/search?keyword=list-item)
+- [QQ小程序文档](https://q.qq.com/wiki/develop/miniprogram/frame/)
+- [快手小程序文档](https://developers.kuaishou.com/page?keyword=list-item&from=docs)
+- [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
+- [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
+- [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+
+#### App平台
+
++ App平台scroll-x、scroll-y属性不支持同时设置为true，同时设置true时仅scroll-y生效。4.0版本开始scroll-x、scroll-y已废弃，请使用direction属性。
++ App平台list-view组件默认高度取值：
+	- list-view组件的子元素高度之和未超过list-view组件的父元素高度：
+		+ list-view组件的默认高度取值为子元素高度之和
+	- list-view组件的子元素高度之和超过list-view组件的父元素高度：
+		+ 3.9版本list-view组件默认高度取值为list-view组件父元素的高度。子元素高度之和超过list-view组件的高度，list-view组件可滚动。
+		+ 4.0版本开始list-view组件的默认高度取值为子元素高度之和。高度相同list-view组件无法滚动。开发者需要设置css属性定义list-view组件高度，让list-view组件高度小于子元素高度之和，实现滚动能力。
+
+#### Web平台
+
++ web平台仅渲染当前屏幕及上下一定距离的内容，滚动高度为空白容器占位，因此如果使用dom API获取list-item内的元素可能无法取到。
++ scroll-with-animation属性在safari 15.4以下版本不支持
++ 尽量避免在list-item上使用浏览器的[外边距折叠特性](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_box_model/Mastering_margin_collapsing)会导致list-view无法准确计算回收的元素的高度，进而导致滚动出现异常。即不要同时为list-item设置上边距（margin-top）和下边距（margin-bottom）。
+
+
 ## 性能优化
 长列表是非常需要注意性能优化的。
 当你的长列表卡顿时，请注意：
@@ -696,3 +801,4 @@ scroll-view开启嵌套模式后，list-view 可作为内层滚动视图与外�
 - 如需im那样的倒序列表，App端可给组件style配置 `transform: rotate(180deg)` 来实现。注意与下拉刷新有冲突，此时应避免启用下拉刷新。可参考[uni-ai x源码](https://ext.dcloud.net.cn/plugin?id=23902)
 - list-view组件的overflow属性不支持配置visible
 - list-view组件不适合做瀑布流，多列瀑布流另见 [waterflow组件](./waterflow.md)
+- 蒸汽模式下 受限于list-item回收的特性，scroll-into-view可能无法准确滚动到指定位置。

@@ -5,11 +5,17 @@
 justify-content 属性设置弹性容器的子元素在主轴方向的对齐方式，控制如何在主轴方向分配内容元素之间和周围的空间。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,12 +34,12 @@ justify-content: normal | <content-distribution> | <overflow-position>? [ <conte
 ### justify-content 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| center | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 元素紧密地排列在主轴方向居中对齐。第一个元素到主轴首的距离将与最后一个元素到主轴尾的距离相同 |
-| flex-start | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 元素紧密地排列在容器主轴起始侧 |
-| flex-end | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 元素紧密地排列在容器主轴结束侧 |
-| space-between | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 在主轴上均匀分配元素，相邻元素间距离相同。第一个元素与主轴首对齐，最后一个元素与主轴尾对齐 |
-| space-around | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 元素沿着主轴均匀分布在容器中，相邻元素间距离相同。主轴起始位置到第一个元素的间距，主轴结束位置到最后一个元素的间距，是相邻元素之间距离的一半 |
-| space-evenly | Web: 4.0; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 元素都沿着主轴均匀分布在指定的对齐容器中。相邻元素之间的间距，主轴起始位置到第一个元素的间距，主轴结束位置到最后一个元素的间距，都完全一样 |
+| center | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素紧密地排列在主轴方向居中对齐。第一个元素到主轴首的距离将与最后一个元素到主轴尾的距离相同 |
+| flex-start | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素紧密地排列在容器主轴起始侧 |
+| flex-end | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素紧密地排列在容器主轴结束侧 |
+| space-between | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 在主轴上均匀分配元素，相邻元素间距离相同。第一个元素与主轴首对齐，最后一个元素与主轴尾对齐 |
+| space-around | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素沿着主轴均匀分布在容器中，相邻元素间距离相同。主轴起始位置到第一个元素的间距，主轴结束位置到最后一个元素的间距，是相邻元素之间距离的一半 |
+| space-evenly | Web: 4.0; Android: 4.61; Android(Vapor): 5.21; iOS: 4.61; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素都沿着主轴均匀分布在指定的对齐容器中。相邻元素之间的间距，主轴起始位置到第一个元素的间距，主轴结束位置到最后一个元素的间距，都完全一样 |
 
 
 ### 默认值 @default-value 
@@ -192,10 +198,10 @@ justify-content: normal | <content-distribution> | <overflow-position>? [ <conte
         <!-- 普通版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">justify-content</text>
-          <text class="uni-info">设置值: {{justifyContent}}</text>
-          <text class="uni-info">获取值: {{justifyContentActual}}</text>
+          <text class="uni-info">设置值: {{data.justifyContent}}</text>
+          <text class="uni-info">获取值: {{data.justifyContentActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="test-flex-container test-view" :style="{ justifyContent: justifyContent }">
+            <view ref="viewRef" class="test-flex-container test-view" :style="{ justifyContent: data.justifyContent }">
               <view class="test-item-small red"></view>
               <view class="test-item-small green"></view>
               <view class="test-item-small blue"></view>
@@ -206,10 +212,10 @@ justify-content: normal | <content-distribution> | <overflow-position>? [ <conte
         <!-- 拍平版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">拍平</text>
-          <text class="uni-info">设置值: {{justifyContent}}</text>
-          <text class="uni-info">获取值: {{justifyContentActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.justifyContent}}</text>
+          <text class="uni-info">获取值: {{data.justifyContentActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="test-flex-container test-view-flatten" :style="{ justifyContent: justifyContent }" flatten>
+            <view ref="viewRefFlat" class="test-flex-container test-view-flatten" :style="{ justifyContent: data.justifyContent }" flatten>
               <view class="test-item-small red"></view>
               <view class="test-item-small green"></view>
               <view class="test-item-small blue"></view>
@@ -221,7 +227,7 @@ justify-content: normal | <content-distribution> | <overflow-position>? [ <conte
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
           <enum-data :items="justifyContentEnum" title="justify-content 枚举值" @change="radioChangeJustifyContent" :compact="true"></enum-data>
-        <input-data :defaultValue="justifyContent" title="justify-content 自定义值" type="text" @confirm="inputChangeJustifyContent"></input-data>
+        <input-data :defaultValue="data.justifyContent" title="justify-content 自定义值" type="text" @confirm="inputChangeJustifyContent"></input-data>
       </view>
 
     </view>
@@ -243,25 +249,29 @@ justify-content: normal | <content-distribution> | <overflow-position>? [ <conte
     { value: 6, name: 'space-evenly' }
   ]
 
-  const justifyContent = ref('center')
-  const justifyContentActual = ref('')
-  const justifyContentActualFlat = ref('')
+  const data = reactive({
+    justifyContent: 'center',
+    justifyContentActual: '',
+    justifyContentActualFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const viewRefFlat = ref(null as UniElement | null)
 
   const getPropertyValues = () => {
-    justifyContentActual.value = viewRef.value?.style.getPropertyValue('justify-content') ?? ''
-    justifyContentActualFlat.value = viewRefFlat.value?.style.getPropertyValue('justify-content') ?? ''
+    data.justifyContentActual = viewRef.value?.style.getPropertyValue('justify-content') ?? ''
+    data.justifyContentActualFlat = viewRefFlat.value?.style.getPropertyValue('justify-content') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeJustifyContent = (value: string) => {
-    justifyContent.value = value
+    data.justifyContent = value
     viewRef.value?.style.setProperty('justify-content', value)
     viewRefFlat.value?.style.setProperty('justify-content', value)
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeJustifyContent = (index: number) => {
@@ -280,7 +290,8 @@ justify-content: normal | <content-distribution> | <overflow-position>? [ <conte
   })
 
   defineExpose({
-    radioChangeJustifyContent
+    radioChangeJustifyContent,
+    data
   })
 </script>
 

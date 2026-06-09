@@ -5,11 +5,17 @@
 opacity 属性指定了一个元素的不透明度。换言之，opacity 属性指定了一个元素后面的背景的被覆盖程度。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -122,10 +128,10 @@ opacity: <alpha-value>;
     <view class="test-container">
       <view class="test-item">
         <text class="uni-subtitle-text">view 组件</text>
-        <text class="uni-info">设置值: {{opacity}}</text>
-        <text class="uni-info">获取值: {{opacityActual}}</text>
+        <text class="uni-info">设置值: {{data.opacity}}</text>
+        <text class="uni-info">获取值: {{data.opacityActual}}</text>
         <view class="test-box">
-          <view ref="viewRef" class="common test-view" :style="{ opacity: opacity }">
+          <view ref="viewRef" class="common test-view" :style="{ opacity: data.opacity }">
             <text class="common-text">view</text>
           </view>
         </view>
@@ -133,19 +139,19 @@ opacity: <alpha-value>;
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件</text>
-        <text class="uni-info">设置值: {{opacity}}</text>
-        <text class="uni-info">获取值: {{opacityActualText}}</text>
+        <text class="uni-info">设置值: {{data.opacity}}</text>
+        <text class="uni-info">获取值: {{data.opacityActualText}}</text>
         <view class="test-box">
-          <text ref="textRef" class="common test-text" :style="{ opacity: opacity }">text</text>
+          <text ref="textRef" class="common test-text" :style="{ opacity: data.opacity }">text</text>
         </view>
       </view>
 
       <view class="test-item">
         <text class="uni-subtitle-text">image 组件</text>
-        <text class="uni-info">设置值: {{opacity}}</text>
-        <text class="uni-info">获取值: {{opacityActualImage}}</text>
+        <text class="uni-info">设置值: {{data.opacity}}</text>
+        <text class="uni-info">获取值: {{data.opacityActualImage}}</text>
         <view class="test-box">
-          <image ref="imageRef" class="common test-image" :style="{ opacity: opacity }" src="/static/test-image/logo.png"></image>
+          <image ref="imageRef" class="common test-image" :style="{ opacity: data.opacity }" src="/static/test-image/logo.png"></image>
         </view>
       </view>
     </view>
@@ -154,10 +160,10 @@ opacity: <alpha-value>;
     <view class="test-container">
       <view class="test-item">
         <text class="uni-subtitle-text">view 组件拍平</text>
-        <text class="uni-info">设置值: {{opacity}}</text>
-        <text class="uni-info">获取值: {{opacityActualFlat}}</text>
+        <text class="uni-info">设置值: {{data.opacity}}</text>
+        <text class="uni-info">获取值: {{data.opacityActualFlat}}</text>
         <view class="test-box">
-          <view ref="viewRefFlat" class="common test-view-flatten" :style="{ opacity: opacity }" flatten>
+          <view ref="viewRefFlat" class="common test-view-flatten" :style="{ opacity: data.opacity }" flatten>
             <text class="common-text">view</text>
           </view>
         </view>
@@ -165,19 +171,19 @@ opacity: <alpha-value>;
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件拍平</text>
-        <text class="uni-info">设置值: {{opacity}}</text>
-        <text class="uni-info">获取值: {{opacityActualTextFlat}}</text>
+        <text class="uni-info">设置值: {{data.opacity}}</text>
+        <text class="uni-info">获取值: {{data.opacityActualTextFlat}}</text>
         <view class="test-box">
-          <text ref="textRefFlat" class="common test-text-flatten" :style="{ opacity: opacity }" flatten>text</text>
+          <text ref="textRefFlat" class="common test-text-flatten" :style="{ opacity: data.opacity }" flatten>text</text>
         </view>
       </view>
 
       <view class="test-item">
         <text class="uni-subtitle-text">image 组件拍平</text>
-        <text class="uni-info">设置值: {{opacity}}</text>
-        <text class="uni-info">获取值: {{opacityActualImageFlat}}</text>
+        <text class="uni-info">设置值: {{data.opacity}}</text>
+        <text class="uni-info">获取值: {{data.opacityActualImageFlat}}</text>
         <view class="test-box">
-          <image ref="imageRefFlat" class="common test-image-flatten" :style="{ opacity: opacity }" flatten src="/static/test-image/logo.png"></image>
+          <image ref="imageRefFlat" class="common test-image-flatten" :style="{ opacity: data.opacity }" flatten src="/static/test-image/logo.png"></image>
         </view>
       </view>
     </view>
@@ -185,7 +191,7 @@ opacity: <alpha-value>;
     <view class="uni-common-mt uni-common-mb">
       <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
       <enum-data :items="opacityEnum" title="opacity 枚举值" @change="radioChangeOpacity" :compact="true"></enum-data>
-      <input-data :defaultValue="opacity" title="opacity 自定义值" type="text" @confirm="inputChangeOpacity"></input-data>
+      <input-data :defaultValue="data.opacity" title="opacity 自定义值" type="text" @confirm="inputChangeOpacity"></input-data>
     </view>
 
     <view class="uni-common-mb">
@@ -219,13 +225,15 @@ opacity: <alpha-value>;
     { value: 5, name: '1' }
   ]
 
-  const opacity = ref('1')
-  const opacityActual = ref('')
-  const opacityActualText = ref('')
-  const opacityActualImage = ref('')
-  const opacityActualFlat = ref('')
-  const opacityActualTextFlat = ref('')
-  const opacityActualImageFlat = ref('')
+  const data = reactive({
+    opacity: '1',
+    opacityActual: '',
+    opacityActualText: '',
+    opacityActualImage: '',
+    opacityActualFlat: '',
+    opacityActualTextFlat: '',
+    opacityActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -234,16 +242,18 @@ opacity: <alpha-value>;
   const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    opacityActual.value = viewRef.value?.style.getPropertyValue('opacity') ?? ''
-    opacityActualFlat.value = viewRefFlat.value?.style.getPropertyValue('opacity') ?? ''
-    opacityActualText.value = textRef.value?.style.getPropertyValue('opacity') ?? ''
-    opacityActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('opacity') ?? ''
-    opacityActualImage.value = imageRef.value?.style.getPropertyValue('opacity') ?? ''
-    opacityActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('opacity') ?? ''
+    data.opacityActual = viewRef.value?.style.getPropertyValue('opacity') ?? ''
+    data.opacityActualFlat = viewRefFlat.value?.style.getPropertyValue('opacity') ?? ''
+    data.opacityActualText = textRef.value?.style.getPropertyValue('opacity') ?? ''
+    data.opacityActualTextFlat = textRefFlat.value?.style.getPropertyValue('opacity') ?? ''
+    data.opacityActualImage = imageRef.value?.style.getPropertyValue('opacity') ?? ''
+    data.opacityActualImageFlat = imageRefFlat.value?.style.getPropertyValue('opacity') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeOpacity = (value: string) => {
-    opacity.value = value
+    data.opacity = value
     viewRef.value?.style.setProperty('opacity', value)
     viewRefFlat.value?.style.setProperty('opacity', value)
     textRef.value?.style.setProperty('opacity', value)
@@ -253,7 +263,7 @@ opacity: <alpha-value>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeOpacity = (index: number) => {
@@ -272,7 +282,8 @@ opacity: <alpha-value>;
   })
 
   defineExpose({
-    radioChangeOpacity
+    radioChangeOpacity,
+    data
   })
 
 </script>

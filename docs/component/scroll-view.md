@@ -10,82 +10,82 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 5.11 | 4.61 | 5.0 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| type | string | - | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 渲染模式，用于支持使用 nested-scroll-header、nested-scroll-body 实现嵌套滚动 |
-| direction | string | "vertical" | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 滚动方向，可取值 none、all、horizontal、vertical，默认值vertical |
+| type | string |   | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 渲染模式，用于支持使用 nested-scroll-header、nested-scroll-body 实现嵌套滚动 |
+| direction | string | "vertical" | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 滚动方向，可取值 none、all、horizontal、vertical，默认值vertical |
 | ~~scroll-x~~ | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 允许横向滚动，不支持同时设置scroll-y属性为true，同时设置true时scroll-y生效。已废弃，请改用direction |
 | ~~scroll-y~~ | boolean | true | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 允许竖向滚动，不支持同时设置scroll-x属性为true，同时设置true时scroll-y生效。已废弃，请改用direction |
-| ~~rebound~~ | boolean | true | Web: -; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 是否开启回弹效果。已废弃，请改用bounces |
-| associative-container | string | - | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 关联的滚动容器 |
-| enable-back-to-top | boolean | false | Web: x; 微信小程序: x; Android: x; iOS: 4.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 点击系统状态栏滚动条返回顶部，只支持竖向 |
-| bounces | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否开启回弹效果 优先级高于rebound |
-| upper-threshold | number | 50 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 距顶部/左边多远时（单位px），触发 scrolltoupper 事件 |
-| lower-threshold | number | 50 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 距底部/右边多远时（单位px），触发 scrolltolower 事件 |
-| scroll-top | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置竖向滚动条位置 |
-| scroll-left | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置横向滚动条位置 |
-| scroll-into-view | string([string.IDString](/uts/data-type.md#ide-string)) | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素起始位置 |
-| scroll-with-animation | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否在设置滚动条位置时使用滚动动画，设置false没有滚动动画 |
-| refresher-enabled | boolean | false | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 开启下拉刷新，暂时不支持scroll-x = true横向刷新 |
-| refresher-threshold | number | 45 | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置下拉刷新阈值 |
-| refresher-max-drag-distance | number | - | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置下拉最大拖拽距离（单位px），默认是下拉刷新控件高度的2.5倍 |
-| refresher-default-style | string | "black" | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置下拉刷新默认样式，支持设置 black \| white \| none， none 表示不使用默认样式 |
-| refresher-background | string([string.ColorString](/uts/data-type.md#ide-string)) | "transparent" | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置下拉刷新区域背景颜色，默认透明 |
-| refresher-triggered | boolean | false | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发 |
-| show-scrollbar | boolean | true | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 控制是否出现滚动条 |
-| custom-nested-scroll | boolean | false | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 子元素是否开启嵌套滚动 将滚动事件与父元素协商处理 |
+| ~~rebound~~ | boolean | true | 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 是否开启回弹效果。已废弃，请改用bounces |
+| associative-container | string |   | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 关联的滚动容器 |
+| enable-back-to-top | boolean | false | Web: x; 微信小程序: x; Android: x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 点击系统状态栏滚动条返回顶部，只支持竖向 |
+| bounces | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否开启回弹效果 优先级高于rebound |
+| upper-threshold | number | 50 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 距顶部/左边多远时（单位px），触发 scrolltoupper 事件 |
+| lower-threshold | number | 50 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 距底部/右边多远时（单位px），触发 scrolltolower 事件 |
+| scroll-top | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置竖向滚动条位置 |
+| scroll-left | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置横向滚动条位置 |
+| scroll-into-view | string([string.IDString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素起始位置 |
+| scroll-with-animation | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否在设置滚动条位置时使用滚动动画，设置false没有滚动动画 |
+| refresher-enabled | boolean | false | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 开启下拉刷新，暂时不支持scroll-x = true横向刷新 |
+| refresher-threshold | number | 45 | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置下拉刷新阈值 |
+| refresher-max-drag-distance | number |   | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置下拉最大拖拽距离（单位px），默认是下拉刷新控件高度的2.5倍 |
+| refresher-default-style | string | "black" | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置下拉刷新默认样式，支持设置 black \| white \| none， none 表示不使用默认样式 |
+| refresher-background | string([string.ColorString](/uts/data-type.md#ide-string)) | "transparent" | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置下拉刷新区域背景颜色，默认透明 |
+| refresher-triggered | boolean | false | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发 |
+| show-scrollbar | boolean | true | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 控制是否出现滚动条 |
+| custom-nested-scroll | boolean | false | Web: x; 微信小程序: x; Android: 3.9; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 子元素是否开启嵌套滚动 将滚动事件与父元素协商处理 |
 | nested-scroll-child | string([string.IDString](/uts/data-type.md#ide-string)) | "" | Web: x; 微信小程序: x; Android: 3.97; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 嵌套滚动子元素的id属性，不支持ref，scroll-view惯性滚动时会让对应id元素视图进行滚动，子元素滚动时会触发scroll-view的nestedprescroll事件，嵌套子元素需要设置custom-nested-scroll = true |
-| enable-passive | boolean | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | *(boolean)*<br/>开启 passive 特性，能优化一定的滚动性能 |
-| fast-deceleration | boolean | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | *(boolean)*<br/>滑动减速速率控制, 仅在 iOS 下生效 (同时开启 enhanced 属性后生效) |
-| @refresherpulling | (event: [UniRefresherEvent](#unirefresherevent)) => void | - | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 下拉刷新控件被下拉 |
-| @refresherrefresh | (event: [UniRefresherEvent](#unirefresherevent)) => void | - | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 下拉刷新被触发 |
-| @refresherrestore | (event: [UniRefresherEvent](#unirefresherevent)) => void | - | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 下拉刷新被复位 |
-| @refresherabort | (event: [UniRefresherEvent](#unirefresherevent)) => void | - | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 下拉刷新被中止 |
-| @scrolltoupper | (event: [UniScrollToUpperEvent](#uniscrolltoupperevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 滚动到顶部/左边，会触发 scrolltoupper 事件 |
-| @scrolltolower | (event: [UniScrollToLowerEvent](#uniscrolltolowerevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 滚动到底部/右边，会触发 scrolltolower 事件 |
-| @scroll | (event: [UniScrollEvent](#uniscrollevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 滚动时触发，event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY} |
-| @scrollend | (event: [UniScrollEvent](#uniscrollevent)) => void | - | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 滚动结束时触发，event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY} |
-| @startnestedscroll | (event: [UniStartNestedScrollEvent](#unistartnestedscrollevent)) => Boolean | - | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 子元素开始滚动时触发, return true表示与子元素开启滚动协商 默认return false! event = {node} |
-| @nestedprescroll | (event: [UniNestedPreScrollEvent](#uninestedprescrollevent)) => void | - | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 子元素滚动时触发，可执行event.consumed(x,y)告知子元素deltaX、deltaY各消耗多少。子元素将执行差值后的deltaX、deltaY滚动距离。不执行consumed(x,y)则表示父元素不消耗deltaX、deltaY。event = {deltaX, deltaY} |
-| @stopnestedscroll | (event: [UniStopNestedScrollEvent](#unistopnestedscrollevent)) => void | - | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 子元素滚动结束或意外终止时触发 |
-| @dragstart | eventhandle | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | *(eventhandle)*<br/>滑动开始事件 (同时开启 enhanced 属性后生效) detail { scrollTop, scrollLeft } |
-| @dragging | eventhandle | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | *(eventhandle)*<br/>滑动事件 (同时开启 enhanced 属性后生效) detail { scrollTop, scrollLeft } |
-| @dragend | eventhandle | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | *(eventhandle)*<br/>滑动结束事件 (同时开启 enhanced 属性后生效) detail { scrollTop, scrollLeft, velocity } |
+| enable-passive | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | *(boolean)*<br/>开启 passive 特性，能优化一定的滚动性能 |
+| fast-deceleration | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | *(boolean)*<br/>滑动减速速率控制, 仅在 iOS 下生效 (同时开启 enhanced 属性后生效) |
+| @refresherpulling | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 下拉刷新控件被下拉 |
+| @refresherrefresh | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 下拉刷新被触发 |
+| @refresherrestore | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 下拉刷新被复位 |
+| @refresherabort | (event: [UniRefresherEvent](#unirefresherevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 下拉刷新被中止 |
+| @scrolltoupper | (event: [UniScrollToUpperEvent](#uniscrolltoupperevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 滚动到顶部/左边，会触发 scrolltoupper 事件 |
+| @scrolltolower | (event: [UniScrollToLowerEvent](#uniscrolltolowerevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 滚动到底部/右边，会触发 scrolltolower 事件 |
+| @scroll | (event: [UniScrollEvent](#uniscrollevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 滚动时触发，event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY} |
+| @scrollend | (event: [UniScrollEvent](#uniscrollevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 滚动结束时触发，event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY} |
+| @startnestedscroll | (event: [UniStartNestedScrollEvent](#unistartnestedscrollevent)) => Boolean |   | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 子元素开始滚动时触发, return true表示与子元素开启滚动协商 默认return false! event = {node} |
+| @nestedprescroll | (event: [UniNestedPreScrollEvent](#uninestedprescrollevent)) => void |   | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 子元素滚动时触发，可执行event.consumed(x,y)告知子元素deltaX、deltaY各消耗多少。子元素将执行差值后的deltaX、deltaY滚动距离。不执行consumed(x,y)则表示父元素不消耗deltaX、deltaY。event = {deltaX, deltaY} |
+| @stopnestedscroll | (event: [UniStopNestedScrollEvent](#unistopnestedscrollevent)) => void |   | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 子元素滚动结束或意外终止时触发 |
+| @dragstart | eventhandle |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | *(eventhandle)*<br/>滑动开始事件 (同时开启 enhanced 属性后生效) detail { scrollTop, scrollLeft } |
+| @dragging | eventhandle |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | *(eventhandle)*<br/>滑动事件 (同时开启 enhanced 属性后生效) detail { scrollTop, scrollLeft } |
+| @dragend | eventhandle |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | *(eventhandle)*<br/>滑动结束事件 (同时开启 enhanced 属性后生效) detail { scrollTop, scrollLeft, velocity } |
 
 #### type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| nested | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 嵌套模式。用于处理父子 scroll-view 间的嵌套滚动，此时子节点只能是 nested-scroll-header nested-scroll-body 组件或自定义 refresher |
+| nested | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 嵌套模式。用于处理父子 scroll-view 间的嵌套滚动，此时子节点只能是 nested-scroll-header nested-scroll-body 组件或自定义 refresher |
 
 #### direction 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| none | Web: 4.0; 微信小程序: -; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 禁止滚动 |
-| all | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 横向/竖向可同时滚动 |
-| horizontal | Web: 4.0; 微信小程序: -; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 横向滚动 |
-| vertical | Web: 4.0; 微信小程序: -; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 竖向滚动 |
+| none | Web: 4.0; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 禁止滚动 |
+| all | Web: 4.0; Android: x; iOS: x; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 横向/竖向可同时滚动 |
+| horizontal | Web: 4.0; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 横向滚动 |
+| vertical | Web: 4.0; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 竖向滚动 |
 
 #### associative-container 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| nested-scroll-view | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 关联 type=nested 嵌套模式 |
+| nested-scroll-view | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 关联 type=nested 嵌套模式 |
 
 #### refresher-default-style 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| black | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 深颜色雪花样式 |
-| white | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 浅白色雪花样式 |
-| none | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不使用默认样式 |
+| black | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 深颜色雪花样式 |
+| white | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 浅白色雪花样式 |
+| none | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不使用默认样式 |
 
 
 ### 事件
@@ -101,13 +101,13 @@ UniRefresherEvent -- Extends --> UniEvent
 ##### UniRefresherEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniRefresherEventDetail** | 是 | - | - | - |
+| detail | **UniRefresherEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| dy | number | 是 | - | - | - |
+| dy | number | 是 |  |   |  |
 
 
 #### UniScrollToUpperEvent
@@ -122,13 +122,13 @@ UniScrollToUpperEvent -- Extends --> UniEvent
 ##### UniScrollToUpperEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniScrollToUpperEventDetail** | 是 | - | - |  |
+| detail | **UniScrollToUpperEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| direction | string | 是 | - | - | 滚动方向 top 或 left |
+| direction | string | 是 |  |   | 滚动方向 top 或 left |
 
 
 #### UniScrollToLowerEvent
@@ -143,13 +143,13 @@ UniScrollToLowerEvent -- Extends --> UniEvent
 ##### UniScrollToLowerEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniScrollToLowerEventDetail** | 是 | - | - |  |
+| detail | **UniScrollToLowerEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| direction | string | 是 | - | - | 滚动方向 bottom 或 right |
+| direction | string | 是 |  |   | 滚动方向 bottom 或 right |
 
 
 #### UniScrollEvent
@@ -164,18 +164,18 @@ UniScrollEvent -- Extends --> UniEvent
 ##### UniScrollEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniScrollEventDetail** | 是 | - | - |  |
+| detail | **UniScrollEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| scrollTop | number | 是 | - | - | 竖向滚动的距离 |
-| scrollLeft | number | 是 | - | - | 横向滚动的距离 |
-| scrollHeight | number | 是 | - | - | 滚动区域的高度 |
-| scrollWidth | number | 是 | - | - | 滚动区域的宽度 |
-| deltaY | number | 是 | - | - | 当次滚动事件竖向滚动量 |
-| deltaX | number | 是 | - | - | 当次滚动事件横向滚动量 |
+| scrollTop | number | 是 |  |   | 竖向滚动的距离 |
+| scrollLeft | number | 是 |  |   | 横向滚动的距离 |
+| scrollHeight | number | 是 |  |   | 滚动区域的高度 |
+| scrollWidth | number | 是 |  |   | 滚动区域的宽度 |
+| deltaY | number | 是 |  |   | 当次滚动事件竖向滚动量 |
+| deltaX | number | 是 |  |   | 当次滚动事件横向滚动量 |
 
 
 #### UniStartNestedScrollEvent
@@ -190,8 +190,8 @@ UniStartNestedScrollEvent -- Extends --> UniEvent
 ##### UniStartNestedScrollEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| node | [UniElement](/api/dom/unielement.md) | 是 | - | - | 开始滚动子节点对象 |
-| isTouch | boolean | 是 | - | Web: -; 微信小程序: -; Android: 3.99; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 是否由触摸行为发生的Event |
+| node | [UniElement](/api/dom/unielement.md) | 是 |  |   | 开始滚动子节点对象 |
+| isTouch | boolean | 是 |  | Android: 3.99; iOS 系统版本: x; iOS: x | 是否由触摸行为发生的Event |
 
 
 #### UniNestedPreScrollEvent
@@ -206,15 +206,15 @@ UniNestedPreScrollEvent -- Extends --> UniEvent
 ##### UniNestedPreScrollEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| deltaX | number | 是 | - | - | x轴滚动距离 |
-| deltaY | number | 是 | - | - | y轴滚动距离 |
-| isTouch | boolean | 是 | - | Web: -; 微信小程序: -; Android: 3.99; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 是否由触摸行为发生的Event |
+| deltaX | number | 是 |  |   | x轴滚动距离 |
+| deltaY | number | 是 |  |   | y轴滚动距离 |
+| isTouch | boolean | 是 |  | Android: 3.99; iOS 系统版本: x; iOS: x | 是否由触摸行为发生的Event |
 
 
 ##### UniNestedPreScrollEvent 的方法
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| consumed | (consumedX: number, consumedY: number) => void | 是 | - | - | 通知到子节点x,y轴滚动距离的消耗 |
+| consumed | (consumedX: number, consumedY: number) => void | 是 |  |   | 通知到子节点x,y轴滚动距离的消耗 |
 
 #### UniStopNestedScrollEvent
 
@@ -228,7 +228,7 @@ UniStopNestedScrollEvent -- Extends --> UniEvent
 ##### UniStopNestedScrollEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| isTouch | boolean | 是 | - | - | 是否由触摸行为发生的Event |
+| isTouch | boolean | 是 |  |   | 是否由触摸行为发生的Event |
 
 
 
@@ -288,8 +288,11 @@ UniStopNestedScrollEvent -- Extends --> UniEvent
 
 **开启嵌套模式设置如下：**
 
-1. 设置外层 scroll-view 的 type 属性为 "nested" ，将外层 scroll-view 改成嵌套模式
-2. 设置内层 scroll-view 的 `associative-container` 属性为 "nested-scroll-view"，开启内层 scroll-view 支持与外层 scroll-view 嵌套滚动
+1. 设置外层 scroll-view 的 type 属性为 "nested"（），将外层 scroll-view 改成嵌套模式
+2. 设置内层 scroll-view 的 `associative-container`  属性为 "nested-scroll-view"，开启内层 scroll-view 支持与外层 scroll-view 嵌套滚动
+
+> 蒸汽模式已废弃 `type` 属性，只需要设置内层 scroll-view 的 `associative-container` 属性为 "nested-scroll-view" 即可开启嵌套模式。  
+
 
 **嵌套滚动策略：**
 
@@ -304,7 +307,11 @@ UniStopNestedScrollEvent -- Extends --> UniEvent
 + 与nested-scroll嵌套滚动协商互不兼容，`nested-scroll-header` 和 `nested-scroll-body`优先级高于nested-scroll嵌套滚动协商
 + 内层滚动视图支持 scroll-view、list-view、waterflow
 
+> 蒸汽模式已废弃 `nested-scroll-header` 和 `nested-scroll-body` 组件的限制要求，嵌套滚动中外层 scroll-view 中可以不使用 `nested-scroll-header` 和 `nested-scroll-body`，在内层 scrol-view 中设置 `associative-container` 属性为 "nested-scroll-view" 即可开启嵌套模式。  
+
+
 **具体代码请参考：**[嵌套模式示例](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/long-list-nested/long-list-nested.uvue)
+
 
 ### nested-scroll嵌套滚动协商@nested
 

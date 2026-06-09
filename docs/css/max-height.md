@@ -5,11 +5,17 @@
 CSS属性 max-height 设置元素的最大高度。它防止height属性的使用值（used value）大于 max-height 的指定值。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,11 +34,11 @@ max-height: <viewport-length>;
 ### max-height 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| fit-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 元素的最大高度根据内容可用高度自适应，当不会超过内容的最大高度 `max-content` 值。 |
-| max-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 元素的最大高度可以扩展到内容的最大高度。 |
-| min-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 元素的最大高度限制在内容的最小高度之内。 |
-| auto | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 元素的高度可以根据其内容的高度自动扩展，但仍然受到其他相关属性（如 `height` 和 `min-height`）的影响。如果没有其他限制，元素的高度将扩展以适应内容。 |
-| none | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 元素的高度不再受到任何最大高度的限制，即使元素的内容很多，也会根据内容的大小来自动扩展。 |
+| fit-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 元素的最大高度根据内容可用高度自适应，当不会超过内容的最大高度 `max-content` 值。 |
+| max-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 元素的最大高度可以扩展到内容的最大高度。 |
+| min-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 元素的最大高度限制在内容的最小高度之内。 |
+| auto | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 元素的高度可以根据其内容的高度自动扩展，但仍然受到其他相关属性（如 `height` 和 `min-height`）的影响。如果没有其他限制，元素的高度将扩展以适应内容。 |
+| none | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 元素的高度不再受到任何最大高度的限制，即使元素的内容很多，也会根据内容的大小来自动扩展。 |
 
 
 ### 默认值 @default-value 
@@ -87,10 +93,10 @@ max-height: <viewport-length>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{maxHeight}}</text>
-          <text class="uni-info">获取值: {{maxHeightActual}}</text>
+          <text class="uni-info">设置值: {{data.maxHeight}}</text>
+          <text class="uni-info">获取值: {{data.maxHeightActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-dynamic test-view" :style="{ maxHeight: maxHeight }">
+            <view ref="viewRef" class="common-dynamic test-view" :style="{ maxHeight: data.maxHeight }">
               <text style="font-size: 12px;">view</text>
             </view>
           </view>
@@ -98,19 +104,19 @@ max-height: <viewport-length>;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{maxHeight}}</text>
-          <text class="uni-info">获取值: {{maxHeightActualText}}</text>
+          <text class="uni-info">设置值: {{data.maxHeight}}</text>
+          <text class="uni-info">获取值: {{data.maxHeightActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-dynamic test-text" :style="{ maxHeight: maxHeight }">text</text>
+            <text ref="textRef" class="common-dynamic test-text" :style="{ maxHeight: data.maxHeight }">text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{maxHeight}}</text>
-          <text class="uni-info">获取值: {{maxHeightActualImage}}</text>
+          <text class="uni-info">设置值: {{data.maxHeight}}</text>
+          <text class="uni-info">获取值: {{data.maxHeightActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-dynamic test-image" :style="{ maxHeight: maxHeight }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-dynamic test-image" :style="{ maxHeight: data.maxHeight }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -119,10 +125,10 @@ max-height: <viewport-length>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{maxHeight}}</text>
-          <text class="uni-info">获取值: {{maxHeightActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.maxHeight}}</text>
+          <text class="uni-info">获取值: {{data.maxHeightActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ maxHeight: maxHeight }" flatten>
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ maxHeight: data.maxHeight }" flatten>
               <text style="font-size: 12px;">view</text>
             </view>
           </view>
@@ -130,19 +136,19 @@ max-height: <viewport-length>;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{maxHeight}}</text>
-          <text class="uni-info">获取值: {{maxHeightActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.maxHeight}}</text>
+          <text class="uni-info">获取值: {{data.maxHeightActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ maxHeight: maxHeight }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ maxHeight: data.maxHeight }" flatten>text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{maxHeight}}</text>
-          <text class="uni-info">获取值: {{maxHeightActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.maxHeight}}</text>
+          <text class="uni-info">获取值: {{data.maxHeightActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ maxHeight: maxHeight }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ maxHeight: data.maxHeight }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -150,7 +156,7 @@ max-height: <viewport-length>;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="maxHeightEnum" title="max-height 枚举值" @change="radioChangeMaxHeight" :compact="true"></enum-data>
-        <input-data :defaultValue="maxHeight" title="max-height 自定义值" type="text" @confirm="inputChangeMaxHeight"></input-data>
+        <input-data :defaultValue="data.maxHeight" title="max-height 自定义值" type="text" @confirm="inputChangeMaxHeight"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -179,13 +185,15 @@ max-height: <viewport-length>;
     { value: 6, name: 'none' }
   ]
 
-  const maxHeight = ref('50px')
-  const maxHeightActual = ref('')
-  const maxHeightActualText = ref('')
-  const maxHeightActualImage = ref('')
-  const maxHeightActualFlat = ref('')
-  const maxHeightActualTextFlat = ref('')
-  const maxHeightActualImageFlat = ref('')
+  const data = reactive({
+    maxHeight: '50px',
+    maxHeightActual: '',
+    maxHeightActualText: '',
+    maxHeightActualImage: '',
+    maxHeightActualFlat: '',
+    maxHeightActualTextFlat: '',
+    maxHeightActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -194,16 +202,18 @@ max-height: <viewport-length>;
   const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    maxHeightActual.value = viewRef.value?.style.getPropertyValue('max-height') ?? ''
-    maxHeightActualFlat.value = viewRefFlat.value?.style.getPropertyValue('max-height') ?? ''
-    maxHeightActualText.value = textRef.value?.style.getPropertyValue('max-height') ?? ''
-    maxHeightActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('max-height') ?? ''
-    maxHeightActualImage.value = imageRef.value?.style.getPropertyValue('max-height') ?? ''
-    maxHeightActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('max-height') ?? ''
+    data.maxHeightActual = viewRef.value?.style.getPropertyValue('max-height') ?? ''
+    data.maxHeightActualFlat = viewRefFlat.value?.style.getPropertyValue('max-height') ?? ''
+    data.maxHeightActualText = textRef.value?.style.getPropertyValue('max-height') ?? ''
+    data.maxHeightActualTextFlat = textRefFlat.value?.style.getPropertyValue('max-height') ?? ''
+    data.maxHeightActualImage = imageRef.value?.style.getPropertyValue('max-height') ?? ''
+    data.maxHeightActualImageFlat = imageRefFlat.value?.style.getPropertyValue('max-height') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeMaxHeight = (value: string) => {
-    maxHeight.value = value
+    data.maxHeight = value
     viewRef.value?.style.setProperty('max-height', value)
     viewRefFlat.value?.style.setProperty('max-height', value)
     textRef.value?.style.setProperty('max-height', value)
@@ -213,7 +223,7 @@ max-height: <viewport-length>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeMaxHeight = (index: number) => {
@@ -232,7 +242,8 @@ max-height: <viewport-length>;
   })
 
   defineExpose({
-    radioChangeMaxHeight
+    radioChangeMaxHeight,
+    data
   })
 </script>
 

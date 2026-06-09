@@ -13,45 +13,45 @@
 扫码（包括一维码和二维码）
 
 ### scanCode 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.71 | 4.71 | 4.71 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.71 | 4.71 | 4.71 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **ScanCodeOptions** | 否 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | uni.scanCode参数定义 |
+| options | **ScanCodeOptions** | 否 |  | Web: x | uni.scanCode参数定义 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| onlyFromCamera | boolean | 否 | - | Web: x; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 是否只能从相机扫码，不允许从相册选择图片 |
-| scanType | Array&lt;string&gt; | 否 | - | Web: x; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 扫码类型 |
-| success | (res: [ScanCodeSuccess](#scancodesuccess-values)) => void | 否 | - | Web: x; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.scanCode成功回调函数定义 |
-| fail | (res: ScanCodeFail) => void | 否 | - | Web: x; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.scanCode失败回调函数定义 |
-| complete | (res: any) => void | 否 | - | Web: x; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.scanCode完成回调函数定义 | 
+| onlyFromCamera | boolean | 否 |  | Web: x; 微信小程序: 4.41 | 是否只能从相机扫码，不允许从相册选择图片 |
+| scanType | Array&lt;string&gt; | 否 |  | Web: x; 微信小程序: 4.41 | 扫码类型 |
+| success | (res: [ScanCodeSuccess](#scancodesuccess-values)) => void | 否 |  | Web: x; 微信小程序: 4.41 | uni.scanCode成功回调函数定义 |
+| fail | (res: ScanCodeFail) => void | 否 |  | Web: x; 微信小程序: 4.41 | uni.scanCode失败回调函数定义 |
+| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: 4.41 | uni.scanCode完成回调函数定义 | 
 
 ##### scanType 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| barCode | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | - |
-| qrCode | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | - |
-| datamatrix | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | - |
-| pdf417 | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | - |
+| barCode | Web: x |  |
+| qrCode | Web: x |  |
+| datamatrix | Web: x |  |
+| pdf417 | Web: x |  |
 
 #### ScanCodeSuccess 的属性值 @scancodesuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| result | string | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
-| scanType | string | 是 | - | Web: x; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
-| charSet | string | 否 | - | Web: x; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 所扫码的字符集<br/> |
-| path | string | 否 | - | Web: x; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 当所扫的码为当前小程序二维码时，会返回此字段，内容为二维码携带的 path<br/> |
-| rawData | string | 否 | - | Web: x; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 原始数据，base64编码<br/> |
+| result | string | 是 |  | Web: x |  |
+| scanType | string | 是 |  | Web: x |  |
+| charSet | string | 否 |  | Web: x; 微信小程序: 4.41 | 所扫码的字符集<br/> |
+| path | string | 否 |  | Web: x; 微信小程序: 4.41 | 当所扫的码为当前小程序二维码时，会返回此字段，内容为二维码携带的 path<br/> |
+| rawData | string | 否 |  | Web: x; 微信小程序: 4.41 | 原始数据，base64编码<br/> |
 
 
 
@@ -129,13 +129,14 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 
 
 ### 平台实现说明
 - uni-app x的Android/iOS平台的扫码基于Google的机器学习库，对各种一维、二维码都有较好的识别效果。超过了uni-app的扫码。
 	扫码API，其实是一个开源的uvue页面，页面中内嵌了[camera组件](../component/camera.md)，camera组件提供扫码模式。源码在文档上方点击右侧gitcode或github。\
-	如需连续扫码，推荐使用[camera组件](../component/camera.md)
+	如需连续扫码，推荐使用[camera组件](../component/camera.md)\
+	扫码需要摄像头权限，扫码界面的相册图标点击后需要相册读取权限。部分Android应用商店要求权限申请前要声明，可以使用[uni-registerRequestPermissionTips插件](https://ext.dcloud.net.cn/plugin?name=uni-registerRequestPermissionTips)
 - 鸿蒙、小程序直接调用了其平台提供的扫码API，UI不可自定义。但各种一维、二维码均可识别。
 
 ### 依赖库版本

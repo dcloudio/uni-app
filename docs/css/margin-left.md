@@ -5,11 +5,17 @@
 margin-left 属性 设置与元素相关联的盒子模型的左外边距。这个值可以为负值。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -29,7 +35,7 @@ margin-left: <length> | <percentage> | auto;
 ### margin-left 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | auto 关键词表示在当前布局模式下，浏览器根据接收的左边距自动计算出外边距。如果有几组 margin-left 和 margin-right 设置为 auto，那么最后计算的空间分布，会根据 display，float，position 属性，自动生成以下几种情况：<br/>    <br/>      <br/>        <br/>          Value of display<br/>          Value of float<br/>          Value of position<br/>          Computed value of auto<br/>          Comment<br/>        <br/>      <br/>      <br/>        <br/>          inline, inline-block, inline-table<br/>          any<br/>          static or relative<br/>          0<br/>          Inline layout mode<br/>        <br/>        <br/>          block, inline, inline-block, block, table, inline-table, list-item, table-caption<br/>          any<br/>          static or relative<br/>          0, 除非margin-left和 margin-right 同时都设置为 auto。这样的话，元素就被设置为基于父元素居中。<br/>          Block layout mode<br/>        <br/>        <br/>          block, inline, inline-block, block, table, inline-table, list-item, table-caption<br/>          left or right<br/>          static or relative<br/>          0<br/>          Block layout mode (floating element)<br/>        <br/>        <br/>          any table-*, except table-caption<br/>          any<br/>          any<br/>          0<br/>          Internal table-* elements don't have margins, use border-spacing instead<br/>        <br/>        <br/>          any, except flex, inline-flex, or table-*<br/>          any<br/>          fixed or absolute<br/>          0, except if both margin-left and margin-right are set to auto. In this case, it is set to the value centering the border area inside the available width, if fixed.<br/>          Absolutely positioned layout mode<br/>        <br/>        <br/>          flex, inline-flex<br/>          any<br/>          any<br/>          在水平方向上有空余空间的情况下，空余的空间会被平均分给水平方向上写有 margin-left:auto 属性的元素的外边距<br/>          Flexbox layout mode |
+| auto | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | auto 关键词表示在当前布局模式下，浏览器根据接收的左边距自动计算出外边距。如果有几组 margin-left 和 margin-right 设置为 auto，那么最后计算的空间分布，会根据 display，float，position 属性，自动生成以下几种情况：<br/>    <br/>      <br/>        <br/>          Value of display<br/>          Value of float<br/>          Value of position<br/>          Computed value of auto<br/>          Comment<br/>        <br/>      <br/>      <br/>        <br/>          inline, inline-block, inline-table<br/>          any<br/>          static or relative<br/>          0<br/>          Inline layout mode<br/>        <br/>        <br/>          block, inline, inline-block, block, table, inline-table, list-item, table-caption<br/>          any<br/>          static or relative<br/>          0, 除非margin-left和 margin-right 同时都设置为 auto。这样的话，元素就被设置为基于父元素居中。<br/>          Block layout mode<br/>        <br/>        <br/>          block, inline, inline-block, block, table, inline-table, list-item, table-caption<br/>          left or right<br/>          static or relative<br/>          0<br/>          Block layout mode (floating element)<br/>        <br/>        <br/>          any table-*, except table-caption<br/>          any<br/>          any<br/>          0<br/>          Internal table-* elements don't have margins, use border-spacing instead<br/>        <br/>        <br/>          any, except flex, inline-flex, or table-*<br/>          any<br/>          fixed or absolute<br/>          0, except if both margin-left and margin-right are set to auto. In this case, it is set to the value centering the border area inside the available width, if fixed.<br/>          Absolutely positioned layout mode<br/>        <br/>        <br/>          flex, inline-flex<br/>          any<br/>          any<br/>          在水平方向上有空余空间的情况下，空余的空间会被平均分给水平方向上写有 margin-left:auto 属性的元素的外边距<br/>          Flexbox layout mode |
 
 
 ### 默认值 @default-value 
@@ -116,11 +122,11 @@ margin-left: <length> | <percentage> | auto;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{marginLeft}}</text>
-          <text class="uni-info">获取值: {{marginLeftActual}}</text>
+          <text class="uni-info">设置值: {{data.marginLeft}}</text>
+          <text class="uni-info">获取值: {{data.marginLeftActual}}</text>
           <view class="test-box">
             <view class="common-view" style="background-color: red;"></view>
-            <view ref="viewRef" class="common-view test-view" :style="{ marginLeft: marginLeft }">
+            <view ref="viewRef" class="common-view test-view" :style="{ marginLeft: data.marginLeft }">
               <text class="common-text">view</text>
             </view>
             <view class="common-view" style="background-color: blue;"></view>
@@ -129,22 +135,22 @@ margin-left: <length> | <percentage> | auto;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{marginLeft}}</text>
-          <text class="uni-info">获取值: {{marginLeftActualText}}</text>
+          <text class="uni-info">设置值: {{data.marginLeft}}</text>
+          <text class="uni-info">获取值: {{data.marginLeftActualText}}</text>
           <view class="test-box">
             <text class="common-view common-text" style="background-color: red;">红色</text>
-            <text ref="textRef" class="common-view common-text test-text" :style="{ marginLeft: marginLeft }">text</text>
+            <text ref="textRef" class="common-view common-text test-text" :style="{ marginLeft: data.marginLeft }">text</text>
             <text class="common-view common-text" style="background-color: blue;">蓝色</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{marginLeft}}</text>
-          <text class="uni-info">获取值: {{marginLeftActualImage}}</text>
+          <text class="uni-info">设置值: {{data.marginLeft}}</text>
+          <text class="uni-info">获取值: {{data.marginLeftActualImage}}</text>
           <view class="test-box">
             <image class="common-image" style="background-color: red;" src="/static/test-image/logo.png"></image>
-            <image ref="imageRef" class="common-image test-image" :style="{ marginLeft: marginLeft }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image test-image" :style="{ marginLeft: data.marginLeft }" src="/static/test-image/logo.png"></image>
             <image class="common-image" style="background-color: blue;" src="/static/test-image/logo.png"></image>
           </view>
         </view>
@@ -153,11 +159,11 @@ margin-left: <length> | <percentage> | auto;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{marginLeft}}</text>
-          <text class="uni-info">获取值: {{marginLeftActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.marginLeft}}</text>
+          <text class="uni-info">获取值: {{data.marginLeftActualFlat}}</text>
           <view class="test-box">
             <view class="common-view" style="background-color: red;"></view>
-            <view ref="viewRefFlat" class="common-view test-view-flatten" :style="{ marginLeft: marginLeft }" flatten>
+            <view ref="viewRefFlat" class="common-view test-view-flatten" :style="{ marginLeft: data.marginLeft }" flatten>
               <text class="common-text">view</text>
             </view>
             <view class="common-view" style="background-color: blue;"></view>
@@ -166,22 +172,22 @@ margin-left: <length> | <percentage> | auto;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{marginLeft}}</text>
-          <text class="uni-info">获取值: {{marginLeftActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.marginLeft}}</text>
+          <text class="uni-info">获取值: {{data.marginLeftActualTextFlat}}</text>
           <view class="test-box">
             <text class="common-view common-text" style="background-color: red;">红色</text>
-            <text ref="textRefFlat" class="common-view common-text test-text-flatten" :style="{ marginLeft: marginLeft }" flatten>text</text>
+            <text ref="textRefFlat" class="common-view common-text test-text-flatten" :style="{ marginLeft: data.marginLeft }" flatten>text</text>
             <text class="common-view common-text" style="background-color: blue;">蓝色</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{marginLeft}}</text>
-          <text class="uni-info">获取值: {{marginLeftActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.marginLeft}}</text>
+          <text class="uni-info">获取值: {{data.marginLeftActualImageFlat}}</text>
           <view class="test-box">
             <image class="common-image" style="background-color: red;" src="/static/test-image/logo.png"></image>
-            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ marginLeft: marginLeft }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ marginLeft: data.marginLeft }" flatten src="/static/test-image/logo.png"></image>
             <image class="common-image" style="background-color: blue;" src="/static/test-image/logo.png"></image>
           </view>
         </view>
@@ -189,7 +195,7 @@ margin-left: <length> | <percentage> | auto;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="marginLeftEnum" title="margin-left 枚举值" @change="radioChangeMarginLeft" :compact="true"></enum-data>
-        <input-data :defaultValue="marginLeft" title="margin-left 自定义值" type="text" @confirm="inputChangeMarginLeft"></input-data>
+        <input-data :defaultValue="data.marginLeft" title="margin-left 自定义值" type="text" @confirm="inputChangeMarginLeft"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -216,13 +222,15 @@ margin-left: <length> | <percentage> | auto;
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const marginLeft = ref('25px')
-  const marginLeftActual = ref('')
-  const marginLeftActualText = ref('')
-  const marginLeftActualImage = ref('')
-  const marginLeftActualFlat = ref('')
-  const marginLeftActualTextFlat = ref('')
-  const marginLeftActualImageFlat = ref('')
+  const data = reactive({
+    marginLeft: '25px',
+    marginLeftActual: '',
+    marginLeftActualText: '',
+    marginLeftActualImage: '',
+    marginLeftActualFlat: '',
+    marginLeftActualTextFlat: '',
+    marginLeftActualImageFlat: ''
+  })
 
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
@@ -242,16 +250,18 @@ margin-left: <length> | <percentage> | auto;
   ]
 
   const getPropertyValues = () => {
-    marginLeftActual.value = viewRef.value?.style.getPropertyValue('margin-left') ?? ''
-    marginLeftActualFlat.value = viewRefFlat.value?.style.getPropertyValue('margin-left') ?? ''
-    marginLeftActualText.value = textRef.value?.style.getPropertyValue('margin-left') ?? ''
-    marginLeftActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('margin-left') ?? ''
-    marginLeftActualImage.value = imageRef.value?.style.getPropertyValue('margin-left') ?? ''
-    marginLeftActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('margin-left') ?? ''
+    data.marginLeftActual = viewRef.value?.style.getPropertyValue('margin-left') ?? ''
+    data.marginLeftActualFlat = viewRefFlat.value?.style.getPropertyValue('margin-left') ?? ''
+    data.marginLeftActualText = textRef.value?.style.getPropertyValue('margin-left') ?? ''
+    data.marginLeftActualTextFlat = textRefFlat.value?.style.getPropertyValue('margin-left') ?? ''
+    data.marginLeftActualImage = imageRef.value?.style.getPropertyValue('margin-left') ?? ''
+    data.marginLeftActualImageFlat = imageRefFlat.value?.style.getPropertyValue('margin-left') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeMarginLeft = (value: string) => {
-    marginLeft.value = value
+    data.marginLeft = value
     viewRef.value?.style.setProperty('margin-left', value)
     viewRefFlat.value?.style.setProperty('margin-left', value)
     textRef.value?.style.setProperty('margin-left', value)
@@ -261,7 +271,7 @@ margin-left: <length> | <percentage> | auto;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeMarginLeft = (index: number) => {
@@ -280,7 +290,8 @@ margin-left: <length> | <percentage> | auto;
   })
 
   defineExpose({
-    radioChangeMarginLeft
+    radioChangeMarginLeft,
+    data
   })
 </script>
 

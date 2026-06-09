@@ -16,50 +16,52 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 5.11 | 4.61 | 5.0 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| src | string([string.HTMLURIString](/uts/data-type.md#ide-string)) | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | webview 指向网页的链接 |
-| allow | string | - | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 用于为 [iframe](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe) 指定其[特征策略](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/策略特征) |
-| sandbox | string | - | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 该属性对呈现在 [iframe](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe) 框架中的内容启用一些额外的限制条件。 |
-| fullscreen | boolean | - | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 是否铺满整个页面，默认值：`true`。 |
-| webview-styles | **WebViewStyles** | {"progress":{"color":"#00FF00"}} | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x; HarmonyOS(Vapor): x | webview 网络地址页面加载进度条样式 |
+| src | string \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | webview 指向网页的链接 |
+| allow | string |   | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 用于为 [iframe](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe) 指定其[特征策略](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/策略特征) |
+| sandbox | string |   | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 该属性对呈现在 [iframe](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe) 框架中的内容启用一些额外的限制条件。 |
+| fullscreen | boolean |   | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 是否铺满整个页面，默认值：`true`。 |
+| webview-styles | **WebViewStyles** | {"progress":{"color":"#00FF00"}} | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | webview 网络地址页面加载进度条样式 |
 
 #### webview-styles 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| progress | [WebViewProgressStyles](#webviewprogressstyles-values) \| boolean | 是 | {"color": "#00FF00"} | - | 网络地址页面加载进度条样式，设置为 false 时表示不显示加载进度条。 |
+| progress | [WebViewProgressStyles](#webviewprogressstyles-values) \| boolean | 是 | {"color": "#00FF00"} |   | 网络地址页面加载进度条样式，设置为 false 时表示不显示加载进度条。 |
 @
-| horizontal-scroll-bar-access | boolean | true | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.13; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置是否显示横向滚动条 |
-| vertical-scroll-bar-access | boolean | true | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.13; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置是否显示纵向滚动条 |
-| bounces | boolean | true | Web: x; 微信小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.63; HarmonyOS(Vapor): 5.0 | 设置是否开启回弹效果 |
-| android-nested-scroll | string | "all" | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 设置嵌套滚动方向 |
-| disable-user-select-menu | boolean | false | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.84; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 设置是否禁用文本选择时弹出的系统菜单 |
-| dark-mode | boolean | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): x | - |
-| @message | (event: [UniWebViewMessageEvent](#uniwebviewmessageevent)) => void | - | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 网页向应用 postMessage 时触发。e.detail = { data } |
-| @error | (event: [UniWebViewErrorEvent](#uniwebviewerrorevent)) => void | - | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 网页加载错误时触发。e.detail = { errSubject, errCode, errMsg, url, fullUrl, src } |
-| @load | (event: [UniWebViewLoadEvent](#uniwebviewloadevent)) => void | - | Web: 4.72; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 网页加载完成后触发。e.detail = { url, src } |
-| ~~@loaded~~ | (event: [UniWebViewLoadEvent](#uniwebviewloadevent)) => void | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 网页加载完成后触发。e.detail = { url, src }。已废弃，请改用load |
-| @loading | (event: [UniWebViewLoadingEvent](#uniwebviewloadingevent)) => void | - | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 网页开始加载时触发。e.detail = { url, src } |
-| @download | (event: [UniWebViewDownloadEvent](#uniwebviewdownloadevent)) => void | - | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 点击网页中可下载链接时触发。e.detail = { url, userAgent, contentDisposition, mimetype, contentLength } |
-| @contentheightchange | (event: [UniWebViewContentHeightChangeEvent](#uniwebviewcontentheightchangeevent)) => void | - | Web: x; 微信小程序: x; Android: 4.63; iOS: 4.63; HarmonyOS: 4.63; HarmonyOS(Vapor): - | 网页内容高度变化时触发。e.detail = { height } |
-| @didterminate | (event: [UniWebViewDidTerminateEvent](#uniwebviewdidterminateevent)) => void | - | Web: x; 微信小程序: x; Android: x; iOS: 5.0; HarmonyOS: x; HarmonyOS(Vapor): - | 检测到web-view压后台再回来出现白屏时触发 |
-| @onWebViewServiceMessage | Event | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): 5.0 | - |
+| horizontal-scroll-bar-access | boolean | true | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.13; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置是否显示横向滚动条 |
+| vertical-scroll-bar-access | boolean | true | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.13; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置是否显示纵向滚动条 |
+| bounces | boolean | true | Web: x; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS(Vapor): 5.11; HarmonyOS: 4.63; HarmonyOS(Vapor): 5.0 | 设置是否开启回弹效果 |
+| android-nested-scroll | string | "all" | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 设置嵌套滚动方向 |
+| disable-user-select-menu | boolean | false | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.84; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 设置是否禁用文本选择时弹出的系统菜单 |
+| ios-allows-inline-media-playback | boolean | false | Web: x; 微信小程序: x; Android: x; iOS 系统版本: x; iOS: 5.08; HarmonyOS: x; HarmonyOS(Vapor): x | 设置是否允许内联播放(禁止使用系统播放器全屏播放) |
+| dark-mode | boolean | true | HarmonyOS(Vapor): x |   |
+| ios-allows-inline-media-playback | boolean |   | iOS: 5.07; iOS(Vapor): 5.11; HarmonyOS(Vapor): x |   |
+| @message | (event: [UniWebViewMessageEvent](#uniwebviewmessageevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 网页向应用 postMessage 时触发。e.detail = { data } |
+| @error | (event: [UniWebViewErrorEvent](#uniwebviewerrorevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 网页加载错误时触发。e.detail = { errSubject, errCode, errMsg, url, fullUrl, src } |
+| @load | (event: [UniWebViewLoadEvent](#uniwebviewloadevent)) => void |   | Web: 4.72; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 网页加载完成后触发。e.detail = { url, src } |
+| ~~@loaded~~ | (event: [UniWebViewLoadEvent](#uniwebviewloadevent)) => void |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 网页加载完成后触发。e.detail = { url, src }。已废弃，请改用load |
+| @loading | (event: [UniWebViewLoadingEvent](#uniwebviewloadingevent)) => void |   | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 网页开始加载时触发。e.detail = { url, src } |
+| @download | (event: [UniWebViewDownloadEvent](#uniwebviewdownloadevent)) => void |   | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 点击网页中可下载链接时触发。e.detail = { url, userAgent, contentDisposition, mimetype, contentLength } |
+| @contentheightchange | (event: [UniWebViewContentHeightChangeEvent](#uniwebviewcontentheightchangeevent)) => void |   | Web: x; 微信小程序: x; Android: 4.63; iOS: 4.63; iOS(Vapor): 5.11; HarmonyOS: 4.63 | 网页内容高度变化时触发。e.detail = { height } |
+| @didterminate | (event: [UniWebViewDidTerminateEvent](#uniwebviewdidterminateevent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: 5.0; iOS(Vapor): 5.11; HarmonyOS: x | 检测到web-view压后台再回来出现白屏时触发 |
+| @onWebViewServiceMessage | Event |   | HarmonyOS(Vapor): 5.0 |   |
 
 #### android-nested-scroll 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| all | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 横向竖向均可嵌套滚动 |
-| vertical | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 竖向可嵌套滚动 |
-| horizontal | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 横向均可嵌套滚动 |
-| none | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 横向竖向均不可嵌套滚动 |
+| all | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 横向竖向均可嵌套滚动 |
+| vertical | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 竖向可嵌套滚动 |
+| horizontal | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 横向均可嵌套滚动 |
+| none | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 横向竖向均不可嵌套滚动 |
 
 
 ### 事件
@@ -75,7 +77,7 @@ UniWebViewMessageEvent -- Extends --> UniCustomEvent&ltUniWebViewMessageEventDet
 ##### UniWebViewMessageEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 | - | - | 事件类型，固定值message |
+| type | string | 是 |  |   | 事件类型，固定值message |
 
 
 ##### UniWebViewMessageEventDetail
@@ -84,7 +86,7 @@ UniWebViewMessageEvent -- Extends --> UniCustomEvent&ltUniWebViewMessageEventDet
 ###### UniWebViewMessageEventDetail 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | UTSJSONObject[\] | 是 | - | - | 消息包含的数据，4.13版本之前类型为Map\<string, any \| null> \| null，4.13版本（含）之后类型为Array\<UTSJSONObject> |
+| data | UTSJSONObject[\] | 是 |  |   | 消息包含的数据，4.13版本之前类型为Map\<string, any \| null> \| null，4.13版本（含）之后类型为Array\<UTSJSONObject> |
 
 
 #### UniWebViewErrorEvent
@@ -99,7 +101,7 @@ UniWebViewErrorEvent -- Extends --> UniCustomEvent&ltUniWebViewErrorEventDetail&
 ##### UniWebViewErrorEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 | - | - | 事件类型，固定值error |
+| type | string | 是 |  |   | 事件类型，固定值error |
 
 
 ##### UniWebViewErrorEventDetail
@@ -108,20 +110,20 @@ UniWebViewErrorEvent -- Extends --> UniCustomEvent&ltUniWebViewErrorEventDetail&
 ###### UniWebViewErrorEventDetail 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errSubject | string | 是 | - | - | 统一错误主题（模块）名称，固定值uni-web-view |
-| errCode | number | 是 | - | - | 统一错误码<br/>100001 ssl error<br/>100002 page error<br/>100003 http error  |
-| errMsg | string | 是 | - | - | 统一错误描述信息 |
-| url | string | 是 | - | - | 加载错误的网页链接，非完整链接，仅包含scheme://authority部分，4.13版本起支持 |
-| fullUrl | string | 是 | - | - | 加载错误的网页链接，完整链接，4.13版本起支持 |
-| src | string | 是 | - | - | 加载错误的网页链接，完整链接，4.13版本起支持 |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称，固定值uni-web-view |
+| errCode | number | 是 |  |   | 统一错误码<br/>100001 ssl error<br/>100002 page error<br/>100003 http error  |
+| errMsg | string | 是 |  |   | 统一错误描述信息 |
+| url | string | 是 |  |   | 加载错误的网页链接，非完整链接，仅包含scheme://authority部分，4.13版本起支持 |
+| fullUrl | string | 是 |  |   | 加载错误的网页链接，完整链接，4.13版本起支持 |
+| src | string | 是 |  |   | 加载错误的网页链接，完整链接，4.13版本起支持 |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| 100001 | - | - |
-| 100002 | - | - |
-| 100003 | - | - |
+| 合法值 | 描述 |
+| :- | :- |
+| 100001 |  |
+| 100002 |  |
+| 100003 |  |
 
 
 #### UniWebViewLoadEvent
@@ -136,7 +138,7 @@ UniWebViewLoadEvent -- Extends --> UniCustomEvent&ltUniWebViewLoadEventDetail&gt
 ##### UniWebViewLoadEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 | - | - | 事件类型，固定值load |
+| type | string | 是 |  |   | 事件类型，固定值load |
 
 
 ##### UniWebViewLoadEventDetail
@@ -145,8 +147,8 @@ UniWebViewLoadEvent -- Extends --> UniCustomEvent&ltUniWebViewLoadEventDetail&gt
 ###### UniWebViewLoadEventDetail 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| ~~url~~ | string | 是 | - | - | 加载完成的网页链接 |
-| src | string | 是 | - | - | 加载完成的网页链接，4.13版本起支持 |
+| ~~url~~ | string | 是 |  |   | 加载完成的网页链接 |
+| src | string | 是 |  |   | 加载完成的网页链接，4.13版本起支持 |
 
 
 #### UniWebViewLoadingEvent
@@ -161,7 +163,7 @@ UniWebViewLoadingEvent -- Extends --> UniCustomEvent&ltUniWebViewLoadingEventDet
 ##### UniWebViewLoadingEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 | - | - | 事件类型，固定值loading |
+| type | string | 是 |  |   | 事件类型，固定值loading |
 
 
 ##### UniWebViewLoadingEventDetail
@@ -170,8 +172,8 @@ UniWebViewLoadingEvent -- Extends --> UniCustomEvent&ltUniWebViewLoadingEventDet
 ###### UniWebViewLoadingEventDetail 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| ~~url~~ | string | 是 | - | - | 加载中的网页链接 |
-| src | string | 是 | - | - | 加载中的网页链接，4.13版本起支持 |
+| ~~url~~ | string | 是 |  |   | 加载中的网页链接 |
+| src | string | 是 |  |   | 加载中的网页链接，4.13版本起支持 |
 
 
 #### UniWebViewDownloadEvent
@@ -186,7 +188,7 @@ UniWebViewDownloadEvent -- Extends --> UniCustomEvent&ltUniWebViewDownloadEventD
 ##### UniWebViewDownloadEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 | - | - | 事件类型，固定值download |
+| type | string | 是 |  |   | 事件类型，固定值download |
 
 
 ##### UniWebViewDownloadEventDetail
@@ -195,11 +197,11 @@ UniWebViewDownloadEvent -- Extends --> UniCustomEvent&ltUniWebViewDownloadEventD
 ###### UniWebViewDownloadEventDetail 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| url | string | 是 | - | - | 下载链接 |
-| userAgent | string | 是 | - | - | 用户代理 |
-| contentDisposition | string | 是 | - | - | 指示回复的内容该以何种形式展示，是以内联的形式（即网页或者页面的一部分），还是以附件的形式下载并保存到本地 |
-| mimetype | string | 是 | - | - | 媒体类型 |
-| contentLength | number | 是 | - | - | 文件大小 |
+| url | string | 是 |  |   | 下载链接 |
+| userAgent | string | 是 |  |   | 用户代理 |
+| contentDisposition | string | 是 |  |   | 指示回复的内容该以何种形式展示，是以内联的形式（即网页或者页面的一部分），还是以附件的形式下载并保存到本地 |
+| mimetype | string | 是 |  |   | 媒体类型 |
+| contentLength | number | 是 |  |   | 文件大小 |
 
 
 #### UniWebViewContentHeightChangeEvent
@@ -214,7 +216,7 @@ UniWebViewContentHeightChangeEvent -- Extends --> UniCustomEvent&ltUniWebViewCon
 ##### UniWebViewContentHeightChangeEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 | - | - | 事件类型，固定值contentheightchange |
+| type | string | 是 |  |   | 事件类型，固定值contentheightchange |
 
 
 ##### UniWebViewContentHeightChangeEventDetail
@@ -223,7 +225,7 @@ UniWebViewContentHeightChangeEvent -- Extends --> UniCustomEvent&ltUniWebViewCon
 ###### UniWebViewContentHeightChangeEventDetail 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| height | number | 是 | - | - | 内容高度 |
+| height | number | 是 |  |   | 内容高度 |
 
 
 
@@ -329,9 +331,8 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
       <!-- #endif -->
     </view>
     <!-- #endif -->
-    <!-- #ifdef APP-ANDROID || APP-IOS -->
-    <view class="safe-area-inset-bottom"></view>
-    <!-- #endif -->
+
+    <bottom-safe-area />
   </view>
 </template>
 
@@ -385,7 +386,7 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
   } as DataType)
 
   let webviewElement = null as UniWebViewElement | null
-
+  let webviewContext = null as WebViewContext | null
   const fullScreen = computed(() => {
     return !data.halfWindowMode
   })
@@ -420,29 +421,29 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
   }
 
   const back = () => {
-    webviewElement?.back();
+    webviewContext?.back();
   }
 
   const forward = () => {
-    webviewElement?.forward();
+    webviewContext?.forward();
   }
 
   const reload = () => {
     data.loadingCount = 0
-    webviewElement?.reload();
+    webviewContext?.reload();
   }
 
   const stop = () => {
-    webviewElement?.stop();
+    webviewContext?.stop();
   }
 
   const nativeToWeb = () => {
-    webviewElement?.evalJS("alert('hello uni-app x')");
+    webviewContext?.evalJS("alert('hello uni-app x')");
   }
 
   // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
   const getContentHeight = (): number => {
-    const height = webviewElement?.getContentHeight() ?? 0;
+    const height = webviewContext?.getContentHeight() ?? 0;
     console.log('contentHeight', height);
     if (!data.autoTest) {
       uni.showModal({
@@ -454,10 +455,14 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
   }
 
   const loadData = () => {
-    webviewElement?.loadData({
+    // webviewElement
+
+    const options: UniWebviewContextLoadDataOptions = {
       data: '<p><a href="https://www.dcloud.io/hbuilderx.html">HBuilderX</a><br/><img src="/unidoc/zh/uni@2x.png"></img><h1>HBuilderX，轻巧、极速，极客编辑器</h1><p style="color:red;"><small>HBuilderX，轻巧、极速，极客编辑器 </small><big>HBuilderX，轻巧、极速，极客编辑器</big><strong>HBuilderX，轻巧、极速，极客编辑器</strong><i>HBuilderX，轻巧、极速，极客编辑器 </i><u>HBuilderX，轻巧、极速，极客编辑器</u><del>HBuilderX，轻巧、极速，极客编辑器</del></p><h2>uni-app x，终极跨平台方案</h2>、<p style="background-color: yellow;"><small>uni-app x，终极跨平台方案 </small><big>uni-app x，终极跨平台方案</big><strong>uni-appx，终极跨平台方案 </strong><i>uni-app x，终极跨平台方案 </i><u>uni-app x，终极跨平台方案 </u><del>uni-appx，终极跨平台方案</del></p><h3>uniCloud，js serverless云服务</h3><p style="text-decoration: line-through;"><small>uniCloud，js serverless云服务 </small><big>uniCloud，jsserverless云服务</big><strong>uniCloud，js serverless云服务 </strong><i>uniCloud，js serverless云服务 </i><u>uniCloud，jsserverless云服务</u><del>uniCloud，js serverless云服务</del></p><h4>uts，大一统语言</h4><p style="text-align: center;"><small>uts，大一统语言 </small><big>uts，大一统语言 </big><strong>uts，大一统语言</strong><i>uts，大一统语言</i><u>uts，大一统语言 </u><del>uts，大一统语言</del></p><h5>uniMPSdk，让你的App具备小程序能力</h5><h6>uni-admin，开源、现成的全端管理后台</h6><ul><li style="color: red; text-align: left;">uni-app x，终极跨平台方案</li><li style="color: green; text-align: center;">uni-app x，终极跨平台方案</li><li style="color: blue; text-align: right;">uni-app x，终极跨平台方案</li></ul><a href="https://uniapp.dcloud.net.cn">uni-app</a><br/><img src="/unidoc/zh/uni@2x.png"></img></p>',
       baseURL: 'https://qiniu-web-assets.dcloud.net.cn'
-    });
+    }
+    webviewContext?.loadData(options)
+    // webviewElement?.loadData(options)
   }
   // #endif
 
@@ -484,13 +489,18 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
   const loading = (event: UniWebViewLoadingEvent) => {
     data.loadingCount++
     // console.log(JSON.stringify(event.detail));
+    // #ifndef APP-HARMONY
+    // 鸿蒙平台在页面加载完成后，重复调用 reload 不会触发 loading 事件
     if (data.autoTest) {
+    // #endif
       data.eventLoading = {
         "tagName": event.target?.tagName,
         "type": event.type,
         "src": event.detail.src
       };
+    // #ifndef APP-HARMONY
     }
+    // #endif
   }
 
   const load = (event: UniWebViewLoadEvent) => {
@@ -499,14 +509,19 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
     data.canGoBack = canWebViewGoBack('web-view');
     data.canGoForward = canWebViewGoForward('web-view');
     // #endif
+    // #ifndef APP-HARMONY
+    // 鸿蒙平台在页面加载完成后，重复调用 reload 不会触发 loading 事件
     if (data.autoTest) {
+    // #endif
       data.eventLoad = {
         "tagName": event.target?.tagName,
         "type": event.type,
         "src": event.detail.src,
         "url": event.detail.url,
       };
+    // #ifndef APP-HARMONY
     }
+    // #endif
   }
 
   const download = (event: UniWebViewDownloadEvent) => {
@@ -572,23 +587,32 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
   }
 
   const checkLoadingCount = () => {
+    // #ifndef APP-HARMONY
+    // 鸿蒙平台在页面加载完成后，重复调用 reload 不会触发 loading 事件
     data.loadingCount = 0
-    webviewElement?.reload();
+    // #endif
+    // webviewContext?.reload();
+    webviewContext?.reload();
   }
 
+  const currentInstance = getCurrentInstance()
+
   onReady(() => {
-    // #ifdef APP
     // TODO web 实现createWebviewContext
-    // this.webviewContext = uni.createWebviewContext('web-view', this)
+    // #ifdef APP
+    webviewContext = uni.createWebViewContext('web-view', currentInstance?.proxy)
+    console.log("webviewContext:",webviewContext)
     // NOTE 绑定到 this 上会被代理导致无法调用方法
     webviewElement = uni.getElementById('web-view') as UniWebViewElement //推荐使用element，功能更丰富
-    // console.log('url: ',this.webviewElement?.getAttribute("src"));
-    // this.webviewElement?.setAttribute("src","https://ext.dcloud.net.cn/")
+    console.log("webviewElement:",webviewElement)
+    // console.log('url: ',this.webviewContext?.getAttribute("src"));
+    // this.webviewContext?.setAttribute("src","https://ext.dcloud.net.cn/")
     // #endif
   })
 
   onUnload(() => {
     webviewElement = null;
+    webviewContext = null;
   })
 
   defineExpose({
@@ -610,10 +634,6 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
 
   .align-items-center {
     align-items: center;
-  }
-
-  .safe-area-inset-bottom {
-    height: var(--uni-safe-area-inset-bottom);
   }
 </style>
 
@@ -754,3 +774,5 @@ webviewController?.setPathAllowingUniversalAccess([
 - app-ios平台不支持padding style（padding-top、padding-left、padding-right、padding-bottom）
 - 页面中的web-view组件数量不宜太多，每个web-view都会占用不少内存。
 - uni.postMessage已不推荐使用（将废弃），功能与uni.webView.postMessage一致，推荐使用uni.webView.postMessage。
+
+<md-hperm :permissions="[{ name: 'ohos.permission.APPROXIMATELY_LOCATION', desc: '网页触发地理位置授权时请求该权限。' }, { name: 'ohos.permission.LOCATION', desc: '网页触发地理位置授权时请求该权限。' }, { name: 'ohos.permission.CAMERA', desc: 'Web 内容请求相关受保护资源时涉及该权限。' }, { name: 'ohos.permission.MICROPHONE', desc: 'Web 内容请求 ProtectedResourceType.AUDIO_CAPTURE 时，会请求该权限。' }]" />

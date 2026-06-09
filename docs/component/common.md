@@ -11,7 +11,7 @@
 | class | string(string.ClassString) \| UTSJSONObject \| Array\<string(string.ClassString) \| UTSJSONObject> | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 组件的样式类，在对应的 css 中定义的样式类 |
 | ref | string \| Function | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | vue中组件的唯一标识，用来给子组件注册引用信息，[详见](https://doc.dcloud.net.cn/uni-app-x/vue/built-in.html#ref) |
 | data-* | any | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 自定义属性，组件上触发的事件时，会发送给事件处理函数 |
-| android-* | any | Web: x; 微信小程序: -; Android: 3.9; iOS: x; HarmonyOS: x | App-Android平台专有属性，详见[App-Android平台专有属性](https://doc.dcloud.net.cn/uni-app-x/component/common.html#attribute-android)章节 |
+| android-* | any | Web: x; Android: 3.9; iOS: x; HarmonyOS: x | App-Android平台专有属性，详见[App-Android平台专有属性](https://doc.dcloud.net.cn/uni-app-x/component/common.html#attribute-android)章节 |
 
 
 
@@ -57,6 +57,7 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
   <!-- #endif -->
     <view>
       <page-head title="global-properties"></page-head>
+      <page-intro content="本页演示组件通用属性：id、class、data、style 的绑定与校验，以及 ref、hover-class、hover-start-time、hover-stay-time 等点击态效果。"></page-intro>
       <view class="uni-padding-wrap">
         <view :id="generalId" :class="generalClass"
           <!-- #ifdef !VUE3-VAPOR-->
@@ -196,9 +197,9 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
 | 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- | :- | :- |
 | @click | (event: [UniPointerEvent](/component/common.md#unipointerevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸后马上离开。与tap相同，（推荐使用tap事件代替），冒泡事件 |
-| @mousedown | (event: [UniMouseEvent](/component/common.md#unimouseevent)) => void | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 鼠标在元素上点击后触发 |
-| @mousemove | (event: [UniMouseEvent](/component/common.md#unimouseevent)) => void | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 鼠标在元素上移动时触发 |
-| @mouseup | (event: [UniMouseEvent](/component/common.md#unimouseevent)) => void | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 鼠标主按钮在元素上松开时触发 |
+| @mousedown | (event: [UniMouseEvent](/component/common.md#unimouseevent)) => void | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 鼠标在元素上点击后触发 |
+| @mousemove | (event: [UniMouseEvent](/component/common.md#unimouseevent)) => void | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 鼠标在元素上移动时触发 |
+| @mouseup | (event: [UniMouseEvent](/component/common.md#unimouseevent)) => void | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 鼠标主按钮在元素上松开时触发 |
 | @touchstart | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸动作开始，冒泡事件，event.type 值为 touchstart |
 | @touchmove | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸后移动，冒泡事件，event.type 值为 touchmove |
 | @touchcancel | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸动作被打断，如来电提醒，弹窗，冒泡事件，event.type 值为 touchcancel |
@@ -225,6 +226,7 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <page-head title="组件全局事件示例"></page-head>
+    <page-intro content="本页演示组件全局事件：触摸区域展示 touchstart/touchmove/touchend/touchcancel，点击区域展示 tap/click/longpress，并显示事件详情与清除；可跳转冒泡、阻止默认、transform 等子示例。"></page-intro>
     <view class="uni-padding-wrap uni-common-mt container">
       <view class="section">
         <text class="section-title">触摸事件区域：touchstart/touchmove/touchend/touchcancel</text>
@@ -736,6 +738,7 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
             </view>
           </view>
         </template>
+        <!-- #ifndef MP-ALIPAY -->
         <text class="touches-title">event.changedTouches (变化的触摸点):</text>
         <template v-for="(touch, index) in longPressEvent!.changedTouches" :key="index">
           <view class="touch-item">
@@ -788,6 +791,7 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
             </view>
           </view>
         </template>
+        <!-- #endif -->
       </view>
       <view v-if="tapEvent !== null" class="event-detail">
         <text class="event-title">tap Event（点击事件）</text>
@@ -1370,23 +1374,23 @@ handleClick (event : UniPointerEvent) {
 ### 构造函数
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 | - | - | 事件的名称 |
+| type | string | 是 |  |   | 事件的名称 |
 
 ### 构造函数
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 | - | - | 事件的名称 |
-| eventInit | any | 是 | - | - | 事件初始参数。支持字段：`bubbles`表明该事件是否冒泡。可选，默认为false；`cancelable`表明该事件是否可以被取消。可选，默认为false。 |
+| type | string | 是 |  |   | 事件的名称 |
+| eventInit | any | 是 |  |   | 事件初始参数。支持字段：`bubbles`表明该事件是否冒泡。可选，默认为false；`cancelable`表明该事件是否可以被取消。可选，默认为false。 |
 
 ### UniEvent 的属性值 @unievent-values
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| bubbles | boolean | 是 | - | - | 是否冒泡 |
-| cancelable | boolean | 是 | - | - | 是否可以取消 |
-| type | string | 是 | - | Web: 4.0; 微信小程序: -; Android: 3.9; iOS: -; HarmonyOS: 4.61 | 事件类型<br/> |
-| target | [UniElement](/api/dom/unielement.md) | 否 | - | Web: 4.0; 微信小程序: -; Android: 3.9; iOS: -; HarmonyOS: 4.61 | 触发事件的组件<br/> |
-| currentTarget | [UniElement](/api/dom/unielement.md) | 否 | - | Web: 4.0; 微信小程序: -; Android: 3.9; iOS: -; HarmonyOS: 4.61 | 当前组件<br/> |
-| timeStamp | number | 是 | - | Web: 4.0; 微信小程序: -; Android: 3.9; iOS: -; HarmonyOS: 4.61 | 事件发生时的时间戳<br/> |
+| bubbles | boolean | 是 |  |   | 是否冒泡 |
+| cancelable | boolean | 是 |  |   | 是否可以取消 |
+| type | string | 是 |  | Web: 4.0; Android: 3.9; HarmonyOS: 4.61 | 事件类型<br/> |
+| target | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; Android: 3.9; HarmonyOS: 4.61 | 触发事件的组件<br/> |
+| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; Android: 3.9; HarmonyOS: 4.61 | 当前组件<br/> |
+| timeStamp | number | 是 |  | Web: 4.0; Android: 3.9; HarmonyOS: 4.61 | 事件发生时的时间戳<br/> |
 
 
 
@@ -1402,9 +1406,9 @@ handleClick (event : UniPointerEvent) {
 
 
 ##### stopPropagation 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | - | 3.9 | 4.0 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.0 | 4.61 |
 
 
 
@@ -1419,9 +1423,9 @@ handleClick (event : UniPointerEvent) {
 
 
 ##### preventDefault 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | - | 3.9 | 4.55 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.55 | 4.61 |
 
 
 
@@ -1442,19 +1446,19 @@ UniCustomEvent -- Extends --> UniEvent
 ### 构造函数
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 | - | - | - |
-| detail | T | 是 | - | - | - |
+| type | string | 是 |  |   |  |
+| detail | T | 是 |  |   |  |
 
 ### 构造函数
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 | - | - | - |
-| options | any | 是 | - | - | - |
+| type | string | 是 |  |   |  |
+| options | any | 是 |  |   |  |
 
 ### UniCustomEvent 的属性值 @unicustomevent-values
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | T | 是 | - | - | - |
+| detail | T | 是 |  |   |  |
 
 
 
@@ -1474,14 +1478,14 @@ UniPointerEvent -- Extends --> UniEvent
 ### UniPointerEvent 的属性值 @unipointerevent-values
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| clientX | number | 是 | - | - | 相对于页面可显示区域左边的距离 |
-| clientY | number | 是 | - | - | 相对于页面可显示区域顶部的距离 |
-| x | number | 是 | - | - | 相对于页面可显示区域左边的距离，同`clientX` |
-| y | number | 是 | - | - | 相对于页面可显示区域顶部的距离，同`clientY` |
-| pageX | number | 是 | - | - | 相对于屏幕左边的距离，包括滚动距离。 |
-| pageY | number | 是 | - | - | 相对于屏幕顶部的距离，包括滚动距离。 |
-| screenX | number | 是 | - | - | 相对于屏幕左边的距离，不包括滚动距离。 |
-| screenY | number | 是 | - | - | 相对于屏幕顶部的距离，不包括滚动距离。 |
+| clientX | number | 是 |  |   | 相对于页面可显示区域左边的距离 |
+| clientY | number | 是 |  |   | 相对于页面可显示区域顶部的距离 |
+| x | number | 是 |  |   | 相对于页面可显示区域左边的距离，同`clientX` |
+| y | number | 是 |  |   | 相对于页面可显示区域顶部的距离，同`clientY` |
+| pageX | number | 是 |  |   | 相对于屏幕左边的距离，包括滚动距离。 |
+| pageY | number | 是 |  |   | 相对于屏幕顶部的距离，包括滚动距离。 |
+| screenX | number | 是 |  |   | 相对于屏幕左边的距离，不包括滚动距离。 |
+| screenY | number | 是 |  |   | 相对于屏幕顶部的距离，不包括滚动距离。 |
 
 
 <!-- CUSTOMTYPEJSON.UniPointerEvent.example -->
@@ -1502,34 +1506,34 @@ UniTouchEvent -- Extends --> UniEvent
 ### UniTouchEvent 的属性值 @unitouchevent-values
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| touches | Array&lt;**UniTouch**&gt; | 是 | - | - | 当前停留在屏幕中的触摸点信息的数组 |
-| changedTouches | Array&lt;**UniTouch**&gt; | 是 | - | - | 当前变化的触摸点信息的数组 |
+| touches | Array&lt;**UniTouch**&gt; | 是 |  |   | 当前停留在屏幕中的触摸点信息的数组 |
+| changedTouches | Array&lt;**UniTouch**&gt; | 是 |  |   | 当前变化的触摸点信息的数组 |
 
 #### touches 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| clientX | number | 是 | - | - | 相对于页面可显示区域左边的距离 |
-| clientY | number | 是 | - | - | 相对于页面可显示区域顶部的距离 |
-| identifier | number | 是 | - | - | 触摸点的标识符。这个值在这根手指所引发的所有事件中保持一致，直到手指抬起。 |
-| pageX | number | 是 | - | - | 相对于屏幕左边的距离，包括滚动距离。 |
-| pageY | number | 是 | - | - | 相对于屏幕顶部的距离，包括滚动距离。 |
-| screenX | number | 是 | - | - | 相对于屏幕左边的距离，不包括滚动距离。 |
-| screenY | number | 是 | - | - | 相对于屏幕顶部的距离，不包括滚动距离。 |
-| force | number | 否 | - | - | 返回当前触摸点按下的压力大小 |
+| clientX | number | 是 |  |   | 相对于页面可显示区域左边的距离 |
+| clientY | number | 是 |  |   | 相对于页面可显示区域顶部的距离 |
+| identifier | number | 是 |  |   | 触摸点的标识符。这个值在这根手指所引发的所有事件中保持一致，直到手指抬起。 |
+| pageX | number | 是 |  |   | 相对于屏幕左边的距离，包括滚动距离。 |
+| pageY | number | 是 |  |   | 相对于屏幕顶部的距离，包括滚动距离。 |
+| screenX | number | 是 |  |   | 相对于屏幕左边的距离，不包括滚动距离。 |
+| screenY | number | 是 |  |   | 相对于屏幕顶部的距离，不包括滚动距离。 |
+| force | number | 否 |  |   | 返回当前触摸点按下的压力大小 |
 
 #### changedTouches 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| clientX | number | 是 | - | - | 相对于页面可显示区域左边的距离 |
-| clientY | number | 是 | - | - | 相对于页面可显示区域顶部的距离 |
-| identifier | number | 是 | - | - | 触摸点的标识符。这个值在这根手指所引发的所有事件中保持一致，直到手指抬起。 |
-| pageX | number | 是 | - | - | 相对于屏幕左边的距离，包括滚动距离。 |
-| pageY | number | 是 | - | - | 相对于屏幕顶部的距离，包括滚动距离。 |
-| screenX | number | 是 | - | - | 相对于屏幕左边的距离，不包括滚动距离。 |
-| screenY | number | 是 | - | - | 相对于屏幕顶部的距离，不包括滚动距离。 |
-| force | number | 否 | - | - | 返回当前触摸点按下的压力大小 |
+| clientX | number | 是 |  |   | 相对于页面可显示区域左边的距离 |
+| clientY | number | 是 |  |   | 相对于页面可显示区域顶部的距离 |
+| identifier | number | 是 |  |   | 触摸点的标识符。这个值在这根手指所引发的所有事件中保持一致，直到手指抬起。 |
+| pageX | number | 是 |  |   | 相对于屏幕左边的距离，包括滚动距离。 |
+| pageY | number | 是 |  |   | 相对于屏幕顶部的距离，包括滚动距离。 |
+| screenX | number | 是 |  |   | 相对于屏幕左边的距离，不包括滚动距离。 |
+| screenY | number | 是 |  |   | 相对于屏幕顶部的距离，不包括滚动距离。 |
+| force | number | 否 |  |   | 返回当前触摸点按下的压力大小 |
 
 
 UniTouchEvent 的 type 类型包括：touchstart、touchmove、touchend、touchcancel、longpress。
@@ -1544,14 +1548,14 @@ UniTouchEvent 的 type 类型包括：touchstart、touchmove、touchend、touchc
 ### UniTouch 的属性值 @unitouch-values
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| clientX | number | 是 | - | - | 相对于页面可显示区域左边的距离 |
-| clientY | number | 是 | - | - | 相对于页面可显示区域顶部的距离 |
-| identifier | number | 是 | - | - | 触摸点的标识符。这个值在这根手指所引发的所有事件中保持一致，直到手指抬起。 |
-| pageX | number | 是 | - | - | 相对于屏幕左边的距离，包括滚动距离。 |
-| pageY | number | 是 | - | - | 相对于屏幕顶部的距离，包括滚动距离。 |
-| screenX | number | 是 | - | - | 相对于屏幕左边的距离，不包括滚动距离。 |
-| screenY | number | 是 | - | - | 相对于屏幕顶部的距离，不包括滚动距离。 |
-| force | number | 否 | - | - | 返回当前触摸点按下的压力大小 |
+| clientX | number | 是 |  |   | 相对于页面可显示区域左边的距离 |
+| clientY | number | 是 |  |   | 相对于页面可显示区域顶部的距离 |
+| identifier | number | 是 |  |   | 触摸点的标识符。这个值在这根手指所引发的所有事件中保持一致，直到手指抬起。 |
+| pageX | number | 是 |  |   | 相对于屏幕左边的距离，包括滚动距离。 |
+| pageY | number | 是 |  |   | 相对于屏幕顶部的距离，包括滚动距离。 |
+| screenX | number | 是 |  |   | 相对于屏幕左边的距离，不包括滚动距离。 |
+| screenY | number | 是 |  |   | 相对于屏幕顶部的距离，不包括滚动距离。 |
+| force | number | 否 |  |   | 返回当前触摸点按下的压力大小 |
 
 
 <!-- CUSTOMTYPEJSON.Unigeneral-event.example -->
@@ -1572,14 +1576,14 @@ UniPointerEvent -- Extends --> UniEvent
 ### UniMouseEvent 的属性值 @unimouseevent-values
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| clientX | number | 是 | - | - | 相对于页面可显示区域左边的距离 |
-| clientY | number | 是 | - | - | 相对于页面可显示区域顶部的距离 |
-| x | number | 是 | - | - | 相对于页面可显示区域左边的距离，同`clientX` |
-| y | number | 是 | - | - | 相对于页面可显示区域顶部的距离，同`clientY` |
-| pageX | number | 是 | - | - | 相对于屏幕左边的距离，包括滚动距离。 |
-| pageY | number | 是 | - | - | 相对于屏幕顶部的距离，包括滚动距离。 |
-| screenX | number | 是 | - | - | 相对于屏幕左边的距离，不包括滚动距离。 |
-| screenY | number | 是 | - | - | 相对于屏幕顶部的距离，不包括滚动距离。 |
+| clientX | number | 是 |  |   | 相对于页面可显示区域左边的距离 |
+| clientY | number | 是 |  |   | 相对于页面可显示区域顶部的距离 |
+| x | number | 是 |  |   | 相对于页面可显示区域左边的距离，同`clientX` |
+| y | number | 是 |  |   | 相对于页面可显示区域顶部的距离，同`clientY` |
+| pageX | number | 是 |  |   | 相对于屏幕左边的距离，包括滚动距离。 |
+| pageY | number | 是 |  |   | 相对于屏幕顶部的距离，包括滚动距离。 |
+| screenX | number | 是 |  |   | 相对于屏幕左边的距离，不包括滚动距离。 |
+| screenY | number | 是 |  |   | 相对于屏幕顶部的距离，不包括滚动距离。 |
 
 
 <!-- CUSTOMTYPEJSON.UniMouseEvent.example -->
@@ -1600,14 +1604,11 @@ UniKeyEvent -- Extends --> UniEvent
 ### UniKeyEvent 的属性值 @unikeyevent-values
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| keyCode | number | 是 | - | - | - |
-| keyType | string | 是 | - | - | - |
+| keyCode | number | 是 |  |   |  |
+| keyType | string | 是 |  |   |  |
 
 
-### UniKeyEvent 兼容性 
- | Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| - | - | - | - | - |
+
 
 <!-- CUSTOMTYPEJSON.UniKeyEvent.example -->
 
@@ -1627,25 +1628,25 @@ UniNativeViewEvent -- Extends --> UniCustomEvent
 ### 构造函数
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 | - | - | - |
-| detail | any | 是 | - | - | - |
+| type | string | 是 |  |   |  |
+| detail | any | 是 |  |   |  |
 
 ### 构造函数
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 | - | - | - |
+| type | string | 是 |  |   |  |
 
 ### UniNativeViewEvent 的属性值 @uninativeviewevent-values
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 | - | - | 事件类型 |
-| detail | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | - | - | - |
+| type | string | 是 |  |   | 事件类型 |
+| detail | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  |   |  |
 
 
 ### UniNativeViewEvent 兼容性 
- | Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| - | - | 4.31 | 4.31 | 4.61 | 5.0 |
+ | Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 4.31 | 4.31 | 4.61 |
 
 <!-- CUSTOMTYPEJSON.UniNativeViewEvent.example -->
 
@@ -1659,18 +1660,15 @@ UniNativeViewEvent -- Extends --> UniCustomEvent
 ### UniVideoEvent 的属性值 @univideoevent-values
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| bubbles | boolean | 是 | - | - | 是否冒泡 |
-| cancelable | boolean | 是 | - | - | 是否可以取消 |
-| type | string | 是 | - | - | 事件类型 |
-| target | [UniElement](/api/dom/unielement.md) | 否 | - | - | 触发事件的组件 |
-| currentTarget | [UniElement](/api/dom/unielement.md) | 否 | - | - | 当前组件 |
-| timeStamp | number | 是 | - | - | 事件发生时的时间戳 |
+| bubbles | boolean | 是 |  |   | 是否冒泡 |
+| cancelable | boolean | 是 |  |   | 是否可以取消 |
+| type | string | 是 |  |   | 事件类型 |
+| target | [UniElement](/api/dom/unielement.md) | 否 |  |   | 触发事件的组件 |
+| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  |   | 当前组件 |
+| timeStamp | number | 是 |  |   | 事件发生时的时间戳 |
 
 
-### UniVideoEvent 兼容性 
- | Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| - | - | - | - | - |
+
 
 <!-- CUSTOMTYPEJSON.UniVideoEvent.example -->
 
@@ -1679,10 +1677,6 @@ UniNativeViewEvent -- Extends --> UniCustomEvent
 
 阻止当前事件的进一步传播
 
-##### stopPropagation 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| - | - | - | - | - |
 
 
 
@@ -1695,10 +1689,6 @@ UniNativeViewEvent -- Extends --> UniCustomEvent
 
 阻止当前事件的默认行为
 
-##### preventDefault 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| - | - | - | - | - |
 
 
 

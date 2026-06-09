@@ -5,11 +5,17 @@
 margin-bottom 属性设置与元素相关联的盒子模型的下外边距。可以为负值
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -29,7 +35,7 @@ margin-bottom: <length> | <percentage> | auto;
 ### margin-bottom 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 由浏览器自己选择一个合适的值。参见 margin。 |
+| auto | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 由浏览器自己选择一个合适的值。参见 margin。 |
 
 
 ### 默认值 @default-value 
@@ -116,11 +122,11 @@ margin-bottom: <length> | <percentage> | auto;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{marginBottom}}</text>
-          <text class="uni-info">获取值: {{marginBottomActual}}</text>
+          <text class="uni-info">设置值: {{data.marginBottom}}</text>
+          <text class="uni-info">获取值: {{data.marginBottomActual}}</text>
           <view class="test-box">
             <view class="common-view" style="background-color: red;"></view>
-            <view ref="viewRef" class="common-view test-view" :style="{ marginBottom: marginBottom }">
+            <view ref="viewRef" class="common-view test-view" :style="{ marginBottom: data.marginBottom }">
               <text class="common-text">view</text>
             </view>
             <view class="common-view" style="background-color: blue;"></view>
@@ -129,22 +135,22 @@ margin-bottom: <length> | <percentage> | auto;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{marginBottom}}</text>
-          <text class="uni-info">获取值: {{marginBottomActualText}}</text>
+          <text class="uni-info">设置值: {{data.marginBottom}}</text>
+          <text class="uni-info">获取值: {{data.marginBottomActualText}}</text>
           <view class="test-box">
             <text class="common-view common-text" style="background-color: red;">红色</text>
-            <text ref="textRef" class="common-view common-text test-text" :style="{ marginBottom: marginBottom }">text</text>
+            <text ref="textRef" class="common-view common-text test-text" :style="{ marginBottom: data.marginBottom }">text</text>
             <text class="common-view common-text" style="background-color: blue;">蓝色</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{marginBottom}}</text>
-          <text class="uni-info">获取值: {{marginBottomActualImage}}</text>
+          <text class="uni-info">设置值: {{data.marginBottom}}</text>
+          <text class="uni-info">获取值: {{data.marginBottomActualImage}}</text>
           <view class="test-box">
             <image class="common-image" style="background-color: red;" src="/static/test-image/logo.png"></image>
-            <image ref="imageRef" class="common-image test-image" :style="{ marginBottom: marginBottom }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image test-image" :style="{ marginBottom: data.marginBottom }" src="/static/test-image/logo.png"></image>
             <image class="common-image" style="background-color: blue;" src="/static/test-image/logo.png"></image>
           </view>
         </view>
@@ -153,11 +159,11 @@ margin-bottom: <length> | <percentage> | auto;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{marginBottom}}</text>
-          <text class="uni-info">获取值: {{marginBottomActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.marginBottom}}</text>
+          <text class="uni-info">获取值: {{data.marginBottomActualFlat}}</text>
           <view class="test-box">
             <view class="common-view" style="background-color: red;"></view>
-            <view ref="viewRefFlat" class="common-view test-view-flatten" :style="{ marginBottom: marginBottom }" flatten>
+            <view ref="viewRefFlat" class="common-view test-view-flatten" :style="{ marginBottom: data.marginBottom }" flatten>
               <text class="common-text">view</text>
             </view>
             <view class="common-view" style="background-color: blue;"></view>
@@ -166,22 +172,22 @@ margin-bottom: <length> | <percentage> | auto;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{marginBottom}}</text>
-          <text class="uni-info">获取值: {{marginBottomActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.marginBottom}}</text>
+          <text class="uni-info">获取值: {{data.marginBottomActualTextFlat}}</text>
           <view class="test-box">
             <text class="common-view common-text" style="background-color: red;">红色</text>
-            <text ref="textRefFlat" class="common-view common-text test-text-flatten" :style="{ marginBottom: marginBottom }" flatten>text</text>
+            <text ref="textRefFlat" class="common-view common-text test-text-flatten" :style="{ marginBottom: data.marginBottom }" flatten>text</text>
             <text class="common-view common-text" style="background-color: blue;">蓝色</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{marginBottom}}</text>
-          <text class="uni-info">获取值: {{marginBottomActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.marginBottom}}</text>
+          <text class="uni-info">获取值: {{data.marginBottomActualImageFlat}}</text>
           <view class="test-box">
             <image class="common-image" style="background-color: red;" src="/static/test-image/logo.png"></image>
-            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ marginBottom: marginBottom }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ marginBottom: data.marginBottom }" flatten src="/static/test-image/logo.png"></image>
             <image class="common-image" style="background-color: blue;" src="/static/test-image/logo.png"></image>
           </view>
         </view>
@@ -189,7 +195,7 @@ margin-bottom: <length> | <percentage> | auto;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="marginBottomEnum" title="margin-bottom 枚举值" @change="radioChangeMarginBottom" :compact="true"></enum-data>
-        <input-data :defaultValue="marginBottom" title="margin-bottom 自定义值" type="text" @confirm="inputChangeMarginBottom"></input-data>
+        <input-data :defaultValue="data.marginBottom" title="margin-bottom 自定义值" type="text" @confirm="inputChangeMarginBottom"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -216,13 +222,15 @@ margin-bottom: <length> | <percentage> | auto;
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const marginBottom = ref('25px')
-  const marginBottomActual = ref('')
-  const marginBottomActualText = ref('')
-  const marginBottomActualImage = ref('')
-  const marginBottomActualFlat = ref('')
-  const marginBottomActualTextFlat = ref('')
-  const marginBottomActualImageFlat = ref('')
+  const data = reactive({
+    marginBottom: '25px',
+    marginBottomActual: '',
+    marginBottomActualText: '',
+    marginBottomActualImage: '',
+    marginBottomActualFlat: '',
+    marginBottomActualTextFlat: '',
+    marginBottomActualImageFlat: ''
+  })
 
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
@@ -242,16 +250,18 @@ margin-bottom: <length> | <percentage> | auto;
   ]
 
   const getPropertyValues = () => {
-    marginBottomActual.value = viewRef.value?.style.getPropertyValue('margin-bottom') ?? ''
-    marginBottomActualFlat.value = viewRefFlat.value?.style.getPropertyValue('margin-bottom') ?? ''
-    marginBottomActualText.value = textRef.value?.style.getPropertyValue('margin-bottom') ?? ''
-    marginBottomActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('margin-bottom') ?? ''
-    marginBottomActualImage.value = imageRef.value?.style.getPropertyValue('margin-bottom') ?? ''
-    marginBottomActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('margin-bottom') ?? ''
+    data.marginBottomActual = viewRef.value?.style.getPropertyValue('margin-bottom') ?? ''
+    data.marginBottomActualFlat = viewRefFlat.value?.style.getPropertyValue('margin-bottom') ?? ''
+    data.marginBottomActualText = textRef.value?.style.getPropertyValue('margin-bottom') ?? ''
+    data.marginBottomActualTextFlat = textRefFlat.value?.style.getPropertyValue('margin-bottom') ?? ''
+    data.marginBottomActualImage = imageRef.value?.style.getPropertyValue('margin-bottom') ?? ''
+    data.marginBottomActualImageFlat = imageRefFlat.value?.style.getPropertyValue('margin-bottom') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeMarginBottom = (value: string) => {
-    marginBottom.value = value
+    data.marginBottom = value
     viewRef.value?.style.setProperty('margin-bottom', value)
     viewRefFlat.value?.style.setProperty('margin-bottom', value)
     textRef.value?.style.setProperty('margin-bottom', value)
@@ -261,7 +271,7 @@ margin-bottom: <length> | <percentage> | auto;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeMarginBottom = (index: number) => {
@@ -280,7 +290,8 @@ margin-bottom: <length> | <percentage> | auto;
   })
 
   defineExpose({
-    radioChangeMarginBottom
+    radioChangeMarginBottom,
+    data
   })
 </script>
 

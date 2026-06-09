@@ -5,11 +5,17 @@
 flex-shrink 属性设置弹性元素在主轴方向的收缩系数。当所有子元素在主轴方向的尺寸之和大于容器时才会发生收缩，会根据元素的收缩系数进行收缩保证不溢出弹性容器。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -105,13 +111,13 @@ flex-shrink: <number>;
         <!-- view 组件测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{flexShrink}}</text>
-          <text class="uni-info">获取值: {{flexShrinkActual}}</text>
+          <text class="uni-info">设置值: {{data.flexShrink}}</text>
+          <text class="uni-info">获取值: {{data.flexShrinkActual}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <view class="common-image red" style="flex-shrink: 1;"></view>
-              <view ref="viewRef" class="common-image green test-view" :style="{ flexShrink: flexShrink }">
-                <text class="test-label">{{flexShrink}}</text>
+              <view ref="viewRef" class="common-image green test-view" :style="{ flexShrink: data.flexShrink }">
+                <text class="test-label">{{data.flexShrink}}</text>
               </view>
               <view class="common-image blue" style="flex-shrink: 1;"></view>
             </view>
@@ -121,12 +127,12 @@ flex-shrink: <number>;
         <!-- text 组件测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{flexShrink}}</text>
-          <text class="uni-info">获取值: {{flexShrinkActualText}}</text>
+          <text class="uni-info">设置值: {{data.flexShrink}}</text>
+          <text class="uni-info">获取值: {{data.flexShrinkActualText}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <text class="common-text red" style="flex-shrink: 1;">红色</text>
-              <text ref="textRef" class="common-text green test-text" :style="{ flexShrink: flexShrink }">text</text>
+              <text ref="textRef" class="common-text green test-text" :style="{ flexShrink: data.flexShrink }">text</text>
               <text class="common-text blue" style="flex-shrink: 1;">蓝色</text>
             </view>
           </view>
@@ -135,12 +141,12 @@ flex-shrink: <number>;
         <!-- image 组件测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{flexShrink}}</text>
-          <text class="uni-info">获取值: {{flexShrinkActualImage}}</text>
+          <text class="uni-info">设置值: {{data.flexShrink}}</text>
+          <text class="uni-info">获取值: {{data.flexShrinkActualImage}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <image class="common-image red" style="flex-shrink: 1;" src="/static/test-image/logo.png"></image>
-              <image ref="imageRef" class="common-image green test-image" :style="{ flexShrink: flexShrink }" src="/static/test-image/logo.png"></image>
+              <image ref="imageRef" class="common-image green test-image" :style="{ flexShrink: data.flexShrink }" src="/static/test-image/logo.png"></image>
               <image class="common-image blue" style="flex-shrink: 1;" src="/static/test-image/logo.png"></image>
             </view>
           </view>
@@ -152,13 +158,13 @@ flex-shrink: <number>;
         <!-- view 组件拍平测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{flexShrink}}</text>
-          <text class="uni-info">获取值: {{flexShrinkActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.flexShrink}}</text>
+          <text class="uni-info">获取值: {{data.flexShrinkActualFlat}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <view class="common-image red" style="flex-shrink: 1;"></view>
-              <view ref="viewRefFlat" class="common-image green test-view-flatten" :style="{ flexShrink: flexShrink }" flatten>
-                <text class="test-label">{{flexShrink}}</text>
+              <view ref="viewRefFlat" class="common-image green test-view-flatten" :style="{ flexShrink: data.flexShrink }" flatten>
+                <text class="test-label">{{data.flexShrink}}</text>
               </view>
               <view class="common-image blue" style="flex-shrink: 1;"></view>
             </view>
@@ -168,12 +174,12 @@ flex-shrink: <number>;
         <!-- text 组件拍平测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{flexShrink}}</text>
-          <text class="uni-info">获取值: {{flexShrinkActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.flexShrink}}</text>
+          <text class="uni-info">获取值: {{data.flexShrinkActualTextFlat}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <text class="common-text red" style="flex-shrink: 1;">红色</text>
-              <text ref="textRefFlat" class="common-text green test-text-flatten" :style="{ flexShrink: flexShrink }" flatten>text</text>
+              <text ref="textRefFlat" class="common-text green test-text-flatten" :style="{ flexShrink: data.flexShrink }" flatten>text</text>
               <text class="common-text blue" style="flex-shrink: 1;">蓝色</text>
             </view>
           </view>
@@ -182,12 +188,12 @@ flex-shrink: <number>;
         <!-- image 组件拍平测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{flexShrink}}</text>
-          <text class="uni-info">获取值: {{flexShrinkActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.flexShrink}}</text>
+          <text class="uni-info">获取值: {{data.flexShrinkActualImageFlat}}</text>
           <view class="test-box">
             <view class="test-flex-container">
               <image class="common-image red" style="flex-shrink: 1;" src="/static/test-image/logo.png"></image>
-              <image ref="imageRefFlat" class="common-image green test-image-flatten" :style="{ flexShrink: flexShrink }" flatten src="/static/test-image/logo.png"></image>
+              <image ref="imageRefFlat" class="common-image green test-image-flatten" :style="{ flexShrink: data.flexShrink }" flatten src="/static/test-image/logo.png"></image>
               <image class="common-image blue" style="flex-shrink: 1;" src="/static/test-image/logo.png"></image>
             </view>
           </view>
@@ -197,7 +203,7 @@ flex-shrink: <number>;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="flexShrinkEnum" title="flex-shrink 枚举值" @change="radioChangeFlexShrink" :compact="true"></enum-data>
-        <input-data :defaultValue="flexShrink" title="flex-shrink 自定义值" type="text" @confirm="inputChangeFlexShrink"></input-data>
+        <input-data :defaultValue="data.flexShrink" title="flex-shrink 自定义值" type="text" @confirm="inputChangeFlexShrink"></input-data>
       </view>
 
       <text class="uni-title-text uni-common-mt">native-view 组件：flex-shrink: 1 、2、3</text>
@@ -225,13 +231,15 @@ flex-shrink: <number>;
     { value: 4, name: '3' }
   ]
 
-  const flexShrink = ref('1')
-  const flexShrinkActual = ref('')
-  const flexShrinkActualFlat = ref('')
-  const flexShrinkActualText = ref('')
-  const flexShrinkActualImage = ref('')
-  const flexShrinkActualTextFlat = ref('')
-  const flexShrinkActualImageFlat = ref('')
+  const data = reactive({
+    flexShrink: '1',
+    flexShrinkActual: '',
+    flexShrinkActualFlat: '',
+    flexShrinkActualText: '',
+    flexShrinkActualImage: '',
+    flexShrinkActualTextFlat: '',
+    flexShrinkActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const viewRefFlat = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
@@ -240,16 +248,18 @@ flex-shrink: <number>;
   const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    flexShrinkActual.value = viewRef.value?.style.getPropertyValue('flex-shrink') ?? ''
-    flexShrinkActualFlat.value = viewRefFlat.value?.style.getPropertyValue('flex-shrink') ?? ''
-    flexShrinkActualText.value = textRef.value?.style.getPropertyValue('flex-shrink') ?? ''
-    flexShrinkActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('flex-shrink') ?? ''
-    flexShrinkActualImage.value = imageRef.value?.style.getPropertyValue('flex-shrink') ?? ''
-    flexShrinkActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('flex-shrink') ?? ''
+    data.flexShrinkActual = viewRef.value?.style.getPropertyValue('flex-shrink') ?? ''
+    data.flexShrinkActualFlat = viewRefFlat.value?.style.getPropertyValue('flex-shrink') ?? ''
+    data.flexShrinkActualText = textRef.value?.style.getPropertyValue('flex-shrink') ?? ''
+    data.flexShrinkActualTextFlat = textRefFlat.value?.style.getPropertyValue('flex-shrink') ?? ''
+    data.flexShrinkActualImage = imageRef.value?.style.getPropertyValue('flex-shrink') ?? ''
+    data.flexShrinkActualImageFlat = imageRefFlat.value?.style.getPropertyValue('flex-shrink') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeFlexShrink = (value: string) => {
-    flexShrink.value = value
+    data.flexShrink = value
     viewRef.value?.style.setProperty('flex-shrink', value)
     viewRefFlat.value?.style.setProperty('flex-shrink', value)
     textRef.value?.style.setProperty('flex-shrink', value)
@@ -259,7 +269,7 @@ flex-shrink: <number>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeFlexShrink = (index: number) => {
@@ -278,7 +288,8 @@ flex-shrink: <number>;
   })
 
   defineExpose({
-    radioChangeFlexShrink
+    radioChangeFlexShrink,
+    data
   })
 </script>
 
@@ -379,8 +390,6 @@ flex-shrink: <number>;
 
   .native-view-shrink {
     height: 50px;
-    justify-content: center;
-    align-items: center;
   }
 </style>
 

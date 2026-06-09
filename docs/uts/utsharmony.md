@@ -11,7 +11,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| filePath | string | 是 | - | - |  | 
+| filePath | string | 是 |  |   |  | 
 
 
 **返回值**
@@ -45,7 +45,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| px | number | 是 | - | - |  | 
+| px | number | 是 |  |   |  | 
 
 
 **返回值**
@@ -91,7 +91,7 @@
 **uni-app x 兼容性**
 | HarmonyOS | HarmonyOS UTS 插件 |
 | :- | :- |
-| x | - |
+| x |  |
 
 
 **uni-app 兼容性**
@@ -119,9 +119,9 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS | HarmonyOS UTS 插件 |
-| :- | :- |
-| 4.71 | 4.71 |
+| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| 5.0.0 (12) | 4.71 | 4.71 |
 
 
 **uni-app 兼容性**
@@ -179,9 +179,9 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS | HarmonyOS UTS 插件 |
-| :- | :- |
-| 4.71 | 4.71 |
+| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| 5.0.0 (12) | 4.71 | 4.71 |
 
 
 **uni-app 兼容性**
@@ -199,7 +199,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| filePath | string | 是 | - | - |  | 
+| filePath | string | 是 |  |   |  | 
 
 
 **返回值**
@@ -256,6 +256,10 @@
 
 <!-- UTSJSON.UTSHarmony.getUIAbilityContext.tutorial -->
 
+**关联文档**
+
+- 鸿蒙官方文档：[UIAbilityContext](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-inner-application-uiabilitycontext)
+
 ### offAppThemeChange(id)
 
 取消监听应用主题变化<br/>
@@ -263,7 +267,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | number | 是 | - | - | 应用主题 | 
+| id | number | 是 |  |   | 应用主题 | 
 
 
 **返回值**
@@ -277,9 +281,9 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS | HarmonyOS UTS 插件 |
-| :- | :- |
-| 4.71 | 4.71 |
+| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| 5.0.0 (12) | 4.71 | 4.71 |
 
 
 **uni-app 兼容性**
@@ -297,7 +301,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | number | 是 | - | - | 监听ID | 
+| id | number | 是 |  |   | 监听ID | 
 
 
 **返回值**
@@ -311,9 +315,9 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS | HarmonyOS UTS 插件 |
-| :- | :- |
-| 4.71 | 4.71 |
+| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| 5.0.0 (12) | 4.71 | 4.71 |
 
 
 **uni-app 兼容性**
@@ -331,7 +335,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (want: Want, launchParam: AbilityConstant.LaunchParam) => void | 是 | - | - |  | 
+| callback | (want: Want, launchParam: AbilityConstant.LaunchParam) => void | 是 |  |   |  | 
 
 
 **返回值**
@@ -365,7 +369,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (want: Want, launchParam: AbilityConstant.LaunchParam) => void | 是 | - | - |  | 
+| callback | (want: Want, launchParam: AbilityConstant.LaunchParam) => void | 是 |  |   |  | 
 
 
 **返回值**
@@ -399,7 +403,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (wantParam: Record\<string, any>) => void | 是 | - | - |  | 
+| callback | (wantParam: Record\<string, any>) => void | 是 |  |   |  | 
 
 
 **返回值**
@@ -433,7 +437,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (windowStage: _ohos_window__default.WindowStage) => void | 是 | - | - |  | 
+| callback | (windowStage: _ohos_window__default.WindowStage) => void | 是 |  |   |  | 
 
 
 **返回值**
@@ -467,13 +471,13 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [OnAppThemeChangeCallbackResult](#onappthemechangecallbackresult-values)) => void | 是 | - | - | 应用主题 | 
+| callback | (res: [OnAppThemeChangeCallbackResult](#onappthemechangecallbackresult-values)) => void | 是 |  |   | 应用主题 | 
 
 ##### OnAppThemeChangeCallbackResult 的属性值 @onappthemechangecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| appTheme | "dark" \| "light" | 是 | - | - | 主题名称 |
+| appTheme | "dark" \| "light" | 是 |  |   | 主题名称 |
 
 
 **返回值**
@@ -487,9 +491,9 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS | HarmonyOS UTS 插件 |
-| :- | :- |
-| 4.71 | 4.71 |
+| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| 5.0.0 (12) | 4.71 | 4.71 |
 
 
 **uni-app 兼容性**
@@ -507,13 +511,13 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [OnOsThemeChangeCallbackResult](#onosthemechangecallbackresult-values)) => void | 是 | - | - | 系统主题变化回调 | 
+| callback | (res: [OnOsThemeChangeCallbackResult](#onosthemechangecallbackresult-values)) => void | 是 |  |   | 系统主题变化回调 | 
 
 ##### OnOsThemeChangeCallbackResult 的属性值 @onosthemechangecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| osTheme | "dark" \| "light" | 是 | - | - | 主题名称 |
+| osTheme | "dark" \| "light" | 是 |  |   | 主题名称 |
 
 
 **返回值**
@@ -527,9 +531,9 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS | HarmonyOS UTS 插件 |
-| :- | :- |
-| 4.71 | 4.71 |
+| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| 5.0.0 (12) | 4.71 | 4.71 |
 
 
 **uni-app 兼容性**
@@ -547,9 +551,9 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| permissions | string[\] | 是 | - | - | - |
-| success | (allRight: boolean, grantedList: Array&lt;string&gt;) => void | 否 | - | - | - |
-| fail | (doNotAskAgain: boolean, grantedList: Array&lt;string&gt;) => void | 否 | - | - | - | 
+| permissions | string[\] | 是 |  |   | - |
+| success | (allRight: boolean, grantedList: Array&lt;string&gt;) => void | 否 |  |   | - |
+| fail | (doNotAskAgain: boolean, grantedList: Array&lt;string&gt;) => void | 否 |  |   | - | 
 
 
 **返回值**
@@ -583,7 +587,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| appTheme | AppTheme | 是 | - | - | 应用主题 | 
+| appTheme | AppTheme | 是 |  |   | 应用主题 | 
 
 
 **返回值**
@@ -597,9 +601,9 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS | HarmonyOS UTS 插件 |
-| :- | :- |
-| 4.71 | 4.71 |
+| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS UTS 插件 |
+| :- | :- | :- |
+| 5.0.0 (12) | 4.71 | 4.71 |
 
 
 **uni-app 兼容性**

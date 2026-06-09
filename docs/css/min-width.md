@@ -5,11 +5,17 @@
 min-width 属性为给定元素设置最小宽度。它可以阻止 width 属性的应用值小于 min-width 的值。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,11 +34,11 @@ min-width: <viewport-length>;
 ### min-width 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| fit-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 等同于 min(max-content, max(min-content, fill-available). |
-| max-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 固有首选宽度。 |
-| min-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 固有最小宽度 |
-| auto | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 用于弹性元素的默认最小宽度。相比其他布局中以0为默认值，auto能为弹性布局指明更合理的默认表现。 |
-| none | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 元素未设置最小值 |
+| fit-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 等同于 min(max-content, max(min-content, fill-available). |
+| max-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 固有首选宽度。 |
+| min-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 固有最小宽度 |
+| auto | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 用于弹性元素的默认最小宽度。相比其他布局中以0为默认值，auto能为弹性布局指明更合理的默认表现。 |
+| none | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 元素未设置最小值 |
 
 
 ### 默认值 @default-value 
@@ -91,10 +97,10 @@ min-width: <viewport-length>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{minWidth}}</text>
-          <text class="uni-info">获取值: {{minWidthActual}}</text>
+          <text class="uni-info">设置值: {{data.minWidth}}</text>
+          <text class="uni-info">获取值: {{data.minWidthActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-dynamic test-view" :style="{ minWidth: minWidth }">
+            <view ref="viewRef" class="common-dynamic test-view" :style="{ minWidth: data.minWidth }">
               <text>view</text>
             </view>
           </view>
@@ -102,19 +108,19 @@ min-width: <viewport-length>;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{minWidth}}</text>
-          <text class="uni-info">获取值: {{minWidthActualText}}</text>
+          <text class="uni-info">设置值: {{data.minWidth}}</text>
+          <text class="uni-info">获取值: {{data.minWidthActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-dynamic test-text" :style="{ minWidth: minWidth }">text</text>
+            <text ref="textRef" class="common-dynamic test-text" :style="{ minWidth: data.minWidth }">text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{minWidth}}</text>
-          <text class="uni-info">获取值: {{minWidthActualImage}}</text>
+          <text class="uni-info">设置值: {{data.minWidth}}</text>
+          <text class="uni-info">获取值: {{data.minWidthActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-dynamic test-image" :style="{ minWidth: minWidth }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-dynamic test-image" :style="{ minWidth: data.minWidth }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -123,10 +129,10 @@ min-width: <viewport-length>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{minWidth}}</text>
-          <text class="uni-info">获取值: {{minWidthActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.minWidth}}</text>
+          <text class="uni-info">获取值: {{data.minWidthActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ minWidth: minWidth }" flatten>
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ minWidth: data.minWidth }" flatten>
               <text>view</text>
             </view>
           </view>
@@ -134,19 +140,19 @@ min-width: <viewport-length>;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{minWidth}}</text>
-          <text class="uni-info">获取值: {{minWidthActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.minWidth}}</text>
+          <text class="uni-info">获取值: {{data.minWidthActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ minWidth: minWidth }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ minWidth: data.minWidth }" flatten>text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{minWidth}}</text>
-          <text class="uni-info">获取值: {{minWidthActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.minWidth}}</text>
+          <text class="uni-info">获取值: {{data.minWidthActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ minWidth: minWidth }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ minWidth: data.minWidth }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -154,14 +160,14 @@ min-width: <viewport-length>;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="minWidthEnum" title="min-width 枚举值" @change="radioChangeMinWidth" :compact="true"></enum-data>
-        <input-data :defaultValue="minWidth" title="min-width 自定义值" type="text" @confirm="inputChangeMinWidth"></input-data>
+        <input-data :defaultValue="data.minWidth" title="min-width 自定义值" type="text" @confirm="inputChangeMinWidth"></input-data>
       </view>
 
       <view class="uni-common-mb">
         <text>native-view组件: min-width: 100px 和 min-width: 200px</text>
         <view class="demo-box">
-          <native-view class="common" style="min-width: 100px; background-color: cyan;"></native-view>
-          <native-view class="common" style="min-width: 200px; background-color: cyan;"></native-view>
+          <native-view class="common-dynamic" style="min-width: 100px;"></native-view>
+          <native-view class="common-dynamic" style="min-width: 200px;"></native-view>
         </view>
       </view>
     </view>
@@ -182,13 +188,15 @@ min-width: <viewport-length>;
     { value: 5, name: '80rpx' },
   ]
 
-  const minWidth = ref('100px')
-  const minWidthActual = ref('')
-  const minWidthActualText = ref('')
-  const minWidthActualImage = ref('')
-  const minWidthActualFlat = ref('')
-  const minWidthActualTextFlat = ref('')
-  const minWidthActualImageFlat = ref('')
+  const data = reactive({
+    minWidth: '100px',
+    minWidthActual: '',
+    minWidthActualText: '',
+    minWidthActualImage: '',
+    minWidthActualFlat: '',
+    minWidthActualTextFlat: '',
+    minWidthActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -197,16 +205,18 @@ min-width: <viewport-length>;
   const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    minWidthActual.value = viewRef.value?.style.getPropertyValue('min-width') ?? ''
-    minWidthActualFlat.value = viewRefFlat.value?.style.getPropertyValue('min-width') ?? ''
-    minWidthActualText.value = textRef.value?.style.getPropertyValue('min-width') ?? ''
-    minWidthActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('min-width') ?? ''
-    minWidthActualImage.value = imageRef.value?.style.getPropertyValue('min-width') ?? ''
-    minWidthActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('min-width') ?? ''
+    data.minWidthActual = viewRef.value?.style.getPropertyValue('min-width') ?? ''
+    data.minWidthActualFlat = viewRefFlat.value?.style.getPropertyValue('min-width') ?? ''
+    data.minWidthActualText = textRef.value?.style.getPropertyValue('min-width') ?? ''
+    data.minWidthActualTextFlat = textRefFlat.value?.style.getPropertyValue('min-width') ?? ''
+    data.minWidthActualImage = imageRef.value?.style.getPropertyValue('min-width') ?? ''
+    data.minWidthActualImageFlat = imageRefFlat.value?.style.getPropertyValue('min-width') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeMinWidth = (value: string) => {
-    minWidth.value = value
+    data.minWidth = value
     viewRef.value?.style.setProperty('min-width', value)
     viewRefFlat.value?.style.setProperty('min-width', value)
     textRef.value?.style.setProperty('min-width', value)
@@ -216,7 +226,7 @@ min-width: <viewport-length>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeMinWidth = (index: number) => {
@@ -236,7 +246,8 @@ min-width: <viewport-length>;
   })
 
   defineExpose({
-    radioChangeMinWidth
+    radioChangeMinWidth,
+    data
   })
 
 </script>

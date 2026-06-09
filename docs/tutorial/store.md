@@ -1,6 +1,17 @@
 # 全局变量与状态管理
 
-`uni-app x` 在app平台暂不支持 `pinia` 和 `vuex`。可通过 [globalData](../collocation/app.md#globaldata) 或一个专用模块组织和管理全局变量与状态。
+全局变量，如果不需要绑定在界面上，可以使用 [globalData](../collocation/app.md#globaldata)
+
+如果需要绑定在界面上，也就是需要响应式，就涉及状态管理。
+
+`vuex` 已被淘汰，`pinia`官方版并不支持uts。
+
+uni-app x下可选方案有：
+
+1. 在独立的uts文件中定义一个全局的reactive变量，各处引用它。
+2. 使用三方插件 [Pinia by uts](https://ext.dcloud.net.cn/plugin?name=x-pinia-s)
+
+使用全局的reactive变量，详细方案如下：
 
 ## 专用模块
 定义一个模块，编写一个单独的uts文件，比如 /store/index.uts，在里面设一个全局变量，比如globalNum。
@@ -26,8 +37,10 @@ export const setGlobalNum = (num: number) => {
 	<text @click="plus">{{ globalNum }}</text>
 </template>
 
+// 选项式 API
 <script lang="uts">
-	import { state, setGlobalNum } from '@/store/index.uts' //导出state和修改其属性值的方法，如不需要修改值，则不需要导出修改方法
+	import { state, setGlobalNum } from '@/store/index.uts'
+
 	export default {
 		computed: {
 			globalNum(): number { //定义可绑定在界面上的globalNum
@@ -39,6 +52,17 @@ export const setGlobalNum = (num: number) => {
 				setGlobalNum(state.globalNum + 1)
 			}
 		}
+	}
+</script>
+
+// 组合式 API
+<script setup lang="uts">
+	import { state, setGlobalNum } from '@/store/index.uts'
+
+	const globalNum = computed(() => state.globalNum)
+
+	const plus = () => {
+		setGlobalNum(state.globalNum + 1)
 	}
 </script>
 ```

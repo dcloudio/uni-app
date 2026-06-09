@@ -18,17 +18,21 @@ dom数量越多，渲染越慢。
 
 Android上为了避免view数量过多，提供了原始的draw api，把线条和文字绘制上去。
 
-在 uni-app x 中，也提供了同样的方法，允许开发者调用绘制API。
+在 uni-app x 中，
 
-hello uni-app x 示例中，有一个日历的模板页面，就是通过draw api来绘制的，性能非常高。[源码详见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master/pages/template/calendar/calendar.uvue)
+- 在 vdom 模式下，也提供了Drawable方法，允许开发者调用绘制API。
+
+hello uni-app x 示例中，有一个日历的模板页面，vdom模式下就是通过draw api来绘制的，性能非常高。[源码详见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master/pages/template/calendar/calendar.uvue)
+
+- 在蒸汽模式下，支持了view、text、image的拍平。
+
+拍平方式允许开发者编写跨平台的view、text代码，只需给text组件加上flatten属性。但性能远超原生的view、text。实现了跨平台和性能兼得。
+
+hello uni-app x 示例中，有一个蒸汽模式下的日历的模板页面，渲染非常快。[源码详见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master/pages/template/calendar-vapor/calendar-vapor.uvue)
 
 尤其是组件作者，更需要关注dom数量的问题。
 
-再举一个例子，uni-app x 内部开发基础组件时，第一个版本的slider组件，使用了7个view，利用view的移动和不同颜色view的width变化来实现。当页面中有slider较多时会变成很卡。
-
-后来 slider组件改为 draw api 实现，只需要一个view。即使一个页面里有100个slider也非常丝滑。与许多原生应用相比，uni-app x的 slider组件性能更优秀。
-
-uni-app x 还提供了工具帮助开发者监控页面的dom数量。
+uni-app x 的 vdom 模式在Android上还提供了工具帮助开发者监控页面的dom数量。
 
 HBuilderX真机运行到Android时，每个页面进入时会都打印页面初始化的数据：dom数量、排版次数、渲染耗时等。
 
@@ -36,7 +40,6 @@ HBuilderX真机运行到Android时，每个页面进入时会都打印页面初�
 
 当然耗时数据不能以真机运行为准，调试基座因为热更新和sourcemap追踪等很多调试功能，导致性能比真实打包差。正式打包后性能更优。
 
-国内应用大都不会采用google的Material Design组件，大多公司自己做组件。但这些组件库的质量层次不齐。可以说大部分国内原生应用自己做的组件库，没有uni-app x的组件性能高。
 
 ## 界面元素动画
 
@@ -54,7 +57,7 @@ uni-app x 中，没有通信阻塞，可以直接监听touch和滚动事件。�
 
 在大多数开发框架中，因为通信性能问题，吸顶这个行为需要底层特殊封装。而 uni-app x 无需特别封装，直接监听滚动事件，通过dom的api以transform方式修改top值，就能自己编写逻辑控制在指定条件下实现固顶。
 
-源码参考hello uni-app x中的吸顶示例，这充分体现了 uni-app x 引擎底层的通信性能多么优秀。[详见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master/pages/template/scroll-sticky/scroll-sticky.uvue)
+源码参考hello uni-app x中的吸顶示例，这充分体现了 uni-app x 引擎底层的通信性能足够优秀。[详见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master/pages/template/scroll-sticky/scroll-sticky.uvue)
 
 当然uni-app x已经封装了吸顶组件，使用更加便利。[详见](./component/sticky-header.md)
 
@@ -82,13 +85,23 @@ uni-app x 中，没有通信阻塞，可以直接监听touch和滚动事件。�
 
 长列表，之所以成为性能关注点，是因为当列表item加载特别多时，持续增高的内存占用会导致越来越卡、应用崩溃。
 
-原生开发一般使用recycle-view做复用，只保留有限的原生view，数屏以外的原生view做复用，即把列表中的数据只装载到部分的原生view中，并根据在屏状态，给原生view装载不同你发的列表数据。
+### 蒸汽模式
+在uni-app x 蒸汽模式时，直接用list-view、waterflow组件即可。加载4000行item、20万元素的死亡长列表，也是瞬间的事情。参考[benchmark](./vapor-benchmark.md)
 
-uni-app x中，[list-view组件](./component/list-view.md)和[waterflow组件](./component/waterflow.md)，内部就是复用的。他们分别对应普通长列表和瀑布流长列表。
+### VDOM模式
+在uni-app x vdom模式下，需要考虑的问题要多一些。
+
+#### vdom模式的list-view和waterflow
+
+原生开发一般使用recycle-view做复用，只保留有限的原生view，数屏以外的原生view做复用，即把列表中的数据只装载到部分的原生view中，并根据在屏状态，给原生view装载不同的列表数据。
+
+uni-app x中，[list-view组件](./component/list-view.md)和[waterflow组件](./component/waterflow.md)，内部就是复用原生view的。他们分别对应普通长列表和瀑布流长列表。
 
 使用这2个组件，无论多长的列表，系统也会自动回收和复用渲染资源，和原生应用一样的体验，但开发更简单。
 
-### uni-recycle-view组件
+但这2个组件只负责复用渲染资源，不处理VNode和Element的复用。如果你希望更多复用，需要看下面的uni-recycle-view组件。
+
+#### uni-recycle-view组件
 
 一般联网加载的分页式列表，常规使用list-view组件或waterflow组件即可。
 
@@ -108,7 +121,7 @@ uni-recycle-view组件内部通过计算决定哪些数据需要在界面展示�
 
 如果由于上述限制无法使用此组件，也可以尝试使用下文的分批加载方案。
 
-### 分批加载
+#### 分批加载
 
 分批加载没有封装具体的组件，hello uni-app-x内提供了一个示例[详见](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/long-list-batch/long-list-batch.uvue)
 
@@ -119,7 +132,7 @@ uni-recycle-view组件内部通过计算决定哪些数据需要在界面展示�
 
 分批加载相比uni-recycle-view 组件，内存占用多一些。由于滚动期间不涉及额外计算，分批加载在低端机上滚动流畅度高一些。
 
-### 长列表性能的关键点
+#### 长列表性能的关键点
 
 无论如何，**注意列表项目里的组件数量**，它是dom元素的放大器。每个list-item里的dom数量多一点，乘以item数量，就会产生非常多dom，页面性能就很容易被拖垮。
 
@@ -128,6 +141,8 @@ uni-recycle-view组件内部通过计算决定哪些数据需要在界面展示�
 在hello uni-app x的复杂长列表示例中，评星没有使用任何自定义组件，只是一个text组件里面使用字体图标放了5个字符，极大减少组件数量。[详见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master/pages/template/long-list/long-list-page.uvue)
 
 所以在列表中，尽量不使用层层封装的组件，直接使用内置组件更高效。
+
+在蒸汽模式中，由于去掉了组件的vnode，即vue的虚拟dom，所以使用组件的压力小多了。但和高度优化的引擎内置view、text、image相比，开发者自己封装的组件肯定性能有折损。
 
 ## 优化排版效率
 
@@ -154,13 +169,6 @@ vue的data更新时，会自动触发页面渲染更新。
 另外更新ui时，如果vue框架能找到最小化组件，则会只更新该组件的渲染。所以尽量避免更新data引发大量ui重绘。\
 比如长列表里有可点击的收藏按钮，点击后会动态更新收藏状态的数据，此时建议把收藏做一个单独的组件，这样某个item的收藏状态的更新，就不会触发整个列表的重绘。
 
-## 避免不必要的组件抽象
-有些时候我们会去创建组件来实现更好的抽象或代码组织。虽然这并没有什么问题，但请记住，创建太多组件实例将会导致性能损失。
-
-需要提醒的是，只减少几个组件实例对于性能不会有明显的改善，所以如果一个用于抽象的组件在应用中只会渲染几次，就不用操心去优化它了。考虑这种优化的最佳场景还是在大型列表中。想象一下一个有 100 项的列表，每项的组件都包含许多子组件。在这里去掉一个不必要的组件抽象，可能会减少数百个组件实例的无谓性能消耗。
-
-但无论如何，不应该对view、text这种大量使用的基础组件进行封装，大量使用封装的自定义组件很容易引发性能问题。
-
 ## 引擎体积
 
-uni-app x的Android引擎体积为7.51M。
+uni-app x的Android引擎体积约10M。这个体积不包括map、video等三方库的体积。

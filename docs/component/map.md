@@ -10,9 +10,9 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.31 | 4.31 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.31 | 9.0 | 4.31 | 4.61 | 5.0 |
 
 
 不同图商在不同平台的兼容性
@@ -29,244 +29,55 @@
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| longitude | number | - | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 中心经度 |
-| latitude | number | - | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 中心纬度 |
-| scale | number | - | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 缩放级别，web端取值范围为5-18 , app端取值范围为3-20 |
-| ~~theme~~ | string | "normal" | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 主题（satellite 或 normal） |
-| min-scale | number | 3 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 最小缩放级别 |
-| max-scale | number | 20 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 最大缩放级别 |
-| layer-style | string | "1" | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 个性化地图（如实现地图暗黑模式） |
-| markers | Array\<**Marker**> | - | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 标记点 |
-
-#### markers 的属性描述
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | number | 是 | - | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 标记点id，marker点击事件回调会返回此id。建议为每个marker设置上Number类型id，保证更新marker时有更好的性能。最大限制9位数 |
-| latitude | number | 是 | - | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 纬度，浮点数，范围 -90 ~ 90 |
-| longitude | number | 是 | - | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 经度，浮点数，范围 -180 ~ 180 |
-| iconPath | string | 是 | - | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 显示的图标，项目目录下的图片路径，支持相对路径写法，以'/'开头则表示相对小程序根目录；也支持临时路径 |
-| title | string | 否 | null | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 标注点名，点击时显示，callout存在时将被忽略 |
-| rotate | number | 否 | 0 | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 旋转角度，顺时针旋转的角度，范围 0 ~ 360 |
-| alpha | number | 否 | 1 | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 标注的透明度，范围 0 ~ 1 |
-| width | number | 否 | 默认为图片实际宽度 | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 标注图标宽度 |
-| height | number | 否 | 默认为图片实际高度 | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 标注图标高度 |
-| ariaLabel | string | 否 | null | Web: -; 微信小程序: -; Android: x; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 无障碍访问，（属性）元素的额外描述 |
-| anchor | **Anchor** | 否 | [0.5, 1\] | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 经纬度在标注图标的锚点，默认底边中点	{x, y}，x表示横向(0-1)，y表示竖向(0-1)。{x: .5, y: 1} 表示底边中点 |
-| callout | **MapMarkerCallout** | 否 | null | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: x; HarmonyOS(Vapor): - | 自定义标记点上方的气泡窗口 |
-| label | **MapMarkerLabel** | 否 | null | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 为标记点旁边增加标签 |
-| clusterId | number | 否 | null | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 自定义点聚合簇效果时使用 |
-| customCallout | **MapMarkerCallout** | 否 | null | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 自定义气泡窗口 |
-| joinCluster | boolean | 否 | null | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 是否参与点聚合 |
-
-##### anchor 的属性描述
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 | - | - | - |
-| y | number | 是 | - | - | - |
-
-##### callout 的属性描述
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| content | string | 否 | "" | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: -; HarmonyOS(Vapor): - | 文本 |
-| color | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "black" | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: -; HarmonyOS(Vapor): - | 文本颜色 |
-| fontSize | number | 否 | null | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: -; HarmonyOS(Vapor): - | 文字大小 |
-| borderRadius | number | 否 | 0 | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: -; HarmonyOS(Vapor): - | 边框圆角 |
-| borderWidth | number | 否 | 0 | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: -; HarmonyOS(Vapor): - | 边框宽度 |
-| borderColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "transparent" | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: -; HarmonyOS(Vapor): - | 边框颜色 |
-| bgColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "#fff" | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: -; HarmonyOS(Vapor): - | 背景色 |
-| padding | number | 否 | 0 | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: -; HarmonyOS(Vapor): - | 文本边缘留白 |
-| display | string | 否 | "BYCLICK" | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: -; HarmonyOS(Vapor): - | 'BYCLICK':点击显示; 'ALWAYS':常显 |
-| textAlign | string | 否 | "left" | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: -; HarmonyOS(Vapor): - | 文本对齐方式。 |
-| anchorX | number | 否 | 0.5 | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 横向偏移量，向右为正数 |
-| anchorY | number | 否 | 1 | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 纵向偏移量，向下为正数 |
-
-###### display 的属性描述
-
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| BYCLICK | - | - |
-| ALWAYS | - | - |
-
-###### textAlign 的属性描述
-
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| left | - | - |
-| center | - | - |
-| right | - | - |
-
-##### label 的属性描述
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| content | string | 否 | 1 | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 文本 |
-| color | string | 否 | 1 | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 文本颜色 |
-| fontSize | number | 否 | 1 | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 文字大小 |
-| x | number | 否 | 1 | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | label的坐标，原点是 marker 对应的经纬度 |
-| y | number | 否 | 1 | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | label的坐标，原点是 marker 对应的经纬度 |
-| anchorX | number | 否 | 1 | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | label的坐标，原点是 marker 对应的经纬度 |
-| anchorY | number | 否 | 1 | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | label的坐标，原点是 marker 对应的经纬度 |
-| borderWidth | number | 否 | 1 | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 边框宽度 |
-| borderColor | string | 否 | 1 | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 边框颜色 |
-| borderRadius | number | 否 | 1 | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 边框圆角 |
-| bgColor | string | 否 | 1 | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 背景色 |
-| padding | number | 否 | 1 | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 文本边缘留白 |
-| textAlign | string | 否 | 1 | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 文本对齐方式。 |
-| ariaLabel | string | 否 | 1 | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 无障碍访问，（属性）元素的额外描述 |
-
-###### textAlign 的属性描述
-
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| left | - | - |
-| center | - | - |
-| right | - | - |
-
-##### customCallout 的属性描述
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| content | string | 否 | "" | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: -; HarmonyOS(Vapor): - | 文本 |
-| color | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "black" | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: -; HarmonyOS(Vapor): - | 文本颜色 |
-| fontSize | number | 否 | null | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: -; HarmonyOS(Vapor): - | 文字大小 |
-| borderRadius | number | 否 | 0 | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: -; HarmonyOS(Vapor): - | 边框圆角 |
-| borderWidth | number | 否 | 0 | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: -; HarmonyOS(Vapor): - | 边框宽度 |
-| borderColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "transparent" | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: -; HarmonyOS(Vapor): - | 边框颜色 |
-| bgColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "#fff" | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: -; HarmonyOS(Vapor): - | 背景色 |
-| padding | number | 否 | 0 | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: -; HarmonyOS(Vapor): - | 文本边缘留白 |
-| display | string | 否 | "BYCLICK" | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: -; HarmonyOS(Vapor): - | 'BYCLICK':点击显示; 'ALWAYS':常显 |
-| textAlign | string | 否 | "left" | Web: -; 微信小程序: -; Android: 4.51; iOS: 4.51; HarmonyOS: -; HarmonyOS(Vapor): - | 文本对齐方式。 |
-| anchorX | number | 否 | 0.5 | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 横向偏移量，向右为正数 |
-| anchorY | number | 否 | 1 | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 纵向偏移量，向下为正数 |
-
-###### display 的属性描述
-
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| BYCLICK | - | - |
-| ALWAYS | - | - |
-
-###### textAlign 的属性描述
-
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| left | - | - |
-| center | - | - |
-| right | - | - |
-@
-| covers | array | - | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 即将移除，请使用 markers |
-| polyline | Array\<**Polyline**> | - | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 路线 |
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| points | Array&lt;**LocationObject**&gt; | 是 | - | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 经纬度数组 |
-| color | [string.ColorString](/uts/data-type.md#ide-string) | 否 | null | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 线的颜色 |
-| width | number | 否 | 0 | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 线的宽度 |
-| dottedLine | boolean | 否 | false | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否虚线 |
-| arrowLine | boolean | 否 | false | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 带箭头的线 |
-| arrowIconPath | string | 否 | null | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 更换箭头图标 |
-| borderColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | null | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 线的边框颜色 |
-| borderWidth | number | 否 | null | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 线的厚度 |
-| colorList | Array&lt;string&gt; | 否 | null | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 彩虹线 |
-
-##### points 的属性描述
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | - | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | - | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 经度，范围为-180~180，负数表示西经 |
-@
-| polygons | Array\<**Polygon**> | - | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 多边形 |
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| points | Array&lt;**LocationObject**&gt; | 是 | - | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 经纬度数组 |
-| strokeWidth | number | 否 | 0 | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 描边的宽度 |
-| strokeColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | null | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 描边的颜色 |
-| fillColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | null | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 填充颜色 |
-| zIndex | number | 否 | 0 | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置多边形 Z 轴数值 |
-
-##### points 的属性描述
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | - | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | - | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 经度，范围为-180~180，负数表示西经 |
-@
-| circles | Array\<**Circle**> | - | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 圆 |
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | - | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 纬度 |
-| longitude | number | 是 | - | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 经度 |
-| radius | number | 是 | - | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 半径 |
-| color | [string.ColorString](/uts/data-type.md#ide-string) | 否 | null | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 描边的颜色 |
-| fillColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | null | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 填充颜色 |
-| strokeWidth | number | 否 | 0 | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 描边的宽度 |
-@
-| controls | Array\<**Control**> | - | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 控件 |
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| position | **ControlPosition** | 是 | - | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: x; HarmonyOS(Vapor): - | 控件相对地图位置 |
-| iconPath | string | 是 | - | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: x; HarmonyOS(Vapor): - | 项目目录下的图片路径，支持相对路径写法，以'/'开头则表示相对项目根目录；也支持临时路径 |
-| id | number | 否 | null | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: x; HarmonyOS(Vapor): - | 在控件点击事件回调会返回此id |
-| clickable | boolean | 否 | false | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: x; HarmonyOS(Vapor): - | 默认不可点击 |
-
-##### position 的属性描述
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| left | number | 否 | 0 | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 距离地图的左边界多远 |
-| top | number | 否 | 0 | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 距离地图的上边界多远 |
-| width | number | 否 | 0 | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 控件宽度 |
-| height | number | 否 | 0 | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 控件高度 |
-@
-| include-points | Array\<**LocationObject**> | - | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 缩放视野以包含所有给定的坐标点 |
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 | - | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 | - | Web: -; 微信小程序: -; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 经度，范围为-180~180，负数表示西经 |
-@
-| show-location | boolean | - | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 显示带有方向的当前定位点 |
-| enable-3D | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 是否显示3D楼块 |
-| show-compass | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 是否显示指南针 |
-| enable-zoom | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 是否支持缩放 |
-| enable-scroll | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 是否支持拖动 |
-| enable-rotate | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 是否支持旋转 |
-| rotate | number | 0 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 旋转角度(范围0-360)地图正北和设备 y 轴角度的夹角 |
-| skew | number | 0 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 倾斜角度，范围 0 ~ 40 , 关于 z 轴的倾角 |
-| enable-overlooking | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 是否开启俯视（是否开启手势修改倾斜角度） |
-| enable-satellite | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 是否开启卫星图 |
-| enable-traffic | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 是否开启实时路况 |
-| enable-poi | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 是否展示 POI 点 |
-| enable-building | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 是否展示建筑物 |
-| enable-indoorMap | boolean | false | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 是否展示室内地图 |
-| subkey | string | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | *(string)*<br/>地图能力【个性化地图】使用的key，不支持动态修改 |
-| show-scale | boolean | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | *(boolean)*<br/>显示比例尺，工具暂不支持 |
-| enable-auto-max-overlooking | boolean | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | *(boolean)*<br/>开启最大俯视角，俯视角度从 45 度拓展到 75 度 |
-| setting | object | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | *(object)*<br/>配置项 |
-| enable3-d | boolean | - | - | - |
-| enable-indoor-map | boolean | - | - | - |
-| @markertap | (event: [UniMapMarkerTapEvent](#unimapmarkertapevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 点击标记点时触发 |
-| @callouttap | (event: [UniEvent](/component/common.md#unievent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 点击标记点对应的气泡时触发 |
-| @controltap | (event: [UniMapControlTapEvent](#unimapcontroltapevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 点击控件时触发 |
-| @regionchange | (event: [UniMapRegionChangeEvent](#unimapregionchangeevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 视野发生变化时触发 |
-| @updated | (event: [UniMapUpdatedEvent](#unimapupdatedevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 在地图渲染更新完成时触发 |
-| @tap | (event: [UniMapTapEvent](#unimaptapevent)) => void | - | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 点击地图时触发 |
-| @anchorpointtap | (event: [UniMapAnchorPointTapEvent](#unimapanchorpointtapevent)) => void | - | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 点击定位标时触发 |
-| @poitap | (event: [UniMapPoiTapEvent](#unimappoitapevent)) => void | - | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: -; HarmonyOS(Vapor): - | 点击地图poi点时触发 |
-| @labeltap | eventhandle | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | *(eventhandle)*<br/>点击label时触发，`e.detail = {markerId}` |
-| @polylinetap | eventhandle | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | *(eventhandle)*<br/>点击地图路线时触发，`e.detail = {longitude, latitude}` |
-| @abilitysuccess | eventhandle | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | *(eventhandle)*<br/>地图能力生效时触发，`e.detail = {ability, errCode, errMsg}` |
-| @abilityfail | eventhandle | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | *(eventhandle)*<br/>地图能力失败时触发，`e.detail = {ability, errCode, errMsg}` |
-| @authsuccess | eventhandle | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | *(eventhandle)*<br/>地图鉴权结果成功时触发，`e.detail = {errCode, errMsg}` |
-| @interpolatepoint | eventhandle | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | *(eventhandle)*<br/>MapContext.moveAlong 插值动画时触发。`e.detail = {markerId, longitude, latitude, animationStatus: "interpolating" |
-| @error | eventhandle | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | *(eventhandle)*<br/>组件错误时触发，例如创建或鉴权失败，`e.detail = {longitude, latitude}` |
+| longitude | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 中心经度 |
+| latitude | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 中心纬度 |
+| scale | number | 16 | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 缩放级别，web端取值范围为5-18 , app端取值范围为3-20 |
+| ~~theme~~ | string | "normal" | Web: x; 微信小程序: x; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 主题（satellite 或 normal） |
+| min-scale | number | 3 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 最小缩放级别 |
+| max-scale | number | 20 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 最大缩放级别 |
+| layer-style | string | "1" | Web: x; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 个性化地图（如实现地图暗黑模式） |
+| markers | Marker[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 标记点 |
+| covers | array |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 9.0; iOS: x | 即将移除，请使用 markers |
+| polyline | Polyline[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 路线 |
+| polygons | Polygon[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 多边形 |
+| circles | Circle[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 圆 |
+| controls | Control[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 控件 |
+| include-points | LocationObject[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 缩放视野以包含所有给定的坐标点 |
+| show-location | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 显示带有方向的当前定位点 |
+| enable-3D | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否显示3D楼块 |
+| show-compass | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否显示指南针 |
+| enable-zoom | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否支持缩放 |
+| enable-scroll | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否支持拖动 |
+| enable-rotate | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否支持旋转 |
+| rotate | number | 0 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 旋转角度(范围0-360)地图正北和设备 y 轴角度的夹角 |
+| skew | number | 0 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 倾斜角度，范围 0 ~ 40 , 关于 z 轴的倾角 |
+| enable-overlooking | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否开启俯视（是否开启手势修改倾斜角度） |
+| enable-satellite | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否开启卫星图 |
+| enable-traffic | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否开启实时路况 |
+| enable-poi | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否展示 POI 点 |
+| enable-building | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否展示建筑物 |
+| enable-indoorMap | boolean | false | Web: x; 微信小程序: x; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否展示室内地图 |
+| subkey | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(string)*<br/>地图能力【个性化地图】使用的key，不支持动态修改 |
+| show-scale | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(boolean)*<br/>显示比例尺，工具暂不支持 |
+| enable-auto-max-overlooking | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(boolean)*<br/>开启最大俯视角，俯视角度从 45 度拓展到 75 度 |
+| setting | object |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(object)*<br/>配置项 |
+| enable3-d | boolean | false | Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否显示3D楼块 |
+| enable-indoor-map | boolean | false |   |   |
+| @markertap | (event: [UniMapMarkerTapEvent](#unimapmarkertapevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 点击标记点时触发 |
+| @callouttap | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 9.0; iOS: x | 点击标记点对应的气泡时触发 |
+| @controltap | (event: [UniMapControlTapEvent](#unimapcontroltapevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 点击控件时触发 |
+| @regionchange | (event: [UniMapRegionChangeEvent](#unimapregionchangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 视野发生变化时触发 |
+| @updated | (event: [UniMapUpdatedEvent](#unimapupdatedevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 在地图渲染更新完成时触发 |
+| @tap | (event: [UniMapTapEvent](#unimaptapevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 点击地图时触发 |
+| @anchorpointtap | (event: [UniMapAnchorPointTapEvent](#unimapanchorpointtapevent)) => void |   | Web: x; 微信小程序: x; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 点击定位标时触发 |
+| @poitap | (event: [UniMapPoiTapEvent](#unimappoitapevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 点击地图poi点时触发 |
+| @labeltap | eventhandle |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(eventhandle)*<br/>点击label时触发，`e.detail = {markerId}` |
+| @polylinetap | eventhandle |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(eventhandle)*<br/>点击地图路线时触发，`e.detail = {longitude, latitude}` |
+| @abilitysuccess | eventhandle |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(eventhandle)*<br/>地图能力生效时触发，`e.detail = {ability, errCode, errMsg}` |
+| @abilityfail | eventhandle |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(eventhandle)*<br/>地图能力失败时触发，`e.detail = {ability, errCode, errMsg}` |
+| @authsuccess | eventhandle |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(eventhandle)*<br/>地图鉴权结果成功时触发，`e.detail = {errCode, errMsg}` |
+| @interpolatepoint | eventhandle |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(eventhandle)*<br/>MapContext.moveAlong 插值动画时触发。`e.detail = {markerId, longitude, latitude, animationStatus: "interpolating" |
+| @error | eventhandle |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(eventhandle)*<br/>组件错误时触发，例如创建或鉴权失败，`e.detail = {longitude, latitude}` |
 
 
 ### 事件
@@ -282,13 +93,13 @@ UniMapMarkerTapEvent -- Extends --> UniPointerEvent
 ##### UniMapMarkerTapEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniMapMarkerTapEventDetail** | 否 | - | - | - |
+| detail | **UniMapMarkerTapEventDetail** | 否 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| markerId | number | 否 | - | - |  |
+| markerId | number | 否 |  |   |  |
 
 
 #### UniMapControlTapEvent
@@ -306,7 +117,7 @@ UniMapControlTapEvent -- Extends --> UniCustomEvent&ltUniMapControlTapEventDetai
 ###### UniMapControlTapEventDetail 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| controlId | number | 否 | - | - |  |
+| controlId | number | 否 |  |   |  |
 
 
 #### UniMapRegionChangeEvent
@@ -321,7 +132,7 @@ UniMapRegionChangeEvent -- Extends --> UniCustomEvent&lt&gt
 ##### UniMapRegionChangeEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| causedBy | string | 否 | - | - |  |
+| causedBy | string | 否 |  |   |  |
 
 
 #### UniMapUpdatedEvent
@@ -345,14 +156,14 @@ UniMapTapEvent -- Extends --> UniPointerEvent
 ##### UniMapTapEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniMapTapEventDetail** | 否 | - | - | - |
+| detail | **UniMapTapEventDetail** | 否 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 否 | - | - |  |
-| longitude | number | 否 | - | - |  |
+| latitude | number | 否 |  |   |  |
+| longitude | number | 否 |  |   |  |
 
 
 #### UniMapAnchorPointTapEvent
@@ -367,14 +178,14 @@ UniMapAnchorPointTapEvent -- Extends --> UniPointerEvent
 ##### UniMapAnchorPointTapEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniMapAnchorPointTapEventDetail** | 否 | - | - | - |
+| detail | **UniMapAnchorPointTapEventDetail** | 否 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 否 | - | - |  |
-| longitude | number | 否 | - | - |  |
+| latitude | number | 否 |  |   |  |
+| longitude | number | 否 |  |   |  |
 
 
 #### UniMapPoiTapEvent
@@ -389,15 +200,15 @@ UniMapPoiTapEvent -- Extends --> UniPointerEvent
 ##### UniMapPoiTapEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniMapPoiTapEventDetail** | 否 | - | - | - |
+| detail | **UniMapPoiTapEventDetail** | 否 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 否 | - | - |  |
-| longitude | number | 否 | - | - |  |
-| name | string | 否 | - | - |  |
+| latitude | number | 否 |  |   |  |
+| longitude | number | 否 |  |   |  |
+| name | string | 否 |  |   |  |
 
 
 
@@ -1232,7 +1043,7 @@ GS粤（2023）1171号
 app平台目前还没有可视化界面，采用摇树机制，即调用地图相关api才会把地图组件编译到基座中，Map Key配置方式如下：
 
 - iOS平台：需要在info.plist中配置对应的Key，参考[iOS平台配置腾讯地图Key](../collocation/manifest-modules.md#uni-map-tencent-ios-key)
-- Android平台：需要在AndroidManifest.xml配置Key， 参考[Andoird平台配置腾讯地图Key](../collocation/manifest-modules.md#uni-map-tencent-android-key)
+- Android平台：需要在AndroidManifest.xml配置Key， 参考[Android平台配置腾讯地图Key](../collocation/manifest-modules.md#uni-map-tencent-android-key)
 - Harmony平台：需要在`/harmony-configs/entry/src/main/module.json5`的metadata属性内配置Key，同时 manifest.json 内还需要配置 app.distribute.modules.uni-map 参考[Harmony平台配置腾讯地图Key](../collocation/manifest-modules.md#uni-map-tencent-harmony-key)
 
 ### 地图扩展

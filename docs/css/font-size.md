@@ -5,11 +5,17 @@
 font-size 属性用于设置字体大小，更改字体大小还会更新字体大小相关的 `<length>` 单位，例如 line-height 属性的 em 单位值。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,17 +34,17 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
 ### font-size 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| large | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
-| larger | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 相对大小关键字。字体大小将相对于父元素的字体大小变大或变小，大致按照上面用于区分绝对大小关键字的比率。 |
-| medium | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
-| small | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
-| smaller | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 相对大小关键字。字体大小将相对于父元素的字体大小变大或变小，大致按照上面用于区分绝对大小关键字的比率。 |
-| x-large | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
-| x-small | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
-| xx-large | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
-| xx-small | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
-| xxx-large | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
-| math | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 使用特殊的数学缩放规则来确定 font-size 属性的计算值。 |
+| large | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
+| larger | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 相对大小关键字。字体大小将相对于父元素的字体大小变大或变小，大致按照上面用于区分绝对大小关键字的比率。 |
+| medium | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
+| small | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
+| smaller | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 相对大小关键字。字体大小将相对于父元素的字体大小变大或变小，大致按照上面用于区分绝对大小关键字的比率。 |
+| x-large | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
+| x-small | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
+| xx-large | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
+| xx-small | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
+| xxx-large | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 基于用户默认字体大小（medium）的绝对大小关键字。 |
+| math | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 使用特殊的数学缩放规则来确定 font-size 属性的计算值。 |
 
 
 ### 默认值 @default-value 
@@ -72,11 +78,11 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
       <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view class="demo-box">
         <view class="common">
-          <text ref="text" :style="{'font-size': fontSize}">font-size: {{fontSize}}</text>
+          <text ref="text" :style="{'font-size': data.fontSize}">font-size: {{data.fontSize}}</text>
           <text style="font-size: 30px;">font-size: 30px</text>
         </view>
         <view class="common">
-          <text ref="text" :style="{'font-size': fontSize}" flatten>font-size: {{fontSize}}</text>
+          <text ref="text" :style="{'font-size': data.fontSize}" flatten>font-size: {{data.fontSize}}</text>
           <text style="font-size: 30px;" flatten>font-size: 30px</text>
         </view>
       </view>
@@ -89,20 +95,20 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
         <!-- 普通版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">font-size</text>
-          <text class="uni-info">设置值: {{fontSizeProp}}</text>
-          <text class="uni-info">获取值: {{fontSizeActual}}</text>
+          <text class="uni-info">设置值: {{data.fontSizeProp}}</text>
+          <text class="uni-info">获取值: {{data.fontSizeActual}}</text>
           <view class="test-box">
-            <text ref="textRef" :style="{ fontSize: fontSizeProp }">当前 font-size: {{fontSizeProp}}</text>
+            <text ref="textRef" :style="{ fontSize: data.fontSizeProp }">当前 font-size: {{data.fontSizeProp}}</text>
           </view>
         </view>
 
         <!-- 拍平版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">测试拍平</text>
-          <text class="uni-info">设置值: {{fontSizeProp}}</text>
-          <text class="uni-info">获取值: {{fontSizeActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.fontSizeProp}}</text>
+          <text class="uni-info">获取值: {{data.fontSizeActualFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" :style="{ fontSize: fontSizeProp }" flatten>当前 font-size: {{fontSizeProp}}</text>
+            <text ref="textRefFlat" :style="{ fontSize: data.fontSizeProp }" flatten>当前 font-size: {{data.fontSizeProp}}</text>
           </view>
         </view>
       </view>
@@ -110,7 +116,7 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
       <view class="uni-common-mt uni-common-mb">
           <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
           <enum-data :items="fontSizeEnum" title="font-size 枚举值" @change="radioChangeFontSize" :compact="true"></enum-data>
-          <input-data :defaultValue="fontSizeProp" title="font-size 自定义值" type="text" @confirm="inputChangeFontSize"></input-data>
+          <input-data :defaultValue="data.fontSizeProp" title="font-size 自定义值" type="text" @confirm="inputChangeFontSize"></input-data>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -121,15 +127,16 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const fontSize = ref('15px')
+  const data = reactive({
+    fontSize: '15px',
+    fontSizeProp: '15px',
+    fontSizeActual: '',
+    fontSizeActualFlat: ''
+  })
   // 自动化测试
   const setFontSize = () => {
-    fontSize.value = '30px'
+    data.fontSize = '30px'
   }
-
-  defineExpose({
-    setFontSize
-  })
 
   const fontSizeEnum: ItemType[] = [
     { value: 0, name: '' },
@@ -141,25 +148,24 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
     { value: 6, name: '20rpx' },
   ]
 
-  const fontSizeProp = ref('15px')
-  const fontSizeActual = ref('')
-  const fontSizeActualFlat = ref('')
   const textRef = ref(null as UniTextElement | null)
   const textRefFlat = ref(null as UniTextElement | null)
 
   const getPropertyValues = () => {
-    fontSizeActual.value = textRef.value?.style.getPropertyValue('font-size') ?? ''
-    fontSizeActualFlat.value = textRefFlat.value?.style.getPropertyValue('font-size') ?? ''
+    data.fontSizeActual = textRef.value?.style.getPropertyValue('font-size') ?? ''
+    data.fontSizeActualFlat = textRefFlat.value?.style.getPropertyValue('font-size') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeFontSize = (value: string) => {
-    fontSizeProp.value = value
+    data.fontSizeProp = value
     textRef.value?.style.setProperty('font-size', value)
     textRefFlat.value?.style.setProperty('font-size', value)
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeFontSize = (index: number) => {
@@ -175,6 +181,12 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
 
   onReady(() => {
     getPropertyValues()
+  })
+
+  defineExpose({
+    setFontSize,
+    radioChangeFontSize,
+    data
   })
 </script>
 

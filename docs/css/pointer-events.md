@@ -5,11 +5,17 @@
 pointer-events CSS 属性指定在什么情况下 (如果有) 某个特定的图形元素可以成为鼠标事件的 target (en-US)。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| x | x | x |
 
 
 
@@ -28,8 +34,8 @@ pointer-events: auto | none | visiblePainted | visibleFill | visibleStroke | vis
 ### pointer-events 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 与pointer-events属性未指定时的表现效果相同，对于 SVG 内容，该值与visiblePainted效果相同 |
-| none | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 元素永远不会成为鼠标事件的target (en-US)。但是，当其后代元素的pointer-events属性指定其他值时，鼠标事件可以指向后代元素，在这种情况下，鼠标事件将在捕获或冒泡阶段触发父元素的事件侦听器。 |
+| auto | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 与pointer-events属性未指定时的表现效果相同，对于 SVG 内容，该值与visiblePainted效果相同 |
+| none | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素永远不会成为鼠标事件的target (en-US)。但是，当其后代元素的pointer-events属性指定其他值时，鼠标事件可以指向后代元素，在这种情况下，鼠标事件将在捕获或冒泡阶段触发父元素的事件侦听器。 |
 
 
 ### 默认值 @default-value 
@@ -52,6 +58,7 @@ pointer-events: auto | none | visiblePainted | visibleFill | visibleStroke | vis
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view>
+      <page-intro content="本页演示 pointer-events：通过开关控制父 view、遮罩层、text、image 的 pointer-events（auto/none），观察点击是否穿透或响应；点击可修改 view/text/image 宽度，用于验证事件是否命中目标。"></page-intro>
       <view class="container1">
         <text>控制父视图pointer-events打开时可以点击</text>
         <switch :checked="true" @change="onChange1" />

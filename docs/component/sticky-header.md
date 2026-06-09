@@ -12,15 +12,15 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.02 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.93 | 4.11 | 5.0.5 | 4.71 | - |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.02 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.93 | 4.11 | 5.11 | 5.0.5 | 4.71 | 5.08 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| padding | Array\<number> | [0,0,0,0\] | Web: 4.02; 微信小程序: x; Android: 3.98; iOS: 4.11; HarmonyOS: x; HarmonyOS(Vapor): - | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距  |
+| padding | Array\<number> | [0,0,0,0\] | Web: 4.02; 微信小程序: x; Android: 3.98; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距  |
 
 
 
@@ -52,7 +52,9 @@
 + `sticky-header` 组件，不支持设置css样式，不要通过 class 和 style 设置样式  
 + 鸿蒙平台暂不支持 `padding` 属性，可通过设置子元素样式来实现类似效果  
 + 鸿蒙平台 `sticky-header` 组件只能作为 `sticky-section` 的子元素使用  
-+ 鸿蒙平台API版本低于17的设备不支持 `sticky-header` 组件，可在滚动容器里自行监听滚动，设置某个区域的top为固定值来实现吸顶效果，参考hello uni-app x的模板->[scroll-view自定义滚动吸顶示例](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/scroll-sticky/scroll-sticky.uvue)  
++ 鸿蒙平台API版本低于17的设备不支持 `sticky-header` 组件，可在滚动容器里自行监听滚动，设置某个区域的top为固定值来实现吸顶效果，参考hello uni-app x的模板->[scroll-view自定义滚动吸顶示例](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/scroll-sticky/scroll-sticky.uvue)
++ 蒸汽模式 sticky-header必须是sticky-section内首个元素
++ 蒸汽模式 每个sticky-section下仅支持一个sticky-header
 
 
 ### 子组件 @children-tags
@@ -60,9 +62,12 @@
 
 ### 示例
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/component/sticky-header/sticky-header.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/component/sticky-header/sticky-header.uvue) 
->
-> 该 API 不支持 Web，请运行 hello uni-app x 到 App 平台体验 
-```uvue
+::: preview https://hellouniappx.dcloud.net.cn/web/#/pages/component/sticky-header/sticky-header
+
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/component/sticky-header/sticky-header
+
+>示例
+```vue
 <template>
   <list-view :scroll-y="true" class="page" bounces="false" show-scrollbar=false :scroll-top="data.scroll_top_input"
     :refresher-enabled="data.refresher_enabled_boolean" :refresher-triggered="data.refresher_triggered_boolean"
@@ -179,6 +184,8 @@
 </style>
 
 ```
+
+:::
 
 
 ### 参见

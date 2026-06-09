@@ -40,7 +40,7 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| pattern | RegExp \| string | 是 | - | - | 正则表达式的文本，也可以是另一个 RegExp 对象或文字。 | 
+| pattern | RegExp \| string | 是 |  |   | 正则表达式的文本，也可以是另一个 RegExp 对象或文字。 | 
 
 
 **返回值**
@@ -72,8 +72,8 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| pattern | string | 是 | - | - | 正则表达式的文本，也可以是另一个 RegExp 对象或文字。 |
-| flags | string | 否 | - | - | 如果指定，flags 是包含要添加的标志的字符串。 | 
+| pattern | string | 是 |  |   | 正则表达式的文本，也可以是另一个 RegExp 对象或文字。 |
+| flags | string | 否 |  |   | 如果指定，flags 是包含要添加的标志的字符串。 | 
 
 
 **返回值**
@@ -168,15 +168,15 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | - | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x |  | 4.61 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| x | - | √ |
+| Android UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- |
+| x | √ |
 
 
 <!-- UTSJSON.RegExp.dotAll.tutorial -->
@@ -207,15 +207,15 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | - | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x |  | 4.61 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| x | - | √ |
+| Android UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- |
+| x | √ |
 
 
 <!-- UTSJSON.RegExp.hasIndices.tutorial -->
@@ -251,15 +251,15 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | - | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x |  | 4.61 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| x | - | √ |
+| Android UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- |
+| x | √ |
 
 
 <!-- UTSJSON.RegExp.sticky.tutorial -->
@@ -277,15 +277,15 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | - | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x |  | 4.61 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| x | - | √ |
+| Android UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- |
+| x | √ |
 
 
 <!-- UTSJSON.RegExp.unicode.tutorial -->
@@ -514,7 +514,7 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| string | string | 是 | - | - | 要匹配正则表达式的字符串。 | 
+| string | string | 是 |  |   | 要匹配正则表达式的字符串。 | 
 
 
 **返回值**
@@ -556,7 +556,7 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| string | string | 是 | - | - | 用来与正则表达式匹配的字符串。 | 
+| string | string | 是 |  |   | 用来与正则表达式匹配的字符串。 | 
 
 
 **返回值**

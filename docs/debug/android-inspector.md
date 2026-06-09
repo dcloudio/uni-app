@@ -1,6 +1,6 @@
 ## Android审查界面元素
 
-HBuilderX暂时不支持 uni-app x 项目 uvue 页面的元素审查。相关需求可以利用 Android Studio 自带的 Layout Inpector 工具查看元素布局。
+HBuilderX暂时不支持 uni-app x 项目 uvue 页面的元素审查。相关需求可以利用 Android Studio 自带的 Layout Inspector 工具查看元素布局。
 
 ![LayoutInspector效果](https://native-res.dcloud.net.cn/images/uni-app-x/android/inspector/inspector-sample.jpg)
 
@@ -46,7 +46,7 @@ HBuilderX暂时不支持 uni-app x 项目 uvue 页面的元素审查。相关需
 ![LayoutInspector切换2D/3D模式](https://native-res.dcloud.net.cn/images/uni-app-x/android/inspector/inspector-switchmode.png)
 
 ### 注意事项  
-- uni-app x项目需使用标准基座或自定义基座运行，发布为正式包后无法使用 Layout Inpector  
+- uni-app x项目需使用标准基座或自定义基座运行，发布为正式包后无法使用 Layout Inspector  
 - 如果启动 Layout Inspector 报错，请更新 Android Studio 到最新版本再重试  
 - 在部分设备连接 Layout Inspector 后应用可能会导致 App 退出，这时需换其它设备，建议使用Google官方提供的模拟器  
 

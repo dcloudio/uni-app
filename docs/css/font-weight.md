@@ -5,11 +5,17 @@
 font-weight 属性用于设置字体的粗细程度。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -22,18 +28,24 @@ font-weight: <font-weight-absolute>{1,2};
 
 ### 值限制
 - enum
+- number
 
 
 
 ### font-weight 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| normal | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 正常粗细。与 400 等值。 |
-| bold | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 加粗。与 700 等值。 |
-| 400 | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 正常粗细，与 normal 等值。 |
-| 500 | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | Medium |
-| 600 | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | Semi Bold (Demi Bold) |
-| 700 | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 加粗，与 bold 等值。 |
+| normal | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 正常粗细。与 400 等值。 |
+| bold | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 加粗。与 700 等值。 |
+| 100 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | Thin |
+| 200 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | Extra Light (Ultra Light) |
+| 300 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | Light |
+| 400 | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 正常粗细，与 normal 等值。 |
+| 500 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | Medium |
+| 600 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | Semi Bold (Demi Bold) |
+| 700 | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 加粗，与 bold 等值。 |
+| 800 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | Extra Bold (Ultra Bold) |
+| 900 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | Black (Heavy) |
 
 
 ### 默认值 @default-value 
@@ -66,14 +78,28 @@ font-weight: <font-weight-absolute>{1,2};
         <view class="common">
           <text class="common-size" style="font-weight: normal;">font-weight: normal</text>
           <text class="common-size" style="font-weight: bold;">font-weight: bold</text>
+          <text class="common-size" style="font-weight: 100;">font-weight: 100</text>
+          <text class="common-size" style="font-weight: 200;">font-weight: 200</text>
+          <text class="common-size" style="font-weight: 300;">font-weight: 300</text>
           <text class="common-size" style="font-weight: 400;">font-weight: 400</text>
+          <text class="common-size" style="font-weight: 500;">font-weight: 500</text>
+          <text class="common-size" style="font-weight: 600;">font-weight: 600</text>
           <text class="common-size" style="font-weight: 700;">font-weight: 700</text>
+          <text class="common-size" style="font-weight: 800;">font-weight: 800</text>
+          <text class="common-size" style="font-weight: 900;">font-weight: 900</text>
         </view>
         <view class="common">
           <text class="common-size" style="font-weight: normal;" flatten>font-weight: normal</text>
           <text class="common-size" style="font-weight: bold;" flatten>font-weight: bold</text>
+          <text class="common-size" style="font-weight: 100;" flatten>font-weight: 100</text>
+          <text class="common-size" style="font-weight: 200;" flatten>font-weight: 200</text>
+          <text class="common-size" style="font-weight: 300;" flatten>font-weight: 300</text>
           <text class="common-size" style="font-weight: 400;" flatten>font-weight: 400</text>
+          <text class="common-size" style="font-weight: 500;" flatten>font-weight: 500</text>
+          <text class="common-size" style="font-weight: 600;" flatten>font-weight: 600</text>
           <text class="common-size" style="font-weight: 700;" flatten>font-weight: 700</text>
+          <text class="common-size" style="font-weight: 800;" flatten>font-weight: 800</text>
+          <text class="common-size" style="font-weight: 900;" flatten>font-weight: 900</text>
         </view>
       </view>
 
@@ -85,20 +111,20 @@ font-weight: <font-weight-absolute>{1,2};
         <!-- 普通版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">font-weight</text>
-          <text class="uni-info">设置值: {{fontWeight}}</text>
-          <text class="uni-info">获取值: {{fontWeightActual}}</text>
+          <text class="uni-info">设置值: {{data.fontWeight}}</text>
+          <text class="uni-info">获取值: {{data.fontWeightActual}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-size test-text" :style="{ fontWeight: fontWeight }">当前 font-weight: {{fontWeight}}</text>
+            <text ref="textRef" class="common-size test-text" :style="{ fontWeight: data.fontWeight }">当前 font-weight: {{data.fontWeight}}</text>
           </view>
         </view>
 
         <!-- 拍平版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">测试拍平</text>
-          <text class="uni-info">设置值: {{fontWeight}}</text>
-          <text class="uni-info">获取值: {{fontWeightActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.fontWeight}}</text>
+          <text class="uni-info">获取值: {{data.fontWeightActualFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-size test-text-flatten" :style="{ fontWeight: fontWeight }" flatten>当前 font-weight: {{fontWeight}}</text>
+            <text ref="textRefFlat" class="common-size test-text-flatten" :style="{ fontWeight: data.fontWeight }" flatten>当前 font-weight: {{data.fontWeight}}</text>
           </view>
         </view>
       </view>
@@ -106,7 +132,7 @@ font-weight: <font-weight-absolute>{1,2};
       <view class="uni-common-mt uni-common-mb">
           <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
           <enum-data :items="fontWeightEnum" title="font-weight 枚举值" @change="radioChangeFontWeight" :compact="true"></enum-data>
-          <input-data :defaultValue="fontWeight" title="font-weight 自定义值" type="text" @confirm="inputChangeFontWeight"></input-data>
+          <input-data :defaultValue="data.fontWeight" title="font-weight 自定义值" type="text" @confirm="inputChangeFontWeight"></input-data>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -121,31 +147,40 @@ font-weight: <font-weight-absolute>{1,2};
 		{ value: 0, name: '' },
 		{ value: 1, name: 'normal' },
 		{ value: 2, name: 'bold' },
-		{ value: 3, name: '400' },
-		{ value: 4, name: '500' },
-		{ value: 5, name: '600' },
-		{ value: 6, name: '700' }
+		{ value: 3, name: '100' },
+		{ value: 4, name: '200' },
+		{ value: 5, name: '300' },
+		{ value: 6, name: '400' },
+		{ value: 7, name: '500' },
+		{ value: 8, name: '600' },
+		{ value: 9, name: '700' },
+		{ value: 10, name: '800' },
+		{ value: 11, name: '900' },
 	]
 
-	const fontWeight = ref('normal')
-	const fontWeightActual = ref('')
-	const fontWeightActualFlat = ref('')
+	const data = reactive({
+		fontWeight: 'normal',
+		fontWeightActual: '',
+		fontWeightActualFlat: ''
+	})
 	const textRef = ref(null as UniTextElement | null)
 	const textRefFlat = ref(null as UniTextElement | null)
 
 	const getPropertyValues = () => {
-		fontWeightActual.value = textRef.value?.style.getPropertyValue('font-weight') ?? ''
-		fontWeightActualFlat.value = textRefFlat.value?.style.getPropertyValue('font-weight') ?? ''
+		data.fontWeightActual = textRef.value?.style.getPropertyValue('font-weight') ?? ''
+		data.fontWeightActualFlat = textRefFlat.value?.style.getPropertyValue('font-weight') ?? ''
 	}
 
+	const ins = getCurrentInstance()
+
 	const changeFontWeight = (value: string) => {
-		fontWeight.value = value
+		data.fontWeight = value
 		textRef.value?.style.setProperty('font-weight', value)
 		textRefFlat.value?.style.setProperty('font-weight', value)
 		// 使用 nextTick 确保样式已应用后再获取值
 		nextTick(() => {
 			getPropertyValues()
-		})
+		}, ins)
 	}
 
 	const radioChangeFontWeight = (index: number) => {
@@ -164,7 +199,8 @@ font-weight: <font-weight-absolute>{1,2};
 	})
 
 	defineExpose({
-		radioChangeFontWeight
+		radioChangeFontWeight,
+		data
 	})
 </script>
 
@@ -173,7 +209,6 @@ font-weight: <font-weight-absolute>{1,2};
 	  font-size: 20px;
 	}
 	.common{
-	  height: 150px;
 	  background-color: gray;
 	  justify-content: center;
 	  align-items: center;
@@ -203,8 +238,7 @@ font-weight: <font-weight-absolute>{1,2};
 :::
 
 #### App平台差异
-- app平台 font-weight 样式不支持继承  
-- app-android平台不支持任意值粗细，仅支持 normal 和 bold 两种值，大于等于 500 时按 bold （加粗）显示，小于 500 时按 normal（正常）显示
+- app平台 font-weight 样式不支持继承
 - app-android平台，部分自定义字体不支持设置 font-weight
 
 

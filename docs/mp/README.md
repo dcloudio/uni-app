@@ -4,8 +4,19 @@
 
 uni-app x 项目在编译到小程序平台时，将部分特性对齐了web与app端，因此和非uni-app x项目编译到小程序端略有差异。
 
+与uni-app相比，uni-app x编译到微信小程序有2个显著差别：
+1. uni-app x 支持 Element API
+在微信小程序上开发高性能应用，离不开wxs。但wxs难用且不跨平台。\
+虽然微信小程序自身不支持Element操作，但uni-app x提供了跨平台的Element API，并且把这些API映射到了微信小程序的wxs上。\
+这样即实现了跨平台一致性，又解决了微信下wxs使用麻烦的问题。
+2. 布局全面使用flex
+小程序的webview渲染支持flex布局，但默认是block布局。\
+uni-app x中全平台统一使用flex布局。
+
 ## 基础库范围
-截止到4.41发版时微信的主流基础库版本是3.7.1。uni-app x主要是在这个版本库上适配。已知过老的基础库版本上，scroll-view区域大小会不准确。请开发者检查并确保基础库版本大于3.7.1。
+截止到HBuilderX 4.41发版时微信的主流基础库版本是3.7.1。
+uni-app x主要是在这个版本库上适配。
+已知过老的基础库版本上，scroll-view区域大小会不准确。请开发者检查并确保基础库版本大于3.7.1。
 
 ## uts
 
@@ -15,7 +26,7 @@ uni-app x 项目在编译到小程序平台时，将部分特性对齐了web与a
 
 ### 自定义组件启用virtualHost带来的影响@virtualHost
 
-标准的小程序下的自定义组件会多套一层DOM，这会影响flex等样式。而uni-app x默认都是flex的。
+标准的小程序下的自定义组件会多套一层DOM，这影响性能且更会影响flex等样式传递。而uni-app x默认都是flex的。
 
 所以为了拉齐样式表现，uni-app x 项目在编译到小程序时，默认启用了virtualHost，该配置是小程序平台提供的一种策略，可以取消多套的一层。\n
 同时默认启用了[mergeVirtualHostAttributes特性](https://uniapp.dcloud.net.cn/collocation/manifest.html#mp-weixin)，在取消多套的一层后，将原本父层的属性设置，合并到子层。

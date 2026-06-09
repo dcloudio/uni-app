@@ -5,11 +5,17 @@
 flex-direction 属性设置弹性容器中的子元素的布局方向，该方向定义为主轴，另一个垂直与它的方向为交叉轴。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,10 +34,10 @@ flex-direction: row | row-reverse | column | column-reverse;
 ### flex-direction 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| row | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | flex 容器的主轴被定义为与文本方向相同。主轴起点和主轴终点与内容方向相同。 |
-| row-reverse | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表现和 row 相同，但是置换了主轴起点和主轴终点 |
-| column | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | flex 容器的主轴和块轴相同。主轴起点与主轴终点和书写模式的前后点相同 |
-| column-reverse | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表现和column相同，但是置换了主轴起点和主轴终点 |
+| row | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | flex 容器的主轴被定义为与文本方向相同。主轴起点和主轴终点与内容方向相同。 |
+| row-reverse | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 表现和 row 相同，但是置换了主轴起点和主轴终点 |
+| column | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | flex 容器的主轴和块轴相同。主轴起点与主轴终点和书写模式的前后点相同 |
+| column-reverse | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 表现和column相同，但是置换了主轴起点和主轴终点 |
 
 
 ### 默认值 @default-value 
@@ -157,10 +163,10 @@ flex-direction: row | row-reverse | column | column-reverse;
         <!-- 普通版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">flex-direction</text>
-          <text class="uni-info">设置值: {{flexDirection}}</text>
-          <text class="uni-info">获取值: {{flexDirectionActual}}</text>
+          <text class="uni-info">设置值: {{data.flexDirection}}</text>
+          <text class="uni-info">获取值: {{data.flexDirectionActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="test-flex-container test-view" :style="{ flexDirection: flexDirection }">
+            <view ref="viewRef" class="test-flex-container test-view" :style="{ flexDirection: data.flexDirection }">
               <view class="test-item-small red"></view>
               <view class="test-item-small green"></view>
               <view class="test-item-small blue"></view>
@@ -171,10 +177,10 @@ flex-direction: row | row-reverse | column | column-reverse;
         <!-- 拍平版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">拍平</text>
-          <text class="uni-info">设置值: {{flexDirection}}</text>
-          <text class="uni-info">获取值: {{flexDirectionActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.flexDirection}}</text>
+          <text class="uni-info">获取值: {{data.flexDirectionActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="test-flex-container test-view-flatten" :style="{ flexDirection: flexDirection }" flatten>
+            <view ref="viewRefFlat" class="test-flex-container test-view-flatten" :style="{ flexDirection: data.flexDirection }" flatten>
               <view class="test-item-small red"></view>
               <view class="test-item-small green"></view>
               <view class="test-item-small blue"></view>
@@ -186,7 +192,7 @@ flex-direction: row | row-reverse | column | column-reverse;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="flexDirectionEnum" title="flex-direction 枚举值" @change="radioChangeFlexDirection" :compact="true"></enum-data>
-        <input-data :defaultValue="flexDirection" title="flex-direction 自定义值" type="text" @confirm="inputChangeFlexDirection"></input-data>
+        <input-data :defaultValue="data.flexDirection" title="flex-direction 自定义值" type="text" @confirm="inputChangeFlexDirection"></input-data>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -205,25 +211,28 @@ flex-direction: row | row-reverse | column | column-reverse;
     { value: 4, name: 'column-reverse' }
   ]
 
-  const flexDirection = ref('row')
-  const flexDirectionActual = ref('')
-  const flexDirectionActualFlat = ref('')
+  const data = reactive({
+    flexDirection: 'row',
+    flexDirectionActual: '',
+    flexDirectionActualFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const viewRefFlat = ref(null as UniElement | null)
 
   const getPropertyValues = () => {
-    flexDirectionActual.value = viewRef.value?.style.getPropertyValue('flex-direction') ?? ''
-    flexDirectionActualFlat.value = viewRefFlat.value?.style.getPropertyValue('flex-direction') ?? ''
+    data.flexDirectionActual = viewRef.value?.style.getPropertyValue('flex-direction') ?? ''
+    data.flexDirectionActualFlat = viewRefFlat.value?.style.getPropertyValue('flex-direction') ?? ''
   }
 
+  const ins = getCurrentInstance()
   const changeFlexDirection = (value: string) => {
-    flexDirection.value = value
+    data.flexDirection = value
     viewRef.value?.style.setProperty('flex-direction', value)
     viewRefFlat.value?.style.setProperty('flex-direction', value)
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeFlexDirection = (index: number) => {
@@ -242,7 +251,8 @@ flex-direction: row | row-reverse | column | column-reverse;
   })
 
   defineExpose({
-    radioChangeFlexDirection
+    radioChangeFlexDirection,
+    data
   })
 </script>
 

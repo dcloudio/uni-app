@@ -10,34 +10,34 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 5.11 | 4.61 | 5.0 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| name | string | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
-| disabled | boolean | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否禁用 |
-| min | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | slider 最小值 |
-| max | number | 100 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | slider 最大值 |
-| step | number | 1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | slider 步长，取值必须大于 0，并且可被(max - min)整除 |
-| value | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | slider 当前取值 |
+| name | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
+| disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否禁用 |
+| min | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | slider 最小值 |
+| max | number | 100 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | slider 最大值 |
+| step | number | 1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | slider 步长，取值必须大于 0，并且可被(max - min)整除 |
+| value | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | slider 当前取值 |
 | activeBackgroundColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#007aff" | Web: 4.18; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): x | slider 滑块左侧已选择部分的线条颜色 (vapor 模式请使用 track-active-class) |
-| ~~activeColor~~ | string([string.ColorString](/uts/data-type.md#ide-string)) | "#007aff" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | slider 滑块左侧已选择部分的线条颜色 |
+| ~~activeColor~~ | string([string.ColorString](/uts/data-type.md#ide-string)) | "#007aff" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | slider 滑块左侧已选择部分的线条颜色 |
 | backgroundColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#e9e9e9" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | slider 背景条的颜色 (vapor 模式请使用 track-class) |
 | block-size | number | 28 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | slider 滑块的大小，取值范围为 12 - 28 (vapor 模式请使用 thumb-class) |
 | ~~block-color~~ | string([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 滑块颜色 (使用foreColor替代) |
-| foreColor | string([string.ColorString](/uts/data-type.md#ide-string)) | - | Web: 4.18; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): x | slider 的滑块背景颜色 (vapor 模式请使用 thumb-class) |
-| show-value | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否显示当前 value |
-| color | color | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | *(color)*<br/>背景条的颜色（请使用 backgroundColor） |
-| selected-color | color | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | *(color)*<br/>已选择的颜色（请使用 activeColor） |
-| track-class | [string.ClassString](/uts/data-type.md#ide-string) | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): 5.0 | slider 背景条样式类名 |
-| track-active-class | [string.ClassString](/uts/data-type.md#ide-string) | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): 5.0 | slider 滑块左侧已选择部分的线条样式类名 |
-| thumb-class | [string.ClassString](/uts/data-type.md#ide-string) | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): 5.0 | slider 滑块样式类名 |
-| @change | (event: [UniSliderChangeEvent](#unisliderchangeevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 完成一次拖动后触发的事件，event.detail = {value: value} |
-| @changing | (event: [UniSliderChangeEvent](#unisliderchangeevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 拖动过程中触发的事件，event.detail = {value: value} |
+| foreColor | string([string.ColorString](/uts/data-type.md#ide-string)) |   | Web: 4.18; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): x | slider 的滑块背景颜色 (vapor 模式请使用 thumb-class) |
+| show-value | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否显示当前 value |
+| color | color |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(color)*<br/>背景条的颜色（请使用 backgroundColor） |
+| selected-color | color |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(color)*<br/>已选择的颜色（请使用 activeColor） |
+| track-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | iOS: x; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | slider 背景条样式类名 |
+| track-active-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | iOS: x; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | slider 滑块左侧已选择部分的线条样式类名 |
+| thumb-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | iOS: x; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | slider 滑块样式类名 |
+| @change | (event: [UniSliderChangeEvent](#unisliderchangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 完成一次拖动后触发的事件，event.detail = {value: value} |
+| @changing | (event: [UniSliderChangeEvent](#unisliderchangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 拖动过程中触发的事件，event.detail = {value: value} |
 
 
 ### 事件
@@ -56,7 +56,7 @@ UniSliderChangeEvent -- Extends --> UniCustomEvent&ltUniSliderChangeEventDetail&
 ###### UniSliderChangeEventDetail 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | number | 是 | - | - | - |
+| value | number | 是 |  |   |  |
 
 
 
@@ -236,7 +236,7 @@ show-value属性设为true后，会在横条右侧显示一个数字。
       :block-color="data.block_color_input" :show-value="data.show_value_boolean" :valueColor="data.valueColor" @click="slider_click"
       @touchstart="slider_touchstart" @touchmove="slider_touchmove" @touchcancel="slider_touchcancel"
       @touchend="slider_touchend" @tap="slider_tap" @longpress="slider_longpress" @change="slider_change"
-      @changing="slider_changing" style="width: 90%"></slider>
+      @changing="slider_changing" style="width: 90%;margin-left: 10px;"></slider>
   </view>
 
   <scroll-view style="flex: 1">
@@ -267,7 +267,7 @@ show-value属性设为true后，会在横条右侧显示一个数字。
       <page-head title="默认及使用"></page-head>
       <view class="uni-title">显示当前value</view>
       <view>
-        <slider style="padding: 5px 0;" @change="sliderChange" :value="50" :show-value="true" />
+        <slider style="padding: 5px 0;margin-left: 10px;" @change="sliderChange" :value="50" :show-value="true" />
       </view>
 
       <view class="uni-title">设置步进:step=10跳动</view>
@@ -276,23 +276,23 @@ show-value属性设为true后，会在横条右侧显示一个数字。
           <text>0</text>
           <text class="m-l-a">100</text>
         </view>
-        <slider style="padding: 5px 0;" @change="sliderChange" :value="60" :step="10" />
+        <slider style="padding: 5px 0;margin-left: 10px;" @change="sliderChange" :value="60" :step="10" />
       </view>
 
       <view class="uni-title">浮点步进:step=0.01跳动</view>
       <view>
-        <slider style="padding: 5px 0;" :value="0.5" :min="0" :max="1" :step="0.01" :show-value="true" />
+        <slider style="padding: 5px 0;margin-left: 10px" :value="0.5" :min="0" :max="1" :step="0.01" :show-value="true" />
       </view>
 
       <view class="uni-title">设置最小/最大值</view>
       <view>
-        <slider style="padding: 5px 0;" @change="sliderChange" :value="100" :min="50" :max="200" :show-value="true" />
+        <slider style="padding: 5px 0;margin-left: 10px" @change="sliderChange" :value="100" :min="50" :max="200" :show-value="true" />
       </view>
 
       <view class="uni-title">不同颜色和大小的滑块</view>
       <view>
         <!-- vapor 模式不支持 activeColor、blockColor 等属性，需要使用 track-class、track-active-class、thumb-class -->
-        <slider style="padding: 5px 0;" id="slider-custom-color-and-size" @change="sliderChange" :value="data.sliderValue"
+        <slider style="padding: 5px 0;margin-left: 10px" id="slider-custom-color-and-size" @change="sliderChange" :value="data.sliderValue"
           :backgroundColor="data.sliderBackgroundColor" :activeColor="data.sliderActiveColor"
           :activeBackgroundColor="data.sliderActiveColor" :blockColor="data.sliderBlockColor" :foreColor="data.sliderBlockColor"
           :block-size="data.sliderBlockSize"
@@ -300,7 +300,7 @@ show-value属性设为true后，会在横条右侧显示一个数字。
       </view>
       <view class="uni-title">暗黑模式</view>
       <view>
-        <slider style="padding: 5px 0;" :show-value="true" backgroundColor="rgba(32,32,32,0.5)" valueColor="#555" track-class="dark-track" thumb-class="dark-thumb"/>
+        <slider style="padding: 5px 0;margin-left: 10px" :show-value="true" backgroundColor="rgba(32,32,32,0.5)" valueColor="#555" track-class="dark-track" thumb-class="dark-thumb"/>
       </view>
 
       <navigator class="uni-common-mb" url="/pages/template/slider-100/slider-100">

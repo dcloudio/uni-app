@@ -5,11 +5,17 @@
 CSS box-shadow 属性用于在元素的框架上添加阴影效果。你可以在同一个元素上设置多个阴影效果，并用逗号将他们分隔开。该属性可设置的值包括阴影的 X 轴偏移量、Y 轴偏移量、模糊半径、扩散半径和颜色。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -30,8 +36,8 @@ box-shadow: none | <shadow>#;
 ### box-shadow 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| inset | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 如果没有指定inset，默认阴影在边框外，即阴影向外扩散。<br/>      使用 inset 关键字会使得阴影落在盒子内部，这样看起来就像是内容被压低了。此时阴影会在边框之内 (即使是透明边框）、背景之上、内容之下。 |
-| none | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | No shadow. |
+| inset | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: x | 如果没有指定inset，默认阴影在边框外，即阴影向外扩散。<br/>      使用 inset 关键字会使得阴影落在盒子内部，这样看起来就像是内容被压低了。此时阴影会在边框之内 (即使是透明边框）、背景之上、内容之下。 |
+| none | Web: 4.0; Android 系统版本: x; Android: 3.9; Android(Vapor): 5.21; iOS 系统版本: x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | No shadow. |
 
 
 
@@ -536,10 +542,10 @@ box-shadow: none | <shadow>#;
         <!-- view 组件测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{boxShadow}}</text>
-          <text class="uni-info">获取值: {{boxShadowActual}}</text>
+          <text class="uni-info">设置值: {{data.boxShadow}}</text>
+          <text class="uni-info">获取值: {{data.boxShadowActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-dynamic test-view" :style="{ boxShadow: boxShadow }">
+            <view ref="viewRef" class="common-dynamic test-view" :style="{ boxShadow: data.boxShadow }">
               <text class="common-text">view</text>
             </view>
           </view>
@@ -548,33 +554,33 @@ box-shadow: none | <shadow>#;
         <!-- text 组件测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{boxShadow}}</text>
-          <text class="uni-info">获取值: {{boxShadowActualText}}</text>
+          <text class="uni-info">设置值: {{data.boxShadow}}</text>
+          <text class="uni-info">获取值: {{data.boxShadowActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-dynamic common-text test-text" :style="{ boxShadow: boxShadow }">text</text>
+            <text ref="textRef" class="common-dynamic common-text test-text" :style="{ boxShadow: data.boxShadow }">text</text>
           </view>
         </view>
 
         <!-- image 组件测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{boxShadow}}</text>
-          <text class="uni-info">获取值: {{boxShadowActualImage}}</text>
+          <text class="uni-info">设置值: {{data.boxShadow}}</text>
+          <text class="uni-info">获取值: {{data.boxShadowActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-dynamic test-image" :style="{ boxShadow: boxShadow }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-dynamic test-image" :style="{ boxShadow: data.boxShadow }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
 
       <!-- 拍平版本（注意：不支持 inset 值） -->
-      <view class="test-container" v-if="!boxShadow.includes('inset')">
+      <view class="test-container" v-if="showFlatSection()">
         <!-- view 组件拍平测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{boxShadow}}</text>
-          <text class="uni-info">获取值: {{boxShadowActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.boxShadow}}</text>
+          <text class="uni-info">获取值: {{data.boxShadowActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ boxShadow: boxShadow }" flatten>
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ boxShadow: data.boxShadow }" flatten>
               <text class="common-text">view</text>
             </view>
           </view>
@@ -583,20 +589,20 @@ box-shadow: none | <shadow>#;
         <!-- text 组件拍平测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{boxShadow}}</text>
-          <text class="uni-info">获取值: {{boxShadowActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.boxShadow}}</text>
+          <text class="uni-info">获取值: {{data.boxShadowActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic common-text test-text-flatten" :style="{ boxShadow: boxShadow }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic common-text test-text-flatten" :style="{ boxShadow: data.boxShadow }" flatten>text</text>
           </view>
         </view>
 
         <!-- image 组件拍平测试 -->
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{boxShadow}}</text>
-          <text class="uni-info">获取值: {{boxShadowActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.boxShadow}}</text>
+          <text class="uni-info">获取值: {{data.boxShadowActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ boxShadow: boxShadow }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ boxShadow: data.boxShadow }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -605,7 +611,7 @@ box-shadow: none | <shadow>#;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :compact="true" :items="boxShadowEnum" title="box-shadow 枚举值" @change="radioChangeBoxShadow"></enum-data>
-        <input-data :defaultValue="boxShadow" title="box-shadow 自定义值" type="text" @confirm="inputChangeBoxShadow"></input-data>
+        <input-data :defaultValue="data.boxShadow" title="box-shadow 自定义值" type="text" @confirm="inputChangeBoxShadow"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -632,18 +638,22 @@ box-shadow: none | <shadow>#;
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
+  const data = reactive({
+    boxShadow: '5px 5px black',
+    boxShadowActual: '',
+    boxShadowActualText: '',
+    boxShadowActualImage: '',
+    boxShadowActualFlat: '',
+    boxShadowActualTextFlat: '',
+    boxShadowActualImageFlat: ''
+  })
+
   const disabled = ref(false)
+
   const changed = () => {
-    disabled.value = !disabled.value
+    disabled.value = disabled.value == false
   }
 
-  const boxShadow = ref('5px 5px black')
-  const boxShadowActual = ref('')
-  const boxShadowActualText = ref('')
-  const boxShadowActualImage = ref('')
-  const boxShadowActualFlat = ref('')
-  const boxShadowActualTextFlat = ref('')
-  const boxShadowActualImageFlat = ref('')
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -663,28 +673,29 @@ box-shadow: none | <shadow>#;
   ]
 
   const getPropertyValues = (value: string) => {
-    boxShadowActual.value = viewRef.value?.style.getPropertyValue('box-shadow') ?? ''
+    data.boxShadowActual = viewRef.value?.style.getPropertyValue('box-shadow') ?? ''
     if (!value.includes('inset')) {
-      boxShadowActualFlat.value = viewRefFlat.value?.style.getPropertyValue('box-shadow') ?? ''
+      data.boxShadowActualFlat = viewRefFlat.value?.style.getPropertyValue('box-shadow') ?? ''
     } else {
-      boxShadowActualFlat.value = '不支持 inset'
+      data.boxShadowActualFlat = '不支持 inset'
     }
-    boxShadowActualText.value = textRef.value?.style.getPropertyValue('box-shadow') ?? ''
+    data.boxShadowActualText = textRef.value?.style.getPropertyValue('box-shadow') ?? ''
     if (!value.includes('inset')) {
-      boxShadowActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('box-shadow') ?? ''
+      data.boxShadowActualTextFlat = textRefFlat.value?.style.getPropertyValue('box-shadow') ?? ''
     } else {
-      boxShadowActualTextFlat.value = '不支持 inset'
+      data.boxShadowActualTextFlat = '不支持 inset'
     }
-    boxShadowActualImage.value = imageRef.value?.style.getPropertyValue('box-shadow') ?? ''
+    data.boxShadowActualImage = imageRef.value?.style.getPropertyValue('box-shadow') ?? ''
     if (!value.includes('inset')) {
-      boxShadowActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('box-shadow') ?? ''
+      data.boxShadowActualImageFlat = imageRefFlat.value?.style.getPropertyValue('box-shadow') ?? ''
     } else {
-      boxShadowActualImageFlat.value = '不支持 inset'
+      data.boxShadowActualImageFlat = '不支持 inset'
     }
   }
 
+  const ins = getCurrentInstance()
   const changeBoxShadow = (value: string) => {
-    boxShadow.value = value
+    data.boxShadow = value
     viewRef.value?.style.setProperty('box-shadow', value)
     if (!value.includes('inset')) {
       viewRefFlat.value?.style.setProperty('box-shadow', value)
@@ -700,7 +711,7 @@ box-shadow: none | <shadow>#;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues(value)
-    })
+    }, ins)
   }
 
   const radioChangeBoxShadow = (index: number) => {
@@ -714,16 +725,19 @@ box-shadow: none | <shadow>#;
     changeBoxShadow(value)
   }
 
+  const showFlatSection = () => (data.boxShadow as string).includes('inset') == false
+
   onReady(() => {
     nextTick(() => {
       const element = uni.getElementById("dynamic-height-textarea")
       element?.style.setProperty("height", "26px")
     })
-    getPropertyValues(boxShadow.value)
+    getPropertyValues(data.boxShadow as string)
   })
 
   defineExpose({
-    radioChangeBoxShadow
+    radioChangeBoxShadow,
+    data
   })
 </script>
 

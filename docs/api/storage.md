@@ -34,26 +34,26 @@ uni.setStorage函数定义
 
 
 ### setStorage 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **SetStorageOptions** | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| options | **SetStorageOptions** | 是 |  |   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 本地存储中的指定的 key |
-| data | any | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 需要存储的内容，只支持能通过 JSON.stringify 序列化的对象 |
-| success | (res: SetStorageSuccess) => void | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | uni.setStorage成功回调函数定义 |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | uni.setStorage失败回调函数定义 |
-| complete | (res: any) => void | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | uni.setStorage完成回调函数定义 | 
+| key | string | 是 |  |   | 本地存储中的指定的 key |
+| data | any | 是 |  |   | 需要存储的内容，只支持能通过 JSON.stringify 序列化的对象 |
+| success | (res: SetStorageSuccess) => void | 否 |  |   | uni.setStorage成功回调函数定义 |
+| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 |  |   | uni.setStorage失败回调函数定义 |
+| complete | (res: any) => void | 否 |  |   | uni.setStorage完成回调函数定义 | 
 
 
 
@@ -93,17 +93,17 @@ uni.setStorageSync函数定义
 
 
 ### setStorageSync 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 本地storage存储中的指定的 key |
-| data | any | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 需要存储的内容，只支持能通过 JSON.stringify 序列化的对象 | 
+| key | string | 是 |  |   | 本地storage存储中的指定的 key |
+| data | any | 是 |  |   | 需要存储的内容，只支持能通过 JSON.stringify 序列化的对象 | 
 
 
 :::warning
@@ -150,31 +150,31 @@ uni.getStorage函数定义
 
 
 ### getStorage 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **GetStorageOptions** | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| options | **GetStorageOptions** | 是 |  |   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 本地存储中的指定的 key |
-| success | (res: [GetStorageSuccess](#getstoragesuccess-values)) => void | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | uni.getStorage成功回调函数定义 |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | uni.getStorage失败回调函数定义 |
-| complete | (res: any) => void | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | uni.getStorage完成回调函数定义 | 
+| key | string | 是 |  |   | 本地存储中的指定的 key |
+| success | (res: [GetStorageSuccess](#getstoragesuccess-values)) => void | 否 |  |   | uni.getStorage成功回调函数定义 |
+| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 |  |   | uni.getStorage失败回调函数定义 |
+| complete | (res: any) => void | 否 |  |   | uni.getStorage完成回调函数定义 | 
 
 #### GetStorageSuccess 的属性值 @getstoragesuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | any | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | key 对应的内容 |
+| data | any | 否 |  |   | key 对应的内容 |
 
 
 
@@ -224,16 +224,16 @@ uni.getStorageSync函数定义
 
 
 ### getStorageSync 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 本地存储中的指定的 key | 
+| key | string | 是 |  |   | 本地存储中的指定的 key | 
 
 
 ### 返回值 
@@ -291,32 +291,32 @@ uni.getStorageInfo函数定义
 
 
 ### getStorageInfo 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **GetStorageInfoOptions** | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| options | **GetStorageInfoOptions** | 是 |  |   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | (res: [GetStorageInfoSuccess](#getstorageinfosuccess-values)) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.getStorageInfo成功回调函数定义 |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.getStorageInfo失败回调函数定义 |
-| complete | (res: any) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.getStorageInfo完成回调函数定义 | 
+| success | (res: [GetStorageInfoSuccess](#getstorageinfosuccess-values)) => void | 否 |  | 微信小程序: 4.41 | uni.getStorageInfo成功回调函数定义 |
+| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 |  | 微信小程序: 4.41 | uni.getStorageInfo失败回调函数定义 |
+| complete | (res: any) => void | 否 |  | 微信小程序: 4.41 | uni.getStorageInfo完成回调函数定义 | 
 
 #### GetStorageInfoSuccess 的属性值 @getstorageinfosuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| keys | Array&lt;string&gt; | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 当前 storage 中所有的 key |
-| currentSize | number | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 当前占用的空间大小, 单位：kb |
-| limitSize | number | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 限制的空间大小, 单位：kb |
+| keys | Array&lt;string&gt; | 是 |  | 微信小程序: 4.41 | 当前 storage 中所有的 key |
+| currentSize | number | 是 |  | 微信小程序: 4.41 | 当前占用的空间大小, 单位：kb |
+| limitSize | number | 是 |  | 微信小程序: 4.41 | 限制的空间大小, 单位：kb |
 
 
 
@@ -356,9 +356,9 @@ uni.getStorageInfoSync函数定义
 
 
 ### getStorageInfoSync 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 
@@ -373,9 +373,9 @@ uni.getStorageInfoSync函数定义
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| keys | Array&lt;string&gt; | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 当前 storage 中所有的 key |
-| currentSize | number | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 当前占用的空间大小, 单位：kb |
-| limitSize | number | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 限制的空间大小, 单位：kb | 
+| keys | Array&lt;string&gt; | 是 |  | 微信小程序: 4.41 | 当前 storage 中所有的 key |
+| currentSize | number | 是 |  | 微信小程序: 4.41 | 当前占用的空间大小, 单位：kb |
+| limitSize | number | 是 |  | 微信小程序: 4.41 | 限制的空间大小, 单位：kb | 
 
 
 <!-- UTSAPIJSON.getStorageInfoSync.example -->
@@ -413,25 +413,25 @@ uni.removeStorage函数定义
 
 
 ### removeStorage 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **RemoveStorageOptions** | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| options | **RemoveStorageOptions** | 是 |  |   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 本地存储中的指定的 key |
-| success | (res: RemoveStorageSuccess) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.removeStorage成功回调函数定义 |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.removeStorage失败回调函数定义 |
-| complete | (res: any) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.removeStorage完成回调函数定义 | 
+| key | string | 是 |  | 微信小程序: 4.41 | 本地存储中的指定的 key |
+| success | (res: RemoveStorageSuccess) => void | 否 |  | 微信小程序: 4.41 | uni.removeStorage成功回调函数定义 |
+| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 |  | 微信小程序: 4.41 | uni.removeStorage失败回调函数定义 |
+| complete | (res: any) => void | 否 |  | 微信小程序: 4.41 | uni.removeStorage完成回调函数定义 | 
 
 
 
@@ -471,16 +471,16 @@ uni.removeStorageSync函数定义
 
 
 ### removeStorageSync 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 本地存储中的指定的 key | 
+| key | string | 是 |  |   | 本地存储中的指定的 key | 
 
 
 
@@ -520,24 +520,24 @@ uni.clearStorage函数定义
 
 
 ### clearStorage 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| option | **ClearStorageOptions** | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | uni.removeStorage参数定义 |
+| option | **ClearStorageOptions** | 否 |  |   | uni.removeStorage参数定义 |
 
 #### option 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | (res: ClearStorageSuccess) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.clearStorage 成功回调函数定义 |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.clearStorage 失败回调函数定义 |
-| complete | (res: any) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.clearStorage 完成回调函数定义 | 
+| success | (res: ClearStorageSuccess) => void | 否 |  | 微信小程序: 4.41 | uni.clearStorage 成功回调函数定义 |
+| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 |  | 微信小程序: 4.41 | uni.clearStorage 失败回调函数定义 |
+| complete | (res: any) => void | 否 |  | 微信小程序: 4.41 | uni.clearStorage 完成回调函数定义 | 
 
 
 
@@ -577,9 +577,9 @@ uni.clearStorageSync函数定义
 
 
 ### clearStorageSync 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
 
 
 
@@ -650,7 +650,7 @@ uni.clearStorageSync函数定义
             </button>
           </view>
           <text class="uni-list-cell-db-text">{{ data.storageInfo }}</text>
-          <view class="uni-flex uni-row">
+          <view class="uni-row">
             <button type="default" style="width:50%" @tap="strMock">
               填充字符串
             </button>
@@ -658,7 +658,7 @@ uni.clearStorageSync函数定义
               填充复杂对象
             </button>
           </view>
-          <view class="uni-flex uni-row">
+          <view class="uni-row">
             <button type="default" style="width:50%" @tap="numberMock">
               填充整型
             </button>
@@ -666,7 +666,7 @@ uni.clearStorageSync函数定义
               填充浮点型
             </button>
           </view>
-          <view class="uni-flex uni-row">
+          <view class="uni-row">
             <button type="default" style="width:50%" @tap="jsonLikeMock">
               填充json字符串
             </button>
@@ -674,7 +674,7 @@ uni.clearStorageSync函数定义
               填充整数字符串
             </button>
           </view>
-          <view class="uni-flex uni-row">
+          <view class="uni-row">
             <button type="default" style="width:50%" @tap="floatLikeMock">
               填充浮点字符串
             </button>
@@ -682,7 +682,7 @@ uni.clearStorageSync函数定义
               填充负数字符串
             </button>
           </view>
-          <view class="uni-flex uni-row">
+          <view class="uni-row">
             <button type="default" class="uni-btn btn-complexStaticTest" style="width:100%" @tap="complexStaticTest">
               字面量读写测试
             </button>
@@ -1150,7 +1150,7 @@ uni.clearStorageSync函数定义
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 
 
 

@@ -5,11 +5,17 @@
 font-style 属性用于设置字体样式。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,8 +34,8 @@ font-style: normal | italic | oblique <angle>{0,2};
 ### font-style 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| italic | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 选择斜体，如果当前字体没有可用的斜体版本，会选用倾斜体（oblique ）替代。 |
-| normal | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 选择 font-family 的常规字体。 |
+| italic | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 选择斜体，如果当前字体没有可用的斜体版本，会选用倾斜体（oblique ）替代。 |
+| normal | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 选择 font-family 的常规字体。 |
 
 
 ### 默认值 @default-value 
@@ -76,20 +82,20 @@ font-style: normal | italic | oblique <angle>{0,2};
         <!-- 普通版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">font-style</text>
-          <text class="uni-info">设置值: {{fontStyle}}</text>
-          <text class="uni-info">获取值: {{fontStyleActual}}</text>
+          <text class="uni-info">设置值: {{data.fontStyle}}</text>
+          <text class="uni-info">获取值: {{data.fontStyleActual}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-size test-text" :style="{ fontStyle: fontStyle }">当前 font-style: {{fontStyle}}</text>
+            <text ref="textRef" class="common-size test-text" :style="{ fontStyle: data.fontStyle }">当前 font-style: {{data.fontStyle}}</text>
           </view>
         </view>
 
         <!-- 拍平版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">测试拍平</text>
-          <text class="uni-info">设置值: {{fontStyle}}</text>
-          <text class="uni-info">获取值: {{fontStyleActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.fontStyle}}</text>
+          <text class="uni-info">获取值: {{data.fontStyleActualFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-size test-text-flatten" :style="{ fontStyle: fontStyle }" flatten>当前 font-style: {{fontStyle}}</text>
+            <text ref="textRefFlat" class="common-size test-text-flatten" :style="{ fontStyle: data.fontStyle }" flatten>当前 font-style: {{data.fontStyle}}</text>
           </view>
         </view>
       </view>
@@ -97,7 +103,7 @@ font-style: normal | italic | oblique <angle>{0,2};
       <view class="uni-common-mt uni-common-mb">
           <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
           <enum-data :items="fontStyleEnum" title="font-style 枚举值" @change="radioChangeFontStyle" :compact="true"></enum-data>
-          <input-data :defaultValue="fontStyle" title="font-style 自定义值" type="text" @confirm="inputChangeFontStyle"></input-data>
+          <input-data :defaultValue="data.fontStyle" title="font-style 自定义值" type="text" @confirm="inputChangeFontStyle"></input-data>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -114,25 +120,29 @@ font-style: normal | italic | oblique <angle>{0,2};
     { value: 2, name: 'italic' }
   ]
 
-  const fontStyle = ref('normal')
-  const fontStyleActual = ref('')
-  const fontStyleActualFlat = ref('')
+  const data = reactive({
+    fontStyle: 'normal',
+    fontStyleActual: '',
+    fontStyleActualFlat: ''
+  })
   const textRef = ref(null as UniTextElement | null)
   const textRefFlat = ref(null as UniTextElement | null)
 
   const getPropertyValues = () => {
-    fontStyleActual.value = textRef.value?.style.getPropertyValue('font-style') ?? ''
-    fontStyleActualFlat.value = textRefFlat.value?.style.getPropertyValue('font-style') ?? ''
+    data.fontStyleActual = textRef.value?.style.getPropertyValue('font-style') ?? ''
+    data.fontStyleActualFlat = textRefFlat.value?.style.getPropertyValue('font-style') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeFontStyle = (value: string) => {
-    fontStyle.value = value
+    data.fontStyle = value
     textRef.value?.style.setProperty('font-style', value)
     textRefFlat.value?.style.setProperty('font-style', value)
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeFontStyle = (index: number) => {
@@ -151,7 +161,8 @@ font-style: normal | italic | oblique <angle>{0,2};
   })
 
   defineExpose({
-    radioChangeFontStyle
+    radioChangeFontStyle,
+    data
   })
 </script>
 

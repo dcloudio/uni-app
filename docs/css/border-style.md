@@ -5,11 +5,17 @@
 border-style 是一个 CSS 简写属性，用来设定元素所有边框的样式。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,10 +34,10 @@ border-style: <line-style>{1,4};
 ### border-style 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| none | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 和关键字 hidden 类似，不显示边框。在这种情况下，如果没有设定背景图片，border-width 计算后的值将是 0，即使先前已经指定过它的值。在单元格边框重叠情况下，none 值优先级最低，意味着如果存在其他的重叠边框，则会显示为那个边框。 |
-| solid | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 显示为一条实线。 |
-| dashed | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 显示为一系列短的方形虚线。标准中没有定义线段的长度和大小，视不同实现而定。 |
-| dotted | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 显示为一系列圆点。标准中没有定义两点之间的间隔大小，视不同实现而定。圆点半径是 border-width 计算值的一半。 |
+| none | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 和关键字 hidden 类似，不显示边框。在这种情况下，如果没有设定背景图片，border-width 计算后的值将是 0，即使先前已经指定过它的值。在单元格边框重叠情况下，none 值优先级最低，意味着如果存在其他的重叠边框，则会显示为那个边框。 |
+| solid | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 显示为一条实线。 |
+| dashed | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 显示为一系列短的方形虚线。标准中没有定义线段的长度和大小，视不同实现而定。 |
+| dotted | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 显示为一系列圆点。标准中没有定义两点之间的间隔大小，视不同实现而定。圆点半径是 border-width 计算值的一半。 |
 
 
 
@@ -137,10 +143,10 @@ border-style: <line-style>{1,4};
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{borderStyleValue}}</text>
-          <text class="uni-info">获取值: {{borderStyleActual}}</text>
+          <text class="uni-info">设置值: {{data.borderStyleValue}}</text>
+          <text class="uni-info">获取值: {{data.borderStyleActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-dynamic test-view" :style="{ borderWidth: '5px', borderStyle: borderStyleValue }">
+            <view ref="viewRef" class="common-dynamic test-view" :style="{ borderWidth: '5px', borderStyle: data.borderStyleValue }">
               <text>view</text>
             </view>
           </view>
@@ -148,19 +154,19 @@ border-style: <line-style>{1,4};
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{borderStyleValue}}</text>
-          <text class="uni-info">获取值: {{borderStyleActualText}}</text>
+          <text class="uni-info">设置值: {{data.borderStyleValue}}</text>
+          <text class="uni-info">获取值: {{data.borderStyleActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-dynamic test-text" :style="{ borderWidth: '5px', borderStyle: borderStyleValue }">text</text>
+            <text ref="textRef" class="common-dynamic test-text" :style="{ borderWidth: '5px', borderStyle: data.borderStyleValue }">text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{borderStyleValue}}</text>
-          <text class="uni-info">获取值: {{borderStyleActualImage}}</text>
+          <text class="uni-info">设置值: {{data.borderStyleValue}}</text>
+          <text class="uni-info">获取值: {{data.borderStyleActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-image test-image" :style="{ borderWidth: '5px', borderStyle: borderStyleValue }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image test-image" :style="{ borderWidth: '5px', borderStyle: data.borderStyleValue }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -169,10 +175,10 @@ border-style: <line-style>{1,4};
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{borderStyleValue}}</text>
-          <text class="uni-info">获取值: {{borderStyleActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.borderStyleValue}}</text>
+          <text class="uni-info">获取值: {{data.borderStyleActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ borderWidth: '5px', borderStyle: borderStyleValue }" flatten>
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ borderWidth: '5px', borderStyle: data.borderStyleValue }" flatten>
               <text>view</text>
             </view>
           </view>
@@ -180,19 +186,19 @@ border-style: <line-style>{1,4};
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{borderStyleValue}}</text>
-          <text class="uni-info">获取值: {{borderStyleActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.borderStyleValue}}</text>
+          <text class="uni-info">获取值: {{data.borderStyleActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ borderWidth: '5px', borderStyle: borderStyleValue }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ borderWidth: '5px', borderStyle: data.borderStyleValue }" flatten>text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{borderStyleValue}}</text>
-          <text class="uni-info">获取值: {{borderStyleActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.borderStyleValue}}</text>
+          <text class="uni-info">获取值: {{data.borderStyleActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ borderWidth: '5px', borderStyle: borderStyleValue }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ borderWidth: '5px', borderStyle: data.borderStyleValue }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -200,7 +206,7 @@ border-style: <line-style>{1,4};
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="borderStyleEnum" title="border-style 枚举值" @change="radioChangeBorderStyle" :compact="true"></enum-data>
-        <input-data :defaultValue="borderStyleValue" title="border-style 自定义值" type="text" @confirm="inputChangeBorderStyle"></input-data>
+        <input-data :defaultValue="data.borderStyleValue" title="border-style 自定义值" type="text" @confirm="inputChangeBorderStyle"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -220,6 +226,16 @@ border-style: <line-style>{1,4};
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   let isSolid = false
+  const data = reactive({
+    borderStyleValue: 'solid',
+    borderStyleActual: '',
+    borderStyleActualText: '',
+    borderStyleActualImage: '',
+    borderStyleActualFlat: '',
+    borderStyleActualTextFlat: '',
+    borderStyleActualImageFlat: ''
+  })
+
   const borderStyle = ref("border-style: none; border-width: 5px;")
 
   const changeBorderStyle = () => {
@@ -237,13 +253,6 @@ border-style: <line-style>{1,4};
     { value: 4, name: 'dotted' }
   ]
 
-  const borderStyleValue = ref('solid')
-  const borderStyleActual = ref('')
-  const borderStyleActualText = ref('')
-  const borderStyleActualImage = ref('')
-  const borderStyleActualFlat = ref('')
-  const borderStyleActualTextFlat = ref('')
-  const borderStyleActualImageFlat = ref('')
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -252,16 +261,17 @@ border-style: <line-style>{1,4};
   const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    borderStyleActual.value = viewRef.value?.style.getPropertyValue('border-style') ?? ''
-    borderStyleActualFlat.value = viewRefFlat.value?.style.getPropertyValue('border-style') ?? ''
-    borderStyleActualText.value = textRef.value?.style.getPropertyValue('border-style') ?? ''
-    borderStyleActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('border-style') ?? ''
-    borderStyleActualImage.value = imageRef.value?.style.getPropertyValue('border-style') ?? ''
-    borderStyleActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('border-style') ?? ''
+    data.borderStyleActual = viewRef.value?.style.getPropertyValue('border-style') ?? ''
+    data.borderStyleActualFlat = viewRefFlat.value?.style.getPropertyValue('border-style') ?? ''
+    data.borderStyleActualText = textRef.value?.style.getPropertyValue('border-style') ?? ''
+    data.borderStyleActualTextFlat = textRefFlat.value?.style.getPropertyValue('border-style') ?? ''
+    data.borderStyleActualImage = imageRef.value?.style.getPropertyValue('border-style') ?? ''
+    data.borderStyleActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border-style') ?? ''
   }
 
+  const ins = getCurrentInstance()
   const changeBorderStyleValue = (value: string) => {
-    borderStyleValue.value = value
+    data.borderStyleValue = value
     viewRef.value?.style.setProperty('border-style', value)
     viewRefFlat.value?.style.setProperty('border-style', value)
     textRef.value?.style.setProperty('border-style', value)
@@ -271,7 +281,7 @@ border-style: <line-style>{1,4};
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeBorderStyle = (index: number) => {
@@ -290,7 +300,8 @@ border-style: <line-style>{1,4};
   })
 
   defineExpose({
-    radioChangeBorderStyle
+    radioChangeBorderStyle,
+    data
   })
 </script>
 

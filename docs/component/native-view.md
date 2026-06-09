@@ -14,15 +14,15 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.31 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.31 | 5.11 | 4.61 | 5.0 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| @init | (event: [UniNativeViewInitEvent](#uninativeviewinitevent)) => void | - | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | native-view初始化时回调，event.detail = { element: 'native-view元素实例对象'} |
+| @init | (event: [UniNativeViewInitEvent](#uninativeviewinitevent)) => void |   | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | native-view初始化时回调，event.detail = { element: 'native-view元素实例对象'} |
 
 
 ### 事件
@@ -41,7 +41,7 @@ UniNativeViewInitEvent -- Extends --> UniCustomEvent&ltUniNativeViewInitEventDet
 ###### UniNativeViewInitEventDetail 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| element | [UniNativeViewElement](/api/dom/uninativeviewelement.md) | 是 | - | - | - |
+| element | [UniNativeViewElement](/api/dom/uninativeviewelement.md) | 是 |  |   |  |
 
 
 
@@ -91,7 +91,172 @@ UniNativeViewInitEvent -- Extends --> UniCustomEvent&ltUniNativeViewInitEventDet
 ### 子组件 @children-tags
 不可以嵌套组件
 
+### 示例
+#### native-view
+展示使用 native-view 封装的原生view的UTS插件-标准模式组件
+示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/component/native-view/native-view.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/component/native-view/native-view.uvue) 
+>
+> 该 API 不支持 Web，请运行 hello uni-app x 到 App 平台体验 
 
+::: preview
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/component/native-view/native-view
+```uvue
+<template>
+  <scroll-view style="flex: 1;">
+    <page-intro content="本页演示 native-view 原生视图与 UTS 插件组件：调用组件方法、native-button 与容器、native-view 样式；可跳转 native-time-picker 等原生能力。"></page-intro>
+    <view style="padding-bottom: 50px;">
+      <!-- #ifndef APP-HARMONY -->
+      <text class="tips">说明：如果本地无 uts 插件编译环境请提交打包自定义基座查看效果</text>
+      <!-- #endif -->
+      <!-- #ifdef APP-HARMONY -->
+      <text class="tips"> </text>
+      <!-- #endif -->
+      <button type="primary" @tap="testCallMethod">调用组件方法</button>
+      <!-- native-button 通过 native-view 绑定原生button 实现的UTS插件-标准模式组件 -->
+      <native-button id="helloView" class="native-button" style="width: 200px; height: 100px;" :text="buttonText" @buttonTap="ontap"
+        @load="onload"></native-button>
+      <native-button-container></native-button-container>
+      <!-- #ifndef APP-HARMONY -->
+      <button type="primary" @click="gotoTimePicker">调用native-time-picker</button>
+      <!-- #endif -->
+
+      <text class="uni-title-text">native-view样式大合集</text>
+      <native-view class="styled-native-view"></native-view>
+    </view>
+  </scroll-view>
+</template>
+
+<script setup lang="uts">
+import { createNativeButtonContext } from "@/uni_modules/native-button";
+
+const buttonText = ref("native-button")
+let isLoad = false
+let clickCount = 0
+
+function ontap(e : UniNativeViewEvent) {
+  uni.showToast({
+    title: "按钮被点击了"
+  })
+  clickCount ++
+  buttonText.value = "native-button"+clickCount
+}
+
+function onload() {
+  //标记已初始化 用于自动化测试
+  isLoad = true
+}
+
+//用于自动化测试
+function getIsLoadTest():boolean {
+  return isLoad
+}
+
+function testCallMethod() {
+  let context = createNativeButtonContext("helloView")
+  context?.updateText("test code")
+}
+
+function gotoTimePicker() {
+  uni.openDialogPage({
+    url: "/pages/component/native-view/native-view-time-picker-dialog",
+    animationType: "fade-in"
+  })
+}
+
+defineExpose({getIsLoadTest})
+
+</script>
+
+<style>
+
+  .tips {
+    font-size: 14px;
+    color: #BEBEBE;
+    margin: 25px auto 25px auto;
+    text-align: center;
+  }
+
+  .native-button {
+    height: 100px;
+    width: 100px;
+    margin: 25px auto 25px auto;
+  }
+
+  .styled-native-view {
+    width: 80px;
+    height: 80px;
+    margin: 20px 30px;
+    padding: 5px;
+    border: 2px solid #007aff;
+    border-radius: 8px;
+    background-color: #f0f8ff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    opacity: 0.95;
+    position: relative;
+    transform: rotate(45deg);
+  }
+</style>
+
+```
+:::
+#### native-button
+通过 native-view 绑定原生 button 实现的UTS插件-标准模式组件
+示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/uni_modules/native-button/components/native-button/native-button.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//uni_modules/native-button/components/native-button/native-button.uvue) 
+>
+> 该 API 不支持 Web，请运行 hello uni-app x 到 App 平台体验 
+```uvue
+<template>
+  <!--建议只存在一个根节点，如果native-view存在兄弟节点则需要将其包裹处理-->
+  <view>
+    <native-view style="height: 100px;" @init="onviewinit" @customClick="ontap"></native-view>
+  	<view style="width: 50%;height: 100px;">
+  		<button>测试按钮</button>
+  	</view>
+  </view>
+</template>
+<script setup lang="uts">
+	import { NativeButton } from "@/uni_modules/native-button";
+	let button : NativeButton | null = null
+
+	//声明属性
+	const props = defineProps<{ text : string }>()
+
+	//声明事件
+	const emit = defineEmits<{
+		(e : "load") : void
+		(e : "buttonTap", event : UniNativeViewEvent) : void
+	}>()
+
+	//声明方法
+	function updateText(value : string) {
+		button?.updateText(value)
+	}
+
+	//监听属性变化
+	watchEffect(() => {
+		const text = props.text
+		updateText(text)
+	})
+
+	//native-view初始化时触发此方法
+	function onviewinit(e : UniNativeViewInitEvent) {
+		//获取UniNativeViewElement 传递给NativeButton对象
+		button = new NativeButton(e.detail.element);
+		updateText(props.text)
+		emit("load")
+	}
+
+	function ontap(e : UniNativeViewEvent) {
+		emit("buttonTap", e)
+	}
+
+	function onUnmounted() {
+		// iOS平台需要主动释放 uts 实例
+		button?.destroy()
+	}
+</script>
+
+```
 
 NativeButton原生对象代码如下：
 

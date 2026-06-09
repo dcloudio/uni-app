@@ -16,100 +16,100 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 5.11 | 4.61 | 5.0 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| name | string | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
+| name | string | "input" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
 | disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否禁用 |
-| value | string | "" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 输入框的初始内容 |
-| type | none \| search \| email \| url \| text \| number \| idcard \| digit \| tel \| safe-password \| nickname \| decimal \| numeric | "text" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | input的类型 |
+| value | string \| number | "" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 输入框的初始内容 |
+| type | string | "text" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | input的类型 |
 | password | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否是密码类型 |
 | placeholder | string | "" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 输入框为空时占位符 |
 | placeholder-style | string | "" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定 placeholder 的样式 |
 | placeholder-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定 placeholder 的样式类 |
-| maxlength | number | "不限制长度" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 最大输入长度，0和正数为合法值，非法值的时候不限制最大长度 |
-| cursor-spacing | number | 0 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x; HarmonyOS(Vapor): x | 指定光标与键盘的距离，单位 px 。取 input 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离 |
+| maxlength | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 最大输入长度，0和正数为合法值，非法值的时候不限制最大长度 |
+| cursor-spacing | number | 0 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指定光标与键盘的距离，单位 px 。取 input 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离 |
 | cursor-color | string([string.ColorString](/uts/data-type.md#ide-string)) | "" | Web: 4.0; 微信小程序: 4.41; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定光标颜色 |
 | auto-focus | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 自动获取焦点，与`focus`属性对比，此属性只会首次生效。 |
 | focus | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 获取焦点 |
-| confirm-type | send \| search \| next \| go \| done | "done" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置键盘右下角按钮的文字，仅在 type为text 时生效。 |
+| confirm-type | string | "done" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置键盘右下角按钮的文字，仅在 type为text 时生效。 |
 | confirm-hold | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 点击键盘右下角按钮时是否保持键盘不收起 |
 | cursor | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定focus时的光标位置 |
 | selection-start | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 光标起始位置，自动聚集时有效，需与selection-end搭配使用 |
 | selection-end | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 光标结束位置，自动聚集时有效，需与selection-satrt搭配使用 |
-| adjust-position | boolean | true | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 键盘弹起时，是否自动上推页面 |
-| ~~inputmode~~ | none \| text \| decimal \| numeric \| tel \| search \| email \| url | "text" | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 是一个枚举属性，它提供了用户在编辑元素或其内容时可能输入的数据类型的提示。在符合条件的高版本webview里，uni-app的 web 和 app-vue 平台中可使用本属性。(自 5.0+ 废弃，推荐使用 type，同时配置以 inputmode 为准) |
-| text-content-type | string | - | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 文本区域的语义，根据类型自动填充 |
-| hold-keyboard | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | focus时，点击页面的时候不收起键盘 |
-| safe-password-cert-path | string | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 安全键盘加密公钥的路径，只支持包内路径 |
-| safe-password-length | number | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 安全键盘输入密码长度 |
-| safe-password-time-stamp | number | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 安全键盘加密时间戳 |
-| safe-password-nonce | string | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 安全键盘加密盐值 |
-| safe-password-salt | string | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 安全键盘计算 hash 盐值，若指定custom-hash 则无效 |
-| safe-password-custom-hash | string | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 安全键盘计算 hash 的算法表达式 |
-| random-number | boolean | - | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 当 type 为 number, digit, idcard 数字键盘是否随机排列 |
-| controlled | boolean | - | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 是否为受控组件。为 true 时，value 内容会完全受 setData 控制 |
-| always-system | boolean | - | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 是否强制使用系统键盘和 Web-view 创建的 input 元素。为 true 时，confirm-type、confirm-hold 可能失效 |
-| always-embed | boolean | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 强制 input 处于同层状态，默认 focus 时 input 会切到非同层状态 (仅在 iOS 下生效) |
-| @input | (event: [UniInputEvent](#uniinputevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 当键盘输入时，触发input事件，event.detail = {value, cursor}，处理函数可以直接 return 一个字符串，将替换输入框的内容。 |
-| @focus | (event: [UniInputFocusEvent](#uniinputfocusevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度 |
-| @blur | (event: [UniInputBlurEvent](#uniinputblurevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 输入框失去焦点时触发，event.detail = {value: value} |
-| @keyboardheightchange | (event: [UniInputKeyboardHeightChangeEvent](#uniinputkeyboardheightchangeevent)) => void | - | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 键盘高度发生变化的时候触发此事件，event.detail = {height: height, duration: duration} |
-| @change | (event: [UniInputChangeEvent](#uniinputchangeevent)) => void | - | Web: x; 微信小程序: 4.41; Android: 4.73; iOS: 4.73; HarmonyOS: 4.73; HarmonyOS(Vapor): - | 非聚焦状态内容改变时触发（仅组件失去焦点时且用户输入改变内容才触发），event.detail = {value: value} |
-| @confirm | (event: [UniInputConfirmEvent](#uniinputconfirmevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 点击完成按钮时触发，event.detail = {value: value} |
-| @nicknamereview | eventhandle | - | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | *(eventhandle)*<br/>用户昵称审核完毕后触发，仅在 type 为 "nickname" 时有效，event.detail = { pass, timeout } |
+| adjust-position | boolean | true | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 键盘弹起时，是否自动上推页面 |
+| ~~inputmode~~ | none \| text \| decimal \| numeric \| tel \| search \| email \| url | "text" | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 是一个枚举属性，它提供了用户在编辑元素或其内容时可能输入的数据类型的提示。在符合条件的高版本webview里，uni-app的 web 和 app-vue 平台中可使用本属性。(自 5.0+ 废弃，推荐使用 type，同时配置以 inputmode 为准) |
+| text-content-type | string |   | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 文本区域的语义，根据类型自动填充 |
+| hold-keyboard | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | focus时，点击页面的时候不收起键盘 |
+| safe-password-cert-path | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 安全键盘加密公钥的路径，只支持包内路径 |
+| safe-password-length | number |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 安全键盘输入密码长度 |
+| safe-password-time-stamp | number |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 安全键盘加密时间戳 |
+| safe-password-nonce | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 安全键盘加密盐值 |
+| safe-password-salt | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 安全键盘计算 hash 盐值，若指定custom-hash 则无效 |
+| safe-password-custom-hash | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 安全键盘计算 hash 的算法表达式 |
+| random-number | boolean |   | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 当 type 为 number, digit, idcard 数字键盘是否随机排列 |
+| controlled | boolean |   | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 是否为受控组件。为 true 时，value 内容会完全受 setData 控制 |
+| always-system | boolean |   | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 是否强制使用系统键盘和 Web-view 创建的 input 元素。为 true 时，confirm-type、confirm-hold 可能失效 |
+| always-embed | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 强制 input 处于同层状态，默认 focus 时 input 会切到非同层状态 (仅在 iOS 下生效) |
+| @input | (event: [UniInputEvent](#uniinputevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 当键盘输入时，触发input事件，event.detail = {value, cursor}，处理函数可以直接 return 一个字符串，将替换输入框的内容。 |
+| @focus | (event: [UniInputFocusEvent](#uniinputfocusevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度 |
+| @blur | (event: [UniInputBlurEvent](#uniinputblurevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 输入框失去焦点时触发，event.detail = {value: value} |
+| @keyboardheightchange | (event: [UniInputKeyboardHeightChangeEvent](#uniinputkeyboardheightchangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 键盘高度发生变化的时候触发此事件，event.detail = {height: height, duration: duration} |
+| @change | (event: [UniInputChangeEvent](#uniinputchangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.73; iOS: 4.73; HarmonyOS: 4.73 | 非聚焦状态内容改变时触发（仅组件失去焦点时且用户输入改变内容才触发），event.detail = {value: value} |
+| @confirm | (event: [UniInputConfirmEvent](#uniinputconfirmevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 点击完成按钮时触发，event.detail = {value: value} |
+| @nicknamereview | eventhandle |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(eventhandle)*<br/>用户昵称审核完毕后触发，仅在 type 为 "nickname" 时有效，event.detail = { pass, timeout } |
 
 #### type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| none | Web: 5.0; 微信小程序: x; Android: 4.73; iOS: 4.73; HarmonyOS: x; HarmonyOS(Vapor): - | 获取焦点时不显示软键盘 |
-| search | Web: 5.0; 微信小程序: x; Android: 4.73; iOS: 4.73; HarmonyOS: 4.73; HarmonyOS(Vapor): - | 为搜索输入优化的虚拟键盘 |
-| email | Web: 5.0; 微信小程序: x; Android: 4.73; iOS: 4.73; HarmonyOS: 4.73; HarmonyOS(Vapor): - | 为邮件地址输入优化的虚拟键盘 |
-| url | Web: 5.0; 微信小程序: x; Android: 4.73; iOS: 4.73; HarmonyOS: 4.73; HarmonyOS(Vapor): - | 为网址输入优化的虚拟键盘 |
-| text | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 文本输入键盘 |
-| number | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 数字输入键盘 |
-| idcard | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 身份证输入键盘 |
-| digit | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 带小数点数字输入键盘 |
-| tel | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 电话输入键盘 |
-| safe-password | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 密码安全输入键盘 |
-| nickname | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 昵称输入键盘 |
-| decimal | Web: 5.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 小数输入键盘，包含数字和分隔符（通常是“ . ”或者“ , ”），设备可能也可能不显示减号键。 |
-| numeric | Web: 5.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 数字输入键盘，所需要的就是 0 到 9 的数字，设备可能也可能不显示减号键。 |
+| none | Web: 5.0; 微信小程序: x; Android: 4.73; iOS: 4.73; HarmonyOS 系统版本: x; HarmonyOS: 5.08; HarmonyOS(Vapor): 5.08 | 获取焦点时不显示软键盘 |
+| search | Web: 5.0; 微信小程序: x; Android: 4.73; iOS: 4.73; HarmonyOS 系统版本: x; HarmonyOS: 4.73 | 为搜索输入优化的虚拟键盘 |
+| email | Web: 5.0; 微信小程序: x; Android: 4.73; iOS: 4.73; HarmonyOS 系统版本: x; HarmonyOS: 4.73 | 为邮件地址输入优化的虚拟键盘 |
+| url | Web: 5.0; 微信小程序: x; Android: 4.73; iOS: 4.73; HarmonyOS 系统版本: x; HarmonyOS: 4.73 | 为网址输入优化的虚拟键盘 |
+| text | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 文本输入键盘 |
+| number | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 数字输入键盘 |
+| idcard | Web: 4.0; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 身份证输入键盘 |
+| digit | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 带小数点数字输入键盘 |
+| tel | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 电话输入键盘 |
+| safe-password | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 密码安全输入键盘 |
+| nickname | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 昵称输入键盘 |
+| decimal | Web: 5.0; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 小数输入键盘，包含数字和分隔符（通常是“ . ”或者“ , ”），设备可能也可能不显示减号键。 |
+| numeric | Web: 5.0; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 数字输入键盘，所需要的就是 0 到 9 的数字，设备可能也可能不显示减号键。 |
 
 #### confirm-type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| send | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 发送 |
-| search | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: -; HarmonyOS(Vapor): - | 搜索 |
-| next | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: -; HarmonyOS(Vapor): - | 下一个 |
-| go | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: -; HarmonyOS(Vapor): - | 前往 |
-| done | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: -; HarmonyOS(Vapor): - | 完成 |
+| send | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 发送 |
+| search | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 搜索 |
+| next | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 下一个 |
+| go | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 前往 |
+| done | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 完成 |
 
 #### inputmode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| none | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 无虚拟键盘。在应用程序或者站点需要实现自己的键盘输入控件时很有用。 |
-| text | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 使用用户本地区域设置的标准文本输入键盘。 |
-| decimal | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 小数输入键盘，包含数字和分隔符（通常是“ . ”或者“ , ”），设备可能也可能不显示减号键。 |
-| numeric | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 数字输入键盘，所需要的就是 0 到 9 的数字，设备可能也可能不显示减号键。 |
-| tel | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 电话输入键盘，包含 0 到 9 的数字、星号（*）和井号（#）键。表单输入里面的电话输入通常应该使用 \<input type="tel"\> 。 |
-| search | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 为搜索输入优化的虚拟键盘，比如，返回键可能被重新标记为“搜索”，也可能还有其他的优化。 |
-| email | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 为邮件地址输入优化的虚拟键盘，通常包含"@"符号和其他优化。表单里面的邮件地址输入应该使用 \<input type="email"\> 。 |
-| url | Web: 4.0; 微信小程序: -; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): - | 为网址输入优化的虚拟键盘，比如，“/”键会更加明显、历史记录访问等。表单里面的网址输入通常应该使用 \<input type="url"\> 。 |
+| none | Web: 4.0; Android: x; iOS: x | 无虚拟键盘。在应用程序或者站点需要实现自己的键盘输入控件时很有用。 |
+| text | Web: 4.0; Android: x; iOS: x | 使用用户本地区域设置的标准文本输入键盘。 |
+| decimal | Web: 4.0; Android: x; iOS: x | 小数输入键盘，包含数字和分隔符（通常是“ . ”或者“ , ”），设备可能也可能不显示减号键。 |
+| numeric | Web: 4.0; Android: x; iOS: x | 数字输入键盘，所需要的就是 0 到 9 的数字，设备可能也可能不显示减号键。 |
+| tel | Web: 4.0; Android: x; iOS: x | 电话输入键盘，包含 0 到 9 的数字、星号（*）和井号（#）键。表单输入里面的电话输入通常应该使用 \<input type="tel"\> 。 |
+| search | Web: 4.0; Android: x; iOS: x | 为搜索输入优化的虚拟键盘，比如，返回键可能被重新标记为“搜索”，也可能还有其他的优化。 |
+| email | Web: 4.0; Android: x; iOS: x | 为邮件地址输入优化的虚拟键盘，通常包含"@"符号和其他优化。表单里面的邮件地址输入应该使用 \<input type="email"\> 。 |
+| url | Web: 4.0; Android: x; iOS: x | 为网址输入优化的虚拟键盘，比如，“/”键会更加明显、历史记录访问等。表单里面的网址输入通常应该使用 \<input type="url"\> 。 |
 
 #### text-content-type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| oneTimeCode | Web: x; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): - | 一次性验证码 |
+| oneTimeCode | Web: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 一次性验证码 |
 
 
 ### 事件
@@ -125,15 +125,15 @@ UniInputEvent -- Extends --> UniEvent
 ##### UniInputEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniInputEventDetail** | 是 | - | - | - |
+| detail | **UniInputEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | string | 是 | - | - | 输入框内容 |
-| cursor | number | 是 | - | - | 光标的位置 |
-| keyCode | number | 是 | - | - | 输入字符的Unicode值 |
+| value | string | 是 |  |   | 输入框内容 |
+| cursor | number | 是 |  |   | 光标的位置 |
+| keyCode | number | 是 |  |   | 输入字符的Unicode值 |
 
 
 #### UniInputFocusEvent
@@ -148,14 +148,14 @@ UniInputFocusEvent -- Extends --> UniEvent
 ##### UniInputFocusEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniInputFocusEventDetail** | 是 | - | - | - |
+| detail | **UniInputFocusEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| height | number | 是 | - | Web: x; 微信小程序: -; Android: 3.9; iOS: 4.11; HarmonyOS: -; HarmonyOS(Vapor): - | 键盘高度 |
-| value | string | 是 | - | - | 输入框内容 |
+| height | number | 是 |  | Web: x; Android: 3.9; iOS: 4.11 | 键盘高度 |
+| value | string | 是 |  |   | 输入框内容 |
 
 
 #### UniInputBlurEvent
@@ -170,14 +170,14 @@ UniInputBlurEvent -- Extends --> UniEvent
 ##### UniInputBlurEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniInputBlurEventDetail** | 是 | - | - | - |
+| detail | **UniInputBlurEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | string | 是 | - | - | 输入框内容 |
-| cursor | number | 是 | - | - | 选择区域的起始位置 |
+| value | string | 是 |  |   | 输入框内容 |
+| cursor | number | 是 |  |   | 选择区域的起始位置 |
 
 
 #### UniInputKeyboardHeightChangeEvent
@@ -192,14 +192,14 @@ UniInputKeyboardHeightChangeEvent -- Extends --> UniEvent
 ##### UniInputKeyboardHeightChangeEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniInputKeyboardHeightChangeEventDetail** | 是 | - | - | - |
+| detail | **UniInputKeyboardHeightChangeEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| height | number | 是 | - | - | 键盘高度 |
-| duration | number | 是 | - | - | 持续时间 |
+| height | number | 是 |  |   | 键盘高度 |
+| duration | number | 是 |  |   | 持续时间 |
 
 
 #### UniInputChangeEvent
@@ -214,13 +214,13 @@ UniInputChangeEvent -- Extends --> UniEvent
 ##### UniInputChangeEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniInputChangeEventDetail** | 是 | - | - | - |
+| detail | **UniInputChangeEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | string | 是 | - | - | 输入框内容 |
+| value | string | 是 |  |   | 输入框内容 |
 
 
 #### UniInputConfirmEvent
@@ -235,13 +235,13 @@ UniInputConfirmEvent -- Extends --> UniEvent
 ##### UniInputConfirmEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniInputConfirmEventDetail** | 是 | - | - | - |
+| detail | **UniInputConfirmEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | string | 是 | - | - | 输入框内容 |
+| value | string | 是 |  |   | 输入框内容 |
 
 
 
@@ -329,6 +329,10 @@ if (view != null && view instanceof UITextField) {
           <input id="uni-input-type-number" class="uni-input" type="number" placeholder="数字输入键盘" />
         </view>
         <view class="input-wrapper">
+          <input id="uni-input-type-number-password-false" class="uni-input" type="number" :password="false"
+            :focus="data.numberPasswordFalseFocus" placeholder="type=number password=false" />
+        </view>
+        <view class="input-wrapper">
           <input id="uni-input-type-digit" class="uni-input" type="digit" placeholder="带小数点的数字输入键盘" />
         </view>
         <view class="input-wrapper">
@@ -345,7 +349,7 @@ if (view != null && view instanceof UITextField) {
           <input id="uni-input-type-url" class="uni-input" type="url" placeholder="url输入键盘" />
         </view>
         <view class="input-wrapper">
-          <input id="uni-input-type-none" class="uni-input" type="none" placeholder="聚焦但不弹出键盘" />
+          <input id="uni-input-type-none" class="uni-input" type="none" :focus="data.typeNoneFocus" placeholder="聚焦但不弹出键盘" />
         </view>
         <!-- #endif -->
       </view>
@@ -377,8 +381,12 @@ if (view != null && view instanceof UITextField) {
             placeholder="占位符文字颜色为红色" />
         </view>
         <view class="input-wrapper">
-          <input id="uni-input-placeholder2" class="uni-input" :placeholder-class="data.inputPlaceHolderClass"
-            placeholder="占位符字体大小为10px" />
+          <input id="uni-input-placeholder-class-dynamic" class="uni-input" :placeholder-class="data.inputPlaceHolderClass"
+            :placeholder="`占位符字体大小为${data.inputPlaceHolderClass == '' ? '15px' : '10px'}`" />
+        </view>
+        <button @click="togglePlaceholderClass">切换 placeholder-class</button>
+        <view class="input-wrapper">
+          <input class="uni-input" placeholder="占位符字体大小为15px" />
         </view>
         <view class="input-wrapper">
           <input id="uni-input-placeholder3" class="uni-input" placeholder-class=""
@@ -389,7 +397,7 @@ if (view != null && view instanceof UITextField) {
             value="不设置placeholder只设置placeholder-style" />
         </view>
         <view class="input-wrapper">
-          <input id="uni-input-placeholder2" style="font-family: AlimamaDaoLiTiOTF;font-weight: bold;text-align: right;" class="uni-input" :placeholder-style="data.placeholderStyle"
+          <input id="uni-input-placeholder-align" style="font-family: AlimamaDaoLiTiOTF;font-weight: bold;text-align: right;" class="uni-input" :placeholder-style="data.placeholderStyle"
             placeholder="占位符以及内容右对齐" />
         </view>
       </view>
@@ -696,6 +704,24 @@ if (view != null && view instanceof UITextField) {
         <input class="input-all-styles" value="样式效果：文本颜色深蓝色、字号16px、字重400、文本居左对齐；外边距10px、内边距10px；圆角8px；浅蓝色渐变背景、蓝色边框、透明度70%、阴影效果。" />
       </view>
 
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">font-size:30px</text>
+        </view>
+        <view class="input-wrapper">
+          <input style="border: 1px solid #ccc;border-radius: 4px;font-size:30px" placeholder="请输入..." value="font-size 超出默认高度" />
+        </view>
+      </view>
+
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">color: green</text>
+        </view>
+        <view class="input-wrapper">
+          <input style="border: 1px solid #ccc;border-radius: 4px;color: green;" placeholder="请输入..." value="字体颜色为绿色" />
+        </view>
+      </view>
+
       <!-- 保证这个示例在页面底部，添加新的示例时请放在上面 -->
       <navigator url="/pages/component/input/input-performance" style="margin-top: 10px;">
         <button type="primary">
@@ -747,6 +773,8 @@ if (view != null && view instanceof UITextField) {
     triggerFocus: boolean;
     triggerBlur: boolean;
     showTypeNoneAndFocusCase: boolean;
+    typeNoneFocus: boolean;
+    numberPasswordFalseFocus: boolean;
   }
 
   // 使用reactive避免ref数据在自动化测试中无法访问
@@ -788,8 +816,14 @@ if (view != null && view instanceof UITextField) {
     syncDisplayValue: '',
     triggerFocus: false,
     triggerBlur: false,
-    showTypeNoneAndFocusCase: false
+    showTypeNoneAndFocusCase: false,
+    typeNoneFocus: false,
+    numberPasswordFalseFocus: false
   } as DataType)
+
+  const togglePlaceholderClass = () => {
+    data.inputPlaceHolderClass = data.inputPlaceHolderClass == "uni-input-placeholder-class" ? "" : "uni-input-placeholder-class"
+  }
 
   const inputFocusKeyBoardChange = (e : UniInputKeyboardHeightChangeEvent) => {
     data.inputFocusKeyBoardChangeValue = e.detail.height > 50
@@ -1061,3 +1095,5 @@ web平台的inputmode的浏览器兼容性如下： Chrome >= 66、Edge >= 79、
 - 如需模拟输入框，比如一些验证码输入框、连续扫码，在插件市场搜索[模拟输入框](https://ext.dcloud.net.cn/search?q=%E6%A8%A1%E6%8B%9F%E8%BE%93%E5%85%A5%E6%A1%86&orderBy=Relevance&uni-appx=1)
 - 如需自定义软键盘，比如车牌键盘，在插件市场搜索[自定义键盘](https://ext.dcloud.net.cn/search?q=%E8%87%AA%E5%AE%9A%E4%B9%89%E9%94%AE%E7%9B%98&orderBy=Relevance&uni-appx=1)
 - 如需hideKeyBoard隐藏软键盘，在插件市场搜索[hideKeyBoard](https://ext.dcloud.net.cn/search?q=hideKeyBoard&orderBy=Relevance&uni-appx=1)
+- App平台蒸汽模式样式设置暂不支持 css 变量。
+- 所有 boolean 类型的属性，只有设置为布尔类型的 false 才会关闭该属性，其他任何值（包括字符串 "false"）都会被当做 true 处理（微信小程序中空字符串会被视为 false）。

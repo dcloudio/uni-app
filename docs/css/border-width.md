@@ -5,11 +5,17 @@
 border-width 属性用于设置元素边框的宽度。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -29,9 +35,9 @@ border-width: <line-width>{1,4};
 ### border-width 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| thin | Web: 4.0; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 细边线，App平台对应值为1px |
-| medium | Web: 4.0; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 中等边线，App平台对应值为3px |
-| thick | Web: 4.0; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 宽边线，App平台对应值为5px |
+| thin | Web: 4.0; Android: 3.93; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 细边线，App平台对应值为1px |
+| medium | Web: 4.0; Android: 3.93; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 中等边线，App平台对应值为3px |
+| thick | Web: 4.0; Android: 3.93; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 宽边线，App平台对应值为5px |
 
 
 ### 默认值 @default-value 
@@ -265,10 +271,10 @@ border-width: <line-width>{1,4};
     <view class="test-container">
       <view class="test-item">
         <text class="uni-subtitle-text">view 组件</text>
-        <text class="uni-info">设置值: {{borderWidth}}</text>
-        <text class="uni-info">获取值: {{borderWidthActual}}</text>
+        <text class="uni-info">设置值: {{data.borderWidth}}</text>
+        <text class="uni-info">获取值: {{data.borderWidthActual}}</text>
         <view class="test-box">
-          <view ref="viewRef" class="common-dynamic test-view" :style="{ borderWidth: borderWidth, borderStyle: 'solid' }">
+          <view ref="viewRef" class="common-dynamic test-view" :style="{ borderWidth: data.borderWidth, borderStyle: 'solid' }">
             <view style="flex-grow: 1;background-color: cyan;"><text>view</text></view>
           </view>
         </view>
@@ -276,20 +282,20 @@ border-width: <line-width>{1,4};
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件</text>
-        <text class="uni-info">设置值: {{borderWidth}}</text>
-        <text class="uni-info">获取值: {{borderWidthActualText}}</text>
+        <text class="uni-info">设置值: {{data.borderWidth}}</text>
+        <text class="uni-info">获取值: {{data.borderWidthActualText}}</text>
         <view class="test-box">
           <text ref="textRef" class="common-dynamic test-text"
-            :style="{ borderWidth: borderWidth, borderStyle: 'solid' }">text</text>
+            :style="{ borderWidth: data.borderWidth, borderStyle: 'solid' }">text</text>
         </view>
       </view>
 
       <view class="test-item">
         <text class="uni-subtitle-text">image 组件</text>
-        <text class="uni-info">设置值: {{borderWidth}}</text>
-        <text class="uni-info">获取值: {{borderWidthActualImage}}</text>
+        <text class="uni-info">设置值: {{data.borderWidth}}</text>
+        <text class="uni-info">获取值: {{data.borderWidthActualImage}}</text>
         <view class="test-box">
-          <image ref="imageRef" class="common-image test-image" :style="{ borderWidth: borderWidth, borderStyle: 'solid' }"
+          <image ref="imageRef" class="common-image test-image" :style="{ borderWidth: data.borderWidth, borderStyle: 'solid' }"
             src="/static/test-image/logo.png"></image>
         </view>
       </view>
@@ -299,10 +305,10 @@ border-width: <line-width>{1,4};
     <view class="test-container">
       <view class="test-item">
         <text class="uni-subtitle-text">view 组件拍平</text>
-        <text class="uni-info">设置值: {{borderWidth}}</text>
-        <text class="uni-info">获取值: {{borderWidthActualFlat}}</text>
+        <text class="uni-info">设置值: {{data.borderWidth}}</text>
+        <text class="uni-info">获取值: {{data.borderWidthActualFlat}}</text>
         <view class="test-box">
-          <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ borderWidth: borderWidth, borderStyle: 'solid' }"
+          <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ borderWidth: data.borderWidth, borderStyle: 'solid' }"
             flatten>
             <view style="flex-grow: 1;background-color: cyan;"><text>view</text></view>
           </view>
@@ -311,20 +317,20 @@ border-width: <line-width>{1,4};
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件拍平</text>
-        <text class="uni-info">设置值: {{borderWidth}}</text>
-        <text class="uni-info">获取值: {{borderWidthActualTextFlat}}</text>
+        <text class="uni-info">设置值: {{data.borderWidth}}</text>
+        <text class="uni-info">获取值: {{data.borderWidthActualTextFlat}}</text>
         <view class="test-box">
-          <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ borderWidth: borderWidth, borderStyle: 'solid' }"
+          <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ borderWidth: data.borderWidth, borderStyle: 'solid' }"
             flatten>text</text>
         </view>
       </view>
 
       <view class="test-item">
         <text class="uni-subtitle-text">image 组件拍平</text>
-        <text class="uni-info">设置值: {{borderWidth}}</text>
-        <text class="uni-info">获取值: {{borderWidthActualImageFlat}}</text>
+        <text class="uni-info">设置值: {{data.borderWidth}}</text>
+        <text class="uni-info">获取值: {{data.borderWidthActualImageFlat}}</text>
         <view class="test-box">
-          <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ borderWidth: borderWidth, borderStyle: 'solid' }"
+          <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ borderWidth: data.borderWidth, borderStyle: 'solid' }"
             flatten src="/static/test-image/logo.png"></image>
         </view>
       </view>
@@ -334,7 +340,7 @@ border-width: <line-width>{1,4};
       <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
       <enum-data :items="borderWidthEnum" title="border-width 枚举值" @change="radioChangeBorderWidth"
         :compact="true"></enum-data>
-      <input-data :defaultValue="borderWidth" title="border-width 自定义值" type="text"
+      <input-data :defaultValue="data.borderWidth" title="border-width 自定义值" type="text"
         @confirm="inputChangeBorderWidth"></input-data>
     </view>
 
@@ -363,13 +369,15 @@ border-width: <line-width>{1,4};
     { value: 6, name: 'thick' }
   ]
 
-  const borderWidth = ref('5px')
-  const borderWidthActual = ref('')
-  const borderWidthActualText = ref('')
-  const borderWidthActualImage = ref('')
-  const borderWidthActualFlat = ref('')
-  const borderWidthActualTextFlat = ref('')
-  const borderWidthActualImageFlat = ref('')
+  const data = reactive({
+    borderWidth: '5px',
+    borderWidthActual: '',
+    borderWidthActualText: '',
+    borderWidthActualImage: '',
+    borderWidthActualFlat: '',
+    borderWidthActualTextFlat: '',
+    borderWidthActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -378,16 +386,17 @@ border-width: <line-width>{1,4};
   const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    borderWidthActual.value = viewRef.value?.style.getPropertyValue('border-width') ?? ''
-    borderWidthActualFlat.value = viewRefFlat.value?.style.getPropertyValue('border-width') ?? ''
-    borderWidthActualText.value = textRef.value?.style.getPropertyValue('border-width') ?? ''
-    borderWidthActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('border-width') ?? ''
-    borderWidthActualImage.value = imageRef.value?.style.getPropertyValue('border-width') ?? ''
-    borderWidthActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('border-width') ?? ''
+    data.borderWidthActual = viewRef.value?.style.getPropertyValue('border-width') ?? ''
+    data.borderWidthActualFlat = viewRefFlat.value?.style.getPropertyValue('border-width') ?? ''
+    data.borderWidthActualText = textRef.value?.style.getPropertyValue('border-width') ?? ''
+    data.borderWidthActualTextFlat = textRefFlat.value?.style.getPropertyValue('border-width') ?? ''
+    data.borderWidthActualImage = imageRef.value?.style.getPropertyValue('border-width') ?? ''
+    data.borderWidthActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border-width') ?? ''
   }
 
+  const ins = getCurrentInstance()
   const changeBorderWidth = (value : string) => {
-    borderWidth.value = value
+    data.borderWidth = value
     viewRef.value?.style.setProperty('border-width', value)
     viewRefFlat.value?.style.setProperty('border-width', value)
     textRef.value?.style.setProperty('border-width', value)
@@ -397,7 +406,7 @@ border-width: <line-width>{1,4};
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeBorderWidth = (index : number) => {
@@ -416,7 +425,8 @@ border-width: <line-width>{1,4};
   })
 
   defineExpose({
-    radioChangeBorderWidth
+    radioChangeBorderWidth,
+    data
   })
 </script>
 

@@ -5,11 +5,17 @@
 CSS 属性 padding-left 是指一个元素在内边距区域（padding area）中左边的宽度。内边距（padding）是指一个元素的内容和边框之间的区域。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -99,10 +105,10 @@ padding-left: <length> | <percentage>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{paddingLeft}}</text>
-          <text class="uni-info">获取值: {{paddingLeftActual}}</text>
+          <text class="uni-info">设置值: {{data.paddingLeft}}</text>
+          <text class="uni-info">获取值: {{data.paddingLeftActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-dynamic test-view" :style="{ paddingLeft: paddingLeft }">
+            <view ref="viewRef" class="common-dynamic test-view" :style="{ paddingLeft: data.paddingLeft }">
               <view style="flex-grow: 1;background-color: cyan;"><text>view</text></view>
             </view>
           </view>
@@ -110,19 +116,19 @@ padding-left: <length> | <percentage>;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{paddingLeft}}</text>
-          <text class="uni-info">获取值: {{paddingLeftActualText}}</text>
+          <text class="uni-info">设置值: {{data.paddingLeft}}</text>
+          <text class="uni-info">获取值: {{data.paddingLeftActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-dynamic test-text" :style="{ paddingLeft: paddingLeft }">text</text>
+            <text ref="textRef" class="common-dynamic test-text" :style="{ paddingLeft: data.paddingLeft }">text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{paddingLeft}}</text>
-          <text class="uni-info">获取值: {{paddingLeftActualImage}}</text>
+          <text class="uni-info">设置值: {{data.paddingLeft}}</text>
+          <text class="uni-info">获取值: {{data.paddingLeftActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-image test-image" :style="{ paddingLeft: paddingLeft }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image test-image" :style="{ paddingLeft: data.paddingLeft }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -131,10 +137,10 @@ padding-left: <length> | <percentage>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{paddingLeft}}</text>
-          <text class="uni-info">获取值: {{paddingLeftActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.paddingLeft}}</text>
+          <text class="uni-info">获取值: {{data.paddingLeftActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ paddingLeft: paddingLeft }" flatten>
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ paddingLeft: data.paddingLeft }" flatten>
               <view style="flex-grow: 1;background-color: cyan;"><text>view</text></view>
             </view>
           </view>
@@ -142,19 +148,19 @@ padding-left: <length> | <percentage>;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{paddingLeft}}</text>
-          <text class="uni-info">获取值: {{paddingLeftActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.paddingLeft}}</text>
+          <text class="uni-info">获取值: {{data.paddingLeftActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ paddingLeft: paddingLeft }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ paddingLeft: data.paddingLeft }" flatten>text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{paddingLeft}}</text>
-          <text class="uni-info">获取值: {{paddingLeftActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.paddingLeft}}</text>
+          <text class="uni-info">获取值: {{data.paddingLeftActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ paddingLeft: paddingLeft }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ paddingLeft: data.paddingLeft }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -162,7 +168,7 @@ padding-left: <length> | <percentage>;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="paddingLeftEnum" title="padding-left 枚举值" @change="radioChangePaddingLeft" :compact="true"></enum-data>
-        <input-data :defaultValue="paddingLeft" title="padding-left 自定义值" type="text" @confirm="inputChangePaddingLeft"></input-data>
+        <input-data :defaultValue="data.paddingLeft" title="padding-left 自定义值" type="text" @confirm="inputChangePaddingLeft"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -186,13 +192,15 @@ padding-left: <length> | <percentage>;
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const paddingLeft = ref('25px')
-  const paddingLeftActual = ref('')
-  const paddingLeftActualText = ref('')
-  const paddingLeftActualImage = ref('')
-  const paddingLeftActualFlat = ref('')
-  const paddingLeftActualTextFlat = ref('')
-  const paddingLeftActualImageFlat = ref('')
+  const data = reactive({
+    paddingLeft: '25px',
+    paddingLeftActual: '',
+    paddingLeftActualText: '',
+    paddingLeftActualImage: '',
+    paddingLeftActualFlat: '',
+    paddingLeftActualTextFlat: '',
+    paddingLeftActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -210,16 +218,18 @@ padding-left: <length> | <percentage>;
   ]
 
   const getPropertyValues = () => {
-    paddingLeftActual.value = viewRef.value?.style.getPropertyValue('padding-left') ?? ''
-    paddingLeftActualFlat.value = viewRefFlat.value?.style.getPropertyValue('padding-left') ?? ''
-    paddingLeftActualText.value = textRef.value?.style.getPropertyValue('padding-left') ?? ''
-    paddingLeftActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('padding-left') ?? ''
-    paddingLeftActualImage.value = imageRef.value?.style.getPropertyValue('padding-left') ?? ''
-    paddingLeftActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('padding-left') ?? ''
+    data.paddingLeftActual = viewRef.value?.style.getPropertyValue('padding-left') ?? ''
+    data.paddingLeftActualFlat = viewRefFlat.value?.style.getPropertyValue('padding-left') ?? ''
+    data.paddingLeftActualText = textRef.value?.style.getPropertyValue('padding-left') ?? ''
+    data.paddingLeftActualTextFlat = textRefFlat.value?.style.getPropertyValue('padding-left') ?? ''
+    data.paddingLeftActualImage = imageRef.value?.style.getPropertyValue('padding-left') ?? ''
+    data.paddingLeftActualImageFlat = imageRefFlat.value?.style.getPropertyValue('padding-left') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changePaddingLeft = (value: string) => {
-    paddingLeft.value = value
+    data.paddingLeft = value
     viewRef.value?.style.setProperty('padding-left', value)
     viewRefFlat.value?.style.setProperty('padding-left', value)
     textRef.value?.style.setProperty('padding-left', value)
@@ -229,7 +239,7 @@ padding-left: <length> | <percentage>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangePaddingLeft = (index: number) => {
@@ -248,7 +258,8 @@ padding-left: <length> | <percentage>;
   })
 
   defineExpose({
-    radioChangePaddingLeft
+    radioChangePaddingLeft,
+    data
   })
 </script>
 

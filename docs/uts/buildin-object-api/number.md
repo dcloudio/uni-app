@@ -12,7 +12,7 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | any | 否 | - | - | - | 
+| value | any | 否 |  |   | - | 
 
 
 **返回值**
@@ -24,15 +24,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | - | x | - | - |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | x |  |  |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| x | - | - |
+| Android UTS 插件 |
+| :- |
+| x |
 
 
 <!-- UTSJSON.Number.Constructor.tutorial -->
@@ -56,15 +56,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | x | 4.61 | 3.9 | - | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | x | x | 4.61 | 3.9 |  | 4.61 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | - | √ |
+| Android UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- |
+| 3.9 | √ |
 
 
 <!-- UTSJSON.Number.MAX_VALUE.tutorial -->
@@ -82,15 +82,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | x | 4.61 | 3.9 | - | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | x | x | 4.61 | 3.9 |  | 4.61 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | - | √ |
+| Android UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- |
+| 3.9 | √ |
 
 
 <!-- UTSJSON.Number.MIN_VALUE.tutorial -->
@@ -108,15 +108,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | x | 4.61 | 3.9 | - | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | x | x | 4.61 | 3.9 |  | 4.61 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | - | √ |
+| Android UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- |
+| 3.9 | √ |
 
 
 <!-- UTSJSON.Number.NaN.tutorial -->
@@ -134,15 +134,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Web | Android | iOS 系统版本 | iOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | x | - | 3.9 | - | - |
+| 4.0 | 3.9 | x | x | 3.9 |  |  |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | - | - |
+| Android UTS 插件 |
+| :- |
+| 3.9 |
 
 
 <!-- UTSJSON.Number.NEGATIVE_INFINITY.tutorial -->
@@ -160,15 +160,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | x | 4.61 | 3.9 | - | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | x | x | 4.61 | 3.9 |  | 4.61 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.9 | - | √ |
+| Android UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- |
+| 3.9 | √ |
 
 
 <!-- UTSJSON.Number.POSITIVE_INFINITY.tutorial -->
@@ -183,7 +183,7 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | Int \| Float \| Double \| Int64 \| Int32 \| Int16 \| Int8 \| UInt \| UInt64 \| UInt32 \| UInt16 \| UInt8 \| Byte \| Short \| Long | 是 | - | - | 必填。一个 Swift 或者 Kotlin 专有数字类型的值。其中 Swift 平台 支持 Int, Float, Double, Int64, Int32, Int16, Int8, UInt,  UInt64, UInt32, UInt16, UInt8。Kotlin 平台支持  Int, Float, Double, Byte, Short, Long | 
+| value | Int \| Float \| Double \| Int64 \| Int32 \| Int16 \| Int8 \| UInt \| UInt64 \| UInt32 \| UInt16 \| UInt8 \| Byte \| Short \| Long | 是 |  |   | 必填。一个 Swift 或者 Kotlin 专有数字类型的值。其中 Swift 平台 支持 Int, Float, Double, Int64, Int32, Int16, Int8, UInt,  UInt64, UInt32, UInt16, UInt8。Kotlin 平台支持  Int, Float, Double, Byte, Short, Long | 
 
 
 **返回值**
@@ -233,7 +233,7 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| fractionDigits | number | 否 | - | - | 小数点后数字的个数；介于 0 到 20（包括）之间，实现环境可能支持更大范围。如果忽略该参数，则默认为 0。 | 
+| fractionDigits | number | 否 |  |   | 小数点后数字的个数；介于 0 到 20（包括）之间，实现环境可能支持更大范围。如果忽略该参数，则默认为 0。 | 
 
 
 **返回值**
@@ -306,7 +306,7 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| radix | number | 否 | - | - | 指定要用于数字到字符串的转换的基数 (从 2 到 36)。如果未指定 radix 参数，则默认值为 10。 | 
+| radix | number | 否 |  |   | 指定要用于数字到字符串的转换的基数 (从 2 到 36)。如果未指定 radix 参数，则默认值为 10。 | 
 
 
 **返回值**
@@ -393,7 +393,7 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| fractionDigits | number | 否 | - | - | 可选。一个整数，用来指定小数点后有几位数字。默认情况下用尽可能多的位数来显示数字。如果 fractionDigits 太小或太大将会抛出该错误。必须介于 0 和 20（包括 20）之间。 | 
+| fractionDigits | number | 否 |  |   | 可选。一个整数，用来指定小数点后有几位数字。默认情况下用尽可能多的位数来显示数字。如果 fractionDigits 太小或太大将会抛出该错误。必须介于 0 和 20（包括 20）之间。 | 
 
 
 **返回值**
@@ -407,15 +407,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | - | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x |  | 4.61 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| x | - | √ |
+| Android UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- |
+| x | √ |
 
 
 <!-- UTSJSON.Number.toExponential.tutorial -->
@@ -427,7 +427,7 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| precision | number | 否 | - | - | 一个用来指定有效数个数的整数。 必须介于 1 到 21 之间。 | 
+| precision | number | 否 |  |   | 一个用来指定有效数个数的整数。 必须介于 1 到 21 之间。 | 
 
 
 **返回值**
@@ -464,15 +464,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | - | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x |  | 4.61 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| x | - | √ |
+| Android UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- |
+| x | √ |
 
 
 <!-- UTSJSON.Number.toPrecision.tutorial -->
@@ -711,15 +711,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| Web | Android | iOS 系统版本 | iOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- |
-| x | 3.90 | x | - | 3.90 | - | - |
+| x | 3.90 | x | x | 3.90 |  |  |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | - | - |
+| Android UTS 插件 |
+| :- |
+| √ |
 
 
 ### toLong()
@@ -748,15 +748,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 3.90 | x | 4.61 | 3.90 | - | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | 3.90 | x | x | 4.61 | 3.90 |  | 4.61 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | - | √ |
+| Android UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- |
+| √ | √ |
 
 
 ### toShort()
@@ -774,15 +774,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 3.90 | x | 4.61 | 3.90 | - | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | 3.90 | x | x | 4.61 | 3.90 |  | 4.61 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | - | √ |
+| Android UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- |
+| √ | √ |
 
 
 ### toUShort()
@@ -800,15 +800,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 3.90 | x | 4.61 | 3.90 | - | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | 3.90 | x | x | 4.61 | 3.90 |  | 4.61 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | - | √ |
+| Android UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- |
+| √ | √ |
 
 
 ### toULong()
@@ -826,15 +826,15 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 3.90 | x | 4.61 | 3.90 | - | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | 3.90 | x | x | 4.61 | 3.90 |  | 4.61 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | - | √ |
+| Android UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- |
+| √ | √ |
 
 
 ### toInt64()
@@ -852,9 +852,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.61 | x | 4.11 | 4.61 |
+| Web | Android 系统版本 | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 | x | 4.11 | 4.61 |
 
 
 **uni-app 兼容性**
@@ -878,9 +878,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.61 | x | 4.11 | 4.61 |
+| Web | Android 系统版本 | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 | x | 4.11 | 4.61 |
 
 
 **uni-app 兼容性**
@@ -904,9 +904,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.61 | x | 4.11 | 4.61 |
+| Web | Android 系统版本 | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 | x | 4.11 | 4.61 |
 
 
 **uni-app 兼容性**
@@ -930,9 +930,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.61 | x | 4.11 | 4.61 |
+| Web | Android 系统版本 | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 | x | 4.11 | 4.61 |
 
 
 **uni-app 兼容性**
@@ -957,9 +957,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.61 | x | 4.11 | 4.61 |
+| Web | Android 系统版本 | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 | x | 4.11 | 4.61 |
 
 
 **uni-app 兼容性**
@@ -983,9 +983,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.61 | x | 4.11 | 4.61 |
+| Web | Android 系统版本 | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 | x | 4.11 | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1009,9 +1009,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.61 | x | 4.11 | 4.61 |
+| Web | Android 系统版本 | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 | x | 4.11 | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1035,9 +1035,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | 4.61 | x | 4.11 | 4.61 |
+| Web | Android 系统版本 | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 | x | 4.11 | 4.61 |
 
 
 **uni-app 兼容性**

@@ -5,11 +5,17 @@
 align-content 属性用于在 Flex 弹性布局中设置多行（或多列）作为一个整体在交叉轴方向的分布方式。注意：如果子元素只有一行（或一列）该属性不起作用，需配合 flex-wrap: wrap 使用。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,12 +34,12 @@ align-content: normal | <baseline-position> | <content-distribution> | <overflow
 ### align-content 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| center | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 所有行朝向容器的中心填充。每行互相紧挨，相对于容器居中对齐。容器的交叉轴起点边和第一行的距离相等于容器的交叉轴终点边和最后一行的距离。 |
-| flex-start | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 所有行从容器交叉轴起点开始填充。第一行的交叉轴起点边和容器的交叉轴起点边对齐。接下来的每一行紧跟前一行。 |
-| flex-end | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 所有行从容器交叉轴末尾开始填充。最后一行的交叉轴终点和容器的交叉轴终点对齐，同时所有后续行与前一个对齐。 |
-| space-between | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 所有行在容器中平均分布，相邻两行间距相等。容器的交叉轴起点边和终点边分别与第一行和最后一行的边对齐。 |
-| space-around | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 所有行在容器中平均分布，相邻两行间距相等。容器的交叉轴起点边和终点边分别与第一行和最后一行的距离是相邻两行间距的一半。 |
-| stretch | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 拉伸所有行来填满剩余空间，剩余空间平均地分配给每一行。 |
+| center | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 所有行朝向容器的中心填充。每行互相紧挨，相对于容器居中对齐。容器的交叉轴起点边和第一行的距离相等于容器的交叉轴终点边和最后一行的距离。 |
+| flex-start | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 所有行从容器交叉轴起点开始填充。第一行的交叉轴起点边和容器的交叉轴起点边对齐。接下来的每一行紧跟前一行。 |
+| flex-end | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 所有行从容器交叉轴末尾开始填充。最后一行的交叉轴终点和容器的交叉轴终点对齐，同时所有后续行与前一个对齐。 |
+| space-between | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 所有行在容器中平均分布，相邻两行间距相等。容器的交叉轴起点边和终点边分别与第一行和最后一行的边对齐。 |
+| space-around | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 所有行在容器中平均分布，相邻两行间距相等。容器的交叉轴起点边和终点边分别与第一行和最后一行的距离是相邻两行间距的一半。 |
+| stretch | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 拉伸所有行来填满剩余空间，剩余空间平均地分配给每一行。 |
 
 
 ### 默认值 @default-value 
@@ -234,10 +240,10 @@ align-content: normal | <baseline-position> | <content-distribution> | <overflow
         <!-- 普通版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">align-content</text>
-          <text class="uni-info">设置值: {{alignContent}}</text>
-          <text class="uni-info">获取值: {{alignContentActual}}</text>
+          <text class="uni-info">设置值: {{data.alignContent}}</text>
+          <text class="uni-info">获取值: {{data.alignContentActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="test-flex-container test-view" :style="{ alignContent: alignContent }">
+            <view ref="viewRef" class="test-flex-container test-view" :style="{ alignContent: data.alignContent }">
               <view class="test-item-small red"></view>
               <view class="test-item-small green"></view>
               <view class="test-item-small blue"></view>
@@ -251,10 +257,10 @@ align-content: normal | <baseline-position> | <content-distribution> | <overflow
         <!-- 拍平版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">拍平</text>
-          <text class="uni-info">设置值: {{alignContent}}</text>
-          <text class="uni-info">获取值: {{alignContentActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.alignContent}}</text>
+          <text class="uni-info">获取值: {{data.alignContentActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="test-flex-container test-view-flatten" :style="{ alignContent: alignContent }" flatten>
+            <view ref="viewRefFlat" class="test-flex-container test-view-flatten" :style="{ alignContent: data.alignContent }" flatten>
               <view class="test-item-small red"></view>
               <view class="test-item-small green"></view>
               <view class="test-item-small blue"></view>
@@ -269,7 +275,7 @@ align-content: normal | <baseline-position> | <content-distribution> | <overflow
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="alignContentEnum" title="align-content 枚举值" @change="radioChangeAlignContent" :compact="true"></enum-data>
-        <input-data :defaultValue="alignContent" title="align-content 自定义值" type="text" @confirm="inputChangeAlignContent"></input-data>
+        <input-data :defaultValue="data.alignContent" title="align-content 自定义值" type="text" @confirm="inputChangeAlignContent"></input-data>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -290,25 +296,28 @@ align-content: normal | <baseline-position> | <content-distribution> | <overflow
     { value: 6, name: 'stretch' }
   ]
 
-  const alignContent = ref('center')
-  const alignContentActual = ref('')
-  const alignContentActualFlat = ref('')
+  const data = reactive({
+    alignContent: 'center',
+    alignContentActual: '',
+    alignContentActualFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const viewRefFlat = ref(null as UniElement | null)
 
   const getPropertyValues = () => {
-    alignContentActual.value = viewRef.value?.style.getPropertyValue('align-content') ?? ''
-    alignContentActualFlat.value = viewRefFlat.value?.style.getPropertyValue('align-content') ?? ''
+    data.alignContentActual = viewRef.value?.style.getPropertyValue('align-content') ?? ''
+    data.alignContentActualFlat = viewRefFlat.value?.style.getPropertyValue('align-content') ?? ''
   }
 
+  const ins = getCurrentInstance()
   const changeAlignContent = (value: string) => {
-    alignContent.value = value
+    data.alignContent = value
     viewRef.value?.style.setProperty('align-content', value)
     viewRefFlat.value?.style.setProperty('align-content', value)
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeAlignContent = (index: number) => {
@@ -327,7 +336,8 @@ align-content: normal | <baseline-position> | <content-distribution> | <overflow
   })
 
   defineExpose({
-    radioChangeAlignContent
+    radioChangeAlignContent,
+    data
   })
 </script>
 

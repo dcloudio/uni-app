@@ -6,7 +6,7 @@ uni-app x 在 app平台实现了 web css 的子集。
 
 子集并不影响开发者开发出所需的界面，仅是写法上没有那么丰富。
 
-当 uni-app x 编译到 web、小程序等平台时，可以支持 web 的全部 css。同时，**编译器会进行 css 重置**，保证 ucss 这个子集在各端效果的一致性。这也意味着使用uni-app x的web端，和直接在浏览器里写html在默认值处理上有一定的差异。
+当 uni-app x 编译到 web、小程序等平台时，可以支持 web 的全部 css。同时，**编译器会进行 css 重置**，保证 ucss 这个子集在各端效果的一致性。这也意味着使用uni-app x的web端，和直接在浏览器里写html在默认值处理上有一定的差异。[见下](#css-reset)
 
 浏览器、Android原生、iOS原生，都有自己的布局和样式设置系统。
 
@@ -29,7 +29,7 @@ flex是一种清晰易用、高性能、全平台支持的布局。不管web、A
 
 web浏览器默认排版是block。block更适合布局文档，比如论文、新闻、blog文章。而web app，使用flex布局会性能更好。
 
-为了跨平台一致性和性能，uni-app x编译到web时，默认的布局也重置为了flex。
+为了跨平台一致性和性能，uni-app x编译到web时，默认的布局也重置为了flex，且默认为竖向，即`flex-direction: column;`。
 
 如果不了解flex可以参考：[MDN的flex教程](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox)
 
@@ -37,8 +37,6 @@ web浏览器默认排版是block。block更适合布局文档，比如论文、�
 - text组件内部为inline
 - rich-text组件内部为block，适于文档、图文显示
 - waterflow组件内部为grid
-
-uni-app x中页面布局有2个注意事项，[flex方向](#flex-direction) 和 [页面级滚动](#pagescroll)。
 
 ### flex方向 @flex-direction
 
@@ -97,81 +95,7 @@ uni-app x中页面布局有2个注意事项，[flex方向](#flex-direction) 和 
 
 ### 页面级滚动@pagescroll
 
-`web开发`中，页面是必然可以滚动的。当然也可以给某些div设局部滚动。
-
-而`原生开发`中，**页面不能滚动**。如果你需要某个地方滚动，那么要在相应位置放scroll-view或list-view等可滚动组件，在这些组件内部滚动。
-
-如果你想要整页滚动，那么可以在页面最外层套一个scroll-view，看起来就和web开发的页面滚动一样了。
-
-在老版nvue中，如果开发者顶层不是scroll-view，编译器会自动在外面套一层scroll-view，来变相实现页面滚动。\
-但在uvue中，废弃了这个策略。因为开发者的页面情况较复杂，而且vue3支持多个一级组件，之前的策略可能会多给页面套一层不必要的scroll-view。\
-在追求高性能时，多一层scroll-view是不能忍受的。
-
-`uvue的策略`：在新建页面时，提供一个选项，让开发者选择是否需要页面级滚动。如需要则自动在页面代码里template的根节点加一个全屏的scroll-view。如下
-
-> 如果开发者不需要，随时可以自己修改代码。
-
-```html
-<template>
-	<!-- #ifdef APP -->
-	<scroll-view style="flex:1">
-	<!-- #endif -->
-
-	<!-- #ifdef APP -->
-	</scroll-view>
-	<!-- #endif -->
-</template>
-```
-
-因为web平台和基于webview的小程序使用页面滚动更方便，所以自动套在页面顶层的scroll-view写在了[条件编译](https://uniapp.dcloud.net.cn/tutorial/platform.html)里。
-
-> 当然如果你只做app，可以不写条件编译。
-
-这样在web浏览器里就无需多套一层scroll-view，自然的使用浏览器的页面滚动就好了。
-
-尤其在Android webview中，scroll-view其实是可区域滚动的div，滚动区变长后，性能远不如页面滚动。
-
-上述代码中给scroll-view的style设为`flex:1`，意思是铺满剩余空间。设在顶层节点上，意味着铺满屏幕。
-
-当然，如果页面的pages.json里配置使用了原生导航栏，那么页面区整体是在原生导航栏下面。
-
-#### 自定义导航栏
-
-如果开发者想要自定义导航栏，首先在pages.json里对应页面的style里设置`"navigationStyle": "custom"`，关闭原生导航栏。\
-然后编写自定义的导航栏组件[\<uni-navbar-lite>](https://ext.dcloud.net.cn/plugin?id=14618)，那么推荐的页面代码结构为：
-
-```html
-<template>
-	<uni-navbar-lite title="自定义导航栏标题">
-	</uni-navbar-lite>
-	<!-- #ifdef APP -->
-	<scroll-view style="flex:1">
-	<!-- #endif -->
-
-	<!-- #ifdef APP -->
-	</scroll-view>
-	<!-- #endif -->
-</template>
-```
-
-> 注：这里的“原生导航栏”是一个历史沿袭叫法，指配置在pages.json里的导航栏，不属于页面代码区。事实上在uni-app x的app平台里所有界面都是原生的。
-
-#### 页面滚动相关的生命周期、api
-
-在uni-app的规范中，页面滚动有一批相关的生命周期、api，比如：`onPageScroll`、`onReachBottom`、`uni.pageScrollTo()`
-
-在app端，会判断页面根节点是否为scroll-view（不认list-view等其他滚动容器）。
-
-* 如果是，页面滚动相关的生命周期和API继续生效，效果如前。
-* 如果不是scroll-view，全部失效。
-
-> 如果根节点使用了list-view，它也有自己的滚动相关的API和监听事件。详见[list-view](../component/list-view.md)的文档。
-
-#### 页面滚动引起的差异
-
-`uni-app-x` App端无页面滚动，且其根节点高度为从导航栏底部到tabBar顶部。如果在页面根节点的子元素使用`position: absolute;`，页面内部scroll-view滚动时不会改变此元素位置。其他端有页面滚动，如果在页面根节点的子元素使用`position: absolute;`页面滚动会改变此元素的位置。如果有不随页面滚动变化位置的需求建议使用`position: fixed`。
-
-注意：web端需要使用[css安全区变量](common/function.md)使元素不覆盖在navigationBar和tabBar上。
+App平台vdom模式下，页面不可滚动。蒸汽模式，以及其他平台，页面均可滚动。[详见](../page.md#disablescroll)
 
 ## 样式不继承@stylenoextends
 
@@ -179,7 +103,7 @@ web的样式继承，主要是文字样式继承。web的css属性众多，规�
 
 在原生等严谨的应用开发方案中，均是组件搭配该组件的专有属性。容器组件和文本组件分离，属性各自隔离，不可能在容器组件里写文本组件的样式。
 
-在uni-app x中也是，文本必须使用`<text>`组件，`<view>`组件就是容器组件，它的style里不应使用与文本修饰相关的样式，比如文字颜色、大小等。
+在uni-app x中也是，文本必须使用`<text>`组件，`<view>`组件就是容器组件，`<view>`的style里不应使用与文本修饰相关的样式，比如文字颜色、大小等。
 
 如下代码，在web浏览器渲染时，父view的style会影响子text，所以123是红色。
 
@@ -245,7 +169,7 @@ app-uvue的css的“样式不继承”规则，虽然与web有差异，其实只
 app中，设置样式只有内联样式即style属性和class属性这两种方式。它们遵循以下规则：
 
 
-- 内联样式(即style属性)优先级高于class选择器 
+- 内联样式(即style属性)优先级高于class选择器
 
 - 单class选择器以组件class属性中的书写顺序确定优先级，后边的优先级高（与web有差异，web是按class定义顺序确定优先级）
 ```vue
@@ -317,7 +241,7 @@ App仅对`同层的兄弟节点`之间支持`z-index`来调节层级。不支持
 	* 例如flex方向，flex-direction，在W3C规范中默认是横排。在uni-app x中都是竖排。
 	* 例如box-sizing，在W3C规范中默认是content-box。在uni-app x中是border-box。（很多css框架都会重置浏览器这个css）
 - 有的是因为浏览器的默认值比较复杂
-	
+
 	比如auto、normal、medium，这些值内部逻辑很复杂，在不同情况有不同表现。很多是历史兼容造成的包袱。
 	在uni-app x中，倾向于让值明确。
 
@@ -327,6 +251,11 @@ App仅对`同层的兄弟节点`之间支持`z-index`来调节层级。不支持
 | :- | :- | :- | :- |
 | align-content | stretch | stretch | normal |
 | align-items | stretch | stretch | normal |
+| border-bottom-color | #000000 | currentcolor | currentcolor |
+| border-color | #000000 | currentcolor | currentcolor |
+| border-left-color | #000000 | currentcolor | currentcolor |
+| border-right-color | #000000 | currentcolor | currentcolor |
+| border-top-color | #000000 | currentcolor | currentcolor |
 | box-sizing | border-box | border-box | content-box |
 | color | #000000 | canvastext | canvastext |
 | display | flex | flex | inline |
@@ -353,7 +282,6 @@ App仅对`同层的兄弟节点`之间支持`z-index`来调节层级。不支持
 | [align-content](align-content.md) |
 | [align-items](align-items.md) |
 | [align-self](align-self.md) |
-| [animation-timing-function](animation-timing-function.md) |
 | [background](background.md) |
 | [background-clip](background-clip.md) |
 | [background-color](background-color.md) |
@@ -443,6 +371,26 @@ App仅对`同层的兄弟节点`之间支持`z-index`来调节层级。不支持
 | [visibility](visibility.md) |
 | [white-space](white-space.md) |
 | [width](width.md) |
+| [z-index](z-index.md) |
+
+
+## 不支持拍平的 CSS 属性
+
+| CSS 属性列表 |
+| :- |
+| [background-clip](background-clip.md) |
+| [background-image](background-image.md) |
+| [lines](lines.md) |
+| [pointer-events](pointer-events.md) |
+| [text-decoration](text-decoration.md) |
+| [text-decoration-color](text-decoration-color.md) |
+| [text-decoration-style](text-decoration-style.md) |
+| [transition](transition.md) |
+| [transition-delay](transition-delay.md) |
+| [transition-duration](transition-duration.md) |
+| [transition-property](transition-property.md) |
+| [transition-timing-function](transition-timing-function.md) |
+| [visibility](visibility.md) |
 | [z-index](z-index.md) |
 
 

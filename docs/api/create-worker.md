@@ -44,7 +44,7 @@ uni-app x的代码，默认都是在主线程执行的，主线程也称为UI线
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| url | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: x; HarmonyOS: - | Worker脚本的URL | 
+| url | string | 是 |  | iOS: x | Worker脚本的URL | 
 
 
 ### 返回值 
@@ -57,98 +57,102 @@ uni-app x的代码，默认都是在主线程执行的，主线程也称为UI线
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| env | **WorkerEnv** | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: x; HarmonyOS: - | worker内的环境变量<br/> |
+| env | **WorkerEnv** | 否 |  | 微信小程序: 4.41; iOS: x | worker内的环境变量<br/> |
 
 ##### env 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| USER_DATA_PATH | string | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: x; HarmonyOS: - | 文件系统中的用户目录路径 (本地路径)<br/> |
+| USER_DATA_PATH | string | 否 |  | 微信小程序: 4.41; iOS: x | 文件系统中的用户目录路径 (本地路径)<br/> |
 #### Worker 的方法 @worker-values 
 
 #### onMessage(callback: WorkerOnMessageCallback): void; @onmessage
 onMessage
 监听主线程/Worker 线程向当前线程发送的消息的事件。
 ##### onMessage 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| - | 4.41 | - | x | - |
+| 微信小程序 | iOS |
+| :- | :- |
+| 4.41 | x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (message: any) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: x; HarmonyOS: - |  | 
+| callback | (message: any) => void | 是 |  | iOS: x |  | 
+
 
 
 #### onError(callback: WorkerOnErrorCallback): void; @onerror
 onError
 监听 Worker 线程错误事件。当 Worker 线程中发生脚本错误时会触发此事件。
 ##### onError 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| - | 4.41 | - | x | - |
+| 微信小程序 | iOS |
+| :- | :- |
+| 4.41 | x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [WorkerOnErrorCallbackResult](#workeronerrorcallbackresult-values)) => void | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: x; HarmonyOS: - |  | 
+| callback | (result: [WorkerOnErrorCallbackResult](#workeronerrorcallbackresult-values)) => void | 是 |  | iOS: x |  | 
 
 ##### WorkerOnErrorCallbackResult 的属性值 @workeronerrorcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: x; HarmonyOS: - |  |
-| errSubject | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: x; HarmonyOS: - | 统一错误主题（模块）名称 |
-| data | any | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: x; HarmonyOS: - | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: x; HarmonyOS: - | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: x; HarmonyOS: - |  |
+| errCode | number | 是 |  | iOS: x |  |
+| errSubject | string | 是 |  | iOS: x | 统一错误主题（模块）名称 |
+| data | any | 否 |  | iOS: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  | iOS: x |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 5000501 | Web: -; 微信小程序: -; Android: -; iOS: x; HarmonyOS: - | worker 运行错误 |
-| 5000502 | Web: -; 微信小程序: -; Android: -; iOS: x; HarmonyOS: - | worker 序列化失败 |
-| 5000503 | Web: -; 微信小程序: -; Android: -; iOS: x; HarmonyOS: - | worker 实例未运行 |
-| 5000504 | Web: -; 微信小程序: -; Android: -; iOS: x; HarmonyOS: - | worker 线程中不支持调用的API。 |
-| 5000505 | Web: -; 微信小程序: -; Android: -; iOS: x; HarmonyOS: - | worker 线程初始化失败 |
-| 5000506 | Web: -; 微信小程序: -; Android: -; iOS: x; HarmonyOS: - | worker 文件路径无效 |
-| 5000510 | Web: -; 微信小程序: -; Android: -; iOS: x; HarmonyOS: - | 非主线程调用worker API |
-| 5000511 | Web: -; 微信小程序: -; Android: -; iOS: x; HarmonyOS: - | worker 线程无效 |
+| 5000501 | iOS: x | worker 运行错误 |
+| 5000502 | iOS: x | worker 序列化失败 |
+| 5000503 | iOS: x | worker 实例未运行 |
+| 5000504 | iOS: x | worker 线程中不支持调用的API。 |
+| 5000505 | iOS: x | worker 线程初始化失败 |
+| 5000506 | iOS: x | worker 文件路径无效 |
+| 5000510 | iOS: x | 非主线程调用worker API |
+| 5000511 | iOS: x | worker 线程无效 |
+
 
 
 #### postMessage(message: any, options?: WorkerPostMessageOptions \| null): void; @postmessage
 postMessage
 向主线程/Worker 线程发送的消息。
 ##### postMessage 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| - | 4.41 | - | x | - |
+| 微信小程序 | iOS |
+| :- | :- |
+| 4.41 | x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| message | any | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: x; HarmonyOS: - |  |
-| options | **WorkerPostMessageOptions** | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: x; HarmonyOS: - |  |
+| message | any | 是 |  | iOS: x |  |
+| options | **WorkerPostMessageOptions** | 否 |  | iOS: x |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| harmonySendable | boolean | 否 | - | Web: x; 微信小程序: -; Android: x; iOS: x; HarmonyOS: 4.81; HarmonyOS(Vapor): 5.0 | 是否支持符合Sendable协议的对象作为共享变量发送，使用postMessageWithSharedSendable实现，默认值为false<br/>仅鸿蒙平台支持，参考：https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-sendable<br/> |
-| transfer | Array&lt;any&gt; | 否 | - | Web: 4.81; 微信小程序: -; Android: x; iOS: x; HarmonyOS: 4.81; HarmonyOS(Vapor): 5.0 | 可转移对象数组，默认值为空数组<br/>仅鸿蒙、web平台支持，参考：https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Transferable_objects<br/> | 
+| harmonySendable | boolean | 否 |  | Web: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: 4.81 | 是否支持符合Sendable协议的对象作为共享变量发送，使用postMessageWithSharedSendable实现，默认值为false<br/>仅鸿蒙平台支持，参考：https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-sendable<br/> |
+| transfer | Array&lt;any&gt; | 否 |  | Web: 4.81; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: 4.81 | 可转移对象数组，默认值为空数组<br/>仅鸿蒙、web平台支持，参考：https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Transferable_objects<br/> | 
+
 
 
 #### terminate(): void; @terminate
 terminate
 结束当前 Worker 线程。仅限在主线程 worker 对象上调用。
 ##### terminate 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| - | 4.41 | - | x | - |
+| 微信小程序 | iOS |
+| :- | :- |
+| 4.41 | x |
+
 
 
  
@@ -488,7 +492,7 @@ terminate
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 
 
 
@@ -719,11 +723,12 @@ worker.terminate();
 ```
 
 ## Tips
-- `uni.createWorker` 仅支持在主线程中使用，在 Worker 子线程中使用会返回错误
-- 各平台在 Worker 中使用全局变量或静态属性在内存管理中存在差异，Android/iOS平台可以共享内存，其它平台不能共享，为了避免这些差异带来的影响建议不要使用全局变量和静态属性
-- Worker 子线程间暂不支持直接互相通讯，如要通讯可通过主线程中转发送消息来实现
-- Android/iOS平台主线程与 Worker 线程传输的引用类型数据是直接共享使用（其它平台是默认为复制），需避免并发访问，暂未提供线程间安全访问机制，需通过业务逻辑控制避免并发访问这些共享的数据
-- 鸿蒙平台主线程与 Worker 线程传输的数据默认为浅拷贝，如需传出共享对象，可在[uts插件](../plugin/uts-plugin.md)中混编开发定义[Sendable对象](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-sendable)，调用 `Worker.postMessage` 发送这些共享对象时设置 `harmonySendable` 参数为 true
-- iOS平台 Worker 仅支持在[uts插件](../plugin/uts-plugin.md)中使用，不能直接在 `uvue` 页面中调用 `uni.createWorker`
-- Worker 中仅支持调用界面无关的API（如 uni.request、uni.getLocation 等），这些 API 触发的回调运行在 Workder 线程中
-- Web 平台不支持在 worker 中调用 uni 上的 API
+- `uni.createWorker` 仅支持在主线程中使用，在 Worker 子线程中使用会返回错误  
+- 各平台在 Worker 中使用全局变量或静态属性在内存管理中存在差异，Android/iOS平台可以共享内存，其它平台不能共享，为了避免这些差异带来的影响建议不要使用全局变量和静态属性  
+- Worker 子线程间暂不支持直接互相通讯，如要通讯可通过主线程中转发送消息来实现  
+- Android/iOS平台主线程与 Worker 线程传输的引用类型数据是直接共享使用（其它平台是默认为复制），需避免并发访问，暂未提供线程间安全访问机制，需通过业务逻辑控制避免并发访问这些共享的数据  
+- 鸿蒙平台主线程与 Worker 线程传输的数据默认为浅拷贝，如需传出共享对象，可在[uts插件](../plugin/uts-plugin.md)中混编开发定义[Sendable对象](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-sendable)，调用 `Worker.postMessage` 发送这些共享对象时设置 `harmonySendable` 参数为 true  
+- iOS平台 Worker 仅支持在[uts插件](../plugin/uts-plugin.md)中使用，不能直接在 `uvue` 页面中调用 `uni.createWorker`  
+- Worker 中仅支持调用界面无关的API（如 uni.request、uni.getLocation 等），这些 API 触发的回调运行在 Workder 线程中  
+- Web 平台不支持在 worker 中调用 uni 上的 API  
+- uts 插件内部无法包含 workers 目录。在 uts 插件中调用 uni.createWorker 时，必须由项目侧将 workers 目录下的文件路径传递进来。若不希望受限于项目的 workers 目录，建议直接在 uts 插件中调用各平台原生的线程 API 来实现多线程操作。

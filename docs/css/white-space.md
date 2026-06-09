@@ -5,11 +5,17 @@
 white-space 属性用于设置如何处理元素中的空白字符（空格、换行符、制表符）以及文本是否自动换行。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.0 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.0 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,13 +34,13 @@ white-space: normal | pre | nowrap | pre-wrap | pre-line | break-spaces | [ <'wh
 ### white-space 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| normal | Web: 4.0; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 换行符（\n）当做空白符处理，连续的多个空白字符会合并为一个空格，文本遇到边界会自动换行，行末空白字符移除。 |
-| nowrap | Web: 4.0; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 换行符（\n）当做空白符处理，连续的多个空白字符会合并为一个空格，文本遇到边界不会自动换行，行末空白字符移除。 |
-| pre | Web: 4.0; Android: 4.81; iOS: 4.81; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 换行符（\n）保留并换行显示，连续的多个空白字符保留，文本遇到边界不会自动换行，行末空白字符保留。 |
-| pre-wrap | Web: 4.0; Android: 4.81; iOS: 4.81; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 换行符（\n）保留并换行显示，连续的多个空白字符保留，文本遇到边界会自动换行，行末空白字符保留但“不占位置”。 |
-| pre-line | Web: 4.0; Android: 4.81; iOS: 4.81; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 换行符（\n）保留并换行显示，连续的多个空白字符会合并为一个空格，文本遇到边界会自动换行，行末空白字符移除。 |
-| break-spaces | Web: 4.0; Android: 4.81; iOS: 4.81; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 换行符（\n）保留并换行显示，连续的多个空白字符保留，文本遇到边界会自动换行，行末空白字符换行处理。 |
-| keep | Web: x; Android: 5.0; iOS: 5.0; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 不对空白字符处理，保持原始值。换行符（\n）保留并换行显示，连续的多个空白字符保留，文本遇到边界会自动换行，行末空白字符保留。 |
+| normal | Web: 4.0; Android: 4.0; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 换行符（\n）当做空白符处理，连续的多个空白字符会合并为一个空格，文本遇到边界会自动换行，行末空白字符移除。 |
+| nowrap | Web: 4.0; Android: 4.0; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 换行符（\n）当做空白符处理，连续的多个空白字符会合并为一个空格，文本遇到边界不会自动换行，行末空白字符移除。 |
+| pre | Web: 4.0; Android: 4.81; Android(Vapor): 5.21; iOS: 4.81; iOS(Vapor): 5.11; HarmonyOS: x | 换行符（\n）保留并换行显示，连续的多个空白字符保留，文本遇到边界不会自动换行，行末空白字符保留。 |
+| pre-wrap | Web: 4.0; Android: 4.81; Android(Vapor): 5.21; iOS: 4.81; iOS(Vapor): 5.11; HarmonyOS: x | 换行符（\n）保留并换行显示，连续的多个空白字符保留，文本遇到边界会自动换行，行末空白字符保留但“不占位置”。 |
+| pre-line | Web: 4.0; Android: 4.81; Android(Vapor): 5.21; iOS: 4.81; iOS(Vapor): 5.11; HarmonyOS: x | 换行符（\n）保留并换行显示，连续的多个空白字符会合并为一个空格，文本遇到边界会自动换行，行末空白字符移除。 |
+| break-spaces | Web: 4.0; Android: 4.81; Android(Vapor): 5.21; iOS: 4.81; iOS(Vapor): 5.11; HarmonyOS: x | 换行符（\n）保留并换行显示，连续的多个空白字符保留，文本遇到边界会自动换行，行末空白字符换行处理。 |
+| keep | Web: x; Android: 5.0; Android(Vapor): 5.21; iOS: 5.0; iOS(Vapor): 5.11; HarmonyOS: x | 不对空白字符处理，保持原始值。换行符（\n）保留并换行显示，连续的多个空白字符保留，文本遇到边界会自动换行，行末空白字符保留。 |
 
 
 ### 默认值 @default-value 
@@ -94,11 +100,11 @@ app平台、web平台调整了 white-space 属性的实现。之前接近小程�
   <!-- #endif -->
     <view style="flex-grow: 1;">
       <scroll-view style="padding: 10px 0px; background-color: gray;justify-content: center;" direction="horizontal">
-        <text class="text" :style="{ whiteSpace: whiteSpace }">{{multiLineText}}</text>
+        <text class="text" :style="{ whiteSpace: data.whiteSpace }">{{data.multiLineText}}</text>
       </scroll-view>
       <text>拍平</text>
       <scroll-view style="padding: 10px 0px; background-color: gray;justify-content: center;" direction="horizontal">
-        <text class="text" :style="{ whiteSpace: whiteSpace }" flatten>{{multiLineText}}</text>
+        <text class="text" :style="{ whiteSpace: data.whiteSpace }" flatten>{{data.multiLineText}}</text>
       </scroll-view>
 
       <scroll-view style="flex: 1">
@@ -110,20 +116,20 @@ app平台、web平台调整了 white-space 属性的实现。之前接近小程�
           <!-- 普通版本 -->
           <view class="uni-common-mt">
             <text class="uni-title-text">white-space</text>
-            <text class="uni-info">设置值: {{whiteSpace}}</text>
-            <text class="uni-info">获取值: {{whiteSpaceActual}}</text>
+            <text class="uni-info">设置值: {{data.whiteSpace}}</text>
+            <text class="uni-info">获取值: {{data.whiteSpaceActual}}</text>
             <view class="test-box">
-              <text ref="textRef" class="text test-text" :style="{ whiteSpace: whiteSpace }">{{multiLineText}}</text>
+              <text ref="textRef" class="text test-text" :style="{ whiteSpace: data.whiteSpace }">{{data.multiLineText}}</text>
             </view>
           </view>
 
           <!-- 拍平版本 -->
           <view class="uni-common-mt">
             <text class="uni-title-text">拍平</text>
-            <text class="uni-info">设置值: {{whiteSpace}}</text>
-            <text class="uni-info">获取值: {{whiteSpaceActualFlat}}</text>
+            <text class="uni-info">设置值: {{data.whiteSpace}}</text>
+            <text class="uni-info">获取值: {{data.whiteSpaceActualFlat}}</text>
             <view class="test-box">
-              <text ref="textRefFlat" class="text test-text-flatten" :style="{ whiteSpace: whiteSpace }" flatten>{{multiLineText}}</text>
+              <text ref="textRefFlat" class="text test-text-flatten" :style="{ whiteSpace: data.whiteSpace }" flatten>{{data.multiLineText}}</text>
             </view>
           </view>
         </view>
@@ -131,7 +137,7 @@ app平台、web平台调整了 white-space 属性的实现。之前接近小程�
         <view class="uni-common-mt uni-common-mb">
             <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
             <enum-data :items="whiteSpaceEnum" title="white-space 枚举值" @change="radioChangeWhiteSpace" :compact="true"></enum-data>
-            <input-data :defaultValue="whiteSpace" title="white-space 自定义值" type="text" @confirm="inputChangeWhiteSpace"></input-data>
+            <input-data :defaultValue="data.whiteSpace" title="white-space 自定义值" type="text" @confirm="inputChangeWhiteSpace"></input-data>
         </view>
       </scroll-view>
     </view>
@@ -154,7 +160,8 @@ app平台、web平台调整了 white-space 属性的实现。之前接近小程�
     { value: 7, name: 'keep' }
   ]
 
-  const multiLineText = ref(`HBuilderX，
+  const data = reactive({
+    multiLineText: `HBuilderX，
 	轻巧、
 		极速，
 			极客编辑器；
@@ -163,27 +170,30 @@ app平台、web平台调整了 white-space 属性的实现。之前接近小程�
 				uts，
 			大一统语言
 
-HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言`)
+HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言`,
+    whiteSpace: 'normal',
+    whiteSpaceActual: '',
+    whiteSpaceActualFlat: ''
+  })
 
-  const whiteSpace = ref('normal')
-  const whiteSpaceActual = ref('')
-  const whiteSpaceActualFlat = ref('')
   const textRef = ref(null as UniTextElement | null)
   const textRefFlat = ref(null as UniTextElement | null)
 
   const getPropertyValues = () => {
-    whiteSpaceActual.value = textRef.value?.style.getPropertyValue('white-space') ?? ''
-    whiteSpaceActualFlat.value = textRefFlat.value?.style.getPropertyValue('white-space') ?? ''
+    data.whiteSpaceActual = textRef.value?.style.getPropertyValue('white-space') ?? ''
+    data.whiteSpaceActualFlat = textRefFlat.value?.style.getPropertyValue('white-space') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeWhiteSpace = (value: string) => {
-    whiteSpace.value = value
+    data.whiteSpace = value
     textRef.value?.style.setProperty('white-space', value)
     textRefFlat.value?.style.setProperty('white-space', value)
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeWhiteSpace = (index: number) => {
@@ -202,7 +212,8 @@ HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方�
   })
 
   defineExpose({
-    radioChangeWhiteSpace
+    radioChangeWhiteSpace,
+    data
   })
 </script>
 

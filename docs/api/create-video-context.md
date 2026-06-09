@@ -15,17 +15,17 @@
 参考：[video组件](../component/video.md)
 
 ### createVideoContext 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | √ | 4.11 | 4.61 | 5.0 |
+| 4.0 | 4.41 | 4.4 | √ | 4.11 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| videoId | [string.VideoIdString](/uts/data-type.md#ide-string) | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
-| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  | 
+| videoId | [string.VideoIdString](/uts/data-type.md#ide-string) | 是 |  |   |  |
+| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 |  |   |  | 
 
 
 在video组件上设置id属性，即可通过本API获取该组件的上下文对象（videoContext ）。
@@ -63,9 +63,10 @@ let v1 = uni.createVideoContext("video1", getCurrentInstance()!.proxy!)
 play
 播放
 ##### play 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 | 5.0 |
+| 4.0 | 4.41 | 4.4 | 3.9.0 | 4.11 | 4.61 |
+
 
 
 
@@ -73,9 +74,10 @@ play
 pause
 暂停
 ##### pause 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 | 5.0 |
+| 4.0 | 4.41 | 4.4 | 3.9.0 | 4.11 | 4.61 |
+
 
 
 
@@ -83,24 +85,26 @@ pause
 seek
 跳转到指定位置
 ##### seek 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 | 5.0 |
+| 4.0 | 4.41 | 4.4 | 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| position | number | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 跳转到指定位置(秒) | 
+| position | number | 是 |  |   | 跳转到指定位置(秒) | 
+
 
 
 #### stop(): void; @stop
 stop
 停止视频
 ##### stop 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 | 5.0 |
+| 4.0 | 4.41 | 4.4 | 3.9.0 | 4.11 | 4.61 |
+
 
 
 
@@ -108,68 +112,72 @@ stop
 sendDanmu
 发送弹幕
 ##### sendDanmu 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 | 5.0 |
+| 4.0 | 4.41 | 4.4 | 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| danmu | **Danmu** | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | text, color |
+| danmu | **Danmu** | 是 |  |   | text, color |
 
 #### danmu 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| text | string | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 弹幕文字 |
-| color | string | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 弹幕颜色 |
-| time | number | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 显示时刻 | 
+| text | string | 否 |  |   | 弹幕文字 |
+| color | string | 否 |  |   | 弹幕颜色 |
+| time | number | 否 |  |   | 显示时刻 | 
+
 
 
 #### playbackRate(rate: number): void; @playbackrate
 playbackRate
 设置倍速播放
 ##### playbackRate 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 | 5.0 |
+| 4.0 | 4.41 | 4.4 | 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| rate | number | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | , 支持倍率 0.5/0.8/1.0/1.25/1.5 | 
+| rate | number | 是 |  |   | , 支持倍率 0.5/0.8/1.0/1.25/1.5 | 
+
 
 
 #### requestFullScreen(direction?: RequestFullScreenOptions \| null): void; @requestfullscreen
 requestFullScreen
 进入全屏
 ##### requestFullScreen 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 | 5.0 |
+| 4.0 | 4.41 | 4.4 | 3.9.0 | 4.11 | 4.61 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| direction | **RequestFullScreenOptions** | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | , 0\|正常竖向, 90\|屏幕逆时针90度, -90\|屏幕顺时针90度 |
+| direction | **RequestFullScreenOptions** | 否 |  |   | , 0\|正常竖向, 90\|屏幕逆时针90度, -90\|屏幕顺时针90度 |
 
 #### direction 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| direction | 90 \| any | 否 | - | Web: x; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11; HarmonyOS: - | direction | 
+| direction | 90 \| any | 否 |  | Web: x; 微信小程序: 4.41; Android 系统版本: 4.4; Android: 3.9.0; iOS: 4.11 | direction | 
+
 
 
 #### exitFullScreen(): void; @exitfullscreen
 exitFullScreen
 退出全屏
 ##### exitFullScreen 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 | 5.0 |
+| 4.0 | 4.41 | 4.4 | 3.9.0 | 4.11 | 4.61 |
+
 
 
  
@@ -200,7 +208,7 @@ exitFullScreen
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 
 
 示例代码另见[video组件](../component/video.md)

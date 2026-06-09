@@ -24,24 +24,24 @@
 
 
 #### onLaunch 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.0 | 4.61 |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | x | 10.0 | 4.0 | 5.11 | 4.61 |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **OnLaunchOptions** | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | - |
+| options | **OnLaunchOptions** | 是 |  |   | - |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| path | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 应用启动页面路径 |
-| appScheme | string | 否 | - | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: x | 首次启动时的Scheme。返回值与App.onLaunch的回调参数一致<br/> |
-| appLink | string | 否 | - | Web: x; 微信小程序: x; Android: x; iOS: 4.25; HarmonyOS: x | 首次启动时的appLink。返回值与App.onLaunch的回调参数一致<br/> | 
+| path | string | 是 |  |   | 应用启动页面路径 |
+| appScheme | string | 否 |  | Web: x; 微信小程序: x; Android: 4.25; Android(Vapor): x; iOS: 4.25; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 首次启动时的Scheme。返回值与App.onLaunch的回调参数一致<br/> |
+| appLink | string | 否 |  | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS: 4.25; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 首次启动时的appLink。返回值与App.onLaunch的回调参数一致<br/> | 
 
 
 
@@ -61,24 +61,24 @@
 
 
 #### onShow 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.0 | 4.61 |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | x | 10.0 | 4.0 | 5.11 | 4.61 |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **OnShowOptions** | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | - |
+| options | **OnShowOptions** | 是 |  |   | - |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| path | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 应用启动页面路径 |
-| appScheme | string | 否 | - | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: x | 本次启动时的Scheme。返回值与App.onShow的回调参数一致<br/> |
-| appLink | string | 否 | - | Web: x; 微信小程序: x; Android: x; iOS: 4.25; HarmonyOS: x | 本次启动时的appLink。返回值与App.onShow的回调参数一致<br/> | 
+| path | string | 是 |  |   | 应用启动页面路径 |
+| appScheme | string | 否 |  | Web: x; 微信小程序: x; Android: 4.25; Android(Vapor): x; iOS: 4.25; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 本次启动时的Scheme。返回值与App.onShow的回调参数一致<br/> |
+| appLink | string | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: 4.25; HarmonyOS 系统版本: x; HarmonyOS: x | 本次启动时的appLink。返回值与App.onShow的回调参数一致<br/> | 
 
 
 
@@ -102,9 +102,9 @@
 
 
 #### onHide 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.0 | 4.61 |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | x | 10.0 | 4.0 | 5.11 | 4.61 |
 
 
 
@@ -124,9 +124,9 @@
 
 
 #### onExit 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 3.9 | x | 4.72 |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | x | x | x | 4.72 |
 
 
 
@@ -152,16 +152,16 @@
 无法监听异步逻辑（例如：`setTimeout`）中的错误和应用初始化之前、 App 崩溃等错误。
 :::
 #### onError 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.21 | 4.21 | 4.61 |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.21 | x | 10.0 | 4.21 | 5.11 | 4.61 |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| error | any | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误信息 | 
+| error | any | 是 |  |   | 错误信息 | 
 
 
 
@@ -178,9 +178,9 @@
 
 
 #### onLastPageBackPress 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 3.9 | x | 4.71 |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | x | x | x | 4.71 |
 
 
 
@@ -205,24 +205,24 @@
 
 
 #### onPageNotFound 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | x | x |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | x | x | 10.0 | x | x | x | x |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **OnPageNotFoundOption** | 是 | - | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | - |
+| options | **OnPageNotFoundOption** | 是 |  | Android: x; iOS: x; HarmonyOS: x | - |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| path | string | 是 | - | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 不存在页面的路径 |
-| query | AnyObject | 是 | - | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 打开不存在页面的 query |
-| isEntryPage | boolean | 是 | - | Web: -; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 是否本次启动的首个页面（例如从分享等入口进来，首个页面是开发者配置的分享页面） | 
+| path | string | 是 |  | Android: x; iOS: x; HarmonyOS: x | 不存在页面的路径 |
+| query | AnyObject | 是 |  | Android: x; iOS: x; HarmonyOS: x | 打开不存在页面的 query |
+| isEntryPage | boolean | 是 |  | Android: x; iOS: x; HarmonyOS: x | 是否本次启动的首个页面（例如从分享等入口进来，首个页面是开发者配置的分享页面） | 
 
 
 
@@ -239,9 +239,9 @@
 
 
 #### onUnhandledRejection 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | x | - |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | x | x | 10.0 | x | x | x | x |
 
 
 
@@ -260,9 +260,9 @@
 
 
 #### onThemeChange 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.41 | x | x | x |
+| Web | 微信小程序 | Android 系统版本 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| x | 4.41 | x | x | x | x | x | x | x | x |
 
 
 监听主题变化一般不推荐这个生命周期。而是使用uni api方式。详见：[uni-app x主题适配](../api/theme-change.md)
@@ -286,18 +286,22 @@
   let firstBackTime = 0
   // #endif
 
-  // #ifndef APP-ANDROID || VUE3-VAPOR
   defineOptions({
-  mixins: [
-    {
+		globalData: {
+			str: 'globalData str',
+			num: 1,
+			boolean: true
+		}
+  	// #ifndef APP-ANDROID || VUE3-VAPOR
+		,mixins: [{
       data() {
         return {
           appMixinDataMsg: 'App.uvue mixin data msg'
         }
       }
     }]
+  	// #endif
   })
-  // #endif
 	onLaunch((options) => {
 		// 自动化测试
 		setLifeCycleNum(state.lifeCycleNum + 1000)
@@ -419,6 +423,8 @@
 
 **以下是 App.uvue 中定义globalData的相关配置：**
 
+### 选项式 API 示例：
+
 ```ts
 <script lang="uts">
   export default {
@@ -448,7 +454,42 @@
 </script>
 ```
 
-**注意：** `uni-app x` 中 `globalData` 的数据结构与类型通过 `App.uvue` 中的 `globalData` 初始值定义，后续只能读取或修改，不能新增或删除。
+### 组合式 API 示例：
+
+```ts
+<script setup lang="uts">
+  defineOptions({
+    globalData: {
+      str: 'global data str',
+      num: 123,
+      bool: true
+    }
+  })
+</script>
+```
+
+
+页面或组件中通过 `getApp().globalData` 访问。
+
+```ts
+<script setup lang="uts">
+  const globalDataStr = ref('')
+  const globalDataNum = ref(0)
+  const globalDataBool = ref(false)
+
+  const getGlobalData = () => {
+    const app = getApp()
+    globalDataStr.value = app.globalData.str
+    globalDataNum.value = app.globalData.num
+    globalDataBool.value = app.globalData.bool
+  }
+</script>
+```
+
+::: warning 注意
+- `uni-app x` 中 `globalData` 的数据结构与类型通过 `App.uvue` 中的 `globalData` 初始值定义，后续只能读取或修改，不能新增或删除。
+- 在组合式 API App.uvue 中使用 `globalData` 时，无法像选项式 API 那样通过 `this.globalData` 访问，而是需要通过 `getApp().globalData` 访问。但部分生命周期中 App 实例还未初始化，需要注意时机问题。
+:::
 
 globalData是简单的全局变量，其他状态管理方式，可参考文档[全局变量和状态管理](../tutorial/store.md)。
 
@@ -505,7 +546,7 @@ globalData是简单的全局变量，其他状态管理方式，可参考文档[
           increase lifeCycleNum
         </button>
         <text class="uni-common-mt">lifeCycleNum: {{ data.lifeCycleNum }}</text>
-        <!-- #ifndef MP -->
+        <!-- #ifdef APP-ANDROID -->
         <button class="uni-common-mt" @click="getAndroidApplication">
           getAndroidApplication
         </button>
@@ -646,7 +687,7 @@ globalData是简单的全局变量，其他状态管理方式，可参考文档[
     setLifeCycleNum(num)
   }
 
-  // #ifndef MP
+  // #ifdef APP-ANDROID
   const getAndroidApplication = () : boolean => {
     const app = getApp()
     data.androidApplication = app.getAndroidApplication()
@@ -664,7 +705,7 @@ globalData是简单的全局变量，其他状态管理方式，可参考文档[
     setGlobalData,
     _increaseLifeCycleNum,
     setLifeCycleNumFunc,
-    // #ifndef MP
+    // #ifdef APP-ANDROID
     getAndroidApplication
     // #endif
   })

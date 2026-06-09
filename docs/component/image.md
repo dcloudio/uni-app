@@ -10,43 +10,43 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 5.11 | 4.61 | 5.0 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| src | string([string.ImageURIString](/uts/data-type.md#ide-string)) | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 图片资源地址 |
-| mode | string | "scaleToFill" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 图片裁剪、缩放的模式 |
-| lazy-load | boolean | false | Web: x; 微信小程序: 4.41; Android: x; iOS: 4.11; HarmonyOS: -; HarmonyOS(Vapor): x | 图片懒加载。只针对page与scroll-view下的image有效。 安卓默认懒加载不支持修改 |
-| fade-show | boolean | false | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 图片显示动画效果 |
-| webp | boolean | true | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: -; HarmonyOS(Vapor): x | 是否支持 WebP 格式，web、app平台默认支持 WebP 格式，不支持本属性，无法关闭对 WebP 格式的解析。 |
-| show-menu-by-longpress | boolean | false | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 开启长按图片显示识别小程序码菜单 |
-| draggable | boolean | false | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 鼠标长按是否能拖动图片(仅H5平台) |
-| flatten | boolean | false | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: 6.0; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
-| @error | (event: [UniImageErrorEvent](#uniimageerrorevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 图片加载错误时触发，event.detail = { errMsg } |
-| @load | (event: [UniImageLoadEvent](#uniimageloadevent)) => void | - | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 图片加载完成时触发，event.detail = { width: '图片宽度px', height: '图片高度px' } |
+| src | string([string.ImageURIString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 图片资源地址 |
+| mode | string | "scaleToFill" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 图片裁剪、缩放的模式 |
+| lazy-load | boolean | false | Web: x; 微信小程序: 4.41; Android: x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: -; HarmonyOS(Vapor): x | 图片懒加载。只针对page与scroll-view下的image有效。 安卓默认懒加载不支持修改 |
+| fade-show | boolean | false | Web: x; 微信小程序: x; Android: 3.9; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 图片显示动画效果 |
+| webp | boolean | true | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: -; HarmonyOS(Vapor): x | 是否支持 WebP 格式，web、app平台默认支持 WebP 格式，不支持本属性，无法关闭对 WebP 格式的解析。 |
+| show-menu-by-longpress | boolean | false | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 开启长按图片显示识别小程序码菜单 |
+| draggable | boolean | false | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 鼠标长按是否能拖动图片(仅H5平台) |
+| flatten | boolean | false | Web: x; 微信小程序: x; Android: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
+| @error | (event: [UniImageErrorEvent](#uniimageerrorevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 图片加载错误时触发，event.detail = { errMsg } |
+| @load | (event: [UniImageLoadEvent](#uniimageloadevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 图片加载完成时触发，event.detail = { width: '图片宽度px', height: '图片高度px' } |
 
 #### mode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| scaleToFill | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不保持纵横比缩放图片，使图片的宽高完全拉伸至填满 image 元素 |
-| aspectFit | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 保持纵横比缩放图片，使图片的长边能完全显示出来。也就是说，可以完整地将图片显示出来。 |
-| aspectFill | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 保持纵横比缩放图片，只保证图片的短边能完全显示出来。也就是说，图片通常只在水平或垂直方向是完整的，另一个方向将会发生截取 |
-| widthFix | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 宽度不变，高度自动变化，保持原图宽高比不变 |
-| heightFix | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 高度不变，宽度自动变化，保持原图宽高比不变 |
-| top | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不缩放图片，只显示图片的顶部区域 |
-| bottom | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不缩放图片，只显示图片的底部区域 |
-| center | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不缩放图片，只显示图片的中间区域 |
-| left | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不缩放图片，只显示图片的左边区域 |
-| right | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不缩放图片，只显示图片的右边区域 |
-| top left | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不缩放图片，只显示图片的左上边区域 |
-| top right | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不缩放图片，只显示图片的右上边区域 |
-| bottom left | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不缩放图片，只显示图片的左下边区域 |
-| bottom right | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不缩放图片，只显示图片的右下边区域 |
+| scaleToFill | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不保持纵横比缩放图片，使图片的宽高完全拉伸至填满 image 元素 |
+| aspectFit | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 保持纵横比缩放图片，使图片的长边能完全显示出来。也就是说，可以完整地将图片显示出来。 |
+| aspectFill | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 保持纵横比缩放图片，只保证图片的短边能完全显示出来。也就是说，图片通常只在水平或垂直方向是完整的，另一个方向将会发生截取 |
+| widthFix | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 宽度不变，高度自动变化，保持原图宽高比不变 |
+| heightFix | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 高度不变，宽度自动变化，保持原图宽高比不变 |
+| top | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不缩放图片，只显示图片的顶部区域 |
+| bottom | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不缩放图片，只显示图片的底部区域 |
+| center | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不缩放图片，只显示图片的中间区域 |
+| left | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不缩放图片，只显示图片的左边区域 |
+| right | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不缩放图片，只显示图片的右边区域 |
+| top left | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不缩放图片，只显示图片的左上边区域 |
+| top right | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不缩放图片，只显示图片的右上边区域 |
+| bottom left | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不缩放图片，只显示图片的左下边区域 |
+| bottom right | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不缩放图片，只显示图片的右下边区域 |
 
 
 ### 事件
@@ -62,13 +62,13 @@ UniImageErrorEvent -- Extends --> UniEvent
 ##### UniImageErrorEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniImageErrorEventDetail** | 是 | - | - |  |
+| detail | **UniImageErrorEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | - | 错误信息 |
+| errMsg | string | 是 |  |   | 错误信息 |
 
 
 #### UniImageLoadEvent
@@ -83,35 +83,38 @@ UniImageLoadEvent -- Extends --> UniEvent
 ##### UniImageLoadEvent 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | **UniImageLoadEventDetail** | 是 | - | - |  |
+| detail | **UniImageLoadEventDetail** | 是 |  |   |  |
 
 #### detail 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| width | number | 是 | - | - | 图片宽度 |
-| height | number | 是 | - | - | 图片高度 |
+| width | number | 是 |  |   | 图片宽度 |
+| height | number | 是 |  |   | 图片高度 |
 
 
 
 <!-- UTSCOMJSON.image.component_type-->
 
 ### 图片格式
-- web平台支持的图片格式，不同浏览器有差异，可查询caniuse
-- 小程序平台支持的图片格式与浏览器类似。但由于不同小程序平台的webview版本不一样，需要具体查阅小程序平台的图片组件介绍。
+- web平台支持的图片格式，不同浏览器有差异，可查询caniuse。
+- 小程序平台支持的图片格式与浏览器类似。但由于不同小程序平台的webview版本不一样，需要具体查阅小程序平台的图片组件介绍。\
 	注意：webp在不同小程序平台策略不同，有的需要打开 webp 属性，有的仅支持来自服务器的webp。
-- 鸿蒙next平台的图片格式[参考](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/ts-basic-components-image?ha_source=Dcloud&ha_sourceId=89000448)
-- Android和iOS平台支持的图片格式如下：
-	* [x] bmp
-	* [x] gif
-	* [x] ico
-	* [x] jpg
-	* [x] png
-	* [x] webp (iOS14起是硬解码，之前是软解码，软解码性能略低。Android支持)
-	* [x] heic (iOS支持，Android10+支持)
-	* [x] avif (iOS16+支持，Android不支持)
-	* [x] tif (iOS支持，Android不支持)
-	* [x] svg (iOS13+支持，Android支持。不支持svg动画。Android暂不支持mode属性。需HBuilderX4.81+)
+- App平台支持的图片格式如下：
+
+| 图片格式| Android							| iOS												| HarmonyOS	| 备注																					|
+| ---			| ---									| ---												| ---				| ---																					|
+| BMP			| √										| √													| √					|																							|
+| GIF			| √										| √													| √					|																							|
+| ICO			| √										| √													| √					|																							|
+| JPG			| √										| √													| √					|																							|
+| PNG			| √										| √													| √					|																							|
+| WebP		| √										| √													| √					|iOS 14+ 为硬解码，低版本为软解码（性能较低）	|
+| HEIC		| √ (Android10+)			| √													| √					|																							|
+| AVIF		| √ (HBuilderX5.08+)	| √ (iOS16+)								| x					|系统支持硬解才有优势，使用三方软解还不如其他格式	|
+| TIF			| x										| √													| x					|																							|
+| SVG			| √ (HBuilderX4.81+)	| √ (iOS13+ HBuilderX4.81+)	| ️√				|	不支持svg动画。某些场景会解成位图渲染，[详见](#svg-support)		|
+
 
 如需其他图片格式，可自行开发uts组件插件或搜索插件市场，如
 - [apng插件](https://ext.dcloud.net.cn/search?q=apng&orderBy=Relevance&cat1=8&cat2=82)
@@ -133,7 +136,16 @@ UniImageLoadEvent -- Extends --> UniEvent
 	* 支持http、https。
 	* 安卓端image组件内部使用facebook的[fresco](https://github.com/facebook/fresco)库(2.5.0)，自带缓存策略，也会自动清理缓存。
 	* iOS端image组件内部使用[SDWebImage](https://github.com/SDWebImage/SDWebImage)库(5.10.0)，自带缓存策略，默认7天缓存，缓存过期后会自动清理。
-	* 鸿蒙平台image组件使用arkUI的image组件，缓存策略[另见](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/ts-basic-components-image?ha_source=Dcloud&ha_sourceId=89000448)
+	* 鸿蒙平台非蒸汽模式image组件使用arkUI的image组件，缓存策略[另见](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/ts-basic-components-image?ha_source=Dcloud&ha_sourceId=89000448)
+	* 鸿蒙平台蒸汽模式image组件使用[imageknifepro](https://gitcode.com/openharmony-sig/imageknifepro)库(1.0.12)，自带缓存策略，内存缓存256张128MB，磁盘缓存512张128MB，超限采用LRU淘汰。
+
+### 关于svg格式的矢量能力@svg-support
+
+svg 是矢量图片，可以无极缩放而不失真。但在以下情况，会把svg转成位图渲染，此时将丢失矢量能力。
+
+- 鸿蒙平台蒸汽模式
+	* 如果启用了 `flatten` 拍平，则会转为位图。
+	* 设置部分 `mode` 属性进行图像裁剪，会转为位图进行裁剪。`mode` 设置为 `scaleToFill/aspectFit/aspectFill` 可以保持矢量能力，设置为其它值会转位图裁剪。
 
 ### 子组件 @children-tags
 不可以嵌套组件
@@ -168,8 +180,14 @@ UniImageLoadEvent -- Extends --> UniEvent
         <!-- 原有的基础拍平测试 -->
         <text class="uni-title-text uni-common-mt">基础（右边为拍平）</text>
         <view class="uni-center image-bg">
-          <image class="image" :fade-show="true" mode="widthFix" :src="data.imageSrc" @error="error" @load="load"></image>
-          <image class="image" :fade-show="true" mode="widthFix" :src="data.imageSrc" @error="error" @load="load" flatten></image>
+            <!-- #ifndef APP-IOS -->
+            <image class="image"  :fade-show="true" mode="widthFix" :src="data.imageSrc" @error="error" @load="load"></image>
+            <image class="image"  :fade-show="true" mode="widthFix" :src="data.imageSrc" @error="error" @load="load" flatten></image>
+            <!-- #endif -->
+            <!-- #ifdef APP-IOS -->
+            <image class="image"  mode="widthFix" :src="data.imageSrc" @error="error" @load="load"></image>
+            <image class="image"  mode="widthFix" :src="data.imageSrc" @error="error" @load="load" flatten></image>
+            <!-- #endif -->
         </view>
 
         <button class="uni-btn" @tap="imageFormat">图片格式示例</button>
@@ -182,6 +200,9 @@ UniImageLoadEvent -- Extends --> UniEvent
         <!-- #ifdef VUE3-VAPOR -->
         <navigator url="/pages/template/2000-image/2000-image">
           <button class="uni-btn">组件性能测试</button>
+        </navigator>
+        <navigator url="/pages/template/2000-image/2000-image-svg">
+          <button class="uni-btn">组件性能测试(SVG)</button>
         </navigator>
         <!-- #endif -->
       </view>
@@ -352,4 +373,4 @@ UniImageLoadEvent -- Extends --> UniEvent
 - app-android平台由于默认启用了图片缩放（即根据组件实际宽高加载图片，以节省内存），所以可能导致load事件返回的图片尺寸并非图片原始尺寸
 - app-android平台不支持CMYK色彩的图片，[详见](https://github.com/facebook/fresco/issues/1404)
 - app-ios平台 iOS14 版本开始系统原生支持 WebP 图片格式，iOS14以下的版本使用三方解码器软解码实现对 WebP 的支持，性能存在一定损耗。如果在iOS14以下同一页面中大量使用WebP图片，会增加性能损耗
-- app-ios平台不支持padding style（padding-top、padding-left、padding-right、padding-bottom）
+- app-ios平台非蒸汽模式不支持padding style（padding-top、padding-left、padding-right、padding-bottom）

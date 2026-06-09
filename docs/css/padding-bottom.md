@@ -5,11 +5,17 @@
 CSS 属性 padding-bottom 是指一个元素在内边距区域（padding area）中下方的高度。内边距（padding）是指一个元素的内容和边框之间的区域。和外边距（margin）不同，内边距（padding）是不允许有负值的。内边距（padding）可以用四个值声明一个元素的四个方向的内边距（paddings），这是一种 CSS 缩写属性。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -99,10 +105,10 @@ padding-bottom: <length> | <percentage>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{paddingBottom}}</text>
-          <text class="uni-info">获取值: {{paddingBottomActual}}</text>
+          <text class="uni-info">设置值: {{data.paddingBottom}}</text>
+          <text class="uni-info">获取值: {{data.paddingBottomActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-view test-view" :style="{ paddingBottom: paddingBottom }">
+            <view ref="viewRef" class="common-view test-view" :style="{ paddingBottom: data.paddingBottom }">
               <view style="flex-grow: 1;background-color: cyan;"><text>view</text></view>
             </view>
           </view>
@@ -110,19 +116,19 @@ padding-bottom: <length> | <percentage>;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{paddingBottom}}</text>
-          <text class="uni-info">获取值: {{paddingBottomActualText}}</text>
+          <text class="uni-info">设置值: {{data.paddingBottom}}</text>
+          <text class="uni-info">获取值: {{data.paddingBottomActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-text test-text" :style="{ paddingBottom: paddingBottom }">当前为text组件当前为text组件</text>
+            <text ref="textRef" class="common-text test-text" :style="{ paddingBottom: data.paddingBottom }">当前为text组件当前为text组件</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{paddingBottom}}</text>
-          <text class="uni-info">获取值: {{paddingBottomActualImage}}</text>
+          <text class="uni-info">设置值: {{data.paddingBottom}}</text>
+          <text class="uni-info">获取值: {{data.paddingBottomActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-image test-image" :style="{ paddingBottom: paddingBottom }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image test-image" :style="{ paddingBottom: data.paddingBottom }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -131,10 +137,10 @@ padding-bottom: <length> | <percentage>;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{paddingBottom}}</text>
-          <text class="uni-info">获取值: {{paddingBottomActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.paddingBottom}}</text>
+          <text class="uni-info">获取值: {{data.paddingBottomActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-view test-view-flatten" :style="{ paddingBottom: paddingBottom }" flatten>
+            <view ref="viewRefFlat" class="common-view test-view-flatten" :style="{ paddingBottom: data.paddingBottom }" flatten>
               <view style="flex-grow: 1;background-color: cyan;"><text>view</text></view>
             </view>
           </view>
@@ -142,19 +148,19 @@ padding-bottom: <length> | <percentage>;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{paddingBottom}}</text>
-          <text class="uni-info">获取值: {{paddingBottomActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.paddingBottom}}</text>
+          <text class="uni-info">获取值: {{data.paddingBottomActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-text test-text-flatten" :style="{ paddingBottom: paddingBottom }" flatten>当前为text组件当前为text组件</text>
+            <text ref="textRefFlat" class="common-text test-text-flatten" :style="{ paddingBottom: data.paddingBottom }" flatten>当前为text组件当前为text组件</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{paddingBottom}}</text>
-          <text class="uni-info">获取值: {{paddingBottomActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.paddingBottom}}</text>
+          <text class="uni-info">获取值: {{data.paddingBottomActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ paddingBottom: paddingBottom }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ paddingBottom: data.paddingBottom }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -162,7 +168,7 @@ padding-bottom: <length> | <percentage>;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="paddingBottomEnum" title="padding-bottom 枚举值" @change="radioChangePaddingBottom" :compact="true"></enum-data>
-        <input-data :defaultValue="paddingBottom" title="padding-bottom 自定义值" type="text" @confirm="inputChangePaddingBottom"></input-data>
+        <input-data :defaultValue="data.paddingBottom" title="padding-bottom 自定义值" type="text" @confirm="inputChangePaddingBottom"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -186,13 +192,15 @@ padding-bottom: <length> | <percentage>;
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const paddingBottom = ref('25px')
-  const paddingBottomActual = ref('')
-  const paddingBottomActualText = ref('')
-  const paddingBottomActualImage = ref('')
-  const paddingBottomActualFlat = ref('')
-  const paddingBottomActualTextFlat = ref('')
-  const paddingBottomActualImageFlat = ref('')
+  const data = reactive({
+    paddingBottom: '25px',
+    paddingBottomActual: '',
+    paddingBottomActualText: '',
+    paddingBottomActualImage: '',
+    paddingBottomActualFlat: '',
+    paddingBottomActualTextFlat: '',
+    paddingBottomActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -210,16 +218,18 @@ padding-bottom: <length> | <percentage>;
   ]
 
   const getPropertyValues = () => {
-    paddingBottomActual.value = viewRef.value?.style.getPropertyValue('padding-bottom') ?? ''
-    paddingBottomActualFlat.value = viewRefFlat.value?.style.getPropertyValue('padding-bottom') ?? ''
-    paddingBottomActualText.value = textRef.value?.style.getPropertyValue('padding-bottom') ?? ''
-    paddingBottomActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('padding-bottom') ?? ''
-    paddingBottomActualImage.value = imageRef.value?.style.getPropertyValue('padding-bottom') ?? ''
-    paddingBottomActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('padding-bottom') ?? ''
+    data.paddingBottomActual = viewRef.value?.style.getPropertyValue('padding-bottom') ?? ''
+    data.paddingBottomActualFlat = viewRefFlat.value?.style.getPropertyValue('padding-bottom') ?? ''
+    data.paddingBottomActualText = textRef.value?.style.getPropertyValue('padding-bottom') ?? ''
+    data.paddingBottomActualTextFlat = textRefFlat.value?.style.getPropertyValue('padding-bottom') ?? ''
+    data.paddingBottomActualImage = imageRef.value?.style.getPropertyValue('padding-bottom') ?? ''
+    data.paddingBottomActualImageFlat = imageRefFlat.value?.style.getPropertyValue('padding-bottom') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changePaddingBottom = (value: string) => {
-    paddingBottom.value = value
+    data.paddingBottom = value
     viewRef.value?.style.setProperty('padding-bottom', value)
     viewRefFlat.value?.style.setProperty('padding-bottom', value)
     textRef.value?.style.setProperty('padding-bottom', value)
@@ -229,7 +239,7 @@ padding-bottom: <length> | <percentage>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangePaddingBottom = (index: number) => {
@@ -248,7 +258,8 @@ padding-bottom: <length> | <percentage>;
   })
 
   defineExpose({
-    radioChangePaddingBottom
+    radioChangePaddingBottom,
+    data
   })
 </script>
 

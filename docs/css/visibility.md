@@ -5,11 +5,17 @@
 visibility CSS 属性显示或隐藏元素而不更改文档的布局。该属性还可以隐藏 \<table> 中的行或列。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| x | x | x |
 
 
 
@@ -28,8 +34,8 @@ visibility: visible | hidden | collapse;
 ### visibility 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| visible | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 元素框可见。 |
-| hidden | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 元素框不可见（不绘制），但仍然影响常规的布局。如果将其子元素的 visibility 设置为 visible，则该子元素依然可见。元素无法获得焦点（例如通过 tab 索引进行键盘导航）。 |
+| visible | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素框可见。 |
+| hidden | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素框不可见（不绘制），但仍然影响常规的布局。如果将其子元素的 visibility 设置为 visible，则该子元素依然可见。元素无法获得焦点（例如通过 tab 索引进行键盘导航）。 |
 
 
 **注意**
@@ -55,19 +61,19 @@ visibility: visible | hidden | collapse;
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
-      <text class="uni-tips">visibility: {{visibility}} ，说明：点击切换</text>
+      <text class="uni-tips">visibility: {{data.visibility}} ，说明：点击切换</text>
       <view class="demo-box">
         <view @click="changeVisibility">
-          <text>view组件: {{visibility}}</text>
-          <view class="common" :style="{'visibility': visibility}"></view>
+          <text>view组件: {{data.visibility}}</text>
+          <view class="common" :style="{'visibility': data.visibility}"></view>
         </view>
         <view @click="changeVisibility">
-          <text>text组件: {{visibility}}</text>
-          <text class="common" :style="{'visibility': visibility}">文本</text>
+          <text>text组件: {{data.visibility}}</text>
+          <text class="common" :style="{'visibility': data.visibility}">文本</text>
         </view>
         <view @click="changeVisibility">
-          <text>image组件: {{visibility}}</text>
-          <image class="common" :style="{'visibility': visibility}" src="/static/test-image/logo.png"></image>
+          <text>image组件: {{data.visibility}}</text>
+          <image class="common" :style="{'visibility': data.visibility}" src="/static/test-image/logo.png"></image>
         </view>
       </view>
 
@@ -93,10 +99,10 @@ visibility: visible | hidden | collapse;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{visibilityValue}}</text>
-          <text class="uni-info">获取值: {{visibilityActual}}</text>
+          <text class="uni-info">设置值: {{data.visibilityValue}}</text>
+          <text class="uni-info">获取值: {{data.visibilityActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-dynamic test-view" :style="{ visibility: visibilityValue }">
+            <view ref="viewRef" class="common-dynamic test-view" :style="{ visibility: data.visibilityValue }">
               <text>view</text>
             </view>
           </view>
@@ -104,51 +110,19 @@ visibility: visible | hidden | collapse;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{visibilityValue}}</text>
-          <text class="uni-info">获取值: {{visibilityActualText}}</text>
+          <text class="uni-info">设置值: {{data.visibilityValue}}</text>
+          <text class="uni-info">获取值: {{data.visibilityActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-dynamic test-text" :style="{ visibility: visibilityValue }">text</text>
+            <text ref="textRef" class="common-dynamic test-text" :style="{ visibility: data.visibilityValue }">text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{visibilityValue}}</text>
-          <text class="uni-info">获取值: {{visibilityActualImage}}</text>
+          <text class="uni-info">设置值: {{data.visibilityValue}}</text>
+          <text class="uni-info">获取值: {{data.visibilityActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-dynamic test-image" :style="{ visibility: visibilityValue }" src="/static/test-image/logo.png"></image>
-          </view>
-        </view>
-      </view>
-
-      <!-- 拍平版本 -->
-      <view class="test-container">
-        <view class="test-item">
-          <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{visibilityValue}}</text>
-          <text class="uni-info">获取值: {{visibilityActualFlat}}</text>
-          <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ visibility: visibilityValue }" flatten>
-              <text>view</text>
-            </view>
-          </view>
-        </view>
-
-        <view class="test-item">
-          <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{visibilityValue}}</text>
-          <text class="uni-info">获取值: {{visibilityActualTextFlat}}</text>
-          <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ visibility: visibilityValue }" flatten>text</text>
-          </view>
-        </view>
-
-        <view class="test-item">
-          <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{visibilityValue}}</text>
-          <text class="uni-info">获取值: {{visibilityActualImageFlat}}</text>
-          <view class="test-box">
-            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ visibility: visibilityValue }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-dynamic test-image" :style="{ visibility: data.visibilityValue }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -156,7 +130,7 @@ visibility: visible | hidden | collapse;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="visibilityEnum" title="visibility 枚举值" @change="radioChangeVisibility" :compact="true"></enum-data>
-        <input-data :defaultValue="visibilityValue" title="visibility 自定义值" type="text" @confirm="inputChangeVisibility"></input-data>
+        <input-data :defaultValue="data.visibilityValue" title="visibility 自定义值" type="text" @confirm="inputChangeVisibility"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -181,15 +155,23 @@ visibility: visible | hidden | collapse;
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const visibility = ref('visible')
   let flag = true
+  const data = reactive({
+    visibility: 'visible',
+    visibilityValue: 'visible',
+    visibilityActual: '',
+    visibilityActualText: '',
+    visibilityActualImage: ''
+  })
+
+  const ins = getCurrentInstance()
 
   const changeVisibility = () => {
     flag = !flag
     if (flag) {
-      visibility.value = 'visible'
+      data.visibility = 'visible'
     } else {
-      visibility.value = 'hidden'
+      data.visibility = 'hidden'
     }
   }
 
@@ -199,41 +181,25 @@ visibility: visible | hidden | collapse;
     { value: 2, name: 'hidden' }
   ]
 
-  const visibilityValue = ref('visible')
-  const visibilityActual = ref('')
-  const visibilityActualText = ref('')
-  const visibilityActualImage = ref('')
-  const visibilityActualFlat = ref('')
-  const visibilityActualTextFlat = ref('')
-  const visibilityActualImageFlat = ref('')
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
-  const viewRefFlat = ref(null as UniElement | null)
-  const textRefFlat = ref(null as UniTextElement | null)
-  const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    visibilityActual.value = viewRef.value?.style.getPropertyValue('visibility') ?? ''
-    visibilityActualFlat.value = viewRefFlat.value?.style.getPropertyValue('visibility') ?? ''
-    visibilityActualText.value = textRef.value?.style.getPropertyValue('visibility') ?? ''
-    visibilityActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('visibility') ?? ''
-    visibilityActualImage.value = imageRef.value?.style.getPropertyValue('visibility') ?? ''
-    visibilityActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('visibility') ?? ''
+    data.visibilityActual = viewRef.value?.style.getPropertyValue('visibility') ?? ''
+    data.visibilityActualText = textRef.value?.style.getPropertyValue('visibility') ?? ''
+    data.visibilityActualImage = imageRef.value?.style.getPropertyValue('visibility') ?? ''
   }
 
   const changeVisibilityProperty = (value: string) => {
-    visibilityValue.value = value
+    data.visibilityValue = value
     viewRef.value?.style.setProperty('visibility', value)
-    viewRefFlat.value?.style.setProperty('visibility', value)
     textRef.value?.style.setProperty('visibility', value)
-    textRefFlat.value?.style.setProperty('visibility', value)
     imageRef.value?.style.setProperty('visibility', value)
-    imageRefFlat.value?.style.setProperty('visibility', value)
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeVisibility = (index: number) => {
@@ -252,7 +218,8 @@ visibility: visible | hidden | collapse;
   })
 
   defineExpose({
-    radioChangeVisibility
+    radioChangeVisibility,
+    data
   })
 </script>
 

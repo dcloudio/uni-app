@@ -8,6 +8,8 @@ js 中操作 json 使用的是 object对象，但 object对象非常灵活，不
 
 uni-app x 5.0+ 起，Android平台 UTSJSONObject 的性能大幅提升，超过了 type 的性能。
 
+HBuilderX 5.08+ 全平台下访问UTSJSONObject下的属性时支持`.`访问。
+
 ## 创建实例
 
 UTSJSONObject 对象的实例目前主要通过两种方式来创建：
@@ -149,7 +151,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| item | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | - | - | 需要检索的UTSJSONObject 实例对象 | 
+| item | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  |   | 需要检索的UTSJSONObject 实例对象 | 
 
 
 **返回值**
@@ -216,7 +218,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| items | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | - | - | 需要被合并的UTSJSONObject 实例对象 | 
+| items | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  |   | 需要被合并的UTSJSONObject 实例对象 | 
 
 
 **返回值**
@@ -315,7 +317,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| items | any[\] | 是 | - | - | 需要被合并的实例对象 | 
+| items | any[\] | 是 |  |   | 需要被合并的实例对象 | 
 
 
 **返回值**
@@ -375,9 +377,9 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 3.90 | x | x | 3.90 | x | x |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS 系统版本 | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| x | 3.90 | x | x | x | x | 3.90 | x | x |
 
 
 **uni-app 兼容性**
@@ -395,7 +397,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | - | - | 
+| key | string | 是 |  |   | - | 
 
 
 **返回值**
@@ -491,8 +493,8 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | - | - |
-| value | any | 是 | - | - | - | 
+| key | string | 是 |  |   | - |
+| value | any | 是 |  |   | - | 
 
 
 **返回值**
@@ -587,7 +589,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | - | - | 
+| key | string | 是 |  |   | - | 
 
 
 **返回值**
@@ -617,8 +619,8 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | - | 属性值, 可以是keyPath |
-| def | any | 是 | - | - | 指定的默认值 | 
+| key | string | 是 |  |   | 属性值, 可以是keyPath |
+| def | any | 是 |  |   | 指定的默认值 | 
 
 
 **返回值**
@@ -648,7 +650,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | - | - | 
+| key | string | 是 |  |   | - | 
 
 
 **返回值**
@@ -678,8 +680,8 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | - | 属性值, 可以是keyPath |
-| def | boolean | 是 | - | - | 指定的默认值 | 
+| key | string | 是 |  |   | 属性值, 可以是keyPath |
+| def | boolean | 是 |  |   | 指定的默认值 | 
 
 
 **返回值**
@@ -709,7 +711,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | - | - | 
+| key | string | 是 |  |   | - | 
 
 
 **返回值**
@@ -739,8 +741,8 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | - | 属性值, 可以是keyPath |
-| def | number | 是 | - | - | 指定的默认值 | 
+| key | string | 是 |  |   | 属性值, 可以是keyPath |
+| def | number | 是 |  |   | 指定的默认值 | 
 
 
 **返回值**
@@ -770,7 +772,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | - | - | 
+| key | string | 是 |  |   | - | 
 
 
 **返回值**
@@ -864,8 +866,8 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | - | 属性值, 可以是keyPath |
-| def | string | 是 | - | - | 指定的默认值 | 
+| key | string | 是 |  |   | 属性值, 可以是keyPath |
+| def | string | 是 |  |   | 指定的默认值 | 
 
 
 **返回值**
@@ -897,7 +899,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | - | - | 
+| key | string | 是 |  |   | - | 
 
 
 **返回值**
@@ -977,8 +979,8 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | - | 属性值, 可以是keyPath |
-| def | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | - | - | 指定的默认值 | 
+| key | string | 是 |  |   | 属性值, 可以是keyPath |
+| def | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  |   | 指定的默认值 | 
 
 
 **返回值**
@@ -1010,7 +1012,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | - | - | 
+| key | string | 是 |  |   | - | 
 
 
 **返回值**
@@ -1094,8 +1096,8 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | - | 属性值, 可以是keyPath |
-| def | Array&lt;T&gt;\<T> | 是 | - | - | 指定的默认值 | 
+| key | string | 是 |  |   | 属性值, 可以是keyPath |
+| def | Array&lt;T&gt;\<T> | 是 |  |   | 指定的默认值 | 
 
 
 **返回值**
@@ -1177,7 +1179,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | - | - | 
+| key | string | 是 |  |   | - | 
 
 
 **返回值**
@@ -1210,8 +1212,8 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 | - | - | 属性值, 可以是keyPath |
-| def | Array&lt;any&gt;\<any> | 是 | - | - | 指定的默认值 | 
+| key | string | 是 |  |   | 属性值, 可以是keyPath |
+| def | Array&lt;any&gt;\<any> | 是 |  |   | 指定的默认值 | 
 
 
 **返回值**
@@ -1225,9 +1227,9 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.51 | 3.90 | x | 4.61 | 3.90 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.51 | 3.90 | x | x | 4.61 | 3.90 | x | 4.61 |
 
 
 **uni-app 兼容性**

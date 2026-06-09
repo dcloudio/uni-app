@@ -9,9 +9,9 @@ setInterval() 方法重复调用一个函数或执行一个代码片段，在每
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| handler | string \| Function | 是 | - | - | - |
-| timeout | number | 否 | - | - | - |
-| arguments | any[\] | 是 | - | - | - | 
+| handler | string \| Function | 是 |  |   | - |
+| timeout | number | 否 |  |   | - |
+| arguments | any[\] | 是 |  |   | - | 
 
 
 **返回值**
@@ -23,15 +23,15 @@ setInterval() 方法重复调用一个函数或执行一个代码片段，在每
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | - | 3.90 | 4.11 | - |
+| Web | Android | iOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 3.90 | 4.11 |  |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | 3.90 | - |
+| Android UTS 插件 | iOS UTS 插件 |
+| :- | :- |
+| 3.90 | 3.90 |
 
 
 
@@ -46,9 +46,9 @@ setInterval() 方法重复调用一个函数或执行一个代码片段，在每
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| handler | string \| Function | 是 | - | - | - |
-| timeout | number | 否 | - | - | - |
-| arguments | any[\] | 是 | - | - | - | 
+| handler | string \| Function | 是 |  |   | - |
+| timeout | number | 否 |  |   | - |
+| arguments | any[\] | 是 |  |   | - | 
 
 
 **返回值**
@@ -60,15 +60,15 @@ setInterval() 方法重复调用一个函数或执行一个代码片段，在每
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | - | 3.90 | 4.11 | - |
+| Web | Android | iOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 3.90 | 4.11 |  |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| 3.90 | 3.90 | - |
+| Android UTS 插件 | iOS UTS 插件 |
+| :- | :- |
+| 3.90 | 3.90 |
 
 
 
@@ -83,7 +83,7 @@ clearInterval() 方法可取消先前通过 setInterval() 设置的重复定时�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | number \| undefined | 是 | - | - | - | 
+| id | number \| undefined | 是 |  |   | - | 
 
 
 **返回值**
@@ -118,7 +118,7 @@ clearTimeout() 方法取消了先前通过调用setTimeout()建立的定时器
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | number \| undefined | 是 | - | - | - | 
+| id | number \| undefined | 是 |  |   | - | 
 
 
 **返回值**

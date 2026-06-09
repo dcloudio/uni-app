@@ -5,11 +5,17 @@
 color 属性设置元素的文本及文本装饰（text-decoration）的前景色颜色值。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,7 +34,7 @@ color: <color>;
 ### color 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| currentcolor | Web: 4.0; Android: -; iOS: -; HarmonyOS: -; HarmonyOS(Vapor): - | 将颜色设置为元素的 color 属性值。但是，如果设置为 color 的值，currentcolor 将被视为 inherit。 |
+| currentcolor | Web: 4.0; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 将颜色设置为元素的 color 属性值。但是，如果设置为 color 的值，currentcolor 将被视为 inherit。 |
 
 
 ### 默认值 @default-value 
@@ -86,20 +92,20 @@ color: <color>;
         <!-- 普通版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">color</text>
-          <text class="uni-info">设置值: {{color}}</text>
-          <text class="uni-info">获取值: {{colorActual}}</text>
+          <text class="uni-info">设置值: {{data.color}}</text>
+          <text class="uni-info">获取值: {{data.colorActual}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common test-text" :style="{ color: color }">当前 color: {{color}}</text>
+            <text ref="textRef" class="common test-text" :style="{ color: data.color }">当前 color: {{data.color}}</text>
           </view>
         </view>
 
         <!-- 拍平版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">测试拍平</text>
-          <text class="uni-info">设置值: {{color}}</text>
-          <text class="uni-info">获取值: {{colorActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.color}}</text>
+          <text class="uni-info">获取值: {{data.colorActualFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common test-text-flatten" :style="{ color: color }" flatten>当前 color: {{color}}</text>
+            <text ref="textRefFlat" class="common test-text-flatten" :style="{ color: data.color }" flatten>当前 color: {{data.color}}</text>
           </view>
         </view>
       </view>
@@ -107,7 +113,7 @@ color: <color>;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="colorEnum" title="color 枚举值" @change="radioChangeColor" :compact="true"></enum-data>
-        <input-data :defaultValue="color" title="color 自定义值" type="text" @confirm="inputChangeColor"></input-data>
+        <input-data :defaultValue="data.color" title="color 自定义值" type="text" @confirm="inputChangeColor"></input-data>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -128,25 +134,29 @@ color: <color>;
     { value: 6, name: 'rgba(0, 255, 0, 0.5)' }
   ]
 
-  const color = ref('cyan')
-  const colorActual = ref('')
-  const colorActualFlat = ref('')
+  const data = reactive({
+    color: 'cyan',
+    colorActual: '',
+    colorActualFlat: ''
+  })
   const textRef = ref(null as UniTextElement | null)
   const textRefFlat = ref(null as UniTextElement | null)
 
   const getPropertyValues = () => {
-    colorActual.value = textRef.value?.style.getPropertyValue('color') ?? ''
-    colorActualFlat.value = textRefFlat.value?.style.getPropertyValue('color') ?? ''
+    data.colorActual = textRef.value?.style.getPropertyValue('color') ?? ''
+    data.colorActualFlat = textRefFlat.value?.style.getPropertyValue('color') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeColor = (value: string) => {
-    color.value = value
+    data.color = value
     textRef.value?.style.setProperty('color', value)
     textRefFlat.value?.style.setProperty('color', value)
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeColor = (index: number) => {
@@ -165,7 +175,8 @@ color: <color>;
   })
 
   defineExpose({
-    radioChangeColor
+    radioChangeColor,
+    data
   })
 </script>
 

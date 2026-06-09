@@ -5,11 +5,17 @@
 flex-flow 属性设置弹性容器中子元素的布局主轴方向及单或多行（列）堆叠方向，，是 flex-direction、flex-wrap 的简写。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,13 +34,13 @@ flex-flow: <'flex-direction'> || <'flex-wrap'>;
 ### flex-flow 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| column | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 主轴为垂直方向，起点在上沿。 |
-| column-reverse | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 主轴为垂直方向（与column相同），起点在下沿（与column相反）。 |
-| row | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 主轴为水平方向，起点在左端。 |
-| row-reverse | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 主轴为水平方向（与row相同），起点在右端（与row相反）。 |
-| nowrap | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不换行。 |
-| wrap | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 换行，第一行在上方。 |
-| wrap-reverse | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 换行（与wrap相同），第一行在下方（与wrap相反）。 |
+| column | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 主轴为垂直方向，起点在上沿。 |
+| column-reverse | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 主轴为垂直方向（与column相同），起点在下沿（与column相反）。 |
+| row | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 主轴为水平方向，起点在左端。 |
+| row-reverse | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 主轴为水平方向（与row相同），起点在右端（与row相反）。 |
+| nowrap | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 不换行。 |
+| wrap | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 换行，第一行在上方。 |
+| wrap-reverse | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 换行（与wrap相同），第一行在下方（与wrap相反）。 |
 
 
 
@@ -184,10 +190,10 @@ flex-flow: <'flex-direction'> || <'flex-wrap'>;
         <!-- 普通版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">flex-flow</text>
-          <text class="uni-info">设置值: {{flexFlow}}</text>
-          <text class="uni-info">获取值: {{flexFlowActual}}</text>
+          <text class="uni-info">设置值: {{data.flexFlow}}</text>
+          <text class="uni-info">获取值: {{data.flexFlowActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="test-flex-container test-view" :style="{ flexFlow: flexFlow }">
+            <view ref="viewRef" class="test-flex-container test-view" :style="{ flexFlow: data.flexFlow }">
               <view class="test-item red"></view>
               <view class="test-item green"></view>
               <view class="test-item blue"></view>
@@ -201,10 +207,10 @@ flex-flow: <'flex-direction'> || <'flex-wrap'>;
         <!-- 拍平版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">拍平</text>
-          <text class="uni-info">设置值: {{flexFlow}}</text>
-          <text class="uni-info">获取值: {{flexFlowActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.flexFlow}}</text>
+          <text class="uni-info">获取值: {{data.flexFlowActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="test-flex-container test-view-flatten" :style="{ flexFlow: flexFlow }" flatten>
+            <view ref="viewRefFlat" class="test-flex-container test-view-flatten" :style="{ flexFlow: data.flexFlow }" flatten>
               <view class="test-item red" flatten></view>
               <view class="test-item green" flatten></view>
               <view class="test-item blue" flatten></view>
@@ -219,7 +225,7 @@ flex-flow: <'flex-direction'> || <'flex-wrap'>;
       <view class="uni-common-mt uni-common-mb">
           <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
           <enum-data :items="flexFlowEnum" title="flex-flow 枚举值" @change="radioChangeFlexFlow" :compact="true"></enum-data>
-          <input-data :defaultValue="flexFlow" title="flex-flow 自定义值" type="text" @confirm="inputChangeFlexFlow"></input-data>
+          <input-data :defaultValue="data.flexFlow" title="flex-flow 自定义值" type="text" @confirm="inputChangeFlexFlow"></input-data>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -240,25 +246,29 @@ flex-flow: <'flex-direction'> || <'flex-wrap'>;
     { value: 6, name: 'column wrap-reverse' }
   ]
 
-  const flexFlow = ref('row wrap')
-  const flexFlowActual = ref('')
-  const flexFlowActualFlat = ref('')
+  const data = reactive({
+    flexFlow: 'row wrap',
+    flexFlowActual: '',
+    flexFlowActualFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const viewRefFlat = ref(null as UniElement | null)
 
   const getPropertyValues = () => {
-    flexFlowActual.value = viewRef.value?.style.getPropertyValue('flex-flow') ?? ''
-    flexFlowActualFlat.value = viewRefFlat.value?.style.getPropertyValue('flex-flow') ?? ''
+    data.flexFlowActual = viewRef.value?.style.getPropertyValue('flex-flow') ?? ''
+    data.flexFlowActualFlat = viewRefFlat.value?.style.getPropertyValue('flex-flow') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeFlexFlow = (value : string) => {
-    flexFlow.value = value
+    data.flexFlow = value
     viewRef.value?.style.setProperty('flex-flow', value)
     viewRefFlat.value?.style.setProperty('flex-flow', value)
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeFlexFlow = (index: number) => {
@@ -277,7 +287,8 @@ flex-flow: <'flex-direction'> || <'flex-wrap'>;
   })
 
   defineExpose({
-    radioChangeFlexFlow
+    radioChangeFlexFlow,
+    data
   })
 </script>
 

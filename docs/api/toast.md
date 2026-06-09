@@ -13,66 +13,66 @@
 显示消息提示框
 
 ### showToast 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **ShowToastOptions** | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | uni.showToast参数定义 |
+| options | **ShowToastOptions** | 是 |  |   | uni.showToast参数定义 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| title | string | 是 | - | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 提示的内容，长度与 icon 取值有关。 |
+| title | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 提示的内容，长度与 icon 取值有关。 |
 | icon | string | 否 | "success" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: x | icon值说明 |
-| image | [string.ImageURIString](/uts/data-type.md#ide-string) | 否 | - | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 自定义图标的本地路径（app端暂不支持gif） |
-| mask | boolean | 否 | false | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否显示透明蒙层，防止触摸穿透 |
-| duration | number | 否 | 1500 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 提示的延迟时间，单位毫秒 |
-| position | string | 否 | - | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | position值说明。纯文本轻提示显示位置，填写有效值后只有 title 属性生效，且不支持通过 uni.hideToast 隐藏。 |
-| success | (res: ShowToastSuccess) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.showToast成功回调函数定义 |
-| fail | (res: [ShowToastFail](#showtoastfail-values)) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.showToast失败回调函数定义 |
-| complete | (res: any) => void | 否 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | uni.showToast完成回调函数定义 | 
+| image | [string.ImageURIString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 自定义图标的本地路径（app端暂不支持gif） |
+| mask | boolean | 否 | false | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 是否显示透明蒙层，防止触摸穿透 |
+| duration | number | 否 | 1500 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 提示的延迟时间，单位毫秒 |
+| position | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | position值说明。纯文本轻提示显示位置，填写有效值后只有 title 属性生效，且不支持通过 uni.hideToast 隐藏。 |
+| success | (res: ShowToastSuccess) => void | 否 |  | 微信小程序: 4.41 | uni.showToast成功回调函数定义 |
+| fail | (res: [ShowToastFail](#showtoastfail-values)) => void | 否 |  | 微信小程序: 4.41 | uni.showToast失败回调函数定义 |
+| complete | (res: any) => void | 否 |  | 微信小程序: 4.41 | uni.showToast完成回调函数定义 | 
 
 ##### icon 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| success | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 显示成功图标 |
-| error | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 显示错误图标 |
-| fail | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 显示错误图标，此时title文本无长度显示，支付宝、抖音小程序生效 |
-| exception | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 显示异常图标，此时title文本无长度显示，支付宝小程序生效 |
-| loading | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 显示加载图标 |
-| none | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 不显示图标 |
+| 合法值 | 描述 |
+| :- | :- |
+| success | 显示成功图标 |
+| error | 显示错误图标 |
+| fail | 显示错误图标，此时title文本无长度显示，支付宝、抖音小程序生效 |
+| exception | 显示异常图标，此时title文本无长度显示，支付宝小程序生效 |
+| loading | 显示加载图标 |
+| none | 不显示图标 |
 
 ##### position 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| top | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 居上显示 |
-| center | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 居中显示 |
-| bottom | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 居底显示 |
+| 合法值 | 描述 |
+| :- | :- |
+| top | 居上显示 |
+| center | 居中显示 |
+| bottom | 居底显示 |
 
 #### ShowToastFail 的属性值 @showtoastfail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误码 |
-| errSubject | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 统一错误主题（模块）名称 |
-| data | any | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - |  |
+| errCode | number | 是 |  |   | 错误码 |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| 1 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 撤销 |
-| 1001 | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 请求参数非法 |
+| 合法值 | 描述 |
+| :- | :- |
+| 1 | 撤销 |
+| 1001 | 请求参数非法 |
 
 
 
@@ -110,9 +110,9 @@
 隐藏消息提示框。
 
 ### hideToast 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 
 
@@ -383,7 +383,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 
 
 ## Bug & Tips@tips

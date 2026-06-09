@@ -5,11 +5,17 @@
 align-items 属性将所有直接子元素上的 align-self 值设置为一个组。在 Flex 弹性布局中控制子元素在交叉轴方向的对齐方式，相当于为所有子元素设置了默认的 align-self 值。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,11 +34,11 @@ align-items: normal | stretch | <baseline-position> | [ <overflow-position>? <se
 ### align-items 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| center | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 元素在交叉轴上居中。如果元素在交叉轴上的尺寸（高度/宽度）大于其容器，那么在两个方向均等溢出。 |
-| flex-start | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 元素在交叉轴上对齐起始位置。 |
-| flex-end | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 元素在交叉轴上对齐结尾位置。 |
-| stretch | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 元素在交叉轴方向未设置尺寸（高度/宽度）或设置为 auto，会被拉伸到与行相同的高度或列相同的宽度。同时元素仍然保持其宽高比例的约束。 |
-| baseline | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 所有元素向基线对齐。交叉轴起点到元素基线距离最大的元素将会于交叉轴起点对齐以确定基线。 |
+| center | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素在交叉轴上居中。如果元素在交叉轴上的尺寸（高度/宽度）大于其容器，那么在两个方向均等溢出。 |
+| flex-start | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素在交叉轴上对齐起始位置。 |
+| flex-end | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素在交叉轴上对齐结尾位置。 |
+| stretch | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素在交叉轴方向未设置尺寸（高度/宽度）或设置为 auto，会被拉伸到与行相同的高度或列相同的宽度。同时元素仍然保持其宽高比例的约束。 |
+| baseline | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 所有元素向基线对齐。交叉轴起点到元素基线距离最大的元素将会于交叉轴起点对齐以确定基线。 |
 
 
 ### 默认值 @default-value 
@@ -176,10 +182,10 @@ align-items: normal | stretch | <baseline-position> | [ <overflow-position>? <se
         <!-- 普通版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">align-items</text>
-          <text class="uni-info">设置值: {{alignItems}}</text>
-          <text class="uni-info">获取值: {{alignItemsActual}}</text>
+          <text class="uni-info">设置值: {{data.alignItems}}</text>
+          <text class="uni-info">获取值: {{data.alignItemsActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="test-flex-container test-view" :style="{ alignItems: alignItems }">
+            <view ref="viewRef" class="test-flex-container test-view" :style="{ alignItems: data.alignItems }">
               <view class="test-item-small red"></view>
               <view class="test-item-small green"></view>
               <view class="test-item-small blue"></view>
@@ -190,10 +196,10 @@ align-items: normal | stretch | <baseline-position> | [ <overflow-position>? <se
         <!-- 拍平版本 -->
         <view class="uni-common-mt">
           <text class="uni-title-text">拍平</text>
-          <text class="uni-info">设置值: {{alignItems}}</text>
-          <text class="uni-info">获取值: {{alignItemsActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.alignItems}}</text>
+          <text class="uni-info">获取值: {{data.alignItemsActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="test-flex-container test-view-flatten" :style="{ alignItems: alignItems }" flatten>
+            <view ref="viewRefFlat" class="test-flex-container test-view-flatten" :style="{ alignItems: data.alignItems }" flatten>
               <view class="test-item-small red"></view>
               <view class="test-item-small green"></view>
               <view class="test-item-small blue"></view>
@@ -205,7 +211,7 @@ align-items: normal | stretch | <baseline-position> | [ <overflow-position>? <se
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
           <enum-data :items="alignItemsEnum" title="align-items 枚举值" @change="radioChangeAlignItems" :compact="true"></enum-data>
-          <input-data :defaultValue="alignItems" title="align-items 自定义值" type="text" @confirm="inputChangeAlignItems"></input-data>
+          <input-data :defaultValue="data.alignItems" title="align-items 自定义值" type="text" @confirm="inputChangeAlignItems"></input-data>
       </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -223,25 +229,28 @@ align-items: normal | stretch | <baseline-position> | [ <overflow-position>? <se
     { value: 4, name: 'stretch' }
   ]
 
-  const alignItems = ref('center')
-  const alignItemsActual = ref('')
-  const alignItemsActualFlat = ref('')
+  const data = reactive({
+    alignItems: 'center',
+    alignItemsActual: '',
+    alignItemsActualFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const viewRefFlat = ref(null as UniElement | null)
 
   const getPropertyValues = () => {
-    alignItemsActual.value = viewRef.value?.style.getPropertyValue('align-items') ?? ''
-    alignItemsActualFlat.value = viewRefFlat.value?.style.getPropertyValue('align-items') ?? ''
+    data.alignItemsActual = viewRef.value?.style.getPropertyValue('align-items') ?? ''
+    data.alignItemsActualFlat = viewRefFlat.value?.style.getPropertyValue('align-items') ?? ''
   }
 
+  const ins = getCurrentInstance()
   const changeAlignItems = (value: string) => {
-    alignItems.value = value
+    data.alignItems = value
     viewRef.value?.style.setProperty('align-items', value)
     viewRefFlat.value?.style.setProperty('align-items', value)
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeAlignItems = (index: number) => {
@@ -260,7 +269,8 @@ align-items: normal | stretch | <baseline-position> | [ <overflow-position>? <se
   })
 
   defineExpose({
-    radioChangeAlignItems
+    radioChangeAlignItems,
+    data
   })
 </script>
 

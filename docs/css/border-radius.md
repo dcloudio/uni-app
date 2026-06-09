@@ -5,11 +5,17 @@
 CSS 属性 border-radius 允许你设置元素的外边框圆角。当使用一个半径时确定一个圆形，当使用两个半径时确定一个椭圆。这个（椭）圆与边框的交集形成圆角效果。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -50,8 +56,16 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
       <view>
         <text>border-radius: 10px</text>
         <view class="demo-box">
-          <view class="common" style="border-radius: 10px"></view>
-          <view class="common" style="border-radius: 10px" flatten></view>
+          <view class="common" style="border-radius: 10px;"></view>
+          <view class="common" style="border-radius: 10px;" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-radius: 10% 和阴影</text>
+        <view class="demo-box" style="height: 60px;">
+          <view class="common" style="border-radius: 10%;box-shadow: 5px 5px rgba(0, 0, 0, .3);"></view>
+          <view class="common" style="border-radius: 10%;box-shadow: 5px 5px rgba(0, 0, 0, .3);" flatten></view>
         </view>
       </view>
 
@@ -88,6 +102,38 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
       </view>
 
       <view>
+        <text>border-top-left-radius: 20%</text>
+        <view class="demo-box">
+          <view class="common" style="border-top-left-radius: 20%"></view>
+          <view class="common" style="border-top-left-radius: 20%" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-top-right-radius: 20%</text>
+        <view class="demo-box">
+          <view class="common" style="border-top-right-radius: 20%"></view>
+          <view class="common" style="border-top-right-radius: 20%" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-bottom-left-radius: 20%</text>
+        <view class="demo-box">
+          <view class="common" style="border-bottom-left-radius: 20%"></view>
+          <view class="common" style="border-bottom-left-radius: 20%" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-bottom-right-radius: 20%</text>
+        <view class="demo-box">
+          <view class="common" style="border-bottom-right-radius: 20%"></view>
+          <view class="common" style="border-bottom-right-radius: 20%" flatten></view>
+        </view>
+      </view>
+
+      <view>
         <text>border-radius: 150px（长宽不同形成扁圆）</text>
         <view class="demo-box">
           <view class="common" style="border-radius: 150px"></view>
@@ -100,6 +146,14 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
         <view class="demo-box">
           <view class="common-square" style="border-radius: 150px"></view>
           <view class="common-square" style="border-radius: 150px" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-radius: 999px（border-radius超出边界形成正圆）</text>
+        <view class="demo-box">
+          <view class="square" style="border-radius: 999px; border: 1px solid green; border-top-color: red;"></view>
+          <view class="square" style="border-radius: 999px; border: 1px solid green; border-top-color: red;" flatten></view>
         </view>
       </view>
 
@@ -172,10 +226,10 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{borderRadius}}</text>
-          <text class="uni-info">获取值: {{borderRadiusActual}}</text>
+          <text class="uni-info">设置值: {{data.borderRadius}}</text>
+          <text class="uni-info">获取值: {{data.borderRadiusActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-dynamic test-view" :style="{ borderRadius: borderRadius }">
+            <view ref="viewRef" class="common-dynamic test-view" :style="{ borderRadius: data.borderRadius }">
               <view style="flex-grow: 1;background-color: bisque;"><text>view</text></view>
             </view>
           </view>
@@ -183,19 +237,19 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{borderRadius}}</text>
-          <text class="uni-info">获取值: {{borderRadiusActualText}}</text>
+          <text class="uni-info">设置值: {{data.borderRadius}}</text>
+          <text class="uni-info">获取值: {{data.borderRadiusActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-dynamic test-text" :style="{ borderRadius: borderRadius }">text</text>
+            <text ref="textRef" class="common-dynamic test-text" :style="{ borderRadius: data.borderRadius }">text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{borderRadius}}</text>
-          <text class="uni-info">获取值: {{borderRadiusActualImage}}</text>
+          <text class="uni-info">设置值: {{data.borderRadius}}</text>
+          <text class="uni-info">获取值: {{data.borderRadiusActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-image test-image" :style="{ borderRadius: borderRadius }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-image test-image" :style="{ borderRadius: data.borderRadius }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -204,10 +258,10 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{borderRadius}}</text>
-          <text class="uni-info">获取值: {{borderRadiusActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.borderRadius}}</text>
+          <text class="uni-info">获取值: {{data.borderRadiusActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ borderRadius: borderRadius }" flatten>
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ borderRadius: data.borderRadius }" flatten>
               <view style="flex-grow: 1;background-color: bisque;" flatten><text flatten>view</text></view>
             </view>
           </view>
@@ -215,19 +269,19 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{borderRadius}}</text>
-          <text class="uni-info">获取值: {{borderRadiusActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.borderRadius}}</text>
+          <text class="uni-info">获取值: {{data.borderRadiusActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ borderRadius: borderRadius }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ borderRadius: data.borderRadius }" flatten>text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{borderRadius}}</text>
-          <text class="uni-info">获取值: {{borderRadiusActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.borderRadius}}</text>
+          <text class="uni-info">获取值: {{data.borderRadiusActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ borderRadius: borderRadius }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image test-image-flatten" :style="{ borderRadius: data.borderRadius }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -235,7 +289,7 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="borderRadiusEnum" title="border-radius 枚举值" @change="radioChangeBorderRadius" :compact="true"></enum-data>
-        <input-data :defaultValue="borderRadius" title="border-radius 自定义值" type="text" @confirm="inputChangeBorderRadius"></input-data>
+        <input-data :defaultValue="data.borderRadius" title="border-radius 自定义值" type="text" @confirm="inputChangeBorderRadius"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -264,13 +318,15 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
     { value: 5, name: '50%' }
   ]
 
-  const borderRadius = ref('10px')
-  const borderRadiusActual = ref('')
-  const borderRadiusActualText = ref('')
-  const borderRadiusActualImage = ref('')
-  const borderRadiusActualFlat = ref('')
-  const borderRadiusActualTextFlat = ref('')
-  const borderRadiusActualImageFlat = ref('')
+  const data = reactive({
+    borderRadius: '10px',
+    borderRadiusActual: '',
+    borderRadiusActualText: '',
+    borderRadiusActualImage: '',
+    borderRadiusActualFlat: '',
+    borderRadiusActualTextFlat: '',
+    borderRadiusActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -279,16 +335,17 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
   const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    borderRadiusActual.value = viewRef.value?.style.getPropertyValue('border-radius') ?? ''
-    borderRadiusActualFlat.value = viewRefFlat.value?.style.getPropertyValue('border-radius') ?? ''
-    borderRadiusActualText.value = textRef.value?.style.getPropertyValue('border-radius') ?? ''
-    borderRadiusActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('border-radius') ?? ''
-    borderRadiusActualImage.value = imageRef.value?.style.getPropertyValue('border-radius') ?? ''
-    borderRadiusActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('border-radius') ?? ''
+    data.borderRadiusActual = viewRef.value?.style.getPropertyValue('border-radius') ?? ''
+    data.borderRadiusActualFlat = viewRefFlat.value?.style.getPropertyValue('border-radius') ?? ''
+    data.borderRadiusActualText = textRef.value?.style.getPropertyValue('border-radius') ?? ''
+    data.borderRadiusActualTextFlat = textRefFlat.value?.style.getPropertyValue('border-radius') ?? ''
+    data.borderRadiusActualImage = imageRef.value?.style.getPropertyValue('border-radius') ?? ''
+    data.borderRadiusActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border-radius') ?? ''
   }
 
+  const ins = getCurrentInstance()
   const changeBorderRadius = (value: string) => {
-    borderRadius.value = value
+    data.borderRadius = value
     viewRef.value?.style.setProperty('border-radius', value)
     viewRefFlat.value?.style.setProperty('border-radius', value)
     textRef.value?.style.setProperty('border-radius', value)
@@ -298,7 +355,7 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeBorderRadius = (index: number) => {
@@ -317,7 +374,8 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
   })
 
   defineExpose({
-    radioChangeBorderRadius
+    radioChangeBorderRadius,
+    data
   })
 </script>
 
@@ -338,6 +396,11 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
     width: 150px;
     height: 150px;
     background-color: gray;
+  }
+
+  .square {
+    width: 150px;
+    height: 150px;
   }
 
   .text-radius {

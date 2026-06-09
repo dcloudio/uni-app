@@ -5,11 +5,17 @@
 height CSS 属性指定了一个元素的高度。默认情况下，这个属性决定的是内容区（ content area）的高度，但是，如果将 box-sizing 设置为 border-box , 这个属性决定的将是边框区域（border area）的高度。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -29,10 +35,10 @@ height: <viewport-length>{1,2};
 ### height 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): - | 由浏览器为元素计算并选择一个高度。 |
-| fit-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 将 fill-content 公式中的可用位置替换为特定的参数以进行使用，如：min(max-content, max(min-content, )) |
-| max-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 设置为允许的最大高度。 |
-| min-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 设置为允许的最小高度。 |
+| auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 由浏览器为元素计算并选择一个高度。 |
+| fit-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 将 fill-content 公式中的可用位置替换为特定的参数以进行使用，如：min(max-content, max(min-content, )) |
+| max-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 设置为允许的最大高度。 |
+| min-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 设置为允许的最小高度。 |
 
 
 **注意**
@@ -96,10 +102,10 @@ height: <viewport-length>{1,2};
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{height}}</text>
-          <text class="uni-info">获取值: {{heightActual}}</text>
+          <text class="uni-info">设置值: {{data.height}}</text>
+          <text class="uni-info">获取值: {{data.heightActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-dynamic test-view" :style="{ height: height }">
+            <view ref="viewRef" class="common-dynamic test-view" :style="{ height: data.height }">
               <text>view</text>
             </view>
           </view>
@@ -107,19 +113,19 @@ height: <viewport-length>{1,2};
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{height}}</text>
-          <text class="uni-info">获取值: {{heightActualText}}</text>
+          <text class="uni-info">设置值: {{data.height}}</text>
+          <text class="uni-info">获取值: {{data.heightActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-dynamic test-text" :style="{ height: height }">text</text>
+            <text ref="textRef" class="common-dynamic test-text" :style="{ height: data.height }">text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{height}}</text>
-          <text class="uni-info">获取值: {{heightActualImage}}</text>
+          <text class="uni-info">设置值: {{data.height}}</text>
+          <text class="uni-info">获取值: {{data.heightActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-dynamic test-image" :style="{ height: height }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-dynamic test-image" :style="{ height: data.height }" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -128,10 +134,10 @@ height: <viewport-length>{1,2};
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{height}}</text>
-          <text class="uni-info">获取值: {{heightActualFlat}}</text>
+          <text class="uni-info">设置值: {{data.height}}</text>
+          <text class="uni-info">获取值: {{data.heightActualFlat}}</text>
           <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ height: height }" flatten>
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ height: data.height }" flatten>
               <text>view</text>
             </view>
           </view>
@@ -139,19 +145,19 @@ height: <viewport-length>{1,2};
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{height}}</text>
-          <text class="uni-info">获取值: {{heightActualTextFlat}}</text>
+          <text class="uni-info">设置值: {{data.height}}</text>
+          <text class="uni-info">获取值: {{data.heightActualTextFlat}}</text>
           <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ height: height }" flatten>text</text>
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ height: data.height }" flatten>text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{height}}</text>
-          <text class="uni-info">获取值: {{heightActualImageFlat}}</text>
+          <text class="uni-info">设置值: {{data.height}}</text>
+          <text class="uni-info">获取值: {{data.heightActualImageFlat}}</text>
           <view class="test-box">
-            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ height: height }" flatten src="/static/test-image/logo.png"></image>
+            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ height: data.height }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -159,7 +165,7 @@ height: <viewport-length>{1,2};
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="heightEnum" title="height 枚举值" @change="radioChangeHeight" :compact="true"></enum-data>
-        <input-data :defaultValue="height" title="height 自定义值" type="text" @confirm="inputChangeHeight"></input-data>
+        <input-data :defaultValue="data.height" title="height 自定义值" type="text" @confirm="inputChangeHeight"></input-data>
       </view>
 
       <view class="uni-common-mb">
@@ -189,13 +195,15 @@ height: <viewport-length>{1,2};
     { value: 7, name: 'auto' }
   ]
 
-  const height = ref('100px')
-  const heightActual = ref('')
-  const heightActualText = ref('')
-  const heightActualImage = ref('')
-  const heightActualFlat = ref('')
-  const heightActualTextFlat = ref('')
-  const heightActualImageFlat = ref('')
+  const data = reactive({
+    height: '100px',
+    heightActual: '',
+    heightActualText: '',
+    heightActualImage: '',
+    heightActualFlat: '',
+    heightActualTextFlat: '',
+    heightActualImageFlat: ''
+  })
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
@@ -204,16 +212,18 @@ height: <viewport-length>{1,2};
   const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
-    heightActual.value = viewRef.value?.style.getPropertyValue('height') ?? ''
-    heightActualFlat.value = viewRefFlat.value?.style.getPropertyValue('height') ?? ''
-    heightActualText.value = textRef.value?.style.getPropertyValue('height') ?? ''
-    heightActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('height') ?? ''
-    heightActualImage.value = imageRef.value?.style.getPropertyValue('height') ?? ''
-    heightActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('height') ?? ''
+    data.heightActual = viewRef.value?.style.getPropertyValue('height') ?? ''
+    data.heightActualFlat = viewRefFlat.value?.style.getPropertyValue('height') ?? ''
+    data.heightActualText = textRef.value?.style.getPropertyValue('height') ?? ''
+    data.heightActualTextFlat = textRefFlat.value?.style.getPropertyValue('height') ?? ''
+    data.heightActualImage = imageRef.value?.style.getPropertyValue('height') ?? ''
+    data.heightActualImageFlat = imageRefFlat.value?.style.getPropertyValue('height') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeHeight = (value: string) => {
-    height.value = value
+    data.height = value
     viewRef.value?.style.setProperty('height', value)
     viewRefFlat.value?.style.setProperty('height', value)
     textRef.value?.style.setProperty('height', value)
@@ -223,7 +233,7 @@ height: <viewport-length>{1,2};
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeHeight = (index: number) => {
@@ -242,7 +252,8 @@ height: <viewport-length>{1,2};
   })
 
   defineExpose({
-    radioChangeHeight
+    radioChangeHeight,
+    data
   })
 </script>
 

@@ -21,8 +21,8 @@ CSSStyleDeclaration表示一个CSS 声明块对象，它是一个 CSS 属性键�
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| name | string ([string.cssPropertyString](/uts/data-type.md#ide-string)) | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | CSS样式名称 |
-| value | string | 否 | "" | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 要设置的新CSS样式值 默认值空字符串 | 
+| name | string ([string.cssPropertyString](/uts/data-type.md#ide-string)) | 是 |  |   | CSS样式名称 |
+| value | string | 否 | "" |   | 要设置的新CSS样式值 默认值空字符串 | 
 
 
 
@@ -44,7 +44,7 @@ CSSStyleDeclaration表示一个CSS 声明块对象，它是一个 CSS 属性键�
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| property | string ([string.cssPropertyString](/uts/data-type.md#ide-string)) | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 要获取的CSS样式名称 | 
+| property | string ([string.cssPropertyString](/uts/data-type.md#ide-string)) | 是 |  |   | 要获取的CSS样式名称 | 
 
 
 ##### 返回值 
@@ -489,7 +489,8 @@ App平台获取样式值与Web平台存在部分差异：
   </style>
   ```
   注意：与排版无关的CSS样式（如 background-color、color、font-size等）可通过 `getPropertyValue` 同步获取设置的样式值  
-  
+
+- 5.08之前版本蒸汽模式（Vapor）通过 `getPropertyValue` 不支持获取[自定义css变量](../../css/common/function.md)
 
 
 
@@ -500,16 +501,16 @@ App平台获取样式值与Web平台存在部分差异：
 删除CSS指定的样式值
 
 ##### removeProperty 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | - | 4.51 | 4.51 | 4.61 | x |
+| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.51 | 4.51 | 4.61 | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| property | string ([string.cssPropertyString](/uts/data-type.md#ide-string)) | 是 | - | Web: -; 微信小程序: -; Android: -; iOS: -; HarmonyOS: - | 要删除的CSS样式名称 | 
+| property | string ([string.cssPropertyString](/uts/data-type.md#ide-string)) | 是 |  |   | 要删除的CSS样式名称 | 
 
 
 ##### 返回值 

@@ -5,11 +5,17 @@
 CSS 属性受到 transition effect的影响，会产生不断变化的中间值，而 CSS transition-timing-function 属性用来描述这个中间值是怎样计算的。实质上，通过这个函数会建立一条加速度曲线，因此在整个 transition 变化过程中，变化速度可以不断改变。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| x | x | x |
 
 
 
@@ -28,12 +34,12 @@ transition-timing-function: <easing-function>#;
 ### transition-timing-function 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| ease | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 默认值。表示过渡效果开始缓慢，然后逐渐加速，最后减速结束。这是大多数情况下的推荐值，因为它创建了平滑的过渡效果。 |
-| ease-in | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 过渡开始时较慢，然后逐渐加速。这会在过渡初期创建一个缓慢的效果。 |
-| ease-out | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 过渡开始时较快，然后逐渐减速。这会在过渡末尾创建一个缓慢的效果。 |
-| ease-in-out | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 过渡开始时较慢，然后加速，最后减速。这是一个结合了ease-in和ease-out的时间函数，产生平滑的过渡效果。 |
-| linear | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 过渡效果是线性的，速度保持恒定，没有加速或减速。这会在整个过渡期间保持相同的速度。 |
-| cubic-bezier | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 用于自定义 CSS 过渡（transition）的时间函数的函数，它允许你精确地定义过渡效果的速度变化。 |
+| ease | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 默认值。表示过渡效果开始缓慢，然后逐渐加速，最后减速结束。这是大多数情况下的推荐值，因为它创建了平滑的过渡效果。 |
+| ease-in | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 过渡开始时较慢，然后逐渐加速。这会在过渡初期创建一个缓慢的效果。 |
+| ease-out | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 过渡开始时较快，然后逐渐减速。这会在过渡末尾创建一个缓慢的效果。 |
+| ease-in-out | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 过渡开始时较慢，然后加速，最后减速。这是一个结合了ease-in和ease-out的时间函数，产生平滑的过渡效果。 |
+| linear | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 过渡效果是线性的，速度保持恒定，没有加速或减速。这会在整个过渡期间保持相同的速度。 |
+| cubic-bezier | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 用于自定义 CSS 过渡（transition）的时间函数的函数，它允许你精确地定义过渡效果的速度变化。 |
 
 
 #### App平台
@@ -94,10 +100,10 @@ App平台不支持指定多个过渡效果。
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
-          <text class="uni-info">设置值: {{transitionTimingFunctionDynamic}}</text>
-          <text class="uni-info">获取值: {{transitionTimingFunctionActual}}</text>
+          <text class="uni-info">设置值: {{data.transitionTimingFunctionDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transitionTimingFunctionActual}}</text>
           <view class="test-box">
-            <view ref="viewRefDynamic" class="common-image test-view" :style="{ transitionTimingFunction: transitionTimingFunctionDynamic, transitionProperty: 'width', transitionDuration: '2s' }" @click="triggerTransitionDynamic">
+            <view ref="viewRefDynamic" class="common-image test-view" :style="{ transitionTimingFunction: data.transitionTimingFunctionDynamic, transitionProperty: 'width', transitionDuration: '2s' }" @click="triggerTransitionDynamic">
               <text style="font-size: 12px;">点击view</text>
             </view>
           </view>
@@ -105,19 +111,19 @@ App平台不支持指定多个过渡效果。
 
         <view class="test-item">
           <text class="uni-subtitle-text">text 组件</text>
-          <text class="uni-info">设置值: {{transitionTimingFunctionDynamic}}</text>
-          <text class="uni-info">获取值: {{transitionTimingFunctionActualText}}</text>
+          <text class="uni-info">设置值: {{data.transitionTimingFunctionDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transitionTimingFunctionActualText}}</text>
           <view class="test-box">
-            <text ref="textRefDynamic" class="common-text test-text" :style="{ transitionTimingFunction: transitionTimingFunctionDynamic, transitionProperty: 'width', transitionDuration: '2s' }" @click="triggerTransitionTextDynamic">点击text</text>
+            <text ref="textRefDynamic" class="common-text test-text" :style="{ transitionTimingFunction: data.transitionTimingFunctionDynamic, transitionProperty: 'width', transitionDuration: '2s' }" @click="triggerTransitionTextDynamic">点击text</text>
           </view>
         </view>
 
         <view class="test-item">
           <text class="uni-subtitle-text">image 组件</text>
-          <text class="uni-info">设置值: {{transitionTimingFunctionDynamic}}</text>
-          <text class="uni-info">获取值: {{transitionTimingFunctionActualImage}}</text>
+          <text class="uni-info">设置值: {{data.transitionTimingFunctionDynamic}}</text>
+          <text class="uni-info">获取值: {{data.transitionTimingFunctionActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRefDynamic" class="common-image test-image" :style="{ transitionTimingFunction: transitionTimingFunctionDynamic, transitionProperty: 'width', transitionDuration: '2s' }" @click="triggerTransitionImageDynamic" src="/static/test-image/logo.png"></image>
+            <image ref="imageRefDynamic" class="common-image test-image" :style="{ transitionTimingFunction: data.transitionTimingFunctionDynamic, transitionProperty: 'width', transitionDuration: '2s' }" @click="triggerTransitionImageDynamic" src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -125,7 +131,7 @@ App平台不支持指定多个过渡效果。
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="transitionTimingFunctionEnum" title="transition-timing-function 枚举值" @change="radioChangeTransitionTimingFunction" :compact="true"></enum-data>
-        <input-data :defaultValue="transitionTimingFunctionDynamic" title="transition-timing-function 自定义值" type="text" @confirm="inputChangeTransitionTimingFunction"></input-data>
+        <input-data :defaultValue="data.transitionTimingFunctionDynamic" title="transition-timing-function 自定义值" type="text" @confirm="inputChangeTransitionTimingFunction"></input-data>
       </view>
 
       <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件 transition-timing-function：ease-in-out</text>
@@ -198,10 +204,12 @@ App平台不支持指定多个过渡效果。
   }
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const transitionTimingFunctionDynamic = ref('ease')
-  const transitionTimingFunctionActual = ref('')
-  const transitionTimingFunctionActualText = ref('')
-  const transitionTimingFunctionActualImage = ref('')
+  const data = reactive({
+    transitionTimingFunctionDynamic: 'ease',
+    transitionTimingFunctionActual: '',
+    transitionTimingFunctionActualText: '',
+    transitionTimingFunctionActualImage: ''
+  })
   const viewRefDynamic = ref(null as UniElement | null)
   const textRefDynamic = ref(null as UniTextElement | null)
   const imageRefDynamic = ref(null as UniImageElement | null)
@@ -222,13 +230,15 @@ App平台不支持指定多个过渡效果。
   ]
 
   const getPropertyValues = () => {
-    transitionTimingFunctionActual.value = viewRefDynamic.value?.style.getPropertyValue('transition-timing-function') ?? ''
-    transitionTimingFunctionActualText.value = textRefDynamic.value?.style.getPropertyValue('transition-timing-function') ?? ''
-    transitionTimingFunctionActualImage.value = imageRefDynamic.value?.style.getPropertyValue('transition-timing-function') ?? ''
+    data.transitionTimingFunctionActual = viewRefDynamic.value?.style.getPropertyValue('transition-timing-function') ?? ''
+    data.transitionTimingFunctionActualText = textRefDynamic.value?.style.getPropertyValue('transition-timing-function') ?? ''
+    data.transitionTimingFunctionActualImage = imageRefDynamic.value?.style.getPropertyValue('transition-timing-function') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeTransitionTimingFunctionDynamic = (value: string) => {
-    transitionTimingFunctionDynamic.value = value
+    data.transitionTimingFunctionDynamic = value
     viewRefDynamic.value?.style.setProperty('transition-timing-function', value)
     textRefDynamic.value?.style.setProperty('transition-timing-function', value)
     imageRefDynamic.value?.style.setProperty('transition-timing-function', value)
@@ -236,7 +246,7 @@ App平台不支持指定多个过渡效果。
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeTransitionTimingFunction = (index: number) => {
@@ -277,7 +287,7 @@ App平台不支持指定多个过渡效果。
   onReady(() => {
     getPropertyValues()
     if (scrollViewRefDynamic.value != null) {
-      scrollViewRefDynamic.value.style.setProperty('transition-timing-function', transitionTimingFunctionDynamic.value)
+      scrollViewRefDynamic.value.style.setProperty('transition-timing-function', data.transitionTimingFunctionDynamic)
       scrollViewRefDynamic.value.style.setProperty('transition-property', 'width')
       scrollViewRefDynamic.value.style.setProperty('transition-duration', '2s')
     }
@@ -286,7 +296,8 @@ App平台不支持指定多个过渡效果。
   defineExpose({
     jest_start,
     jest_reset,
-    radioChangeTransitionTimingFunction
+    radioChangeTransitionTimingFunction,
+    data
   })
 </script>
 

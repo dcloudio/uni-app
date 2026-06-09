@@ -29,7 +29,7 @@ String.fromCharCode() 静态方法返回由指定的 UTF-16 码元序列创建�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| codes | number[\] | 是 | - | - | 介于 0 和 65535（0xFFFF）之间的数字，表示一个 UTF-16 码元。大于 0xFFFF 的数字会被截断为最后的 16 位。不进行有效性检查。 | 
+| codes | number[\] | 是 |  |   | 介于 0 和 65535（0xFFFF）之间的数字，表示一个 UTF-16 码元。大于 0xFFFF 的数字会被截断为最后的 16 位。不进行有效性检查。 | 
 
 
 **返回值**
@@ -128,9 +128,9 @@ String.fromCharCode() 静态方法返回由指定的 UTF-16 码元序列创建�
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -148,8 +148,8 @@ String.fromCharCode() 静态方法返回由指定的 UTF-16 码元序列创建�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| searchString | string | 是 | - | - | 要在 str 中搜索的字符串。不能是正则表达式。 |
-| position | number | 否 | - | - | 在字符串中开始搜索 searchString 的位置。（默认为 0。） | 
+| searchString | string | 是 |  |   | 要在 str 中搜索的字符串。不能是正则表达式。 |
+| position | number | 否 |  |   | 在字符串中开始搜索 searchString 的位置。（默认为 0。） | 
 
 
 **返回值**
@@ -190,8 +190,8 @@ endsWith() 方法用于判断一个字符串是否以指定字符串结尾，如
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| searchString | string | 是 | - | - | 要搜索的作为结尾的字符串，不能是正则表达式。所有非正则表达式的值都会被强制转换为字符串。 |
-| endPosition | number | 否 | - | - | 可选，预期找到 searchString 的末尾位置（即 searchString 最后一个字符的索引加 1）。默认为 str.length。 | 
+| searchString | string | 是 |  |   | 要搜索的作为结尾的字符串，不能是正则表达式。所有非正则表达式的值都会被强制转换为字符串。 |
+| endPosition | number | 否 |  |   | 可选，预期找到 searchString 的末尾位置（即 searchString 最后一个字符的索引加 1）。默认为 str.length。 | 
 
 
 **返回值**
@@ -237,7 +237,7 @@ repeat() 构造并返回一个新字符串，该字符串包含被连接在一�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| count | number | 是 | - | - | 介于 0 和 +Infinity 之间的整数。表示在新构造的字符串中重复了多少遍原字符串。 | 
+| count | number | 是 |  |   | 介于 0 和 +Infinity 之间的整数。表示在新构造的字符串中重复了多少遍原字符串。 | 
 
 
 **返回值**
@@ -279,8 +279,8 @@ startsWith() 方法用来判断当前字符串是否以另外一个给定的子�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| searchString | string | 是 | - | - | 要搜索的子字符串。 |
-| position | number | 否 | - | - | 在 str 中搜索 searchString 的开始位置，默认值为 0。 | 
+| searchString | string | 是 |  |   | 要搜索的子字符串。 |
+| position | number | 否 |  |   | 在 str 中搜索 searchString 的开始位置，默认值为 0。 | 
 
 
 **返回值**
@@ -320,7 +320,7 @@ startsWith() 方法用来判断当前字符串是否以另外一个给定的子�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| index | number | 是 | - | - | 字符指定偏移量处，允许正整数和负整数，负整数从字符串中的最后一个字符开始倒数。 | 
+| index | number | 是 |  |   | 字符指定偏移量处，允许正整数和负整数，负整数从字符串中的最后一个字符开始倒数。 | 
 
 
 **返回值**
@@ -365,7 +365,7 @@ startsWith() 方法用来判断当前字符串是否以另外一个给定的子�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| pos | number | 是 | - | - | 要返回的字符的索引，从零开始。 | 
+| pos | number | 是 |  |   | 要返回的字符的索引，从零开始。 | 
 
 
 **返回值**
@@ -416,7 +416,7 @@ startsWith() 方法用来判断当前字符串是否以另外一个给定的子�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| index | number | 是 | - | - | 一个大于等于 0，小于字符串长度的整数。如果不是一个数值，则默认为 0。 | 
+| index | number | 是 |  |   | 一个大于等于 0，小于字符串长度的整数。如果不是一个数值，则默认为 0。 | 
 
 
 **返回值**
@@ -460,7 +460,7 @@ startsWith() 方法用来判断当前字符串是否以另外一个给定的子�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| strings | string[\] | 是 | - | - | T要连接到 str 的一个或多个字符串。 | 
+| strings | string[\] | 是 |  |   | T要连接到 str 的一个或多个字符串。 | 
 
 
 **返回值**
@@ -502,8 +502,8 @@ startsWith() 方法用来判断当前字符串是否以另外一个给定的子�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| searchString | string | 是 | - | - | 要搜索的子字符串。 |
-| position | number | 否 | - | - | 该方法返回指定子字符串在大于或等于 position 位置的第一次出现的索引，默认为 0。如果 position 大于调用字符串的长度，则该方法根本不搜索调用字符串。如果 position 小于零，该方法的行为就像 position 为 0 时一样。 | 
+| searchString | string | 是 |  |   | 要搜索的子字符串。 |
+| position | number | 否 |  |   | 该方法返回指定子字符串在大于或等于 position 位置的第一次出现的索引，默认为 0。如果 position 大于调用字符串的长度，则该方法根本不搜索调用字符串。如果 position 小于零，该方法的行为就像 position 为 0 时一样。 | 
 
 
 **返回值**
@@ -549,8 +549,8 @@ startsWith() 方法用来判断当前字符串是否以另外一个给定的子�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| searchString | string | 是 | - | - | 要搜索的子字符串。 |
-| position | number | 否 | - | - | 该方法返回指定子字符串在小于或等于 position 的位置中的最后一次出现的索引，默认为 +Infinity。如果 position 大于调用字符串的长度，则该方法将搜索整个字符串。如果 position 小于 0，则行为与 0 相同，即该方法只在索引 0 处查找指定的子字符串。 | 
+| searchString | string | 是 |  |   | 要搜索的子字符串。 |
+| position | number | 否 |  |   | 该方法返回指定子字符串在小于或等于 position 的位置中的最后一次出现的索引，默认为 +Infinity。如果 position 大于调用字符串的长度，则该方法将搜索整个字符串。如果 position 小于 0，则行为与 0 相同，即该方法只在索引 0 处查找指定的子字符串。 | 
 
 
 **返回值**
@@ -589,7 +589,7 @@ startsWith() 方法用来判断当前字符串是否以另外一个给定的子�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| that | string | 是 | - | - | 与 referenceStr 进行比较的字符串。 | 
+| that | string | 是 |  |   | 与 referenceStr 进行比较的字符串。 | 
 
 
 **返回值**
@@ -603,9 +603,9 @@ startsWith() 方法用来判断当前字符串是否以另外一个给定的子�
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -623,7 +623,7 @@ match() 方法检索字符串与正则表达式进行匹配的结果。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| regexp | string \| RegExp | 是 | - | - | 一个正则表达式对象或者任何具有 Symbol.match 方法的对象。 | 
+| regexp | string \| RegExp | 是 |  |   | 一个正则表达式对象或者任何具有 Symbol.match 方法的对象。 | 
 
 
 **返回值**
@@ -646,9 +646,9 @@ match() 方法检索字符串与正则表达式进行匹配的结果。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+| Web | Android 系统版本 | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | √ | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
 
 
 **uni-app 兼容性**
@@ -664,8 +664,8 @@ match() 方法检索字符串与正则表达式进行匹配的结果。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| searchValue | string \| RegExp | 是 | - | - | RegExp: 一个RegExp 对象或者其字面量。该正则所匹配的内容会被第二个参数的返回值替换掉。string: 一个将被 newSubStr 替换的 字符串。其被视为一整个字符串，而不是一个正则表达式。仅第一个匹配项会被替换。 |
-| replaceValue | string | 是 | - | - | 用于替换掉第一个参数在原字符串中的匹配部分的字符串。 | 
+| searchValue | string \| RegExp | 是 |  |   | RegExp: 一个RegExp 对象或者其字面量。该正则所匹配的内容会被第二个参数的返回值替换掉。string: 一个将被 newSubStr 替换的 字符串。其被视为一整个字符串，而不是一个正则表达式。仅第一个匹配项会被替换。 |
+| replaceValue | string | 是 |  |   | 用于替换掉第一个参数在原字符串中的匹配部分的字符串。 | 
 
 
 **返回值**
@@ -729,8 +729,8 @@ replaceValue 参数在包含一些特殊字符时在不同的平台被解释为�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| searchValue | string \| RegExp | 是 | - | - | RegExp: 一个RegExp 对象或者其字面量。该正则所匹配的内容会被第二个参数的返回值替换掉。string: 一个将被 newSubStr 替换的 字符串。其被视为一整个字符串，而不是一个正则表达式。仅第一个匹配项会被替换。 |
-| replacer | (substring: string, args?: Array&lt;any&gt;) => string | 是 | - | - | 一个用来创建新子字符串的函数，该函数的返回值将替换掉第一个参数匹配到的结果。在iOS中replacer的第二个参数是字符串数组而非可变参数。 | 
+| searchValue | string \| RegExp | 是 |  |   | RegExp: 一个RegExp 对象或者其字面量。该正则所匹配的内容会被第二个参数的返回值替换掉。string: 一个将被 newSubStr 替换的 字符串。其被视为一整个字符串，而不是一个正则表达式。仅第一个匹配项会被替换。 |
+| replacer | (substring: string, args?: Array&lt;any&gt;) => string | 是 |  |   | 一个用来创建新子字符串的函数，该函数的返回值将替换掉第一个参数匹配到的结果。在iOS中replacer的第二个参数是字符串数组而非可变参数。 | 
 
 
 **返回值**
@@ -792,7 +792,7 @@ search() 方法执行正则表达式和 String 对象之间的一个搜索匹配
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| regexp | string \| RegExp | 是 | - | - | 一个正则表达式（regular expression）对象。 | 
+| regexp | string \| RegExp | 是 |  |   | 一个正则表达式（regular expression）对象。 | 
 
 
 **返回值**
@@ -838,8 +838,8 @@ slice() 方法提取某个字符串的一部分，并返回一个新的字符串
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| start | number | 否 | - | - | 可选。从该索引（以 0 为基数）处开始提取原字符串中的字符。如果值为负数，会被当做 strLength + beginIndex 看待，这里的strLength 是字符串的长度（例如，如果 beginIndex 是 -3 则看作是：strLength - 3） |
-| end | number | 否 | - | - | 可选。在该索引（以 0 为基数）处结束提取字符串。如果省略该参数，slice() 会一直提取到字符串末尾。如果该参数为负数，则被看作是 strLength + endIndex，这里的 strLength 就是字符串的长度 (例如，如果 endIndex 是 -3，则是，strLength - 3)。 | 
+| start | number | 否 |  |   | 可选。从该索引（以 0 为基数）处开始提取原字符串中的字符。如果值为负数，会被当做 strLength + beginIndex 看待，这里的strLength 是字符串的长度（例如，如果 beginIndex 是 -3 则看作是：strLength - 3） |
+| end | number | 否 |  |   | 可选。在该索引（以 0 为基数）处结束提取字符串。如果省略该参数，slice() 会一直提取到字符串末尾。如果该参数为负数，则被看作是 strLength + endIndex，这里的 strLength 就是字符串的长度 (例如，如果 endIndex 是 -3，则是，strLength - 3)。 | 
 
 
 **返回值**
@@ -883,8 +883,8 @@ split() 方法接受一个模式，通过搜索模式将字符串分割成一个
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| separator | string \| RegExp | 是 | - | - | 描述每个分割应该发生在哪里的模式。 |
-| limit | number | 否 | - | - | 一个非负整数，指定数组中包含的子字符串的数量限制。当提供此参数时，split 方法会在指定 separator 每次出现时分割该字符串，但在已经有 limit 个元素时停止分割。任何剩余的文本都不会包含在数组中。 | 
+| separator | string \| RegExp | 是 |  |   | 描述每个分割应该发生在哪里的模式。 |
+| limit | number | 否 |  |   | 一个非负整数，指定数组中包含的子字符串的数量限制。当提供此参数时，split 方法会在指定 separator 每次出现时分割该字符串，但在已经有 limit 个元素时停止分割。任何剩余的文本都不会包含在数组中。 | 
 
 
 **返回值**
@@ -930,8 +930,8 @@ split() 方法接受一个模式，通过搜索模式将字符串分割成一个
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| start | number | 是 | - | - | 要截取的第一个字符的索引，该索引位置的字符作为返回的字符串的首字母。 |
-| end | number | 否 | - | - | 可选。一个 0 到字符串长度之间的整数，以该数字为索引的字符不包含在截取的字符串内。 | 
+| start | number | 是 |  |   | 要截取的第一个字符的索引，该索引位置的字符作为返回的字符串的首字母。 |
+| end | number | 否 |  |   | 可选。一个 0 到字符串长度之间的整数，以该数字为索引的字符不包含在截取的字符串内。 | 
 
 
 **返回值**
@@ -1016,7 +1016,7 @@ toLowerCase() 会将调用该方法的字符串值转为小写形式，并返回
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| locales | string \| string[\] | 否 | - | - | 可选。指明要转换成小写格式的特定语言区域。如果以一个数组 Array 形式给出多个 locales, 最合适的地区将被选出来应用。默认的 locale 是主机环境的当前区域 (locale) 设置。 | 
+| locales | string \| string[\] | 否 |  |   | 可选。指明要转换成小写格式的特定语言区域。如果以一个数组 Array 形式给出多个 locales, 最合适的地区将被选出来应用。默认的 locale 是主机环境的当前区域 (locale) 设置。 | 
 
 
 **返回值**
@@ -1030,9 +1030,9 @@ toLowerCase() 会将调用该方法的字符串值转为小写形式，并返回
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1087,7 +1087,7 @@ toLowerCase() 会将调用该方法的字符串值转为小写形式，并返回
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| locales | string \| string[\] | 否 | - | - | locales参数指示要用于根据任何特定于语言环境的大小写映射转换为大写的语言环境。如果Array中给出了多个区域设置，则使用最佳可用区域设置。默认语言环境是主机环境的当前语言环境。 | 
+| locales | string \| string[\] | 否 |  |   | locales参数指示要用于根据任何特定于语言环境的大小写映射转换为大写的语言环境。如果Array中给出了多个区域设置，则使用最佳可用区域设置。默认语言环境是主机环境的当前语言环境。 | 
 
 
 **返回值**
@@ -1101,9 +1101,9 @@ toLowerCase() 会将调用该方法的字符串值转为小写形式，并返回
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1159,8 +1159,8 @@ toLowerCase() 会将调用该方法的字符串值转为小写形式，并返回
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| from | number | 是 | - | - | 开始提取字符的位置。如果为负值，则被看作 strLength + start，其中 strLength 为字符串的长度（例如，如果 start 为 -3，则被看作 strLength + (-3)）。 |
-| length | number | 否 | - | - | 可选。提取的字符数。 | 
+| from | number | 是 |  |   | 开始提取字符的位置。如果为负值，则被看作 strLength + start，其中 strLength 为字符串的长度（例如，如果 start 为 -3，则被看作 strLength + (-3)）。 |
+| length | number | 否 |  |   | 可选。提取的字符数。 | 
 
 
 **返回值**
@@ -1183,9 +1183,9 @@ toLowerCase() 会将调用该方法的字符串值转为小写形式，并返回
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1203,8 +1203,8 @@ toLowerCase() 会将调用该方法的字符串值转为小写形式，并返回
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| targetLength | number | 是 | - | - | 当前 str 填充后的长度。如果该值小于或等于 str.length，则会直接返回当前 str。 |
-| padString | string | 否 | - | - | 可选。用于填充当前 str 的字符串。如果 padString 太长，无法适应 targetLength，则会从末尾被截断。默认值为“ ”字符（U+0020）。 | 
+| targetLength | number | 是 |  |   | 当前 str 填充后的长度。如果该值小于或等于 str.length，则会直接返回当前 str。 |
+| padString | string | 否 |  |   | 可选。用于填充当前 str 的字符串。如果 padString 太长，无法适应 targetLength，则会从末尾被截断。默认值为“ ”字符（U+0020）。 | 
 
 
 **返回值**
@@ -1247,8 +1247,8 @@ toLowerCase() 会将调用该方法的字符串值转为小写形式，并返回
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| targetLength | number | 是 | - | - | 当前 str 填充后的长度。如果该值小于或等于 str.length，则会直接返回当前 str。 |
-| padString | string | 否 | - | - | 可选。用于填充当前 str 的字符串。如果 padString 太长，无法适应 targetLength，则会被截断。默认值为“ ”字符（U+0020）。 | 
+| targetLength | number | 是 |  |   | 当前 str 填充后的长度。如果该值小于或等于 str.length，则会直接返回当前 str。 |
+| padString | string | 否 |  |   | 可选。用于填充当前 str 的字符串。如果 padString 太长，无法适应 targetLength，则会被截断。默认值为“ ”字符（U+0020）。 | 
 
 
 **返回值**
@@ -1295,7 +1295,7 @@ toLowerCase() 会将调用该方法的字符串值转为小写形式，并返回
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| pos | number | 是 | - | - | 这个字符串中需要转码的元素的位置。 | 
+| pos | number | 是 |  |   | 这个字符串中需要转码的元素的位置。 | 
 
 
 **返回值**
@@ -1309,9 +1309,9 @@ toLowerCase() 会将调用该方法的字符串值转为小写形式，并返回
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1329,7 +1329,7 @@ normalize() 方法会按照指定的一种 Unicode 正规形式将当前字符�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| form | "NFC" \| "NFD" \| "NFKC" \| "NFKD" | 是 | - | - | 四种 Unicode 正规形式（Unicode Normalization Form）"NFC"、"NFD"、"NFKC"，或 "NFKD" 其中的一个，默认值为 "NFC"。 | 
+| form | "NFC" \| "NFD" \| "NFKC" \| "NFKD" | 是 |  |   | 四种 Unicode 正规形式（Unicode Normalization Form）"NFC"、"NFD"、"NFKC"，或 "NFKD" 其中的一个，默认值为 "NFC"。 | 
 
 
 **返回值**
@@ -1343,9 +1343,9 @@ normalize() 方法会按照指定的一种 Unicode 正规形式将当前字符�
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1363,7 +1363,7 @@ normalize() 方法会按照指定的一种 Unicode 正规形式将当前字符�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| form | string | 否 | - | - | 四种 Unicode 正规形式（Unicode Normalization Form）"NFC"、"NFD"、"NFKC"，或 "NFKD" 其中的一个，默认值为 "NFC"。 | 
+| form | string | 否 |  |   | 四种 Unicode 正规形式（Unicode Normalization Form）"NFC"、"NFD"、"NFKC"，或 "NFKD" 其中的一个，默认值为 "NFC"。 | 
 
 
 **返回值**
@@ -1377,9 +1377,9 @@ normalize() 方法会按照指定的一种 Unicode 正规形式将当前字符�
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1415,9 +1415,9 @@ String 值的 isWellFormed() 方法返回一个表示该字符串是否包含单
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | x | 4.61 | 4.25 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| √ | 4.25 | x | x | 4.61 | 4.25 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1451,9 +1451,9 @@ String 的 toWellFormed() 方法返回一个字符串，其中该字符串的所
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.25 | x | 4.61 | 4.25 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| √ | 4.25 | x | x | 4.61 | 4.25 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1479,9 +1479,9 @@ String 的 toWellFormed() 方法返回一个字符串，其中该字符串的所
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 3.90 | x | 4.61 | 3.90 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | 3.90 | x | x | 4.61 | 3.90 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1509,9 +1509,9 @@ String 的 toWellFormed() 方法返回一个字符串，其中该字符串的所
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1530,7 +1530,7 @@ anchor() 方法创建一个 \<a> HTML 锚元素，被用作超文本靶标（hyp
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| name | string | 是 | - | - | 一个字符串，表示被创建的标签的 name 属性。 | 
+| name | string | 是 |  |   | 一个字符串，表示被创建的标签的 name 属性。 | 
 
 
 **返回值**
@@ -1544,9 +1544,9 @@ anchor() 方法创建一个 \<a> HTML 锚元素，被用作超文本靶标（hyp
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1575,9 +1575,9 @@ anchor() 方法创建一个 \<a> HTML 锚元素，被用作超文本靶标（hyp
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1606,9 +1606,9 @@ blink() 方法创建一个字符串，其在 \<blink>str\</blink> 中嵌入字�
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1637,9 +1637,9 @@ bold() 方法会创建 HTML 元素“b”，并将字符串加粗展示。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1668,9 +1668,9 @@ fixed() 方法创建了一个 \<tt> 标签元素将字符串包裹起来，从�
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1689,7 +1689,7 @@ fixed() 方法创建了一个 \<tt> 标签元素将字符串包裹起来，从�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| color | string | 是 | - | - | 代表颜色的一个字符串，可以是三个一组的十六进制的 RGB 值，也可以是一个颜色名称的字符串字面量. | 
+| color | string | 是 |  |   | 代表颜色的一个字符串，可以是三个一组的十六进制的 RGB 值，也可以是一个颜色名称的字符串字面量. | 
 
 
 **返回值**
@@ -1703,9 +1703,9 @@ fixed() 方法创建了一个 \<tt> 标签元素将字符串包裹起来，从�
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1724,7 +1724,7 @@ fixed() 方法创建了一个 \<tt> 标签元素将字符串包裹起来，从�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| size | number | 是 | - | - | 1到7之间的整数。 | 
+| size | number | 是 |  |   | 1到7之间的整数。 | 
 
 
 **返回值**
@@ -1738,9 +1738,9 @@ fixed() 方法创建了一个 \<tt> 标签元素将字符串包裹起来，从�
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1759,7 +1759,7 @@ fixed() 方法创建了一个 \<tt> 标签元素将字符串包裹起来，从�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| size | string | 是 | - | - | 表示1到7之间的有符号整数的字符串。 | 
+| size | string | 是 |  |   | 表示1到7之间的有符号整数的字符串。 | 
 
 
 **返回值**
@@ -1773,9 +1773,9 @@ fixed() 方法创建了一个 \<tt> 标签元素将字符串包裹起来，从�
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1803,9 +1803,9 @@ italics()方法创建一个\<i> HTML元素，使字符串变为斜体。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1824,7 +1824,7 @@ link() 方法创建一个 HTML 元素 \<a> ，用该字符串作为超链接的�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| url | string | 是 | - | - | 任何能够指定 a 标签的 href 属性的字符串；它应当是有效的 URL（相对或绝对），任何 & 字符将会被转义为 &amp;，任何 " 字符将会被转义为 &quot;。 | 
+| url | string | 是 |  |   | 任何能够指定 a 标签的 href 属性的字符串；它应当是有效的 URL（相对或绝对），任何 & 字符将会被转义为 &amp;，任何 " 字符将会被转义为 &quot;。 | 
 
 
 **返回值**
@@ -1838,9 +1838,9 @@ link() 方法创建一个 HTML 元素 \<a> ，用该字符串作为超链接的�
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1869,9 +1869,9 @@ small() 方法的作用是创建一个使字符串显示小号字体的 \<small>
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1900,9 +1900,9 @@ strike()方法创建\<strike> HTML 元素，使字符串展示为被删除的文
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1931,9 +1931,9 @@ sub()方法创建一个 \<sub> HTML 元素，使字符串展示为下标。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -1962,9 +1962,9 @@ sup()方法创建 一个\<sup>HTML 元素，使字符串显示为上标。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**

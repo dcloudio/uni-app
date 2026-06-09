@@ -11,9 +11,9 @@ UniPage对象强化了开发者对页面的管理功能，并且支持在uts插�
 选项式的vue中通过`this.$page`，是另一种快速获取当前页面对象的方式。它得到的不是一个页面数组，而是一个具体的当前页面。并且这种方式支持主页面，也支持dialogPage。组合式写法[见下](#tips)
 
 ### getCurrentPages 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.31 | 4.61 |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | iOS uni-app x UTS 插件 | HarmonyOS 系统版本 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 5.11 | 4.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 |
 
 
 
@@ -85,6 +85,11 @@ UniPage对象强化了开发者对页面的管理功能，并且支持在uts插�
           check getAndroidActivity
         </button>
         <!-- #endif -->
+        <!-- #ifdef APP -->
+        <button class="uni-common-mt" @click="checkTakeSnapshot">
+          check takeSnapshot
+        </button>
+        <!-- #endif -->
       </view>
       <!-- #ifndef MP -->
       <page-head title="currentPageStyle"></page-head>
@@ -140,6 +145,7 @@ UniPage对象强化了开发者对页面的管理功能，并且支持在uts插�
     PageStyleArray: PageStyleItem[];
     currentPageStyle: UTSJSONObject;
     testing: boolean;
+    checkSnapshotResult: boolean;
   }
 
   const data = reactive({
@@ -147,7 +153,8 @@ UniPage对象强化了开发者对页面的管理功能，并且支持在uts插�
     pages: [] as string[],
     PageStyleArray: PageStyleArray,
     currentPageStyle: {},
-    testing: false
+    testing: false,
+    checkSnapshotResult: false
   } as DataType)
 
   const pageStyleText = computed(() : string => {
@@ -289,8 +296,14 @@ UniPage对象强化了开发者对页面的管理功能，并且支持在uts插�
     const page = getCurrentPage()
     const androidView = page.getAndroidView()
     const res = androidView != null
+    let failTitle = 'check fail'
+    // #ifdef APP-ANDROID && VUE3-VAPOR
+    if (!res) {
+      failTitle = '仅 Android uts 插件环境支持'
+    }
+    // #endif
     console.log('check getAndroidView', res)
-    uni.showToast(res ? { title: 'check success' } : { title: 'check fail', icon: 'error' })
+    uni.showToast(res ? { title: 'check success' } : { title: failTitle, icon: 'error' })
     return res
   }
   const checkGetIOSView = () : boolean => {
@@ -313,8 +326,14 @@ UniPage对象强化了开发者对页面的管理功能，并且支持在uts插�
     const page = getCurrentPage()
     const activity = page.getAndroidActivity()
     const res = activity != null
+    let failTitle = 'check fail'
+    // #ifdef APP-ANDROID && VUE3-VAPOR
+    if (!res) {
+      failTitle = '仅 Android uts 插件环境支持'
+    }
+    // #endif
     console.log('check getAndroidActivity', res)
-    uni.showToast(res ? { title: 'check success' } : { title: 'check fail', icon: 'error' })
+    uni.showToast(res ? { title: 'check success' } : { title: failTitle, icon: 'error' })
     return res
   }
 
@@ -337,6 +356,33 @@ UniPage对象强化了开发者对页面的管理功能，并且支持在uts插�
     return res
   }
 
+  const checkTakeSnapshot = () => {
+    const page = getCurrentPage()
+    let callBackNum = 0
+    page.takeSnapshot({
+      success: (res) => {
+        console.log('check takeSnapshot success', res)
+        uni.showToast({ title: 'check success' })
+        callBackNum++
+        if(callBackNum == 2){
+          data.checkSnapshotResult = true
+        }
+      },
+      fail: (err) => {
+        console.log('check takeSnapshot fail', err)
+        uni.showToast({ title: 'check fail', icon: 'error' })
+        callBackNum--
+      },
+      complete: (info) => {
+        console.log('check takeSnapshot complete', info)
+        callBackNum++
+        if(callBackNum == 2){
+          data.checkSnapshotResult = true
+        }
+      }
+    })
+  }
+
   defineExpose({
     data,
     pageStyleText,
@@ -354,7 +400,8 @@ UniPage对象强化了开发者对页面的管理功能，并且支持在uts插�
     checkGetHTMLElement,
     checkQuerySelector,
     checkQuerySelectorAll,
-    checkGetAndroidActivity
+    checkGetAndroidActivity,
+    checkTakeSnapshot
   })
 </script>
 
@@ -426,15 +473,15 @@ UniPage对象强化了开发者对页面的管理功能，并且支持在uts插�
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | - | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: - | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 
 
 ## 直接获取当前页面的UniPage@currentpage
 * `4.32` 新增选项式通过 `this.$page` 获取当前 `UniPage` 实例, 组合式通过`getCurrentInstance`，代码示例：
 ```js
 // 选项式 API
-const dialogPage = this.$page
+const curPage = this.$page
 // 组合式 API
 const currentInstance = getCurrentInstance()
-const dialogPage = instance?.proxy?.$page
+const curPage = currentInstance?.proxy?.$page
 ```

@@ -8,9 +8,9 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 | 5.0 |
+| Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 9.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 | 5.0 |
 
 
 App平台可以用view加事件来替代label。
@@ -18,8 +18,8 @@ App平台可以用view加事件来替代label。
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| disabled | boolean | - | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.71; HarmonyOS(Vapor): 5.0 | 是否禁用 |
-| for | string | - | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.71; HarmonyOS(Vapor): 5.0 | 绑定控件的 id |
+| disabled | boolean | false | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x; iOS(Vapor): 5.11; HarmonyOS: 4.71; HarmonyOS(Vapor): 5.0 | 是否禁用 |
+| for | string |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 9.0; iOS: x; iOS(Vapor): 5.11; HarmonyOS: 4.71; HarmonyOS(Vapor): 5.0 | 绑定控件的 id |
 
 
 
@@ -30,6 +30,8 @@ App平台可以用view加事件来替代label。
 ### 示例
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/component/label/label.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/component/label/label.uvue) 
 ::: preview https://hellouniappx.dcloud.net.cn/web/#/pages/component/label/label
+
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/component/label/label
 
 >示例
 ```vue
@@ -72,9 +74,15 @@ App平台可以用view加事件来替代label。
           <label class="label-3 label">
             <view class="uni-list-cell uni-list-cell-pd">
               <checkbox value="for1">选项一</checkbox>
+              <!-- #ifdef MP-ALIPAY -->
+              <text>选项一</text>
+              <!-- #endif -->
             </view>
             <view class="uni-list-cell uni-list-cell-pd">
               <checkbox value="for2">选项二</checkbox>
+              <!-- #ifdef MP-ALIPAY -->
+              <text>选项二</text>
+              <!-- #endif -->
             </view>
             <view class="uni-center" style="margin:10px 0;">
               <text class="uni-link">点击该label下的文字默认选中第一个checkbox</text>

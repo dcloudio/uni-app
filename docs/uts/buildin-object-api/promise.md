@@ -9,7 +9,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| fn | (resolve: (value: T) => void, reject: (reason?: any) => void) => void | 是 | - | - | 在构造函数中执行的 function。 | 
+| fn | (resolve: (value: T) => void, reject: (reason?: any) => void) => void | 是 |  |   | 在构造函数中执行的 function。 | 
 
 
 
@@ -79,7 +79,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| fn | (resolve: (value: T) => void) => void | 是 | - | - | 在构造函数中执行的 function。 | 
+| fn | (resolve: (value: T) => void) => void | 是 |  |   | 在构造函数中执行的 function。 | 
 
 
 
@@ -230,8 +230,8 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| onFulfilled | () => any | 是 | - | - | 一个在此 Promise 对象被兑现时异步执行的函数。它的返回值将成为 then() 返回的 Promise 对象的兑现值。 |
-| onRejected | (...args?: any) => any | 否 | - | - | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
+| onFulfilled | () => any | 是 |  |   | 一个在此 Promise 对象被兑现时异步执行的函数。它的返回值将成为 then() 返回的 Promise 对象的兑现值。 |
+| onRejected | (...args?: any) => any | 否 |  |   | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
 
 
 **返回值**
@@ -313,8 +313,8 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| onFulfilled | () => Promise\<any> | 是 | - | - | 一个在此 Promise 对象被兑现时异步执行的函数。它的返回值将成为 then() 返回的 Promise 对象的兑现值。 |
-| onRejected | (...args?: any) => any | 否 | - | - | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
+| onFulfilled | () => Promise\<any> | 是 |  |   | 一个在此 Promise 对象被兑现时异步执行的函数。它的返回值将成为 then() 返回的 Promise 对象的兑现值。 |
+| onRejected | (...args?: any) => any | 否 |  |   | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
 
 
 **返回值**
@@ -396,8 +396,8 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| onFulfilled | (res: T) => any | 是 | - | - | 一个在此 Promise 对象被兑现时异步执行的函数。它的返回值将成为 then() 返回的 Promise 对象的兑现值。 |
-| onRejected | (...args?: any) => any | 否 | - | - | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
+| onFulfilled | (res: T) => any | 是 |  |   | 一个在此 Promise 对象被兑现时异步执行的函数。它的返回值将成为 then() 返回的 Promise 对象的兑现值。 |
+| onRejected | (...args?: any) => any | 否 |  |   | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
 
 
 **返回值**
@@ -479,8 +479,8 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| onFulfilled | (res: T) => Promise\<any> | 是 | - | - | 一个在此 Promise 对象被兑现时异步执行的函数。它的返回值将成为 then() 返回的 Promise 对象的兑现值。 |
-| onRejected | (...args?: any) => any | 否 | - | - | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
+| onFulfilled | (res: T) => Promise\<any> | 是 |  |   | 一个在此 Promise 对象被兑现时异步执行的函数。它的返回值将成为 then() 返回的 Promise 对象的兑现值。 |
+| onRejected | (...args?: any) => any | 否 |  |   | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
 
 
 **返回值**
@@ -634,7 +634,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| onRejected | () => any | 是 | - | - | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
+| onRejected | () => any | 是 |  |   | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
 
 
 **返回值**
@@ -710,7 +710,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| onRejected | () => Promise\<any> | 是 | - | - | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
+| onRejected | () => Promise\<any> | 是 |  |   | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
 
 
 **返回值**
@@ -786,7 +786,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| onRejected | (res?: any) => any | 是 | - | - | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
+| onRejected | (res?: any) => any | 是 |  |   | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
 
 
 **返回值**
@@ -862,7 +862,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| onRejected | (res?: any) => Promise\<any> | 是 | - | - | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
+| onRejected | (res?: any) => Promise\<any> | 是 |  |   | 一个在此 Promise 对象被拒绝时异步执行的函数。它的返回值将成为 catch() 返回的 Promise 对象的兑现值。 | 
 
 
 **返回值**
@@ -938,7 +938,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-|  | (...args?: any) => any | 是 | - | - | - | 
+|  | (...args?: any) => any | 是 |  |   | - | 
 
 
 **返回值**
@@ -1079,7 +1079,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | T \| null | 是 | - | - | 一个兑现的值。 | 
+| value | T \| null | 是 |  |   | 一个兑现的值。 | 
 
 
 **返回值**
@@ -1143,7 +1143,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | Promise\<T> \| null | 是 | - | - | 一个 Promise。 | 
+| value | Promise\<T> \| null | 是 |  |   | 一个 Promise。 | 
 
 
 **返回值**
@@ -1207,7 +1207,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| value | any \| null | 否 | - | - | 一个拒绝的原因。 | 
+| value | any \| null | 否 |  |   | 一个拒绝的原因。 | 
 
 
 **返回值**
@@ -1270,7 +1270,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| arr | Array&lt;Promise&gt;\<Promise\<T>> | 是 | - | - | 一个 Promise 数组。 | 
+| arr | Array&lt;Promise&gt;\<Promise\<T>> | 是 |  |   | 一个 Promise 数组。 | 
 
 
 **返回值**
@@ -1345,7 +1345,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| arr | Array&lt;Promise&gt;\<Promise\<T>> | 是 | - | - | 一个 Promise 数组。 | 
+| arr | Array&lt;Promise&gt;\<Promise\<T>> | 是 |  |   | 一个 Promise 数组。 | 
 
 
 **返回值**
@@ -1415,7 +1415,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| arr | Array&lt;Promise&gt;\<Promise\<T>> | 是 | - | - | 一个 Promise 数组。 | 
+| arr | Array&lt;Promise&gt;\<Promise\<T>> | 是 |  |   | 一个 Promise 数组。 | 
 
 
 **返回值**
@@ -1502,7 +1502,7 @@ Promise 对象表示异步操作最终的完成（或失败）以及其结果值
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| arr | Array&lt;Promise&gt;\<Promise\<T>> | 是 | - | - | 一个 Promise 数组。 | 
+| arr | Array&lt;Promise&gt;\<Promise\<T>> | 是 |  |   | 一个 Promise 数组。 | 
 
 
 **返回值**

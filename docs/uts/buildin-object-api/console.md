@@ -11,7 +11,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | (any \| null)[\] | 是 | - | - | 要输出的对象列表。按传参的顺序把对象输出到控制台。 | 
+| data | (any \| null)[\] | 是 |  |   | 要输出的对象列表。按传参的顺序把对象输出到控制台。 | 
 
 
 **返回值**
@@ -41,7 +41,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | (any \| null)[\] | 是 | - | - | 要输出的对象列表。按传参的顺序把对象输出到控制台。 | 
+| data | (any \| null)[\] | 是 |  |   | 要输出的对象列表。按传参的顺序把对象输出到控制台。 | 
 
 
 **返回值**
@@ -71,7 +71,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | (any \| null)[\] | 是 | - | - | 要输出的对象列表。按传参的顺序把对象输出到控制台。 | 
+| data | (any \| null)[\] | 是 |  |   | 要输出的对象列表。按传参的顺序把对象输出到控制台。 | 
 
 
 **返回值**
@@ -101,7 +101,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | (any \| null)[\] | 是 | - | - | 要输出的对象列表。按传参的顺序把对象输出到控制台。 | 
+| data | (any \| null)[\] | 是 |  |   | 要输出的对象列表。按传参的顺序把对象输出到控制台。 | 
 
 
 **返回值**
@@ -113,15 +113,15 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | - | 3.90 | 4.11 | - |
+| Web | Android | iOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 3.90 | 4.11 |  |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | - |
+| Android UTS 插件 | iOS UTS 插件 |
+| :- | :- |
+| √ | √ |
 
 
 ### warn(...data)
@@ -131,7 +131,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | (any \| null)[\] | 是 | - | - | 要输出的对象列表。按传参的顺序把对象输出到控制台。 | 
+| data | (any \| null)[\] | 是 |  |   | 要输出的对象列表。按传参的顺序把对象输出到控制台。 | 
 
 
 **返回值**
@@ -143,15 +143,15 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | - | 3.90 | 4.11 | - |
+| Web | Android | iOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 3.90 | 4.11 |  |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- |
-| √ | √ | - |
+| Android UTS 插件 | iOS UTS 插件 |
+| :- | :- |
+| √ | √ |
 
 
 ### assert(condition?, ...data)
@@ -161,8 +161,8 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| condition | boolean | 否 | - | - | - |
-| data | (any \| null)[\] | 是 | - | - | - | 
+| condition | boolean | 否 |  |   | - |
+| data | (any \| null)[\] | 是 |  |   | - | 
 
 
 **返回值**
@@ -174,9 +174,9 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -200,9 +200,9 @@ console.clear() 方法清空控制台，但前提是该控制台允许清空。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -218,7 +218,7 @@ console.count() 方法会记录调用 count() 的次数。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| label | string | 否 | - | - | - | 
+| label | string | 否 |  |   | - | 
 
 
 **返回值**
@@ -230,9 +230,9 @@ console.count() 方法会记录调用 count() 的次数。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -248,7 +248,7 @@ console.count() 方法会记录调用 count() 的次数。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| label | string | 否 | - | - | - | 
+| label | string | 否 |  |   | - | 
 
 
 **返回值**
@@ -260,9 +260,9 @@ console.count() 方法会记录调用 count() 的次数。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -278,8 +278,8 @@ console.dir() 方法可以显示指定 JavaScript 对象的属性列表，并以
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| item | any \| null | 否 | - | - |  |
-| options | any \| null | 否 | - | - |  | 
+| item | any \| null | 否 |  |   |  |
+| options | any \| null | 否 |  |   |  | 
 
 
 **返回值**
@@ -291,9 +291,9 @@ console.dir() 方法可以显示指定 JavaScript 对象的属性列表，并以
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -309,7 +309,7 @@ console.dir() 方法可以显示指定 JavaScript 对象的属性列表，并以
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | (any \| null)[\] | 是 | - | - | - | 
+| data | (any \| null)[\] | 是 |  |   | - | 
 
 
 **返回值**
@@ -321,9 +321,9 @@ console.dir() 方法可以显示指定 JavaScript 对象的属性列表，并以
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -339,7 +339,7 @@ console.group() 方法在控制台上创建一个新的分组。随后输出到�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | (any \| null)[\] | 是 | - | - | - | 
+| data | (any \| null)[\] | 是 |  |   | - | 
 
 
 **返回值**
@@ -351,9 +351,9 @@ console.group() 方法在控制台上创建一个新的分组。随后输出到�
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -369,7 +369,7 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | (any \| null)[\] | 是 | - | - | - | 
+| data | (any \| null)[\] | 是 |  |   | - | 
 
 
 **返回值**
@@ -381,9 +381,9 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -407,9 +407,9 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -425,8 +425,8 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| tabularData | any \| null | 否 | - | - |  |
-| properties | string[\] | 否 | - | - | - | 
+| tabularData | any \| null | 否 |  |   |  |
+| properties | string[\] | 否 |  |   | - | 
 
 
 **返回值**
@@ -438,9 +438,9 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -456,7 +456,7 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| label | string | 否 | - | - | - | 
+| label | string | 否 |  |   | - | 
 
 
 **返回值**
@@ -468,9 +468,9 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -486,7 +486,7 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| label | string | 否 | - | - | - | 
+| label | string | 否 |  |   | - | 
 
 
 **返回值**
@@ -498,9 +498,9 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -516,8 +516,8 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| label | string | 否 | - | - | - |
-| data | (any \| null)[\] | 是 | - | - | - | 
+| label | string | 否 |  |   | - |
+| data | (any \| null)[\] | 是 |  |   | - | 
 
 
 **返回值**
@@ -529,9 +529,9 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -547,7 +547,7 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| label | string | 否 | - | - | - | 
+| label | string | 否 |  |   | - | 
 
 
 **返回值**
@@ -559,9 +559,9 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -577,7 +577,7 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | (any \| null)[\] | 是 | - | - | - | 
+| data | (any \| null)[\] | 是 |  |   | - | 
 
 
 **返回值**
@@ -589,9 +589,9 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | 4.61 | x | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 | x | x | 4.61 |
 
 
 **uni-app 兼容性**

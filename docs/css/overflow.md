@@ -5,11 +5,17 @@
 overflow 是 CSS 的简写属性，其设置了元素溢出时所需的行为——即当元素的内容太大而无法适应它的块级格式化上下文时。
 
 
-#### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 | 5.0 |
+### uni-app x 兼容性
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
+
+### App平台拍平（flatten）兼容性 @flatten_compatibility
+
+| Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
+| :- | :- | :- |
+| 5.21 | 5.11 | 5.0 |
 
 
 
@@ -28,11 +34,11 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
 ### overflow 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| visible | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 暂时仅view组件支持visible，其他组件支持不支持 |
-| hidden | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 如果需要，内容将被裁减以适应边距（padding）盒。不提供滚动条，也不支持允许用户滚动（例如通过拖拽或者使用滚轮）。内容可以以编程的方式滚动（例如，通过设置 scrollLeft 等属性的值或 scrollTo() 方法）, 因此该元素仍然是一个滚动的容器。 |
-| scroll | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 如果需要，内容将被裁减以适应边距（padding）盒。无论是否实际裁剪了任何内容，浏览器总是显示滚动条，以防止滚动条在内容改变时出现或者消失。打印机可能会打印溢出的内容。 |
-| auto | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 取决于用户代理。如果内容适应边距（padding）盒，它看起来与 visible 相同，但是仍然建立了一个新的块级格式化上下文。如果内容溢出，则浏览器提供滚动条。 |
-| clip | Web: 4.0; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 类似于 hidden，内容将以元素的边距（padding）盒进行裁剪。clip 和 hidden 之间的区别是 clip 关键字禁止所有滚动，包括以编程方式的滚动。该盒子不是一个滚动的容器，并且不会启动新的格式化上下文。如果你希望开启一个新的格式化上下文，你可以使用 display: flow-root 来这样做。 |
+| visible | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 暂时仅view组件支持visible，其他组件支持不支持 |
+| hidden | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 如果需要，内容将被裁减以适应边距（padding）盒。不提供滚动条，也不支持允许用户滚动（例如通过拖拽或者使用滚轮）。内容可以以编程的方式滚动（例如，通过设置 scrollLeft 等属性的值或 scrollTo() 方法）, 因此该元素仍然是一个滚动的容器。 |
+| scroll | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 如果需要，内容将被裁减以适应边距（padding）盒。无论是否实际裁剪了任何内容，浏览器总是显示滚动条，以防止滚动条在内容改变时出现或者消失。打印机可能会打印溢出的内容。 |
+| auto | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 取决于用户代理。如果内容适应边距（padding）盒，它看起来与 visible 相同，但是仍然建立了一个新的块级格式化上下文。如果内容溢出，则浏览器提供滚动条。 |
+| clip | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 类似于 hidden，内容将以元素的边距（padding）盒进行裁剪。clip 和 hidden 之间的区别是 clip 关键字禁止所有滚动，包括以编程方式的滚动。该盒子不是一个滚动的容器，并且不会启动新的格式化上下文。如果你希望开启一个新的格式化上下文，你可以使用 display: flow-root 来这样做。 |
 
 
 ### 默认值 @default-value 
@@ -58,6 +64,7 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
   <!-- #ifdef APP -->
   <scroll-view style="flex:1;">
   <!-- #endif -->
+    <page-intro content="本页演示 overflow 样式：overflow:hidden 与 overflow:visible 下子元素超出时的裁剪与显示；子元素为 view（border 圆角/边框）、text、image 等，每组均提供拍平（flatten）版本对比。"></page-intro>
     <text style="font-size: 15px;">overflow=hidden效果子元素是view border圆角</text>
     <view class="backgroundview">
       <view class="box-hidden-border-radius">
@@ -114,26 +121,42 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
       <text style="font-size: 15px;">overflow=hidden效果 子元素是text</text>
       <view class="backgroundview">
         <view class="box-hidden-border-radius">
-          <text class="text1">ABCDEFG</text>
+          <text
+            <!-- #ifdef VUE3-VAPOR-->
+              max-lines=1
+            <!-- #endif-->
+            class="text1">ABCDEFG</text>
         </view>
       </view>
       <text>拍平</text>
       <view class="backgroundview">
         <view class="box-hidden-border-radius" flatten>
-          <text class="text1" flatten>ABCDEFG</text>
+          <text
+          <!-- #ifdef VUE3-VAPOR-->
+            max-lines=1
+          <!-- #endif-->
+          class="text1" flatten>ABCDEFG</text>
         </view>
       </view>
 
       <text style="font-size: 15px;">overflow=visible效果 子元素是text</text>
       <view class="backgroundview">
         <view class="box-visible-border-radius">
-          <text class="text1">ABCDEFG</text>
+          <text
+          <!-- #ifdef VUE3-VAPOR-->
+            max-lines=1
+          <!-- #endif-->
+          class="text1">ABCDEFG</text>
         </view>
       </view>
       <text>拍平</text>
       <view class="backgroundview">
         <view class="box-visible-border-radius" flatten>
-          <text class="text1" flatten>ABCDEFG</text>
+          <text
+          <!-- #ifdef VUE3-VAPOR-->
+            max-lines=1
+          <!-- #endif-->
+           class="text1" flatten >ABCDEFG</text>
         </view>
       </view>
 
@@ -201,6 +224,45 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
           <view style="width: 50px; height: 50px; background-color: greenyellow;right: -70px;position: absolute;" flatten></view>
         </view>
       </view>
+
+      <text style="font-size: 15px;">overflow=hidden 多层view嵌套裁剪</text>
+      <view class="backgroundview">
+        <view class="box-visible-border-width">
+          <view style="overflow: hidden; width: 100px; height: 100px;">
+            <view style="width: 50px; height: 130px; background-color: greenyellow;position: absolute;"></view>
+          </view>
+        </view>
+      </view>
+      <text>拍平</text>
+      <view class="backgroundview">
+        <view class="box-visible-border-width">
+          <view style="overflow: hidden; width: 100px; height: 100px;">
+            <view style="width: 50px; height: 130px; background-color: greenyellow;position: absolute;" flatten></view>
+          </view>
+        </view>
+      </view>
+
+      <text style="font-size: 15px;">overflow=visible 多层view嵌套visible</text>
+      <view class="backgroundview">
+        <view style="overflow: visible; flex-direction: row; background-color: green;">
+      		<view style="overflow: visible; width: 50px; height: 100px;">
+      			<view style="width: 50px; height: 130px; background-color: greenyellow;position: absolute;"></view>
+      		</view>
+          <view style="overflow: hidden; width: 50px; height: 100px;"></view>
+        </view>
+      </view>
+      <text>拍平</text>
+      <view class="backgroundview">
+        <view class="backgroundview">
+          <view style="overflow: visible; flex-direction: row; background-color: green;">
+        		<view style="overflow: visible; width: 50px; height: 100px;">
+        			<view style="width: 50px; height: 130px; background-color: greenyellow;position: absolute;" flatten></view>
+        		</view>
+            <view style="overflow: hidden; width: 50px; height: 100px;" flatten></view>
+          </view>
+        </view>
+      </view>
+
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
