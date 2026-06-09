@@ -146,7 +146,10 @@ export function initEnv(
 
   initCustomScripts(options)
 
-  process.env.UNI_PLATFORM = options.platform as UniApp.PLATFORM
+  process.env.UNI_PLATFORM = options.platform as Exclude<
+    UniApp.PLATFORM,
+    'app-android' | 'app-ios'
+  >
 
   // 需要提前初始化
   initUVueEnv()
