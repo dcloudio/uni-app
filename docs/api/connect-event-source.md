@@ -35,14 +35,14 @@ Web端暂未兼容uni.connectEventSource API，请使用标准的Web API。
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **ConnectEventSourceOptions** | 是 |  | Web: x; HarmonyOS: x |  |
+| options | **ConnectEventSourceOptions** | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| url | string | 是 |  | Web: x; Android: 4.51; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS 系统版本: x; HarmonyOS: x | 服务器地址 |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |  | Web: x; Android: 4.61; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS 系统版本: x; HarmonyOS: x | 请求头 | 
+| url | string | 是 |  | Web: x; 微信小程序:  ; Android: 4.51; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS 系统版本: x; HarmonyOS: x | 服务器地址 |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |  | Web: x; 微信小程序:  ; Android: 4.61; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS 系统版本: x; HarmonyOS: x | 请求头 | 
 
 
 ### 返回值 
@@ -65,15 +65,15 @@ message 事件，会在通过事件源收到数据时触发。
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (ev: [UniMessageEvent](#unimessageevent-values)) => void | 是 |  | Web: x; HarmonyOS: x | 事件回调 | 
+| callback | (ev: [UniMessageEvent](#unimessageevent-values)) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | 事件回调 | 
 
 ##### UniMessageEvent 的属性值 @unimessageevent-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS 系统版本: x; HarmonyOS: x | 事件类型。 |
-| data | any | 否 | null | Web: x; Android: 4.51; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS 系统版本: x; HarmonyOS: x | 消息发射器发出的数据。 |
-| lastEventId | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS 系统版本: x; HarmonyOS: x | 一个字符串，表示事件的唯一 ID。 |
+| type | string | 否 | null | Web: x; 微信小程序:  ; Android: 4.51; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS 系统版本: x; HarmonyOS: x | 事件类型。 |
+| data | any | 否 | null | Web: x; 微信小程序:  ; Android: 4.51; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS 系统版本: x; HarmonyOS: x | 消息发射器发出的数据。 |
+| lastEventId | string | 否 | null | Web: x; 微信小程序:  ; Android: 4.51; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS 系统版本: x; HarmonyOS: x | 一个字符串，表示事件的唯一 ID。 |
 
 
 
@@ -89,7 +89,7 @@ onerror 是当发生错误且这个错误事件（error）被 UniEventSource 触
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (error: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 是 |  | Web: x; HarmonyOS: x | 事件回调 | 
+| callback | (error: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | 事件回调 | 
 
 
 
@@ -105,7 +105,7 @@ onOpen
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (ev: [UniMessageEvent](#unimessageevent-values)) => void | 是 |  | Web: x; HarmonyOS: x | 事件回调 | 
+| callback | (ev: [UniMessageEvent](#unimessageevent-values)) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | 事件回调 | 
 
 
 
@@ -376,5 +376,5 @@ close
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 

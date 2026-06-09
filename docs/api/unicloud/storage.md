@@ -12,7 +12,7 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | [UniCloudUploadFileOptions](#uniclouduploadfileoptions-values) | 是 |  |   | - |
+| options | [UniCloudUploadFileOptions](#uniclouduploadfileoptions-values) | 是 |  |   |  |
 
 #### options 的属性描述
 
@@ -84,7 +84,7 @@ onUploadProgress
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | [UniCloudChooseAndUploadFileOptions](#unicloudchooseanduploadfileoptions-values) | 是 |  |   | - |
+| options | [UniCloudChooseAndUploadFileOptions](#unicloudchooseanduploadfileoptions-values) | 是 |  |   |  |
 
 #### options 的属性描述
 
@@ -139,7 +139,7 @@ onChooseFile
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| arg | **UniCloudChooseAndUploadFileResult** | 是 |  |   | - |
+| arg | **UniCloudChooseAndUploadFileResult** | 是 |  |   |  |
 
 #### arg 的属性描述
 
@@ -169,7 +169,7 @@ onUploadProgress
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| arg | **UniCloudChooseAndUploadFileProgressEvent** | 是 |  |   | - |
+| arg | **UniCloudChooseAndUploadFileProgressEvent** | 是 |  |   |  |
 
 #### arg 的属性描述
 
@@ -234,7 +234,7 @@ onUploadProgress
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **UniCloudGetTempFileURLOptions** | 是 |  |   | - |
+| options | **UniCloudGetTempFileURLOptions** | 是 |  |   |  |
 
 #### options 的属性描述
 

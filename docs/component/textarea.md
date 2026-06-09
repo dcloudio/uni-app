@@ -38,14 +38,14 @@
 | confirm-hold | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 点击键盘右下角按钮时是否保持键盘不收起 |
 | auto-height | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.65; HarmonyOS(Vapor): 5.0 | 是否自动增高，设置auto-height时，style.height不生效 |
 | cursor-spacing | number | 0 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指定光标与键盘的距离，单位 px 。取 textarea 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离 |
-| cursor-color | string([string.ColorString](/uts/data-type.md#ide-string)) | "" | 微信小程序: 4.41; Android: 3.99; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定光标颜色 |
+| cursor-color | string([string.ColorString](/uts/data-type.md#ide-string)) | "" | Web:  ; 微信小程序: 4.41; Android: 3.99; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定光标颜色 |
 | selection-start | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 光标起始位置，自动聚集时有效，需与selection-end搭配使用 |
 | selection-end | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 光标结束位置，自动聚集时有效，需与selection-satrt搭配使用 |
 | adjust-position | boolean | true | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 键盘弹起时，是否自动上推页面 |
 | hold-keyboard | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | focus时，点击页面的时候不收起键盘 |
 | inputmode | none \| text \| decimal \| numeric \| tel \| search \| email \| url | "text" | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 是一个枚举属性，它提供了用户在编辑元素或其内容时可能输入的数据类型的提示。在符合条件的高版本webview里，uni-app的 web 和 app-vue 平台中可使用本属性。 |
-| fixed | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true |
-| show-confirm-bar | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 是否显示键盘上方带有”完成“按钮那一栏 |
+| fixed | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true |
+| show-confirm-bar | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 是否显示键盘上方带有”完成“按钮那一栏 |
 | disabled | boolean |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(boolean)*<br/>是否禁用 |
 | disable-default-padding | boolean |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(boolean)*<br/>是否去掉 iOS 下的默认内边距 |
 | adjust-keyboard-to | boolean |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(boolean)*<br/>键盘对齐位置 |
@@ -72,14 +72,14 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| none | Android: x; iOS: x | 无虚拟键盘。在应用程序或者站点需要实现自己的键盘输入控件时很有用。 |
-| text | Android: x; iOS: x | 使用用户本地区域设置的标准文本输入键盘。 |
-| decimal | Android: x; iOS: x | 小数输入键盘，包含数字和分隔符（通常是“ . ”或者“ , ”），设备可能也可能不显示减号键。 |
-| numeric | Android: x; iOS: x | 数字输入键盘，所需要的就是 0 到 9 的数字，设备可能也可能不显示减号键。 |
-| tel | Android: x; iOS: x | 电话输入键盘，包含 0 到 9 的数字、星号（*）和井号（#）键。表单输入里面的电话输入通常应该使用 \<input type="tel"\> 。 |
-| search | Android: x; iOS: x | 为搜索输入优化的虚拟键盘，比如，返回键可能被重新标记为“搜索”，也可能还有其他的优化。 |
-| email | Android: x; iOS: x | 为邮件地址输入优化的虚拟键盘，通常包含"@"符号和其他优化。表单里面的邮件地址输入应该使用 \<input type="email"\> 。 |
-| url | Android: x; iOS: x | 为网址输入优化的虚拟键盘，比如，“/”键会更加明显、历史记录访问等。表单里面的网址输入通常应该使用 \<input type="url"\> 。 |
+| none | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 无虚拟键盘。在应用程序或者站点需要实现自己的键盘输入控件时很有用。 |
+| text | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 使用用户本地区域设置的标准文本输入键盘。 |
+| decimal | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 小数输入键盘，包含数字和分隔符（通常是“ . ”或者“ , ”），设备可能也可能不显示减号键。 |
+| numeric | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 数字输入键盘，所需要的就是 0 到 9 的数字，设备可能也可能不显示减号键。 |
+| tel | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 电话输入键盘，包含 0 到 9 的数字、星号（*）和井号（#）键。表单输入里面的电话输入通常应该使用 \<input type="tel"\> 。 |
+| search | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 为搜索输入优化的虚拟键盘，比如，返回键可能被重新标记为“搜索”，也可能还有其他的优化。 |
+| email | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 为邮件地址输入优化的虚拟键盘，通常包含"@"符号和其他优化。表单里面的邮件地址输入应该使用 \<input type="email"\> 。 |
+| url | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 为网址输入优化的虚拟键盘，比如，“/”键会更加明显、历史记录访问等。表单里面的网址输入通常应该使用 \<input type="url"\> 。 |
 
 #### adjust-keyboard-to 的属性描述
 
@@ -219,7 +219,7 @@ UniTextareaFocusEvent -- Extends --> UniEvent
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| height | number | 是 |  | Web: x; Android: 3.9; iOS: 4.11 | 键盘高度 |
+| height | number | 是 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 键盘高度 |
 | value | string | 是 |  |   | 输入框内容 |
 
 

@@ -35,7 +35,7 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **GetPrivacySettingOptions** | 是 |  | Web: x |  |
+| options | **GetPrivacySettingOptions** | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### options 的属性描述
 
@@ -50,7 +50,7 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | needAuthorization | boolean | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 是否需要用户授权隐私协议(用户之前同意过返回false，没同意过则返回true) |
-| privacyContractName | string | 否 |  | Web: x; 微信小程序: 4.41 | 隐私授权协议的名称<br/> |
+| privacyContractName | string | 否 |  | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 隐私授权协议的名称<br/> |
 
 
 
@@ -139,13 +139,13 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [PrivacyChangeResult](#privacychangeresult-values)) => void | 是 |  | Web: x |  | 
+| callback | (res: [PrivacyChangeResult](#privacychangeresult-values)) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 ### PrivacyChangeResult 的属性值 @privacychangeresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| needAuthorization | boolean | 是 |  | Web: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 是否需要用户授权隐私协议(用户之前同意过返回false，没同意过则返回true) |
+| needAuthorization | boolean | 是 |  | Web: x; 微信小程序:  ; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 是否需要用户授权隐私协议(用户之前同意过返回false，没同意过则返回true) |
 
 
 ### 返回值 
@@ -197,7 +197,7 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | number | 是 |  | Web: x | 开启监听隐私协议状态改变返回的id | 
+| id | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 开启监听隐私协议状态改变返回的id | 
 
 
 
@@ -343,5 +343,5 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 

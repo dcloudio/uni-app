@@ -44,9 +44,9 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | (result: [GetSystemInfoResult](#getsysteminforesult-values)) => void | 否 | null | 微信小程序: 4.41 | 接口调用成功的回调函数 |
-| fail | (result: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | null | 微信小程序: 4.41 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (result: [GetSystemInfoResult](#getsysteminforesult-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
+| fail | (result: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### GetSystemInfoResult 的属性值 @getsysteminforesult-values 
 
@@ -69,7 +69,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 | deviceOrientation | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备方向。<br/> |
 | osName | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 系统名称<br/> |
 | osVersion | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统版本。如 ios 版本，andriod 版本<br/> |
-| osLanguage | string | 是 |  | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统语言<br/> |
+| osLanguage | string | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统语言<br/> |
 | osTheme | string | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 操作系统主题<br/> |
 | screenWidth | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕宽度，单位为px<br/> |
 | screenHeight | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕高度，单位为px<br/> |
@@ -98,24 +98,24 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 | hostName | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 宿主名称（仅 web、微信小程序支持）<br/> |
 | hostSDKVersion | string | 否 |  | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 宿主 SDKVersion（仅 web、微信小程序支持）<br/> |
 | hostFontSizeSetting | number | 否 |  | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 宿主字体大小设置（仅 web、微信小程序支持）<br/> |
-| albumAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用相册的开关（仅 iOS 有效）<br/> |
-| benchmarkLevel | number | 否 |  | 微信小程序: 4.41 | 需要基础库： `1.8.0`<br/><br/>设备性能等级（仅 Android）。取值为：-2 或 0（该设备无法运行小游戏），-1（性能未知），>=1（设备性能值，该值越高，设备性能越好）<br> 注意：性能等级当前仅反馈真机机型，暂不支持 IDE 模拟器机型<br/> |
-| bluetoothEnabled | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>蓝牙的系统开关<br/> |
-| cameraAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用摄像头的开关<br/> |
-| enableDebug | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.15.0`<br/><br/>是否已打开调试。可通过右上角菜单或 [uni.setEnableDebug](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/wx.setEnableDebug.html) 打开调试。<br/> |
-| fontSizeSetting | number | 否 |  | 微信小程序: 4.41 | 需要基础库： `1.5.0`<br/><br/>用户字体大小（单位px）。以微信客户端「我-设置-通用-字体大小」中的设置为准<br/> |
-| host | **GetSystemInfoResultHost** | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.12.3`<br/><br/>当前小程序运行的宿主环境<br/> |
-| locationAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用定位的开关<br/> |
-| locationEnabled | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>地理位置的系统开关<br/> |
-| locationReducedAccuracy | boolean | 否 |  | 微信小程序: 4.41 | `true` 表示模糊定位，`false` 表示精确定位，仅 iOS 支持<br/> |
-| microphoneAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用麦克风的开关<br/> |
-| notificationAlertAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有提醒的开关（仅 iOS 有效）<br/> |
-| notificationAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知的开关<br/> |
-| notificationBadgeAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有标记的开关（仅 iOS 有效）<br/> |
-| notificationSoundAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有声音的开关（仅 iOS 有效）<br/> |
-| phoneCalendarAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.19.3`<br/><br/>允许微信使用日历的开关<br/> |
-| wifiEnabled | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>Wi-Fi 的系统开关<br/> |
-| theme | string | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.11.0`<br/><br/>系统当前主题，取值为`light`或`dark`，全局配置`"darkmode":true`时才能获取，否则为 undefined （不支持小游戏）<br/><br/>可选值：<br/>- 'dark': 深色主题;<br/>- 'light': 浅色主题;<br/> |
+| albumAuthorized | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>允许微信使用相册的开关（仅 iOS 有效）<br/> |
+| benchmarkLevel | number | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `1.8.0`<br/><br/>设备性能等级（仅 Android）。取值为：-2 或 0（该设备无法运行小游戏），-1（性能未知），>=1（设备性能值，该值越高，设备性能越好）<br> 注意：性能等级当前仅反馈真机机型，暂不支持 IDE 模拟器机型<br/> |
+| bluetoothEnabled | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>蓝牙的系统开关<br/> |
+| cameraAuthorized | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>允许微信使用摄像头的开关<br/> |
+| enableDebug | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.15.0`<br/><br/>是否已打开调试。可通过右上角菜单或 [uni.setEnableDebug](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/wx.setEnableDebug.html) 打开调试。<br/> |
+| fontSizeSetting | number | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `1.5.0`<br/><br/>用户字体大小（单位px）。以微信客户端「我-设置-通用-字体大小」中的设置为准<br/> |
+| host | **GetSystemInfoResultHost** | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.12.3`<br/><br/>当前小程序运行的宿主环境<br/> |
+| locationAuthorized | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>允许微信使用定位的开关<br/> |
+| locationEnabled | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>地理位置的系统开关<br/> |
+| locationReducedAccuracy | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | `true` 表示模糊定位，`false` 表示精确定位，仅 iOS 支持<br/> |
+| microphoneAuthorized | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>允许微信使用麦克风的开关<br/> |
+| notificationAlertAuthorized | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有提醒的开关（仅 iOS 有效）<br/> |
+| notificationAuthorized | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>允许微信通知的开关<br/> |
+| notificationBadgeAuthorized | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有标记的开关（仅 iOS 有效）<br/> |
+| notificationSoundAuthorized | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有声音的开关（仅 iOS 有效）<br/> |
+| phoneCalendarAuthorized | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.19.3`<br/><br/>允许微信使用日历的开关<br/> |
+| wifiEnabled | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>Wi-Fi 的系统开关<br/> |
+| theme | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.11.0`<br/><br/>系统当前主题，取值为`light`或`dark`，全局配置`"darkmode":true`时才能获取，否则为 undefined （不支持小游戏）<br/><br/>可选值：<br/>- 'dark': 深色主题;<br/>- 'light': 浅色主题;<br/> |
 | ~~brand~~ | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手机品牌。  **已废弃，仅为了向下兼容保留** |
 | ~~language~~ | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 程序设置的语言  **已废弃，仅为了向下兼容保留** |
 | ~~model~~ | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 手机型号  **已废弃，仅为了向下兼容保留** |
@@ -223,7 +223,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| appId | string | 否 |  | 微信小程序: 4.41 | 宿主 app 对应的 appId<br/> |
+| appId | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 宿主 app 对应的 appId<br/> |
 
 #### theme 的属性描述
 
@@ -242,8 +242,8 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 | mac |   |  |
 | windows |   |  |
 | linux |   |  |
-| ohos | 微信小程序: 4.41 |  |
-| devtools | 微信小程序: 4.41 |  |
+| ohos | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   |  |
+| devtools | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 
 
@@ -512,7 +512,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 | deviceOrientation | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备方向。<br/> |
 | osName | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 系统名称<br/> |
 | osVersion | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统版本。如 ios 版本，andriod 版本<br/> |
-| osLanguage | string | 是 |  | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统语言<br/> |
+| osLanguage | string | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统语言<br/> |
 | osTheme | string | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 操作系统主题<br/> |
 | screenWidth | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕宽度，单位为px<br/> |
 | screenHeight | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕高度，单位为px<br/> |
@@ -541,24 +541,24 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 | hostName | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 宿主名称（仅 web、微信小程序支持）<br/> |
 | hostSDKVersion | string | 否 |  | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 宿主 SDKVersion（仅 web、微信小程序支持）<br/> |
 | hostFontSizeSetting | number | 否 |  | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 宿主字体大小设置（仅 web、微信小程序支持）<br/> |
-| albumAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用相册的开关（仅 iOS 有效）<br/> |
-| benchmarkLevel | number | 否 |  | 微信小程序: 4.41 | 需要基础库： `1.8.0`<br/><br/>设备性能等级（仅 Android）。取值为：-2 或 0（该设备无法运行小游戏），-1（性能未知），>=1（设备性能值，该值越高，设备性能越好）<br> 注意：性能等级当前仅反馈真机机型，暂不支持 IDE 模拟器机型<br/> |
-| bluetoothEnabled | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>蓝牙的系统开关<br/> |
-| cameraAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用摄像头的开关<br/> |
-| enableDebug | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.15.0`<br/><br/>是否已打开调试。可通过右上角菜单或 [uni.setEnableDebug](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/wx.setEnableDebug.html) 打开调试。<br/> |
-| fontSizeSetting | number | 否 |  | 微信小程序: 4.41 | 需要基础库： `1.5.0`<br/><br/>用户字体大小（单位px）。以微信客户端「我-设置-通用-字体大小」中的设置为准<br/> |
-| host | **GetSystemInfoResultHost** | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.12.3`<br/><br/>当前小程序运行的宿主环境<br/> |
-| locationAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用定位的开关<br/> |
-| locationEnabled | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>地理位置的系统开关<br/> |
-| locationReducedAccuracy | boolean | 否 |  | 微信小程序: 4.41 | `true` 表示模糊定位，`false` 表示精确定位，仅 iOS 支持<br/> |
-| microphoneAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用麦克风的开关<br/> |
-| notificationAlertAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有提醒的开关（仅 iOS 有效）<br/> |
-| notificationAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知的开关<br/> |
-| notificationBadgeAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有标记的开关（仅 iOS 有效）<br/> |
-| notificationSoundAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有声音的开关（仅 iOS 有效）<br/> |
-| phoneCalendarAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.19.3`<br/><br/>允许微信使用日历的开关<br/> |
-| wifiEnabled | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>Wi-Fi 的系统开关<br/> |
-| theme | string | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.11.0`<br/><br/>系统当前主题，取值为`light`或`dark`，全局配置`"darkmode":true`时才能获取，否则为 undefined （不支持小游戏）<br/><br/>可选值：<br/>- 'dark': 深色主题;<br/>- 'light': 浅色主题;<br/> |
+| albumAuthorized | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>允许微信使用相册的开关（仅 iOS 有效）<br/> |
+| benchmarkLevel | number | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `1.8.0`<br/><br/>设备性能等级（仅 Android）。取值为：-2 或 0（该设备无法运行小游戏），-1（性能未知），>=1（设备性能值，该值越高，设备性能越好）<br> 注意：性能等级当前仅反馈真机机型，暂不支持 IDE 模拟器机型<br/> |
+| bluetoothEnabled | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>蓝牙的系统开关<br/> |
+| cameraAuthorized | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>允许微信使用摄像头的开关<br/> |
+| enableDebug | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.15.0`<br/><br/>是否已打开调试。可通过右上角菜单或 [uni.setEnableDebug](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/wx.setEnableDebug.html) 打开调试。<br/> |
+| fontSizeSetting | number | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `1.5.0`<br/><br/>用户字体大小（单位px）。以微信客户端「我-设置-通用-字体大小」中的设置为准<br/> |
+| host | **GetSystemInfoResultHost** | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.12.3`<br/><br/>当前小程序运行的宿主环境<br/> |
+| locationAuthorized | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>允许微信使用定位的开关<br/> |
+| locationEnabled | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>地理位置的系统开关<br/> |
+| locationReducedAccuracy | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | `true` 表示模糊定位，`false` 表示精确定位，仅 iOS 支持<br/> |
+| microphoneAuthorized | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>允许微信使用麦克风的开关<br/> |
+| notificationAlertAuthorized | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有提醒的开关（仅 iOS 有效）<br/> |
+| notificationAuthorized | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>允许微信通知的开关<br/> |
+| notificationBadgeAuthorized | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有标记的开关（仅 iOS 有效）<br/> |
+| notificationSoundAuthorized | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有声音的开关（仅 iOS 有效）<br/> |
+| phoneCalendarAuthorized | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.19.3`<br/><br/>允许微信使用日历的开关<br/> |
+| wifiEnabled | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.6.0`<br/><br/>Wi-Fi 的系统开关<br/> |
+| theme | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.11.0`<br/><br/>系统当前主题，取值为`light`或`dark`，全局配置`"darkmode":true`时才能获取，否则为 undefined （不支持小游戏）<br/><br/>可选值：<br/>- 'dark': 深色主题;<br/>- 'light': 浅色主题;<br/> |
 | ~~brand~~ | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手机品牌。  **已废弃，仅为了向下兼容保留** |
 | ~~language~~ | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 程序设置的语言  **已废弃，仅为了向下兼容保留** |
 | ~~model~~ | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 手机型号  **已废弃，仅为了向下兼容保留** |
@@ -666,7 +666,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| appId | string | 否 |  | 微信小程序: 4.41 | 宿主 app 对应的 appId<br/> |
+| appId | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 宿主 app 对应的 appId<br/> |
 
 ##### theme 的属性描述
 
@@ -685,8 +685,8 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 | mac |   |  |
 | windows |   |  |
 | linux |   |  |
-| ohos | 微信小程序: 4.41 |  |
-| devtools | 微信小程序: 4.41 |  |
+| ohos | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   |  |
+| devtools | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 
 <!-- UTSAPIJSON.getSystemInfoSync.example -->
@@ -714,5 +714,5 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 

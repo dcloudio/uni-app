@@ -25,10 +25,10 @@
 | type | "none" | "null" | Web: 4.0; 微信小程序: x; Android 系统版本: 8.0.0; Android: 5.08; iOS: 5.08; iOS(Vapor): 5.11; HarmonyOS 系统版本: √; HarmonyOS: 5.08; HarmonyOS(Vapor): 5.08 | 输入类型，暂只支持<br>  "none": 聚焦时不弹出键盘 |
 | name | string |   |   | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
 | @ready | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS 系统版本: 9.0; iOS: 5.08; HarmonyOS: 5.08; HarmonyOS(Vapor): 5.08 | 编辑器初始化完成时触发 |
-| @focus | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS 系统版本: 9.0; iOS: 5.08 | 编辑器聚焦时触发 |
-| @blur | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS 系统版本: 9.0; iOS: 5.08 | 编辑器失去焦点时触发 |
-| @input | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS 系统版本: 9.0; iOS: 5.08 | 编辑器内容改变时触发 |
-| @statuschange | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS 系统版本: 9.0; iOS: 5.08 | 通过 Context 方法改变编辑器内样式时触发，返回选区已设置的样式 |
+| @focus | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS 系统版本: 9.0; iOS: 5.08; HarmonyOS:   | 编辑器聚焦时触发 |
+| @blur | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS 系统版本: 9.0; iOS: 5.08; HarmonyOS:   | 编辑器失去焦点时触发 |
+| @input | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS 系统版本: 9.0; iOS: 5.08; HarmonyOS:   | 编辑器内容改变时触发 |
+| @statuschange | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS 系统版本: 9.0; iOS: 5.08; HarmonyOS:   | 通过 Context 方法改变编辑器内样式时触发，返回选区已设置的样式 |
 
 #### type 的属性描述
 

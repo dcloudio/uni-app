@@ -40,27 +40,27 @@ UniPage在App和Web平台较完善，在小程序端受小程序未开放，很�
 | $root | VueComponent | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |  |
 | $options | VueComponentOptions | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |  |
 | $el | [UniElement](/api/dom/unielement.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |  |
-| $page | [UniPage](/api/unipage.md) | 是 |  | Web: 4.31; 微信小程序: -; Android: 4.31; iOS 系统版本: 10.0; iOS: 4.31; iOS uni-app x UTS 插件: x |  |
+| $page | [UniPage](/api/unipage.md) | 是 |  | Web: 4.31; 微信小程序: -; Android: 4.31; iOS 系统版本: 10.0; iOS: 4.31; iOS uni-app x UTS 插件: x; HarmonyOS:   |  |
 
 #### pageBody 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| left | number | 是 |  | Android: 4.51; iOS: 4.51 | 页面内容区域左上角横坐标 |
-| right | number | 是 |  | Android: 4.51; iOS: 4.51 | 页面内容区域右下角横坐标 |
-| top | number | 是 |  | Android: 4.51; iOS: 4.51 | 页面内容区域左上角纵坐标 |
-| bottom | number | 是 |  | Android: 4.51; iOS: 4.51 | 页面内容区域右下角纵坐标 |
-| width | number | 是 |  | Android: 4.51; iOS: 4.51 | 页面内容区域宽度 |
-| height | number | 是 |  | Android: 4.51; iOS: 4.51 | 页面内容区域高度 |
+| left | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS:   | 页面内容区域左上角横坐标 |
+| right | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS:   | 页面内容区域右下角横坐标 |
+| top | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS:   | 页面内容区域左上角纵坐标 |
+| bottom | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS:   | 页面内容区域右下角纵坐标 |
+| width | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS:   | 页面内容区域宽度 |
+| height | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS:   | 页面内容区域高度 |
 
 #### safeAreaInsets 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| left | number | 是 |  | Android: 4.51; iOS: 4.51 | 安全区域左侧插入位置（距离左边边界距离） |
-| right | number | 是 |  | Android: 4.51; iOS: 4.51 | 安全区域右侧插入位置（距离右边边界距离） |
-| top | number | 是 |  | Android: 4.51; iOS: 4.51 | 安全区顶部插入位置（距离顶部边界距离） |
-| bottom | number | 是 |  | Android: 4.51; iOS: 4.51 | 安全区域底部插入位置（距离底部边界距离） |
+| left | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS:   | 安全区域左侧插入位置（距离左边边界距离） |
+| right | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS:   | 安全区域右侧插入位置（距离右边边界距离） |
+| top | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS:   | 安全区顶部插入位置（距离顶部边界距离） |
+| bottom | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS:   | 安全区域底部插入位置（距离底部边界距离） |
 
 
 
@@ -106,7 +106,7 @@ pages.json里的内容是静态的，通过本API可以动态设置UniPage的Sty
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| style | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  | 微信小程序: x |  | 
+| style | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 
 
@@ -206,7 +206,7 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | [string.IDString](/uts/data-type.md#ide-string) \| string | 是 |  | 微信小程序: x |  | 
+| id | [string.IDString](/uts/data-type.md#ide-string) \| string | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 
 ##### 返回值 
@@ -329,35 +329,35 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **ExitFullscreenOptions** | 否 |  | Web: x; 微信小程序: x; iOS: x |  |
+| options | **ExitFullscreenOptions** | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS: x; HarmonyOS:   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | () => void | 否 |  | Web: x; 微信小程序: x; iOS: x | 成功回调 |
-| fail | (error: [IFullscreenError](#ifullscreenerror-values)) => void | 否 |  | Web: x; 微信小程序: x; iOS: x | 失败回调 |
-| complete | (result?: any) => void | 否 |  | Web: x; 微信小程序: x; iOS: x | 完成回调 | 
+| success | () => void | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS: x; HarmonyOS:   | 成功回调 |
+| fail | (error: [IFullscreenError](#ifullscreenerror-values)) => void | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS: x; HarmonyOS:   | 失败回调 |
+| complete | (result?: any) => void | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS: x; HarmonyOS:   | 完成回调 | 
 
 ###### IFullscreenError 的属性值 @ifullscreenerror-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x; 微信小程序: x | 错误码 |
-| errSubject | string | 是 |  | Web: x; 微信小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x; 微信小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 错误码 |
+| errSubject | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x; 微信小程序: x |  |
+| errMsg | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 106600 | Web: x; 微信小程序: x | 当前页面已经有element处于全屏状态 |
-| 106601 | Web: x; 微信小程序: x | 当前element不支持全屏 |
-| 106602 | Web: x; 微信小程序: x | 当前页面没有element处于全屏状态 |
-| 106603 | Web: x; 微信小程序: x | 页面已销毁或者尚未就绪 |
-| 106604 | Web: x; 微信小程序: x | 组件未就绪 |
+| 106600 | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 当前页面已经有element处于全屏状态 |
+| 106601 | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 当前element不支持全屏 |
+| 106602 | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 当前页面没有element处于全屏状态 |
+| 106603 | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 页面已销毁或者尚未就绪 |
+| 106604 | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 组件未就绪 |
 
 
 
@@ -381,7 +381,7 @@ createElement
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| tagName | string | 是 |  | Web: x; 微信小程序: x; Android: x; iOS: x |  | 
+| tagName | string | 是 |  | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   |  | 
 
 
 ##### 返回值 
@@ -410,13 +410,13 @@ onLayoutChange
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [UniPagePerformanceTiming](#unipageperformancetiming-values)) => void | 是 |  | Android: x; iOS: x; HarmonyOS: x |  | 
+| callback | (res: [UniPagePerformanceTiming](#unipageperformancetiming-values)) => void | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  | 
 
 ##### UniPagePerformanceTiming 的属性值 @unipageperformancetiming-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| duration | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 性能计时持续的时间，单位为ms |
+| duration | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 性能计时持续的时间，单位为ms |
 
 
 ##### 返回值 
@@ -445,7 +445,7 @@ offLayoutChange
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | number | 是 |  | Android: x; iOS: x; HarmonyOS: x |  | 
+| id | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -468,14 +468,14 @@ onRenderChange
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [UniPagePerformanceRenderTiming](#unipageperformancerendertiming-values)) => void | 是 |  | Android: x; iOS: x; HarmonyOS: x |  | 
+| callback | (res: [UniPagePerformanceRenderTiming](#unipageperformancerendertiming-values)) => void | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  | 
 
 ##### UniPagePerformanceRenderTiming 的属性值 @unipageperformancerendertiming-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| updateDuration | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 更新渲染属性的总时间，单位为ms |
-| duration | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 性能计时持续的时间，单位为ms |
+| updateDuration | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 更新渲染属性的总时间，单位为ms |
+| duration | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 性能计时持续的时间，单位为ms |
 
 
 ##### 返回值 
@@ -504,7 +504,7 @@ offRenderChange
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | number | 是 |  | Android: x; iOS: x; HarmonyOS: x |  | 
+| id | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -527,7 +527,7 @@ onTouchStart
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | 是 |  | Android: x; iOS: x; HarmonyOS: x |  | 
+| callback | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  | 
 
 
 ##### 返回值 
@@ -556,7 +556,7 @@ offTouchStart
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | number | 是 |  | Android: x; iOS: x; HarmonyOS: x |  | 
+| id | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -579,7 +579,7 @@ onTouchEnd
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | 是 |  | Android: x; iOS: x; HarmonyOS: x |  | 
+| callback | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  | 
 
 
 ##### 返回值 
@@ -608,7 +608,7 @@ offTouchEnd
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | number | 是 |  | Android: x; iOS: x; HarmonyOS: x |  | 
+| id | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -631,7 +631,7 @@ querySelector
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| selector | [string.cssSelectorString](/uts/data-type.md#ide-string) | 是 |  | 微信小程序: x | CSS 选择器字符串 | 
+| selector | [string.cssSelectorString](/uts/data-type.md#ide-string) | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | CSS 选择器字符串 | 
 
 
 ##### 返回值 
@@ -660,7 +660,7 @@ querySelectorAll
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| selector | [string.cssSelectorString](/uts/data-type.md#ide-string) | 是 |  | Web: x; 微信小程序: x | CSS 选择器字符串 | 
+| selector | [string.cssSelectorString](/uts/data-type.md#ide-string) | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | CSS 选择器字符串 | 
 
 
 ##### 返回值 
@@ -687,7 +687,7 @@ querySelectorAll
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| style | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  | 微信小程序: x |  | 
+| style | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 
 

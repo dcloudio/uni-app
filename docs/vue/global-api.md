@@ -587,13 +587,11 @@ uni-app x 新增了 [onLastPageBackPress](../collocation/App.md#applifecycle) �
 
 ## 通用 @general
 
-|  | Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| version | 4.0 | 4.41 | √ | 5.11 | 10.0 | 4.11 | 5.11 | 5.0.0 | 4.61 |
-| nextTick() | 4.0 | 4.41 | √ |   | 10.0 | 4.11 |   | 5.0.0 | 4.61 |
-| defineComponent() | 4.0 | 4.41 | x |   | 10.0 | x |   | 3.0 | x |
-| defineAsyncComponent() |   |   |   |   |   |   |   |   |   |
-| defineCustomElement() |   |   |   |   |   |   |   |   |   |
+|  | Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| version | 4.0 | 4.41 | √ | 5.11 | 10.0 | 4.11 | 5.11 | 5.0.0 | 4.61 | 5.0 |
+| nextTick() | 4.0 | 4.41 | √ | x | 10.0 | 4.11 | 5.11 | 5.0.0 | 4.61 | 5.0 |
+| defineComponent() | 4.0 | 4.41 | x | x | 10.0 | x | x | 3.0 | x | x |
 
 
 

@@ -4,15 +4,15 @@
 
 ## 状态选项
 
-|  | Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| data | 4.0 | 4.41 | 3.9 | 10.0 | 4.11 | 4.61 |
-| props | 4.0 | 4.41 | 3.9 | 10.0 | 4.11 | 4.61 |
-| computed | 4.0 | 4.41 | 3.9 | 10.0 | 4.11 | 4.61 |
-| methods | 4.0 | 4.41 | 3.9 | 10.0 | 4.11 | 4.61 |
-| watch | 4.0 | 4.41 | 3.9 | 10.0 | 4.11 | 4.61 |
-| emits | 4.0 | 4.41 | 3.9 | 10.0 | 4.11 | 4.61 |
-| expose | 4.0 | 4.41 | x | 10.0 | x | x |
+|  | Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| data | 4.0 | 4.41 | 3.9 | x | 10.0 | 4.11 | x | 4.61 | x |
+| props | 4.0 | 4.41 | 3.9 | x | 10.0 | 4.11 | x | 4.61 | x |
+| computed | 4.0 | 4.41 | 3.9 | x | 10.0 | 4.11 | x | 4.61 | x |
+| methods | 4.0 | 4.41 | 3.9 | x | 10.0 | 4.11 | x | 4.61 | x |
+| watch | 4.0 | 4.41 | 3.9 |   | 10.0 | 4.11 |   | 4.61 |   |
+| emits | 4.0 | 4.41 | 3.9 |   | 10.0 | 4.11 |   | 4.61 |   |
+| expose | 4.0 | 4.41 | x | x | 10.0 | x | x | x | x |
 
 ### 示例代码 @example
 
@@ -554,10 +554,10 @@ export default {
 
 |  | Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| template | x | 4.41 | x |   | 10.0 | x |   | 4.61 |   |
-| render | 4.0 | - | 3.9 | x | 10.0 | 4.11 | x | 4.61 | x |
-| compilerOptions | x | x | x |   | 10.0 | x |   | 4.61 |   |
-| slots | 4.0 | 4.41 | 3.9 |   | 10.0 | 4.11 |   | 4.61 |   |
+| template | x | x | x | x | 10.0 | x | x | 4.61 | x |
+| render | 4.0 | x | 3.9 | x | 10.0 | 4.11 | x | 4.61 | x |
+| compilerOptions | x | x | x | x | 10.0 | x | x | 4.61 | x |
+| slots | 4.0 | 4.41 | 3.9 | x | 10.0 | 4.11 | 5.11 | 4.61 | 5.03 |
 
 ### 示例代码 @example
 
@@ -1096,10 +1096,9 @@ export default {
 
 |  | Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| provide | 4.0 | 4.41 | 3.99 |   | 10.0 | 4.11 |   | 4.61 |   |
-| inject | 4.0 | 4.41 | 3.99 |   | 10.0 | 4.11 |   | 4.61 |   |
+| provide | 4.0 | 4.41 | 3.99 | x | 10.0 | 4.11 | 5.11 | 4.61 | 5.0 |
+| inject | 4.0 | 4.41 | 3.99 | x | 10.0 | 4.11 | 5.11 | 4.61 | 5.0 |
 | mixins | 4.0 | 4.41 | 3.99 | x | 10.0 | 4.11 | x | 4.61 | x |
-| extends |   |   |   |   |   |   |   |   |   |
 
 ### inject
 
@@ -1947,12 +1946,11 @@ export default {
 
 ## 其他杂项
 
-|  | Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| name | 4.0 | 4.41 | 3.9 | 10.0 | 4.11 | 4.61 |
-| inheritAttrs | 4.0 | - | 3.9 | 10.0 | 4.11 | 4.61 |
-| components | 4.0 | 4.41 | 3.9 | 10.0 | 4.11 | 4.61 |
-| directives |   |   |   |   |   |   |
+|  | Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| name | 4.0 | 4.41 | 3.9 |   | 10.0 | 4.11 |   | 4.61 |   |
+| inheritAttrs | 4.0 | √ | 3.9 |   | 10.0 | 4.11 |   | 4.61 |   |
+| components | 4.0 | 4.41 | 3.9 | x | 10.0 | 4.11 | x | 4.61 | x |
 
 
 ### 示例代码 @example
@@ -2218,7 +2216,7 @@ export default {
 | $callMethod | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
 | $emit | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
 | $watch | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $page | Web: 4.31; 微信小程序: -; Android: 4.31; iOS 系统版本: 10.0; iOS: 4.31; iOS uni-app x UTS 插件: x |
+| $page | Web: 4.31; 微信小程序: √; Android: 4.31; iOS 系统版本: 10.0; iOS: 4.31; iOS uni-app x UTS 插件: x; HarmonyOS:   |
 
 ### 示例代码 @example
 

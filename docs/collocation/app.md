@@ -12,7 +12,7 @@
 
 应用生命周期仅可在`App.uvue`中监听，在页面监听无效。
 
-`App.uvue`仅支持选项式，暂不支持组合式写法。
+`App.uvue`从HBuilderX 5.0起支持组合式。以前的版本仅支持选项式。
 
 ## 应用生命周期@applifecycle
 
@@ -33,7 +33,7 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **OnLaunchOptions** | 是 |  |   | - |
+| options | **OnLaunchOptions** | 是 |  |   |  |
 
 #### options 的属性描述
 
@@ -70,7 +70,7 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **OnShowOptions** | 是 |  |   | - |
+| options | **OnShowOptions** | 是 |  |   |  |
 
 #### options 的属性描述
 
@@ -214,15 +214,15 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **OnPageNotFoundOption** | 是 |  | Android: x; iOS: x; HarmonyOS: x | - |
+| options | **OnPageNotFoundOption** | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| path | string | 是 |  | Android: x; iOS: x; HarmonyOS: x | 不存在页面的路径 |
-| query | AnyObject | 是 |  | Android: x; iOS: x; HarmonyOS: x | 打开不存在页面的 query |
-| isEntryPage | boolean | 是 |  | Android: x; iOS: x; HarmonyOS: x | 是否本次启动的首个页面（例如从分享等入口进来，首个页面是开发者配置的分享页面） | 
+| path | string | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 不存在页面的路径 |
+| query | AnyObject | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 打开不存在页面的 query |
+| isEntryPage | boolean | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 是否本次启动的首个页面（例如从分享等入口进来，首个页面是开发者配置的分享页面） | 
 
 
 

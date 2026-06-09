@@ -29,9 +29,9 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | (result: [StartPullDownRefreshSuccess](#startpulldownrefreshsuccess-values)) => void | 否 |  | 微信小程序: 4.41 | 接口调用成功的回调函数 |
-| fail | (result: [StartPullDownRefreshFail](#startpulldownrefreshfail-values)) => void | 否 |  | 微信小程序: 4.41 | 接口调用失败的回调函数 |
-| complete | (result: [StartPullDownRefreshComplete](#startpulldownrefreshcomplete-values)) => void | 否 |  | 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (result: [StartPullDownRefreshSuccess](#startpulldownrefreshsuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
+| fail | (result: [StartPullDownRefreshFail](#startpulldownrefreshfail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
+| complete | (result: [StartPullDownRefreshComplete](#startpulldownrefreshcomplete-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### StartPullDownRefreshSuccess 的属性值 @startpulldownrefreshsuccess-values 
 
@@ -263,7 +263,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 
 
 ## Tips

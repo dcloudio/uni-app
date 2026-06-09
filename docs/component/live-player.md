@@ -20,15 +20,15 @@
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| src | string([string.VideoURIString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 音视频地址。微信小程序支持 flv, rtmp 格式，app平台支持 rtmp, hls 协议 |
-| mode | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | live（直播），RTC（实时通话） |
-| autoplay | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 自动播放 |
-| muted | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 是否静音 |
-| orientation | string | "vertical" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 画面方向，可选值有 vertical，horizontal |
-| object-fit | string | "contain" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 填充模式，可选值有 contain，fillCrop |
-| background-mute | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 进入后台时是否静音 |
-| min-cache | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 最小缓冲区，单位s |
-| max-cache | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 最大缓冲区，单位s |
+| src | string([string.VideoURIString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 音视频地址。微信小程序支持 flv, rtmp 格式，app平台支持 rtmp, hls 协议 |
+| mode | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | live（直播），RTC（实时通话） |
+| autoplay | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 自动播放 |
+| muted | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 是否静音 |
+| orientation | string | "vertical" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 画面方向，可选值有 vertical，horizontal |
+| object-fit | string | "contain" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 填充模式，可选值有 contain，fillCrop |
+| background-mute | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 进入后台时是否静音 |
+| min-cache | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 最小缓冲区，单位s |
+| max-cache | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 最大缓冲区，单位s |
 | sound-mode | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(string)*<br/>声音输出方式 |
 | auto-pause-if-navigate | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(boolean)*<br/>当跳转到本小程序的其他页面时，是否自动暂停本页面的实时音视频播放 |
 | auto-pause-if-open-native | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(boolean)*<br/>当跳转到其它微信原生页面时，是否自动暂停本页面的实时音视频播放 |
@@ -50,10 +50,10 @@
 | controls | boolean |   |   |   |
 | show-center-play-btn | boolean |   |   |   |
 | show-loading | boolean |   |   |   |
-| @statechange | (event: [UniLivePlayerStatechangeEvent](#uniliveplayerstatechangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 播放状态变化事件，event.detail = {code} |
-| @fullscreenchange | (event: [UniLivePlayerFullscreenchangeEvent](#uniliveplayerfullscreenchangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 全屏变化事件，event.detail = {direction, fullScreen} |
-| @error | (event: [UniLivePlayerErrorEvent](#uniliveplayererrorevent)) => void |   | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81 | 错误事件，event.detail = {errCode, errMsg} |
-| @netstatus | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 网络状态通知，detail = {info} |
+| @statechange | (event: [UniLivePlayerStatechangeEvent](#uniliveplayerstatechangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 播放状态变化事件，event.detail = {code} |
+| @fullscreenchange | (event: [UniLivePlayerFullscreenchangeEvent](#uniliveplayerfullscreenchangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 全屏变化事件，event.detail = {direction, fullScreen} |
+| @error | (event: [UniLivePlayerErrorEvent](#uniliveplayererrorevent)) => void |   | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS:   | 错误事件，event.detail = {errCode, errMsg} |
+| @netstatus | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 网络状态通知，detail = {info} |
 | @audiovolumenotify | eventhandler |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(eventhandler)*<br/>播放音量大小通知，detail = {} |
 | @enterpictureinpicture | eventhandler |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(eventhandler)*<br/>播放器进入小窗 |
 | @leavepictureinpicture | eventhandler |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(eventhandler)*<br/>播放器退出小窗 |

@@ -12,7 +12,7 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (UniCloudResponseEvent: [UniCloudResponseEvent](#unicloudresponseevent-values)) => any | 是 |  |   | - | 
+| callback | (UniCloudResponseEvent: [UniCloudResponseEvent](#unicloudresponseevent-values)) => any | 是 |  |   |  | 
 
 ### UniCloudResponseEvent 的属性值 @unicloudresponseevent-values 
 
@@ -43,7 +43,7 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (UniCloudResponseEvent: [UniCloudResponseEvent](#unicloudresponseevent-values)) => any | 是 |  |   | - | 
+| callback | (UniCloudResponseEvent: [UniCloudResponseEvent](#unicloudresponseevent-values)) => any | 是 |  |   |  | 
 
 ### UniCloudResponseEvent 的属性值 @unicloudresponseevent-values 
 
@@ -74,7 +74,7 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (UniCloudResponseEvent: [UniCloudResponseEvent](#unicloudresponseevent-values)) => any | 是 |  |   | - | 
+| callback | (UniCloudResponseEvent: [UniCloudResponseEvent](#unicloudresponseevent-values)) => any | 是 |  |   |  | 
 
 ### UniCloudResponseEvent 的属性值 @unicloudresponseevent-values 
 
@@ -105,7 +105,7 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (UniCloudResponseEvent: [UniCloudResponseEvent](#unicloudresponseevent-values)) => any | 是 |  |   | - | 
+| callback | (UniCloudResponseEvent: [UniCloudResponseEvent](#unicloudresponseevent-values)) => any | 是 |  |   |  | 
 
 ### UniCloudResponseEvent 的属性值 @unicloudresponseevent-values 
 
@@ -168,7 +168,7 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **UniCloudConnectWebSocketOptions** | 是 |  |   | - |
+| options | **UniCloudConnectWebSocketOptions** | 是 |  |   |  |
 
 #### options 的属性描述
 

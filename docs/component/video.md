@@ -52,10 +52,10 @@
 | auto-pause-if-open-native | boolean |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 当跳转到其它小程序宿主原生页面时，是否自动暂停本页面的视频 |
 | vslide-gesture | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 在非全屏模式下，是否开启亮度与音量调节手势（同 page-gesture） |
 | vslide-gesture-in-fullscreen | boolean | true | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 在全屏模式下，是否开启亮度与音量调节手势 |
-| ad-unit-id | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: x; iOS: x | 视频前贴广告单元ID |
+| ad-unit-id | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 视频前贴广告单元ID |
 | poster-for-crawler | string |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 用于给搜索等场景作为视频封面展示，建议使用无播放 icon 的视频封面图，只支持网络地址 |
-| codec | string | "hardware" | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS(Vapor): x | 解码器选择 |
-| http-cache | boolean | false | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS(Vapor): x | 是否对 http、https 视频源开启本地缓存 |
+| codec | string | "hardware" | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:  ; HarmonyOS(Vapor): x | 解码器选择 |
+| http-cache | boolean | false | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS:  ; HarmonyOS(Vapor): x | 是否对 http、https 视频源开启本地缓存 |
 | play-strategy | number | 0 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 播放策略 |
 | is-live | boolean |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 是否为直播源 |
 | show-bottom-progress | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(boolean)*<br/>是否展示底部进度条 |
@@ -74,7 +74,7 @@
 | certificate-url | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(string)*<br/>DRM 设备身份认证 url，仅 is-drm 为 true 时生效 (iOS) |
 | license-url | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(string)*<br/>DRM 获取加密信息 url，仅 is-drm 为 true 时生效 |
 | preferred-peak-bit-rate | number |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(number)*<br/>指定码率上界，单位为比特每秒 |
-| header | UTSJSONObject |   | HarmonyOS(Vapor): x | 自定义 header |
+| header | UTSJSONObject |   | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:  ; HarmonyOS(Vapor): x | 自定义 header |
 | @loadedmetadata | (event: [UniVideoLoadedMetadataEvent](#univideoloadedmetadataevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 视频元数据加载完成时触发 |
 | @play | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 当开始/继续播放时触发 |
 | @pause | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 当暂停播放时触发 |
@@ -99,17 +99,17 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 0 | Web: x; 微信小程序: 4.41 | 正常竖向 |
-| 90 | Web: x; 微信小程序: 4.41 | 屏幕逆时针90度 |
-| -90 | Web: x; 微信小程序: 4.41 | 屏幕顺时针90度 |
+| 0 | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 正常竖向 |
+| 90 | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 屏幕逆时针90度 |
+| -90 | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 屏幕顺时针90度 |
 
 #### object-fit 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| contain | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11 | 包含 |
-| fill | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 填充 |
-| cover | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 覆盖 |
+| contain | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS:   | 包含 |
+| fill | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 填充 |
+| cover | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 覆盖 |
 
 #### play-btn-position 的属性描述
 
@@ -1313,5 +1313,5 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
 - App的video默认拦截触摸事件，目前会导致父组件无法响应触摸事件
 - video 默认宽度为300px，高度为225px。（App平台从 uni-app x 4.0起支持该默认宽高）
 - `HarmonyOS` 平台适配小窗需要在 `modules.json5` 中配置 `"preferMultiWindowOrientation": "landscape_auto"` [详情](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V13/module-configuration-file-V13#abilities%E6%A0%87%E7%AD%BE?ha_source=Dcloud&ha_sourceId=89000448)
-- app-android、app-iOS平台暂不支持在dialogPage中调用createVideoContext。
+- app-iOS平台暂不支持在dialogPage中调用createVideoContext。
 - 5.07版本起，app-android、app-iOS平台不再支持codec、play-strategy属性。

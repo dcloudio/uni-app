@@ -35,12 +35,12 @@
 | appScheme | string | 否 |  | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.81 | 首次启动时的Scheme。返回值与App.onLaunch的回调参数一致<br/> |
 | appLink | string | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: 4.25; HarmonyOS: 4.81 | 首次启动时的appLink。返回值与App.onLaunch的回调参数一致<br/> |
 | query | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: √; HarmonyOS: 4.81 | 启动时的 query 参数<br/> |
-| apiCategory | string | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.20.0`<br/><br/>API 类别<br/><br/>可选值：<br/>- 'default': 默认类别;<br/>- 'nativeFunctionalized': 原生功能化，视频号直播商品、商品橱窗等场景打开的小程序;<br/>- 'browseOnly': 仅浏览，朋友圈快照页等场景打开的小程序;<br/>- 'embedded': 内嵌，通过打开半屏小程序能力打开的小程序;<br/>- 'chatTool': 聊天工具，通过打开聊天工具能力打开的小程序;<br/> |
-| forwardMaterials | any | 否 |  | 微信小程序: 4.41 | 打开的文件信息数组，只有从聊天素材场景打开（scene为1173）才会携带该参数<br/> |
-| referrerInfo | **OnLaunchOptionsReferrerInfo** | 否 |  | 微信小程序: 4.41 | 来源信息。从另一个小程序、公众号或 App 进入小程序时返回。否则返回 `{}`。(参见后文注意)<br/> |
-| scene | number | 否 |  | 微信小程序: 4.41 |  |
-| chatType | number | 否 |  | 微信小程序: 4.41 | 从微信群聊/单聊打开小程序时，chatType 表示具体微信群聊/单聊类型<br/><br/>可选值：<br/>- 1: 微信联系人单聊;<br/>- 2: 企业微信联系人单聊;<br/>- 3: 普通微信群聊;<br/>- 4: 企业微信互通群聊;<br/> |
-| shareTicket | string | 否 |  | 微信小程序: 4.41 |  | 
+| apiCategory | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.20.0`<br/><br/>API 类别<br/><br/>可选值：<br/>- 'default': 默认类别;<br/>- 'nativeFunctionalized': 原生功能化，视频号直播商品、商品橱窗等场景打开的小程序;<br/>- 'browseOnly': 仅浏览，朋友圈快照页等场景打开的小程序;<br/>- 'embedded': 内嵌，通过打开半屏小程序能力打开的小程序;<br/>- 'chatTool': 聊天工具，通过打开聊天工具能力打开的小程序;<br/> |
+| forwardMaterials | any | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 打开的文件信息数组，只有从聊天素材场景打开（scene为1173）才会携带该参数<br/> |
+| referrerInfo | **OnLaunchOptionsReferrerInfo** | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 来源信息。从另一个小程序、公众号或 App 进入小程序时返回。否则返回 `{}`。(参见后文注意)<br/> |
+| scene | number | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   |  |
+| chatType | number | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 从微信群聊/单聊打开小程序时，chatType 表示具体微信群聊/单聊类型<br/><br/>可选值：<br/>- 1: 微信联系人单聊;<br/>- 2: 企业微信联系人单聊;<br/>- 3: 普通微信群聊;<br/>- 4: 企业微信互通群聊;<br/> |
+| shareTicket | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 ##### apiCategory 的属性描述
 
@@ -56,8 +56,8 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| appId | string | 否 |  | 微信小程序: 4.41 | 来源小程序、公众号或 App 的 appId<br/> |
-| extraData | any | 否 |  | 微信小程序: 4.41 | 来源小程序传过来的数据，scene=1037或1038时支持<br/> |
+| appId | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 来源小程序、公众号或 App 的 appId<br/> |
+| extraData | any | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 来源小程序传过来的数据，scene=1037或1038时支持<br/> |
 
 ##### chatType 的属性描述
 
@@ -208,12 +208,12 @@ uni.getEnterOptionsSync 和 uni.getLaunchOptionsSync 的区别，相当于应用
 | appScheme | string | 否 |  | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.81 | 本次启动时的Scheme。返回值与App.onShow的回调参数一致<br/> |
 | appLink | string | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: 4.25; HarmonyOS: 4.81 | 本次启动时的appLink。返回值与App.onShow的回调参数一致<br/> |
 | query | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: √; HarmonyOS: 4.81 | 启动时的 query 参数<br/> |
-| apiCategory | string | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.20.0`<br/><br/>API 类别<br/><br/>可选值：<br/>- 'default': 默认类别;<br/>- 'nativeFunctionalized': 原生功能化，视频号直播商品、商品橱窗等场景打开的小程序;<br/>- 'browseOnly': 仅浏览，朋友圈快照页等场景打开的小程序;<br/>- 'embedded': 内嵌，通过打开半屏小程序能力打开的小程序;<br/>- 'chatTool': 聊天工具，通过打开聊天工具能力打开的小程序;<br/> |
-| forwardMaterials | any | 否 |  | 微信小程序: 4.41 | 打开的文件信息数组，只有从聊天素材场景打开（scene为1173）才会携带该参数<br/> |
-| referrerInfo | **OnShowOptionsReferrerInfo** | 否 |  | 微信小程序: 4.41 | 来源信息。从另一个小程序、公众号或 App 进入小程序时返回。否则返回 `{}`。(参见后文注意)<br/> |
-| scene | number | 否 |  | 微信小程序: 4.41 |  |
-| chatType | number | 否 |  | 微信小程序: 4.41 | 从微信群聊/单聊打开小程序时，chatType 表示具体微信群聊/单聊类型<br/><br/>可选值：<br/>- 1: 微信联系人单聊;<br/>- 2: 企业微信联系人单聊;<br/>- 3: 普通微信群聊;<br/>- 4: 企业微信互通群聊;<br/> |
-| shareTicket | string | 否 |  | 微信小程序: 4.41 |  | 
+| apiCategory | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.20.0`<br/><br/>API 类别<br/><br/>可选值：<br/>- 'default': 默认类别;<br/>- 'nativeFunctionalized': 原生功能化，视频号直播商品、商品橱窗等场景打开的小程序;<br/>- 'browseOnly': 仅浏览，朋友圈快照页等场景打开的小程序;<br/>- 'embedded': 内嵌，通过打开半屏小程序能力打开的小程序;<br/>- 'chatTool': 聊天工具，通过打开聊天工具能力打开的小程序;<br/> |
+| forwardMaterials | any | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 打开的文件信息数组，只有从聊天素材场景打开（scene为1173）才会携带该参数<br/> |
+| referrerInfo | **OnShowOptionsReferrerInfo** | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 来源信息。从另一个小程序、公众号或 App 进入小程序时返回。否则返回 `{}`。(参见后文注意)<br/> |
+| scene | number | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   |  |
+| chatType | number | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 从微信群聊/单聊打开小程序时，chatType 表示具体微信群聊/单聊类型<br/><br/>可选值：<br/>- 1: 微信联系人单聊;<br/>- 2: 企业微信联系人单聊;<br/>- 3: 普通微信群聊;<br/>- 4: 企业微信互通群聊;<br/> |
+| shareTicket | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 ##### apiCategory 的属性描述
 
@@ -229,8 +229,8 @@ uni.getEnterOptionsSync 和 uni.getLaunchOptionsSync 的区别，相当于应用
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| appId | string | 否 |  | 微信小程序: 4.41 | 来源小程序、公众号或 App 的 appId<br/> |
-| extraData | any | 否 |  | 微信小程序: 4.41 | 来源小程序传过来的数据，scene=1037或1038时支持<br/> |
+| appId | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 来源小程序、公众号或 App 的 appId<br/> |
+| extraData | any | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 来源小程序传过来的数据，scene=1037或1038时支持<br/> |
 
 ##### chatType 的属性描述
 
@@ -319,5 +319,5 @@ defineExpose({
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 

@@ -18,21 +18,21 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| src | [string.VideoURIString](/uts/data-type.md#ide-string) | 是 |  | Android: 4.18; iOS: 4.25 | 视频文件路径，可以是临时文件路径也可以是永久文件路径 |
-| success | (callback: [GetVideoInfoSuccess](#getvideoinfosuccess-values)) => void | 否 |  | Android: 4.18; iOS: 4.25 | 接口调用成功的回调函数 |
-| fail | (callback: [GetVideoInfoFail](#getvideoinfofail-values)) => void | 否 |  | Android: 4.18; iOS: 4.25 | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 |  | Android: 4.18; iOS: 4.25 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| src | [string.VideoURIString](/uts/data-type.md#ide-string) | 是 |  | Web:  ; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS:   | 视频文件路径，可以是临时文件路径也可以是永久文件路径 |
+| success | (callback: [GetVideoInfoSuccess](#getvideoinfosuccess-values)) => void | 否 |  | Web:  ; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS:   | 接口调用成功的回调函数 |
+| fail | (callback: [GetVideoInfoFail](#getvideoinfofail-values)) => void | 否 |  | Web:  ; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS:   | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 |  | Web:  ; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### GetVideoInfoSuccess 的属性值 @getvideoinfosuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| orientation | string | 否 |  | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 画面方向 |
+| orientation | string | 否 |  | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 画面方向 |
 | type | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 视频格式 |
-| duration | number | 是 |  | Android: 4.18; iOS: 4.25 | 视频长度 |
-| size | number | 是 |  | Android: 4.18; iOS: 4.25 | 视频大小，单位 kB |
-| height | number | 是 |  | Android: 4.18; iOS: 4.25 | 视频的长，单位 px |
-| width | number | 是 |  | Android: 4.18; iOS: 4.25 | 视频的宽，单位 px |
+| duration | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS:   | 视频长度 |
+| size | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS:   | 视频大小，单位 kB |
+| height | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS:   | 视频的长，单位 px |
+| width | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS:   | 视频的宽，单位 px |
 | fps | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS 系统版本: x; HarmonyOS: x | 视频帧率 |
 | bitrate | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS 系统版本: x; HarmonyOS: x | 视频码率，单位 kbps |
 | thumbTempFilePath | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: x | 视频缩略图临时文件路径 |
@@ -262,7 +262,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 
 
 

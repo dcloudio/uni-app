@@ -166,7 +166,7 @@ requestFullScreen
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| direction | 90 \| any | 否 |  | Web: x; 微信小程序: 4.41; Android 系统版本: 4.4; Android: 3.9.0; iOS: 4.11 | direction | 
+| direction | 90 \| any | 否 |  | Web: x; 微信小程序: 4.41; Android 系统版本: 4.4; Android: 3.9.0; iOS: 4.11; HarmonyOS:   | direction | 
 
 
 
@@ -208,7 +208,7 @@ exitFullScreen
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 
 
 示例代码另见[video组件](../component/video.md)

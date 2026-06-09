@@ -11,7 +11,7 @@ Array 对象是用于构造数组的全局对象，数组是类似于列表的�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| items | T[\] | 是 |  |   | - | 
+| items | T[\] | 是 |  |   |  | 
 
 
 **返回值**
@@ -233,7 +233,7 @@ fromNative() 方法 从native 数据结构中 转换得到一个UTS环境下的A
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| input | kotlin.ByteArray \| Kotlin.LongArray \| Kotlin.IntArray \| Kotlin.FloatArray \| Kotlin.DoubleArray \| Kotlin.ShortArray \| Kotlin.CharArray \| Kotlin.BooleanArray \| kotlin.Array \| kotlin.collections.List | 是 |  |   | - | 
+| input | kotlin.ByteArray \| Kotlin.LongArray \| Kotlin.IntArray \| Kotlin.FloatArray \| Kotlin.DoubleArray \| Kotlin.ShortArray \| Kotlin.CharArray \| Kotlin.BooleanArray \| kotlin.Array \| kotlin.collections.List | 是 |  |   |  | 
 
 
 **返回值**

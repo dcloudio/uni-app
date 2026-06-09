@@ -14,7 +14,7 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **UniCloudCallFunctionOptions** | 是 |  |   | - |
+| options | **UniCloudCallFunctionOptions** | 是 |  |   |  |
 
 #### options 的属性描述
 

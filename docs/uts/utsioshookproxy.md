@@ -206,7 +206,7 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| app | UIApplication | 否 |  |   | - |
+| app | UIApplication | 否 |  |   |  |
 | url | URL | 否 |  |   | 要打开的URL资源。该资源可以是网络资源或文件。 |
 | options | Map\<UIApplication.OpenURLOptionsKey, any> | 否 |  |   | URL处理选项的字典, 默认值为 null 。 | 
 
@@ -236,7 +236,7 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| application | UIApplication | 否 |  |   | - | 
+| application | UIApplication | 否 |  |   |  | 
 
 
 **返回值**
@@ -264,7 +264,7 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| application | UIApplication | 否 |  |   | - | 
+| application | UIApplication | 否 |  |   |  | 
 
 
 **返回值**
@@ -292,7 +292,7 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| application | UIApplication | 否 |  |   | - | 
+| application | UIApplication | 否 |  |   |  | 
 
 
 **返回值**
@@ -320,7 +320,7 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| application | UIApplication | 否 |  |   | - | 
+| application | UIApplication | 否 |  |   |  | 
 
 
 **返回值**
@@ -348,8 +348,8 @@ uts 插件创建时的回调。<br/>此回调的准确时机对应于 OC 类的 
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| argc | Int32 | 是 |  |   | - |
-| argv | UnsafeMutablePointer\<UnsafeMutablePointer\<CChar> \| null> | 是 |  |   | - | 
+| argc | Int32 | 是 |  |   |  |
+| argv | UnsafeMutablePointer\<UnsafeMutablePointer\<CChar> \| null> | 是 |  |   |  | 
 
 
 **返回值**

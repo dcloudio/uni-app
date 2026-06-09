@@ -44,18 +44,18 @@
 | selection-end | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 光标结束位置，自动聚集时有效，需与selection-satrt搭配使用 |
 | adjust-position | boolean | true | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 键盘弹起时，是否自动上推页面 |
 | ~~inputmode~~ | none \| text \| decimal \| numeric \| tel \| search \| email \| url | "text" | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 是一个枚举属性，它提供了用户在编辑元素或其内容时可能输入的数据类型的提示。在符合条件的高版本webview里，uni-app的 web 和 app-vue 平台中可使用本属性。(自 5.0+ 废弃，推荐使用 type，同时配置以 inputmode 为准) |
-| text-content-type | string |   | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 文本区域的语义，根据类型自动填充 |
+| text-content-type | string |   | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 文本区域的语义，根据类型自动填充 |
 | hold-keyboard | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | focus时，点击页面的时候不收起键盘 |
-| safe-password-cert-path | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 安全键盘加密公钥的路径，只支持包内路径 |
-| safe-password-length | number |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 安全键盘输入密码长度 |
-| safe-password-time-stamp | number |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 安全键盘加密时间戳 |
-| safe-password-nonce | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 安全键盘加密盐值 |
-| safe-password-salt | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 安全键盘计算 hash 盐值，若指定custom-hash 则无效 |
-| safe-password-custom-hash | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 安全键盘计算 hash 的算法表达式 |
+| safe-password-cert-path | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 安全键盘加密公钥的路径，只支持包内路径 |
+| safe-password-length | number |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 安全键盘输入密码长度 |
+| safe-password-time-stamp | number |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 安全键盘加密时间戳 |
+| safe-password-nonce | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 安全键盘加密盐值 |
+| safe-password-salt | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 安全键盘计算 hash 盐值，若指定custom-hash 则无效 |
+| safe-password-custom-hash | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 安全键盘计算 hash 的算法表达式 |
 | random-number | boolean |   | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 当 type 为 number, digit, idcard 数字键盘是否随机排列 |
 | controlled | boolean |   | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 是否为受控组件。为 true 时，value 内容会完全受 setData 控制 |
 | always-system | boolean |   | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 是否强制使用系统键盘和 Web-view 创建的 input 元素。为 true 时，confirm-type、confirm-hold 可能失效 |
-| always-embed | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 强制 input 处于同层状态，默认 focus 时 input 会切到非同层状态 (仅在 iOS 下生效) |
+| always-embed | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 强制 input 处于同层状态，默认 focus 时 input 会切到非同层状态 (仅在 iOS 下生效) |
 | @input | (event: [UniInputEvent](#uniinputevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 当键盘输入时，触发input事件，event.detail = {value, cursor}，处理函数可以直接 return 一个字符串，将替换输入框的内容。 |
 | @focus | (event: [UniInputFocusEvent](#uniinputfocusevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度 |
 | @blur | (event: [UniInputBlurEvent](#uniinputblurevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 输入框失去焦点时触发，event.detail = {value: value} |
@@ -74,42 +74,42 @@
 | url | Web: 5.0; 微信小程序: x; Android: 4.73; iOS: 4.73; HarmonyOS 系统版本: x; HarmonyOS: 4.73 | 为网址输入优化的虚拟键盘 |
 | text | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 文本输入键盘 |
 | number | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 数字输入键盘 |
-| idcard | Web: 4.0; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 身份证输入键盘 |
+| idcard | Web: 4.0; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 身份证输入键盘 |
 | digit | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 带小数点数字输入键盘 |
 | tel | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 电话输入键盘 |
 | safe-password | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 密码安全输入键盘 |
-| nickname | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 昵称输入键盘 |
-| decimal | Web: 5.0; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 小数输入键盘，包含数字和分隔符（通常是“ . ”或者“ , ”），设备可能也可能不显示减号键。 |
-| numeric | Web: 5.0; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 数字输入键盘，所需要的就是 0 到 9 的数字，设备可能也可能不显示减号键。 |
+| nickname | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 昵称输入键盘 |
+| decimal | Web: 5.0; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 小数输入键盘，包含数字和分隔符（通常是“ . ”或者“ , ”），设备可能也可能不显示减号键。 |
+| numeric | Web: 5.0; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 数字输入键盘，所需要的就是 0 到 9 的数字，设备可能也可能不显示减号键。 |
 
 #### confirm-type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | send | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 发送 |
-| search | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 搜索 |
-| next | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 下一个 |
-| go | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 前往 |
-| done | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 完成 |
+| search | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 搜索 |
+| next | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 下一个 |
+| go | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 前往 |
+| done | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 完成 |
 
 #### inputmode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| none | Web: 4.0; Android: x; iOS: x | 无虚拟键盘。在应用程序或者站点需要实现自己的键盘输入控件时很有用。 |
-| text | Web: 4.0; Android: x; iOS: x | 使用用户本地区域设置的标准文本输入键盘。 |
-| decimal | Web: 4.0; Android: x; iOS: x | 小数输入键盘，包含数字和分隔符（通常是“ . ”或者“ , ”），设备可能也可能不显示减号键。 |
-| numeric | Web: 4.0; Android: x; iOS: x | 数字输入键盘，所需要的就是 0 到 9 的数字，设备可能也可能不显示减号键。 |
-| tel | Web: 4.0; Android: x; iOS: x | 电话输入键盘，包含 0 到 9 的数字、星号（*）和井号（#）键。表单输入里面的电话输入通常应该使用 \<input type="tel"\> 。 |
-| search | Web: 4.0; Android: x; iOS: x | 为搜索输入优化的虚拟键盘，比如，返回键可能被重新标记为“搜索”，也可能还有其他的优化。 |
-| email | Web: 4.0; Android: x; iOS: x | 为邮件地址输入优化的虚拟键盘，通常包含"@"符号和其他优化。表单里面的邮件地址输入应该使用 \<input type="email"\> 。 |
-| url | Web: 4.0; Android: x; iOS: x | 为网址输入优化的虚拟键盘，比如，“/”键会更加明显、历史记录访问等。表单里面的网址输入通常应该使用 \<input type="url"\> 。 |
+| none | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 无虚拟键盘。在应用程序或者站点需要实现自己的键盘输入控件时很有用。 |
+| text | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 使用用户本地区域设置的标准文本输入键盘。 |
+| decimal | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 小数输入键盘，包含数字和分隔符（通常是“ . ”或者“ , ”），设备可能也可能不显示减号键。 |
+| numeric | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 数字输入键盘，所需要的就是 0 到 9 的数字，设备可能也可能不显示减号键。 |
+| tel | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 电话输入键盘，包含 0 到 9 的数字、星号（*）和井号（#）键。表单输入里面的电话输入通常应该使用 \<input type="tel"\> 。 |
+| search | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 为搜索输入优化的虚拟键盘，比如，返回键可能被重新标记为“搜索”，也可能还有其他的优化。 |
+| email | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 为邮件地址输入优化的虚拟键盘，通常包含"@"符号和其他优化。表单里面的邮件地址输入应该使用 \<input type="email"\> 。 |
+| url | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 为网址输入优化的虚拟键盘，比如，“/”键会更加明显、历史记录访问等。表单里面的网址输入通常应该使用 \<input type="url"\> 。 |
 
 #### text-content-type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| oneTimeCode | Web: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 一次性验证码 |
+| oneTimeCode | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 一次性验证码 |
 
 
 ### 事件
@@ -154,7 +154,7 @@ UniInputFocusEvent -- Extends --> UniEvent
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| height | number | 是 |  | Web: x; Android: 3.9; iOS: 4.11 | 键盘高度 |
+| height | number | 是 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 键盘高度 |
 | value | string | 是 |  |   | 输入框内容 |
 
 
@@ -1045,7 +1045,7 @@ if (view != null && view instanceof UITextField) {
 在App平台，input和textarea组件都一个属性`adjust-position`，默认为true，即软键盘弹出时，默认上推页面以显示出输入框，避免输入框被软键盘遮挡。
 
 软键盘弹出后会挡住输入框，此时启动上推逻辑。默认的上推策略是：
-- 如果输入框在scroll-view里，会优先滚动scroll-view，以保证显示出输入框(App-Harmony 暂不支持)。
+- 如果输入框在scroll-view里，会优先滚动scroll-view，以保证显示出输入框。
 - 如果没有可滚动区域，会transform上移页面，以保证显示出输入框。
 
 但是默认的上推策略无法适配所有场景，有些场景需要关闭默认上推策略，即把属性`adjust-position`设为false，然后在输入框的focus或keyboardheightchange事件中获取键盘高度，手动调整界面。

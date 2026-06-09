@@ -26,7 +26,7 @@
 | orderby | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 排序字段及正序倒叙设置 |
 | groupby | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 对数据进行分组 |
 | group-field | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 对数据进行分组统计 |
-| distinct | boolean |   | Web: 4.0; 微信小程序: -; Android: 3.93; iOS: 4.11 | 是否对数据查询结果中重复的记录进行去重 |
+| distinct | boolean |   | Web: 4.0; 微信小程序: -; Android: 3.93; iOS: 4.11; HarmonyOS:   | 是否对数据查询结果中重复的记录进行去重 |
 | page-data | string |   | Web: 4.0; 微信小程序: -; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | add 多次查询的集合, replace 当前查询的集合 |
 | page-current | number |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 当前页 |
 | page-size | number |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 每页数据数量 |
@@ -160,7 +160,7 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | any | 否 |  |   | - |
+| id | any | 否 |  |   |  |
 | options | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |  |   |  | 
 
 

@@ -22,8 +22,8 @@ uniCloud是基于serverless的云开发服务，它大幅降低开发者的开�
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| config | **UniCloudInitOptions** | 是 |  |   | - |
-| mixinDatacom | any | 是 |  |   | - |
+| config | **UniCloudInitOptions** | 是 |  |   |  |
+| mixinDatacom | any | 是 |  |   |  |
 | SSEChannel | any | 是 |  | Web: 4.71; 微信小程序: 4.71; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 服务端通知通道 | 
 
 #### config 的属性描述

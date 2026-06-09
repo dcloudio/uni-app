@@ -32,7 +32,7 @@ uni.requestMerchantTransfer 是​商家转账到用户零钱的API，适用于�
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **RequestMerchantTransferOptions** | 是 |  | Web: x; HarmonyOS: x |  |
+| options | **RequestMerchantTransferOptions** | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x |  |
 
 #### options 的属性描述
 
@@ -44,15 +44,15 @@ uni.requestMerchantTransfer 是​商家转账到用户零钱的API，适用于�
 | openId | string | 否 |  | Web: x; 微信小程序: 4.61; Android: 4.61; iOS: 4.61; HarmonyOS: x | 收款用户 openId， 对应传入的商户 appId 下，某用户的 openId |
 | subAppId | string | 否 |  | Web: x; 微信小程序: 4.61; Android: 4.61; iOS: 4.61; HarmonyOS: x | 子商户 appId（微信平台子appid)，服务商模式下，appId 和 subAppId 二选一填写 |
 | subMchId | string | 否 |  | Web: x; 微信小程序: 4.61; Android: 4.61; iOS: 4.61; HarmonyOS: x | 子商户号，服务商模式下必填 |
-| success | (res: [RequestMerchantTransferGeneralCallbackResult](#requestmerchanttransfergeneralcallbackresult-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: [RequestMerchantTransferGeneralCallbackResult](#requestmerchanttransfergeneralcallbackresult-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; HarmonyOS: x | 接口调用失败的回调函数 |
+| success | (res: [RequestMerchantTransferGeneralCallbackResult](#requestmerchanttransfergeneralcallbackresult-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: [RequestMerchantTransferGeneralCallbackResult](#requestmerchanttransfergeneralcallbackresult-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS: x | 接口调用失败的回调函数 |
 | complete | (res: [RequestMerchantTransferGeneralCallbackResult](#requestmerchanttransfergeneralcallbackresult-values)) => void | 否 |  | Web: x; 微信小程序: 4.61; Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### RequestMerchantTransferGeneralCallbackResult 的属性值 @requestmerchanttransfergeneralcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web: x; HarmonyOS: x |  |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x |  |
 
 
 
@@ -340,5 +340,5 @@ uni.requestMerchantTransfer 是​商家转账到用户零钱的API，适用于�
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 

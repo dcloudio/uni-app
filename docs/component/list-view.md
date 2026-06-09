@@ -76,14 +76,14 @@ list-view和scroll-view都是滚动组件，list适用于长列表场景，其�
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| nested-scroll-view | Web: x; Android: 4.11; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 嵌套滚动 |
+| nested-scroll-view | Web: x; 微信小程序:  ; Android: 4.11; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 嵌套滚动 |
 
 #### refresher-default-style 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| black | 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 深颜色雪花样式 |
-| white | 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 浅白色雪花样式 |
+| black | Web:  ; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 深颜色雪花样式 |
+| white | Web:  ; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 浅白色雪花样式 |
 | none | Web: 4.11; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 不使用默认样式 |
 
 
@@ -662,16 +662,16 @@ scroll-view开启嵌套模式后，list-view 可作为内层滚动视图与外�
 
 ### 蒸汽模式list-view调整 <Badge text="App Vapor"/>
 
-蒸汽模式下app端list-view调整为使用vue组件实现，list-view在滚动期间会复用出屏幕的list-item组件用于渲染新的列表数据，从而提升长列表的渲染性能，减少内存占用。
+VDOM模式下，app平台list-view仅对渲染层复用，不会对vue数据层和DOM层复用。
+
+蒸汽模式下，app平台list-view，首先没有VDOM了，且内置支持对vue数据和渲染层同时复用，性能表现大幅提升。
 
 在蒸汽模式使用list-view需要注意以下几点：
 
 - list-item内部组件如果有内部状态不受绑定数据影响则需要依赖onReuse、onRecycle等生命周期函数进行状态重置，否则会出现状态错乱的问题，参考：[组件生命周期文档](../vue/component.md#component-lifecycle)
-- 蒸汽模式list-view内暂不支持sticky-header、sticky-section组件
 - list-view下仅第一个在list-item上的v-for支持复用，其他list-item会被当做view对待。
 - list-item的v-for必须要有:key属性，否则不会复用，此时list-item也会被当做view对待
 - list-item不支持设置margin样式
-- 不支持scroll-into-view属性
 - 不支持横向滚动
 
 <!-- ## list-item -->
@@ -704,7 +704,7 @@ scroll-view开启嵌套模式后，list-view 可作为内层滚动视图与外�
 
 + 良好的复用，需要在list-item上使用v-for且配置:key。
 + type属性定义list-item组件类型。不赋值type属性默认值为0，每一个type类型都会有对应的list-item组件缓存池。
-+ 鸿蒙平台在非蒸汽模式不支持type属性，会将一个list-view下所有list-item放在一个缓存池进行复用。蒸汽模式支持type分类复用。
++ 鸿蒙平台在VDOM模式不支持type属性，会将一个list-view下所有list-item放在一个缓存池进行复用。蒸汽模式支持type分类复用。
 + list-view组件加载list-item组件时，会优先查询对应type缓存池是否存在可复用的list-item组件。有则复用没有则创建新的list-item组件。
 + list-item组件被滑动出屏幕则会优先添加到对应类型的list-item缓存池，每个类型缓存最大5~8个（不同平台缓存最大值不固定），如果缓存池已满则进行组件销毁！
 + 部分list-item组件存在子元素个数差异时。请尽可能的配置不同的type，可以规避获取相同type类型的list-item组件因子元素个数差异导致重新创建，增加性能消耗。

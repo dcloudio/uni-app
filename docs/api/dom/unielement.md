@@ -16,9 +16,9 @@
 | isConnected | boolean | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: 12; HarmonyOS: 4.61 | 只读属性 节点是否与 DOM 树连接 |
 | id | string | 是 |  | Web: x; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: 12; HarmonyOS: x | 只读属性 节点是否与 DOM 树连接 |
 | uniPage | [UniPage](/api/unipage.md) | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: 12; HarmonyOS: 4.61 | 元素所属的页面对象 |
-| classList | Array&lt;string&gt; | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: x | 只读属性 获取当前元素的的 class 属性的动态集合。 |
-| firstChild | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25 | 只读属性 获取当前元素的的第一个子元素，如果元素是无子元素，则返回 null。 |
-| lastChild | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25 | 只读属性 获取当前元素的最后一个子元素，如果没有子元素，则返回 null。 |
+| classList | Array&lt;string&gt; | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS:   | 只读属性 获取当前元素的的 class 属性的动态集合。 |
+| firstChild | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS:   | 只读属性 获取当前元素的的第一个子元素，如果元素是无子元素，则返回 null。 |
+| lastChild | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS:   | 只读属性 获取当前元素的最后一个子元素，如果没有子元素，则返回 null。 |
 | parentElement | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性 获取当前元素在 DOM 树中的父元素，如果没有父元素（如未添加到DOM树中），则返回null。 |
 | previousSibling | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性 获取当前元素的前一个同级元素，没有则返回null。 |
 | nextElementSibling | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性 获取在 DOM 树中紧跟在其后面的同级元素，如果指定的元素为最后一个元素，则返回 null。 |
@@ -130,8 +130,8 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 |  | 微信小程序: x | 属性名称 |
-| value | string | 是 |  | 微信小程序: x | 属性值域 | 
+| key | string | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 属性名称 |
+| value | string | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 属性值域 | 
 
 
 
@@ -155,8 +155,8 @@ app平台 setAttribute 不支持设置 class、style 属性，设置了也不会
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 |  | Web: x; 微信小程序: x | 属性名称 |
-| value | any | 是 |  | Web: x; 微信小程序: x | 属性值域 | 
+| key | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 属性名称 |
+| value | any | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 属性值域 | 
 
 
 
@@ -469,7 +469,7 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 |  | Web: x; 微信小程序: x | 属性名称 | 
+| key | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 属性名称 | 
 
 
 ##### 返回值 
@@ -496,7 +496,7 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 |  | 微信小程序: x | 属性名称 | 
+| key | string | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 属性名称 | 
 
 
 ##### 返回值 
@@ -523,7 +523,7 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 |  | 微信小程序: x | 属性名称 | 
+| key | string | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 属性名称 | 
 
 
 
@@ -1378,8 +1378,8 @@ if (view != null && view instanceof WKWebView) {
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 |  | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 事件类型 |
-| callback | (event: T) => R | 是 |  | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 事件监听器 T表示event类型，R表示返回值类型 | 
+| type | string | 是 |  | Web:  ; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 事件类型 |
+| callback | (event: T) => R | 是 |  | Web:  ; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 事件监听器 T表示event类型，R表示返回值类型 | 
 
 
 ##### 返回值 
@@ -1406,8 +1406,8 @@ if (view != null && view instanceof WKWebView) {
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 |  | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 事件类型 |
-| callbackWrapper | UniCallbackWrapper | 是 |  | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 事件监听回调封装类 | 
+| type | string | 是 |  | Web:  ; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 事件类型 |
+| callbackWrapper | UniCallbackWrapper | 是 |  | Web:  ; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 事件监听回调封装类 | 
 
 
 
@@ -1483,8 +1483,8 @@ if (view != null && view instanceof WKWebView) {
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  | 微信小程序: x | x轴要滚动到坐标位置(单位px) |
-| y | number | 是 |  | 微信小程序: x | y轴要滚动到坐标位置(单位px) | 
+| x | number | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | x轴要滚动到坐标位置(单位px) |
+| y | number | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | y轴要滚动到坐标位置(单位px) | 
 
 
 
@@ -1505,8 +1505,8 @@ if (view != null && view instanceof WKWebView) {
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  | 微信小程序: x | x轴要滚动的距离(单位px) |
-| y | number | 是 |  | 微信小程序: x | y轴要滚动的距离(单位px) | 
+| x | number | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | x轴要滚动的距离(单位px) |
+| y | number | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | y轴要滚动的距离(单位px) | 
 
 
 
@@ -1527,7 +1527,7 @@ if (view != null && view instanceof WKWebView) {
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| selector | [string.cssSelectorString](/uts/data-type.md#ide-string) | 是 |  | 微信小程序: x | CSS 选择器字符串 | 
+| selector | [string.cssSelectorString](/uts/data-type.md#ide-string) | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | CSS 选择器字符串 | 
 
 
 ##### 返回值 
@@ -1554,7 +1554,7 @@ if (view != null && view instanceof WKWebView) {
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| selector | [string.cssSelectorString](/uts/data-type.md#ide-string) | 是 |  | 微信小程序: x | CSS 选择器字符串 | 
+| selector | [string.cssSelectorString](/uts/data-type.md#ide-string) | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | CSS 选择器字符串 | 
 
 
 ##### 返回值 
@@ -2779,55 +2779,55 @@ play
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **RequestFullscreenOptions** | 否 |  | Web: x; 微信小程序: x |  |
+| options | **RequestFullscreenOptions** | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| navigationUI | string | 否 |  | Web: x; 微信小程序: x | 全屏模式时导航栏状态 |
-| orientation | string | 否 |  | Web: x; 微信小程序: x | 全屏显示方向 |
-| success | () => void | 否 |  | Web: x; 微信小程序: x | 成功回调 |
-| fail | (error: [IFullscreenError](#ifullscreenerror-values)) => void | 否 |  | Web: x; 微信小程序: x | 失败回调 |
-| complete | (result?: any) => void | 否 |  | Web: x; 微信小程序: x | 完成回调 | 
+| navigationUI | string | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 全屏模式时导航栏状态 |
+| orientation | string | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 全屏显示方向 |
+| success | () => void | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 成功回调 |
+| fail | (error: [IFullscreenError](#ifullscreenerror-values)) => void | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 失败回调 |
+| complete | (result?: any) => void | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 完成回调 | 
 
 ##### navigationUI 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| hide | Web: x; 微信小程序: x | 隐藏所有系统状态栏和底部导航栏 |
-| show | Web: x; 微信小程序: x | 隐藏顶部系统状态栏，显示底部系统导航栏 |
-| auto | Web: x; 微信小程序: x | 系统默认行为 |
+| hide | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 隐藏所有系统状态栏和底部导航栏 |
+| show | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 隐藏顶部系统状态栏，显示底部系统导航栏 |
+| auto | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 系统默认行为 |
 
 ##### orientation 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| auto | Web: x; 微信小程序: x | 根据重力感应自动调整 |
-| landscape | Web: x; 微信小程序: x | 固定为横屏，会根据重力调整方向 |
-| landscape-secondary | Web: x; 微信小程序: x | 固定为反向横屏 |
-| landscape-primary | Web: x; 微信小程序: x | 固定为正向横屏 |
-| portrait | Web: x; 微信小程序: x | 固定为竖屏 |
+| auto | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 根据重力感应自动调整 |
+| landscape | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 固定为横屏，会根据重力调整方向 |
+| landscape-secondary | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 固定为反向横屏 |
+| landscape-primary | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 固定为正向横屏 |
+| portrait | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 固定为竖屏 |
 
 ###### IFullscreenError 的属性值 @ifullscreenerror-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x; 微信小程序: x | 错误码 |
-| errSubject | string | 是 |  | Web: x; 微信小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x; 微信小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 错误码 |
+| errSubject | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x; 微信小程序: x |  |
+| errMsg | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 106600 | Web: x; 微信小程序: x | 当前页面已经有element处于全屏状态 |
-| 106601 | Web: x; 微信小程序: x | 当前element不支持全屏 |
-| 106602 | Web: x; 微信小程序: x | 当前页面没有element处于全屏状态 |
-| 106603 | Web: x; 微信小程序: x | 页面已销毁或者尚未就绪 |
-| 106604 | Web: x; 微信小程序: x | 组件未就绪 |
+| 106600 | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 当前页面已经有element处于全屏状态 |
+| 106601 | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 当前element不支持全屏 |
+| 106602 | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 当前页面没有element处于全屏状态 |
+| 106603 | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 页面已销毁或者尚未就绪 |
+| 106604 | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 组件未就绪 |
 
 
 

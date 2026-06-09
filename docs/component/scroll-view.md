@@ -22,7 +22,7 @@
 | direction | string | "vertical" | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 滚动方向，可取值 none、all、horizontal、vertical，默认值vertical |
 | ~~scroll-x~~ | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 允许横向滚动，不支持同时设置scroll-y属性为true，同时设置true时scroll-y生效。已废弃，请改用direction |
 | ~~scroll-y~~ | boolean | true | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 允许竖向滚动，不支持同时设置scroll-x属性为true，同时设置true时scroll-y生效。已废弃，请改用direction |
-| ~~rebound~~ | boolean | true | 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 是否开启回弹效果。已废弃，请改用bounces |
+| ~~rebound~~ | boolean | true | Web:  ; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 是否开启回弹效果。已废弃，请改用bounces |
 | associative-container | string |   | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 关联的滚动容器 |
 | enable-back-to-top | boolean | false | Web: x; 微信小程序: x; Android: x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 点击系统状态栏滚动条返回顶部，只支持竖向 |
 | bounces | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否开启回弹效果 优先级高于rebound |
@@ -68,10 +68,10 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| none | Web: 4.0; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 禁止滚动 |
-| all | Web: 4.0; Android: x; iOS: x; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 横向/竖向可同时滚动 |
-| horizontal | Web: 4.0; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 横向滚动 |
-| vertical | Web: 4.0; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 竖向滚动 |
+| none | Web: 4.0; 微信小程序:  ; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 禁止滚动 |
+| all | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 横向/竖向可同时滚动 |
+| horizontal | Web: 4.0; 微信小程序:  ; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 横向滚动 |
+| vertical | Web: 4.0; 微信小程序:  ; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 竖向滚动 |
 
 #### associative-container 的属性描述
 
@@ -191,7 +191,7 @@ UniStartNestedScrollEvent -- Extends --> UniEvent
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | node | [UniElement](/api/dom/unielement.md) | 是 |  |   | 开始滚动子节点对象 |
-| isTouch | boolean | 是 |  | Android: 3.99; iOS 系统版本: x; iOS: x | 是否由触摸行为发生的Event |
+| isTouch | boolean | 是 |  | Web:  ; 微信小程序:  ; Android: 3.99; iOS 系统版本: x; iOS: x; HarmonyOS:   | 是否由触摸行为发生的Event |
 
 
 #### UniNestedPreScrollEvent
@@ -208,7 +208,7 @@ UniNestedPreScrollEvent -- Extends --> UniEvent
 | :- | :- | :- | :- |  :-: | :- |
 | deltaX | number | 是 |  |   | x轴滚动距离 |
 | deltaY | number | 是 |  |   | y轴滚动距离 |
-| isTouch | boolean | 是 |  | Android: 3.99; iOS 系统版本: x; iOS: x | 是否由触摸行为发生的Event |
+| isTouch | boolean | 是 |  | Web:  ; 微信小程序:  ; Android: 3.99; iOS 系统版本: x; iOS: x; HarmonyOS:   | 是否由触摸行为发生的Event |
 
 
 ##### UniNestedPreScrollEvent 的方法

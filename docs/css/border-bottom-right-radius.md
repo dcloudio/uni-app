@@ -41,10 +41,6 @@ border-bottom-right-radius: <length-percentage>{1,2};
 
 
 
-#### App平台差异  
-- App平台暂不支持设置百分比。  
-  如需要设置元素为圆形，请参考[border-radius](./border-radius.md)。  
-
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/border-bottom-right-radius)

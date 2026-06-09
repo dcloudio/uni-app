@@ -22,7 +22,7 @@ CSS 长度数据类型 `<percentage>` 表述一个百分比值。许多 CSS 属�
 | :- | :- | :- |
 | px | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |   |
 | rpx | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 |   |
-| em | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| em | Web: 4.0; 微信小程序:  ; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
 | rem | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
 | cap | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
 | ch | Web: 4.0; 微信小程序: 4.41; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |

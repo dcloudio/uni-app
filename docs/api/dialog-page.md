@@ -90,37 +90,37 @@ app-android平台注意事项：
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| auto | 微信小程序: x | 自动选择动画效果 |
-| none | 微信小程序: x | 无动画效果 |
-| slide-in-right | 微信小程序: x | 从右侧横向滑动效果 |
-| slide-in-left | 微信小程序: x | 左侧横向滑动效果 |
-| slide-in-top | 微信小程序: x | 从上侧竖向滑动效果 |
-| slide-in-bottom | 微信小程序: x | 从下侧竖向滑动效果 |
-| fade-in | 微信小程序: x | 从透明到不透明逐渐显示效果 |
-| zoom-out | 微信小程序: x | 从小到大逐渐放大显示效果 |
-| zoom-fade-out | 微信小程序: x | 从小到大逐渐放大并且从透明到不透明逐渐显示效果 |
+| auto | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 自动选择动画效果 |
+| none | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 无动画效果 |
+| slide-in-right | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 从右侧横向滑动效果 |
+| slide-in-left | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 左侧横向滑动效果 |
+| slide-in-top | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 从上侧竖向滑动效果 |
+| slide-in-bottom | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 从下侧竖向滑动效果 |
+| fade-in | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 从透明到不透明逐渐显示效果 |
+| zoom-out | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 从小到大逐渐放大显示效果 |
+| zoom-fade-out | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 从小到大逐渐放大并且从透明到不透明逐渐显示效果 |
 
 #### OpenDialogPageSuccess 的属性值 @opendialogpagesuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: x |  |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### OpenDialogPageFail 的属性值 @opendialogpagefail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | 微信小程序: x | 路由错误码<br/>- 4: 框架内部异常 |
-| errSubject | string | 是 |  | 微信小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | 微信小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 路由错误码<br/>- 4: 框架内部异常 |
+| errSubject | string | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | 微信小程序: x |  |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### OpenDialogPageComplete 的属性值 @opendialogpagecomplete-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: x |  |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 
 ### 返回值 
@@ -192,37 +192,37 @@ app-android平台注意事项：
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| auto | 微信小程序: x | 自动选择动画效果 |
-| none | 微信小程序: x | 无动画效果 |
-| slide-out-right | 微信小程序: x | 横向向右侧滑出屏幕动画 |
-| slide-out-left | 微信小程序: x | 横向向左侧滑出屏幕动画 |
-| slide-out-top | 微信小程序: x | 竖向向上侧滑出屏幕动画 |
-| slide-out-bottom | 微信小程序: x | 竖向向下侧滑出屏幕动画 |
-| fade-out | 微信小程序: x | 从不透明到透明逐渐隐藏动画 |
-| zoom-in | 微信小程序: x | 从大逐渐缩小关闭动画 |
-| zoom-fade-in | 微信小程序: x | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
+| auto | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 自动选择动画效果 |
+| none | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 无动画效果 |
+| slide-out-right | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 横向向右侧滑出屏幕动画 |
+| slide-out-left | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 横向向左侧滑出屏幕动画 |
+| slide-out-top | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 竖向向上侧滑出屏幕动画 |
+| slide-out-bottom | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 竖向向下侧滑出屏幕动画 |
+| fade-out | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 从不透明到透明逐渐隐藏动画 |
+| zoom-in | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 从大逐渐缩小关闭动画 |
+| zoom-fade-in | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
 
 #### CloseDialogPageSuccess 的属性值 @closedialogpagesuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: x |  |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### CloseDialogPageFail 的属性值 @closedialogpagefail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | 微信小程序: x | 路由错误码<br/>- 4: 框架内部异常 |
-| errSubject | string | 是 |  | 微信小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | 微信小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 路由错误码<br/>- 4: 框架内部异常 |
+| errSubject | string | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | 微信小程序: x |  |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### CloseDialogPageComplete 的属性值 @closedialogpagecomplete-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: x |  |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 
 ### 返回值 
@@ -796,7 +796,7 @@ app-android平台注意事项：
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 
 
 ## Tips

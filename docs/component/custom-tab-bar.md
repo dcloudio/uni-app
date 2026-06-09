@@ -16,10 +16,10 @@
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| direction | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x | 选项的排列方向 |
-| show-icon | boolean |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x | 是否显示icon |
-| selected | number |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x | 选中的tabBar选项索引值 |
-| @onTabItemTap | (event: [OnTabItemTapOption](#ontabitemtapoption)) => void |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x | 点击自定义 tabBar 触发事件，detail = {index, pagePath, text} |
+| direction | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   | 选项的排列方向 |
+| show-icon | boolean |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   | 是否显示icon |
+| selected | number |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   | 选中的tabBar选项索引值 |
+| @onTabItemTap | (event: [OnTabItemTapOption](#ontabitemtapoption)) => void |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   | 点击自定义 tabBar 触发事件，detail = {index, pagePath, text} |
 
 #### direction 的属性描述
 

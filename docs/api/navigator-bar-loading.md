@@ -23,31 +23,31 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **ShowNavigationBarLoadingOptions** | 否 |  | Android: x; iOS: x |  |
+| options | **ShowNavigationBarLoadingOptions** | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | (result: [ShowNavigationBarLoadingSuccess](#shownavigationbarloadingsuccess-values)) => void | 否 |  | Android: x; iOS: x |  |
-| fail | (error: [ShowNavigationBarLoadingFail](#shownavigationbarloadingfail-values)) => void | 否 |  | Android: x; iOS: x |  |
-| complete | () => void | 否 |  | Android: x; iOS: x |  | 
+| success | (result: [ShowNavigationBarLoadingSuccess](#shownavigationbarloadingsuccess-values)) => void | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  |
+| fail | (error: [ShowNavigationBarLoadingFail](#shownavigationbarloadingfail-values)) => void | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  |
+| complete | () => void | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  | 
 
 #### ShowNavigationBarLoadingSuccess 的属性值 @shownavigationbarloadingsuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Android: x; iOS: x |  |
+| errMsg | string | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  |
 
 #### ShowNavigationBarLoadingFail 的属性值 @shownavigationbarloadingfail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Android: x; iOS: x | 统一错误码 |
-| errSubject | string | 是 |  | Android: x; iOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Android: x; iOS: x | 错误信息中包含的数据 |
+| errCode | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 统一错误码 |
+| errSubject | string | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Android: x; iOS: x |  |
+| errMsg | string | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  |
 
 
 
@@ -95,31 +95,31 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **HideNavigationBarLoadingOptions** | 否 |  | Android: x; iOS: x |  |
+| options | **HideNavigationBarLoadingOptions** | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | (result: [HideNavigationBarLoadingSuccess](#hidenavigationbarloadingsuccess-values)) => void | 否 |  | Android: x; iOS: x |  |
-| fail | (error: [HideNavigationBarLoadingFail](#hidenavigationbarloadingfail-values)) => void | 否 |  | Android: x; iOS: x |  |
-| complete | () => void | 否 |  | Android: x; iOS: x |  | 
+| success | (result: [HideNavigationBarLoadingSuccess](#hidenavigationbarloadingsuccess-values)) => void | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  |
+| fail | (error: [HideNavigationBarLoadingFail](#hidenavigationbarloadingfail-values)) => void | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  |
+| complete | () => void | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  | 
 
 #### HideNavigationBarLoadingSuccess 的属性值 @hidenavigationbarloadingsuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Android: x; iOS: x |  |
+| errMsg | string | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  |
 
 #### HideNavigationBarLoadingFail 的属性值 @hidenavigationbarloadingfail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Android: x; iOS: x | 统一错误码 |
-| errSubject | string | 是 |  | Android: x; iOS: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Android: x; iOS: x | 错误信息中包含的数据 |
+| errCode | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 统一错误码 |
+| errSubject | string | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Android: x; iOS: x |  |
+| errMsg | string | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  |
 
 
 
@@ -151,7 +151,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 
 
 ## Tips

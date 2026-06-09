@@ -27,16 +27,16 @@
 | duration | number | 30 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 进度增加1%所需毫秒数 |
 | percent | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 进度百分比 |
 | show-info | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否显示进度条值 |
-| border-radius | number | 0 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 进度条圆角 |
-| font-size | number | 12 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 进度条字体大小 |
+| border-radius | number | 0 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS:  ; HarmonyOS(Vapor): 5.0 | 进度条圆角 |
+| font-size | number | 12 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS:  ; HarmonyOS(Vapor): 5.0 | 进度条字体大小 |
 | stroke-width | number | 3 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 进度条宽度 |
 | activeColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#09BB07" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 已选择的进度条的颜色 |
 | backgroundColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#EBEBEB" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 未选择的进度条的颜色 |
 | active | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否启用动画 |
 | active-mode | string | "backwards" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 动画模式 |
 | ~~color~~ | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(string)*<br/>进度条颜色（请使用activeColor） |
-| background-color | string | "#ebebeb" | iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 未选择的进度条的颜色 |
-| active-color | string | "#007aff" | iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 已选择的进度条的颜色 |
+| background-color | string | "#ebebeb" | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; iOS(Vapor): 5.11; HarmonyOS:  ; HarmonyOS(Vapor): 5.0 | 未选择的进度条的颜色 |
+| active-color | string | "#007aff" | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; iOS(Vapor): 5.11; HarmonyOS:  ; HarmonyOS(Vapor): 5.0 | 已选择的进度条的颜色 |
 | @activeend | (event: [UniProgressActiveendEvent](#uniprogressactiveendevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 动画完成事件 |
 
 #### active-mode 的属性描述

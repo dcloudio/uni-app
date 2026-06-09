@@ -12,7 +12,7 @@ app-android平台专有内置对象。在uni-app和uni-app x的uts环境中均�
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 |  |   | - | 
+| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 |  |   |  | 
 
 
 **返回值**
@@ -44,7 +44,7 @@ onAppConfigChange 对应的反注册函数
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 否 |  |   | - | 
+| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 否 |  |   |  | 
 
 
 **返回值**
@@ -75,7 +75,7 @@ onAppConfigChange 对应的反注册函数
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (res: Number) => void | 否 |  |   | - | 
+| callback | (res: Number) => void | 否 |  |   |  | 
 
 
 **返回值**
@@ -107,7 +107,7 @@ onAppTrimMemory 对应的反注册函数。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (res: Number) => void | 否 |  |   | - | 
+| callback | (res: Number) => void | 否 |  |   |  | 
 
 
 **返回值**
@@ -139,7 +139,7 @@ onAppTrimMemory 对应的反注册函数。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 是 |  |   | - | 
+| callback | () => void | 是 |  |   |  | 
 
 
 **返回值**
@@ -177,7 +177,7 @@ onAppActivityPause 对应的反注册函数
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 否 |  |   | - | 
+| callback | () => void | 否 |  |   |  | 
 
 
 **返回值**
@@ -216,7 +216,7 @@ UTSAndroid.offAppActivityPause(() => {
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 是 |  |   | - | 
+| callback | () => void | 是 |  |   |  | 
 
 
 **返回值**
@@ -257,7 +257,7 @@ onAppActivityResume 对应的反注册函数
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 否 |  |   | - | 
+| callback | () => void | 否 |  |   |  | 
 
 
 **返回值**
@@ -298,7 +298,7 @@ UTSAndroid.onAppActivityResume(() => {
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 是 |  |   | - | 
+| callback | () => void | 是 |  |   |  | 
 
 
 **返回值**
@@ -336,7 +336,7 @@ onAppActivityDestroy 对应的反注册函数。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 否 |  |   | - | 
+| callback | () => void | 否 |  |   |  | 
 
 
 **返回值**
@@ -427,7 +427,7 @@ onAppActivityResult 对应的反注册函数。
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (requestCode: Int, resultCode: Int, data: any) => void | 否 |  |   | - | 
+| callback | (requestCode: Int, resultCode: Int, data: any) => void | 否 |  |   |  | 
 
 
 **返回值**
@@ -506,7 +506,7 @@ UTSAndroid.onAppActivityBack(() => {
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 否 |  |   | - | 
+| callback | () => void | 否 |  |   |  | 
 
 
 **返回值**
@@ -1064,10 +1064,10 @@ console.log("pagePX",pagePX)
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| context | Activity | 是 |  |   | - |
+| context | Activity | 是 |  |   |  |
 | requestPermission | Array&lt;string&gt;\<string> | 是 |  |   | 期望请求的权限 |
-| success | (allRight: boolean, grantedList: Array&lt;string&gt;) => void | 是 |  |   | - |
-| fail | (doNotAskAgain: boolean, grantedList: Array&lt;string&gt;) => void | 是 |  |   | - |
+| success | (allRight: boolean, grantedList: Array&lt;string&gt;) => void | 是 |  |   |  |
+| fail | (doNotAskAgain: boolean, grantedList: Array&lt;string&gt;) => void | 是 |  |   |  |
 | shallUnCheck | boolean | 否 | false |   | 是否忽略权限检查，需要HBuilder X 4.25 之后版本 | 
 
 
@@ -1123,7 +1123,7 @@ console.log("pagePX",pagePX)
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| context | Activity | 是 |  |   | - |
+| context | Activity | 是 |  |   |  |
 | requestPermission | Array&lt;string&gt;\<string> | 是 |  |   | 期望具备的权限 | 
 
 
@@ -1165,7 +1165,7 @@ if (UTSAndroid.checkSystemPermissionGranted(UTSAndroid.getUniActivity()!, permis
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| context | Activity | 是 |  |   | - |
+| context | Activity | 是 |  |   |  |
 | requestPermission | Array&lt;string&gt;\<string> | 是 |  |   | 期望请求的权限 | 
 
 
@@ -1203,7 +1203,7 @@ UTSAndroid.gotoSystemPermissionActivity(UTSAndroid.getUniActivity()!,permissionN
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| context | Activity | 是 |  |   | - |
+| context | Activity | 是 |  |   |  |
 | requestPermission | Array&lt;string&gt;\<string> | 是 |  |   | 期望请求的权限 | 
 
 

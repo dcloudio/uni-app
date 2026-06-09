@@ -49,7 +49,7 @@ onRequest
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (permissions: Array&lt;string&gt;) => void | 是 |  | Web: x; iOS: x; HarmonyOS: x | 申请系统权限回调，permissions为触发权限申请的所有权限 | 
+| callback | (permissions: Array&lt;string&gt;) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS: x | 申请系统权限回调，permissions为触发权限申请的所有权限 | 
 
 
 
@@ -65,7 +65,7 @@ onConfirm
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (permissions: Array&lt;string&gt;) => void | 是 |  | Web: x; iOS: x; HarmonyOS: x | 弹出系统权限授权框回调，permissions为触发弹出权限授权框的所有权限 | 
+| callback | (permissions: Array&lt;string&gt;) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS: x | 弹出系统权限授权框回调，permissions为触发弹出权限授权框的所有权限 | 
 
 
 
@@ -81,7 +81,7 @@ onComplete
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (permissions: Array&lt;string&gt;) => void | 是 |  | Web: x; iOS: x; HarmonyOS: x | 权限申请完成回调，permissions为申请完成的所有权限 | 
+| callback | (permissions: Array&lt;string&gt;) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS: x | 权限申请完成回调，permissions为申请完成的所有权限 | 
 
 
 
@@ -217,5 +217,5 @@ stop
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 

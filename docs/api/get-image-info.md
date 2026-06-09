@@ -18,20 +18,20 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| src | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 |  | Android: 4.18; iOS: 4.25 | 图片的路径，可以是相对路径，临时文件路径，存储文件路径，网络图片路径 |
-| success | (callback: [GetImageInfoSuccess](#getimageinfosuccess-values)) => void | 否 |  | Android: 4.18; iOS: 4.25 | 接口调用成功的回调函数 |
-| fail | (callback: [GetImageInfoFail](#getimageinfofail-values)) => void | 否 |  | Android: 4.18; iOS: 4.25 | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 |  | Android: 4.18; iOS: 4.25 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| src | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 |  | Web:  ; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS:   | 图片的路径，可以是相对路径，临时文件路径，存储文件路径，网络图片路径 |
+| success | (callback: [GetImageInfoSuccess](#getimageinfosuccess-values)) => void | 否 |  | Web:  ; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS:   | 接口调用成功的回调函数 |
+| fail | (callback: [GetImageInfoFail](#getimageinfofail-values)) => void | 否 |  | Web:  ; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS:   | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 |  | Web:  ; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### GetImageInfoSuccess 的属性值 @getimageinfosuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| width | number | 是 |  | Android: 4.18; iOS: 4.25 | 图片宽度，单位px |
-| height | number | 是 |  | Android: 4.18; iOS: 4.25 | 图片高度，单位px |
-| path | string | 是 |  | Android: 4.18; iOS: 4.25 | 返回图片的本地路径 |
-| orientation | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 返回图片的方向 |
-| type | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 返回图片的格式 |
+| width | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS:   | 图片宽度，单位px |
+| height | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS:   | 图片高度，单位px |
+| path | string | 是 |  | Web:  ; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS:   | 返回图片的本地路径 |
+| orientation | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS:   | 返回图片的方向 |
+| type | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS:   | 返回图片的格式 |
 
 #### orientation 的属性描述
 
@@ -240,5 +240,5 @@ web平台读取图片的exif信息，需要引入三方库。考虑到影响web 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 

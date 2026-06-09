@@ -37,7 +37,7 @@
 | max-scale | number | 20 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 最大缩放级别 |
 | layer-style | string | "1" | Web: x; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 个性化地图（如实现地图暗黑模式） |
 | markers | Marker[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 标记点 |
-| covers | array |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 9.0; iOS: x | 即将移除，请使用 markers |
+| covers | array |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   | 即将移除，请使用 markers |
 | polyline | Polyline[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 路线 |
 | polygons | Polygon[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 多边形 |
 | circles | Circle[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 圆 |
@@ -61,10 +61,10 @@
 | show-scale | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(boolean)*<br/>显示比例尺，工具暂不支持 |
 | enable-auto-max-overlooking | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(boolean)*<br/>开启最大俯视角，俯视角度从 45 度拓展到 75 度 |
 | setting | object |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(object)*<br/>配置项 |
-| enable3-d | boolean | false | Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否显示3D楼块 |
+| enable3-d | boolean | false | Web:  ; 微信小程序:  ; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否显示3D楼块 |
 | enable-indoor-map | boolean | false |   |   |
 | @markertap | (event: [UniMapMarkerTapEvent](#unimapmarkertapevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 点击标记点时触发 |
-| @callouttap | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 9.0; iOS: x | 点击标记点对应的气泡时触发 |
+| @callouttap | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   | 点击标记点对应的气泡时触发 |
 | @controltap | (event: [UniMapControlTapEvent](#unimapcontroltapevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 点击控件时触发 |
 | @regionchange | (event: [UniMapRegionChangeEvent](#unimapregionchangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 视野发生变化时触发 |
 | @updated | (event: [UniMapUpdatedEvent](#unimapupdatedevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS 系统版本: 9.0; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 在地图渲染更新完成时触发 |

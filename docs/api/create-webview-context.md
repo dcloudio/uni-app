@@ -110,7 +110,7 @@ evalJS
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| js | string | 是 |  | Web: x |  | 
+| js | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 
 
@@ -143,16 +143,16 @@ loadData
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **UniWebviewContextLoadDataOptions** | 是 |  | Web: x |  |
+| options | **UniWebviewContextLoadDataOptions** | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | string | 是 |  | Web: x | 要加载的内容，编码后的字符串 |
-| baseURL | string | 否 |  | Web: x | 页面的基础URL |
-| mimeType | string | 否 |  | Web: x | 加载的页面内容类型，默认值为"text/html" |
-| encoding | string | 否 |  | Web: x | 页面内容的编码类型，默认值为"utf-8" | 
+| data | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 要加载的内容，编码后的字符串 |
+| baseURL | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 页面的基础URL |
+| mimeType | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 加载的页面内容类型，默认值为"text/html" |
+| encoding | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 页面内容的编码类型，默认值为"utf-8" | 
 
 
  
@@ -204,8 +204,8 @@ loadData
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| webviewId | [string.WebviewIdString](/uts/data-type.md#ide-string) | 是 |  | Web: x |  |
-| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 |  | Web: x |  | 
+| webviewId | [string.WebviewIdString](/uts/data-type.md#ide-string) | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 
 ### 返回值 
@@ -272,7 +272,7 @@ evalJS
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| js | string | 是 |  | Web: x |  | 
+| js | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 
 
@@ -305,16 +305,16 @@ loadData
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **UniWebviewContextLoadDataOptions** | 是 |  | Web: x |  |
+| options | **UniWebviewContextLoadDataOptions** | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | string | 是 |  | Web: x | 要加载的内容，编码后的字符串 |
-| baseURL | string | 否 |  | Web: x | 页面的基础URL |
-| mimeType | string | 否 |  | Web: x | 加载的页面内容类型，默认值为"text/html" |
-| encoding | string | 否 |  | Web: x | 页面内容的编码类型，默认值为"utf-8" | 
+| data | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 要加载的内容，编码后的字符串 |
+| baseURL | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 页面的基础URL |
+| mimeType | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 加载的页面内容类型，默认值为"text/html" |
+| encoding | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 页面内容的编码类型，默认值为"utf-8" | 
 
 
  
@@ -333,7 +333,7 @@ loadData
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 
 
 示例代码另见[web-view组件](../component/web-view.md)

@@ -50,7 +50,7 @@ UniTextElement -- Extends --> UniElement
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| layout | [UniTextLayout](#unitextlayout-values) | 是 |  | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 文本对象 | 
+| layout | [UniTextLayout](#unitextlayout-values) | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS: x; HarmonyOS: x | 文本对象 | 
 
 ##### UniTextLayout 的方法 @unitextlayout-values 
 
@@ -66,7 +66,7 @@ setText
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| text | string | 是 |  | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x |  | 
+| text | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -82,7 +82,7 @@ setColor
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| color | string | 是 |  | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x |  | 
+| color | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -98,7 +98,7 @@ setFontFamily
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| family | string | 是 |  | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x |  | 
+| family | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -114,7 +114,7 @@ setFontSize
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| size | string | 是 |  | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x |  | 
+| size | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -130,7 +130,7 @@ setFontStyle
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| style | string | 是 |  | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x |  | 
+| style | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -146,7 +146,7 @@ setFontWeight
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| weight | string | 是 |  | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x |  | 
+| weight | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -162,7 +162,7 @@ setLineHeight
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| height | string | 是 |  | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x |  | 
+| height | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -178,7 +178,7 @@ setTextAlign
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| align | string | 是 |  | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x |  | 
+| align | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -194,7 +194,7 @@ setTextOverflow
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| overflow | string | 是 |  | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x |  | 
+| overflow | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -210,7 +210,7 @@ setTextShadow
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| shadow | string | 是 |  | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x |  | 
+| shadow | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -226,7 +226,7 @@ setTextDecorationLine
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| decorationLine | string | 是 |  | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x |  | 
+| decorationLine | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -242,7 +242,7 @@ setWhiteSpace
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| whiteSpace | string | 是 |  | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x |  | 
+| whiteSpace | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -258,7 +258,7 @@ append
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| layout | [UniTextLayout](#unitextlayout-values) | 是 |  | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 文本对象 | 
+| layout | [UniTextLayout](#unitextlayout-values) | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS: x; HarmonyOS: x | 文本对象 | 
 
 
 
@@ -274,7 +274,7 @@ measure
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| constraint | **UniLayoutConstraintSize** | 是 |  | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 布局约束大小 |
+| constraint | **UniLayoutConstraintSize** | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS: x; HarmonyOS: x | 布局约束大小 |
 
 #### constraint 的属性描述
 
