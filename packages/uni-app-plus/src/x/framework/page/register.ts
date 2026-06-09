@@ -378,6 +378,13 @@ export function registerDialogPage(
   if (typeof pageStyle.get('disableSwipeBack') !== 'boolean') {
     pageStyle.set('disableSwipeBack', true)
   }
+  if (
+    __VAPOR_PLATFORM__ === 'app-android' &&
+    typeof pageStyle.get('androidThreeButtonNavigationTranslucent') !==
+      'boolean'
+  ) {
+    pageStyle.set('androidThreeButtonNavigationTranslucent', true)
+  }
   const parentPage = dialogPage.getParentPage()
   const pageManager = getPageManager() as any
   const createDialogPage = pageManager.createDialogPage.bind(pageManager)
