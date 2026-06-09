@@ -1,6 +1,11 @@
 import { existsSync, readFileSync } from 'fs-extra'
-import { isAbsolute, parse as parsePath, resolve } from 'path'
+import { isAbsolute, parse as parsePath, relative, resolve } from 'path'
 import { parse } from '@vue/compiler-sfc'
+import { parseUniXPageOptions } from '../json'
+import { onCompileLog } from '../logs'
+import { M } from '../messages'
+import { normalizePath } from '../utils'
+import { offsetToStartAndEnd } from '../vite/plugins/vitejs/utils'
 
 const { preprocess: preprocessHtml } = require('../../lib/preprocess')
 
@@ -31,6 +36,7 @@ interface TemplateNode {
       column: number
       offset: number
     }
+    source?: string
   }
 }
 
@@ -58,6 +64,14 @@ export interface VueCodeEditRange {
 
 export type VueCodeEditRangesResult = Record<string, VueCodeEditRange[]>
 
+const TEMPLATE_BLOCK_RE = /<template\b[^>]*>([\s\S]*?)<\/template>/i
+const ROOT_SCROLL_VIEW_ATTR_RE =
+  /^\s+style\s*=\s*(["'])\s*flex\s*:\s*1\s*;?\s*\1\s*$/
+const APP_ROOT_SCROLL_VIEW_RE =
+  /^\s*<!--\s*#ifdef APP\s*-->\s*<scroll-view([^>]*)>[\s\S]*<\/scroll-view>\s*<!--\s*#endif\s*-->\s*$/
+const SPLIT_APP_ROOT_SCROLL_VIEW_RE =
+  /^\s*<!--\s*#ifdef APP\s*-->\s*<scroll-view([^>]*)>\s*<!--\s*#endif\s*-->[\s\S]*<!--\s*#ifdef APP\s*-->\s*<\/scroll-view>\s*<!--\s*#endif\s*-->\s*$/
+
 /**
  * 批量定位由 `#ifdef APP` 包裹的根 scroll-view 需要移除的范围。
  * 只返回需要修改的行列号，不修改文件，也不返回修改后的文件内容。
@@ -83,6 +97,75 @@ export function resolveAppRootScrollViewEditRanges(
   return result
 }
 
+/**
+ * 蒸汽模式下，页面根节点会自动补一个 scroll-view。
+ * 这里仅用正则做精确匹配：命中范围宁可保守，也不能误报。
+ */
+export function hasAppRootScrollViewWrappedByIfdef(code: string) {
+  const templateContent = getTemplateContent(code)
+  if (!templateContent) {
+    return false
+  }
+  return (
+    matchesAppRootScrollViewTemplate(
+      templateContent,
+      APP_ROOT_SCROLL_VIEW_RE
+    ) ||
+    matchesAppRootScrollViewTemplate(
+      templateContent,
+      SPLIT_APP_ROOT_SCROLL_VIEW_RE
+    )
+  )
+}
+
+/**
+ * 仅在 dom2 页面整文件预处理时定位需要提示优化建议的根 scroll-view 节点。
+ */
+export function resolveDom2RootScrollViewWarnLocation(
+  code: string,
+  filename: string,
+  isVueSubRequest: boolean
+) {
+  if (
+    process.env.UNI_APP_X_DOM2 !== 'true' ||
+    isVueSubRequest ||
+    !parseUniXPageOptions(filename) ||
+    !code.includes('scroll-view') ||
+    !code.includes('#ifdef APP')
+  ) {
+    return
+  }
+  if (!hasAppRootScrollViewWrappedByIfdef(code)) {
+    return
+  }
+  return resolveAppRootScrollViewNodeLocByCode(code, filename)
+}
+
+export function warnDom2RootScrollView(
+  code: string,
+  filename: string,
+  isVueSubRequest: boolean
+) {
+  const location = resolveDom2RootScrollViewWarnLocation(
+    code,
+    filename,
+    isVueSubRequest
+  )
+  if (!location) {
+    return
+  }
+  onCompileLog(
+    'warn',
+    {
+      message: M['dom2.root.scroll.view'],
+      name: 'Warn',
+      loc: location.loc,
+    },
+    createWarnCodeFrameSource(location),
+    normalizePath(relative(process.env.UNI_INPUT_DIR, filename))
+  )
+}
+
 function resolveVueFilename(inputDir: string, file: string) {
   if (isAbsolute(file)) {
     const root = parsePath(file).root
@@ -102,6 +185,71 @@ function removeLeadingRootSlash(file: string) {
     index++
   }
   return file.slice(index)
+}
+
+function getTemplateContent(code: string) {
+  return code.match(TEMPLATE_BLOCK_RE)?.[1]
+}
+
+function matchesAppRootScrollViewTemplate(template: string, regex: RegExp) {
+  const match = template.match(regex)
+  return !!match && ROOT_SCROLL_VIEW_ATTR_RE.test(match[1])
+}
+
+function resolveAppRootScrollViewNodeLocByCode(code: string, filename: string) {
+  const template = parseSfcTemplate(code, filename)
+  if (!template) {
+    return
+  }
+
+  const children = template.ast.children
+  if (children.length !== 3) {
+    return
+  }
+
+  const [, scrollViewNode] = children
+  if (!isRootScrollView(scrollViewNode)) {
+    return
+  }
+
+  return {
+    loc: createStartTagLoc(code, scrollViewNode),
+    source: resolveStartTagSource(scrollViewNode),
+  }
+}
+
+function createStartTagLoc(code: string, node: TemplateNode) {
+  const source = node.loc.source || ''
+  const endOffsetInSource = source.indexOf('>')
+  if (endOffsetInSource === -1) {
+    return {
+      start: node.loc.start,
+      end: node.loc.end,
+    }
+  }
+  return offsetToStartAndEnd(
+    code,
+    node.loc.start.offset,
+    node.loc.start.offset + endOffsetInSource + 1
+  )
+}
+
+function resolveStartTagSource(node: TemplateNode) {
+  const source = node.loc.source || ''
+  const endOffsetInSource = source.indexOf('>')
+  if (endOffsetInSource === -1) {
+    return source
+  }
+  return source.slice(0, endOffsetInSource + 1)
+}
+
+function createWarnCodeFrameSource(location: {
+  loc: { start: { line: number } }
+  source: string
+}) {
+  return `${'\n'.repeat(Math.max(location.loc.start.line - 1, 0))}${
+    location.source
+  }`
 }
 
 export function resolveAppRootScrollViewEditRangesByCode(
