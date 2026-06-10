@@ -801,4 +801,4 @@ VDOM模式下，app平台list-view仅对渲染层复用，不会对vue数据层�
 - 如需im那样的倒序列表，App端可给组件style配置 `transform: rotate(180deg)` 来实现。注意与下拉刷新有冲突，此时应避免启用下拉刷新。可参考[uni-ai x源码](https://ext.dcloud.net.cn/plugin?id=23902)
 - list-view组件的overflow属性不支持配置visible
 - list-view组件不适合做瀑布流，多列瀑布流另见 [waterflow组件](./waterflow.md)
-- 蒸汽模式下 受限于list-item回收的特性，scroll-into-view可能无法准确滚动到指定位置。
+- 受限于list-item回收复用的特性，scroll-into-view可能无法准确滚动到指定位置。尤其蒸汽模式下非渲染区域list-item对应的element都不存在，scroll-into-view更难以准确跳转。
