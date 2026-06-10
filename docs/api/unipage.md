@@ -40,7 +40,7 @@ UniPage在App和Web平台较完善，在小程序端受小程序未开放，很�
 | $root | VueComponent | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |  |
 | $options | VueComponentOptions | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |  |
 | $el | [UniElement](/api/dom/unielement.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |  |
-| $page | [UniPage](/api/unipage.md) | 是 |  | Web: 4.31; 微信小程序: -; Android: 4.31; iOS 系统版本: 10.0; iOS: 4.31; iOS uni-app x UTS 插件: x; HarmonyOS:   |  |
+| $page | [UniPage](/api/unipage.md) | 是 |  | Web: 4.31; 微信小程序: √; Android: 4.31; iOS 系统版本: 10.0; iOS: 4.31; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |  |
 
 #### pageBody 的属性描述
 
