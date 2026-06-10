@@ -2216,7 +2216,7 @@ export default {
 | $callMethod | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
 | $emit | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
 | $watch | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $page | Web: 4.31; 微信小程序: √; Android: 4.31; iOS 系统版本: 10.0; iOS: 4.31; iOS uni-app x UTS 插件: x; HarmonyOS:   |
+| $page | Web: 4.31; 微信小程序: √; Android: 4.31; iOS 系统版本: 10.0; iOS: 4.31; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
 
 ### 示例代码 @example
 
