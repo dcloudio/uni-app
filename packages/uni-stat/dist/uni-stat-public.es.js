@@ -257,6 +257,52 @@ function getGlobalObject() {
     return {};
 }
 /**
+ * 用字面量 `uni.方法` 引用拼出一个可用的 `uni` facade。
+ *
+ * uni-app 各端构建的 API 注入器仅识别字面量成员表达式 `uni.方法`（H5 → `@dcloudio/uni-h5`，
+ * 小程序 / App 同理），动态 `u.方法` 不会被注入。这里对所需 API 逐个写字面量 `uni.方法`，
+ * 使其被注入后收敛为一个对象供下游适配器使用。
+ *
+ * 仅在 `globalThis.uni` 与模块 `uni` 均不可用时作为兜底（典型：H5 发行摇树后 `window.uni`
+ * 为 `{}` 空桩）。未经注入的环境下 `uni.方法` 读到空桩 / 未声明，拼不出方法时返回 undefined。
+ */
+function buildInjectedUniRuntime() {
+    try {
+        const out = {};
+        const pick = (name, fn) => {
+            if (typeof fn === 'function')
+                out[name] = fn;
+        };
+        // 必须逐个写字面量 `(uni as ...).方法`（emit 后为 `uni.方法`），不可别名 / 循环，否则不会被注入。
+        pick('getStorageSync', uni.getStorageSync);
+        pick('setStorageSync', uni.setStorageSync);
+        pick('removeStorageSync', uni.removeStorageSync);
+        pick('getSystemInfoSync', uni.getSystemInfoSync);
+        pick('getDeviceInfo', uni.getDeviceInfo);
+        pick('getAppBaseInfo', uni.getAppBaseInfo);
+        pick('getWindowInfo', uni.getWindowInfo);
+        pick('getNetworkType', uni.getNetworkType);
+        pick('request', uni.request);
+        pick('onAppShow', uni.onAppShow);
+        pick('offAppShow', uni.offAppShow);
+        pick('onAppHide', uni.onAppHide);
+        pick('offAppHide', uni.offAppHide);
+        pick('onAppLaunch', uni.onAppLaunch);
+        pick('offAppLaunch', uni.offAppLaunch);
+        pick('getLaunchOptionsSync', uni.getLaunchOptionsSync);
+        pick('addInterceptor', uni.addInterceptor);
+        pick('removeInterceptor', uni.removeInterceptor);
+        pick('getPushClientId', uni.getPushClientId);
+        pick('getAccountInfoSync', uni.getAccountInfoSync);
+        pick('onCreateVueApp', uni.onCreateVueApp);
+        return Object.keys(out).length > 0 ? out : undefined;
+    }
+    catch (_e) {
+        // 未注入且 `uni` 未声明（单测 / 极端环境）→ ReferenceError，兜底返回 undefined。
+        return undefined;
+    }
+}
+/**
  * 探测 `uni` 解析路径（不改变 `resolveUniRuntime` 行为，仅用于 debug 诊断）。
  */
 function probeUniRuntime() {
@@ -287,6 +333,19 @@ function probeUniRuntime() {
             moduleUniDefined: true,
             globalThisAvailable,
             uni: moduleUni,
+        };
+    }
+    // globalThis / 模块 uni 均不可用（典型 H5 发行空桩）时，用注入 facade 兜底。
+    const injectedUni = buildInjectedUniRuntime();
+    if (isUsableUniRuntime(injectedUni)) {
+        return {
+            resolved: true,
+            source: 'injected',
+            globalThisHasUni,
+            globalThisUniStub,
+            moduleUniDefined,
+            globalThisAvailable,
+            uni: injectedUni,
         };
     }
     return {
@@ -1466,6 +1525,13 @@ function isNvue() {
  * 说明：老版 `odid`（`plus.device.uuid`）已移除，不再参与装配与导出。
  */
 const STORAGE_KEY_UUID = 'device:uuid';
+/**
+ * uni-h5 `getDeviceInfo().deviceId` 的底层 localStorage 键（见 `packages/uni-h5/src/helpers/uuid.ts`）。
+ *
+ * H5 端直接复用同一个键读写 deviceId：绕开 uni 运行时，保证 `did` 与页面
+ * `uni.getDeviceInfo().deviceId` 同源一致，且跨刷新稳定。
+ */
+const WEB_UUID_KEY = '__DC_STAT_UUID';
 let cachedUuid = null;
 /**
  * App、H5、微信小程序上优先用拆分 API `getDeviceInfo().deviceId`；其它平台保持原兜底顺序。
@@ -1517,55 +1583,139 @@ function generateAnonUuid() {
     return `${ms}${rnd}`;
 }
 /**
+ * 把设备 id 写回统计命名空间（`UNI_STAT_DATA:<appid>:device:uuid`），供后续启动读回锁定。
+ * 写入失败静默吞掉，不影响本次返回。
+ */
+function persistUuid(uuid) {
+    tryRun(() => storage.set(STORAGE_KEY_UUID, uuid), undefined);
+}
+/**
+ * 取浏览器 `localStorage`（cookie 被禁用 / 无 localStorage 时返回 undefined）。
+ *
+ * 直接走 `getGlobalObject()`（globalThis / window），**绕开可能不可用的 `uni` 运行时**；
+ * 与 `adapter/web.getWebInfo` 直读 `location` 同思路。
+ */
+function getWebLocalStorage() {
+    return tryRun(() => {
+        const g = getGlobalObject();
+        if (g.navigator && g.navigator.cookieEnabled === false)
+            return undefined;
+        const ls = g.localStorage;
+        if (ls &&
+            typeof ls.getItem === 'function' &&
+            typeof ls.setItem === 'function') {
+            return ls;
+        }
+        return undefined;
+    }, undefined);
+}
+/**
+ * H5：直接从浏览器 `localStorage` 读取 uni-h5 写入的稳定 deviceId（`__DC_STAT_UUID`）。
+ * 取不到返回空串。
+ */
+function readWebDeviceId() {
+    const ls = getWebLocalStorage();
+    if (!ls)
+        return '';
+    return tryRun(() => {
+        const v = ls.getItem(WEB_UUID_KEY);
+        return typeof v === 'string' ? v : '';
+    }, '');
+}
+/**
+ * H5：把 did 直接写入浏览器 `localStorage`（与 uni-h5 同键 `__DC_STAT_UUID`）。
+ * 使下次刷新读回同一值，并与页面 `uni.getDeviceInfo().deviceId` 对齐。
+ */
+function writeWebDeviceId(uuid) {
+    const ls = getWebLocalStorage();
+    if (!ls)
+        return;
+    tryRun(() => ls.setItem(WEB_UUID_KEY, uuid), undefined);
+}
+/**
+ * 从 uni 运行时解析设备 id。
+ *
+ * - App / H5 / 微信小程序：优先 `getDeviceInfo().deviceId`，再退 `getSystemInfoSync().deviceId`；
+ *   H5 上 `getDeviceInfo().deviceId` 取自 uni-h5 持久化的 `__DC_STAT_UUID`，跨刷新稳定。
+ * - 其余宿主：直接 `getSystemInfoSync().deviceId`。
+ *
+ * 取不到时返回空串，由 `getUuid` 继续走 storage / anon 兜底。
+ */
+function resolveDeviceIdFromUni() {
+    if (preferGetDeviceInfoDeviceIdFirst()) {
+        const fromDeviceInfo = readGetDeviceInfoDeviceId();
+        if (fromDeviceInfo)
+            return fromDeviceInfo;
+    }
+    return readSysDeviceId();
+}
+/**
  * 取设备 uuid（上行映射为 `did`）。
  *
- * 优先级：内存缓存 →（App/H5/mp-weixin）`getDeviceInfo().deviceId` →
- * `getSystemInfoSync().deviceId` → storage 历史值 → 新生成 anon 并落库。
+ * 解析顺序：
+ *   1. 内存缓存（同进程内恒定，保证同次启动 `did` 与 `sid` 前半段一致）。
+ *   2. H5：直接读浏览器 `localStorage['__DC_STAT_UUID']`（uni-h5 写入的 deviceId）。
+ *   3. uni 设备源（getDeviceInfo / getSystemInfoSync），取到即写回 storage 锁定。
+ *   4. uni storage 已持久化的 did。
+ *   5. uni storage 正常且无历史值 → 生成 anon 并落库。
+ *   6. uni storage 读取异常：H5 直接写浏览器 localStorage 并缓存；其它端返回不缓存、不落库的临时 did。
  *
- * 任何环节失败都不抛错，最差情况返回新生成的 anon uuid（仅当次进程内有效），
- * 调用方据此能保证字段非空（避免私有版 `''` 上报后被丢弃）。
+ * 任何环节失败都不抛错，最差返回新生成的临时 uuid，保证上行字段非空。
  */
 function getUuid() {
     if (cachedUuid)
         return cachedUuid;
-    if (preferGetDeviceInfoDeviceIdFirst()) {
-        const fromDeviceInfo = readGetDeviceInfoDeviceId();
-        if (fromDeviceInfo) {
-            cachedUuid = fromDeviceInfo;
+    // H5：直读浏览器 localStorage 的 deviceId，与页面 uni.getDeviceInfo().deviceId 同源。
+    if (isH5()) {
+        const fromWeb = readWebDeviceId();
+        if (fromWeb) {
+            cachedUuid = fromWeb;
             return cachedUuid;
         }
     }
-    const sysDeviceId = readSysDeviceId();
-    if (sysDeviceId) {
-        cachedUuid = sysDeviceId;
+    // uni 设备源；取到后写回 storage 锁定。
+    const fromDevice = resolveDeviceIdFromUni();
+    if (fromDevice) {
+        persistUuid(fromDevice);
+        if (isH5())
+            writeWebDeviceId(fromDevice);
+        cachedUuid = fromDevice;
         return cachedUuid;
     }
-    // 用 safeRead 区分「确无历史值」与「storage 读取异常」：
-    //   - 读取异常时**绝不**重新生成并落库，否则会覆盖磁盘上可能仍存在的真实 did，
-    //     导致同一设备跨进程 did 漂移（设备去重失真）。改为生成**仅本进程有效**的临时
-    //     did，不持久化；待 storage 恢复后下次冷启仍读回原值。
+    // 设备源不可用：回落到 uni storage 已持久化的 did。
+    // safeRead 区分「确无历史值」与「storage 读取异常」，后者不落库以免覆盖真实值。
     const storedRead = storage.safeRead(STORAGE_KEY_UUID);
     if (storedRead.ok) {
         const stored = storedRead.value;
         if (typeof stored === 'string' && stored.length > 0) {
             if (stored.startsWith('device-anon-')) {
                 const upgraded = generateAnonUuid();
-                tryRun(() => storage.set(STORAGE_KEY_UUID, upgraded), undefined);
+                persistUuid(upgraded);
+                if (isH5())
+                    writeWebDeviceId(upgraded);
                 cachedUuid = upgraded;
                 return cachedUuid;
             }
             cachedUuid = stored;
             return cachedUuid;
         }
-        // 读取成功且确实无历史值 → 首次生成并落库。
+        // 无历史值 → 首次生成并落库。
         const generated = generateAnonUuid();
-        tryRun(() => storage.set(STORAGE_KEY_UUID, generated), undefined);
+        persistUuid(generated);
+        if (isH5())
+            writeWebDeviceId(generated);
         cachedUuid = generated;
         return cachedUuid;
     }
-    // storage 读取异常：生成临时 did（不落库），保证本次上报字段非空，且不污染持久值。
+    // uni storage 读取异常。
     const ephemeral = generateAnonUuid();
-    cachedUuid = ephemeral;
+    if (isH5()) {
+        // H5 写浏览器 localStorage 并缓存，下次刷新读回同一值。
+        writeWebDeviceId(ephemeral);
+        cachedUuid = ephemeral;
+        return cachedUuid;
+    }
+    // 其它端：临时 did，不缓存、不落库，避免覆盖磁盘上可能仍存在的真实 did。
     return ephemeral;
 }
 
@@ -6045,7 +6195,10 @@ class StatApp {
                 pr: 1,
             }),
             device: {
-                uuid: tryRun(() => getUuid(), ''),
+                // 惰性解析：每次 build 时再调 getUuid()，避免 install 过早（uni 运行时未就绪）冻结临时值。
+                get uuid() {
+                    return tryRun(() => getUuid(), '');
+                },
             },
             net: { net: 'unknown', raw: '' },
             location: { lat: '', lng: '', ok: false },
