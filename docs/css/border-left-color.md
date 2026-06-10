@@ -49,5 +49,5 @@ border-left-color: <color>;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/border-left-color)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border-left-color)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border.border-left-color)
 

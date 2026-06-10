@@ -286,5 +286,5 @@ border-top: <line-width> || <line-style> || <color>;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/border-top)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border-top)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border.border-top)
 

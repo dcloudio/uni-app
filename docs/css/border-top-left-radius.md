@@ -44,5 +44,5 @@ border-top-left-radius: <length-percentage>{1,2};
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/border-top-left-radius)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border-top-left-radius)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border.border-top-left-radius)
 

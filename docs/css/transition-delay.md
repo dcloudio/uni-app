@@ -420,5 +420,5 @@ transition-delay: <time>#;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/transition-delay)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.transition-delay)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.transition.transition-delay)
 

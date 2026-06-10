@@ -298,5 +298,5 @@ max-height: <viewport-length>;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/max-height)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.max-height)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.height.max-height)
 

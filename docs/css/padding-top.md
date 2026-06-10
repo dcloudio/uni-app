@@ -332,5 +332,5 @@ padding-top: <length> | <percentage>;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/padding-top)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.padding-top)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.padding.padding-top)
 

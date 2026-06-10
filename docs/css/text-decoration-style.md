@@ -56,5 +56,5 @@ text-decoration-style 样式不支持继承
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/text-decoration-style)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text-decoration-style)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text.text-decoration-style)
 

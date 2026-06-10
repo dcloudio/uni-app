@@ -497,5 +497,5 @@ border-width: <line-width>{1,4};
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/border-width)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border-width)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border.border-width)
 

@@ -367,5 +367,5 @@ align-self: auto | normal | stretch | <baseline-position> | <overflow-position>?
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/align-self)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.align-self)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.flex.align-self)
 

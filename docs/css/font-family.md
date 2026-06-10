@@ -265,7 +265,7 @@ font-family: <family-name>;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/font-family)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.font-family)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text.font-family)
 
 
 [示例代码](https://gitcode.com/dcloud/hello-uni-app-x/blob/master/pages/CSS/text/font-family.uvue)

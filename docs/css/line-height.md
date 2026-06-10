@@ -285,5 +285,5 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/line-height)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.line-height)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text.line-height)
 

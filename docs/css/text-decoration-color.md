@@ -50,5 +50,5 @@ text-decoration-color: <color>;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/text-decoration-color)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text-decoration-color)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text.text-decoration-color)
 

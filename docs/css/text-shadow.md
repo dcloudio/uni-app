@@ -210,5 +210,5 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/text-shadow)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text-shadow)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text.text-shadow)
 

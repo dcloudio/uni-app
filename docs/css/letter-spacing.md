@@ -255,5 +255,5 @@ letter-spacing: normal | <length>;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/letter-spacing)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.letter-spacing)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text.letter-spacing)
 

@@ -59,5 +59,5 @@ border-right-width: <line-width>;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/border-right-width)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border-right-width)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border.border-right-width)
 

@@ -207,5 +207,5 @@ font-style: normal | italic | oblique <angle>{0,2};
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/font-style)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.font-style)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text.font-style)
 

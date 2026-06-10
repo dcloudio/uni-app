@@ -50,5 +50,5 @@ lines: <integer>;
 
 
 ### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.lines)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text.lines)
 

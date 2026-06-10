@@ -59,5 +59,5 @@ border-top-width: <line-width>;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/border-top-width)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border-top-width)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border.border-top-width)
 

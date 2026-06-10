@@ -358,5 +358,5 @@ flex-flow: <'flex-direction'> || <'flex-wrap'>;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/flex-flow)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.flex-flow)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.flex.flex-flow)
 

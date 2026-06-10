@@ -54,5 +54,5 @@ border-bottom-color: <'border-top-color'>;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/border-bottom-color)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border-bottom-color)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border.border-bottom-color)
 

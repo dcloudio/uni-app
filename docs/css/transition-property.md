@@ -82,5 +82,5 @@ transition-property: none | <single-transition-property>#;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/transition-property)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.transition-property)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.transition.transition-property)
 

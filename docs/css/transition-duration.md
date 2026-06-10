@@ -458,5 +458,5 @@ transition-duration: <time>#;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/transition-duration)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.transition-duration)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.transition.transition-duration)
 

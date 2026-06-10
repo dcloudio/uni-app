@@ -410,5 +410,5 @@ align-content: normal | <baseline-position> | <content-distribution> | <overflow
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/align-content)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.align-content)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.flex.align-content)
 

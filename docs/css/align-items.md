@@ -346,5 +346,5 @@ align-items: normal | stretch | <baseline-position> | [ <overflow-position>? <se
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/align-items)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.align-items)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.flex.align-items)
 

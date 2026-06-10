@@ -363,7 +363,7 @@ border-style: <line-style>{1,4};
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/border-style)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border-style)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border.border-style)
 
 
 ## 注意事项

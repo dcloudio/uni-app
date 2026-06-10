@@ -254,5 +254,5 @@ App平台不支持样式继承，font-size 也不例外。font-size仅对作用�
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/font-size)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.font-size)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text.font-size)
 

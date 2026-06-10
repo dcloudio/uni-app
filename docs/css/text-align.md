@@ -214,5 +214,5 @@ text-align: start | end | left | right | center | justify | match-parent;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/text-align)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text-align)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text.text-align)
 

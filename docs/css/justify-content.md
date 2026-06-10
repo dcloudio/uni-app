@@ -358,5 +358,5 @@ justify-content: normal | <content-distribution> | <overflow-position>? [ <conte
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/justify-content)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.justify-content)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.flex.justify-content)
 

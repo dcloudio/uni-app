@@ -331,5 +331,5 @@ padding-left: <length> | <percentage>;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/padding-left)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.padding-left)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.padding.padding-left)
 

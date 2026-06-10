@@ -246,5 +246,5 @@ HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方�
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/white-space)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.white-space)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text.white-space)
 

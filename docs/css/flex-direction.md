@@ -313,5 +313,5 @@ flex-direction: row | row-reverse | column | column-reverse;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/flex-direction)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.flex-direction)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.flex.flex-direction)
 

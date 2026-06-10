@@ -67,5 +67,5 @@ App平台不支持 text-decoration 简写样式，仅支持 [text-decoration-lin
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/text-decoration)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text-decoration)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text.text-decoration)
 

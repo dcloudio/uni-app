@@ -364,5 +364,5 @@ border-color: <color>{1,4};
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/border-color)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border-color)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border.border-color)
 

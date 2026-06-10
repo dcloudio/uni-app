@@ -477,5 +477,5 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/border-radius)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border-radius)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border.border-radius)
 

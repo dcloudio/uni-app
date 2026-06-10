@@ -247,7 +247,7 @@ linear-gradient(<direction>, <color-start>, <color-stop>)
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/background-image)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.background-image)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.background.background-image)
 
 
 ### Bug & Tips@tips
