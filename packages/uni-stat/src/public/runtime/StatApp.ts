@@ -379,7 +379,10 @@ export class StatApp {
         pr: 1,
       }),
       device: {
-        uuid: tryRun(() => getUuid(), ''),
+        // 惰性解析：每次 build 时再调 getUuid()，避免 install 过早（uni 运行时未就绪）冻结临时值。
+        get uuid() {
+          return tryRun(() => getUuid(), '')
+        },
       },
       net: { net: 'unknown', raw: '' },
       location: { lat: '', lng: '', ok: false },

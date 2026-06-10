@@ -14,7 +14,7 @@
  */
 
 /** `resolveUniRuntime` 解析结果来源。 */
-export type UniRuntimeSource = 'globalThis' | 'module' | 'none'
+export type UniRuntimeSource = 'globalThis' | 'module' | 'injected' | 'none'
 
 /** `uni` 两路来源探测时的快照结构。 */
 export interface UniRuntimeProbe {
@@ -94,6 +94,80 @@ export function getGlobalObject(): Record<string, unknown> {
   return {}
 }
 
+type UniApiFn = (...args: unknown[]) => unknown
+
+/**
+ * 统计运行时用到的 uni API 子集（全部可选，做 duck typing；完整类型以 `@dcloudio/types` 为准）。
+ */
+interface UniRuntimeApis {
+  getStorageSync?: UniApiFn
+  setStorageSync?: UniApiFn
+  removeStorageSync?: UniApiFn
+  getSystemInfoSync?: UniApiFn
+  getDeviceInfo?: UniApiFn
+  getAppBaseInfo?: UniApiFn
+  getWindowInfo?: UniApiFn
+  getNetworkType?: UniApiFn
+  request?: UniApiFn
+  onAppShow?: UniApiFn
+  offAppShow?: UniApiFn
+  onAppHide?: UniApiFn
+  offAppHide?: UniApiFn
+  onAppLaunch?: UniApiFn
+  offAppLaunch?: UniApiFn
+  getLaunchOptionsSync?: UniApiFn
+  addInterceptor?: UniApiFn
+  removeInterceptor?: UniApiFn
+  getPushClientId?: UniApiFn
+  getAccountInfoSync?: UniApiFn
+  onCreateVueApp?: UniApiFn
+}
+
+/**
+ * 用字面量 `uni.方法` 引用拼出一个可用的 `uni` facade。
+ *
+ * uni-app 各端构建的 API 注入器仅识别字面量成员表达式 `uni.方法`（H5 → `@dcloudio/uni-h5`，
+ * 小程序 / App 同理），动态 `u.方法` 不会被注入。这里对所需 API 逐个写字面量 `uni.方法`，
+ * 使其被注入后收敛为一个对象供下游适配器使用。
+ *
+ * 仅在 `globalThis.uni` 与模块 `uni` 均不可用时作为兜底（典型：H5 发行摇树后 `window.uni`
+ * 为 `{}` 空桩）。未经注入的环境下 `uni.方法` 读到空桩 / 未声明，拼不出方法时返回 undefined。
+ */
+function buildInjectedUniRuntime(): Record<string, unknown> | undefined {
+  try {
+    const out: Record<string, unknown> = {}
+    const pick = (name: string, fn: unknown): void => {
+      if (typeof fn === 'function') out[name] = fn
+    }
+    // 必须逐个写字面量 `(uni as ...).方法`（emit 后为 `uni.方法`），不可别名 / 循环，否则不会被注入。
+    pick('getStorageSync', (uni as UniRuntimeApis).getStorageSync)
+    pick('setStorageSync', (uni as UniRuntimeApis).setStorageSync)
+    pick('removeStorageSync', (uni as UniRuntimeApis).removeStorageSync)
+    pick('getSystemInfoSync', (uni as UniRuntimeApis).getSystemInfoSync)
+    pick('getDeviceInfo', (uni as UniRuntimeApis).getDeviceInfo)
+    pick('getAppBaseInfo', (uni as UniRuntimeApis).getAppBaseInfo)
+    pick('getWindowInfo', (uni as UniRuntimeApis).getWindowInfo)
+    pick('getNetworkType', (uni as UniRuntimeApis).getNetworkType)
+    pick('request', (uni as UniRuntimeApis).request)
+    pick('onAppShow', (uni as UniRuntimeApis).onAppShow)
+    pick('offAppShow', (uni as UniRuntimeApis).offAppShow)
+    pick('onAppHide', (uni as UniRuntimeApis).onAppHide)
+    pick('offAppHide', (uni as UniRuntimeApis).offAppHide)
+    pick('onAppLaunch', (uni as UniRuntimeApis).onAppLaunch)
+    pick('offAppLaunch', (uni as UniRuntimeApis).offAppLaunch)
+    pick('getLaunchOptionsSync', (uni as UniRuntimeApis).getLaunchOptionsSync)
+    pick('addInterceptor', (uni as UniRuntimeApis).addInterceptor)
+    pick('removeInterceptor', (uni as UniRuntimeApis).removeInterceptor)
+    pick('getPushClientId', (uni as UniRuntimeApis).getPushClientId)
+    pick('getAccountInfoSync', (uni as UniRuntimeApis).getAccountInfoSync)
+    pick('onCreateVueApp', (uni as UniRuntimeApis).onCreateVueApp)
+    return Object.keys(out).length > 0 ? out : undefined
+  } catch (_e) {
+    // 未注入且 `uni` 未声明（单测 / 极端环境）→ ReferenceError，兜底返回 undefined。
+    return undefined
+  }
+}
+
 /**
  * 探测 `uni` 解析路径（不改变 `resolveUniRuntime` 行为，仅用于 debug 诊断）。
  */
@@ -126,6 +200,19 @@ export function probeUniRuntime(): UniRuntimeProbe {
       moduleUniDefined: true,
       globalThisAvailable,
       uni: moduleUni,
+    }
+  }
+  // globalThis / 模块 uni 均不可用（典型 H5 发行空桩）时，用注入 facade 兜底。
+  const injectedUni = buildInjectedUniRuntime()
+  if (isUsableUniRuntime(injectedUni)) {
+    return {
+      resolved: true,
+      source: 'injected',
+      globalThisHasUni,
+      globalThisUniStub,
+      moduleUniDefined,
+      globalThisAvailable,
+      uni: injectedUni,
     }
   }
   return {
