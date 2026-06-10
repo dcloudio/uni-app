@@ -248,6 +248,7 @@ const nodeTransforms = [
     transformOpenType,
     // transformMatchMedia,
     uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_ON_LINK, compilerCore.NodeTypes.ATTRIBUTE),
+    uniCliShared.transformTeleport,
 ];
 if (process.env.UNI_APP_X === 'true') {
     nodeTransforms.push(transformMPBuiltInTag, uniCliShared.transformDirection, transformLoading);
