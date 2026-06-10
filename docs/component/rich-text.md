@@ -371,3 +371,4 @@ rich-text组件是一个比较重的组件，需要注意适用场景。
 
 - App-Android 平台且 mode=native 时，HTML String 类型的`<img/>`不支持自定义宽高，默认以 rich-text 组件宽度为基准等比缩放；节点列表类型的`<img />`支持自定义宽高。
 - App-Harmony 平台且 mode=native 时，暂不支持 `selectable` 属性。 
+- 仅支持(静态、动态)设置如下style： font-size、line-height、font-family
