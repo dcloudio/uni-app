@@ -61,6 +61,7 @@ import type { UniXCompilerOptions } from '../lib/uni-x/dist/compiler'
 
 export { syncUTSFiles } from './uni_modules'
 export * from './tsc'
+export { buildUTSFile, type BuildUTSFileOptions } from './standalone/index'
 
 export {
   getKotlinCompilerServer,
@@ -782,22 +783,24 @@ function emptyDir(dir: string) {
  * @param param2
  * @param compilerOptions
  */
+export interface BuildUniModulesOptions {
+  syncUniModulesFilePreprocessors: {
+    android: SyncUniModulesFilePreprocessor
+    ios: SyncUniModulesFilePreprocessor
+    harmony: SyncUniModulesFilePreprocessor
+  }
+  transformVueFile?: (
+    platform: UniXCompilerPlatform,
+    fileName: string
+  ) => Promise<string>
+  rootFiles?: string[]
+  sourceFileCallback?: UniXCompilerOptions['sourceFileCallback']
+}
+
 export async function buildUniModules(
   platform: 'app' | 'app-android' | 'app-ios' | 'app-harmony',
   pluginDir: string,
-  options: {
-    syncUniModulesFilePreprocessors: {
-      android: SyncUniModulesFilePreprocessor
-      ios: SyncUniModulesFilePreprocessor
-      harmony: SyncUniModulesFilePreprocessor
-    }
-    transformVueFile?: (
-      platform: UniXCompilerPlatform,
-      fileName: string
-    ) => Promise<string>
-    rootFiles?: string[]
-    sourceFileCallback?: UniXCompilerOptions['sourceFileCallback']
-  },
+  options: BuildUniModulesOptions,
   compilerOptions: UTSPluginCompilerOptions
 ) {
   const inputDir = process.env.UNI_INPUT_DIR
@@ -879,6 +882,9 @@ export async function buildUniModules(
   }
   return compile(pluginDir, compilerOptions)
 }
+
+// 语义化别名：编译单个 uni_module 仍完全复用 buildUniModules。
+export const buildUniModule = buildUniModules
 
 function patchSyncUniModulesFilePreprocessors(
   syncUniModulesFilePreprocessors: {
