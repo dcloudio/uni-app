@@ -19,6 +19,7 @@ import {
 } from '@dcloudio/uni-mp-vite'
 import { transformAd } from './transforms/transformAd'
 import { transformLoading } from '../x/compiler/transforms/transformLoading'
+import { getMiniProgramAIPaths } from './utils'
 
 import source from './project.config.json'
 
@@ -170,6 +171,10 @@ export const options: UniMiniProgramPluginOptions = {
             'functional-pages',
             'project.private.config.json',
             projectConfigFilename,
+            ...getMiniProgramAIPaths(
+              process.env.UNI_INPUT_DIR,
+              process.env.UNI_PLATFORM
+            ),
           ],
           get dest() {
             return process.env.UNI_OUTPUT_DIR
