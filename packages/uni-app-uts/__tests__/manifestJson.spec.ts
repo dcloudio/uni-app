@@ -4,12 +4,14 @@ import { normalizeManifestJson } from '../src/plugins/utils'
 describe('x-ios x-harmony manifestJson', () => {
   beforeEach(() => {
     process.env.UNI_INPUT_DIR = '/mock/input/dir'
-    process.env.UNI_PLATFORM = 'app-ios'
+    process.env.UNI_PLATFORM = 'app'
+    process.env.UNI_UTS_PLATFORM = 'app-ios'
   })
 
   afterEach(() => {
     process.env.UNI_INPUT_DIR = undefined as any
     process.env.UNI_PLATFORM = undefined as any
+    process.env.UNI_UTS_PLATFORM = undefined as any
   })
 
   const mockManifestJson = {
