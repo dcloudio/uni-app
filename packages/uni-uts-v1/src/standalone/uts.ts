@@ -86,7 +86,7 @@ export async function buildStandaloneUTS(options: StandaloneUTSOptions) {
     ? installConsolePathRewriter(rewriteTempPath)
     : undefined
   try {
-    return await buildUniModule(
+    const result = await buildUniModule(
       resolved.platform,
       pluginDir,
       {
@@ -100,10 +100,12 @@ export async function buildStandaloneUTS(options: StandaloneUTSOptions) {
         isX: true,
         isPlugin: true,
         isSingleThread: process.env.UNI_APP_X_SINGLE_THREAD !== 'false',
-        sourceMap: process.env.UNI_APP_SOURCEMAP === 'true',
+        sourceMap: !!resolved.file || process.env.UNI_APP_SOURCEMAP === 'true',
         rewriteConsoleExpr: (_fileName, content) => content,
       }
     )
+    console.log(`Build finished.`)
+    return result
   } catch (error: any) {
     if (rewriteTempPath && error?.customPrint) {
       const customPrint = error.customPrint
@@ -118,7 +120,10 @@ export async function buildStandaloneUTS(options: StandaloneUTSOptions) {
     }
     throw error
   } finally {
-    restoreConsole?.()
+    if (restoreConsole) {
+      await new Promise((resolve) => setTimeout(resolve, 50))
+      restoreConsole()
+    }
   }
 }
 
@@ -487,12 +492,13 @@ if (require.main === module) {
     .then(() => {
       process.exit(0)
     })
-    .catch((error) => {
+    .catch(async (error) => {
       if (error?.customPrint) {
         error.customPrint()
       } else {
         console.error(error?.message || error)
       }
+      await new Promise((resolve) => setTimeout(resolve, 50))
       console.error(`Build failed with errors.`)
       process.exit(1)
     })
