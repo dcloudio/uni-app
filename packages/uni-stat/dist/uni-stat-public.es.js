@@ -1075,8 +1075,8 @@ function rollbackPendingVisit() {
  * 上行出口：
  *   - **仅 `lt=11` 携带 `iey` / `ppiey`（0/1）**；`lt=1` / `lt=3` 等事件不含入口字段。
  * 字段含义（`lt=11` 在**下一页 onShow** 采集，描述**刚离开的上一页**）：
- *   - `iey`：离开页是否为本会话**入口页**。
- *   - `ppiey`：`urlref` 指向页（再上一层来源）是否入口页。
+ *   - `iey`：离开页是否为本会话**首次离开的入口页**（会话内仅第一次离开入口路由为 1）。
+ *   - `ppiey`：`urlref` 指向页是否仍为**有效入口**（同上，循环回到入口后再离开不算）。
  *
  * 写入时机（`markEntryPage` 仅维护「本会话入口 path」，供 `isEntry` 与 `lt=11` 使用）：
  *   - 新会话：`clearEntry()` 后立刻 `markEntryPage(route)`（launch / app_show / 首个 page_show），
@@ -1088,6 +1088,8 @@ function rollbackPendingVisit() {
  */
 const KEY_ENTRY = 'session:entryRoute';
 let cached$3;
+/** 本会话是否已离开过登记入口（离开后循环回入口不再计 iey/ppiey）。 */
+let entryDeparted = false;
 /**
  * 标记当前页为入口页。
  *
@@ -1133,10 +1135,27 @@ function isEntry(route) {
     return entry === route;
 }
 /**
+ * 当前路径是否仍按入口参与 `iey` / `ppiey` 计算。
+ *
+ * 与 `isEntry` 区别：用户首次离开登记入口后，即使再次导航回同一路由也不再视为入口。
+ */
+function isEntryForIey(route) {
+    if (entryDeparted)
+        return false;
+    return isEntry(route);
+}
+/**
+ * 标记本会话已离开登记入口；后续同路由访问不再产生 `iey=1` / `ppiey=1`。
+ */
+function markEntryDeparted() {
+    entryDeparted = true;
+}
+/**
  * session 切换时调用：清掉 entry，等待新会话第一次 pageShow 重新登记。
  */
 function clearEntry() {
     cached$3 = '';
+    entryDeparted = false;
     storage.remove(KEY_ENTRY);
 }
 
@@ -2614,6 +2633,10 @@ function handleAppHide(app, opts = {}) {
         if (ref)
             payload.urlref = ref;
         c.report(payload);
+        if (state$1.lastIey) {
+            tryRun(() => markEntryDeparted(), undefined);
+            state$1.lastIey = false;
+        }
     }
     c.report({
         lt: LT.Hide,
@@ -2635,7 +2658,8 @@ function handleAppHide(app, opts = {}) {
  *   - `urlref`：再上一层的来源页（「上上个页面」），来自 `beforeLastRouteFull`；
  *     首次从启动页外跳（只有一层来源）时不带 `urlref`。
  *   - `urlref_ts`：离开页停留秒数（`now - lastRouteEnterTime`，不足 1 秒按 1 秒，对齐私有版）。
- *   - `iey` / `ppiey`：分别对应**离开页**是否入口、`urlref` 指向页是否入口（与字段字典「上级页面」口径一致）。
+ *   - `iey` / `ppiey`：分别对应**离开页**是否仍为有效入口、`urlref` 指向页是否仍为有效入口
+ *     （会话内仅**首次离开**登记入口为 1；循环回到入口后再离开不算）。
  *   - `ttn` / `ttpj` / `ttc`：三维独立内存（API 导航栏 / pages.json / uni.report('title')），
  *     **同一事件可同时非空**。离开页快照优先在 **`onHide` 且 `clearPageTitle` 之前**落盘；
  *     无 hide 场景依赖 **microtask**（晚于业务 `onShow`）— 由 `titleSnapGeneration` 防止被下一页 show 尾部误覆盖。
@@ -2708,12 +2732,15 @@ function handlePageShow(app, vm, opts = {}) {
         payload.ttpj = snap.ttpj;
         payload.ttc = snap.ttc;
         c.report(payload);
+        if (state$1.lastIey) {
+            tryRun(() => markEntryDeparted(), undefined);
+        }
     }
     // 轮换路由链：当前页在下一轮成为「上一页」。
     state$1.beforeLastRoute = state$1.lastRoute;
     state$1.beforeLastRouteFull = state$1.lastRouteFull;
     state$1.prevIey = state$1.lastIey;
-    state$1.lastIey = !!route && tryRun(() => isEntry(route), false);
+    state$1.lastIey = !!route && tryRun(() => isEntryForIey(route), false);
     state$1.lastRoute = route;
     state$1.lastRouteFull = url;
     state$1.lastRouteEnterTime = now;
