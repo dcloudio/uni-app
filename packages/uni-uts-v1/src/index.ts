@@ -667,7 +667,7 @@ export async function compile(
                 deps: res?.deps,
               })
             }
-            if (tips) {
+            if (tips && process.env.UTS_CLI_ENV !== 'true') {
               warn(tips)
             }
             if (versionTips) {
