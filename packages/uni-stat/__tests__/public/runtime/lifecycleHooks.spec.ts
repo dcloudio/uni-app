@@ -609,6 +609,45 @@ describe('runtime/lifecycleHooks', () => {
     expect(ltPages[1].ppiey).toBe(true)
   })
 
+  test('page_show：A→B→C→A→B 循环回入口后 iey/ppiey 不再为 1', () => {
+    const { app, reportSpy } = installAppWithSpyReporter()
+    handleLaunch(app, {})
+
+    handlePageShow(app, { route: 'pages/A' })
+    handlePageHide(app, { route: 'pages/A' })
+    handlePageShow(app, { route: 'pages/B' })
+    handlePageHide(app, { route: 'pages/B' })
+    handlePageShow(app, { route: 'pages/C' })
+    handlePageHide(app, { route: 'pages/C' })
+    handlePageShow(app, { route: 'pages/A' })
+    handlePageHide(app, { route: 'pages/A' })
+    handlePageShow(app, { route: 'pages/B' })
+    handlePageHide(app, { route: 'pages/B' })
+
+    const ltPages = reportSpy.mock.calls
+      .map((c) => c[0] as ReportInput)
+      .filter((i) => i.lt === '11')
+    expect(ltPages).toHaveLength(4)
+    // 首次离开入口 A
+    expect(ltPages[0].url).toBe('pages/A')
+    expect(ltPages[0].iey).toBe(true)
+    expect(ltPages[0].ppiey).toBe(false)
+    // 离开 B，urlref 仍指向首次入口 A
+    expect(ltPages[1].url).toBe('pages/B')
+    expect(ltPages[1].urlref).toBe('pages/A')
+    expect(ltPages[1].iey).toBe(false)
+    expect(ltPages[1].ppiey).toBe(true)
+    // 离开 C
+    expect(ltPages[2].url).toBe('pages/C')
+    expect(ltPages[2].iey).toBe(false)
+    expect(ltPages[2].ppiey).toBe(false)
+    // 再次离开 A（循环回来，不再算入口）
+    expect(ltPages[3].url).toBe('pages/A')
+    expect(ltPages[3].urlref).toBe('pages/C')
+    expect(ltPages[3].iey).toBe(false)
+    expect(ltPages[3].ppiey).toBe(false)
+  })
+
   // 回归：enablePageLog=false 时跳过 lt=11 上报。
   // 与私有版 is_page_report() 在 pageShow/pageHide 上的拦截语义完全一致：
   // 仅影响页面切换事件 lt=11，**不影响** lt=1（launch）/ lt=3（appHide）/ lt=21 / lt=31。

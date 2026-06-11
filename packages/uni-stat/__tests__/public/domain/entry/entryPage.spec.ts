@@ -3,6 +3,8 @@ import {
   clearEntry,
   getEntryRoute,
   isEntry,
+  isEntryForIey,
+  markEntryDeparted,
   markEntryPage,
 } from '../../../../src/public/domain/entry/entryPage'
 import { storage } from '../../../../src/public/infra/storage'
@@ -112,6 +114,25 @@ describe('domain/entry/entryPage', () => {
       clearEntry()
       markEntryPage('pages/B/B')
       expect(getEntryRoute()).toBe('pages/B/B')
+    })
+
+    test('清掉后重置 entryDeparted（重新登记入口后再次生效）', () => {
+      markEntryPage('pages/A/A')
+      markEntryDeparted()
+      clearEntry()
+      markEntryPage('pages/A/A')
+      expect(isEntryForIey('pages/A/A')).toBe(true)
+    })
+  })
+
+  describe('isEntryForIey / markEntryDeparted', () => {
+    test('首次离开前入口路由 → true；离开后同路由 → false', () => {
+      markEntryPage('pages/A/A')
+      expect(isEntryForIey('pages/A/A')).toBe(true)
+      markEntryDeparted()
+      // isEntry 仍认其为登记入口，但 isEntryForIey 因已离开而不再计入
+      expect(isEntry('pages/A/A')).toBe(true)
+      expect(isEntryForIey('pages/A/A')).toBe(false)
     })
   })
 })
