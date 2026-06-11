@@ -26,16 +26,16 @@ function removeUrlWrap(source: string): string {
 
 function getLoadFontFaceOptions(
   options: LoadFontFaceOptions,
-  res: AsyncApiRes<UniNamespace.LoadFontFaceOptions>
+  res: AsyncApiRes<UniNamespace.LoadFontFaceOptions> | null
 ): NativeLoadFontFaceOptions {
   return {
     family: options.family,
     source: options.source,
     success: (_: any | null) => {
-      res.resolve(null)
+      res?.resolve(null)
     },
     fail: (error: NativeLoadFontFaceFail) => {
-      res.reject(
+      res?.reject(
         // new LoadFontFaceErrorImpl(
         error.errMsg,
         error.errCode as LoadFontFaceErrCode
@@ -56,26 +56,40 @@ export const loadFontFace = defineAsyncApi(
     options.source = removeUrlWrap(options.source as string)
 
     if (options.global === true) {
-      const app = getNativeApp()
-      const fontInfo = getLoadFontFaceOptions(options, res)
-      app.loadFontFace(fontInfo)
+      appLoadFontFace(options, res)
     } else {
-      const page = (getCurrentPage() as unknown as UniPage).vm
-
-      if (!page) {
+      const page = getCurrentPage() as unknown as UniPage
+      if (!page.vm) {
         res.reject('page is not ready', 99)
         // reject(new LoadFontFaceErrorImpl('page is not ready', 99), 99)
         return
       }
 
-      if (page!.$fontFamilySet.has(options.family)) {
-        return
-      }
-
-      page!.$fontFamilySet.add(options.family)
-      const fontInfo = getLoadFontFaceOptions(options, res)
-      page.$nativePage!.loadFontFace(fontInfo)
+      pageLoadFontFace(page, options, res)
     }
   },
   LoadFontFaceProtocol
 )
+
+export const appLoadFontFace = (
+  options: LoadFontFaceOptions,
+  res: AsyncApiRes<UniNamespace.LoadFontFaceOptions> | null
+) => {
+  const app = getNativeApp()
+  const fontInfo = getLoadFontFaceOptions(options, res)
+  app.loadFontFace(fontInfo)
+}
+
+export const pageLoadFontFace = (
+  page: UniPage,
+  options: LoadFontFaceOptions,
+  res: AsyncApiRes<UniNamespace.LoadFontFaceOptions> | null
+) => {
+  const pageVm = page.vm
+  if (pageVm.$fontFamilySet.has(options.family)) {
+    return
+  }
+  pageVm!.$fontFamilySet.add(options.family)
+  const fontInfo = getLoadFontFaceOptions(options, res)
+  pageVm.$nativePage!.loadFontFace(fontInfo)
+}

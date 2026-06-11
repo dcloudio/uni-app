@@ -1,4 +1,4 @@
-import { loadFontFace } from '../api/ui/loadFontFace'
+import { appLoadFontFace, pageLoadFontFace } from '../api/ui/loadFontFace'
 
 /**
  * 解析 css 中的 @font-face 规则，并加载字体
@@ -8,7 +8,7 @@ import { loadFontFace } from '../api/ui/loadFontFace'
  */
 export function loadFontFaceByStyles(
   styles: Array<Record<string, any>>,
-  global: boolean
+  targetPage: UniPage | null
 ) {
   // TODO will fix by otto
   styles = Array.isArray(styles) ? styles : [styles]
@@ -29,16 +29,36 @@ export function loadFontFaceByStyles(
     const src = style['src'] as string | null
 
     if (fontFamily != null && src != null) {
-      loadFontFace({
-        global,
-        family: fontFamily,
-        source: src,
-        desc: {
-          style: fontStyle as string,
-          weight: fontWeight as string,
-          variant: fontVariant as string,
-        },
-      })
+      if (targetPage === null) {
+        appLoadFontFace(
+          {
+            global: true,
+            family: fontFamily,
+            source: src,
+            desc: {
+              style: fontStyle as string,
+              weight: fontWeight as string,
+              variant: fontVariant as string,
+            },
+          },
+          null
+        )
+      } else {
+        pageLoadFontFace(
+          targetPage,
+          {
+            global: false,
+            family: fontFamily,
+            source: src,
+            desc: {
+              style: fontStyle as string,
+              weight: fontWeight as string,
+              variant: fontVariant as string,
+            },
+          },
+          null
+        )
+      }
     } else {
       console.warn('loadFontFace: fail, font-family or src is null')
     }

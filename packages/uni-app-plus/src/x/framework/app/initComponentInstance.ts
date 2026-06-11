@@ -2,6 +2,7 @@ import type { App, ComponentPublicInstance } from 'vue'
 import { getNativeApp } from './app'
 import { loadFontFaceByStyles } from '../utils'
 import { beforeSetupPage } from '../../../service/framework/page/setup'
+import { homeDialogPages, homeSystemDialogPages } from '../page/dialogPage'
 
 export function initNativePage(vm: ComponentPublicInstance) {
   const instance = vm.$
@@ -22,7 +23,58 @@ export function initFontFace(vm: ComponentPublicInstance) {
   if ((instance.type as any).mpType === 'app') {
     return
   }
-  loadFontFaceByStyles(vm.$options.styles ?? [], false)
+  const pageId = instance.root.attrs.__pageId
+  const targetPage = findPageById(pageId + '')
+
+  if (!targetPage) {
+    console.warn(
+      '[initFontFace] can not find page for pageId: ' +
+        pageId +
+        ', skip loadFontFace'
+    )
+    return
+  }
+  // 加载页面字体
+  loadFontFaceByStyles(vm.$options.styles ?? [], targetPage)
+}
+
+function findPageById(pageId: string): UniPage | null {
+  const isTargetPage = (page: UniPage) => {
+    const targetPageId = page.vm?.$.root.attrs.__pageId
+    return targetPageId != null && pageId === targetPageId + ''
+  }
+  const findTargetPage = (pages: UniPage[]) => {
+    for (let i = pages.length - 1; i >= 0; i--) {
+      if (isTargetPage(pages[i])) {
+        return pages[i]
+      }
+    }
+    return null
+  }
+
+  const currentPages = getCurrentPages() as UniPage[]
+  const targetPage = findTargetPage(currentPages)
+  if (targetPage) {
+    return targetPage
+  }
+
+  for (let i = currentPages.length - 1; i >= 0; i--) {
+    const page = currentPages[i]
+    const targetSystemDialogPage = findTargetPage(page.$getSystemDialogPages())
+    if (targetSystemDialogPage) {
+      return targetSystemDialogPage
+    }
+
+    const targetDialogPage = findTargetPage(page.getDialogPages())
+    if (targetDialogPage) {
+      return targetDialogPage
+    }
+  }
+
+  return (
+    findTargetPage(homeSystemDialogPages as UniPage[]) ||
+    findTargetPage(homeDialogPages as UniPage[])
+  )
 }
 
 export function initComponentInstance(app: App) {
