@@ -29,7 +29,12 @@ import {
   buildVisitFields,
   buildVisitFieldsForSessionRenewal,
 } from '../domain/visit/firstVisit'
-import { clearEntry, isEntry, markEntryPage } from '../domain/entry/entryPage'
+import {
+  clearEntry,
+  isEntryForIey,
+  markEntryDeparted,
+  markEntryPage,
+} from '../domain/entry/entryPage'
 import { getPagesJsonNavigationTitle } from '../adapter/pagesTitle'
 import {
   clearPageTitle,
@@ -616,6 +621,10 @@ export function handleAppHide(app: StatApp, opts: LifecycleOptions = {}): void {
     }
     if (ref) payload.urlref = ref
     c.report(payload)
+    if (state.lastIey) {
+      tryRun(() => markEntryDeparted(), undefined)
+      state.lastIey = false
+    }
   }
   c.report({
     lt: LT.Hide,
@@ -638,7 +647,8 @@ export function handleAppHide(app: StatApp, opts: LifecycleOptions = {}): void {
  *   - `urlref`：再上一层的来源页（「上上个页面」），来自 `beforeLastRouteFull`；
  *     首次从启动页外跳（只有一层来源）时不带 `urlref`。
  *   - `urlref_ts`：离开页停留秒数（`now - lastRouteEnterTime`，不足 1 秒按 1 秒，对齐私有版）。
- *   - `iey` / `ppiey`：分别对应**离开页**是否入口、`urlref` 指向页是否入口（与字段字典「上级页面」口径一致）。
+ *   - `iey` / `ppiey`：分别对应**离开页**是否仍为有效入口、`urlref` 指向页是否仍为有效入口
+ *     （会话内仅**首次离开**登记入口为 1；循环回到入口后再离开不算）。
  *   - `ttn` / `ttpj` / `ttc`：三维独立内存（API 导航栏 / pages.json / uni.report('title')），
  *     **同一事件可同时非空**。离开页快照优先在 **`onHide` 且 `clearPageTitle` 之前**落盘；
  *     无 hide 场景依赖 **microtask**（晚于业务 `onShow`）— 由 `titleSnapGeneration` 防止被下一页 show 尾部误覆盖。
@@ -724,12 +734,15 @@ export function handlePageShow(
     payload.ttpj = snap.ttpj
     payload.ttc = snap.ttc
     c.report(payload)
+    if (state.lastIey) {
+      tryRun(() => markEntryDeparted(), undefined)
+    }
   }
   // 轮换路由链：当前页在下一轮成为「上一页」。
   state.beforeLastRoute = state.lastRoute
   state.beforeLastRouteFull = state.lastRouteFull
   state.prevIey = state.lastIey
-  state.lastIey = !!route && tryRun(() => isEntry(route), false)
+  state.lastIey = !!route && tryRun(() => isEntryForIey(route), false)
   state.lastRoute = route
   state.lastRouteFull = url
   state.lastRouteEnterTime = now

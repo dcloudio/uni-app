@@ -6,8 +6,8 @@
  * 上行出口：
  *   - **仅 `lt=11` 携带 `iey` / `ppiey`（0/1）**；`lt=1` / `lt=3` 等事件不含入口字段。
  * 字段含义（`lt=11` 在**下一页 onShow** 采集，描述**刚离开的上一页**）：
- *   - `iey`：离开页是否为本会话**入口页**。
- *   - `ppiey`：`urlref` 指向页（再上一层来源）是否入口页。
+ *   - `iey`：离开页是否为本会话**首次离开的入口页**（会话内仅第一次离开入口路由为 1）。
+ *   - `ppiey`：`urlref` 指向页是否仍为**有效入口**（同上，循环回到入口后再离开不算）。
  *
  * 写入时机（`markEntryPage` 仅维护「本会话入口 path」，供 `isEntry` 与 `lt=11` 使用）：
  *   - 新会话：`clearEntry()` 后立刻 `markEntryPage(route)`（launch / app_show / 首个 page_show），
@@ -23,6 +23,9 @@ import { storage } from '../../infra/storage'
 const KEY_ENTRY = 'session:entryRoute'
 
 let cached: string | undefined
+
+/** 本会话是否已离开过登记入口（离开后循环回入口不再计 iey/ppiey）。 */
+let entryDeparted = false
 
 /**
  * 标记当前页为入口页。
@@ -67,14 +70,33 @@ export function isEntry(route: string | undefined): boolean {
 }
 
 /**
+ * 当前路径是否仍按入口参与 `iey` / `ppiey` 计算。
+ *
+ * 与 `isEntry` 区别：用户首次离开登记入口后，即使再次导航回同一路由也不再视为入口。
+ */
+export function isEntryForIey(route: string | undefined): boolean {
+  if (entryDeparted) return false
+  return isEntry(route)
+}
+
+/**
+ * 标记本会话已离开登记入口；后续同路由访问不再产生 `iey=1` / `ppiey=1`。
+ */
+export function markEntryDeparted(): void {
+  entryDeparted = true
+}
+
+/**
  * session 切换时调用：清掉 entry，等待新会话第一次 pageShow 重新登记。
  */
 export function clearEntry(): void {
   cached = ''
+  entryDeparted = false
   storage.remove(KEY_ENTRY)
 }
 
 /** 仅供测试。 */
 export function __resetState(): void {
   cached = undefined
+  entryDeparted = false
 }

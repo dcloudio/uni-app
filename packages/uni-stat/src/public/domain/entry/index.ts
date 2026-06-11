@@ -8,5 +8,7 @@ export {
   clearEntry,
   getEntryRoute,
   isEntry,
+  isEntryForIey,
+  markEntryDeparted,
   markEntryPage,
 } from './entryPage'
