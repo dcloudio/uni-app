@@ -4677,7 +4677,7 @@ function initUTSElementProxyClass(options) {
       var target = {};
       var instance = (
         // @ts-expect-error UniElementImpl构造参数调整
-        new UniElementImpl(nodeId, page, tagName)
+        new UniViewElementImpl(nodeId, page, tagName)
       );
       var proxy2 = new Proxy(instance, {
         get(_target, name) {
