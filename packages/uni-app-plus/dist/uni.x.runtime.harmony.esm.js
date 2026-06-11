@@ -838,10 +838,10 @@ function getLoadFontFaceOptions(options, res) {
     family: options.family,
     source: options.source,
     success: (_) => {
-      res.resolve(null);
+      res === null || res === void 0 || res.resolve(null);
     },
     fail: (error) => {
-      res.reject(
+      res === null || res === void 0 || res.reject(
         // new LoadFontFaceErrorImpl(
         error.errMsg,
         error.errCode
@@ -853,24 +853,31 @@ function getLoadFontFaceOptions(options, res) {
 var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, res) => {
   options.source = removeUrlWrap(options.source);
   if (options.global === true) {
-    var app = getNativeApp();
-    var fontInfo = getLoadFontFaceOptions(options, res);
-    app.loadFontFace(fontInfo);
+    appLoadFontFace(options, res);
   } else {
-    var page = getCurrentPage().vm;
-    if (!page) {
+    var page = getCurrentPage();
+    if (!page.vm) {
       res.reject("page is not ready", 99);
       return;
     }
-    if (page.$fontFamilySet.has(options.family)) {
-      return;
-    }
-    page.$fontFamilySet.add(options.family);
-    var _fontInfo = getLoadFontFaceOptions(options, res);
-    page.$nativePage.loadFontFace(_fontInfo);
+    pageLoadFontFace(page, options, res);
   }
 });
-function loadFontFaceByStyles(styles, global) {
+var appLoadFontFace = (options, res) => {
+  var app = getNativeApp();
+  var fontInfo = getLoadFontFaceOptions(options, res);
+  app.loadFontFace(fontInfo);
+};
+var pageLoadFontFace = (page, options, res) => {
+  var pageVm = page.vm;
+  if (pageVm.$fontFamilySet.has(options.family)) {
+    return;
+  }
+  pageVm.$fontFamilySet.add(options.family);
+  var fontInfo = getLoadFontFaceOptions(options, res);
+  pageVm.$nativePage.loadFontFace(fontInfo);
+};
+function loadFontFaceByStyles(styles, targetPage) {
   styles = Array.isArray(styles) ? styles : [styles];
   var fontFaceStyle = [];
   styles.forEach((style) => {
@@ -887,16 +894,29 @@ function loadFontFaceByStyles(styles, global) {
     var fontVariant = style["fontVariant"];
     var src = style["src"];
     if (fontFamily != null && src != null) {
-      loadFontFace({
-        global,
-        family: fontFamily,
-        source: src,
-        desc: {
-          style: fontStyle,
-          weight: fontWeight,
-          variant: fontVariant
-        }
-      });
+      if (targetPage === null) {
+        appLoadFontFace({
+          global: true,
+          family: fontFamily,
+          source: src,
+          desc: {
+            style: fontStyle,
+            weight: fontWeight,
+            variant: fontVariant
+          }
+        }, null);
+      } else {
+        pageLoadFontFace(targetPage, {
+          global: false,
+          family: fontFamily,
+          source: src,
+          desc: {
+            style: fontStyle,
+            weight: fontWeight,
+            variant: fontVariant
+          }
+        }, null);
+      }
     } else {
       console.warn("loadFontFace: fail, font-family or src is null");
     }
@@ -919,7 +939,45 @@ function initFontFace(vm) {
   if (instance.type.mpType === "app") {
     return;
   }
-  loadFontFaceByStyles((_vm$$options$styles = vm.$options.styles) !== null && _vm$$options$styles !== void 0 ? _vm$$options$styles : [], false);
+  var pageId = instance.root.attrs.__pageId;
+  var targetPage = findPageById(pageId + "");
+  if (!targetPage) {
+    console.warn("[initFontFace] can not find page for pageId: " + pageId + ", skip loadFontFace");
+    return;
+  }
+  loadFontFaceByStyles((_vm$$options$styles = vm.$options.styles) !== null && _vm$$options$styles !== void 0 ? _vm$$options$styles : [], targetPage);
+}
+function findPageById(pageId) {
+  var isTargetPage = (page2) => {
+    var _page$vm;
+    var targetPageId = (_page$vm = page2.vm) === null || _page$vm === void 0 ? void 0 : _page$vm.$.root.attrs.__pageId;
+    return targetPageId != null && pageId === targetPageId + "";
+  };
+  var findTargetPage = (pages2) => {
+    for (var i2 = pages2.length - 1; i2 >= 0; i2--) {
+      if (isTargetPage(pages2[i2])) {
+        return pages2[i2];
+      }
+    }
+    return null;
+  };
+  var currentPages = getCurrentPages();
+  var targetPage = findTargetPage(currentPages);
+  if (targetPage) {
+    return targetPage;
+  }
+  for (var i = currentPages.length - 1; i >= 0; i--) {
+    var page = currentPages[i];
+    var targetSystemDialogPage = findTargetPage(page.$getSystemDialogPages());
+    if (targetSystemDialogPage) {
+      return targetSystemDialogPage;
+    }
+    var targetDialogPage = findTargetPage(page.getDialogPages());
+    if (targetDialogPage) {
+      return targetDialogPage;
+    }
+  }
+  return findTargetPage(homeSystemDialogPages) || findTargetPage(homeDialogPages);
 }
 function initComponentInstance(app) {
   app.config.uniX = {
@@ -2365,7 +2423,7 @@ function initAppLaunch(appVm) {
   invokeHook(appVm, ON_SHOW, showOption);
   var appStyle = appVm.$options.styles;
   if (appStyle) {
-    loadFontFaceByStyles(appStyle, true);
+    loadFontFaceByStyles(appStyle, null);
   }
   useTheme();
 }
