@@ -61,7 +61,6 @@ import type { UniXCompilerOptions } from '../lib/uni-x/dist/compiler'
 
 export { syncUTSFiles } from './uni_modules'
 export * from './tsc'
-export { buildUTSFile, type BuildUTSFileOptions } from './standalone/index'
 
 export {
   getKotlinCompilerServer,

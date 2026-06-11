@@ -1,283 +1,499 @@
+import crypto from 'crypto'
 import path from 'path'
-import type {
-  BuildUniModulesOptions,
-  CompileResult,
-  UTSPluginCompilerOptions,
-} from '../index'
-import type { BuildUTSFileOptions } from './index'
+import fs from 'fs-extra'
+import { dataToEsm } from '@rollup/pluginutils'
+import type { SyncUniModulesFilePreprocessor } from '../uni_modules'
 
-type UTSPlatform = 'app' | 'app-android' | 'app-ios' | 'app-harmony'
-type UTSFilePlatform = Exclude<UTSPlatform, 'app'>
-type UTSTargetLanguage = 'javascript' | 'kotlin' | 'swift' | 'arkts'
-type AutoImports = Required<
-  NonNullable<UTSPluginCompilerOptions['transform']>
->['autoImports']
+type BuildPlatform = 'app' | 'app-android' | 'app-ios' | 'app-harmony'
 
-interface CLIArgs {
-  file: string
-  uniModule: string
-}
-
-interface UTSCompiler {
-  buildUTSFile: (
-    platform: UTSFilePlatform,
-    fileName: string,
-    options: BuildUTSFileOptions,
-    compilerOptions: UTSPluginCompilerOptions
-  ) => Promise<CompileResult | void>
-  buildUniModule: (
-    platform: UTSPlatform,
-    pluginDir: string,
-    options: BuildUniModulesOptions,
-    compilerOptions: UTSPluginCompilerOptions
-  ) => Promise<CompileResult | void>
-}
-
-interface UniModulesShared {
-  createAppAndroidUniModulesSyncFilePreprocessorOnce: (
-    isX: boolean
-  ) => BuildUniModulesOptions['syncUniModulesFilePreprocessors']['android']
-  createAppIosUniModulesSyncFilePreprocessorOnce: (
-    isX: boolean
-  ) => BuildUniModulesOptions['syncUniModulesFilePreprocessors']['ios']
-  createAppHarmonyUniModulesSyncFilePreprocessorOnce: (
-    isX: boolean
-  ) => BuildUniModulesOptions['syncUniModulesFilePreprocessors']['harmony']
-  rewriteUniModulesConsoleExpr: (fileName: string, content: string) => string
-}
-
-interface UTSShared {
-  initUTSKotlinAutoImportsOnce: () => Promise<AutoImports>
-  initUTSSwiftAutoImportsOnce: () => Promise<AutoImports>
-  parseKotlinPackageWithPluginId: (id: string, isUniModules: boolean) => string
-  parseSwiftModuleWithPluginId: (id: string, isUniModules: boolean) => string
-  parseUniExtApiNamespacesOnce: (
-    platform: UTSPlatform,
-    language: UTSTargetLanguage
-  ) => Record<string, [string, string]>
-}
-
-const VALID_PLATFORMS: UTSPlatform[] = [
-  'app',
-  'app-android',
-  'app-ios',
-  'app-harmony',
-]
-const VALID_FILE_PLATFORMS: UTSFilePlatform[] = [
-  'app-android',
-  'app-ios',
-  'app-harmony',
-]
-
-// CLI 只做参数解析和编译器参数拼装，具体编译逻辑继续复用 uni-uts-v1。
-async function main() {
-  const args = parseArgs(process.argv.slice(2))
-  if (!args.file && !args.uniModule) {
-    throw new Error('请通过 --file 或 --uni_module 指定要编译的内容')
-  }
-  if (args.file && args.uniModule) {
-    throw new Error('--file 和 --uni_module 不能同时使用')
-  }
-
-  if (args.file) {
-    await buildSingleUTSFile(args.file)
-  } else {
-    await buildSingleUniModule(args.uniModule)
+interface BuildUniModulesOptions {
+  syncUniModulesFilePreprocessors: {
+    android: SyncUniModulesFilePreprocessor
+    ios: SyncUniModulesFilePreprocessor
+    harmony: SyncUniModulesFilePreprocessor
   }
 }
 
-export async function buildSingleUTSFile(fileName: string) {
-  const { buildUTSFile } = loadUTSCompiler()
-  const sourceFile = path.resolve(fileName)
-  const platform = readUTSFilePlatform()
-
-  // 单文件编译默认以当前 uts 文件所在目录作为源码根目录。
-  if (!process.env.UNI_INPUT_DIR) {
-    process.env.UNI_INPUT_DIR = path.dirname(sourceFile)
-  }
-  await buildUTSFile(
-    platform,
-    sourceFile,
-    {
-      workDir: process.env.UNI_OUTPUT_DIR,
-      sourceRoot: process.env.UNI_INPUT_DIR,
-      clean: true,
-    },
-    {
-      isX: process.env.UNI_APP_X === 'true',
-      isPlugin: true,
-      isSingleThread: true,
-      sourceMap: true,
-    }
-  )
+interface UTSPluginCompilerOptions {
+  isX: boolean
+  isPlugin: boolean
+  isSingleThread: boolean
+  sourceMap?: boolean
+  rewriteConsoleExpr?: (fileName: string, content: string) => string
 }
 
-export async function buildSingleUniModule(pluginDir: string) {
-  const { buildUniModule } = loadUTSCompiler()
-  const {
-    createAppAndroidUniModulesSyncFilePreprocessorOnce,
-    createAppIosUniModulesSyncFilePreprocessorOnce,
-    createAppHarmonyUniModulesSyncFilePreprocessorOnce,
-    rewriteUniModulesConsoleExpr,
-  } = loadUniModulesShared()
-  const {
-    initUTSKotlinAutoImportsOnce,
-    initUTSSwiftAutoImportsOnce,
-    parseKotlinPackageWithPluginId,
-    parseSwiftModuleWithPluginId,
-    parseUniExtApiNamespacesOnce,
-  } = loadUTSShared()
-  const resolvedPluginDir = path.resolve(pluginDir)
-  const platform = readUTSPlatform()
-  const targetLanguage = resolveUTSTargetLanguage(platform)
+type BuildUniModule = (
+  platform: BuildPlatform,
+  pluginDir: string,
+  options: BuildUniModulesOptions,
+  compilerOptions: UTSPluginCompilerOptions
+) => Promise<unknown>
 
-  process.env.UNI_UTS_TARGET_LANGUAGE = targetLanguage
+export interface StandaloneUTSOptions {
+  file?: string
+  uni_module?: string
+  uniModule?: string
+  platform?: string
+  inputDir?: string
+  outputDir?: string
+  tscDir?: string
+  uvueDir?: string
+  tscCacheDir?: string
+  hbuilderxPlugins?: string
+}
 
-  await buildUniModule(
-    platform,
-    resolvedPluginDir,
-    {
-      syncUniModulesFilePreprocessors: {
-        android: createAppAndroidUniModulesSyncFilePreprocessorOnce(true),
-        ios: createAppIosUniModulesSyncFilePreprocessorOnce(true),
-        harmony: createAppHarmonyUniModulesSyncFilePreprocessorOnce(true),
-      },
-    },
-    {
-      isX: true,
-      isPlugin: true,
-      isSingleThread: true,
-      sourceMap: true,
-      // ext-api 的 platform/language 必须和当前 UNI_UTS_PLATFORM 保持一致。
-      extApis: parseUniExtApiNamespacesOnce(platform, targetLanguage),
-      async kotlinAutoImports() {
-        return filterAutoImports(
-          await initUTSKotlinAutoImportsOnce(),
-          parseKotlinPackageWithPluginId(path.basename(resolvedPluginDir), true)
+interface ResolvedOptions {
+  file?: string
+  uniModule?: string
+  platform: BuildPlatform
+  projectRoot: string
+  inputDir: string
+  outputDir: string
+}
+
+interface UniCliShared {
+  initPreContext: (
+    platform: string,
+    userPreContext?: Record<string, boolean> | string,
+    utsPlatform?: string,
+    isX?: boolean
+  ) => void
+  preUVueHtml: (code: string, fileName: string) => string
+  preUVueJs: (code: string, fileName: string) => string
+}
+
+export async function buildStandaloneUTS(options: StandaloneUTSOptions) {
+  const resolved = resolveOptions(options)
+  initStandaloneEnv(resolved, options)
+
+  const tempUniModule = resolved.file
+    ? createTempUniModule(resolved.file, resolved.outputDir)
+    : undefined
+  const pluginDir = tempUniModule
+    ? tempUniModule.pluginDir
+    : resolved.uniModule!
+
+  const buildUniModule = loadBuildUniModule()
+  const rewriteTempPath =
+    resolved.file && tempUniModule
+      ? createTempPathRewriter(
+          tempUniModule.id,
+          resolved.file,
+          resolved.projectRoot
         )
+      : undefined
+  const restoreConsole = rewriteTempPath
+    ? installConsolePathRewriter(rewriteTempPath)
+    : undefined
+  try {
+    return await buildUniModule(
+      resolved.platform,
+      pluginDir,
+      {
+        syncUniModulesFilePreprocessors: {
+          android: createUniXPreprocessor('app', 'app-android'),
+          ios: createUniXPreprocessor('app', 'app-ios'),
+          harmony: createUniXPreprocessor('app-harmony', 'app-harmony'),
+        },
       },
-      async swiftAutoImports() {
-        return filterAutoImports(
-          await initUTSSwiftAutoImportsOnce(),
-          parseSwiftModuleWithPluginId(path.basename(resolvedPluginDir), true)
-        )
-      },
-      rewriteConsoleExpr: rewriteUniModulesConsoleExpr,
+      {
+        isX: true,
+        isPlugin: true,
+        isSingleThread: process.env.UNI_APP_X_SINGLE_THREAD !== 'false',
+        sourceMap: process.env.UNI_APP_SOURCEMAP === 'true',
+        rewriteConsoleExpr: (_fileName, content) => content,
+      }
+    )
+  } catch (error: any) {
+    if (rewriteTempPath && error?.customPrint) {
+      const customPrint = error.customPrint
+      error.customPrint = () => {
+        const restore = installConsolePathRewriter(rewriteTempPath)
+        try {
+          customPrint()
+        } finally {
+          restore()
+        }
+      }
     }
-  )
-}
-
-function filterAutoImports(autoImports: AutoImports, source: string) {
-  if (!autoImports[source]) {
-    return autoImports
+    throw error
+  } finally {
+    restoreConsole?.()
   }
-  return Object.keys(autoImports).reduce<AutoImports>((imports, key) => {
-    if (key !== source) {
-      imports[key] = autoImports[key]
-    }
-    return imports
-  }, {})
 }
 
-export function resolveUTSTargetLanguage(
-  platform: UTSPlatform
-): UTSTargetLanguage {
-  if (platform === 'app-android') {
+function loadBuildUniModule(): BuildUniModule {
+  // eslint-disable-next-line no-restricted-globals
+  const compiler = require('../index') as { buildUniModule: BuildUniModule }
+  return compiler.buildUniModule
+}
+
+function resolveOptions(options: StandaloneUTSOptions): ResolvedOptions {
+  const file = options.file && path.resolve(options.file)
+  const uniModule =
+    (options.uni_module || options.uniModule) &&
+    path.resolve((options.uni_module || options.uniModule)!)
+
+  if (!!file === !!uniModule) {
+    throw new Error('Please pass exactly one of --file or --uni_module.')
+  }
+  if (file) {
+    if (path.extname(file) !== '.uts') {
+      throw new Error(`--file must point to a .uts file: ${file}`)
+    }
+    if (!fs.existsSync(file)) {
+      throw new Error(`UTS file does not exist: ${file}`)
+    }
+  }
+  if (uniModule) {
+    if (!fs.existsSync(uniModule) || !fs.statSync(uniModule).isDirectory()) {
+      throw new Error(
+        `uni_modules plugin directory does not exist: ${uniModule}`
+      )
+    }
+    if (!normalizePath(uniModule).split('/').includes('uni_modules')) {
+      throw new Error(
+        `--uni_module must point to a uni_modules plugin directory.`
+      )
+    }
+  }
+
+  const platform = normalizePlatform(
+    options.platform || process.env.UNI_UTS_PLATFORM
+  )
+  const projectRoot = file
+    ? findProjectRoot(path.dirname(file))
+    : resolveUniModuleProjectRoot(uniModule!)
+  const outputDir =
+    options.outputDir ||
+    process.env.UNI_OUTPUT_DIR ||
+    path.resolve(projectRoot, 'dist', 'dev', getPlatformOutputDir(platform))
+  const inputDir =
+    options.inputDir ||
+    process.env.UNI_INPUT_DIR ||
+    (file ? outputDir : projectRoot)
+
+  return {
+    file,
+    uniModule,
+    platform,
+    projectRoot,
+    inputDir: path.resolve(inputDir),
+    outputDir: path.resolve(outputDir),
+  }
+}
+
+function initStandaloneEnv(
+  { platform, inputDir, outputDir }: ResolvedOptions,
+  options: StandaloneUTSOptions
+) {
+  const normalizedOutputDir = path.resolve(outputDir)
+  const cacheDir =
+    process.env.UNI_APP_X_CACHE_DIR ||
+    path.resolve(
+      normalizedOutputDir,
+      '../cache/.' + path.basename(normalizedOutputDir)
+    )
+
+  process.env.NODE_ENV = process.env.NODE_ENV || 'development'
+  process.env.UNI_NODE_ENV = process.env.UNI_NODE_ENV || process.env.NODE_ENV
+  process.env.UNI_INPUT_DIR = inputDir
+  process.env.UNI_OUTPUT_DIR = normalizedOutputDir
+  process.env.UNI_PLATFORM = platform === 'app-harmony' ? 'app-harmony' : 'app'
+  process.env.UNI_UTS_PLATFORM = platform
+  process.env.UNI_UTS_TARGET_LANGUAGE = resolveTargetLanguage(platform)
+  process.env.UNI_APP_X = process.env.UNI_APP_X || 'true'
+  process.env.UNI_APP_X_TSC = process.env.UNI_APP_X_TSC || 'true'
+  process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE =
+    process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE || 'native'
+  process.env.UNI_APP_X_CACHE_DIR = cacheDir
+  process.env.UNI_APP_X_TSC_DIR =
+    options.tscDir ||
+    process.env.UNI_APP_X_TSC_DIR ||
+    path.resolve(normalizedOutputDir, '../.tsc')
+  process.env.UNI_APP_X_UVUE_DIR =
+    options.uvueDir ||
+    process.env.UNI_APP_X_UVUE_DIR ||
+    path.resolve(normalizedOutputDir, '../.uvue')
+  process.env.UNI_APP_X_TSC_CACHE_DIR =
+    options.tscCacheDir ||
+    process.env.UNI_APP_X_TSC_CACHE_DIR ||
+    path.resolve(cacheDir, 'tsc')
+  process.env.HX_DEPENDENCIES_DIR =
+    process.env.HX_DEPENDENCIES_DIR ||
+    path.resolve(
+      normalizedOutputDir,
+      '../hx/' + path.basename(normalizedOutputDir)
+    )
+
+  if (options.hbuilderxPlugins) {
+    process.env.UNI_HBUILDERX_PLUGINS = path.resolve(options.hbuilderxPlugins)
+  } else if (!process.env.UNI_HBUILDERX_PLUGINS) {
+    process.env.UNI_HBUILDERX_PLUGINS = resolveHBuilderXPlugins()
+  }
+}
+
+function createTempUniModule(file: string, outputDir: string) {
+  const id = createTempPluginId(file)
+  const pluginDir = path.resolve(outputDir, 'uni_modules', id)
+  const utsDir = path.resolve(pluginDir, 'utssdk')
+
+  fs.emptyDirSync(pluginDir)
+  fs.outputJsonSync(
+    path.resolve(pluginDir, 'package.json'),
+    {
+      id,
+      displayName: id,
+      version: '1.0.0',
+      uni_modules: {},
+    },
+    { spaces: 2 }
+  )
+  fs.ensureDirSync(utsDir)
+  fs.copyFileSync(file, path.resolve(utsDir, 'index.uts'))
+  return { id, pluginDir }
+}
+
+function createTempPathRewriter(
+  pluginId: string,
+  sourceFile: string,
+  projectRoot: string
+) {
+  const displayFile = normalizePath(
+    path.isAbsolute(sourceFile) && isSubPath(projectRoot, sourceFile)
+      ? path.relative(projectRoot, sourceFile)
+      : sourceFile
+  )
+  const pattern = new RegExp(
+    `(?:[A-Za-z]:[\\\\/][^\\n\\r]*?[\\\\/]|[^\\s\\n\\r]*?[\\\\/])?uni_modules[\\\\/]${escapeRegExp(
+      pluginId
+    )}[\\\\/]utssdk(?:[\\\\/](?:app-android|app-ios|app-harmony))?[\\\\/]index\\.uts(?:\\.ts)?`,
+    'g'
+  )
+  return (message: string) => {
+    return message.replace(pattern, displayFile)
+  }
+}
+
+function installConsolePathRewriter(rewrite: (message: string) => string) {
+  const methods = ['log', 'info', 'warn', 'error'] as const
+  const originals = methods.map((method) => [method, console[method]] as const)
+  methods.forEach((method) => {
+    console[method] = ((...args: unknown[]) => {
+      return originals
+        .find(([name]) => name === method)![1]
+        .apply(
+          console,
+          args.map((arg) => (typeof arg === 'string' ? rewrite(arg) : arg))
+        )
+    }) as (typeof console)[typeof method]
+  })
+  return () => {
+    originals.forEach(([method, original]) => {
+      console[method] = original
+    })
+  }
+}
+
+function isSubPath(parent: string, child: string) {
+  const relative = path.relative(parent, child)
+  return !!relative && !relative.startsWith('..') && !path.isAbsolute(relative)
+}
+
+function escapeRegExp(str: string) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+function createTempPluginId(file: string) {
+  const name = path
+    .basename(file, path.extname(file))
+    .replace(/[^a-zA-Z0-9-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .toLowerCase()
+  const hash = crypto.createHash('sha1').update(file).digest('hex').slice(0, 8)
+  return `standalone-uts-${name || 'file'}-${hash}`
+}
+
+function createUniXPreprocessor(
+  platform: 'app' | 'app-harmony',
+  utsPlatform: 'app-android' | 'app-ios' | 'app-harmony'
+): SyncUniModulesFilePreprocessor {
+  return async (content, fileName) => {
+    const cliShared = loadUniCliShared()
+    cliShared.initPreContext(
+      platform,
+      process.env.UNI_CUSTOM_CONTEXT,
+      utsPlatform,
+      true
+    )
+
+    const extname = path.extname(fileName)
+    if (extname === '.json') {
+      return dataToEsm(JSON.parse(cliShared.preUVueJs(content, fileName)), {
+        namedExports: true,
+        preferConst: true,
+      })
+    }
+    if (extname === '.uts' || extname === '.ts') {
+      return cliShared.preUVueJs(content, fileName)
+    }
+    if (extname === '.uvue' || extname === '.vue') {
+      return cliShared.preUVueJs(
+        preUTSSDKVueFile(fileName, cliShared.preUVueHtml(content, fileName)),
+        fileName
+      )
+    }
+    return content
+  }
+}
+
+function loadUniCliShared(): UniCliShared {
+  return require(path.join(
+    process.env.UNI_HBUILDERX_PLUGINS,
+    'uniapp-cli-vite',
+    'node_modules',
+    '@dcloudio',
+    'uni-cli-shared'
+  )) as UniCliShared
+}
+
+function preUTSSDKVueFile(fileName: string, content: string) {
+  if (
+    fileName.includes('utssdk') &&
+    (fileName.includes('app-android') || fileName.includes('app-ios'))
+  ) {
+    // eslint-disable-next-line no-restricted-globals
+    const { parse } =
+      require('@vue/compiler-sfc') as typeof import('@vue/compiler-sfc')
+    const { descriptor } = parse(content, {
+      sourceMap: false,
+      pad: 'line',
+    })
+    if (descriptor.script?.content) {
+      return descriptor.script.content + `/*${descriptor.template?.content}*/`
+    }
+  }
+  return content
+}
+
+function normalizePlatform(platform?: string): BuildPlatform {
+  if (!platform || platform === 'android') {
+    return 'app-android'
+  }
+  if (platform === 'ios') {
+    return 'app-ios'
+  }
+  if (platform === 'app-plus') {
+    return 'app'
+  }
+  if (
+    platform === 'app' ||
+    platform === 'app-android' ||
+    platform === 'app-ios' ||
+    platform === 'app-harmony'
+  ) {
+    return platform
+  }
+  throw new Error(`Unsupported --platform: ${platform}`)
+}
+
+function resolveTargetLanguage(platform: BuildPlatform) {
+  if (platform === 'app-android' || platform === 'app') {
     return 'kotlin'
   }
   if (platform === 'app-ios') {
     return 'swift'
   }
+  return 'arkts'
+}
+
+function getPlatformOutputDir(platform: BuildPlatform) {
   if (platform === 'app-harmony') {
-    return 'arkts'
+    return 'app-harmony'
   }
-  return 'javascript'
+  return 'app'
 }
 
-function readUTSFilePlatform() {
-  const platform = readUTSPlatform()
-  if (!VALID_FILE_PLATFORMS.includes(platform as UTSFilePlatform)) {
-    throw new Error(`单文件编译不支持 UNI_UTS_PLATFORM：${platform}`)
+function resolveUniModuleProjectRoot(pluginDir: string) {
+  const parts = normalizePath(pluginDir).split('/')
+  const index = parts.lastIndexOf('uni_modules')
+  return index > 0 ? parts.slice(0, index).join('/') : path.dirname(pluginDir)
+}
+
+function findProjectRoot(startDir: string) {
+  let dir = path.resolve(startDir)
+  while (true) {
+    if (
+      fs.existsSync(path.resolve(dir, 'pages.json')) ||
+      fs.existsSync(path.resolve(dir, 'manifest.json')) ||
+      fs.existsSync(path.resolve(dir, 'uni_modules'))
+    ) {
+      return dir
+    }
+    const parent = path.dirname(dir)
+    if (parent === dir) {
+      return process.cwd()
+    }
+    dir = parent
   }
-  return platform as UTSFilePlatform
 }
 
-function readUTSPlatform() {
-  const platform = process.env.UNI_UTS_PLATFORM as UTSPlatform | undefined
-  if (!platform) {
-    throw new Error('请先设置环境变量 UNI_UTS_PLATFORM')
+function resolveHBuilderXPlugins() {
+  if (process.env.HX_APP_ROOT) {
+    return path.resolve(process.env.HX_APP_ROOT, 'plugins')
   }
-  if (!VALID_PLATFORMS.includes(platform)) {
-    throw new Error(`不支持的 UNI_UTS_PLATFORM：${platform}`)
-  }
-  return platform
+  try {
+    // eslint-disable-next-line no-restricted-globals
+    const about = require(path.resolve(process.cwd(), '../about/package.json'))
+    if (about.name === 'about') {
+      return path.resolve(process.cwd(), '..')
+    }
+  } catch (e) {}
+  return path.resolve(process.cwd(), '..')
 }
 
-function loadUTSCompiler() {
-  return require('../..') as UTSCompiler
+function normalizePath(fileName: string) {
+  return fileName.replace(/\\/g, '/')
 }
 
-function loadUniModulesShared() {
-  return require(resolveHBuilderXPluginModule(
-    'uniapp-cli-vite/node_modules/@dcloudio/uni-cli-shared/dist/vite/plugins/uts/uni_modules.js'
-  )) as UniModulesShared
-}
-
-function loadUTSShared() {
-  return require(resolveHBuilderXPluginModule(
-    'uniapp-cli-vite/node_modules/@dcloudio/uni-cli-shared/dist/uts.js'
-  )) as UTSShared
-}
-
-function resolveHBuilderXPluginModule(moduleName: string) {
-  if (!process.env.UNI_HBUILDERX_PLUGINS) {
-    throw new Error('请先设置环境变量 UNI_HBUILDERX_PLUGINS')
-  }
-  return path.join(process.env.UNI_HBUILDERX_PLUGINS, moduleName)
-}
-
-export function parseArgs(argv: string[]) {
-  const args: CLIArgs = {
-    file: '',
-    uniModule: '',
-  }
-  for (let i = 0; i < argv.length; i++) {
+function parseArgs(argv: string[]): StandaloneUTSOptions {
+  const options: Record<string, string | boolean> = {}
+  for (let i = 2; i < argv.length; i++) {
     const arg = argv[i]
-    if (arg === '--file') {
-      args.file = readArgValue(argv, ++i, '--file')
-    } else if (arg.startsWith('--file=')) {
-      args.file = arg.slice('--file='.length)
-    } else if (arg === '--uni_module') {
-      args.uniModule = readArgValue(argv, ++i, '--uni_module')
-    } else if (arg.startsWith('--uni_module=')) {
-      args.uniModule = arg.slice('--uni_module='.length)
+    if (!arg.startsWith('--')) {
+      continue
+    }
+    const rawKey = arg.slice(2)
+    const key = rawKey.replace(/-([a-z])/g, (_, char: string) =>
+      char.toUpperCase()
+    )
+    const next = argv[i + 1]
+    if (!next || next.startsWith('--')) {
+      options[key] = true
     } else {
-      throw new Error(`未知参数：${arg}`)
+      options[key] = next
+      i++
     }
   }
-  return args
+  return options as StandaloneUTSOptions
 }
 
-function readArgValue(argv: string[], index: number, name: string) {
-  const value = argv[index]
-  if (!value || value.startsWith('--')) {
-    throw new Error(`${name} 缺少参数值`)
-  }
-  return value
+export async function run() {
+  await buildStandaloneUTS(parseArgs(process.argv))
 }
 
 if (require.main === module) {
-  main()
+  run()
     .then(() => {
-      process.exit()
+      process.exit(0)
     })
-    .catch((e) => {
-      if (e && typeof e.customPrint === 'function') {
-        e.customPrint()
+    .catch((error) => {
+      if (error?.customPrint) {
+        error.customPrint()
       } else {
-        console.error(e)
+        console.error(error?.message || error)
       }
-      process.exitCode = 1
-      process.exit()
+      console.error(`Build failed with errors.`)
+      process.exit(1)
     })
 }
