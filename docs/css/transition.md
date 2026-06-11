@@ -6,9 +6,9 @@ transition CSS 属性是 transition-property、transition-duration、transition-
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -35,8 +35,8 @@ transition: <single-transition>#;
 ### transition 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| all | Web: 4.0; Android: 4.13; Android(Vapor): 5.21; iOS: 4.13; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 每一个能够进行过渡动画的属性都会进行过渡动画。 |
-| none | Web: 4.0; Android: 4.13; Android(Vapor): 5.21; iOS: 4.13; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 没有属性会进行过渡动画。 |
+| all | Web: 4.0; Android: 4.13; Android(Vapor): 5.21; iOS: 4.13; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 每一个能够进行过渡动画的属性都会进行过渡动画。 |
+| none | Web: 4.0; Android: 4.13; Android(Vapor): 5.21; iOS: 4.13; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 没有属性会进行过渡动画。 |
 
 
 #### App平台

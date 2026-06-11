@@ -6,9 +6,9 @@ overflow 是 CSS 的简写属性，其设置了元素溢出时所需的行为—
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,8 +34,8 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
 ### overflow 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| visible | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 暂时仅view组件支持visible，其他组件支持不支持 |
-| hidden | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 如果需要，内容将被裁减以适应边距（padding）盒。不提供滚动条，也不支持允许用户滚动（例如通过拖拽或者使用滚轮）。内容可以以编程的方式滚动（例如，通过设置 scrollLeft 等属性的值或 scrollTo() 方法）, 因此该元素仍然是一个滚动的容器。 |
+| visible | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 暂时仅view组件支持visible，其他组件支持不支持 |
+| hidden | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 如果需要，内容将被裁减以适应边距（padding）盒。不提供滚动条，也不支持允许用户滚动（例如通过拖拽或者使用滚轮）。内容可以以编程的方式滚动（例如，通过设置 scrollLeft 等属性的值或 scrollTo() 方法）, 因此该元素仍然是一个滚动的容器。 |
 | scroll | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 如果需要，内容将被裁减以适应边距（padding）盒。无论是否实际裁剪了任何内容，浏览器总是显示滚动条，以防止滚动条在内容改变时出现或者消失。打印机可能会打印溢出的内容。 |
 | auto | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 取决于用户代理。如果内容适应边距（padding）盒，它看起来与 visible 相同，但是仍然建立了一个新的块级格式化上下文。如果内容溢出，则浏览器提供滚动条。 |
 | clip | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 类似于 hidden，内容将以元素的边距（padding）盒进行裁剪。clip 和 hidden 之间的区别是 clip 关键字禁止所有滚动，包括以编程方式的滚动。该盒子不是一个滚动的容器，并且不会启动新的格式化上下文。如果你希望开启一个新的格式化上下文，你可以使用 display: flow-root 来这样做。 |

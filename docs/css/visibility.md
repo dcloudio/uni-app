@@ -6,9 +6,9 @@ visibility CSS 属性显示或隐藏元素而不更改文档的布局。该属�
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,8 +34,8 @@ visibility: visible | hidden | collapse;
 ### visibility 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| visible | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素框可见。 |
-| hidden | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素框不可见（不绘制），但仍然影响常规的布局。如果将其子元素的 visibility 设置为 visible，则该子元素依然可见。元素无法获得焦点（例如通过 tab 索引进行键盘导航）。 |
+| visible | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 元素框可见。 |
+| hidden | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 元素框不可见（不绘制），但仍然影响常规的布局。如果将其子元素的 visibility 设置为 visible，则该子元素依然可见。元素无法获得焦点（例如通过 tab 索引进行键盘导航）。 |
 
 
 **注意**

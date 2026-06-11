@@ -6,9 +6,9 @@ text-align 属性设置元素中文本内容的水平对齐方式。
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,9 +34,9 @@ text-align: start | end | left | right | center | justify | match-parent;
 ### text-align 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| left | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 行内内容向左侧边对齐。 |
-| center | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 行内内容居中。 |
-| right | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 行内内容向右侧边对齐。 |
+| left | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 行内内容向左侧边对齐。 |
+| center | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 行内内容居中。 |
+| right | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 行内内容向右侧边对齐。 |
 
 
 ### 默认值 @default-value 

@@ -6,9 +6,9 @@ border-top-color 属性用以设置某元素顶部 border的颜色。通常，�
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility

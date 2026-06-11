@@ -6,9 +6,9 @@ CSS 中的 box-sizing 属性定义了 user agent 应该如何计算一个元素�
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,8 +34,8 @@ box-sizing: content-box | border-box;
 ### box-sizing 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| content-box | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 默认值，标准盒子模型。width 与 height 只包括内容的宽和高，不包括边框（border），内边距（padding），外边距（margin）。注意：内边距、边框和外边距都在这个盒子的外部。比如说，.box {width: 350px; border: 10px solid black;} 在浏览器中的渲染的实际宽度将是 370px。<br/>    尺寸计算公式：<br/>    <br/>      width = 内容的宽度<br/>      height = 内容的高度<br/>    <br/>    宽度和高度的计算值都不包含内容的边框（border）和内边距（padding）。 |
-| border-box | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | width 和 height 属性包括内容，内边距和边框，但不包括外边距。这是当文档处于 Quirks 模式 时 Internet Explorer 使用的盒模型。注意，填充和边框将在盒子内 , 例如， .box {width: 350px; border: 10px solid black;} 导致在浏览器中呈现的宽度为 350px 的盒子。内容框不能为负，并且被分配到 0，使得不可能使用 border-box 使元素消失。<br/>    尺寸计算公式：<br/>    <br/>      width = border + padding + 内容的宽度<br/>      height = border + padding + 内容的高度 |
+| content-box | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 默认值，标准盒子模型。width 与 height 只包括内容的宽和高，不包括边框（border），内边距（padding），外边距（margin）。注意：内边距、边框和外边距都在这个盒子的外部。比如说，.box {width: 350px; border: 10px solid black;} 在浏览器中的渲染的实际宽度将是 370px。<br/>    尺寸计算公式：<br/>    <br/>      width = 内容的宽度<br/>      height = 内容的高度<br/>    <br/>    宽度和高度的计算值都不包含内容的边框（border）和内边距（padding）。 |
+| border-box | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | width 和 height 属性包括内容，内边距和边框，但不包括外边距。这是当文档处于 Quirks 模式 时 Internet Explorer 使用的盒模型。注意，填充和边框将在盒子内 , 例如， .box {width: 350px; border: 10px solid black;} 导致在浏览器中呈现的宽度为 350px 的盒子。内容框不能为负，并且被分配到 0，使得不可能使用 border-box 使元素消失。<br/>    尺寸计算公式：<br/>    <br/>      width = border + padding + 内容的宽度<br/>      height = border + padding + 内容的高度 |
 
 
 ### 默认值 @default-value 

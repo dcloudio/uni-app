@@ -6,9 +6,9 @@ text-overflow CSS 属性用于确定如何提示用户存在隐藏的溢出内�
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,8 +34,8 @@ text-overflow: [ clip | ellipsis | <string> ]{1,2};
 ### text-overflow 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| clip | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 默认值。这个关键字会在内容区域的极限处截断文本，因此可能会在单词的中间发生截断。如果你的目标浏览器支持 text-overflow: ''，为了能在两个单词过渡处截断，你可以使用一个空字符串值（''）作为 text-overflow 属性的值。 |
-| ellipsis | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 这个关键字会用一个省略号（'…'、U+2026 HORIZONTAL ELLIPSIS）来表示被截断的文本。这个省略号被添加在内容区域中，因此会减少显示的文本。如果空间太小以至于连省略号都容纳不下，那么这个省略号也会被截断。 |
+| clip | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 默认值。这个关键字会在内容区域的极限处截断文本，因此可能会在单词的中间发生截断。如果你的目标浏览器支持 text-overflow: ''，为了能在两个单词过渡处截断，你可以使用一个空字符串值（''）作为 text-overflow 属性的值。 |
+| ellipsis | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 这个关键字会用一个省略号（'…'、U+2026 HORIZONTAL ELLIPSIS）来表示被截断的文本。这个省略号被添加在内容区域中，因此会减少显示的文本。如果空间太小以至于连省略号都容纳不下，那么这个省略号也会被截断。 |
 
 
 ### 默认值 @default-value 
