@@ -67,6 +67,10 @@ module.exports = function generateApp (compilation) {
   const specialMethods = getSpecialMethods()
 
   let beforeCode = ''
+  if (process.env.UNI_PLATFORM === 'mp-harmony') {
+    // 解决鸿蒙元服务热更新白屏问题，鸿蒙元服务热更新时会执行 app.js 中的代码
+    beforeCode = 'global["webpackJsonp"] = [];'
+  }
   if (Object.keys(specialMethods).length) {
     beforeCode = `${getPlatformGlobal()}.specialMethods = ${JSON.stringify(specialMethods)}`
   }
