@@ -1310,7 +1310,7 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
 
 ### Bug & Tips@tips
 - 标准运行基座默认不包含intel x86 cpu的兼容so库，所以video组件在标准基座运行时无法在x86 cpu的设备上运行（常见于模拟器）。如需支持x86 cpu，请在manifest里配置`abiFilters`，打包或自定义基座后生效 [详见](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest.html#android)
-- App的video默认拦截触摸事件，目前会导致父组件无法响应触摸事件
+- 5.13版本以前，App平台的video默认拦截触摸事件，会导致父组件无法响应触摸事件。5.13起在非全屏时不再拦截touch，仅在全屏时拦截。
 - video 默认宽度为300px，高度为225px。（App平台从 uni-app x 4.0起支持该默认宽高）
 - `HarmonyOS` 平台适配小窗需要在 `modules.json5` 中配置 `"preferMultiWindowOrientation": "landscape_auto"` [详情](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V13/module-configuration-file-V13#abilities%E6%A0%87%E7%AD%BE?ha_source=Dcloud&ha_sourceId=89000448)
 - app-iOS平台暂不支持在dialogPage中调用createVideoContext。
