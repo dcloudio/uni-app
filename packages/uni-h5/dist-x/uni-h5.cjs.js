@@ -10189,10 +10189,15 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
     touchStartOrigin.y = toucher.pageY;
     state.gestureType = "none";
     state.volumeOld = 0;
+    if (fullscreenState.fullscreen) {
+      event.stopPropagation();
+    }
   }
   function onTouchmove(event) {
     function stop() {
-      event.stopPropagation();
+      if (fullscreenState.fullscreen) {
+        event.stopPropagation();
+      }
       event.preventDefault();
     }
     if (fullscreenState.fullscreen) {
@@ -10214,6 +10219,7 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
       changeVolume(pageY - origin.y);
     }
     if (gestureType !== "none") {
+      stop();
       return;
     }
     if (Math.abs(pageX - origin.x) > Math.abs(pageY - origin.y)) {
@@ -10242,7 +10248,9 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
   function onTouchend(event) {
     const video = videoRef.value;
     if (state.gestureType !== "none" && state.gestureType !== "stop") {
-      event.stopPropagation();
+      if (fullscreenState.fullscreen) {
+        event.stopPropagation();
+      }
       event.preventDefault();
     }
     if (state.gestureType === "progress" && state.currentTimeOld !== state.currentTimeNew) {
