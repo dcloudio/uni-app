@@ -986,7 +986,7 @@ export function initUTSElementProxyClass(options: ProxyClassOptions): any {
       const target: Record<string, Function> = {}
       const instance = __VAPOR__
         ? // @ts-expect-error UniElementImpl构造参数调整
-          new UniElementImpl(nodeId, page, tagName)
+          new UniViewElementImpl(nodeId, page, tagName)
         : {}
       const proxy = new Proxy(instance, {
         get(_target, name) {
