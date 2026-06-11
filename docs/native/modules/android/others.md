@@ -59,6 +59,8 @@
 
 根据编译出来的`unpackage/resource/app-android/{appid}/www/manifest.json`中的`app->distribute->modules`下的模块配置。
 
+注意：下方的配置本地依赖库和配置线上依赖库都需要配置。
+
 ### 配置本地依赖库
 
 将上表中本地依赖库对应的aar拷贝到app模块的libs目录下
