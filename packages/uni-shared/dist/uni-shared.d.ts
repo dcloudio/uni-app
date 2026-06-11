@@ -142,6 +142,8 @@ export declare function createIsCustomElement(tags?: string[]): (tag: string) =>
 
 export declare function createRpx2Unit(unit: string, unitRatio: number, unitPrecision: number): (val: string) => string;
 
+export declare function createUniDOMStringMap(source?: UniDOMStringMapSource): UniDOMStringMap;
+
 export declare function createUniEvent(evt: Record<string, any>): UniEvent;
 
 declare type CreateVueAppHook = (app: App_2) => void;
@@ -397,6 +399,8 @@ export declare const NODE_TYPE_TEXT = 3;
 export declare function normalizeClass(value: unknown): string;
 
 export declare function normalizeDataset(el: Element): any;
+
+export declare function normalizeDatasetKey(key: string): string;
 
 export declare function normalizeEventType(type: string, options?: AddEventListenerOptions): string;
 
@@ -835,6 +839,16 @@ export declare class UniCommentNode extends UniNode {
 }
 
 declare type UniCSSStyleDeclarationJSON = string | null | Record<string, string | string[]> | [string, Record<string, string | string[]>];
+
+export declare class UniDOMStringMap extends Map<string, any> {
+    [key: string]: any;
+    get(key: string): any;
+    set(key: string, value: any): this;
+    has(key: string): boolean;
+    delete(key: string): boolean;
+}
+
+export declare type UniDOMStringMapSource = Record<string, any> | Map<string, any> | UniDOMStringMap;
 
 export declare class UniElement extends UniBaseNode {
     tagName: string;

@@ -2597,6 +2597,105 @@ function isDom2AppUserVueComponentTag(tag) {
     return !isDom2AppNativeTag(tag) && !isDom2VueComponentTag(tag);
 }
 
+class UniDOMStringMap extends Map {
+    get(key) {
+        return super.get(normalizeDatasetKey(String(key)));
+    }
+    set(key, value) {
+        super.set(normalizeDatasetKey(String(key)), value);
+        return this;
+    }
+    has(key) {
+        return super.has(normalizeDatasetKey(String(key)));
+    }
+    delete(key) {
+        return super.delete(normalizeDatasetKey(String(key)));
+    }
+}
+function normalizeDatasetKey(key) {
+    const normalizedKey = key.replace(/[A-Z]/g, (char) => char.toLowerCase());
+    if (normalizedKey.indexOf('data-') !== 0) {
+        return key;
+    }
+    return normalizedKey
+        .slice(5)
+        .replace(/-([a-z])/g, (_, char) => char.toUpperCase());
+}
+function isReservedDatasetKey(target, key) {
+    return key in target;
+}
+function setDatasetValue(dataset, key, value) {
+    dataset.set(key, value);
+}
+function initDataset(dataset, source) {
+    if (!source) {
+        return;
+    }
+    if (source instanceof Map) {
+        source.forEach((value, key) => setDatasetValue(dataset, key, value));
+        return;
+    }
+    Object.keys(source).forEach((key) => setDatasetValue(dataset, key, source[key]));
+}
+function createUniDOMStringMap(source) {
+    const target = new UniDOMStringMap();
+    initDataset(target, source);
+    return new Proxy(target, {
+        get(target, key, receiver) {
+            if (typeof key === 'string') {
+                if (!isReservedDatasetKey(target, key) && target.has(key)) {
+                    return target.get(key);
+                }
+            }
+            const value = Reflect.get(target, key, target);
+            if (typeof value === 'function') {
+                return (...args) => {
+                    const result = value.apply(target, args);
+                    return result === target ? receiver : result;
+                };
+            }
+            return value;
+        },
+        set(target, key, value, receiver) {
+            if (typeof key === 'string' && !isReservedDatasetKey(target, key)) {
+                target.set(key, value);
+                return true;
+            }
+            return Reflect.set(target, key, value, receiver);
+        },
+        deleteProperty(target, key) {
+            if (typeof key === 'string' &&
+                !isReservedDatasetKey(target, key) &&
+                target.has(key)) {
+                return target.delete(key);
+            }
+            return Reflect.deleteProperty(target, key);
+        },
+        has(target, key) {
+            if (typeof key === 'string' && target.has(key)) {
+                return true;
+            }
+            return Reflect.has(target, key);
+        },
+        ownKeys(target) {
+            return Array.from(target.keys()).filter((key) => !isReservedDatasetKey(target, key));
+        },
+        getOwnPropertyDescriptor(target, key) {
+            if (typeof key === 'string' &&
+                !isReservedDatasetKey(target, key) &&
+                target.has(key)) {
+                return {
+                    configurable: true,
+                    enumerable: true,
+                    value: target.get(key),
+                    writable: true,
+                };
+            }
+            return Reflect.getOwnPropertyDescriptor(target, key);
+        },
+    });
+}
+
 function getEnvLocale() {
     const { env } = process;
     const lang = env.LC_ALL || env.LC_MESSAGES || env.LANG || env.LANGUAGE;
@@ -2742,6 +2841,7 @@ exports.UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS = UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS;
 exports.UVUE_WEB_BUILT_IN_TAGS = UVUE_WEB_BUILT_IN_TAGS;
 exports.UniBaseNode = UniBaseNode;
 exports.UniCommentNode = UniCommentNode;
+exports.UniDOMStringMap = UniDOMStringMap;
 exports.UniElement = UniElement;
 exports.UniError = UniError;
 exports.UniEvent = UniEvent;
@@ -2766,6 +2866,7 @@ exports.cacheStringFunction = cacheStringFunction;
 exports.callOptions = callOptions;
 exports.createIsCustomElement = createIsCustomElement;
 exports.createRpx2Unit = createRpx2Unit;
+exports.createUniDOMStringMap = createUniDOMStringMap;
 exports.createUniEvent = createUniEvent;
 exports.customizeEvent = customizeEvent;
 exports.debounce = debounce;
@@ -2817,6 +2918,7 @@ exports.isUniXElement = isUniXElement;
 exports.isWebBuiltInComponent = isWebBuiltInComponent;
 exports.normalizeClass = normalizeClass;
 exports.normalizeDataset = normalizeDataset;
+exports.normalizeDatasetKey = normalizeDatasetKey;
 exports.normalizeEventType = normalizeEventType;
 exports.normalizeProps = normalizeProps;
 exports.normalizeStyle = normalizeStyle;
