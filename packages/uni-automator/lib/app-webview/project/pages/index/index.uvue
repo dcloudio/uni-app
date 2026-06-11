@@ -19,6 +19,11 @@
 </template>
 
 <script setup lang='uts'>
+  // #ifdef APP-IOS || APP-ANDROID
+  import { applyWebViewSnapshotTextMetricsPatch } from '@/tools/webview-snapshot-text-metrics.uts'
+  // #endif
+
+
   const instance = getCurrentInstance()!.proxy!
 
   const src = ref(process.env.UNI_AUTOMATOR_APP_WEBVIEW_SRC)
@@ -39,27 +44,18 @@
     safeAreaTop.value = windowInfo.safeAreaInsets.top
     webviewContext.value = uni.createWebViewContext('webview')
   })
-  
+
   const initAutomator = () => {
     const options = {
       wsEndpoint: process.env.UNI_AUTOMATOR_WS_ENDPOINT
     }
     webviewContext.value!.evalJS(`initRuntimeAutomator(${JSON.stringify(options)})`)
-    // #ifdef APP-ANDROID
-    webviewContext.value!.evalJS(`
-      const style = document.createElement('style');
-      style.textContent = '@font-face { font-family: "system"; src: local("Roboto"); ascent-override: 92%; descent-override: 8%; } body { font-family: "system"; line-height: 1.35; }';
-      document.head.appendChild(style);
-      
-      const script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.textContent = 'const observer = new MutationObserver((_) => { const elements = document.querySelectorAll("span"); elements.forEach(element => { const range = document.createRange(); range.selectNodeContents(element); const rects = range.getClientRects(); if (rects.length > 1 && element.parentElement.style.getPropertyValue("line-height") == "") {element.parentElement.style.setProperty("line-height", 1.215); }; }); });observer.observe(document.body, { childList: true, subtree: true, attributes: true });';
-      document.head.appendChild(script);
-    `)
+    // #ifdef APP-IOS || APP-ANDROID
+    applyWebViewSnapshotTextMetricsPatch(webviewContext.value)
     // #endif
     console.log('initRuntimeAutomator...')
   }
-	
+
 	const callback = (id : number, res : any | null, error : string) => {
 	  webviewContext.value!.evalJS(`onPostMessageFromUniXWebView(${id},${JSON.stringify(res)},${JSON.stringify(error)})`)
 	}
