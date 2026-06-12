@@ -11,6 +11,42 @@ export {
 
 export const instances = Object.create(null)
 
+export function initChildVues (vm) {
+  if (vm._$childVues) {
+    vm._$childVues.forEach(([createdVm]) => createdVm())
+    vm._$childVues.forEach(([, mountedVm]) => mountedVm())
+    delete vm._$childVues
+  }
+}
+
+export function initComponentLifecycle (mpInstance) {
+  const vm = mpInstance.$vm
+  if (!vm || vm.mpType === 'page' || vm._isMounted) {
+    return
+  }
+  const parentVm = vm.$parent
+  const createdVm = function () {
+    vm.__call_hook('created')
+  }
+  const mountedVm = function () {
+    if (vm._isMounted) {
+      return
+    }
+    initChildVues(vm)
+    vm.__call_hook('beforeMount')
+    vm._isMounted = true
+    vm.__call_hook('mounted')
+    vm.__call_hook('onReady')
+  }
+  // 父实例未 mounted 时先挂起，避免首页组件早于页面 ready 时丢失生命周期。
+  if (!parentVm || parentVm._isMounted) {
+    createdVm()
+    mountedVm()
+  } else {
+    (parentVm._$childVues || (parentVm._$childVues = [])).push([createdVm, mountedVm])
+  }
+}
+
 export function initRelation ({
   options,
   mpInstance
