@@ -60,7 +60,7 @@
 | uniRuntimeVersion | string | 否 |  | Web: 4.18; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: x | uni 运行时版本<br/> |
 | uniCompilerVersionCode | number | 否 |  | Web: 4.18; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | uni 编译器版本号<br/> |
 | uniRuntimeVersionCode | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | uni 运行时版本号<br/> |
-| packageName | string | 否 |  | Web: x; 微信小程序: 5.13; Android: 3.97; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 | Android 包名<br/>微信小程序 appId<br/>鸿蒙 bundleName<br/> |
+| packageName | string | 否 |  | Web: 5.13; 微信小程序: 5.13; Android: 3.97; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 | Web: manifest.json中定义的 appId<br/>微信小程序: 小程序appId<br/>Android: 包名<br/>鸿蒙: bundleName<br/> |
 | bundleName | string | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 | 鸿蒙的包名<br/> |
 | bundleId | string | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: x | iOS的bundleId<br/> |
 | signature | string | 否 |  | Web: x; 微信小程序: x; Android: 3.97; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: x | Android: 应用签名证书的SHA1值（全部为小写，中间不包含“:”）。<br/>iOS: 应用签名证书中绑定的Bundle ID（AppleID）的md5值（全部为小写）。<br/> |
