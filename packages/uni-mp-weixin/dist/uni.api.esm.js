@@ -1262,6 +1262,13 @@ const getAppBaseInfo = {
             uniCompilerVersion: process.env.UNI_COMPILER_VERSION,
             uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
         };
+        try {
+            if (typeof wx.getAccountInfoSync === 'function') {
+                parameters.packagename =
+                    wx.getAccountInfoSync().miniProgram.appId;
+            }
+        }
+        catch (error) { }
         extend(toRes, parameters);
     },
 };
