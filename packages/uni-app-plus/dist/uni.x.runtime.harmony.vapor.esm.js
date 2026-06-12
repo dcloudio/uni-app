@@ -851,7 +851,6 @@ function getLoadFontFaceOptions(options, res) {
   };
 }
 var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, res) => {
-  options.source = removeUrlWrap(options.source);
   if (options.global === true) {
     appLoadFontFace(options, res);
   } else {
@@ -864,6 +863,7 @@ var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, 
   }
 });
 var appLoadFontFace = (options, res) => {
+  options.source = removeUrlWrap(options.source);
   var app = getNativeApp();
   var fontInfo = getLoadFontFaceOptions(options, res);
   app.loadFontFace(fontInfo);
@@ -872,6 +872,7 @@ var pageLoadFontFace = (pageVm, options, res) => {
   if (pageVm.$fontFamilySet.has(options.family)) {
     return;
   }
+  options.source = removeUrlWrap(options.source);
   pageVm.$fontFamilySet.add(options.family);
   var fontInfo = getLoadFontFaceOptions(options, res);
   pageVm.$nativePage.loadFontFace(fontInfo);
