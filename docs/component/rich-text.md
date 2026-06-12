@@ -45,12 +45,14 @@
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| nodes | any |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 节点列表 \| HTML String |
-| selectable | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 文本是否可选 |
-| mode | string | "web" | Web: x; 微信小程序: x; Android: 4.71; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 渲染模式 |
+| nodes | any |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 节点列表/HTML String |
+| selectable | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 文本是否可选 |
+| mode | string | "web" | Web: x; 微信小程序: x; Android: 4.71; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 渲染模式 |
 | space | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(string)*<br/>显示连续空格 |
 | ~~user-select~~ | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(boolean)*<br/>文本是否可选，该属性会使节点显示为 block。已废弃，请使用 selectable |
-| @itemclick | (event: [UniRichTextItemClickEvent](#unirichtextitemclickevent)) => void |   | Web: 4.0; 微信小程序: x; Android: 3.9; iOS 系统版本: 9.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.71; HarmonyOS(Vapor): 5.0 | 拦截点击事件（只支持 a、img标签），返回img标签的src属性或a标签的href属性。event.detail={ src \| href } |
+| selection-handle-color | string | "#B4D5FE" | Web:  ; 微信小程序:  ; Android:  ; Android(Vapor): 5.21; iOS:  ; iOS(Vapor): 5.11; HarmonyOS:  ; HarmonyOS(Vapor): 5.0 | 高亮手柄颜色 |
+| selection-background-color | string | "#B4D5FE" | Web:  ; 微信小程序:  ; Android:  ; Android(Vapor): 5.21; iOS:  ; iOS(Vapor): 5.11; HarmonyOS:  ; HarmonyOS(Vapor): 5.0 | 高亮背景颜色 |
+| @itemclick | (event: [UniRichTextItemClickEvent](#unirichtextitemclickevent)) => void |   | Web: 4.0; 微信小程序: x; Android: 3.9; iOS 系统版本: 9.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.71; HarmonyOS(Vapor): 5.0 | 内容点击事件 |
 
 #### mode 的属性描述
 
