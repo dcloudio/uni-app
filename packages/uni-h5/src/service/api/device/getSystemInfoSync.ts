@@ -66,6 +66,7 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
         appVersionCode: __uniConfig.appVersionCode,
         appLanguage: getLocale ? getLocale() : language,
         enableDebug: false,
+        packagename: __uniConfig.appId,
         hostSDKVersion: undefined,
         hostPackageName: undefined,
         hostFontSizeSetting: undefined,
