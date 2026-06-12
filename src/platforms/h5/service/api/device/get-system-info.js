@@ -59,6 +59,7 @@ export function getAppBaseInfo () {
     appLanguage,
 
     enableDebug: false,
+    packagename: __uniConfig.appId,
 
     hostSDKVersion: undefined,
     hostPackageName: undefined,
