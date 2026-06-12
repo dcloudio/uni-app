@@ -13,30 +13,28 @@
 ### UniElement 的属性值 @unielement-values
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| isConnected | boolean | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: 12; HarmonyOS: 4.61 | 只读属性 节点是否与 DOM 树连接 |
-| id | string | 是 |  | Web: x; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: 12; HarmonyOS: x | 只读属性 节点是否与 DOM 树连接 |
-| uniPage | [UniPage](/api/unipage.md) | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: 12; HarmonyOS: 4.61 | 元素所属的页面对象 |
-| classList | Array&lt;string&gt; | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS:   | 只读属性 获取当前元素的的 class 属性的动态集合。 |
-| firstChild | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS:   | 只读属性 获取当前元素的的第一个子元素，如果元素是无子元素，则返回 null。 |
-| lastChild | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS:   | 只读属性 获取当前元素的最后一个子元素，如果没有子元素，则返回 null。 |
-| parentElement | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性 获取当前元素在 DOM 树中的父元素，如果没有父元素（如未添加到DOM树中），则返回null。 |
-| previousSibling | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性 获取当前元素的前一个同级元素，没有则返回null。 |
-| nextElementSibling | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性 获取在 DOM 树中紧跟在其后面的同级元素，如果指定的元素为最后一个元素，则返回 null。 |
-| children | Array&lt;[UniElement](/api/dom/unielement.md)&gt; | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性 获取当前元素包含的子元素的集合 |
-| tagName | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性 获取当前元素的标签名 |
-| nodeName | string | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 只读属性 获取当前元素的元素名称 |
-| dataset | Map\<string, any> | 是 |  | Web: 4.0; 微信小程序: 4.41 仅在event对象内的target上可用; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 | 只读属性 获取元素上自定义数据属性（data-*）的集合 |
-| attributes | Map\<string, any> | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性 获取元素上所有属性元素的集合 |
-| style | [CSSStyleDeclaration](/api/dom/cssstyledeclaration.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性 获取元素的CSS样式对象 |
-| scrollWidth | number | 是 |  | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性 获取可滚动元素内容的总宽度，仅scroll-view、list-view组件支持，其他组件返回视图宽度 |
-| scrollHeight | number | 是 |  | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性 获取可滚动元素内容的总高度，仅scroll-view、list-view组件支持，其他组件返回视图高度 |
-| scrollLeft | number | 是 |  | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 获取或修改元素滚动条到元素左边的距离像素数，仅scroll-view、list-view组件支持。其他组件返回0 |
-| scrollTop | number | 是 |  | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 获取或修改元素滚动条到元素顶部的距离像素数，仅scroll-view、list-view组件支持。其他组件返回0 |
-| offsetLeft | number | 是 |  | Web: 4.0; 微信小程序: 4.41 仅在event对象内的target上可用; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性 元素的左边界偏移值 单位px |
-| offsetTop | number | 是 |  | Web: 4.0; 微信小程序: 4.41 仅在event对象内的target上可用; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性 元素的顶部边界偏移值 单位px |
-| offsetWidth | number | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性 元素的布局宽度，宽度包含border、padding的数据值 单位px |
-| offsetHeight | number | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性 元素的布局高度，高度包含border、padding的数据值 单位px |
-| innerHTML | string | 是 |  | Web: x; 微信小程序: x; Android 系统版本: x; Android: 4.84; iOS 系统版本: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 只读属性 字符串形式返回一个元素内部所有子节点（不包括注释节点）的 HTML 内容 |
+| id | string | 是 |  | Web: x; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS 系统版本: 12; HarmonyOS: x | 只读属性，当前元素的标识符 |
+| isConnected | boolean | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS 系统版本: 12; HarmonyOS: 4.61 | 只读属性，当前元素是否与 DOM 树连接 |
+| attributes | Map\<string, any> | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素上所有属性元素的集合 |
+| classList | Array&lt;string&gt; | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS:   | 只读属性，当前元素 class 属性的动态集合 |
+| dataset | Map\<string, any> | 是 |  | Web: 4.0; 微信小程序: 4.41 仅在event对象内的target上可用; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 | 只读属性，当前元素上自定义数据属性（data-*）的集合 |
+| children | Array&lt;[UniElement](/api/dom/unielement.md)&gt; | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素包含的子元素的集合 |
+| firstChild | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS:   | 只读属性，当前元素的第一个子元素，如果元素是无子元素，则返回 null |
+| lastChild | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS:   | 只读属性，当前元素的最后一个子元素，如果没有子元素，则返回 null |
+| parentElement | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素在 DOM 树中的父元素，如果没有父元素（如未添加到DOM树中），则返回null。 |
+| nextElementSibling | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素在 DOM 树中紧跟在其后面的同级元素，如果当前元素为最后一个元素，则返回 null |
+| offsetLeft | number | 是 |  | Web: 4.0; 微信小程序: 4.41 仅在event对象内的target上可用; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素左上角相对于其定位父元素内边框（Border内侧）左边缘的逻辑像素值 |
+| offsetTop | number | 是 |  | Web: 4.0; 微信小程序: 4.41 仅在event对象内的target上可用; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素外边框左上角相对于其定位父元素内边框（Border内侧）顶部边缘的逻辑像素值 |
+| offsetWidth | number | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素的布局宽度逻辑像素值，包含border、padding区域 |
+| offsetHeight | number | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素的布局高度逻辑像素值，包含border、padding区域 |
+| style | [CSSStyleDeclaration](/api/dom/cssstyledeclaration.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素的CSS样式对象 |
+| scrollWidth | number | 是 |  | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素的可滚动内容总宽度，仅scroll-view、list-view等可滚动组件支持，其他组件返回视图宽度 |
+| scrollHeight | number | 是 |  | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素可滚动内容的总高度，仅scroll-view、list-view等可滚动组件支持，其他组件返回视图高度 |
+| scrollLeft | number | 是 |  | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 获取或修改当前元素横向滚动的逻辑像素值，仅scroll-view、list-view等可滚动组件支持，其他组件修改无效、获取时返回 0 |
+| scrollTop | number | 是 |  | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 获取或修改当前元素竖向滚动逻辑像素值，仅scroll-view、list-view可滚动组件组件支持，其他组件修改无效、获取时返回 0 |
+| tagName | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，获取当前元素的标签名 |
+| uniPage | [UniPage](/api/unipage.md) | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: 12; HarmonyOS: 4.61 | 只读属性，当前元素所属的页面对象 |
+| innerHTML | string | 是 |  | Web: x; 微信小程序: x; Android 系统版本: x; Android: 4.84; iOS 系统版本: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 只读属性，当前元素内部所有子元素（不包括注释节点）的 HTML 内容 |
 
 
 #### style@style
