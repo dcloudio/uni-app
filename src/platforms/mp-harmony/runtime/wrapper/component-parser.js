@@ -6,7 +6,8 @@ import {
 import {
   isPage,
   initRelation,
-  handleLink
+  handleLink,
+  initComponentLifecycle
 } from './util'
 
 import {
@@ -92,6 +93,8 @@ export default function parseComponent (vueComponentOptions, needVueOptions) {
 
     // 触发首次 setData
     this.$vm.$mount()
+
+    initComponentLifecycle(this)
   }
 
   // ready 比 handleLink 还早，初始化逻辑放到 handleLink 中
