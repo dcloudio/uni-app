@@ -977,7 +977,7 @@ var getAppBaseInfo = {
 
     const hostLanguage = (language || '').replace('_', '-');
 
-    result = Object.assign(result, {
+    const parameters = {
       appId: process.env.UNI_APP_ID,
       appName: process.env.UNI_APP_NAME,
       appVersion: process.env.UNI_APP_VERSION_NAME,
@@ -993,7 +993,15 @@ var getAppBaseInfo = {
       uniCompileVersion: process.env.UNI_COMPILER_VERSION,
       uniCompilerVersion: process.env.UNI_COMPILER_VERSION,
       uniRuntimeVersion: process.env.UNI_COMPILER_VERSION
-    });
+    };
+
+    try {
+      if (typeof wx.getAccountInfoSync === 'function') {
+        parameters.packagename = wx.getAccountInfoSync().miniProgram.appId;
+      }
+    } catch (e) { }
+
+    result = Object.assign(result, parameters);
   }
 };
 
