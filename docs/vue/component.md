@@ -1702,8 +1702,8 @@ export default {
 | onActivated() | Web: 4.0; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | keep-alive 组件激活时调用。 |
 | onDeactivated() | Web: 4.0; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | keep-alive 组件停用时调用。 |
 | onServerPrefetch() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个异步函数，在组件实例在服务器上被渲染之前调用。<br/>如果这个钩子返回了一个 Promise，服务端渲染会在渲染该组件前等待该 Promise 完成。<br/>这个钩子仅会在服务端渲染中执行，可以用于执行一些仅存在于服务端的数据抓取过程。 |
-| onRecycle() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 组件回收时的生命周期钩子 |
-| onReuse() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 组件复用时的生命周期钩子 |
+| onRecycle() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): 5.11; HarmonyOS: x | 组件回收时的生命周期钩子 |
+| onReuse() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): 5.11; HarmonyOS: x | 组件复用时的生命周期钩子 |
 | onLoad() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面加载<br/><br/>页面加载时触发。一个页面只会调用一次，可以在 onLoad 的参数中获取打开当前页面路径中的参数。 |
 | onReady() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面初次渲染完成<br/><br/>页面初次渲染完成时触发。一个页面只会调用一次，代表页面已经准备妥当，可以和视图层进行交互。<br/> |
 | onUnload() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面卸载<br/><br/>页面卸载时触发。如 `redirectTo` 或 `navigateBack` 到其他页面时。<br/> |
