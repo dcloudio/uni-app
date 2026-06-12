@@ -63,6 +63,12 @@ interface UniModulesShared {
   rewriteUniModulesConsoleExpr?: (fileName: string, content: string) => string
 }
 
+interface TempUniModule {
+  id: string
+  pluginDir: string
+  entryFile: string
+}
+
 export async function buildStandaloneUTS(options: StandaloneUTSOptions) {
   const resolved = resolveOptions(options)
   initStandaloneEnv(resolved, options)
@@ -119,6 +125,8 @@ export async function buildStandaloneUTS(options: StandaloneUTSOptions) {
         rewriteConsoleExpr: createUniModulesConsoleExprRewriter(),
       }
     )
+    // 单文件模式复用 uni_module 编译链路，编译完成后只把最终平台产物收拢到 output/index。
+    relocateStandaloneOutput(resolved, tempUniModule)
     console.log(`Build complete.`)
     return result
   } catch (error: any) {
@@ -178,9 +186,7 @@ function resolveOptions(options: StandaloneUTSOptions): ResolvedOptions {
     }
   }
 
-  const platform = normalizePlatform(
-    options.platform || process.env.UNI_UTS_PLATFORM
-  )
+  const platform = normalizePlatform(resolvePlatformOption(options.platform))
   const projectRoot = file
     ? findProjectRoot(path.dirname(file))
     : resolveUniModuleProjectRoot(uniModule!)
@@ -257,7 +263,7 @@ function createTempUniModule(
   file: string,
   outputDir: string,
   inputDir: string
-) {
+): TempUniModule {
   const id = createTempPluginId(file)
   const pluginDir = path.resolve(outputDir, 'uni_modules', id)
   const utsDir = path.resolve(pluginDir, 'utssdk')
@@ -291,6 +297,82 @@ function createTempUniModule(
     createStandaloneIndexSource(entryFile)
   )
   return { id, pluginDir, entryFile }
+}
+
+function relocateStandaloneOutput(
+  resolved: ResolvedOptions,
+  tempUniModule?: TempUniModule
+) {
+  if (!tempUniModule) {
+    // --file 命中 uni_modules 时走真实插件编译，不能改动单个 uni_module 的原有产物结构。
+    return
+  }
+
+  const platforms = resolveStandaloneOutputPlatforms(resolved.platform)
+  if (!platforms.length) {
+    return
+  }
+
+  const targetDir = path.resolve(resolved.outputDir, 'index')
+  let copied = false
+  for (const platform of platforms) {
+    const sourceDir = resolveStandaloneGeneratedPlatformDir(
+      resolved,
+      tempUniModule,
+      platform
+    )
+    if (!fs.existsSync(sourceDir) || !fs.statSync(sourceDir).isDirectory()) {
+      continue
+    }
+    if (!copied) {
+      fs.emptyDirSync(targetDir)
+    }
+    fs.copySync(sourceDir, targetDir, { overwrite: true })
+    copied = true
+  }
+
+  if (copied) {
+    // 复制成功后清理由绝对路径相对化导致的 output/unpackage 嵌套目录。
+    removeStandaloneNestedUnpackageDir(resolved.outputDir)
+  }
+}
+
+function resolveStandaloneOutputPlatforms(platform: BuildPlatform) {
+  if (platform === 'app-android') {
+    return ['app-android'] as const
+  }
+  if (platform === 'app-ios') {
+    return ['app-ios'] as const
+  }
+  if (platform === 'app') {
+    return ['app-android', 'app-ios'] as const
+  }
+  // standalone 单文件暂不整理鸿蒙产物，避免影响现有鸿蒙编译链路。
+  return []
+}
+
+function resolveStandaloneGeneratedPlatformDir(
+  resolved: ResolvedOptions,
+  tempUniModule: TempUniModule,
+  platform: 'app-android' | 'app-ios'
+) {
+  // 与 src/index.ts 的 pluginRelativeDir/outputPluginDir 计算保持一致，避免重复造轮子。
+  const pluginRelativeDir = path.relative(
+    resolved.inputDir,
+    tempUniModule.pluginDir
+  )
+  return path.join(resolved.outputDir, pluginRelativeDir, 'utssdk', platform)
+}
+
+function removeStandaloneNestedUnpackageDir(outputDir: string) {
+  const nestedUnpackageDir = path.resolve(outputDir, 'unpackage')
+  if (
+    fs.existsSync(nestedUnpackageDir) &&
+    fs.statSync(nestedUnpackageDir).isDirectory() &&
+    isSubPath(outputDir, nestedUnpackageDir)
+  ) {
+    fs.removeSync(nestedUnpackageDir)
+  }
 }
 
 const STANDALONE_SOURCE_EXT = '.uts'
@@ -533,6 +615,14 @@ function normalizePlatform(platform?: string): BuildPlatform {
   throw new Error(`Unsupported --platform: ${platform}`)
 }
 
+function resolvePlatformOption(platform?: string) {
+  // CLI 明确传入 --platform app 时，优先使用外部环境注入的真实 app 平台。
+  if (platform === 'app' && process.env.UNI_APP_PLATFORM) {
+    return process.env.UNI_APP_PLATFORM
+  }
+  return platform || process.env.UNI_UTS_PLATFORM
+}
+
 function resolveTargetLanguage(platform: BuildPlatform) {
   if (platform === 'app-android' || platform === 'app') {
     return 'kotlin'
@@ -596,15 +686,17 @@ function parseArgs(argv: string[]): StandaloneUTSOptions {
   const options: Record<string, string | boolean> = {}
   for (let i = 2; i < argv.length; i++) {
     const arg = argv[i]
-    if (!arg.startsWith('--')) {
+    const rawKey = resolveArgKey(arg)
+    if (!rawKey) {
       continue
     }
-    const rawKey = arg.slice(2)
+
     const key = rawKey.replace(/-([a-z])/g, (_, char: string) =>
       char.toUpperCase()
     )
+
     const next = argv[i + 1]
-    if (!next || next.startsWith('--')) {
+    if (!next || isStandaloneArg(next)) {
       options[key] = true
     } else {
       options[key] = next
@@ -612,6 +704,26 @@ function parseArgs(argv: string[]): StandaloneUTSOptions {
     }
   }
   return options as StandaloneUTSOptions
+}
+
+const STANDALONE_ARG_ALIASES: Record<string, string> = {
+  // 兼容 standalone CLI 简写：--p 等同 --platform，-f 等同 --file。
+  p: 'platform',
+  f: 'file',
+}
+
+function resolveArgKey(arg: string) {
+  if (arg.startsWith('--')) {
+    const key = arg.slice(2)
+    return STANDALONE_ARG_ALIASES[key] || key
+  }
+  if (arg.startsWith('-')) {
+    return STANDALONE_ARG_ALIASES[arg.slice(1)]
+  }
+}
+
+function isStandaloneArg(arg: string) {
+  return !!resolveArgKey(arg)
 }
 
 export async function run() {
