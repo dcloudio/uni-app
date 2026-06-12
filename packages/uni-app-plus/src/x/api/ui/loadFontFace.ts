@@ -9,6 +9,7 @@ import type {
 } from '@dcloudio/uni-app-x/types/uni'
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { getNativeApp } from '../../framework/app/app'
+import type { ComponentPublicInstance } from 'vue'
 
 function removeUrlWrap(source: string): string {
   // 考虑 url(xxx) format(xxx) 的情况，去掉 format(xxx)
@@ -65,7 +66,7 @@ export const loadFontFace = defineAsyncApi(
         return
       }
 
-      pageLoadFontFace(page, options, res)
+      pageLoadFontFace(page.vm, options, res)
     }
   },
   LoadFontFaceProtocol
@@ -81,15 +82,14 @@ export const appLoadFontFace = (
 }
 
 export const pageLoadFontFace = (
-  page: UniPage,
+  pageVm: ComponentPublicInstance,
   options: LoadFontFaceOptions,
   res: AsyncApiRes<UniNamespace.LoadFontFaceOptions> | null
 ) => {
-  const pageVm = page.vm
   if (pageVm.$fontFamilySet.has(options.family)) {
     return
   }
-  pageVm!.$fontFamilySet.add(options.family)
+  pageVm.$fontFamilySet.add(options.family)
   const fontInfo = getLoadFontFaceOptions(options, res)
   pageVm.$nativePage!.loadFontFace(fontInfo)
 }

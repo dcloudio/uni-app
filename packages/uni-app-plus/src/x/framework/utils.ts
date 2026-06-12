@@ -1,3 +1,4 @@
+import type { ComponentPublicInstance } from 'vue'
 import { appLoadFontFace, pageLoadFontFace } from '../api/ui/loadFontFace'
 
 /**
@@ -8,7 +9,7 @@ import { appLoadFontFace, pageLoadFontFace } from '../api/ui/loadFontFace'
  */
 export function loadFontFaceByStyles(
   styles: Array<Record<string, any>>,
-  targetPage: UniPage | null
+  pageVm: ComponentPublicInstance | null
 ) {
   // TODO will fix by otto
   styles = Array.isArray(styles) ? styles : [styles]
@@ -29,35 +30,19 @@ export function loadFontFaceByStyles(
     const src = style['src'] as string | null
 
     if (fontFamily != null && src != null) {
-      if (targetPage === null) {
-        appLoadFontFace(
-          {
-            global: true,
-            family: fontFamily,
-            source: src,
-            desc: {
-              style: fontStyle as string,
-              weight: fontWeight as string,
-              variant: fontVariant as string,
-            },
-          },
-          null
-        )
+      const LoadFontFaceOptions = {
+        family: fontFamily,
+        source: src,
+        desc: {
+          style: fontStyle as string,
+          weight: fontWeight as string,
+          variant: fontVariant as string,
+        },
+      }
+      if (pageVm === null) {
+        appLoadFontFace(LoadFontFaceOptions, null)
       } else {
-        pageLoadFontFace(
-          targetPage,
-          {
-            global: false,
-            family: fontFamily,
-            source: src,
-            desc: {
-              style: fontStyle as string,
-              weight: fontWeight as string,
-              variant: fontVariant as string,
-            },
-          },
-          null
-        )
+        pageLoadFontFace(pageVm, LoadFontFaceOptions, null)
       }
     } else {
       console.warn('loadFontFace: fail, font-family or src is null')
