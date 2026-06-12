@@ -208,6 +208,7 @@ rate组件有onChange事件，事件回调中会给出点击触发的新评分�
 	letter-spacing: 5px;
 }
 .tap-rate-star{
+	font-size: 32px;
 	letter-spacing: 8px;
 }
 </style>

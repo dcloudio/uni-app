@@ -396,6 +396,20 @@ complete: () => {
     }, 4000)
   }
 
+  const jest_download_long_url = () => {
+    data.task = uni.downloadFile({
+      url: "https://request.dcloud.net.cn/WsQkvvoLPbLFRoZB3NZOhgR8bMbjvpMZMmnzhlH1UtAzbVaOqokI9NBhqgc0pUVesJVQeJoTXjCbuAHqsoGJryxzjo4xf2bR75GTfOgJ5mfDDoX31DY9HTQ0mgLwTlt43MWsRobR22r6qwJYRaZW4yLthUX1BSzckZS9OeKzyV2r3dizxkbAPV3j5toN5qjUq5gYJOHbWfOEdwCA6tftgEGzc3eb6Deed0ngLtNnYYcVOWCzXk24jhYP87g9yh1o9kowdQXUMv4mhwxbvvulLTDC470HqLT1cLm7iuh38L1c8EdMJ6xSCO8y1mxKDzczA0W29mzf54jUfuO7OodX9ZJeFQhCptm73P8oSzyc57BaP9zecVN0u1LwPa4cyj1vMleUSfI2lSzT5PIt2YCojkFEunuFWHRq5vtDQ2ZXQGYIJqSmBDDsVXMAlHAC91F1uWsuC67GgcAPMtrXAyB8HbCA4fiP9iYsKmkKKwMUFx04ehsabTuWnOO6Oms14wrqghKGUJKKXdCaYomcCrRDRUOjIm3NwRKqUN1cHiHI9cxXQbWD8FFb8qBEPrrFscog2dHhQyM8nBbdrk9Lc99ao7bE1s39qiYxSZPnSdfHVb0zfgg9vkm0DTd47pTHz3qOhtWLgNLBLTsCf3HMVG4yZgGcenX3XG2Z6OgG6Pm1DsimJfZtzYU78Cbbp395mdnX6bj3bNNzraV6JVLLiI6diJwtdipIMBFle0t0S0eWMNSGUiZHDwjVTGibHK4PTSd6VkJbBcxSxdmdApn1LiSmxJTciH0auKrSzriVxjDGyQ2bnqyStG",
+      success: () => {
+        data.jest_result = true;
+        data.jest_callback_triggred = true
+      },
+      fail: () => {
+        data.jest_result = false;
+        data.jest_callback_triggred = true
+      }
+    });
+  }
+
   defineExpose({
     data,
     jest_downloadFile,
@@ -404,7 +418,8 @@ complete: () => {
     jest_delete_cookie,
     jest_uts_module_invoked,
     jest_special_characters_download,
-    jest_download_call_timeout
+    jest_download_call_timeout,
+    jest_download_long_url
   })
 </script>
 

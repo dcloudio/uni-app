@@ -1,3 +1,33 @@
+#### 5.13.2026061207-alpha
+##### uni-app x
+* Web平台、App平台 修复 组件 video 非全屏时不阻止 touch 事件冒泡 [文档](https://doc.dcloud.net.cn/uni-app-x/component/video.html) <https://issues.dcloud.net.cn/pages/issues/detail?id=30007>
+* Web平台 修复 API modal PC宽屏时窗口宽度过宽 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29731)
+* App平台 蒸汽模式 修复 vue 动态片段延迟渲染时 slot 上下文丢失导致作用域插槽不显示 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29737)
+* App平台 蒸汽模式 修复 vue 字节码模式 v-for 动态插槽崩溃 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29976)
+* App平台 蒸汽模式 修复 组件 swiper 开启循环模式 衔接后的第一个item滑动有阻尼感的问题 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29579)
+* App平台 蒸汽模式 修复 组件 swiper 快速切换current属性时 transition事件的dx偏移量不正确的问题 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29589)
+* App平台 蒸汽模式 修复 组件 swiper 组件预销毁后的后续处理，避免销毁后仍然执行相关逻辑 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29300)
+* App平台 蒸汽模式 修复 CSS flex-basis/line-height 关键字样式被错误解析为数值 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29916)
+* App平台 蒸汽模式 修复 CSS transform 编译为字节码 transform: scaleY(0.5) 导致元素宽度不正常 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29775)
+* App平台 蒸汽模式 修复 CSS class 自定义组件使用 a.b 时 b无法覆盖a [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29633)
+* iOS平台 VDOM模式 修复 组件 nested-scroll-header 嵌套横向 scroll-view 组件时手势冲突 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29957)
+* iOS平台 蒸汽模式 新增 组件 rich-text 补充 native 模式 [文档](https://doc.dcloud.net.cn/uni-app-x/component/rich-text.html) <https://issues.dcloud.net.cn/pages/issues/detail?id=28179>
+* iOS平台 蒸汽模式 修复 组件 input 初始 value 偶现不显示 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30054)
+* iOS平台 蒸汽模式 修复 组件 ad 导致页面元素不够一屏也可滚动 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29816)
+* iOS平台 蒸汽模式 修复 API previewImage 长按弹出 actionSheet 可能显示异常 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29991)
+* iOS平台 蒸汽模式 修复 应用前后台事件 onAppHide、onAppShow 不触发 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30056)
+* iOS平台 蒸汽模式 修复 onResize 事件不触发 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30061)
+* 鸿蒙平台 新增 组件 web-view 默认使用 base64 编码以防止特殊字符导致页面加载失败 [文档](https://doc.dcloud.net.cn/uni-app-x/api/create-webview-context.html#loaddata) <https://issues.dcloud.net.cn/pages/issues/detail?id=29926>
+* 鸿蒙平台 修复 组件 map 触发 markertap 事件时的 markertId 不准确 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30041)
+* 鸿蒙平台 修复 API uni.downloadFile 超长且不返回 content-disposition 的 url 下载时失败 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29937)
+* 鸿蒙平台 修复 API uni.share 微信分享图片时特定 url 分享失败 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29902&ask_id=220170)
+* 鸿蒙平台 蒸汽模式 修复 组件 scroll-view 滑动嵌套子 scroll-view 的惯性可能导致父容器显示不正常 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29951)
+* 鸿蒙平台 蒸汽模式 修复 5.08版本引发的 组件 input cursor-color 属性无效 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29917)
+* 鸿蒙平台 蒸汽模式 修复 组件 canvas 页面包含 canvas 组件返回上一级页面会报错 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29777)
+* 鸿蒙平台 蒸汽模式 修复 API uni.createSelectorQuery 查询元素位置时受fixed祖先之外的滚动位置影响返回错误数据 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30142)
+* 鸿蒙平台 蒸汽模式 修复 5.11版本引发的 UniApp API 关闭应用时控制台打印报错 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29649)
+* 微信小程序平台 新增 UniElement 支持获取 scrollTop、scrollLeft、scrollWidth 和 scrollHeight 属性 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30039)
+
 #### 5.12.2026060409-alpha
 ##### uni-app x
 * Android平台 修复 5.11版本引发的 组件 rich-text mode为web时无法渲染 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29742)

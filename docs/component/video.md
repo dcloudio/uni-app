@@ -403,7 +403,8 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
 >示例
 ```vue
 <template>
-  <view class="uni-flex-item">
+  <view id="video-parent" class="uni-flex-item" @touchstart="onVideoParentTouchStart" @touchmove="onVideoParentTouchMove"
+    @touchend="onVideoParentTouchEnd">
     <video class="video" ref="video" id="video" :header="data.header" :src="data.src" :autoplay="data.autoplay" :loop="data.loop"
       :muted="data.muted" :initial-time="data.initialTime" :duration="data.duration" :controls="data.controls" :danmu-btn="data.danmuBtn && fullscreenShowDanmuBtn"
       :enable-danmu="data.enableDanmu" :page-gesture="data.pageGesture" :direction="data.direction" :show-progress="data.showProgress"
@@ -561,6 +562,13 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types';
 
+  type RectType = {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }
+
   type DataType = {
     videoContext: VideoContext | null;
     // 属性
@@ -624,6 +632,9 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
     eventProgress: UTSJSONObject | null;
     eventFullscreenclick: UTSJSONObject | null;
     eventControlstoggle: UTSJSONObject | null;
+    eventParentTouchstart: UTSJSONObject | null;
+    eventParentTouchmove: UTSJSONObject | null;
+    eventParentTouchend: UTSJSONObject | null;
     dialogPageVideo: UniPage | null;
   }
 
@@ -727,6 +738,9 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
     eventProgress: null,
     eventFullscreenclick: null,
     eventControlstoggle: null,
+    eventParentTouchstart: null,
+    eventParentTouchmove: null,
+    eventParentTouchend: null,
     dialogPageVideo: null
   } as DataType)
 
@@ -1161,6 +1175,36 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
     }
   }
 
+  const onVideoParentTouchStart = (res : TouchEvent) => {
+    if (data.autoTest) {
+      data.eventParentTouchstart = {
+        "tagName": res.target?.tagName,
+        "currentTargetTagName": res.currentTarget?.tagName,
+        "type": res.type
+      };
+    }
+  }
+
+  const onVideoParentTouchMove = (res : TouchEvent) => {
+    if (data.autoTest) {
+      data.eventParentTouchmove = {
+        "tagName": res.target?.tagName,
+        "currentTargetTagName": res.currentTarget?.tagName,
+        "type": res.type
+      };
+    }
+  }
+
+  const onVideoParentTouchEnd = (res : TouchEvent) => {
+    if (data.autoTest) {
+      data.eventParentTouchend = {
+        "tagName": res.target?.tagName,
+        "currentTargetTagName": res.currentTarget?.tagName,
+        "type": res.type
+      };
+    }
+  }
+
   // 自动化测试
   const downloadSource = () => {
     uni.downloadFile({
@@ -1176,6 +1220,18 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
 
   const getWindowInfo = () : GetWindowInfoResult => {
     return uni.getWindowInfo();
+  }
+
+  const getVideoRect = () : RectType | null => {
+    const element = uni.getElementById('video');
+    if (element == null) return null;
+    const rect = element.getBoundingClientRect();
+    return {
+      x: rect.x,
+      y: rect.y,
+      width: rect.width,
+      height: rect.height
+    };
   }
 
   // #ifdef APP-ANDROID
@@ -1206,7 +1262,8 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
     requestVerticalFullScreen,
     openDialogPageVideo,
     closeDialogPageVideo,
-    getWindowInfo
+    getWindowInfo,
+    getVideoRect
   })
 </script>
 

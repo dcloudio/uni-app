@@ -267,6 +267,7 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
       <!-- #ifndef WEB -->
       <button @click="scrollTo">scrollTo设置left滚动200px</button>
       <!-- #endif -->
+      <button style="margin-top: 8px" @click="getUniElementScrollOffset">打印 scroll-view 滚动属性</button>
 
       <view id="scaledView" style="transform: scale(2);background-color: green;width: 50px;height: 50px;margin-top: 45px;margin-left: 25px;"></view>
 
@@ -300,6 +301,14 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
     scaledViewHeight: number
   }
 
+  type ScrollOffset = {
+    scrollTop: number,
+    scrollHeight: number,
+    scrollWidth: number,
+    scrollLeft: number,
+    width: number
+  }
+
   const boxRef = ref<UniElement | null>(null)
   const scrollViewRef = ref<UniScrollViewElement | null>(null)
   const data = reactive({
@@ -319,6 +328,13 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
     scaledViewWidth: 0,
     scaledViewHeight: 0
   } as DataType)
+  const scrollOffset = reactive<ScrollOffset>({
+    scrollTop: 0,
+    scrollHeight: 0,
+    scrollWidth: 0,
+    scrollLeft: 0,
+    width: 0
+  })
 
   function getBoundingClientRectAsyncChild(){
     const childEl = uni.getElementById('child')!
@@ -374,6 +390,22 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
     }
   }
 
+  function getUniElementScrollOffset() {
+    if (scrollViewRef.value != null) {
+      const scrollView = scrollViewRef.value!
+      console.log("scrollTop: ", scrollView.scrollTop)
+      console.log("scrollHeight: ", scrollView.scrollHeight)
+      console.log("scrollWidth: ", scrollView.scrollWidth)
+      console.log("scrollLeft: ", scrollView.scrollLeft)
+      const screenWidth = uni.getWindowInfo().screenWidth
+      scrollOffset.width = (screenWidth - 30) * 3
+      scrollOffset.scrollTop = scrollView.scrollTop
+      scrollOffset.scrollHeight = scrollView.scrollHeight
+      scrollOffset.scrollWidth = scrollView.scrollWidth
+      scrollOffset.scrollLeft = scrollView.scrollLeft
+    }
+  }
+
   //scrollView元素获取class中的margin-top属性值 仅自动化测试使用
   function getScrollViewStyleMarginTop() : string {
     if (scrollViewRef.value != null) {
@@ -398,6 +430,7 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
 
   defineExpose({
     data,
+    scrollOffset,
     getAttributeId,
     setStyle,
     getAttributeStyle,
