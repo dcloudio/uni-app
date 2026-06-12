@@ -54,8 +54,6 @@ function getLoadFontFaceOptions(
 export const loadFontFace = defineAsyncApi(
   API_LOAD_FONT_FACE,
   (options: LoadFontFaceOptions, res) => {
-    options.source = removeUrlWrap(options.source as string)
-
     if (options.global === true) {
       appLoadFontFace(options, res)
     } else {
@@ -76,6 +74,7 @@ export const appLoadFontFace = (
   options: LoadFontFaceOptions,
   res: AsyncApiRes<UniNamespace.LoadFontFaceOptions> | null
 ) => {
+  options.source = removeUrlWrap(options.source as string)
   const app = getNativeApp()
   const fontInfo = getLoadFontFaceOptions(options, res)
   app.loadFontFace(fontInfo)
@@ -89,6 +88,7 @@ export const pageLoadFontFace = (
   if (pageVm.$fontFamilySet.has(options.family)) {
     return
   }
+  options.source = removeUrlWrap(options.source as string)
   pageVm.$fontFamilySet.add(options.family)
   const fontInfo = getLoadFontFaceOptions(options, res)
   pageVm.$nativePage!.loadFontFace(fontInfo)
