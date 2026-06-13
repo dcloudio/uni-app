@@ -4287,6 +4287,7 @@ function getProxy() {
   }
   return proxy;
 }
+var UTSClassInstanceRegistry;
 function resolveSyncResult(args, res, returnOptions, instanceIdOrInstance, proxy2) {
   if (!res) {
     throw new Error("返回值为：" + JSON.stringify(res) + "；请求参数为：" + JSON.stringify(args));
@@ -4316,10 +4317,12 @@ function resolveSyncResult(args, res, returnOptions, instanceIdOrInstance, proxy
         }, interfaceDefines[returnOptions.options]));
         var result = new ProxyClass();
         if (typeof FinalizationRegistry !== "undefined") {
-          var registry = new FinalizationRegistry((id2) => {
-            unregisterInstance(id2);
-          });
-          registry.register(result, res.params);
+          if (!UTSClassInstanceRegistry) {
+            UTSClassInstanceRegistry = new FinalizationRegistry((id2) => {
+              unregisterInstance(id2);
+            });
+          }
+          UTSClassInstanceRegistry.register(result, res.params);
         }
         return result;
       }
