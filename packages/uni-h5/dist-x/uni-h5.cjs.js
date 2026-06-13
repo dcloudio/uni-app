@@ -9481,7 +9481,9 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = vue.getCurrentInstance()) => {
-  !vue.isInSSRComponentSetup && vue.injectHook(lifecycle, hook, target);
+  if (vue.isInSSRComponentSetup)
+    return;
+  vue.injectHook(lifecycle, hook, target);
 };
 const onBackPress = /* @__PURE__ */ createLifeCycleHook(
   uniShared.ON_BACK_PRESS,

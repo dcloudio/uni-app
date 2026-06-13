@@ -19133,7 +19133,9 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = getCurrentInstance()) => {
-  !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
+  if (isInSSRComponentSetup)
+    return;
+  injectHook(lifecycle, hook, target);
 };
 const onLoad = /* @__PURE__ */ createLifeCycleHook(
   ON_LOAD,

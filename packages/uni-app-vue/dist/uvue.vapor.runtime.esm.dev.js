@@ -13537,6 +13537,38 @@ function unmountPage(pageInstance) {
 }
 
 /// <reference types="@dcloudio/types" />
+function isUniApp(target) {
+  var proxy = target === null || target === void 0 ? void 0 : target.proxy;
+  var ctx = target === null || target === void 0 ? void 0 : target.ctx;
+  return (proxy === null || proxy === void 0 ? void 0 : proxy.$mpType) === 'app' || (ctx === null || ctx === void 0 ? void 0 : ctx.$mpType) === 'app';
+}
+function getAppVm() {
+  var app = getApp({
+    allowDefault: true
+  });
+  return app === null || app === void 0 ? void 0 : app.$vm;
+}
+function removeAppHook(vm, name, hook) {
+  var hooks = vm.$[name];
+  if (isArray$1(hooks) && hook.__weh) {
+    remove$1(hooks, hook.__weh);
+  }
+}
+function injectAppHook(lifecycle, hook, target) {
+  var isAppInstance = isUniApp(target);
+  var appVm = getAppVm();
+  var appInstance = isAppInstance ? target : appVm === null || appVm === void 0 ? void 0 : appVm.$;
+  if (appInstance) {
+    injectHook(lifecycle, hook, appInstance);
+    // 如果不是App，那么需要监听当前target的销毁事件，来移除App上的钩子
+    if (!isAppInstance && target) {
+      onBeforeUnmount(() => {
+        var appVm = getAppVm();
+        appVm && removeAppHook(appVm, lifecycle, hook);
+      }, target);
+    }
+  }
+}
 // function isUniPage(target: ComponentInternalInstance | null): boolean {
 //   if (target && 'renderer' in target) {
 //     return target.renderer === 'page'
@@ -13547,21 +13579,17 @@ var createLifeCycleHook = function (lifecycle) {
   var flag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
   return function (hook) {
     var target = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getCurrentGenericInstance();
-    // 不使用此判断了，因为组件也可以监听页面的生命周期，当页面作为组件渲染时，那监听的页面生成周期是其所在页面的，而不是其自身的
-    // if (true) {
-    //   // 如果只是页面生命周期，排除与App公用的，比如onShow、onHide
-    //   if (flag === HookFlags.PAGE) {
-    //     if (!isUniPage(target)) {
-    //       return
-    //     }
-    //   }
-    // }
+    if (isInSSRComponentSetup) return;
+    if (flag === 1 /* HookFlags.APP */) {
+      injectAppHook(lifecycle, hook, target);
+      return;
+    }
     // post-create lifecycle registrations are noops during SSR
-    !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
+    injectHook(lifecycle, hook, target);
   };
 };
-var onShow = /*#__PURE__*/createLifeCycleHook(ON_SHOW, 1 /* HookFlags.APP */ | 2 /* HookFlags.PAGE */);
-var onHide = /*#__PURE__*/createLifeCycleHook(ON_HIDE, 1 /* HookFlags.APP */ | 2 /* HookFlags.PAGE */);
+var onShow = /*#__PURE__*/createLifeCycleHook(ON_SHOW, 2 /* HookFlags.PAGE */);
+var onHide = /*#__PURE__*/createLifeCycleHook(ON_HIDE, 2 /* HookFlags.PAGE */);
 var onLaunch = /*#__PURE__*/createLifeCycleHook(ON_LAUNCH, 1 /* HookFlags.APP */);
 var onError = /*#__PURE__*/createLifeCycleHook(ON_ERROR, 1 /* HookFlags.APP */);
 var onThemeChange = /*#__PURE__*/createLifeCycleHook(ON_THEME_CHANGE, 1 /* HookFlags.APP */);
@@ -13580,8 +13608,8 @@ var onReachBottom = /*#__PURE__*/createLifeCycleHook(ON_REACH_BOTTOM, 2 /* HookF
 var onPullDownRefresh = /*#__PURE__*/createLifeCycleHook(ON_PULL_DOWN_REFRESH, 2 /* HookFlags.PAGE */);
 var onShareTimeline = /*#__PURE__*/createLifeCycleHook(ON_SHARE_TIMELINE, 2 /* HookFlags.PAGE */);
 var onShareAppMessage = /*#__PURE__*/createLifeCycleHook(ON_SHARE_APP_MESSAGE, 2 /* HookFlags.PAGE */);
-var onPageHide = onHide;
 var onPageShow = onShow;
+var onPageHide = onHide;
 function renderComponentSlot(slots, name) {
   var props = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
   if (slots[name]) {
