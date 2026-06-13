@@ -68,7 +68,7 @@ function applyTestPreset(preset: any) {
   const originalPlus = (globalThis as any).plus
   const originalUni = (globalThis as any).uni
   const originalNativeChannel = (globalThis as any).nativeChannel
-  const originalUniElementImpl = (globalThis as any).UniElementImpl
+  const originalUniElementImpl = (globalThis as any).UniViewElementImpl
   ;(globalThis as any).__VAPOR__ = preset.__VAPOR__
   ;(globalThis as any).__X__ = preset.__X__
   ;(globalThis as any).plus = preset.plus
@@ -85,7 +85,7 @@ function applyTestPreset(preset: any) {
     },
   }
   ;(globalThis as any).nativeChannel = preset.nativeChannel
-  ;(globalThis as any).UniElementImpl = class UniElementImpl {
+  ;(globalThis as any).UniViewElementImpl = class UniViewElementImpl {
     constructor(
       public nodeId: number,
       public page: any,
@@ -112,7 +112,7 @@ function applyTestPreset(preset: any) {
     ;(globalThis as any).plus = originalPlus
     ;(globalThis as any).uni = originalUni
     ;(globalThis as any).nativeChannel = originalNativeChannel
-    ;(globalThis as any).UniElementImpl = originalUniElementImpl
+    ;(globalThis as any).UniViewElementImpl = originalUniElementImpl
   }
 }
 
