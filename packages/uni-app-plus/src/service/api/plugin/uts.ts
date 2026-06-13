@@ -440,6 +440,8 @@ function getProxy(): {
   return proxy
 }
 
+let UTSClassInstanceRegistry: FinalizationRegistry<number>
+
 function resolveSyncResult(
   args: InvokeArgs,
   res: InvokeSyncRes,
@@ -494,10 +496,12 @@ function resolveSyncResult(
         )
         const result = new ProxyClass()
         if (__VAPOR__ && typeof FinalizationRegistry !== 'undefined') {
-          const registry = new FinalizationRegistry((id) => {
-            unregisterInstance(id as number)
-          })
-          registry.register(result, res.params)
+          if (!UTSClassInstanceRegistry) {
+            UTSClassInstanceRegistry = new FinalizationRegistry((id) => {
+              unregisterInstance(id as number)
+            })
+          }
+          UTSClassInstanceRegistry.register(result, res.params)
         }
         return result
       }
