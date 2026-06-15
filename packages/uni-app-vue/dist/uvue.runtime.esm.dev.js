@@ -10700,7 +10700,8 @@ function unmountPage(pageInstance) {
 function isUniApp(target) {
   var proxy = target === null || target === void 0 ? void 0 : target.proxy;
   var ctx = target === null || target === void 0 ? void 0 : target.ctx;
-  return (proxy === null || proxy === void 0 ? void 0 : proxy.$mpType) === 'app' || (ctx === null || ctx === void 0 ? void 0 : ctx.$mpType) === 'app';
+  var type = target === null || target === void 0 ? void 0 : target.type;
+  return (proxy === null || proxy === void 0 ? void 0 : proxy.$mpType) === 'app' || (ctx === null || ctx === void 0 ? void 0 : ctx.$mpType) === 'app' || (type === null || type === void 0 ? void 0 : type.mpType) === 'app';
 }
 function getAppVm() {
   var app = getApp({
@@ -10708,24 +10709,63 @@ function getAppVm() {
   });
   return app === null || app === void 0 ? void 0 : app.$vm;
 }
-function removeAppHook(vm, name, hook) {
+function removeAppHook(vm, name, hook, originalHook, target) {
   var hooks = vm.$[name];
-  if (isArray$1(hooks) && hook.__weh) {
-    remove(hooks, hook.__weh);
+  if (!isArray$1(hooks)) {
+    return;
   }
+  for (var i = hooks.length - 1; i >= 0; i--) {
+    var appHook = hooks[i];
+    if (appHook === hook || originalHook && appHook.__uni_app_hook === originalHook && appHook.__uni_app_target === target) {
+      hooks.splice(i, 1);
+    }
+  }
+}
+function isTargetInvalid(target) {
+  var _a;
+  return (target === null || target === void 0 ? void 0 : target.isUnmounted) || (target === null || target === void 0 ? void 0 : target.__isUnload) || ((_a = target === null || target === void 0 ? void 0 : target.root) === null || _a === void 0 ? void 0 : _a.__isUnload);
+}
+function queueRemoveAppHook(removeHook) {
+  Promise.resolve().then(removeHook);
 }
 function injectAppHook(lifecycle, hook, target) {
   var isAppInstance = isUniApp(target);
   var appVm = getAppVm();
   var appInstance = isAppInstance ? target : appVm === null || appVm === void 0 ? void 0 : appVm.$;
   if (appInstance) {
-    injectHook(lifecycle, hook, appInstance);
+    if (isAppInstance) {
+      injectHook(lifecycle, hook, appInstance);
+      return;
+    }
+    var isRemoved = false;
+    var wrappedHook;
+    var removeHook = () => {
+      if (isRemoved || !wrappedHook) {
+        return;
+      }
+      isRemoved = true;
+      var appVm = getAppVm();
+      appVm && removeAppHook(appVm, lifecycle, wrappedHook, hook, target);
+    };
+    var appHook = function () {
+      if (isRemoved || isTargetInvalid(target)) {
+        queueRemoveAppHook(removeHook);
+        return;
+      }
+      return hook(...arguments);
+    };
+    wrappedHook = injectHook(lifecycle, appHook, appInstance);
+    if (wrappedHook) {
+      wrappedHook.__uni_app_hook = hook;
+      wrappedHook.__uni_app_target = target;
+      if (isTargetInvalid(target)) {
+        removeHook();
+      }
+    }
     // 如果不是App，那么需要监听当前target的销毁事件，来移除App上的钩子
-    if (!isAppInstance && target) {
-      onBeforeUnmount(() => {
-        var appVm = getAppVm();
-        appVm && removeAppHook(appVm, lifecycle, hook);
-      }, target);
+    if (target && wrappedHook) {
+      onBeforeUnmount(() => removeHook(), target);
+      injectHook(ON_UNLOAD, () => removeHook(), target);
     }
   }
 }

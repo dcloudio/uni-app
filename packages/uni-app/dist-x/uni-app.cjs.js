@@ -106,30 +106,73 @@ function resolveEasycom(component, easycom) {
 function isUniApp(target) {
     const proxy = target === null || target === void 0 ? void 0 : target.proxy;
     const ctx = target === null || target === void 0 ? void 0 : target.ctx;
-    return (proxy === null || proxy === void 0 ? void 0 : proxy.$mpType) === 'app' || (ctx === null || ctx === void 0 ? void 0 : ctx.$mpType) === 'app';
+    const type = target === null || target === void 0 ? void 0 : target.type;
+    return ((proxy === null || proxy === void 0 ? void 0 : proxy.$mpType) === 'app' || (ctx === null || ctx === void 0 ? void 0 : ctx.$mpType) === 'app' || (type === null || type === void 0 ? void 0 : type.mpType) === 'app');
 }
 function getAppVm() {
     const app = getApp({ allowDefault: true });
     return app === null || app === void 0 ? void 0 : app.$vm;
 }
-function removeAppHook(vm, name, hook) {
+function removeAppHook(vm, name, hook, originalHook, target) {
     const hooks = vm.$[name];
-    if (shared.isArray(hooks) && hook.__weh) {
-        shared.remove(hooks, hook.__weh);
+    if (!shared.isArray(hooks)) {
+        return;
     }
+    for (let i = hooks.length - 1; i >= 0; i--) {
+        const appHook = hooks[i];
+        if (appHook === hook ||
+            (originalHook &&
+                appHook.__uni_app_hook === originalHook &&
+                appHook.__uni_app_target === target)) {
+            hooks.splice(i, 1);
+        }
+    }
+}
+function isTargetInvalid(target) {
+    var _a;
+    return (target === null || target === void 0 ? void 0 : target.isUnmounted) || (target === null || target === void 0 ? void 0 : target.__isUnload) || ((_a = target === null || target === void 0 ? void 0 : target.root) === null || _a === void 0 ? void 0 : _a.__isUnload);
+}
+function queueRemoveAppHook(removeHook) {
+    Promise.resolve().then(removeHook);
 }
 function injectAppHook(lifecycle, hook, target) {
     const isAppInstance = isUniApp(target);
     const appVm = getAppVm();
     const appInstance = isAppInstance ? target : appVm === null || appVm === void 0 ? void 0 : appVm.$;
     if (appInstance) {
-        vue.injectHook(lifecycle, hook, appInstance);
+        if (isAppInstance) {
+            vue.injectHook(lifecycle, hook, appInstance);
+            return;
+        }
+        let isRemoved = false;
+        let wrappedHook;
+        const removeHook = () => {
+            if (isRemoved || !wrappedHook) {
+                return;
+            }
+            isRemoved = true;
+            const appVm = getAppVm();
+            appVm && removeAppHook(appVm, lifecycle, wrappedHook, hook, target);
+        };
+        const appHook = ((...args) => {
+            if (isRemoved || isTargetInvalid(target)) {
+                queueRemoveAppHook(removeHook);
+                return;
+            }
+            return hook(...args);
+        });
+        wrappedHook = vue.injectHook(lifecycle, appHook, appInstance);
+        if (wrappedHook) {
+            wrappedHook.__uni_app_hook = hook;
+            wrappedHook.__uni_app_target = target;
+            if (isTargetInvalid(target)) {
+                removeHook();
+            }
+        }
         // 如果不是App，那么需要监听当前target的销毁事件，来移除App上的钩子
-        if (!isAppInstance && target) {
-            vue.onBeforeUnmount(() => {
-                const appVm = getAppVm();
-                appVm && removeAppHook(appVm, lifecycle, hook);
-            }, target);
+        if (target && wrappedHook) {
+            vue.onBeforeUnmount(() => removeHook(), target);
+            vue.injectHook(uniShared.ON_UNLOAD, () => removeHook(), target);
         }
     }
 }
