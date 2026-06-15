@@ -8,7 +8,7 @@ import {
   isInSSRComponentSetup,
   onBeforeUnmount,
 } from 'vue'
-import { isArray, remove } from '@vue/shared'
+import { isArray } from '@vue/shared'
 
 import {
   ON_ADD_TO_FAVORITES,
@@ -61,6 +61,11 @@ type onNavigationBarSearchInputFocusChangedHook = (
   options: NavigationBarSearchInputFocusChanged
 ) => void
 
+type AppLifecycleHook = Function & {
+  __uni_app_hook?: Function
+  __uni_app_target?: ComponentInternalInstance | null
+}
+
 export const enum HookFlags {
   UNKNOWN = 0,
   APP = 1,
@@ -71,7 +76,10 @@ export const enum HookFlags {
 function isUniApp(target: ComponentInternalInstance | null): boolean {
   const proxy = target?.proxy as ComponentPublicInstance | null
   const ctx = target?.ctx as Record<string, unknown> | undefined
-  return proxy?.$mpType === 'app' || ctx?.$mpType === 'app'
+  const type = target?.type as Record<string, unknown> | undefined
+  return (
+    proxy?.$mpType === 'app' || ctx?.$mpType === 'app' || type?.mpType === 'app'
+  )
 }
 
 function getAppVm(): ComponentPublicInstance | undefined {
@@ -82,12 +90,33 @@ function getAppVm(): ComponentPublicInstance | undefined {
 function removeAppHook(
   vm: ComponentPublicInstance,
   name: string,
-  hook: Function & { __weh?: Function }
+  hook: Function,
+  originalHook?: Function,
+  target?: ComponentInternalInstance | null
 ) {
   const hooks = (vm.$ as unknown as Record<string, Function[]>)[name]
-  if (isArray(hooks) && hook.__weh) {
-    remove(hooks, hook.__weh)
+  if (!isArray(hooks)) {
+    return
   }
+  for (let i = hooks.length - 1; i >= 0; i--) {
+    const appHook = hooks[i] as AppLifecycleHook
+    if (
+      appHook === hook ||
+      (originalHook &&
+        appHook.__uni_app_hook === originalHook &&
+        appHook.__uni_app_target === target)
+    ) {
+      hooks.splice(i, 1)
+    }
+  }
+}
+
+function isTargetInvalid(target: ComponentInternalInstance | null) {
+  return target?.isUnmounted || target?.__isUnload || target?.root?.__isUnload
+}
+
+function queueRemoveAppHook(removeHook: () => void) {
+  Promise.resolve().then(removeHook)
 }
 
 function injectAppHook(
@@ -99,13 +128,39 @@ function injectAppHook(
   const appVm = getAppVm()
   const appInstance = isAppInstance ? target : appVm?.$
   if (appInstance) {
-    injectHook(lifecycle as any, hook, appInstance)
+    if (isAppInstance) {
+      injectHook(lifecycle as any, hook, appInstance)
+      return
+    }
+    let isRemoved = false
+    let wrappedHook: Function | undefined
+    const removeHook = () => {
+      if (isRemoved || !wrappedHook) {
+        return
+      }
+      isRemoved = true
+      const appVm = getAppVm()
+      appVm && removeAppHook(appVm, lifecycle, wrappedHook, hook, target)
+    }
+    const appHook = ((...args: unknown[]) => {
+      if (isRemoved || isTargetInvalid(target)) {
+        queueRemoveAppHook(removeHook)
+        return
+      }
+      return hook(...args)
+    }) as Function
+    wrappedHook = injectHook(lifecycle as any, appHook, appInstance)
+    if (wrappedHook) {
+      ;(wrappedHook as AppLifecycleHook).__uni_app_hook = hook
+      ;(wrappedHook as AppLifecycleHook).__uni_app_target = target
+      if (isTargetInvalid(target)) {
+        removeHook()
+      }
+    }
     // 如果不是App，那么需要监听当前target的销毁事件，来移除App上的钩子
-    if (!isAppInstance && target) {
-      onBeforeUnmount(() => {
-        const appVm = getAppVm()
-        appVm && removeAppHook(appVm, lifecycle, hook)
-      }, target)
+    if (target && wrappedHook) {
+      onBeforeUnmount(() => removeHook(), target)
+      injectHook(ON_UNLOAD as any, () => removeHook(), target)
     }
   }
 }
