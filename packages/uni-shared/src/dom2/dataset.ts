@@ -3,15 +3,29 @@ export type UniDOMStringMapSource =
   | Map<string, any>
   | UniDOMStringMap
 
+export interface UniDOMStringMapOptions {
+  onSet?: (key: string, value: any) => void
+  onDelete?: (key: string) => void
+}
+
 export class UniDOMStringMap extends Map<string, any> {
   [key: string]: any
+
+  private _options?: UniDOMStringMapOptions
+
+  constructor(options?: UniDOMStringMapOptions) {
+    super()
+    this._options = options
+  }
 
   get(key: string) {
     return super.get(normalizeDatasetKey(String(key)))
   }
 
   set(key: string, value: any) {
-    super.set(normalizeDatasetKey(String(key)), value)
+    const normalizedKey = normalizeDatasetKey(String(key))
+    super.set(normalizedKey, value)
+    this._options?.onSet?.(normalizedKey, value)
     return this
   }
 
@@ -20,7 +34,18 @@ export class UniDOMStringMap extends Map<string, any> {
   }
 
   delete(key: string) {
-    return super.delete(normalizeDatasetKey(String(key)))
+    const normalizedKey = normalizeDatasetKey(String(key))
+    const deleted = super.delete(normalizedKey)
+    if (deleted) {
+      this._options?.onDelete?.(normalizedKey)
+    }
+    return deleted
+  }
+
+  clear() {
+    const keys = Array.from(super.keys())
+    super.clear()
+    keys.forEach((key) => this._options?.onDelete?.(key))
   }
 }
 
@@ -34,12 +59,21 @@ export function normalizeDatasetKey(key: string) {
     .replace(/-([a-z])/g, (_, char: string) => char.toUpperCase())
 }
 
+export function normalizeDatasetAttrName(key: string) {
+  return (
+    'data-' +
+    normalizeDatasetKey(key).replace(/[A-Z]/g, (char) => {
+      return '-' + char.toLowerCase()
+    })
+  )
+}
+
 function isReservedDatasetKey(target: UniDOMStringMap, key: string) {
   return key in target
 }
 
 function setDatasetValue(dataset: UniDOMStringMap, key: string, value: any) {
-  dataset.set(key, value)
+  Map.prototype.set.call(dataset, normalizeDatasetKey(String(key)), value)
 }
 
 function initDataset(dataset: UniDOMStringMap, source?: UniDOMStringMapSource) {
@@ -56,9 +90,10 @@ function initDataset(dataset: UniDOMStringMap, source?: UniDOMStringMapSource) {
 }
 
 export function createUniDOMStringMap(
-  source?: UniDOMStringMapSource
+  source?: UniDOMStringMapSource,
+  options?: UniDOMStringMapOptions
 ): UniDOMStringMap {
-  const target = new UniDOMStringMap()
+  const target = new UniDOMStringMap(options)
   initDataset(target, source)
 
   return new Proxy(target, {
