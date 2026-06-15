@@ -2596,18 +2596,36 @@ function isDom2AppUserVueComponentTag(tag) {
 }
 
 class UniDOMStringMap extends Map {
+    constructor(options) {
+        super();
+        this._options = options;
+    }
     get(key) {
         return super.get(normalizeDatasetKey(String(key)));
     }
     set(key, value) {
-        super.set(normalizeDatasetKey(String(key)), value);
+        var _a, _b;
+        const normalizedKey = normalizeDatasetKey(String(key));
+        super.set(normalizedKey, value);
+        (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onSet) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedKey, value);
         return this;
     }
     has(key) {
         return super.has(normalizeDatasetKey(String(key)));
     }
     delete(key) {
-        return super.delete(normalizeDatasetKey(String(key)));
+        var _a, _b;
+        const normalizedKey = normalizeDatasetKey(String(key));
+        const deleted = super.delete(normalizedKey);
+        if (deleted) {
+            (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onDelete) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedKey);
+        }
+        return deleted;
+    }
+    clear() {
+        const keys = Array.from(super.keys());
+        super.clear();
+        keys.forEach((key) => { var _a, _b; return (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onDelete) === null || _b === void 0 ? void 0 : _b.call(_a, key); });
     }
 }
 function normalizeDatasetKey(key) {
@@ -2619,11 +2637,17 @@ function normalizeDatasetKey(key) {
         .slice(5)
         .replace(/-([a-z])/g, (_, char) => char.toUpperCase());
 }
+function normalizeDatasetAttrName(key) {
+    return ('data-' +
+        normalizeDatasetKey(key).replace(/[A-Z]/g, (char) => {
+            return '-' + char.toLowerCase();
+        }));
+}
 function isReservedDatasetKey(target, key) {
     return key in target;
 }
 function setDatasetValue(dataset, key, value) {
-    dataset.set(key, value);
+    Map.prototype.set.call(dataset, normalizeDatasetKey(String(key)), value);
 }
 function initDataset(dataset, source) {
     if (!source) {
@@ -2635,8 +2659,8 @@ function initDataset(dataset, source) {
     }
     Object.keys(source).forEach((key) => setDatasetValue(dataset, key, source[key]));
 }
-function createUniDOMStringMap(source) {
-    const target = new UniDOMStringMap();
+function createUniDOMStringMap(source, options) {
+    const target = new UniDOMStringMap(options);
     initDataset(target, source);
     return new Proxy(target, {
         get(target, key, receiver) {
@@ -2722,4 +2746,4 @@ const GLOBALS_ALLOWED = 'Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseI
     'uni';
 const isGloballyAllowed = /*#__PURE__*/ makeMap(GLOBALS_ALLOWED);
 
-export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ATTR_CHANGE_PREFIX, ATTR_CLASS, ATTR_INNER_HTML, ATTR_STYLE, ATTR_TEXT_CONTENT, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, ATTR_V_SHOW, BACKGROUND_COLOR, BUILT_IN_TAGS, BUILT_IN_TAG_NAMES, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, E$1 as Emitter, EventChannel, EventModifierFlags, H5_BUILT_IN_TAGS, H5_BUILT_IN_TAG_NAMES, I18N_JSON_DELIMITERS, JSON_PROTOCOL, LINEFEED, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, NVUE_BUILT_IN_TAGS, NVUE_U_BUILT_IN_TAGS, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, ON_ADD_TO_FAVORITES, ON_APP_ENTER_BACKGROUND, ON_APP_ENTER_FOREGROUND, ON_BACK_PRESS, ON_COPY_URL, ON_ERROR, ON_EXIT, ON_HIDE, ON_HOST_THEME_CHANGE, ON_INIT, ON_KEYBOARD_HEIGHT_CHANGE, ON_LAST_PAGE_BACK_PRESS, ON_LAUNCH, ON_LIVE_MOUNT, ON_LOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_REACH_BOTTOM_DISTANCE, ON_READY, ON_RESIZE, ON_SAVE_EXIT_STATE, ON_SHARE_APP_MESSAGE, ON_SHARE_CHAT, ON_SHARE_TIMELINE, ON_SHOW, ON_TAB_ITEM_TAP, ON_THEME_CHANGE, ON_TITLE_CLICK, ON_UNHANDLE_REJECTION, ON_UNLOAD, ON_UPLOAD_DOUYIN_VIDEO, ON_WEB_INVOKE_APP_SERVICE, ON_WXS_INVOKE_CALL_METHOD, PLUS_RE, PRIMARY_COLOR, RENDERJS_MODULES, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, SLOT_DEFAULT_NAME, TABBAR_HEIGHT, TAGS, UNI_AD_PLUGINS, UNI_SAFE_AREA_INSET_BOTTOM, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UNI_STATUS_BAR_HEIGHT, UNI_STORAGE_LOCALE, UNI_UI_CONFLICT_TAGS, UTS, UTSJSONObject, UTSValueIterable, UVUE_BUILT_IN_TAGS, UVUE_HARMONY_BUILT_IN_TAGS, UVUE_IOS_BUILT_IN_TAGS, UVUE_MP_BUILT_IN_TAGS, UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS, UVUE_WEB_BUILT_IN_TAGS, UniBaseNode, UniCommentNode, UniDOMStringMap, UniElement, UniError, UniEvent, UniInputElement, UniLifecycleHooks, UniNode, UniTextAreaElement, UniTextNode, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, VIRTUAL_HOST_ID, VIRTUAL_HOST_STYLE, WEB_INVOKE_APPSERVICE, WXS_MODULES, WXS_PROTOCOL, addFont, addLeadingSlash, batchGetPartClass, borderStyles, cache, cacheStringFunction, callOptions, createIsCustomElement, createRpx2Unit, createUniDOMStringMap, createUniEvent, customizeEvent, debounce, decode, decodedQuery, defaultMiniProgramRpx2Unit, defaultNVueRpx2Unit, defaultRpx2Unit, dynamicSlotName, forcePatchProp, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getGlobal, getLen, getPartClass, getValueByDataPath, initCustomDatasetOnce, invokeArrayFns, invokeArrayFnsWithResults, invokeCreateErrorHandler, invokeCreateVueAppHook, isAppHarmonyUVueNativeTag, isAppIOSUVueNativeTag, isAppNVueNativeTag, isAppNativeTag, isAppUVueBuiltInEasyComponent, isAppUVueNativeTag, isAppVoidTag, isBuiltInComponent, isComponentInternalInstance, isComponentTag, isDom2AppNativeTag, isDom2AppUserVueComponentTag, isDom2AppVueComponentTag, isDom2VueComponentTag, isGloballyAllowed, isH5CustomElement, isH5NativeTag, isIntegerKey, isMPBuiltInComponent, isMiniProgramNativeTag, isMiniProgramUVueNativeTag, isRootHook, isRootImmediateHook, isUniLifecycleHook, isUniXElement, isWebBuiltInComponent, normalizeClass, normalizeDataset, normalizeDatasetKey, normalizeEventType, normalizeProps, normalizeStyle, normalizeStyles, normalizeTabBarStyles, normalizeTarget, normalizeTitleColor, onCreateVueApp, once, parseEventName, parseNVueDataset, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, resolveComponentInstance, resolveOwnerEl, resolveOwnerVm, sanitise, scrollTo, sortObject, stringifyQuery, updateElementStyle };
+export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ATTR_CHANGE_PREFIX, ATTR_CLASS, ATTR_INNER_HTML, ATTR_STYLE, ATTR_TEXT_CONTENT, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, ATTR_V_SHOW, BACKGROUND_COLOR, BUILT_IN_TAGS, BUILT_IN_TAG_NAMES, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, E$1 as Emitter, EventChannel, EventModifierFlags, H5_BUILT_IN_TAGS, H5_BUILT_IN_TAG_NAMES, I18N_JSON_DELIMITERS, JSON_PROTOCOL, LINEFEED, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, NVUE_BUILT_IN_TAGS, NVUE_U_BUILT_IN_TAGS, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, ON_ADD_TO_FAVORITES, ON_APP_ENTER_BACKGROUND, ON_APP_ENTER_FOREGROUND, ON_BACK_PRESS, ON_COPY_URL, ON_ERROR, ON_EXIT, ON_HIDE, ON_HOST_THEME_CHANGE, ON_INIT, ON_KEYBOARD_HEIGHT_CHANGE, ON_LAST_PAGE_BACK_PRESS, ON_LAUNCH, ON_LIVE_MOUNT, ON_LOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_REACH_BOTTOM_DISTANCE, ON_READY, ON_RESIZE, ON_SAVE_EXIT_STATE, ON_SHARE_APP_MESSAGE, ON_SHARE_CHAT, ON_SHARE_TIMELINE, ON_SHOW, ON_TAB_ITEM_TAP, ON_THEME_CHANGE, ON_TITLE_CLICK, ON_UNHANDLE_REJECTION, ON_UNLOAD, ON_UPLOAD_DOUYIN_VIDEO, ON_WEB_INVOKE_APP_SERVICE, ON_WXS_INVOKE_CALL_METHOD, PLUS_RE, PRIMARY_COLOR, RENDERJS_MODULES, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, SLOT_DEFAULT_NAME, TABBAR_HEIGHT, TAGS, UNI_AD_PLUGINS, UNI_SAFE_AREA_INSET_BOTTOM, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UNI_STATUS_BAR_HEIGHT, UNI_STORAGE_LOCALE, UNI_UI_CONFLICT_TAGS, UTS, UTSJSONObject, UTSValueIterable, UVUE_BUILT_IN_TAGS, UVUE_HARMONY_BUILT_IN_TAGS, UVUE_IOS_BUILT_IN_TAGS, UVUE_MP_BUILT_IN_TAGS, UVUE_WEB_BUILT_IN_CUSTOM_ELEMENTS, UVUE_WEB_BUILT_IN_TAGS, UniBaseNode, UniCommentNode, UniDOMStringMap, UniElement, UniError, UniEvent, UniInputElement, UniLifecycleHooks, UniNode, UniTextAreaElement, UniTextNode, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, VIRTUAL_HOST_ID, VIRTUAL_HOST_STYLE, WEB_INVOKE_APPSERVICE, WXS_MODULES, WXS_PROTOCOL, addFont, addLeadingSlash, batchGetPartClass, borderStyles, cache, cacheStringFunction, callOptions, createIsCustomElement, createRpx2Unit, createUniDOMStringMap, createUniEvent, customizeEvent, debounce, decode, decodedQuery, defaultMiniProgramRpx2Unit, defaultNVueRpx2Unit, defaultRpx2Unit, dynamicSlotName, forcePatchProp, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getGlobal, getLen, getPartClass, getValueByDataPath, initCustomDatasetOnce, invokeArrayFns, invokeArrayFnsWithResults, invokeCreateErrorHandler, invokeCreateVueAppHook, isAppHarmonyUVueNativeTag, isAppIOSUVueNativeTag, isAppNVueNativeTag, isAppNativeTag, isAppUVueBuiltInEasyComponent, isAppUVueNativeTag, isAppVoidTag, isBuiltInComponent, isComponentInternalInstance, isComponentTag, isDom2AppNativeTag, isDom2AppUserVueComponentTag, isDom2AppVueComponentTag, isDom2VueComponentTag, isGloballyAllowed, isH5CustomElement, isH5NativeTag, isIntegerKey, isMPBuiltInComponent, isMiniProgramNativeTag, isMiniProgramUVueNativeTag, isRootHook, isRootImmediateHook, isUniLifecycleHook, isUniXElement, isWebBuiltInComponent, normalizeClass, normalizeDataset, normalizeDatasetAttrName, normalizeDatasetKey, normalizeEventType, normalizeProps, normalizeStyle, normalizeStyles, normalizeTabBarStyles, normalizeTarget, normalizeTitleColor, onCreateVueApp, once, parseEventName, parseNVueDataset, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, resolveComponentInstance, resolveOwnerEl, resolveOwnerVm, sanitise, scrollTo, sortObject, stringifyQuery, updateElementStyle };

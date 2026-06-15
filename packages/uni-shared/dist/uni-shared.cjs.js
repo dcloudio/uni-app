@@ -2598,18 +2598,36 @@ function isDom2AppUserVueComponentTag(tag) {
 }
 
 class UniDOMStringMap extends Map {
+    constructor(options) {
+        super();
+        this._options = options;
+    }
     get(key) {
         return super.get(normalizeDatasetKey(String(key)));
     }
     set(key, value) {
-        super.set(normalizeDatasetKey(String(key)), value);
+        var _a, _b;
+        const normalizedKey = normalizeDatasetKey(String(key));
+        super.set(normalizedKey, value);
+        (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onSet) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedKey, value);
         return this;
     }
     has(key) {
         return super.has(normalizeDatasetKey(String(key)));
     }
     delete(key) {
-        return super.delete(normalizeDatasetKey(String(key)));
+        var _a, _b;
+        const normalizedKey = normalizeDatasetKey(String(key));
+        const deleted = super.delete(normalizedKey);
+        if (deleted) {
+            (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onDelete) === null || _b === void 0 ? void 0 : _b.call(_a, normalizedKey);
+        }
+        return deleted;
+    }
+    clear() {
+        const keys = Array.from(super.keys());
+        super.clear();
+        keys.forEach((key) => { var _a, _b; return (_b = (_a = this._options) === null || _a === void 0 ? void 0 : _a.onDelete) === null || _b === void 0 ? void 0 : _b.call(_a, key); });
     }
 }
 function normalizeDatasetKey(key) {
@@ -2621,11 +2639,17 @@ function normalizeDatasetKey(key) {
         .slice(5)
         .replace(/-([a-z])/g, (_, char) => char.toUpperCase());
 }
+function normalizeDatasetAttrName(key) {
+    return ('data-' +
+        normalizeDatasetKey(key).replace(/[A-Z]/g, (char) => {
+            return '-' + char.toLowerCase();
+        }));
+}
 function isReservedDatasetKey(target, key) {
     return key in target;
 }
 function setDatasetValue(dataset, key, value) {
-    dataset.set(key, value);
+    Map.prototype.set.call(dataset, normalizeDatasetKey(String(key)), value);
 }
 function initDataset(dataset, source) {
     if (!source) {
@@ -2637,8 +2661,8 @@ function initDataset(dataset, source) {
     }
     Object.keys(source).forEach((key) => setDatasetValue(dataset, key, source[key]));
 }
-function createUniDOMStringMap(source) {
-    const target = new UniDOMStringMap();
+function createUniDOMStringMap(source, options) {
+    const target = new UniDOMStringMap(options);
     initDataset(target, source);
     return new Proxy(target, {
         get(target, key, receiver) {
@@ -2918,6 +2942,7 @@ exports.isUniXElement = isUniXElement;
 exports.isWebBuiltInComponent = isWebBuiltInComponent;
 exports.normalizeClass = normalizeClass;
 exports.normalizeDataset = normalizeDataset;
+exports.normalizeDatasetAttrName = normalizeDatasetAttrName;
 exports.normalizeDatasetKey = normalizeDatasetKey;
 exports.normalizeEventType = normalizeEventType;
 exports.normalizeProps = normalizeProps;
