@@ -16,9 +16,9 @@
 > Android、iOS平台从 HBuilderX5.08 版本开始支持微信分享  
 
 ### share 兼容性 
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 4.81 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 | 4.81 |
 
 
 ### 参数 
@@ -31,18 +31,18 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| provider | string | 否 | weixin | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 分享服务提供商，通过uni.getProvider获取，如果不设置则默认 weixin |
-| type | number | 否 | 0 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 分享类型。默认图文0 |
-| title | string | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 标题 |
-| scene | string | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 场景 |
-| summary | string | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 摘要 |
-| href | string | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 跳转链接 |
-| imageUrl | string | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 图片地址 |
-| mediaUrl | string | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 音视频地址 |
-| miniProgram | **ShareMiniProgramShareOptions** | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 分享小程序 |
-| openCustomerServiceChat | boolean | 否 | false | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: 5.0.0 (12); HarmonyOS: 5.0 | 是否启用拉起客服功能，为 true 时除 `corpid`、`customerUrl` 外其他参数无效 |
-| corpid | string | 否 |  | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: 5.0.0 (12); HarmonyOS: 5.0 | 客服ID，`openCustomerServiceChat` 为 true 时必填<br/> |
-| customerUrl | string | 否 |  | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: 5.0.0 (12); HarmonyOS: 5.0 | 客服的页面路径，`openCustomerServiceChat` 为 true 时必填<br/> |
+| provider | string | 否 | weixin | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享服务提供商，通过uni.getProvider获取，如果不设置则默认 weixin |
+| type | number | 否 | 0 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享类型。默认图文0 |
+| title | string | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 标题 |
+| scene | string | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 场景 |
+| summary | string | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 摘要 |
+| href | string | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 跳转链接 |
+| imageUrl | string | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 图片地址 |
+| mediaUrl | string | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 音视频地址 |
+| miniProgram | **ShareMiniProgramShareOptions** | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享小程序 |
+| openCustomerServiceChat | boolean | 否 | false | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS 系统版本: 5.0.0 (12); HarmonyOS: 5.0 | 是否启用拉起客服功能，为 true 时除 `corpid`、`customerUrl` 外其他参数无效 |
+| corpid | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS 系统版本: 5.0.0 (12); HarmonyOS: 5.0 | 客服ID，`openCustomerServiceChat` 为 true 时必填<br/> |
+| customerUrl | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS 系统版本: 5.0.0 (12); HarmonyOS: 5.0 | 客服的页面路径，`openCustomerServiceChat` 为 true 时必填<br/> |
 | success | (result: ShareSuccess) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
 | fail | (result: [ShareFail](#sharefail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -51,37 +51,37 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 0 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 图文 |
-| 1 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 纯文字 |
-| 2 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 纯图片 |
-| 3 | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 音乐 |
-| 4 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 视频 |
-| 5 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 小程序 |
+| 0 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 图文 |
+| 1 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 纯文字 |
+| 2 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 纯图片 |
+| 3 | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 音乐 |
+| 4 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 视频 |
+| 5 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 小程序 |
 
 ##### scene 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| WXSceneSession | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 分享到聊天界面 |
-| WXSceneTimeline | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 分享到朋友圈 |
-| WXSceneFavorite | Web: x; 微信小程序:  ; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 分享微信收藏 |
+| WXSceneSession | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享到聊天界面 |
+| WXSceneTimeline | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享到朋友圈 |
+| WXSceneFavorite | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 分享微信收藏 |
 
 ##### miniProgram 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | string | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 微信小程序原始id |
-| path | string | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 点击链接进入的页面 |
-| type | number | 否 | 0 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 微信小程序版本类型，默认为0。 |
-| webUrl | string | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 兼容低版本的网页链接 |
+| id | string | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 微信小程序原始id |
+| path | string | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 点击链接进入的页面 |
+| type | number | 否 | 0 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 微信小程序版本类型，默认为0。 |
+| webUrl | string | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 兼容低版本的网页链接 |
 
 ###### type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 0 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 正式版 |
-| 1 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 测试版 |
-| 2 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 体验版 |
+| 0 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 正式版 |
+| 1 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 测试版 |
+| 2 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 体验版 |
 
 #### ShareFail 的属性值 @sharefail-values 
 
@@ -97,18 +97,18 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 4000500 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 未找到微信APPID,请确认 manifest.json 中配置信息是否正确 |
-| 4000501 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 该场景字段当前不支持 |
-| 4000502 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 该场景字段未匹配到 |
-| 4000503 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 分享类型不匹配，请确认类型是否正确 |
-| 4000504 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 参数填写错误 |
-| 4000505 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 请求微信接口失败 |
-| 4000506 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 暂不支持该类型的分享 |
-| 4000507 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 图片下载失败 |
-| 4000508 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 加载本地文件失败 |
-| 4000509 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 获取缩略图失败 |
-| 4000510 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 微信可能未安装 |
-| 4000511 | Web: x; 微信小程序:  ; Android: 5.08; iOS 系统版本: x; iOS: 5.08; HarmonyOS: 4.81 | 分享失败 |
+| 4000500 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 未找到微信APPID,请确认 manifest.json 中配置信息是否正确 |
+| 4000501 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 该场景字段当前不支持 |
+| 4000502 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 该场景字段未匹配到 |
+| 4000503 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享类型不匹配，请确认类型是否正确 |
+| 4000504 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 参数填写错误 |
+| 4000505 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 请求微信接口失败 |
+| 4000506 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 暂不支持该类型的分享 |
+| 4000507 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 图片下载失败 |
+| 4000508 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 加载本地文件失败 |
+| 4000509 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 获取缩略图失败 |
+| 4000510 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 微信可能未安装 |
+| 4000511 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享失败 |
 
 
 

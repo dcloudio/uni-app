@@ -34,7 +34,7 @@
 | bluetoothError | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 蓝牙的报错信息<br/> |
 | locationEnabled | boolean | 是 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 位置是否开启<br/> |
 | wifiEnabled | boolean | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | wifi是否开启<br/> |
-| wifiError | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: x; iOS: x; HarmonyOS: 4.61 | wifi的报错信息<br/> |
+| wifiError | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: 4.61 | wifi的报错信息<br/> |
 | deviceOrientation | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备方向<br/> |
 
 ##### deviceOrientation 的属性描述

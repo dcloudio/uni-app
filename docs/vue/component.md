@@ -1671,49 +1671,49 @@ export default {
 
 |  | 兼容性 | 描述 |
 | :- | :- | :- |
-| beforeCreate | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 在组件实例初始化完成之后立即调用。<br/>在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用。 |
-| created | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 在组件实例处理完所有与状态相关的选项后调用。<br/>在这一步，实例已完成以下的配置：数据观测 (data observer)，属性和方法的运算，watch/event 事件回调。<br/>然而，此时挂载阶段还未开始，因此 $el 属性仍不可用。 |
-| beforeMount | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 在组件被挂载之前调用。<br/>相关的 render 函数首次被调用。<br/>当这个钩子被调用时，组件已经完成了其响应式状态的设置，但还没有创建 DOM 节点。<br/>它即将首次执行 DOM 渲染过程。 |
-| mounted | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 在组件被挂载之后调用。<br/>el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
-| beforeUpdate | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 在组件即将因为一个响应式状态变更而更新其 DOM 树之前调用。<br/>数据更新时调用，发生在虚拟 DOM 打补丁之前。<br/>这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。 |
-| updated | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 在组件因为一个响应式状态变更而更新其 DOM 树之后调用。<br/>父组件的更新钩子将在其子组件的更新钩子之后调用。<br/>这个钩子会在组件的任意 DOM 更新后被调用，这些更新可能是由不同的状态变更导致的。<br/>如果你需要在某个特定的状态更改后访问更新后的 DOM，请使用 nextTick() 作为替代。 |
-| beforeUnmount | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之前调用。<br/>当这个钩子被调用时，组件实例依然还保有全部的功能。 |
-| unmounted | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之后调用。<br/>可以在这个钩子中手动清理一些副作用，例如计时器、DOM 事件监听器或者与服务器的连接。 |
-| errorCaptured | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 在捕获了后代组件传递的错误时调用。<br/>这个钩子带有三个实参：错误对象、触发该错误的组件实例，以及一个说明错误来源类型的信息字符串。<br/>这个钩子可以通过返回 false 来阻止错误继续向上传递。 |
-| renderTracked | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 在一个响应式依赖被组件的渲染作用追踪后调用。<br/>跟踪虚拟 DOM 重新渲染时调用。钩子接收 debugger event 作为参数。<br/>此事件告诉你哪个操作跟踪了组件以及该操作的目标对象和键。 |
-| renderTriggered | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 在一个响应式依赖被组件触发了重新渲染之后调用。<br/>当虚拟 DOM 重新渲染为 triggered.Similarly 为renderTracked，接收 debugger event 作为参数。<br/>此事件告诉你是什么操作触发了重新渲染，以及该操作的目标对象和键。 |
-| activated | Web: 4.0; 微信小程序: x; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 若组件实例是 \<KeepAlive> 缓存树的一部分，当组件被插入到 DOM 中时调用。<br/>keep-alive 组件激活时调用。 |
-| deactivated | Web: 4.0; 微信小程序: x; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 若组件实例是 \<KeepAlive> 缓存树的一部分，当组件从 DOM 中被移除时调用。<br/>keep-alive 组件停用时调用。 |
-| serverPrefetch | Web: x; 微信小程序: x; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 当组件实例在服务器上被渲染之前要完成的异步函数。<br/>如果这个钩子返回了一个 Promise，服务端渲染会在渲染该组件前等待该 Promise 完成。 |
+| beforeCreate | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件实例初始化完成之后立即调用。<br/>在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用。 |
+| created | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件实例处理完所有与状态相关的选项后调用。<br/>在这一步，实例已完成以下的配置：数据观测 (data observer)，属性和方法的运算，watch/event 事件回调。<br/>然而，此时挂载阶段还未开始，因此 $el 属性仍不可用。 |
+| beforeMount | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件被挂载之前调用。<br/>相关的 render 函数首次被调用。<br/>当这个钩子被调用时，组件已经完成了其响应式状态的设置，但还没有创建 DOM 节点。<br/>它即将首次执行 DOM 渲染过程。 |
+| mounted | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件被挂载之后调用。<br/>el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
+| beforeUpdate | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件即将因为一个响应式状态变更而更新其 DOM 树之前调用。<br/>数据更新时调用，发生在虚拟 DOM 打补丁之前。<br/>这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。 |
+| updated | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件因为一个响应式状态变更而更新其 DOM 树之后调用。<br/>父组件的更新钩子将在其子组件的更新钩子之后调用。<br/>这个钩子会在组件的任意 DOM 更新后被调用，这些更新可能是由不同的状态变更导致的。<br/>如果你需要在某个特定的状态更改后访问更新后的 DOM，请使用 nextTick() 作为替代。 |
+| beforeUnmount | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之前调用。<br/>当这个钩子被调用时，组件实例依然还保有全部的功能。 |
+| unmounted | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之后调用。<br/>可以在这个钩子中手动清理一些副作用，例如计时器、DOM 事件监听器或者与服务器的连接。 |
+| errorCaptured | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 在捕获了后代组件传递的错误时调用。<br/>这个钩子带有三个实参：错误对象、触发该错误的组件实例，以及一个说明错误来源类型的信息字符串。<br/>这个钩子可以通过返回 false 来阻止错误继续向上传递。 |
+| renderTracked | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 在一个响应式依赖被组件的渲染作用追踪后调用。<br/>跟踪虚拟 DOM 重新渲染时调用。钩子接收 debugger event 作为参数。<br/>此事件告诉你哪个操作跟踪了组件以及该操作的目标对象和键。 |
+| renderTriggered | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 在一个响应式依赖被组件触发了重新渲染之后调用。<br/>当虚拟 DOM 重新渲染为 triggered.Similarly 为renderTracked，接收 debugger event 作为参数。<br/>此事件告诉你是什么操作触发了重新渲染，以及该操作的目标对象和键。 |
+| activated | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 若组件实例是 \<KeepAlive> 缓存树的一部分，当组件被插入到 DOM 中时调用。<br/>keep-alive 组件激活时调用。 |
+| deactivated | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 若组件实例是 \<KeepAlive> 缓存树的一部分，当组件从 DOM 中被移除时调用。<br/>keep-alive 组件停用时调用。 |
+| serverPrefetch | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当组件实例在服务器上被渲染之前要完成的异步函数。<br/>如果这个钩子返回了一个 Promise，服务端渲染会在渲染该组件前等待该 Promise 完成。 |
 
 ### 组件生命周期（组合式 API）兼容性 @component-lifecycle-composition-compatibility
 
 |  | 兼容性 | 描述 |
 | :- | :- | :- |
-| onMounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
-| onUpdated() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子。 |
-| onUnmounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之后调用。 |
-| onBeforeMount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 在挂载开始之前被调用：相关的 render 函数首次被调用。 |
-| onBeforeUpdate() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 数据更新时调用，发生在虚拟 DOM 打补丁之前。<br/>这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。 |
-| onBeforeUnmount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之前调用。 |
-| onErrorCaptured() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个钩子，在捕获了后代组件传递的错误时调用。 |
-| onRenderTracked() | Web: x; 微信小程序: -; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个调试钩子，当组件渲染过程中追踪到响应式依赖时调用。 |
-| onRenderTriggered() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个调试钩子，当响应式依赖的变更触发了组件渲染时调用。 |
-| onActivated() | Web: 4.0; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | keep-alive 组件激活时调用。 |
-| onDeactivated() | Web: 4.0; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | keep-alive 组件停用时调用。 |
-| onServerPrefetch() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个异步函数，在组件实例在服务器上被渲染之前调用。<br/>如果这个钩子返回了一个 Promise，服务端渲染会在渲染该组件前等待该 Promise 完成。<br/>这个钩子仅会在服务端渲染中执行，可以用于执行一些仅存在于服务端的数据抓取过程。 |
-| onRecycle() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): 5.11; HarmonyOS: x | 组件回收时的生命周期钩子 |
-| onReuse() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): 5.11; HarmonyOS: x | 组件复用时的生命周期钩子 |
-| onLoad() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面加载<br/><br/>页面加载时触发。一个页面只会调用一次，可以在 onLoad 的参数中获取打开当前页面路径中的参数。 |
-| onReady() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面初次渲染完成<br/><br/>页面初次渲染完成时触发。一个页面只会调用一次，代表页面已经准备妥当，可以和视图层进行交互。<br/> |
-| onUnload() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面卸载<br/><br/>页面卸载时触发。如 `redirectTo` 或 `navigateBack` 到其他页面时。<br/> |
-| onPageShow() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面显示<br/><br/>页面显示/切入前台时触发。<br/> |
-| onPageHide() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面隐藏<br/><br/>页面隐藏/切入后台时触发。 如 `navigateTo` 或底部 `tab` 切换到其他页面，应用切入后台等。<br/> |
-| onPageScroll() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.13; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动触发事件的处理函数<br/><br/>监听用户滑动页面事件。 |
-| onBackPress() | Web: 4.0; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 监听页面返回 |
-| onReachBottom() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件的处理函数<br/>- 可以在 `pages.json` 的页面配置中设置触发距离 `onReachBottomDistance` 。<br/>- 在触发距离内滑动期间，本事件只会被触发一次。<br/> |
-| onPullDownRefresh() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 监听用户下拉动作<br/>- 需要在 `pages.json` 的页面配置中开启 `enablePullDownRefresh` 。<br/>- 可以通过 `uni.startPullDownRefresh` 触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。<br/>- 当处理完数据刷新后，`uni.stopPullDownRefresh` 可以停止当前页面的下拉刷新。<br/> |
-| onResize() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.03 | 页面尺寸改变时触发 |
+| onMounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
+| onUpdated() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子。 |
+| onUnmounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之后调用。 |
+| onBeforeMount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 在挂载开始之前被调用：相关的 render 函数首次被调用。 |
+| onBeforeUpdate() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 数据更新时调用，发生在虚拟 DOM 打补丁之前。<br/>这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。 |
+| onBeforeUnmount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之前调用。 |
+| onErrorCaptured() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个钩子，在捕获了后代组件传递的错误时调用。 |
+| onRenderTracked() | Web: x; 微信小程序: -; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个调试钩子，当组件渲染过程中追踪到响应式依赖时调用。 |
+| onRenderTriggered() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个调试钩子，当响应式依赖的变更触发了组件渲染时调用。 |
+| onActivated() | Web: 4.0; 微信小程序: x; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | keep-alive 组件激活时调用。 |
+| onDeactivated() | Web: 4.0; 微信小程序: x; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | keep-alive 组件停用时调用。 |
+| onServerPrefetch() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个异步函数，在组件实例在服务器上被渲染之前调用。<br/>如果这个钩子返回了一个 Promise，服务端渲染会在渲染该组件前等待该 Promise 完成。<br/>这个钩子仅会在服务端渲染中执行，可以用于执行一些仅存在于服务端的数据抓取过程。 |
+| onRecycle() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): 5.11; HarmonyOS: x | 组件回收时的生命周期钩子 |
+| onReuse() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): 5.11; HarmonyOS: x | 组件复用时的生命周期钩子 |
+| onLoad() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面加载<br/><br/>页面加载时触发。一个页面只会调用一次，可以在 onLoad 的参数中获取打开当前页面路径中的参数。 |
+| onReady() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面初次渲染完成<br/><br/>页面初次渲染完成时触发。一个页面只会调用一次，代表页面已经准备妥当，可以和视图层进行交互。<br/> |
+| onUnload() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面卸载<br/><br/>页面卸载时触发。如 `redirectTo` 或 `navigateBack` 到其他页面时。<br/> |
+| onPageShow() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面显示<br/><br/>页面显示/切入前台时触发。<br/> |
+| onPageHide() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面隐藏<br/><br/>页面隐藏/切入后台时触发。 如 `navigateTo` 或底部 `tab` 切换到其他页面，应用切入后台等。<br/> |
+| onPageScroll() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS: 4.13; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动触发事件的处理函数<br/><br/>监听用户滑动页面事件。 |
+| onBackPress() | Web: 4.0; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 监听页面返回 |
+| onReachBottom() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件的处理函数<br/>- 可以在 `pages.json` 的页面配置中设置触发距离 `onReachBottomDistance` 。<br/>- 在触发距离内滑动期间，本事件只会被触发一次。<br/> |
+| onPullDownRefresh() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 监听用户下拉动作<br/>- 需要在 `pages.json` 的页面配置中开启 `enablePullDownRefresh` 。<br/>- 可以通过 `uni.startPullDownRefresh` 触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。<br/>- 当处理完数据刷新后，`uni.stopPullDownRefresh` 可以停止当前页面的下拉刷新。<br/> |
+| onResize() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.03 | 页面尺寸改变时触发 |
 
 示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/lifecycle/component/ChildComponentOptions.uvue)
 

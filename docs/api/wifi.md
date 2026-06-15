@@ -7,9 +7,9 @@
 
 
 ### startWifi 兼容性 
-| Android 系统版本 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.4.4 | 3.9.0 | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
+| :- | :- | :- | :- |
+| 3.9.0 | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
@@ -73,9 +73,9 @@
 
 
 ### stopWifi 兼容性 
-| Android 系统版本 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.4.4 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
+| :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
@@ -270,9 +270,9 @@ SetWifiList  暂未实现
 
 
 ### getWifiList 兼容性 
-| Android 系统版本 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.4.4 | 3.9.0 | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
+| :- | :- | :- | :- |
+| 3.9.0 | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
@@ -336,9 +336,9 @@ SetWifiList  暂未实现
 
 
 ### onGetWifiList 兼容性 
-| Android 系统版本 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.4.4 | 3.9.0 | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
+| :- | :- | :- | :- |
+| 3.9.0 | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
@@ -375,9 +375,9 @@ SetWifiList  暂未实现
 
 
 ### offGetWifiList 兼容性 
-| Android 系统版本 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.4.4 | 3.9.0 | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
+| :- | :- | :- | :- |
+| 3.9.0 | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
@@ -414,9 +414,9 @@ SetWifiList  暂未实现
 
 
 ### getConnectedWifi 兼容性 
-| Android 系统版本 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.4.4 | 3.9.0 | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
+| :- | :- | :- | :- |
+| 3.9.0 | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
@@ -481,9 +481,9 @@ SetWifiList  暂未实现
 
 
 ### onWifiConnected 兼容性 
-| Android 系统版本 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.4.4 | 3.9.0 | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
+| :- | :- | :- | :- |
+| 3.9.0 | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 
@@ -539,9 +539,9 @@ SetWifiList  暂未实现
 
 
 ### onWifiConnectedWithPartialInfo 兼容性 
-| Android 系统版本 | Android | iOS |
-| :- | :- | :- |
-| 4.4.4 | 3.9.0 | 4.11 |
+| Android | iOS |
+| :- | :- |
+| 3.9.0 | 4.11 |
 
 
 ### 参数 
@@ -584,9 +584,9 @@ SetWifiList  暂未实现
 
 
 ### offWifiConnected 兼容性 
-| Android 系统版本 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.4.4 | 3.9.0 | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
+| :- | :- | :- | :- |
+| 3.9.0 | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 参数 

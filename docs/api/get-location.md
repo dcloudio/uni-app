@@ -31,7 +31,7 @@
 | provider | string | 否 | system | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.81 | 定位服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,目前支持系统定位(system)、腾讯定位(tencent)<br/>腾讯定位是4.25版本后支持的；<br/>web端暂不支持provider机制； |
 | type | string | 否 | wgs84 | Web: 4.0; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.81 | 默认为 wgs84 返回 gps 坐标，gcj02 返回可用于uni.openLocation的坐标，web端需配置定位 SDK 信息才可支持 gcj02； |
 | altitude | boolean | 否 | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.81 | 传入 true 会返回高度信息，由于获取高度需要较高精确度，会减慢接口返回速度 |
-| geocode | boolean | 否 | false | Web: x; 微信小程序: x; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 传入 true 会解析地址；<br/>使用系统定位时平台差异：iOS支持逆地理编码，Android、HarmonyOS 不支持； |
+| geocode | boolean | 否 | false | Web: x; 微信小程序: x; Android: 3.9.0; iOS: 4.11; HarmonyOS: x | 传入 true 会解析地址；<br/>使用系统定位时平台差异：iOS支持逆地理编码，Android、HarmonyOS 不支持； |
 | highAccuracyExpireTime | number | 否 | 3000 | Web: x; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.81 | 高精度定位超时时间(ms)，指定时间内返回最高精度，该值3000ms以上高精度定位才有效果 |
 | isHighAccuracy | boolean | 否 | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.81 | 开启高精度定位 |
 | success | (result: [GetLocationSuccess](#getlocationsuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.81 | 接口调用成功的回调函数 |
@@ -55,8 +55,8 @@
 | accuracy | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 位置的精确度 |
 | altitude | number | 是 | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 高度，单位 m |
 | verticalAccuracy | number | 是 | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.81 | 垂直精度，单位 m（Android 无法获取，返回 0） |
-| horizontalAccuracy | number | 是 | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 水平精度，单位 m（Android、HarmonyOS 无法获取，返回 0） |
-| address | string | 否 | null | Web: x; 微信小程序: x; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 地址信息 |
+| horizontalAccuracy | number | 是 | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11; HarmonyOS: x | 水平精度，单位 m（Android、HarmonyOS 无法获取，返回 0） |
+| address | string | 否 | null | Web: x; 微信小程序: x; Android: 3.9.0; iOS: 4.11; HarmonyOS: x | 地址信息 |
 
 #### GetLocationFail 的属性值 @getlocationfail-values 
 
@@ -78,15 +78,15 @@
 | 1505600 | Web:  ; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS:   | 超时 |
 | 1505601 | Web:  ; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.81 | 不支持的定位类型 |
 | 1505602 | Web:  ; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.81 | 捕获定位失败 |
-| 1505603 | Web:  ; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS 系统版本: x; HarmonyOS: x | 逆地理编码捕获失败 |
-| 1505604 | Web:  ; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS 系统版本: x; HarmonyOS: x | 服务供应商获取失败 |
-| 1505605 | Web:  ; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS 系统版本: x; HarmonyOS: x | 未通过配置预校验，通常是腾讯定位 api key 配置错误 |
-| 1505607 | Web:  ; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS 系统版本: x; HarmonyOS: x | 腾讯定位只支持GCJ-02 |
-| 1505608 | Web:  ; 微信小程序:  ; Android: 4.81; iOS: 4.81; HarmonyOS 系统版本: x; HarmonyOS: x | 同一时间只能单个provider开启持续定位 |
-| 1505700 | Web:  ; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS 系统版本: x; HarmonyOS: x | 不支持逆地理编码 |
-| 1505701 | Web:  ; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS 系统版本: x; HarmonyOS: x | 没有找到具体的定位引擎（GPS_PROVIDER，NETWORK_PROVIDER，PASSIVE_PROVIDER等），请确定系统定位是否开启 |
-| 1505702 | Web:  ; 微信小程序:  ; Android: 4.81; iOS: 4.81; HarmonyOS 系统版本: x; HarmonyOS: x | iOS plist文件中缺少后台定位配置：UIBackgroundModes->location |
-| 1505800 | Web:  ; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS 系统版本: x; HarmonyOS: x | 应用高精度定位权限未开启 |
+| 1505603 | Web:  ; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x | 逆地理编码捕获失败 |
+| 1505604 | Web:  ; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x | 服务供应商获取失败 |
+| 1505605 | Web:  ; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x | 未通过配置预校验，通常是腾讯定位 api key 配置错误 |
+| 1505607 | Web:  ; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x | 腾讯定位只支持GCJ-02 |
+| 1505608 | Web:  ; 微信小程序:  ; Android: 4.81; iOS: 4.81; HarmonyOS: x | 同一时间只能单个provider开启持续定位 |
+| 1505700 | Web:  ; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x | 不支持逆地理编码 |
+| 1505701 | Web:  ; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x | 没有找到具体的定位引擎（GPS_PROVIDER，NETWORK_PROVIDER，PASSIVE_PROVIDER等），请确定系统定位是否开启 |
+| 1505702 | Web:  ; 微信小程序:  ; Android: 4.81; iOS: 4.81; HarmonyOS: x | iOS plist文件中缺少后台定位配置：UIBackgroundModes->location |
+| 1505800 | Web:  ; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x | 应用高精度定位权限未开启 |
 | ~~1505005~~ | Web: 4.0; 微信小程序:  ; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 缺失高精度权限授权（iOS特有）  **从4.25开始已经废弃** |
 | ~~1505021~~ | Web: 4.0; 微信小程序:  ; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 超时  **从4.25开始已经废弃** |
 | ~~1505022~~ | Web: 4.0; 微信小程序:  ; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 不支持的定位类型  **从4.25开始已经废弃** |

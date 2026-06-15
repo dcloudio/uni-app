@@ -34,7 +34,7 @@
 | scrollTop | number | 是 |  | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 获取或修改当前元素竖向滚动逻辑像素值，仅scroll-view、list-view可滚动组件组件支持，其他组件修改无效、获取时返回 0 |
 | tagName | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，获取当前元素的标签名 |
 | uniPage | [UniPage](/api/unipage.md) | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: 12; HarmonyOS: 4.61 | 只读属性，当前元素所属的页面对象 |
-| innerHTML | string | 是 |  | Web: x; 微信小程序: x; Android 系统版本: x; Android: 4.84; iOS 系统版本: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 只读属性，当前元素内部所有子元素（不包括注释节点）的 HTML 内容 |
+| innerHTML | string | 是 |  | Web: x; 微信小程序: x; Android: 4.84; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x; HarmonyOS(Vapor): x | 只读属性，当前元素内部所有子元素（不包括注释节点）的 HTML 内容 |
 
 
 #### style@style
@@ -566,9 +566,9 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
 获取元素android原生view 可能返回null
 
 ##### getAndroidView 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | 4.25 | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 4.25 | x | x | x |
 
 
 
@@ -652,9 +652,9 @@ if(webViewElement != null) {
 获取元素android原生activity 可能返回null
 
 ##### getAndroidActivity 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | 4.25 | x | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | x | 4.25 | x | x | x | x |
 
 
 
@@ -1343,9 +1343,9 @@ if(webViewElement != null) {
 获取元素ios原生view
 
 ##### getIOSView 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | x | x | 4.25 | x | x | x |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.25 | x | x |
 
 
 
@@ -2761,9 +2761,9 @@ play
 鸿蒙原生组件控制器，可以控制组件的状态。可能返回null
 
 ##### getHarmonyController 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | x | x | x | 4.61 | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 | x |
 
 
 

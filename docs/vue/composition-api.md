@@ -11,16 +11,16 @@
 
 ## 响应式: 核心
 
-|  | Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| ref() | 4.0 | 4.41 | √ | 10.0 | 4.11 | 4.61 |
-| computed() | 4.0 | 4.41 | √ | 10.0 | 4.11 | 4.61 |
-| reactive() | 4.0 | 4.41 | √ | 10.0 | 4.11 | 4.61 |
-| readonly() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| watchEffect() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| watchPostEffect() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| watchSyncEffect() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| watch() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
+|  | Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| ref() | 4.0 | 4.41 | √ | 4.11 | 4.61 |
+| computed() | 4.0 | 4.41 | √ | 4.11 | 4.61 |
+| reactive() | 4.0 | 4.41 | √ | 4.11 | 4.61 |
+| readonly() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
+| watchEffect() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
+| watchPostEffect() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
+| watchSyncEffect() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
+| watch() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
 
 ### 示例代码 @example
 
@@ -1842,16 +1842,16 @@ const updateReadonlyData = () => {
 
 ## 响应式: 工具
 
-|  | Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| isRef() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| unref() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| toRef() | 4.11 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| toValue() | 4.11 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| toRefs() | 4.11 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| isProxy() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| isReactive() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
-| isReadonly() | 4.0 | 4.41 | 4.0 | 10.0 | 4.11 | 4.61 |
+|  | Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| isRef() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
+| unref() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
+| toRef() | 4.11 | 4.41 | 4.0 | 4.11 | 4.61 |
+| toValue() | 4.11 | 4.41 | 4.0 | 4.11 | 4.61 |
+| toRefs() | 4.11 | 4.41 | 4.0 | 4.11 | 4.61 |
+| isProxy() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
+| isReactive() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
+| isReadonly() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
 
 
 ::: warning 注意
@@ -2340,16 +2340,16 @@ const isReactiveShallowReadonlyCount = isReactive(shallowReadonlyCount);
 
 |  | 兼容性 |
 | :- | :- |
-| shallowRef() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
-| triggerRef() | Web: x; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
-| customRef() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
-| shallowReactive() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
-| shallowReadonly() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
-| toRaw() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
+| shallowRef() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| triggerRef() | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| customRef() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| shallowReactive() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| shallowReadonly() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| toRaw() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 | markRaw() |   |
-| effectScope() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
-| getCurrentScope() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
-| onScopeDispose() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
+| effectScope() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| getCurrentScope() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| onScopeDispose() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 
 
 ### 示例代码 @example
@@ -2875,11 +2875,11 @@ const triggerRefState = () => {
 
 ## 组合选项 @options-composition
 
-|  | Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| provide | 4.0 | 4.41 | 3.99 | x | 10.0 | 4.11 | 5.11 | 4.61 | 5.0 |
-| inject | 4.0 | 4.41 | 3.99 | x | 10.0 | 4.11 | 5.11 | 4.61 | 5.0 |
-| mixins | 4.0 | 4.41 | 3.99 | x | 10.0 | 4.11 | x | 4.61 | x |
+|  | Web | 微信小程序 | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| provide | 4.0 | 4.41 | 3.99 | x | 4.11 | 5.11 | 4.61 | 5.0 |
+| inject | 4.0 | 4.41 | 3.99 | x | 4.11 | 5.11 | 4.61 | 5.0 |
+| mixins | 4.0 | 4.41 | 3.99 | x | 4.11 | x | 4.61 | x |
 
 ### inject
 
@@ -3160,30 +3160,30 @@ defineExpose({
 
 |  | 兼容性 | 描述 |
 | :- | :- | :- |
-| onMounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
-| onUpdated() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子。 |
-| onUnmounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之后调用。 |
-| onBeforeMount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 在挂载开始之前被调用：相关的 render 函数首次被调用。 |
-| onBeforeUpdate() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 数据更新时调用，发生在虚拟 DOM 打补丁之前。<br/>这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。 |
-| onBeforeUnmount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之前调用。 |
-| onErrorCaptured() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个钩子，在捕获了后代组件传递的错误时调用。 |
-| onRenderTracked() | Web: x; 微信小程序: -; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个调试钩子，当组件渲染过程中追踪到响应式依赖时调用。 |
-| onRenderTriggered() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个调试钩子，当响应式依赖的变更触发了组件渲染时调用。 |
-| onActivated() | Web: 4.0; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | keep-alive 组件激活时调用。 |
-| onDeactivated() | Web: 4.0; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | keep-alive 组件停用时调用。 |
-| onServerPrefetch() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个异步函数，在组件实例在服务器上被渲染之前调用。<br/>如果这个钩子返回了一个 Promise，服务端渲染会在渲染该组件前等待该 Promise 完成。<br/>这个钩子仅会在服务端渲染中执行，可以用于执行一些仅存在于服务端的数据抓取过程。 |
-| onRecycle() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): 5.11; HarmonyOS: x | 组件回收时的生命周期钩子 |
-| onReuse() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 10.0; iOS: x; iOS(Vapor): 5.11; HarmonyOS: x | 组件复用时的生命周期钩子 |
-| onLoad() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面加载<br/><br/>页面加载时触发。一个页面只会调用一次，可以在 onLoad 的参数中获取打开当前页面路径中的参数。 |
-| onReady() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面初次渲染完成<br/><br/>页面初次渲染完成时触发。一个页面只会调用一次，代表页面已经准备妥当，可以和视图层进行交互。<br/> |
-| onUnload() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面卸载<br/><br/>页面卸载时触发。如 `redirectTo` 或 `navigateBack` 到其他页面时。<br/> |
-| onPageShow() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面显示<br/><br/>页面显示/切入前台时触发。<br/> |
-| onPageHide() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面隐藏<br/><br/>页面隐藏/切入后台时触发。 如 `navigateTo` 或底部 `tab` 切换到其他页面，应用切入后台等。<br/> |
-| onPageScroll() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.13; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动触发事件的处理函数<br/><br/>监听用户滑动页面事件。 |
-| onBackPress() | Web: 4.0; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 监听页面返回 |
-| onReachBottom() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件的处理函数<br/>- 可以在 `pages.json` 的页面配置中设置触发距离 `onReachBottomDistance` 。<br/>- 在触发距离内滑动期间，本事件只会被触发一次。<br/> |
-| onPullDownRefresh() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 监听用户下拉动作<br/>- 需要在 `pages.json` 的页面配置中开启 `enablePullDownRefresh` 。<br/>- 可以通过 `uni.startPullDownRefresh` 触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。<br/>- 当处理完数据刷新后，`uni.stopPullDownRefresh` 可以停止当前页面的下拉刷新。<br/> |
-| onResize() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.03 | 页面尺寸改变时触发 |
+| onMounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
+| onUpdated() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子。 |
+| onUnmounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之后调用。 |
+| onBeforeMount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 在挂载开始之前被调用：相关的 render 函数首次被调用。 |
+| onBeforeUpdate() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 数据更新时调用，发生在虚拟 DOM 打补丁之前。<br/>这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。 |
+| onBeforeUnmount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之前调用。 |
+| onErrorCaptured() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个钩子，在捕获了后代组件传递的错误时调用。 |
+| onRenderTracked() | Web: x; 微信小程序: -; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个调试钩子，当组件渲染过程中追踪到响应式依赖时调用。 |
+| onRenderTriggered() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个调试钩子，当响应式依赖的变更触发了组件渲染时调用。 |
+| onActivated() | Web: 4.0; 微信小程序: x; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | keep-alive 组件激活时调用。 |
+| onDeactivated() | Web: 4.0; 微信小程序: x; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | keep-alive 组件停用时调用。 |
+| onServerPrefetch() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 注册一个异步函数，在组件实例在服务器上被渲染之前调用。<br/>如果这个钩子返回了一个 Promise，服务端渲染会在渲染该组件前等待该 Promise 完成。<br/>这个钩子仅会在服务端渲染中执行，可以用于执行一些仅存在于服务端的数据抓取过程。 |
+| onRecycle() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): 5.11; HarmonyOS: x | 组件回收时的生命周期钩子 |
+| onReuse() | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): 5.11; HarmonyOS: x | 组件复用时的生命周期钩子 |
+| onLoad() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面加载<br/><br/>页面加载时触发。一个页面只会调用一次，可以在 onLoad 的参数中获取打开当前页面路径中的参数。 |
+| onReady() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面初次渲染完成<br/><br/>页面初次渲染完成时触发。一个页面只会调用一次，代表页面已经准备妥当，可以和视图层进行交互。<br/> |
+| onUnload() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面卸载<br/><br/>页面卸载时触发。如 `redirectTo` 或 `navigateBack` 到其他页面时。<br/> |
+| onPageShow() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面显示<br/><br/>页面显示/切入前台时触发。<br/> |
+| onPageHide() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 生命周期回调 监听页面隐藏<br/><br/>页面隐藏/切入后台时触发。 如 `navigateTo` 或底部 `tab` 切换到其他页面，应用切入后台等。<br/> |
+| onPageScroll() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS: 4.13; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动触发事件的处理函数<br/><br/>监听用户滑动页面事件。 |
+| onBackPress() | Web: 4.0; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 监听页面返回 |
+| onReachBottom() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件的处理函数<br/>- 可以在 `pages.json` 的页面配置中设置触发距离 `onReachBottomDistance` 。<br/>- 在触发距离内滑动期间，本事件只会被触发一次。<br/> |
+| onPullDownRefresh() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 监听用户下拉动作<br/>- 需要在 `pages.json` 的页面配置中开启 `enablePullDownRefresh` 。<br/>- 可以通过 `uni.startPullDownRefresh` 触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。<br/>- 当处理完数据刷新后，`uni.stopPullDownRefresh` 可以停止当前页面的下拉刷新。<br/> |
+| onResize() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.03 | 页面尺寸改变时触发 |
 
 #### onMounted、onUnmounted 使用注意事项 @mounted-unmounted-tips
 
@@ -3364,23 +3364,23 @@ const updateTitle = () => {
 
 
 ##### 兼容性
-| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | √ | 3.9 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 10.0 | 4.11 | 5.11 | 4.61 | 5.03 |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | √ | 3.9 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 5.11 | 4.61 | 5.03 |
 
 
 ##### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| setup | Any |   | Web: 4.0; 微信小程序: √; Android: 4.0; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.03 |   |
-| lang | Any |   | Web: 4.0; 微信小程序: √; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |  |
+| setup | Any |   | Web: 4.0; 微信小程序: √; Android: 4.0; Android(Vapor): x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.03 |   |
+| lang | Any |   | Web: 4.0; 微信小程序: √; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |  |
 
 #### lang 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ts | Web: x; 微信小程序: √; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | typescript |
-| uts | Web: 4.0; 微信小程序: √; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | uts |
+| ts | Web: x; 微信小程序: √; Android: x; iOS: x; HarmonyOS: x | typescript |
+| uts | Web: 4.0; 微信小程序: √; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | uts |
 
 
 
@@ -3509,15 +3509,15 @@ export default {
 
 |  | 兼容性 |
 | :- | :- |
-| defineProps() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
-| defineEmits() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
-| defineModel() | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
-| defineExpose() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
-| defineOptions() | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
-| defineSlots() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
-| useSlots() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
-| useAttrs() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |
-| useRecycleState() | Web: x; 微信小程序: x; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |
+| defineProps() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| defineEmits() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| defineModel() | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| defineExpose() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| defineOptions() | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| defineSlots() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| useSlots() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| useAttrs() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| useRecycleState() | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
 
 
 ### defineProps()

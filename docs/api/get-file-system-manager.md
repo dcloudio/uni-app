@@ -100,30 +100,30 @@ access
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1200002 | Web: x; 微信小程序:  ; Android: √; iOS 系统版本: x; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
-| 1300002 | Web: x; 微信小程序:  ; Android: √; iOS 系统版本: x; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
-| 1300009 | Web: x; 微信小程序:  ; Android: 4.13; iOS 系统版本: x; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
-| 1300010 | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: 4.61 | 重试 |
-| 1300011 | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
-| 1300012 | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
-| 1300013 | Web: x; 微信小程序:  ; Android: √; iOS 系统版本: x; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
-| 1300014 | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
-| 1300015 | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
-| 1300016 | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
-| 1300017 | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
-| 1300018 | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
-| 1300019 | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
-| 1300020 | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
-| 1300021 | Web: x; 微信小程序:  ; Android: √; iOS 系统版本: x; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
-| 1300022 | Web: x; 微信小程序:  ; Android: √; iOS 系统版本: x; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
-| 1300033 | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
-| 1300066 | Web: x; 微信小程序:  ; Android: √; iOS 系统版本: x; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
-| 1300201 | Web: x; 微信小程序:  ; Android: √; iOS 系统版本: x; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
-| 1300202 | Web: x; 微信小程序:  ; Android: √; iOS 系统版本: x; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
-| 1301003 | Web: x; 微信小程序:  ; Android: √; iOS 系统版本: x; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
-| 1301005 | Web: x; 微信小程序:  ; Android: √; iOS 系统版本: x; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
-| 1301111 | Web: x; 微信小程序:  ; Android: 4.13; iOS 系统版本: x; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
-| 1302003 | Web: x; 微信小程序:  ; Android: 4.13; iOS 系统版本: x; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
+| 1200002 | Web: x; 微信小程序:  ; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 类型错误。仅支持 base64 / utf-8 / ascii |
+| 1300002 | Web: x; 微信小程序:  ; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 未找到文件 |
+| 1300009 | Web: x; 微信小程序:  ; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 文件描述符错误 |
+| 1300010 | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: 4.61 | 重试 |
+| 1300011 | Web: x; 微信小程序:  ; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 错误的地址 |
+| 1300012 | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: 4.61 | 操作阻塞 |
+| 1300013 | Web: x; 微信小程序:  ; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 无权限 |
+| 1300014 | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: 4.61 | 网络不可达 |
+| 1300015 | Web: x; 微信小程序:  ; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 未知错误 |
+| 1300016 | Web: x; 微信小程序:  ; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 不是文件夹 |
+| 1300017 | Web: x; 微信小程序:  ; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文本文件繁忙 |
+| 1300018 | Web: x; 微信小程序:  ; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件太大 |
+| 1300019 | Web: x; 微信小程序:  ; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 只读文件系统 |
+| 1300020 | Web: x; 微信小程序:  ; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件名称太长 |
+| 1300021 | Web: x; 微信小程序:  ; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 是目录 |
+| 1300022 | Web: x; 微信小程序:  ; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 参数无效 |
+| 1300033 | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: 4.61 | 过多符号链接 |
+| 1300066 | Web: x; 微信小程序:  ; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 目录非空 |
+| 1300201 | Web: x; 微信小程序:  ; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 系统错误 |
+| 1300202 | Web: x; 微信小程序:  ; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 超出文件存储限制的最大尺寸 |
+| 1301003 | Web: x; 微信小程序:  ; Android: √; iOS: 4.61; HarmonyOS: 4.61 | 对目录的非法操作 |
+| 1301005 | Web: x; 微信小程序:  ; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 文件已存在 |
+| 1301111 | Web: x; 微信小程序:  ; Android: 4.13; iOS: x; HarmonyOS: 4.61 | brotli解压失败 |
+| 1302003 | Web: x; 微信小程序:  ; Android: 4.13; iOS: 4.61; HarmonyOS: 4.61 | 标志无效 |
 
 
 
@@ -1037,9 +1037,9 @@ readCompressedFile
 readCompressedFileSync
 同步读取指定压缩类型的本地文件内容
 ##### readCompressedFileSync 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.41 | 4.13 | 4.61 | x | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | 4.41 | 4.13 | 4.61 | 4.61 |
 
 ##### 参数 
 

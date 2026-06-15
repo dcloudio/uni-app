@@ -140,8 +140,8 @@ postMessage
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| harmonySendable | boolean | 否 |  | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: 4.81 | 是否支持符合Sendable协议的对象作为共享变量发送，使用postMessageWithSharedSendable实现，默认值为false<br/>仅鸿蒙平台支持，参考：https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-sendable<br/> |
-| transfer | Array&lt;any&gt; | 否 |  | Web: 4.81; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: 4.81 | 可转移对象数组，默认值为空数组<br/>仅鸿蒙、web平台支持，参考：https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Transferable_objects<br/> | 
+| harmonySendable | boolean | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: 4.81 | 是否支持符合Sendable协议的对象作为共享变量发送，使用postMessageWithSharedSendable实现，默认值为false<br/>仅鸿蒙平台支持，参考：https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-sendable<br/> |
+| transfer | Array&lt;any&gt; | 否 |  | Web: 4.81; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: 4.81 | 可转移对象数组，默认值为空数组<br/>仅鸿蒙、web平台支持，参考：https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Transferable_objects<br/> | 
 
 
 

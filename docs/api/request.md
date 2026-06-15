@@ -13,9 +13,9 @@
 发起网络请求。
 
 ### request 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.4 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -34,7 +34,7 @@
 | method | string | 否 | "GET" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 请求方法 |
 | timeout | number | 否 | 60000 | Web:  ; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS:   | 超时时间，单位 ms |
 | enableQuic | boolean | 否 | false | Web: √; 微信小程序: √; Android 系统版本: 6.0; Android: 5.0; iOS 系统版本: x; iOS: 5.0; iOS uni-app x UTS 插件: 5.0; HarmonyOS: 5.0 | 是否开启 Quic/h3 协议<br/>`web` 端由服务端和浏览器共同决定是否启用 Quic/h3 协议，无需设置此参数 |
-| withCredentials | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android 系统版本: 4.4; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: x; HarmonyOS: x | 跨域请求时是否携带凭证（cookies）<br/> |
+| withCredentials | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: x; HarmonyOS: x | 跨域请求时是否携带凭证（cookies）<br/> |
 | firstIpv4 | boolean | 否 | false | Web: x; 微信小程序: 4.41; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: x; HarmonyOS: x | DNS解析时优先使用ipv4 |
 | enableChunked | boolean | 否 |  | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS uni-app x UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS uni-app x UTS 插件: 4.71 | 开启 transfer-encoding chunked。 |
 | success | (option: [RequestSuccess\<T>](#requestsuccess-values)) => void | 否 | null |   | 网络请求成功回调。 |

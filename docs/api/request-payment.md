@@ -88,8 +88,8 @@ uni.requestPayment是一个统一各平台的客户端支付API，客户端均�
 | 700605 | Web: x; 微信小程序:  ; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 服务供应商获取失败。 |
 | 700607 | Web: x; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 支付未完成。 |
 | 700608 | Web: x; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 服务商返回参数错误。 |
-| 700800 | Web: x; 微信小程序:  ; Android: x; iOS: 4.18; HarmonyOS 系统版本: x; HarmonyOS: x | 没有配置对应的URL Scheme。 |
-| 700801 | Web: x; 微信小程序:  ; Android: x; iOS: 4.18; HarmonyOS 系统版本: x; HarmonyOS: x | 没有配置对应的Universal Link。 |
+| 700800 | Web: x; 微信小程序:  ; Android: x; iOS: 4.18; HarmonyOS: x | 没有配置对应的URL Scheme。 |
+| 700801 | Web: x; 微信小程序:  ; Android: x; iOS: 4.18; HarmonyOS: x | 没有配置对应的Universal Link。 |
 | 701100 | Web: x; 微信小程序:  ; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 订单支付失败。 |
 | 701110 | Web: x; 微信小程序:  ; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 重复请求。 |
 

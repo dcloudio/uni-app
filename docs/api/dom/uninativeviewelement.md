@@ -24,9 +24,9 @@ UniNativeViewElement -- Extends --> UniElement
 绑定安卓平台原生view
 
 ##### bindAndroidView 兼容性 
-| Android | iOS | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.31 | x | x | x | x |
+| Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- |
+| 4.31 | x | x | x |
 
 
 ##### 参数 
@@ -45,9 +45,9 @@ UniNativeViewElement -- Extends --> UniElement
 绑定IOS平台原生view
 
 ##### bindIOSView 兼容性 
-| Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| x | x | 4.31 | x | x | x |
+| Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- |
+| x | x | 4.31 | x | x |
 
 
 ##### 参数 
@@ -66,9 +66,9 @@ UniNativeViewElement -- Extends --> UniElement
 绑定鸿蒙 FrameNode
 
 ##### bindHarmonyFrameNode 兼容性 
-| Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | x |
+| Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- |
+| x | x | 4.61 | x |
 
 
 ##### 参数 
@@ -87,9 +87,9 @@ UniNativeViewElement -- Extends --> UniElement
 绑定鸿蒙 wrapperBuilder
 
 ##### bindHarmonyWrappedBuilder 兼容性 
-| Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| x | x | 4.61 |
 
 
 ##### 参数 
@@ -115,9 +115,9 @@ UniNativeViewElement -- Extends --> UniElement
 获取鸿蒙 FrameNode
 
 ##### getHarmonyFrameNode 兼容性 
-| Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | x |
+| Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- |
+| x | x | 4.61 | x |
 
 
 
@@ -137,9 +137,9 @@ UniNativeViewElement -- Extends --> UniElement
 获取鸿蒙 BuilderNode
 
 ##### getHarmonyBuilderNode 兼容性 
-| Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | x |
+| Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- |
+| x | x | 4.61 | x |
 
 
 
@@ -159,9 +159,9 @@ UniNativeViewElement -- Extends --> UniElement
 绑定鸿蒙控制器
 
 ##### bindHarmonyController 兼容性 
-| Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| x | x | 4.61 |
 
 
 ##### 参数 

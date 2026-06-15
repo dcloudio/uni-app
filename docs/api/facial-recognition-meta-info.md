@@ -49,8 +49,8 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | certifyId | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | certifyId 调用实人认证的id |
-| progressBarColor | string | 否 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 活体检测页面的进度条颜色。<br/> |
-| screenOrientation | string | 否 | "port" | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 认证时屏幕方向 |
+| progressBarColor | string | 否 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS: x | 活体检测页面的进度条颜色。<br/> |
+| screenOrientation | string | 否 | "port" | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS: x | 认证时屏幕方向 |
 | success | (res: [StartFacialRecognitionVerifySuccess](#startfacialrecognitionverifysuccess-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 成功回调 |
 | fail | (res: [IFacialRecognitionVerifyError](#ifacialrecognitionverifyerror-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 失败回调 |
 | complete | (res: any) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 完成回调 | 

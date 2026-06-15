@@ -157,7 +157,7 @@ UniVideoElement -- Extends --> UniElement
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| direction | number | 否 |  | Web: x; 微信小程序: x; Android 系统版本: 4.4; Android: 3.9.0; iOS: 4.11; HarmonyOS:   | direction |
+| direction | number | 否 |  | Web: x; 微信小程序: x; Android: 3.9.0; iOS: 4.11; HarmonyOS:   | direction |
 
 ##### direction 的属性描述
 

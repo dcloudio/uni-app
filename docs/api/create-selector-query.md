@@ -152,7 +152,7 @@ fields
 | scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
 | properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
 | computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
-| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS:   | 是否返回节点对应的 Context 对象 |
+| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否返回节点对应的 Context 对象 |
 | node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
 
 
@@ -167,9 +167,9 @@ fields
 context
 添加节点的 Context 对象查询请求（uni-app x 暂仅支持获取 EditorContext）
 ###### context 兼容性 
-| Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.04 | 10.0 | 5.04 | 5.04 | 5.04 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.04 | 5.04 | 5.04 | 5.04 |
 
 ##### 参数 
 

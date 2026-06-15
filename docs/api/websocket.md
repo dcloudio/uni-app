@@ -22,9 +22,9 @@
 创建一个 WebSocket 连接。
 
 ### connectSocket 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.4 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -37,9 +37,9 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| url | string | 是 |  | Web:  ; 微信小程序: 4.41; Android 系统版本: 4.4; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器接口地址 |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web:  ; 微信小程序: 4.41; Android 系统版本: 4.4; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS:   | HTTP 请求 Header，header 中不能设置 Referer |
-| protocols | Array&lt;string&gt; | 否 | null | Web:  ; 微信小程序: 4.41; Android 系统版本: 4.4; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS:   | 子协议数组 |
+| url | string | 是 |  | Web:  ; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器接口地址 |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web:  ; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS:   | HTTP 请求 Header，header 中不能设置 Referer |
+| protocols | Array&lt;string&gt; | 否 | null | Web:  ; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS:   | 子协议数组 |
 | success | (result: [ConnectSocketSuccess](#connectsocketsuccess-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
 | fail | (result: [ConnectSocketFail](#connectsocketfail-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） |
@@ -77,9 +77,9 @@
 send
 通过 WebSocket 连接发送数据
 ##### send 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.4 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 ##### 参数 
 
@@ -91,7 +91,7 @@ send
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | any | 是 |  | Web:  ; 微信小程序: 4.41; Android 系统版本: 4.4; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 需要发送的内容, app平台从 4.61 版本开始支持ArrayBuffer |
+| data | any | 是 |  | Web:  ; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 需要发送的内容, app平台从 4.61 版本开始支持ArrayBuffer |
 | success | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
 | fail | (result: [SendSocketMessageFail](#sendsocketmessagefail-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -120,9 +120,9 @@ send
 close
 关闭 WebSocket 连接
 ##### close 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.4 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 ##### 参数 
 
@@ -134,8 +134,8 @@ close
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| code | number | 否 | 1000 | Web:  ; 微信小程序: 4.41; Android 系统版本: 4.4; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。如果这个参数没有被指定，默认的取值是1000 （表示正常连接关闭） |
-| reason | string | 否 | "" | Web:  ; 微信小程序: 4.41; Android 系统版本: 4.4; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 一个可读的字符串，表示连接被关闭的原因。这个字符串必须是不长于123字节的UTF-8 文本（不是字符） |
+| code | number | 否 | 1000 | Web:  ; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。如果这个参数没有被指定，默认的取值是1000 （表示正常连接关闭） |
+| reason | string | 否 | "" | Web:  ; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 一个可读的字符串，表示连接被关闭的原因。这个字符串必须是不长于123字节的UTF-8 文本（不是字符） |
 | success | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
 | fail | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
 | complete | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -146,9 +146,9 @@ close
 onOpen
 监听 WebSocket 连接打开事件
 ##### onOpen 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.4 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 ##### 参数 
 
@@ -160,7 +160,7 @@ onOpen
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| header | any | 是 |  | Web:  ; 微信小程序: 4.41; Android 系统版本: 4.4; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 连接成功的 HTTP 响应 Header |
+| header | any | 是 |  | Web:  ; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 连接成功的 HTTP 响应 Header |
 
 
 
@@ -168,9 +168,9 @@ onOpen
 onClose
 监听 WebSocket 连接关闭事件
 ##### onClose 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.4 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 ##### 参数 
 
@@ -184,9 +184,9 @@ onClose
 onError
 监听 WebSocket 错误
 ##### onError 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.4 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 ##### 参数 
 
@@ -200,9 +200,9 @@ onError
 onMessage
 监听 WebSocket 接受到服务器的消息事件
 ##### onMessage 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.4 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 ##### 参数 
 
@@ -214,7 +214,7 @@ onMessage
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | any | 是 |  | Web:  ; 微信小程序: 4.41; Android 系统版本: 4.4; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 服务器返回的消息, app平台从 4.61 版本开始支持ArrayBuffer |
+| data | any | 是 |  | Web:  ; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 服务器返回的消息, app平台从 4.61 版本开始支持ArrayBuffer |
 
 
  
@@ -251,9 +251,9 @@ onMessage
 监听WebSocket连接打开事件。  **已废弃，使用 SocketTask 的 onOpen 替换。**
 
 ### onSocketOpen 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.4 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -296,9 +296,9 @@ onMessage
 监听WebSocket错误。  **已废弃，使用 SocketTask 的 onError 替换。**
 
 ### onSocketError 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.4 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -347,9 +347,9 @@ onMessage
 通过 WebSocket 连接发送数据，需要先 uni.connectSocket，并在 uni.onSocketOpen 回调之后才能发送。  **已废弃，使用 SocketTask 的 send 替换。**
 
 ### sendSocketMessage 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.4 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -362,7 +362,7 @@ onMessage
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | any | 是 |  | Web:  ; 微信小程序: 4.41; Android 系统版本: 4.4; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 需要发送的内容, app平台从 4.61 版本开始支持ArrayBuffer |
+| data | any | 是 |  | Web:  ; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 需要发送的内容, app平台从 4.61 版本开始支持ArrayBuffer |
 | success | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
 | fail | (result: [SendSocketMessageFail](#sendsocketmessagefail-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -423,9 +423,9 @@ onMessage
 监听WebSocket接受到服务器的消息事件。  **已废弃，使用 SocketTask 的 onMessage 替换。**
 
 ### onSocketMessage 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.4 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -438,7 +438,7 @@ onMessage
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | any | 是 |  | Web:  ; 微信小程序: 4.41; Android 系统版本: 4.4; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 服务器返回的消息, app平台从 4.61 版本开始支持ArrayBuffer |
+| data | any | 是 |  | Web:  ; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 服务器返回的消息, app平台从 4.61 版本开始支持ArrayBuffer |
 
 
 
@@ -474,9 +474,9 @@ onMessage
 关闭 WebSocket 连接。  **已废弃，使用 SocketTask 的 close 替换。**
 
 ### closeSocket 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.4 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -489,8 +489,8 @@ onMessage
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| code | number | 否 | 1000 | Web:  ; 微信小程序: 4.41; Android 系统版本: 4.4; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。如果这个参数没有被指定，默认的取值是1000 （表示正常连接关闭） |
-| reason | string | 否 | "" | Web:  ; 微信小程序: 4.41; Android 系统版本: 4.4; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 一个可读的字符串，表示连接被关闭的原因。这个字符串必须是不长于123字节的UTF-8 文本（不是字符） |
+| code | number | 否 | 1000 | Web:  ; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。如果这个参数没有被指定，默认的取值是1000 （表示正常连接关闭） |
+| reason | string | 否 | "" | Web:  ; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 一个可读的字符串，表示连接被关闭的原因。这个字符串必须是不长于123字节的UTF-8 文本（不是字符） |
 | success | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
 | fail | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
 | complete | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -529,9 +529,9 @@ onMessage
 监听WebSocket关闭。  **已废弃，使用 SocketTask 的 onClose 替换。**
 
 ### onSocketClose 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.4 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -544,8 +544,8 @@ onMessage
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| code | number | 是 |  | Web:  ; 微信小程序: 4.41; Android 系统版本: 4.4; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。 |
-| reason | string | 是 |  | Web:  ; 微信小程序: 4.41; Android 系统版本: 4.4; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 一个可读的字符串，表示连接被关闭的原因。 |
+| code | number | 是 |  | Web:  ; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。 |
+| reason | string | 是 |  | Web:  ; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 一个可读的字符串，表示连接被关闭的原因。 |
 
 
 

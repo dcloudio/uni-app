@@ -38,9 +38,9 @@ App平台在manifest中配置添加三方广告SDK。具体配置可参考[文�
 由uniCloud服务器从各家广告平台接受到视频播放完毕后，通知业务服务进行奖励发放。[详见](https://uniapp.dcloud.net.cn/uni-ad/ad-rewarded-video.html#callback)
 
 ### createRewardedVideoAd 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.4 | 4.0 | 4.22 |
+| Web | 微信小程序 | Android | iOS |
+| :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.0 | 4.22 |
 
 
 ### 参数 
@@ -76,9 +76,9 @@ App平台在manifest中配置添加三方广告SDK。具体配置可参考[文�
 show
 广告加载成功之后，调用此方法展示广告
 ##### show 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 
 
@@ -93,9 +93,9 @@ show
 load
 加载广告
 ##### load 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 
 
@@ -110,9 +110,9 @@ load
 destroy
 销毁广告
 ##### destroy 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 
 
@@ -121,9 +121,9 @@ destroy
 onLoad
 绑定广告 load 事件的监听器
 ##### onLoad 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 ##### 参数 
 
@@ -137,9 +137,9 @@ onLoad
 offLoad
 解除绑定 load 事件的监听器
 ##### offLoad 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 ##### 参数 
 
@@ -153,9 +153,9 @@ offLoad
 onError
 绑定 error 事件的监听器
 ##### onError 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 ##### 参数 
 
@@ -179,9 +179,9 @@ onError
 offError
 解除绑定 error 事件的监听器
 ##### offError 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 ##### 参数 
 
@@ -195,9 +195,9 @@ offError
 onClose
 绑定 close 事件的监听器
 ##### onClose 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 ##### 参数 
 
@@ -217,9 +217,9 @@ onClose
 offClose
 解除绑定 close 事件的监听器
 ##### offClose 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 ##### 参数 
 
@@ -233,9 +233,9 @@ offClose
 onAdClicked
 绑定广告可点击屏幕区域事件的监听器
 ##### onAdClicked 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 ##### 参数 
 
@@ -249,9 +249,9 @@ onAdClicked
 onVerify
 绑定 verify 事件的监听器
 ##### onVerify 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 ##### 参数 
 

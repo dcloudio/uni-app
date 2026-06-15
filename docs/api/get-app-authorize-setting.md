@@ -32,19 +32,19 @@
 | :- | :- | :- | :- |  :-: | :- |
 | albumAuthorized | string | 是 |  | Web: x; 微信小程序:  ; Android: 4.25; iOS: 4.11; HarmonyOS:   | 允许 App 使用相册的开关<br/> |
 | bluetoothAuthorized | string | 是 |  | Web: x; 微信小程序:  ; Android: 4.25; iOS: 4.11; HarmonyOS:   | 允许 App 使用蓝牙的开关<br/> |
-| cameraAuthorized | string | 是 |  | Web: x; 微信小程序:  ; Android 系统版本: 4.4; Android: 3.9; iOS: 4.11; HarmonyOS:   | 允许 App 使用摄像头的开关<br/> |
-| locationAuthorized | string | 是 |  | Web: x; 微信小程序:  ; Android 系统版本: 4.4; Android: 3.9; iOS: 4.11; HarmonyOS:   | 允许 App 使用定位的开关<br/> |
-| locationAccuracy | string | 否 |  | Web: x; 微信小程序:  ; Android 系统版本: 4.4; Android: 3.9; iOS: 4.11; HarmonyOS:   | 定位准确度。<br/> |
-| locationReducedAccuracy | boolean | 否 |  | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS: 4.11; HarmonyOS:   | 定位准确度（推荐使用 locationAccuracy 属性）。true 表示模糊定位，false 表示精确定位（仅 iOS 支持） |
-| microphoneAuthorized | string | 是 |  | Web: x; 微信小程序:  ; Android 系统版本: 4.4; Android: 3.9; iOS: 4.11; HarmonyOS:   | 允许 App 使用麦克风的开关<br/> |
-| notificationAuthorized | string | 是 |  | Web: x; 微信小程序:  ; Android 系统版本: 4.4; Android: 3.9; iOS: 4.11; HarmonyOS:   | 允许 App 通知的开关<br/> |
-| notificationAlertAuthorized | string | 否 |  | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS: 4.11; HarmonyOS:   | 允许 App 通知带有提醒的开关（仅 iOS 支持）<br/> |
-| notificationBadgeAuthorized | string | 否 |  | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS: 4.11; HarmonyOS:   | 允许 App 通知带有标记的开关（仅 iOS 支持）<br/> |
-| notificationSoundAuthorized | string | 否 |  | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS: 4.11; HarmonyOS:   | 允许 App 通知带有声音的开关（仅 iOS 支持）<br/> |
-| phoneCalendarAuthorized | string | 否 |  | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 允许读写日历的开关（仅微信小程序支持）<br/> |
-| readPhoneCalendarAuthorized | string | 否 |  | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: 4.61 | 允许读日历的开关（仅鸿蒙支持）<br/> |
-| writePhoneCalendarAuthorized | string | 否 |  | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: 4.61 | 允许写日历的开关（仅鸿蒙支持）<br/> |
-| pasteboardAuthorized | string | 否 |  | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: 4.61 | 允许读取剪切版（仅鸿蒙支持）<br/> |
+| cameraAuthorized | string | 是 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 允许 App 使用摄像头的开关<br/> |
+| locationAuthorized | string | 是 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 允许 App 使用定位的开关<br/> |
+| locationAccuracy | string | 否 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 定位准确度。<br/> |
+| locationReducedAccuracy | boolean | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: 4.11; HarmonyOS:   | 定位准确度（推荐使用 locationAccuracy 属性）。true 表示模糊定位，false 表示精确定位（仅 iOS 支持） |
+| microphoneAuthorized | string | 是 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 允许 App 使用麦克风的开关<br/> |
+| notificationAuthorized | string | 是 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 允许 App 通知的开关<br/> |
+| notificationAlertAuthorized | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: 4.11; HarmonyOS:   | 允许 App 通知带有提醒的开关（仅 iOS 支持）<br/> |
+| notificationBadgeAuthorized | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: 4.11; HarmonyOS:   | 允许 App 通知带有标记的开关（仅 iOS 支持）<br/> |
+| notificationSoundAuthorized | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: 4.11; HarmonyOS:   | 允许 App 通知带有声音的开关（仅 iOS 支持）<br/> |
+| phoneCalendarAuthorized | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 允许读写日历的开关（仅微信小程序支持）<br/> |
+| readPhoneCalendarAuthorized | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: 4.61 | 允许读日历的开关（仅鸿蒙支持）<br/> |
+| writePhoneCalendarAuthorized | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: 4.61 | 允许写日历的开关（仅鸿蒙支持）<br/> |
+| pasteboardAuthorized | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: 4.61 | 允许读取剪切版（仅鸿蒙支持）<br/> |
 
 ##### albumAuthorized 的属性描述
 

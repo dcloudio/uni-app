@@ -7,9 +7,9 @@
 
 
 ### onUserCaptureScreen 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 4.4.4 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -52,9 +52,9 @@
 
 
 ### offUserCaptureScreen 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 4.4.4 | 3.9.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 3.9.0 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -108,9 +108,9 @@
 
 
 ### setUserCaptureScreen 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 4.4.4 | 3.9.0 | 13.0 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 3.9.0 | 13.0 | 4.11 | 4.61 |
 
 
 ### 参数 

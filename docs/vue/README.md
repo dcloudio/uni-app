@@ -306,25 +306,25 @@ style通过lang属性，可以支持less、scss、stylus等css预处理语言。
 
 
 ##### 兼容性
-| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | √ | 3.9 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 10.0 | 4.11 | 5.11 | 4.61 | 5.03 |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | √ | 3.9 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 5.11 | 4.61 | 5.03 |
 
 
 ##### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| lang | string |   | Web: 4.0; 微信小程序: √; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |  |
-| scoped | boolean |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
-| module | Any |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x |   |
+| lang | string |   | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |  |
+| scoped | boolean |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |   |
+| module | Any |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |   |
 
 #### lang 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| scss | Web: 4.0; 微信小程序: √; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |  |
-| less | Web: 4.0; 微信小程序: √; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |  |
-| stylus | Web: 4.0; 微信小程序: √; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 |  |
+| scss | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |  |
+| less | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |  |
+| stylus | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |  |
 
 
 

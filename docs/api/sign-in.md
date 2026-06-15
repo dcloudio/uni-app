@@ -22,8 +22,8 @@
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | provider | string | 否 |  | Web: x; 微信小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录服务提供商，通过uni.getProvider获取，如果不设置则弹出分享列表选择界面<br/> |
-| scopes | any | 否 |  | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 授权类型，默认 auth_base。支持 auth_base（静默授权）/ auth_user（主动授权） / auth_zhima（芝麻信用）<br/> |
-| timeout | number | 否 |  | Web: x; 微信小程序: 2.35; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 超时时间，单位 ms |
+| scopes | any | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 授权类型，默认 auth_base。支持 auth_base（静默授权）/ auth_user（主动授权） / auth_zhima（芝麻信用）<br/> |
+| timeout | number | 否 |  | Web: x; 微信小程序: 2.35; Android: x; iOS: x; HarmonyOS: x | 超时时间，单位 ms |
 | onlyAuthorize | boolean | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 微信登录仅请求授权认证<br/> |
 | success | (result: [LoginSuccess](#loginsuccess-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
 | fail | (result: [LoginFail](#loginfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
@@ -34,11 +34,11 @@
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | weixin | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 微信登录 |
-| qq | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | QQ登录 |
-| sinaweibo | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 新浪微博登录 |
-| xiaomi | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 小米登录 |
-| apple | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | Apple登录 |
-| huawei | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: 4.61 | 华为 HarmonyOS 华为账号登录 |
+| qq | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | QQ登录 |
+| sinaweibo | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 新浪微博登录 |
+| xiaomi | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 小米登录 |
+| apple | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | Apple登录 |
+| huawei | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: 4.61 | 华为 HarmonyOS 华为账号登录 |
 
 #### LoginSuccess 的属性值 @loginsuccess-values 
 
@@ -47,11 +47,11 @@
 | errMsg | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 描述信息 |
 | authResult | any | 是 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 登录服务商提供的登录信息，服务商不同返回的结果不完全相同 |
 | code | string | 是 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 小程序用户临时登录凭证 |
-| anonymousCode | string | 否 |  | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 头条小程序当前设备标识 |
-| authCode | string | 否 |  | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 支付宝小程序授权码 |
-| authErrorScope | any | 否 |  | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 支付宝小程序登录失败的授权类型，key是授权失败的 scope，value 是对应的错误码 |
-| authSucessScope | Array&lt;string&gt; | 否 |  | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 支付宝小程序登录成功的授权 scope |
-| appleInfo | **AppleLoginAppleInfo** | 否 |  | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 苹果登录成功返回的信息 |
+| anonymousCode | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 头条小程序当前设备标识 |
+| authCode | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序授权码 |
+| authErrorScope | any | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序登录失败的授权类型，key是授权失败的 scope，value 是对应的错误码 |
+| authSucessScope | Array&lt;string&gt; | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序登录成功的授权 scope |
+| appleInfo | **AppleLoginAppleInfo** | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 苹果登录成功返回的信息 |
 
 #### appleInfo 的属性描述
 
@@ -239,9 +239,9 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | provider | string | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 授权登录服务提供商，通过uni.getProvider获取 |
-| withCredentials | boolean | 否 |  | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 是否带上登录态信息，仅微信小程序生效。 |
-| lang | string | 否 |  | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。默认为en，仅微信小程序生效。 |
-| timeout | number | 否 |  | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 超时时间，单位 ms |
+| withCredentials | boolean | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否带上登录态信息，仅微信小程序生效。 |
+| lang | string | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。默认为en，仅微信小程序生效。 |
+| timeout | number | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 超时时间，单位 ms |
 | success | (result: [GetUserInfoSuccess](#getuserinfosuccess-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 接口调用成功的回调函数 |
 | fail | (result: [GetUserInfoFail](#getuserinfofail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -250,12 +250,12 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| weixin | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 微信登录。 - **推荐**: 使用 uniCloud 提供的云函数登录方式，避免在客户端暴露 appSecret。 1. [获取微信openid](https://doc.dcloud.net.cn/uniCloud/uni-id/old.html#获取微信openid) 2. [获取App平台微信登录用户信息](https://doc.dcloud.net.cn/uniCloud/uni-id/old.html#get-weixin-user-info) |
-| qq | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | QQ登录 |
-| sinaweibo | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 新浪微博登录 |
-| xiaomi | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 小米登录 |
-| apple | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | Apple登录 |
-| huawei | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: 4.61 | 华为 HarmonyOS 华为账号登录 |
+| weixin | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 微信登录。 - **推荐**: 使用 uniCloud 提供的云函数登录方式，避免在客户端暴露 appSecret。 1. [获取微信openid](https://doc.dcloud.net.cn/uniCloud/uni-id/old.html#获取微信openid) 2. [获取App平台微信登录用户信息](https://doc.dcloud.net.cn/uniCloud/uni-id/old.html#get-weixin-user-info) |
+| qq | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | QQ登录 |
+| sinaweibo | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 新浪微博登录 |
+| xiaomi | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 小米登录 |
+| apple | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | Apple登录 |
+| huawei | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: 4.61 | 华为 HarmonyOS 华为账号登录 |
 
 #### GetUserInfoSuccess 的属性值 @getuserinfosuccess-values 
 
@@ -275,7 +275,7 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 | nickName | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 用户昵称 |
 | openId | string | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 该服务商唯一用户标识 |
 | avatarUrl | string | 是 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 用户头像 |
-| gender | string | 否 |  | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: 4.81 | 用户性别（仅微信登录支持） |
+| gender | string | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.81 | 用户性别（仅微信登录支持） |
 
 ##### gender 的属性描述
 

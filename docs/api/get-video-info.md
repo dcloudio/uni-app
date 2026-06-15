@@ -33,8 +33,8 @@
 | size | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS:   | 视频大小，单位 kB |
 | height | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS:   | 视频的长，单位 px |
 | width | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS:   | 视频的宽，单位 px |
-| fps | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS 系统版本: x; HarmonyOS: x | 视频帧率 |
-| bitrate | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS 系统版本: x; HarmonyOS: x | 视频码率，单位 kbps |
+| fps | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS: x | 视频帧率 |
+| bitrate | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS: x | 视频码率，单位 kbps |
 | thumbTempFilePath | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: x | 视频缩略图临时文件路径 |
 | byteSize | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: x | 视频文件的字节大小 |
 

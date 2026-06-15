@@ -30,10 +30,10 @@
 | :- | :- | :- | :- |  :-: | :- |
 | current | any | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | current 为当前显示图片的链接/索引值，不填或填写的值无效则为 urls 的第一张。APP平台仅支持索引值。 |
 | urls | Array&lt;[string.ImageURIString](/uts/data-type.md#ide-string)&gt; | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要预览的图片链接列表 |
-| showmenu | boolean | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: 4.61 | 是否显示长按菜单<br/> |
-| indicator | "default" \| "number" \| "none" | 否 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 图片指示器样式<br/> |
-| loop | boolean | 否 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 是否可循环预览 |
-| longPressActions | **LongPressActionsOptions** | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.51; iOS 系统版本: 5.0; iOS: 4.71; HarmonyOS 系统版本: x; HarmonyOS: x | 长按图片显示操作菜单。 |
+| showmenu | boolean | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 是否显示长按菜单<br/> |
+| indicator | "default" \| "number" \| "none" | 否 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS: x | 图片指示器样式<br/> |
+| loop | boolean | 否 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS: x | 是否可循环预览 |
+| longPressActions | **LongPressActionsOptions** | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.71; HarmonyOS: x | 长按图片显示操作菜单。 |
 | success | (callback: [PreviewImageSuccess](#previewimagesuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
 | fail | (callback: [PreviewImageFail](#previewimagefail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
 | complete | (callback: any) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） |
@@ -353,7 +353,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.media.previewImage.previewImage)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/media/image.html#unipreviewimageobject)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/media/image/wx.previewImage.html)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=previewImage&doc_type=miniprogram)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=previewImage&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=previewImage&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=previewImage&secondType=all&type=1)
