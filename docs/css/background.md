@@ -35,10 +35,10 @@ background: [ <bg-layer> , ]* <final-bg-layer>;
 ### background 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| fixed | Web: 4.0; Android 系统版本: 4.4; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 背景固定于视口。在分页媒体中，如果没有视口，则“fixed”背景将相对于页面框固定，因此在每一页都会复制。 |
-| local | Web: 4.0; Android 系统版本: 4.4; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 背景相对于元素内容固定：如果元素具有滚动机制，背景将随元素内容滚动。 |
-| none | Web: 4.0; Android 系统版本: 4.4; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 被视为图像层，但不绘制任何内容。 |
-| scroll | Web: 4.0; Android 系统版本: 4.4; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 背景固定于元素自身，不随内容滚动（实际上附加在元素的边框上）。 |
+| fixed | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 背景固定于视口。在分页媒体中，如果没有视口，则“fixed”背景将相对于页面框固定，因此在每一页都会复制。 |
+| local | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 背景相对于元素内容固定：如果元素具有滚动机制，背景将随元素内容滚动。 |
+| none | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 被视为图像层，但不绘制任何内容。 |
+| scroll | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 背景固定于元素自身，不随内容滚动（实际上附加在元素的边框上）。 |
 
 
 

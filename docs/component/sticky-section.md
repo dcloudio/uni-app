@@ -20,7 +20,7 @@
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| push-pinned-header | boolean | true | Web: x; 微信小程序: x; Android: 3.98; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | sticky-section元素重叠时是否继续上推 |
+| push-pinned-header | boolean | true | Web: x; 微信小程序: x; Android: 3.98; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | sticky-section元素重叠时是否继续上推 |
 | padding | Array\<number> | [0,0,0,0\] | Web: 4.02; 微信小程序: x; Android: 3.98; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距  |
 
 

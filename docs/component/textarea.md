@@ -37,15 +37,15 @@
 | cursor | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定focus时的光标位置 |
 | confirm-hold | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 点击键盘右下角按钮时是否保持键盘不收起 |
 | auto-height | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.65; HarmonyOS(Vapor): 5.0 | 是否自动增高，设置auto-height时，style.height不生效 |
-| cursor-spacing | number | 0 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指定光标与键盘的距离，单位 px 。取 textarea 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离 |
-| cursor-color | string([string.ColorString](/uts/data-type.md#ide-string)) | "" | Web:  ; 微信小程序: 4.41; Android: 3.99; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定光标颜色 |
+| cursor-spacing | number | 0 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x; HarmonyOS(Vapor): x | 指定光标与键盘的距离，单位 px 。取 textarea 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离 |
+| cursor-color | string([string.ColorString](/uts/data-type.md#ide-string)) | "" | Web:  ; 微信小程序: 4.41; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定光标颜色 |
 | selection-start | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 光标起始位置，自动聚集时有效，需与selection-end搭配使用 |
 | selection-end | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 光标结束位置，自动聚集时有效，需与selection-satrt搭配使用 |
-| adjust-position | boolean | true | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 键盘弹起时，是否自动上推页面 |
-| hold-keyboard | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): x | focus时，点击页面的时候不收起键盘 |
-| inputmode | none \| text \| decimal \| numeric \| tel \| search \| email \| url | "text" | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 是一个枚举属性，它提供了用户在编辑元素或其内容时可能输入的数据类型的提示。在符合条件的高版本webview里，uni-app的 web 和 app-vue 平台中可使用本属性。 |
-| fixed | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true |
-| show-confirm-bar | boolean |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 是否显示键盘上方带有”完成“按钮那一栏 |
+| adjust-position | boolean | true | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 键盘弹起时，是否自动上推页面 |
+| hold-keyboard | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | focus时，点击页面的时候不收起键盘 |
+| inputmode | none \| text \| decimal \| numeric \| tel \| search \| email \| url | "text" | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 是一个枚举属性，它提供了用户在编辑元素或其内容时可能输入的数据类型的提示。在符合条件的高版本webview里，uni-app的 web 和 app-vue 平台中可使用本属性。 |
+| fixed | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true |
+| show-confirm-bar | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否显示键盘上方带有”完成“按钮那一栏 |
 | disabled | boolean |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(boolean)*<br/>是否禁用 |
 | disable-default-padding | boolean |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(boolean)*<br/>是否去掉 iOS 下的默认内边距 |
 | adjust-keyboard-to | boolean |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(boolean)*<br/>键盘对齐位置 |
@@ -53,7 +53,7 @@
 | @input | (event: [UniInputEvent](#uniinputevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 当键盘输入时，触发 input 事件，event.detail = {value, cursor}， @input 处理函数的返回值并不会反映到 textarea 上 |
 | @linechange | (event: [UniTextareaLineChangeEvent](#unitextarealinechangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.65 | 输入框行数变化时调用，event.detail = {height: 0, heightRpx: 0, lineCount: 0} |
 | @blur | (event: [UniTextareaBlurEvent](#unitextareablurevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 输入框失去焦点时触发，event.detail = {value, cursor} |
-| @keyboardheightchange | (event: [UniInputKeyboardHeightChangeEvent](#uniinputkeyboardheightchangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 键盘高度发生变化的时候触发此事件，event.detail = {height: height, duration: duration} |
+| @keyboardheightchange | (event: [UniInputKeyboardHeightChangeEvent](#uniinputkeyboardheightchangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 键盘高度发生变化的时候触发此事件，event.detail = {height: height, duration: duration} |
 | @focus | (event: [UniTextareaFocusEvent](#unitextareafocusevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度，在基础库 1.9.90 起支持 |
 | @change | (event: [UniInputChangeEvent](#uniinputchangeevent)) => void |   | Web: 4.81; 微信小程序: 4.41; Android: 4.73; iOS: 4.73; HarmonyOS: 4.73 | 非聚焦状态内容改变时触发（仅组件失去焦点时且用户输入改变内容才触发） |
 
@@ -61,12 +61,12 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| return | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.15; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 换行 |
-| send | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 发送 |
-| search | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 搜索 |
-| next | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 下一个 |
-| go | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 前往 |
-| done | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 完成 |
+| return | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.15; HarmonyOS: 4.61 | 换行 |
+| send | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS: 4.61 | 发送 |
+| search | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS: 4.61 | 搜索 |
+| next | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS: 4.61 | 下一个 |
+| go | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS: 4.61 | 前往 |
+| done | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS: 4.61 | 完成 |
 
 #### inputmode 的属性描述
 

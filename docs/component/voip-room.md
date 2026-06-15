@@ -8,41 +8,41 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| openid | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(string)*<br/>进入房间用户的 openid |
-| mode | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(string)*<br/>对话窗口类型 |
-| device-position | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(string)*<br/>摄像头方向，仅在 mode 为 camera 时有效 |
-| object-fit | string |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(string)*<br/>画面与容器比例不一致时，画面的表现形式 |
-| @error | eventhandle |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | *(eventhandle)*<br/>创建对话窗口失败时触发 |
+| openid | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>进入房间用户的 openid |
+| mode | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>对话窗口类型 |
+| device-position | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>摄像头方向，仅在 mode 为 camera 时有效 |
+| object-fit | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>画面与容器比例不一致时，画面的表现形式 |
+| @error | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>创建对话窗口失败时触发 |
 
 #### mode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| camera | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 自身传入 camera |
-| video | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 其他用户传入 video |
+| camera | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 自身传入 camera |
+| video | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 其他用户传入 video |
 
 #### device-position 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| front | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 前置 |
-| back | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 后置 |
+| front | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 前置 |
+| back | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 后置 |
 
 #### object-fit 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| fill | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 填充 |
-| contain | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 包含 |
-| cover | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 覆盖，安卓暂未支持，iOS 生效 |
+| fill | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 填充 |
+| contain | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 包含 |
+| cover | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 覆盖，安卓暂未支持，iOS 生效 |
 
 
 

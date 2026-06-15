@@ -21,10 +21,10 @@
 | src | string([string.ImageURIString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 图片资源地址 |
 | mode | string | "scaleToFill" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 图片裁剪、缩放的模式 |
 | lazy-load | boolean | false | Web: x; 微信小程序: 4.41; Android: x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: -; HarmonyOS(Vapor): x | 图片懒加载。只针对page与scroll-view下的image有效。 安卓默认懒加载不支持修改 |
-| fade-show | boolean | false | Web: x; 微信小程序: x; Android: 3.9; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 图片显示动画效果 |
-| webp | boolean | true | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: -; HarmonyOS(Vapor): x | 是否支持 WebP 格式，web、app平台默认支持 WebP 格式，不支持本属性，无法关闭对 WebP 格式的解析。 |
-| show-menu-by-longpress | boolean | false | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 开启长按图片显示识别小程序码菜单 |
-| draggable | boolean | false | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 鼠标长按是否能拖动图片(仅H5平台) |
+| fade-show | boolean | false | Web: x; 微信小程序: x; Android: 3.9; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 图片显示动画效果 |
+| webp | boolean | true | Web: x; 微信小程序: 4.41; Android: x; iOS: x; iOS(Vapor): x; HarmonyOS: -; HarmonyOS(Vapor): x | 是否支持 WebP 格式，web、app平台默认支持 WebP 格式，不支持本属性，无法关闭对 WebP 格式的解析。 |
+| show-menu-by-longpress | boolean | false | Web: x; 微信小程序: 4.41; Android: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 开启长按图片显示识别小程序码菜单 |
+| draggable | boolean | false | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 鼠标长按是否能拖动图片(仅H5平台) |
 | flatten | boolean | false | Web: x; 微信小程序: x; Android: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
 | @error | (event: [UniImageErrorEvent](#uniimageerrorevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 图片加载错误时触发，event.detail = { errMsg } |
 | @load | (event: [UniImageLoadEvent](#uniimageloadevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 图片加载完成时触发，event.detail = { width: '图片宽度px', height: '图片高度px' } |

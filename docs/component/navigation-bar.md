@@ -8,30 +8,30 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| √ | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 9.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| √ | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| title | string |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   | 导航条标题 |
-| title-icon | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   | 标题icon |
-| titleIcon-radius | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   | 标题icon圆角 |
-| subtitle-text | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   |   |
-| subtitle-size | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   |   |
-| subtitle-color | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   |   |
-| subtitle-overflow | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   |   |
-| title-align | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   |   |
-| background-image | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   |   |
-| background-repeat | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   |   |
-| blur-effect | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   |   |
-| loading | string |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   | 是否在导航条显示 loading 加载提示 |
-| front-color | string |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   | 导航条前景颜色值，包括按钮、标题、状态栏的颜色，仅支持 #ffffff 和 #000000 |
-| background-color | string |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   | 导航条背景颜色值，有效值为十六进制颜色 |
-| color-animation-duration | number |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   | 改变导航栏颜色时的动画时长，默认为 0 （即没有动画效果） |
-| color-animation-timing-func | string |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS:   | 改变导航栏颜色时的动画方式，支持 linear 、 easeIn 、 easeOut 和 easeInOut |
+| title | string |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 导航条标题 |
+| title-icon | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 标题icon |
+| titleIcon-radius | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 标题icon圆角 |
+| subtitle-text | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   |   |
+| subtitle-size | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   |   |
+| subtitle-color | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   |   |
+| subtitle-overflow | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   |   |
+| title-align | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   |   |
+| background-image | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   |   |
+| background-repeat | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   |   |
+| blur-effect | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   |   |
+| loading | string |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否在导航条显示 loading 加载提示 |
+| front-color | string |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 导航条前景颜色值，包括按钮、标题、状态栏的颜色，仅支持 #ffffff 和 #000000 |
+| background-color | string |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 导航条背景颜色值，有效值为十六进制颜色 |
+| color-animation-duration | number |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 改变导航栏颜色时的动画时长，默认为 0 （即没有动画效果） |
+| color-animation-timing-func | string |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 改变导航栏颜色时的动画方式，支持 linear 、 easeIn 、 easeOut 和 easeInOut |
 
 
 

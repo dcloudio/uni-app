@@ -22,7 +22,7 @@ uni-app x 目前不提供内置模块选择，而是提供了摇树机制自动�
 | uni-app-x | [uni-app-x 配置项列表](#manifest-uni-app-x) |  | Web: 4.0; 微信小程序:  ; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.21; HarmonyOS: 4.61 | 存在uni-app-x节点则表示为uni-app x项目 |
 | app | [app 配置项列表](#manifest-app) |  | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | App平台（原生App）配置 |
 | app-android | [app-android 配置项列表](#manifest-app-android) |  | Web: x; 微信小程序: x; Android: 4.71; Android(Vapor): 5.21; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | App-Android平台配置 |
-| app-ios | [app-ios 配置项列表](#manifest-app-ios) |  | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS 系统版本: 5.0; iOS: 4.71; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): x | iOS App平台配置 |
+| app-ios | [app-ios 配置项列表](#manifest-app-ios) |  | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS: 4.71; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): x | iOS App平台配置 |
 | app-harmony | [app-harmony 配置项列表](#manifest-app-harmony) |  | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | HarmonyOS平台配置 |
 | web | [web 配置项列表](#manifest-web) |  | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | Web平台配置 |
 | mp-weixin | [mp-weixin 配置项列表](#manifest-mp-weixin) |  | Web: x; 微信小程序: √; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
@@ -501,9 +501,9 @@ Android平台应用启动界面配置。云端打包后生效，建议在HBuilde
 
 iOS App平台配置
 
-| Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 5.0 | 4.71 | 5.11 | x | x |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.71 | 5.11 | x | x |
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
