@@ -978,21 +978,18 @@ export function initUTSElementProxyClass(options: ProxyClassOptions): any {
   const staticSetters = options.staticSetters || {}
 
   const classId = ++elementClassDefineId
-
-  const ProxyClass = class UTSClass {
+  const BaseClass = __VAPOR__ ? UniViewElementImpl : class {}
+  const ProxyClass = class UTSClass extends BaseClass {
     static [Symbol.hasInstance](instance) {
       return instance && instance.__element_class_id__ === classId
     }
     // page: UniNativePageImpl
     constructor(nodeId: number, page: any, tagName: string) {
+      super(nodeId, page, tagName)
       const pageId = page.pageId
       const element = { __type__: 'UniElement', pageId, nodeId }
       const target: Record<string, Function> = {}
-      const instance = __VAPOR__
-        ? // @ts-expect-error UniElementImpl构造参数调整
-          new UniViewElementImpl(nodeId, page, tagName)
-        : {}
-      const proxy = new Proxy(instance, {
+      const proxy = new Proxy(this, {
         get(_target, name) {
           // 重要：禁止响应式
           if (name === '__v_skip') {
@@ -1005,7 +1002,7 @@ export function initUTSElementProxyClass(options: ProxyClassOptions): any {
             uniElementImplPriorityMethods.includes(name as string) &&
             name in _target
           ) {
-            return _target[name]
+            return _target[name].bind(_target)
           }
           if (!target[name as string]) {
             //实例方法
@@ -1044,7 +1041,11 @@ export function initUTSElementProxyClass(options: ProxyClassOptions): any {
               })
             }
           }
-          return target[name as string] || _target[name as string]
+          const propOrMethod = _target[name as string]
+          if (typeof propOrMethod === 'function') {
+            return propOrMethod.bind(_target)
+          }
+          return propOrMethod
         },
         set(_target, name, newValue) {
           if (props.includes(name as string)) {
