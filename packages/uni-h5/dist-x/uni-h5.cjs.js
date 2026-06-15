@@ -3568,22 +3568,13 @@ const _export_sfc = (sfc, props2) => {
 };
 const _hoisted_1 = { class: "uni-page-refresh-inner" };
 const _hoisted_2 = ["fill"];
-const _hoisted_3 = /* @__PURE__ */ vue.createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
-const _hoisted_4 = /* @__PURE__ */ vue.createElementVNode("path", {
-  d: "M0 0h24v24H0z",
-  fill: "none"
-}, null, -1);
-const _hoisted_5 = [
-  _hoisted_3,
-  _hoisted_4
-];
-const _hoisted_6 = {
+const _hoisted_3 = {
   class: "uni-page-refresh__spinner",
   width: "24",
   height: "24",
   viewBox: "25 25 50 50"
 };
-const _hoisted_7 = ["stroke"];
+const _hoisted_4 = ["stroke"];
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return vue.openBlock(), vue.createElementBlock("uni-page-refresh", null, [
     vue.createElementVNode("div", {
@@ -3597,8 +3588,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
           width: "24",
           height: "24",
           viewBox: "0 0 24 24"
-        }, _hoisted_5, 8, _hoisted_2)),
-        (vue.openBlock(), vue.createElementBlock("svg", _hoisted_6, [
+        }, [..._cache[0] || (_cache[0] = [
+          vue.createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1),
+          vue.createElementVNode("path", {
+            d: "M0 0h24v24H0z",
+            fill: "none"
+          }, null, -1)
+        ])], 8, _hoisted_2)),
+        (vue.openBlock(), vue.createElementBlock("svg", _hoisted_3, [
           vue.createElementVNode("circle", {
             stroke: $setup.color,
             class: "uni-page-refresh__path",
@@ -3608,7 +3605,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
             fill: "none",
             "stroke-width": "4",
             "stroke-miterlimit": "10"
-          }, null, 8, _hoisted_7)
+          }, null, 8, _hoisted_4)
         ]))
       ])
     ], 4)
@@ -9728,10 +9725,10 @@ const _sfc_main$1 = /* @__PURE__ */ vue.defineComponent(__spreadProps$1(__spread
     return (_ctx, _cache) => {
       const _component_view = __syscom_0;
       return vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [
-        _ctx.overlay && showPageContainer.value ? (vue.openBlock(), vue.createBlock(_component_view, {
+        __props.overlay && showPageContainer.value ? (vue.openBlock(), vue.createBlock(_component_view, {
           key: 0,
           class: "uni-page-container-overlay",
-          style: vue.normalizeStyle([overlayStyleMap.value, _ctx.overlayStyle]),
+          style: vue.normalizeStyle([overlayStyleMap.value, __props.overlayStyle]),
           onClick: onClickOverlay,
           onTouchmove: _cache[0] || (_cache[0] = vue.withModifiers(() => {
           }, ["prevent", "stop"]))
@@ -9739,7 +9736,7 @@ const _sfc_main$1 = /* @__PURE__ */ vue.defineComponent(__spreadProps$1(__spread
         showPageContainer.value ? (vue.openBlock(), vue.createBlock(_component_view, {
           key: 1,
           class: vue.normalizeClass(["uni-page-container-popup", popupClasses.value]),
-          style: vue.normalizeStyle([innerStyleMap.value, _ctx.customStyle]),
+          style: vue.normalizeStyle([innerStyleMap.value, __props.customStyle]),
           onTouchstart: onTouchStart,
           onTouchmove: onTouchMove,
           onTouchend: onTouchEnd,

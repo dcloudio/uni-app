@@ -1,4 +1,10 @@
-import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray as isArray$1, toRawType, hasOwn, isMap, makeMap, capitalize, hyphenate, EMPTY_OBJ, toNumber, isPromise, isString, toHandlerKey, isOn, isModelListener, EMPTY_ARR, camelize, isRegExp, getGlobalThis, looseToNumber, invokeArrayFns, isSet, isPlainObject, remove, isReservedProp, isBuiltInDirective, NO, isGloballyAllowed, parseStringStyle, normalizeStyle as normalizeStyle$1, normalizeClass as normalizeClass$1, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue } from '@vue/shared';
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) { n[e] = r[e]; } return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0) { ; } } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+import { hasChanged, extend, isSymbol, isObject, toRawType, hasOwn, def, isFunction, isArray as isArray$1, isMap, makeMap, capitalize, hyphenate, EMPTY_OBJ, toNumber, isPromise, isString, toHandlerKey, isOn, isModelListener, EMPTY_ARR, camelize, isRegExp, getGlobalThis, NOOP, looseToNumber, invokeArrayFns, isSet, isPlainObject, remove, isReservedProp, isBuiltInDirective, NO, isGloballyAllowed, parseStringStyle, normalizeStyle as normalizeStyle$1, normalizeClass as normalizeClass$1, stringifyStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
 import { isIntegerKey, isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle, forcePatchProp, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_LAST_PAGE_BACK_PRESS, ON_EXIT, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
@@ -10,6 +16,7 @@ function warn$2(msg) {
 }
 var activeEffectScope;
 class EffectScope {
+  // TODO isolatedDeclarations "__v_skip"
   constructor() {
     var detached = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
     this.detached = detached;
@@ -18,6 +25,10 @@ class EffectScope {
      */
     this._active = true;
     /**
+     * @internal track `on` calls, allow `on` call multiple times
+     */
+    this._on = 0;
+    /**
      * @internal
      */
     this.effects = [];
@@ -25,13 +36,54 @@ class EffectScope {
      * @internal
      */
     this.cleanups = [];
-    this.parent = activeEffectScope;
+    this._isPaused = false;
+    this._warnOnRun = true;
+    this.__v_skip = true;
     if (!detached && activeEffectScope) {
-      this.index = (activeEffectScope.scopes || (activeEffectScope.scopes = [])).push(this) - 1;
+      if (activeEffectScope.active) {
+        this.parent = activeEffectScope;
+        this.index = (activeEffectScope.scopes || (activeEffectScope.scopes = [])).push(this) - 1;
+      } else {
+        this._active = false;
+        this._warnOnRun = false;
+      }
     }
   }
   get active() {
     return this._active;
+  }
+  pause() {
+    if (this._active) {
+      this._isPaused = true;
+      var i, l;
+      if (this.scopes) {
+        for (i = 0, l = this.scopes.length; i < l; i++) {
+          this.scopes[i].pause();
+        }
+      }
+      for (i = 0, l = this.effects.length; i < l; i++) {
+        this.effects[i].pause();
+      }
+    }
+  }
+  /**
+   * Resumes the effect scope, including all child scopes and effects.
+   */
+  resume() {
+    if (this._active) {
+      if (this._isPaused) {
+        this._isPaused = false;
+        var i, l;
+        if (this.scopes) {
+          for (i = 0, l = this.scopes.length; i < l; i++) {
+            this.scopes[i].resume();
+          }
+        }
+        for (i = 0, l = this.effects.length; i < l; i++) {
+          this.effects[i].resume();
+        }
+      }
+    }
   }
   run(fn) {
     if (this._active) {
@@ -42,7 +94,7 @@ class EffectScope {
       } finally {
         activeEffectScope = currentEffectScope;
       }
-    } else {
+    } else if (this._warnOnRun) {
       warn$2("cannot run an inactive effect scope.");
     }
   }
@@ -51,28 +103,49 @@ class EffectScope {
    * @internal
    */
   on() {
-    activeEffectScope = this;
+    if (++this._on === 1) {
+      this.prevScope = activeEffectScope;
+      activeEffectScope = this;
+    }
   }
   /**
    * This should only be called on non-detached scopes
    * @internal
    */
   off() {
-    activeEffectScope = this.parent;
+    if (this._on > 0 && --this._on === 0) {
+      if (activeEffectScope === this) {
+        activeEffectScope = this.prevScope;
+      } else {
+        var current = activeEffectScope;
+        while (current) {
+          if (current.prevScope === this) {
+            current.prevScope = this.prevScope;
+            break;
+          }
+          current = current.prevScope;
+        }
+      }
+      this.prevScope = void 0;
+    }
   }
   stop(fromParent) {
     if (this._active) {
+      this._active = false;
       var i, l;
       for (i = 0, l = this.effects.length; i < l; i++) {
         this.effects[i].stop();
       }
+      this.effects.length = 0;
       for (i = 0, l = this.cleanups.length; i < l; i++) {
         this.cleanups[i]();
       }
+      this.cleanups.length = 0;
       if (this.scopes) {
         for (i = 0, l = this.scopes.length; i < l; i++) {
           this.scopes[i].stop(true);
         }
+        this.scopes.length = 0;
       }
       if (!this.detached && this.parent && !fromParent) {
         var last = this.parent.scopes.pop();
@@ -82,161 +155,324 @@ class EffectScope {
         }
       }
       this.parent = void 0;
-      this._active = false;
     }
   }
 }
 function effectScope(detached) {
   return new EffectScope(detached);
 }
-function recordEffectScope(effect) {
-  var scope = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : activeEffectScope;
-  if (scope && scope.active) {
-    scope.effects.push(effect);
-  }
-}
 function getCurrentScope() {
   return activeEffectScope;
 }
 function onScopeDispose(fn) {
+  var failSilently = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
   if (activeEffectScope) {
     activeEffectScope.cleanups.push(fn);
-  } else {
+  } else if (!failSilently) {
     warn$2("onScopeDispose() is called when there is no active effect scope to be associated with.");
   }
 }
-var activeEffect;
+var activeSub;
+var pausedQueueEffects = /* @__PURE__ */new WeakSet();
 class ReactiveEffect {
-  constructor(fn, trigger, scheduler, scope) {
+  constructor(fn) {
     this.fn = fn;
-    this.trigger = trigger;
-    this.scheduler = scheduler;
-    this.active = true;
-    this.deps = [];
     /**
      * @internal
      */
-    this._dirtyLevel = 4;
+    this.deps = void 0;
     /**
      * @internal
      */
-    this._trackId = 0;
+    this.depsTail = void 0;
     /**
      * @internal
      */
-    this._runnings = 0;
+    this.flags = 1 | 4;
     /**
      * @internal
      */
-    this._shouldSchedule = false;
+    this.next = void 0;
     /**
      * @internal
      */
-    this._depsLength = 0;
-    recordEffectScope(this, scope);
-  }
-  get dirty() {
-    if (this._dirtyLevel === 2 || this._dirtyLevel === 3) {
-      this._dirtyLevel = 1;
-      pauseTracking();
-      for (var i = 0; i < this._depsLength; i++) {
-        var dep = this.deps[i];
-        if (dep.computed) {
-          triggerComputed(dep.computed);
-          if (this._dirtyLevel >= 4) {
-            break;
-          }
-        }
+    this.cleanup = void 0;
+    this.scheduler = void 0;
+    if (activeEffectScope) {
+      if (activeEffectScope.active) {
+        activeEffectScope.effects.push(this);
+      } else {
+        this.flags &= -2;
       }
-      if (this._dirtyLevel === 1) {
-        this._dirtyLevel = 0;
-      }
-      resetTracking();
     }
-    return this._dirtyLevel >= 4;
   }
-  set dirty(v) {
-    this._dirtyLevel = v ? 4 : 0;
+  pause() {
+    this.flags |= 64;
+  }
+  resume() {
+    if (this.flags & 64) {
+      this.flags &= -65;
+      if (pausedQueueEffects.has(this)) {
+        pausedQueueEffects.delete(this);
+        this.trigger();
+      }
+    }
+  }
+  /**
+   * @internal
+   */
+  notify() {
+    if (this.flags & 2 && !(this.flags & 32)) {
+      return;
+    }
+    if (!(this.flags & 8)) {
+      batch(this);
+    }
   }
   run() {
-    this._dirtyLevel = 0;
-    if (!this.active) {
+    if (!(this.flags & 1)) {
       return this.fn();
     }
-    var lastShouldTrack = shouldTrack;
-    var lastEffect = activeEffect;
+    this.flags |= 2;
+    cleanupEffect(this);
+    prepareDeps(this);
+    var prevEffect = activeSub;
+    var prevShouldTrack = shouldTrack;
+    activeSub = this;
+    shouldTrack = true;
     try {
-      shouldTrack = true;
-      activeEffect = this;
-      this._runnings++;
-      preCleanupEffect(this);
       return this.fn();
     } finally {
-      postCleanupEffect(this);
-      this._runnings--;
-      activeEffect = lastEffect;
-      shouldTrack = lastShouldTrack;
+      if (activeSub !== this) {
+        warn$2("Active effect was not restored correctly - this is likely a Vue internal bug.");
+      }
+      cleanupDeps(this);
+      activeSub = prevEffect;
+      shouldTrack = prevShouldTrack;
+      this.flags &= -3;
     }
   }
   stop() {
-    var _a;
-    if (this.active) {
-      preCleanupEffect(this);
-      postCleanupEffect(this);
-      (_a = this.onStop) == null ? void 0 : _a.call(this);
-      this.active = false;
+    if (this.flags & 1) {
+      for (var link = this.deps; link; link = link.nextDep) {
+        removeSub(link);
+      }
+      this.deps = this.depsTail = void 0;
+      cleanupEffect(this);
+      this.onStop && this.onStop();
+      this.flags &= -2;
     }
   }
-}
-function triggerComputed(computed) {
-  return computed.value;
-}
-function preCleanupEffect(effect2) {
-  effect2._trackId++;
-  effect2._depsLength = 0;
-}
-function postCleanupEffect(effect2) {
-  if (effect2.deps.length > effect2._depsLength) {
-    for (var i = effect2._depsLength; i < effect2.deps.length; i++) {
-      cleanupDepEffect(effect2.deps[i], effect2);
+  trigger() {
+    if (this.flags & 64) {
+      pausedQueueEffects.add(this);
+    } else if (this.scheduler) {
+      this.scheduler();
+    } else {
+      this.runIfDirty();
     }
-    effect2.deps.length = effect2._depsLength;
+  }
+  /**
+   * @internal
+   */
+  runIfDirty() {
+    if (isDirty(this)) {
+      this.run();
+    }
+  }
+  get dirty() {
+    return isDirty(this);
   }
 }
-function cleanupDepEffect(dep, effect2) {
-  var trackId = dep.get(effect2);
-  if (trackId !== void 0 && effect2._trackId !== trackId) {
-    dep.delete(effect2);
-    if (dep.size === 0) {
-      dep.cleanup();
+var batchDepth = 0;
+var batchedSub;
+var batchedComputed;
+function batch(sub) {
+  var isComputed = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  sub.flags |= 8;
+  if (isComputed) {
+    sub.next = batchedComputed;
+    batchedComputed = sub;
+    return;
+  }
+  sub.next = batchedSub;
+  batchedSub = sub;
+}
+function startBatch() {
+  batchDepth++;
+}
+function endBatch() {
+  if (--batchDepth > 0) {
+    return;
+  }
+  if (batchedComputed) {
+    var e = batchedComputed;
+    batchedComputed = void 0;
+    while (e) {
+      var next = e.next;
+      e.next = void 0;
+      e.flags &= -9;
+      e = next;
     }
+  }
+  var error;
+  while (batchedSub) {
+    var _e = batchedSub;
+    batchedSub = void 0;
+    while (_e) {
+      var _next = _e.next;
+      _e.next = void 0;
+      _e.flags &= -9;
+      if (_e.flags & 1) {
+        try {
+          ;
+          _e.trigger();
+        } catch (err) {
+          if (!error) error = err;
+        }
+      }
+      _e = _next;
+    }
+  }
+  if (error) throw error;
+}
+function prepareDeps(sub) {
+  for (var link = sub.deps; link; link = link.nextDep) {
+    link.version = -1;
+    link.prevActiveLink = link.dep.activeLink;
+    link.dep.activeLink = link;
+  }
+}
+function cleanupDeps(sub) {
+  var head;
+  var tail = sub.depsTail;
+  var link = tail;
+  while (link) {
+    var prev = link.prevDep;
+    if (link.version === -1) {
+      if (link === tail) tail = prev;
+      removeSub(link);
+      removeDep(link);
+    } else {
+      head = link;
+    }
+    link.dep.activeLink = link.prevActiveLink;
+    link.prevActiveLink = void 0;
+    link = prev;
+  }
+  sub.deps = head;
+  sub.depsTail = tail;
+}
+function isDirty(sub) {
+  for (var link = sub.deps; link; link = link.nextDep) {
+    if (link.dep.version !== link.version || link.dep.computed && (refreshComputed(link.dep.computed) || link.dep.version !== link.version)) {
+      return true;
+    }
+  }
+  if (sub._dirty) {
+    return true;
+  }
+  return false;
+}
+function refreshComputed(computed) {
+  if (computed.flags & 4 && !(computed.flags & 16)) {
+    return;
+  }
+  computed.flags &= -17;
+  if (computed.globalVersion === globalVersion) {
+    return;
+  }
+  computed.globalVersion = globalVersion;
+  if (!computed.isSSR && computed.flags & 128 && (!computed.deps && !computed._dirty || !isDirty(computed))) {
+    return;
+  }
+  computed.flags |= 2;
+  var dep = computed.dep;
+  var prevSub = activeSub;
+  var prevShouldTrack = shouldTrack;
+  activeSub = computed;
+  shouldTrack = true;
+  try {
+    prepareDeps(computed);
+    var value = computed.fn(computed._value);
+    if (dep.version === 0 || hasChanged(value, computed._value)) {
+      computed.flags |= 128;
+      computed._value = value;
+      dep.version++;
+    }
+  } catch (err) {
+    dep.version++;
+    throw err;
+  } finally {
+    activeSub = prevSub;
+    shouldTrack = prevShouldTrack;
+    cleanupDeps(computed);
+    computed.flags &= -3;
+  }
+}
+function removeSub(link) {
+  var soft = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var dep = link.dep,
+    prevSub = link.prevSub,
+    nextSub = link.nextSub;
+  if (prevSub) {
+    prevSub.nextSub = nextSub;
+    link.prevSub = void 0;
+  }
+  if (nextSub) {
+    nextSub.prevSub = prevSub;
+    link.nextSub = void 0;
+  }
+  if (dep.subsHead === link) {
+    dep.subsHead = nextSub;
+  }
+  if (dep.subs === link) {
+    dep.subs = prevSub;
+    if (!prevSub && dep.computed) {
+      dep.computed.flags &= -5;
+      for (var l = dep.computed.deps; l; l = l.nextDep) {
+        removeSub(l, true);
+      }
+    }
+  }
+  if (!soft && ! --dep.sc && dep.map) {
+    dep.map.delete(dep.key);
+  }
+}
+function removeDep(link) {
+  var prevDep = link.prevDep,
+    nextDep = link.nextDep;
+  if (prevDep) {
+    prevDep.nextDep = nextDep;
+    link.prevDep = void 0;
+  }
+  if (nextDep) {
+    nextDep.prevDep = prevDep;
+    link.nextDep = void 0;
   }
 }
 function effect(fn, options) {
   if (fn.effect instanceof ReactiveEffect) {
     fn = fn.effect.fn;
   }
-  var _effect = new ReactiveEffect(fn, NOOP, () => {
-    if (_effect.dirty) {
-      _effect.run();
-    }
-  });
+  var e = new ReactiveEffect(fn);
   if (options) {
-    extend(_effect, options);
-    if (options.scope) recordEffectScope(_effect, options.scope);
+    extend(e, options);
   }
-  if (!options || !options.lazy) {
-    _effect.run();
+  try {
+    e.run();
+  } catch (err) {
+    e.stop();
+    throw err;
   }
-  var runner = _effect.run.bind(_effect);
-  runner.effect = _effect;
+  var runner = e.run.bind(e);
+  runner.effect = e;
   return runner;
 }
 function stop(runner) {
   runner.effect.stop();
 }
 var shouldTrack = true;
-var pauseScheduleStack = 0;
 var trackStack = [];
 function pauseTracking() {
   trackStack.push(shouldTrack);
@@ -246,194 +482,467 @@ function resetTracking() {
   var last = trackStack.pop();
   shouldTrack = last === void 0 ? true : last;
 }
-function pauseScheduling() {
-  pauseScheduleStack++;
-}
-function resetScheduling() {
-  pauseScheduleStack--;
-  while (!pauseScheduleStack && queueEffectSchedulers.length) {
-    queueEffectSchedulers.shift()();
+function cleanupEffect(e) {
+  var cleanup = e.cleanup;
+  e.cleanup = void 0;
+  if (cleanup) {
+    var prevSub = activeSub;
+    activeSub = void 0;
+    try {
+      cleanup();
+    } finally {
+      activeSub = prevSub;
+    }
   }
 }
-function trackEffect(effect2, dep, debuggerEventExtraInfo) {
-  var _a;
-  if (dep.get(effect2) !== effect2._trackId) {
-    dep.set(effect2, effect2._trackId);
-    var oldDep = effect2.deps[effect2._depsLength];
-    if (oldDep !== dep) {
-      if (oldDep) {
-        cleanupDepEffect(oldDep, effect2);
-      }
-      effect2.deps[effect2._depsLength++] = dep;
-    } else {
-      effect2._depsLength++;
-    }
+var globalVersion = 0;
+class Link {
+  constructor(sub, dep) {
+    this.sub = sub;
+    this.dep = dep;
+    this.version = dep.version;
+    this.nextDep = this.prevDep = this.nextSub = this.prevSub = this.prevActiveLink = void 0;
+  }
+}
+class Dep {
+  // TODO isolatedDeclarations "__v_skip"
+  constructor(computed) {
+    this.computed = computed;
+    this.version = 0;
+    /**
+     * Link between this dep and the current active effect
+     */
+    this.activeLink = void 0;
+    /**
+     * Doubly linked list representing the subscribing effects (tail)
+     */
+    this.subs = void 0;
+    /**
+     * For object property deps cleanup
+     */
+    this.map = void 0;
+    this.key = void 0;
+    /**
+     * Subscriber counter
+     */
+    this.sc = 0;
+    /**
+     * @internal
+     */
+    this.__v_skip = true;
     {
-      (_a = effect2.onTrack) == null ? void 0 : _a.call(effect2, extend({
-        effect: effect2
-      }, debuggerEventExtraInfo));
+      this.subsHead = void 0;
     }
   }
-}
-var queueEffectSchedulers = [];
-function triggerEffects(dep, dirtyLevel, debuggerEventExtraInfo) {
-  var _a;
-  pauseScheduling();
-  for (var effect2 of dep.keys()) {
-    var tracking = void 0;
-    if (effect2._dirtyLevel < dirtyLevel && (tracking != null ? tracking : tracking = dep.get(effect2) === effect2._trackId)) {
-      effect2._shouldSchedule || (effect2._shouldSchedule = effect2._dirtyLevel === 0);
-      effect2._dirtyLevel = dirtyLevel;
+  track(debugInfo) {
+    if (!activeSub || !shouldTrack || activeSub === this.computed) {
+      return;
     }
-    if (effect2._shouldSchedule && (tracking != null ? tracking : tracking = dep.get(effect2) === effect2._trackId)) {
-      {
-        (_a = effect2.onTrigger) == null ? void 0 : _a.call(effect2, extend({
-          effect: effect2
-        }, debuggerEventExtraInfo));
+    var link = this.activeLink;
+    if (link === void 0 || link.sub !== activeSub) {
+      link = this.activeLink = new Link(activeSub, this);
+      if (!activeSub.deps) {
+        activeSub.deps = activeSub.depsTail = link;
+      } else {
+        link.prevDep = activeSub.depsTail;
+        activeSub.depsTail.nextDep = link;
+        activeSub.depsTail = link;
       }
-      effect2.trigger();
-      if ((!effect2._runnings || effect2.allowRecurse) && effect2._dirtyLevel !== 2) {
-        effect2._shouldSchedule = false;
-        if (effect2.scheduler) {
-          queueEffectSchedulers.push(effect2.scheduler);
+      addSub(link);
+    } else if (link.version === -1) {
+      link.version = this.version;
+      if (link.nextDep) {
+        var next = link.nextDep;
+        next.prevDep = link.prevDep;
+        if (link.prevDep) {
+          link.prevDep.nextDep = next;
+        }
+        link.prevDep = activeSub.depsTail;
+        link.nextDep = void 0;
+        activeSub.depsTail.nextDep = link;
+        activeSub.depsTail = link;
+        if (activeSub.deps === link) {
+          activeSub.deps = next;
         }
       }
     }
+    if (activeSub.onTrack) {
+      activeSub.onTrack(extend({
+        effect: activeSub
+      }, debugInfo));
+    }
+    return link;
   }
-  resetScheduling();
+  trigger(debugInfo) {
+    this.version++;
+    globalVersion++;
+    this.notify(debugInfo);
+  }
+  notify(debugInfo) {
+    startBatch();
+    try {
+      if (!!("development" !== "production")) {
+        for (var head = this.subsHead; head; head = head.nextSub) {
+          if (head.sub.onTrigger && !(head.sub.flags & 8)) {
+            head.sub.onTrigger(extend({
+              effect: head.sub
+            }, debugInfo));
+          }
+        }
+      }
+      for (var link = this.subs; link; link = link.prevSub) {
+        if (link.sub.notify()) {
+          ;
+          link.sub.dep.notify();
+        }
+      }
+    } finally {
+      endBatch();
+    }
+  }
 }
-var createDep = (cleanup, computed) => {
-  var dep = /* @__PURE__ */new Map();
-  dep.cleanup = cleanup;
-  dep.computed = computed;
-  return dep;
-};
+function addSub(link) {
+  link.dep.sc++;
+  if (link.sub.flags & 4) {
+    var _computed = link.dep.computed;
+    if (_computed && !link.dep.subs) {
+      _computed.flags |= 4 | 16;
+      for (var l = _computed.deps; l; l = l.nextDep) {
+        addSub(l);
+      }
+    }
+    var currentTail = link.dep.subs;
+    if (currentTail !== link) {
+      link.prevSub = currentTail;
+      if (currentTail) currentTail.nextSub = link;
+    }
+    if (link.dep.subsHead === void 0) {
+      link.dep.subsHead = link;
+    }
+    link.dep.subs = link;
+  }
+}
 var targetMap = /* @__PURE__ */new WeakMap();
-var ITERATE_KEY = Symbol("iterate");
-var MAP_KEY_ITERATE_KEY = Symbol("Map key iterate");
+var ITERATE_KEY = /* @__PURE__ */Symbol("Object iterate");
+var MAP_KEY_ITERATE_KEY = /* @__PURE__ */Symbol("Map keys iterate");
+var ARRAY_ITERATE_KEY = /* @__PURE__ */Symbol("Array iterate");
 function track(target, type, key) {
-  if (shouldTrack && activeEffect) {
+  if (shouldTrack && activeSub) {
     var depsMap = targetMap.get(target);
     if (!depsMap) {
       targetMap.set(target, depsMap = /* @__PURE__ */new Map());
     }
     var dep = depsMap.get(key);
     if (!dep) {
-      depsMap.set(key, dep = createDep(() => depsMap.delete(key)));
+      depsMap.set(key, dep = new Dep());
+      dep.map = depsMap;
+      dep.key = key;
     }
-    trackEffect(activeEffect, dep, {
-      target,
-      type,
-      key
-    });
+    {
+      dep.track({
+        target,
+        type,
+        key
+      });
+    }
   }
 }
 function trigger(target, type, key, newValue, oldValue, oldTarget) {
   var depsMap = targetMap.get(target);
   if (!depsMap) {
+    globalVersion++;
     return;
   }
-  var deps = [];
-  if (type === "clear") {
-    deps = [...depsMap.values()];
-  } else if (key === "length" && isArray$1(target)) {
-    var newLength = Number(newValue);
-    depsMap.forEach((dep, key2) => {
-      if (key2 === "length" || !isSymbol(key2) && key2 >= newLength) {
-        deps.push(dep);
-      }
-    });
-  } else {
-    if (key !== void 0) {
-      deps.push(depsMap.get(key));
-    }
-    switch (type) {
-      case "add":
-        if (!isArray$1(target)) {
-          deps.push(depsMap.get(ITERATE_KEY));
-          if (isMap(target)) {
-            deps.push(depsMap.get(MAP_KEY_ITERATE_KEY));
-          }
-        } else if (isIntegerKey(key)) {
-          deps.push(depsMap.get("length"));
-        }
-        break;
-      case "delete":
-        if (!isArray$1(target)) {
-          deps.push(depsMap.get(ITERATE_KEY));
-          if (isMap(target)) {
-            deps.push(depsMap.get(MAP_KEY_ITERATE_KEY));
-          }
-        }
-        break;
-      case "set":
-        if (isMap(target)) {
-          deps.push(depsMap.get(ITERATE_KEY));
-        }
-        break;
-    }
-  }
-  pauseScheduling();
-  for (var dep of deps) {
+  var run = dep => {
     if (dep) {
-      triggerEffects(dep, 4, {
-        target,
-        type,
-        key,
-        newValue,
-        oldValue,
-        oldTarget
+      {
+        dep.trigger({
+          target,
+          type,
+          key,
+          newValue,
+          oldValue,
+          oldTarget
+        });
+      }
+    }
+  };
+  startBatch();
+  if (type === "clear") {
+    depsMap.forEach(run);
+  } else {
+    var targetIsArray = isArray$1(target);
+    var isArrayIndex = targetIsArray && isIntegerKey(key);
+    if (targetIsArray && key === "length") {
+      var newLength = Number(newValue);
+      depsMap.forEach((dep, key2) => {
+        if (key2 === "length" || key2 === ARRAY_ITERATE_KEY || !isSymbol(key2) && key2 >= newLength) {
+          run(dep);
+        }
       });
+    } else {
+      if (key !== void 0 || depsMap.has(void 0)) {
+        run(depsMap.get(key));
+      }
+      if (isArrayIndex) {
+        run(depsMap.get(ARRAY_ITERATE_KEY));
+      }
+      switch (type) {
+        case "add":
+          if (!targetIsArray) {
+            run(depsMap.get(ITERATE_KEY));
+            if (isMap(target)) {
+              run(depsMap.get(MAP_KEY_ITERATE_KEY));
+            }
+          } else if (isArrayIndex) {
+            run(depsMap.get("length"));
+          }
+          break;
+        case "delete":
+          if (!targetIsArray) {
+            run(depsMap.get(ITERATE_KEY));
+            if (isMap(target)) {
+              run(depsMap.get(MAP_KEY_ITERATE_KEY));
+            }
+          }
+          break;
+        case "set":
+          if (isMap(target)) {
+            run(depsMap.get(ITERATE_KEY));
+          }
+          break;
+      }
     }
   }
-  resetScheduling();
+  endBatch();
 }
 function getDepFromReactive(object, key) {
-  var _a;
-  return (_a = targetMap.get(object)) == null ? void 0 : _a.get(key);
+  var depMap = targetMap.get(object);
+  return depMap && depMap.get(key);
+}
+function reactiveReadArray(array) {
+  var raw = toRaw(array);
+  if (raw === array) return raw;
+  track(raw, "iterate", ARRAY_ITERATE_KEY);
+  return isShallow(array) ? raw : raw.map(toReactive);
+}
+function shallowReadArray(arr) {
+  track(arr = toRaw(arr), "iterate", ARRAY_ITERATE_KEY);
+  return arr;
+}
+function toWrapped(target, item) {
+  if (isReadonly(target)) {
+    return isReactive(target) ? toReadonly(toReactive(item)) : toReadonly(item);
+  }
+  return toReactive(item);
+}
+var arrayInstrumentations = {
+  __proto__: null,
+  [Symbol.iterator]() {
+    return iterator(this, Symbol.iterator, item => toWrapped(this, item));
+  },
+  concat() {
+    for (var _len2 = arguments.length, args = new Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
+      args[_key3] = arguments[_key3];
+    }
+    return reactiveReadArray(this).concat(...args.map(x => isArray$1(x) ? reactiveReadArray(x) : x));
+  },
+  entries() {
+    return iterator(this, "entries", value => {
+      value[1] = toWrapped(this, value[1]);
+      return value;
+    });
+  },
+  every(fn, thisArg) {
+    return apply(this, "every", fn, thisArg, void 0, arguments);
+  },
+  filter(fn, thisArg) {
+    return apply(this, "filter", fn, thisArg, v => v.map(item => toWrapped(this, item)), arguments);
+  },
+  find(fn, thisArg) {
+    return apply(this, "find", fn, thisArg, item => toWrapped(this, item), arguments);
+  },
+  findIndex(fn, thisArg) {
+    return apply(this, "findIndex", fn, thisArg, void 0, arguments);
+  },
+  findLast(fn, thisArg) {
+    return apply(this, "findLast", fn, thisArg, item => toWrapped(this, item), arguments);
+  },
+  findLastIndex(fn, thisArg) {
+    return apply(this, "findLastIndex", fn, thisArg, void 0, arguments);
+  },
+  // flat, flatMap could benefit from ARRAY_ITERATE but are not straight-forward to implement
+  forEach(fn, thisArg) {
+    return apply(this, "forEach", fn, thisArg, void 0, arguments);
+  },
+  includes() {
+    for (var _len3 = arguments.length, args = new Array(_len3), _key4 = 0; _key4 < _len3; _key4++) {
+      args[_key4] = arguments[_key4];
+    }
+    return searchProxy(this, "includes", args);
+  },
+  indexOf() {
+    for (var _len4 = arguments.length, args = new Array(_len4), _key5 = 0; _key5 < _len4; _key5++) {
+      args[_key5] = arguments[_key5];
+    }
+    return searchProxy(this, "indexOf", args);
+  },
+  join(separator) {
+    return reactiveReadArray(this).join(separator);
+  },
+  // keys() iterator only reads `length`, no optimization required
+  lastIndexOf() {
+    for (var _len5 = arguments.length, args = new Array(_len5), _key6 = 0; _key6 < _len5; _key6++) {
+      args[_key6] = arguments[_key6];
+    }
+    return searchProxy(this, "lastIndexOf", args);
+  },
+  map(fn, thisArg) {
+    return apply(this, "map", fn, thisArg, void 0, arguments);
+  },
+  pop() {
+    return noTracking(this, "pop");
+  },
+  push() {
+    for (var _len6 = arguments.length, args = new Array(_len6), _key7 = 0; _key7 < _len6; _key7++) {
+      args[_key7] = arguments[_key7];
+    }
+    return noTracking(this, "push", args);
+  },
+  reduce(fn) {
+    for (var _len7 = arguments.length, args = new Array(_len7 > 1 ? _len7 - 1 : 0), _key8 = 1; _key8 < _len7; _key8++) {
+      args[_key8 - 1] = arguments[_key8];
+    }
+    return reduce(this, "reduce", fn, args);
+  },
+  reduceRight(fn) {
+    for (var _len8 = arguments.length, args = new Array(_len8 > 1 ? _len8 - 1 : 0), _key9 = 1; _key9 < _len8; _key9++) {
+      args[_key9 - 1] = arguments[_key9];
+    }
+    return reduce(this, "reduceRight", fn, args);
+  },
+  shift() {
+    return noTracking(this, "shift");
+  },
+  // slice could use ARRAY_ITERATE but also seems to beg for range tracking
+  some(fn, thisArg) {
+    return apply(this, "some", fn, thisArg, void 0, arguments);
+  },
+  splice() {
+    for (var _len9 = arguments.length, args = new Array(_len9), _key0 = 0; _key0 < _len9; _key0++) {
+      args[_key0] = arguments[_key0];
+    }
+    return noTracking(this, "splice", args);
+  },
+  toReversed() {
+    return reactiveReadArray(this).toReversed();
+  },
+  toSorted(comparer) {
+    return reactiveReadArray(this).toSorted(comparer);
+  },
+  toSpliced() {
+    return reactiveReadArray(this).toSpliced(...arguments);
+  },
+  unshift() {
+    for (var _len0 = arguments.length, args = new Array(_len0), _key1 = 0; _key1 < _len0; _key1++) {
+      args[_key1] = arguments[_key1];
+    }
+    return noTracking(this, "unshift", args);
+  },
+  values() {
+    return iterator(this, "values", item => toWrapped(this, item));
+  }
+};
+function iterator(self, method, wrapValue) {
+  var arr = shallowReadArray(self);
+  var iter = arr[method]();
+  if (arr !== self && !isShallow(self)) {
+    iter._next = iter.next;
+    iter.next = () => {
+      var result = iter._next();
+      if (!result.done) {
+        result.value = wrapValue(result.value);
+      }
+      return result;
+    };
+  }
+  return iter;
+}
+var arrayProto = Array.prototype;
+function apply(self, method, fn, thisArg, wrappedRetFn, args) {
+  var arr = shallowReadArray(self);
+  var needsWrap = arr !== self && !isShallow(self);
+  var methodFn = arr[method];
+  if (methodFn !== arrayProto[method]) {
+    var result2 = methodFn.apply(self, args);
+    return needsWrap ? toReactive(result2) : result2;
+  }
+  var wrappedFn = fn;
+  if (arr !== self) {
+    if (needsWrap) {
+      wrappedFn = function (item, index) {
+        return fn.call(this, toWrapped(self, item), index, self);
+      };
+    } else if (fn.length > 2) {
+      wrappedFn = function (item, index) {
+        return fn.call(this, item, index, self);
+      };
+    }
+  }
+  var result = methodFn.call(arr, wrappedFn, thisArg);
+  return needsWrap && wrappedRetFn ? wrappedRetFn(result) : result;
+}
+function reduce(self, method, fn, args) {
+  var arr = shallowReadArray(self);
+  var needsWrap = arr !== self && !isShallow(self);
+  var wrappedFn = fn;
+  var wrapInitialAccumulator = false;
+  if (arr !== self) {
+    if (needsWrap) {
+      wrapInitialAccumulator = args.length === 0;
+      wrappedFn = function (acc, item, index) {
+        if (wrapInitialAccumulator) {
+          wrapInitialAccumulator = false;
+          acc = toWrapped(self, acc);
+        }
+        return fn.call(this, acc, toWrapped(self, item), index, self);
+      };
+    } else if (fn.length > 3) {
+      wrappedFn = function (acc, item, index) {
+        return fn.call(this, acc, item, index, self);
+      };
+    }
+  }
+  var result = arr[method](wrappedFn, ...args);
+  return wrapInitialAccumulator ? toWrapped(self, result) : result;
+}
+function searchProxy(self, method, args) {
+  var arr = toRaw(self);
+  track(arr, "iterate", ARRAY_ITERATE_KEY);
+  var res = arr[method](...args);
+  if ((res === -1 || res === false) && isProxy(args[0])) {
+    args[0] = toRaw(args[0]);
+    return arr[method](...args);
+  }
+  return res;
+}
+function noTracking(self, method) {
+  var args = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  pauseTracking();
+  startBatch();
+  var raw = toRaw(self);
+  if (raw.length > 0) {
+    raw[0] = raw[0];
+  }
+  var res = raw[method].apply(self, args);
+  endBatch();
+  resetTracking();
+  return res;
 }
 var isNonTrackableKeys = /* @__PURE__ */makeMap("__proto__,__v_isRef,__isVue");
 var builtInSymbols = new Set(/* @__PURE__ */Object.getOwnPropertyNames(Symbol).filter(key => key !== "arguments" && key !== "caller").map(key => Symbol[key]).filter(isSymbol));
-var arrayInstrumentations = /* @__PURE__ */createArrayInstrumentations();
-function createArrayInstrumentations() {
-  var instrumentations = {};
-  ["includes", "indexOf", "lastIndexOf"].forEach(key => {
-    instrumentations[key] = function () {
-      var arr = toRaw(this);
-      for (var i = 0, l = this.length; i < l; i++) {
-        track(arr, "get", i + "");
-      }
-      for (var _len2 = arguments.length, args = new Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
-        args[_key3] = arguments[_key3];
-      }
-      var res = arr[key](...args);
-      if (res === -1 || res === false) {
-        return arr[key](...args.map(toRaw));
-      } else {
-        return res;
-      }
-    };
-  });
-  ["push", "pop", "shift", "unshift", "splice"].forEach(key => {
-    instrumentations[key] = function () {
-      pauseTracking();
-      pauseScheduling();
-      var raw = toRaw(this);
-      if (raw.length > 0) {
-        raw[0] = raw[0];
-      }
-      for (var _len3 = arguments.length, args = new Array(_len3), _key4 = 0; _key4 < _len3; _key4++) {
-        args[_key4] = arguments[_key4];
-      }
-      var res = raw[key].apply(this, args);
-      resetScheduling();
-      resetTracking();
-      return res;
-    };
-  });
-  return instrumentations;
-}
 function hasOwnProperty(key) {
+  if (!isSymbol(key)) key = String(key);
   var obj = toRaw(this);
   track(obj, "has", key);
   return obj.hasOwnProperty(key);
@@ -446,6 +955,7 @@ class BaseReactiveHandler {
     this._isShallow = _isShallow;
   }
   get(target, key, receiver) {
+    if (key === "__v_skip") return target["__v_skip"];
     var isReadonly2 = this._isReadonly,
       isShallow2 = this._isShallow;
     if (key === "__v_isReactive") {
@@ -457,7 +967,7 @@ class BaseReactiveHandler {
     } else if (key === "__v_raw") {
       if (receiver === (isReadonly2 ? isShallow2 ? shallowReadonlyMap : readonlyMap : isShallow2 ? shallowReactiveMap : reactiveMap).get(target) ||
       // receiver is not the reactive proxy, but has the same prototype
-      // this means the reciever is a user proxy of the reactive proxy
+      // this means the receiver is a user proxy of the reactive proxy
       Object.getPrototypeOf(target) === Object.getPrototypeOf(receiver)) {
         return target;
       }
@@ -465,14 +975,19 @@ class BaseReactiveHandler {
     }
     var targetIsArray = isArray$1(target);
     if (!isReadonly2) {
-      if (targetIsArray && hasOwn(arrayInstrumentations, key)) {
-        return Reflect.get(arrayInstrumentations, key, receiver);
+      var fn;
+      if (targetIsArray && (fn = arrayInstrumentations[key])) {
+        return fn;
       }
       if (key === "hasOwnProperty") {
         return hasOwnProperty;
       }
     }
-    var res = Reflect.get(target, key, receiver);
+    var res = Reflect.get(target, key,
+    // if this is a proxy wrapping a ref, return methods using the raw ref
+    // as receiver so that we don't have to call `toRaw` on the ref in all
+    // its class methods
+    isRef(target) ? target : receiver);
     if (isSymbol(key) ? builtInSymbols.has(key) : isNonTrackableKeys(key)) {
       return res;
     }
@@ -483,7 +998,8 @@ class BaseReactiveHandler {
       return res;
     }
     if (isRef(res)) {
-      return targetIsArray && isIntegerKey(key) ? res : res.value;
+      var value = targetIsArray && isIntegerKey(key) ? res : res.value;
+      return isReadonly2 && isObject(value) ? readonly(value) : value;
     }
     if (isObject(res)) {
       return isReadonly2 ? readonly(res) : reactive(res);
@@ -498,23 +1014,27 @@ class MutableReactiveHandler extends BaseReactiveHandler {
   }
   set(target, key, value, receiver) {
     var oldValue = target[key];
+    var isArrayWithIntegerKey = isArray$1(target) && isIntegerKey(key);
     if (!this._isShallow) {
       var isOldValueReadonly = isReadonly(oldValue);
       if (!isShallow(value) && !isReadonly(value)) {
         oldValue = toRaw(oldValue);
         value = toRaw(value);
       }
-      if (!isArray$1(target) && isRef(oldValue) && !isRef(value)) {
+      if (!isArrayWithIntegerKey && isRef(oldValue) && !isRef(value)) {
         if (isOldValueReadonly) {
-          return false;
+          {
+            warn$2("Set operation on key \"".concat(String(key), "\" failed: target is readonly."), target[key]);
+          }
+          return true;
         } else {
           oldValue.value = value;
           return true;
         }
       }
     }
-    var hadKey = isArray$1(target) && isIntegerKey(key) ? Number(key) < target.length : hasOwn(target, key);
-    var result = Reflect.set(target, key, value, receiver);
+    var hadKey = isArrayWithIntegerKey ? Number(key) < target.length : hasOwn(target, key);
+    var result = Reflect.set(target, key, value, isRef(target) ? target : receiver);
     if (target === toRaw(receiver)) {
       if (!hadKey) {
         trigger(target, "add", key, value);
@@ -569,126 +1089,7 @@ var shallowReactiveHandlers = /* @__PURE__ */new MutableReactiveHandler(true);
 var shallowReadonlyHandlers = /* @__PURE__ */new ReadonlyReactiveHandler(true);
 var toShallow = value => value;
 var getProto = v => Reflect.getPrototypeOf(v);
-function get(target, key) {
-  var isReadonly = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  var isShallow = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  target = target["__v_raw"];
-  var rawTarget = toRaw(target);
-  var rawKey = toRaw(key);
-  if (!isReadonly) {
-    if (hasChanged(key, rawKey)) {
-      track(rawTarget, "get", key);
-    }
-    track(rawTarget, "get", rawKey);
-  }
-  var {
-    has: has2
-  } = getProto(rawTarget);
-  var wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
-  if (has2.call(rawTarget, key)) {
-    return wrap(target.get(key));
-  } else if (has2.call(rawTarget, rawKey)) {
-    return wrap(target.get(rawKey));
-  } else if (target !== rawTarget) {
-    target.get(key);
-  }
-}
-function has(key) {
-  var isReadonly = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  var target = this["__v_raw"];
-  var rawTarget = toRaw(target);
-  var rawKey = toRaw(key);
-  if (!isReadonly) {
-    if (hasChanged(key, rawKey)) {
-      track(rawTarget, "has", key);
-    }
-    track(rawTarget, "has", rawKey);
-  }
-  return key === rawKey ? target.has(key) : target.has(key) || target.has(rawKey);
-}
-function size(target) {
-  var isReadonly = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  target = target["__v_raw"];
-  !isReadonly && track(toRaw(target), "iterate", ITERATE_KEY);
-  return Reflect.get(target, "size", target);
-}
-function add(value) {
-  value = toRaw(value);
-  var target = toRaw(this);
-  var proto = getProto(target);
-  var hadKey = proto.has.call(target, value);
-  if (!hadKey) {
-    target.add(value);
-    trigger(target, "add", value, value);
-  }
-  return this;
-}
-function set(key, value) {
-  value = toRaw(value);
-  var target = toRaw(this);
-  var {
-    has: has2,
-    get: get2
-  } = getProto(target);
-  var hadKey = has2.call(target, key);
-  if (!hadKey) {
-    key = toRaw(key);
-    hadKey = has2.call(target, key);
-  } else {
-    checkIdentityKeys(target, has2, key);
-  }
-  var oldValue = get2.call(target, key);
-  target.set(key, value);
-  if (!hadKey) {
-    trigger(target, "add", key, value);
-  } else if (hasChanged(value, oldValue)) {
-    trigger(target, "set", key, value, oldValue);
-  }
-  return this;
-}
-function deleteEntry(key) {
-  var target = toRaw(this);
-  var {
-    has: has2,
-    get: get2
-  } = getProto(target);
-  var hadKey = has2.call(target, key);
-  if (!hadKey) {
-    key = toRaw(key);
-    hadKey = has2.call(target, key);
-  } else {
-    checkIdentityKeys(target, has2, key);
-  }
-  var oldValue = get2 ? get2.call(target, key) : void 0;
-  var result = target.delete(key);
-  if (hadKey) {
-    trigger(target, "delete", key, void 0, oldValue);
-  }
-  return result;
-}
-function clear() {
-  var target = toRaw(this);
-  var hadItems = target.size !== 0;
-  var oldTarget = isMap(target) ? new Map(target) : new Set(target);
-  var result = target.clear();
-  if (hadItems) {
-    trigger(target, "clear", void 0, void 0, oldTarget);
-  }
-  return result;
-}
-function createForEach(isReadonly, isShallow) {
-  return function forEach(callback, thisArg) {
-    var observed = this;
-    var target = observed["__v_raw"];
-    var rawTarget = toRaw(target);
-    var wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
-    !isReadonly && track(rawTarget, "iterate", ITERATE_KEY);
-    return target.forEach((value, key) => {
-      return callback.call(thisArg, wrap(value), wrap(key), observed);
-    });
-  };
-}
-function createIterableMethod(method, isReadonly, isShallow) {
+function createIterableMethod(method, isReadonly2, isShallow2) {
   return function () {
     var target = this["__v_raw"];
     var rawTarget = toRaw(target);
@@ -696,15 +1097,16 @@ function createIterableMethod(method, isReadonly, isShallow) {
     var isPair = method === "entries" || method === Symbol.iterator && targetIsMap;
     var isKeyOnly = method === "keys" && targetIsMap;
     var innerIterator = target[method](...arguments);
-    var wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
-    !isReadonly && track(rawTarget, "iterate", isKeyOnly ? MAP_KEY_ITERATE_KEY : ITERATE_KEY);
-    return {
+    var wrap = isShallow2 ? toShallow : isReadonly2 ? toReadonly : toReactive;
+    !isReadonly2 && track(rawTarget, "iterate", isKeyOnly ? MAP_KEY_ITERATE_KEY : ITERATE_KEY);
+    return extend(
+    // inheriting all iterator properties
+    Object.create(innerIterator), {
       // iterator protocol
       next() {
-        var {
-          value,
-          done
-        } = innerIterator.next();
+        var _innerIterator$next = innerIterator.next(),
+          value = _innerIterator$next.value,
+          done = _innerIterator$next.done;
         return done ? {
           value,
           done
@@ -712,12 +1114,8 @@ function createIterableMethod(method, isReadonly, isShallow) {
           value: isPair ? [wrap(value[0]), wrap(value[1])] : wrap(value),
           done
         };
-      },
-      // iterable protocol
-      [Symbol.iterator]() {
-        return this;
       }
-    };
+    });
   };
 }
 function createReadonlyMethod(type) {
@@ -729,84 +1127,142 @@ function createReadonlyMethod(type) {
     return type === "delete" ? false : type === "clear" ? void 0 : this;
   };
 }
-function createInstrumentations() {
-  var mutableInstrumentations2 = {
+function createInstrumentations(readonly, shallow) {
+  var instrumentations = {
     get(key) {
-      return get(this, key);
+      var target = this["__v_raw"];
+      var rawTarget = toRaw(target);
+      var rawKey = toRaw(key);
+      if (!readonly) {
+        if (hasChanged(key, rawKey)) {
+          track(rawTarget, "get", key);
+        }
+        track(rawTarget, "get", rawKey);
+      }
+      var _getProto = getProto(rawTarget),
+        has = _getProto.has;
+      var wrap = shallow ? toShallow : readonly ? toReadonly : toReactive;
+      if (has.call(rawTarget, key)) {
+        return wrap(target.get(key));
+      } else if (has.call(rawTarget, rawKey)) {
+        return wrap(target.get(rawKey));
+      } else if (target !== rawTarget) {
+        target.get(key);
+      }
     },
     get size() {
-      return size(this);
-    },
-    has,
-    add,
-    set,
-    delete: deleteEntry,
-    clear,
-    forEach: createForEach(false, false)
-  };
-  var shallowInstrumentations2 = {
-    get(key) {
-      return get(this, key, false, true);
-    },
-    get size() {
-      return size(this);
-    },
-    has,
-    add,
-    set,
-    delete: deleteEntry,
-    clear,
-    forEach: createForEach(false, true)
-  };
-  var readonlyInstrumentations2 = {
-    get(key) {
-      return get(this, key, true);
-    },
-    get size() {
-      return size(this, true);
+      var target = this["__v_raw"];
+      !readonly && track(toRaw(target), "iterate", ITERATE_KEY);
+      return target.size;
     },
     has(key) {
-      return has.call(this, key, true);
+      var target = this["__v_raw"];
+      var rawTarget = toRaw(target);
+      var rawKey = toRaw(key);
+      if (!readonly) {
+        if (hasChanged(key, rawKey)) {
+          track(rawTarget, "has", key);
+        }
+        track(rawTarget, "has", rawKey);
+      }
+      return key === rawKey ? target.has(key) : target.has(key) || target.has(rawKey);
     },
+    forEach(callback, thisArg) {
+      var observed = this;
+      var target = observed["__v_raw"];
+      var rawTarget = toRaw(target);
+      var wrap = shallow ? toShallow : readonly ? toReadonly : toReactive;
+      !readonly && track(rawTarget, "iterate", ITERATE_KEY);
+      return target.forEach((value, key) => {
+        return callback.call(thisArg, wrap(value), wrap(key), observed);
+      });
+    }
+  };
+  extend(instrumentations, readonly ? {
     add: createReadonlyMethod("add"),
     set: createReadonlyMethod("set"),
     delete: createReadonlyMethod("delete"),
-    clear: createReadonlyMethod("clear"),
-    forEach: createForEach(true, false)
-  };
-  var shallowReadonlyInstrumentations2 = {
-    get(key) {
-      return get(this, key, true, true);
+    clear: createReadonlyMethod("clear")
+  } : {
+    add(value) {
+      var target = toRaw(this);
+      var proto = getProto(target);
+      var rawValue = toRaw(value);
+      var valueToAdd = !shallow && !isShallow(value) && !isReadonly(value) ? rawValue : value;
+      var hadKey = proto.has.call(target, valueToAdd) || hasChanged(value, valueToAdd) && proto.has.call(target, value) || hasChanged(rawValue, valueToAdd) && proto.has.call(target, rawValue);
+      if (!hadKey) {
+        target.add(valueToAdd);
+        trigger(target, "add", valueToAdd, valueToAdd);
+      }
+      return this;
     },
-    get size() {
-      return size(this, true);
+    set(key, value) {
+      if (!shallow && !isShallow(value) && !isReadonly(value)) {
+        value = toRaw(value);
+      }
+      var target = toRaw(this);
+      var _getProto2 = getProto(target),
+        has = _getProto2.has,
+        get = _getProto2.get;
+      var hadKey = has.call(target, key);
+      if (!hadKey) {
+        key = toRaw(key);
+        hadKey = has.call(target, key);
+      } else {
+        checkIdentityKeys(target, has, key);
+      }
+      var oldValue = get.call(target, key);
+      target.set(key, value);
+      if (!hadKey) {
+        trigger(target, "add", key, value);
+      } else if (hasChanged(value, oldValue)) {
+        trigger(target, "set", key, value, oldValue);
+      }
+      return this;
     },
-    has(key) {
-      return has.call(this, key, true);
+    delete(key) {
+      var target = toRaw(this);
+      var _getProto3 = getProto(target),
+        has = _getProto3.has,
+        get = _getProto3.get;
+      var hadKey = has.call(target, key);
+      if (!hadKey) {
+        key = toRaw(key);
+        hadKey = has.call(target, key);
+      } else {
+        checkIdentityKeys(target, has, key);
+      }
+      var oldValue = get ? get.call(target, key) : void 0;
+      var result = target.delete(key);
+      if (hadKey) {
+        trigger(target, "delete", key, void 0, oldValue);
+      }
+      return result;
     },
-    add: createReadonlyMethod("add"),
-    set: createReadonlyMethod("set"),
-    delete: createReadonlyMethod("delete"),
-    clear: createReadonlyMethod("clear"),
-    forEach: createForEach(true, true)
-  };
+    clear() {
+      var target = toRaw(this);
+      var hadItems = target.size !== 0;
+      var oldTarget = isMap(target) ? new Map(target) : new Set(target);
+      var result = target.clear();
+      if (hadItems) {
+        trigger(target, "clear", void 0, void 0, oldTarget);
+      }
+      return result;
+    }
+  });
   var iteratorMethods = ["keys", "values", "entries", Symbol.iterator];
   iteratorMethods.forEach(method => {
-    mutableInstrumentations2[method] = createIterableMethod(method, false, false);
-    readonlyInstrumentations2[method] = createIterableMethod(method, true, false);
-    shallowInstrumentations2[method] = createIterableMethod(method, false, true);
-    shallowReadonlyInstrumentations2[method] = createIterableMethod(method, true, true);
+    instrumentations[method] = createIterableMethod(method, readonly, shallow);
   });
-  return [mutableInstrumentations2, readonlyInstrumentations2, shallowInstrumentations2, shallowReadonlyInstrumentations2];
+  return instrumentations;
 }
-var [mutableInstrumentations, readonlyInstrumentations, shallowInstrumentations, shallowReadonlyInstrumentations] = /* @__PURE__ */createInstrumentations();
-function createInstrumentationGetter(isReadonly, shallow) {
-  var instrumentations = shallow ? isReadonly ? shallowReadonlyInstrumentations : shallowInstrumentations : isReadonly ? readonlyInstrumentations : mutableInstrumentations;
+function createInstrumentationGetter(isReadonly2, shallow) {
+  var instrumentations = createInstrumentations(isReadonly2, shallow);
   return (target, key, receiver) => {
     if (key === "__v_isReactive") {
-      return !isReadonly;
+      return !isReadonly2;
     } else if (key === "__v_isReadonly") {
-      return isReadonly;
+      return isReadonly2;
     } else if (key === "__v_raw") {
       return target;
     }
@@ -825,9 +1281,9 @@ var readonlyCollectionHandlers = {
 var shallowReadonlyCollectionHandlers = {
   get: /* @__PURE__ */createInstrumentationGetter(true, true)
 };
-function checkIdentityKeys(target, has2, key) {
+function checkIdentityKeys(target, has, key) {
   var rawKey = toRaw(key);
-  if (rawKey !== key && has2.call(target, rawKey)) {
+  if (rawKey !== key && has.call(target, rawKey)) {
     var type = toRawType(target);
     warn$2("Reactive ".concat(type, " contains both the raw and reactive versions of the same object").concat(type === "Map" ? " as keys" : "", ", which can lead to inconsistencies. Avoid differentiating between the raw and reactive versions of an object and only use the reactive version if possible."));
   }
@@ -850,32 +1306,36 @@ function targetTypeMap(rawType) {
       return 0 /* INVALID */;
   }
 }
-function getTargetType(value) {
-  return value["__v_skip"] || !Object.isExtensible(value) ? 0 /* INVALID */ : targetTypeMap(toRawType(value));
-}
+// @__NO_SIDE_EFFECTS__
 function reactive(target) {
-  if (isReadonly(target)) {
+  if (/* @__PURE__ */isReadonly(target)) {
     return target;
   }
   return createReactiveObject(target, false, mutableHandlers, mutableCollectionHandlers, reactiveMap);
 }
+// @__NO_SIDE_EFFECTS__
 function shallowReactive(target) {
   return createReactiveObject(target, false, shallowReactiveHandlers, shallowCollectionHandlers, shallowReactiveMap);
 }
+// @__NO_SIDE_EFFECTS__
 function readonly(target) {
   return createReactiveObject(target, true, readonlyHandlers, readonlyCollectionHandlers, readonlyMap);
 }
+// @__NO_SIDE_EFFECTS__
 function shallowReadonly(target) {
   return createReactiveObject(target, true, shallowReadonlyHandlers, shallowReadonlyCollectionHandlers, shallowReadonlyMap);
 }
 function createReactiveObject(target, isReadonly2, baseHandlers, collectionHandlers, proxyMap) {
   if (!isObject(target)) {
     {
-      warn$2("value cannot be made reactive: ".concat(String(target)));
+      warn$2("value cannot be made ".concat(isReadonly2 ? "readonly" : "reactive", ": ").concat(String(target)));
     }
     return target;
   }
   if (target["__v_raw"] && !(isReadonly2 && target["__v_isReactive"])) {
+    return target;
+  }
+  if (target["__v_skip"] || !Object.isExtensible(target)) {
     return target;
   }
   var existingProxy = proxyMap.get(target);
@@ -885,7 +1345,7 @@ function createReactiveObject(target, isReadonly2, baseHandlers, collectionHandl
       return deref;
     }
   }
-  var targetType = getTargetType(target);
+  var targetType = targetTypeMap(toRawType(target));
   if (targetType === 0 /* INVALID */) {
     return target;
   }
@@ -893,169 +1353,118 @@ function createReactiveObject(target, isReadonly2, baseHandlers, collectionHandl
   proxyMap.set(target, new WeakRef(proxy));
   return proxy;
 }
+// @__NO_SIDE_EFFECTS__
 function isReactive(value) {
-  if (isReadonly(value)) {
-    return isReactive(value["__v_raw"]);
+  if (/* @__PURE__ */isReadonly(value)) {
+    return /* @__PURE__ */isReactive(value["__v_raw"]);
   }
   return !!(value && value["__v_isReactive"]);
 }
+// @__NO_SIDE_EFFECTS__
 function isReadonly(value) {
   return !!(value && value["__v_isReadonly"]);
 }
+// @__NO_SIDE_EFFECTS__
 function isShallow(value) {
   return !!(value && value["__v_isShallow"]);
 }
+// @__NO_SIDE_EFFECTS__
 function isProxy(value) {
-  return isReactive(value) || isReadonly(value);
+  return value ? !!value["__v_raw"] : false;
 }
+// @__NO_SIDE_EFFECTS__
 function toRaw(observed) {
   var raw = observed && observed["__v_raw"];
-  return raw ? toRaw(raw) : observed;
+  return raw ? /* @__PURE__ */toRaw(raw) : observed;
 }
 function markRaw(value) {
-  if (Object.isExtensible(value)) {
+  if (!hasOwn(value, "__v_skip") && Object.isExtensible(value)) {
     def(value, "__v_skip", true);
   }
   return value;
 }
-var toReactive = value => isObject(value) ? reactive(value) : value;
-var toReadonly = value => isObject(value) ? readonly(value) : value;
-var COMPUTED_SIDE_EFFECT_WARN = "Computed is still dirty after getter evaluation, likely because a computed is mutating its own dependency in its getter. State mutations in computed getters should be avoided.  Check the docs for more details: https://vuejs.org/guide/essentials/computed.html#getters-should-be-side-effect-free";
-class ComputedRefImpl {
-  constructor(getter, _setter, isReadonly, isSSR) {
-    this.getter = getter;
-    this._setter = _setter;
-    this.dep = void 0;
-    this.__v_isRef = true;
-    this["__v_isReadonly"] = false;
-    this.effect = new ReactiveEffect(() => getter(this._value), () => triggerRefValue(this, this.effect._dirtyLevel === 2 ? 2 : 3));
-    this.effect.computed = this;
-    this.effect.active = this._cacheable = !isSSR;
-    this["__v_isReadonly"] = isReadonly;
-  }
-  get value() {
-    var self = toRaw(this);
-    if ((!self._cacheable || self.effect.dirty) && hasChanged(self._value, self._value = self.effect.run())) {
-      triggerRefValue(self, 4);
-    }
-    trackRefValue(self);
-    if (self.effect._dirtyLevel >= 2) {
-      if (this._warnRecursive) {
-        warn$2(COMPUTED_SIDE_EFFECT_WARN, "\n\ngetter: ", this.getter);
-      }
-      triggerRefValue(self, 2);
-    }
-    return self._value;
-  }
-  set value(newValue) {
-    this._setter(newValue);
-  }
-  // #region polyfill _dirty for backward compatibility third party code for Vue <= 3.3.x
-  get _dirty() {
-    return this.effect.dirty;
-  }
-  set _dirty(v) {
-    this.effect.dirty = v;
-  }
-  // #endregion
-}
-function computed$1(getterOrOptions, debugOptions) {
-  var isSSR = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  var getter;
-  var setter;
-  var onlyGetter = isFunction(getterOrOptions);
-  if (onlyGetter) {
-    getter = getterOrOptions;
-    setter = () => {
-      warn$2("Write operation failed: computed value is readonly");
-    };
-  } else {
-    getter = getterOrOptions.get;
-    setter = getterOrOptions.set;
-  }
-  var cRef = new ComputedRefImpl(getter, setter, onlyGetter || !setter, isSSR);
-  if (debugOptions && !isSSR) {
-    cRef.effect.onTrack = debugOptions.onTrack;
-    cRef.effect.onTrigger = debugOptions.onTrigger;
-  }
-  return cRef;
-}
-function trackRefValue(ref2) {
-  var _a;
-  if (shouldTrack && activeEffect) {
-    ref2 = toRaw(ref2);
-    trackEffect(activeEffect, (_a = ref2.dep) != null ? _a : ref2.dep = createDep(() => ref2.dep = void 0, ref2 instanceof ComputedRefImpl ? ref2 : void 0), {
-      target: ref2,
-      type: "get",
-      key: "value"
-    });
-  }
-}
-function triggerRefValue(ref2) {
-  var dirtyLevel = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 4;
-  var newVal = arguments.length > 2 ? arguments[2] : undefined;
-  ref2 = toRaw(ref2);
-  var dep = ref2.dep;
-  if (dep) {
-    triggerEffects(dep, dirtyLevel, {
-      target: ref2,
-      type: "set",
-      key: "value",
-      newValue: newVal
-    });
-  }
-}
+var toReactive = value => isObject(value) ? /* @__PURE__ */reactive(value) : value;
+var toReadonly = value => isObject(value) ? /* @__PURE__ */readonly(value) : value;
+
+// @__NO_SIDE_EFFECTS__
 function isRef(r) {
-  return !!(r && r.__v_isRef === true);
+  return r ? r["__v_isRef"] === true : false;
 }
+// @__NO_SIDE_EFFECTS__
 function ref(value) {
   return createRef(value, false);
 }
+// @__NO_SIDE_EFFECTS__
 function shallowRef(value) {
   return createRef(value, true);
 }
 function createRef(rawValue, shallow) {
-  if (isRef(rawValue)) {
+  if (/* @__PURE__ */isRef(rawValue)) {
     return rawValue;
   }
   return new RefImpl(rawValue, shallow);
 }
 class RefImpl {
-  constructor(value, __v_isShallow) {
-    this.__v_isShallow = __v_isShallow;
-    this.dep = void 0;
-    this.__v_isRef = true;
-    this._rawValue = __v_isShallow ? value : toRaw(value);
-    this._value = __v_isShallow ? value : toReactive(value);
+  constructor(value, isShallow2) {
+    this.dep = new Dep();
+    this["__v_isRef"] = true;
+    this["__v_isShallow"] = false;
+    this._rawValue = isShallow2 ? value : toRaw(value);
+    this._value = isShallow2 ? value : toReactive(value);
+    this["__v_isShallow"] = isShallow2;
   }
   get value() {
-    trackRefValue(this);
+    {
+      this.dep.track({
+        target: this,
+        type: "get",
+        key: "value"
+      });
+    }
     return this._value;
   }
-  set value(newVal) {
-    var useDirectValue = this.__v_isShallow || isShallow(newVal) || isReadonly(newVal);
-    newVal = useDirectValue ? newVal : toRaw(newVal);
-    if (hasChanged(newVal, this._rawValue)) {
-      this._rawValue = newVal;
-      this._value = useDirectValue ? newVal : toReactive(newVal);
-      triggerRefValue(this, 4, newVal);
+  set value(newValue) {
+    var oldValue = this._rawValue;
+    var useDirectValue = this["__v_isShallow"] || isShallow(newValue) || isReadonly(newValue);
+    newValue = useDirectValue ? newValue : toRaw(newValue);
+    if (hasChanged(newValue, oldValue)) {
+      this._rawValue = newValue;
+      this._value = useDirectValue ? newValue : toReactive(newValue);
+      {
+        this.dep.trigger({
+          target: this,
+          type: "set",
+          key: "value",
+          newValue,
+          oldValue
+        });
+      }
     }
   }
 }
 function triggerRef(ref2) {
-  triggerRefValue(ref2, 4, ref2.value);
+  if (ref2.dep) {
+    {
+      ref2.dep.trigger({
+        target: ref2,
+        type: "set",
+        key: "value",
+        newValue: ref2._value
+      });
+    }
+  }
 }
 function unref(ref2) {
-  return isRef(ref2) ? ref2.value : ref2;
+  return /* @__PURE__ */isRef(ref2) ? ref2.value : ref2;
 }
 function toValue(source) {
   return isFunction(source) ? source() : unref(source);
 }
 var shallowUnwrapHandlers = {
-  get: (target, key, receiver) => unref(Reflect.get(target, key, receiver)),
+  get: (target, key, receiver) => key === "__v_raw" ? target : unref(Reflect.get(target, key, receiver)),
   set: (target, key, value, receiver) => {
     var oldValue = target[key];
-    if (isRef(oldValue) && !isRef(value)) {
+    if (/* @__PURE__ */isRef(oldValue) && ! /* @__PURE__ */isRef(value)) {
       oldValue.value = value;
       return true;
     } else {
@@ -1068,17 +1477,17 @@ function proxyRefs(objectWithRefs) {
 }
 class CustomRefImpl {
   constructor(factory) {
-    this.dep = void 0;
-    this.__v_isRef = true;
-    var {
-      get,
-      set
-    } = factory(() => trackRefValue(this), () => triggerRefValue(this));
+    this["__v_isRef"] = true;
+    this._value = void 0;
+    var dep = this.dep = new Dep();
+    var _factory = factory(dep.track.bind(dep), dep.trigger.bind(dep)),
+      get = _factory.get,
+      set = _factory.set;
     this._get = get;
     this._set = set;
   }
   get value() {
-    return this._get();
+    return this._value = this._get();
   }
   set value(newVal) {
     this._set(newVal);
@@ -1087,6 +1496,7 @@ class CustomRefImpl {
 function customRef(factory) {
   return new CustomRefImpl(factory);
 }
+// @__NO_SIDE_EFFECTS__
 function toRefs(object) {
   if (!isProxy(object)) {
     warn$2("toRefs() expects a reactive object but received a plain one.");
@@ -1098,47 +1508,161 @@ function toRefs(object) {
   return ret;
 }
 class ObjectRefImpl {
-  constructor(_object, _key, _defaultValue) {
+  constructor(_object, key, _defaultValue) {
     this._object = _object;
-    this._key = _key;
     this._defaultValue = _defaultValue;
-    this.__v_isRef = true;
+    this["__v_isRef"] = true;
+    this._value = void 0;
+    this._key = isSymbol(key) ? key : String(key);
+    this._raw = toRaw(_object);
+    var shallow = true;
+    var obj = _object;
+    if (!isArray$1(_object) || isSymbol(this._key) || !isIntegerKey(this._key)) {
+      do {
+        shallow = !isProxy(obj) || isShallow(obj);
+      } while (shallow && (obj = obj["__v_raw"]));
+    }
+    this._shallow = shallow;
   }
   get value() {
     var val = this._object[this._key];
-    return val === void 0 ? this._defaultValue : val;
+    if (this._shallow) {
+      val = unref(val);
+    }
+    return this._value = val === void 0 ? this._defaultValue : val;
   }
   set value(newVal) {
+    if (this._shallow && /* @__PURE__ */isRef(this._raw[this._key])) {
+      var nestedRef = this._object[this._key];
+      if (/* @__PURE__ */isRef(nestedRef)) {
+        nestedRef.value = newVal;
+        return;
+      }
+    }
     this._object[this._key] = newVal;
   }
   get dep() {
-    return getDepFromReactive(toRaw(this._object), this._key);
+    return getDepFromReactive(this._raw, this._key);
   }
 }
 class GetterRefImpl {
   constructor(_getter) {
     this._getter = _getter;
-    this.__v_isRef = true;
-    this.__v_isReadonly = true;
+    this["__v_isRef"] = true;
+    this["__v_isReadonly"] = true;
+    this._value = void 0;
   }
   get value() {
-    return this._getter();
+    return this._value = this._getter();
   }
 }
+// @__NO_SIDE_EFFECTS__
 function toRef(source, key, defaultValue) {
-  if (isRef(source)) {
+  if (/* @__PURE__ */isRef(source)) {
     return source;
   } else if (isFunction(source)) {
     return new GetterRefImpl(source);
   } else if (isObject(source) && arguments.length > 1) {
     return propertyToRef(source, key, defaultValue);
   } else {
-    return ref(source);
+    return /* @__PURE__ */ref(source);
   }
 }
 function propertyToRef(source, key, defaultValue) {
-  var val = source[key];
-  return isRef(val) ? val : new ObjectRefImpl(source, key, defaultValue);
+  return new ObjectRefImpl(source, key, defaultValue);
+}
+class ComputedRefImpl {
+  constructor(fn, setter, isSSR) {
+    this.fn = fn;
+    this.setter = setter;
+    /**
+     * @internal
+     */
+    this._value = void 0;
+    /**
+     * @internal
+     */
+    this.dep = new Dep(this);
+    /**
+     * @internal
+     */
+    this.__v_isRef = true;
+    // TODO isolatedDeclarations "__v_isReadonly"
+    // A computed is also a subscriber that tracks other deps
+    /**
+     * @internal
+     */
+    this.deps = void 0;
+    /**
+     * @internal
+     */
+    this.depsTail = void 0;
+    /**
+     * @internal
+     */
+    this.flags = 16;
+    /**
+     * @internal
+     */
+    this.globalVersion = globalVersion - 1;
+    /**
+     * @internal
+     */
+    this.next = void 0;
+    // for backwards compat
+    this.effect = this;
+    this["__v_isReadonly"] = !setter;
+    this.isSSR = isSSR;
+  }
+  /**
+   * @internal
+   */
+  notify() {
+    this.flags |= 16;
+    if (!(this.flags & 8) &&
+    // avoid infinite self recursion
+    activeSub !== this) {
+      batch(this, true);
+      return true;
+    }
+  }
+  get value() {
+    var link = this.dep.track({
+      target: this,
+      type: "get",
+      key: "value"
+    });
+    refreshComputed(this);
+    if (link) {
+      link.version = this.dep.version;
+    }
+    return this._value;
+  }
+  set value(newValue) {
+    if (this.setter) {
+      this.setter(newValue);
+    } else {
+      warn$2("Write operation failed: computed value is readonly");
+    }
+  }
+}
+// @__NO_SIDE_EFFECTS__
+function computed$1(getterOrOptions, debugOptions) {
+  var isSSR = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  var getter;
+  var setter;
+  if (isFunction(getterOrOptions)) {
+    getter = getterOrOptions;
+  } else {
+    getter = getterOrOptions.get;
+    setter = getterOrOptions.set;
+  }
+  var cRef = new ComputedRefImpl(getter, setter, isSSR);
+  if (debugOptions && !isSSR) {
+    cRef.onTrack = debugOptions.onTrack;
+    cRef.onTrigger = debugOptions.onTrigger;
+  }
+  return cRef;
 }
 var TrackOpTypes = {
   "GET": "get",
@@ -1538,12 +2062,10 @@ function splitValues(value) {
 var backgroundColor = 'backgroundColor';
 var backgroundImage = 'backgroundImage';
 var handleTransformBackground = decl => {
-  var {
-    value,
-    important,
-    raws,
-    source
-  } = decl;
+  var value = decl.value,
+    important = decl.important,
+    raws = decl.raws,
+    source = decl.source;
   value = value.trim();
   if (value === 'none') {
     return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
@@ -1558,12 +2080,10 @@ var handleTransformBackground = decl => {
   return [decl];
 };
 var handleTransformBackgroundNvue = decl => {
-  var {
-    value,
-    important,
-    raws,
-    source
-  } = decl;
+  var value = decl.value,
+    important = decl.important,
+    raws = decl.raws,
+    source = decl.source;
   if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
     return [createDecl(backgroundColor, value, important, raws, source)];
   } else if (/^linear-gradient(.+)$/.test(value)) {
@@ -1589,13 +2109,11 @@ var borderRight = 'borderRight';
 var borderBottom = 'borderBottom';
 var borderLeft = 'borderLeft';
 var transformBorderColor = decl => {
-  var {
-    prop,
-    value,
-    important,
-    raws,
-    source
-  } = decl;
+  var prop = decl.prop,
+    value = decl.value,
+    important = decl.important,
+    raws = decl.raws,
+    source = decl.source;
   value = value.trim();
   var _property_split = hyphenate(prop).split('-');
   var property = _property_split[_property_split.length - 1];
@@ -1622,13 +2140,11 @@ var transformBorderColor = decl => {
   return [createDecl(borderTop + property, splitResult[0], important, raws, source), createDecl(borderRight + property, splitResult[1], important, raws, source), createDecl(borderBottom + property, splitResult[2], important, raws, source), createDecl(borderLeft + property, splitResult[3], important, raws, source)];
 };
 var transformBorderColorNvue = decl => {
-  var {
-    prop,
-    value,
-    important,
-    raws,
-    source
-  } = decl;
+  var prop = decl.prop,
+    value = decl.value,
+    important = decl.important,
+    raws = decl.raws,
+    source = decl.source;
   value = value.trim();
   var property = hyphenate(prop).split('-')[1];
   {
@@ -1681,13 +2197,11 @@ function isBorderColorValue(value) {
 }
 function createTransformBorder(options) {
   return decl => {
-    var {
-      prop,
-      value,
-      important,
-      raws,
-      source
-    } = decl;
+    var prop = decl.prop,
+      value = decl.value,
+      important = decl.important,
+      raws = decl.raws,
+      source = decl.source;
     var singleVarResult = tryExpandSingleValueVarShorthand();
     // 单个 var() 无法提前判断是 width/style/color，dom2 下先平铺后继续展开。
     if (singleVarResult) {
@@ -1739,13 +2253,11 @@ function createTransformBorder(options) {
  */
 function createTransformBorderNvue(options) {
   return decl => {
-    var {
-      prop,
-      value,
-      important,
-      raws,
-      source
-    } = decl;
+    var prop = decl.prop,
+      value = decl.value,
+      important = decl.important,
+      raws = decl.raws,
+      source = decl.source;
     value = value.trim();
     var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
     var result = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
@@ -1763,12 +2275,10 @@ var borderTopRightRadius = 'borderTopRightRadius';
 var borderBottomRightRadius = 'borderBottomRightRadius';
 var borderBottomLeftRadius = 'borderBottomLeftRadius';
 var transformBorderRadius = decl => {
-  var {
-    value,
-    important,
-    raws,
-    source
-  } = decl;
+  var value = decl.value,
+    important = decl.important,
+    raws = decl.raws,
+    source = decl.source;
   value = value.trim();
   var splitResult = splitValues(value);
   if (value.includes('/')) {
@@ -1788,12 +2298,10 @@ var transformBorderRadius = decl => {
   return [createDecl(borderTopLeftRadius, splitResult[0], important, raws, source), createDecl(borderTopRightRadius, splitResult[1], important, raws, source), createDecl(borderBottomRightRadius, splitResult[2], important, raws, source), createDecl(borderBottomLeftRadius, splitResult[3], important, raws, source)];
 };
 var transformBorderRadiusNvue = decl => {
-  var {
-    value,
-    important,
-    raws,
-    source
-  } = decl;
+  var value = decl.value,
+    important = decl.important,
+    raws = decl.raws,
+    source = decl.source;
   value = value.trim();
   var splitResult = value.split(/\s+/);
   if (value.includes('/')) {
@@ -1815,12 +2323,10 @@ var transformBorderRadiusNvue = decl => {
 var flexDirection = 'flexDirection';
 var flexWrap = 'flexWrap';
 var transformFlexFlow = decl => {
-  var {
-    value,
-    important,
-    raws,
-    source
-  } = decl;
+  var value = decl.value,
+    important = decl.important,
+    raws = decl.raws,
+    source = decl.source;
   value = value.trim();
   var splitResult = splitValues(value);
   var singleVarResult = tryExpandSingleValueVarShorthand();
@@ -1843,12 +2349,10 @@ var bottom = 'Bottom';
 var left = 'Left';
 var createTransformBox = type => {
   return decl => {
-    var {
-      value,
-      important,
-      raws,
-      source
-    } = decl;
+    var value = decl.value,
+      important = decl.important,
+      raws = decl.raws,
+      source = decl.source;
     var splitResult = splitValues(value);
     switch (splitResult.length) {
       case 1:
@@ -1871,12 +2375,10 @@ var transitionDuration = 'transitionDuration';
 var transitionTimingFunction = 'transitionTimingFunction';
 var transitionDelay = 'transitionDelay';
 var transformTransition = decl => {
-  var {
-    value,
-    important,
-    raws,
-    source
-  } = decl;
+  var value = decl.value,
+    important = decl.important,
+    raws = decl.raws,
+    source = decl.source;
   value = value.trim();
   var result = [];
   var match;
@@ -1902,12 +2404,10 @@ var flexGrow = 'flexGrow';
 var flexShrink = 'flexShrink';
 var flexBasis = 'flexBasis';
 var transformFlex = decl => {
-  var {
-    value,
-    important,
-    raws,
-    source
-  } = decl;
+  var value = decl.value,
+    important = decl.important,
+    raws = decl.raws,
+    source = decl.source;
   value = value.trim();
   var result = [];
   var splitResult = splitValues(value);
@@ -1944,7 +2444,9 @@ var transformFlex = decl => {
       return [decl];
     }
   } else if (splitResult.length === 2) {
-    var [v1, v2] = splitResult;
+    var _splitResult = _slicedToArray(splitResult, 2),
+      v1 = _splitResult[0],
+      v2 = _splitResult[1];
     if (isFlexGrowValid(v1)) {
       if (isFlexShrinkValid(v2)) {
         // flex: 1 2 => 1 2 0%
@@ -1959,7 +2461,10 @@ var transformFlex = decl => {
       return [decl];
     }
   } else if (splitResult.length === 3) {
-    var [_v, _v2, v3] = splitResult;
+    var _splitResult2 = _slicedToArray(splitResult, 3),
+      _v = _splitResult2[0],
+      _v2 = _splitResult2[1],
+      v3 = _splitResult2[2];
     if (isFlexGrowValid(_v) && isFlexShrinkValid(_v2)) {
       result.push(createDecl(flexGrow, _v, important, raws, source), createDecl(flexShrink, _v2, important, raws, source), createDecl(flexBasis, v3, important, raws, source));
       return result;
@@ -2063,17 +2568,15 @@ function warn$1(msg) {
   var instance = stack.length ? stack[stack.length - 1].component : null;
   var appWarnHandler = instance && instance.appContext.config.warnHandler;
   var trace = getComponentTrace();
-  for (var _len4 = arguments.length, args = new Array(_len4 > 1 ? _len4 - 1 : 0), _key5 = 1; _key5 < _len4; _key5++) {
-    args[_key5 - 1] = arguments[_key5];
+  for (var _len1 = arguments.length, args = new Array(_len1 > 1 ? _len1 - 1 : 0), _key10 = 1; _key10 < _len1; _key10++) {
+    args[_key10 - 1] = arguments[_key10];
   }
   if (appWarnHandler) {
     callWithErrorHandling(appWarnHandler, instance, 11, [msg + args.map(a => {
       var _a, _b;
       return (_b = (_a = a.toString) == null ? void 0 : _a.call(a)) != null ? _b : JSON.stringify(a);
     }).join(""), instance && instance.proxy, trace.map(_ref => {
-      var {
-        vnode
-      } = _ref;
+      var vnode = _ref.vnode;
       return "at <".concat(formatComponentName(instance, vnode.type), ">");
     }).join("\n"), trace]);
   } else {
@@ -2116,10 +2619,8 @@ function formatTrace(trace) {
   return logs;
 }
 function formatTraceEntry(_ref2) {
-  var {
-    vnode,
-    recurseCount
-  } = _ref2;
+  var vnode = _ref2.vnode,
+    recurseCount = _ref2.recurseCount;
   var postfix = recurseCount > 0 ? "... (".concat(recurseCount, " recursive calls)") : "";
   var isRoot = vnode.component ? vnode.component.parent == null : false;
   var open = " at <".concat(formatComponentName(vnode.component, vnode.type, isRoot));
@@ -2575,8 +3076,8 @@ var devtools$1;
 var buffer = [];
 var devtoolsNotInstalled = false;
 function emit$1(event) {
-  for (var _len5 = arguments.length, args = new Array(_len5 > 1 ? _len5 - 1 : 0), _key6 = 1; _key6 < _len5; _key6++) {
-    args[_key6 - 1] = arguments[_key6];
+  for (var _len10 = arguments.length, args = new Array(_len10 > 1 ? _len10 - 1 : 0), _key11 = 1; _key11 < _len10; _key11++) {
+    args[_key11 - 1] = arguments[_key11];
   }
   if (devtools$1) {
     devtools$1.emit(event, ...args);
@@ -2593,10 +3094,8 @@ function setDevtoolsHook$1(hook, target) {
   if (devtools$1) {
     devtools$1.enabled = true;
     buffer.forEach(_ref3 => {
-      var {
-        event,
-        args
-      } = _ref3;
+      var event = _ref3.event,
+        args = _ref3.args;
       return devtools$1.emit(event, ...args);
     });
     buffer = [];
@@ -2666,14 +3165,13 @@ function devtoolsComponentEmit(component, event, params) {
 function emit(instance, event) {
   if (instance.isUnmounted) return;
   var props = instance.vnode.props || EMPTY_OBJ;
-  for (var _len6 = arguments.length, rawArgs = new Array(_len6 > 2 ? _len6 - 2 : 0), _key7 = 2; _key7 < _len6; _key7++) {
-    rawArgs[_key7 - 2] = arguments[_key7];
+  for (var _len11 = arguments.length, rawArgs = new Array(_len11 > 2 ? _len11 - 2 : 0), _key12 = 2; _key12 < _len11; _key12++) {
+    rawArgs[_key12 - 2] = arguments[_key12];
   }
   {
-    var {
-      emitsOptions,
-      propsOptions: [propsOptions]
-    } = instance;
+    var emitsOptions = instance.emitsOptions,
+      _instance$propsOption = _slicedToArray(instance.propsOptions, 1),
+      propsOptions = _instance$propsOption[0];
     if (emitsOptions) {
       if (!(event in emitsOptions) && true) {
         if (!propsOptions || !(toHandlerKey(event) in propsOptions)) {
@@ -2695,10 +3193,9 @@ function emit(instance, event) {
   var modelArg = isModelListener && event.slice(7);
   if (modelArg && modelArg in props) {
     var modifiersKey = "".concat(modelArg === "modelValue" ? "model" : modelArg, "Modifiers");
-    var {
-      number,
-      trim
-    } = props[modifiersKey] || EMPTY_OBJ;
+    var _ref4 = props[modifiersKey] || EMPTY_OBJ,
+      number = _ref4.number,
+      trim = _ref4.trim;
     if (trim) {
       args = rawArgs.map(a => isString(a) ? a.trim() : a);
     }
@@ -2838,23 +3335,22 @@ function markAttrsAccessed() {
   accessedAttrs = true;
 }
 function renderComponentRoot(instance) {
-  var {
-    type: Component,
-    vnode,
-    proxy,
-    withProxy,
-    props,
-    propsOptions: [propsOptions],
-    slots,
-    attrs,
-    emit,
-    render,
-    renderCache,
-    data,
-    setupState,
-    ctx,
-    inheritAttrs
-  } = instance;
+  var Component = instance.type,
+    vnode = instance.vnode,
+    proxy = instance.proxy,
+    withProxy = instance.withProxy,
+    props = instance.props,
+    _instance$propsOption2 = _slicedToArray(instance.propsOptions, 1),
+    propsOptions = _instance$propsOption2[0],
+    slots = instance.slots,
+    attrs = instance.attrs,
+    emit = instance.emit,
+    render = instance.render,
+    renderCache = instance.renderCache,
+    data = instance.data,
+    setupState = instance.setupState,
+    ctx = instance.ctx,
+    inheritAttrs = instance.inheritAttrs;
   var result;
   var fallthroughAttrs;
   var prev = setCurrentRenderingInstance(instance);
@@ -2900,13 +3396,15 @@ function renderComponentRoot(instance) {
   var root = result;
   var setRoot = void 0;
   if (result.patchFlag > 0 && result.patchFlag & 2048) {
-    [root, setRoot] = getChildRoot(result);
+    var _getChildRoot = getChildRoot(result);
+    var _getChildRoot2 = _slicedToArray(_getChildRoot, 2);
+    root = _getChildRoot2[0];
+    setRoot = _getChildRoot2[1];
   }
   if (fallthroughAttrs && inheritAttrs !== false) {
     var keys = Object.keys(fallthroughAttrs);
-    var {
-      shapeFlag
-    } = root;
+    var _root = root,
+      shapeFlag = _root.shapeFlag;
     if (keys.length) {
       if (shapeFlag & (1 | 6)) {
         if (propsOptions && keys.some(isModelListener)) {
@@ -3024,16 +3522,12 @@ var isElementRoot = vnode => {
   return vnode.shapeFlag & (6 | 1) || vnode.type === Comment;
 };
 function shouldUpdateComponent(prevVNode, nextVNode, optimized) {
-  var {
-    props: prevProps,
-    children: prevChildren,
-    component
-  } = prevVNode;
-  var {
-    props: nextProps,
-    children: nextChildren,
-    patchFlag
-  } = nextVNode;
+  var prevProps = prevVNode.props,
+    prevChildren = prevVNode.children,
+    component = prevVNode.component;
+  var nextProps = nextVNode.props,
+    nextChildren = nextVNode.children,
+    patchFlag = nextVNode.patchFlag;
   var emits = component.emitsOptions;
   if ((prevChildren || nextChildren) && isHmrUpdating) {
     return true;
@@ -3091,11 +3585,9 @@ function hasPropsChanged(prevProps, nextProps, emitsOptions) {
   }
   return false;
 }
-function updateHOCHostEl(_ref4, el) {
-  var {
-    vnode,
-    parent
-  } = _ref4;
+function updateHOCHostEl(_ref5, el) {
+  var vnode = _ref5.vnode,
+    parent = _ref5.parent;
   while (parent) {
     var root = parent.subTree;
     if (root.suspense && root.suspense.activeBranch === vnode) {
@@ -3192,12 +3684,8 @@ function triggerEvent(vnode, name) {
   }
 }
 function mountSuspense(vnode, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized, rendererInternals) {
-  var {
-    p: patch,
-    o: {
-      createElement
-    }
-  } = rendererInternals;
+  var patch = rendererInternals.p,
+    createElement = rendererInternals.o.createElement;
   var hiddenContainer = createElement("div", container);
   var suspense = vnode.suspense = createSuspenseBoundary(vnode, parentSuspense, parentComponent, container, hiddenContainer, anchor, namespace, slotScopeIds, optimized, rendererInternals);
   patch(null, suspense.pendingBranch = vnode.ssContent, hiddenContainer, null, parentComponent, suspense, namespace, slotScopeIds);
@@ -3212,25 +3700,19 @@ function mountSuspense(vnode, container, anchor, parentComponent, parentSuspense
     suspense.resolve(false, true);
   }
 }
-function patchSuspense(n1, n2, container, anchor, parentComponent, namespace, slotScopeIds, optimized, _ref5) {
-  var {
-    p: patch,
-    um: unmount,
-    o: {
-      createElement
-    }
-  } = _ref5;
+function patchSuspense(n1, n2, container, anchor, parentComponent, namespace, slotScopeIds, optimized, _ref6) {
+  var patch = _ref6.p,
+    unmount = _ref6.um,
+    createElement = _ref6.o.createElement;
   var suspense = n2.suspense = n1.suspense;
   suspense.vnode = n2;
   n2.el = n1.el;
   var newBranch = n2.ssContent;
   var newFallback = n2.ssFallback;
-  var {
-    activeBranch,
-    pendingBranch,
-    isInFallback,
-    isHydrating
-  } = suspense;
+  var activeBranch = suspense.activeBranch,
+    pendingBranch = suspense.pendingBranch,
+    isInFallback = suspense.isInFallback,
+    isHydrating = suspense.isHydrating;
   if (pendingBranch) {
     suspense.pendingBranch = newBranch;
     if (isSameVNodeType(newBranch, pendingBranch)) {
@@ -3292,10 +3774,8 @@ function patchSuspense(n1, n2, container, anchor, parentComponent, namespace, sl
       if (suspense.deps <= 0) {
         suspense.resolve();
       } else {
-        var {
-          timeout,
-          pendingId
-        } = suspense;
+        var timeout = suspense.timeout,
+          pendingId = suspense.pendingId;
         if (timeout > 0) {
           setTimeout(() => {
             if (suspense.pendingId === pendingId) {
@@ -3316,16 +3796,13 @@ function createSuspenseBoundary(vnode, parentSuspense, parentComponent, containe
     hasWarned = true;
     console[console.info ? "info" : "log"]("<Suspense> is an experimental feature and its API will likely change.");
   }
-  var {
-    p: patch,
-    m: move,
-    um: unmount,
-    n: next,
-    o: {
-      parentNode,
-      remove
-    }
-  } = rendererInternals;
+  var patch = rendererInternals.p,
+    move = rendererInternals.m,
+    unmount = rendererInternals.um,
+    next = rendererInternals.n,
+    _rendererInternals$o = rendererInternals.o,
+    parentNode = _rendererInternals$o.parentNode,
+    remove = _rendererInternals$o.remove;
   var parentSuspenseId;
   var isSuspensible = isVNodeSuspensible(vnode);
   if (isSuspensible) {
@@ -3366,15 +3843,13 @@ function createSuspenseBoundary(vnode, parentSuspense, parentComponent, containe
           throw new Error("suspense.resolve() is called on an already unmounted suspense boundary.");
         }
       }
-      var {
-        vnode: vnode2,
-        activeBranch,
-        pendingBranch,
-        pendingId,
-        effects,
-        parentComponent: parentComponent2,
-        container: container2
-      } = suspense;
+      var vnode2 = suspense.vnode,
+        activeBranch = suspense.activeBranch,
+        pendingBranch = suspense.pendingBranch,
+        pendingId = suspense.pendingId,
+        effects = suspense.effects,
+        parentComponent2 = suspense.parentComponent,
+        container2 = suspense.container;
       var delayEnter = false;
       if (suspense.isHydrating) {
         suspense.isHydrating = false;
@@ -3429,13 +3904,11 @@ function createSuspenseBoundary(vnode, parentSuspense, parentComponent, containe
       if (!suspense.pendingBranch) {
         return;
       }
-      var {
-        vnode: vnode2,
-        activeBranch,
-        parentComponent: parentComponent2,
-        container: container2,
-        namespace: namespace2
-      } = suspense;
+      var vnode2 = suspense.vnode,
+        activeBranch = suspense.activeBranch,
+        parentComponent2 = suspense.parentComponent,
+        container2 = suspense.container,
+        namespace2 = suspense.namespace;
       triggerEvent(vnode2, "onFallback");
       var anchor2 = next(activeBranch);
       var mountFallback = () => {
@@ -3481,9 +3954,7 @@ function createSuspenseBoundary(vnode, parentSuspense, parentComponent, containe
           return;
         }
         instance.asyncResolved = true;
-        var {
-          vnode: vnode2
-        } = instance;
+        var vnode2 = instance.vnode;
         {
           pushWarningContext(vnode2);
         }
@@ -3535,10 +4006,8 @@ function hydrateSuspense(node, vnode, parentComponent, parentSuspense, namespace
   return result;
 }
 function normalizeSuspenseChildren(vnode) {
-  var {
-    shapeFlag,
-    children
-  } = vnode;
+  var shapeFlag = vnode.shapeFlag,
+    children = vnode.children;
   var isSlotChildren = shapeFlag & 32;
   vnode.ssContent = normalizeSuspenseSlot(isSlotChildren ? children.default : children);
   vnode.ssFallback = isSlotChildren ? normalizeSuspenseSlot(children.fallback) : createVNode(Comment);
@@ -3584,10 +4053,8 @@ function queueEffectWithSuspense(fn, suspense) {
 }
 function setActiveBranch(suspense, branch) {
   suspense.activeBranch = branch;
-  var {
-    vnode,
-    parentComponent
-  } = suspense;
+  var vnode = suspense.vnode,
+    parentComponent = suspense.parentComponent;
   var el = branch.el;
   while (!el && branch.component) {
     branch = branch.component.subTree;
@@ -3634,14 +4101,13 @@ function watch(source, cb, options) {
   return doWatch(source, cb, options);
 }
 function doWatch(source, cb) {
-  var {
-    immediate,
-    deep,
-    flush,
-    once,
-    onTrack,
-    onTrigger
-  } = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : EMPTY_OBJ;
+  var _ref7 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : EMPTY_OBJ,
+    immediate = _ref7.immediate,
+    deep = _ref7.deep,
+    flush = _ref7.flush,
+    once = _ref7.once,
+    onTrack = _ref7.onTrack,
+    onTrigger = _ref7.onTrigger;
   if (cb && once) {
     var _cb = cb;
     cb = function () {
@@ -3863,7 +4329,12 @@ function withDirectives(vnode, directives) {
   var instance = getExposeProxy(currentRenderingInstance) || currentRenderingInstance.proxy;
   var bindings = vnode.dirs || (vnode.dirs = []);
   for (var i = 0; i < directives.length; i++) {
-    var [dir, value, arg, modifiers = EMPTY_OBJ] = directives[i];
+    var _directives$i = _slicedToArray(directives[i], 4),
+      dir = _directives$i[0],
+      value = _directives$i[1],
+      arg = _directives$i[2],
+      _directives$i$ = _directives$i[3],
+      modifiers = _directives$i$ === void 0 ? EMPTY_OBJ : _directives$i$;
     if (dir) {
       if (isFunction(dir)) {
         dir = {
@@ -3943,10 +4414,8 @@ var BaseTransitionPropsValidators = {
 var BaseTransitionImpl = {
   name: "BaseTransition",
   props: BaseTransitionPropsValidators,
-  setup(props, _ref6) {
-    var {
-      slots
-    } = _ref6;
+  setup(props, _ref8) {
+    var slots = _ref8.slots;
     var instance = getCurrentInstance();
     var state = useTransitionState();
     return () => {
@@ -3969,9 +4438,7 @@ var BaseTransitionImpl = {
         }
       }
       var rawProps = toRaw(props);
-      var {
-        mode
-      } = rawProps;
+      var mode = rawProps.mode;
       if (mode && mode !== "in-out" && mode !== "out-in" && mode !== "default") {
         warn$1("invalid <transition> mode: ".concat(mode));
       }
@@ -4018,9 +4485,7 @@ var BaseTransitionImpl = {
 };
 var BaseTransition = BaseTransitionImpl;
 function getLeavingNodesForType(state, vnode) {
-  var {
-    leavingVNodes
-  } = state;
+  var leavingVNodes = state.leavingVNodes;
   var leavingVNodesCache = leavingVNodes.get(vnode.type);
   if (!leavingVNodesCache) {
     leavingVNodesCache = /* @__PURE__ */Object.create(null);
@@ -4029,23 +4494,22 @@ function getLeavingNodesForType(state, vnode) {
   return leavingVNodesCache;
 }
 function resolveTransitionHooks(vnode, props, state, instance) {
-  var {
-    appear,
-    mode,
-    persisted = false,
-    onBeforeEnter,
-    onEnter,
-    onAfterEnter,
-    onEnterCancelled,
-    onBeforeLeave,
-    onLeave,
-    onAfterLeave,
-    onLeaveCancelled,
-    onBeforeAppear,
-    onAppear,
-    onAfterAppear,
-    onAppearCancelled
-  } = props;
+  var appear = props.appear,
+    mode = props.mode,
+    _props$persisted = props.persisted,
+    persisted = _props$persisted === void 0 ? false : _props$persisted,
+    onBeforeEnter = props.onBeforeEnter,
+    onEnter = props.onEnter,
+    onAfterEnter = props.onAfterEnter,
+    onEnterCancelled = props.onEnterCancelled,
+    onBeforeLeave = props.onBeforeLeave,
+    onLeave = props.onLeave,
+    onAfterLeave = props.onAfterLeave,
+    onLeaveCancelled = props.onLeaveCancelled,
+    onBeforeAppear = props.onBeforeAppear,
+    onAppear = props.onAppear,
+    onAfterAppear = props.onAfterAppear,
+    onAppearCancelled = props.onAppearCancelled;
   var key = String(vnode.key);
   var leavingVNodesCache = getLeavingNodesForType(state, vnode);
   var callHook = (hook, args) => {
@@ -4223,16 +4687,16 @@ function defineAsyncComponent(source) {
       loader: source
     };
   }
-  var {
-    loader,
-    loadingComponent,
-    errorComponent,
-    delay = 200,
-    timeout,
-    // undefined = never times out
-    suspensible = true,
-    onError: userOnError
-  } = source;
+  var _source = source,
+    loader = _source.loader,
+    loadingComponent = _source.loadingComponent,
+    errorComponent = _source.errorComponent,
+    _source$delay = _source.delay,
+    delay = _source$delay === void 0 ? 200 : _source$delay,
+    timeout = _source.timeout,
+    _source$suspensible = _source.suspensible,
+    suspensible = _source$suspensible === void 0 ? true : _source$suspensible,
+    userOnError = _source.onError;
   var pendingRequest = null;
   var resolvedComp;
   var retries = 0;
@@ -4338,12 +4802,11 @@ function defineAsyncComponent(source) {
   });
 }
 function createInnerComp(comp, parent) {
-  var {
-    ref: ref2,
-    props,
-    children,
-    ce
-  } = parent.vnode;
+  var _parent$vnode = parent.vnode,
+    ref2 = _parent$vnode.ref,
+    props = _parent$vnode.props,
+    children = _parent$vnode.children,
+    ce = _parent$vnode.ce;
   var vnode = createVNode(comp, props, children);
   vnode.ref = ref2;
   vnode.ce = ce;
@@ -4362,10 +4825,8 @@ var KeepAliveImpl = {
     exclude: [String, RegExp, Array],
     max: [String, Number]
   },
-  setup(props, _ref7) {
-    var {
-      slots
-    } = _ref7;
+  setup(props, _ref9) {
+    var slots = _ref9.slots;
     var instance = getCurrentInstance();
     var sharedContext = instance.ctx;
     if (!sharedContext.renderer) {
@@ -4381,16 +4842,11 @@ var KeepAliveImpl = {
       instance.__v_cache = cache;
     }
     var parentSuspense = instance.suspense;
-    var {
-      renderer: {
-        p: patch,
-        m: move,
-        um: _unmount,
-        o: {
-          createElement
-        }
-      }
-    } = sharedContext;
+    var _sharedContext$render = sharedContext.renderer,
+      patch = _sharedContext$render.p,
+      move = _sharedContext$render.m,
+      _unmount = _sharedContext$render.um,
+      createElement = _sharedContext$render.o.createElement;
     var storageContainer = createElement("div");
     sharedContext.activate = (vnode, container, anchor, namespace, optimized) => {
       var instance2 = vnode.component;
@@ -4449,8 +4905,10 @@ var KeepAliveImpl = {
       cache.delete(key);
       keys.delete(key);
     }
-    watch(() => [props.include, props.exclude], _ref8 => {
-      var [include, exclude] = _ref8;
+    watch(() => [props.include, props.exclude], _ref0 => {
+      var _ref1 = _slicedToArray(_ref0, 2),
+        include = _ref1[0],
+        exclude = _ref1[1];
       include && pruneCache(name => matches(include, name));
       exclude && pruneCache(name => !matches(exclude, name));
     },
@@ -4469,10 +4927,8 @@ var KeepAliveImpl = {
     onUpdated(cacheSubtree);
     onBeforeUnmount(() => {
       cache.forEach(cached => {
-        var {
-          subTree,
-          suspense
-        } = instance;
+        var subTree = instance.subTree,
+          suspense = instance.suspense;
         var vnode = getInnerChild(subTree);
         if (cached.type === vnode.type && cached.key === vnode.key) {
           resetShapeFlag(vnode);
@@ -4503,11 +4959,9 @@ var KeepAliveImpl = {
       var vnode = getInnerChild(rawVNode);
       var comp = vnode.type;
       var name = getComponentName(isAsyncWrapper(vnode) ? vnode.type.__asyncResolved || {} : comp);
-      var {
-        include,
-        exclude,
-        max
-      } = props;
+      var include = props.include,
+        exclude = props.exclude,
+        max = props.max;
       if (include && (!name || !matches(include, name)) || exclude && name && matches(exclude, name)) {
         current = vnode;
         return rawVNode;
@@ -4614,8 +5068,8 @@ function injectHook(type, hook) {
       }
       pauseTracking();
       var reset = setCurrentInstance(target);
-      for (var _len7 = arguments.length, args = new Array(_len7), _key8 = 0; _key8 < _len7; _key8++) {
-        args[_key8] = arguments[_key8];
+      for (var _len12 = arguments.length, args = new Array(_len12), _key13 = 0; _key13 < _len12; _key13++) {
+        args[_key13] = arguments[_key13];
       }
       var res = callWithAsyncErrorHandling(hook, target, type, args);
       reset();
@@ -4801,8 +5255,8 @@ publicPropertiesMap.$callMethod = i => {
     }
     var method = proxy[methodName];
     if (method) {
-      for (var _len8 = arguments.length, args = new Array(_len8 > 1 ? _len8 - 1 : 0), _key9 = 1; _key9 < _len8; _key9++) {
-        args[_key9 - 1] = arguments[_key9];
+      for (var _len13 = arguments.length, args = new Array(_len13 > 1 ? _len13 - 1 : 0), _key14 = 1; _key14 < _len13; _key14++) {
+        args[_key14 - 1] = arguments[_key14];
       }
       return method(...args);
     }
@@ -4813,19 +5267,15 @@ publicPropertiesMap.$callMethod = i => {
 var isReservedPrefix = key => key === "_" || key === "$";
 var hasSetupBinding = (state, key) => state !== EMPTY_OBJ && !state.__isScriptSetup && hasOwn(state, key);
 var PublicInstanceProxyHandlers = {
-  get(_ref9, key) {
-    var {
-      _: instance
-    } = _ref9;
-    var {
-      ctx,
-      setupState,
-      data,
-      props,
-      accessCache,
-      type,
-      appContext
-    } = instance;
+  get(_ref10, key) {
+    var instance = _ref10._;
+    var ctx = instance.ctx,
+      setupState = instance.setupState,
+      data = instance.data,
+      props = instance.props,
+      accessCache = instance.accessCache,
+      type = instance.type,
+      appContext = instance.appContext;
     if (key === "__isVue") {
       return true;
     }
@@ -4896,15 +5346,11 @@ var PublicInstanceProxyHandlers = {
       }
     }
   },
-  set(_ref10, key, value) {
-    var {
-      _: instance
-    } = _ref10;
-    var {
-      data,
-      setupState,
-      ctx
-    } = instance;
+  set(_ref11, key, value) {
+    var instance = _ref11._;
+    var data = instance.data,
+      setupState = instance.setupState,
+      ctx = instance.ctx;
     if (hasSetupBinding(setupState, key)) {
       setupState[key] = value;
       return true;
@@ -4934,17 +5380,14 @@ var PublicInstanceProxyHandlers = {
     }
     return true;
   },
-  has(_ref11, key) {
-    var {
-      _: {
-        data,
-        setupState,
-        accessCache,
-        ctx,
-        appContext,
-        propsOptions
-      }
-    } = _ref11;
+  has(_ref12, key) {
+    var _ref12$_ = _ref12._,
+      data = _ref12$_.data,
+      setupState = _ref12$_.setupState,
+      accessCache = _ref12$_.accessCache,
+      ctx = _ref12$_.ctx,
+      appContext = _ref12$_.appContext,
+      propsOptions = _ref12$_.propsOptions;
     var normalizedProps;
     return !!accessCache[key] || data !== EMPTY_OBJ && hasOwn(data, key) || hasSetupBinding(setupState, key) || (normalizedProps = propsOptions[0]) && hasOwn(normalizedProps, key) || hasOwn(ctx, key) || hasOwn(publicPropertiesMap, key) || hasOwn(appContext.config.globalProperties, key);
   },
@@ -4998,10 +5441,9 @@ function createDevRenderContext(instance) {
   return target;
 }
 function exposePropsOnRenderContext(instance) {
-  var {
-    ctx,
-    propsOptions: [propsOptions]
-  } = instance;
+  var ctx = instance.ctx,
+    _instance$propsOption3 = _slicedToArray(instance.propsOptions, 1),
+    propsOptions = _instance$propsOption3[0];
   if (propsOptions) {
     Object.keys(propsOptions).forEach(key => {
       Object.defineProperty(ctx, key, {
@@ -5014,10 +5456,8 @@ function exposePropsOnRenderContext(instance) {
   }
 }
 function exposeSetupStateOnRenderContext(instance) {
-  var {
-    ctx,
-    setupState
-  } = instance;
+  var ctx = instance.ctx,
+    setupState = instance.setupState;
   Object.keys(toRaw(setupState)).forEach(key => {
     if (!setupState.__isScriptSetup) {
       if (isReservedPrefix(key[0])) {
@@ -5170,42 +5610,37 @@ function applyOptions(instance) {
   if (options.beforeCreate) {
     callHook(options.beforeCreate, instance, "bc");
   }
-  var {
-    // state
-    data: dataOptions,
-    computed: computedOptions,
-    methods,
-    watch: watchOptions,
-    provide: provideOptions,
-    inject: injectOptions,
-    // lifecycle
-    created,
-    beforeMount,
-    mounted,
-    beforeUpdate,
-    updated,
-    activated,
-    deactivated,
-    beforeDestroy,
-    beforeUnmount,
-    destroyed,
-    unmounted,
-    render,
-    renderTracked,
-    renderTriggered,
-    errorCaptured,
-    serverPrefetch,
-    // public API
-    expose,
-    inheritAttrs,
-    // assets
-    components,
-    directives,
-    filters
-  } = options;
+  var dataOptions = options.data,
+    computedOptions = options.computed,
+    methods = options.methods,
+    watchOptions = options.watch,
+    provideOptions = options.provide,
+    injectOptions = options.inject,
+    created = options.created,
+    beforeMount = options.beforeMount,
+    mounted = options.mounted,
+    beforeUpdate = options.beforeUpdate,
+    updated = options.updated,
+    activated = options.activated,
+    deactivated = options.deactivated,
+    beforeDestroy = options.beforeDestroy,
+    beforeUnmount = options.beforeUnmount,
+    destroyed = options.destroyed,
+    unmounted = options.unmounted,
+    render = options.render,
+    renderTracked = options.renderTracked,
+    renderTriggered = options.renderTriggered,
+    errorCaptured = options.errorCaptured,
+    serverPrefetch = options.serverPrefetch,
+    expose = options.expose,
+    inheritAttrs = options.inheritAttrs,
+    components = options.components,
+    directives = options.directives,
+    filters = options.filters;
   var checkDuplicateProperties = createDuplicateChecker();
   {
-    var [propsOptions] = instance.propsOptions;
+    var _instance$propsOption4 = _slicedToArray(instance.propsOptions, 1),
+      propsOptions = _instance$propsOption4[0];
     if (propsOptions) {
       for (var key in propsOptions) {
         checkDuplicateProperties("Props" /* PROPS */, key);
@@ -5216,11 +5651,11 @@ function applyOptions(instance) {
     resolveInjections(injectOptions, ctx, checkDuplicateProperties);
   }
   if (methods) {
-    for (var _key10 in methods) {
-      var methodHandler = methods[_key10];
+    for (var _key15 in methods) {
+      var methodHandler = methods[_key15];
       if (isFunction(methodHandler)) {
         {
-          Object.defineProperty(ctx, _key10, {
+          Object.defineProperty(ctx, _key15, {
             value: methodHandler.bind(publicThis),
             configurable: true,
             enumerable: true,
@@ -5228,10 +5663,10 @@ function applyOptions(instance) {
           });
         }
         {
-          checkDuplicateProperties("Methods" /* METHODS */, _key10);
+          checkDuplicateProperties("Methods" /* METHODS */, _key15);
         }
       } else {
-        warn$1("Method \"".concat(_key10, "\" has type \"").concat(typeof methodHandler, "\" in the component definition. Did you reference the function correctly?"));
+        warn$1("Method \"".concat(_key15, "\" has type \"").concat(typeof methodHandler, "\" in the component definition. Did you reference the function correctly?"));
       }
     }
   }
@@ -5249,19 +5684,19 @@ function applyOptions(instance) {
       } else {
         instance.data = reactive(data);
         {
-          var _loop3 = function (_key11) {
-            checkDuplicateProperties("Data" /* DATA */, _key11);
-            if (!isReservedPrefix(_key11[0])) {
-              Object.defineProperty(ctx, _key11, {
+          var _loop3 = function (_key16) {
+            checkDuplicateProperties("Data" /* DATA */, _key16);
+            if (!isReservedPrefix(_key16[0])) {
+              Object.defineProperty(ctx, _key16, {
                 configurable: true,
                 enumerable: true,
-                get: () => data[_key11],
+                get: () => data[_key16],
                 set: NOOP
               });
             }
           };
-          for (var _key11 in data) {
-            _loop3(_key11);
+          for (var _key16 in data) {
+            _loop3(_key16);
           }
         }
       }
@@ -5269,36 +5704,36 @@ function applyOptions(instance) {
   }
   shouldCacheAccess = true;
   if (computedOptions) {
-    var _loop4 = function (_key12) {
-      var opt = computedOptions[_key12];
+    var _loop4 = function (_key17) {
+      var opt = computedOptions[_key17];
       var get = isFunction(opt) ? opt.bind(publicThis, publicThis) : isFunction(opt.get) ? opt.get.bind(publicThis, publicThis) : NOOP;
       if (get === NOOP) {
-        warn$1("Computed property \"".concat(_key12, "\" has no getter."));
+        warn$1("Computed property \"".concat(_key17, "\" has no getter."));
       }
       var set = !isFunction(opt) && isFunction(opt.set) ? opt.set.bind(publicThis) : () => {
-        warn$1("Write operation failed: computed property \"".concat(_key12, "\" is readonly."));
+        warn$1("Write operation failed: computed property \"".concat(_key17, "\" is readonly."));
       };
       var c = computed({
         get,
         set
       });
-      Object.defineProperty(ctx, _key12, {
+      Object.defineProperty(ctx, _key17, {
         enumerable: true,
         configurable: true,
         get: () => c.value,
         set: v => c.value = v
       });
       {
-        checkDuplicateProperties("Computed" /* COMPUTED */, _key12);
+        checkDuplicateProperties("Computed" /* COMPUTED */, _key17);
       }
     };
-    for (var _key12 in computedOptions) {
-      _loop4(_key12);
+    for (var _key17 in computedOptions) {
+      _loop4(_key17);
     }
   }
   if (watchOptions) {
-    for (var _key13 in watchOptions) {
-      createWatcher(watchOptions[_key13], ctx, publicThis, _key13);
+    for (var _key18 in watchOptions) {
+      createWatcher(watchOptions[_key18], ctx, publicThis, _key18);
     }
   }
   if (provideOptions) {
@@ -5421,17 +5856,12 @@ function createWatcher(raw, ctx, publicThis, key) {
 }
 function resolveMergedOptions(instance) {
   var base = instance.type;
-  var {
-    mixins,
-    extends: extendsOptions
-  } = base;
-  var {
-    mixins: globalMixins,
-    optionsCache: cache,
-    config: {
-      optionMergeStrategies
-    }
-  } = instance.appContext;
+  var mixins = base.mixins,
+    extendsOptions = base.extends;
+  var _instance$appContext = instance.appContext,
+    globalMixins = _instance$appContext.mixins,
+    cache = _instance$appContext.optionsCache,
+    optionMergeStrategies = _instance$appContext.config.optionMergeStrategies;
   var cached = cache.get(base);
   var resolved;
   if (cached) {
@@ -5454,10 +5884,8 @@ function resolveMergedOptions(instance) {
 }
 function mergeOptions(to, from, strats) {
   var asMixin = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  var {
-    mixins,
-    extends: extendsOptions
-  } = from;
+  var mixins = from.mixins,
+    extendsOptions = from.extends;
   if (extendsOptions) {
     mergeOptions(to, extendsOptions, strats, true);
   }
@@ -5606,8 +6034,8 @@ function createAppAPI(render, hydrate) {
         }
       },
       use(plugin) {
-        for (var _len9 = arguments.length, options = new Array(_len9 > 1 ? _len9 - 1 : 0), _key14 = 1; _key14 < _len9; _key14++) {
-          options[_key14 - 1] = arguments[_key14];
+        for (var _len14 = arguments.length, options = new Array(_len14 > 1 ? _len14 - 1 : 0), _key19 = 1; _key19 < _len14; _key19++) {
+          options[_key19 - 1] = arguments[_key19];
         }
         if (installedPlugins.has(plugin)) {
           warn$1("Plugin has already been applied to target app.");
@@ -5806,15 +6234,12 @@ function isInHmrContext(instance) {
   }
 }
 function updateProps(instance, rawProps, rawPrevProps, optimized) {
-  var {
-    props,
-    attrs,
-    vnode: {
-      patchFlag
-    }
-  } = instance;
+  var props = instance.props,
+    attrs = instance.attrs,
+    patchFlag = instance.vnode.patchFlag;
   var rawCurrentProps = toRaw(props);
-  var [options] = instance.propsOptions;
+  var _instance$propsOption5 = _slicedToArray(instance.propsOptions, 1),
+    options = _instance$propsOption5[0];
   var hasAttrsChanged = false;
   if (
   // always force full diff in dev
@@ -5852,30 +6277,30 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
       hasAttrsChanged = true;
     }
     var kebabKey;
-    for (var _key15 in rawCurrentProps) {
+    for (var _key20 in rawCurrentProps) {
       if (!rawProps ||
       // for camelCase
-      !hasOwn(rawProps, _key15) && (
+      !hasOwn(rawProps, _key20) && (
       // it's possible the original props was passed in as kebab-case
       // and converted to camelCase (#955)
-      (kebabKey = hyphenate(_key15)) === _key15 || !hasOwn(rawProps, kebabKey))) {
+      (kebabKey = hyphenate(_key20)) === _key20 || !hasOwn(rawProps, kebabKey))) {
         if (options) {
           if (rawPrevProps && (
           // for camelCase
-          rawPrevProps[_key15] !== void 0 ||
+          rawPrevProps[_key20] !== void 0 ||
           // for kebab-case
           rawPrevProps[kebabKey] !== void 0)) {
-            props[_key15] = resolvePropValue(options, rawCurrentProps, _key15, void 0, instance, true);
+            props[_key20] = resolvePropValue(options, rawCurrentProps, _key20, void 0, instance, true);
           }
         } else {
-          delete props[_key15];
+          delete props[_key20];
         }
       }
     }
     if (attrs !== rawCurrentProps) {
-      for (var _key16 in attrs) {
-        if (!rawProps || !hasOwn(rawProps, _key16) && true) {
-          delete attrs[_key16];
+      for (var _key21 in attrs) {
+        if (!rawProps || !hasOwn(rawProps, _key21) && true) {
+          delete attrs[_key21];
           hasAttrsChanged = true;
         }
       }
@@ -5889,7 +6314,9 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
   }
 }
 function setFullProps(instance, rawProps, props, attrs) {
-  var [options, needCastKeys] = instance.propsOptions;
+  var _instance$propsOption6 = _slicedToArray(instance.propsOptions, 2),
+    options = _instance$propsOption6[0],
+    needCastKeys = _instance$propsOption6[1];
   var hasAttrsChanged = false;
   var rawCastValues;
   if (rawProps) {
@@ -5921,8 +6348,8 @@ function setFullProps(instance, rawProps, props, attrs) {
     var rawCurrentProps = toRaw(props);
     var castValues = rawCastValues || EMPTY_OBJ;
     for (var i = 0; i < needCastKeys.length; i++) {
-      var _key17 = needCastKeys[i];
-      props[_key17] = resolvePropValue(options, rawCurrentProps, _key17, castValues[_key17], instance, !hasOwn(castValues, _key17));
+      var _key22 = needCastKeys[i];
+      props[_key22] = resolvePropValue(options, rawCurrentProps, _key22, castValues[_key22], instance, !hasOwn(castValues, _key22));
     }
   }
   return hasAttrsChanged;
@@ -5968,9 +6395,7 @@ function _resolvePropValue(options, props, key, value, instance, isAbsent) {
     if (hasDefault && value === void 0) {
       var defaultValue = opt.default;
       if (opt.type !== Function && !opt.skipFactory && isFunction(defaultValue)) {
-        var {
-          propsDefaults
-        } = instance;
+        var propsDefaults = instance.propsDefaults;
         if (key in propsDefaults) {
           value = propsDefaults[key];
         } else {
@@ -6014,7 +6439,10 @@ function normalizePropsOptions(comp, appContext) {
   if (!isFunction(comp)) {
     var extendProps = raw2 => {
       hasExtends = true;
-      var [props, keys] = normalizePropsOptions(raw2, appContext, true);
+      var _normalizePropsOption = normalizePropsOptions(raw2, appContext, true),
+        _normalizePropsOption2 = _slicedToArray(_normalizePropsOption, 2),
+        props = _normalizePropsOption2[0],
+        keys = _normalizePropsOption2[1];
       extend(normalized, props);
       if (keys) needCastKeys.push(...keys);
     };
@@ -6118,13 +6546,11 @@ function validateProps(rawProps, props, instance) {
   }
 }
 function validateProp(name, value, prop, props, isAbsent) {
-  var {
-    type,
-    required,
-    validator,
-    skipCheck,
-    default: defaultValue
-  } = prop;
+  var type = prop.type,
+    required = prop.required,
+    validator = prop.validator,
+    skipCheck = prop.skipCheck,
+    defaultValue = prop.default;
   if (defaultValue == null && required && isAbsent) {
     warn$1('Missing required prop: "' + name + '"');
     return;
@@ -6137,10 +6563,9 @@ function validateProp(name, value, prop, props, isAbsent) {
     var types = isArray$1(type) ? type : [type];
     var expectedTypes = [];
     for (var i = 0; i < types.length && !isValid; i++) {
-      var {
-        valid,
-        expectedType
-      } = assertType(value, types[i]);
+      var _assertType = assertType(value, types[i]),
+        valid = _assertType.valid,
+        expectedType = _assertType.expectedType;
       expectedTypes.push(expectedType || "");
       isValid = valid;
     }
@@ -6209,8 +6634,8 @@ function isExplicable(type) {
   return explicitTypes.some(elem => type.toLowerCase() === elem);
 }
 function isBoolean() {
-  for (var _len10 = arguments.length, args = new Array(_len10), _key18 = 0; _key18 < _len10; _key18++) {
-    args[_key18] = arguments[_key18];
+  for (var _len15 = arguments.length, args = new Array(_len15), _key23 = 0; _key23 < _len15; _key23++) {
+    args[_key23] = arguments[_key23];
   }
   return args.some(elem => elem.toLowerCase() === "boolean");
 }
@@ -6272,10 +6697,8 @@ var initSlots = (instance, children) => {
   def(instance.slots, InternalObjectKey, 1);
 };
 var updateSlots = (instance, children, optimized) => {
-  var {
-    vnode,
-    slots
-  } = instance;
+  var vnode = instance.vnode,
+    slots = instance.slots;
   var needDeletionCheck = true;
   var deletionComparisonTarget = EMPTY_OBJ;
   if (vnode.shapeFlag & 32) {
@@ -6322,10 +6745,8 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode) {
   }
   var refValue = vnode.shapeFlag & 4 && !vnode.component.type.rootElement ? getExposeProxy(vnode.component) || vnode.component.proxy : vnode.el;
   var value = isUnmount ? null : refValue;
-  var {
-    i: owner,
-    r: ref
-  } = rawRef;
+  var owner = rawRef.i,
+    ref = rawRef.r;
   if (!owner) {
     warn$1("Missing ref owner context. ref cannot be used on hoisted vnodes. A vnode with ref must be created inside the render function.");
     return;
@@ -6402,19 +6823,16 @@ var getContainerType = container => {
 };
 var isComment = node => node.nodeType === 8 /* COMMENT */;
 function createHydrationFunctions(rendererInternals) {
-  var {
-    mt: mountComponent,
-    p: patch,
-    o: {
-      patchProp,
-      createText,
-      nextSibling,
-      parentNode,
-      remove,
-      insert,
-      createComment
-    }
-  } = rendererInternals;
+  var mountComponent = rendererInternals.mt,
+    patch = rendererInternals.p,
+    _rendererInternals$o2 = rendererInternals.o,
+    patchProp = _rendererInternals$o2.patchProp,
+    createText = _rendererInternals$o2.createText,
+    nextSibling = _rendererInternals$o2.nextSibling,
+    parentNode = _rendererInternals$o2.parentNode,
+    remove = _rendererInternals$o2.remove,
+    insert = _rendererInternals$o2.insert,
+    createComment = _rendererInternals$o2.createComment;
   var hydrate = (vnode, container) => {
     if (!container.hasChildNodes()) {
       warn$1("Attempting to hydrate existing markup but container is empty. Performing full mount instead.");
@@ -6435,12 +6853,10 @@ function createHydrationFunctions(rendererInternals) {
     var optimized = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : false;
     var isFragmentStart = isComment(node) && node.data === "[";
     var onMismatch = () => handleMismatch(node, vnode, parentComponent, parentSuspense, slotScopeIds, isFragmentStart);
-    var {
-      type,
-      ref,
-      shapeFlag,
-      patchFlag
-    } = vnode;
+    var type = vnode.type,
+      ref = vnode.ref,
+      shapeFlag = vnode.shapeFlag,
+      patchFlag = vnode.patchFlag;
     var domType = node.nodeType;
     vnode.el = node;
     {
@@ -6565,14 +6981,12 @@ function createHydrationFunctions(rendererInternals) {
   };
   var hydrateElement = (el, vnode, parentComponent, parentSuspense, slotScopeIds, optimized) => {
     optimized = optimized || !!vnode.dynamicChildren;
-    var {
-      type,
-      props,
-      patchFlag,
-      shapeFlag,
-      dirs,
-      transition
-    } = vnode;
+    var type = vnode.type,
+      props = vnode.props,
+      patchFlag = vnode.patchFlag,
+      shapeFlag = vnode.shapeFlag,
+      dirs = vnode.dirs,
+      transition = vnode.transition;
     var forcePatch = type === "input" || type === "option";
     {
       if (dirs) {
@@ -6664,9 +7078,7 @@ function createHydrationFunctions(rendererInternals) {
     return node;
   };
   var hydrateFragment = (node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized) => {
-    var {
-      slotScopeIds: fragmentSlotScopeIds
-    } = vnode;
+    var fragmentSlotScopeIds = vnode.slotScopeIds;
     if (fragmentSlotScopeIds) {
       slotScopeIds = slotScopeIds ? slotScopeIds.concat(fragmentSlotScopeIds) : fragmentSlotScopeIds;
     }
@@ -6756,10 +7168,9 @@ function propHasMismatch(el, key, clientValue, vnode, instance) {
     var actualMap = toStyleMap(actual);
     var expectedMap = toStyleMap(expected);
     if (vnode.dirs) {
-      for (var {
-        dir,
-        value
-      } of vnode.dirs) {
+      for (var _ref14 of vnode.dirs) {
+        var dir = _ref14.dir;
+        var value = _ref14.value;
         if (dir.name === "show" && !value) {
           expectedMap.set("display", "none");
         }
@@ -6825,7 +7236,10 @@ function isSetEqual(a, b) {
 function toStyleMap(str) {
   var styleMap = /* @__PURE__ */new Map();
   for (var item of str.split(";")) {
-    var [key, value] = item.split(":");
+    var _item$split = item.split(":"),
+      _item$split2 = _slicedToArray(_item$split, 2),
+      key = _item$split2[0],
+      value = _item$split2[1];
     key = key == null ? void 0 : key.trim();
     value = value == null ? void 0 : value.trim();
     if (key && value) {
@@ -6838,7 +7252,10 @@ function isMapEqual(a, b) {
   if (a.size !== b.size) {
     return false;
   }
-  for (var [key, value] of a) {
+  for (var _ref17 of a) {
+    var _ref16 = _slicedToArray(_ref17, 2);
+    var key = _ref16[0];
+    var value = _ref16[1];
     if (value !== b.get(key)) {
       return false;
     }
@@ -6903,22 +7320,20 @@ function baseCreateRenderer(options, createHydrationFns) {
   {
     setDevtoolsHook$1(target.__VUE_DEVTOOLS_GLOBAL_HOOK__, target);
   }
-  var {
-    insert: hostInsert,
-    remove: hostRemove,
-    patchProp: hostPatchProp,
-    forcePatchProp: hostForcePatchProp,
-    // fixed by xxxxxx
-    createElement: hostCreateElement,
-    createText: hostCreateText,
-    createComment: hostCreateComment,
-    setText: hostSetText,
-    setElementText: hostSetElementText,
-    parentNode: hostParentNode,
-    nextSibling: hostNextSibling,
-    setScopeId: hostSetScopeId = NOOP,
-    insertStaticContent: hostInsertStaticContent
-  } = options;
+  var hostInsert = options.insert,
+    hostRemove = options.remove,
+    hostPatchProp = options.patchProp,
+    hostForcePatchProp = options.forcePatchProp,
+    hostCreateElement = options.createElement,
+    hostCreateText = options.createText,
+    hostCreateComment = options.createComment,
+    hostSetText = options.setText,
+    hostSetElementText = options.setElementText,
+    hostParentNode = options.parentNode,
+    hostNextSibling = options.nextSibling,
+    _options$setScopeId = options.setScopeId,
+    hostSetScopeId = _options$setScopeId === void 0 ? NOOP : _options$setScopeId,
+    hostInsertStaticContent = options.insertStaticContent;
   var patch = function (n1, n2, container) {
     var anchor = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
     var parentComponent = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
@@ -6938,11 +7353,9 @@ function baseCreateRenderer(options, createHydrationFns) {
       optimized = false;
       n2.dynamicChildren = null;
     }
-    var {
-      type,
-      ref,
-      shapeFlag
-    } = n2;
+    var type = n2.type,
+      ref = n2.ref,
+      shapeFlag = n2.shapeFlag;
     switch (type) {
       case Text:
         processText(n1, n2, container, anchor);
@@ -6999,23 +7412,27 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
   };
   var mountStaticNode = (n2, container, anchor, namespace) => {
-    [n2.el, n2.anchor] = hostInsertStaticContent(n2.children, container, anchor, namespace, n2.el, n2.anchor);
+    var _hostInsertStaticCont = hostInsertStaticContent(n2.children, container, anchor, namespace, n2.el, n2.anchor);
+    var _hostInsertStaticCont2 = _slicedToArray(_hostInsertStaticCont, 2);
+    n2.el = _hostInsertStaticCont2[0];
+    n2.anchor = _hostInsertStaticCont2[1];
   };
   var patchStaticNode = (n1, n2, container, namespace) => {
     if (n2.children !== n1.children) {
       var anchor = hostNextSibling(n1.anchor);
       removeStaticNode(n1);
-      [n2.el, n2.anchor] = hostInsertStaticContent(n2.children, container, anchor, namespace);
+      var _hostInsertStaticCont3 = hostInsertStaticContent(n2.children, container, anchor, namespace);
+      var _hostInsertStaticCont4 = _slicedToArray(_hostInsertStaticCont3, 2);
+      n2.el = _hostInsertStaticCont4[0];
+      n2.anchor = _hostInsertStaticCont4[1];
     } else {
       n2.el = n1.el;
       n2.anchor = n1.anchor;
     }
   };
-  var moveStaticNode = (_ref12, container, nextSibling) => {
-    var {
-      el,
-      anchor
-    } = _ref12;
+  var moveStaticNode = (_ref18, container, nextSibling) => {
+    var el = _ref18.el,
+      anchor = _ref18.anchor;
     var next;
     while (el && el !== anchor) {
       next = hostNextSibling(el);
@@ -7024,11 +7441,9 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
     hostInsert(anchor, container, nextSibling);
   };
-  var removeStaticNode = _ref13 => {
-    var {
-      el,
-      anchor
-    } = _ref13;
+  var removeStaticNode = _ref19 => {
+    var el = _ref19.el,
+      anchor = _ref19.anchor;
     var next;
     while (el && el !== anchor) {
       next = hostNextSibling(el);
@@ -7052,12 +7467,10 @@ function baseCreateRenderer(options, createHydrationFns) {
   var mountElement = (vnode, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
     var el;
     var vnodeHook;
-    var {
-      props,
-      shapeFlag,
-      transition,
-      dirs
-    } = vnode;
+    var props = vnode.props,
+      shapeFlag = vnode.shapeFlag,
+      transition = vnode.transition,
+      dirs = vnode.dirs;
     el = vnode.el = hostCreateElement(vnode.type,
     // fixed by xxxxxx
     container);
@@ -7142,11 +7555,9 @@ function baseCreateRenderer(options, createHydrationFns) {
   };
   var patchElement = (n1, n2, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
     var el = n2.el = n1.el;
-    var {
-      patchFlag,
-      dynamicChildren,
-      dirs
-    } = n2;
+    var patchFlag = n2.patchFlag,
+      dynamicChildren = n2.dynamicChildren,
+      dirs = n2.dirs;
     patchFlag |= n1.patchFlag & 16;
     var oldProps = n1.props || EMPTY_OBJ;
     var newProps = n2.props || EMPTY_OBJ;
@@ -7252,12 +7663,12 @@ function baseCreateRenderer(options, createHydrationFns) {
           }
         }
       }
-      for (var _key19 in newProps) {
-        if (isReservedProp(_key19)) continue;
-        var next = newProps[_key19];
-        var prev = oldProps[_key19];
-        if (next !== prev && _key19 !== "value" || hostForcePatchProp && hostForcePatchProp(el, _key19)) {
-          hostPatchProp(el, _key19, prev, next, namespace, vnode.children, parentComponent, parentSuspense, unmountChildren,
+      for (var _key24 in newProps) {
+        if (isReservedProp(_key24)) continue;
+        var next = newProps[_key24];
+        var prev = oldProps[_key24];
+        if (next !== prev && _key24 !== "value" || hostForcePatchProp && hostForcePatchProp(el, _key24)) {
+          hostPatchProp(el, _key24, prev, next, namespace, vnode.children, parentComponent, parentSuspense, unmountChildren,
           // fixed by xxxxxx
           vnode.hostInstance);
         }
@@ -7272,11 +7683,9 @@ function baseCreateRenderer(options, createHydrationFns) {
   var processFragment = (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
     var fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateText("", container, true);
     var fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateText("", container, true);
-    var {
-      patchFlag,
-      dynamicChildren,
-      slotScopeIds: fragmentSlotScopeIds
-    } = n2;
+    var patchFlag = n2.patchFlag,
+      dynamicChildren = n2.dynamicChildren,
+      fragmentSlotScopeIds = n2.slotScopeIds;
     if (
     // #5523 dev root fragment may inherit directives
     isHmrUpdating || patchFlag & 2048) {
@@ -7384,15 +7793,12 @@ function baseCreateRenderer(options, createHydrationFns) {
     var componentUpdateFn = () => {
       if (!instance.isMounted) {
         var vnodeHook;
-        var {
-          el,
-          props
-        } = initialVNode;
-        var {
-          bm,
-          m,
-          parent
-        } = instance;
+        var _initialVNode = initialVNode,
+          el = _initialVNode.el,
+          props = _initialVNode.props;
+        var bm = instance.bm,
+          m = instance.m,
+          parent = instance.parent;
         var isAsyncWrapperVNode = isAsyncWrapper(initialVNode);
         toggleRecurse(instance, false);
         if (bm) {
@@ -7462,13 +7868,11 @@ function baseCreateRenderer(options, createHydrationFns) {
         }
         initialVNode = container = anchor = null;
       } else {
-        var {
-          next,
-          bu,
-          u,
-          parent: _parent,
-          vnode
-        } = instance;
+        var next = instance.next,
+          bu = instance.bu,
+          u = instance.u,
+          _parent = instance.parent,
+          vnode = instance.vnode;
         {
           var nonHydratedAsyncRoot = locateNonHydratedAsyncRoot(instance);
           if (nonHydratedAsyncRoot) {
@@ -7574,10 +7978,8 @@ function baseCreateRenderer(options, createHydrationFns) {
     var c1 = n1 && n1.children;
     var prevShapeFlag = n1 ? n1.shapeFlag : 0;
     var c2 = n2.children;
-    var {
-      patchFlag,
-      shapeFlag
-    } = n2;
+    var patchFlag = n2.patchFlag,
+      shapeFlag = n2.shapeFlag;
     if (patchFlag > 0) {
       if (patchFlag & 128) {
         patchKeyedChildren(c1, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
@@ -7740,13 +8142,11 @@ function baseCreateRenderer(options, createHydrationFns) {
   };
   var move = function (vnode, container, anchor, moveType) {
     var parentSuspense = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
-    var {
-      el,
-      type,
-      transition,
-      children,
-      shapeFlag
-    } = vnode;
+    var el = vnode.el,
+      type = vnode.type,
+      transition = vnode.transition,
+      children = vnode.children,
+      shapeFlag = vnode.shapeFlag;
     if (shapeFlag & 6) {
       move(vnode.component.subTree, container, anchor, moveType);
       return;
@@ -7778,11 +8178,9 @@ function baseCreateRenderer(options, createHydrationFns) {
         hostInsert(el, container, anchor);
         queuePostRenderEffect(() => transition.enter(el), parentSuspense);
       } else {
-        var {
-          leave,
-          delayLeave,
-          afterLeave
-        } = transition;
+        var leave = transition.leave,
+          delayLeave = transition.delayLeave,
+          afterLeave = transition.afterLeave;
         var remove2 = () => hostInsert(el, container, anchor);
         var performLeave = () => {
           leave(el, () => {
@@ -7803,16 +8201,14 @@ function baseCreateRenderer(options, createHydrationFns) {
   var unmount = function (vnode, parentComponent, parentSuspense) {
     var doRemove = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
     var optimized = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
-    var {
-      type,
-      props,
-      ref,
-      children,
-      dynamicChildren,
-      shapeFlag,
-      patchFlag,
-      dirs
-    } = vnode;
+    var type = vnode.type,
+      props = vnode.props,
+      ref = vnode.ref,
+      children = vnode.children,
+      dynamicChildren = vnode.dynamicChildren,
+      shapeFlag = vnode.shapeFlag,
+      patchFlag = vnode.patchFlag,
+      dirs = vnode.dirs;
     if (ref != null) {
       setRef(ref, null, parentSuspense, vnode, true);
     }
@@ -7857,12 +8253,10 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
   };
   var remove = vnode => {
-    var {
-      type,
-      el,
-      anchor,
-      transition
-    } = vnode;
+    var type = vnode.type,
+      el = vnode.el,
+      anchor = vnode.anchor,
+      transition = vnode.transition;
     if (type === Fragment) {
       if (vnode.patchFlag > 0 && vnode.patchFlag & 2048 && transition && !transition.persisted) {
         vnode.children.forEach(child => {
@@ -7888,10 +8282,8 @@ function baseCreateRenderer(options, createHydrationFns) {
       }
     };
     if (vnode.shapeFlag & 1 && transition && !transition.persisted) {
-      var {
-        leave,
-        delayLeave
-      } = transition;
+      var leave = transition.leave,
+        delayLeave = transition.delayLeave;
       var performLeave = () => leave(el, performRemove);
       if (delayLeave) {
         delayLeave(vnode.el, performRemove, performLeave);
@@ -7915,13 +8307,11 @@ function baseCreateRenderer(options, createHydrationFns) {
     if (instance.type.__hmrId) {
       unregisterHMR(instance);
     }
-    var {
-      bum,
-      scope,
-      update,
-      subTree,
-      um
-    } = instance;
+    var bum = instance.bum,
+      scope = instance.scope,
+      update = instance.update,
+      subTree = instance.subTree,
+      um = instance.um;
     if (bum) {
       invokeArrayFns(bum);
     }
@@ -7995,7 +8385,10 @@ function baseCreateRenderer(options, createHydrationFns) {
   var hydrate;
   var hydrateNode;
   if (createHydrationFns) {
-    [hydrate, hydrateNode] = createHydrationFns(internals);
+    var _createHydrationFns = createHydrationFns(internals);
+    var _createHydrationFns2 = _slicedToArray(_createHydrationFns, 2);
+    hydrate = _createHydrationFns2[0];
+    hydrateNode = _createHydrationFns2[1];
   }
   return {
     render,
@@ -8003,18 +8396,14 @@ function baseCreateRenderer(options, createHydrationFns) {
     createApp: createAppAPI(render, hydrate)
   };
 }
-function resolveChildrenNamespace(_ref14, currentNamespace) {
-  var {
-    type,
-    props
-  } = _ref14;
+function resolveChildrenNamespace(_ref20, currentNamespace) {
+  var type = _ref20.type,
+    props = _ref20.props;
   return currentNamespace === "svg" && type === "foreignObject" || currentNamespace === "mathml" && type === "annotation-xml" && props && props.encoding && props.encoding.includes("html") ? void 0 : currentNamespace;
 }
-function toggleRecurse(_ref15, allowed) {
-  var {
-    effect,
-    update
-  } = _ref15;
+function toggleRecurse(_ref21, allowed) {
+  var effect = _ref21.effect,
+    update = _ref21.update;
   effect.allowRecurse = update.allowRecurse = allowed;
 }
 function needTransition(parentSuspense, transition) {
@@ -8122,23 +8511,18 @@ var TeleportImpl = {
   name: "Teleport",
   __isTeleport: true,
   process(n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized, internals) {
-    var {
-      mc: mountChildren,
-      pc: patchChildren,
-      pbc: patchBlockChildren,
-      o: {
-        insert,
-        querySelector,
-        createText,
-        createComment
-      }
-    } = internals;
+    var mountChildren = internals.mc,
+      patchChildren = internals.pc,
+      patchBlockChildren = internals.pbc,
+      _internals$o = internals.o,
+      insert = _internals$o.insert,
+      querySelector = _internals$o.querySelector,
+      createText = _internals$o.createText,
+      createComment = _internals$o.createComment;
     var disabled = isTeleportDisabled(n2.props);
-    var {
-      shapeFlag,
-      children,
-      dynamicChildren
-    } = n2;
+    var shapeFlag = n2.shapeFlag,
+      children = n2.children,
+      dynamicChildren = n2.dynamicChildren;
     if (isHmrUpdating) {
       optimized = false;
       dynamicChildren = null;
@@ -8216,21 +8600,15 @@ var TeleportImpl = {
     }
     updateCssVars(n2);
   },
-  remove(vnode, parentComponent, parentSuspense, optimized, _ref16, doRemove) {
-    var {
-      um: unmount,
-      o: {
-        remove: hostRemove
-      }
-    } = _ref16;
-    var {
-      shapeFlag,
-      children,
-      anchor,
-      targetAnchor,
-      target,
-      props
-    } = vnode;
+  remove(vnode, parentComponent, parentSuspense, optimized, _ref22, doRemove) {
+    var unmount = _ref22.um,
+      hostRemove = _ref22.o.remove;
+    var shapeFlag = vnode.shapeFlag,
+      children = vnode.children,
+      anchor = vnode.anchor,
+      targetAnchor = vnode.targetAnchor,
+      target = vnode.target,
+      props = vnode.props;
     if (target) {
       hostRemove(targetAnchor);
     }
@@ -8246,24 +8624,18 @@ var TeleportImpl = {
   move: moveTeleport,
   hydrate: hydrateTeleport
 };
-function moveTeleport(vnode, container, parentAnchor, _ref17) {
-  var {
-    o: {
-      insert
-    },
-    m: move
-  } = _ref17;
+function moveTeleport(vnode, container, parentAnchor, _ref23) {
+  var insert = _ref23.o.insert,
+    move = _ref23.m;
   var moveType = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 2;
   if (moveType === 0) {
     insert(vnode.targetAnchor, container, parentAnchor);
   }
-  var {
-    el,
-    anchor,
-    shapeFlag,
-    children,
-    props
-  } = vnode;
+  var el = vnode.el,
+    anchor = vnode.anchor,
+    shapeFlag = vnode.shapeFlag,
+    children = vnode.children,
+    props = vnode.props;
   var isReorder = moveType === 2;
   if (isReorder) {
     insert(el, container, parentAnchor);
@@ -8279,14 +8651,11 @@ function moveTeleport(vnode, container, parentAnchor, _ref17) {
     insert(anchor, container, parentAnchor);
   }
 }
-function hydrateTeleport(node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized, _ref18, hydrateChildren) {
-  var {
-    o: {
-      nextSibling,
-      parentNode,
-      querySelector
-    }
-  } = _ref18;
+function hydrateTeleport(node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized, _ref24, hydrateChildren) {
+  var _ref24$o = _ref24.o,
+    nextSibling = _ref24$o.nextSibling,
+    parentNode = _ref24$o.parentNode,
+    querySelector = _ref24$o.querySelector;
   var target = vnode.target = resolveTarget(vnode.props, querySelector, parentComponent);
   if (target) {
     var targetNode = target._lpa || target.firstChild;
@@ -8372,24 +8741,20 @@ function transformVNodeArgs(transformer) {
   vnodeArgsTransformer = transformer;
 }
 var createVNodeWithArgsTransform = function () {
-  for (var _len11 = arguments.length, args = new Array(_len11), _key20 = 0; _key20 < _len11; _key20++) {
-    args[_key20] = arguments[_key20];
+  for (var _len16 = arguments.length, args = new Array(_len16), _key25 = 0; _key25 < _len16; _key25++) {
+    args[_key25] = arguments[_key25];
   }
   return _createVNode(...(vnodeArgsTransformer ? vnodeArgsTransformer(args, currentRenderingInstance) : args));
 };
 var InternalObjectKey = "__vInternal";
-var normalizeKey = _ref19 => {
-  var {
-    key
-  } = _ref19;
+var normalizeKey = _ref25 => {
+  var key = _ref25.key;
   return key != null ? key : null;
 };
-var normalizeRef = _ref20 => {
-  var {
-    ref,
-    ref_key,
-    ref_for
-  } = _ref20;
+var normalizeRef = _ref26 => {
+  var ref = _ref26.ref,
+    ref_key = _ref26.ref_key,
+    ref_for = _ref26.ref_for;
   if (typeof ref === "number") {
     ref = "" + ref;
   }
@@ -8506,10 +8871,9 @@ function _createVNode(type) {
   }
   if (props) {
     props = guardReactiveProps(props);
-    var {
-      class: klass,
-      style
-    } = props;
+    var _props = props,
+      klass = _props.class,
+      style = _props.style;
     if (klass && !isString(klass)) {
       props.class = normalizeClass(klass);
     }
@@ -8533,12 +8897,10 @@ function guardReactiveProps(props) {
 }
 function cloneVNode(vnode, extraProps) {
   var mergeRef = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  var {
-    props,
-    ref,
-    patchFlag,
-    children
-  } = vnode;
+  var props = vnode.props,
+    ref = vnode.ref,
+    patchFlag = vnode.patchFlag,
+    children = vnode.children;
   var mergedProps = extraProps ? mergeProps(props || {}, extraProps) : props;
   var cloned = {
     __v_isVNode: true,
@@ -8625,9 +8987,7 @@ function cloneIfMounted(child) {
 }
 function normalizeChildren(vnode, children) {
   var type = 0;
-  var {
-    shapeFlag
-  } = vnode;
+  var shapeFlag = vnode.shapeFlag;
   if (children == null) {
     children = null;
   } else if (isArray$1(children)) {
@@ -8846,10 +9206,8 @@ var unsetCurrentInstance = () => {
   internalSetCurrentInstance(null);
 };
 var isBuiltInTag = /* @__PURE__ */makeMap("slot,component");
-function validateComponentName(name, _ref21) {
-  var {
-    isNativeTag
-  } = _ref21;
+function validateComponentName(name, _ref27) {
+  var isNativeTag = _ref27.isNativeTag;
   if (isBuiltInTag(name) || isNativeTag(name)) {
     warn$1("Do not use built-in or reserved HTML elements as component id: " + name);
   }
@@ -8861,10 +9219,9 @@ var isInSSRComponentSetup = false;
 function setupComponent(instance) {
   var isSSR = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
   isSSR && setInSSRSetupState(isSSR);
-  var {
-    props,
-    children
-  } = instance.vnode;
+  var _instance$vnode = instance.vnode,
+    props = _instance$vnode.props,
+    children = _instance$vnode.children;
   var isStateful = isStatefulComponent(instance);
   initProps(instance, props, isStateful, isSSR);
   initSlots(instance, children);
@@ -8900,9 +9257,7 @@ function setupStatefulComponent(instance, isSSR) {
   {
     exposePropsOnRenderContext(instance);
   }
-  var {
-    setup
-  } = Component;
+  var setup = Component.setup;
   if (setup) {
     var setupContext = instance.setupContext = setup.length > 1 ? createSetupContext(instance) : null;
     var reset = setCurrentInstance(instance);
@@ -8975,14 +9330,11 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
         {
           startMeasure(instance, "compile");
         }
-        var {
-          isCustomElement,
-          compilerOptions
-        } = instance.appContext.config;
-        var {
-          delimiters,
-          compilerOptions: componentCompilerOptions
-        } = Component;
+        var _instance$appContext$ = instance.appContext.config,
+          isCustomElement = _instance$appContext$.isCustomElement,
+          compilerOptions = _instance$appContext$.compilerOptions;
+        var delimiters = Component.delimiters,
+          componentCompilerOptions = Component.compilerOptions;
         var finalCompilerOptions = extend(extend({
           isCustomElement,
           delimiters
@@ -9073,8 +9425,8 @@ function createSetupContext(instance) {
       },
       get emit() {
         return function (event) {
-          for (var _len12 = arguments.length, args = new Array(_len12 > 1 ? _len12 - 1 : 0), _key21 = 1; _key21 < _len12; _key21++) {
-            args[_key21 - 1] = arguments[_key21];
+          for (var _len17 = arguments.length, args = new Array(_len17 > 1 ? _len17 - 1 : 0), _key26 = 1; _key26 < _len17; _key26++) {
+            args[_key26 - 1] = arguments[_key26];
           }
           return instance.emit(event, ...args);
         };
@@ -9554,7 +9906,10 @@ function hasClass(className, el) {
     }
     return [true, hostEl];
   }
-  var [matched, curEl] = hasClass(baseClassName, hostEl);
+  var _hasClass = hasClass(baseClassName, hostEl),
+    _hasClass2 = _slicedToArray(_hasClass, 2),
+    matched = _hasClass2[0],
+    curEl = _hasClass2[1];
   if (!matched) {
     return [false, null];
   }
@@ -9573,7 +9928,10 @@ function isMatchParentSelector(parentSelector, el) {
       var property = type === "~" ? PROPERTY_PREVIOUS_SIBLING : PROPERTY_PARENT_NODE;
       while (el) {
         el = el[property];
-        var [matched, curEl] = hasClass(className, el);
+        var _hasClass3 = hasClass(className, el),
+          _hasClass4 = _slicedToArray(_hasClass3, 2),
+          matched = _hasClass4[0],
+          curEl = _hasClass4[1];
         if (matched) {
           el = curEl;
           break;
@@ -9588,7 +9946,10 @@ function isMatchParentSelector(parentSelector, el) {
       } else if (type === "+") {
         el = el && el[PROPERTY_PREVIOUS_SIBLING];
       }
-      var [_matched, _curEl] = hasClass(className, el);
+      var _hasClass5 = hasClass(className, el),
+        _hasClass6 = _slicedToArray(_hasClass5, 2),
+        _matched = _hasClass6[0],
+        _curEl = _hasClass6[1];
       if (!_matched) {
         return false;
       }
@@ -9598,11 +9959,9 @@ function isMatchParentSelector(parentSelector, el) {
   return true;
 }
 var WEIGHT_IMPORTANT = 1e3;
-function parseClassName(_ref22, parentStyles, el) {
-  var {
-    styles,
-    weights
-  } = _ref22;
+function parseClassName(_ref28, parentStyles, el) {
+  var styles = _ref28.styles,
+    weights = _ref28.weights;
   each(parentStyles).forEach(parentSelector => {
     if (parentSelector && el) {
       if (!isMatchParentSelector(parentSelector, el)) {
@@ -9670,12 +10029,10 @@ function parseClassList(classList, instance) {
   }
   return parseClassListWithStyleSheet(classList, parseStyleSheet(instance), null, el).styles;
 }
-function parseStyleSheet(_ref23) {
-  var {
-    type,
-    appContext,
-    root
-  } = _ref23;
+function parseStyleSheet(_ref29) {
+  var type = _ref29.type,
+    appContext = _ref29.appContext,
+    root = _ref29.root;
   var component = type;
   var pageInstance = root;
   if (!pageInstance.componentStylesCache) {
@@ -9823,11 +10180,9 @@ function useComputedStyle() {
   var r = reactive(/* @__PURE__ */new Map());
   if (i) {
     var propsDef = i.propsOptions === EMPTY_ARR ? {} : i.propsOptions[0];
-    var {
-      classAttr,
-      styleAttr,
-      properties
-    } = options;
+    var classAttr = options.classAttr,
+      styleAttr = options.styleAttr,
+      properties = options.properties;
     var filterProperties = (_a = options.filterProperties) != null ? _a : true;
     if (classAttr || styleAttr) {
       if (classAttr && classAttr in propsDef) {
@@ -10231,7 +10586,10 @@ function updateChildrenClassStyle(el) {
 function patchAttr(el, key, value) {
   var instance = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
   if (instance) {
-    [key, value] = transformAttr(el, key, value, instance);
+    var _transformAttr = transformAttr(el, key, value, instance);
+    var _transformAttr2 = _slicedToArray(_transformAttr, 2);
+    key = _transformAttr2[0];
+    value = _transformAttr2[1];
   }
   el.setAnyAttribute(key, value);
 }
@@ -10307,7 +10665,9 @@ function patchEvent(el, rawName, prevValue, nextValue) {
   if (nextValue && existingInvoker) {
     existingInvoker.value = nextValue;
   } else {
-    var [name] = parseName(rawName);
+    var _parseName = parseName(rawName),
+      _parseName2 = _slicedToArray(_parseName, 1),
+      name = _parseName2[0];
     if (nextValue) {
       var invoker = invokers[rawName] = createInvoker(nextValue, instance);
       addEventListener(el, name, invoker);
@@ -10406,11 +10766,11 @@ function patchStyle(el, prev, next) {
           });
         }
       }
-      for (var _key22 in next) {
-        var value = next[_key22];
-        var prevValue = prev[_key22];
+      for (var _key27 in next) {
+        var value = next[_key27];
+        var prevValue = prev[_key27];
         if (!isSame(prevValue, value)) {
-          var _key = _key22.startsWith("--") ? _key22 : camelize(_key22);
+          var _key = _key27.startsWith("--") ? _key27 : camelize(_key27);
           parseStyleDecl(_key, value).forEach(item => {
             batchedStyles.set(item.prop, item.value);
             style == null ? void 0 : style.set(item.prop, item.value);
@@ -10561,8 +10921,8 @@ var withModifiers = (fn, modifiers) => {
       var guard = modifierGuards[modifiers[i]];
       if (guard && guard(event, modifiers)) return;
     }
-    for (var _len13 = arguments.length, args = new Array(_len13 > 1 ? _len13 - 1 : 0), _key23 = 1; _key23 < _len13; _key23++) {
-      args[_key23 - 1] = arguments[_key23];
+    for (var _len18 = arguments.length, args = new Array(_len18 > 1 ? _len18 - 1 : 0), _key28 = 1; _key28 < _len18; _key28++) {
+      args[_key28 - 1] = arguments[_key28];
     }
     return fn(event, ...args);
   };
@@ -10579,13 +10939,9 @@ var withKeys = (fn, modifiers) => {
   };
 };
 var vShow = {
-  beforeMount(el, _ref24, _ref25) {
-    var {
-      value
-    } = _ref24;
-    var {
-      transition
-    } = _ref25;
+  beforeMount(el, _ref30, _ref31) {
+    var value = _ref30.value;
+    var transition = _ref31.transition;
     el._vod = el.style.getPropertyValue("display") === "none" ? "" : "flex";
     if (transition && value) {
       transition.beforeEnter(el);
@@ -10593,25 +10949,17 @@ var vShow = {
       setDisplay(el, value);
     }
   },
-  mounted(el, _ref26, _ref27) {
-    var {
-      value
-    } = _ref26;
-    var {
-      transition
-    } = _ref27;
+  mounted(el, _ref32, _ref33) {
+    var value = _ref32.value;
+    var transition = _ref33.transition;
     if (transition && value) {
       transition.enter(el);
     }
   },
-  updated(el, _ref28, _ref29) {
-    var {
-      value,
-      oldValue
-    } = _ref28;
-    var {
-      transition
-    } = _ref29;
+  updated(el, _ref34, _ref35) {
+    var value = _ref34.value,
+      oldValue = _ref34.oldValue;
+    var transition = _ref35.transition;
     if (!value === !oldValue) return;
     if (transition) {
       if (value) {
@@ -10627,10 +10975,8 @@ var vShow = {
       setDisplay(el, value);
     }
   },
-  beforeUnmount(el, _ref30) {
-    var {
-      value
-    } = _ref30;
+  beforeUnmount(el, _ref36) {
+    var value = _ref36.value;
     setDisplay(el, value);
   }
 };
@@ -10651,10 +10997,8 @@ var render = function () {
 };
 var createApp = function () {
   var app = ensureRenderer().createApp(...arguments);
-  var {
-    mount,
-    unmount
-  } = app;
+  var mount = app.mount,
+    unmount = app.unmount;
   app.mount = container => {
     setDocument(container);
     return mount(container.body);
@@ -10679,9 +11023,7 @@ function createMountPage(appContext) {
   };
 }
 function unmountPage(pageInstance) {
-  var {
-    __page_container__
-  } = pageInstance;
+  var __page_container__ = pageInstance.__page_container__;
   if (__page_container__) {
     __page_container__.isUnmounted = true;
     render(null, __page_container__);

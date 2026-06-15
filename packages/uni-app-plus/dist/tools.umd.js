@@ -5,10 +5,11 @@
 })(this, (function (exports) { 'use strict';
 
   /**
-  * @vue/shared v3.4.21
+  * @vue/shared v3.5.35
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
+
 
   !!(process.env.NODE_ENV !== "production") ? Object.freeze({}) : {};
   !!(process.env.NODE_ENV !== "production") ? Object.freeze([]) : [];

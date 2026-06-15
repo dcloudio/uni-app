@@ -2,6 +2,114 @@
   typeof define === "function" && define.amd ? define(factory) : factory();
 })((function() {
   "use strict";
+  function _arrayLikeToArray(r, a2) {
+    (null == a2 || a2 > r.length) && (a2 = r.length);
+    for (var e2 = 0, n = Array(a2); e2 < a2; e2++) n[e2] = r[e2];
+    return n;
+  }
+  function _arrayWithHoles(r) {
+    if (Array.isArray(r)) return r;
+  }
+  function asyncGeneratorStep(n, t2, e2, r, o2, a2, c) {
+    try {
+      var i = n[a2](c), u = i.value;
+    } catch (n2) {
+      return void e2(n2);
+    }
+    i.done ? t2(u) : Promise.resolve(u).then(r, o2);
+  }
+  function _asyncToGenerator(n) {
+    return function() {
+      var t2 = this, e2 = arguments;
+      return new Promise(function(r, o2) {
+        var a2 = n.apply(t2, e2);
+        function _next(n2) {
+          asyncGeneratorStep(a2, r, o2, _next, _throw, "next", n2);
+        }
+        function _throw(n2) {
+          asyncGeneratorStep(a2, r, o2, _next, _throw, "throw", n2);
+        }
+        _next(void 0);
+      });
+    };
+  }
+  function _defineProperty(e2, r, t2) {
+    return (r = _toPropertyKey(r)) in e2 ? Object.defineProperty(e2, r, {
+      value: t2,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    }) : e2[r] = t2, e2;
+  }
+  function _iterableToArrayLimit(r, l) {
+    var t2 = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
+    if (null != t2) {
+      var e2, n, i, u, a2 = [], f2 = true, o2 = false;
+      try {
+        if (i = (t2 = t2.call(r)).next, 0 === l) {
+          if (Object(t2) !== t2) return;
+          f2 = false;
+        } else for (; !(f2 = (e2 = i.call(t2)).done) && (a2.push(e2.value), a2.length !== l); f2 = true) ;
+      } catch (r2) {
+        o2 = true, n = r2;
+      } finally {
+        try {
+          if (!f2 && null != t2.return && (u = t2.return(), Object(u) !== u)) return;
+        } finally {
+          if (o2) throw n;
+        }
+      }
+      return a2;
+    }
+  }
+  function _nonIterableRest() {
+    throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+  function ownKeys(e2, r) {
+    var t2 = Object.keys(e2);
+    if (Object.getOwnPropertySymbols) {
+      var o2 = Object.getOwnPropertySymbols(e2);
+      r && (o2 = o2.filter(function(r2) {
+        return Object.getOwnPropertyDescriptor(e2, r2).enumerable;
+      })), t2.push.apply(t2, o2);
+    }
+    return t2;
+  }
+  function _objectSpread2(e2) {
+    for (var r = 1; r < arguments.length; r++) {
+      var t2 = null != arguments[r] ? arguments[r] : {};
+      r % 2 ? ownKeys(Object(t2), true).forEach(function(r2) {
+        _defineProperty(e2, r2, t2[r2]);
+      }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e2, Object.getOwnPropertyDescriptors(t2)) : ownKeys(Object(t2)).forEach(function(r2) {
+        Object.defineProperty(e2, r2, Object.getOwnPropertyDescriptor(t2, r2));
+      });
+    }
+    return e2;
+  }
+  function _slicedToArray(r, e2) {
+    return _arrayWithHoles(r) || _iterableToArrayLimit(r, e2) || _unsupportedIterableToArray(r, e2) || _nonIterableRest();
+  }
+  function _toPrimitive$1(t2, r) {
+    if ("object" != typeof t2 || !t2) return t2;
+    var e2 = t2[Symbol.toPrimitive];
+    if (void 0 !== e2) {
+      var i = e2.call(t2, r);
+      if ("object" != typeof i) return i;
+      throw new TypeError("@@toPrimitive must return a primitive value.");
+    }
+    return ("string" === r ? String : Number)(t2);
+  }
+  function _toPropertyKey(t2) {
+    var i = _toPrimitive$1(t2, "string");
+    return "symbol" == typeof i ? i : i + "";
+  }
+  function _unsupportedIterableToArray(r, a2) {
+    if (r) {
+      if ("string" == typeof r) return _arrayLikeToArray(r, a2);
+      var t2 = {}.toString.call(r).slice(8, -1);
+      return "Object" === t2 && r.constructor && (t2 = r.constructor.name), "Map" === t2 || "Set" === t2 ? Array.from(r) : "Arguments" === t2 || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t2) ? _arrayLikeToArray(r, a2) : void 0;
+    }
+  }
   function getDefaultExportFromCjs(x) {
     return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
   }
@@ -157,13 +265,13 @@
     });
     return _ie8DomDefine;
   }
-  var _toPrimitive$1;
+  var _toPrimitive;
   var hasRequired_toPrimitive;
   function require_toPrimitive() {
-    if (hasRequired_toPrimitive) return _toPrimitive$1;
+    if (hasRequired_toPrimitive) return _toPrimitive;
     hasRequired_toPrimitive = 1;
     var isObject2 = require_isObject();
-    _toPrimitive$1 = function(it, S) {
+    _toPrimitive = function(it, S) {
       if (!isObject2(it)) return it;
       var fn, val;
       if (S && typeof (fn = it.toString) == "function" && !isObject2(val = fn.call(it))) return val;
@@ -171,7 +279,7 @@
       if (!S && typeof (fn = it.toString) == "function" && !isObject2(val = fn.call(it))) return val;
       throw TypeError("Can't convert object to primitive value");
     };
-    return _toPrimitive$1;
+    return _toPrimitive;
   }
   var hasRequired_objectDp;
   function require_objectDp() {
@@ -886,9 +994,13 @@
     return web_dom_iterable;
   }
   requireWeb_dom_iterable();
-  function makeMap$1(str, expectsLowerCase) {
-    var set2 = new Set(str.split(","));
-    return (val) => set2.has(val);
+  // @__NO_SIDE_EFFECTS__
+  function makeMap$1(str) {
+    var map = /* @__PURE__ */ Object.create(null);
+    for (var key of str.split(",")) {
+      map[key] = 1;
+    }
+    return (val) => val in map;
   }
   var EMPTY_OBJ = {};
   var EMPTY_ARR = [];
@@ -935,9 +1047,9 @@
       return hit || (cache2[str] = fn(str));
     };
   };
-  var camelizeRE = /-(\w)/g;
+  var camelizeRE = /-\w/g;
   var camelize = cacheStringFunction$1((str) => {
-    return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : "");
+    return str.replace(camelizeRE, (c) => c.slice(1).toUpperCase());
   });
   var hyphenateRE = /\B([A-Z])/g;
   var hyphenate = cacheStringFunction$1((str) => str.replace(hyphenateRE, "-$1").toLowerCase());
@@ -949,15 +1061,20 @@
     return s;
   });
   var hasChanged = (value, oldValue) => !Object.is(value, oldValue);
-  var invokeArrayFns = (fns, arg) => {
+  var invokeArrayFns = function(fns) {
+    for (var _len = arguments.length, arg = new Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
+      arg[_key2 - 1] = arguments[_key2];
+    }
     for (var i = 0; i < fns.length; i++) {
-      fns[i](arg);
+      fns[i](...arg);
     }
   };
-  var def = (obj, key, value) => {
+  var def = function(obj, key, value) {
+    var writable = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
     Object.defineProperty(obj, key, {
       configurable: true,
       enumerable: false,
+      writable,
       value
     });
   };
@@ -1000,14 +1117,13 @@
     return ret;
   }
   function stringifyStyle(styles) {
+    if (!styles) return "";
+    if (isString(styles)) return styles;
     var ret = "";
-    if (!styles || isString(styles)) {
-      return ret;
-    }
     for (var key in styles) {
       var value = styles[key];
-      var normalizedKey = key.startsWith("--") ? key : hyphenate(key);
       if (isString(value) || typeof value === "number") {
+        var normalizedKey = key.startsWith("--") ? key : hyphenate(key);
         ret += "".concat(normalizedKey, ":").concat(value, ";");
       }
     }
@@ -1157,11 +1273,7 @@
     };
   }
   function normalizeTarget(el) {
-    var {
-      id,
-      offsetTop,
-      offsetLeft
-    } = el;
+    var id = el.id, offsetTop = el.offsetTop, offsetLeft = el.offsetLeft;
     return {
       id,
       dataset: getCustomDataset(el),
@@ -1181,14 +1293,7 @@
       var style = document.createElement("style");
       var values = [];
       if (desc) {
-        var {
-          style: style2,
-          weight,
-          stretch,
-          unicodeRange,
-          variant,
-          featureSettings
-        } = desc;
+        var style2 = desc.style, weight = desc.weight, stretch = desc.stretch, unicodeRange = desc.unicodeRange, variant = desc.variant, featureSettings = desc.featureSettings;
         style2 && values.push("font-style:".concat(style2));
         weight && values.push("font-weight:".concat(weight));
         stretch && values.push("font-stretch:".concat(stretch));
@@ -1205,9 +1310,7 @@
     if (isString(scrollTop)) {
       var el = document.querySelector(scrollTop);
       if (el) {
-        var {
-          top
-        } = el.getBoundingClientRect();
+        var _el$getBoundingClient = el.getBoundingClientRect(), top = _el$getBoundingClient.top;
         scrollTop = top + window.pageYOffset;
         var pageHeader = document.querySelector("uni-page-head");
         if (pageHeader) {
@@ -1219,10 +1322,7 @@
       scrollTop = 0;
     }
     var documentElement = document.documentElement;
-    var {
-      clientHeight,
-      scrollHeight
-    } = documentElement;
+    var clientHeight = documentElement.clientHeight, scrollHeight = documentElement.scrollHeight;
     scrollTop = Math.min(scrollTop, scrollHeight - clientHeight);
     if (duration === 0) {
       documentElement.scrollTop = document.body.scrollTop = scrollTop;
@@ -1308,11 +1408,8 @@
   var ACTION_TYPE_ADD_WXS_EVENT = 12;
   var ACTION_TYPE_PAGE_SCROLL = 15;
   var ACTION_TYPE_EVENT = 20;
-  function debounce(fn, delay, _ref2) {
-    var {
-      clearTimeout: clearTimeout2,
-      setTimeout: setTimeout2
-    } = _ref2;
+  function debounce(fn, delay, _ref3) {
+    var clearTimeout2 = _ref3.clearTimeout, setTimeout2 = _ref3.setTimeout;
     var timeout;
     var newFn = function() {
       clearTimeout2(timeout);
@@ -1395,7 +1492,7 @@
   var RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
   var RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
   function parse(format, _ref) {
-    var [startDelimiter, endDelimiter] = _ref;
+    var _ref2 = _slicedToArray(_ref, 2), startDelimiter = _ref2[0], endDelimiter = _ref2[1];
     var tokens = [];
     var position = 0;
     var text2 = "";
@@ -1505,14 +1602,8 @@
     }
   }
   class I18n {
-    constructor(_ref2) {
-      var {
-        locale,
-        fallbackLocale,
-        messages: messages2,
-        watcher,
-        formater: formater2
-      } = _ref2;
+    constructor(_ref3) {
+      var locale = _ref3.locale, fallbackLocale = _ref3.fallbackLocale, messages2 = _ref3.messages, watcher = _ref3.watcher, formater2 = _ref3.formater;
       this.locale = LOCALE_EN;
       this.fallbackLocale = LOCALE_EN;
       this.message = {};
@@ -1771,10 +1862,7 @@
   var INVOKE_SERVICE_API = "invokeServiceApi";
   var invokeServiceMethodId = 1;
   var invokeServiceMethod = (name, args, callback) => {
-    var {
-      subscribe,
-      publishHandler: publishHandler2
-    } = UniViewJSBridge;
+    var _UniViewJSBridge = UniViewJSBridge, subscribe = _UniViewJSBridge.subscribe, publishHandler2 = _UniViewJSBridge.publishHandler;
     var id = callback ? invokeServiceMethodId++ : 0;
     callback && subscribe(INVOKE_SERVICE_API + "." + id, callback, true);
     publishHandler2(INVOKE_SERVICE_API, {
@@ -1801,11 +1889,7 @@
     delete viewMethods[name];
   }
   function onInvokeViewMethod(_ref, pageId) {
-    var {
-      id,
-      name,
-      args
-    } = _ref;
+    var id = _ref.id, name = _ref.name, args = _ref.args;
     name = normalizeViewMethodName(pageId, name);
     var publish = (res) => {
       id && UniViewJSBridge.publishHandler(INVOKE_VIEW_API + "." + id, res);
@@ -1837,10 +1921,7 @@
     if (evt.touches.length !== 1) {
       return;
     }
-    var {
-      pageX,
-      pageY
-    } = evt.touches[0];
+    var _evt$touches$ = evt.touches[0], pageX = _evt$touches$.pageX, pageY = _evt$touches$.pageY;
     startPageX = pageX;
     startPageY = pageY;
     longPressTimer = setTimeout(function() {
@@ -1863,10 +1944,7 @@
     if (evt.touches.length !== 1) {
       return clearLongPressTimer();
     }
-    var {
-      pageX,
-      pageY
-    } = evt.touches[0];
+    var _evt$touches$2 = evt.touches[0], pageX = _evt$touches$2.pageX, pageY = _evt$touches$2.pageY;
     if (Math.abs(pageX - startPageX) > LONGPRESS_THRESHOLD || Math.abs(pageY - startPageY) > LONGPRESS_THRESHOLD) {
       return clearLongPressTimer();
     }
@@ -2420,9 +2498,7 @@
       }
       track(rawTarget, "get", rawKey);
     }
-    var {
-      has: has2
-    } = getProto(rawTarget);
+    var _getProto = getProto(rawTarget), has2 = _getProto.has;
     var wrap = isShallow2 ? toShallow : isReadonly2 ? toReadonly : toReactive;
     if (has2.call(rawTarget, key)) {
       return wrap(target.get(key));
@@ -2465,10 +2541,7 @@
   function set(key, value) {
     value = toRaw(value);
     var target = toRaw(this);
-    var {
-      has: has2,
-      get: get2
-    } = getProto(target);
+    var _getProto2 = getProto(target), has2 = _getProto2.has, get2 = _getProto2.get;
     var hadKey = has2.call(target, key);
     if (!hadKey) {
       key = toRaw(key);
@@ -2485,10 +2558,7 @@
   }
   function deleteEntry(key) {
     var target = toRaw(this);
-    var {
-      has: has2,
-      get: get2
-    } = getProto(target);
+    var _getProto3 = getProto(target), has2 = _getProto3.has, get2 = _getProto3.get;
     var hadKey = has2.call(target, key);
     if (!hadKey) {
       key = toRaw(key);
@@ -2535,10 +2605,7 @@
       return {
         // iterator protocol
         next() {
-          var {
-            value,
-            done
-          } = innerIterator.next();
+          var _innerIterator$next = innerIterator.next(), value = _innerIterator$next.value, done = _innerIterator$next.done;
           return done ? {
             value,
             done
@@ -2629,7 +2696,7 @@
     });
     return [mutableInstrumentations2, readonlyInstrumentations2, shallowInstrumentations2, shallowReadonlyInstrumentations2];
   }
-  var [mutableInstrumentations, readonlyInstrumentations, shallowInstrumentations, shallowReadonlyInstrumentations] = /* @__PURE__ */ createInstrumentations();
+  var _createInstrumentatio = /* @__PURE__ */ createInstrumentations(), _createInstrumentatio2 = _slicedToArray(_createInstrumentatio, 4), mutableInstrumentations = _createInstrumentatio2[0], readonlyInstrumentations = _createInstrumentatio2[1], shallowInstrumentations = _createInstrumentatio2[2], shallowReadonlyInstrumentations = _createInstrumentatio2[3];
   function createInstrumentationGetter(isReadonly2, shallow) {
     var instrumentations = shallow ? isReadonly2 ? shallowReadonlyInstrumentations : shallowInstrumentations : isReadonly2 ? readonlyInstrumentations : mutableInstrumentations;
     return (target, key, receiver) => {
@@ -2865,9 +2932,7 @@
         var _a, _b;
         return (_b = (_a = a2.toString) == null ? void 0 : _a.call(a2)) != null ? _b : JSON.stringify(a2);
       }).join(""), instance && instance.proxy, trace.map((_ref) => {
-        var {
-          vnode
-        } = _ref;
+        var vnode = _ref.vnode;
         return "at <".concat(formatComponentName(instance, vnode.type), ">");
       }).join("\n"), trace]);
     } else {
@@ -2909,10 +2974,7 @@
     return logs;
   }
   function formatTraceEntry(_ref2) {
-    var {
-      vnode,
-      recurseCount
-    } = _ref2;
+    var vnode = _ref2.vnode, recurseCount = _ref2.recurseCount;
     var postfix = recurseCount > 0 ? "... (".concat(recurseCount, " recursive calls)") : "";
     var isRoot = vnode.component ? vnode.component.parent == null : false;
     var open = " at <".concat(formatComponentName(vnode.component, vnode.type, isRoot));
@@ -3136,10 +3198,7 @@
     var modelArg = isModelListener2 && event.slice(7);
     if (modelArg && modelArg in props2) {
       var modifiersKey = "".concat(modelArg === "modelValue" ? "model" : modelArg, "Modifiers");
-      var {
-        number,
-        trim
-      } = props2[modifiersKey] || EMPTY_OBJ;
+      var _ref4 = props2[modifiersKey] || EMPTY_OBJ, number = _ref4.number, trim = _ref4.trim;
       if (trim) {
         args = rawArgs.map((a2) => isString(a2) ? a2.trim() : a2);
       }
@@ -3256,23 +3315,7 @@
   function markAttrsAccessed() {
   }
   function renderComponentRoot(instance) {
-    var {
-      type: Component,
-      vnode,
-      proxy,
-      withProxy,
-      props: props2,
-      propsOptions: [propsOptions],
-      slots,
-      attrs,
-      emit: emit2,
-      render: render2,
-      renderCache,
-      data,
-      setupState,
-      ctx,
-      inheritAttrs
-    } = instance;
+    var Component = instance.type, vnode = instance.vnode, proxy = instance.proxy, withProxy = instance.withProxy, props2 = instance.props, _instance$propsOption2 = _slicedToArray(instance.propsOptions, 1), propsOptions = _instance$propsOption2[0], slots = instance.slots, attrs = instance.attrs, emit2 = instance.emit, render2 = instance.render, renderCache = instance.renderCache, data = instance.data, setupState = instance.setupState, ctx = instance.ctx, inheritAttrs = instance.inheritAttrs;
     var result;
     var fallthroughAttrs;
     var prev = setCurrentRenderingInstance(instance);
@@ -3315,9 +3358,7 @@
     var root = result;
     if (fallthroughAttrs && inheritAttrs !== false) {
       var keys = Object.keys(fallthroughAttrs);
-      var {
-        shapeFlag
-      } = root;
+      var _root = root, shapeFlag = _root.shapeFlag;
       if (keys.length) {
         if (shapeFlag & (1 | 6)) {
           if (propsOptions && keys.some(isModelListener)) {
@@ -3359,16 +3400,8 @@
     return res;
   };
   function shouldUpdateComponent(prevVNode, nextVNode, optimized) {
-    var {
-      props: prevProps,
-      children: prevChildren,
-      component
-    } = prevVNode;
-    var {
-      props: nextProps,
-      children: nextChildren,
-      patchFlag
-    } = nextVNode;
+    var prevProps = prevVNode.props, prevChildren = prevVNode.children, component = prevVNode.component;
+    var nextProps = nextVNode.props, nextChildren = nextVNode.children, patchFlag = nextVNode.patchFlag;
     var emits = component.emitsOptions;
     if (nextVNode.dirs || nextVNode.transition) {
       return true;
@@ -3423,11 +3456,8 @@
     }
     return false;
   }
-  function updateHOCHostEl(_ref4, el) {
-    var {
-      vnode,
-      parent
-    } = _ref4;
+  function updateHOCHostEl(_ref5, el) {
+    var vnode = _ref5.vnode, parent = _ref5.parent;
     while (parent) {
       var root = parent.subTree;
       if (root.suspense && root.suspense.activeBranch === vnode) {
@@ -3469,14 +3499,9 @@
     return doWatch(source, cb, options);
   }
   function doWatch(source, cb) {
-    var {
-      immediate,
-      deep,
-      flush,
-      once: once2,
-      onTrack,
-      onTrigger
-    } = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : EMPTY_OBJ;
+    var _ref7 = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : EMPTY_OBJ, immediate = _ref7.immediate, deep = _ref7.deep, flush = _ref7.flush, once2 = _ref7.once;
+    _ref7.onTrack;
+    _ref7.onTrigger;
     if (cb && once2) {
       var _cb = cb;
       cb = function() {
@@ -3672,7 +3697,7 @@
     var instance = getExposeProxy(currentRenderingInstance) || currentRenderingInstance.proxy;
     var bindings = vnode.dirs || (vnode.dirs = []);
     for (var i = 0; i < directives.length; i++) {
-      var [dir, value, arg, modifiers = EMPTY_OBJ] = directives[i];
+      var _directives$i = _slicedToArray(directives[i], 4), dir = _directives$i[0], value = _directives$i[1], arg = _directives$i[2], _directives$i$ = _directives$i[3], modifiers = _directives$i$ === void 0 ? EMPTY_OBJ : _directives$i$;
       if (dir) {
         if (isFunction(dir)) {
           dir = {
@@ -3845,19 +3870,9 @@
   );
   var hasSetupBinding = (state, key) => state !== EMPTY_OBJ && !state.__isScriptSetup && hasOwn$1(state, key);
   var PublicInstanceProxyHandlers = {
-    get(_ref9, key) {
-      var {
-        _: instance
-      } = _ref9;
-      var {
-        ctx,
-        setupState,
-        data,
-        props: props2,
-        accessCache,
-        type,
-        appContext
-      } = instance;
+    get(_ref10, key) {
+      var instance = _ref10._;
+      var ctx = instance.ctx, setupState = instance.setupState, data = instance.data, props2 = instance.props, accessCache = instance.accessCache, type = instance.type, appContext = instance.appContext;
       var normalizedProps;
       if (key[0] !== "$") {
         var n = accessCache[key];
@@ -3916,15 +3931,9 @@
         }
       } else ;
     },
-    set(_ref10, key, value) {
-      var {
-        _: instance
-      } = _ref10;
-      var {
-        data,
-        setupState,
-        ctx
-      } = instance;
+    set(_ref11, key, value) {
+      var instance = _ref11._;
+      var data = instance.data, setupState = instance.setupState, ctx = instance.ctx;
       if (hasSetupBinding(setupState, key)) {
         setupState[key] = value;
         return true;
@@ -3943,17 +3952,8 @@
       }
       return true;
     },
-    has(_ref11, key) {
-      var {
-        _: {
-          data,
-          setupState,
-          accessCache,
-          ctx,
-          appContext,
-          propsOptions
-        }
-      } = _ref11;
+    has(_ref12, key) {
+      var _ref12$_ = _ref12._, data = _ref12$_.data, setupState = _ref12$_.setupState, accessCache = _ref12$_.accessCache, ctx = _ref12$_.ctx, appContext = _ref12$_.appContext, propsOptions = _ref12$_.propsOptions;
       var normalizedProps;
       return !!accessCache[key] || data !== EMPTY_OBJ && hasOwn$1(data, key) || hasSetupBinding(setupState, key) || (normalizedProps = propsOptions[0]) && hasOwn$1(normalizedProps, key) || hasOwn$1(ctx, key) || hasOwn$1(publicPropertiesMap, key) || hasOwn$1(appContext.config.globalProperties, key);
     },
@@ -3978,39 +3978,12 @@
     if (options.beforeCreate) {
       callHook$1(options.beforeCreate, instance, "bc");
     }
-    var {
-      // state
-      data: dataOptions,
-      computed: computedOptions,
-      methods,
-      watch: watchOptions,
-      provide: provideOptions,
-      inject: injectOptions,
-      // lifecycle
-      created,
-      beforeMount,
-      mounted,
-      beforeUpdate,
-      updated,
-      activated,
-      deactivated,
-      beforeDestroy,
-      beforeUnmount,
-      destroyed,
-      unmounted,
-      render: render2,
-      renderTracked,
-      renderTriggered,
-      errorCaptured,
-      serverPrefetch,
-      // public API
-      expose,
-      inheritAttrs,
-      // assets
-      components,
-      directives,
-      filters
-    } = options;
+    var dataOptions = options.data, computedOptions = options.computed, methods = options.methods, watchOptions = options.watch, provideOptions = options.provide, injectOptions = options.inject, created = options.created, beforeMount = options.beforeMount, mounted = options.mounted, beforeUpdate = options.beforeUpdate, updated = options.updated, activated = options.activated, deactivated = options.deactivated;
+    options.beforeDestroy;
+    var beforeUnmount = options.beforeUnmount;
+    options.destroyed;
+    var unmounted = options.unmounted, render2 = options.render, renderTracked = options.renderTracked, renderTriggered = options.renderTriggered, errorCaptured = options.errorCaptured, serverPrefetch = options.serverPrefetch, expose = options.expose, inheritAttrs = options.inheritAttrs, components = options.components, directives = options.directives;
+    options.filters;
     if (injectOptions) {
       resolveInjections(injectOptions, ctx);
     }
@@ -4035,28 +4008,28 @@
     }
     shouldCacheAccess = true;
     if (computedOptions) {
-      var _loop4 = function(_key112) {
-        var opt = computedOptions[_key112];
+      var _loop4 = function(_key12) {
+        var opt = computedOptions[_key12];
         var get2 = isFunction(opt) ? opt.bind(publicThis, publicThis) : isFunction(opt.get) ? opt.get.bind(publicThis, publicThis) : NOOP;
         var set2 = !isFunction(opt) && isFunction(opt.set) ? opt.set.bind(publicThis) : NOOP;
         var c = computed({
           get: get2,
           set: set2
         });
-        Object.defineProperty(ctx, _key112, {
+        Object.defineProperty(ctx, _key12, {
           enumerable: true,
           configurable: true,
           get: () => c.value,
           set: (v2) => c.value = v2
         });
       };
-      for (var _key11 in computedOptions) {
-        _loop4(_key11);
+      for (var _key1 in computedOptions) {
+        _loop4(_key1);
       }
     }
     if (watchOptions) {
-      for (var _key12 in watchOptions) {
-        createWatcher(watchOptions[_key12], ctx, publicThis, _key12);
+      for (var _key10 in watchOptions) {
+        createWatcher(watchOptions[_key10], ctx, publicThis, _key10);
       }
     }
     if (provideOptions) {
@@ -4165,17 +4138,8 @@
   }
   function resolveMergedOptions(instance) {
     var base = instance.type;
-    var {
-      mixins,
-      extends: extendsOptions
-    } = base;
-    var {
-      mixins: globalMixins,
-      optionsCache: cache2,
-      config: {
-        optionMergeStrategies
-      }
-    } = instance.appContext;
+    var mixins = base.mixins, extendsOptions = base.extends;
+    var _instance$appContext = instance.appContext, globalMixins = _instance$appContext.mixins, cache2 = _instance$appContext.optionsCache, optionMergeStrategies = _instance$appContext.config.optionMergeStrategies;
     var cached = cache2.get(base);
     var resolved;
     if (cached) {
@@ -4198,10 +4162,7 @@
   }
   function mergeOptions(to, from, strats) {
     var asMixin = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
-    var {
-      mixins,
-      extends: extendsOptions
-    } = from;
+    var mixins = from.mixins, extendsOptions = from.extends;
     if (extendsOptions) {
       mergeOptions(to, extendsOptions, strats, true);
     }
@@ -4345,8 +4306,8 @@
         set config(v2) {
         },
         use(plugin) {
-          for (var _len8 = arguments.length, options = new Array(_len8 > 1 ? _len8 - 1 : 0), _key13 = 1; _key13 < _len8; _key13++) {
-            options[_key13 - 1] = arguments[_key13];
+          for (var _len8 = arguments.length, options = new Array(_len8 > 1 ? _len8 - 1 : 0), _key11 = 1; _key11 < _len8; _key11++) {
+            options[_key11 - 1] = arguments[_key11];
           }
           if (installedPlugins.has(plugin)) ;
           else if (plugin && isFunction(plugin.install)) {
@@ -4469,15 +4430,9 @@
     instance.attrs = attrs;
   }
   function updateProps(instance, rawProps, rawPrevProps, optimized) {
-    var {
-      props: props2,
-      attrs,
-      vnode: {
-        patchFlag
-      }
-    } = instance;
+    var props2 = instance.props, attrs = instance.attrs, patchFlag = instance.vnode.patchFlag;
     var rawCurrentProps = toRaw(props2);
-    var [options] = instance.propsOptions;
+    var _instance$propsOption5 = _slicedToArray(instance.propsOptions, 1), options = _instance$propsOption5[0];
     var hasAttrsChanged = false;
     if (
       // always force full diff in dev
@@ -4516,26 +4471,26 @@
         hasAttrsChanged = true;
       }
       var kebabKey;
-      for (var _key14 in rawCurrentProps) {
+      for (var _key12 in rawCurrentProps) {
         if (!rawProps || // for camelCase
-        !hasOwn$1(rawProps, _key14) && // it's possible the original props was passed in as kebab-case
+        !hasOwn$1(rawProps, _key12) && // it's possible the original props was passed in as kebab-case
         // and converted to camelCase (#955)
-        ((kebabKey = hyphenate(_key14)) === _key14 || !hasOwn$1(rawProps, kebabKey))) {
+        ((kebabKey = hyphenate(_key12)) === _key12 || !hasOwn$1(rawProps, kebabKey))) {
           if (options) {
             if (rawPrevProps && // for camelCase
-            (rawPrevProps[_key14] !== void 0 || // for kebab-case
+            (rawPrevProps[_key12] !== void 0 || // for kebab-case
             rawPrevProps[kebabKey] !== void 0)) {
-              props2[_key14] = resolvePropValue(options, rawCurrentProps, _key14, void 0, instance, true);
+              props2[_key12] = resolvePropValue(options, rawCurrentProps, _key12, void 0, instance, true);
             }
           } else {
-            delete props2[_key14];
+            delete props2[_key12];
           }
         }
       }
       if (attrs !== rawCurrentProps) {
-        for (var _key15 in attrs) {
-          if (!rawProps || !hasOwn$1(rawProps, _key15) && true) {
-            delete attrs[_key15];
+        for (var _key13 in attrs) {
+          if (!rawProps || !hasOwn$1(rawProps, _key13) && true) {
+            delete attrs[_key13];
             hasAttrsChanged = true;
           }
         }
@@ -4546,7 +4501,7 @@
     }
   }
   function setFullProps(instance, rawProps, props2, attrs) {
-    var [options, needCastKeys] = instance.propsOptions;
+    var _instance$propsOption6 = _slicedToArray(instance.propsOptions, 2), options = _instance$propsOption6[0], needCastKeys = _instance$propsOption6[1];
     var hasAttrsChanged = false;
     var rawCastValues;
     if (rawProps) {
@@ -4574,8 +4529,8 @@
       var rawCurrentProps = toRaw(props2);
       var castValues = rawCastValues || EMPTY_OBJ;
       for (var i = 0; i < needCastKeys.length; i++) {
-        var _key16 = needCastKeys[i];
-        props2[_key16] = resolvePropValue(options, rawCurrentProps, _key16, castValues[_key16], instance, !hasOwn$1(castValues, _key16));
+        var _key14 = needCastKeys[i];
+        props2[_key14] = resolvePropValue(options, rawCurrentProps, _key14, castValues[_key14], instance, !hasOwn$1(castValues, _key14));
       }
     }
     return hasAttrsChanged;
@@ -4587,9 +4542,7 @@
       if (hasDefault && value === void 0) {
         var defaultValue = opt.default;
         if (opt.type !== Function && !opt.skipFactory && isFunction(defaultValue)) {
-          var {
-            propsDefaults
-          } = instance;
+          var propsDefaults = instance.propsDefaults;
           if (key in propsDefaults) {
             value = propsDefaults[key];
           } else {
@@ -4631,7 +4584,7 @@
     if (!isFunction(comp)) {
       var extendProps = (raw2) => {
         hasExtends = true;
-        var [props2, keys] = normalizePropsOptions(raw2, appContext, true);
+        var _normalizePropsOption = normalizePropsOptions(raw2, appContext, true), _normalizePropsOption2 = _slicedToArray(_normalizePropsOption, 2), props2 = _normalizePropsOption2[0], keys = _normalizePropsOption2[1];
         extend(normalized, props2);
         if (keys) needCastKeys.push(...keys);
       };
@@ -4769,10 +4722,7 @@
     def(instance.slots, InternalObjectKey, 1);
   };
   var updateSlots = (instance, children, optimized) => {
-    var {
-      vnode,
-      slots
-    } = instance;
+    var vnode = instance.vnode, slots = instance.slots;
     var needDeletionCheck = true;
     var deletionComparisonTarget = EMPTY_OBJ;
     if (vnode.shapeFlag & 32) {
@@ -4816,10 +4766,7 @@
     }
     var refValue = vnode.shapeFlag & 4 ? getExposeProxy(vnode.component) || vnode.component.proxy : vnode.el;
     var value = isUnmount ? null : refValue;
-    var {
-      i: owner,
-      r: ref2
-    } = rawRef;
+    var owner = rawRef.i, ref2 = rawRef.r;
     var oldRef = oldRawRef && oldRawRef.r;
     var refs = owner.refs === EMPTY_OBJ ? owner.refs = {} : owner.refs;
     var setupState = owner.setupState;
@@ -4885,20 +4832,7 @@
   function baseCreateRenderer(options, createHydrationFns) {
     var target = getGlobalThis();
     target.__VUE__ = true;
-    var {
-      insert: hostInsert,
-      remove: hostRemove,
-      patchProp: hostPatchProp,
-      createElement: hostCreateElement,
-      createText: hostCreateText,
-      createComment: hostCreateComment,
-      setText: hostSetText,
-      setElementText: hostSetElementText,
-      parentNode: hostParentNode,
-      nextSibling: hostNextSibling,
-      setScopeId: hostSetScopeId = NOOP,
-      insertStaticContent: hostInsertStaticContent
-    } = options;
+    var hostInsert = options.insert, hostRemove = options.remove, hostPatchProp = options.patchProp, hostCreateElement = options.createElement, hostCreateText = options.createText, hostCreateComment = options.createComment, hostSetText = options.setText, hostSetElementText = options.setElementText, hostParentNode = options.parentNode, hostNextSibling = options.nextSibling, _options$setScopeId = options.setScopeId, hostSetScopeId = _options$setScopeId === void 0 ? NOOP : _options$setScopeId, hostInsertStaticContent = options.insertStaticContent;
     var patch = function(n1, n2, container) {
       var anchor = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : null;
       var parentComponent = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : null;
@@ -4918,11 +4852,7 @@
         optimized = false;
         n2.dynamicChildren = null;
       }
-      var {
-        type,
-        ref: ref2,
-        shapeFlag
-      } = n2;
+      var type = n2.type, ref2 = n2.ref, shapeFlag = n2.shapeFlag;
       switch (type) {
         case Text:
           processText(n1, n2, container, anchor);
@@ -4971,13 +4901,13 @@
       }
     };
     var mountStaticNode = (n2, container, anchor, namespace) => {
-      [n2.el, n2.anchor] = hostInsertStaticContent(n2.children, container, anchor, namespace, n2.el, n2.anchor);
+      var _hostInsertStaticCont = hostInsertStaticContent(n2.children, container, anchor, namespace, n2.el, n2.anchor);
+      var _hostInsertStaticCont2 = _slicedToArray(_hostInsertStaticCont, 2);
+      n2.el = _hostInsertStaticCont2[0];
+      n2.anchor = _hostInsertStaticCont2[1];
     };
-    var moveStaticNode = (_ref12, container, nextSibling) => {
-      var {
-        el,
-        anchor
-      } = _ref12;
+    var moveStaticNode = (_ref18, container, nextSibling) => {
+      var el = _ref18.el, anchor = _ref18.anchor;
       var next;
       while (el && el !== anchor) {
         next = hostNextSibling(el);
@@ -4986,11 +4916,8 @@
       }
       hostInsert(anchor, container, nextSibling);
     };
-    var removeStaticNode = (_ref13) => {
-      var {
-        el,
-        anchor
-      } = _ref13;
+    var removeStaticNode = (_ref19) => {
+      var el = _ref19.el, anchor = _ref19.anchor;
       var next;
       while (el && el !== anchor) {
         next = hostNextSibling(el);
@@ -5014,12 +4941,7 @@
     var mountElement = (vnode, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
       var el;
       var vnodeHook;
-      var {
-        props: props2,
-        shapeFlag,
-        transition,
-        dirs
-      } = vnode;
+      var props2 = vnode.props, shapeFlag = vnode.shapeFlag, transition = vnode.transition, dirs = vnode.dirs;
       el = vnode.el = hostCreateElement(vnode.type, namespace, props2 && props2.is, props2);
       if (shapeFlag & 8) {
         hostSetElementText(el, vnode.children);
@@ -5089,11 +5011,7 @@
     };
     var patchElement = (n1, n2, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
       var el = n2.el = n1.el;
-      var {
-        patchFlag,
-        dynamicChildren,
-        dirs
-      } = n2;
+      var patchFlag = n2.patchFlag, dynamicChildren = n2.dynamicChildren, dirs = n2.dirs;
       patchFlag |= n1.patchFlag & 16;
       var oldProps = n1.props || EMPTY_OBJ;
       var newProps = n2.props || EMPTY_OBJ;
@@ -5180,12 +5098,12 @@
             }
           }
         }
-        for (var _key18 in newProps) {
-          if (isReservedProp(_key18)) continue;
-          var next = newProps[_key18];
-          var prev = oldProps[_key18];
-          if (next !== prev && _key18 !== "value") {
-            hostPatchProp(el, _key18, prev, next, namespace, vnode.children, parentComponent, parentSuspense, unmountChildren);
+        for (var _key16 in newProps) {
+          if (isReservedProp(_key16)) continue;
+          var next = newProps[_key16];
+          var prev = oldProps[_key16];
+          if (next !== prev && _key16 !== "value") {
+            hostPatchProp(el, _key16, prev, next, namespace, vnode.children, parentComponent, parentSuspense, unmountChildren);
           }
         }
         if ("value" in newProps) {
@@ -5196,11 +5114,7 @@
     var processFragment = (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
       var fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateText("");
       var fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateText("");
-      var {
-        patchFlag,
-        dynamicChildren,
-        slotScopeIds: fragmentSlotScopeIds
-      } = n2;
+      var patchFlag = n2.patchFlag, dynamicChildren = n2.dynamicChildren, fragmentSlotScopeIds = n2.slotScopeIds;
       if (fragmentSlotScopeIds) {
         slotScopeIds = slotScopeIds ? slotScopeIds.concat(fragmentSlotScopeIds) : fragmentSlotScopeIds;
       }
@@ -5296,15 +5210,10 @@
       var componentUpdateFn = () => {
         if (!instance.isMounted) {
           var vnodeHook;
-          var {
-            el,
-            props: props2
-          } = initialVNode;
-          var {
-            bm,
-            m,
-            parent
-          } = instance;
+          var _initialVNode = initialVNode;
+          _initialVNode.el;
+          var props2 = _initialVNode.props;
+          var bm = instance.bm, m = instance.m, parent = instance.parent;
           var isAsyncWrapperVNode = isAsyncWrapper(initialVNode);
           toggleRecurse(instance, false);
           if (bm) {
@@ -5332,13 +5241,7 @@
           instance.isMounted = true;
           initialVNode = container = anchor = null;
         } else {
-          var {
-            next,
-            bu,
-            u,
-            parent: _parent,
-            vnode
-          } = instance;
+          var next = instance.next, bu = instance.bu, u = instance.u, _parent = instance.parent, vnode = instance.vnode;
           {
             var nonHydratedAsyncRoot = locateNonHydratedAsyncRoot(instance);
             if (nonHydratedAsyncRoot) {
@@ -5428,10 +5331,7 @@
       var c1 = n1 && n1.children;
       var prevShapeFlag = n1 ? n1.shapeFlag : 0;
       var c2 = n2.children;
-      var {
-        patchFlag,
-        shapeFlag
-      } = n2;
+      var patchFlag = n2.patchFlag, shapeFlag = n2.shapeFlag;
       if (patchFlag > 0) {
         if (patchFlag & 128) {
           patchKeyedChildren(c1, c2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized);
@@ -5591,13 +5491,7 @@
     };
     var move = function(vnode, container, anchor, moveType) {
       var parentSuspense = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : null;
-      var {
-        el,
-        type,
-        transition,
-        children,
-        shapeFlag
-      } = vnode;
+      var el = vnode.el, type = vnode.type, transition = vnode.transition, children = vnode.children, shapeFlag = vnode.shapeFlag;
       if (shapeFlag & 6) {
         move(vnode.component.subTree, container, anchor, moveType);
         return;
@@ -5629,11 +5523,7 @@
           hostInsert(el, container, anchor);
           queuePostRenderEffect(() => transition.enter(el), parentSuspense);
         } else {
-          var {
-            leave,
-            delayLeave,
-            afterLeave
-          } = transition;
+          var leave = transition.leave, delayLeave = transition.delayLeave, afterLeave = transition.afterLeave;
           var remove22 = () => hostInsert(el, container, anchor);
           var performLeave = () => {
             leave(el, () => {
@@ -5654,16 +5544,7 @@
     var unmount = function(vnode, parentComponent, parentSuspense) {
       var doRemove = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
       var optimized = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : false;
-      var {
-        type,
-        props: props2,
-        ref: ref2,
-        children,
-        dynamicChildren,
-        shapeFlag,
-        patchFlag,
-        dirs
-      } = vnode;
+      var type = vnode.type, props2 = vnode.props, ref2 = vnode.ref, children = vnode.children, dynamicChildren = vnode.dynamicChildren, shapeFlag = vnode.shapeFlag, patchFlag = vnode.patchFlag, dirs = vnode.dirs;
       if (ref2 != null) {
         setRef(ref2, null, parentSuspense, vnode, true);
       }
@@ -5707,12 +5588,7 @@
       }
     };
     var remove2 = (vnode) => {
-      var {
-        type,
-        el,
-        anchor,
-        transition
-      } = vnode;
+      var type = vnode.type, el = vnode.el, anchor = vnode.anchor, transition = vnode.transition;
       if (type === Fragment) {
         {
           removeFragment(el, anchor);
@@ -5730,10 +5606,7 @@
         }
       };
       if (vnode.shapeFlag & 1 && transition && !transition.persisted) {
-        var {
-          leave,
-          delayLeave
-        } = transition;
+        var leave = transition.leave, delayLeave = transition.delayLeave;
         var performLeave = () => leave(el, performRemove);
         if (delayLeave) {
           delayLeave(vnode.el, performRemove, performLeave);
@@ -5754,13 +5627,7 @@
       hostRemove(end);
     };
     var unmountComponent = (instance, parentSuspense, doRemove) => {
-      var {
-        bum,
-        scope,
-        update,
-        subTree,
-        um
-      } = instance;
+      var bum = instance.bum, scope = instance.scope, update = instance.update, subTree = instance.subTree, um = instance.um;
       if (bum) {
         invokeArrayFns(bum);
       }
@@ -5835,18 +5702,12 @@
       createApp: createAppAPI(render2)
     };
   }
-  function resolveChildrenNamespace(_ref14, currentNamespace) {
-    var {
-      type,
-      props: props2
-    } = _ref14;
+  function resolveChildrenNamespace(_ref20, currentNamespace) {
+    var type = _ref20.type, props2 = _ref20.props;
     return currentNamespace === "svg" && type === "foreignObject" || currentNamespace === "mathml" && type === "annotation-xml" && props2 && props2.encoding && props2.encoding.includes("html") ? void 0 : currentNamespace;
   }
-  function toggleRecurse(_ref15, allowed) {
-    var {
-      effect: effect2,
-      update
-    } = _ref15;
+  function toggleRecurse(_ref21, allowed) {
+    var effect2 = _ref21.effect, update = _ref21.update;
     effect2.allowRecurse = update.allowRecurse = allowed;
   }
   function needTransition(parentSuspense, transition) {
@@ -5940,18 +5801,12 @@
     return n1.type === n2.type && n1.key === n2.key;
   }
   var InternalObjectKey = "__vInternal";
-  var normalizeKey = (_ref19) => {
-    var {
-      key
-    } = _ref19;
+  var normalizeKey = (_ref25) => {
+    var key = _ref25.key;
     return key != null ? key : null;
   };
-  var normalizeRef = (_ref20) => {
-    var {
-      ref: ref2,
-      ref_key,
-      ref_for
-    } = _ref20;
+  var normalizeRef = (_ref26) => {
+    var ref2 = _ref26.ref, ref_key = _ref26.ref_key, ref_for = _ref26.ref_for;
     if (typeof ref2 === "number") {
       ref2 = "" + ref2;
     }
@@ -6054,10 +5909,7 @@
     }
     if (props2) {
       props2 = guardReactiveProps(props2);
-      var {
-        class: klass,
-        style
-      } = props2;
+      var _props2 = props2, klass = _props2.class, style = _props2.style;
       if (klass && !isString(klass)) {
         props2.class = normalizeClass(klass);
       }
@@ -6077,12 +5929,7 @@
   }
   function cloneVNode(vnode, extraProps) {
     var mergeRef = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : false;
-    var {
-      props: props2,
-      ref: ref2,
-      patchFlag,
-      children
-    } = vnode;
+    var props2 = vnode.props, ref2 = vnode.ref, patchFlag = vnode.patchFlag, children = vnode.children;
     var mergedProps = extraProps ? mergeProps(props2 || {}, extraProps) : props2;
     var cloned = {
       __v_isVNode: true,
@@ -6154,9 +6001,7 @@
   }
   function normalizeChildren(vnode, children) {
     var type = 0;
-    var {
-      shapeFlag
-    } = vnode;
+    var shapeFlag = vnode.shapeFlag;
     if (children == null) {
       children = null;
     } else if (isArray(children)) {
@@ -6361,10 +6206,7 @@
   function setupComponent(instance) {
     var isSSR = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
     isSSR && setInSSRSetupState(isSSR);
-    var {
-      props: props2,
-      children
-    } = instance.vnode;
+    var _instance$vnode = instance.vnode, props2 = _instance$vnode.props, children = _instance$vnode.children;
     var isStateful = isStatefulComponent(instance);
     initProps(instance, props2, isStateful, isSSR);
     initSlots(instance, children);
@@ -6376,9 +6218,7 @@
     var Component = instance.type;
     instance.accessCache = /* @__PURE__ */ Object.create(null);
     instance.proxy = markRaw(new Proxy(instance.ctx, PublicInstanceProxyHandlers));
-    var {
-      setup
-    } = Component;
+    var setup = Component.setup;
     if (setup) {
       var setupContext = instance.setupContext = setup.length > 1 ? createSetupContext(instance) : null;
       var reset = setCurrentInstance(instance);
@@ -6611,13 +6451,9 @@
   var vShowOriginalDisplay = /* @__PURE__ */ Symbol("_vod");
   var vShowHidden = /* @__PURE__ */ Symbol("_vsh");
   var vShow = {
-    beforeMount(el, _ref23, _ref24) {
-      var {
-        value
-      } = _ref23;
-      var {
-        transition
-      } = _ref24;
+    beforeMount(el, _ref29, _ref30) {
+      var value = _ref29.value;
+      var transition = _ref30.transition;
       el[vShowOriginalDisplay] = el.style.display === "none" ? "" : el.style.display;
       if (transition && value) {
         transition.beforeEnter(el);
@@ -6625,25 +6461,16 @@
         setDisplay(el, value);
       }
     },
-    mounted(el, _ref25, _ref26) {
-      var {
-        value
-      } = _ref25;
-      var {
-        transition
-      } = _ref26;
+    mounted(el, _ref31, _ref32) {
+      var value = _ref31.value;
+      var transition = _ref32.transition;
       if (transition && value) {
         transition.enter(el);
       }
     },
-    updated(el, _ref27, _ref28) {
-      var {
-        value,
-        oldValue
-      } = _ref27;
-      var {
-        transition
-      } = _ref28;
+    updated(el, _ref33, _ref34) {
+      var value = _ref33.value, oldValue = _ref33.oldValue;
+      var transition = _ref34.transition;
       if (!value === !oldValue) return;
       if (transition) {
         if (value) {
@@ -6659,10 +6486,8 @@
         setDisplay(el, value);
       }
     },
-    beforeUnmount(el, _ref29) {
-      var {
-        value
-      } = _ref29;
+    beforeUnmount(el, _ref35) {
+      var value = _ref35.value;
       setDisplay(el, value);
     }
   };
@@ -6686,18 +6511,18 @@
           }
         } else {
           for (var prevStyle of prev.split(";")) {
-            var _key21 = prevStyle.slice(0, prevStyle.indexOf(":")).trim();
-            if (next[_key21] == null) {
-              setStyle$1(style, _key21, "");
+            var _key19 = prevStyle.slice(0, prevStyle.indexOf(":")).trim();
+            if (next[_key19] == null) {
+              setStyle$1(style, _key19, "");
             }
           }
         }
       }
-      for (var _key22 in next) {
-        if (_key22 === "display") {
+      for (var _key20 in next) {
+        if (_key20 === "display") {
           hasControlledDisplay = true;
         }
-        setStyle$1(style, _key22, next[_key22]);
+        setStyle$1(style, _key20, next[_key20]);
       }
     } else {
       if (isCssString) {
@@ -6811,7 +6636,7 @@
     if (nextValue && existingInvoker) {
       existingInvoker.value = nextValue;
     } else {
-      var [name, options] = parseName(rawName);
+      var _parseName = parseName(rawName), _parseName2 = _slicedToArray(_parseName, 2), name = _parseName2[0], options = _parseName2[1];
       if (nextValue) {
         var invoker = invokers[rawName] = createInvoker$1(nextValue, instance);
         addEventListener(el, name, invoker, options);
@@ -6941,8 +6766,8 @@
         var guard = modifierGuards[modifiers[i]];
         if (guard && guard(event, modifiers)) return;
       }
-      for (var _len13 = arguments.length, args = new Array(_len13 > 1 ? _len13 - 1 : 0), _key25 = 1; _key25 < _len13; _key25++) {
-        args[_key25 - 1] = arguments[_key25];
+      for (var _len11 = arguments.length, args = new Array(_len11 > 1 ? _len11 - 1 : 0), _key23 = 1; _key23 < _len11; _key23++) {
+        args[_key23 - 1] = arguments[_key23];
       }
       return fn(event, ...args);
     });
@@ -6956,9 +6781,7 @@
   }
   var createApp = function() {
     var app = ensureRenderer().createApp(...arguments);
-    var {
-      mount
-    } = app;
+    var mount = app.mount;
     app.mount = (containerOrSelector) => {
       var container = normalizeContainer(containerOrSelector);
       if (!container) return;
@@ -7299,18 +7122,12 @@
   var testReachBottomTimer;
   var lastScrollHeight = 0;
   function createScrollListener(_ref) {
-    var {
-      onPageScroll,
-      onReachBottom,
-      onReachBottomDistance
-    } = _ref;
+    var onPageScroll = _ref.onPageScroll, onReachBottom = _ref.onReachBottom, onReachBottomDistance = _ref.onReachBottomDistance;
     var ticking = false;
     var hasReachBottom = false;
     var reachBottomLocking = true;
     var isReachBottom = () => {
-      var {
-        scrollHeight
-      } = document.documentElement;
+      var scrollHeight = document.documentElement.scrollHeight;
       var windowHeight = window.innerHeight;
       var scrollY = window.scrollY;
       var isBottom = scrollY > 0 && scrollHeight > windowHeight && scrollY + windowHeight + onReachBottomDistance >= scrollHeight;
@@ -7433,17 +7250,13 @@
       }
     }
     updateWxsClass() {
-      var {
-        __wxsAddClass
-      } = this.$el;
+      var __wxsAddClass = this.$el.__wxsAddClass;
       if (__wxsAddClass.length) {
         this.$el.className = __wxsAddClass.join(" ");
       }
     }
     updateWxsStyle() {
-      var {
-        __wxsStyle
-      } = this.$el;
+      var __wxsStyle = this.$el.__wxsStyle;
       if (__wxsStyle) {
         this.$el.setAttribute("style", stringifyStyle(__wxsStyle));
       }
@@ -7476,9 +7289,7 @@
       if (!this.$el || !clazz) {
         return this;
       }
-      var {
-        __wxsAddClass
-      } = this.$el;
+      var __wxsAddClass = this.$el.__wxsAddClass;
       if (__wxsAddClass) {
         var index2 = __wxsAddClass.indexOf(clazz);
         if (index2 > -1) {
@@ -7571,13 +7382,7 @@
       $emit() {
       },
       $forceUpdate() {
-        var {
-          __wxsStyle,
-          __wxsAddClass,
-          __wxsRemoveClass,
-          __wxsStyleChanged,
-          __wxsClassChanged
-        } = el;
+        var __wxsStyle = el.__wxsStyle, __wxsAddClass = el.__wxsAddClass, __wxsRemoveClass = el.__wxsRemoveClass, __wxsStyleChanged = el.__wxsStyleChanged, __wxsClassChanged = el.__wxsClassChanged;
         var updateClass;
         var updateStyle;
         if (__wxsStyleChanged) {
@@ -7611,9 +7416,7 @@
   var isMouseEvent = (val) => val.type.indexOf("mouse") === 0 || ["contextmenu"].includes(val.type);
   var isTouchEvent = (val) => typeof TouchEvent !== "undefined" && val instanceof TouchEvent || val.type.indexOf("touch") === 0 || ["longpress"].indexOf(val.type) >= 0;
   function $nne(evt, eventValue, instance) {
-    var {
-      currentTarget
-    } = evt;
+    var currentTarget = evt.currentTarget;
     if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
       return [evt];
     }
@@ -7649,12 +7452,7 @@
   }
   function createNativeEvent(evt) {
     var htmlElement = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
-    var {
-      type,
-      timeStamp,
-      target,
-      currentTarget
-    } = evt;
+    var type = evt.type, timeStamp = evt.timeStamp, target = evt.target, currentTarget = evt.currentTarget;
     var realTarget, realCurrentTarget;
     {
       realTarget = normalizeTarget(htmlElement ? target : findUniTarget(target));
@@ -7680,10 +7478,7 @@
     return event;
   }
   function normalizeClickEvent(evt, mouseEvt) {
-    var {
-      x,
-      y
-    } = mouseEvt;
+    var x = mouseEvt.x, y = mouseEvt.y;
     var top = getWindowTop();
     evt.detail = {
       x,
@@ -7712,14 +7507,7 @@
   function normalizeTouchEvent(touches, top) {
     var res = [];
     for (var i = 0; i < touches.length; i++) {
-      var {
-        identifier,
-        pageX,
-        pageY,
-        clientX,
-        clientY,
-        force
-      } = touches[i];
+      var _touches$i = touches[i], identifier = _touches$i.identifier, pageX = _touches$i.pageX, pageY = _touches$i.pageY, clientX = _touches$i.clientX, clientY = _touches$i.clientY, force = _touches$i.force;
       res.push({
         identifier,
         pageX,
@@ -12086,11 +11874,7 @@
   function checkDeviceWidth() {
     var windowWidth, pixelRatio2, platform;
     {
-      var {
-        windowWidth: w,
-        pixelRatio: p2,
-        platform: pf
-      } = getBaseSystemInfo();
+      var _getBaseSystemInfo = getBaseSystemInfo(), w = _getBaseSystemInfo.windowWidth, p2 = _getBaseSystemInfo.pixelRatio, pf = _getBaseSystemInfo.platform;
       windowWidth = w;
       pixelRatio2 = p2;
       platform = pf;
@@ -12719,14 +12503,7 @@
     window.IntersectionObserverEntry = IntersectionObserverEntry;
   };
   function normalizeRect(rect) {
-    var {
-      bottom,
-      height,
-      left,
-      right,
-      top,
-      width
-    } = rect || {};
+    var _ref = rect || {}, bottom = _ref.bottom, height = _ref.height, left = _ref.left, right = _ref.right, top = _ref.top, width = _ref.width;
     return {
       bottom,
       height,
@@ -12737,17 +12514,7 @@
     };
   }
   function rectifyIntersectionRatio(entrie) {
-    var {
-      intersectionRatio,
-      boundingClientRect: {
-        height: overAllHeight,
-        width: overAllWidth
-      },
-      intersectionRect: {
-        height: intersectionHeight,
-        width: intersectionWidth
-      }
-    } = entrie;
+    var intersectionRatio = entrie.intersectionRatio, _entrie$boundingClien = entrie.boundingClientRect, overAllHeight = _entrie$boundingClien.height, overAllWidth = _entrie$boundingClien.width, _entrie$intersectionR = entrie.intersectionRect, intersectionHeight = _entrie$intersectionR.height, intersectionWidth = _entrie$intersectionR.width;
     if (intersectionRatio !== 0) return intersectionRatio;
     return intersectionHeight === overAllHeight ? intersectionWidth / overAllWidth : intersectionHeight / overAllHeight;
   }
@@ -12823,7 +12590,7 @@
       }
       var res = {};
       value.forEach((_ref) => {
-        var [n, v2] = _ref;
+        var _ref2 = _slicedToArray(_ref, 2), n = _ref2[0], v2 = _ref2[1];
         if (includeValue) {
           res[getDict(n)] = getDict(v2);
         } else {
@@ -12857,8 +12624,8 @@
   }
   function getWxsEventDict(w, getDict) {
     var res = {};
-    w.forEach((_ref4) => {
-      var [name, [wxsEvent, flag]] = _ref4;
+    w.forEach((_ref7) => {
+      var _ref8 = _slicedToArray(_ref7, 2), name = _ref8[0], _ref8$ = _slicedToArray(_ref8[1], 2), wxsEvent = _ref8$[0], flag = _ref8$[1];
       res[getDict(name)] = [getDict(wxsEvent), flag];
     });
     return res;
@@ -12907,17 +12674,17 @@
   }
   var WXS_PROTOCOL_LEN = WXS_PROTOCOL.length;
   function invokeWxs(el, wxsStr, invokerArgs) {
-    var [ownerId, moduleId, invoker, args] = parseWxs(wxsStr);
+    var _parseWxs = parseWxs(wxsStr), _parseWxs2 = _slicedToArray(_parseWxs, 4), ownerId = _parseWxs2[0], moduleId = _parseWxs2[1], invoker = _parseWxs2[2], args = _parseWxs2[3];
     var ownerEl = resolveOwnerEl(el, ownerId);
     if (isArray(invokerArgs) || isArray(args)) {
-      var [moduleName, methodName] = invoker.split(".");
+      var _invoker$split = invoker.split("."), _invoker$split2 = _slicedToArray(_invoker$split, 2), moduleName = _invoker$split2[0], methodName = _invoker$split2[1];
       return invokeWxsMethod(ownerEl, moduleId, moduleName, methodName, args);
     }
     return getWxsProp(ownerEl, moduleId, invoker);
   }
   function invokeWxsEvent(el, wxsStr, event) {
-    var [ownerId, moduleId, invoker] = parseWxs(wxsStr);
-    var [moduleName, methodName] = invoker.split(".");
+    var _parseWxs3 = parseWxs(wxsStr), _parseWxs4 = _slicedToArray(_parseWxs3, 3), ownerId = _parseWxs4[0], moduleId = _parseWxs4[1], invoker = _parseWxs4[2];
+    var _invoker$split3 = invoker.split("."), _invoker$split4 = _slicedToArray(_invoker$split3, 2), moduleName = _invoker$split4[0], methodName = _invoker$split4[1];
     var ownerEl = resolveOwnerEl(el, ownerId);
     return invokeWxsMethod(ownerEl, moduleId, moduleName, methodName, [wrapperWxsEvent(event, el), getComponentDescriptor(createComponentDescriptorVm(ownerEl))]);
   }
@@ -12938,9 +12705,9 @@
     return JSON.parse(wxsStr.slice(WXS_PROTOCOL_LEN));
   }
   function invokeWxsProps(wxsStr, el, newValue, oldValue) {
-    var [ownerId, moduleId, invoker] = parseWxs(wxsStr);
+    var _parseWxs5 = parseWxs(wxsStr), _parseWxs6 = _slicedToArray(_parseWxs5, 3), ownerId = _parseWxs6[0], moduleId = _parseWxs6[1], invoker = _parseWxs6[2];
     var ownerEl = resolveOwnerEl(el, ownerId);
-    var [moduleName, methodName] = invoker.split(".");
+    var _invoker$split5 = invoker.split("."), _invoker$split6 = _slicedToArray(_invoker$split5, 2), moduleName = _invoker$split6[0], methodName = _invoker$split6[1];
     return invokeWxsMethod(ownerEl, moduleId, moduleName, methodName, [newValue, oldValue, getComponentDescriptor(createComponentDescriptorVm(ownerEl)), getComponentDescriptor(createComponentDescriptorVm(el))]);
   }
   function invokeWxsMethod(ownerEl, moduleId, moduleName, methodName, args) {
@@ -12987,9 +12754,7 @@
     });
   }
   function destroyRenderjs(node) {
-    var {
-      __renderjsInstances
-    } = node.$;
+    var __renderjsInstances = node.$.__renderjsInstances;
     if (!__renderjsInstances) {
       return;
     }
@@ -13083,9 +12848,7 @@
     }
     remove() {
       this.removeUniParent();
-      var {
-        $: $2
-      } = this;
+      var $2 = this.$;
       $2.parentNode.removeChild($2);
       this.isUnmounted = true;
       removeElement(this.id);
@@ -13113,9 +12876,7 @@
       }
     }
     removeUniParent() {
-      var {
-        $parent
-      } = this;
+      var $parent = this.$parent;
       if ($parent) {
         $parent.removeUniChild(this);
         this.$parent = void 0;
@@ -13143,7 +12904,7 @@
     }
     addWxsEvents(events) {
       Object.keys(events).forEach((name) => {
-        var [wxsEvent, flag] = events[name];
+        var _events$name = _slicedToArray(events[name], 2), wxsEvent = _events$name[0], flag = _events$name[1];
         this.addWxsEvent(name, wxsEvent, flag);
       });
     }
@@ -13167,10 +12928,7 @@
     }
   }
   function patchClass(el, clazz) {
-    var {
-      __wxsAddClass,
-      __wxsRemoveClass
-    } = el;
+    var __wxsAddClass = el.__wxsAddClass, __wxsRemoveClass = el.__wxsRemoveClass;
     if (__wxsRemoveClass && __wxsRemoveClass.length) {
       clazz = clazz.split(/\s+/).filter((v2) => __wxsRemoveClass.indexOf(v2) === -1).join(" ");
       __wxsRemoveClass.length = 0;
@@ -13193,11 +12951,7 @@
     }
     return val;
   };
-  var {
-    unit,
-    unitRatio,
-    unitPrecision
-  } = defaultRpx2Unit;
+  var unit = defaultRpx2Unit.unit, unitRatio = defaultRpx2Unit.unitRatio, unitPrecision = defaultRpx2Unit.unitPrecision;
   var rpx2Unit = createRpx2Unit(unit, unitRatio, unitPrecision);
   var normalizeRpx = (val) => {
     if (isString(val)) {
@@ -13241,12 +12995,10 @@
         setStyle(style, key, value[key]);
       }
     }
-    var {
-      __wxsStyle
-    } = el;
+    var __wxsStyle = el.__wxsStyle;
     if (__wxsStyle) {
-      for (var _key in __wxsStyle) {
-        setStyle(style, _key, __wxsStyle[_key]);
+      for (var key in __wxsStyle) {
+        setStyle(style, key, __wxsStyle[key]);
       }
     }
   }
@@ -13280,7 +13032,7 @@
     }
   }
   function patchEvent(el, name, flag) {
-    var [type, options] = parseEventName(name);
+    var _parseEventName = parseEventName(name), _parseEventName2 = _slicedToArray(_parseEventName, 2), type = _parseEventName2[0], options = _parseEventName2[1];
     if (flag === -1) {
       removeEventListener(el, type);
     } else {
@@ -13291,7 +13043,7 @@
   }
   function createInvoker(id, flag, options) {
     var invoker = (evt) => {
-      var [event] = $nne(evt);
+      var _normalizeNativeEvent = $nne(evt), _normalizeNativeEvent2 = _slicedToArray(_normalizeNativeEvent, 1), event = _normalizeNativeEvent2[0];
       event.type = normalizeEventType(evt.type, options);
       UniViewJSBridge.publishHandler(VD_SYNC, [[ACTION_TYPE_EVENT, id, event]]);
     };
@@ -13314,7 +13066,7 @@
     return modifiers;
   }
   function patchWxsEvent(el, name, wxsEvent, flag) {
-    var [type, options] = parseEventName(name);
+    var _parseEventName3 = parseEventName(name), _parseEventName4 = _slicedToArray(_parseEventName3, 2), type = _parseEventName4[0], options = _parseEventName4[1];
     if (flag === -1) {
       removeEventListener(el, type);
     } else {
@@ -13535,10 +13287,7 @@
   };
   var defineBuiltInComponent = (options) => {
     options.__reserved = true;
-    var {
-      props: props2,
-      mixins
-    } = options;
+    var props2 = options.props, mixins = options.mixins;
     if (!props2 || !props2.animation) {
       (mixins || (options.mixins = [])).push(animation);
     }
@@ -13673,10 +13422,7 @@
     name: "Form",
     emits: ["submit", "reset"],
     setup(_props, _ref) {
-      var {
-        slots,
-        emit: emit2
-      } = _ref;
+      var slots = _ref.slots, emit2 = _ref.emit;
       var rootRef = ref(null);
       provideForm(useCustomEvent(rootRef, emit2));
       return () => createVNode("uni-form", {
@@ -13697,7 +13443,7 @@
         trigger2("submit", evt, {
           value: fields2.reduce((res, field) => {
             if (field.submit) {
-              var [name, value] = field.submit();
+              var _field$submit = field.submit(), _field$submit2 = _slicedToArray(_field$submit, 2), name = _field$submit2[0], value = _field$submit2[1];
               name && (res[name] = value);
             }
             return res;
@@ -13734,9 +13480,7 @@
     name: "Label",
     props: labelProps,
     setup(props2, _ref) {
-      var {
-        slots
-      } = _ref;
+      var slots = _ref.slots;
       var rootRef = ref(null);
       var pageId = useCurrentPageId();
       var handlers = useProvideLabel();
@@ -13865,18 +13609,12 @@
     name: "Button",
     props: buttonProps,
     setup(props2, _ref) {
-      var {
-        slots
-      } = _ref;
+      var slots = _ref.slots;
       var rootRef = ref(null);
       var uniForm = inject(uniFormKey, false);
-      var {
-        hovering,
-        binding
-      } = useHover(props2);
-      var {
-        t: t2
-      } = /* @__PURE__ */ useI18n();
+      var _useHover = useHover(props2), hovering = _useHover.hovering, binding = _useHover.binding;
+      var _useI18n = /* @__PURE__ */ useI18n();
+      _useI18n.t;
       var onClick = withWebEvent((e2, isLabelClick) => {
         if (props2.disabled) {
           return e2.stopImmediatePropagation();
@@ -13932,9 +13670,7 @@
     },
     emits: ["resize"],
     setup(props2, _ref) {
-      var {
-        emit: emit2
-      } = _ref;
+      var emit2 = _ref.emit;
       var rootRef = ref(null);
       var reset = useResizeSensorReset(rootRef);
       var update = useResizeSensorUpdate(rootRef, emit2, reset);
@@ -13966,10 +13702,7 @@
   }
   function useResizeSensorReset(rootRef) {
     return () => {
-      var {
-        firstElementChild,
-        lastElementChild
-      } = rootRef.value;
+      var _rootRef$value = rootRef.value, firstElementChild = _rootRef$value.firstElementChild, lastElementChild = _rootRef$value.lastElementChild;
       firstElementChild.scrollLeft = 1e5;
       firstElementChild.scrollTop = 1e5;
       lastElementChild.scrollLeft = 1e5;
@@ -14190,39 +13923,24 @@
       }
     },
     setup(props2, _ref) {
-      var {
-        emit: emit2,
-        slots
-      } = _ref;
+      var emit2 = _ref.emit, slots = _ref.slots;
       initHidpiOnce();
       var rootRef = ref(null);
       var canvas = ref(null);
       var sensor = ref(null);
       var actionsWaiting = ref(false);
       var trigger2 = useNativeEvent(emit2);
-      var {
-        $attrs,
-        $excludeAttrs,
-        $listeners
-      } = useAttrs({
+      var _useAttrs = useAttrs({
         excludeListeners: true
-      });
-      var {
-        _listeners
-      } = useListeners(props2, $listeners, trigger2);
-      var {
-        _handleSubscribe,
-        _resize
-      } = useMethods$1(props2, canvas, actionsWaiting);
+      }), $attrs = _useAttrs.$attrs, $excludeAttrs = _useAttrs.$excludeAttrs, $listeners = _useAttrs.$listeners;
+      var _useListeners = useListeners(props2, $listeners, trigger2), _listeners = _useListeners._listeners;
+      var _useMethods = useMethods$1(props2, canvas, actionsWaiting), _handleSubscribe = _useMethods._handleSubscribe, _resize = _useMethods._resize;
       useSubscribe(_handleSubscribe, useContextInfo(props2.canvasId));
       onMounted(() => {
         _resize();
       });
       return () => {
-        var {
-          canvasId,
-          disableScroll
-        } = props2;
+        var canvasId = props2.canvasId, disableScroll = props2.disableScroll;
         return createVNode("uni-canvas", mergeProps({
           "ref": rootRef,
           "canvas-id": canvasId,
@@ -14295,10 +14013,7 @@
       }
     }
     function actionsChanged(_ref2, resolve) {
-      var {
-        actions,
-        reserve
-      } = _ref2;
+      var actions = _ref2.actions, reserve = _ref2.reserve;
       if (!actions) {
         return;
       }
@@ -14495,18 +14210,7 @@
       }
     }
     function getImageData(_ref3, resolve) {
-      var {
-        x = 0,
-        y = 0,
-        width,
-        height,
-        destWidth,
-        destHeight,
-        hidpi = true,
-        dataType,
-        quality = 1,
-        type = "png"
-      } = _ref3;
+      var _ref3$x = _ref3.x, x = _ref3$x === void 0 ? 0 : _ref3$x, _ref3$y = _ref3.y, y = _ref3$y === void 0 ? 0 : _ref3$y, width = _ref3.width, height = _ref3.height, destWidth = _ref3.destWidth, destHeight = _ref3.destHeight, _ref3$hidpi = _ref3.hidpi, hidpi = _ref3$hidpi === void 0 ? true : _ref3$hidpi, dataType = _ref3.dataType, _ref3$quality = _ref3.quality, quality = _ref3$quality === void 0 ? 1 : _ref3$quality, _ref3$type = _ref3.type, type = _ref3$type === void 0 ? "png" : _ref3$type;
       var canvas = canvasRef.value;
       var data;
       var maxWidth2 = canvas.offsetWidth - x;
@@ -14572,14 +14276,7 @@
       }
     }
     function putImageData(_ref4, resolve) {
-      var {
-        data,
-        x,
-        y,
-        width,
-        height,
-        compressed
-      } = _ref4;
+      var data = _ref4.data, x = _ref4.x, y = _ref4.y, width = _ref4.width, height = _ref4.height, compressed = _ref4.compressed;
       try {
         if (compressed) {
           data = pakoExports.inflateRaw(data);
@@ -14603,17 +14300,7 @@
       });
     }
     function toTempFilePath(_ref5, resolve) {
-      var {
-        x = 0,
-        y = 0,
-        width,
-        height,
-        destWidth,
-        destHeight,
-        fileType,
-        quality,
-        dirname
-      } = _ref5;
+      var _ref5$x = _ref5.x, x = _ref5$x === void 0 ? 0 : _ref5$x, _ref5$y = _ref5.y, y = _ref5$y === void 0 ? 0 : _ref5$y, width = _ref5.width, height = _ref5.height, destWidth = _ref5.destWidth, destHeight = _ref5.destHeight, fileType = _ref5.fileType, quality = _ref5.quality, dirname = _ref5.dirname;
       var res = getImageData({
         x,
         y,
@@ -14672,10 +14359,7 @@
     props: props$t,
     emits: ["change"],
     setup(props2, _ref) {
-      var {
-        emit: emit2,
-        slots
-      } = _ref;
+      var emit2 = _ref.emit, slots = _ref.slots;
       var rootRef = ref(null);
       var trigger2 = useCustomEvent(rootRef, emit2);
       useProvideCheckGroup(props2, trigger2);
@@ -14773,9 +14457,7 @@
     name: "Checkbox",
     props: props$s,
     setup(props2, _ref) {
-      var {
-        slots
-      } = _ref;
+      var slots = _ref.slots;
       var rootRef = ref(null);
       var checkboxChecked = ref(props2.checked);
       var checkboxCheckedBool = computed(() => {
@@ -14803,17 +14485,14 @@
         return getCheckBoxStyle(checkboxCheckedBool.value);
       });
       watch([() => props2.checked, () => props2.value], (_ref2) => {
-        var [newChecked, newModelValue] = _ref2;
+        var _ref3 = _slicedToArray(_ref2, 2), newChecked = _ref3[0], newModelValue = _ref3[1];
         checkboxChecked.value = newChecked;
         checkboxValue.value = newModelValue;
       });
       var reset = () => {
         checkboxChecked.value = false;
       };
-      var {
-        uniCheckGroup,
-        uniLabel
-      } = useCheckboxInject(checkboxChecked, checkboxValue, reset);
+      var _useCheckboxInject = useCheckboxInject(checkboxChecked, checkboxValue, reset), uniCheckGroup = _useCheckboxInject.uniCheckGroup, uniLabel = _useCheckboxInject.uniLabel;
       var _onClick = ($event) => {
         if (props2.disabled) {
           return;
@@ -14927,9 +14606,7 @@
     }
     plusReady(() => {
       var currentWebview = plus.webview.currentWebview();
-      var {
-        softinputNavBar
-      } = currentWebview.getStyle() || {};
+      var _ref = currentWebview.getStyle() || {}, softinputNavBar = _ref.softinputNavBar;
       var showConfirmBar = softinputNavBar !== "none";
       if (showConfirmBar !== props2.showConfirmBar) {
         state.softinputNavBar = softinputNavBar || "auto";
@@ -15227,10 +14904,7 @@
     };
   }
   function align(Quill) {
-    var {
-      Scope,
-      Attributor
-    } = Quill.import("parchment");
+    var _Quill$import = Quill.import("parchment"), Scope = _Quill$import.Scope, Attributor = _Quill$import.Attributor;
     var config = {
       scope: Scope.BLOCK,
       whitelist: ["left", "right", "center", "justify"]
@@ -15241,10 +14915,7 @@
     };
   }
   function direction(Quill) {
-    var {
-      Scope,
-      Attributor
-    } = Quill.import("parchment");
+    var _Quill$import = Quill.import("parchment"), Scope = _Quill$import.Scope, Attributor = _Quill$import.Attributor;
     var config = {
       scope: Scope.BLOCK,
       whitelist: ["rtl"]
@@ -15338,9 +15009,7 @@
     };
   }
   function background(Quill) {
-    var {
-      Scope
-    } = Quill.import("parchment");
+    var _Quill$import = Quill.import("parchment"), Scope = _Quill$import.Scope;
     var BackgroundStyle = Quill.import("formats/background");
     var BackgroundColorStyle = new BackgroundStyle.constructor("backgroundColor", "background-color", {
       scope: Scope.INLINE
@@ -15350,10 +15019,7 @@
     };
   }
   function box(Quill) {
-    var {
-      Scope,
-      Attributor
-    } = Quill.import("parchment");
+    var _Quill$import = Quill.import("parchment"), Scope = _Quill$import.Scope, Attributor = _Quill$import.Attributor;
     var config = {
       scope: Scope.BLOCK
     };
@@ -15366,10 +15032,7 @@
     return result;
   }
   function font(Quill) {
-    var {
-      Scope,
-      Attributor
-    } = Quill.import("parchment");
+    var _Quill$import = Quill.import("parchment"), Scope = _Quill$import.Scope, Attributor = _Quill$import.Attributor;
     var config = {
       scope: Scope.INLINE
     };
@@ -15381,10 +15044,7 @@
     return result;
   }
   function text(Quill) {
-    var {
-      Scope,
-      Attributor
-    } = Quill.import("parchment");
+    var _Quill$import = Quill.import("parchment"), Scope = _Quill$import.Scope, Attributor = _Quill$import.Attributor;
     var text2 = [{
       name: "lineHeight",
       scope: Scope.BLOCK
@@ -15400,10 +15060,7 @@
     }];
     var result = {};
     text2.forEach((_ref) => {
-      var {
-        name,
-        scope
-      } = _ref;
+      var name = _ref.name, scope = _ref.scope;
       result["formats/".concat(name)] = new Attributor.Style(name, hyphenate(name), {
         scope
       });
@@ -15561,10 +15218,7 @@
           }
           disable = false;
           var arrts = attrs.map((_ref) => {
-            var {
-              name,
-              value
-            } = _ref;
+            var name = _ref.name, value = _ref.value;
             return "".concat(name, '="').concat(value, '"');
           }).join(" ");
           var start = "<".concat(tag, " ").concat(arrts, " ").concat(unary ? "/" : "", ">");
@@ -15622,7 +15276,7 @@
       var _a;
       var range = quill.getSelection();
       if (!range) return;
-      var [leaf] = quill.getLeaf(range.index - 1);
+      var _quill$getLeaf = quill.getLeaf(range.index - 1), _quill$getLeaf2 = _slicedToArray(_quill$getLeaf, 1), leaf = _quill$getLeaf2[0];
       if (((_a = leaf == null ? void 0 : leaf.statics) == null ? void 0 : _a.blotName) === "mention") {
         quill.setSelection(range.index, 0, "silent");
       }
@@ -15680,14 +15334,10 @@
         }
         if (delta.ops) {
           delta.ops = delta.ops.filter((_ref2) => {
-            var {
-              insert
-            } = _ref2;
+            var insert = _ref2.insert;
             return isString(insert);
           }).map((_ref3) => {
-            var {
-              insert
-            } = _ref3;
+            var insert = _ref3.insert;
             return {
               insert
             };
@@ -15700,10 +15350,7 @@
     }
     var id = useContextInfo();
     useSubscribe((type, data, resolve) => {
-      var {
-        options,
-        callbackId
-      } = data;
+      var options = data.options, callbackId = data.callbackId;
       var res;
       var range;
       var errMsg;
@@ -15712,10 +15359,7 @@
         switch (type) {
           case "format":
             {
-              var {
-                name = "",
-                value = false
-              } = options;
+              var _options$name = options.name, name = _options$name === void 0 ? "" : _options$name, _options$value = options.value, value = _options$value === void 0 ? false : _options$value;
               range = quill.getSelection(true);
               if (!name) {
                 break;
@@ -15768,14 +15412,7 @@
           case "insertImage":
             {
               range = quill.getSelection(true);
-              var {
-                src = "",
-                alt = "",
-                width = "",
-                height = "",
-                extClass = "",
-                data: data2 = {}
-              } = options;
+              var _options$src = options.src, src = _options$src === void 0 ? "" : _options$src, _options$alt = options.alt, alt = _options$alt === void 0 ? "" : _options$alt, _options$width = options.width, width = _options$width === void 0 ? "" : _options$width, _options$height = options.height, height = _options$height === void 0 ? "" : _options$height, _options$extClass = options.extClass, extClass = _options$extClass === void 0 ? "" : _options$extClass, _options$data = options.data, data2 = _options$data === void 0 ? {} : _options$data;
               var path = getRealPath(src);
               quill.insertEmbed(range.index, "image", path, "silent");
               var local = /^(file|blob):/.test(path) ? path : false;
@@ -15795,9 +15432,7 @@
           case "insertText":
             {
               range = quill.getSelection(true);
-              var {
-                text: text2 = ""
-              } = options;
+              var _options$text = options.text, text2 = _options$text === void 0 ? "" : _options$text;
               quill.insertText(range.index, text2, "user");
               quill.setSelection(range.index + text2.length, 0, "silent");
             }
@@ -15805,10 +15440,7 @@
           case "insertLink":
             {
               range = quill.getSelection(true);
-              var {
-                text: _text = "",
-                href = ""
-              } = options;
+              var _options$text2 = options.text, _text = _options$text2 === void 0 ? "" : _options$text2, _options$href = options.href, href = _options$href === void 0 ? "" : _options$href;
               if (!href) break;
               if (range.length > 0) {
                 quill.format("link", href, "user");
@@ -15821,10 +15453,7 @@
             break;
           case "setContents":
             {
-              var {
-                delta,
-                html
-              } = options;
+              var delta = options.delta, html = options.html;
               if (typeof delta === "object") {
                 quill.setContents(delta, "silent");
               } else if (isString(html)) {
@@ -15952,9 +15581,7 @@
     props: props$q,
     emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
     setup(props2, _ref) {
-      var {
-        emit: emit2
-      } = _ref;
+      var emit2 = _ref.emit;
       var rootRef = ref(null);
       var trigger2 = useCustomEvent(rootRef, emit2);
       useQuill(props2, rootRef, trigger2);
@@ -16031,9 +15658,7 @@
       var rootRef = ref(null);
       var path = computed(() => ICONS[props2.type]);
       return () => {
-        var {
-          value
-        } = path;
+        var value = path.value;
         return createVNode("uni-icon", {
           "ref": rootRef
         }, [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))], 512);
@@ -16081,15 +15706,11 @@
     name: "Image",
     props: props$p,
     setup(props2, _ref) {
-      var {
-        emit: emit2
-      } = _ref;
+      var emit2 = _ref.emit;
       var rootRef = ref(null);
       var state = useImageState(rootRef, props2);
       var trigger2 = useCustomEvent(rootRef, emit2);
-      var {
-        fixSize
-      } = useImageSize(rootRef, props2, state);
+      var _useImageSize = useImageSize(rootRef, props2, state), fixSize = _useImageSize.fixSize;
       useImageLoader(state, props2, rootRef, fixSize, trigger2);
       return () => {
         return createVNode("uni-image", {
@@ -16155,10 +15776,7 @@
       }
       img = img || new Image();
       img.onload = (evt) => {
-        var {
-          width,
-          height
-        } = img;
+        var _img = img, width = _img.width, height = _img.height;
         setState(width, height, src);
         nextTick(() => {
           fixSize();
@@ -16210,17 +15828,12 @@
   }
   function useImageSize(rootRef, props2, state) {
     var fixSize = () => {
-      var {
-        mode: mode2
-      } = props2;
+      var mode2 = props2.mode;
       var names = FIX_MODES[mode2];
       if (!names) {
         return;
       }
-      var {
-        origWidth,
-        origHeight
-      } = state;
+      var origWidth = state.origWidth, origHeight = state.origHeight;
       var ratio = origWidth && origHeight ? origWidth / origHeight : 0;
       if (!ratio) {
         return;
@@ -16235,15 +15848,8 @@
       }
     };
     var resetSize = () => {
-      var {
-        style
-      } = rootRef.value;
-      var {
-        origStyle: {
-          width,
-          height
-        }
-      } = state;
+      var style = rootRef.value.style;
+      var _state$origStyle = state.origStyle, width = _state$origStyle.width, height = _state$origStyle.height;
       style.width = width;
       style.height = height;
     };
@@ -16587,9 +16193,7 @@
     };
   }
   function useAutoFocus(props2, fieldRef) {
-    var {
-      state: userActionState
-    } = useUserAction();
+    var _useUserAction = useUserAction(), userActionState = _useUserAction.state;
     var needFocus = computed(() => props2.autoFocus || props2.focus);
     function focus() {
       if (!needFocus.value) {
@@ -16727,19 +16331,11 @@
   }
   function useField(props2, rootRef, emit2, beforeInput) {
     UniViewJSBridgeSubscribe();
-    var {
-      fieldRef,
-      state,
-      trigger: trigger2
-    } = useBase(props2, rootRef, emit2);
-    var {
-      triggerInput
-    } = useValueSync(props2, state, emit2, trigger2, fieldRef);
+    var _useBase = useBase(props2, rootRef, emit2), fieldRef = _useBase.fieldRef, state = _useBase.state, trigger2 = _useBase.trigger;
+    var _useValueSync = useValueSync(props2, state, emit2, trigger2, fieldRef), triggerInput = _useValueSync.triggerInput;
     useAutoFocus(props2, fieldRef);
     useKeyboard(props2, fieldRef, trigger2);
-    var {
-      state: scopedAttrsState
-    } = useScopedAttrs();
+    var _useScopedAttrs = useScopedAttrs(), scopedAttrsState = _useScopedAttrs.state;
     useFormField("name", state);
     useEvent(fieldRef, state, props2, trigger2, triggerInput, beforeInput);
     var fixDisabledColor = String(navigator.vendor).indexOf("Apple") === 0 && CSS.supports("image-orientation:from-image");
@@ -16817,10 +16413,7 @@
     props: props$n,
     emits: ["confirm", ...emit],
     setup(props2, _ref) {
-      var {
-        emit: emit2,
-        expose
-      } = _ref;
+      var emit2 = _ref.emit, expose = _ref.expose;
       var INPUT_TYPES = ["text", "number", "idcard", "digit", "password", "tel"];
       var AUTOCOMPLETES = ["off", "one-time-code"];
       var type = computed(() => {
@@ -16872,13 +16465,7 @@
         fn: null
       };
       var rootRef = ref(null);
-      var {
-        fieldRef,
-        state,
-        scopedAttrsState,
-        fixDisabledColor,
-        trigger: trigger2
-      } = useField(props2, rootRef, emit2, (event, state2) => {
+      var _useField = useField(props2, rootRef, emit2, (event, state2) => {
         var input = event.target;
         if (type.value === "number") {
           if (resetCache.fn) {
@@ -16909,7 +16496,7 @@
             return false;
           }
         }
-      });
+      }), fieldRef = _useField.fieldRef, state = _useField.state, scopedAttrsState = _useField.scopedAttrsState, fixDisabledColor = _useField.fixDisabledColor, trigger2 = _useField.trigger;
       watch(() => state.value, (value) => {
         if (props2.type === "number" && !(cache2.value === "-" && value === "")) {
           cache2.value = value.toString();
@@ -17009,10 +16596,7 @@
   var LISTENER_PREFIX = /^on[A-Z]+/;
   var useAttrs = function() {
     var params = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
-    var {
-      excludeListeners = false,
-      excludeKeys = []
-    } = params;
+    var _params$excludeListen = params.excludeListeners, excludeListeners = _params$excludeListen === void 0 ? false : _params$excludeListen, _params$excludeKeys = params.excludeKeys, excludeKeys = _params$excludeKeys === void 0 ? [] : _params$excludeKeys;
     var instance = getCurrentInstance();
     var attrs = shallowRef({});
     var listeners2 = shallowRef({});
@@ -17021,7 +16605,7 @@
     instance.attrs = reactive(instance.attrs);
     watchEffect(() => {
       var res = entries(instance.attrs).reduce((acc, _ref) => {
-        var [key, val] = _ref;
+        var _ref2 = _slicedToArray(_ref, 2), key = _ref2[0], val = _ref2[1];
         if (allExcludeKeys.includes(key)) {
           acc.exclude[key] = val;
         } else if (LISTENER_PREFIX.test(key)) {
@@ -17063,9 +16647,7 @@
     }
   }
   function disableScrollBounce(_ref) {
-    var {
-      disable
-    } = _ref;
+    var disable = _ref.disable;
     {
       if (pullToRefreshStyle && pullToRefreshStyle.support) {
         webview.setPullToRefresh(Object.assign({}, pullToRefreshStyle, {
@@ -17089,20 +16671,11 @@
     name: "MovableArea",
     props: movableAreaProps,
     setup(props2, _ref) {
-      var {
-        slots
-      } = _ref;
+      var slots = _ref.slots;
       var rootRef = ref(null);
       var _isMounted = ref(false);
-      var {
-        setContexts,
-        events: movableAreaEvents
-      } = useMovableAreaState(props2, rootRef);
-      var {
-        $listeners,
-        $attrs,
-        $excludeAttrs
-      } = useAttrs();
+      var _useMovableAreaState = useMovableAreaState(props2, rootRef), setContexts = _useMovableAreaState.setContexts, movableAreaEvents = _useMovableAreaState.events;
+      var _useAttrs = useAttrs(), $listeners = _useAttrs.$listeners, $attrs = _useAttrs.$attrs, $excludeAttrs = _useAttrs.$excludeAttrs;
       var _listeners = $listeners.value;
       var events = ["onTouchstart", "onTouchmove", "onTouchend"];
       events.forEach((event) => {
@@ -17771,15 +17344,10 @@
     props: movableViewProps,
     emits: ["change", "scale"],
     setup(props2, _ref) {
-      var {
-        slots,
-        emit: emit2
-      } = _ref;
+      var slots = _ref.slots, emit2 = _ref.emit;
       var rootRef = ref(null);
       var trigger2 = useCustomEvent(rootRef, emit2);
-      var {
-        setParent
-      } = useMovableViewState(props2, trigger2, rootRef);
+      var _useMovableViewState = useMovableViewState(props2, trigger2, rootRef), setParent = _useMovableViewState.setParent;
       return () => {
         return createVNode("uni-movable-view", {
           "ref": rootRef
@@ -18112,29 +17680,8 @@
     watch(() => props2.scaleValue, (val) => {
       scaleValueSync.value = Number(val) || 0;
     });
-    var {
-      _updateBoundary,
-      _updateOffset,
-      _updateWH,
-      _scaleOffset,
-      minX,
-      minY,
-      maxX,
-      maxY
-    } = useMovableViewLayout(rootRef, _scale, _adjustScale);
-    var {
-      FAandSFACancel,
-      _getLimitXY,
-      _animationTo,
-      _setTransform,
-      _revise,
-      dampingNumber,
-      xMove,
-      yMove,
-      xSync,
-      ySync,
-      _STD
-    } = useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger2);
+    var _useMovableViewLayout = useMovableViewLayout(rootRef, _scale, _adjustScale), _updateBoundary = _useMovableViewLayout._updateBoundary, _updateOffset = _useMovableViewLayout._updateOffset, _updateWH = _useMovableViewLayout._updateWH, _scaleOffset = _useMovableViewLayout._scaleOffset, minX = _useMovableViewLayout.minX, minY = _useMovableViewLayout.minY, maxX = _useMovableViewLayout.maxX, maxY = _useMovableViewLayout.maxY;
+    var _useMovableViewTransf = useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger2), FAandSFACancel = _useMovableViewTransf.FAandSFACancel, _getLimitXY = _useMovableViewTransf._getLimitXY, _animationTo = _useMovableViewTransf._animationTo, _setTransform = _useMovableViewTransf._setTransform, _revise = _useMovableViewTransf._revise, dampingNumber = _useMovableViewTransf.dampingNumber, xMove = _useMovableViewTransf.xMove, yMove = _useMovableViewTransf.yMove, xSync = _useMovableViewTransf.xSync, ySync = _useMovableViewTransf.ySync, _STD = _useMovableViewTransf._STD;
     function _updateScale(scale, animat) {
       if (props2.scale) {
         scale = _adjustScale(scale);
@@ -18252,33 +17799,7 @@
     watch(() => props2.disabled, () => {
       __handleTouchStart();
     });
-    var {
-      // scale
-      _updateOldScale,
-      _endScale,
-      _setScale,
-      scaleValueSync,
-      // layout
-      _updateBoundary,
-      _updateOffset,
-      _updateWH,
-      _scaleOffset,
-      minX,
-      minY,
-      maxX,
-      maxY,
-      // transform
-      FAandSFACancel,
-      _getLimitXY,
-      _setTransform,
-      _revise,
-      dampingNumber,
-      xMove,
-      yMove,
-      xSync,
-      ySync,
-      _STD
-    } = useMovableViewInit(props2, rootRef, trigger2, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA);
+    var _useMovableViewInit = useMovableViewInit(props2, rootRef, trigger2, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA), _updateOldScale = _useMovableViewInit._updateOldScale, _endScale = _useMovableViewInit._endScale, _setScale = _useMovableViewInit._setScale, scaleValueSync = _useMovableViewInit.scaleValueSync, _updateBoundary = _useMovableViewInit._updateBoundary, _updateOffset = _useMovableViewInit._updateOffset, _updateWH = _useMovableViewInit._updateWH, _scaleOffset = _useMovableViewInit._scaleOffset, minX = _useMovableViewInit.minX, minY = _useMovableViewInit.minY, maxX = _useMovableViewInit.maxX, maxY = _useMovableViewInit.maxY, FAandSFACancel = _useMovableViewInit.FAandSFACancel, _getLimitXY = _useMovableViewInit._getLimitXY, _setTransform = _useMovableViewInit._setTransform, _revise = _useMovableViewInit._revise, dampingNumber = _useMovableViewInit.dampingNumber, xMove = _useMovableViewInit.xMove, yMove = _useMovableViewInit.yMove, xSync = _useMovableViewInit.xSync, ySync = _useMovableViewInit.ySync, _STD = _useMovableViewInit._STD;
     function __handleTouchStart() {
       if (!_isScaling.value) {
         if (!props2.disabled) {
@@ -18581,22 +18102,14 @@
       }
     }),
     setup(props2, _ref) {
-      var {
-        slots
-      } = _ref;
+      var slots = _ref.slots;
       var rootRef = ref(null);
       var vm = getCurrentInstance();
       var __scopeId = vm && vm.vnode.scopeId || "";
-      var {
-        hovering,
-        binding
-      } = useHover(props2);
+      var _useHover = useHover(props2), hovering = _useHover.hovering, binding = _useHover.binding;
       var onClick = createNavigatorOnClick(props2);
       return () => {
-        var {
-          hoverClass,
-          url
-        } = props2;
+        var hoverClass = props2.hoverClass, url = props2.url;
         var hasHoverClass = props2.hoverClass && props2.hoverClass !== "none";
         var innerNode = props2.renderLink ? createVNode("a", {
           "class": "navigator-wrap",
@@ -18665,10 +18178,7 @@
     props: pickerViewProps,
     emits: ["change", "pickstart", "pickend", "update:value"],
     setup(props2, _ref) {
-      var {
-        slots,
-        emit: emit2
-      } = _ref;
+      var slots = _ref.slots, emit2 = _ref.emit;
       var rootRef = ref(null);
       var wrapperRef = ref(null);
       var trigger2 = useCustomEvent(rootRef, emit2);
@@ -18730,9 +18240,7 @@
         }, [createVNode(ResizeSensor, {
           "ref": resizeSensorRef,
           "onResize": (_ref2) => {
-            var {
-              height
-            } = _ref2;
+            var height = _ref2.height;
             return state.height = height;
           }
         }, null, 8, ["onResize"]), createVNode("div", {
@@ -19448,10 +18956,8 @@
   const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     name: "PickerViewColumn",
     setup(props2, _ref) {
-      var {
-        slots,
-        emit: emit2
-      } = _ref;
+      var slots = _ref.slots;
+      _ref.emit;
       var rootRef = ref(null);
       var contentRef = ref(null);
       var getPickerViewColumn = inject("getPickerViewColumn");
@@ -19466,9 +18972,7 @@
         indicatorHeight.value = resizeSensor.$el.getBoundingClientRect().height;
       };
       var maskSize = computed(() => (pickerViewState.height - indicatorHeight.value) / 2);
-      var {
-        state: scopedAttrsState
-      } = useScopedAttrs();
+      var _useScopedAttrs = useScopedAttrs(), scopedAttrsState = _useScopedAttrs.state;
       var scroller;
       var state = reactive({
         current: currentRef.value,
@@ -19508,9 +19012,7 @@
         event.preventDefault();
       }
       function handleTap(_ref2) {
-        var {
-          clientY
-        } = _ref2;
+        var clientY = _ref2.clientY;
         var el = rootRef.value;
         if (!scroller.isScrolling()) {
           var rect = el.getBoundingClientRect();
@@ -19528,12 +19030,7 @@
       var initScroller = () => {
         var el = rootRef.value;
         var content = contentRef.value;
-        var {
-          scroller: scrollerOrigin,
-          handleTouchStart,
-          handleTouchMove,
-          handleTouchEnd
-        } = useScroller(content, {
+        var _useScroller = useScroller(content, {
           enableY: true,
           enableX: false,
           enableSnap: true,
@@ -19545,7 +19042,7 @@
               state.current = index2;
             }
           }
-        });
+        }), scrollerOrigin = _useScroller.scroller, handleTouchStart = _useScroller.handleTouchStart, handleTouchMove = _useScroller.handleTouchMove, handleTouchEnd = _useScroller.handleTouchEnd;
         scroller = scrollerOrigin;
         useTouchtrack(el, (e2) => {
           switch (e2.detail.state) {
@@ -19600,9 +19097,7 @@
         }), [createVNode(ResizeSensor, {
           "ref": resizeSensorRef,
           "onResize": (_ref3) => {
-            var {
-              height
-            } = _ref3;
+            var height = _ref3.height;
             return indicatorHeight.value = height;
           }
         }, null, 8, ["onResize"])], 16), createVNode("div", {
@@ -19690,14 +19185,8 @@
         _activeAnimation(state, props2);
       });
       return () => {
-        var {
-          showInfo
-        } = props2;
-        var {
-          outerBarStyle,
-          innerBarStyle,
-          currentPercent
-        } = state;
+        var showInfo = props2.showInfo;
+        var outerBarStyle = state.outerBarStyle, innerBarStyle = state.innerBarStyle, currentPercent = state.currentPercent;
         return createVNode("uni-progress", {
           "class": "uni-progress",
           "ref": rootRef
@@ -19772,10 +19261,7 @@
     props: props$m,
     // emits: ['change'],
     setup(props2, _ref) {
-      var {
-        emit: emit2,
-        slots
-      } = _ref;
+      var emit2 = _ref.emit, slots = _ref.slots;
       var rootRef = ref(null);
       var trigger2 = useCustomEvent(rootRef, emit2);
       useProvideRadioGroup(props2, trigger2);
@@ -19900,9 +19386,7 @@
     name: "Radio",
     props: props$l,
     setup(props2, _ref) {
-      var {
-        slots
-      } = _ref;
+      var slots = _ref.slots;
       var rootRef = ref(null);
       var radioChecked = ref(props2.checked);
       var radioValue = ref(props2.value);
@@ -19927,18 +19411,14 @@
         return getRadioStyle(radioChecked.value);
       });
       watch([() => props2.checked, () => props2.value], (_ref2) => {
-        var [newChecked, newModelValue] = _ref2;
+        var _ref3 = _slicedToArray(_ref2, 2), newChecked = _ref3[0], newModelValue = _ref3[1];
         radioChecked.value = newChecked;
         radioValue.value = newModelValue;
       });
       var reset = () => {
         radioChecked.value = false;
       };
-      var {
-        uniCheckGroup,
-        uniLabel,
-        field
-      } = useRadioInject(radioChecked, radioValue, reset);
+      var _useRadioInject = useRadioInject(radioChecked, radioValue, reset), uniCheckGroup = _useRadioInject.uniCheckGroup, uniLabel = _useRadioInject.uniLabel, field = _useRadioInject.field;
       var _onClick = ($event) => {
         if (props2.disabled || radioChecked.value) {
           return;
@@ -19984,10 +19464,8 @@
         radioChecked: Boolean(radioChecked.value),
         value: radioValue.value
       }),
-      set: (_ref3) => {
-        var {
-          radioChecked: checked
-        } = _ref3;
+      set: (_ref4) => {
+        var checked = _ref4.radioChecked;
         radioChecked.value = checked;
       }
     });
@@ -20272,9 +19750,7 @@
     props: props$k,
     emits: ["itemclick"],
     setup(props2, _ref) {
-      var {
-        emit: emit2
-      } = _ref;
+      var emit2 = _ref.emit;
       var vm = getCurrentInstance();
       var scopeId = vm && vm.vnode.scopeId || "";
       var rootRef = ref(null);
@@ -20325,9 +19801,7 @@
       }
     },
     setup(props2, _ref) {
-      var {
-        slots
-      } = _ref;
+      var slots = _ref.slots;
       var rootRef = ref(null);
       var rootStyle = computed(() => {
         var style = {
@@ -20355,11 +19829,7 @@
         return (route > 1 ? 1 : route) * 360;
       });
       return () => {
-        var {
-          refreshState,
-          refresherDefaultStyle,
-          refresherThreshold
-        } = props2;
+        var refreshState = props2.refreshState, refresherDefaultStyle = props2.refresherDefaultStyle, refresherThreshold = props2.refresherThreshold;
         return createVNode("div", {
           "ref": rootRef,
           "style": rootStyle.value,
@@ -20480,25 +19950,14 @@
     props: props$j,
     emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
     setup(props2, _ref) {
-      var {
-        emit: emit2,
-        slots,
-        expose
-      } = _ref;
+      var emit2 = _ref.emit, slots = _ref.slots, expose = _ref.expose;
       var rootRef = ref(null);
       var main = ref(null);
       var wrap = ref(null);
       var content = ref(null);
       var trigger2 = useCustomEvent(rootRef, emit2);
-      var {
-        state,
-        scrollTopNumber,
-        scrollLeftNumber
-      } = useScrollViewState(props2);
-      var {
-        realScrollX,
-        realScrollY
-      } = useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger2, rootRef, main, content, emit2);
+      var _useScrollViewState = useScrollViewState(props2), state = _useScrollViewState.state, scrollTopNumber = _useScrollViewState.scrollTopNumber, scrollLeftNumber = _useScrollViewState.scrollLeftNumber;
+      var _useScrollViewLoader = useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger2, rootRef, main, content, emit2), realScrollX = _useScrollViewLoader.realScrollX, realScrollY = _useScrollViewLoader.realScrollY;
       var mainStyle = computed(() => {
         var style = "";
         realScrollX.value ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
@@ -20519,16 +19978,8 @@
         }
       });
       return () => {
-        var {
-          refresherEnabled,
-          refresherBackground,
-          refresherDefaultStyle,
-          refresherThreshold
-        } = props2;
-        var {
-          refresherHeight,
-          refreshState
-        } = state;
+        var refresherEnabled = props2.refresherEnabled, refresherBackground = props2.refresherBackground, refresherDefaultStyle = props2.refresherDefaultStyle, refresherThreshold = props2.refresherThreshold;
+        var refresherHeight = state.refresherHeight, refreshState = state.refreshState;
         return createVNode("uni-scroll-view", {
           "ref": rootRef
         }, [createVNode("div", {
@@ -20980,9 +20431,7 @@
     props: props$i,
     emits: ["changing", "change"],
     setup(props2, _ref) {
-      var {
-        emit: emit2
-      } = _ref;
+      var emit2 = _ref.emit;
       var sliderRef = ref(null);
       var sliderValueRef = ref(null);
       var sliderHandleRef = ref(null);
@@ -20998,20 +20447,12 @@
       });
       var trigger2 = useCustomEvent(sliderRef, emit2);
       var state = useSliderState(props2, sliderValue);
-      var {
-        _onClick,
-        _onTrack
-      } = useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger2);
+      var _useSliderLoader = useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger2), _onClick = _useSliderLoader._onClick, _onTrack = _useSliderLoader._onTrack;
       onMounted(() => {
         useTouchtrack(sliderHandleRef.value, _onTrack);
       });
       return () => {
-        var {
-          setBgColor,
-          setBlockBg,
-          setActiveColor,
-          setBlockStyle
-        } = state;
+        var setBgColor = state.setBgColor, setBlockBg = state.setBlockBg, setActiveColor = state.setActiveColor, setBlockStyle = state.setBlockStyle;
         return createVNode("uni-slider", {
           "ref": sliderRef,
           "onClick": withWebEvent(_onClick)
@@ -21660,10 +21101,7 @@
     props: props$h,
     emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
     setup(props2, _ref) {
-      var {
-        slots,
-        emit: emit2
-      } = _ref;
+      var slots = _ref.slots, emit2 = _ref.emit;
       var rootRef = ref(null);
       var trigger2 = useCustomEvent(rootRef, emit2);
       var slidesWrapperRef = ref(null);
@@ -21734,9 +21172,7 @@
         }
       };
       provide("removeSwiperContext", removeSwiperContext);
-      var {
-        onSwiperDotClick
-      } = useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger2);
+      var _useLayout = useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger2), onSwiperDotClick = _useLayout.onSwiperDotClick;
       var createNavigationTsx = () => null;
       return () => {
         var defaultSlots = slots.default && slots.default();
@@ -21777,9 +21213,7 @@
     name: "SwiperItem",
     props: props$g,
     setup(props2, _ref) {
-      var {
-        slots
-      } = _ref;
+      var slots = _ref.slots;
       var rootRef = ref(null);
       var context = {
         rootRef,
@@ -21856,9 +21290,7 @@
     props: props$f,
     emits: ["change"],
     setup(props2, _ref) {
-      var {
-        emit: emit2
-      } = _ref;
+      var emit2 = _ref.emit;
       var rootRef = ref(null);
       var switchChecked = ref(props2.checked);
       var uniLabel = useSwitchInject(props2, switchChecked);
@@ -21885,10 +21317,7 @@
         "label-click": _onClick
       });
       return () => {
-        var {
-          color,
-          type
-        } = props2;
+        var color = props2.color, type = props2.type;
         var booleanAttrs = useBooleanAttr(props2, "disabled");
         var switchInputStyle = {};
         if (color && switchChecked.value) {
@@ -21943,10 +21372,7 @@
     nbsp: " "
   };
   function normalizeText(text2, _ref) {
-    var {
-      space,
-      decode
-    } = _ref;
+    var space = _ref.space, decode = _ref.decode;
     var result = "";
     var isEscape = false;
     for (var char of text2) {
@@ -21978,72 +21404,6 @@
   function parseText(text2, options) {
     return normalizeText(text2, options).split(LINEFEED);
   }
-  function asyncGeneratorStep(n, t2, e2, r, o2, a2, c) {
-    try {
-      var i = n[a2](c), u = i.value;
-    } catch (n2) {
-      return void e2(n2);
-    }
-    i.done ? t2(u) : Promise.resolve(u).then(r, o2);
-  }
-  function _asyncToGenerator(n) {
-    return function() {
-      var t2 = this, e2 = arguments;
-      return new Promise(function(r, o2) {
-        var a2 = n.apply(t2, e2);
-        function _next(n2) {
-          asyncGeneratorStep(a2, r, o2, _next, _throw, "next", n2);
-        }
-        function _throw(n2) {
-          asyncGeneratorStep(a2, r, o2, _next, _throw, "throw", n2);
-        }
-        _next(void 0);
-      });
-    };
-  }
-  function _defineProperty(e2, r, t2) {
-    return (r = _toPropertyKey(r)) in e2 ? Object.defineProperty(e2, r, {
-      value: t2,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    }) : e2[r] = t2, e2;
-  }
-  function ownKeys(e2, r) {
-    var t2 = Object.keys(e2);
-    if (Object.getOwnPropertySymbols) {
-      var o2 = Object.getOwnPropertySymbols(e2);
-      r && (o2 = o2.filter(function(r2) {
-        return Object.getOwnPropertyDescriptor(e2, r2).enumerable;
-      })), t2.push.apply(t2, o2);
-    }
-    return t2;
-  }
-  function _objectSpread2(e2) {
-    for (var r = 1; r < arguments.length; r++) {
-      var t2 = null != arguments[r] ? arguments[r] : {};
-      r % 2 ? ownKeys(Object(t2), true).forEach(function(r2) {
-        _defineProperty(e2, r2, t2[r2]);
-      }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e2, Object.getOwnPropertyDescriptors(t2)) : ownKeys(Object(t2)).forEach(function(r2) {
-        Object.defineProperty(e2, r2, Object.getOwnPropertyDescriptor(t2, r2));
-      });
-    }
-    return e2;
-  }
-  function _toPrimitive(t2, r) {
-    if ("object" != typeof t2 || !t2) return t2;
-    var e2 = t2[Symbol.toPrimitive];
-    if (void 0 !== e2) {
-      var i = e2.call(t2, r);
-      if ("object" != typeof i) return i;
-      throw new TypeError("@@toPrimitive must return a primitive value.");
-    }
-    return ("string" === r ? String : Number)(t2);
-  }
-  function _toPropertyKey(t2) {
-    var i = _toPrimitive(t2, "string");
-    return "symbol" == typeof i ? i : i + "";
-  }
   var props$e = /* @__PURE__ */ extend({}, props$o, {
     placeholderClass: {
       type: String,
@@ -22072,19 +21432,10 @@
     props: props$e,
     emits: ["confirm", "change", "linechange", ...emit],
     setup(props2, _ref) {
-      var {
-        emit: emit2,
-        expose
-      } = _ref;
+      var emit2 = _ref.emit, expose = _ref.expose;
       var rootRef = ref(null);
       var wrapperRef = ref(null);
-      var {
-        fieldRef,
-        state,
-        scopedAttrsState,
-        fixDisabledColor,
-        trigger: trigger2
-      } = useField(props2, rootRef, emit2);
+      var _useField = useField(props2, rootRef, emit2), fieldRef = _useField.fieldRef, state = _useField.state, scopedAttrsState = _useField.scopedAttrsState, fixDisabledColor = _useField.fixDisabledColor, trigger2 = _useField.trigger;
       var valueCompute = computed(() => state.value.split(LINEFEED));
       var isDone = computed(() => ConfirmTypes.includes(props2.confirmType));
       var heightRef = ref(0);
@@ -22108,9 +21459,7 @@
         }
       });
       function onResize(_ref2) {
-        var {
-          height
-        } = _ref2;
+        var height = _ref2.height;
         heightRef.value = height;
       }
       function onChange(event) {
@@ -22229,10 +21578,7 @@
       return;
     }
     registerViewMethod(pageId || getCurrentPageId(), name, (_ref, resolve) => {
-      var {
-        type,
-        data
-      } = _ref;
+      var type = _ref.type, data = _ref.data;
       callback(type, data, resolve);
     });
   }
@@ -22299,10 +21645,7 @@
       this.updateView();
     }
     update() {
-      var {
-        space,
-        decode
-      } = this.$parent && this.$parent.$props || {};
+      var _ref = this.$parent && this.$parent.$props || {}, space = _ref.space, decode = _ref.decode;
       this.$.textContent = parseText(this._text, {
         space,
         decode
@@ -22485,11 +21828,7 @@
       flushPostFlushCbs();
     }
     init(nodeJson) {
-      var {
-        a: a2,
-        e: e2,
-        w
-      } = nodeJson;
+      var a2 = nodeJson.a, e2 = nodeJson.e, w = nodeJson.w;
       if (a2) {
         this.setWxsProps(a2);
         Object.keys(a2).forEach((n) => {
@@ -22615,9 +21954,7 @@
     while (node && node.pid > 0) {
       node = $(node.pid);
       if (node) {
-        var {
-          __vueParentComponent
-        } = node.$;
+        var __vueParentComponent = node.$.__vueParentComponent;
         if (__vueParentComponent) {
           return __vueParentComponent;
         }
@@ -22675,12 +22012,7 @@
     }
     update() {
       var isMounted = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : false;
-      var {
-        $props: {
-          space,
-          decode
-        }
-      } = this;
+      var _this$$props = this.$props, space = _this$$props.space, decode = _this$$props.decode;
       this.$.textContent = parseText(this._text, {
         space,
         decode
@@ -22873,10 +22205,7 @@
   const Embed = /* @__PURE__ */ defineBuiltInComponent({
     props: props$d,
     setup(props2, _ref) {
-      var {
-        expose,
-        attrs
-      } = _ref;
+      var expose = _ref.expose, attrs = _ref.attrs;
       var elId = String(index$1++);
       var elRef = ref(null);
       var visibility = ref(0);
@@ -23013,9 +22342,7 @@
     setup(props2) {
       var embedRef = ref(null);
       var pageId = getCurrentPageId();
-      var {
-        _handleSubscribe
-      } = useMethods(embedRef);
+      var _useMethods = useMethods(embedRef), _handleSubscribe = _useMethods._handleSubscribe;
       useSubscribe(_handleSubscribe, useContextInfo(props2.id));
       onMounted(() => {
         UniViewJSBridge.publishHandler(WEBVIEW_INSERTED, {}, pageId);
@@ -23302,9 +22629,7 @@
       state.currentDuration = _duration > 0 ? _duration : state.duration;
     });
     function onDurationChange(_ref) {
-      var {
-        target
-      } = _ref;
+      var target = _ref.target;
       state.duration = target.duration;
     }
     function onLoadedMetadata($event) {
@@ -23757,72 +23082,22 @@
     props: props$b,
     emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
     setup(props2, _ref2) {
-      var {
-        emit: emit2,
-        attrs,
-        slots
-      } = _ref2;
+      var emit2 = _ref2.emit, attrs = _ref2.attrs, slots = _ref2.slots;
       var rootRef = ref(null);
       var containerRef = ref(null);
       var trigger2 = useCustomEvent(rootRef, emit2);
-      var {
-        state: userActionState
-      } = useUserAction();
-      var {
-        $attrs: videoAttrs
-      } = useAttrs({
+      var _useUserAction = useUserAction(), userActionState = _useUserAction.state;
+      var _useAttrs = useAttrs({
         excludeListeners: true
-      });
+      }), videoAttrs = _useAttrs.$attrs;
       initI18nVideoMsgsOnce();
-      var {
-        videoRef,
-        state: videoState,
-        play,
-        pause,
-        stop,
-        seek,
-        playbackRate,
-        toggle,
-        onDurationChange,
-        onLoadedMetadata,
-        onProgress,
-        onWaiting,
-        onVideoError,
-        onPlay,
-        onPause,
-        onEnded,
-        onTimeUpdate
-      } = useVideo(props2, attrs, trigger2);
-      var {
-        state: danmuState,
-        danmuRef,
-        updateDanmu,
-        toggleDanmu,
-        sendDanmu
-      } = useDanmu(props2, videoState);
-      var {
-        state: fullscreenState,
-        onFullscreenChange,
-        emitFullscreenChange,
-        toggleFullscreen,
-        requestFullScreen,
-        exitFullScreen
-      } = useFullscreen(trigger2, containerRef, videoRef, userActionState, rootRef);
-      var {
-        state: gestureState,
-        onTouchstart,
-        onTouchend,
-        onTouchmove
-      } = useGesture(props2, videoState, videoRef, fullscreenState);
-      var {
-        state: controlsState,
-        progressRef,
-        ballRef,
-        clickProgress,
-        toggleControls
-      } = useControls(props2, videoState, seek, (currentTimeNew) => {
+      var _useVideo = useVideo(props2, attrs, trigger2), videoRef = _useVideo.videoRef, videoState = _useVideo.state, play = _useVideo.play, pause = _useVideo.pause, stop = _useVideo.stop, seek = _useVideo.seek, playbackRate = _useVideo.playbackRate, toggle = _useVideo.toggle, onDurationChange = _useVideo.onDurationChange, onLoadedMetadata = _useVideo.onLoadedMetadata, onProgress = _useVideo.onProgress, onWaiting = _useVideo.onWaiting, onVideoError = _useVideo.onVideoError, onPlay = _useVideo.onPlay, onPause = _useVideo.onPause, onEnded = _useVideo.onEnded, onTimeUpdate = _useVideo.onTimeUpdate;
+      var _useDanmu = useDanmu(props2, videoState), danmuState = _useDanmu.state, danmuRef = _useDanmu.danmuRef, updateDanmu = _useDanmu.updateDanmu, toggleDanmu = _useDanmu.toggleDanmu, sendDanmu = _useDanmu.sendDanmu;
+      var _useFullscreen = useFullscreen(trigger2, containerRef, videoRef, userActionState, rootRef), fullscreenState = _useFullscreen.state, onFullscreenChange = _useFullscreen.onFullscreenChange, emitFullscreenChange = _useFullscreen.emitFullscreenChange, toggleFullscreen = _useFullscreen.toggleFullscreen, requestFullScreen = _useFullscreen.requestFullScreen, exitFullScreen = _useFullscreen.exitFullScreen;
+      var _useGesture = useGesture(props2, videoState, videoRef, fullscreenState), gestureState = _useGesture.state, onTouchstart = _useGesture.onTouchstart, onTouchend = _useGesture.onTouchend, onTouchmove = _useGesture.onTouchmove;
+      var _useControls = useControls(props2, videoState, seek, (currentTimeNew) => {
         gestureState.currentTimeNew = currentTimeNew;
-      });
+      }), controlsState = _useControls.state, progressRef = _useControls.progressRef, ballRef = _useControls.ballRef, clickProgress = _useControls.clickProgress, toggleControls = _useControls.toggleControls;
       useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
       var progressing = useProgressing(videoState, gestureState, controlsState);
       return () => {
@@ -24078,9 +23353,7 @@
     props: props$a,
     emits: ["change", "cancel", "columnchange"],
     setup(props2, _ref) {
-      var {
-        emit: emit2
-      } = _ref;
+      var emit2 = _ref.emit;
       var rootRef = ref(null);
       var embedRef = ref(null);
       var trigger2 = useCustomEvent(rootRef, emit2);
@@ -24944,7 +24217,7 @@
     if (tmpHexLen === 3 || tmpHexLen === 4) {
       tmpHex = tmpHex.replace(/(\w{1})/g, "$1$1");
     }
-    var [sr, sg, sb, sa] = tmpHex.match(/(\w{2})/g);
+    var _tmpHex$match = tmpHex.match(/(\w{2})/g), _tmpHex$match2 = _slicedToArray(_tmpHex$match, 4), sr = _tmpHex$match2[0], sg = _tmpHex$match2[1], sb = _tmpHex$match2[2], sa = _tmpHex$match2[3];
     var r = parseInt(sr, 16), g2 = parseInt(sg, 16), b = parseInt(sb, 16);
     if (!sa) {
       return {
@@ -25039,18 +24312,8 @@
             path.push(pointPosition);
           });
           var strokeWeight = Number(option.width) || 1;
-          var {
-            r: sr,
-            g: sg,
-            b: sb,
-            a: sa
-          } = hexToRgba(option.color);
-          var {
-            r: br,
-            g: bg,
-            b: bb,
-            a: ba
-          } = hexToRgba(option.borderColor);
+          var _hexToRgba = hexToRgba(option.color), sr = _hexToRgba.r, sg = _hexToRgba.g, sb = _hexToRgba.b, sa = _hexToRgba.a;
+          var _hexToRgba2 = hexToRgba(option.borderColor), br = _hexToRgba2.r, bg = _hexToRgba2.g, bb = _hexToRgba2.b, ba = _hexToRgba2.a;
           var polylineOptions = {
             map,
             clickable: false,
@@ -25157,18 +24420,8 @@
             circleOptions.fillColor = option.fillColor || "#000";
             circleOptions.fillOpacity = 1;
           } else {
-            var {
-              r: fr,
-              g: fg,
-              b: fb,
-              a: fa
-            } = hexToRgba(option.fillColor);
-            var {
-              r: sr,
-              g: sg,
-              b: sb,
-              a: sa
-            } = hexToRgba(option.color);
+            var _hexToRgba = hexToRgba(option.fillColor), fr = _hexToRgba.r, fg = _hexToRgba.g, fb = _hexToRgba.b, fa = _hexToRgba.a;
+            var _hexToRgba2 = hexToRgba(option.color), sr = _hexToRgba2.r, sg = _hexToRgba2.g, sb = _hexToRgba2.b, sa = _hexToRgba2.a;
             if ("Color" in maps2) {
               circleOptions.fillColor = new maps2.Color(fr, fg, fb, fa);
               circleOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
@@ -25445,19 +24698,9 @@
       var onMapReady = inject("onMapReady");
       onMapReady((map, maps2, trigger2) => {
         function drawPolygon() {
-          var {
-            points,
-            strokeWidth,
-            strokeColor,
-            dashArray,
-            fillColor,
-            zIndex
-          } = props2;
+          var points = props2.points, strokeWidth = props2.strokeWidth, strokeColor = props2.strokeColor, dashArray = props2.dashArray, fillColor = props2.fillColor, zIndex = props2.zIndex;
           var path = points.map((item) => {
-            var {
-              latitude,
-              longitude
-            } = item;
+            var latitude = item.latitude, longitude = item.longitude;
             if (getIsAMap()) {
               return [longitude, latitude];
             } else if (getIsBMap()) {
@@ -25466,18 +24709,8 @@
               return new maps2.LatLng(latitude, longitude);
             }
           });
-          var {
-            r: fcR,
-            g: fcG,
-            b: fcB,
-            a: fcA
-          } = hexToRgba(fillColor);
-          var {
-            r: scR,
-            g: scG,
-            b: scB,
-            a: scA
-          } = hexToRgba(strokeColor);
+          var _hexToRgba = hexToRgba(fillColor), fcR = _hexToRgba.r, fcG = _hexToRgba.g, fcB = _hexToRgba.b, fcA = _hexToRgba.a;
+          var _hexToRgba2 = hexToRgba(strokeColor), scR = _hexToRgba2.r, scG = _hexToRgba2.g, scB = _hexToRgba2.b, scA = _hexToRgba2.a;
           var polygonOptions = {
             //多边形是否可点击。
             clickable: true,
@@ -25687,7 +24920,7 @@
       delete contexts[context.id];
     }
     watch([() => props2.latitude, () => props2.longitude], (_ref) => {
-      var [latitudeVlaue, longitudeVlaue] = _ref;
+      var _ref2 = _slicedToArray(_ref, 2), latitudeVlaue = _ref2[0], longitudeVlaue = _ref2[1];
       var latitude = Number(latitudeVlaue);
       var longitude = Number(longitudeVlaue);
       if (latitude !== state.latitude || longitude !== state.longitude) {
@@ -25737,11 +24970,8 @@
       } else if (getIsBMap()) ;
       else {
         var _bounds = new maps2.LatLngBounds();
-        state.includePoints.forEach((_ref2) => {
-          var {
-            latitude,
-            longitude
-          } = _ref2;
+        state.includePoints.forEach((_ref3) => {
+          var latitude = _ref3.latitude, longitude = _ref3.longitude;
           var latLng = new maps2.LatLng(latitude, longitude);
           _bounds.extend(latLng);
         });
@@ -25979,16 +25209,10 @@
     name: "Map",
     props: props$4,
     emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
-    setup(props2, _ref3) {
-      var {
-        emit: emit2,
-        slots
-      } = _ref3;
+    setup(props2, _ref4) {
+      var emit2 = _ref4.emit, slots = _ref4.slots;
       var rootRef = ref(null);
-      var {
-        mapRef,
-        trigger: trigger2
-      } = useMap(props2, rootRef, emit2);
+      var _useMap = useMap(props2, rootRef, emit2), mapRef = _useMap.mapRef, trigger2 = _useMap.trigger;
       return () => {
         return createVNode("uni-map", {
           "ref": rootRef,
@@ -26195,23 +25419,13 @@
     props: props$3,
     emits: ["close"],
     setup(props2, _ref) {
-      var {
-        emit: emit2
-      } = _ref;
+      var emit2 = _ref.emit;
       var rootRef = ref(null);
       var trigger2 = useCustomEvent(rootRef, emit2);
       initI18nChooseLocationMsgsOnce();
-      var {
-        t: t2
-      } = useI18n();
+      var _useI18n = useI18n(), t2 = _useI18n.t;
       var state = useState$1(props2);
-      var {
-        list: list2,
-        listState,
-        loadMore,
-        reset,
-        getList
-      } = useList(state);
+      var _useList = useList(state), list2 = _useList.list, listState = _useList.listState, loadMore = _useList.loadMore, reset = _useList.reset, getList = _useList.getList;
       var search = debounce(() => {
         reset();
         if (state.keyword) {
@@ -26257,10 +25471,7 @@
           type: "gcj02",
           isHighAccuracy: true
         }).then((_ref2) => {
-          var {
-            latitude,
-            longitude
-          } = _ref2;
+          var latitude = _ref2.latitude, longitude = _ref2.longitude;
           move({
             latitude,
             longitude
@@ -26268,10 +25479,7 @@
         });
       }
       function move(_ref3) {
-        var {
-          latitude,
-          longitude
-        } = _ref3;
+        var latitude = _ref3.latitude, longitude = _ref3.longitude;
         state.latitude = latitude;
         state.longitude = longitude;
         reset();
@@ -26435,9 +25643,7 @@
     props: props$2,
     emits: ["close", "navChange"],
     setup(props2, _ref) {
-      var {
-        emit: emit2
-      } = _ref;
+      var emit2 = _ref.emit;
       var rootRef = ref(null);
       var trigger2 = useCustomEvent(rootRef, emit2);
       var state = useState(props2);
@@ -26445,10 +25651,7 @@
         type: "gcj02",
         isHighAccuracy: true
       }).then((_ref2) => {
-        var {
-          latitude,
-          longitude
-        } = _ref2;
+        var latitude = _ref2.latitude, longitude = _ref2.longitude;
         state.location.latitude = latitude;
         state.location.longitude = longitude;
       });
@@ -26497,10 +25700,7 @@
         navUrl.value = "";
       }
       function setCenter(_ref3) {
-        var {
-          latitude,
-          longitude
-        } = _ref3;
+        var latitude = _ref3.latitude, longitude = _ref3.longitude;
         state.center.latitude = latitude;
         state.center.longitude = longitude;
       }
@@ -26567,9 +25767,7 @@
     },
     emits: ["load", "error"],
     setup(props2, _ref) {
-      var {
-        emit: emit2
-      } = _ref;
+      var emit2 = _ref.emit;
       var root = ref(null);
       var trigger2 = useCustomEvent(root, emit2);
       function load($event) {
@@ -26579,9 +25777,7 @@
         trigger2("error", $event);
       }
       return () => {
-        var {
-          src
-        } = props2;
+        var src = props2.src;
         return createVNode("uni-cover-image", {
           "ref": root,
           "src": src
@@ -26613,9 +25809,7 @@
     },
     props: props$1,
     setup(props2, _ref) {
-      var {
-        slots
-      } = _ref;
+      var slots = _ref.slots;
       var root = ref(null);
       var content = ref(null);
       watch(() => props2.scrollTop, (val) => {
@@ -26675,9 +25869,7 @@
     props,
     emits: ["load", "close", "error"],
     setup(props2, _ref) {
-      var {
-        emit: emit2
-      } = _ref;
+      var emit2 = _ref.emit;
       var rootRef = ref(null);
       var embedRef = ref(null);
       var trigger2 = useCustomEvent(rootRef, emit2);
@@ -26795,22 +25987,7 @@
   function onPageCreated() {
   }
   function onPageCreate(_ref) {
-    var {
-      css,
-      route,
-      platform,
-      pixelRatio: pixelRatio2,
-      windowWidth,
-      disableScroll,
-      // 因为组合式API的提供，不再在create时初始化，而是在监听后，主动通知
-      // onPageScroll,
-      // onPageReachBottom,
-      // onReachBottomDistance,
-      statusbarHeight,
-      windowTop,
-      windowBottom,
-      nvueFlexDirection
-    } = _ref;
+    var css = _ref.css, route = _ref.route, platform = _ref.platform, pixelRatio2 = _ref.pixelRatio, windowWidth = _ref.windowWidth, disableScroll = _ref.disableScroll, statusbarHeight = _ref.statusbarHeight, windowTop = _ref.windowTop, windowBottom = _ref.windowBottom, nvueFlexDirection = _ref.nvueFlexDirection;
     initPageInfo(route);
     initSystemInfo(platform, pixelRatio2, windowWidth);
     initPageElement();
@@ -26884,11 +26061,7 @@
     requestAnimationFrame(() => document.addEventListener("scroll", createScrollListener(opts)));
   }
   function pageScrollTo(_ref2, publish) {
-    var {
-      scrollTop,
-      selector,
-      duration
-    } = _ref2;
+    var scrollTop = _ref2.scrollTop, selector = _ref2.selector, duration = _ref2.duration;
     scrollTo(selector || scrollTop || 0, duration);
     publish();
   }
@@ -26953,9 +26126,7 @@
     flushPostActionJobs();
   }
   function initSubscribeHandlers() {
-    var {
-      subscribe
-    } = UniViewJSBridge;
+    var _UniViewJSBridge = UniViewJSBridge, subscribe = _UniViewJSBridge.subscribe;
     subscribe(VD_SYNC, onVdSync);
     subscribe(API_SET_LOCALE, (local) => useI18n().setLocale(local));
     subscribe(ON_WEBVIEW_READY, onWebviewReady$1);
@@ -26998,10 +26169,7 @@
   }
   function getNodeInfo(el, fields2) {
     var info = {};
-    var {
-      top,
-      topWindowHeight
-    } = getWindowOffset();
+    var _getWindowOffset = getWindowOffset(), top = _getWindowOffset.top, topWindowHeight = _getWindowOffset.topWindowHeight;
     if (fields2.node) {
       var tagName = el.tagName.split("-")[1] || el.tagName;
       if (tagName) {
@@ -27083,9 +26251,7 @@
     if (!parentElement) {
       return single ? null : [];
     }
-    var {
-      nodeType
-    } = selfElement;
+    var nodeType = selfElement.nodeType;
     var maybeFragment = nodeType === 3 || nodeType === 8;
     if (single) {
       var node = maybeFragment ? parentElement.querySelector(selector) : matches(selfElement, selector) ? selfElement : selfElement.querySelector(selector);
@@ -27110,12 +26276,7 @@
   function requestComponentInfo(page, reqs, callback) {
     var result = [];
     reqs.forEach((_ref) => {
-      var {
-        component,
-        selector,
-        single,
-        fields: fields2
-      } = _ref;
+      var component = _ref.component, selector = _ref.selector, single = _ref.single, fields2 = _ref.fields;
       if (component === null) {
         result.push(getRootInfo(fields2));
       } else {
@@ -27125,10 +26286,7 @@
     callback(result);
   }
   function setCurrentPageMeta(_page, _ref) {
-    var {
-      pageStyle,
-      rootFontSize
-    } = _ref;
+    var pageStyle = _ref.pageStyle, rootFontSize = _ref.rootFontSize;
     if (pageStyle) {
       var pageElm = document.querySelector("uni-page-body") || document.body;
       pageElm.setAttribute("style", pageStyle);
@@ -27138,20 +26296,12 @@
     }
   }
   function addIntersectionObserver(_ref, _pageId) {
-    var {
-      reqId,
-      component,
-      options,
-      callback
-    } = _ref;
+    var reqId = _ref.reqId, component = _ref.component, options = _ref.options, callback = _ref.callback;
     var $el = findElem(component);
     ($el.__io || ($el.__io = {}))[reqId] = requestComponentObserver($el, options, callback);
   }
   function removeIntersectionObserver(_ref2, _pageId) {
-    var {
-      reqId,
-      component
-    } = _ref2;
+    var reqId = _ref2.reqId, component = _ref2.component;
     var $el = findElem(component);
     var intersectionObserver = $el.__io && $el.__io[reqId];
     if (intersectionObserver) {
@@ -27179,22 +26329,17 @@
     return name.replace(/([A-Z])/g, "-$1").toLowerCase();
   }
   function addMediaQueryObserver(_ref, _pageId) {
-    var {
-      reqId,
-      component,
-      options,
-      callback
-    } = _ref;
+    var reqId = _ref.reqId;
+    _ref.component;
+    var options = _ref.options, callback = _ref.callback;
     var mediaQueryObserver = mediaQueryObservers[reqId] = window.matchMedia(handleMediaQueryStr(options));
     var listener = listeners[reqId] = (observer) => callback(observer.matches);
     listener(mediaQueryObserver);
     mediaQueryObserver.addListener(listener);
   }
   function removeMediaQueryObserver(_ref2, _pageId) {
-    var {
-      reqId,
-      component
-    } = _ref2;
+    var reqId = _ref2.reqId;
+    _ref2.component;
     var listener = listeners[reqId];
     var mediaQueryObserver = mediaQueryObservers[reqId];
     if (mediaQueryObserver) {
@@ -27204,11 +26349,7 @@
     }
   }
   function loadFontFace(_ref, publish) {
-    var {
-      family,
-      source,
-      desc
-    } = _ref;
+    var family = _ref.family, source = _ref.source, desc = _ref.desc;
     if (source.startsWith('url("') || source.startsWith("url('")) {
       source = "url('".concat(getRealPath(source.substring(5, source.length - 2)), "')");
     } else if (source.startsWith("url(")) {

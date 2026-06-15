@@ -1,6 +1,69 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_SHOW, ON_HIDE, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_ERROR, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, getLen, removeLeadingSlash, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType } from "@vue/shared";
 import { createMountPage, unmountPage, ref, getCurrentGenericInstance, injectHook, defineComponent, getCurrentInstance, onMounted, camelize, createVNode, renderSlot } from "vue";
+function _arrayLikeToArray(r, a) {
+  (null == a || a > r.length) && (a = r.length);
+  for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
+  return n;
+}
+function _arrayWithHoles(r) {
+  if (Array.isArray(r)) return r;
+}
+function asyncGeneratorStep(n, t, e, r, o, a, c) {
+  try {
+    var i = n[a](c), u = i.value;
+  } catch (n2) {
+    return void e(n2);
+  }
+  i.done ? t(u) : Promise.resolve(u).then(r, o);
+}
+function _asyncToGenerator(n) {
+  return function() {
+    var t = this, e = arguments;
+    return new Promise(function(r, o) {
+      var a = n.apply(t, e);
+      function _next(n2) {
+        asyncGeneratorStep(a, r, o, _next, _throw, "next", n2);
+      }
+      function _throw(n2) {
+        asyncGeneratorStep(a, r, o, _next, _throw, "throw", n2);
+      }
+      _next(void 0);
+    });
+  };
+}
+function _iterableToArrayLimit(r, l) {
+  var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
+  if (null != t) {
+    var e, n, i, u, a = [], f = true, o = false;
+    try {
+      if (i = (t = t.call(r)).next, 0 === l) ;
+      else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = true) ;
+    } catch (r2) {
+      o = true, n = r2;
+    } finally {
+      try {
+        if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return;
+      } finally {
+        if (o) throw n;
+      }
+    }
+    return a;
+  }
+}
+function _nonIterableRest() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+function _slicedToArray(r, e) {
+  return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest();
+}
+function _unsupportedIterableToArray(r, a) {
+  if (r) {
+    if ("string" == typeof r) return _arrayLikeToArray(r, a);
+    var t = {}.toString.call(r).slice(8, -1);
+    return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0;
+  }
+}
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -37,17 +100,12 @@ function initRouteMeta(pageMeta, id2) {
   PAGE_META_KEYS.forEach((name) => {
     res[name] = extend({}, globalStyle[name], pageMeta[name]);
   });
-  var {
-    navigationBar
-  } = res;
+  var navigationBar = res.navigationBar;
   navigationBar.titleText && navigationBar.titleImage && (navigationBar.titleText = "");
   return res;
 }
 function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, themeMode) {
-  var {
-    id: id2,
-    route
-  } = meta;
+  var id2 = meta.id, route = meta.route;
   var titleColor = normalizeStyles$1(meta.navigationBar, __uniConfig.themeConfig, themeMode).titleColor;
   return {
     id: id2,
@@ -331,18 +389,11 @@ function normalizeErrMsg(errMsg, name) {
 }
 function createAsyncApiCallback(name) {
   var args = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
-  var {
-    beforeAll,
-    beforeSuccess
-  } = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
+  var _ref = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {}, beforeAll = _ref.beforeAll, beforeSuccess = _ref.beforeSuccess;
   if (!isPlainObject(args)) {
     args = {};
   }
-  var {
-    success,
-    fail,
-    complete
-  } = getApiCallbacks(args);
+  var _getApiCallbacks = getApiCallbacks(args), success = _getApiCallbacks.success, fail = _getApiCallbacks.fail, complete = _getApiCallbacks.complete;
   var hasSuccess = isFunction(success);
   var hasFail = isFunction(fail);
   var hasComplete = isFunction(complete);
@@ -731,13 +782,7 @@ function getLaunchOptions() {
   return extend({}, launchOptions$1);
 }
 function initLaunchOptions(_ref2) {
-  var {
-    path,
-    query,
-    referrerInfo,
-    appScheme,
-    appLink
-  } = _ref2;
+  var path = _ref2.path, query = _ref2.query, referrerInfo = _ref2.referrerInfo, appScheme = _ref2.appScheme, appLink = _ref2.appLink;
   extend(launchOptions$1, {
     path,
     query: query ? parseQuery(query) : {},
@@ -926,14 +971,7 @@ function initComponentInstance(app) {
   });
 }
 var beforeSetupPage = (props, ctx) => {
-  var {
-    attrs: {
-      __pageId,
-      __pagePath,
-      /*__pageQuery,*/
-      __pageInstance
-    }
-  } = ctx;
+  var _ctx$attrs = ctx.attrs, __pageId = _ctx$attrs.__pageId, __pagePath = _ctx$attrs.__pagePath, __pageInstance = _ctx$attrs.__pageInstance;
   var instance = getCurrentGenericInstance();
   var pageVm = instance.proxy;
   initPageVm(pageVm, __pageInstance);
@@ -1977,9 +2015,7 @@ function parsePageStyle(route) {
   return style;
 }
 function invokeMountedJobs(proxy2) {
-  var {
-    mountedJobs
-  } = proxy2.$;
+  var mountedJobs = proxy2.$.mountedJobs;
   if (mountedJobs) {
     var jobs = mountedJobs.slice();
     mountedJobs.length = 0;
@@ -1987,14 +2023,7 @@ function invokeMountedJobs(proxy2) {
   }
 }
 function registerPage(_ref, onCreated) {
-  var {
-    url,
-    path,
-    query,
-    openType,
-    eventChannel,
-    onRegistered
-  } = _ref;
+  var url = _ref.url, path = _ref.path, query = _ref.query, openType = _ref.openType, eventChannel = _ref.eventChannel, onRegistered = _ref.onRegistered;
   var delay = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 0;
   var id2 = genWebviewId();
   var routeOptions = initRouteOptions(path, openType);
@@ -2133,13 +2162,7 @@ function initVaporPageLifeCycle(pageComponentPublicInstance, nativePage) {
 }
 function registerDialogPage(_ref2, dialogPage, onCreated) {
   var _uniRoutes$find;
-  var {
-    url,
-    path,
-    query,
-    openType,
-    eventChannel
-  } = _ref2;
+  var url = _ref2.url, path = _ref2.path, query = _ref2.query, openType = _ref2.openType, eventChannel = _ref2.eventChannel;
   var delay = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : 0;
   var id2 = genWebviewId();
   var routeOptions = initRouteOptions(path, openType);
@@ -2260,11 +2283,7 @@ function initEntry(app) {
   var entryPageQuery;
   var redirectInfo = app.getRedirectInfo();
   if (redirectInfo.size > 0) {
-    var {
-      path,
-      query
-      /* referrerInfo, appScheme, appLink */
-    } = parseRedirectInfo(app);
+    var _parseRedirectInfo = parseRedirectInfo(app), path = _parseRedirectInfo.path, query = _parseRedirectInfo.query;
     if (path) {
       entryPagePath = path;
       entryPageQuery = query;
@@ -2341,11 +2360,7 @@ var getEnterOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_ENTER_OPTIONS_SY
 function initAppLaunch(appVm) {
   var _app$getLaunchOptions;
   injectAppHooks(appVm.$);
-  var {
-    entryPagePath,
-    entryPageQuery,
-    referrerInfo
-  } = __uniConfig;
+  var _uniConfig = __uniConfig, entryPagePath = _uniConfig.entryPagePath, entryPageQuery = _uniConfig.entryPageQuery, referrerInfo = _uniConfig.referrerInfo;
   var args = initLaunchOptions({
     path: entryPagePath,
     query: entryPageQuery,
@@ -2379,17 +2394,9 @@ function initAppError(appVm, nativeApp2) {
   });
 }
 var redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, (_ref, _ref2) => {
-  var {
-    url
-  } = _ref;
-  var {
-    resolve,
-    reject
-  } = _ref2;
-  var {
-    path,
-    query
-  } = parseUrl(url);
+  var url = _ref.url;
+  var resolve = _ref2.resolve, reject = _ref2.reject;
+  var _parseUrl = parseUrl(url), path = _parseUrl.path, query = _parseUrl.query;
   if (!entryPageState.isReady) {
     redirectToPagesBeforeEntryPages.push({
       args: {
@@ -2411,11 +2418,7 @@ var redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, (_ref, _ref2) =
   }).then(resolve).catch(reject);
 }, RedirectToProtocol, RedirectToOptions);
 function _redirectTo(_ref3) {
-  var {
-    url,
-    path,
-    query
-  } = _ref3;
+  var url = _ref3.url, path = _ref3.path, query = _ref3.query;
   return new Promise((resolve) => {
     setTimeout(() => {
       var lastPage = getCurrentPage().vm;
@@ -2460,17 +2463,9 @@ function removePages(currentPage) {
   }
 }
 var $reLaunch = (_ref, _ref2) => {
-  var {
-    url
-  } = _ref;
-  var {
-    resolve,
-    reject
-  } = _ref2;
-  var {
-    path,
-    query
-  } = parseUrl(url);
+  var url = _ref.url;
+  var resolve = _ref2.resolve, reject = _ref2.reject;
+  var _parseUrl = parseUrl(url), path = _parseUrl.path, query = _parseUrl.query;
   if (!entryPageState.isReady) {
     reLaunchPagesBeforeEntryPages.push({
       args: {
@@ -2490,11 +2485,7 @@ var $reLaunch = (_ref, _ref2) => {
   }).then(resolve).catch(reject);
 };
 function _reLaunch(_ref3) {
-  var {
-    url,
-    path,
-    query
-  } = _ref3;
+  var url = _ref3.url, path = _ref3.path, query = _ref3.query;
   return new Promise((resolve) => {
     setTimeout(() => {
       var pages2 = getAllPages().slice(0);
@@ -2555,37 +2546,25 @@ function handleBeforeEntryPageRoutes() {
   var navigateToPages = [...navigateToPagesBeforeEntryPages];
   navigateToPagesBeforeEntryPages.length = 0;
   navigateToPages.forEach((_ref) => {
-    var {
-      args,
-      handler
-    } = _ref;
+    var args = _ref.args, handler = _ref.handler;
     return $navigateTo(args, handler);
   });
   var switchTabPages = [...switchTabPagesBeforeEntryPages];
   switchTabPagesBeforeEntryPages.length = 0;
   switchTabPages.forEach((_ref2) => {
-    var {
-      args,
-      handler
-    } = _ref2;
+    var args = _ref2.args, handler = _ref2.handler;
     return $switchTab(args, handler);
   });
   var redirectToPages = [...redirectToPagesBeforeEntryPages];
   redirectToPagesBeforeEntryPages.length = 0;
   redirectToPages.forEach((_ref3) => {
-    var {
-      args,
-      handler
-    } = _ref3;
+    var args = _ref3.args, handler = _ref3.handler;
     return _redirectTo(args).then(handler.resolve).catch(handler.reject);
   });
   var reLaunchPages = [...reLaunchPagesBeforeEntryPages];
   reLaunchPagesBeforeEntryPages.length = 0;
   reLaunchPages.forEach((_ref4) => {
-    var {
-      args,
-      handler
-    } = _ref4;
+    var args = _ref4.args, handler = _ref4.handler;
     return $reLaunch(args, handler);
   });
 }
@@ -2613,17 +2592,9 @@ function clearDialogPages(uniPage) {
   systemDialogPages.length = 0;
 }
 var $switchTab = (args, _ref) => {
-  var {
-    resolve,
-    reject
-  } = _ref;
-  var {
-    url
-  } = args;
-  var {
-    path,
-    query
-  } = parseUrl(url);
+  var resolve = _ref.resolve, reject = _ref.reject;
+  var url = args.url;
+  var _parseUrl = parseUrl(url), path = _parseUrl.path, query = _parseUrl.query;
   updateEntryPageIsReady(path);
   if (!entryPageState.isReady) {
     switchTabPagesBeforeEntryPages.push({
@@ -2643,10 +2614,7 @@ var $switchTab = (args, _ref) => {
 };
 var switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, $switchTab, SwitchTabProtocol, SwitchTabOptions);
 function _switchTab(_ref2) {
-  var {
-    path,
-    query
-  } = _ref2;
+  var path = _ref2.path, query = _ref2.query;
   var selected = getTabIndex(path);
   if (selected == -1) {
     return Promise.reject("tab ".concat(path, " not found"));
@@ -2709,29 +2677,6 @@ function clearWebviewReady() {
 }
 function initSubscribeHandlers() {
   subscribeWebviewReady();
-}
-function asyncGeneratorStep(n, t, e, r, o, a, c) {
-  try {
-    var i = n[a](c), u = i.value;
-  } catch (n2) {
-    return void e(n2);
-  }
-  i.done ? t(u) : Promise.resolve(u).then(r, o);
-}
-function _asyncToGenerator(n) {
-  return function() {
-    var t = this, e = arguments;
-    return new Promise(function(r, o) {
-      var a = n.apply(t, e);
-      function _next(n2) {
-        asyncGeneratorStep(a, r, o, _next, _throw, "next", n2);
-      }
-      function _throw(n2) {
-        asyncGeneratorStep(a, r, o, _next, _throw, "throw", n2);
-      }
-      _next(void 0);
-    });
-  };
 }
 function initOn(app, unregisterApp2) {
   app.addEventListener(ON_SHOW, /* @__PURE__ */ (function() {
@@ -2857,7 +2802,7 @@ function initEntryPagePath(app) {
     var url = debugInfo.get("url");
     if (url && url != __uniConfig.entryPagePath) {
       __uniConfig.realEntryPagePath = __uniConfig.entryPagePath;
-      var [path, query] = url.split("?");
+      var _url$split = url.split("?"), _url$split2 = _slicedToArray(_url$split, 2), path = _url$split2[0], query = _url$split2[1];
       __uniConfig.entryPagePath = path;
       if (query) {
         __uniConfig.entryPageQuery = "?".concat(query);
@@ -2868,7 +2813,7 @@ function initEntryPagePath(app) {
   if (__uniConfig.conditionUrl) {
     __uniConfig.realEntryPagePath = __uniConfig.entryPagePath;
     var conditionUrl = __uniConfig.conditionUrl;
-    var [_path, _query] = conditionUrl.split("?");
+    var _conditionUrl$split = conditionUrl.split("?"), _conditionUrl$split2 = _slicedToArray(_conditionUrl$split, 2), _path = _conditionUrl$split2[0], _query = _conditionUrl$split2[1];
     __uniConfig.entryPagePath = _path;
     if (_query) {
       __uniConfig.entryPageQuery = "?".concat(_query);
@@ -2876,21 +2821,10 @@ function initEntryPagePath(app) {
   }
 }
 var $navigateTo = (args, _ref) => {
-  var {
-    resolve,
-    reject
-  } = _ref;
-  var {
-    url,
-    events,
-    animationType,
-    animationDuration
-  } = args;
-  var {
-    path,
-    query
-  } = parseUrl(url);
-  var [aniType, aniDuration] = initAnimation$1(path, animationType, animationDuration);
+  var resolve = _ref.resolve, reject = _ref.reject;
+  var url = args.url, events = args.events, animationType = args.animationType, animationDuration = args.animationDuration;
+  var _parseUrl = parseUrl(url), path = _parseUrl.path, query = _parseUrl.query;
+  var _initAnimation = initAnimation$1(path, animationType, animationDuration), _initAnimation2 = _slicedToArray(_initAnimation, 2), aniType = _initAnimation2[0], aniDuration = _initAnimation2[1];
   updateEntryPageIsReady(path);
   if (!entryPageState.isReady) {
     navigateToPagesBeforeEntryPages.push({
@@ -2915,14 +2849,7 @@ var $navigateTo = (args, _ref) => {
 var navigateTo = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
 function _navigateTo(_ref2) {
   var _getCurrentPage;
-  var {
-    url,
-    path,
-    query,
-    events,
-    aniType,
-    aniDuration
-  } = _ref2;
+  var url = _ref2.url, path = _ref2.path, query = _ref2.query, events = _ref2.events, aniType = _ref2.aniType, aniDuration = _ref2.aniDuration;
   var currentPage = (_getCurrentPage = getCurrentPage()) === null || _getCurrentPage === void 0 ? void 0 : _getCurrentPage.vm;
   var currentRouteType = currentPage == null ? "appLaunch" : API_NAVIGATE_TO;
   invokeBeforeRouteHooks(currentRouteType);
@@ -2965,9 +2892,7 @@ function initAnimation$1(path, animationType, animationDuration) {
   if (!getCurrentPage()) {
     return ["none", 0];
   }
-  var {
-    globalStyle
-  } = __uniConfig;
+  var _uniConfig = __uniConfig, globalStyle = _uniConfig.globalStyle;
   var meta = getRouteMeta(path);
   return [animationType || meta.animationType || globalStyle.animationType || ANI_SHOW, animationDuration || meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
 }
@@ -2984,10 +2909,7 @@ function reLaunchEntryPage() {
   });
 }
 var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref) => {
-  var {
-    resolve,
-    reject
-  } = _ref;
+  var resolve = _ref.resolve, reject = _ref.reject;
   var page = getCurrentPage().vm;
   if (!page) {
     return reject("getCurrentPages is empty");
@@ -3024,11 +2946,7 @@ var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref
     if (isDirectPage(page)) {
       return reLaunchEntryPage();
     } else {
-      var {
-        delta,
-        animationType,
-        animationDuration
-      } = args;
+      var delta = args.delta, animationType = args.animationType, animationDuration = args.animationDuration;
       back(delta, animationType, animationDuration);
     }
   }
@@ -3071,19 +2989,12 @@ function back(delta, animationType, animationDuration) {
 }
 var openDialogPage = (options) => {
   var _options$success, _options$complete;
-  var {
-    url,
-    animationType,
-    animationDuration
-  } = options;
+  var url = options.url, animationType = options.animationType, animationDuration = options.animationDuration;
   if (!options.url) {
     triggerFailCallback(options, "url is required");
     return null;
   }
-  var {
-    path,
-    query
-  } = parseUrl(url);
+  var _parseUrl = parseUrl(url), path = _parseUrl.path, query = _parseUrl.query;
   path = normalizeRoute(path);
   var normalizeUrl = createNormalizeUrl("navigateTo");
   var errMsg = normalizeUrl(url, {});
@@ -3132,12 +3043,12 @@ var openDialogPage = (options) => {
     }
     setCurrentSystemDialogPage(dialogPage);
   }
-  var [aniType, aniDuration] = initAnimation(
+  var _initAnimation = initAnimation(
     path,
     // @ts-expect-error
     animationType,
     animationDuration
-  );
+  ), _initAnimation2 = _slicedToArray(_initAnimation, 2), aniType = _initAnimation2[0], aniDuration = _initAnimation2[1];
   var noAnimation = aniType === "none" || aniDuration === 0;
   function callback(page2) {
     showWebview(page2, aniType, aniDuration, () => {
@@ -3180,9 +3091,7 @@ function initAnimation(path, animationType, animationDuration) {
   if (!getCurrentPage()) {
     return ["none", 0];
   }
-  var {
-    globalStyle
-  } = __uniConfig;
+  var _uniConfig = __uniConfig, globalStyle = _uniConfig.globalStyle;
   var meta = getRouteMeta(path);
   var _animationType = animationType || meta.animationType || globalStyle.animationType || ANI_SHOW;
   if (_animationType == "pop-in") {
@@ -3191,14 +3100,8 @@ function initAnimation(path, animationType, animationDuration) {
   return [_animationType, animationDuration || meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
 }
 var setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (_ref, _ref2) => {
-  var {
-    index: index2,
-    text
-  } = _ref;
-  var {
-    resolve,
-    reject
-  } = _ref2;
+  var index2 = _ref.index, text = _ref.text;
+  var resolve = _ref2.resolve, reject = _ref2.reject;
   var tabBar = getTabBar();
   if (tabBar === null) {
     reject("tabBar is not exist");
@@ -3208,13 +3111,8 @@ var setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (_ref
   resolve();
 }, SetTabBarBadgeProtocol, SetTabBarBadgeOptions);
 var removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_REMOVE_TAB_BAR_BADGE, (_ref, _ref2) => {
-  var {
-    index: index2
-  } = _ref;
-  var {
-    resolve,
-    reject
-  } = _ref2;
+  var index2 = _ref.index;
+  var resolve = _ref2.resolve, reject = _ref2.reject;
   var tabBar = getTabBar();
   if (tabBar === null) {
     reject("tabBar is not exist");
@@ -3224,19 +3122,8 @@ var removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_REMOVE_TAB_BAR_BADGE,
   resolve();
 }, RemoveTabBarBadgeProtocol, RemoveTabBarBadgeOptions);
 var setTabBarItem = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_ITEM, (_ref, _ref2) => {
-  var {
-    index: index2,
-    text,
-    iconPath,
-    selectedIconPath,
-    pagePath,
-    visible,
-    iconfont
-  } = _ref;
-  var {
-    resolve,
-    reject
-  } = _ref2;
+  var index2 = _ref.index, text = _ref.text, iconPath = _ref.iconPath, selectedIconPath = _ref.selectedIconPath, pagePath = _ref.pagePath, visible = _ref.visible, iconfont = _ref.iconfont;
+  var resolve = _ref2.resolve, reject = _ref2.reject;
   var tabBar = getTabBar();
   if (tabBar === null) {
     reject("tabBar is not exist");
@@ -3268,10 +3155,7 @@ var setTabBarItem = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_ITEM, (_ref, 
   resolve();
 }, SetTabBarItemProtocol, SetTabBarItemOptions);
 var setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (options, _ref) => {
-  var {
-    resolve,
-    reject
-  } = _ref;
+  var resolve = _ref.resolve, reject = _ref.reject;
   var tabBar = getTabBar();
   if (tabBar === null) {
     reject("tabBar is not exist");
@@ -3293,10 +3177,7 @@ var setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (opti
   resolve();
 }, SetTabBarStyleProtocol, SetTabBarStyleOptions);
 var hideTabBar = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR, (options, _ref) => {
-  var {
-    resolve,
-    reject
-  } = _ref;
+  var resolve = _ref.resolve, reject = _ref.reject;
   var tabBar = getTabBar();
   if (tabBar === null) {
     reject("tabBar is not exist");
@@ -3306,10 +3187,7 @@ var hideTabBar = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR, (options, _ref
   resolve();
 });
 var showTabBar = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR, (args, _ref) => {
-  var {
-    resolve,
-    reject
-  } = _ref;
+  var resolve = _ref.resolve, reject = _ref.reject;
   var tabBar = getTabBar();
   var animation2 = args && args.animation;
   if (tabBar === null) {
@@ -3320,13 +3198,8 @@ var showTabBar = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR, (args, _ref) =
   resolve();
 });
 var showTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR_RED_DOT, (_ref, _ref2) => {
-  var {
-    index: index2
-  } = _ref;
-  var {
-    resolve,
-    reject
-  } = _ref2;
+  var index2 = _ref.index;
+  var resolve = _ref2.resolve, reject = _ref2.reject;
   var tabBar = getTabBar();
   if (tabBar === null) {
     reject("tabBar is not exist");
@@ -3336,13 +3209,8 @@ var showTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR_RED_DOT, 
   resolve();
 }, ShowTabBarRedDotProtocol, ShowTabBarRedDotOptions);
 var hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, (_ref, _ref2) => {
-  var {
-    index: index2
-  } = _ref;
-  var {
-    resolve,
-    reject
-  } = _ref2;
+  var index2 = _ref.index;
+  var resolve = _ref2.resolve, reject = _ref2.reject;
   var tabBar = getTabBar();
   if (tabBar === null) {
     reject("tabBar is not exist");
@@ -3355,14 +3223,8 @@ var onTabBarMidButtonTap = (cb) => {
   onTabBarMidButtonTapCallback.push(cb);
 };
 var setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, (_ref, _ref2) => {
-  var {
-    frontColor,
-    backgroundColor
-  } = _ref;
-  var {
-    resolve,
-    reject
-  } = _ref2;
+  var frontColor = _ref.frontColor, backgroundColor = _ref.backgroundColor;
+  var resolve = _ref2.resolve, reject = _ref2.reject;
   var page = getCurrentPage();
   if (!page) {
     return reject("getCurrentPages is empty");
@@ -3372,10 +3234,7 @@ var setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
   resolve();
 }, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
 var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (options, _ref) => {
-  var {
-    resolve,
-    reject
-  } = _ref;
+  var resolve = _ref.resolve, reject = _ref.reject;
   var page = getCurrentPage().vm;
   if (page == null) {
     reject("page is not ready");
@@ -3670,10 +3529,7 @@ class CanvasContextImpl {
 }
 var createCanvasContextAsync = /* @__PURE__ */ defineAsyncApi("createCanvasContextAsync", (options, _ref) => {
   var _options$component;
-  var {
-    resolve,
-    reject
-  } = _ref;
+  var resolve = _ref.resolve, reject = _ref.reject;
   var page = getCurrentPage().vm;
   if (page == null) {
     return null;
@@ -4253,19 +4109,7 @@ function invokePropGetter(args) {
   }));
 }
 function initProxyFunction(type, async, _ref, instanceId, proxy2) {
-  var {
-    moduleName,
-    moduleType,
-    package: pkg,
-    class: cls,
-    name: methodName,
-    method,
-    companion,
-    keepAlive,
-    params: methodParams,
-    return: returnOptions,
-    errMsg
-  } = _ref;
+  var moduleName = _ref.moduleName, moduleType = _ref.moduleType, pkg = _ref.package, cls = _ref.class, methodName = _ref.name, method = _ref.method, companion = _ref.companion, keepAlive = _ref.keepAlive, methodParams = _ref.params, returnOptions = _ref.return, errMsg = _ref.errMsg;
   if (!keepAlive) {
     keepAlive = (methodName.indexOf("on") === 0 || methodName.indexOf("off") === 0) && methodParams.length === 1 && methodParams[0].type === "UTSCallback";
   }
@@ -4296,11 +4140,7 @@ function initProxyFunction(type, async, _ref, instanceId, proxy2) {
     }
     var callbacks = keepAlive ? keepAliveCallbacks : {};
     var invokeCallback2 = (_ref2) => {
-      var {
-        id: id2,
-        name,
-        params
-      } = _ref2;
+      var id2 = _ref2.id, name = _ref2.name, params = _ref2.params;
       var callback = callbacks[id2];
       if (callback) {
         callback(...params);
@@ -4365,16 +4205,7 @@ function parseClassPropertySetter(name) {
   return "__$set" + capitalize(name);
 }
 function initUTSProxyClass(options) {
-  var {
-    moduleName,
-    moduleType,
-    package: pkg,
-    class: cls,
-    methods,
-    props,
-    setters,
-    errMsg
-  } = options;
+  var moduleName = options.moduleName, moduleType = options.moduleType, pkg = options.package, cls = options.class, methods = options.methods, props = options.props, setters = options.setters, errMsg = options.errMsg;
   var baseOptions = {
     moduleName,
     moduleType,
@@ -4436,12 +4267,7 @@ function initUTSProxyClass(options) {
           if (!target[name]) {
             name = parseClassMethodName(name, methods);
             if (hasOwn(methods, name)) {
-              var {
-                async,
-                keepAlive,
-                params: params2,
-                return: returnOptions
-              } = methods[name];
+              var _methods$name = methods[name], async = _methods$name.async, keepAlive = _methods$name.keepAlive, params2 = _methods$name.params, returnOptions = _methods$name.return;
               target[name] = initUTSInstanceMethod(!!async, extend({
                 name,
                 keepAlive,
@@ -4492,12 +4318,7 @@ function initUTSProxyClass(options) {
       name = parseClassMethodName(name, staticMethods);
       if (hasOwn(staticMethods, name)) {
         if (!staticMethodCache[name]) {
-          var {
-            async,
-            keepAlive,
-            params,
-            return: returnOptions
-          } = staticMethods[name];
+          var _staticMethods$name = staticMethods[name], async = _staticMethods$name.async, keepAlive = _staticMethods$name.keepAlive, params = _staticMethods$name.params, returnOptions = _staticMethods$name.return;
           staticMethodCache[name] = initUTSStaticMethod(!!async, extend({
             name,
             companion: true,
@@ -4772,10 +4593,7 @@ const animation = {
 };
 var defineBuiltInComponent = (options) => {
   options.__reserved = true;
-  var {
-    props,
-    mixins
-  } = options;
+  var props = options.props, mixins = options.mixins;
   if (!props || !props.animation) {
     (mixins || (options.mixins = [])).push(animation);
   }
@@ -4860,10 +4678,7 @@ const navigator = /* @__PURE__ */ defineBuiltInComponent({
   props: navigatorProps,
   emits: ["click"],
   setup(props, _ref) {
-    var {
-      emit,
-      slots
-    } = _ref;
+    var emit = _ref.emit, slots = _ref.slots;
     var $uniNavigatorElement = ref();
     var instance = getCurrentInstance();
     onMounted(() => {
