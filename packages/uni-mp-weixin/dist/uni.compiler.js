@@ -59,6 +59,9 @@ function transformLoading(node, context) {
 const isArray = Array.isArray;
 
 function getMiniProgramAIPaths(inputDir, platform) {
+    if (!inputDir || !platform) {
+        return [];
+    }
     const manifestJson = uniCliShared.parseManifestJsonOnce(inputDir);
     const config = manifestJson[platform];
     if (!(config === null || config === void 0 ? void 0 : config.agent)) {

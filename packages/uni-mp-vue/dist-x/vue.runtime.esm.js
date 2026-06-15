@@ -1,4 +1,4 @@
-import { isRootHook, normalizeClass, getValueByDataPath, isUniLifecycleHook, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, normalizeStyle as normalizeStyle$1, dynamicSlotName, getPartClass } from '@dcloudio/uni-shared';
+import { isRootHook, normalizeClass, getValueByDataPath, isUniLifecycleHook, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, createUniDOMStringMap, normalizeStyle as normalizeStyle$1, dynamicSlotName, getPartClass } from '@dcloudio/uni-shared';
 import { NOOP, extend, isSymbol, isObject, def, hasChanged, isFunction, isArray, isPromise, camelize, capitalize, EMPTY_OBJ, remove, toHandlerKey, hasOwn, hyphenate, isReservedProp, toRawType, isString, normalizeClass as normalizeClass$1, normalizeStyle, isOn, toTypeString, isMap, isIntegerKey, isSet, isPlainObject, makeMap, invokeArrayFns, isBuiltInDirective, looseToNumber, NO, EMPTY_ARR, isModelListener, toNumber, toDisplayString } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 
@@ -5848,7 +5848,7 @@ class UniElement {
         // 跳过vue的响应式
         this.__v_skip = true;
         this.style = new UniCSSStyleDeclaration();
-        this.dataset = {};
+        this._dataset = createUniDOMStringMap();
         this.offsetTop = NaN;
         this.offsetLeft = NaN;
         this.scrollTop = NaN;
@@ -5858,6 +5858,12 @@ class UniElement {
         this.id = id;
         this.tagName = name.toUpperCase();
         this.nodeName = this.tagName;
+    }
+    get dataset() {
+        return this._dataset;
+    }
+    set dataset(value) {
+        this._dataset = createUniDOMStringMap(value || {});
     }
     scrollTo(options) {
         if (this.$vm
