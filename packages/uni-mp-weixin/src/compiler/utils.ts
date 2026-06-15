@@ -13,7 +13,7 @@ export function getMiniProgramAIPaths(
   inputDir: string,
   platform: UniApp.PLATFORM
 ) {
-  const manifestJson = parseManifestJsonOnce(inputDir).manifest
+  const manifestJson = parseManifestJsonOnce(inputDir)
   const config = manifestJson[platform]
   if (!config?.agent) {
     return []
