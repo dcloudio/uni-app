@@ -169,7 +169,9 @@ function normalizeAlipayTapEventPosition(event: MPTapEvent) {
 
 function normalizeXEvent(
   event: MPEvent,
-  instance?: ComponentInternalInstance | null
+  instance?: ComponentInternalInstance | null,
+  originalTarget: WechatMiniprogram.IAnyObject = event.target,
+  originalCurrentTarget: WechatMiniprogram.IAnyObject = event.currentTarget
 ) {
   if (isMPTapEvent(event)) {
     const ctx = (instance as any)?.ctx
@@ -189,8 +191,8 @@ function normalizeXEvent(
       }
     }
   }
-  if (event.target) {
-    const oldTarget = event.target
+  if (originalTarget) {
+    const oldTarget = originalTarget
     Object.defineProperty(event, 'target', {
       get() {
         if (!event._target) {
@@ -200,8 +202,8 @@ function normalizeXEvent(
       },
     })
   }
-  if (event.currentTarget) {
-    const oldCurrentTarget = event.currentTarget
+  if (originalCurrentTarget) {
+    const oldCurrentTarget = originalCurrentTarget
     Object.defineProperty(event, 'currentTarget', {
       get() {
         if (!event._currentTarget) {
@@ -216,11 +218,13 @@ function normalizeXEvent(
   }
 }
 
-function patchMPEvent(
+export function patchMPEvent(
   event: MPEvent,
   instance?: ComponentInternalInstance | null
 ) {
   if (event.type && event.target) {
+    const originalTarget = event.target
+    const originalCurrentTarget = event.currentTarget
     event.preventDefault = NOOP
     event.stopPropagation = NOOP
     event.stopImmediatePropagation = NOOP
@@ -246,7 +250,7 @@ function patchMPEvent(
     }
 
     if (__X__) {
-      normalizeXEvent(event, instance)
+      normalizeXEvent(event, instance, originalTarget, originalCurrentTarget)
     }
   }
 }
