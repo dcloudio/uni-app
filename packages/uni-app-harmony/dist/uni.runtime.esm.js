@@ -13588,22 +13588,49 @@ function publishHandler(event, args, pageIds) {
 
 let focusTimeout = 0;
 let keyboardHeight = 0;
+let onKeyboardShow = null;
 let focusTimer = null;
 function hookKeyboardEvent(event, callback) {
+    onKeyboardShow = null;
     if (focusTimer) {
         clearTimeout(focusTimer);
         focusTimer = null;
     }
     if (event.type === 'onFocus') {
-        {
+        if (keyboardHeight > 0) {
+            event.detail.height = keyboardHeight;
+        }
+        else {
             focusTimer = setTimeout(function () {
                 event.detail.height = keyboardHeight;
                 callback(event);
             }, focusTimeout);
+            onKeyboardShow = function () {
+                if (focusTimer) {
+                    clearTimeout(focusTimer);
+                    focusTimer = null;
+                }
+                event.detail.height = keyboardHeight;
+                callback(event);
+            };
             return;
         }
     }
     callback(event);
+}
+function initKeyboardEvent() {
+    const isAndroid = 'HarmonyOS'.toLowerCase() === 'android';
+    focusTimeout = isAndroid ? 300 : 700;
+    UniServiceJSBridge.on(ON_KEYBOARD_HEIGHT_CHANGE, (res) => {
+        keyboardHeight = res.height;
+        if (keyboardHeight > 0) {
+            const callback = onKeyboardShow;
+            onKeyboardShow = null;
+            if (callback) {
+                callback();
+            }
+        }
+    });
 }
 
 function onNodeEvent(nodeId, evt, pageNode) {
@@ -13933,6 +13960,7 @@ function registerApp(appVm) {
     initEntry();
     initTabBar();
     initGlobalEvent();
+    initKeyboardEvent();
     initSubscribeHandlers();
     initAppLaunch(appVm);
     // TODO clearTempFile
