@@ -1,4 +1,9 @@
 import type { ComponentPublicInstance } from 'vue'
+import {
+  type UniDOMStringMap,
+  type UniDOMStringMapSource,
+  createUniDOMStringMap,
+} from '@dcloudio/uni-shared'
 import { UniCSSStyleDeclaration } from './UniCSSStyleDeclaration'
 import { UniAnimation } from './UniAnimation'
 
@@ -18,7 +23,7 @@ export class UniElement {
   nodeName: string
   tagName: string
   style: UniCSSStyleDeclaration = new UniCSSStyleDeclaration()
-  dataset: WechatMiniprogram.IAnyObject = {}
+  private _dataset: UniDOMStringMap = createUniDOMStringMap()
   offsetTop = NaN
   offsetLeft = NaN
   scrollTop = NaN
@@ -34,6 +39,14 @@ export class UniElement {
     this.id = id
     this.tagName = name.toUpperCase()
     this.nodeName = this.tagName
+  }
+
+  get dataset(): UniDOMStringMap {
+    return this._dataset
+  }
+
+  set dataset(value: UniDOMStringMapSource | null | undefined) {
+    this._dataset = createUniDOMStringMap(value || {})
   }
 
   scrollTo(options: unknown) {
