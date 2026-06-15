@@ -6298,7 +6298,7 @@ function normalizeAlipayTapEventPosition(event) {
     event.pageX = event.detail.pageX;
     event.pageY = event.detail.pageY;
 }
-function normalizeXEvent(event, instance) {
+function normalizeXEvent(event, instance, originalTarget = event.target, originalCurrentTarget = event.currentTarget) {
     if (isMPTapEvent(event)) {
         const ctx = instance === null || instance === void 0 ? void 0 : instance.ctx;
         if ((ctx === null || ctx === void 0 ? void 0 : ctx.$mpPlatform) === 'mp-alipay') {
@@ -6318,8 +6318,8 @@ function normalizeXEvent(event, instance) {
             }
         }
     }
-    if (event.target) {
-        const oldTarget = event.target;
+    if (originalTarget) {
+        const oldTarget = originalTarget;
         Object.defineProperty(event, 'target', {
             get() {
                 if (!event._target) {
@@ -6329,8 +6329,8 @@ function normalizeXEvent(event, instance) {
             },
         });
     }
-    if (event.currentTarget) {
-        const oldCurrentTarget = event.currentTarget;
+    if (originalCurrentTarget) {
+        const oldCurrentTarget = originalCurrentTarget;
         Object.defineProperty(event, 'currentTarget', {
             get() {
                 if (!event._currentTarget) {
@@ -6343,6 +6343,8 @@ function normalizeXEvent(event, instance) {
 }
 function patchMPEvent(event, instance) {
     if (event.type && event.target) {
+        const originalTarget = event.target;
+        const originalCurrentTarget = event.currentTarget;
         event.preventDefault = NOOP;
         event.stopPropagation = NOOP;
         event.stopImmediatePropagation = NOOP;
@@ -6363,7 +6365,7 @@ function patchMPEvent(event, instance) {
             event.target = extend({}, event.target, event.detail);
         }
         {
-            normalizeXEvent(event, instance);
+            normalizeXEvent(event, instance, originalTarget, originalCurrentTarget);
         }
     }
 }

@@ -4597,12 +4597,15 @@ function initUTSElementProxyClass(options) {
   var staticProps = options.staticProps || [];
   var staticSetters = options.staticSetters || {};
   var classId = ++elementClassDefineId;
-  var ProxyClass = class UTSClass {
+  var BaseClass = class {
+  };
+  var ProxyClass = class UTSClass extends BaseClass {
     static [Symbol.hasInstance](instance) {
       return instance && instance.__element_class_id__ === classId;
     }
     // page: UniNativePageImpl
     constructor(nodeId, page, tagName) {
+      super(nodeId, page, tagName);
       var pageId = page.pageId;
       var element = {
         __type__: "UniElement",
@@ -4610,8 +4613,7 @@ function initUTSElementProxyClass(options) {
         nodeId
       };
       var target = {};
-      var instance = {};
-      var proxy2 = new Proxy(instance, {
+      var proxy2 = new Proxy(this, {
         get(_target, name) {
           if (name === "__v_skip") {
             return true;
@@ -4620,7 +4622,7 @@ function initUTSElementProxyClass(options) {
             return classId;
           }
           if (uniElementImplPriorityMethods.includes(name) && name in _target) {
-            return _target[name];
+            return _target[name].bind(_target);
           }
           if (!target[name]) {
             if (hasOwn(methods, name)) {
@@ -4649,7 +4651,11 @@ function initUTSElementProxyClass(options) {
               });
             }
           }
-          return target[name] || _target[name];
+          var propOrMethod = _target[name];
+          if (typeof propOrMethod === "function") {
+            return propOrMethod.bind(_target);
+          }
+          return propOrMethod;
         },
         set(_target, name, newValue) {
           if (props.includes(name)) {

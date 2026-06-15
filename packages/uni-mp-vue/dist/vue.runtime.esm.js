@@ -5649,6 +5649,8 @@ const bubbles = [
 ];
 function patchMPEvent(event, instance) {
     if (event.type && event.target) {
+        event.target;
+        event.currentTarget;
         event.preventDefault = NOOP;
         event.stopPropagation = NOOP;
         event.stopImmediatePropagation = NOOP;
