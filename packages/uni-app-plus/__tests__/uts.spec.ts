@@ -61,6 +61,7 @@ const TEST_PRESETS = [
 ]
 
 const uniElementText = new WeakMap<object, string>()
+const uniElementAttributes = new WeakMap<object, Map<string, unknown>>()
 
 function applyTestPreset(preset: any) {
   const originalVapor = (globalThis as any).__VAPOR__
@@ -92,6 +93,13 @@ function applyTestPreset(preset: any) {
       public tagName: string
     ) {
       uniElementText.set(this, '')
+      uniElementAttributes.set(
+        this,
+        new Map<string, unknown>([
+          ['id', 'native-id'],
+          ['data-count', 1],
+        ])
+      )
     }
     getNodeId() {
       return this.nodeId
@@ -104,6 +112,15 @@ function applyTestPreset(preset: any) {
     }
     set text(value: string) {
       uniElementText.set(this, value)
+    }
+    hasAttribute(name: string) {
+      return !!uniElementAttributes.get(this)?.has(name)
+    }
+    getAttribute(name: string) {
+      return uniElementAttributes.get(this)?.get(name) || null
+    }
+    getAnyAttribute(name: string) {
+      return uniElementAttributes.get(this)?.get(name)
     }
   }
   return () => {
@@ -439,13 +456,17 @@ describe.each(TEST_PRESETS)(
           params: [],
         },
         methods: {
-          scrollTo: {
+          hasAttribute: {
             keepAlive: false,
-            params: [{ name: 'options', type: 'JSONObject' }],
+            params: [{ name: 'name', type: 'string' }],
           },
-          measure: {
+          getAttribute: {
             keepAlive: false,
-            params: [{ name: 'callback', type: 'UTSCallback' }],
+            params: [{ name: 'name', type: 'string' }],
+          },
+          getAnyAttribute: {
+            keepAlive: false,
+            params: [{ name: 'name', type: 'string' }],
           },
         },
         staticMethods: {
@@ -467,39 +488,19 @@ describe.each(TEST_PRESETS)(
       invokeSync.mockClear()
 
       expect(element.__v_skip).toBe(true)
+      expect(element instanceof UniViewElement).toBe(true)
       if (preset.__VAPOR__) {
         expect(element.tagName).toBe('view')
         expect(element.getNodeId()).toBe(200)
         expect(element.hasTagName('view')).toBe(true)
         element.text = 'hello'
         expect(element.text).toBe('hello')
+        const getAttribute = element.getAttribute
+        expect(getAttribute('id')).toBe('native-id')
+        expect(element.hasAttribute('id')).toBe(true)
+        expect(element.getAnyAttribute('data-count')).toBe(1)
       }
-      element.scrollTo({ top: 10 })
-      expect(invokeSync).toHaveBeenLastCalledWith(
-        'APP-SERVICE',
-        expect.objectContaining({
-          moduleName: 'Element扩展',
-          moduleType: '',
-          ins,
-          type: 'method',
-          name: 'scrollTo',
-          keepAlive: false,
-          nested: false,
-          params: [{ top: 10 }],
-        }),
-        expect.any(Function)
-      )
-      element.measure(() => {})
-      expect(invokeSync).toHaveBeenLastCalledWith(
-        'APP-SERVICE',
-        expect.objectContaining({
-          ins,
-          type: 'method',
-          name: 'measure',
-          method: [{ name: 'callback', type: 'UTSCallback' }],
-        }),
-        expect.any(Function)
-      )
+      expect(invokeSync).not.toHaveBeenCalled()
       void element.dataset
       expect(invokeSync).toHaveBeenLastCalledWith(
         'APP-SERVICE',
@@ -574,25 +575,19 @@ describe.each(TEST_PRESETS)(
         invokeSync.mock.calls[invokeSync.mock.calls.length - 1][1]
       ).not.toHaveProperty('id')
 
-      expect(invokeSync).toHaveBeenCalledTimes(7)
+      expect(invokeSync).toHaveBeenCalledTimes(5)
       invokeSync.mockRestore()
 
       const ElementError = initUTSElementProxyClass({
         constructor: {
           params: [],
         },
-        methods: {
-          scrollTo: {
-            keepAlive: false,
-            params: [],
-          },
-        },
+        methods: {},
         props: ['dataset'],
         setters: {},
         errMsg: 'xx插件编译失败，无法使用',
       } as any)
       const errorElement = new ElementError(200, page, 'view')
-      expect(errorElement.scrollTo).toThrowError('xx插件编译失败，无法使用')
       expect(() => {
         errorElement.dataset
       }).toThrowError('xx插件编译失败，无法使用')
