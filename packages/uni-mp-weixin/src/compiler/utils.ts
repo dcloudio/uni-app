@@ -10,9 +10,12 @@ interface AgentConfig {
 }
 
 export function getMiniProgramAIPaths(
-  inputDir: string,
-  platform: UniApp.PLATFORM
+  inputDir?: string,
+  platform?: UniApp.PLATFORM
 ) {
+  if (!inputDir || !platform) {
+    return []
+  }
   const manifestJson = parseManifestJsonOnce(inputDir)
   const config = manifestJson[platform]
   if (!config?.agent) {
