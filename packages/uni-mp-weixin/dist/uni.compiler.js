@@ -3,10 +3,14 @@
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var compilerCore = require('@vue/compiler-core');
+var fs = require('fs');
+var path = require('path');
 
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefault(initMiniProgramPlugin);
+var fs__default = /*#__PURE__*/_interopDefault(fs);
+var path__default = /*#__PURE__*/_interopDefault(path);
 
 const AD_COMPONENTS = [
     'uniad',
@@ -46,6 +50,43 @@ function transformLoading(node, context) {
         node.tag = 'uniloading';
         node.tagType = compilerCore.ElementTypes.COMPONENT;
     }
+}
+
+/**
+* @vue/shared v3.4.21
+* (c) 2018-present Yuxi (Evan) You and Vue contributors
+* @license MIT
+**/
+
+!!(process.env.NODE_ENV !== "production") ? Object.freeze({}) : {};
+!!(process.env.NODE_ENV !== "production") ? Object.freeze([]) : [];
+const isArray = Array.isArray;
+
+function getMiniProgramAIPaths(inputDir, platform) {
+    const manifestJson = uniCliShared.parseManifestJsonOnce(inputDir);
+    const config = manifestJson[platform];
+    if (!(config === null || config === void 0 ? void 0 : config.agent)) {
+        return [];
+    }
+    const agentConfig = config.agent;
+    const paths = [];
+    const instruction = agentConfig.instruction;
+    if (instruction && fs__default.default.existsSync(path__default.default.resolve(inputDir, instruction))) {
+        paths.push(instruction);
+    }
+    const pageMetadata = agentConfig.pageMetadata;
+    if (pageMetadata && fs__default.default.existsSync(path__default.default.resolve(inputDir, pageMetadata))) {
+        paths.push(pageMetadata);
+    }
+    const skills = agentConfig.skills;
+    if (isArray(skills) && skills.length > 0) {
+        skills.forEach((skill) => {
+            if (skill.path && fs__default.default.existsSync(path__default.default.resolve(inputDir, skill.path))) {
+                paths.push(skill.path);
+            }
+        });
+    }
+    return paths;
 }
 
 var description = "项目配置文件。";
@@ -232,6 +273,7 @@ const options = {
                         'functional-pages',
                         'project.private.config.json',
                         projectConfigFilename,
+                        ...getMiniProgramAIPaths(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
                     ],
                     get dest() {
                         return process.env.UNI_OUTPUT_DIR;
