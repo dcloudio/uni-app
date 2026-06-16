@@ -89,7 +89,7 @@
         (instance as Page).$viewToTempFilePath({
           id: 'webview',
           // #ifdef APP-ANDROID
-          offsetY: `44px`,
+          offsetY: `44`,
           // #endif
           // #ifndef APP-ANDROID
           offsetY: `${safeAreaTop.value + 44}`,
