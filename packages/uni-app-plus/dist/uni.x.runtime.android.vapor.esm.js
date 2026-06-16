@@ -4234,8 +4234,16 @@ function toRaw(observed) {
   }
   return current;
 }
+var SKIP_CIRCULAR_REFERENCE = {};
+function enterStack(arg, stack) {
+  if (stack.has(arg)) {
+    return false;
+  }
+  stack.add(arg);
+  return true;
+}
 function normalizeArg(arg, callbacks, keepAlive, context) {
-  var cache = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : /* @__PURE__ */ new WeakMap();
+  var stack = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : /* @__PURE__ */ new WeakSet();
   arg = toRaw(arg);
   var isVaporAndroid = isUTSAndroid();
   if (typeof arg === "function") {
@@ -4250,16 +4258,22 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
     }
     return id2;
   } else if (isArray(arg)) {
-    if (cache.has(arg)) {
-      return cache.get(arg);
+    if (!enterStack(arg, stack)) {
+      return SKIP_CIRCULAR_REFERENCE;
     }
     context.depth++;
     var newArg = new Array(arg.length);
-    cache.set(arg, newArg);
-    arg.forEach((item, index2) => {
-      newArg[index2] = normalizeArg(item, callbacks, keepAlive, context, cache);
-    });
-    return newArg;
+    try {
+      arg.forEach((item, index2) => {
+        var value = normalizeArg(item, callbacks, keepAlive, context, stack);
+        if (value !== SKIP_CIRCULAR_REFERENCE) {
+          newArg[index2] = value;
+        }
+      });
+      return newArg;
+    } finally {
+      stack.delete(arg);
+    }
   } else if (arg instanceof ArrayBuffer) {
     if (isVaporAndroid) {
       context.nested = true;
@@ -4282,16 +4296,22 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
       }
       return serializeComponentPublicInstance(arg);
     } else {
-      if (cache.has(arg)) {
-        return cache.get(arg);
+      if (!enterStack(arg, stack)) {
+        return SKIP_CIRCULAR_REFERENCE;
       }
       var _newArg = {};
-      cache.set(arg, _newArg);
-      Object.keys(arg).forEach((name) => {
-        context.depth++;
-        _newArg[name] = normalizeArg(arg[name], callbacks, keepAlive, context, cache);
-      });
-      return _newArg;
+      try {
+        Object.keys(arg).forEach((name) => {
+          context.depth++;
+          var value = normalizeArg(arg[name], callbacks, keepAlive, context, stack);
+          if (value !== SKIP_CIRCULAR_REFERENCE) {
+            _newArg[name] = value;
+          }
+        });
+        return _newArg;
+      } finally {
+        stack.delete(arg);
+      }
     }
   }
   return arg;
@@ -4456,12 +4476,11 @@ function initProxyFunction(type, async, _ref, instanceIdOrInstance, proxy2) {
       depth: 0,
       nested: false
     };
-    var cache = /* @__PURE__ */ new WeakMap();
     for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
     var invokeArgs = extend({}, baseArgs, {
-      params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive, context, cache))
+      params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive, context))
     });
     invokeArgs.nested = context.nested;
     if (async) {
