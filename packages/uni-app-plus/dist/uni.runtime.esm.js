@@ -18430,10 +18430,24 @@ function serializeUniElement(el, type) {
     return { __type__: type, pageId, nodeId };
 }
 function toRaw(observed) {
-    const raw = observed && observed.__v_raw;
-    return raw ? toRaw(raw) : observed;
+    const seen = new WeakSet();
+    let current = observed;
+    while (current) {
+        const raw = current.__v_raw;
+        if (!raw) {
+            return current;
+        }
+        if (typeof current === 'object' || typeof current === 'function') {
+            if (seen.has(current)) {
+                return current;
+            }
+            seen.add(current);
+        }
+        current = raw;
+    }
+    return current;
 }
-function normalizeArg(arg, callbacks, keepAlive, context) {
+function normalizeArg(arg, callbacks, keepAlive, context, cache = new WeakMap()) {
     arg = toRaw(arg);
     const isVaporAndroid = false;
     if (typeof arg === 'function') {
@@ -18451,8 +18465,16 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
         return id;
     }
     else if (isArray(arg)) {
+        if (cache.has(arg)) {
+            return cache.get(arg);
+        }
         context.depth++;
-        return arg.map((item) => normalizeArg(item, callbacks, keepAlive, context));
+        const newArg = new Array(arg.length);
+        cache.set(arg, newArg);
+        arg.forEach((item, index) => {
+            newArg[index] = normalizeArg(item, callbacks, keepAlive, context, cache);
+        });
+        return newArg;
         // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
     }
     else if (arg instanceof ArrayBuffer) {
@@ -18483,10 +18505,14 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
             // }
             // const newObj = normalizeArg(obj, {}, false)
             // newObj.a = 2 // 这会污染原始对象 obj
+            if (cache.has(arg)) {
+                return cache.get(arg);
+            }
             const newArg = {};
+            cache.set(arg, newArg);
             Object.keys(arg).forEach((name) => {
                 context.depth++;
-                newArg[name] = normalizeArg(arg[name], callbacks, keepAlive, context);
+                newArg[name] = normalizeArg(arg[name], callbacks, keepAlive, context, cache);
             });
             return newArg;
         }
@@ -18625,8 +18651,9 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             depth: 0,
             nested: false,
         };
+        const cache = new WeakMap();
         const invokeArgs = extend({}, baseArgs, {
-            params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive, context)),
+            params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive, context, cache)),
         });
         invokeArgs.nested = context.nested;
         if (async) {

@@ -4214,10 +4214,25 @@ function serializeUniElement(el, type) {
   };
 }
 function toRaw(observed) {
-  var raw = observed && observed.__v_raw;
-  return raw ? toRaw(raw) : observed;
+  var seen = /* @__PURE__ */ new WeakSet();
+  var current = observed;
+  while (current) {
+    var raw = current.__v_raw;
+    if (!raw) {
+      return current;
+    }
+    if (typeof current === "object" || typeof current === "function") {
+      if (seen.has(current)) {
+        return current;
+      }
+      seen.add(current);
+    }
+    current = raw;
+  }
+  return current;
 }
 function normalizeArg(arg, callbacks, keepAlive, context) {
+  var cache = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : /* @__PURE__ */ new WeakMap();
   arg = toRaw(arg);
   var isVaporAndroid = isUTSAndroid();
   if (typeof arg === "function") {
@@ -4232,8 +4247,16 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
     }
     return id2;
   } else if (isArray(arg)) {
+    if (cache.has(arg)) {
+      return cache.get(arg);
+    }
     context.depth++;
-    return arg.map((item) => normalizeArg(item, callbacks, keepAlive, context));
+    var newArg = new Array(arg.length);
+    cache.set(arg, newArg);
+    arg.forEach((item, index2) => {
+      newArg[index2] = normalizeArg(item, callbacks, keepAlive, context, cache);
+    });
+    return newArg;
   } else if (arg instanceof ArrayBuffer) {
     if (isVaporAndroid) {
       context.nested = true;
@@ -4256,12 +4279,16 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
       }
       return serializeComponentPublicInstance(arg);
     } else {
-      var newArg = {};
+      if (cache.has(arg)) {
+        return cache.get(arg);
+      }
+      var _newArg = {};
+      cache.set(arg, _newArg);
       Object.keys(arg).forEach((name) => {
         context.depth++;
-        newArg[name] = normalizeArg(arg[name], callbacks, keepAlive, context);
+        _newArg[name] = normalizeArg(arg[name], callbacks, keepAlive, context, cache);
       });
-      return newArg;
+      return _newArg;
     }
   }
   return arg;
@@ -4426,11 +4453,12 @@ function initProxyFunction(type, async, _ref, instanceIdOrInstance, proxy2) {
       depth: 0,
       nested: false
     };
+    var cache = /* @__PURE__ */ new WeakMap();
     for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
     var invokeArgs = extend({}, baseArgs, {
-      params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive, context))
+      params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive, context, cache))
     });
     invokeArgs.nested = context.nested;
     if (async) {
