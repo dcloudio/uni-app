@@ -113,6 +113,9 @@ function applyTestPreset(preset: any) {
     set text(value: string) {
       uniElementText.set(this, value)
     }
+    focus() {
+      throw new Error('native focus should be overridden')
+    }
     hasAttribute(name: string) {
       return !!uniElementAttributes.get(this)?.has(name)
     }
@@ -456,6 +459,10 @@ describe.each(TEST_PRESETS)(
           params: [],
         },
         methods: {
+          focus: {
+            keepAlive: false,
+            params: [],
+          },
           hasAttribute: {
             keepAlive: false,
             params: [{ name: 'name', type: 'string' }],
@@ -501,6 +508,21 @@ describe.each(TEST_PRESETS)(
         expect(element.getAnyAttribute('data-count')).toBe(1)
       }
       expect(invokeSync).not.toHaveBeenCalled()
+      element.focus()
+      expect(invokeSync).toHaveBeenLastCalledWith(
+        'APP-SERVICE',
+        expect.objectContaining({
+          moduleName: 'Element扩展',
+          moduleType: '',
+          ins,
+          type: 'method',
+          name: 'focus',
+          keepAlive: false,
+          nested: false,
+          params: [],
+        }),
+        expect.any(Function)
+      )
       void element.dataset
       expect(invokeSync).toHaveBeenLastCalledWith(
         'APP-SERVICE',
@@ -575,7 +597,7 @@ describe.each(TEST_PRESETS)(
         invokeSync.mock.calls[invokeSync.mock.calls.length - 1][1]
       ).not.toHaveProperty('id')
 
-      expect(invokeSync).toHaveBeenCalledTimes(5)
+      expect(invokeSync).toHaveBeenCalledTimes(6)
       invokeSync.mockRestore()
 
       const ElementError = initUTSElementProxyClass({
