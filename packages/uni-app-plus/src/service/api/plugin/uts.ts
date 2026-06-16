@@ -1041,6 +1041,9 @@ export function initUTSElementProxyClass(options: ProxyClassOptions): any {
               })
             }
           }
+          if (target[name as string]) {
+            return target[name as string]
+          }
           const propOrMethod = _target[name as string]
           if (typeof propOrMethod === 'function') {
             return propOrMethod.bind(_target)
