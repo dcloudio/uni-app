@@ -4343,7 +4343,7 @@ function unregisterInstance(id2) {
     nested: false,
     params: [id2]
   };
-  getProxy().invokeAsync(args, () => {
+  getProxy().invokeSync(args, () => {
   });
 }
 function invokePropGetter(args) {
