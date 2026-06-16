@@ -1,5 +1,10 @@
 import { camelize } from '@vue/shared'
-import { createRpx2Unit, defaultRpx2Unit } from '@dcloudio/uni-shared'
+import {
+  type UniDOMStringMap,
+  createRpx2Unit,
+  createUniDOMStringMap,
+  defaultRpx2Unit,
+} from '@dcloudio/uni-shared'
 
 const rpx2Unit = createRpx2Unit(
   defaultRpx2Unit.unit,
@@ -18,6 +23,11 @@ function transformRpx(value: string) {
 
 export class UniElement extends HTMLElement {
   private _props: Record<string, any> = {}
+  //#if _X_
+  // H5 X 第一版只做 attribute -> dataset 的单向同步：Vue/uni 运行时更新
+  // data-* 后，已访问过的 dataset 会同步刷新；暂不支持 dataset 反写 DOM attribute。
+  private __uniDatasetMap?: UniDOMStringMap
+  //#endif
   public __isUniElement: boolean
   constructor() {
     super()
@@ -43,6 +53,30 @@ export class UniElement extends HTMLElement {
   }
   get uniPage() {
     return this.getPage()
+  }
+
+  get dataset(): UniDOMStringMap {
+    if (!this.__uniDatasetMap) {
+      this.__uniDatasetMap = createUniDOMStringMap(
+        (this as unknown as { __uniDataset?: Record<string, any> })
+          .__uniDataset || {}
+      )
+    }
+    return this.__uniDatasetMap
+  }
+
+  setAttribute(qualifiedName: string, value: string) {
+    super.setAttribute(qualifiedName, value)
+    if (qualifiedName.startsWith('data-') && this.__uniDatasetMap) {
+      this.__uniDatasetMap.set(qualifiedName, value)
+    }
+  }
+
+  removeAttribute(qualifiedName: string) {
+    super.removeAttribute(qualifiedName)
+    if (qualifiedName.startsWith('data-') && this.__uniDatasetMap) {
+      this.__uniDatasetMap.delete(qualifiedName)
+    }
   }
 
   getBoundingClientRectAsync(callback) {
