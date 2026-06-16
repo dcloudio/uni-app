@@ -523,7 +523,7 @@ function unregisterInstance(id: number) {
     nested: false,
     params: [id],
   }
-  getProxy().invokeAsync(args, () => {})
+  getProxy().invokeSync(args, () => {})
 }
 
 function invokePropGetter(args: InvokeArgs) {
