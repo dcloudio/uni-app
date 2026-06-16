@@ -149,6 +149,7 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
   suspenseId: number;
   asyncDep: Promise<any> | null;
   asyncResolved: boolean;
+  pendingMountNativeRender: (() => void) | null;
   hasFallthrough: boolean;
   shapeFlag?: number;
   oncePropsCache?: Record<string | symbol, any>;
