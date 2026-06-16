@@ -2042,8 +2042,7 @@ function useNativeEvent(emit2) {
   };
 }
 function normalizeCustomEvent(name, domEvt, el, detail) {
-  let target;
-  target = normalizeTarget(el);
+  const target = normalizeTarget(el);
   return {
     type: domEvt.__evName || detail.type || name,
     timeStamp: domEvt.timeStamp || 0,

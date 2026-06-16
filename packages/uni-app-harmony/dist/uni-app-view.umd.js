@@ -13243,8 +13243,7 @@
     };
   }
   function normalizeCustomEvent(name, domEvt, el, detail) {
-    var target;
-    target = normalizeTarget(el);
+    var target = normalizeTarget(el);
     return {
       type: domEvt.__evName || detail.type || name,
       timeStamp: domEvt.timeStamp || 0,
