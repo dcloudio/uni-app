@@ -84,6 +84,11 @@ function onPageCreate ({
 }
 
 function onWebviewReady () { // service 主动发起检测
+  // service 会主动探测首页 webviewReady；iOS WKWebview 可能在 app-view.js 注入 __uniConfig 前收到该探测。
+  // __uniConfig 未就绪时先忽略本次探测，避免 service 过早下发 onPageCreate；后续 app-view.js 初始化完成会主动上报 webviewReady。
+  if (typeof __uniConfig === 'undefined') {
+    return
+  }
   UniViewJSBridge.publishHandler('webviewReady')
 }
 
