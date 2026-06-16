@@ -69,7 +69,7 @@ list-view和scroll-view都是滚动组件，list适用于长列表场景，其�
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | none | Web: 4.02; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 禁止滚动 |
-| horizontal | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: x; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 横向滚动 |
+| horizontal | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 横向滚动 |
 | vertical | Web: 4.02; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 竖向滚动 |
 
 #### associative-container 的属性描述
