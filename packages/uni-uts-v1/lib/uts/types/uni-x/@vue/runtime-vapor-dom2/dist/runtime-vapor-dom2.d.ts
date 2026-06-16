@@ -467,6 +467,7 @@ export declare function createElementSlot(page: UniPage, name: string | (() => s
 export declare function createElementFor<Source extends UniSharedData>(page: UniPage, src: () => UniSharedDataVFor<Source> | string | number, renderItem: (shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index: number | undefined) => void, getKey?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, flags?: number, setup?: (_: {
   createSelector: (source: () => any) => (cb: () => void) => void;
 }) => void): VaporFragment;
+export declare function createElementStaticFor(source: number, renderItem: (item: number, key: number, index: number | undefined) => UniElementBlock): UniElementBlock;
 export declare function createElementRecycleFor<Source extends UniSharedData>(page: UniPage, recycleContext: ElementRecycleContext, src: () => UniSharedDataVFor<Source>, renderItem: (shareDataVForItem: Source, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => void, getKey?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, getType?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, flags?: number): VaporFragment;
 export declare class ElementRecycleContext {}
 export declare function createElementRecycleContext(): ElementRecycleContext;
@@ -533,6 +534,7 @@ export declare function appendNativeViewChild(node: UniNativeBaseView, child: Un
 export declare function createNativeViewFor<Source extends UniSharedData>(page: UniPage, src: () => UniSharedDataVFor<Source> | string | number, renderItem: (shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index: number | undefined) => void, getKey?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, flags?: number, setup?: (_: {
   createSelector: (source: () => any) => (cb: () => void) => void;
 }) => void): VaporFragment;
+export declare function createNativeViewStaticFor(source: number, renderItem: (item: number, key: number, index: number | undefined) => UniNativeViewBlock): UniNativeViewBlock;
 export declare function createNativeViewRecycleFor<Source extends UniSharedData>(page: UniPage, recycleContext: NativeViewRecycleContext, src: () => UniSharedDataVFor<Source>, renderItem: (shareDataVForItem: Source, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => void, getKey?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, getType?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, flags?: number): VaporFragment;
 export declare class NativeViewRecycleContext {}
 export declare function createNativeViewRecycleContext(): NativeViewRecycleContext;
