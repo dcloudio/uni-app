@@ -36,13 +36,7 @@ function normalizeCustomEvent(
   el: HTMLElement,
   detail: EventDetail
 ): WechatMiniprogram.CustomEvent {
-  let target
-  //#if _X_ && !_NODE_JS_
-  target = el
-  //#endif
-  //#if !_X_ || _NODE_JS_
-  target = normalizeTarget(el)
-  //#endif
+  const target = __X__ && !__NODE_JS__ ? el : normalizeTarget(el)
   return {
     type: (domEvt as any).__evName || detail.type || name,
     timeStamp: domEvt.timeStamp || 0,
