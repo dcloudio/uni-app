@@ -60,7 +60,15 @@ function toRaw(observed) {
     }
     return current;
 }
-function normalizeArg(arg, callbacks, keepAlive, context, cache = new WeakMap()) {
+const SKIP_CIRCULAR_REFERENCE = {};
+function enterStack(arg, stack) {
+    if (stack.has(arg)) {
+        return false;
+    }
+    stack.add(arg);
+    return true;
+}
+function normalizeArg(arg, callbacks, keepAlive, context, stack = new WeakSet()) {
     arg = toRaw(arg);
     const isVaporAndroid = false;
     if (typeof arg === 'function') {
@@ -78,16 +86,23 @@ function normalizeArg(arg, callbacks, keepAlive, context, cache = new WeakMap())
         return id;
     }
     else if (isArray(arg)) {
-        if (cache.has(arg)) {
-            return cache.get(arg);
+        if (!enterStack(arg, stack)) {
+            return SKIP_CIRCULAR_REFERENCE;
         }
         context.depth++;
         const newArg = new Array(arg.length);
-        cache.set(arg, newArg);
-        arg.forEach((item, index) => {
-            newArg[index] = normalizeArg(item, callbacks, keepAlive, context, cache);
-        });
-        return newArg;
+        try {
+            arg.forEach((item, index) => {
+                const value = normalizeArg(item, callbacks, keepAlive, context, stack);
+                if (value !== SKIP_CIRCULAR_REFERENCE) {
+                    newArg[index] = value;
+                }
+            });
+            return newArg;
+        }
+        finally {
+            stack.delete(arg);
+        }
         // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
     }
     else if (arg instanceof ArrayBuffer) {
@@ -118,16 +133,23 @@ function normalizeArg(arg, callbacks, keepAlive, context, cache = new WeakMap())
             // }
             // const newObj = normalizeArg(obj, {}, false)
             // newObj.a = 2 // 这会污染原始对象 obj
-            if (cache.has(arg)) {
-                return cache.get(arg);
+            if (!enterStack(arg, stack)) {
+                return SKIP_CIRCULAR_REFERENCE;
             }
             const newArg = {};
-            cache.set(arg, newArg);
-            Object.keys(arg).forEach((name) => {
-                context.depth++;
-                newArg[name] = normalizeArg(arg[name], callbacks, keepAlive, context, cache);
-            });
-            return newArg;
+            try {
+                Object.keys(arg).forEach((name) => {
+                    context.depth++;
+                    const value = normalizeArg(arg[name], callbacks, keepAlive, context, stack);
+                    if (value !== SKIP_CIRCULAR_REFERENCE) {
+                        newArg[name] = value;
+                    }
+                });
+                return newArg;
+            }
+            finally {
+                stack.delete(arg);
+            }
         }
     }
     return arg;
@@ -264,9 +286,8 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             depth: 0,
             nested: false,
         };
-        const cache = new WeakMap();
         const invokeArgs = extend({}, baseArgs, {
-            params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive, context, cache)),
+            params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive, context)),
         });
         invokeArgs.nested = context.nested;
         if (async) {

@@ -79,6 +79,16 @@ function toRaw(observed?: unknown) {
   return current
 }
 
+const SKIP_CIRCULAR_REFERENCE = {}
+
+function enterStack(arg: object, stack: WeakSet<object>) {
+  if (stack.has(arg)) {
+    return false
+  }
+  stack.add(arg)
+  return true
+}
+
 export function normalizeArg(
   arg: unknown,
   callbacks: Record<string, Function>,
@@ -87,7 +97,7 @@ export function normalizeArg(
     depth: number
     nested: boolean
   },
-  cache: WeakMap<object, unknown> = new WeakMap()
+  stack: WeakSet<object> = new WeakSet()
 ) {
   arg = toRaw(arg)
   const isVaporAndroid = __VAPOR__ && isUTSAndroid()
@@ -104,16 +114,22 @@ export function normalizeArg(
     }
     return id
   } else if (isArray(arg)) {
-    if (cache.has(arg)) {
-      return cache.get(arg)
+    if (!enterStack(arg, stack)) {
+      return SKIP_CIRCULAR_REFERENCE
     }
     context.depth++
     const newArg: unknown[] = new Array(arg.length)
-    cache.set(arg, newArg)
-    arg.forEach((item, index) => {
-      newArg[index] = normalizeArg(item, callbacks, keepAlive, context, cache)
-    })
-    return newArg
+    try {
+      arg.forEach((item, index) => {
+        const value = normalizeArg(item, callbacks, keepAlive, context, stack)
+        if (value !== SKIP_CIRCULAR_REFERENCE) {
+          newArg[index] = value
+        }
+      })
+      return newArg
+    } finally {
+      stack.delete(arg)
+    }
     // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
   } else if (arg instanceof ArrayBuffer) {
     // android dom2 js引擎支持直接传递 ArrayBuffer
@@ -146,22 +162,28 @@ export function normalizeArg(
       // }
       // const newObj = normalizeArg(obj, {}, false)
       // newObj.a = 2 // 这会污染原始对象 obj
-      if (cache.has(arg as object)) {
-        return cache.get(arg as object)
+      if (!enterStack(arg as object, stack)) {
+        return SKIP_CIRCULAR_REFERENCE
       }
       const newArg = {}
-      cache.set(arg as object, newArg)
-      Object.keys(arg as object).forEach((name) => {
-        context.depth++
-        newArg[name] = normalizeArg(
-          (arg as any)[name],
-          callbacks,
-          keepAlive,
-          context,
-          cache
-        )
-      })
-      return newArg
+      try {
+        Object.keys(arg as object).forEach((name) => {
+          context.depth++
+          const value = normalizeArg(
+            (arg as any)[name],
+            callbacks,
+            keepAlive,
+            context,
+            stack
+          )
+          if (value !== SKIP_CIRCULAR_REFERENCE) {
+            newArg[name] = value
+          }
+        })
+        return newArg
+      } finally {
+        stack.delete(arg as object)
+      }
     }
   }
   return arg
@@ -658,10 +680,9 @@ function initProxyFunction(
       depth: 0,
       nested: false,
     }
-    const cache = new WeakMap<object, unknown>()
     const invokeArgs = extend({}, baseArgs, {
       params: args.map((arg) =>
-        normalizeArg(arg, callbacks, keepAlive, context, cache)
+        normalizeArg(arg, callbacks, keepAlive, context)
       ),
     })
 

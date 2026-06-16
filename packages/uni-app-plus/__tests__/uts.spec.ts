@@ -325,7 +325,6 @@ describe.each(TEST_PRESETS)(
         first: { value: 1 },
         second: { value: 1 },
       })
-      expect(normalizedShared.first).toBe(normalizedShared.second)
 
       const circularObj: Record<string, unknown> = { value: undefined }
       circularObj.self = circularObj
@@ -335,7 +334,7 @@ describe.each(TEST_PRESETS)(
       }) as Record<string, unknown>
       expect(normalizedCircularObj.value).toBeUndefined()
       expect('value' in normalizedCircularObj).toBe(true)
-      expect(normalizedCircularObj.self).toBe(normalizedCircularObj)
+      expect('self' in normalizedCircularObj).toBe(false)
 
       const circularArr: unknown[] = [undefined]
       circularArr.push(circularArr, 2)
@@ -346,7 +345,7 @@ describe.each(TEST_PRESETS)(
       expect(normalizedCircularArr).toHaveLength(3)
       expect(normalizedCircularArr[0]).toBeUndefined()
       expect(0 in normalizedCircularArr).toBe(true)
-      expect(normalizedCircularArr[1]).toBe(normalizedCircularArr)
+      expect(1 in normalizedCircularArr).toBe(false)
       expect(normalizedCircularArr[2]).toBe(2)
 
       const circularRaw: Record<string, unknown> = { value: 1 }
@@ -356,7 +355,7 @@ describe.each(TEST_PRESETS)(
         nested: false,
       }) as Record<string, unknown>
       expect(normalizedCircularRaw.value).toBe(1)
-      expect(normalizedCircularRaw.__v_raw).toBe(normalizedCircularRaw)
+      expect('__v_raw' in normalizedCircularRaw).toBe(false)
     })
   }
 )
