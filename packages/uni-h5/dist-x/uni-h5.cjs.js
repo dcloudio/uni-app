@@ -1102,6 +1102,26 @@ class UniElement extends Object {
   get uniPage() {
     return this.getPage();
   }
+  get dataset() {
+    if (!this.__uniDatasetMap) {
+      this.__uniDatasetMap = uniShared.createUniDOMStringMap(
+        this.__uniDataset || {}
+      );
+    }
+    return this.__uniDatasetMap;
+  }
+  setAttribute(qualifiedName, value) {
+    super.setAttribute(qualifiedName, value);
+    if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
+      this.__uniDatasetMap.set(qualifiedName, value);
+    }
+  }
+  removeAttribute(qualifiedName) {
+    super.removeAttribute(qualifiedName);
+    if (qualifiedName.startsWith("data-") && this.__uniDatasetMap) {
+      this.__uniDatasetMap.delete(qualifiedName);
+    }
+  }
   getBoundingClientRectAsync(callback) {
     var _a, _b;
     if (callback) {
