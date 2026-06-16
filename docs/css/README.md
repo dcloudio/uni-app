@@ -29,7 +29,7 @@ flex是一种清晰易用、高性能、全平台支持的布局。不管web、A
 
 web浏览器默认排版是block。block更适合布局文档，比如论文、新闻、blog文章。而web app，使用flex布局会性能更好。
 
-为了跨平台一致性和性能，uni-app x编译到web时，默认的布局也重置为了flex，且默认为竖向，即`flex-direction: column;`。
+为了跨平台一致性和性能，uni-app x编译到web和小程序时，默认的布局也重置为了flex，且默认为竖向，即`flex-direction: column;`。
 
 如果不了解flex可以参考：[MDN的flex教程](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox)
 
@@ -236,7 +236,7 @@ App仅对`同层的兄弟节点`之间支持`z-index`来调节层级。不支持
 
 ## css样式重置 @css-reset
 
-标准浏览器中，有一些样式，在uni-app x中被重置了默认值，即 css reset。
+浏览器和小程序中，有一些样式，在uni-app x中被重置了默认值，即 css reset。
 - 有的重置是因为使用习惯和便利性
 	* 例如flex方向，flex-direction，在W3C规范中默认是横排。在uni-app x中都是竖排。
 	* 例如box-sizing，在W3C规范中默认是content-box。在uni-app x中是border-box。（很多css框架都会重置浏览器这个css）
