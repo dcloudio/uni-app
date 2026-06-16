@@ -4732,6 +4732,9 @@ function initUTSElementProxyClass(options) {
               });
             }
           }
+          if (target[name]) {
+            return target[name];
+          }
           var propOrMethod = _target[name];
           if (typeof propOrMethod === "function") {
             return propOrMethod.bind(_target);
