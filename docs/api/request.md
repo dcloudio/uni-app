@@ -31,27 +31,40 @@
 | url | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器接口地址<br/> |
 | data | any | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 请求的参数 在`app-android端，参数类型只能为`UTSJSONObject`或者`string`类型,app-android平台从 4.51版本开始支持ArrayBuffer, app-ios平台从 4.61版本开始支持ArrayBuffer |
 | header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 设置请求的 header，header 中不能设置 Referer |
-| method | string | 否 | "GET" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 请求方法 |
+| method | string | 否 | "GET" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 请求方法，如果设置的值不在取值范围内，会以GET方法进行请求。 |
 | timeout | number | 否 | 60000 | Web:  ; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS:   | 超时时间，单位 ms |
 | enableQuic | boolean | 否 | false | Web: √; 微信小程序: √; Android 系统版本: 6.0; Android: 5.0; iOS 系统版本: x; iOS: 5.0; iOS uni-app x UTS 插件: 5.0; HarmonyOS: 5.0 | 是否开启 Quic/h3 协议<br/>`web` 端由服务端和浏览器共同决定是否启用 Quic/h3 协议，无需设置此参数 |
+| dataType | string | 否 | "json" | Web:  ; 微信小程序:  ; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 如果设为 json，会对返回的数据进行一次 JSON.parse，非 json 不会进行 JSON.parse |
+| responseType | string | 否 |  | Web:  ; 微信小程序:  ; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 设置响应的数据类型。 |
+| sslVerify | boolean | 否 |  | Web:  ; 微信小程序:  ; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 验证 ssl 证书 |
 | withCredentials | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: x; HarmonyOS: x | 跨域请求时是否携带凭证（cookies）<br/> |
 | firstIpv4 | boolean | 否 | false | Web: x; 微信小程序: 4.41; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: x; HarmonyOS: x | DNS解析时优先使用ipv4 |
 | enableChunked | boolean | 否 |  | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS uni-app x UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS uni-app x UTS 插件: 4.71 | 开启 transfer-encoding chunked。 |
-| success | (option: [RequestSuccess\<T>](#requestsuccess-values)) => void | 否 | null |   | 网络请求成功回调。 |
-| fail | (option: [RequestFail](#requestfail-values)) => void | 否 | null |   | 网络请求失败回调。 |
-| complete | (option: any) => void | 否 | null |   | 网络请求完成回调，成功或者失败都会调用。 | 
+| success | (option: [RequestSuccess\<T>](#requestsuccess-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 网络请求成功回调。 |
+| fail | (option: [RequestFail](#requestfail-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 网络请求失败回调。 |
+| complete | (option: any) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 网络请求完成回调，成功或者失败都会调用。 |
+| enableCache | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.10.4`<br/><br/>开启 Http 缓存<br/> |
+| enableHttp2 | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.10.4`<br/><br/>开启 http2<br/> |
+| enableHttpDNS | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.19.1`<br/><br/>是否开启 HttpDNS 服务。如开启，需要同时填入 httpDNSServiceId 。 HttpDNS 用法详见 [移动解析HttpDNS](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/HTTPDNS.html)<br/> |
+| enableProfile | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 是否开启 profile，默认开启。开启后可在接口回调的 res.profile 中查看性能调试信息。<br/> |
+| forceCellularNetwork | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.21.0`<br/><br/>强制使用蜂窝网络发送请求<br/> |
+| httpDNSServiceId | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.19.1`<br/><br/>HttpDNS 服务商 Id。 HttpDNS 用法详见 [移动解析HttpDNS](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/HTTPDNS.html)<br/> |
+| redirect | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `3.2.2`<br/><br/>重定向拦截策略。（目前安卓、iOS、开发者工具已支持，PC端将在后续支持）<br/><br/>可选值：<br/>- 'follow': 不拦截重定向，即客户端自动处理重定向;<br/>- 'manual': 拦截重定向。开启后，当 http 状态码为 3xx 时客户端不再自动重定向，而是触发 onHeadersReceived 回调，并结束本次 request 请求。可通过 onHeadersReceived 回调中的 header.Location 获取重定向的 url;<br/> |
+| useHighPerformanceMode | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `3.3.3`<br/><br/>使用高性能模式，暂仅支持 Android，默认关闭。该模式下有更优的网络性能表现，更多信息请查看下方说明。<br/> | 
 
 ##### method 的属性描述
 
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| TRACE | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   |  |
+| CONNECT | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   |  |
+
+##### redirect 的属性描述
+
 | 合法值 | 描述 |
 | :- | :- |
-| GET | GET方法请求一个指定资源的表示形式，使用 GET 的请求应该只被用于获取数据。 |
-| POST | POST方法用于将实体提交到指定的资源，通常导致在服务器上的状态变化或副作用。 |
-| PUT | PUT方法用有效载荷请求替换目标资源的所有当前表示。 |
-| PATCH | PATCH方法用于对资源应用部分修改。 |
-| DELETE | DELETE方法删除指定的资源。 |
-| HEAD | HEAD方法请求一个与GET请求的响应相同的响应，但没有响应体。 |
-| OPTIONS | OPTIONS 方法用于描述目标资源的通信选项。 |
+| follow |  |
+| manual |  |
 
 #### RequestSuccess\<T> 的属性值 @requestsuccess-values 
 
@@ -61,12 +74,23 @@
 | statusCode | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP 状态码 |
 | header | any | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP Response Header |
 | cookies | Array&lt;string&gt; | 是 |  | Web: x; 微信小程序:  ; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 cookies，格式为字符串数组 |
+| exception | **RequestSuccessException** | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `3.0.0`<br/><br/>网络请求过程中的一些异常信息，例如httpdns重试等<br/> |
+| profile | any | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.10.4`<br/><br/>网络请求过程中一些调试信息，[查看详细说明](https://developers.weixin.qq.com/miniprogram/dev/framework/performance/network.html)<br/> |
+| useHttpDNS | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `3.4.10`<br/><br/>最终请求是否使用了HttpDNS（仅当enableHttpDNS传true时返回此字段）<br/> |
+
+#### exception 的属性描述
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| reasons | any | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 本次请求底层失败信息，所有失败信息均符合Errno错误码<br/> |
+| retryCount | number | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 本次请求底层重试次数<br/> |
 
 #### RequestFail 的属性值 @requestfail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 |  |   | 错误码 |
+| errno | number | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.24.0`<br/><br/>errno 错误码，错误码的详细说明参考 [Errno错误码](https://developers.weixin.qq.com/miniprogram/dev/framework/usability/PublicErrno.html)<br/> |
 | errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
 | data | any | 否 |  |   | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
