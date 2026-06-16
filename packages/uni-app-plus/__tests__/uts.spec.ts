@@ -299,6 +299,64 @@ describe.each(TEST_PRESETS)(
       ])
       expect(context6.depth).toBe(1)
       expect(context6.nested).toBe(true)
+
+      const sparseArr: unknown[] = []
+      sparseArr[2] = 1
+      const normalizedSparseArr = normalizeArg(sparseArr, {}, false, {
+        depth: 0,
+        nested: false,
+      }) as unknown[]
+      expect(normalizedSparseArr).toHaveLength(3)
+      expect(0 in normalizedSparseArr).toBe(false)
+      expect(normalizedSparseArr[2]).toBe(1)
+
+      const context7 = { depth: 0, nested: false }
+      const shared = { value: 1 }
+      const normalizedShared = normalizeArg(
+        {
+          first: shared,
+          second: shared,
+        },
+        {},
+        false,
+        context7
+      ) as Record<string, unknown>
+      expect(normalizedShared).toEqual({
+        first: { value: 1 },
+        second: { value: 1 },
+      })
+      expect(normalizedShared.first).toBe(normalizedShared.second)
+
+      const circularObj: Record<string, unknown> = { value: undefined }
+      circularObj.self = circularObj
+      const normalizedCircularObj = normalizeArg(circularObj, {}, false, {
+        depth: 0,
+        nested: false,
+      }) as Record<string, unknown>
+      expect(normalizedCircularObj.value).toBeUndefined()
+      expect('value' in normalizedCircularObj).toBe(true)
+      expect(normalizedCircularObj.self).toBe(normalizedCircularObj)
+
+      const circularArr: unknown[] = [undefined]
+      circularArr.push(circularArr, 2)
+      const normalizedCircularArr = normalizeArg(circularArr, {}, false, {
+        depth: 0,
+        nested: false,
+      }) as unknown[]
+      expect(normalizedCircularArr).toHaveLength(3)
+      expect(normalizedCircularArr[0]).toBeUndefined()
+      expect(0 in normalizedCircularArr).toBe(true)
+      expect(normalizedCircularArr[1]).toBe(normalizedCircularArr)
+      expect(normalizedCircularArr[2]).toBe(2)
+
+      const circularRaw: Record<string, unknown> = { value: 1 }
+      circularRaw.__v_raw = circularRaw
+      const normalizedCircularRaw = normalizeArg(circularRaw, {}, false, {
+        depth: 0,
+        nested: false,
+      }) as Record<string, unknown>
+      expect(normalizedCircularRaw.value).toBe(1)
+      expect(normalizedCircularRaw.__v_raw).toBe(normalizedCircularRaw)
     })
   }
 )

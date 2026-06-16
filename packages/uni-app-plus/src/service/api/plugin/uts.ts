@@ -60,9 +60,23 @@ function serializeUniElement(
   return { __type__: type, pageId, nodeId }
 }
 
-function toRaw(observed?: unknown): unknown {
-  const raw = observed && (observed as any).__v_raw
-  return raw ? toRaw(raw) : observed
+function toRaw(observed?: unknown) {
+  const seen = new WeakSet<object>()
+  let current = observed
+  while (current) {
+    const raw = (current as any).__v_raw
+    if (!raw) {
+      return current
+    }
+    if (typeof current === 'object' || typeof current === 'function') {
+      if (seen.has(current as object)) {
+        return current
+      }
+      seen.add(current as object)
+    }
+    current = raw
+  }
+  return current
 }
 
 export function normalizeArg(
@@ -72,7 +86,8 @@ export function normalizeArg(
   context: {
     depth: number
     nested: boolean
-  }
+  },
+  cache: WeakMap<object, unknown> = new WeakMap()
 ) {
   arg = toRaw(arg)
   const isVaporAndroid = __VAPOR__ && isUTSAndroid()
@@ -89,8 +104,16 @@ export function normalizeArg(
     }
     return id
   } else if (isArray(arg)) {
+    if (cache.has(arg)) {
+      return cache.get(arg)
+    }
     context.depth++
-    return arg.map((item) => normalizeArg(item, callbacks, keepAlive, context))
+    const newArg: unknown[] = new Array(arg.length)
+    cache.set(arg, newArg)
+    arg.forEach((item, index) => {
+      newArg[index] = normalizeArg(item, callbacks, keepAlive, context, cache)
+    })
+    return newArg
     // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
   } else if (arg instanceof ArrayBuffer) {
     // android dom2 js引擎支持直接传递 ArrayBuffer
@@ -123,14 +146,19 @@ export function normalizeArg(
       // }
       // const newObj = normalizeArg(obj, {}, false)
       // newObj.a = 2 // 这会污染原始对象 obj
+      if (cache.has(arg as object)) {
+        return cache.get(arg as object)
+      }
       const newArg = {}
+      cache.set(arg as object, newArg)
       Object.keys(arg as object).forEach((name) => {
         context.depth++
         newArg[name] = normalizeArg(
           (arg as any)[name],
           callbacks,
           keepAlive,
-          context
+          context,
+          cache
         )
       })
       return newArg
@@ -630,9 +658,10 @@ function initProxyFunction(
       depth: 0,
       nested: false,
     }
+    const cache = new WeakMap<object, unknown>()
     const invokeArgs = extend({}, baseArgs, {
       params: args.map((arg) =>
-        normalizeArg(arg, callbacks, keepAlive, context)
+        normalizeArg(arg, callbacks, keepAlive, context, cache)
       ),
     })
 
