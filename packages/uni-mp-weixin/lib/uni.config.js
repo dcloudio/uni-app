@@ -4,6 +4,7 @@ const { parseJson } = require('@dcloudio/uni-cli-shared/lib/json')
 const { getSubpackageRoots } = require('@dcloudio/uni-cli-shared/lib/pages')
 const { normalizePath } = require('@dcloudio/uni-cli-shared/lib/util')
 const { copyMiniProgramThemeJson } = require('@dcloudio/uni-cli-shared/lib/theme')
+const { getMiniProgramAIPaths } = require('./utils')
 
 const COMPONENTS_DIR_NAME = 'wxcomponents'
 
@@ -32,7 +33,8 @@ module.exports = {
       'sitemap.json',
       'custom-tab-bar',
       'functional-pages',
-      'project.private.config.json'
+      'project.private.config.json',
+      ...getMiniProgramAIPaths(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM)
     ]
     const dirs = getSubpackageRoots().map((root) => normalizePath(path.join(root, COMPONENTS_DIR_NAME)))
     copyOptions.push(...dirs)
