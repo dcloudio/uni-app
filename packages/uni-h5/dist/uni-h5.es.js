@@ -19593,7 +19593,6 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
         appVersionCode: __uniConfig.appVersionCode,
         appLanguage: getLocale ? getLocale() : language,
         enableDebug: false,
-        packagename: __uniConfig.appId,
         hostSDKVersion: void 0,
         hostPackageName: void 0,
         hostFontSizeSetting: void 0,
