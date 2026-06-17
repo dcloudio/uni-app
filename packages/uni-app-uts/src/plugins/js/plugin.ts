@@ -346,6 +346,7 @@ export function createUniAppJsEnginePlugin(
                 process.env.NODE_ENV === 'development' &&
                 (isAndroid || isIOS) &&
                 isDom2,
+              sourceMapUrlMode: isAndroid ? 'absolute' : 'relative',
             })
             if (enableSourceMapIncremental) {
               sourceMapHashCache.set(file, sourceMapHash)

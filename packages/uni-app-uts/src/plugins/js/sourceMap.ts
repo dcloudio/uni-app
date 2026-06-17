@@ -1,4 +1,5 @@
 import path from 'path'
+import { pathToFileURL } from 'node:url'
 import fs from 'fs-extra'
 import { normalizePath } from '@dcloudio/uni-cli-shared'
 
@@ -15,6 +16,10 @@ export function resolveAppServiceSourceMapUrl(
       sourceMapFileName
     )
   )
+}
+
+export function resolveAppServiceSourceMapFileUrl(sourceMapFileName: string) {
+  return pathToFileURL(normalizePath(path.resolve(sourceMapFileName))).href
 }
 
 export function resolveAppServiceSourceMapSourceRoot(
@@ -49,6 +54,7 @@ export function writeAppServiceSourceMapToCache({
   cacheDir,
   keepSourceMapInBundle,
   useCacheSourceMapUrl,
+  sourceMapUrlMode,
 }: {
   file: string
   sourceMap: string
@@ -58,6 +64,7 @@ export function writeAppServiceSourceMapToCache({
   cacheDir: string
   keepSourceMapInBundle: boolean
   useCacheSourceMapUrl: boolean
+  sourceMapUrlMode?: 'relative' | 'absolute'
 }) {
   const source = JSON.parse(sourceMap)
   const newSourceMapFileName = path.resolve(cacheDir, 'sourcemap', file)
@@ -69,9 +76,17 @@ export function writeAppServiceSourceMapToCache({
     const jsFile = file.replace(/\.map$/, '')
     const outputChunk = bundle[jsFile]
     if (useCacheSourceMapUrl && outputChunk?.type === 'chunk') {
+      const sourceMapUrl =
+        sourceMapUrlMode === 'absolute'
+          ? resolveAppServiceSourceMapFileUrl(newSourceMapFileName)
+          : resolveAppServiceSourceMapUrl(
+              outputDir,
+              jsFile,
+              newSourceMapFileName
+            )
       outputChunk.code = rewriteAppServiceSourceMappingURL(
         outputChunk.code,
-        resolveAppServiceSourceMapUrl(outputDir, jsFile, newSourceMapFileName)
+        sourceMapUrl
       )
     }
     delete bundle[file]

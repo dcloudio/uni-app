@@ -2,6 +2,7 @@ import fs from 'fs-extra'
 import os from 'os'
 import path from 'path'
 import {
+  resolveAppServiceSourceMapFileUrl,
   resolveAppServiceSourceMapSourceRoot,
   resolveAppServiceSourceMapUrl,
   rewriteAppServiceSourceMappingURL,
@@ -66,6 +67,16 @@ describe('app service sourcemap', () => {
       ).toBe('../../../../..')
     })
     expect(
+      resolveAppServiceSourceMapFileUrl(
+        path.resolve(
+          projectDir,
+          'unpackage/cache/vapor/.app-android/sourcemap/app-service.js.map'
+        )
+      )
+    ).toBe(
+      'file:///project/unpackage/cache/vapor/.app-android/sourcemap/app-service.js.map'
+    )
+    expect(
       rewriteAppServiceSourceMappingURL(
         'console.log(1)\n//# sourceMappingURL=app-service.js.map',
         '../../../cache/vapor/.app-android/sourcemap/app-service.js.map'
@@ -105,6 +116,7 @@ describe('app service sourcemap', () => {
       cacheDir,
       keepSourceMapInBundle: false,
       useCacheSourceMapUrl: true,
+      sourceMapUrlMode: 'absolute',
     })
 
     const sourceMapFileName = path.resolve(
@@ -112,7 +124,9 @@ describe('app service sourcemap', () => {
       'sourcemap/app-service.js.map'
     )
     expect(bundle['app-service.js'].code).toContain(
-      '//# sourceMappingURL=../../../cache/vapor/.app-android/sourcemap/app-service.js.map'
+      `//# sourceMappingURL=${resolveAppServiceSourceMapFileUrl(
+        sourceMapFileName
+      )}`
     )
     expect(bundle['app-service.js.map']).toBeUndefined()
     expect(
@@ -152,6 +166,7 @@ describe('app service sourcemap', () => {
       cacheDir,
       keepSourceMapInBundle: false,
       useCacheSourceMapUrl: false,
+      sourceMapUrlMode: 'relative',
     })
 
     const sourceMapFileName = path.resolve(
