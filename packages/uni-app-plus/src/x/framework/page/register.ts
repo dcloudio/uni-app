@@ -295,13 +295,13 @@ function initVaporPageLifeCycle(
   if (!pageRootEl) return
 
   // 处理 蒸汽模式下页面 onPageScroll 和 onReachBottom 生命周期触发
-  const pageScrollElementTags = ['LIST-VIEW', 'SCROLL-VIEW', 'WATERFLOW']
   if (
     // @ts-expect-error
     (pageComponentPublicInstance._.onReachBottom ||
       // @ts-expect-error
       pageComponentPublicInstance._.onPageScroll) &&
-    pageScrollElementTags.includes(pageRootEl.tagName)
+    pageRootEl.tagName === 'PAGE' &&
+    pageRootEl instanceof UniViewElementImpl == false
   ) {
     let triggeredReachBottom = false
     const scrollEventId = pageRootEl.addEventListener('scroll', (e: Event) => {
@@ -336,10 +336,9 @@ function initVaporPageLifeCycle(
     })
   }
 
-  const SCROLL_VIEW_INSERT_BY_PULL_DOWN_REFRESH_ID = 'uni-pdr-root'
   if (
-    pageRootEl.tagName === 'SCROLL-VIEW' &&
-    pageRootEl.getAttribute('id') === SCROLL_VIEW_INSERT_BY_PULL_DOWN_REFRESH_ID
+    pageRootEl.tagName === 'PAGE' &&
+    pageRootEl instanceof UniViewElementImpl == false
   ) {
     const pullDownRefreshEventId = `uni-pull-down-refresh-${nativePage.pageId}`
     uni.$on(pullDownRefreshEventId, () => {
