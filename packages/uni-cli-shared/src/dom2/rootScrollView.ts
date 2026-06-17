@@ -127,6 +127,7 @@ export function resolveDom2RootScrollViewWarnLocation(
   isVueSubRequest: boolean
 ) {
   if (
+    process.env.UNI_PLATFORM !== 'app' ||
     process.env.UNI_APP_X_DOM2 !== 'true' ||
     isVueSubRequest ||
     !parseUniXPageOptions(filename) ||
