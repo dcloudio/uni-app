@@ -28,6 +28,7 @@ import {
 } from '../utils'
 import { uniAppCssPlugin } from './css'
 import { uniAppJsPlugin } from './js'
+import { writeAppServiceSourceMapToCache } from './sourceMap'
 
 const HARMONY_DOM2_ESBUILD_TRANSPILE_CACHE_MAX = 2048
 const HARMONY_DOM2_ESBUILD_TRANSPILE_CACHE_FLAG =
@@ -317,7 +318,6 @@ export function createUniAppJsEnginePlugin(
       },
       generateBundle(_, bundle) {
         // 调整所有sourceMap文件
-        const sourceRoot = normalizePath(inputDir)
         const currentSourceMapFiles = enableSourceMapIncremental
           ? new Set<string>()
           : undefined
@@ -334,18 +334,19 @@ export function createUniAppJsEnginePlugin(
             ) {
               return
             }
-            const source = JSON.parse(asset.source as string)
-            source.sourceRoot = sourceRoot
-            const newSourceMapFileName = path.resolve(
-              process.env.UNI_APP_X_CACHE_DIR,
-              'sourcemap',
-              file
-            )
-            fs.outputFileSync(newSourceMapFileName, JSON.stringify(source))
-            // 非鸿蒙平台不需要保留 sourceMap 文件
-            if (process.env.UNI_PLATFORM !== 'app-harmony') {
-              delete bundle[file]
-            }
+            writeAppServiceSourceMapToCache({
+              file,
+              sourceMap: asset.source as string,
+              bundle,
+              inputDir,
+              outputDir,
+              cacheDir: process.env.UNI_APP_X_CACHE_DIR,
+              keepSourceMapInBundle: process.env.UNI_PLATFORM === 'app-harmony',
+              useCacheSourceMapUrl:
+                process.env.NODE_ENV === 'development' &&
+                (isAndroid || isIOS) &&
+                isDom2,
+            })
             if (enableSourceMapIncremental) {
               sourceMapHashCache.set(file, sourceMapHash)
             }
