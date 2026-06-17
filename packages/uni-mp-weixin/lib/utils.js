@@ -1,12 +1,14 @@
-const {
-  parseManifestJsonOnce
-} = require('@dcloudio/uni-cli-shared')
+const path = require('path')
+const fs = require('fs')
+const { parseManifestJson } = require('@dcloudio/uni-cli-shared/lib/manifest')
 
 function getMiniProgramAIPaths (inputDir, platform) {
   if (!inputDir || !platform) {
     return []
   }
-  const manifestJson = parseManifestJsonOnce(inputDir)
+
+  const manifestJsonPath = path.resolve(inputDir, 'manifest.json')
+  const manifestJson = parseManifestJson(fs.readFileSync(manifestJsonPath, 'utf8'))
   const config = manifestJson[platform]
   if (!config || !config.agent) {
     return []
