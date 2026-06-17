@@ -3776,7 +3776,7 @@ function queryElementTop(component, selector) {
 var pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, (options, res) => {
   var currentPage = getCurrentPage().vm;
   var scrollViewNode = currentPage === null || currentPage === void 0 ? void 0 : currentPage.$el;
-  if (scrollViewNode == null || scrollViewNode.tagName != "SCROLL-VIEW") {
+  if (scrollViewNode == null || scrollViewNode.tagName != "PAGE") {
     res.reject("selector invalid");
     return;
   }
