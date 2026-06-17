@@ -176,7 +176,7 @@
     'load' : UniCloudDBGetResult
   }>()
 
-  const loadData = async (options : UniCloudDBComponentLoadDataOptions) : Promise<void> => {
+  const loadData = async (options : UniCloudDBComponentLoadDataOptions = {}) : Promise<void> => {
     const clear = (options.clear != null && options.clear == true)
     if (clear == true) {
       if (props.pageData == PAGE_MODE_REPLACE) {
@@ -188,7 +188,7 @@
   }
 
   const loadMore = () => {
-    if (isEnded || loading) {
+    if (isEnded.value || loading.value) {
       return
     }
 
@@ -229,7 +229,7 @@
       const count = res.count
 
       isEnded.value = (count != null) ? (pagination.value.current * pagination.value.size >= count) : (data.length < props.pageSize)
-      hasMore.value = !isEnded
+      hasMore.value = !isEnded.value
 
       if (props.getcount && count != null) {
         pagination.value.count = count
@@ -256,7 +256,7 @@
     })
   }
 
-  const add = (value : UTSJSONObject, options : UniCloudDBComponentAddOptions) => {
+  const add = (value : UTSJSONObject, options : UniCloudDBComponentAddOptions = {}) => {
     _needLoading(options.needLoading, options.loadingTitle)
     const db = uniCloud.databaseForJQL()
     db.collection(_getMainCollection()).add(value).then<void>((res : UniCloudDBAddResult) => {
@@ -271,7 +271,7 @@
     })
   }
 
-  const update = (id : string, value : UTSJSONObject, options : UniCloudDBComponentUpdateOptions) => {
+  const update = (id : string, value : UTSJSONObject, options : UniCloudDBComponentUpdateOptions = {}) => {
     if (options.needConfirm == true) {
       uni.showModal({
         title: options.confirmTitle,
@@ -288,7 +288,7 @@
     }
   }
 
-  const remove = (id : any, options : UniCloudDBComponentRemoveOptions) => {
+  const remove = (id : any, options : UniCloudDBComponentRemoveOptions = {}) => {
     const ids = Array.isArray(id) ? (id as Array<any>) : [id]
     if (options.needConfirm == true) {
       uni.showModal({
@@ -493,7 +493,7 @@
   }
 
   const _dispatchEvent = (type : string, data : Array<UTSJSONObject>) => {
-    emit(type, data, isEnded, {
+    emit(type, data, isEnded.value, {
       current: pagination.value.current,
       size: pagination.value.size,
       count: pagination.value.count
@@ -584,4 +584,13 @@
   pagination.value.size = props.pageSize
 
   initData()
+
+  defineExpose({
+    loadData,
+    loadMore,
+    add,
+    remove,
+    update
+  })
+
 </script>
