@@ -94,6 +94,34 @@ describe('pre plugin', () => {
     expect(warnSpy).not.toHaveBeenCalled()
     expect(logSpy).not.toHaveBeenCalled()
   })
+
+  test('does not warn outside app platform', () => {
+    process.env.UNI_PLATFORM = 'web'
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {})
+    const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {})
+    const plugin = uniPrePlugin({ build: {} } as any, {})
+
+    ;(plugin.transform as any).call(
+      {
+        getCombinedSourcemap() {
+          return null
+        },
+      },
+      `<template>
+<!-- #ifdef APP -->
+<scroll-view style="flex:1">
+<!-- #endif -->
+  <view>hello</view>
+<!-- #ifdef APP -->
+</scroll-view>
+<!-- #endif -->
+</template>`,
+      path.join(inputDir, 'pages', 'index', 'index.uvue')
+    )
+
+    expect(warnSpy).not.toHaveBeenCalled()
+    expect(logSpy).not.toHaveBeenCalled()
+  })
 })
 
 function restoreEnv(name: string, value: string | undefined) {
