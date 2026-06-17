@@ -1,5 +1,6 @@
 import path from 'path'
 import fs from 'fs-extra'
+import type { OutputChunk } from 'rollup'
 import type { ResolvedConfig } from 'vite'
 import {
   APP_SERVICE_FILENAME,
@@ -211,6 +212,22 @@ export function createUniAppJsEnginePlugin(
               file
             )
             fs.outputFileSync(newSourceMapFileName, JSON.stringify(source))
+            if (isIOS) {
+              const jsFile = file.replace('.js.map', '.js')
+              const outputChunk = bundle[jsFile] as OutputChunk
+              if (outputChunk) {
+                outputChunk.code = outputChunk.code.replace(
+                  `//# sourceMappingURL=${path.basename(file)}`,
+                  `//# sourceMappingURL=` +
+                    normalizePath(
+                      path.relative(
+                        process.env.UNI_OUTPUT_DIR,
+                        newSourceMapFileName
+                      )
+                    )
+                )
+              }
+            }
             // 非鸿蒙平台不需要保留 sourceMap 文件
             if (process.env.UNI_PLATFORM !== 'app-harmony') {
               delete bundle[file]
