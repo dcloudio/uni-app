@@ -25,7 +25,10 @@ export const pageScrollTo = defineAsyncApi<API_TYPE_PAGE_SCROLL_TO>(
     const currentPage = (getCurrentPage() as unknown as UniPage).vm
 
     const scrollViewNode = currentPage?.$el
-    if (scrollViewNode == null || scrollViewNode.tagName != 'SCROLL-VIEW') {
+    if (
+      scrollViewNode == null ||
+      scrollViewNode.tagName != (__VAPOR__ ? 'PAGE' : 'SCROLL-VIEW')
+    ) {
       res.reject('selector invalid')
       return
     }
