@@ -117,6 +117,7 @@ describe('app service sourcemap', () => {
       keepSourceMapInBundle: false,
       useCacheSourceMapUrl: true,
       sourceMapUrlMode: 'absolute',
+      sourceRootMode: 'relative',
     })
 
     const sourceMapFileName = path.resolve(
@@ -133,6 +134,56 @@ describe('app service sourcemap', () => {
       JSON.parse(fs.readFileSync(sourceMapFileName, 'utf8'))
     ).toMatchObject({
       sourceRoot: '../../../../..',
+    })
+  })
+
+  test('writes iOS cache sourcemap with relative URL and absolute sourceRoot', () => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-app-uts-sourcemap-'))
+    const outputDir = path.resolve(tempDir, 'unpackage/dist/dev/app-ios')
+    const cacheDir = path.resolve(tempDir, 'unpackage/cache/vapor/.app-ios')
+    const bundle = {
+      'app-service.js': {
+        type: 'chunk',
+        code: 'console.log(1)\n//# sourceMappingURL=app-service.js.map',
+      },
+      'app-service.js.map': {
+        type: 'asset',
+        source: JSON.stringify({
+          version: 3,
+          file: 'app-service.js',
+          sources: ['pages/index/index.uvue', 'App.uvue'],
+          names: [],
+          mappings: '',
+        }),
+      },
+    } as any
+
+    writeAppServiceSourceMapToCache({
+      file: 'app-service.js.map',
+      sourceMap: bundle['app-service.js.map'].source,
+      bundle,
+      inputDir: tempDir,
+      outputDir,
+      cacheDir,
+      keepSourceMapInBundle: false,
+      useCacheSourceMapUrl: true,
+      sourceMapUrlMode: 'relative',
+      sourceRootMode: 'absolute',
+    })
+
+    const sourceMapFileName = path.resolve(
+      cacheDir,
+      'sourcemap/app-service.js.map'
+    )
+    expect(bundle['app-service.js'].code).toContain(
+      '//# sourceMappingURL=../../../cache/vapor/.app-ios/sourcemap/app-service.js.map'
+    )
+    expect(bundle['app-service.js.map']).toBeUndefined()
+    expect(
+      JSON.parse(fs.readFileSync(sourceMapFileName, 'utf8'))
+    ).toMatchObject({
+      sourceRoot: tempDir,
+      sources: ['pages/index/index.uvue', 'App.uvue'],
     })
   })
 
@@ -167,6 +218,7 @@ describe('app service sourcemap', () => {
       keepSourceMapInBundle: false,
       useCacheSourceMapUrl: false,
       sourceMapUrlMode: 'relative',
+      sourceRootMode: 'absolute',
     })
 
     const sourceMapFileName = path.resolve(

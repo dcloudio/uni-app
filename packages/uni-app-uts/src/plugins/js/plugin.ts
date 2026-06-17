@@ -344,9 +344,9 @@ export function createUniAppJsEnginePlugin(
               keepSourceMapInBundle: process.env.UNI_PLATFORM === 'app-harmony',
               useCacheSourceMapUrl:
                 process.env.NODE_ENV === 'development' &&
-                (isAndroid || isIOS) &&
-                isDom2,
+                ((isAndroid && isDom2) || isIOS),
               sourceMapUrlMode: isAndroid ? 'absolute' : 'relative',
+              sourceRootMode: isIOS ? 'absolute' : 'relative',
             })
             if (enableSourceMapIncremental) {
               sourceMapHashCache.set(file, sourceMapHash)

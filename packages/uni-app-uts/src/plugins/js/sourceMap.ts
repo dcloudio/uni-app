@@ -55,6 +55,7 @@ export function writeAppServiceSourceMapToCache({
   keepSourceMapInBundle,
   useCacheSourceMapUrl,
   sourceMapUrlMode,
+  sourceRootMode,
 }: {
   file: string
   sourceMap: string
@@ -65,12 +66,16 @@ export function writeAppServiceSourceMapToCache({
   keepSourceMapInBundle: boolean
   useCacheSourceMapUrl: boolean
   sourceMapUrlMode?: 'relative' | 'absolute'
+  sourceRootMode?: 'relative' | 'absolute'
 }) {
   const source = JSON.parse(sourceMap)
   const newSourceMapFileName = path.resolve(cacheDir, 'sourcemap', file)
-  source.sourceRoot = useCacheSourceMapUrl
-    ? resolveAppServiceSourceMapSourceRoot(newSourceMapFileName, inputDir)
-    : normalizePath(inputDir)
+  const resolvedSourceRootMode =
+    sourceRootMode || (useCacheSourceMapUrl ? 'relative' : 'absolute')
+  source.sourceRoot =
+    resolvedSourceRootMode === 'relative'
+      ? resolveAppServiceSourceMapSourceRoot(newSourceMapFileName, inputDir)
+      : normalizePath(inputDir)
   fs.outputFileSync(newSourceMapFileName, JSON.stringify(source))
   if (!keepSourceMapInBundle) {
     const jsFile = file.replace(/\.map$/, '')
