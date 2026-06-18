@@ -125,9 +125,11 @@ export interface GenProxyCodeOptions {
   iosPreprocessor?: SyncUniModulesFilePreprocessor
 }
 
-function isElementClass(cls: string) {
+function isUTSElementProxyClass(cls: string) {
   return (
-    process.env.UNI_APP_X_DOM2 === 'true' && /^Uni.*Element(?:Impl)?$/.test(cls)
+    process.env.UNI_APP_X_DOM2 === 'true' &&
+    process.env.UNI_UTS_PLATFORM === 'app-android' &&
+    /^Uni.*Element(?:Impl)?$/.test(cls)
   )
 }
 
@@ -374,7 +376,7 @@ function normalizeInterfaceKeepAlive(decls: ProxyDecl[], types: Types) {
       classNames.find((n) => {
         const classMeta = classTypes[n]
         if (classMeta.interfaces && classMeta.interfaces.includes(decl.cls)) {
-          const isElement = isElementClass(decl.cls)
+          const isElement = isUTSElementProxyClass(decl.cls)
           classMeta.keepAliveMethods.forEach((method) => {
             const jsMethod = method + (isElement ? '' : 'ByJs')
             if (decl.options.methods[jsMethod]) {
@@ -578,7 +580,7 @@ function genModuleCode(
           }ByJs', is_uni_modules) }, ${genClassOptionsCode(decl.options)} ))`
         )
       } else {
-        const isElement = isElementClass(decl.cls)
+        const isElement = isUTSElementProxyClass(decl.cls)
         const initProxyMethodName = isElement
           ? 'initUTSElementProxyClass'
           : 'initUTSProxyClass'
@@ -1504,7 +1506,7 @@ function genInterfaceDeclaration(
   const props: string[] = []
   const setters: Record<string, Parameter> = {}
   const elements = parseInterfaceBody(types, decl)
-  const isElement = isElementClass(cls)
+  const isElement = isUTSElementProxyClass(cls)
 
   elements.forEach((item) => {
     if (item.type === 'TsMethodSignature') {
@@ -1598,7 +1600,7 @@ function genClassDeclaration(
       implement.expression.type === 'Identifier' &&
       isHookClass(implement.expression.value)
   )
-  const isElement = isElementClass(cls)
+  const isElement = isUTSElementProxyClass(cls)
 
   const interfaces = parseImplements(decl)
   decl.body.forEach((item) => {
@@ -1714,7 +1716,7 @@ function genClassDeclarationFromInterface(
   const props: string[] = []
   const setters: Record<string, Parameter> = {}
   const elements = parseInterfaceBody(types, decl)
-  const isElement = isElementClass(cls)
+  const isElement = isUTSElementProxyClass(cls)
 
   elements.forEach((item) => {
     if (item.type === 'TsMethodSignature') {
