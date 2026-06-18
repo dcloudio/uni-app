@@ -11,91 +11,91 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | canvas | [UniCanvasElement](/api/dom/unicanvaselement.md) | 是 |  | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 是对与给定上下文关联的HTMLCanvasElement对象的只读引用 |
-| direction | string | 是 | inherit | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 描述当前文本方向 |
+| direction | string | 是 | inherit | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 描述当前文本方向 |
 | fillStyle | [CanvasGradient](#canvasgradient-values) \| CanvasPattern \| [string.ColorString](/uts/data-type.md#ide-string) | 是 | #000 (黑色) | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 设置填充颜色 |
-| filter | string | 是 | none | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 提供模糊、灰度等过滤效果的属性。它类似于 CSS filter 属性，并且接受相同的函数 |
+| filter | string | 是 | none | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 提供模糊、灰度等过滤效果的属性。它类似于 CSS filter 属性，并且接受相同的函数 |
 | font | string | 是 | 10px sans-serif | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 指定绘制文字所使用的字体样式。使用和 CSS 字体描述符相同的字符串值。<br/>注意App平台只支持font-size、font-family、font-weight |
-| fontStretch | string | 是 | normal | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指定绘制文本时字体如何被扩展或压缩。该属性对应于 CSS 中的 font-stretch 属性 |
+| fontStretch | string | 是 | normal | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 指定绘制文本时字体如何被扩展或压缩。该属性对应于 CSS 中的 font-stretch 属性 |
 | globalAlpha | number | 是 | 1.0 | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 用来描述在 canvas 上绘图之前，设置图形和图片透明度的属性。数值的范围从 0.0（完全透明）到 1.0（完全不透明） |
-| globalCompositeOperation | string | 是 | source-over | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): x | 在绘制新形状时应用的合成操作的类型，其中 type 是用于标识要使用的合成或混合模式操作的字符串 |
-| imageSmoothingEnabled | boolean | 是 | true | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 用于设置是否对缩放后的图片进行平滑处理，true 表示进行平滑处理，false 表示不进行 |
-| imageSmoothingQuality | string | 是 | low | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 用于设置图像平滑度,要使此属性生效，imageSmoothingEnabled 属性必须为 true，可选值：`low`低质量； `medium`中等质量；`high`高质量。 |
-| letterSpacing | string | 是 | 0px | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 用于指定绘制文本时字母之间的间距。这对应于 CSS 中的 letter-spacing 属性 |
+| globalCompositeOperation | string | 是 | source-over | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x | 在绘制新形状时应用的合成操作的类型，其中 type 是用于标识要使用的合成或混合模式操作的字符串 |
+| imageSmoothingEnabled | boolean | 是 | true | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 用于设置是否对缩放后的图片进行平滑处理，true 表示进行平滑处理，false 表示不进行 |
+| imageSmoothingQuality | string | 是 | low | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 用于设置图像平滑度,要使此属性生效，imageSmoothingEnabled 属性必须为 true，可选值：`low`低质量； `medium`中等质量；`high`高质量。 |
+| letterSpacing | string | 是 | 0px | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 用于指定绘制文本时字母之间的间距。这对应于 CSS 中的 letter-spacing 属性 |
 | lineCap | string | 是 | butt | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 指定如何绘制每一条线条末端的属性，可选值：`butt`线段末端以方形结束；`round`线段末端以圆形结束；`square`线段末端以方形结束，但是会增加一个一半宽度的矩形区域。 |
 | lineDashOffset | number | 是 | 0.0 | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 设置虚线偏移量 |
 | lineJoin | string | 是 | miter | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 设置 2 个长度不为 0 的线条相连部分如何连接在一起的属性，可选值：`bevel`斜角；`round`圆角；`miter`尖角。 |
 | lineWidth | number | 是 | 1.0 | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 设置线条的宽度, 零、负数、Infinity 和 NaN 值将被忽略 |
 | miterLimit | number | 是 | 10.0 | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 设置斜接面限制比例的属性。当获取属性值时，会返回当前的值。当给属性赋值时，0、负数、 Infinity 和 NaN 都会被忽略；除此之外都会被赋予一个新值。 |
-| shadowBlur | number | 是 | 0 | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 用于描述模糊效果程度,其中 0 表示没有模糊，数字越大表示模糊程度越高。这个值不对应于像素数量，并且不受当前变换矩阵的影响。负数、Infinity 和 NaN 将被忽略 |
-| shadowColor | string | 是 | fully-transparent black | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 描述阴影颜色,只有当 shadowColor 属性设置为非透明值时，阴影才会被绘制。其中的 shadowBlur、shadowOffsetX 或 shadowOffsetY 属性中至少有一个必须是非零的。 |
-| shadowOffsetX | number | 是 | 0 | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指定阴影在水平方向上的偏移距离。正值向右偏移，负值向左偏移。默认值为 0（无水平偏移）。Infinity 和 NaN 值将被忽略 |
-| shadowOffsetY | number | 是 | 0 | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指定阴影在垂直方向上的偏移距离。正值向右偏移，负值向左偏移。默认值为 0（无水平偏移）。Infinity 和 NaN 值将被忽略 |
+| shadowBlur | number | 是 | 0 | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 用于描述模糊效果程度,其中 0 表示没有模糊，数字越大表示模糊程度越高。这个值不对应于像素数量，并且不受当前变换矩阵的影响。负数、Infinity 和 NaN 将被忽略 |
+| shadowColor | string | 是 | fully-transparent black | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 描述阴影颜色,只有当 shadowColor 属性设置为非透明值时，阴影才会被绘制。其中的 shadowBlur、shadowOffsetX 或 shadowOffsetY 属性中至少有一个必须是非零的。 |
+| shadowOffsetX | number | 是 | 0 | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 指定阴影在水平方向上的偏移距离。正值向右偏移，负值向左偏移。默认值为 0（无水平偏移）。Infinity 和 NaN 值将被忽略 |
+| shadowOffsetY | number | 是 | 0 | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 指定阴影在垂直方向上的偏移距离。正值向右偏移，负值向左偏移。默认值为 0（无水平偏移）。Infinity 和 NaN 值将被忽略 |
 | strokeStyle | [CanvasGradient](#canvasgradient-values) \| CanvasPattern \| [string.ColorString](/uts/data-type.md#ide-string) | 是 | #000 (黑色) | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 设置边框的颜色 |
 | textAlign | string | 是 | left | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 设置文本的对齐方式，可取值：`left`左对齐；`center`居中对齐；`right`右对齐。 |
 | textBaseline | string | 是 | alphabetic | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 描述绘制文本时，当前文本基线的属性 |
-| textRendering | string | 是 | auto | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 用于在渲染文本时向渲染引擎提供应该如何优化的相关信息 |
+| textRendering | string | 是 | auto | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 用于在渲染文本时向渲染引擎提供应该如何优化的相关信息 |
 | wordSpacing | string | 是 | 0px | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: 4.61 | 用于指定绘制文本时单词之间的间距, 如果设置为无效或无法解析的值，则属性值将保持不变 |
 
 #### direction 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ltr | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 文字方向为从左到右 |
-| rtl | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 文字方向为从右到左 |
-| inherit | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 文字方向从相应的 \<canvas> 元素或 Document 继承 |
+| ltr | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 文字方向为从左到右 |
+| rtl | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 文字方向为从右到左 |
+| inherit | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 文字方向从相应的 \<canvas> 元素或 Document 继承 |
 
 #### fontStretch 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ultra-condensed | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指定比普通字体更紧凑的字体,对应百分比数值为50% |
-| extra-condensed | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指定比普通字体更紧凑的字体,对应百分比数值为62.5% |
-| condensed | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指定比普通字体更紧凑的字体,对应百分比数值为75% |
-| semi-condensed | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指定比普通字体更紧凑的字体,对应百分比数值为87.5% |
-| normal | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 普通字体外观 |
-| semi-expanded | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指定比普通字体更扩展的字体,对应百分比数值为112.5% |
-| expanded | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指定比普通字体更扩展的字体,对应百分比数值为125% |
-| extra-expanded | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指定比普通字体更扩展的字体,对应百分比数值为150% |
-| ultra-expanded | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指定比普通字体更扩展的字体,对应百分比数值为200% |
+| ultra-condensed | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更紧凑的字体,对应百分比数值为50% |
+| extra-condensed | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更紧凑的字体,对应百分比数值为62.5% |
+| condensed | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更紧凑的字体,对应百分比数值为75% |
+| semi-condensed | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更紧凑的字体,对应百分比数值为87.5% |
+| normal | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 普通字体外观 |
+| semi-expanded | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更扩展的字体,对应百分比数值为112.5% |
+| expanded | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更扩展的字体,对应百分比数值为125% |
+| extra-expanded | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更扩展的字体,对应百分比数值为150% |
+| ultra-expanded | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更扩展的字体,对应百分比数值为200% |
 
 #### globalCompositeOperation 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| source-over | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): x | 在现有画布上下文之上绘制新图形 |
-| source-in | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 新图形只在新图形和目标画布重叠的地方绘制。其他的都是透明的 |
-| source-out | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 在不与现有画布内容重叠的地方绘制新图形 |
-| source-atop | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): x | 新图形只在与现有画布内容重叠的地方绘制。 |
-| destination-over | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): x | 在现有的画布内容后面绘制新的图形。 |
-| destination-atop | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 现有的画布只保留与新图形重叠的部分，新的图形是在画布内容后面绘制的。 |
-| destination-in | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 现有的画布内容保持在新图形和现有画布内容重叠的位置。其他的都是透明的。 |
-| destination-out | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): x | 现有内容保持在新图形不重叠的地方。 |
-| lighter | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): x | 两个重叠图形的颜色是通过颜色值相加来确定的。 |
-| copy | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 只显示新图形。 |
-| xor | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): x | 图像中，那些重叠和正常绘制之外的其他地方是透明的。 |
-| multiply | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 将顶层像素与底层相应像素相乘，结果是一幅更黑暗的图片。 |
-| screen | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 像素被倒转，相乘，再倒转，结果是一幅更明亮的图片。 |
-| overlay | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | multiply 和 screen 的结合，原本暗的地方更暗，原本亮的地方更亮。 |
-| darken | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 保留两个图层中最暗的像素 |
-| lighten | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 保留两个图层中最亮的像素。 |
-| color-dodge | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 将底层除以顶层的反置。 |
-| color-burn | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 将反置的底层除以顶层，然后将结果反过来。 |
-| hard-light | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | multiply 和 screen 的结合，类似于叠加，但上下图层互换了。 |
-| soft-light | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 用顶层减去底层或者相反来得到一个正值。 |
-| difference | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 一个柔和版本的 hard-light。纯黑或纯白不会导致纯黑或纯白。 |
-| exclusion | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 和 difference 相似，但对比度较低。 |
-| hue | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 保留了底层的亮度和色度，同时采用了顶层的色调。 |
-| saturation | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 保留底层的亮度和色调，同时采用顶层的色度。 |
-| color | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 保留了底层的亮度，同时采用了顶层的色调和色度。 |
-| luminosity | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 保持底层的色调和色度，同时采用顶层的亮度。 |
+| source-over | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x | 在现有画布上下文之上绘制新图形 |
+| source-in | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 新图形只在新图形和目标画布重叠的地方绘制。其他的都是透明的 |
+| source-out | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 在不与现有画布内容重叠的地方绘制新图形 |
+| source-atop | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x | 新图形只在与现有画布内容重叠的地方绘制。 |
+| destination-over | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x | 在现有的画布内容后面绘制新的图形。 |
+| destination-atop | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 现有的画布只保留与新图形重叠的部分，新的图形是在画布内容后面绘制的。 |
+| destination-in | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 现有的画布内容保持在新图形和现有画布内容重叠的位置。其他的都是透明的。 |
+| destination-out | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x | 现有内容保持在新图形不重叠的地方。 |
+| lighter | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x | 两个重叠图形的颜色是通过颜色值相加来确定的。 |
+| copy | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 只显示新图形。 |
+| xor | Web: 4.0; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS: x | 图像中，那些重叠和正常绘制之外的其他地方是透明的。 |
+| multiply | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 将顶层像素与底层相应像素相乘，结果是一幅更黑暗的图片。 |
+| screen | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 像素被倒转，相乘，再倒转，结果是一幅更明亮的图片。 |
+| overlay | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | multiply 和 screen 的结合，原本暗的地方更暗，原本亮的地方更亮。 |
+| darken | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 保留两个图层中最暗的像素 |
+| lighten | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 保留两个图层中最亮的像素。 |
+| color-dodge | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 将底层除以顶层的反置。 |
+| color-burn | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 将反置的底层除以顶层，然后将结果反过来。 |
+| hard-light | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | multiply 和 screen 的结合，类似于叠加，但上下图层互换了。 |
+| soft-light | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 用顶层减去底层或者相反来得到一个正值。 |
+| difference | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 一个柔和版本的 hard-light。纯黑或纯白不会导致纯黑或纯白。 |
+| exclusion | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 和 difference 相似，但对比度较低。 |
+| hue | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 保留了底层的亮度和色度，同时采用了顶层的色调。 |
+| saturation | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 保留底层的亮度和色调，同时采用顶层的色度。 |
+| color | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 保留了底层的亮度，同时采用了顶层的色调和色度。 |
+| luminosity | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 保持底层的色调和色度，同时采用顶层的亮度。 |
 
 #### imageSmoothingQuality 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| low | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 低质量。 |
-| medium | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 中等质量。 |
-| high | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 高质量。 |
+| low | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 低质量。 |
+| medium | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 中等质量。 |
+| high | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 高质量。 |
 
 #### lineCap 的属性描述
 
@@ -314,9 +314,9 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 将当前创建的路径设置为当前剪切路径
 
 ##### clip 兼容性 
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | x |
 
 
 ##### 参数 
@@ -335,9 +335,9 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 将当前创建的路径设置为当前剪切路径
 
 ##### clip 兼容性 
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | x |
 
 
 ##### 参数 
@@ -373,9 +373,9 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 创建一个新的、空白的、指定大小的 ImageData 对象。所有的像素在新对象中都是透明的黑色
 
 ##### createImageData 兼容性 
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | x |
 
 
 ##### 参数 
@@ -616,9 +616,9 @@ addColorStop
 添加椭圆路径。椭圆的圆心在（x,y）位置，半径分别是radiusX 和 radiusY，按照anticlockwise（默认顺时针）指定的方向，从 startAngle 开始绘制，到 endAngle 结束
 
 ##### ellipse 兼容性 
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | x |
 
 
 ##### 参数 
@@ -845,9 +845,9 @@ addColorStop
 判断在当前路径中是否包含检测点
 
 ##### isPointInPath 兼容性 
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | x |
 
 
 ##### 参数 
@@ -873,9 +873,9 @@ addColorStop
 判断在当前路径中是否包含检测点
 
 ##### isPointInPath 兼容性 
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | x |
 
 
 ##### 参数 
@@ -902,9 +902,9 @@ addColorStop
 判断在当前路径中是否包含检测点
 
 ##### isPointInPath 兼容性 
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | x |
 
 
 ##### 参数 
@@ -931,9 +931,9 @@ addColorStop
 判断在当前路径中是否包含检测点
 
 ##### isPointInPath 兼容性 
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | x |
 
 
 ##### 参数 
@@ -961,9 +961,9 @@ addColorStop
 检测某点是否在路径的描边线
 
 ##### isPointInStroke 兼容性 
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | x |
 
 
 ##### 参数 
@@ -1254,9 +1254,9 @@ addColorStop
 在当前路径中添加一个圆角矩形
 
 ##### roundRect 兼容性 
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | x |
 
 
 ##### 参数 

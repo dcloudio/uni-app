@@ -24,9 +24,9 @@ UniNativeViewElement -- Extends --> UniElement
 绑定安卓平台原生view
 
 ##### bindAndroidView 兼容性 
-| Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| 4.31 | x | x | x |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 4.31 | x | x |
 
 
 ##### 参数 
@@ -45,9 +45,9 @@ UniNativeViewElement -- Extends --> UniElement
 绑定IOS平台原生view
 
 ##### bindIOSView 兼容性 
-| Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| x | x | 4.31 | x | x |
+| Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- |
+| x | x | 4.31 | x |
 
 
 ##### 参数 

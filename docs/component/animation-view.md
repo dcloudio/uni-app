@@ -17,9 +17,9 @@ Lottie 动画
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 标准基座并不包含本插件，下载插件后需编写调用代码并打包自定义基座才可运行。
@@ -27,20 +27,20 @@ Lottie 动画
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | string | "" | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 动画资源地址，目前只支持绝对路径 |
-| loop | boolean | false | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 动画是否循环播放 |
-| autoplay | boolean | false | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 动画是否自动播放 |
-| action | string | "stop" | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 动画操作，可取值 play、pause、stop |
-| hidden | boolean | false | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 是否隐藏动画 |
-| @ended | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x |   |
+| path | string | "" | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x | 动画资源地址，目前只支持绝对路径 |
+| loop | boolean | false | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x | 动画是否循环播放 |
+| autoplay | boolean | false | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x | 动画是否自动播放 |
+| action | string | "stop" | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x | 动画操作，可取值 play、pause、stop |
+| hidden | boolean | false | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x | 是否隐藏动画 |
+| @ended | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x |   |
 
 #### action 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| play | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 播放 |
-| pause | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 暂停 |
-| stop | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 停止 |
+| play | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x | 播放 |
+| pause | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x | 暂停 |
+| stop | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x | 停止 |
 
 
 

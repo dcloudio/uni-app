@@ -16,9 +16,9 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.21 | 4.41 | 4.25 | 4.25 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.21 | 4.41 | 4.25 | 4.25 | 4.61 |
 
 
 * 截图或海报需求，无需像webview那样通过canvas中转，app平台view直接提供截图API，[takesnapshot](../dom/unielement.html#takesnapshot)。

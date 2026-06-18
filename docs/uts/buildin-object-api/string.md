@@ -646,9 +646,9 @@ match() 方法检索字符串与正则表达式进行匹配的结果。
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android 系统版本 | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | √ | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
 
 
 **uni-app 兼容性**

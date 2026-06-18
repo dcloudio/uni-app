@@ -6,9 +6,9 @@ line-height 属性用于设置多行文本的间距。
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -35,7 +35,7 @@ line-height: normal | <number> | <length> | <percentage>;
 ### line-height 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| normal | Web: 4.0; Android: 5.0; Android(Vapor): 5.21; iOS: 5.0; iOS(Vapor): 5.11; HarmonyOS: 5.0; HarmonyOS(Vapor): 5.0 | 由各平台实现，约为 1.2，取决于元素的 font-family。 |
+| normal | Web: 4.0; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | 由各平台实现，约为 1.2，取决于元素的 font-family。 |
 
 
 ### 默认值 @default-value 

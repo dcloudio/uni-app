@@ -605,7 +605,7 @@
 | backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS: x | tab 的背景色 |
 | backgroundImage | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS: x | 图片背景 |
 | backgroundRepeat | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS: x | 背景图平铺方式 |
-| borderColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 |  | Web: 4.23; 微信小程序: 4.41; Android: x; iOS: 4.23; HarmonyOS: x; HarmonyOS(Vapor): x | tabbar上边框的颜色（优先级高于 borderStyle） |
+| borderColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 |  | Web: 4.23; 微信小程序: 4.41; Android: x; iOS: 4.23; HarmonyOS: x | tabbar上边框的颜色（优先级高于 borderStyle） |
 | borderStyle | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS: x | tabbar上边框的颜色 |
 | success | (result: [SetTabBarStyleSuccess](#settabbarstylesuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS: x | 接口调用成功的回调函数 |
 | fail | (result: [SetTabBarStyleFail](#settabbarstylefail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS: x | 接口调用失败的回调函数 |

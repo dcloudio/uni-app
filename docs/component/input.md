@@ -16,33 +16,33 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 5.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| name | string | "input" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
-| disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否禁用 |
-| value | string \| number | "" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 输入框的初始内容 |
-| type | string | "text" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | input的类型 |
-| password | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否是密码类型 |
-| placeholder | string | "" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 输入框为空时占位符 |
-| placeholder-style | string | "" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定 placeholder 的样式 |
-| placeholder-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定 placeholder 的样式类 |
-| maxlength | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 最大输入长度，0和正数为合法值，非法值的时候不限制最大长度 |
-| cursor-spacing | number | 0 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x; HarmonyOS(Vapor): x | 指定光标与键盘的距离，单位 px 。取 input 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离 |
-| cursor-color | string([string.ColorString](/uts/data-type.md#ide-string)) | "" | Web: 4.0; 微信小程序: 4.41; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定光标颜色 |
-| auto-focus | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 自动获取焦点，与`focus`属性对比，此属性只会首次生效。 |
-| focus | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 获取焦点 |
-| confirm-type | string | "done" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置键盘右下角按钮的文字，仅在 type为text 时生效。 |
-| confirm-hold | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 点击键盘右下角按钮时是否保持键盘不收起 |
-| cursor | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定focus时的光标位置 |
-| selection-start | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 光标起始位置，自动聚集时有效，需与selection-end搭配使用 |
-| selection-end | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 光标结束位置，自动聚集时有效，需与selection-satrt搭配使用 |
-| adjust-position | boolean | true | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 键盘弹起时，是否自动上推页面 |
+| name | string | "input" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
+| disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否禁用 |
+| value | string \| number | "" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 输入框的初始内容 |
+| type | string | "text" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | input的类型 |
+| password | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否是密码类型 |
+| placeholder | string | "" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 输入框为空时占位符 |
+| placeholder-style | string | "" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定 placeholder 的样式 |
+| placeholder-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定 placeholder 的样式类 |
+| maxlength | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 最大输入长度，0和正数为合法值，非法值的时候不限制最大长度 |
+| cursor-spacing | number | 0 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 指定光标与键盘的距离，单位 px 。取 input 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离 |
+| cursor-color | string([string.ColorString](/uts/data-type.md#ide-string)) | "" | Web: 4.0; 微信小程序: 4.41; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 | 指定光标颜色 |
+| auto-focus | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 自动获取焦点，与`focus`属性对比，此属性只会首次生效。 |
+| focus | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 获取焦点 |
+| confirm-type | string | "done" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设置键盘右下角按钮的文字，仅在 type为text 时生效。 |
+| confirm-hold | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 点击键盘右下角按钮时是否保持键盘不收起 |
+| cursor | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定focus时的光标位置 |
+| selection-start | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 光标起始位置，自动聚集时有效，需与selection-end搭配使用 |
+| selection-end | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 光标结束位置，自动聚集时有效，需与selection-satrt搭配使用 |
+| adjust-position | boolean | true | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 键盘弹起时，是否自动上推页面 |
 | ~~inputmode~~ | none \| text \| decimal \| numeric \| tel \| search \| email \| url | "text" | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 是一个枚举属性，它提供了用户在编辑元素或其内容时可能输入的数据类型的提示。在符合条件的高版本webview里，uni-app的 web 和 app-vue 平台中可使用本属性。(自 5.0+ 废弃，推荐使用 type，同时配置以 inputmode 为准) |
 | text-content-type | string |   | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 文本区域的语义，根据类型自动填充 |
 | hold-keyboard | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | focus时，点击页面的时候不收起键盘 |

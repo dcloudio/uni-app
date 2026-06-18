@@ -6,9 +6,9 @@ CSS transform 属性允许你旋转，缩放，倾斜或平移给定元素。这
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,16 +34,16 @@ transform: none | <transform-list>;
 ### transform 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| rotate(<angle>) | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 旋转元素以给定的角度（angle） |
-| rotateX(<angle>) | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 绕 X 轴旋转元素以给定的角度（angle） |
-| rotateY(<angle>) | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 绕 Y 轴旋转元素以给定的角度（angle） |
-| rotateZ(<angle>) | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 绕 Z 轴旋转元素以给定的角度（angle） |
-| scale(<number> <number>) | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 缩放元素的尺寸，水平和垂直方向分别使用给定的比例（number） |
-| scaleX(<number>) | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 水平方向缩放元素的尺寸，使用给定的比例（number） |
-| scaleY(<number>) | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 垂直方向缩放元素的尺寸，使用给定的比例（number） |
-| translate(<length/percentage> <length/percentage>) | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 沿 X 和 Y 轴移动元素，水平和垂直方向分别使用给定的距离或百分比 |
-| translateX(<length/percentage>) | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 沿 X 轴移动元素，使用给定的距离或百分比 |
-| translateY(<length/percentage>) | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 沿 Y 轴移动元素，使用给定的距离或百分比 |
+| rotate(<angle>) | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 旋转元素以给定的角度（angle） |
+| rotateX(<angle>) | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 绕 X 轴旋转元素以给定的角度（angle） |
+| rotateY(<angle>) | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 绕 Y 轴旋转元素以给定的角度（angle） |
+| rotateZ(<angle>) | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 绕 Z 轴旋转元素以给定的角度（angle） |
+| scale(<number> <number>) | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 缩放元素的尺寸，水平和垂直方向分别使用给定的比例（number） |
+| scaleX(<number>) | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 水平方向缩放元素的尺寸，使用给定的比例（number） |
+| scaleY(<number>) | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 垂直方向缩放元素的尺寸，使用给定的比例（number） |
+| translate(<length/percentage> <length/percentage>) | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 沿 X 和 Y 轴移动元素，水平和垂直方向分别使用给定的距离或百分比 |
+| translateX(<length/percentage>) | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 沿 X 轴移动元素，使用给定的距离或百分比 |
+| translateY(<length/percentage>) | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 沿 Y 轴移动元素，使用给定的距离或百分比 |
 
 
 

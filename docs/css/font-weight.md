@@ -6,9 +6,9 @@ font-weight 属性用于设置字体的粗细程度。
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -35,17 +35,17 @@ font-weight: <font-weight-absolute>{1,2};
 ### font-weight 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| normal | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 正常粗细。与 400 等值。 |
-| bold | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 加粗。与 700 等值。 |
-| 100 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | Thin |
-| 200 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | Extra Light (Ultra Light) |
-| 300 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | Light |
-| 400 | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 正常粗细，与 normal 等值。 |
-| 500 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | Medium |
-| 600 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | Semi Bold (Demi Bold) |
-| 700 | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 加粗，与 bold 等值。 |
-| 800 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | Extra Bold (Ultra Bold) |
-| 900 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | Black (Heavy) |
+| normal | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 正常粗细。与 400 等值。 |
+| bold | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 加粗。与 700 等值。 |
+| 100 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; iOS: 4.11; HarmonyOS: 4.61 | Thin |
+| 200 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; iOS: 4.11; HarmonyOS: 4.61 | Extra Light (Ultra Light) |
+| 300 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; iOS: 4.11; HarmonyOS: 4.61 | Light |
+| 400 | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 正常粗细，与 normal 等值。 |
+| 500 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; iOS: 4.11; HarmonyOS: 4.61 | Medium |
+| 600 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; iOS: 4.11; HarmonyOS: 4.61 | Semi Bold (Demi Bold) |
+| 700 | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 加粗，与 bold 等值。 |
+| 800 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; iOS: 4.11; HarmonyOS: 4.61 | Extra Bold (Ultra Bold) |
+| 900 | Web: 4.0; Android 系统版本: 9.0; Android: 5.08; iOS: 4.11; HarmonyOS: 4.61 | Black (Heavy) |
 
 
 ### 默认值 @default-value 

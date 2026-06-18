@@ -13,7 +13,7 @@
 ### UniElement 的属性值 @unielement-values
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | string | 是 |  | Web: x; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS 系统版本: 12; HarmonyOS: x | 只读属性，当前元素的标识符 |
+| id | string | 是 |  | Web: x; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS 系统版本: 12; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 只读属性，当前元素的标识符 |
 | isConnected | boolean | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS 系统版本: 12; HarmonyOS: 4.61 | 只读属性，当前元素是否与 DOM 树连接 |
 | attributes | Map\<string, any> | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素上所有属性元素的集合 |
 | classList | Array&lt;string&gt; | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS:   | 只读属性，当前元素 class 属性的动态集合 |
@@ -34,7 +34,7 @@
 | scrollTop | number | 是 |  | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 获取或修改当前元素竖向滚动逻辑像素值，仅scroll-view、list-view可滚动组件组件支持，其他组件修改无效、获取时返回 0 |
 | tagName | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，获取当前元素的标签名 |
 | uniPage | [UniPage](/api/unipage.md) | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: 12; HarmonyOS: 4.61 | 只读属性，当前元素所属的页面对象 |
-| innerHTML | string | 是 |  | Web: x; 微信小程序: x; Android: 4.84; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x; HarmonyOS(Vapor): x | 只读属性，当前元素内部所有子元素（不包括注释节点）的 HTML 内容 |
+| innerHTML | string | 是 |  | Web: x; 微信小程序: x; Android: 4.84; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 只读属性，当前元素内部所有子元素（不包括注释节点）的 HTML 内容 |
 
 
 #### style@style
@@ -566,9 +566,9 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
 获取元素android原生view 可能返回null
 
 ##### getAndroidView 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| x | x | 4.25 | x | x | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | x | 4.25 | x | x |
 
 
 
@@ -652,9 +652,9 @@ if(webViewElement != null) {
 获取元素android原生activity 可能返回null
 
 ##### getAndroidActivity 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | 4.25 | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 4.25 | x | x | x |
 
 
 
@@ -1343,9 +1343,9 @@ if(webViewElement != null) {
 获取元素ios原生view
 
 ##### getIOSView 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.25 | x | x |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.25 | x |
 
 
 
@@ -1400,9 +1400,9 @@ if (view != null && view instanceof WKWebView) {
 将指定的监听器注册到元素对象上，当该对象触发指定的事件时，指定的回调函数就会被执行。
 
 ##### addEventListener 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS(Vapor) | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | x |
 
 
 ##### 参数 
@@ -1428,9 +1428,9 @@ if (view != null && view instanceof WKWebView) {
 删除使用 addEventListener 方法添加的事件监听器。
 
 ##### removeEventListener 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | x |
 
 
 ##### 参数 
@@ -2188,10 +2188,10 @@ if (view != null && view instanceof WKWebView) {
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| backwards | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 动画播放完毕后恢复初始状态 |
+| backwards | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 动画播放完毕后恢复初始状态 |
 | forwards | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS: x; HarmonyOS(Vapor): 5.08 | 动画播放完毕后保留状态 |
-| both | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 动画播放完毕后保留状态 |
-| none | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 动画播放完毕后恢复初始状态 |
+| both | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 动画播放完毕后保留状态 |
+| none | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 动画播放完毕后恢复初始状态 |
 
 
 - keyframes 支持的属性值

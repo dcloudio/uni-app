@@ -60,9 +60,9 @@ UniCanvasElement -- Extends --> UniElement
 创造 Blob 对象
 
 ##### toBlob 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.21 | x | x | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.21 | x | x | x | x | x |
 
 
 ##### 参数 

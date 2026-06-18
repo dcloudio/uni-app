@@ -6,9 +6,9 @@ text-decoration-style 属性用于设置元素中文本的修饰线样式，线�
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x | x |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | x | x | x |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,10 +34,10 @@ text-decoration-style: solid | double | dotted | dashed | wavy;
 ### text-decoration-style 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| solid | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 实线。 |
-| dashed | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 虚线。 |
-| dotted | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 点划线。 |
-| wavy | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 波浪线。 |
+| solid | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 实线。 |
+| dashed | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 虚线。 |
+| dotted | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 点划线。 |
+| wavy | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 波浪线。 |
 
 
 

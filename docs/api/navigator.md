@@ -36,13 +36,13 @@
 | :- |  :-: | :- |
 | auto | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 自动选择动画效果 |
 | none | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 无动画效果 |
-| slide-in-right | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 从右侧横向滑动效果 |
-| slide-in-left | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 从左侧横向滑动效果 |
-| slide-in-top | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 从上侧竖向滑动效果 |
-| slide-in-bottom | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 从下侧竖向滑动效果 |
-| fade-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 从完全透明到不透明逐渐显示 |
-| zoom-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 在屏幕中间从小到大逐渐放大显示 |
-| zoom-fade-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
+| slide-in-right | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 从右侧横向滑动效果 |
+| slide-in-left | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 从左侧横向滑动效果 |
+| slide-in-top | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 从上侧竖向滑动效果 |
+| slide-in-bottom | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 从下侧竖向滑动效果 |
+| fade-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 从完全透明到不透明逐渐显示 |
+| zoom-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 在屏幕中间从小到大逐渐放大显示 |
+| zoom-fade-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
 | pop-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 从右侧平移出栈动画效果 |
 
 #### NavigateToSuccess 的属性值 @navigatetosuccess-values 
@@ -373,13 +373,13 @@
 | :- |  :-: | :- |
 | auto | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 自动选择动画效果 |
 | none | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 无动画效果 |
-| slide-out-right | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 横向向右侧滑出屏幕动画 |
-| slide-out-left | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 横向向左侧滑出屏幕动画 |
-| slide-out-top | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 竖向向上侧滑出屏幕动画 |
-| slide-out-bottom | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 竖向向下侧滑出屏幕动画 |
-| fade-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 从不透明到透明逐渐隐藏动画 |
-| zoom-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 从大逐渐缩小关闭动画 |
-| zoom-fade-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
+| slide-out-right | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 横向向右侧滑出屏幕动画 |
+| slide-out-left | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 横向向左侧滑出屏幕动画 |
+| slide-out-top | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 竖向向上侧滑出屏幕动画 |
+| slide-out-bottom | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 竖向向下侧滑出屏幕动画 |
+| fade-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 从不透明到透明逐渐隐藏动画 |
+| zoom-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 从大逐渐缩小关闭动画 |
+| zoom-fade-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
 | pop-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 从右侧平移出栈动画效果 |
 
 #### NavigateBackSuccess 的属性值 @navigatebacksuccess-values 

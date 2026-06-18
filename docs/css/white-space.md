@@ -6,9 +6,9 @@ white-space 属性用于设置如何处理元素中的空白字符（空格、�
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.0 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.0 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,13 +34,13 @@ white-space: normal | pre | nowrap | pre-wrap | pre-line | break-spaces | [ <'wh
 ### white-space 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| normal | Web: 4.0; Android: 4.0; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 换行符（\n）当做空白符处理，连续的多个空白字符会合并为一个空格，文本遇到边界会自动换行，行末空白字符移除。 |
-| nowrap | Web: 4.0; Android: 4.0; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 换行符（\n）当做空白符处理，连续的多个空白字符会合并为一个空格，文本遇到边界不会自动换行，行末空白字符移除。 |
-| pre | Web: 4.0; Android: 4.81; Android(Vapor): 5.21; iOS: 4.81; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 换行符（\n）保留并换行显示，连续的多个空白字符保留，文本遇到边界不会自动换行，行末空白字符保留。 |
-| pre-wrap | Web: 4.0; Android: 4.81; Android(Vapor): 5.21; iOS: 4.81; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 换行符（\n）保留并换行显示，连续的多个空白字符保留，文本遇到边界会自动换行，行末空白字符保留但“不占位置”。 |
-| pre-line | Web: 4.0; Android: 4.81; Android(Vapor): 5.21; iOS: 4.81; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 换行符（\n）保留并换行显示，连续的多个空白字符会合并为一个空格，文本遇到边界会自动换行，行末空白字符移除。 |
-| break-spaces | Web: 4.0; Android: 4.81; Android(Vapor): 5.21; iOS: 4.81; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 换行符（\n）保留并换行显示，连续的多个空白字符保留，文本遇到边界会自动换行，行末空白字符换行处理。 |
-| keep | Web: x; Android: 5.0; Android(Vapor): 5.21; iOS: 5.0; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 不对空白字符处理，保持原始值。换行符（\n）保留并换行显示，连续的多个空白字符保留，文本遇到边界会自动换行，行末空白字符保留。 |
+| normal | Web: 4.0; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 换行符（\n）当做空白符处理，连续的多个空白字符会合并为一个空格，文本遇到边界会自动换行，行末空白字符移除。 |
+| nowrap | Web: 4.0; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 换行符（\n）当做空白符处理，连续的多个空白字符会合并为一个空格，文本遇到边界不会自动换行，行末空白字符移除。 |
+| pre | Web: 4.0; Android: 4.81; iOS: 4.81; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 换行符（\n）保留并换行显示，连续的多个空白字符保留，文本遇到边界不会自动换行，行末空白字符保留。 |
+| pre-wrap | Web: 4.0; Android: 4.81; iOS: 4.81; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 换行符（\n）保留并换行显示，连续的多个空白字符保留，文本遇到边界会自动换行，行末空白字符保留但“不占位置”。 |
+| pre-line | Web: 4.0; Android: 4.81; iOS: 4.81; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 换行符（\n）保留并换行显示，连续的多个空白字符会合并为一个空格，文本遇到边界会自动换行，行末空白字符移除。 |
+| break-spaces | Web: 4.0; Android: 4.81; iOS: 4.81; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 换行符（\n）保留并换行显示，连续的多个空白字符保留，文本遇到边界会自动换行，行末空白字符换行处理。 |
+| keep | Web: x; Android: 5.0; iOS: 5.0; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 不对空白字符处理，保持原始值。换行符（\n）保留并换行显示，连续的多个空白字符保留，文本遇到边界会自动换行，行末空白字符保留。 |
 
 
 ### 默认值 @default-value 

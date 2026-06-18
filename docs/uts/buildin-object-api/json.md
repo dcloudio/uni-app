@@ -38,7 +38,7 @@ JSON.parse() 方法用来解析 JSON 字符串，构造由字符串描述的 Jav
 | :- | :- | :- | :- |  :-: | :- |
 | text | string | 是 |  |   | 要被解析成 JavaScript 值的字符串 |
 | reviver | (this: any, key: string, value: any) => any | 否 |  | Web: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | \[可选]转换器，如果传入该参数 (函数)，可以用来修改解析生成的原始值，调用时机在 parse 函数返回之前。 |
-| ignoreError | boolean | 否 | false | Web: √; Android: 4.41; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: √; HarmonyOS: √ | \[ignoreError=false]是否要忽略，解析错误时引发的控制台报错，默认为false | 
+| ignoreError | boolean | 否 | false | Web: √; Android: 4.41; iOS 系统版本: x; iOS: x; HarmonyOS: √ | \[ignoreError=false]是否要忽略，解析错误时引发的控制台报错，默认为false | 
 
 
 **返回值**

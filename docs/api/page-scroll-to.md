@@ -38,7 +38,7 @@ app-uvue下，其实没有页面级滚动。但本API做了一定兼容，当页
 | scrollTop | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 滚动到页面的目标位置（单位px） |
 | selector | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 元素选择器，用于指定要滚动到的元素位置 |
 | offsetTop | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 偏移距离，可以滚动到 selector 加偏移距离的位置 |
-| duration | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 滚动动画的时长，默认300，单位 ms |
+| duration | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 滚动动画的时长，默认300，单位 ms |
 | success | (result: [PageScrollToSuccess](#pagescrolltosuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
 | fail | (result: [PageScrollToFail](#pagescrolltofail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
 | complete | (result: [PageScrollToComplete](#pagescrolltocomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 

@@ -6,9 +6,9 @@ width 属性用于设置元素的宽度。width 默认设置内容区域的宽�
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -35,10 +35,10 @@ width: <viewport-length>{1,2};
 ### width 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| auto | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 浏览器将会为指定的元素计算并选择一个宽度。 |
-| fit-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 取以下两种值中的较大值：<br/>    <br/>      固有的最小宽度<br/>      固有首选宽度（max-content）和可用宽度（available）两者中的较小值<br/>    <br/>    可表示为：min(max-content, max(min-content, \<length-percentage>)) |
-| max-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 元素内容固有的（intrinsic）合适宽度。 |
-| min-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 元素内容固有的最小宽度。 |
+| auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 浏览器将会为指定的元素计算并选择一个宽度。 |
+| fit-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 取以下两种值中的较大值：<br/>    <br/>      固有的最小宽度<br/>      固有首选宽度（max-content）和可用宽度（available）两者中的较小值<br/>    <br/>    可表示为：min(max-content, max(min-content, \<length-percentage>)) |
+| max-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 元素内容固有的（intrinsic）合适宽度。 |
+| min-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 元素内容固有的最小宽度。 |
 
 
 **注意**

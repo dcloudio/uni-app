@@ -6,9 +6,9 @@ border-right-style 是 border 中的一个 CSS 子属性，描述的是右边框
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,10 +34,10 @@ border-right-style: <line-style>;
 ### border-right-style 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| none | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 和关键字 hidden 类似，不显示边框。在这种情况下，如果没有设定背景图片，border-width 计算后的值将是 0，即使先前已经指定过它的值。在单元格边框重叠情况下，none 值优先级最低，意味着如果存在其他的重叠边框，则会显示为那个边框。 |
-| solid | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 显示为一条实线。 |
-| dashed | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 显示为一系列短的方形虚线。标准中没有定义线段的长度和大小，视不同实现而定。 |
-| dotted | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 显示为一系列圆点。标准中没有定义两点之间的间隔大小，视不同实现而定。圆点半径是 border-width 计算值的一半。 |
+| none | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 和关键字 hidden 类似，不显示边框。在这种情况下，如果没有设定背景图片，border-width 计算后的值将是 0，即使先前已经指定过它的值。在单元格边框重叠情况下，none 值优先级最低，意味着如果存在其他的重叠边框，则会显示为那个边框。 |
+| solid | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 显示为一条实线。 |
+| dashed | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 显示为一系列短的方形虚线。标准中没有定义线段的长度和大小，视不同实现而定。 |
+| dotted | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 显示为一系列圆点。标准中没有定义两点之间的间隔大小，视不同实现而定。圆点半径是 border-width 计算值的一半。 |
 
 
 

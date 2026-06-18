@@ -54,7 +54,7 @@
 | 0 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 图文 |
 | 1 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 纯文字 |
 | 2 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 纯图片 |
-| 3 | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 音乐 |
+| 3 | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 音乐 |
 | 4 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 视频 |
 | 5 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 小程序 |
 
@@ -64,7 +64,7 @@
 | :- |  :-: | :- |
 | WXSceneSession | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享到聊天界面 |
 | WXSceneTimeline | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享到朋友圈 |
-| WXSceneFavorite | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): x | 分享微信收藏 |
+| WXSceneFavorite | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 分享微信收藏 |
 
 ##### miniProgram 的属性描述
 

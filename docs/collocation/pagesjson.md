@@ -419,18 +419,18 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 | selectedColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.11 | tab 上的文字选中时的颜色 |
 | backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.11 | tab 的背景色 |
 | borderStyle | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) | "black" | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.11 | tabbar 上边框的颜色，可选值 black、white，black对应颜色rgba(0,0,0,0.33)，white对应颜色rgba(255,255,255,0.33)。 |
-| blurEffect | 'dark' \| 'extralight' \| 'light' \| 'none' | "none" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS(Vapor): x; HarmonyOS:   | 高斯模糊效果 |
+| blurEffect | 'dark' \| 'extralight' \| 'light' \| 'none' | "none" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 高斯模糊效果 |
 | list | Array\<[PagesOptionsTabbarList](#pagesoptionstabbarlist)> |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.11 | tab 的列表，详见 list 属性说明，最少2个、最多5个 tab |
-| position | 'top' \| 'bottom' | "bottom" | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS:   | tabbar 的位置,可选值 bottom、top。 |
-| fontSize | string | "10px" | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 文字默认大小 |
-| iconWidth | string | "24px" | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 图标默认宽度（高度等比例缩放） |
-| spacing | string | "3px" | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 图标和文字的间距 |
-| height | string | "50px" | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | tabBar 默认高度 |
-| midButton | [midButton 配置项列表](#tabbar-midbutton) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 中间按钮 仅在 list 项为偶数时有效 |
-| iconfontSrc | string |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | list设置 iconfont 属性时，需要指定字体文件路径 |
-| backgroundImage | string |  | 否 | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 设置背景图片，优先级高于 backgroundColor |
-| backgroundRepeat | 'repeat' \| 'repeat-x' \| 'repeat-y' \| 'no-repeat' | "no-repeat" | 否 | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 设置标题栏的背景图平铺方式 |
-| redDotColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | tabbar上红点颜色 |
+| position | 'top' \| 'bottom' | "bottom" | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | tabbar 的位置,可选值 bottom、top。 |
+| fontSize | string | "10px" | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x | 文字默认大小 |
+| iconWidth | string | "24px" | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x | 图标默认宽度（高度等比例缩放） |
+| spacing | string | "3px" | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x | 图标和文字的间距 |
+| height | string | "50px" | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x | tabBar 默认高度 |
+| midButton | [midButton 配置项列表](#tabbar-midbutton) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 中间按钮 仅在 list 项为偶数时有效 |
+| iconfontSrc | string |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x | list设置 iconfont 属性时，需要指定字体文件路径 |
+| backgroundImage | string |  | 否 | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x | 设置背景图片，优先级高于 backgroundColor |
+| backgroundRepeat | 'repeat' \| 'repeat-x' \| 'repeat-y' \| 'no-repeat' | "no-repeat" | 否 | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x | 设置标题栏的背景图平铺方式 |
+| redDotColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x | tabbar上红点颜色 |
 
 <a id="tabbar-tips"></a>
 
@@ -453,7 +453,7 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
-| iconfont | [iconfont 配置项列表](#pagesoptionstabbarlist-iconfont) |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 字体图标，优先级高于 iconPath |
+| iconfont | [iconfont 配置项列表](#pagesoptionstabbarlist-iconfont) |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x | 字体图标，优先级高于 iconPath |
 | pagePath | string ([string.PageURIString](/uts/data-type.md#ide-string)) |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.11 | 页面路径，必须在 pages 中先定义 |
 | text | string |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.11 | tab 上按钮文字，在 App 和 H5 平台为非必填。例如中间可放一个没有文字的+号图标 |
 | iconPath | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.11 | 图片路径，icon 大小限制为40kb，建议尺寸为 81px * 81px，当 position 为 top 时，此参数无效，不支持网络图片，不支持字体图标 |
@@ -485,35 +485,35 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 
 字体图标，优先级高于 iconPath
 
-| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | 3.9 | 4.18 | x | x | x |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 3.9 | 4.18 | x | x |
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
-| text | string |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 字库 Unicode 码 |
-| selectedText | string |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 选中后字库 Unicode 码 |
-| fontSize | string |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 字体图标字号(px) |
-| color | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 字体图标颜色 |
-| selectedColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 字体图标选中颜色 |
+| text | string |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x | 字库 Unicode 码 |
+| selectedText | string |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x | 选中后字库 Unicode 码 |
+| fontSize | string |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x | 字体图标字号(px) |
+| color | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x | 字体图标颜色 |
+| selectedColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.18; iOS(Vapor): x; HarmonyOS: x | 字体图标选中颜色 |
 
 #### midButton 配置项列表 @tabbar-midbutton
 
 中间按钮 仅在 list 项为偶数时有效
 
-| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x |
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
-| width | string | "80px" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 中间按钮的宽度，tabBar 其它项为减去此宽度后平分，默认值为与其它项平分宽度 |
-| height | string | "80px" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 中间按钮的高度，可以大于 tabBar 高度，达到中间凸起的效果 |
-| text | string |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 中间按钮的文字 |
-| iconPath | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 中间按钮的图片路径 |
-| iconWidth | string | "24px" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 图标默认宽度（高度等比例缩放） |
-| backgroundImage | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 中间按钮的背景图片路径 |
-| iconfont | object |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 字体图标，优先级高于 iconPath |
+| width | string | "80px" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 中间按钮的宽度，tabBar 其它项为减去此宽度后平分，默认值为与其它项平分宽度 |
+| height | string | "80px" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 中间按钮的高度，可以大于 tabBar 高度，达到中间凸起的效果 |
+| text | string |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 中间按钮的文字 |
+| iconPath | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 中间按钮的图片路径 |
+| iconWidth | string | "24px" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 图标默认宽度（高度等比例缩放） |
+| backgroundImage | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 中间按钮的背景图片路径 |
+| iconfont | object |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 字体图标，优先级高于 iconPath |
 
 ### topWindow 配置项列表 @pages-topwindow
 

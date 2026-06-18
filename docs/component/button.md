@@ -10,25 +10,25 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 5.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否禁用 |
-| hover-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "button-hover" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果 |
+| disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否禁用 |
+| hover-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "button-hover" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果 |
 | hover-stop-propagation | boolean | false | Web: x; 微信小程序: 4.41; Android: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS:  ; HarmonyOS(Vapor): 5.0 | 指定是否阻止本节点的祖先节点出现点击态 |
-| hover-start-time | number | 20 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 按住后多久出现点击态，单位毫秒 |
-| hover-stay-time | number | 70 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 手指松开后点击态保留时间，单位毫秒 |
-| size | string | "default" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 按钮大小 |
-| type | string | "default" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 按钮类型 |
-| plain | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 按钮是否镂空，背景色透明 |
+| hover-start-time | number | 20 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按住后多久出现点击态，单位毫秒 |
+| hover-stay-time | number | 70 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指松开后点击态保留时间，单位毫秒 |
+| size | string | "default" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按钮大小 |
+| type | string | "default" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按钮类型 |
+| plain | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按钮是否镂空，背景色透明 |
 | loading | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 名称前是否带 loading 图标 |
-| form-type | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 用于 form 组件，点击分别会触发 form 组件的 submit/reset 事件 |
-| open-type | string |   | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 开放能力 |
+| form-type | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 用于 form 组件，点击分别会触发 form 组件的 submit/reset 事件 |
+| open-type | string |   | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 开放能力 |
 | lang | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。 |
 | session-from | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 会话来源 |
 | send-message-title | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 会话内消息卡片标题 |
@@ -62,29 +62,29 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| default | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 默认大小 |
-| mini | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 小尺寸 |
+| default | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 默认大小 |
+| mini | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 小尺寸 |
 
 #### type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| default | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 白色 |
-| primary | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 蓝色 |
-| warn | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 红色 |
+| default | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 白色 |
+| primary | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 蓝色 |
+| warn | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 红色 |
 
 #### form-type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| submit | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 提交表单 |
-| reset | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 重置表单 |
+| submit | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 提交表单 |
+| reset | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 重置表单 |
 
 #### open-type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| agreePrivacyAuthorization | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 用户同意隐私协议按钮。用户点击一次此按钮后，所有已声明过的隐私接口可以正常调用。 |
+| agreePrivacyAuthorization | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 用户同意隐私协议按钮。用户点击一次此按钮后，所有已声明过的隐私接口可以正常调用。 |
 | feedback | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 打开“意见反馈”页面，用户可提交反馈内容并上传日志 |
 | share | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 触发用户转发 |
 | getUserInfo | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 获取用户信息，可以从@getuserinfo回调中获取到用户信息 |
