@@ -33,7 +33,7 @@
 | extra-data | object |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 当target="miniProgram"时有效，需要传递给目标应用的数据，目标应用可在 App.onLaunch()，App.onShow() 中获取到这份数据 |
 | version | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 当target="miniProgram"时有效，要打开的小程序版本，有效值 develop（开发版），trial（体验版），release（正式版），仅在当前小程序为开发版或体验版时此参数有效；如果当前小程序是体验版或正式版，则打开的小程序必定是正式版 |
 | animation-type | string | "pop-in/out" | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 当 open-type="navigateTo" 或 open-type="navigateBack" 时有效，窗口的显示/关闭的动画类型。 |
-| animation-duration | number | 300 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 当 open-type="navigateTo" 或 open-type="navigateBack" 时有效，窗口的显示/关闭动画的持续时间。 |
+| animation-duration | number | 300 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 当 open-type="navigateTo" 或 open-type="navigateBack" 时有效，窗口的显示/关闭动画的持续时间。 |
 | hover-class | string |   | Web: 4.41; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果 |
 | hover-stop-propagation | boolean |   | Web: 4.41; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 指定是否阻止本节点的祖先节点出现点击态 |
 | hover-start-time | number |   | Web: 4.41; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 按住后多久出现点击态，单位毫秒 |
@@ -74,24 +74,24 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| auto |   | 自动选择动画效果 |
-| none |   | 无动画效果 |
-| slide-in-right |   | 从右侧横向滑动效果 |
-| slide-in-left |   | 左侧横向滑动效果 |
-| slide-in-top |   | 从上侧竖向滑动效果 |
-| slide-in-bottom |   | 从下侧竖向滑动效果 |
-| fade-in |   | 从透明到不透明逐渐显示效果 |
-| zoom-out |   | 从小到大逐渐放大显示效果 |
-| zoom-fade-out |   | 从小到大逐渐放大并且从透明到不透明逐渐显示效果 |
-| pop-in |   | 从右侧平移入栈动画效果 |
-| slide-out-right |   | 横向向右侧滑出屏幕动画 |
-| slide-out-left |   | 横向向左侧滑出屏幕动画 |
-| slide-out-top |   | 竖向向上侧滑出屏幕动画 |
-| slide-out-bottom |   | 竖向向下侧滑出屏幕动画 |
-| fade-out |   | 从不透明到透明逐渐隐藏动画 |
-| zoom-in |   | 从大逐渐缩小关闭动画 |
-| zoom-fade-in |   | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
-| pop-out |   | 从右侧平移出栈动画效果 |
+| auto | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 5.0; HarmonyOS(Vapor): 5.0 | 自动选择动画效果 |
+| none | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 无动画效果 |
+| slide-in-right | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 从右侧横向滑动效果 |
+| slide-in-left | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 左侧横向滑动效果 |
+| slide-in-top | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 从上侧竖向滑动效果 |
+| slide-in-bottom | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 从下侧竖向滑动效果 |
+| fade-in | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 从透明到不透明逐渐显示效果 |
+| zoom-out | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 从小到大逐渐放大显示效果 |
+| zoom-fade-out | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 从小到大逐渐放大并且从透明到不透明逐渐显示效果 |
+| pop-in | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 从右侧平移入栈动画效果 |
+| slide-out-right | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 横向向右侧滑出屏幕动画 |
+| slide-out-left | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 横向向左侧滑出屏幕动画 |
+| slide-out-top | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 竖向向上侧滑出屏幕动画 |
+| slide-out-bottom | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 竖向向下侧滑出屏幕动画 |
+| fade-out | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 从不透明到透明逐渐隐藏动画 |
+| zoom-in | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 从大逐渐缩小关闭动画 |
+| zoom-fade-in | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
+| pop-out | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 从右侧平移出栈动画效果 |
 
 
 

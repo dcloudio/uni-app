@@ -86,7 +86,7 @@ UniSwiperChangeEvent -- Extends --> UniEvent
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | current | number | 是 |  |   | 发生change事件的滑块下标 |
-| currentItemId | string | 否 |  | Web: √; 微信小程序: 4.41; Android: x; iOS 系统版本: √; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 切换结束的 swiper-item 的 item-id 属性值 |
+| currentItemId | string | 否 |  | Web: √; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 切换结束的 swiper-item 的 item-id 属性值 |
 | source | string | 是 |  |   | autoplay 自动播放导致swiper变化；touch 用户划动引起swiper变化 |
 
 
@@ -131,7 +131,7 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | current | number | 是 |  |   | 发生动画结束事件的滑块下标 |
-| currentItemId | string | 否 |  | Web: √; 微信小程序: 4.41; Android: x; iOS 系统版本: √; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 动画结束的 swiper-item 的 item-id 属性值 |
+| currentItemId | string | 否 |  | Web: √; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 动画结束的 swiper-item 的 item-id 属性值 |
 | source | string | 是 |  |   | autoplay 自动播放导致swiper变化；touch 用户划动引起swiper变化 |
 
 

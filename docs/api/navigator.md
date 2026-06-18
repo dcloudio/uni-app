@@ -36,13 +36,13 @@
 | :- |  :-: | :- |
 | auto | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 自动选择动画效果 |
 | none | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 无动画效果 |
-| slide-in-right | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从右侧横向滑动效果 |
-| slide-in-left | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从左侧横向滑动效果 |
-| slide-in-top | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从上侧竖向滑动效果 |
-| slide-in-bottom | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从下侧竖向滑动效果 |
-| fade-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从完全透明到不透明逐渐显示 |
-| zoom-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 在屏幕中间从小到大逐渐放大显示 |
-| zoom-fade-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
+| slide-in-right | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 从右侧横向滑动效果 |
+| slide-in-left | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 从左侧横向滑动效果 |
+| slide-in-top | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 从上侧竖向滑动效果 |
+| slide-in-bottom | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 从下侧竖向滑动效果 |
+| fade-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 从完全透明到不透明逐渐显示 |
+| zoom-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 在屏幕中间从小到大逐渐放大显示 |
+| zoom-fade-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
 | pop-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 从右侧平移出栈动画效果 |
 
 #### NavigateToSuccess 的属性值 @navigatetosuccess-values 
@@ -361,7 +361,7 @@
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | delta | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 返回的页面数，如果 delta 大于现有页面数，则返回到首页 |
-| animationType | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.25; HarmonyOS:   | 窗口关闭的动画类型<br/> |
+| animationType | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 窗口关闭的动画类型<br/> |
 | animationDuration | number | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 窗口关闭动画的持续时间，单位为 ms |
 | success | (result: [NavigateBackSuccess](#navigatebacksuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: x; HarmonyOS:   | 接口调用成功的回调函数 |
 | fail | (result: [NavigateBackFail](#navigatebackfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
@@ -373,13 +373,13 @@
 | :- |  :-: | :- |
 | auto | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 自动选择动画效果 |
 | none | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 无动画效果 |
-| slide-out-right | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 横向向右侧滑出屏幕动画 |
-| slide-out-left | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 横向向左侧滑出屏幕动画 |
-| slide-out-top | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 竖向向上侧滑出屏幕动画 |
-| slide-out-bottom | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 竖向向下侧滑出屏幕动画 |
-| fade-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从不透明到透明逐渐隐藏动画 |
-| zoom-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从大逐渐缩小关闭动画 |
-| zoom-fade-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
+| slide-out-right | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 横向向右侧滑出屏幕动画 |
+| slide-out-left | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 横向向左侧滑出屏幕动画 |
+| slide-out-top | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 竖向向上侧滑出屏幕动画 |
+| slide-out-bottom | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 竖向向下侧滑出屏幕动画 |
+| fade-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 从不透明到透明逐渐隐藏动画 |
+| zoom-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 从大逐渐缩小关闭动画 |
+| zoom-fade-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: x | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
 | pop-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 从右侧平移出栈动画效果 |
 
 #### NavigateBackSuccess 的属性值 @navigatebacksuccess-values 
