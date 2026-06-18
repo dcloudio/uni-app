@@ -80,6 +80,15 @@
           "swift": false,
           "arkts": false
         }
+      },
+      "createDramaAd": {
+        "name": "createDramaAd",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
       }
     },
     "components": [
