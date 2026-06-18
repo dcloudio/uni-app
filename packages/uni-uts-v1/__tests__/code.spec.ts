@@ -14,15 +14,26 @@ const pluginElementProxyDir = resolve(
   'examples/uts/utssdk/test-element-proxy'
 )
 
-async function withUniAppXDom2<T>(
-  value: 'true' | undefined,
+type UTSPlatform = GenProxyCodeOptions['platform']
+
+async function withUniAppXEnv<T>(
+  env: {
+    dom2?: 'true'
+    platform?: UTSPlatform
+  },
   run: () => Promise<T>
 ) {
   const originalUniAppXDom2 = process.env.UNI_APP_X_DOM2
-  if (value === undefined) {
+  const originalUniUTSPlatform = process.env.UNI_UTS_PLATFORM
+  if (env.dom2 === undefined) {
     delete process.env.UNI_APP_X_DOM2
   } else {
-    process.env.UNI_APP_X_DOM2 = value
+    process.env.UNI_APP_X_DOM2 = env.dom2
+  }
+  if (env.platform === undefined) {
+    Reflect.deleteProperty(process.env, 'UNI_UTS_PLATFORM')
+  } else {
+    process.env.UNI_UTS_PLATFORM = env.platform
   }
   try {
     return await run()
@@ -31,6 +42,11 @@ async function withUniAppXDom2<T>(
       delete process.env.UNI_APP_X_DOM2
     } else {
       process.env.UNI_APP_X_DOM2 = originalUniAppXDom2
+    }
+    if (originalUniUTSPlatform === undefined) {
+      Reflect.deleteProperty(process.env, 'UNI_UTS_PLATFORM')
+    } else {
+      process.env.UNI_UTS_PLATFORM = originalUniUTSPlatform
     }
   }
 }
@@ -107,7 +123,7 @@ describe('code', () => {
     ).toMatchSnapshot()
   })
 
-  function genElementProxyCode() {
+  function genElementProxyCode(platform: UTSPlatform = 'app-android') {
     return genProxyCode(pluginElementProxyDir, {
       id: 'test-element',
       is_uni_modules: false,
@@ -116,12 +132,15 @@ describe('code', () => {
       extname: '.uts',
       androidComponents: {},
       inputDir,
-      platform: 'app-android',
+      platform,
     })
   }
 
-  test('genProxyCode uses element proxy class for Uni*Element and Uni*ElementImpl classes in DOM2', async () => {
-    const res = await withUniAppXDom2('true', genElementProxyCode)
+  test('genProxyCode uses element proxy class for Uni*Element and Uni*ElementImpl classes in android DOM2', async () => {
+    const res = await withUniAppXEnv(
+      { dom2: 'true', platform: 'app-android' },
+      () => genElementProxyCode('app-android')
+    )
 
     expect(res).toContain('initUTSElementProxyClass')
     expect(res).toContain(
@@ -140,7 +159,33 @@ describe('code', () => {
   })
 
   test('genProxyCode uses normal proxy class for Uni*Element and Uni*ElementImpl classes outside DOM2', async () => {
-    const res = await withUniAppXDom2(undefined, genElementProxyCode)
+    const res = await withUniAppXEnv({ platform: 'app-android' }, () =>
+      genElementProxyCode('app-android')
+    )
+
+    expect(res).toContain(
+      'export const UniViewElement = /*#__PURE__*/ initUTSProxyClass'
+    )
+    expect(res).toContain(
+      'export const UniCanvasElementImpl = /*#__PURE__*/ initUTSProxyClass'
+    )
+    expect(res).toContain(
+      'export const ViewController = /*#__PURE__*/ initUTSProxyClass'
+    )
+    expect(res).toContain('export default /*#__PURE__*/ initUTSProxyClass')
+    expect(res).not.toContain(
+      'export const UniViewElement = /*#__PURE__*/ initUTSElementProxyClass'
+    )
+    expect(res).not.toContain(
+      'export const UniCanvasElementImpl = /*#__PURE__*/ initUTSElementProxyClass'
+    )
+  })
+
+  test('genProxyCode uses normal proxy class for Uni*Element and Uni*ElementImpl classes in iOS DOM2', async () => {
+    const res = await withUniAppXEnv(
+      { dom2: 'true', platform: 'app-ios' },
+      () => genElementProxyCode('app-ios')
+    )
 
     expect(res).toContain(
       'export const UniViewElement = /*#__PURE__*/ initUTSProxyClass'
