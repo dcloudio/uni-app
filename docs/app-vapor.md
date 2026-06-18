@@ -177,7 +177,7 @@ ninja: error: failed recompaction: Permission denied。
 对比非蒸汽，蒸汽模式有一些变更调整，有一些待完成TODO，说明如下：
 
 ### vue蒸汽模式自身变更
-- **仅支持组合式，不支持选项式**
+- **仅支持组合式，不支持选项式。这是vue框架自身的新版约束**
 
     选项式转组合式，AI可以帮忙。hello uni-app x里大量的选项式页面都是用uni-agent转成了组合式，以适配蒸汽模式。详见[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)
 - 不再支持mixin
@@ -195,10 +195,9 @@ ninja: error: failed recompaction: Permission denied。
 
 ### 全局文件
 pages.json
-- TODO：iOS暂无tabbar，但有独立的[uni-tab组件](./component/uni-ui-x/uni-tab.md)
+- TODO：iOS暂无tabbar，但有独立的[uni-tab组件](./component/uni-ui-x/uni-tab.md)。自定义组件的性能与pages.json中的tabbar没有差别。
 
 ### 组件
-- TODO：全局属性data-暂未实现
 - 变更：不再支持uts兼容模式组件，仅支持uts标准模式组件，即使用native-view的开发方式。
 - 变更：布尔属性规范化。scroll-view等部分组件布尔属性默认值从true改为false。
 - 变更：list-view的变化和限制
