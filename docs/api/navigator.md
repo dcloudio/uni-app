@@ -21,7 +21,7 @@
 | :- | :- | :- | :- |  :-: | :- |
 | url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数 |
 | animationType | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 窗口显示的动画类型<br/> |
-| animationDuration | number | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 窗口显示动画的持续时间，单位为 ms |
+| animationDuration | number | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 窗口显示动画的持续时间，单位为 ms |
 | events | any | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 页面间通信接口，用于监听被打开页面发送到当前页面的数据 |
 | success | (result: [NavigateToSuccess](#navigatetosuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
 | fail | (result: [NavigateToFail](#navigatetofail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
@@ -362,7 +362,7 @@
 | :- | :- | :- | :- |  :-: | :- |
 | delta | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 返回的页面数，如果 delta 大于现有页面数，则返回到首页 |
 | animationType | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 窗口关闭的动画类型<br/> |
-| animationDuration | number | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 窗口关闭动画的持续时间，单位为 ms |
+| animationDuration | number | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 窗口关闭动画的持续时间，单位为 ms |
 | success | (result: [NavigateBackSuccess](#navigatebacksuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: x; HarmonyOS:   | 接口调用成功的回调函数 |
 | fail | (result: [NavigateBackFail](#navigatebackfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
 | complete | (result: [NavigateBackComplete](#navigatebackcomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 

@@ -1596,10 +1596,11 @@ export default {
 >
 > 具体请查看 [页面生命周期](../page.md#lifecycle)
 
-|组件中监听应用生命周期 |Android |iOS  | iOS(Vapor) |HarmonyOS | HarmonyOS(Vapor) |Web |微信小程序 |
-|:-:			          |:-:		 |:-:  |:-:         |:-:		  |:-:               |:-:	 |:-:		  |
-|onAppShow          |4.11    |4.11 |x           |4.61     |5.0              |4.11 |4.41     |
-|onAppHide          |4.11    |4.11 |x           |4.61     |5.0              |4.11 |4.41     |
+|组件中监听应用生命周期 |Android |Android(Vapor)  |iOS  | iOS(Vapor) |HarmonyOS | HarmonyOS(Vapor) |Web |微信小程序 |
+|:-:			          |:-:		 |:-:             |:-:  |:-:         |:-:		  |:-:               |:-:	 |:-:		  |
+|onAppShow          |4.11    |5.21            |4.11 |x           |4.61     |5.0               |4.11 |4.41     |
+|onAppHide          |4.11    |5.21            |4.11 |x           |4.61     |5.0               |4.11 |4.41     |
+|onError            |4.11    |5.21            |5.21 |5.21        |5.21     |5.21              |4.11 |4.41     |
 
 ::: warning 注意
  `onPageHide`、`onPageShow` 需要写在选项式的 setup 函数或者组合式 `<script setup>` 中才能生效
