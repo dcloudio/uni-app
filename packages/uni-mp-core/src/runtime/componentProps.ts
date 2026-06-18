@@ -48,11 +48,17 @@ function initDefaultProps(
       const $slots = Object.create(null)
       newVal &&
         newVal.forEach((slotName: string) => {
-          $slots[slotName] = true
+          if (slotName) {
+            $slots[slotName] = true
+          }
         })
       this.setData({
         $slots,
       })
+      if (this.$vm) {
+        this.$vm.$.slots = $slots
+        this.$vm.$forceUpdate()
+      }
     }
     properties.uS = {
       type: null,
