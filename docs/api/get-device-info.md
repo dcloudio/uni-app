@@ -56,8 +56,8 @@
 | osLanguage | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 操作系统语言<br/> |
 | osTheme | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 操作系统主题<br/> |
 | osAndroidAPILevel | number | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: x; HarmonyOS: x | Android 系统API库的版本。<br/> |
-| osHarmonySDKAPIVersion | number | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS 系统版本: √; HarmonyOS: 4.61 | 鸿蒙系统软件API版本<br/> |
-| osHarmonyDisplayVersion | string | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS 系统版本: √; HarmonyOS: 4.61 | 产品版本，关于本机信息内的软件版本<br/> |
+| osHarmonySDKAPIVersion | number | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 鸿蒙系统软件API版本<br/> |
+| osHarmonyDisplayVersion | string | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 产品版本，关于本机信息内的软件版本<br/> |
 | romName | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | rom 名称。Android 部分机型获取不到值。iOS 恒为 `ios`<br/> |
 | romVersion | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | rom 版本号。Android 部分机型获取不到值。iOS 为操作系统版本号（同 `osVersion`）。<br/> |
 | abi | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 应用（微信APP）二进制接口类型（仅 Android 支持）<br/> |

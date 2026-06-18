@@ -89,8 +89,8 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 | windowTop | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 内容区域距离顶部的距离（同CSS变量 `--window-top`），单位为px<br/> |
 | windowBottom | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 内容区域距离底部的距离（同CSS变量 `--window-bottom`），单位为px<br/> |
 | osAndroidAPILevel | number | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: x | Android 系统API库的版本。<br/> |
-| osHarmonySDKAPIVersion | number | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS 系统版本: √; HarmonyOS: 4.61 | 鸿蒙系统软件API版本<br/> |
-| osHarmonyDisplayVersion | string | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS 系统版本: √; HarmonyOS: 4.61 | 产品版本，关于本机信息内的软件版本<br/> |
+| osHarmonySDKAPIVersion | number | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 鸿蒙系统软件API版本<br/> |
+| osHarmonyDisplayVersion | string | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 产品版本，关于本机信息内的软件版本<br/> |
 | appTheme | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 当前App的主题<br/> |
 | hostTheme | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主主题（仅 web、微信小程序支持）<br/> |
 | hostVersion | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主版本（仅 web、微信小程序支持）<br/> |
@@ -532,8 +532,8 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 | windowTop | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 内容区域距离顶部的距离（同CSS变量 `--window-top`），单位为px<br/> |
 | windowBottom | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 内容区域距离底部的距离（同CSS变量 `--window-bottom`），单位为px<br/> |
 | osAndroidAPILevel | number | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: x | Android 系统API库的版本。<br/> |
-| osHarmonySDKAPIVersion | number | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS 系统版本: √; HarmonyOS: 4.61 | 鸿蒙系统软件API版本<br/> |
-| osHarmonyDisplayVersion | string | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS 系统版本: √; HarmonyOS: 4.61 | 产品版本，关于本机信息内的软件版本<br/> |
+| osHarmonySDKAPIVersion | number | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 鸿蒙系统软件API版本<br/> |
+| osHarmonyDisplayVersion | string | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 产品版本，关于本机信息内的软件版本<br/> |
 | appTheme | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 当前App的主题<br/> |
 | hostTheme | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主主题（仅 web、微信小程序支持）<br/> |
 | hostVersion | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主版本（仅 web、微信小程序支持）<br/> |

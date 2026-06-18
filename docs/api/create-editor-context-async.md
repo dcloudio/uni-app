@@ -34,9 +34,9 @@
 format
 修改样式
 ##### format 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | √ | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -51,9 +51,9 @@ format
 insertDivider
 插入分割线
 ##### insertDivider 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | √ | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -93,9 +93,9 @@ insertDivider
 insertImage
 插入图片
 ##### insertImage 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | √ | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -123,9 +123,9 @@ insertImage
 insertText
 覆盖当前选区，设置一段文本
 ##### insertText 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | √ | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -148,9 +148,9 @@ insertText
 insertLink
 插入链接
 ##### insertLink 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | √ | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -174,9 +174,9 @@ insertLink
 insertMention
 插入可整块删除的提及，提及文本默认为
 ##### insertMention 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | √ | 5.08 | 5.11 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.11 |
 
 ##### 参数 
 
@@ -203,9 +203,9 @@ insertMention
 setContents
 初始化编辑器内容，html和delta同时存在时仅delta生效
 ##### setContents 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | √ | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -229,9 +229,9 @@ setContents
 getContents
 获取编辑器内容
 ##### getContents 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | √ | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -262,9 +262,9 @@ getContents
 clear
 清空编辑器内容
 ##### clear 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | √ | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -278,9 +278,9 @@ clear
 removeFormat
 清除当前选区的样式
 ##### removeFormat 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | √ | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -294,9 +294,9 @@ removeFormat
 undo
 撤销
 ##### undo 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | √ | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -310,9 +310,9 @@ undo
 redo
 恢复
 ##### redo 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | √ | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -326,9 +326,9 @@ redo
 getSelectionText
 获取编辑器已选区域内的纯文本内容。当编辑器失焦或未选中一段区间时，返回内容为空。
 ##### getSelectionText 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | √ | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -357,9 +357,9 @@ getSelectionText
 scrollIntoView
 使得编辑器光标处滚动到窗口可视区域内。
 ##### scrollIntoView 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | √ | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -373,9 +373,9 @@ scrollIntoView
 blur
 编辑器失焦，同时收起键盘
 ##### blur 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | √ | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
