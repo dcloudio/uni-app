@@ -1625,7 +1625,7 @@ function createNativeEvent(evt, htmlElement = false) {
     detail: {},
     currentTarget: realCurrentTarget
   };
-  if (evt instanceof CustomEvent && isPlainObject(evt.detail)) {
+  if (typeof CustomEvent !== "undefined" && evt instanceof CustomEvent && isPlainObject(evt.detail)) {
     event.detail = evt.detail;
   }
   if (evt._stopped) {
