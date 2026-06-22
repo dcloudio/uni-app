@@ -16,16 +16,19 @@ export function setStatusBarStyle() {
       const lastSystemDialogPage =
         systemDialogPages[systemDialogPages.length - 1]
       const lastDialogPage = dialogPages[dialogPages.length - 1]
-      page =
-        // @ts-expect-error
-        Number(lastSystemDialogPage.__nativePageId) >
-        Number((lastDialogPage as any).__nativePageId)
-          ? lastSystemDialogPage.vm
-          : lastDialogPage.vm
+      if (lastSystemDialogPage && lastDialogPage) {
+        page =
+          Number((lastSystemDialogPage as any).__nativePageId) >
+          Number((lastDialogPage as any).__nativePageId)
+            ? lastSystemDialogPage.vm
+            : lastDialogPage.vm
+      } else {
+        page = lastSystemDialogPage?.vm || lastDialogPage?.vm
+      }
     } else if (dialogPages?.length) {
-      page = dialogPages[dialogPages.length - 1].vm
+      page = dialogPages[dialogPages.length - 1]?.vm
     } else if (systemDialogPages?.length) {
-      page = systemDialogPages[systemDialogPages.length - 1].vm
+      page = systemDialogPages[systemDialogPages.length - 1]?.vm
     } else {
       page = currentPage?.vm
     }
