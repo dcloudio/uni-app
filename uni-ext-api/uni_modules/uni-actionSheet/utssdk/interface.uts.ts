@@ -17,7 +17,7 @@ export type Popover = {
    *      "unixUtsPlugin": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "x",
    *      "unixVaporVer": "x"
@@ -90,7 +90,7 @@ export type Popover = {
    *      "unixUtsPlugin": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "x",
    *      "unixVaporVer": "x"
@@ -163,7 +163,7 @@ export type Popover = {
    *      "unixUtsPlugin": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "x",
    *      "unixVaporVer": "x"
@@ -236,7 +236,7 @@ export type Popover = {
    *      "unixUtsPlugin": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "x",
    *      "unixVaporVer": "x"
@@ -317,7 +317,7 @@ export interface ShowActionSheetSuccess {
    *      "unixUtsPlugin": "4.11"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -390,7 +390,7 @@ export interface ShowActionSheetSuccess {
    *      "unixUtsPlugin": "4.11"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -467,7 +467,7 @@ export interface ShowActionSheetFail extends IUniError {
    *      "unixUtsPlugin": "4.11"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -546,7 +546,7 @@ type ShowActionSheetCompleteCallback = (result: ShowActionSheetComplete) => void
  *      "unixUtsPlugin": "4.11"
  *    },
  *    "harmony": {
- *      "osVer": "3.0",
+ *      "osVer": "5.0",
  *      "uniVer": "4.23",
  *      "unixVer": "4.61",
  *      "unixVaporVer": "5.0"
@@ -619,7 +619,7 @@ export type ShowActionSheetOptions = {
    *      "unixUtsPlugin": "4.51"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -692,7 +692,7 @@ export type ShowActionSheetOptions = {
    *      "unixUtsPlugin": "4.11"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -765,7 +765,7 @@ export type ShowActionSheetOptions = {
    *      "unixUtsPlugin": "4.11"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -838,7 +838,7 @@ export type ShowActionSheetOptions = {
    *      "unixUtsPlugin": "4.11"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -911,7 +911,7 @@ export type ShowActionSheetOptions = {
    *      "unixUtsPlugin": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "x",
    *      "unixVaporVer": "x"
@@ -984,7 +984,7 @@ export type ShowActionSheetOptions = {
    *      "unixUtsPlugin": "4.11"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -1057,7 +1057,7 @@ export type ShowActionSheetOptions = {
    *      "unixUtsPlugin": "4.11"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -1130,7 +1130,7 @@ export type ShowActionSheetOptions = {
    *      "unixUtsPlugin": "4.11"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -1203,7 +1203,7 @@ export type ShowActionSheetOptions = {
    *      "unixUtsPlugin": "4.11"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -1276,7 +1276,7 @@ export type ShowActionSheetOptions = {
    *      "unixUtsPlugin": "4.11"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -1349,7 +1349,7 @@ export type ShowActionSheetOptions = {
    *      "unixUtsPlugin": "4.11"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -1422,7 +1422,7 @@ export type ShowActionSheetOptions = {
    *      "unixUtsPlugin": "4.11"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -1515,7 +1515,7 @@ export interface Uni {
    *      "unixUtsPlugin": "4.11"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -1595,7 +1595,7 @@ export interface Uni {
    *      "unixUtsPlugin": "4.11"
    *    },
    *    "harmony": {
-   *      "osVer": "3.0",
+   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"

@@ -21,7 +21,7 @@ export interface ShowLoadingSuccess {
 	        "unixUtsPlugin": "4.61"
 	      },
 	      "harmony": {
-	        "osVer": "3.0",
+	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -141,7 +141,7 @@ export type ShowLoadingOptions = {
 	        "unixUtsPlugin": "4.61"
 	      },
 	      "harmony": {
-	        "osVer": "3.0",
+	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -358,7 +358,7 @@ export type ShowLoadingOptions = {
 	        "unixUtsPlugin": "4.61"
 	      },
 	      "harmony": {
-	        "osVer": "3.0",
+	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -432,7 +432,7 @@ export type ShowLoadingOptions = {
 	        "unixUtsPlugin": "4.61"
 	      },
 	      "harmony": {
-	        "osVer": "3.0",
+	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -506,7 +506,7 @@ export type ShowLoadingOptions = {
 	        "unixUtsPlugin": "4.61"
 	      },
 	      "harmony": {
-	        "osVer": "3.0",
+	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -588,7 +588,7 @@ export interface HideLoadingSuccess {
 	        "unixUtsPlugin": "4.61"
 	      },
 	      "harmony": {
-	        "osVer": "3.0",
+	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -709,7 +709,7 @@ export type HideLoadingOptions = {
 	        "unixUtsPlugin": "4.61"
 	      },
 	      "harmony": {
-	        "osVer": "3.0",
+	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -783,7 +783,7 @@ export type HideLoadingOptions = {
 	        "unixUtsPlugin": "4.61"
 	      },
 	      "harmony": {
-	        "osVer": "3.0",
+	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -857,7 +857,7 @@ export type HideLoadingOptions = {
 	        "unixUtsPlugin": "4.61"
 	      },
 	      "harmony": {
-	        "osVer": "3.0",
+	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -931,7 +931,7 @@ export type HideLoadingOptions = {
 	        "unixUtsPlugin": "4.61"
 	      },
 	      "harmony": {
-	        "osVer": "3.0",
+	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -1024,7 +1024,7 @@ export interface Uni {
 	        "unixUtsPlugin": "4.61"
 	      },
 	      "harmony": {
-	        "osVer": "3.0",
+	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -1112,7 +1112,7 @@ export interface Uni {
 	        "unixUtsPlugin": "4.61"
 	      },
 	      "harmony": {
-	        "osVer": "3.0",
+	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
