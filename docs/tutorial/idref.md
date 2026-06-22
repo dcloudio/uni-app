@@ -79,12 +79,12 @@ uni-app x中，web、小程序、vue这3类概念都支持，所以id、ref、El
 
 #### Element方式
 
-uni-app x提供了[uni.getElementById](../api/get-element.md)等多种方法获取[Element](../dom/unielement.md)类型。
+uni-app x提供了[uni.getElementById](../api/get-element-by-id.md)等多种方法获取[Element](../api/dom/unielement.md)类型。
 
 通用的元素操作方法，比如getAttribute、setStyle，在Element上就可以操作。
 
 获取Element有很多方法，
-1. [uni.getElementById](../api/get-element.md)获取栈顶页面的元素（注意无法获取dialogPage页面的元素）
+1. [uni.getElementById](../api/get-element-by-id.md)获取栈顶页面的元素（注意无法获取dialogPage页面的元素）
 2. [UniPage的getElementById](../api/get-current-pages.md#getelementbyid)获取指定页面的元素。通过`this.$page.getElementById`可以获取当前页面的元素。
 3. 还可以通过this.refs获取到vue实例然后as为Element。[见下](#ref方式)
 

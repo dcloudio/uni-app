@@ -158,7 +158,7 @@ Android/iOS平台目前还没有可视化界面，需要在manifest的源码视�
 </plist>
 ```
 - iOS平台：使用内置腾讯定位和iOS14以上高精度定位时，需配置对应的Key，参考[iOS平台配置腾讯定位](../collocation/manifest-ios.md#locationtencent)
-- Android平台：使用内置腾讯定位时，需配置对应的Key，参考[Android平台配置腾讯定位](../collocation/manifest-android.md#locationTencent)
+- Android平台：使用内置腾讯定位时，需配置对应的Key，参考[Android平台配置腾讯定位](../collocation/manifest-android.md#locationtencent)
 
 地图厂商在App端大多会校验包名和证书，请务必保证在地图厂商后台创建的应用，填写的包名、证书摘要，和实际运行的应用匹配，否则无法使用三方定位。
 

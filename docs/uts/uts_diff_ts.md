@@ -161,7 +161,7 @@ console.log(person2.name);
 
 在 JSON.parse 的场景中，如果不通过泛型指定 type，那么返回值也是 UTSJSONObject。
 
-TS 开发者一般都熟悉使用 interface 来声明类型，UTS 中改为 type 即可。但不熟悉 TS 的开发者，务必需要详细了解[UTSJSONObject](./data-type.md#UTSJSONObject)和[type](./data-type.md#type自定义类型)
+TS 开发者一般都熟悉使用 interface 来声明类型，UTS 中改为 type 即可。但不熟悉 TS 的开发者，务必需要详细了解[UTSJSONObject](./data-type.md#utsjsonobject)和[type](./data-type.md#type自定义类型)
 
 
 #### 对象字面量仅支持构造 type 定义的对象类型，不支持 interface @uts110111163
@@ -937,7 +937,7 @@ TypeScript写法:
 ```ts
 function test() {
 	interface Test {
-		
+
 	}
 }
 ```
@@ -946,7 +946,7 @@ UTS正确写法：
 
 ```ts
 interface Test {
-		
+
 }
 function test() {
 

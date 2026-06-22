@@ -1,8 +1,8 @@
 # splash启动界面@splash
 
-> HBuilderX4.71及以上版本调整manifest.json可视化配置界面。 此文档已废弃（不再维护），Android平台和iOS平台分别参考以下文档: 
-> - [安卓App配置 启动界面](manifest-android.md#@splashscreen)  
-> - [iOS App配置 启动界面](manifest-ios.md#splashscreen)  
+> HBuilderX4.71及以上版本调整manifest.json可视化配置界面。 此文档已废弃（不再维护），Android平台和iOS平台分别参考以下文档:
+> - [安卓App配置 启动界面](manifest-android.md#splashscreen)
+> - [iOS App配置 启动界面](manifest-ios.md#splashscreen)
 
 App启动时，系统加载应用渲染首页需要一定的时间，为了避免用户等待，手机操作系统提供了特殊的启动界面设计，让用户先看到一个简单的界面，等应用加载完成后正式进入应用首页。
 
@@ -54,9 +54,9 @@ Android Studio 已经集成 .9.png 图片编辑工具，使用详情可参考 An
 
 也可以使用在线.9.png生成工具：[http://inloop.github.io/shadow4android/](http://inloop.github.io/shadow4android/)
 
->.9.png作为启动图使用时注意以下事项：  
-> 不要使用圆角图，图片内容区域不要包含透明信息（4条黑边可以有透明信息）  
-> 为了有更好的兼容性，右侧和底部黑边应该拉满完整区域，不拉满可能在部分设备会显示灰色区域  
+>.9.png作为启动图使用时注意以下事项：
+> 不要使用圆角图，图片内容区域不要包含透明信息（4条黑边可以有透明信息）
+> 为了有更好的兼容性，右侧和底部黑边应该拉满完整区域，不拉满可能在部分设备会显示灰色区域
 
 **.9.png配置使用**
 打开项目的manifest.json文件，在“App启动界面配置”中的“Android启动界面设置”项下，在各分辨率启动图设置框选择需要使用的.9.png图片（图片尺寸请按照提示尺寸对应上传），保存后提交云端打包即可。
