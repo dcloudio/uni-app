@@ -5,7 +5,7 @@ image 组件的 DOM 元素对象。
 ### UniImageElement 兼容性 
  | Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | 4.0 | 4.11 | 4.25 | 4.61 |
+| 4.0 | x | 4.0 | 4.11 | 4.25 | x |
 
 ```mermaid
 graph LR
