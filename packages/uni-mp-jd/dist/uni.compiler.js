@@ -48,6 +48,7 @@ const nodeTransforms = [
     uniCliShared.transformRef,
     // transformMatchMedia,
     uniCliShared.transformComponentLink,
+    uniCliShared.transformTeleport,
 ];
 const directiveTransforms = {
     on: transformOn,
