@@ -2200,12 +2200,11 @@ function initVaporPageLifeCycle(pageComponentPublicInstance, nativePage) {
     });
   }
   if (pageRootEl.tagName === "PAGE" && pageRootEl instanceof UniViewElementImpl == false) {
-    var pullDownRefreshEventId = "uni-pull-down-refresh-".concat(nativePage.pageId);
-    uni.$on(pullDownRefreshEventId, () => {
+    var pulldownRefreshEventId = pageRootEl.addEventListener("refresherrefresh", () => {
       invokeHook(pageComponentPublicInstance, ON_PULL_DOWN_REFRESH);
     });
     nativePage.addPageEventListener(ON_UNLOAD, (_) => {
-      uni.$off(pullDownRefreshEventId);
+      pageRootEl.removeEventListener("refresherrefresh", pulldownRefreshEventId);
     });
   }
 }
