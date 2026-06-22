@@ -1,6 +1,8 @@
 import fs from 'fs-extra'
 import os from 'os'
 import path from 'path'
+import { pathToFileURL } from 'node:url'
+import { normalizePath } from '@dcloudio/uni-cli-shared'
 import {
   resolveAppServiceSourceMapFileUrl,
   resolveAppServiceSourceMapSourceRoot,
@@ -74,7 +76,12 @@ describe('app service sourcemap', () => {
         )
       )
     ).toBe(
-      'file:///project/unpackage/cache/vapor/.app-android/sourcemap/app-service.js.map'
+      pathToFileURL(
+        path.resolve(
+          projectDir,
+          'unpackage/cache/vapor/.app-android/sourcemap/app-service.js.map'
+        )
+      ).href
     )
     expect(
       rewriteAppServiceSourceMappingURL(
@@ -182,7 +189,7 @@ describe('app service sourcemap', () => {
     expect(
       JSON.parse(fs.readFileSync(sourceMapFileName, 'utf8'))
     ).toMatchObject({
-      sourceRoot: tempDir,
+      sourceRoot: normalizePath(tempDir),
       sources: ['pages/index/index.uvue', 'App.uvue'],
     })
   })
@@ -229,7 +236,7 @@ describe('app service sourcemap', () => {
     expect(
       JSON.parse(fs.readFileSync(sourceMapFileName, 'utf8'))
     ).toMatchObject({
-      sourceRoot: tempDir,
+      sourceRoot: normalizePath(tempDir),
     })
   })
 })
