@@ -6,7 +6,7 @@ uni-app x项目的uts代码中可以使用很多API。包括：
 2. 全局api，前面不需要加`uni.`。如`getApp`
 3. uni.xxx的内置api。见左侧
 4. uniCloud.xxx的内置api [详见](./unicloud/README.md)
-5. dom的api [详见](../dom/README.md)
+5. dom的api [详见](./dom/README.md)
 6. vue的api [详见](../vue/README.md)
 7. 平台原生api
 	* Android 所有原生API

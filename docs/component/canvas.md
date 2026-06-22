@@ -21,9 +21,9 @@
 | 4.21 | 4.41 | 4.25 | 4.25 | 4.61 |
 
 
-* 截图或海报需求，无需像webview那样通过canvas中转，app平台view直接提供截图API，[takesnapshot](../dom/unielement.html#takesnapshot)。
+* 截图或海报需求，无需像webview那样通过canvas中转，app平台view直接提供截图API，[takesnapshot](../api/dom/unielement.md#takesnapshot)。
 
-在绘制形状、文字、图片方面，uni-app x有2种解决方案：`canvas组件`和 [DOM的DrawableContext API](../dom/drawablecontext.md)
+在绘制形状、文字、图片方面，uni-app x有2种解决方案：`canvas组件`和 [DOM的DrawableContext API](../api/dom/drawablecontext.md)
 
 它们的区别是：
 1. canvas组件的语法是W3C标准语法；DrawableContext是对原生view的绘制API的封装，语法尽可能靠齐W3C规范，但不相同。

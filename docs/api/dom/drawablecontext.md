@@ -705,6 +705,6 @@
 
 ## Bug & Tips@tips
 + 同时使用`border-radius`和`DrawableContext`，可能会出现`DrawableContext`绘制内容超出border区域的情况。
-+ 如果绘制过多内容或者绘制复杂图形时，建议设置`android-layer-type`为`hardware`，提高绘制效率。具体可参考[`android-layer-type`文档](../component/common.md#attribute-android)
++ 如果绘制过多内容或者绘制复杂图形时，建议设置`android-layer-type`为`hardware`，提高绘制效率。具体可参考[`android-layer-type`文档](../../../component/common.md#attribute-android)
 + iOS 平台绘制大量文字时相较于绘制其他内容性能会显著下降，可使用`text`组件代替。
 + uni-app-x harmony 暂不支持功能：line相关效果/镂空字体

@@ -42,7 +42,7 @@ view组件是 uni-app x 最基本的视图容器，它的作用类似于HTML中�
 
 #### 获取原生view对象@nativeview
 
-为增强uni-app x组件的开放性，从 `HBuilderX 4.25` 起，UniElement对象提供了 [getAndroidView](../dom/unielement.md#getandroidview) 和 [getIOSView](../dom/unielement.md#getiosview) 方法。
+为增强uni-app x组件的开放性，从 `HBuilderX 4.25` 起，UniElement对象提供了 [getAndroidView](../api/dom/unielement.md#getandroidview) 和 [getIOSView](../api/dom/unielement.md#getiosview) 方法。
 
 该方法可以获取到 view 组件对应的原生对象，即Android的`ViewGroup`对象、iOS的`UIView`对象。
 
@@ -50,7 +50,7 @@ view组件是 uni-app x 最基本的视图容器，它的作用类似于HTML中�
 
 **Android 平台：**
 
-获取view组件对应的UniElement对象，通过UniElement对象的[getAndroidView](../dom/unielement.md#getandroidview-2)函数获取组件原生ViewGroup对象
+获取view组件对应的UniElement对象，通过UniElement对象的[getAndroidView](../api/dom/unielement.md#getandroidview-2)函数获取组件原生ViewGroup对象
 
 ```uts
 //导入安卓原生ViewGroup对象
@@ -70,7 +70,7 @@ if(viewElement != null) {
 
 **iOS 平台：**
 
-获取view组件对应的UniElement对象，通过UniElement对象的[getIOSView](../dom/unielement.md#getiosview)函数获取组件原生UIView对象
+获取view组件对应的UniElement对象，通过UniElement对象的[getIOSView](../api/dom/unielement.md#getiosview)函数获取组件原生UIView对象
 
 ```uts
 //通过 view 组件定义的 id 属性值，获取 view 标签的 UniElement 对象
@@ -268,4 +268,4 @@ if (view != null && view instanceof UIView) {
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
-view是Drawable的组件，也就是可以在view上调用绘制API自绘内容。它类似canvas，但不需要单独的canvas组件，在view上就可以直接draw。[详见](../dom/drawablecontext.md)
+view是Drawable的组件，也就是可以在view上调用绘制API自绘内容。它类似canvas，但不需要单独的canvas组件，在view上就可以直接draw。[详见](../api/dom/drawablecontext.md)

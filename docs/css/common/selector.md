@@ -2,7 +2,7 @@
 
 - web和小程序支持page元素选择器，以替代body元素选择器。
 - web端可以使用`html`、`body`、`:root`等选择器。由于页面的css样式隔离，且html节点并未添加data-xxx属性，`html`、`:root`写在页面style内无效，只能写在App.uvue内。
-- 深度选择器 `:deep()/::v-deep` 用法参考 [单文件 style - 深度选择器](/vue/index#scoped) 文档。
+- 深度选择器 `:deep()/::v-deep` 用法参考 [单文件 style - 深度选择器](/vue/README.md#scoped) 文档。
 
 | 名称 | 示例 | Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) | 描述 |
 | :- | :- | :- | :- | :- | :- | :- | :- |

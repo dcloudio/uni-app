@@ -2,7 +2,7 @@
 
 canvas 组件的 DOM 元素对象。
 
-参考：[canvas组件](../component/canvas.md)
+参考：[canvas组件](../../component/canvas.md)
 
 ```mermaid
 graph LR

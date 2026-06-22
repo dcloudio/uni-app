@@ -665,7 +665,7 @@ web-view的操作api为[uni.createWebviewContext()](../api/create-webview-contex
 
 #### 获取原生WebView对象@nativeview
 
-为增强uni-app x组件的开放性，从 `HBuilderX 4.25` 起，UniElement对象提供了 [getAndroidView](../dom/unielement.md#getandroidview) 和 [getIOSView](../dom/unielement.md#getiosview) 方法。
+为增强uni-app x组件的开放性，从 `HBuilderX 4.25` 起，UniElement对象提供了 [getAndroidView](../api/dom/unielement.md#getandroidview) 和 [getIOSView](../api/dom/unielement.md#getiosview) 方法。
 
 该方法可以获取到 web-view 组件对应的原生 `WebView` 对象，从而可以调用原生 API 以扩展当前 web-view 组件和上下文对象未提供的能力。
 
