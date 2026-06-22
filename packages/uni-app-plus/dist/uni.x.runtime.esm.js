@@ -1895,12 +1895,17 @@ function setStatusBarStyle() {
     if (systemDialogPages !== null && systemDialogPages !== void 0 && systemDialogPages.length && dialogPages !== null && dialogPages !== void 0 && dialogPages.length) {
       var lastSystemDialogPage = systemDialogPages[systemDialogPages.length - 1];
       var lastDialogPage = dialogPages[dialogPages.length - 1];
-      page = // @ts-expect-error
-      Number(lastSystemDialogPage.__nativePageId) > Number(lastDialogPage.__nativePageId) ? lastSystemDialogPage.vm : lastDialogPage.vm;
+      if (lastSystemDialogPage && lastDialogPage) {
+        page = Number(lastSystemDialogPage.__nativePageId) > Number(lastDialogPage.__nativePageId) ? lastSystemDialogPage.vm : lastDialogPage.vm;
+      } else {
+        page = (lastSystemDialogPage === null || lastSystemDialogPage === void 0 ? void 0 : lastSystemDialogPage.vm) || (lastDialogPage === null || lastDialogPage === void 0 ? void 0 : lastDialogPage.vm);
+      }
     } else if (dialogPages !== null && dialogPages !== void 0 && dialogPages.length) {
-      page = dialogPages[dialogPages.length - 1].vm;
+      var _dialogPages;
+      page = (_dialogPages = dialogPages[dialogPages.length - 1]) === null || _dialogPages === void 0 ? void 0 : _dialogPages.vm;
     } else if (systemDialogPages !== null && systemDialogPages !== void 0 && systemDialogPages.length) {
-      page = systemDialogPages[systemDialogPages.length - 1].vm;
+      var _systemDialogPages;
+      page = (_systemDialogPages = systemDialogPages[systemDialogPages.length - 1]) === null || _systemDialogPages === void 0 ? void 0 : _systemDialogPages.vm;
     } else {
       page = currentPage === null || currentPage === void 0 ? void 0 : currentPage.vm;
     }

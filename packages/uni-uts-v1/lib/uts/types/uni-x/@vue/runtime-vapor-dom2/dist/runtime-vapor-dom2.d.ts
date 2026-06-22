@@ -1,11 +1,12 @@
 import { AppContext, ComponentInternalOptions, ComponentPropsOptions, ComponentPublicInstance, CreateAppFunction, EffectScope, EmitFn, EmitsOptions, GenericAppContext, GenericComponentInstance, LifecycleHook, NormalizedPropsOptions, ObjectEmitsOptions, SuspenseBoundary, defineComponent, defineComponent as defineVaporSharedDataComponent, ref, shallowRef } from "@vue/runtime-core";
-import { hyphenate } from "@vue/shared";
+import { VaporSlotFlags, extend, hyphenate } from "@vue/shared";
 import { EffectScope as EffectScope$1, Reactive, Ref, ShallowRef } from "@vue/reactivity";
 import { Element as Element$1 } from "@dcloudio/uni-app-x/types/native";
 export * from "@vue/runtime-x";
 
 //#region temp/packages/runtime-vapor-dom2/src/fragment.d.ts
 declare class VaporFragment {
+  readonly __vf = true;
   nodes: Block;
   anchor?: Node;
   parentComponent?: VaporSharedDataComponentInstance | null;
@@ -17,6 +18,7 @@ declare class VaporFragment {
   protected runWithRenderCtx<R>(fn: () => R): R;
 }
 declare class DynamicFragment extends VaporFragment {
+  readonly __df = true;
   scope: EffectScope$1 | undefined;
   current?: BlockFn;
   fallback?: BlockFn;
@@ -49,9 +51,11 @@ type RawSlots = Record<string, VaporSlot> & {
 type StaticSlots = Record<string, VaporSlot>;
 type VaporSlot<T extends UniSharedData = any> = BlockFn & {
   sharedDataVFor?: UniSharedDataVFor<T>;
+  _?: VaporSlotFlags.NON_STABLE;
 };
 type VaporScopedSlot<T extends UniSharedData = any> = ((slotProps: any, sharedData: T) => void) & {
   sharedDataVFor?: UniSharedDataVFor<T>;
+  _?: VaporSlotFlags.NON_STABLE;
 };
 type DynamicSlot = {
   name: string;
@@ -580,4 +584,4 @@ export declare function findVueInstanceByUid(uid: number): VaporSharedDataCompon
 export declare const ssrRef: typeof ref;
 export declare const shallowSsrRef: typeof shallowRef;
 //#endregion
-export { defineVaporSharedDataComponent, hyphenate,  };
+export { defineVaporSharedDataComponent, extend, hyphenate,  };

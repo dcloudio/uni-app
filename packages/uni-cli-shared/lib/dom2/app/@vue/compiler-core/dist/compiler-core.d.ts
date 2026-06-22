@@ -137,6 +137,7 @@ export interface TransformContext extends Required<Omit<TransformOptions, keyof 
   hoist(exp: string | JSChildNode | ArrayExpression): SimpleExpressionNode;
   cache(exp: JSChildNode, isVNode?: boolean, inVOnce?: boolean): CacheExpression;
   constantCache: WeakMap<TemplateChildNode, ConstantTypes>;
+  vForMemoKeyedNodes: WeakSet<ElementNode>;
   filters?: Set<string>;
 }
 export declare function getSelfName(filename: string): string | null;
@@ -161,6 +162,7 @@ export declare function createTransformContext(root: RootNode, {
   bindingMetadata,
   inline,
   isTS,
+  eventDelegation,
   onError,
   onWarn,
   compatConfig
@@ -951,6 +953,12 @@ export interface TransformOptions extends SharedTransformCodegenOptions, ErrorHa
   * correctly, e.g. #6938, #7138
   */
   hmr?: boolean;
+  /**
+  * Vapor only: control whether eligible static DOM events are compiled to
+  * document-level delegated events.
+  * @default true
+  */
+  eventDelegation?: boolean;
 }
 export interface CodegenOptions extends SharedTransformCodegenOptions {
   /**

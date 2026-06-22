@@ -491,7 +491,8 @@ export declare enum TemplateFlags {
 export declare enum VaporSlotFlags {
   NO_SLOTTED = 1,
   ONCE = 2,
-  SLOT_ROOT = 4
+  SLOT_ROOT = 4,
+  NON_STABLE = 8
 }
 export declare enum VaporDynamicComponentFlags {
   SINGLE_ROOT = 1,

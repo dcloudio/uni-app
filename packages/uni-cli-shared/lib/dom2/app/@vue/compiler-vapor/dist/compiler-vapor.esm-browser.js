@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-vapor v3.6.0-beta.14
+  * @vue/compiler-vapor v3.6.0-beta.16
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -16248,7 +16248,7 @@ const tokenizer = new Tokenizer(stack, {
 		}
 	},
 	oncdata(start, end) {
-		if (stack[0].ns !== 0) onText(getSlice(start, end), start, end);
+		if ((stack[0] ? stack[0].ns : currentOptions.ns) !== 0) onText(getSlice(start, end), start, end);
 		else emitError(1, start - 9);
 	},
 	onprocessinginstruction(start) {
@@ -19147,6 +19147,13 @@ function getLiteralExpressionValue(exp, excludeNumber) {
 	}
 	return exp.isStatic ? exp.content : null;
 }
+function isInTransition(context) {
+	const parentNode = context.parent && context.parent.node;
+	return !!(parentNode && isTransitionNode(parentNode));
+}
+function isTransitionNode(node) {
+	return node.type === 1 && isTransitionTag(node.tag);
+}
 function isTransitionTag(tag) {
 	tag = tag.toLowerCase();
 	return tag === "transition" || tag === "vaportransition";
@@ -19394,6 +19401,7 @@ const defaultOptions = {
 	bindingMetadata: EMPTY_OBJ,
 	inline: false,
 	isTS: false,
+	eventDelegation: true,
 	onError: defaultOnError,
 	onWarn: defaultOnWarn
 };
@@ -19696,6 +19704,8 @@ function _objectSpread2(e) {
 function genExpression(node, context, assignment) {
 	node = context.getExpressionReplacement(node);
 	const { content, ast, isStatic, loc } = node;
+	const { options } = context;
+	const { inline } = options;
 	if (isStatic) return [[
 		JSON.stringify(content),
 		-2,
@@ -19717,23 +19727,31 @@ function genExpression(node, context, assignment) {
 	let hasMemberExpression = false;
 	if (ids.length) {
 		const [frag, push] = buildCodeFragment();
-		ids.sort((a, b) => a.start - b.start).forEach((id, i) => {
-			const start = id.start - 1;
-			const end = id.end - 1;
-			const last = ids[i - 1];
-			const leadingText = content.slice(last ? last.end - 1 : 0, start);
-			if (leadingText.length) push([leadingText, -3]);
-			const source = content.slice(start, end);
+		let lastEnd = 0;
+		ids.sort((a, b) => a.start - b.start).forEach((id) => {
+			const idStart = id.start - 1;
+			const idEnd = id.end - 1;
+			const source = content.slice(idStart, idEnd);
 			const parentStack = parentStackMap.get(id);
 			const parent = parentStack[parentStack.length - 1];
+			let start = idStart;
+			let end = idEnd;
+			if (inline && options.bindingMetadata && options.bindingMetadata[source] === "setup-let" && parent && parent.type === "UpdateExpression" && parent.argument === id) {
+				start = parent.start - 1;
+				end = parent.end - 1;
+			}
+			if (start < lastEnd) return;
+			const leadingText = content.slice(lastEnd, start);
+			if (leadingText.length) push([leadingText, -3]);
 			hasMemberExpression || (hasMemberExpression = parent && (parent.type === "MemberExpression" || parent.type === "OptionalMemberExpression"));
 			push(...genIdentifier(source, context, {
 				start: advancePositionWithClone(node.loc.start, source, start),
 				end: advancePositionWithClone(node.loc.start, source, end),
 				source
-			}, hasMemberExpression ? void 0 : assignment, id, parent, parentStack));
-			if (i === ids.length - 1 && end < content.length) push([content.slice(end), -3]);
+			}, hasMemberExpression ? void 0 : assignment, id, parent, parentStack, node));
+			lastEnd = end;
 		});
+		if (lastEnd < content.length) push([content.slice(lastEnd), -3]);
 		if (assignment && hasMemberExpression) push(` = ${assignment}`);
 		return frag;
 	} else return [[
@@ -19742,7 +19760,7 @@ function genExpression(node, context, assignment) {
 		loc
 	]];
 }
-function genIdentifier(raw, context, loc, assignment, id, parent, parentStack) {
+function genIdentifier(raw, context, loc, assignment, id, parent, parentStack, sourceNode) {
 	const { options, helper, identifiers } = context;
 	const { inline, bindingMetadata } = options;
 	let name = raw;
@@ -19762,19 +19780,49 @@ function genIdentifier(raw, context, loc, assignment, id, parent, parentStack) {
 		else return genExpression(replacement, context, assignment);
 	}
 	let prefix;
-	if (isStaticProperty(parent) && parent.shorthand) prefix = `${raw}: `;
 	const type = bindingMetadata && bindingMetadata[raw];
+	const isDestructureAssignment = parent && isInDestructureAssignment(parent, parentStack || []);
+	const isAssignmentLVal = parent && parent.type === "AssignmentExpression" && parent.left === id;
+	const isUpdateArg = parent && parent.type === "UpdateExpression" && parent.argument === id;
+	if (isStaticProperty(parent) && parent.shorthand && !(inline && type === "setup-let" && isDestructureAssignment)) prefix = `${raw}: `;
 	if (inline) switch (type) {
 		case "setup-let":
-			name = raw = assignment ? `_isRef(${raw}) ? (${raw}.value = ${assignment}) : (${raw} = ${assignment})` : unref();
+			if (isAssignmentLVal) {
+				const { right, operator } = parent;
+				const source = sourceNode;
+				const sourceContent = source.content;
+				const rightStart = right.start - 1;
+				const rightEnd = right.end - 1;
+				const rightContent = sourceContent.slice(rightStart, rightEnd);
+				const rightExp = createSimpleExpression(rightContent, false, {
+					start: advancePositionWithClone(source.loc.start, sourceContent, rightStart),
+					end: advancePositionWithClone(source.loc.start, sourceContent, rightEnd),
+					source: rightContent
+				});
+				rightExp.ast = parseExp(context, rightContent);
+				return [
+					prefix,
+					`${helper("isRef")}(${raw}) ? ${raw}.value ${operator} `,
+					...genExpression(rightExp, context),
+					` : `,
+					[
+						raw,
+						-2,
+						loc,
+						name
+					]
+				];
+			} else if (isUpdateArg) {
+				const { prefix: isPrefix, operator } = parent;
+				const updatePrefix = isPrefix ? operator : ``;
+				const updatePostfix = isPrefix ? `` : operator;
+				raw = `${helper("isRef")}(${raw}) ? ${updatePrefix}${raw}.value${updatePostfix} : ${updatePrefix}${raw}${updatePostfix}`;
+			} else if (!isDestructureAssignment) name = raw = assignment ? `${helper("isRef")}(${raw}) ? (${raw}.value = ${assignment}) : (${raw} = ${assignment})` : unref();
 			break;
 		case "setup-ref":
 			name = raw = withAssignment(`${raw}.value`);
 			break;
 		case "setup-maybe-ref":
-			const isDestructureAssignment = parent && isInDestructureAssignment(parent, parentStack || []);
-			const isAssignmentLVal = parent && parent.type === "AssignmentExpression" && parent.left === id;
-			const isUpdateArg = parent && parent.type === "UpdateExpression" && parent.argument === id;
 			raw = isAssignmentLVal || isUpdateArg || isDestructureAssignment ? name = `${raw}.value` : assignment ? `${helper("isRef")}(${raw}) ? (${raw}.value = ${assignment}) : null` : unref();
 			break;
 		case "props":
@@ -20688,7 +20736,12 @@ function genPropKey({ key: node, modifier, runtimeCamelize, handler, handlerModi
 	if (runtimeCamelize) {
 		key.push(" || \"\"");
 		key = genCall(helper("camelize"), key);
-	}
+	} else if (modifier) key = [
+		"(",
+		...key,
+		" || \"\"",
+		")"
+	];
 	if (handler) key = genCall(helper("toHandlerKey"), key);
 	return [
 		"[",
@@ -20780,6 +20833,11 @@ function genVShow(oper, context) {
 	])];
 }
 //#endregion
+//#region packages/compiler-vapor/src/generators/modifier.ts
+function genDirectiveModifiers(modifiers) {
+	return modifiers.map((value) => `${isSimpleIdentifier(value) ? value : JSON.stringify(value)}: true`).join(", ");
+}
+//#endregion
 //#region packages/compiler-vapor/src/generators/vModel.ts
 const helperMap = {
 	text: "applyTextModel",
@@ -20794,7 +20852,7 @@ function genVModel(oper, context) {
 		`() => (`,
 		...genExpression(exp, context),
 		`)`
-	], genModelHandler(exp, context), modifiers.length ? `{ ${modifiers.map((e) => e.content + ": true").join(",")} }` : void 0)];
+	], genModelHandler(exp, context), modifiers.length ? `{ ${genDirectiveModifiers(modifiers.map((e) => e.content))} }` : void 0)];
 }
 function genModelHandler(exp, context) {
 	return [
@@ -20836,14 +20894,15 @@ function genCustomDirectives(opers, context) {
 		return genMulti(DELIMITERS_ARRAY.concat("void 0"), directiveVar, value, argument, modifiers);
 	}
 }
-function genDirectiveModifiers(modifiers) {
-	return modifiers.map((value) => `${isSimpleIdentifier(value) ? value : JSON.stringify(value)}: true`).join(", ");
-}
 function filterCustomDirectives(id, operations) {
 	return operations.filter((oper) => oper.type === 14 && oper.element === id && !oper.builtin);
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/component.ts
+function genStaticModifierPropKey(name) {
+	const key = getModifierPropName(name);
+	return [isSimpleIdentifier(key) ? key : JSON.stringify(key)];
+}
 function genCreateComponent(operation, context) {
 	const { helper } = context;
 	const singleUseAssetComponentNames = context.singleUseAssetComponentNames;
@@ -20985,7 +21044,7 @@ function genStaticProps(props, context, dynamicProps, directStaticLiteralProps =
 			}
 			const { key, modelModifiers } = prop;
 			if (modelModifiers && modelModifiers.length) {
-				const modifiersKey = key.isStatic ? [getModifierPropName(key.content)] : [
+				const modifiersKey = key.isStatic ? genStaticModifierPropKey(key.content) : [
 					"[",
 					...genExpression(key, context),
 					" + \"Modifiers\"]"
@@ -21028,7 +21087,7 @@ function genDynamicProps(props, context, directStaticLiteralProps = false) {
 			]);
 			const { modelModifiers } = p;
 			if (modelModifiers && modelModifiers.length) {
-				const modifiersKey = p.key.isStatic ? [getModifierPropName(p.key.content)] : [
+				const modifiersKey = p.key.isStatic ? genStaticModifierPropKey(p.key.content) : [
 					"[",
 					...genExpression(p.key, context),
 					" + \"Modifiers\"]"
@@ -21153,7 +21212,7 @@ function genDynamicSlot(slot, context, withFunction = false) {
 }
 function genBasicDynamicSlot(slot, context) {
 	const { name, fn } = slot;
-	return genMulti(DELIMITERS_OBJECT_NEWLINE, ["name: ", ...genExpression(name, context)], ["fn: ", ...genSlotBlockWithProps(fn, context)]);
+	return genMulti(DELIMITERS_OBJECT_NEWLINE, ["name: ", ...genExpression(name, context)], ["fn: ", ...genSlotBlockWithProps(fn, context, false)]);
 }
 function genLoopSlot(slot, context) {
 	const { name, fn, loop } = slot;
@@ -21165,7 +21224,7 @@ function genLoopSlot(slot, context) {
 	if (rawValue) idMap[rawValue] = rawValue;
 	if (rawKey) idMap[rawKey] = rawKey;
 	if (rawIndex) idMap[rawIndex] = rawIndex;
-	const slotExpr = genMulti(DELIMITERS_OBJECT_NEWLINE, ["name: ", ...context.withId(() => genExpression(name, context), idMap)], ["fn: ", ...context.withId(() => genSlotBlockWithProps(fn, context), idMap)]);
+	const slotExpr = genMulti(DELIMITERS_OBJECT_NEWLINE, ["name: ", ...context.withId(() => genExpression(name, context), idMap)], ["fn: ", ...context.withId(() => genSlotBlockWithProps(fn, context, false), idMap)]);
 	return [...genCall(context.helper("createForSlots"), genExpression(source, context), [
 		...genMulti([
 			"(",
@@ -21191,7 +21250,7 @@ function genConditionalSlot(slot, context) {
 		INDENT_END
 	];
 }
-function genSlotBlockWithProps(oper, context) {
+function genSlotBlockWithProps(oper, context, emitNonStableFlag = true) {
 	let propsName;
 	let exitScope;
 	let depth;
@@ -21206,9 +21265,44 @@ function genSlotBlockWithProps(oper, context) {
 	const exitSlotBlock = context.enterSlotBlock();
 	markSlotRootOperations(oper);
 	let blockFn = context.withId(() => genBlock(oper, context, propsName ? [propsName] : []), idMap);
+	if (emitNonStableFlag && !hasStableSlotRoot(oper, context)) blockFn = genCall(context.helper("extend"), blockFn, `{ _: 8 }`);
 	exitSlotBlock();
 	exitScope && exitScope();
 	return blockFn;
+}
+const commentOnlyTemplateRE = /^(?:<!--[\s\S]*?-->)+$/;
+function hasStableSlotRoot(block, context) {
+	let hasValidRoot = false;
+	for (let i = 0; i < block.returns.length; i++) {
+		const id = block.returns[i];
+		const child = findReturnedDynamic$1(block, id);
+		const operation = child && child.operation;
+		if (!operation) {
+			if (child && isStableTemplateSlotRoot(child, context)) hasValidRoot = true;
+			continue;
+		}
+		switch (operation.type) {
+			case 12:
+				if (!operation.dynamic || operation.dynamic.isStatic) {
+					hasValidRoot = true;
+					continue;
+				}
+				return false;
+			case 17:
+				if (hasStableSlotRoot(operation.block, context)) {
+					hasValidRoot = true;
+					continue;
+				}
+				return false;
+			default: return false;
+		}
+	}
+	return hasValidRoot;
+}
+function isStableTemplateSlotRoot(child, context) {
+	if (child.template == null) return false;
+	const content = context.ir.template.entries[child.template].content;
+	return content !== "" && !commentOnlyTemplateRE.test(content.trim());
 }
 function needsVaporCtx(block) {
 	return hasComponentOrSlotInBlock(block);
@@ -21588,7 +21682,7 @@ function genBlockContent(block, context, root, genEffectsExtraFrag) {
 	else if (genEffectsExtraFrag) push(...genEffects([], context, genEffectsExtraFrag));
 	push(NEWLINE, `return `);
 	const returnNodes = returns.map((n) => `n${n}`);
-	push(...returnNodes.length > 1 ? genMulti(DELIMITERS_ARRAY, ...returnNodes) : [returnNodes[0] || "null"]);
+	push(...returnNodes.length > 1 ? genMulti(DELIMITERS_ARRAY, ...returnNodes) : [returnNodes[0] || "[]"]);
 	resetBlock();
 	context.singleUseAssetComponentNames = prevSingleUseAssetComponentNames;
 	return frag;
@@ -21928,6 +22022,31 @@ const transformVBind = (dir, node, context) => {
 	};
 };
 //#endregion
+//#region packages/compiler-vapor/src/transforms/vHtml.ts
+function ignoreVHtmlChildren(node, context, clear) {
+	if (!node.children.length) return;
+	const dir = findDir$1(node, "html");
+	if (!dir) return;
+	context.options.onError(createDOMCompilerError(55, dir.loc));
+	if (clear === "node") node.children.length = 0;
+	else context.childrenTemplate.length = 0;
+}
+const transformVHtml = (dir, node, context) => {
+	let { exp, loc } = dir;
+	if (!exp) {
+		context.options.onError(createDOMCompilerError(54, loc));
+		exp = EMPTY_EXPRESSION;
+	}
+	ignoreVHtmlChildren(node, context, "template");
+	context.registerEffect([exp], {
+		type: 8,
+		node,
+		element: context.reference(),
+		value: exp,
+		isComponent: node.tagType === 1
+	});
+};
+//#endregion
 //#region packages/compiler-vapor/src/transforms/transformElement.ts
 const isReservedProp = /* @__PURE__ */ makeMap(",key,ref,ref_for,ref_key,");
 const transformElement = (node, context) => {
@@ -21935,6 +22054,7 @@ const transformElement = (node, context) => {
 	const getEffectIndex = () => effectIndex++;
 	let operationIndex = context.block.operation.length;
 	const getOperationIndex = () => operationIndex++;
+	if (node.type === 1 && node.children.length) ignoreVHtmlChildren(node, context, "node");
 	let parentSlots;
 	if (node.type === 1 && (node.tagType === 1 || context.options.isCustomElement(node.tag))) {
 		parentSlots = context.slots;
@@ -22137,6 +22257,8 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 		};
 		for (const prop of propsResult[1]) {
 			const { key, values } = prop;
+			const canStringifyAttrName = key.isStatic && !UNSAFE_ATTR_NAME_RE.test(key.content);
+			let foldedValue;
 			if (isDom2) {
 				if (isDataProp(prop)) {
 					datasetProps.push(prop);
@@ -22154,45 +22276,11 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 				}
 				if (key.content === "class") hasClass = true;
 			}
-			if (context.imports.some((imported) => values[0].content.includes(imported.exp.content))) {
+			if (canStringifyAttrName && context.imports.some((imported) => values[0].content.includes(imported.exp.content))) {
 				if (!prevWasQuoted) template += ` `;
 				template += `${key.content}="${IMPORT_EXP_START}${values[0].content}${IMPORT_EXP_END}"`;
 				prevWasQuoted = true;
-			} else if (key.isStatic && !prop.modifier && isBooleanAttr(key.content)) if (values.length === 1 && (values[0].isStatic || values[0].content === "''") && !dynamicKeys.includes(key.content)) {
-				const value = values[0].content === "''" ? "" : values[0].content;
-				appendTemplateProp(key.content, value);
-			} else {
-				const include = foldBooleanAttrValue(values);
-				if (include != null) {
-					if (include) appendTemplateProp(key.content);
-				} else {
-					dynamicProps.push(key.content);
-					context.registerEffect(values, {
-						type: 3,
-						node,
-						element: context.reference(),
-						prop,
-						tag
-					}, getEffectIndex);
-				}
-			}
-			else if (key.isStatic && !prop.modifier && !isDom2 && hasBoundValue(values)) {
-				let foldedValue;
-				if (key.content === "class") foldedValue = foldClassValues(values);
-				else if (key.content === "style") foldedValue = foldStyleValues(values);
-				if (foldedValue != null) {
-					if (foldedValue) appendTemplateProp(key.content, foldedValue, true);
-				} else {
-					dynamicProps.push(key.content);
-					context.registerEffect(values, {
-						type: 3,
-						node,
-						element: context.reference(),
-						prop,
-						tag
-					}, getEffectIndex);
-				}
-			} else if (key.isStatic && values.length === 1 && (values[0].isStatic || values[0].content === "''") && !dynamicKeys.includes(key.content)) {
+			} else if (canStringifyAttrName && values.length === 1 && (values[0].isStatic || values[0].content === "''") && !dynamicKeys.includes(key.content)) {
 				if (isDom2 && key.content === "style") {
 					hasStaticStyle = true;
 					const checkStaticStyle = context.options.checkStaticStyle;
@@ -22214,17 +22302,18 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 				}
 				const value = values[0].content === "''" ? "" : values[0].content;
 				appendTemplateProp(key.content, value);
-			} else {
-				dynamicProps.push(key.content);
-				context.registerEffect(values, {
-					type: 3,
-					node,
-					isChangeProp: changeProps.includes(key.content),
-					element: context.reference(),
-					prop,
-					tag
-				}, getEffectIndex);
-			}
+			} else if (canStringifyAttrName && !prop.modifier && isBooleanAttr(key.content) && (foldedValue = foldBooleanAttrValue(values)) != null) {
+				if (foldedValue) appendTemplateProp(key.content);
+			} else if (canStringifyAttrName && !prop.modifier && !isDom2 && hasBoundValue(values) && (foldedValue = key.content === "class" ? foldClassValues(values) : key.content === "style" ? foldStyleValues(values) : void 0) != null) {
+				if (foldedValue) appendTemplateProp(key.content, foldedValue, true);
+			} else context.registerEffect(values, {
+				type: 3,
+				node,
+				isChangeProp: changeProps.includes(key.content),
+				element: context.reference(),
+				prop,
+				tag
+			}, getEffectIndex);
 		}
 		if (hasStaticStyle && hasClass) template += ` ext:style`;
 		if (datasetProps.length) {
@@ -22755,26 +22844,6 @@ const transformVOnce = (node, context) => {
 	if (node.type === 1 && findDir$1(node, "once", true)) context.inVOnce = true;
 };
 //#endregion
-//#region packages/compiler-vapor/src/transforms/vHtml.ts
-const transformVHtml = (dir, node, context) => {
-	let { exp, loc } = dir;
-	if (!exp) {
-		context.options.onError(createDOMCompilerError(54, loc));
-		exp = EMPTY_EXPRESSION;
-	}
-	if (node.children.length) {
-		context.options.onError(createDOMCompilerError(55, loc));
-		context.childrenTemplate.length = 0;
-	}
-	context.registerEffect([exp], {
-		type: 8,
-		node,
-		element: context.reference(),
-		value: exp,
-		isComponent: node.tagType === 1
-	});
-};
-//#endregion
 //#region packages/compiler-vapor/src/transforms/transformText.ts
 const seen = /* @__PURE__ */ new WeakMap();
 function markNonTemplate(node, context) {
@@ -22994,12 +23063,10 @@ const transformVOn = (dir, node, context) => {
 	const { keyModifiers, nonKeyModifiers, eventOptionModifiers } = resolveModifiers(arg.isStatic ? `on${arg.content}` : arg, modifiers, null, loc);
 	let keyOverride;
 	const isStaticClick = arg.isStatic && arg.content.toLowerCase() === "click";
-	if (nonKeyModifiers.includes("middle")) {
-		if (keyOverride) {}
-		if (!isStaticClick && !arg.isStatic) keyOverride = ["click", "mouseup"];
-	}
 	if (nonKeyModifiers.includes("right")) {
 		if (!isStaticClick && !arg.isStatic) keyOverride = ["click", "contextmenu"];
+	} else if (nonKeyModifiers.includes("middle")) {
+		if (!isStaticClick && !arg.isStatic) keyOverride = ["click", "mouseup"];
 	}
 	arg = normalizeStaticEventArg(arg, nonKeyModifiers);
 	if (keyModifiers.length && isStaticExp(arg) && !isKeyboardEvent(`on${arg.content.toLowerCase()}`)) keyModifiers.length = 0;
@@ -23013,7 +23080,7 @@ const transformVOn = (dir, node, context) => {
 			options: eventOptionModifiers
 		}
 	};
-	const delegate = arg.isStatic && !eventOptionModifiers.length && !hasStopHandlerForStaticEvent(node, arg.content) && delegatedEvents(arg.content);
+	const delegate = context.options.eventDelegation && arg.isStatic && !eventOptionModifiers.length && !hasStopHandlerForStaticEvent(node, arg.content) && delegatedEvents(arg.content);
 	const operation = {
 		type: 6,
 		node,
@@ -23035,8 +23102,8 @@ function normalizeStaticEventArg(arg, nonKeyModifiers) {
 	if (!arg.isStatic) return arg;
 	let normalized = arg;
 	const isStaticClick = arg.content.toLowerCase() === "click";
-	if (nonKeyModifiers.includes("middle") && isStaticClick) normalized = extend({}, normalized, { content: "mouseup" });
 	if (nonKeyModifiers.includes("right") && isStaticClick) normalized = extend({}, normalized, { content: "contextmenu" });
+	else if (nonKeyModifiers.includes("middle") && isStaticClick) normalized = extend({}, normalized, { content: "mouseup" });
 	return normalized;
 }
 function hasStopHandlerForStaticEvent(node, eventName) {
@@ -23240,11 +23307,14 @@ function processIf(node, dir, context) {
 		}
 		while (lastIfNode.negative && lastIfNode.negative.type === 15) lastIfNode = lastIfNode.negative;
 		if (dir.name === "else-if" && lastIfNode.negative) context.options.onError(createCompilerError(30, node.loc));
-		if (context.root.comment.length) {
-			node = wrapTemplate(node, ["else-if", "else"]);
-			context.node = node = extend({}, node, { children: [...context.comment, ...node.children] });
+		const comments = context.comment;
+		if (comments.length) {
+			if (!isInTransition(context)) {
+				node = wrapTemplate(node, ["else-if", "else"]);
+				context.node = node = extend({}, node, { children: [...comments, ...node.children] });
+			}
+			comments.length = 0;
 		}
-		context.root.comment = [];
 		const [branch, onExit] = createIfBranch(node, context);
 		if (dir.name === "else") lastIfNode.negative = branch;
 		else lastIfNode.negative = {
@@ -23499,7 +23569,7 @@ function transformTemplateSlot(node, dir, context) {
 	});
 	else if (vElse) {
 		const vIfSlot = slots[slots.length - 1];
-		if (vIfSlot.slotType === 3) {
+		if (vIfSlot && vIfSlot.slotType === 3) {
 			let ifNode = vIfSlot;
 			while (ifNode.negative && ifNode.negative.slotType === 3) ifNode = ifNode.negative;
 			const negative = vElse.exp ? {
@@ -23665,4 +23735,4 @@ const VaporErrorMessages = {
 	[101]: ``
 };
 //#endregion
-export { CodegenContext, DELIMITERS_ARRAY, DELIMITERS_ARRAY_NEWLINE, DELIMITERS_OBJECT, DELIMITERS_OBJECT_NEWLINE, DynamicFlag, IMPORT_EXPR_RE, IMPORT_EXP_END, IMPORT_EXP_START, INDENT_END, INDENT_START, IRDynamicPropsKind, IRNodeTypes, IRSlotType, LF, NEWLINE, TEXT_NODE_PLACEHOLDER, TEXT_PLACEHOLDER, TemplateRegistry, VaporErrorCodes, VaporErrorMessages, analyzeExpressions, buildCodeFragment, buildDestructureIdMap, codeFragmentToString, compile, createStructuralDirectiveTransform, createVaporCompilerError, genCall, genMulti, generate, getBaseTransformPreset, getLiteralExpressionValue, getParserOptions, isBlockOperation, isBuiltInComponent, isConstantExpression, isKeepAliveTag, isStaticExpression, isTeleportTag, isTransitionGroupTag, isTransitionTag, markSlotRootOperations, matchKeyOnlyBindingPattern, matchSelectorPattern, needsVaporCtx, parse, parseValueDestructure, propToExpression, transform, transformChildren, transformComment, transformElement, transformKey, transformSlotOutlet, transformTemplateRef, transformText, transformVBind, transformVFor, transformVHtml, transformVIf, transformVModel, transformVOn, transformVOnce, transformVShow, transformVSlot, transformVText, wrapTemplate };
+export { CodegenContext, DELIMITERS_ARRAY, DELIMITERS_ARRAY_NEWLINE, DELIMITERS_OBJECT, DELIMITERS_OBJECT_NEWLINE, DynamicFlag, IMPORT_EXPR_RE, IMPORT_EXP_END, IMPORT_EXP_START, INDENT_END, INDENT_START, IRDynamicPropsKind, IRNodeTypes, IRSlotType, LF, NEWLINE, TEXT_NODE_PLACEHOLDER, TEXT_PLACEHOLDER, TemplateRegistry, VaporErrorCodes, VaporErrorMessages, analyzeExpressions, buildCodeFragment, buildDestructureIdMap, codeFragmentToString, compile, createStructuralDirectiveTransform, createVaporCompilerError, genCall, genDirectiveModifiers, genMulti, generate, getBaseTransformPreset, getLiteralExpressionValue, getParserOptions, hasStableSlotRoot, isBlockOperation, isBuiltInComponent, isConstantExpression, isKeepAliveTag, isStaticExpression, isTeleportTag, isTransitionGroupTag, isTransitionTag, markSlotRootOperations, matchKeyOnlyBindingPattern, matchSelectorPattern, needsVaporCtx, parse, parseValueDestructure, propToExpression, transform, transformChildren, transformComment, transformElement, transformKey, transformSlotOutlet, transformTemplateRef, transformText, transformVBind, transformVFor, transformVHtml, transformVIf, transformVModel, transformVOn, transformVOnce, transformVShow, transformVSlot, transformVText, wrapTemplate };

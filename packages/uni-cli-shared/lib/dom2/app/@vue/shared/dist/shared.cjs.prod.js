@@ -1,5 +1,5 @@
 /**
-  * @vue/shared v3.6.0-beta.14
+  * @vue/shared v3.6.0-beta.16
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -729,7 +729,9 @@ const VaporSlotFlags = {
 	"ONCE": 2,
 	"2": "ONCE",
 	"SLOT_ROOT": 4,
-	"4": "SLOT_ROOT"
+	"4": "SLOT_ROOT",
+	"NON_STABLE": 8,
+	"8": "NON_STABLE"
 };
 const VaporDynamicComponentFlags = {
 	"SINGLE_ROOT": 1,
