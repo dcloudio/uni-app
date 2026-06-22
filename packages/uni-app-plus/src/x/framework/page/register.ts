@@ -340,12 +340,14 @@ function initVaporPageLifeCycle(
     pageRootEl.tagName === 'PAGE' &&
     pageRootEl instanceof UniViewElementImpl == false
   ) {
-    const pullDownRefreshEventId = `uni-pull-down-refresh-${nativePage.pageId}`
-    uni.$on(pullDownRefreshEventId, () => {
-      invokeHook(pageComponentPublicInstance, ON_PULL_DOWN_REFRESH)
-    })
+    const pulldownRefreshEventId = pageRootEl.addEventListener(
+      'refresherrefresh',
+      () => {
+        invokeHook(pageComponentPublicInstance, ON_PULL_DOWN_REFRESH)
+      }
+    )
     nativePage.addPageEventListener(ON_UNLOAD, (_) => {
-      uni.$off(pullDownRefreshEventId)
+      pageRootEl.removeEventListener('refresherrefresh', pulldownRefreshEventId)
     })
   }
 }
