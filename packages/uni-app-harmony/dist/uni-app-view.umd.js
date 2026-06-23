@@ -16552,11 +16552,12 @@
         if (INPUT_MODES.includes(props2.type)) {
           return props2.type;
         }
-        var inputmodeMap = {
-          // number: 'numeric',
-          digit: "decimal",
-          idcard: "text"
-        };
+        var inputmodeMap = {};
+        {
+          inputmodeMap = {
+            idcard: "text"
+          };
+        }
         return inputmodeMap[props2.type];
       });
       var cache2 = useCache(props2, type);
