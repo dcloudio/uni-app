@@ -220,20 +220,6 @@
       }
     }
   },
-  "uni-canvas-dom2": {
-    "uni": {
-      "createCanvasContextAsync": {
-        "name": "createCanvasContextAsync",
-        "app": {
-          "js": false,
-          "x-js": false,
-          "kotlin": true,
-          "swift": true,
-          "arkts": true
-        }
-      }
-    }
-  },
   "uni-chooseLocation": {
     "uni": {
       "chooseLocation": {
