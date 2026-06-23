@@ -2150,11 +2150,10 @@ function initVaporPageLifeCycle(pageComponentPublicInstance, nativePage) {
   var pageRootEl = pageComponentPublicInstance.$el;
   if (!pageRootEl)
     return;
-  var pageScrollElementTags = ["LIST-VIEW", "SCROLL-VIEW", "WATERFLOW"];
   if (
     // @ts-expect-error
     (pageComponentPublicInstance._.onReachBottom || // @ts-expect-error
-    pageComponentPublicInstance._.onPageScroll) && pageScrollElementTags.includes(pageRootEl.tagName)
+    pageComponentPublicInstance._.onPageScroll) && pageRootEl.tagName === "PAGE" && pageRootEl instanceof UniViewElementImpl == false
   ) {
     var triggeredReachBottom = false;
     var scrollEventId = pageRootEl.addEventListener("scroll", (e) => {
@@ -2179,14 +2178,12 @@ function initVaporPageLifeCycle(pageComponentPublicInstance, nativePage) {
       pageRootEl.removeEventListener("scroll", scrollEventId);
     });
   }
-  var SCROLL_VIEW_INSERT_BY_PULL_DOWN_REFRESH_ID = "uni-pdr-root";
-  if (pageRootEl.tagName === "SCROLL-VIEW" && pageRootEl.getAttribute("id") === SCROLL_VIEW_INSERT_BY_PULL_DOWN_REFRESH_ID) {
-    var pullDownRefreshEventId = "uni-pull-down-refresh-".concat(nativePage.pageId);
-    uni.$on(pullDownRefreshEventId, () => {
+  if (pageRootEl.tagName === "PAGE" && pageRootEl instanceof UniViewElementImpl == false) {
+    var pulldownRefreshEventId = pageRootEl.addEventListener("refresherrefresh", () => {
       invokeHook(pageComponentPublicInstance, ON_PULL_DOWN_REFRESH);
     });
     nativePage.addPageEventListener(ON_UNLOAD, (_) => {
-      uni.$off(pullDownRefreshEventId);
+      pageRootEl.removeEventListener("refresherrefresh", pulldownRefreshEventId);
     });
   }
 }
