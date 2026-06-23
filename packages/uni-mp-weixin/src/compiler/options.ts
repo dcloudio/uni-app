@@ -72,6 +72,7 @@ const nodeTransforms: NodeTransform[] = [
   transformRef,
   transformComponentLink,
   transformAd,
+  transformTeleport,
 ]
 if (process.env.UNI_APP_X === 'true') {
   nodeTransforms.push(
@@ -79,8 +80,6 @@ if (process.env.UNI_APP_X === 'true') {
     transformDirection,
     transformLoading
   )
-} else {
-  nodeTransforms.push(transformTeleport)
 }
 
 export const compilerOptions: CompilerOptions = {
