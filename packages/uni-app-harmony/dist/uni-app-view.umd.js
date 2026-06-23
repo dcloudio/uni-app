@@ -16554,7 +16554,7 @@
           return props2.type;
         }
         var inputmodeMap = {
-          number: "numeric",
+          // number: 'numeric',
           digit: "decimal",
           idcard: "text"
         };

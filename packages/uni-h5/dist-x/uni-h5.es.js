@@ -12494,7 +12494,7 @@ const __syscom_3$1 = /* @__PURE__ */ defineBuiltInComponent({
         return props2.type;
       }
       const inputmodeMap = {
-        number: "numeric",
+        // number: 'numeric',
         digit: "decimal",
         idcard: "text"
       };

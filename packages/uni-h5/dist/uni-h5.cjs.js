@@ -4051,7 +4051,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         return props2.type;
       }
       const inputmodeMap = {
-        number: "numeric",
+        // number: 'numeric',
         digit: "decimal",
         idcard: "text"
       };
