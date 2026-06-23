@@ -191,8 +191,8 @@ export default {
       switch (this.type) {
         case 'digit':
           return 'decimal'
-        case 'number':
-          return 'numeric'
+        /* case 'number':
+          return 'numeric' */
         case 'idcard':
           return 'text'
       }
