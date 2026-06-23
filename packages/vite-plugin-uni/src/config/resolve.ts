@@ -1,6 +1,7 @@
 import path from 'path'
 import type { Alias, ResolverFunction, UserConfig } from 'vite'
 import {
+  FS_PREFIX,
   extensions,
   isNormalCompileTarget,
   isWindows,
@@ -16,11 +17,14 @@ import type { VitePluginUniResolvedOptions } from '..'
 function resolveUTSModuleProxyFile(id: string, importer: string) {
   const file = resolveUTSAppModule(process.env.UNI_UTS_PLATFORM, id, importer)
   if (file) {
+    const normalizedFile = isWindows ? normalizePath(file) : file
     // app-js 会返回完整路径，不需要 uts-proxy
-    if (file.endsWith('.uts')) {
-      return file
+    if (normalizedFile.endsWith('.uts')) {
+      return isWindows ? FS_PREFIX + normalizedFile : normalizedFile
     }
-    return file + '?uts-proxy'
+    return isWindows
+      ? `${FS_PREFIX + normalizedFile}?uts-proxy`
+      : normalizedFile + '?uts-proxy'
   }
 }
 
