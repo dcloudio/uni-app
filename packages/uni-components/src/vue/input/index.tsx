@@ -136,7 +136,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         return props.type
       }
       const inputmodeMap = {
-        number: 'numeric',
+        // number: 'numeric',
         digit: 'decimal',
         idcard: 'text',
       }
