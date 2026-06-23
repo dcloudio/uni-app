@@ -19,7 +19,10 @@ import {
   normalizeEmitAssetFileName,
   normalizeNodeModules,
 } from '../../../../utils'
-import { shouldUseHighResolutionSourceMap } from '../../../../x'
+import {
+  isUniAppXAndroid,
+  shouldUseHighResolutionSourceMap,
+} from '../../../../x'
 import { type IsStaticFile, getIsStaticFile } from './static'
 
 export const assetUrlRE = /__VITE_ASSET__([a-z\d]{8})__(?:\$_(.*?)__)?/g
@@ -152,7 +155,7 @@ export function assetPlugin(
         return {
           code: s.toString(),
           map: withSourcemap(config)
-            ? s.generateMap({ hires: shouldUseHighResolutionSourceMap() })
+            ? s.generateMap({ hires: shouldUseAssetHighResolutionSourceMap() })
             : null,
         }
       } else {
@@ -160,6 +163,12 @@ export function assetPlugin(
       }
     },
   }
+}
+
+function shouldUseAssetHighResolutionSourceMap() {
+  // Android dom2 的 app-service 后续会与 esbuild map 合并，低精度 asset map
+  // 可能导致原始 .uvue 映射丢失或断点偏移。
+  return isUniAppXAndroid() || shouldUseHighResolutionSourceMap()
 }
 
 export function parseAssets(config: ResolvedConfig, code: string) {
