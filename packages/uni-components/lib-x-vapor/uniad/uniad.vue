@@ -1,8 +1,9 @@
 <template>
-  <view @click="onclick">
+  <view @click="_onclick">
     <uniad-plugin
       class="uniad-plugin"
       :adpid="adpid"
+      :isUni="true"
       :unit-id="unitId"
       @load="_onmpload"
       @close="_onmpclose"
@@ -10,7 +11,7 @@
       @nextChannel="_onnextchannel"
     />
     <!-- #ifdef MP-WEIXIN -->
-    <ad-custom v-if="userwx" :unit-id="userUnitId"></ad-custom>
+    <ad-custom v-if="userwx && !isHalfScreen" :unit-id="userUnitId"></ad-custom>
     <uniad-plugin-wx v-if="wxchannel" class="uniad-plugin-wx" @error="_onwxchannelerror"></uniad-plugin-wx>
     <!-- #endif -->
   </view>

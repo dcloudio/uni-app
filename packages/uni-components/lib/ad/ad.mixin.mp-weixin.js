@@ -15,7 +15,8 @@ const AdType = {
 const ProviderType = {
   WeChat: 10018,
   UserWeChat: 10017,
-  ShanHu: 10020
+  ShanHu: 10020,
+  HalfScreen: 10032
 }
 
 const ActionType = {
@@ -74,7 +75,8 @@ export default {
       userUnitId: '',
       customFullscreen: '',
       wxchannel: false,
-      errorMessage: null
+      errorMessage: null,
+      isHalfScreen: false
     }
   },
   created () {
@@ -84,6 +86,8 @@ export default {
     this._wxInterstitialAd = null
     this._userInvokeShowFlag = false
     this._providerType = ProviderType.ShanHu
+    this._halfScreenOpening = false
+    this._halfScreenOpeningTimer = null
     if (this.preload && this._canCreateAd()) {
       this.load()
     }
@@ -107,6 +111,11 @@ export default {
       this.errorMessage = null
       if (this.loading) {
         this._userInvokeShowFlag = true
+        return
+      }
+      const plugin = this.selectComponent('.uniad-plugin')
+      if (this._isHalfScreenAd(plugin)) {
+        this._showHalfScreenAd(plugin, e)
         return
       }
       if (this._providerType === ProviderType.ShanHu) {
@@ -141,8 +150,102 @@ export default {
       return (typeof this.urlCallback === 'object' && Object.keys(this.urlCallback).length > 0)
     },
 
+    /**
+     * 切换为半屏广告模式
+     */
+    _setHalfScreenMode () {
+      this.isHalfScreen = true
+      this._providerType = ProviderType.HalfScreen
+      this.userwx = false
+      this.loading = false
+    },
+
+    /**
+     * 是否半屏广告
+     * @param {Object} plugin uniad-plugin 实例
+     */
+    _isHalfScreenAd (plugin) {
+      return this._providerType === ProviderType.HalfScreen || !!(
+        plugin &&
+        plugin.getHalfScreenConfig &&
+        plugin.getHalfScreenConfig()
+      )
+    },
+
+    /**
+     * 打开半屏小程序
+     * @param {Object} plugin uniad-plugin 实例
+     * @param {Object} e show 入参
+     */
+    _showHalfScreenAd (plugin, e) {
+      this._setHalfScreenMode()
+      if (plugin && plugin.getHalfScreenOpenOptions) {
+        this._openHalfScreenInHost(plugin.getHalfScreenOpenOptions(e || {}))
+      }
+    },
+
+    /**
+     * 清除半屏打开锁定时器
+     */
+    _clearHalfScreenOpeningTimer () {
+      if (this._halfScreenOpeningTimer) {
+        clearTimeout(this._halfScreenOpeningTimer)
+        this._halfScreenOpeningTimer = null
+      }
+    },
+
+    /**
+     * 重置半屏打开锁
+     */
+    _resetHalfScreenOpening () {
+      this._halfScreenOpening = false
+      this._clearHalfScreenOpeningTimer()
+    },
+
+    /**
+     * 调用 wx.openEmbeddedMiniProgram
+     * @param {Object} openOptions 打开参数
+     */
+    _openHalfScreenInHost (openOptions) {
+      if (this._halfScreenOpening) {
+        return
+      }
+      if (!openOptions || !openOptions.appId || typeof wx.openEmbeddedMiniProgram !== 'function') {
+        this._dispatchEvent(EventType.Error, {
+          errMsg: 'half screen openOptions unavailable or openEmbeddedMiniProgram not supported'
+        })
+        return
+      }
+      this._halfScreenOpening = true
+      this._halfScreenOpeningTimer = setTimeout(() => {
+        this._resetHalfScreenOpening()
+      }, 3000)
+      const plugin = this.selectComponent('.uniad-plugin')
+      wx.openEmbeddedMiniProgram({
+        appId: openOptions.appId,
+        path: openOptions.path,
+        extraData: openOptions.extraData || {},
+        success: (res) => {
+          this._resetHalfScreenOpening()
+          if (plugin && plugin.notifyHalfScreenOpenSuccess) {
+            plugin.notifyHalfScreenOpenSuccess(res)
+          }
+        },
+        fail: (err) => {
+          this._resetHalfScreenOpening()
+          if (plugin && plugin.notifyHalfScreenOpenFail) {
+            plugin.notifyHalfScreenOpenFail(err)
+          }
+        }
+      })
+    },
+
     _onmpload (e) {
       this.loading = false
+      const plugin = this.selectComponent('.uniad-plugin')
+      if (plugin && plugin.getHalfScreenConfig && plugin.getHalfScreenConfig()) {
+        this._setHalfScreenMode()
+      }
       this._dispatchEvent(EventType.Load, {})
       this._report(ActionType.AdRequest)
       if (this._userInvokeShowFlag) {
@@ -191,8 +294,11 @@ export default {
     },
 
     _onnextchannel (e) {
-      this.wxchannel = true
       const adData = e.detail[0]
+      if (Number(adData.provider) === ProviderType.HalfScreen) {
+        return
+      }
+      this.wxchannel = true
       this.$nextTick(() => {
         if (adData.provider === 10017) {
           this._providerType = ProviderType.UserWeChat
