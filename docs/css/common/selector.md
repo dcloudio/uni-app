@@ -1,6 +1,6 @@
 # 选择器 @selector
 
-- web和小程序支持page元素选择器，以替代body元素选择器。
+- web 和小程序支持 `page` 元素选择器；HBuilderX 5.14+ 起，App 端蒸汽模式下各平台也支持 `page` 元素选择器。`page` 可用于设置页面根节点样式，用来替代 web 中常用的 `body` 选择器。
 - web端可以使用`html`、`body`、`:root`等选择器。由于页面的css样式隔离，且html节点并未添加data-xxx属性，`html`、`:root`写在页面style内无效，只能写在App.uvue内。
 - 深度选择器 `:deep()/::v-deep` 用法参考 [单文件 style - 深度选择器](/vue/README.md#scoped) 文档。
 
