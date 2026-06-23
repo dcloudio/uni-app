@@ -189,8 +189,9 @@ export default {
         return this.type
       }
       switch (this.type) {
-        case 'digit':
-          return 'decimal'
+        // iOS 上 inputmode="decimal" 弹出键盘没有负号
+        /* case 'digit':
+          return 'decimal' */
         /* case 'number':
           return 'numeric' */
         case 'idcard':
