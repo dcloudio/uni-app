@@ -190,12 +190,10 @@ const nodeTransforms = [
     uniCliShared.transformRef,
     uniCliShared.transformComponentLink,
     transformAd,
+    uniCliShared.transformTeleport,
 ];
 if (process.env.UNI_APP_X === 'true') {
     nodeTransforms.push(uniCliShared.transformMPBuiltInTag, uniCliShared.transformDirection, transformLoading);
-}
-else {
-    nodeTransforms.push(uniCliShared.transformTeleport);
 }
 const compilerOptions = {
     nodeTransforms,
