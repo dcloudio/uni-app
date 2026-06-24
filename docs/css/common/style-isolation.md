@@ -207,6 +207,8 @@ defineOptions中配置externalClasses，从HBuilderX5.0起支持。
 
 - 由于全局样式是最低优先级，如果传递给组件externalClasses的class是在全局App.uvue中定义的，且期望覆盖组件内部自身class的部分样式，需要给指定的css属性增加`!important;`。
 
+- 当前Web平台在样式隔离策略2.0下，如果传递给组件externalClasses的class定义在`App.uvue`的全局样式中，组件需要额外配置`styleIsolation: 'app'`，否则组件内部无法引用该全局class。建议在Web端增加该兼容配置，待该问题修复后可移除。
+
 
 ##### 组件避免外部过度干扰样式
 
