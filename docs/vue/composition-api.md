@@ -586,7 +586,7 @@ const stateText = computed(() => {
 
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1;">
     <!-- #endif -->
 		<view class="page">
@@ -810,7 +810,7 @@ const stateText = computed(() => {
       <button class='mb-10' id="update-json-obj-with-arr-list-0-value-btn" @click="updateJsonObjWithArrList0Value()">update jsonObjWithArr.data.list[0].value</button>
       <button class='mb-10' id="push-json-obj-with-arr-list-btn" @click="pushJsonObjWithArrList()">push to jsonObjWithArr.data.list</button>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
 	</scroll-view>
   <!-- #endif -->
 </template>
