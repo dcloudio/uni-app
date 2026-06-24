@@ -52,6 +52,22 @@ describe('stats', () => {
     hook?.handler(id, { event: 'update' })
   }
 
+  function writeBundle(
+    plugin: ReturnType<typeof uniStatsPlugin>,
+    bundle: Record<string, any>
+  ) {
+    ;(plugin.writeBundle as any)({}, bundle)
+  }
+
+  function createChunk(code: string, imports: string[] = []) {
+    return {
+      type: 'chunk',
+      code,
+      imports,
+      dynamicImports: [],
+    }
+  }
+
   test('app x watches vapor toggle and prompts restart', () => {
     process.env.UNI_APP_X = 'true'
     process.env.UNI_PLATFORM = 'app'
@@ -130,5 +146,63 @@ describe('stats', () => {
     )
 
     expect(process.env.UNI_APP_CHANGED_FILES).toBe('previous')
+  })
+
+  test('app harmony changed files include recursive static importers', () => {
+    process.env.UNI_PLATFORM = 'app-harmony'
+    const plugin = uniStatsPlugin()
+    const bundle = {
+      'a.js': createChunk('import "./b.js"', ['b.js']),
+      'b.js': createChunk('import "./c.js"', ['c.js']),
+      'c.js': createChunk('export const c = 1'),
+    }
+
+    ;(plugin.configResolved as any)({ isProduction: false })
+    writeBundle(plugin, bundle)
+    bundle['c.js'] = createChunk('export const c = 2')
+    writeBundle(plugin, bundle)
+
+    expect(JSON.parse(process.env.UNI_APP_CHANGED_FILES)).toEqual([
+      'c.js',
+      'b.js',
+      'a.js',
+    ])
+  })
+
+  test('app harmony recursive importers skip circular dependencies', () => {
+    process.env.UNI_PLATFORM = 'app-harmony'
+    const plugin = uniStatsPlugin()
+    const bundle = {
+      'a.js': createChunk('import "./b.js"', ['b.js']),
+      'b.js': createChunk('import "./a.js"; export const b = 1', ['a.js']),
+    }
+
+    ;(plugin.configResolved as any)({ isProduction: false })
+    writeBundle(plugin, bundle)
+    bundle['b.js'] = createChunk('import "./a.js"; export const b = 2', [
+      'a.js',
+    ])
+    writeBundle(plugin, bundle)
+
+    expect(JSON.parse(process.env.UNI_APP_CHANGED_FILES)).toEqual([
+      'b.js',
+      'a.js',
+    ])
+  })
+
+  test('non app harmony changed files do not include importers', () => {
+    process.env.UNI_PLATFORM = 'app'
+    const plugin = uniStatsPlugin()
+    const bundle = {
+      'a.js': createChunk('import "./b.js"', ['b.js']),
+      'b.js': createChunk('export const b = 1'),
+    }
+
+    ;(plugin.configResolved as any)({ isProduction: false })
+    writeBundle(plugin, bundle)
+    bundle['b.js'] = createChunk('export const b = 2')
+    writeBundle(plugin, bundle)
+
+    expect(JSON.parse(process.env.UNI_APP_CHANGED_FILES)).toEqual(['b.js'])
   })
 })
