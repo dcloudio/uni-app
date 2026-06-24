@@ -2976,7 +2976,7 @@ onReady(() => {
 
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1" :bounces="false">
     <!-- #endif -->
     <view class="page container">
@@ -3024,7 +3024,7 @@ onReady(() => {
         跳转 onBackPress 示例
       </button>
     </view>
-    <!-- #ifdef APP -->
+    <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
