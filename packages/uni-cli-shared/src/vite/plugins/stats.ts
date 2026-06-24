@@ -1,4 +1,5 @@
 import type { Plugin, ResolvedConfig } from 'vite'
+import type { OutputBundle } from 'rollup'
 import fs from 'fs-extra'
 import { hash } from '../../utils'
 import { parseJson } from '../../json'
@@ -36,12 +37,59 @@ function getManifestVaporRenderTarget(manifest: Record<string, any>) {
   )
 }
 
+function appendChangedFile(
+  changedFiles: string[],
+  seenFiles: Set<string>,
+  filename: string
+) {
+  if (seenFiles.has(filename)) {
+    return
+  }
+  seenFiles.add(filename)
+  changedFiles.push(filename)
+}
+
+function appendImporterFiles(
+  changedFiles: string[],
+  seenFiles: Set<string>,
+  bundle: OutputBundle
+) {
+  const importerMap = new Map<string, string[]>()
+
+  Object.keys(bundle).forEach((filename) => {
+    const outputFile = bundle[filename]
+    if (outputFile.type !== 'chunk') {
+      return
+    }
+    const imports = outputFile.imports.concat(outputFile.dynamicImports)
+    imports.forEach((file) => {
+      const importers = importerMap.get(file)
+      if (importers) {
+        importers.push(filename)
+      } else {
+        importerMap.set(file, [filename])
+      }
+    })
+  })
+
+  for (let i = 0; i < changedFiles.length; i++) {
+    const importers = importerMap.get(changedFiles[i])
+    if (!importers) {
+      continue
+    }
+    importers.forEach((filename) => {
+      appendChangedFile(changedFiles, seenFiles, filename)
+    })
+  }
+}
+
 export function uniStatsPlugin(options: UniStatsPluginOptions = {}): Plugin {
   let resolvedConfig: ResolvedConfig
   let isManifestChanged = false
   const shouldTrackManifestChange =
     process.env.UNI_PLATFORM === 'app' ||
     process.env.UNI_PLATFORM === 'app-harmony'
+  const shouldAppendImporterFiles = process.env.UNI_PLATFORM === 'app-harmony'
 
   let isVapor =
     shouldTrackManifestChange && process.env.UNI_APP_X_DOM2 === 'true'
@@ -103,6 +151,7 @@ export function uniStatsPlugin(options: UniStatsPluginOptions = {}): Plugin {
       }
       const emittedHash = emittedHashMap.get(resolvedConfig)!
       const changedFiles: string[] = []
+      const seenFiles = new Set<string>()
       Object.keys(bundle).forEach((filename) => {
         // 不处理sourcemap
         if (filename.endsWith('.map')) {
@@ -117,9 +166,12 @@ export function uniStatsPlugin(options: UniStatsPluginOptions = {}): Plugin {
         }
         if (emittedHash.get(filename) !== outputFileHash) {
           emittedHash.set(filename, outputFileHash)
-          changedFiles.push(filename)
+          appendChangedFile(changedFiles, seenFiles, filename)
         }
       })
+      if (shouldAppendImporterFiles) {
+        appendImporterFiles(changedFiles, seenFiles, bundle)
+      }
       if (isManifestChanged) {
         isManifestChanged = false
         changedFiles.unshift('manifest.json')
