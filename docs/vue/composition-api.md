@@ -1468,8 +1468,6 @@ const updateReadonlyData = () => {
 
 [watchEffect()](#watcheffect) 使用 `flush: 'post'` 选项时的别名。
 
-**注意：** App平台下 watchPostEffect 的回调中不能立即访问到更新后的DOM，如果需要访问，需要放到 nextTick 中
-
 示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/reactivity/core/watch-post-effect/watch-post-effect.uvue)
 
 ::: preview https://hellouvue.dcloud.net.cn/#/pages/reactivity/core/watch-post-effect/watch-post-effect
