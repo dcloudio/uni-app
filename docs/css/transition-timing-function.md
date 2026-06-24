@@ -39,7 +39,7 @@ transition-timing-function: <easing-function>#;
 | ease-out | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 过渡开始时较快，然后逐渐减速。这会在过渡末尾创建一个缓慢的效果。 |
 | ease-in-out | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 过渡开始时较慢，然后加速，最后减速。这是一个结合了ease-in和ease-out的时间函数，产生平滑的过渡效果。 |
 | linear | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 过渡效果是线性的，速度保持恒定，没有加速或减速。这会在整个过渡期间保持相同的速度。 |
-| cubic-bezier | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 用于自定义 CSS 过渡（transition）的时间函数的函数，它允许你精确地定义过渡效果的速度变化。 |
+| cubic-bezier | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.14 | 用于自定义 CSS 过渡（transition）的时间函数的函数，它允许你精确地定义过渡效果的速度变化。 |
 
 
 #### App平台

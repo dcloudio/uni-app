@@ -15,7 +15,7 @@ text-decoration-thickness 属性用于设置元素中文本的修饰线的粗细
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
-| 5.21 | 5.11 | 5.0 |
+| x | x | x |
 
 
 

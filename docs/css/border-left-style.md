@@ -40,7 +40,8 @@ border-left-style: <line-style>;
 | dotted | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 显示为一系列圆点。标准中没有定义两点之间的间隔大小，视不同实现而定。圆点半径是 border-width 计算值的一半。 |
 
 
-
+### 默认值 @default-value 
+ `none`
 
 
 
