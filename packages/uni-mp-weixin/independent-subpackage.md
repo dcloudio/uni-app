@@ -73,6 +73,44 @@ vue3 + Vite/Rollup 可以保留“root 内有 `common/main.js` 产物”的形�
 - `packages/uni-cli-shared/src/mp/usingComponents.ts`：分析组件引用并生成 `usingComponents`。
 - `packages/uni-mp-vue/src/plugin.ts`、`packages/uni-mp-core/src/runtime/app.ts`、`packages/uni-mp-core/src/runtime/component.ts`：小程序 app/page/component 运行时。
 
+## Vite 8.1 / Rolldown 评估
+
+截至 2026-06-24，官方资料显示 Vite 8 已切换为 Rolldown 驱动的统一 bundler，Vite 8.1 新增的重点能力是 experimental bundled dev mode，用于让开发模式也走 bundle 以提升大项目启动和刷新性能。参考：
+
+- [Vite 8.0 is out](https://vite.dev/blog/announcing-vite8)
+- [Vite 8.1 is out](https://vite.dev/blog/announcing-vite8-1)
+- [Rolldown Automatic Code Splitting](https://rolldown.rs/in-depth/automatic-code-splitting)
+- [Rolldown output.codeSplitting](https://rolldown.rs/reference/OutputOptions.codeSplitting)
+
+结论：升级到 Vite 8.1 / Rolldown 后，独立分包核心方案不会变得可以“只靠多 input 自动复制依赖”。原因是 Rolldown 的自动 code splitting 仍然会把被多个 entry 静态引用的同一个 module id 放入 common chunk，并以保持最终 bundle 中 JS module singleton 为目标。这与微信独立分包冷启动的诉求冲突：独立分包不能依赖主包 `common/*`。
+
+因此仍然需要保留：
+
+- 每个独立分包一个额外 input。
+- root 专属虚拟入口。
+- root query 传播，使独立分包看到不同 module id。
+- root-specific pages 模块。
+- app factory 与运行时 root 动态化。
+
+Vite 8.1 / Rolldown 可能简化的是 chunk 策略，而不是 module 隔离策略：
+
+- 当前 Rollup 方案需要调整 `manualChunks`、`chunkFileNames`。
+- 后续 Rolldown 可优先评估用 `output.codeSplitting.groups` 或 Vite 暴露的 `rolldownOptions.output.codeSplitting` 替代部分 `manualChunks` 逻辑。
+- `codeSplitting.groups` 可以更方便地把已带 root query 的模块分组到 `${root}/common/*`，但不能把同一个真实 module id 自动复制成多份。
+- bundled dev mode 有助于 dev/watch 与 build 行为趋同，但官方仍标记 experimental，且当前重点是 browser side、basic plugins；小程序编译涉及虚拟模块、JSON/WXML/WXSS 产物，不能把它作为第一阶段依赖能力。
+
+后续升级 Vite 8.1 时，可把 chunk 输出策略抽象成两套实现：
+
+```text
+当前 Vite/Rollup:
+  root query -> manualChunks -> chunkFileNames
+
+未来 Vite/Rolldown:
+  root query -> output.codeSplitting.groups -> entry/chunk naming
+```
+
+需要注意：Rolldown manual code splitting 可能改变带副作用模块的执行顺序。若后续改用 `codeSplitting.groups`，需要重点验证 `common/index.js -> common/main.js -> app factory -> pages` 的执行顺序，并评估是否需要接入 `strictExecutionOrder` 或显式 `require()` 顺序。
+
 ## 核心方案
 
 采用“单 Vite/Rollup 构建 + 每个独立分包一个额外 input + root query 隔离 module id”的方案。
