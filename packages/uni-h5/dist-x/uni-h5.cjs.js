@@ -4854,11 +4854,14 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       if (INPUT_MODES.includes(props2.type)) {
         return props2.type;
       }
-      const inputmodeMap = {
-        // number: 'numeric',
-        digit: "decimal",
-        idcard: "text"
-      };
+      let inputmodeMap = {};
+      {
+        inputmodeMap = {
+          number: "numeric",
+          digit: "decimal",
+          idcard: "text"
+        };
+      }
       return inputmodeMap[props2.type];
     });
     let cache = useCache(props2, type);
