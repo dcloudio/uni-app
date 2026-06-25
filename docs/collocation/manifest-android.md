@@ -957,13 +957,13 @@ uni-app x 项目云端打包默认仅包含“arm64-v8a”，如需支持其它C
 - 配置 abiFilters 需提交云端打包才能生效
 
 
-## 是否压缩原生库（.so 文件） @disablelegacypackaging
+## 不压缩原生库（.so 文件） @disablelegacypackaging
 
 > HBuilderX 5.21 及以上版本支持
 
 Android平台云端打包默认会压缩 APK/AAB 中的原生库（.so 文件）。如果三方SDK要求 .so 文件以未压缩方式打包，或希望优化应用安装、启动时加载原生库的性能，可在 manifest.json 中配置 `disableLegacyPackaging`。
 
-可视化界面操作在 “安卓App配置” 中选择勾选 “是否压缩原生库（so文件）”：
+可视化界面操作在 “安卓App配置” 中选择勾选 “不压缩原生库（so文件）”：
 
 ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/android_disablelegacypackaging.png)
 
