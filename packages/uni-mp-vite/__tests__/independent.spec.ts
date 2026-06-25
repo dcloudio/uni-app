@@ -1,0 +1,62 @@
+import fs from 'fs'
+import os from 'os'
+import path from 'path'
+import { uniIndependentSubpackagePlugin } from '../src/plugins/independent'
+
+function withPagesJson(pagesJson: unknown, test: (inputDir: string) => void) {
+  const inputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-independent-'))
+  fs.writeFileSync(
+    path.join(inputDir, 'pages.json'),
+    JSON.stringify(pagesJson, null, 2)
+  )
+  try {
+    test(inputDir)
+  } finally {
+    fs.rmSync(inputDir, { recursive: true, force: true })
+  }
+}
+
+describe('uniIndependentSubpackagePlugin', () => {
+  const originalPlatform = process.env.UNI_PLATFORM
+  const originalInputDir = process.env.UNI_INPUT_DIR
+
+  afterEach(() => {
+    if (originalPlatform === undefined) {
+      delete (process.env as Record<string, string | undefined>).UNI_PLATFORM
+    } else {
+      process.env.UNI_PLATFORM = originalPlatform
+    }
+    if (originalInputDir === undefined) {
+      delete (process.env as Record<string, string | undefined>).UNI_INPUT_DIR
+    } else {
+      process.env.UNI_INPUT_DIR = originalInputDir
+    }
+  })
+
+  test('resolves and loads independent main virtual module', () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        const plugin = uniIndependentSubpackagePlugin({} as any)
+        ;(plugin.buildStart as Function).call({})
+        const id = '\0uni:mp-independent-main?root=package-a'
+
+        expect((plugin.resolveId as Function)(id)).toBe(id)
+        expect((plugin.load as Function)(id)).toEqual({
+          code: "import 'uni-mp-runtime'\n",
+          map: { mappings: '' },
+        })
+      }
+    )
+  })
+})
