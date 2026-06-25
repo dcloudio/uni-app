@@ -5566,7 +5566,7 @@ function rfdc(opts) {
   if (opts.circles) { return rfdcCircles(opts) }
 
   var constructorHandlers = new Map();
-  constructorHandlers.set(Date, function (o) { return new Date(o); });
+  constructorHandlers.set(Date, function (o) { return o.toJSON(); });
   constructorHandlers.set(Map, function (o, fn) { return new Map(cloneArray(Array.from(o), fn)); });
   constructorHandlers.set(Set, function (o, fn) { return new Set(cloneArray(Array.from(o), fn)); });
   if (opts.constructorHandlers) {
@@ -5649,7 +5649,7 @@ function rfdcCircles(opts) {
   var refsNew = [];
 
   var constructorHandlers = new Map();
-  constructorHandlers.set(Date, function (o) { return new Date(o); });
+  constructorHandlers.set(Date, function (o) { return o.toJSON(); });
   constructorHandlers.set(Map, function (o, fn) { return new Map(cloneArray(Array.from(o), fn)); });
   constructorHandlers.set(Set, function (o, fn) { return new Set(cloneArray(Array.from(o), fn)); });
   if (opts.constructorHandlers) {
