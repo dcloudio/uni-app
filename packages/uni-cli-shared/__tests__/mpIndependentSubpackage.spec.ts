@@ -1,6 +1,7 @@
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
+import { parseMiniProgramPagesJson } from '../src/json/mp/pages'
 import { parseIndependentSubPackages } from '../src/json/mp/subpackage'
 
 function withPagesJson(pagesJson: unknown, test: (inputDir: string) => void) {
@@ -18,12 +19,18 @@ function withPagesJson(pagesJson: unknown, test: (inputDir: string) => void) {
 
 describe('parseIndependentSubPackages', () => {
   const originalPlatform = process.env.UNI_PLATFORM
+  const originalInputDir = process.env.UNI_INPUT_DIR
 
   afterEach(() => {
     if (originalPlatform === undefined) {
       delete (process.env as Record<string, string | undefined>).UNI_PLATFORM
     } else {
       process.env.UNI_PLATFORM = originalPlatform
+    }
+    if (originalInputDir === undefined) {
+      delete (process.env as Record<string, string | undefined>).UNI_INPUT_DIR
+    } else {
+      process.env.UNI_INPUT_DIR = originalInputDir
     }
   })
 
@@ -114,6 +121,38 @@ describe('parseIndependentSubPackages', () => {
       },
       (inputDir) => {
         expect(parseIndependentSubPackages(inputDir)).toEqual([])
+      }
+    )
+  })
+
+  test('keeps independent field in app json subPackages', () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    withPagesJson(
+      {
+        pages: [{ path: 'pages/index/index' }],
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        fs.writeFileSync(path.join(inputDir, 'manifest.json'), '{}')
+        const { appJson } = parseMiniProgramPagesJson(
+          fs.readFileSync(path.join(inputDir, 'pages.json'), 'utf8'),
+          'mp-weixin',
+          { subpackages: true }
+        )
+        expect(appJson.subPackages).toEqual([
+          {
+            root: 'package-a',
+            pages: ['pages/index/index'],
+            independent: true,
+          },
+        ])
       }
     )
   })
