@@ -1,4 +1,8 @@
+import fs from 'fs'
+import path from 'path'
 import {
+  normalizePagePath,
+  normalizePath,
   parseIndependentSubPackages,
   resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
@@ -13,11 +17,14 @@ import {
 const INDEPENDENT_MAIN_PREFIX = '\0uni:mp-independent-main'
 const APP_FACTORY_PREFIX = '\0uni:mp-app-factory'
 const INDEPENDENT_PAGES_PREFIX = '\0uni:mp-independent-pages'
+const INDEPENDENT_PAGE_PREFIX = '\0uni:mp-independent-page'
 
 export function uniIndependentSubpackagePlugin(
-  _options: UniMiniProgramPluginOptions
+  options: UniMiniProgramPluginOptions
 ): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR
+  const platform = process.env.UNI_PLATFORM as UniApp.PLATFORM
+  const global = options.global
   let independentRoots = new Set<string>()
   return {
     name: 'uni:mp-independent-subpackage',
@@ -38,6 +45,10 @@ export function uniIndependentSubpackagePlugin(
       }
       const pagesRoot = parseIndependentPagesRoot(id)
       if (pagesRoot && independentRoots.has(pagesRoot)) {
+        return id
+      }
+      const pageInfo = parseIndependentPageInfo(id)
+      if (pageInfo && independentRoots.has(pageInfo.root)) {
         return id
       }
       const importerRoot = importer && parseIndependentRoot(importer)
@@ -82,13 +93,54 @@ export function uniIndependentSubpackagePlugin(
       }
       const pagesRoot = parseIndependentPagesRoot(id)
       if (pagesRoot && independentRoots.has(pagesRoot)) {
+        this.addWatchFile(path.resolve(inputDir, 'pages.json'))
         return {
-          code: '',
+          code: generateIndependentPagesCode(inputDir, platform, pagesRoot),
+          map: { mappings: '' },
+        }
+      }
+      const pageInfo = parseIndependentPageInfo(id)
+      if (pageInfo && independentRoots.has(pageInfo.root)) {
+        const filepath = normalizePath(path.resolve(inputDir, pageInfo.page))
+        if (fs.existsSync(filepath)) {
+          this.addWatchFile(filepath)
+        }
+        return {
+          code: `import MiniProgramPage from ${JSON.stringify(
+            withIndependentRoot(filepath, pageInfo.root)
+          )}
+${global}.createPage(MiniProgramPage)`,
           map: { mappings: '' },
         }
       }
     },
   }
+}
+
+function generateIndependentPagesCode(
+  inputDir: string,
+  platform: UniApp.PLATFORM,
+  root: string
+) {
+  const independentPackage = parseIndependentSubPackages(inputDir).find(
+    (pkg) => pkg.root === root
+  )
+  if (!independentPackage) {
+    return ''
+  }
+  const imports = independentPackage.pages
+    .map((page) => normalizePath(path.join(root, page)))
+    .map((page) => normalizePagePath(page, platform))
+    .filter((page): page is string => !!page)
+    .map((page) => {
+      const id = `${INDEPENDENT_PAGE_PREFIX}?root=${encodeURIComponent(
+        root
+      )}&page=${encodeURIComponent(page)}`
+      return `import(${JSON.stringify(id)})`
+    })
+  return `if(!Math){
+${imports.join('\n')}
+}`
 }
 
 function shouldPropagateIndependentRoot(id: string) {
@@ -142,6 +194,18 @@ function parseIndependentPagesRoot(id: string) {
   return parseVirtualRoot(id, INDEPENDENT_PAGES_PREFIX)
 }
 
+function parseIndependentPageInfo(id: string) {
+  if (!id.startsWith(INDEPENDENT_PAGE_PREFIX)) {
+    return
+  }
+  const query = parseVirtualQuery(id)
+  const root = query.get('root')
+  const page = query.get('page')
+  if (root && page) {
+    return { root, page }
+  }
+}
+
 function parseVirtualRoot(id: string, prefix: string) {
   if (!id.startsWith(prefix)) {
     return
@@ -151,10 +215,10 @@ function parseVirtualRoot(id: string, prefix: string) {
     return
   }
   const query = id.slice(queryIndex + 1)
-  for (const item of query.split('&')) {
-    const [name, value = ''] = item.split('=')
-    if (name === 'root') {
-      return decodeURIComponent(value)
-    }
-  }
+  return new URLSearchParams(query).get('root') || undefined
+}
+
+function parseVirtualQuery(id: string) {
+  const queryIndex = id.indexOf('?')
+  return new URLSearchParams(queryIndex === -1 ? '' : id.slice(queryIndex + 1))
 }
