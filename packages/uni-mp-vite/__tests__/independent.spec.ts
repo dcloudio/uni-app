@@ -59,4 +59,36 @@ describe('uniIndependentSubpackagePlugin', () => {
       }
     )
   })
+
+  test('resolves app factory to root-specific main module', () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        const mainPath = path.join(inputDir, 'main.ts')
+        fs.writeFileSync(mainPath, 'export function createApp() {}')
+
+        const plugin = uniIndependentSubpackagePlugin({} as any)
+        ;(plugin.buildStart as Function).call({})
+        const id = '\0uni:mp-app-factory?root=package-a'
+
+        expect((plugin.resolveId as Function)(id)).toBe(id)
+        expect((plugin.load as Function)(id)).toEqual({
+          code: `export { createApp } from ${JSON.stringify(
+            `${mainPath}?uni_mp_independent_root=package-a`
+          )}\n`,
+          map: { mappings: '' },
+        })
+      }
+    )
+  })
 })
