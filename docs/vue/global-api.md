@@ -141,7 +141,7 @@ export function createApp() {
 > 组合式 API
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1;">
     <!-- #endif -->
     <view class="uni-padding-wrap">
@@ -188,7 +188,7 @@ export function createApp() {
         update globalProperties
       </button>
     </view>
-    <!-- #ifdef APP -->
+    <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

@@ -254,7 +254,7 @@ defineExpose({
 
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1; padding-bottom: 20px">
     <!-- #endif -->
     <view class="page">
@@ -326,7 +326,7 @@ defineExpose({
         <text id="watch-count-obj-num-res">{{ watchCountAndObjNumRes }}</text>
       </view>
     </view>
-    <!-- #ifdef APP -->
+    <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -1261,7 +1261,7 @@ const updateReadonlyData = () => {
 
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1; padding-bottom: 20px">
     <!-- #endif -->
     <view class="page">
@@ -1333,7 +1333,7 @@ const updateReadonlyData = () => {
         <text id="watch-count-obj-num-res">{{ watchCountAndObjNumRes }}</text>
       </view>
     </view>
-    <!-- #ifdef APP -->
+    <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -1474,7 +1474,7 @@ const updateReadonlyData = () => {
 
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1; padding-bottom: 20px">
     <!-- #endif -->
     <view class="page">
@@ -1542,7 +1542,7 @@ const updateReadonlyData = () => {
         <text id="watch-count-obj-num-res">{{ watchCountAndObjNumRes }}</text>
       </view>
     </view>
-    <!-- #ifdef APP -->
+    <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -1662,7 +1662,7 @@ const updateReadonlyData = () => {
 
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1; padding-bottom: 20px">
     <!-- #endif -->
     <view class="page">
@@ -1730,7 +1730,7 @@ const updateReadonlyData = () => {
         <text id="watch-count-obj-num-res">{{ watchCountAndObjNumRes }}</text>
       </view>
     </view>
-    <!-- #ifdef APP -->
+    <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -3400,7 +3400,7 @@ const updateTitle = () => {
 
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
     <!-- #endif -->
     <view class="page">
@@ -3450,7 +3450,7 @@ const updateTitle = () => {
         <text class="mt-10" id="default-slot-in-foo">default slot in Foo</text>
       </Foo>
     </view>
-    <!-- #ifdef APP -->
+    <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
