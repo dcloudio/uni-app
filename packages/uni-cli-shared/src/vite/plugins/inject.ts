@@ -22,6 +22,7 @@ import {
   isMemberExpression,
   isProperty,
   isReference,
+  withSourcemap,
 } from '../utils'
 import { isUniHelpers } from '../../uts'
 import { shouldUseHighResolutionSourceMap } from '../../x'
@@ -79,12 +80,15 @@ export function uniViteInjectPlugin(
     `(?:${Array.from(modulesMap.keys()).map(escape).join('|')})`,
     'g'
   )
-  const sourceMap = options.sourceMap !== false
+  let sourceMap = options.sourceMap !== false
   const callback = options.callback
   return {
     name,
     // 确保在 commonjs 之后，否则会混合 es6 module 与 cjs 的代码，导致 commonjs 失效
     enforce: options.enforce ?? 'post',
+    configResolved(config) {
+      sourceMap = options.sourceMap !== false && withSourcemap(config)
+    },
     transform(code, id) {
       if (!filter(id)) return null
       // 加密插件也要走后续注入逻辑

@@ -221,6 +221,13 @@ export function enableSourceMap() {
   if (process.env.UNI_APP_SOURCEMAP === 'false') {
     return false
   }
+  if (
+    process.env.NODE_ENV === 'development' &&
+    process.env.UNI_PLATFORM === 'app' &&
+    process.env.UNI_APP_X !== 'true'
+  ) {
+    return false
+  }
   return process.env.NODE_ENV === 'development' && isNormalCompileTarget()
 }
 
