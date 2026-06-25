@@ -26,6 +26,11 @@ const ActionType = {
   Click: '41'
 }
 
+/** 微信广告无填充错误码 */
+const WxAdErrorCode = {
+  NoFill: 1004
+}
+
 export default {
   options: {
     virtualHost: true
@@ -148,6 +153,77 @@ export default {
 
     _hasCallback () {
       return (typeof this.urlCallback == 'object' && Object.keys(this.urlCallback).length > 0)
+    },
+
+    /**
+     * 按 provider 从 acsv4 配置列表查找广告项
+     * @param {Array} list 配置数组
+     * @param {number} provider 渠道 provider
+     */
+    _findAdItemByProvider (list, provider) {
+      if (!Array.isArray(list)) {
+        return null
+      }
+      return list.find(item => Number(item.provider) === Number(provider)) || null
+    },
+
+    /**
+     * 是否为微信广告无填充 errCode 1004
+     * @param {Object} err 错误对象
+     */
+    _isWxAdNoFillError (err) {
+      if (!err) {
+        return false
+      }
+      const detail = err.detail || err
+      return Number(detail.errCode) === WxAdErrorCode.NoFill
+    },
+
+    /**
+     * 代运营无填充时尝试半屏兜底
+     * @param {Object} plugin uniad-plugin 实例
+     * @param {Object} err 错误对象
+     */
+    _tryHalfScreenFallback (plugin, err) {
+      if (!plugin || !plugin.tryHalfScreenFallback) {
+        return false
+      }
+      const detail = err && (err.detail || err)
+      if (!this._isWxAdNoFillError(detail)) {
+        return false
+      }
+      if (!plugin.tryHalfScreenFallback(detail)) {
+        return false
+      }
+      this._setHalfScreenMode()
+      this._dispatchEvent(EventType.Load, {})
+      this._report(ActionType.AdRequest)
+      if (this._userInvokeShowFlag) {
+        this._userInvokeShowFlag = false
+        setTimeout(() => {
+          this.show()
+        }, 1)
+      }
+      return true
+    },
+
+    /**
+     * 处理代运营微信广告错误，无填充时走半屏兜底
+     * @param {Object} err 错误对象
+     * @param {string} reportType 上报类型
+     */
+    _handleUserWxAdError (err, reportType) {
+      this.loading = false
+      const plugin = this.selectComponent('.uniad-plugin')
+      if (this._tryHalfScreenFallback(plugin, err)) {
+        return true
+      }
+      this.errorMessage = JSON.stringify(err)
+      this._dispatchEvent(EventType.Error, err)
+      if (reportType) {
+        this._report(reportType, err)
+      }
+      return false
     },
 
     /**
@@ -287,15 +363,14 @@ export default {
     },
 
     _onmperror (e) {
-      this.loading = false
-      this.errorMessage = JSON.stringify(e.detail)
-      this._dispatchEvent(EventType.Error, e.detail)
-      this._report(ActionType.AdRequest, e.detail)
+      if (this._handleUserWxAdError(e.detail || e, ActionType.AdRequest)) {
+        return
+      }
     },
 
     _onnextchannel (e) {
-      const adData = e.detail[0]
-      if (Number(adData.provider) === ProviderType.HalfScreen) {
+      const adData = this._findAdItemByProvider(e.detail, ProviderType.UserWeChat)
+      if (!adData) {
         return
       }
       this.wxchannel = true
@@ -416,8 +491,9 @@ export default {
           this._wxRewardedAd.show().then(() => {
             this._report(ActionType.Show)
           }).catch((err) => {
-            this._dispatchEvent(EventType.Error, err)
-            this._report(ActionType.Show, err)
+            if (this._handleUserWxAdError(err, ActionType.Show)) {
+              return
+            }
           })
           break
         case AdType.Interstitial:
@@ -428,8 +504,9 @@ export default {
           this._wxInterstitialAd.show().then(() => {
             this._report(ActionType.Show)
           }).catch((err) => {
-            this._dispatchEvent(EventType.Error, err)
-            this._report(ActionType.Show, err)
+            if (this._handleUserWxAdError(err, ActionType.Show)) {
+              return
+            }
           })
           break
       }
@@ -454,9 +531,7 @@ export default {
       })
 
       this._wxRewardedAd.onError(err => {
-        this.loading = false
-        this.errorMessage = JSON.stringify(err)
-        this._dispatchEvent(EventType.Error, err)
+        this._handleUserWxAdError(err, ActionType.AdRequest)
       })
 
       this._wxRewardedAd.onClose(res => {
@@ -494,10 +569,7 @@ export default {
       })
 
       this._wxInterstitialAd.onError(err => {
-        this.loading = false
-        this.errorMessage = JSON.stringify(err)
-        this._dispatchEvent(EventType.Error, err)
-        this._report(ActionType.AdRequest, err)
+        this._handleUserWxAdError(err, ActionType.AdRequest)
       })
 
       this._wxInterstitialAd.onClose(res => {
@@ -505,8 +577,7 @@ export default {
       })
 
       this._wxInterstitialAd.load().catch((err) => {
-        this._dispatchEvent(EventType.Error, err)
-        this._report(ActionType.AdRequest, err)
+        this._handleUserWxAdError(err, ActionType.AdRequest)
       })
 
       this.loading = true
