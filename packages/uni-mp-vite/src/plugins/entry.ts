@@ -17,23 +17,37 @@ import {
 import type { Plugin } from 'vite'
 
 import type { UniMiniProgramPluginOptions } from '../plugin'
+import { withIndependentRoot } from './independentUtils'
 
 const uniPagePrefix = 'uniPage://'
 const uniComponentPrefix = 'uniComponent://'
 
-export function virtualPagePath(filepath: string) {
-  return uniPagePrefix + encodeBase64Url(filepath)
+interface VirtualMiniProgramFileInfo {
+  filepath: string
+  root?: string
 }
-export function virtualComponentPath(filepath: string) {
-  return uniComponentPrefix + encodeBase64Url(filepath)
+
+export function virtualPagePath(filepath: string, root?: string) {
+  return uniPagePrefix + encodeVirtualFileInfo(filepath, root)
+}
+export function virtualComponentPath(filepath: string, root?: string) {
+  return uniComponentPrefix + encodeVirtualFileInfo(filepath, root)
 }
 
 export function parseVirtualPagePath(uniPageUrl: string) {
-  return decodeBase64Url(uniPageUrl.replace(uniPagePrefix, ''))
+  return parseVirtualPagePathInfo(uniPageUrl).filepath
 }
 
 export function parseVirtualComponentPath(uniComponentUrl: string) {
-  return decodeBase64Url(uniComponentUrl.replace(uniComponentPrefix, ''))
+  return parseVirtualComponentPathInfo(uniComponentUrl).filepath
+}
+
+export function parseVirtualPagePathInfo(uniPageUrl: string) {
+  return decodeVirtualFileInfo(uniPageUrl, uniPagePrefix)
+}
+
+export function parseVirtualComponentPathInfo(uniComponentUrl: string) {
+  return decodeVirtualFileInfo(uniComponentUrl, uniComponentPrefix)
 }
 
 export function isUniPageUrl(id: string) {
@@ -110,17 +124,20 @@ export function uniEntryPlugin({
     },
     load(id) {
       if (isUniPageUrl(id)) {
-        const filepath = normalizePath(
-          path.resolve(inputDir, parseVirtualPagePath(id))
-        )
+        const { filepath: pageFilepath, root } = parseVirtualPagePathInfo(id)
+        const filepath = normalizePath(path.resolve(inputDir, pageFilepath))
         this.addWatchFile(filepath)
         return {
-          code: `import MiniProgramPage from '${filepath}'
+          code: `import MiniProgramPage from '${
+            root ? withIndependentRoot(filepath, root) : filepath
+          }'
 ${global}.createPage(MiniProgramPage)`,
         }
       } else if (isUniComponentUrl(id)) {
+        const { filepath: componentFilepath, root } =
+          parseVirtualComponentPathInfo(id)
         const filepath = normalizePath(
-          path.resolve(inputDir, parseVirtualComponentPath(id))
+          path.resolve(inputDir, componentFilepath)
         )
         this.addWatchFile(filepath)
 
@@ -174,7 +191,9 @@ export default Component`,
           }
         }
         return {
-          code: `import Component from '${filepath}'
+          code: `import Component from '${
+            root ? withIndependentRoot(filepath, root) : filepath
+          }'
 ${global}.createComponent(Component)`,
         }
       }
@@ -198,4 +217,29 @@ ${global}.createComponent(Component)`,
       }
     },
   }
+}
+
+function encodeVirtualFileInfo(filepath: string, root?: string) {
+  return encodeBase64Url(root ? JSON.stringify({ filepath, root }) : filepath)
+}
+
+function decodeVirtualFileInfo(
+  url: string,
+  prefix: string
+): VirtualMiniProgramFileInfo {
+  const decoded = decodeBase64Url(url.replace(prefix, ''))
+  if (decoded[0] === '{') {
+    try {
+      const info = JSON.parse(decoded)
+      if (info && typeof info.filepath === 'string') {
+        return {
+          filepath: info.filepath,
+          root: typeof info.root === 'string' ? info.root : undefined,
+        }
+      }
+    } catch (e) {
+      // 非 JSON 编码时按旧格式处理
+    }
+  }
+  return { filepath: decoded }
 }
