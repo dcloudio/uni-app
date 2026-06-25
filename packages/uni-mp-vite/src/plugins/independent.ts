@@ -4,7 +4,11 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import type { Plugin } from 'vite'
 import type { UniMiniProgramPluginOptions } from '../plugin'
-import { withIndependentRoot } from './independentUtils'
+import {
+  parseIndependentRoot,
+  withIndependentRoot,
+  withoutIndependentRoot,
+} from './independentUtils'
 
 const INDEPENDENT_MAIN_PREFIX = '\0uni:mp-independent-main'
 const APP_FACTORY_PREFIX = '\0uni:mp-app-factory'
@@ -23,7 +27,7 @@ export function uniIndependentSubpackagePlugin(
         parseIndependentSubPackages(inputDir).map(({ root }) => root)
       )
     },
-    resolveId(id) {
+    async resolveId(id, importer) {
       const root = parseIndependentMainRoot(id)
       if (root && independentRoots.has(root)) {
         return id
@@ -35,6 +39,26 @@ export function uniIndependentSubpackagePlugin(
       const pagesRoot = parseIndependentPagesRoot(id)
       if (pagesRoot && independentRoots.has(pagesRoot)) {
         return id
+      }
+      const importerRoot = importer && parseIndependentRoot(importer)
+      if (
+        importerRoot &&
+        independentRoots.has(importerRoot) &&
+        shouldPropagateIndependentRoot(id)
+      ) {
+        const resolved = await this.resolve(
+          id,
+          withoutIndependentRoot(importer),
+          {
+            skipSelf: true,
+          }
+        )
+        if (resolved && !resolved.external) {
+          return {
+            ...resolved,
+            id: withIndependentRoot(resolved.id, importerRoot),
+          }
+        }
       }
     },
     load(id) {
@@ -65,6 +89,26 @@ export function uniIndependentSubpackagePlugin(
       }
     },
   }
+}
+
+function shouldPropagateIndependentRoot(id: string) {
+  if (parseIndependentRoot(id)) {
+    return false
+  }
+  if (/^(?:plugin|dynamicLib|ext|data|https?):/.test(id)) {
+    return false
+  }
+  if (/[?&](?:url|raw)\b/.test(id)) {
+    return false
+  }
+  if (
+    /\.(?:css|scss|sass|less|styl|png|jpe?g|gif|svg|webp|avif|woff2?|ttf|eot)(?:$|[?#])/.test(
+      id
+    )
+  ) {
+    return false
+  }
+  return true
 }
 
 function generateIndependentMainCode(root: string) {
