@@ -17,6 +17,7 @@ import {
   isMiniProgramAssetFile,
   normalizeMiniProgramFilename,
   normalizePath,
+  parseIndependentSubPackages,
   parseJson,
   parseManifestJsonOnce,
   removeExt,
@@ -177,6 +178,11 @@ function parseRollupInput(inputDir: string, platform: UniApp.PLATFORM) {
   if (process.env.UNI_MP_PLUGIN) {
     return inputOptions
   }
+  parseIndependentSubPackages(inputDir).forEach(({ root }) => {
+    inputOptions[
+      `${root}/common/main`
+    ] = `\0uni:mp-independent-main?root=${encodeURIComponent(root)}`
+  })
   if (platform === 'mp-weixin' || platform === 'mp-alipay') {
     const pluginExports = getSubpackagePluginExports(inputDir)
     Object.keys(pluginExports).forEach((exportPath) => {
