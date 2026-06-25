@@ -5,7 +5,7 @@
       :adpid="adpid"
       :isUni="true"
       :unit-id="unitId"
-      :adIntervals="adIntervals"
+      :adIntervals="normalizedAdIntervals"
       @load="_onmpload"
       @close="_onmpclose"
       @error="_onmperror"
@@ -13,7 +13,7 @@
       @customFullscreen="_customFullscreen"
     />
     <!-- #ifdef MP-WEIXIN -->
-    <ad-custom v-if="userwx && !isHalfScreen" :unit-id="userUnitId" :adIntervals="adIntervals" class="uni-ad-custom" :class="[customFullscreen]" @load="_onmpload" @error="_onmperror"></ad-custom>
+    <ad-custom v-if="userwx && !isHalfScreen" :unit-id="userUnitId" :adIntervals="normalizedAdIntervals" class="uni-ad-custom" :class="[customFullscreen]" @load="_onmpload" @error="_onmperror"></ad-custom>
     <!-- <uniad-plugin-wx v-if="wxchannel" class="uniad-plugin-wx" :class="[customFullscreen]" @load="_onmpload" @error="_onwxchannelerror"></uniad-plugin-wx> -->
     <!-- #endif -->
   </view>
@@ -21,7 +21,12 @@
 
 <script>
 // #ifdef MP-WEIXIN
-import adMixin from "../ad/ad.mixin.mp-weixin.js"
+import adMixin, {
+  adComponentProps,
+  adComponentData,
+  adComponentEmits,
+  adComponentComputed
+} from "../ad/ad.mixin.mp-weixin.js"
 // #endif
 // #ifdef MP-ALIPAY
 import adMixin from "../ad/ad.mixin.mp-alipay.js"
@@ -29,7 +34,16 @@ import adMixin from "../ad/ad.mixin.mp-alipay.js"
 
 export default {
   name: 'Uniad',
-  mixins: [adMixin]
+  mixins: [adMixin],
+  // #ifdef MP-WEIXIN
+  options: {
+    virtualHost: true
+  },
+  props: adComponentProps,
+  emits: adComponentEmits,
+  data: adComponentData,
+  computed: adComponentComputed
+  // #endif
 }
 </script>
 

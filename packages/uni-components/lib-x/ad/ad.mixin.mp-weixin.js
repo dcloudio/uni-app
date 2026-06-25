@@ -31,59 +31,86 @@ const WxAdErrorCode = {
   NoFill: 1004
 }
 
+/** 供 uniad 壳组件显式声明，消除 Vue3 编译期 mixin 不可见告警 */
+export const adComponentProps = {
+  style: {
+    type: String,
+    default: ''
+  },
+  options: {
+    type: [Object, Array],
+    default () {
+      return {}
+    }
+  },
+  adpid: {
+    type: [Number, String],
+    default: ''
+  },
+  unitId: {
+    type: [Number, String],
+    default: ''
+  },
+  preload: {
+    type: [Boolean, String],
+    default: true
+  },
+  loadnext: {
+    type: [Boolean, String],
+    default: false
+  },
+  adIntervals: {
+    type: [Number, String],
+    default: ''
+  },
+  urlCallback: {
+    type: Object,
+    default () {
+      return {}
+    }
+  }
+}
+
+/** 供 uniad 壳组件显式声明的 data */
+export function adComponentData () {
+  return {
+    loading: false,
+    userwx: false,
+    userUnitId: '',
+    customFullscreen: '',
+    wxchannel: false,
+    errorMessage: null,
+    isHalfScreen: false
+  }
+}
+
+/** 供 uniad 壳组件显式声明的 emits */
+export const adComponentEmits = ['load', 'close', 'error', 'adcreated']
+
+/** 供 uniad 壳组件显式声明的 computed */
+export const adComponentComputed = {
+  /**
+   * 规范化 adIntervals，无效值不传以免插件收到非 Number
+   */
+  normalizedAdIntervals () {
+    if (this.adIntervals === '' || this.adIntervals == null) {
+      return undefined
+    }
+    const value = Number(this.adIntervals)
+    if (!Number.isFinite(value) || value < 30) {
+      return undefined
+    }
+    return value
+  }
+}
+
 export default {
   options: {
     virtualHost: true
   },
-  props: {
-    style: {
-      type: String,
-      default: ''
-    },
-    options: {
-      type: [Object, Array],
-      default () {
-        return {}
-      }
-    },
-    adpid: {
-      type: [Number, String],
-      default: ''
-    },
-    unitId: {
-      type: [Number, String],
-      default: ''
-    },
-    preload: {
-      type: [Boolean, String],
-      default: true
-    },
-    loadnext: {
-      type: [Boolean, String],
-      default: false
-    },
-    adIntervals: {
-      type: [Number, String],
-      default: ''
-    },
-    urlCallback: {
-      type: Object,
-      default () {
-        return {}
-      }
-    }
-  },
-  data () {
-    return {
-      loading: false,
-      userwx: false,
-      userUnitId: '',
-      customFullscreen: '',
-      wxchannel: false,
-      errorMessage: null,
-      isHalfScreen: false
-    }
-  },
+  emits: adComponentEmits,
+  props: adComponentProps,
+  data: adComponentData,
   created () {
     this._ad = null
     this._loading = false
@@ -98,6 +125,7 @@ export default {
     }
     this._dispatchEvent('adcreated', { instance: this })
   },
+  computed: adComponentComputed,
   methods: {
     load () {
       if (this.loading) {
@@ -192,19 +220,7 @@ export default {
       if (!this._isWxAdNoFillError(detail)) {
         return false
       }
-      if (!plugin.tryHalfScreenFallback(detail)) {
-        return false
-      }
-      this._setHalfScreenMode()
-      this._dispatchEvent(EventType.Load, {})
-      this._report(ActionType.AdRequest)
-      if (this._userInvokeShowFlag) {
-        this._userInvokeShowFlag = false
-        setTimeout(() => {
-          this.show()
-        }, 1)
-      }
-      return true
+      return plugin.tryHalfScreenFallback(detail)
     },
 
     /**

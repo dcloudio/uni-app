@@ -19,7 +19,11 @@
 
 <script>
 // #ifdef MP-WEIXIN
-import adMixin from "../ad/ad.mixin.mp-weixin.js"
+import adMixin, {
+  adComponentProps,
+  adComponentData,
+  adComponentEmits
+} from "../ad/ad.mixin.mp-weixin.js"
 // #endif
 // #ifdef MP-ALIPAY
 import adMixin from "../ad/ad.mixin.mp-alipay.js"
@@ -27,6 +31,11 @@ import adMixin from "../ad/ad.mixin.mp-alipay.js"
 
 export default {
   name: 'Uniad',
-  mixins: [adMixin]
+  mixins: [adMixin],
+  // #ifdef MP-WEIXIN
+  props: adComponentProps,
+  emits: adComponentEmits,
+  data: adComponentData
+  // #endif
 }
 </script>
