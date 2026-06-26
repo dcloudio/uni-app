@@ -381,6 +381,45 @@ wx.createPage(MiniProgramPage)`,
     )
   })
 
+  test('resolves explicit root query dependency from alias fallback', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    await withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      async (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+          vite: {
+            alias: {
+              'uni-mp-runtime':
+                '/project/node_modules/@dcloudio/uni-mp-weixin/dist/uni.mp.esm.js',
+            },
+          },
+        } as any)
+        callBuildStart(plugin)
+        const resolve = jest.fn(async () => null)
+
+        const result = await (plugin.resolveId as Function).call(
+          { resolve },
+          'uni-mp-runtime?uni_mp_independent_root=package-a'
+        )
+
+        expect(result).toBe(
+          '/project/node_modules/@dcloudio/uni-mp-weixin/dist/uni.mp.esm.js?uni_mp_independent_root=package-a'
+        )
+      }
+    )
+  })
+
   test('validates but does not propagate root query for style and assets', async () => {
     process.env.UNI_PLATFORM = 'mp-weixin'
     await withPagesJson(
