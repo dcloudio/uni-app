@@ -6,6 +6,7 @@ import {
   normalizePath,
   parseIndependentSubPackages,
   relativeFile,
+  resolveAppVue,
   resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
 import type {
@@ -34,14 +35,39 @@ export function uniIndependentSubpackagePlugin(
   const platform = process.env.UNI_PLATFORM as UniApp.PLATFORM
   const global = options.global
   const styleExtname = options.style.extname
+  const pagesJsonFile = normalizePath(path.resolve(inputDir, 'pages.json'))
   let independentPackages: IndependentSubPackage[] = []
   let independentRoots = new Set<string>()
+  let independentRootsSignature = ''
   return {
     name: 'uni:mp-independent-subpackage',
     enforce: 'pre',
     buildStart() {
+      if (fs.existsSync(pagesJsonFile)) {
+        this.addWatchFile(pagesJsonFile)
+      }
       independentPackages = parseIndependentSubPackages(inputDir)
       independentRoots = new Set(independentPackages.map(({ root }) => root))
+      independentRootsSignature = stringifyIndependentRoots(independentPackages)
+    },
+    watchChange(id) {
+      if (normalizeFileId(id) !== pagesJsonFile) {
+        return
+      }
+      const nextIndependentPackages = tryParseIndependentSubPackages(inputDir)
+      if (!nextIndependentPackages) {
+        return
+      }
+      const nextIndependentRootsSignature = stringifyIndependentRoots(
+        nextIndependentPackages
+      )
+      if (nextIndependentRootsSignature !== independentRootsSignature) {
+        this.error(
+          `独立分包 root 列表发生变化，需要重启当前构建。当前：${formatIndependentRoots(
+            independentRootsSignature
+          )}；最新：${formatIndependentRoots(nextIndependentRootsSignature)}。`
+        )
+      }
     },
     async resolveId(id, importer) {
       const root = parseIndependentMainRoot(id)
@@ -97,10 +123,13 @@ export function uniIndependentSubpackagePlugin(
       }
       const appFactoryRoot = parseAppFactoryRoot(id)
       if (appFactoryRoot && independentRoots.has(appFactoryRoot)) {
-        const mainPath = withIndependentRoot(
-          resolveMainPathOnce(inputDir),
-          appFactoryRoot
-        )
+        const mainFilename = resolveMainPathOnce(inputDir)
+        this.addWatchFile(mainFilename)
+        const appVueFilename = resolveAppVue(inputDir)
+        if (fs.existsSync(appVueFilename)) {
+          this.addWatchFile(appVueFilename)
+        }
+        const mainPath = withIndependentRoot(mainFilename, appFactoryRoot)
         return {
           code: `export { createApp } from ${JSON.stringify(mainPath)}\n`,
           map: { mappings: '' },
@@ -196,6 +225,25 @@ function shouldInjectBootstrap(chunk: OutputChunk, root: string) {
 
 function resolveIndependentBootstrapFilename(root: string) {
   return `${normalizePath(root).replace(/\/$/, '')}/common/index.js`
+}
+
+function tryParseIndependentSubPackages(inputDir: string) {
+  try {
+    return parseIndependentSubPackages(inputDir)
+  } catch {
+    return
+  }
+}
+
+function stringifyIndependentRoots(packages: IndependentSubPackage[]) {
+  return packages
+    .map(({ root }) => root)
+    .sort()
+    .join('\n')
+}
+
+function formatIndependentRoots(signature: string) {
+  return signature ? signature.split('\n').join(', ') : '无'
 }
 
 function processIndependentStyles(
