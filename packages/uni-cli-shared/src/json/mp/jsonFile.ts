@@ -89,19 +89,18 @@ export function findChangedJsonFiles(
         // 从取全局的 usingComponents 并补充到子组件 usingComponents 中
         const globalUsingComponents = appJsonCache?.usingComponents || {}
         const globalComponents = findUsingComponents('app') || {}
-        if (independentRoot) {
-          validateIndependentGlobalComponents(
-            filename,
-            independentRoot,
-            globalUsingComponents,
-            globalComponents
-          )
-        }
         usingComponents = {
           ...globalUsingComponents,
           ...globalComponents,
           ...newJson.usingComponents,
         }
+      }
+      if (independentRoot) {
+        validateIndependentUsingComponents(
+          filename,
+          independentRoot,
+          usingComponents
+        )
       }
       Object.keys(usingComponents).forEach((name) => {
         const componentFilename = usingComponents[name]
@@ -140,33 +139,49 @@ function findIndependentRoot(filename: string, independentRoots: string[]) {
   })
 }
 
-function validateIndependentGlobalComponents(
+function validateIndependentUsingComponents(
   filename: string,
   root: string,
-  ...usingComponentsList: Record<string, string>[]
+  usingComponents: Record<string, string>
 ) {
-  usingComponentsList.forEach((usingComponents) => {
-    Object.keys(usingComponents).forEach((name) => {
-      const componentFilename = usingComponents[name]
-      if (
-        isLocalUsingComponent(componentFilename) &&
-        !isUsingComponentInRoot(componentFilename, root)
-      ) {
-        throw new Error(
-          `独立分包 "${root}" 不能在 "${filename}" 中使用 root 外全局组件 "${name}"（${componentFilename}），请移动到 "${root}" 内或改为页面局部组件。`
-        )
-      }
-    })
+  Object.keys(usingComponents).forEach((name) => {
+    const componentFilename = usingComponents[name]
+    if (
+      isLocalUsingComponent(componentFilename) &&
+      !isUsingComponentInRoot(componentFilename, root, filename)
+    ) {
+      throw new Error(
+        `独立分包 "${root}" 不能在 "${filename}" 中使用 root 外组件 "${name}"（${componentFilename}），请移动到 "${root}" 内或改为页面局部组件。`
+      )
+    }
   })
 }
 
-function isUsingComponentInRoot(componentFilename: string, root: string) {
-  const filename = normalizeUsingComponentFilename(componentFilename)
+function isUsingComponentInRoot(
+  componentFilename: string,
+  root: string,
+  ownerFilename: string
+) {
+  const filename = normalizeUsingComponentFilename(
+    componentFilename,
+    ownerFilename
+  )
   return filename === root || filename.startsWith(root + '/')
 }
 
-function normalizeUsingComponentFilename(componentFilename: string) {
-  return normalizePath(componentFilename).replace(/^\/+/, '')
+function normalizeUsingComponentFilename(
+  componentFilename: string,
+  ownerFilename: string
+) {
+  if (componentFilename.startsWith('/')) {
+    return normalizePath(componentFilename).replace(/^\/+/, '')
+  }
+  if (componentFilename.startsWith('.')) {
+    return normalizePath(
+      path.join(path.dirname(ownerFilename), componentFilename)
+    )
+  }
+  return normalizePath(componentFilename)
 }
 
 function isLocalUsingComponent(componentFilename: string) {
