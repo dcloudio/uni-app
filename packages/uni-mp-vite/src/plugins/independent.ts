@@ -27,6 +27,7 @@ const INDEPENDENT_MAIN_PREFIX = '\0uni:mp-independent-main'
 const APP_FACTORY_PREFIX = '\0uni:mp-app-factory'
 const INDEPENDENT_PAGES_PREFIX = '\0uni:mp-independent-pages'
 const INDEPENDENT_PAGE_PREFIX = '\0uni:mp-independent-page'
+const VUE_EXPORT_HELPER_ID = '\0plugin-vue:export-helper'
 
 export function uniIndependentSubpackagePlugin(
   options: UniMiniProgramPluginOptions
@@ -74,6 +75,9 @@ export function uniIndependentSubpackagePlugin(
       const explicitRoot = parseIndependentRoot(id)
       if (explicitRoot && independentRoots.has(explicitRoot)) {
         const idWithoutRoot = withoutIndependentRoot(id)
+        if (idWithoutRoot === VUE_EXPORT_HELPER_ID) {
+          return id
+        }
         const resolved = await this.resolve(
           idWithoutRoot,
           importer && withoutIndependentRoot(importer)
@@ -133,6 +137,17 @@ export function uniIndependentSubpackagePlugin(
       }
     },
     load(id) {
+      const explicitRoot = parseIndependentRoot(id)
+      if (
+        explicitRoot &&
+        independentRoots.has(explicitRoot) &&
+        withoutIndependentRoot(id) === VUE_EXPORT_HELPER_ID
+      ) {
+        return {
+          code: generateVueExportHelperCode(),
+          map: { mappings: '' },
+        }
+      }
       const root = parseIndependentMainRoot(id)
       if (root && independentRoots.has(root)) {
         return {
@@ -676,6 +691,17 @@ try {
   createUserApp().app.mount('#app')
 } finally {
   __uniGlobal.__uniSubpackageRoot = ''
+}
+`
+}
+
+function generateVueExportHelperCode() {
+  return `export default (sfc, props) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props) {
+    target[key] = val;
+  }
+  return target;
 }
 `
 }

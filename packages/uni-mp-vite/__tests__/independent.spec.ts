@@ -420,6 +420,36 @@ wx.createPage(MiniProgramPage)`,
     )
   })
 
+  test('resolves and loads root-specific vue export helper', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    await withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      async (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+        } as any)
+        callBuildStart(plugin)
+        const id =
+          '\0plugin-vue:export-helper?uni_mp_independent_root=package-a'
+
+        await expect((plugin.resolveId as Function)(id)).resolves.toBe(id)
+        const result = (plugin.load as Function)(id)
+        expect(result.map).toEqual({ mappings: '' })
+        expect(result.code).toContain('sfc.__vccOpts')
+      }
+    )
+  })
+
   test('validates but does not propagate root query for style and assets', async () => {
     process.env.UNI_PLATFORM = 'mp-weixin'
     await withPagesJson(
