@@ -29,9 +29,13 @@ import {
   getSubPackages,
   isUniComponentUrl,
   isUniPageUrl,
-  parseVirtualComponentPath,
-  parseVirtualPagePath,
+  parseVirtualComponentPathInfo,
+  parseVirtualPagePathInfo,
 } from '../plugins/entry'
+import {
+  parseIndependentRoot,
+  withoutIndependentRoot,
+} from '../plugins/independentUtils'
 
 const debugChunk = debug('uni:chunk')
 
@@ -122,11 +126,15 @@ function sourcemapPathTransform(
   }
   let [, base64] = relativeSourcePath.split('/uniPage:/')
   if (base64) {
-    return prefix + parseVirtualPagePath(base64) + '?type=page'
+    return prefix + parseVirtualPagePathInfo(base64).filepath + '?type=page'
   }
   ;[, base64] = relativeSourcePath.split('/uniComponent:/')
   if (base64) {
-    return prefix + parseVirtualComponentPath(base64) + '?type=component'
+    return (
+      prefix +
+      parseVirtualComponentPathInfo(base64).filepath +
+      '?type=component'
+    )
   }
   return (
     prefix +
@@ -219,12 +227,19 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
   const cache = new Map<string, boolean>()
   const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
   return (id, { getModuleInfo }) => {
-    const normalizedId = normalizePath(id)
+    const independentRoot = parseIndependentRoot(id)
+    const idWithoutIndependentRoot = independentRoot
+      ? withoutIndependentRoot(id)
+      : id
+    const normalizedId = normalizePath(idWithoutIndependentRoot)
     const filename = normalizedId.split('?')[0]
     // 处理资源文件
     if (DEFAULT_ASSETS_RE.test(filename)) {
-      debugChunk('common/assets', normalizedId)
-      return 'common/assets'
+      const chunkName = independentRoot
+        ? resolveIndependentCommonChunkName(independentRoot, 'assets')
+        : 'common/assets'
+      debugChunk(chunkName, normalizedId)
+      return chunkName
     }
     // 处理项目内的js,ts文件
     if (EXTNAME_JS_RE.test(filename)) {
@@ -241,10 +256,21 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
           !chunkFileNameBlackList.includes(chunkFileName) &&
           !hasJsonFile(chunkFileName) // 无同名的page,component
         ) {
-          debugChunk(chunkFileName, normalizedId)
-          return chunkFileName
+          const normalizedChunkFileName = independentRoot
+            ? resolveIndependentCommonChunkName(independentRoot, chunkFileName)
+            : chunkFileName
+          debugChunk(normalizedChunkFileName, normalizedId)
+          return normalizedChunkFileName
         }
         return
+      }
+      if (independentRoot) {
+        const chunkName = resolveIndependentCommonChunkName(
+          independentRoot,
+          'vendor'
+        )
+        debugChunk(chunkName, normalizedId)
+        return chunkName
       }
       const { hasOptimizationSubPackages, subPackages } = getSubPackages()
       // 处理子包引用的 node_modules 中的文件
@@ -281,10 +307,25 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
         // 使用原始路径，格式化的可能找不到模块信息 https://github.com/dcloudio/uni-app/issues/3425
         staticImportedByEntry(id, getModuleInfo, cache))
     ) {
-      debugChunk('common/vendor', id)
-      return 'common/vendor'
+      const chunkName = independentRoot
+        ? resolveIndependentCommonChunkName(independentRoot, 'vendor')
+        : 'common/vendor'
+      debugChunk(chunkName, id)
+      return chunkName
     }
   }
+}
+
+function resolveIndependentCommonChunkName(root: string, chunkName: string) {
+  const normalizedRoot = normalizePath(root).replace(/\/$/, '')
+  const normalizedChunkName = normalizePath(chunkName)
+  if (normalizedChunkName.startsWith(`${normalizedRoot}/common/`)) {
+    return normalizedChunkName
+  }
+  const relativeChunkName = normalizedChunkName.startsWith(`${normalizedRoot}/`)
+    ? normalizedChunkName.slice(normalizedRoot.length + 1)
+    : normalizedChunkName
+  return `${normalizedRoot}/common/${relativeChunkName}`
 }
 
 function resolveWorkerChunkName(chunkFileName: string) {
@@ -340,13 +381,25 @@ function createChunkFileNames(
   return function chunkFileNames(chunk) {
     if (chunk.isDynamicEntry && chunk.facadeModuleId) {
       let id = chunk.facadeModuleId
+      let independentRoot = parseIndependentRoot(id)
+      id = independentRoot ? withoutIndependentRoot(id) : id
+      let isMiniProgramEntry = false
+      const independentPageInfo = parseIndependentPageChunkInfo(id)
+      if (independentPageInfo) {
+        independentRoot = independentRoot || independentPageInfo.root
+        id = path.resolve(process.env.UNI_INPUT_DIR, independentPageInfo.page)
+        isMiniProgramEntry = true
+      }
       if (isUniPageUrl(id)) {
-        id = path.resolve(process.env.UNI_INPUT_DIR, parseVirtualPagePath(id))
+        const { filepath, root } = parseVirtualPagePathInfo(id)
+        independentRoot = independentRoot || root
+        id = path.resolve(process.env.UNI_INPUT_DIR, filepath)
+        isMiniProgramEntry = true
       } else if (isUniComponentUrl(id)) {
-        id = path.resolve(
-          process.env.UNI_INPUT_DIR,
-          parseVirtualComponentPath(id)
-        )
+        const { filepath, root } = parseVirtualComponentPathInfo(id)
+        independentRoot = independentRoot || root
+        id = path.resolve(process.env.UNI_INPUT_DIR, filepath)
+        isMiniProgramEntry = true
       }
       if (getWorkersRootDirs().length) {
         const normalizedId = normalizePath(id)
@@ -360,9 +413,35 @@ function createChunkFileNames(
           return workerChunkName + '.js'
         }
       }
+      if (independentRoot && !isMiniProgramEntry) {
+        const filename = normalizePath(id).split('?')[0]
+        const chunkFileName = removeExt(
+          normalizeMiniProgramFilename(filename, inputDir)
+        )
+        return (
+          resolveIndependentCommonChunkName(independentRoot, chunkFileName) +
+          '.js'
+        )
+      }
       return removeExt(normalizeMiniProgramFilename(id, inputDir)) + '.js'
     }
     return '[name].js'
+  }
+}
+
+function parseIndependentPageChunkInfo(id: string) {
+  if (!id.startsWith('\0uni:mp-independent-page')) {
+    return
+  }
+  const queryIndex = id.indexOf('?')
+  if (queryIndex === -1) {
+    return
+  }
+  const query = new URLSearchParams(id.slice(queryIndex + 1))
+  const root = query.get('root')
+  const page = query.get('page')
+  if (root && page) {
+    return { root, page }
   }
 }
 
