@@ -150,6 +150,15 @@ describe('mp vite build options', () => {
           facadeModuleId: `${inputDir}/utils/lazy.ts`,
         })
       ).toBe('utils/lazy.js')
+      expect(
+        chunkFileNames({
+          isDynamicEntry: false,
+          name: 'App.vue_vue_type_style_index_0_lang',
+          moduleIds: [
+            `${inputDir}/App.vue?vue&type=style&index=0&lang.css&uni_mp_independent_root=package-a`,
+          ],
+        })
+      ).toBe('package-a/common/App.vue_vue_type_style_index_0_lang.js')
       expect(chunkFileNames({ isDynamicEntry: false })).toBe('[name].js')
     })
   })
