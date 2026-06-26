@@ -28,11 +28,21 @@ export default {
 }
 
 function getCreateApp() {
-  const method = process.env.UNI_MP_PLUGIN
-    ? 'createPluginApp'
-    : process.env.UNI_SUBPACKAGE
-    ? 'createSubpackageApp'
-    : 'createApp'
+  const subpackageRoot = getSubpackageRoot()
+  const method =
+    subpackageRoot || process.env.UNI_SUBPACKAGE
+      ? 'createSubpackageApp'
+      : process.env.UNI_MP_PLUGIN
+      ? 'createPluginApp'
+      : 'createApp'
+  const createApp = getGlobalCreateApp(method)
+  if (createApp && subpackageRoot && method === 'createSubpackageApp') {
+    return (instance: any) => createApp(instance, subpackageRoot)
+  }
+  return createApp
+}
+
+function getGlobalCreateApp(method: string) {
   if (
     typeof global !== 'undefined' &&
     typeof (global as any)[method] !== 'undefined'
@@ -44,4 +54,30 @@ function getCreateApp() {
     // @ts-expect-error
     return (my as any)[method]
   }
+}
+
+function getSubpackageRoot() {
+  if (typeof globalThis !== 'undefined') {
+    const root = normalizeSubpackageRoot(
+      (globalThis as any).__uniSubpackageRoot
+    )
+    if (root) {
+      return root
+    }
+  }
+  if (typeof global !== 'undefined') {
+    const root = normalizeSubpackageRoot((global as any).__uniSubpackageRoot)
+    if (root) {
+      return root
+    }
+  }
+  // @ts-expect-error
+  if (typeof my !== 'undefined') {
+    // @ts-expect-error
+    return normalizeSubpackageRoot((my as any).__uniSubpackageRoot)
+  }
+}
+
+function normalizeSubpackageRoot(root: unknown) {
+  return typeof root === 'string' ? root.replace(/^\/+|\/+$/g, '') : undefined
 }
