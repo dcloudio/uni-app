@@ -11,20 +11,22 @@ export interface ShowLoadingSuccess {
 	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
+	        "unixVer": "4.61",
+	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
 	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.0"
+	        "unixVaporVer": "5.03"
 	      }
       },
       "mp": {
@@ -131,20 +133,22 @@ export type ShowLoadingOptions = {
 	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
+	        "unixVer": "4.61",
+	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
 	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.0"
+	        "unixVaporVer": "5.03"
 	      }
       },
       "mp": {
@@ -204,17 +208,20 @@ export type ShowLoadingOptions = {
         "android": {
           "osVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
+          "unixVer": "x",
+          "unixVaporVer": "x"
         },
         "ios": {
           "osVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
+          "unixVer": "x",
+          "unixVaporVer": "x"
         },
         "harmony": {
           "osVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
+          "unixVer": "x",
+          "unixVaporVer": "x"
         }
       },
       "mp": {
@@ -274,17 +281,20 @@ export type ShowLoadingOptions = {
         "android": {
           "osVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
+          "unixVer": "x",
+          "unixVaporVer": "x"
         },
         "ios": {
           "osVer": "12.0",
           "uniVer": "x",
-          "unixVer": "5.0"
+          "unixVer": "5.0",
+          "unixVaporVer": "5.11"
         },
         "harmony": {
           "osVer": "x",
           "uniVer": "x",
-          "unixVer": "x"
+          "unixVer": "x",
+          "unixVaporVer": "x"
         }
       },
       "mp": {
@@ -348,20 +358,22 @@ export type ShowLoadingOptions = {
 	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
+	        "unixVer": "4.61",
+	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
 	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.0"
+	        "unixVaporVer": "5.03"
 	      }
       },
       "mp": {
@@ -422,20 +434,22 @@ export type ShowLoadingOptions = {
 	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
+	        "unixVer": "4.61",
+	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
 	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.0"
+	        "unixVaporVer": "5.03"
 	      }
       },
       "mp": {
@@ -496,20 +510,22 @@ export type ShowLoadingOptions = {
 	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
+	        "unixVer": "4.61",
+	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
 	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.0"
+	        "unixVaporVer": "5.03"
 	      }
       },
       "mp": {
@@ -578,20 +594,22 @@ export interface HideLoadingSuccess {
 	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
+	        "unixVer": "4.61",
+	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
 	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.0"
+	        "unixVaporVer": "5.03"
 	      }
       },
       "mp": {
@@ -699,20 +717,22 @@ export type HideLoadingOptions = {
 	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
+	        "unixVer": "4.61",
+	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
 	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.0"
+	        "unixVaporVer": "5.03"
 	      }
       },
       "mp": {
@@ -773,20 +793,22 @@ export type HideLoadingOptions = {
 	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
+	        "unixVer": "4.61",
+	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
 	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.0"
+	        "unixVaporVer": "5.03"
 	      }
       },
       "mp": {
@@ -847,20 +869,22 @@ export type HideLoadingOptions = {
 	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
+	        "unixVer": "4.61",
+	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
 	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.0"
+	        "unixVaporVer": "5.03"
 	      }
       },
       "mp": {
@@ -921,20 +945,22 @@ export type HideLoadingOptions = {
 	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
+	        "unixVer": "4.61",
+	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
 	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.0"
+	        "unixVaporVer": "5.03"
 	      }
       },
       "mp": {
@@ -1014,20 +1040,22 @@ export interface Uni {
 	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
+	        "unixVer": "4.61",
+	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
 	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.0"
+	        "unixVaporVer": "5.03"
 	      }
       },
       "mp": {
@@ -1102,20 +1130,22 @@ export interface Uni {
 	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
-	        "unixVer": "4.61"
+	        "unixVer": "4.61",
+	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
 	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
-	        "unixUtsPlugin": "4.61"
+	        "unixUtsPlugin": "4.61",
+	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.0"
+	        "unixVaporVer": "5.03"
 	      }
       },
       "mp": {
