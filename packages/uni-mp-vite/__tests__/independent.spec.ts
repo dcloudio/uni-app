@@ -250,4 +250,63 @@ wx.createPage(MiniProgramPage)`,
       }
     )
   })
+
+  test('emits and injects independent bootstrap', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    await withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      async (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        const plugin = uniIndependentSubpackagePlugin({ global: 'wx' } as any)
+        ;(plugin.buildStart as Function).call({})
+        const emitFile = jest.fn(() => 'asset-reference')
+        const bundle = {
+          'package-a/pages/index/index.js': {
+            type: 'chunk',
+            fileName: 'package-a/pages/index/index.js',
+            code: 'wx.createPage({})',
+          },
+          'package-a/components/foo.js': {
+            type: 'chunk',
+            fileName: 'package-a/components/foo.js',
+            code: 'wx.createComponent({})',
+          },
+          'package-a/common/main.js': {
+            type: 'chunk',
+            fileName: 'package-a/common/main.js',
+            code: 'main()',
+          },
+          'pages/index/index.js': {
+            type: 'chunk',
+            fileName: 'pages/index/index.js',
+            code: 'wx.createPage({})',
+          },
+        }
+
+        ;(plugin.generateBundle as Function).call({ emitFile }, {}, bundle)
+
+        expect(emitFile).toHaveBeenCalledWith({
+          type: 'asset',
+          fileName: 'package-a/common/index.js',
+          source: "require('./main.js');\n",
+        })
+        expect(bundle['package-a/pages/index/index.js'].code).toBe(
+          "require('../../common/index.js');\nwx.createPage({})"
+        )
+        expect(bundle['package-a/components/foo.js'].code).toBe(
+          "require('../common/index.js');\nwx.createComponent({})"
+        )
+        expect(bundle['package-a/common/main.js'].code).toBe('main()')
+        expect(bundle['pages/index/index.js'].code).toBe('wx.createPage({})')
+      }
+    )
+  })
 })

@@ -4,8 +4,10 @@ import {
   normalizePagePath,
   normalizePath,
   parseIndependentSubPackages,
+  relativeFile,
   resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
+import type { EmittedFile, OutputBundle, OutputChunk } from 'rollup'
 import type { Plugin } from 'vite'
 import type { UniMiniProgramPluginOptions } from '../plugin'
 import {
@@ -114,7 +116,60 @@ ${global}.createPage(MiniProgramPage)`,
         }
       }
     },
+    generateBundle(_, bundle) {
+      independentRoots.forEach((root) => {
+        emitIndependentBootstrap((file) => this.emitFile(file), bundle, root)
+        injectIndependentBootstrap(bundle, root)
+      })
+    },
   }
+}
+
+function emitIndependentBootstrap(
+  emitFile: (emittedFile: EmittedFile) => string,
+  bundle: OutputBundle,
+  root: string
+) {
+  const fileName = resolveIndependentBootstrapFilename(root)
+  if (bundle[fileName]) {
+    return
+  }
+  emitFile({
+    type: 'asset',
+    fileName,
+    source: "require('./main.js');\n",
+  })
+}
+
+function injectIndependentBootstrap(bundle: OutputBundle, root: string) {
+  const bootstrapFilename = resolveIndependentBootstrapFilename(root)
+  Object.keys(bundle).forEach((name) => {
+    const file = bundle[name]
+    if (file.type !== 'chunk' || !shouldInjectBootstrap(file, root)) {
+      return
+    }
+    const requireCode = `require('${relativeFile(
+      file.fileName,
+      bootstrapFilename
+    )}');\n`
+    if (!file.code.startsWith(requireCode)) {
+      file.code = requireCode + file.code
+    }
+  })
+}
+
+function shouldInjectBootstrap(chunk: OutputChunk, root: string) {
+  const fileName = normalizePath(chunk.fileName)
+  const normalizedRoot = normalizePath(root).replace(/\/$/, '')
+  return (
+    fileName.endsWith('.js') &&
+    fileName.startsWith(`${normalizedRoot}/`) &&
+    !fileName.startsWith(`${normalizedRoot}/common/`)
+  )
+}
+
+function resolveIndependentBootstrapFilename(root: string) {
+  return `${normalizePath(root).replace(/\/$/, '')}/common/index.js`
 }
 
 function generateIndependentPagesCode(
