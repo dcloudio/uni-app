@@ -19,7 +19,6 @@ import {
   normalizePath,
   parseJson,
   parseManifestJsonOnce,
-  readIndependentSubPackages,
   removeExt,
   resolveMainPathOnce,
   resolveWorkersRootDir,
@@ -34,6 +33,7 @@ import {
 } from '../plugins/entry'
 import {
   parseIndependentRoot,
+  resolveIndependentSubPackages,
   withoutIndependentRoot,
 } from '../plugins/independentUtils'
 
@@ -186,7 +186,7 @@ function parseRollupInput(inputDir: string, platform: UniApp.PLATFORM) {
   if (process.env.UNI_MP_PLUGIN) {
     return inputOptions
   }
-  readIndependentSubPackages(inputDir, platform).forEach(({ root }) => {
+  resolveIndependentSubPackages(inputDir, platform).forEach(({ root }) => {
     inputOptions[
       `${root}/common/main`
     ] = `\0uni:mp-independent-main?root=${encodeURIComponent(root)}`

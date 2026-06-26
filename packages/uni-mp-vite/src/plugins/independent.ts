@@ -4,7 +4,6 @@ import {
   type IndependentSubPackage,
   normalizePagePath,
   normalizePath,
-  readIndependentSubPackages,
   relativeFile,
   resolveAppVue,
   resolveMainPathOnce,
@@ -19,6 +18,7 @@ import type { Plugin } from 'vite'
 import type { UniMiniProgramPluginOptions } from '../plugin'
 import {
   parseIndependentRoot,
+  resolveIndependentSubPackages,
   withIndependentRoot,
   withoutIndependentRoot,
 } from './independentUtils'
@@ -49,7 +49,7 @@ export function uniIndependentSubpackagePlugin(
       if (fs.existsSync(pagesJsonFile)) {
         this.addWatchFile(pagesJsonFile)
       }
-      independentPackages = readIndependentSubPackages(inputDir, platform)
+      independentPackages = resolveIndependentSubPackages(inputDir, platform)
       independentRoots = new Set(independentPackages.map(({ root }) => root))
       independentRootsSignature = stringifyIndependentRoots(independentPackages)
     },
@@ -57,7 +57,7 @@ export function uniIndependentSubpackagePlugin(
       if (normalizeFileId(id) !== pagesJsonFile) {
         return
       }
-      const nextIndependentPackages = tryReadIndependentSubPackages(
+      const nextIndependentPackages = tryResolveIndependentSubPackages(
         inputDir,
         platform
       )
@@ -363,12 +363,12 @@ function resolveIndependentCommonChunkFilename(root: string, filename: string) {
   return `${normalizeIndependentRoot(root)}/common/${normalizePath(filename)}`
 }
 
-function tryReadIndependentSubPackages(
+function tryResolveIndependentSubPackages(
   inputDir: string,
   platform: UniApp.PLATFORM
 ) {
   try {
-    return readIndependentSubPackages(inputDir, platform)
+    return resolveIndependentSubPackages(inputDir, platform)
   } catch {
     return
   }
