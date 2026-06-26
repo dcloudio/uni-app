@@ -1,6 +1,3 @@
-import fs from 'fs'
-import path from 'path'
-import { parseJson } from '../json'
 import { normalizePath } from '../../utils'
 
 export const MP_INDEPENDENT_ROOT_QUERY = 'uni_mp_independent_root'
@@ -42,28 +39,6 @@ export function parseIndependentSubPackages(
     })
     return packages
   }, [])
-}
-
-export function readIndependentSubPackages(
-  inputDir: string,
-  platform: UniApp.PLATFORM | string | undefined = process.env.UNI_PLATFORM
-): IndependentSubPackage[] {
-  if (platform !== 'mp-weixin') {
-    return []
-  }
-  const pagesJsonPath = path.resolve(inputDir, 'pages.json')
-  if (!fs.existsSync(pagesJsonPath)) {
-    return []
-  }
-  const pagesJson = parseJson(
-    fs.readFileSync(pagesJsonPath, 'utf8'),
-    true,
-    pagesJsonPath
-  ) as UniApp.PagesJson
-  if (!pagesJson) {
-    return []
-  }
-  return parseIndependentSubPackages(pagesJson, platform)
 }
 
 function normalizeSubPackageRoot(root: unknown) {

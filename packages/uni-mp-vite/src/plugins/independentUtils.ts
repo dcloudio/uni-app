@@ -1,4 +1,25 @@
+import fs from 'fs'
+import path from 'path'
+import {
+  parseIndependentSubPackages,
+  parsePagesJson,
+} from '@dcloudio/uni-cli-shared'
+
 export const INDEPENDENT_ROOT_QUERY = 'uni_mp_independent_root'
+
+export function resolveIndependentSubPackages(
+  inputDir: string,
+  platform: UniApp.PLATFORM
+) {
+  const pagesJsonPath = path.resolve(inputDir, 'pages.json')
+  if (!fs.existsSync(pagesJsonPath)) {
+    return []
+  }
+  return parseIndependentSubPackages(
+    parsePagesJson(inputDir, platform, false),
+    platform
+  )
+}
 
 export function parseIndependentRoot(id: string): string | undefined {
   const query = splitIdQuery(id).query

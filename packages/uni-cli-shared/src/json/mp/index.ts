@@ -6,7 +6,6 @@ export {
   MP_INDEPENDENT_ROOT_QUERY,
   parseIndependentRoot,
   parseIndependentSubPackages,
-  readIndependentSubPackages,
   withIndependentRoot,
   withoutIndependentRoot,
 } from './subpackage'

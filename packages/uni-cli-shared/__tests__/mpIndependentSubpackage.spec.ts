@@ -2,10 +2,7 @@ import fs from 'fs'
 import os from 'os'
 import path from 'path'
 import { parseMiniProgramPagesJson } from '../src/json/mp/pages'
-import {
-  parseIndependentSubPackages,
-  readIndependentSubPackages,
-} from '../src/json/mp/subpackage'
+import { parseIndependentSubPackages } from '../src/json/mp/subpackage'
 
 function withPagesJson(
   pagesJson: unknown,
@@ -127,30 +124,6 @@ describe('parseIndependentSubPackages', () => {
       },
       (_inputDir, pagesJson) => {
         expect(parseIndependentSubPackages(pagesJson, 'mp-alipay')).toEqual([])
-      }
-    )
-  })
-
-  test('reads independent subPackages from pages.json at caller boundary', () => {
-    process.env.UNI_PLATFORM = 'mp-weixin'
-    withPagesJson(
-      {
-        subPackages: [
-          {
-            root: 'package-a',
-            independent: true,
-            pages: [{ path: 'pages/index/index' }],
-          },
-        ],
-      },
-      (inputDir) => {
-        expect(readIndependentSubPackages(inputDir, 'mp-weixin')).toEqual([
-          {
-            root: 'package-a',
-            pages: ['pages/index/index'],
-            independent: true,
-          },
-        ])
       }
     )
   })
