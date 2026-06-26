@@ -1,6 +1,7 @@
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
+import { virtualComponentPath } from '../src/plugins/entry'
 import { uniIndependentSubpackagePlugin } from '../src/plugins/independent'
 
 async function withPagesJson(
@@ -446,6 +447,39 @@ wx.createPage(MiniProgramPage)`,
         const result = (plugin.load as Function)(id)
         expect(result.map).toEqual({ mappings: '' })
         expect(result.code).toContain('sfc.__vccOpts')
+      }
+    )
+  })
+
+  test('does not append root query to root-aware virtual component url', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    await withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      async (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+        } as any)
+        callBuildStart(plugin)
+        const resolve = jest.fn()
+
+        await expect(
+          (plugin.resolveId as Function).call(
+            { resolve },
+            virtualComponentPath('package-a/components/foo.vue', 'package-a'),
+            `${inputDir}/package-a/pages/index/index.vue?uni_mp_independent_root=package-a`
+          )
+        ).resolves.toBeUndefined()
+        expect(resolve).not.toHaveBeenCalled()
       }
     )
   })
