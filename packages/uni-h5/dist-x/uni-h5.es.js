@@ -43,7 +43,7 @@ realGlobal.UTSValueIterable = UTSValueIterable$1;
 realGlobal.UniError = UniError$2;
 //#endregion
 //#region ../uni-core/src/i18n/utils.ts
-var isEnableLocale = /* @__PURE__ */ once(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
+var isEnableLocale = /*#__PURE__*/ once(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
 //#endregion
 //#region ../uni-core/src/i18n/useI18n.ts
 var i18n;
@@ -113,7 +113,7 @@ function normalizeMessages(module, keys, values) {
 		return res;
 	}, {});
 }
-var initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
+var initI18nAsyncMsgsOnce = /*#__PURE__*/ once(() => {
 	const name = "uni.async.";
 	const keys = ["error"];
 	if (__UNI_FEATURE_I18N_EN__) useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["The connection timed out, click the screen to try again."]), false);
@@ -122,7 +122,7 @@ var initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
 	if (__UNI_FEATURE_I18N_ZH_HANS__) useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["连接服务器超时，点击屏幕重试"]), false);
 	if (__UNI_FEATURE_I18N_ZH_HANT__) useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["連接服務器超時，點擊屏幕重試"]), false);
 });
-var initI18nShowToastMsgsOnce = /* @__PURE__ */ once(() => {
+var initI18nShowToastMsgsOnce = /*#__PURE__*/ once(() => {
 	const name = "uni.showToast.";
 	const keys = ["unpaired"];
 	if (__UNI_FEATURE_I18N_EN__) useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Please note showToast must be paired with hideToast"]), false);
@@ -131,7 +131,7 @@ var initI18nShowToastMsgsOnce = /* @__PURE__ */ once(() => {
 	if (__UNI_FEATURE_I18N_ZH_HANS__) useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["请注意 showToast 与 hideToast 必须配对使用"]), false);
 	if (__UNI_FEATURE_I18N_ZH_HANT__) useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["請注意 showToast 與 hideToast 必須配對使用"]), false);
 });
-var initI18nShowLoadingMsgsOnce = /* @__PURE__ */ once(() => {
+var initI18nShowLoadingMsgsOnce = /*#__PURE__*/ once(() => {
 	const name = "uni.showLoading.";
 	const keys = ["unpaired"];
 	if (__UNI_FEATURE_I18N_EN__) useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Please note showLoading must be paired with hideLoading"]), false);
@@ -140,7 +140,7 @@ var initI18nShowLoadingMsgsOnce = /* @__PURE__ */ once(() => {
 	if (__UNI_FEATURE_I18N_ZH_HANS__) useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["请注意 showLoading 与 hideLoading 必须配对使用"]), false);
 	if (__UNI_FEATURE_I18N_ZH_HANT__) useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["請注意 showLoading 與 hideLoading 必須配對使用"]), false);
 });
-var initI18nChooseFileMsgsOnce = /* @__PURE__ */ once(() => {
+var initI18nChooseFileMsgsOnce = /*#__PURE__*/ once(() => {
 	const name = "uni.chooseFile.";
 	const keys = ["notUserActivation"];
 	if (__UNI_FEATURE_I18N_EN__) useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["File chooser dialog can only be shown with a user activation"]), false);
@@ -149,7 +149,7 @@ var initI18nChooseFileMsgsOnce = /* @__PURE__ */ once(() => {
 	if (__UNI_FEATURE_I18N_ZH_HANS__) useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["文件选择器对话框只能在由用户激活时显示"]), false);
 	if (__UNI_FEATURE_I18N_ZH_HANT__) useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["文件選擇器對話框只能在由用戶激活時顯示"]), false);
 });
-var initI18nSetClipboardDataMsgsOnce = /* @__PURE__ */ once(() => {
+var initI18nSetClipboardDataMsgsOnce = /*#__PURE__*/ once(() => {
 	const name = "uni.setClipboardData.";
 	const keys = ["success", "fail"];
 	if (__UNI_FEATURE_I18N_EN__) useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Content copied", "Copy failed, please copy manually"]), false);
@@ -158,7 +158,7 @@ var initI18nSetClipboardDataMsgsOnce = /* @__PURE__ */ once(() => {
 	if (__UNI_FEATURE_I18N_ZH_HANS__) useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["内容已复制", "复制失败，请手动复制"]), false);
 	if (__UNI_FEATURE_I18N_ZH_HANT__) useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["內容已復制", "復制失敗，請手動復製"]), false);
 });
-var initI18nGetClipboardDataMsgsOnce = /* @__PURE__ */ once(() => {
+var initI18nGetClipboardDataMsgsOnce = /*#__PURE__*/ once(() => {
 	const name = "uni.getClipboardData.";
 	const keys = ["fail"];
 	if (__UNI_FEATURE_I18N_EN__) useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Reading failed, please paste manually"]), false);
@@ -167,7 +167,7 @@ var initI18nGetClipboardDataMsgsOnce = /* @__PURE__ */ once(() => {
 	if (__UNI_FEATURE_I18N_ZH_HANS__) useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["读取失败，请手动粘贴"]), false);
 	if (__UNI_FEATURE_I18N_ZH_HANT__) useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["讀取失敗，請手動粘貼"]), false);
 });
-var initI18nPickerMsgsOnce = /* @__PURE__ */ once(() => {
+var initI18nPickerMsgsOnce = /*#__PURE__*/ once(() => {
 	const name = "uni.picker.";
 	const keys = ["done", "cancel"];
 	if (__UNI_FEATURE_I18N_EN__) useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Done", "Cancel"]), false);
@@ -176,7 +176,7 @@ var initI18nPickerMsgsOnce = /* @__PURE__ */ once(() => {
 	if (__UNI_FEATURE_I18N_ZH_HANS__) useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["完成", "取消"]), false);
 	if (__UNI_FEATURE_I18N_ZH_HANT__) useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["完成", "取消"]), false);
 });
-var initI18nVideoMsgsOnce = /* @__PURE__ */ once(() => {
+var initI18nVideoMsgsOnce = /*#__PURE__*/ once(() => {
 	const name = "uni.video.";
 	const keys = ["danmu", "volume"];
 	if (__UNI_FEATURE_I18N_EN__) useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Danmu", "Volume"]), false);
@@ -284,12 +284,12 @@ function onInvokeViewMethod({ id, name, args }, pageId) {
 }
 //#endregion
 //#region ../uni-core/src/view/bridge/index.ts
-var ViewJSBridge = /* @__PURE__ */ extend(/* @__PURE__ */ initBridge("service"), { invokeServiceMethod });
+var ViewJSBridge = /*#__PURE__*/ extend(/*#__PURE__*/ initBridge("service"), { invokeServiceMethod });
 //#endregion
 //#region ../uni-core/src/view/init/longPress.ts
 var LONGPRESS_TIMEOUT = 350;
 var LONGPRESS_THRESHOLD = 10;
-var passiveOptions$3 = /* @__PURE__ */ passive(true);
+var passiveOptions$3 = /*#__PURE__*/ passive(true);
 var longPressTimer;
 function clearLongPressTimer() {
 	if (longPressTimer) {
@@ -527,8 +527,8 @@ var import_out = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((export
 		offChange
 	};
 })))());
-var onEventPrevent = /* @__PURE__ */ withModifiers(() => {}, ["prevent"]);
-var onEventStop = /* @__PURE__ */ withModifiers((_event) => {}, ["stop"]);
+var onEventPrevent = /*#__PURE__*/ withModifiers(() => {}, ["prevent"]);
+var onEventStop = /*#__PURE__*/ withModifiers((_event) => {}, ["stop"]);
 function getWindowOffsetCssVar(style, name) {
 	return parseInt((style.getPropertyValue(name).match(/\d+/) || ["0"])[0]);
 }
@@ -1180,7 +1180,7 @@ var invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
 };
 //#endregion
 //#region ../uni-core/src/service/bridge/index.ts
-var ServiceJSBridge = /* @__PURE__ */ extend(/* @__PURE__ */ initBridge("view"), {
+var ServiceJSBridge = /*#__PURE__*/ extend(/*#__PURE__*/ initBridge("view"), {
 	invokeOnCallback,
 	invokeViewMethod,
 	invokeViewMethodKeepAlive
@@ -1665,7 +1665,7 @@ var UniElement = class extends HTMLElement {
 //#region ../uni-components/src/vue/form/index.tsx
 var uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 var UniFormElement = class extends UniElement {};
-var form_default = /* @__PURE__ */ defineBuiltInComponent({
+var form_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Form",
 	emits: ["submit", "reset"],
 	rootElement: {
@@ -1728,7 +1728,7 @@ function useProvideLabel() {
 //#endregion
 //#region ../uni-components/src/vue/label/index.tsx
 var UniLabelElement = class extends UniElement {};
-var label_default = /* @__PURE__ */ defineBuiltInComponent({
+var label_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Label",
 	props: labelProps,
 	rootElement: {
@@ -1839,7 +1839,7 @@ var buttonProps = {
 //#endregion
 //#region ../uni-components/src/vue/button/index.tsx
 var UniButtonElement = class extends UniElement {};
-var button_default = /* @__PURE__ */ defineBuiltInComponent({
+var button_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Button",
 	props: buttonProps,
 	rootElement: {
@@ -1850,7 +1850,7 @@ var button_default = /* @__PURE__ */ defineBuiltInComponent({
 		const rootRef = ref(null);
 		const uniForm = inject(uniFormKey, false);
 		const { hovering, binding } = useHover(props);
-		const { t } = /* @__PURE__ */ useI18n();
+		const { t } = /*#__PURE__*/ useI18n();
 		const onClick = withWebEvent((e, isLabelClick) => {
 			if (props.disabled) return e.stopImmediatePropagation();
 			if (isLabelClick) rootRef.value.click();
@@ -1918,7 +1918,7 @@ var UniCanvasElement = class extends UniElement {
 		return this.querySelector("canvas").toDataURL(type, encoderOptions);
 	}
 };
-var index_x_default = /* @__PURE__ */ defineBuiltInComponent({
+var index_x_default = /*#__PURE__*/ defineBuiltInComponent({
 	inheritAttrs: true,
 	name: "Canvas",
 	compatConfig: { MODE: 3 },
@@ -1949,7 +1949,7 @@ var props$29 = { name: {
 	default: ""
 } };
 var UniCheckboxGroupElement = class extends UniElement {};
-var checkbox_group_default = /* @__PURE__ */ defineBuiltInComponent({
+var checkbox_group_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "CheckboxGroup",
 	props: props$29,
 	emits: ["change"],
@@ -2045,7 +2045,7 @@ var props$28 = {
 	}
 };
 var UniCheckboxElement = class extends UniElement {};
-var checkbox_default = /* @__PURE__ */ defineBuiltInComponent({
+var checkbox_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Checkbox",
 	props: props$28,
 	rootElement: {
@@ -2272,28 +2272,10 @@ function normalizePageMeta(pageMeta) {
 	return pageMeta;
 }
 //#endregion
-//#region src/helpers/dom.ts
-function checkMinWidth(minWidth) {
-	const screen = window.screen;
-	const documentElement = document.documentElement;
-	const sizes = [
-		window.outerWidth,
-		window.outerHeight,
-		screen.width,
-		screen.height,
-		documentElement.clientWidth,
-		documentElement.clientHeight
-	];
-	return Math.max.apply(null, sizes) > minWidth;
-}
-function getStateId() {
-	return history.state && history.state.__id__ || 1;
-}
-//#endregion
 //#region ../uni-api/src/helpers/base64-arraybuffer.js
 var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-var lookup = /* @__PURE__ */ (function() {
-	const lookup = new Uint8Array(256);
+var lookup = /*#__PURE__*/ (function() {
+	const lookup = /* @__PURE__ */ new Uint8Array(256);
 	for (var i = 0; i < chars.length; i++) lookup[chars.charCodeAt(i)] = i;
 	return lookup;
 })();
@@ -2390,7 +2372,7 @@ function validateProp(name, value, prop, isAbsent) {
 	}
 	if (validator) return validator(value);
 }
-var isSimpleType = /* @__PURE__ */ makeMap("String,Number,Boolean,Function,Symbol");
+var isSimpleType = /*#__PURE__*/ makeMap("String,Number,Boolean,Function,Symbol");
 function assertType(value, type) {
 	let valid;
 	const expectedType = getType(type);
@@ -2770,10 +2752,10 @@ var ArrayBufferToBase64Protocol = [{
 }];
 //#endregion
 //#region ../uni-api/src/service/base/base64.ts
-var base64ToArrayBuffer = /* @__PURE__ */ defineSyncApi(API_BASE64_TO_ARRAY_BUFFER, (base64) => {
+var base64ToArrayBuffer = /*#__PURE__*/ defineSyncApi(API_BASE64_TO_ARRAY_BUFFER, (base64) => {
 	return decode(base64);
 }, Base64ToArrayBufferProtocol);
-var arrayBufferToBase64 = /* @__PURE__ */ defineSyncApi(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer) => {
+var arrayBufferToBase64 = /*#__PURE__*/ defineSyncApi(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer) => {
 	return encode$1(arrayBuffer);
 }, ArrayBufferToBase64Protocol);
 //#endregion
@@ -2816,7 +2798,7 @@ function checkMaxWidth() {
 	baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
 	includeWidth = checkValue(config.rpxCalcBaseDeviceWidth, 750);
 }
-var upx2px = /* @__PURE__ */ defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
+var upx2px = /*#__PURE__*/ defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
 	if (deviceWidth === 0) {
 		checkDeviceWidth();
 		checkMaxWidth();
@@ -2866,11 +2848,11 @@ function dedupeHooks(hooks) {
 	for (let i = 0; i < hooks.length; i++) if (res.indexOf(hooks[i]) === -1) res.push(hooks[i]);
 	return res;
 }
-var addInterceptor = /* @__PURE__ */ defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
+var addInterceptor = /*#__PURE__*/ defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
 	if (isString(method) && isPlainObject(interceptor)) mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
 	else if (isPlainObject(method)) mergeInterceptorHook(globalInterceptors, method);
 }, AddInterceptorProtocol);
-var removeInterceptor = /* @__PURE__ */ defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
+var removeInterceptor = /*#__PURE__*/ defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
 	if (isString(method)) if (isPlainObject(interceptor)) removeInterceptorHook(scopedInterceptors[method], interceptor);
 	else delete scopedInterceptors[method];
 	else if (isPlainObject(method)) removeInterceptorHook(globalInterceptors, method);
@@ -2927,19 +2909,19 @@ var EventBus = class {
 	}
 };
 var eventBus = new EventBus();
-var $on = /* @__PURE__ */ defineSyncApi("$on", (name, callback) => {
+var $on = /*#__PURE__*/ defineSyncApi("$on", (name, callback) => {
 	return eventBus.on(name, callback);
 }, OnProtocol);
-var $once = /* @__PURE__ */ defineSyncApi(API_ONCE, (name, callback) => {
+var $once = /*#__PURE__*/ defineSyncApi(API_ONCE, (name, callback) => {
 	return eventBus.once(name, callback);
 }, OnceProtocol);
-var $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
+var $off = /*#__PURE__*/ defineSyncApi(API_OFF, (name, callback) => {
 	if (!isArray(name)) name = name ? [name] : [];
 	name.forEach((n) => {
 		eventBus.off(n, callback);
 	});
 }, OffProtocol);
-var $emit = /* @__PURE__ */ defineSyncApi(API_EMIT, (name, ...args) => {
+var $emit = /*#__PURE__*/ defineSyncApi(API_EMIT, (name, ...args) => {
 	eventBus.emit(name, ...args);
 }, EmitProtocol);
 //#endregion
@@ -3019,7 +3001,7 @@ var VideoContext = class {
 		operateVideoPlayer(this.id, this.pageId, "hideStatusBar");
 	}
 };
-var createVideoContext = /* @__PURE__ */ defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id, context) => {
+var createVideoContext = /*#__PURE__*/ defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id, context) => {
 	if (context) return new VideoContext(id, getPageIdByVm(context));
 	return new VideoContext(id, getPageIdByVm(getCurrentPageVm()));
 });
@@ -3100,7 +3082,7 @@ var MapContext = class {
 		});
 	}
 };
-var createMapContext = /* @__PURE__ */ defineSyncApi(API_CREATE_MAP_CONTEXT, (id, context) => {
+var createMapContext = /*#__PURE__*/ defineSyncApi(API_CREATE_MAP_CONTEXT, (id, context) => {
 	if (context) return new MapContext(id, getPageIdByVm(context));
 	return new MapContext(id, getPageIdByVm(getCurrentPageVm()));
 }, CreateMapContextProtocol);
@@ -3145,7 +3127,7 @@ var CanvasGetImageDataProtocol = {
 };
 var API_CANVAS_PUT_IMAGE_DATA = "canvasPutImageData";
 var CanvasPutImageDataOptions = CanvasGetImageDataOptions;
-var CanvasPutImageDataProtocol = /* @__PURE__ */ extend({ data: {
+var CanvasPutImageDataProtocol = /*#__PURE__*/ extend({ data: {
 	type: Uint8ClampedArray,
 	required: true
 } }, CanvasGetImageDataProtocol, { height: { type: Number } });
@@ -3892,7 +3874,7 @@ var CanvasContext = class {
 		});
 	}
 };
-var initCanvasContextProperty = /* @__PURE__ */ once(() => {
+var initCanvasContextProperty = /*#__PURE__*/ once(() => {
 	[...methods1, ...methods2].forEach(function(method) {
 		function get(method) {
 			switch (method) {
@@ -4064,14 +4046,14 @@ var initCanvasContextProperty = /* @__PURE__ */ once(() => {
 		CanvasContext.prototype[method] = get(method);
 	});
 });
-var createCanvasContext = /* @__PURE__ */ defineSyncApi(API_CREATE_CANVAS_CONTEXT, (canvasId, componentInstance) => {
+var createCanvasContext = /*#__PURE__*/ defineSyncApi(API_CREATE_CANVAS_CONTEXT, (canvasId, componentInstance) => {
 	initCanvasContextProperty();
 	if (componentInstance) return new CanvasContext(canvasId, getPageIdByVm(componentInstance));
 	const pageId = getPageIdByVm(getCurrentPageVm());
 	if (pageId) return new CanvasContext(canvasId, pageId);
 	else UniServiceJSBridge.emit(ON_ERROR, "createCanvasContext:fail");
 }, CreateCanvasContextProtocol);
-var canvasGetImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_GET_IMAGE_DATA, ({ canvasId, x, y, width, height }, { resolve, reject }) => {
+var canvasGetImageData = /*#__PURE__*/ defineAsyncApi(API_CANVAS_GET_IMAGE_DATA, ({ canvasId, x, y, width, height }, { resolve, reject }) => {
 	const pageId = getPageIdByVm(getCurrentPageVm());
 	if (!pageId) {
 		reject();
@@ -4094,7 +4076,7 @@ var canvasGetImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_GET_IMAGE_DAT
 		height
 	}, callback);
 }, CanvasGetImageDataProtocol, CanvasGetImageDataOptions);
-var canvasPutImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
+var canvasPutImageData = /*#__PURE__*/ defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
 	var pageId = getPageIdByVm(getCurrentPageVm());
 	if (!pageId) {
 		reject();
@@ -4120,7 +4102,7 @@ var canvasPutImageData = /* @__PURE__ */ defineAsyncApi(API_CANVAS_PUT_IMAGE_DAT
 	data = Array.prototype.slice.call(data);
 	operate();
 }, CanvasPutImageDataProtocol, CanvasPutImageDataOptions);
-var canvasToTempFilePath = /* @__PURE__ */ defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({ x = 0, y = 0, width, height, destWidth, destHeight, canvasId, fileType, quality }, { resolve, reject }) => {
+var canvasToTempFilePath = /*#__PURE__*/ defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({ x = 0, y = 0, width, height, destWidth, destHeight, canvasId, fileType, quality }, { resolve, reject }) => {
 	var pageId = getPageIdByVm(getCurrentPageVm());
 	if (!pageId) {
 		reject();
@@ -4303,7 +4285,7 @@ var ServiceIntersectionObserver = class {
 		}, this._pageId);
 	}
 };
-var createIntersectionObserver = /* @__PURE__ */ defineSyncApi("createIntersectionObserver", (context, options) => {
+var createIntersectionObserver = /*#__PURE__*/ defineSyncApi("createIntersectionObserver", (context, options) => {
 	context = resolveComponentInstance(context);
 	if (context && !getPageIdByVm(context)) {
 		options = context;
@@ -4337,7 +4319,7 @@ var ServiceMediaQueryObserver = class {
 		}, this._pageId);
 	}
 };
-var createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQueryObserver", (context) => {
+var createMediaQueryObserver = /*#__PURE__*/ defineSyncApi("createMediaQueryObserver", (context) => {
 	context = resolveComponentInstance(context);
 	if (context && !getPageIdByVm(context)) context = null;
 	if (context) return new ServiceMediaQueryObserver(context);
@@ -4439,7 +4421,7 @@ var SelectorQuery = class {
 		this._queueCb.push(callback);
 	}
 };
-var createSelectorQuery = /* @__PURE__ */ defineSyncApi("createSelectorQuery", (context) => {
+var createSelectorQuery = /*#__PURE__*/ defineSyncApi("createSelectorQuery", (context) => {
 	context = resolveComponentInstance(context);
 	if (context && !getPageIdByVm(context)) context = null;
 	return new SelectorQuery(context || getCurrentPageVm());
@@ -4510,7 +4492,7 @@ var MPAnimation = class {
 		return this;
 	}
 };
-var initAnimationProperty = /* @__PURE__ */ once(() => {
+var initAnimationProperty = /*#__PURE__*/ once(() => {
 	const animateTypes1 = [
 		"matrix",
 		"matrix3d",
@@ -4550,14 +4532,14 @@ var initAnimationProperty = /* @__PURE__ */ once(() => {
 		};
 	});
 });
-var createAnimation = /* @__PURE__ */ defineSyncApi(API_CREATE_ANIMATION, (option) => {
+var createAnimation = /*#__PURE__*/ defineSyncApi(API_CREATE_ANIMATION, (option) => {
 	initAnimationProperty();
 	return new MPAnimation(option);
 }, CreateAnimationProtocol, CreateAnimationOptions);
 //#endregion
 //#region ../uni-api/src/service/ui/tabBar.ts
 var API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
-var onTabBarMidButtonTap = /* @__PURE__ */ defineOnApi(API_ON_TAB_BAR_MID_BUTTON_TAP, () => {});
+var onTabBarMidButtonTap = /*#__PURE__*/ defineOnApi(API_ON_TAB_BAR_MID_BUTTON_TAP, () => {});
 //#endregion
 //#region ../uni-api/src/protocols/ui/window.ts
 var API_ON_WINDOW_RESIZE = "onWindowResize";
@@ -4567,23 +4549,23 @@ var API_OFF_WINDOW_RESIZE = "offWindowResize";
 /**
 * 监听窗口大小变化
 */
-var onWindowResize = /* @__PURE__ */ defineOnApi(API_ON_WINDOW_RESIZE, () => {});
+var onWindowResize = /*#__PURE__*/ defineOnApi(API_ON_WINDOW_RESIZE, () => {});
 /**
 * 取消监听窗口大小变化
 */
-var offWindowResize = /* @__PURE__ */ defineOffApi(API_OFF_WINDOW_RESIZE, () => {});
+var offWindowResize = /*#__PURE__*/ defineOffApi(API_OFF_WINDOW_RESIZE, () => {});
 //#endregion
 //#region ../uni-api/src/service/ui/locale.ts
 var API_SET_LOCALE = "setLocale";
 var API_GET_LOCALE = "getLocale";
 var API_ON_LOCALE_CHANGE = "onLocaleChange";
-var getLocale = /* @__PURE__ */ defineSyncApi(API_GET_LOCALE, () => {
+var getLocale = /*#__PURE__*/ defineSyncApi(API_GET_LOCALE, () => {
 	const app = getApp({ allowDefault: true });
 	if (app && app.$vm) return app.$vm.$locale;
 	return useI18n().getLocale();
 });
-var onLocaleChange = /* @__PURE__ */ defineOnApi(API_ON_LOCALE_CHANGE, () => {});
-var setLocale = /* @__PURE__ */ defineSyncApi(API_SET_LOCALE, (locale) => {
+var onLocaleChange = /*#__PURE__*/ defineOnApi(API_ON_LOCALE_CHANGE, () => {});
+var setLocale = /*#__PURE__*/ defineSyncApi(API_SET_LOCALE, (locale) => {
 	const app = getApp();
 	if (!app) return false;
 	if (app.$vm.$locale !== locale) {
@@ -4594,7 +4576,7 @@ var setLocale = /* @__PURE__ */ defineSyncApi(API_SET_LOCALE, (locale) => {
 	}
 	return false;
 });
-var setPageMeta = /* @__PURE__ */ defineAsyncApi("setPageMeta", (options, { resolve }) => {
+var setPageMeta = /*#__PURE__*/ defineAsyncApi("setPageMeta", (options, { resolve }) => {
 	resolve(setCurrentPageMeta(getCurrentPageVm(), options));
 });
 //#endregion
@@ -4602,7 +4584,7 @@ var setPageMeta = /* @__PURE__ */ defineAsyncApi("setPageMeta", (options, { reso
 var API_GET_SELECTED_TEXT_RANGE = "getSelectedTextRange";
 //#endregion
 //#region ../uni-api/src/service/keyboard/getSelectedTextRange.ts
-var getSelectedTextRange = /* @__PURE__ */ defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { resolve, reject }) => {
+var getSelectedTextRange = /*#__PURE__*/ defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { resolve, reject }) => {
 	UniServiceJSBridge.invokeViewMethod(API_GET_SELECTED_TEXT_RANGE, {}, getCurrentPageId(), (res) => {
 		if (typeof res.end === "undefined" && typeof res.start === "undefined") reject("no focused");
 		else resolve(res);
@@ -4664,10 +4646,10 @@ function onAppHide(hook) {
 function offAppHide(hook) {
 	offAppHook(ON_HIDE, hook);
 }
-var getEnterOptionsSync = /* @__PURE__ */ defineSyncApi("getEnterOptionsSync", () => {
+var getEnterOptionsSync = /*#__PURE__*/ defineSyncApi("getEnterOptionsSync", () => {
 	return getEnterOptions();
 });
-var getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi("getLaunchOptionsSync", () => {
+var getLaunchOptionsSync = /*#__PURE__*/ defineSyncApi("getLaunchOptionsSync", () => {
 	return getLaunchOptions();
 });
 //#endregion
@@ -4715,7 +4697,7 @@ function invokeGetPushCidCallbacks(cid, errMsg) {
 	});
 	getPushCidCallbacks.length = 0;
 }
-var getPushClientId = /* @__PURE__ */ defineAsyncApi("getPushClientId", (_, { resolve, reject }) => {
+var getPushClientId = /*#__PURE__*/ defineAsyncApi("getPushClientId", (_, { resolve, reject }) => {
 	Promise.resolve().then(() => {
 		if (typeof enabled === "undefined") {
 			enabled = false;
@@ -5240,16 +5222,16 @@ var API_RE_LAUNCH = "reLaunch";
 var API_SWITCH_TAB = "switchTab";
 var API_NAVIGATE_BACK = "navigateBack";
 var API_PRELOAD_PAGE = "preloadPage";
-var NavigateToProtocol = /* @__PURE__ */ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN$1));
-var NavigateBackProtocol = /* @__PURE__ */ extend({ delta: { type: Number } }, createAnimationProtocol(ANIMATION_OUT$1));
+var NavigateToProtocol = /*#__PURE__*/ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN$1));
+var NavigateBackProtocol = /*#__PURE__*/ extend({ delta: { type: Number } }, createAnimationProtocol(ANIMATION_OUT$1));
 var RedirectToProtocol = BaseRouteProtocol;
 var ReLaunchProtocol = BaseRouteProtocol;
 var SwitchTabProtocol = BaseRouteProtocol;
 var PreloadPageProtocol = BaseRouteProtocol;
-var NavigateToOptions = /* @__PURE__ */ createRouteOptions(API_NAVIGATE_TO);
-var RedirectToOptions = /* @__PURE__ */ createRouteOptions(API_REDIRECT_TO);
-var ReLaunchOptions = /* @__PURE__ */ createRouteOptions(API_RE_LAUNCH);
-var SwitchTabOptions = /* @__PURE__ */ createRouteOptions(API_SWITCH_TAB);
+var NavigateToOptions = /*#__PURE__*/ createRouteOptions(API_NAVIGATE_TO);
+var RedirectToOptions = /*#__PURE__*/ createRouteOptions(API_REDIRECT_TO);
+var ReLaunchOptions = /*#__PURE__*/ createRouteOptions(API_RE_LAUNCH);
+var SwitchTabOptions = /*#__PURE__*/ createRouteOptions(API_SWITCH_TAB);
 var NavigateBackOptions = { formatArgs: { delta(value, params) {
 	value = parseInt(value + "") || 1;
 	params.delta = Math.min(getCurrentPages().length - 1, value);
@@ -5423,7 +5405,7 @@ var IndexOptions = {
 	} }
 };
 var API_SET_TAB_BAR_ITEM = "setTabBarItem";
-var SetTabBarItemProtocol = /* @__PURE__ */ extend({
+var SetTabBarItemProtocol = /*#__PURE__*/ extend({
 	text: String,
 	iconPath: String,
 	selectedIconPath: String,
@@ -5431,7 +5413,7 @@ var SetTabBarItemProtocol = /* @__PURE__ */ extend({
 }, IndexProtocol);
 var SetTabBarItemOptions = {
 	beforeInvoke: IndexOptions.beforeInvoke,
-	formatArgs: /* @__PURE__ */ extend({ pagePath(value, params) {
+	formatArgs: /*#__PURE__*/ extend({ pagePath(value, params) {
 		if (value) params.pagePath = removeLeadingSlash(value);
 	} }, IndexOptions.formatArgs)
 };
@@ -5470,13 +5452,13 @@ var API_REMOVE_TAB_BAR_BADGE = "removeTabBarBadge";
 var RemoveTabBarBadgeProtocol = IndexProtocol;
 var RemoveTabBarBadgeOptions = IndexOptions;
 var API_SET_TAB_BAR_BADGE = "setTabBarBadge";
-var SetTabBarBadgeProtocol = /* @__PURE__ */ extend({ text: {
+var SetTabBarBadgeProtocol = /*#__PURE__*/ extend({ text: {
 	type: String,
 	required: true
 } }, IndexProtocol);
 var SetTabBarBadgeOptions = {
 	beforeInvoke: IndexOptions.beforeInvoke,
-	formatArgs: /* @__PURE__ */ extend({ text(value, params) {
+	formatArgs: /*#__PURE__*/ extend({ text(value, params) {
 		if (getLen(value) >= 4) params.text = "...";
 	} }, IndexOptions.formatArgs)
 };
@@ -6260,7 +6242,7 @@ function getTabBarPageId(url) {
 		}
 	}
 }
-var switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
+var switchTab = /*#__PURE__*/ defineAsyncApi(API_SWITCH_TAB, ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
 	if (!entryPageState.handledBeforeEntryPageRoutes) {
 		switchTabPagesBeforeEntryPages.push({
 			args: {
@@ -6290,7 +6272,7 @@ function removeLastPage() {
 	const $page = getPage$BasePage(page);
 	removePage(normalizeRouteKey($page.path, $page.id));
 }
-var redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, ({ url, isAutomatedTesting }, { resolve, reject }) => {
+var redirectTo = /*#__PURE__*/ defineAsyncApi(API_REDIRECT_TO, ({ url, isAutomatedTesting }, { resolve, reject }) => {
 	if (!entryPageState.handledBeforeEntryPageRoutes) {
 		redirectToPagesBeforeEntryPages.push({
 			args: {
@@ -6315,7 +6297,7 @@ function removeAllPages() {
 	const keys = getCurrentPagesMap().keys();
 	for (const routeKey of keys) removePage(routeKey);
 }
-var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, ({ url, isAutomatedTesting }, { resolve, reject }) => {
+var reLaunch = /*#__PURE__*/ defineAsyncApi(API_RE_LAUNCH, ({ url, isAutomatedTesting }, { resolve, reject }) => {
 	if (!entryPageState.handledBeforeEntryPageRoutes) {
 		reLaunchPagesBeforeEntryPages.push({
 			args: {
@@ -6394,24 +6376,24 @@ function cssSupports(css) {
 	const supports = window.CSS && window.CSS.supports;
 	return supports && (supports(css) || supports.apply(window.CSS, css.split(":")));
 }
-var cssVar = /* @__PURE__ */ cssSupports("--a:0");
-var cssEnv = /* @__PURE__ */ cssSupports("top:env(a)");
-var cssConstant = /* @__PURE__ */ cssSupports("top:constant(a)");
-var cssBackdropFilter = /* @__PURE__ */ cssSupports("backdrop-filter:blur(10px)");
+var cssVar = /*#__PURE__*/ cssSupports("--a:0");
+var cssEnv = /*#__PURE__*/ cssSupports("top:env(a)");
+var cssConstant = /*#__PURE__*/ cssSupports("top:constant(a)");
+var cssBackdropFilter = /*#__PURE__*/ cssSupports("backdrop-filter:blur(10px)");
 var SCHEMA_CSS = {
 	"css.var": cssVar,
 	"css.env": cssEnv,
 	"css.constant": cssConstant,
 	"css.backdrop-filter": cssBackdropFilter
 };
-var canIUse = /* @__PURE__ */ defineSyncApi(API_CAN_I_USE, (schema) => {
+var canIUse = /*#__PURE__*/ defineSyncApi(API_CAN_I_USE, (schema) => {
 	if (hasOwn(SCHEMA_CSS, schema)) return SCHEMA_CSS[schema];
 	if (hasOwn(uni, schema)) return true;
 	return false;
 }, CanIUseProtocol);
 //#endregion
 //#region src/helpers/cssVar.ts
-var envMethod = cssEnv ? "env" : cssConstant ? "constant" : "";
+var envMethod = /*#__PURE__*/ (() => cssEnv ? "env" : cssConstant ? "constant" : "")();
 function updateCurPageCssVar(pageMeta) {
 	let windowTopValue = 0;
 	let windowBottomValue = 0;
@@ -6430,6 +6412,24 @@ function normalizeWindowTop(windowTop) {
 }
 function normalizeWindowBottom(windowBottom) {
 	return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
+}
+//#endregion
+//#region src/helpers/dom.ts
+function checkMinWidth(minWidth) {
+	const screen = window.screen;
+	const documentElement = document.documentElement;
+	const sizes = [
+		window.outerWidth,
+		window.outerHeight,
+		screen.width,
+		screen.height,
+		documentElement.clientWidth,
+		documentElement.clientHeight
+	];
+	return Math.max.apply(null, sizes) > minWidth;
+}
+function getStateId() {
+	return history.state && history.state.__id__ || 1;
 }
 //#endregion
 //#region src/helpers/safeArea.ts
@@ -6866,7 +6866,7 @@ function removePage(routeKey, removeRouteCaches = true) {
 	removeRouteCaches && removeRouteCache(routeKey);
 	pageVm.$page.vm = null;
 }
-var id$1 = /* @__PURE__ */ getStateId();
+var id$1 = /*#__PURE__*/ getStateId();
 function createPageState(type, __id__) {
 	return {
 		__id__: __id__ || ++id$1,
@@ -7038,11 +7038,11 @@ function getRealPath(filePath) {
 //#endregion
 //#region src/service/api/base/getBaseSystemInfo.ts
 var ua = navigator.userAgent;
-var isAndroid = /* @__PURE__ */ /android/i.test(ua);
-var isIOS = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
-var isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
-var isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
-var isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
+var isAndroid = /*#__PURE__*/ /android/i.test(ua);
+var isIOS = /*#__PURE__*/ /iphone|ipad|ipod/i.test(ua);
+var isWindows = /*#__PURE__*/ ua.match(/Windows NT ([\d|\d.\d]*)/i);
+var isMac = /*#__PURE__*/ /Macintosh|Mac/i.test(ua);
+var isLinux = /*#__PURE__*/ /Linux|X11/i.test(ua);
 var isIPadOS = isMac && navigator.maxTouchPoints > 0;
 var isHarmony = /OpenHarmony/i.test(ua);
 function getScreenFix() {
@@ -7458,8 +7458,8 @@ function revokeObjectURL(url) {
 }
 //#endregion
 //#region src/framework/setup/utils.ts
-var launchOptions = /* @__PURE__ */ createLaunchOptions();
-var enterOptions = /* @__PURE__ */ createLaunchOptions();
+var launchOptions = /*#__PURE__*/ createLaunchOptions();
+var enterOptions = /*#__PURE__*/ createLaunchOptions();
 function getEnterOptions() {
 	return extend({}, enterOptions);
 }
@@ -7477,8 +7477,8 @@ function initLaunchOptions({ path, query }) {
 //#endregion
 //#region src/framework/components/async-loading/index.ts
 var clazz = { class: "uni-async-loading" };
-var loadingVNode = /* @__PURE__ */ createVNode("i", { class: "uni-loading" }, null, -1);
-var async_loading_default = /* @__PURE__ */ defineSystemComponent({
+var loadingVNode = /*#__PURE__*/ createVNode("i", { class: "uni-loading" }, null, -1);
+var async_loading_default = /*#__PURE__*/ defineSystemComponent({
 	name: "AsyncLoading",
 	render() {
 		return openBlock(), createBlock("div", clazz, [loadingVNode]);
@@ -7489,7 +7489,7 @@ var async_loading_default = /* @__PURE__ */ defineSystemComponent({
 function reload() {
 	window.location.reload();
 }
-var async_error_default = /* @__PURE__ */ defineSystemComponent({
+var async_error_default = /*#__PURE__*/ defineSystemComponent({
 	name: "AsyncError",
 	props: ["error"],
 	setup() {
@@ -8089,7 +8089,7 @@ var ICON_PATHS = {
 	menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
 	close: ICON_PATH_CLOSE
 };
-var pageHead_default = /* @__PURE__ */ defineSystemComponent({
+var pageHead_default = /*#__PURE__*/ defineSystemComponent({
 	name: "PageHead",
 	setup() {
 		const headRef = ref(null);
@@ -8393,7 +8393,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 		"stroke-miterlimit": "10"
 	}, null, 8, _hoisted_7)]))])], 4)]);
 }
-var component_default = /* @__PURE__ */ _plugin_vue_export_helper_default(component_vue_vue_type_script_lang_default, [["render", _sfc_render]]);
+var component_default = /*#__PURE__*/ _plugin_vue_export_helper_default(component_vue_vue_type_script_lang_default, [["render", _sfc_render]]);
 //#endregion
 //#region src/framework/components/page/page-refresh/index.ts
 function processDeltaY(ev, identifier, startY) {
@@ -8578,7 +8578,7 @@ function usePageRefresh(refreshRef) {
 }
 //#endregion
 //#region src/framework/components/page/pageBody.tsx
-var pageBody_default = /* @__PURE__ */ defineSystemComponent({
+var pageBody_default = /*#__PURE__*/ defineSystemComponent({
 	name: "PageBody",
 	setup(props, ctx) {
 		const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
@@ -8613,7 +8613,7 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
 }
 //#endregion
 //#region src/framework/components/page/index.ts
-var page_default = /* @__PURE__ */ defineSystemComponent({
+var page_default = /*#__PURE__*/ defineSystemComponent({
 	name: "Page",
 	setup(_props, ctx) {
 		let pageMeta = providePageMeta(getStateId());
@@ -8744,12 +8744,12 @@ function registerSystemRoute(route, page, meta = {}) {
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
-var empty = /* @__PURE__ */ makeMap$1("area,base,basefont,br,col,frame,hr,img,input,link,meta,param,embed,command,keygen,source,track,wbr");
-var block = /* @__PURE__ */ makeMap$1("a,address,article,applet,aside,audio,blockquote,button,canvas,center,dd,del,dir,div,dl,dt,fieldset,figcaption,figure,footer,form,frameset,h1,h2,h3,h4,h5,h6,header,hgroup,hr,iframe,isindex,li,map,menu,noframes,noscript,object,ol,output,p,pre,section,script,table,tbody,td,tfoot,th,thead,tr,ul,video");
-var inline = /* @__PURE__ */ makeMap$1("abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var");
-var closeSelf = /* @__PURE__ */ makeMap$1("colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr");
-var fillAttrs = /* @__PURE__ */ makeMap$1("checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected");
-var special = /* @__PURE__ */ makeMap$1("script,style");
+var empty = /*#__PURE__*/ makeMap$1("area,base,basefont,br,col,frame,hr,img,input,link,meta,param,embed,command,keygen,source,track,wbr");
+var block = /*#__PURE__*/ makeMap$1("a,address,article,applet,aside,audio,blockquote,button,canvas,center,dd,del,dir,div,dl,dt,fieldset,figcaption,figure,footer,form,frameset,h1,h2,h3,h4,h5,h6,header,hgroup,hr,iframe,isindex,li,map,menu,noframes,noscript,object,ol,output,p,pre,section,script,table,tbody,td,tfoot,th,thead,tr,ul,video");
+var inline = /*#__PURE__*/ makeMap$1("abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var");
+var closeSelf = /*#__PURE__*/ makeMap$1("colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr");
+var fillAttrs = /*#__PURE__*/ makeMap$1("checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected");
+var special = /*#__PURE__*/ makeMap$1("script,style");
 function HTMLParser(html, handler) {
 	var index;
 	var chars;
@@ -9487,7 +9487,7 @@ function useQuill(props, rootRef, trigger) {
 }
 //#endregion
 //#region ../uni-components/src/vue/editor/index.tsx
-var props$26 = /* @__PURE__ */ extend({}, props$27, {
+var props$26 = /*#__PURE__*/ extend({}, props$27, {
 	id: {
 		type: String,
 		default: ""
@@ -9518,7 +9518,7 @@ var props$26 = /* @__PURE__ */ extend({}, props$27, {
 	}
 });
 var UniEditorElement = class extends UniElement {};
-var editor_default = /* @__PURE__ */ defineBuiltInComponent({
+var editor_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Editor",
 	props: props$26,
 	emit: [
@@ -9594,7 +9594,7 @@ var ICONS = {
 	}
 };
 var UniIconElement = class extends UniElement {};
-var icon_default = /* @__PURE__ */ defineBuiltInComponent({
+var icon_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Icon",
 	props: {
 		type: {
@@ -9629,7 +9629,7 @@ var icon_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region ../uni-components/src/vue/resize-sensor/index.tsx
-var resize_sensor_default = /* @__PURE__ */ defineBuiltInComponent({
+var resize_sensor_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "ResizeSensor",
 	props: { initial: {
 		type: Boolean,
@@ -9728,7 +9728,7 @@ var IMAGE_MODES = {
 	"bottom right": ["right bottom"]
 };
 var UniImageElement = class extends UniElement {};
-var image_default = /* @__PURE__ */ defineBuiltInComponent({
+var image_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Image",
 	props: props$25,
 	rootElement: {
@@ -9912,7 +9912,7 @@ function throttle(fn, wait) {
 }
 //#endregion
 //#region ../uni-components/src/helpers/useUserAction.ts
-var passiveOptions$1 = /* @__PURE__ */ passive(true);
+var passiveOptions$1 = /*#__PURE__*/ passive(true);
 var states = [];
 var userInteract = 0;
 var inited = false;
@@ -10025,7 +10025,7 @@ var INPUT_MODES = [
 	"email",
 	"url"
 ];
-var props$24 = /* @__PURE__ */ extend({}, {
+var props$24 = /*#__PURE__*/ extend({}, {
 	name: {
 		type: String,
 		default: ""
@@ -10320,7 +10320,7 @@ once(() => {
 });
 //#endregion
 //#region ../uni-components/src/vue/input/index.tsx
-var props$23 = /* @__PURE__ */ extend({}, props$24, {
+var props$23 = /*#__PURE__*/ extend({}, props$24, {
 	placeholderClass: {
 		type: String,
 		default: "input-placeholder"
@@ -10352,7 +10352,7 @@ var UniInputElement = class extends UniElement {
 		(_this$querySelector = this.querySelector("input")) === null || _this$querySelector === void 0 || _this$querySelector.focus(options);
 	}
 };
-var input_default = /* @__PURE__ */ defineBuiltInComponent({
+var input_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Input",
 	props: props$23,
 	emits: ["confirm", ...emit],
@@ -10572,7 +10572,7 @@ var movableAreaProps = { scaleArea: {
 //#endregion
 //#region ../uni-components/src/vue/movable-area/index.tsx
 var UniMovableAreaElement = class extends UniElement {};
-var movable_area_default = /* @__PURE__ */ defineBuiltInComponent({
+var movable_area_default = /*#__PURE__*/ defineBuiltInComponent({
 	inheritAttrs: false,
 	name: "MovableArea",
 	props: movableAreaProps,
@@ -11181,7 +11181,7 @@ function v(a, b) {
 //#endregion
 //#region ../uni-components/src/vue/movable-view/index.tsx
 var UniMovableViewElement = class extends UniElement {};
-var movable_view_default = /* @__PURE__ */ defineBuiltInComponent({
+var movable_view_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "MovableView",
 	props: movableViewProps,
 	emits: ["change", "scale"],
@@ -11858,11 +11858,11 @@ function createNavigatorOnClick(props) {
 //#endregion
 //#region ../uni-components/src/vue/navigator/index.tsx
 var UniNavigatorElement = class extends UniElement {};
-var navigator_default = /* @__PURE__ */ defineBuiltInComponent({
+var navigator_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Navigator",
 	inheritAttrs: false,
 	compatConfig: { MODE: 3 },
-	props: /* @__PURE__ */ extend({}, navigatorProps, { renderLink: {
+	props: /*#__PURE__*/ extend({}, navigatorProps, { renderLink: {
 		type: Boolean,
 		default: true
 	} }),
@@ -11944,7 +11944,7 @@ function useState$3(props) {
 	return state;
 }
 var UniPickerViewElement = class extends UniElement {};
-var picker_view_default = /* @__PURE__ */ defineBuiltInComponent({
+var picker_view_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "PickerView",
 	props: pickerViewProps,
 	emits: [
@@ -12648,7 +12648,7 @@ function useCustomClick(dom) {
 	});
 }
 var UniPickerViewColumnElement = class extends UniElement {};
-var picker_view_column_default = /* @__PURE__ */ defineBuiltInComponent({
+var picker_view_column_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "PickerViewColumn",
 	rootElement: {
 		name: "uni-picker-view-column",
@@ -12874,7 +12874,7 @@ var progressProps = {
 //#endregion
 //#region ../uni-components/src/vue/progress/index.tsx
 var UniProgressElement = class extends UniElement {};
-var progress_default = /* @__PURE__ */ defineBuiltInComponent({
+var progress_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Progress",
 	props: progressProps,
 	rootElement: {
@@ -12963,7 +12963,7 @@ var props$22 = { name: {
 	default: ""
 } };
 var UniRadioGroupElement = class extends UniElement {};
-var radio_group_default = /* @__PURE__ */ defineBuiltInComponent({
+var radio_group_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "RadioGroup",
 	props: props$22,
 	rootElement: {
@@ -13084,7 +13084,7 @@ var props$21 = {
 	}
 };
 var UniRadioElement = class extends UniElement {};
-var index_x_default$2 = /* @__PURE__ */ defineBuiltInComponent({
+var index_x_default$2 = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Radio",
 	props: props$21,
 	rootElement: {
@@ -13430,7 +13430,7 @@ var props$20 = { nodes: {
 //#endregion
 //#region ../uni-components/src/vue/rich-text/index.tsx
 var UniRichTextElement = class extends UniElement {};
-var rich_text_default = /* @__PURE__ */ defineBuiltInComponent({
+var rich_text_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "RichText",
 	compatConfig: { MODE: 3 },
 	props: props$20,
@@ -13465,7 +13465,7 @@ var rich_text_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region ../uni-components/src/vue/refresher/index.tsx
-var refresher_default = /* @__PURE__ */ defineBuiltInComponent({
+var refresher_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Refresher",
 	props: {
 		refreshState: {
@@ -13554,7 +13554,7 @@ var refresher_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region ../uni-components/src/vue/scroll-view/index.tsx
-var passiveOptions = /* @__PURE__ */ passive(true);
+var passiveOptions = /*#__PURE__*/ passive(true);
 var props$19 = {
 	direction: {
 		type: [String],
@@ -13622,7 +13622,7 @@ var props$19 = {
 	}
 };
 var UniScrollViewElement = class extends UniElement {};
-var scroll_view_default = /* @__PURE__ */ defineBuiltInComponent({
+var scroll_view_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "ScrollView",
 	compatConfig: { MODE: 3 },
 	props: props$19,
@@ -14135,7 +14135,7 @@ var UniSliderElement = class extends UniElement {
 		this.inputValue.innerText = value.toString();
 	}
 };
-var index_x_default$3 = /* @__PURE__ */ defineBuiltInComponent({
+var index_x_default$3 = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Slider",
 	props: props$18,
 	emits: ["changing", "change"],
@@ -14608,14 +14608,12 @@ function useLayout(props, state, swiperContexts, slideFrameRef, emit, trigger) {
 	}
 	watch(() => props.autoplay && !state.userTracking, inintAutoplay);
 	inintAutoplay(props.autoplay && !state.userTracking);
-	let debouncedTrackEndFallback = null;
 	onMounted(() => {
 		let userDirectionChecked = false;
 		let contentTrackSpeed = 0;
 		let contentTrackT = 0;
 		function handleTrackStart() {
 			cancelSchedule();
-			debouncedTrackEndFallback === null || debouncedTrackEndFallback === void 0 || debouncedTrackEndFallback.cancel();
 			contentTrackViewport = viewportPosition;
 			contentTrackSpeed = 0;
 			contentTrackT = Date.now();
@@ -14646,7 +14644,6 @@ function useLayout(props, state, swiperContexts, slideFrameRef, emit, trigger) {
 			else move(-data.dx / slideFrameEl.offsetWidth, -data.ddx / time);
 		}
 		function handleTrackEnd(isCancel) {
-			debouncedTrackEndFallback === null || debouncedTrackEndFallback === void 0 || debouncedTrackEndFallback.cancel();
 			state.userTracking = false;
 			const t = contentTrackSpeed / Math.abs(contentTrackSpeed);
 			let n = 0;
@@ -14701,7 +14698,7 @@ function useLayout(props, state, swiperContexts, slideFrameRef, emit, trigger) {
 	};
 }
 var UniSwiperElement = class extends UniElement {};
-var swiper_default = /* @__PURE__ */ defineBuiltInComponent({
+var swiper_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Swiper",
 	props: props$17,
 	emits: [
@@ -14901,7 +14898,7 @@ var props$16 = { itemId: {
 	default: ""
 } };
 var UniSwiperItemElement = class extends UniElement {};
-var swiper_item_default = /* @__PURE__ */ defineBuiltInComponent({
+var swiper_item_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "SwiperItem",
 	props: props$16,
 	rootElement: {
@@ -14997,7 +14994,7 @@ var props$15 = {
 	}
 };
 var UniSwitchElement = class extends UniElement {};
-var index_x_default$4 = /* @__PURE__ */ defineBuiltInComponent({
+var index_x_default$4 = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Switch",
 	props: props$15,
 	emits: ["change"],
@@ -15123,7 +15120,7 @@ function parseTextIgnoreLinefeed(text, options) {
 //#endregion
 //#region ../uni-components/src/vue/text/index.tsx
 var UniTextElement = class extends UniElement {};
-var text_default = /* @__PURE__ */ defineBuiltInComponent({
+var text_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Text",
 	rootElement: {
 		name: "uni-text",
@@ -15176,7 +15173,7 @@ var text_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region ../uni-components/src/vue/textarea/index.tsx
-var props$14 = /* @__PURE__ */ extend({}, props$24, {
+var props$14 = /*#__PURE__*/ extend({}, props$24, {
 	placeholderClass: {
 		type: String,
 		default: "input-placeholder"
@@ -15211,7 +15208,7 @@ var UniTextareaElement = class extends UniElement {
 		(_this$querySelector = this.querySelector("textarea")) === null || _this$querySelector === void 0 || _this$querySelector.focus(options);
 	}
 };
-var textarea_default = /* @__PURE__ */ defineBuiltInComponent({
+var textarea_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Textarea",
 	props: props$14,
 	emits: [
@@ -15375,9 +15372,9 @@ var textarea_default = /* @__PURE__ */ defineBuiltInComponent({
 //#endregion
 //#region ../uni-components/src/vue/view/index.tsx
 var UniViewElement = class extends UniElement {};
-var view_default = /* @__PURE__ */ defineBuiltInComponent({
+var view_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "View",
-	props: /* @__PURE__ */ extend({}, hoverProps),
+	props: /*#__PURE__*/ extend({}, hoverProps),
 	rootElement: {
 		name: "uni-view",
 		class: UniViewElement
@@ -15497,7 +15494,7 @@ var props$13 = {
 	}
 };
 var UniListViewElement = class extends UniElement {};
-var list_view_default = /* @__PURE__ */ defineBuiltInComponent({
+var list_view_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "ListView",
 	props: props$13,
 	emits: [
@@ -15983,7 +15980,7 @@ function getSize(isVertical, el) {
 	else return parseFloat(style.marginLeft) + el.getBoundingClientRect().width + parseFloat(style.marginRight);
 }
 var UniListItemElement = class extends UniElement {};
-var list_item_default = /* @__PURE__ */ defineBuiltInComponent({
+var list_item_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "ListItem",
 	props: {},
 	rootElement: {
@@ -16033,7 +16030,7 @@ var list_item_default = /* @__PURE__ */ defineBuiltInComponent({
 //#endregion
 //#region ../uni-components/src/vue/sticky-section/index.tsx
 var UniStickySectionElement = class extends UniElement {};
-var sticky_section_default = /* @__PURE__ */ defineBuiltInComponent({
+var sticky_section_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "StickySection",
 	props: { padding: {
 		type: Array,
@@ -16090,7 +16087,7 @@ var sticky_section_default = /* @__PURE__ */ defineBuiltInComponent({
 //#endregion
 //#region ../uni-components/src/vue/sticky-header/index.tsx
 var UniStickyHeaderElement = class extends UniElement {};
-var sticky_header_default = /* @__PURE__ */ defineBuiltInComponent({
+var sticky_header_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "StickyHeader",
 	props: { padding: {
 		type: Array,
@@ -16145,16 +16142,16 @@ var sticky_header_default = /* @__PURE__ */ defineBuiltInComponent({
 var createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = getCurrentInstance()) => {
 	!isInSSRComponentSetup && injectHook(lifecycle, hook, target);
 };
-var onLoad = /* @__PURE__ */ createLifeCycleHook(ON_LOAD, 2);
-var onReady = /* @__PURE__ */ createLifeCycleHook(ON_READY, 2);
-var onUnload = /* @__PURE__ */ createLifeCycleHook(ON_UNLOAD, 2);
-var onResize = /* @__PURE__ */ createLifeCycleHook(ON_RESIZE, 2);
-var onBackPress = /* @__PURE__ */ createLifeCycleHook(ON_BACK_PRESS, 2);
+var onLoad = /*#__PURE__*/ createLifeCycleHook(ON_LOAD, 2);
+var onReady = /*#__PURE__*/ createLifeCycleHook(ON_READY, 2);
+var onUnload = /*#__PURE__*/ createLifeCycleHook(ON_UNLOAD, 2);
+var onResize = /*#__PURE__*/ createLifeCycleHook(ON_RESIZE, 2);
+var onBackPress = /*#__PURE__*/ createLifeCycleHook(ON_BACK_PRESS, 2);
 //#endregion
 //#region ../uni-components/src/vue/page-container/element.ts
 var UniPageContainerElement = class extends UniElement {};
 //#endregion
-//#region \0@oxc-project+runtime@0.130.0/helpers/typeof.js
+//#region \0@oxc-project+runtime@0.137.0/helpers/esm/typeof.js
 function _typeof(o) {
 	"@babel/helpers - typeof";
 	return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o) {
@@ -16164,7 +16161,7 @@ function _typeof(o) {
 	}, _typeof(o);
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.130.0/helpers/toPrimitive.js
+//#region \0@oxc-project+runtime@0.137.0/helpers/esm/toPrimitive.js
 function toPrimitive(t, r) {
 	if ("object" != _typeof(t) || !t) return t;
 	var e = t[Symbol.toPrimitive];
@@ -16176,13 +16173,13 @@ function toPrimitive(t, r) {
 	return ("string" === r ? String : Number)(t);
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.130.0/helpers/toPropertyKey.js
+//#region \0@oxc-project+runtime@0.137.0/helpers/esm/toPropertyKey.js
 function toPropertyKey(t) {
 	var i = toPrimitive(t, "string");
 	return "symbol" == _typeof(i) ? i : i + "";
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.130.0/helpers/defineProperty.js
+//#region \0@oxc-project+runtime@0.137.0/helpers/esm/defineProperty.js
 function _defineProperty(e, r, t) {
 	return (r = toPropertyKey(r)) in e ? Object.defineProperty(e, r, {
 		value: t,
@@ -16192,7 +16189,7 @@ function _defineProperty(e, r, t) {
 	}) : e[r] = t, e;
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.130.0/helpers/objectSpread2.js
+//#region \0@oxc-project+runtime@0.137.0/helpers/esm/objectSpread2.js
 function ownKeys(e, r) {
 	var t = Object.keys(e);
 	if (Object.getOwnPropertySymbols) {
@@ -17637,7 +17634,7 @@ var props$12 = {
 	}
 };
 var UniVideoElement = class extends UniElement {};
-var video_default = /* @__PURE__ */ defineBuiltInComponent({
+var video_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Video",
 	props: props$12,
 	emits: [
@@ -17878,13 +17875,13 @@ var onWebInvokeAppService = ({ name, arg }) => {
 };
 //#endregion
 //#region src/view/components/web-view/index-x.tsx
-var Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
+var Invoke = /*#__PURE__*/ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
 var props$11 = { src: {
 	type: String,
 	default: ""
 } };
 var UniWebViewElement = class extends UniElement {};
-var index_x_default$5 = /* @__PURE__ */ defineBuiltInComponent({
+var index_x_default$5 = /*#__PURE__*/ defineBuiltInComponent({
 	inheritAttrs: false,
 	name: "WebView",
 	props: props$11,
@@ -18339,7 +18336,7 @@ function useMarkerLabelStyle(id) {
 		return className;
 	};
 }
-var MapMarker_default = /* @__PURE__ */ defineSystemComponent({
+var MapMarker_default = /*#__PURE__*/ defineSystemComponent({
 	name: "MapMarker",
 	props: props$10,
 	setup(props) {
@@ -18611,7 +18608,7 @@ var MapMarker_default = /* @__PURE__ */ defineSystemComponent({
 		};
 	}
 });
-var MapPolyline_default = /* @__PURE__ */ defineSystemComponent({
+var MapPolyline_default = /*#__PURE__*/ defineSystemComponent({
 	name: "MapPolyline",
 	props: {
 		points: {
@@ -18723,7 +18720,7 @@ var MapPolyline_default = /* @__PURE__ */ defineSystemComponent({
 		};
 	}
 });
-var MapCircle_default = /* @__PURE__ */ defineSystemComponent({
+var MapCircle_default = /*#__PURE__*/ defineSystemComponent({
 	name: "MapCircle",
 	props: {
 		latitude: {
@@ -18810,7 +18807,7 @@ var MapCircle_default = /* @__PURE__ */ defineSystemComponent({
 		};
 	}
 });
-var MapControl_default = /* @__PURE__ */ defineSystemComponent({
+var MapControl_default = /*#__PURE__*/ defineSystemComponent({
 	name: "MapControl",
 	props: {
 		id: {
@@ -18857,7 +18854,7 @@ var MapControl_default = /* @__PURE__ */ defineSystemComponent({
 });
 //#endregion
 //#region src/service/api/context/createInnerAudioContext.ts
-var initInnerAudioContextEventOnce = /* @__PURE__ */ once(() => {
+var initInnerAudioContextEventOnce = /*#__PURE__*/ once(() => {
 	innerAudioContextEventNames.forEach((eventName) => {
 		InnerAudioContext.prototype[eventName] = function(callback) {
 			if (isFunction(callback)) this._events[eventName].push(callback);
@@ -18991,12 +18988,12 @@ var InnerAudioContext = class {
 /**
 * 创建音频上下文
 */
-var createInnerAudioContext = /* @__PURE__ */ defineSyncApi(API_CREATE_INNER_AUDIO_CONTEXT, () => {
+var createInnerAudioContext = /*#__PURE__*/ defineSyncApi(API_CREATE_INNER_AUDIO_CONTEXT, () => {
 	return new InnerAudioContext();
 });
 //#endregion
 //#region src/service/api/device/makePhoneCall.ts
-var makePhoneCall = /* @__PURE__ */ defineAsyncApi(API_MAKE_PHONE_CALL, ({ phoneNumber }, { resolve }) => {
+var makePhoneCall = /*#__PURE__*/ defineAsyncApi(API_MAKE_PHONE_CALL, ({ phoneNumber }, { resolve }) => {
 	window.location.href = `tel:${phoneNumber}`;
 	return resolve();
 }, MakePhoneCallProtocol);
@@ -19017,7 +19014,7 @@ function uuid_default() {
 }
 //#endregion
 //#region src/service/api/device/getWindowInfo.ts
-var getWindowInfo = /* @__PURE__ */ defineSyncApi("getWindowInfo", () => {
+var getWindowInfo = /*#__PURE__*/ defineSyncApi("getWindowInfo", () => {
 	const pixelRatio = window.devicePixelRatio;
 	const screenFix = getScreenFix();
 	const landscape = isLandscape(screenFix);
@@ -19064,7 +19061,7 @@ function initBrowserInfo() {
 	if (!_initBrowserInfo) return;
 	browserInfo = getBrowserInfo();
 }
-var getDeviceInfo = /* @__PURE__ */ defineSyncApi("getDeviceInfo", () => {
+var getDeviceInfo = /*#__PURE__*/ defineSyncApi("getDeviceInfo", () => {
 	initBrowserInfo();
 	const { deviceBrand, deviceModel, brand, model, platform, system, deviceOrientation, deviceType, osname, osversion } = browserInfo;
 	return extend({
@@ -19082,7 +19079,7 @@ var getDeviceInfo = /* @__PURE__ */ defineSyncApi("getDeviceInfo", () => {
 		system
 	});
 });
-var getAppBaseInfo = /* @__PURE__ */ defineSyncApi("getAppBaseInfo", () => {
+var getAppBaseInfo = /*#__PURE__*/ defineSyncApi("getAppBaseInfo", () => {
 	initBrowserInfo();
 	const { theme, language, browserName, browserVersion } = browserInfo;
 	return extend({
@@ -19117,7 +19114,7 @@ var getAppBaseInfo = /* @__PURE__ */ defineSyncApi("getAppBaseInfo", () => {
 /**
 * 获取系统信息-同步
 */
-var getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () => {
+var getSystemInfoSync = /*#__PURE__*/ defineSyncApi("getSystemInfoSync", () => {
 	_initBrowserInfo = true;
 	initBrowserInfo();
 	_initBrowserInfo = false;
@@ -19146,7 +19143,7 @@ var getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () =>
 });
 //#endregion
 //#region src/service/api/device/getSystemInfo.ts
-var getSystemInfo = /* @__PURE__ */ defineAsyncApi("getSystemInfo", (_args, { resolve }) => {
+var getSystemInfo = /*#__PURE__*/ defineAsyncApi("getSystemInfo", (_args, { resolve }) => {
 	return resolve(getSystemInfoSync());
 });
 //#endregion
@@ -19164,7 +19161,7 @@ function networkListener() {
 function getConnection() {
 	return navigator.connection || navigator.webkitConnection || navigator.mozConnection;
 }
-var onNetworkStatusChange = /* @__PURE__ */ defineOnApi(API_ON_NETWORK_STATUS_CHANGE, () => {
+var onNetworkStatusChange = /*#__PURE__*/ defineOnApi(API_ON_NETWORK_STATUS_CHANGE, () => {
 	const connection = getConnection();
 	if (connection) connection.addEventListener("change", networkListener);
 	else {
@@ -19172,7 +19169,7 @@ var onNetworkStatusChange = /* @__PURE__ */ defineOnApi(API_ON_NETWORK_STATUS_CH
 		window.addEventListener("online", networkListener);
 	}
 });
-var offNetworkStatusChange = /* @__PURE__ */ defineOffApi("offNetworkStatusChange", () => {
+var offNetworkStatusChange = /*#__PURE__*/ defineOffApi("offNetworkStatusChange", () => {
 	const connection = getConnection();
 	if (connection) connection.removeEventListener("change", networkListener);
 	else {
@@ -19180,7 +19177,7 @@ var offNetworkStatusChange = /* @__PURE__ */ defineOffApi("offNetworkStatusChang
 		window.removeEventListener("online", networkListener);
 	}
 });
-var getNetworkType = /* @__PURE__ */ defineAsyncApi("getNetworkType", (_args, { resolve }) => {
+var getNetworkType = /*#__PURE__*/ defineAsyncApi("getNetworkType", (_args, { resolve }) => {
 	const connection = getConnection();
 	let networkType = "unknown";
 	if (connection) {
@@ -19195,13 +19192,13 @@ var getNetworkType = /* @__PURE__ */ defineAsyncApi("getNetworkType", (_args, { 
 //#endregion
 //#region src/service/api/device/accelerometer.ts
 var listener$1 = null;
-var onAccelerometerChange = /* @__PURE__ */ defineOnApi(API_ON_ACCELEROMETER, () => {
+var onAccelerometerChange = /*#__PURE__*/ defineOnApi(API_ON_ACCELEROMETER, () => {
 	startAccelerometer();
 });
-var offAccelerometerChange = /* @__PURE__ */ defineOffApi(API_OFF_ACCELEROMETER, () => {
+var offAccelerometerChange = /*#__PURE__*/ defineOffApi(API_OFF_ACCELEROMETER, () => {
 	stopAccelerometer();
 });
-var startAccelerometer = /* @__PURE__ */ defineAsyncApi(API_START_ACCELEROMETER, (_, { resolve, reject }) => {
+var startAccelerometer = /*#__PURE__*/ defineAsyncApi(API_START_ACCELEROMETER, (_, { resolve, reject }) => {
 	if (!window.DeviceMotionEvent) {
 		reject();
 		return;
@@ -19233,7 +19230,7 @@ var startAccelerometer = /* @__PURE__ */ defineAsyncApi(API_START_ACCELEROMETER,
 	}
 	resolve();
 });
-var stopAccelerometer = /* @__PURE__ */ defineAsyncApi(API_STOP_ACCELEROMETER, (_, { resolve }) => {
+var stopAccelerometer = /*#__PURE__*/ defineAsyncApi(API_STOP_ACCELEROMETER, (_, { resolve }) => {
 	if (listener$1) {
 		window.removeEventListener("devicemotion", listener$1, false);
 		listener$1 = null;
@@ -19243,13 +19240,13 @@ var stopAccelerometer = /* @__PURE__ */ defineAsyncApi(API_STOP_ACCELEROMETER, (
 //#endregion
 //#region src/service/api/device/compass.ts
 var listener = null;
-var onCompassChange = /* @__PURE__ */ defineOnApi(API_ON_COMPASS, () => {
+var onCompassChange = /*#__PURE__*/ defineOnApi(API_ON_COMPASS, () => {
 	startCompass();
 });
-var offCompassChange = /* @__PURE__ */ defineOffApi(API_OFF_COMPASS, () => {
+var offCompassChange = /*#__PURE__*/ defineOffApi(API_OFF_COMPASS, () => {
 	stopCompass();
 });
-var startCompass = /* @__PURE__ */ defineAsyncApi(API_START_COMPASS, (_, { resolve, reject }) => {
+var startCompass = /*#__PURE__*/ defineAsyncApi(API_START_COMPASS, (_, { resolve, reject }) => {
 	if (!window.DeviceOrientationEvent) {
 		reject();
 		return;
@@ -19277,7 +19274,7 @@ var startCompass = /* @__PURE__ */ defineAsyncApi(API_START_COMPASS, (_, { resol
 	}
 	resolve();
 });
-var stopCompass = /* @__PURE__ */ defineAsyncApi(API_STOP_COMPASS, (_, { resolve }) => {
+var stopCompass = /*#__PURE__*/ defineAsyncApi(API_STOP_COMPASS, (_, { resolve }) => {
 	if (listener) {
 		window.removeEventListener("deviceorientation", listener, false);
 		listener = null;
@@ -19287,16 +19284,16 @@ var stopCompass = /* @__PURE__ */ defineAsyncApi(API_STOP_COMPASS, (_, { resolve
 //#endregion
 //#region src/service/api/device/vibrate.ts
 var _isSupport = !!window.navigator.vibrate;
-var vibrateShort = /* @__PURE__ */ defineAsyncApi(API_VIBRATE_SHORT, (args, { resolve, reject }) => {
+var vibrateShort = /*#__PURE__*/ defineAsyncApi(API_VIBRATE_SHORT, (args, { resolve, reject }) => {
 	if (_isSupport && window.navigator.vibrate(15)) resolve();
 	else reject("vibrateShort:fail");
 });
-var vibrateLong = /* @__PURE__ */ defineAsyncApi(API_VIBRATE_LONG, (args, { resolve, reject }) => {
+var vibrateLong = /*#__PURE__*/ defineAsyncApi(API_VIBRATE_LONG, (args, { resolve, reject }) => {
 	if (_isSupport && window.navigator.vibrate(400)) resolve();
 	else reject("vibrateLong:fail");
 });
 //#endregion
-//#region \0@oxc-project+runtime@0.130.0/helpers/asyncToGenerator.js
+//#region \0@oxc-project+runtime@0.137.0/helpers/esm/asyncToGenerator.js
 function asyncGeneratorStep(n, t, e, r, o, a, c) {
 	try {
 		var i = n[a](c), u = i.value;
@@ -19323,7 +19320,7 @@ function _asyncToGenerator(n) {
 }
 //#endregion
 //#region src/service/api/device/clipboard.ts
-var getClipboardData = /* @__PURE__ */ defineAsyncApi(API_GET_CLIPBOARD_DATA, function() {
+var getClipboardData = /*#__PURE__*/ defineAsyncApi(API_GET_CLIPBOARD_DATA, function() {
 	var _ref = _asyncToGenerator(function* (_, { resolve, reject }) {
 		initI18nGetClipboardDataMsgsOnce();
 		const { t } = useI18n();
@@ -19339,7 +19336,7 @@ var getClipboardData = /* @__PURE__ */ defineAsyncApi(API_GET_CLIPBOARD_DATA, fu
 		return _ref.apply(this, arguments);
 	};
 }());
-var setClipboardData = /* @__PURE__ */ defineAsyncApi(API_SET_CLIPBOARD_DATA, function() {
+var setClipboardData = /*#__PURE__*/ defineAsyncApi(API_SET_CLIPBOARD_DATA, function() {
 	var _ref2 = _asyncToGenerator(function* ({ data }, { resolve, reject }) {
 		try {
 			yield navigator.clipboard.writeText(data);
@@ -19381,14 +19378,14 @@ function _setClipboardData(data, resolve, reject) {
 var themeChangeCallBack = (res) => {
 	UniServiceJSBridge.invokeOnCallback(ON_THEME_CHANGE, res);
 };
-var onThemeChange = /* @__PURE__ */ defineOnApi(ON_THEME_CHANGE, () => {
+var onThemeChange = /*#__PURE__*/ defineOnApi(ON_THEME_CHANGE, () => {
 	UniServiceJSBridge.on(ON_THEME_CHANGE, themeChangeCallBack);
 });
-var offThemeChange = /* @__PURE__ */ defineOffApi(OFF_THEME_CHANGE, () => {
+var offThemeChange = /*#__PURE__*/ defineOffApi(OFF_THEME_CHANGE, () => {
 	UniServiceJSBridge.off(ON_THEME_CHANGE, themeChangeCallBack);
 });
 var THEME_CALLBACK = [];
-var onHostThemeChange = /* @__PURE__ */ defineSyncApi(ON_HOST_THEME_CHANGE, (callback) => {
+var onHostThemeChange = /*#__PURE__*/ defineSyncApi(ON_HOST_THEME_CHANGE, (callback) => {
 	const onHostThemeChangeCallback = (res) => {
 		callback({ hostTheme: res.theme });
 	};
@@ -19396,7 +19393,7 @@ var onHostThemeChange = /* @__PURE__ */ defineSyncApi(ON_HOST_THEME_CHANGE, (cal
 	UniServiceJSBridge.on(ON_THEME_CHANGE, onHostThemeChangeCallback);
 	return index;
 });
-var offHostThemeChange = /* @__PURE__ */ defineSyncApi(OFF_HOST_THEME_CHANGE, (callbackId) => {
+var offHostThemeChange = /*#__PURE__*/ defineSyncApi(OFF_HOST_THEME_CHANGE, (callbackId) => {
 	if (isFunction(callbackId)) callbackId = THEME_CALLBACK.findIndex(([callback]) => callback === callbackId);
 	if (callbackId > -1) {
 		const arr = THEME_CALLBACK.splice(callbackId, 1)[0];
@@ -19429,7 +19426,7 @@ function parseValue(value) {
 		}
 	} catch (error) {}
 }
-var setStorageSync = /* @__PURE__ */ defineSyncApi(API_SET_STORAGE_SYNC, (key, data) => {
+var setStorageSync = /*#__PURE__*/ defineSyncApi(API_SET_STORAGE_SYNC, (key, data) => {
 	const type = typeof data;
 	const value = type === "string" ? data : JSON.stringify({
 		type,
@@ -19437,7 +19434,7 @@ var setStorageSync = /* @__PURE__ */ defineSyncApi(API_SET_STORAGE_SYNC, (key, d
 	});
 	localStorage.setItem(key, value);
 }, SetStorageSyncProtocol);
-var setStorage = /* @__PURE__ */ defineAsyncApi(API_SET_STORAGE, ({ key, data }, { resolve, reject }) => {
+var setStorage = /*#__PURE__*/ defineAsyncApi(API_SET_STORAGE, ({ key, data }, { resolve, reject }) => {
 	try {
 		setStorageSync(key, data);
 		resolve();
@@ -19455,35 +19452,35 @@ function getStorageOrigin(key) {
 	} catch (error) {}
 	return data;
 }
-var getStorageSync = /* @__PURE__ */ defineSyncApi(API_GET_STORAGE_SYNC, (key) => {
+var getStorageSync = /*#__PURE__*/ defineSyncApi(API_GET_STORAGE_SYNC, (key) => {
 	try {
 		return getStorageOrigin(key);
 	} catch (error) {
 		return "";
 	}
 }, GetStorageSyncProtocol);
-var getStorage = /* @__PURE__ */ defineAsyncApi(API_GET_STORAGE, ({ key }, { resolve, reject }) => {
+var getStorage = /*#__PURE__*/ defineAsyncApi(API_GET_STORAGE, ({ key }, { resolve, reject }) => {
 	try {
 		resolve({ data: getStorageOrigin(key) });
 	} catch (error) {
 		reject(error.message);
 	}
 }, GetStorageProtocol);
-var removeStorageSync = /* @__PURE__ */ defineSyncApi(API_REMOVE_STORAGE, (key) => {
+var removeStorageSync = /*#__PURE__*/ defineSyncApi(API_REMOVE_STORAGE, (key) => {
 	if (localStorage) localStorage.removeItem(key);
 }, RemoveStorageSyncProtocol);
-var removeStorage = /* @__PURE__ */ defineAsyncApi(API_REMOVE_STORAGE, ({ key }, { resolve }) => {
+var removeStorage = /*#__PURE__*/ defineAsyncApi(API_REMOVE_STORAGE, ({ key }, { resolve }) => {
 	removeStorageSync(key);
 	resolve();
 }, RemoveStorageProtocol);
-var clearStorageSync = /* @__PURE__ */ defineSyncApi("clearStorageSync", () => {
+var clearStorageSync = /*#__PURE__*/ defineSyncApi("clearStorageSync", () => {
 	if (localStorage) localStorage.clear();
 });
-var clearStorage = /* @__PURE__ */ defineAsyncApi("clearStorage", (_, { resolve }) => {
+var clearStorage = /*#__PURE__*/ defineAsyncApi("clearStorage", (_, { resolve }) => {
 	clearStorageSync();
 	resolve();
 });
-var getStorageInfoSync = /* @__PURE__ */ defineSyncApi("getStorageInfoSync", () => {
+var getStorageInfoSync = /*#__PURE__*/ defineSyncApi("getStorageInfoSync", () => {
 	const length = localStorage && localStorage.length || 0;
 	const keys = [];
 	let currentSize = 0;
@@ -19499,12 +19496,12 @@ var getStorageInfoSync = /* @__PURE__ */ defineSyncApi("getStorageInfoSync", () 
 		limitSize: Number.MAX_VALUE
 	};
 });
-var getStorageInfo = /* @__PURE__ */ defineAsyncApi("getStorageInfo", (_, { resolve }) => {
+var getStorageInfo = /*#__PURE__*/ defineAsyncApi("getStorageInfo", (_, { resolve }) => {
 	resolve(getStorageInfoSync());
 });
 //#endregion
 //#region src/service/api/file/getFileInfo.ts
-var getFileInfo = /* @__PURE__ */ defineAsyncApi(API_GET_FILE_INFO, ({ filePath }, { resolve, reject }) => {
+var getFileInfo = /*#__PURE__*/ defineAsyncApi(API_GET_FILE_INFO, ({ filePath }, { resolve, reject }) => {
 	urlToFile(filePath).then((res) => {
 		resolve({ size: res.size });
 	}).catch((err) => {
@@ -19513,13 +19510,13 @@ var getFileInfo = /* @__PURE__ */ defineAsyncApi(API_GET_FILE_INFO, ({ filePath 
 }, GetFileInfoProtocol, GetFileInfoOptions);
 //#endregion
 //#region src/service/api/file/openDocument.ts
-var openDocument = /* @__PURE__ */ defineAsyncApi(API_OPEN_DOCUMENT, ({ filePath }, { resolve }) => {
+var openDocument = /*#__PURE__*/ defineAsyncApi(API_OPEN_DOCUMENT, ({ filePath }, { resolve }) => {
 	window.open(filePath);
 	return resolve();
 }, OpenDocumentProtocol, OpenDocumentOptions);
 //#endregion
 //#region src/service/api/keyboard/keyboard.ts
-var hideKeyboard = /* @__PURE__ */ defineAsyncApi(API_HIDE_KEYBOARD, (args, { resolve, reject }) => {
+var hideKeyboard = /*#__PURE__*/ defineAsyncApi(API_HIDE_KEYBOARD, (args, { resolve, reject }) => {
 	const activeElement = document.activeElement;
 	if (activeElement && (activeElement.tagName === "TEXTAREA" || activeElement.tagName === "INPUT")) {
 		activeElement.blur();
@@ -19531,7 +19528,7 @@ var hideKeyboard = /* @__PURE__ */ defineAsyncApi(API_HIDE_KEYBOARD, (args, { re
 function getServiceAddress() {
 	return window.location.protocol + "//" + window.location.host;
 }
-var getImageInfo = /* @__PURE__ */ defineAsyncApi(API_GET_IMAGE_INFO, ({ src }, { resolve, reject }) => {
+var getImageInfo = /*#__PURE__*/ defineAsyncApi(API_GET_IMAGE_INFO, ({ src }, { resolve, reject }) => {
 	const img = new Image();
 	img.onload = function() {
 		resolve({
@@ -19547,7 +19544,7 @@ var getImageInfo = /* @__PURE__ */ defineAsyncApi(API_GET_IMAGE_INFO, ({ src }, 
 }, GetImageInfoProtocol, GetImageInfoOptions);
 //#endregion
 //#region src/service/api/media/getVideoInfo.ts
-var getVideoInfo = /* @__PURE__ */ defineAsyncApi(API_GET_VIDEO_INFO, ({ src }, { resolve, reject }) => {
+var getVideoInfo = /*#__PURE__*/ defineAsyncApi(API_GET_VIDEO_INFO, ({ src }, { resolve, reject }) => {
 	urlToFile(src, true).then((file) => {
 		return file;
 	}).catch(() => {
@@ -19675,7 +19672,7 @@ function createInput_default({ count, sourceType, type, extension }) {
 //#endregion
 //#region src/service/api/media/chooseFile.ts
 var fileInput = null;
-var chooseFile = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_FILE, ({ count, sourceType, type, extension }, { resolve, reject }) => {
+var chooseFile = /*#__PURE__*/ defineAsyncApi(API_CHOOSE_FILE, ({ count, sourceType, type, extension }, { resolve, reject }) => {
 	initI18nChooseFileMsgsOnce();
 	const { t } = useI18n();
 	if (fileInput) {
@@ -19720,7 +19717,7 @@ var chooseFile = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_FILE, ({ count, sourc
 //#endregion
 //#region src/service/api/media/chooseImage.ts
 var imageInput = null;
-var chooseImage = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_IMAGE, ({ count, sourceType, extension }, { resolve, reject }) => {
+var chooseImage = /*#__PURE__*/ defineAsyncApi(API_CHOOSE_IMAGE, ({ count, sourceType, extension }, { resolve, reject }) => {
 	initI18nChooseFileMsgsOnce();
 	const { t } = useI18n();
 	if (imageInput) {
@@ -19784,7 +19781,7 @@ function usePreventScroll() {
 	onMounted(() => preventScroll(true));
 	onUnmounted(() => preventScroll(false));
 }
-var ImageView_default = /* @__PURE__ */ defineSystemComponent({
+var ImageView_default = /*#__PURE__*/ defineSystemComponent({
 	name: "ImageView",
 	props: { src: {
 		type: String,
@@ -19892,7 +19889,7 @@ function getIndex(props) {
 	index = index < 0 ? 0 : index;
 	return index;
 }
-var ImagePreview_default = /* @__PURE__ */ defineSystemComponent({
+var ImagePreview_default = /*#__PURE__*/ defineSystemComponent({
 	name: "ImagePreview",
 	props: props$5,
 	emits: ["close"],
@@ -19988,7 +19985,7 @@ var closePreviewImageView = () => {
 		imagePreviewInstance = null;
 	});
 };
-var previewImage = /* @__PURE__ */ defineAsyncApi(API_PREVIEW_IMAGE, (args, { resolve }) => {
+var previewImage = /*#__PURE__*/ defineAsyncApi(API_PREVIEW_IMAGE, (args, { resolve }) => {
 	if (!state$1) {
 		state$1 = reactive(args);
 		nextTick(() => {
@@ -19998,7 +19995,7 @@ var previewImage = /* @__PURE__ */ defineAsyncApi(API_PREVIEW_IMAGE, (args, { re
 	} else extend(state$1, args);
 	resolve();
 }, PreviewImageProtocol, PreviewImageOptions);
-var closePreviewImage = /* @__PURE__ */ defineAsyncApi(API_CLOSE_PREVIEW_IMAGE, (_, { resolve, reject }) => {
+var closePreviewImage = /*#__PURE__*/ defineAsyncApi(API_CLOSE_PREVIEW_IMAGE, (_, { resolve, reject }) => {
 	if (imagePreviewInstance) {
 		closePreviewImageView();
 		resolve();
@@ -20007,7 +20004,7 @@ var closePreviewImage = /* @__PURE__ */ defineAsyncApi(API_CLOSE_PREVIEW_IMAGE, 
 //#endregion
 //#region src/service/api/media/chooseVideo.ts
 var videoInput = null;
-var chooseVideo = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_VIDEO, ({ sourceType, extension }, { resolve, reject }) => {
+var chooseVideo = /*#__PURE__*/ defineAsyncApi(API_CHOOSE_VIDEO, ({ sourceType, extension }, { resolve, reject }) => {
 	initI18nChooseFileMsgsOnce();
 	const { t } = useI18n();
 	if (videoInput) {
@@ -20063,7 +20060,7 @@ var chooseVideo = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_VIDEO, ({ sourceType
 }, ChooseVideoProtocol, ChooseVideoOptions);
 //#endregion
 //#region src/service/api/network/request.ts
-var request = /* @__PURE__ */ defineTaskApi(API_REQUEST, ({ url, data, header = {}, method, dataType, responseType, enableChunked, withCredentials, timeout = __uniConfig.networkTimeout.request }, { resolve, reject }) => {
+var request = /*#__PURE__*/ defineTaskApi(API_REQUEST, ({ url, data, header = {}, method, dataType, responseType, enableChunked, withCredentials, timeout = __uniConfig.networkTimeout.request }, { resolve, reject }) => {
 	timeout = timeout == null ? __uniConfig.networkTimeout.request : timeout;
 	let body = null;
 	const contentType = normalizeContentType(header);
@@ -20347,7 +20344,7 @@ var DownloadTask = class {
 * @param {string} callbackId
 * @return {DownloadTask}
 */
-var downloadFile = /* @__PURE__ */ defineTaskApi(API_DOWNLOAD_FILE, ({ url, header = {}, timeout = __uniConfig.networkTimeout.downloadFile }, { resolve, reject }) => {
+var downloadFile = /*#__PURE__*/ defineTaskApi(API_DOWNLOAD_FILE, ({ url, header = {}, timeout = __uniConfig.networkTimeout.downloadFile }, { resolve, reject }) => {
 	timeout = timeout == null ? __uniConfig.networkTimeout.downloadFile : timeout;
 	var timer;
 	var xhr = new XMLHttpRequest();
@@ -20439,7 +20436,7 @@ var UploadTask = class {
 		throw new Error("Method not implemented.");
 	}
 };
-var uploadFile = /* @__PURE__ */ defineTaskApi(API_UPLOAD_FILE, ({ url, file, filePath, name, files, header = {}, formData = {}, timeout = __uniConfig.networkTimeout.uploadFile }, { resolve, reject }) => {
+var uploadFile = /*#__PURE__*/ defineTaskApi(API_UPLOAD_FILE, ({ url, file, filePath, name, files, header = {}, formData = {}, timeout = __uniConfig.networkTimeout.uploadFile }, { resolve, reject }) => {
 	timeout = timeout == null ? __uniConfig.networkTimeout.uploadFile : timeout;
 	var uploadTask = new UploadTask();
 	if (!isArray(files) || !files.length) {
@@ -20640,7 +20637,7 @@ var SocketTask = class {
 		this._callbacks.close.push(callback);
 	}
 };
-var connectSocket = /* @__PURE__ */ defineTaskApi(API_CONNECT_SOCKET, ({ url, protocols }, { resolve, reject }) => {
+var connectSocket = /*#__PURE__*/ defineTaskApi(API_CONNECT_SOCKET, ({ url, protocols }, { resolve, reject }) => {
 	return new SocketTask(url, protocols, (error, socketTask) => {
 		if (error) {
 			reject(error.toString(), { errCode: 600009 });
@@ -20662,29 +20659,29 @@ function callSocketTask(socketTask, method, option, resolve, reject) {
 		complete: void 0
 	}));
 }
-var sendSocketMessage = /* @__PURE__ */ defineAsyncApi(API_SEND_SOCKET_MESSAGE, (options, { resolve, reject }) => {
+var sendSocketMessage = /*#__PURE__*/ defineAsyncApi(API_SEND_SOCKET_MESSAGE, (options, { resolve, reject }) => {
 	const socketTask = socketTasks[0];
 	if (socketTask && socketTask.readyState === socketTask.OPEN) callSocketTask(socketTask, "send", options, resolve, reject);
 	else reject("WebSocket is not connected");
 }, SendSocketMessageProtocol);
-var closeSocket = /* @__PURE__ */ defineAsyncApi(API_CLOSE_SOCKET, (options, { resolve, reject }) => {
+var closeSocket = /*#__PURE__*/ defineAsyncApi(API_CLOSE_SOCKET, (options, { resolve, reject }) => {
 	const socketTask = socketTasks[0];
 	if (socketTask) callSocketTask(socketTask, "close", options, resolve, reject);
 	else reject("WebSocket is not connected");
 }, CloseSocketProtocol);
 function on(event) {
 	const api = `onSocket${capitalize(event)}`;
-	return /* @__PURE__ */ defineOnApi(api, () => {
+	return /*#__PURE__*/ defineOnApi(api, () => {
 		globalEvent[event] = api;
 	});
 }
-var onSocketOpen = /* @__PURE__ */ on("open");
-var onSocketError = /* @__PURE__ */ on("error");
-var onSocketMessage = /* @__PURE__ */ on("message");
-var onSocketClose = /* @__PURE__ */ on("close");
+var onSocketOpen = /*#__PURE__*/ on("open");
+var onSocketError = /*#__PURE__*/ on("error");
+var onSocketMessage = /*#__PURE__*/ on("message");
+var onSocketClose = /*#__PURE__*/ on("close");
 //#endregion
 //#region src/service/api/location/getLocation.ts
-var getLocation = /* @__PURE__ */ defineAsyncApi(API_GET_LOCATION, ({ type, altitude, highAccuracyExpireTime, isHighAccuracy }, { resolve, reject }) => {
+var getLocation = /*#__PURE__*/ defineAsyncApi(API_GET_LOCATION, ({ type, altitude, highAccuracyExpireTime, isHighAccuracy }, { resolve, reject }) => {
 	const mapInfo = getMapInfo();
 	new Promise((resolve, reject) => {
 		if (navigator.geolocation) navigator.geolocation.getCurrentPosition((res) => resolve({ coords: res.coords }), reject, {
@@ -20817,7 +20814,7 @@ function useState$1(props) {
 	updatePosition();
 	return state;
 }
-var LocationView_default = /* @__PURE__ */ defineSystemComponent({
+var LocationView_default = /*#__PURE__*/ defineSystemComponent({
 	name: "LocationView",
 	props: props$4,
 	emits: ["close"],
@@ -20895,7 +20892,7 @@ var LocationView_default = /* @__PURE__ */ defineSystemComponent({
 //#endregion
 //#region src/service/api/location/openLocation/index.ts
 var state = null;
-var openLocation = /* @__PURE__ */ defineAsyncApi(API_OPEN_LOCATION, (args, { resolve }) => {
+var openLocation = /*#__PURE__*/ defineAsyncApi(API_OPEN_LOCATION, (args, { resolve }) => {
 	if (!state) {
 		state = reactive(args);
 		nextTick(() => {
@@ -20914,7 +20911,7 @@ var openLocation = /* @__PURE__ */ defineAsyncApi(API_OPEN_LOCATION, (args, { re
 //#region src/service/api/location/locationChange.ts
 var started = false;
 var watchId = 0;
-var startLocationUpdate = /* @__PURE__ */ defineAsyncApi(API_START_LOCATION_UPDATE, (options, { resolve, reject }) => {
+var startLocationUpdate = /*#__PURE__*/ defineAsyncApi(API_START_LOCATION_UPDATE, (options, { resolve, reject }) => {
 	if (!navigator.geolocation) {
 		reject();
 		return;
@@ -20936,7 +20933,7 @@ var startLocationUpdate = /* @__PURE__ */ defineAsyncApi(API_START_LOCATION_UPDA
 	});
 	setTimeout(resolve, 100);
 }, StartLocationUpdateProtocol, StartLocationUpdateOptions);
-var stopLocationUpdate = /* @__PURE__ */ defineAsyncApi(API_STOP_LOCATION_UPDATE, (_, { resolve }) => {
+var stopLocationUpdate = /*#__PURE__*/ defineAsyncApi(API_STOP_LOCATION_UPDATE, (_, { resolve }) => {
 	if (watchId) {
 		navigator.geolocation.clearWatch(watchId);
 		started = false;
@@ -20944,13 +20941,13 @@ var stopLocationUpdate = /* @__PURE__ */ defineAsyncApi(API_STOP_LOCATION_UPDATE
 	}
 	resolve();
 });
-var onLocationChange = /* @__PURE__ */ defineOnApi(API_ON_LOCATION_CHANGE, () => {});
-var offLocationChange = /* @__PURE__ */ defineOffApi(API_OFF_LOCATION_CHANGE, () => {});
-var onLocationChangeError = /* @__PURE__ */ defineOnApi(API_ON_LOCATION_CHANGE_ERROR, () => {});
-var offLocationChangeError = /* @__PURE__ */ defineOffApi(API_OFF_LOCATION_CHANGE_ERROR, () => {});
+var onLocationChange = /*#__PURE__*/ defineOnApi(API_ON_LOCATION_CHANGE, () => {});
+var offLocationChange = /*#__PURE__*/ defineOffApi(API_OFF_LOCATION_CHANGE, () => {});
+var onLocationChangeError = /*#__PURE__*/ defineOnApi(API_ON_LOCATION_CHANGE_ERROR, () => {});
+var offLocationChangeError = /*#__PURE__*/ defineOffApi(API_OFF_LOCATION_CHANGE_ERROR, () => {});
 //#endregion
 //#region src/service/api/route/navigateBack.ts
-var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject }) => {
+var navigateBack = /*#__PURE__*/ defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject }) => {
 	let canBack = true;
 	if (invokeHook(ON_BACK_PRESS, { from: args.from || "navigateBack" }) === true) canBack = false;
 	{
@@ -20969,7 +20966,7 @@ var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, { re
 }, NavigateBackProtocol, NavigateBackOptions);
 //#endregion
 //#region src/service/api/route/navigateTo.ts
-var navigateTo = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_TO, ({ url, events, isAutomatedTesting }, { resolve, reject }) => {
+var navigateTo = /*#__PURE__*/ defineAsyncApi(API_NAVIGATE_TO, ({ url, events, isAutomatedTesting }, { resolve, reject }) => {
 	if (!entryPageState.handledBeforeEntryPageRoutes) {
 		navigateToPagesBeforeEntryPages.push({
 			args: {
@@ -20992,7 +20989,7 @@ var navigateTo = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_TO, ({ url, events,
 }, NavigateToProtocol, NavigateToOptions);
 //#endregion
 //#region src/service/api/route/preloadPage.ts
-var preloadPage = /* @__PURE__ */ defineAsyncApi(API_PRELOAD_PAGE, ({ url }, { resolve, reject }) => {
+var preloadPage = /*#__PURE__*/ defineAsyncApi(API_PRELOAD_PAGE, ({ url }, { resolve, reject }) => {
 	const path = url.split("?")[0];
 	const route = getRouteOptions(path);
 	if (!route) {
@@ -21100,7 +21097,7 @@ function useToastIcon(props) {
 var showToastState;
 var showType = "";
 var timeoutId;
-var scope = /* @__PURE__ */ effectScope();
+var scope = /*#__PURE__*/ effectScope();
 function watchVisible() {
 	scope.run(() => {
 		watch([() => showToastState.visible, () => showToastState.duration], ([visible, duration]) => {
@@ -21127,12 +21124,12 @@ function createToast(args) {
 		showToastState.visible = true;
 	}, 10);
 }
-var showToast = /* @__PURE__ */ defineAsyncApi(API_SHOW_TOAST, (args, { resolve, reject }) => {
+var showToast = /*#__PURE__*/ defineAsyncApi(API_SHOW_TOAST, (args, { resolve, reject }) => {
 	createToast(args);
 	showType = "onShowToast";
 	resolve();
 }, ShowToastProtocol, ShowToastOptions);
-var hideToast = /* @__PURE__ */ defineAsyncApi(API_HIDE_TOAST, (args, { resolve, reject }) => {
+var hideToast = /*#__PURE__*/ defineAsyncApi(API_HIDE_TOAST, (args, { resolve, reject }) => {
 	hidePopup("onHideToast");
 	resolve();
 });
@@ -21150,7 +21147,7 @@ function hidePopup(type) {
 }
 //#endregion
 //#region src/service/api/ui/loadFontFace.ts
-var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, ({ family, source, desc }, { resolve, reject }) => {
+var loadFontFace = /*#__PURE__*/ defineAsyncApi(API_LOAD_FONT_FACE, ({ family, source, desc }, { resolve, reject }) => {
 	if (source.startsWith(`url("`) || source.startsWith(`url('`)) source = `url('${getRealPath(source.substring(5, source.length - 2))}')`;
 	else if (source.startsWith("url(")) source = `url('${getRealPath(source.substring(4, source.length - 1))}')`;
 	else source = getRealPath(source);
@@ -21187,33 +21184,33 @@ function setNavigationBar(pageMeta, type, args, resolve, reject) {
 	}
 	resolve();
 }
-var setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, (args, { resolve, reject }) => {
+var setNavigationBarColor = /*#__PURE__*/ defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, (args, { resolve, reject }) => {
 	setNavigationBar(getCurrentPageMeta(), API_SET_NAVIGATION_BAR_COLOR, args, resolve, reject);
 }, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
-var showNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(API_SHOW_NAVIGATION_BAR_LOADING, (args, { resolve, reject }) => {
+var showNavigationBarLoading = /*#__PURE__*/ defineAsyncApi(API_SHOW_NAVIGATION_BAR_LOADING, (args, { resolve, reject }) => {
 	setNavigationBar(getCurrentPageMeta(), API_SHOW_NAVIGATION_BAR_LOADING, args || {}, resolve, reject);
 });
-var hideNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(API_HIDE_NAVIGATION_BAR_LOADING, (args, { resolve, reject }) => {
+var hideNavigationBarLoading = /*#__PURE__*/ defineAsyncApi(API_HIDE_NAVIGATION_BAR_LOADING, (args, { resolve, reject }) => {
 	setNavigationBar(getCurrentPageMeta(), API_HIDE_NAVIGATION_BAR_LOADING, args || {}, resolve, reject);
 });
-var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (args, { resolve, reject }) => {
+var setNavigationBarTitle = /*#__PURE__*/ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (args, { resolve, reject }) => {
 	setNavigationBar(getCurrentPageMeta(), API_SET_NAVIGATION_BAR_TITLE, args, resolve, reject);
 }, SetNavigationBarTitleProtocol);
 //#endregion
 //#region src/service/api/ui/pageScrollTo.ts
-var pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, ({ scrollTop, selector, duration }, { resolve }) => {
+var pageScrollTo = /*#__PURE__*/ defineAsyncApi(API_PAGE_SCROLL_TO, ({ scrollTop, selector, duration }, { resolve }) => {
 	scrollTo(selector || scrollTop || 0, duration, true);
 	resolve();
 }, PageScrollToProtocol, PageScrollToOptions);
 //#endregion
 //#region src/service/api/ui/startPullDownRefresh.ts
-var startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_args, { resolve }) => {
+var startPullDownRefresh = /*#__PURE__*/ defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_args, { resolve }) => {
 	UniServiceJSBridge.invokeViewMethod(API_START_PULL_DOWN_REFRESH, {}, getCurrentPageId());
 	resolve();
 });
 //#endregion
 //#region src/service/api/ui/stopPullDownRefresh.ts
-var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, { resolve }) => {
+var stopPullDownRefresh = /*#__PURE__*/ defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, { resolve }) => {
 	UniServiceJSBridge.invokeViewMethod(API_STOP_PULL_DOWN_REFRESH, {}, getCurrentPageId());
 	resolve();
 });
@@ -21296,28 +21293,28 @@ function setTabBar(type, args, resolve, reject) {
 	}
 	resolve();
 }
-var setTabBarItem = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_ITEM, (args, { resolve, reject }) => {
+var setTabBarItem = /*#__PURE__*/ defineAsyncApi(API_SET_TAB_BAR_ITEM, (args, { resolve, reject }) => {
 	setTabBar(API_SET_TAB_BAR_ITEM, args, resolve, reject);
 }, SetTabBarItemProtocol, SetTabBarItemOptions);
-var setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (args, { resolve, reject }) => {
+var setTabBarStyle = /*#__PURE__*/ defineAsyncApi(API_SET_TAB_BAR_STYLE, (args, { resolve, reject }) => {
 	setTabBar(API_SET_TAB_BAR_STYLE, args, resolve, reject);
 }, SetTabBarStyleProtocol, SetTabBarStyleOptions);
-var hideTabBar = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR, (args, { resolve, reject }) => {
+var hideTabBar = /*#__PURE__*/ defineAsyncApi(API_HIDE_TAB_BAR, (args, { resolve, reject }) => {
 	setTabBar(API_HIDE_TAB_BAR, args ? args : {}, resolve, reject);
 }, HideTabBarProtocol);
-var showTabBar = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR, (args, { resolve, reject }) => {
+var showTabBar = /*#__PURE__*/ defineAsyncApi(API_SHOW_TAB_BAR, (args, { resolve, reject }) => {
 	setTabBar(API_SHOW_TAB_BAR, args ? args : {}, resolve, reject);
 }, ShowTabBarProtocol);
-var hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, (args, { resolve, reject }) => {
+var hideTabBarRedDot = /*#__PURE__*/ defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, (args, { resolve, reject }) => {
 	setTabBar(API_HIDE_TAB_BAR_RED_DOT, args, resolve, reject);
 }, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
-var showTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR_RED_DOT, (args, { resolve, reject }) => {
+var showTabBarRedDot = /*#__PURE__*/ defineAsyncApi(API_SHOW_TAB_BAR_RED_DOT, (args, { resolve, reject }) => {
 	setTabBar(API_SHOW_TAB_BAR_RED_DOT, args, resolve, reject);
 }, ShowTabBarRedDotProtocol, ShowTabBarRedDotOptions);
-var removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_REMOVE_TAB_BAR_BADGE, (args, { resolve, reject }) => {
+var removeTabBarBadge = /*#__PURE__*/ defineAsyncApi(API_REMOVE_TAB_BAR_BADGE, (args, { resolve, reject }) => {
 	setTabBar(API_REMOVE_TAB_BAR_BADGE, args, resolve, reject);
 }, RemoveTabBarBadgeProtocol, RemoveTabBarBadgeOptions);
-var setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (args, { resolve, reject }) => {
+var setTabBarBadge = /*#__PURE__*/ defineAsyncApi(API_SET_TAB_BAR_BADGE, (args, { resolve, reject }) => {
 	setTabBar(API_SET_TAB_BAR_BADGE, args, resolve, reject);
 }, SetTabBarBadgeProtocol, SetTabBarBadgeOptions);
 //#endregion
@@ -21328,7 +21325,7 @@ var _middleButton = {
 	height: "50px",
 	iconWidth: "24px"
 };
-var tabBar_default = /* @__PURE__ */ defineSystemComponent({
+var tabBar_default = /*#__PURE__*/ defineSystemComponent({
 	name: "TabBar",
 	setup() {
 		const visibleList = ref([]);
@@ -21571,7 +21568,7 @@ var globalLayoutState = void 0;
 function getLayoutState() {
 	return globalLayoutState;
 }
-var layout_default = /* @__PURE__ */ defineSystemComponent({
+var layout_default = /*#__PURE__*/ defineSystemComponent({
 	name: "Layout",
 	setup(_props, { emit }) {
 		const rootRef = ref(null);
@@ -21906,7 +21903,7 @@ function createRightWindowTsx(rightWindow, layoutState, windowState) {
 }
 //#endregion
 //#region src/service/api/ui/window.ts
-var showTopWindow = /* @__PURE__ */ defineAsyncApi("showTopWindow", (_, { resolve, reject }) => {
+var showTopWindow = /*#__PURE__*/ defineAsyncApi("showTopWindow", (_, { resolve, reject }) => {
 	const state = getLayoutState();
 	if (!state) {
 		reject();
@@ -21915,7 +21912,7 @@ var showTopWindow = /* @__PURE__ */ defineAsyncApi("showTopWindow", (_, { resolv
 	state.apiShowTopWindow = true;
 	nextTick(resolve);
 });
-var hideTopWindow = /* @__PURE__ */ defineAsyncApi("hideTopWindow", (_, { resolve, reject }) => {
+var hideTopWindow = /*#__PURE__*/ defineAsyncApi("hideTopWindow", (_, { resolve, reject }) => {
 	const state = getLayoutState();
 	if (!state) {
 		reject();
@@ -21924,7 +21921,7 @@ var hideTopWindow = /* @__PURE__ */ defineAsyncApi("hideTopWindow", (_, { resolv
 	state.apiShowTopWindow = false;
 	nextTick(resolve);
 });
-var showLeftWindow = /* @__PURE__ */ defineAsyncApi("showLeftWindow", (_, { resolve, reject }) => {
+var showLeftWindow = /*#__PURE__*/ defineAsyncApi("showLeftWindow", (_, { resolve, reject }) => {
 	const state = getLayoutState();
 	if (!state) {
 		reject();
@@ -21933,7 +21930,7 @@ var showLeftWindow = /* @__PURE__ */ defineAsyncApi("showLeftWindow", (_, { reso
 	state.apiShowLeftWindow = true;
 	nextTick(resolve);
 });
-var hideLeftWindow = /* @__PURE__ */ defineAsyncApi("hideLeftWindow", (_, { resolve, reject }) => {
+var hideLeftWindow = /*#__PURE__*/ defineAsyncApi("hideLeftWindow", (_, { resolve, reject }) => {
 	const state = getLayoutState();
 	if (!state) {
 		reject();
@@ -21942,7 +21939,7 @@ var hideLeftWindow = /* @__PURE__ */ defineAsyncApi("hideLeftWindow", (_, { reso
 	state.apiShowLeftWindow = false;
 	nextTick(resolve);
 });
-var showRightWindow = /* @__PURE__ */ defineAsyncApi("showRightWindow", (_, { resolve, reject }) => {
+var showRightWindow = /*#__PURE__*/ defineAsyncApi("showRightWindow", (_, { resolve, reject }) => {
 	const state = getLayoutState();
 	if (!state) {
 		reject();
@@ -21951,7 +21948,7 @@ var showRightWindow = /* @__PURE__ */ defineAsyncApi("showRightWindow", (_, { re
 	state.apiShowRightWindow = true;
 	nextTick(resolve);
 });
-var hideRightWindow = /* @__PURE__ */ defineAsyncApi("hideRightWindow", (_, { resolve, reject }) => {
+var hideRightWindow = /*#__PURE__*/ defineAsyncApi("hideRightWindow", (_, { resolve, reject }) => {
 	const state = getLayoutState();
 	if (!state) {
 		reject();
@@ -21960,33 +21957,33 @@ var hideRightWindow = /* @__PURE__ */ defineAsyncApi("hideRightWindow", (_, { re
 	state.apiShowRightWindow = false;
 	nextTick(resolve);
 });
-var getTopWindowStyle = /* @__PURE__ */ defineSyncApi("getTopWindowStyle", () => {
+var getTopWindowStyle = /*#__PURE__*/ defineSyncApi("getTopWindowStyle", () => {
 	const state = getLayoutState();
 	return extend({}, state && state.topWindowStyle);
 });
-var setTopWindowStyle = /* @__PURE__ */ defineSyncApi("setTopWindowStyle", (style) => {
+var setTopWindowStyle = /*#__PURE__*/ defineSyncApi("setTopWindowStyle", (style) => {
 	const state = getLayoutState();
 	if (state) state.topWindowStyle = style;
 });
-var getLeftWindowStyle = /* @__PURE__ */ defineSyncApi("getLeftWindowStyle", () => {
+var getLeftWindowStyle = /*#__PURE__*/ defineSyncApi("getLeftWindowStyle", () => {
 	const state = getLayoutState();
 	return extend({}, state && state.leftWindowStyle);
 });
-var setLeftWindowStyle = /* @__PURE__ */ defineSyncApi("setLeftWindowStyle", (style) => {
+var setLeftWindowStyle = /*#__PURE__*/ defineSyncApi("setLeftWindowStyle", (style) => {
 	const state = getLayoutState();
 	if (state) state.leftWindowStyle = style;
 });
-var getRightWindowStyle = /* @__PURE__ */ defineSyncApi("getRightWindowStyle", () => {
+var getRightWindowStyle = /*#__PURE__*/ defineSyncApi("getRightWindowStyle", () => {
 	const state = getLayoutState();
 	return extend({}, state && state.rightWindowStyle);
 });
-var setRightWindowStyle = /* @__PURE__ */ defineSyncApi("setRightWindowStyle", (style) => {
+var setRightWindowStyle = /*#__PURE__*/ defineSyncApi("setRightWindowStyle", (style) => {
 	const state = getLayoutState();
 	if (state) state.rightWindowStyle = style;
 });
 //#endregion
 //#region src/service/api/plugin/facialVerify.ts
-var getFacialRecognitionMetaInfo = /* @__PURE__ */ defineSyncApi("getFacialRecognitionMetaInfo", () => {
+var getFacialRecognitionMetaInfo = /*#__PURE__*/ defineSyncApi("getFacialRecognitionMetaInfo", () => {
 	if (Object.getPrototypeOf(window) !== Window.prototype) {
 		console.error("getFacialRecognitionMetaInfo:fail window对象原型被篡改，可能存在劫持");
 		return "";
@@ -22070,7 +22067,7 @@ function removeVisibilityChangeListener() {
 		visibilityChangeListenerAdded = false;
 	}
 }
-var setKeepScreenOn = /* @__PURE__ */ defineAsyncApi(API_SET_KEEP_SCREEN_ON, ({ keepScreenOn: value }, { resolve, reject }) => {
+var setKeepScreenOn = /*#__PURE__*/ defineAsyncApi(API_SET_KEEP_SCREEN_ON, ({ keepScreenOn: value }, { resolve, reject }) => {
 	keepScreenOn = !!value;
 	if (keepScreenOn) {
 		addVisibilityChangeListener();
@@ -22090,44 +22087,44 @@ var setKeepScreenOn = /* @__PURE__ */ defineAsyncApi(API_SET_KEEP_SCREEN_ON, ({ 
 });
 //#endregion
 //#region src/service/api/todo/index.ts
-var saveImageToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM, createUnsupportedAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM));
+var saveImageToPhotosAlbum = /*#__PURE__*/ defineAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM, createUnsupportedAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM));
 var API_GET_RECORDER_MANAGER = "getRecorderManager";
-var getRecorderManager = /* @__PURE__ */ defineSyncApi(API_GET_RECORDER_MANAGER, createUnsupportedSyncApi(API_GET_RECORDER_MANAGER));
-var saveVideoToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(API_SAVE_VIDEO_TO_PHOTOS_ALBUM, createUnsupportedAsyncApi(API_SAVE_VIDEO_TO_PHOTOS_ALBUM));
+var getRecorderManager = /*#__PURE__*/ defineSyncApi(API_GET_RECORDER_MANAGER, createUnsupportedSyncApi(API_GET_RECORDER_MANAGER));
+var saveVideoToPhotosAlbum = /*#__PURE__*/ defineAsyncApi(API_SAVE_VIDEO_TO_PHOTOS_ALBUM, createUnsupportedAsyncApi(API_SAVE_VIDEO_TO_PHOTOS_ALBUM));
 var API_CREATE_CAMERA_CONTEXT = "createCameraContext";
-var createCameraContext = /* @__PURE__ */ defineSyncApi(API_CREATE_CAMERA_CONTEXT, createUnsupportedSyncApi(API_CREATE_CAMERA_CONTEXT));
+var createCameraContext = /*#__PURE__*/ defineSyncApi(API_CREATE_CAMERA_CONTEXT, createUnsupportedSyncApi(API_CREATE_CAMERA_CONTEXT));
 var API_CREATE_LIVE_PLAYER_CONTEXT = "createLivePlayerContext";
-var createLivePlayerContext = /* @__PURE__ */ defineSyncApi(API_CREATE_LIVE_PLAYER_CONTEXT, createUnsupportedSyncApi(API_CREATE_LIVE_PLAYER_CONTEXT));
+var createLivePlayerContext = /*#__PURE__*/ defineSyncApi(API_CREATE_LIVE_PLAYER_CONTEXT, createUnsupportedSyncApi(API_CREATE_LIVE_PLAYER_CONTEXT));
 var API_SAVE_FILE = "saveFile";
-var saveFile = /* @__PURE__ */ defineAsyncApi(API_SAVE_FILE, createUnsupportedAsyncApi(API_SAVE_FILE));
+var saveFile = /*#__PURE__*/ defineAsyncApi(API_SAVE_FILE, createUnsupportedAsyncApi(API_SAVE_FILE));
 var API_GET_SAVED_FILE_LIST = "getSavedFileList";
-var getSavedFileList = /* @__PURE__ */ defineAsyncApi(API_GET_SAVED_FILE_LIST, createUnsupportedAsyncApi(API_GET_SAVED_FILE_LIST));
+var getSavedFileList = /*#__PURE__*/ defineAsyncApi(API_GET_SAVED_FILE_LIST, createUnsupportedAsyncApi(API_GET_SAVED_FILE_LIST));
 var API_GET_SAVED_FILE_INFO = "getSavedFileInfo";
-var getSavedFileInfo = /* @__PURE__ */ defineAsyncApi(API_GET_SAVED_FILE_INFO, createUnsupportedAsyncApi(API_GET_SAVED_FILE_INFO));
+var getSavedFileInfo = /*#__PURE__*/ defineAsyncApi(API_GET_SAVED_FILE_INFO, createUnsupportedAsyncApi(API_GET_SAVED_FILE_INFO));
 var API_REMOVE_SAVED_FILE = "removeSavedFile";
-var removeSavedFile = /* @__PURE__ */ defineAsyncApi(API_REMOVE_SAVED_FILE, createUnsupportedAsyncApi(API_REMOVE_SAVED_FILE));
+var removeSavedFile = /*#__PURE__*/ defineAsyncApi(API_REMOVE_SAVED_FILE, createUnsupportedAsyncApi(API_REMOVE_SAVED_FILE));
 var API_ON_MEMORY_WARNING = "onMemoryWarning";
-var onMemoryWarning = /* @__PURE__ */ defineOnApi(API_ON_MEMORY_WARNING, createUnsupportedOnApi(API_ON_MEMORY_WARNING));
+var onMemoryWarning = /*#__PURE__*/ defineOnApi(API_ON_MEMORY_WARNING, createUnsupportedOnApi(API_ON_MEMORY_WARNING));
 var API_ON_GYROSCOPE_CHANGE = "onGyroscopeChange";
-var onGyroscopeChange = /* @__PURE__ */ defineOnApi(API_ON_GYROSCOPE_CHANGE, createUnsupportedOnApi(API_ON_GYROSCOPE_CHANGE));
+var onGyroscopeChange = /*#__PURE__*/ defineOnApi(API_ON_GYROSCOPE_CHANGE, createUnsupportedOnApi(API_ON_GYROSCOPE_CHANGE));
 var API_START_GYROSCOPE = "startGyroscope";
-var startGyroscope = /* @__PURE__ */ defineAsyncApi(API_START_GYROSCOPE, createUnsupportedAsyncApi(API_START_GYROSCOPE));
+var startGyroscope = /*#__PURE__*/ defineAsyncApi(API_START_GYROSCOPE, createUnsupportedAsyncApi(API_START_GYROSCOPE));
 var API_STOP_GYROSCOPE = "stopGyroscope";
-var stopGyroscope = /* @__PURE__ */ defineAsyncApi(API_STOP_GYROSCOPE, createUnsupportedAsyncApi(API_STOP_GYROSCOPE));
+var stopGyroscope = /*#__PURE__*/ defineAsyncApi(API_STOP_GYROSCOPE, createUnsupportedAsyncApi(API_STOP_GYROSCOPE));
 var API_SCAN_CODE = "scanCode";
-var scanCode = /* @__PURE__ */ defineAsyncApi(API_SCAN_CODE, createUnsupportedAsyncApi(API_SCAN_CODE));
+var scanCode = /*#__PURE__*/ defineAsyncApi(API_SCAN_CODE, createUnsupportedAsyncApi(API_SCAN_CODE));
 var API_SET_SCREEN_BRIGHTNESS = "setScreenBrightness";
-var setScreenBrightness = /* @__PURE__ */ defineAsyncApi(API_SET_SCREEN_BRIGHTNESS, createUnsupportedAsyncApi(API_SET_SCREEN_BRIGHTNESS));
+var setScreenBrightness = /*#__PURE__*/ defineAsyncApi(API_SET_SCREEN_BRIGHTNESS, createUnsupportedAsyncApi(API_SET_SCREEN_BRIGHTNESS));
 var API_GET_SCREEN_BRIGHTNESS = "getScreenBrightness";
-var getScreenBrightness = /* @__PURE__ */ defineAsyncApi(API_GET_SCREEN_BRIGHTNESS, createUnsupportedAsyncApi(API_GET_SCREEN_BRIGHTNESS));
+var getScreenBrightness = /*#__PURE__*/ defineAsyncApi(API_GET_SCREEN_BRIGHTNESS, createUnsupportedAsyncApi(API_GET_SCREEN_BRIGHTNESS));
 var API_ON_USER_CAPTURE_SCREEN = "onUserCaptureScreen";
-var onUserCaptureScreen = /* @__PURE__ */ defineOnApi(API_ON_USER_CAPTURE_SCREEN, createUnsupportedOnApi(API_ON_USER_CAPTURE_SCREEN));
+var onUserCaptureScreen = /*#__PURE__*/ defineOnApi(API_ON_USER_CAPTURE_SCREEN, createUnsupportedOnApi(API_ON_USER_CAPTURE_SCREEN));
 var API_ADD_PHONE_CONTACT = "addPhoneContact";
-var addPhoneContact = /* @__PURE__ */ defineAsyncApi(API_ADD_PHONE_CONTACT, createUnsupportedAsyncApi(API_ADD_PHONE_CONTACT));
+var addPhoneContact = /*#__PURE__*/ defineAsyncApi(API_ADD_PHONE_CONTACT, createUnsupportedAsyncApi(API_ADD_PHONE_CONTACT));
 var API_LOGIN = "login";
-var login = /* @__PURE__ */ defineAsyncApi(API_LOGIN, createUnsupportedAsyncApi(API_LOGIN));
+var login = /*#__PURE__*/ defineAsyncApi(API_LOGIN, createUnsupportedAsyncApi(API_LOGIN));
 var API_GET_PROVIDER = "getProvider";
-var getProvider = /* @__PURE__ */ defineAsyncApi(API_GET_PROVIDER, createUnsupportedAsyncApi(API_GET_PROVIDER));
+var getProvider = /*#__PURE__*/ defineAsyncApi(API_GET_PROVIDER, createUnsupportedAsyncApi(API_GET_PROVIDER));
 //#endregion
 //#region src/service/api/context/createCanvasContextAsync.ts
 var CanvasImage = class extends Image {
@@ -22233,7 +22230,7 @@ var createEditorContextAsync = function(options) {
 //#endregion
 //#region src/view/components/map/MapLocation.tsx
 var CONTEXT_ID = "MAP_LOCATION";
-var MapLocation_default = /* @__PURE__ */ defineSystemComponent({
+var MapLocation_default = /*#__PURE__*/ defineSystemComponent({
 	name: "MapLocation",
 	setup() {
 		const state = reactive({
@@ -22290,7 +22287,7 @@ var MapLocation_default = /* @__PURE__ */ defineSystemComponent({
 });
 //#endregion
 //#region src/view/components/map/map-polygon/index.tsx
-var map_polygon_default = /* @__PURE__ */ defineSystemComponent({
+var map_polygon_default = /*#__PURE__*/ defineSystemComponent({
 	name: "MapPolygon",
 	props: {
 		dashArray: {
@@ -22755,7 +22752,7 @@ function useMap(props, rootRef, emit) {
 	};
 }
 var UniMapElement = class extends UniElement {};
-var map_default = /* @__PURE__ */ defineBuiltInComponent({
+var map_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Map",
 	props: props$2,
 	emits: [
@@ -22808,7 +22805,7 @@ var props$1 = { scrollTop: {
 	default: 0
 } };
 var UniCoverViewElement = class extends UniElement {};
-var cover_view_default = /* @__PURE__ */ defineBuiltInComponent({
+var cover_view_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "CoverView",
 	compatConfig: { MODE: 3 },
 	props: props$1,
@@ -22853,7 +22850,7 @@ var cover_view_default = /* @__PURE__ */ defineBuiltInComponent({
 //#endregion
 //#region src/view/components/cover-image/index.tsx
 var UniCoverImageElement = class extends UniElement {};
-var cover_image_default = /* @__PURE__ */ defineBuiltInComponent({
+var cover_image_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "CoverImage",
 	compatConfig: { MODE: 3 },
 	props: { src: {
@@ -23019,7 +23016,7 @@ var props = {
 	}
 };
 var UniPickerElement = class extends UniElement {};
-var picker_default = /* @__PURE__ */ defineBuiltInComponent({
+var picker_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Picker",
 	compatConfig: { MODE: 3 },
 	props,
@@ -24087,7 +24084,7 @@ var AdRender = class {
 		if (this._rootRef.value) this._rootRef.value.innerHTML = "";
 	}
 };
-var ad_default = /* @__PURE__ */ defineBuiltInComponent({
+var ad_default = /*#__PURE__*/ defineBuiltInComponent({
 	inheritAttrs: false,
 	name: "Ad",
 	props: {
@@ -24157,19 +24154,19 @@ var ad_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region src/view/components/ad-content-page/index.tsx
-var ad_content_page_default = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
+var ad_content_page_default = /*#__PURE__*/ defineUnsupportedComponent("ad-content-page");
 //#endregion
 //#region src/view/components/ad-draw/index.tsx
-var ad_draw_default = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
+var ad_draw_default = /*#__PURE__*/ defineUnsupportedComponent("ad-draw");
 //#endregion
 //#region src/view/components/camera/index.tsx
-var camera_default = /* @__PURE__ */ defineUnsupportedComponent("camera");
+var camera_default = /*#__PURE__*/ defineUnsupportedComponent("camera");
 //#endregion
 //#region src/view/components/live-player/index.tsx
-var live_player_default = /* @__PURE__ */ defineUnsupportedComponent("live-player");
+var live_player_default = /*#__PURE__*/ defineUnsupportedComponent("live-player");
 //#endregion
 //#region src/view/components/live-pusher/index.tsx
-var live_pusher_default = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
+var live_pusher_default = /*#__PURE__*/ defineUnsupportedComponent("live-pusher");
 //#endregion
 //#region ../../uni-ext-api/uni_modules/uni-match-media/customElements/uni-match-media/uni-match-media.uts.ts
 var RE_MQ_FEATURE = /^(min|max)?([A-Z]?[a-z]+)(?:([A-Z])([a-z]+))?$/;
@@ -24187,7 +24184,7 @@ var UniMatchMediaElement = class UniMatchMediaElement extends UniViewElement {
 	}
 	constructor() {
 		super();
-		this._expressions = [];
+		_defineProperty(this, "_expressions", []);
 	}
 	connectedCallback() {
 		this._expressions = this.getExpressions();
@@ -24255,18 +24252,18 @@ var UniMatchMediaElement = class UniMatchMediaElement extends UniViewElement {
 };
 //#endregion
 //#region src/x/view/components/customElements.ts
-var MatchMedia = /* @__PURE__ */ (() => {
+var MatchMedia = /*#__PURE__*/ (() => {
 	customElements.define("uni-match-media", UniMatchMediaElement);
 	return "uni-match-media";
 })();
 //#endregion
 //#region src/view/bridge/index.ts
-var UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, { publishHandler(event, args, pageId) {
+var UniViewJSBridge$1 = /*#__PURE__*/ extend(ViewJSBridge, { publishHandler(event, args, pageId) {
 	UniServiceJSBridge.subscribeHandler(event, args, pageId);
 } });
 //#endregion
 //#region src/x/service/api/element/getElementById.ts
-var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id) => {
+var getElementById = /*#__PURE__*/ defineSyncApi("getElementById", (id) => {
 	const uniPageBody = document.querySelector("uni-page-body");
 	return uniPageBody ? uniPageBody.querySelector(`#${id}`) : null;
 });
@@ -24347,7 +24344,7 @@ function triggerFailCallback(options, errMsg) {
 }
 //#endregion
 //#region ../../uni-ext-apiuni:actionSheet.vue
-var actionSheet_default = /* @__PURE__ */ _plugin_vue_export_helper_default(/* @__PURE__ */ defineComponent({
+var actionSheet_default = /*#__PURE__*/ _plugin_vue_export_helper_default(/* @__PURE__ */ defineComponent({
 	__name: "actionSheet",
 	setup(__props) {
 		const uniPageInstance = getCurrentInstance().proxy.$page;
@@ -24644,6 +24641,8 @@ var actionSheet_default = /* @__PURE__ */ _plugin_vue_export_helper_default(/* @
 //#region ../../uni-ext-api/uni_modules/uni-actionSheet/utssdk/interface.uts.ts
 var ShowActionSheetSuccessImpl = class {
 	constructor(tapIndex, errMsg = "showActionSheet:ok") {
+		_defineProperty(this, "tapIndex", void 0);
+		_defineProperty(this, "errMsg", void 0);
 		this.errMsg = errMsg;
 		this.tapIndex = tapIndex;
 	}
@@ -24651,6 +24650,7 @@ var ShowActionSheetSuccessImpl = class {
 var ShowActionSheetFailImpl = class extends UniError {
 	constructor(errMsg = "showActionSheet:fail cancel", errCode = 4) {
 		super();
+		_defineProperty(this, "errCode", void 0);
 		this.errMsg = errMsg;
 		this.errCode = errCode;
 	}
@@ -24709,7 +24709,7 @@ var hideActionSheet = () => {
 	registerActionSheetOnce();
 	hideActionSheet$1();
 };
-var showActionSheet = /* @__PURE__ */ defineAsyncApi(API_SHOW_ACTION_SHEET, (args, { resolve, reject }) => {
+var showActionSheet = /*#__PURE__*/ defineAsyncApi(API_SHOW_ACTION_SHEET, (args, { resolve, reject }) => {
 	registerActionSheetOnce();
 	showActionSheet$1(extend({
 		success: (res) => {
@@ -24722,7 +24722,7 @@ var showActionSheet = /* @__PURE__ */ defineAsyncApi(API_SHOW_ACTION_SHEET, (arg
 });
 //#endregion
 //#region ../../uni-ext-apiuni:chooseLocation.vue
-var chooseLocation_default = /* @__PURE__ */ _plugin_vue_export_helper_default(/* @__PURE__ */ defineComponent({
+var chooseLocation_default = /*#__PURE__*/ _plugin_vue_export_helper_default(/* @__PURE__ */ defineComponent({
 	__name: "chooseLocation",
 	setup(__props) {
 		const defaultPoi = {
@@ -25451,6 +25451,7 @@ var chooseLocation_default = /* @__PURE__ */ _plugin_vue_export_helper_default(/
 var ChooseLocationFailImpl = class extends UniError {
 	constructor(errMsg = "chooseLocation:fail cancel", errCode = 1) {
 		super();
+		_defineProperty(this, "errCode", void 0);
 		this.errCode = errCode;
 		this.errMsg = errMsg;
 	}
@@ -25494,7 +25495,7 @@ var chooseLocation$1 = (options) => {
 var registerChooseLocationOnce = /* @__PURE__ */ once(() => {
 	registerSystemRoute("uni:chooseLocation", chooseLocation_default);
 });
-var chooseLocation = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_LOCATION, (args, { resolve, reject }) => {
+var chooseLocation = /*#__PURE__*/ defineAsyncApi(API_CHOOSE_LOCATION, (args, { resolve, reject }) => {
 	registerChooseLocationOnce();
 	chooseLocation$1(extend({
 		success: (res) => {
@@ -25507,7 +25508,7 @@ var chooseLocation = /* @__PURE__ */ defineAsyncApi(API_CHOOSE_LOCATION, (args, 
 });
 //#endregion
 //#region ../../uni-ext-apiuni:uniModal.vue
-var uniModal_default = /* @__PURE__ */ _plugin_vue_export_helper_default(/* @__PURE__ */ defineComponent({
+var uniModal_default = /*#__PURE__*/ _plugin_vue_export_helper_default(/* @__PURE__ */ defineComponent({
 	__name: "uniModal",
 	setup(__props) {
 		const theme = ref("light");
@@ -25770,7 +25771,7 @@ var uniModal_default = /* @__PURE__ */ _plugin_vue_export_helper_default(/* @__P
 										class: normalizeClass(["uni-modal-dialog__split", { "uni-modal--dark": isDark.value }])
 									}, null, 8, ["class"])) : createCommentVNode("", true),
 									createVNode(_component_view, {
-										class: "uni-modal-dialog__action",
+										class: "uni-modal-dialog__action uni-modal-dialog__action--confirm",
 										"hover-class": hoverClassName.value,
 										onClick: handleSure
 									}, {
@@ -25796,11 +25797,15 @@ var uniModal_default = /* @__PURE__ */ _plugin_vue_export_helper_default(/* @__P
 			}, 8, ["class"]);
 		};
 	}
-}), [["styles", ["\n	/**\n	 * 透明背景\n	 */\n.uni-modal-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0.55);\n		transition-property: opacity;\n}\n.uni-modal-mask--hide {\n		transition-duration: 0s;\n		opacity: 0;\n}\n.uni-modal-mask--show {\n		transition-duration: 0.1s;\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal-dialog {\n		width: 80%;\n		max-width: 90%;\n		max-height: 90%;\n		background-color: #ffffff;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 16px;\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n.uni-modal-dialog.uni-modal-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal-dialog.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__inner {\n		width: 100%;\n		height: 100%;\n		background-color: #ffffff;\n		border-radius: 8px;\n}\n.uni-modal-dialog__inner.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__title__container {\n		padding: 33px 24px 18px;\n}\n.uni-modal-dialog__title {\n		font-size: 17px;\n		font-weight: 600;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		lines: 2;\n\n		line-height: 22px;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal-dialog__title.uni-modal--dark {\n		color: #cfcfcf;\n}\n.uni-modal-dialog__body {\n		justify-content: center;\n		align-items: center;\n		padding: 0 24px;\n		margin-bottom: 13px;\n}\n.uni-modal-dialog__body.no-title {\n		margin-top: -10px;\n		margin-bottom: 20px;\n}\n.uni-modal-dialog__scroll {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal-dialog__message {\n		font-size: 17px;\n		font-weight: normal;\n		text-align: center;\n		color: #7f7f7f;\n		line-height: 1.5em;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal-dialog__textarea {\n		font-size: 17px;\n		background-color: #f6f6f6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal-dialog__textarea.uni-modal--dark {\n		background-color: #3d3d3d;\n		color: #cfcfcf;\n}\n.uni-modal-dialog__textarea-placeholder {\n		color: #808080;\n}\n.uni-modal-dialog__divider {\n		width: 100%;\n		height: 1px;\n		transform: scaleY(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__divider.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-modal-dialog__actions {\n		display: flex;\n		width: 100%;\n		height: 56px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal-dialog__action {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal-dialog__action--hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal-dialog__action--hover-dark {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1c1c1c;\n}\n.uni-modal-dialog__action-text {\n		letter-spacing: 1px;\n		font-size: 17px;\n		text-align: center;\n\n		lines: 1;\n\n		white-space: nowrap;\n		font-weight: 600;\n}\n.uni-modal-dialog__action-text--confirm {\n		color: #4A5E86;\n}\n.uni-modal-dialog__split {\n		width: 1px;\n		height: 100%;\n		transform: scaleX(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__split.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-textarea-wrapper {\n		min-height: 18px !important;\n}\n\n"]]]);
+}), [["styles", ["\n	/**\n	 * 透明背景\n	 */\n.uni-modal-mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		align-items: center;\n		background-color: rgba(0, 0, 0, 0.55);\n		transition-property: opacity;\n}\n.uni-modal-mask--hide {\n		transition-duration: 0s;\n		opacity: 0;\n}\n.uni-modal-mask--show {\n		transition-duration: 0.1s;\n		opacity: 1;\n}\n\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal-dialog {\n		width: 80%;\n		max-width: 90%;\n		max-height: 90%;\n		background-color: #ffffff;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		border-radius: 16px;\n		opacity: 0;\n		transform: scale(0.9);\n		transition-duration: 0.1s;\n		transition-property: opacity, transform;\n}\n@media screen and (min-width: 768px) {\n.uni-modal-dialog {\n			max-width: 556px;\n}\n}\n.uni-modal-dialog.uni-modal-dialog--show {\n		opacity: 1;\n		transform: scale(1);\n}\n.uni-modal-dialog.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__inner {\n		width: 100%;\n		height: 100%;\n		background-color: #ffffff;\n		border-radius: 8px;\n}\n.uni-modal-dialog__inner.uni-modal--dark {\n		background-color: #272727;\n}\n.uni-modal-dialog__title__container {\n		padding: 33px 24px 18px;\n}\n.uni-modal-dialog__title {\n		font-size: 17px;\n		font-weight: 600;\n		text-align: center;\n		text-overflow: ellipsis;\n\n		lines: 2;\n\n		line-height: 22px;\n\n		display: -webkit-box;\n		-webkit-line-clamp: 2;\n		-webkit-box-orient: vertical;\n		overflow: hidden;\n}\n.uni-modal-dialog__title.uni-modal--dark {\n		color: #cfcfcf;\n}\n.uni-modal-dialog__body {\n		justify-content: center;\n		align-items: center;\n		padding: 0 22px;\n		margin-bottom: 13px;\n}\n.uni-modal-dialog__body.no-title {\n		margin-top: -10px;\n		margin-bottom: 20px;\n}\n.uni-modal-dialog__scroll {\n		max-height: 192px;\n		margin: 2px;\n		width: 100%;\n}\n.uni-modal-dialog__message {\n		font-size: 17px;\n		font-weight: normal;\n		text-align: center;\n		color: #7f7f7f;\n		line-height: 1.5em;\n		width: 100%;\n		padding-bottom: 10px;\n}\n.uni-modal-dialog__textarea {\n		font-size: 17px;\n		background-color: #f6f6f6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		margin-top: 2px;\n		margin-bottom: 7px;\n		max-height: 192px;\n\n		word-break: break-word;\n}\n.uni-modal-dialog__textarea.uni-modal--dark {\n		background-color: #3d3d3d;\n		color: #cfcfcf;\n}\n.uni-modal-dialog__textarea-placeholder {\n		color: #808080;\n}\n.uni-modal-dialog__divider {\n		width: 100%;\n		height: 1px;\n		transform: scaleY(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__divider.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-modal-dialog__actions {\n		display: flex;\n		width: 100%;\n		height: 56px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal-dialog__action {\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal-dialog__action--cancel{\n		padding: 0 4px 0 10px;\n}\n.uni-modal-dialog__action--confirm{\n		padding: 0 10px 0 4px;\n}\n.uni-modal-dialog__action--hover {\n		background-color: #efefef;\n}\n.uni-modal-dialog__action--hover-dark {\n		background-color: #1c1c1c;\n}\n.uni-modal-dialog__action-text {\n		letter-spacing: 1px;\n		font-size: 17px;\n		text-align: center;\n\n		lines: 1;\n\n		white-space: nowrap;\n		font-weight: 600;\n}\n.uni-modal-dialog__action-text--confirm {\n		color: #4A5E86;\n}\n.uni-modal-dialog__split {\n		width: 1px;\n		height: 100%;\n		transform: scaleX(0.5);\n		background-color: #e3e3e3;\n}\n.uni-modal-dialog__split.uni-modal--dark {\n		background-color: #303030;\n}\n.uni-textarea-wrapper {\n		min-height: 18px !important;\n}\n\n"]]]);
 //#endregion
 //#region ../../uni-ext-api/uni_modules/uni-modal/utssdk/interface.uts.ts
 var ShowModalSuccessImpl = class {
 	constructor(cancel, confirm, content = null, errMsg = "showModal:ok") {
+		_defineProperty(this, "errMsg", void 0);
+		_defineProperty(this, "content", void 0);
+		_defineProperty(this, "cancel", void 0);
+		_defineProperty(this, "confirm", void 0);
 		this.errMsg = errMsg;
 		this.content = content;
 		this.cancel = cancel;
@@ -25810,18 +25815,21 @@ var ShowModalSuccessImpl = class {
 var ShowModalFailImpl = class extends UniError {
 	constructor(errMsg = "showModal:fail cancel", errCode = 4) {
 		super();
+		_defineProperty(this, "errCode", void 0);
 		this.errMsg = errMsg;
 		this.errCode = errCode;
 	}
 };
 var HideModalSuccessImpl = class {
 	constructor(errMsg = "hideModal:ok") {
+		_defineProperty(this, "errMsg", void 0);
 		this.errMsg = errMsg;
 	}
 };
 var HideModalFailImpl = class extends UniError {
 	constructor(errMsg = "hideModal:fail cancel", errCode = 4) {
 		super();
+		_defineProperty(this, "errCode", void 0);
 		this.errMsg = errMsg;
 		this.errCode = errCode;
 	}
@@ -25902,7 +25910,7 @@ var API_HIDE_MODAL = "hideModal";
 var registerModalOnce = /* @__PURE__ */ once(() => {
 	registerSystemRoute("uni:uniModal", uniModal_default);
 });
-var hideModal = /* @__PURE__ */ defineAsyncApi(API_HIDE_MODAL, (args, { resolve, reject }) => {
+var hideModal = /*#__PURE__*/ defineAsyncApi(API_HIDE_MODAL, (args, { resolve, reject }) => {
 	registerModalOnce();
 	hideModal$1(extend({
 		success: (res) => {
@@ -25913,7 +25921,7 @@ var hideModal = /* @__PURE__ */ defineAsyncApi(API_HIDE_MODAL, (args, { resolve,
 		}
 	}, args));
 });
-var showModal = /* @__PURE__ */ defineAsyncApi(API_SHOW_MODAL, (args, { resolve, reject }) => {
+var showModal = /*#__PURE__*/ defineAsyncApi(API_SHOW_MODAL, (args, { resolve, reject }) => {
 	registerModalOnce();
 	return showModal$1(extend({
 		success: (res) => {
@@ -25926,7 +25934,7 @@ var showModal = /* @__PURE__ */ defineAsyncApi(API_SHOW_MODAL, (args, { resolve,
 });
 //#endregion
 //#region ../../uni-ext-apiuni:showLoading.vue
-var showLoading_default = /* @__PURE__ */ _plugin_vue_export_helper_default(/* @__PURE__ */ defineComponent({
+var showLoading_default = /*#__PURE__*/ _plugin_vue_export_helper_default(/* @__PURE__ */ defineComponent({
 	__name: "showLoading",
 	setup(__props) {
 		const readyEventName = ref("");
@@ -25987,24 +25995,28 @@ var showLoading_default = /* @__PURE__ */ _plugin_vue_export_helper_default(/* @
 //#region ../../uni-ext-api/uni_modules/uni-showLoading/utssdk/interface.uts.ts
 var ShowLoadingSuccessImpl = class {
 	constructor(errMsg = "showLoading:ok") {
+		_defineProperty(this, "errMsg", void 0);
 		this.errMsg = errMsg;
 	}
 };
 var ShowLoadingFailImpl = class extends UniError {
 	constructor(errMsg = "showLoading:fail cancel", errCode = 4) {
 		super();
+		_defineProperty(this, "errCode", void 0);
 		this.errMsg = errMsg;
 		this.errCode = errCode;
 	}
 };
 var HideLoadingSuccessImpl = class {
 	constructor(errMsg = "hideLoading:ok") {
+		_defineProperty(this, "errMsg", void 0);
 		this.errMsg = errMsg;
 	}
 };
 var HideLoadingFailImpl = class extends UniError {
 	constructor(errMsg = "hideLoading:fail cancel", errCode = 4) {
 		super();
+		_defineProperty(this, "errCode", void 0);
 		this.errMsg = errMsg;
 		this.errCode = errCode;
 	}
@@ -26084,7 +26096,7 @@ var API_HIDE_LOADING = "hideLoading";
 var registerLoadingOnce = /* @__PURE__ */ once(() => {
 	registerSystemRoute("uni:showLoading", showLoading_default);
 });
-var hideLoading = /* @__PURE__ */ defineAsyncApi(API_HIDE_LOADING, (args, { resolve, reject }) => {
+var hideLoading = /*#__PURE__*/ defineAsyncApi(API_HIDE_LOADING, (args, { resolve, reject }) => {
 	registerLoadingOnce();
 	hideLoading$1(extend({
 		success: (res) => {
@@ -26095,7 +26107,7 @@ var hideLoading = /* @__PURE__ */ defineAsyncApi(API_HIDE_LOADING, (args, { reso
 		}
 	}, args));
 });
-var showLoading = /* @__PURE__ */ defineAsyncApi(API_SHOW_LOADING, (args, { resolve, reject }) => {
+var showLoading = /*#__PURE__*/ defineAsyncApi(API_SHOW_LOADING, (args, { resolve, reject }) => {
 	registerLoadingOnce();
 	return showLoading$1(extend({
 		success: (res) => {
@@ -26112,7 +26124,7 @@ var API_CREATE_WORKER = "createWorker";
 var MESSAGE_EVENT = "__UNI_WEB_WORKER_MESSAGE";
 var ERROR_EVENT = "__UNI_WEB_WORKER_ERROR";
 var id = 0;
-var createWorker = /* @__PURE__ */ defineSyncApi(API_CREATE_WORKER, (url) => {
+var createWorker = /*#__PURE__*/ defineSyncApi(API_CREATE_WORKER, (url) => {
 	const MESSAGE_EVENT_NAME = `${MESSAGE_EVENT}_${id}`;
 	const ERROR_EVENT_NAME = `${ERROR_EVENT}_${id}`;
 	id++;
@@ -26349,7 +26361,7 @@ window.UniResizeObserver = window.ResizeObserver;
 var uni$1 = api_exports;
 //#endregion
 //#region src/service/bridge/index.ts
-var UniServiceJSBridge$1 = /* @__PURE__ */ extend(ServiceJSBridge, { publishHandler(event, args, pageId) {
+var UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, { publishHandler(event, args, pageId) {
 	UniViewJSBridge.subscribeHandler(event, args, pageId);
 } });
 //#endregion

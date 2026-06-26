@@ -44,7 +44,7 @@ realGlobal.UTSValueIterable = _dcloudio_uni_shared.UTSValueIterable;
 realGlobal.UniError = _dcloudio_uni_shared.UniError;
 //#endregion
 //#region ../uni-core/src/i18n/utils.ts
-var isEnableLocale = /* @__PURE__ */ (0, _dcloudio_uni_shared.once)(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
+var isEnableLocale = /*#__PURE__*/ (0, _dcloudio_uni_shared.once)(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
 //#endregion
 //#region ../uni-core/src/i18n/useI18n.ts
 var i18n;
@@ -114,7 +114,7 @@ function normalizeMessages(module, keys, values) {
 		return res;
 	}, {});
 }
-var initI18nAsyncMsgsOnce = /* @__PURE__ */ (0, _dcloudio_uni_shared.once)(() => {
+var initI18nAsyncMsgsOnce = /*#__PURE__*/ (0, _dcloudio_uni_shared.once)(() => {
 	const name = "uni.async.";
 	const keys = ["error"];
 	if (__UNI_FEATURE_I18N_EN__) useI18n().add(_dcloudio_uni_i18n.LOCALE_EN, normalizeMessages(name, keys, ["The connection timed out, click the screen to try again."]), false);
@@ -123,7 +123,7 @@ var initI18nAsyncMsgsOnce = /* @__PURE__ */ (0, _dcloudio_uni_shared.once)(() =>
 	if (__UNI_FEATURE_I18N_ZH_HANS__) useI18n().add(_dcloudio_uni_i18n.LOCALE_ZH_HANS, normalizeMessages(name, keys, ["连接服务器超时，点击屏幕重试"]), false);
 	if (__UNI_FEATURE_I18N_ZH_HANT__) useI18n().add(_dcloudio_uni_i18n.LOCALE_ZH_HANT, normalizeMessages(name, keys, ["連接服務器超時，點擊屏幕重試"]), false);
 });
-var initI18nPickerMsgsOnce = /* @__PURE__ */ (0, _dcloudio_uni_shared.once)(() => {
+var initI18nPickerMsgsOnce = /*#__PURE__*/ (0, _dcloudio_uni_shared.once)(() => {
 	const name = "uni.picker.";
 	const keys = ["done", "cancel"];
 	if (__UNI_FEATURE_I18N_EN__) useI18n().add(_dcloudio_uni_i18n.LOCALE_EN, normalizeMessages(name, keys, ["Done", "Cancel"]), false);
@@ -132,7 +132,7 @@ var initI18nPickerMsgsOnce = /* @__PURE__ */ (0, _dcloudio_uni_shared.once)(() =
 	if (__UNI_FEATURE_I18N_ZH_HANS__) useI18n().add(_dcloudio_uni_i18n.LOCALE_ZH_HANS, normalizeMessages(name, keys, ["完成", "取消"]), false);
 	if (__UNI_FEATURE_I18N_ZH_HANT__) useI18n().add(_dcloudio_uni_i18n.LOCALE_ZH_HANT, normalizeMessages(name, keys, ["完成", "取消"]), false);
 });
-var initI18nVideoMsgsOnce = /* @__PURE__ */ (0, _dcloudio_uni_shared.once)(() => {
+var initI18nVideoMsgsOnce = /*#__PURE__*/ (0, _dcloudio_uni_shared.once)(() => {
 	const name = "uni.video.";
 	const keys = ["danmu", "volume"];
 	if (__UNI_FEATURE_I18N_EN__) useI18n().add(_dcloudio_uni_i18n.LOCALE_EN, normalizeMessages(name, keys, ["Danmu", "Volume"]), false);
@@ -214,7 +214,7 @@ function registerViewMethod(pageId, name, fn) {
 }
 //#endregion
 //#region ../uni-core/src/view/bridge/index.ts
-var ViewJSBridge = /* @__PURE__ */ (0, _vue_shared.extend)(/* @__PURE__ */ initBridge("service"), { invokeServiceMethod });
+var ViewJSBridge = /*#__PURE__*/ (0, _vue_shared.extend)(/*#__PURE__*/ initBridge("service"), { invokeServiceMethod });
 //#endregion
 //#region ../uni-core/src/helpers/dom.ts
 var import_out = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -383,8 +383,8 @@ var import_out = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((export
 		offChange
 	};
 })))());
-var onEventPrevent = /* @__PURE__ */ (0, vue.withModifiers)(() => {}, ["prevent"]);
-var onEventStop = /* @__PURE__ */ (0, vue.withModifiers)((_event) => {}, ["stop"]);
+var onEventPrevent = /*#__PURE__*/ (0, vue.withModifiers)(() => {}, ["prevent"]);
+var onEventStop = /*#__PURE__*/ (0, vue.withModifiers)((_event) => {}, ["stop"]);
 function updateCssVar(cssVars) {
 	const style = document.documentElement.style;
 	Object.keys(cssVars).forEach((name) => {
@@ -614,7 +614,7 @@ var invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
 };
 //#endregion
 //#region ../uni-core/src/service/bridge/index.ts
-var ServiceJSBridge = /* @__PURE__ */ (0, _vue_shared.extend)(/* @__PURE__ */ initBridge("view"), {
+var ServiceJSBridge = /*#__PURE__*/ (0, _vue_shared.extend)(/*#__PURE__*/ initBridge("view"), {
 	invokeOnCallback,
 	invokeViewMethod,
 	invokeViewMethodKeepAlive
@@ -981,7 +981,7 @@ var UniElement = class extends Object {
 //#endregion
 //#region ../uni-components/src/vue/form/index.tsx
 var uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var form_default = /* @__PURE__ */ defineBuiltInComponent({
+var form_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Form",
 	emits: ["submit", "reset"],
 	setup(_props, { slots, emit }) {
@@ -1036,7 +1036,7 @@ function useProvideLabel() {
 }
 //#endregion
 //#region ../uni-components/src/vue/label/index.tsx
-var label_default = /* @__PURE__ */ defineBuiltInComponent({
+var label_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Label",
 	props: labelProps,
 	setup(props, { slots }) {
@@ -1061,7 +1061,7 @@ var label_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region ../uni-components/src/vue/button/index.tsx
-var button_default = /* @__PURE__ */ defineBuiltInComponent({
+var button_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Button",
 	props: {
 		id: {
@@ -1109,7 +1109,7 @@ var button_default = /* @__PURE__ */ defineBuiltInComponent({
 		const rootRef = (0, vue.ref)(null);
 		const uniForm = (0, vue.inject)(uniFormKey, false);
 		const { hovering, binding } = useHover(props);
-		const { t } = /* @__PURE__ */ useI18n();
+		const { t } = /*#__PURE__*/ useI18n();
 		const onClick = withWebEvent((e, isLabelClick) => {
 			if (props.disabled) return e.stopImmediatePropagation();
 			if (isLabelClick) rootRef.value.click();
@@ -1138,7 +1138,7 @@ var button_default = /* @__PURE__ */ defineBuiltInComponent({
 		};
 	}
 });
-var index_x_default = /* @__PURE__ */ defineBuiltInComponent({
+var index_x_default = /*#__PURE__*/ defineBuiltInComponent({
 	inheritAttrs: true,
 	name: "Canvas",
 	compatConfig: { MODE: 3 },
@@ -1160,7 +1160,7 @@ var index_x_default = /* @__PURE__ */ defineBuiltInComponent({
 //#endregion
 //#region ../uni-components/src/vue/checkbox-group/index.tsx
 var uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-var checkbox_group_default = /* @__PURE__ */ defineBuiltInComponent({
+var checkbox_group_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "CheckboxGroup",
 	props: { name: {
 		type: String,
@@ -1203,7 +1203,7 @@ function useProvideCheckGroup(props, trigger) {
 	} });
 	return getFieldsValue;
 }
-var checkbox_default = /* @__PURE__ */ defineBuiltInComponent({
+var checkbox_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Checkbox",
 	props: {
 		checked: {
@@ -1430,14 +1430,6 @@ function normalizePageMeta(pageMeta) {
 	return pageMeta;
 }
 //#endregion
-//#region src/helpers/dom.ts
-function checkMinWidth(minWidth) {
-	return false;
-}
-function getStateId() {
-	return 1;
-}
-//#endregion
 //#region ../uni-api/src/helpers/protocol.ts
 var HTTP_METHODS = [
 	"GET",
@@ -1494,7 +1486,7 @@ function validateProp(name, value, prop, isAbsent) {
 	}
 	if (validator) return validator(value);
 }
-var isSimpleType = /* @__PURE__ */ (0, _vue_shared.makeMap)("String,Number,Boolean,Function,Symbol");
+var isSimpleType = /*#__PURE__*/ (0, _vue_shared.makeMap)("String,Number,Boolean,Function,Symbol");
 function assertType(value, type) {
 	let valid;
 	const expectedType = getType(type);
@@ -1788,7 +1780,7 @@ function defineAsyncApi(name, fn, protocol, options) {
 //#endregion
 //#region ../uni-api/src/service/ui/tabBar.ts
 var API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
-var getLocale = /* @__PURE__ */ defineSyncApi("getLocale", () => {
+var getLocale = /*#__PURE__*/ defineSyncApi("getLocale", () => {
 	const app = getApp({ allowDefault: true });
 	if (app && app.$vm) return app.$vm.$locale;
 	return useI18n().getLocale();
@@ -2012,9 +2004,17 @@ function useTabBar() {
 }
 //#endregion
 //#region src/helpers/cssVar.ts
-var envMethod = "env";
+var envMethod = /*#__PURE__*/ (() => "env")();
 function normalizeWindowBottom(windowBottom) {
 	return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
+}
+//#endregion
+//#region src/helpers/dom.ts
+function checkMinWidth(minWidth) {
+	return false;
+}
+function getStateId() {
+	return 1;
 }
 //#endregion
 //#region src/x/framework/setup/page.ts
@@ -2277,7 +2277,7 @@ function removePage(routeKey, removeRouteCaches = true) {
 	currentPagesMap.delete(routeKey);
 	removeRouteCaches && removeRouteCache(routeKey);
 }
-var id = /* @__PURE__ */ getStateId();
+var id = /*#__PURE__*/ getStateId();
 function createPageState(type, __id__) {
 	return {
 		__id__: __id__ || ++id,
@@ -2364,694 +2364,16 @@ function getRealPath(filePath) {
 	return filePath;
 }
 //#endregion
-//#region src/framework/components/async-loading/index.ts
-var clazz = { class: "uni-async-loading" };
-var loadingVNode = /* @__PURE__ */ (0, vue.createVNode)("i", { class: "uni-loading" }, null, -1);
-var async_loading_default = /* @__PURE__ */ defineSystemComponent({
-	name: "AsyncLoading",
-	render() {
-		return (0, vue.openBlock)(), (0, vue.createBlock)("div", clazz, [loadingVNode]);
-	}
-});
-//#endregion
-//#region src/framework/components/async-error/index.tsx
-function reload() {
-	window.location.reload();
-}
-var async_error_default = /* @__PURE__ */ defineSystemComponent({
-	name: "AsyncError",
-	props: ["error"],
-	setup() {
-		initI18nAsyncMsgsOnce();
-		const { t } = useI18n();
-		return () => (0, vue.createVNode)("div", {
-			"class": "uni-async-error",
-			"onClick": reload
-		}, [t("uni.async.error")], 8, ["onClick"]);
-	}
-});
-//#endregion
-//#region src/framework/setup/app.ts
-var appVm;
-var $uniApp;
-{
-	class UniAppImpl {
-		get vm() {
-			return appVm;
-		}
-		get $vm() {
-			return appVm;
-		}
-		get globalData() {
-			return (appVm === null || appVm === void 0 ? void 0 : appVm.globalData) || {};
-		}
-		getAndroidApplication() {
-			return null;
-		}
-		getHarmonyAbility() {
-			return null;
-		}
-	}
-	$uniApp = new UniAppImpl();
-}
-function getApp$1() {
-	return $uniApp;
-}
-function initApp$1(vm) {
-	appVm = vm;
-	Object.defineProperty(appVm.$.ctx, "$children", { get() {
-		return getCurrentBasePages().map((page) => page.$vm);
-	} });
-	const app = appVm.$.appContext.app;
-	if (!app.component(async_loading_default.name)) app.component(async_loading_default.name, async_loading_default);
-	if (!app.component(async_error_default.name)) app.component(async_error_default.name, async_error_default);
-	initAppVm(appVm);
-	defineGlobalData(appVm);
-}
-//#endregion
-//#region src/framework/setup/index.ts
-function wrapperComponentSetup(comp, { type, clone, init, setup, before, options }) {
-	if (clone) comp = (0, _vue_shared.extend)({}, comp);
-	before && before(comp);
-	const oldSetup = comp.setup;
-	comp.setup = (props, ctx) => {
-		const instance = (0, vue.getCurrentInstance)();
-		init(instance.proxy);
-		setup(instance);
-		if (oldSetup) return oldSetup(props, ctx);
-	};
-	if (type === "page" || type === "window") {
-		if ((comp.styleIsolation || (__uniConfig.styleIsolation || {})[comp.__filename]) !== "isolated") comp.styleIsolation = "app";
-	}
-	return comp;
-}
-function setupComponent(comp, options) {
-	if (comp && (comp.__esModule || comp[Symbol.toStringTag] === "Module")) return wrapperComponentSetup(comp.default, options);
-	return wrapperComponentSetup(comp, options);
-}
-function setupWindow(comp, id) {
-	return setupComponent(comp, {
-		type: "window",
-		init: (vm) => {
-			vm.$basePage = { id };
-		},
-		setup(instance) {
-			instance.$pageInstance = instance;
-		}
-	});
-}
-function setupPage(comp, path) {
-	if (process.env.NODE_ENV !== "production") comp.__mpType = "page";
-	if (path) comp.__filename = path;
-	return setupComponent(comp, {
-		type: "page",
-		clone: true,
-		init: initPage,
-		setup(instance) {
-			instance.$pageInstance = instance;
-			const query = (0, _dcloudio_uni_shared.decodedQuery)(usePageRoute().query);
-			instance.attrs.__pageQuery = query;
-			{
-				const pageInstance = getPageInstanceByChild(instance);
-				if (isDialogPageInstance(pageInstance)) instance.attrs.__pageQuery = (0, _dcloudio_uni_shared.decodedQuery)((0, _dcloudio_uni_shared.parseQuery)((pageInstance === null || pageInstance === void 0 ? void 0 : pageInstance.attrs.route).split("?")[1] || ""));
-			}
-			getPage$BasePage(instance.proxy).options = query;
-			instance.proxy.options = query;
-			return query;
-		}
-	});
-}
-function setupApp(comp) {
-	if (process.env.NODE_ENV !== "production") comp.__mpType = "app";
-	return setupComponent(comp, {
-		init: initApp$1,
-		setup(instance) {
-			return usePageRoute().query;
-		},
-		before(comp) {
-			comp.mpType = "app";
-			const { setup } = comp;
-			const render = () => {
-				return (0, vue.openBlock)(), (0, vue.createBlock)(layout_default);
-			};
-			comp.setup = (props, ctx) => {
-				const res = setup && setup(props, ctx);
-				return (0, _vue_shared.isFunction)(res) ? render : res;
-			};
-			comp.render = render;
-		}
-	});
-}
-//#endregion
-//#region src/helpers/useDocumentTitle.ts
-function updateDocumentTitle(title) {
-	{
-		const ssrContext = getApp$1().$vm.$.appContext.provides[vue.ssrContextKey];
-		if (ssrContext) ssrContext[_dcloudio_uni_shared.UNI_SSR_TITLE] = title;
-	}
-	UniServiceJSBridge.emit(_dcloudio_uni_shared.ON_NAVIGATION_BAR_CHANGE, { titleText: title });
-}
-function useDocumentTitle(pageMeta) {
-	function update() {
-		updateDocumentTitle(pageMeta.navigationBar.titleText);
-	}
-	(0, vue.watchEffect)(update);
-}
-//#endregion
-//#region src/service/api/base/getBrowserInfo.ts
-function getTheme() {
-	if (__uniConfig.darkmode !== true) return (0, _vue_shared.isString)(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
-	try {
-		return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-	} catch (error) {
-		return "light";
-	}
-}
-//#endregion
-//#region src/helpers/theme.ts
-function onThemeChange(callback) {
-	if (__uniConfig.darkmode) UniServiceJSBridge.on(_dcloudio_uni_shared.ON_THEME_CHANGE, callback);
-}
-function parseTheme(pageStyle) {
-	let parsedStyle = {};
-	if (__uniConfig.darkmode) parsedStyle = (0, _dcloudio_uni_shared.normalizeStyles)(pageStyle, __uniConfig.themeConfig, getTheme());
-	return __uniConfig.darkmode ? parsedStyle : pageStyle;
-}
-function useTheme(pageStyle, onThemeChangeCallback) {
-	const isReactivity = (0, vue.isReactive)(pageStyle);
-	const reactivePageStyle = isReactivity ? (0, vue.reactive)(parseTheme(pageStyle)) : parseTheme(pageStyle);
-	if (__uniConfig.darkmode && isReactivity) (0, vue.watch)(pageStyle, (value) => {
-		const _pageStyle = parseTheme(value);
-		for (const key in _pageStyle) reactivePageStyle[key] = _pageStyle[key];
-	});
-	onThemeChangeCallback && onThemeChange(onThemeChangeCallback);
-	return reactivePageStyle;
-}
-function useBackgroundColorContent(pageMeta) {
-	function update() {
-		if (pageMeta.backgroundColorContent) parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent;
-	}
-	onThemeChange(update);
-	(0, vue.watchEffect)(update);
-}
-//#endregion
-//#region src/helpers/hexToRgba.ts
-/**
-* 从 16 进制的色值解析成 rgba 格式的色值
-* @param { string } hex, #000、#000A、#000000、#000000AA，参数只能是这四种格式
-*/
-function hexToRgba(hex) {
-	if (!hex) return {
-		r: 0,
-		g: 0,
-		b: 0,
-		a: 0
-	};
-	let tmpHex = hex.slice(1);
-	const tmpHexLen = tmpHex.length;
-	if (![
-		3,
-		4,
-		6,
-		8
-	].includes(tmpHexLen)) return {
-		r: 0,
-		g: 0,
-		b: 0,
-		a: 0
-	};
-	if (tmpHexLen === 3 || tmpHexLen === 4) tmpHex = tmpHex.replace(/(\w{1})/g, "$1$1");
-	let [sr, sg, sb, sa] = tmpHex.match(/(\w{2})/g);
-	const r = parseInt(sr, 16), g = parseInt(sg, 16), b = parseInt(sb, 16);
-	if (!sa) return {
-		r,
-		g,
-		b,
-		a: 1
-	};
-	return {
-		r,
-		g,
-		b,
-		a: (`0x100${sa}` - 65536) / 255
-	};
-}
-//#endregion
-//#region src/framework/components/page/transparent.ts
-function usePageHeadTransparentBackgroundColor(backgroundColor) {
-	const { r, g, b } = hexToRgba(backgroundColor);
-	return `rgba(${r},${g},${b},0)`;
-}
-function usePageHeadTransparent(headRef, { id, navigationBar: { titleColor, coverage, backgroundColor } }) {
-	(0, vue.computed)(() => hexToRgba(backgroundColor));
-	id + "";
-}
-//#endregion
-//#region src/framework/components/page/pageHead.tsx
-var ICON_PATHS = {
-	none: "",
-	forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
-	back: ICON_PATH_BACK,
-	select: ICON_PATH_BACK,
-	share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
-	favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
-	home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
-	menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
-	close: ICON_PATH_CLOSE
-};
-var pageHead_default = /* @__PURE__ */ defineSystemComponent({
-	name: "PageHead",
-	setup() {
-		const headRef = (0, vue.ref)(null);
-		const pageMeta = usePageMeta();
-		const navigationBar = useTheme(pageMeta.navigationBar, () => {
-			const _navigationBar = parseTheme(pageMeta.navigationBar);
-			navigationBar.backgroundColor = _navigationBar.backgroundColor;
-			navigationBar.titleColor = _navigationBar.titleColor;
-		});
-		const { clazz, style } = usePageHead(navigationBar);
-		const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
-		const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
-		__UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
-		return () => {
-			const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar, pageMeta.isQuit) : null;
-			const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
-			const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
-			const type = navigationBar.type || "default";
-			const placeholderTsx = type !== "transparent" && type !== "float" && (0, vue.createVNode)("div", { "class": {
-				"uni-placeholder": true,
-				"uni-placeholder-titlePenetrate": navigationBar.titlePenetrate
-			} }, null, 2);
-			return (0, vue.createVNode)("uni-page-head", { "uni-page-head-type": type }, [(0, vue.createVNode)("div", {
-				"ref": headRef,
-				"class": clazz.value,
-				"style": style.value
-			}, [
-				(0, vue.createVNode)("div", { "class": "uni-page-head-hd" }, [backButtonTsx, ...leftButtonsTsx]),
-				createPageHeadBdTsx(navigationBar, searchInput),
-				(0, vue.createVNode)("div", { "class": "uni-page-head-ft" }, [...rightButtonsTsx])
-			], 6), placeholderTsx], 8, ["uni-page-head-type"]);
-		};
-	}
-});
-function createBackButtonTsx(navigationBar, isQuit) {
-	if (!isQuit) return (0, vue.createVNode)("div", {
-		"class": "uni-page-head-btn",
-		"onClick": onPageHeadBackButton
-	}, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 26)], 8, ["onClick"]);
-}
-function createButtonsTsx(btns) {
-	return btns.map(({ onClick, btnClass, btnStyle, btnText, btnIconPath, badgeText, iconStyle, btnSelect }, index) => {
-		return (0, vue.createVNode)("div", {
-			"key": index,
-			"class": btnClass,
-			"style": btnStyle,
-			"onClick": onClick,
-			"badge-text": badgeText
-		}, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : btnSelect ? (0, vue.createVNode)("span", { "style": iconStyle }, [(0, vue.createVNode)("i", {
-			"class": "uni-btn-icon",
-			"innerHTML": btnText
-		}, null, 8, ["innerHTML"]), createSvgIconVNode(ICON_PATHS["select"], "#000", 14)], 4) : (0, vue.createVNode)("i", {
-			"class": "uni-btn-icon",
-			"style": iconStyle,
-			"innerHTML": btnText
-		}, null, 12, ["innerHTML"])], 14, ["onClick", "badge-text"]);
-	});
-}
-function createPageHeadBdTsx(navigationBar, searchInput) {
-	if (!__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ || !navigationBar.searchInput) return createPageHeadTitleTextTsx(navigationBar);
-	return createPageHeadSearchInputTsx(navigationBar, searchInput);
-}
-function createPageHeadTitleTextTsx({ type, loading, titleSize, titleText, titleImage }) {
-	return (0, vue.createVNode)("div", { "class": "uni-page-head-bd" }, [(0, vue.createVNode)("div", {
-		"style": {
-			fontSize: titleSize,
-			opacity: type === "transparent" ? 0 : 1
-		},
-		"class": "uni-page-head__title"
-	}, [loading ? (0, vue.createVNode)("i", { "class": "uni-loading" }, null) : titleImage ? (0, vue.createVNode)("img", {
-		"src": titleImage,
-		"class": "uni-page-head__title_image"
-	}, null, 8, ["src"]) : titleText], 4)]);
-}
-function createPageHeadSearchInputTsx(navigationBar, { text, focus, composing, onBlur, onFocus, onInput, onConfirm, onClick }) {
-	const { color, align, autoFocus, disabled, borderRadius, backgroundColor, placeholder, placeholderColor } = navigationBar.searchInput;
-	const searchStyle = {
-		borderRadius,
-		backgroundColor
-	};
-	const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text.value ? "left" : align}`];
-	return (0, vue.createVNode)("div", {
-		"class": "uni-page-head-search",
-		"style": searchStyle
-	}, [(0, vue.createVNode)("div", {
-		"style": { color: placeholderColor },
-		"class": placeholderClass
-	}, [(0, vue.createVNode)("div", { "class": "uni-page-head-search-icon" }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text.value || composing.value ? "" : placeholder], 6), disabled ? (0, vue.createVNode)(input_default, {
-		"disabled": true,
-		"style": { color },
-		"placeholder-style": "color: " + placeholderColor,
-		"class": "uni-page-head-search-input",
-		"confirm-type": "search",
-		"onClick": onClick
-	}, null, 8, [
-		"style",
-		"placeholder-style",
-		"onClick"
-	]) : (0, vue.createVNode)(input_default, {
-		"focus": autoFocus,
-		"style": { color },
-		"placeholder-style": "color: " + placeholderColor,
-		"class": "uni-page-head-search-input",
-		"confirm-type": "search",
-		"onFocus": onFocus,
-		"onBlur": onBlur,
-		"onInput": onInput,
-		"onConfirm": onConfirm
-	}, null, 8, [
-		"focus",
-		"style",
-		"placeholder-style",
-		"onFocus",
-		"onBlur",
-		"onInput",
-		"onConfirm"
-	])], 4);
-}
-function onPageHeadBackButton() {
-	if (getCurrentPages().length === 1) uni.reLaunch({ url: "/" });
-	else uni.navigateBack({
-		from: "backbutton",
-		success() {}
-	});
-}
-function usePageHead(navigationBar) {
-	return {
-		clazz: (0, vue.computed)(() => {
-			const { type, titlePenetrate, shadowColorType } = navigationBar;
-			const clazz = {
-				"uni-page-head": true,
-				"uni-page-head-transparent": type === "transparent",
-				"uni-page-head-titlePenetrate": titlePenetrate === "YES",
-				"uni-page-head-shadow": !!shadowColorType
-			};
-			if (shadowColorType) clazz[`uni-page-head-shadow-${shadowColorType}`] = true;
-			return clazz;
-		}),
-		style: (0, vue.computed)(() => {
-			return {
-				backgroundColor: __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor,
-				color: navigationBar.titleColor,
-				transitionDuration: navigationBar.duration,
-				transitionTimingFunction: navigationBar.timingFunc
-			};
-		})
-	};
-}
-function usePageHeadButtons({ id, navigationBar }) {
-	const left = [];
-	const right = [];
-	const { buttons } = navigationBar;
-	if ((0, _vue_shared.isArray)(buttons)) {
-		const { type } = navigationBar;
-		const isTransparent = type === "transparent";
-		const fonts = Object.create(null);
-		buttons.forEach((btn, index) => {
-			if (btn.fontSrc && !btn.fontFamily) {
-				const fontSrc = getRealPath(btn.fontSrc);
-				let fontFamily = fonts[fontSrc];
-				if (!fontFamily) {
-					fontFamily = `font${Date.now()}`;
-					fonts[fontSrc] = fontFamily;
-				}
-				btn.fontFamily = fontFamily;
-			}
-			const pageHeadBtn = usePageHeadButton(id, index, btn, isTransparent);
-			if (btn.float === "left") left.push(pageHeadBtn);
-			else right.push(pageHeadBtn);
-		});
-	}
-	return {
-		left,
-		right
-	};
-}
-function usePageHeadButton(pageId, index, btn, isTransparent) {
-	const iconStyle = {
-		color: btn.color,
-		fontSize: btn.fontSize,
-		fontWeight: btn.fontWeight
-	};
-	if (btn.fontFamily) iconStyle.fontFamily = btn.fontFamily;
-	return new Proxy({
-		btnClass: {
-			"uni-page-head-btn": true,
-			"uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
-			"uni-page-head-btn-select": !!btn.select
-		},
-		btnStyle: {
-			backgroundColor: isTransparent ? btn.background : "transparent",
-			width: btn.width
-		},
-		btnText: "",
-		btnIconPath: ICON_PATHS[btn.type],
-		badgeText: btn.badgeText,
-		iconStyle,
-		onClick() {
-			invokeHook(pageId, _dcloudio_uni_shared.ON_NAVIGATION_BAR_BUTTON_TAP, (0, _vue_shared.extend)({ index }, btn));
-		},
-		btnSelect: btn.select
-	}, { get(target, key, receiver) {
-		if (["btnText"].includes(key)) return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
-		else return Reflect.get(target, key, receiver);
-	} });
-}
-function usePageHeadSearchInput({ id, navigationBar: { searchInput } }) {
-	const focus = (0, vue.ref)(false);
-	const text = (0, vue.ref)("");
-	const composing = (0, vue.ref)(false);
-	const { disabled } = searchInput;
-	if (disabled) {
-		const onClick = () => {
-			invokeHook(id, _dcloudio_uni_shared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
-		};
-		return {
-			focus,
-			text,
-			composing,
-			onClick
-		};
-	}
-	const onFocus = () => {
-		focus.value = true;
-		invokeHook(id, _dcloudio_uni_shared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, { focus: true });
-	};
-	const onBlur = () => {
-		focus.value = false;
-		invokeHook(id, _dcloudio_uni_shared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, { focus: false });
-	};
-	const onInput = (evt) => {
-		text.value = evt.detail.value;
-		invokeHook(id, _dcloudio_uni_shared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, { text: text.value });
-	};
-	const onConfirm = (evt) => {
-		invokeHook(id, _dcloudio_uni_shared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, { text: text.value });
-	};
-	return {
-		focus,
-		text,
-		composing,
-		onFocus,
-		onBlur,
-		onInput,
-		onConfirm
-	};
-}
-//#endregion
-//#region src/framework/components/page/page-refresh/component.vue?vue&type=script&lang.ts
-var component_vue_vue_type_script_lang_default = {
-	name: "PageRefresh",
-	setup() {
-		const { pullToRefresh } = usePageMeta();
-		return {
-			offset: pullToRefresh.offset,
-			color: pullToRefresh.color
-		};
-	}
-};
-//#endregion
-//#region \0plugin-vue:export-helper
-var _plugin_vue_export_helper_default = (sfc, props) => {
-	const target = sfc.__vccOpts || sfc;
-	for (const [key, val] of props) target[key] = val;
-	return target;
-};
-//#endregion
-//#region src/framework/components/page/page-refresh/component.vue
-var _hoisted_1 = { class: "uni-page-refresh-inner" };
-var _hoisted_2 = ["fill"];
-var _hoisted_5 = [/* @__PURE__ */ (0, vue.createElementVNode)("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1), /* @__PURE__ */ (0, vue.createElementVNode)("path", {
-	d: "M0 0h24v24H0z",
-	fill: "none"
-}, null, -1)];
-var _hoisted_6 = {
-	class: "uni-page-refresh__spinner",
-	width: "24",
-	height: "24",
-	viewBox: "25 25 50 50"
-};
-var _hoisted_7 = ["stroke"];
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-	return (0, vue.openBlock)(), (0, vue.createElementBlock)("uni-page-refresh", null, [(0, vue.createElementVNode)("div", {
-		style: (0, vue.normalizeStyle)({ "margin-top": $setup.offset + "px" }),
-		class: "uni-page-refresh"
-	}, [(0, vue.createElementVNode)("div", _hoisted_1, [((0, vue.openBlock)(), (0, vue.createElementBlock)("svg", {
-		fill: $setup.color,
-		class: "uni-page-refresh__icon",
-		width: "24",
-		height: "24",
-		viewBox: "0 0 24 24"
-	}, _hoisted_5, 8, _hoisted_2)), ((0, vue.openBlock)(), (0, vue.createElementBlock)("svg", _hoisted_6, [(0, vue.createElementVNode)("circle", {
-		stroke: $setup.color,
-		class: "uni-page-refresh__path",
-		cx: "50",
-		cy: "50",
-		r: "20",
-		fill: "none",
-		"stroke-width": "4",
-		"stroke-miterlimit": "10"
-	}, null, 8, _hoisted_7)]))])], 4)]);
-}
-var component_default = /* @__PURE__ */ _plugin_vue_export_helper_default(component_vue_vue_type_script_lang_default, [["render", _sfc_render]]);
-//#endregion
-//#region src/framework/components/page/pageBody.tsx
-var pageBody_default = /* @__PURE__ */ defineSystemComponent({
-	name: "PageBody",
-	setup(props, ctx) {
-		const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
-		const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && (0, vue.ref)(null);
-		const wrapperRef = (0, vue.ref)(null);
-		const _pageRefresh = null;
-		const pageRefresh = (0, vue.ref)(null);
-		(0, vue.watch)(() => {
-			return pageMeta.enablePullDownRefresh;
-		}, () => {
-			pageRefresh.value = pageMeta.enablePullDownRefresh ? _pageRefresh : null;
-		}, { immediate: true });
-		function _resize() {}
-		return () => {
-			const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef, pageMeta);
-			const pageResizeSensor = (0, vue.createVNode)(resize_sensor_default, { "onResize": _resize }, null, 8, ["onResize"]);
-			return (0, vue.createVNode)(vue.Fragment, null, [pageRefreshTsx, (0, vue.createVNode)("uni-page-wrapper", (0, vue.mergeProps)({ "ref": wrapperRef }, pageRefresh.value), [(0, vue.createVNode)("uni-page-body", null, [(0, vue.renderSlot)(ctx.slots, "default")]), pageResizeSensor], 16)]);
-		};
-	}
-});
-function createPageRefreshTsx(refreshRef, pageMeta) {
-	return (0, vue.createVNode)(component_default, { "ref": refreshRef }, null, 512);
-}
-//#endregion
-//#region src/framework/components/page/index.ts
-var page_default = /* @__PURE__ */ defineSystemComponent({
-	name: "Page",
-	setup(_props, ctx) {
-		let pageMeta = providePageMeta(getStateId());
-		const navigationBar = pageMeta.navigationBar;
-		const pageStyle = {};
-		useDocumentTitle(pageMeta);
-		const currentInstance = (0, vue.getCurrentInstance)();
-		currentInstance.$dialogPages = (0, vue.ref)([]);
-		currentInstance.$systemDialogPages = (0, vue.ref)([]);
-		if (isDialogPageInstance(ctx)) {
-			var _uniRoutes$find;
-			pageMeta.route = ctx.attrs.route;
-			const routePageMeta = (_uniRoutes$find = __uniRoutes.find((route) => route.path === pageMeta.route.split("?")[0])) === null || _uniRoutes$find === void 0 ? void 0 : _uniRoutes$find.meta;
-			if (routePageMeta) {
-				routePageMeta.navigationBar = Object.assign(navigationBar, routePageMeta.navigationBar);
-				pageMeta = Object.assign(pageMeta, routePageMeta);
-			}
-			if (!(routePageMeta === null || routePageMeta === void 0 ? void 0 : routePageMeta.backgroundColorContent)) pageMeta.backgroundColorContent = "transparent";
-			if (!(routePageMeta === null || routePageMeta === void 0 ? void 0 : routePageMeta.navigationBar.style)) pageMeta.navigationBar.style = "custom";
-			if (ctx.attrs["data-type"] === "systemDialog") pageMeta.navigationBar.titleText = "";
-			const parentInstance = (0, vue.inject)("parentInstance");
-			if (currentInstance && parentInstance) {
-				currentInstance.$parentInstance = parentInstance;
-				assignDialogPage(ctx, parentInstance, currentInstance);
-			}
-		} else {
-			useBackgroundColorContent(pageMeta);
-			(0, vue.provide)("parentInstance", currentInstance);
-		}
-		return () => (0, vue.createVNode)("uni-page", {
-			"data-page": pageMeta.route,
-			style: pageStyle
-		}, __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
-			(0, vue.createVNode)(pageHead_default),
-			createPageBodyVNode(ctx),
-			createDialogPageVNode(currentInstance.$dialogPages, currentInstance.$systemDialogPages)
-		] : [createPageBodyVNode(ctx), createDialogPageVNode(currentInstance.$dialogPages, currentInstance.$systemDialogPages)]);
-	}
-});
-function assignDialogPage(ctx, parentInstance, currentInstance) {
-	let parentDialogPages = [];
-	if (isNormalDialogPageInstance(ctx)) parentDialogPages = parentInstance.$dialogPages.value;
-	if (isSystemDialogPageInstance(ctx)) parentDialogPages = parentInstance.$systemDialogPages.value;
-	if (!parentDialogPages.length) return;
-	for (let i = 0; i < parentDialogPages.length; i++) {
-		const dialogPage = parentDialogPages[i];
-		if (!dialogPage.$assigned) {
-			dialogPage.$assigned = true;
-			currentInstance.$dialogPage = dialogPage;
-			break;
-		}
-	}
-}
-function createPageBodyVNode(ctx) {
-	return (0, vue.openBlock)(), (0, vue.createBlock)(pageBody_default, { key: 0 }, {
-		default: (0, vue.withCtx)(() => [(0, vue.renderSlot)(ctx.slots, "page")]),
-		_: 3
-	});
-}
-function createDialogPageVNode(normalDialogPages, systemDialogPages) {
-	const dialogPages = [...normalDialogPages.value.map((page) => ({
-		page,
-		type: DIALOG_TAG
-	})), ...systemDialogPages.value.map((page) => ({
-		page,
-		type: SYSTEM_DIALOG_TAG
-	}))];
-	dialogPages.sort((a, b) => {
-		var _a$page$vm, _b$page$vm;
-		return (((_a$page$vm = a.page.vm) === null || _a$page$vm === void 0 || (_a$page$vm = _a$page$vm.$basePage) === null || _a$page$vm === void 0 ? void 0 : _a$page$vm.id) || Number.MAX_SAFE_INTEGER) - (((_b$page$vm = b.page.vm) === null || _b$page$vm === void 0 || (_b$page$vm = _b$page$vm.$basePage) === null || _b$page$vm === void 0 ? void 0 : _b$page$vm.id) || Number.MAX_SAFE_INTEGER);
-	});
-	return (0, vue.openBlock)(true), (0, vue.createElementBlock)(vue.Fragment, null, (0, vue.renderList)(dialogPages, (dialogPage) => {
-		const { type, page } = dialogPage;
-		const fullUrl = `${page.route}${(0, _dcloudio_uni_shared.stringifyQuery)(page.options)}`;
-		return (0, vue.openBlock)(), (0, vue.createBlock)((0, vue.createVNode)(page.$component, {
-			key: fullUrl,
-			style: {
-				position: "fixed",
-				"z-index": 999,
-				top: 0,
-				right: 0,
-				bottom: 0,
-				left: 0
-			},
-			"data-type": type,
-			route: fullUrl
-		}, null));
-	}));
-}
-//#endregion
 //#region ../uni-components/src/helpers/html-parser.js
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
-var empty = /* @__PURE__ */ makeMap("area,base,basefont,br,col,frame,hr,img,input,link,meta,param,embed,command,keygen,source,track,wbr");
-var block = /* @__PURE__ */ makeMap("a,address,article,applet,aside,audio,blockquote,button,canvas,center,dd,del,dir,div,dl,dt,fieldset,figcaption,figure,footer,form,frameset,h1,h2,h3,h4,h5,h6,header,hgroup,hr,iframe,isindex,li,map,menu,noframes,noscript,object,ol,output,p,pre,section,script,table,tbody,td,tfoot,th,thead,tr,ul,video");
-var inline = /* @__PURE__ */ makeMap("abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var");
-var closeSelf = /* @__PURE__ */ makeMap("colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr");
-var fillAttrs = /* @__PURE__ */ makeMap("checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected");
-var special = /* @__PURE__ */ makeMap("script,style");
+var empty = /*#__PURE__*/ makeMap("area,base,basefont,br,col,frame,hr,img,input,link,meta,param,embed,command,keygen,source,track,wbr");
+var block = /*#__PURE__*/ makeMap("a,address,article,applet,aside,audio,blockquote,button,canvas,center,dd,del,dir,div,dl,dt,fieldset,figcaption,figure,footer,form,frameset,h1,h2,h3,h4,h5,h6,header,hgroup,hr,iframe,isindex,li,map,menu,noframes,noscript,object,ol,output,p,pre,section,script,table,tbody,td,tfoot,th,thead,tr,ul,video");
+var inline = /*#__PURE__*/ makeMap("abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var");
+var closeSelf = /*#__PURE__*/ makeMap("colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr");
+var fillAttrs = /*#__PURE__*/ makeMap("checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected");
+var special = /*#__PURE__*/ makeMap("script,style");
 function HTMLParser(html, handler) {
 	var index;
 	var chars;
@@ -3148,14 +2470,13 @@ function useQuill(props, rootRef, trigger) {
 	useSubscribe((type, data, resolve) => {
 		const { options, callbackId } = data;
 		let res;
-		let errMsg = "not ready";
 		if (callbackId) resolve({
 			callbackId,
-			data: (0, _vue_shared.extend)({}, res, { errMsg: `${type}:${"fail " + errMsg}` })
+			data: (0, _vue_shared.extend)({}, res, { errMsg: `${type}:fail not ready` })
 		});
 	}, useContextInfo(), true);
 }
-var editor_default = /* @__PURE__ */ defineBuiltInComponent({
+var editor_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Editor",
 	props: /* @__PURE__ */ (0, _vue_shared.extend)({}, props$23, {
 		id: {
@@ -3252,7 +2573,7 @@ var ICONS = {
 		c: GREY_COLOR
 	}
 };
-var icon_default = /* @__PURE__ */ defineBuiltInComponent({
+var icon_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Icon",
 	props: {
 		type: {
@@ -3280,7 +2601,7 @@ var icon_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region ../uni-components/src/vue/resize-sensor/index.tsx
-var resize_sensor_default = /* @__PURE__ */ defineBuiltInComponent({
+var resize_sensor_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "ResizeSensor",
 	props: { initial: {
 		type: Boolean,
@@ -3367,7 +2688,7 @@ var IMAGE_MODES = {
 	"bottom left": ["left bottom"],
 	"bottom right": ["right bottom"]
 };
-var image_default = /* @__PURE__ */ defineBuiltInComponent({
+var image_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Image",
 	props: props$21,
 	setup(props, { emit }) {
@@ -3584,7 +2905,7 @@ var INPUT_MODES = [
 	"email",
 	"url"
 ];
-var props$20 = /* @__PURE__ */ (0, _vue_shared.extend)({}, {
+var props$20 = /*#__PURE__*/ (0, _vue_shared.extend)({}, {
 	name: {
 		type: String,
 		default: ""
@@ -3859,7 +3180,7 @@ function useField(props, rootRef, emit, beforeInput) {
 (0, _dcloudio_uni_shared.once)(() => {});
 //#endregion
 //#region ../uni-components/src/vue/input/index.tsx
-var props$19 = /* @__PURE__ */ (0, _vue_shared.extend)({}, props$20, {
+var props$19 = /*#__PURE__*/ (0, _vue_shared.extend)({}, props$20, {
 	placeholderClass: {
 		type: String,
 		default: "input-placeholder"
@@ -3885,7 +3206,7 @@ function useCache(props, type) {
 		return cache;
 	} else return (0, vue.ref)("");
 }
-var input_default = /* @__PURE__ */ defineBuiltInComponent({
+var input_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Input",
 	props: props$19,
 	emits: ["confirm", ...emit],
@@ -4084,7 +3405,7 @@ function flatVNode(nodes) {
 }
 //#endregion
 //#region ../uni-components/src/vue/movable-area/index.tsx
-var movable_area_default = /* @__PURE__ */ defineBuiltInComponent({
+var movable_area_default = /*#__PURE__*/ defineBuiltInComponent({
 	inheritAttrs: false,
 	name: "MovableArea",
 	props: { scaleArea: {
@@ -4578,7 +3899,7 @@ function v(a, b) {
 }
 //#endregion
 //#region ../uni-components/src/vue/movable-view/index.tsx
-var movable_view_default = /* @__PURE__ */ defineBuiltInComponent({
+var movable_view_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "MovableView",
 	props: movableViewProps,
 	emits: ["change", "scale"],
@@ -5121,11 +4442,11 @@ function createNavigatorOnClick(props) {
 }
 //#endregion
 //#region ../uni-components/src/vue/navigator/index.tsx
-var navigator_default = /* @__PURE__ */ defineBuiltInComponent({
+var navigator_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Navigator",
 	inheritAttrs: false,
 	compatConfig: { MODE: 3 },
-	props: /* @__PURE__ */ (0, _vue_shared.extend)({}, navigatorProps, { renderLink: {
+	props: /*#__PURE__*/ (0, _vue_shared.extend)({}, navigatorProps, { renderLink: {
 		type: Boolean,
 		default: true
 	} }),
@@ -5199,7 +4520,7 @@ function useState$2(props) {
 	});
 	return state;
 }
-var picker_view_default = /* @__PURE__ */ defineBuiltInComponent({
+var picker_view_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "PickerView",
 	props: pickerViewProps,
 	emits: [
@@ -5264,7 +4585,7 @@ var picker_view_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region ../uni-components/src/vue/picker-view-column/index.tsx
-var picker_view_column_default = /* @__PURE__ */ defineBuiltInComponent({
+var picker_view_column_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "PickerViewColumn",
 	setup(props, { slots, emit }) {
 		const rootRef = (0, vue.ref)(null);
@@ -5360,7 +4681,7 @@ var PROGRESS_VALUES = {
 };
 //#endregion
 //#region ../uni-components/src/vue/progress/index.tsx
-var progress_default = /* @__PURE__ */ defineBuiltInComponent({
+var progress_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Progress",
 	props: {
 		percent: {
@@ -5476,7 +4797,7 @@ function _activeAnimation(state, props) {
 //#endregion
 //#region ../uni-components/src/vue/radio-group/index.tsx
 var uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-var radio_group_default = /* @__PURE__ */ defineBuiltInComponent({
+var radio_group_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "RadioGroup",
 	props: { name: {
 		type: String,
@@ -5536,7 +4857,7 @@ function useProvideRadioGroup(props, trigger) {
 	}
 	return fields;
 }
-var index_x_default$2 = /* @__PURE__ */ defineBuiltInComponent({
+var index_x_default$2 = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Radio",
 	props: {
 		checked: {
@@ -5880,7 +5201,7 @@ function parseHtml(html) {
 }
 //#endregion
 //#region ../uni-components/src/vue/rich-text/index.tsx
-var rich_text_default = /* @__PURE__ */ defineBuiltInComponent({
+var rich_text_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "RichText",
 	compatConfig: { MODE: 3 },
 	props: { nodes: {
@@ -5913,7 +5234,7 @@ var rich_text_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region ../uni-components/src/vue/refresher/index.tsx
-var refresher_default = /* @__PURE__ */ defineBuiltInComponent({
+var refresher_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Refresher",
 	props: {
 		refreshState: {
@@ -6000,7 +5321,7 @@ var refresher_default = /* @__PURE__ */ defineBuiltInComponent({
 		};
 	}
 });
-var scroll_view_default = /* @__PURE__ */ defineBuiltInComponent({
+var scroll_view_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "ScrollView",
 	compatConfig: { MODE: 3 },
 	props: {
@@ -6308,7 +5629,7 @@ function useScrollViewLoader(props, state, scrollTopNumber, scrollLeftNumber, tr
 //#region ../uni-components/src/vue/slider/index-x.tsx
 var SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
 var SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
-var index_x_default$3 = /* @__PURE__ */ defineBuiltInComponent({
+var index_x_default$3 = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Slider",
 	props: {
 		name: {
@@ -6838,7 +6159,7 @@ function useLayout(props, state, swiperContexts, slideFrameRef, emit, trigger) {
 		swiperEnabled
 	};
 }
-var swiper_default = /* @__PURE__ */ defineBuiltInComponent({
+var swiper_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Swiper",
 	props: props$13,
 	emits: [
@@ -7023,7 +6344,7 @@ var useSwiperNavigation = (rootRef, props, state, onSwiperDotClick, swiperContex
 	}
 	return createNavigationTsx;
 };
-var swiper_item_default = /* @__PURE__ */ defineBuiltInComponent({
+var swiper_item_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "SwiperItem",
 	props: { itemId: {
 		type: String,
@@ -7043,7 +6364,7 @@ var swiper_item_default = /* @__PURE__ */ defineBuiltInComponent({
 		};
 	}
 });
-var index_x_default$4 = /* @__PURE__ */ defineBuiltInComponent({
+var index_x_default$4 = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Switch",
 	props: {
 		name: {
@@ -7182,7 +6503,7 @@ function parseTextIgnoreLinefeed(text, options) {
 }
 //#endregion
 //#region ../uni-components/src/vue/text/index.tsx
-var text_default = /* @__PURE__ */ defineBuiltInComponent({
+var text_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Text",
 	props: {
 		selectable: {
@@ -7228,7 +6549,7 @@ var text_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region ../uni-components/src/vue/textarea/index.tsx
-var props$10 = /* @__PURE__ */ (0, _vue_shared.extend)({}, props$20, {
+var props$10 = /*#__PURE__*/ (0, _vue_shared.extend)({}, props$20, {
 	placeholderClass: {
 		type: String,
 		default: "input-placeholder"
@@ -7253,7 +6574,7 @@ var ConfirmTypes = [
 	"search",
 	"send"
 ];
-var textarea_default = /* @__PURE__ */ defineBuiltInComponent({
+var textarea_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Textarea",
 	props: props$10,
 	emits: [
@@ -7399,9 +6720,9 @@ var textarea_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region ../uni-components/src/vue/view/index.tsx
-var view_default = /* @__PURE__ */ defineBuiltInComponent({
+var view_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "View",
-	props: /* @__PURE__ */ (0, _vue_shared.extend)({}, hoverProps),
+	props: /*#__PURE__*/ (0, _vue_shared.extend)({}, hoverProps),
 	setup(props, { slots }) {
 		const rootRef = (0, vue.ref)(null);
 		const { hovering, binding } = useHover(props);
@@ -7452,7 +6773,7 @@ function traverseStickySection(stickySectionVNode, callback) {
 		callback(child);
 	}
 }
-var list_view_default = /* @__PURE__ */ defineBuiltInComponent({
+var list_view_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "ListView",
 	props: {
 		direction: {
@@ -7844,7 +7165,7 @@ function getSize(isVertical, el) {
 	if (isVertical) return parseFloat(style.marginTop) + el.getBoundingClientRect().height + parseFloat(style.marginBottom);
 	else return parseFloat(style.marginLeft) + el.getBoundingClientRect().width + parseFloat(style.marginRight);
 }
-var list_item_default = /* @__PURE__ */ defineBuiltInComponent({
+var list_item_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "ListItem",
 	props: {},
 	setup(props, { slots, expose, attrs }) {
@@ -7883,7 +7204,7 @@ var list_item_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region ../uni-components/src/vue/sticky-section/index.tsx
-var sticky_section_default = /* @__PURE__ */ defineBuiltInComponent({
+var sticky_section_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "StickySection",
 	props: { padding: {
 		type: Array,
@@ -7932,7 +7253,7 @@ var sticky_section_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region ../uni-components/src/vue/sticky-header/index.tsx
-var sticky_header_default = /* @__PURE__ */ defineBuiltInComponent({
+var sticky_header_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "StickyHeader",
 	props: { padding: {
 		type: Array,
@@ -7974,12 +7295,12 @@ var sticky_header_default = /* @__PURE__ */ defineBuiltInComponent({
 var createLifeCycleHook = (lifecycle, flag = 0) => (hook, target = (0, vue.getCurrentInstance)()) => {
 	!vue.isInSSRComponentSetup && (0, vue.injectHook)(lifecycle, hook, target);
 };
-var onBackPress = /* @__PURE__ */ createLifeCycleHook(_dcloudio_uni_shared.ON_BACK_PRESS, 2);
+var onBackPress = /*#__PURE__*/ createLifeCycleHook(_dcloudio_uni_shared.ON_BACK_PRESS, 2);
 //#endregion
 //#region ../uni-components/src/vue/page-container/element.ts
 var UniPageContainerElement = class extends UniElement {};
 //#endregion
-//#region \0@oxc-project+runtime@0.130.0/helpers/typeof.js
+//#region \0@oxc-project+runtime@0.137.0/helpers/esm/typeof.js
 function _typeof(o) {
 	"@babel/helpers - typeof";
 	return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o) {
@@ -7989,7 +7310,7 @@ function _typeof(o) {
 	}, _typeof(o);
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.130.0/helpers/toPrimitive.js
+//#region \0@oxc-project+runtime@0.137.0/helpers/esm/toPrimitive.js
 function toPrimitive(t, r) {
 	if ("object" != _typeof(t) || !t) return t;
 	var e = t[Symbol.toPrimitive];
@@ -8001,13 +7322,13 @@ function toPrimitive(t, r) {
 	return ("string" === r ? String : Number)(t);
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.130.0/helpers/toPropertyKey.js
+//#region \0@oxc-project+runtime@0.137.0/helpers/esm/toPropertyKey.js
 function toPropertyKey(t) {
 	var i = toPrimitive(t, "string");
 	return "symbol" == _typeof(i) ? i : i + "";
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.130.0/helpers/defineProperty.js
+//#region \0@oxc-project+runtime@0.137.0/helpers/esm/defineProperty.js
 function _defineProperty(e, r, t) {
 	return (r = toPropertyKey(r)) in e ? Object.defineProperty(e, r, {
 		value: t,
@@ -8017,7 +7338,7 @@ function _defineProperty(e, r, t) {
 	}) : e[r] = t, e;
 }
 //#endregion
-//#region \0@oxc-project+runtime@0.130.0/helpers/objectSpread2.js
+//#region \0@oxc-project+runtime@0.137.0/helpers/esm/objectSpread2.js
 function ownKeys(e, r) {
 	var t = Object.keys(e);
 	if (Object.getOwnPropertySymbols) {
@@ -8517,7 +7838,7 @@ function uniIdMixin(globalProperties) {
 }
 //#endregion
 //#region ../uni-vue/src/index.ts
-function initApp(app) {
+function initApp$1(app) {
 	const appConfig = app.config;
 	appConfig.errorHandler = (0, _dcloudio_uni_shared.invokeCreateErrorHandler)(app, createErrorHandler);
 	initOptionMergeStrategies(appConfig.optionMergeStrategies);
@@ -8577,7 +7898,7 @@ function initHistory() {
 //#endregion
 //#region src/framework/plugin/index.ts
 var plugin_default = { install(app) {
-	initApp(app);
+	initApp$1(app);
 	if (!app.config.warnHandler) app.config.warnHandler = warnHandler;
 	if (__UNI_FEATURE_PAGES__) initRouter(app);
 } };
@@ -8590,6 +7911,145 @@ function warnHandler(msg, instance, trace) {
 	const warnArgs = [`[Vue warn]: ${msg}`];
 	if (trace.length) warnArgs.push(`\n`, trace);
 	console.warn(...warnArgs);
+}
+//#endregion
+//#region src/framework/components/async-loading/index.ts
+var clazz = { class: "uni-async-loading" };
+var loadingVNode = /*#__PURE__*/ (0, vue.createVNode)("i", { class: "uni-loading" }, null, -1);
+var async_loading_default = /*#__PURE__*/ defineSystemComponent({
+	name: "AsyncLoading",
+	render() {
+		return (0, vue.openBlock)(), (0, vue.createBlock)("div", clazz, [loadingVNode]);
+	}
+});
+//#endregion
+//#region src/framework/components/async-error/index.tsx
+function reload() {
+	window.location.reload();
+}
+var async_error_default = /*#__PURE__*/ defineSystemComponent({
+	name: "AsyncError",
+	props: ["error"],
+	setup() {
+		initI18nAsyncMsgsOnce();
+		const { t } = useI18n();
+		return () => (0, vue.createVNode)("div", {
+			"class": "uni-async-error",
+			"onClick": reload
+		}, [t("uni.async.error")], 8, ["onClick"]);
+	}
+});
+//#endregion
+//#region src/framework/setup/app.ts
+var appVm;
+var $uniApp;
+{
+	class UniAppImpl {
+		get vm() {
+			return appVm;
+		}
+		get $vm() {
+			return appVm;
+		}
+		get globalData() {
+			return (appVm === null || appVm === void 0 ? void 0 : appVm.globalData) || {};
+		}
+		getAndroidApplication() {
+			return null;
+		}
+		getHarmonyAbility() {
+			return null;
+		}
+	}
+	$uniApp = new UniAppImpl();
+}
+function getApp$1() {
+	return $uniApp;
+}
+function initApp(vm) {
+	appVm = vm;
+	Object.defineProperty(appVm.$.ctx, "$children", { get() {
+		return getCurrentBasePages().map((page) => page.$vm);
+	} });
+	const app = appVm.$.appContext.app;
+	if (!app.component(async_loading_default.name)) app.component(async_loading_default.name, async_loading_default);
+	if (!app.component(async_error_default.name)) app.component(async_error_default.name, async_error_default);
+	initAppVm(appVm);
+	defineGlobalData(appVm);
+}
+//#endregion
+//#region src/framework/setup/index.ts
+function wrapperComponentSetup(comp, { type, clone, init, setup, before, options }) {
+	if (clone) comp = (0, _vue_shared.extend)({}, comp);
+	before && before(comp);
+	const oldSetup = comp.setup;
+	comp.setup = (props, ctx) => {
+		const instance = (0, vue.getCurrentInstance)();
+		init(instance.proxy);
+		setup(instance);
+		if (oldSetup) return oldSetup(props, ctx);
+	};
+	if (type === "page" || type === "window") {
+		if ((comp.styleIsolation || (__uniConfig.styleIsolation || {})[comp.__filename]) !== "isolated") comp.styleIsolation = "app";
+	}
+	return comp;
+}
+function setupComponent(comp, options) {
+	if (comp && (comp.__esModule || comp[Symbol.toStringTag] === "Module")) return wrapperComponentSetup(comp.default, options);
+	return wrapperComponentSetup(comp, options);
+}
+function setupWindow(comp, id) {
+	return setupComponent(comp, {
+		type: "window",
+		init: (vm) => {
+			vm.$basePage = { id };
+		},
+		setup(instance) {
+			instance.$pageInstance = instance;
+		}
+	});
+}
+function setupPage(comp, path) {
+	if (process.env.NODE_ENV !== "production") comp.__mpType = "page";
+	if (path) comp.__filename = path;
+	return setupComponent(comp, {
+		type: "page",
+		clone: true,
+		init: initPage,
+		setup(instance) {
+			instance.$pageInstance = instance;
+			const query = (0, _dcloudio_uni_shared.decodedQuery)(usePageRoute().query);
+			instance.attrs.__pageQuery = query;
+			{
+				const pageInstance = getPageInstanceByChild(instance);
+				if (isDialogPageInstance(pageInstance)) instance.attrs.__pageQuery = (0, _dcloudio_uni_shared.decodedQuery)((0, _dcloudio_uni_shared.parseQuery)((pageInstance === null || pageInstance === void 0 ? void 0 : pageInstance.attrs.route).split("?")[1] || ""));
+			}
+			getPage$BasePage(instance.proxy).options = query;
+			instance.proxy.options = query;
+			return query;
+		}
+	});
+}
+function setupApp(comp) {
+	if (process.env.NODE_ENV !== "production") comp.__mpType = "app";
+	return setupComponent(comp, {
+		init: initApp,
+		setup(instance) {
+			return usePageRoute().query;
+		},
+		before(comp) {
+			comp.mpType = "app";
+			const { setup } = comp;
+			const render = () => {
+				return (0, vue.openBlock)(), (0, vue.createBlock)(layout_default);
+			};
+			comp.setup = (props, ctx) => {
+				const res = setup && setup(props, ctx);
+				return (0, _vue_shared.isFunction)(res) ? render : res;
+			};
+			comp.render = render;
+		}
+	});
 }
 //#endregion
 //#region src/view/components/video/index.tsx
@@ -9062,7 +8522,7 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
 	});
 	return progressing;
 }
-var video_default = /* @__PURE__ */ defineBuiltInComponent({
+var video_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Video",
 	props: {
 		id: {
@@ -9372,8 +8832,8 @@ var onWebInvokeAppService = ({ name, arg }) => {
 };
 //#endregion
 //#region src/view/components/web-view/index-x.tsx
-var Invoke = /* @__PURE__ */ (0, _dcloudio_uni_shared.once)(() => UniServiceJSBridge.on(_dcloudio_uni_shared.ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-var index_x_default$5 = /* @__PURE__ */ defineBuiltInComponent({
+var Invoke = /*#__PURE__*/ (0, _dcloudio_uni_shared.once)(() => UniServiceJSBridge.on(_dcloudio_uni_shared.ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
+var index_x_default$5 = /*#__PURE__*/ defineBuiltInComponent({
 	inheritAttrs: false,
 	name: "WebView",
 	props: { src: {
@@ -9526,7 +8986,7 @@ function useMarkerLabelStyle(id) {
 		return className;
 	};
 }
-var MapMarker_default = /* @__PURE__ */ defineSystemComponent({
+var MapMarker_default = /*#__PURE__*/ defineSystemComponent({
 	name: "MapMarker",
 	props: props$6,
 	setup(props) {
@@ -9788,7 +9248,49 @@ var MapMarker_default = /* @__PURE__ */ defineSystemComponent({
 		};
 	}
 });
-var MapPolyline_default = /* @__PURE__ */ defineSystemComponent({
+//#endregion
+//#region src/helpers/hexToRgba.ts
+/**
+* 从 16 进制的色值解析成 rgba 格式的色值
+* @param { string } hex, #000、#000A、#000000、#000000AA，参数只能是这四种格式
+*/
+function hexToRgba(hex) {
+	if (!hex) return {
+		r: 0,
+		g: 0,
+		b: 0,
+		a: 0
+	};
+	let tmpHex = hex.slice(1);
+	const tmpHexLen = tmpHex.length;
+	if (![
+		3,
+		4,
+		6,
+		8
+	].includes(tmpHexLen)) return {
+		r: 0,
+		g: 0,
+		b: 0,
+		a: 0
+	};
+	if (tmpHexLen === 3 || tmpHexLen === 4) tmpHex = tmpHex.replace(/(\w{1})/g, "$1$1");
+	let [sr, sg, sb, sa] = tmpHex.match(/(\w{2})/g);
+	const r = parseInt(sr, 16), g = parseInt(sg, 16), b = parseInt(sb, 16);
+	if (!sa) return {
+		r,
+		g,
+		b,
+		a: 1
+	};
+	return {
+		r,
+		g,
+		b,
+		a: (`0x100${sa}` - 65536) / 255
+	};
+}
+var MapPolyline_default = /*#__PURE__*/ defineSystemComponent({
 	name: "MapPolyline",
 	props: {
 		points: {
@@ -9899,7 +9401,7 @@ var MapPolyline_default = /* @__PURE__ */ defineSystemComponent({
 		};
 	}
 });
-var MapCircle_default = /* @__PURE__ */ defineSystemComponent({
+var MapCircle_default = /*#__PURE__*/ defineSystemComponent({
 	name: "MapCircle",
 	props: {
 		latitude: {
@@ -9985,7 +9487,7 @@ var MapCircle_default = /* @__PURE__ */ defineSystemComponent({
 		};
 	}
 });
-var MapControl_default = /* @__PURE__ */ defineSystemComponent({
+var MapControl_default = /*#__PURE__*/ defineSystemComponent({
 	name: "MapControl",
 	props: {
 		id: {
@@ -10033,7 +9535,7 @@ var MapControl_default = /* @__PURE__ */ defineSystemComponent({
 //#endregion
 //#region src/view/components/map/MapLocation.tsx
 var CONTEXT_ID = "MAP_LOCATION";
-var MapLocation_default = /* @__PURE__ */ defineSystemComponent({
+var MapLocation_default = /*#__PURE__*/ defineSystemComponent({
 	name: "MapLocation",
 	setup() {
 		const state = (0, vue.reactive)({
@@ -10056,7 +9558,7 @@ var MapLocation_default = /* @__PURE__ */ defineSystemComponent({
 });
 //#endregion
 //#region src/view/components/map/map-polygon/index.tsx
-var map_polygon_default = /* @__PURE__ */ defineSystemComponent({
+var map_polygon_default = /*#__PURE__*/ defineSystemComponent({
 	name: "MapPolygon",
 	props: {
 		dashArray: {
@@ -10364,7 +9866,7 @@ function useMap(props, rootRef, emit) {
 		trigger
 	};
 }
-var map_default = /* @__PURE__ */ defineBuiltInComponent({
+var map_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Map",
 	props: props$2,
 	emits: [
@@ -10403,7 +9905,7 @@ var map_default = /* @__PURE__ */ defineBuiltInComponent({
 		};
 	}
 });
-var cover_view_default = /* @__PURE__ */ defineBuiltInComponent({
+var cover_view_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "CoverView",
 	compatConfig: { MODE: 3 },
 	props: { scrollTop: {
@@ -10440,7 +9942,7 @@ var cover_view_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region src/view/components/cover-image/index.tsx
-var cover_image_default = /* @__PURE__ */ defineBuiltInComponent({
+var cover_image_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "CoverImage",
 	compatConfig: { MODE: 3 },
 	props: { src: {
@@ -10619,7 +10121,7 @@ var selectorType = {
 	PICKER: "picker",
 	SELECT: "select"
 };
-var picker_default = /* @__PURE__ */ defineBuiltInComponent({
+var picker_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Picker",
 	compatConfig: { MODE: 3 },
 	props: {
@@ -11713,7 +11215,7 @@ var AdRender = class {
 		if (this._rootRef.value) this._rootRef.value.innerHTML = "";
 	}
 };
-var ad_default = /* @__PURE__ */ defineBuiltInComponent({
+var ad_default = /*#__PURE__*/ defineBuiltInComponent({
 	inheritAttrs: false,
 	name: "Ad",
 	props: {
@@ -11769,27 +11271,27 @@ var ad_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region src/view/components/ad-content-page/index.tsx
-var ad_content_page_default = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
+var ad_content_page_default = /*#__PURE__*/ defineUnsupportedComponent("ad-content-page");
 //#endregion
 //#region src/view/components/ad-draw/index.tsx
-var ad_draw_default = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
+var ad_draw_default = /*#__PURE__*/ defineUnsupportedComponent("ad-draw");
 //#endregion
 //#region src/view/components/camera/index.tsx
-var camera_default = /* @__PURE__ */ defineUnsupportedComponent("camera");
+var camera_default = /*#__PURE__*/ defineUnsupportedComponent("camera");
 //#endregion
 //#region src/view/components/live-player/index.tsx
-var live_player_default = /* @__PURE__ */ defineUnsupportedComponent("live-player");
+var live_player_default = /*#__PURE__*/ defineUnsupportedComponent("live-player");
 //#endregion
 //#region src/view/components/live-pusher/index.tsx
-var live_pusher_default = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
+var live_pusher_default = /*#__PURE__*/ defineUnsupportedComponent("live-pusher");
 //#endregion
 //#region src/view/bridge/index.ts
-var UniViewJSBridge$1 = /* @__PURE__ */ (0, _vue_shared.extend)(ViewJSBridge, { publishHandler(event, args, pageId) {
+var UniViewJSBridge$1 = /*#__PURE__*/ (0, _vue_shared.extend)(ViewJSBridge, { publishHandler(event, args, pageId) {
 	UniServiceJSBridge.subscribeHandler(event, args, pageId);
 } });
 //#endregion
 //#region src/service/api/network/request.ts
-var request = /* @__PURE__ */ defineTaskApi(API_REQUEST, ({ url, data, header = {}, method, dataType, responseType, enableChunked, withCredentials, timeout = __uniConfig.networkTimeout.request }, { resolve, reject }) => {
+var request = /*#__PURE__*/ defineTaskApi(API_REQUEST, ({ url, data, header = {}, method, dataType, responseType, enableChunked, withCredentials, timeout = __uniConfig.networkTimeout.request }, { resolve, reject }) => {
 	timeout = timeout == null ? __uniConfig.networkTimeout.request : timeout;
 	let body = null;
 	const contentType = normalizeContentType(header);
@@ -12059,7 +11561,7 @@ function parseValue(value) {
 		}
 	} catch (error) {}
 }
-var setStorageSync = /* @__PURE__ */ defineSyncApi(API_SET_STORAGE_SYNC, (key, data) => {
+var setStorageSync = /*#__PURE__*/ defineSyncApi(API_SET_STORAGE_SYNC, (key, data) => {
 	const type = typeof data;
 	const value = type === "string" ? data : JSON.stringify({
 		type,
@@ -12067,7 +11569,7 @@ var setStorageSync = /* @__PURE__ */ defineSyncApi(API_SET_STORAGE_SYNC, (key, d
 	});
 	localStorage.setItem(key, value);
 }, SetStorageSyncProtocol);
-var setStorage = /* @__PURE__ */ defineAsyncApi(API_SET_STORAGE, ({ key, data }, { resolve, reject }) => {
+var setStorage = /*#__PURE__*/ defineAsyncApi(API_SET_STORAGE, ({ key, data }, { resolve, reject }) => {
 	try {
 		setStorageSync(key, data);
 		resolve();
@@ -12085,35 +11587,35 @@ function getStorageOrigin(key) {
 	} catch (error) {}
 	return data;
 }
-var getStorageSync = /* @__PURE__ */ defineSyncApi(API_GET_STORAGE_SYNC, (key) => {
+var getStorageSync = /*#__PURE__*/ defineSyncApi(API_GET_STORAGE_SYNC, (key) => {
 	try {
 		return getStorageOrigin(key);
 	} catch (error) {
 		return "";
 	}
 }, GetStorageSyncProtocol);
-var getStorage = /* @__PURE__ */ defineAsyncApi(API_GET_STORAGE, ({ key }, { resolve, reject }) => {
+var getStorage = /*#__PURE__*/ defineAsyncApi(API_GET_STORAGE, ({ key }, { resolve, reject }) => {
 	try {
 		resolve({ data: getStorageOrigin(key) });
 	} catch (error) {
 		reject(error.message);
 	}
 }, GetStorageProtocol);
-var removeStorageSync = /* @__PURE__ */ defineSyncApi(API_REMOVE_STORAGE, (key) => {
+var removeStorageSync = /*#__PURE__*/ defineSyncApi(API_REMOVE_STORAGE, (key) => {
 	if (localStorage) localStorage.removeItem(key);
 }, RemoveStorageSyncProtocol);
-var removeStorage = /* @__PURE__ */ defineAsyncApi(API_REMOVE_STORAGE, ({ key }, { resolve }) => {
+var removeStorage = /*#__PURE__*/ defineAsyncApi(API_REMOVE_STORAGE, ({ key }, { resolve }) => {
 	removeStorageSync(key);
 	resolve();
 }, RemoveStorageProtocol);
-var clearStorageSync = /* @__PURE__ */ defineSyncApi("clearStorageSync", () => {
+var clearStorageSync = /*#__PURE__*/ defineSyncApi("clearStorageSync", () => {
 	if (localStorage) localStorage.clear();
 });
-var clearStorage = /* @__PURE__ */ defineAsyncApi("clearStorage", (_, { resolve }) => {
+var clearStorage = /*#__PURE__*/ defineAsyncApi("clearStorage", (_, { resolve }) => {
 	clearStorageSync();
 	resolve();
 });
-var getStorageInfoSync = /* @__PURE__ */ defineSyncApi("getStorageInfoSync", () => {
+var getStorageInfoSync = /*#__PURE__*/ defineSyncApi("getStorageInfoSync", () => {
 	const length = localStorage && localStorage.length || 0;
 	const keys = [];
 	let currentSize = 0;
@@ -12129,16 +11631,26 @@ var getStorageInfoSync = /* @__PURE__ */ defineSyncApi("getStorageInfoSync", () 
 		limitSize: Number.MAX_VALUE
 	};
 });
-var getStorageInfo = /* @__PURE__ */ defineAsyncApi("getStorageInfo", (_, { resolve }) => {
+var getStorageInfo = /*#__PURE__*/ defineAsyncApi("getStorageInfo", (_, { resolve }) => {
 	resolve(getStorageInfoSync());
 });
+//#endregion
+//#region src/service/api/base/getBrowserInfo.ts
+function getTheme() {
+	if (__uniConfig.darkmode !== true) return (0, _vue_shared.isString)(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
+	try {
+		return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+	} catch (error) {
+		return "light";
+	}
+}
 //#endregion
 //#region src/service/api/device/getSystemInfoSync.ts
 var browserInfo;
 function initBrowserInfo() {
 	return browserInfo = {};
 }
-var getDeviceInfo = /* @__PURE__ */ defineSyncApi("getDeviceInfo", () => {
+var getDeviceInfo = /*#__PURE__*/ defineSyncApi("getDeviceInfo", () => {
 	initBrowserInfo();
 	const { deviceBrand, deviceModel, brand, model, platform, system, deviceOrientation, deviceType, osname, osversion } = browserInfo;
 	return (0, _vue_shared.extend)({
@@ -12156,7 +11668,7 @@ var getDeviceInfo = /* @__PURE__ */ defineSyncApi("getDeviceInfo", () => {
 		system
 	});
 });
-var getAppBaseInfo = /* @__PURE__ */ defineSyncApi("getAppBaseInfo", () => {
+var getAppBaseInfo = /*#__PURE__*/ defineSyncApi("getAppBaseInfo", () => {
 	initBrowserInfo();
 	const { theme, language, browserName, browserVersion } = browserInfo;
 	return (0, _vue_shared.extend)({
@@ -12191,12 +11703,27 @@ var getAppBaseInfo = /* @__PURE__ */ defineSyncApi("getAppBaseInfo", () => {
 /**
 * 获取系统信息-同步
 */
-var getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () => {
+var getSystemInfoSync = /*#__PURE__*/ defineSyncApi("getSystemInfoSync", () => {
 	return {
 		deviceId: Date.now() + "" + Math.floor(Math.random() * 1e7),
 		platform: "nodejs"
 	};
 });
+//#endregion
+//#region src/helpers/useDocumentTitle.ts
+function updateDocumentTitle(title) {
+	{
+		const ssrContext = getApp$1().$vm.$.appContext.provides[vue.ssrContextKey];
+		if (ssrContext) ssrContext[_dcloudio_uni_shared.UNI_SSR_TITLE] = title;
+	}
+	UniServiceJSBridge.emit(_dcloudio_uni_shared.ON_NAVIGATION_BAR_CHANGE, { titleText: title });
+}
+function useDocumentTitle(pageMeta) {
+	function update() {
+		updateDocumentTitle(pageMeta.navigationBar.titleText);
+	}
+	(0, vue.watchEffect)(update);
+}
 //#endregion
 //#region src/service/api/ui/navigationBar.ts
 function setNavigationBar(pageMeta, type, args, resolve, reject) {
@@ -12225,7 +11752,7 @@ function setNavigationBar(pageMeta, type, args, resolve, reject) {
 	}
 	resolve();
 }
-var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (args, { resolve, reject }) => {
+var setNavigationBarTitle = /*#__PURE__*/ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (args, { resolve, reject }) => {
 	setNavigationBar(getCurrentPageMeta(), API_SET_NAVIGATION_BAR_TITLE, args, resolve, reject);
 }, SetNavigationBarTitleProtocol);
 //#endregion
@@ -12691,9 +12218,29 @@ global.XMLHttpRequest = require_XMLHttpRequest().XMLHttpRequest;
 var uni$1 = api_exports;
 //#endregion
 //#region src/service/bridge/index.ts
-var UniServiceJSBridge$1 = /* @__PURE__ */ (0, _vue_shared.extend)(ServiceJSBridge, { publishHandler(event, args, pageId) {
+var UniServiceJSBridge$1 = /*#__PURE__*/ (0, _vue_shared.extend)(ServiceJSBridge, { publishHandler(event, args, pageId) {
 	UniViewJSBridge.subscribeHandler(event, args, pageId);
 } });
+//#endregion
+//#region src/helpers/theme.ts
+function onThemeChange(callback) {
+	if (__uniConfig.darkmode) UniServiceJSBridge.on(_dcloudio_uni_shared.ON_THEME_CHANGE, callback);
+}
+function parseTheme(pageStyle) {
+	let parsedStyle = {};
+	if (__uniConfig.darkmode) parsedStyle = (0, _dcloudio_uni_shared.normalizeStyles)(pageStyle, __uniConfig.themeConfig, getTheme());
+	return __uniConfig.darkmode ? parsedStyle : pageStyle;
+}
+function useTheme(pageStyle, onThemeChangeCallback) {
+	const isReactivity = (0, vue.isReactive)(pageStyle);
+	const reactivePageStyle = isReactivity ? (0, vue.reactive)(parseTheme(pageStyle)) : parseTheme(pageStyle);
+	if (__uniConfig.darkmode && isReactivity) (0, vue.watch)(pageStyle, (value) => {
+		const _pageStyle = parseTheme(value);
+		for (const key in _pageStyle) reactivePageStyle[key] = _pageStyle[key];
+	});
+	onThemeChangeCallback && onThemeChange(onThemeChangeCallback);
+	return reactivePageStyle;
+}
 //#endregion
 //#region src/framework/components/layout/tabBar.tsx
 var _middleButton = {
@@ -12701,7 +12248,7 @@ var _middleButton = {
 	height: "50px",
 	iconWidth: "24px"
 };
-var tabBar_default = /* @__PURE__ */ defineSystemComponent({
+var tabBar_default = /*#__PURE__*/ defineSystemComponent({
 	name: "TabBar",
 	setup() {
 		const visibleList = (0, vue.ref)([]);
@@ -12931,7 +12478,7 @@ function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, 
 		"src": getRealPath(iconPath)
 	}, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar)], 12, ["onClick"]);
 }
-var layout_default = /* @__PURE__ */ defineSystemComponent({
+var layout_default = /*#__PURE__*/ defineSystemComponent({
 	name: "Layout",
 	setup(_props, { emit }) {
 		const rootRef = (0, vue.ref)(null);
@@ -13242,6 +12789,458 @@ function createRightWindowTsx(rightWindow, layoutState, windowState) {
 			"onClick": () => layoutState.apiShowRightWindow = false
 		}, null, 8, ["onClick"]) : null, (0, vue.createVNode)("div", { "class": "uni-right-window" }, [(0, vue.createVNode)(RightWindow, (0, vue.mergeProps)({ "ref": windowRef }, windowState), null, 16)])], 12, ["data-show"]), [[vue.vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]);
 	}
+}
+function useBackgroundColorContent(pageMeta) {
+	function update() {
+		if (pageMeta.backgroundColorContent) parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent;
+	}
+	onThemeChange(update);
+	(0, vue.watchEffect)(update);
+}
+//#endregion
+//#region src/framework/components/page/transparent.ts
+function usePageHeadTransparentBackgroundColor(backgroundColor) {
+	const { r, g, b } = hexToRgba(backgroundColor);
+	return `rgba(${r},${g},${b},0)`;
+}
+function usePageHeadTransparent(headRef, { id, navigationBar: { titleColor, coverage, backgroundColor } }) {
+	(0, vue.computed)(() => hexToRgba(backgroundColor));
+	id + "";
+}
+//#endregion
+//#region src/framework/components/page/pageHead.tsx
+var ICON_PATHS = {
+	none: "",
+	forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
+	back: ICON_PATH_BACK,
+	select: ICON_PATH_BACK,
+	share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
+	favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
+	home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
+	menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
+	close: ICON_PATH_CLOSE
+};
+var pageHead_default = /*#__PURE__*/ defineSystemComponent({
+	name: "PageHead",
+	setup() {
+		const headRef = (0, vue.ref)(null);
+		const pageMeta = usePageMeta();
+		const navigationBar = useTheme(pageMeta.navigationBar, () => {
+			const _navigationBar = parseTheme(pageMeta.navigationBar);
+			navigationBar.backgroundColor = _navigationBar.backgroundColor;
+			navigationBar.titleColor = _navigationBar.titleColor;
+		});
+		const { clazz, style } = usePageHead(navigationBar);
+		const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
+		const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
+		__UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
+		return () => {
+			const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar, pageMeta.isQuit) : null;
+			const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
+			const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
+			const type = navigationBar.type || "default";
+			const placeholderTsx = type !== "transparent" && type !== "float" && (0, vue.createVNode)("div", { "class": {
+				"uni-placeholder": true,
+				"uni-placeholder-titlePenetrate": navigationBar.titlePenetrate
+			} }, null, 2);
+			return (0, vue.createVNode)("uni-page-head", { "uni-page-head-type": type }, [(0, vue.createVNode)("div", {
+				"ref": headRef,
+				"class": clazz.value,
+				"style": style.value
+			}, [
+				(0, vue.createVNode)("div", { "class": "uni-page-head-hd" }, [backButtonTsx, ...leftButtonsTsx]),
+				createPageHeadBdTsx(navigationBar, searchInput),
+				(0, vue.createVNode)("div", { "class": "uni-page-head-ft" }, [...rightButtonsTsx])
+			], 6), placeholderTsx], 8, ["uni-page-head-type"]);
+		};
+	}
+});
+function createBackButtonTsx(navigationBar, isQuit) {
+	if (!isQuit) return (0, vue.createVNode)("div", {
+		"class": "uni-page-head-btn",
+		"onClick": onPageHeadBackButton
+	}, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 26)], 8, ["onClick"]);
+}
+function createButtonsTsx(btns) {
+	return btns.map(({ onClick, btnClass, btnStyle, btnText, btnIconPath, badgeText, iconStyle, btnSelect }, index) => {
+		return (0, vue.createVNode)("div", {
+			"key": index,
+			"class": btnClass,
+			"style": btnStyle,
+			"onClick": onClick,
+			"badge-text": badgeText
+		}, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : btnSelect ? (0, vue.createVNode)("span", { "style": iconStyle }, [(0, vue.createVNode)("i", {
+			"class": "uni-btn-icon",
+			"innerHTML": btnText
+		}, null, 8, ["innerHTML"]), createSvgIconVNode(ICON_PATHS["select"], "#000", 14)], 4) : (0, vue.createVNode)("i", {
+			"class": "uni-btn-icon",
+			"style": iconStyle,
+			"innerHTML": btnText
+		}, null, 12, ["innerHTML"])], 14, ["onClick", "badge-text"]);
+	});
+}
+function createPageHeadBdTsx(navigationBar, searchInput) {
+	if (!__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ || !navigationBar.searchInput) return createPageHeadTitleTextTsx(navigationBar);
+	return createPageHeadSearchInputTsx(navigationBar, searchInput);
+}
+function createPageHeadTitleTextTsx({ type, loading, titleSize, titleText, titleImage }) {
+	return (0, vue.createVNode)("div", { "class": "uni-page-head-bd" }, [(0, vue.createVNode)("div", {
+		"style": {
+			fontSize: titleSize,
+			opacity: type === "transparent" ? 0 : 1
+		},
+		"class": "uni-page-head__title"
+	}, [loading ? (0, vue.createVNode)("i", { "class": "uni-loading" }, null) : titleImage ? (0, vue.createVNode)("img", {
+		"src": titleImage,
+		"class": "uni-page-head__title_image"
+	}, null, 8, ["src"]) : titleText], 4)]);
+}
+function createPageHeadSearchInputTsx(navigationBar, { text, focus, composing, onBlur, onFocus, onInput, onConfirm, onClick }) {
+	const { color, align, autoFocus, disabled, borderRadius, backgroundColor, placeholder, placeholderColor } = navigationBar.searchInput;
+	const searchStyle = {
+		borderRadius,
+		backgroundColor
+	};
+	const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text.value ? "left" : align}`];
+	return (0, vue.createVNode)("div", {
+		"class": "uni-page-head-search",
+		"style": searchStyle
+	}, [(0, vue.createVNode)("div", {
+		"style": { color: placeholderColor },
+		"class": placeholderClass
+	}, [(0, vue.createVNode)("div", { "class": "uni-page-head-search-icon" }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text.value || composing.value ? "" : placeholder], 6), disabled ? (0, vue.createVNode)(input_default, {
+		"disabled": true,
+		"style": { color },
+		"placeholder-style": "color: " + placeholderColor,
+		"class": "uni-page-head-search-input",
+		"confirm-type": "search",
+		"onClick": onClick
+	}, null, 8, [
+		"style",
+		"placeholder-style",
+		"onClick"
+	]) : (0, vue.createVNode)(input_default, {
+		"focus": autoFocus,
+		"style": { color },
+		"placeholder-style": "color: " + placeholderColor,
+		"class": "uni-page-head-search-input",
+		"confirm-type": "search",
+		"onFocus": onFocus,
+		"onBlur": onBlur,
+		"onInput": onInput,
+		"onConfirm": onConfirm
+	}, null, 8, [
+		"focus",
+		"style",
+		"placeholder-style",
+		"onFocus",
+		"onBlur",
+		"onInput",
+		"onConfirm"
+	])], 4);
+}
+function onPageHeadBackButton() {
+	if (getCurrentPages().length === 1) uni.reLaunch({ url: "/" });
+	else uni.navigateBack({
+		from: "backbutton",
+		success() {}
+	});
+}
+function usePageHead(navigationBar) {
+	return {
+		clazz: (0, vue.computed)(() => {
+			const { type, titlePenetrate, shadowColorType } = navigationBar;
+			const clazz = {
+				"uni-page-head": true,
+				"uni-page-head-transparent": type === "transparent",
+				"uni-page-head-titlePenetrate": titlePenetrate === "YES",
+				"uni-page-head-shadow": !!shadowColorType
+			};
+			if (shadowColorType) clazz[`uni-page-head-shadow-${shadowColorType}`] = true;
+			return clazz;
+		}),
+		style: (0, vue.computed)(() => {
+			return {
+				backgroundColor: __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor,
+				color: navigationBar.titleColor,
+				transitionDuration: navigationBar.duration,
+				transitionTimingFunction: navigationBar.timingFunc
+			};
+		})
+	};
+}
+function usePageHeadButtons({ id, navigationBar }) {
+	const left = [];
+	const right = [];
+	const { buttons } = navigationBar;
+	if ((0, _vue_shared.isArray)(buttons)) {
+		const { type } = navigationBar;
+		const isTransparent = type === "transparent";
+		const fonts = Object.create(null);
+		buttons.forEach((btn, index) => {
+			if (btn.fontSrc && !btn.fontFamily) {
+				const fontSrc = getRealPath(btn.fontSrc);
+				let fontFamily = fonts[fontSrc];
+				if (!fontFamily) {
+					fontFamily = `font${Date.now()}`;
+					fonts[fontSrc] = fontFamily;
+				}
+				btn.fontFamily = fontFamily;
+			}
+			const pageHeadBtn = usePageHeadButton(id, index, btn, isTransparent);
+			if (btn.float === "left") left.push(pageHeadBtn);
+			else right.push(pageHeadBtn);
+		});
+	}
+	return {
+		left,
+		right
+	};
+}
+function usePageHeadButton(pageId, index, btn, isTransparent) {
+	const iconStyle = {
+		color: btn.color,
+		fontSize: btn.fontSize,
+		fontWeight: btn.fontWeight
+	};
+	if (btn.fontFamily) iconStyle.fontFamily = btn.fontFamily;
+	return new Proxy({
+		btnClass: {
+			"uni-page-head-btn": true,
+			"uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
+			"uni-page-head-btn-select": !!btn.select
+		},
+		btnStyle: {
+			backgroundColor: isTransparent ? btn.background : "transparent",
+			width: btn.width
+		},
+		btnText: "",
+		btnIconPath: ICON_PATHS[btn.type],
+		badgeText: btn.badgeText,
+		iconStyle,
+		onClick() {
+			invokeHook(pageId, _dcloudio_uni_shared.ON_NAVIGATION_BAR_BUTTON_TAP, (0, _vue_shared.extend)({ index }, btn));
+		},
+		btnSelect: btn.select
+	}, { get(target, key, receiver) {
+		if (["btnText"].includes(key)) return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
+		else return Reflect.get(target, key, receiver);
+	} });
+}
+function usePageHeadSearchInput({ id, navigationBar: { searchInput } }) {
+	const focus = (0, vue.ref)(false);
+	const text = (0, vue.ref)("");
+	const composing = (0, vue.ref)(false);
+	const { disabled } = searchInput;
+	if (disabled) {
+		const onClick = () => {
+			invokeHook(id, _dcloudio_uni_shared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
+		};
+		return {
+			focus,
+			text,
+			composing,
+			onClick
+		};
+	}
+	const onFocus = () => {
+		focus.value = true;
+		invokeHook(id, _dcloudio_uni_shared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, { focus: true });
+	};
+	const onBlur = () => {
+		focus.value = false;
+		invokeHook(id, _dcloudio_uni_shared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, { focus: false });
+	};
+	const onInput = (evt) => {
+		text.value = evt.detail.value;
+		invokeHook(id, _dcloudio_uni_shared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, { text: text.value });
+	};
+	const onConfirm = (evt) => {
+		invokeHook(id, _dcloudio_uni_shared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, { text: text.value });
+	};
+	return {
+		focus,
+		text,
+		composing,
+		onFocus,
+		onBlur,
+		onInput,
+		onConfirm
+	};
+}
+//#endregion
+//#region src/framework/components/page/page-refresh/component.vue?vue&type=script&lang.ts
+var component_vue_vue_type_script_lang_default = {
+	name: "PageRefresh",
+	setup() {
+		const { pullToRefresh } = usePageMeta();
+		return {
+			offset: pullToRefresh.offset,
+			color: pullToRefresh.color
+		};
+	}
+};
+//#endregion
+//#region \0plugin-vue:export-helper
+var _plugin_vue_export_helper_default = (sfc, props) => {
+	const target = sfc.__vccOpts || sfc;
+	for (const [key, val] of props) target[key] = val;
+	return target;
+};
+//#endregion
+//#region src/framework/components/page/page-refresh/component.vue
+var _hoisted_1 = { class: "uni-page-refresh-inner" };
+var _hoisted_2 = ["fill"];
+var _hoisted_5 = [/* @__PURE__ */ (0, vue.createElementVNode)("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1), /* @__PURE__ */ (0, vue.createElementVNode)("path", {
+	d: "M0 0h24v24H0z",
+	fill: "none"
+}, null, -1)];
+var _hoisted_6 = {
+	class: "uni-page-refresh__spinner",
+	width: "24",
+	height: "24",
+	viewBox: "25 25 50 50"
+};
+var _hoisted_7 = ["stroke"];
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+	return (0, vue.openBlock)(), (0, vue.createElementBlock)("uni-page-refresh", null, [(0, vue.createElementVNode)("div", {
+		style: (0, vue.normalizeStyle)({ "margin-top": $setup.offset + "px" }),
+		class: "uni-page-refresh"
+	}, [(0, vue.createElementVNode)("div", _hoisted_1, [((0, vue.openBlock)(), (0, vue.createElementBlock)("svg", {
+		fill: $setup.color,
+		class: "uni-page-refresh__icon",
+		width: "24",
+		height: "24",
+		viewBox: "0 0 24 24"
+	}, _hoisted_5, 8, _hoisted_2)), ((0, vue.openBlock)(), (0, vue.createElementBlock)("svg", _hoisted_6, [(0, vue.createElementVNode)("circle", {
+		stroke: $setup.color,
+		class: "uni-page-refresh__path",
+		cx: "50",
+		cy: "50",
+		r: "20",
+		fill: "none",
+		"stroke-width": "4",
+		"stroke-miterlimit": "10"
+	}, null, 8, _hoisted_7)]))])], 4)]);
+}
+var component_default = /*#__PURE__*/ _plugin_vue_export_helper_default(component_vue_vue_type_script_lang_default, [["render", _sfc_render]]);
+//#endregion
+//#region src/framework/components/page/pageBody.tsx
+var pageBody_default = /*#__PURE__*/ defineSystemComponent({
+	name: "PageBody",
+	setup(props, ctx) {
+		const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
+		const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && (0, vue.ref)(null);
+		const wrapperRef = (0, vue.ref)(null);
+		const _pageRefresh = null;
+		const pageRefresh = (0, vue.ref)(null);
+		(0, vue.watch)(() => {
+			return pageMeta.enablePullDownRefresh;
+		}, () => {
+			pageRefresh.value = pageMeta.enablePullDownRefresh ? _pageRefresh : null;
+		}, { immediate: true });
+		function _resize() {}
+		return () => {
+			const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef, pageMeta);
+			const pageResizeSensor = (0, vue.createVNode)(resize_sensor_default, { "onResize": _resize }, null, 8, ["onResize"]);
+			return (0, vue.createVNode)(vue.Fragment, null, [pageRefreshTsx, (0, vue.createVNode)("uni-page-wrapper", (0, vue.mergeProps)({ "ref": wrapperRef }, pageRefresh.value), [(0, vue.createVNode)("uni-page-body", null, [(0, vue.renderSlot)(ctx.slots, "default")]), pageResizeSensor], 16)]);
+		};
+	}
+});
+function createPageRefreshTsx(refreshRef, pageMeta) {
+	return (0, vue.createVNode)(component_default, { "ref": refreshRef }, null, 512);
+}
+//#endregion
+//#region src/framework/components/page/index.ts
+var page_default = /*#__PURE__*/ defineSystemComponent({
+	name: "Page",
+	setup(_props, ctx) {
+		let pageMeta = providePageMeta(getStateId());
+		const navigationBar = pageMeta.navigationBar;
+		const pageStyle = {};
+		useDocumentTitle(pageMeta);
+		const currentInstance = (0, vue.getCurrentInstance)();
+		currentInstance.$dialogPages = (0, vue.ref)([]);
+		currentInstance.$systemDialogPages = (0, vue.ref)([]);
+		if (isDialogPageInstance(ctx)) {
+			var _uniRoutes$find;
+			pageMeta.route = ctx.attrs.route;
+			const routePageMeta = (_uniRoutes$find = __uniRoutes.find((route) => route.path === pageMeta.route.split("?")[0])) === null || _uniRoutes$find === void 0 ? void 0 : _uniRoutes$find.meta;
+			if (routePageMeta) {
+				routePageMeta.navigationBar = Object.assign(navigationBar, routePageMeta.navigationBar);
+				pageMeta = Object.assign(pageMeta, routePageMeta);
+			}
+			if (!(routePageMeta === null || routePageMeta === void 0 ? void 0 : routePageMeta.backgroundColorContent)) pageMeta.backgroundColorContent = "transparent";
+			if (!(routePageMeta === null || routePageMeta === void 0 ? void 0 : routePageMeta.navigationBar.style)) pageMeta.navigationBar.style = "custom";
+			if (ctx.attrs["data-type"] === "systemDialog") pageMeta.navigationBar.titleText = "";
+			const parentInstance = (0, vue.inject)("parentInstance");
+			if (currentInstance && parentInstance) {
+				currentInstance.$parentInstance = parentInstance;
+				assignDialogPage(ctx, parentInstance, currentInstance);
+			}
+		} else {
+			useBackgroundColorContent(pageMeta);
+			(0, vue.provide)("parentInstance", currentInstance);
+		}
+		return () => (0, vue.createVNode)("uni-page", {
+			"data-page": pageMeta.route,
+			style: pageStyle
+		}, __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
+			(0, vue.createVNode)(pageHead_default),
+			createPageBodyVNode(ctx),
+			createDialogPageVNode(currentInstance.$dialogPages, currentInstance.$systemDialogPages)
+		] : [createPageBodyVNode(ctx), createDialogPageVNode(currentInstance.$dialogPages, currentInstance.$systemDialogPages)]);
+	}
+});
+function assignDialogPage(ctx, parentInstance, currentInstance) {
+	let parentDialogPages = [];
+	if (isNormalDialogPageInstance(ctx)) parentDialogPages = parentInstance.$dialogPages.value;
+	if (isSystemDialogPageInstance(ctx)) parentDialogPages = parentInstance.$systemDialogPages.value;
+	if (!parentDialogPages.length) return;
+	for (let i = 0; i < parentDialogPages.length; i++) {
+		const dialogPage = parentDialogPages[i];
+		if (!dialogPage.$assigned) {
+			dialogPage.$assigned = true;
+			currentInstance.$dialogPage = dialogPage;
+			break;
+		}
+	}
+}
+function createPageBodyVNode(ctx) {
+	return (0, vue.openBlock)(), (0, vue.createBlock)(pageBody_default, { key: 0 }, {
+		default: (0, vue.withCtx)(() => [(0, vue.renderSlot)(ctx.slots, "page")]),
+		_: 3
+	});
+}
+function createDialogPageVNode(normalDialogPages, systemDialogPages) {
+	const dialogPages = [...normalDialogPages.value.map((page) => ({
+		page,
+		type: DIALOG_TAG
+	})), ...systemDialogPages.value.map((page) => ({
+		page,
+		type: SYSTEM_DIALOG_TAG
+	}))];
+	dialogPages.sort((a, b) => {
+		var _a$page$vm, _b$page$vm;
+		return (((_a$page$vm = a.page.vm) === null || _a$page$vm === void 0 || (_a$page$vm = _a$page$vm.$basePage) === null || _a$page$vm === void 0 ? void 0 : _a$page$vm.id) || Number.MAX_SAFE_INTEGER) - (((_b$page$vm = b.page.vm) === null || _b$page$vm === void 0 || (_b$page$vm = _b$page$vm.$basePage) === null || _b$page$vm === void 0 ? void 0 : _b$page$vm.id) || Number.MAX_SAFE_INTEGER);
+	});
+	return (0, vue.openBlock)(true), (0, vue.createElementBlock)(vue.Fragment, null, (0, vue.renderList)(dialogPages, (dialogPage) => {
+		const { type, page } = dialogPage;
+		const fullUrl = `${page.route}${(0, _dcloudio_uni_shared.stringifyQuery)(page.options)}`;
+		return (0, vue.openBlock)(), (0, vue.createBlock)((0, vue.createVNode)(page.$component, {
+			key: fullUrl,
+			style: {
+				position: "fixed",
+				"z-index": 999,
+				top: 0,
+				right: 0,
+				bottom: 0,
+				left: 0
+			},
+			"data-type": type,
+			route: fullUrl
+		}, null));
+	}));
 }
 //#endregion
 exports.Ad = ad_default;

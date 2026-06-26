@@ -3,7 +3,14 @@ import { camelize, capitalize, extend, hasOwn, invokeArrayFns as invokeArrayFns$
 import { Fragment, camelize as camelize$1, computed, createCommentVNode, createElementBlock, createElementVNode, createMountPage, createVNode, defineComponent, getCurrentGenericInstance, getCurrentInstance, injectHook, isInSSRComponentSetup, nextTick, normalizeClass, normalizeStyle, onBeforeUnmount, onMounted, onUnmounted, openBlock, reactive, ref, renderSlot, unmountPage, watch, watchEffect, withModifiers } from "vue";
 //#region \0rolldown/runtime.js
 var __defProp = Object.defineProperty;
-var __esmMin = (fn, res) => () => (fn && (res = fn(fn = 0)), res);
+var __esmMin = (fn, res, err) => () => {
+	if (err) throw err[0];
+	try {
+		return fn && (res = fn(fn = 0)), res;
+	} catch (e) {
+		throw err = [e], e;
+	}
+};
 var __commonJSMin = (cb, mod) => () => (mod || (cb((mod = { exports: {} }).exports, mod), cb = null), mod.exports);
 var __exportAll = (all, no_symbols) => {
 	let target = {};
@@ -919,6 +926,86 @@ function defineGlobalData(app, defaultGlobalData) {
 	});
 }
 //#endregion
+//#region ../uni-api/src/helpers/interceptor.ts
+var HOOK_SUCCESS = "success";
+var HOOK_FAIL = "fail";
+var HOOK_COMPLETE = "complete";
+var globalInterceptors = {};
+var scopedInterceptors = {};
+function wrapperHook(hook, params) {
+	return function(data) {
+		return hook(data, params) || data;
+	};
+}
+function queue(hooks, data, params) {
+	var promise = false;
+	for (var i = 0; i < hooks.length; i++) {
+		var hook = hooks[i];
+		if (promise) promise = Promise.resolve(wrapperHook(hook, params));
+		else {
+			var res = hook(data, params);
+			if (isPromise(res)) promise = Promise.resolve(res);
+			if (res === false) return {
+				then() {},
+				catch() {}
+			};
+		}
+	}
+	return promise || {
+		then(callback) {
+			return callback(data);
+		},
+		catch() {}
+	};
+}
+function wrapperOptions(interceptors) {
+	var options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+	[
+		HOOK_SUCCESS,
+		HOOK_FAIL,
+		HOOK_COMPLETE
+	].forEach((name) => {
+		var hooks = interceptors[name];
+		if (!isArray(hooks)) return;
+		var oldCallback = options[name];
+		options[name] = function callbackInterceptor(res) {
+			queue(hooks, res, options).then((res) => {
+				return isFunction(oldCallback) && oldCallback(res) || res;
+			});
+		};
+	});
+	return options;
+}
+function wrapperReturnValue(method, returnValue) {
+	var returnValueHooks = [];
+	if (isArray(globalInterceptors.returnValue)) returnValueHooks.push(...globalInterceptors.returnValue);
+	var interceptor = scopedInterceptors[method];
+	if (interceptor && isArray(interceptor.returnValue)) returnValueHooks.push(...interceptor.returnValue);
+	returnValueHooks.forEach((hook) => {
+		returnValue = hook(returnValue) || returnValue;
+	});
+	return returnValue;
+}
+function getApiInterceptorHooks(method) {
+	var interceptor = Object.create(null);
+	Object.keys(globalInterceptors).forEach((hook) => {
+		if (hook !== "returnValue") interceptor[hook] = globalInterceptors[hook].slice();
+	});
+	var scopedInterceptor = scopedInterceptors[method];
+	if (scopedInterceptor) Object.keys(scopedInterceptor).forEach((hook) => {
+		if (hook !== "returnValue") interceptor[hook] = (interceptor[hook] || []).concat(scopedInterceptor[hook]);
+	});
+	return interceptor;
+}
+function invokeApi(method, api, options, params) {
+	var interceptor = getApiInterceptorHooks(method);
+	if (interceptor && Object.keys(interceptor).length) if (isArray(interceptor.invoke)) return queue(interceptor.invoke, options).then((options) => {
+		return api(wrapperOptions(getApiInterceptorHooks(method), options), ...params);
+	});
+	else return api(wrapperOptions(interceptor, options), ...params);
+	return api(options, ...params);
+}
+//#endregion
 //#region ../uni-api/src/helpers/api/catch.ts
 function tryCatch(fn) {
 	return function() {
@@ -1010,86 +1097,6 @@ function createAsyncApiCallback(name) {
 		hasComplete && complete(res);
 	});
 	return callbackId;
-}
-//#endregion
-//#region ../uni-api/src/helpers/interceptor.ts
-var HOOK_SUCCESS = "success";
-var HOOK_FAIL = "fail";
-var HOOK_COMPLETE = "complete";
-var globalInterceptors = {};
-var scopedInterceptors = {};
-function wrapperHook(hook, params) {
-	return function(data) {
-		return hook(data, params) || data;
-	};
-}
-function queue(hooks, data, params) {
-	var promise = false;
-	for (var i = 0; i < hooks.length; i++) {
-		var hook = hooks[i];
-		if (promise) promise = Promise.resolve(wrapperHook(hook, params));
-		else {
-			var res = hook(data, params);
-			if (isPromise(res)) promise = Promise.resolve(res);
-			if (res === false) return {
-				then() {},
-				catch() {}
-			};
-		}
-	}
-	return promise || {
-		then(callback) {
-			return callback(data);
-		},
-		catch() {}
-	};
-}
-function wrapperOptions(interceptors) {
-	var options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
-	[
-		HOOK_SUCCESS,
-		HOOK_FAIL,
-		HOOK_COMPLETE
-	].forEach((name) => {
-		var hooks = interceptors[name];
-		if (!isArray(hooks)) return;
-		var oldCallback = options[name];
-		options[name] = function callbackInterceptor(res) {
-			queue(hooks, res, options).then((res) => {
-				return isFunction(oldCallback) && oldCallback(res) || res;
-			});
-		};
-	});
-	return options;
-}
-function wrapperReturnValue(method, returnValue) {
-	var returnValueHooks = [];
-	if (isArray(globalInterceptors.returnValue)) returnValueHooks.push(...globalInterceptors.returnValue);
-	var interceptor = scopedInterceptors[method];
-	if (interceptor && isArray(interceptor.returnValue)) returnValueHooks.push(...interceptor.returnValue);
-	returnValueHooks.forEach((hook) => {
-		returnValue = hook(returnValue) || returnValue;
-	});
-	return returnValue;
-}
-function getApiInterceptorHooks(method) {
-	var interceptor = Object.create(null);
-	Object.keys(globalInterceptors).forEach((hook) => {
-		if (hook !== "returnValue") interceptor[hook] = globalInterceptors[hook].slice();
-	});
-	var scopedInterceptor = scopedInterceptors[method];
-	if (scopedInterceptor) Object.keys(scopedInterceptor).forEach((hook) => {
-		if (hook !== "returnValue") interceptor[hook] = (interceptor[hook] || []).concat(scopedInterceptor[hook]);
-	});
-	return interceptor;
-}
-function invokeApi(method, api, options, params) {
-	var interceptor = getApiInterceptorHooks(method);
-	if (interceptor && Object.keys(interceptor).length) if (isArray(interceptor.invoke)) return queue(interceptor.invoke, options).then((options) => {
-		return api(wrapperOptions(getApiInterceptorHooks(method), options), ...params);
-	});
-	else return api(wrapperOptions(interceptor, options), ...params);
-	return api(options, ...params);
 }
 //#endregion
 //#region ../uni-api/src/helpers/api/promise.ts
@@ -1229,6 +1236,457 @@ function defineAsyncApi(name, fn, protocol, options) {
 	return promisify(name, wrapperAsyncApi(name, fn, void 0, options));
 }
 //#endregion
+//#region ../uni-api/src/protocols/base/interceptor.ts
+var API_ADD_INTERCEPTOR = "addInterceptor";
+var API_REMOVE_INTERCEPTOR = "removeInterceptor";
+var AddInterceptorProtocol = [{
+	name: "method",
+	type: [String, Object],
+	required: true
+}];
+var RemoveInterceptorProtocol = AddInterceptorProtocol;
+//#endregion
+//#region ../uni-api/src/service/base/interceptor.ts
+function mergeInterceptorHook(interceptors, interceptor) {
+	Object.keys(interceptor).forEach((hook) => {
+		if (isFunction(interceptor[hook])) interceptors[hook] = mergeHook(interceptors[hook], interceptor[hook]);
+	});
+}
+function removeInterceptorHook(interceptors, interceptor) {
+	if (!interceptors || !interceptor) return;
+	Object.keys(interceptor).forEach((name) => {
+		var hooks = interceptors[name];
+		var hook = interceptor[name];
+		if (isArray(hooks) && isFunction(hook)) remove(hooks, hook);
+	});
+}
+function mergeHook(parentVal, childVal) {
+	var res = childVal ? parentVal ? parentVal.concat(childVal) : isArray(childVal) ? childVal : [childVal] : parentVal;
+	return res ? dedupeHooks(res) : res;
+}
+function dedupeHooks(hooks) {
+	var res = [];
+	for (var i = 0; i < hooks.length; i++) if (res.indexOf(hooks[i]) === -1) res.push(hooks[i]);
+	return res;
+}
+var addInterceptor = /*#__PURE__*/ defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
+	if (isString(method) && isPlainObject(interceptor)) mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
+	else if (isPlainObject(method)) mergeInterceptorHook(globalInterceptors, method);
+}, AddInterceptorProtocol);
+var removeInterceptor = /*#__PURE__*/ defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
+	if (isString(method)) if (isPlainObject(interceptor)) removeInterceptorHook(scopedInterceptors[method], interceptor);
+	else delete scopedInterceptors[method];
+	else if (isPlainObject(method)) removeInterceptorHook(globalInterceptors, method);
+}, RemoveInterceptorProtocol);
+//#endregion
+//#region ../uni-api/src/protocols/base/eventBus.ts
+var OnProtocol = [{
+	name: "event",
+	type: String,
+	required: true
+}, {
+	name: "callback",
+	type: Function,
+	required: true
+}];
+var API_ONCE = "$once";
+var OnceProtocol = OnProtocol;
+var API_OFF = "$off";
+var OffProtocol = [{
+	name: "event",
+	type: [String, Array]
+}, {
+	name: "callback",
+	type: [Function, Number]
+}];
+var API_EMIT = "$emit";
+var EmitProtocol = [{
+	name: "event",
+	type: String,
+	required: true
+}];
+//#endregion
+//#region ../uni-api/src/service/base/eventBus.ts
+var EventBus = class {
+	constructor() {
+		this.$emitter = new Emitter();
+	}
+	on(name, callback) {
+		return this.$emitter.on(name, callback);
+	}
+	once(name, callback) {
+		return this.$emitter.once(name, callback);
+	}
+	off(name, callback) {
+		if (!name) {
+			this.$emitter.e = {};
+			return;
+		}
+		this.$emitter.off(name, callback);
+	}
+	emit(name) {
+		for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) args[_key - 1] = arguments[_key];
+		this.$emitter.emit(name, ...args);
+	}
+};
+var eventBus = new EventBus();
+var $on = /*#__PURE__*/ defineSyncApi("$on", (name, callback) => {
+	return eventBus.on(name, callback);
+}, OnProtocol);
+var $once = /*#__PURE__*/ defineSyncApi(API_ONCE, (name, callback) => {
+	return eventBus.once(name, callback);
+}, OnceProtocol);
+var $off = /*#__PURE__*/ defineSyncApi(API_OFF, (name, callback) => {
+	if (!isArray(name)) name = name ? [name] : [];
+	name.forEach((n) => {
+		eventBus.off(n, callback);
+		if (typeof __uniappx__nativeEventBus !== "undefined") __uniappx__nativeEventBus.off(n, callback);
+	});
+}, OffProtocol);
+var $emit = /*#__PURE__*/ defineSyncApi(API_EMIT, function(name) {
+	for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) args[_key2 - 1] = arguments[_key2];
+	eventBus.emit(name, ...args);
+}, EmitProtocol);
+//#endregion
+//#region ../uni-api/src/service/base/__f__.ts
+function __f__(type, filename) {
+	for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) args[_key - 2] = arguments[_key];
+	if (filename) args.push(filename);
+	console[type].apply(console, args);
+}
+cacheStringFunction((filepath) => {
+	return plus.io.convertLocalFileSystemURL(filepath).replace(/^\/?apps\//, "/android_asset/apps/").replace(/\/$/, "");
+});
+//#endregion
+//#region src/service/framework/app/utils.ts
+function backbuttonListener() {
+	uni.navigateBack({
+		from: "backbutton",
+		success() {}
+	});
+}
+var enterOptions$1 = /*#__PURE__*/ createLaunchOptions();
+var launchOptions$1 = /*#__PURE__*/ createLaunchOptions();
+function getLaunchOptions() {
+	return extend({}, launchOptions$1);
+}
+function initLaunchOptions(_ref2) {
+	var { path, query, referrerInfo, appScheme, appLink } = _ref2;
+	extend(launchOptions$1, {
+		path,
+		query: query ? parseQuery(query) : {},
+		referrerInfo: referrerInfo || {},
+		channel: void 0,
+		launcher: void 0,
+		appScheme,
+		appLink
+	});
+	launchOptions$1.query = new UTSJSONObject(launchOptions$1.query);
+	extend(enterOptions$1, launchOptions$1);
+	return enterOptions$1;
+}
+//#endregion
+//#region ../uni-api/src/service/lifecycle/app.ts
+var appHooks = {
+	[ON_UNHANDLE_REJECTION]: [],
+	[ON_PAGE_NOT_FOUND]: [],
+	[ON_ERROR]: [],
+	[ON_SHOW]: [],
+	[ON_HIDE]: []
+};
+function injectAppHooks(appInstance) {
+	Object.keys(appHooks).forEach((type) => {
+		appHooks[type].forEach((hook) => {
+			injectHook(type, hook, appInstance);
+		});
+	});
+}
+//#endregion
+//#region ../uni-api/src/protocols/route/encodeQueryString.ts
+function encodeQueryString(url) {
+	if (!isString(url)) return url;
+	var index = url.indexOf("?");
+	if (index === -1) return url;
+	var query = url.slice(index + 1).trim().replace(/^(\?|#|&)/, "");
+	if (!query) return url;
+	url = url.slice(0, index);
+	var params = [];
+	query.split("&").forEach((param) => {
+		var parts = param.replace(/\+/g, " ").split("=");
+		var key = parts.shift();
+		var val = parts.length > 0 ? parts.join("=") : "";
+		params.push(key + "=" + encodeURIComponent(val));
+	});
+	return params.length ? url + "?" + params.join("&") : url;
+}
+//#endregion
+//#region ../uni-api/src/protocols/route/route.ts
+var ANIMATION_IN = [
+	"slide-in-right",
+	"slide-in-left",
+	"slide-in-top",
+	"slide-in-bottom",
+	"fade-in",
+	"zoom-out",
+	"zoom-fade-out",
+	"pop-in",
+	"none"
+];
+var ANIMATION_OUT = [
+	"slide-out-right",
+	"slide-out-left",
+	"slide-out-top",
+	"slide-out-bottom",
+	"fade-out",
+	"zoom-in",
+	"zoom-fade-in",
+	"pop-out",
+	"none"
+];
+var BaseRouteProtocol = { url: {
+	type: String,
+	required: true
+} };
+var API_NAVIGATE_TO = "navigateTo";
+var API_REDIRECT_TO = "redirectTo";
+var API_RE_LAUNCH = "reLaunch";
+var API_SWITCH_TAB = "switchTab";
+var API_NAVIGATE_BACK = "navigateBack";
+var NavigateToProtocol = /*#__PURE__*/ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
+var NavigateBackProtocol = /*#__PURE__*/ extend({ delta: { type: Number } }, createAnimationProtocol(ANIMATION_OUT));
+var RedirectToProtocol = BaseRouteProtocol;
+var ReLaunchProtocol = BaseRouteProtocol;
+var SwitchTabProtocol = BaseRouteProtocol;
+var NavigateToOptions = /*#__PURE__*/ createRouteOptions(API_NAVIGATE_TO);
+var RedirectToOptions = /*#__PURE__*/ createRouteOptions(API_REDIRECT_TO);
+var ReLaunchOptions = /*#__PURE__*/ createRouteOptions(API_RE_LAUNCH);
+var SwitchTabOptions = /*#__PURE__*/ createRouteOptions(API_SWITCH_TAB);
+var NavigateBackOptions = { formatArgs: { delta(value, params) {
+	value = parseInt(value + "") || 1;
+	params.delta = Math.min(getCurrentPages().length - 1, value);
+} } };
+function createAnimationProtocol(animationTypes) {
+	return {
+		animationType: {
+			type: String,
+			validator(type) {
+				if (type && animationTypes.indexOf(type) === -1) return "`" + type + "` is not supported for `animationType` (supported values are: `" + animationTypes.join("`|`") + "`)";
+			}
+		},
+		animationDuration: { type: Number }
+	};
+}
+var navigatorLock;
+function beforeRoute() {
+	navigatorLock = "";
+}
+function createRouteOptions(type) {
+	return {
+		formatArgs: { url: createNormalizeUrl(type) },
+		beforeAll: beforeRoute
+	};
+}
+function createNormalizeUrl(type) {
+	return function normalizeUrl(url, params) {
+		if (!url) return "Missing required args: \"url\"";
+		url = normalizeRoute(url);
+		var pagePath = url.split("?")[0];
+		var routeOptions = getRouteOptions(pagePath, true);
+		if (!routeOptions) return "page `" + url + "` is not found";
+		if (type === "navigateTo" || type === "redirectTo") {
+			if (routeOptions.meta.isTabBar) return "can not ".concat(type, " a tabbar page");
+		} else if (type === "switchTab") {
+			if (!routeOptions.meta.isTabBar) return "can not switch to no-tabBar page";
+		}
+		if ((type === "switchTab" || type === "preloadPage") && routeOptions.meta.isTabBar && params.openType !== "appLaunch") url = pagePath;
+		if (routeOptions.meta.isEntry) url = url.replace(routeOptions.alias, "/");
+		params.url = encodeQueryString(url);
+		if (type === "unPreloadPage") return;
+		else if (type === "preloadPage") {
+			if (!routeOptions.meta.isNVue) return "can not preload vue page";
+			if (routeOptions.meta.isTabBar) {
+				var pages = getCurrentPages();
+				var tabBarPagePath = routeOptions.path.slice(1);
+				if (pages.find((page) => page.route === tabBarPagePath)) return "tabBar page `" + tabBarPagePath + "` already exists";
+			}
+			return;
+		}
+		if (navigatorLock === url && params.openType !== "appLaunch") return "".concat(navigatorLock, " locked");
+		if (__uniConfig.ready) navigatorLock = url;
+	};
+}
+//#endregion
+//#region ../uni-api/src/protocols/ui/loadFontFace.ts
+var API_LOAD_FONT_FACE = "loadFontFace";
+var LoadFontFaceProtocol = {
+	family: {
+		type: String,
+		required: true
+	},
+	source: {
+		type: String,
+		required: true
+	},
+	desc: Object
+};
+//#endregion
+//#region ../uni-api/src/protocols/ui/navigationBar.ts
+var FRONT_COLORS = ["#ffffff", "#000000"];
+var API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
+var SetNavigationBarColorOptions = { formatArgs: { animation(animation, params) {
+	if (!animation) animation = {
+		duration: 0,
+		timingFunc: "linear"
+	};
+	params.animation = {
+		duration: animation.duration || 0,
+		timingFunc: animation.timingFunc || "linear"
+	};
+} } };
+var SetNavigationBarColorProtocol = {
+	frontColor: {
+		type: String,
+		required: true,
+		validator(frontColor) {
+			if (FRONT_COLORS.indexOf(frontColor) === -1) return "invalid frontColor \"".concat(frontColor, "\"");
+		}
+	},
+	backgroundColor: {
+		type: String,
+		required: true
+	},
+	animation: Object
+};
+var API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
+var SetNavigationBarTitleProtocol = { title: {
+	type: String,
+	required: true
+} };
+//#endregion
+//#region ../uni-api/src/protocols/ui/pageScrollTo.ts
+var API_PAGE_SCROLL_TO = "pageScrollTo";
+var PageScrollToProtocol = {
+	scrollTop: Number,
+	selector: String,
+	duration: Number
+};
+var PageScrollToOptions = { formatArgs: { duration: 300 } };
+//#endregion
+//#region ../uni-api/src/protocols/ui/startPullDownRefresh.ts
+var API_START_PULL_DOWN_REFRESH = "startPullDownRefresh";
+//#endregion
+//#region ../uni-api/src/protocols/ui/stopPullDownRefresh.ts
+var API_STOP_PULL_DOWN_REFRESH = "stopPullDownRefresh";
+//#endregion
+//#region ../uni-api/src/protocols/ui/tabBar.ts
+var IndexProtocol = { index: {
+	type: Number,
+	required: true
+} };
+var IndexOptions = {
+	beforeInvoke() {
+		var pageMeta = getCurrentPageMeta();
+		if (pageMeta && !pageMeta.isTabBar) return "not TabBar page";
+	},
+	formatArgs: { index(value) {
+		if (!__uniConfig.tabBar.list[value]) return "tabbar item not found";
+	} }
+};
+var API_SET_TAB_BAR_ITEM = "setTabBarItem";
+var SetTabBarItemProtocol = /*#__PURE__*/ extend({
+	text: String,
+	iconPath: String,
+	selectedIconPath: String,
+	pagePath: String
+}, IndexProtocol);
+var SetTabBarItemOptions = {
+	beforeInvoke: IndexOptions.beforeInvoke,
+	formatArgs: /*#__PURE__*/ extend({ pagePath(value, params) {
+		if (value) params.pagePath = removeLeadingSlash(value);
+	} }, IndexOptions.formatArgs)
+};
+var API_SET_TAB_BAR_STYLE = "setTabBarStyle";
+var SetTabBarStyleProtocol = {
+	color: String,
+	selectedColor: String,
+	backgroundColor: String,
+	backgroundImage: String,
+	backgroundRepeat: String,
+	borderStyle: String
+};
+var SetTabBarStyleOptions = {
+	beforeInvoke: IndexOptions.beforeInvoke,
+	formatArgs: {
+		backgroundImage(value, params) {
+			params.backgroundImage = value;
+		},
+		borderStyle(value, params) {
+			if (value) params.borderStyle = value === "white" ? "white" : "black";
+		}
+	}
+};
+var API_HIDE_TAB_BAR = "hideTabBar";
+var HideTabBarProtocol = { animation: Boolean };
+var API_SHOW_TAB_BAR = "showTabBar";
+var ShowTabBarProtocol = HideTabBarProtocol;
+var API_HIDE_TAB_BAR_RED_DOT = "hideTabBarRedDot";
+var HideTabBarRedDotProtocol = IndexProtocol;
+var HideTabBarRedDotOptions = IndexOptions;
+var API_SHOW_TAB_BAR_RED_DOT = "showTabBarRedDot";
+var ShowTabBarRedDotProtocol = IndexProtocol;
+var ShowTabBarRedDotOptions = IndexOptions;
+var API_REMOVE_TAB_BAR_BADGE = "removeTabBarBadge";
+var RemoveTabBarBadgeProtocol = IndexProtocol;
+var RemoveTabBarBadgeOptions = IndexOptions;
+var API_SET_TAB_BAR_BADGE = "setTabBarBadge";
+var SetTabBarBadgeProtocol = /*#__PURE__*/ extend({ text: {
+	type: String,
+	required: true
+} }, IndexProtocol);
+var SetTabBarBadgeOptions = {
+	beforeInvoke: IndexOptions.beforeInvoke,
+	formatArgs: /*#__PURE__*/ extend({ text(value, params) {
+		if (getLen(value) >= 4) params.text = "...";
+	} }, IndexOptions.formatArgs)
+};
+//#endregion
+//#region src/service/constants.ts
+var downgrade = false;
+var ANI_SHOW = downgrade ? "slide-in-right" : "pop-in";
+var ANI_CLOSE = downgrade ? "slide-out-right" : "pop-out";
+//#endregion
+//#region src/x/api/route/webview.ts
+init_web_dom_iterable();
+function showWebview(nPage, animationType, animationDuration, showCallback) {
+	nPage.show(/* @__PURE__ */ new Map([["animationType", animationType], ["animationDuration", animationDuration]]), showCallback);
+}
+function closeWebview(nPage, animationType, animationDuration, callback) {
+	var options = /* @__PURE__ */ new Map([["animationType", animationType]]);
+	if (typeof animationDuration === "number") options.set("animationDuration", animationDuration);
+	nPage.close(options, callback);
+}
+//#endregion
+//#region src/service/framework/webview/utils.ts
+var id = 1;
+function getWebviewId() {
+	return id;
+}
+function genWebviewId() {
+	return id++;
+}
+function resetWebviewId() {
+	id = 1;
+}
+//#endregion
+//#region src/service/framework/page/routeOptions.ts
+function initRouteOptions(path, openType) {
+	var routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)));
+	routeOptions.meta = initRouteMeta(routeOptions.meta);
+	if (openType !== "preloadPage" && !__uniConfig.realEntryPagePath && (openType === "reLaunch" || getCurrentPages().length === 0)) routeOptions.meta.isQuit = true;
+	else if (!routeOptions.meta.isTabBar) routeOptions.meta.isQuit = false;
+	return routeOptions;
+}
+//#endregion
 //#region src/service/framework/app/vueApp.ts
 var vueApp;
 function getVueApp() {
@@ -1288,37 +1746,6 @@ function removePage(curPage) {
 		ins.$.page.vm = null;
 		ins.$.page = null;
 	}
-}
-cacheStringFunction((filepath) => {
-	return plus.io.convertLocalFileSystemURL(filepath).replace(/^\/?apps\//, "/android_asset/apps/").replace(/\/$/, "");
-});
-//#endregion
-//#region src/service/framework/app/utils.ts
-function backbuttonListener() {
-	uni.navigateBack({
-		from: "backbutton",
-		success() {}
-	});
-}
-var enterOptions$1 = /* @__PURE__ */ createLaunchOptions();
-var launchOptions$1 = /* @__PURE__ */ createLaunchOptions();
-function getLaunchOptions() {
-	return extend({}, launchOptions$1);
-}
-function initLaunchOptions(_ref2) {
-	var { path, query, referrerInfo, appScheme, appLink } = _ref2;
-	extend(launchOptions$1, {
-		path,
-		query: query ? parseQuery(query) : {},
-		referrerInfo: referrerInfo || {},
-		channel: void 0,
-		launcher: void 0,
-		appScheme,
-		appLink
-	});
-	launchOptions$1.query = new UTSJSONObject(launchOptions$1.query);
-	extend(enterOptions$1, launchOptions$1);
-	return enterOptions$1;
 }
 //#endregion
 //#region src/x/constants.ts
@@ -1405,7 +1832,7 @@ function getLoadFontFaceOptions(options, res) {
 * 注意：iOS 目前不支持页面级别的加载，功能实际不生效。
 * 只支持全局加载
 */
-var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, res) => {
+var loadFontFace = /*#__PURE__*/ defineAsyncApi(API_LOAD_FONT_FACE, (options, res) => {
 	options.source = removeUrlWrap(options.source);
 	if (options.global === true) {
 		var app = getNativeApp();
@@ -1546,32 +1973,6 @@ function clonedPageComponent(component) {
 	return extend({}, component);
 }
 //#endregion
-//#region src/service/framework/page/routeOptions.ts
-function initRouteOptions(path, openType) {
-	var routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)));
-	routeOptions.meta = initRouteMeta(routeOptions.meta);
-	if (openType !== "preloadPage" && !__uniConfig.realEntryPagePath && (openType === "reLaunch" || getCurrentPages().length === 0)) routeOptions.meta.isQuit = true;
-	else if (!routeOptions.meta.isTabBar) routeOptions.meta.isQuit = false;
-	return routeOptions;
-}
-//#endregion
-//#region src/service/framework/webview/utils.ts
-var id = 1;
-function getWebviewId() {
-	return id;
-}
-function genWebviewId() {
-	return id++;
-}
-function resetWebviewId() {
-	id = 1;
-}
-//#endregion
-//#region src/service/constants.ts
-var downgrade = false;
-var ANI_SHOW = downgrade ? "slide-in-right" : "pop-in";
-var ANI_CLOSE = downgrade ? "slide-out-right" : "pop-out";
-//#endregion
 //#region src/x/framework/route/index.ts
 function hasLeadingSlash(str) {
 	return str.indexOf("/") == 0;
@@ -1607,435 +2008,6 @@ function registerSystemRoute(route, page) {
 	definePage(route, page);
 }
 //#endregion
-//#region ../uni-api/src/protocols/base/interceptor.ts
-var API_ADD_INTERCEPTOR = "addInterceptor";
-var API_REMOVE_INTERCEPTOR = "removeInterceptor";
-var AddInterceptorProtocol = [{
-	name: "method",
-	type: [String, Object],
-	required: true
-}];
-var RemoveInterceptorProtocol = AddInterceptorProtocol;
-//#endregion
-//#region ../uni-api/src/service/base/interceptor.ts
-function mergeInterceptorHook(interceptors, interceptor) {
-	Object.keys(interceptor).forEach((hook) => {
-		if (isFunction(interceptor[hook])) interceptors[hook] = mergeHook(interceptors[hook], interceptor[hook]);
-	});
-}
-function removeInterceptorHook(interceptors, interceptor) {
-	if (!interceptors || !interceptor) return;
-	Object.keys(interceptor).forEach((name) => {
-		var hooks = interceptors[name];
-		var hook = interceptor[name];
-		if (isArray(hooks) && isFunction(hook)) remove(hooks, hook);
-	});
-}
-function mergeHook(parentVal, childVal) {
-	var res = childVal ? parentVal ? parentVal.concat(childVal) : isArray(childVal) ? childVal : [childVal] : parentVal;
-	return res ? dedupeHooks(res) : res;
-}
-function dedupeHooks(hooks) {
-	var res = [];
-	for (var i = 0; i < hooks.length; i++) if (res.indexOf(hooks[i]) === -1) res.push(hooks[i]);
-	return res;
-}
-var addInterceptor = /* @__PURE__ */ defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
-	if (isString(method) && isPlainObject(interceptor)) mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
-	else if (isPlainObject(method)) mergeInterceptorHook(globalInterceptors, method);
-}, AddInterceptorProtocol);
-var removeInterceptor = /* @__PURE__ */ defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
-	if (isString(method)) if (isPlainObject(interceptor)) removeInterceptorHook(scopedInterceptors[method], interceptor);
-	else delete scopedInterceptors[method];
-	else if (isPlainObject(method)) removeInterceptorHook(globalInterceptors, method);
-}, RemoveInterceptorProtocol);
-//#endregion
-//#region ../uni-api/src/protocols/base/eventBus.ts
-var OnProtocol = [{
-	name: "event",
-	type: String,
-	required: true
-}, {
-	name: "callback",
-	type: Function,
-	required: true
-}];
-var API_ONCE = "$once";
-var OnceProtocol = OnProtocol;
-var API_OFF = "$off";
-var OffProtocol = [{
-	name: "event",
-	type: [String, Array]
-}, {
-	name: "callback",
-	type: [Function, Number]
-}];
-var API_EMIT = "$emit";
-var EmitProtocol = [{
-	name: "event",
-	type: String,
-	required: true
-}];
-//#endregion
-//#region ../uni-api/src/service/base/eventBus.ts
-var EventBus = class {
-	constructor() {
-		this.$emitter = new Emitter();
-	}
-	on(name, callback) {
-		return this.$emitter.on(name, callback);
-	}
-	once(name, callback) {
-		return this.$emitter.once(name, callback);
-	}
-	off(name, callback) {
-		if (!name) {
-			this.$emitter.e = {};
-			return;
-		}
-		this.$emitter.off(name, callback);
-	}
-	emit(name) {
-		for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) args[_key - 1] = arguments[_key];
-		this.$emitter.emit(name, ...args);
-	}
-};
-var eventBus = new EventBus();
-var $on = /* @__PURE__ */ defineSyncApi("$on", (name, callback) => {
-	return eventBus.on(name, callback);
-}, OnProtocol);
-var $once = /* @__PURE__ */ defineSyncApi(API_ONCE, (name, callback) => {
-	return eventBus.once(name, callback);
-}, OnceProtocol);
-var $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
-	if (!isArray(name)) name = name ? [name] : [];
-	name.forEach((n) => {
-		eventBus.off(n, callback);
-		if (typeof __uniappx__nativeEventBus !== "undefined") __uniappx__nativeEventBus.off(n, callback);
-	});
-}, OffProtocol);
-var $emit = /* @__PURE__ */ defineSyncApi(API_EMIT, function(name) {
-	for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) args[_key2 - 1] = arguments[_key2];
-	eventBus.emit(name, ...args);
-}, EmitProtocol);
-//#endregion
-//#region ../uni-api/src/service/base/__f__.ts
-function __f__(type, filename) {
-	for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) args[_key - 2] = arguments[_key];
-	if (filename) args.push(filename);
-	console[type].apply(console, args);
-}
-//#endregion
-//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_object-pie.js
-var require__object_pie = /* @__PURE__ */ __commonJSMin(((exports) => {
-	exports.f = {}.propertyIsEnumerable;
-}));
-//#endregion
-//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_object-to-array.js
-var require__object_to_array = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	var DESCRIPTORS = require__descriptors();
-	var getKeys = require__object_keys();
-	var toIObject = require__to_iobject();
-	var isEnum = require__object_pie().f;
-	module.exports = function(isEntries) {
-		return function(it) {
-			var O = toIObject(it);
-			var keys = getKeys(O);
-			var length = keys.length;
-			var i = 0;
-			var result = [];
-			var key;
-			while (length > i) {
-				key = keys[i++];
-				if (!DESCRIPTORS || isEnum.call(O, key)) result.push(isEntries ? [key, O[key]] : O[key]);
-			}
-			return result;
-		};
-	};
-}));
-//#endregion
-//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/es7.object.values.js
-var $export = require__export();
-var $values = require__object_to_array()(false);
-$export($export.S, "Object", { values: function values(it) {
-	return $values(it);
-} });
-//#endregion
-//#region ../uni-api/src/service/lifecycle/app.ts
-var appHooks = {
-	[ON_UNHANDLE_REJECTION]: [],
-	[ON_PAGE_NOT_FOUND]: [],
-	[ON_ERROR]: [],
-	[ON_SHOW]: [],
-	[ON_HIDE]: []
-};
-function injectAppHooks(appInstance) {
-	Object.keys(appHooks).forEach((type) => {
-		appHooks[type].forEach((hook) => {
-			injectHook(type, hook, appInstance);
-		});
-	});
-}
-//#endregion
-//#region ../uni-api/src/protocols/route/encodeQueryString.ts
-function encodeQueryString(url) {
-	if (!isString(url)) return url;
-	var index = url.indexOf("?");
-	if (index === -1) return url;
-	var query = url.slice(index + 1).trim().replace(/^(\?|#|&)/, "");
-	if (!query) return url;
-	url = url.slice(0, index);
-	var params = [];
-	query.split("&").forEach((param) => {
-		var parts = param.replace(/\+/g, " ").split("=");
-		var key = parts.shift();
-		var val = parts.length > 0 ? parts.join("=") : "";
-		params.push(key + "=" + encodeURIComponent(val));
-	});
-	return params.length ? url + "?" + params.join("&") : url;
-}
-//#endregion
-//#region ../uni-api/src/protocols/route/route.ts
-var ANIMATION_IN = [
-	"slide-in-right",
-	"slide-in-left",
-	"slide-in-top",
-	"slide-in-bottom",
-	"fade-in",
-	"zoom-out",
-	"zoom-fade-out",
-	"pop-in",
-	"none"
-];
-var ANIMATION_OUT = [
-	"slide-out-right",
-	"slide-out-left",
-	"slide-out-top",
-	"slide-out-bottom",
-	"fade-out",
-	"zoom-in",
-	"zoom-fade-in",
-	"pop-out",
-	"none"
-];
-var BaseRouteProtocol = { url: {
-	type: String,
-	required: true
-} };
-var API_NAVIGATE_TO = "navigateTo";
-var API_REDIRECT_TO = "redirectTo";
-var API_RE_LAUNCH = "reLaunch";
-var API_SWITCH_TAB = "switchTab";
-var API_NAVIGATE_BACK = "navigateBack";
-var NavigateToProtocol = /* @__PURE__ */ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
-var NavigateBackProtocol = /* @__PURE__ */ extend({ delta: { type: Number } }, createAnimationProtocol(ANIMATION_OUT));
-var RedirectToProtocol = BaseRouteProtocol;
-var ReLaunchProtocol = BaseRouteProtocol;
-var SwitchTabProtocol = BaseRouteProtocol;
-var NavigateToOptions = /* @__PURE__ */ createRouteOptions(API_NAVIGATE_TO);
-var RedirectToOptions = /* @__PURE__ */ createRouteOptions(API_REDIRECT_TO);
-var ReLaunchOptions = /* @__PURE__ */ createRouteOptions(API_RE_LAUNCH);
-var SwitchTabOptions = /* @__PURE__ */ createRouteOptions(API_SWITCH_TAB);
-var NavigateBackOptions = { formatArgs: { delta(value, params) {
-	value = parseInt(value + "") || 1;
-	params.delta = Math.min(getCurrentPages().length - 1, value);
-} } };
-function createAnimationProtocol(animationTypes) {
-	return {
-		animationType: {
-			type: String,
-			validator(type) {
-				if (type && animationTypes.indexOf(type) === -1) return "`" + type + "` is not supported for `animationType` (supported values are: `" + animationTypes.join("`|`") + "`)";
-			}
-		},
-		animationDuration: { type: Number }
-	};
-}
-var navigatorLock;
-function beforeRoute() {
-	navigatorLock = "";
-}
-function createRouteOptions(type) {
-	return {
-		formatArgs: { url: createNormalizeUrl(type) },
-		beforeAll: beforeRoute
-	};
-}
-function createNormalizeUrl(type) {
-	return function normalizeUrl(url, params) {
-		if (!url) return "Missing required args: \"url\"";
-		url = normalizeRoute(url);
-		var pagePath = url.split("?")[0];
-		var routeOptions = getRouteOptions(pagePath, true);
-		if (!routeOptions) return "page `" + url + "` is not found";
-		if (type === "navigateTo" || type === "redirectTo") {
-			if (routeOptions.meta.isTabBar) return "can not ".concat(type, " a tabbar page");
-		} else if (type === "switchTab") {
-			if (!routeOptions.meta.isTabBar) return "can not switch to no-tabBar page";
-		}
-		if ((type === "switchTab" || type === "preloadPage") && routeOptions.meta.isTabBar && params.openType !== "appLaunch") url = pagePath;
-		if (routeOptions.meta.isEntry) url = url.replace(routeOptions.alias, "/");
-		params.url = encodeQueryString(url);
-		if (type === "unPreloadPage") return;
-		else if (type === "preloadPage") {
-			if (!routeOptions.meta.isNVue) return "can not preload vue page";
-			if (routeOptions.meta.isTabBar) {
-				var pages = getCurrentPages();
-				var tabBarPagePath = routeOptions.path.slice(1);
-				if (pages.find((page) => page.route === tabBarPagePath)) return "tabBar page `" + tabBarPagePath + "` already exists";
-			}
-			return;
-		}
-		if (navigatorLock === url && params.openType !== "appLaunch") return "".concat(navigatorLock, " locked");
-		if (__uniConfig.ready) navigatorLock = url;
-	};
-}
-//#endregion
-//#region ../uni-api/src/protocols/ui/loadFontFace.ts
-var API_LOAD_FONT_FACE = "loadFontFace";
-var LoadFontFaceProtocol = {
-	family: {
-		type: String,
-		required: true
-	},
-	source: {
-		type: String,
-		required: true
-	},
-	desc: Object
-};
-//#endregion
-//#region ../uni-api/src/protocols/ui/navigationBar.ts
-var FRONT_COLORS = ["#ffffff", "#000000"];
-var API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
-var SetNavigationBarColorOptions = { formatArgs: { animation(animation, params) {
-	if (!animation) animation = {
-		duration: 0,
-		timingFunc: "linear"
-	};
-	params.animation = {
-		duration: animation.duration || 0,
-		timingFunc: animation.timingFunc || "linear"
-	};
-} } };
-var SetNavigationBarColorProtocol = {
-	frontColor: {
-		type: String,
-		required: true,
-		validator(frontColor) {
-			if (FRONT_COLORS.indexOf(frontColor) === -1) return "invalid frontColor \"".concat(frontColor, "\"");
-		}
-	},
-	backgroundColor: {
-		type: String,
-		required: true
-	},
-	animation: Object
-};
-var API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
-var SetNavigationBarTitleProtocol = { title: {
-	type: String,
-	required: true
-} };
-//#endregion
-//#region ../uni-api/src/protocols/ui/pageScrollTo.ts
-var API_PAGE_SCROLL_TO = "pageScrollTo";
-var PageScrollToProtocol = {
-	scrollTop: Number,
-	selector: String,
-	duration: Number
-};
-var PageScrollToOptions = { formatArgs: { duration: 300 } };
-//#endregion
-//#region ../uni-api/src/protocols/ui/startPullDownRefresh.ts
-var API_START_PULL_DOWN_REFRESH = "startPullDownRefresh";
-//#endregion
-//#region ../uni-api/src/protocols/ui/stopPullDownRefresh.ts
-var API_STOP_PULL_DOWN_REFRESH = "stopPullDownRefresh";
-//#endregion
-//#region ../uni-api/src/protocols/ui/tabBar.ts
-var IndexProtocol = { index: {
-	type: Number,
-	required: true
-} };
-var IndexOptions = {
-	beforeInvoke() {
-		var pageMeta = getCurrentPageMeta();
-		if (pageMeta && !pageMeta.isTabBar) return "not TabBar page";
-	},
-	formatArgs: { index(value) {
-		if (!__uniConfig.tabBar.list[value]) return "tabbar item not found";
-	} }
-};
-var API_SET_TAB_BAR_ITEM = "setTabBarItem";
-var SetTabBarItemProtocol = /* @__PURE__ */ extend({
-	text: String,
-	iconPath: String,
-	selectedIconPath: String,
-	pagePath: String
-}, IndexProtocol);
-var SetTabBarItemOptions = {
-	beforeInvoke: IndexOptions.beforeInvoke,
-	formatArgs: /* @__PURE__ */ extend({ pagePath(value, params) {
-		if (value) params.pagePath = removeLeadingSlash(value);
-	} }, IndexOptions.formatArgs)
-};
-var API_SET_TAB_BAR_STYLE = "setTabBarStyle";
-var SetTabBarStyleProtocol = {
-	color: String,
-	selectedColor: String,
-	backgroundColor: String,
-	backgroundImage: String,
-	backgroundRepeat: String,
-	borderStyle: String
-};
-var SetTabBarStyleOptions = {
-	beforeInvoke: IndexOptions.beforeInvoke,
-	formatArgs: {
-		backgroundImage(value, params) {
-			params.backgroundImage = value;
-		},
-		borderStyle(value, params) {
-			if (value) params.borderStyle = value === "white" ? "white" : "black";
-		}
-	}
-};
-var API_HIDE_TAB_BAR = "hideTabBar";
-var HideTabBarProtocol = { animation: Boolean };
-var API_SHOW_TAB_BAR = "showTabBar";
-var ShowTabBarProtocol = HideTabBarProtocol;
-var API_HIDE_TAB_BAR_RED_DOT = "hideTabBarRedDot";
-var HideTabBarRedDotProtocol = IndexProtocol;
-var HideTabBarRedDotOptions = IndexOptions;
-var API_SHOW_TAB_BAR_RED_DOT = "showTabBarRedDot";
-var ShowTabBarRedDotProtocol = IndexProtocol;
-var ShowTabBarRedDotOptions = IndexOptions;
-var API_REMOVE_TAB_BAR_BADGE = "removeTabBarBadge";
-var RemoveTabBarBadgeProtocol = IndexProtocol;
-var RemoveTabBarBadgeOptions = IndexOptions;
-var API_SET_TAB_BAR_BADGE = "setTabBarBadge";
-var SetTabBarBadgeProtocol = /* @__PURE__ */ extend({ text: {
-	type: String,
-	required: true
-} }, IndexProtocol);
-var SetTabBarBadgeOptions = {
-	beforeInvoke: IndexOptions.beforeInvoke,
-	formatArgs: /* @__PURE__ */ extend({ text(value, params) {
-		if (getLen(value) >= 4) params.text = "...";
-	} }, IndexOptions.formatArgs)
-};
-//#endregion
-//#region src/x/api/route/webview.ts
-init_web_dom_iterable();
-function showWebview(nPage, animationType, animationDuration, showCallback) {
-	nPage.show(new Map([["animationType", animationType], ["animationDuration", animationDuration]]), showCallback);
-}
-function closeWebview(nPage, animationType, animationDuration, callback) {
-	var options = new Map([["animationType", animationType]]);
-	if (typeof animationDuration === "number") options.set("animationDuration", animationDuration);
-	nPage.close(options, callback);
-}
-//#endregion
 //#region src/x/api/route/performance.ts
 var beforeRouteHooks = [];
 var afterRouteHooks = [];
@@ -2061,7 +2033,7 @@ function invokePageReadyHooks(page) {
 //#endregion
 //#region src/x/framework/app/utils.ts
 init_web_dom_iterable();
-var BORDER_COLORS = new Map([["white", "rgba(255, 255, 255, 0.33)"], ["black", "rgba(0, 0, 0, 0.33)"]]);
+var BORDER_COLORS = /* @__PURE__ */ new Map([["white", "rgba(255, 255, 255, 0.33)"], ["black", "rgba(0, 0, 0, 0.33)"]]);
 function getBorderStyle(borderStyle) {
 	var value = BORDER_COLORS.get(borderStyle);
 	if (borderStyle && !value) console.warn("4.23 版本起，在 pages.json 设置 tabbar borderStyle、在 uni.setTabBarStyle 设置 borderStyle 时仅支持 white/black，推荐使用 borderColor 自定义颜色。");
@@ -2117,8 +2089,8 @@ function init() {
 	style.set("navigationStyle", "custom");
 	style.set("pageOrientation", (_uniConfig$globalSty = (_uniConfig$globalSty2 = __uniConfig.globalStyle) === null || _uniConfig$globalSty2 === void 0 ? void 0 : _uniConfig$globalSty2.pageOrientation) !== null && _uniConfig$globalSty !== void 0 ? _uniConfig$globalSty : "portrait");
 	var page = getPageManager().createPage("tabBar", "tabBar_".concat(Date.now()), style);
-	var document = page.createDocument(new NodeData("root", "view", /* @__PURE__ */ new Map(), new Map([["flex", "1"]])));
-	var tabParent = document.createElement(new NodeData("tabs", "tabs", /* @__PURE__ */ new Map(), new Map([["overflow", "hidden"], ["flex", "1"]])));
+	var document = page.createDocument(new NodeData("root", "view", /* @__PURE__ */ new Map(), /* @__PURE__ */ new Map([["flex", "1"]])));
+	var tabParent = document.createElement(new NodeData("tabs", "tabs", /* @__PURE__ */ new Map(), /* @__PURE__ */ new Map([["overflow", "hidden"], ["flex", "1"]])));
 	document.appendChild(tabParent);
 	tabBar0 = document.getRealDomNodeById("tabs");
 	var _tabBarConfig = extend({}, __uniConfig.tabBar);
@@ -2739,7 +2711,7 @@ var launchOptions = {
 var setLaunchOptionsSync = function(options) {
 	launchOptions = options;
 };
-var getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
+var getLaunchOptionsSync = /*#__PURE__*/ defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
 	var baseInfo = getLaunchOptions();
 	return Object.assign({}, baseInfo, launchOptions);
 });
@@ -2754,7 +2726,7 @@ var enterOptions = {
 var setEnterOptionsSync = function(options) {
 	enterOptions = options;
 };
-var getEnterOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
+var getEnterOptionsSync = /*#__PURE__*/ defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
 	var baseInfo = getLaunchOptions();
 	return Object.assign({}, baseInfo, enterOptions);
 });
@@ -2795,7 +2767,7 @@ function initAppError(appVm, nativeApp) {
 }
 //#endregion
 //#region src/x/api/route/redirectTo.ts
-var redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, (_ref, _ref2) => {
+var redirectTo = /*#__PURE__*/ defineAsyncApi(API_REDIRECT_TO, (_ref, _ref2) => {
 	var { url } = _ref;
 	var { resolve, reject } = _ref2;
 	var { path, query } = parseUrl(url);
@@ -2914,7 +2886,7 @@ function _reLaunch(_ref3) {
 		}, 0);
 	});
 }
-var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
+var reLaunch = /*#__PURE__*/ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
 //#endregion
 //#region src/x/api/route/utils.ts
 function closePage(page, animationType, animationDuration) {
@@ -2996,7 +2968,7 @@ var $switchTab = (args, _ref) => {
 	}).then(resolve).catch(reject);
 	handleBeforeEntryPageRoutes();
 };
-var switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, $switchTab, SwitchTabProtocol, SwitchTabOptions);
+var switchTab = /*#__PURE__*/ defineAsyncApi(API_SWITCH_TAB, $switchTab, SwitchTabProtocol, SwitchTabOptions);
 function _switchTab(_ref2) {
 	var { url, path, query } = _ref2;
 	var selected = getTabIndex(path);
@@ -3188,7 +3160,7 @@ AsyncGenerator.prototype["function" == typeof Symbol && Symbol.asyncIterator || 
 //#endregion
 //#region src/x/framework/app/initService.ts
 function initOn(app, unregisterApp) {
-	app.addEventListener(ON_SHOW, /* @__PURE__ */ function() {
+	app.addEventListener(ON_SHOW, /*#__PURE__*/ function() {
 		var _ref = _asyncToGenerator(function* (event) {
 			var _getCurrentPage;
 			var app = getNativeApp();
@@ -3348,7 +3320,7 @@ var $navigateTo = (args, _ref) => {
 	}).then(resolve).catch(reject);
 	handleBeforeEntryPageRoutes();
 };
-var navigateTo = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
+var navigateTo = /*#__PURE__*/ defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
 function _navigateTo(_ref2) {
 	var _getCurrentPage;
 	var { url, path, query, events, aniType, aniDuration } = _ref2;
@@ -3401,7 +3373,7 @@ function reLaunchEntryPage() {
 }
 //#endregion
 //#region src/x/api/route/navigateBack.ts
-var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref) => {
+var navigateBack = /*#__PURE__*/ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref) => {
 	var { resolve, reject } = _ref;
 	var page = getCurrentPage().vm;
 	if (!page) return reject("getCurrentPages is empty");
@@ -3546,7 +3518,7 @@ function initAnimation(path, animationType, animationDuration) {
 //#endregion
 //#region src/x/api/tabBar/setTabBarBadge.ts
 init_web_dom_iterable();
-var setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (_ref, _ref2) => {
+var setTabBarBadge = /*#__PURE__*/ defineAsyncApi(API_SET_TAB_BAR_BADGE, (_ref, _ref2) => {
 	var { index, text } = _ref;
 	var { resolve, reject } = _ref2;
 	var tabBar = getTabBar();
@@ -3554,13 +3526,13 @@ var setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (_ref
 		reject("tabBar is not exist");
 		return;
 	}
-	tabBar.setTabBarBadge(new Map([["index", index], ["text", text]]));
+	tabBar.setTabBarBadge(/* @__PURE__ */ new Map([["index", index], ["text", text]]));
 	resolve();
 }, SetTabBarBadgeProtocol, SetTabBarBadgeOptions);
 //#endregion
 //#region src/x/api/tabBar/removeTabBarBadge.ts
 init_web_dom_iterable();
-var removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_REMOVE_TAB_BAR_BADGE, (_ref, _ref2) => {
+var removeTabBarBadge = /*#__PURE__*/ defineAsyncApi(API_REMOVE_TAB_BAR_BADGE, (_ref, _ref2) => {
 	var { index } = _ref;
 	var { resolve, reject } = _ref2;
 	var tabBar = getTabBar();
@@ -3568,13 +3540,13 @@ var removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_REMOVE_TAB_BAR_BADGE,
 		reject("tabBar is not exist");
 		return;
 	}
-	tabBar.removeTabBarBadge(new Map([["index", index]]));
+	tabBar.removeTabBarBadge(/* @__PURE__ */ new Map([["index", index]]));
 	resolve();
 }, RemoveTabBarBadgeProtocol, RemoveTabBarBadgeOptions);
 //#endregion
 //#region src/x/api/tabBar/setTabBarItem.ts
 init_web_dom_iterable();
-var setTabBarItem = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_ITEM, (_ref, _ref2) => {
+var setTabBarItem = /*#__PURE__*/ defineAsyncApi(API_SET_TAB_BAR_ITEM, (_ref, _ref2) => {
 	var { index, text, iconPath, selectedIconPath, pagePath, visible, iconfont } = _ref;
 	var { resolve, reject } = _ref2;
 	var tabBar = getTabBar();
@@ -3591,7 +3563,7 @@ var setTabBarItem = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_ITEM, (_ref, 
 	if (typeof visible === "boolean") item.set("visible", visible);
 	if (iconfont != null) {
 		var iconfontOptions = iconfont;
-		var _iconfont = new Map([
+		var _iconfont = /* @__PURE__ */ new Map([
 			["text", iconfontOptions.text],
 			["selectedText", iconfontOptions.selectedText],
 			["fontSize", iconfontOptions.fontSize],
@@ -3606,14 +3578,14 @@ var setTabBarItem = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_ITEM, (_ref, 
 //#endregion
 //#region src/x/api/tabBar/setTabBarStyle.ts
 init_web_dom_iterable();
-var setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (options, _ref) => {
+var setTabBarStyle = /*#__PURE__*/ defineAsyncApi(API_SET_TAB_BAR_STYLE, (options, _ref) => {
 	var { resolve, reject } = _ref;
 	var tabBar = getTabBar();
 	if (tabBar === null) {
 		reject("tabBar is not exist");
 		return;
 	}
-	var style = new Map([
+	var style = /* @__PURE__ */ new Map([
 		["color", options.color],
 		["selectedColor", options.selectedColor],
 		["backgroundColor", options.backgroundColor],
@@ -3624,7 +3596,7 @@ var setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (opti
 	]);
 	if (!!options.midButton) {
 		var midButtonOptions = options.midButton;
-		var midButton = new Map([
+		var midButton = /* @__PURE__ */ new Map([
 			["width", midButtonOptions.width],
 			["height", midButtonOptions.height],
 			["iconPath", midButtonOptions.iconPath],
@@ -3635,7 +3607,7 @@ var setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (opti
 		]);
 		if (!!midButtonOptions.iconfont) {
 			var iconfontOptions = midButtonOptions.iconfont;
-			var iconfont = new Map([
+			var iconfont = /* @__PURE__ */ new Map([
 				["text", iconfontOptions.text],
 				["selectedText", iconfontOptions.selectedText],
 				["fontSize", iconfontOptions.fontSize],
@@ -3653,20 +3625,20 @@ var setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (opti
 //#endregion
 //#region src/x/api/tabBar/hideTabBar.ts
 init_web_dom_iterable();
-var hideTabBar = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR, (options, _ref) => {
+var hideTabBar = /*#__PURE__*/ defineAsyncApi(API_HIDE_TAB_BAR, (options, _ref) => {
 	var { resolve, reject } = _ref;
 	var tabBar = getTabBar();
 	if (tabBar === null) {
 		reject("tabBar is not exist");
 		return;
 	}
-	tabBar.hideTabBar(new Map([["animation", options === null || options === void 0 ? void 0 : options.animation]]));
+	tabBar.hideTabBar(/* @__PURE__ */ new Map([["animation", options === null || options === void 0 ? void 0 : options.animation]]));
 	resolve();
 }, HideTabBarProtocol);
 //#endregion
 //#region src/x/api/tabBar/showTabBar.ts
 init_web_dom_iterable();
-var showTabBar = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR, (args, _ref) => {
+var showTabBar = /*#__PURE__*/ defineAsyncApi(API_SHOW_TAB_BAR, (args, _ref) => {
 	var { resolve, reject } = _ref;
 	var tabBar = getTabBar();
 	var animation = args && args.animation;
@@ -3674,13 +3646,13 @@ var showTabBar = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR, (args, _ref) =
 		reject("tabBar is not exist");
 		return;
 	}
-	tabBar.showTabBar(new Map([["animation", animation]]));
+	tabBar.showTabBar(/* @__PURE__ */ new Map([["animation", animation]]));
 	resolve();
 }, ShowTabBarProtocol);
 //#endregion
 //#region src/x/api/tabBar/showTabBarRedDot.ts
 init_web_dom_iterable();
-var showTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR_RED_DOT, (_ref, _ref2) => {
+var showTabBarRedDot = /*#__PURE__*/ defineAsyncApi(API_SHOW_TAB_BAR_RED_DOT, (_ref, _ref2) => {
 	var { index } = _ref;
 	var { resolve, reject } = _ref2;
 	var tabBar = getTabBar();
@@ -3688,13 +3660,13 @@ var showTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR_RED_DOT, 
 		reject("tabBar is not exist");
 		return;
 	}
-	tabBar.showTabBarRedDot(new Map([["index", index]]));
+	tabBar.showTabBarRedDot(/* @__PURE__ */ new Map([["index", index]]));
 	resolve();
 }, ShowTabBarRedDotProtocol, ShowTabBarRedDotOptions);
 //#endregion
 //#region src/x/api/tabBar/hideTabBarRedDot.ts
 init_web_dom_iterable();
-var hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, (_ref, _ref2) => {
+var hideTabBarRedDot = /*#__PURE__*/ defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, (_ref, _ref2) => {
 	var { index } = _ref;
 	var { resolve, reject } = _ref2;
 	var tabBar = getTabBar();
@@ -3702,7 +3674,7 @@ var hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, 
 		reject("tabBar is not exist");
 		return;
 	}
-	tabBar.hideTabBarRedDot(new Map([["index", index]]));
+	tabBar.hideTabBarRedDot(/* @__PURE__ */ new Map([["index", index]]));
 	resolve();
 }, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
 //#endregion
@@ -3713,30 +3685,30 @@ var onTabBarMidButtonTap = (cb) => {
 //#endregion
 //#region src/x/api/navigationBar/setNavigationBarColor.ts
 init_web_dom_iterable();
-var setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, (_ref, _ref2) => {
+var setNavigationBarColor = /*#__PURE__*/ defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, (_ref, _ref2) => {
 	var { frontColor, backgroundColor } = _ref;
 	var { resolve, reject } = _ref2;
 	var page = getCurrentPage();
 	if (!page) return reject("getCurrentPages is empty");
-	page.vm.$nativePage.updateStyle(new Map([["navigationBarTextStyle", frontColor == "#000000" ? "black" : "white"], ["navigationBarBackgroundColor", backgroundColor]]));
+	page.vm.$nativePage.updateStyle(/* @__PURE__ */ new Map([["navigationBarTextStyle", frontColor == "#000000" ? "black" : "white"], ["navigationBarBackgroundColor", backgroundColor]]));
 	resolve();
 }, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
 //#endregion
 //#region src/x/api/navigationBar/setNavigationBarTitle.ts
 init_web_dom_iterable();
-var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (options, _ref) => {
+var setNavigationBarTitle = /*#__PURE__*/ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (options, _ref) => {
 	var { resolve, reject } = _ref;
 	var page = getCurrentPage().vm;
 	if (page == null) {
 		reject("page is not ready");
 		return;
 	}
-	page.$nativePage.updateStyle(new Map([["navigationBarTitleText", options.title]]));
+	page.$nativePage.updateStyle(/* @__PURE__ */ new Map([["navigationBarTitleText", options.title]]));
 	resolve();
 }, SetNavigationBarTitleProtocol);
 //#endregion
 //#region src/x/api/dom/getElementById.ts
-var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id) => {
+var getElementById = /*#__PURE__*/ defineSyncApi("getElementById", (id) => {
 	var page = getCurrentPage();
 	if (page == null) return null;
 	return page.getElementById(id);
@@ -3982,7 +3954,7 @@ var CanvasContextImpl = class {
 		cancelAnimationFrame(taskId);
 	}
 };
-var createCanvasContextAsync = /* @__PURE__ */ defineAsyncApi("createCanvasContextAsync", (options, _ref) => {
+var createCanvasContextAsync = /*#__PURE__*/ defineAsyncApi("createCanvasContextAsync", (options, _ref) => {
 	var _options$component;
 	var { resolve, reject } = _ref;
 	if (getCurrentPage().vm == null) return null;
@@ -4000,7 +3972,7 @@ function queryElementTop(component, selector) {
 	if (scrollNode != null) return scrollNode.getBoundingClientRect().top;
 	return null;
 }
-var pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, (options, res) => {
+var pageScrollTo = /*#__PURE__*/ defineAsyncApi(API_PAGE_SCROLL_TO, (options, res) => {
 	var currentPage = getCurrentPage().vm;
 	var scrollViewNode = currentPage === null || currentPage === void 0 ? void 0 : currentPage.$el;
 	if (scrollViewNode == null || scrollViewNode.tagName != "SCROLL-VIEW") {
@@ -4025,7 +3997,7 @@ var pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, (options, 
 }, PageScrollToProtocol, PageScrollToOptions);
 //#endregion
 //#region src/x/api/ui/startPullDownRefresh.ts
-var startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_options, res) => {
+var startPullDownRefresh = /*#__PURE__*/ defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_options, res) => {
 	var page = getCurrentPage().vm;
 	if (page === null) {
 		res.reject("page is not ready");
@@ -4040,7 +4012,7 @@ var startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_RE
 });
 //#endregion
 //#region src/x/api/ui/stopPullDownRefresh.ts
-var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, res) => {
+var stopPullDownRefresh = /*#__PURE__*/ defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, res) => {
 	var page = getCurrentPage().vm;
 	if (page === null) {
 		res.reject("page is not ready");
@@ -5032,6 +5004,41 @@ document.addEventListener("keyboardchange", function(event) {
 	keyboardChangeCallback && keyboardChangeCallback();
 }, false);
 var emit$1 = ["keyboardheightchange"];
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_object-pie.js
+var require__object_pie = /* @__PURE__ */ __commonJSMin(((exports) => {
+	exports.f = {}.propertyIsEnumerable;
+}));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/_object-to-array.js
+var require__object_to_array = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+	var DESCRIPTORS = require__descriptors();
+	var getKeys = require__object_keys();
+	var toIObject = require__to_iobject();
+	var isEnum = require__object_pie().f;
+	module.exports = function(isEntries) {
+		return function(it) {
+			var O = toIObject(it);
+			var keys = getKeys(O);
+			var length = keys.length;
+			var i = 0;
+			var result = [];
+			var key;
+			while (length > i) {
+				key = keys[i++];
+				if (!DESCRIPTORS || isEnum.call(O, key)) result.push(isEntries ? [key, O[key]] : O[key]);
+			}
+			return result;
+		};
+	};
+}));
+//#endregion
+//#region ../../node_modules/.pnpm/core-js@2.6.12/node_modules/core-js/modules/es7.object.values.js
+var $export = require__export();
+var $values = require__object_to_array()(false);
+$export($export.S, "Object", { values: function values(it) {
+	return $values(it);
+} });
 /^Apple/.test(navigator.vendor);
 //#endregion
 //#region ../uni-components/src/vue/editor/quill/index.ts
@@ -5345,7 +5352,7 @@ var createLifeCycleHook = function(lifecycle) {
 		!isInSSRComponentSetup && injectHook(lifecycle, hook, target);
 	};
 };
-var onBackPress = /* @__PURE__ */ createLifeCycleHook(ON_BACK_PRESS, 2);
+var onBackPress = /*#__PURE__*/ createLifeCycleHook(ON_BACK_PRESS, 2);
 //#endregion
 //#region ../uni-components/src/vue/page-container/element.ts
 var UniPageContainerElement = class extends UniElement {};
@@ -5716,7 +5723,7 @@ _objectSpread2(_objectSpread2({}, {
 });
 //#endregion
 //#region src/x/components/navigator/model.ts
-var UniNavigatorElement = class extends UniElementImpl {
+var UniNavigatorElement = /* @__PURE__ */ (() => class extends UniElementImpl {
 	constructor(data, pageNode) {
 		super(data, pageNode);
 		this.tagName = "NAVIGATOR";
@@ -5730,7 +5737,7 @@ var UniNavigatorElement = class extends UniElementImpl {
 		if (value != null) return value;
 		return super.getAnyAttribute(key);
 	}
-};
+})();
 var navigatorProps = {
 	url: {
 		type: String,
@@ -5775,7 +5782,7 @@ var navigator_exports = /* @__PURE__ */ __exportAll({
 	UniNavigatorElement: () => UniNavigatorElement,
 	default: () => navigator_default
 });
-var navigator_default = /* @__PURE__ */ defineBuiltInComponent({
+var navigator_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Navigator",
 	rootElement: {
 		name: "uni-navigator-element",

@@ -17,7 +17,7 @@ let _dcloudio_uni_shared = require("@dcloudio/uni-shared");
 let _dcloudio_uni_i18n = require("@dcloudio/uni-i18n");
 let vue_router = require("vue-router");
 //#region ../uni-core/src/i18n/utils.ts
-var isEnableLocale = /* @__PURE__ */ (0, _dcloudio_uni_shared.once)(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
+var isEnableLocale = /*#__PURE__*/ (0, _dcloudio_uni_shared.once)(() => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
 //#endregion
 //#region ../uni-core/src/i18n/useI18n.ts
 var i18n;
@@ -87,7 +87,7 @@ function normalizeMessages(module, keys, values) {
 		return res;
 	}, {});
 }
-var initI18nAsyncMsgsOnce = /* @__PURE__ */ (0, _dcloudio_uni_shared.once)(() => {
+var initI18nAsyncMsgsOnce = /*#__PURE__*/ (0, _dcloudio_uni_shared.once)(() => {
 	const name = "uni.async.";
 	const keys = ["error"];
 	if (__UNI_FEATURE_I18N_EN__) useI18n().add(_dcloudio_uni_i18n.LOCALE_EN, normalizeMessages(name, keys, ["The connection timed out, click the screen to try again."]), false);
@@ -96,7 +96,7 @@ var initI18nAsyncMsgsOnce = /* @__PURE__ */ (0, _dcloudio_uni_shared.once)(() =>
 	if (__UNI_FEATURE_I18N_ZH_HANS__) useI18n().add(_dcloudio_uni_i18n.LOCALE_ZH_HANS, normalizeMessages(name, keys, ["连接服务器超时，点击屏幕重试"]), false);
 	if (__UNI_FEATURE_I18N_ZH_HANT__) useI18n().add(_dcloudio_uni_i18n.LOCALE_ZH_HANT, normalizeMessages(name, keys, ["連接服務器超時，點擊屏幕重試"]), false);
 });
-var initI18nPickerMsgsOnce = /* @__PURE__ */ (0, _dcloudio_uni_shared.once)(() => {
+var initI18nPickerMsgsOnce = /*#__PURE__*/ (0, _dcloudio_uni_shared.once)(() => {
 	const name = "uni.picker.";
 	const keys = ["done", "cancel"];
 	if (__UNI_FEATURE_I18N_EN__) useI18n().add(_dcloudio_uni_i18n.LOCALE_EN, normalizeMessages(name, keys, ["Done", "Cancel"]), false);
@@ -105,7 +105,7 @@ var initI18nPickerMsgsOnce = /* @__PURE__ */ (0, _dcloudio_uni_shared.once)(() =
 	if (__UNI_FEATURE_I18N_ZH_HANS__) useI18n().add(_dcloudio_uni_i18n.LOCALE_ZH_HANS, normalizeMessages(name, keys, ["完成", "取消"]), false);
 	if (__UNI_FEATURE_I18N_ZH_HANT__) useI18n().add(_dcloudio_uni_i18n.LOCALE_ZH_HANT, normalizeMessages(name, keys, ["完成", "取消"]), false);
 });
-var initI18nVideoMsgsOnce = /* @__PURE__ */ (0, _dcloudio_uni_shared.once)(() => {
+var initI18nVideoMsgsOnce = /*#__PURE__*/ (0, _dcloudio_uni_shared.once)(() => {
 	const name = "uni.video.";
 	const keys = ["danmu", "volume"];
 	if (__UNI_FEATURE_I18N_EN__) useI18n().add(_dcloudio_uni_i18n.LOCALE_EN, normalizeMessages(name, keys, ["Danmu", "Volume"]), false);
@@ -187,7 +187,7 @@ function registerViewMethod(pageId, name, fn) {
 }
 //#endregion
 //#region ../uni-core/src/view/bridge/index.ts
-var ViewJSBridge = /* @__PURE__ */ (0, _vue_shared.extend)(/* @__PURE__ */ initBridge("service"), { invokeServiceMethod });
+var ViewJSBridge = /*#__PURE__*/ (0, _vue_shared.extend)(/*#__PURE__*/ initBridge("service"), { invokeServiceMethod });
 (/* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var attrs = [
 		"top",
@@ -354,8 +354,8 @@ var ViewJSBridge = /* @__PURE__ */ (0, _vue_shared.extend)(/* @__PURE__ */ initB
 		offChange
 	};
 })))();
-var onEventPrevent = /* @__PURE__ */ (0, vue.withModifiers)(() => {}, ["prevent"]);
-var onEventStop = /* @__PURE__ */ (0, vue.withModifiers)((_event) => {}, ["stop"]);
+var onEventPrevent = /*#__PURE__*/ (0, vue.withModifiers)(() => {}, ["prevent"]);
+var onEventStop = /*#__PURE__*/ (0, vue.withModifiers)((_event) => {}, ["stop"]);
 function updateCssVar(cssVars) {
 	const style = document.documentElement.style;
 	Object.keys(cssVars).forEach((name) => {
@@ -588,7 +588,7 @@ var invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
 };
 //#endregion
 //#region ../uni-core/src/service/bridge/index.ts
-var ServiceJSBridge = /* @__PURE__ */ (0, _vue_shared.extend)(/* @__PURE__ */ initBridge("view"), {
+var ServiceJSBridge = /*#__PURE__*/ (0, _vue_shared.extend)(/*#__PURE__*/ initBridge("view"), {
 	invokeOnCallback,
 	invokeViewMethod,
 	invokeViewMethodKeepAlive
@@ -893,7 +893,7 @@ function useBooleanAttr(props, keys) {
 //#endregion
 //#region ../uni-components/src/vue/form/index.tsx
 var uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-var form_default = /* @__PURE__ */ defineBuiltInComponent({
+var form_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Form",
 	emits: ["submit", "reset"],
 	setup(_props, { slots, emit }) {
@@ -948,7 +948,7 @@ function useProvideLabel() {
 }
 //#endregion
 //#region ../uni-components/src/vue/label/index.tsx
-var label_default = /* @__PURE__ */ defineBuiltInComponent({
+var label_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Label",
 	props: labelProps,
 	setup(props, { slots }) {
@@ -973,7 +973,7 @@ var label_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region ../uni-components/src/vue/button/index.tsx
-var button_default = /* @__PURE__ */ defineBuiltInComponent({
+var button_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Button",
 	props: {
 		id: {
@@ -1021,7 +1021,7 @@ var button_default = /* @__PURE__ */ defineBuiltInComponent({
 		const rootRef = (0, vue.ref)(null);
 		const uniForm = (0, vue.inject)(uniFormKey, false);
 		const { hovering, binding } = useHover(props);
-		const { t } = /* @__PURE__ */ useI18n();
+		const { t } = /*#__PURE__*/ useI18n();
 		const onClick = withWebEvent((e, isLabelClick) => {
 			if (props.disabled) return e.stopImmediatePropagation();
 			if (isLabelClick) rootRef.value.click();
@@ -1111,14 +1111,6 @@ function normalizePageMeta(pageMeta) {
 	return pageMeta;
 }
 //#endregion
-//#region src/helpers/dom.ts
-function checkMinWidth(minWidth) {
-	return false;
-}
-function getStateId() {
-	return 1;
-}
-//#endregion
 //#region ../uni-api/src/helpers/protocol.ts
 var HTTP_METHODS = [
 	"GET",
@@ -1175,7 +1167,7 @@ function validateProp(name, value, prop, isAbsent) {
 	}
 	if (validator) return validator(value);
 }
-var isSimpleType = /* @__PURE__ */ (0, _vue_shared.makeMap)("String,Number,Boolean,Function,Symbol");
+var isSimpleType = /*#__PURE__*/ (0, _vue_shared.makeMap)("String,Number,Boolean,Function,Symbol");
 function assertType(value, type) {
 	let valid;
 	const expectedType = getType(type);
@@ -1470,7 +1462,7 @@ function defineAsyncApi(name, fn, protocol, options) {
 //#endregion
 //#region ../uni-api/src/service/ui/tabBar.ts
 var API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
-var getLocale = /* @__PURE__ */ defineSyncApi("getLocale", () => {
+var getLocale = /*#__PURE__*/ defineSyncApi("getLocale", () => {
 	const app = getApp({ allowDefault: true });
 	if (app && app.$vm) return app.$vm.$locale;
 	return useI18n().getLocale();
@@ -1693,9 +1685,17 @@ function useTabBar() {
 }
 //#endregion
 //#region src/helpers/cssVar.ts
-var envMethod = "env";
+var envMethod = /*#__PURE__*/ (() => "env")();
 function normalizeWindowBottom(windowBottom) {
 	return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
+}
+//#endregion
+//#region src/helpers/dom.ts
+function checkMinWidth(minWidth) {
+	return false;
+}
+function getStateId() {
+	return 1;
 }
 //#endregion
 //#region src/framework/setup/page.ts
@@ -1746,7 +1746,7 @@ function removePage(routeKey, removeRouteCaches = true) {
 	currentPagesMap.delete(routeKey);
 	removeRouteCaches && removeRouteCache(routeKey);
 }
-var id = /* @__PURE__ */ getStateId();
+var id = /*#__PURE__*/ getStateId();
 function createPageState(type, __id__) {
 	return {
 		__id__: __id__ || ++id,
@@ -1932,7 +1932,7 @@ function getSameOriginUrl(url) {
 }
 //#endregion
 //#region ../uni-components/src/vue/resize-sensor/index.tsx
-var resize_sensor_default = /* @__PURE__ */ defineBuiltInComponent({
+var resize_sensor_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "ResizeSensor",
 	props: { initial: {
 		type: Boolean,
@@ -1980,7 +1980,7 @@ function wrapper(canvas, hidpi = true) {
 }
 //#endregion
 //#region ../uni-components/src/vue/canvas/index.tsx
-var initHidpiOnce = /* @__PURE__ */ (0, _dcloudio_uni_shared.once)(() => {});
+var initHidpiOnce = /*#__PURE__*/ (0, _dcloudio_uni_shared.once)(() => {});
 function $getRealPath(src) {
 	return src ? getRealPath(src) : src;
 }
@@ -2002,7 +2002,7 @@ function getTempCanvas(width = 0, height = 0) {
 	tempCanvas.height = height;
 	return tempCanvas;
 }
-var canvas_default = /* @__PURE__ */ defineBuiltInComponent({
+var canvas_default = /*#__PURE__*/ defineBuiltInComponent({
 	inheritAttrs: false,
 	name: "Canvas",
 	compatConfig: { MODE: 3 },
@@ -2364,7 +2364,7 @@ function useMethods(props, canvasRef, actionsWaiting) {
 //#endregion
 //#region ../uni-components/src/vue/checkbox-group/index.tsx
 var uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-var checkbox_group_default = /* @__PURE__ */ defineBuiltInComponent({
+var checkbox_group_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "CheckboxGroup",
 	props: { name: {
 		type: String,
@@ -2407,7 +2407,7 @@ function useProvideCheckGroup(props, trigger) {
 	} });
 	return getFieldsValue;
 }
-var checkbox_default = /* @__PURE__ */ defineBuiltInComponent({
+var checkbox_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Checkbox",
 	props: {
 		checked: {
@@ -2578,12 +2578,12 @@ function useKeyboard$1(props, elRef, trigger) {
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
-var empty = /* @__PURE__ */ makeMap("area,base,basefont,br,col,frame,hr,img,input,link,meta,param,embed,command,keygen,source,track,wbr");
-var block = /* @__PURE__ */ makeMap("a,address,article,applet,aside,audio,blockquote,button,canvas,center,dd,del,dir,div,dl,dt,fieldset,figcaption,figure,footer,form,frameset,h1,h2,h3,h4,h5,h6,header,hgroup,hr,iframe,isindex,li,map,menu,noframes,noscript,object,ol,output,p,pre,section,script,table,tbody,td,tfoot,th,thead,tr,ul,video");
-var inline = /* @__PURE__ */ makeMap("abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var");
-var closeSelf = /* @__PURE__ */ makeMap("colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr");
-var fillAttrs = /* @__PURE__ */ makeMap("checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected");
-var special = /* @__PURE__ */ makeMap("script,style");
+var empty = /*#__PURE__*/ makeMap("area,base,basefont,br,col,frame,hr,img,input,link,meta,param,embed,command,keygen,source,track,wbr");
+var block = /*#__PURE__*/ makeMap("a,address,article,applet,aside,audio,blockquote,button,canvas,center,dd,del,dir,div,dl,dt,fieldset,figcaption,figure,footer,form,frameset,h1,h2,h3,h4,h5,h6,header,hgroup,hr,iframe,isindex,li,map,menu,noframes,noscript,object,ol,output,p,pre,section,script,table,tbody,td,tfoot,th,thead,tr,ul,video");
+var inline = /*#__PURE__*/ makeMap("abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var");
+var closeSelf = /*#__PURE__*/ makeMap("colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr");
+var fillAttrs = /*#__PURE__*/ makeMap("checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected");
+var special = /*#__PURE__*/ makeMap("script,style");
 function HTMLParser(html, handler) {
 	var index;
 	var chars;
@@ -2680,14 +2680,13 @@ function useQuill(props, rootRef, trigger) {
 	useSubscribe((type, data, resolve) => {
 		const { options, callbackId } = data;
 		let res;
-		let errMsg = "not ready";
 		if (callbackId) resolve({
 			callbackId,
-			data: (0, _vue_shared.extend)({}, res, { errMsg: `${type}:${"fail " + errMsg}` })
+			data: (0, _vue_shared.extend)({}, res, { errMsg: `${type}:fail not ready` })
 		});
 	}, useContextInfo(), true);
 }
-var editor_default = /* @__PURE__ */ defineBuiltInComponent({
+var editor_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Editor",
 	props: /* @__PURE__ */ (0, _vue_shared.extend)({}, props$22, {
 		id: {
@@ -2784,7 +2783,7 @@ var ICONS = {
 		c: GREY_COLOR
 	}
 };
-var icon_default = /* @__PURE__ */ defineBuiltInComponent({
+var icon_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Icon",
 	props: {
 		type: {
@@ -2857,7 +2856,7 @@ var IMAGE_MODES = {
 	"bottom left": ["left bottom"],
 	"bottom right": ["right bottom"]
 };
-var image_default = /* @__PURE__ */ defineBuiltInComponent({
+var image_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Image",
 	props: props$20,
 	setup(props, { emit }) {
@@ -3074,7 +3073,7 @@ var INPUT_MODES = [
 	"email",
 	"url"
 ];
-var props$19 = /* @__PURE__ */ (0, _vue_shared.extend)({}, {
+var props$19 = /*#__PURE__*/ (0, _vue_shared.extend)({}, {
 	name: {
 		type: String,
 		default: ""
@@ -3382,7 +3381,7 @@ function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
 }
 //#endregion
 //#region ../uni-components/src/vue/input/index.tsx
-var props$18 = /* @__PURE__ */ (0, _vue_shared.extend)({}, props$19, {
+var props$18 = /*#__PURE__*/ (0, _vue_shared.extend)({}, props$19, {
 	placeholderClass: {
 		type: String,
 		default: "input-placeholder"
@@ -3408,7 +3407,7 @@ function useCache(props, type) {
 		return cache;
 	} else return (0, vue.ref)("");
 }
-var input_default = /* @__PURE__ */ defineBuiltInComponent({
+var input_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Input",
 	props: props$18,
 	emits: ["confirm", ...emit],
@@ -3639,7 +3638,7 @@ function flatVNode(nodes) {
 }
 //#endregion
 //#region ../uni-components/src/vue/movable-area/index.tsx
-var movable_area_default = /* @__PURE__ */ defineBuiltInComponent({
+var movable_area_default = /*#__PURE__*/ defineBuiltInComponent({
 	inheritAttrs: false,
 	name: "MovableArea",
 	props: { scaleArea: {
@@ -4133,7 +4132,7 @@ function v(a, b) {
 }
 //#endregion
 //#region ../uni-components/src/vue/movable-view/index.tsx
-var movable_view_default = /* @__PURE__ */ defineBuiltInComponent({
+var movable_view_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "MovableView",
 	props: movableViewProps,
 	emits: ["change", "scale"],
@@ -4676,11 +4675,11 @@ function createNavigatorOnClick(props) {
 }
 //#endregion
 //#region ../uni-components/src/vue/navigator/index.tsx
-var navigator_default = /* @__PURE__ */ defineBuiltInComponent({
+var navigator_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Navigator",
 	inheritAttrs: false,
 	compatConfig: { MODE: 3 },
-	props: /* @__PURE__ */ (0, _vue_shared.extend)({}, navigatorProps, { renderLink: {
+	props: /*#__PURE__*/ (0, _vue_shared.extend)({}, navigatorProps, { renderLink: {
 		type: Boolean,
 		default: true
 	} }),
@@ -4754,7 +4753,7 @@ function useState$2(props) {
 	});
 	return state;
 }
-var picker_view_default = /* @__PURE__ */ defineBuiltInComponent({
+var picker_view_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "PickerView",
 	props: pickerViewProps,
 	emits: [
@@ -4819,7 +4818,7 @@ var picker_view_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region ../uni-components/src/vue/picker-view-column/index.tsx
-var picker_view_column_default = /* @__PURE__ */ defineBuiltInComponent({
+var picker_view_column_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "PickerViewColumn",
 	setup(props, { slots, emit }) {
 		const rootRef = (0, vue.ref)(null);
@@ -4915,7 +4914,7 @@ var PROGRESS_VALUES = {
 };
 //#endregion
 //#region ../uni-components/src/vue/progress/index.tsx
-var progress_default = /* @__PURE__ */ defineBuiltInComponent({
+var progress_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Progress",
 	props: {
 		percent: {
@@ -5031,7 +5030,7 @@ function _activeAnimation(state, props) {
 //#endregion
 //#region ../uni-components/src/vue/radio-group/index.tsx
 var uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-var radio_group_default = /* @__PURE__ */ defineBuiltInComponent({
+var radio_group_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "RadioGroup",
 	props: { name: {
 		type: String,
@@ -5091,7 +5090,7 @@ function useProvideRadioGroup(props, trigger) {
 	}
 	return fields;
 }
-var radio_default = /* @__PURE__ */ defineBuiltInComponent({
+var radio_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Radio",
 	props: {
 		checked: {
@@ -5432,7 +5431,7 @@ function parseHtml(html) {
 }
 //#endregion
 //#region ../uni-components/src/vue/rich-text/index.tsx
-var rich_text_default = /* @__PURE__ */ defineBuiltInComponent({
+var rich_text_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "RichText",
 	compatConfig: { MODE: 3 },
 	props: { nodes: {
@@ -5465,7 +5464,7 @@ var rich_text_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region ../uni-components/src/vue/refresher/index.tsx
-var refresher_default = /* @__PURE__ */ defineBuiltInComponent({
+var refresher_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Refresher",
 	props: {
 		refreshState: {
@@ -5552,7 +5551,7 @@ var refresher_default = /* @__PURE__ */ defineBuiltInComponent({
 		};
 	}
 });
-var scroll_view_default = /* @__PURE__ */ defineBuiltInComponent({
+var scroll_view_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "ScrollView",
 	compatConfig: { MODE: 3 },
 	props: {
@@ -5854,7 +5853,7 @@ function useScrollViewLoader(props, state, scrollTopNumber, scrollLeftNumber, tr
 		_scrollLeftChanged
 	};
 }
-var slider_default = /* @__PURE__ */ defineBuiltInComponent({
+var slider_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Slider",
 	props: {
 		name: {
@@ -6390,7 +6389,7 @@ function useLayout(props, state, swiperContexts, slideFrameRef, emit, trigger) {
 		swiperEnabled
 	};
 }
-var swiper_default = /* @__PURE__ */ defineBuiltInComponent({
+var swiper_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Swiper",
 	props: props$12,
 	emits: [
@@ -6575,7 +6574,7 @@ var useSwiperNavigation = (rootRef, props, state, onSwiperDotClick, swiperContex
 	}
 	return createNavigationTsx;
 };
-var swiper_item_default = /* @__PURE__ */ defineBuiltInComponent({
+var swiper_item_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "SwiperItem",
 	props: { itemId: {
 		type: String,
@@ -6595,7 +6594,7 @@ var swiper_item_default = /* @__PURE__ */ defineBuiltInComponent({
 		};
 	}
 });
-var switch_default = /* @__PURE__ */ defineBuiltInComponent({
+var switch_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Switch",
 	props: {
 		name: {
@@ -6705,7 +6704,7 @@ function parseText(text, options) {
 }
 //#endregion
 //#region ../uni-components/src/vue/text/index.tsx
-var text_default = /* @__PURE__ */ defineBuiltInComponent({
+var text_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Text",
 	props: {
 		selectable: {
@@ -6751,7 +6750,7 @@ var text_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region ../uni-components/src/vue/textarea/index.tsx
-var props$9 = /* @__PURE__ */ (0, _vue_shared.extend)({}, props$19, {
+var props$9 = /*#__PURE__*/ (0, _vue_shared.extend)({}, props$19, {
 	placeholderClass: {
 		type: String,
 		default: "input-placeholder"
@@ -6776,7 +6775,7 @@ var ConfirmTypes = [
 	"search",
 	"send"
 ];
-var textarea_default = /* @__PURE__ */ defineBuiltInComponent({
+var textarea_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Textarea",
 	props: props$9,
 	emits: [
@@ -6915,9 +6914,9 @@ var textarea_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region ../uni-components/src/vue/view/index.tsx
-var view_default = /* @__PURE__ */ defineBuiltInComponent({
+var view_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "View",
-	props: /* @__PURE__ */ (0, _vue_shared.extend)({}, hoverProps),
+	props: /*#__PURE__*/ (0, _vue_shared.extend)({}, hoverProps),
 	setup(props, { slots }) {
 		const rootRef = (0, vue.ref)(null);
 		const { hovering, binding } = useHover(props);
@@ -7148,8 +7147,8 @@ function warnHandler(msg, instance, trace) {
 //#endregion
 //#region src/framework/components/async-loading/index.ts
 var clazz = { class: "uni-async-loading" };
-var loadingVNode = /* @__PURE__ */ (0, vue.createVNode)("i", { class: "uni-loading" }, null, -1);
-var async_loading_default = /* @__PURE__ */ defineSystemComponent({
+var loadingVNode = /*#__PURE__*/ (0, vue.createVNode)("i", { class: "uni-loading" }, null, -1);
+var async_loading_default = /*#__PURE__*/ defineSystemComponent({
 	name: "AsyncLoading",
 	render() {
 		return (0, vue.openBlock)(), (0, vue.createBlock)("div", clazz, [loadingVNode]);
@@ -7160,7 +7159,7 @@ var async_loading_default = /* @__PURE__ */ defineSystemComponent({
 function reload() {
 	window.location.reload();
 }
-var async_error_default = /* @__PURE__ */ defineSystemComponent({
+var async_error_default = /*#__PURE__*/ defineSystemComponent({
 	name: "AsyncError",
 	props: ["error"],
 	setup() {
@@ -7726,7 +7725,7 @@ function useProgressing(videoState, gestureState, controlsState, autoHideEnd, au
 	});
 	return progressing;
 }
-var video_default = /* @__PURE__ */ defineBuiltInComponent({
+var video_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Video",
 	props: {
 		id: {
@@ -8036,8 +8035,8 @@ var onWebInvokeAppService = ({ name, arg }) => {
 };
 //#endregion
 //#region src/view/components/web-view/index.tsx
-var Invoke = /* @__PURE__ */ (0, _dcloudio_uni_shared.once)(() => UniServiceJSBridge.on(_dcloudio_uni_shared.ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-var web_view_default = /* @__PURE__ */ defineBuiltInComponent({
+var Invoke = /*#__PURE__*/ (0, _dcloudio_uni_shared.once)(() => UniServiceJSBridge.on(_dcloudio_uni_shared.ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
+var web_view_default = /*#__PURE__*/ defineBuiltInComponent({
 	inheritAttrs: false,
 	name: "WebView",
 	props: {
@@ -8197,7 +8196,7 @@ function useMarkerLabelStyle(id) {
 		return className;
 	};
 }
-var MapMarker_default = /* @__PURE__ */ defineSystemComponent({
+var MapMarker_default = /*#__PURE__*/ defineSystemComponent({
 	name: "MapMarker",
 	props: props$6,
 	setup(props) {
@@ -8501,7 +8500,7 @@ function hexToRgba(hex) {
 		a: (`0x100${sa}` - 65536) / 255
 	};
 }
-var MapPolyline_default = /* @__PURE__ */ defineSystemComponent({
+var MapPolyline_default = /*#__PURE__*/ defineSystemComponent({
 	name: "MapPolyline",
 	props: {
 		points: {
@@ -8612,7 +8611,7 @@ var MapPolyline_default = /* @__PURE__ */ defineSystemComponent({
 		};
 	}
 });
-var MapCircle_default = /* @__PURE__ */ defineSystemComponent({
+var MapCircle_default = /*#__PURE__*/ defineSystemComponent({
 	name: "MapCircle",
 	props: {
 		latitude: {
@@ -8698,7 +8697,7 @@ var MapCircle_default = /* @__PURE__ */ defineSystemComponent({
 		};
 	}
 });
-var MapControl_default = /* @__PURE__ */ defineSystemComponent({
+var MapControl_default = /*#__PURE__*/ defineSystemComponent({
 	name: "MapControl",
 	props: {
 		id: {
@@ -8746,7 +8745,7 @@ var MapControl_default = /* @__PURE__ */ defineSystemComponent({
 //#endregion
 //#region src/view/components/map/MapLocation.tsx
 var CONTEXT_ID = "MAP_LOCATION";
-var MapLocation_default = /* @__PURE__ */ defineSystemComponent({
+var MapLocation_default = /*#__PURE__*/ defineSystemComponent({
 	name: "MapLocation",
 	setup() {
 		const state = (0, vue.reactive)({
@@ -8769,7 +8768,7 @@ var MapLocation_default = /* @__PURE__ */ defineSystemComponent({
 });
 //#endregion
 //#region src/view/components/map/map-polygon/index.tsx
-var map_polygon_default = /* @__PURE__ */ defineSystemComponent({
+var map_polygon_default = /*#__PURE__*/ defineSystemComponent({
 	name: "MapPolygon",
 	props: {
 		dashArray: {
@@ -9077,7 +9076,7 @@ function useMap(props, rootRef, emit) {
 		trigger
 	};
 }
-var map_default = /* @__PURE__ */ defineBuiltInComponent({
+var map_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Map",
 	props: props$2,
 	emits: [
@@ -9116,7 +9115,7 @@ var map_default = /* @__PURE__ */ defineBuiltInComponent({
 		};
 	}
 });
-var cover_view_default = /* @__PURE__ */ defineBuiltInComponent({
+var cover_view_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "CoverView",
 	compatConfig: { MODE: 3 },
 	props: { scrollTop: {
@@ -9153,7 +9152,7 @@ var cover_view_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region src/view/components/cover-image/index.tsx
-var cover_image_default = /* @__PURE__ */ defineBuiltInComponent({
+var cover_image_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "CoverImage",
 	compatConfig: { MODE: 3 },
 	props: { src: {
@@ -9332,7 +9331,7 @@ var selectorType = {
 	PICKER: "picker",
 	SELECT: "select"
 };
-var picker_default = /* @__PURE__ */ defineBuiltInComponent({
+var picker_default = /*#__PURE__*/ defineBuiltInComponent({
 	name: "Picker",
 	compatConfig: { MODE: 3 },
 	props: {
@@ -10426,7 +10425,7 @@ var AdRender = class {
 		if (this._rootRef.value) this._rootRef.value.innerHTML = "";
 	}
 };
-var ad_default = /* @__PURE__ */ defineBuiltInComponent({
+var ad_default = /*#__PURE__*/ defineBuiltInComponent({
 	inheritAttrs: false,
 	name: "Ad",
 	props: {
@@ -10482,27 +10481,27 @@ var ad_default = /* @__PURE__ */ defineBuiltInComponent({
 });
 //#endregion
 //#region src/view/components/ad-content-page/index.tsx
-var ad_content_page_default = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
+var ad_content_page_default = /*#__PURE__*/ defineUnsupportedComponent("ad-content-page");
 //#endregion
 //#region src/view/components/ad-draw/index.tsx
-var ad_draw_default = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
+var ad_draw_default = /*#__PURE__*/ defineUnsupportedComponent("ad-draw");
 //#endregion
 //#region src/view/components/camera/index.tsx
-var camera_default = /* @__PURE__ */ defineUnsupportedComponent("camera");
+var camera_default = /*#__PURE__*/ defineUnsupportedComponent("camera");
 //#endregion
 //#region src/view/components/live-player/index.tsx
-var live_player_default = /* @__PURE__ */ defineUnsupportedComponent("live-player");
+var live_player_default = /*#__PURE__*/ defineUnsupportedComponent("live-player");
 //#endregion
 //#region src/view/components/live-pusher/index.tsx
-var live_pusher_default = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
+var live_pusher_default = /*#__PURE__*/ defineUnsupportedComponent("live-pusher");
 //#endregion
 //#region src/view/bridge/index.ts
-var UniViewJSBridge$1 = /* @__PURE__ */ (0, _vue_shared.extend)(ViewJSBridge, { publishHandler(event, args, pageId) {
+var UniViewJSBridge$1 = /*#__PURE__*/ (0, _vue_shared.extend)(ViewJSBridge, { publishHandler(event, args, pageId) {
 	UniServiceJSBridge.subscribeHandler(event, args, pageId);
 } });
 //#endregion
 //#region src/service/api/network/request.ts
-var request = /* @__PURE__ */ defineTaskApi(API_REQUEST, ({ url, data, header = {}, method, dataType, responseType, enableChunked, withCredentials, timeout = __uniConfig.networkTimeout.request }, { resolve, reject }) => {
+var request = /*#__PURE__*/ defineTaskApi(API_REQUEST, ({ url, data, header = {}, method, dataType, responseType, enableChunked, withCredentials, timeout = __uniConfig.networkTimeout.request }, { resolve, reject }) => {
 	let body = null;
 	const contentType = normalizeContentType(header);
 	if (method !== "GET") if ((0, _vue_shared.isString)(data) || data instanceof ArrayBuffer) body = data;
@@ -10768,7 +10767,7 @@ function parseValue(value) {
 		}
 	} catch (error) {}
 }
-var setStorageSync = /* @__PURE__ */ defineSyncApi(API_SET_STORAGE_SYNC, (key, data) => {
+var setStorageSync = /*#__PURE__*/ defineSyncApi(API_SET_STORAGE_SYNC, (key, data) => {
 	const type = typeof data;
 	const value = type === "string" ? data : JSON.stringify({
 		type,
@@ -10776,7 +10775,7 @@ var setStorageSync = /* @__PURE__ */ defineSyncApi(API_SET_STORAGE_SYNC, (key, d
 	});
 	localStorage.setItem(key, value);
 }, SetStorageSyncProtocol);
-var setStorage = /* @__PURE__ */ defineAsyncApi(API_SET_STORAGE, ({ key, data }, { resolve, reject }) => {
+var setStorage = /*#__PURE__*/ defineAsyncApi(API_SET_STORAGE, ({ key, data }, { resolve, reject }) => {
 	try {
 		setStorageSync(key, data);
 		resolve();
@@ -10794,35 +10793,35 @@ function getStorageOrigin(key) {
 	} catch (error) {}
 	return data;
 }
-var getStorageSync = /* @__PURE__ */ defineSyncApi(API_GET_STORAGE_SYNC, (key) => {
+var getStorageSync = /*#__PURE__*/ defineSyncApi(API_GET_STORAGE_SYNC, (key) => {
 	try {
 		return getStorageOrigin(key);
 	} catch (error) {
 		return "";
 	}
 }, GetStorageSyncProtocol);
-var getStorage = /* @__PURE__ */ defineAsyncApi(API_GET_STORAGE, ({ key }, { resolve, reject }) => {
+var getStorage = /*#__PURE__*/ defineAsyncApi(API_GET_STORAGE, ({ key }, { resolve, reject }) => {
 	try {
 		resolve({ data: getStorageOrigin(key) });
 	} catch (error) {
 		reject(error.message);
 	}
 }, GetStorageProtocol);
-var removeStorageSync = /* @__PURE__ */ defineSyncApi(API_REMOVE_STORAGE, (key) => {
+var removeStorageSync = /*#__PURE__*/ defineSyncApi(API_REMOVE_STORAGE, (key) => {
 	if (localStorage) localStorage.removeItem(key);
 }, RemoveStorageSyncProtocol);
-var removeStorage = /* @__PURE__ */ defineAsyncApi(API_REMOVE_STORAGE, ({ key }, { resolve }) => {
+var removeStorage = /*#__PURE__*/ defineAsyncApi(API_REMOVE_STORAGE, ({ key }, { resolve }) => {
 	removeStorageSync(key);
 	resolve();
 }, RemoveStorageProtocol);
-var clearStorageSync = /* @__PURE__ */ defineSyncApi("clearStorageSync", () => {
+var clearStorageSync = /*#__PURE__*/ defineSyncApi("clearStorageSync", () => {
 	if (localStorage) localStorage.clear();
 });
-var clearStorage = /* @__PURE__ */ defineAsyncApi("clearStorage", (_, { resolve }) => {
+var clearStorage = /*#__PURE__*/ defineAsyncApi("clearStorage", (_, { resolve }) => {
 	clearStorageSync();
 	resolve();
 });
-var getStorageInfoSync = /* @__PURE__ */ defineSyncApi("getStorageInfoSync", () => {
+var getStorageInfoSync = /*#__PURE__*/ defineSyncApi("getStorageInfoSync", () => {
 	const length = localStorage && localStorage.length || 0;
 	const keys = [];
 	let currentSize = 0;
@@ -10838,7 +10837,7 @@ var getStorageInfoSync = /* @__PURE__ */ defineSyncApi("getStorageInfoSync", () 
 		limitSize: Number.MAX_VALUE
 	};
 });
-var getStorageInfo = /* @__PURE__ */ defineAsyncApi("getStorageInfo", (_, { resolve }) => {
+var getStorageInfo = /*#__PURE__*/ defineAsyncApi("getStorageInfo", (_, { resolve }) => {
 	resolve(getStorageInfoSync());
 });
 //#endregion
@@ -10857,7 +10856,7 @@ var browserInfo;
 function initBrowserInfo() {
 	return browserInfo = {};
 }
-var getDeviceInfo = /* @__PURE__ */ defineSyncApi("getDeviceInfo", () => {
+var getDeviceInfo = /*#__PURE__*/ defineSyncApi("getDeviceInfo", () => {
 	initBrowserInfo();
 	const { deviceBrand, deviceModel, brand, model, platform, system, deviceOrientation, deviceType, osname, osversion } = browserInfo;
 	return (0, _vue_shared.extend)({
@@ -10875,7 +10874,7 @@ var getDeviceInfo = /* @__PURE__ */ defineSyncApi("getDeviceInfo", () => {
 		system
 	});
 });
-var getAppBaseInfo = /* @__PURE__ */ defineSyncApi("getAppBaseInfo", () => {
+var getAppBaseInfo = /*#__PURE__*/ defineSyncApi("getAppBaseInfo", () => {
 	initBrowserInfo();
 	const { theme, language, browserName, browserVersion } = browserInfo;
 	return (0, _vue_shared.extend)({
@@ -10906,7 +10905,7 @@ var getAppBaseInfo = /* @__PURE__ */ defineSyncApi("getAppBaseInfo", () => {
 /**
 * 获取系统信息-同步
 */
-var getSystemInfoSync = /* @__PURE__ */ defineSyncApi("getSystemInfoSync", () => {
+var getSystemInfoSync = /*#__PURE__*/ defineSyncApi("getSystemInfoSync", () => {
 	return {
 		deviceId: Date.now() + "" + Math.floor(Math.random() * 1e7),
 		platform: "nodejs"
@@ -10955,7 +10954,7 @@ function setNavigationBar(pageMeta, type, args, resolve, reject) {
 	}
 	resolve();
 }
-var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (args, { resolve, reject }) => {
+var setNavigationBarTitle = /*#__PURE__*/ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (args, { resolve, reject }) => {
 	setNavigationBar(getCurrentPageMeta(), API_SET_NAVIGATION_BAR_TITLE, args, resolve, reject);
 }, SetNavigationBarTitleProtocol);
 //#endregion
@@ -11421,7 +11420,7 @@ global.XMLHttpRequest = require_XMLHttpRequest().XMLHttpRequest;
 var uni$1 = api_exports;
 //#endregion
 //#region src/service/bridge/index.ts
-var UniServiceJSBridge$1 = /* @__PURE__ */ (0, _vue_shared.extend)(ServiceJSBridge, { publishHandler(event, args, pageId) {
+var UniServiceJSBridge$1 = /*#__PURE__*/ (0, _vue_shared.extend)(ServiceJSBridge, { publishHandler(event, args, pageId) {
 	UniViewJSBridge.subscribeHandler(event, args, pageId);
 } });
 //#endregion
@@ -11451,7 +11450,7 @@ var _middleButton = {
 	height: "50px",
 	iconWidth: "24px"
 };
-var tabBar_default = /* @__PURE__ */ defineSystemComponent({
+var tabBar_default = /*#__PURE__*/ defineSystemComponent({
 	name: "TabBar",
 	setup() {
 		const visibleList = (0, vue.ref)([]);
@@ -11681,7 +11680,7 @@ function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, 
 		"src": getRealPath(iconPath)
 	}, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar)], 12, ["onClick"]);
 }
-var layout_default = /* @__PURE__ */ defineSystemComponent({
+var layout_default = /*#__PURE__*/ defineSystemComponent({
 	name: "Layout",
 	setup(_props, { emit }) {
 		const rootRef = (0, vue.ref)(null);
@@ -12016,7 +12015,7 @@ var ICON_PATHS = {
 	menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
 	close: ICON_PATH_CLOSE
 };
-var pageHead_default = /* @__PURE__ */ defineSystemComponent({
+var pageHead_default = /*#__PURE__*/ defineSystemComponent({
 	name: "PageHead",
 	setup() {
 		const headRef = (0, vue.ref)(null);
@@ -12319,10 +12318,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 		"stroke-miterlimit": "10"
 	}, null, 8, _hoisted_7)]))])], 4)]);
 }
-var component_default = /* @__PURE__ */ _plugin_vue_export_helper_default(component_vue_vue_type_script_lang_default, [["render", _sfc_render]]);
+var component_default = /*#__PURE__*/ _plugin_vue_export_helper_default(component_vue_vue_type_script_lang_default, [["render", _sfc_render]]);
 //#endregion
 //#region src/framework/components/page/pageBody.tsx
-var pageBody_default = /* @__PURE__ */ defineSystemComponent({
+var pageBody_default = /*#__PURE__*/ defineSystemComponent({
 	name: "PageBody",
 	setup(props, ctx) {
 		const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
@@ -12346,7 +12345,7 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
 }
 //#endregion
 //#region src/framework/components/page/index.ts
-var page_default = /* @__PURE__ */ defineSystemComponent({
+var page_default = /*#__PURE__*/ defineSystemComponent({
 	name: "Page",
 	setup(_props, ctx) {
 		let pageMeta = providePageMeta(getStateId());
