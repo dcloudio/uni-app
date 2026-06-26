@@ -3,6 +3,7 @@ import debug from 'debug'
 import type { Plugin, ResolvedConfig } from 'vite'
 import {
   type AppJson,
+  M,
   MANIFEST_JSON_JS,
   addMiniProgramAppJson,
   addMiniProgramPageJson,
@@ -15,6 +16,7 @@ import {
   mergeMiniProgramAppJson,
   normalizePagePath,
   normalizePath,
+  parseIndependentSubPackages,
   parseManifestJsonOnce,
   parseMiniProgramPagesJson,
   parseVueRequest,
@@ -26,6 +28,7 @@ import { virtualPagePath } from './entry'
 import type { UniMiniProgramPluginOptions } from '../plugin'
 import { parseI18nJson } from '@dcloudio/uni-i18n'
 import { isPlainObject } from '@vue/shared'
+import { updateIndependentSubPackages } from './independentUtils'
 
 const debugPagesJson = debug('uni:pages-json')
 
@@ -141,7 +144,18 @@ export function uniPagesJsonPlugin(
         }
 
         const { normalize } = options.app
-        addMiniProgramAppJson(normalize ? normalize(appJson) : appJson)
+        const normalizedAppJson = normalize ? normalize(appJson) : appJson
+        const independentUpdate = updateIndependentSubPackages(
+          parseIndependentSubPackages(
+            normalizedAppJson as unknown as UniApp.PagesJson,
+            platform
+          )
+        )
+        if (independentUpdate.rootsChanged) {
+          console.warn(M['dev.watching.restart.independentSubPackages'])
+          process.exit(0)
+        }
+        addMiniProgramAppJson(normalizedAppJson)
         Object.keys(pageJsons).forEach((name) => {
           if (isNormalPage(name)) {
             addMiniProgramPageJson(name, pageJsons[name])

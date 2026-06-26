@@ -17,8 +17,9 @@ import type {
 import type { Plugin } from 'vite'
 import type { UniMiniProgramPluginOptions } from '../plugin'
 import {
+  getIndependentRoots,
+  getIndependentSubPackages,
   parseIndependentRoot,
-  resolveIndependentSubPackages,
   withIndependentRoot,
   withoutIndependentRoot,
 } from './independentUtils'
@@ -38,44 +39,11 @@ export function uniIndependentSubpackagePlugin(
   const global = options.global
   const alias = options.vite?.alias || {}
   const styleExtname = options.style.extname
-  const pagesJsonFile = normalizePath(path.resolve(inputDir, 'pages.json'))
-  let independentPackages: IndependentSubPackage[] = []
-  let independentRoots = new Set<string>()
-  let independentRootsSignature = ''
   return {
     name: 'uni:mp-independent-subpackage',
     enforce: 'pre',
-    buildStart() {
-      if (fs.existsSync(pagesJsonFile)) {
-        this.addWatchFile(pagesJsonFile)
-      }
-      independentPackages = resolveIndependentSubPackages(inputDir, platform)
-      independentRoots = new Set(independentPackages.map(({ root }) => root))
-      independentRootsSignature = stringifyIndependentRoots(independentPackages)
-    },
-    watchChange(id) {
-      if (normalizeFileId(id) !== pagesJsonFile) {
-        return
-      }
-      const nextIndependentPackages = tryResolveIndependentSubPackages(
-        inputDir,
-        platform
-      )
-      if (!nextIndependentPackages) {
-        return
-      }
-      const nextIndependentRootsSignature = stringifyIndependentRoots(
-        nextIndependentPackages
-      )
-      if (nextIndependentRootsSignature !== independentRootsSignature) {
-        this.error(
-          `独立分包 root 列表发生变化，需要重启当前构建。当前：${formatIndependentRoots(
-            independentRootsSignature
-          )}；最新：${formatIndependentRoots(nextIndependentRootsSignature)}。`
-        )
-      }
-    },
     async resolveId(id, importer) {
+      const independentRoots = getIndependentRoots()
       const explicitRoot = parseIndependentRoot(id)
       if (explicitRoot && independentRoots.has(explicitRoot)) {
         const idWithoutRoot = withoutIndependentRoot(id)
@@ -141,6 +109,8 @@ export function uniIndependentSubpackagePlugin(
       }
     },
     load(id) {
+      const independentPackages = getIndependentSubPackages()
+      const independentRoots = getIndependentRoots()
       const explicitRoot = parseIndependentRoot(id)
       if (
         explicitRoot &&
@@ -175,7 +145,6 @@ export function uniIndependentSubpackagePlugin(
       }
       const pagesRoot = parseIndependentPagesRoot(id)
       if (pagesRoot && independentRoots.has(pagesRoot)) {
-        this.addWatchFile(path.resolve(inputDir, 'pages.json'))
         return {
           code: generateIndependentPagesCode(
             independentPackages,
@@ -203,7 +172,7 @@ ${global}.createPage(MiniProgramPage)`,
     generateBundle: {
       order: 'post',
       handler(_, bundle) {
-        independentPackages.forEach((pkg) => {
+        getIndependentSubPackages().forEach((pkg) => {
           emitIndependentBootstrap(
             (file) => this.emitFile(file),
             bundle,
@@ -361,28 +330,6 @@ function isRelocatableStyleChunk(
 
 function resolveIndependentCommonChunkFilename(root: string, filename: string) {
   return `${normalizeIndependentRoot(root)}/common/${normalizePath(filename)}`
-}
-
-function tryResolveIndependentSubPackages(
-  inputDir: string,
-  platform: UniApp.PLATFORM
-) {
-  try {
-    return resolveIndependentSubPackages(inputDir, platform)
-  } catch {
-    return
-  }
-}
-
-function stringifyIndependentRoots(packages: IndependentSubPackage[]) {
-  return packages
-    .map(({ root }) => root)
-    .sort()
-    .join('\n')
-}
-
-function formatIndependentRoots(signature: string) {
-  return signature ? signature.split('\n').join(', ') : '无'
 }
 
 function resolveIndependentAlias(

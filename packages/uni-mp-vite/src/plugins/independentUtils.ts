@@ -1,24 +1,56 @@
-import fs from 'fs'
-import path from 'path'
-import {
-  parseIndependentSubPackages,
-  parsePagesJson,
-} from '@dcloudio/uni-cli-shared'
+import { type IndependentSubPackage } from '@dcloudio/uni-cli-shared'
 
 export const INDEPENDENT_ROOT_QUERY = 'uni_mp_independent_root'
 
-export function resolveIndependentSubPackages(
-  inputDir: string,
-  platform: UniApp.PLATFORM
-) {
-  const pagesJsonPath = path.resolve(inputDir, 'pages.json')
-  if (!fs.existsSync(pagesJsonPath)) {
-    return []
+let independentSubPackages: IndependentSubPackage[] = []
+let initialIndependentRootsSignature: string | undefined
+
+export interface UpdateIndependentSubPackagesResult {
+  rootsChanged: boolean
+  initialRoots: string
+  currentRoots: string
+}
+
+export function initIndependentSubPackages(
+  packages: IndependentSubPackage[]
+): void {
+  independentSubPackages = packages
+  initialIndependentRootsSignature = stringifyIndependentRoots(packages)
+}
+
+export function updateIndependentSubPackages(
+  packages: IndependentSubPackage[]
+): UpdateIndependentSubPackagesResult {
+  const currentRoots = stringifyIndependentRoots(packages)
+  if (initialIndependentRootsSignature === undefined) {
+    initialIndependentRootsSignature = currentRoots
   }
-  return parseIndependentSubPackages(
-    parsePagesJson(inputDir, platform, false),
-    platform
-  )
+  const rootsChanged = currentRoots !== initialIndependentRootsSignature
+  if (!rootsChanged) {
+    independentSubPackages = packages
+  }
+  return {
+    rootsChanged,
+    initialRoots: initialIndependentRootsSignature,
+    currentRoots,
+  }
+}
+
+export function getIndependentSubPackages(): IndependentSubPackage[] {
+  return independentSubPackages
+}
+
+export function getIndependentRoots(): Set<string> {
+  return new Set(independentSubPackages.map(({ root }) => root))
+}
+
+export function stringifyIndependentRoots(
+  packages: IndependentSubPackage[]
+): string {
+  return packages
+    .map(({ root }) => root)
+    .sort()
+    .join('\n')
 }
 
 export function parseIndependentRoot(id: string): string | undefined {
