@@ -12,21 +12,10 @@ export interface IndependentSubPackage {
 }
 
 export function parseIndependentSubPackages(
-  inputDir: string
+  pagesJson: UniApp.PagesJson | undefined,
+  platform: UniApp.PLATFORM | string | undefined = process.env.UNI_PLATFORM
 ): IndependentSubPackage[] {
-  if (process.env.UNI_PLATFORM !== 'mp-weixin') {
-    return []
-  }
-  const pagesJsonPath = path.resolve(inputDir, 'pages.json')
-  if (!fs.existsSync(pagesJsonPath)) {
-    return []
-  }
-  const pagesJson = parseJson(
-    fs.readFileSync(pagesJsonPath, 'utf8'),
-    true,
-    pagesJsonPath
-  ) as UniApp.PagesJson
-  if (!pagesJson) {
+  if (platform !== 'mp-weixin' || !pagesJson) {
     return []
   }
   const subPackages = pagesJson.subPackages || pagesJson.subpackages || []
@@ -55,6 +44,28 @@ export function parseIndependentSubPackages(
   }, [])
 }
 
+export function readIndependentSubPackages(
+  inputDir: string,
+  platform: UniApp.PLATFORM | string | undefined = process.env.UNI_PLATFORM
+): IndependentSubPackage[] {
+  if (platform !== 'mp-weixin') {
+    return []
+  }
+  const pagesJsonPath = path.resolve(inputDir, 'pages.json')
+  if (!fs.existsSync(pagesJsonPath)) {
+    return []
+  }
+  const pagesJson = parseJson(
+    fs.readFileSync(pagesJsonPath, 'utf8'),
+    true,
+    pagesJsonPath
+  ) as UniApp.PagesJson
+  if (!pagesJson) {
+    return []
+  }
+  return parseIndependentSubPackages(pagesJson, platform)
+}
+
 function normalizeSubPackageRoot(root: unknown) {
   if (typeof root !== 'string') {
     return ''
@@ -67,7 +78,9 @@ function normalizeSubPackagePages(pages: unknown) {
     return []
   }
   return pages.reduce<string[]>((paths, page) => {
-    if (page && typeof page.path === 'string' && page.path) {
+    if (typeof page === 'string' && page) {
+      paths.push(normalizePath(page))
+    } else if (page && typeof page.path === 'string' && page.path) {
       paths.push(normalizePath(page.path))
     }
     return paths

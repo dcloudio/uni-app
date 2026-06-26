@@ -2,16 +2,22 @@ import fs from 'fs'
 import os from 'os'
 import path from 'path'
 import { parseMiniProgramPagesJson } from '../src/json/mp/pages'
-import { parseIndependentSubPackages } from '../src/json/mp/subpackage'
+import {
+  parseIndependentSubPackages,
+  readIndependentSubPackages,
+} from '../src/json/mp/subpackage'
 
-function withPagesJson(pagesJson: unknown, test: (inputDir: string) => void) {
+function withPagesJson(
+  pagesJson: unknown,
+  test: (inputDir: string, pagesJson: UniApp.PagesJson) => void
+) {
   const inputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-independent-'))
   fs.writeFileSync(
     path.join(inputDir, 'pages.json'),
     JSON.stringify(pagesJson, null, 2)
   )
   try {
-    test(inputDir)
+    test(inputDir, pagesJson as UniApp.PagesJson)
   } finally {
     fs.rmSync(inputDir, { recursive: true, force: true })
   }
@@ -51,8 +57,8 @@ describe('parseIndependentSubPackages', () => {
           },
         ],
       },
-      (inputDir) => {
-        expect(parseIndependentSubPackages(inputDir)).toEqual([
+      (_inputDir, pagesJson) => {
+        expect(parseIndependentSubPackages(pagesJson, 'mp-weixin')).toEqual([
           {
             root: 'package-a',
             pages: ['pages/index/index'],
@@ -75,8 +81,8 @@ describe('parseIndependentSubPackages', () => {
           },
         ],
       },
-      (inputDir) => {
-        expect(parseIndependentSubPackages(inputDir)).toEqual([
+      (_inputDir, pagesJson) => {
+        expect(parseIndependentSubPackages(pagesJson, 'mp-weixin')).toEqual([
           {
             root: 'package-a',
             pages: ['pages/index/index'],
@@ -101,8 +107,8 @@ describe('parseIndependentSubPackages', () => {
           { root: 'package-b', independent: true, pages: [{ path: '' }] },
         ],
       },
-      (inputDir) => {
-        expect(parseIndependentSubPackages(inputDir)).toEqual([])
+      (_inputDir, pagesJson) => {
+        expect(parseIndependentSubPackages(pagesJson, 'mp-weixin')).toEqual([])
       }
     )
   })
@@ -119,10 +125,57 @@ describe('parseIndependentSubPackages', () => {
           },
         ],
       },
-      (inputDir) => {
-        expect(parseIndependentSubPackages(inputDir)).toEqual([])
+      (_inputDir, pagesJson) => {
+        expect(parseIndependentSubPackages(pagesJson, 'mp-alipay')).toEqual([])
       }
     )
+  })
+
+  test('reads independent subPackages from pages.json at caller boundary', () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      (inputDir) => {
+        expect(readIndependentSubPackages(inputDir, 'mp-weixin')).toEqual([
+          {
+            root: 'package-a',
+            pages: ['pages/index/index'],
+            independent: true,
+          },
+        ])
+      }
+    )
+  })
+
+  test('supports appJson style page strings', () => {
+    expect(
+      parseIndependentSubPackages(
+        {
+          subPackages: [
+            {
+              root: 'package-a',
+              independent: true,
+              pages: ['pages/index/index'],
+            },
+          ],
+        } as unknown as UniApp.PagesJson,
+        'mp-weixin'
+      )
+    ).toEqual([
+      {
+        root: 'package-a',
+        pages: ['pages/index/index'],
+        independent: true,
+      },
+    ])
   })
 
   test('keeps independent field in app json subPackages', () => {

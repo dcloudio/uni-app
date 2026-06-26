@@ -55,7 +55,7 @@ describe('miniProgram:jsonFile', () => {
         const page = 'package-a/pages/index/index'
 
         addMiniProgramAppJson({
-          pages: [],
+          ...createIndependentAppJson('package-a'),
           usingComponents: {
             'global-a': '/package-a/components/global-a',
           },
@@ -81,7 +81,7 @@ describe('miniProgram:jsonFile', () => {
         const page = 'package-a/pages/index/index'
 
         addMiniProgramAppJson({
-          pages: [],
+          ...createIndependentAppJson('package-a'),
           usingComponents: {
             'global-a': '/components/global-a',
           },
@@ -100,7 +100,7 @@ describe('miniProgram:jsonFile', () => {
         process.env.UNI_INPUT_DIR = inputDir
         const page = 'package-a/pages/index/index'
 
-        addMiniProgramAppJson({ pages: [] })
+        addMiniProgramAppJson(createIndependentAppJson('package-a'))
         addMiniProgramPageJson(page, {
           usingComponents: {
             'local-a': '/components/local-a',
@@ -119,7 +119,7 @@ describe('miniProgram:jsonFile', () => {
         process.env.UNI_INPUT_DIR = inputDir
         const page = 'package-a/pages/index/index'
 
-        addMiniProgramAppJson({ pages: [] })
+        addMiniProgramAppJson(createIndependentAppJson('package-a'))
         addMiniProgramPageJson(page, {
           usingComponents: {
             'local-a': '../../components/local-a',
@@ -140,7 +140,7 @@ describe('miniProgram:jsonFile', () => {
         process.env.UNI_INPUT_DIR = inputDir
         const page = 'package-a/pages/index/index'
 
-        addMiniProgramAppJson({ pages: [] })
+        addMiniProgramAppJson(createIndependentAppJson('package-a'))
         addMiniProgramPageJson(page, {
           usingComponents: {
             'local-a': '../../../components/local-a',
@@ -215,5 +215,18 @@ function withIndependentPagesJson(
     test(inputDir)
   } finally {
     fs.rmSync(inputDir, { recursive: true, force: true })
+  }
+}
+
+function createIndependentAppJson(root: string) {
+  return {
+    pages: [],
+    subPackages: [
+      {
+        root,
+        independent: true,
+        pages: ['pages/index/index'],
+      },
+    ],
   }
 }
