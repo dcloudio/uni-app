@@ -17,16 +17,16 @@ function getWindowWidth () {
    * 安卓平台微信内置浏览器在调整微信字体大小小于标准字体时，windowWidth会大于screenWidth，此时计算rpx等时应以windowWidth为准
    * iOS端微信内置浏览器没有这个问题
    */
-  // 目前仅在 iOS 直接使用平台 API，其他仍使用历史遗留的兼容方案
-  var windowWidth = _isApple
-    ? __PLATFORM__ === 'app-plus'
-      ? plus.webview.currentWebview().getStyle().width
-      : Math.min(
+  // app-plus 都使用 plus 获取宽度
+  var windowWidth = __PLATFORM__ === 'app-plus'
+    ? plus.webview.currentWebview().getStyle().width
+    : _isApple
+      ? Math.min(
         window.innerWidth,
         document.documentElement.clientWidth,
         screenWidth
       ) || screenWidth
-    : Math.min(window.innerWidth, document.documentElement.clientWidth)
+      : Math.min(window.innerWidth, document.documentElement.clientWidth)
   return windowWidth
 }
 
