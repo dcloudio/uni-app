@@ -16,6 +16,7 @@ import {
 import { relativeFile } from '../../resolve'
 import { isVueSfcFile } from '../../vue/utils'
 import { UNI_AD_PLUGINS } from '@dcloudio/uni-shared'
+import { parseIndependentSubPackages } from './subpackage'
 
 let appJsonCache: Record<string, any> = {}
 const jsonFilesCache = new Map<string, string>()
@@ -62,9 +63,12 @@ export function normalizeJsonFilename(filename: string) {
 }
 
 export function findChangedJsonFiles(
-  supportGlobalUsingComponents: boolean = true
+  supportGlobalUsingComponents: boolean | ((filename: string) => boolean) = true
 ) {
   const changedJsonFiles = new Map<string, string>()
+  const independentRoots = parseIndependentSubPackages(
+    process.env.UNI_INPUT_DIR || ''
+  ).map(({ root }) => root)
   function findChangedFile(filename: string, json: Record<string, any>) {
     const newJson = JSON.parse(JSON.stringify(json))
     if (!newJson.usingComponents) {
@@ -75,11 +79,24 @@ export function findChangedJsonFiles(
     // app.json mp-baidu 在 win 不支持相对路径。所有平台改用绝对路径
     if (filename !== 'app') {
       let usingComponents = newJson.usingComponents as Record<string, string>
-      // 如果小程序不支持 global 的 usingComponents
-      if (!supportGlobalUsingComponents) {
+      const independentRoot = findIndependentRoot(filename, independentRoots)
+      const supportGlobalUsingComponentsForFile =
+        typeof supportGlobalUsingComponents === 'function'
+          ? supportGlobalUsingComponents(filename)
+          : supportGlobalUsingComponents
+      // 如果小程序不支持 global 的 usingComponents，或独立分包冷启动不能依赖 app.json
+      if (!supportGlobalUsingComponentsForFile || independentRoot) {
         // 从取全局的 usingComponents 并补充到子组件 usingComponents 中
         const globalUsingComponents = appJsonCache?.usingComponents || {}
         const globalComponents = findUsingComponents('app') || {}
+        if (independentRoot) {
+          validateIndependentGlobalComponents(
+            filename,
+            independentRoot,
+            globalUsingComponents,
+            globalComponents
+          )
+        }
         usingComponents = {
           ...globalUsingComponents,
           ...globalComponents,
@@ -117,6 +134,48 @@ export function findChangedJsonFiles(
   return changedJsonFiles
 }
 
+function findIndependentRoot(filename: string, independentRoots: string[]) {
+  return independentRoots.find((root) => {
+    return filename === root || filename.startsWith(root + '/')
+  })
+}
+
+function validateIndependentGlobalComponents(
+  filename: string,
+  root: string,
+  ...usingComponentsList: Record<string, string>[]
+) {
+  usingComponentsList.forEach((usingComponents) => {
+    Object.keys(usingComponents).forEach((name) => {
+      const componentFilename = usingComponents[name]
+      if (
+        isLocalUsingComponent(componentFilename) &&
+        !isUsingComponentInRoot(componentFilename, root)
+      ) {
+        throw new Error(
+          `独立分包 "${root}" 不能在 "${filename}" 中使用 root 外全局组件 "${name}"（${componentFilename}），请移动到 "${root}" 内或改为页面局部组件。`
+        )
+      }
+    })
+  })
+}
+
+function isUsingComponentInRoot(componentFilename: string, root: string) {
+  const filename = normalizeUsingComponentFilename(componentFilename)
+  return filename === root || filename.startsWith(root + '/')
+}
+
+function normalizeUsingComponentFilename(componentFilename: string) {
+  return normalizePath(componentFilename).replace(/^\/+/, '')
+}
+
+function isLocalUsingComponent(componentFilename: string) {
+  return (
+    !/^(?:plugin|dynamicLib|ext):\/\//.test(componentFilename) &&
+    !componentFilename.startsWith('weui-miniprogram')
+  )
+}
+
 export function addMiniProgramAppJson(appJson: Record<string, any>) {
   appJsonCache = appJson
 }
@@ -140,6 +199,14 @@ export function addMiniProgramUsingComponents(
   json: UsingComponents
 ) {
   jsonUsingComponentsCache.set(filename, json)
+}
+
+export function resetMiniProgramJsonFiles() {
+  appJsonCache = {}
+  jsonFilesCache.clear()
+  jsonPagesCache.clear()
+  jsonComponentsCache.clear()
+  jsonUsingComponentsCache.clear()
 }
 
 export function isMiniProgramUsingComponent(

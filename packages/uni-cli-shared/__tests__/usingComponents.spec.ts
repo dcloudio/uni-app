@@ -2,6 +2,11 @@ import path from 'path'
 import type { ResolvedId } from 'rollup'
 import { normalizePath } from '../src/utils'
 import { findUsingComponents } from '../src/json/mp/jsonFile'
+import {
+  parseIndependentRoot,
+  withIndependentRoot,
+  withoutIndependentRoot,
+} from '../src/json/mp/subpackage'
 import { parseProgram } from '../src/mp/ast'
 import {
   parseMainDescriptor,
@@ -17,6 +22,19 @@ function normalizeComponentName(name: string) {
 async function resolve(id: string, importer?: string) {
   return {
     id: normalizePath(importer ? path.resolve(path.dirname(importer), id) : id),
+  } as ResolvedId
+}
+
+async function resolveWithIndependentRoot(id: string, importer?: string) {
+  const root = importer && parseIndependentRoot(importer)
+  const importerWithoutRoot = importer && withoutIndependentRoot(importer)
+  const resolved = normalizePath(
+    importerWithoutRoot
+      ? path.resolve(path.dirname(importerWithoutRoot), id)
+      : id
+  )
+  return {
+    id: root ? withIndependentRoot(resolved, root) : resolved,
   } as ResolvedId
 }
 
@@ -307,5 +325,59 @@ export function createApp() {
         `const _easycom_test = ()=>import('${inputDir}/components/test/test.vue')`
       )
     })
+
+    test(`independent root keeps descriptor cache separate`, async () => {
+      const filename = `${inputDir}/package-a/pages/index/index.vue`
+      await parseMainDescriptor(
+        filename,
+        parseProgram(createComponentSource('ComponentA'), filename, {}),
+        resolve
+      )
+      await parseMainDescriptor(
+        filename,
+        parseProgram(createComponentSource('ComponentB'), filename, {}),
+        resolveWithIndependentRoot,
+        'package-a'
+      )
+
+      updateMiniProgramComponentsByMainFilename(
+        filename,
+        inputDir,
+        normalizeComponentName
+      )
+      expect(findUsingComponents('package-a/pages/index/index')).toMatchObject({
+        'component-a': '/package-a/pages/index/components/component-a',
+      })
+
+      updateMiniProgramComponentsByMainFilename(
+        filename,
+        inputDir,
+        normalizeComponentName,
+        'package-a'
+      )
+      expect(findUsingComponents('package-a/pages/index/index')).toMatchObject({
+        'component-b': '/package-a/pages/index/components/component-b',
+      })
+    })
   })
 })
+
+function createComponentSource(name: 'ComponentA' | 'ComponentB') {
+  const tag = name === 'ComponentA' ? 'component-a' : 'component-b'
+  const source = name === 'ComponentA' ? 'component-a' : 'component-b'
+  return `import ${name} from "./components/${source}.vue";
+const _sfc_main = {
+  components: {
+    ${name}
+  }
+};
+const __BINDING_COMPONENTS__ = '{"${tag}":{"name":"_component_${source.replace(
+    '-',
+    '_'
+  )}","type":"unknown"}}';
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return {};
+}
+export default _sfc_main;
+`
+}
