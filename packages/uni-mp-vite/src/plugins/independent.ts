@@ -34,6 +34,7 @@ export function uniIndependentSubpackagePlugin(
   const inputDir = process.env.UNI_INPUT_DIR
   const platform = process.env.UNI_PLATFORM as UniApp.PLATFORM
   const global = options.global
+  const alias = options.vite?.alias || {}
   const styleExtname = options.style.extname
   const pagesJsonFile = normalizePath(path.resolve(inputDir, 'pages.json'))
   let independentPackages: IndependentSubPackage[] = []
@@ -72,8 +73,9 @@ export function uniIndependentSubpackagePlugin(
     async resolveId(id, importer) {
       const explicitRoot = parseIndependentRoot(id)
       if (explicitRoot && independentRoots.has(explicitRoot)) {
+        const idWithoutRoot = withoutIndependentRoot(id)
         const resolved = await this.resolve(
-          withoutIndependentRoot(id),
+          idWithoutRoot,
           importer && withoutIndependentRoot(importer)
         )
         if (resolved && !resolved.external) {
@@ -81,6 +83,10 @@ export function uniIndependentSubpackagePlugin(
             ...resolved,
             id: withIndependentRoot(resolved.id, explicitRoot),
           }
+        }
+        const aliased = resolveIndependentAlias(idWithoutRoot, alias)
+        if (aliased) {
+          return withIndependentRoot(aliased, explicitRoot)
         }
       }
       const root = parseIndependentMainRoot(id)
@@ -257,6 +263,21 @@ function stringifyIndependentRoots(packages: IndependentSubPackage[]) {
 
 function formatIndependentRoots(signature: string) {
   return signature ? signature.split('\n').join(', ') : '无'
+}
+
+function resolveIndependentAlias(
+  id: string,
+  alias: UniMiniProgramPluginOptions['vite']['alias']
+) {
+  if (Array.isArray(alias)) {
+    for (const item of alias) {
+      if (typeof item.find === 'string' && item.find === id) {
+        return item.replacement
+      }
+    }
+    return
+  }
+  return alias[id]
 }
 
 function processIndependentStyles(
