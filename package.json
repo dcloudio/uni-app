@@ -44,7 +44,7 @@
     ]
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": "^20.19.0 || >=22.12.0"
   },
   "devDependencies": {
     "@babel/core": "catalog:",
@@ -68,7 +68,7 @@
     "@rollup/plugin-terser": "^0.2.1",
     "@types/fs-extra": "catalog:",
     "@types/jest": "^29.2.3",
-    "@types/node": "^18.16.2",
+    "@types/node": "22.19.19",
     "@types/react": "^18.2.67",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
     "@typescript-eslint/parser": "^7.1.1",
@@ -119,7 +119,7 @@
   "pnpm": {
     "overrides": {
       "@types/node": "22.19.19",
-      "postcss": "8.5.6"
+      "postcss": "8.5.15"
     }
   },
   "packageManager": "pnpm@9.5.0",
