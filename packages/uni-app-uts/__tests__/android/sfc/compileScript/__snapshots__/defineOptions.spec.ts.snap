@@ -3,7 +3,7 @@
 exports[`defineOptions() basic usage 1`] = `
 "
 export default defineComponent({
- name: 'FooApp' ,
+name: 'FooApp',
   setup(__props) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
@@ -31,4 +31,66 @@ return (): any | null => { return null }
 }
 
 })"
+`;
+
+exports[`defineOptions() empty object argument 1`] = `
+"
+export default defineComponent({
+  setup(__props) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy;
+const _cache = __ins.renderCache;
+
+      
+      
+return (): any | null => { return null }
+}
+
+})"
+`;
+
+exports[`defineOptions() with trailing comma 1`] = `
+"
+const __sfc__ = defineComponent({
+  __name: 'index',
+inheritAttrs: false,
+        styleIsolation: "app",
+  setup(__props) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as InstanceType<typeof __sfc__>;
+const _cache = __ins.renderCache;
+
+      
+      
+return (): any | null => {
+
+  return _cE("view", null, "123")
+}
+}
+
+})
+export default __sfc__"
+`;
+
+exports[`defineOptions() without trailing comma 1`] = `
+"
+const __sfc__ = defineComponent({
+  __name: 'index',
+inheritAttrs: false,
+        styleIsolation: "app",
+  setup(__props) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as InstanceType<typeof __sfc__>;
+const _cache = __ins.renderCache;
+
+      
+      
+return (): any | null => {
+
+  return _cE("view", null, "123")
+}
+}
+
+})
+export default __sfc__"
 `;

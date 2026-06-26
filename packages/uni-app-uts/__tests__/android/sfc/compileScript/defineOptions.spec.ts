@@ -11,7 +11,67 @@ describe('defineOptions()', () => {
     // should remove defineOptions import and call
     expect(content).not.toMatch('defineOptions')
     // should include context options in default export
-    expect(content).toMatch(`name: 'FooApp' ,`)
+    expect(content).toMatch(`name: 'FooApp',`)
+  })
+
+  test('with trailing comma', () => {
+    const { content } = compile(
+      `
+      <script setup>
+      defineOptions({
+        inheritAttrs: false,
+        styleIsolation: "app",
+      })
+      </script>
+      <template><view>123</view></template>
+    `,
+      {
+        genDefaultAs: '__sfc__',
+      },
+      {
+        filename: 'pages/index/index.uvue',
+      }
+    )
+    assertCode(content)
+    expect(content).toMatch(`inheritAttrs: false,
+        styleIsolation: "app",
+  setup`)
+    expect(content).not.toMatch(/styleIsolation: "app",\s*,/)
+  })
+
+  test('without trailing comma', () => {
+    const { content } = compile(
+      `
+      <script setup>
+      defineOptions({
+        inheritAttrs: false,
+        styleIsolation: "app"
+      })
+      </script>
+      <template><view>123</view></template>
+    `,
+      {
+        genDefaultAs: '__sfc__',
+      },
+      {
+        filename: 'pages/index/index.uvue',
+      }
+    )
+    assertCode(content)
+    expect(content).toMatch(`inheritAttrs: false,
+        styleIsolation: "app",
+  setup`)
+  })
+
+  test('empty object argument', () => {
+    const { content } = compile(`
+      <script setup>
+      defineOptions({})
+      </script>
+    `)
+    assertCode(content)
+    expect(content).toMatch(`export default defineComponent({`)
+    expect(content).not.toMatch(/\{\s*,\s*setup/)
   })
 
   test('empty argument', () => {
