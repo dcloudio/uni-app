@@ -70,6 +70,22 @@ export function uniIndependentSubpackagePlugin(
       }
     },
     async resolveId(id, importer) {
+      const explicitRoot = parseIndependentRoot(id)
+      if (explicitRoot && independentRoots.has(explicitRoot)) {
+        const resolved = await this.resolve(
+          withoutIndependentRoot(id),
+          importer && withoutIndependentRoot(importer),
+          {
+            skipSelf: true,
+          }
+        )
+        if (resolved && !resolved.external) {
+          return {
+            ...resolved,
+            id: withIndependentRoot(resolved.id, explicitRoot),
+          }
+        }
+      }
       const root = parseIndependentMainRoot(id)
       if (root && independentRoots.has(root)) {
         return id
