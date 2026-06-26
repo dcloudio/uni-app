@@ -57,19 +57,25 @@ export function uniIndependentSubpackagePlugin(
       if (
         importerRoot &&
         independentRoots.has(importerRoot) &&
-        shouldPropagateIndependentRoot(id)
+        shouldResolveIndependentDependency(id)
       ) {
-        const resolved = await this.resolve(
-          id,
-          withoutIndependentRoot(importer),
-          {
-            skipSelf: true,
-          }
-        )
+        const importerWithoutRoot = withoutIndependentRoot(importer)
+        const resolved = await this.resolve(id, importerWithoutRoot, {
+          skipSelf: true,
+        })
         if (resolved && !resolved.external) {
-          return {
-            ...resolved,
-            id: withIndependentRoot(resolved.id, importerRoot),
+          validateIndependentDependency({
+            root: importerRoot,
+            source: id,
+            importer: importerWithoutRoot,
+            resolvedId: resolved.id,
+            inputDir,
+          })
+          if (shouldPropagateIndependentRoot(id)) {
+            return {
+              ...resolved,
+              id: withIndependentRoot(resolved.id, importerRoot),
+            }
           }
         }
       }
@@ -196,6 +202,72 @@ function generateIndependentPagesCode(
   return `if(!Math){
 ${imports.join('\n')}
 }`
+}
+
+function validateIndependentDependency({
+  root,
+  source,
+  importer,
+  resolvedId,
+  inputDir,
+}: {
+  root: string
+  source: string
+  importer: string
+  resolvedId: string
+  inputDir: string
+}) {
+  const normalizedInputDir = normalizePath(inputDir)
+  const importerFile = normalizeFileId(importer)
+  if (!isInIndependentRoot(importerFile, normalizedInputDir, root)) {
+    return
+  }
+  const resolvedFile = normalizeFileId(withoutIndependentRoot(resolvedId))
+  if (
+    !isProjectFile(resolvedFile, normalizedInputDir) ||
+    isAllowedProjectDependency(resolvedFile, normalizedInputDir) ||
+    isInIndependentRoot(resolvedFile, normalizedInputDir, root)
+  ) {
+    return
+  }
+  throw new Error(
+    `独立分包 "${root}" 不能引用 root 外依赖：${normalizePath(
+      path.relative(normalizedInputDir, resolvedFile)
+    )}。来源：${normalizePath(
+      path.relative(normalizedInputDir, importerFile)
+    )} -> ${source}。请将该依赖移动到 "${root}" 内，或等待后续自动处理 root 外依赖。`
+  )
+}
+
+function isProjectFile(filename: string, inputDir: string) {
+  return filename === inputDir || filename.startsWith(`${inputDir}/`)
+}
+
+function isAllowedProjectDependency(filename: string, inputDir: string) {
+  return (
+    filename.includes('/node_modules/') ||
+    filename === resolveMainPathOnce(inputDir)
+  )
+}
+
+function isInIndependentRoot(filename: string, inputDir: string, root: string) {
+  const normalizedRoot = normalizePath(root).replace(/\/$/, '')
+  const rootDir = `${inputDir}/${normalizedRoot}`
+  return filename === rootDir || filename.startsWith(`${rootDir}/`)
+}
+
+function normalizeFileId(id: string) {
+  return normalizePath(id).split('?')[0]
+}
+
+function shouldResolveIndependentDependency(id: string) {
+  if (parseIndependentRoot(id)) {
+    return false
+  }
+  if (/^(?:plugin|dynamicLib|ext|data|https?):/.test(id)) {
+    return false
+  }
+  return true
 }
 
 function shouldPropagateIndependentRoot(id: string) {

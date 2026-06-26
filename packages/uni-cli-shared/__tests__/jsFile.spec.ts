@@ -89,7 +89,66 @@ describe('miniProgram:jsonFile', () => {
         addMiniProgramPageJson(page, {})
 
         expect(() => findChangedJsonFiles(true)).toThrow(
-          '独立分包 "package-a" 不能在 "package-a/pages/index/index" 中使用 root 外全局组件 "global-a"'
+          '独立分包 "package-a" 不能在 "package-a/pages/index/index" 中使用 root 外组件 "global-a"'
+        )
+      })
+    })
+
+    test('throws when independent pages use root-outside local components', () => {
+      withIndependentPagesJson('package-a', (inputDir) => {
+        process.env.UNI_PLATFORM = 'mp-weixin'
+        process.env.UNI_INPUT_DIR = inputDir
+        const page = 'package-a/pages/index/index'
+
+        addMiniProgramAppJson({ pages: [] })
+        addMiniProgramPageJson(page, {
+          usingComponents: {
+            'local-a': '/components/local-a',
+          },
+        })
+
+        expect(() => findChangedJsonFiles(true)).toThrow(
+          '独立分包 "package-a" 不能在 "package-a/pages/index/index" 中使用 root 外组件 "local-a"'
+        )
+      })
+    })
+
+    test('allows independent pages to use root-inside relative components', () => {
+      withIndependentPagesJson('package-a', (inputDir) => {
+        process.env.UNI_PLATFORM = 'mp-weixin'
+        process.env.UNI_INPUT_DIR = inputDir
+        const page = 'package-a/pages/index/index'
+
+        addMiniProgramAppJson({ pages: [] })
+        addMiniProgramPageJson(page, {
+          usingComponents: {
+            'local-a': '../../components/local-a',
+          },
+        })
+
+        expect(JSON.parse(findChangedJsonFiles(true).get(page)!)).toEqual({
+          usingComponents: {
+            'local-a': '../../components/local-a',
+          },
+        })
+      })
+    })
+
+    test('throws when independent pages use root-outside relative components', () => {
+      withIndependentPagesJson('package-a', (inputDir) => {
+        process.env.UNI_PLATFORM = 'mp-weixin'
+        process.env.UNI_INPUT_DIR = inputDir
+        const page = 'package-a/pages/index/index'
+
+        addMiniProgramAppJson({ pages: [] })
+        addMiniProgramPageJson(page, {
+          usingComponents: {
+            'local-a': '../../../components/local-a',
+          },
+        })
+
+        expect(() => findChangedJsonFiles(true)).toThrow(
+          '独立分包 "package-a" 不能在 "package-a/pages/index/index" 中使用 root 外组件 "local-a"'
         )
       })
     })

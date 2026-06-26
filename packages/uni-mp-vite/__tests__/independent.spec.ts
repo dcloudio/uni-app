@@ -214,7 +214,7 @@ wx.createPage(MiniProgramPage)`,
     )
   })
 
-  test('does not propagate root query for style and assets', async () => {
+  test('validates but does not propagate root query for style and assets', async () => {
     process.env.UNI_PLATFORM = 'mp-weixin'
     await withPagesJson(
       {
@@ -230,23 +230,91 @@ wx.createPage(MiniProgramPage)`,
         process.env.UNI_INPUT_DIR = inputDir
         const plugin = uniIndependentSubpackagePlugin({ global: 'wx' } as any)
         ;(plugin.buildStart as Function).call({})
-        const resolve = jest.fn()
+        const resolve = jest.fn(async (source: string) => ({
+          id: path.join(inputDir, 'package-a/pages/index', source),
+        }))
 
         await expect(
           (plugin.resolveId as Function).call(
             { resolve },
             './style.css',
-            '/project/src/main.ts?uni_mp_independent_root=package-a'
+            `${inputDir}/package-a/pages/index/index.vue?uni_mp_independent_root=package-a`
           )
         ).resolves.toBeUndefined()
         await expect(
           (plugin.resolveId as Function).call(
             { resolve },
             './logo.png',
-            '/project/src/main.ts?uni_mp_independent_root=package-a'
+            `${inputDir}/package-a/pages/index/index.vue?uni_mp_independent_root=package-a`
           )
         ).resolves.toBeUndefined()
-        expect(resolve).not.toHaveBeenCalled()
+        expect(resolve).toHaveBeenCalledTimes(2)
+      }
+    )
+  })
+
+  test('throws when independent root module imports root-outside project file', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    await withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      async (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        const plugin = uniIndependentSubpackagePlugin({ global: 'wx' } as any)
+        ;(plugin.buildStart as Function).call({})
+        const resolve = jest.fn(async () => ({
+          id: path.join(inputDir, 'utils/foo.ts'),
+        }))
+
+        await expect(
+          (plugin.resolveId as Function).call(
+            { resolve },
+            '../../utils/foo',
+            `${inputDir}/package-a/pages/index/index.vue?uni_mp_independent_root=package-a`
+          )
+        ).rejects.toThrow(
+          '独立分包 "package-a" 不能引用 root 外依赖：utils/foo.ts'
+        )
+      }
+    )
+  })
+
+  test('throws when independent root module imports root-outside asset', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    await withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      async (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        const plugin = uniIndependentSubpackagePlugin({ global: 'wx' } as any)
+        ;(plugin.buildStart as Function).call({})
+        const resolve = jest.fn(async () => ({
+          id: path.join(inputDir, 'static/logo.png'),
+        }))
+
+        await expect(
+          (plugin.resolveId as Function).call(
+            { resolve },
+            '../../static/logo.png',
+            `${inputDir}/package-a/pages/index/index.vue?uni_mp_independent_root=package-a`
+          )
+        ).rejects.toThrow(
+          '独立分包 "package-a" 不能引用 root 外依赖：static/logo.png'
+        )
       }
     )
   })
