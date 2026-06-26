@@ -1009,13 +1009,13 @@ __ins.emit(event, ...do_not_transform_spread)
   //   runtimeOptions += `\n  __ssrInlineRender: true,`
   // }
   if (ctx.optionsRuntimeDecl) {
-    runtimeOptions +=
-      `\n` +
-      scriptSetup.content
-        .slice(ctx.optionsRuntimeDecl.start!, ctx.optionsRuntimeDecl.end!)
-        .trim()
-        .slice(1, -1) +
-      `,`
+    const defineOptions = genDefineOptions(
+      scriptSetup.content,
+      ctx.optionsRuntimeDecl
+    )
+    if (defineOptions) {
+      runtimeOptions += `\n` + defineOptions + `,`
+    }
   }
 
   const slotsDecl = genRuntimeSlots(ctx)
@@ -1113,6 +1113,16 @@ ${exposeCall}`
     scriptSetupAst: scriptSetupAst?.body,
     deps: ctx.deps ? [...ctx.deps] : undefined,
   }
+}
+
+function genDefineOptions(content: string, node: Node): string {
+  if (node.type !== 'ObjectExpression' || node.properties.length === 0) {
+    return ''
+  }
+
+  const last = node.properties[node.properties.length - 1]
+  // 截取到最后一个属性，避免带上用户写的尾逗号；defineComponent 的选项分隔符由编译器统一补齐。
+  return content.slice(node.start! + 1, last.end!).trim()
 }
 
 function generateScriptMap(
