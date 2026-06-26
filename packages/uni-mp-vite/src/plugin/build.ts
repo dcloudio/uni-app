@@ -34,6 +34,12 @@ import {
   parseVirtualPagePathInfo,
 } from '../plugins/entry'
 import {
+  INDEPENDENT_MAIN_PREFIX,
+  INDEPENDENT_PAGE_PARAM,
+  INDEPENDENT_PAGE_PREFIX,
+  INDEPENDENT_ROOT_PARAM,
+  VUE_EXPORT_HELPER_ID,
+  formatIndependentVirtualId,
   initIndependentSubPackages,
   parseIndependentRoot,
   withoutIndependentRoot,
@@ -195,9 +201,10 @@ function parseRollupInput(inputDir: string, platform: UniApp.PLATFORM) {
   )
   initIndependentSubPackages(independentPackages)
   independentPackages.forEach(({ root }) => {
-    inputOptions[
-      `${root}/common/main`
-    ] = `\0uni:mp-independent-main?root=${encodeURIComponent(root)}`
+    inputOptions[`${root}/common/main`] = formatIndependentVirtualId(
+      INDEPENDENT_MAIN_PREFIX,
+      root
+    )
   })
   if (platform === 'mp-weixin' || platform === 'mp-alipay') {
     const pluginExports = getSubpackagePluginExports(inputDir)
@@ -222,7 +229,7 @@ function parseRollupInput(inputDir: string, platform: UniApp.PLATFORM) {
 }
 
 function isVueJs(id: string) {
-  return id.includes('\0plugin-vue:export-helper')
+  return id.includes(VUE_EXPORT_HELPER_ID)
 }
 
 const chunkFileNameBlackList = ['main', 'pages.json', 'manifest.json']
@@ -448,7 +455,7 @@ function findIndependentChunkRoot(chunk: PreRenderedChunk) {
 }
 
 function parseIndependentPageChunkInfo(id: string) {
-  if (!id.startsWith('\0uni:mp-independent-page')) {
+  if (!id.startsWith(INDEPENDENT_PAGE_PREFIX)) {
     return
   }
   const queryIndex = id.indexOf('?')
@@ -456,8 +463,8 @@ function parseIndependentPageChunkInfo(id: string) {
     return
   }
   const query = new URLSearchParams(id.slice(queryIndex + 1))
-  const root = query.get('root')
-  const page = query.get('page')
+  const root = query.get(INDEPENDENT_ROOT_PARAM)
+  const page = query.get(INDEPENDENT_PAGE_PARAM)
   if (root && page) {
     return { root, page }
   }

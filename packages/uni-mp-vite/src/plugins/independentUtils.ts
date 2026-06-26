@@ -1,6 +1,19 @@
-import { type IndependentSubPackage } from '@dcloudio/uni-cli-shared'
+import {
+  MP_INDEPENDENT_ROOT_QUERY,
+  type IndependentSubPackage,
+} from '@dcloudio/uni-cli-shared'
 
-export const INDEPENDENT_ROOT_QUERY = 'uni_mp_independent_root'
+export const INDEPENDENT_SUBPACKAGE_PLUGIN_NAME =
+  'uni:mp-independent-subpackage'
+export const INDEPENDENT_MAIN_PREFIX = '\0uni:mp-independent-main'
+export const APP_FACTORY_PREFIX = '\0uni:mp-app-factory'
+export const INDEPENDENT_PAGES_PREFIX = '\0uni:mp-independent-pages'
+export const INDEPENDENT_PAGE_PREFIX = '\0uni:mp-independent-page'
+export const VUE_EXPORT_HELPER_ID = '\0plugin-vue:export-helper'
+export const UNI_MP_RUNTIME_ID = 'uni-mp-runtime'
+export const INDEPENDENT_ROOT_QUERY = MP_INDEPENDENT_ROOT_QUERY
+export const INDEPENDENT_ROOT_PARAM = 'root'
+export const INDEPENDENT_PAGE_PARAM = 'page'
 
 let independentSubPackages: IndependentSubPackage[] = []
 let initialIndependentRootsSignature: string | undefined
@@ -42,6 +55,23 @@ export function getIndependentSubPackages(): IndependentSubPackage[] {
 
 export function getIndependentRoots(): Set<string> {
   return new Set(independentSubPackages.map(({ root }) => root))
+}
+
+export function formatIndependentVirtualId(
+  prefix: string,
+  root: string
+): string {
+  return `${prefix}?${INDEPENDENT_ROOT_PARAM}=${encodeURIComponent(root)}`
+}
+
+export function formatIndependentPageVirtualId(
+  root: string,
+  page: string
+): string {
+  return `${formatIndependentVirtualId(
+    INDEPENDENT_PAGE_PREFIX,
+    root
+  )}&${INDEPENDENT_PAGE_PARAM}=${encodeURIComponent(page)}`
 }
 
 export function stringifyIndependentRoots(
