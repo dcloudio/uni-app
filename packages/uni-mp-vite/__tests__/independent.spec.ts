@@ -4,7 +4,17 @@ import path from 'path'
 import { parseIndependentSubPackages } from '@dcloudio/uni-cli-shared'
 import { virtualComponentPath, virtualPagePath } from '../src/plugins/entry'
 import { uniIndependentSubpackagePlugin } from '../src/plugins/independent'
-import { initIndependentSubPackages } from '../src/plugins/independentUtils'
+import {
+  APP_FACTORY_PREFIX,
+  INDEPENDENT_MAIN_PREFIX,
+  INDEPENDENT_PAGES_PREFIX,
+  UNI_MP_RUNTIME_ID,
+  VUE_EXPORT_HELPER_ID,
+  formatIndependentPageVirtualId,
+  formatIndependentVirtualId,
+  initIndependentSubPackages,
+  withIndependentRoot,
+} from '../src/plugins/independentUtils'
 
 async function withPagesJson(
   pagesJson: unknown,
@@ -84,19 +94,28 @@ describe('uniIndependentSubpackagePlugin', () => {
           style: { extname: '.wxss' },
         } as any)
         callBuildStart(plugin)
-        const id = '\0uni:mp-independent-main?root=package-a'
+        const id = formatIndependentVirtualId(
+          INDEPENDENT_MAIN_PREFIX,
+          'package-a'
+        )
 
         await expect((plugin.resolveId as Function)(id)).resolves.toBe(id)
         const result = (plugin.load as Function)(id)
         expect(result.map).toEqual({ mappings: '' })
         expect(result.code).toContain(
-          'import "uni-mp-runtime?uni_mp_independent_root=package-a"'
+          `import ${JSON.stringify(
+            withIndependentRoot(UNI_MP_RUNTIME_ID, 'package-a')
+          )}`
         )
         expect(result.code).toContain(
-          'import { createApp as createUserApp } from "\\u0000uni:mp-app-factory?root=package-a"'
+          `import { createApp as createUserApp } from ${JSON.stringify(
+            formatIndependentVirtualId(APP_FACTORY_PREFIX, 'package-a')
+          )}`
         )
         expect(result.code).toContain(
-          'import "\\u0000uni:mp-independent-pages?root=package-a"'
+          `import ${JSON.stringify(
+            formatIndependentVirtualId(INDEPENDENT_PAGES_PREFIX, 'package-a')
+          )}`
         )
         expect(result.code).toContain("createUserApp().app.mount('#app')")
       }
@@ -127,13 +146,13 @@ describe('uniIndependentSubpackagePlugin', () => {
           style: { extname: '.wxss' },
         } as any)
         callBuildStart(plugin)
-        const id = '\0uni:mp-app-factory?root=package-a'
+        const id = formatIndependentVirtualId(APP_FACTORY_PREFIX, 'package-a')
         const addWatchFile = jest.fn()
 
         await expect((plugin.resolveId as Function)(id)).resolves.toBe(id)
         expect((plugin.load as Function).call({ addWatchFile }, id)).toEqual({
           code: `export { createApp } from ${JSON.stringify(
-            `${mainPath}?uni_mp_independent_root=package-a`
+            withIndependentRoot(mainPath, 'package-a')
           )}\n`,
           map: { mappings: '' },
         })
@@ -165,7 +184,10 @@ describe('uniIndependentSubpackagePlugin', () => {
           style: { extname: '.wxss' },
         } as any)
         callBuildStart(plugin)
-        const id = '\0uni:mp-independent-pages?root=package-a'
+        const id = formatIndependentVirtualId(
+          INDEPENDENT_PAGES_PREFIX,
+          'package-a'
+        )
 
         await expect((plugin.resolveId as Function)(id)).resolves.toBe(id)
         const result = (plugin.load as Function)(id)
@@ -201,8 +223,10 @@ describe('uniIndependentSubpackagePlugin', () => {
           style: { extname: '.wxss' },
         } as any)
         callBuildStart(plugin)
-        const id =
-          '\0uni:mp-independent-page?root=package-a&page=package-a%2Fpages%2Findex%2Findex.vue'
+        const id = formatIndependentPageVirtualId(
+          'package-a',
+          'package-a/pages/index/index.vue'
+        )
         const addWatchFile = jest.fn()
 
         await expect((plugin.resolveId as Function)(id)).resolves.toBe(id)
@@ -211,7 +235,7 @@ describe('uniIndependentSubpackagePlugin', () => {
         expect(addWatchFile).toHaveBeenCalledWith(pagePath)
         expect(result).toEqual({
           code: `import MiniProgramPage from ${JSON.stringify(
-            `${pagePath}?uni_mp_independent_root=package-a`
+            withIndependentRoot(pagePath, 'package-a')
           )}
 wx.createPage(MiniProgramPage)`,
           map: { mappings: '' },
@@ -244,7 +268,7 @@ wx.createPage(MiniProgramPage)`,
         const result = await (plugin.resolveId as Function).call(
           { resolve },
           './App.vue',
-          '/project/src/main.ts?uni_mp_independent_root=package-a'
+          withIndependentRoot('/project/src/main.ts', 'package-a')
         )
 
         expect(resolve).toHaveBeenCalledWith(
@@ -255,7 +279,7 @@ wx.createPage(MiniProgramPage)`,
           }
         )
         expect(result.id).toBe(
-          '/project/src/App.vue?uni_mp_independent_root=package-a'
+          withIndependentRoot('/project/src/App.vue', 'package-a')
         )
       }
     )
@@ -286,12 +310,15 @@ wx.createPage(MiniProgramPage)`,
 
         const result = await (plugin.resolveId as Function).call(
           { resolve },
-          'uni-mp-runtime?uni_mp_independent_root=package-a'
+          withIndependentRoot(UNI_MP_RUNTIME_ID, 'package-a')
         )
 
-        expect(resolve).toHaveBeenCalledWith('uni-mp-runtime', undefined)
+        expect(resolve).toHaveBeenCalledWith(UNI_MP_RUNTIME_ID, undefined)
         expect(result.id).toBe(
-          '/project/node_modules/@dcloudio/uni-mp-weixin/dist/uni.mp.esm.js?uni_mp_independent_root=package-a'
+          withIndependentRoot(
+            '/project/node_modules/@dcloudio/uni-mp-weixin/dist/uni.mp.esm.js',
+            'package-a'
+          )
         )
       }
     )
@@ -316,7 +343,7 @@ wx.createPage(MiniProgramPage)`,
           style: { extname: '.wxss' },
           vite: {
             alias: {
-              'uni-mp-runtime':
+              [UNI_MP_RUNTIME_ID]:
                 '/project/node_modules/@dcloudio/uni-mp-weixin/dist/uni.mp.esm.js',
             },
           },
@@ -326,11 +353,14 @@ wx.createPage(MiniProgramPage)`,
 
         const result = await (plugin.resolveId as Function).call(
           { resolve },
-          'uni-mp-runtime?uni_mp_independent_root=package-a'
+          withIndependentRoot(UNI_MP_RUNTIME_ID, 'package-a')
         )
 
         expect(result).toBe(
-          '/project/node_modules/@dcloudio/uni-mp-weixin/dist/uni.mp.esm.js?uni_mp_independent_root=package-a'
+          withIndependentRoot(
+            '/project/node_modules/@dcloudio/uni-mp-weixin/dist/uni.mp.esm.js',
+            'package-a'
+          )
         )
       }
     )
@@ -355,8 +385,7 @@ wx.createPage(MiniProgramPage)`,
           style: { extname: '.wxss' },
         } as any)
         callBuildStart(plugin)
-        const id =
-          '\0plugin-vue:export-helper?uni_mp_independent_root=package-a'
+        const id = withIndependentRoot(VUE_EXPORT_HELPER_ID, 'package-a')
 
         await expect((plugin.resolveId as Function)(id)).resolves.toBe(id)
         const result = (plugin.load as Function)(id)
@@ -391,7 +420,10 @@ wx.createPage(MiniProgramPage)`,
           (plugin.resolveId as Function).call(
             { resolve },
             virtualComponentPath('package-a/components/foo.vue', 'package-a'),
-            `${inputDir}/package-a/pages/index/index.vue?uni_mp_independent_root=package-a`
+            withIndependentRoot(
+              `${inputDir}/package-a/pages/index/index.vue`,
+              'package-a'
+            )
           )
         ).resolves.toBeUndefined()
         expect(resolve).not.toHaveBeenCalled()
@@ -426,19 +458,25 @@ wx.createPage(MiniProgramPage)`,
           (plugin.resolveId as Function).call(
             { resolve },
             './style.css',
-            `${inputDir}/package-a/pages/index/index.vue?uni_mp_independent_root=package-a`
+            withIndependentRoot(
+              `${inputDir}/package-a/pages/index/index.vue`,
+              'package-a'
+            )
           )
         ).resolves.toBeUndefined()
         const assetResult = await (plugin.resolveId as Function).call(
           { resolve },
           './logo.png',
-          `${inputDir}/package-a/pages/index/index.vue?uni_mp_independent_root=package-a`
+          withIndependentRoot(
+            `${inputDir}/package-a/pages/index/index.vue`,
+            'package-a'
+          )
         )
         expect(assetResult.id).toBe(
-          `${path.join(
-            inputDir,
-            'package-a/pages/index/logo.png'
-          )}?uni_mp_independent_root=package-a`
+          withIndependentRoot(
+            path.join(inputDir, 'package-a/pages/index/logo.png'),
+            'package-a'
+          )
         )
         expect(resolve).toHaveBeenCalledTimes(2)
       }
@@ -472,7 +510,10 @@ wx.createPage(MiniProgramPage)`,
           (plugin.resolveId as Function).call(
             { resolve },
             '../../utils/foo',
-            `${inputDir}/package-a/pages/index/index.vue?uni_mp_independent_root=package-a`
+            withIndependentRoot(
+              `${inputDir}/package-a/pages/index/index.vue`,
+              'package-a'
+            )
           )
         ).rejects.toThrow(
           '独立分包 "package-a" 不能引用 root 外依赖：utils/foo.ts'
@@ -508,7 +549,10 @@ wx.createPage(MiniProgramPage)`,
           (plugin.resolveId as Function).call(
             { resolve },
             '../../static/logo.png',
-            `${inputDir}/package-a/pages/index/index.vue?uni_mp_independent_root=package-a`
+            withIndependentRoot(
+              `${inputDir}/package-a/pages/index/index.vue`,
+              'package-a'
+            )
           )
         ).rejects.toThrow(
           '独立分包 "package-a" 不能引用 root 外依赖：static/logo.png'

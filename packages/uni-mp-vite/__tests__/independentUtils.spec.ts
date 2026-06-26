@@ -1,4 +1,5 @@
 import {
+  INDEPENDENT_ROOT_QUERY,
   getIndependentRoots,
   getIndependentSubPackages,
   hasIndependentRoot,
@@ -13,7 +14,7 @@ describe('independent root query utils', () => {
   test('adds and parses independent root query', () => {
     const id = withIndependentRoot('/src/utils/foo.ts', 'package-a')
 
-    expect(id).toBe('/src/utils/foo.ts?uni_mp_independent_root=package-a')
+    expect(id).toBe(`/src/utils/foo.ts?${INDEPENDENT_ROOT_QUERY}=package-a`)
     expect(parseIndependentRoot(id)).toBe('package-a')
     expect(hasIndependentRoot(id)).toBe(true)
     expect(withoutIndependentRoot(id)).toBe('/src/utils/foo.ts')
@@ -24,7 +25,7 @@ describe('independent root query utils', () => {
     const id = withIndependentRoot(source, 'package-a')
 
     expect(id).toBe(
-      '/src/App.vue?vue&type=script&lang.ts&uni_mp_independent_root=package-a'
+      `/src/App.vue?vue&type=script&lang.ts&${INDEPENDENT_ROOT_QUERY}=package-a`
     )
     expect(parseIndependentRoot(id)).toBe('package-a')
     expect(withoutIndependentRoot(id)).toBe(source)
@@ -32,12 +33,12 @@ describe('independent root query utils', () => {
 
   test('replaces existing independent root query', () => {
     const id = withIndependentRoot(
-      '/src/App.vue?vue&type=template&uni_mp_independent_root=package-a',
+      `/src/App.vue?vue&type=template&${INDEPENDENT_ROOT_QUERY}=package-a`,
       'package-b'
     )
 
     expect(id).toBe(
-      '/src/App.vue?vue&type=template&uni_mp_independent_root=package-b'
+      `/src/App.vue?vue&type=template&${INDEPENDENT_ROOT_QUERY}=package-b`
     )
     expect(parseIndependentRoot(id)).toBe('package-b')
   })
@@ -45,7 +46,7 @@ describe('independent root query utils', () => {
   test('supports slash in root value', () => {
     const id = withIndependentRoot('/src/foo.ts?raw', 'pkg/nested')
 
-    expect(id).toBe('/src/foo.ts?raw&uni_mp_independent_root=pkg%2Fnested')
+    expect(id).toBe(`/src/foo.ts?raw&${INDEPENDENT_ROOT_QUERY}=pkg%2Fnested`)
     expect(parseIndependentRoot(id)).toBe('pkg/nested')
     expect(withoutIndependentRoot(id)).toBe('/src/foo.ts?raw')
   })

@@ -7,6 +7,7 @@ import {
   updateMiniProgramGlobalComponents,
 } from '@dcloudio/uni-cli-shared'
 import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
+import { UNI_MP_RUNTIME_ID, VUE_EXPORT_HELPER_ID } from './independentUtils'
 import { dynamicImport } from './usingComponents'
 
 export function uniMainJsPlugin(
@@ -46,7 +47,7 @@ export function uniMainJsPlugin(
           })
           return {
             code:
-              `import '\0plugin-vue:export-helper';import 'uni-mp-runtime';import './${PAGES_JSON_JS}';` +
+              `import '${VUE_EXPORT_HELPER_ID}';import '${UNI_MP_RUNTIME_ID}';import './${PAGES_JSON_JS}';` +
               code,
             map,
           }

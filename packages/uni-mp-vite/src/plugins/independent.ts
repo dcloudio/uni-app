@@ -17,6 +17,16 @@ import type {
 import type { Plugin } from 'vite'
 import type { UniMiniProgramPluginOptions } from '../plugin'
 import {
+  APP_FACTORY_PREFIX,
+  INDEPENDENT_MAIN_PREFIX,
+  INDEPENDENT_PAGE_PARAM,
+  INDEPENDENT_PAGE_PREFIX,
+  INDEPENDENT_PAGES_PREFIX,
+  INDEPENDENT_ROOT_PARAM,
+  INDEPENDENT_SUBPACKAGE_PLUGIN_NAME,
+  UNI_MP_RUNTIME_ID,
+  VUE_EXPORT_HELPER_ID,
+  formatIndependentVirtualId,
   getIndependentRoots,
   getIndependentSubPackages,
   parseIndependentRoot,
@@ -24,12 +34,6 @@ import {
   withoutIndependentRoot,
 } from './independentUtils'
 import { virtualPagePath } from './entry'
-
-const INDEPENDENT_MAIN_PREFIX = '\0uni:mp-independent-main'
-const APP_FACTORY_PREFIX = '\0uni:mp-app-factory'
-const INDEPENDENT_PAGES_PREFIX = '\0uni:mp-independent-pages'
-const INDEPENDENT_PAGE_PREFIX = '\0uni:mp-independent-page'
-const VUE_EXPORT_HELPER_ID = '\0plugin-vue:export-helper'
 
 export function uniIndependentSubpackagePlugin(
   options: UniMiniProgramPluginOptions
@@ -40,7 +44,7 @@ export function uniIndependentSubpackagePlugin(
   const alias = options.vite?.alias || {}
   const styleExtname = options.style.extname
   return {
-    name: 'uni:mp-independent-subpackage',
+    name: INDEPENDENT_SUBPACKAGE_PLUGIN_NAME,
     enforce: 'pre',
     async resolveId(id, importer) {
       const independentRoots = getIndependentRoots()
@@ -731,12 +735,13 @@ function shouldPropagateIndependentRoot(id: string) {
 }
 
 function generateIndependentMainCode(root: string) {
-  const encodedRoot = encodeURIComponent(root)
-  return `import ${JSON.stringify(withIndependentRoot('uni-mp-runtime', root))}
+  return `import ${JSON.stringify(withIndependentRoot(UNI_MP_RUNTIME_ID, root))}
 import { createApp as createUserApp } from ${JSON.stringify(
-    `${APP_FACTORY_PREFIX}?root=${encodedRoot}`
+    formatIndependentVirtualId(APP_FACTORY_PREFIX, root)
   )}
-import ${JSON.stringify(`${INDEPENDENT_PAGES_PREFIX}?root=${encodedRoot}`)}
+import ${JSON.stringify(
+    formatIndependentVirtualId(INDEPENDENT_PAGES_PREFIX, root)
+  )}
 
 const __uniSubpackageRoot = ${JSON.stringify(root)}
 const __uniGlobal = typeof globalThis !== 'undefined' ? globalThis : global
@@ -777,8 +782,8 @@ function parseIndependentPageInfo(id: string) {
     return
   }
   const query = parseVirtualQuery(id)
-  const root = query.get('root')
-  const page = query.get('page')
+  const root = query.get(INDEPENDENT_ROOT_PARAM)
+  const page = query.get(INDEPENDENT_PAGE_PARAM)
   if (root && page) {
     return { root, page }
   }

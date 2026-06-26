@@ -3,6 +3,10 @@ import os from 'os'
 import path from 'path'
 import { createBuildOptions } from '../src/plugin/build'
 import { virtualComponentPath, virtualPagePath } from '../src/plugins/entry'
+import {
+  formatIndependentPageVirtualId,
+  withIndependentRoot,
+} from '../src/plugins/independentUtils'
 
 async function withMiniProgramProject(
   test: (inputDir: string) => void | Promise<void>
@@ -72,31 +76,37 @@ describe('mp vite build options', () => {
 
       expect(
         manualChunks(
-          `${inputDir}/utils/foo.ts?uni_mp_independent_root=package-a`,
+          withIndependentRoot(`${inputDir}/utils/foo.ts`, 'package-a'),
           meta
         )
       ).toBe('package-a/common/utils/foo')
       expect(
         manualChunks(
-          `${inputDir}/package-a/utils/foo.ts?uni_mp_independent_root=package-a`,
+          withIndependentRoot(
+            `${inputDir}/package-a/utils/foo.ts`,
+            'package-a'
+          ),
           meta
         )
       ).toBe('package-a/common/utils/foo')
       expect(
         manualChunks(
-          `${inputDir}/node_modules/foo/index.js?uni_mp_independent_root=package-a`,
+          withIndependentRoot(
+            `${inputDir}/node_modules/foo/index.js`,
+            'package-a'
+          ),
           meta
         )
       ).toBe('package-a/common/vendor')
       expect(
         manualChunks(
-          `${inputDir}/static/logo.png?uni_mp_independent_root=package-a`,
+          withIndependentRoot(`${inputDir}/static/logo.png`, 'package-a'),
           meta
         )
       ).toBe('package-a/common/assets')
       expect(
         manualChunks(
-          `${inputDir}/main.ts?uni_mp_independent_root=package-a`,
+          withIndependentRoot(`${inputDir}/main.ts`, 'package-a'),
           meta
         )
       ).toBeUndefined()
@@ -110,14 +120,18 @@ describe('mp vite build options', () => {
     await withMiniProgramProject(async (inputDir) => {
       process.env.UNI_INPUT_DIR = inputDir
       const chunkFileNames = getRollupOutput(inputDir).chunkFileNames
-      const independentPageId = `\0uni:mp-independent-page?root=package-a&page=${encodeURIComponent(
+      const independentPageId = formatIndependentPageVirtualId(
+        'package-a',
         'package-a/pages/index/index.vue'
-      )}`
+      )
 
       expect(
         chunkFileNames({
           isDynamicEntry: true,
-          facadeModuleId: `${inputDir}/utils/lazy.ts?uni_mp_independent_root=package-a`,
+          facadeModuleId: withIndependentRoot(
+            `${inputDir}/utils/lazy.ts`,
+            'package-a'
+          ),
         })
       ).toBe('package-a/common/utils/lazy.js')
       expect(
@@ -155,7 +169,10 @@ describe('mp vite build options', () => {
           isDynamicEntry: false,
           name: 'App.vue_vue_type_style_index_0_lang',
           moduleIds: [
-            `${inputDir}/App.vue?vue&type=style&index=0&lang.css&uni_mp_independent_root=package-a`,
+            withIndependentRoot(
+              `${inputDir}/App.vue?vue&type=style&index=0&lang.css`,
+              'package-a'
+            ),
           ],
         })
       ).toBe('package-a/common/App.vue_vue_type_style_index_0_lang.js')
