@@ -1,13 +1,19 @@
 import fs from 'fs'
 import path from 'path'
 import {
+  type IndependentSubPackage,
   normalizePagePath,
   normalizePath,
   parseIndependentSubPackages,
   relativeFile,
   resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
-import type { EmittedFile, OutputBundle, OutputChunk } from 'rollup'
+import type {
+  EmittedFile,
+  OutputAsset,
+  OutputBundle,
+  OutputChunk,
+} from 'rollup'
 import type { Plugin } from 'vite'
 import type { UniMiniProgramPluginOptions } from '../plugin'
 import {
@@ -27,14 +33,15 @@ export function uniIndependentSubpackagePlugin(
   const inputDir = process.env.UNI_INPUT_DIR
   const platform = process.env.UNI_PLATFORM as UniApp.PLATFORM
   const global = options.global
+  const styleExtname = options.style.extname
+  let independentPackages: IndependentSubPackage[] = []
   let independentRoots = new Set<string>()
   return {
     name: 'uni:mp-independent-subpackage',
     enforce: 'pre',
     buildStart() {
-      independentRoots = new Set(
-        parseIndependentSubPackages(inputDir).map(({ root }) => root)
-      )
+      independentPackages = parseIndependentSubPackages(inputDir)
+      independentRoots = new Set(independentPackages.map(({ root }) => root))
     },
     async resolveId(id, importer) {
       const root = parseIndependentMainRoot(id)
@@ -122,11 +129,24 @@ ${global}.createPage(MiniProgramPage)`,
         }
       }
     },
-    generateBundle(_, bundle) {
-      independentRoots.forEach((root) => {
-        emitIndependentBootstrap((file) => this.emitFile(file), bundle, root)
-        injectIndependentBootstrap(bundle, root)
-      })
+    generateBundle: {
+      order: 'post',
+      handler(_, bundle) {
+        independentPackages.forEach((pkg) => {
+          emitIndependentBootstrap(
+            (file) => this.emitFile(file),
+            bundle,
+            pkg.root
+          )
+          injectIndependentBootstrap(bundle, pkg.root)
+          processIndependentStyles(
+            (file) => this.emitFile(file),
+            bundle,
+            pkg,
+            styleExtname
+          )
+        })
+      },
     },
   }
 }
@@ -176,6 +196,275 @@ function shouldInjectBootstrap(chunk: OutputChunk, root: string) {
 
 function resolveIndependentBootstrapFilename(root: string) {
   return `${normalizePath(root).replace(/\/$/, '')}/common/index.js`
+}
+
+function processIndependentStyles(
+  emitFile: (emittedFile: EmittedFile) => string,
+  bundle: OutputBundle,
+  independentPackage: IndependentSubPackage,
+  extname: string
+) {
+  const root = normalizeIndependentRoot(independentPackage.root)
+  const globalStyleFilename = resolveIndependentGlobalStyleFilename(
+    root,
+    extname
+  )
+  const hasGlobalStyle = emitIndependentGlobalStyle(
+    emitFile,
+    bundle,
+    root,
+    extname,
+    globalStyleFilename
+  )
+
+  validateIndependentStyleAssets(bundle, root, extname)
+  if (hasGlobalStyle) {
+    injectIndependentGlobalStyle(
+      bundle,
+      independentPackage,
+      extname,
+      globalStyleFilename
+    )
+    validateIndependentStyleAssets(bundle, root, extname)
+  }
+}
+
+function emitIndependentGlobalStyle(
+  emitFile: (emittedFile: EmittedFile) => string,
+  bundle: OutputBundle,
+  root: string,
+  extname: string,
+  globalStyleFilename: string
+) {
+  const existedGlobalStyle = bundle[globalStyleFilename]
+  if (isOutputAsset(existedGlobalStyle)) {
+    validateIndependentStyleReferences(
+      root,
+      globalStyleFilename,
+      existedGlobalStyle.source.toString(),
+      extname
+    )
+    return true
+  }
+
+  const appStyleFilename = resolveAppStyleFilename(extname)
+  const appStyle = bundle[appStyleFilename]
+  if (!isOutputAsset(appStyle)) {
+    return false
+  }
+  const source = rebaseStyleReferences(
+    appStyle.source.toString(),
+    appStyleFilename,
+    globalStyleFilename
+  )
+  validateIndependentStyleReferences(root, globalStyleFilename, source, extname)
+  emitFile({
+    type: 'asset',
+    fileName: globalStyleFilename,
+    source,
+  })
+  return true
+}
+
+function injectIndependentGlobalStyle(
+  bundle: OutputBundle,
+  independentPackage: IndependentSubPackage,
+  extname: string,
+  globalStyleFilename: string
+) {
+  const pageStyleFilenames = resolveIndependentPageStyleFilenames(
+    independentPackage,
+    extname
+  )
+  pageStyleFilenames.forEach((filename) => {
+    const asset = bundle[filename]
+    if (!isOutputAsset(asset)) {
+      return
+    }
+    const importCode = `@import "${relativeFile(
+      filename,
+      globalStyleFilename
+    )}";\n`
+    const source = asset.source.toString()
+    if (!source.includes(importCode.trim())) {
+      asset.source = importCode + source
+    }
+  })
+}
+
+function validateIndependentStyleAssets(
+  bundle: OutputBundle,
+  root: string,
+  extname: string
+) {
+  Object.keys(bundle).forEach((filename) => {
+    const asset = bundle[filename]
+    if (
+      !isOutputAsset(asset) ||
+      !filename.endsWith(extname) ||
+      !isInIndependentOutputRoot(filename, root)
+    ) {
+      return
+    }
+    validateIndependentStyleReferences(
+      root,
+      normalizePath(filename),
+      asset.source.toString(),
+      extname
+    )
+  })
+}
+
+function resolveIndependentPageStyleFilenames(
+  independentPackage: IndependentSubPackage,
+  extname: string
+) {
+  const root = normalizeIndependentRoot(independentPackage.root)
+  return independentPackage.pages.map((page) => {
+    return `${normalizePath(path.join(root, page))}${extname}`
+  })
+}
+
+function validateIndependentStyleReferences(
+  root: string,
+  filename: string,
+  source: string,
+  extname: string
+) {
+  replaceStyleReferences(source, (reference) => {
+    const resolved = resolveStyleReferenceFilename(filename, reference)
+    if (!resolved) {
+      return reference
+    }
+    const appStyleFilename = resolveAppStyleFilename(extname)
+    if (resolved.filename === appStyleFilename) {
+      throw new Error(
+        `独立分包 "${root}" 的样式不能引用主包 ${appStyleFilename}：${filename} -> ${reference}。请改为引用 "${resolveIndependentGlobalStyleFilename(
+          root,
+          extname
+        )}"。`
+      )
+    }
+    if (!isInIndependentOutputRoot(resolved.filename, root)) {
+      throw new Error(
+        `独立分包 "${root}" 的样式不能引用 root 外资源：${filename} -> ${reference}。请将该资源移动到 "${root}" 内，或等待后续自动处理 root 外依赖。`
+      )
+    }
+    return reference
+  })
+}
+
+function rebaseStyleReferences(
+  source: string,
+  fromFilename: string,
+  toFilename: string
+) {
+  return replaceStyleReferences(source, (reference) => {
+    const resolved = resolveStyleReferenceFilename(fromFilename, reference)
+    if (!resolved || reference.trim().startsWith('/')) {
+      return reference
+    }
+    return relativeFile(toFilename, resolved.filename) + resolved.suffix
+  })
+}
+
+function replaceStyleReferences(
+  source: string,
+  replacer: (reference: string) => string
+) {
+  return source
+    .replace(
+      /@import\s+(?:"([^"]+)"|'([^']+)'|(?!url\s*\()([^;\s]+))/gi,
+      (match, doubleQuote: string, singleQuote: string, raw: string) =>
+        replaceStyleReference(
+          match,
+          doubleQuote || singleQuote || raw,
+          replacer
+        )
+    )
+    .replace(
+      /\burl\(\s*(?:"([^"]*)"|'([^']*)'|([^'")]*?))\s*\)/gi,
+      (match, doubleQuote: string, singleQuote: string, raw: string) =>
+        replaceStyleReference(
+          match,
+          doubleQuote || singleQuote || raw,
+          replacer
+        )
+    )
+}
+
+function replaceStyleReference(
+  match: string,
+  reference: string,
+  replacer: (reference: string) => string
+) {
+  const nextReference = replacer(reference.trim())
+  return nextReference === reference.trim()
+    ? match
+    : match.replace(reference, nextReference)
+}
+
+function resolveStyleReferenceFilename(filename: string, reference: string) {
+  if (isExternalStyleReference(reference)) {
+    return
+  }
+  const { pathname, suffix } = splitStyleReference(reference)
+  if (!pathname) {
+    return
+  }
+  const resolvedFilename = pathname.startsWith('/')
+    ? normalizePath(pathname).replace(/^\/+/, '')
+    : normalizePath(path.join(path.dirname(filename), pathname))
+  return {
+    filename: resolvedFilename,
+    suffix,
+  }
+}
+
+function splitStyleReference(reference: string) {
+  const match = reference.match(/^([^?#]*)([?#].*)?$/)
+  return {
+    pathname: match ? match[1] : reference,
+    suffix: (match && match[2]) || '',
+  }
+}
+
+function isExternalStyleReference(reference: string) {
+  const normalized = reference.trim()
+  return (
+    !normalized ||
+    normalized.startsWith('#') ||
+    normalized.startsWith('//') ||
+    normalized.startsWith('var(') ||
+    /^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(normalized)
+  )
+}
+
+function isInIndependentOutputRoot(filename: string, root: string) {
+  const normalizedFilename = normalizePath(filename)
+  const normalizedRoot = normalizeIndependentRoot(root)
+  return (
+    normalizedFilename === normalizedRoot ||
+    normalizedFilename.startsWith(`${normalizedRoot}/`)
+  )
+}
+
+function isOutputAsset(
+  file: OutputBundle[string] | undefined
+): file is OutputAsset {
+  return !!file && file.type === 'asset'
+}
+
+function resolveAppStyleFilename(extname: string) {
+  return `app${extname}`
+}
+
+function resolveIndependentGlobalStyleFilename(root: string, extname: string) {
+  return `${normalizeIndependentRoot(root)}/common/main${extname}`
+}
+
+function normalizeIndependentRoot(root: string) {
+  return normalizePath(root).replace(/\/$/, '')
 }
 
 function generateIndependentPagesCode(
