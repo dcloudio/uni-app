@@ -4,7 +4,7 @@ import {
   type IndependentSubPackage,
   normalizePagePath,
   normalizePath,
-  parseIndependentSubPackages,
+  readIndependentSubPackages,
   relativeFile,
   resolveAppVue,
   resolveMainPathOnce,
@@ -49,7 +49,7 @@ export function uniIndependentSubpackagePlugin(
       if (fs.existsSync(pagesJsonFile)) {
         this.addWatchFile(pagesJsonFile)
       }
-      independentPackages = parseIndependentSubPackages(inputDir)
+      independentPackages = readIndependentSubPackages(inputDir, platform)
       independentRoots = new Set(independentPackages.map(({ root }) => root))
       independentRootsSignature = stringifyIndependentRoots(independentPackages)
     },
@@ -57,7 +57,10 @@ export function uniIndependentSubpackagePlugin(
       if (normalizeFileId(id) !== pagesJsonFile) {
         return
       }
-      const nextIndependentPackages = tryParseIndependentSubPackages(inputDir)
+      const nextIndependentPackages = tryReadIndependentSubPackages(
+        inputDir,
+        platform
+      )
       if (!nextIndependentPackages) {
         return
       }
@@ -174,7 +177,11 @@ export function uniIndependentSubpackagePlugin(
       if (pagesRoot && independentRoots.has(pagesRoot)) {
         this.addWatchFile(path.resolve(inputDir, 'pages.json'))
         return {
-          code: generateIndependentPagesCode(inputDir, platform, pagesRoot),
+          code: generateIndependentPagesCode(
+            independentPackages,
+            platform,
+            pagesRoot
+          ),
           map: { mappings: '' },
         }
       }
@@ -356,9 +363,12 @@ function resolveIndependentCommonChunkFilename(root: string, filename: string) {
   return `${normalizeIndependentRoot(root)}/common/${normalizePath(filename)}`
 }
 
-function tryParseIndependentSubPackages(inputDir: string) {
+function tryReadIndependentSubPackages(
+  inputDir: string,
+  platform: UniApp.PLATFORM
+) {
   try {
-    return parseIndependentSubPackages(inputDir)
+    return readIndependentSubPackages(inputDir, platform)
   } catch {
     return
   }
@@ -666,11 +676,11 @@ function normalizeIndependentRoot(root: string) {
 }
 
 function generateIndependentPagesCode(
-  inputDir: string,
+  independentPackages: IndependentSubPackage[],
   platform: UniApp.PLATFORM,
   root: string
 ) {
-  const independentPackage = parseIndependentSubPackages(inputDir).find(
+  const independentPackage = independentPackages.find(
     (pkg) => pkg.root === root
   )
   if (!independentPackage) {

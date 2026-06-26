@@ -19,6 +19,7 @@ import { UNI_AD_PLUGINS } from '@dcloudio/uni-shared'
 import { parseIndependentSubPackages } from './subpackage'
 
 let appJsonCache: Record<string, any> = {}
+let independentRootsCache: string[] = []
 const jsonFilesCache = new Map<string, string>()
 const jsonPagesCache = new Map<string, PageWindowOptions>()
 const jsonComponentsCache = new Map<string, ComponentJson>()
@@ -66,9 +67,6 @@ export function findChangedJsonFiles(
   supportGlobalUsingComponents: boolean | ((filename: string) => boolean) = true
 ) {
   const changedJsonFiles = new Map<string, string>()
-  const independentRoots = parseIndependentSubPackages(
-    process.env.UNI_INPUT_DIR || ''
-  ).map(({ root }) => root)
   function findChangedFile(filename: string, json: Record<string, any>) {
     const newJson = JSON.parse(JSON.stringify(json))
     if (!newJson.usingComponents) {
@@ -79,7 +77,10 @@ export function findChangedJsonFiles(
     // app.json mp-baidu 在 win 不支持相对路径。所有平台改用绝对路径
     if (filename !== 'app') {
       let usingComponents = newJson.usingComponents as Record<string, string>
-      const independentRoot = findIndependentRoot(filename, independentRoots)
+      const independentRoot = findIndependentRoot(
+        filename,
+        independentRootsCache
+      )
       const supportGlobalUsingComponentsForFile =
         typeof supportGlobalUsingComponents === 'function'
           ? supportGlobalUsingComponents(filename)
@@ -193,6 +194,9 @@ function isLocalUsingComponent(componentFilename: string) {
 
 export function addMiniProgramAppJson(appJson: Record<string, any>) {
   appJsonCache = appJson
+  independentRootsCache = parseIndependentSubPackages(
+    appJson as UniApp.PagesJson
+  ).map(({ root }) => root)
 }
 
 export function addMiniProgramPageJson(
@@ -218,6 +222,7 @@ export function addMiniProgramUsingComponents(
 
 export function resetMiniProgramJsonFiles() {
   appJsonCache = {}
+  independentRootsCache = []
   jsonFilesCache.clear()
   jsonPagesCache.clear()
   jsonComponentsCache.clear()

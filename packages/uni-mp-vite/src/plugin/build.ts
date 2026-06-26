@@ -17,9 +17,9 @@ import {
   isMiniProgramAssetFile,
   normalizeMiniProgramFilename,
   normalizePath,
-  parseIndependentSubPackages,
   parseJson,
   parseManifestJsonOnce,
+  readIndependentSubPackages,
   removeExt,
   resolveMainPathOnce,
   resolveWorkersRootDir,
@@ -186,7 +186,7 @@ function parseRollupInput(inputDir: string, platform: UniApp.PLATFORM) {
   if (process.env.UNI_MP_PLUGIN) {
     return inputOptions
   }
-  parseIndependentSubPackages(inputDir).forEach(({ root }) => {
+  readIndependentSubPackages(inputDir, platform).forEach(({ root }) => {
     inputOptions[
       `${root}/common/main`
     ] = `\0uni:mp-independent-main?root=${encodeURIComponent(root)}`
