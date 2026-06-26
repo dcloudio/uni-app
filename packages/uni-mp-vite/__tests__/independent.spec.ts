@@ -19,6 +19,14 @@ async function withPagesJson(
   }
 }
 
+function callGenerateBundle(plugin: any, context: any, bundle: any) {
+  const generateBundle = plugin.generateBundle
+  if (typeof generateBundle === 'function') {
+    return generateBundle.call(context, {}, bundle)
+  }
+  return generateBundle.handler.call(context, {}, bundle)
+}
+
 describe('uniIndependentSubpackagePlugin', () => {
   const originalPlatform = process.env.UNI_PLATFORM
   const originalInputDir = process.env.UNI_INPUT_DIR
@@ -50,7 +58,10 @@ describe('uniIndependentSubpackagePlugin', () => {
       },
       async (inputDir) => {
         process.env.UNI_INPUT_DIR = inputDir
-        const plugin = uniIndependentSubpackagePlugin({ global: 'wx' } as any)
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+        } as any)
         ;(plugin.buildStart as Function).call({})
         const id = '\0uni:mp-independent-main?root=package-a'
 
@@ -88,7 +99,10 @@ describe('uniIndependentSubpackagePlugin', () => {
         const mainPath = path.join(inputDir, 'main.ts')
         fs.writeFileSync(mainPath, 'export function createApp() {}')
 
-        const plugin = uniIndependentSubpackagePlugin({ global: 'wx' } as any)
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+        } as any)
         ;(plugin.buildStart as Function).call({})
         const id = '\0uni:mp-app-factory?root=package-a'
 
@@ -120,7 +134,10 @@ describe('uniIndependentSubpackagePlugin', () => {
         const pagePath = path.join(inputDir, 'package-a/pages/index/index.vue')
         fs.mkdirSync(path.dirname(pagePath), { recursive: true })
         fs.writeFileSync(pagePath, '<template><view /></template>')
-        const plugin = uniIndependentSubpackagePlugin({ global: 'wx' } as any)
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+        } as any)
         ;(plugin.buildStart as Function).call({})
         const id = '\0uni:mp-independent-pages?root=package-a'
         const addWatchFile = jest.fn()
@@ -155,7 +172,10 @@ describe('uniIndependentSubpackagePlugin', () => {
         const pagePath = path.join(inputDir, 'package-a/pages/index/index.vue')
         fs.mkdirSync(path.dirname(pagePath), { recursive: true })
         fs.writeFileSync(pagePath, '<template><view /></template>')
-        const plugin = uniIndependentSubpackagePlugin({ global: 'wx' } as any)
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+        } as any)
         ;(plugin.buildStart as Function).call({})
         const id =
           '\0uni:mp-independent-page?root=package-a&page=package-a%2Fpages%2Findex%2Findex.vue'
@@ -190,7 +210,10 @@ wx.createPage(MiniProgramPage)`,
       },
       async (inputDir) => {
         process.env.UNI_INPUT_DIR = inputDir
-        const plugin = uniIndependentSubpackagePlugin({ global: 'wx' } as any)
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+        } as any)
         ;(plugin.buildStart as Function).call({})
         const resolve = jest.fn(async () => ({ id: '/project/src/App.vue' }))
 
@@ -228,7 +251,10 @@ wx.createPage(MiniProgramPage)`,
       },
       async (inputDir) => {
         process.env.UNI_INPUT_DIR = inputDir
-        const plugin = uniIndependentSubpackagePlugin({ global: 'wx' } as any)
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+        } as any)
         ;(plugin.buildStart as Function).call({})
         const resolve = jest.fn(async (source: string) => ({
           id: path.join(inputDir, 'package-a/pages/index', source),
@@ -267,7 +293,10 @@ wx.createPage(MiniProgramPage)`,
       },
       async (inputDir) => {
         process.env.UNI_INPUT_DIR = inputDir
-        const plugin = uniIndependentSubpackagePlugin({ global: 'wx' } as any)
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+        } as any)
         ;(plugin.buildStart as Function).call({})
         const resolve = jest.fn(async () => ({
           id: path.join(inputDir, 'utils/foo.ts'),
@@ -300,7 +329,10 @@ wx.createPage(MiniProgramPage)`,
       },
       async (inputDir) => {
         process.env.UNI_INPUT_DIR = inputDir
-        const plugin = uniIndependentSubpackagePlugin({ global: 'wx' } as any)
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+        } as any)
         ;(plugin.buildStart as Function).call({})
         const resolve = jest.fn(async () => ({
           id: path.join(inputDir, 'static/logo.png'),
@@ -333,7 +365,10 @@ wx.createPage(MiniProgramPage)`,
       },
       async (inputDir) => {
         process.env.UNI_INPUT_DIR = inputDir
-        const plugin = uniIndependentSubpackagePlugin({ global: 'wx' } as any)
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+        } as any)
         ;(plugin.buildStart as Function).call({})
         const emitFile = jest.fn(() => 'asset-reference')
         const bundle = {
@@ -359,7 +394,7 @@ wx.createPage(MiniProgramPage)`,
           },
         }
 
-        ;(plugin.generateBundle as Function).call({ emitFile }, {}, bundle)
+        callGenerateBundle(plugin, { emitFile }, bundle)
 
         expect(emitFile).toHaveBeenCalledWith({
           type: 'asset',
@@ -374,6 +409,140 @@ wx.createPage(MiniProgramPage)`,
         )
         expect(bundle['package-a/common/main.js'].code).toBe('main()')
         expect(bundle['pages/index/index.js'].code).toBe('wx.createPage({})')
+      }
+    )
+  })
+
+  test('emits and injects independent global style', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    await withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      async (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+        } as any)
+        ;(plugin.buildStart as Function).call({})
+        const emitFile = jest.fn(() => 'asset-reference')
+        const bundle = {
+          'app.wxss': {
+            type: 'asset',
+            fileName: 'app.wxss',
+            source:
+              'page{color:red}.logo{background:url("package-a/static/logo.png")}',
+          },
+          'package-a/pages/index/index.wxss': {
+            type: 'asset',
+            fileName: 'package-a/pages/index/index.wxss',
+            source: '.page{color:blue}',
+          },
+          'package-a/components/foo.wxss': {
+            type: 'asset',
+            fileName: 'package-a/components/foo.wxss',
+            source: '.component{color:green}',
+          },
+        }
+
+        callGenerateBundle(plugin, { emitFile }, bundle)
+
+        expect(emitFile).toHaveBeenCalledWith({
+          type: 'asset',
+          fileName: 'package-a/common/main.wxss',
+          source: 'page{color:red}.logo{background:url("../static/logo.png")}',
+        })
+        expect(bundle['package-a/pages/index/index.wxss'].source).toBe(
+          '@import "../../common/main.wxss";\n.page{color:blue}'
+        )
+        expect(bundle['package-a/components/foo.wxss'].source).toBe(
+          '.component{color:green}'
+        )
+      }
+    )
+  })
+
+  test('throws when independent style imports main app style', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    await withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      async (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+        } as any)
+        ;(plugin.buildStart as Function).call({})
+        const bundle = {
+          'app.wxss': {
+            type: 'asset',
+            fileName: 'app.wxss',
+            source: 'page{color:red}',
+          },
+          'package-a/pages/index/index.wxss': {
+            type: 'asset',
+            fileName: 'package-a/pages/index/index.wxss',
+            source: '@import "../../../app.wxss";\n.page{color:blue}',
+          },
+        }
+
+        expect(() =>
+          callGenerateBundle(plugin, { emitFile: jest.fn() }, bundle)
+        ).toThrow('独立分包 "package-a" 的样式不能引用主包 app.wxss')
+      }
+    )
+  })
+
+  test('throws when independent style references root-outside asset', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    await withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      async (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+        } as any)
+        ;(plugin.buildStart as Function).call({})
+        const bundle = {
+          'app.wxss': {
+            type: 'asset',
+            fileName: 'app.wxss',
+            source: 'page{color:red}',
+          },
+          'package-a/pages/index/index.wxss': {
+            type: 'asset',
+            fileName: 'package-a/pages/index/index.wxss',
+            source: '.page{background:url("../../../static/logo.png")}',
+          },
+        }
+
+        expect(() =>
+          callGenerateBundle(plugin, { emitFile: jest.fn() }, bundle)
+        ).toThrow('独立分包 "package-a" 的样式不能引用 root 外资源')
       }
     )
   })
