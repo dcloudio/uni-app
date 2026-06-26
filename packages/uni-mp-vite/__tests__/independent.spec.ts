@@ -335,7 +335,7 @@ wx.createPage(MiniProgramPage)`,
           './App.vue',
           '/project/src/main.ts',
           {
-            skipSelf: true,
+            skipSelf: false,
           }
         )
         expect(result.id).toBe(
@@ -373,9 +373,7 @@ wx.createPage(MiniProgramPage)`,
           'uni-mp-runtime?uni_mp_independent_root=package-a'
         )
 
-        expect(resolve).toHaveBeenCalledWith('uni-mp-runtime', undefined, {
-          skipSelf: true,
-        })
+        expect(resolve).toHaveBeenCalledWith('uni-mp-runtime', undefined)
         expect(result.id).toBe(
           '/project/node_modules/@dcloudio/uni-mp-weixin/dist/uni.mp.esm.js?uni_mp_independent_root=package-a'
         )

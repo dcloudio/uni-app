@@ -74,10 +74,7 @@ export function uniIndependentSubpackagePlugin(
       if (explicitRoot && independentRoots.has(explicitRoot)) {
         const resolved = await this.resolve(
           withoutIndependentRoot(id),
-          importer && withoutIndependentRoot(importer),
-          {
-            skipSelf: true,
-          }
+          importer && withoutIndependentRoot(importer)
         )
         if (resolved && !resolved.external) {
           return {
@@ -110,7 +107,7 @@ export function uniIndependentSubpackagePlugin(
       ) {
         const importerWithoutRoot = withoutIndependentRoot(importer)
         const resolved = await this.resolve(id, importerWithoutRoot, {
-          skipSelf: true,
+          skipSelf: false,
         })
         if (resolved && !resolved.external) {
           validateIndependentDependency({
