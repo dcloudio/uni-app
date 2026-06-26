@@ -1,8 +1,13 @@
+import fs from 'fs'
+import os from 'os'
 import path from 'path'
 import {
+  addMiniProgramAppJson,
   addMiniProgramPageJson,
+  addMiniProgramUsingComponents,
   findChangedJsonFiles,
   findUsingComponentsJson,
+  resetMiniProgramJsonFiles,
 } from '../src/json/mp/jsonFile'
 import xrStart from './examples/usingComponents/wxcomponents/xr-start/xr-start.json'
 import xrStartIndex from './examples/usingComponents/wxcomponents/xr-start-index/index.json'
@@ -22,6 +27,71 @@ describe('miniProgram:jsonFile', () => {
         subscribe: 'plugin://subscribeMsg/subscribe',
         demo: '../../components/demo/demo',
       },
+    })
+  })
+
+  describe('independent subpackage', () => {
+    const originalPlatform = process.env.UNI_PLATFORM
+    const originalInputDir = process.env.UNI_INPUT_DIR
+
+    afterEach(() => {
+      resetMiniProgramJsonFiles()
+      if (originalPlatform === undefined) {
+        delete (process.env as Record<string, string | undefined>).UNI_PLATFORM
+      } else {
+        process.env.UNI_PLATFORM = originalPlatform
+      }
+      if (originalInputDir === undefined) {
+        delete (process.env as Record<string, string | undefined>).UNI_INPUT_DIR
+      } else {
+        process.env.UNI_INPUT_DIR = originalInputDir
+      }
+    })
+
+    test('inlines global usingComponents into independent pages', () => {
+      withIndependentPagesJson('package-a', (inputDir) => {
+        process.env.UNI_PLATFORM = 'mp-weixin'
+        process.env.UNI_INPUT_DIR = inputDir
+        const page = 'package-a/pages/index/index'
+
+        addMiniProgramAppJson({
+          pages: [],
+          usingComponents: {
+            'global-a': '/package-a/components/global-a',
+          },
+        })
+        addMiniProgramUsingComponents('app', {
+          'global-b': '/package-a/components/global-b',
+        })
+        addMiniProgramPageJson(page, {})
+
+        expect(JSON.parse(findChangedJsonFiles(true).get(page)!)).toEqual({
+          usingComponents: {
+            'global-a': '../../components/global-a',
+            'global-b': '../../components/global-b',
+          },
+        })
+      })
+    })
+
+    test('throws when independent pages use root-outside global components', () => {
+      withIndependentPagesJson('package-a', (inputDir) => {
+        process.env.UNI_PLATFORM = 'mp-weixin'
+        process.env.UNI_INPUT_DIR = inputDir
+        const page = 'package-a/pages/index/index'
+
+        addMiniProgramAppJson({
+          pages: [],
+          usingComponents: {
+            'global-a': '/components/global-a',
+          },
+        })
+        addMiniProgramPageJson(page, {})
+
+        expect(() => findChangedJsonFiles(true)).toThrow(
+          '独立分包 "package-a" 不能在 "package-a/pages/index/index" 中使用 root 外全局组件 "global-a"'
+        )
+      })
     })
   })
 
@@ -63,3 +133,28 @@ describe('miniProgram:jsonFile', () => {
     })
   })
 })
+
+function withIndependentPagesJson(
+  root: string,
+  test: (inputDir: string) => void
+) {
+  const inputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-json-file-'))
+  fs.writeFileSync(
+    path.join(inputDir, 'pages.json'),
+    JSON.stringify({
+      pages: [{ path: 'pages/index/index' }],
+      subPackages: [
+        {
+          root,
+          independent: true,
+          pages: [{ path: 'pages/index/index' }],
+        },
+      ],
+    })
+  )
+  try {
+    test(inputDir)
+  } finally {
+    fs.rmSync(inputDir, { recursive: true, force: true })
+  }
+}
