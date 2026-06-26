@@ -295,6 +295,38 @@ export default {
     },
 
     /**
+     * 是否为打开/跳转小程序时用户点击取消（fail cancel）
+     * @param {Object} err 失败回调对象
+     */
+    _isMiniProgramOpenCancel (err) {
+      const msg = (err && err.errMsg) || ''
+      return typeof msg === 'string' && msg.indexOf('fail cancel') !== -1
+    },
+
+    /**
+     * 通知插件半屏打开失败或用户取消
+     * @param {Object} plugin uniad-plugin 实例
+     * @param {Object} err 失败回调对象
+     */
+    _notifyHalfScreenOpenResult (plugin, err) {
+      if (this._isMiniProgramOpenCancel(err)) {
+        if (plugin && plugin.notifyHalfScreenOpenCancel) {
+          plugin.notifyHalfScreenOpenCancel(err)
+        } else if (plugin && plugin.notifyHalfScreenOpenFail) {
+          plugin.notifyHalfScreenOpenFail(err)
+        } else {
+          this._dispatchEvent(EventType.Close, { type: 'userCancel', detail: err })
+        }
+        return
+      }
+      if (plugin && plugin.notifyHalfScreenOpenFail) {
+        plugin.notifyHalfScreenOpenFail(err)
+      } else {
+        this._dispatchEvent(EventType.Error, err)
+      }
+    },
+
+    /**
      * 调用 wx.openEmbeddedMiniProgram
      * @param {Object} openOptions 打开参数
      */
@@ -325,9 +357,7 @@ export default {
         },
         fail: (err) => {
           this._resetHalfScreenOpening()
-          if (plugin && plugin.notifyHalfScreenOpenFail) {
-            plugin.notifyHalfScreenOpenFail(err)
-          }
+          this._notifyHalfScreenOpenResult(plugin, err)
         }
       })
     },
@@ -379,9 +409,14 @@ export default {
     },
 
     _onmperror (e) {
-      if (this._handleUserWxAdError(e.detail || e, ActionType.AdRequest)) {
+      const detail = e.detail || e
+      if (this._handleUserWxAdError(detail, ActionType.AdRequest)) {
         return
       }
+      if (this._isMiniProgramOpenCancel(detail)) {
+        return
+      }
+      this._dispatchEvent(EventType.Error, detail)
     },
 
     _onnextchannel (e) {
