@@ -1,6 +1,10 @@
 import {
+  getIndependentRoots,
+  getIndependentSubPackages,
   hasIndependentRoot,
+  initIndependentSubPackages,
   parseIndependentRoot,
+  updateIndependentSubPackages,
   withIndependentRoot,
   withoutIndependentRoot,
 } from '../src/plugins/independentUtils'
@@ -44,5 +48,66 @@ describe('independent root query utils', () => {
     expect(id).toBe('/src/foo.ts?raw&uni_mp_independent_root=pkg%2Fnested')
     expect(parseIndependentRoot(id)).toBe('pkg/nested')
     expect(withoutIndependentRoot(id)).toBe('/src/foo.ts?raw')
+  })
+})
+
+describe('independent subpackage state', () => {
+  test('updates pages when roots are unchanged', () => {
+    initIndependentSubPackages([
+      {
+        root: 'package-a',
+        pages: ['pages/index/index'],
+        independent: true,
+      },
+    ])
+
+    const result = updateIndependentSubPackages([
+      {
+        root: 'package-a',
+        pages: ['pages/index/index', 'pages/list/list'],
+        independent: true,
+      },
+    ])
+
+    expect(result.rootsChanged).toBe(false)
+    expect(getIndependentRoots().has('package-a')).toBe(true)
+    expect(getIndependentSubPackages()).toEqual([
+      {
+        root: 'package-a',
+        pages: ['pages/index/index', 'pages/list/list'],
+        independent: true,
+      },
+    ])
+  })
+
+  test('keeps previous pages when roots changed', () => {
+    initIndependentSubPackages([
+      {
+        root: 'package-a',
+        pages: ['pages/index/index'],
+        independent: true,
+      },
+    ])
+
+    const result = updateIndependentSubPackages([
+      {
+        root: 'package-b',
+        pages: ['pages/index/index'],
+        independent: true,
+      },
+    ])
+
+    expect(result).toEqual({
+      rootsChanged: true,
+      initialRoots: 'package-a',
+      currentRoots: 'package-b',
+    })
+    expect(getIndependentSubPackages()).toEqual([
+      {
+        root: 'package-a',
+        pages: ['pages/index/index'],
+        independent: true,
+      },
+    ])
   })
 })

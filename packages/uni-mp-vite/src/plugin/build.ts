@@ -17,8 +17,10 @@ import {
   isMiniProgramAssetFile,
   normalizeMiniProgramFilename,
   normalizePath,
+  parseIndependentSubPackages,
   parseJson,
   parseManifestJsonOnce,
+  parsePagesJson,
   removeExt,
   resolveMainPathOnce,
   resolveWorkersRootDir,
@@ -32,8 +34,8 @@ import {
   parseVirtualPagePathInfo,
 } from '../plugins/entry'
 import {
+  initIndependentSubPackages,
   parseIndependentRoot,
-  resolveIndependentSubPackages,
   withoutIndependentRoot,
 } from '../plugins/independentUtils'
 
@@ -184,9 +186,15 @@ function parseRollupInput(inputDir: string, platform: UniApp.PLATFORM) {
     app: resolveMainPathOnce(inputDir),
   }
   if (process.env.UNI_MP_PLUGIN) {
+    initIndependentSubPackages([])
     return inputOptions
   }
-  resolveIndependentSubPackages(inputDir, platform).forEach(({ root }) => {
+  const independentPackages = parseIndependentSubPackages(
+    parsePagesJson(inputDir, platform, false),
+    platform
+  )
+  initIndependentSubPackages(independentPackages)
+  independentPackages.forEach(({ root }) => {
     inputOptions[
       `${root}/common/main`
     ] = `\0uni:mp-independent-main?root=${encodeURIComponent(root)}`

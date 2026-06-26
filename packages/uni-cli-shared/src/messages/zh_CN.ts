@@ -20,6 +20,8 @@ export default {
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
   'dev.watching.restart.vapor':
     'DONE  Restart required. 切换蒸汽模式需要重新运行才能生效。',
+  'dev.watching.restart.independentSubPackages':
+    'DONE  Restart required. 独立分包 root 列表变化需要重新运行才能生效。',
   'dev.watching.vapor.render.target':
     'manifest.json 中更改了视图层编译目标为{manifestTarget}，但注意运行控制台还是{runtimeTarget}。',
   'build.failed': 'DONE  Build failed.',

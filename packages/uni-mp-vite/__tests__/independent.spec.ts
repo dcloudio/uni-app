@@ -1,8 +1,10 @@
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
+import { parseIndependentSubPackages } from '@dcloudio/uni-cli-shared'
 import { virtualComponentPath, virtualPagePath } from '../src/plugins/entry'
 import { uniIndependentSubpackagePlugin } from '../src/plugins/independent'
+import { initIndependentSubPackages } from '../src/plugins/independentUtils'
 
 async function withPagesJson(
   pagesJson: unknown,
@@ -10,6 +12,12 @@ async function withPagesJson(
 ) {
   const inputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-independent-'))
   writePagesJson(inputDir, pagesJson)
+  initIndependentSubPackages(
+    parseIndependentSubPackages(
+      pagesJson as UniApp.PagesJson,
+      process.env.UNI_PLATFORM
+    )
+  )
   try {
     await test(inputDir)
   } finally {
@@ -26,7 +34,9 @@ function writePagesJson(inputDir: string, pagesJson: unknown) {
 
 function callBuildStart(plugin: any) {
   const addWatchFile = jest.fn()
-  ;(plugin.buildStart as Function).call({ addWatchFile })
+  if (plugin.buildStart) {
+    ;(plugin.buildStart as Function).call({ addWatchFile })
+  }
   return { addWatchFile }
 }
 
@@ -133,99 +143,6 @@ describe('uniIndependentSubpackagePlugin', () => {
     )
   })
 
-  test('throws clear restart message when independent roots change in watch', async () => {
-    process.env.UNI_PLATFORM = 'mp-weixin'
-    await withPagesJson(
-      {
-        subPackages: [
-          {
-            root: 'package-a',
-            independent: true,
-            pages: [{ path: 'pages/index/index' }],
-          },
-        ],
-      },
-      async (inputDir) => {
-        process.env.UNI_INPUT_DIR = inputDir
-        const plugin = uniIndependentSubpackagePlugin({
-          global: 'wx',
-          style: { extname: '.wxss' },
-        } as any)
-        const { addWatchFile } = callBuildStart(plugin)
-        const pagesJsonFile = path.join(inputDir, 'pages.json')
-        expect(addWatchFile).toHaveBeenCalledWith(pagesJsonFile)
-
-        writePagesJson(inputDir, {
-          subPackages: [
-            {
-              root: 'package-a',
-              independent: true,
-              pages: [{ path: 'pages/index/index' }],
-            },
-            {
-              root: 'package-b',
-              independent: true,
-              pages: [{ path: 'pages/index/index' }],
-            },
-          ],
-        })
-        const error = jest.fn((message: string) => {
-          throw new Error(message)
-        })
-
-        expect(() =>
-          (plugin.watchChange as Function).call({ error }, pagesJsonFile)
-        ).toThrow('独立分包 root 列表发生变化，需要重启当前构建')
-        expect(error).toHaveBeenCalledWith(expect.stringContaining('package-b'))
-      }
-    )
-  })
-
-  test('allows independent page list changes in watch when roots are unchanged', async () => {
-    process.env.UNI_PLATFORM = 'mp-weixin'
-    await withPagesJson(
-      {
-        subPackages: [
-          {
-            root: 'package-a',
-            independent: true,
-            pages: [{ path: 'pages/index/index' }],
-          },
-        ],
-      },
-      async (inputDir) => {
-        process.env.UNI_INPUT_DIR = inputDir
-        const plugin = uniIndependentSubpackagePlugin({
-          global: 'wx',
-          style: { extname: '.wxss' },
-        } as any)
-        callBuildStart(plugin)
-        const pagesJsonFile = path.join(inputDir, 'pages.json')
-
-        writePagesJson(inputDir, {
-          subPackages: [
-            {
-              root: 'package-a',
-              independent: true,
-              pages: [
-                { path: 'pages/index/index' },
-                { path: 'pages/list/list' },
-              ],
-            },
-          ],
-        })
-        const error = jest.fn((message: string) => {
-          throw new Error(message)
-        })
-
-        expect(() =>
-          (plugin.watchChange as Function).call({ error }, pagesJsonFile)
-        ).not.toThrow()
-        expect(error).not.toHaveBeenCalled()
-      }
-    )
-  })
-
   test('resolves and loads independent pages virtual module', async () => {
     process.env.UNI_PLATFORM = 'mp-weixin'
     await withPagesJson(
@@ -249,13 +166,9 @@ describe('uniIndependentSubpackagePlugin', () => {
         } as any)
         callBuildStart(plugin)
         const id = '\0uni:mp-independent-pages?root=package-a'
-        const addWatchFile = jest.fn()
 
         await expect((plugin.resolveId as Function)(id)).resolves.toBe(id)
-        const result = (plugin.load as Function).call({ addWatchFile }, id)
-        expect(addWatchFile).toHaveBeenCalledWith(
-          path.join(inputDir, 'pages.json')
-        )
+        const result = (plugin.load as Function)(id)
         expect(result.map).toEqual({ mappings: '' })
         expect(result.code).toContain(
           `import(${JSON.stringify(
