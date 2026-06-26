@@ -650,6 +650,9 @@ function shouldResolveIndependentDependency(id: string) {
   if (parseIndependentRoot(id)) {
     return false
   }
+  if (/^uni(?:Page|Component):\/\//.test(id)) {
+    return false
+  }
   if (/^(?:plugin|dynamicLib|ext|data|https?):/.test(id)) {
     return false
   }
