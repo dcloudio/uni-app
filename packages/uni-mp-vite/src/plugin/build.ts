@@ -425,8 +425,18 @@ function createChunkFileNames(
       }
       return removeExt(normalizeMiniProgramFilename(id, inputDir)) + '.js'
     }
+    const independentRoot = findIndependentChunkRoot(chunk)
+    if (independentRoot) {
+      return (
+        resolveIndependentCommonChunkName(independentRoot, chunk.name) + '.js'
+      )
+    }
     return '[name].js'
   }
+}
+
+function findIndependentChunkRoot(chunk: PreRenderedChunk) {
+  return chunk.moduleIds?.map(parseIndependentRoot).find(Boolean)
 }
 
 function parseIndependentPageChunkInfo(id: string) {

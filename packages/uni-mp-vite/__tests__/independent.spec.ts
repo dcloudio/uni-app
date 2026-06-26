@@ -1,7 +1,7 @@
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
-import { virtualComponentPath } from '../src/plugins/entry'
+import { virtualComponentPath, virtualPagePath } from '../src/plugins/entry'
 import { uniIndependentSubpackagePlugin } from '../src/plugins/independent'
 
 async function withPagesJson(
@@ -258,7 +258,9 @@ describe('uniIndependentSubpackagePlugin', () => {
         )
         expect(result.map).toEqual({ mappings: '' })
         expect(result.code).toContain(
-          'import("\\u0000uni:mp-independent-page?root=package-a&page=package-a%2Fpages%2Findex%2Findex.vue")'
+          `import(${JSON.stringify(
+            virtualPagePath('package-a/pages/index/index.vue', 'package-a')
+          )})`
         )
       }
     )
@@ -484,7 +486,7 @@ wx.createPage(MiniProgramPage)`,
     )
   })
 
-  test('validates but does not propagate root query for style and assets', async () => {
+  test('validates style and propagates root query for assets', async () => {
     process.env.UNI_PLATFORM = 'mp-weixin'
     await withPagesJson(
       {
@@ -514,13 +516,17 @@ wx.createPage(MiniProgramPage)`,
             `${inputDir}/package-a/pages/index/index.vue?uni_mp_independent_root=package-a`
           )
         ).resolves.toBeUndefined()
-        await expect(
-          (plugin.resolveId as Function).call(
-            { resolve },
-            './logo.png',
-            `${inputDir}/package-a/pages/index/index.vue?uni_mp_independent_root=package-a`
-          )
-        ).resolves.toBeUndefined()
+        const assetResult = await (plugin.resolveId as Function).call(
+          { resolve },
+          './logo.png',
+          `${inputDir}/package-a/pages/index/index.vue?uni_mp_independent_root=package-a`
+        )
+        expect(assetResult.id).toBe(
+          `${path.join(
+            inputDir,
+            'package-a/pages/index/logo.png'
+          )}?uni_mp_independent_root=package-a`
+        )
         expect(resolve).toHaveBeenCalledTimes(2)
       }
     )
@@ -632,7 +638,12 @@ wx.createPage(MiniProgramPage)`,
           'package-a/common/main.js': {
             type: 'chunk',
             fileName: 'package-a/common/main.js',
-            code: 'main()',
+            code: 'require("../../App.vue_vue_type_style_index_0_lang.js");\nmain()',
+          },
+          'App.vue_vue_type_style_index_0_lang.js': {
+            type: 'chunk',
+            fileName: 'App.vue_vue_type_style_index_0_lang.js',
+            code: '"use strict";',
           },
           'pages/index/index.js': {
             type: 'chunk',
@@ -654,8 +665,55 @@ wx.createPage(MiniProgramPage)`,
         expect(bundle['package-a/components/foo.js'].code).toBe(
           "require('../common/index.js');\nwx.createComponent({})"
         )
-        expect(bundle['package-a/common/main.js'].code).toBe('main()')
+        expect(bundle['package-a/common/main.js'].code).toBe(
+          'require("./App.vue_vue_type_style_index_0_lang.js");\nmain()'
+        )
+        expect(
+          bundle['package-a/common/App.vue_vue_type_style_index_0_lang.js']
+        ).toMatchObject({
+          type: 'chunk',
+          fileName: 'package-a/common/App.vue_vue_type_style_index_0_lang.js',
+        })
         expect(bundle['pages/index/index.js'].code).toBe('wx.createPage({})')
+      }
+    )
+  })
+
+  test('throws when independent output js references root-outside chunk', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    await withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      async (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+        } as any)
+        callBuildStart(plugin)
+        const bundle = {
+          'package-a/pages/index/index.js': {
+            type: 'chunk',
+            fileName: 'package-a/pages/index/index.js',
+            code: 'require("../../../common/vendor.js");\nwx.createPage({})',
+          },
+          'common/vendor.js': {
+            type: 'chunk',
+            fileName: 'common/vendor.js',
+            code: '"use strict";',
+          },
+        }
+
+        expect(() =>
+          callGenerateBundle(plugin, { emitFile: jest.fn() }, bundle)
+        ).toThrow('独立分包 "package-a" 的 JS 不能引用 root 外产物')
       }
     )
   })

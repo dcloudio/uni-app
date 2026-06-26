@@ -22,6 +22,7 @@ import {
   withIndependentRoot,
   withoutIndependentRoot,
 } from './independentUtils'
+import { virtualPagePath } from './entry'
 
 const INDEPENDENT_MAIN_PREFIX = '\0uni:mp-independent-main'
 const APP_FACTORY_PREFIX = '\0uni:mp-app-factory'
@@ -202,12 +203,14 @@ ${global}.createPage(MiniProgramPage)`,
             pkg.root
           )
           injectIndependentBootstrap(bundle, pkg.root)
+          relocateIndependentStyleChunks(bundle, pkg.root)
           processIndependentStyles(
             (file) => this.emitFile(file),
             bundle,
             pkg,
             styleExtname
           )
+          validateIndependentJsReferences(bundle, pkg.root)
         })
       },
     },
@@ -259,6 +262,98 @@ function shouldInjectBootstrap(chunk: OutputChunk, root: string) {
 
 function resolveIndependentBootstrapFilename(root: string) {
   return `${normalizePath(root).replace(/\/$/, '')}/common/index.js`
+}
+
+function relocateIndependentStyleChunks(bundle: OutputBundle, root: string) {
+  Object.keys(bundle).forEach((name) => {
+    const file = bundle[name]
+    if (
+      !isOutputChunk(file) ||
+      !file.fileName.endsWith('.js') ||
+      !isInIndependentOutputRoot(file.fileName, root)
+    ) {
+      return
+    }
+    file.code = replaceStaticRequire(file.code, (source) => {
+      const resolved = resolveLocalOutputFilename(file.fileName, source)
+      if (
+        !resolved ||
+        isInIndependentOutputRoot(resolved, root) ||
+        !isRelocatableStyleChunk(bundle[resolved], resolved)
+      ) {
+        return source
+      }
+      const targetFilename = resolveIndependentCommonChunkFilename(
+        root,
+        path.basename(resolved)
+      )
+      if (!bundle[targetFilename]) {
+        bundle[targetFilename] = {
+          ...bundle[resolved],
+          fileName: targetFilename,
+        } as OutputChunk
+      }
+      return relativeFile(file.fileName, targetFilename)
+    })
+  })
+}
+
+function validateIndependentJsReferences(bundle: OutputBundle, root: string) {
+  Object.keys(bundle).forEach((name) => {
+    const file = bundle[name]
+    if (
+      !isOutputChunk(file) ||
+      !file.fileName.endsWith('.js') ||
+      !isInIndependentOutputRoot(file.fileName, root)
+    ) {
+      return
+    }
+    replaceStaticRequire(file.code, (source) => {
+      const resolved = resolveLocalOutputFilename(file.fileName, source)
+      if (resolved && !isInIndependentOutputRoot(resolved, root)) {
+        throw new Error(
+          `独立分包 "${root}" 的 JS 不能引用 root 外产物：${file.fileName} -> ${source}（${resolved}）。请将依赖移动到 "${root}" 内，或等待后续自动处理 root 外依赖。`
+        )
+      }
+      return source
+    })
+  })
+}
+
+function replaceStaticRequire(
+  code: string,
+  replacer: (source: string) => string
+) {
+  return code.replace(
+    /\brequire\(\s*(['"])([^'"]+)\1\s*\)/g,
+    (match, quote: string, source: string) => {
+      const nextSource = replacer(source)
+      return nextSource === source
+        ? match
+        : `require(${quote}${nextSource}${quote})`
+    }
+  )
+}
+
+function resolveLocalOutputFilename(importer: string, source: string) {
+  if (!source.startsWith('.')) {
+    return
+  }
+  return normalizePath(path.join(path.dirname(importer), source))
+}
+
+function isRelocatableStyleChunk(
+  file: OutputBundle[string] | undefined,
+  filename: string
+) {
+  return (
+    isOutputChunk(file) &&
+    /(?:^|\/)[^/]+\.vue_vue_type_style_.*\.js$/.test(filename)
+  )
+}
+
+function resolveIndependentCommonChunkFilename(root: string, filename: string) {
+  return `${normalizeIndependentRoot(root)}/common/${normalizePath(filename)}`
 }
 
 function tryParseIndependentSubPackages(inputDir: string) {
@@ -552,6 +647,12 @@ function isOutputAsset(
   return !!file && file.type === 'asset'
 }
 
+function isOutputChunk(
+  file: OutputBundle[string] | undefined
+): file is OutputChunk {
+  return !!file && file.type === 'chunk'
+}
+
 function resolveAppStyleFilename(extname: string) {
   return `app${extname}`
 }
@@ -580,10 +681,7 @@ function generateIndependentPagesCode(
     .map((page) => normalizePagePath(page, platform))
     .filter((page): page is string => !!page)
     .map((page) => {
-      const id = `${INDEPENDENT_PAGE_PREFIX}?root=${encodeURIComponent(
-        root
-      )}&page=${encodeURIComponent(page)}`
-      return `import(${JSON.stringify(id)})`
+      return `import(${JSON.stringify(virtualPagePath(page, root))})`
     })
   return `if(!Math){
 ${imports.join('\n')}
@@ -669,11 +767,7 @@ function shouldPropagateIndependentRoot(id: string) {
   if (/[?&](?:url|raw)\b/.test(id)) {
     return false
   }
-  if (
-    /\.(?:css|scss|sass|less|styl|png|jpe?g|gif|svg|webp|avif|woff2?|ttf|eot)(?:$|[?#])/.test(
-      id
-    )
-  ) {
+  if (/\.(?:css|scss|sass|less|styl)(?:$|[?#&])/.test(id)) {
     return false
   }
   return true

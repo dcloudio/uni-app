@@ -183,7 +183,7 @@ function isNormalPage(pagePath: string) {
 
 function importPagesCode(pagesJson: AppJson) {
   const importPagesCode: string[] = []
-  function importPageCode(pagePath: string) {
+  function importPageCode(pagePath: string, root?: string) {
     if (!isNormalPage(pagePath)) {
       return
     }
@@ -192,14 +192,22 @@ function importPagesCode(pagesJson: AppJson) {
       process.env.UNI_PLATFORM
     )
     if (pagePathWithExtname) {
-      importPagesCode.push(`import('${virtualPagePath(pagePathWithExtname)}')`)
+      importPagesCode.push(
+        `import('${virtualPagePath(pagePathWithExtname, root)}')`
+      )
     }
   }
   pagesJson.pages.forEach((pagePath) => importPageCode(pagePath))
   if (pagesJson.subPackages) {
-    pagesJson.subPackages.forEach(({ root, pages }) => {
+    pagesJson.subPackages.forEach(({ root, pages, independent }) => {
+      const subPackageRoot = normalizePath(root).replace(/\/$/, '')
       pages &&
-        pages.forEach((pagePath) => importPageCode(path.join(root, pagePath)))
+        pages.forEach((pagePath) =>
+          importPageCode(
+            normalizePath(path.join(subPackageRoot, pagePath)),
+            independent ? subPackageRoot : undefined
+          )
+        )
     })
   }
   let workerCode: string[] = []
