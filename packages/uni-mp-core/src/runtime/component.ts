@@ -241,6 +241,7 @@ let $createComponentFn: Function
 let $destroyComponentFn: Function
 let $createComponentAppVm: ComponentPublicInstance | undefined
 let $destroyComponentAppVm: ComponentPublicInstance | undefined
+const componentAppVmMap = new WeakMap<object, ComponentPublicInstance>()
 
 interface InitialVNode {
   type: ComponentOptions
@@ -271,14 +272,29 @@ export function $createComponent(
     initialVNode,
     options
   ) as ComponentPublicInstance
-  return getExposeProxy(proxy.$) || proxy
+  const exposeProxy = getComponentExposeProxy(proxy)
+  componentAppVmMap.set(proxy, appVm)
+  if (exposeProxy && typeof exposeProxy === 'object') {
+    componentAppVmMap.set(exposeProxy, appVm)
+  }
+  return exposeProxy || proxy
 }
 
 export function $destroyComponent(instance: ComponentPublicInstance) {
-  const appVm = getAppVm()
+  const appVm = componentAppVmMap.get(instance) || getAppVm()
   if (!$destroyComponentFn || $destroyComponentAppVm !== appVm) {
     $destroyComponentAppVm = appVm
     $destroyComponentFn = appVm.$destroyComponent
   }
-  return $destroyComponentFn(instance)
+  try {
+    return $destroyComponentFn(instance)
+  } finally {
+    componentAppVmMap.delete(instance)
+  }
+}
+
+function getComponentExposeProxy(proxy: ComponentPublicInstance) {
+  return typeof getExposeProxy === 'function'
+    ? getExposeProxy(proxy.$)
+    : undefined
 }

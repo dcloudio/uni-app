@@ -117,7 +117,9 @@ describe('uniIndependentSubpackagePlugin', () => {
             formatIndependentVirtualId(INDEPENDENT_PAGES_PREFIX, 'package-a')
           )}`
         )
-        expect(result.code).toContain("createUserApp().app.mount('#app')")
+        expect(result.code).toContain(
+          `createUserApp().app.mount('#app', "package-a")`
+        )
       }
     )
   })

@@ -7,7 +7,6 @@ import {
 
 describe('runtime/subpackage', () => {
   const originalSubpackage = process.env.UNI_SUBPACKAGE
-  const originalRuntimeRoot = (globalThis as any).__uniSubpackageRoot
   const originalGlobal = (global as any).__GLOBAL__
   const originalGetCurrentPages = (global as any).getCurrentPages
 
@@ -17,11 +16,6 @@ describe('runtime/subpackage', () => {
     } else {
       process.env.UNI_SUBPACKAGE = originalSubpackage
     }
-    if (originalRuntimeRoot === undefined) {
-      delete (globalThis as any).__uniSubpackageRoot
-    } else {
-      ;(globalThis as any).__uniSubpackageRoot = originalRuntimeRoot
-    }
     ;(global as any).__GLOBAL__ = originalGlobal
     if (originalGetCurrentPages === undefined) {
       delete (global as any).getCurrentPages
@@ -30,15 +24,10 @@ describe('runtime/subpackage', () => {
     }
   })
 
-  test('resolves root from parameter, runtime marker and env', () => {
+  test('resolves root from parameter and env', () => {
     delete (process.env as Record<string, string | undefined>).UNI_SUBPACKAGE
-    delete (globalThis as any).__uniSubpackageRoot
 
     expect(resolveSubpackageRoot('/package-a/')).toBe('package-a')
-    ;(globalThis as any).__uniSubpackageRoot = 'package-b'
-    expect(resolveSubpackageRoot()).toBe('package-b')
-
-    delete (globalThis as any).__uniSubpackageRoot
     process.env.UNI_SUBPACKAGE = 'package-c'
     expect(resolveSubpackageRoot()).toBe('package-c')
   })
