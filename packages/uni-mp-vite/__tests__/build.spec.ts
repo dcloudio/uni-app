@@ -35,8 +35,9 @@ async function withMiniProgramProject(
 }
 
 function getRollupOutput(inputDir: string) {
-  return createBuildOptions(inputDir, 'mp-weixin').rollupOptions!
-    .output as Record<string, Function>
+  return createBuildOptions(inputDir, 'mp-weixin', {
+    app: { independentSubpackages: true },
+  }).rollupOptions!.output as Record<string, Function>
 }
 
 function clearCompileTarget() {
@@ -111,6 +112,27 @@ describe('mp vite build options', () => {
         )
       ).toBeUndefined()
       expect(manualChunks(`${inputDir}/utils/foo.ts`, meta)).toBe('utils/foo')
+    })
+  })
+
+  test('adds independent input only when app option supports it', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    clearCompileTarget()
+    await withMiniProgramProject(async (inputDir) => {
+      process.env.UNI_INPUT_DIR = inputDir
+
+      expect(
+        createBuildOptions(inputDir, 'mp-weixin', {
+          app: { independentSubpackages: true },
+        }).rollupOptions!.input
+      ).toMatchObject({
+        'package-a/common/main': expect.any(String),
+      })
+      expect(
+        createBuildOptions(inputDir, 'mp-weixin', {
+          app: { independentSubpackages: false },
+        }).rollupOptions!.input
+      ).not.toHaveProperty('package-a/common/main')
     })
   })
 

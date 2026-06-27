@@ -94,16 +94,20 @@ export function uniPagesJsonPlugin(
           this.addWatchFile(filepath)
         })
         const manifestJson = parseManifestJsonOnce(inputDir)
+        const parsePagesJsonOptions = {
+          debug: !!manifestJson.debug,
+          darkmode: options.app.darkmode,
+          networkTimeout: manifestJson.networkTimeout,
+          subpackages: !!options.app.subpackages,
+          ...options.json,
+          independentSubpackages: !!options.app.independentSubpackages,
+        } as Parameters<typeof parseMiniProgramPagesJson>[2] & {
+          independentSubpackages?: boolean
+        }
         const { appJson, pageJsons, nvuePages } = parseMiniProgramPagesJson(
           code,
           platform,
-          {
-            debug: !!manifestJson.debug,
-            darkmode: options.app.darkmode,
-            networkTimeout: manifestJson.networkTimeout,
-            subpackages: !!options.app.subpackages,
-            ...options.json,
-          }
+          parsePagesJsonOptions
         )
         nvueCssPathsCache.set(
           resolvedConfig,
@@ -146,10 +150,11 @@ export function uniPagesJsonPlugin(
         const { normalize } = options.app
         const normalizedAppJson = normalize ? normalize(appJson) : appJson
         const independentUpdate = updateIndependentSubPackages(
-          parseIndependentSubPackages(
-            normalizedAppJson as unknown as UniApp.PagesJson,
-            platform
-          )
+          options.app.independentSubpackages
+            ? parseIndependentSubPackages(
+                normalizedAppJson as unknown as UniApp.PagesJson
+              )
+            : []
         )
         if (independentUpdate.rootsChanged) {
           console.warn(M['dev.watching.restart.independentSubPackages'])

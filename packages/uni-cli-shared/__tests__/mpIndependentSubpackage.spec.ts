@@ -37,8 +37,7 @@ describe('parseIndependentSubPackages', () => {
     }
   })
 
-  test('returns independent subPackages on mp-weixin', () => {
-    process.env.UNI_PLATFORM = 'mp-weixin'
+  test('returns independent subPackages', () => {
     withPagesJson(
       {
         subPackages: [
@@ -55,7 +54,7 @@ describe('parseIndependentSubPackages', () => {
         ],
       },
       (_inputDir, pagesJson) => {
-        expect(parseIndependentSubPackages(pagesJson, 'mp-weixin')).toEqual([
+        expect(parseIndependentSubPackages(pagesJson)).toEqual([
           {
             root: 'package-a',
             pages: ['pages/index/index'],
@@ -79,7 +78,7 @@ describe('parseIndependentSubPackages', () => {
         ],
       },
       (_inputDir, pagesJson) => {
-        expect(parseIndependentSubPackages(pagesJson, 'mp-weixin')).toEqual([
+        expect(parseIndependentSubPackages(pagesJson)).toEqual([
           {
             root: 'package-a',
             pages: ['pages/index/index'],
@@ -105,43 +104,22 @@ describe('parseIndependentSubPackages', () => {
         ],
       },
       (_inputDir, pagesJson) => {
-        expect(parseIndependentSubPackages(pagesJson, 'mp-weixin')).toEqual([])
-      }
-    )
-  })
-
-  test('returns empty array on other platforms', () => {
-    process.env.UNI_PLATFORM = 'mp-alipay'
-    withPagesJson(
-      {
-        subPackages: [
-          {
-            root: 'package-a',
-            independent: true,
-            pages: [{ path: 'pages/index/index' }],
-          },
-        ],
-      },
-      (_inputDir, pagesJson) => {
-        expect(parseIndependentSubPackages(pagesJson, 'mp-alipay')).toEqual([])
+        expect(parseIndependentSubPackages(pagesJson)).toEqual([])
       }
     )
   })
 
   test('supports appJson style page strings', () => {
     expect(
-      parseIndependentSubPackages(
-        {
-          subPackages: [
-            {
-              root: 'package-a',
-              independent: true,
-              pages: ['pages/index/index'],
-            },
-          ],
-        } as unknown as UniApp.PagesJson,
-        'mp-weixin'
-      )
+      parseIndependentSubPackages({
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: ['pages/index/index'],
+          },
+        ],
+      } as unknown as UniApp.PagesJson)
     ).toEqual([
       {
         root: 'package-a',
@@ -170,13 +148,43 @@ describe('parseIndependentSubPackages', () => {
         const { appJson } = parseMiniProgramPagesJson(
           fs.readFileSync(path.join(inputDir, 'pages.json'), 'utf8'),
           'mp-weixin',
-          { subpackages: true }
+          { subpackages: true, independentSubpackages: true }
         )
         expect(appJson.subPackages).toEqual([
           {
             root: 'package-a',
             pages: ['pages/index/index'],
             independent: true,
+          },
+        ])
+      }
+    )
+  })
+
+  test('removes independent field when app json does not support independent subpackages', () => {
+    withPagesJson(
+      {
+        pages: [{ path: 'pages/index/index' }],
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        fs.writeFileSync(path.join(inputDir, 'manifest.json'), '{}')
+        const { appJson } = parseMiniProgramPagesJson(
+          fs.readFileSync(path.join(inputDir, 'pages.json'), 'utf8'),
+          'mp-alipay',
+          { subpackages: true }
+        )
+        expect(appJson.subPackages).toEqual([
+          {
+            root: 'package-a',
+            pages: ['pages/index/index'],
           },
         ])
       }
