@@ -94,6 +94,32 @@ describe('miniProgram:jsonFile', () => {
       })
     })
 
+    test('allows independent pages to override root-outside global components', () => {
+      withIndependentPagesJson('package-a', (inputDir) => {
+        process.env.UNI_PLATFORM = 'mp-weixin'
+        process.env.UNI_INPUT_DIR = inputDir
+        const page = 'package-a/pages/index/index'
+
+        addMiniProgramAppJson({
+          ...createIndependentAppJson('package-a'),
+          usingComponents: {
+            'global-a': '/components/global-a',
+          },
+        })
+        addMiniProgramPageJson(page, {
+          usingComponents: {
+            'global-a': '/package-a/components/global-a',
+          },
+        })
+
+        expect(JSON.parse(findChangedJsonFiles(true).get(page)!)).toEqual({
+          usingComponents: {
+            'global-a': '../../components/global-a',
+          },
+        })
+      })
+    })
+
     test('throws when independent pages use root-outside local components', () => {
       withIndependentPagesJson('package-a', (inputDir) => {
         process.env.UNI_PLATFORM = 'mp-weixin'
