@@ -6,7 +6,6 @@ import {
   enableSourceMap,
   isAppVue,
   isMiniProgramPageFile,
-  normalizePath,
   parseMainDescriptor,
   parseProgram,
   parseScriptDescriptor,
@@ -20,74 +19,11 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { virtualComponentPath, virtualPagePath } from './entry'
 import {
-  getIndependentRoots,
+  getIndependentRootByFilename,
   parseIndependentRoot,
   withoutIndependentRoot,
 } from './independentUtils'
 import type { CustomPluginOptions, ResolvedId } from 'rollup'
-
-const parseMainDescriptorWithRoot =
-  parseMainDescriptor as typeof parseMainDescriptor &
-    ((
-      filename: Parameters<typeof parseMainDescriptor>[0],
-      ast: Parameters<typeof parseMainDescriptor>[1],
-      resolve: Parameters<typeof parseMainDescriptor>[2],
-      root?: string
-    ) => ReturnType<typeof parseMainDescriptor>)
-const parseScriptDescriptorWithRoot =
-  parseScriptDescriptor as typeof parseScriptDescriptor &
-    ((
-      filename: Parameters<typeof parseScriptDescriptor>[0],
-      ast: Parameters<typeof parseScriptDescriptor>[1],
-      options: Parameters<typeof parseScriptDescriptor>[2] & { root?: string }
-    ) => ReturnType<typeof parseScriptDescriptor>)
-const parseTemplateDescriptorWithRoot =
-  parseTemplateDescriptor as typeof parseTemplateDescriptor &
-    ((
-      filename: Parameters<typeof parseTemplateDescriptor>[0],
-      ast: Parameters<typeof parseTemplateDescriptor>[1],
-      options: Parameters<typeof parseTemplateDescriptor>[2] & { root?: string }
-    ) => ReturnType<typeof parseTemplateDescriptor>)
-const updateMiniProgramComponentsByMainFilenameWithRoot =
-  updateMiniProgramComponentsByMainFilename as typeof updateMiniProgramComponentsByMainFilename &
-    ((
-      mainFilename: Parameters<
-        typeof updateMiniProgramComponentsByMainFilename
-      >[0],
-      inputDir: Parameters<typeof updateMiniProgramComponentsByMainFilename>[1],
-      normalizeComponentName: Parameters<
-        typeof updateMiniProgramComponentsByMainFilename
-      >[2],
-      root?: string
-    ) => ReturnType<typeof updateMiniProgramComponentsByMainFilename>)
-const updateMiniProgramComponentsByScriptFilenameWithRoot =
-  updateMiniProgramComponentsByScriptFilename as typeof updateMiniProgramComponentsByScriptFilename &
-    ((
-      scriptFilename: Parameters<
-        typeof updateMiniProgramComponentsByScriptFilename
-      >[0],
-      inputDir: Parameters<
-        typeof updateMiniProgramComponentsByScriptFilename
-      >[1],
-      normalizeComponentName: Parameters<
-        typeof updateMiniProgramComponentsByScriptFilename
-      >[2],
-      root?: string
-    ) => ReturnType<typeof updateMiniProgramComponentsByScriptFilename>)
-const updateMiniProgramComponentsByTemplateFilenameWithRoot =
-  updateMiniProgramComponentsByTemplateFilename as typeof updateMiniProgramComponentsByTemplateFilename &
-    ((
-      templateFilename: Parameters<
-        typeof updateMiniProgramComponentsByTemplateFilename
-      >[0],
-      inputDir: Parameters<
-        typeof updateMiniProgramComponentsByTemplateFilename
-      >[1],
-      normalizeComponentName: Parameters<
-        typeof updateMiniProgramComponentsByTemplateFilename
-      >[2],
-      root?: string
-    ) => ReturnType<typeof updateMiniProgramComponentsByTemplateFilename>)
 
 export function uniUsingComponentsPlugin(
   options: {
@@ -116,7 +52,12 @@ export function uniUsingComponentsPlugin(
       const dynamicImportOptions = {
         id,
         sourceMap,
-        dynamicImport,
+        dynamicImport: (name: string, value: string) =>
+          dynamicImport(name, value, {
+            root: independentRoot,
+            checkIndependentRoot: true,
+            inputDir,
+          }),
       }
       const resolve = async (
         source: string,
@@ -142,7 +83,7 @@ export function uniUsingComponentsPlugin(
         if (query.type === 'script') {
           // 需要主动监听
           this.addWatchFile(filename)
-          const descriptor = await parseScriptDescriptorWithRoot(
+          const descriptor = await parseScriptDescriptor(
             filename,
             parseAst(source, id),
             {
@@ -151,7 +92,7 @@ export function uniUsingComponentsPlugin(
               root: independentRoot,
             }
           )
-          updateMiniProgramComponentsByScriptFilenameWithRoot(
+          updateMiniProgramComponentsByScriptFilename(
             filename,
             inputDir,
             normalizeComponentName,
@@ -165,7 +106,7 @@ export function uniUsingComponentsPlugin(
         } else if (query.type === 'template') {
           // 需要主动监听
           this.addWatchFile(filename)
-          const descriptor = await parseTemplateDescriptorWithRoot(
+          const descriptor = await parseTemplateDescriptor(
             filename,
             parseAst(source, id),
             {
@@ -174,7 +115,7 @@ export function uniUsingComponentsPlugin(
               root: independentRoot,
             }
           )
-          updateMiniProgramComponentsByTemplateFilenameWithRoot(
+          updateMiniProgramComponentsByTemplateFilename(
             filename,
             inputDir,
             normalizeComponentName,
@@ -194,14 +135,14 @@ export function uniUsingComponentsPlugin(
 
       const ast = parseAst(source, id)
 
-      const descriptor = await parseMainDescriptorWithRoot(
+      const descriptor = await parseMainDescriptor(
         filename,
         ast,
         resolve,
         independentRoot
       )
 
-      updateMiniProgramComponentsByMainFilenameWithRoot(
+      updateMiniProgramComponentsByMainFilename(
         filename,
         inputDir,
         normalizeComponentName,
@@ -217,14 +158,41 @@ export function uniUsingComponentsPlugin(
   }
 }
 
-export function dynamicImport(name: string, value: string) {
-  let independentRoot = parseIndependentRoot(value)
+interface DynamicImportOptions {
+  root?: string
+  inferRoot?: boolean
+  checkIndependentRoot?: boolean
+  inputDir?: string
+}
+
+export function dynamicImport(
+  name: string,
+  value: string,
+  options: DynamicImportOptions = {}
+) {
+  const sourceRoot = parseIndependentRoot(value)
   value = withoutIndependentRoot(value)
-  independentRoot =
-    independentRoot ||
-    findIndependentRootByFilename(value, process.env.UNI_INPUT_DIR)
+  const inputDir = options.inputDir || process.env.UNI_INPUT_DIR
+  const targetRoot =
+    sourceRoot ||
+    (options.inferRoot || options.checkIndependentRoot
+      ? getIndependentRootByFilename(value, inputDir)
+      : undefined)
+  if (
+    options.checkIndependentRoot &&
+    targetRoot &&
+    targetRoot !== options.root
+  ) {
+    throw new Error(
+      `暂不支持跨分包组件同步引用：${value} 属于独立分包 "${targetRoot}"，请将组件移动到当前包内。`
+    )
+  }
+  let independentRoot = options.root || sourceRoot
+  if (!independentRoot && options.inferRoot) {
+    independentRoot = targetRoot
+  }
   // 开发者可能将页面作为组件来引用
-  if (isMiniProgramPageFile(value, process.env.UNI_INPUT_DIR)) {
+  if (isMiniProgramPageFile(value, inputDir)) {
     return `const ${name} = ()=>import('${virtualPagePath(
       value,
       independentRoot
@@ -234,18 +202,4 @@ export function dynamicImport(name: string, value: string) {
     value,
     independentRoot
   )}')`
-}
-
-function findIndependentRootByFilename(filename: string, inputDir: string) {
-  if (!inputDir || !path.isAbsolute(filename)) {
-    return
-  }
-  const relativeFilename = normalizePath(path.relative(inputDir, filename))
-  return [...getIndependentRoots()].find((root) => {
-    const normalizedRoot = normalizePath(root).replace(/\/$/, '')
-    return (
-      relativeFilename === normalizedRoot ||
-      relativeFilename.startsWith(`${normalizedRoot}/`)
-    )
-  })
 }

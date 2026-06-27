@@ -1,6 +1,8 @@
+import path from 'path'
 import {
-  MP_INDEPENDENT_ROOT_QUERY,
   type IndependentSubPackage,
+  MP_INDEPENDENT_ROOT_QUERY,
+  normalizePath,
 } from '@dcloudio/uni-cli-shared'
 
 export const INDEPENDENT_SUBPACKAGE_PLUGIN_NAME =
@@ -16,7 +18,13 @@ export const INDEPENDENT_ROOT_PARAM = 'root'
 export const INDEPENDENT_PAGE_PARAM = 'page'
 
 let independentSubPackages: IndependentSubPackage[] = []
+let independentRootMatchers: IndependentRootMatcher[] = []
 let initialIndependentRootsSignature: string | undefined
+
+interface IndependentRootMatcher {
+  root: string
+  normalizedRoot: string
+}
 
 export interface UpdateIndependentSubPackagesResult {
   rootsChanged: boolean
@@ -27,7 +35,7 @@ export interface UpdateIndependentSubPackagesResult {
 export function initIndependentSubPackages(
   packages: IndependentSubPackage[]
 ): void {
-  independentSubPackages = packages
+  setIndependentSubPackages(packages)
   initialIndependentRootsSignature = stringifyIndependentRoots(packages)
 }
 
@@ -40,7 +48,7 @@ export function updateIndependentSubPackages(
   }
   const rootsChanged = currentRoots !== initialIndependentRootsSignature
   if (!rootsChanged) {
-    independentSubPackages = packages
+    setIndependentSubPackages(packages)
   }
   return {
     rootsChanged,
@@ -55,6 +63,24 @@ export function getIndependentSubPackages(): IndependentSubPackage[] {
 
 export function getIndependentRoots(): Set<string> {
   return new Set(independentSubPackages.map(({ root }) => root))
+}
+
+export function getIndependentRootByFilename(
+  filename: string,
+  inputDir: string | undefined
+): string | undefined {
+  const cleanFilename = splitIdQuery(withoutIndependentRoot(filename)).filename
+  if (!inputDir || !path.isAbsolute(cleanFilename)) {
+    return
+  }
+  const relativeFilename = normalizePath(path.relative(inputDir, cleanFilename))
+  const matcher = independentRootMatchers.find(({ normalizedRoot }) => {
+    return (
+      relativeFilename === normalizedRoot ||
+      relativeFilename.startsWith(`${normalizedRoot}/`)
+    )
+  })
+  return matcher?.root
 }
 
 export function formatIndependentVirtualId(
@@ -78,9 +104,36 @@ export function stringifyIndependentRoots(
   packages: IndependentSubPackage[]
 ): string {
   return packages
-    .map(({ root }) => root)
+    .map(({ root }) => normalizeIndependentRoot(root))
+    .filter(Boolean)
     .sort()
     .join('\n')
+}
+
+function setIndependentSubPackages(packages: IndependentSubPackage[]): void {
+  independentSubPackages = packages.reduce<IndependentSubPackage[]>(
+    (result, pkg) => {
+      const root = normalizeIndependentRoot(pkg.root)
+      if (root) {
+        result.push({
+          ...pkg,
+          root,
+        })
+      }
+      return result
+    },
+    []
+  )
+  independentRootMatchers = independentSubPackages
+    .map(({ root }) => ({
+      root,
+      normalizedRoot: root,
+    }))
+    .sort((a, b) => b.normalizedRoot.length - a.normalizedRoot.length)
+}
+
+function normalizeIndependentRoot(root: string): string {
+  return normalizePath(root).replace(/^\/+|\/+$/g, '')
 }
 
 export function parseIndependentRoot(id: string): string | undefined {

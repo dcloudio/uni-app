@@ -42,6 +42,8 @@ type BindingComponents = Record<
 const mainDescriptors = new Map<string, MainDescriptor>()
 const scriptDescriptors = new Map<string, ScriptDescriptor>()
 const templateDescriptors = new Map<string, TemplateDescriptor>()
+const scriptDescriptorMainMap = new Map<string, string>()
+const templateDescriptorMainMap = new Map<string, string>()
 // 存储全局组件名到完整源文件路径的映射
 const globalComponentSourceMap = new Map<string, string>()
 
@@ -148,8 +150,25 @@ export async function parseMainDescriptor(
         )
       : createDescriptorKey(filename, root),
   }
-  mainDescriptors.set(createDescriptorKey(filename, root), descriptor)
+  const mainDescriptorKey = createDescriptorKey(filename, root)
+  updateMainDescriptorIndex(mainDescriptorKey, descriptor)
   return descriptor
+}
+
+function updateMainDescriptorIndex(
+  mainDescriptorKey: string,
+  descriptor: MainDescriptor
+) {
+  const oldDescriptor = mainDescriptors.get(mainDescriptorKey)
+  if (oldDescriptor && oldDescriptor.script !== descriptor.script) {
+    scriptDescriptorMainMap.delete(oldDescriptor.script)
+  }
+  if (oldDescriptor && oldDescriptor.template !== descriptor.template) {
+    templateDescriptorMainMap.delete(oldDescriptor.template)
+  }
+  mainDescriptors.set(mainDescriptorKey, descriptor)
+  scriptDescriptorMainMap.set(descriptor.script, mainDescriptorKey)
+  templateDescriptorMainMap.set(descriptor.template, mainDescriptorKey)
 }
 
 export function updateMiniProgramComponentsByScriptFilename(
@@ -191,15 +210,11 @@ export function updateMiniProgramComponentsByTemplateFilename(
 }
 
 function findMainFilenameByScriptFilename(scriptFilename: string) {
-  const keys = [...mainDescriptors.keys()]
-  return keys.find((key) => mainDescriptors.get(key)!.script === scriptFilename)
+  return scriptDescriptorMainMap.get(scriptFilename)
 }
 
 function findMainFilenameByTemplateFilename(templateFilename: string) {
-  const keys = [...mainDescriptors.keys()]
-  return keys.find(
-    (key) => mainDescriptors.get(key)!.template === templateFilename
-  )
+  return templateDescriptorMainMap.get(templateFilename)
 }
 
 export async function updateMiniProgramGlobalComponents(
