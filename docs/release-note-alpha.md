@@ -1,3 +1,30 @@
+#### 5.14.2026062614-alpha
+##### uni-app x
+* App平台 蒸汽模式 新增 CSS class 支持page选择器 [文档](https://doc.dcloud.net.cn/uni-app-x/css/common/selector.html) <https://issues.dcloud.net.cn/pages/issues/detail?id=30283>
+* App平台 蒸汽模式 修复 组件 list-view 上方list-item尺寸未获取时向上滚动可能出现跳动 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30084)
+* App平台 蒸汽模式 修复 组件 list-view 初次渲染后未发生滚动缓冲区一直不生效 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30240)
+* App平台 蒸汽模式 修复 组件 list-view 不含可回收区域时自定义下拉刷新无法使用 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30358)
+* App平台 蒸汽模式 修复 组件 sticky-section 设置横向padding时list-item及sticky-header宽度异常 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30529)
+* App平台 蒸汽模式 修复 组件 text 插值节点后使用嵌套子text导致崩溃 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30018)
+* App平台 蒸汽模式 修复 组件 button 开启 disabled 和 plain 时，type 为 primary 和 warn 的 border-color 和 color 不正确 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30528)
+* App平台 蒸汽模式 修复 组件 unicloud-db 内置的方法不存在问题 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30340)
+* App平台 蒸汽模式 修复 CSS height flex+height配合布局异常 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29915)
+* Android平台 修复 5.08版本引发的 组件 video 播放中息屏、网络不佳时未显示loading [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29943)
+* Android平台 更新 华夏乐游广告SDK为 4.7.8.1 版，解决与 uni-push 打包冲突的问题 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30384)
+* iOS平台 修复 5.08版本引发的 组件 video 设置 object-fit 为 cover 无效果 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29170)
+* iOS平台 修复 5.08版本引发的 组件 video 首次加载可能闪烁 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29628)
+* iOS平台 蒸汽模式 修复 组件 rich-text native 为 mode 时在低端机型进入长内容页面短时间内卡顿 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30488)
+* iOS平台 蒸汽模式 修复 组件 canvas 在部分设备渲染不出内容 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30397)
+* iOS平台 蒸汽模式 修复 组件 text 某些文字显示如视频弹幕偶现崩溃 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30537)
+* iOS平台 蒸汽模式 修复 CSS transition-property 设置为 bottom 时修改未触发布局过渡动画 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30180)
+* iOS平台 蒸汽模式 修复 CSS transition-property 切换为 none 时未中断未完成动画 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30181)
+* iOS平台 蒸汽模式 修复 CSS transition-timing-function 使用 cubic-bezier 回弹曲线时动画异常 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30126)
+* 鸿蒙平台 蒸汽模式 新增 CSS transition-timing-function 支持 cubic-bezier 函数 [文档](https://doc.dcloud.net.cn/uni-app-x/css/transition-timing-function.html) <https://issues.dcloud.net.cn/pages/issues/detail?id=30184>
+* 鸿蒙平台 蒸汽模式 修复 组件 全局事件 嵌套text子元素为动态节点时其事件无法触发 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30059)
+* 鸿蒙平台 蒸汽模式 修复 API uni.redirectTo 可能引发应用崩溃 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29726)
+* 鸿蒙平台 蒸汽模式 修复 CSS transition-timing-function 某些场景下 Animator curve handle 过早释放导致 transition 崩溃 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=30221)
+* 微信小程序平台 新增 API uni.getAppBaseInfo 支持返回 packagename 字段 [文档](https://doc.dcloud.net.cn/uni-app-x/api/get-app-base-info.html#%E5%8F%82%E8%A7%81) <https://issues.dcloud.net.cn/pages/issues/detail?id=30196>
+
 #### 5.13.2026061207-alpha
 ##### uni-app x
 * Web平台、App平台 修复 组件 video 非全屏时不阻止 touch 事件冒泡 [文档](https://doc.dcloud.net.cn/uni-app-x/component/video.html) <https://issues.dcloud.net.cn/pages/issues/detail?id=30007>
