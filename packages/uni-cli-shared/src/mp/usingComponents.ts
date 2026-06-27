@@ -209,16 +209,19 @@ export async function updateMiniProgramGlobalComponents(
     inputDir,
     resolve,
     normalizeComponentName,
+    root,
   }: {
     inputDir: string
     resolve: ParseDescriptor['resolve']
     normalizeComponentName: (name: string) => string
+    root?: string
   }
 ) {
   const { bindingComponents, imports } = await parseGlobalDescriptor(
     filename,
     ast,
-    resolve
+    resolve,
+    root
   )
   // 存储全局组件名到完整源文件路径的映射
   imports.forEach(({ source: { value }, specifiers: [specifier] }) => {
@@ -227,7 +230,10 @@ export async function updateMiniProgramGlobalComponents(
       return
     }
     if (!globalComponentSourceMap.has(bindingComponents[name].tag)) {
-      globalComponentSourceMap.set(bindingComponents[name].tag, value)
+      globalComponentSourceMap.set(
+        bindingComponents[name].tag,
+        withoutIndependentRoot(value)
+      )
     }
   })
   addMiniProgramUsingComponents(
@@ -420,12 +426,13 @@ export interface ScriptDescriptor extends TemplateDescriptor {
 async function parseGlobalDescriptor(
   filename: string,
   ast: Program,
-  resolve: PluginContext['resolve']
+  resolve: PluginContext['resolve'],
+  root?: string
 ) {
   // 外置时查找所有 vue component import
   const imports = (
     await parseVueComponentImports(
-      filename,
+      root ? withIndependentRoot(filename, root) : filename,
       ast.body.filter((node) =>
         isImportDeclaration(node)
       ) as ImportDeclaration[],
