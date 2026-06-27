@@ -15,16 +15,6 @@ import {
 } from './independentUtils'
 import { dynamicImport } from './usingComponents'
 
-const updateMiniProgramGlobalComponentsWithRoot =
-  updateMiniProgramGlobalComponents as typeof updateMiniProgramGlobalComponents &
-    ((
-      filename: Parameters<typeof updateMiniProgramGlobalComponents>[0],
-      ast: Parameters<typeof updateMiniProgramGlobalComponents>[1],
-      options: Parameters<typeof updateMiniProgramGlobalComponents>[2] & {
-        root?: string
-      }
-    ) => ReturnType<typeof updateMiniProgramGlobalComponents>)
-
 export function uniMainJsPlugin(
   options: {
     normalizeComponentName?: (name: string) => string
@@ -47,22 +37,30 @@ export function uniMainJsPlugin(
               : createLegacyApp(source)
 
           const inputDir = process.env.UNI_INPUT_DIR
-          const { imports } = await updateMiniProgramGlobalComponentsWithRoot(
+          const globalComponentOptions: Parameters<
+            typeof updateMiniProgramGlobalComponents
+          >[2] & { root?: string } = {
+            inputDir,
+            resolve: this.resolve,
+            normalizeComponentName,
+            root: independentRoot,
+          }
+          const { imports } = await updateMiniProgramGlobalComponents(
             id,
             parseProgram(source, id, {
               babelParserPlugins: options.babelParserPlugins,
             }),
-            {
-              inputDir,
-              resolve: this.resolve,
-              normalizeComponentName,
-              root: independentRoot,
-            }
+            globalComponentOptions
           )
           const { code, map } = await transformDynamicImports(source, imports, {
             id,
             sourceMap: enableSourceMap(),
-            dynamicImport,
+            dynamicImport: (name: string, value: string) =>
+              dynamicImport(name, value, {
+                root: independentRoot,
+                inferRoot: !independentRoot,
+                inputDir,
+              }),
           })
           if (independentRoot) {
             return {

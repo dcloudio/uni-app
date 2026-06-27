@@ -1,5 +1,6 @@
 import {
   INDEPENDENT_ROOT_QUERY,
+  getIndependentRootByFilename,
   getIndependentRoots,
   getIndependentSubPackages,
   hasIndependentRoot,
@@ -9,6 +10,10 @@ import {
   withIndependentRoot,
   withoutIndependentRoot,
 } from '../src/plugins/independentUtils'
+
+afterEach(() => {
+  initIndependentSubPackages([])
+})
 
 describe('independent root query utils', () => {
   test('adds and parses independent root query', () => {
@@ -110,5 +115,66 @@ describe('independent subpackage state', () => {
         independent: true,
       },
     ])
+  })
+
+  test('normalizes independent roots when updating state', () => {
+    initIndependentSubPackages([
+      {
+        root: '/package-a/',
+        pages: ['pages/index/index'],
+        independent: true,
+      },
+    ])
+
+    const result = updateIndependentSubPackages([
+      {
+        root: 'package-a',
+        pages: ['pages/list/list'],
+        independent: true,
+      },
+    ])
+
+    expect(result.rootsChanged).toBe(false)
+    expect(getIndependentSubPackages()).toEqual([
+      {
+        root: 'package-a',
+        pages: ['pages/list/list'],
+        independent: true,
+      },
+    ])
+  })
+
+  test('matches independent root by project filename', () => {
+    initIndependentSubPackages([
+      {
+        root: '/package-a/',
+        pages: ['pages/index/index'],
+        independent: true,
+      },
+      {
+        root: 'package-a-extra',
+        pages: ['pages/index/index'],
+        independent: true,
+      },
+    ])
+
+    expect(
+      getIndependentRootByFilename(
+        '/project/src/package-a/components/foo.vue',
+        '/project/src'
+      )
+    ).toBe('package-a')
+    expect(
+      getIndependentRootByFilename(
+        '/project/src/package-a-extra/components/foo.vue',
+        '/project/src'
+      )
+    ).toBe('package-a-extra')
+    expect(
+      getIndependentRootByFilename(
+        '/project/src/components/foo.vue',
+        '/project/src'
+      )
+    ).toBeUndefined()
   })
 })

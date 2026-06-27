@@ -42,7 +42,7 @@ describe('mp vite usingComponents', () => {
     })
   })
 
-  test('uses independent root for components inside independent subpackage', () => {
+  test('infers independent root when explicitly enabled', () => {
     process.env.UNI_INPUT_DIR = '/project/src'
     initIndependentSubPackages([
       {
@@ -54,7 +54,11 @@ describe('mp vite usingComponents', () => {
 
     const code = dynamicImport(
       'ComponentA',
-      '/project/src/package-a/components/component-a.vue'
+      '/project/src/package-a/components/component-a.vue',
+      {
+        inferRoot: true,
+        inputDir: process.env.UNI_INPUT_DIR,
+      }
     )
     const [, id] = code.match(/import\('(.+)'\)/)!
 
@@ -68,5 +72,27 @@ describe('mp vite usingComponents', () => {
       filepath: '/project/src/package-a/components/component-a.vue',
       root: 'package-a',
     })
+  })
+
+  test('throws when sync component import crosses into independent subpackage', () => {
+    process.env.UNI_INPUT_DIR = '/project/src'
+    initIndependentSubPackages([
+      {
+        root: 'package-a',
+        pages: ['pages/index/index'],
+        independent: true,
+      },
+    ])
+
+    expect(() =>
+      dynamicImport(
+        'ComponentA',
+        '/project/src/package-a/components/component-a.vue',
+        {
+          checkIndependentRoot: true,
+          inputDir: process.env.UNI_INPUT_DIR,
+        }
+      )
+    ).toThrow('暂不支持跨分包组件同步引用')
   })
 })
