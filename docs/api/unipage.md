@@ -317,7 +317,7 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 将当前在全屏模式下显示的元素退出全屏模式，恢复全屏之前的状态
 
 
-用于逆转先前调用 [UniElement.requestFullscreen](./dom/unielement.md#requestfullscreen) 的效果。
+用于逆转先前调用 [UniElement.requestFullscreen](/dom/unielement.md#requestfullscreen) 的效果。
 
 ##### exitFullscreen 兼容性 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
@@ -730,7 +730,7 @@ querySelectorAll
 | 不超过一屏 | scroll-view 滚动容器 | 内容高度<sup>①</sup> | 内容高度<sup>①</sup> | 内容高度<sup>①</sup> | 内容高度<sup>①</sup> |
 | 不超过一屏 | 非 scroll-view 容器 | 屏幕高度<sup>②</sup> | 屏幕高度<sup>②</sup> | 屏幕高度<sup>②</sup> | 屏幕高度<sup>②</sup> |
 
-> ① 截图高度等于内容实际高度（内容多高截图就多高）
+> ① 截图高度等于内容实际高度（内容多高截图就多高）  
 > ② 截图高度固定为屏幕高度（不管内容多少都是一屏高）
 
 ##### takeSnapshot 兼容性 

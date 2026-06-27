@@ -996,8 +996,8 @@ export default {
 #### mounted、unmounted 使用注意事项 @mounted-unmounted-tips
 
 目前 mounted、unmounted 可以保证当前数据已经同步到 DOM，但是由于排版和渲染是异步的，所以 mounted、unmounted 不能保证 DOM 排版以及渲染完毕。\
-如果需要获取排版后的节点信息推荐使用 [uni.createSelectorQuery](../api/nodes-info.md) 不推荐直接使用 [Element](../api/dom/unielement.md) 对象。\
-在修改 DOM 后，立刻使用 [Element](../api/dom/unielement.md) 对象的同步接口获取 DOM 状态可能获取到的是排版之前的，而 [uni.createSelectorQuery](../api/nodes-info.md) 可以保障获取到的节点信息是排版之后的。
+如果需要获取排版后的节点信息推荐使用 [uni.createSelectorQuery](../api/nodes-info.md) 不推荐直接使用 [Element](../dom/unielement.md) 对象。\
+在修改 DOM 后，立刻使用 [Element](../dom/unielement.md) 对象的同步接口获取 DOM 状态可能获取到的是排版之前的，而 [uni.createSelectorQuery](../api/nodes-info.md) 可以保障获取到的节点信息是排版之后的。
 
 #### activated、deactivated 使用注意事项 @activated-deactivated-tips
 
@@ -1378,7 +1378,7 @@ export default {
 
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
     <!-- #endif -->
     <view class="page">
@@ -1398,7 +1398,7 @@ export default {
       </text>
       <Comp2 class='comp2' title="title" />
     </view>
-    <!-- #ifdef APP && !VUE3-VAPOR -->
+    <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -1456,7 +1456,7 @@ export default {
 
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
     <!-- #endif -->
     <view class="page">
@@ -1487,7 +1487,7 @@ export default {
       <ChildMixinComp2 />
       <MixinComp />
     </view>
-    <!-- #ifdef APP && !VUE3-VAPOR -->
+    <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -1673,7 +1673,7 @@ export default {
 
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
     <!-- #endif -->
     <view class="page">
@@ -1771,7 +1771,7 @@ export default {
       <MixinComp2 />
       <ChildMixinComp2 />
     </view>
-    <!-- #ifdef APP && !VUE3-VAPOR -->
+    <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -3052,8 +3052,8 @@ export default {
 ##### 使用注意事项 @options-nextTick
 
 目前 $nextTick 可以保证当前数据已经同步到 DOM，但是由于排版和渲染是异步的，所以 $nextTick 不能保证 DOM 排版以及渲染完毕。\
-如果需要获取排版后的节点信息推荐使用 [uni.createSelectorQuery](../api/nodes-info.md) 不推荐直接使用 [Element](../api/dom/unielement.md) 对象。\
-在修改 DOM 后，立刻使用 [Element](../api/dom/unielement.md) 对象的同步接口获取 DOM 状态可能获取到的是排版之前的，而 [uni.createSelectorQuery](../api/nodes-info.md) 可以保障获取到的节点信息是排版之后的。
+如果需要获取排版后的节点信息推荐使用 [uni.createSelectorQuery](../api/nodes-info.md) 不推荐直接使用 [Element](../dom/unielement.md) 对象。\
+在修改 DOM 后，立刻使用 [Element](../dom/unielement.md) 对象的同步接口获取 DOM 状态可能获取到的是排版之前的，而 [uni.createSelectorQuery](../api/nodes-info.md) 可以保障获取到的节点信息是排版之后的。
 
 
 示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/component-instance/nextTick/nextTick-options.uvue)

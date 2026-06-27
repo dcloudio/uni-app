@@ -31,7 +31,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| provider | string | 否 | weixin | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,如果不设置则默认 weixin |
+| provider | string | 否 | weixin | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享服务提供商，通过uni.getProvider获取，如果不设置则默认 weixin |
 | type | number | 否 | 0 | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享类型。默认图文0 |
 | title | string | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 标题 |
 | scene | string | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 场景 |

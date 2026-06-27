@@ -2072,8 +2072,8 @@ if (view != null && view instanceof WKWebView) {
 
 完整示例代码参考[hello uni-app x](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/API/element-takesnapshot/element-takesnapshot.uvue)
 
-* 截图会在应用沙盒目录的cache目录产生临时文件，位置[详见](../file-system-spec.md#cache)。
-* app端如需主动删除临时文件，使用[uni.getFileSystemManager](../get-file-system-manager.md)。
+* 截图会在应用沙盒目录的cache目录产生临时文件，位置[详见](../api/file-system-spec.md#cache)。
+* app端如需主动删除临时文件，使用[uni.getFileSystemManager](../api/get-file-system-manager.md)。
 * app端list-view、web-view组件性能优化仅渲染屏幕显示的内容，所以截图仅能截取到当前屏幕展示的内容。
 * app端scroll-view组件设置padding后，截图内容不会包含padding区域。
 * 截图默认为png格式，包含透明度。如果view等元素未设置背景，截图后会表现为相关区域透明。另需注意png如果压缩成jpg会丢失透明度，一般会填充成黑色背景。开发者也可以主动给view设背景色来规避截图的png含有透明度。

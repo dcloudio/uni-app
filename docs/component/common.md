@@ -34,7 +34,7 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
 ::: tip Tips
 - 不建议对所有的组件设置`hardware`，大量的视图在硬件中渲染会占用巨大的显存开销、增加Android原生渲染的复杂度。
 - 不建议对频繁修改的组件设置`hardware`，频繁修改的会增加硬件的缓存更新。
-- 通过[DrawableContext](../api/dom/drawablecontext.md)或其他方式绘制复杂图形时，建议设置为`hardware`。
+- 通过[DrawableContext](../dom/drawablecontext.md)或其他方式绘制复杂图形时，建议设置为`hardware`。
 - 执行复杂动画或大量动画时，建议设置为`hardware`。
 - 由于安卓原生限制，当设置`android-layer-type`为`hardware`或`software`时，`overflow: visible`不生效。
 :::

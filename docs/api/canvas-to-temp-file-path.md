@@ -9,7 +9,7 @@
 | 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
-* 截图或海报需求，app平台view直接提供截图API，[takesnapshot](./dom/unielement.md#takesnapshot)。
+* 截图或海报需求，app平台view直接提供截图API，[takesnapshot](../dom/unielement.html#takesnapshot)。
 
 ### 参数 
 

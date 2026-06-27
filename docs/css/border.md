@@ -35,10 +35,7 @@ border: <line-width> || <line-style> || <color>;
 
 
 
-### 默认值 @default-value 
- | 平台 | 默认值 |
-| :- | :- |
-| uvue | 0 |
+
 
 
 

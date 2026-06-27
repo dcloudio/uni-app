@@ -327,7 +327,7 @@ export default {
 
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
       <view class="page">
@@ -461,7 +461,7 @@ export default {
         </view>
 
       </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -729,7 +729,7 @@ export default {
 
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
     <!-- #endif -->
     <view class="page">
@@ -822,7 +822,7 @@ export default {
         <text :id="value">{{ value }}</text>
       </view>
     </view>
-    <!-- #ifdef APP && !VUE3-VAPOR -->
+    <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -1219,7 +1219,7 @@ defineExpose({
 
 ```vue
 <template>
-<!-- #ifdef APP && !VUE3-VAPOR -->
+<!-- #ifdef APP -->
 <scroll-view style="flex: 1">
   <!-- #endif -->    
   <view class="page">
@@ -1273,7 +1273,7 @@ defineExpose({
     <view class="mb-10 v-bind-css"></view>
     <!-- #endif -->
   </view>
-<!-- #ifdef APP && !VUE3-VAPOR -->
+<!-- #ifdef APP -->
 </scroll-view>
 <!-- #endif -->  
 </template>
@@ -2117,18 +2117,17 @@ const incrementNum = () =>{
 ##### 兼容性
 | Web | 微信小程序 | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 5.14 | 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ##### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | to | string |   | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 必须是有效的查询选择器或 HTMLElement (如果在浏览器环境中使用)。指定将在其中移动 \<teleport> 内容的目标元素 |
-| disabled | boolean |   | Web: 4.0; 微信小程序: 5.14; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 此可选属性可用于禁用 \<teleport> 的功能，这意味着其插槽内容将不会移动到任何位置，而是在您在周围父组件中指定了 \<teleport> 的位置渲染。 |
+| disabled | boolean |   | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 此可选属性可用于禁用 \<teleport> 的功能，这意味着其插槽内容将不会移动到任何位置，而是在您在周围父组件中指定了 \<teleport> 的位置渲染。 |
 
 **注意：**
 - App-Android 平台暂不支持动态修改 `to` 属性。
-- 小程序 平台不支持 `to` 属性。
 
 
 

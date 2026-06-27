@@ -1,16 +1,14 @@
 # iOS App配置
 
-## 图标配置 @icon
+## 图标配置 @icon  
 
-应用图标是在手机上安装应用后显示在桌面的图标，可在 manifest.json 的可视化界面配置：
-
+应用图标是在手机上安装应用后显示在桌面的图标，可在 manifest.json 的可视化界面配置：  
 ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/ios_icon.png)
 
-> 要求使用1024x1024分辨率图标，不要设置圆角（系统会自动处理圆角）
+> 要求使用1024x1024分辨率图标，不要设置圆角（系统会自动处理圆角）  
 
-如果不配置，默认使用iOS提供的图标，效果如下：
-
-![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/ios_icon_default.png)
+如果不配置，默认使用iOS提供的图标，效果如下：  
+  ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/ios_icon_default.png)  
 
 **注意**
 - 修改或配置图标后需提交云端打包才能生效
@@ -19,7 +17,7 @@
 ## 启动界面 @splashscreen
 App启动时，系统加载应用渲染首页需要一定的时间，为了避免用户等待，手机操作系统提供了特殊的启动界面设计，让用户先看到一个简单的界面，等应用加载完成后正式进入应用首页。
 
-这个界面，即被称为启动封面，也称为 splash。
+这个界面，即被称为启动封面，也成称为 splash。
 
 当然并非所有App都需要splash，很多系统应用比如计算器、日历都没有splash。
 
@@ -27,8 +25,8 @@ uni-app x中，如不配置splash，则与计算器等应用一致，启动时�
 
 如需配置splash，注意避免splash图与首页风格差异太大。因为uni-app x启动速度非常快，splash只是一闪而过，如果颜色差异太大，会让用户视觉不舒服。
 
-> HBuilderX 4.18+ 版本支持配置启动界面。
-> HBuilderX 4.71 及以上版本 iOS 平台可视化界面设置调整到`iOS App配置`项中。
+> HBuilderX 4.18+ 版本支持配置启动界面。  
+> HBuilderX 4.71 及以上版本iOS平台可视化界面设置调整到`iOS App配置`项中。  
 
 uni-app x 的 app-ios 平台，启动界面有以下策略：
 - 不配置
@@ -38,11 +36,11 @@ Storyboard是Apple提供的一种简化的布局界面，通过xml描述界面�
 虽然无法制作非常灵活的界面，但满足启动界面是没问题的，比如设定背景色背景图、设定前景文字、图片的位置。
 storyboard的优势是启动速度快。在App的真实首页被渲染完成前，可以快速给用户提供一个基于Storyboard的启动屏。
 
-### 制作 storyboard 文件
+### 制作storyboard文件
 
 storyboard有两种制作方式：
 
-**1.** **直接使用[模板文件(点击下载)](https://native-res.dcloud.net.cn/uni-app/file/CustomStoryboard.zip)中提供的相对常用的 storyboard 模板，可在这个文件的基础上进行自定义（不需要 Mac 及 Xcode，详情请查看附件中的 readme 教程）**
+**1.** **直接使用[模板文件(点击下载)](https://native-res.dcloud.net.cn/uni-app/file/CustomStoryboard.zip)中提供的相对常用的 storyboard 模板，可在这个文件的基础上进行自定义（不需要 Mac 及 XCode，详情请查看附件中的 readme 教程）**
 此 storyboard 文件适用于各种 iPhone 及 iPad 设备的横竖屏，支持自定义界面元素包括
 
 - 页面背景图片或背景颜色
@@ -50,55 +48,56 @@ storyboard有两种制作方式：
 - 底部显示文字及颜色
 注：每一项都是可选的（比如只显示背景图片，只提供背景图片即可）
 
-**2.** 使用 Xcode 自行制作。Xcode 提供了可视化制作 storyboard 的方式，但依赖 Mac 电脑。在 Xcode 中制作 storyboard 的教程请自行网络搜索，并注意下面的事项。
+**2.** 使用xcode自行制作。xcode提供了可视化的制作storyboard的方式，但依赖于mac电脑。在xcode中制作storyboard的教程请自行网络搜索，请注意下面的注意事项。
 
-HBuilderX 需要的自定义 storyboard 文件格式为 zip 压缩包，里面要求包含 Xcode 使用的 .storyboard 文件，以及 .storyboard 文件中使用的 png 图，如下图所示：
+HBuilderX需要的自定义storyboard文件格式为zip压缩包，里面要求包含XCode使用的.storyboard文件，以及.stroybard文件中使用的png图，如下图所示：
 
 ![](https://img.cdn.aliyun.dcloud.net.cn/client/ask/pkg/splash/storyboard.png)
 
 ::: warning 注意事项
-- zip 压缩包中不要包含目录，直接包含 .storyboard 和 .png 文件
-- 有且只有一个 .storyboard 文件
-- .storyboard 文件可以通过 Xcode 生成，也可以使用任何文本编辑器修改其源码，比如对 .storyboard 文件点右键，使用 HBuilderX 打开。它本质是一个 xml 文件。
-- png 文件名称中的 @2x 和 @3x 用于适配不同分辨率的图片，系统会自动根据设备 dpi 选择，可参考[这里](https://www.jianshu.com/p/5b5f47ff87d4)
-- 为了避免 png 文件名称与应用中内置的文件名冲突，建议以 dc_launchscreen 开头
-- 制作 storyboard 时，**请将图片资源直接拖到工程中，不要放到 imageset 里面，并且图片命名要保证唯一性，可参考附件中的示例**
-- Xcode 中创建 storyboard 文件时，**页面元素添加约束时一定要相对于** `Superview`，否则启动图到 loading 页面过渡时页面可能跳动或变形
-![](https://web-ext-storage.dcloud.net.cn/doc/app/ios/storyboard1.png)#{width="800px"}
+- zip压缩包中不要包含目录，直接包含.storyboard和.png文件
+- 有且只有一个.storyboard文件
+- .storyboard文件可以通过xcode生成，也可以使用任何文本编辑器修改其源码，比如对.storyboard文件点右键，使用HBuilderX打开。它本质是一个xml文件。
+- png文件名称中的@2x和@3x是适配不同分辨率的图片，系统会自动根据设备dpi选择，可参考[这里](https://www.jianshu.com/p/5b5f47ff87d4)
+- 为了避免png文件名称与应用中内置的文件名冲突，建议以dc_launchscreen开头
+- 制作 storyboard 时，**请将图片资源直接拖到放工程中，不要放到 imageset 里面，并且图片命名要保证一定的唯一性可参考附件中的示例**
+- XCode中创建 storyboard 文件时，**页面元素添加约束时一定要相对于** `Superview`，不然启动图到 loading页面过渡时页面会跳动或者变形
+![](https://web-ext-storage.dcloud.net.cn/doc/app/ios/storyboard1.png)#{width="800px"}  
 :::
 
-### 使用 storyboard 文件
+### 使用storyboard文件
 
-打开项目的 manifest.json 文件，在“App启动界面配置”中的“iOS启动图设置”项下选择自己制作的 storyboard 文件：
+打开项目的manifest.json文件，在“App启动界面配置”中的“iOS启动图设置”项下选择自己制作的storyboard文件：
 
-- HBuilderX 4.71 及以上版本
-  在 “iOS App配置” 的 “启动界面配置” -> “自定义 storyboard 启动界面” 中设置
+- HBuilderX 4.71 及以上版本  
+  在 “iOS App配置” 的 “启动界面配置” -> “自定义storyboard启动界面” 中设置  
   ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/splashscreen_ios_storyboard.png)
 
-- HBuilderX 4.71 以下版本
-  在 “安卓/iOS启动界面配置” 的 “iOS启动图设置” -> “自定义 storyboard 启动界面” 中设置
+- HBuilderX 4.71 以下版本  
+  在 “安卓/iOS启动界面配置” 的 “iOS启动图设置” -> “自定义storyboard启动界面” 中设置  
   ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/splashscreen_ios_storyboard_old.png)
 
-### 启动界面方向 @orientation
+### 启动界面方向 @orientation  
 
-启动界面方向与应用支持的横竖屏方向一致，云端打包会根据 `pages.json` 中配置的 `globalStyle -> pageOrientation` 属性在 Info.plist 文件中生成 iPhone 设备的 `UISupportedInterfaceOrientations~iphone` 值：
-- portrait
-  + `UISupportedInterfaceOrientations~iphone` 值使用 `UIInterfaceOrientationPortrait`，即固定为竖屏正方向显示
-- landscape
-  + `UISupportedInterfaceOrientations~iphone` 值使用 `UIInterfaceOrientationLandscapeLeft`、`UIInterfaceOrientationLandscapeRight`，即横屏显示，根据感应自动决定横屏正反方向
-- auto
-  + `UISupportedInterfaceOrientations~iphone` 值使用 `UIInterfaceOrientationPortrait`、`UIInterfaceOrientationLandscapeLeft`、`UIInterfaceOrientationLandscapeRight`，即自适应显示，根据感应自动决定竖屏正方向或横屏正反方向
+启动界面方向由项目 `pages.json` 中配置的 globalStyle -> pageOrientation 属性决定：  
+- portrait  
+  + iPhone设备，UISupportedInterfaceOrientations~iphone 值使用 UIInterfaceOrientationPortrait。即固定为竖屏正方向显示  
+  + iPad设备，UISupportedInterfaceOrientations~ipad 值使用 UIInterfaceOrientationPortrait、UIInterfaceOrientationPortraitUpsideDown。即竖屏显示，根据感应自动决定竖屏正反方向  
+- landscape  
+  + iPhone设备，UISupportedInterfaceOrientations~iphone 值使用 UIInterfaceOrientationLandscapeLeft、UIInterfaceOrientationLandscapeRight。即横屏显示，根据感应自动决定横屏正反方向  
+  + iPad设备，UISupportedInterfaceOrientations~ipad 值使用 UIInterfaceOrientationLandscapeLeft、UIInterfaceOrientationLandscapeRight。即横屏显示，根据感应自动决定横屏正反方向  
+- auto  
+  + iPhone设备，UISupportedInterfaceOrientations~iphone 值使用 UIInterfaceOrientationPortrait、UIInterfaceOrientationLandscapeLeft、UIInterfaceOrientationLandscapeRight。即自适应显示，根据感应自动决定竖屏正方向或横屏正反方向  
+  + iPad设备，UISupportedInterfaceOrientations~ipad 值使用 UIInterfaceOrientationPortrait、UIInterfaceOrientationPortraitUpsideDown。即自适应显示，根据感应自动决定竖屏正反方向或横屏正反方向  
 
-iPad 设备默认支持横竖屏自适应（4个方向），`pages.json` 中的 `pageOrientation` 不会限制 iPad 方向。如需在 iPad 固定方向，需配置 `UISupportedInterfaceOrientations~ipad`，并配置 `UIRequiresFullScreen` 为 `true` 关闭 iPad 多任务处理。`UIRequiresFullScreen` 可参考下文配置，`UISupportedInterfaceOrientations~ipad` 可在项目根目录下的 [Info.plist](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#orientation) 中配置。
+以上UISupportedInterfaceOrientations~iphone、UISupportedInterfaceOrientations~ipad 值云端打包时设置到应用的Info.plist中。
 
-以上 `UISupportedInterfaceOrientations~iphone`、`UISupportedInterfaceOrientations~ipad` 值云端打包时会设置到应用的 Info.plist 中。
+如果同时在项目根目录下 `Info.plist` 配置了 UISupportedInterfaceOrientations~iphone、UISupportedInterfaceOrientations~ipad 值，云端打包会自动合并到应用的Info.plist中。
 
-如果同时在项目根目录下 `Info.plist` 配置了 `UISupportedInterfaceOrientations~iphone`、`UISupportedInterfaceOrientations~ipad` 值，云端打包会自动合并到应用的 Info.plist 中。
+如果`pages.json` 中没有配置 pageOrientation 属性，也没有在项目根目录下 `Info.plist` 配置 UISupportedInterfaceOrientations~iphone 或 UISupportedInterfaceOrientations~ipad 值，不同设备默认值如下：  
 
-如果 `pages.json` 中没有配置 `pageOrientation` 属性，也没有在项目根目录下 `Info.plist` 配置 `UISupportedInterfaceOrientations~iphone` 或 `UISupportedInterfaceOrientations~ipad` 值，不同设备默认值如下：
-
-- iPhone
-  默认值为竖屏（HBuilderX 4.71 及以上版本；HBuilderX 4.71 以下版本为横竖屏自适应显示），对应原生工程的 Info.plist 值如下：
+- iPhone  
+  默认值为竖屏（HBuilderX4.71及以上版本，HBuilderX4.71以下版本为横竖屏自适应显示），对应原生工程的Info.plist值如下  
   ```xml
   <?xml version="1.0" encoding="UTF-8"?>
   <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -112,8 +111,8 @@ iPad 设备默认支持横竖屏自适应（4个方向），`pages.json` 中的 
   </plist>
   ```
 
-- iPad
-  默认值为横竖屏自适应（支持 4 个方向），对应原生工程的 Info.plist 值如下：
+- iPad  
+  默认值为横竖屏自适应（支持4个方向），对应原生工程的Info.plist值如下
   ```xml
   <?xml version="1.0" encoding="UTF-8"?>
   <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -130,9 +129,9 @@ iPad 设备默认支持横竖屏自适应（4个方向），`pages.json` 中的 
   </plist>
   ```
 
-**注意**
-iOS 平台在 iPad 设备默认支持`多任务处理`，即支持悬浮窗口和拆分视图，此时要求 `UISupportedInterfaceOrientations~ipad` 同时支持 4 个方向。云端打包会自动检测应用是否关闭`多任务处理`，如果没有关闭，则自动补齐 iPad 方向为横竖屏自适应（支持 4 个方向）。如果需要在 iPad 设备固定某个方向，需在项目根目录下的 [Info.plist](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#infoplist) 文件中添加 `UIRequiresFullScreen`，并将值配置为 `true`，如下：
-```xml
+**注意**  
+iOS平台在iPad设备默认是支持`多任务处理`的，即支持悬浮窗口和拆分视图，这时要求`UISupportedInterfaceOrientations~ipad`的值为同时支持4个方向。云端打包会自动检测应用是否配置关闭支持`多任务处理`，没有关闭则自动补齐iPad设置为横竖屏自适应（支持4个方向），如过需要在iPad设备固定某个方向，需在项目根目录下的[Info.plist]()文件中添加`UIRequiresFullScreen`配置值为`true`，如下：  
+```json
   <?xml version="1.0" encoding="UTF-8"?>
   <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
   <plist version="1.0">
@@ -147,9 +146,9 @@ iOS 平台在 iPad 设备默认支持`多任务处理`，即支持悬浮窗口�
 
 ## 可选模块配置 @modules
 
-> HBuilderX 4.71 及以上版本支持可视化界面配置可选模块
+> HBuilderX 4.71 及以上版本支持可视化界面配置可选模块  
 
-### uni-oauth（登录） @modulesoauth
+### uni-oauth（登录） @modulesoauth  
 
 登录功能使用 [provider机制](../api/provider.md) 实现，uni-app x 项目中使用 [uni.login](../api/sign-in.md) API时依赖此模块。
 
@@ -157,13 +156,13 @@ iOS 平台在 iPad 设备默认支持`多任务处理`，即支持悬浮窗口�
 
 支持以下登录 provider ：
 
-#### 微信登录 @oauthweixin
+#### 微信登录 @oauthweixin  
 使用 “微信 Open SDK for iOS” 实现，使用前需到[微信开放平台](https://open.weixin.qq.com/)创建移动应用并在开发配置中正确配置`iOS应用`的 Bundle ID 和 Universal Links。
 
-在uni-app x项目中使用此模块，需在manifest.json中配置：
+在uni-app x项目中使用此模块，需在manifest.json中配置：  
 
-- HBuilderX 5.08 及以上版本  
-  需通过 manifest.json 的`源码视图`在 "app-ios" -> "distribute" -> "modules" -> "uni-oauth" 下添加 "weixin" 节点，如下示例：
+- HBuilderX 5.08 版本  
+  需通过 manifest.json 的`源码视图`在 "app-ios" -> "distribute" -> "modules" -> "uni-oauth" 下添加 "weixin" 节点，如下示例：  
   ```json
   {
     "app-ios": {
@@ -191,13 +190,13 @@ iOS 平台在 iPad 设备默认支持`多任务处理`，即支持悬浮窗口�
 #### 系统定位 @locationSystem
 使用系统自带定位功能，由苹果iOS系统实现
 
-使用此模块，需在manifest.json中配置：
+使用此模块，需在manifest.json中配置：  
 
 - HBuilderX 4.71 及以上版本  
-  可视化界面操作在 “iOS App配置” 的 “可选模块配置” -> “uni-location（定位）” 中勾选 “系统定位”：
+  可视化界面操作在 “iOS App配置” 的 “可选模块配置” -> “uni-location（定位）” 中勾选 “系统定位”：  
   ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/ios_location_system.png)
 
-  也可通过`源码视图`在 "app-ios" -> "distribute" -> "modules" -> "uni-location" 下添加 "system" 节点，如下示例：
+  也可通过`源码视图`在 "app-ios" -> "distribute" -> "modules" -> "uni-location" 下添加 "system" 节点，如下示例：  
   ```json
   {
     "app-ios": {
@@ -213,7 +212,7 @@ iOS 平台在 iPad 设备默认支持`多任务处理`，即支持悬浮窗口�
   ```
 
 - HBuilderX 4.71 以下版本  
-  需通过 manifest.json 的`源码视图`在 "app" -> "distribute" -> "modules" -> "uni-location" 下添加 "system" 节点，如下示例：
+  需通过 manifest.json 的`源码视图`在 "app" -> "distribute" -> "modules" -> "uni-location" 下添加 "system" 节点，如下示例：  
   ```json
   {
     "app": {
@@ -231,21 +230,21 @@ iOS 平台在 iPad 设备默认支持`多任务处理`，即支持悬浮窗口�
 
 #### 腾讯定位 @locationTencent
 
-使用 [腾讯位置服务](https://lbs.qq.com/) 的 “iOS定位SDK” 实现，使用前需申请Key。
+使用 [腾讯位置服务](https://lbs.qq.com/) 的 “iOS定位SDK” 实现，使用前需申请Key。  
 
-> 同时使用 [腾讯地图](#mapTencent) 时，要求使用相同的Key
+> 同时使用 [腾讯地图](#mapTencent) 时，要求使用相同的Key  
 
-使用此模块，需在manifest.json中配置：
+使用此模块，需在manifest.json中配置：  
 
 - HBuilderX 4.71 及以上版本  
-  可视化界面操作在 “iOS App配置” 的 “可选模块配置” -> “uni-location（定位）” 中勾选 “腾讯定位” 并配置 Key：
+  可视化界面操作在 “iOS App配置” 的 “可选模块配置” -> “uni-location（定位）” 中勾选 “腾讯定位” 并配置 Key：  
   ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/ios_location_tencent.png)
 
-  **配置参数**
-  + Key
-    [腾讯位置服务](https://lbs.qq.com/)后台申请的Key
+  **配置参数**  
+  + Key  
+    [腾讯位置服务](https://lbs.qq.com/)后台申请的Key  
 
-  也可通过`源码视图`在 "app-ios" -> "distribute" -> "modules" -> "uni-location" 下添加 "tencent" 节点，如下示例：
+  也可通过`源码视图`在 "app-ios" -> "distribute" -> "modules" -> "uni-location" 下添加 "tencent" 节点，如下示例：  
   ```json
   {
     "app-ios": {
@@ -263,7 +262,7 @@ iOS 平台在 iPad 设备默认支持`多任务处理`，即支持悬浮窗口�
   ```
 
 - HBuilderX 4.71 以下版本  
-  需通过 manifest.json 的`源码视图`在 "app" -> "distribute" -> "modules" -> "uni-location" 下添加 "tencent" 节点，如下示例：
+  需通过 manifest.json 的`源码视图`在 "app" -> "distribute" -> "modules" -> "uni-location" 下添加 "tencent" 节点，如下示例：  
   ```json
   {
     "app": {
@@ -278,7 +277,7 @@ iOS 平台在 iPad 设备默认支持`多任务处理`，即支持悬浮窗口�
   }
   ```
 
-  > HBuilderX 4.71 以下版本不支持在 manifest.json 中配置 `腾讯位置服务` 申请的 Key，需在项目根目录下添加 [Info.plist](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#infoplist) 文件，将 Key 配置到 TencentLBSAPIKey 节点中，如下示例：
+  > HBuilder 4.71 以下版本不支持在 manifest.json 中配置 `腾讯位置服务` 申请的 Key，需在项目根目录下添加 [Info.plist](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#infoplist) 文件，将 Key 配置到 TencentLBSAPIKey 节点中，如下示例：  
 
   ```xml
   <?xml version="1.0" encoding="UTF-8"?>
@@ -292,10 +291,10 @@ iOS 平台在 iPad 设备默认支持`多任务处理`，即支持悬浮窗口�
   ```
 
 
-#### 高精度定位
-应用需要使用高精度定位时还需配置 `NSLocationTemporaryUsageDescriptionDictionary` 的 `PurposeKey`，并说明高精度定位的原因。
+#### 高精度定位  
+应用需要使用高精度定位时还需配置 `NSLocationTemporaryUsageDescriptionDictionary` 的 `PurposeKey`，并说明高精度定位的原因。  
 
-需在项目根目录下添加 [Info.plist](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#infoplist) 文件，配置 NSLocationTemporaryUsageDescriptionDictionary 相关信息，如下示例：
+需在项目根目录下添加 [Info.plist](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#infoplist) 文件，配置 NSLocationTemporaryUsageDescriptionDictionary 相关信息，如下示例：  
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -317,25 +316,25 @@ iOS 平台在 iPad 设备默认支持`多任务处理`，即支持悬浮窗口�
 
 uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocation](../api/choose-location.md) API时依赖此模块。
 
-地图是商业服务，授权较贵，如需购买，请点击[获取优惠](https://ask.dcloud.net.cn/explore/map/)。
+地图是商业服务，授权较贵，如需购买，请点击[获取优惠](https://ask.dcloud.net.cn/explore/map/)。  
 
 #### 腾讯地图 @mapTencent
 
-使用 [腾讯位置服务](https://lbs.qq.com/) 的 “iOS地图SDK” 实现，使用前需申请Key，并在腾讯后台申请 Key 界面勾选“SDK”。
+使用 [腾讯位置服务](https://lbs.qq.com/) 的 “iOS地图SDK” 实现，使用前需申请Key，并在腾讯后台申请 Key 界面勾选“SDK”。  
 
-> 同时使用 [腾讯定位](#locationtencent) 时，要求使用相同的Key
+> 同时使用 [腾讯定位](#locationTencent) 时，要求使用相同的Key  
 
-使用此模块，需在manifest.json中配置：
+使用此模块，需在manifest.json中配置：  
 
 - HBuilderX 4.71 及以上版本  
-  可视化界面操作在 “iOS App配置” 的 “可选模块配置” -> “uni-map（地图）” 中勾选 “腾讯地图” 并配置 Key：
+  可视化界面操作在 “iOS App配置” 的 “可选模块配置” -> “uni-map（地图）” 中勾选 “腾讯地图” 并配置 Key：  
   ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/ios_map_tencent.png)
 
-  **配置参数**
-  + Key
-    [腾讯位置服务](https://lbs.qq.com/)后台申请的Key
+  **配置参数**  
+  + Key  
+    [腾讯位置服务](https://lbs.qq.com/)后台申请的Key  
 
-  也可通过`源码视图`在 "app-ios" -> "distribute" -> "modules" -> "uni-map" 下添加 "tencent" 节点配置，如下示例：
+  也可通过`源码视图`在 "app-ios" -> "distribute" -> "modules" -> "uni-map" 下添加 "tencent" 节点配置，如下示例：  
   ```json
   {
     "app-ios": {
@@ -353,7 +352,7 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
   ```
 
 - HBuilderX 4.71 以下版本  
-  需通过 manifest.json 的`源码视图`在 "app" -> "distribute" -> "modules" -> "uni-map" 下添加 "tencent" 节点，如下示例：
+  需通过 manifest.json 的`源码视图`在 "app" -> "distribute" -> "modules" -> "uni-map" 下添加 "tencent" 节点，如下示例：  
   ```json
   {
     "app": {
@@ -368,7 +367,7 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
   }
   ```
 
-  > HBuilderX 4.71 以下版本不支持在 manifest.json 中配置从 `腾讯位置服务` 申请的 Key，需在项目根目录下添加 [Info.plist](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#infoplist) 文件，将 Key 配置到 TencentLBSAPIKey 节点中，如下示例：
+  > HBuilder 4.71 以下版本不支持在 manifest.json 中配置从 `腾讯位置服务` 申请的 Key，需在项目根目录下添加 [Info.plist](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#infoplist) 文件，将 Key 配置到 TencentLBSAPIKey 节点中，如下示例：  
 
   ```xml
   <?xml version="1.0" encoding="UTF-8"?>
@@ -389,13 +388,13 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
 支持以下支付 provider ：
 
 #### 支付宝支付 @paymentAlipay
-使用 “App支付宝客户端SDK” 实现。使用此模块，需在manifest.json中配置：
+使用 “App支付宝客户端SDK” 实现。使用此模块，需在manifest.json中配置：  
 
 - HBuilderX 4.71 及以上版本  
-  可视化界面操作在 “iOS App配置” 的 “可选模块配置” -> “uni-payment（支付）” 中勾选 “支付宝支付”：
+  可视化界面操作在 “iOS App配置” 的 “可选模块配置” -> “uni-payment（支付）” 中勾选 “支付宝支付”：  
   ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/ios_payment_alipay.png)
 
-  也可通过`源码视图`在 "app-ios" -> "distribute" -> "modules" -> "uni-payment" 下添加 "alipay" 节点配置，如下示例：
+  也可通过`源码视图`在 "app-ios" -> "distribute" -> "modules" -> "uni-payment" 下添加 "alipay" 节点配置，如下示例：  
   ```json
   {
     "app-ios": {
@@ -411,7 +410,7 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
   ```
 
 - HBuilderX 4.71 以下版本  
-  需通过 manifest.json 的`源码视图`在 "app" -> "distribute" -> "modules" -> "uni-payment" 下添加 "alipay" 节点，如下示例：
+  需通过 manifest.json 的`源码视图`在 "app" -> "distribute" -> "modules" -> "uni-payment" 下添加 "alipay" 节点，如下示例：  
   ```json
   {
     "app": {
@@ -428,20 +427,20 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
 
 
 #### 微信支付 @paymentWeixin
-使用 “微信 Open SDK for iOS” 实现，使用前需到[微信开放平台](https://open.weixin.qq.com/)创建移动应用并在开发配置中正确配置`iOS应用`的 Bundle ID 和 Universal Links。
-在uni-app x项目中使用此模块，需在manifest.json中配置：
+使用 “微信 Open SDK for iOS” 实现，使用前需到[微信开放平台](https://open.weixin.qq.com/)创建移动应用并在开发配置中正确配置`iOS应用`的 Bundle ID 和 Universal Links。  
+在uni-app x项目中使用此模块，需在manifest.json中配置：  
 
 - HBuilderX 4.71 及以上版本  
-  可视化界面操作在 “iOS App配置” 的 “可选模块配置” -> “uni-payment（支付）” 中勾选 “微信支付” 并配置参数：
+  可视化界面操作在 “iOS App配置” 的 “可选模块配置” -> “uni-payment（支付）” 中勾选 “微信支付” 并配置参数：  
   ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/ios_payment_wxpay.png)
 
-  **配置参数**
-  + APPID
-    [微信开放平台](https://open.weixin.qq.com/)创建移动应用时获取的APPID，以wx开头的字符串
-  + Universal Links
-    [微信开放平台](https://open.weixin.qq.com/)应用的开发配置中设置的 Universal Links 值
+  **配置参数**  
+  + APPID  
+    [微信开放平台](https://open.weixin.qq.com/)创建移动应用时获取的APPID，以wx开头的字符串  
+  + Universal Links  
+    [微信开放平台](https://open.weixin.qq.com/)应用的开发配置中设置的 Universal Links 值  
 
-  也可通过`源码视图`在 "app-ios" -> "distribute" -> "modules" -> "uni-payment" 下添加 "wxpay" 节点并配置参数，如下示例：
+  也可通过`源码视图`在 "app-ios" -> "distribute" -> "modules" -> "uni-payment" 下添加 "wxpay" 节点并配置参数，如下示例：  
   ```json
   {
     "app-ios": {
@@ -460,7 +459,7 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
   ```
 
 - HBuilderX 4.71 以下版本  
-  需通过 manifest.json 的`源码视图`在 "app" -> "distribute" -> "modules" -> "uni-payment" 下添加 "wxpay" 节点并配置参数，如下示例：
+  需通过 manifest.json 的`源码视图`在 "app" -> "distribute" -> "modules" -> "uni-payment" 下添加 "wxpay" 节点并配置参数，如下示例：  
   ```json
   {
     "app": {
@@ -479,12 +478,12 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
   ```
 
 
-### uni-barcode-scanning（相机组件扫码）@modulesscan
-[camera相机](../component/camera.md)组件的`mode`属性，支持配置扫码模式（scanCode），需勾选此扫码模块。
+### uni-barcode-scanning（相机组件扫码）@modulesscan  
+[camera相机](../component/camera.md)组件的`mode`属性，支持配置扫码模式（scanCode），需勾选此扫码模块。  
 
-在uni-app x项目中使用此模块，需在manifest.json中配置。
+在uni-app x项目中使用此模块，需在manifest.json中配置。  
 
-可视化界面操作在 “iOS App配置” 的 “可选模块配置” 勾选 “uni-barcode-scanning（相机组件扫码）”模块：
+可视化界面操作在 “iOS App配置” 的 “可选模块配置” 勾选 “uni-barcode-scanning（相机组件扫码）”模块：  
 ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/ios_barcodescan.png)
 
 也可通过`源码视图`在 "app-ios" -> "distribute" -> "modules" 下添加 "uni-barcode-scanning" 节点，如下示例：
@@ -500,11 +499,11 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
 }
 ```
 
-**注意**
-- 配置或修改可选模块配置后需提交云端打包才能生效
+**注意**  
+- 配置或修改可选模块配置后需提交云端打包才能生效  
 
 
-### uni-share（分享） @modulesshare
+### uni-share（分享） @modulesshare  
 
 分享功能使用 [provider机制](../api/provider.md) 实现，uni-app x 项目中使用 [uni.share](../api/share.md) API时依赖此模块。
 
@@ -512,13 +511,13 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
 
 支持以下分享 provider ：
 
-#### 微信分享 @shareweixin
+#### 微信登录 @shareweixin  
 使用 “微信 Open SDK for iOS” 实现，使用前需到[微信开放平台](https://open.weixin.qq.com/)创建移动应用并在开发配置中正确配置`iOS应用`的 Bundle ID 和 Universal Links。
 
-在uni-app x项目中使用此模块，需在manifest.json中配置：
+在uni-app x项目中使用此模块，需在manifest.json中配置：  
 
-- HBuilderX 5.08 及以上版本  
-  需通过 manifest.json 的`源码视图`在 "app-ios" -> "distribute" -> "modules" -> "uni-share" 下添加 "weixin" 节点，如下示例：
+- HBuilderX 5.08 版本  
+  需通过 manifest.json 的`源码视图`在 "app-ios" -> "distribute" -> "modules" -> "uni-share" 下添加 "weixin" 节点，如下示例：  
   ```json
   {
     "app-ios": {
@@ -540,27 +539,27 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
 
 ## URL Schemes @urlSchemes
 
-> HBuilderX 4.71 及以上版本支持可视化配置 URL Schemes。
-> HBuilderX 4.71 以下版本未提供 URL Schemes 配置，需在 app 原生应用配置文件中进行设置，详情参考：[iOS平台 URL Schemes 配置](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#urlscheme)。
+> HBuilderX 4.71 及以上版本支持可视化配置URL Schemes。  
+> HBuilderX 4.71 以下版本未提供 url scheme 配置，需在 app 原生应用配置文件中进行设置，详情参考：[iOS平台 URL Scheme 配置](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#urlscheme)。  
 
-打开项目的 manifest.json 文件，在 “iOS App配置” 的 “URL Schemes” 中设置，如下示例配置 myapp 和 helloapp 两个值：
+打开项目的manifest.json文件，在 “iOS App配置” 的 “URL Schemes” 中设置，如下示例配置 myapp 和 helloapp 两个值：  
 ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/ios_urlschemes.png)
 
 **注意**
-- uni-app x 项目标准基座已配置 URL Scheme 值："uniappx"
-- 配置 URL Schemes 需提交云端打包才能生效
+- uni-app x 项目标准基座已配置 url scheme 值："uniappx"  
+- 配置 URL Schemese 需提交云端打包才能生效  
 
-标准基座可通过此网页体验 URL Scheme 启动 App：[https://uniappx.dcloud.net.cn/scheme.html](https://uniappx.dcloud.net.cn/scheme.html)
+标准基座可通过此网页体验 Url Scheme 启动 App：[https://uniappx.dcloud.net.cn/scheme.html](https://uniappx.dcloud.net.cn/scheme.html)
 
 
 ## 关联域（Associated Domains） @associatedDomains
 
 关联域（Associated Domains）是配置应用通用链接的前置条件，需将通用链接的域名加“applinks:”前缀配置为关联域。如应用需设置通用链接值“https://uniappx.dcloud.net.cn/ulinks”，其域名为“uniappx.dcloud.net.cn”，对应的关联域值则为“applinks:uniappx.dcloud.net.cn”。
 
-> HBuilderX 4.71 及以上版本支持可视化配置关联域（Associated Domains）。
-> HBuilderX 4.71 以下版本未提供 关联域（Associated Domains）配置，需在 app 原生应用配置文件中进行设置，详情参考：[iOS平台 Associated Domains 配置](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#domains)。
+> HBuilderX 4.71 及以上版本支持可视化配置关联域（Associated Domains）。  
+> HBuilderX 4.71 以下版本未提供 关联域（Associated Domains）配置，需在 app 原生应用配置文件中进行设置，详情参考：[iOS平台 Associated Domains 配置](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#domains)。  
 
-打开项目的 manifest.json 文件，在 “iOS App配置” 的 “关联域（Associated Domains）” 中设置，如下示例配置 applinks:uniappx.dcloud.net.cn 值：
+打开项目的manifest.json文件，在 “iOS App配置” 的 “关联域（Associated Domains）” 中设置，如下示例配置 applinks:uniappx.dcloud.net.cn 值：
 ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/ios_associatedDomains.png)
 
 完整通用链接配置参考：[iOS平台通用链接配置教程](https://uniapp.dcloud.net.cn/tutorial/app-ios-capabilities.html#%E9%80%9A%E7%94%A8%E9%93%BE%E6%8E%A5-universal-link)
@@ -572,125 +571,96 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
 
 ## 应用访问白名单 @urlschemewhitelist
 
-应用访问白名单用于声明当前应用需要检测或跳转的其他应用（或系统功能）的 URL Scheme。它的核心作用是解决 iOS 9 及以上版本的应用间通信限制，确保应用能安全地查询或调用其他应用的功能。
+应用访问白名单用于声明当前应用需要检测或跳转的其他应用（或系统功能）的 ​​URL Scheme​​。它的核心作用是 ​​解决 iOS 9 及以上版本的应用间通信限制​​，确保应用能安全地查询或调用其他应用的功能。
 
-> HBuilderX 4.71 及以上版本支持可视化配置应用访问白名单。
-> HBuilderX 4.71 以下版本未提供应用访问白名单配置，需在 app 原生应用配置文件 [Info.plist](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#infoplist) 中添加 `LSApplicationQueriesSchemes` 数据。
+> HBuilderX 4.71 及以上版本支持可视化配置应用访问白名单。  
+> HBuilderX 4.71 以下版本未提供应用访问白名单配置，需在 app 原生应用配置文件 [Info.plist](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#infoPlist) 中添加 `LSApplicationQueriesSchemes` 数据。  
 
-打开项目的 manifest.json 文件，在 “iOS App配置” 的 “应用访问白名单” 中设置，如下示例配置 qqmap（腾讯地图）、iosamap（高德地图）、baidumap（百度地图）三个值：
+打开项目的manifest.json文件，在 “iOS App配置” 的 “应用访问白名单” 中设置，如下示例配置 qqmap（腾讯地图）、iosamap（高德地图）、baidumap（百度地图）三个值：
 ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/ios_urlschemewhitelist.png)
 
 **注意**
-- 配置应用访问白名单需提交云端打包才能生效
+- 配置 应用访问白名单 需提交云端打包才能生效
 
 
 ## 后台运行能力 @backgroundModes
 
-声明应用在后台（App 进入后台或被挂起时）需要继续执行的任务类型。向系统申请特定的后台运行权限，确保应用在后台仍能完成必要操作（如播放音乐、获取位置更新等）。
+声明应用在后台（App 进入后台或被挂起时）需要继续执行的任务类型。​​向系统申请特定的后台运行权限​​，确保应用在后台仍能完成必要操作（如播放音乐、获取位置更新等）。
 
-> HBuilderX 4.71 及以上版本支持可视化配置后台运行能力。
-> HBuilderX 4.71 以下版本未提供后台运行能力配置，需在 app 原生应用配置文件 [Info.plist](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#infoplist) 中添加 `UIBackgroundModes` 数据。
+> HBuilderX 4.71 及以上版本支持可视化配置后台运行能力。  
+> HBuilderX 4.71 以下版本未提供后台运行能力配置，需在 app 原生应用配置文件 [Info.plist](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#infoPlist) 中添加 `UIBackgroundModes` 数据。  
 
-打开项目的 manifest.json 文件，在 “iOS App配置” 的 “后台运行能力” 中设置：
+打开项目的manifest.json文件，在 “iOS App配置” 的 “后台运行能力” 中设置：
 ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/ios_backgroundModes.png)
 
 **注意**
-- 配置后台运行能力需提交云端打包才能生效
+- 配置 后台运行能力 需提交云端打包才能生效
 
 
 ## 隐私信息访问的许可描述 @usageDescription
 
 `隐私信息访问的许可描述`向用户解释应用为何需要访问敏感数据或功能（如相机、相册、位置等），这些描述会在系统首次请求权限时展示给用户，直接影响用户是否授权。
 
-- 用户知情权：苹果强制要求应用在访问敏感数据前必须明确告知用户用途，遵循“隐私透明化”原则。
-- 权限弹窗内容：描述文本会直接显示在系统的权限请求弹窗中（如下图），帮助用户理解授权必要性。
-- 审核合规：未提供正确的描述文本会导致 App Store 审核被拒。
+- ​​用户知情权​​：苹果强制要求应用在访问敏感数据前必须明确告知用户用途，遵循“隐私透明化”原则。  
+- 权限弹窗内容​​：描述文本会直接显示在系统的权限请求弹窗中（如下图），帮助用户理解授权必要性。  
+- 审核合规​​：未提供正确的描述文本会导致 App Store 审核被拒。  
 
 ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/ios_usageCamera.png)
 
-> HBuilderX 4.71 及以上版本支持可视化配置隐私信息访问的许可描述。
-> HBuilderX 4.71 以下版本未提供隐私信息访问的许可描述配置，需在 app 原生应用配置文件中进行设置，详情参考：[iOS隐私信息访问描述配置](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#usagedescription)。
+> HBuilderX 4.71 及以上版本支持可视化配置隐私信息访问的许可描述。  
+> HBuilderX 4.71 以下版本未提供隐私信息访问的许可描述配置，需在 app 原生应用配置文件中进行设置，详情参考：[iOS隐私信息访问描述配置](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-ios.html#usagedescription)。  
 
-打开项目的 manifest.json 文件，在 “iOS App配置” 的 “隐私信息访问的许可描述” 中设置：
+打开项目的manifest.json文件，在 “iOS App配置” 的 “隐私信息访问的许可描述” 中设置：
 ![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/ios_usageDescription.png)
 
-使用[uni内置模块](./manifest-modules.md#utsmodules)时，云端打包会自动添加模块需要的隐私信息访问的许可描述。但自动添加的是通用描述，不一定适合应用的实际使用场景，建议根据应用实际用途配置准确的许可描述。
+使用[uni内置模块](./manifest-modules.md#utsmodules)时，云端打包回自动添加模块需要的隐私信息访问的许可描述，但许可描述信息是通用描述，不一定适合应用的实际使用场景描述，需根据应用的实际情况配置准确的许可描述。
 
-**注意**
-- 配置隐私信息访问的许可描述需提交云端打包才能生效
+**注意**  
+- 配置 隐私信息访问的许可描述 需提交云端打包才能生效
 
 
 ## CFBundleName @cfbundlename
 
-> HBuilderX 4.34 版本新增支持
+>HBuilder4.34版本新增支持  
 
-iOS 平台配置应用内部名称，默认值为“UniAppX”，最多支持 15 个字符，详细说明参考[苹果官方文档](https://developer.apple.com/documentation/bundleresources/information-property-list/cfbundlename)。
+iOS平台配置应用内部名称，默认值为“UniAppX”，最多支持15个字符，详细说明参考[苹果官方文档](https://developer.apple.com/documentation/bundleresources/information-property-list/cfbundlename)。  
 
-如需更改应用内部名称，可在项目 manifest.json 文件中配置：
-
-- HBuilderX 4.71 及以上版本  
-  需通过`源码视图`在 "app-ios" -> "distribute" 节点配置 CFBundleName，如下示例将应用内部名称修改为“MyApp”：
-  ```json
-  {
-    "app-ios": {
-      "distribute": {
+如需更改应用内部名称，可在项目 manifest.json 文件的 "app" -> "distribute" -> "ios" 节点配置 CFBundleName，如下示例将应用内部名称修改为“MyApp”：
+```json
+{
+  "app": {
+    "distribute": {
+      "ios": {
         "CFBundleName": "MyApp"
       }
     }
   }
-  ```
+}
+```
 
-- HBuilderX 4.71 以下版本  
-  需通过`源码视图`在 "app" -> "distribute" -> "ios" 节点配置 CFBundleName，如下示例将应用内部名称修改为“MyApp”：
-  ```json
-  {
-    "app": {
-      "distribute": {
-        "ios": {
-          "CFBundleName": "MyApp"
-        }
-      }
-    }
-  }
-  ```
-
-**注意**
+**注意**  
 - 配置 CFBundleName 需提交云端打包才能生效
 
 
 ## UIRequiresFullScreen @uirequiresfullscreen
 
-> HBuilderX 4.34 版本新增支持
+>HBuilder4.34版本新增支持
 
-iOS 平台配置 iPad 应用是否必须全屏运行，仅在应用支持 iPad 设备时有效。默认值为 `false`，表示允许与其他应用共享屏幕，支持分屏显示、悬浮窗口等 iPad 多任务处理；配置为 `true` 表示应用必须全屏运行，不与其他应用共享屏幕。更多信息参考[苹果官方文档](https://developer.apple.com/documentation/bundleresources/information-property-list/uirequiresfullscreen)。
+iOS平台配置应用在iPad设置是否能够与其他应用程序共享屏幕（分屏显示），需配置应用支持iPad设备时有效，默认值为true（可与其他应用程序共享屏幕）。更多信息参考[苹果官方文档](https://developer.apple.com/documentation/bundleresources/information-property-list/uirequiresfullscreen)。  
 
-如需更改此配置，可在项目 manifest.json 文件中配置：
-
-- HBuilderX 4.71 及以上版本  
-  需通过`源码视图`在 "app-ios" -> "distribute" 节点配置 UIRequiresFullScreen，如下示例配置应用必须全屏运行：
-  ```json
-  {
-    "app-ios": {
-      "distribute": {
-        "UIRequiresFullScreen": true
+如需更改此配置，可在项目 manifest.json 文件的 "app" -> "distribute" -> "ios" 节点配置 UIRequiresFullScreen，如下示例为配置应用不与其他应用共享屏幕：
+```json
+{
+  "app": {
+    "distribute": {
+      "ios": {
+        "UIRequiresFullScreen": false
       }
     }
   }
-  ```
+}
+```
 
-- HBuilderX 4.71 以下版本  
-  需通过`源码视图`在 "app" -> "distribute" -> "ios" 节点配置 UIRequiresFullScreen，如下示例配置应用必须全屏运行：
-  ```json
-  {
-    "app": {
-      "distribute": {
-        "ios": {
-          "UIRequiresFullScreen": true
-        }
-      }
-    }
-  }
-  ```
-
-**注意**
+**注意**  
 - 配置 UIRequiresFullScreen 需提交云端打包才能生效
+

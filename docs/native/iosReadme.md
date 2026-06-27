@@ -34,7 +34,7 @@ uni-app x专门对iOS上jscore和原生视图层的通信做了优化，可以�
 
 如果开发者不想使用js驱动，或者弱化js在应用中的占比，方案就是跳开vue、在uts插件中直接操作原生DOM。
 
-uni-app x的所有原生UI，除了使用vue框架构建，还可以使用DOM API构建。参考[UniELement文档](/api/dom/unielement.md)
+uni-app x的所有原生UI，除了使用vue框架构建，还可以使用DOM API构建。参考[UniELement文档](../dom/README.md)
 
 在uts插件中也可以使用DOM API，因为uts插件是编译为swift的，所以这样实现了纯原生的驱动。
 

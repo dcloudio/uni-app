@@ -26,12 +26,12 @@ uni-app x框架因为需要也会产生一些文件在CACHE目录中，比如拍
 	+ 应用内置沙盒目录（`uni.env.ANDROID_INTERNAL_SANDBOX_PATH`）：存放框架的网络缓存（如网络图片、视频、web-view的缓存）、storage。
 	+ 沙盒外目录
 
-**uts插件开发**
-在uts插件开发中调用系统 API 时可能需要平台相关的绝对路径，可以通过以下方式进行转换：
-- app-android平台
-  [UTSAndroid.convert2AbsFullPath](../uts/utsandroid.md#convert2absfullpath)
-- app-ios平台
-  [UTSiOS.convert2AbsFullPath](../uts/utsios.md#convert2absfullpath)
+**uts插件开发**  
+在uts插件开发中调用系统 API 时可能需要平台相关的绝对路径，可以通过以下方式进行转换：  
+- app-android平台  
+  [UTSAndroid.convert2AbsFullPath](../uts/utsandroid.md#convert2absfullpath)  
+- app-ios平台  
+  [UTSiOS.convert2AbsFullPath](../uts/utsios.md#convert2absfullpath)  
 
 ## 代码包文件@package
 
@@ -73,9 +73,9 @@ fileManager.copyFile({
 
 > 注意：代码包文件只读，无法动态修改或删除。修改代码包文件一般会copy到沙盒目录后再修改。
 
-### 真机运行时代码包文件目录 @packageDebug
+### 真机运行时代码包文件目录 @packageDebug  
 
-**注意：真机运行时代码包文件目录有特殊处理**
+**注意：真机运行时代码包文件目录有特殊处理**  
 
 Android/iOS端真机运行期间，为了实现动态性，将代码包文件同步到`应用沙盒目录`下的特定目录：
 - Android平台
@@ -190,8 +190,8 @@ App端和小程序提供了用户文件目录，用于开发者在应用运行�
 - Android平台
 	应用专属存储空间的外置存储空间根目录下的files目录，通常为“/sdcard/Android/data/%应用包名%/files/”
 - iOS平台
-	应用沙盒目录下的Documents目录
-	此目录下保留 uni-app-x 子目录用于真机运行时使用，避免业务代码操作此目录，[详情](#packagedebug)
+	应用沙盒目录下的Documents目录  
+	此目录下保留 uni-app-x 子目录用于真机运行时使用，避免业务代码操作此目录，[详情](#packageDebug)  
 
 ### 内置应用沙盒目录@internalsandbox
 
@@ -212,13 +212,13 @@ FileSystemManager API暂不支持访问沙盒外目录。
 
 如还想访问以上API不支持的目录，需开发uts插件。
 
-## 常见问题
-### 文件路径中字母大小写敏感问题@casesensitive
-- Android平台
-	+ 本地磁盘文件路径中字母大小写不敏感，真机运行时会将应用资源同步到设备的SD卡中，此时路径中字母大小写不敏感
-	+ 代码包文件中的文件打包后到apk中后，由于Android系统的要求是大小写敏感，因此发布为后应用资源路径中的字母大小写敏感
-- iOS平台
-	+ iOS真机文件路径中字母大小写敏感
-	+ iOS模拟器文件路径中字母大小写不敏感
+## 常见问题  
+### 文件路径中字母大小写敏感问题@casesensitive  
+- Android平台  
+	+ 本地磁盘文件路径中字母大小写不敏感，真机运行时会将应用资源同步到设备的SD卡中，此时路径中字母大小写不敏感  
+	+ 代码包文件中的文件打包后到apk中后，由于Android系统的要求是大小写敏感，因此发布为后应用资源路径中的字母大小写敏感  
+- iOS平台  
+	+ iOS真机文件路径中字母大小写敏感  
+	+ iOS模拟器文件路径中字母大小写不敏感  
 
-> 为了有更好的兼容性，建议处理文件路径时按大小写敏感原则处理
+> 为了有更好的兼容性，建议处理文件路径时按大小写敏感原则处理  

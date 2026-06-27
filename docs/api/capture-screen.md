@@ -248,7 +248,7 @@ onUnmounted(() => {
 
 
 ## tips
-- 本文的截屏指手机自带的截屏事件的监听和取消监听，由用户操作手机按键触发。App平台如需通过代码对view截屏，另见API [takeSnapshot](./dom/unielement.md#takesnapshot)
+- 本文的截屏指手机自带的截屏事件的监听和取消监听，由用户操作手机按键触发。App平台如需通过代码对view截屏，另见API [takeSnapshot](../dom/unielement.md#takesnapshot)
 - iOS平台该API在iOS 13.0及以上系统支持,在iOS 13.0以下系统调用该API会返回12001:system not support的错误。
 - 因iOS 15.1系统bug，在该系统上调用此API会返回12010:system internal error的错误。
 - Android平台在某些页面暂不支持（如：图片选择等页面以及App原生插件内部原生页面）。

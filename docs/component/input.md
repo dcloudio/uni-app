@@ -249,7 +249,7 @@ UniInputConfirmEvent -- Extends --> UniEvent
 
 #### 获取原生view对象
 
-为增强uni-app x组件的开放性，从 `HBuilderX 4.25` 起，UniElement对象提供了 [getAndroidView](../api/dom/unielement.md#getandroidview) 和 [getIOSView](../api/dom/unielement.md#getiosview) 方法。
+为增强uni-app x组件的开放性，从 `HBuilderX 4.25` 起，UniElement对象提供了 [getAndroidView](../dom/unielement.md#getandroidview) 和 [getIOSView](../dom/unielement.md#getiosview) 方法。
 
 该方法可以获取到 textarea 组件对应的原生对象，即Android的`AppCompatEditText`对象、iOS的`UITextField`对象。
 
@@ -257,7 +257,7 @@ UniInputConfirmEvent -- Extends --> UniEvent
 
 **Android 平台：**
 
-获取input组件对应的UniElement对象，通过UniElement对象的[getAndroidView](../api/dom/unielement.md#getandroidview-2)方法获取组件原生AppCompatEditText对象
+获取input组件对应的UniElement对象，通过UniElement对象的[getAndroidView](../dom/unielement.md#getandroidview-2)方法获取组件原生AppCompatEditText对象
 
 ```uts
 //导入安卓原生AppCompatEditText对象
@@ -274,7 +274,7 @@ if(inputElement != null) {
 
 **iOS 平台：**
 
-获取input组件对应的UniElement对象，通过UniElement对象的[getIOSView](../api/dom/unielement.md#getiosview)方法获取组件原生UITextField对象
+获取input组件对应的UniElement对象，通过UniElement对象的[getIOSView](../dom/unielement.md#getiosview)方法获取组件原生UITextField对象
 
 ```uts
 //通过 input 组件定义的 id 属性值，获取 input 标签的 UniElement 对象

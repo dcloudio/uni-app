@@ -30,7 +30,7 @@ DOM在Web、Android、iOS、鸿蒙、微信小程序均存在。微信小程序�
 
 	Android和iOS的原生view，有一些底层的高性能绘制能力，这些API的调用，需要先获取到 UniElement 对象，然后再调用其方法。
 
-在[性能](../../performance.md)章节，对这2个场景有详细的阐述。
+在[性能](../performance.md)章节，对这2个场景有详细的阐述。
 
 
 ## DOM元素对象@getDomNode
@@ -39,7 +39,7 @@ DOM在Web、Android、iOS、鸿蒙、微信小程序均存在。微信小程序�
 
 ### 通过uni.getElementById获取DOM元素
 
-app-uvue 页面中可以为页面元素节点设置 id 属性，然后通过 [uni.getElementById](../get-element-by-id.md#getelementbyid) 获取 DOM 元素对象。
+app-uvue 页面中可以为页面元素节点设置 id 属性，然后通过 [uni.getElementById](../api/get-element.md#getelementbyid) 获取 DOM 元素对象。
 
 但注意这个方法只能获取栈顶页面的element。如需绑定调用的页面，需使用下方的[this.$refs](#refs)
 
@@ -282,8 +282,8 @@ DrawableContext 可通过`view`组件节点对象（UniElement）的`getDrawable
 :::
 
 
-**注意**
-`DrawableContext` 对象需等元素渲染到页面后才能正常使用，要在页面 `onReady` 生命周期后获取。
+**注意**  
+`DrawableContext` 对象需等元素渲染到页面后才能正常使用，要在页面 `onReady` 生命周期后获取。  
 
 ### 绘制内容
 
@@ -517,4 +517,4 @@ DrawableContext 在调用 API 之后不会主动更新到画布上，需要主�
 
 ## 注意事项
 
-由于排版和渲染是异步的，在修改 DOM 后，立刻使用 DOM 的同步接口获取 DOM 状态可能获取到的是排版之前的，如果需要及时准确的获取到排版之后的 DOM 状态需要使用 [uni.createSelectorQuery](../create-selector-query.md) 。
+由于排版和渲染是异步的，在修改 DOM 后，立刻使用 DOM 的同步接口获取 DOM 状态可能获取到的是排版之前的，如果需要及时准确的获取到排版之后的 DOM 状态需要使用 [uni.createSelectorQuery](../api/nodes-info.md) 。

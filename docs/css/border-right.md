@@ -35,8 +35,7 @@ border-right: <line-width> || <line-style> || <color>;
 
 
 
-### 默认值 @default-value 
- `0`
+
 
 
 

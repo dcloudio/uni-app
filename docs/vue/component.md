@@ -488,7 +488,7 @@ app.config.globalProperties.globalPropertiesReactiveObj = reactive({
 
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <!-- #ifdef APP -->
   <scroll-view style="flex: 1;">
     <!-- #endif -->
     <view class="uni-padding-wrap">
@@ -535,7 +535,7 @@ app.config.globalProperties.globalPropertiesReactiveObj = reactive({
         update globalProperties
       </button>
     </view>
-    <!-- #ifdef APP && !VUE3-VAPOR -->
+    <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>

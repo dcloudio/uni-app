@@ -19,7 +19,7 @@ createSelectorQuery是小程序的API，因小程序未开放DOM，且视图层�
 
 大多数组件的属性和样式操作，是通过绑定vue的响应式变量data来实现的。一般不使用本API。
 
-本API的主要用途是小程序下获取元素计算后的样式。如果您的应用不适配小程序，那么在Web和App上有更强大的[UniElement](./dom/unielement.md)。
+本API的主要用途是小程序下获取元素计算后的样式。如果您的应用不适配小程序，那么在Web和App上有更强大的[UniElement](../dom/README.md)。
 
 小程序下有时用本API获取部分组件的上下文context，但这个写法不跨平台。跨平台的获取组件context，应该使用uni.createXXContext()。
 

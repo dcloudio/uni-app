@@ -28,10 +28,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| filePath | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 图片文件路径，可以是临时文件路径也可以是永久文件路径，不支持网络图片路径 |
-| success | (callback: [SaveImageToPhotosAlbumSuccess](#saveimagetophotosalbumsuccess-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 接口调用成功的回调函数 |
-| fail | (callback: [SaveImageToPhotosAlbumFail](#saveimagetophotosalbumfail-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| filePath | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 图片文件路径，可以是临时文件路径也可以是永久文件路径，不支持网络图片路径 |
+| success | (callback: [SaveImageToPhotosAlbumSuccess](#saveimagetophotosalbumsuccess-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 接口调用成功的回调函数 |
+| fail | (callback: [SaveImageToPhotosAlbumFail](#saveimagetophotosalbumfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### SaveImageToPhotosAlbumSuccess 的属性值 @saveimagetophotosalbumsuccess-values 
 

@@ -19,7 +19,7 @@ uni.createCanvasContextAsync 方法可以异步获取页面上指定id的canvas�
 
 获取到CanvasContext对象后，还需通过getContext("2d")方法获取[CanvasRenderingContext2D](./canvasrenderingcontext2d.md)对象。
 
-如果不考虑小程序，那么Web和App其实支持通过uni.getElementById方式同步获取[UniCanvasElement](./dom/unicanvaselement.md)。
+如果不考虑小程序，那么Web和App其实支持通过uni.getElementById方式同步获取[UniCanvasElement](../dom/unicanvaselement.md)。
 
 参考文档：
 - [canvas组件文档](../component/canvas.md)

@@ -30,9 +30,9 @@ _注：App平台其实早期版本也可以使用_
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | (result: [OpenAppAuthorizeSettingSuccess](#openappauthorizesettingsuccess-values)) => void | 否 | null | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; iOS uni-app x UTS 插件: 4.51; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: [OpenAppAuthorizeSettingFail](#openappauthorizesettingfail-values)) => void | 否 | null | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; iOS uni-app x UTS 插件: 4.51; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: [OpenAppAuthorizeSettingComplete](#openappauthorizesettingcomplete-values)) => void | 否 | null | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; iOS uni-app x UTS 插件: 4.51; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (result: [OpenAppAuthorizeSettingSuccess](#openappauthorizesettingsuccess-values)) => void | 否 | null | Web: x; 微信小程序:  ; Android: 4.51; iOS: 4.51; iOS uni-app x UTS 插件: 4.51; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [OpenAppAuthorizeSettingFail](#openappauthorizesettingfail-values)) => void | 否 | null | Web: x; 微信小程序:  ; Android: 4.51; iOS: 4.51; iOS uni-app x UTS 插件: 4.51; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: [OpenAppAuthorizeSettingComplete](#openappauthorizesettingcomplete-values)) => void | 否 | null | Web: x; 微信小程序:  ; Android: 4.51; iOS: 4.51; iOS uni-app x UTS 插件: 4.51; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### OpenAppAuthorizeSettingSuccess 的属性值 @openappauthorizesettingsuccess-values 
 

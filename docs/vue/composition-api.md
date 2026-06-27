@@ -254,7 +254,7 @@ defineExpose({
 
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <!-- #ifdef APP -->
   <scroll-view style="flex: 1; padding-bottom: 20px">
     <!-- #endif -->
     <view class="page">
@@ -326,7 +326,7 @@ defineExpose({
         <text id="watch-count-obj-num-res">{{ watchCountAndObjNumRes }}</text>
       </view>
     </view>
-    <!-- #ifdef APP && !VUE3-VAPOR -->
+    <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -586,7 +586,7 @@ const stateText = computed(() => {
 
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <!-- #ifdef APP -->
   <scroll-view style="flex: 1;">
     <!-- #endif -->
 		<view class="page">
@@ -810,7 +810,7 @@ const stateText = computed(() => {
       <button class='mb-10' id="update-json-obj-with-arr-list-0-value-btn" @click="updateJsonObjWithArrList0Value()">update jsonObjWithArr.data.list[0].value</button>
       <button class='mb-10' id="push-json-obj-with-arr-list-btn" @click="pushJsonObjWithArrList()">push to jsonObjWithArr.data.list</button>
     </view>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <!-- #ifdef APP -->
 	</scroll-view>
   <!-- #endif -->
 </template>
@@ -1261,7 +1261,7 @@ const updateReadonlyData = () => {
 
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <!-- #ifdef APP -->
   <scroll-view style="flex: 1; padding-bottom: 20px">
     <!-- #endif -->
     <view class="page">
@@ -1333,7 +1333,7 @@ const updateReadonlyData = () => {
         <text id="watch-count-obj-num-res">{{ watchCountAndObjNumRes }}</text>
       </view>
     </view>
-    <!-- #ifdef APP && !VUE3-VAPOR -->
+    <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -1474,7 +1474,7 @@ const updateReadonlyData = () => {
 
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <!-- #ifdef APP -->
   <scroll-view style="flex: 1; padding-bottom: 20px">
     <!-- #endif -->
     <view class="page">
@@ -1542,7 +1542,7 @@ const updateReadonlyData = () => {
         <text id="watch-count-obj-num-res">{{ watchCountAndObjNumRes }}</text>
       </view>
     </view>
-    <!-- #ifdef APP && !VUE3-VAPOR -->
+    <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -1662,7 +1662,7 @@ const updateReadonlyData = () => {
 
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <!-- #ifdef APP -->
   <scroll-view style="flex: 1; padding-bottom: 20px">
     <!-- #endif -->
     <view class="page">
@@ -1730,7 +1730,7 @@ const updateReadonlyData = () => {
         <text id="watch-count-obj-num-res">{{ watchCountAndObjNumRes }}</text>
       </view>
     </view>
-    <!-- #ifdef APP && !VUE3-VAPOR -->
+    <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -2976,7 +2976,7 @@ onReady(() => {
 
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <!-- #ifdef APP -->
   <scroll-view style="flex: 1" :bounces="false">
     <!-- #endif -->
     <view class="page container">
@@ -3024,7 +3024,7 @@ onReady(() => {
         跳转 onBackPress 示例
       </button>
     </view>
-    <!-- #ifdef APP && !VUE3-VAPOR -->
+    <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -3188,8 +3188,8 @@ defineExpose({
 #### onMounted、onUnmounted 使用注意事项 @mounted-unmounted-tips
 
 目前 App平台 onMounted、onUnmounted 可以保证当前数据已经同步到 DOM，但是由于排版和渲染是异步的，所以 onMounted、onUnmounted 不能保证 DOM 排版以及渲染完毕。\
-如果需要获取排版后的节点信息推荐使用 [uni.createSelectorQuery](../api/nodes-info.md) 不推荐直接使用 [Element](../api/dom/unielement.md) 对象。\
-在修改 DOM 后，立刻使用 [Element](../api/dom/unielement.md) 对象的同步接口获取 DOM 状态可能获取到的是排版之前的，而 [uni.createSelectorQuery](../api/nodes-info.md) 可以保障获取到的节点信息是排版之后的。
+如果需要获取排版后的节点信息推荐使用 [uni.createSelectorQuery](../api/nodes-info.md) 不推荐直接使用 [Element](../dom/unielement.md) 对象。\
+在修改 DOM 后，立刻使用 [Element](../dom/unielement.md) 对象的同步接口获取 DOM 状态可能获取到的是排版之前的，而 [uni.createSelectorQuery](../api/nodes-info.md) 可以保障获取到的节点信息是排版之后的。
 
 注：页面的 onReady 生命周期可以获取到排版后的节点信息
 
@@ -3400,7 +3400,7 @@ const updateTitle = () => {
 
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
     <!-- #endif -->
     <view class="page">
@@ -3450,7 +3450,7 @@ const updateTitle = () => {
         <text class="mt-10" id="default-slot-in-foo">default slot in Foo</text>
       </Foo>
     </view>
-    <!-- #ifdef APP && !VUE3-VAPOR -->
+    <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -3517,7 +3517,7 @@ export default {
 | defineSlots() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 | useSlots() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 | useAttrs() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
-| useRecycleState() | Web: x; 微信小程序: x; Android: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 |
+| useRecycleState() | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x; HarmonyOS(Vapor): 5.0 |
 
 
 ### defineProps()

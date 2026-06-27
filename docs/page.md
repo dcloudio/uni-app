@@ -578,7 +578,7 @@ onShow和onHide是成对出现的。
 
 ```vue
 <template>
-  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <!-- #ifdef APP -->
   <scroll-view style="flex: 1" :bounces="false">
     <!-- #endif -->
     <view class="page container">
@@ -626,7 +626,7 @@ onShow和onHide是成对出现的。
         跳转 onBackPress 示例
       </button>
     </view>
-    <!-- #ifdef APP && !VUE3-VAPOR -->
+    <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>

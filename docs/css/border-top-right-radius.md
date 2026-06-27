@@ -33,8 +33,7 @@ border-top-right-radius: <length-percentage>{1,2};
 
 
 
-### 默认值 @default-value 
- `0`
+
 
 
 

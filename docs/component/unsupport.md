@@ -8,8 +8,8 @@ uni-app x在App端还有一批组件未与uni-app js引擎版拉齐。有的在�
 - movable-view：没有ui层和逻辑层的通信阻塞，开发者可自己写代码拖动view。hello uni-app x中有[示例代码](https://gitcode.com/dcloud/hello-uni-app-x/blob/dev/pages/component/general-event/touch-event.uvue)
 - picker：可改用[picker-view](picker-view.md)。在主流的uni-app x三方ui库中，基本都有封装好的弹出组件。uni ui的[uni-data-picker](https://ext.dcloud.net.cn/plugin?id=3796)
 - canvas：App平台目前没有完整的canvas组件，但
-	* 每个view，都提供了[draw API](../api/dom/drawablecontext.md)，可以高性能的画各种形状、写字。这组API与web的canvas api接近但不同。
-	* 截图或海报需求，无需像webview那样通过canvas中转，app平台view直接提供截图API，[takesnapshot](../api/dom/unielement.md#takesnapshot)。
+	* 每个view，都提供了[draw API](../dom/drawablecontext.md)，可以高性能的画各种形状、写字。这组API与web的canvas api接近但不同。
+	* 截图或海报需求，无需像webview那样通过canvas中转，app平台view直接提供截图API，[takesnapshot](../dom/unielement.md#takesnapshot)。
 	* 使用web-view中的canvas也是一种方案，uvue页面里的web-view组件可以和uvue页面里的uts代码双向通信。
 	* 二维码展示需求：[见插件市场](https://ext.dcloud.net.cn/search?q=%E4%BA%8C%E7%BB%B4%E7%A0%81&uni-appx=1)
 	* 图表需求：[插件市场搜echart](https://ext.dcloud.net.cn/search?q=chart&orderBy=Relevance&uni-appx=1)、[插件市场搜F2](https://ext.dcloud.net.cn/search?q=f2&orderBy=Relevance&uni-appx=1)

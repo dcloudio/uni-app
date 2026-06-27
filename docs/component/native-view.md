@@ -55,25 +55,25 @@ UniNativeViewInitEvent -- Extends --> UniCustomEvent&ltUniNativeViewInitEventDet
 
 #### 获取 UniNativeViewElement
 
-`native-view`提供 @init 监听元素初始化，通过事件[UniNativeViewInitEvent](#uninativeviewinitevent)的 detail.element 获取到 [UniNativeViewElement](../api/dom/uninativeviewelement.md)。
+`native-view`提供 @init 监听元素初始化，通过事件[UniNativeViewInitEvent](#uninativeviewinitevent)的 detail.element 获取到 [UniNativeViewElement](../dom/uninativeviewelement.md)。
 
 #### UniNativeViewElement绑定原生view
 
 **Android 平台：**
 
-[UniNativeViewElement](../api/dom/uninativeviewelement.md) 提供[bindAndroidView](../api/dom/uninativeviewelement.md#bindandroidview)函数与`native-view`绑定android平台原生view
+[UniNativeViewElement](../dom/uninativeviewelement.md) 提供[bindAndroidView](../dom/uninativeviewelement.md#bindandroidview)函数与`native-view`绑定android平台原生view
 
 **IOS 平台：**
 
-[UniNativeViewElement](../api/dom/uninativeviewelement.md) 提供[bindIOSView](../api/dom/uninativeviewelement.md#bindiosview)函数与`native-view`绑定ios平台原生view
+[UniNativeViewElement](../dom/uninativeviewelement.md) 提供[bindIOSView](../dom/uninativeviewelement.md#bindiosview)函数与`native-view`绑定ios平台原生view
 
 **Harmony 平台：**
 
-[UniNativeViewElement](../api/dom/uninativeviewelement.md) 提供 [bindHarmonyWrappedBuilder](../api/dom/uninativeviewelement.md#bindharmonywrappedbuilder) / [bindHarmonyFrameNode](../api/dom/uninativeviewelement.md#bindharmonyframenode) 函数与 `native-view` 绑定。
+[UniNativeViewElement](../dom/uninativeviewelement.md) 提供 [bindHarmonyWrappedBuilder](../dom/uninativeviewelement.md#bindharmonywrappedbuilder) / [bindHarmonyFrameNode](../dom/uninativeviewelement.md#bindharmonyframenode) 函数与 `native-view` 绑定。
 
 #### 分发自定义事件
 
-[UniNativeViewElement](../api/dom/uninativeviewelement.md) 提供了dispatchEvent分发event事件API，注意：事件数据类型暂时只支持[UniNativeViewEvent](./common.md#uninativeviewevent)。
+[UniNativeViewElement](../dom/uninativeviewelement.md) 提供了dispatchEvent分发event事件API，注意：事件数据类型暂时只支持[UniNativeViewEvent](./common.md#uninativeviewevent)。
 
 具体示例请参考：[native-button](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/uni_modules/native-button/components/native-button/native-button.uvue)插件，该插件使用`native-view`封装原生button实现的native-button。
 
