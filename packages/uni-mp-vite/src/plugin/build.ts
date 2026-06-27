@@ -195,6 +195,7 @@ function parseRollupInput(inputDir: string, platform: UniApp.PLATFORM) {
     initIndependentSubPackages([])
     return inputOptions
   }
+  // 独立分包需要原始 pages.json；normalize 会把 subPackages 合并进 pages。
   const independentPackages = parseIndependentSubPackages(
     parsePagesJson(inputDir, platform, false),
     platform
