@@ -19,9 +19,9 @@ import type { UniMiniProgramPluginOptions } from '../plugin'
 import {
   APP_FACTORY_PREFIX,
   INDEPENDENT_MAIN_PREFIX,
+  INDEPENDENT_PAGES_PREFIX,
   INDEPENDENT_PAGE_PARAM,
   INDEPENDENT_PAGE_PREFIX,
-  INDEPENDENT_PAGES_PREFIX,
   INDEPENDENT_ROOT_PARAM,
   INDEPENDENT_SUBPACKAGE_PLUGIN_NAME,
   UNI_MP_RUNTIME_ID,
@@ -743,14 +743,7 @@ import ${JSON.stringify(
     formatIndependentVirtualId(INDEPENDENT_PAGES_PREFIX, root)
   )}
 
-const __uniSubpackageRoot = ${JSON.stringify(root)}
-const __uniGlobal = typeof globalThis !== 'undefined' ? globalThis : global
-try {
-  __uniGlobal.__uniSubpackageRoot = __uniSubpackageRoot
-  createUserApp().app.mount('#app')
-} finally {
-  __uniGlobal.__uniSubpackageRoot = ''
-}
+createUserApp().app.mount('#app', ${JSON.stringify(root)})
 `
 }
 

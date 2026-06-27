@@ -9,15 +9,7 @@ type Subpackages = Record<string, SubpackageApp>
 export function resolveSubpackageRoot(root?: string) {
   return (
     normalizeSubpackageRoot(root) ||
-    getRuntimeSubpackageRoot() ||
     normalizeSubpackageRoot(process.env.UNI_SUBPACKAGE)
-  )
-}
-
-export function getRuntimeSubpackageRoot() {
-  return normalizeSubpackageRoot(
-    getRuntimeGlobalObject()?.__uniSubpackageRoot ||
-      (__GLOBAL__ as any).__uniSubpackageRoot
   )
 }
 
@@ -79,15 +71,6 @@ function getCurrentPageRoute() {
       }
     | undefined
   return page?.route || page?.__route__ || ''
-}
-
-function getRuntimeGlobalObject() {
-  if (typeof globalThis !== 'undefined') {
-    return globalThis as Record<string, any>
-  }
-  if (typeof global !== 'undefined') {
-    return global as Record<string, any>
-  }
 }
 
 function normalizeRoute(route: string | undefined) {

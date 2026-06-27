@@ -10,9 +10,16 @@ export default {
     app.config.globalProperties.pruneComponentPropsCache =
       pruneComponentPropsCache
     const oldMount = app.mount
-    app.mount = function mount(rootContainer: any) {
-      const instance = oldMount.call(app, rootContainer)
-      const createApp = getCreateApp()
+    ;(app.mount as any) = function mount(
+      rootContainer: any,
+      subpackageRoot?: string
+    ) {
+      const hasSubpackageRoot = typeof subpackageRoot === 'string'
+      const root = hasSubpackageRoot ? subpackageRoot : undefined
+      const instance = hasSubpackageRoot
+        ? oldMount.call(app, rootContainer)
+        : oldMount.apply(app, arguments as any)
+      const createApp = getCreateApp(root)
       if (createApp) {
         createApp(instance)
       } else {
@@ -27,17 +34,16 @@ export default {
   },
 }
 
-function getCreateApp() {
-  const subpackageRoot = getSubpackageRoot()
-  const method =
-    subpackageRoot || process.env.UNI_SUBPACKAGE
-      ? 'createSubpackageApp'
-      : process.env.UNI_MP_PLUGIN
-      ? 'createPluginApp'
-      : 'createApp'
+function getCreateApp(subpackageRoot?: string) {
+  const root = normalizeSubpackageRoot(subpackageRoot)
+  const method = process.env.UNI_MP_PLUGIN
+    ? 'createPluginApp'
+    : root || process.env.UNI_SUBPACKAGE
+    ? 'createSubpackageApp'
+    : 'createApp'
   const createApp = getGlobalCreateApp(method)
-  if (createApp && subpackageRoot && method === 'createSubpackageApp') {
-    return (instance: any) => createApp(instance, subpackageRoot)
+  if (createApp && root && method === 'createSubpackageApp') {
+    return (instance: any) => createApp(instance, root)
   }
   return createApp
 }
@@ -53,28 +59,6 @@ function getGlobalCreateApp(method: string) {
     // 支付宝小程序开启globalObjectMode配置后才会有global
     // @ts-expect-error
     return (my as any)[method]
-  }
-}
-
-function getSubpackageRoot() {
-  if (typeof globalThis !== 'undefined') {
-    const root = normalizeSubpackageRoot(
-      (globalThis as any).__uniSubpackageRoot
-    )
-    if (root) {
-      return root
-    }
-  }
-  if (typeof global !== 'undefined') {
-    const root = normalizeSubpackageRoot((global as any).__uniSubpackageRoot)
-    if (root) {
-      return root
-    }
-  }
-  // @ts-expect-error
-  if (typeof my !== 'undefined') {
-    // @ts-expect-error
-    return normalizeSubpackageRoot((my as any).__uniSubpackageRoot)
   }
 }
 
