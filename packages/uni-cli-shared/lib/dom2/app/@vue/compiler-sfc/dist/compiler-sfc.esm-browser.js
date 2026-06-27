@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-beta.16
+  * @vue/compiler-sfc v3.6.0-beta.17
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -25130,6 +25130,7 @@ function getBlockShape(block) {
 //#endregion
 //#region packages/compiler-vapor/src/transform.ts
 const generatedVarRE = /^[nxr](\d+)$/;
+const childContextInfoCache = /* @__PURE__ */ new WeakMap();
 var TransformContext = class TransformContext {
 	constructor(ir, node, options = {}) {
 		this.ir = ir;
@@ -25155,6 +25156,7 @@ var TransformContext = class TransformContext {
 		this.operationIndex = this.block.operation.length;
 		this.isLastEffectiveChild = true;
 		this.isOnRightmostPath = true;
+		this.isSingleRoot = false;
 		this.templateCloseTags = void 0;
 		this.templateCloseBlocks = false;
 		this.globalId = 0;
@@ -25288,8 +25290,10 @@ var TransformContext = class TransformContext {
 	create(node, index) {
 		let effectiveParent = this;
 		while (effectiveParent && effectiveParent.node.type === 1 && effectiveParent.node.tagType === 3) effectiveParent = effectiveParent.parent;
-		const isLastEffectiveChild = this.isEffectivelyLastChild(index);
+		const childInfo = this.getChildContextInfo();
+		const isLastEffectiveChild = childInfo.isLastEffectiveChild[index];
 		const isOnRightmostPath = this.isOnRightmostPath && isLastEffectiveChild;
+		const isSingleRoot = this.isSingleRootChild(childInfo);
 		return Object.assign(Object.create(TransformContext.prototype), this, {
 			node,
 			parent: this,
@@ -25304,6 +25308,7 @@ var TransformContext = class TransformContext {
 			effectiveParent,
 			isLastEffectiveChild,
 			isOnRightmostPath,
+			isSingleRoot,
 			templateCloseTags: this.templateCloseTags,
 			templateCloseBlocks: this.templateCloseBlocks
 		});
@@ -25318,12 +25323,59 @@ var TransformContext = class TransformContext {
 		if (operation && isBlockOperation(operation) && operation.operationIndex !== void 0 && operation.operationIndex >= index) operation.operationIndex += offset;
 		for (const child of dynamic.children) this.shiftOperationBoundaries(index, offset, child);
 	}
-	isEffectivelyLastChild(index) {
-		const children = this.node.children;
-		if (!children) return true;
-		return children.every((c, i) => i <= index || c.type === 1 && c.tagType === 1);
+	getChildContextInfo() {
+		const node = this.node;
+		if (node.type !== 0 && node.type !== 1) return {
+			node,
+			hasSingleRootChild: true,
+			isLastEffectiveChild: []
+		};
+		const cached = childContextInfoCache.get(this);
+		if (cached && cached.node === node) return cached;
+		const { children } = node;
+		const isLastEffectiveChild = new Array(children.length);
+		let hasFollowingEffectiveChild = false;
+		for (let i = children.length - 1; i >= 0; i--) {
+			isLastEffectiveChild[i] = !hasFollowingEffectiveChild;
+			if (!isComponentChild(children[i])) hasFollowingEffectiveChild = true;
+		}
+		const childInfo = {
+			node,
+			hasSingleRootChild: hasSingleRootChild(children),
+			isLastEffectiveChild
+		};
+		childContextInfoCache.set(this, childInfo);
+		return childInfo;
+	}
+	isSingleRootChild(childInfo) {
+		if (this.inVFor || !childInfo.hasSingleRootChild) return false;
+		if (this.node.type === 0) return true;
+		return this.node.type === 1 && this.node.tagType === 3 && !!this.parent && this.isSingleRoot;
 	}
 };
+function hasSingleRootChild(children) {
+	let nonCommentChildren = 0;
+	let hasEncounteredIf = false;
+	let isSingleIfBlock = true;
+	for (const child of children) {
+		if (isCommentOrWhitespace(child)) continue;
+		nonCommentChildren++;
+		if (isIfChild(child)) {
+			if (hasEncounteredIf) isSingleIfBlock = false;
+			hasEncounteredIf = true;
+		} else if (!hasEncounteredIf || !isElseChild(child)) isSingleIfBlock = false;
+	}
+	return nonCommentChildren === 1 || isSingleIfBlock;
+}
+function isComponentChild(child) {
+	return child.type === 1 && child.tagType === 1;
+}
+function isIfChild(child) {
+	return child.type === 9 || child.type === 1 && !!findDir$1(child, "if");
+}
+function isElseChild(child) {
+	return child.type === 1 && !!findDir$1(child, /^else(-if)?$/, true);
+}
 const defaultOptions = {
 	filename: "",
 	prefixIdentifiers: true,
@@ -25743,28 +25795,31 @@ function canPrefix(name) {
 }
 function processExpressions(context, expressions, shouldDeclare) {
 	const expressionReplacements = /* @__PURE__ */ new Map();
-	const { seenVariable, variableToExpMap, expToVariableMap, seenIdentifier, updatedVariable } = analyzeExpressions(expressions);
+	const { seenVariable, variableToExpMap, expressionRecords, seenIdentifier, updatedVariable } = analyzeExpressions(expressions);
 	const reservedNames = new Set(seenIdentifier);
-	const varDeclarations = processRepeatedVariables(context, seenVariable, variableToExpMap, expToVariableMap, seenIdentifier, updatedVariable, reservedNames, expressionReplacements);
-	const expDeclarations = processRepeatedExpressions(context, expressions, varDeclarations, updatedVariable, expToVariableMap, reservedNames, expressionReplacements);
+	const varDeclarations = processRepeatedVariables(context, seenVariable, variableToExpMap, expressionRecords, seenIdentifier, updatedVariable, reservedNames, expressionReplacements);
+	const expDeclarations = processRepeatedExpressions(context, expressions, varDeclarations, updatedVariable, expressionRecords, reservedNames, expressionReplacements);
 	return _objectSpread2(_objectSpread2({}, genDeclarations([...varDeclarations, ...expDeclarations], context, shouldDeclare)), {}, { expressionReplacements });
 }
 function analyzeExpressions(expressions) {
 	const seenVariable = Object.create(null);
 	const variableToExpMap = /* @__PURE__ */ new Map();
-	const expToVariableMap = /* @__PURE__ */ new Map();
+	const expressionRecords = /* @__PURE__ */ new Map();
 	const seenIdentifier = /* @__PURE__ */ new Set();
 	const updatedVariable = /* @__PURE__ */ new Set();
+	const getRecord = (exp) => {
+		let record = expressionRecords.get(exp);
+		if (!record) expressionRecords.set(exp, record = { variables: [] });
+		return record;
+	};
 	const registerVariable = (name, exp, isIdentifier, loc, parentStack = []) => {
 		if (isIdentifier) seenIdentifier.add(name);
 		seenVariable[name] = (seenVariable[name] || 0) + 1;
 		variableToExpMap.set(name, (variableToExpMap.get(name) || /* @__PURE__ */ new Set()).add(exp));
-		const variables = expToVariableMap.get(exp) || [];
-		variables.push({
+		getRecord(exp).variables.push({
 			name,
 			loc
 		});
-		expToVariableMap.set(exp, variables);
 		if (parentStack.some((p) => p.type === "UpdateExpression" || p.type === "AssignmentExpression")) updatedVariable.add(name);
 	};
 	for (const exp of expressions) {
@@ -25801,7 +25856,7 @@ function analyzeExpressions(expressions) {
 		seenVariable,
 		seenIdentifier,
 		variableToExpMap,
-		expToVariableMap,
+		expressionRecords,
 		updatedVariable
 	};
 }
@@ -25811,9 +25866,10 @@ function getProcessedExpression(exp, expressionReplacements) {
 function setExpressionReplacement(expressionReplacements, exp, content, ast) {
 	expressionReplacements.set(exp, extend({ ast }, createSimpleExpression(content, exp.isStatic, exp.loc, exp.constType)));
 }
-function processRepeatedVariables(context, seenVariable, variableToExpMap, expToVariableMap, seenIdentifier, updatedVariable, reservedNames, expressionReplacements) {
+function processRepeatedVariables(context, seenVariable, variableToExpMap, expressionRecords, seenIdentifier, updatedVariable, reservedNames, expressionReplacements) {
 	const declarations = [];
-	const expToReplacementMap = /* @__PURE__ */ new Map();
+	const declaredNames = /* @__PURE__ */ new Set();
+	const replacementPlan = /* @__PURE__ */ new Map();
 	for (const [name, exps] of variableToExpMap) {
 		if (updatedVariable.has(name)) continue;
 		if (isGloballyAllowed(name)) continue;
@@ -25822,95 +25878,200 @@ function processRepeatedVariables(context, seenVariable, variableToExpMap, expTo
 			const varName = isIdentifier ? name : getUniqueDeclarationName(genVarName(name), reservedNames);
 			exps.forEach((node) => {
 				if (node.ast && varName !== name) {
-					const replacements = expToReplacementMap.get(node) || [];
-					replacements.push({
-						name: varName,
-						locs: expToVariableMap.get(node).reduce((locs, v) => {
-							if (v.name === name && v.loc) locs.push(v.loc);
-							return locs;
-						}, [])
+					for (const variable of getExpressionVariables(expressionRecords, node)) if (variable.name === name && variable.loc) queueContentReplacement(replacementPlan, node, {
+						start: variable.loc.start - 1,
+						end: variable.loc.end - 1,
+						content: varName
 					});
-					expToReplacementMap.set(node, replacements);
 				}
 			});
-			if (!declarations.some((d) => d.name === varName) && (!isIdentifier || shouldDeclareVariable(name, expToVariableMap, exps))) declarations.push({
-				name: varName,
-				isIdentifier,
-				value: extend({ ast: isIdentifier ? null : parseExp(context, name) }, createSimpleExpression(name)),
-				rawName: name,
-				exps,
-				seenCount: seenVariable[name]
-			});
+			if (!declaredNames.has(varName) && (!isIdentifier || shouldDeclareVariable(name, expressionRecords, exps))) {
+				declaredNames.add(varName);
+				declarations.push({
+					name: varName,
+					isIdentifier,
+					value: extend({ ast: isIdentifier ? null : parseExp(context, name) }, createSimpleExpression(name)),
+					rawName: name,
+					exps,
+					seenCount: seenVariable[name]
+				});
+			}
 		}
 	}
-	for (const [exp, replacements] of expToReplacementMap) {
-		let content = getProcessedExpression(exp, expressionReplacements).content;
-		replacements.flatMap(({ name, locs }) => locs.map(({ start, end }) => ({
-			start,
-			end,
-			name
-		}))).sort((a, b) => b.end - a.end).forEach(({ start, end, name }) => {
-			content = content.slice(0, start - 1) + name + content.slice(end - 1);
-		});
-		setExpressionReplacement(expressionReplacements, exp, content, parseExp(context, content));
-	}
+	applyReplacementPlan(context, expressionReplacements, replacementPlan);
 	return declarations;
 }
-function shouldDeclareVariable(name, expToVariableMap, exps) {
-	const vars = Array.from(exps, (exp) => expToVariableMap.get(exp).map((v) => v.name));
-	if (vars.every((v) => v.length === 1)) return true;
-	if (vars.some((v) => v.filter((e) => e === name).length > 1)) return true;
-	const first = vars[0];
-	if (vars.some((v) => v.length !== first.length)) {
-		if (vars.some((v) => v.length > first.length && v.every((e) => first.includes(e))) || vars.some((v) => first.length > v.length && first.every((e) => v.includes(e)))) return false;
+function shouldDeclareVariable(name, expressionRecords, exps) {
+	const variableUsages = [];
+	let allSingleVariable = true;
+	let hasRepeatedName = false;
+	let hasDifferentLength = false;
+	outer: for (const exp of exps) {
+		const variables = getExpressionVariables(expressionRecords, exp);
+		if (allSingleVariable && variables.length !== 1) allSingleVariable = false;
+		if (!hasDifferentLength && variableUsages.length > 0 && variables.length !== variableUsages[0].length) hasDifferentLength = true;
+		let nameCount = 0;
+		for (const variable of variables) if (variable.name === name && ++nameCount > 1) {
+			hasRepeatedName = true;
+			break outer;
+		}
+		variableUsages.push(variables);
+	}
+	if (allSingleVariable) return true;
+	if (hasRepeatedName) return true;
+	const first = variableUsages[0];
+	if (hasDifferentLength) {
+		for (const variables of variableUsages) {
+			if (variables.length === first.length) continue;
+			const longer = variables.length > first.length ? variables : first;
+			const shorter = variables.length > first.length ? first : variables;
+			const shorterNames = /* @__PURE__ */ new Set();
+			for (const variable of shorter) shorterNames.add(variable.name);
+			let isSubset = true;
+			for (const variable of longer) if (!shorterNames.has(variable.name)) {
+				isSubset = false;
+				break;
+			}
+			if (isSubset) return false;
+		}
 		return true;
 	}
-	if (vars.every((v) => v.every((e, idx) => e === first[idx]))) return false;
-	return true;
+	for (const variables of variableUsages) for (let i = 0; i < variables.length; i++) if (variables[i].name !== first[i].name) return true;
+	return false;
 }
-function processRepeatedExpressions(context, expressions, varDeclarations, updatedVariable, expToVariableMap, reservedNames, expressionReplacements) {
+function processRepeatedExpressions(context, expressions, varDeclarations, updatedVariable, expressionRecords, reservedNames, expressionReplacements) {
 	const declarations = [];
-	const seenExp = expressions.reduce((acc, exp) => {
-		const vars = expToVariableMap.get(exp);
-		if (!vars) return acc;
+	const seenExp = /* @__PURE__ */ new Map();
+	for (const exp of expressions) {
+		var _expressionRecords$ge;
+		const vars = (_expressionRecords$ge = expressionRecords.get(exp)) === null || _expressionRecords$ge === void 0 ? void 0 : _expressionRecords$ge.variables;
+		if (!vars) continue;
 		const processed = getProcessedExpression(exp, expressionReplacements);
-		const variables = vars.map((v) => v.name);
-		if (processed.ast && processed.ast.type !== "Identifier" && !(variables && variables.some((v) => updatedVariable.has(v))) && !variables.some((v) => isGloballyAllowed(v))) acc[processed.content] = (acc[processed.content] || 0) + 1;
-		return acc;
-	}, Object.create(null));
-	Object.entries(seenExp).forEach(([content, count]) => {
-		if (count > 1) {
-			const delVars = {};
-			for (let i = varDeclarations.length - 1; i >= 0; i--) {
-				const item = varDeclarations[i];
-				if (!item.exps || !item.seenCount) continue;
-				if ([...item.exps].every((node) => getProcessedExpression(node, expressionReplacements).content === content && item.seenCount === count)) {
-					delVars[item.name] = item.rawName;
-					reservedNames.delete(item.name);
-					varDeclarations.splice(i, 1);
-				}
-			}
-			const value = extend({}, getProcessedExpression(expressions.find((exp) => getProcessedExpression(exp, expressionReplacements).content === content), expressionReplacements));
-			Object.keys(delVars).forEach((name) => {
-				value.content = value.content.replace(name, delVars[name]);
-				if (value.ast) value.ast = parseExp(context, value.content);
-			});
-			const varName = getUniqueDeclarationName(genVarName(content), reservedNames);
-			declarations.push({
-				name: varName,
-				value
-			});
-			expressions.forEach((exp) => {
-				const processed = getProcessedExpression(exp, expressionReplacements);
-				if (processed.content === content) setExpressionReplacement(expressionReplacements, exp, varName, null);
-				else if (processed.content.includes(content)) {
-					const replacedContent = processed.content.replace(new RegExp(escapeRegExp(content), "g"), varName);
-					setExpressionReplacement(expressionReplacements, exp, replacedContent, parseExp(context, replacedContent));
-				}
+		if (canCacheExpression(processed, vars, updatedVariable)) {
+			const seen = seenExp.get(processed.content);
+			if (seen) seen.count++;
+			else seenExp.set(processed.content, {
+				count: 1,
+				first: exp
 			});
 		}
-	});
+	}
+	const repeatedExpressions = [...seenExp].sort(([contentA], [contentB]) => contentB.length - contentA.length);
+	for (const [content, { count, first }] of repeatedExpressions) if (count > 1) {
+		const removedDeclarations = [];
+		for (let i = varDeclarations.length - 1; i >= 0; i--) {
+			const item = varDeclarations[i];
+			if (!item.exps || !item.seenCount) continue;
+			if ([...item.exps].every((node) => getProcessedExpression(node, expressionReplacements).content === content && item.seenCount === count)) {
+				removedDeclarations.push({
+					name: item.name,
+					rawName: item.rawName
+				});
+				reservedNames.delete(item.name);
+				varDeclarations.splice(i, 1);
+			}
+		}
+		const value = extend({}, getProcessedExpression(first, expressionReplacements));
+		const restorePlan = [];
+		for (const { name, rawName } of removedDeclarations) restorePlan.push(...findIdentifierReplacements(value, name, rawName));
+		if (restorePlan.length) {
+			value.content = applyContentReplacements(value.content, restorePlan);
+			if (value.ast) value.ast = parseExp(context, value.content);
+		}
+		const varName = getUniqueDeclarationName(genVarName(content), reservedNames);
+		declarations.push({
+			name: varName,
+			value
+		});
+		for (const exp of expressions) {
+			const processed = getProcessedExpression(exp, expressionReplacements);
+			if (processed.content === content) setExpressionReplacement(expressionReplacements, exp, varName, null);
+			else if (processed.content.includes(content)) {
+				const replacements = findContentReplacements(processed, content, varName);
+				if (replacements.length) {
+					const replacedContent = applyContentReplacements(processed.content, replacements);
+					setExpressionReplacement(expressionReplacements, exp, replacedContent, parseExp(context, replacedContent));
+				}
+			}
+		}
+	}
 	return declarations;
+}
+function canCacheExpression(processed, vars, updatedVariable) {
+	if (!processed.ast || processed.ast.type === "Identifier") return false;
+	for (const { name } of vars) if (updatedVariable.has(name) || isGloballyAllowed(name)) return false;
+	return true;
+}
+function getExpressionVariables(expressionRecords, exp) {
+	var _expressionRecords$ge2;
+	return ((_expressionRecords$ge2 = expressionRecords.get(exp)) === null || _expressionRecords$ge2 === void 0 ? void 0 : _expressionRecords$ge2.variables) || [];
+}
+function queueContentReplacement(replacementPlan, exp, replacement) {
+	const replacements = replacementPlan.get(exp);
+	if (replacements) replacements.push(replacement);
+	else replacementPlan.set(exp, [replacement]);
+}
+function applyReplacementPlan(context, expressionReplacements, replacementPlan) {
+	for (const [exp, replacements] of replacementPlan) {
+		if (!replacements.length) continue;
+		const content = applyContentReplacements(getProcessedExpression(exp, expressionReplacements).content, replacements);
+		setExpressionReplacement(expressionReplacements, exp, content, parseExp(context, content));
+	}
+}
+function findContentReplacements(exp, content, replacement) {
+	const identifiers = getIdentifierRanges(exp);
+	if (!identifiers.length) return [];
+	const replacements = [];
+	let searchStart = 0;
+	let start = exp.content.indexOf(content, searchStart);
+	while (start !== -1) {
+		const end = start + content.length;
+		let canReplace = false;
+		for (const identifier of identifiers) {
+			if (start >= identifier.end || end <= identifier.start) continue;
+			if (start > identifier.start || end < identifier.end) {
+				canReplace = false;
+				break;
+			}
+			canReplace = true;
+		}
+		if (canReplace) {
+			replacements.push({
+				start,
+				end,
+				content: replacement
+			});
+			searchStart = end;
+		} else searchStart = start + 1;
+		start = exp.content.indexOf(content, searchStart);
+	}
+	return replacements;
+}
+function findIdentifierReplacements(exp, name, replacement) {
+	const replacements = [];
+	for (const { start, end } of getIdentifierRanges(exp)) if (exp.content.slice(start, end) === name) replacements.push({
+		start,
+		end,
+		content: replacement
+	});
+	return replacements;
+}
+function getIdentifierRanges(exp) {
+	if (!exp.ast || typeof exp.ast !== "object") return [];
+	const identifiers = [];
+	walkIdentifiers(exp.ast, (id) => {
+		identifiers.push({
+			start: id.start - 1,
+			end: id.end - 1
+		});
+	}, false);
+	return identifiers;
+}
+function applyContentReplacements(content, replacements) {
+	replacements.sort((a, b) => b.start - a.start).forEach(({ start, end, content: replacement }) => {
+		content = content.slice(0, start) + replacement + content.slice(end);
+	});
+	return content;
 }
 function genDeclarations(declarations, context, shouldDeclare) {
 	const [frag, push] = buildCodeFragment();
@@ -25938,9 +26099,6 @@ function genDeclarations(declarations, context, shouldDeclare) {
 		frag,
 		varNames: [...varNames]
 	};
-}
-function escapeRegExp(string) {
-	return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 function parseExp(context, content, loc) {
 	try {
@@ -26142,7 +26300,7 @@ function genFor(oper, context) {
 		idMap[rawIndex] = `${indexVar}.value`;
 		idMap[indexVar] = null;
 	}
-	const { selectorPatterns, keyOnlyBindingPatterns } = matchPatterns(render, keyProp, idMap, context);
+	const { selectorPatterns, keyOnlyBindingPatterns, skippedEffectIndexes } = matchPatterns(render, keyProp, idMap, context);
 	const selectorDeclarations = [];
 	const selectorName = (i) => selectorPatterns.length > 1 ? `_selector${id}_${i}` : `_selector${id}`;
 	for (let i = 0; i < selectorPatterns.length; i++) {
@@ -26162,26 +26320,20 @@ function genFor(oper, context) {
 			}
 			for (const { effect } of keyOnlyBindingPatterns) for (const oper of effect.operations) patternFrag.push(...genOperation(oper, context));
 			return patternFrag;
-		}));
+		}, skippedEffectIndexes));
 		else frag.push(...genBlockContent(render, context));
 		frag.push(INDENT_END, NEWLINE, "}");
 		return frag;
 	}, idMap);
 	exitScope();
-	let flags = 0;
-	if (onlyChild) flags |= 1;
-	if (component) flags |= 2;
-	if (isFragmentBlock(render)) flags |= 16;
-	if (!component && isSingleNodeBlock(render)) flags |= 8;
-	if (once) flags |= 4;
-	if (slotRoot) flags |= 32;
+	const flags = genForFlags(onlyChild, component, isFragmentBlock(render), !component && isSingleNodeBlock(render), once, slotRoot);
 	const onResetCalls = [];
 	for (let i = 0; i < selectorPatterns.length; i++) onResetCalls.push(NEWLINE, `n${id}.onReset(${selectorName(i)}.reset)`);
 	return [
 		NEWLINE,
 		...selectorDeclarations,
 		`const n${id} = `,
-		...genCall([helper("createFor"), "undefined"], sourceExpr, blockFn, genCallback(keyProp), flags ? String(flags) : void 0),
+		...genCall([helper("createFor"), "undefined"], sourceExpr, blockFn, genCallback(keyProp), flags),
 		...onResetCalls
 	];
 	function genCallback(expr) {
@@ -26205,6 +26357,36 @@ function genFor(oper, context) {
 		idToPathMap.forEach((_, id) => idMap[id] = null);
 		return idMap;
 	}
+}
+function genForFlags(onlyChild, component, isFragment, isSingleNode, once, slotRoot) {
+	let flags = 0;
+	const names = [];
+	if (onlyChild) {
+		flags |= 1;
+		names.push("FAST_REMOVE");
+	}
+	if (component) {
+		flags |= 2;
+		names.push("IS_COMPONENT");
+	}
+	if (isFragment) {
+		flags |= 16;
+		names.push("IS_FRAGMENT");
+	}
+	if (isSingleNode) {
+		flags |= 8;
+		names.push("IS_SINGLE_NODE");
+	}
+	if (once) {
+		flags |= 4;
+		names.push("ONCE");
+	}
+	if (slotRoot) {
+		flags |= 32;
+		names.push("SLOT_ROOT");
+	}
+	if (!flags) return;
+	return `${flags} /* ${names.join(", ")} */`;
 }
 function isSingleNodeBlock(block) {
 	const child = getSingleReturnedChild(block);
@@ -26295,39 +26477,35 @@ function buildDestructureIdMap(idToPathMap, baseAccessor, plugins) {
 function matchPatterns(render, keyProp, idMap, context) {
 	const selectorPatterns = [];
 	const keyOnlyBindingPatterns = [];
-	const removedEffectIndexes = [];
-	render.effect = render.effect.filter((effect, index) => {
-		if (keyProp !== void 0) {
-			const selector = matchSelectorPattern(effect, keyProp.content, idMap, context);
-			if (selector) {
-				selectorPatterns.push(selector);
-				removedEffectIndexes.push(index);
-				return false;
-			}
-			const keyOnly = matchKeyOnlyBindingPattern(effect, keyProp.content);
-			if (keyOnly) {
-				keyOnlyBindingPatterns.push(keyOnly);
-				removedEffectIndexes.push(index);
-				return false;
-			}
+	let skippedEffectIndexes;
+	if (keyProp === void 0) return {
+		keyOnlyBindingPatterns,
+		selectorPatterns,
+		skippedEffectIndexes
+	};
+	for (let index = 0; index < render.effect.length; index++) {
+		const effect = render.effect[index];
+		const selector = matchSelectorPattern(effect, keyProp.content, idMap, context);
+		if (selector) {
+			selectorPatterns.push(selector);
+			skipEffect(index);
+			continue;
 		}
-		return true;
-	});
-	if (removedEffectIndexes.length) shiftEffectBoundaries(render.dynamic, removedEffectIndexes);
+		const keyOnly = matchKeyOnlyBindingPattern(effect, keyProp.content);
+		if (keyOnly) {
+			keyOnlyBindingPatterns.push(keyOnly);
+			skipEffect(index);
+		}
+	}
 	return {
 		keyOnlyBindingPatterns,
-		selectorPatterns
+		selectorPatterns,
+		skippedEffectIndexes
 	};
-}
-function shiftEffectBoundaries(dynamic, removedEffectIndexes) {
-	const operation = dynamic.operation;
-	if (operation && isBlockOperation(operation) && operation.effectIndex !== void 0) {
-		let offset = 0;
-		for (const removedIndex of removedEffectIndexes) if (removedIndex < operation.effectIndex) offset++;
-		else break;
-		operation.effectIndex -= offset;
+	function skipEffect(index) {
+		if (!skippedEffectIndexes) skippedEffectIndexes = /* @__PURE__ */ new Set();
+		skippedEffectIndexes.add(index);
 	}
-	for (const child of dynamic.children) shiftEffectBoundaries(child, removedEffectIndexes);
 }
 function matchKeyOnlyBindingPattern(effect, key) {
 	if (effect.expressions.length === 1) {
@@ -26432,13 +26610,24 @@ function genIfFlags(blockShape, once, slotRoot, index) {
 	return `${flags} /* ${genIfFlagNames(once, slotRoot, index, blockShape)} */`;
 }
 function genIfFlagNames(once, slotRoot, index, blockShape) {
-	const names = ["BLOCK_SHAPE"];
+	const names = [`TRUE_${genBlockShapeName(blockShape)}`];
+	const falseShape = blockShape >> 2;
+	const hasFalseBranch = (falseShape & 3) !== 0;
+	if (hasFalseBranch) names.push(`FALSE_${genBlockShapeName(falseShape)}`);
 	if (blockShape & 32) names.push("TRUE_NO_SCOPE");
-	if (blockShape & 64) names.push("FALSE_NO_SCOPE");
+	if (hasFalseBranch && blockShape & 64) names.push("FALSE_NO_SCOPE");
 	if (once) names.push("ONCE");
 	if (slotRoot) names.push("SLOT_ROOT");
-	if (!once && index !== void 0) names.push("INDEX_SHIFT");
+	if (!once && index !== void 0) names.push(`KEYED_INDEX_${index}`);
 	return names.join(", ");
+}
+function genBlockShapeName(flags) {
+	switch (flags & 3) {
+		case 0: return "EMPTY";
+		case 1: return "SINGLE_ROOT";
+		case 2: return "MULTI_ROOT";
+	}
+	return "UNKNOWN";
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/prop.ts
@@ -26796,7 +26985,7 @@ function genCreateComponent(operation, context) {
 	const tag = genTag();
 	const { root, props, slots, once, slotRoot } = operation;
 	const isRuntimeDynamicComponent = !!(operation.dynamic && !operation.dynamic.isStatic);
-	const dynamicComponentFlags = isRuntimeDynamicComponent ? (root ? 1 : 0) | (once ? 2 : 0) | (slotRoot ? 4 : 0) : 0;
+	const dynamicComponentFlags = isRuntimeDynamicComponent ? genDynamicComponentFlags(root, once, slotRoot) : false;
 	const rawSlots = genRawSlots(slots, context);
 	const [ids, handlers] = processInlineHandlers(props, context);
 	const rawProps = context.withId(() => genRawProps(props, context, true), ids);
@@ -26812,7 +27001,7 @@ function genCreateComponent(operation, context) {
 			];
 		}, []),
 		`const n${operation.id} = `,
-		...genCall(isRuntimeDynamicComponent ? helper("createDynamicComponent") : operation.useCreateElement ? helper("createPlainElement") : useAssetComponentHelper ? helper("createAssetComponent") : operation.asset ? helper("createComponentWithFallback") : helper("createComponent"), tag, rawProps, rawSlots, isRuntimeDynamicComponent ? dynamicComponentFlags ? String(dynamicComponentFlags) : false : root ? "true" : false, isRuntimeDynamicComponent ? false : once && "true", isRuntimeDynamicComponent ? false : maybeSelfReference && "true"),
+		...genCall(isRuntimeDynamicComponent ? helper("createDynamicComponent") : operation.useCreateElement ? helper("createPlainElement") : useAssetComponentHelper ? helper("createAssetComponent") : operation.asset ? helper("createComponentWithFallback") : helper("createComponent"), tag, rawProps, rawSlots, isRuntimeDynamicComponent ? dynamicComponentFlags : root ? "true" : false, isRuntimeDynamicComponent ? false : once && "true", isRuntimeDynamicComponent ? false : maybeSelfReference && "true"),
 		...genDirectivesForElement(operation.id, context)
 	];
 	function genTag() {
@@ -26837,6 +27026,24 @@ function genCreateComponent(operation, context) {
 			return genExpression(extend(createSimpleExpression(tag, false), { ast: null }), context);
 		}
 	}
+}
+function genDynamicComponentFlags(root, once, slotRoot) {
+	let flags = 0;
+	const names = [];
+	if (root) {
+		flags |= 1;
+		names.push("SINGLE_ROOT");
+	}
+	if (once) {
+		flags |= 2;
+		names.push("ONCE");
+	}
+	if (slotRoot) {
+		flags |= 4;
+		names.push("SLOT_ROOT");
+	}
+	if (!flags) return false;
+	return `${flags} /* ${names.join(", ")} */`;
 }
 function getUniqueHandlerName(context, name) {
 	const { seenInlineHandlerNames } = context;
@@ -27148,12 +27355,21 @@ function genSlotBlockWithProps(oper, context, emitNonStableFlag = true) {
 	const idMap = idToPathMap.size ? buildDestructureIdMap(idToPathMap, propsName || "", context.options.expressionPlugins) : {};
 	if (propsName) idMap[propsName] = null;
 	const exitSlotBlock = context.enterSlotBlock();
-	markSlotRootOperations(oper);
+	const hasStableRoot = hasStableSlotRoot(oper, context);
+	if (!hasStableRoot) markSlotRootOperations(oper);
 	let blockFn = context.withId(() => genBlock(oper, context, propsName ? [propsName] : []), idMap);
-	if (emitNonStableFlag && !hasStableSlotRoot(oper, context)) blockFn = genCall(context.helper("extend"), blockFn, `{ _: 8 }`);
+	if (emitNonStableFlag && !hasStableRoot) blockFn = genCall(context.helper("extend"), blockFn, [`{ _: ${genSlotFlags$1(8)} }`]);
 	exitSlotBlock();
 	exitScope && exitScope();
 	return blockFn;
+}
+function genSlotFlags$1(flags) {
+	const names = [];
+	if (flags & 1) names.push("NO_SLOTTED");
+	if (flags & 2) names.push("ONCE");
+	if (flags & 4) names.push("SLOT_ROOT");
+	if (flags & 8) names.push("NON_STABLE");
+	return `${flags} /* ${names.join(", ")} */`;
 }
 const commentOnlyTemplateRE = /^(?:<!--[\s\S]*?-->)+$/;
 function hasStableSlotRoot(block, context) {
@@ -27172,14 +27388,14 @@ function hasStableSlotRoot(block, context) {
 					hasValidRoot = true;
 					continue;
 				}
-				return false;
+				continue;
 			case 17:
 				if (hasStableSlotRoot(operation.block, context)) {
 					hasValidRoot = true;
 					continue;
 				}
-				return false;
-			default: return false;
+				continue;
+			default: continue;
 		}
 	}
 	return hasValidRoot;
@@ -27237,7 +27453,7 @@ function genSlotOutlet(oper, context) {
 	const [frag, push] = buildCodeFragment();
 	let fallbackArg;
 	if (fallback) {
-		markSlotRootOperations(fallback);
+		if (context.inSlotBlock) markSlotRootOperations(fallback);
 		fallbackArg = genBlock(fallback, context);
 	}
 	const createSlot = helper("createSlot");
@@ -27247,8 +27463,16 @@ function genSlotOutlet(oper, context) {
 		...genExpression(name, context),
 		")"
 	];
-	push(NEWLINE, `const n${id} = `, ...genCall(createSlot, nameArg, rawPropsArg, fallbackArg, flags ? String(flags) : void 0));
+	push(NEWLINE, `const n${id} = `, ...genCall(createSlot, nameArg, rawPropsArg, fallbackArg, genSlotFlags(flags)));
 	return frag;
+}
+function genSlotFlags(flags) {
+	if (!flags) return;
+	const names = [];
+	if (flags & 1) names.push("NO_SLOTTED");
+	if (flags & 2) names.push("ONCE");
+	if (flags & 4) names.push("SLOT_ROOT");
+	return `${flags} /* ${names.join(", ")} */`;
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/key.ts
@@ -27524,7 +27748,7 @@ function genBlock(oper, context, args = [], root) {
 		"}"
 	];
 }
-function genBlockContent(block, context, root, genEffectsExtraFrag) {
+function genBlockContent(block, context, root, genEffectsExtraFrag, skippedEffectIndexes) {
 	const [frag, push] = buildCodeFragment();
 	const { dynamic, effect, operation, returns } = block;
 	const resetBlock = context.enterBlock(block);
@@ -27549,7 +27773,7 @@ function genBlockContent(block, context, root, genEffectsExtraFrag) {
 			operationIndex++;
 		}
 		if (effectIndex < effectEnd) {
-			push(...genEffects(effect.slice(effectIndex, effectEnd), context));
+			push(...genEffectRange(effectIndex, effectEnd));
 			effectIndex = effectEnd;
 		}
 	};
@@ -27563,7 +27787,7 @@ function genBlockContent(block, context, root, genEffectsExtraFrag) {
 	}
 	for (const child of dynamic.children) if (!child.hasDynamicChild) push(...genChildren(child, context, push, `n${child.id}`, flushBeforeDynamic));
 	if (operationIndex < operation.length) push(...genOperations(operation.slice(operationIndex), context));
-	if (effectIndex < effect.length) push(...genEffects(effect.slice(effectIndex), context, genEffectsExtraFrag));
+	if (effectIndex < effect.length) push(...genEffectRange(effectIndex, effect.length, genEffectsExtraFrag));
 	else if (genEffectsExtraFrag) push(...genEffects([], context, genEffectsExtraFrag));
 	push(NEWLINE, `return `);
 	const returnNodes = returns.map((n) => `n${n}`);
@@ -27571,6 +27795,13 @@ function genBlockContent(block, context, root, genEffectsExtraFrag) {
 	resetBlock();
 	context.singleUseAssetComponentNames = prevSingleUseAssetComponentNames;
 	return frag;
+	function genEffectRange(start, end, genExtraFrag) {
+		if (!skippedEffectIndexes) return genEffects(effect.slice(start, end), context, genExtraFrag);
+		const effects = [];
+		for (let i = start; i < end; i++) if (!skippedEffectIndexes.has(i)) effects.push(effect[i]);
+		if (effects.length || genExtraFrag) return genEffects(effects, context, genExtraFrag);
+		return [];
+	}
 	function genResolveAssets(kind, helper) {
 		for (const name of context.ir[kind]) push(NEWLINE, `const ${toValidAssetId(name, kind)} = `, ...genCall(context.helper(helper), JSON.stringify(name)));
 	}
@@ -27582,7 +27813,6 @@ function markSlotRootOperations(block) {
 		if (!operation) continue;
 		if (operation.type === 15) markSlotRootIf(operation);
 		else if (operation.type === 16) markSlotRootFor(operation);
-		else if (operation.type === 13) markSlotRootSlotOutlet(operation);
 		else if (operation.type === 12) markSlotRootComponent(operation);
 	}
 }
@@ -27597,10 +27827,6 @@ function markSlotRootIf(operation) {
 function markSlotRootFor(operation) {
 	if (!operation.once) operation.slotRoot = true;
 	markSlotRootOperations(operation.render);
-}
-function markSlotRootSlotOutlet(operation) {
-	operation.flags |= 4;
-	if (operation.fallback) markSlotRootOperations(operation.fallback);
 }
 function markSlotRootComponent(operation) {
 	if (!operation.once && operation.dynamic && !operation.dynamic.isStatic) operation.slotRoot = true;
@@ -27954,7 +28180,7 @@ const transformElement = (node, context) => {
 		const isDynamicComponent = isComponentTag(node.tag);
 		const staticKey = resolveStaticKey(node, context, isComponent);
 		const propsResult = buildProps(node, context, isComponent, isDynamicComponent, getEffectIndex);
-		const singleRoot = isSingleRoot(context);
+		const singleRoot = context.isSingleRoot;
 		if (isComponent) transformComponentElement(node, propsResult, staticKey, singleRoot, context, isDynamicComponent, useCreateElement);
 		else transformNativeElement(node, propsResult, staticKey, singleRoot, context, getEffectIndex, context.root === context.effectiveParent || canOmitEndTag(node, context), getOperationIndex);
 		if (parentSlots) context.slots = parentSlots;
@@ -27992,16 +28218,6 @@ function isInSameTemplateAsParent(context) {
 	const parentNode = parent.node;
 	if (parentNode.type !== 1 || parentNode.tagType !== 0) return false;
 	return !shouldUseCreateElement(parentNode, parent) && isValidHTMLNesting(parentNode.tag, node.tag);
-}
-function isSingleRoot(context) {
-	if (context.inVFor) return false;
-	let { parent } = context;
-	if (parent && !(hasSingleChild(parent.node) || isSingleIfBlock(parent.node))) return false;
-	while (parent && parent.parent && parent.node.type === 1 && parent.node.tagType === 3) {
-		parent = parent.parent;
-		if (!(hasSingleChild(parent.node) || isSingleIfBlock(parent.node))) return false;
-	}
-	return context.root === parent;
 }
 function transformComponentElement(node, propsResult, staticKey, singleRoot, context, isDynamicComponent, useCreateElement) {
 	const dynamicComponent = isDynamicComponent ? resolveDynamicComponent(node) : void 0;
@@ -28775,13 +28991,7 @@ const transformText = (node, context) => {
 };
 function processInterpolation(context) {
 	const parentNode = context.parent.node;
-	const children = parentNode.children;
-	const nexts = children.slice(context.index);
-	const idx = nexts.findIndex((n) => !isTextLike(n));
-	const nodes = idx > -1 ? nexts.slice(0, idx) : nexts;
-	const prev = children[context.index - 1];
-	if (prev && prev.type === 2) nodes.unshift(prev);
-	const values = processTextLikeChildren(nodes, context);
+	const values = processTextLikeChildren(collectAdjacentText(context), context);
 	if (values.length === 0 && parentNode.type !== 0) return;
 	const literalValues = values.map((v) => getLiteralExpressionValue(v));
 	if (literalValues.every((v) => v != null) && parentNode.type !== 0) {
@@ -28816,6 +29026,18 @@ function processInterpolation(context) {
 		element: id,
 		values
 	});
+}
+function collectAdjacentText(context) {
+	const children = context.parent.node.children;
+	const nodes = [];
+	const prev = children[context.index - 1];
+	let index = prev && prev.type === 2 ? context.index - 1 : context.index;
+	for (; index < children.length; index++) {
+		const child = children[index];
+		if (!isTextLike(child)) break;
+		nodes.push(child);
+	}
+	return nodes;
 }
 function processTextContainer(children, context) {
 	const values = processTextLikeChildren(children, context);
@@ -29657,7 +29879,9 @@ var src_exports$1 = /* @__PURE__ */ __exportAll({
 	createVaporCompilerError: () => createVaporCompilerError,
 	genCall: () => genCall,
 	genDirectiveModifiers: () => genDirectiveModifiers,
+	genDynamicComponentFlags: () => genDynamicComponentFlags,
 	genMulti: () => genMulti,
+	genSlotFlags: () => genSlotFlags,
 	generate: () => generate,
 	getBaseTransformPreset: () => getBaseTransformPreset,
 	getLiteralExpressionValue: () => getLiteralExpressionValue,
@@ -43084,7 +43308,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
 init_objectSpread2();
-const version = "3.6.0-beta.16";
+const version = "3.6.0-beta.17";
 const parseCache = parseCache$1;
 const errorMessages = _objectSpread2(_objectSpread2({}, errorMessages$1), DOMErrorMessages);
 const walk = walk$2;

@@ -176,6 +176,7 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
   rtc?: LifecycleHook;
   ec?: LifecycleHook;
   sp?: LifecycleHook<() => Promise<unknown>>;
+  effectCount: number;
   /**
   * fixed by uts
   * 页面 ready 之前收集到的 mounted 事件列表，包括自己和子组件的

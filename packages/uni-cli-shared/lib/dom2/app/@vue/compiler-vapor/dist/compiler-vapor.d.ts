@@ -21802,7 +21802,6 @@ interface SlotBoundaryContext {
   getFallback: () => BlockFn | undefined;
   run<R>(fn: () => R, scope?: EffectScope$1): R;
   markDirty: () => void;
-  redirected?: SlotBoundaryContext;
 }
 //#endregion
 //#region packages/runtime-vapor/src/keepAlive.d.ts
@@ -21826,8 +21825,7 @@ declare class VaporFragment<T extends Block = Block> implements TransitionOption
   nodes: T;
   vnode?: VNode | null;
   anchor?: Node;
-  validityPending?: boolean;
-  isBlockValid?: () => boolean;
+  isBlockValid?: (componentAsValid?: boolean) => boolean;
   insert?: (parent: ParentNode, anchor: Node | null, transitionHooks?: TransitionHooks) => void;
   remove?: (parent?: ParentNode, transitionHooks?: TransitionHooks) => void;
   hydrate?(...args: any[]): void;
@@ -21842,7 +21840,7 @@ declare class RenderContextFragment<T extends Block = Block> extends VaporFragme
   readonly renderInstance: GenericComponentInstance$1 | null;
   readonly slotOwner: VaporComponentInstance | null;
   readonly keepAliveCtx?: VaporKeepAliveContext | null;
-  readonly inheritedSlotBoundary: SlotBoundaryContext | null;
+  readonly slotBoundary: SlotBoundaryContext | null;
   constructor(nodes: T);
   protected runWithRenderCtx<R>(fn: () => R, scope?: EffectScope$1): R;
 }
@@ -21869,10 +21867,11 @@ declare class DynamicFragment extends RenderContextFragment {
   keyed?: boolean;
   isSlot?: boolean;
   forwarded?: boolean;
+  nativeChildren?: boolean;
   inTransition?: boolean;
   hasFallthroughAttrs?: true;
-  readonly autoHydrate: boolean;
-  constructor(anchorLabel?: string, keyed?: boolean, locate?: boolean, trackSlotBoundary?: boolean, autoHydrate?: boolean);
+  constructor(anchorLabel?: string, keyed?: boolean, locate?: boolean, trackSlotBoundary?: boolean);
+  protected get autoHydrate(): boolean;
   update(render?: BlockFn, key?: any, noScope?: boolean): void;
   protected getBranchParent(): ParentNode | null;
   renderBranch(render: BlockFn | undefined, transition: VaporTransitionHooks | undefined, parent: ParentNode | null, key: any, noScope?: boolean, notifyUpdated?: boolean): void;
@@ -21916,6 +21915,7 @@ declare class RenderEffect extends ReactiveEffect {
   job: SchedulerJob;
   updateJob?: SchedulerJob;
   render: () => void;
+  order: number;
   constructor(render: () => void, noLifecycle?: boolean);
   fn(): void;
   notify(): void;
@@ -22086,6 +22086,7 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   rtc?: LifecycleHook;
   ec?: LifecycleHook;
   sp?: LifecycleHook<() => Promise<unknown>>;
+  effectCount: number;
   setupState?: Exposed extends Block ? undefined : ShallowUnwrapRef<Exposed>;
   devtoolsRawSetupState?: any;
   hmrRerender?: () => void;
@@ -22770,6 +22771,7 @@ export declare class TransformContext<T extends AllNode = AllNode> {
   operationIndex: number;
   isLastEffectiveChild: boolean;
   isOnRightmostPath: boolean;
+  isSingleRoot: boolean;
   templateCloseTags: Set<string> | undefined;
   templateCloseBlocks: boolean;
   private globalId;
@@ -22800,7 +22802,8 @@ export declare class TransformContext<T extends AllNode = AllNode> {
   create<T extends TemplateChildNode>(node: T, index: number): TransformContext<T>;
   private shiftEffectBoundaries;
   private shiftOperationBoundaries;
-  private isEffectivelyLastChild;
+  private getChildContextInfo;
+  private isSingleRootChild;
 }
 export declare function transform(node: RootNode, options?: TransformOptions$1): RootIRNode;
 export declare function createStructuralDirectiveTransform(name: string | string[], fn: StructuralDirectiveTransform): NodeTransform;
@@ -22953,20 +22956,25 @@ export declare function isTeleportTag(tag: string): boolean;
 export declare function isBuiltInComponent(tag: string): string | undefined;
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/expression.d.ts
-interface AnalyzeExPressionsResult {
+type SourceRange = {
+  start: number;
+  end: number;
+};
+type VariableUse = {
+  name: string;
+  loc?: SourceRange;
+};
+type ExpressionRecord = {
+  variables: VariableUse[];
+};
+type ExpressionAnalysis = {
   seenVariable: Record<string, number>;
   variableToExpMap: Map<string, Set<SimpleExpressionNode>>;
-  expToVariableMap: Map<SimpleExpressionNode, Array<{
-    name: string;
-    loc?: {
-      start: number;
-      end: number;
-    };
-  }>>;
+  expressionRecords: Map<SimpleExpressionNode, ExpressionRecord>;
   seenIdentifier: Set<string>;
   updatedVariable: Set<string>;
-}
-export declare function analyzeExpressions(expressions: SimpleExpressionNode[]): AnalyzeExPressionsResult;
+};
+export declare function analyzeExpressions(expressions: SimpleExpressionNode[]): ExpressionAnalysis;
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/modifier.d.ts
 export declare function genDirectiveModifiers(modifiers: string[]): string;
@@ -22993,8 +23001,12 @@ export declare function matchSelectorPattern(effect: IREffect, key: string, idMa
 export declare function markSlotRootOperations(block: BlockIRNode): void;
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/component.d.ts
+export declare function genDynamicComponentFlags(root: boolean | undefined, once: boolean | undefined, slotRoot: boolean | undefined): string | false;
 type SlotRootStabilityContext = Pick<CodegenContext, "ir">;
 export declare function hasStableSlotRoot(block: BlockIRNode, context: SlotRootStabilityContext): boolean;
 export declare function needsVaporCtx(block: BlockIRNode): boolean;
+//#endregion
+//#region temp/packages/compiler-vapor/src/generators/slotOutlet.d.ts
+export declare function genSlotFlags(flags: number): string | undefined;
 //#endregion
 export { parse,  };

@@ -1,5 +1,5 @@
 /**
-  * @vue/shared v3.6.0-beta.16
+  * @vue/shared v3.6.0-beta.17
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -686,8 +686,8 @@ const VaporBlockShape = {
 * - bits 0-1: true branch VaporBlockShape
 * - bits 2-3: false branch VaporBlockShape
 * - bit 4: v-once
-* - bit 5: true branch does not need EffectScope
-* - bit 6: false branch does not need EffectScope
+* - bit 5: true branch is static and can skip branch-owned EffectScope
+* - bit 6: false branch is static and can skip branch-owned EffectScope
 * - bit 7: v-if sits on a slot content/fallback root chain
 * - bits 8+: branch index + 1 for keyed dynamic fragments
 *
