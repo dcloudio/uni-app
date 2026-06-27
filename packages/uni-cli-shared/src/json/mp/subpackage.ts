@@ -9,10 +9,9 @@ export interface IndependentSubPackage {
 }
 
 export function parseIndependentSubPackages(
-  pagesJson: UniApp.PagesJson | undefined,
-  platform: UniApp.PLATFORM | string | undefined = process.env.UNI_PLATFORM
+  pagesJson: UniApp.PagesJson | undefined
 ): IndependentSubPackage[] {
-  if (platform !== 'mp-weixin' || !pagesJson) {
+  if (!pagesJson) {
     return []
   }
   const subPackages = pagesJson.subPackages || pagesJson.subpackages || []
@@ -20,15 +19,11 @@ export function parseIndependentSubPackages(
     return []
   }
   return subPackages.reduce<IndependentSubPackage[]>((packages, subPackage) => {
-    const subPackageOptions =
-      subPackage as UniApp.PagesJsonSubpackagesOptions & {
-        independent?: boolean
-      }
-    if (!subPackageOptions || subPackageOptions.independent !== true) {
+    if (!subPackage || subPackage.independent !== true) {
       return packages
     }
-    const root = normalizeSubPackageRoot(subPackageOptions.root)
-    const pages = normalizeSubPackagePages(subPackageOptions.pages)
+    const root = normalizeSubPackageRoot(subPackage.root)
+    const pages = normalizeSubPackagePages(subPackage.pages)
     if (!root || !pages.length) {
       return packages
     }

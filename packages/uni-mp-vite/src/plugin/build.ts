@@ -47,7 +47,15 @@ import {
 
 const debugChunk = debug('uni:chunk')
 
-export function buildOptions(): UserConfig['build'] {
+interface MiniProgramBuildOptions {
+  app?: {
+    independentSubpackages?: boolean
+  }
+}
+
+export function buildOptions(
+  options: MiniProgramBuildOptions = {}
+): UserConfig['build'] {
   const platform = process.env.UNI_PLATFORM
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
@@ -55,12 +63,13 @@ export function buildOptions(): UserConfig['build'] {
   if (fs.existsSync(outputDir)) {
     emptyDir(outputDir, ['project.config.json', 'project.private.config.json'])
   }
-  return createBuildOptions(inputDir, platform)
+  return createBuildOptions(inputDir, platform, options)
 }
 
 export function createBuildOptions(
   inputDir: string,
-  platform: UniApp.PLATFORM
+  platform: UniApp.PLATFORM,
+  options: MiniProgramBuildOptions = {}
 ): BuildOptions {
   const { renderDynamicImport } = dynamicImportPolyfill()
   return {
@@ -82,7 +91,7 @@ export function createBuildOptions(
       input:
         process.env.UNI_COMPILE_TARGET === 'uni_modules'
           ? {}
-          : parseRollupInput(inputDir, platform),
+          : parseRollupInput(inputDir, platform, options),
       output: {
         sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
           const result = sourcemapPathTransform(
@@ -187,7 +196,11 @@ function getSubpackagePluginExports(inputDir: string): Record<string, string> {
   return pluginExports
 }
 
-function parseRollupInput(inputDir: string, platform: UniApp.PLATFORM) {
+function parseRollupInput(
+  inputDir: string,
+  platform: UniApp.PLATFORM,
+  options: MiniProgramBuildOptions
+) {
   const inputOptions: Record<string, string> = {
     app: resolveMainPathOnce(inputDir),
   }
@@ -196,10 +209,9 @@ function parseRollupInput(inputDir: string, platform: UniApp.PLATFORM) {
     return inputOptions
   }
   // 独立分包需要原始 pages.json；normalize 会把 subPackages 合并进 pages。
-  const independentPackages = parseIndependentSubPackages(
-    parsePagesJson(inputDir, platform, false),
-    platform
-  )
+  const independentPackages = options.app?.independentSubpackages
+    ? parseIndependentSubPackages(parsePagesJson(inputDir, platform, false))
+    : []
   initIndependentSubPackages(independentPackages)
   independentPackages.forEach(({ root }) => {
     inputOptions[`${root}/common/main`] = formatIndependentVirtualId(

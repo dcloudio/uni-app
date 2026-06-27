@@ -34,10 +34,11 @@ function writePage(inputDir: string, page: string) {
   fs.writeFileSync(filename, '<template><view /></template>')
 }
 
-function createPagesJsonPlugin() {
+function createPagesJsonPlugin(independentSubpackages = true) {
   return uniPagesJsonPlugin({
     app: {
       subpackages: true,
+      independentSubpackages,
       usingComponents: true,
     },
     style: { extname: '.wxss' },
@@ -65,12 +66,31 @@ function callTransform(
   )
 }
 
+function callTransformWithoutIndependentSubpackages(
+  inputDir: string,
+  pagesJson: unknown
+) {
+  const plugin = createPagesJsonPlugin(false)
+  ;(plugin.configResolved as Function).call({}, {})
+  return (plugin.transform as Function).call(
+    {
+      addWatchFile: jest.fn(),
+      error(message: string) {
+        throw new Error(message)
+      },
+    },
+    JSON.stringify(pagesJson),
+    path.join(inputDir, PAGES_JSON_JS)
+  )
+}
+
 describe('uniPagesJsonPlugin independent subpackages', () => {
   const originalPlatform = process.env.UNI_PLATFORM
   const originalInputDir = process.env.UNI_INPUT_DIR
 
   afterEach(() => {
     resetMiniProgramJsonFiles()
+    initIndependentSubPackages([])
     jest.restoreAllMocks()
     if (originalPlatform === undefined) {
       delete (process.env as Record<string, string | undefined>).UNI_PLATFORM
@@ -153,6 +173,29 @@ describe('uniPagesJsonPlugin independent subpackages', () => {
         M['dev.watching.restart.independentSubPackages']
       )
       expect(exitSpy).toHaveBeenCalledWith(0)
+    })
+  })
+
+  test('treats independent subpackages as normal subpackages when app option does not support it', async () => {
+    process.env.UNI_PLATFORM = 'mp-alipay'
+    await withMiniProgramProject(async (inputDir) => {
+      process.env.UNI_INPUT_DIR = inputDir
+      initIndependentSubPackages([])
+
+      const result = callTransformWithoutIndependentSubpackages(inputDir, {
+        pages: [{ path: 'pages/index/index' }],
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      })
+
+      expect(getIndependentSubPackages()).toEqual([])
+      expect(result.code).toContain('uniPage://')
+      expect(result.code).not.toContain('uni_mp_independent_root')
     })
   })
 })

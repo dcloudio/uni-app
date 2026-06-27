@@ -23,10 +23,7 @@ async function withPagesJson(
   const inputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-independent-'))
   writePagesJson(inputDir, pagesJson)
   initIndependentSubPackages(
-    parseIndependentSubPackages(
-      pagesJson as UniApp.PagesJson,
-      process.env.UNI_PLATFORM
-    )
+    parseIndependentSubPackages(pagesJson as UniApp.PagesJson)
   )
   try {
     await test(inputDir)

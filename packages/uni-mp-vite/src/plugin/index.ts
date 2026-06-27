@@ -60,6 +60,10 @@ export interface UniMiniProgramPluginOptions {
      */
     subpackages?: boolean
     /**
+     * 是否支持独立分包
+     */
+    independentSubpackages?: boolean
+    /**
      * 是否支持发行插件
      */
     plugins?: boolean
@@ -178,7 +182,7 @@ export function uniMiniProgramPlugin(
           noDiscovery: true,
           include: [],
         },
-        build: buildOptions(),
+        build: buildOptions(options),
       }
     },
     configResolved(config) {
