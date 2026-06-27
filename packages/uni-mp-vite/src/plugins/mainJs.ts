@@ -7,8 +7,23 @@ import {
   updateMiniProgramGlobalComponents,
 } from '@dcloudio/uni-cli-shared'
 import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
-import { UNI_MP_RUNTIME_ID, VUE_EXPORT_HELPER_ID } from './independentUtils'
+import {
+  UNI_MP_RUNTIME_ID,
+  VUE_EXPORT_HELPER_ID,
+  parseIndependentRoot,
+  withoutIndependentRoot,
+} from './independentUtils'
 import { dynamicImport } from './usingComponents'
+
+const updateMiniProgramGlobalComponentsWithRoot =
+  updateMiniProgramGlobalComponents as typeof updateMiniProgramGlobalComponents &
+    ((
+      filename: Parameters<typeof updateMiniProgramGlobalComponents>[0],
+      ast: Parameters<typeof updateMiniProgramGlobalComponents>[1],
+      options: Parameters<typeof updateMiniProgramGlobalComponents>[2] & {
+        root?: string
+      }
+    ) => ReturnType<typeof updateMiniProgramGlobalComponents>)
 
 export function uniMainJsPlugin(
   options: {
@@ -23,13 +38,16 @@ export function uniMainJsPlugin(
       name: 'uni:mp-main-js',
       enforce: 'pre',
       async transform(source, id) {
-        if (opts.filter(id)) {
-          source = source.includes('createSSRApp')
-            ? createApp(source)
-            : createLegacyApp(source)
+        const independentRoot = parseIndependentRoot(id)
+        const filename = independentRoot ? withoutIndependentRoot(id) : id
+        if (opts.filter(filename)) {
+          source =
+            !independentRoot && source.includes('createSSRApp')
+              ? createApp(source)
+              : createLegacyApp(source)
 
           const inputDir = process.env.UNI_INPUT_DIR
-          const { imports } = await updateMiniProgramGlobalComponents(
+          const { imports } = await updateMiniProgramGlobalComponentsWithRoot(
             id,
             parseProgram(source, id, {
               babelParserPlugins: options.babelParserPlugins,
@@ -38,6 +56,7 @@ export function uniMainJsPlugin(
               inputDir,
               resolve: this.resolve,
               normalizeComponentName,
+              root: independentRoot,
             }
           )
           const { code, map } = await transformDynamicImports(source, imports, {
@@ -45,6 +64,12 @@ export function uniMainJsPlugin(
             sourceMap: enableSourceMap(),
             dynamicImport,
           })
+          if (independentRoot) {
+            return {
+              code,
+              map,
+            }
+          }
           return {
             code:
               `import '${VUE_EXPORT_HELPER_ID}';import '${UNI_MP_RUNTIME_ID}';import './${PAGES_JSON_JS}';` +

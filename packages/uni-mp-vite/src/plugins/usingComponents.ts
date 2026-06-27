@@ -6,6 +6,7 @@ import {
   enableSourceMap,
   isAppVue,
   isMiniProgramPageFile,
+  normalizePath,
   parseMainDescriptor,
   parseProgram,
   parseScriptDescriptor,
@@ -19,6 +20,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { virtualComponentPath, virtualPagePath } from './entry'
 import {
+  getIndependentRoots,
   parseIndependentRoot,
   withoutIndependentRoot,
 } from './independentUtils'
@@ -216,8 +218,11 @@ export function uniUsingComponentsPlugin(
 }
 
 export function dynamicImport(name: string, value: string) {
-  const independentRoot = parseIndependentRoot(value)
+  let independentRoot = parseIndependentRoot(value)
   value = withoutIndependentRoot(value)
+  independentRoot =
+    independentRoot ||
+    findIndependentRootByFilename(value, process.env.UNI_INPUT_DIR)
   // 开发者可能将页面作为组件来引用
   if (isMiniProgramPageFile(value, process.env.UNI_INPUT_DIR)) {
     return `const ${name} = ()=>import('${virtualPagePath(
@@ -229,4 +234,18 @@ export function dynamicImport(name: string, value: string) {
     value,
     independentRoot
   )}')`
+}
+
+function findIndependentRootByFilename(filename: string, inputDir: string) {
+  if (!inputDir || !path.isAbsolute(filename)) {
+    return
+  }
+  const relativeFilename = normalizePath(path.relative(inputDir, filename))
+  return [...getIndependentRoots()].find((root) => {
+    const normalizedRoot = normalizePath(root).replace(/\/$/, '')
+    return (
+      relativeFilename === normalizedRoot ||
+      relativeFilename.startsWith(`${normalizedRoot}/`)
+    )
+  })
 }
