@@ -23,7 +23,7 @@
 2. 为了避免Apple Store审核不过，请在iOS15.0版本以下，关闭项目中的购买入口；
 :::
 
-支付不仅需要客户端开发，也需要服务器开发。
+支付不仅需要客户端开发，也需要服务器开发。\
 [uni-pay](https://doc.dcloud.net.cn/uniCloud/uni-pay/uni-app-x.html#appleiap)是一个云端一体的开源组件，下载这个插件，客户端和服务器代码都已封装好，开发者填入参数即可使用。[详见](https://doc.dcloud.net.cn/uniCloud/uni-pay/uni-app-x.html)
 
 <!-- ## uni.requestVirtualPayment(options) @requestvirtualpayment -->
@@ -49,8 +49,6 @@
 uni.requestVirtualPayment是一个统一各平台虚拟支付客户端API。
 
 > 在uni-app中，iOS的IAP是放置在uni.requestPayment中的。但后期微信小程序独立了虚拟支付的API。考虑到Apple、微信、鸿蒙next都有虚拟支付，所以在uni-app x中，也独立出了单独的虚拟支付的API。
-
-目前本API仅支持IAP。待uni-app x可以编译为微信小程序和鸿蒙hap时，也会支持相应的虚拟支付。
 
 ### 参数 
 
@@ -156,7 +154,7 @@ uni.requestVirtualPayment是一个统一各平台虚拟支付客户端API。
 
 
 
-### 注意事项
+### IAP注意事项
 1. uni.requestVirtualPayment api 适用Apple虚拟产品类型说明
 ::: warning requestVirtualPayment iOS平台说明：
 uni.requestVirtualPayment api 适用于消耗性类型、非消耗性类型、自动续期订阅类型、非自动续期订阅类型产品的购买。
@@ -224,7 +222,7 @@ uni.requestVirtualPayment({
 
 
 
-uni.getVirtualPaymentManager(): 用来创建各个平台虚拟支付的管理类，暂时仅支持iOS平台IAP支付。
+uni.getVirtualPaymentManager(): 用来创建各个平台虚拟支付的管理类。
 
 ### 持有方法：
 1. restoreTransactions(options): 获取苹果服务器已支付的交易列表
@@ -392,7 +390,7 @@ finishTransaction
 
  
 
-### 注意事项
+### IAP注意事项
 1. restoreTransactions(options): 获取苹果服务器已支付的交易列表
 ::: warning restoreTransactions api iOS平台说明：
 restoreTransactions api 适用于非消耗性类型、自动续期订阅类型、非自动续期订阅类型产品的购买。

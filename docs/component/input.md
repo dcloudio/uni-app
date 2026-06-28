@@ -288,7 +288,7 @@ if (view != null && view instanceof UITextField) {
 }
 ```
 
-+ iOS平台 uvue 环境使用 js 驱动无法处理原生类型，getIOSView 方法需要在 uts 插件中使用。
++ iOS平台、以及Android平台的蒸汽模式，uvue 页面中使用 js 驱动，无法处理原生类型，getIOSView 或 getAndroidView 方法需要在 uts 插件中使用。
 
 更多示例请参考 uts 插件 [uts-get-native-view](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/uni_modules/uts-get-native-view/utssdk/app-ios/index.uts)
 
@@ -1057,7 +1057,7 @@ if (view != null && view instanceof UITextField) {
 在web端平台，输入框上推逻辑是由浏览器自动完成的，属性`adjust-position`无效。
 但iOS safari软键盘弹出时，整个页面会上推而不是挤压，导致pages.json配置的导航栏会上移到屏幕之外。
 
-推荐参考代码：[hello uni-app x -> 模板 -> 自定义导航栏](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/navbar-lite/navbar-lite.uvue)。为了避免自定义导航栏被顶飞，有的可以自动上推，有的需手动控制，这里均有示例。
+推荐参考代码：[hello uni-app x -> 模板 -> 输入框上推示例](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/custom-navbar-search/custom-navbar-search.uvue)。为了避免自定义导航栏被顶飞，有的可以自动上推，有的需手动控制，这里均有示例。
 
 ## comfirm-type和inputmode说明
 
@@ -1072,15 +1072,14 @@ web平台的inputmode的浏览器兼容性如下： Chrome >= 66、Edge >= 79、
 
 - type：在 uni-app 和小程序中仅仅是输入框，定义 input 的工作方式，此值决定可输入什么值。比如 number 只能输入数字。
 - comfirm-type：定义键盘右下角按键的文字
-- inputmode：inputmode 属性是当使用某些值时会对键盘所作出的优化。
+- inputmode：inputmode 属性是当使用某些值时会对键盘所作出的优化。从HBuilderX 5.0+，为简化概念，已废弃inputmode，推荐改用type属性。
 
-同时使用 inputmode 和 comfirm-type 时，若设值冲突，键盘右下角按键类型由 comfirm-type 决定。type 属性和 inputmode 属性并不冲突
+同时使用 inputmode 和 comfirm-type 时，若设值冲突，键盘右下角按键类型由 comfirm-type 决定。
 
 ## placeholder-style和placeholder-class说明
 - uni-app x 4.41前，App平台仅支持`color`、`font-size`、`font-weight`。
 - uni-app x 4.41后，App平台新增支持`font-family`、`font-style`、`text-align`，其中`text-align`仅App-Android平台支持，App-iOS平台的placeholder位置取决于input的`text-align`。
 - placeholder-style的`font-size`样式不支持rpx单位。
-- App-HarmonyOS `placeholder-class` 暂不支持 css 变量。
 
 
 ## Tips
@@ -1095,5 +1094,5 @@ web平台的inputmode的浏览器兼容性如下： Chrome >= 66、Edge >= 79、
 - 如需模拟输入框，比如一些验证码输入框、连续扫码，在插件市场搜索[模拟输入框](https://ext.dcloud.net.cn/search?q=%E6%A8%A1%E6%8B%9F%E8%BE%93%E5%85%A5%E6%A1%86&orderBy=Relevance&uni-appx=1)
 - 如需自定义软键盘，比如车牌键盘，在插件市场搜索[自定义键盘](https://ext.dcloud.net.cn/search?q=%E8%87%AA%E5%AE%9A%E4%B9%89%E9%94%AE%E7%9B%98&orderBy=Relevance&uni-appx=1)
 - 如需hideKeyBoard隐藏软键盘，在插件市场搜索[hideKeyBoard](https://ext.dcloud.net.cn/search?q=hideKeyBoard&orderBy=Relevance&uni-appx=1)
-- App平台蒸汽模式样式设置暂不支持 css 变量。
+- css变量的支持程度，需另见 [css变量文档](../css/common/function.md) 
 - 所有 boolean 类型的属性，只有设置为布尔类型的 false 才会关闭该属性，其他任何值（包括字符串 "false"）都会被当做 true 处理（微信小程序中空字符串会被视为 false）。
