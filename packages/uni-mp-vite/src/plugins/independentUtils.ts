@@ -8,7 +8,6 @@ import {
 export const INDEPENDENT_SUBPACKAGE_PLUGIN_NAME =
   'uni:mp-independent-subpackage'
 export const INDEPENDENT_MAIN_PREFIX = '\0uni:mp-independent-main'
-export const APP_FACTORY_PREFIX = '\0uni:mp-app-factory'
 export const INDEPENDENT_PAGES_PREFIX = '\0uni:mp-independent-pages'
 export const INDEPENDENT_PAGE_PREFIX = '\0uni:mp-independent-page'
 export const VUE_EXPORT_HELPER_ID = '\0plugin-vue:export-helper'

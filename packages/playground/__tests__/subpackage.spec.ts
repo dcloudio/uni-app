@@ -205,7 +205,6 @@ describe('subpackage playground', () => {
     const files = [
       'package-independent/common/index.js',
       'package-independent/common/main.js',
-      'package-independent/common/main.wxss',
       'package-independent/pages/index/index.js',
       'package-independent/pages/index/index.json',
       'package-independent/pages/index/index.wxml',
@@ -258,13 +257,20 @@ describe('subpackage playground', () => {
         path.resolve(outDir, 'package-independent/pages/index/index.wxss'),
         'utf-8'
       )
-    ).toContain('@import "../../common/main.wxss";')
+    ).not.toContain('@import "../../common/main.wxss";')
+    const independentMain = fs.readFileSync(
+      path.resolve(outDir, 'package-independent/common/main.js'),
+      'utf-8'
+    )
+    expect(independentMain).toContain('createSSRApp')
+    expect(independentMain).toContain('independent: true')
+    expect(independentMain).not.toContain('store-ready')
+    expect(independentMain).not.toContain('App Launch')
     expect(
-      fs.readFileSync(
-        path.resolve(outDir, 'package-independent/common/main.js'),
-        'utf-8'
+      fs.existsSync(
+        path.resolve(outDir, 'package-independent/common/main.wxss')
       )
-    ).toContain('store-ready')
+    ).toBe(false)
     expect(
       fs.existsSync(
         path.resolve(outDir, 'package-independent/common/assets.js')

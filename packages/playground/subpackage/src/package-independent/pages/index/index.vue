@@ -15,16 +15,12 @@ export default {
   components: {
     IndependentCard,
   },
-  computed: {
-    fromStore() {
-      return this.$store?.state?.independentMessage || ''
-    },
-    globalValue() {
-      return this.$independentGlobal || ''
-    },
-    pluginValue() {
-      return this.$independentPluginReady || ''
-    },
+  data() {
+    return {
+      fromStore: 'independent-local-ready',
+      globalValue: 'independent-global-ready',
+      pluginValue: 'independent-plugin-ready',
+    }
   },
 }
 </script>

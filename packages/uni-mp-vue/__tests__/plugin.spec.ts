@@ -9,6 +9,8 @@ describe('uni-mp-vue: plugin', () => {
   const originalMpPlugin = process.env.UNI_MP_PLUGIN
   const originalSubpackage = process.env.UNI_SUBPACKAGE
   const originalCreateApp = (global as any).createApp
+  const originalCreateIndependentSubpackageApp = (global as any)
+    .createIndependentSubpackageApp
   const originalCreatePluginApp = (global as any).createPluginApp
   const originalCreateSubpackageApp = (global as any).createSubpackageApp
 
@@ -16,6 +18,10 @@ describe('uni-mp-vue: plugin', () => {
     restoreEnv('UNI_MP_PLUGIN', originalMpPlugin)
     restoreEnv('UNI_SUBPACKAGE', originalSubpackage)
     restoreGlobal('createApp', originalCreateApp)
+    restoreGlobal(
+      'createIndependentSubpackageApp',
+      originalCreateIndependentSubpackageApp
+    )
     restoreGlobal('createPluginApp', originalCreatePluginApp)
     restoreGlobal('createSubpackageApp', originalCreateSubpackageApp)
     jest.clearAllMocks()
@@ -49,6 +55,22 @@ describe('uni-mp-vue: plugin', () => {
     )
   })
 
+  test('passes explicit independent root to independent subpackage app creation', () => {
+    restoreEnv('UNI_MP_PLUGIN', undefined)
+    restoreEnv('UNI_SUBPACKAGE', undefined)
+    ;(global as any).createIndependentSubpackageApp = jest.fn()
+    ;(global as any).createSubpackageApp = jest.fn()
+    const { app, instance } = createInstalledApp()
+
+    app.mount('#app', '/package-a/', { independent: true })
+
+    expect((global as any).createIndependentSubpackageApp).toHaveBeenCalledWith(
+      instance,
+      'package-a'
+    )
+    expect((global as any).createSubpackageApp).not.toHaveBeenCalled()
+  })
+
   test('keeps env subpackage fallback without explicit root', () => {
     restoreEnv('UNI_MP_PLUGIN', undefined)
     process.env.UNI_SUBPACKAGE = 'package-env'
@@ -72,7 +94,11 @@ describe('uni-mp-vue: plugin', () => {
     expect(initApp).toHaveBeenCalledWith(app)
     return {
       app: app as typeof app & {
-        mount(rootContainer: unknown, subpackageRoot?: string): unknown
+        mount(
+          rootContainer: unknown,
+          subpackageRoot?: string,
+          options?: { independent?: boolean }
+        ): unknown
       },
       instance,
       mount,

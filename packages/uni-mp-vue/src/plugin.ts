@@ -12,14 +12,15 @@ export default {
     const oldMount = app.mount
     ;(app.mount as any) = function mount(
       rootContainer: any,
-      subpackageRoot?: string
+      subpackageRoot?: string,
+      options?: { independent?: boolean }
     ) {
       const hasSubpackageRoot = typeof subpackageRoot === 'string'
       const root = hasSubpackageRoot ? subpackageRoot : undefined
       const instance = hasSubpackageRoot
         ? oldMount.call(app, rootContainer)
         : oldMount.apply(app, arguments as any)
-      const createApp = getCreateApp(root)
+      const createApp = getCreateApp(root, options)
       if (createApp) {
         createApp(instance)
       } else {
@@ -34,15 +35,25 @@ export default {
   },
 }
 
-function getCreateApp(subpackageRoot?: string) {
+function getCreateApp(
+  subpackageRoot?: string,
+  options?: { independent?: boolean }
+) {
   const root = normalizeSubpackageRoot(subpackageRoot)
   const method = process.env.UNI_MP_PLUGIN
     ? 'createPluginApp'
+    : root && options?.independent
+    ? 'createIndependentSubpackageApp'
     : root || process.env.UNI_SUBPACKAGE
     ? 'createSubpackageApp'
     : 'createApp'
   const createApp = getGlobalCreateApp(method)
-  if (createApp && root && method === 'createSubpackageApp') {
+  if (
+    createApp &&
+    root &&
+    (method === 'createSubpackageApp' ||
+      method === 'createIndependentSubpackageApp')
+  ) {
     return (instance: any) => createApp(instance, root)
   }
   return createApp
