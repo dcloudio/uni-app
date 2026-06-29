@@ -29,13 +29,14 @@ export function setSubpackageAppVm(
   }
 }
 
-export function getSubpackageAppVm() {
+export function getSubpackageAppVm(route?: string) {
   const globalObject = __GLOBAL__ as any
   const subpackages = globalObject.$subpackages as Subpackages | undefined
   if (!subpackages) {
     return
   }
   const root =
+    findSubpackageRootByRoute(subpackages, route) ||
     findSubpackageRootByRoute(subpackages, getCurrentPageRoute()) ||
     normalizeSubpackageRoot(process.env.UNI_SUBPACKAGE)
   return root && subpackages[root]?.$vm
@@ -43,7 +44,7 @@ export function getSubpackageAppVm() {
 
 export function findSubpackageRootByRoute(
   subpackages: Subpackages,
-  route: string
+  route?: string
 ) {
   const normalizedRoute = normalizeRoute(route)
   if (!normalizedRoute) {

@@ -70,6 +70,7 @@ describe('runtime/subpackage', () => {
     ]
 
     expect(getSubpackageAppVm()).toBe(appVmB)
+    expect(getSubpackageAppVm('package-a/pages/index/index')).toBe(appVmA)
     ;(global as any).getCurrentPages = () => []
     expect(getSubpackageAppVm()).toBe(appVmA)
   })
