@@ -1057,7 +1057,7 @@ if (view != null && view instanceof UITextField) {
 在web端平台，输入框上推逻辑是由浏览器自动完成的，属性`adjust-position`无效。
 但iOS safari软键盘弹出时，整个页面会上推而不是挤压，导致pages.json配置的导航栏会上移到屏幕之外。
 
-推荐参考代码：[hello uni-app x -> 模板 -> 输入框上推示例](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/custom-navbar-search/custom-navbar-search.uvue)。为了避免自定义导航栏被顶飞，有的可以自动上推，有的需手动控制，这里均有示例。
+推荐参考代码：[hello uni-app x -> 模板 -> 输入框上推示例](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/keyboard-adjust/keyboard-adjust.uvue)。为了避免自定义导航栏被顶飞，有的可以自动上推，有的需手动控制，这里均有示例。
 
 ## comfirm-type和inputmode说明
 
