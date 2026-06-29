@@ -729,9 +729,16 @@ export function resolveKotlincArgs(
   return args
 }
 
+function resolveD8MinApi() {
+  if (process.env.UNI_UTS_D8_MIN_API) {
+    return process.env.UNI_UTS_D8_MIN_API
+  }
+  return process.env.UNI_APP_X_DOM2 === 'true' ? '23' : '21'
+}
+
 export const D8_DEFAULT_ARGS = [
   '--min-api',
-  '21',
+  resolveD8MinApi(),
   '--thread-count',
   os.cpus().length + '',
 ]
