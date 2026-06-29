@@ -291,7 +291,7 @@ UniStopNestedScrollEvent -- Extends --> UniEvent
 1. 设置外层 scroll-view 的 type 属性为 "nested"（），将外层 scroll-view 改成嵌套模式
 2. 设置内层 scroll-view 的 `associative-container`  属性为 "nested-scroll-view"，开启内层 scroll-view 支持与外层 scroll-view 嵌套滚动
 
-> 蒸汽模式已废弃 `type` 属性，只需要设置内层 scroll-view 的 `associative-container` 属性为 "nested-scroll-view" 即可开启嵌套模式。  
+> 蒸汽模式已废弃 `type` 属性，只需要设置内层 scroll-view 的 `associative-container` 属性为 "nested-scroll-view" 即可开启嵌套模式。
 
 
 **嵌套滚动策略：**
@@ -307,7 +307,7 @@ UniStopNestedScrollEvent -- Extends --> UniEvent
 + 与nested-scroll嵌套滚动协商互不兼容，`nested-scroll-header` 和 `nested-scroll-body`优先级高于nested-scroll嵌套滚动协商
 + 内层滚动视图支持 scroll-view、list-view、waterflow
 
-> 蒸汽模式已废弃 `nested-scroll-header` 和 `nested-scroll-body` 组件的限制要求，嵌套滚动中外层 scroll-view 中可以不使用 `nested-scroll-header` 和 `nested-scroll-body`，在内层 scrol-view 中设置 `associative-container` 属性为 "nested-scroll-view" 即可开启嵌套模式。  
+> 蒸汽模式已废弃 `nested-scroll-header` 和 `nested-scroll-body` 组件的限制要求，嵌套滚动中外层 scroll-view 中可以不使用 `nested-scroll-header` 和 `nested-scroll-body`，在内层 scrol-view 中设置 `associative-container` 属性为 "nested-scroll-view" 即可开启嵌套模式。
 
 
 **具体代码请参考：**[嵌套模式示例](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/long-list-nested/long-list-nested.uvue)
@@ -365,7 +365,7 @@ onNestedPreScroll(event: NestedPreScrollEvent) {
 + nested-scroll-child设置的元素必须配置custom-nested-scroll = true，否则配置无效
 + 与`nested-scroll-header` 和 `nested-scroll-body`不兼容，scroll-view 设置嵌套模式后，嵌套滚动手势协商相关事件将不会触发
 
-**具体代码请参考：**[nested-scroll嵌套滚动示例](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/long-list/long-list.uvue)
+**具体代码请参考：**[nested-scroll嵌套滚动示例](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/long-list-perf/long-list-perf.uvue)
 
 #### App平台
 
