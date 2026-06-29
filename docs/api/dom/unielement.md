@@ -1400,9 +1400,9 @@ if (view != null && view instanceof WKWebView) {
 将指定的监听器注册到元素对象上，当该对象触发指定的事件时，指定的回调函数就会被执行。
 
 ##### addEventListener 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | x | x |
 
 
 ##### 参数 

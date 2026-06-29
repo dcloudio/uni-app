@@ -6,9 +6,9 @@ flex-basis 属性设置弹性元素在主轴方向的初始大小，即在分配
 
 
 ### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -36,8 +36,8 @@ flex-basis: content | <'width'>;
 ### flex-basis 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 参照元素的 `width` 和 `height` 属性计算初始大小。 |
-| content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 基于 flex 的元素的内容自动调整大小。<br/>    <br/>      **备注：**由于最初规范中没有包括这个值，在一些早期的浏览器实现的 flex 布局中，content 值无效，可以利用设置 (width 或 height) 为 auto 达到同样的效果。<br/>    <br/>    <br/>      备注： 简史<br/>      <br/>        最初，"flex-basis:auto" 的含义是 "参照我的width和height属性".<br/>        在此之后，"flex-basis:auto" 的含义变成了自动尺寸，而 "main-size" 变成了 "参照我的width和height属性"。实际执行于 bug 1032922.<br/>        然后呢，这个更改又在 bug 1093316 中被撤销了，所以 "auto" 变回了原来的含义; 而一个新的关键字 'content' 变成了自动尺寸。 (Firefox bug 1105111 包括了增加这个关键字). |
+| auto | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 参照元素的 `width` 和 `height` 属性计算初始大小。 |
+| content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 基于 flex 的元素的内容自动调整大小。<br/>    <br/>      **备注：**由于最初规范中没有包括这个值，在一些早期的浏览器实现的 flex 布局中，content 值无效，可以利用设置 (width 或 height) 为 auto 达到同样的效果。<br/>    <br/>    <br/>      备注： 简史<br/>      <br/>        最初，"flex-basis:auto" 的含义是 "参照我的width和height属性".<br/>        在此之后，"flex-basis:auto" 的含义变成了自动尺寸，而 "main-size" 变成了 "参照我的width和height属性"。实际执行于 bug 1032922.<br/>        然后呢，这个更改又在 bug 1093316 中被撤销了，所以 "auto" 变回了原来的含义; 而一个新的关键字 'content' 变成了自动尺寸。 (Firefox bug 1105111 包括了增加这个关键字). |
 
 
 ### 默认值 @default-value 

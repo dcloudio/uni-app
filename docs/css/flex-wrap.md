@@ -6,9 +6,9 @@ flex-wrap 属性设置弹性容器中的子元素在主轴方向是单行（列�
 
 
 ### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,9 +34,9 @@ flex-wrap: nowrap | wrap | wrap-reverse;
 ### flex-wrap 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| nowrap | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | flex 的元素被摆放到到一行，这可能导致 flex 容器溢出。cross-start 会根据 flex-direction 的值等价于 start 或 before。为该属性的默认值。 |
-| wrap | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 换行，第一行在上方。 |
-| wrap-reverse | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 和 wrap 的行为一样，但是 cross-start 和 cross-end 互换。 |
+| nowrap | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | flex 的元素被摆放到到一行，这可能导致 flex 容器溢出。cross-start 会根据 flex-direction 的值等价于 start 或 before。为该属性的默认值。 |
+| wrap | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 换行，第一行在上方。 |
+| wrap-reverse | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 和 wrap 的行为一样，但是 cross-start 和 cross-end 互换。 |
 
 
 ### 默认值 @default-value 

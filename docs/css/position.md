@@ -6,9 +6,9 @@ position 属性用于指定元素在页面中的定位方式。与 top、right�
 
 
 ### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,11 +34,11 @@ position: static | relative | absolute | sticky | fixed;
 ### position 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| relative | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 当前元素将参与父节点布局，根据 top、right、bottom、left 等属性相对于自身偏移。 |
-| absolute | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 当前元素将不参与父节点布局，布局时不会为该元素创建任何空间，在父元素的内容区域中进行绝对布局，根据 top、right、bottom、left 等属性决定其位置。 |
-| fixed | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 当前元素将不参与父节点布局，将被视为页面根节点的子元素进行绝对布局，根据 top、right、bottom、left 等属性决定其位置。 |
-| static | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 该关键字指定元素使用正常的布局行为，即元素在文档常规流中当前的布局位置。此时 top, right, bottom, left 和 z-index 属性无效。 |
-| sticky | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 元素根据正常文档流进行定位，然后相对它的最近滚动祖先（nearest scrolling ancestor）和 containing block（最近块级祖先 nearest block-level ancestor），包括 table-related 元素，基于 top、right、bottom 和 left 的值进行偏移。偏移值不会影响任何其他元素的位置。<br/>      该值总是创建一个新的层叠上下文（stacking context）。注意，一个 sticky 元素会“固定”在离它最近的一个拥有“滚动机制”的祖先上（当该祖先的 overflow 是 hidden、scroll、auto 或 overlay 时），即便这个祖先不是最近的真实可滚动祖先。这有效地抑制了任何“sticky”行为（详情见 Github issue on W3C CSSWG）。 |
+| relative | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 当前元素将参与父节点布局，根据 top、right、bottom、left 等属性相对于自身偏移。 |
+| absolute | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 当前元素将不参与父节点布局，布局时不会为该元素创建任何空间，在父元素的内容区域中进行绝对布局，根据 top、right、bottom、left 等属性决定其位置。 |
+| fixed | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 当前元素将不参与父节点布局，将被视为页面根节点的子元素进行绝对布局，根据 top、right、bottom、left 等属性决定其位置。 |
+| static | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 该关键字指定元素使用正常的布局行为，即元素在文档常规流中当前的布局位置。此时 top, right, bottom, left 和 z-index 属性无效。 |
+| sticky | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 元素根据正常文档流进行定位，然后相对它的最近滚动祖先（nearest scrolling ancestor）和 containing block（最近块级祖先 nearest block-level ancestor），包括 table-related 元素，基于 top、right、bottom 和 left 的值进行偏移。偏移值不会影响任何其他元素的位置。<br/>      该值总是创建一个新的层叠上下文（stacking context）。注意，一个 sticky 元素会“固定”在离它最近的一个拥有“滚动机制”的祖先上（当该祖先的 overflow 是 hidden、scroll、auto 或 overlay 时），即便这个祖先不是最近的真实可滚动祖先。这有效地抑制了任何“sticky”行为（详情见 Github issue on W3C CSSWG）。 |
 
 
 ### 默认值 @default-value 

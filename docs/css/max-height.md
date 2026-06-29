@@ -6,9 +6,9 @@ CSS属性 max-height 设置元素的最大高度。它防止height属性的使�
 
 
 ### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,11 +34,11 @@ max-height: <viewport-length>;
 ### max-height 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| fit-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 元素的最大高度根据内容可用高度自适应，当不会超过内容的最大高度 `max-content` 值。 |
-| max-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 元素的最大高度可以扩展到内容的最大高度。 |
-| min-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 元素的最大高度限制在内容的最小高度之内。 |
-| auto | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 元素的高度可以根据其内容的高度自动扩展，但仍然受到其他相关属性（如 `height` 和 `min-height`）的影响。如果没有其他限制，元素的高度将扩展以适应内容。 |
-| none | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 元素的高度不再受到任何最大高度的限制，即使元素的内容很多，也会根据内容的大小来自动扩展。 |
+| fit-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 元素的最大高度根据内容可用高度自适应，当不会超过内容的最大高度 `max-content` 值。 |
+| max-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 元素的最大高度可以扩展到内容的最大高度。 |
+| min-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 元素的最大高度限制在内容的最小高度之内。 |
+| auto | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 元素的高度可以根据其内容的高度自动扩展，但仍然受到其他相关属性（如 `height` 和 `min-height`）的影响。如果没有其他限制，元素的高度将扩展以适应内容。 |
+| none | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 元素的高度不再受到任何最大高度的限制，即使元素的内容很多，也会根据内容的大小来自动扩展。 |
 
 
 ### 默认值 @default-value 

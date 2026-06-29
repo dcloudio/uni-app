@@ -6,9 +6,9 @@ CSS 属性受到 transition effect的影响，会产生不断变化的中间值�
 
 
 ### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,12 +34,12 @@ transition-timing-function: <easing-function>#;
 ### transition-timing-function 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| ease | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 默认值。表示过渡效果开始缓慢，然后逐渐加速，最后减速结束。这是大多数情况下的推荐值，因为它创建了平滑的过渡效果。 |
-| ease-in | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 过渡开始时较慢，然后逐渐加速。这会在过渡初期创建一个缓慢的效果。 |
-| ease-out | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 过渡开始时较快，然后逐渐减速。这会在过渡末尾创建一个缓慢的效果。 |
-| ease-in-out | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 过渡开始时较慢，然后加速，最后减速。这是一个结合了ease-in和ease-out的时间函数，产生平滑的过渡效果。 |
-| linear | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 过渡效果是线性的，速度保持恒定，没有加速或减速。这会在整个过渡期间保持相同的速度。 |
-| cubic-bezier | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.14 | 用于自定义 CSS 过渡（transition）的时间函数的函数，它允许你精确地定义过渡效果的速度变化。 |
+| ease | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 默认值。表示过渡效果开始缓慢，然后逐渐加速，最后减速结束。这是大多数情况下的推荐值，因为它创建了平滑的过渡效果。 |
+| ease-in | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 过渡开始时较慢，然后逐渐加速。这会在过渡初期创建一个缓慢的效果。 |
+| ease-out | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 过渡开始时较快，然后逐渐减速。这会在过渡末尾创建一个缓慢的效果。 |
+| ease-in-out | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 过渡开始时较慢，然后加速，最后减速。这是一个结合了ease-in和ease-out的时间函数，产生平滑的过渡效果。 |
+| linear | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 过渡效果是线性的，速度保持恒定，没有加速或减速。这会在整个过渡期间保持相同的速度。 |
+| cubic-bezier | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.14 | 用于自定义 CSS 过渡（transition）的时间函数的函数，它允许你精确地定义过渡效果的速度变化。 |
 
 
 #### App平台

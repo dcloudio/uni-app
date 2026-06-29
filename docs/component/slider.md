@@ -10,27 +10,27 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 5.11 | 4.61 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| name | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
-| disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否禁用 |
-| min | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | slider 最小值 |
-| max | number | 100 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | slider 最大值 |
-| step | number | 1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | slider 步长，取值必须大于 0，并且可被(max - min)整除 |
-| value | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | slider 当前取值 |
+| name | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
+| disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 是否禁用 |
+| min | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | slider 最小值 |
+| max | number | 100 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | slider 最大值 |
+| step | number | 1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | slider 步长，取值必须大于 0，并且可被(max - min)整除 |
+| value | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | slider 当前取值 |
 | activeBackgroundColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#007aff" | Web: 4.18; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): x | slider 滑块左侧已选择部分的线条颜色 (vapor 模式请使用 track-active-class) |
 | ~~activeColor~~ | string([string.ColorString](/uts/data-type.md#ide-string)) | "#007aff" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | slider 滑块左侧已选择部分的线条颜色 |
 | backgroundColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#e9e9e9" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | slider 背景条的颜色 (vapor 模式请使用 track-class) |
 | block-size | number | 28 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | slider 滑块的大小，取值范围为 12 - 28 (vapor 模式请使用 thumb-class) |
 | ~~block-color~~ | string([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61; HarmonyOS(Vapor): x | 滑块颜色 (使用foreColor替代) |
 | foreColor | string([string.ColorString](/uts/data-type.md#ide-string)) |   | Web: 4.18; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61; HarmonyOS(Vapor): x | slider 的滑块背景颜色 (vapor 模式请使用 thumb-class) |
-| show-value | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否显示当前 value |
+| show-value | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 是否显示当前 value |
 | color | color |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(color)*<br/>背景条的颜色（请使用 backgroundColor） |
 | selected-color | color |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(color)*<br/>已选择的颜色（请使用 activeColor） |
 | track-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS: x; iOS(Vapor): 5.11; HarmonyOS:  ; HarmonyOS(Vapor): 5.0 | slider 背景条样式类名 |

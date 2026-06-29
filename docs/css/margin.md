@@ -6,9 +6,9 @@ margin 属性为给定元素设置所有四个（上下左右）方向的外边�
 
 
 ### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -35,7 +35,7 @@ margin: [ <length> | <percentage> | auto ]{1,4};
 ### margin 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 让浏览器自己选择一个合适的外边距。有时，在一些特殊情况下，该值可以使元素居中。 |
+| auto | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 让浏览器自己选择一个合适的外边距。有时，在一些特殊情况下，该值可以使元素居中。 |
 
 
 ### 默认值 @default-value 

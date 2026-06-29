@@ -6,9 +6,9 @@ margin-top CSS 属性用于设置元素的顶部外边距外边距区域。正�
 
 
 ### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -35,7 +35,7 @@ margin-top: <length> | <percentage> | auto;
 ### margin-top 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 浏览器选择一个合适的值来使用。参见 margin。 |
+| auto | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 浏览器选择一个合适的值来使用。参见 margin。 |
 
 
 ### 默认值 @default-value 

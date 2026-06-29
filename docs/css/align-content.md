@@ -6,9 +6,9 @@ align-content 属性用于在 Flex 弹性布局中设置多行（或多列）作
 
 
 ### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,12 +34,12 @@ align-content: normal | <baseline-position> | <content-distribution> | <overflow
 ### align-content 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| center | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 所有行朝向容器的中心填充。每行互相紧挨，相对于容器居中对齐。容器的交叉轴起点边和第一行的距离相等于容器的交叉轴终点边和最后一行的距离。 |
-| flex-start | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 所有行从容器交叉轴起点开始填充。第一行的交叉轴起点边和容器的交叉轴起点边对齐。接下来的每一行紧跟前一行。 |
-| flex-end | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 所有行从容器交叉轴末尾开始填充。最后一行的交叉轴终点和容器的交叉轴终点对齐，同时所有后续行与前一个对齐。 |
-| space-between | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 所有行在容器中平均分布，相邻两行间距相等。容器的交叉轴起点边和终点边分别与第一行和最后一行的边对齐。 |
-| space-around | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 所有行在容器中平均分布，相邻两行间距相等。容器的交叉轴起点边和终点边分别与第一行和最后一行的距离是相邻两行间距的一半。 |
-| stretch | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 拉伸所有行来填满剩余空间，剩余空间平均地分配给每一行。 |
+| center | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 所有行朝向容器的中心填充。每行互相紧挨，相对于容器居中对齐。容器的交叉轴起点边和第一行的距离相等于容器的交叉轴终点边和最后一行的距离。 |
+| flex-start | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 所有行从容器交叉轴起点开始填充。第一行的交叉轴起点边和容器的交叉轴起点边对齐。接下来的每一行紧跟前一行。 |
+| flex-end | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 所有行从容器交叉轴末尾开始填充。最后一行的交叉轴终点和容器的交叉轴终点对齐，同时所有后续行与前一个对齐。 |
+| space-between | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 所有行在容器中平均分布，相邻两行间距相等。容器的交叉轴起点边和终点边分别与第一行和最后一行的边对齐。 |
+| space-around | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 所有行在容器中平均分布，相邻两行间距相等。容器的交叉轴起点边和终点边分别与第一行和最后一行的距离是相邻两行间距的一半。 |
+| stretch | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 拉伸所有行来填满剩余空间，剩余空间平均地分配给每一行。 |
 
 
 ### 默认值 @default-value 

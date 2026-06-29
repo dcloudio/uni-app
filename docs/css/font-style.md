@@ -6,9 +6,9 @@ font-style 属性用于设置字体样式。
 
 
 ### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,8 +34,8 @@ font-style: normal | italic | oblique <angle>{0,2};
 ### font-style 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| italic | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 选择斜体，如果当前字体没有可用的斜体版本，会选用倾斜体（oblique ）替代。 |
-| normal | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 选择 font-family 的常规字体。 |
+| italic | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 选择斜体，如果当前字体没有可用的斜体版本，会选用倾斜体（oblique ）替代。 |
+| normal | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 选择 font-family 的常规字体。 |
 
 
 ### 默认值 @default-value 

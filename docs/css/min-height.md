@@ -6,9 +6,9 @@ CSS 属性 min-height 能够设置元素的最小高度。这样能够防止 hei
 
 
 ### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,11 +34,11 @@ min-height: <viewport-length>;
 ### min-height 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| fit-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 元素的高度将自动调整为适应内容的大小，但不会小于内容的最小高度 `min-content` 值。 |
-| max-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 元素的最小高度不会小于内容的最大高度。 |
-| min-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 元素的最小高度不会小于内容的最小高度。 |
-| auto | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 浏览器将通过计算为指定元素选择一个 min-height 值。 |
-| none | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 不限制盒容器的尺寸。 |
+| fit-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 元素的高度将自动调整为适应内容的大小，但不会小于内容的最小高度 `min-content` 值。 |
+| max-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 元素的最小高度不会小于内容的最大高度。 |
+| min-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 元素的最小高度不会小于内容的最小高度。 |
+| auto | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 浏览器将通过计算为指定元素选择一个 min-height 值。 |
+| none | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 不限制盒容器的尺寸。 |
 
 
 ### 默认值 @default-value 

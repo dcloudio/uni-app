@@ -6,9 +6,9 @@ min-width 属性为给定元素设置最小宽度。它可以阻止 width 属性
 
 
 ### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,11 +34,11 @@ min-width: <viewport-length>;
 ### min-width 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| fit-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 等同于 min(max-content, max(min-content, fill-available). |
-| max-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 固有首选宽度。 |
-| min-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 固有最小宽度 |
-| auto | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 用于弹性元素的默认最小宽度。相比其他布局中以0为默认值，auto能为弹性布局指明更合理的默认表现。 |
-| none | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 元素未设置最小值 |
+| fit-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 等同于 min(max-content, max(min-content, fill-available). |
+| max-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 固有首选宽度。 |
+| min-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 固有最小宽度 |
+| auto | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 用于弹性元素的默认最小宽度。相比其他布局中以0为默认值，auto能为弹性布局指明更合理的默认表现。 |
+| none | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 元素未设置最小值 |
 
 
 ### 默认值 @default-value 

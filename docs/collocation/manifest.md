@@ -12,20 +12,20 @@ uni-app x 目前不提供内置模块选择，而是提供了摇树机制自动�
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| appid | string |  | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | [DCloud AppID 使用说明](https://ask.dcloud.net.cn/article/35907) |
-| name | string |  | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 应用名称 |
-| description | string |  | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 应用描述 |
-| versionName | string |  | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 应用版本名称 |
-| versionCode | integer |  | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 应用版本号，必须是整数，取值范围1~2147483647；升级时必须高于上一次设置的值。 |
+| appid | string |  | Web: 4.0; 微信小程序: √; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | [DCloud AppID 使用说明](https://ask.dcloud.net.cn/article/35907) |
+| name | string |  | Web: 4.0; 微信小程序: √; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 应用名称 |
+| description | string |  | Web: 4.0; 微信小程序: √; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 应用描述 |
+| versionName | string |  | Web: 4.0; 微信小程序: √; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 应用版本名称 |
+| versionCode | integer |  | Web: 4.0; 微信小程序: √; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 应用版本号，必须是整数，取值范围1~2147483647；升级时必须高于上一次设置的值。 |
 | locale | '' |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 默认语言 |
 | fallbackLocale | '' |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 默认回退语言 |
-| uni-app-x | [uni-app-x 配置项列表](#manifest-uni-app-x) |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.21; HarmonyOS: 4.61 | 存在uni-app-x节点则表示为uni-app x项目 |
-| app | [app 配置项列表](#manifest-app) |  | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | App平台（原生App）配置 |
-| app-android | [app-android 配置项列表](#manifest-app-android) |  | Web: x; 微信小程序: x; Android: 4.71; iOS: x; HarmonyOS: x | App-Android平台配置 |
-| app-ios | [app-ios 配置项列表](#manifest-app-ios) |  | Web: x; 微信小程序: x; Android: x; iOS: 4.71; HarmonyOS: x | iOS App平台配置 |
-| app-harmony | [app-harmony 配置项列表](#manifest-app-harmony) |  | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | HarmonyOS平台配置 |
-| web | [web 配置项列表](#manifest-web) |  | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | Web平台配置 |
-| mp-weixin | [mp-weixin 配置项列表](#manifest-mp-weixin) |  | Web: x; 微信小程序: √; Android: x; iOS: x; HarmonyOS: x |   |
+| uni-app-x | [uni-app-x 配置项列表](#manifest-uni-app-x) |  | Web: 4.0; 微信小程序:  ; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.21; HarmonyOS: 4.61 | 存在uni-app-x节点则表示为uni-app x项目 |
+| app | [app 配置项列表](#manifest-app) |  | Web: x; 微信小程序: x; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | App平台（原生App）配置 |
+| app-android | [app-android 配置项列表](#manifest-app-android) |  | Web: x; 微信小程序: x; Android: 4.71; Android(Vapor): 5.21; iOS: x; iOS(Vapor): x; HarmonyOS: x | App-Android平台配置 |
+| app-ios | [app-ios 配置项列表](#manifest-app-ios) |  | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS: 4.71; iOS(Vapor): 5.11; HarmonyOS: x | iOS App平台配置 |
+| app-harmony | [app-harmony 配置项列表](#manifest-app-harmony) |  | Web: x; 微信小程序: x; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | HarmonyOS平台配置 |
+| web | [web 配置项列表](#manifest-web) |  | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: x; iOS(Vapor): x; HarmonyOS: x | Web平台配置 |
+| mp-weixin | [mp-weixin 配置项列表](#manifest-mp-weixin) |  | Web: x; 微信小程序: √; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x |   |
 | __hbuilderx | [__hbuilderx 配置项列表](#manifest-hbuilderx) |  | Web: x; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS:   | 用于HBuilderX可视化界面相关操作配置 |
 
 **注意**
@@ -38,23 +38,23 @@ uni-app x 目前不提供内置模块选择，而是提供了摇树机制自动�
 
 存在uni-app-x节点则表示为uni-app x项目
 
-| Web | Android | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 5.21 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.21 | 4.61 |
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| flex-direction | 'row' \| 'row-reverse' \| 'column' \| 'column-reverse' | "column" | Web: 4.0; 微信小程序:  ; Android 系统版本: x; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | uvue页面默认flex排列方向 |
+| flex-direction | 'row' \| 'row-reverse' \| 'column' \| 'column-reverse' | "column" | Web: 4.0; 微信小程序:  ; Android 系统版本: x; Android: 5.0; iOS: 5.0; iOS(Vapor): 5.11; HarmonyOS: 5.0 | uvue页面默认flex排列方向 |
 | vapor | boolean | false | Web: 4.0; 微信小程序:  ; Android 系统版本: x; Android: x; iOS: x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0.0; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 是否启用蒸汽模式 |
-| styleIsolationVersion | '2' | "2" | Web: 5.0; 微信小程序:  ; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | 样式隔离策略 |
+| styleIsolationVersion | '2' | "2" | Web: 5.0; 微信小程序:  ; Android: 5.0; iOS: 5.0; iOS(Vapor): 5.11; HarmonyOS: 5.0 | 样式隔离策略 |
 
 ### APP配置 @manifest-app
 
 App平台（原生App）配置
 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 3.9 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | x | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -330,9 +330,9 @@ ios平台微信支付配置信息
 
 App-Android平台配置
 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.71 | x | x |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | x | 4.71 | 5.21 | x | x | x |
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -501,9 +501,9 @@ Android平台应用启动界面配置。云端打包后生效，建议在HBuilde
 
 iOS App平台配置
 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | x | 4.71 | x |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.71 | 5.11 | x |
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -643,9 +643,9 @@ app内置模块配置
 
 HarmonyOS平台配置
 
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | x | 4.61 |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS 系统版本 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| x | x | x | x | x | x | x | 4.61 |
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -739,9 +739,9 @@ share 模块
 
 Web平台配置
 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x | x |
+| Web | 微信小程序 | Android 系统版本 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | x | x | x | x |
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -874,9 +874,9 @@ Web平台配置
 
 <!-- MANIFESTJSON.mp-weixin.description -->
 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | √ | x | x | x |
+| Web | 微信小程序 | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | √ | x | x | x | x | x |
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |

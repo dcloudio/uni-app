@@ -6,9 +6,9 @@ display 属性设置元素的显示或布局方式，默认值为flex（弹性�
 
 
 ### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,8 +34,8 @@ display: [ <display-outside> || <display-inside> ] | <display-listitem> | <displ
 ### display 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| flex | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 该元素根据弹性盒模型布局。 |
-| none | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 使元素不再显示，其对布局不会有影响（页面渲染得好像此元素并不存在），所有的子元素也不会再显示。如需元素占据空间，但不渲染任何东西，应该使用 visibility 属性。 |
+| flex | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 该元素根据弹性盒模型布局。 |
+| none | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 使元素不再显示，其对布局不会有影响（页面渲染得好像此元素并不存在），所有的子元素也不会再显示。如需元素占据空间，但不渲染任何东西，应该使用 visibility 属性。 |
 
 
 **注意**

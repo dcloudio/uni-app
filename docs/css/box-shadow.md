@@ -6,9 +6,9 @@ CSS box-shadow 属性用于在元素的框架上添加阴影效果。你可以�
 
 
 ### uni-app x 兼容性
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.0 | 3.9 | 4.11 | 4.61 |
+| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -36,8 +36,8 @@ box-shadow: none | <shadow>#;
 ### box-shadow 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| inset | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 如果没有指定inset，默认阴影在边框外，即阴影向外扩散。<br/>      使用 inset 关键字会使得阴影落在盒子内部，这样看起来就像是内容被压低了。此时阴影会在边框之内 (即使是透明边框）、背景之上、内容之下。 |
-| none | Web: 4.0; Android 系统版本: x; Android: 3.9; iOS 系统版本: x; iOS: 4.11; HarmonyOS: 4.61 | No shadow. |
+| inset | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 如果没有指定inset，默认阴影在边框外，即阴影向外扩散。<br/>      使用 inset 关键字会使得阴影落在盒子内部，这样看起来就像是内容被压低了。此时阴影会在边框之内 (即使是透明边框）、背景之上、内容之下。 |
+| none | Web: 4.0; Android 系统版本: x; Android: 3.9; Android(Vapor): 5.21; iOS 系统版本: x; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | No shadow. |
 
 
 
