@@ -125,7 +125,7 @@ app.mount('#app', 'package-a', { independent: true })
 - 传入 root 或 `process.env.UNI_SUBPACKAGE`：走普通 `createSubpackageApp`。
 - 否则走主包 `createApp`。
 
-`createIndependentSubpackageApp` 只做一件事：
+`createIndependentSubpackageApp` 只初始化当前独立分包 runtime 的 root 与空 app 上下文：
 
 ```ts
 setSubpackageAppVm(resolveSubpackageRoot(root), vm)
@@ -138,7 +138,7 @@ setSubpackageAppVm(resolveSubpackageRoot(root), vm)
 - 注册 `wx.onAppShow` / `wx.onAppHide` 来转发 App 生命周期。
 - 合并 `globalData` 或把用户 App options 写回原生 App 实例。
 
-页面/组件侧通过当前页面 route 反查 `__GLOBAL__.$subpackages[root].$vm`，独立分包冷启动时不依赖 `getApp().$vm`。
+页面/组件侧通过当前 runtime 的 `getRuntimeSubpackageRoot()` 读取 `__GLOBAL__.$subpackages[root].$vm`，不再通过页面 route、`getCurrentPages()` 或 `process.env.UNI_SUBPACKAGE` 推导 root。`process.env.UNI_SUBPACKAGE` 仅保留在初始化阶段兼容旧的单独编译分包入口。
 
 ## 第一阶段能力边界
 
