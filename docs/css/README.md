@@ -383,8 +383,8 @@ App仅对`同层的兄弟节点`之间支持`z-index`来调节层级。不支持
 | [lines](lines.md) |
 | [pointer-events](pointer-events.md) |
 | [text-decoration](text-decoration.md) |
-| [text-decoration-color](text-decoration-color.md) |
 | [text-decoration-style](text-decoration-style.md) |
+| [text-decoration-thickness](text-decoration-thickness.md) |
 | [transition](transition.md) |
 | [transition-delay](transition-delay.md) |
 | [transition-duration](transition-duration.md) |
