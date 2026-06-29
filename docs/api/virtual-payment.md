@@ -20,7 +20,7 @@
 
 ::: warning Note：
 1. iOS平台采用Apple新提供的框架StoreKit2实现IAP，该框架目前仅支持iOS15.0及以上版本；
-2. 为了避免Apple Store审核不过，请在iOS15.0版本以下，关闭项目中的购买入口；
+2. 为了避免Apple Store审核不过，建议设置项目最低版本为iOS15.0，最低版本设置参考manifest.json的[deploymentTarget](https://uniapp.dcloud.net.cn/collocation/manifest-app.html#ios)
 :::
 
 支付不仅需要客户端开发，也需要服务器开发。\
