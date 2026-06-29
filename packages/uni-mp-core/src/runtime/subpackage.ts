@@ -6,11 +6,21 @@ interface SubpackageApp {
 
 type Subpackages = Record<string, SubpackageApp>
 
+let runtimeSubpackageRoot: string | undefined
+
 export function resolveSubpackageRoot(root?: string) {
   return (
     normalizeSubpackageRoot(root) ||
     normalizeSubpackageRoot(process.env.UNI_SUBPACKAGE)
   )
+}
+
+export function setRuntimeSubpackageRoot(root?: string) {
+  runtimeSubpackageRoot = normalizeSubpackageRoot(root)
+}
+
+export function getRuntimeSubpackageRoot() {
+  return runtimeSubpackageRoot
 }
 
 export function setSubpackageAppVm(
@@ -21,6 +31,7 @@ export function setSubpackageAppVm(
   if (!subpackageRoot) {
     return
   }
+  setRuntimeSubpackageRoot(subpackageRoot)
   const globalObject = __GLOBAL__ as any
   ;(globalObject.$subpackages || (globalObject.$subpackages = {}))[
     subpackageRoot
@@ -29,53 +40,17 @@ export function setSubpackageAppVm(
   }
 }
 
-export function getSubpackageAppVm(route?: string) {
+export function getSubpackageAppVm() {
+  const subpackageRoot = getRuntimeSubpackageRoot()
+  if (!subpackageRoot) {
+    return
+  }
   const globalObject = __GLOBAL__ as any
   const subpackages = globalObject.$subpackages as Subpackages | undefined
   if (!subpackages) {
     return
   }
-  const root =
-    findSubpackageRootByRoute(subpackages, route) ||
-    findSubpackageRootByRoute(subpackages, getCurrentPageRoute()) ||
-    normalizeSubpackageRoot(process.env.UNI_SUBPACKAGE)
-  return root && subpackages[root]?.$vm
-}
-
-export function findSubpackageRootByRoute(
-  subpackages: Subpackages,
-  route?: string
-) {
-  const normalizedRoute = normalizeRoute(route)
-  if (!normalizedRoute) {
-    return
-  }
-  return Object.keys(subpackages).find((root) => {
-    const normalizedRoot = normalizeSubpackageRoot(root)
-    return (
-      normalizedRoot &&
-      (normalizedRoute === normalizedRoot ||
-        normalizedRoute.startsWith(`${normalizedRoot}/`))
-    )
-  })
-}
-
-function getCurrentPageRoute() {
-  if (typeof getCurrentPages !== 'function') {
-    return ''
-  }
-  const pages = getCurrentPages()
-  const page = pages[pages.length - 1] as
-    | {
-        route?: string
-        __route__?: string
-      }
-    | undefined
-  return page?.route || page?.__route__ || ''
-}
-
-function normalizeRoute(route: string | undefined) {
-  return normalizeSubpackageRoot(route)
+  return subpackages[subpackageRoot]?.$vm
 }
 
 function normalizeSubpackageRoot(root: string | undefined) {

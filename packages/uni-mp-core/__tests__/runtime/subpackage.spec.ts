@@ -1,7 +1,8 @@
 import {
-  findSubpackageRootByRoute,
+  getRuntimeSubpackageRoot,
   getSubpackageAppVm,
   resolveSubpackageRoot,
+  setRuntimeSubpackageRoot,
   setSubpackageAppVm,
 } from '../../src/runtime/subpackage'
 
@@ -22,6 +23,7 @@ describe('runtime/subpackage', () => {
     } else {
       ;(global as any).getCurrentPages = originalGetCurrentPages
     }
+    setRuntimeSubpackageRoot(undefined)
   })
 
   test('resolves root from parameter and env', () => {
@@ -32,30 +34,13 @@ describe('runtime/subpackage', () => {
     expect(resolveSubpackageRoot()).toBe('package-c')
   })
 
-  test('finds root by current page route', () => {
-    const subpackages = {
-      'package-a': {},
-      'package-b/nested': {},
-    }
+  test('sets runtime root with normalized root', () => {
+    setRuntimeSubpackageRoot('/package-a/')
 
-    expect(findSubpackageRootByRoute(subpackages, 'package-a')).toBe(
-      'package-a'
-    )
-    expect(
-      findSubpackageRootByRoute(subpackages, '/package-a/pages/index/index')
-    ).toBe('package-a')
-    expect(
-      findSubpackageRootByRoute(
-        subpackages,
-        'package-b/nested/pages/index/index'
-      )
-    ).toBe('package-b/nested')
-    expect(findSubpackageRootByRoute(subpackages, 'pages/index/index')).toBe(
-      undefined
-    )
+    expect(getRuntimeSubpackageRoot()).toBe('package-a')
   })
 
-  test('gets subpackage app vm by route before env fallback', () => {
+  test('gets subpackage app vm by runtime root only', () => {
     const appVmA = {}
     const appVmB = {}
     ;(global as any).__GLOBAL__ = {
@@ -69,9 +54,10 @@ describe('runtime/subpackage', () => {
       { route: 'package-b/pages/index/index' },
     ]
 
+    expect(getSubpackageAppVm()).toBeUndefined()
+    setRuntimeSubpackageRoot('package-b')
     expect(getSubpackageAppVm()).toBe(appVmB)
-    expect(getSubpackageAppVm('package-a/pages/index/index')).toBe(appVmA)
-    ;(global as any).getCurrentPages = () => []
+    setRuntimeSubpackageRoot('package-a')
     expect(getSubpackageAppVm()).toBe(appVmA)
   })
 
@@ -81,6 +67,7 @@ describe('runtime/subpackage', () => {
 
     setSubpackageAppVm('/package-a/', appVm as any)
 
+    expect(getRuntimeSubpackageRoot()).toBe('package-a')
     expect((global as any).__GLOBAL__.$subpackages).toEqual({
       'package-a': { $vm: appVm },
     })

@@ -2,6 +2,7 @@ import {
   $createComponent,
   $destroyComponent,
 } from '../../src/runtime/component'
+import { setRuntimeSubpackageRoot } from '../../src/runtime/subpackage'
 
 describe('runtime/component', () => {
   const originalGlobal = (global as any).__GLOBAL__
@@ -20,6 +21,7 @@ describe('runtime/component', () => {
     } else {
       process.env.UNI_MP_PLUGIN = originalMpPlugin
     }
+    setRuntimeSubpackageRoot(undefined)
   })
 
   test('destroys component with the app vm that created it', () => {
@@ -40,15 +42,10 @@ describe('runtime/component', () => {
         'package-b': { $vm: appVmB },
       },
     }
-    ;(global as any).getCurrentPages = () => [
-      { route: 'package-a/pages/index/index' },
-    ]
+    setRuntimeSubpackageRoot('package-a')
 
     const instance = $createComponent({} as any, {} as any)
 
-    ;(global as any).getCurrentPages = () => [
-      { route: 'package-b/pages/index/index' },
-    ]
     $destroyComponent(instance as any)
 
     expect(appVmA.$createComponent).toHaveBeenCalled()
@@ -56,7 +53,7 @@ describe('runtime/component', () => {
     expect(appVmB.$destroyComponent).not.toHaveBeenCalled()
   })
 
-  test('creates component with mp instance route before current page route', () => {
+  test('creates component with runtime root before route fallbacks', () => {
     delete (process.env as Record<string, string | undefined>).UNI_MP_PLUGIN
     const componentA = { $: {} }
     const componentB = { $: {} }
@@ -77,12 +74,13 @@ describe('runtime/component', () => {
     ;(global as any).getCurrentPages = () => [
       { route: 'package-b/pages/index/index' },
     ]
+    setRuntimeSubpackageRoot('package-a')
 
     const instance = $createComponent(
       {} as any,
       {
         mpInstance: {
-          route: 'package-a/pages/index/index',
+          route: 'package-b/pages/index/index',
         },
       } as any
     )

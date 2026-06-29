@@ -1,4 +1,8 @@
 import { initCreateIndependentSubpackageApp } from '../../src/runtime/app'
+import {
+  getRuntimeSubpackageRoot,
+  setRuntimeSubpackageRoot,
+} from '../../src/runtime/subpackage'
 
 declare global {
   const my: any
@@ -13,6 +17,7 @@ describe('runtime/app', () => {
     ;(global as any).__GLOBAL__ = originalGlobal
     restoreGlobal('getApp', originalGetApp)
     restoreGlobal('wx', originalWx)
+    setRuntimeSubpackageRoot(undefined)
   })
 
   test('registers independent subpackage app without app lifecycle', () => {
@@ -33,6 +38,7 @@ describe('runtime/app', () => {
     expect((global as any).__GLOBAL__.$subpackages).toEqual({
       'package-a': { $vm: vm },
     })
+    expect(getRuntimeSubpackageRoot()).toBe('package-a')
     expect((global as any).getApp).not.toHaveBeenCalled()
     expect((global as any).wx.getLaunchOptionsSync).not.toHaveBeenCalled()
     expect((global as any).wx.onAppShow).not.toHaveBeenCalled()
