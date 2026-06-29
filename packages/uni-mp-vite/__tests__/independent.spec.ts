@@ -5,7 +5,6 @@ import { parseIndependentSubPackages } from '@dcloudio/uni-cli-shared'
 import { virtualComponentPath, virtualPagePath } from '../src/plugins/entry'
 import { uniIndependentSubpackagePlugin } from '../src/plugins/independent'
 import {
-  APP_FACTORY_PREFIX,
   INDEPENDENT_MAIN_PREFIX,
   INDEPENDENT_PAGES_PREFIX,
   UNI_MP_RUNTIME_ID,
@@ -105,8 +104,8 @@ describe('uniIndependentSubpackagePlugin', () => {
           )}`
         )
         expect(result.code).toContain(
-          `import { createApp as createUserApp } from ${JSON.stringify(
-            formatIndependentVirtualId(APP_FACTORY_PREFIX, 'package-a')
+          `import { createSSRApp } from ${JSON.stringify(
+            withIndependentRoot('vue', 'package-a')
           )}`
         )
         expect(result.code).toContain(
@@ -115,48 +114,8 @@ describe('uniIndependentSubpackagePlugin', () => {
           )}`
         )
         expect(result.code).toContain(
-          `createUserApp().app.mount('#app', "package-a")`
+          `createSSRApp({}).mount('#app', "package-a", { independent: true })`
         )
-      }
-    )
-  })
-
-  test('resolves app factory to root-specific main module', async () => {
-    process.env.UNI_PLATFORM = 'mp-weixin'
-    await withPagesJson(
-      {
-        subPackages: [
-          {
-            root: 'package-a',
-            independent: true,
-            pages: [{ path: 'pages/index/index' }],
-          },
-        ],
-      },
-      async (inputDir) => {
-        process.env.UNI_INPUT_DIR = inputDir
-        const mainPath = path.join(inputDir, 'main.ts')
-        const appVuePath = path.join(inputDir, 'App.vue')
-        fs.writeFileSync(mainPath, 'export function createApp() {}')
-        fs.writeFileSync(appVuePath, '<script></script>')
-
-        const plugin = uniIndependentSubpackagePlugin({
-          global: 'wx',
-          style: { extname: '.wxss' },
-        } as any)
-        callBuildStart(plugin)
-        const id = formatIndependentVirtualId(APP_FACTORY_PREFIX, 'package-a')
-        const addWatchFile = jest.fn()
-
-        await expect((plugin.resolveId as Function)(id)).resolves.toBe(id)
-        expect((plugin.load as Function).call({ addWatchFile }, id)).toEqual({
-          code: `export { createApp } from ${JSON.stringify(
-            withIndependentRoot(mainPath, 'package-a')
-          )}\n`,
-          map: { mappings: '' },
-        })
-        expect(addWatchFile).toHaveBeenCalledWith(mainPath)
-        expect(addWatchFile).toHaveBeenCalledWith(appVuePath)
       }
     )
   })
@@ -674,7 +633,7 @@ wx.createPage(MiniProgramPage)`,
     )
   })
 
-  test('emits and injects independent global style', async () => {
+  test('does not copy app style into independent package', async () => {
     process.env.UNI_PLATFORM = 'mp-weixin'
     await withPagesJson(
       {
@@ -715,13 +674,13 @@ wx.createPage(MiniProgramPage)`,
 
         callGenerateBundle(plugin, { emitFile }, bundle)
 
-        expect(emitFile).toHaveBeenCalledWith({
-          type: 'asset',
-          fileName: 'package-a/common/main.wxss',
-          source: 'page{color:red}.logo{background:url("../static/logo.png")}',
-        })
+        expect(emitFile).not.toHaveBeenCalledWith(
+          expect.objectContaining({
+            fileName: 'package-a/common/main.wxss',
+          })
+        )
         expect(bundle['package-a/pages/index/index.wxss'].source).toBe(
-          '@import "../../common/main.wxss";\n.page{color:blue}'
+          '.page{color:blue}'
         )
         expect(bundle['package-a/components/foo.wxss'].source).toBe(
           '.component{color:green}'
