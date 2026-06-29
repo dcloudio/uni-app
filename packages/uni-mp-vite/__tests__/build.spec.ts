@@ -3,10 +3,7 @@ import os from 'os'
 import path from 'path'
 import { createBuildOptions } from '../src/plugin/build'
 import { virtualComponentPath, virtualPagePath } from '../src/plugins/entry'
-import {
-  formatIndependentPageVirtualId,
-  withIndependentRoot,
-} from '../src/plugins/independentUtils'
+import { withIndependentRoot } from '../src/plugins/independentUtils'
 
 async function withMiniProgramProject(
   test: (inputDir: string) => void | Promise<void>
@@ -142,10 +139,6 @@ describe('mp vite build options', () => {
     await withMiniProgramProject(async (inputDir) => {
       process.env.UNI_INPUT_DIR = inputDir
       const chunkFileNames = getRollupOutput(inputDir).chunkFileNames
-      const independentPageId = formatIndependentPageVirtualId(
-        'package-a',
-        'package-a/pages/index/index.vue'
-      )
 
       expect(
         chunkFileNames({
@@ -156,12 +149,6 @@ describe('mp vite build options', () => {
           ),
         })
       ).toBe('package-a/common/utils/lazy.js')
-      expect(
-        chunkFileNames({
-          isDynamicEntry: true,
-          facadeModuleId: independentPageId,
-        })
-      ).toBe('package-a/pages/index/index.js')
       expect(
         chunkFileNames({
           isDynamicEntry: true,

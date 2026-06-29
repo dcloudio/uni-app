@@ -148,7 +148,7 @@ export function initCreateSubpackageApp(parseAppOptions?: ParseAppOptions) {
 
 export function initCreateIndependentSubpackageApp() {
   return function createApp(vm: ComponentPublicInstance, root?: string) {
-    setSubpackageAppVm(resolveSubpackageRoot(root), vm)
+    setSubpackageAppVm(resolveSubpackageRoot(root), vm, true)
   }
 }
 

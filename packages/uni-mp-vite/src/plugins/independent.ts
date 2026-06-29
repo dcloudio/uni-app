@@ -1,4 +1,3 @@
-import fs from 'fs'
 import path from 'path'
 import {
   type IndependentSubPackage,
@@ -17,8 +16,6 @@ import type { UniMiniProgramPluginOptions } from '../plugin'
 import {
   INDEPENDENT_MAIN_PREFIX,
   INDEPENDENT_PAGES_PREFIX,
-  INDEPENDENT_PAGE_PARAM,
-  INDEPENDENT_PAGE_PREFIX,
   INDEPENDENT_ROOT_PARAM,
   INDEPENDENT_SUBPACKAGE_PLUGIN_NAME,
   UNI_MP_RUNTIME_ID,
@@ -37,7 +34,6 @@ export function uniIndependentSubpackagePlugin(
 ): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const platform = process.env.UNI_PLATFORM as UniApp.PLATFORM
-  const global = options.global
   const alias = options.vite?.alias || {}
   const styleExtname = options.style.extname
   return {
@@ -72,10 +68,6 @@ export function uniIndependentSubpackagePlugin(
       }
       const pagesRoot = parseIndependentPagesRoot(id)
       if (pagesRoot && independentRoots.has(pagesRoot)) {
-        return id
-      }
-      const pageInfo = parseIndependentPageInfo(id)
-      if (pageInfo && independentRoots.has(pageInfo.root)) {
         return id
       }
       const importerRoot = importer && parseIndependentRoot(importer)
@@ -134,20 +126,6 @@ export function uniIndependentSubpackagePlugin(
             platform,
             pagesRoot
           ),
-          map: { mappings: '' },
-        }
-      }
-      const pageInfo = parseIndependentPageInfo(id)
-      if (pageInfo && independentRoots.has(pageInfo.root)) {
-        const filepath = normalizePath(path.resolve(inputDir, pageInfo.page))
-        if (fs.existsSync(filepath)) {
-          this.addWatchFile(filepath)
-        }
-        return {
-          code: `import MiniProgramPage from ${JSON.stringify(
-            withIndependentRoot(filepath, pageInfo.root)
-          )}
-${global}.createPage(MiniProgramPage)`,
           map: { mappings: '' },
         }
       }
@@ -581,13 +559,17 @@ function shouldPropagateIndependentRoot(id: string) {
 }
 
 function generateIndependentMainCode(root: string) {
-  return `import ${JSON.stringify(withIndependentRoot(UNI_MP_RUNTIME_ID, root))}
+  return `import { createIndependentSubpackageApp } from ${JSON.stringify(
+    withIndependentRoot(UNI_MP_RUNTIME_ID, root)
+  )}
 import { createSSRApp } from ${JSON.stringify(withIndependentRoot('vue', root))}
 import ${JSON.stringify(
     formatIndependentVirtualId(INDEPENDENT_PAGES_PREFIX, root)
   )}
 
-createSSRApp({}).mount('#app', ${JSON.stringify(root)}, { independent: true })
+createSSRApp({}).mount('#app', ${JSON.stringify(
+    root
+  )}, { independent: true, createApp: createIndependentSubpackageApp })
 `
 }
 
@@ -610,18 +592,6 @@ function parseIndependentPagesRoot(id: string) {
   return parseVirtualRoot(id, INDEPENDENT_PAGES_PREFIX)
 }
 
-function parseIndependentPageInfo(id: string) {
-  if (!id.startsWith(INDEPENDENT_PAGE_PREFIX)) {
-    return
-  }
-  const query = parseVirtualQuery(id)
-  const root = query.get(INDEPENDENT_ROOT_PARAM)
-  const page = query.get(INDEPENDENT_PAGE_PARAM)
-  if (root && page) {
-    return { root, page }
-  }
-}
-
 function parseVirtualRoot(id: string, prefix: string) {
   if (!id.startsWith(prefix)) {
     return
@@ -631,10 +601,5 @@ function parseVirtualRoot(id: string, prefix: string) {
     return
   }
   const query = id.slice(queryIndex + 1)
-  return new URLSearchParams(query).get('root') || undefined
-}
-
-function parseVirtualQuery(id: string) {
-  const queryIndex = id.indexOf('?')
-  return new URLSearchParams(queryIndex === -1 ? '' : id.slice(queryIndex + 1))
+  return new URLSearchParams(query).get(INDEPENDENT_ROOT_PARAM) || undefined
 }

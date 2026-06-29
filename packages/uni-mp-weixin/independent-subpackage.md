@@ -72,11 +72,14 @@ input: {
 `\0uni:mp-independent-main?root=package-a` 返回编译器生成的 root 专属启动代码：
 
 ```ts
-import 'uni-mp-runtime?uni_mp_independent_root=package-a'
+import { createIndependentSubpackageApp } from 'uni-mp-runtime?uni_mp_independent_root=package-a'
 import { createSSRApp } from 'vue?uni_mp_independent_root=package-a'
 import '\0uni:mp-independent-pages?root=package-a'
 
-createSSRApp({}).mount('#app', 'package-a', { independent: true })
+createSSRApp({}).mount('#app', 'package-a', {
+  independent: true,
+  createApp: createIndependentSubpackageApp,
+})
 ```
 
 要点：
@@ -85,7 +88,7 @@ createSSRApp({}).mount('#app', 'package-a', { independent: true })
 - 不 import `App.vue`。
 - 不复用 app factory。
 - 只创建一个空 Vue app 上下文，用于小程序页面/组件运行时挂载。
-- 第三个参数 `{ independent: true }` 让 `uni-mp-vue` 选择独立分包专用运行时创建方法。
+- 第三个参数传入当前 root runtime 的 `createIndependentSubpackageApp`，避免全局 `createIndependentSubpackageApp` 被主包 runtime 覆盖后选错运行时。
 
 ### 独立分包 bootstrap
 
@@ -96,6 +99,15 @@ require('./main.js')
 ```
 
 页面 JS 先执行 `common/index.js`，确保当前 root 的 runtime、Vue app 空上下文、页面模块已经初始化。
+
+独立分包页面/组件 wrapper 直接从当前 root 专属 runtime 导入创建方法，不依赖全局 `wx.createPage/createComponent` 当前指向：
+
+```ts
+import { createPage } from 'uni-mp-runtime?uni_mp_independent_root=package-a'
+import MiniProgramPage from './index.vue?uni_mp_independent_root=package-a'
+
+createPage(MiniProgramPage)
+```
 
 ### root query 传播
 
@@ -115,20 +127,23 @@ uni-mp-runtime?uni_mp_independent_root=package-a
 `uni-mp-vue` 的 `app.mount()` 支持第三个参数：
 
 ```ts
-app.mount('#app', 'package-a', { independent: true })
+app.mount('#app', 'package-a', {
+  independent: true,
+  createApp: createIndependentSubpackageApp,
+})
 ```
 
 选择规则：
 
 - `UNI_MP_PLUGIN` 存在：仍走 `createPluginApp`。
-- 传入 root 且 `independent: true`：走 `createIndependentSubpackageApp(vm, root)`。
+- 传入 root 且 `independent: true`：优先走第三个参数传入的 `createApp(vm, root)`，否则回退全局 `createIndependentSubpackageApp(vm, root)`。
 - 传入 root 或 `process.env.UNI_SUBPACKAGE`：走普通 `createSubpackageApp`。
 - 否则走主包 `createApp`。
 
 `createIndependentSubpackageApp` 只初始化当前独立分包 runtime 的 root 与空 app 上下文：
 
 ```ts
-setSubpackageAppVm(resolveSubpackageRoot(root), vm)
+setSubpackageAppVm(resolveSubpackageRoot(root), vm, true)
 ```
 
 它不会：
@@ -138,7 +153,7 @@ setSubpackageAppVm(resolveSubpackageRoot(root), vm)
 - 注册 `wx.onAppShow` / `wx.onAppHide` 来转发 App 生命周期。
 - 合并 `globalData` 或把用户 App options 写回原生 App 实例。
 
-页面/组件侧通过当前 runtime 的 `getRuntimeSubpackageRoot()` 读取 `__GLOBAL__.$subpackages[root].$vm`，不再通过页面 route、`getCurrentPages()` 或 `process.env.UNI_SUBPACKAGE` 推导 root。`process.env.UNI_SUBPACKAGE` 仅保留在初始化阶段兼容旧的单独编译分包入口。
+页面/组件侧通过当前 runtime 的 `getRuntimeSubpackageRoot()` 读取同一 runtime 内缓存的 app vm，不再通过页面 route、`getCurrentPages()` 或 `process.env.UNI_SUBPACKAGE` 推导 root。独立分包 app vm 不写入 `wx/global`，避免主包 runtime 后续重建 `wx` 时丢失；普通分包仍保留旧的 `__GLOBAL__.$subpackages` 存储策略，兼容 `process.env.UNI_SUBPACKAGE` 单独编译入口。
 
 ## 第一阶段能力边界
 
@@ -232,7 +247,6 @@ flowchart TD
 
 - 解析并加载 `\0uni:mp-independent-main?root=xxx`。
 - 解析并加载 `\0uni:mp-independent-pages?root=xxx`，只导入当前 root 下页面。
-- 解析并加载 `\0uni:mp-independent-page?root=xxx&page=xxx`。
 - 对独立分包 importer 传播 root query。
 - 生成 `${root}/common/index.js`。
 - 给 `${root}/` 下非 `common/` JS 注入 bootstrap require。
@@ -279,7 +293,7 @@ flowchart TD
 
 `packages/uni-mp-vue/src/plugin.ts`
 
-- `app.mount(rootContainer, root, { independent: true })` 选择 `createIndependentSubpackageApp`。
+- `app.mount(rootContainer, root, { independent: true, createApp })` 优先使用传入的 root 专属 `createApp`。
 - 普通 subpackage 和插件路径保持原有优先级。
 
 ## 样式策略
@@ -361,14 +375,14 @@ flowchart TD
 
 - 注册 `uniIndependentSubpackagePlugin`。
 - 无 independent 配置时空转。
-- 识别 independent main/pages/page 虚拟 id。
+- 识别 independent main/pages 虚拟 id。
 - 建议提交：`feat(mp-vite): 增加独立分包插件骨架`
 
 #### C06 独立分包 common/main 虚拟模块
 
 - 生成 root 专属 `common/main.js`。
 - 只导入 root runtime、root vue、root pages。
-- 使用 `createSSRApp({}).mount('#app', root, { independent: true })`。
+- 使用 `createSSRApp({}).mount('#app', root, { independent: true, createApp })`。
 - 不导入用户 `main.*`、不导入 `App.vue`、不触发 app factory。
 - 建议提交：`feat(mp-vite): 生成独立分包 common main`
 
@@ -409,7 +423,7 @@ flowchart TD
 
 - 新增 `initCreateIndependentSubpackageApp()`。
 - 微信运行时注册 `createIndependentSubpackageApp`。
-- `uni-mp-vue` 在 `independent: true` 时调用它。
+- `uni-mp-vue` 在 `independent: true` 时优先调用 mount options 传入的 root 专属创建方法。
 - 不调用 `getApp`，不模拟 App 生命周期。
 - 建议提交：`feat(mp-runtime): 支持独立分包原生生命周期`
 
