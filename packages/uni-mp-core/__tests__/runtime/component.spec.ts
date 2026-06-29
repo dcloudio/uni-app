@@ -55,4 +55,40 @@ describe('runtime/component', () => {
     expect(appVmA.$destroyComponent).toHaveBeenCalledWith(instance)
     expect(appVmB.$destroyComponent).not.toHaveBeenCalled()
   })
+
+  test('creates component with mp instance route before current page route', () => {
+    delete (process.env as Record<string, string | undefined>).UNI_MP_PLUGIN
+    const componentA = { $: {} }
+    const componentB = { $: {} }
+    const appVmA = {
+      $createComponent: jest.fn(() => componentA),
+      $destroyComponent: jest.fn(),
+    }
+    const appVmB = {
+      $createComponent: jest.fn(() => componentB),
+      $destroyComponent: jest.fn(),
+    }
+    ;(global as any).__GLOBAL__ = {
+      $subpackages: {
+        'package-a': { $vm: appVmA },
+        'package-b': { $vm: appVmB },
+      },
+    }
+    ;(global as any).getCurrentPages = () => [
+      { route: 'package-b/pages/index/index' },
+    ]
+
+    const instance = $createComponent(
+      {} as any,
+      {
+        mpInstance: {
+          route: 'package-a/pages/index/index',
+        },
+      } as any
+    )
+
+    expect(instance).toBe(componentA)
+    expect(appVmA.$createComponent).toHaveBeenCalled()
+    expect(appVmB.$createComponent).not.toHaveBeenCalled()
+  })
 })

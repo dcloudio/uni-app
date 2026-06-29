@@ -248,11 +248,11 @@ interface InitialVNode {
   props: Record<string, any>
 }
 
-export function getAppVm() {
+export function getAppVm(mpInstance?: MPComponentInstance) {
   if (process.env.UNI_MP_PLUGIN) {
     return __GLOBAL__.$vm
   }
-  const subpackageAppVm = getSubpackageAppVm()
+  const subpackageAppVm = getSubpackageAppVm(resolveMpInstanceRoute(mpInstance))
   if (subpackageAppVm) {
     return subpackageAppVm
   }
@@ -263,7 +263,7 @@ export function $createComponent(
   initialVNode: InitialVNode,
   options: CreateComponentOptions
 ) {
-  const appVm = getAppVm()
+  const appVm = getAppVm(options.mpInstance)
   if (!$createComponentFn || $createComponentAppVm !== appVm) {
     $createComponentAppVm = appVm
     $createComponentFn = appVm.$createComponent
@@ -278,6 +278,17 @@ export function $createComponent(
     componentAppVmMap.set(exposeProxy, appVm)
   }
   return exposeProxy || proxy
+}
+
+function resolveMpInstanceRoute(mpInstance: MPComponentInstance | undefined) {
+  const instance = mpInstance as
+    | {
+        route?: string
+        __route__?: string
+        is?: string
+      }
+    | undefined
+  return instance?.route || instance?.__route__ || instance?.is
 }
 
 export function $destroyComponent(instance: ComponentPublicInstance) {
