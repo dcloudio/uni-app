@@ -58,7 +58,8 @@ export function defineNVuePageCode(pagesJson: Record<string, any>) {
     const pagePathWithExtname = normalizePagePath(page.path, 'app')
     if (pagePathWithExtname) {
       importNVuePagesCode.push(
-        `import('./${pagePathWithExtname}').then((res)=>{res()})`
+        // 使用 res.default 确保 rollup 不会摇树
+        `import('./${pagePathWithExtname}').then((res)=>{res.default})`
       )
     }
   })
