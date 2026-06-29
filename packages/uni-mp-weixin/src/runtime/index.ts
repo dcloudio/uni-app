@@ -1,6 +1,7 @@
 import {
   initCreateApp,
   initCreateComponent,
+  initCreateIndependentSubpackageApp,
   initCreatePage,
   initCreatePluginApp,
   initCreateSubpackageApp,
@@ -16,6 +17,8 @@ export const createPage = initCreatePage(parseOptions)
 export const createComponent = initCreateComponent(parseOptions)
 export const createPluginApp = initCreatePluginApp()
 export const createSubpackageApp = initCreateSubpackageApp()
+export const createIndependentSubpackageApp =
+  initCreateIndependentSubpackageApp()
 if (__PLATFORM__ === 'mp-weixin') {
   preloadAsset()
   ;(wx as any).createApp = (global as any).createApp = createApp
@@ -25,4 +28,7 @@ if (__PLATFORM__ === 'mp-weixin') {
     createPluginApp
   ;(wx as any).createSubpackageApp = (global as any).createSubpackageApp =
     createSubpackageApp
+  ;(wx as any).createIndependentSubpackageApp = (
+    global as any
+  ).createIndependentSubpackageApp = createIndependentSubpackageApp
 }

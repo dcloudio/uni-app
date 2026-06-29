@@ -5,8 +5,6 @@ import {
   normalizePagePath,
   normalizePath,
   relativeFile,
-  resolveAppVue,
-  resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
 import type {
   EmittedFile,
@@ -17,7 +15,6 @@ import type {
 import type { Plugin } from 'vite'
 import type { UniMiniProgramPluginOptions } from '../plugin'
 import {
-  APP_FACTORY_PREFIX,
   INDEPENDENT_MAIN_PREFIX,
   INDEPENDENT_PAGES_PREFIX,
   INDEPENDENT_PAGE_PARAM,
@@ -71,10 +68,6 @@ export function uniIndependentSubpackagePlugin(
       }
       const root = parseIndependentMainRoot(id)
       if (root && independentRoots.has(root)) {
-        return id
-      }
-      const appFactoryRoot = parseAppFactoryRoot(id)
-      if (appFactoryRoot && independentRoots.has(appFactoryRoot)) {
         return id
       }
       const pagesRoot = parseIndependentPagesRoot(id)
@@ -133,20 +126,6 @@ export function uniIndependentSubpackagePlugin(
           map: { mappings: '' },
         }
       }
-      const appFactoryRoot = parseAppFactoryRoot(id)
-      if (appFactoryRoot && independentRoots.has(appFactoryRoot)) {
-        const mainFilename = resolveMainPathOnce(inputDir)
-        this.addWatchFile(mainFilename)
-        const appVueFilename = resolveAppVue(inputDir)
-        if (fs.existsSync(appVueFilename)) {
-          this.addWatchFile(appVueFilename)
-        }
-        const mainPath = withIndependentRoot(mainFilename, appFactoryRoot)
-        return {
-          code: `export { createApp } from ${JSON.stringify(mainPath)}\n`,
-          map: { mappings: '' },
-        }
-      }
       const pagesRoot = parseIndependentPagesRoot(id)
       if (pagesRoot && independentRoots.has(pagesRoot)) {
         return {
@@ -184,12 +163,7 @@ ${global}.createPage(MiniProgramPage)`,
           )
           injectIndependentBootstrap(bundle, pkg.root)
           relocateIndependentStyleChunks(bundle, pkg.root)
-          processIndependentStyles(
-            (file) => this.emitFile(file),
-            bundle,
-            pkg,
-            styleExtname
-          )
+          validateIndependentStyleAssets(bundle, pkg.root, styleExtname)
           validateIndependentJsReferences(bundle, pkg.root)
         })
       },
@@ -351,100 +325,6 @@ function resolveIndependentAlias(
   return alias[id]
 }
 
-function processIndependentStyles(
-  emitFile: (emittedFile: EmittedFile) => string,
-  bundle: OutputBundle,
-  independentPackage: IndependentSubPackage,
-  extname: string
-) {
-  const root = normalizeIndependentRoot(independentPackage.root)
-  const globalStyleFilename = resolveIndependentGlobalStyleFilename(
-    root,
-    extname
-  )
-  const hasGlobalStyle = emitIndependentGlobalStyle(
-    emitFile,
-    bundle,
-    root,
-    extname,
-    globalStyleFilename
-  )
-
-  validateIndependentStyleAssets(bundle, root, extname)
-  if (hasGlobalStyle) {
-    injectIndependentGlobalStyle(
-      bundle,
-      independentPackage,
-      extname,
-      globalStyleFilename
-    )
-    validateIndependentStyleAssets(bundle, root, extname)
-  }
-}
-
-function emitIndependentGlobalStyle(
-  emitFile: (emittedFile: EmittedFile) => string,
-  bundle: OutputBundle,
-  root: string,
-  extname: string,
-  globalStyleFilename: string
-) {
-  const existedGlobalStyle = bundle[globalStyleFilename]
-  if (isOutputAsset(existedGlobalStyle)) {
-    validateIndependentStyleReferences(
-      root,
-      globalStyleFilename,
-      existedGlobalStyle.source.toString(),
-      extname
-    )
-    return true
-  }
-
-  const appStyleFilename = resolveAppStyleFilename(extname)
-  const appStyle = bundle[appStyleFilename]
-  if (!isOutputAsset(appStyle)) {
-    return false
-  }
-  const source = rebaseStyleReferences(
-    appStyle.source.toString(),
-    appStyleFilename,
-    globalStyleFilename
-  )
-  validateIndependentStyleReferences(root, globalStyleFilename, source, extname)
-  emitFile({
-    type: 'asset',
-    fileName: globalStyleFilename,
-    source,
-  })
-  return true
-}
-
-function injectIndependentGlobalStyle(
-  bundle: OutputBundle,
-  independentPackage: IndependentSubPackage,
-  extname: string,
-  globalStyleFilename: string
-) {
-  const pageStyleFilenames = resolveIndependentPageStyleFilenames(
-    independentPackage,
-    extname
-  )
-  pageStyleFilenames.forEach((filename) => {
-    const asset = bundle[filename]
-    if (!isOutputAsset(asset)) {
-      return
-    }
-    const importCode = `@import "${relativeFile(
-      filename,
-      globalStyleFilename
-    )}";\n`
-    const source = asset.source.toString()
-    if (!source.includes(importCode.trim())) {
-      asset.source = importCode + source
-    }
-  })
-}
-
 function validateIndependentStyleAssets(
   bundle: OutputBundle,
   root: string,
@@ -468,16 +348,6 @@ function validateIndependentStyleAssets(
   })
 }
 
-function resolveIndependentPageStyleFilenames(
-  independentPackage: IndependentSubPackage,
-  extname: string
-) {
-  const root = normalizeIndependentRoot(independentPackage.root)
-  return independentPackage.pages.map((page) => {
-    return `${normalizePath(path.join(root, page))}${extname}`
-  })
-}
-
 function validateIndependentStyleReferences(
   root: string,
   filename: string,
@@ -492,10 +362,7 @@ function validateIndependentStyleReferences(
     const appStyleFilename = resolveAppStyleFilename(extname)
     if (resolved.filename === appStyleFilename) {
       throw new Error(
-        `独立分包 "${root}" 的样式不能引用主包 ${appStyleFilename}：${filename} -> ${reference}。请改为引用 "${resolveIndependentGlobalStyleFilename(
-          root,
-          extname
-        )}"。`
+        `独立分包 "${root}" 的样式不能引用主包 ${appStyleFilename}：${filename} -> ${reference}。请将公共样式移动到 "${root}" 内。`
       )
     }
     if (!isInIndependentOutputRoot(resolved.filename, root)) {
@@ -504,20 +371,6 @@ function validateIndependentStyleReferences(
       )
     }
     return reference
-  })
-}
-
-function rebaseStyleReferences(
-  source: string,
-  fromFilename: string,
-  toFilename: string
-) {
-  return replaceStyleReferences(source, (reference) => {
-    const resolved = resolveStyleReferenceFilename(fromFilename, reference)
-    if (!resolved || reference.trim().startsWith('/')) {
-      return reference
-    }
-    return relativeFile(toFilename, resolved.filename) + resolved.suffix
   })
 }
 
@@ -618,10 +471,6 @@ function resolveAppStyleFilename(extname: string) {
   return `app${extname}`
 }
 
-function resolveIndependentGlobalStyleFilename(root: string, extname: string) {
-  return `${normalizeIndependentRoot(root)}/common/main${extname}`
-}
-
 function normalizeIndependentRoot(root: string) {
   return normalizePath(root).replace(/\/$/, '')
 }
@@ -670,7 +519,7 @@ function validateIndependentDependency({
   const resolvedFile = normalizeFileId(withoutIndependentRoot(resolvedId))
   if (
     !isProjectFile(resolvedFile, normalizedInputDir) ||
-    isAllowedProjectDependency(resolvedFile, normalizedInputDir) ||
+    isAllowedProjectDependency(resolvedFile) ||
     isInIndependentRoot(resolvedFile, normalizedInputDir, root)
   ) {
     return
@@ -688,11 +537,8 @@ function isProjectFile(filename: string, inputDir: string) {
   return filename === inputDir || filename.startsWith(`${inputDir}/`)
 }
 
-function isAllowedProjectDependency(filename: string, inputDir: string) {
-  return (
-    filename.includes('/node_modules/') ||
-    filename === resolveMainPathOnce(inputDir)
-  )
+function isAllowedProjectDependency(filename: string) {
+  return filename.includes('/node_modules/')
 }
 
 function isInIndependentRoot(filename: string, inputDir: string, root: string) {
@@ -736,14 +582,12 @@ function shouldPropagateIndependentRoot(id: string) {
 
 function generateIndependentMainCode(root: string) {
   return `import ${JSON.stringify(withIndependentRoot(UNI_MP_RUNTIME_ID, root))}
-import { createApp as createUserApp } from ${JSON.stringify(
-    formatIndependentVirtualId(APP_FACTORY_PREFIX, root)
-  )}
+import { createSSRApp } from ${JSON.stringify(withIndependentRoot('vue', root))}
 import ${JSON.stringify(
     formatIndependentVirtualId(INDEPENDENT_PAGES_PREFIX, root)
   )}
 
-createUserApp().app.mount('#app', ${JSON.stringify(root)})
+createSSRApp({}).mount('#app', ${JSON.stringify(root)}, { independent: true })
 `
 }
 
@@ -760,10 +604,6 @@ function generateVueExportHelperCode() {
 
 function parseIndependentMainRoot(id: string) {
   return parseVirtualRoot(id, INDEPENDENT_MAIN_PREFIX)
-}
-
-function parseAppFactoryRoot(id: string) {
-  return parseVirtualRoot(id, APP_FACTORY_PREFIX)
 }
 
 function parseIndependentPagesRoot(id: string) {
