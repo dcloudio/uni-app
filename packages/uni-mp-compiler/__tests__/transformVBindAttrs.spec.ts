@@ -120,6 +120,23 @@ describe('compiler: transform v-bind="$attrs"', () => {
     expect(onError).not.toHaveBeenCalled()
   })
 
+  test('uni-app-x 支付宝小程序下支持原生节点 v-bind="$attrs"', () => {
+    const onError = jest.fn()
+    const source = compileTemplate(
+      `<view v-bind="$attrs"/>`,
+      {
+        isX: true,
+        onError,
+      },
+      'mp-alipay'
+    )
+
+    expect(source).toBe(
+      `<view class="{{b}}" bindtap="{{c}}" id="{{a}}" style="{{$eS[a]}}"/>`
+    )
+    expect(onError).not.toHaveBeenCalled()
+  })
+
   test('仅处理原生节点，不改写组件上的 v-bind="$attrs"', () => {
     const node = runTransform(`<custom v-bind="$attrs"/>`, {
       isX: true,
@@ -174,7 +191,7 @@ describe('compiler: transform v-bind="$attrs"', () => {
     })
   })
 
-  test('uni-app-x 非微信小程序下仍保持原有报错', () => {
+  test('uni-app-x 非微信/支付宝小程序下仍保持原有报错', () => {
     const onError = jest.fn()
     const source = compileTemplate(
       `<view v-bind="$attrs"/>`,
@@ -182,7 +199,7 @@ describe('compiler: transform v-bind="$attrs"', () => {
         isX: true,
         onError,
       },
-      'mp-alipay'
+      'mp-toutiao'
     )
 
     expect(source).toContain(`<view`)
