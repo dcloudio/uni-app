@@ -24,9 +24,9 @@ createSelectorQuery是小程序的API，因小程序未开放DOM，且视图层�
 小程序下有时用本API获取部分组件的上下文context，但这个写法不跨平台。跨平台的获取组件context，应该使用uni.createXXContext()。
 
 ### createSelectorQuery 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | 5.0 |
 
 
 
@@ -130,7 +130,7 @@ scrollOffset
 fields
 获取节点的相关信息，需要获取的字段在fields中指定
 ###### fields 兼容性 
-| Web | 微信小程序 | Android | iOS |
+| Web | 微信小程序 | Android(VDOM) | iOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.25 | 4.25 |
 
@@ -152,7 +152,7 @@ fields
 | scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
 | properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
 | computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
-| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否返回节点对应的 Context 对象 |
+| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; iOS: x; HarmonyOS(VDOM):   | 是否返回节点对应的 Context 对象 |
 | node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
 
 
@@ -167,7 +167,7 @@ fields
 context
 添加节点的 Context 对象查询请求（uni-app x 暂仅支持获取 EditorContext）
 ###### context 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 5.04 | 5.04 | 5.04 | 5.04 |
 
@@ -190,7 +190,7 @@ node
 获取 Node 节点实例。目前支持 Canvas 的获取。
 获取节点的相关信息，需要获取的字段在fields中指定
 ###### node 兼容性 
-| Web | 微信小程序 | Android | iOS |
+| Web | 微信小程序 | Android(VDOM) | iOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.25 | 4.25 |
 
@@ -903,5 +903,5 @@ uni.createSelectorQuery().select('.rect1').selectAll('.rect2').boundingClientRec
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
 

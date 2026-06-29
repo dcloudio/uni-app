@@ -6,9 +6,9 @@ align-self 属性在 Flex 弹性布局中设置元素在容器中的交叉轴方
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,12 +34,12 @@ align-self: auto | normal | stretch | <baseline-position> | <overflow-position>?
 ### align-self 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| auto | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 默认值。与父元素的 align-items 值一致。 |
-| center | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素在交叉轴上居中。如果元素在交叉轴上的尺寸（高度/宽度）大于其容器，那么在两个方向均等溢出。 |
-| flex-start | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素在交叉轴上对齐起始位置。 |
-| flex-end | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素在交叉轴上对齐结尾位置。 |
-| stretch | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 如果元素未设置高度或设为auto，将占满整个容器的高度。 |
-| baseline | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 所有元素向基线对齐。交叉轴起点到元素基线距离最大的元素将会于交叉轴起点对齐以确定基线。 |
+| auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 默认值。与父元素的 align-items 值一致。 |
+| center | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 元素在交叉轴上居中。如果元素在交叉轴上的尺寸（高度/宽度）大于其容器，那么在两个方向均等溢出。 |
+| flex-start | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 元素在交叉轴上对齐起始位置。 |
+| flex-end | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 元素在交叉轴上对齐结尾位置。 |
+| stretch | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 如果元素未设置高度或设为auto，将占满整个容器的高度。 |
+| baseline | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 所有元素向基线对齐。交叉轴起点到元素基线距离最大的元素将会于交叉轴起点对齐以确定基线。 |
 
 
 ### 默认值 @default-value 

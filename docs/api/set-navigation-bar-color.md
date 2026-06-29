@@ -14,9 +14,9 @@
 
 
 ### setNavigationBarColor 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | √ | 4.11 | 4.61 |
+| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | 4.11 | 4.61 | 5.0 |
 
 
 注意当pages.json中设置导航栏为custom时：
@@ -33,12 +33,12 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| frontColor | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 前景颜色值，包括按钮、标题、状态栏的颜色，仅支持 #ffffff 和 #000000 |
-| backgroundColor | [string.ColorString](/uts/data-type.md#ide-string) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 背景颜色值，有效值为十六进制颜色 |
-| success | (result: [SetNavigationBarColorSuccess](#setnavigationbarcolorsuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (error: [SetNavigationBarColorFail](#setnavigationbarcolorfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (res: [SetNavigationBarColorComplete](#setnavigationbarcolorcomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| animation | **SetNavigationBarColorOptionsAnimation** | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 动画效果<br/> |
+| frontColor | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 前景颜色值，包括按钮、标题、状态栏的颜色，仅支持 #ffffff 和 #000000 |
+| backgroundColor | [string.ColorString](/uts/data-type.md#ide-string) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 背景颜色值，有效值为十六进制颜色 |
+| success | (result: [SetNavigationBarColorSuccess](#setnavigationbarcolorsuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用成功的回调函数 |
+| fail | (error: [SetNavigationBarColorFail](#setnavigationbarcolorfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用失败的回调函数 |
+| complete | (res: [SetNavigationBarColorComplete](#setnavigationbarcolorcomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| animation | **SetNavigationBarColorOptionsAnimation** | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 动画效果<br/> |
 
 ##### frontColor 的属性描述
 
@@ -51,8 +51,8 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| duration | number | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 动画变化时间，单位 ms<br/> |
-| timingFunc | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 动画变化方式<br/><br/>可选值：<br/>- 'linear': 动画从头到尾的速度是相同的;<br/>- 'easeIn': 动画以低速开始;<br/>- 'easeOut': 动画以低速结束;<br/>- 'easeInOut': 动画以低速开始和结束;<br/> |
+| duration | number | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 动画变化时间，单位 ms<br/> |
+| timingFunc | string | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 动画变化方式<br/><br/>可选值：<br/>- 'linear': 动画从头到尾的速度是相同的;<br/>- 'easeIn': 动画以低速开始;<br/>- 'easeOut': 动画以低速结束;<br/>- 'easeInOut': 动画以低速开始和结束;<br/> |
 
 ###### timingFunc 的属性描述
 
@@ -215,7 +215,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
 
 
 ## Bug & Tips @tips

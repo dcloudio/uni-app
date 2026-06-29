@@ -6,9 +6,9 @@ flex-direction 属性设置弹性容器中的子元素的布局方向，该方�
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,10 +34,10 @@ flex-direction: row | row-reverse | column | column-reverse;
 ### flex-direction 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| row | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | flex 容器的主轴被定义为与文本方向相同。主轴起点和主轴终点与内容方向相同。 |
-| row-reverse | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 表现和 row 相同，但是置换了主轴起点和主轴终点 |
-| column | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | flex 容器的主轴和块轴相同。主轴起点与主轴终点和书写模式的前后点相同 |
-| column-reverse | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 表现和column相同，但是置换了主轴起点和主轴终点 |
+| row | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | flex 容器的主轴被定义为与文本方向相同。主轴起点和主轴终点与内容方向相同。 |
+| row-reverse | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表现和 row 相同，但是置换了主轴起点和主轴终点 |
+| column | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | flex 容器的主轴和块轴相同。主轴起点与主轴终点和书写模式的前后点相同 |
+| column-reverse | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表现和column相同，但是置换了主轴起点和主轴终点 |
 
 
 ### 默认值 @default-value 

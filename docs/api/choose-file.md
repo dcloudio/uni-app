@@ -14,9 +14,9 @@
 
 
 ### chooseFile 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.51 | 4.61 | 4.61 |
+| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.51 | 4.61 | 4.61 | 5.0 |
 
 
 ### 参数 
@@ -29,48 +29,48 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| count | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 最多可以选择的文件数，默认100,注意Android中count只会决定是否是单选/多选，如果count>1 是多选效果，等于1为单选效果, |
-| type | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 选择文件的类型，默认all，可选<br/>- image: 选择图片文件<br/>- video: 选择视频文件<br/>- audio: 选择音频文件<br/>- all: 默认值，选择本地文件，包含图片和视频 |
-| extension | Array&lt;string&gt; | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 选择文件的后缀名，暂只支持.zip、.png等，不支持application/msword等值, App平台不支持 |
-| sizeType | any | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | original 原图，compressed 压缩图，默认二者都有, App平台不支持 |
-| sourceType | Array&lt;string&gt; | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | album 从相册选图，camera 使用相机，默认二者都有, App平台不支持 |
-| success | (result: [ChooseFileSuccess](#choosefilesuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 成功则返回图片的本地文件路径列表 tempFilePaths、tempFiles |
-| fail | (result: [ChooseFileFail](#choosefilefail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| count | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.51; iOS: 4.61; HarmonyOS(VDOM): x | 最多可以选择的文件数，默认100,注意Android中count只会决定是否是单选/多选，如果count>1 是多选效果，等于1为单选效果, |
+| type | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.51; iOS: 4.61; HarmonyOS(VDOM): x | 选择文件的类型，默认all，可选<br/>- image: 选择图片文件<br/>- video: 选择视频文件<br/>- audio: 选择音频文件<br/>- all: 默认值，选择本地文件，包含图片和视频 |
+| extension | Array&lt;string&gt; | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; iOS: x; HarmonyOS(VDOM): x | 选择文件的后缀名，暂只支持.zip、.png等，不支持application/msword等值, App平台不支持 |
+| sizeType | any | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; iOS: x; HarmonyOS(VDOM): x | original 原图，compressed 压缩图，默认二者都有, App平台不支持 |
+| sourceType | Array&lt;string&gt; | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; iOS: x; HarmonyOS(VDOM): x | album 从相册选图，camera 使用相机，默认二者都有, App平台不支持 |
+| success | (result: [ChooseFileSuccess](#choosefilesuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.51; iOS: 4.61; HarmonyOS(VDOM): x | 成功则返回图片的本地文件路径列表 tempFilePaths、tempFiles |
+| fail | (result: [ChooseFileFail](#choosefilefail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.51; iOS: 4.61; HarmonyOS(VDOM): x | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.51; iOS: 4.61; HarmonyOS(VDOM): x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| image | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 图片类型 |
-| video | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 视频类型 |
-| audio | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 音频类型 |
+| image | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.51; iOS: 4.61; HarmonyOS(VDOM): x | 图片类型 |
+| video | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.51; iOS: 4.61; HarmonyOS(VDOM): x | 视频类型 |
+| audio | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.51; iOS: 4.61; HarmonyOS(VDOM): x | 音频类型 |
 | all |   |  |
 
 #### ChooseFileSuccess 的属性值 @choosefilesuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| tempFilePaths | Array&lt;string&gt; | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: 4.61; HarmonyOS: x | 文件的本地文件路径列表, Android平台不支持 |
-| tempFiles | Array&lt;**ChooseFileTempFile**&gt; | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 文件的本地文件列表，每一项是一个 File 对象 |
+| tempFilePaths | Array&lt;string&gt; | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; iOS: 4.61; HarmonyOS(VDOM): x | 文件的本地文件路径列表, Android平台不支持 |
+| tempFiles | Array&lt;**ChooseFileTempFile**&gt; | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.51; iOS: 4.61; HarmonyOS(VDOM): x | 文件的本地文件列表，每一项是一个 File 对象 |
 
 #### tempFiles 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| name | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 选择的文件名称 |
-| path | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 文件路径 |
-| size | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 文件大小，单位 B |
+| name | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.51; iOS: 4.61; HarmonyOS(VDOM): x | 选择的文件名称 |
+| path | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.51; iOS: 4.61; HarmonyOS(VDOM): x | 文件路径 |
+| size | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.51; iOS: 4.61; HarmonyOS(VDOM): x | 文件大小，单位 B |
 | type | string | 是 |  |   | 选择的文件类型<br/>可选值：<br/>- 'video': 选择了视频文件;<br/>- 'image': 选择了图片文件;<br/>- 'audio': 选择了音频文件;<br/>- 'file': 选择了除图片和视频的文件; |
 
 ##### type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| video | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 视频类型 |
-| image | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 图片类型 |
-| audio | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 音频类型 |
-| file | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 除图片和音视频类型的文件 |
+| video | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.51; iOS: 4.61; HarmonyOS(VDOM): x | 视频类型 |
+| image | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.51; iOS: 4.61; HarmonyOS(VDOM): x | 图片类型 |
+| audio | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.51; iOS: 4.61; HarmonyOS(VDOM): x | 音频类型 |
+| file | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.51; iOS: 4.61; HarmonyOS(VDOM): x | 除图片和音视频类型的文件 |
 
 #### ChooseFileFail 的属性值 @choosefilefail-values 
 
@@ -415,5 +415,5 @@ Android端返回的路径是content协议。
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
 

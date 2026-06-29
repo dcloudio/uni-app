@@ -16,13 +16,13 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | () => void | 是 |  | Web:  ; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |  | 
+| options | () => void | 是 |  | Web:  ; 微信小程序: x; Android(VDOM): x; iOS: x; HarmonyOS(VDOM): x |  | 
 
 
 
 
 ### onTabBarMidButtonTap 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) |
 | :- | :- | :- | :- | :- |
 | 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
@@ -39,7 +39,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
 
 
 ## 注意

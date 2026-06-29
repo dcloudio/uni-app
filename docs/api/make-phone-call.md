@@ -13,9 +13,9 @@
 拨打电话
 
 ### makePhoneCall 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS uni-app x UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.63 | 4.63 | 4.63 | 4.61 | 4.61 |
+| Web | 微信小程序 | Android(VDOM) | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) | HarmonyOS uni-app x UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.63 | 4.63 | 4.63 | 4.61 | 5.0 | 4.61 |
 
 
 ::: warning 注意
@@ -34,10 +34,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| phoneNumber | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS uni-app x UTS 插件: 4.61 | 需要拨打的电话号码 |
-| success | (result: MakePhoneCallSuccess) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS uni-app x UTS 插件: 4.61 | 成功返回的回调函数 |
-| fail | (result: [MakePhoneCallFail](#makephonecallfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS uni-app x UTS 插件: 4.61 | 失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS uni-app x UTS 插件: 4.61 | 结束的回调函数（调用成功、失败都会执行） | 
+| phoneNumber | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.63; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0; HarmonyOS uni-app x UTS 插件: 4.61 | 需要拨打的电话号码 |
+| success | (result: MakePhoneCallSuccess) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.63; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0; HarmonyOS uni-app x UTS 插件: 4.61 | 成功返回的回调函数 |
+| fail | (result: [MakePhoneCallFail](#makephonecallfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.63; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0; HarmonyOS uni-app x UTS 插件: 4.61 | 失败的回调函数 |
+| complete | (result: any) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.63; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0; HarmonyOS uni-app x UTS 插件: 4.61 | 结束的回调函数（调用成功、失败都会执行） | 
 
 #### MakePhoneCallFail 的属性值 @makephonecallfail-values 
 
@@ -157,5 +157,5 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
 

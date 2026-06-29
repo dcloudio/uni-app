@@ -6,9 +6,9 @@ margin-left 属性 设置与元素相关联的盒子模型的左外边距。这�
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -35,7 +35,7 @@ margin-left: <length> | <percentage> | auto;
 ### margin-left 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| auto | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | auto 关键词表示在当前布局模式下，浏览器根据接收的左边距自动计算出外边距。如果有几组 margin-left 和 margin-right 设置为 auto，那么最后计算的空间分布，会根据 display，float，position 属性，自动生成以下几种情况：<br/>    <br/>      <br/>        <br/>          Value of display<br/>          Value of float<br/>          Value of position<br/>          Computed value of auto<br/>          Comment<br/>        <br/>      <br/>      <br/>        <br/>          inline, inline-block, inline-table<br/>          any<br/>          static or relative<br/>          0<br/>          Inline layout mode<br/>        <br/>        <br/>          block, inline, inline-block, block, table, inline-table, list-item, table-caption<br/>          any<br/>          static or relative<br/>          0, 除非margin-left和 margin-right 同时都设置为 auto。这样的话，元素就被设置为基于父元素居中。<br/>          Block layout mode<br/>        <br/>        <br/>          block, inline, inline-block, block, table, inline-table, list-item, table-caption<br/>          left or right<br/>          static or relative<br/>          0<br/>          Block layout mode (floating element)<br/>        <br/>        <br/>          any table-*, except table-caption<br/>          any<br/>          any<br/>          0<br/>          Internal table-* elements don't have margins, use border-spacing instead<br/>        <br/>        <br/>          any, except flex, inline-flex, or table-*<br/>          any<br/>          fixed or absolute<br/>          0, except if both margin-left and margin-right are set to auto. In this case, it is set to the value centering the border area inside the available width, if fixed.<br/>          Absolutely positioned layout mode<br/>        <br/>        <br/>          flex, inline-flex<br/>          any<br/>          any<br/>          在水平方向上有空余空间的情况下，空余的空间会被平均分给水平方向上写有 margin-left:auto 属性的元素的外边距<br/>          Flexbox layout mode |
+| auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | auto 关键词表示在当前布局模式下，浏览器根据接收的左边距自动计算出外边距。如果有几组 margin-left 和 margin-right 设置为 auto，那么最后计算的空间分布，会根据 display，float，position 属性，自动生成以下几种情况：<br/>    <br/>      <br/>        <br/>          Value of display<br/>          Value of float<br/>          Value of position<br/>          Computed value of auto<br/>          Comment<br/>        <br/>      <br/>      <br/>        <br/>          inline, inline-block, inline-table<br/>          any<br/>          static or relative<br/>          0<br/>          Inline layout mode<br/>        <br/>        <br/>          block, inline, inline-block, block, table, inline-table, list-item, table-caption<br/>          any<br/>          static or relative<br/>          0, 除非margin-left和 margin-right 同时都设置为 auto。这样的话，元素就被设置为基于父元素居中。<br/>          Block layout mode<br/>        <br/>        <br/>          block, inline, inline-block, block, table, inline-table, list-item, table-caption<br/>          left or right<br/>          static or relative<br/>          0<br/>          Block layout mode (floating element)<br/>        <br/>        <br/>          any table-*, except table-caption<br/>          any<br/>          any<br/>          0<br/>          Internal table-* elements don't have margins, use border-spacing instead<br/>        <br/>        <br/>          any, except flex, inline-flex, or table-*<br/>          any<br/>          fixed or absolute<br/>          0, except if both margin-left and margin-right are set to auto. In this case, it is set to the value centering the border area inside the available width, if fixed.<br/>          Absolutely positioned layout mode<br/>        <br/>        <br/>          flex, inline-flex<br/>          any<br/>          any<br/>          在水平方向上有空余空间的情况下，空余的空间会被平均分给水平方向上写有 margin-left:auto 属性的元素的外边距<br/>          Flexbox layout mode |
 
 
 ### 默认值 @default-value 

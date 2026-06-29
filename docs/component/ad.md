@@ -28,7 +28,7 @@ App平台在manifest中配置添加三方广告SDK。具体配置可参考[文�
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| Web | 微信小程序 | Android(VDOM) | iOS(VDOM) | HarmonyOS(VDOM) |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.31 | 4.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
@@ -36,14 +36,14 @@ App平台在manifest中配置添加三方广告SDK。具体配置可参考[文�
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| adpid | string |   | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: x | 广告位id，在uniAD官网申请广告位 |
-| unit-id | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>广告单元id，可在[小程序管理后台](https://mp.weixin.qq.com)的流量主模块新建 |
-| ad-intervals | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>广告自动刷新的间隔时间，单位为秒，参数值必须大于等于30（该参数不传入时 Banner 广告不会自动刷新） |
-| ad-type | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>广告类型，默认为展示banner，可通过设置该属性为`video`展示视频广告, `grid`为格子广告 |
-| ad-theme | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/> |
-| @load | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: x | 广告加载成功的回调 |
-| @close | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: x | 广告关闭的回调 |
-| @error | (e:[UniAdErrorEvent](#uniaderrorevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: x | 广告加载失败的回调 |
+| adpid | string |   | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; iOS(VDOM): 4.31; HarmonyOS(VDOM): x | 广告位id，在uniAD官网申请广告位 |
+| unit-id | string |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(string)*<br/>广告单元id，可在[小程序管理后台](https://mp.weixin.qq.com)的流量主模块新建 |
+| ad-intervals | number |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(number)*<br/>广告自动刷新的间隔时间，单位为秒，参数值必须大于等于30（该参数不传入时 Banner 广告不会自动刷新） |
+| ad-type | string |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(string)*<br/>广告类型，默认为展示banner，可通过设置该属性为`video`展示视频广告, `grid`为格子广告 |
+| ad-theme | string |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(string)*<br/> |
+| @load | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; iOS(VDOM): 4.31; HarmonyOS(VDOM): x | 广告加载成功的回调 |
+| @close | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; iOS(VDOM): 4.31; HarmonyOS(VDOM): x | 广告关闭的回调 |
+| @error | (e:[UniAdErrorEvent](#uniaderrorevent)) => void |   | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; iOS(VDOM): 4.31; HarmonyOS(VDOM): x | 广告加载失败的回调 |
 | @clicked | Event |   |   |   |
 
 

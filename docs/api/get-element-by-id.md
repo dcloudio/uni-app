@@ -16,9 +16,9 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 
 ### getElementById 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS uni-app x UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.25 | 4.61 | 4.61 |
+| Web | 微信小程序 | Android(VDOM) | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) | HarmonyOS uni-app x UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.25 | 4.61 | 5.0 | 4.61 |
 
 
 **注意：** \
@@ -191,5 +191,5 @@ uni是全局api，本方法获取的元素，是页面栈栈顶（不包括 dial
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
 

@@ -14,7 +14,7 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| Web | 微信小程序 | Android(VDOM) | iOS(VDOM) | HarmonyOS(VDOM) |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.81 | 4.81 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
@@ -22,136 +22,136 @@
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| url | string([string.VideoURIString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 推流地址，支持 rtmp 协议 |
-| mode | string | "SD" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | SD（标清）, HD（高清）, FHD（超清）, RTC（实时通话） |
-| autopush | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 自动推流 |
-| muted | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 是否静音 |
-| enable-camera | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 开启摄像头 |
-| auto-focus | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 自动获取焦点 |
-| orientation | string | "vertical" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 画面方向，可选值有 vertical，horizontal |
-| beauty | number | 0 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 美颜，取值范围 0-9（iOS取值范围为1） ，0 表示关闭 |
-| aspect | string | "3:4" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 视频宽高比例 |
-| min-bitrate | number | 200 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 最小码率 |
-| max-bitrate | number | 1000 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 最大码率 |
-| waiting-image | string |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 进入后台时推流的等待画面 |
-| waiting-image-md5 | string |   | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 等待画面资源的MD5值 |
-| background-mute | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 进入后台时是否静音 |
-| enableVideoCustomRender | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>自定义渲染，允许开发者自行处理所采集的视频帧，详见[LivePusherContext]((LivePusherContext)) |
-| whiteness | number | 0 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(number)*<br/>美白，取值范围 0-9（iOS取值范围为1） ，0 表示关闭 |
-| audio-quality | string | "high" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(string)*<br/>高音质(48KHz)或低音质(16KHz)，值为`high`, `low` |
-| waiting-image-hash | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>等待画面资源的MD5值 |
-| zoom | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>调整焦距 |
-| zoom | number | 1 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | 调整焦距 |
-| device-position | string | "front" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(string)*<br/>前置或后置，值为`front`, `back` |
-| mirror | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>设置推流画面是否镜像，产生的效果在 live-player 反应到 |
-| remote-mirror | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(boolean)*<br/>同 mirror 属性，后续 mirror 将废弃 |
-| local-mirror | string | "auto" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(string)*<br/>控制本地预览画面是否镜像 |
-| audio-reverb-type | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>音频混响类型 |
-| enable-mic | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(boolean)*<br/>开启或关闭麦克风 |
-| enable-agc | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否开启音频自动增益 |
-| enable-ans | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否开启音频噪声抑制 |
-| audio-volume-type | string |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(string)*<br/>音量类型 |
-| video-width | number |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(number)*<br/>上推的视频流的分辨率宽度 |
-| video-height | number |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(number)*<br/>上推的视频流的分辨率高度 |
-| beauty-style | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>设置美颜类型 |
-| filter | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>设置色彩滤镜 |
-| picture-in-picture-mode | string/Array |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string/Array)*<br/>设置小窗模式： push, pop，空字符串或通过数组形式设置多种模式（如： \["push", "pop"] |
-| voice-changer-type | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>0：关闭变声；1：熊孩子；2：萝莉；3：大叔；4：重金属；6：外国人；7：困兽；8：死肥仔；9：强电流；10：重机械；11：空灵 |
-| custom-effect | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否启动自定义特效，设定后不能更改 |
-| skin-whiteness | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>自定义特效美白效果，取值 0~1。需要开启 `custom-effect` |
-| skin-smoothness | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>自定义特效磨皮效果，取值 0~1。需要开启 `custom-effect` |
-| face-thinness | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>自定义特效瘦脸效果，取值 0~1。需要开启 `custom-effect` |
-| eye-bigness | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>自定义特效大眼效果，取值 0~1。需要开启 `custom-effect` |
-| fps | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>帧率，有效值为 1~30 |
-| @statechange | (event: [UniLivePusherStatechangeEvent](#unilivepusherstatechangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 播放状态变化事件，event.detail = {code, message} |
-| @statechange | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 播放状态变化事件，detail = {code} |
-| @error | (event: [UniLivePusherErrorEvent](#unilivepushererrorevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | 错误事件，event.detail = {errCode, errMsg} |
-| @netstatus | (event: [UniLivePusherNetstatusEvent](#unilivepushernetstatusevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 网络状态通知，event.detail = {videoBitrate, audioBitrate, videoFPS, videoGOP, netSpeed, videoWidth, videoHeight} |
-| @netstatus | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 网络状态通知，detail = {info} |
-| @bgmstart | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>背景音开始播放时触发 |
-| @bgmprogress | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>背景音进度变化时触发，detail = {progress, duration} |
-| @bgmcomplete | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>背景音播放完成时触发 |
-| @audiovolumenotify | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>返回麦克风采集的音量大小 |
-| @enterpictureinpicture | eventhandler |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>进入小窗 |
-| @leavepictureinpicture | eventhandler |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>退出小窗 |
+| url | string([string.VideoURIString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM):   | 推流地址，支持 rtmp 协议 |
+| mode | string | "SD" | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM):   | SD（标清）, HD（高清）, FHD（超清）, RTC（实时通话） |
+| autopush | boolean |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM):   | 自动推流 |
+| muted | boolean | false | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM):   | 是否静音 |
+| enable-camera | boolean | true | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM):   | 开启摄像头 |
+| auto-focus | boolean | true | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM):   | 自动获取焦点 |
+| orientation | string | "vertical" | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM):   | 画面方向，可选值有 vertical，horizontal |
+| beauty | number | 0 | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM):   | 美颜，取值范围 0-9（iOS取值范围为1） ，0 表示关闭 |
+| aspect | string | "3:4" | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM):   | 视频宽高比例 |
+| min-bitrate | number | 200 | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM):   | 最小码率 |
+| max-bitrate | number | 1000 | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM):   | 最大码率 |
+| waiting-image | string |   | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM):   | 进入后台时推流的等待画面 |
+| waiting-image-md5 | string |   | Web: x; 微信小程序: x; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM):   | 等待画面资源的MD5值 |
+| background-mute | boolean | false | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM):   | 进入后台时是否静音 |
+| enableVideoCustomRender | boolean |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(boolean)*<br/>自定义渲染，允许开发者自行处理所采集的视频帧，详见[LivePusherContext]((LivePusherContext)) |
+| whiteness | number | 0 | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x | *(number)*<br/>美白，取值范围 0-9（iOS取值范围为1） ，0 表示关闭 |
+| audio-quality | string | "high" | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x | *(string)*<br/>高音质(48KHz)或低音质(16KHz)，值为`high`, `low` |
+| waiting-image-hash | string |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(string)*<br/>等待画面资源的MD5值 |
+| zoom | number |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(boolean)*<br/>调整焦距 |
+| zoom | number | 1 | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x | 调整焦距 |
+| device-position | string | "front" | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x | *(string)*<br/>前置或后置，值为`front`, `back` |
+| mirror | boolean |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(boolean)*<br/>设置推流画面是否镜像，产生的效果在 live-player 反应到 |
+| remote-mirror | boolean | false | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x | *(boolean)*<br/>同 mirror 属性，后续 mirror 将废弃 |
+| local-mirror | string | "auto" | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x | *(string)*<br/>控制本地预览画面是否镜像 |
+| audio-reverb-type | number |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(number)*<br/>音频混响类型 |
+| enable-mic | boolean | true | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x | *(boolean)*<br/>开启或关闭麦克风 |
+| enable-agc | boolean |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(boolean)*<br/>是否开启音频自动增益 |
+| enable-ans | boolean |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(boolean)*<br/>是否开启音频噪声抑制 |
+| audio-volume-type | string |   | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x | *(string)*<br/>音量类型 |
+| video-width | number |   | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x | *(number)*<br/>上推的视频流的分辨率宽度 |
+| video-height | number |   | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x | *(number)*<br/>上推的视频流的分辨率高度 |
+| beauty-style | string |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(string)*<br/>设置美颜类型 |
+| filter | string |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(string)*<br/>设置色彩滤镜 |
+| picture-in-picture-mode | string/Array |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(string/Array)*<br/>设置小窗模式： push, pop，空字符串或通过数组形式设置多种模式（如： \["push", "pop"] |
+| voice-changer-type | number |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(number)*<br/>0：关闭变声；1：熊孩子；2：萝莉；3：大叔；4：重金属；6：外国人；7：困兽；8：死肥仔；9：强电流；10：重机械；11：空灵 |
+| custom-effect | boolean |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(boolean)*<br/>是否启动自定义特效，设定后不能更改 |
+| skin-whiteness | number |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(number)*<br/>自定义特效美白效果，取值 0~1。需要开启 `custom-effect` |
+| skin-smoothness | number |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(number)*<br/>自定义特效磨皮效果，取值 0~1。需要开启 `custom-effect` |
+| face-thinness | number |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(number)*<br/>自定义特效瘦脸效果，取值 0~1。需要开启 `custom-effect` |
+| eye-bigness | number |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(number)*<br/>自定义特效大眼效果，取值 0~1。需要开启 `custom-effect` |
+| fps | number |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(number)*<br/>帧率，有效值为 1~30 |
+| @statechange | (event: [UniLivePusherStatechangeEvent](#unilivepusherstatechangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM):   | 播放状态变化事件，event.detail = {code, message} |
+| @statechange | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM):   | 播放状态变化事件，detail = {code} |
+| @error | (event: [UniLivePusherErrorEvent](#unilivepushererrorevent)) => void |   | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x | 错误事件，event.detail = {errCode, errMsg} |
+| @netstatus | (event: [UniLivePusherNetstatusEvent](#unilivepushernetstatusevent)) => void |   | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM):   | 网络状态通知，event.detail = {videoBitrate, audioBitrate, videoFPS, videoGOP, netSpeed, videoWidth, videoHeight} |
+| @netstatus | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM):   | 网络状态通知，detail = {info} |
+| @bgmstart | eventhandle |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(eventhandle)*<br/>背景音开始播放时触发 |
+| @bgmprogress | eventhandle |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(eventhandle)*<br/>背景音进度变化时触发，detail = {progress, duration} |
+| @bgmcomplete | eventhandle |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(eventhandle)*<br/>背景音播放完成时触发 |
+| @audiovolumenotify | eventhandle |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(eventhandle)*<br/>返回麦克风采集的音量大小 |
+| @enterpictureinpicture | eventhandler |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(eventhandler)*<br/>进入小窗 |
+| @leavepictureinpicture | eventhandler |   | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(eventhandler)*<br/>退出小窗 |
 
 #### mode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| RTC | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |  |
-| SD | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |  |
-| HD | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |  |
-| FHD | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |  |
-| QVGA | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | Quarter VGA |
-| HVGA | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | Half-size VGA |
+| RTC | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x |  |
+| SD | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x |  |
+| HD | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x |  |
+| FHD | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x |  |
+| QVGA | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | Quarter VGA |
+| HVGA | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | Half-size VGA |
 
 #### orientation 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| vertical | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |  |
-| horizontal | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |  |
+| vertical | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x |  |
+| horizontal | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x |  |
 
 #### local-mirror 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| auto | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | 前置摄像头镜像，后置摄像头不镜像 |
-| enable | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | 前后置摄像头均镜像 |
-| disable | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | 前后置摄像头均不镜像 |
+| auto | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x | 前置摄像头镜像，后置摄像头不镜像 |
+| enable | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x | 前后置摄像头均镜像 |
+| disable | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x | 前后置摄像头均不镜像 |
 
 #### audio-reverb-type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 0 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 关闭 |
-| 1 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | KTV |
-| 2 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 小房间 |
-| 3 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 大会堂 |
-| 4 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 低沉 |
-| 5 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 洪亮 |
-| 6 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 金属声 |
-| 7 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 磁性 |
+| 0 | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 关闭 |
+| 1 | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | KTV |
+| 2 | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 小房间 |
+| 3 | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 大会堂 |
+| 4 | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 低沉 |
+| 5 | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 洪亮 |
+| 6 | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 金属声 |
+| 7 | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 磁性 |
 
 #### audio-volume-type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| auto | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 自动 |
-| media | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | 媒体音量 |
-| voicecall | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | 通话音量 |
+| auto | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 自动 |
+| media | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x | 媒体音量 |
+| voicecall | Web: x; 微信小程序: 4.41; Android(VDOM): 4.81; iOS(VDOM): 4.81; HarmonyOS(VDOM): x | 通话音量 |
 
 #### beauty-style 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| smooth | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 光滑美颜 |
-| nature | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 自然美颜 |
+| smooth | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 光滑美颜 |
+| nature | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 自然美颜 |
 
 #### filter 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| standard | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 标准 |
-| pink | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 粉嫩 |
-| nostalgia | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 怀旧 |
-| blues | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 蓝调 |
-| romantic | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 浪漫 |
-| cool | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 清凉 |
-| fresher | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 清新 |
-| solor | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 日系 |
-| aestheticism | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 唯美 |
-| whitening | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 美白 |
-| cerisered | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 樱红 |
+| standard | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 标准 |
+| pink | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 粉嫩 |
+| nostalgia | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 怀旧 |
+| blues | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 蓝调 |
+| romantic | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 浪漫 |
+| cool | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 清凉 |
+| fresher | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 清新 |
+| solor | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 日系 |
+| aestheticism | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 唯美 |
+| whitening | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 美白 |
+| cerisered | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 樱红 |
 
 #### picture-in-picture-mode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| [] | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 取消小窗 |
-| push | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 路由 push 时触发小窗 |
-| pop | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 路由 pop 时触发小窗 |
+| [] | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 取消小窗 |
+| push | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 路由 push 时触发小窗 |
+| pop | Web: x; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): x | 路由 pop 时触发小窗 |
 
 
 ### 事件

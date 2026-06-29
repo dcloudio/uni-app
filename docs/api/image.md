@@ -14,15 +14,15 @@ Image -- Extends --> UniImageElement
 ### Image 的属性值 @image-values
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| src | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.25; iOS: 4.25; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 | 图片url |
+| src | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.25; iOS: 4.25; iOS uni-app x UTS 插件: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 图片url |
 
 
 
 
 ### Image 兼容性 
- | Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | x | 4.25 | 4.25 | 4.61 |
+ | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 4.25 | 4.25 | 4.61 | 5.0 |
 
 <!-- CUSTOMTYPEJSON.Image.example -->
 

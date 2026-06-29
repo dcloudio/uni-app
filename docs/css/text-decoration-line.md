@@ -6,9 +6,9 @@ text-decoration-line 属性用于设置元素中文本的修饰线类型。
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,10 +34,10 @@ text-decoration-line: none | [ underline || overline || line-through || blink ] 
 ### text-decoration-line 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| underline | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 在文本的下方有一条修饰线。 |
-| line-through | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 有一条贯穿文本中间的修饰线。 |
-| overline | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 在文本的上方有一条修饰线。 |
-| none | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 表示没有文本修饰效果。 |
+| underline | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在文本的下方有一条修饰线。 |
+| line-through | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 有一条贯穿文本中间的修饰线。 |
+| overline | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 在文本的上方有一条修饰线。 |
+| none | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表示没有文本修饰效果。 |
 
 
 ### 默认值 @default-value 

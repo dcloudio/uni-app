@@ -14,9 +14,9 @@
 
 
 ### hideKeyboard 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.71 | 4.71 | 4.61 |
+| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.71 | 4.71 | 4.61 | 5.0 |
 
 
 ### 参数 
@@ -71,7 +71,7 @@
 在input和textarea组件上也有事件用于监听键盘高度变化。本API为全局API，可以全局监听键盘弹出收起和高度变化，尤其是App内嵌web-view中的键盘变化，无法在组件上监听，只能使用本API全局监听。
 
 ### onKeyboardHeightChange 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.71 | 4.71 | 5.08 | 5.08 |
 
@@ -80,13 +80,13 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [OnKeyboardHeightChangeCallbackResult](#onkeyboardheightchangecallbackresult-values)) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | uni.onKeyboardHeightChange参数定义 | 
+| callback | (res: [OnKeyboardHeightChangeCallbackResult](#onkeyboardheightchangecallbackresult-values)) => void | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | uni.onKeyboardHeightChange参数定义 | 
 
 ### OnKeyboardHeightChangeCallbackResult 的属性值 @onkeyboardheightchangecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| height | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 键盘高度 |
+| height | number | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 键盘高度 |
 
 
 ### 返回值 
@@ -130,7 +130,7 @@
 移除键盘高度变化事件的监听函数
 
 ### offKeyboardHeightChange 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.71 | 4.71 | 5.08 | 5.08 |
 
@@ -139,7 +139,7 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | number | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
+| id | number | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   |  | 
 
 
 
@@ -265,5 +265,5 @@ defineExpose({
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
 

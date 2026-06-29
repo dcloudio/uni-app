@@ -4,7 +4,7 @@
 - web端可以使用`html`、`body`、`:root`等选择器。由于页面的css样式隔离，且html节点并未添加data-xxx属性，`html`、`:root`写在页面style内无效，只能写在App.uvue内。
 - 深度选择器 `:deep()/::v-deep` 用法参考 [单文件 style - 深度选择器](/vue/index#scoped) 文档。
 
-| 名称 | 示例 | Web | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) | 描述 |
+| 名称 | 示例 | Web | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) | 描述 |
 | :- | :- | :- | :- | :- | :- | :- | :- | :- |
 | 通配选择器 | * {} | 4.0 | x | x | x | x | x |  |
 | 类选择器 | .class {} | 4.0 | 3.9 | 4.11 | 5.11 | 4.61 | 5.0 |  |

@@ -14,9 +14,9 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
 获取阿里云实人认证meta info
 
 ### getFacialRecognitionMetaInfo 兼容性 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| 4.84 | 3.9 | 4.11 | 4.61 |
+| Web | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- |
+| 4.84 | 3.9 | 4.11 | 4.61 | 5.0 |
 
 
 
@@ -33,75 +33,75 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
 启动人脸识别
 
 ### startFacialRecognitionVerify 兼容性 
-| Web | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9 | 4.11 | 4.61 |
+| Web | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9 | 4.11 | 4.61 | 5.0 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| faceStyle | **StartFacialRecognitionVerifyOptions** | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| faceStyle | **StartFacialRecognitionVerifyOptions** | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   |  |
 
 #### faceStyle 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| certifyId | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | certifyId 调用实人认证的id |
-| progressBarColor | string | 否 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS: x | 活体检测页面的进度条颜色。<br/> |
-| screenOrientation | string | 否 | "port" | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS: x | 认证时屏幕方向 |
-| success | (res: [StartFacialRecognitionVerifySuccess](#startfacialrecognitionverifysuccess-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 成功回调 |
-| fail | (res: [IFacialRecognitionVerifyError](#ifacialrecognitionverifyerror-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 失败回调 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 完成回调 | 
+| certifyId | string | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | certifyId 调用实人认证的id |
+| progressBarColor | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM): 3.9; iOS: 4.11; HarmonyOS(VDOM): x | 活体检测页面的进度条颜色。<br/> |
+| screenOrientation | string | 否 | "port" | Web: x; 微信小程序:  ; Android(VDOM): 3.9; iOS: 4.11; HarmonyOS(VDOM): x | 认证时屏幕方向 |
+| success | (res: [StartFacialRecognitionVerifySuccess](#startfacialrecognitionverifysuccess-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 成功回调 |
+| fail | (res: [IFacialRecognitionVerifyError](#ifacialrecognitionverifyerror-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 失败回调 |
+| complete | (res: any) => void | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 完成回调 | 
 
 ##### screenOrientation 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| land | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 横屏 |
-| port | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 竖屏 |
+| land | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 横屏 |
+| port | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 竖屏 |
 
 #### StartFacialRecognitionVerifySuccess 的属性值 @startfacialrecognitionverifysuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误码 |
-| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 调用API的名称 |
-| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误的详细信息 |
-| cause | **SourceError** | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误来源 |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误码 |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 调用API的名称 |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误的详细信息 |
+| cause | **SourceError** | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误来源 |
 
 #### cause 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| subject | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 源错误模块名称 |
-| message | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 源错误描述信息 |
-| code | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 源错误的错误码 |
-| name | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| subject | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 源错误模块名称 |
+| message | string | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 源错误描述信息 |
+| code | number | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 源错误的错误码 |
+| name | string | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   |  |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   |  |
 
 #### IFacialRecognitionVerifyError 的属性值 @ifacialrecognitionverifyerror-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误码 |
-| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误码 |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 10001 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | certifyId 不能为空 |
-| 10002 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 当前设备不支持 |
-| 10010 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 刷脸异常 |
-| 10011 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 验证中断 |
-| 10012 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 网络异常 |
-| 10013 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 刷脸验证失败 |
-| 10020 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 设备设置时间异常 |
+| 10001 | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | certifyId 不能为空 |
+| 10002 | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 当前设备不支持 |
+| 10010 | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 刷脸异常 |
+| 10011 | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 验证中断 |
+| 10012 | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 网络异常 |
+| 10013 | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 刷脸验证失败 |
+| 10020 | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 设备设置时间异常 |
 
 
 
@@ -217,7 +217,7 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
 
 
 ## Tips

@@ -8,7 +8,7 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| Web | 微信小程序 | Android(VDOM) | iOS(VDOM) | HarmonyOS(VDOM) |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 

@@ -15,7 +15,7 @@
 如果手机启用了辅助应用功能，可以识别有哪些辅助应用的服务。辅助应用有时会被用于灰黑产实施自动点击，本API有助于开发者识别当前运行环境。
 
 ### getAccessibilityInfo 兼容性 
-| Android | iOS | HarmonyOS |
+| Android(VDOM) | iOS | HarmonyOS(VDOM) |
 | :- | :- | :- |
 | 4.51 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
@@ -130,5 +130,5 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
 

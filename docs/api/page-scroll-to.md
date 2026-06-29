@@ -20,9 +20,9 @@
 app-uvue下，其实没有页面级滚动。但本API做了一定兼容，当页面的根元素为scroll-view时，本API也会滚动该scroll-view。[详见](../css/README.md#pagescroll)
 
 ### pageScrollTo 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | 5.00 |
 
 
 ### 参数 
@@ -35,13 +35,13 @@ app-uvue下，其实没有页面级滚动。但本API做了一定兼容，当页
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| scrollTop | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 滚动到页面的目标位置（单位px） |
-| selector | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 元素选择器，用于指定要滚动到的元素位置 |
-| offsetTop | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 偏移距离，可以滚动到 selector 加偏移距离的位置 |
-| duration | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 滚动动画的时长，默认300，单位 ms |
-| success | (result: [PageScrollToSuccess](#pagescrolltosuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: [PageScrollToFail](#pagescrolltofail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: [PageScrollToComplete](#pagescrolltocomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| scrollTop | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.00 | 滚动到页面的目标位置（单位px） |
+| selector | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.00 | 元素选择器，用于指定要滚动到的元素位置 |
+| offsetTop | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 偏移距离，可以滚动到 selector 加偏移距离的位置 |
+| duration | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): x | 滚动动画的时长，默认300，单位 ms |
+| success | (result: [PageScrollToSuccess](#pagescrolltosuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.00 | 接口调用成功的回调函数 |
+| fail | (result: [PageScrollToFail](#pagescrolltofail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.00 | 接口调用失败的回调函数 |
+| complete | (result: [PageScrollToComplete](#pagescrolltocomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.00 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### PageScrollToSuccess 的属性值 @pagescrolltosuccess-values 
 
@@ -53,7 +53,7 @@ app-uvue下，其实没有页面级滚动。但本API做了一定兼容，当页
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 设置页面滚动错误码<br/>- 4: 框架内部异常 |
+| errCode | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.00 | 设置页面滚动错误码<br/>- 4: 框架内部异常 |
 | errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
 | data | any | 否 |  |   | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
@@ -205,7 +205,7 @@ uni.pageScrollTo({
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
 
 
 ## Tips

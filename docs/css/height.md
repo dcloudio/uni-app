@@ -6,9 +6,9 @@ height CSS 属性指定了一个元素的高度。默认情况下，这个属性
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -36,9 +36,9 @@ height: <viewport-length>{1,2};
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
 | auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 由浏览器为元素计算并选择一个高度。 |
-| fit-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 将 fill-content 公式中的可用位置替换为特定的参数以进行使用，如：min(max-content, max(min-content, )) |
-| max-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 设置为允许的最大高度。 |
-| min-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 设置为允许的最小高度。 |
+| fit-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 将 fill-content 公式中的可用位置替换为特定的参数以进行使用，如：min(max-content, max(min-content, )) |
+| max-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 设置为允许的最大高度。 |
+| min-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 设置为允许的最小高度。 |
 
 
 **注意**

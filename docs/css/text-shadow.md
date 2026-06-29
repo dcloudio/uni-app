@@ -6,9 +6,9 @@ text-shadow 为文字添加阴影。可以为文字与 decoration 添加多个�
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.61 | 5.21 | 4.61 | 5.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.61 | 4.61 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -37,7 +37,7 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
 ### text-shadow 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| none | Web: 4.0; Android: 4.61; Android(Vapor): 5.21; iOS: 4.61; iOS(Vapor): 5.11; HarmonyOS: 4.61 | No shadow. |
+| none | Web: 4.0; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | No shadow. |
 
 
 ### 默认值 @default-value 

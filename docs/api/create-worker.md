@@ -35,7 +35,7 @@ uni-app x的代码，默认都是在主线程执行的，主线程也称为UI线
 创建一个Worker对象
 
 ### createWorker 兼容性 
-| Web | 微信小程序 | Android | Android uni-app x UTS 插件 | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS uni-app x UTS 插件 |
+| Web | 微信小程序 | Android(VDOM) | Android uni-app x UTS 插件 | iOS(VDOM) | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS uni-app x UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | 4.81 | 4.41 | 4.81 | 4.81 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.81 | 4.81 | 4.81 |
 
@@ -44,7 +44,7 @@ uni-app x的代码，默认都是在主线程执行的，主线程也称为UI线
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| url | string | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | Worker脚本的URL | 
+| url | string | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM):  ; iOS(VDOM): x; HarmonyOS(VDOM):   | Worker脚本的URL | 
 
 
 ### 返回值 
@@ -57,20 +57,20 @@ uni-app x的代码，默认都是在主线程执行的，主线程也称为UI线
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| env | **WorkerEnv** | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS: x; HarmonyOS:   | worker内的环境变量<br/> |
+| env | **WorkerEnv** | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS(VDOM): x; HarmonyOS(VDOM):   | worker内的环境变量<br/> |
 
 ##### env 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| USER_DATA_PATH | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS: x; HarmonyOS:   | 文件系统中的用户目录路径 (本地路径)<br/> |
+| USER_DATA_PATH | string | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS(VDOM): x; HarmonyOS(VDOM):   | 文件系统中的用户目录路径 (本地路径)<br/> |
 #### Worker 的方法 @worker-values 
 
 #### onMessage(callback: WorkerOnMessageCallback): void; @onmessage
 onMessage
 监听主线程/Worker 线程向当前线程发送的消息的事件。
 ##### onMessage 兼容性 
-| 微信小程序 | iOS |
+| 微信小程序 | iOS(VDOM) |
 | :- | :- |
 | 4.41 | x |
 
@@ -78,7 +78,7 @@ onMessage
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (message: any) => void | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   |  | 
+| callback | (message: any) => void | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM):  ; iOS(VDOM): x; HarmonyOS(VDOM):   |  | 
 
 
 
@@ -86,7 +86,7 @@ onMessage
 onError
 监听 Worker 线程错误事件。当 Worker 线程中发生脚本错误时会触发此事件。
 ##### onError 兼容性 
-| 微信小程序 | iOS |
+| 微信小程序 | iOS(VDOM) |
 | :- | :- |
 | 4.41 | x |
 
@@ -94,30 +94,30 @@ onError
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [WorkerOnErrorCallbackResult](#workeronerrorcallbackresult-values)) => void | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   |  | 
+| callback | (result: [WorkerOnErrorCallbackResult](#workeronerrorcallbackresult-values)) => void | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM):  ; iOS(VDOM): x; HarmonyOS(VDOM):   |  | 
 
 ##### WorkerOnErrorCallbackResult 的属性值 @workeronerrorcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   |  |
-| errSubject | string | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web:  ; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 错误信息中包含的数据 |
+| errCode | number | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM):  ; iOS(VDOM): x; HarmonyOS(VDOM):   |  |
+| errSubject | string | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM):  ; iOS(VDOM): x; HarmonyOS(VDOM):   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web:  ; 微信小程序:  ; Android(VDOM):  ; iOS(VDOM): x; HarmonyOS(VDOM):   | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   |  |
+| errMsg | string | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM):  ; iOS(VDOM): x; HarmonyOS(VDOM):   |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 5000501 | Web:  ; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | worker 运行错误 |
-| 5000502 | Web:  ; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | worker 序列化失败 |
-| 5000503 | Web:  ; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | worker 实例未运行 |
-| 5000504 | Web:  ; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | worker 线程中不支持调用的API。 |
-| 5000505 | Web:  ; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | worker 线程初始化失败 |
-| 5000506 | Web:  ; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | worker 文件路径无效 |
-| 5000510 | Web:  ; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 非主线程调用worker API |
-| 5000511 | Web:  ; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | worker 线程无效 |
+| 5000501 | Web:  ; 微信小程序:  ; Android(VDOM):  ; iOS(VDOM): x; HarmonyOS(VDOM):   | worker 运行错误 |
+| 5000502 | Web:  ; 微信小程序:  ; Android(VDOM):  ; iOS(VDOM): x; HarmonyOS(VDOM):   | worker 序列化失败 |
+| 5000503 | Web:  ; 微信小程序:  ; Android(VDOM):  ; iOS(VDOM): x; HarmonyOS(VDOM):   | worker 实例未运行 |
+| 5000504 | Web:  ; 微信小程序:  ; Android(VDOM):  ; iOS(VDOM): x; HarmonyOS(VDOM):   | worker 线程中不支持调用的API。 |
+| 5000505 | Web:  ; 微信小程序:  ; Android(VDOM):  ; iOS(VDOM): x; HarmonyOS(VDOM):   | worker 线程初始化失败 |
+| 5000506 | Web:  ; 微信小程序:  ; Android(VDOM):  ; iOS(VDOM): x; HarmonyOS(VDOM):   | worker 文件路径无效 |
+| 5000510 | Web:  ; 微信小程序:  ; Android(VDOM):  ; iOS(VDOM): x; HarmonyOS(VDOM):   | 非主线程调用worker API |
+| 5000511 | Web:  ; 微信小程序:  ; Android(VDOM):  ; iOS(VDOM): x; HarmonyOS(VDOM):   | worker 线程无效 |
 
 
 
@@ -125,7 +125,7 @@ onError
 postMessage
 向主线程/Worker 线程发送的消息。
 ##### postMessage 兼容性 
-| 微信小程序 | iOS |
+| 微信小程序 | iOS(VDOM) |
 | :- | :- |
 | 4.41 | x |
 
@@ -133,15 +133,15 @@ postMessage
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| message | any | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   |  |
-| options | **WorkerPostMessageOptions** | 否 |  | Web:  ; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   |  |
+| message | any | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM):  ; iOS(VDOM): x; HarmonyOS(VDOM):   |  |
+| options | **WorkerPostMessageOptions** | 否 |  | Web:  ; 微信小程序:  ; Android(VDOM):  ; iOS(VDOM): x; HarmonyOS(VDOM):   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| harmonySendable | boolean | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: 4.81 | 是否支持符合Sendable协议的对象作为共享变量发送，使用postMessageWithSharedSendable实现，默认值为false<br/>仅鸿蒙平台支持，参考：https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-sendable<br/> |
-| transfer | Array&lt;any&gt; | 否 |  | Web: 4.81; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: 4.81 | 可转移对象数组，默认值为空数组<br/>仅鸿蒙、web平台支持，参考：https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Transferable_objects<br/> | 
+| harmonySendable | boolean | 否 |  | Web: x; 微信小程序:  ; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.0 | 是否支持符合Sendable协议的对象作为共享变量发送，使用postMessageWithSharedSendable实现，默认值为false<br/>仅鸿蒙平台支持，参考：https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-sendable<br/> |
+| transfer | Array&lt;any&gt; | 否 |  | Web: 4.81; 微信小程序:  ; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.0 | 可转移对象数组，默认值为空数组<br/>仅鸿蒙、web平台支持，参考：https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Transferable_objects<br/> | 
 
 
 
@@ -149,7 +149,7 @@ postMessage
 terminate
 结束当前 Worker 线程。仅限在主线程 worker 对象上调用。
 ##### terminate 兼容性 
-| 微信小程序 | iOS |
+| 微信小程序 | iOS(VDOM) |
 | :- | :- |
 | 4.41 | x |
 
@@ -492,7 +492,7 @@ terminate
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
 
 
 

@@ -3,9 +3,9 @@
 显示消息提示框
 
 ### showToast 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android(VDOM) | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 | 5.0 |
 
 
 ### 参数 
@@ -18,15 +18,15 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| title | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 提示的内容，长度与 icon 取值有关。 |
-| icon | string | 否 | "success" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: x | icon值说明 |
-| image | [string.ImageURIString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 自定义图标的本地路径（app端暂不支持gif） |
-| mask | boolean | 否 | false | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 是否显示透明蒙层，防止触摸穿透 |
-| duration | number | 否 | 1500 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 提示的延迟时间，单位毫秒 |
-| position | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | position值说明。纯文本轻提示显示位置，填写有效值后只有 title 属性生效，且不支持通过 uni.hideToast 隐藏。 |
-| success | (res: ShowToastSuccess) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.showToast成功回调函数定义 |
-| fail | (res: [ShowToastFail](#showtoastfail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.showToast失败回调函数定义 |
-| complete | (res: any) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.showToast完成回调函数定义 | 
+| title | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 提示的内容，长度与 icon 取值有关。 |
+| icon | string | 否 | "success" | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): x | icon值说明 |
+| image | [string.ImageURIString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 自定义图标的本地路径（app端暂不支持gif） |
+| mask | boolean | 否 | false | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 是否显示透明蒙层，防止触摸穿透 |
+| duration | number | 否 | 1500 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 提示的延迟时间，单位毫秒 |
+| position | string | 否 |  | Web: x; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | position值说明。纯文本轻提示显示位置，填写有效值后只有 title 属性生效，且不支持通过 uni.hideToast 隐藏。 |
+| success | (res: ShowToastSuccess) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | uni.showToast成功回调函数定义 |
+| fail | (res: [ShowToastFail](#showtoastfail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | uni.showToast失败回调函数定义 |
+| complete | (res: any) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | uni.showToast完成回调函数定义 | 
 
 ##### icon 的属性描述
 
@@ -108,9 +108,9 @@
 <!-- UTSAPIJSON.hideToast.example -->
 
 ### hideToast 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android(VDOM) | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 | 5.0 |
 
 
 
@@ -135,9 +135,9 @@
 显示 loading 提示框, 需主动调用 uni.hideLoading 才能关闭提示框。
 
 ### showLoading 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.61 | 4.61 | 4.61 | 4.61 |
+| Web | 微信小程序 | Android(VDOM) | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.61 | 4.61 | 4.61 | 4.61 | 5.0 |
 
 
 ### 参数 
@@ -150,17 +150,17 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| title | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 提示的内容，长度与 icon 取值有关。 |
-| mask | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 是否显示透明蒙层，防止触摸穿透，默认：false |
-| success | (res: [ShowLoadingSuccess](#showloadingsuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.showLoading成功回调函数定义 |
-| fail | (res: [ShowLoadingFail](#showloadingfail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.showLoading失败回调函数定义 |
-| complete | (res: any) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.showLoading完成回调函数定义 | 
+| title | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 提示的内容，长度与 icon 取值有关。 |
+| mask | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android 系统版本: x; Android(VDOM): x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS(VDOM): x | 是否显示透明蒙层，防止触摸穿透，默认：false |
+| success | (res: [ShowLoadingSuccess](#showloadingsuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | uni.showLoading成功回调函数定义 |
+| fail | (res: [ShowLoadingFail](#showloadingfail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | uni.showLoading失败回调函数定义 |
+| complete | (res: any) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | uni.showLoading完成回调函数定义 | 
 
 #### ShowLoadingSuccess 的属性值 @showloadingsuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 错误信息 |
+| errMsg | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 错误信息 |
 
 #### ShowLoadingFail 的属性值 @showloadingfail-values 
 
@@ -213,17 +213,17 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| loadingPage | [UniPage](/api/unipage.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: 12; HarmonyOS: 4.61 | 期望隐藏的目标LoadingPage 如果为null 会关闭当前栈顶全部LoadingPage |
-| success | (res: [HideLoadingSuccess](#hideloadingsuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.hideLoading成功回调函数定义 |
-| fail | (res: [HideLoadingFail](#hideloadingfail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.hideLoading失败回调函数定义 |
-| complete | (res: any) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.hideLoading完成回调函数定义 |
-| noConflict | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.22.1`<br/><br/>目前 toast 和 loading 相关接口可以相互混用，此参数可用于取消混用特性<br/> | 
+| loadingPage | [UniPage](/api/unipage.md) | 否 |  | Web: 4.0; 微信小程序: x; Android(VDOM): 4.61; iOS: 4.61; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: 12; HarmonyOS(VDOM): 4.61 | 期望隐藏的目标LoadingPage 如果为null 会关闭当前栈顶全部LoadingPage |
+| success | (res: [HideLoadingSuccess](#hideloadingsuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | uni.hideLoading成功回调函数定义 |
+| fail | (res: [HideLoadingFail](#hideloadingfail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | uni.hideLoading失败回调函数定义 |
+| complete | (res: any) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | uni.hideLoading完成回调函数定义 |
+| noConflict | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 需要基础库： `2.22.1`<br/><br/>目前 toast 和 loading 相关接口可以相互混用，此参数可用于取消混用特性<br/> | 
 
 #### HideLoadingSuccess 的属性值 @hideloadingsuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 错误信息 |
+| errMsg | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 错误信息 |
 
 #### HideLoadingFail 的属性值 @hideloadingfail-values 
 
@@ -241,9 +241,9 @@
 <!-- UTSAPIJSON.hideLoading.example -->
 
 ### hideLoading 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.61 | 4.61 | 4.61 | 4.61 |
+| Web | 微信小程序 | Android(VDOM) | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.61 | 4.61 | 4.61 | 4.61 | 5.0 |
 
 
 
@@ -267,9 +267,9 @@
 显示模态弹窗，可以只有一个确定按钮，也可以同时有确定和取消按钮。类似于一个API整合了 html 中：alert、confirm。
 
 ### showModal 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.61 | 4.61 | 4.61 | 4.61 |
+| Web | 微信小程序 | Android(VDOM) | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.61 | 4.61 | 4.61 | 4.61 | 5.0 |
 
 
 ### 参数 
@@ -282,27 +282,27 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| title | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 提示的标题 |
-| content | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 提示的内容 |
-| showCancel | boolean | 否 | true<br/>是否显示取消按钮，默认为 true | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 |  |
-| cancelText | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 取消按钮的文字，默认为"取消" |
-| cancelColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 取消按钮的文字颜色，默认为"#000000" |
-| confirmText | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 确定按钮的文字，默认为"确定" |
-| confirmColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 确定按钮的文字颜色 |
-| editable | boolean | 否 | false | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 是否显示输入框 |
-| placeholderText | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 显示输入框时的提示文本 |
-| success | (result: [ShowModalSuccess](#showmodalsuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: [ShowModalFail](#showmodalfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| title | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 提示的标题 |
+| content | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 提示的内容 |
+| showCancel | boolean | 否 | true<br/>是否显示取消按钮，默认为 true | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 |  |
+| cancelText | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 取消按钮的文字，默认为"取消" |
+| cancelColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 取消按钮的文字颜色，默认为"#000000" |
+| confirmText | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 确定按钮的文字，默认为"确定" |
+| confirmColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 确定按钮的文字颜色 |
+| editable | boolean | 否 | false | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 是否显示输入框 |
+| placeholderText | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 显示输入框时的提示文本 |
+| success | (result: [ShowModalSuccess](#showmodalsuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用成功的回调函数 |
+| fail | (result: [ShowModalFail](#showmodalfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### ShowModalSuccess 的属性值 @showmodalsuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 错误信息 |
-| content | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | editable 为 true 时，用户输入的文本 |
-| cancel | boolean | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 为 true 时，表示用户点击了取消（用于 Android 系统区分点击蒙层关闭还是点击取消按钮关闭） |
-| confirm | boolean | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 为 true 时，表示用户点击了确定按钮 |
+| errMsg | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 错误信息 |
+| content | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | editable 为 true 时，用户输入的文本 |
+| cancel | boolean | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 为 true 时，表示用户点击了取消（用于 Android 系统区分点击蒙层关闭还是点击取消按钮关闭） |
+| confirm | boolean | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 为 true 时，表示用户点击了确定按钮 |
 
 #### ShowModalFail 的属性值 @showmodalfail-values 
 
@@ -346,49 +346,49 @@
 从底部向上弹出操作菜单
 
 ### showActionSheet 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android(VDOM) | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 | 5.0 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **ShowActionSheetOptions** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 参数说明 |
+| options | **ShowActionSheetOptions** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 参数说明 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| title | string | 否 |  | Web: 4.51; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; iOS uni-app x UTS 插件: 4.51; HarmonyOS: 4.61 | 菜单标题 |
-| alertText | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 警示文案（仅微信小程序真机有效） |
-| itemList | Array&lt;string&gt; | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 按钮的文字数组 |
-| itemColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 按钮的文字颜色，字符串格式 |
-| popover | **Popover** | 否 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 大屏设备弹出原生选择按钮框的指示区域，默认居中显示 |
-| titleColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: x; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 菜单标题文字颜色，字符串格式 |
-| cancelText | string | 否 |  | Web: 4.0; 微信小程序: x; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 取消按钮的文字，默认为"取消" |
-| cancelColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: x; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 取消按钮的文字颜色，字符串格式 |
-| backgroundColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: x; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 弹框背景颜色 |
-| success | (result: [ShowActionSheetSuccess](#showactionsheetsuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: [ShowActionSheetFail](#showactionsheetfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| title | string | 否 |  | Web: 4.51; 微信小程序: 4.41; Android(VDOM): 4.51; iOS: 4.51; iOS uni-app x UTS 插件: 4.51; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 菜单标题 |
+| alertText | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 警示文案（仅微信小程序真机有效） |
+| itemList | Array&lt;string&gt; | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 按钮的文字数组 |
+| itemColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 按钮的文字颜色，字符串格式 |
+| popover | **Popover** | 否 |  | Web: 4.0; 微信小程序: x; Android(VDOM): x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): x | 大屏设备弹出原生选择按钮框的指示区域，默认居中显示 |
+| titleColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: x; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 菜单标题文字颜色，字符串格式 |
+| cancelText | string | 否 |  | Web: 4.0; 微信小程序: x; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 取消按钮的文字，默认为"取消" |
+| cancelColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: x; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 取消按钮的文字颜色，字符串格式 |
+| backgroundColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: x; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 弹框背景颜色 |
+| success | (result: [ShowActionSheetSuccess](#showactionsheetsuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用成功的回调函数 |
+| fail | (result: [ShowActionSheetFail](#showactionsheetfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### popover 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| top | number | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 指示区域坐标，使用原生 navigationBar 时一般需要加上 navigationBar 的高度 |
-| left | number | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 指示区域坐标 |
-| width | number | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 指示区域宽度 |
-| height | number | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 指示区域高度 |
+| top | number | 是 |  | Web: 4.0; 微信小程序: x; Android(VDOM): x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): x | 指示区域坐标，使用原生 navigationBar 时一般需要加上 navigationBar 的高度 |
+| left | number | 是 |  | Web: 4.0; 微信小程序: x; Android(VDOM): x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): x | 指示区域坐标 |
+| width | number | 是 |  | Web: 4.0; 微信小程序: x; Android(VDOM): x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): x | 指示区域宽度 |
+| height | number | 是 |  | Web: 4.0; 微信小程序: x; Android(VDOM): x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): x | 指示区域高度 |
 
 #### ShowActionSheetSuccess 的属性值 @showactionsheetsuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web: 4.0; 微信小程序: x; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 错误信息 |
-| tapIndex | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 用户点击的按钮序号，从上到下的顺序，从0开始 |
+| errMsg | string | 是 |  | Web: 4.0; 微信小程序: x; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 错误信息 |
+| tapIndex | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 用户点击的按钮序号，从上到下的顺序，从0开始 |
 
 #### ShowActionSheetFail 的属性值 @showactionsheetfail-values 
 
@@ -432,7 +432,7 @@ itemList，即actionsheet的列表项，在app和小程序上最多6项，超出
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
 
 
 ## Bug & Tips@tips

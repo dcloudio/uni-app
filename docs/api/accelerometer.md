@@ -3,7 +3,7 @@
 监听加速度数据变化事件
 
 ### onAccelerometerChange 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android(VDOM) | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 |
 
@@ -52,7 +52,7 @@
 监听加速度数据变化事件
 
 ### offAccelerometerChange 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android(VDOM) | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 |
 
@@ -98,7 +98,7 @@
 
 
 ### startAccelerometer 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 5.08 | 5.08 | 5.08 | 5.08 |
 
@@ -193,7 +193,7 @@
 
 
 ### stopAccelerometer 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 5.08 | 5.08 | 5.08 | 5.08 |
 
@@ -436,7 +436,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
 
 
 ### tips

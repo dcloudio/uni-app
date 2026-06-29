@@ -2,7 +2,7 @@
 
 ## 渲染函数
 
-|  | Web | 微信小程序 | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+|  | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- | :- |
 | h() | 4.0 | x | 3.99 | x | 4.11 | x | 4.61 | x |
 | mergeProps() | 4.0 | x | 4.0 | x | 4.11 | x | 4.61 | x |

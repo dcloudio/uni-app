@@ -64,7 +64,7 @@ UniVideoElement -- Extends --> UniElement
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| position | number | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 跳转到指定位置(秒) | 
+| position | number | 是 |  | Web:  ; 微信小程序: x; Android(VDOM):  ; iOS(VDOM):  ; HarmonyOS(VDOM):   | 跳转到指定位置(秒) | 
 
 
 
@@ -101,15 +101,15 @@ UniVideoElement -- Extends --> UniElement
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| danmu | **Danmu** | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 弹幕数据 |
+| danmu | **Danmu** | 是 |  | Web:  ; 微信小程序: x; Android(VDOM):  ; iOS(VDOM):  ; HarmonyOS(VDOM):   | 弹幕数据 |
 
 #### danmu 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| text | string | 否 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 弹幕文字 |
-| color | string | 否 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 弹幕颜色 |
-| time | number | 否 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 显示时刻 | 
+| text | string | 否 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS(VDOM):   | 弹幕文字 |
+| color | string | 否 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS(VDOM):   | 弹幕颜色 |
+| time | number | 否 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS(VDOM):   | 显示时刻 | 
 
 
 
@@ -130,7 +130,7 @@ UniVideoElement -- Extends --> UniElement
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| rate | number | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 支持倍率 0.5/0.8/1.0/1.25/1.5 | 
+| rate | number | 是 |  | Web:  ; 微信小程序: x; Android(VDOM):  ; iOS(VDOM):  ; HarmonyOS(VDOM):   | 支持倍率 0.5/0.8/1.0/1.25/1.5 | 
 
 
 
@@ -151,21 +151,21 @@ UniVideoElement -- Extends --> UniElement
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| direction | **RequestFullScreenOptions** | 否 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 0\|正常竖向, 90\|屏幕逆时针90度, -90\|屏幕顺时针90度 |
+| direction | **RequestFullScreenOptions** | 否 |  | Web:  ; 微信小程序: x; Android(VDOM):  ; iOS(VDOM):  ; HarmonyOS(VDOM):   | 0\|正常竖向, 90\|屏幕逆时针90度, -90\|屏幕顺时针90度 |
 
 #### direction 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| direction | number | 否 |  | Web: x; 微信小程序: x; Android: 3.9.0; iOS: 4.11; HarmonyOS:   | direction |
+| direction | number | 否 |  | Web: x; 微信小程序: x; Android: 3.9.0; iOS: 4.11; HarmonyOS(VDOM):   | direction |
 
 ##### direction 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 0 | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 正常竖向 |
-| 90 | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 屏幕逆时针90度 |
-| -90 | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 屏幕顺时针90度 | 
+| 0 | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS(VDOM):   | 正常竖向 |
+| 90 | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS(VDOM):   | 屏幕逆时针90度 |
+| -90 | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS(VDOM):   | 屏幕顺时针90度 | 
 
 
 

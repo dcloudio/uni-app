@@ -6,9 +6,9 @@ text-decoration-color 属性用于设置元素中文本的修饰线颜色。
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | 5.11 | x | 5.0 |
+| Web | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | 5.11 | x | 5.0 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility

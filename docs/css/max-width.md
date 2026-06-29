@@ -6,9 +6,9 @@ max-width 属性用来给元素设置最大宽度值。定义了 max-width 的�
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,11 +34,11 @@ max-width: <viewport-length>;
 ### max-width 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| fit-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 与 max-content 等价。 |
-| max-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 元素的最大宽度可以扩展到内容的最大宽度。 |
-| min-content | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 元素的最大宽度限制在内容的最小宽度之内。 |
-| auto | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 浏览器将通过计算为指定元素选择一个 max-width 值。 |
-| none | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x | 元素未设置最大值 |
+| fit-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 与 max-content 等价。 |
+| max-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 元素的最大宽度可以扩展到内容的最大宽度。 |
+| min-content | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 元素的最大宽度限制在内容的最小宽度之内。 |
+| auto | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 浏览器将通过计算为指定元素选择一个 max-width 值。 |
+| none | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 元素未设置最大值 |
 
 
 ### 默认值 @default-value 
