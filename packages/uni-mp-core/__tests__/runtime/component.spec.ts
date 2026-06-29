@@ -2,7 +2,10 @@ import {
   $createComponent,
   $destroyComponent,
 } from '../../src/runtime/component'
-import { setRuntimeSubpackageRoot } from '../../src/runtime/subpackage'
+import {
+  setRuntimeSubpackageRoot,
+  setSubpackageAppVm,
+} from '../../src/runtime/subpackage'
 
 describe('runtime/component', () => {
   const originalGlobal = (global as any).__GLOBAL__
@@ -36,12 +39,8 @@ describe('runtime/component', () => {
       $createComponent: jest.fn(() => componentB),
       $destroyComponent: jest.fn(),
     }
-    ;(global as any).__GLOBAL__ = {
-      $subpackages: {
-        'package-a': { $vm: appVmA },
-        'package-b': { $vm: appVmB },
-      },
-    }
+    setSubpackageAppVm('package-a', appVmA as any, true)
+    setSubpackageAppVm('package-b', appVmB as any, true)
     setRuntimeSubpackageRoot('package-a')
 
     const instance = $createComponent({} as any, {} as any)
@@ -65,12 +64,8 @@ describe('runtime/component', () => {
       $createComponent: jest.fn(() => componentB),
       $destroyComponent: jest.fn(),
     }
-    ;(global as any).__GLOBAL__ = {
-      $subpackages: {
-        'package-a': { $vm: appVmA },
-        'package-b': { $vm: appVmB },
-      },
-    }
+    setSubpackageAppVm('package-a', appVmA as any, true)
+    setSubpackageAppVm('package-b', appVmB as any, true)
     ;(global as any).getCurrentPages = () => [
       { route: 'package-b/pages/index/index' },
     ]

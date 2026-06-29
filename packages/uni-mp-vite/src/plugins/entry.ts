@@ -17,7 +17,7 @@ import {
 import type { Plugin } from 'vite'
 
 import type { UniMiniProgramPluginOptions } from '../plugin'
-import { withIndependentRoot } from './independentUtils'
+import { UNI_MP_RUNTIME_ID, withIndependentRoot } from './independentUtils'
 
 const uniPagePrefix = 'uniPage://'
 const uniComponentPrefix = 'uniComponent://'
@@ -128,10 +128,14 @@ export function uniEntryPlugin({
         const filepath = normalizePath(path.resolve(inputDir, pageFilepath))
         this.addWatchFile(filepath)
         return {
-          code: `import MiniProgramPage from '${
+          code: `${genIndependentCreateImport(
+            'createPage',
+            '__uniCreatePage',
+            root
+          )}import MiniProgramPage from '${
             root ? withIndependentRoot(filepath, root) : filepath
           }'
-${global}.createPage(MiniProgramPage)`,
+${root ? '__uniCreatePage' : `${global}.createPage`}(MiniProgramPage)`,
         }
       } else if (isUniComponentUrl(id)) {
         const { filepath: componentFilepath, root } =
@@ -191,10 +195,14 @@ export default Component`,
           }
         }
         return {
-          code: `import Component from '${
+          code: `${genIndependentCreateImport(
+            'createComponent',
+            '__uniCreateComponent',
+            root
+          )}import Component from '${
             root ? withIndependentRoot(filepath, root) : filepath
           }'
-${global}.createComponent(Component)`,
+${root ? '__uniCreateComponent' : `${global}.createComponent`}(Component)`,
         }
       }
     },
@@ -217,6 +225,19 @@ ${global}.createComponent(Component)`,
       }
     },
   }
+}
+
+function genIndependentCreateImport(
+  name: 'createPage' | 'createComponent',
+  alias: string,
+  root?: string
+) {
+  return root
+    ? `import { ${name} as ${alias} } from ${JSON.stringify(
+        withIndependentRoot(UNI_MP_RUNTIME_ID, root)
+      )}
+`
+    : ''
 }
 
 function encodeVirtualFileInfo(filepath: string, root?: string) {

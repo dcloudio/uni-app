@@ -71,6 +71,27 @@ describe('uni-mp-vue: plugin', () => {
     expect((global as any).createSubpackageApp).not.toHaveBeenCalled()
   })
 
+  test('prefers explicit independent app creator before global', () => {
+    restoreEnv('UNI_MP_PLUGIN', undefined)
+    restoreEnv('UNI_SUBPACKAGE', undefined)
+    const localCreateIndependentSubpackageApp = jest.fn()
+    ;(global as any).createIndependentSubpackageApp = jest.fn()
+    const { app, instance } = createInstalledApp()
+
+    app.mount('#app', '/package-a/', {
+      independent: true,
+      createApp: localCreateIndependentSubpackageApp,
+    })
+
+    expect(localCreateIndependentSubpackageApp).toHaveBeenCalledWith(
+      instance,
+      'package-a'
+    )
+    expect(
+      (global as any).createIndependentSubpackageApp
+    ).not.toHaveBeenCalled()
+  })
+
   test('keeps env subpackage fallback without explicit root', () => {
     restoreEnv('UNI_MP_PLUGIN', undefined)
     process.env.UNI_SUBPACKAGE = 'package-env'
@@ -97,7 +118,10 @@ describe('uni-mp-vue: plugin', () => {
         mount(
           rootContainer: unknown,
           subpackageRoot?: string,
-          options?: { independent?: boolean }
+          options?: {
+            independent?: boolean
+            createApp?: (instance: unknown, root?: string) => void
+          }
         ): unknown
       },
       instance,

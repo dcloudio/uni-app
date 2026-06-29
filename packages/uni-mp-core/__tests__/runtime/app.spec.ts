@@ -1,6 +1,7 @@
 import { initCreateIndependentSubpackageApp } from '../../src/runtime/app'
 import {
   getRuntimeSubpackageRoot,
+  getSubpackageAppVm,
   setRuntimeSubpackageRoot,
 } from '../../src/runtime/subpackage'
 
@@ -35,10 +36,9 @@ describe('runtime/app', () => {
 
     createIndependentSubpackageApp(vm as any, '/package-a/')
 
-    expect((global as any).__GLOBAL__.$subpackages).toEqual({
-      'package-a': { $vm: vm },
-    })
     expect(getRuntimeSubpackageRoot()).toBe('package-a')
+    expect(getSubpackageAppVm()).toBe(vm)
+    expect((global as any).__GLOBAL__.$subpackages).toBeUndefined()
     expect((global as any).getApp).not.toHaveBeenCalled()
     expect((global as any).wx.getLaunchOptionsSync).not.toHaveBeenCalled()
     expect((global as any).wx.onAppShow).not.toHaveBeenCalled()

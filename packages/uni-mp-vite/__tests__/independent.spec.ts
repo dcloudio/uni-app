@@ -9,7 +9,6 @@ import {
   INDEPENDENT_PAGES_PREFIX,
   UNI_MP_RUNTIME_ID,
   VUE_EXPORT_HELPER_ID,
-  formatIndependentPageVirtualId,
   formatIndependentVirtualId,
   initIndependentSubPackages,
   withIndependentRoot,
@@ -99,7 +98,7 @@ describe('uniIndependentSubpackagePlugin', () => {
         const result = (plugin.load as Function)(id)
         expect(result.map).toEqual({ mappings: '' })
         expect(result.code).toContain(
-          `import ${JSON.stringify(
+          `import { createIndependentSubpackageApp } from ${JSON.stringify(
             withIndependentRoot(UNI_MP_RUNTIME_ID, 'package-a')
           )}`
         )
@@ -114,7 +113,7 @@ describe('uniIndependentSubpackagePlugin', () => {
           )}`
         )
         expect(result.code).toContain(
-          `createSSRApp({}).mount('#app', "package-a", { independent: true })`
+          `createSSRApp({}).mount('#app', "package-a", { independent: true, createApp: createIndependentSubpackageApp })`
         )
       }
     )
@@ -155,49 +154,6 @@ describe('uniIndependentSubpackagePlugin', () => {
             virtualPagePath('package-a/pages/index/index.vue', 'package-a')
           )})`
         )
-      }
-    )
-  })
-
-  test('loads independent page virtual module', async () => {
-    process.env.UNI_PLATFORM = 'mp-weixin'
-    await withPagesJson(
-      {
-        subPackages: [
-          {
-            root: 'package-a',
-            independent: true,
-            pages: [{ path: 'pages/index/index' }],
-          },
-        ],
-      },
-      async (inputDir) => {
-        process.env.UNI_INPUT_DIR = inputDir
-        const pagePath = path.join(inputDir, 'package-a/pages/index/index.vue')
-        fs.mkdirSync(path.dirname(pagePath), { recursive: true })
-        fs.writeFileSync(pagePath, '<template><view /></template>')
-        const plugin = uniIndependentSubpackagePlugin({
-          global: 'wx',
-          style: { extname: '.wxss' },
-        } as any)
-        callBuildStart(plugin)
-        const id = formatIndependentPageVirtualId(
-          'package-a',
-          'package-a/pages/index/index.vue'
-        )
-        const addWatchFile = jest.fn()
-
-        await expect((plugin.resolveId as Function)(id)).resolves.toBe(id)
-        const result = (plugin.load as Function).call({ addWatchFile }, id)
-
-        expect(addWatchFile).toHaveBeenCalledWith(pagePath)
-        expect(result).toEqual({
-          code: `import MiniProgramPage from ${JSON.stringify(
-            withIndependentRoot(pagePath, 'package-a')
-          )}
-wx.createPage(MiniProgramPage)`,
-          map: { mappings: '' },
-        })
       }
     )
   })

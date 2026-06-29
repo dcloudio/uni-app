@@ -3,6 +3,11 @@ import type { App } from 'vue'
 import { initApp } from '@dcloudio/uni-vue'
 import { pruneComponentPropsCache } from './helpers/renderProps'
 
+interface MountOptions {
+  independent?: boolean
+  createApp?: (instance: any, root?: string) => void
+}
+
 export default {
   install(app: App) {
     initApp(app)
@@ -13,7 +18,7 @@ export default {
     ;(app.mount as any) = function mount(
       rootContainer: any,
       subpackageRoot?: string,
-      options?: { independent?: boolean }
+      options?: MountOptions
     ) {
       const hasSubpackageRoot = typeof subpackageRoot === 'string'
       const root = hasSubpackageRoot ? subpackageRoot : undefined
@@ -35,10 +40,7 @@ export default {
   },
 }
 
-function getCreateApp(
-  subpackageRoot?: string,
-  options?: { independent?: boolean }
-) {
+function getCreateApp(subpackageRoot?: string, options?: MountOptions) {
   const root = normalizeSubpackageRoot(subpackageRoot)
   const method = process.env.UNI_MP_PLUGIN
     ? 'createPluginApp'
@@ -47,7 +49,10 @@ function getCreateApp(
     : root || process.env.UNI_SUBPACKAGE
     ? 'createSubpackageApp'
     : 'createApp'
-  const createApp = getGlobalCreateApp(method)
+  const createApp =
+    method === 'createIndependentSubpackageApp' && options?.createApp
+      ? options.createApp
+      : getGlobalCreateApp(method)
   if (
     createApp &&
     root &&

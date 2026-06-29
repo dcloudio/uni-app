@@ -35,9 +35,6 @@ import {
 } from '../plugins/entry'
 import {
   INDEPENDENT_MAIN_PREFIX,
-  INDEPENDENT_PAGE_PARAM,
-  INDEPENDENT_PAGE_PREFIX,
-  INDEPENDENT_ROOT_PARAM,
   VUE_EXPORT_HELPER_ID,
   formatIndependentVirtualId,
   initIndependentSubPackages,
@@ -412,12 +409,6 @@ function createChunkFileNames(
       let independentRoot = parseIndependentRoot(id)
       id = independentRoot ? withoutIndependentRoot(id) : id
       let isMiniProgramEntry = false
-      const independentPageInfo = parseIndependentPageChunkInfo(id)
-      if (independentPageInfo) {
-        independentRoot = independentRoot || independentPageInfo.root
-        id = path.resolve(process.env.UNI_INPUT_DIR, independentPageInfo.page)
-        isMiniProgramEntry = true
-      }
       if (isUniPageUrl(id)) {
         const { filepath, root } = parseVirtualPagePathInfo(id)
         independentRoot = independentRoot || root
@@ -465,22 +456,6 @@ function createChunkFileNames(
 
 function findIndependentChunkRoot(chunk: PreRenderedChunk) {
   return chunk.moduleIds?.map(parseIndependentRoot).find(Boolean)
-}
-
-function parseIndependentPageChunkInfo(id: string) {
-  if (!id.startsWith(INDEPENDENT_PAGE_PREFIX)) {
-    return
-  }
-  const queryIndex = id.indexOf('?')
-  if (queryIndex === -1) {
-    return
-  }
-  const query = new URLSearchParams(id.slice(queryIndex + 1))
-  const root = query.get(INDEPENDENT_ROOT_PARAM)
-  const page = query.get(INDEPENDENT_PAGE_PARAM)
-  if (root && page) {
-    return { root, page }
-  }
 }
 
 export function notFound(filename: string): never {
