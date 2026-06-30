@@ -39,10 +39,7 @@ function writePage(inputDir: string, page: string) {
 }
 
 function writePagesJson(inputDir: string, pagesJson: unknown) {
-  fs.writeFileSync(
-    path.join(inputDir, 'pages.json'),
-    JSON.stringify(pagesJson)
-  )
+  fs.writeFileSync(path.join(inputDir, 'pages.json'), JSON.stringify(pagesJson))
 }
 
 function createPagesJsonPlugin(

@@ -324,6 +324,7 @@ function isPagesJsonJs(id: string, inputDir: string) {
   const filename = id.split('?')[0]
   return (
     filename === PAGES_JSON_JS ||
-    normalizePath(filename) === normalizePath(path.join(inputDir, PAGES_JSON_JS))
+    normalizePath(filename) ===
+      normalizePath(path.join(inputDir, PAGES_JSON_JS))
   )
 }
