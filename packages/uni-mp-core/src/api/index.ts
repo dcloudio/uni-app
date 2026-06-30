@@ -4,6 +4,7 @@ import { hasOwn } from '@vue/shared'
 import { getElementById } from './x/getElementId'
 import { createCanvasContextAsync } from './x/createCanvasContextAsync'
 import { createEditorContextAsync } from './x/createEditorContextAsync'
+import { normalizeDatasetApi } from './x/dataset'
 //#endif
 import { upx2px } from '@dcloudio/uni-api/src/service/base/upx2px'
 import { __f__ } from '@dcloudio/uni-api/src/service/base/__f__'
@@ -58,6 +59,16 @@ const baseApis = {
   createEditorContextAsync,
   //#endif
 }
+
+function normalizeApi(name: string, api: unknown) {
+  //#if _X_
+  if (__X__) {
+    return normalizeDatasetApi(name, api)
+  }
+  //#endif
+  return api
+}
+
 export function initUni(
   api: Record<string, any>,
   protocols: MPProtocols,
@@ -70,14 +81,14 @@ export function initUni(
         return target[key]
       }
       if (hasOwn(api, key)) {
-        return promisify(key, api[key])
+        return normalizeApi(key, promisify(key, api[key]))
       }
       if (hasOwn(baseApis, key)) {
-        return promisify(key, baseApis[key])
+        return normalizeApi(key, promisify(key, baseApis[key]))
       }
       // event-api
       // provider-api?
-      return promisify(key, wrapper(key, platform[key]))
+      return normalizeApi(key, promisify(key, wrapper(key, platform[key])))
     },
   }
 
