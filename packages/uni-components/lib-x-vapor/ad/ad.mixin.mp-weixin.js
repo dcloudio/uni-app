@@ -105,7 +105,6 @@ export default {
       this.errorMessage = null
       const plugin = this.selectComponent('.uniad-plugin')
       if (this._isHalfScreenAd(plugin)) {
-        this._showHalfScreenAd(plugin, e)
         return
       }
       if (this._providerType == ProviderType.ShanHu) {
@@ -118,6 +117,9 @@ export default {
     },
 
     _onclick () {
+      if (this.isHalfScreen) {
+        return
+      }
       this.show()
     },
 
@@ -202,6 +204,7 @@ export default {
       this.isHalfScreen = true
       this._providerType = ProviderType.HalfScreen
       this.userwx = false
+      this.wxchannel = false
       this.loading = false
     },
 
@@ -218,15 +221,109 @@ export default {
     },
 
     /**
-     * 打开半屏小程序
-     * @param {Object} plugin uniad-plugin 实例
-     * @param {Object} e show 入参
+     * 用户点击半屏占位（插件 halfScreenTap 事件）
+     * @param {Object} e 事件对象
      */
-    _showHalfScreenAd (plugin, e) {
-      this._setHalfScreenMode()
-      if (plugin && plugin.getHalfScreenOpenOptions) {
-        this._openHalfScreenInHost(plugin.getHalfScreenOpenOptions(e || {}))
+    _onHalfScreenTap (e) {
+      const openOptions = e.detail && e.detail.openOptions
+      if (!openOptions) {
+        return
       }
+      this._openTargetMiniProgramInHost(openOptions)
+    },
+
+    /**
+     * 开始打开小程序防抖锁
+     */
+    _beginMiniProgramOpening () {
+      this._halfScreenOpening = true
+      this._halfScreenOpeningTimer = setTimeout(() => {
+        this._resetHalfScreenOpening()
+      }, 3000)
+    },
+
+    /**
+     * 用户手动触发：优先半屏打开，失败则 navigateToMiniProgram 兜底
+     * @param {Object} openOptions 打开参数
+     */
+    _openTargetMiniProgramInHost (openOptions) {
+      if (this._halfScreenOpening) {
+        return
+      }
+      if (!openOptions || !openOptions.appId) {
+        this._dispatchEvent(EventType.Error, {
+          errMsg: 'mini program openOptions unavailable'
+        })
+        return
+      }
+      const plugin = this.selectComponent('.uniad-plugin')
+      this._openHalfScreenEmbeddedInHost(openOptions, plugin)
+    },
+
+    /**
+     * 半屏嵌入打开 wx.openEmbeddedMiniProgram
+     * @param {Object} openOptions 打开参数
+     * @param {Object} plugin uniad-plugin 实例
+     */
+    _openHalfScreenEmbeddedInHost (openOptions, plugin) {
+      if (typeof wx.openEmbeddedMiniProgram !== 'function') {
+        this._openMiniProgramDirectInHost(openOptions, plugin)
+        return
+      }
+      this._beginMiniProgramOpening()
+      wx.openEmbeddedMiniProgram({
+        appId: openOptions.appId,
+        path: openOptions.path,
+        extraData: openOptions.extraData || {},
+        success: (res) => {
+          this._resetHalfScreenOpening()
+          if (plugin && plugin.notifyHalfScreenOpenSuccess) {
+            plugin.notifyHalfScreenOpenSuccess(res)
+          }
+        },
+        fail: (err) => {
+          if (this._isMiniProgramOpenCancel(err)) {
+            this._resetHalfScreenOpening()
+            this._notifyHalfScreenOpenResult(plugin, err)
+            return
+          }
+          this._openMiniProgramDirectInHost(openOptions, plugin, err)
+        }
+      })
+    },
+
+    /**
+     * 直接打开小程序 wx.navigateToMiniProgram（半屏未过审等场景兜底）
+     * @param {Object} openOptions 打开参数
+     * @param {Object} plugin uniad-plugin 实例
+     * @param {Object} fromErr 半屏打开失败时的错误
+     */
+    _openMiniProgramDirectInHost (openOptions, plugin, fromErr) {
+      if (typeof wx.navigateToMiniProgram !== 'function') {
+        this._resetHalfScreenOpening()
+        this._notifyHalfScreenOpenResult(plugin, fromErr || {
+          errMsg: 'navigateToMiniProgram not supported'
+        })
+        return
+      }
+      if (!this._halfScreenOpening) {
+        this._beginMiniProgramOpening()
+      }
+      wx.navigateToMiniProgram({
+        appId: openOptions.appId,
+        path: openOptions.path,
+        extraData: openOptions.extraData || {},
+        success: (res) => {
+          this._resetHalfScreenOpening()
+          if (plugin && plugin.notifyHalfScreenOpenSuccess) {
+            plugin.notifyHalfScreenOpenSuccess(res)
+          }
+        },
+        fail: (err) => {
+          this._resetHalfScreenOpening()
+          this._notifyHalfScreenOpenResult(plugin, err)
+        }
+      })
     },
 
     /**
@@ -279,40 +376,8 @@ export default {
       }
     },
 
-    /**
-     * 调用 wx.openEmbeddedMiniProgram
-     * @param {Object} openOptions 打开参数
-     */
-    _openHalfScreenInHost (openOptions) {
-      if (this._halfScreenOpening) {
-        return
-      }
-      if (!openOptions || !openOptions.appId || typeof wx.openEmbeddedMiniProgram !== 'function') {
-        this._dispatchEvent(EventType.Error, {
-          errMsg: 'half screen openOptions unavailable or openEmbeddedMiniProgram not supported'
-        })
-        return
-      }
-      this._halfScreenOpening = true
-      this._halfScreenOpeningTimer = setTimeout(() => {
-        this._resetHalfScreenOpening()
-      }, 3000)
-      const plugin = this.selectComponent('.uniad-plugin')
-      wx.openEmbeddedMiniProgram({
-        appId: openOptions.appId,
-        path: openOptions.path,
-        extraData: openOptions.extraData || {},
-        success: (res) => {
-          this._resetHalfScreenOpening()
-          if (plugin && plugin.notifyHalfScreenOpenSuccess) {
-            plugin.notifyHalfScreenOpenSuccess(res)
-          }
-        },
-        fail: (err) => {
-          this._resetHalfScreenOpening()
-          this._notifyHalfScreenOpenResult(plugin, err)
-        }
-      })
+    _onHalfScreenReady () {
+      this._setHalfScreenMode()
     },
 
     _onmpload (e) {

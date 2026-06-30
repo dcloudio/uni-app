@@ -9,10 +9,12 @@
       @close="_onmpclose"
       @error="_onmperror"
       @nextChannel="_onnextchannel"
+      @halfScreenReady="_onHalfScreenReady"
+      @halfScreenTap="_onHalfScreenTap"
     />
     <!-- #ifdef MP-WEIXIN -->
     <ad-custom v-if="userwx && !isHalfScreen" :unit-id="userUnitId"></ad-custom>
-    <uniad-plugin-wx v-if="wxchannel" class="uniad-plugin-wx" @error="_onwxchannelerror"></uniad-plugin-wx>
+    <uniad-plugin-wx v-if="wxchannel && !isHalfScreen" class="uniad-plugin-wx" @error="_onwxchannelerror"></uniad-plugin-wx>
     <!-- #endif -->
   </view>
 </template>
