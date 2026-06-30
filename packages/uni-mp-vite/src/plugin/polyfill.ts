@@ -135,19 +135,6 @@ function rewriteCompilerSfcParse() {
     ) {
       res.descriptor.styles = [createDefaultSFCStyleBlock(source)]
     }
-    if (options.filename && isMpAlipayXStyleIsolation()) {
-      res.descriptor.styles.forEach((style) => {
-        style.scoped = true
-      })
-    }
     return res
   }
-}
-
-function isMpAlipayXStyleIsolation() {
-  return (
-    process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2' &&
-    process.env.UNI_APP_X === 'true' &&
-    process.env.UNI_PLATFORM === 'mp-alipay'
-  )
 }
