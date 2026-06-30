@@ -283,12 +283,20 @@ export function uniMiniProgramPlugin(
           const nvueCssPaths = getNVueCssPaths(resolvedConfig)
           if (nvueCssPaths && nvueCssPaths.length) {
             resetCssEmitted = true
+            const nvueCssSource = genNVueCssCode(
+              parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+            )
             this.emitFile({
               type: 'asset',
               fileName: 'nvue' + style.extname,
-              source: genNVueCssCode(
-                parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-              ),
+              source: nvueCssSource,
+            })
+            getIndependentSubPackages().forEach(({ root }) => {
+              this.emitFile({
+                type: 'asset',
+                fileName: `${root}/nvue${style.extname}`,
+                source: nvueCssSource,
+              })
             })
           }
         }

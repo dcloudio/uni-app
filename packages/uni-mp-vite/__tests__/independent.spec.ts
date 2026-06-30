@@ -11,8 +11,12 @@ import {
   transformIndependentMiniProgramComponentJs,
 } from '../src/plugin/copy'
 import { uniMiniProgramPlugin } from '../src/plugin'
-import { resolveUVueCssFilename } from '../src/plugin/configResolved'
+import {
+  resolveNVueCssFilename,
+  resolveUVueCssFilename,
+} from '../src/plugin/configResolved'
 import { uniIndependentSubpackagePlugin } from '../src/plugins/independent'
+import { uniPagesJsonPlugin } from '../src/plugins/pagesJson'
 import {
   INDEPENDENT_MAIN_PREFIX,
   UNI_MP_RUNTIME_ID,
@@ -727,6 +731,12 @@ describe('uniIndependentSubpackagePlugin', () => {
         expect(resolveUVueCssFilename('pages/index/index.wxss', '.wxss')).toBe(
           'uvue.wxss'
         )
+        expect(
+          resolveNVueCssFilename('package-a/pages/index/index.wxss', '.wxss')
+        ).toBe('package-a/nvue.wxss')
+        expect(resolveNVueCssFilename('pages/index/index.wxss', '.wxss')).toBe(
+          'nvue.wxss'
+        )
         const plugin = uniMiniProgramPlugin({
           vite: { alias: {}, copyOptions: {}, inject: {} },
           global: 'wx',
@@ -822,6 +832,86 @@ describe('uniIndependentSubpackagePlugin', () => {
         )
         expect(emitFile).toHaveBeenCalledWith(
           expect.objectContaining({ fileName: 'package-a/uvue.wxss' })
+        )
+      }
+    )
+  })
+
+  test('emits nvue built-in style for independent roots', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    delete (process.env as Record<string, string | undefined>).UNI_APP_X
+    await withPagesJson(
+      {
+        pages: [{ path: 'pages/home/index' }],
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      async (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        fs.writeFileSync(path.join(inputDir, 'manifest.json'), '{}')
+        fs.mkdirSync(path.join(inputDir, 'pages/home'), {
+          recursive: true,
+        })
+        fs.writeFileSync(
+          path.join(inputDir, 'pages/home/index.vue'),
+          '<template><view /></template>'
+        )
+        fs.mkdirSync(path.join(inputDir, 'package-a/pages/index'), {
+          recursive: true,
+        })
+        fs.writeFileSync(
+          path.join(inputDir, 'package-a/pages/index/index.nvue'),
+          '<template><view /></template>'
+        )
+
+        const options = {
+          vite: { alias: {}, copyOptions: {}, inject: {} },
+          global: 'wx',
+          app: {
+            subpackages: true,
+            independentSubpackages: true,
+            usingComponents: true,
+          },
+          template: {
+            extname: '.wxml',
+            directive: 'wx:',
+            class: { array: true },
+            slot: {},
+          },
+          style: { extname: '.wxss' },
+        } as any
+        const resolvedConfig = {
+          plugins: [],
+          createResolver: () => jest.fn(),
+        } as any
+        const pagesPlugin = uniPagesJsonPlugin(options)
+        ;(pagesPlugin.configResolved as Function).call({}, resolvedConfig)
+        ;(pagesPlugin.transform as Function).call(
+          { addWatchFile: jest.fn() },
+          fs.readFileSync(path.join(inputDir, 'pages.json'), 'utf8'),
+          path.join(inputDir, PAGES_JSON_JS)
+        )
+
+        const plugin = uniMiniProgramPlugin(options)
+        ;(plugin.configResolved as Function).call({}, resolvedConfig)
+        const emitFile = jest.fn()
+
+        ;(plugin.generateBundle as Function).call(
+          { emitFile, getModuleInfo: jest.fn() },
+          {},
+          {}
+        )
+
+        expect(emitFile).toHaveBeenCalledWith(
+          expect.objectContaining({ fileName: 'nvue.wxss' })
+        )
+        expect(emitFile).toHaveBeenCalledWith(
+          expect.objectContaining({ fileName: 'package-a/nvue.wxss' })
         )
       }
     )

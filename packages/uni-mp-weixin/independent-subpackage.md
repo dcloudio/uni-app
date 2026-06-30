@@ -296,14 +296,14 @@ require('./main.js');
 - `packages/uni-mp-vite/src/plugin/index.ts`
 - `packages/uni-mp-compiler/src/template/codegen.ts`
 
-`uvue.wxss` 与 `common/uniView.wxs` 是 uni-app x 小程序编译器生成的内置运行资源，不属于业务 root 外依赖。独立分包需要拥有自己的副本，且引用路径在源头生成时就指向当前 root：
+`uvue.wxss`、`nvue.wxss` 与 `common/uniView.wxs` 是小程序编译器生成的内置运行资源，不属于业务 root 外依赖。独立分包需要拥有自己的副本，且引用路径在源头生成时就指向当前 root：
 
-- 主包继续输出 `uvue.wxss`，每个独立分包额外输出 `${root}/uvue.wxss`。
-- 独立分包页面 WXSS 自动引用 `${root}/uvue.wxss` 的相对路径，例如 `../../uvue.wxss`。
+- 主包继续输出 `uvue.wxss` / `nvue.wxss`，每个独立分包额外输出 `${root}/uvue.wxss` / `${root}/nvue.wxss`。
+- 独立分包页面 WXSS 自动引用 `${root}/uvue.wxss` 或 `${root}/nvue.wxss` 的相对路径，例如 `../../uvue.wxss`。
 - 主包继续输出 `common/uniView.wxs`，每个独立分包额外输出 `${root}/common/uniView.wxs`。
 - 独立分包模板自动导入 `${root}/common/uniView.wxs` 的相对路径，例如 `../../common/uniView.wxs`。
 
-这些路径不在 independent 插件中后置扫描改写，而是在 `uvue.wxss` import 与 auto import filter 生成时直接写正确。`uniView.wxs` 通过 Vite 侧包装现有 `filter.generate`，结合模板 owner filename 计算独立分包相对路径，不新增平台级 `template.filter` 配置；非独立分包继续保持 `uvue.wxss` 与 `/common/uniView.wxs` 原路径。
+这些路径不在 independent 插件中后置扫描改写，而是在 `uvue.wxss` / `nvue.wxss` import 与 auto import filter 生成时直接写正确。`uniView.wxs` 通过 Vite 侧包装现有 `filter.generate`，结合模板 owner filename 计算独立分包相对路径，不新增平台级 `template.filter` 配置；非独立分包继续保持 `uvue.wxss`、`nvue.wxss` 与 `/common/uniView.wxs` 原路径。
 
 ### 13. 原生小程序组件 copy 处理
 

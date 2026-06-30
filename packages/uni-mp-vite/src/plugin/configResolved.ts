@@ -240,8 +240,10 @@ export function createConfigResolved({
           if (nvueCssPaths.find((pageCssPath) => pageCssPath === normalized)) {
             debugNVueCss(normalized)
             return (
-              `@import "${relativeFile(normalized, 'nvue' + extname)}";\n` +
-              cssCode
+              `@import "${relativeFile(
+                normalized,
+                resolveNVueCssFilename(normalized, extname)
+              )}";\n` + cssCode
             )
           }
           return cssCode
@@ -261,13 +263,25 @@ export function createConfigResolved({
 }
 
 export function resolveUVueCssFilename(filename: string, extname: string) {
+  return resolveBuiltInStyleFilename(filename, 'uvue', extname)
+}
+
+export function resolveNVueCssFilename(filename: string, extname: string) {
+  return resolveBuiltInStyleFilename(filename, 'nvue', extname)
+}
+
+function resolveBuiltInStyleFilename(
+  filename: string,
+  name: 'uvue' | 'nvue',
+  extname: string
+) {
   const inputDir = process.env.UNI_INPUT_DIR
   const independentRoot = inputDir
     ? getIndependentRootByFilename(path.resolve(inputDir, filename), inputDir)
     : undefined
   return independentRoot
-    ? `${independentRoot}/uvue${extname}`
-    : `uvue${extname}`
+    ? `${independentRoot}/${name}${extname}`
+    : `${name}${extname}`
 }
 
 function adjustCssExtname(extname: string): Plugin {
