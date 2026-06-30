@@ -22,6 +22,7 @@ import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import { uniOptions } from './uni'
 import { buildOptions } from './build'
 import { createConfigResolved } from './configResolved'
+import { normalizeCopyOptions } from './copy'
 import { emitFile, getFilterFiles, getTemplateFiles } from './template'
 
 import { getNVueCssPaths } from '../plugins/pagesJson'
@@ -116,6 +117,7 @@ export function uniMiniProgramPlugin(
     template,
     style,
   } = options
+  const normalizedCopyOptions = normalizeCopyOptions(copyOptions, options)
 
   let resetCssEmitted = false
 
@@ -129,7 +131,7 @@ export function uniMiniProgramPlugin(
   return {
     name: 'uni:mp',
     uni: uniOptions({
-      copyOptions,
+      copyOptions: normalizedCopyOptions,
       customElements: template.customElements,
       miniProgram: {
         event: template.event,

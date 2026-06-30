@@ -269,14 +269,19 @@ export function findMiniProgramUsingComponents({
     )
   }
 
-  const jsonFile = findJsonFile(
-    removeExt(normalizeMiniProgramFilename(filename, inputDir))
+  const ownerFilename = removeExt(
+    normalizeMiniProgramFilename(filename, inputDir)
   )
+  const jsonFile = findJsonFile(ownerFilename)
   if (jsonFile) {
     if (jsonFile.usingComponents) {
       extend(
         miniProgramComponents,
-        findMiniProgramUsingComponent(jsonFile.usingComponents, componentsDir)
+        findMiniProgramUsingComponent(
+          jsonFile.usingComponents,
+          componentsDir,
+          ownerFilename
+        )
       )
     }
     // mp-baidu 特有
@@ -285,7 +290,8 @@ export function findMiniProgramUsingComponents({
         miniProgramComponents,
         findMiniProgramUsingComponent(
           jsonFile.usingSwanComponents,
-          componentsDir
+          componentsDir,
+          ownerFilename
         )
       )
     }
@@ -296,7 +302,8 @@ export function findMiniProgramUsingComponents({
 
 function findMiniProgramUsingComponent(
   usingComponents: Record<string, string>,
-  componentsDir?: string
+  componentsDir?: string,
+  ownerFilename?: string
 ) {
   return Object.keys(usingComponents).reduce<MiniProgramComponents>(
     (res, name) => {
@@ -313,7 +320,8 @@ function findMiniProgramUsingComponent(
       } else if (
         componentsDir &&
         path.includes(componentsDir + '/') &&
-        findUsingComponentsJson(path, componentsDir).renderer === 'xr-frame'
+        findUsingComponentsJson(path, componentsDir, ownerFilename).renderer ===
+          'xr-frame'
       ) {
         // mp-weixin & x-frame
         res[name] = 'xr-frame'
@@ -346,18 +354,21 @@ function findMiniProgramUsingComponent(
 
 export function findUsingComponentsJson(
   pathInpages: string,
-  componentsDir: string
+  componentsDir: string,
+  ownerFilename?: string
 ): Record<any, any> {
   // 兼容test case
   if (!process.env.UNI_INPUT_DIR) return {}
 
-  let [, dir] = pathInpages.split(componentsDir)
-  if (dir === '') {
+  const fulldir = resolveUsingComponentsDir(
+    pathInpages,
+    componentsDir,
+    ownerFilename
+  )
+  if (!fulldir) {
     console.warn(`${pathInpages} 路径里没有找到对应的 ${componentsDir} 目录`)
     return {}
   }
-  dir = '.' + dir
-  const fulldir = path.resolve(process.env.UNI_INPUT_DIR, componentsDir, dir)
   let jsonPath = fulldir + '.json'
   if (fs.existsSync(jsonPath)) {
     return require(jsonPath) as Record<any, any>
@@ -369,4 +380,32 @@ export function findUsingComponentsJson(
 
   console.warn(`${pathInpages} 路径下没有找到对应的json文件`)
   return {}
+}
+
+function resolveUsingComponentsDir(
+  pathInpages: string,
+  componentsDir: string,
+  ownerFilename?: string
+) {
+  const normalizedPath = normalizePath(pathInpages)
+  if (normalizedPath.startsWith('/')) {
+    return path.resolve(process.env.UNI_INPUT_DIR, '.' + normalizedPath)
+  }
+  if (ownerFilename && normalizedPath.startsWith('.')) {
+    return path.resolve(
+      process.env.UNI_INPUT_DIR,
+      path.dirname(ownerFilename),
+      normalizedPath
+    )
+  }
+  const marker = componentsDir + '/'
+  const index = normalizedPath.indexOf(marker)
+  if (index === -1) {
+    return
+  }
+  const dir = normalizedPath.slice(index + componentsDir.length)
+  if (!dir) {
+    return
+  }
+  return path.resolve(process.env.UNI_INPUT_DIR, componentsDir, '.' + dir)
 }

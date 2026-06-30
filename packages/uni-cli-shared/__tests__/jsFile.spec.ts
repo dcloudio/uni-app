@@ -6,6 +6,7 @@ import {
   addMiniProgramPageJson,
   addMiniProgramUsingComponents,
   findChangedJsonFiles,
+  findMiniProgramUsingComponents,
   findUsingComponentsJson,
   resetMiniProgramJsonFiles,
 } from '../src/json/mp/jsonFile'
@@ -36,6 +37,7 @@ describe('miniProgram:jsonFile', () => {
 
     afterEach(() => {
       resetMiniProgramJsonFiles()
+      jest.restoreAllMocks()
       if (originalPlatform === undefined) {
         delete (process.env as Record<string, string | undefined>).UNI_PLATFORM
       } else {
@@ -157,6 +159,68 @@ describe('miniProgram:jsonFile', () => {
             'local-a': '../../components/local-a',
           },
         })
+      })
+    })
+
+    test('resolves independent page relative wxcomponents from owner filename', () => {
+      withIndependentPagesJson('package-a', (inputDir) => {
+        process.env.UNI_PLATFORM = 'mp-weixin'
+        process.env.UNI_INPUT_DIR = inputDir
+        const page = 'package-a/pages/index/index'
+        const nativeJson = path.join(
+          inputDir,
+          'package-a/wxcomponents/native-badge/index.json'
+        )
+        fs.mkdirSync(path.dirname(nativeJson), { recursive: true })
+        fs.writeFileSync(nativeJson, '{"component":true}')
+        addMiniProgramPageJson(page, {
+          usingComponents: {
+            'native-badge': '../../wxcomponents/native-badge/index',
+          },
+        })
+        const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {})
+
+        expect(
+          findMiniProgramUsingComponents({
+            filename: path.join(inputDir, page + '.vue'),
+            inputDir,
+            componentsDir: 'wxcomponents',
+          })
+        ).toMatchObject({
+          'native-badge': 'component',
+        })
+        expect(warnSpy).not.toHaveBeenCalled()
+      })
+    })
+
+    test('resolves independent page absolute wxcomponents with root prefix', () => {
+      withIndependentPagesJson('package-a', (inputDir) => {
+        process.env.UNI_PLATFORM = 'mp-weixin'
+        process.env.UNI_INPUT_DIR = inputDir
+        const page = 'package-a/pages/index/index'
+        const nativeJson = path.join(
+          inputDir,
+          'package-a/wxcomponents/native-badge/index.json'
+        )
+        fs.mkdirSync(path.dirname(nativeJson), { recursive: true })
+        fs.writeFileSync(nativeJson, '{"component":true}')
+        addMiniProgramPageJson(page, {
+          usingComponents: {
+            'native-badge': '/package-a/wxcomponents/native-badge/index',
+          },
+        })
+        const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {})
+
+        expect(
+          findMiniProgramUsingComponents({
+            filename: path.join(inputDir, page + '.vue'),
+            inputDir,
+            componentsDir: 'wxcomponents',
+          })
+        ).toMatchObject({
+          'native-badge': 'component',
+        })
+        expect(warnSpy).not.toHaveBeenCalled()
       })
     })
 
