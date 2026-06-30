@@ -10,7 +10,7 @@
 [live-player组件文档](../component/live-player.md)
 
 ### createLivePlayerContext 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.81 | 4.81 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
@@ -19,8 +19,8 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| livePlayerId | string | 是 |  | Web: x; 微信小程序: x; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM): x |  |
-| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 |  | Web: x; 微信小程序: x; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM): x |  | 
+| livePlayerId | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x |  |
+| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x |  | 
 
 
 ### 返回值 
@@ -35,7 +35,7 @@
 play
 播放
 ##### play 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | x | 4.81 | 4.81 | x |
 
@@ -43,15 +43,15 @@ play
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **LivePlayerOptions** | 否 |  | Web: x; 微信小程序: x; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM): x | 方法调用参数 |
+| options | **LivePlayerOptions** | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x | 方法调用参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android(VDOM): 4.81; iOS: 4.81; HarmonyOS(VDOM): x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android(VDOM): 4.81; iOS: 4.81; HarmonyOS(VDOM): x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android(VDOM): 4.81; iOS: 4.81; HarmonyOS(VDOM): x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -59,7 +59,7 @@ play
 pause
 暂停
 ##### pause 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | x | 4.81 | 4.81 | x |
 
@@ -67,7 +67,7 @@ pause
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | [LivePlayerOptions](#liveplayeroptions-values) | 否 |  | Web: x; 微信小程序: x; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM): x | 方法调用参数 | 
+| options | [LivePlayerOptions](#liveplayeroptions-values) | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x | 方法调用参数 | 
 
 
 
@@ -75,7 +75,7 @@ pause
 stop
 停止
 ##### stop 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | x | 4.81 | 4.81 | x |
 
@@ -83,7 +83,7 @@ stop
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | [LivePlayerOptions](#liveplayeroptions-values) | 否 |  | Web: x; 微信小程序: x; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM): x | 方法调用参数 | 
+| options | [LivePlayerOptions](#liveplayeroptions-values) | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x | 方法调用参数 | 
 
 
 
@@ -91,7 +91,7 @@ stop
 resume
 恢复
 ##### resume 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | x | 4.81 | 4.81 | x |
 
@@ -99,7 +99,7 @@ resume
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | [LivePlayerOptions](#liveplayeroptions-values) | 否 |  | Web: x; 微信小程序: x; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM): x | 方法调用参数 | 
+| options | [LivePlayerOptions](#liveplayeroptions-values) | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x | 方法调用参数 | 
 
 
 
@@ -107,7 +107,7 @@ resume
 mute
 静音
 ##### mute 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | x | 4.81 | 4.81 | x |
 
@@ -115,7 +115,7 @@ mute
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | [LivePlayerOptions](#liveplayeroptions-values) | 否 |  | Web: x; 微信小程序: x; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM): x | 方法调用参数 | 
+| options | [LivePlayerOptions](#liveplayeroptions-values) | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x | 方法调用参数 | 
 
 
 
@@ -123,7 +123,7 @@ mute
 requestFullScreen
 全屏
 ##### requestFullScreen 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | x | 4.81 | 4.81 | x |
 
@@ -131,7 +131,7 @@ requestFullScreen
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | [LivePlayerOptions](#liveplayeroptions-values) | 否 |  | Web: x; 微信小程序: x; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM): x | 方法调用参数 | 
+| options | [LivePlayerOptions](#liveplayeroptions-values) | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x | 方法调用参数 | 
 
 
 
@@ -139,7 +139,7 @@ requestFullScreen
 exitFullScreen
 退出全屏
 ##### exitFullScreen 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | x | 4.81 | 4.81 | x |
 
@@ -147,7 +147,7 @@ exitFullScreen
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | [LivePlayerOptions](#liveplayeroptions-values) | 否 |  | Web: x; 微信小程序: x; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM): x | 方法调用参数 | 
+| options | [LivePlayerOptions](#liveplayeroptions-values) | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x | 方法调用参数 | 
 
 
  
@@ -182,5 +182,5 @@ exitFullScreen
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 

@@ -14,9 +14,9 @@
 
 
 ### setNavigationBarTitle 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.97 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.97 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -29,10 +29,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| title | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.97; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 页面标题 |
-| success | (result: [SetNavigationBarTitleSuccess](#setnavigationbartitlesuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.97; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用成功的回调函数 |
-| fail | (error: [SetNavigationBarTitleFail](#setnavigationbartitlefail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.97; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用失败的回调函数 |
-| complete | (res: [SetNavigationBarTitleComplete](#setnavigationbartitlecomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.97; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| title | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 页面标题 |
+| success | (result: [SetNavigationBarTitleSuccess](#setnavigationbartitlesuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (error: [SetNavigationBarTitleFail](#setnavigationbartitlefail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (res: [SetNavigationBarTitleComplete](#setnavigationbartitlecomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### SetNavigationBarTitleSuccess 的属性值 @setnavigationbartitlesuccess-values 
 
@@ -215,7 +215,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 
 
 ## Tips

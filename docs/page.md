@@ -315,10 +315,10 @@ onShow和onHide是成对出现的。
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| screenHeight | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; iOS(VDOM): 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 新的屏幕高度 |
-| screenWidth | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; iOS(VDOM): 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 新的屏幕宽度 |
-| windowHeight | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; iOS(VDOM): 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 新的显示区域高度 |
-| windowWidth | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; iOS(VDOM): 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 新的显示区域宽度 | 
+| screenHeight | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 新的屏幕高度 |
+| screenWidth | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 新的屏幕宽度 |
+| windowHeight | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 新的显示区域高度 |
+| windowWidth | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 新的显示区域宽度 | 
 
 
 
@@ -340,7 +340,7 @@ onShow和onHide是成对出现的。
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **OnPageScrollOptions** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; iOS(VDOM): 4.13; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动参数 |
+| options | **OnPageScrollOptions** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.13; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动参数 |
 
 #### options 的属性描述
 
@@ -358,29 +358,29 @@ onShow和onHide是成对出现的。
 ### 页面 onBackPress 生命周期 @onbackpress
 
 #### onBackPress 兼容性 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | 3.9 | x | 4.11 | 5.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 3.9 | x | 4.11 | 4.61 |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **OnBackPressOptions** | 是 |  | Web: 4.0; 微信小程序: x; Android(VDOM): 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 监听页面返回回调参数  |
+| options | **OnBackPressOptions** | 是 |  | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 监听页面返回回调参数  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| from | string | 是 |  | Web: 4.0; 微信小程序: x; Android(VDOM): 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | - backbutton 顶部导航栏左边的返回按钮或 Android 实体返回键<br/>- navigateBack 返回 API，即 uni.navigateBack() |
+| from | string | 是 |  | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | - backbutton 顶部导航栏左边的返回按钮或 Android 实体返回键<br/>- navigateBack 返回 API，即 uni.navigateBack() |
 
 ##### from 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| backbutton | Web:  ; 微信小程序: x; Android(VDOM):  ; iOS(VDOM):  ; HarmonyOS(VDOM):   |  |
-| navigateBack | Web:  ; 微信小程序: x; Android(VDOM):  ; iOS(VDOM):  ; HarmonyOS(VDOM):   |  | 
+| backbutton | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
+| navigateBack | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 
 #### 返回值 
@@ -475,24 +475,24 @@ onShow和onHide是成对出现的。
 ### 页面 onTabItemTap 生命周期 @ontabitemtap
 
 #### onTabItemTap 兼容性 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | x | x | x | 4.61 | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | x | x | 4.61 | x |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **OnTabItemTapOption** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): x; iOS(VDOM): x; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听 tab 点击回调参数 |
+| options | **OnTabItemTapOption** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听 tab 点击回调参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| index | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): x; iOS(VDOM): x; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 被点击 tabItem 的序号，从0开始 |
-| pagePath | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): x; iOS(VDOM): x; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 被点击 tabItem 的页面路径 |
-| text | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): x; iOS(VDOM): x; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 被点击 tabItem 的按钮文字 | 
+| index | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 被点击 tabItem 的序号，从0开始 |
+| pagePath | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 被点击 tabItem 的页面路径 |
+| text | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 被点击 tabItem 的按钮文字 | 
 
 
 
@@ -504,22 +504,22 @@ onShow和onHide是成对出现的。
 ### 页面 onNavigationBarButtonTap 生命周期 @onnavigationbarbuttontap
 
 #### onNavigationBarButtonTap 兼容性 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x | 4.61 | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | 4.61 | x |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **OnNavigationBarButtonTapOption** | 是 |  | Web: 4.0; 微信小程序: x; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 原生标题栏按钮点击回调参数  |
+| options | **OnNavigationBarButtonTapOption** | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 原生标题栏按钮点击回调参数  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| index | number | 是 |  | Web: 4.0; 微信小程序: x; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 原生标题栏按钮数组的下标 | 
+| index | number | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 原生标题栏按钮数组的下标 | 
 
 
 
@@ -527,22 +527,22 @@ onShow和onHide是成对出现的。
 ### 页面 onNavigationBarSearchInputChanged 生命周期 @onnavigationbarsearchinputchanged
 
 #### onNavigationBarSearchInputChanged 兼容性 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x | 4.61 | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | 4.61 | x |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| event | **NavigationBarSearchInputEvent** | 是 |  | Web: 4.0; 微信小程序: x; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框搜索回调参数  |
+| event | **NavigationBarSearchInputEvent** | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框搜索回调参数  |
 
 #### event 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| text | string | 是 |  | Web: 4.0; 微信小程序: x; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 搜索输入框输入内容 | 
+| text | string | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 搜索输入框输入内容 | 
 
 
 
@@ -550,22 +550,22 @@ onShow和onHide是成对出现的。
 ### 页面 onNavigationBarSearchInputConfirmed 生命周期 @onnavigationbarsearchinputconfirmed
 
 #### onNavigationBarSearchInputConfirmed 兼容性 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x | 4.61 | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | 4.61 | x |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| event | **NavigationBarSearchInputEvent** | 是 |  | Web: 4.0; 微信小程序: x; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框搜索回调参数  |
+| event | **NavigationBarSearchInputEvent** | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听原生标题栏搜索输入框搜索回调参数  |
 
 #### event 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| text | string | 是 |  | Web: 4.0; 微信小程序: x; Android(VDOM): x; iOS(VDOM): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 搜索输入框输入内容 | 
+| text | string | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 搜索输入框输入内容 | 
 
 
 

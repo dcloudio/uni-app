@@ -11,7 +11,7 @@
 
 ## 响应式: 核心
 
-|  | Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS |
+|  | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | ref() | 4.0 | 4.41 | √ | 4.11 | 4.61 |
 | computed() | 4.0 | 4.41 | √ | 4.11 | 4.61 |
@@ -1842,7 +1842,7 @@ const updateReadonlyData = () => {
 
 ## 响应式: 工具
 
-|  | Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS |
+|  | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | isRef() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
 | unref() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
@@ -3373,7 +3373,7 @@ const updateTitle = () => {
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | setup | Any |   | Web: 4.0; 微信小程序: √; Android(VDOM): 4.0; Android(Vapor): x; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 |   |
-| lang | Any |   | Web: 4.0; 微信小程序: √; Android(VDOM): 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61 |  |
+| lang | Any |   | Web: 4.0; 微信小程序: √; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |  |
 
 #### lang 的属性描述
 

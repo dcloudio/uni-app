@@ -8,7 +8,7 @@ movable-view 的可移动区域
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS(VDOM) | HarmonyOS(VDOM) |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
@@ -24,7 +24,7 @@ movable-view 的可移动区域
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| scale-area | boolean |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS(VDOM): x; HarmonyOS(VDOM): x | *(Boolean)*<br/>当里面的movable-view设置为支持双指缩放时，设置此值可将缩放手势生效区域修改为整个movable-area |
+| scale-area | boolean |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(Boolean)*<br/>当里面的movable-view设置为支持双指缩放时，设置此值可将缩放手势生效区域修改为整个movable-area |
 
 
 

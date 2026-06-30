@@ -14,9 +14,9 @@
 
 
 ### getClipboardData 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.71 | 4.71 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.71 | 4.71 | 4.61 |
 
 
 ### 参数 
@@ -29,15 +29,15 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | (result: [GetClipboardDataSuccess](#getclipboarddatasuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 成功返回的回调函数 |
-| fail | (result: [GetClipboardDataFail](#getclipboarddatafail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 结束的回调函数（调用成功、失败都会执行） | 
+| success | (result: [GetClipboardDataSuccess](#getclipboarddatasuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 成功返回的回调函数 |
+| fail | (result: [GetClipboardDataFail](#getclipboarddatafail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 失败的回调函数 |
+| complete | (result: any) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 结束的回调函数（调用成功、失败都会执行） | 
 
 #### GetClipboardDataSuccess 的属性值 @getclipboarddatasuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 剪贴板的内容 |
+| data | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 剪贴板的内容 |
 
 #### GetClipboardDataFail 的属性值 @getclipboarddatafail-values 
 
@@ -94,9 +94,9 @@
 
 
 ### setClipboardData 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.71 | 4.71 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.71 | 4.71 | 4.61 |
 
 
 ### 参数 
@@ -109,11 +109,11 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 需要设置的内容 |
-| showToast | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 是否弹出提示，默认弹出提示 |
-| success | (result: SetClipboardDataSuccess) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 成功返回的回调函数 |
-| fail | (result: [SetClipboardDataFail](#setclipboarddatafail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 结束的回调函数（调用成功、失败都会执行） | 
+| data | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要设置的内容 |
+| showToast | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 是否弹出提示，默认弹出提示 |
+| success | (result: SetClipboardDataSuccess) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 成功返回的回调函数 |
+| fail | (result: [SetClipboardDataFail](#setclipboarddatafail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 失败的回调函数 |
+| complete | (result: any) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 结束的回调函数（调用成功、失败都会执行） | 
 
 #### SetClipboardDataFail 的属性值 @setclipboarddatafail-values 
 
@@ -272,5 +272,5 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 

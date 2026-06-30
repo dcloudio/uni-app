@@ -4,9 +4,9 @@
 
 
 ### navigateTo 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | √ | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -19,31 +19,31 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS: 4.61 | 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数 |
-| animationType | string | 否 |  | Web: x; 微信小程序: x; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS: 4.61 | 窗口显示的动画类型<br/> |
-| animationDuration | number | 否 |  | Web: x; 微信小程序: x; Android(VDOM): x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 窗口显示动画的持续时间，单位为 ms |
-| events | any | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 页面间通信接口，用于监听被打开页面发送到当前页面的数据 |
-| success | (result: [NavigateToSuccess](#navigatetosuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用成功的回调函数 |
-| fail | (result: [NavigateToFail](#navigatetofail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用失败的回调函数 |
-| complete | (result: [NavigateToComplete](#navigatetocomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| routeConfig | IAnyObject | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   |  |
-| routeOptions | IAnyObject | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   |  |
-| routeType | string | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   |  | 
+| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数 |
+| animationType | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 窗口显示的动画类型<br/> |
+| animationDuration | number | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 窗口显示动画的持续时间，单位为 ms |
+| events | any | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 页面间通信接口，用于监听被打开页面发送到当前页面的数据 |
+| success | (result: [NavigateToSuccess](#navigatetosuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [NavigateToFail](#navigatetofail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: [NavigateToComplete](#navigatetocomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| routeConfig | IAnyObject | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   |  |
+| routeOptions | IAnyObject | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   |  |
+| routeType | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 ##### animationType 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| auto | Web: x; 微信小程序:  ; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS: 5.0 | 自动选择动画效果 |
-| none | Web: x; 微信小程序:  ; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS: 4.61 | 无动画效果 |
-| slide-in-right | Web: x; 微信小程序:  ; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从右侧横向滑动效果 |
-| slide-in-left | Web: x; 微信小程序:  ; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从左侧横向滑动效果 |
-| slide-in-top | Web: x; 微信小程序:  ; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从上侧竖向滑动效果 |
-| slide-in-bottom | Web: x; 微信小程序:  ; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从下侧竖向滑动效果 |
-| fade-in | Web: x; 微信小程序:  ; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从完全透明到不透明逐渐显示 |
-| zoom-out | Web: x; 微信小程序:  ; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS: 5.0 | 在屏幕中间从小到大逐渐放大显示 |
-| zoom-fade-out | Web: x; 微信小程序:  ; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
-| pop-in | Web: x; 微信小程序:  ; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS: 4.61 | 从右侧平移出栈动画效果 |
+| auto | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 自动选择动画效果 |
+| none | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 无动画效果 |
+| slide-in-right | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从右侧横向滑动效果 |
+| slide-in-left | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从左侧横向滑动效果 |
+| slide-in-top | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从上侧竖向滑动效果 |
+| slide-in-bottom | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从下侧竖向滑动效果 |
+| fade-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从完全透明到不透明逐渐显示 |
+| zoom-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 在屏幕中间从小到大逐渐放大显示 |
+| zoom-fade-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
+| pop-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 从右侧平移出栈动画效果 |
 
 #### NavigateToSuccess 的属性值 @navigatetosuccess-values 
 
@@ -105,9 +105,9 @@
 
 
 ### redirectTo 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | √ | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -120,10 +120,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数 |
-| success | (result: [RedirectToSuccess](#redirecttosuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用成功的回调函数 |
-| fail | (result: [RedirectToFail](#redirecttofail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用失败的回调函数 |
-| complete | (result: [RedirectToComplete](#redirecttocomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数 |
+| success | (result: [RedirectToSuccess](#redirecttosuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [RedirectToFail](#redirecttofail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: [RedirectToComplete](#redirecttocomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### RedirectToSuccess 的属性值 @redirecttosuccess-values 
 
@@ -185,9 +185,9 @@
 
 
 ### reLaunch 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | √ | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -200,10 +200,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 需要跳转的应用内页面路径 , 路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2'，如果跳转的页面路径是 tabBar 页面则不能带参数 |
-| success | (result: [ReLaunchSuccess](#relaunchsuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用成功的回调函数 |
-| fail | (result: [ReLaunchFail](#relaunchfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用失败的回调函数 |
-| complete | (result: [ReLaunchComplete](#relaunchcomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 需要跳转的应用内页面路径 , 路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2'，如果跳转的页面路径是 tabBar 页面则不能带参数 |
+| success | (result: [ReLaunchSuccess](#relaunchsuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [ReLaunchFail](#relaunchfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: [ReLaunchComplete](#relaunchcomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### ReLaunchSuccess 的属性值 @relaunchsuccess-values 
 
@@ -265,9 +265,9 @@
 
 
 ### switchTab 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | √ | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -280,10 +280,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 需要跳转的 tabBar 页面的路径，路径后不能带参数 |
-| success | (result: [SwitchTabSuccess](#switchtabsuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用成功的回调函数 |
-| fail | (result: [SwitchTabFail](#switchtabfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用失败的回调函数 |
-| complete | (result: [SwitchTabComplete](#switchtabcomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 需要跳转的 tabBar 页面的路径，路径后不能带参数 |
+| success | (result: [SwitchTabSuccess](#switchtabsuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [SwitchTabFail](#switchtabfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: [SwitchTabComplete](#switchtabcomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### SwitchTabSuccess 的属性值 @switchtabsuccess-values 
 
@@ -345,9 +345,9 @@
 
 
 ### navigateBack 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | √ | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -360,27 +360,27 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| delta | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 返回的页面数，如果 delta 大于现有页面数，则返回到首页 |
-| animationType | string | 否 |  | Web: x; 微信小程序: x; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS(VDOM):   | 窗口关闭的动画类型<br/> |
-| animationDuration | number | 否 |  | Web: x; 微信小程序: x; Android(VDOM): x; iOS: x; HarmonyOS(VDOM): x | 窗口关闭动画的持续时间，单位为 ms |
-| success | (result: [NavigateBackSuccess](#navigatebacksuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: x; HarmonyOS(VDOM):   | 接口调用成功的回调函数 |
-| fail | (result: [NavigateBackFail](#navigatebackfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用失败的回调函数 |
-| complete | (result: [NavigateBackComplete](#navigatebackcomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| delta | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 返回的页面数，如果 delta 大于现有页面数，则返回到首页 |
+| animationType | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.25; HarmonyOS:   | 窗口关闭的动画类型<br/> |
+| animationDuration | number | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 窗口关闭动画的持续时间，单位为 ms |
+| success | (result: [NavigateBackSuccess](#navigatebacksuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: x; HarmonyOS:   | 接口调用成功的回调函数 |
+| fail | (result: [NavigateBackFail](#navigatebackfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: [NavigateBackComplete](#navigatebackcomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### animationType 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| auto | Web: x; 微信小程序:  ; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS(VDOM): 5.0 | 自动选择动画效果 |
-| none | Web: x; 微信小程序:  ; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 无动画效果 |
-| slide-out-right | Web: x; 微信小程序:  ; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS(VDOM): 5.0 | 横向向右侧滑出屏幕动画 |
-| slide-out-left | Web: x; 微信小程序:  ; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS(VDOM): 5.0 | 横向向左侧滑出屏幕动画 |
-| slide-out-top | Web: x; 微信小程序:  ; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS(VDOM): 5.0 | 竖向向上侧滑出屏幕动画 |
-| slide-out-bottom | Web: x; 微信小程序:  ; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS(VDOM): 5.0 | 竖向向下侧滑出屏幕动画 |
-| fade-out | Web: x; 微信小程序:  ; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS(VDOM): 5.0 | 从不透明到透明逐渐隐藏动画 |
-| zoom-in | Web: x; 微信小程序:  ; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS(VDOM): 5.0 | 从大逐渐缩小关闭动画 |
-| zoom-fade-in | Web: x; 微信小程序:  ; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS(VDOM): 5.0 | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
-| pop-out | Web: x; 微信小程序:  ; Android(VDOM): 4.18; iOS: 4.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 从右侧平移出栈动画效果 |
+| auto | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 自动选择动画效果 |
+| none | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 无动画效果 |
+| slide-out-right | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 横向向右侧滑出屏幕动画 |
+| slide-out-left | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 横向向左侧滑出屏幕动画 |
+| slide-out-top | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 竖向向上侧滑出屏幕动画 |
+| slide-out-bottom | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 竖向向下侧滑出屏幕动画 |
+| fade-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从不透明到透明逐渐隐藏动画 |
+| zoom-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从大逐渐缩小关闭动画 |
+| zoom-fade-in | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 从大逐渐缩小并且从不透明到透明逐渐隐藏关闭动画 |
+| pop-out | Web: x; 微信小程序:  ; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 从右侧平移出栈动画效果 |
 
 #### NavigateBackSuccess 的属性值 @navigatebacksuccess-values 
 
@@ -906,7 +906,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 
 
 ## 页面跳转与参数传递

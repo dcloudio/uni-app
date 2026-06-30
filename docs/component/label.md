@@ -8,9 +8,9 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android(VDOM) | iOS(VDOM) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
 
 
 App平台可以用view加事件来替代label。
@@ -18,8 +18,8 @@ App平台可以用view加事件来替代label。
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| disabled | boolean | false | Web: 4.0; 微信小程序: x; Android(VDOM): x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): 4.71; HarmonyOS(Vapor): 5.0 | 是否禁用 |
-| for | string |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): 4.71; HarmonyOS(Vapor): 5.0 | 绑定控件的 id |
+| disabled | boolean | false | Web: 4.0; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: 4.71 | 是否禁用 |
+| for | string |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: 4.71 | 绑定控件的 id |
 
 
 

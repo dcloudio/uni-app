@@ -52,9 +52,9 @@ getAndroidApplication
 getHarmonyAbility
 获取 鸿蒙应用 Ability 实例
 ##### getHarmonyAbility 兼容性 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | x | x | 4.61 | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 | x |
 
 
 
@@ -324,5 +324,5 @@ getHarmonyAbility
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 

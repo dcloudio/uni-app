@@ -13,7 +13,7 @@
 创建一个监听权限申请的对象。
 
 ### createRequestPermissionListener 兼容性 
-| Web | Android(VDOM) | iOS | HarmonyOS(VDOM) |
+| Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
@@ -41,7 +41,7 @@ app-android平台，可使用本API监听应用权限申请确认框的弹出和
 onRequest
 监听申请系统权限
 ##### onRequest 兼容性 
-| Web | iOS | HarmonyOS(VDOM) |
+| Web | iOS | HarmonyOS |
 | :- | :- | :- |
 | x | x | x |
 
@@ -49,7 +49,7 @@ onRequest
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (permissions: Array&lt;string&gt;) => void | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS: x; HarmonyOS(VDOM): x | 申请系统权限回调，permissions为触发权限申请的所有权限 | 
+| callback | (permissions: Array&lt;string&gt;) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS: x | 申请系统权限回调，permissions为触发权限申请的所有权限 | 
 
 
 
@@ -57,7 +57,7 @@ onRequest
 onConfirm
 监听弹出系统权限授权框
 ##### onConfirm 兼容性 
-| Web | iOS | HarmonyOS(VDOM) |
+| Web | iOS | HarmonyOS |
 | :- | :- | :- |
 | x | x | x |
 
@@ -65,7 +65,7 @@ onConfirm
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (permissions: Array&lt;string&gt;) => void | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS: x; HarmonyOS(VDOM): x | 弹出系统权限授权框回调，permissions为触发弹出权限授权框的所有权限 | 
+| callback | (permissions: Array&lt;string&gt;) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS: x | 弹出系统权限授权框回调，permissions为触发弹出权限授权框的所有权限 | 
 
 
 
@@ -73,7 +73,7 @@ onConfirm
 onComplete
 监听权限申请完成
 ##### onComplete 兼容性 
-| Web | iOS | HarmonyOS(VDOM) |
+| Web | iOS | HarmonyOS |
 | :- | :- | :- |
 | x | x | x |
 
@@ -81,7 +81,7 @@ onComplete
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (permissions: Array&lt;string&gt;) => void | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS: x; HarmonyOS(VDOM): x | 权限申请完成回调，permissions为申请完成的所有权限 | 
+| callback | (permissions: Array&lt;string&gt;) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS: x | 权限申请完成回调，permissions为申请完成的所有权限 | 
 
 
 
@@ -89,7 +89,7 @@ onComplete
 stop
 取消所有监听
 ##### stop 兼容性 
-| Web | iOS | HarmonyOS(VDOM) |
+| Web | iOS | HarmonyOS |
 | :- | :- | :- |
 | x | x | x |
 
@@ -217,5 +217,5 @@ stop
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 

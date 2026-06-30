@@ -5,9 +5,9 @@
 参考：[Map组件](../component/map.md)
 
 ### createMapContext 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.31 | 4.31 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.31 | 4.31 | 4.61 |
 
 
 ### 参数 
@@ -30,9 +30,9 @@
 getCenterLocation
 获取当前地图中心的经纬度，返回的是 gcj02 坐标系，可以用于 uni.openLocation
 ##### getCenterLocation 兼容性 
-| Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| 4.31 | 4.31 | 4.61 | 5.0 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 4.31 | 4.31 | 4.61 |
 
 ##### 参数 
 
@@ -52,8 +52,8 @@ getCenterLocation
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 经度，范围为-180~180，负数表示西经 |
+| latitude | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
@@ -83,9 +83,9 @@ getCenterLocation
 moveToLocation
 将地图中心移动到当前定位点，需要配合map组件的show-location使用
 ##### moveToLocation 兼容性 
-| Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| 4.31 | 4.31 | 4.61 | 5.0 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 4.31 | 4.31 | 4.61 |
 
 ##### 参数 
 
@@ -97,8 +97,8 @@ moveToLocation
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 否 | null | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 否 | null | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 经度，范围为-180~180，负数表示西经 |
+| latitude | number | 否 | null | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 否 | null | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -109,9 +109,9 @@ moveToLocation
 translateMarker
 平移marker，带动画
 ##### translateMarker 兼容性 
-| Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| 4.31 | 4.31 | 4.61 | 5.0 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 4.31 | 4.31 | 4.61 |
 
 ##### 参数 
 
@@ -123,12 +123,12 @@ translateMarker
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| markerId | number | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 指定marker |
-| destination | [LocationObject](#locationobject-values) | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 指定marker移动到的目标点 |
-| autoRotate | boolean | 否 |  | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM):   | 移动过程中是否自动旋转marker |
-| rotate | number | 否 | 0 | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | marker的旋转角度 |
-| moveWithRotate | boolean | 否 | false | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 平移和旋转同时进行 |
-| duration | number | 否 | 1000 | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 动画持续时长，平移与旋转分别计算 |
+| markerId | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker |
+| destination | [LocationObject](#locationobject-values) | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker移动到的目标点 |
+| autoRotate | boolean | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 移动过程中是否自动旋转marker |
+| rotate | number | 否 | 0 | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | marker的旋转角度 |
+| moveWithRotate | boolean | 否 | false | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 平移和旋转同时进行 |
+| duration | number | 否 | 1000 | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 动画持续时长，平移与旋转分别计算 |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -139,9 +139,9 @@ translateMarker
 includePoints
 缩放视野展示所有经纬度
 ##### includePoints 兼容性 
-| Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| 4.31 | 4.31 | 4.61 | 5.0 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 4.31 | 4.31 | 4.61 |
 
 ##### 参数 
 
@@ -153,7 +153,7 @@ includePoints
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| points | Array&lt;[LocationObject](#locationobject-values)&gt; | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 要显示在可视区域内的坐标点列表，[{latitude, longitude}\] |
+| points | Array&lt;[LocationObject](#locationobject-values)&gt; | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要显示在可视区域内的坐标点列表，[{latitude, longitude}\] |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -164,9 +164,9 @@ includePoints
 getRegion
 获取当前地图的视野范围
 ##### getRegion 兼容性 
-| Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| 4.31 | 4.31 | 4.61 | 5.0 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 4.31 | 4.31 | 4.61 |
 
 ##### 参数 
 
@@ -186,8 +186,8 @@ getRegion
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| southwest | [LocationObject](#locationobject-values) | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 西南角的经纬度 |
-| northeast | [LocationObject](#locationobject-values) | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 东北角的经纬度 |
+| southwest | [LocationObject](#locationobject-values) | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
+| northeast | [LocationObject](#locationobject-values) | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
 
 
 
@@ -195,9 +195,9 @@ getRegion
 getScale
 获取当前地图的缩放级别
 ##### getScale 兼容性 
-| Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| 4.31 | 4.31 | 4.61 | 5.0 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 4.31 | 4.31 | 4.61 |
 
 ##### 参数 
 
@@ -217,7 +217,7 @@ getScale
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| scale | number | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 地图缩放级别 |
+| scale | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 地图缩放级别 |
 
 
 
@@ -225,7 +225,7 @@ getScale
 addGroundOverlay
 创建自定义图片图层，图片会随着地图缩放而缩放
 ##### addGroundOverlay 兼容性 
-| Android(VDOM) | iOS | HarmonyOS(VDOM) |
+| Android | iOS | HarmonyOS |
 | :- | :- | :- |
 | 4.31 | 4.31 | x |
 
@@ -239,12 +239,12 @@ addGroundOverlay
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | string | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): x | 图片图层 id |
-| src | string | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): x | 图片路径，支持网络图片、临时路径、代码包路径 |
-| bounds | **Bounds** | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): x | 图片覆盖的经纬度范围 |
-| visible | boolean | 否 | false | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): x | 是否可见 |
-| zIndex | number | 否 | 0 | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): x | 图层绘制顺序 |
-| opacity | number | 否 | 1 | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): x | 图层透明度 |
+| id | string | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片图层 id |
+| src | string | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片路径，支持网络图片、临时路径、代码包路径 |
+| bounds | **Bounds** | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片覆盖的经纬度范围 |
+| visible | boolean | 否 | false | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: x | 是否可见 |
+| zIndex | number | 否 | 0 | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图层绘制顺序 |
+| opacity | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图层透明度 |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -253,8 +253,8 @@ addGroundOverlay
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| southwest | [LocationObject](#locationobject-values) | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 西南角的经纬度 |
-| northeast | [LocationObject](#locationobject-values) | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 东北角的经纬度 |
+| southwest | [LocationObject](#locationobject-values) | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
+| northeast | [LocationObject](#locationobject-values) | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
 
 
 
@@ -262,9 +262,9 @@ addGroundOverlay
 addMarkers
 添加 marker
 ##### addMarkers 兼容性 
-| Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| 4.31 | 4.31 | 4.61 | 5.0 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 4.31 | 4.31 | 4.61 |
 
 ##### 参数 
 
@@ -276,8 +276,8 @@ addMarkers
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| markers | Array&lt;**Marker**&gt; | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 同传入 map 组件的 marker 属性 |
-| clear | boolean | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 是否先清空地图上所有 marker |
+| markers | Array&lt;**Marker**&gt; | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 同传入 map 组件的 marker 属性 |
+| clear | boolean | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否先清空地图上所有 marker |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -286,22 +286,22 @@ addMarkers
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | number | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 标记点id，marker点击事件回调会返回此id。建议为每个marker设置上Number类型id，保证更新marker时有更好的性能。最大限制9位数 |
-| latitude | number | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 纬度，浮点数，范围 -90 ~ 90 |
-| longitude | number | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 经度，浮点数，范围 -180 ~ 180 |
-| iconPath | string | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 显示的图标，项目目录下的图片路径，支持相对路径写法，以'/'开头则表示相对小程序根目录；也支持临时路径 |
-| title | string | 否 | null | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 标注点名，点击时显示，callout存在时将被忽略 |
-| rotate | number | 否 | 0 | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 旋转角度，顺时针旋转的角度，范围 0 ~ 360 |
-| alpha | number | 否 | 1 | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 标注的透明度，范围 0 ~ 1 |
-| width | number | 否 | 默认为图片实际宽度 | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 标注图标宽度 |
-| height | number | 否 | 默认为图片实际高度 | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 标注图标高度 |
-| ariaLabel | string | 否 | null | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 无障碍访问，（属性）元素的额外描述 |
-| anchor | **Anchor** | 否 | [0.5, 1\] | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 经纬度在标注图标的锚点，默认底边中点	{x, y}，x表示横向(0-1)，y表示竖向(0-1)。{x: .5, y: 1} 表示底边中点 |
-| callout | **MapMarkerCallout** | 否 | null | Web:  ; 微信小程序:  ; Android(VDOM): 4.51; iOS: 4.51; HarmonyOS(VDOM): x | 自定义标记点上方的气泡窗口 |
-| label | **MapMarkerLabel** | 否 | null | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM): x | 为标记点旁边增加标签 |
-| clusterId | number | 否 | null | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM): x | 自定义点聚合簇效果时使用 |
-| customCallout | [MapMarkerCallout](#mapmarkercallout-values) | 否 | null | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM): x | 自定义气泡窗口 |
-| joinCluster | boolean | 否 | null | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM): x | 是否参与点聚合 |
+| id | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标记点id，marker点击事件回调会返回此id。建议为每个marker设置上Number类型id，保证更新marker时有更好的性能。最大限制9位数 |
+| latitude | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围 -90 ~ 90 |
+| longitude | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，浮点数，范围 -180 ~ 180 |
+| iconPath | string | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 显示的图标，项目目录下的图片路径，支持相对路径写法，以'/'开头则表示相对小程序根目录；也支持临时路径 |
+| title | string | 否 | null | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注点名，点击时显示，callout存在时将被忽略 |
+| rotate | number | 否 | 0 | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 旋转角度，顺时针旋转的角度，范围 0 ~ 360 |
+| alpha | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注的透明度，范围 0 ~ 1 |
+| width | number | 否 | 默认为图片实际宽度 | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注图标宽度 |
+| height | number | 否 | 默认为图片实际高度 | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注图标高度 |
+| ariaLabel | string | 否 | null | Web:  ; 微信小程序:  ; Android: x; iOS: 4.31; HarmonyOS: 4.61 | 无障碍访问，（属性）元素的额外描述 |
+| anchor | **Anchor** | 否 | [0.5, 1\] | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经纬度在标注图标的锚点，默认底边中点	{x, y}，x表示横向(0-1)，y表示竖向(0-1)。{x: .5, y: 1} 表示底边中点 |
+| callout | **MapMarkerCallout** | 否 | null | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS: x | 自定义标记点上方的气泡窗口 |
+| label | **MapMarkerLabel** | 否 | null | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 为标记点旁边增加标签 |
+| clusterId | number | 否 | null | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 自定义点聚合簇效果时使用 |
+| customCallout | [MapMarkerCallout](#mapmarkercallout-values) | 否 | null | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 自定义气泡窗口 |
+| joinCluster | boolean | 否 | null | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 是否参与点聚合 |
 
 ###### anchor 的属性描述
 
@@ -314,18 +314,18 @@ addMarkers
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| content | string | 否 | "" | Web:  ; 微信小程序:  ; Android(VDOM): 4.51; iOS: 4.51; HarmonyOS(VDOM):   | 文本 |
-| color | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "black" | Web:  ; 微信小程序:  ; Android(VDOM): 4.51; iOS: 4.51; HarmonyOS(VDOM):   | 文本颜色 |
-| fontSize | number | 否 | null | Web:  ; 微信小程序:  ; Android(VDOM): 4.51; iOS: 4.51; HarmonyOS(VDOM):   | 文字大小 |
-| borderRadius | number | 否 | 0 | Web:  ; 微信小程序:  ; Android(VDOM): 4.51; iOS: 4.51; HarmonyOS(VDOM):   | 边框圆角 |
-| borderWidth | number | 否 | 0 | Web:  ; 微信小程序:  ; Android(VDOM): 4.51; iOS: 4.51; HarmonyOS(VDOM):   | 边框宽度 |
-| borderColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "transparent" | Web:  ; 微信小程序:  ; Android(VDOM): 4.51; iOS: 4.51; HarmonyOS(VDOM):   | 边框颜色 |
-| bgColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "#fff" | Web:  ; 微信小程序:  ; Android(VDOM): 4.51; iOS: 4.51; HarmonyOS(VDOM):   | 背景色 |
-| padding | number | 否 | 0 | Web:  ; 微信小程序:  ; Android(VDOM): 4.51; iOS: 4.51; HarmonyOS(VDOM):   | 文本边缘留白 |
-| display | string | 否 | "BYCLICK" | Web:  ; 微信小程序:  ; Android(VDOM): 4.51; iOS: 4.51; HarmonyOS(VDOM):   | 'BYCLICK':点击显示; 'ALWAYS':常显 |
-| textAlign | string | 否 | "left" | Web:  ; 微信小程序:  ; Android(VDOM): 4.51; iOS: 4.51; HarmonyOS(VDOM):   | 文本对齐方式。 |
-| anchorX | number | 否 | 0.5 | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM):   | 横向偏移量，向右为正数 |
-| anchorY | number | 否 | 1 | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM):   | 纵向偏移量，向下为正数 |
+| content | string | 否 | "" | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS:   | 文本 |
+| color | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "black" | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS:   | 文本颜色 |
+| fontSize | number | 否 | null | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS:   | 文字大小 |
+| borderRadius | number | 否 | 0 | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS:   | 边框圆角 |
+| borderWidth | number | 否 | 0 | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS:   | 边框宽度 |
+| borderColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "transparent" | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS:   | 边框颜色 |
+| bgColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "#fff" | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS:   | 背景色 |
+| padding | number | 否 | 0 | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS:   | 文本边缘留白 |
+| display | string | 否 | "BYCLICK" | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS:   | 'BYCLICK':点击显示; 'ALWAYS':常显 |
+| textAlign | string | 否 | "left" | Web:  ; 微信小程序:  ; Android: 4.51; iOS: 4.51; HarmonyOS:   | 文本对齐方式。 |
+| anchorX | number | 否 | 0.5 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 横向偏移量，向右为正数 |
+| anchorY | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 纵向偏移量，向下为正数 |
 
 ####### display 的属性描述
 
@@ -346,20 +346,20 @@ addMarkers
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| content | string | 否 | 1 | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM):   | 文本 |
-| color | string | 否 | 1 | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM):   | 文本颜色 |
-| fontSize | number | 否 | 1 | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM):   | 文字大小 |
-| x | number | 否 | 1 | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM):   | label的坐标，原点是 marker 对应的经纬度 |
-| y | number | 否 | 1 | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM):   | label的坐标，原点是 marker 对应的经纬度 |
-| anchorX | number | 否 | 1 | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM):   | label的坐标，原点是 marker 对应的经纬度 |
-| anchorY | number | 否 | 1 | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM):   | label的坐标，原点是 marker 对应的经纬度 |
-| borderWidth | number | 否 | 1 | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM):   | 边框宽度 |
-| borderColor | string | 否 | 1 | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM):   | 边框颜色 |
-| borderRadius | number | 否 | 1 | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM):   | 边框圆角 |
-| bgColor | string | 否 | 1 | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM):   | 背景色 |
-| padding | number | 否 | 1 | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM):   | 文本边缘留白 |
-| textAlign | string | 否 | 1 | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM):   | 文本对齐方式。 |
-| ariaLabel | string | 否 | 1 | Web:  ; 微信小程序:  ; Android(VDOM): x; iOS: x; HarmonyOS(VDOM):   | 无障碍访问，（属性）元素的额外描述 |
+| content | string | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文本 |
+| color | string | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文本颜色 |
+| fontSize | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文字大小 |
+| x | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | label的坐标，原点是 marker 对应的经纬度 |
+| y | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | label的坐标，原点是 marker 对应的经纬度 |
+| anchorX | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | label的坐标，原点是 marker 对应的经纬度 |
+| anchorY | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | label的坐标，原点是 marker 对应的经纬度 |
+| borderWidth | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 边框宽度 |
+| borderColor | string | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 边框颜色 |
+| borderRadius | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 边框圆角 |
+| bgColor | string | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 背景色 |
+| padding | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文本边缘留白 |
+| textAlign | string | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文本对齐方式。 |
+| ariaLabel | string | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 无障碍访问，（属性）元素的额外描述 |
 
 ####### textAlign 的属性描述
 
@@ -375,9 +375,9 @@ addMarkers
 moveAlong
 沿指定路径移动 marker，用于轨迹回放等场景。动画完成时触发回调事件，若动画进行中，对同一 marker 再次调用 moveAlong 方法，前一次的动画将被打断。
 ##### moveAlong 兼容性 
-| Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| 4.31 | 4.31 | 4.61 | 5.0 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 4.31 | 4.31 | 4.61 |
 
 ##### 参数 
 
@@ -389,9 +389,9 @@ moveAlong
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| markerId | number | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 指定marker |
-| path | Array&lt;[LocationObject](#locationobject-values)&gt; | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 移动路径的坐标串，坐标点格式 {longitude, latitude} |
-| duration | number | 否 | 1000 | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 平滑移动的时间 |
+| markerId | number | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker |
+| path | Array&lt;[LocationObject](#locationobject-values)&gt; | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 移动路径的坐标串，坐标点格式 {longitude, latitude} |
+| duration | number | 否 | 1000 | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 平滑移动的时间 |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -402,7 +402,7 @@ moveAlong
 removeGroundOverlay
 移除自定义图片图层
 ##### removeGroundOverlay 兼容性 
-| Android(VDOM) | iOS | HarmonyOS(VDOM) |
+| Android | iOS | HarmonyOS |
 | :- | :- | :- |
 | 4.31 | 4.31 | x |
 
@@ -416,7 +416,7 @@ removeGroundOverlay
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | string | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 图片图层 id |
+| id | string | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 图片图层 id |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -427,9 +427,9 @@ removeGroundOverlay
 removeMarkers
 移除 marker
 ##### removeMarkers 兼容性 
-| Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| 4.31 | 4.31 | 4.61 | 5.0 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 4.31 | 4.31 | 4.61 |
 
 ##### 参数 
 
@@ -441,7 +441,7 @@ removeMarkers
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| markerIds | Array&lt;number&gt; | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 要被删除的marker的id属性组成的数组 |
+| markerIds | Array&lt;number&gt; | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要被删除的marker的id属性组成的数组 |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -452,7 +452,7 @@ removeMarkers
 updateGroundOverlay
 更新自定义图片图层。
 ##### updateGroundOverlay 兼容性 
-| Android(VDOM) | iOS | HarmonyOS(VDOM) |
+| Android | iOS | HarmonyOS |
 | :- | :- | :- |
 | 4.31 | 4.31 | x |
 
@@ -466,12 +466,12 @@ updateGroundOverlay
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | string | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): x | 图片图层 id |
-| src | string | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): x | 图片路径，支持网络图片、临时路径、代码包路径 |
-| bounds | [Bounds](#bounds-values) | 是 |  | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): x | 图片覆盖的经纬度范围 |
-| visible | boolean | 否 | true | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): x | 是否可见 |
-| zIndex | number | 否 | 0 | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): x | 图层绘制顺序 |
-| opacity | number | 否 | 1 | Web:  ; 微信小程序:  ; Android(VDOM): 4.31; iOS: 4.31; HarmonyOS(VDOM): x | 图层透明度 |
+| id | string | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片图层 id |
+| src | string | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片路径，支持网络图片、临时路径、代码包路径 |
+| bounds | [Bounds](#bounds-values) | 是 |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片覆盖的经纬度范围 |
+| visible | boolean | 否 | true | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: x | 是否可见 |
+| zIndex | number | 否 | 0 | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图层绘制顺序 |
+| opacity | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS: x | 图层透明度 |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 

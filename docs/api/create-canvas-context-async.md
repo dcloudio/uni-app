@@ -26,9 +26,9 @@ uni.createCanvasContextAsync 方法可以异步获取页面上指定id的canvas�
 - [CanvasRenderingContext2D文档](./canvasrenderingcontext2d.md)
 
 ### createCanvasContextAsync 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.25 | 4.41 | 4.25 | 4.25 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.25 | 4.41 | 4.25 | 4.25 | 4.61 |
 
 
 ### 参数 
@@ -41,11 +41,11 @@ uni.createCanvasContextAsync 方法可以异步获取页面上指定id的canvas�
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | [string.IDString](/uts/data-type.md#ide-string) | 是 |  | Web: 4.25; 微信小程序: 4.41; Android(VDOM): 4.25; iOS: 4.25; HarmonyOS(VDOM):   | canvas 元素的 id 属性 |
-| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 |  | Web: 4.25; 微信小程序: 4.41; Android(VDOM): 4.25; iOS: 4.25; HarmonyOS(VDOM):   | 组件或页面实例，限定在什么范围内查找id |
-| success | (context: [CanvasContext](#canvascontext-values)) => void | 否 |  | Web: 4.25; 微信小程序: 4.41; Android(VDOM): 4.25; iOS: 4.25; HarmonyOS(VDOM):   | 接口调用成功的回调函数 |
-| fail | (error: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 |  | Web: 4.25; 微信小程序: 4.41; Android(VDOM): 4.25; iOS: 4.25; HarmonyOS(VDOM):   | 接口调用失败的回调函数 |
-| complete | () => void | 否 |  | Web: 4.25; 微信小程序: 4.41; Android(VDOM): 4.25; iOS: 4.25; HarmonyOS(VDOM):   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| id | [string.IDString](/uts/data-type.md#ide-string) | 是 |  | Web: 4.25; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS:   | canvas 元素的 id 属性 |
+| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 |  | Web: 4.25; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS:   | 组件或页面实例，限定在什么范围内查找id |
+| success | (context: [CanvasContext](#canvascontext-values)) => void | 否 |  | Web: 4.25; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS:   | 接口调用成功的回调函数 |
+| fail | (error: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 |  | Web: 4.25; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS:   | 接口调用失败的回调函数 |
+| complete | () => void | 否 |  | Web: 4.25; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### CanvasContext 的方法 @canvascontext-values 
 
@@ -71,7 +71,7 @@ getContext
 toBlob
 创造 Blob 对象
 ##### toBlob 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS |
+| Web | 微信小程序 | Android | iOS |
 | :- | :- | :- | :- |
 | 4.25 | 4.41 | x | x |
 
@@ -89,9 +89,9 @@ toBlob
 toDataURL
 返回一个包含图片展示的 data URI
 ##### toDataURL 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.25 | 4.41 | 4.25 | 4.25 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.25 | 4.41 | 4.25 | 4.25 | 4.61 |
 
 
 
@@ -106,9 +106,9 @@ toDataURL
 createImage
 返回一个包含图片展示的 data URI
 ##### createImage 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.25 | 4.41 | 4.25 | 4.25 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.25 | 4.41 | 4.25 | 4.25 | 4.61 |
 
 
 
@@ -123,9 +123,9 @@ createImage
 createPath2D
 返回一个包含图片展示的 data URI
 ##### createPath2D 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.25 | 4.41 | 4.25 | 4.25 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.25 | 4.41 | 4.25 | 4.25 | 4.61 |
 
 
 
@@ -140,9 +140,9 @@ createPath2D
 requestAnimationFrame
 在下一次重绘之前，调用用户提供的回调函数
 ##### requestAnimationFrame 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.25 | 4.41 | 4.25 | 4.25 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.25 | 4.41 | 4.25 | 4.25 | 4.61 |
 
 ##### 参数 
 
@@ -162,9 +162,9 @@ requestAnimationFrame
 cancelAnimationFrame
 取消一个先前通过调用 uni.requestAnimationFrame() 方法添加到计划中的动画帧请求
 ##### cancelAnimationFrame 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.25 | 4.41 | 4.25 | 4.25 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.25 | 4.41 | 4.25 | 4.25 | 4.61 |
 
 ##### 参数 
 
@@ -190,7 +190,7 @@ cancelAnimationFrame
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 
 
 

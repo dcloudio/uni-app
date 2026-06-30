@@ -13,74 +13,74 @@
 添加手机通讯录联系人。用户可以选择将该表单以「新增联系人」或「添加到已有联系人」的方式，写入手机系统通讯录。
 
 ### addPhoneContact 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.08 | 5.08 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.08 | 5.08 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **AddPhoneContactOptions** | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 添加手机通讯录联系人的参数 |
+| options | **AddPhoneContactOptions** | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 添加手机通讯录联系人的参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| photoFilePath | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 头像本地文件路径 |
-| nickName | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 昵称 |
-| lastName | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 姓氏 |
-| middleName | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 中间名 |
-| firstName | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 名字 |
-| remark | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 备注 |
-| mobilePhoneNumber | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 手机号 |
-| weChatNumber | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 即时消息账号 |
-| addressCountry | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 联系地址国家 |
-| addressState | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 联系地址省份 |
-| addressCity | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 联系地址城市 |
-| addressStreet | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 联系地址街道 |
-| addressPostalCode | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 联系地址邮政编码 |
-| organization | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 公司 |
-| title | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 职位 |
-| workFaxNumber | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 工作传真 |
-| workPhoneNumber | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 工作电话 |
-| hostNumber | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 公司电话 |
-| email | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 电子邮件 |
-| url | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 网站 |
-| workAddressCountry | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 工作地址国家 |
-| workAddressState | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 工作地址省份 |
-| workAddressCity | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 工作地址城市 |
-| workAddressStreet | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 工作地址街道 |
-| workAddressPostalCode | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 工作地址邮政编码 |
-| homeFaxNumber | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 住宅传真 |
-| homePhoneNumber | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 住宅电话 |
-| homeAddressCountry | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 住宅地址国家 |
-| homeAddressState | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 住宅地址省份 |
-| homeAddressCity | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 住宅地址城市 |
-| homeAddressStreet | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 住宅地址街道 |
-| homeAddressPostalCode | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 住宅地址邮政编码 |
-| success | (result: AddPhoneContactSuccess) => void | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 接口调用成功的回调函数 |
-| fail | (result: [AddPhoneContactFail](#addphonecontactfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 接口调用失败的回调函数 |
-| complete | (result: AddPhoneContactSuccess \| [AddPhoneContactFail](#addphonecontactfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| photoFilePath | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 头像本地文件路径 |
+| nickName | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 昵称 |
+| lastName | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 姓氏 |
+| middleName | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 中间名 |
+| firstName | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 名字 |
+| remark | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 备注 |
+| mobilePhoneNumber | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 手机号 |
+| weChatNumber | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 即时消息账号 |
+| addressCountry | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 联系地址国家 |
+| addressState | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 联系地址省份 |
+| addressCity | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 联系地址城市 |
+| addressStreet | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 联系地址街道 |
+| addressPostalCode | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 联系地址邮政编码 |
+| organization | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 公司 |
+| title | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 职位 |
+| workFaxNumber | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 工作传真 |
+| workPhoneNumber | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 工作电话 |
+| hostNumber | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 公司电话 |
+| email | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 电子邮件 |
+| url | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 网站 |
+| workAddressCountry | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 工作地址国家 |
+| workAddressState | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 工作地址省份 |
+| workAddressCity | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 工作地址城市 |
+| workAddressStreet | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 工作地址街道 |
+| workAddressPostalCode | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 工作地址邮政编码 |
+| homeFaxNumber | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 住宅传真 |
+| homePhoneNumber | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 住宅电话 |
+| homeAddressCountry | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 住宅地址国家 |
+| homeAddressState | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 住宅地址省份 |
+| homeAddressCity | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 住宅地址城市 |
+| homeAddressStreet | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 住宅地址街道 |
+| homeAddressPostalCode | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 住宅地址邮政编码 |
+| success | (result: AddPhoneContactSuccess) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
+| fail | (result: [AddPhoneContactFail](#addphonecontactfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
+| complete | (result: AddPhoneContactSuccess \| [AddPhoneContactFail](#addphonecontactfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### AddPhoneContactFail 的属性值 @addphonecontactfail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   |  |
-| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息中包含的数据 |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   |  |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 601 | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   |  |
-| 602 | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   |  |
-| 603 | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   |  |
+| 601 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 602 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 603 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 
 
@@ -112,5 +112,5 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 

@@ -13,9 +13,9 @@
 将本地资源上传到开发者服务器。
 
 ### uploadFile 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 
 推荐上传到uniCloud，uniCloud提供了更便宜CDN和更好的易用性，[详见](https://doc.dcloud.net.cn/uniCloud/ext-storage/intro.html)
@@ -30,35 +30,35 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| url | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 开发者服务器 url |
-| filePath | string | 否 | null | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 要上传文件资源的路径, 支持uni.env |
-| name | string | 否 | null | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 文件对应的 key , 开发者在服务器端通过这个 key 可以获取到文件二进制内容 |
-| files | Array&lt;**UploadFileOptionFiles**&gt; | 否 | null | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 需要上传的文件列表。 |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | HTTP 请求 Header, header 中不能设置 Referer |
-| formData | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | HTTP 请求中其他额外的 form data |
-| timeout | number | 否 | 120000 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 超时时间，单位 ms |
-| success | (result: [UploadFileSuccess](#uploadfilesuccess-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 成功返回的回调函数 |
-| fail | (result: [UploadFileFail](#uploadfilefail-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 失败的回调函数 |
-| complete | (result: any) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 结束的回调函数（调用成功、失败都会执行） |
-| enableHttp2 | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 需要基础库： `2.10.4`<br/><br/>是否开启 http2<br/> |
-| enableProfile | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 是否开启 profile，默认开启。开启后可在接口回调的 res.profile 中查看性能调试信息。目前仅 iOS 端支持。<br/> |
-| enableQuic | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 需要基础库： `2.10.4`<br/><br/>是否开启 Quic/h3 协议（iOS 微信目前使用 gQUIC-Q43；Android 微信在 v8.0.54 前使用 gQUIC-Q43，v8.0.54 开始使用 IETF QUIC，即 h3 协议；PC微信使用 IETF QUIC，即 h3 协议）<br/> |
-| useHighPerformanceMode | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 需要基础库： `3.4.1`<br/><br/>使用高性能模式，暂仅支持 Android，默认关闭。该模式下有更优的网络性能表现。<br/> | 
+| url | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器 url |
+| filePath | string | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 要上传文件资源的路径, 支持uni.env |
+| name | string | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 文件对应的 key , 开发者在服务器端通过这个 key 可以获取到文件二进制内容 |
+| files | Array&lt;**UploadFileOptionFiles**&gt; | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 需要上传的文件列表。 |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | HTTP 请求 Header, header 中不能设置 Referer |
+| formData | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | HTTP 请求中其他额外的 form data |
+| timeout | number | 否 | 120000 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 超时时间，单位 ms |
+| success | (result: [UploadFileSuccess](#uploadfilesuccess-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 成功返回的回调函数 |
+| fail | (result: [UploadFileFail](#uploadfilefail-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 失败的回调函数 |
+| complete | (result: any) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 结束的回调函数（调用成功、失败都会执行） |
+| enableHttp2 | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.10.4`<br/><br/>是否开启 http2<br/> |
+| enableProfile | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 是否开启 profile，默认开启。开启后可在接口回调的 res.profile 中查看性能调试信息。目前仅 iOS 端支持。<br/> |
+| enableQuic | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.10.4`<br/><br/>是否开启 Quic/h3 协议（iOS 微信目前使用 gQUIC-Q43；Android 微信在 v8.0.54 前使用 gQUIC-Q43，v8.0.54 开始使用 IETF QUIC，即 h3 协议；PC微信使用 IETF QUIC，即 h3 协议）<br/> |
+| useHighPerformanceMode | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `3.4.1`<br/><br/>使用高性能模式，暂仅支持 Android，默认关闭。该模式下有更优的网络性能表现。<br/> | 
 
 ##### files 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| name | string | 否 | "file" | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | multipart 提交时，表单的项目名，默认为 file，如果 name 不填或填的值相同，可能导致服务端读取文件时只能读取到一个文件。 |
-| uri | string | 是 |  | Web: x; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 要上传文件资源的路径 |
-| file | any | 否 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS 系统版本: x; HarmonyOS(VDOM): x | 要上传的文件对象 |
+| name | string | 否 | "file" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | multipart 提交时，表单的项目名，默认为 file，如果 name 不填或填的值相同，可能导致服务端读取文件时只能读取到一个文件。 |
+| uri | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 要上传文件资源的路径 |
+| file | any | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 要上传的文件对象 |
 
 #### UploadFileSuccess 的属性值 @uploadfilesuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| data | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 开发者服务器返回的数据 |
-| statusCode | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 开发者服务器返回的 HTTP 状态码 |
+| data | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的数据 |
+| statusCode | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP 状态码 |
 
 #### UploadFileFail 的属性值 @uploadfilefail-values 
 
@@ -97,9 +97,9 @@
 abort
 中断上传任务。
 ##### abort 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 
 
@@ -108,9 +108,9 @@ abort
 onProgressUpdate
 监听上传进度变化。
 ##### onProgressUpdate 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 ##### 参数 
 
@@ -122,9 +122,9 @@ onProgressUpdate
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| progress | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 上传进度百分比 |
-| totalBytesSent | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 已经上传的数据长度，单位 Bytes |
-| totalBytesExpectedToSend | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.0 | 预期需要上传的数据总长度，单位 Bytes |
+| progress | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 上传进度百分比 |
+| totalBytesSent | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 已经上传的数据长度，单位 Bytes |
+| totalBytesExpectedToSend | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 预期需要上传的数据总长度，单位 Bytes |
 
 
  
@@ -489,7 +489,7 @@ complete: () => {
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 
 
 **注意**

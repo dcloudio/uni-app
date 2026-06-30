@@ -7,7 +7,7 @@
 
 
 ### onUserCaptureScreen 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 3.9.0 | 4.11 | 4.61 |
 
@@ -16,13 +16,13 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [OnUserCaptureScreenCallbackResult](#onusercapturescreencallbackresult-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   |  | 
+| callback | (res: [OnUserCaptureScreenCallbackResult](#onusercapturescreencallbackresult-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 ### OnUserCaptureScreenCallbackResult 的属性值 @onusercapturescreencallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| path | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 截屏文件路径（仅Android返回） |
+| path | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 截屏文件路径（仅Android返回） |
 
 
 
@@ -52,7 +52,7 @@
 
 
 ### offUserCaptureScreen 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS | HarmonyOS(VDOM) |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 3.9.0 | 4.11 | 4.61 |
 
@@ -61,13 +61,13 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [OnUserCaptureScreenCallbackResult](#onusercapturescreencallbackresult-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   |  | 
+| callback | (res: [OnUserCaptureScreenCallbackResult](#onusercapturescreencallbackresult-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 ### OnUserCaptureScreenCallbackResult 的属性值 @onusercapturescreencallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| path | string | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 截屏文件路径（仅Android返回） |
+| path | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 截屏文件路径（仅Android返回） |
 
 
 
@@ -95,7 +95,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 
 
 
@@ -108,7 +108,7 @@
 
 
 ### setUserCaptureScreen 兼容性 
-| Web | 微信小程序 | Android(VDOM) | iOS 系统版本 | iOS | HarmonyOS(VDOM) |
+| Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 3.9.0 | 13.0 | 4.11 | 4.61 |
 
@@ -117,26 +117,26 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **SetUserCaptureScreenOptions** | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   |  |
+| options | **SetUserCaptureScreenOptions** | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| enable | boolean | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | true: 允许用户截屏 false: 不允许用户截屏，防止用户截屏到应用页面内容 |
-| success | (res: SetUserCaptureScreenSuccess) => void | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | uni.setUserCaptureScreen成功回调函数定义 |
-| fail | (res: [IUniError](#iunierror-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | uni.setUserCaptureScreen失败回调函数定义 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | uni.setUserCaptureScreen完成回调函数定义 | 
+| enable | boolean | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | true: 允许用户截屏 false: 不允许用户截屏，防止用户截屏到应用页面内容 |
+| success | (res: SetUserCaptureScreenSuccess) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | uni.setUserCaptureScreen成功回调函数定义 |
+| fail | (res: [IUniError](#iunierror-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | uni.setUserCaptureScreen失败回调函数定义 |
+| complete | (res: any) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | uni.setUserCaptureScreen完成回调函数定义 | 
 
 #### IUniError 的属性值 @iunierror-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 统一错误码 |
-| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息中包含的数据 |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误码 |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   |  |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 
 
@@ -244,7 +244,7 @@ onUnmounted(() => {
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android(VDOM):  ; iOS:  ; HarmonyOS(VDOM):   | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 
 
 ## tips

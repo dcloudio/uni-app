@@ -1387,10 +1387,10 @@ handleClick (event : UniPointerEvent) {
 | :- | :- | :- | :- |  :-: | :- |
 | bubbles | boolean | 是 |  |   | 是否冒泡 |
 | cancelable | boolean | 是 |  |   | 是否可以取消 |
-| type | string | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS(VDOM): 4.61 | 事件类型<br/> |
-| target | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS(VDOM): 4.61 | 触发事件的组件<br/> |
-| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS(VDOM): 4.61 | 当前组件<br/> |
-| timeStamp | number | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS(VDOM): 4.61 | 事件发生时的时间戳<br/> |
+| type | string | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 事件类型<br/> |
+| target | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 触发事件的组件<br/> |
+| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 当前组件<br/> |
+| timeStamp | number | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 事件发生时的时间戳<br/> |
 
 
 
@@ -1406,7 +1406,7 @@ handleClick (event : UniPointerEvent) {
 
 
 ##### stopPropagation 兼容性 
-| Web | Android(VDOM) | iOS(VDOM) | HarmonyOS(VDOM) |
+| Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.0 | 4.61 |
 
@@ -1423,7 +1423,7 @@ handleClick (event : UniPointerEvent) {
 
 
 ##### preventDefault 兼容性 
-| Web | Android(VDOM) | iOS(VDOM) | HarmonyOS(VDOM) |
+| Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.55 | 4.61 |
 
@@ -1644,9 +1644,9 @@ UniNativeViewEvent -- Extends --> UniCustomEvent
 
 
 ### UniNativeViewEvent 兼容性 
- | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| 4.31 | 4.31 | 4.61 | 5.0 |
+ | Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 4.31 | 4.31 | 4.61 |
 
 <!-- CUSTOMTYPEJSON.UniNativeViewEvent.example -->
 
