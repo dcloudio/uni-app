@@ -42,6 +42,9 @@ border-top-left-radius: <length-percentage>{1,2};
 
 
 
+### tips
+- App平台蒸汽模式不支持相对像素值（rpx）。  
+
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/border-top-left-radius)
