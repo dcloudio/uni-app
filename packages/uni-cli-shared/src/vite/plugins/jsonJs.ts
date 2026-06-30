@@ -64,11 +64,7 @@ function createDefineJsonJsPlugin(name: 'pages.json' | 'manifest.json') {
   }
 }
 
-function parseJsonJsRequest(
-  id: string,
-  jsonJs: string,
-  allowedQuery: string
-) {
+function parseJsonJsRequest(id: string, jsonJs: string, allowedQuery: string) {
   const queryIndex = id.indexOf('?')
   const query = queryIndex === -1 ? '' : id.slice(queryIndex + 1)
   if (query && !isAllowedJsonJsQuery(query, allowedQuery)) {

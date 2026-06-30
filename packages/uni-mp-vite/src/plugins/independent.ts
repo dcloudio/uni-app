@@ -519,9 +519,7 @@ function generateIndependentMainCode(root: string) {
     withIndependentRoot(UNI_MP_RUNTIME_ID, root)
   )}
 import { createSSRApp } from ${JSON.stringify(withIndependentRoot('vue', root))}
-import ${JSON.stringify(
-    withIndependentRoot(PAGES_JSON_JS, root)
-  )}
+import ${JSON.stringify(withIndependentRoot(PAGES_JSON_JS, root))}
 
 createSSRApp({}).mount('#app', ${JSON.stringify(
     root
