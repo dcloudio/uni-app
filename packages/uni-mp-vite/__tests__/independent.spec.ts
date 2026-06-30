@@ -88,9 +88,8 @@ describe('uniIndependentSubpackagePlugin', () => {
       process.env.UNI_APP_X = originalAppX
     }
     if (originalCompileTarget === undefined) {
-      delete (
-        process.env as Record<string, string | undefined>
-      ).UNI_COMPILE_TARGET
+      delete (process.env as Record<string, string | undefined>)
+        .UNI_COMPILE_TARGET
     } else {
       process.env.UNI_COMPILE_TARGET = originalCompileTarget
     }

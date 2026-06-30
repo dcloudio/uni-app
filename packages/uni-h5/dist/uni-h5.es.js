@@ -6880,6 +6880,10 @@ function normalizeRect(rect) {
     width
   };
 }
+function createDatasetSnapshot$1(el) {
+  const dataset = getCustomDataset(el);
+  return dataset;
+}
 function rectifyIntersectionRatio(entrie) {
   const {
     intersectionRatio,
@@ -6902,7 +6906,7 @@ function requestComponentObserver($el, options, callback) {
           boundingClientRect: normalizeRect(entrie.boundingClientRect),
           relativeRect: normalizeRect(entrie.rootBounds),
           time: Date.now(),
-          dataset: getCustomDataset(entrie.target),
+          dataset: createDatasetSnapshot$1(entrie.target),
           id: entrie.target.id
         });
       });
@@ -7517,13 +7521,16 @@ function operateMap(id2, pageId, type, data, operateMapCallback2) {
     operateMapCallback2
   );
 }
+function createDatasetSnapshot(dataset) {
+  return dataset;
+}
 function getRootInfo(fields2) {
   const info = {};
   if (fields2.id) {
     info.id = "";
   }
   if (fields2.dataset) {
-    info.dataset = {};
+    info.dataset = createDatasetSnapshot({});
   }
   if (fields2.rect) {
     info.left = 0;
@@ -7558,7 +7565,7 @@ function getNodeInfo(el, fields2) {
     info.id = el.id;
   }
   if (fields2.dataset) {
-    info.dataset = getCustomDataset(el);
+    info.dataset = createDatasetSnapshot(getCustomDataset(el));
   }
   if (fields2.rect || fields2.size) {
     const rect = el.getBoundingClientRect();
