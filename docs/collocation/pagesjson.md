@@ -27,7 +27,7 @@ uni-app x的app平台，页面不再由webview渲染，其实不需要原生提�
 | :- | :- | :- | :- | :- | :- |
 | globalStyle | [globalStyle 配置项列表](#pages-globalstyle) |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 默认页面的窗口表现 |
 | pages | Array\<[PagesOptionsPage](#pagesoptionspage)> |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 页面路径及窗口表现 |
-| tabBar | [tabBar 配置项列表](#pages-tabbar) |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 底部 tab 的表现 |
+| tabBar | [tabBar 配置项列表](#pages-tabbar) |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 底部 tab 的表现 |
 | topWindow | [topWindow 配置项列表](#pages-topwindow) |  | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 上窗体 |
 | leftWindow | [leftWindow 配置项列表](#pages-leftwindow) |  | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 左窗体 |
 | rightWindow | [rightWindow 配置项列表](#pages-rightwindow) |  | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 右窗体 |
@@ -411,16 +411,16 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 
 | Web | 微信小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | x | 4.61 | 5.11 |
+| 4.0 | 4.41 | 3.9 | 4.11 | 5.14 | 4.61 | 5.11 |
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
-| color | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tab 上的文字默认颜色 |
-| selectedColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tab 上的文字选中时的颜色 |
-| backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tab 的背景色 |
-| borderStyle | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) | "black" | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tabbar 上边框的颜色，可选值 black、white，black对应颜色rgba(0,0,0,0.33)，white对应颜色rgba(255,255,255,0.33)。 |
+| color | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tab 上的文字默认颜色 |
+| selectedColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tab 上的文字选中时的颜色 |
+| backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tab 的背景色 |
+| borderStyle | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) | "black" | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tabbar 上边框的颜色，可选值 black、white，black对应颜色rgba(0,0,0,0.33)，white对应颜色rgba(255,255,255,0.33)。 |
 | blurEffect | 'dark' \| 'extralight' \| 'light' \| 'none' | "none" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 高斯模糊效果 |
-| list | Array\<[PagesOptionsTabbarList](#pagesoptionstabbarlist)> |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tab 的列表，详见 list 属性说明，最少2个、最多5个 tab |
+| list | Array\<[PagesOptionsTabbarList](#pagesoptionstabbarlist)> |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tab 的列表，详见 list 属性说明，最少2个、最多5个 tab |
 | position | 'top' \| 'bottom' | "bottom" | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | tabbar 的位置,可选值 bottom、top。 |
 | fontSize | string | "10px" | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 文字默认大小 |
 | iconWidth | string | "24px" | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 图标默认宽度（高度等比例缩放） |
@@ -454,11 +454,11 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
 | iconfont | [iconfont 配置项列表](#pagesoptionstabbarlist-iconfont) |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 字体图标，优先级高于 iconPath |
-| pagePath | string ([string.PageURIString](/uts/data-type.md#ide-string)) |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 页面路径，必须在 pages 中先定义 |
-| text | string |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tab 上按钮文字，在 App 和 H5 平台为非必填。例如中间可放一个没有文字的+号图标 |
-| iconPath | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 图片路径，icon 大小限制为40kb，建议尺寸为 81px * 81px，当 position 为 top 时，此参数无效，不支持网络图片，不支持字体图标 |
-| selectedIconPath | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 选中时的图片路径，icon 大小限制为40kb，建议尺寸为 81px * 81px ，当 position 为 top 时，此参数无效 |
-| visible | boolean |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 该项是否显示，默认显示 |
+| pagePath | string ([string.PageURIString](/uts/data-type.md#ide-string)) |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 页面路径，必须在 pages 中先定义 |
+| text | string |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tab 上按钮文字，在 App 和 H5 平台为非必填。例如中间可放一个没有文字的+号图标 |
+| iconPath | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 图片路径，icon 大小限制为40kb，建议尺寸为 81px * 81px，当 position 为 top 时，此参数无效，不支持网络图片，不支持字体图标 |
+| selectedIconPath | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 选中时的图片路径，icon 大小限制为40kb，建议尺寸为 81px * 81px ，当 position 为 top 时，此参数无效 |
+| visible | boolean |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 该项是否显示，默认显示 |
 
 **tabbar示例**
 ```json
