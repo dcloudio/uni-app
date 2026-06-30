@@ -10,6 +10,8 @@ import {
   normalizeCopyOptions,
   transformIndependentMiniProgramComponentJs,
 } from '../src/plugin/copy'
+import { uniMiniProgramPlugin } from '../src/plugin'
+import { resolveUVueCssFilename } from '../src/plugin/configResolved'
 import { uniIndependentSubpackagePlugin } from '../src/plugins/independent'
 import {
   INDEPENDENT_MAIN_PREFIX,
@@ -62,6 +64,8 @@ function callGenerateBundle(plugin: any, context: any, bundle: any) {
 describe('uniIndependentSubpackagePlugin', () => {
   const originalPlatform = process.env.UNI_PLATFORM
   const originalInputDir = process.env.UNI_INPUT_DIR
+  const originalAppX = process.env.UNI_APP_X
+  const originalCompileTarget = process.env.UNI_COMPILE_TARGET
 
   afterEach(() => {
     if (originalPlatform === undefined) {
@@ -73,6 +77,18 @@ describe('uniIndependentSubpackagePlugin', () => {
       delete (process.env as Record<string, string | undefined>).UNI_INPUT_DIR
     } else {
       process.env.UNI_INPUT_DIR = originalInputDir
+    }
+    if (originalAppX === undefined) {
+      delete (process.env as Record<string, string | undefined>).UNI_APP_X
+    } else {
+      process.env.UNI_APP_X = originalAppX
+    }
+    if (originalCompileTarget === undefined) {
+      delete (
+        process.env as Record<string, string | undefined>
+      ).UNI_COMPILE_TARGET
+    } else {
+      process.env.UNI_COMPILE_TARGET = originalCompileTarget
     }
   })
 
@@ -686,6 +702,127 @@ describe('uniIndependentSubpackagePlugin', () => {
         expect(() =>
           callGenerateBundle(plugin, { emitFile: jest.fn() }, bundle)
         ).toThrow('独立分包 "package-a" 的样式不能引用 root 外资源')
+      }
+    )
+  })
+
+  test('resolves x built-in asset paths inside independent root', async () => {
+    await withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      async (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        fs.writeFileSync(path.join(inputDir, 'manifest.json'), '{}')
+
+        expect(
+          resolveUVueCssFilename('package-a/pages/index/index.wxss', '.wxss')
+        ).toBe('package-a/uvue.wxss')
+        expect(resolveUVueCssFilename('pages/index/index.wxss', '.wxss')).toBe(
+          'uvue.wxss'
+        )
+        const plugin = uniMiniProgramPlugin({
+          vite: { alias: {}, copyOptions: {}, inject: {} },
+          global: 'wx',
+          app: { usingComponents: true },
+          template: {
+            extname: '.wxml',
+            directive: 'wx:',
+            class: { array: true },
+            slot: {},
+            filter: {
+              lang: 'wxs',
+              extname: '.wxs',
+              setStyle: true,
+              generate(filter: { name: string }, filename: string) {
+                return `<wxs src="${filename}.wxs" module="${filter.name}"/>`
+              },
+            },
+          },
+          style: { extname: '.wxss' },
+        } as any)
+        const generate = (plugin.uni!.compilerOptions as any).miniProgram.filter
+          .generate
+        expect(
+          generate(
+            { id: 'uniView', name: 'uV', type: 'filter' },
+            '/common/uniView',
+            path.join(inputDir, 'package-a/pages/index/index.uvue')
+          )
+        ).toBe('<wxs src="../../common/uniView.wxs" module="uV"/>')
+        expect(
+          generate(
+            { id: 'uniView', name: 'uV', type: 'filter' },
+            '/common/uniView',
+            path.join(inputDir, 'pages/index/index.uvue')
+          )
+        ).toBe('<wxs src="/common/uniView.wxs" module="uV"/>')
+      }
+    )
+  })
+
+  test('emits x built-in assets for independent roots', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    process.env.UNI_APP_X = 'true'
+    await withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      async (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        fs.writeFileSync(path.join(inputDir, 'manifest.json'), '{}')
+        const plugin = uniMiniProgramPlugin({
+          vite: { alias: {}, copyOptions: {}, inject: {} },
+          global: 'wx',
+          app: { usingComponents: true },
+          template: {
+            extname: '.wxml',
+            directive: 'wx:',
+            class: { array: true },
+            slot: {},
+            filter: {
+              lang: 'wxs',
+              extname: '.wxs',
+              setStyle: true,
+              generate(filter: { name: string }, filename: string) {
+                return `<wxs src="${filename}.wxs" module="${filter.name}"/>`
+              },
+            },
+          },
+          style: { extname: '.wxss' },
+        } as any)
+        const emitFile = jest.fn()
+
+        ;(plugin.generateBundle as Function).call(
+          { emitFile, getModuleInfo: jest.fn() },
+          {},
+          {}
+        )
+
+        expect(emitFile).toHaveBeenCalledWith(
+          expect.objectContaining({ fileName: 'common/uniView.wxs' })
+        )
+        expect(emitFile).toHaveBeenCalledWith(
+          expect.objectContaining({ fileName: 'package-a/common/uniView.wxs' })
+        )
+        expect(emitFile).toHaveBeenCalledWith(
+          expect.objectContaining({ fileName: 'uvue.wxss' })
+        )
+        expect(emitFile).toHaveBeenCalledWith(
+          expect.objectContaining({ fileName: 'package-a/uvue.wxss' })
+        )
       }
     )
   })

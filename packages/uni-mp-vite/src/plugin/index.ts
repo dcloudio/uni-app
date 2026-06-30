@@ -5,14 +5,18 @@ import {
   type AppJson,
   type CopyOptions,
   type MiniProgramCompilerOptions,
+  type MiniProgramFilterOptions,
   type UniVitePlugin,
   type findMiniProgramTemplateFiles,
   genNVueCssCode,
   initPostcssPlugin,
+  normalizeMiniProgramFilename,
   parseManifestJsonOnce,
   parseRpx2UnitOnce,
   parseUniXFlexDirection,
   preCss,
+  relativeFile,
+  removeExt,
   resolveBuiltIn,
   resolveVueI18nRuntime,
 } from '@dcloudio/uni-cli-shared'
@@ -25,6 +29,10 @@ import { createConfigResolved } from './configResolved'
 import { normalizeCopyOptions } from './copy'
 import { emitFile, getFilterFiles, getTemplateFiles } from './template'
 
+import {
+  getIndependentRootByFilename,
+  getIndependentSubPackages,
+} from '../plugins/independentUtils'
 import { getNVueCssPaths } from '../plugins/pagesJson'
 import {
   rewriteCompileScriptOnce,
@@ -140,7 +148,9 @@ export function uniMiniProgramPlugin(
           ? {
               lang: template.filter.lang,
               setStyle: template.filter.setStyle,
-              generate: template.filter.generate,
+              generate: createAutoImportFilterGenerate(
+                template.filter.generate
+              ),
             }
           : undefined,
         directive: template.directive,
@@ -211,14 +221,21 @@ export function uniMiniProgramPlugin(
               if (process.env.UNI_PLATFORM === 'mp-alipay') {
                 uniViewPath = '../../lib/filters/uniView.esm.js'
               }
+              const uniViewSource = fs.readFileSync(
+                path.resolve(__dirname, uniViewPath),
+                'utf8'
+              )
               this.emitFile({
                 type: 'asset',
-                // uniView.wxs文件在分包内的引用路径不对
                 fileName: `common/uniView${extname}`,
-                source: fs.readFileSync(
-                  path.resolve(__dirname, uniViewPath),
-                  'utf8'
-                ),
+                source: uniViewSource,
+              })
+              getIndependentSubPackages().forEach(({ root }) => {
+                this.emitFile({
+                  type: 'asset',
+                  fileName: `${root}/common/uniView${extname}`,
+                  source: uniViewSource,
+                })
               })
             }
           }
@@ -247,12 +264,20 @@ export function uniMiniProgramPlugin(
       if (!resetCssEmitted) {
         if (isX) {
           resetCssEmitted = true
+          const uvueCssSource = genUVueCssCode(
+            parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+          )
           this.emitFile({
             type: 'asset',
             fileName: 'uvue' + style.extname,
-            source: genUVueCssCode(
-              parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-            ),
+            source: uvueCssSource,
+          })
+          getIndependentSubPackages().forEach(({ root }) => {
+            this.emitFile({
+              type: 'asset',
+              fileName: `${root}/uvue${style.extname}`,
+              source: uvueCssSource,
+            })
           })
         } else {
           const nvueCssPaths = getNVueCssPaths(resolvedConfig)
@@ -270,6 +295,51 @@ export function uniMiniProgramPlugin(
       }
     },
   }
+}
+
+function createAutoImportFilterGenerate(
+  generate: Parameters<typeof findMiniProgramTemplateFiles>[0]
+) {
+  return (
+    filter: MiniProgramFilterOptions,
+    filename: string,
+    ownerFilename?: string
+  ) => {
+    return generate?.(
+      filter,
+      ownerFilename
+        ? resolveAutoImportFilterFilename(filter, filename, ownerFilename)
+        : filename
+    )
+  }
+}
+
+function resolveAutoImportFilterFilename(
+  filter: Omit<MiniProgramFilterOptions, 'code'>,
+  filename: string,
+  ownerFilename: string
+) {
+  const inputDir = process.env.UNI_INPUT_DIR
+  if (!inputDir) {
+    return filename
+  }
+  const resolvedFilename = path.isAbsolute(ownerFilename)
+    ? ownerFilename
+    : path.resolve(inputDir, ownerFilename)
+  const independentRoot = getIndependentRootByFilename(
+    resolvedFilename,
+    inputDir
+  )
+  if (!independentRoot) {
+    return filename
+  }
+  const templateFilename = removeExt(
+    normalizeMiniProgramFilename(resolvedFilename, inputDir)
+  )
+  return relativeFile(
+    templateFilename,
+    `${independentRoot}/common/${filter.id}`
+  )
 }
 
 export function genUVueCssCode(manifestJson: Record<string, any>) {

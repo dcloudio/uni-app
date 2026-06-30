@@ -1,29 +1,20 @@
-# 微信小程序独立分包实现方案
+# 微信小程序独立分包实现文档
 
-## 背景
+## 当前结论
 
-微信小程序独立分包支持从分包页面冷启动。冷启动独立分包时，主包不会被下载，因此主包的 `app.js`、`app.wxss`、主包 `common/*` 不会先执行或加载。
+vue3 小程序独立分包采用“单次 Vite/Rollup 构建 + 独立分包额外 input + root query 隔离 module id”的方案实现。
 
-微信官方规范的关键约束是：
+核心原则：
 
-- 从独立分包页面启动时，主包不存在，`App` 也不存在，`getApp()` 可能返回 `undefined`。
-- 主包 `App.onLaunch` 和首次 `App.onShow` 会在用户首次进入主包或普通分包页面时才调用。
-- 独立分包中不能定义 `App`，小程序生命周期监听应使用 `wx.onAppShow`、`wx.onAppHide`。
-- 主包 `app.wxss` 对独立分包无效。
+- 独立分包冷启动严格对齐微信原生规范：不执行主包 `app.js`、不执行项目根 `main.js/main.ts/main.uts`、不执行 `App.vue`，也不主动触发 `App.onLaunch/onShow/onHide`。
+- 每个独立分包 root 都有自己的 `common/main.js`、`common/vendor.js`、`common/index.js`，并在 root 内自包含运行时依赖。
+- `manifest-json-js` 保持 app 级入口；`pages-json-js` 支持 `uni_mp_independent_root`，用于只导入当前独立分包页面。
+- 第一阶段要求开发者主动隔离业务资源：独立分包业务源码、页面局部组件、原生组件、静态资源、样式都应放在当前 root 内。
+- 不支持独立分包的平台会在 JSON 解析阶段移除 `subPackages[].independent`，按普通分包输出。
 
-uni-app vue2 的 webpack 版曾通过运行时包装 `App/getApp` 来模拟主包 App 生命周期，提升旧业务兼容性；但这不符合微信原生冷启动行为。vue3 先按微信原生规范实现：独立分包冷启动不执行项目根 `main.js/main.ts/main.uts`，不执行 `App.vue`，不主动触发主包 App 生命周期。
+## 启用方式
 
-## 目标
-
-- 支持 `mp-weixin` 独立分包冷启动。
-- build 和 dev/watch 使用同一套 Vite/Rollup 构建与 watcher。
-- 第一阶段要求开发者主动隔离独立分包业务资源。
-- 后续第二阶段再由编译器自动处理 root 外业务依赖。
-- 不影响主包、普通分包、插件编译、其它小程序平台。
-
-## 配置约定
-
-不新增 `manifest.json` 配置，仅使用微信原生 `pages.json` 字段启用独立分包：
+不新增 `manifest.json` 配置，沿用微信原生 `pages.json` 配置：
 
 ```jsonc
 {
@@ -31,32 +22,78 @@ uni-app vue2 的 webpack 版曾通过运行时包装 `App/getApp` 来模拟主�
     {
       "root": "package-a",
       "independent": true,
-      "pages": [{ "path": "pages/index/index" }]
+      "pages": [
+        {
+          "path": "pages/index/index"
+        }
+      ]
     }
   ]
 }
 ```
 
-平台是否支持独立分包由各平台 compiler options 配置：`mp-weixin` 设置 `app.independentSubpackages: true`。JSON 解析阶段根据该配置决定是否保留 `subPackages[].independent`；不支持的平台会移除该字段并退回普通分包输出。
+平台能力由各小程序平台 compiler options 声明：
 
-## vue2 实现参考
+```ts
+app: {
+  subpackages: true,
+  independentSubpackages: true
+}
+```
 
-vue2 不是为独立分包单独跑编译，而是在同一次 webpack 构建中增加入口并做产物处理：
+当前 `mp-weixin` 配置 `independentSubpackages: true`。`parseMiniProgramPagesJson()` 根据该能力决定是否保留 `independent` 字段；不支持的平台不需要独立判断，会自然退回普通分包。
 
-- `parseEntry()` 给每个独立分包增加 `${root}/common/main` 入口。
-- 入口 value 指向项目根 `main.js/main.ts`，所以会把用户 app 初始化逻辑编译出一份 root 内 `common/main.js`。
-- 插件生成 `${root}/common/index.js`，并注入到独立分包页面/组件 JS 前面。
-- 运行时包装 `App/getApp`，独立分包启动时会模拟执行 `app.onLaunch`，并通过 `wx.onAppShow/onAppHide` 转发到用户 App 生命周期。
+## 整体流程
 
-该方案兼容旧业务，但会导致独立分包冷启动时也执行根 `main.*` 和 App 生命周期，行为与微信原生规范不一致。vue3 不沿用该 runtime hack。
+```mermaid
+flowchart TD
+  A[读取 pages.json] --> B[parseMiniProgramPagesJson]
+  B --> C{平台支持 independentSubpackages?}
+  C -- 否 --> D[删除 independent 字段并按普通分包输出]
+  C -- 是 --> E[收集 independent subPackages]
+  E --> F[追加 root/common/main Rollup input]
+  F --> G[加载 root 专属 independent-main 虚拟模块]
+  G --> H[导入 root runtime、vue、root pages-json-js]
+  H --> I[通过 uni_mp_independent_root 隔离 module id]
+  I --> J[页面/组件虚拟入口携带 root]
+  J --> K[chunk 输出到 root/common]
+  K --> L[生成 root/common/index 并注入 root 内 JS]
+  L --> M[JSON/usingComponents 内联与 root 校验]
+  M --> N[原生组件 copy 阶段注入 root runtime]
+  N --> O[输出独立分包产物]
+```
 
-## Vite/Rollup 核心方案
+## 编译期设计
 
-采用“单 Vite/Rollup 构建 + 每个独立分包一个额外 input + root query 隔离 module id”的方案。
+### 1. 独立分包元信息
 
-Rollup 多 input 会共享相同 resolved module id，没有“每个 input 完整复制依赖”的开关。独立分包需要 root 内自包含产物，因此必须让独立分包入口看到 root 专属 module id。
+实现位置：
 
-示例：
+- `packages/uni-cli-shared/src/json/mp/subpackage.ts`
+- `packages/uni-mp-vite/src/plugins/independentUtils.ts`
+
+`parseIndependentSubPackages(pagesJson)` 只接收已解析的 pagesJson 对象，不在内部读取 `pages.json` 文件。它负责：
+
+- 兼容 `subPackages` 与 `subpackages`。
+- 只收集 `independent === true` 的分包。
+- 过滤非法 root、空 pages。
+- 将 root 规范化为不带首尾 `/` 的路径。
+
+Vite 侧通过 `initIndependentSubPackages()` / `updateIndependentSubPackages()` 维护当前构建中的独立分包状态。该状态会被 input、resolve、pages-json-js、copy 原生组件等流程复用，避免各处重复读取文件。
+
+### 2. Rollup input
+
+实现位置：`packages/uni-mp-vite/src/plugin/build.ts`
+
+普通主包入口保持不变：
+
+```ts
+input: {
+  app: resolveMainPathOnce(inputDir)
+}
+```
+
+当平台支持独立分包时，`parseRollupInput()` 使用 `parsePagesJson(inputDir, platform, false)` 获取未被小程序 appJson normalize 合并的 pagesJson，并为每个独立分包追加 input：
 
 ```ts
 input: {
@@ -65,11 +102,38 @@ input: {
 }
 ```
 
-`package-a/common/main` 是 Rollup input name，即最终产物名；源码目录不需要存在 `package-a/common/main.ts`。
+注意：
 
-### 独立分包 main 虚拟模块
+- `package-a/common/main` 是输出入口名，不要求源码中存在 `package-a/common/main.ts`。
+- `UNI_MP_PLUGIN` 场景不启用独立分包 input。
+- 多 input 本身不会自动复制共享依赖；必须通过 root query 让独立分包模块拥有独立 module id。
 
-`\0uni:mp-independent-main?root=package-a` 返回编译器生成的 root 专属启动代码：
+### 3. root query 隔离
+
+实现位置：`packages/uni-mp-vite/src/plugins/independentUtils.ts`
+
+统一使用 `uni_mp_independent_root` 标识独立分包 root：
+
+```text
+vue?uni_mp_independent_root=package-a
+uni-mp-runtime?uni_mp_independent_root=package-a
+src/package-a/pages/index/index.vue?uni_mp_independent_root=package-a
+```
+
+核心工具：
+
+- `parseIndependentRoot(id)`：读取 root。
+- `withIndependentRoot(id, root)`：追加或替换 root query。
+- `withoutIndependentRoot(id)`：移除 root query。
+- `getIndependentRootByFilename(filename, inputDir)`：根据真实文件路径匹配所属独立分包 root。
+
+这样 Rollup 会把主包、普通分包、不同独立分包看到的同一依赖识别为不同 module id，从而允许它们分别输出到各自 root 内。
+
+### 4. 独立分包 main 虚拟模块
+
+实现位置：`packages/uni-mp-vite/src/plugins/independent.ts`
+
+虚拟模块 `\0uni:mp-independent-main?root=package-a` 生成当前 root 专属启动代码：
 
 ```ts
 import { createIndependentSubpackageApp } from 'uni-mp-runtime?uni_mp_independent_root=package-a'
@@ -82,49 +146,187 @@ createSSRApp({}).mount('#app', 'package-a', {
 })
 ```
 
-要点：
+该模块只做独立分包运行时初始化：
 
-- 不 import 项目根 `main.js/main.ts/main.uts`。
+- 不 import 项目根 `main.*`。
 - 不 import `App.vue`。
-- 不复用 app factory。
-- 只创建一个空 Vue app 上下文，用于小程序页面/组件运行时挂载。
-- 第三个参数传入当前 root runtime 的 `createIndependentSubpackageApp`，避免全局 `createIndependentSubpackageApp` 被主包 runtime 覆盖后选错运行时。
+- 不复用主包 app factory。
+- 只创建空 Vue app 上下文，供当前独立分包页面/组件挂载。
+- `createApp` 使用当前 root runtime 导出的 `createIndependentSubpackageApp`，避免先后进入主包/独立分包时拿到错误 runtime。
 
-### 独立分包 bootstrap
+### 5. root-scoped pages-json-js
 
-额外生成 `${root}/common/index.js`，并注入到独立分包页面/组件 JS 顶部：
+实现位置：
 
-```js
-require('./main.js')
-```
+- `packages/uni-cli-shared/src/vite/plugins/jsonJs.ts`
+- `packages/uni-mp-vite/src/plugins/pagesJson.ts`
 
-页面 JS 先执行 `common/index.js`，确保当前 root 的 runtime、Vue app 空上下文、页面模块已经初始化。
+`manifest-json-js` 仍保持 app 级，不允许独立分包 root query。
 
-独立分包页面/组件 wrapper 直接从当前 root 专属 runtime 导入创建方法，不依赖全局 `wx.createPage/createComponent` 当前指向：
+`pages-json-js` 允许唯一的 `uni_mp_independent_root` query：
 
 ```ts
-import { createPage } from 'uni-mp-runtime?uni_mp_independent_root=package-a'
-import MiniProgramPage from './index.vue?uni_mp_independent_root=package-a'
-
-createPage(MiniProgramPage)
+import 'pages-json-js?uni_mp_independent_root=package-a'
 ```
 
-### root query 传播
+pagesJson 插件解析到 root 后，只生成当前 root 下页面的虚拟入口 import：
 
-独立分包模块通过 `uni_mp_independent_root` 区分 module id：
+```ts
+import('uniPage://...root=package-a...')
+```
+
+普通 app 级 `pages-json-js` 仍负责导入主包页面、普通分包页面，以及非 root-scoped 场景所需页面。
+
+开发模式中，`pages.json` 的读取、解析和 watch 仍统一由 pagesJson 插件负责。root 列表变化时输出 restart 提示并退出，由外层重启机制重新构建；root 列表未变化时复用同一 watcher 更新页面导入。
+
+### 6. 页面/组件虚拟入口
+
+实现位置：`packages/uni-mp-vite/src/plugins/entry.ts`
+
+`virtualPagePath(filepath, root?)` 与 `virtualComponentPath(filepath, root?)` 通过 base64 JSON 携带 root：
+
+```json
+{
+  "filepath": "package-a/pages/index/index.vue",
+  "root": "package-a"
+}
+```
+
+加载独立分包页面/组件时：
+
+- 真实 Vue 文件 import 会附加 root query。
+- `createPage` / `createComponent` 从当前 root 的 `uni-mp-runtime` 导入。
+- 不再依赖全局 `wx.createPage` / `wx.createComponent` 当前指向。
+
+示例产物逻辑：
+
+```ts
+import { createPage as __uniCreatePage } from 'uni-mp-runtime?uni_mp_independent_root=package-a'
+import MiniProgramPage from '/input/package-a/pages/index/index.vue?uni_mp_independent_root=package-a'
+
+__uniCreatePage(MiniProgramPage)
+```
+
+### 7. root query 传播与依赖校验
+
+实现位置：`packages/uni-mp-vite/src/plugins/independent.ts`
+
+当 importer 带有 root query 时，独立分包插件会尝试解析依赖并继续附加相同 root query。
+
+不会传播 root query 的资源包括：
+
+- 已带独立分包 root query 的 id。
+- `uniPage://`、`uniComponent://` 虚拟入口。
+- `plugin://`、`dynamicLib://`、`ext://`、`data:`、`http(s):` 等小程序或外部协议。
+- `?raw`、`?url` 资源。
+- CSS/SCSS/LESS/Stylus 请求。
+
+第一阶段会校验 root 内 JS/Vue 不能同步引用 root 外项目文件。`node_modules` 与内置运行时依赖允许重复打包到当前 root 内。
+
+### 8. chunk 输出
+
+实现位置：`packages/uni-mp-vite/src/plugin/build.ts`
+
+chunk 命名先解析 root query，再决定输出位置：
+
+- 独立分包 runtime/vendor/assets 输出到 `${root}/common/*`。
+- 独立分包项目内公共 JS 输出到 `${root}/common/<path>.js`。
+- 独立分包动态 chunk 输出到当前 root 内或 `${root}/common`。
+- 普通主包、普通分包未带 root query，沿用原输出策略。
+
+构建后会再次校验 `${root}/` 内 JS 不引用 root 外产物，避免独立分包冷启动时依赖主包 `common/*`。
+
+### 9. bootstrap 注入
+
+实现位置：`packages/uni-mp-vite/src/plugins/independent.ts`
+
+每个独立分包会生成：
 
 ```text
-src/package-a/pages/index/index.vue
-src/package-a/pages/index/index.vue?uni_mp_independent_root=package-a
-vue?uni_mp_independent_root=package-a
-uni-mp-runtime?uni_mp_independent_root=package-a
+${root}/common/index.js
 ```
 
-这样主包和独立分包不会因为相同 module id 被 Rollup 合并到同一份 chunk。第一阶段允许重复打包 `vue`、`uni-mp-runtime`、`@dcloudio/*` 运行时依赖。
+内容：
 
-## 运行时行为
+```js
+require('./main.js');
+```
 
-`uni-mp-vue` 的 `app.mount()` 支持第三个参数：
+插件会给 `${root}/` 下非 `common/` 的 JS chunk 顶部注入到该 bootstrap 的相对 require，确保页面/组件执行前当前 root 的 `common/main.js` 已初始化。
+
+### 10. 样式与资源约束
+
+实现位置：`packages/uni-mp-vite/src/plugins/independent.ts`
+
+独立分包遵循微信原生样式规则：冷启动不加载主包 `app.wxss`。
+
+当前策略：
+
+- 不复制主包 `app.wxss`。
+- 不生成来自主包 app 样式的 `${root}/common/main.wxss`。
+- 校验独立分包 WXSS 不能引用 `app.wxss`。
+- 校验独立分包 WXSS 不能引用 root 外本地资源。
+- root 内 Vue style 产生的可重定位 JS chunk 会复制到 `${root}/common/`，避免引用主包 common。
+
+如需独立分包公共样式，业务应放在当前 root 内并由页面或组件显式引用。
+
+### 11. JSON 与 usingComponents
+
+实现位置：
+
+- `packages/uni-cli-shared/src/json/mp/jsonFile.ts`
+- `packages/uni-cli-shared/src/mp/usingComponents.ts`
+- `packages/uni-mp-vite/src/plugins/usingComponents.ts`
+- `packages/uni-mp-vite/src/plugins/mainJs.ts`
+
+关键规则：
+
+- `addMiniProgramAppJson()` 会从当前 appJson 中缓存独立分包 roots。
+- `findChangedJsonFiles()` 发现页面/组件属于独立分包时，会把 app 级 `usingComponents` 与全局组件 usingComponents 内联到当前页面/组件 JSON，避免冷启动依赖主包 `app.json`。
+- 独立分包 JSON 中的本地 `usingComponents` 必须位于当前 root 内；root 外本地组件会报错。
+- 页面局部或组件局部 `usingComponents` 的相对路径按 owner JSON 所在路径解析；绝对路径按项目根解析。
+- Vue SFC descriptor cache key 增加 root 维度，避免同一真实文件以主包和独立分包身份编译时互相覆盖。
+- 主包或普通分包同步引用独立分包目录内组件会报错，避免未来分包异步化能力被同步依赖破坏。
+
+### 12. uni-app x 内置资源
+
+实现位置：
+
+- `packages/uni-mp-vite/src/plugin/configResolved.ts`
+- `packages/uni-mp-vite/src/plugin/index.ts`
+- `packages/uni-mp-compiler/src/template/codegen.ts`
+
+`uvue.wxss` 与 `common/uniView.wxs` 是 uni-app x 小程序编译器生成的内置运行资源，不属于业务 root 外依赖。独立分包需要拥有自己的副本，且引用路径在源头生成时就指向当前 root：
+
+- 主包继续输出 `uvue.wxss`，每个独立分包额外输出 `${root}/uvue.wxss`。
+- 独立分包页面 WXSS 自动引用 `${root}/uvue.wxss` 的相对路径，例如 `../../uvue.wxss`。
+- 主包继续输出 `common/uniView.wxs`，每个独立分包额外输出 `${root}/common/uniView.wxs`。
+- 独立分包模板自动导入 `${root}/common/uniView.wxs` 的相对路径，例如 `../../common/uniView.wxs`。
+
+这些路径不在 independent 插件中后置扫描改写，而是在 `uvue.wxss` import 与 auto import filter 生成时直接写正确。`uniView.wxs` 通过 Vite 侧包装现有 `filter.generate`，结合模板 owner filename 计算独立分包相对路径，不新增平台级 `template.filter` 配置；非独立分包继续保持 `uvue.wxss` 与 `/common/uniView.wxs` 原路径。
+
+### 13. 原生小程序组件 copy 处理
+
+实现位置：`packages/uni-mp-vite/src/plugin/copy.ts`
+
+普通原生小程序组件会继续沿用现有 copy 流程。启用独立分包能力且平台配置了 `template.component.dir` 时，`normalizeCopyOptions()` 会把原生组件 copy asset 转成带 transform 的 target。
+
+copy 阶段会基于已维护的独立分包 root 状态判断文件是否属于独立分包 root 内的原生组件。若命中 `${root}/${componentDir}/**/*.js` 或 `${root}/uni_modules/*/${componentDir}/**/*.js`，会在组件 JS 注册前注入当前 root runtime：
+
+```js
+require('../../common/vendor.js');
+Component({})
+```
+
+注入会保留 `"use strict"` 指令顺序。这样独立分包原生组件在执行 `Component(...)` 前能加载当前 root 的 runtime，确保 Vue3 小程序运行时的 `u-p` props 缓存、事件桥接等逻辑命中同一份 runtime。
+
+## 运行时设计
+
+### 1. app.mount 分发
+
+实现位置：`packages/uni-mp-vue/src/plugin.ts`
+
+`app.mount()` 支持第三个参数：
 
 ```ts
 app.mount('#app', 'package-a', {
@@ -133,14 +335,22 @@ app.mount('#app', 'package-a', {
 })
 ```
 
-选择规则：
+分发优先级：
 
-- `UNI_MP_PLUGIN` 存在：仍走 `createPluginApp`。
-- 传入 root 且 `independent: true`：优先走第三个参数传入的 `createApp(vm, root)`，否则回退全局 `createIndependentSubpackageApp(vm, root)`。
-- 传入 root 或 `process.env.UNI_SUBPACKAGE`：走普通 `createSubpackageApp`。
-- 否则走主包 `createApp`。
+1. `UNI_MP_PLUGIN`：使用 `createPluginApp`。
+2. 传入 root 且 `independent: true`：使用 `createIndependentSubpackageApp`，并优先使用 mount options 传入的 root 专属 `createApp`。
+3. 传入 root 或存在 `process.env.UNI_SUBPACKAGE`：使用普通 `createSubpackageApp`。
+4. 其它情况：使用主包 `createApp`。
 
-`createIndependentSubpackageApp` 只初始化当前独立分包 runtime 的 root 与空 app 上下文：
+### 2. 独立分包 app 创建
+
+实现位置：
+
+- `packages/uni-mp-core/src/runtime/app.ts`
+- `packages/uni-mp-core/src/runtime/subpackage.ts`
+- `packages/uni-mp-weixin/src/runtime/index.ts`
+
+`initCreateIndependentSubpackageApp()` 只注册当前 root 的空 app vm：
 
 ```ts
 setSubpackageAppVm(resolveSubpackageRoot(root), vm, true)
@@ -149,381 +359,104 @@ setSubpackageAppVm(resolveSubpackageRoot(root), vm, true)
 它不会：
 
 - 调用 `getApp()`。
-- 调用或模拟 `onLaunch`。
-- 注册 `wx.onAppShow` / `wx.onAppHide` 来转发 App 生命周期。
-- 合并 `globalData` 或把用户 App options 写回原生 App 实例。
+- 调用或模拟 `App.onLaunch/onShow/onHide`。
+- 注册 `wx.onAppShow` / `wx.onAppHide` 转发 App 生命周期。
+- 合并 `globalData`。
+- 把用户 App options 写回原生 App 实例。
 
-页面/组件侧通过当前 runtime 的 `getRuntimeSubpackageRoot()` 读取同一 runtime 内缓存的 app vm，不再通过页面 route、`getCurrentPages()` 或 `process.env.UNI_SUBPACKAGE` 推导 root。独立分包 app vm 不写入 `wx/global`，避免主包 runtime 后续重建 `wx` 时丢失；普通分包仍保留旧的 `__GLOBAL__.$subpackages` 存储策略，兼容 `process.env.UNI_SUBPACKAGE` 单独编译入口。
+独立分包 app vm 存储在当前 runtime 内部缓存中；普通分包继续使用历史的 `__GLOBAL__.$subpackages` 存储，兼容旧的 `process.env.UNI_SUBPACKAGE` 路径。
 
-## 第一阶段能力边界
+`setSubpackageAppVm()` 会同步设置 runtime 当前 root，页面/组件通过 `getRuntimeSubpackageRoot()` 读取 root，再从当前 runtime 缓存中取 app vm。这样可避免“先进入独立分包 -> 再进入主包 -> 再进入独立分包”时，因为主包 runtime 重建全局对象导致独立分包 vm 丢失。
 
-第一阶段采用“开发者主动隔离”。
+## 当前能力边界
 
-必须放在当前独立分包 root 内：
+已经支持：
 
-- 独立分包业务源码。
-- 页面局部 Vue 组件。
-- 微信原生组件。
-- 本地静态资源。
-- 独立分包页面需要的局部样式。
+- `mp-weixin` 独立分包冷启动。
+- build 与 dev/watch 使用同一套 Vite/Rollup 构建图。
+- 独立分包 root 专属 runtime、Vue、pages-json-js 与页面/组件入口。
+- 独立分包页面/组件 JSON 内联 app 级 usingComponents。
+- root 内 Vue 组件、原生小程序组件、静态资源、样式。
+- 原生小程序组件在独立分包中使用 Vue3 `u-p` 机制传递属性。
+- root 外 JS/Vue/WXSS/本地资源/本地 usingComponents 的第一阶段错误提示。
+- 不支持独立分包的平台自动退回普通分包。
 
-第一阶段会报错的情况：
+当前不支持：
 
-- 独立分包 JS/Vue 引用 root 外业务文件。
-- 独立分包 WXSS 引用主包 `app.wxss` 或 root 外本地资源。
-- 独立分包 JSON/usingComponents 引用 root 外本地组件。
-- 主包或普通分包同步引用独立分包目录内组件。
-
-第一阶段不会提供：
-
-- 根 `main.*` 中的 `app.use()`、`globalProperties`、`provide`、store、i18n、全局 mixin、全局组件注册。
-- `App.vue` 的 app 级样式。
-- `App.onLaunch/onShow/onHide` 的模拟触发。
-- 主包 `app.wxss` 复制或注入。
-- `copyWxComponentsOnDemand`、`insertAppCssToIndependent` 开关。
-
-## 第二阶段能力边界
-
-第二阶段由编译器自动处理 root 外业务依赖，仍保持微信原生 App 生命周期行为：
-
-- root 外 JS/TS 自动附加 root query，重复打包到当前 root。
-- root 外 Vue 组件生成当前 root 内 JS/WXML/WXSS/JSON 产物。
-- root 外微信原生组件复制 `.json/.wxml/.wxss/.js` 及递归依赖树。
-- root 外静态资源复制到当前 root 内并重写引用。
-- 全局组件按实际使用自动内联到独立分包页面/组件 JSON。
-
-注意：第二阶段可以自动处理依赖，但不应恢复“执行根 `main.*` / 模拟 App 生命周期”的旧行为。
-
-## 整体流程
-
-```mermaid
-flowchart TD
-  A[读取 pages.json] --> B{平台支持 independentSubpackages?}
-  B -- 否 --> C[移除 independent 字段并按普通分包构建]
-  B -- 是 --> D{存在 independent subPackage?}
-  D -- 否 --> E[普通 mp 构建]
-  D -- 是 --> F[收集 independent roots]
-  F --> G[向 Rollup input 追加 root/common/main]
-  G --> H[加载 root 专属 independent-main 虚拟模块]
-  H --> I[导入 root runtime、vue、root pages]
-  I --> J[resolveId 传播 root query]
-  J --> K[manualChunks/chunkFileNames 输出到 root/common]
-  K --> L[生成 root/common/index 并注入 root 内 JS]
-  L --> M[内联 root 内组件 JSON 并校验 root 外依赖]
-  M --> N[输出 app.json 并保留 independent]
-```
-
-## 关键实现点
-
-### 1. 独立分包元信息
-
-`packages/uni-cli-shared/src/json/mp/subpackage.ts`
-
-- `parseIndependentSubPackages(pagesJson)` 只接收已解析的 pagesJson 对象，不在内部读文件。
-- 兼容 `subPackages` 与 `subpackages`。
-- 只收集 `independent === true` 且 root/pages 有效的配置。
-- root 规范化为不带首尾 `/`。
-
-### 2. Rollup input
-
-`packages/uni-mp-vite/src/plugin/build.ts`
-
-- 使用 `parsePagesJson(inputDir, platform, false)` 获取原始 pagesJson。
-- 根据 `options.app.independentSubpackages` 判断是否解析独立分包。
-- 为每个 root 追加 `\0uni:mp-independent-main?root=xxx` input。
-- `UNI_MP_PLUGIN` 场景不启用独立分包 input。
-
-### 3. pages.json watch 更新
-
-`packages/uni-mp-vite/src/plugins/pagesJson.ts`
-
-- pagesJson 插件本身负责监听 `pages.json`。
-- transform 时更新独立分包 root 缓存。
-- 如果 root 列表发生变化，输出现有 restart 提示并退出，由外层重启机制重新构建。
-
-### 4. 独立分包插件
-
-`packages/uni-mp-vite/src/plugins/independent.ts`
-
-- 解析并加载 `\0uni:mp-independent-main?root=xxx`。
-- `pages-json-js?uni_mp_independent_root=xxx` 由 pagesJson 插件解析，只导入当前 root 下页面。
-- 对独立分包 importer 传播 root query。
-- 生成 `${root}/common/index.js`。
-- 给 `${root}/` 下非 `common/` JS 注入 bootstrap require。
-- 把 root 内 style chunk relocate 到 `${root}/common/`。
-- 校验 root 内 JS/WXSS 不引用 root 外产物。
-
-### 5. 页面/组件虚拟路径
-
-`packages/uni-mp-vite/src/plugins/entry.ts`
-
-- `virtualPagePath(filepath, root?)`、`virtualComponentPath(filepath, root?)` 通过 base64 JSON 携带 root。
-- 普通旧格式仍兼容。
-- 带 root 的 page/component 加载真实文件时附加 root query。
-- 输出小程序 JSON 文件名时仍使用真实路径，不能带 query。
-
-### 6. chunk 输出
-
-`packages/uni-mp-vite/src/plugin/build.ts`
-
-- `manualChunks` 先解析 root query，再 strip query。
-- 带 root query 的 runtime/vendor/assets 输出到 `${root}/common/*`。
-- 带 root query 的动态 chunk 输出到当前 root 内。
-- 构建后由 independent 插件校验 root 内 JS 不引用主包 `common/*`。
-
-### 7. JSON 与 usingComponents
-
-`packages/uni-cli-shared/src/json/mp/jsonFile.ts`、`packages/uni-cli-shared/src/mp/usingComponents.ts`
-
-- 独立分包页面/组件 JSON 内联全局 usingComponents，避免依赖主包 `app.json`。
-- 第一阶段校验本地组件必须在当前 root 内。
-- descriptor cache key 增加 root 维度，避免同一真实文件以主包和独立分包身份进入时互相覆盖。
-
-### 8. 运行时
-
-`packages/uni-mp-core/src/runtime/app.ts`
-
-- 新增 `initCreateIndependentSubpackageApp()`。
-- 只注册 root 对应的 subpackage app vm。
-- 保留普通 `initCreateSubpackageApp()` 的旧行为，避免影响普通分包兼容性。
-
-`packages/uni-mp-weixin/src/runtime/index.ts`
-
-- 注册 `createIndependentSubpackageApp` 到 `wx` 与 `global`。
-
-`packages/uni-mp-vue/src/plugin.ts`
-
-- `app.mount(rootContainer, root, { independent: true, createApp })` 优先使用传入的 root 专属 `createApp`。
-- 普通 subpackage 和插件路径保持原有优先级。
-
-## 样式策略
-
-按微信原生规范，独立分包冷启动不加载主包 `app.wxss`。第一阶段不复制、不注入主包 app 级样式。
-
-当前仅做校验：
-
-- 独立分包 WXSS 不能引用 `app.wxss`。
-- 独立分包 WXSS 不能引用 root 外本地资源。
-- root 内页面/组件自己的样式保持原路径输出。
-- root 内 Vue style 拆出的 JS chunk 如被页面引用，会复制到 `${root}/common/`，避免引用主包 common。
-
-如果业务需要独立分包级公共样式，第一阶段建议放在 root 内并由页面显式引入；后续可增加“独立分包专属全局样式入口”，但不复用主包 `app.wxss`。
+- 独立分包自动引用 root 外业务 JS/TS/Vue 文件。
+- 独立分包自动复制 root 外原生小程序组件。
+- 独立分包自动复制 root 外静态资源。
+- 独立分包复用项目根 `main.*` 中的 `app.use()`、`globalProperties`、`provide`、store、i18n、全局 mixin 等初始化逻辑。
+- 独立分包复用 `App.vue` app 级样式。
+- 独立分包冷启动模拟主包 App 生命周期。
 
 ## 开发模式
 
-独立分包不能通过多次 Vite 构建实现，开发模式必须进入同一个 watcher：
+开发模式不能通过多次 Vite 构建实现，必须保持在同一个 watcher 内：
 
-- 独立分包额外 input 在同一 Rollup graph 内。
+- 独立分包 extra input 与主包共享同一 Rollup graph。
 - root query 模块通过同一 watcher 增量更新。
-- 虚拟模块读取真实页面文件时调用 `this.addWatchFile()`。
-- `pages.json` 内容变化由 pagesJson 插件重新解析；root 列表变化时触发 restart。
-- 产物校验在 build 和 watch 都执行。
+- 页面/组件虚拟入口读取真实文件时调用 `this.addWatchFile()`。
+- `pages.json` 和 locale 文件由 pagesJson 插件统一 watch。
+- root 列表变化时输出 `dev.watching.restart.independentSubPackages` 对应提示并退出，由外层重启机制重新构建。
+- 当前没有针对“仅 pages.json usingComponents 变化”强制 invalidate 已编译页面的完整机制，后续需要统一设计。
 
-## 测试计划
+## 验收重点
 
-自动化断言：
+自动化测试覆盖方向：
 
-- `app.json` 中 `subPackages[].independent === true`。
-- 独立分包目录内存在 `${root}/common/index.js`、`${root}/common/main.js`、页面 JS/JSON/WXML/WXSS。
-- `${root}/common/main.js` 包含 `createSSRApp({})` 和 `{ independent: true }`。
-- `${root}/common/main.js` 不包含根 `main.*` 中的业务标记、`App Launch` 等代码。
-- 独立分包目录内不生成 `${root}/common/main.wxss` 作为主包样式复制产物。
-- 独立分包页面 WXSS 不 import 主包 `common/main.wxss` 或 `app.wxss`。
+- `app.json` 保留或移除 `subPackages[].independent` 符合平台能力配置。
+- 独立分包生成 `${root}/common/main.js`、`${root}/common/vendor.js`、`${root}/common/index.js`。
+- `${root}/common/main.js` 包含 `createSSRApp({})` 与 `{ independent: true }`，且不包含项目根 `main.*` 业务代码。
 - 独立分包 JS 不引用主包 `common/*`。
-- root 外业务 JS/Vue/静态资源/原生组件引用报错清晰。
-- 普通分包和主包现有 snapshot 保持一致。
+- 独立分包 WXSS 不引用 `app.wxss` 或 root 外资源。
+- 独立分包 JSON 内联必要 usingComponents，并拒绝 root 外本地组件。
+- root 内原生小程序组件 JS 注入当前 root `common/vendor.js`。
+- 主包、普通分包、插件、其它小程序平台旧用例保持不变。
 
-手工验证：
+微信开发者工具手工验证重点：
 
-- 微信开发者工具中以独立分包页面作为启动页冷启动。
-- 清缓存后冷启动独立分包页面。
-- 独立分包冷启动时不打印根 `main.*` 顶层日志，不触发 `App.onLaunch` / 首次 `App.onShow`。
-- 从独立分包跳转到主包或普通分包时，再触发主包 `App.onLaunch` / 首次 `App.onShow`。
-- 主包页面跳转到独立分包页面后，主包已存在，此时 `getApp()` 按微信原生行为可获取真实 App。
-- 验证独立分包 root 内组件、原生组件、静态资源可用。
+- 清缓存后直接以独立分包页面启动。
+- 主包页面跳转到独立分包页面。
+- 独立分包页面启动后跳转主包，再跳回独立分包。
+- 独立分包冷启动不打印根 `main.*` 顶层日志，不触发主包 `App.onLaunch/onShow`。
+- 首次进入主包或普通分包时，再按微信原生规范触发主包 App 生命周期。
+- 独立分包 root 内 Vue 组件、原生小程序组件、静态资源、样式均可用。
 
-## 任务 TODO（可独立提交）
+## 未来 TODO
 
-### 第一阶段：主动隔离 + 微信原生生命周期
+### T01 自动处理 root 外业务依赖
 
-#### C01 配置识别与元信息解析
+目标：开发者不再需要手动把所有业务依赖移动到独立分包 root 内。
 
-- 新增 `parseIndependentSubPackages(pagesJson)`。
-- 仅接收 pagesJson 对象，不在内部读文件。
-- 兼容 `subPackages/subpackages`、非法 root、空 pages。
-- 建议提交：`feat(mp-weixin): 解析独立分包配置`
+需要处理：
 
-#### C02 平台能力配置与 app.json 输出
+- root 外 JS/TS 自动附加当前 root query 并重复打包。
+- root 外 Vue 组件输出到当前 root 内，并递归处理组件依赖。
+- root 外原生小程序组件复制 `.json/.wxml/.wxss/.js` 及递归依赖。
+- root 外静态资源复制到当前 root 内，并重写 JS/WXSS/WXML 引用。
+- app 级或全局组件按实际使用复制或重写到当前 root。
 
-- 在 `mp-weixin` compiler options 中增加 `app.independentSubpackages: true`。
-- `parseMiniProgramPagesJson()` 根据该配置保留或删除 `independent` 字段。
-- 建议提交：`feat(mp): 配置化独立分包能力`
+约束：不能恢复“执行项目根 `main.*` / 模拟主包 App 生命周期”的旧行为。
 
-#### C03 Rollup input 追加独立分包入口
+### T02 pages.json usingComponents 热更新
 
-- 为每个 root 追加 `${root}/common/main` input。
-- input value 指向 `\0uni:mp-independent-main?root=xxx`。
-- 建议提交：`feat(mp-vite): 为独立分包追加 rollup input`
+当前 `pages-json-js` 虚拟 id 不携带 pages.json 内容版本。开发期如果只修改 `pages.json` 中影响模板编译的 `usingComponents`，可能无法强制已编译页面重新 transform。
 
-#### C04 root query 工具
+后续需要统一设计 invalidate 策略，避免在虚拟 id 中直接携带大体积 pages.json 内容。
 
-- 增加 `parseIndependentRoot`、`withIndependentRoot`、`withoutIndependentRoot`、`hasIndependentRoot`。
-- 保留 Vue SFC 其它 query。
-- 建议提交：`feat(mp-vite): 增加独立分包 root query 工具`
+### T03 独立分包公共样式入口
 
-#### C05 独立分包插件骨架
+当前仅支持 root 内页面/组件显式引入样式，不复制主包 `app.wxss`。后续可评估新增独立分包专属公共样式入口，用于承载 root 内共享样式，但仍不复用主包 app 级样式。
 
-- 注册 `uniIndependentSubpackagePlugin`。
-- 无 independent 配置时空转。
-- 识别 independent main/pages 虚拟 id。
-- 建议提交：`feat(mp-vite): 增加独立分包插件骨架`
+### T04 分包异步化与跨包依赖协同
 
-#### C06 独立分包 common/main 虚拟模块
+后续支持分包异步化时，需要重新定义主包、普通分包、独立分包之间的跨包组件引用规则：
 
-- 生成 root 专属 `common/main.js`。
-- 只导入 root runtime、root vue、root pages。
-- 使用 `createSSRApp({}).mount('#app', root, { independent: true, createApp })`。
-- 不导入用户 `main.*`、不导入 `App.vue`、不触发 app factory。
-- 建议提交：`feat(mp-vite): 生成独立分包 common main`
+- 同步引用仍应避免主包或普通分包直接依赖独立分包目录。
+- 可异步加载的跨包组件需要明确产物位置、运行时加载顺序与错误提示。
+- 自动处理 root 外依赖时需与异步化策略保持一致，避免重复复制或错误共享。
 
-#### C07 root-specific pages-json-js
+### T05 Vite/Rolldown 输出策略评估
 
-- `pages-json-js?uni_mp_independent_root=xxx` 只导入当前 root 页面。
-- `manifest-json-js` 保持 app 级入口，不随独立分包 root 复制。
-- 页面虚拟路径携带 root 元信息。
-- 建议提交：`feat(mp-vite): 支持独立分包 pages-json-js`
-
-#### C08 root query 传播接入
-
-- importer 带 root query 时，resolved id 继续附加相同 root。
-- 跳过插件协议、外部 URL、raw/url、CSS 等不适合传播的资源。
-- root 外业务依赖第一阶段报错。
-- 建议提交：`feat(mp-vite): 传播独立分包 root query`
-
-#### C09 页面/组件虚拟路径携带 root
-
-- 扩展 `virtualPagePath`、`virtualComponentPath`。
-- 兼容旧 base64 字符串格式。
-- 加载真实文件时附加 root query。
-- 建议提交：`feat(mp-vite): 支持页面组件虚拟路径携带 root`
-
-#### C10 chunk 输出到 root/common
-
-- 带 root query 的 vendor/runtime/assets 输出到 `${root}/common/*`。
-- 动态 chunk 根据 root 输出。
-- 校验 root 内 JS 不引用主包 common。
-- 建议提交：`feat(mp-vite): 输出独立分包 root 内 chunk`
-
-#### C11 生成并注入 common/index bootstrap
-
-- emit `${root}/common/index.js`。
-- 给 root 下非 common JS 注入 `require('../common/index.js')`。
-- 建议提交：`feat(mp-vite): 注入独立分包 bootstrap`
-
-#### C12 运行时独立分包 app 创建
-
-- 新增 `initCreateIndependentSubpackageApp()`。
-- 微信运行时注册 `createIndependentSubpackageApp`。
-- `uni-mp-vue` 在 `independent: true` 时优先调用 mount options 传入的 root 专属创建方法。
-- 不调用 `getApp`，不模拟 App 生命周期。
-- 建议提交：`feat(mp-runtime): 支持独立分包原生生命周期`
-
-#### C13 JSON 与 usingComponents root 维度
-
-- 独立分包页面/组件 JSON 内联必要 global usingComponents。
-- descriptor cache 增加 root 维度。
-- root 外组件第一阶段报错。
-- 建议提交：`feat(mp): 支持独立分包 JSON root 维度`
-
-#### C14 第一阶段依赖隔离校验
-
-- 校验 JS/Vue、本地静态资源、微信原生组件、WXSS root 外引用。
-- 错误信息包含 root、importer/source 或产物路径。
-- 建议提交：`feat(mp-weixin): 校验独立分包 root 外依赖`
-
-#### C15 样式原生规范处理
-
-- 不复制主包 `app.wxss`。
-- 不生成主包样式来源的 `${root}/common/main.wxss`。
-- 校验独立分包 WXSS 不引用主包 `app.wxss` 和 root 外资源。
-- 建议提交：`feat(mp-weixin): 校验独立分包样式依赖`
-
-#### C16 dev/watch 支持
-
-- 虚拟模块读取真实文件时 `addWatchFile()`。
-- `pages.json` 在 pagesJson 插件内重新解析。
-- independent root 列表变化时输出 restart 提示。
-- 建议提交：`feat(mp-vite): 支持独立分包 watch 更新`
-
-#### C17 playground 正向用例
-
-- 增加 `independent: true` 分包。
-- 覆盖 root 内页面、Vue 组件、微信原生组件、静态资源。
-- 用例不依赖根 `main.*` 注入的 store/global/plugin。
-- 建议提交：`test(mp-weixin): 增加独立分包正向用例`
-
-#### C18 负向用例与产物断言
-
-- 断言 root 外业务依赖报错。
-- 断言 independent main 不包含根 `main.*` 代码。
-- 断言不复制主包 app 样式。
-- 建议提交：`test(mp-weixin): 增加独立分包边界断言`
-
-#### C19 微信开发者工具手工验收记录
-
-- 记录冷启动、清缓存冷启动、独立分包跳主包、主包跳独立分包。
-- 重点记录 App 生命周期触发时机与微信原生规范一致。
-- 建议提交：`docs(mp-weixin): 记录独立分包手工验收结果`
-
-### 第二阶段：自动处理 root 外业务依赖
-
-#### C20 root 外 JS/TS 自动隔离
-
-- 自动附加 root query 并重复打包到当前 root。
-- 保持不执行根 `main.*`。
-- 建议提交：`feat(mp-weixin): 自动隔离独立分包 root 外脚本`
-
-#### C21 root 外 Vue 组件自动处理
-
-- root 外 Vue 组件生成当前 root 内 JS/WXML/WXSS/JSON。
-- 递归处理组件依赖与资源引用。
-- 建议提交：`feat(mp-weixin): 自动处理独立分包 root 外 Vue 组件`
-
-#### C22 root 外微信原生组件自动复制
-
-- 复制并重写 `.json/.wxml/.wxss/.js` 及递归依赖。
-- 建议提交：`feat(mp-weixin): 自动复制独立分包原生组件`
-
-#### C23 root 外静态资源自动复制
-
-- 复制图片/字体等本地资源到当前 root 内。
-- 重写 JS/WXSS/WXML 引用。
-- 建议提交：`feat(mp-weixin): 自动复制独立分包静态资源`
-
-#### C24 全局组件自动复制与内联
-
-- 分析独立分包实际使用的全局组件。
-- root 外全局组件按 Vue/原生组件规则复制或重写。
-- 建议提交：`feat(mp-weixin): 自动处理独立分包全局组件`
-
-## Vite 8.1 / Rolldown 评估
-
-升级到 Vite 8.1 / Rolldown 后，核心方案仍不会变成“只靠多 input 自动复制依赖”。Rolldown 的自动 code splitting 仍以相同 module id 共享为基础；独立分包要自包含，仍需要 root query 或等价机制让模块身份唯一。
-
-未来可评估简化的是 chunk 输出策略：
-
-```text
-当前 Vite/Rollup:
-  root query -> manualChunks -> chunkFileNames
-
-未来 Vite/Rolldown:
-  root query -> output.codeSplitting.groups -> entry/chunk naming
-```
-
-无论底层是 Rollup 还是 Rolldown，都应保持：
-
-- 每个独立分包一个额外 input。
-- root 专属虚拟 main。
-- root query 传播或等价 module id 隔离。
-- root 内 bootstrap。
-- 严格微信原生 App 生命周期行为。
+升级到 Vite/Rolldown 后，核心隔离原则仍是“每个独立分包一个额外 input + root query 或等价 module id 隔离”。未来可评估是否用 Rolldown 的 chunk 分组能力简化 manualChunks/chunkFileNames，但不能依赖多 input 自动复制共享依赖。

@@ -223,7 +223,7 @@ function validateIndependentJsReferences(bundle: OutputBundle, root: string) {
       const resolved = resolveLocalOutputFilename(file.fileName, source)
       if (resolved && !isInIndependentOutputRoot(resolved, root)) {
         throw new Error(
-          `独立分包 "${root}" 的 JS 不能引用 root 外产物：${file.fileName} -> ${source}（${resolved}）。请将依赖移动到 "${root}" 内，或等待后续自动处理 root 外依赖。`
+          `独立分包 "${root}" 的 JS 不能引用 root 外产物：${file.fileName} -> ${source}（${resolved}）。请将依赖移动到 "${root}" 内。`
         )
       }
       return source
@@ -324,7 +324,7 @@ function validateIndependentStyleReferences(
     }
     if (!isInIndependentOutputRoot(resolved.filename, root)) {
       throw new Error(
-        `独立分包 "${root}" 的样式不能引用 root 外资源：${filename} -> ${reference}。请将该资源移动到 "${root}" 内，或等待后续自动处理 root 外依赖。`
+        `独立分包 "${root}" 的样式不能引用 root 外资源：${filename} -> ${reference}。请将该资源移动到 "${root}" 内。`
       )
     }
     return reference
@@ -463,7 +463,7 @@ function validateIndependentDependency({
       path.relative(normalizedInputDir, resolvedFile)
     )}。来源：${normalizePath(
       path.relative(normalizedInputDir, importerFile)
-    )} -> ${source}。请将该依赖移动到 "${root}" 内，或等待后续自动处理 root 外依赖。`
+    )} -> ${source}。请将该依赖移动到 "${root}" 内。`
   )
 }
 
