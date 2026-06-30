@@ -74,7 +74,7 @@ input: {
 ```ts
 import { createIndependentSubpackageApp } from 'uni-mp-runtime?uni_mp_independent_root=package-a'
 import { createSSRApp } from 'vue?uni_mp_independent_root=package-a'
-import '\0uni:mp-independent-pages?root=package-a'
+import 'pages-json-js?uni_mp_independent_root=package-a'
 
 createSSRApp({}).mount('#app', 'package-a', {
   independent: true,
@@ -246,7 +246,7 @@ flowchart TD
 `packages/uni-mp-vite/src/plugins/independent.ts`
 
 - 解析并加载 `\0uni:mp-independent-main?root=xxx`。
-- 解析并加载 `\0uni:mp-independent-pages?root=xxx`，只导入当前 root 下页面。
+- `pages-json-js?uni_mp_independent_root=xxx` 由 pagesJson 插件解析，只导入当前 root 下页面。
 - 对独立分包 importer 传播 root query。
 - 生成 `${root}/common/index.js`。
 - 给 `${root}/` 下非 `common/` JS 注入 bootstrap require。
@@ -386,11 +386,12 @@ flowchart TD
 - 不导入用户 `main.*`、不导入 `App.vue`、不触发 app factory。
 - 建议提交：`feat(mp-vite): 生成独立分包 common main`
 
-#### C07 root-specific pages 虚拟模块
+#### C07 root-specific pages-json-js
 
-- `\0uni:mp-independent-pages?root=xxx` 只导入当前 root 页面。
+- `pages-json-js?uni_mp_independent_root=xxx` 只导入当前 root 页面。
+- `manifest-json-js` 保持 app 级入口，不随独立分包 root 复制。
 - 页面虚拟路径携带 root 元信息。
-- 建议提交：`feat(mp-vite): 生成独立分包页面虚拟模块`
+- 建议提交：`feat(mp-vite): 支持独立分包 pages-json-js`
 
 #### C08 root query 传播接入
 

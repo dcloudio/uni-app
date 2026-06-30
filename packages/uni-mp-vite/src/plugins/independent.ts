@@ -1,7 +1,6 @@
 import path from 'path'
 import {
-  type IndependentSubPackage,
-  normalizePagePath,
+  PAGES_JSON_JS,
   normalizePath,
   relativeFile,
 } from '@dcloudio/uni-cli-shared'
@@ -15,25 +14,21 @@ import type { Plugin } from 'vite'
 import type { UniMiniProgramPluginOptions } from '../plugin'
 import {
   INDEPENDENT_MAIN_PREFIX,
-  INDEPENDENT_PAGES_PREFIX,
   INDEPENDENT_ROOT_PARAM,
   INDEPENDENT_SUBPACKAGE_PLUGIN_NAME,
   UNI_MP_RUNTIME_ID,
   VUE_EXPORT_HELPER_ID,
-  formatIndependentVirtualId,
   getIndependentRoots,
   getIndependentSubPackages,
   parseIndependentRoot,
   withIndependentRoot,
   withoutIndependentRoot,
 } from './independentUtils'
-import { virtualPagePath } from './entry'
 
 export function uniIndependentSubpackagePlugin(
   options: UniMiniProgramPluginOptions
 ): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR
-  const platform = process.env.UNI_PLATFORM as UniApp.PLATFORM
   const alias = options.vite?.alias || {}
   const styleExtname = options.style.extname
   return {
@@ -66,10 +61,6 @@ export function uniIndependentSubpackagePlugin(
       if (root && independentRoots.has(root)) {
         return id
       }
-      const pagesRoot = parseIndependentPagesRoot(id)
-      if (pagesRoot && independentRoots.has(pagesRoot)) {
-        return id
-      }
       const importerRoot = importer && parseIndependentRoot(importer)
       if (
         importerRoot &&
@@ -98,7 +89,6 @@ export function uniIndependentSubpackagePlugin(
       }
     },
     load(id) {
-      const independentPackages = getIndependentSubPackages()
       const independentRoots = getIndependentRoots()
       const explicitRoot = parseIndependentRoot(id)
       if (
@@ -115,17 +105,6 @@ export function uniIndependentSubpackagePlugin(
       if (root && independentRoots.has(root)) {
         return {
           code: generateIndependentMainCode(root),
-          map: { mappings: '' },
-        }
-      }
-      const pagesRoot = parseIndependentPagesRoot(id)
-      if (pagesRoot && independentRoots.has(pagesRoot)) {
-        return {
-          code: generateIndependentPagesCode(
-            independentPackages,
-            platform,
-            pagesRoot
-          ),
           map: { mappings: '' },
         }
       }
@@ -453,29 +432,6 @@ function normalizeIndependentRoot(root: string) {
   return normalizePath(root).replace(/\/$/, '')
 }
 
-function generateIndependentPagesCode(
-  independentPackages: IndependentSubPackage[],
-  platform: UniApp.PLATFORM,
-  root: string
-) {
-  const independentPackage = independentPackages.find(
-    (pkg) => pkg.root === root
-  )
-  if (!independentPackage) {
-    return ''
-  }
-  const imports = independentPackage.pages
-    .map((page) => normalizePath(path.join(root, page)))
-    .map((page) => normalizePagePath(page, platform))
-    .filter((page): page is string => !!page)
-    .map((page) => {
-      return `import(${JSON.stringify(virtualPagePath(page, root))})`
-    })
-  return `if(!Math){
-${imports.join('\n')}
-}`
-}
-
 function validateIndependentDependency({
   root,
   source,
@@ -564,7 +520,7 @@ function generateIndependentMainCode(root: string) {
   )}
 import { createSSRApp } from ${JSON.stringify(withIndependentRoot('vue', root))}
 import ${JSON.stringify(
-    formatIndependentVirtualId(INDEPENDENT_PAGES_PREFIX, root)
+    withIndependentRoot(PAGES_JSON_JS, root)
   )}
 
 createSSRApp({}).mount('#app', ${JSON.stringify(
@@ -586,10 +542,6 @@ function generateVueExportHelperCode() {
 
 function parseIndependentMainRoot(id: string) {
   return parseVirtualRoot(id, INDEPENDENT_MAIN_PREFIX)
-}
-
-function parseIndependentPagesRoot(id: string) {
-  return parseVirtualRoot(id, INDEPENDENT_PAGES_PREFIX)
 }
 
 function parseVirtualRoot(id: string, prefix: string) {
