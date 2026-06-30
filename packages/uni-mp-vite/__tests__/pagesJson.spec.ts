@@ -3,13 +3,17 @@ import os from 'os'
 import path from 'path'
 import {
   M,
+  MANIFEST_JSON_JS,
   PAGES_JSON_JS,
+  findMiniProgramUsingComponents,
   resetMiniProgramJsonFiles,
 } from '@dcloudio/uni-cli-shared'
+import { parseVirtualPagePathInfo } from '../src/plugins/entry'
 import { uniPagesJsonPlugin } from '../src/plugins/pagesJson'
 import {
   getIndependentSubPackages,
   initIndependentSubPackages,
+  withIndependentRoot,
 } from '../src/plugins/independentUtils'
 
 async function withMiniProgramProject(
@@ -34,7 +38,17 @@ function writePage(inputDir: string, page: string) {
   fs.writeFileSync(filename, '<template><view /></template>')
 }
 
-function createPagesJsonPlugin(independentSubpackages = true) {
+function writePagesJson(inputDir: string, pagesJson: unknown) {
+  fs.writeFileSync(
+    path.join(inputDir, 'pages.json'),
+    JSON.stringify(pagesJson)
+  )
+}
+
+function createPagesJsonPlugin(
+  independentSubpackages = true,
+  json: Record<string, unknown> = {}
+) {
   return uniPagesJsonPlugin({
     app: {
       subpackages: true,
@@ -42,7 +56,7 @@ function createPagesJsonPlugin(independentSubpackages = true) {
       usingComponents: true,
     },
     style: { extname: '.wxss' },
-    json: {},
+    json,
   } as any)
 }
 
@@ -53,6 +67,16 @@ function callTransform(
 ) {
   const plugin = createPagesJsonPlugin()
   ;(plugin.configResolved as Function).call({}, {})
+  return callTransformWithPlugin(plugin, inputDir, pagesJson, context)
+}
+
+function callTransformWithPlugin(
+  plugin: any,
+  inputDir: string,
+  pagesJson: unknown,
+  context: Record<string, unknown> = {},
+  id = path.join(inputDir, PAGES_JSON_JS)
+) {
   return (plugin.transform as Function).call(
     {
       addWatchFile: jest.fn(),
@@ -62,7 +86,7 @@ function callTransform(
       ...context,
     },
     JSON.stringify(pagesJson),
-    path.join(inputDir, PAGES_JSON_JS)
+    id
   )
 }
 
@@ -72,6 +96,24 @@ function callTransformWithoutIndependentSubpackages(
 ) {
   const plugin = createPagesJsonPlugin(false)
   ;(plugin.configResolved as Function).call({}, {})
+  return callTransformWithPlugin(plugin, inputDir, pagesJson)
+}
+
+function readFirstVirtualPageInfo(code: string) {
+  const match = code.match(/import\((['"])(.*?)\1\)/)
+  if (!match) {
+    return
+  }
+  return parseVirtualPagePathInfo(match[2])
+}
+
+async function loadAndTransformPagesJson(plugin: any, id: string) {
+  const resolved = await (plugin.resolveId as Function)(id)
+  const resolvedId = typeof resolved === 'string' ? resolved : resolved.id
+  const code = (plugin.load as Function).call(
+    { addWatchFile: jest.fn() },
+    resolvedId
+  )
   return (plugin.transform as Function).call(
     {
       addWatchFile: jest.fn(),
@@ -79,8 +121,8 @@ function callTransformWithoutIndependentSubpackages(
         throw new Error(message)
       },
     },
-    JSON.stringify(pagesJson),
-    path.join(inputDir, PAGES_JSON_JS)
+    code,
+    resolvedId
   )
 }
 
@@ -102,6 +144,154 @@ describe('uniPagesJsonPlugin independent subpackages', () => {
     } else {
       process.env.UNI_INPUT_DIR = originalInputDir
     }
+  })
+
+  test('initializes independent page usingComponents when transforming root-scoped pages-json-js', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    await withMiniProgramProject(async (inputDir) => {
+      process.env.UNI_INPUT_DIR = inputDir
+      initIndependentSubPackages([
+        {
+          root: 'package-a',
+          pages: ['pages/index/index'],
+          independent: true,
+        },
+      ])
+      const pagesJson = {
+        pages: [{ path: 'pages/index/index' }],
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [
+              {
+                path: 'pages/index/index',
+                style: {
+                  usingComponents: {
+                    'native-badge': '../../wxcomponents/native-badge/index',
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      }
+      writePagesJson(inputDir, pagesJson)
+      const nativeJson = path.join(
+        inputDir,
+        'wxcomponents/native-badge/index.json'
+      )
+      fs.mkdirSync(path.dirname(nativeJson), { recursive: true })
+      fs.writeFileSync(nativeJson, '{"component":true}')
+      const plugin = createPagesJsonPlugin()
+      ;(plugin.configResolved as Function).call({}, {})
+      const id = withIndependentRoot(PAGES_JSON_JS, 'package-a')
+
+      await loadAndTransformPagesJson(plugin, id)
+
+      expect(
+        findMiniProgramUsingComponents({
+          filename: path.join(inputDir, 'package-a/pages/index/index.vue'),
+          inputDir,
+          componentsDir: 'wxcomponents',
+        })
+      ).toMatchObject({
+        'native-badge': 'component',
+      })
+    })
+  })
+
+  test('loads root-scoped pages-json-js from pages.json', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    await withMiniProgramProject(async (inputDir) => {
+      process.env.UNI_INPUT_DIR = inputDir
+      initIndependentSubPackages([
+        {
+          root: 'package-a',
+          pages: ['pages/index/index'],
+          independent: true,
+        },
+      ])
+      const pagesJson = {
+        pages: [{ path: 'pages/index/index' }],
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      }
+      writePagesJson(inputDir, pagesJson)
+      const plugin = createPagesJsonPlugin()
+      ;(plugin.configResolved as Function).call({}, {})
+      const id = withIndependentRoot(PAGES_JSON_JS, 'package-a')
+
+      const resolvedId = await (plugin.resolveId as Function)(id)
+      expect(resolvedId).toBe(path.join(inputDir, id))
+      expect((plugin.resolveId as Function)(`${PAGES_JSON_JS}?raw`)).toBe(
+        undefined
+      )
+      const result = await loadAndTransformPagesJson(plugin, id)
+
+      expect(result.map).toEqual({ mappings: '' })
+      expect(result.code).toContain('uniPage://')
+      expect(result.code).not.toContain(MANIFEST_JSON_JS)
+      expect(readFirstVirtualPageInfo(result.code)).toMatchObject({
+        filepath: 'package-a/pages/index/index.vue',
+        root: 'package-a',
+      })
+    })
+  })
+
+  test('reuses pages json state for root-scoped pages-json-js', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    await withMiniProgramProject(async (inputDir) => {
+      process.env.UNI_INPUT_DIR = inputDir
+      initIndependentSubPackages([
+        {
+          root: 'package-a',
+          pages: ['pages/index/index'],
+          independent: true,
+        },
+        {
+          root: 'package-b',
+          pages: ['pages/index/index'],
+          independent: true,
+        },
+      ])
+      const pagesJson = {
+        pages: [{ path: 'pages/index/index' }],
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+          {
+            root: 'package-b',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      }
+      writePagesJson(inputDir, pagesJson)
+      const formatAppJson = jest.fn()
+      const plugin = createPagesJsonPlugin(true, { formatAppJson })
+      ;(plugin.configResolved as Function).call({}, {})
+
+      await loadAndTransformPagesJson(
+        plugin,
+        withIndependentRoot(PAGES_JSON_JS, 'package-a')
+      )
+      callTransformWithPlugin(plugin, inputDir, pagesJson)
+      await loadAndTransformPagesJson(
+        plugin,
+        withIndependentRoot(PAGES_JSON_JS, 'package-b')
+      )
+
+      expect(formatAppJson).toHaveBeenCalledTimes(1)
+    })
   })
 
   test('updates independent pages when roots are unchanged', async () => {

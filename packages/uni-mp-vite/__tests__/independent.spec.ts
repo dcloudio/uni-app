@@ -1,12 +1,14 @@
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
-import { parseIndependentSubPackages } from '@dcloudio/uni-cli-shared'
-import { virtualComponentPath, virtualPagePath } from '../src/plugins/entry'
+import {
+  PAGES_JSON_JS,
+  parseIndependentSubPackages,
+} from '@dcloudio/uni-cli-shared'
+import { virtualComponentPath } from '../src/plugins/entry'
 import { uniIndependentSubpackagePlugin } from '../src/plugins/independent'
 import {
   INDEPENDENT_MAIN_PREFIX,
-  INDEPENDENT_PAGES_PREFIX,
   UNI_MP_RUNTIME_ID,
   VUE_EXPORT_HELPER_ID,
   formatIndependentVirtualId,
@@ -108,51 +110,10 @@ describe('uniIndependentSubpackagePlugin', () => {
           )}`
         )
         expect(result.code).toContain(
-          `import ${JSON.stringify(
-            formatIndependentVirtualId(INDEPENDENT_PAGES_PREFIX, 'package-a')
-          )}`
+          `import ${JSON.stringify(withIndependentRoot(PAGES_JSON_JS, 'package-a'))}`
         )
         expect(result.code).toContain(
           `createSSRApp({}).mount('#app', "package-a", { independent: true, createApp: createIndependentSubpackageApp })`
-        )
-      }
-    )
-  })
-
-  test('resolves and loads independent pages virtual module', async () => {
-    process.env.UNI_PLATFORM = 'mp-weixin'
-    await withPagesJson(
-      {
-        subPackages: [
-          {
-            root: 'package-a',
-            independent: true,
-            pages: [{ path: 'pages/index/index' }],
-          },
-        ],
-      },
-      async (inputDir) => {
-        process.env.UNI_INPUT_DIR = inputDir
-        const pagePath = path.join(inputDir, 'package-a/pages/index/index.vue')
-        fs.mkdirSync(path.dirname(pagePath), { recursive: true })
-        fs.writeFileSync(pagePath, '<template><view /></template>')
-        const plugin = uniIndependentSubpackagePlugin({
-          global: 'wx',
-          style: { extname: '.wxss' },
-        } as any)
-        callBuildStart(plugin)
-        const id = formatIndependentVirtualId(
-          INDEPENDENT_PAGES_PREFIX,
-          'package-a'
-        )
-
-        await expect((plugin.resolveId as Function)(id)).resolves.toBe(id)
-        const result = (plugin.load as Function)(id)
-        expect(result.map).toEqual({ mappings: '' })
-        expect(result.code).toContain(
-          `import(${JSON.stringify(
-            virtualPagePath('package-a/pages/index/index.vue', 'package-a')
-          )})`
         )
       }
     )
