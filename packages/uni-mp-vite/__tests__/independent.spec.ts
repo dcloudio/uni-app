@@ -6,6 +6,10 @@ import {
   parseIndependentSubPackages,
 } from '@dcloudio/uni-cli-shared'
 import { virtualComponentPath } from '../src/plugins/entry'
+import {
+  normalizeCopyOptions,
+  transformIndependentMiniProgramComponentJs,
+} from '../src/plugin/copy'
 import { uniIndependentSubpackagePlugin } from '../src/plugins/independent'
 import {
   INDEPENDENT_MAIN_PREFIX,
@@ -110,7 +114,9 @@ describe('uniIndependentSubpackagePlugin', () => {
           )}`
         )
         expect(result.code).toContain(
-          `import ${JSON.stringify(withIndependentRoot(PAGES_JSON_JS, 'package-a'))}`
+          `import ${JSON.stringify(
+            withIndependentRoot(PAGES_JSON_JS, 'package-a')
+          )}`
         )
         expect(result.code).toContain(
           `createSSRApp({}).mount('#app', "package-a", { independent: true, createApp: createIndependentSubpackageApp })`
@@ -680,6 +686,82 @@ describe('uniIndependentSubpackagePlugin', () => {
         expect(() =>
           callGenerateBundle(plugin, { emitFile: jest.fn() }, bundle)
         ).toThrow('独立分包 "package-a" 的样式不能引用 root 外资源')
+      }
+    )
+  })
+
+  test('moves component copy assets to transformed target', async () => {
+    await withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      async (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        const componentAssets = [
+          'wxcomponents',
+          'uni_modules/*/wxcomponents/**/*',
+          'package-a/wxcomponents',
+          'package-a/uni_modules/*/wxcomponents/**/*',
+        ]
+        const copyOptions = normalizeCopyOptions(
+          {
+            assets: [...componentAssets, 'static/**/*'],
+            targets: [],
+          },
+          {
+            app: {
+              independentSubpackages: true,
+            },
+            template: {
+              component: {
+                dir: 'wxcomponents',
+              },
+            },
+          } as any
+        )
+        expect(copyOptions.assets).toEqual(['static/**/*'])
+        expect(copyOptions.targets?.[0].src).toEqual(componentAssets)
+        expect(
+          copyOptions.targets?.[0].transform!(
+            Buffer.from('Component({})'),
+            path.join(inputDir, 'package-a/wxcomponents/native-badge/index.js')
+          )
+        ).toBe("require('../../common/vendor.js');\nComponent({})")
+      }
+    )
+  })
+
+  test('keeps strict directive before injected root runtime', async () => {
+    await withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      async (inputDir) => {
+        expect(
+          transformIndependentMiniProgramComponentJs(
+            '"use strict";\nComponent({})',
+            path.join(inputDir, 'package-a/wxcomponents/badge/index.js'),
+            {
+              componentDir: 'wxcomponents',
+              independentRoots: ['package-a'],
+              inputDir,
+            }
+          )
+        ).toBe(
+          '"use strict";\nrequire(\'../../common/vendor.js\');\nComponent({})'
+        )
       }
     )
   })
