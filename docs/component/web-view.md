@@ -709,7 +709,7 @@ function canGoForward() : boolean {
 
 |方法名|说明|平台差异说明|
 |:-|:-|:-|
-|uni.webView.navigateTo|[navigateTo](../api/navigator.md#uni-navigateto)|Web平台暂不支持|
+|uni.webView.navigateTo|[navigateTo](../api/navigator.md#navigateto)|Web平台暂不支持|
 |uni.webView.redirectTo|[redirectTo](../api/navigator#redirectto)|Web平台暂不支持|
 |uni.webView.reLaunch|[reLaunch](../api/navigator#relaunch)|Web平台暂不支持|
 |uni.webView.switchTab|[switchTab](../api/navigator#switchtab)|Web平台暂不支持|
