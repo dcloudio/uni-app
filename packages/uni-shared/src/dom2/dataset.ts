@@ -19,7 +19,8 @@ export class UniDOMStringMap extends Map<string, any> {
   }
 
   get(key: string) {
-    return super.get(normalizeDatasetKey(String(key)))
+    const normalizedKey = normalizeDatasetKey(String(key))
+    return super.has(normalizedKey) ? super.get(normalizedKey) : null
   }
 
   set(key: string, value: any) {
@@ -99,8 +100,8 @@ export function createUniDOMStringMap(
   return new Proxy(target, {
     get(target, key, receiver) {
       if (typeof key === 'string') {
-        if (!isReservedDatasetKey(target, key) && target.has(key)) {
-          return target.get(key)
+        if (!isReservedDatasetKey(target, key)) {
+          return target.has(key) ? target.get(key) : null
         }
       }
       const value = Reflect.get(target, key, target)
