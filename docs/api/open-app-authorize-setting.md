@@ -154,7 +154,7 @@ _注：App平台其实早期版本也可以使用_
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |

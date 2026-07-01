@@ -489,7 +489,7 @@ HarmonyOS平台调用此 API 需要申请定位权限`ohos.permission.APPROXIMAT
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |

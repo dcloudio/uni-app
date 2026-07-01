@@ -236,7 +236,7 @@ web平台读取图片的exif信息，需要引入三方库。考虑到影响web 
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |

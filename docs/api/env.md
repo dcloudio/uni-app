@@ -167,7 +167,7 @@ uni.env提供了一些环境变量，主要是App和小程序文件系统相关�
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |

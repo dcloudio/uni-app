@@ -339,7 +339,7 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |

@@ -228,7 +228,7 @@ appTheme返回值为`auto`，代表跟随系统。此时需通过[getSystemInfo]
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |

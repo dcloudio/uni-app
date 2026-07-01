@@ -187,7 +187,7 @@ uni是全局api，本方法获取的元素，是页面栈栈顶（不包括 dial
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |

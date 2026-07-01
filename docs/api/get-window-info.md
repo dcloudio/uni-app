@@ -244,7 +244,7 @@ app-ios平台safeArea与iOS原生的安全区域概念相同，top与bottom分�
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
