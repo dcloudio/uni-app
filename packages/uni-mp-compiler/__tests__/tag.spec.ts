@@ -49,7 +49,7 @@ describe('compiler: transform tag', () => {
   })
   test('teleport', () => {
     assert(
-      `<teleport to="#foo" disabled><view/></teleport>`,
+      `<teleport to="#foo" disabled defer><view/></teleport>`,
       `<root-portal enable="{{false}}"><view/></root-portal>`,
       `(_ctx, _cache) => {
   return {}
@@ -59,7 +59,27 @@ describe('compiler: transform tag', () => {
       }
     )
     assert(
+      `<teleport :to="to" :defer="isDeferred"><view/></teleport>`,
+      `<root-portal><view/></root-portal>`,
+      `(_ctx, _cache) => {
+  return {}
+}`,
+      {
+        nodeTransforms: [transformTeleport],
+      }
+    )
+    assert(
       `<teleport :to="to" :disabled="disabled"><view/></teleport>`,
+      `<root-portal enable="{{a}}"><view/></root-portal>`,
+      `(_ctx, _cache) => {
+  return { a: !_ctx.disabled }
+}`,
+      {
+        nodeTransforms: [transformTeleport],
+      }
+    )
+    assert(
+      `<teleport :disabled="disabled" :defer="isDeferred"><view/></teleport>`,
       `<root-portal enable="{{a}}"><view/></root-portal>`,
       `(_ctx, _cache) => {
   return { a: !_ctx.disabled }

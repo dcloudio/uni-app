@@ -120,7 +120,19 @@ describe('compiler: transform tagAndProp', () => {
   })
   test('teleport', () => {
     assert(
-      `<teleport to="body"><view /></teleport>`,
+      `<teleport to="body" defer><view /></teleport>`,
+      `<root-portal style=\"{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}\"><view/></root-portal>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformTeleport],
+      }
+    )
+    assert(
+      `<teleport :to="to" :defer="isDeferred"><view /></teleport>`,
       `<root-portal style=\"{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}\"><view/></root-portal>`,
       `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
@@ -169,6 +181,18 @@ describe('compiler: transform tagAndProp', () => {
     )
     assert(
       `<teleport :disabled="disabled"><view /></teleport>`,
+      `<root-portal enable="{{a}}" style=\"{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}\"><view/></root-portal>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: !_ctx.disabled, b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformTeleport],
+      }
+    )
+    assert(
+      `<teleport :disabled="disabled" :defer="isDeferred"><view /></teleport>`,
       `<root-portal enable="{{a}}" style=\"{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}\"><view/></root-portal>`,
       `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: !_ctx.disabled, b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\` }
