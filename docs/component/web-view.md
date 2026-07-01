@@ -34,7 +34,13 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| progress | [WebViewProgressStyles](#webviewprogressstyles-values) \| boolean | 是 | {"color": "#00FF00"} |   | 网络地址页面加载进度条样式，设置为 false 时表示不显示加载进度条。 |
+| progress | **WebViewProgressStyles** \| boolean | 是 | {"color": "#00FF00"} |   | 网络地址页面加载进度条样式，设置为 false 时表示不显示加载进度条。 |
+
+##### progress 的属性描述
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| color | [string.ColorString](/uts/data-type.md#ide-string) | 是 |  |   | 网页加载进度条颜色，默认值为 #00FF00 。 |
 @
 | horizontal-scroll-bar-access | boolean | true | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.13; HarmonyOS: 4.61 | 设置是否显示横向滚动条 |
 | vertical-scroll-bar-access | boolean | true | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.13; HarmonyOS: 4.61 | 设置是否显示纵向滚动条 |
@@ -117,15 +123,12 @@ UniWebViewErrorEvent -- Extends --> UniCustomEvent&ltUniWebViewErrorEventDetail&
 | fullUrl | string | 是 |  |   | 加载错误的网页链接，完整链接，4.13版本起支持 |
 | src | string | 是 |  |   | 加载错误的网页链接，完整链接，4.13版本起支持 |
 
-#### errCode 的属性描述
-
+###### 的属性值 @errcode-values
 | 合法值 | 描述 |
 | :- | :- |
 | 100001 |  |
 | 100002 |  |
 | 100003 |  |
-
-
 #### UniWebViewLoadEvent
 
 ```mermaid

@@ -285,6 +285,48 @@ UniVideoControlsToggleEvent -- Extends --> UniVideoEvent
 | show | boolean | 是 |  |   | 是否显示 |
 
 
+#### UniVideoRecycleEvent
+video组件回收事件对象
+
+##### UniVideoRecycleEvent 的属性值
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| detail | T | 是 |  |   |  |
+| bubbles | boolean | 是 |  |   | 是否冒泡 |
+| cancelable | boolean | 是 |  |   | 是否可以取消 |
+| type | string | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 事件类型<br/> |
+| target | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 触发事件的组件<br/> |
+| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 当前组件<br/> |
+| timeStamp | number | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 事件发生时的时间戳<br/> |
+
+
+##### UniVideoRecycleEvent 的方法
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| stopPropagation | () => void | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 | 阻止当前事件的进一步传播<br/> |
+| preventDefault | () => void | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS: 4.55; HarmonyOS: 4.61 | 阻止当前事件的默认行为<br/> |
+
+#### UniVideoReuseEvent
+
+
+##### UniVideoReuseEvent 的属性值
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| detail | T | 是 |  |   |  |
+| bubbles | boolean | 是 |  |   | 是否冒泡 |
+| cancelable | boolean | 是 |  |   | 是否可以取消 |
+| type | string | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 事件类型<br/> |
+| target | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 触发事件的组件<br/> |
+| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 当前组件<br/> |
+| timeStamp | number | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 事件发生时的时间戳<br/> |
+
+
+##### UniVideoReuseEvent 的方法
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| stopPropagation | () => void | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 | 阻止当前事件的进一步传播<br/> |
+| preventDefault | () => void | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS: 4.55; HarmonyOS: 4.61 | 阻止当前事件的默认行为<br/> |
+
 
 <!-- UTSCOMJSON.video.component_type -->
 
