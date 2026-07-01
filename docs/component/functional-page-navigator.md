@@ -35,11 +35,11 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| loginAndGetUserInfo | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | [用户信息功能页](../framework/plugin/functional-pages/user-info.md) |
-| requestPayment | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | [支付功能页](../framework/plugin/functional-pages/request-payment.md) |
-| chooseAddress | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | [收货地址功能页](../framework/plugin/functional-pages/choose-address.md) |
-| chooseInvoice | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | [获取发票功能页](../framework/plugin/functional-pages/choose-invoice.md) |
-| chooseInvoiceTitle | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | [获取发票抬头功能页](../framework/plugin/functional-pages/choose-invoice-title.md) |
+| loginAndGetUserInfo | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | [用户信息功能页](https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/functional-pages/user-info.html) |
+| requestPayment | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | [支付功能页](https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/functional-pages/request-payment.html) |
+| chooseAddress | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | [收货地址功能页](https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/functional-pages/choose-address.html) |
+| chooseInvoice | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | [获取发票功能页](https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/functional-pages/choose-invoice.html) |
+| chooseInvoiceTitle | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | [获取发票抬头功能页](https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/functional-pages/choose-invoice-title.html) |
 
 
 
