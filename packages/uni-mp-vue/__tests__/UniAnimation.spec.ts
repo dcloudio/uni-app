@@ -1,4 +1,5 @@
 import {
+  UniAnimation,
   coverAnimateToStyle,
   normalizeKeyframes,
   // setStyleByRequestAnimationFrame,
@@ -396,5 +397,50 @@ describe('uni-mp-vue: UniAnimation', () => {
         _duration: 400,
       },
     ])
+  })
+
+  it('dispatches oncancel when a running animation is cancelled', () => {
+    const scope = {
+      setData: jest.fn(),
+    }
+    const animation = new UniAnimation(
+      'view',
+      scope,
+      [{ opacity: 0 }, { opacity: 1 }],
+      { duration: 1000 }
+    )
+    const oncancel = jest.fn()
+
+    animation.oncancel = oncancel
+    animation.play()
+    scope.setData.mockClear()
+    animation.cancel()
+
+    expect(animation.playState).toBe('idle')
+    expect(scope.setData).toHaveBeenCalledTimes(1)
+    const payload = JSON.parse(scope.setData.mock.calls[0][0]['$eA.view'])
+    expect(payload.playState).toBe('idle')
+    expect(oncancel).toHaveBeenCalledTimes(1)
+    expect(oncancel.mock.calls[0][0]).toMatchObject({ type: 'cancel' })
+    expect(typeof oncancel.mock.calls[0][0].timeStamp).toBe('number')
+  })
+
+  it('does not dispatch oncancel when animation is already idle', () => {
+    const scope = {
+      setData: jest.fn(),
+    }
+    const animation = new UniAnimation(
+      'view',
+      scope,
+      [{ opacity: 0 }, { opacity: 1 }],
+      { duration: 1000 }
+    )
+    const oncancel = jest.fn()
+
+    animation.oncancel = oncancel
+    animation.cancel()
+
+    expect(animation.playState).toBe('idle')
+    expect(oncancel).not.toHaveBeenCalled()
   })
 })
