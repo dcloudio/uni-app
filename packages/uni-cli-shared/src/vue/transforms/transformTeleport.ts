@@ -52,6 +52,12 @@ export const transformTeleport = function (node: RootNode | TemplateChildNode) {
     // delete `to` prop since it is not supported in mini program
     node.props.splice(node.props.indexOf(toProp), 1)
   }
+
+  const deferProp = findProp(node, 'defer', false, true)
+  if (deferProp) {
+    // delete `defer` prop since it is not supported in mini program
+    node.props.splice(node.props.indexOf(deferProp), 1)
+  }
 }
 
 function createEnableExpression(exp?: ExpressionNode) {
