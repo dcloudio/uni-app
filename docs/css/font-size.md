@@ -223,7 +223,7 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
 #### App平台差异
 - 字体单位说明
 
-App平台仅支持以像素值（px）和相对像素值（rpx）设置字体大小，默认值为16px。
+App平台仅支持 px 和 rpx 单位设置字体大小，默认值为16px。
 
 如果仅开发App，那么属性值可以不设置单位，不设置单位时当做 px 处理。但无法兼容web和小程序。
 
