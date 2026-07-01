@@ -1,6 +1,7 @@
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
+import { normalizePath } from '@dcloudio/uni-cli-shared'
 import {
   parseVirtualComponentPath,
   parseVirtualComponentPathInfo,
@@ -97,7 +98,10 @@ describe('entry virtual paths', () => {
         virtualPagePath(page, 'package-a')
       )
       const runtimeId = withIndependentRoot(UNI_MP_RUNTIME_ID, 'package-a')
-      const pageId = withIndependentRoot(path.join(inputDir, page), 'package-a')
+      const pageId = withIndependentRoot(
+        normalizePath(path.join(inputDir, page)),
+        'package-a'
+      )
       const expectedCode = [
         `import { createPage as __uniCreatePage } from ${JSON.stringify(
           runtimeId
@@ -128,7 +132,7 @@ describe('entry virtual paths', () => {
       )
       const runtimeId = withIndependentRoot(UNI_MP_RUNTIME_ID, 'package-a')
       const componentId = withIndependentRoot(
-        path.join(inputDir, component),
+        normalizePath(path.join(inputDir, component)),
         'package-a'
       )
       const expectedCode = [

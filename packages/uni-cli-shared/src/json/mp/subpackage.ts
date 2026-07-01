@@ -74,7 +74,7 @@ export function withIndependentRoot(id: string, root: string): string {
   const cleanId = withoutIndependentRoot(id)
   const { filename, query } = splitIdQuery(cleanId)
   const rootQuery = `${MP_INDEPENDENT_ROOT_QUERY}=${encodeURIComponent(root)}`
-  return `${filename}?${query ? query + '&' : ''}${rootQuery}`
+  return `${normalizePath(filename)}?${query ? query + '&' : ''}${rootQuery}`
 }
 
 export function withoutIndependentRoot(id: string): string {
