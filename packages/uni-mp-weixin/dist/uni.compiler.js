@@ -283,6 +283,7 @@ const options = {
     app: {
         darkmode: true,
         subpackages: true,
+        independentSubpackages: true,
         plugins: true,
         usingComponents: true,
         workers: true,

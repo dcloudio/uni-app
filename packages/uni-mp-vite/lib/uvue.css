@@ -16,7 +16,9 @@ button,
 camera,
 canvas,
 checkbox-group,
+/* #ifndef MP-ALIPAY */ 
 checkbox,
+/* #endif */
 cover-image,
 cover-view,
 custom-tab-bar,
@@ -42,7 +44,9 @@ picker-view,
 picker,
 progress,
 radio-group,
-radio,
+/* #ifndef MP-ALIPAY */ 
+radio, 
+/* #endif */
 rich-text,
 scroll-view,
 slider,

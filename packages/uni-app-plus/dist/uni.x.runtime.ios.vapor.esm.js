@@ -1,4 +1,4 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, UTSJSONObject, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_EXIT, ON_LAST_PAGE_BACK_PRESS, createUniDOMStringMap } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType } from "@vue/shared";
 import { createMountPage, unmountPage, ref, getCurrentGenericInstance, injectHook, nextTick, markRaw, defineComponent, getCurrentInstance, onMounted, camelize, createVNode, renderSlot } from "vue";
 function get$pageByPage(page) {
@@ -3679,6 +3679,9 @@ class QuerySelectorHelper {
       var nodeInfo2 = {
         node: element
       };
+      if (this._fields.dataset == true) {
+        nodeInfo2.dataset = createUniDOMStringMap(element.dataset || {});
+      }
       if (this._fields.size == true) {
         var rect2 = element.getBoundingClientRect();
         nodeInfo2.width = rect2.width;
@@ -3689,7 +3692,6 @@ class QuerySelectorHelper {
     var rect = element.getBoundingClientRect();
     var nodeInfo = {
       id: (_element$getAttribute = element.getAttribute("id")) === null || _element$getAttribute === void 0 ? void 0 : _element$getAttribute.toString(),
-      dataset: null,
       left: rect.left,
       top: rect.top,
       right: rect.right,
@@ -3697,6 +3699,9 @@ class QuerySelectorHelper {
       width: rect.width,
       height: rect.height
     };
+    if (this._fields.dataset == true) {
+      nodeInfo.dataset = createUniDOMStringMap(element.dataset || {});
+    }
     return nodeInfo;
   }
 }

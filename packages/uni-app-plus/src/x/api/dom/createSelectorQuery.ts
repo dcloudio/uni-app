@@ -10,6 +10,7 @@ import type {
 import { getCurrentPage } from '@dcloudio/uni-core'
 import type { ComponentPublicInstance, VNode } from 'vue'
 import { isFunction } from '@vue/shared'
+import { createUniDOMStringMap } from '@dcloudio/uni-shared'
 
 type NodeInfo = Partial<
   _NodeInfo & {
@@ -372,6 +373,10 @@ class QuerySelectorHelper {
         node: element,
       }
 
+      if (this._fields.dataset == true) {
+        nodeInfo.dataset = createUniDOMStringMap(element.dataset || {})
+      }
+
       if (this._fields.size == true) {
         const rect = element.getBoundingClientRect()
         nodeInfo.width = rect.width
@@ -384,13 +389,15 @@ class QuerySelectorHelper {
     const rect = element.getBoundingClientRect()
     const nodeInfo: NodeInfo = {
       id: element.getAttribute('id')?.toString(),
-      dataset: null,
       left: rect.left,
       top: rect.top,
       right: rect.right,
       bottom: rect.bottom,
       width: rect.width,
       height: rect.height,
+    }
+    if (this._fields.dataset == true) {
+      nodeInfo.dataset = createUniDOMStringMap(element.dataset || {})
     }
     return nodeInfo
   }

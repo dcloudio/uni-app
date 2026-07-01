@@ -1,7 +1,7 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 import { findUniElement, injectHook } from 'vue';
-import { Emitter, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { createUniDOMStringMap, Emitter, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 
 function getLocaleLanguage() {
     let localeLanguage = '';
@@ -552,6 +552,81 @@ const createEditorContextAsync = defineAsyncApi(API_CREATE_EDITOR_CONTEXT_ASYNC,
             .exec();
     }
 });
+
+function normalizeDatasetResult(result) {
+    if (result && result.dataset) {
+        result.dataset = createUniDOMStringMap(result.dataset);
+    }
+    return result;
+}
+function normalizeDatasetCallback(callback) {
+    if (!isFunction(callback)) {
+        return callback;
+    }
+    return function datasetCallback(result) {
+        if (Array.isArray(result)) {
+            result.forEach(normalizeDatasetResult);
+        }
+        else {
+            normalizeDatasetResult(result);
+        }
+        return callback.call(this, result);
+    };
+}
+function normalizeSelectorQueryDataset(query) {
+    if (!query) {
+        return query;
+    }
+    const oldExec = query.exec;
+    if (isFunction(oldExec)) {
+        query.exec = function exec(callback) {
+            return oldExec.call(this, normalizeDatasetCallback(callback));
+        };
+    }
+    ['boundingClientRect', 'scrollOffset'].forEach((name) => {
+        const method = query[name];
+        if (isFunction(method)) {
+            query[name] = function datasetMethod(callback) {
+                return method.call(this, normalizeDatasetCallback(callback));
+            };
+        }
+    });
+    const oldFields = query.fields;
+    if (isFunction(oldFields)) {
+        query.fields = function fields(fields, callback) {
+            return oldFields.call(this, fields, normalizeDatasetCallback(callback));
+        };
+    }
+    return query;
+}
+function normalizeIntersectionObserverDataset(observer) {
+    if (!observer) {
+        return observer;
+    }
+    const oldObserve = observer.observe;
+    if (isFunction(oldObserve)) {
+        observer.observe = function observe(selector, callback) {
+            return oldObserve.call(this, selector, normalizeDatasetCallback(callback));
+        };
+    }
+    return observer;
+}
+function normalizeDatasetApi(name, api) {
+    if (!isFunction(api)) {
+        return api;
+    }
+    if (name === 'createSelectorQuery') {
+        return function createSelectorQuery(...args) {
+            return normalizeSelectorQueryDataset(api.apply(this, args));
+        };
+    }
+    if (name === 'createIntersectionObserver') {
+        return function createIntersectionObserver(...args) {
+            return normalizeIntersectionObserverDataset(api.apply(this, args));
+        };
+    }
+    return api;
+}
 
 function getBaseSystemInfo() {
     return tt.getSystemInfoSync();
@@ -1436,6 +1511,11 @@ const baseApis = {
     createCanvasContextAsync,
     createEditorContextAsync,
 };
+function normalizeApi(name, api) {
+    {
+        return normalizeDatasetApi(name, api);
+    }
+}
 function initUni(api, protocols, platform = tt) {
     const wrapper = initWrapper(protocols);
     const UniProxyHandlers = {
@@ -1444,14 +1524,14 @@ function initUni(api, protocols, platform = tt) {
                 return target[key];
             }
             if (hasOwn(api, key)) {
-                return promisify(key, api[key]);
+                return normalizeApi(key, promisify(key, api[key]));
             }
             if (hasOwn(baseApis, key)) {
-                return promisify(key, baseApis[key]);
+                return normalizeApi(key, promisify(key, baseApis[key]));
             }
             // event-api
             // provider-api?
-            return promisify(key, wrapper(key, platform[key]));
+            return normalizeApi(key, promisify(key, wrapper(key, platform[key])));
         },
     };
     // 处理 api mp 打包后为不同js，getEventChannel 无法共享问题

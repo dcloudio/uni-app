@@ -20,6 +20,7 @@ import {
 import { initProps } from './componentProps'
 import { applyOptions, initPropsObserver } from './componentOptions'
 import type { CreateComponentOptions } from './componentInstance'
+import { getSubpackageAppVm } from './subpackage'
 
 import Component = WechatMiniprogram.Component
 
@@ -238,6 +239,9 @@ export function initCreateComponent(parseOptions: ParseComponentOptions) {
 
 let $createComponentFn: Function
 let $destroyComponentFn: Function
+let $createComponentAppVm: ComponentPublicInstance | undefined
+let $destroyComponentAppVm: ComponentPublicInstance | undefined
+const componentAppVmMap = new WeakMap<object, ComponentPublicInstance>()
 
 interface InitialVNode {
   type: ComponentOptions
@@ -248,8 +252,9 @@ export function getAppVm() {
   if (process.env.UNI_MP_PLUGIN) {
     return __GLOBAL__.$vm
   }
-  if (process.env.UNI_SUBPACKAGE) {
-    return __GLOBAL__.$subpackages[process.env.UNI_SUBPACKAGE].$vm
+  const subpackageAppVm = getSubpackageAppVm()
+  if (subpackageAppVm) {
+    return subpackageAppVm
   }
   return getApp().$vm
 }
@@ -258,19 +263,38 @@ export function $createComponent(
   initialVNode: InitialVNode,
   options: CreateComponentOptions
 ) {
-  if (!$createComponentFn) {
-    $createComponentFn = getAppVm().$createComponent
+  const appVm = getAppVm()
+  if (!$createComponentFn || $createComponentAppVm !== appVm) {
+    $createComponentAppVm = appVm
+    $createComponentFn = appVm.$createComponent
   }
   const proxy = $createComponentFn(
     initialVNode,
     options
   ) as ComponentPublicInstance
-  return getExposeProxy(proxy.$) || proxy
+  const exposeProxy = getComponentExposeProxy(proxy)
+  componentAppVmMap.set(proxy, appVm)
+  if (exposeProxy && typeof exposeProxy === 'object') {
+    componentAppVmMap.set(exposeProxy, appVm)
+  }
+  return exposeProxy || proxy
 }
 
 export function $destroyComponent(instance: ComponentPublicInstance) {
-  if (!$destroyComponentFn) {
-    $destroyComponentFn = getAppVm().$destroyComponent
+  const appVm = componentAppVmMap.get(instance) || getAppVm()
+  if (!$destroyComponentFn || $destroyComponentAppVm !== appVm) {
+    $destroyComponentAppVm = appVm
+    $destroyComponentFn = appVm.$destroyComponent
   }
-  return $destroyComponentFn(instance)
+  try {
+    return $destroyComponentFn(instance)
+  } finally {
+    componentAppVmMap.delete(instance)
+  }
+}
+
+function getComponentExposeProxy(proxy: ComponentPublicInstance) {
+  return typeof getExposeProxy === 'function'
+    ? getExposeProxy(proxy.$)
+    : undefined
 }

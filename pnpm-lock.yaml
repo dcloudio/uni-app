@@ -1944,6 +1944,9 @@ importers:
 
   packages/uni-mp-core:
     dependencies:
+      '@dcloudio/uni-shared':
+        specifier: workspace:*
+        version: link:../uni-shared
       '@vue/shared':
         specifier: 'catalog:'
         version: 3.4.21

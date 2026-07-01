@@ -55,10 +55,27 @@ describe('UniDOMStringMap', () => {
     expect(dataset.fooBar).toBe('foo')
 
     delete dataset.fooBar
-    expect(dataset.fooBar).toBeUndefined()
+    expect(dataset.fooBar).toBeNull()
 
     expect(onSet).toHaveBeenCalledWith('fooBar', 'foo')
     expect(onDelete).toHaveBeenCalledWith('fooBar')
+  })
+
+  test('不存在的 key 返回 null，已存在的 undefined 原样返回', () => {
+    const dataset = createUniDOMStringMap({
+      foo: undefined,
+      bar: null,
+    })
+
+    expect(dataset.get('missing')).toBeNull()
+    expect(dataset.missing).toBeNull()
+    expect(dataset['missing']).toBeNull()
+    expect(dataset.get('foo')).toBeUndefined()
+    expect(dataset.foo).toBeUndefined()
+    expect(dataset.get('bar')).toBeNull()
+    expect(dataset.bar).toBeNull()
+    expect(dataset.has('foo')).toBe(true)
+    expect(dataset.has('missing')).toBe(false)
   })
 
   test('normalizeDatasetAttrName 转换为 data-* 属性名', () => {

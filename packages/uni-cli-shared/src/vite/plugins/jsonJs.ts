@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { JSON_JS_MAP } from '../../constants'
+import { MP_INDEPENDENT_ROOT_QUERY } from '../../json/mp/subpackage'
 import { normalizePath } from '../../utils'
 import type {
   CreateUniViteFilterPlugin,
@@ -13,11 +14,13 @@ export const defineUniManifestJsonPlugin =
 
 function createDefineJsonJsPlugin(name: 'pages.json' | 'manifest.json') {
   const JSON_JS = JSON_JS_MAP[name]
+  // pages-json-js 仅允许独立分包 root query；manifest-json-js 仍保持 app 级。
+  const allowedQuery = name === 'pages.json' ? MP_INDEPENDENT_ROOT_QUERY : ''
   return function (createVitePlugin: CreateUniViteFilterPlugin) {
     const opts = {
       resolvedConfig: {},
       filter(id) {
-        return id.endsWith(JSON_JS)
+        return !!parseJsonJsRequest(id, JSON_JS, allowedQuery)
       },
     } as UniViteFilterPluginOptions
 
@@ -35,8 +38,9 @@ function createDefineJsonJsPlugin(name: 'pages.json' | 'manifest.json') {
       if (res) {
         return res
       }
-      if (id.endsWith(JSON_JS)) {
-        return jsonJsPath
+      const jsonJsRequest = parseJsonJsRequest(id, JSON_JS, allowedQuery)
+      if (jsonJsRequest) {
+        return jsonJsPath + jsonJsRequest.query
       }
     }
     plugin.configResolved = function (config) {
@@ -58,4 +62,42 @@ function createDefineJsonJsPlugin(name: 'pages.json' | 'manifest.json') {
     }
     return plugin
   }
+}
+
+function parseJsonJsRequest(id: string, jsonJs: string, allowedQuery: string) {
+  const queryIndex = id.indexOf('?')
+  const query = queryIndex === -1 ? '' : id.slice(queryIndex + 1)
+  if (query && !isAllowedJsonJsQuery(query, allowedQuery)) {
+    return
+  }
+  if (queryIndex !== -1 && !query) {
+    return
+  }
+  const filename = queryIndex === -1 ? id : id.slice(0, queryIndex)
+  if (!filename.endsWith(jsonJs)) {
+    return
+  }
+  return {
+    filename,
+    query: queryIndex === -1 ? '' : id.slice(queryIndex),
+  }
+}
+
+function isAllowedJsonJsQuery(query: string, allowedQuery: string) {
+  if (!allowedQuery) {
+    return false
+  }
+  const items = query.split('&')
+  if (items.length !== 1) {
+    return false
+  }
+  const item = items[0]
+  const equalIndex = item.indexOf('=')
+  if (equalIndex === -1) {
+    return false
+  }
+  return (
+    item.slice(0, equalIndex) === allowedQuery &&
+    item.slice(equalIndex + 1).length > 0
+  )
 }

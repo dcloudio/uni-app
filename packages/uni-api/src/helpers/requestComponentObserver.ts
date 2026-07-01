@@ -1,4 +1,4 @@
-import { getCustomDataset } from '@dcloudio/uni-shared'
+import { createUniDOMStringMap, getCustomDataset } from '@dcloudio/uni-shared'
 import { initIntersectionObserverPolyfill } from './intersection-observer'
 
 export interface RequestComponentObserverOptions {
@@ -17,6 +17,11 @@ function normalizeRect(rect: DOMRect) {
     top,
     width,
   }
+}
+
+function createDatasetSnapshot(el: HTMLElement) {
+  const dataset = getCustomDataset(el)
+  return __X__ ? createUniDOMStringMap(dataset) : dataset
 }
 
 // 在相交比很小的情况下，Chrome会返回相交为0
@@ -54,7 +59,7 @@ export function requestComponentObserver(
           boundingClientRect: normalizeRect(entrie.boundingClientRect),
           relativeRect: normalizeRect(entrie.rootBounds!),
           time: Date.now(),
-          dataset: getCustomDataset(entrie.target as HTMLElement),
+          dataset: createDatasetSnapshot(entrie.target as HTMLElement),
           id: entrie.target.id,
         })
       })
