@@ -6,7 +6,7 @@
 uni-app x 的蒸汽模式，包含了去掉虚拟DOM的vue框架，以及App平台的一套基于原生渲染管线的、超过原生渲染速度的全新渲染引擎。
 
 - HBuilderX 5.0+，鸿蒙支持蒸汽模式
-- HBuilderX 5.1+，iOS支持蒸汽模式
+- HBuilderX 5.11+，iOS支持蒸汽模式
 - Android的蒸汽模式 计划于5.2发布
 
 ## 虚拟DOM的问题
