@@ -303,6 +303,17 @@ export declare function createSharedDataDynamicComponent(getter: () => any, sett
 */
 export declare function createSharedDataKeyedFragment(key: () => any, render: BlockFn): Block;
 //#endregion
+//#region temp/packages/runtime-vapor-dom2/src/apiCreateTeleport.d.ts
+export type SharedDataTeleportPropSetters = {
+  to?: () => void;
+  disabled?: () => void;
+  defer?: () => void;
+};
+export type SharedDataTeleportSlots = {
+  default?: BlockFn | null;
+};
+export declare function createSharedDataTeleport(propSetters?: SharedDataTeleportPropSetters | null, slots?: SharedDataTeleportSlots | null): void;
+//#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiUseComputedStyle.d.ts
 type UseComputedStyleOptions = {
   /**
