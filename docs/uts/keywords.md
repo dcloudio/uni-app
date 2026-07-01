@@ -79,7 +79,7 @@ a as string // 正常
 1.0 as Double
 1.0 as number
 
-// 对象字面量也可以as为USTJSONObject或某个type
+// 对象字面量也可以as为UTSJSONObject或某个type
 {"id":1} as UTSJSONObject
 
 type t = {
@@ -130,7 +130,7 @@ a as string // 正确
 a as number // 错误
 ```
 
-USTJSONObject和type不相容，无法互相as。应该在初始的字面量或JSON.parse环节就决定好类型。
+UTSJSONObject和type不相容，无法互相as。应该在初始的字面量或JSON.parse环节就决定好类型。
 
 类型断言会在运行时进行，如果无法强制转换，类型断言运算符会引发异常：
 
