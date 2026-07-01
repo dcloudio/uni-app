@@ -155,6 +155,15 @@ loadData
 | encoding | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 页面内容的编码类型，默认值为"utf-8" | 
 
 
+
+##### UniWebviewContextLoadDataOptions 的属性值 @uniwebviewcontextloaddataoptions-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| data | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 要加载的内容，编码后的字符串 |
+| baseURL | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 页面的基础URL |
+| mimeType | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 加载的页面内容类型，默认值为"text/html" |
+| encoding | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 页面内容的编码类型，默认值为"utf-8" |
  
 
 
@@ -317,6 +326,15 @@ loadData
 | encoding | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 页面内容的编码类型，默认值为"utf-8" | 
 
 
+
+##### UniWebviewContextLoadDataOptions 的属性值 @uniwebviewcontextloaddataoptions-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| data | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 要加载的内容，编码后的字符串 |
+| baseURL | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 页面的基础URL |
+| mimeType | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 加载的页面内容类型，默认值为"text/html" |
+| encoding | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 页面内容的编码类型，默认值为"utf-8" |
  
 
 

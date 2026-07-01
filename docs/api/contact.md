@@ -80,6 +80,24 @@
 | 602 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 | 603 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 
+#### AddPhoneContactFail 的属性值 @addphonecontactfail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 601 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 602 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 603 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
 
 
 
@@ -128,6 +146,33 @@
 | success | (result: [ChooseContactSuccess](#choosecontactsuccess-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
 | fail | (result: [ChooseContactFail](#choosecontactfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
 | complete | (result: [ChooseContactSuccess](#choosecontactsuccess-values) \| [ChooseContactFail](#choosecontactfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+
+#### ChooseContactSuccess 的属性值 @choosecontactsuccess-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| displayName | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 联系人姓名 |
+| phoneNumber | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 当前选中的手机号 |
+| phoneNumberList | Array&lt;string&gt; | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 联系人的所有手机号 |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结果 |
+
+#### ChooseContactFail 的属性值 @choosecontactfail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 601 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 602 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 603 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### ChooseContactSuccess 的属性值 @choosecontactsuccess-values 
 

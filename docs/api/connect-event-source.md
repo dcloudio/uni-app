@@ -107,6 +107,14 @@ onOpen
 | :- | :- | :- | :- |  :-: | :- |
 | callback | (ev: [UniMessageEvent](#unimessageevent-values)) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | 事件回调 | 
 
+##### UniMessageEvent 的属性值 @unimessageevent-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| type | string | 否 | null | Web: x; 微信小程序:  ; Android: 4.51; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS 系统版本: x; HarmonyOS: x | 事件类型。 |
+| data | any | 否 | null | Web: x; 微信小程序:  ; Android: 4.51; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS 系统版本: x; HarmonyOS: x | 消息发射器发出的数据。 |
+| lastEventId | string | 否 | null | Web: x; 微信小程序:  ; Android: 4.51; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS 系统版本: x; HarmonyOS: x | 一个字符串，表示事件的唯一 ID。 |
+
 
 
 #### close() : void @close
@@ -119,6 +127,22 @@ close
 
 
 
+
+##### UniMessageEvent 的属性值 @unimessageevent-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| type | string | 否 | null | Web: x; 微信小程序:  ; Android: 4.51; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS 系统版本: x; HarmonyOS: x | 事件类型。 |
+| data | any | 否 | null | Web: x; 微信小程序:  ; Android: 4.51; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS 系统版本: x; HarmonyOS: x | 消息发射器发出的数据。 |
+| lastEventId | string | 否 | null | Web: x; 微信小程序:  ; Android: 4.51; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS 系统版本: x; HarmonyOS: x | 一个字符串，表示事件的唯一 ID。 |
+
+##### UniMessageEvent 的属性值 @unimessageevent-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| type | string | 否 | null | Web: x; 微信小程序:  ; Android: 4.51; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS 系统版本: x; HarmonyOS: x | 事件类型。 |
+| data | any | 否 | null | Web: x; 微信小程序:  ; Android: 4.51; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS 系统版本: x; HarmonyOS: x | 消息发射器发出的数据。 |
+| lastEventId | string | 否 | null | Web: x; 微信小程序:  ; Android: 4.51; iOS: 4.63; iOS uni-app x UTS 插件: 4.63; HarmonyOS 系统版本: x; HarmonyOS: x | 一个字符串，表示事件的唯一 ID。 |
  
 
 

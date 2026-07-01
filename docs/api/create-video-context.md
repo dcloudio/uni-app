@@ -180,6 +180,20 @@ exitFullScreen
 
 
 
+
+##### Danmu 的属性值 @danmu-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| text | string | 否 |  |   | 弹幕文字 |
+| color | string | 否 |  |   | 弹幕颜色 |
+| time | number | 否 |  |   | 显示时刻 |
+
+##### RequestFullScreenOptions 的属性值 @requestfullscreenoptions-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| direction | 90 \| any | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11; HarmonyOS:   | direction |
  
 
 

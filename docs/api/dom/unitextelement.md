@@ -299,6 +299,22 @@ measure
 | width | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素宽度，逻辑像素值 |
 | height | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素高度，逻辑像素值 | 
 
+###### UniLayoutConstraintSize 的属性值 @unilayoutconstraintsize-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| minWidth | number | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素最小宽度，逻辑像素值<br/>可选值，不设置则认为没有最小宽度 |
+| maxWidth | number | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素最大宽度，逻辑像素值<br/>可选值，不设置则认为可以无限宽 |
+| minHeight | number | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素最小高度，逻辑像素值<br/>可选值，不设置则认为没有最小高度 |
+| maxHeight | number | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素最大高度，逻辑像素值<br/>可选值，不设置则认为可以无限高 |
+
+###### UniLayoutSize 的属性值 @unilayoutsize-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| width | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素宽度，逻辑像素值 |
+| height | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素高度，逻辑像素值 |
+
 
 
 

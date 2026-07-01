@@ -74,6 +74,35 @@
 | 608 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | add calendar event failed |
 | 609 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | calendar creation canceled |
 
+#### AddPhoneRepeatCalendarSuccess 的属性值 @addphonerepeatcalendarsuccess-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errMsg | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
+#### AddPhoneRepeatCalendarFail 的属性值 @addphonerepeatcalendarfail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误码 |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 601 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | title is required |
+| 602 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | startTime is invalid |
+| 603 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | endTime is invalid |
+| 604 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | alarmOffset requires alarm |
+| 606 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | repeat rule is invalid |
+| 607 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | calendar service is unavailable |
+| 608 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | add calendar event failed |
+| 609 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | calendar creation canceled |
+
 
 
 
@@ -132,6 +161,35 @@
 | success | (res: [AddPhoneCalendarSuccess](#addphonecalendarsuccess-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
 | fail | (res: [AddPhoneCalendarFail](#addphonecalendarfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
 | complete | (res: [AddPhoneCalendarSuccess](#addphonecalendarsuccess-values) \| [AddPhoneCalendarFail](#addphonecalendarfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+
+#### AddPhoneCalendarSuccess 的属性值 @addphonecalendarsuccess-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errMsg | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
+#### AddPhoneCalendarFail 的属性值 @addphonecalendarfail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误码 |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 601 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | title is required |
+| 602 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | startTime is invalid |
+| 603 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | endTime is invalid |
+| 604 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | alarmOffset requires alarm |
+| 606 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | repeat rule is invalid |
+| 607 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | calendar service is unavailable |
+| 608 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | add calendar event failed |
+| 609 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | calendar creation canceled |
 
 #### AddPhoneCalendarSuccess 的属性值 @addphonecalendarsuccess-values 
 

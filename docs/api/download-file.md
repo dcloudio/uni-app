@@ -156,6 +156,14 @@ onProgressUpdate
 | totalBytesExpectedToWrite | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 预期需要下载的数据总长度，单位 Bytes |
 
 
+
+##### OnProgressDownloadResult 的属性值 @onprogressdownloadresult-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| progress | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 下载进度百分比 |
+| totalBytesWritten | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 已经下载的数据长度，单位 Bytes |
+| totalBytesExpectedToWrite | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 预期需要下载的数据总长度，单位 Bytes |
  
 
 

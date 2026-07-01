@@ -69,6 +69,34 @@
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
 | errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 
+#### StartSoterAuthenticationSuccess 的属性值 @startsoterauthenticationsuccess-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误码 |
+| authMode | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 生物认证方式 |
+| resultJSON | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 在设备安全区域（TEE）内获得的本机安全信息以及本次认证信息 |
+| resultJSONSignature | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 用安全密钥对 resultJSON 的签名(SHA256 with RSA/PSS, saltlen=20) |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结果 |
+
+#### authMode 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| fingerPrint | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 指纹识别 |
+| facial | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 人脸识别 |
+| speech | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 声纹识别（暂未支持） |
+
+#### StartSoterAuthenticationFail 的属性值 @startsoterauthenticationfail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误码 |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
 
 
 
@@ -126,6 +154,31 @@
 | success | (result: [CheckIsSupportSoterAuthenticationSuccess](#checkissupportsoterauthenticationsuccess-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
 | fail | (result: [CheckIsSupportSoterAuthenticationFail](#checkissupportsoterauthenticationfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
 | complete | (result: [CheckIsSupportSoterAuthenticationSuccess](#checkissupportsoterauthenticationsuccess-values) \| [CheckIsSupportSoterAuthenticationFail](#checkissupportsoterauthenticationfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+
+#### CheckIsSupportSoterAuthenticationSuccess 的属性值 @checkissupportsoterauthenticationsuccess-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| supportMode | Array&lt;string&gt; | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结果 |
+
+#### supportMode 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| fingerPrint | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 指纹识别 |
+| facial | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 人脸识别 |
+| speech | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 声纹识别（暂未支持） |
+
+#### CheckIsSupportSoterAuthenticationFail 的属性值 @checkissupportsoterauthenticationfail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误码 |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### CheckIsSupportSoterAuthenticationSuccess 的属性值 @checkissupportsoterauthenticationsuccess-values 
 
@@ -219,6 +272,23 @@
 | fingerPrint | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 指纹识别 |
 | facial | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 人脸识别 |
 | speech | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 声纹识别（暂未支持） |
+
+#### CheckIsSoterEnrolledInDeviceSuccess 的属性值 @checkissoterenrolledindevicesuccess-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| isEnrolled | boolean | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 是否已录入信息 |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+
+#### CheckIsSoterEnrolledInDeviceFail 的属性值 @checkissoterenrolledindevicefail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误码 |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### CheckIsSoterEnrolledInDeviceSuccess 的属性值 @checkissoterenrolledindevicesuccess-values 
 

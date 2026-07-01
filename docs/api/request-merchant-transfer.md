@@ -54,6 +54,18 @@ uni.requestMerchantTransfer 是​商家转账到用户零钱的API，适用于�
 | :- | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x |  |
 
+#### RequestMerchantTransferGeneralCallbackResult 的属性值 @requestmerchanttransfergeneralcallbackresult-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x |  |
+
+#### RequestMerchantTransferGeneralCallbackResult 的属性值 @requestmerchanttransfergeneralcallbackresult-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x |  |
+
 
 
 

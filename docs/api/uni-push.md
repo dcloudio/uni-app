@@ -275,6 +275,18 @@ getAllChannels
 | :- |
 | Array&lt;string&gt; |
  
+
+##### SetPushChannelOptions 的属性值 @setpushchanneloptions-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| soundName | string | 否 | null | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 添加的声音文件，注意raw目录下必须要有 ，不传此字段将使用默认铃音。 |
+| channelId | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 通知渠道id |
+| channelDesc | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 通知渠道描述 |
+| enableLights | boolean | 否 | false | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 呼吸灯闪烁 |
+| enableVibration | boolean | 否 | false | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 震动 |
+| importance | number | 否 | 3 | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 通知的重要性级别，可选范围IMPORTANCE_LOW：2、IMPORTANCE_DEFAULT：3、IMPORTANCE_HIGH：4 。 |
+| lockscreenVisibility | number | 否 | -1000 | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 锁屏可见性，可选范围VISIBILITY_PRIVATE：0、VISIBILITY_PUBLIC：1、VISIBILITY_SECRET：-1、VISIBILITY_NO_OVERRIDE：-1000。 |
  
 
 
@@ -388,6 +400,18 @@ getAllChannels
 | :- |
 | Array&lt;string&gt; |
  
+
+##### SetPushChannelOptions 的属性值 @setpushchanneloptions-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| soundName | string | 否 | null | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 添加的声音文件，注意raw目录下必须要有 ，不传此字段将使用默认铃音。 |
+| channelId | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 通知渠道id |
+| channelDesc | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 通知渠道描述 |
+| enableLights | boolean | 否 | false | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 呼吸灯闪烁 |
+| enableVibration | boolean | 否 | false | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 震动 |
+| importance | number | 否 | 3 | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 通知的重要性级别，可选范围IMPORTANCE_LOW：2、IMPORTANCE_DEFAULT：3、IMPORTANCE_HIGH：4 。 |
+| lockscreenVisibility | number | 否 | -1000 | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 锁屏可见性，可选范围VISIBILITY_PRIVATE：0、VISIBILITY_PUBLIC：1、VISIBILITY_SECRET：-1、VISIBILITY_NO_OVERRIDE：-1000。 |
  
 
 

@@ -127,6 +127,14 @@ onProgressUpdate
 | totalBytesExpectedToSend | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 预期需要上传的数据总长度，单位 Bytes |
 
 
+
+##### OnProgressUpdateResult 的属性值 @onprogressupdateresult-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| progress | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 上传进度百分比 |
+| totalBytesSent | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 已经上传的数据长度，单位 Bytes |
+| totalBytesExpectedToSend | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 预期需要上传的数据总长度，单位 Bytes |
  
 
 

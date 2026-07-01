@@ -83,6 +83,71 @@
 | byteOffset | number | 否 |  |   | 可选，偏移量，单位字节 |
 | length | number | 否 |  |   | 可选，长度 | 
 
+#### buffer 的属性描述
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| byteLength | number | 是 |  | Web: √; Android: 4.25; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | ArrayBuffer 实例的 byteLength 访问器属性返回该数组缓冲区的长度（以字节为单位）。 |
+
+##### ArrayBufferLike 的方法 @arraybufferlike-values 
+
+##### slice(begin ?: number, end ?: number) : ArrayBuffer; @slice
+slice
+ArrayBuffer 实例的 slice() 方法返回一个新的 ArrayBuffer 实例，其包含原 ArrayBuffer 实例中从 begin 开始（包含）到 end 结束（不含）的所有字节的副本。
+###### slice 兼容性 
+| Web | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| √ | 4.25 | 4.11 | x | 4.61 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| begin | number | 否 |  |   | 可选，要开始提取的位置索引（从 0 开始），将被转换为整数。负数索引将会从缓冲区末尾开始计算——如果 start \< 0，那么将会使用 start + buffer.length。 如果 start \< -buffer.length 或省略了 start，则会使用 0。 如果 start >= buffer.length，则不会提取任何内容。 |
+| end | number | 否 |  |   | 可选，要结束提取的位置索引（从 0 开始），将被转换为整数。slice() 提取到但不包括 end。 负数索引将会从缓冲区末尾开始计算——如果 end \< 0，那么将会使用 end + buffer.length。 如果 end \< -buffer.length，则会使用 0。 如果 end >= buffer.length 或省略了 end，则会使用 buffer.length，则会导致直到末尾的所有元素都被提取。 如果标准化后的 end 位置在 start 位置之前，则不会提取任何内容。 | 
+
+
+###### 返回值 
+
+| 类型 | 描述 |
+| :- | :- |
+| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 一个新的 ArrayBuffer 对象。 |
+ 
+
+##### toByteBuffer() : ByteBuffer; @tobytebuffer
+toByteBuffer
+ArrayBuffer 实例的 toByteBuffer() 方法返回一个android原生ByteBuffer对象。
+###### toByteBuffer 兼容性 
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS 系统版本 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.25 | x | x | x | 4.61 |
+
+
+
+###### 返回值 
+
+| 类型 | 描述 |
+| :- | :- |
+| ByteBuffer | android 原生ByteBuffer对象。 |
+ 
+
+##### toData() : Data; @todata
+toData
+ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
+###### toData 兼容性 
+| Web | Android 系统版本 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | x | x | x | 4.61 |
+
+
+
+###### 返回值 
+
+| 类型 | 描述 |
+| :- | :- |
+| Data | iOS 原生 Data 对象。 |
+ 
+
 
 **返回值**
 | 类型 | 描述 |
@@ -193,6 +258,12 @@
 | :- | :- | :- | :- |  :-: | :- |
 | arrayLike | [ArrayLike\<number>](#arraylike-values) | 是 |  |   | 要转换为数组的类似数组或可迭代对象。 |
 | mapfn | (v: number, k: number) => number | 否 |  |   | 可选参数。如果指定了该参数，则最后生成的类型数组会经过该函数的加工处理后再返回。 | 
+
+#### arrayLike 的属性描述
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| length | number | 是 |  |   |  |
 
 
 **返回值**
@@ -977,6 +1048,12 @@
 | :- | :- | :- | :- |  :-: | :- |
 | array | [ArrayLike\<number>](#arraylike-values) | 是 |  |   | 要设置的值或数组。 |
 | offset | number | 否 |  |   | 要写入值的当前数组中的索引。 | 
+
+#### array 的属性描述
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| length | number | 是 |  |   |  |
 
 
 **返回值**

@@ -207,6 +207,20 @@ node
 | :- |
 | [SelectorQuery](#selectorquery-values) |
  
+
+###### NodeField 的属性值 @nodefield-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| id | boolean | 否 |  |   | 是否返回节点 id |
+| dataset | boolean | 否 |  |   | 是否返回节点 dataset |
+| rect | boolean | 否 |  |   | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 |  |   | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
+| computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
+| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
  
 
 #### selectAll(selector: string): NodesRef @selectall
@@ -229,6 +243,140 @@ selectAll
 | 类型 |
 | :- |
 | [NodesRef](#nodesref-values) |
+
+###### NodesRef 的方法 @nodesref-values 
+
+###### boundingClientRect( callback: SelectorQueryNodeInfoCallback \| null,    ): SelectorQuery @boundingclientrect
+boundingClientRect
+添加节点的布局位置的查询请求，相对于显示区域，以像素为单位
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 否 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+###### scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery @scrolloffset
+scrollOffset
+添加节点的滚动位置查询请求，以像素为单位
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+###### fields( fields: NodeField,        callback: SelectorQueryNodeInfoCallback \| null,    ): SelectorQuery @fields
+fields
+获取节点的相关信息，需要获取的字段在fields中指定
+###### fields 兼容性 
+| Web | 微信小程序 | Android | iOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.25 | 4.25 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| fields | **NodeField** | 是 |  |   |  |
+| callback | (result: any) => void | 否 |  |   |  | 
+
+#### fields 的属性描述
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| id | boolean | 否 |  |   | 是否返回节点 id |
+| dataset | boolean | 否 |  |   | 是否返回节点 dataset |
+| rect | boolean | 否 |  |   | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 |  |   | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
+| computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
+| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+###### context(callback: SelectorQueryNodeInfoCallback): SelectorQuery @context
+context
+添加节点的 Context 对象查询请求（uni-app x 暂仅支持获取 EditorContext）
+###### context 兼容性 
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.04 | 5.04 | 5.04 | 5.04 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+###### node(callback: (result: any) => void): SelectorQuery @node
+node
+获取 Node 节点实例。目前支持 Canvas 的获取。
+获取节点的相关信息，需要获取的字段在fields中指定
+###### node 兼容性 
+| Web | 微信小程序 | Android | iOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.25 | 4.25 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+###### NodeField 的属性值 @nodefield-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| id | boolean | 否 |  |   | 是否返回节点 id |
+| dataset | boolean | 否 |  |   | 是否返回节点 dataset |
+| rect | boolean | 否 |  |   | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 |  |   | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
+| computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
+| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
  
 
 #### selectViewport(): NodesRef @selectviewport
@@ -246,6 +394,140 @@ selectViewport
 | 类型 |
 | :- |
 | [NodesRef](#nodesref-values) |
+
+###### NodesRef 的方法 @nodesref-values 
+
+###### boundingClientRect( callback: SelectorQueryNodeInfoCallback \| null,    ): SelectorQuery @boundingclientrect
+boundingClientRect
+添加节点的布局位置的查询请求，相对于显示区域，以像素为单位
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 否 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+###### scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery @scrolloffset
+scrollOffset
+添加节点的滚动位置查询请求，以像素为单位
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+###### fields( fields: NodeField,        callback: SelectorQueryNodeInfoCallback \| null,    ): SelectorQuery @fields
+fields
+获取节点的相关信息，需要获取的字段在fields中指定
+###### fields 兼容性 
+| Web | 微信小程序 | Android | iOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.25 | 4.25 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| fields | **NodeField** | 是 |  |   |  |
+| callback | (result: any) => void | 否 |  |   |  | 
+
+#### fields 的属性描述
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| id | boolean | 否 |  |   | 是否返回节点 id |
+| dataset | boolean | 否 |  |   | 是否返回节点 dataset |
+| rect | boolean | 否 |  |   | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 |  |   | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
+| computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
+| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+###### context(callback: SelectorQueryNodeInfoCallback): SelectorQuery @context
+context
+添加节点的 Context 对象查询请求（uni-app x 暂仅支持获取 EditorContext）
+###### context 兼容性 
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.04 | 5.04 | 5.04 | 5.04 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+###### node(callback: (result: any) => void): SelectorQuery @node
+node
+获取 Node 节点实例。目前支持 Canvas 的获取。
+获取节点的相关信息，需要获取的字段在fields中指定
+###### node 兼容性 
+| Web | 微信小程序 | Android | iOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.25 | 4.25 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+###### NodeField 的属性值 @nodefield-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| id | boolean | 否 |  |   | 是否返回节点 id |
+| dataset | boolean | 否 |  |   | 是否返回节点 dataset |
+| rect | boolean | 否 |  |   | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 |  |   | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
+| computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
+| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
  
 
 #### exec(callback: (result: Array\<any>) => void \| null): NodesRef \| null @exec
@@ -268,7 +550,677 @@ exec
 | 类型 | 必备 |
 | :- | :- |
 | [NodesRef](#nodesref-values) | 否 |
+
+###### NodesRef 的方法 @nodesref-values 
+
+###### boundingClientRect( callback: SelectorQueryNodeInfoCallback \| null,    ): SelectorQuery @boundingclientrect
+boundingClientRect
+添加节点的布局位置的查询请求，相对于显示区域，以像素为单位
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 否 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
  
+
+###### scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery @scrolloffset
+scrollOffset
+添加节点的滚动位置查询请求，以像素为单位
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+###### fields( fields: NodeField,        callback: SelectorQueryNodeInfoCallback \| null,    ): SelectorQuery @fields
+fields
+获取节点的相关信息，需要获取的字段在fields中指定
+###### fields 兼容性 
+| Web | 微信小程序 | Android | iOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.25 | 4.25 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| fields | **NodeField** | 是 |  |   |  |
+| callback | (result: any) => void | 否 |  |   |  | 
+
+#### fields 的属性描述
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| id | boolean | 否 |  |   | 是否返回节点 id |
+| dataset | boolean | 否 |  |   | 是否返回节点 dataset |
+| rect | boolean | 否 |  |   | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 |  |   | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
+| computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
+| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+###### context(callback: SelectorQueryNodeInfoCallback): SelectorQuery @context
+context
+添加节点的 Context 对象查询请求（uni-app x 暂仅支持获取 EditorContext）
+###### context 兼容性 
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.04 | 5.04 | 5.04 | 5.04 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+###### node(callback: (result: any) => void): SelectorQuery @node
+node
+获取 Node 节点实例。目前支持 Canvas 的获取。
+获取节点的相关信息，需要获取的字段在fields中指定
+###### node 兼容性 
+| Web | 微信小程序 | Android | iOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.25 | 4.25 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+###### NodeField 的属性值 @nodefield-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| id | boolean | 否 |  |   | 是否返回节点 id |
+| dataset | boolean | 否 |  |   | 是否返回节点 dataset |
+| rect | boolean | 否 |  |   | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 |  |   | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
+| computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
+| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
+ 
+
+##### NodesRef 的方法 @nodesref-values 
+
+##### boundingClientRect( callback: SelectorQueryNodeInfoCallback \| null,    ): SelectorQuery @boundingclientrect
+boundingClientRect
+添加节点的布局位置的查询请求，相对于显示区域，以像素为单位
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 否 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+##### scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery @scrolloffset
+scrollOffset
+添加节点的滚动位置查询请求，以像素为单位
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+##### fields( fields: NodeField,        callback: SelectorQueryNodeInfoCallback \| null,    ): SelectorQuery @fields
+fields
+获取节点的相关信息，需要获取的字段在fields中指定
+###### fields 兼容性 
+| Web | 微信小程序 | Android | iOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.25 | 4.25 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| fields | **NodeField** | 是 |  |   |  |
+| callback | (result: any) => void | 否 |  |   |  | 
+
+#### fields 的属性描述
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| id | boolean | 否 |  |   | 是否返回节点 id |
+| dataset | boolean | 否 |  |   | 是否返回节点 dataset |
+| rect | boolean | 否 |  |   | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 |  |   | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
+| computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
+| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+##### context(callback: SelectorQueryNodeInfoCallback): SelectorQuery @context
+context
+添加节点的 Context 对象查询请求（uni-app x 暂仅支持获取 EditorContext）
+###### context 兼容性 
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.04 | 5.04 | 5.04 | 5.04 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+##### node(callback: (result: any) => void): SelectorQuery @node
+node
+获取 Node 节点实例。目前支持 Canvas 的获取。
+获取节点的相关信息，需要获取的字段在fields中指定
+###### node 兼容性 
+| Web | 微信小程序 | Android | iOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.25 | 4.25 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+###### NodeField 的属性值 @nodefield-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| id | boolean | 否 |  |   | 是否返回节点 id |
+| dataset | boolean | 否 |  |   | 是否返回节点 dataset |
+| rect | boolean | 否 |  |   | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 |  |   | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
+| computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
+| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
+
+##### NodesRef 的方法 @nodesref-values 
+
+##### boundingClientRect( callback: SelectorQueryNodeInfoCallback \| null,    ): SelectorQuery @boundingclientrect
+boundingClientRect
+添加节点的布局位置的查询请求，相对于显示区域，以像素为单位
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 否 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+##### scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery @scrolloffset
+scrollOffset
+添加节点的滚动位置查询请求，以像素为单位
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+##### fields( fields: NodeField,        callback: SelectorQueryNodeInfoCallback \| null,    ): SelectorQuery @fields
+fields
+获取节点的相关信息，需要获取的字段在fields中指定
+###### fields 兼容性 
+| Web | 微信小程序 | Android | iOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.25 | 4.25 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| fields | **NodeField** | 是 |  |   |  |
+| callback | (result: any) => void | 否 |  |   |  | 
+
+#### fields 的属性描述
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| id | boolean | 否 |  |   | 是否返回节点 id |
+| dataset | boolean | 否 |  |   | 是否返回节点 dataset |
+| rect | boolean | 否 |  |   | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 |  |   | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
+| computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
+| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+##### context(callback: SelectorQueryNodeInfoCallback): SelectorQuery @context
+context
+添加节点的 Context 对象查询请求（uni-app x 暂仅支持获取 EditorContext）
+###### context 兼容性 
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.04 | 5.04 | 5.04 | 5.04 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+##### node(callback: (result: any) => void): SelectorQuery @node
+node
+获取 Node 节点实例。目前支持 Canvas 的获取。
+获取节点的相关信息，需要获取的字段在fields中指定
+###### node 兼容性 
+| Web | 微信小程序 | Android | iOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.25 | 4.25 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+###### NodeField 的属性值 @nodefield-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| id | boolean | 否 |  |   | 是否返回节点 id |
+| dataset | boolean | 否 |  |   | 是否返回节点 dataset |
+| rect | boolean | 否 |  |   | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 |  |   | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
+| computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
+| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
+
+##### NodesRef 的方法 @nodesref-values 
+
+##### boundingClientRect( callback: SelectorQueryNodeInfoCallback \| null,    ): SelectorQuery @boundingclientrect
+boundingClientRect
+添加节点的布局位置的查询请求，相对于显示区域，以像素为单位
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 否 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+##### scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery @scrolloffset
+scrollOffset
+添加节点的滚动位置查询请求，以像素为单位
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+##### fields( fields: NodeField,        callback: SelectorQueryNodeInfoCallback \| null,    ): SelectorQuery @fields
+fields
+获取节点的相关信息，需要获取的字段在fields中指定
+###### fields 兼容性 
+| Web | 微信小程序 | Android | iOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.25 | 4.25 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| fields | **NodeField** | 是 |  |   |  |
+| callback | (result: any) => void | 否 |  |   |  | 
+
+#### fields 的属性描述
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| id | boolean | 否 |  |   | 是否返回节点 id |
+| dataset | boolean | 否 |  |   | 是否返回节点 dataset |
+| rect | boolean | 否 |  |   | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 |  |   | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
+| computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
+| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+##### context(callback: SelectorQueryNodeInfoCallback): SelectorQuery @context
+context
+添加节点的 Context 对象查询请求（uni-app x 暂仅支持获取 EditorContext）
+###### context 兼容性 
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.04 | 5.04 | 5.04 | 5.04 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+##### node(callback: (result: any) => void): SelectorQuery @node
+node
+获取 Node 节点实例。目前支持 Canvas 的获取。
+获取节点的相关信息，需要获取的字段在fields中指定
+###### node 兼容性 
+| Web | 微信小程序 | Android | iOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.25 | 4.25 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+###### NodeField 的属性值 @nodefield-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| id | boolean | 否 |  |   | 是否返回节点 id |
+| dataset | boolean | 否 |  |   | 是否返回节点 dataset |
+| rect | boolean | 否 |  |   | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 |  |   | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
+| computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
+| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
+
+##### NodesRef 的方法 @nodesref-values 
+
+##### boundingClientRect( callback: SelectorQueryNodeInfoCallback \| null,    ): SelectorQuery @boundingclientrect
+boundingClientRect
+添加节点的布局位置的查询请求，相对于显示区域，以像素为单位
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 否 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+##### scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery @scrolloffset
+scrollOffset
+添加节点的滚动位置查询请求，以像素为单位
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+##### fields( fields: NodeField,        callback: SelectorQueryNodeInfoCallback \| null,    ): SelectorQuery @fields
+fields
+获取节点的相关信息，需要获取的字段在fields中指定
+###### fields 兼容性 
+| Web | 微信小程序 | Android | iOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.25 | 4.25 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| fields | **NodeField** | 是 |  |   |  |
+| callback | (result: any) => void | 否 |  |   |  | 
+
+#### fields 的属性描述
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| id | boolean | 否 |  |   | 是否返回节点 id |
+| dataset | boolean | 否 |  |   | 是否返回节点 dataset |
+| rect | boolean | 否 |  |   | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 |  |   | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
+| computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
+| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+##### context(callback: SelectorQueryNodeInfoCallback): SelectorQuery @context
+context
+添加节点的 Context 对象查询请求（uni-app x 暂仅支持获取 EditorContext）
+###### context 兼容性 
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.04 | 5.04 | 5.04 | 5.04 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+##### node(callback: (result: any) => void): SelectorQuery @node
+node
+获取 Node 节点实例。目前支持 Canvas 的获取。
+获取节点的相关信息，需要获取的字段在fields中指定
+###### node 兼容性 
+| Web | 微信小程序 | Android | iOS |
+| :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.25 | 4.25 |
+
+##### 参数 
+
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| callback | (result: any) => void | 是 |  |   |  | 
+
+
+###### 返回值 
+
+| 类型 |
+| :- |
+| [SelectorQuery](#selectorquery-values) |
+ 
+
+###### NodeField 的属性值 @nodefield-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| id | boolean | 否 |  |   | 是否返回节点 id |
+| dataset | boolean | 否 |  |   | 是否返回节点 dataset |
+| rect | boolean | 否 |  |   | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 |  |   | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
+| computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
+| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
  
 
 

@@ -344,6 +344,56 @@ offInterruptionEnd
 
 
 
+
+##### RecorderManagerStartOptions 的属性值 @recordermanagerstartoptions-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| duration | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 指定录音的时长，单位 ms ，如果传入了合法的 duration ，在到达指定的 duration 后会自动停止录音，默认值 60000（1 分钟)，微信小程序最大值 600000（10 分钟), App 平台没有最大值限制 |
+| sampleRate | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 采样率，有效值 8000/16000/44100, Android平台默认是8000，iOS平台默认是44100 |
+| numberOfChannels | number | 否 | 2 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 | 录音通道数，有效值 1/2 |
+| encodeBitRate | number | 否 | 48000 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 编码码率，有效值见下表格 |
+| format | string | 否 | aac | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 音频格式 |
+| frameSize | number | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 指定帧大小，单位 KB。传入 frameSize 后，每录制指定帧大小的内容后，会回调录制的文件内容，不指定则不会回调。暂仅支持 mp3 格式。 |
+
+#### format 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| aac | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | aac格式 |
+| mp3 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 | mp3格式 |
+| pcm | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | pcm格式 |
+| wav | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | wav格式 |
+| m4a | Web: x; 微信小程序: 4.41; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 | m4a格式 |
+
+##### RecorderManagerOnStopResult 的属性值 @recordermanageronstopresult-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| tempFilePath | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 录音文件的临时路径 |
+
+##### IRecorderManagerFail 的属性值 @irecordermanagerfail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误码 |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 1107601 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 没有麦克风权限 |
+| 1107602 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 不支持该采样率 |
+| 1107603 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 采样率是和编码码率不匹配 |
+| 1107604 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 启动失败 |
+| 1107605 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 不支持该音频格式 |
+| 1107606 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 其他错误 |
+| 1107607 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 被打断 |
+| 1107608 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: x; HarmonyOS: x | 正在录音中，请稍后执行此操作 |
  
 
 

@@ -101,10 +101,19 @@ observe
 | intersectionRatio | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 相交比例 |
 | intersectionRect | any | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 相交区域的边界 |
 | boundingClientRect | **ObserveNodeRect** | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 目标节点布局区域的边界 |
-| relativeRect | [ObserveNodeRect](#observenoderect-values) | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 参照区域的边界 |
+| relativeRect | **ObserveNodeRect** | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 参照区域的边界 |
 | time | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 相交检测时的时间戳 |
 
 #### boundingClientRect 的属性描述
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| left | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | left |
+| right | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | right |
+| top | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | top |
+| bottom | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | bottom |
+
+#### relativeRect 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
@@ -125,6 +134,34 @@ disconnect
 
 
 
+
+##### ObserveResult 的属性值 @observeresult-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| intersectionRatio | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 相交比例 |
+| intersectionRect | any | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 相交区域的边界 |
+| boundingClientRect | **ObserveNodeRect** | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 目标节点布局区域的边界 |
+| relativeRect | **ObserveNodeRect** | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 参照区域的边界 |
+| time | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 相交检测时的时间戳 |
+
+#### boundingClientRect 的属性描述
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| left | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | left |
+| right | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | right |
+| top | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | top |
+| bottom | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | bottom |
+
+#### relativeRect 的属性描述
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| left | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | left |
+| right | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | right |
+| top | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | top |
+| bottom | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | bottom |
  
 
 

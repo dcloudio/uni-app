@@ -162,6 +162,42 @@
 | 804 |  |
 | 901 |  |
 
+#### StartAccelerometerSuccess 的属性值 @startaccelerometersuccess-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errMsg | string | 否 |  |   |  |
+
+#### StartAccelerometerFail 的属性值 @startaccelerometerfail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  |   |  |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 描述 |
+| :- | :- |
+| 501 |  |
+| 502 |  |
+| 503 |  |
+| 601 |  |
+| 602 |  |
+| 603 |  |
+| 604 |  |
+| 701 |  |
+| 702 |  |
+| 703 |  |
+| 801 |  |
+| 802 |  |
+| 803 |  |
+| 804 |  |
+| 901 |  |
+
 
 
 
@@ -211,6 +247,42 @@
 | success | (res: [StopAccelerometerSuccess](#stopaccelerometersuccess-values)) => void | 否 |  |   | 停止监听加速度数据调用成功的回调函数 |
 | fail | (res: [StopAccelerometerFail](#stopaccelerometerfail-values)) => void | 否 |  |   | 停止监听加速度数据调用失败的回调函数 |
 | complete | (res: [StopAccelerometerSuccess](#stopaccelerometersuccess-values) \| [StopAccelerometerFail](#stopaccelerometerfail-values)) => void | 否 |  |   | 停止监听加速度数据调用结束的回调函数（调用成功、失败都会执行） | 
+
+#### StopAccelerometerSuccess 的属性值 @stopaccelerometersuccess-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errMsg | string | 否 |  |   |  |
+
+#### StopAccelerometerFail 的属性值 @stopaccelerometerfail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  |   |  |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 描述 |
+| :- | :- |
+| 501 |  |
+| 502 |  |
+| 503 |  |
+| 601 |  |
+| 602 |  |
+| 603 |  |
+| 604 |  |
+| 701 |  |
+| 702 |  |
+| 703 |  |
+| 801 |  |
+| 802 |  |
+| 803 |  |
+| 804 |  |
+| 901 |  |
 
 #### StopAccelerometerSuccess 的属性值 @stopaccelerometersuccess-values 
 

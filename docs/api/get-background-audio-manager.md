@@ -475,6 +475,27 @@ offWaiting
 
 
 
+
+##### ICreateBackgroundAudioFail 的属性值 @icreatebackgroundaudiofail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误码 |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 1107601 | Web: x; 微信小程序:  ; Android: 4.41; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS:   | 系统错误 |
+| 1107602 | Web: x; 微信小程序:  ; Android: 4.41; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS:   | 网络错误 |
+| 1107603 | Web: x; 微信小程序:  ; Android: 4.41; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS:   | 文件错误 |
+| 1107604 | Web: x; 微信小程序:  ; Android: 4.41; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS:   | 格式错误 |
+| 1107605 | Web: x; 微信小程序:  ; Android: 4.41; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS:   | 未知错误 |
+| 1107609 | Web: x; 微信小程序:  ; Android: 4.41; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS:   | 播放路径不能为空 |
  
 
 

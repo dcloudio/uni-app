@@ -71,6 +71,44 @@
 | 804 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 | 901 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 
+#### StartGyroscopeSuccess 的属性值 @startgyroscopesuccess-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errMsg | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
+#### StartGyroscopeFail 的属性值 @startgyroscopefail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 501 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 502 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 503 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 504 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 601 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 602 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 603 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 604 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 701 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 702 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 703 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 704 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 801 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 802 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 803 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 804 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 901 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
 
 
 
@@ -123,6 +161,44 @@
 | success | (res: [StopGyroscopeSuccess](#stopgyroscopesuccess-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
 | fail | (res: [StopGyroscopeFail](#stopgyroscopefail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
 | complete | (res: [StopGyroscopeSuccess](#stopgyroscopesuccess-values) \| [StopGyroscopeFail](#stopgyroscopefail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+
+#### StopGyroscopeSuccess 的属性值 @stopgyroscopesuccess-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errMsg | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
+#### StopGyroscopeFail 的属性值 @stopgyroscopefail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 501 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 502 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 503 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 504 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 601 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 602 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 603 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 604 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 701 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 702 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 703 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 704 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 801 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 802 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 803 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 804 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 901 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### StopGyroscopeSuccess 的属性值 @stopgyroscopesuccess-values 
 

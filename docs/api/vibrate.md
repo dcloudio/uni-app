@@ -58,6 +58,30 @@
 | 9001002 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 | 9001003 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 
+#### VibrateShortSuccess 的属性值 @vibrateshortsuccess-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
+#### VibrateShortFail 的属性值 @vibrateshortfail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 9001001 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 9001002 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 9001003 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
 
 
 
@@ -107,6 +131,30 @@
 | success | (result: [VibrateLongSuccess](#vibratelongsuccess-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 | fail | (result: [VibrateLongFail](#vibratelongfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 | complete | (result: [VibrateLongSuccess](#vibratelongsuccess-values) \| [VibrateLongFail](#vibratelongfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
+
+#### VibrateLongSuccess 的属性值 @vibratelongsuccess-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
+#### VibrateLongFail 的属性值 @vibratelongfail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 9001001 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 9001002 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+| 9001003 | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### VibrateLongSuccess 的属性值 @vibratelongsuccess-values 
 
