@@ -389,6 +389,20 @@ setSubpackageAppVm(resolveSubpackageRoot(root), vm, true)
 - 独立分包复用项目根 `main.*` 中的 `app.use()`、`globalProperties`、`provide`、store、i18n、全局 mixin 等初始化逻辑。
 - 独立分包复用 `App.vue` app 级样式。
 - 独立分包冷启动模拟主包 App 生命周期。
+- 依赖 `defineUniMainJsPlugin()` 向项目根 `main.*` 注入 side effect 的编译器插件，目前不会自动注入到独立分包虚拟入口。
+
+### 编译器插件 side effect 现状
+
+独立分包入口是编译器生成的 `\0uni:mp-independent-main?root=xxx`，不是项目根 `main.js/main.ts/main.uts`。当前 `defineUniMainJsPlugin()` 的过滤条件只匹配项目根真实 `main.*`，因此依赖该机制做运行时 side effect 注入的插件，不会天然覆盖独立分包冷启动。
+
+已知未适配项：
+
+- `uni-stat`：统计插件只会在项目根 `main.*` 追加 `@dcloudio/uni-stat-public` 或 `@dcloudio/uni-cloud-stat`。独立分包冷启动时不会加载统计运行时，可能导致 `uni.report`、页面 mixin、页面访问统计、应用前后台统计缺失。
+- `uni-cloud`：`uni-cloud-main` 只会在项目根 `main.*` 追加 `@dcloudio/uni-cloud`。如果页面源码显式使用 `uniCloud`，现有 inject 仍可能通过页面依赖进入独立分包；但依赖 main side effect 的预初始化能力未明确覆盖，需要按具体场景验证。
+- `uni-push`：push 插件只会在项目根 `main.*` 注入 `@dcloudio/uni-push`。独立分包冷启动不执行项目根 main，因此不会通过该路径初始化 push 运行时。
+- `uni-console`：运行时 console 插件只会在项目根 `main.*` 注入 console runtime。独立分包冷启动如果只依赖该 main 注入路径，可能缺少对应运行时增强。
+
+注意：不能简单把独立分包虚拟入口纳入 `defineUniMainJsPlugin()` 的通用 filter。`main.*` 插件链里同时包含用户 main 语义和编译器 side effect 语义，直接复用会破坏“独立分包冷启动不执行项目根 main、不触发主包 App 生命周期”的微信原生规范。后续应单独设计独立分包编译器 runtime bootstrap 机制，只允许明确声明可在独立分包中执行的框架/插件 side effect。
 
 ## 开发模式
 
@@ -460,3 +474,19 @@ setSubpackageAppVm(resolveSubpackageRoot(root), vm, true)
 ### T05 Vite/Rolldown 输出策略评估
 
 升级到 Vite/Rolldown 后，核心隔离原则仍是“每个独立分包一个额外 input + root query 或等价 module id 隔离”。未来可评估是否用 Rolldown 的 chunk 分组能力简化 manualChunks/chunkFileNames，但不能依赖多 input 自动复制共享依赖。
+
+### T06 独立分包编译器插件 side effect bootstrap
+
+目标：在不执行项目根 `main.*` 的前提下，让独立分包按需加载编译器插件声明的运行时 side effect。
+
+优先级：
+
+- 先适配 `uni-stat`，因为它依赖自动 import 安装运行时，且独立分包冷启动会直接缺少统计入口。
+- 再按真实场景评估 `uni-cloud`、`uni-push`、`uni-console` 是否需要进入独立分包 bootstrap。
+
+设计约束：
+
+- 不复用用户 `main.*`，不执行 `App.vue`，不模拟主包 App 生命周期。
+- 不扩大 `defineUniMainJsPlugin()` 到独立分包虚拟入口，避免把用户 main 语义误套进独立分包。
+- side effect import 必须带当前 root 标识，例如通过 `withIndependentRoot()` 生成 root 专属 module id，确保运行时代码进入 `${root}/common/vendor.js`，不能引用主包 `common/vendor.js`。
+- 插件应显式声明自己是否支持独立分包 bootstrap，以及需要注入的 import id，避免在 `independent.ts` 中散落业务插件判断。
