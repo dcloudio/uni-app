@@ -421,8 +421,16 @@ describe('uni-mp-vue: UniAnimation', () => {
     const payload = JSON.parse(scope.setData.mock.calls[0][0]['$eA.view'])
     expect(payload.playState).toBe('idle')
     expect(oncancel).toHaveBeenCalledTimes(1)
-    expect(oncancel.mock.calls[0][0]).toMatchObject({ type: 'cancel' })
-    expect(typeof oncancel.mock.calls[0][0].timeStamp).toBe('number')
+    const event = oncancel.mock.calls[0][0]
+    expect(event).toMatchObject({
+      type: 'cancel',
+      currentTime: null,
+      timelineTime: null,
+    })
+    expect(typeof event.timeStamp).toBe('number')
+
+    animation.cancel()
+    expect(oncancel).toHaveBeenCalledTimes(1)
   })
 
   it('does not dispatch oncancel when animation is already idle', () => {

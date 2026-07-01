@@ -87,7 +87,9 @@ function createUniAnimationPlaybackEvent(
   return {
     type,
     timeStamp: Date.now(),
-  } as UniAnimationPlaybackEvent
+    currentTime: null,
+    timelineTime: null,
+  } as unknown as UniAnimationPlaybackEvent
 }
 
 function handleDirection(keyframes: any[], direction: string) {
