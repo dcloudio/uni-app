@@ -337,7 +337,7 @@ callTestFn((arg1) => {})
 
 ### 类型判断
 
-判断类型，有好几种方案：[typeof](operator.md#typeof)、[instanceof](operator.md#instanceof)、[isArray](buildin-object-api/array.md#isarray)。
+判断类型，有好几种方案：[typeof](keywords.md#typeof)、[instanceof](keywords.md#instanceof)、[isArray](buildin-object-api/array.md#isarray)。
 
 使用 typeof 可以判断布尔值、数字、字符串、函数。
 ```ts
