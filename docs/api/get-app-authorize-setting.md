@@ -60,7 +60,7 @@
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| denied | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请蓝牙相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
 | not determined | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
 | config error | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | Android平台：表示没有配置[蓝牙相关权限](https://doc.dcloud.net.cn/uni-app-x/native/permission/android_permission_adapter.html)，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置蓝牙权限描述 |
 
@@ -69,7 +69,7 @@
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| denied | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请摄像头相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
 | not determined | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
 | config error | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | Android平台：表示没有配置 `android.permission.CAMERA` 权限，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置相机权限描述 |
 
@@ -78,7 +78,7 @@
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| denied | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请定位相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
 | not determined | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
 | config error | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | Android平台：表示没有配置 `android.permission.ACCESS_COARSE_LOCATION` 权限，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置定位权限描述 |
 
@@ -95,7 +95,7 @@
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| denied | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请麦克风相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
 | not determined | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
 | config error | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | Android平台：表示没有配置 `android.permission.RECORD_AUDIO` 权限，[权限配置详情](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions)；iOS平台：当前应用没有配置麦克风权限描述 |
 
@@ -104,7 +104,7 @@
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| denied | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请通知相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
 | not determined | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
 | config error | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | Android平台没有该值；iOS平台：没有包含推送权限描述 |
 
@@ -113,7 +113,7 @@
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| denied | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
 | not determined | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
 | config error | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 当前应用没有配置推送权限描述 |
 
@@ -122,7 +122,7 @@
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| denied | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
 | not determined | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
 | config error | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 当前应用没有配置推送权限描述 |
 
@@ -131,7 +131,7 @@
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| denied | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
 | not determined | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 尚未请求授权，会在App下一次调用系统相应权限时请求；（仅 iOS 会出现。此种情况下引导用户打开系统设置，不展示开关） |
 | config error | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 当前应用没有配置推送权限描述 |
 
@@ -140,18 +140,18 @@
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| denied | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 请求授权被拒绝，无法再次请求授权。 |
 | not determined | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 尚未请求授权，会在App下一次调用系统相应权限时请求； |
-| config error | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 当前应用没有配置推送权限描述 |
+| config error | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 当前应用没有配置读写日历权限描述 |
 
 ##### readPhoneCalendarAuthorized 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 已经获得授权，无需再次请求授权 |
-| denied | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
+| denied | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 请求授权被拒绝，无法再次请求授权。 |
 | not determined | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 尚未请求授权，会在App下一次调用系统相应权限时请求； |
-| config error | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 当前应用没有配置推送权限描述 |
+| config error | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 当前应用没有配置读日历权限描述 |
 
 ##### writePhoneCalendarAuthorized 的属性描述
 

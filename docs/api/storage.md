@@ -529,7 +529,7 @@ uni.clearStorage函数定义
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| option | **ClearStorageOptions** | 否 |  |   | uni.removeStorage参数定义 |
+| option | **ClearStorageOptions** | 否 |  |   | uni.clearStorage参数定义 |
 
 #### option 的属性描述
 

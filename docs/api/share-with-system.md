@@ -30,17 +30,17 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: x; HarmonyOS: x | 分享类型,默认为text。 |
-| summary | string | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | 分享的文字内容 |
-| href | string | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | 分享链接 |
-| imageUrl | string | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | 分享单个图片，仅支持本地路径 |
-| imagePaths | Array&lt;string&gt; | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | 分享图片，仅支持本地路径 |
-| videoPaths | Array&lt;string&gt; | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | 分享video，仅支持本地路径 |
-| audioPaths | Array&lt;string&gt; | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | 分享audio，仅支持本地路径 |
-| filePaths | Array&lt;string&gt; | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | 分享文件，仅支持本地路径 |
-| success | (res: ShareWithSystemSuccess) => void | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | uni.shareWithSystem成功回调函数定义 |
-| fail | (res: [ShareWithSystemFail](#sharewithsystemfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | uni.shareWithSystem失败回调函数定义 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | uni.shareWithSystem完成回调函数定义 | 
+| type | string | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | 分享类型,默认为text。 |
+| summary | string | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享的文字内容 |
+| href | string | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享链接 |
+| imageUrl | string | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享单个图片，仅支持本地路径 |
+| imagePaths | Array&lt;string&gt; | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享图片，仅支持本地路径 |
+| videoPaths | Array&lt;string&gt; | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享video，仅支持本地路径 |
+| audioPaths | Array&lt;string&gt; | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享audio，仅支持本地路径 |
+| filePaths | Array&lt;string&gt; | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享文件，仅支持本地路径 |
+| success | (res: ShareWithSystemSuccess) => void | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | uni.shareWithSystem成功回调函数定义 |
+| fail | (res: [ShareWithSystemFail](#sharewithsystemfail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | uni.shareWithSystem失败回调函数定义 |
+| complete | (res: any) => void | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | uni.shareWithSystem完成回调函数定义 | 
 
 ##### type 的属性描述
 
@@ -66,14 +66,14 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1310600 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | 取消分享 |
-| 1310601 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | 分享内容不可以为空 |
-| 1310602 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | 已经成功调用系统分享接口，系统分享出错 |
-| 1310603 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | 图片路径无效 |
-| 1310604 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | 无效的链接 |
-| 1310605 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | video 路径无效 |
-| 1310606 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | file 文件不存在 |
-| 1310607 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | audio 路径无效 |
+| 1310600 | Web: x; 微信小程序:  ; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: x | 取消分享 |
+| 1310601 | Web: x; 微信小程序:  ; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: x | 分享内容不可以为空 |
+| 1310602 | Web: x; 微信小程序:  ; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: x | 已经成功调用系统分享接口，系统分享出错 |
+| 1310603 | Web: x; 微信小程序:  ; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: 4.61 | 图片路径无效 |
+| 1310604 | Web: x; 微信小程序:  ; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: x | 无效的链接 |
+| 1310605 | Web: x; 微信小程序:  ; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: 4.61 | video 路径无效 |
+| 1310606 | Web: x; 微信小程序:  ; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: 4.61 | file 文件不存在 |
+| 1310607 | Web: x; 微信小程序:  ; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: 4.61 | audio 路径无效 |
 
 
 
