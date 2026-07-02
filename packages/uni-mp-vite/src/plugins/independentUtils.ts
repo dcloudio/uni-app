@@ -61,6 +61,11 @@ export function getIndependentRoots(): Set<string> {
   return new Set(independentSubPackages.map(({ root }) => root))
 }
 
+export function isAppPagesJson(filename: string, inputDir: string) {
+  const cleanFilename = normalizePath(filename).split('?')[0]
+  return cleanFilename === normalizePath(path.resolve(inputDir, 'pages.json'))
+}
+
 export function getIndependentRootByFilename(
   filename: string,
   inputDir: string | undefined

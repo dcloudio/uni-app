@@ -38,6 +38,7 @@ import {
   VUE_EXPORT_HELPER_ID,
   formatIndependentVirtualId,
   initIndependentSubPackages,
+  isAppPagesJson,
   parseIndependentRoot,
   withoutIndependentRoot,
 } from '../plugins/independentUtils'
@@ -258,6 +259,14 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
       : id
     const normalizedId = normalizePath(idWithoutIndependentRoot)
     const filename = normalizedId.split('?')[0]
+    if (independentRoot && isAppPagesJson(filename, inputDir)) {
+      const chunkName = resolveIndependentCommonChunkName(
+        independentRoot,
+        'vendor'
+      )
+      debugChunk(chunkName, normalizedId)
+      return chunkName
+    }
     // 处理资源文件
     if (DEFAULT_ASSETS_RE.test(filename)) {
       const chunkName = independentRoot
@@ -340,6 +349,7 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
     }
   }
 }
+
 
 function resolveIndependentCommonChunkName(root: string, chunkName: string) {
   const normalizedRoot = normalizePath(root).replace(/\/$/, '')

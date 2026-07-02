@@ -511,6 +511,48 @@ app.mount('#app', "package-a", { independent: true, createApp: createIndependent
     )
   })
 
+  test('allows independent root module to import app pages json with root query', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    await withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      async (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+        } as any)
+        callBuildStart(plugin)
+        const resolve = jest.fn(async () => ({
+          id: path.join(inputDir, 'pages.json'),
+        }))
+
+        const result = await (plugin.resolveId as Function).call(
+          { resolve },
+          '@/pages.json',
+          withIndependentRoot(
+            `${inputDir}/package-a/pages/index/index.uvue`,
+            'package-a'
+          )
+        )
+
+        expect(result.id).toBe(
+          withIndependentRoot(
+            normalizePath(path.join(inputDir, 'pages.json')),
+            'package-a'
+          )
+        )
+      }
+    )
+  })
+
   test('throws when independent root module imports root-outside asset', async () => {
     process.env.UNI_PLATFORM = 'mp-weixin'
     await withPagesJson(

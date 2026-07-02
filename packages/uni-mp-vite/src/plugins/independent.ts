@@ -20,6 +20,7 @@ import {
   VUE_EXPORT_HELPER_ID,
   getIndependentRoots,
   getIndependentSubPackages,
+  isAppPagesJson,
   parseIndependentRoot,
   withIndependentRoot,
   withoutIndependentRoot,
@@ -454,7 +455,7 @@ function validateIndependentDependency({
   const resolvedFile = normalizeFileId(withoutIndependentRoot(resolvedId))
   if (
     !isProjectFile(resolvedFile, normalizedInputDir) ||
-    isAllowedProjectDependency(resolvedFile) ||
+    isAllowedProjectDependency(resolvedFile, normalizedInputDir) ||
     isInIndependentRoot(resolvedFile, normalizedInputDir, root)
   ) {
     return
@@ -472,8 +473,9 @@ function isProjectFile(filename: string, inputDir: string) {
   return filename === inputDir || filename.startsWith(`${inputDir}/`)
 }
 
-function isAllowedProjectDependency(filename: string) {
-  return filename.includes('/node_modules/')
+function isAllowedProjectDependency(filename: string, inputDir: string) {
+  // pages.json 是 app 级配置文件，允许独立分包读取；实际模块仍会追加 root query，避免产物落到主包 common。
+  return filename.includes('/node_modules/') || isAppPagesJson(filename, inputDir)
 }
 
 function isInIndependentRoot(filename: string, inputDir: string, root: string) {

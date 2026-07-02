@@ -104,6 +104,12 @@ describe('mp vite build options', () => {
       ).toBe('package-a/common/assets')
       expect(
         manualChunks(
+          withIndependentRoot(`${inputDir}/pages.json`, 'package-a'),
+          meta
+        )
+      ).toBe('package-a/common/vendor')
+      expect(
+        manualChunks(
           withIndependentRoot(`${inputDir}/main.ts`, 'package-a'),
           meta
         )
