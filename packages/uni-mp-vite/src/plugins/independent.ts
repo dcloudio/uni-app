@@ -515,11 +515,25 @@ function shouldPropagateIndependentRoot(id: string) {
 }
 
 function generateIndependentMainCode(root: string) {
+  let hasUniCloudSpace = false
+  if (process.env.UNI_CLOUD_PROVIDER) {
+    const spaces = JSON.parse(process.env.UNI_CLOUD_PROVIDER)
+    if (Array.isArray(spaces) && spaces.length) {
+      hasUniCloudSpace = true
+    }
+  }
   return `import { createIndependentSubpackageApp } from ${JSON.stringify(
     withIndependentRoot(UNI_MP_RUNTIME_ID, root)
   )}
 import { createSSRApp } from ${JSON.stringify(withIndependentRoot('vue', root))}
 import ${JSON.stringify(withIndependentRoot(PAGES_JSON_JS, root))}
+${
+  hasUniCloudSpace
+    ? `import ${JSON.stringify(
+        withIndependentRoot('@dcloudio/uni-cloud', root)
+      )}`
+    : ''
+}
 
 createSSRApp({}).mount('#app', ${JSON.stringify(
     root
