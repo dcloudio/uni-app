@@ -24,6 +24,7 @@ import {
   withIndependentRoot,
   withoutIndependentRoot,
 } from './independentUtils'
+import { resolveIndependentMainPath } from './independentMain'
 
 export function uniIndependentSubpackagePlugin(
   options: UniMiniProgramPluginOptions
@@ -104,7 +105,7 @@ export function uniIndependentSubpackagePlugin(
       const root = parseIndependentMainRoot(id)
       if (root && independentRoots.has(root)) {
         return {
-          code: generateIndependentMainCode(root),
+          code: generateIndependentMainCode(root, inputDir),
           map: { mappings: '' },
         }
       }
@@ -514,7 +515,11 @@ function shouldPropagateIndependentRoot(id: string) {
   return true
 }
 
-function generateIndependentMainCode(root: string) {
+function generateIndependentMainCode(
+  root: string,
+  inputDir: string | undefined
+) {
+  const independentMainPath = resolveIndependentMainPath(inputDir, root)
   let hasUniCloudSpace = false
   if (process.env.UNI_CLOUD_PROVIDER) {
     const spaces = JSON.parse(process.env.UNI_CLOUD_PROVIDER)
@@ -522,20 +527,33 @@ function generateIndependentMainCode(root: string) {
       hasUniCloudSpace = true
     }
   }
-  return `import { createIndependentSubpackageApp } from ${JSON.stringify(
-    withIndependentRoot(UNI_MP_RUNTIME_ID, root)
-  )}
-import { createSSRApp } from ${JSON.stringify(withIndependentRoot('vue', root))}
-import ${JSON.stringify(withIndependentRoot(PAGES_JSON_JS, root))}
-${
-  hasUniCloudSpace
-    ? `import ${JSON.stringify(
-        withIndependentRoot('@dcloudio/uni-cloud', root)
+  const imports = [
+    `import { createIndependentSubpackageApp } from ${JSON.stringify(
+      withIndependentRoot(UNI_MP_RUNTIME_ID, root)
+    )}`,
+    `import { createSSRApp } from ${JSON.stringify(
+      withIndependentRoot('vue', root)
+    )}`,
+    `import ${JSON.stringify(withIndependentRoot(PAGES_JSON_JS, root))}`,
+  ]
+  if (hasUniCloudSpace) {
+    imports.push(
+      `import ${JSON.stringify(withIndependentRoot('@dcloudio/uni-cloud', root))}`
+    )
+  }
+  if (independentMainPath) {
+    // 独立分包 main 仅用于配置当前 root 的 Vue app（如 app.use/provide）。
+    // 不复用 app main 的 app.component 收集逻辑，避免多个独立分包全局组件互相污染。
+    imports.push(
+      `import { createApp as createIndependentApp } from ${JSON.stringify(
+        withIndependentRoot(independentMainPath, root)
       )}`
-    : ''
-}
-
-createSSRApp({}).mount('#app', ${JSON.stringify(
+    )
+  }
+  const setupCode = independentMainPath ? 'createIndependentApp(app)\n' : ''
+  return `${imports.join(
+    '\n'
+  )}\n\nconst app = createSSRApp({})\n${setupCode}app.mount('#app', ${JSON.stringify(
     root
   )}, { independent: true, createApp: createIndependentSubpackageApp })
 `

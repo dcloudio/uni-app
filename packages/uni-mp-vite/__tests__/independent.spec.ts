@@ -3,6 +3,7 @@ import os from 'os'
 import path from 'path'
 import {
   PAGES_JSON_JS,
+  normalizePath,
   parseIndependentSubPackages,
 } from '@dcloudio/uni-cli-shared'
 import { virtualComponentPath } from '../src/plugins/entry'
@@ -138,7 +139,95 @@ describe('uniIndependentSubpackagePlugin', () => {
           )}`
         )
         expect(result.code).toContain(
-          `createSSRApp({}).mount('#app', "package-a", { independent: true, createApp: createIndependentSubpackageApp })`
+          `const app = createSSRApp({})
+app.mount('#app', "package-a", { independent: true, createApp: createIndependentSubpackageApp })`
+        )
+      }
+    )
+  })
+
+  test('loads independent root main when it exists', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    delete (process.env as Record<string, string | undefined>).UNI_APP_X
+    await withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      async (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        fs.mkdirSync(path.join(inputDir, 'package-a'), { recursive: true })
+        fs.writeFileSync(
+          path.join(inputDir, 'package-a/main.ts'),
+          'export function createApp(app) { app.use(plugin) }'
+        )
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+        } as any)
+        callBuildStart(plugin)
+        const id = formatIndependentVirtualId(
+          INDEPENDENT_MAIN_PREFIX,
+          'package-a'
+        )
+        const result = (plugin.load as Function)(id)
+
+        expect(result.code).toContain(
+          `import { createApp as createIndependentApp } from ${JSON.stringify(
+            withIndependentRoot(
+              normalizePath(path.join(inputDir, 'package-a/main.ts')),
+              'package-a'
+            )
+          )}`
+        )
+        expect(result.code).toContain(
+          `const app = createSSRApp({})
+createIndependentApp(app)
+app.mount('#app', "package-a", { independent: true, createApp: createIndependentSubpackageApp })`
+        )
+      }
+    )
+  })
+
+  test('prefers independent root main uts for app x', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    process.env.UNI_APP_X = 'true'
+    await withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      async (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        fs.mkdirSync(path.join(inputDir, 'package-a'), { recursive: true })
+        fs.writeFileSync(path.join(inputDir, 'package-a/main.uts'), '')
+        fs.writeFileSync(path.join(inputDir, 'package-a/main.ts'), '')
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+        } as any)
+        callBuildStart(plugin)
+        const id = formatIndependentVirtualId(
+          INDEPENDENT_MAIN_PREFIX,
+          'package-a'
+        )
+        const result = (plugin.load as Function)(id)
+
+        expect(result.code).toContain(
+          withIndependentRoot(
+            normalizePath(path.join(inputDir, 'package-a/main.uts')),
+            'package-a'
+          )
         )
       }
     )

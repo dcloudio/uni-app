@@ -123,4 +123,39 @@ export function createApp() {
       root: 'package-independent',
     })
   })
+
+  test('throws when independent root main registers global component', async () => {
+    const source = `import GlobalCard from './components/independent-card/independent-card.vue'
+
+export function createApp(subApp) {
+  subApp.component('global-card', GlobalCard)
+}
+`
+    const id = withIndependentRoot(
+      `${inputDir}/package-independent/main.ts`,
+      'package-independent'
+    )
+
+    await expect(createPlugin().transform.call({ resolve }, source, id)).rejects
+      .toThrow('独立分包 main 暂不支持 app.component 注册全局组件')
+  })
+
+  test('allows non app component calls in independent root main', async () => {
+    const source = `const foo = {
+  component() {}
+}
+
+export function createApp(app) {
+  foo.component('global-card')
+}
+`
+    const id = withIndependentRoot(
+      `${inputDir}/package-independent/main.ts`,
+      'package-independent'
+    )
+
+    await expect(
+      createPlugin().transform.call({ resolve }, source, id)
+    ).resolves.toBeUndefined()
+  })
 })

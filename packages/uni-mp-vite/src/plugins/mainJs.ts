@@ -13,6 +13,10 @@ import {
   parseIndependentRoot,
   withoutIndependentRoot,
 } from './independentUtils'
+import {
+  isIndependentMainJs,
+  validateIndependentMainJs,
+} from './independentMain'
 import { dynamicImport } from './usingComponents'
 
 export function uniMainJsPlugin(
@@ -30,6 +34,16 @@ export function uniMainJsPlugin(
       async transform(source, id) {
         const independentRoot = parseIndependentRoot(id)
         const filename = independentRoot ? withoutIndependentRoot(id) : id
+        const independentMainJs = isIndependentMainJs(filename, independentRoot)
+        if (independentMainJs) {
+          validateIndependentMainJs(
+            parseProgram(source, id, {
+              babelParserPlugins: options.babelParserPlugins,
+            }),
+            filename
+          )
+          return
+        }
         if (opts.filter(filename)) {
           source =
             !independentRoot && source.includes('createSSRApp')
