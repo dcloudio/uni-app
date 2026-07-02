@@ -3,12 +3,12 @@
   Author Tobias Koppers @sokra
   Modified by Evan You @yyx990803
 */
-const {
-  createRpx2Unit,
-  getRpx2Unit
-} = require('@dcloudio/uni-cli-shared/lib/style')
+const styleUtils = require('@dcloudio/uni-cli-shared/lib/style')
 
 import listToStyles from './listToStyles'
+
+const createRpx2Unit = styleUtils.createRpx2Unit
+const getRpx2Unit = styleUtils.getRpx2Unit
 
 var hasDocument = typeof document !== 'undefined'
 

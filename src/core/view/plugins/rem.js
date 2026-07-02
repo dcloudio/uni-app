@@ -6,17 +6,27 @@ function checkValue (value, defaultValue) {
 const isApple = () => /^Apple/.test(navigator.vendor)
 
 function getWindowWidth () {
-  const screenFix = isApple() && typeof window.orientation === 'number'
-  const landscape = screenFix && Math.abs(window.orientation) === 90
+  const _isApple = isApple()
+  // 横屏时 iOS 获取的屏幕宽高颠倒，进行纠正，iOS26 以上在 WebView 中 window.orientation 与 screen.orientation 可能不准确
+  const screenFix =
+    _isApple && window.matchMedia('(orientation:landscape)').matches
   var screenWidth = screenFix
-    ? Math[landscape ? 'max' : 'min'](screen.width, screen.height)
+    ? Math.max(screen.width, screen.height)
     : screen.width
-  var windowWidth =
-    Math.min(
-      window.innerWidth,
-      document.documentElement.clientWidth,
-      screenWidth
-    ) || screenWidth
+  /**
+   * 安卓平台微信内置浏览器在调整微信字体大小小于标准字体时，windowWidth会大于screenWidth，此时计算rpx等时应以windowWidth为准
+   * iOS端微信内置浏览器没有这个问题
+   */
+  // app-plus 都使用 plus 获取宽度
+  var windowWidth = __PLATFORM__ === 'app-plus'
+    ? plus.webview.currentWebview().getStyle().width
+    : _isApple
+      ? Math.min(
+        window.innerWidth,
+        document.documentElement.clientWidth,
+        screenWidth
+      ) || screenWidth
+      : Math.min(window.innerWidth, document.documentElement.clientWidth)
   return windowWidth
 }
 

@@ -146,6 +146,7 @@ const tags = {
     'subscribe-message',
     'mpass-component',
     'ad-feeds',
+    'open-avatar',
     ...nativeTags
   ],
   // 抖音小程序平台独有组件

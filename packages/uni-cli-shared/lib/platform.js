@@ -81,7 +81,10 @@ function isEnableConsole () {
     process.env.NODE_ENV === 'development' &&
     process.env.UNI_SOCKET_HOSTS &&
     process.env.UNI_SOCKET_PORT &&
-    process.env.UNI_SOCKET_ID
+    process.env.UNI_SOCKET_ID &&
+    // 环境变量传入有bug，临时屏蔽安卓平台开启 uni-console
+    process.env.UNI_APP_PLATFORM !== 'android' &&
+    process.env.UNI_APP_PLATFORM !== 'ios'
   )
 }
 
@@ -94,6 +97,7 @@ const {
   vueContext: preprocessContext,
   nvueContext: nvuePreprocessContext
 } = global.uniPlugin.preprocess
+
 // TODO 暂时保留原有导出，减少影响，后续再整理一下
 module.exports = {
   normalizeNodeModules,
@@ -209,8 +213,9 @@ module.exports = {
     if (!process.env.UNI_USING_STAT) {
       return ''
     }
-    return process.env.UNI_USING_STAT === '2' ? 'import \'@dcloudio/uni-stat/dist/uni-cloud-stat.es.js\';'
-      : 'import \'@dcloudio/uni-stat/dist/uni-stat.es.js\';'
+    return process.env.UNI_USING_STAT === 'private'
+      ? 'import \'@dcloudio/uni-stat/dist/uni-cloud-stat.es.js\';'
+      : 'import \'@dcloudio/uni-stat/dist/uni-stat-public.es.js\';'
   },
   getPlatformPush () {
     if (process.env.UNI_PUSH_V1) {

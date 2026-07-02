@@ -829,24 +829,44 @@ function addSafeAreaInsets (result) {
 }
 
 function getOSInfo (system, platform) {
+  /**
+   * system 枚举值说明：
+   *
+   * weixin: 操作系统及版本
+   * qq: 操作系统及版本
+   * kuaishou: 操作系统及版本
+   *
+   * alipay、dingding: 系统版本
+   * baidu: 操作系统版本
+   * toutiao/douyin: 操作系统版本
+   * jd: 操作系统版本
+   * harmony: 操作系统版本
+   *
+   * lark: 文档无此字段
+   */
   let osName = '';
   let osVersion = '';
 
   if (
     platform &&
-    ( "mp-harmony" === 'mp-baidu')
+    ( "mp-harmony" === 'mp-harmony')
   ) {
     osName = platform;
     osVersion = system;
+    system = `${osName} ${osVersion}`;
   } else {
-    osName = system.split(' ')[0] || platform;
+    {
+      osName = system.split(' ')[0] || platform;
+    }
     osVersion = system.split(' ')[1] || '';
   }
 
   osName = osName.toLocaleLowerCase();
+
   switch (osName) {
     case 'harmony': // alipay
-    case 'ohos': // weixin
+    case 'ohos': // weixin harmony
+    case 'openharmonyos': // weixin 由 HarmonyOS 改为了 OpenHarmonyOS
     case 'openharmony': // feishu
       osName = 'harmonyos';
       break
@@ -864,8 +884,34 @@ function getOSInfo (system, platform) {
 
   return {
     osName,
-    osVersion
+    osVersion,
+    system
   }
+}
+
+function getPlatform (platform) {
+  /**
+   * platform 枚举值说明：
+   *
+   * weixin：ios、android、windows、mac、ohos、ohos_pc、devtools
+   * alipay、dingding：Android，iOS / iPhone OS，Harmony
+   * harmony: 固定 ohos
+   *
+   * toutiao: Android，iOS 无 harmony 平台，暂不处理
+   * lark: 'pc' | 'mobile' | 'android' | 'ios', 无 harmony 平台，暂不处理
+   *
+   * baidu：无相关描述
+   * qq: 无相关描述
+   * kuaishou: 无相关描述
+   * jd: 无相关描述
+   */
+  platform = platform.toLowerCase();
+  {
+    if (platform === 'ohos') {
+      platform = 'harmonyos';
+    }
+  }
+  return platform
 }
 
 function populateParameters (result) {
@@ -880,7 +926,7 @@ function populateParameters (result) {
   const extraParam = {};
 
   // osName osVersion
-  const { osName, osVersion } = getOSInfo(system, platform);
+  const { osName, osVersion, system: updatedSystem } = getOSInfo(system, platform);
   let hostVersion = version;
 
   // deviceType
@@ -931,6 +977,8 @@ function populateParameters (result) {
     hostFontSizeSetting: fontSizeSetting,
     windowTop: 0,
     windowBottom: 0,
+    platform: getPlatform(platform),
+    system: updatedSystem,
     // TODO
     osLanguage: undefined,
     osTheme: undefined,
@@ -945,12 +993,15 @@ function populateParameters (result) {
 }
 
 function getGetDeviceType (result, model) {
+  const platform = result.platform || '';
   let deviceType = result.deviceType || 'phone';
   {
     const deviceTypeMaps = {
       ipad: 'pad',
       windows: 'pc',
-      mac: 'pc'
+      mac: 'pc',
+      linux: 'pc',
+      pc: 'pc'
     };
     const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
     const _model = model.toLocaleLowerCase();
@@ -960,6 +1011,11 @@ function getGetDeviceType (result, model) {
         deviceType = deviceTypeMaps[_m];
         break
       }
+    }
+  }
+  {
+    if (platform === 'ohos_pc') {
+      deviceType = 'pc';
     }
   }
   return deviceType
@@ -2231,6 +2287,42 @@ function isPage () {
 
 const instances = Object.create(null);
 
+function initChildVues (vm) {
+  if (vm._$childVues) {
+    vm._$childVues.forEach(([createdVm]) => createdVm());
+    vm._$childVues.forEach(([, mountedVm]) => mountedVm());
+    delete vm._$childVues;
+  }
+}
+
+function initComponentLifecycle (mpInstance) {
+  const vm = mpInstance.$vm;
+  if (!vm || vm.mpType === 'page' || vm._isMounted) {
+    return
+  }
+  const parentVm = vm.$parent;
+  const createdVm = function () {
+    vm.__call_hook('created');
+  };
+  const mountedVm = function () {
+    if (vm._isMounted) {
+      return
+    }
+    initChildVues(vm);
+    vm.__call_hook('beforeMount');
+    vm._isMounted = true;
+    vm.__call_hook('mounted');
+    vm.__call_hook('onReady');
+  };
+  // 父实例未 mounted 时先挂起，避免首页组件早于页面 ready 时丢失生命周期。
+  if (!parentVm || parentVm._isMounted) {
+    createdVm();
+    mountedVm();
+  } else {
+    (parentVm._$childVues || (parentVm._$childVues = [])).push([createdVm, mountedVm]);
+  }
+}
+
 function initRelation ({
   options,
   mpInstance
@@ -2506,6 +2598,8 @@ function parseComponent (vueComponentOptions, needVueOptions) {
 
     // 触发首次 setData
     this.$vm.$mount();
+
+    initComponentLifecycle(this);
   };
 
   // ready 比 handleLink 还早，初始化逻辑放到 handleLink 中
@@ -2552,6 +2646,7 @@ function parsePage (vuePageOptions) {
   pageOptions.lifetimes.ready = function ready () {
     if (this.$vm && this.$vm.mpType === 'page') {
       this.$vm.__call_hook('created');
+      initChildVues(this.$vm);
       this.$vm.__call_hook('beforeMount');
       this.$vm._isMounted = true;
       this.$vm.__call_hook('mounted');

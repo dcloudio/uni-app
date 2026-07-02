@@ -64,6 +64,8 @@ const isIPadOS = isMac && navigator.maxTouchPoints > 0
  * 是否是鸿蒙
  */
 const isHarmony = /OpenHarmony/i.test(ua)
+const isHarmony2in1 = isHarmony && /PC/i.test(ua)
+const isHarmonyTablet = isHarmony && /Tablet/i.test(ua)
 
 /**
  * 获取系统信息-同步
@@ -74,8 +76,11 @@ export function getBrowserInfo () {
   var osversion
   var model
   let deviceType = 'phone'
+  let deviceBrand
+  let platform = ''
 
   if (isIOS) {
+    deviceBrand = 'iPhone'
     osname = 'iOS'
     const osversionFind = ua.match(/OS\s([\w_]+)\slike/)
     if (osversionFind) {
@@ -123,6 +128,7 @@ export function getBrowserInfo () {
       }
     }
   } else if (isIPadOS) {
+    deviceBrand = 'iPad'
     model = 'iPad'
     osname = 'iOS'
     osversion = typeof window.BigInt === 'function' ? '14.0' : '13.0'
@@ -168,7 +174,8 @@ export function getBrowserInfo () {
         osversion += ` x${framework[1]}`
       }
     } else if (isMac) {
-      osname = 'macOS'
+      osname = 'macos'
+      platform = 'mac'
       osversion = osversionFind.match(/Mac OS X (.+)/) || ''
 
       if (osversion) {
@@ -191,13 +198,13 @@ export function getBrowserInfo () {
       }
     }
   } else if (isHarmony) {
-    osname = 'Harmony'
+    deviceBrand = 'HUAWEI'
+    osname = 'harmonyos'
+    deviceType = isHarmony2in1 ? 'pc' : isHarmonyTablet ? 'pad' : 'phone'
     const versionMatch = ua.match(/OpenHarmony\s([\d.]+)/i)
     if (versionMatch) {
       osversion = versionMatch[1]
     }
-    // 不区分 pad/phone，统一按手机处理
-    deviceType = 'phone'
     model = undefined
   } else {
     osname = 'Other'
@@ -206,7 +213,7 @@ export function getBrowserInfo () {
   }
 
   var system = `${osname} ${osversion}`
-  var platform = osname.toLocaleLowerCase()
+  if (!platform) platform = osname.toLocaleLowerCase()
 
   let browserName = ''
   let browserVersion = String(IEVersion())
@@ -225,12 +232,25 @@ export function getBrowserInfo () {
 
   // deviceOrientation
   let deviceOrientation = 'portrait'
-  const orientation = typeof window.screen.orientation === 'undefined' ? window.orientation : window.screen.orientation.angle
-  deviceOrientation = Math.abs(orientation) === 90 ? 'landscape' : 'portrait'
+  if (window.matchMedia) {
+    try {
+      if (window.matchMedia('(orientation:landscape)').matches) {
+        deviceOrientation = 'landscape'
+      }
+    } catch {}
+  }
+  if (deviceOrientation === 'portrait' && window.screen.orientation !== undefined) {
+    deviceOrientation = [90, 270].includes(window.screen.orientation.angle)
+      ? 'landscape'
+      : 'portrait'
+  }
+  if (deviceOrientation === 'portrait' && window.orientation != null) {
+    deviceOrientation = Math.abs(window.orientation) === 90 ? 'landscape' : 'portrait'
+  }
 
   return {
-    deviceBrand: undefined,
-    brand: undefined,
+    deviceBrand,
+    brand: deviceBrand,
     deviceModel: model,
     deviceOrientation,
     model,

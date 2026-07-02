@@ -8,7 +8,7 @@ export default {
 
     const hostLanguage = (language || '').replace('_', '-')
 
-    result = Object.assign(result, {
+    const parameters = {
       appId: process.env.UNI_APP_ID,
       appName: process.env.UNI_APP_NAME,
       appVersion: process.env.UNI_APP_VERSION_NAME,
@@ -24,6 +24,14 @@ export default {
       uniCompileVersion: process.env.UNI_COMPILER_VERSION,
       uniCompilerVersion: process.env.UNI_COMPILER_VERSION,
       uniRuntimeVersion: process.env.UNI_COMPILER_VERSION
-    })
+    }
+
+    try {
+      if (typeof __GLOBAL__.getAccountInfoSync === 'function') {
+        parameters.packagename = __GLOBAL__.getAccountInfoSync().miniProgram.appId
+      }
+    } catch (e) { }
+
+    result = Object.assign(result, parameters)
   }
 }

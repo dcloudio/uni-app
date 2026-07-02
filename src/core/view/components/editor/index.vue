@@ -16,6 +16,8 @@ import HTMLParser from 'uni-helpers/html-parser'
 import * as formats from './formats'
 import loadScript from './load-script'
 
+const STATUS_KEY_MAP = { 'code-block': 'codeBlock' }
+
 function isiOS () {
   if (__PLATFORM__ === 'app-plus') {
     return plus.os.name.toLowerCase() === 'ios'
@@ -40,6 +42,10 @@ export default {
     readOnly: {
       type: [Boolean, String],
       default: false
+    },
+    type: {
+      type: String,
+      default: ''
     },
     placeholder: {
       type: String,
@@ -70,7 +76,7 @@ export default {
       if (this.quillReady) {
         const quill = this.quill
         quill.enable(!value)
-        if (!value) {
+        if (value) {
           quill.blur()
         }
       }
@@ -78,6 +84,11 @@ export default {
     placeholder (value) {
       if (this.quillReady) {
         this.setPlaceHolder(value)
+      }
+    },
+    type (value) {
+      if (this.quillReady) {
+        this.setInputMode(value)
       }
     }
   },
@@ -93,20 +104,32 @@ export default {
       imageResizeModules.push('Resize')
     }
     const quillSrc = __PLATFORM__ === 'app-plus' ? './__uniappquill.js' : 'https://unpkg.com/quill@1.3.7/dist/quill.min.js'
-    loadScript(window.Quill, quillSrc, () => {
-      if (imageResizeModules.length) {
-        const imageResizeSrc = __PLATFORM__ === 'app-plus' ? './__uniappquillimageresize.js' : 'https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js'
-        loadScript(window.ImageResize, imageResizeSrc, () => {
+    const quillHighlightSrc = __PLATFORM__ === 'app-plus' ? './__uniappquillhighlight.js' : 'https://unpkg.com/@highlightjs/cdn-assets@11.11.1/highlight.min.js'
+    loadScript('hljs', quillHighlightSrc, () => {
+      loadScript(window.Quill, quillSrc, () => {
+        if (imageResizeModules.length) {
+          const imageResizeSrc = __PLATFORM__ === 'app-plus' ? './__uniappquillimageresize.js' : 'https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js'
+          loadScript(window.ImageResize, imageResizeSrc, () => {
+            this.initQuill(imageResizeModules)
+          })
+        } else {
           this.initQuill(imageResizeModules)
-        })
-      } else {
-        this.initQuill(imageResizeModules)
-      }
+        }
+      })
     })
   },
   methods: {
     _textChangeHandler () {
+      this.fixCursor()
       this.$trigger('input', {}, this.getContents())
+    },
+    fixCursor () {
+      const range = this.quill.getSelection()
+      if (!range) return
+      const [leaf] = this.quill.getLeaf(range.index - 1)
+      if (leaf?.statics?.blotName === 'mention') {
+        this.quill.setSelection(range.index, 0, 'silent')
+      }
     },
     _handleSubscribe ({
       type,
@@ -161,6 +184,15 @@ export default {
             quill.insertEmbed(range.index + 1, 'divider', true, Quill.sources.USER)
             quill.setSelection(range.index + 2, Quill.sources.SILENT)
             break
+          case 'insertMention':
+            {
+              range = quill.getSelection(true)
+              const { id = '', name = '' } = options
+              const mentionData = Object.assign({ id, name }, options)
+              quill.insertEmbed(range.index, 'mention', mentionData, Quill.sources.USER)
+              quill.setSelection(range.index + 1, 0, Quill.sources.SILENT)
+            }
+            break
           case 'insertImage':
             {
               range = quill.getSelection(true)
@@ -187,6 +219,20 @@ export default {
               const { text = '' } = options
               quill.insertText(range.index, text, Quill.sources.USER)
               quill.setSelection(range.index + text.length, 0, Quill.sources.SILENT)
+            }
+            break
+          case 'insertLink':
+            {
+              range = quill.getSelection(true)
+              const { text = '', href = '' } = options
+              if (!href) break
+              if (range.length > 0) {
+                quill.format('link', href, Quill.sources.USER)
+              } else {
+                const linkText = text || href
+                quill.insertText(range.index, linkText, 'link', href, Quill.sources.USER)
+                quill.setSelection(range.index + linkText.length, 0, Quill.sources.SILENT)
+              }
             }
             break
           case 'setContents':
@@ -262,6 +308,14 @@ export default {
       const QuillRoot = this.quill.root
       QuillRoot.getAttribute(placeHolderAttrName) !== value && QuillRoot.setAttribute(placeHolderAttrName, value)
     },
+    setInputMode (type) {
+      const QuillRoot = this.quill.root
+      if (type === 'none') {
+        QuillRoot.setAttribute('inputmode', 'none')
+      } else {
+        QuillRoot.removeAttribute('inputmode')
+      }
+    },
     initQuill (imageResizeModules) {
       const Quill = window.Quill
       formats.register(Quill)
@@ -269,7 +323,9 @@ export default {
         toolbar: false,
         readOnly: this.readOnly,
         placeholder: this.placeholder,
-        modules: {}
+        modules: {
+          syntax: true
+        }
       }
       if (imageResizeModules.length) {
         Quill.register('modules/ImageResize', window.ImageResize.default)
@@ -278,6 +334,7 @@ export default {
         }
       }
       const quill = this.quill = new Quill(this.$el, options)
+      this.setInputMode(this.type)
       const $el = quill.root
       const events = ['focus', 'blur', 'input']
       events.forEach(name => {
@@ -324,7 +381,7 @@ export default {
       }
     },
     html2delta (html) {
-      const tags = ['span', 'strong', 'b', 'ins', 'em', 'i', 'u', 'a', 'del', 's', 'sub', 'sup', 'img', 'div', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'ol', 'ul', 'li', 'br']
+      const tags = ['span', 'strong', 'b', 'ins', 'em', 'i', 'u', 'a', 'del', 's', 'sub', 'sup', 'img', 'div', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'ol', 'ul', 'li', 'br', 'blockquote', 'pre', 'code']
       let content = ''
       let disable
       HTMLParser(html, {
@@ -359,7 +416,11 @@ export default {
       const keys = Object.keys(status)
       if (keys.length !== Object.keys(this.__status || {}).length || keys.find(key => status[key] !== this.__status[key])) {
         this.__status = status
-        this.$trigger('statuschange', {}, status)
+        const normalizedStatus = {}
+        Object.keys(status).forEach(function (k) {
+          normalizedStatus[STATUS_KEY_MAP[k] || k] = status[k]
+        })
+        this.$trigger('statuschange', {}, normalizedStatus)
       }
     }
   }

@@ -1,6 +1,6 @@
 /*!
  * Vue.js v2.6.11
- * (c) 2014-2025 Evan You
+ * (c) 2014-2026 Evan You
  * Released under the MIT License.
  */
 /*  */
@@ -5548,11 +5548,12 @@ function type(obj) {
  */
 
 function copyBuffer(cur) {
-  if (cur instanceof Buffer) {
+  if (typeof Buffer !== 'undefined' && cur instanceof Buffer) {
     return Buffer.from(cur)
   }
 
-  return new cur.constructor(cur.buffer.slice(), cur.byteOffset, cur.length)
+  var length = cur instanceof DataView ? cur.byteLength : cur.length;
+  return new cur.constructor(cur.buffer.slice(), cur.byteOffset, length)
 }
 
 /**
@@ -5565,7 +5566,7 @@ function rfdc(opts) {
   if (opts.circles) { return rfdcCircles(opts) }
 
   var constructorHandlers = new Map();
-  constructorHandlers.set(Date, function (o) { return new Date(o); });
+  constructorHandlers.set(Date, function (o) { return o.toJSON(); });
   constructorHandlers.set(Map, function (o, fn) { return new Map(cloneArray(Array.from(o), fn)); });
   constructorHandlers.set(Set, function (o, fn) { return new Set(cloneArray(Array.from(o), fn)); });
   if (opts.constructorHandlers) {
@@ -5580,7 +5581,7 @@ function rfdc(opts) {
 
   function cloneArray(a, fn) {
     var keys = Object.keys(a);
-    var a2 = new Array(keys.length);
+    var a2 = new Array(a.length);
     for (var i = 0; i < keys.length; i++) {
       var k = keys[i];
       var cur = a[k];
@@ -5591,7 +5592,7 @@ function rfdc(opts) {
       } else if (ArrayBuffer.isView(cur)) {
         a2[k] = copyBuffer(cur);
       } else {
-        a2[k] = fn(cur);
+        a2[k] = fn(opts.reviver ? opts.reviver(k, cur) : cur);
       }
     }
     return a2
@@ -5648,7 +5649,7 @@ function rfdcCircles(opts) {
   var refsNew = [];
 
   var constructorHandlers = new Map();
-  constructorHandlers.set(Date, function (o) { return new Date(o); });
+  constructorHandlers.set(Date, function (o) { return o.toJSON(); });
   constructorHandlers.set(Map, function (o, fn) { return new Map(cloneArray(Array.from(o), fn)); });
   constructorHandlers.set(Set, function (o, fn) { return new Set(cloneArray(Array.from(o), fn)); });
   if (opts.constructorHandlers) {
@@ -5662,7 +5663,9 @@ function rfdcCircles(opts) {
 
   function cloneArray(a, fn) {
     var keys = Object.keys(a);
-    var a2 = new Array(keys.length);
+    var a2 = new Array(a.length);
+    refs.push(a);
+    refsNew.push(a2);
     for (var i = 0; i < keys.length; i++) {
       var k = keys[i];
       var cur = a[k];
@@ -5677,10 +5680,12 @@ function rfdcCircles(opts) {
         if (index !== -1) {
           a2[k] = refsNew[index];
         } else {
-          a2[k] = fn(cur);
+          a2[k] = fn(opts.reviver ? opts.reviver(k, cur) : cur);
         }
       }
     }
+    refs.pop();
+    refsNew.pop();
     return a2
   }
 

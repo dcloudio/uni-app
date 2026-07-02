@@ -16,6 +16,10 @@ function transformJson(content) {
   const importCode = []
   const componentsCode = []
   Object.keys(usingComponents).forEach(name => {
+    // 跳过小程序原生插件
+    if (usingComponents[name].includes('plugin://')) {
+      return
+    }
     const identifier = capitalize(camelize(name))
     importCode.push(`import ${identifier} from '${usingComponents[name]}.vue'`)
     componentsCode.push(`'${name}': ${identifier}`)

@@ -163,7 +163,9 @@ module.exports = function processStyle (paths, path, state) {
       styleValuePath.isMemberExpression() || // TODO 需要优化到下一个条件，:style="item.styleObject"
       styleValuePath.isConditionalExpression() ||
       styleValuePath.isLogicalExpression() ||
-      styleValuePath.isBinaryExpression()
+      styleValuePath.isBinaryExpression() ||
+      styleValuePath.isCallExpression() || // 支持函数调用，如 tools._style([customStyle])
+      styleValuePath.isTemplateLiteral() // 支持模板字符串
     ) {
       // 理论上 ConditionalExpression,LogicalExpression 可能存在 styleObject，应该__get_style，还是先不考虑这种情况吧
       // ConditionalExpression :style="index === currentIndex ? activeStyle : itemStyle"

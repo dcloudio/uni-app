@@ -1,5 +1,6 @@
 import {
-  instances
+  instances,
+  initChildVues
 } from './util'
 
 import parseBasePage from '../../../mp-weixin/runtime/wrapper/page-base-parser'
@@ -10,6 +11,7 @@ export default function parsePage (vuePageOptions) {
   pageOptions.lifetimes.ready = function ready () {
     if (this.$vm && this.$vm.mpType === 'page') {
       this.$vm.__call_hook('created')
+      initChildVues(this.$vm)
       this.$vm.__call_hook('beforeMount')
       this.$vm._isMounted = true
       this.$vm.__call_hook('mounted')
