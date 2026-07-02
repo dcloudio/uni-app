@@ -6,6 +6,7 @@ import {
   MANIFEST_JSON_JS,
   PAGES_JSON_JS,
   findMiniProgramUsingComponents,
+  normalizePath,
   resetMiniProgramJsonFiles,
 } from '@dcloudio/uni-cli-shared'
 import { parseVirtualPagePathInfo } from '../src/plugins/entry'
@@ -225,7 +226,7 @@ describe('uniPagesJsonPlugin independent subpackages', () => {
       const id = withIndependentRoot(PAGES_JSON_JS, 'package-a')
 
       const resolvedId = await (plugin.resolveId as Function)(id)
-      expect(resolvedId).toBe(path.join(inputDir, id))
+      expect(resolvedId).toBe(normalizePath(path.join(inputDir, id)))
       expect((plugin.resolveId as Function)(`${PAGES_JSON_JS}?raw`)).toBe(
         undefined
       )
