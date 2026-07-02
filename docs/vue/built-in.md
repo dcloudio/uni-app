@@ -2249,14 +2249,14 @@ const incrementNum = () =>{
 ##### 兼容性
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
-| 4.0 | √ | 3.99 | 4.11 | 4.61 |
+| 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.99 | 4.11 | 4.61 |
 
 
 ##### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| is | Any |   | Web: 4.0; 微信小程序: √; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 |   |
-| inline-template | boolean |   | Web: 4.0; 微信小程序: √; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 |   |
+| is | Any |   | Web: 4.0; 微信小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 |   |
+| inline-template | boolean |   | Web: 4.0; 微信小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 |   |
 
 
 
