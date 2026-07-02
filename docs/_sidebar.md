@@ -90,7 +90,7 @@
   * [Android 内存泄漏排查](tutorial/android-memoryleak.md)
   * [uts插件iOS运行配置](tutorial/uts-development-ios.md)
   * [uts插件iOS Debug](tutorial/uni-uts-debug-ios.md)
-  * [鸿蒙运行](tutorial/runbuild.md)
+  * [鸿蒙运行](tutorial/harmony/runbuild.md)
   * [鸿蒙Debug断点](tutorial/uni-uts-debug-harmony.md)
   * [AI纠错](tutorial/bug_repair.md)
 * [性能优化](performance.md)
@@ -101,6 +101,24 @@
 * [源码和示例](sample.md)
 * [benchmark](vapor-benchmark.md)
 * [跨平台框架及原生对比](select.md)
+* 运营服务
+  * uni多商店上传
+    * [简介](uni-publish/intro.md)
+    * [应用首次上架](uni-publish/first.md)
+    * [应用更新发布](uni-publish/update.md)
+    * [常见问题](uni-publish/faq.md)
+  * uni-push统一推送
+    * [简介](uni-push/intro.md)
+    * [如何开通](uni-push/open.md)
+    * [uni-push 2.0](uni-push/v2.md)
+      * [入门文档](uni-push/v2.md)
+      * 开发文档
+        * [uni-app客户端api](https://uniapp.dcloud.net.cn/api/plugins/push.html)
+        * [uni-app x客户端api](https://doc.dcloud.net.cn/uni-app-x/api/push.html)
+        * [服务端api](https://doc.dcloud.net.cn/uniCloud/uni-cloud-push/api.html)
+      * [uni-push2.0、uni-id、uni统计的组合](https://doc.dcloud.net.cn/uniCloud/uni-cloud-push/mate.html)
+    * [安卓、鸿蒙厂商推送配置](uni-push/vendor_config.md)
+    * [谷歌FCM配置](uni-push/google-fcm.md)
 * cursor/vscode插件
   * [语言服务插件](tutorial/ls-plugin.md)
   * [AI Rules/MCP](tutorial/rules_mcp.md)
