@@ -8185,6 +8185,13 @@ function updateCurPageAttrs(pageMeta) {
   }
 }
 function onPageShow(instance2, pageMeta) {
+  {
+    const type = instance2.type;
+    if (type.styleIsolation !== "isolated") {
+      const scopeId = getScopeId(instance2.root);
+      scopeId && updateCurPageBodyScopeId(scopeId);
+    }
+  }
   updateBodyScopeId(instance2);
   updateCurPageCssVar(pageMeta);
   updateCurPageAttrs();
