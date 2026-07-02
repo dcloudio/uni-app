@@ -1345,6 +1345,9 @@
       "LegacySavedFileListItem"
     ],
     [
+      "LoadAnimationOptions"
+    ],
+    [
       "LoadFontFace"
     ],
     [
@@ -2681,6 +2684,9 @@
     ],
     [
       "UnLinkSuccessCallback"
+    ],
+    [
+      "UniAnimationViewElement"
     ],
     [
       "UniCanvasElement"
