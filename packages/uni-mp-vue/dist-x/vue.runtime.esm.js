@@ -5690,7 +5690,7 @@ function hyphenateCssProperty(str) {
 class UniAnimation {
     constructor(id, scope, keyframes, options = {}) {
         var _a;
-        this._playState = '';
+        this._playState = 'idle';
         this.parsedKeyframes = [];
         this.options = {};
         this.onfinish = null;
@@ -5712,6 +5712,8 @@ class UniAnimation {
         throw new Error('currentTime not implemented.');
     }
     cancel() {
+        var _a;
+        const shouldDispatchCancel = this._playState !== 'idle';
         toRaw(this.scope).setData({
             ['$eA.' + this.id]: JSON.stringify({
                 id: this.id,
@@ -5721,6 +5723,9 @@ class UniAnimation {
             }),
         });
         this._playState = 'idle';
+        if (shouldDispatchCancel) {
+            (_a = this.oncancel) === null || _a === void 0 ? void 0 : _a.call(this, createUniAnimationPlaybackEvent('cancel'));
+        }
     }
     finish() {
         throw new Error('finish not implemented.');
@@ -5739,6 +5744,14 @@ class UniAnimation {
         });
         this._playState = 'running';
     }
+}
+function createUniAnimationPlaybackEvent(type) {
+    return {
+        type,
+        timeStamp: Date.now(),
+        currentTime: null,
+        timelineTime: null,
+    };
 }
 function handleDirection(keyframes, direction) {
     if (direction === 'reverse') {
