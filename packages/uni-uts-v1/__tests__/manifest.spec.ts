@@ -1,4 +1,6 @@
 import path, { resolve } from 'path'
+import os from 'os'
+import fs from 'fs-extra'
 import {
   checkManifest,
   genManifestFile,
@@ -119,6 +121,60 @@ describe('manifest', () => {
     expect(res1.expired).toBe(false)
     expect(res1.files.length).toBe(5)
     expect(res1.tips).toBe('')
+  })
+  test('check android dependencies cache', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uts-deps-'))
+    const pluginRelativeDir = 'uni_modules/test-uts-deps'
+    const dependenciesCacheDir = path.join(
+      cacheDir,
+      'app-android',
+      'uts',
+      pluginRelativeDir
+    )
+    try {
+      const tempPluginDir = path.join(tempDir, 'test-uts')
+      fs.copySync(pluginModuleDir, tempPluginDir)
+      const configJsonFile = path.join(
+        tempPluginDir,
+        'utssdk',
+        'app-android',
+        'config.json'
+      )
+      const options = {
+        ...pluginModuleOptions,
+        pluginDir: tempPluginDir,
+        pluginRelativeDir,
+      }
+      fs.outputFileSync(
+        configJsonFile,
+        JSON.stringify({ dependencies: ['com.test:old:1.0.0'] })
+      )
+      await genManifestFile('app-android', options)
+      const dependenciesCacheFile = path.join(
+        dependenciesCacheDir,
+        'dependencies.json'
+      )
+      const oldDependenciesCache = fs.readFileSync(
+        dependenciesCacheFile,
+        'utf8'
+      )
+
+      fs.outputFileSync(
+        configJsonFile,
+        JSON.stringify({ dependencies: ['com.test:new:1.0.0'] })
+      )
+      await genManifestFile('app-android', options)
+      fs.outputFileSync(dependenciesCacheFile, oldDependenciesCache)
+
+      const res = await checkKotlinCompile('custom', options)
+      expect(res.expired).toBe(true)
+      expect(res.tips).toBe(
+        'uts插件[test-uts]依赖发生变化，需要重新打包自定义基座'
+      )
+    } finally {
+      fs.removeSync(tempDir)
+      fs.removeSync(dependenciesCacheDir)
+    }
   })
   test('gen ios manifest', async () => {
     const res = await checkSwiftCompile('standard', pluginModuleOptions)

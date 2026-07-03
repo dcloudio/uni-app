@@ -25,6 +25,8 @@ declare function initTargetHacker(_targetLanguage: TargetLanguage): {
     useTypeAndInterfaceAsValue: boolean;
 };
 interface CreateTransformerOptions {
+    dom2?: boolean;
+    isUniAppX?: boolean;
     enableUTSNumber?: boolean;
     enableNarrowType?: boolean;
     enableGenericsParameterDefaults?: boolean;
@@ -33,6 +35,12 @@ interface CreateTransformerOptions {
         resolve?: () => Record<string, string>;
         extname?: '.ets' | '.js';
         rewriteRootDir?: string;
+    };
+    disableUTSBooleanConversion?: boolean;
+    sharedData?: {
+        resolveFieldMeta(name: string): {
+            fieldId: number;
+        };
     };
 }
 declare function initTargetTransformers(targetLanguage: TargetLanguage, options?: CreateTransformerOptions): _uts_transforms_base.UTSTransformerFactoryCreator[];
@@ -64,6 +72,7 @@ type UniXCompilerOptions = {
     sharedDataLibName?: string;
     normalizeFileName: (fileName: string) => string;
     watchFile?(path: string, callback: tsTypes__default.FileWatcherCallback, pollingInterval?: number, options?: tsTypes__default.WatchOptions): tsTypes__default.FileWatcher;
+    sourceFileCallback?: (sourceFile: tsTypes__default.SourceFile) => void;
     transformOptions?: CreateTransformerOptions;
 };
 declare class UniXCompiler implements IUTSCompiler {

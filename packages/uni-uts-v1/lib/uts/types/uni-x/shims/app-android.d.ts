@@ -22,6 +22,8 @@ declare global {
 
   type CreateVueComponent = any
 
+  // 属性委托装饰器
+  function by(arg0: any): any
   function numberEquals(a: any, b: any): boolean
   function utsMapOf<K = string,T = any>(obj?: Record<string,unknown> | any[]): any
   function padStyleMapOf(style: any): any

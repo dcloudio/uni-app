@@ -19,8 +19,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     useCover(rootRef, trigger, content)
 
     useRebuild(() => {
-      const node = (textRef.value as HTMLElement).childNodes[0]
-      content.text = node && node instanceof Text ? node.textContent! : ''
+      if (textRef.value) {
+        const node = (textRef.value as HTMLElement).childNodes[0]
+        content.text = node && node instanceof Text ? node.textContent! : ''
+      }
       window.dispatchEvent(new CustomEvent('updateview'))
     })
 

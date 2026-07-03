@@ -2054,6 +2054,23 @@ function createDecl(prop, value, important, raws, source) {
   return decl;
 }
 var isNumber = val => typeof val === 'number';
+var cacheStringFunction = fn => {
+  var cache = Object.create(null);
+  return str => {
+    var hit = cache[str];
+    return hit || (cache[str] = fn(str));
+  };
+};
+var hyphenateRE = /([A-Z])/g;
+var hyphenateStyleProperty = cacheStringFunction(str => str.replace(hyphenateRE, (_, m) => {
+  if (typeof m === 'string') {
+    return '-' + m.toLowerCase();
+  }
+  return m;
+}).toLowerCase());
+function supportedValueWithTipsReason(k, v, tips) {
+  return 'ERROR: property value `' + v + '` is not supported for `' + hyphenateStyleProperty(k) + '` ' + tips;
+}
 /**
  * css value 分割多值，兼容包含括号的 css 方法，比如 var/env/calc() 等
  */
@@ -2212,9 +2229,34 @@ var transformBorderStyle = transformBorderColor;
 var transformBorderStyleNvue = transformBorderColorNvue;
 var transformBorderWidth = transformBorderColor;
 var transformBorderWidthNvue = transformBorderColorNvue;
+function tryExpandSingleValueVarShorthand(decl, props, value) {
+  // 只在 dom2 运行时兜底展开，避免影响其它平台现有行为。
+  {
+    return null;
+  }
+}
 var borderWidth = 'Width';
 var borderStyle = 'Style';
 var borderColor = 'Color';
+var BORDER_WIDTH_REGEXP = /^(?:[\d.]+\S*|thin|medium|thick)$/;
+// 这里按完整 CSS line-style 识别，后续再交给 border-*-style 的既有校验逻辑报精确错误。
+var BORDER_STYLE_REGEXP = /^(?:none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset)$/;
+var BORDER_SHORTHAND_VAR_ORDER_WARNING = '__borderShorthandVarOrderWarning';
+function createBorderVarOrderWarning(prop, value) {
+  return supportedValueWithTipsReason(prop, value, '(border shorthand with CSS variables must follow `width style color`, for example: `1px solid var(--color, #999999)`)');
+}
+function isCssVarValue(value) {
+  return value.startsWith('var(');
+}
+function isBorderWidthValue(value) {
+  return isCssVarValue(value) || BORDER_WIDTH_REGEXP.test(value);
+}
+function isBorderStyleValue(value) {
+  return isCssVarValue(value) || BORDER_STYLE_REGEXP.test(value);
+}
+function isBorderColorValue(value) {
+  return isCssVarValue(value) || !BORDER_WIDTH_REGEXP.test(value) && !BORDER_STYLE_REGEXP.test(value);
+}
 function createTransformBorder(options) {
   return decl => {
     var {
@@ -2224,15 +2266,24 @@ function createTransformBorder(options) {
       raws,
       source
     } = decl;
+    var singleVarResult = tryExpandSingleValueVarShorthand();
+    // 单个 var() 无法提前判断是 width/style/color，dom2 下先平铺后继续展开。
+    if (singleVarResult) {
+      return [...transformBorderWidth(singleVarResult[0]), ...transformBorderStyle(singleVarResult[1]), ...transformBorderColor(singleVarResult[2])];
+    }
     var splitResult = splitValues(value);
     var havVar = splitResult.some(str => str.startsWith('var('));
     var result = [];
-    // 包含 var ，直接视为 width/style/color 都使用默认值
+    // 包含 var 时按位置解析，避免把 style 误判成 color
     if (havVar) {
+      if (splitResult.length > 3 || splitResult.length === 3 && (!isBorderWidthValue(splitResult[0]) || !isBorderStyleValue(splitResult[1]) || !isBorderColorValue(splitResult[2]))) {
+        decl[BORDER_SHORTHAND_VAR_ORDER_WARNING] = createBorderVarOrderWarning(prop, value);
+        return [];
+      }
       result = splitResult;
       splitResult = [];
     } else {
-      result = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
+      result = [BORDER_WIDTH_REGEXP, BORDER_STYLE_REGEXP, /\S+/].map(item => {
         var index = splitResult.findIndex(str => item.test(str));
         return index < 0 ? null : splitResult.splice(index, 1)[0];
       });
@@ -2350,6 +2401,11 @@ var transformFlexFlow = decl => {
   } = decl;
   value = value.trim();
   var splitResult = splitValues(value);
+  var singleVarResult = tryExpandSingleValueVarShorthand();
+  // 单个 var() 无法提前判断是 direction 还是 wrap，dom2 下直接平铺。
+  if (singleVarResult) {
+    return singleVarResult;
+  }
   var result = [/^(column|column-reverse|row|row-reverse)$/, /^(nowrap|wrap|wrap-reverse)$/].map(item => {
     var index = splitResult.findIndex(str => item.test(str));
     return index < 0 ? null : splitResult.splice(index, 1)[0];
@@ -2433,6 +2489,11 @@ var transformFlex = decl => {
   value = value.trim();
   var result = [];
   var splitResult = splitValues(value);
+  var singleVarResult = tryExpandSingleValueVarShorthand();
+  // 单个 var() 无法提前拆出 grow/shrink/basis，dom2 下按 border 的兜底逻辑平铺。
+  if (singleVarResult) {
+    return singleVarResult;
+  }
   // 是否 flex-grow 的有效值 <number [0,∞]>
   var isFlexGrowValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v));
   var isFlexShrinkValid = v => isNumber(Number(v)) && !Number.isNaN(Number(v)) && Number(v) >= 0;
@@ -2527,7 +2588,7 @@ var expanded = Symbol('expanded');
 function expand(options) {
   var plugin = {
     postcssPlugin: "".concat(options.type || 'nvue', ":expand"),
-    Declaration(decl) {
+    Declaration(decl, helper) {
       if (decl[expanded]) {
         return;
       }
@@ -2537,6 +2598,25 @@ function expand(options) {
       var transform = DeclTransforms[decl.prop];
       if (transform) {
         var res = transform(decl);
+        var reason = decl[BORDER_SHORTHAND_VAR_ORDER_WARNING];
+        if (reason && helper && decl.warn) {
+          var needLog = false;
+          if (options.logLevel === 'NOTE') {
+            needLog = true;
+          } else if (options.logLevel === 'ERROR') {
+            if (reason.startsWith('ERROR:')) {
+              needLog = true;
+            }
+          } else {
+            if (!reason.startsWith('NOTE:')) {
+              needLog = true;
+            }
+          }
+          if (needLog) {
+            decl.warn(helper.result, reason);
+          }
+          delete decl[BORDER_SHORTHAND_VAR_ORDER_WARNING];
+        }
         var _isSame = res.length === 1 && res[0] === decl;
         if (!_isSame) {
           decl.replaceWith(res);

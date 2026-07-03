@@ -8,6 +8,7 @@ import {
   APP_SERVICE_FILENAME,
   M,
   isInHBuilderX,
+  isUniAppXAndroidNative,
   output,
   runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
@@ -33,10 +34,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
     ;(options as BuildOptions).minify = true
   }
   initEnv('dev', options)
-  if (
-    process.env.UNI_APP_X === 'true' &&
-    process.env.UNI_UTS_PLATFORM === 'app-android'
-  ) {
+  if (isUniAppXAndroidNative()) {
     return runUVueAndroidDev(options)
   }
   const createLogger = await import('vite').then(
@@ -92,19 +90,28 @@ export async function runDev(options: CliOptions & ServerOptions) {
           }
           const utsChanged = process.env.UNI_APP_UTS_CHANGED === 'true'
           process.env.UNI_APP_UTS_CHANGED = ''
+          let changedFiles = ''
+          let hasBinFiles = false
           if (options.platform === 'app') {
             const files = process.env.UNI_APP_CHANGED_FILES
             const pages = process.env.UNI_APP_CHANGED_PAGES
             const dex = process.env.UNI_APP_UTS_CHANGED_FILES
-            const changedFiles = pages || files
+            hasBinFiles = getHasBinFiles()
+            changedFiles = pages || files
             process.env.UNI_APP_CHANGED_PAGES = ''
             process.env.UNI_APP_CHANGED_FILES = ''
             process.env.UNI_APP_UTS_CHANGED_FILES = ''
+            if (process.env.UNI_APP_X_DOM2_DYNAMIC === 'true') {
+              process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES = ''
+            }
+            const hasIncrementalFiles =
+              changedFiles &&
+              !changedFiles.includes(APP_CONFIG_SERVICE) &&
+              !changedFiles.includes(APP_SERVICE_FILENAME)
             if (
-              (changedFiles &&
-                !changedFiles.includes(APP_CONFIG_SERVICE) &&
-                !changedFiles.includes(APP_SERVICE_FILENAME)) ||
-              dex
+              // 目前动态渲染下，只要bin有变更，就需要全量同步，后续可以优化成bin变更时输出bin变更文件列表
+              !hasBinFiles &&
+              (hasIncrementalFiles || dex)
             ) {
               if (pages) {
                 return output(
@@ -128,12 +135,47 @@ export async function runDev(options: CliOptions & ServerOptions) {
             options.platform === 'app-harmony' ||
             options.platform === 'mp-harmony'
           ) {
+            hasBinFiles = getHasBinFiles()
+            // 动态化且没有uts插件变更时，输出变更文件列表
+            if (
+              process.env.UNI_APP_X_DOM2_DYNAMIC === 'true' &&
+              !utsChanged &&
+              !hasBinFiles
+            ) {
+              const changed: string[] = []
+              const files = process.env.UNI_APP_CHANGED_FILES
+              process.env.UNI_APP_CHANGED_PAGES = ''
+              if (files) {
+                try {
+                  changed.push(...JSON.parse(files))
+                } catch {}
+              }
+              // 鸿蒙平台暂不启用 bin 文件热更新，先不合并到 changes 中。
+              // const binFiles = process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES
+              process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES = ''
+              // if (binFiles) {
+              //   try {
+              //     changed.push(...JSON.parse(binFiles))
+              //   } catch {}
+              // }
+              if (changed.length) {
+                return output(
+                  'log',
+                  M['dev.watching.end.files'].replace(
+                    '{files}',
+                    JSON.stringify(changed)
+                  )
+                )
+              }
+            }
             // 鸿蒙平台cpp/uts插件变更需要整体编译
             if (
               process.env.UNI_APP_X_DOM2_CPP_CHANGED !== 'true' &&
-              !utsChanged
+              !utsChanged &&
+              !hasBinFiles
             ) {
               const files = process.env.UNI_APP_CHANGED_FILES
+              process.env.UNI_APP_CHANGED_FILES = ''
               if (files) {
                 return output(
                   'log',
@@ -152,7 +194,10 @@ export async function runDev(options: CliOptions & ServerOptions) {
             ) {
               return output('log', M['dev.watching.end'])
             }
-            return output('log', M['uvue.dev.watching.end.empty'])
+            // 没有cpp/uts插件变更，且没有增量js/bin文件变更，就输出无变更
+            if (!changedFiles && !hasBinFiles) {
+              return output('log', M['uvue.dev.watching.end.empty'])
+            }
           }
           return output('log', M['dev.watching.end'])
         } else if (event.code === 'END') {
@@ -184,10 +229,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
 
 export async function runBuild(options: CliOptions & BuildOptions) {
   initEnv('build', options)
-  if (
-    process.env.UNI_APP_X === 'true' &&
-    process.env.UNI_UTS_PLATFORM === 'app-android'
-  ) {
+  if (isUniAppXAndroidNative()) {
     return runUVueAndroidBuild(options)
   }
   try {
@@ -251,4 +293,12 @@ export const stopProfiler = (
       }
     })
   })
+}
+
+function getHasBinFiles() {
+  const binFiles =
+    process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
+      ? process.env.UNI_APP_X_DOM2_BIN_CHANGED_FILES
+      : ''
+  return !!(binFiles && binFiles !== '[]')
 }

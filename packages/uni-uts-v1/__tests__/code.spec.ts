@@ -21,6 +21,7 @@ describe('code', () => {
       extname: '.uts',
       androidComponents: { TestUTS: '' },
       inputDir,
+      platform: 'app-android',
     }
     const res = await genProxyCode(pluginDir, options)
     expect(res.replace(ERR_MSG_PLACEHOLDER, '')).toMatchSnapshot()
@@ -40,6 +41,7 @@ describe('code', () => {
           pluginRelativeDir: 'utssdk/test-uts',
           androidComponents: { TestUTS: '' },
           inputDir,
+          platform: 'app-android',
         })
       ).replace(ERR_MSG_PLACEHOLDER, '')
     ).toMatchSnapshot()
@@ -56,6 +58,7 @@ describe('code', () => {
           extname: '.uts',
           androidComponents: {},
           inputDir,
+          platform: 'app-android',
         })
       ).replace(ERR_MSG_PLACEHOLDER, '')
     ).toMatchSnapshot()
@@ -72,6 +75,7 @@ describe('code', () => {
           extname: '.uts',
           androidComponents: {},
           inputDir,
+          platform: 'app-android',
         })
       ).replace(ERR_MSG_PLACEHOLDER, '')
     ).toMatchSnapshot()

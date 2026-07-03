@@ -1,5 +1,10 @@
 export default {
   'app.compiler.version': '编译器版本：{version}',
+  'view.render.compiler.target': '当前视图层编译目标：{target}',
+  'view.render.compiler.target.bytecode': '字节码',
+  'view.render.compiler.target.nativecode': '机器码',
+  'style.isolation.version':
+    '当前样式隔离策略：{version}。详见：https://doc.dcloud.net.cn/uni-app-x/css/common/style-isolation.html',
   compiling: '正在编译中...',
   'dev.performance':
     '请注意运行模式下，因日志输出、sourcemap 以及未压缩源码等原因，性能和包体积，均不及发行模式。',
@@ -15,18 +20,24 @@ export default {
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
   'dev.watching.restart.vapor':
     'DONE  Restart required. 切换蒸汽模式需要重新运行才能生效。',
+  'dev.watching.vapor.render.target':
+    'manifest.json 中更改了视图层编译目标为{manifestTarget}，但注意运行控制台还是{runtimeTarget}。',
   'build.failed': 'DONE  Build failed.',
   'compiler.build.failed': '编译失败',
   'stat.warn.appid':
     '当前应用未配置 appid，无法使用 uni 统计，详情参考：https://ask.dcloud.net.cn/article/36303',
   'stat.warn.version':
-    '当前应用未配置uni统计版本，默认使用1.0版本；建议使用uni统计2.0版本 ，私有部署数据更安全，代码开源可定制。详情：https://uniapp.dcloud.io/uni-stat',
-  'stat.warn.tip': '已开启 uni统计{version} 版本',
+    '当前应用未配置 uni 统计版本，默认使用公有版；可配置为公有版或私有版。详情：https://uniapp.dcloud.io/uni-stat',
+  'stat.warn.tip': '已开启uni 统计 2.0{type}',
   'i18n.fallbackLocale.default':
     '当前应用未在 manifest.json 配置 fallbackLocale，默认使用：{locale}',
   'i18n.fallbackLocale.missing':
     '当前应用配置的 fallbackLocale 或 locale 为：{locale}，但 locale 目录缺少该语言文件',
   'easycom.conflict': 'easycom组件冲突：',
+  'dom2.compatible.component':
+    '蒸汽模式不支持 uni-app 兼容模式组件 {name}，检测到其实现文件为 {file}。请改用标准模式的UTS组件实现来实现。',
+  'dom2.root.scroll.view':
+    '蒸汽模式下页面可滚动，建议移除根节点 scroll-view，以避免嵌套滚动。详情: https://doc.dcloud.net.cn/uni-app-x/page.html#disablescroll',
   'mp.component.args[0]': '{0}的第一个参数必须为静态字符串',
   'mp.component.args[1]': '{0}需要两个参数',
   'mp.360.unsupported': 'vue3暂不支持360小程序',
@@ -65,4 +76,6 @@ export default {
   'pages.json.page.notfound':
     '页面"{pagePath}"不存在，请确保填写的页面路径不包含文件后缀，且必须与真实的文件路径大小写保持一致。',
   'pages.json.page.slash': '路径 "{pagePath}" 不能以 "/" 开头',
+  'pages.json.tabbar.page.notfound':
+    'tabBar 中配置的页面 "{pagePath}" 未在 pages.json 中注册。',
 } as const

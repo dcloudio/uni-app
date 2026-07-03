@@ -11,6 +11,7 @@ import {
   transformDirection,
   transformMPBuiltInTag,
   transformRef,
+  transformTeleport,
 } from '@dcloudio/uni-cli-shared'
 import {
   type UniMiniProgramPluginOptions,
@@ -18,6 +19,7 @@ import {
 } from '@dcloudio/uni-mp-vite'
 import { transformAd } from './transforms/transformAd'
 import { transformLoading } from '../x/compiler/transforms/transformLoading'
+import { getMiniProgramAIPaths } from './utils'
 
 import source from './project.config.json'
 
@@ -70,6 +72,7 @@ const nodeTransforms: NodeTransform[] = [
   transformRef,
   transformComponentLink,
   transformAd,
+  transformTeleport,
 ]
 if (process.env.UNI_APP_X === 'true') {
   nodeTransforms.push(
@@ -168,6 +171,10 @@ export const options: UniMiniProgramPluginOptions = {
             'functional-pages',
             'project.private.config.json',
             projectConfigFilename,
+            ...getMiniProgramAIPaths(
+              process.env.UNI_INPUT_DIR,
+              process.env.UNI_PLATFORM
+            ),
           ],
           get dest() {
             return process.env.UNI_OUTPUT_DIR

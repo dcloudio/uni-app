@@ -18,6 +18,7 @@ import {
 } from '@dcloudio/uni-core'
 import { closePreSystemDialogPage } from './utils'
 import { UTSJSONObject } from '@dcloudio/uni-shared'
+import { markRaw } from 'vue'
 
 export const openDialogPage = (
   options: OpenDialogPageOptions
@@ -38,14 +39,16 @@ export const openDialogPage = (
   const targetRoute = __uniRoutes.find((route) => {
     return route.path === path || `/${route.meta.route}` === path
   })
-  const dialogPage = new UniDialogPageImpl({
-    route: removeLeadingSlash(path),
-    options: new UTSJSONObject(query),
-    $component: targetRoute!.component,
-    getParentPage: () => null,
-    $disableEscBack: options.disableEscBack,
-    $triggerParentHide: !!options.triggerParentHide,
-  })
+  const dialogPage = markRaw(
+    new UniDialogPageImpl({
+      route: removeLeadingSlash(path),
+      options: new UTSJSONObject(query),
+      $component: targetRoute!.component,
+      getParentPage: () => null,
+      $disableEscBack: options.disableEscBack,
+      $triggerParentHide: !!options.triggerParentHide,
+    })
+  )
 
   let parentPage = options.parentPage
   const currentPages = getCurrentPages() as UniPage[]

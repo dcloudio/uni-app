@@ -1,4 +1,4 @@
-import { extend, hasOwn, isArray, isPlainObject, isString } from '@vue/shared'
+import { extend, hasOwn, isPlainObject, isString } from '@vue/shared'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { type VNode, createTextVNode, h } from 'vue'
 
@@ -98,7 +98,7 @@ export function decodeEntities(htmlString: string) {
         return String.fromCharCode(stage.slice(1))
       }
       if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
-        return String.fromCharCode(0 + stage.slice(1))
+        return String.fromCharCode(Number('0' + stage.slice(1)))
       }
       return match
     }
@@ -108,13 +108,13 @@ export function decodeEntities(htmlString: string) {
 interface Node {
   type: string
   text?: string
-  name: string
-  attrs: Data
+  name?: string
+  attrs?: Data
   children?: Node[]
 }
 
 function processClickEvent(node: Node, triggerItemClick: Function) {
-  if (['a', 'img'].includes(node.name) && triggerItemClick) {
+  if (node.name && ['a', 'img'].includes(node.name) && triggerItemClick) {
     return {
       onClickCapture: (e: Event) => {
         //#if !_X_
@@ -135,15 +135,32 @@ function processClickEvent(node: Node, triggerItemClick: Function) {
   }
 }
 
-function normalizeAttrs(tagName: string, attrs: Data) {
-  if (!isPlainObject(attrs)) return
-  for (const key in attrs) {
-    if (hasOwn(attrs, key)) {
-      const value = attrs[key]
-      if (tagName === 'img' && key === 'src')
-        attrs[key] = getRealPath(value as string)
-    }
+function normalizeValue(tagName: string, name: string, value: unknown) {
+  if (tagName === 'img' && name === 'src' && isString(value)) {
+    return getRealPath(value)
   }
+  return value
+}
+
+function normalizeAttrs(tagName: string, attrs?: Data) {
+  if (!isPlainObject(attrs)) return
+  const tagAttrs = TAGS[tagName as keyof typeof TAGS] || []
+  const normalizedAttrs: Data = {}
+  Object.keys(attrs).forEach((name) => {
+    //#if _X_
+    normalizedAttrs[name] = normalizeValue(tagName, name, attrs[name])
+    //#endif
+    //#if !_X_
+    if (
+      name === 'class' ||
+      name === 'style' ||
+      (tagAttrs as string[]).includes(name)
+    ) {
+      normalizedAttrs[name] = normalizeValue(tagName, name, attrs[name])
+    }
+    //#endif
+  })
+  return normalizedAttrs
 }
 
 export const nodeList2VNode = /*#__PURE__*/ (
@@ -151,23 +168,26 @@ export const nodeList2VNode = /*#__PURE__*/ (
   triggerItemClick: Function,
   nodeList?: Node[]
 ): Array<VNode | undefined> => {
-  if (!nodeList || (isArray(nodeList) && !nodeList.length)) return []
+  if (!nodeList || (Array.isArray(nodeList) && !nodeList.length)) return []
 
   return nodeList.map((node) => {
     if (!isPlainObject(node)) {
       return
     }
     if (!hasOwn(node, 'type') || node.type === 'node') {
-      let nodeProps = { [scopeId]: '' }
-      const tagName = node.name?.toLowerCase()
+      if (!isString(node.name) || !node.name) {
+        return
+      }
+      const tagName = node.name.toLowerCase()
+      //#if !_X_
       if (!hasOwn(TAGS, tagName)) {
         return
       }
-      normalizeAttrs(tagName, node.attrs)
-      nodeProps = extend(
-        nodeProps,
+      //#endif
+      const nodeProps = extend(
+        { [scopeId]: '' },
         processClickEvent(node, triggerItemClick),
-        node.attrs
+        normalizeAttrs(tagName, node.attrs)
       )
       return h(
         node.name,

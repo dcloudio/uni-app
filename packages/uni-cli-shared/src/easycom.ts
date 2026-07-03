@@ -6,6 +6,7 @@ import { camelize, capitalize, extend } from '@vue/shared'
 import { createFilter } from '@rollup/pluginutils'
 
 import { isBuiltInComponent, once } from '@dcloudio/uni-shared'
+import { isUniAppXAndroidNative } from './x'
 import { normalizePath } from './utils'
 import { parsePagesJson, parsePagesJsonOnce } from './json/pages'
 import { M } from './messages'
@@ -30,6 +31,8 @@ export interface EasycomMatcher {
   name: string
   pattern: RegExp
   replacement: string
+  // 仅在 dom2 模式下使用：命中该字段时，说明 easycom 实际解析到了旧版 uni-app 兼容模式组件
+  dom2IncompatibleFile?: string
 }
 interface EasycomCustom {
   [key: string]: string
@@ -100,6 +103,9 @@ export function initEasycoms(
     if (isX && (globalThis as any).uts2jsSourceCodeMap) {
       ;(globalThis as any).uts2jsSourceCodeMap.initUts2jsEasycom(easycoms)
     }
+    // UTS / customElements 组件是在 initEasycom 之后补充进去的，
+    // 这里补一次状态，避免项目里只有这类组件时被误判为没有 easycom。
+    hasEasycom = !!easycoms.length
   }
 
   const initUTSEasycomCustomElements = () => {
@@ -151,8 +157,8 @@ export function initEasycoms(
         clearEasycom()
         clearUTSComponents()
         clearUTSCustomElements()
-        initEasycom(easyComOptions)
-        if (isX) {
+        initEasycom(res.easyComOptions)
+        if (supportCustomElements) {
           initUTSEasycomCustomElements()
         }
         initUTSEasycom()
@@ -259,9 +265,27 @@ export function matchEasycom(tag: string) {
     easycomsInvalidCache.add(tag)
     return false
   }
+  // dom2 不支持旧版 uni-app 兼容模式组件，这里在 easycom 真正命中时再报错，
+  // 避免扫描阶段就对未使用的插件组件产生误报。
+  if (process.env.UNI_APP_X_DOM2 === 'true' && matcher.dom2IncompatibleFile) {
+    throw new Error(
+      M['dom2.compatible.component']
+        .replace('{name}', `<${tag}>`)
+        .replace('{file}', matcher.dom2IncompatibleFile)
+    )
+  }
   source = tag.replace(matcher.pattern, matcher.replacement)
   easycomsCache.set(tag, source)
   debugEasycom('matchEasycom', tag, source)
+
+  // 检查 H5 专用组件 ask163203
+  const H5_ONLY_COMPONENTS = ['custom-tab-bar']
+  if (H5_ONLY_COMPONENTS.includes(tag) && process.env.UNI_PLATFORM !== 'h5') {
+    console.warn(
+      `[uni-app] 组件 <${tag}> 是 H5 平台专用组件，在 ${process.env.UNI_PLATFORM} 平台使用可能导致错误。如果你要引入自定义 tabBar 可重命名为其他名称。`
+    )
+  }
+
   return source
 }
 
@@ -339,11 +363,7 @@ function initAutoScanEasycom(
                 path.join(
                   rootDir,
                   `uni_modules/${uni_modules_plugin_id}?${
-                    // android 走 proxy
-                    process.env.UNI_APP_X === 'true' &&
-                    process.env.UNI_UTS_PLATFORM === 'app-android'
-                      ? 'uts-proxy'
-                      : 'uni_helpers'
+                    isUniAppXAndroidNative() ? 'uts-proxy' : 'uni_helpers'
                   }`
                 )
               )
@@ -432,7 +452,12 @@ export function genResolveEasycomCode(
   code: string,
   name: string
 ) {
-  if (process.env.UNI_APP_X_DOM2 === 'true') {
+  if (
+    process.env.UNI_APP_X_DOM2 === 'true' ||
+    // 内部 dev 版本，需要本地开发内置组件，比如web-view，此时需要直接返回本地easycom，不然会找到基座内置的
+    (process.env.UNI_HX_VERSION_DEV === 'true' &&
+      process.env.UNI_APP_X === 'true')
+  ) {
     // dom2 模式下，为了性能，不再考虑优先级问题，如果开发者需要区别，可以手动导入为其他名称
     return name
   }

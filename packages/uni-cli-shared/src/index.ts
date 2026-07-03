@@ -6,6 +6,7 @@ export * from './hbx'
 export * from './ssr'
 export * from './vue'
 export * from './uts'
+export * from './x'
 export * from './logs'
 export * from './dom2'
 export * from './i18n'
@@ -36,6 +37,7 @@ export {
   formatExtApiProviderName,
 } from './uni_modules'
 export {
+  copyEncryptUniModulesDom2Bytes,
   getUniModulesEncryptType,
   parseUniModulesArtifacts,
   resolveEncryptUniModule,

@@ -22,6 +22,8 @@ export function useBackgroundColorContent(pageMeta: UniApp.PageRouteMeta) {
         parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent })
           .backgroundColorContent
       )
+    } else {
+      updateBackgroundColorContent('transparent')
     }
   }
 

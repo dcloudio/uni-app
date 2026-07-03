@@ -4,6 +4,7 @@ import {
   type ComponentOptions,
   toRaw,
 } from 'vue'
+import { VIRTUAL_HOST_CLASS } from '@dcloudio/uni-shared'
 
 import {
   // @ts-expect-error
@@ -36,6 +37,12 @@ export function initPropsObserver(componentOptions: MPComponentOptions) {
     } else if (resolvePropValue(this.properties.uT) === 'm') {
       // 小程序组件
       updateMiniProgramComponentProperties(resolvePropValue(up), this)
+    } else {
+      // mp-harmony  this.$vm 和 observe.uP 表现不稳定
+      if (__PLATFORM__ === 'mp-harmony') {
+        // 临时变量 在 attached this.$vm 时处理
+        this._pendingUP = up
+      }
     }
   }
   if (
@@ -47,6 +54,28 @@ export function initPropsObserver(componentOptions: MPComponentOptions) {
       componentOptions.observers = {}
     }
     componentOptions.observers.uP = observe
+    if (
+      __X__ &&
+      componentOptions.options &&
+      componentOptions.options.virtualHost &&
+      componentOptions.properties &&
+      componentOptions.properties[VIRTUAL_HOST_CLASS]
+    ) {
+      const observeVirtualHostClass = function observeVirtualHostClass(
+        this: MPComponentInstance
+      ) {
+        if (!this.$vm) {
+          return
+        }
+        const instance = this.$vm.$
+        instance.effect.dirty = true
+        if (hasQueueJob(instance.update)) {
+          invalidateJob(instance.update)
+        }
+        instance.update()
+      }
+      componentOptions.observers[VIRTUAL_HOST_CLASS] = observeVirtualHostClass
+    }
   } else {
     ;(componentOptions.properties as any).uP.observer = observe
   }

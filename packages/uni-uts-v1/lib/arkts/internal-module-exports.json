@@ -13,7 +13,37 @@
       "$Once"
     ],
     [
+      "AccelerometerErrorCode"
+    ],
+    [
+      "AccelerometerInterval"
+    ],
+    [
       "AccessOptions"
+    ],
+    [
+      "AddPhoneCalendar"
+    ],
+    [
+      "AddPhoneCalendarComplete"
+    ],
+    [
+      "AddPhoneCalendarCompleteCallback"
+    ],
+    [
+      "AddPhoneCalendarFail"
+    ],
+    [
+      "AddPhoneCalendarFailCallback"
+    ],
+    [
+      "AddPhoneCalendarOptions"
+    ],
+    [
+      "AddPhoneCalendarSuccess"
+    ],
+    [
+      "AddPhoneCalendarSuccessCallback"
     ],
     [
       "AddPhoneContact"
@@ -23,6 +53,9 @@
     ],
     [
       "AddPhoneContactCompleteCallback"
+    ],
+    [
+      "AddPhoneContactErrorCode"
     ],
     [
       "AddPhoneContactFail"
@@ -38,6 +71,30 @@
     ],
     [
       "AddPhoneContactSuccessCallback"
+    ],
+    [
+      "AddPhoneRepeatCalendar"
+    ],
+    [
+      "AddPhoneRepeatCalendarComplete"
+    ],
+    [
+      "AddPhoneRepeatCalendarCompleteCallback"
+    ],
+    [
+      "AddPhoneRepeatCalendarFail"
+    ],
+    [
+      "AddPhoneRepeatCalendarFailCallback"
+    ],
+    [
+      "AddPhoneRepeatCalendarOptions"
+    ],
+    [
+      "AddPhoneRepeatCalendarSuccess"
+    ],
+    [
+      "AddPhoneRepeatCalendarSuccessCallback"
     ],
     [
       "AppCrashInfo"
@@ -59,6 +116,12 @@
     ],
     [
       "BackgroundAudioManager"
+    ],
+    [
+      "CalendarErrorCode"
+    ],
+    [
+      "CalendarRepeatInterval"
     ],
     [
       "Certificate"
@@ -110,6 +173,33 @@
     ],
     [
       "CheckIsSupportSoterAuthenticationSuccessCallback"
+    ],
+    [
+      "ChooseContact"
+    ],
+    [
+      "ChooseContactComplete"
+    ],
+    [
+      "ChooseContactCompleteCallback"
+    ],
+    [
+      "ChooseContactErrorCode"
+    ],
+    [
+      "ChooseContactFail"
+    ],
+    [
+      "ChooseContactFailCallback"
+    ],
+    [
+      "ChooseContactOptions"
+    ],
+    [
+      "ChooseContactSuccess"
+    ],
+    [
+      "ChooseContactSuccessCallback"
     ],
     [
       "ChooseFile"
@@ -287,6 +377,12 @@
     ],
     [
       "CloseSyncOptions"
+    ],
+    [
+      "CompassAccuracy"
+    ],
+    [
+      "CompassErrorCode"
     ],
     [
       "CompressImage"
@@ -823,6 +919,12 @@
       "GetWindowInfoResult"
     ],
     [
+      "GyroscopeErrorCode"
+    ],
+    [
+      "GyroscopeInterval"
+    ],
+    [
       "HideKeyboard"
     ],
     [
@@ -850,13 +952,40 @@
       "HideToast"
     ],
     [
+      "IAccelerometerError"
+    ],
+    [
+      "IAddPhoneCalendarFail"
+    ],
+    [
+      "IAddPhoneContactFail"
+    ],
+    [
+      "IAddPhoneRepeatCalendarFail"
+    ],
+    [
       "IAppThemeFail"
+    ],
+    [
+      "ICalendarError"
+    ],
+    [
+      "ICheckIsSoterEnrolledInDeviceFail"
+    ],
+    [
+      "ICheckIsSupportSoterAuthenticationFail"
+    ],
+    [
+      "IChooseContactFail"
     ],
     [
       "IChooseMediaError"
     ],
     [
       "IClipBoardError"
+    ],
+    [
+      "ICompassError"
     ],
     [
       "ICreateBackgroundAudioFail"
@@ -875,6 +1004,12 @@
     ],
     [
       "IGetProviderFail"
+    ],
+    [
+      "IGetScreenBrightnessFail"
+    ],
+    [
+      "IGyroscopeError"
     ],
     [
       "IMakePhoneCallError"
@@ -898,10 +1033,43 @@
       "IRequestPaymentFail"
     ],
     [
+      "ISetKeepScreenOnFail"
+    ],
+    [
+      "ISetScreenBrightnessFail"
+    ],
+    [
       "IShareFail"
     ],
     [
       "IShareWithSystemFail"
+    ],
+    [
+      "IStartAccelerometerFail"
+    ],
+    [
+      "IStartCompassFail"
+    ],
+    [
+      "IStartGyroscopeFail"
+    ],
+    [
+      "IStartSoterAuthenticationFail"
+    ],
+    [
+      "IStopAccelerometerFail"
+    ],
+    [
+      "IStopCompassFail"
+    ],
+    [
+      "IStopGyroscopeFail"
+    ],
+    [
+      "IVibrateLongFail"
+    ],
+    [
+      "IVibrateShortFail"
     ],
     [
       "Icon"
@@ -1072,6 +1240,15 @@
       "MediaOrientation"
     ],
     [
+      "MemoryWarningCallbackResult"
+    ],
+    [
+      "MemoryWarningErrorCode"
+    ],
+    [
+      "MemoryWarningFail"
+    ],
+    [
       "MkDirOptions"
     ],
     [
@@ -1081,10 +1258,19 @@
       "OauthErrorCode"
     ],
     [
+      "OffAccelerometerChange"
+    ],
+    [
       "OffAppCrash"
     ],
     [
       "OffAppThemeChange"
+    ],
+    [
+      "OffCompassChange"
+    ],
+    [
+      "OffGyroscopeChange"
     ],
     [
       "OffHostThemeChange"
@@ -1099,10 +1285,22 @@
       "OffLocationChangeError"
     ],
     [
+      "OffMemoryWarning"
+    ],
+    [
       "OffNetworkStatusChange"
     ],
     [
       "OffOsThemeChange"
+    ],
+    [
+      "OnAccelerometerChange"
+    ],
+    [
+      "OnAccelerometerChangeCallback"
+    ],
+    [
+      "OnAccelerometerChangeCallbackResult"
     ],
     [
       "OnAppCrash"
@@ -1115,6 +1313,24 @@
     ],
     [
       "OnAppThemeChangeCallback"
+    ],
+    [
+      "OnCompassChange"
+    ],
+    [
+      "OnCompassChangeCallback"
+    ],
+    [
+      "OnCompassChangeCallbackResult"
+    ],
+    [
+      "OnGyroscopeChange"
+    ],
+    [
+      "OnGyroscopeChangeCallback"
+    ],
+    [
+      "OnGyroscopeChangeCallbackResult"
     ],
     [
       "OnHostThemeChange"
@@ -1148,6 +1364,12 @@
     ],
     [
       "OnLocationChangeResult"
+    ],
+    [
+      "OnMemoryWarning"
+    ],
+    [
+      "OnMemoryWarningCallback"
     ],
     [
       "OnNetworkStatusChange"
@@ -1864,6 +2086,78 @@
       "SoterAuthMode"
     ],
     [
+      "StartAccelerometer"
+    ],
+    [
+      "StartAccelerometerComplete"
+    ],
+    [
+      "StartAccelerometerCompleteCallback"
+    ],
+    [
+      "StartAccelerometerFail"
+    ],
+    [
+      "StartAccelerometerFailCallback"
+    ],
+    [
+      "StartAccelerometerOptions"
+    ],
+    [
+      "StartAccelerometerSuccess"
+    ],
+    [
+      "StartAccelerometerSuccessCallback"
+    ],
+    [
+      "StartCompass"
+    ],
+    [
+      "StartCompassComplete"
+    ],
+    [
+      "StartCompassCompleteCallback"
+    ],
+    [
+      "StartCompassFail"
+    ],
+    [
+      "StartCompassFailCallback"
+    ],
+    [
+      "StartCompassOptions"
+    ],
+    [
+      "StartCompassSuccess"
+    ],
+    [
+      "StartCompassSuccessCallback"
+    ],
+    [
+      "StartGyroscope"
+    ],
+    [
+      "StartGyroscopeComplete"
+    ],
+    [
+      "StartGyroscopeCompleteCallback"
+    ],
+    [
+      "StartGyroscopeFail"
+    ],
+    [
+      "StartGyroscopeFailCallback"
+    ],
+    [
+      "StartGyroscopeOptions"
+    ],
+    [
+      "StartGyroscopeSuccess"
+    ],
+    [
+      "StartGyroscopeSuccessCallback"
+    ],
+    [
       "StartLocationUpdate"
     ],
     [
@@ -1946,6 +2240,78 @@
     ],
     [
       "Stats"
+    ],
+    [
+      "StopAccelerometer"
+    ],
+    [
+      "StopAccelerometerComplete"
+    ],
+    [
+      "StopAccelerometerCompleteCallback"
+    ],
+    [
+      "StopAccelerometerFail"
+    ],
+    [
+      "StopAccelerometerFailCallback"
+    ],
+    [
+      "StopAccelerometerOptions"
+    ],
+    [
+      "StopAccelerometerSuccess"
+    ],
+    [
+      "StopAccelerometerSuccessCallback"
+    ],
+    [
+      "StopCompass"
+    ],
+    [
+      "StopCompassComplete"
+    ],
+    [
+      "StopCompassCompleteCallback"
+    ],
+    [
+      "StopCompassFail"
+    ],
+    [
+      "StopCompassFailCallback"
+    ],
+    [
+      "StopCompassOptions"
+    ],
+    [
+      "StopCompassSuccess"
+    ],
+    [
+      "StopCompassSuccessCallback"
+    ],
+    [
+      "StopGyroscope"
+    ],
+    [
+      "StopGyroscopeComplete"
+    ],
+    [
+      "StopGyroscopeCompleteCallback"
+    ],
+    [
+      "StopGyroscopeFail"
+    ],
+    [
+      "StopGyroscopeFailCallback"
+    ],
+    [
+      "StopGyroscopeOptions"
+    ],
+    [
+      "StopGyroscopeSuccess"
+    ],
+    [
+      "StopGyroscopeSuccessCallback"
     ],
     [
       "StopLocationUpdate"
@@ -2045,6 +2411,60 @@
     ],
     [
       "UserInfo"
+    ],
+    [
+      "VibrateErrorCode"
+    ],
+    [
+      "VibrateLong"
+    ],
+    [
+      "VibrateLongComplete"
+    ],
+    [
+      "VibrateLongCompleteCallback"
+    ],
+    [
+      "VibrateLongFail"
+    ],
+    [
+      "VibrateLongFailCallback"
+    ],
+    [
+      "VibrateLongOptions"
+    ],
+    [
+      "VibrateLongSuccess"
+    ],
+    [
+      "VibrateLongSuccessCallback"
+    ],
+    [
+      "VibrateShort"
+    ],
+    [
+      "VibrateShortComplete"
+    ],
+    [
+      "VibrateShortCompleteCallback"
+    ],
+    [
+      "VibrateShortFail"
+    ],
+    [
+      "VibrateShortFailCallback"
+    ],
+    [
+      "VibrateShortOptions"
+    ],
+    [
+      "VibrateShortSuccess"
+    ],
+    [
+      "VibrateShortSuccessCallback"
+    ],
+    [
+      "VibrateShortType"
     ],
     [
       "Worker"

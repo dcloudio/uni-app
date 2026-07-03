@@ -35,6 +35,7 @@ export function createUniXCompiler(
     normalizeFileName: (str: string) => string
     isPureSwift?: boolean
     resolveWorkers: () => Record<string, string>
+    sourceFileCallback?: UniXCompilerOptions['sourceFileCallback']
   }
 ) {
   const inputDir = normalizePath(options.inputDir)
@@ -93,11 +94,14 @@ export function createUniXCompiler(
     watchFile,
     incremental: mode === 'development',
     transformOptions: {
+      dom2: process.env.UNI_APP_X_DOM2 === 'true',
+      isUniAppX: process.env.UNI_APP_X === 'true',
       enableUTSNumber: false,
       enableNarrowType: true, // 默认开启
       enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
       // TODO 调整参数传递方式
       isPureSwift: options.isPureSwift,
+      disableUTSBooleanConversion: process.env.UNI_COMPILE_TARGET === 'ext-api',
       workers: {
         resolve: options.resolveWorkers,
         extname:
@@ -228,9 +232,10 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
   ) {
     const stableCode = [
       2300, 2451, 110111119, 2564, 1023, 120000003, 120000004, 110111165, 1005,
+      2588,
     ]
     const internalUseCode = [
-      2355, 4117, 2348, 2310, 18047, 120000000, 120000001,
+      2355, 4117, 2348, 2310, 18047, 120000000, 120000001, 100008,
     ]
     const code = [...stableCode]
     if (hxDev) {
@@ -257,7 +262,12 @@ function createReportDiagnostic(compiler: UniXCompiler, inputDir: string) {
       ].includes(diagnostic.code)
     const isDebug = debugCompile.enabled
 
-    const isWarning = !hxDev && errorCode.includes(diagnostic.code)
+    // 即使内部开发模式开启了额外校验码，只要诊断本身被标记为 Warning，
+    // 这里仍按警告处理，避免被升级为阻塞编译的错误。
+    const isWarning =
+      diagnostic.category ===
+        compiler.getTypeScript().DiagnosticCategory.Warning ||
+      (!hxDev && errorCode.includes(diagnostic.code))
     const color = isWarning ? COLORS.warn : COLORS.error
     const block = isWarning
       ? SPECIAL_CHARS.WARN_BLOCK

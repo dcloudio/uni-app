@@ -292,6 +292,13 @@ export function onPageShow(
   instance: ComponentInternalInstance,
   pageMeta: UniApp.PageRouteMeta
 ) {
+  if (__X__) {
+    const type = instance.type as { styleIsolation?: string }
+    if (type.styleIsolation !== 'isolated') {
+      const scopeId = getScopeId(instance.root)
+      scopeId && updateCurPageBodyScopeId(scopeId)
+    }
+  }
   updateBodyScopeId(instance)
   updateCurPageCssVar(pageMeta)
   updateCurPageAttrs(pageMeta)

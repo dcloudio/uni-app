@@ -12,6 +12,8 @@ import { useContextInfo, useSubscribe } from '@dcloudio/uni-components'
 import { getBaseSystemInfo, getRealPath } from '@dcloudio/uni-platform'
 import type { CustomEventTrigger } from '../../../helpers/useEvent'
 import HTMLParser from '../../../helpers/html-parser'
+
+const STATUS_KEY_MAP: Record<string, string> = { 'code-block': 'codeBlock' }
 import loadScript from './loadScript'
 import * as formats from './formats'
 
@@ -58,6 +60,7 @@ interface WindowExt extends Window {
 export function useQuill(
   props: {
     readOnly?: any
+    type?: any
     placeholder?: any
     showImgSize?: any
     showImgToolbar?: any
@@ -75,7 +78,7 @@ export function useQuill(
     (value) => {
       if (quillReady) {
         quill.enable(!value)
-        if (!value) {
+        if (value) {
           quill.blur()
         }
       }
@@ -86,6 +89,14 @@ export function useQuill(
     (value) => {
       if (quillReady) {
         setPlaceHolder(value)
+      }
+    }
+  )
+  watch(
+    () => props.type,
+    (value) => {
+      if (quillReady) {
+        setInputMode(value)
       }
     }
   )
@@ -117,6 +128,9 @@ export function useQuill(
       'ul',
       'li',
       'br',
+      'blockquote',
+      'pre',
+      'code',
     ]
     let content = ''
     let disable: boolean
@@ -165,6 +179,14 @@ export function useQuill(
     QuillRoot.getAttribute(placeHolderAttrName) !== placeholder &&
       QuillRoot.setAttribute(placeHolderAttrName, placeholder)
   }
+  function setInputMode(type: string) {
+    const QuillRoot = quill.root
+    if (type === 'none') {
+      QuillRoot.setAttribute('inputmode', 'none')
+    } else {
+      QuillRoot.removeAttribute('inputmode')
+    }
+  }
   let oldStatus: StringMap = {}
   function updateStatus(range?: RangeStatic) {
     const status = range ? quill.getFormat(range) : {}
@@ -174,10 +196,23 @@ export function useQuill(
       keys.find((key) => status[key] !== oldStatus[key])
     ) {
       oldStatus = status
-      trigger('statuschange', {} as Event, status)
+      const normalizedStatus: StringMap = {}
+      Object.keys(status).forEach((k) => {
+        normalizedStatus[STATUS_KEY_MAP[k] || k] = status[k]
+      })
+      trigger('statuschange', {} as Event, normalizedStatus)
+    }
+  }
+  function fixCursor() {
+    const range = quill.getSelection()
+    if (!range) return
+    const [leaf] = quill.getLeaf(range.index - 1)
+    if (leaf?.statics?.blotName === 'mention') {
+      quill.setSelection(range.index, 0, 'silent')
     }
   }
   function textChangeHandler() {
+    fixCursor()
     trigger('input', {} as Event, getContents())
   }
   function initQuill(imageResizeModules: ResizeModuleName[]) {
@@ -194,6 +229,7 @@ export function useQuill(
         (window as WindowExt).ImageResize.default
       )
       options.modules = {
+        syntax: true,
         ImageResize: {
           modules: imageResizeModules,
         },
@@ -201,6 +237,7 @@ export function useQuill(
     }
     const rootEl = rootRef.value as HTMLElement
     quill = new Quill(rootEl, options) as QuillExt
+    setInputMode(props.type as string)
     const $el = quill.root
     const events = ['focus', 'blur', 'input']
     events.forEach((name) => {
@@ -300,6 +337,14 @@ export function useQuill(
             quill.insertEmbed(range.index + 1, 'divider', true, 'user')
             quill.setSelection(range.index + 2, 0, 'silent')
             break
+          case 'insertMention':
+            {
+              range = quill.getSelection(true)
+              const mentionData = extend({ id: '', name: '' }, options)
+              quill.insertEmbed(range.index, 'mention', mentionData, 'user')
+              quill.setSelection(range.index + 1, 0)
+            }
+            break
           case 'insertImage':
             {
               range = quill.getSelection(true)
@@ -341,6 +386,20 @@ export function useQuill(
               const { text = '' } = options
               quill.insertText(range.index, text, 'user')
               quill.setSelection(range.index + text.length, 0, 'silent')
+            }
+            break
+          case 'insertLink':
+            {
+              range = quill.getSelection(true)
+              const { text = '', href = '' } = options
+              if (!href) break
+              if (range.length > 0) {
+                quill.format('link', href, 'user')
+              } else {
+                const linkText = text || href
+                quill.insertText(range.index, linkText, 'link', href, 'user')
+                quill.setSelection(range.index + linkText.length, 0, 'silent')
+              }
             }
             break
           case 'setContents':
@@ -429,18 +488,24 @@ export function useQuill(
       __PLATFORM__ === 'app'
         ? './__uniappquill.js'
         : 'https://unpkg.com/quill@1.3.7/dist/quill.min.js'
-    loadScript((window as WindowExt).Quill, quillSrc, () => {
-      if (imageResizeModules.length) {
-        const imageResizeSrc =
-          __PLATFORM__ === 'app'
-            ? './__uniappquillimageresize.js'
-            : 'https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js'
-        loadScript((window as WindowExt).ImageResize, imageResizeSrc, () => {
+    const quillHighlightSrc =
+      __PLATFORM__ === 'app'
+        ? './__uniappquillhighlight.js'
+        : 'https://unpkg.com/@highlightjs/cdn-assets@11.11.1/highlight.min.js'
+    loadScript('hljs', quillHighlightSrc, () => {
+      loadScript((window as WindowExt).Quill, quillSrc, () => {
+        if (imageResizeModules.length) {
+          const imageResizeSrc =
+            __PLATFORM__ === 'app'
+              ? './__uniappquillimageresize.js'
+              : 'https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js'
+          loadScript((window as WindowExt).ImageResize, imageResizeSrc, () => {
+            initQuill(imageResizeModules)
+          })
+        } else {
           initQuill(imageResizeModules)
-        })
-      } else {
-        initQuill(imageResizeModules)
-      }
+        }
+      })
     })
   })
 }

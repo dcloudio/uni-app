@@ -534,6 +534,37 @@ const createCanvasContextAsync = defineAsyncApi(API_CREATE_CANVAS_CONTEXT_ASYNC,
     }
 });
 
+const API_CREATE_EDITOR_CONTEXT_ASYNC = 'createEditorContextAsync';
+const createEditorContextAsync = defineAsyncApi(API_CREATE_EDITOR_CONTEXT_ASYNC, (options, { resolve, reject }) => {
+    const { id, component } = options;
+    const pages = getCurrentPages();
+    const page = pages[pages.length - 1];
+    if (!page || !page.$vm) {
+        reject('current page invalid.');
+    }
+    else {
+        const query = my.createSelectorQuery();
+        if (component) {
+            // 支付宝小程序 in 只支持在 Component 中使用，Page 中使用返回值为 null https://opendocs.alipay.com/mini/0cs688?pathHash=aba8a9f8#%E7%AE%80%E4%BB%8B
+            query.in = function () {
+                return this;
+            };
+        }
+        const baseQuery = component ? query.in(component) : query;
+        baseQuery
+            .select('#' + id)
+            .context((res) => {
+            if (res && res.context) {
+                resolve(res.context);
+            }
+            else {
+                reject('editor id or component invalid.');
+            }
+        })
+            .exec();
+    }
+});
+
 function getBaseSystemInfo() {
     return my.getSystemInfoSync();
 }
@@ -1080,21 +1111,40 @@ function addSafeAreaInsets(fromRes, toRes) {
     }
 }
 function getOSInfo(system, platform) {
+    /**
+     * system 枚举值说明：
+     *
+     * weixin: 操作系统及版本
+     * qq: 操作系统及版本
+     * kuaishou: 操作系统及版本
+     *
+     * alipay、dingding: 系统版本
+     * baidu: 操作系统版本
+     * toutiao/douyin: 操作系统版本
+     * jd: 操作系统版本
+     * harmony: 操作系统版本
+     *
+     * lark: 文档无此字段
+     */
     let osName = '';
     let osVersion = '';
     if (platform &&
         ("mp-alipay" === 'mp-alipay')) {
         osName = platform;
         osVersion = system;
+        system = `${osName} ${osVersion}`;
     }
     else {
-        osName = system.split(' ')[0] || platform;
+        {
+            osName = system.split(' ')[0] || platform;
+        }
         osVersion = system.split(' ')[1] || '';
     }
     osName = osName.toLowerCase();
     switch (osName) {
         case 'harmony': // alipay
-        case 'ohos': // weixin
+        case 'ohos': // weixin harmony
+        case 'openharmonyos': // weixin 由 HarmonyOS 改为了 OpenHarmonyOS
         case 'openharmony': // feishu
             osName = 'harmonyos';
             break;
@@ -1112,13 +1162,45 @@ function getOSInfo(system, platform) {
     return {
         osName,
         osVersion,
+        system,
     };
+}
+function getPlatform(platform) {
+    /**
+     * platform 枚举值说明：
+     *
+     * weixin：ios、android、windows、mac、ohos、ohos_pc、devtools
+     * alipay、dingding：Android，iOS / iPhone OS，Harmony
+     * harmony: 固定 ohos
+     *
+     * toutiao: Android，iOS 无 harmony 平台，暂不处理
+     * lark: 'pc' | 'mobile' | 'android' | 'ios', 无 harmony 平台，暂不处理
+     *
+     * baidu：无相关描述
+     * qq: 无相关描述
+     * kuaishou: 无相关描述
+     * jd: 无相关描述
+     */
+    platform = platform.toLowerCase();
+    {
+        switch (platform) {
+            case 'iphone os':
+                platform = 'ios';
+                break;
+            case 'openharmonyos':
+            case 'openharmony':
+            case 'harmony':
+                platform = 'harmonyos';
+                break;
+        }
+    }
+    return platform;
 }
 function populateParameters(fromRes, toRes) {
     const { brand = '', model = '', system = '', language = '', theme, version, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, } = fromRes;
     // const isQuickApp = "mp-alipay".indexOf('quickapp-webview') !== -1
     // osName osVersion
-    const { osName, osVersion } = getOSInfo(system, platform);
+    const { osName, osVersion, system: updatedSystem, } = getOSInfo(system, platform);
     let hostVersion = version;
     // deviceType
     let deviceType = getGetDeviceType(fromRes, model);
@@ -1133,7 +1215,6 @@ function populateParameters(fromRes, toRes) {
     // SDKVersion
     let _SDKVersion = SDKVersion;
     {
-        // @ts-expect-error
         _SDKVersion = my.SDKVersion;
     }
     // hostLanguage
@@ -1164,6 +1245,8 @@ function populateParameters(fromRes, toRes) {
         hostFontSizeSetting: fontSizeSetting,
         windowTop: 0,
         windowBottom: 0,
+        platform: getPlatform(platform),
+        system: updatedSystem,
         // TODO
         osLanguage: undefined,
         osTheme: undefined,
@@ -1183,6 +1266,7 @@ function populateParameters(fromRes, toRes) {
     extend(toRes, parameters);
 }
 function getGetDeviceType(fromRes, model) {
+    fromRes.platform || '';
     // deviceType
     let deviceType = fromRes.deviceType || 'phone';
     {
@@ -1190,6 +1274,8 @@ function getGetDeviceType(fromRes, model) {
             ipad: 'pad',
             windows: 'pc',
             mac: 'pc',
+            linux: 'pc',
+            pc: 'pc',
         };
         const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
         const _model = model.toLowerCase();
@@ -1340,6 +1426,7 @@ const baseApis = {
     __f__,
     getElementById,
     createCanvasContextAsync,
+    createEditorContextAsync,
 };
 function initUni(api, protocols, platform = my) {
     const wrapper = initWrapper(protocols);
@@ -1362,7 +1449,6 @@ function initUni(api, protocols, platform = my) {
     // 处理 api mp 打包后为不同js，emitter 无法共享问题
     {
         platform.$emit = $emit;
-        // @ts-expect-error
         if (!my.canIUse('page.getOpenerEventChannel'))
             platform.getEventChannel = getEventChannel;
     }
@@ -1655,16 +1741,23 @@ function setNavigationBarTitle() {
 }
 /**
  * Note:
- * 钉钉已支持 showModal https://open.dingtalk.com/document/development/jsapi-show-modal
- * 但效果和支付宝明显不同，还是使用 confrim 做兼容抹平
+ * showModal 钉钉已经支持，但是参数和支付宝差异很大，故仍使用 confrim 做兼容抹平
  */
 function showModal({ showCancel = true } = {}) {
+    // @ts-expect-error
+    if (typeof dd === 'undefined' && my.canIUse('showModal')) {
+        return {
+            name: 'showModal',
+        };
+    }
     if (showCancel) {
         return {
             name: 'confirm',
-            args(fromArgs, toArgs) {
-                toArgs.cancelButtonText = fromArgs.cancelText || '取消';
-                toArgs.confirmButtonText = fromArgs.confirmText || '确定';
+            args: {
+                confirmColor: false,
+                cancelColor: false,
+                cancelText: 'cancelButtonText',
+                confirmText: 'confirmButtonText',
             },
             returnValue(fromRes, toRes) {
                 toRes.confirm = fromRes.confirm;
@@ -1674,8 +1767,9 @@ function showModal({ showCancel = true } = {}) {
     }
     return {
         name: 'alert',
-        args(fromArgs, toArgs) {
-            toArgs.confirmButtonText = fromArgs.confirmText || '确定';
+        args: {
+            confirmColor: false,
+            confirmText: 'buttonText',
         },
         returnValue(fromRes, toRes) {
             toRes.confirm = true;
@@ -1996,7 +2090,7 @@ const chooseAddress = {
     returnValue(fromRes, toRes) {
         const info = fromRes.result || {};
         toRes.userName = info.fullname;
-        toRes.countyName = info.country;
+        toRes.countyName = info.area;
         toRes.provinceName = info.prov;
         toRes.cityName = info.city;
         toRes.detailInfo = info.address;

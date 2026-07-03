@@ -19,6 +19,10 @@ const props = /*#__PURE__*/ extend({}, keyboardProps, {
     type: [Boolean, String],
     default: false,
   },
+  type: {
+    type: String,
+    default: '',
+  },
   placeholder: {
     type: String,
     default: '',

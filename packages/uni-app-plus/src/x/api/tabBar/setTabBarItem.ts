@@ -18,15 +18,25 @@ export const setTabBarItem = defineAsyncApi<API_TYPE_SET_TAB_BAR_ITEM>(
       reject('tabBar is not exist')
       return
     }
-    const item = new Map<string, any>([
-      ['index', index],
-      ['text', text],
-      ['iconPath', iconPath],
-      ['selectedIconPath', selectedIconPath],
-      ['pagePath', pagePath],
-      ['visible', visible],
-    ])
-    if (!!iconfont) {
+    const item = new Map<string, any>()
+    item.set('index', index)
+
+    if (typeof text === 'string') {
+      item.set('text', text)
+    }
+    if (typeof iconPath === 'string') {
+      item.set('iconPath', iconPath)
+    }
+    if (typeof selectedIconPath === 'string') {
+      item.set('selectedIconPath', selectedIconPath)
+    }
+    if (typeof pagePath === 'string') {
+      item.set('pagePath', pagePath)
+    }
+    if (typeof visible === 'boolean') {
+      item.set('visible', visible)
+    }
+    if (iconfont != null) {
       const iconfontOptions = iconfont
       const _iconfont: Map<string, any> = new Map<string, any>([
         ['text', iconfontOptions.text],

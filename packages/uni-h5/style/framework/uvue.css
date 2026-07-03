@@ -315,6 +315,7 @@ uni-app uni-navigator a {
   align-items: inherit;
   align-content: inherit;
   justify-content: inherit;
+  flex-wrap: inherit;
 }
 
 uni-app uni-navigator a {

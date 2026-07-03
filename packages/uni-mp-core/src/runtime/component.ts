@@ -29,6 +29,7 @@ export interface CustomComponentInstanceProperty {
   _$vueId: string
   _$vuePid?: string
   _$setRef?: (fn: Function) => void
+  _pendingUP?: string // 缓存在 attached 之前触发的 observer 的 uP 值
 }
 
 export type MPComponentOptions = Component.Options<
@@ -243,7 +244,7 @@ interface InitialVNode {
   props: Record<string, any>
 }
 
-function getAppVm() {
+export function getAppVm() {
   if (process.env.UNI_MP_PLUGIN) {
     return __GLOBAL__.$vm
   }

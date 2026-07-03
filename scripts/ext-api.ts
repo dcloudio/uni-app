@@ -18,26 +18,26 @@ interface Options {
 }
 
 if (!process.env.UNI_APP_EXT_API_DIR) {
-  const extApiDir = path.resolve(__dirname, '..', '..', 'uni-app', 'api')
+  const extApiDir = path.resolve(__dirname, '..', '..', 'uni-app', 'src', 'uni_modules')
   if (fs.existsSync(extApiDir)) {
     process.env.UNI_APP_EXT_API_DIR = extApiDir
     console.log('UNI_APP_EXT_API_DIR', extApiDir)
   }
 }
 
-if (!process.env.UNI_APP_EXT_COMPONENT_DIR) {
-  const extComponentDir = path.resolve(
-    __dirname,
-    '..',
-    '..',
-    'uni-app',
-    'component'
-  )
-  if (fs.existsSync(extComponentDir)) {
-    process.env.UNI_APP_EXT_COMPONENT_DIR = extComponentDir
-    console.log('UNI_APP_EXT_COMPONENT_DIR', extComponentDir)
-  }
-}
+// if (!process.env.UNI_APP_EXT_COMPONENT_DIR) {
+//   const extComponentDir = path.resolve(
+//     __dirname,
+//     '..',
+//     '..',
+//     'uni-app',
+//     'component'
+//   )
+//   if (fs.existsSync(extComponentDir)) {
+//     process.env.UNI_APP_EXT_COMPONENT_DIR = extComponentDir
+//     console.log('UNI_APP_EXT_COMPONENT_DIR', extComponentDir)
+//   }
+// }
 
 export function uts2ts({ target, platform }: Options): Plugin {
   return {
@@ -151,12 +151,12 @@ async function checkExtApiDir(target: Target, name: string) {
     fs.emptyDirSync(currentExtApiDir)
   }
   let extApiDir = path.resolve(process.env.UNI_APP_EXT_API_DIR!)
-  if (
-    process.env.UNI_APP_EXT_COMPONENT_DIR &&
-    !fs.existsSync(path.resolve(extApiDir, name))
-  ) {
-    extApiDir = path.resolve(process.env.UNI_APP_EXT_COMPONENT_DIR!)
-  }
+  // if (
+  //   process.env.UNI_APP_EXT_COMPONENT_DIR &&
+  //   !fs.existsSync(path.resolve(extApiDir, name))
+  // ) {
+  //   extApiDir = path.resolve(process.env.UNI_APP_EXT_COMPONENT_DIR!)
+  // }
   if (
     process.env.UNI_APP_EXT_API_DCLOUD_DIR &&
     !fs.existsSync(path.resolve(extApiDir, name))

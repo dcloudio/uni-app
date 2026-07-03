@@ -477,6 +477,54 @@ describe('uvue-styler: normalize', () => {
       })
     )
   })
+  test('dom2 platform support uses unixVaporVer', async () => {
+    const oldDom2 = process.env.UNI_APP_X_DOM2
+    process.env.UNI_APP_X_DOM2 = 'true'
+    const { json, messages } = await objectifierRule(`
+  .foo {
+    textDecorationColor: #21ff21;
+  }
+  `)
+    if (oldDom2 === undefined) {
+      delete process.env.UNI_APP_X_DOM2
+    } else {
+      process.env.UNI_APP_X_DOM2 = oldDom2
+    }
+    expect(json).toEqual({
+      foo: {
+        '': {
+          textDecorationColor: '#21ff21',
+        },
+      },
+    })
+    expect(messages.length).toBe(0)
+  })
+  test('dom2 platform unsupported still warns', async () => {
+    const oldDom2 = process.env.UNI_APP_X_DOM2
+    process.env.UNI_APP_X_DOM2 = 'true'
+    const { json, messages } = await objectifierRule(`
+  .foo {
+    textDecorationStyle: dotted;
+  }
+  `)
+    if (oldDom2 === undefined) {
+      delete process.env.UNI_APP_X_DOM2
+    } else {
+      process.env.UNI_APP_X_DOM2 = oldDom2
+    }
+    expect(json).toEqual({
+      foo: {
+        '': {
+          textDecorationStyle: 'dotted',
+        },
+      },
+    })
+    expect(messages[0]).toEqual(
+      expect.objectContaining({
+        text: 'WARNING: `text-decoration-style` is not a standard property name (may not be supported)',
+      })
+    )
+  })
   test('complex style code', async () => {
     const { json, messages } = await objectifierRule(`
   .foo {
@@ -654,21 +702,42 @@ border-color: var(--default-border);
       a3: {
         '': {
           '--default-border': '1px',
-          borderBottomColor: '#000000',
-          borderBottomStyle: 'none',
+          borderBottomColor: 'var(--default-border)',
+          borderBottomStyle: 'var(--default-border)',
           borderBottomWidth: 'var(--default-border)',
-          borderLeftColor: '#000000',
-          borderLeftStyle: 'none',
+          borderLeftColor: 'var(--default-border)',
+          borderLeftStyle: 'var(--default-border)',
           borderLeftWidth: 'var(--default-border)',
-          borderRightColor: '#000000',
-          borderRightStyle: 'none',
+          borderRightColor: 'var(--default-border)',
+          borderRightStyle: 'var(--default-border)',
           borderRightWidth: 'var(--default-border)',
-          borderTopColor: '#000000',
-          borderTopStyle: 'none',
+          borderTopColor: 'var(--default-border)',
+          borderTopStyle: 'var(--default-border)',
           borderTopWidth: 'var(--default-border)',
         },
       },
     })
+  })
+
+  test('border shorthand with css var must use width style color order', async () => {
+    const { json, messages } = await objectifierRule(`
+.test {
+  --arrow-color: #999999;
+  border-right: 1px var(--arrow-color, #999999) solid;
+}
+    `)
+
+    expect(json).toEqual({
+      test: {
+        '': {
+          '--arrow-color': '#999999',
+        },
+      },
+    })
+    expect(messages).toHaveLength(1)
+    expect(messages[0].text).toBe(
+      'ERROR: property value `1px var(--arrow-color, #999999) solid` is not supported for `border-right` (border shorthand with CSS variables must follow `width style color`, for example: `1px solid var(--color, #999999)`)'
+    )
   })
 
   test('多次出现 border 不同形式，保证最后一个生效', async () => {

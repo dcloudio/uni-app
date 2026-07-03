@@ -1,5 +1,5 @@
 import { extend, isPromise } from '@vue/shared'
-import type { ComponentPublicInstance } from 'vue'
+import { type ComponentPublicInstance, nextTick } from 'vue'
 import type { IPage } from '@dcloudio/uni-app-x/types/native'
 import type { EventChannel, UniNode } from '@dcloudio/uni-shared'
 import {
@@ -14,6 +14,7 @@ import {
 import {
   SYSTEM_DIALOG_PAGE_PATH_STARTER,
   dialogPageTriggerParentShow,
+  getSystemDialogPages,
   initPageInternalInstance,
   invokeHook,
   isSystemDialogPage,
@@ -128,6 +129,27 @@ function invokeMountedJobs(proxy: ComponentPublicInstance) {
   }
 }
 
+function invokePageOnReady(
+  pageComponentPublicInstance: ComponentPublicInstance
+) {
+  if (__VAPOR_PLATFORM__ === 'app-ios') {
+    // iOS native ready 可能早于 Vapor 自定义组件 ref 的 post-flush 赋值完成，不 nextTick 的话这样会导致自定义组件的 ref 在页面 onReady 时还没有赋值
+    nextTick(() => {
+      invokeMountedJobs(pageComponentPublicInstance)
+      invokePageReadyHooks(pageComponentPublicInstance)
+      invokeHook(pageComponentPublicInstance, ON_READY)
+      // @ts-expect-error
+    }, null)
+  } else if (__VAPOR_PLATFORM__) {
+    invokeMountedJobs(pageComponentPublicInstance)
+    invokePageReadyHooks(pageComponentPublicInstance)
+    invokeHook(pageComponentPublicInstance, ON_READY)
+  } else {
+    invokePageReadyHooks(pageComponentPublicInstance)
+    invokeHook(pageComponentPublicInstance, ON_READY)
+  }
+}
+
 export function registerPage(
   {
     url,
@@ -201,7 +223,7 @@ export function registerPage(
           }
           if (homeSystemDialogPages.length) {
             sourceDialogPages = homeSystemDialogPages
-            targetDialogPages = homePage.__$$getSystemDialogPages()
+            targetDialogPages = getSystemDialogPages(homePage)
           }
           handleHomeDialogPages(homePage, sourceDialogPages, targetDialogPages)
         }
@@ -219,11 +241,7 @@ export function registerPage(
           invokeHook(pageComponentPublicInstance, ON_UNLOAD)
         })
         nativePage.addPageEventListener(ON_READY, (_) => {
-          if (__VAPOR__) {
-            invokeMountedJobs(pageComponentPublicInstance)
-          }
-          invokePageReadyHooks(pageComponentPublicInstance)
-          invokeHook(pageComponentPublicInstance, ON_READY)
+          invokePageOnReady(pageComponentPublicInstance)
         })
 
         nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
@@ -252,6 +270,10 @@ export function registerPage(
           }
           invokeHook(pageComponentPublicInstance, ON_RESIZE, args)
         })
+        if (__VAPOR__) {
+          // 蒸汽模式目前通过监听页面根 scroll-view 的 scroll 事件来触发页面 onPageScroll 和 onReachBottom
+          initVaporPageLifeCycle(pageComponentPublicInstance, nativePage)
+        }
         nativePage.startRender()
         onRegistered?.(nativePage)
       }
@@ -263,6 +285,71 @@ export function registerPage(
     fn()
   }
   return nativePage
+}
+
+function initVaporPageLifeCycle(
+  pageComponentPublicInstance: ComponentPublicInstance,
+  nativePage: UniNativePage
+) {
+  const pageRootEl = pageComponentPublicInstance.$el
+  if (!pageRootEl) return
+
+  // 处理 蒸汽模式下页面 onPageScroll 和 onReachBottom 生命周期触发
+  if (
+    // @ts-expect-error
+    (pageComponentPublicInstance._.onReachBottom ||
+      // @ts-expect-error
+      pageComponentPublicInstance._.onPageScroll) &&
+    pageRootEl.tagName === 'PAGE' &&
+    pageRootEl instanceof UniViewElementImpl == false
+  ) {
+    let triggeredReachBottom = false
+    const scrollEventId = pageRootEl.addEventListener('scroll', (e: Event) => {
+      const scrollTop = (e.target as Element).scrollTop
+      // @ts-expect-error
+      if (pageComponentPublicInstance._.onPageScroll) {
+        invokeHook(pageComponentPublicInstance, ON_PAGE_SCROLL, {
+          scrollTop,
+        })
+      }
+      // @ts-expect-error
+      if (pageComponentPublicInstance._.onReachBottom) {
+        const scrollHeight = (e.target as Element).scrollHeight
+        const pageRootElHeight = pageRootEl.getBoundingClientRect().height
+        if (
+          scrollTop + pageRootElHeight >=
+          scrollHeight -
+            (pageComponentPublicInstance.$basePage.meta.onReachBottomDistance ||
+              50)
+        ) {
+          !triggeredReachBottom &&
+            invokeHook(pageComponentPublicInstance, ON_REACH_BOTTOM)
+          triggeredReachBottom = true
+        } else {
+          triggeredReachBottom = false
+        }
+      }
+    })
+
+    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+      pageRootEl.removeEventListener('scroll', scrollEventId)
+    })
+  }
+
+  if (
+    pageRootEl.tagName === 'PAGE' &&
+    pageRootEl instanceof UniViewElementImpl == false
+  ) {
+    const pulldownRefreshEventId = pageRootEl.addEventListener(
+      'refresherrefresh',
+      () => {
+        invokeHook(pageComponentPublicInstance, ON_PULL_DOWN_REFRESH)
+      }
+    )
+    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+      pageRootEl.removeEventListener('refresherrefresh', pulldownRefreshEventId)
+    })
+  }
 }
 
 export function registerDialogPage(
@@ -293,7 +380,8 @@ export function registerDialogPage(
     pageStyle.set('disableSwipeBack', true)
   }
   const parentPage = dialogPage.getParentPage()
-  const createDialogPage = (getPageManager() as any).createDialogPage
+  const pageManager = getPageManager() as any
+  const createDialogPage = pageManager.createDialogPage.bind(pageManager)
   // 鸿蒙的API与Android保持一致，参数均为6个
   const isHarmony = createDialogPage.length === 6
   const nativePage = isHarmony
@@ -351,11 +439,7 @@ export function registerDialogPage(
           )
         })
         nativePage.addPageEventListener(ON_READY, (_) => {
-          if (__VAPOR__) {
-            invokeMountedJobs(pageComponentPublicInstance)
-          }
-          invokePageReadyHooks(pageComponentPublicInstance)
-          invokeHook(pageComponentPublicInstance, ON_READY)
+          invokePageOnReady(pageComponentPublicInstance)
         })
 
         nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {

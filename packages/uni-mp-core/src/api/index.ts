@@ -3,6 +3,7 @@ import { hasOwn } from '@vue/shared'
 //#if _X_
 import { getElementById } from './x/getElementId'
 import { createCanvasContextAsync } from './x/createCanvasContextAsync'
+import { createEditorContextAsync } from './x/createEditorContextAsync'
 //#endif
 import { upx2px } from '@dcloudio/uni-api/src/service/base/upx2px'
 import { __f__ } from '@dcloudio/uni-api/src/service/base/__f__'
@@ -54,6 +55,7 @@ const baseApis = {
   //#if _X_
   getElementById,
   createCanvasContextAsync,
+  createEditorContextAsync,
   //#endif
 }
 export function initUni(
@@ -82,7 +84,6 @@ export function initUni(
   // 处理 api mp 打包后为不同js，emitter 无法共享问题
   if (__PLATFORM__ === 'mp-alipay') {
     platform.$emit = $emit
-    // @ts-expect-error
     if (!my.canIUse('page.getOpenerEventChannel'))
       platform.getEventChannel = getEventChannel
   }

@@ -57,11 +57,17 @@ import {
 import { existsSync, readdirSync, rmSync } from 'fs-extra'
 import { restoreDebuggerFiles } from './manifest/dex'
 import { compileArkTS } from './arkts'
+import type { UniXCompilerOptions } from '../lib/uni-x/dist/compiler'
 
 export { syncUTSFiles } from './uni_modules'
 export * from './tsc'
 
-export { getPluginInjectApis, getPluginInjectComponents } from './utils'
+export {
+  getKotlinCompilerServer,
+  getSwiftCompilerServer,
+  getPluginInjectApis,
+  getPluginInjectComponents,
+} from './utils'
 
 export { parseExportIdentifiers, parseInterfaceTypes } from './code'
 
@@ -74,14 +80,19 @@ export {
   resolveAppHarmonyUniModulesEntryDir,
 } from './arkts'
 
-export { toCppCode } from '@dcloudio/uts'
+export { toCppCode, toKotlinCode, toSwiftCode } from '@dcloudio/uts'
 
 export const sourcemap = {
   generateCodeFrameWithKotlinStacktrace,
   generateCodeFrameWithSwiftStacktrace,
 }
 
-export { compileApp, CompileAppOptions } from './uvue/index'
+export {
+  compileApp,
+  CompileAppOptions,
+  compileVaporApp,
+  CompileVaporAppOptions,
+} from './uvue/index'
 
 export { parseInjectModules, parseExtApiProviders } from './utils'
 
@@ -656,7 +667,7 @@ export async function compile(
                 deps: res?.deps,
               })
             }
-            if (tips) {
+            if (tips && process.env.UTS_CLI_ENV !== 'true') {
               warn(tips)
             }
             if (versionTips) {
@@ -771,21 +782,24 @@ function emptyDir(dir: string) {
  * @param param2
  * @param compilerOptions
  */
+export interface BuildUniModulesOptions {
+  syncUniModulesFilePreprocessors: {
+    android: SyncUniModulesFilePreprocessor
+    ios: SyncUniModulesFilePreprocessor
+    harmony: SyncUniModulesFilePreprocessor
+  }
+  transformVueFile?: (
+    platform: UniXCompilerPlatform,
+    fileName: string
+  ) => Promise<string>
+  rootFiles?: string[]
+  sourceFileCallback?: UniXCompilerOptions['sourceFileCallback']
+}
+
 export async function buildUniModules(
   platform: 'app' | 'app-android' | 'app-ios' | 'app-harmony',
   pluginDir: string,
-  options: {
-    syncUniModulesFilePreprocessors: {
-      android: SyncUniModulesFilePreprocessor
-      ios: SyncUniModulesFilePreprocessor
-      harmony: SyncUniModulesFilePreprocessor
-    }
-    transformVueFile?: (
-      platform: UniXCompilerPlatform,
-      fileName: string
-    ) => Promise<string>
-    rootFiles?: string[]
-  },
+  options: BuildUniModulesOptions,
   compilerOptions: UTSPluginCompilerOptions
 ) {
   const inputDir = process.env.UNI_INPUT_DIR
@@ -805,6 +819,7 @@ export async function buildUniModules(
       pluginDir,
       createUniXKotlinCompiler({
         resolveWorkers: () => ({}),
+        sourceFileCallback: options.sourceFileCallback,
       }),
       {
         rootFiles: options.rootFiles,
@@ -866,6 +881,9 @@ export async function buildUniModules(
   }
   return compile(pluginDir, compilerOptions)
 }
+
+// 语义化别名：编译单个 uni_module 仍完全复用 buildUniModules。
+export const buildUniModule = buildUniModules
 
 function patchSyncUniModulesFilePreprocessors(
   syncUniModulesFilePreprocessors: {

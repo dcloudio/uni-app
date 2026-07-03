@@ -217,7 +217,7 @@ export function assetFileNamesToFileName(
   assetFileNames: Exclude<OutputOptions['assetFileNames'], undefined>,
   file: string,
   contentHash: string,
-  content: string | Buffer
+  content: string | Uint8Array
 ): string {
   const basename = path.basename(file)
 

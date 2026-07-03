@@ -1,4 +1,10 @@
 "use strict";
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 const vue = require("vue");
 const shared = require("@vue/shared");
@@ -2207,8 +2213,9 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
     const rootEl = rootRef.value;
     if (!rootEl)
       return;
-    size.width = rootEl.offsetWidth;
-    size.height = rootEl.offsetHeight;
+    const rect = rootEl.getBoundingClientRect();
+    size.width = rect.width;
+    size.height = rect.height;
     reset();
   };
 }
@@ -3158,6 +3165,11 @@ function useQuill(props2, rootRef, trigger) {
     (value) => {
     }
   );
+  vue.watch(
+    () => props2.type,
+    (value) => {
+    }
+  );
   useContextInfo();
   useSubscribe();
 }
@@ -3169,6 +3181,10 @@ const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
   readOnly: {
     type: [Boolean, String],
     default: false
+  },
+  type: {
+    type: String,
+    default: ""
   },
   placeholder: {
     type: String,
@@ -4034,11 +4050,12 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       if (INPUT_MODES.includes(props2.type)) {
         return props2.type;
       }
-      const inputmodeMap = {
-        number: "numeric",
-        digit: "decimal",
-        idcard: "text"
-      };
+      let inputmodeMap = {};
+      {
+        inputmodeMap = {
+          idcard: "text"
+        };
+      }
       return inputmodeMap[props2.type];
     });
     let cache = useCache(props2, type);
@@ -5402,35 +5419,43 @@ function createNavigatorOnClick(props2) {
       return;
     }
     const animationDuration = parseInt(props2.animationDuration);
+    const onFail = (error) => {
+      console.error(error.errMsg);
+    };
     switch (props2.openType) {
       case "navigate":
         uni.navigateTo({
           url: props2.url,
           animationType: props2.animationType || "pop-in",
-          animationDuration
+          animationDuration,
+          fail: onFail
         });
         break;
       case "redirect":
         uni.redirectTo({
           url: props2.url,
-          exists: props2.exists
+          exists: props2.exists,
+          fail: onFail
         });
         break;
       case "switchTab":
         uni.switchTab({
-          url: props2.url
+          url: props2.url,
+          fail: onFail
         });
         break;
       case "reLaunch":
         uni.reLaunch({
-          url: props2.url
+          url: props2.url,
+          fail: onFail
         });
         break;
       case "navigateBack":
         uni.navigateBack({
           delta: props2.delta,
           animationType: props2.animationType || "pop-out",
-          animationDuration
+          animationDuration,
+          fail: onFail
         });
         break;
     }
@@ -6163,14 +6188,14 @@ function decodeEntities(htmlString) {
         return String.fromCharCode(stage.slice(1));
       }
       if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
-        return String.fromCharCode(0 + stage.slice(1));
+        return String.fromCharCode(Number("0" + stage.slice(1)));
       }
       return match;
     }
   );
 }
 function processClickEvent(node, triggerItemClick) {
-  if (["a", "img"].includes(node.name) && triggerItemClick) {
+  if (node.name && ["a", "img"].includes(node.name) && triggerItemClick) {
     return {
       onClickCapture: (e2) => {
         triggerItemClick(e2, { node });
@@ -6181,36 +6206,43 @@ function processClickEvent(node, triggerItemClick) {
     };
   }
 }
+function normalizeValue(tagName, name, value) {
+  if (tagName === "img" && name === "src" && shared.isString(value)) {
+    return getRealPath(value);
+  }
+  return value;
+}
 function normalizeAttrs(tagName, attrs) {
   if (!shared.isPlainObject(attrs))
     return;
-  for (const key in attrs) {
-    if (shared.hasOwn(attrs, key)) {
-      const value = attrs[key];
-      if (tagName === "img" && key === "src")
-        attrs[key] = getRealPath(value);
+  const tagAttrs = TAGS[tagName] || [];
+  const normalizedAttrs = {};
+  Object.keys(attrs).forEach((name) => {
+    if (name === "class" || name === "style" || tagAttrs.includes(name)) {
+      normalizedAttrs[name] = normalizeValue(tagName, name, attrs[name]);
     }
-  }
+  });
+  return normalizedAttrs;
 }
 const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
-  if (!nodeList || shared.isArray(nodeList) && !nodeList.length)
+  if (!nodeList || Array.isArray(nodeList) && !nodeList.length)
     return [];
   return nodeList.map((node) => {
-    var _a;
     if (!shared.isPlainObject(node)) {
       return;
     }
     if (!shared.hasOwn(node, "type") || node.type === "node") {
-      let nodeProps = { [scopeId]: "" };
-      const tagName = (_a = node.name) == null ? void 0 : _a.toLowerCase();
+      if (!shared.isString(node.name) || !node.name) {
+        return;
+      }
+      const tagName = node.name.toLowerCase();
       if (!shared.hasOwn(TAGS, tagName)) {
         return;
       }
-      normalizeAttrs(tagName, node.attrs);
-      nodeProps = shared.extend(
-        nodeProps,
+      const nodeProps = shared.extend(
+        { [scopeId]: "" },
         processClickEvent(node, triggerItemClick),
-        node.attrs
+        normalizeAttrs(tagName, node.attrs)
       );
       return vue.h(
         node.name,
@@ -6335,7 +6367,7 @@ const index$n = /* @__PURE__ */ defineBuiltInComponent({
     const vm = vue.getCurrentInstance();
     const scopeId = vm && vm.vnode.scopeId || "";
     const rootRef = vue.ref(null);
-    const _vnode = vue.ref([]);
+    const _vnode = vue.shallowRef([]);
     const trigger = useCustomEvent(rootRef, emit2);
     function triggerItemClick(e2, detail = {}) {
       trigger("itemclick", e2, detail);
@@ -8537,10 +8569,15 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
     touchStartOrigin.y = toucher.pageY;
     state.gestureType = "none";
     state.volumeOld = 0;
+    if (fullscreenState.fullscreen) {
+      event.stopPropagation();
+    }
   }
   function onTouchmove(event) {
     function stop() {
-      event.stopPropagation();
+      if (fullscreenState.fullscreen) {
+        event.stopPropagation();
+      }
       event.preventDefault();
     }
     if (fullscreenState.fullscreen) {
@@ -8562,6 +8599,7 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
       changeVolume(pageY - origin.y);
     }
     if (gestureType !== "none") {
+      stop();
       return;
     }
     if (Math.abs(pageX - origin.x) > Math.abs(pageY - origin.y)) {
@@ -8590,7 +8628,9 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
   function onTouchend(event) {
     const video = videoRef.value;
     if (state.gestureType !== "none" && state.gestureType !== "stop") {
-      event.stopPropagation();
+      if (fullscreenState.fullscreen) {
+        event.stopPropagation();
+      }
       event.preventDefault();
     }
     if (state.gestureType === "progress" && state.currentTimeOld !== state.currentTimeNew) {
@@ -11550,7 +11590,659 @@ function usePickerForm(_resetFormData, _getFormData) {
     uniForm.addField(field);
   }
 }
-const index$6 = /* @__PURE__ */ defineUnsupportedComponent("ad");
+const _AdConfig = class _AdConfig {
+  constructor() {
+    __publicField(this, "_adConfig", null);
+    __publicField(this, "_isLoading", false);
+    __publicField(this, "_callbacks", []);
+    __publicField(this, "_configLast", 0);
+  }
+  static get instance() {
+    if (!_AdConfig._instance) {
+      _AdConfig._instance = new _AdConfig();
+      _AdConfig._instance._init();
+    }
+    return _AdConfig._instance;
+  }
+  get adConfig() {
+    return this._adConfig;
+  }
+  get isExpired() {
+    if (this._adConfig == null) {
+      return true;
+    }
+    if (!this._configLast) {
+      return true;
+    }
+    return Math.abs(Date.now() - this._configLast) > _AdConfig.CACHE_TIME;
+  }
+  _init() {
+    var config = this._getConfig();
+    if (config === null || !config.last) {
+      return;
+    }
+    if (Math.abs(Date.now() - config.last) <= _AdConfig.CACHE_TIME) {
+      this._adConfig = config.data;
+      this._configLast = config.last;
+    }
+  }
+  get(adpid, success, fail) {
+    _AdConfig.IC++;
+    if (this._adConfig != null) {
+      this._doCallback(adpid, success, fail);
+      if (this.isExpired) {
+        this._loadAdConfig(adpid);
+      }
+      return;
+    }
+    this._callbacks.push({
+      adpid,
+      success,
+      fail
+    });
+    this._loadAdConfig(adpid);
+  }
+  _doCallback(adpid, success, fail) {
+    _AdConfig.IS++;
+    var {
+      a,
+      b
+    } = this._adConfig;
+    const adData = a[adpid];
+    if (adData) {
+      success(b, Array.isArray(adData) ? adData : [adData]);
+    } else {
+      fail(_AdConfig.ERROR_INVALID_ADPID);
+    }
+  }
+  _loadAdConfig(adpid) {
+    if (this._isLoading === true) {
+      return;
+    }
+    this._isLoading = true;
+    const appid = typeof __uniConfig !== "undefined" ? __uniConfig.appId ?? "" : "";
+    uni.request({
+      url: _AdConfig.URL,
+      method: "GET",
+      timeout: 8e3,
+      data: {
+        d: location.hostname,
+        a: adpid,
+        appid
+      },
+      dataType: "json",
+      success: (res) => {
+        const rd = res.data;
+        if (rd.ret === 0) {
+          const data = rd.data;
+          this._adConfig = data;
+          this._configLast = Date.now();
+          this._setConfig(data);
+          this._callbacks.forEach(({
+            adpid: adpid2,
+            success,
+            fail
+          }) => {
+            this._doCallback(adpid2, success, fail);
+          });
+        } else {
+          this._callbacks.forEach((i) => {
+            i.fail({
+              errCode: rd.ret,
+              errMsg: rd.msg
+            });
+          });
+        }
+        this._callbacks = [];
+      },
+      fail: (err) => {
+        this._callbacks.forEach((i) => {
+          i.fail(err);
+        });
+        this._callbacks = [];
+      },
+      complete: (c) => {
+        this._isLoading = false;
+      }
+    });
+  }
+  _getConfig() {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null;
+    }
+    var data = localStorage.getItem(_AdConfig.KEY);
+    return data ? JSON.parse(data) : null;
+  }
+  _setConfig(data) {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null;
+    }
+    localStorage.setItem(_AdConfig.KEY, JSON.stringify({
+      last: Date.now(),
+      data
+    }));
+  }
+};
+__publicField(_AdConfig, "IC", 0);
+__publicField(_AdConfig, "IS", 0);
+// 生产环境地址
+// private static readonly URL: string = 'https://hac1.dcloud.net.cn/ah5'
+// 生产环境地址v2
+__publicField(_AdConfig, "URL", "https://hac1.dcloud.net.cn/ah5v2");
+// 测试环境地址
+// private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5'
+// private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5v2'
+__publicField(_AdConfig, "KEY", "uni_app_ad_config");
+__publicField(_AdConfig, "CACHE_TIME", 1e3 * 60 * 10);
+__publicField(_AdConfig, "ERROR_INVALID_ADPID", {
+  "-5002": "invalid adpid"
+});
+let AdConfig = _AdConfig;
+const _AdReport = class _AdReport {
+  static get instance() {
+    if (!_AdReport._instance) {
+      _AdReport._instance = new _AdReport();
+    }
+    return _AdReport._instance;
+  }
+  constructor() {
+    var config = this._getConfig();
+    if (config && config.guid) {
+      this._guid = config.guid;
+      return;
+    }
+    this._guid = this._newGUID();
+    this._setConfig(this._guid);
+  }
+  get(data) {
+    this._process(Object.assign(data, {
+      d: location.hostname,
+      i: this._guid
+    }));
+  }
+  _process(data) {
+    uni.request({
+      url: _AdReport.URL,
+      method: "GET",
+      data,
+      dataType: "json",
+      success: () => {
+      }
+    });
+  }
+  _newGUID() {
+    let guid = "";
+    const format = "xxxxxxxx-xxxx-4xxx-xxxx-xxxxxxxxxxxx";
+    for (let i = 0; i < format.length; i++) {
+      if (format[i] === "x") {
+        guid += (Math.random() * 16 | 0).toString(16);
+      } else {
+        guid += format[i];
+      }
+    }
+    return guid.toUpperCase();
+  }
+  _getConfig() {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null;
+    }
+    var data = localStorage.getItem(_AdReport.KEY);
+    return data ? JSON.parse(data) : null;
+  }
+  _setConfig(guid) {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null;
+    }
+    localStorage.setItem(_AdReport.KEY, JSON.stringify({
+      last: Date.now(),
+      guid
+    }));
+  }
+};
+__publicField(_AdReport, "URL", "https://has1.dcloud.net.cn/ahl");
+__publicField(_AdReport, "KEY", "uni_app_ad_guid");
+let AdReport = _AdReport;
+class AdScript {
+  static get instance() {
+    if (!AdScript._instance) {
+      AdScript._instance = new AdScript();
+    }
+    return AdScript._instance;
+  }
+  constructor() {
+    this._callback = {};
+    this._cache = {};
+  }
+  load(data, success, fail) {
+    const provider = data.provider;
+    if (this._cache[provider] === void 0) {
+      this.loadScript(data);
+    }
+    if (this._cache[provider] === 1) {
+      success();
+    } else {
+      if (!this._callback[provider]) {
+        this._callback[provider] = [];
+      }
+      this._callback[provider].push({
+        success,
+        fail
+      });
+    }
+  }
+  loadScript(data) {
+    const provider = data.provider;
+    this._cache[provider] = 0;
+    const domid = "uniad_provider" + provider;
+    const adScriptDom = document.getElementById(domid);
+    const src = adScriptDom && adScriptDom.getAttribute("src");
+    if (src) {
+      this._cache[provider] = 1;
+      return;
+    }
+    var ads = document.createElement("script");
+    ads.setAttribute("id", domid);
+    const script = data.script;
+    for (const var1 in script) {
+      ads.setAttribute(var1, script[var1]);
+    }
+    ads.onload = () => {
+      this._cache[provider] = 1;
+      this._callback[provider].forEach(({
+        success
+      }) => {
+        success();
+      });
+      this._callback[provider].length = 0;
+    };
+    ads.onerror = (err) => {
+      this._cache[provider] = void 0;
+      this._callback[provider].forEach(({
+        fail
+      }) => {
+        fail(err);
+      });
+      this._callback[provider].length = 0;
+    };
+    document.body.append(ads);
+  }
+}
+const CHECK_RENDER_DELAY = 1e3;
+const CHECK_RENDER_RETRY = 5;
+const AD_PROVIDER = {
+  GDT: "2",
+  TUIA: "10035"
+};
+class AdRender {
+  constructor(props2, trigger, rootRef, options) {
+    __publicField(this, "_pi", 0);
+    __publicField(this, "_pl", []);
+    __publicField(this, "_b", {});
+    __publicField(this, "_checkTimerCount", 0);
+    __publicField(this, "_currentChannel", null);
+    __publicField(this, "_tuiaData", null);
+    this._checkTimer = null;
+    this._adpid = props2.adpid;
+    this._adpidWidescreen = props2.adpidWidescreen;
+    this._widescreenWidth = props2.widescreenWidth;
+    this._trigger = trigger;
+    this._rootRef = rootRef;
+    this._currentAdpid = this._adpid;
+    this._hasCustomTuiaMaterial = options.hasCustomTuiaMaterial;
+    this._setCustomTuiaVisible = options.setCustomTuiaVisible;
+  }
+  renderTuiaFromCustomMaterial() {
+    if (!this._tuiaData) {
+      return;
+    }
+    this._renderTuia(this._tuiaData);
+  }
+  get isWidescreen() {
+    return this._rootRef.value && this._rootRef.value.clientWidth > this._widescreenWidth;
+  }
+  load(adpid) {
+    this._currentAdpid = adpid || (this.isWidescreen ? this._adpidWidescreen : this._adpid);
+    this._reset();
+    AdConfig.instance.get(this._currentAdpid, (b, a) => {
+      this._b = b;
+      this._pl = a;
+      this._renderAd();
+    }, (err) => {
+      this._trigger("error", {}, err);
+    });
+  }
+  dispose() {
+    this._clearCheckTimer();
+    if (this._rootRef.value) {
+      this._rootRef.value.innerHTML = "";
+    }
+  }
+  _renderAd() {
+    if (this._pi > this._pl.length - 1) {
+      return;
+    }
+    const data = this._pl[this._pi];
+    if (!data) {
+      this._renderNext();
+      return;
+    }
+    const providerId = String(data.a1);
+    const providerConfig = this._b[providerId];
+    if (!providerConfig) {
+      this._renderNext();
+      return;
+    }
+    const script = providerConfig.script || providerConfig.s;
+    this._currentChannel = providerId;
+    const id2 = this._randomId();
+    this._createView(id2);
+    if (providerId === AD_PROVIDER.GDT) {
+      window.TencentGDT = window.TencentGDT || [];
+      AdScript.instance.load({
+        provider: providerId,
+        script
+      }, () => {
+        this._renderGdt(id2, data);
+      }, (err) => {
+        this._trigger("error", {}, err);
+        this._renderNext();
+      });
+      return;
+    }
+    if (providerId === AD_PROVIDER.TUIA) {
+      AdScript.instance.load({
+        provider: providerId,
+        script
+      }, () => {
+        this._renderTuiaMaterial(id2, data);
+      }, (err) => {
+        this._trigger("error", {}, err);
+        this._renderNext();
+      });
+      return;
+    }
+    this._renderNext();
+  }
+  _createView(id2) {
+    if (!this._rootRef.value) {
+      return null;
+    }
+    var adView = document.createElement("div");
+    adView.setAttribute("id", id2);
+    adView.setAttribute("class", id2);
+    this._rootRef.value.innerHTML = "";
+    this._rootRef.value.append(adView);
+    return adView;
+  }
+  _renderGdt(id2, data) {
+    window.TencentGDT.push({
+      placement_id: data.a3,
+      app_id: data.a2,
+      type: "native",
+      count: 1,
+      onComplete: (res) => {
+        if (res && res.constructor === Array && res.length > 0) {
+          window.TencentGDT.NATIVE.renderAd(res[0], id2);
+          this._trigger("load", {}, {});
+        } else {
+          this._trigger("error", {}, res || {
+            errMsg: "No advertisement"
+          });
+          this._renderNext();
+        }
+      }
+    });
+    this._startCheckTimer();
+  }
+  _renderTuiaMaterial(id2, data) {
+    const adView = document.getElementById(id2);
+    if (!adView) {
+      this._trigger("error", {}, {
+        errMsg: "Invalid ad container"
+      });
+      this._renderNext();
+      return;
+    }
+    this._tuiaData = data;
+    if (this._hasCustomTuiaMaterial()) {
+      adView.innerHTML = "";
+      this._setCustomTuiaVisible(true);
+      this.report(40, this._currentChannel || void 0);
+      this._trigger("load", {}, {});
+      return;
+    }
+    this._setCustomTuiaVisible(false);
+    const materialSrc = this._getRandomTuiaMaterial(data == null ? void 0 : data.imgs, data == null ? void 0 : data.img);
+    if (!materialSrc) {
+      this._trigger("error", {}, {
+        errMsg: "Invalid tuia material imgs/img"
+      });
+      this._renderNext();
+      return;
+    }
+    const img = document.createElement("img");
+    img.src = materialSrc;
+    img.onerror = () => {
+      this._trigger("error", {}, {
+        errMsg: "Tuia material load fail"
+      });
+      this._renderNext();
+    };
+    img.alt = "ad";
+    img.setAttribute("draggable", "false");
+    img.style.width = "100%";
+    img.style.height = "auto";
+    img.style.display = "block";
+    img.style.cursor = "pointer";
+    img.onclick = () => {
+      this._renderTuia(data);
+    };
+    adView.innerHTML = "";
+    adView.append(img);
+    this.report(40, this._currentChannel || void 0);
+    this._trigger("load", {}, {});
+  }
+  _getRandomTuiaMaterial(imgs, img) {
+    if (Array.isArray(imgs)) {
+      const list = imgs.filter((item) => typeof item === "string" && item);
+      if (list.length) {
+        const index2 = Math.floor(Math.random() * list.length);
+        return list[index2];
+      }
+    }
+    if (typeof img === "string") {
+      return img;
+    }
+    return "";
+  }
+  _renderTuia(data) {
+    this._setCustomTuiaVisible(false);
+    const tuia = window.TuiaSDKLite;
+    if (!tuia || typeof tuia.execute !== "function") {
+      this._trigger("error", {}, {
+        errMsg: "Invalid TuiaSDKLite"
+      });
+      this._renderNext();
+      return;
+    }
+    tuia.execute({
+      data: {
+        pid: data.a3,
+        fail_message: "ad load fail",
+        product_name: document.title || location.hostname
+      },
+      success: (res) => {
+        this._trigger("load", {}, res || {});
+      },
+      fail: (err) => {
+        this._trigger("error", {}, err || {
+          errMsg: "TuiaSDKLite execute fail"
+        });
+        this._renderNext();
+      }
+    });
+  }
+  _renderAdView(provider, data) {
+    var randomId = this._randomId();
+    var adView = document.createElement("div");
+    adView.setAttribute("class", randomId);
+    this._rootRef.value.innerHTML = "";
+    this._rootRef.value.append(adView);
+    const scriptPath = provider.s || provider.script;
+    if (!scriptPath || typeof scriptPath !== "string") {
+      this._trigger("error", {}, {
+        errMsg: "Invalid provider script"
+      });
+      this._renderNext();
+      return;
+    }
+    try {
+      let bindThis = window;
+      const fn = scriptPath.split(".").reduce((total, currentValue) => {
+        bindThis = total;
+        return total[currentValue];
+      }, window);
+      fn.bind(bindThis)(data.a2, randomId, 2);
+    } catch (err) {
+      this._trigger("error", {}, err);
+      this._renderNext();
+      return;
+    }
+    this._startCheckTimer();
+  }
+  _renderNext() {
+    if (this._pi >= this._pl.length - 1) {
+      return;
+    }
+    this._pi++;
+    this._renderAd();
+  }
+  _checkRender() {
+    if (!this._rootRef.value) {
+      return false;
+    }
+    var hasContent = this._rootRef.value.children.length > 0 && this._rootRef.value.clientHeight > 40;
+    if (hasContent) {
+      this.report(40, this._currentChannel || void 0);
+    }
+    return hasContent;
+  }
+  _startCheckTimer() {
+    this._clearCheckTimer();
+    this._checkTimer = setInterval(() => {
+      this._checkTimerCount++;
+      if (this._checkTimerCount >= CHECK_RENDER_RETRY) {
+        this._clearCheckTimer();
+        this._renderNext();
+        return;
+      }
+      if (this._checkRender()) {
+        this._clearCheckTimer();
+      }
+    }, CHECK_RENDER_DELAY);
+  }
+  _clearCheckTimer() {
+    this._checkTimerCount = 0;
+    if (this._checkTimer != null) {
+      window.clearInterval(this._checkTimer);
+      this._checkTimer = null;
+    }
+  }
+  report(type, currentChannel) {
+    const compilerVersion = typeof __uniConfig !== "undefined" ? __uniConfig.compilerVersion ?? "" : "";
+    const reportData = {
+      h: compilerVersion,
+      a: this._currentAdpid,
+      at: type
+    };
+    if (currentChannel) {
+      reportData.t = currentChannel;
+    }
+    AdReport.instance.get(reportData);
+  }
+  _randomId() {
+    var result = "";
+    for (let i = 0; i < 4; i++) {
+      result += (65536 * (1 + Math.random()) | 0).toString(16).substring(1);
+    }
+    return "_u" + result;
+  }
+  _reset() {
+    this._b = {};
+    this._pl = [];
+    this._pi = 0;
+    this._tuiaData = null;
+    this._setCustomTuiaVisible(false);
+    this._clearCheckTimer();
+    if (this._rootRef.value) {
+      this._rootRef.value.innerHTML = "";
+    }
+  }
+}
+const DEFAULT_WIDESCREEN_WIDTH = 750;
+const index$6 = /* @__PURE__ */ defineBuiltInComponent({
+  inheritAttrs: false,
+  name: "Ad",
+  props: {
+    adpid: {
+      type: String,
+      default: ""
+    },
+    adpidWidescreen: {
+      type: String,
+      default: ""
+    },
+    widescreenWidth: {
+      type: Number,
+      default: DEFAULT_WIDESCREEN_WIDTH
+    }
+  },
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
+    const rootRef = vue.ref(null);
+    const customTuiaVisible = vue.ref(false);
+    const {
+      $excludeAttrs,
+      $listeners
+    } = useAttrs({
+      excludeListeners: true
+    });
+    const trigger = useCustomEvent(rootRef, emit2);
+    const ad = new AdRender(props2, trigger, rootRef, {
+      hasCustomTuiaMaterial: () => Boolean(slots.default && slots.default().length),
+      setCustomTuiaVisible: (visible) => {
+        customTuiaVisible.value = visible;
+      }
+    });
+    vue.watch(() => props2.adpid, (val) => {
+      ad.load(val);
+    });
+    vue.watch(() => props2.adpidWidescreen, (val) => {
+      ad.load(val);
+    });
+    return () => {
+      const {
+        adpid,
+        adpidWidescreen,
+        widescreenWidth
+      } = props2;
+      return vue.createVNode(vue.Fragment, null, [vue.createVNode("uni-ad", vue.mergeProps($listeners.value, $excludeAttrs.value, {
+        "adpid": adpid,
+        "adpidWidescreen": adpidWidescreen,
+        "widescreenWidth": widescreenWidth
+      }), [vue.createVNode("div", {
+        "ref": rootRef,
+        "class": "uni-ad-container",
+        "onClick": () => ad.report(41)
+      }, null, 8, ["onClick"]), customTuiaVisible.value && slots.default ? vue.createVNode("div", {
+        "class": "uni-ad-custom-material",
+        "onClick": () => ad.renderTuiaFromCustomMaterial()
+      }, [slots.default()], 8, ["onClick"]) : null], 16, ["adpid", "adpidWidescreen", "widescreenWidth"])]);
+    };
+  }
+});
 const index$5 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
 const index$4 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
 const index$3 = /* @__PURE__ */ defineUnsupportedComponent("camera");
@@ -12789,6 +13481,7 @@ function useTopWindow(layoutState) {
     updateWindow();
   });
   vue.watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => vue.nextTick(updateWindow));
+  vue.watch(() => layoutState.topWindowStyle, () => vue.nextTick(updateWindow));
   layoutState.topWindowStyle = style;
   return {
     component,
@@ -12821,6 +13514,7 @@ function useLeftWindow(layoutState) {
     updateWindow();
   });
   vue.watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => vue.nextTick(updateWindow));
+  vue.watch(() => layoutState.leftWindowStyle, () => vue.nextTick(updateWindow));
   layoutState.leftWindowStyle = style;
   return {
     component,
@@ -12853,6 +13547,7 @@ function useRightWindow(layoutState) {
     updateWindow();
   });
   vue.watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => vue.nextTick(updateWindow));
+  vue.watch(() => layoutState.rightWindowStyle, () => vue.nextTick(updateWindow));
   layoutState.rightWindowStyle = style;
   return {
     component,

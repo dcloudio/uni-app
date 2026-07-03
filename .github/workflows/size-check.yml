@@ -2,10 +2,10 @@ name: 'size'
 on:
   push:
     branches:
-      - next
+      - uni-app-vue3-dev
   pull_request:
     branches:
-      - next
+      - uni-app-vue3-dev
 jobs:
   size:
     runs-on: windows-latest

@@ -1,5 +1,9 @@
 export default {
   'app.compiler.version': 'Compiler version: {version}',
+  'view.render.compiler.target': 'Current view.render compile target: {target}',
+  'view.render.compiler.target.bytecode': 'bytecode',
+  'view.render.compiler.target.nativecode': 'nativecode',
+  'style.isolation.version': 'Style isolation version: {version}',
   compiling: 'Compiling...',
   'dev.performance':
     'Please note that in running mode, due to log output, sourcemap, and uncompressed source code, the performance and package size are not as good as release mode.',
@@ -16,17 +20,23 @@ export default {
   'dev.watching.end.files': 'DONE  Build complete. FILES:{files}',
   'dev.watching.restart.vapor':
     'DONE  Restart required. Switching vapor mode requires restarting to take effect.',
+  'dev.watching.vapor.render.target':
+    'vapor-render-target in manifest.json was changed to {manifestTarget}, but the running console is still {runtimeTarget}.',
   'build.failed': 'DONE  Build failed.',
   'compiler.build.failed': 'Build failed with errors.',
   'stat.warn.appid':
     'The current application is not configured with Appid, and uni statistics cannot be used. For details, see https://ask.dcloud.net.cn/article/36303',
   'stat.warn.version':
-    'The uni statistics version is not configured. The default version is 1.0.uni statistics version 2.0 is recommended, private deployment data is more secure and code is open source and customizable. details: https://uniapp.dcloud.io/uni-stat',
-  'stat.warn.tip': 'uni statistics version: {version}',
+    'The uni statistics type is not configured. The default type is public. You can set it to public or private. Details: https://uniapp.dcloud.io/uni-stat',
+  'stat.warn.tip': 'uni statistics enabled: {type}',
   'i18n.fallbackLocale.default':
     'fallbackLocale is missing in manifest.json, use: {locale}',
   'i18n.fallbackLocale.missing': './local/{locale}.json is missing',
   'easycom.conflict': 'easycom component conflict: ',
+  'dom2.compatible.component':
+    'Vapor mode does not support the uni-app compatibility component {name}. The implementation file {file} was detected. Please use the standard UTS component implementation for this purpose.',
+  'dom2.root.scroll.view':
+    'Pages are scrollable in Vapor mode. Remove the root scroll-view to avoid nested scrolling. Details: https://doc.dcloud.net.cn/uni-app-x/page.html#disablescroll',
   'mp.component.args[0]': 'The first parameter of {0} must be a static string',
   'mp.component.args[1]': '{0} requires two parameters',
   'mp.360.unsupported': '360 is unsupported',
@@ -62,4 +72,6 @@ export default {
   'uni_modules.import': 'Plug-in [{0}] only supports @/uni_modules/{1}.',
   'pages.json.page.notfound': 'The page "{pagePath}" does not exist.',
   'pages.json.page.slash': 'The Path "{pagePath}" cannot start with "/"',
+  'pages.json.tabbar.page.notfound':
+    'The tabBar page "{pagePath}" is not declared in "pages.json".',
 } as const

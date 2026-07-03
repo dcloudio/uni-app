@@ -50,6 +50,14 @@ function resolveOptions(options: UTSOptions) {
   return options
 }
 
+function resolveCodeOptions(options: UTSOptions) {
+  const { input } = options
+  if (!input?.fileContent) {
+    return
+  }
+  return options
+}
+
 export async function parse(source: string, options: UTSParseOptions = {}) {
   options.noColor = !!options.noColor
   return bindings
@@ -67,6 +75,19 @@ export async function toKotlin(options: UTSOptions): Promise<UTSResult> {
   }
   return bindings
     .toKotlin(toBuffer(kotlinOptions))
+    .then((res: string) => JSON.parse(res))
+    .catch((error: Error) => {
+      return { error }
+    })
+}
+
+export async function toKotlinCode(options: UTSOptions): Promise<string> {
+  const kotlinOptions = resolveCodeOptions(options)
+  if (!kotlinOptions) {
+    return Promise.resolve('')
+  }
+  return bindings
+    .toKotlinCode(toBuffer(kotlinOptions))
     .then((res: string) => JSON.parse(res))
     .catch((error: Error) => {
       return { error }
@@ -101,6 +122,19 @@ export async function toSwift(options: UTSOptions): Promise<UTSResult> {
     })
 }
 
+export async function toSwiftCode(options: UTSOptions): Promise<string> {
+  const swiftOptions = resolveCodeOptions(options)
+  if (!swiftOptions) {
+    return Promise.resolve('')
+  }
+  return bindings
+    .toSwiftCode(toBuffer(swiftOptions))
+    .then((res: string) => JSON.parse(res))
+    .catch((error: Error) => {
+      return { error }
+    })
+}
+
 export async function bundleSwift(
   options: UTSBundleOptions
 ): Promise<UTSResult> {
@@ -123,6 +157,19 @@ export async function toArkTS(options: UTSOptions): Promise<UTSResult> {
   }
   return bindings
     .toSwift(toBuffer(arkTSOptions))
+    .then((res: string) => JSON.parse(res))
+    .catch((error: Error) => {
+      return { error }
+    })
+}
+
+export async function toArkTSCode(options: UTSOptions): Promise<string> {
+  const arkTSOptions = resolveCodeOptions(options)
+  if (!arkTSOptions) {
+    return Promise.resolve('')
+  }
+  return bindings
+    .toArkTSCode(toBuffer(arkTSOptions))
     .then((res: string) => JSON.parse(res))
     .catch((error: Error) => {
       return { error }

@@ -71,12 +71,8 @@ export const downloadFile = defineTaskApi<API_TYPE_DOWNLOAD_FILE>(
       },
       (download, statusCode) => {
         if (statusCode) {
-          let tempFilePath = download.filename!
-          try {
-            tempFilePath = decodeURIComponent(tempFilePath)
-          } catch (e) {}
           resolve({
-            tempFilePath,
+            tempFilePath: download.filename!,
             statusCode,
           })
         } else {

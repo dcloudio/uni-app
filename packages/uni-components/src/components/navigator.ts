@@ -98,28 +98,39 @@ export function createNavigatorOnClick(
 
     const animationDuration = parseInt(props.animationDuration as string)
 
+    const onFail =
+      __PLATFORM__ === 'h5'
+        ? (error: any) => {
+            console.error(error.errMsg)
+          }
+        : undefined
+
     switch (props.openType) {
       case 'navigate':
         uni.navigateTo({
           url: props.url,
           animationType: (props.animationType as AnimationToType) || 'pop-in',
           animationDuration,
+          fail: onFail,
         })
         break
       case 'redirect':
         uni.redirectTo({
           url: props.url,
           exists: props.exists,
+          fail: onFail,
         })
         break
       case 'switchTab':
         uni.switchTab({
           url: props.url,
+          fail: onFail,
         })
         break
       case 'reLaunch':
         uni.reLaunch({
           url: props.url,
+          fail: onFail,
         })
         break
       case 'navigateBack':
@@ -128,6 +139,7 @@ export function createNavigatorOnClick(
           animationType:
             (props.animationType as AnimationBackType) || 'pop-out',
           animationDuration,
+          fail: onFail,
         })
         break
       default:

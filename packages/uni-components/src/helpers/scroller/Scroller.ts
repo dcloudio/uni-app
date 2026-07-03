@@ -3,6 +3,11 @@ import type { Friction } from './Friction'
 import type { Spring } from './Spring'
 import { Scroll } from './Scroll'
 
+// 提取 snap index 计算逻辑为纯函数，便于测试
+export function calculateSnapIndex(position: number, itemSize: number): number {
+  return Math.round(Math.abs(position) / itemSize)
+}
+
 interface Animation {
   cancel(): void
   model: Scroll
@@ -209,7 +214,7 @@ export class Scroller {
     this._lastDelay = 0
     this._scrolling = true
     this._lastChangePos = this._position
-    this._lastIdx = Math.floor(Math.abs(this._position / this._itemSize))
+    this._lastIdx = calculateSnapIndex(this._position, this._itemSize)
     this._animation = createAnimation(
       this._scroll,
       () => {
@@ -236,7 +241,7 @@ export class Scroller {
           }
           if (isFunction(this._options.onSnap)) {
             this._options.onSnap(
-              Math.floor(Math.abs(this._position) / this._itemSize)
+              calculateSnapIndex(this._position, this._itemSize)
             )
           }
         }
@@ -268,7 +273,7 @@ export class Scroller {
       this.scrollTo(-i)
       if (isFunction(this._options.onSnap)) {
         this._options.onSnap(
-          Math.floor(Math.abs(this._position) / this._itemSize)
+          Math.round(Math.abs(this._position) / this._itemSize)
         )
       }
     }
@@ -345,7 +350,7 @@ export class Scroller {
       this.dispatchScroll()
       if (isFunction(this._options.onSnap)) {
         this._options.onSnap(
-          Math.floor(Math.abs(this._position) / this._itemSize)
+          Math.round(Math.abs(this._position) / this._itemSize)
         )
       }
     }

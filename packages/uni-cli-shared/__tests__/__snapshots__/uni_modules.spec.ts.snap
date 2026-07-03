@@ -71,6 +71,22 @@ export {
 }
 `;
 
+exports[`uni_modules:cloud parseUniModulesWithComponents(app-android vapor) 1`] = `
+{
+  "test-easycom": "
+import TestA from './components/test-a/test-a.vue'
+import TestB from './components/test-b/test-b.vue'
+
+export { 
+  TestA,
+  TestB 
+}
+  ",
+  "test-uts1": "export * from './utssdk/index.uts'",
+  "test-uts2": "export * from './utssdk/app-android/index.uts'",
+}
+`;
+
 exports[`uni_modules:uni-ext-api findCloudEncryptUniModules(app-android) 1`] = `
 {
   "test-com1": undefined,
@@ -206,5 +222,22 @@ exports[`uni_modules:uni-ext-api findUploadEncryptUniModulesFiles(web) 1`] = `
   "uni_modules/test-uts2/encrypt",
   "uni_modules/test-uts2/package.json",
   "uni_modules/test-uts2/utssdk/web/index.uts",
+]
+`;
+
+exports[`uni_modules:uni-ext-api vapor findUploadEncryptUniModulesFiles(app-android vapor) 1`] = `
+[
+  "uni_modules/test-com1/encrypt",
+  "uni_modules/test-com1/index.module.uts",
+  "uni_modules/test-com1/package.json",
+  "uni_modules/test-com1/components/test-com1-1/test-com1-1.vue",
+  "uni_modules/test-com1/components/test-com1-2/test-com1-2.vue",
+  "uni_modules/test-com2/encrypt",
+  "uni_modules/test-com2/index.module.uts",
+  "uni_modules/test-com2/index.uts",
+  "uni_modules/test-com2/package.json",
+  "uni_modules/test-com2/utils/index.uts",
+  "uni_modules/test-com2/components/test-com2-1/test-com2-1.vue",
+  "uni_modules/test-com2/components/test-com2-2/test-com2-2.vue",
 ]
 `;

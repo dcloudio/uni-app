@@ -1,4 +1,5 @@
 import { isPlainObject } from '@vue/shared'
+import { DEFAULT_APPID } from '../../constants'
 
 const flexDirs = ['row', 'row-reverse', 'column', 'column-reverse'] as const
 
@@ -23,6 +24,6 @@ export function parseUniXSplashScreen(
   return false
 }
 
-export function parseUniXAppAndroidPackage(appid: string) {
-  return 'uni.' + appid.replace(/_/g, '')
+export function parseUniXAppAndroidPackage(appid?: string) {
+  return 'uni.' + (appid || DEFAULT_APPID).replace(/_/g, '')
 }

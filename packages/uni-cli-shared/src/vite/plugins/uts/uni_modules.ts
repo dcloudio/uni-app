@@ -26,6 +26,7 @@ import { parseVueRequest } from '../../utils'
 import {
   getNonTreeShakingPlugins,
   getUniExtApiPlugins,
+  getUniExtApiProviders,
   parseUTSModuleDeps,
 } from '../../../uni_modules'
 import {
@@ -33,6 +34,7 @@ import {
   checkEncryptUniModules,
   resolveEncryptUniModule,
 } from '../../../uni_modules.cloud'
+import { isUniAppXJsEngine } from '../../../x'
 import {
   camelize,
   capitalize,
@@ -47,6 +49,7 @@ import { initScopedPreContext } from '../../../preprocess/context'
 import { isInHBuilderX } from '../../../hbx'
 import { appendConsoleExpr, rewriteConsoleExpr } from '../../../logs/console'
 import { getWorkers } from '../../../workers'
+import { initSourceFileCallback } from '../../../dom2'
 
 /* eslint-disable no-restricted-globals */
 const { preprocess } = require('../../../../lib/preprocess')
@@ -259,7 +262,7 @@ export function getCurrentCompiledUTSProviders() {
   return utsProviders
 }
 
-let uniExtApiCompiler = async () => {}
+let uniExtApiCompiler = async (providerOnly: boolean = false) => {}
 let nonTreeShakingUniModulesCompiler = async () => {}
 
 function emptyCacheDir(platform: 'app-android' | 'app-ios' | 'app-harmony') {
@@ -371,7 +374,10 @@ export function uniUTSAppUniModulesPlugin(
     process.env.UNI_APP_X_TSC === 'true' &&
     (process.env.UNI_UTS_PLATFORM === 'app-android' ||
       process.env.UNI_UTS_PLATFORM === 'app')
-      ? createUniXKotlinCompilerOnce({ resolveWorkers })
+      ? createUniXKotlinCompilerOnce({
+          resolveWorkers,
+          sourceFileCallback: initSourceFileCallback(),
+        })
       : null
   const uniXSwiftCompiler =
     process.env.UNI_APP_X_TSC === 'true' &&
@@ -615,19 +621,27 @@ export function uniUTSAppUniModulesPlugin(
           )
         })
       },
+      iosPreprocessor: createAppIosUniModulesSyncFilePreprocessorOnce(
+        !!options.x
+      ),
+      androidPreprocessor: createAppAndroidUniModulesSyncFilePreprocessorOnce(
+        !!options.x
+      ),
+      // harmonyPreprocessor: createAppHarmonyUniModulesSyncFilePreprocessorOnce(!!options.x),
     })
   }
 
-  uniExtApiCompiler = async () => {
+  uniExtApiCompiler = async (providerOnly: boolean = false) => {
     // 此方法为兜底方法，确保uni_modules中的所有插件都会编译，目前仅用于编译provider
     // 获取 provider 扩展(编译所有uni)
     const plugins = getUniExtApiPlugins().filter(
       (provider) => !utsPlugins.has(provider.plugin)
     )
+    const providers = getUniExtApiProviders()
     for (const plugin of plugins) {
       const pluginDir = path.resolve(inputDir, 'uni_modules', plugin.plugin)
       // 如果是 app-js 环境
-      if (process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js') {
+      if (isUniAppXJsEngine()) {
         if (
           fs.existsSync(
             path.resolve(pluginDir, 'utssdk', 'app-js', 'index.uts')
@@ -650,14 +664,18 @@ export function uniUTSAppUniModulesPlugin(
           continue
         }
       }
+      const isProvider = providers.some((p) => p.plugin === plugin.plugin)
       utsProviders.add(plugin.plugin)
-      const result = await compilePlugin(pluginDir)
-      if (result) {
-        // 时机不对，不能addWatch
-        // result.deps.forEach((dep) => {
-        //   this.addWatchFile(dep)
-        // })
+      if ((providerOnly && isProvider) || !providerOnly) {
+        await compilePlugin(pluginDir)
       }
+      // const result = await compilePlugin(pluginDir)
+      // if (result) {
+      //   // 时机不对，不能addWatch
+      //   // result.deps.forEach((dep) => {
+      //   //   this.addWatchFile(dep)
+      //   // })
+      // }
     }
   }
 
@@ -788,8 +806,8 @@ export function uniUTSAppUniModulesPlugin(
   }
 }
 
-export async function buildUniExtApis() {
-  await uniExtApiCompiler()
+export async function buildUniExtApis(providerOnly: boolean = false) {
+  await uniExtApiCompiler(providerOnly)
 }
 
 export async function buildNonTreeShakingUniModules() {
@@ -837,7 +855,12 @@ export function uniDecryptUniModulesPlugin(): Plugin {
           appname: manifest.name,
           platform: process.env.UNI_UTS_PLATFORM,
           'uni-app-x': isX,
+          vapor: process.env.UNI_APP_X_DOM2 === 'true',
           env,
+        }
+        if (options.vapor) {
+          options.vaporRenderTarget =
+            process.env.UNI_APP_X_VAPOR_RENDER_TARGET || 'bytecode'
         }
         // 鸿蒙平台需要拆分两次云编译
         if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {

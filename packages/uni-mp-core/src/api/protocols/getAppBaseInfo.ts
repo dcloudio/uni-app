@@ -27,6 +27,13 @@ export const getAppBaseInfo: MPProtocol = {
       uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
     }
 
+    try {
+      if (typeof __GLOBAL__.getAccountInfoSync === 'function') {
+        parameters.packagename =
+          __GLOBAL__.getAccountInfoSync().miniProgram.appId
+      }
+    } catch (error) {}
+
     if (__X__) {
       try {
         parameters.uniCompilerVersionCode = parseFloat(

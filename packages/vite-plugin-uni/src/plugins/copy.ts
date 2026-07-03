@@ -7,6 +7,7 @@ import {
   PUBLIC_DIR,
   type UniViteCopyPluginTarget,
   getPlatforms,
+  hasUTSModulePlatformFile,
   isWindows,
   normalizePath,
   parseSubpackagesRootOnce,
@@ -22,10 +23,8 @@ export function uniCopyPlugin({
 }: Pick<VitePluginUniResolvedOptions, 'outputDir' | 'copyOptions'>): Plugin {
   const staticDir = PUBLIC_DIR + '/**/*'
   const uniModulesStaticDir = 'uni_modules/*/' + PUBLIC_DIR + '/**/*'
-  const isDom2Harmony =
-    process.env.UNI_APP_X_DOM2 === 'true' &&
-    process.env.UNI_PLATFORM === 'app-harmony'
-  const uniModulesCppDir = isDom2Harmony ? 'uni_modules/*/cppsdk/**/*' : ''
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+  const uniModulesCppDir = isDom2 ? 'uni_modules/*/cppsdk/**/*' : ''
   const assets = [staticDir, uniModulesStaticDir]
   const cppAssets: string[] = []
   if (uniModulesCppDir) {
@@ -46,6 +45,7 @@ export function uniCopyPlugin({
     assets.push(asset)
   })
   const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
+  const normalizedInputDir = normalizePathForCompare(inputDir)
   const platform = process.env.UNI_PLATFORM
   const utsPlatform = process.env.UNI_UTS_PLATFORM
   // 非当前平台 static 目录
@@ -54,6 +54,16 @@ export function uniCopyPlugin({
     platform,
     utsPlatform
   )
+  // app 资源包导出时，如果 uni_modules 的 utssdk 不支持当前原生平台，则连同 static 一起忽略
+  const ignoreUniModulesStaticDirs = createIgnoreUniModulesStaticDirs(
+    inputDir,
+    subpackages,
+    utsPlatform
+  )
+  const ignoreStaticDirs = [
+    ...ignorePlatformStaticDirs,
+    ...ignoreUniModulesStaticDirs,
+  ]
   // 非当前平台 cppsdk 目录
   const ignorePlatformCppDirs = uniModulesCppDir
     ? createIgnorePlatformDirs('cppsdk', platform, utsPlatform)
@@ -67,18 +77,24 @@ export function uniCopyPlugin({
         readyTimeout: getReadyTimeout(),
         ignored(path: string) {
           const normalizedPath = normalizePath(path)
+          const comparablePath = normalizePathForCompare(normalizedPath)
+          if (
+            ignoreUniModulesStaticDirs.find((dir) =>
+              // 忽略整个 static 目录及其子文件，避免无效资源进入资源包
+              (comparablePath + '/').includes(dir)
+            )
+          ) {
+            return true
+          }
           if (
             ignorePlatformStaticDirs.find((dir) =>
-              // dir都是以 / 结尾，所以这里也要以 / 结尾
-              (normalizedPath + '/').includes(dir)
+              (comparablePath + '/').includes(dir)
             )
           ) {
             return fs.statSync(normalizedPath).isDirectory()
           }
-          // 应该是软链
-          if (!normalizedPath.startsWith(inputDir)) {
-            // 目前仅简单处理static
-            if (normalizedPath.includes('/static/')) {
+          if (!comparablePath.startsWith(normalizedInputDir)) {
+            if (comparablePath.includes('/static/')) {
               return false
             }
             return true
@@ -89,10 +105,10 @@ export function uniCopyPlugin({
     },
   ]
   targets.push(...copyOptions!.targets)
-  if (process.env.UNI_APP_HARMONY_DOM2_CPP_DIR && cppAssets.length) {
+  if (process.env.UNI_APP_X_DOM2_CPP_DIR && cppAssets.length) {
     targets.push({
       src: cppAssets,
-      dest: process.env.UNI_APP_HARMONY_DOM2_CPP_DIR,
+      dest: process.env.UNI_APP_X_DOM2_CPP_DIR,
       watchOptions: {
         readyTimeout: getReadyTimeout(),
         ignored(path: string) {
@@ -111,9 +127,7 @@ export function uniCopyPlugin({
     })
   }
   debugCopy(targets)
-  checkIgnoreStatic(
-    ignorePlatformStaticDirs.map((dir) => dir.substring(1).split('/'))
-  )
+  checkIgnoreStatic(ignoreStaticDirs.map((dir) => dir.substring(1).split('/')))
   return uniViteCopyPlugin({
     targets,
   })
@@ -178,6 +192,49 @@ function createIgnorePlatformDirs(
         return p !== platform
       })
       // 在最后增加 / 是为了避免误判以 platform 开头的目录，比如 app-test
-      .map((p) => '/' + dir + '/' + p + '/')
+      .map((p) => normalizePathForCompare('/' + dir + '/' + p + '/'))
   )
+}
+
+function createIgnoreUniModulesStaticDirs(
+  inputDir: string,
+  subpackages: string[],
+  utsPlatform: UniApp.PLATFORM
+) {
+  if (utsPlatform !== 'app-android' && utsPlatform !== 'app-ios') {
+    return []
+  }
+  const ignoreDirs: string[] = []
+  const roots = [
+    inputDir,
+    ...subpackages.map((root) => path.resolve(inputDir, root)),
+  ]
+  roots.forEach((rootDir) => {
+    const uniModulesDir = path.resolve(rootDir, 'uni_modules')
+    if (!fs.existsSync(uniModulesDir)) {
+      return
+    }
+    fs.readdirSync(uniModulesDir).forEach((uniModuleDir) => {
+      const uniModuleRootDir = path.resolve(uniModulesDir, uniModuleDir)
+      const utssdkDir = path.resolve(uniModuleRootDir, 'utssdk')
+      const staticDir = path.resolve(uniModuleRootDir, PUBLIC_DIR)
+      if (!fs.existsSync(utssdkDir) || !fs.existsSync(staticDir)) {
+        return
+      }
+      if (hasUTSModulePlatformFile(uniModuleRootDir, utsPlatform)) {
+        return
+      }
+      ignoreDirs.push(
+        normalizePathForCompare(
+          '/' + normalizePath(path.relative(inputDir, staticDir)) + '/'
+        )
+      )
+    })
+  })
+  return ignoreDirs
+}
+
+function normalizePathForCompare(id: string) {
+  const normalizedPath = normalizePath(id)
+  return isWindows ? normalizedPath.toLowerCase() : normalizedPath
 }

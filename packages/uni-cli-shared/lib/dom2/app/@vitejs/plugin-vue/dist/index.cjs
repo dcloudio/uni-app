@@ -320,13 +320,6 @@ function resolveTemplateCompilerOptions(descriptor, options, ssr) {
     expressionPlugins.push("typescript");
   }
   const extraOptions = options.template?.compilerOptions?.extraOptions?.(descriptor);
-  if (extraOptions.helper) {
-    extraOptions.className = extraOptions.helper.GCN(
-      descriptor.filename,
-      process.env.UNI_INPUT_DIR
-    );
-    extraOptions.r = extraOptions.helper.K;
-  }
   return {
     ...options.template,
     // @ts-expect-error TODO remove when 3.6 is out

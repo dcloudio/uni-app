@@ -12,7 +12,6 @@ import type {
 import { get } from 'android-versions'
 import { normalizePath, parseJson, resolveSourceMapPath } from './shared'
 import {
-  type CompilerServer,
   type RunDevOptions,
   type RunOptions,
   type RunProdOptions,
@@ -21,7 +20,7 @@ import {
   copyPlatformNativeLanguageFiles,
   genComponentsCode,
   genUTSPlatformResource,
-  getCompilerServer,
+  getKotlinCompilerServer,
   getUTSCompiler,
   isColorSupported,
   isEnableGenericsParameterDefaults,
@@ -52,7 +51,7 @@ import {
 import { uvueOutDir } from './uvue'
 import { storeIndexKt } from './manifest/dex'
 
-export interface KotlinCompilerServer extends CompilerServer {
+export interface KotlinCompilerServer {
   getKotlincHome(): string
   getDefaultJar(arg?: any): string[]
   getCompilerJar?: (userJars: string[], version?: number) => string[]
@@ -65,6 +64,12 @@ export interface KotlinCompilerServer extends CompilerServer {
     },
     projectPath: string
   ): Promise<{ code: number; msg: string; data?: { dexList: string[] } }>
+  compileCpp(options: {
+    appId: string
+    projectPath: string
+    cppPath: string
+    outDir: string
+  }): Promise<{ code: number; msg: string; data?: { soList: string[] } }>
   checkDependencies?: (
     configJsonPath: string,
     options?: { type: 1 /*插件*/ | 2 /*项目*/; valid: boolean }
@@ -278,9 +283,7 @@ export async function runKotlinDev(
   })
   // 开发模式下，需要生成 dex
   if (fs.existsSync(kotlinFile)) {
-    const compilerServer = getCompilerServer<KotlinCompilerServer>(
-      'uniapp-runextension'
-    )
+    const compilerServer = getKotlinCompilerServer()
     if (!compilerServer) {
       throw new Error(`项目使用了uts插件，正在安装 uts Android 运行扩展...`)
     }
@@ -428,10 +431,12 @@ function getKotlinCompileJars(
   depJars: string[],
   { getDefaultJar, getCompilerJar }: KotlinCompilerServer
 ) {
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+  const jarVersion = isDom2 ? 3 : isX ? 2 : undefined
   if (getCompilerJar) {
-    return getCompilerJar(depJars, isX ? 2 : undefined)
+    return getCompilerJar(depJars, jarVersion)
   }
-  return getDefaultJar(isX ? 2 : undefined).concat(depJars)
+  return getDefaultJar(jarVersion).concat(depJars)
 }
 
 function checkDeps(
@@ -550,7 +555,10 @@ const DEFAULT_IMPORTS_VUE_X = [
   'io.dcloud.uniapp.vue.shared.*',
 ]
 
+const DEFAULT_IMPORTS_VUE_X_DOM2 = []
+
 const DEFAULT_IMPORTS_X = ['io.dcloud.uniapp.runtime.*']
+const DEFAULT_IMPORTS_X_DOM2 = ['io.dcloud.uniappxv.runtime.*']
 
 export async function compile(
   filename: string,
@@ -570,13 +578,20 @@ export async function compile(
     outFilename,
   }: ToKotlinOptions
 ) {
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
   const imports = [...DEFAULT_IMPORTS]
   if (isX) {
-    imports.push(...DEFAULT_IMPORTS_X)
+    if (isDom2) {
+      imports.push(...DEFAULT_IMPORTS_X_DOM2)
+    } else {
+      imports.push(...DEFAULT_IMPORTS_X)
+    }
     if (!process.env.UNI_UTS_DISABLE_X_IMPORT) {
-      imports.push(...DEFAULT_IMPORTS_VUE_X)
+      imports.push(
+        ...(isDom2 ? DEFAULT_IMPORTS_VUE_X_DOM2 : DEFAULT_IMPORTS_VUE_X)
+      )
     }
   }
   const rClass = resolveAndroidResourceClass(filename)
@@ -630,6 +645,7 @@ export async function compile(
   const options: UTSBundleOptions = {
     mode: process.env.NODE_ENV,
     hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
+    vapor: process.env.UNI_APP_X_DOM2 === 'true',
     input,
     output: {
       errorFormat: 'json',
@@ -637,6 +653,9 @@ export async function compile(
       isX,
       isSingleThread,
       isPlugin,
+      // TODO 目前安卓dom2仅有js驱动，后续如果增加原生驱动需要由调用者传入参数控制
+      isJsDriven: process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js',
+      isDom2,
       isModule,
       isExtApi,
       outDir: outputDir,
@@ -681,7 +700,7 @@ export function resolveKotlincArgs(
   kotlinc: string,
   jars: string[]
 ) {
-  return [
+  const args = [
     ...files,
     '-cp',
     resolveClassPath(jars),
@@ -698,6 +717,10 @@ export function resolveKotlincArgs(
     '-P',
     'plugin:io.dcloud.uts.kotlin:console=true',
   ]
+  if (process.env.UNI_APP_X_DOM2 === 'true') {
+    args.push('-jvm-target', '17')
+  }
+  return args
 }
 
 export const D8_DEFAULT_ARGS = [

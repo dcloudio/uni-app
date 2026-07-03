@@ -96,6 +96,7 @@ export function initCreateComponent() {
     vueOptions = vueOptions.default || vueOptions
     const mpComponentOptions: tinyapp.ComponentOptions & {
       options?: any
+      externalClasses?: string[]
     } = {
       props: initComponentProps(vueOptions.props),
       didMount() {
@@ -131,6 +132,14 @@ export function initCreateComponent() {
     // vueOptions.options
     if (vueOptions.options) {
       mpComponentOptions.options = vueOptions.options
+    }
+    if (__X__ && __X_STYLE_ISOLATION__) {
+      mpComponentOptions.options = mpComponentOptions.options ?? {}
+      mpComponentOptions.options.externalClasses =
+        vueOptions.options?.externalClasses ?? true
+      if (vueOptions.externalClasses) {
+        mpComponentOptions.externalClasses = vueOptions.externalClasses
+      }
     }
     if (__VUE_OPTIONS_API__) {
       mpComponentOptions.data = initData(vueOptions)

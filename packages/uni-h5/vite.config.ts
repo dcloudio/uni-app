@@ -46,14 +46,15 @@ if (isX) {
   const apiDirs: string[] = []
   if (process.env.UNI_APP_EXT_API_DIR) {
     apiDirs.push(process.env.UNI_APP_EXT_API_DIR)
+    syncCustomElementsFile([process.env.UNI_APP_EXT_API_DIR])
   }
   if (process.env.UNI_APP_EXT_API_DCLOUD_DIR) {
     apiDirs.push(process.env.UNI_APP_EXT_API_DCLOUD_DIR)
   }
   systemPagePaths = syncPagesFile(apiDirs, 'web')
-  if (process.env.UNI_APP_EXT_COMPONENT_DIR) {
-    syncCustomElementsFile([process.env.UNI_APP_EXT_COMPONENT_DIR])
-  }
+  // if (process.env.UNI_APP_EXT_COMPONENT_DIR) {
+  //   syncCustomElementsFile([process.env.UNI_APP_EXT_COMPONENT_DIR])
+  // }
 }
 
 const rollupPlugins = [

@@ -15,9 +15,12 @@ function parseElement(obj) {
         return obj;
     }
 }
-function parseComponentPublicInstance(obj) {
-    if (isComponentPublicInstance(obj)) {
-        return obj.$el;
+function serializeComponentPublicInstance(obj) {
+    if (obj.$el) {
+        return serializeUniElement(obj.$el, 'ComponentPublicInstance');
+    }
+    else {
+        return { __type__: 'ComponentPublicInstance', pageId: '', nodeId: '' };
     }
 }
 function serializeArrayBuffer(obj) {
@@ -45,6 +48,7 @@ function toRaw(observed) {
 }
 function normalizeArg(arg, callbacks, keepAlive, context) {
     arg = toRaw(arg);
+    const isVaporAndroid = false;
     if (typeof arg === 'function') {
         let id;
         if (keepAlive) {
@@ -72,15 +76,17 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
     }
     else if (isPlainObject(arg) || isUniElement(arg)) {
         const uniElement = parseElement(arg);
-        const componentPublicInstanceUniElement = !uniElement
-            ? parseComponentPublicInstance(arg)
-            : undefined;
-        const el = uniElement || componentPublicInstanceUniElement;
-        if (el) {
-            if (context.depth > 0) {
+        if (uniElement) {
+            if (context.depth > 0 || isVaporAndroid) {
                 context.nested = true;
             }
-            return serializeUniElement(el, uniElement ? 'UniElement' : 'ComponentPublicInstance');
+            return serializeUniElement(uniElement, 'UniElement');
+        }
+        else if (isComponentPublicInstance(arg)) {
+            if (context.depth > 0 || isVaporAndroid) {
+                context.nested = true;
+            }
+            return serializeComponentPublicInstance(arg);
         }
         else {
             // 必须复制，否则会污染原始对象，比如：

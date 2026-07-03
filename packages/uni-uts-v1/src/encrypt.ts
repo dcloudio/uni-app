@@ -3,7 +3,6 @@ import fs from 'fs-extra'
 import type { APP_PLATFORM } from './manifest/utils'
 import { normalizePath, resolveSourceMapPath } from './shared'
 import {
-  type KotlinCompilerServer,
   compileAndroidDex,
   createStderrListener,
   getUniModulesCacheJars,
@@ -14,7 +13,7 @@ import {
   addPluginInjectApis,
   addPluginInjectComponents,
   addPluginInjectCustomElements,
-  getCompilerServer,
+  getKotlinCompilerServer,
   requireUniHelpers,
 } from './utils'
 import { restoreDex } from './manifest'
@@ -261,9 +260,7 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
       ? getUniModulesCacheJars(cacheDir, uniModules) // 依赖的jar
       : []
 
-    const compilerServer = getCompilerServer<KotlinCompilerServer>(
-      'uniapp-runextension'
-    )
+    const compilerServer = getKotlinCompilerServer()
     if (!compilerServer) {
       throw new Error(`项目使用了uts插件，正在安装 uts Android 运行扩展...`)
     }

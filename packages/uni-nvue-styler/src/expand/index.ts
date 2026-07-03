@@ -5,7 +5,11 @@ import {
   hyphenateStyleProperty,
 } from '../utils'
 import { createTransformBackground } from './background'
-import { createTransformBorder, createTransformBorderNvue } from './border'
+import {
+  BORDER_SHORTHAND_VAR_ORDER_WARNING,
+  createTransformBorder,
+  createTransformBorderNvue,
+} from './border'
 import { transformBorderColor, transformBorderColorNvue } from './borderColor'
 import {
   transformBorderRadius,
@@ -78,7 +82,7 @@ const expanded = Symbol('expanded')
 export function expand(options: NormalizeOptions): Plugin {
   const plugin: Plugin = {
     postcssPlugin: `${options.type || 'nvue'}:expand`,
-    Declaration(decl) {
+    Declaration(decl, helper) {
       if ((decl as any)[expanded]) {
         return
       }
@@ -88,6 +92,25 @@ export function expand(options: NormalizeOptions): Plugin {
       const transform = DeclTransforms[decl.prop]
       if (transform) {
         const res = transform(decl)
+        const reason = (decl as any)[BORDER_SHORTHAND_VAR_ORDER_WARNING]
+        if (reason && helper && decl.warn) {
+          let needLog = false
+          if (options.logLevel === 'NOTE') {
+            needLog = true
+          } else if (options.logLevel === 'ERROR') {
+            if (reason.startsWith('ERROR:')) {
+              needLog = true
+            }
+          } else {
+            if (!reason.startsWith('NOTE:')) {
+              needLog = true
+            }
+          }
+          if (needLog) {
+            decl.warn(helper.result, reason)
+          }
+          delete (decl as any)[BORDER_SHORTHAND_VAR_ORDER_WARNING]
+        }
         const isSame = res.length === 1 && res[0] === decl
         if (!isSame) {
           decl.replaceWith(res)

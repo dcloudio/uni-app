@@ -179,9 +179,14 @@ const transformMPBuiltInTagOptions = {
         slider: {
             activeBackgroundColor: 'active-color',
             foreColor: 'handle-color',
+            blockColor: 'handle-color',
+            blockSize: 'handle-size',
         },
         switch: {
             activeBackgroundColor: 'color',
+        },
+        canvas: {
+            canvasId: 'id',
         },
     },
     propAdd: {
@@ -243,6 +248,7 @@ const nodeTransforms = [
     transformOpenType,
     // transformMatchMedia,
     uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_ON_LINK, compilerCore.NodeTypes.ATTRIBUTE),
+    uniCliShared.transformTeleport,
 ];
 if (process.env.UNI_APP_X === 'true') {
     nodeTransforms.push(transformMPBuiltInTag, uniCliShared.transformDirection, transformLoading);
@@ -272,6 +278,7 @@ const customElements = [
     'mpaas-component',
     'match-media',
     'ad-feeds',
+    'open-avatar',
     ...uniCliShared.getNativeTags(process.env.UNI_INPUT_DIR, process.env.UNI_PLATFORM),
 ];
 const options = {

@@ -8883,6 +8883,27 @@ function useComputedStyle(options = {}) {
   }
   return r;
 }
+const excludedPxKeys = /* @__PURE__ */ new Set([
+  "z-index",
+  "opacity",
+  "font-weight",
+  "line-height",
+  "flex-grow",
+  "flex-shrink",
+  "flex"
+]);
+function formatValue(key, value) {
+  if (typeof value != "number") {
+    return value;
+  }
+  if (isPxKey(key)) {
+    return `${value}px`;
+  }
+  return `${value}`;
+}
+function isPxKey(key) {
+  return !excludedPxKeys.has(key);
+}
 function triggerComputedStyleUpdate(instance, styles) {
   if (instance.computedStyleInterceptors) {
     const keysToDelete = /* @__PURE__ */ new Set();
@@ -8898,7 +8919,7 @@ function triggerComputedStyleUpdate(instance, styles) {
             if (value === "" || value == null) {
               r.delete(hyphenatedKey);
             } else {
-              r.set(hyphenatedKey, value);
+              r.set(hyphenatedKey, formatValue(hyphenatedKey, value));
             }
             if (interceptor.filterProperties) {
               keysToDelete.add(key);
@@ -8912,7 +8933,7 @@ function triggerComputedStyleUpdate(instance, styles) {
           if (value === "" || value == null) {
             r.delete(hyphenatedKey);
           } else {
-            r.set(hyphenatedKey, value);
+            r.set(hyphenatedKey, formatValue(hyphenatedKey, value));
           }
         });
         clearStyles = true;
@@ -8926,6 +8947,7 @@ function triggerComputedStyleUpdate(instance, styles) {
       });
     }
   }
+  return styles;
 }
 
 const PartElementContextMap = /* @__PURE__ */ new WeakMap();
@@ -9421,7 +9443,7 @@ function patchStyle(el, prev, next, instance = null) {
   if (isString(next)) {
     next = parseStringStyle(next);
   }
-  const batchedStyles = /* @__PURE__ */ new Map();
+  let batchedStyles = /* @__PURE__ */ new Map();
   const isPrevObj = prev && !isString(prev);
   if (isPrevObj) {
     const classStyle = getExtraClassStyle(el);
@@ -9462,7 +9484,10 @@ function patchStyle(el, prev, next, instance = null) {
     setRootElementInstance(el, instance);
     const computedStyleInterceptors = instance == null ? void 0 : instance.computedStyleInterceptors;
     if (computedStyleInterceptors) {
-      triggerComputedStyleUpdate(instance, batchedStyles);
+      batchedStyles = triggerComputedStyleUpdate(
+        instance,
+        new Map(batchedStyles)
+      );
     }
   }
   if (batchedStyles.size == 0) {

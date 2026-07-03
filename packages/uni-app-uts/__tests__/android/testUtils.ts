@@ -10,9 +10,8 @@ import {
   isString,
 } from '@vue/shared'
 
-export function assert(
+export function compileTemplate(
   template: string,
-  templateCode: string,
   options: Omit<TemplateCompilerOptions, 'rootDir'> = {
     targetLanguage: 'kotlin',
   }
@@ -29,7 +28,17 @@ export function assert(
       )
     },
   }
-  const res = compile(template, compilerOptions)
+  return compile(template, compilerOptions)
+}
+
+export function assert(
+  template: string,
+  templateCode: string,
+  options: Omit<TemplateCompilerOptions, 'rootDir'> = {
+    targetLanguage: 'kotlin',
+  }
+) {
+  const res = compileTemplate(template, options)
   if (typeof expect !== 'undefined') {
     expect((res.preamble || '') + res.code).toBe(templateCode)
   }

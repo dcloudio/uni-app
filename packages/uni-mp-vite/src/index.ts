@@ -8,6 +8,7 @@ import {
   enableSourceMap,
   getWorkers,
   isEnableConsole,
+  isInHBuilderX,
   isNormalCompileTarget,
   normalizePath,
   parseJson,
@@ -15,7 +16,6 @@ import {
   resolveSourceMapPath,
   resolveUTSCompiler,
   resolveWorkersRootDir,
-  runByHBuilderX,
   uniDecryptUniModulesPlugin,
   uniEncryptUniModulesAssetsPlugin,
   uniEncryptUniModulesPlugin,
@@ -63,7 +63,7 @@ export default (options: UniMiniProgramPluginOptions) => {
   )
 
   const plugins: Plugin[] = []
-  if (runByHBuilderX() && process.env.UNI_PLATFORM === 'mp-weixin') {
+  if (isInHBuilderX() && process.env.UNI_PLATFORM === 'mp-weixin') {
     const { UUVP } = requireUniHelpers()
     plugins.push(UUVP(getFilterPaths))
   }

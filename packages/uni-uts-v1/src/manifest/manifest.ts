@@ -3,7 +3,7 @@ import { join, relative } from 'path'
 import md5 from 'md5-file'
 import glob from 'fast-glob'
 import type { APP_PLATFORM } from './utils'
-import { normalizePath } from '../shared'
+import { normalizePath, parseJson } from '../shared'
 
 const fileCaches = new Map<
   string,
@@ -25,6 +25,11 @@ export interface Manifest {
   files: {
     [file: string]: ManifestFile
   }
+}
+
+interface DependenciesCache {
+  version: typeof VERSION
+  dependencies: Record<string, unknown>
 }
 
 /**
@@ -84,6 +89,14 @@ export async function genManifestFile(
         is_uni_modules,
         deps,
       }),
+      null,
+      2
+    )
+  )
+  outputFileSync(
+    resolveDependenciesCacheFilename(platform, pluginRelativeDir, cacheDir),
+    JSON.stringify(
+      genDependenciesCacheJson(platform, pluginDir, is_uni_modules),
       null,
       2
     )
@@ -284,6 +297,132 @@ export function resolveManifestJson(
   if (existsSync(file)) {
     try {
       return JSON.parse(readFileSync(file, 'utf8')) as Manifest
+    } catch (e) {}
+  }
+}
+
+export function checkDependenciesCache(
+  platform: APP_PLATFORM,
+  pluginRelativeDir: string,
+  cacheDir: string,
+  pluginDir: string,
+  is_uni_modules: boolean
+) {
+  const cache = resolveDependenciesCacheJson(
+    platform,
+    pluginRelativeDir,
+    cacheDir
+  )
+  // 兼容旧缓存：没有依赖缓存时仍然沿用原 manifest 判断逻辑。
+  if (!cache) {
+    return true
+  }
+  if (cache.version !== VERSION) {
+    return false
+  }
+  return (
+    stableStringify(cache.dependencies) ===
+    stableStringify(
+      genDependenciesCacheJson(platform, pluginDir, is_uni_modules).dependencies
+    )
+  )
+}
+
+function genDependenciesCacheJson(
+  platform: APP_PLATFORM,
+  pluginDir: string,
+  is_uni_modules: boolean
+): DependenciesCache {
+  return {
+    version: VERSION,
+    dependencies: resolveConfigJsonDependencies(
+      platform,
+      pluginDir,
+      is_uni_modules
+    ),
+  }
+}
+
+function resolveConfigJsonDependencies(
+  platform: APP_PLATFORM,
+  pluginDir: string,
+  is_uni_modules: boolean
+) {
+  const configJsonFile = join(
+    pluginDir,
+    is_uni_modules ? 'utssdk' : '',
+    platform,
+    'config.json'
+  )
+  if (!existsSync(configJsonFile)) {
+    return {}
+  }
+  try {
+    const configJson = parseJson(readFileSync(configJsonFile, 'utf8')) || {}
+    const dependencies: Record<string, unknown> = {}
+    // 只缓存会影响原生依赖解析的字段，避免 config.json 其他配置改动影响旧逻辑。
+    getConfigJsonDependencyKeys(platform).forEach((key) => {
+      if (configJson[key] !== undefined) {
+        dependencies[key] = configJson[key]
+      }
+    })
+    return dependencies
+  } catch (e) {}
+  return {}
+}
+
+function getConfigJsonDependencyKeys(platform: APP_PLATFORM) {
+  if (platform === 'app-android') {
+    return ['dependencies']
+  }
+  return [
+    'frameworks',
+    'dependencies-pods',
+    'dependencies-pod-sources',
+    'dependencies-spms',
+  ]
+}
+
+function stableStringify(value: unknown): string {
+  return JSON.stringify(sortObject(value))
+}
+
+function sortObject(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map(sortObject)
+  }
+  if (value && typeof value === 'object') {
+    return Object.keys(value)
+      .sort()
+      .reduce<Record<string, unknown>>((res, key) => {
+        res[key] = sortObject((value as Record<string, unknown>)[key])
+        return res
+      }, {})
+  }
+  return value
+}
+
+function resolveDependenciesCacheFilename(
+  platform: APP_PLATFORM,
+  pluginRelativeDir: string,
+  cacheDir: string
+) {
+  return join(cacheDir, platform, 'uts', pluginRelativeDir, 'dependencies.json')
+}
+
+function resolveDependenciesCacheJson(
+  platform: APP_PLATFORM,
+  pluginRelativeDir: string,
+  cacheDir: string
+) {
+  const file = resolveDependenciesCacheFilename(
+    platform,
+    pluginRelativeDir,
+    cacheDir
+  )
+  if (existsSync(file)) {
+    try {
+      return JSON.parse(readFileSync(file, 'utf8')) as DependenciesCache
     } catch (e) {}
   }
 }

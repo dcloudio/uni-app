@@ -4,6 +4,7 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import { type FilterPattern, createFilter } from '@rollup/pluginutils'
 
 import { EXTNAME_JS, EXTNAME_VUE, X_EXTNAME_VUE } from '../../constants'
+import { warnDom2RootScrollView } from '../../dom2'
 import { preHtml, preJs, preNVueHtml, preNVueJs } from '../../preprocess'
 import { parseVueRequest, withSourcemap } from '../utils'
 
@@ -44,6 +45,7 @@ export function uniPrePlugin(
       if (!hasEndif) {
         return
       }
+      warnDom2RootScrollView(code, filename, !!query.vue)
       // 因为完整的 vue 会先条件编译，而 vue&type=template 等会再次条件编译，如果走error模式会报两次错误，且第二次错误没有正确的位置映射
       const unbalanced = query.vue ? 'skip' : 'error'
       if (isHtml) {

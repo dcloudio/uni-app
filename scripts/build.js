@@ -134,8 +134,15 @@ async function build(target) {
   if (['uni-app-harmony'].includes(target)) {
     await fs.remove(`${pkgDir}/dist-x`)
   }
-  if (process.env.UNI_APP_EXT_COMPONENT_DIR && (target === 'uni-h5' || target.startsWith('uni-mp'))) {
-    syncExtComponentFile([process.env.UNI_APP_EXT_COMPONENT_DIR])
+  // if (process.env.UNI_APP_EXT_COMPONENT_DIR && (target === 'uni-h5' || target.startsWith('uni-mp'))) {
+  //   syncExtComponentFile([process.env.UNI_APP_EXT_COMPONENT_DIR])
+  // }
+  // UNI_APP_EXT_COMPONENT_DIR合并到了UNI_APP_EXT_API_DIR中
+  if (
+    process.env.UNI_APP_EXT_API_DIR &&
+    (target === 'uni-h5' || target.startsWith('uni-mp'))
+  ) {
+    syncExtComponentFile([process.env.UNI_APP_EXT_API_DIR])
   }
 
   const env = devOnly ? 'development' : 'production'
@@ -232,6 +239,24 @@ async function build(target) {
         {
           stdio: 'inherit',
           env: Object.assign({ FORMAT: 'es', X_RUNTIME_PLATFORM: 'app-ios' }, process.env, env),
+          cwd: pkgDir,
+        }
+      )
+      await execa(
+        'vite',
+        ['build', '--config', path.resolve(pkgDir, 'x.vite.config.ts')],
+        {
+          stdio: 'inherit',
+          env: Object.assign({ FORMAT: 'es', X_RUNTIME_PLATFORM: 'app-ios', X_VAPOR: 'true' }, process.env, env),
+          cwd: pkgDir,
+        }
+      )
+      await execa(
+        'vite',
+        ['build', '--config', path.resolve(pkgDir, 'x.vite.config.ts')],
+        {
+          stdio: 'inherit',
+          env: Object.assign({ FORMAT: 'es', X_RUNTIME_PLATFORM: 'app-android', X_VAPOR: 'true' }, process.env, env),
           cwd: pkgDir,
         }
       )

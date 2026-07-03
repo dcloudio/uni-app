@@ -1,4 +1,5 @@
 import { get_page_vm, get_platform_name, is_debug } from './utils/pageInfo.js'
+import { logger } from './public/infra/logger.ts'
 import Stat from './core/stat.js'
 const stat = Stat.getInstance()
 
@@ -82,12 +83,12 @@ function main() {
   if (is_debug) {
     if (__STAT_VERSION__ === '1') {
       // #ifndef APP-NVUE
-      console.log('=== uni统计开启,version:1.0 ===')
+      logger.debug('=== uni统计 1.0 已启用 ===')
       // #endif
     }
     if (__STAT_VERSION__ === '2') {
       // #ifndef APP-NVUE
-      console.log('=== uni统计开启,version:2.0 ===')
+      logger.debug('=== uni统计 2.0（私有版）已启用 ===')
       // #endif
     }
     load_stat()

@@ -16,6 +16,7 @@ import {
   getUniExtApiProviderRegisters,
   getUniXPagePaths,
   getWorkers,
+  initSourceFileCallback,
   initUTSKotlinAutoImportsOnce,
   isNormalCompileTarget,
   normalizeEmitAssetFileName,
@@ -34,7 +35,6 @@ import {
   uvueOutDir,
 } from '@dcloudio/uni-cli-shared'
 import {
-  DEFAULT_APPID,
   UVUE_CLASS_NAME_PREFIX,
   createTryResolve,
   getUniCloudObjectInfo,
@@ -98,7 +98,10 @@ export function uniAppPlugin(): UniVitePlugin {
 
   const uniXKotlinCompiler =
     process.env.UNI_APP_X_TSC === 'true'
-      ? resolveUTSCompiler().createUniXKotlinCompilerOnce({ resolveWorkers })
+      ? resolveUTSCompiler().createUniXKotlinCompilerOnce({
+          resolveWorkers,
+          sourceFileCallback: initSourceFileCallback(),
+        })
       : null
   const changedFiles: { fileName: string; event: ChangeEvent }[] = []
 
@@ -345,9 +348,7 @@ export function uniAppPlugin(): UniVitePlugin {
         disableSplitManifest: process.env.NODE_ENV !== 'development',
         inputDir: uvueOutputDir,
         outputDir: outputDir,
-        package: parseUniXAppAndroidPackage(
-          manifestJson.appid || DEFAULT_APPID
-        ),
+        package: parseUniXAppAndroidPackage(manifestJson.appid),
         sourceMap: enableSourceMap(),
         uni_modules: [...getCurrentCompiledUTSPlugins()],
         pages: getUniXPagePaths(),

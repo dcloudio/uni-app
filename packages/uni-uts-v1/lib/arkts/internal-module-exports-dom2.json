@@ -13,7 +13,37 @@
       "$Once"
     ],
     [
+      "AccelerometerErrorCode"
+    ],
+    [
+      "AccelerometerInterval"
+    ],
+    [
       "AccessOptions"
+    ],
+    [
+      "AddPhoneCalendar"
+    ],
+    [
+      "AddPhoneCalendarComplete"
+    ],
+    [
+      "AddPhoneCalendarCompleteCallback"
+    ],
+    [
+      "AddPhoneCalendarFail"
+    ],
+    [
+      "AddPhoneCalendarFailCallback"
+    ],
+    [
+      "AddPhoneCalendarOptions"
+    ],
+    [
+      "AddPhoneCalendarSuccess"
+    ],
+    [
+      "AddPhoneCalendarSuccessCallback"
     ],
     [
       "AddPhoneContact"
@@ -23,6 +53,9 @@
     ],
     [
       "AddPhoneContactCompleteCallback"
+    ],
+    [
+      "AddPhoneContactErrorCode"
     ],
     [
       "AddPhoneContactFail"
@@ -38,6 +71,33 @@
     ],
     [
       "AddPhoneContactSuccessCallback"
+    ],
+    [
+      "AddPhoneRepeatCalendar"
+    ],
+    [
+      "AddPhoneRepeatCalendarComplete"
+    ],
+    [
+      "AddPhoneRepeatCalendarCompleteCallback"
+    ],
+    [
+      "AddPhoneRepeatCalendarFail"
+    ],
+    [
+      "AddPhoneRepeatCalendarFailCallback"
+    ],
+    [
+      "AddPhoneRepeatCalendarOptions"
+    ],
+    [
+      "AddPhoneRepeatCalendarSuccess"
+    ],
+    [
+      "AddPhoneRepeatCalendarSuccessCallback"
+    ],
+    [
+      "AgreePrivacyAuthorization"
     ],
     [
       "AppCrashInfo"
@@ -65,6 +125,12 @@
     ],
     [
       "Base64ToArrayBuffer"
+    ],
+    [
+      "CalendarErrorCode"
+    ],
+    [
+      "CalendarRepeatInterval"
     ],
     [
       "CanvasContext"
@@ -119,6 +185,33 @@
     ],
     [
       "CheckIsSupportSoterAuthenticationSuccessCallback"
+    ],
+    [
+      "ChooseContact"
+    ],
+    [
+      "ChooseContactComplete"
+    ],
+    [
+      "ChooseContactCompleteCallback"
+    ],
+    [
+      "ChooseContactErrorCode"
+    ],
+    [
+      "ChooseContactFail"
+    ],
+    [
+      "ChooseContactFailCallback"
+    ],
+    [
+      "ChooseContactOptions"
+    ],
+    [
+      "ChooseContactSuccess"
+    ],
+    [
+      "ChooseContactSuccessCallback"
     ],
     [
       "ChooseFile"
@@ -322,6 +415,12 @@
       "CloseSyncOptions"
     ],
     [
+      "CompassAccuracy"
+    ],
+    [
+      "CompassErrorCode"
+    ],
+    [
       "CompressImage"
     ],
     [
@@ -427,6 +526,12 @@
       "CreateCanvasContextAsyncSuccessCallback"
     ],
     [
+      "CreateEditorContextAsync"
+    ],
+    [
+      "CreateEditorContextAsyncOptions"
+    ],
+    [
       "CreateInnerAudioContext"
     ],
     [
@@ -482,6 +587,9 @@
     ],
     [
       "DownloadTask"
+    ],
+    [
+      "EditorContext"
     ],
     [
       "EntriesResult"
@@ -907,6 +1015,12 @@
       "GetWindowInfoResult"
     ],
     [
+      "GyroscopeErrorCode"
+    ],
+    [
+      "GyroscopeInterval"
+    ],
+    [
       "HideActionSheet"
     ],
     [
@@ -934,6 +1048,9 @@
       "HideLoading"
     ],
     [
+      "HideLoadingComplete"
+    ],
+    [
       "HideLoadingCompleteCallback"
     ],
     [
@@ -958,6 +1075,9 @@
       "HideLoadingSuccessCallback"
     ],
     [
+      "HideLoadingSuccessImpl"
+    ],
+    [
       "HideModal"
     ],
     [
@@ -973,7 +1093,10 @@
       "HideModalOptions"
     ],
     [
-      "HideModalResult"
+      "HideModalSuccess"
+    ],
+    [
+      "HideModalSuccessImpl"
     ],
     [
       "HideNavigationBarLoading"
@@ -997,13 +1120,40 @@
       "HideToast"
     ],
     [
+      "IAccelerometerError"
+    ],
+    [
+      "IAddPhoneCalendarFail"
+    ],
+    [
+      "IAddPhoneContactFail"
+    ],
+    [
+      "IAddPhoneRepeatCalendarFail"
+    ],
+    [
       "IAppThemeFail"
+    ],
+    [
+      "ICalendarError"
+    ],
+    [
+      "ICheckIsSoterEnrolledInDeviceFail"
+    ],
+    [
+      "ICheckIsSupportSoterAuthenticationFail"
+    ],
+    [
+      "IChooseContactFail"
     ],
     [
       "IChooseMediaError"
     ],
     [
       "IClipBoardError"
+    ],
+    [
+      "ICompassError"
     ],
     [
       "ICreateBackgroundAudioFail"
@@ -1022,6 +1172,12 @@
     ],
     [
       "IGetProviderFail"
+    ],
+    [
+      "IGetScreenBrightnessFail"
+    ],
+    [
+      "IGyroscopeError"
     ],
     [
       "IMakePhoneCallError"
@@ -1048,10 +1204,46 @@
       "IRequestPaymentFail"
     ],
     [
+      "ISetKeepScreenOnFail"
+    ],
+    [
+      "ISetScreenBrightnessFail"
+    ],
+    [
       "IShareFail"
     ],
     [
       "IShareWithSystemFail"
+    ],
+    [
+      "IStartAccelerometerFail"
+    ],
+    [
+      "IStartCompassFail"
+    ],
+    [
+      "IStartGyroscopeFail"
+    ],
+    [
+      "IStartSoterAuthenticationFail"
+    ],
+    [
+      "IStopAccelerometerFail"
+    ],
+    [
+      "IStopCompassFail"
+    ],
+    [
+      "IStopGyroscopeFail"
+    ],
+    [
+      "IUniEditorElement"
+    ],
+    [
+      "IVibrateLongFail"
+    ],
+    [
+      "IVibrateShortFail"
     ],
     [
       "Icon"
@@ -1255,6 +1447,15 @@
       "MediaOrientation"
     ],
     [
+      "MemoryWarningCallbackResult"
+    ],
+    [
+      "MemoryWarningErrorCode"
+    ],
+    [
+      "MemoryWarningFail"
+    ],
+    [
       "MkDirOptions"
     ],
     [
@@ -1267,10 +1468,19 @@
       "OauthErrorCode"
     ],
     [
+      "OffAccelerometerChange"
+    ],
+    [
       "OffAppCrash"
     ],
     [
       "OffAppThemeChange"
+    ],
+    [
+      "OffCompassChange"
+    ],
+    [
+      "OffGyroscopeChange"
     ],
     [
       "OffHostThemeChange"
@@ -1285,6 +1495,9 @@
       "OffLocationChangeError"
     ],
     [
+      "OffMemoryWarning"
+    ],
+    [
       "OffNetworkStatusChange"
     ],
     [
@@ -1292,6 +1505,15 @@
     ],
     [
       "OffPrivacyAuthorizationChange"
+    ],
+    [
+      "OnAccelerometerChange"
+    ],
+    [
+      "OnAccelerometerChangeCallback"
+    ],
+    [
+      "OnAccelerometerChangeCallbackResult"
     ],
     [
       "OnAppCrash"
@@ -1304,6 +1526,24 @@
     ],
     [
       "OnAppThemeChangeCallback"
+    ],
+    [
+      "OnCompassChange"
+    ],
+    [
+      "OnCompassChangeCallback"
+    ],
+    [
+      "OnCompassChangeCallbackResult"
+    ],
+    [
+      "OnGyroscopeChange"
+    ],
+    [
+      "OnGyroscopeChangeCallback"
+    ],
+    [
+      "OnGyroscopeChangeCallbackResult"
     ],
     [
       "OnHostThemeChange"
@@ -1337,6 +1577,12 @@
     ],
     [
       "OnLocationChangeResult"
+    ],
+    [
+      "OnMemoryWarning"
+    ],
+    [
+      "OnMemoryWarningCallback"
     ],
     [
       "OnNetworkStatusChange"
@@ -1466,6 +1712,27 @@
     ],
     [
       "OpenFileSyncOptions"
+    ],
+    [
+      "OpenLocation"
+    ],
+    [
+      "OpenLocationComplete"
+    ],
+    [
+      "OpenLocationErrorCode"
+    ],
+    [
+      "OpenLocationFail"
+    ],
+    [
+      "OpenLocationOptions"
+    ],
+    [
+      "OpenLocationSuccess"
+    ],
+    [
+      "OpenLocationSuccessImpl"
     ],
     [
       "OsThemeChangeResult"
@@ -2059,6 +2326,9 @@
       "ShowLoading"
     ],
     [
+      "ShowLoadingComplete"
+    ],
+    [
       "ShowLoadingCompleteCallback"
     ],
     [
@@ -2083,6 +2353,9 @@
       "ShowLoadingSuccessCallback"
     ],
     [
+      "ShowLoadingSuccessImpl"
+    ],
+    [
       "ShowModal"
     ],
     [
@@ -2098,7 +2371,10 @@
       "ShowModalOptions"
     ],
     [
-      "ShowModalResult"
+      "ShowModalSuccess"
+    ],
+    [
+      "ShowModalSuccessImpl"
     ],
     [
       "ShowNavigationBarLoading"
@@ -2147,6 +2423,78 @@
     ],
     [
       "SoterAuthMode"
+    ],
+    [
+      "StartAccelerometer"
+    ],
+    [
+      "StartAccelerometerComplete"
+    ],
+    [
+      "StartAccelerometerCompleteCallback"
+    ],
+    [
+      "StartAccelerometerFail"
+    ],
+    [
+      "StartAccelerometerFailCallback"
+    ],
+    [
+      "StartAccelerometerOptions"
+    ],
+    [
+      "StartAccelerometerSuccess"
+    ],
+    [
+      "StartAccelerometerSuccessCallback"
+    ],
+    [
+      "StartCompass"
+    ],
+    [
+      "StartCompassComplete"
+    ],
+    [
+      "StartCompassCompleteCallback"
+    ],
+    [
+      "StartCompassFail"
+    ],
+    [
+      "StartCompassFailCallback"
+    ],
+    [
+      "StartCompassOptions"
+    ],
+    [
+      "StartCompassSuccess"
+    ],
+    [
+      "StartCompassSuccessCallback"
+    ],
+    [
+      "StartGyroscope"
+    ],
+    [
+      "StartGyroscopeComplete"
+    ],
+    [
+      "StartGyroscopeCompleteCallback"
+    ],
+    [
+      "StartGyroscopeFail"
+    ],
+    [
+      "StartGyroscopeFailCallback"
+    ],
+    [
+      "StartGyroscopeOptions"
+    ],
+    [
+      "StartGyroscopeSuccess"
+    ],
+    [
+      "StartGyroscopeSuccessCallback"
     ],
     [
       "StartLocationUpdate"
@@ -2209,6 +2557,78 @@
       "Stats"
     ],
     [
+      "StopAccelerometer"
+    ],
+    [
+      "StopAccelerometerComplete"
+    ],
+    [
+      "StopAccelerometerCompleteCallback"
+    ],
+    [
+      "StopAccelerometerFail"
+    ],
+    [
+      "StopAccelerometerFailCallback"
+    ],
+    [
+      "StopAccelerometerOptions"
+    ],
+    [
+      "StopAccelerometerSuccess"
+    ],
+    [
+      "StopAccelerometerSuccessCallback"
+    ],
+    [
+      "StopCompass"
+    ],
+    [
+      "StopCompassComplete"
+    ],
+    [
+      "StopCompassCompleteCallback"
+    ],
+    [
+      "StopCompassFail"
+    ],
+    [
+      "StopCompassFailCallback"
+    ],
+    [
+      "StopCompassOptions"
+    ],
+    [
+      "StopCompassSuccess"
+    ],
+    [
+      "StopCompassSuccessCallback"
+    ],
+    [
+      "StopGyroscope"
+    ],
+    [
+      "StopGyroscopeComplete"
+    ],
+    [
+      "StopGyroscopeCompleteCallback"
+    ],
+    [
+      "StopGyroscopeFail"
+    ],
+    [
+      "StopGyroscopeFailCallback"
+    ],
+    [
+      "StopGyroscopeOptions"
+    ],
+    [
+      "StopGyroscopeSuccess"
+    ],
+    [
+      "StopGyroscopeSuccessCallback"
+    ],
+    [
       "StopLocationUpdate"
     ],
     [
@@ -2230,13 +2650,46 @@
       "UniCanvasElement"
     ],
     [
-      "UniHideModalFail"
+      "UniEditorElement"
     ],
     [
-      "UniHideModalResult"
+      "UniEditorElementGetContentsOptions"
     ],
     [
-      "UniInputElement"
+      "UniEditorElementGetContentsOptionsRes"
+    ],
+    [
+      "UniEditorElementGetSelectionTextOptions"
+    ],
+    [
+      "UniEditorElementGetSelectionTextOptionsRes"
+    ],
+    [
+      "UniEditorElementInsertImageOptions"
+    ],
+    [
+      "UniEditorElementInsertLinkOptions"
+    ],
+    [
+      "UniEditorElementInsertMentionOptions"
+    ],
+    [
+      "UniEditorElementInsertTextOptions"
+    ],
+    [
+      "UniEditorElementOptions"
+    ],
+    [
+      "UniEditorElementOptionsCompleteRes"
+    ],
+    [
+      "UniEditorElementOptionsFailRes"
+    ],
+    [
+      "UniEditorElementOptionsSuccessRes"
+    ],
+    [
+      "UniEditorElementSetContentsOptions"
     ],
     [
       "UniLoadingElement"
@@ -2252,15 +2705,6 @@
     ],
     [
       "UniShareProvider"
-    ],
-    [
-      "UniShowModalFail"
-    ],
-    [
-      "UniShowModalResult"
-    ],
-    [
-      "UniTextareaElement"
     ],
     [
       "UniVerifyButtonListItem"
@@ -2383,46 +2827,67 @@
       "UserInfo"
     ],
     [
+      "VibrateErrorCode"
+    ],
+    [
+      "VibrateLong"
+    ],
+    [
+      "VibrateLongComplete"
+    ],
+    [
+      "VibrateLongCompleteCallback"
+    ],
+    [
+      "VibrateLongFail"
+    ],
+    [
+      "VibrateLongFailCallback"
+    ],
+    [
+      "VibrateLongOptions"
+    ],
+    [
+      "VibrateLongSuccess"
+    ],
+    [
+      "VibrateLongSuccessCallback"
+    ],
+    [
+      "VibrateShort"
+    ],
+    [
+      "VibrateShortComplete"
+    ],
+    [
+      "VibrateShortCompleteCallback"
+    ],
+    [
+      "VibrateShortFail"
+    ],
+    [
+      "VibrateShortFailCallback"
+    ],
+    [
+      "VibrateShortOptions"
+    ],
+    [
+      "VibrateShortSuccess"
+    ],
+    [
+      "VibrateShortSuccessCallback"
+    ],
+    [
+      "VibrateShortType"
+    ],
+    [
       "VideoContext"
-    ],
-    [
-      "VideoControlsToggleEvent"
-    ],
-    [
-      "VideoControlsToggleEventDetail"
     ],
     [
       "VideoError"
     ],
     [
       "VideoErrorCode"
-    ],
-    [
-      "VideoErrorEvent"
-    ],
-    [
-      "VideoFullScreenChangeEvent"
-    ],
-    [
-      "VideoFullScreenChangeEventDetail"
-    ],
-    [
-      "VideoFullScreenClickEvent"
-    ],
-    [
-      "VideoFullScreenClickEventDetail"
-    ],
-    [
-      "VideoProgressEvent"
-    ],
-    [
-      "VideoProgressEventDetail"
-    ],
-    [
-      "VideoTimeUpdateEvent"
-    ],
-    [
-      "VideoTimeUpdateEventDetail"
     ],
     [
       "WebViewContext"

@@ -8,7 +8,7 @@ import {
   copyPlatformNativeLanguageFiles,
   genComponentsCode,
   genUTSPlatformResource,
-  getCompilerServer,
+  getSwiftCompilerServer,
   getUTSCompiler,
   isColorSupported,
   isEnableSwiftUtsArray,
@@ -169,9 +169,7 @@ export async function runSwiftDev(
     console.error(`已跳过uts插件[${resolvePackage(filename)?.id}]的编译`)
     return
   }
-  const compilerServer = getCompilerServer<SwiftCompilerServer>(
-    'uts-development-ios'
-  )
+  const compilerServer = getSwiftCompilerServer()
   if (!compilerServer) {
     throw new Error(`项目使用了uts插件，正在安装 uts iOS 运行扩展...`)
   }
@@ -324,6 +322,7 @@ export async function compile(
   const options: UTSBundleOptions = {
     mode: process.env.NODE_ENV,
     hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
+    vapor: process.env.UNI_APP_X_DOM2 === 'true',
     input,
     output: {
       errorFormat: 'json',
@@ -340,6 +339,7 @@ export async function compile(
         'DCloudUTSFoundation',
         ...(isX ? ['DCloudUniappRuntime'] : []),
       ],
+      isDom2: process.env.UNI_APP_X_DOM2 === 'true',
       logFilename: true,
       noColor: !isColorSupported(),
       transform: {
@@ -374,7 +374,7 @@ export function resolveIOSDepFiles(filename: string) {
   return deps.map((dep) => path.resolve(dir, dep))
 }
 
-interface SwiftCompilerServer {
+export interface SwiftCompilerServer {
   compile(options: {
     projectPath: string
     isCli: boolean
@@ -382,6 +382,11 @@ interface SwiftCompilerServer {
     pluginName: string
     utsPath: string
     swiftPath: string
+  }): Promise<{ code: number; msg: string }>
+  compileCpp(options: {
+    appId: string
+    projectPath: string
+    cppPath: string
   }): Promise<{ code: number; msg: string }>
   checkEnv?: () => { code: number; msg: string }
 }

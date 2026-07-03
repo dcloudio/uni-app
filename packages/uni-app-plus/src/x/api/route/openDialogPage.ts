@@ -25,6 +25,7 @@ import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 import { OPEN_DIALOG_PAGE } from '../../constants'
 import { closePreSystemDialogPage } from './utils'
+import { markRaw } from 'vue'
 
 export const openDialogPage = (
   options: OpenDialogPageOptions
@@ -55,7 +56,7 @@ export const openDialogPage = (
     parentPage = currentPages[currentPages.length - 1]
   }
 
-  const dialogPage = new UniDialogPageImpl()
+  const dialogPage = markRaw(new UniDialogPageImpl())
   dialogPage.route = path
   dialogPage.getParentPage = () => parentPage
   dialogPage.$component = null

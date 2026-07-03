@@ -762,3 +762,5 @@ interface UTSiOS {
 
 
 declare var UTSiOS : UTSiOS;
+
+declare function isTruthy(value: any | null): boolean;

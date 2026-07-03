@@ -418,6 +418,23 @@ describe('nvue-styler: expand', () => {
             value: '#ffffff',
           },
         ],
+        '14px double #8e44ad': [
+          {
+            type: 'decl',
+            prop: `${border}-width`,
+            value: '14px',
+          },
+          {
+            type: 'decl',
+            prop: `${border}-style`,
+            value: 'double',
+          },
+          {
+            type: 'decl',
+            prop: `${border}-color`,
+            value: '#8e44ad',
+          },
+        ],
       }
     }
     postionTypes.forEach((type) => {
@@ -1145,6 +1162,149 @@ describe('nvue-styler: expand', () => {
     expect(topColor?.value).toBe('var(--color, red)')
   })
 
+  test('transform border with single var in dom2', () => {
+    const prevRunTime = (globalThis as any).__RUN_TIME__
+    const prevHyphenate = (globalThis as any).__HYPHENATE__
+
+    ;(globalThis as any).__RUN_TIME__ = true
+    ;(globalThis as any).__HYPHENATE__ = true
+
+    try {
+      const transform = createTransformBorder({ type: 'uvue' })
+      const decl = parseDecl(`.test { border: var(--composite-border) }`)
+      expect(transform(decl)).toEqual([
+        {
+          type: 'decl',
+          prop: 'border-top-width',
+          value: 'var(--composite-border)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'border-right-width',
+          value: 'var(--composite-border)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'border-bottom-width',
+          value: 'var(--composite-border)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'border-left-width',
+          value: 'var(--composite-border)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'border-top-style',
+          value: 'var(--composite-border)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'border-right-style',
+          value: 'var(--composite-border)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'border-bottom-style',
+          value: 'var(--composite-border)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'border-left-style',
+          value: 'var(--composite-border)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'border-top-color',
+          value: 'var(--composite-border)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'border-right-color',
+          value: 'var(--composite-border)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'border-bottom-color',
+          value: 'var(--composite-border)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'border-left-color',
+          value: 'var(--composite-border)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+      ])
+    } finally {
+      ;(globalThis as any).__RUN_TIME__ = prevRunTime
+      ;(globalThis as any).__HYPHENATE__ = prevHyphenate
+    }
+  })
+
+  test('transform border-left with single var fallback in dom2', () => {
+    const prevRunTime = (globalThis as any).__RUN_TIME__
+    const prevHyphenate = (globalThis as any).__HYPHENATE__
+
+    ;(globalThis as any).__RUN_TIME__ = true
+    ;(globalThis as any).__HYPHENATE__ = true
+
+    try {
+      const transform = createTransformBorder({ type: 'uvue' })
+      const decl = parseDecl(
+        `.test { border-left: var(--composite-border, 1px solid red) }`
+      )
+      expect(transform(decl)).toEqual([
+        {
+          type: 'decl',
+          prop: 'border-left-width',
+          value: 'var(--composite-border, 1px solid red)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'border-left-style',
+          value: 'var(--composite-border, 1px solid red)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'border-left-color',
+          value: 'var(--composite-border, 1px solid red)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+      ])
+    } finally {
+      ;(globalThis as any).__RUN_TIME__ = prevRunTime
+      ;(globalThis as any).__HYPHENATE__ = prevHyphenate
+    }
+  })
+
   test('transform margin with calc', () => {
     const transform = createTransformBox('margin')
     const decl = parseDecl(`.test { margin: calc(10px + 2px) 5px }`)
@@ -1187,6 +1347,108 @@ describe('nvue-styler: expand', () => {
     const result = transformFlexFlow(decl)
     expect(result.length).toBe(1)
     expect(result[0]).toBe(decl)
+  })
+
+  test('transform flex with single var in dom2', () => {
+    const prevRunTime = (globalThis as any).__RUN_TIME__
+    const prevHyphenate = (globalThis as any).__HYPHENATE__
+
+    ;(globalThis as any).__RUN_TIME__ = true
+    ;(globalThis as any).__HYPHENATE__ = true
+
+    try {
+      const decl = parseDecl(`.test { flex: var(--composite-flex) }`)
+      expect(transformFlex(decl)).toEqual([
+        {
+          type: 'decl',
+          prop: 'flex-grow',
+          value: 'var(--composite-flex)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'flex-shrink',
+          value: 'var(--composite-flex)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'flex-basis',
+          value: 'var(--composite-flex)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+      ])
+    } finally {
+      ;(globalThis as any).__RUN_TIME__ = prevRunTime
+      ;(globalThis as any).__HYPHENATE__ = prevHyphenate
+    }
+  })
+
+  test('transform flex-flow with single var in dom2', () => {
+    const prevRunTime = (globalThis as any).__RUN_TIME__
+    const prevHyphenate = (globalThis as any).__HYPHENATE__
+
+    ;(globalThis as any).__RUN_TIME__ = true
+    ;(globalThis as any).__HYPHENATE__ = true
+
+    try {
+      const decl = parseDecl(`.test { flex-flow: var(--composite-flow) }`)
+      expect(transformFlexFlow(decl)).toEqual([
+        {
+          type: 'decl',
+          prop: 'flex-direction',
+          value: 'var(--composite-flow)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'flex-wrap',
+          value: 'var(--composite-flow)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+      ])
+    } finally {
+      ;(globalThis as any).__RUN_TIME__ = prevRunTime
+      ;(globalThis as any).__HYPHENATE__ = prevHyphenate
+    }
+  })
+
+  test('transform flex-flow with single var fallback in dom2', () => {
+    const prevRunTime = (globalThis as any).__RUN_TIME__
+    const prevHyphenate = (globalThis as any).__HYPHENATE__
+
+    ;(globalThis as any).__RUN_TIME__ = true
+    ;(globalThis as any).__HYPHENATE__ = true
+
+    try {
+      const decl = parseDecl(
+        `.test { flex-flow: var(--composite-flow, row wrap) }`
+      )
+      expect(transformFlexFlow(decl)).toEqual([
+        {
+          type: 'decl',
+          prop: 'flex-direction',
+          value: 'var(--composite-flow, row wrap)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'flex-wrap',
+          value: 'var(--composite-flow, row wrap)',
+          raws: decl.raws,
+          source: decl.source,
+        },
+      ])
+    } finally {
+      ;(globalThis as any).__RUN_TIME__ = prevRunTime
+      ;(globalThis as any).__HYPHENATE__ = prevHyphenate
+    }
   })
 
   test('transform border-color with rgba and spaces', () => {

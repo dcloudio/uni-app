@@ -1,6 +1,7 @@
 import fs from 'fs-extra'
 import { resolve } from 'path'
 import type { EmittedFile } from 'rollup'
+import { SourceMapConsumer } from 'source-map-js'
 import { transformMain } from '../../../src/plugins/android/uvue/sfc/main'
 import type { ResolvedOptions } from '../../../src/plugins/android/uvue/sfc/index'
 
@@ -60,6 +61,55 @@ describe('SFC sourceMap', () => {
       })
     }
   }
+
+  test('template with script setup maps generated code back to source', async () => {
+    const filename = resolve(pagesDir, 'template-setup.vue')
+    const vueCode = fs.readFileSync(filename, 'utf-8')
+    const assets: Record<string, string> = {}
+
+    await transformMain(vueCode, filename, mockOptions, {
+      ...mockPluginContext,
+      emitFile: (options: EmittedFile) => {
+        const { type, fileName } = options
+        if (type === 'asset' && fileName) {
+          assets[fileName] = options.source as string
+        }
+      },
+    })
+
+    const code = assets['pages/template-setup.vue']
+    const map = JSON.parse(assets['pages/template-setup.vue.map'])
+    const consumer = new SourceMapConsumer(map)
+    const lines = code.split('\n')
+
+    const scriptLine = lines.findIndex((line) =>
+      line.includes(`const msg = 'Template-Setup'`)
+    )
+    expect(scriptLine).toBeGreaterThanOrEqual(0)
+    expect(
+      consumer.originalPositionFor({
+        line: scriptLine + 1,
+        column: lines[scriptLine].indexOf('msg'),
+      })
+    ).toMatchObject({
+      source: 'pages/template-setup.vue',
+      line: 8,
+      column: 6,
+    })
+
+    const templateLine = lines.findIndex((line) => line.includes('_tD(msg)'))
+    expect(templateLine).toBeGreaterThanOrEqual(0)
+    expect(
+      consumer.originalPositionFor({
+        line: templateLine + 1,
+        column: lines[templateLine].indexOf('msg'),
+      })
+    ).toMatchObject({
+      source: 'pages/template-setup.vue',
+      line: 3,
+      column: 13,
+    })
+  })
 
   test('template only', createTest('template'))
   test('template with script', createTest('template-script'))

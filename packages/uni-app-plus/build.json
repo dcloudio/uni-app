@@ -8,7 +8,8 @@
       "@vue/shared": "uni-shared"
     },
     "replacements": {
-      "__X__": "false"
+      "__X__": "false",
+      "__VAPOR__": "false"
     }
   },
   {
@@ -29,6 +30,7 @@
     },
     "replacements": {
       "__X__": "false",
+      "__VAPOR__": "false",
       "__PLUS__": "true",
       "__PLATFORM__": "'app'",
       "__APP_VIEW__": "false",
@@ -63,6 +65,7 @@
     "replacements": {
       "__PLATFORM__": "'app'",
       "__X__": "false",
+      "__VAPOR__": "false",
       "__APP_VIEW__": "false",
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",

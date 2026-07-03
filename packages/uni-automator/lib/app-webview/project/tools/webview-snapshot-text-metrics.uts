@@ -1,0 +1,184 @@
+const buildIOSWebViewSnapshotTextMetricsScript = (): string => {
+  return `
+    (function () {
+      var styleId = '__uni_snapshot_ios_text_metrics_style__';
+      var scriptId = '__uni_snapshot_ios_text_metrics_script__';
+      var defaultLineHeight = '1.20';
+
+      if (window.__uniSnapshotIOSTextObserver) {
+        window.__uniSnapshotIOSTextObserver.disconnect();
+        window.__uniSnapshotIOSTextObserver = null;
+      }
+
+      window.__uniSnapshotTextNormalizeInstalled = false;
+
+      Array.prototype.forEach.call(document.querySelectorAll('style'), function(style) {
+        var text = style.textContent || '';
+        if (style.id == styleId ||
+          text.indexOf('uni-ios-snapshot-text-metrics') >= 0 ||
+          text.indexOf('__uniSnapshotIOSTextMetrics') >= 0 ||
+          text.indexOf('__uni_snapshot_multiline_text__') >= 0 ||
+          text.indexOf('__uniSnapshotTextNormalizeInstalled') >= 0 ||
+          text.indexOf('local(".SF UI Text")') >= 0 ||
+          text.indexOf('body { line-height: 1.35') >= 0 ||
+          text.indexOf('body { line-height: 1.20') >= 0) {
+          style.parentNode && style.parentNode.removeChild(style);
+        }
+      });
+
+      Array.prototype.forEach.call(document.querySelectorAll('script'), function(script) {
+        var text = script.textContent || '';
+        if (script.id == scriptId ||
+          text.indexOf('__uniSnapshotIOSTextMetrics') >= 0 ||
+          text.indexOf('__uniSnapshotIOSTextObserver') >= 0 ||
+          text.indexOf('__uniSnapshotTextNormalizeInstalled') >= 0) {
+          script.parentNode && script.parentNode.removeChild(script);
+        }
+      });
+
+      Array.prototype.forEach.call(document.querySelectorAll('[data-uni-ios-line-height-patched="1"]'), function(element) {
+        element.style.removeProperty('line-height');
+        element.removeAttribute('data-uni-ios-line-height-patched');
+      });
+
+      Array.prototype.forEach.call(document.querySelectorAll('.__uni_snapshot_multiline_text__'), function(element) {
+        element.style.removeProperty('line-height');
+        element.style.removeProperty('display');
+        element.classList.remove('__uni_snapshot_multiline_text__');
+      });
+
+      function selectorMatchesLineHeightRule(element, rule) {
+        if (!rule || !rule.selectorText || !rule.style) {
+          return false;
+        }
+
+        if (!rule.style.getPropertyValue('line-height')) {
+          return false;
+        }
+
+        try {
+          return element.matches(rule.selectorText);
+        } catch (_) {
+          return false;
+        }
+      }
+
+      function hasAuthoredLineHeightInRules(element, rules) {
+        if (!rules) {
+          return false;
+        }
+
+        for (var i = 0; i < rules.length; i++) {
+          var rule = rules[i];
+
+          if (selectorMatchesLineHeightRule(element, rule)) {
+            return true;
+          }
+
+          if (rule.cssRules && hasAuthoredLineHeightInRules(element, rule.cssRules)) {
+            return true;
+          }
+        }
+
+        return false;
+      }
+
+      function hasAuthoredLineHeightInStylesheet(element) {
+        var sheets = document.styleSheets;
+
+        for (var i = 0; i < sheets.length; i++) {
+          var rules = null;
+
+          try {
+            rules = sheets[i].cssRules;
+          } catch (_) {
+            continue;
+          }
+
+          if (hasAuthoredLineHeightInRules(element, rules)) {
+            return true;
+          }
+        }
+
+        return false;
+      }
+
+      function hasInlineLineHeight(element) {
+        return !!element &&
+          !!element.style &&
+          element.style.getPropertyValue('line-height') != '';
+      }
+
+      var bodyHasAuthoredLineHeight =
+        hasInlineLineHeight(document.body) ||
+        hasAuthoredLineHeightInStylesheet(document.body);
+
+      var styleLines = [
+        '/* uni-ios-snapshot-text-metrics */',
+        'html, body {',
+        '  -webkit-text-size-adjust: 100%;',
+        '  text-size-adjust: 100%;',
+        '}'
+      ];
+
+      if (!bodyHasAuthoredLineHeight) {
+        styleLines.push(
+          'body {',
+          '  line-height: ' + defaultLineHeight + ';',
+          '}'
+        );
+      }
+
+      var style = document.createElement('style');
+      style.id = styleId;
+      style.textContent = styleLines.join('\\n');
+      document.head.appendChild(style);
+
+      var script = document.createElement('script');
+      script.id = scriptId;
+      script.type = 'text/javascript';
+      script.textContent = 'window.__uniSnapshotIOSTextMetrics=' + JSON.stringify({
+        installed: true,
+        defaultLineHeight: defaultLineHeight,
+        bodyHasAuthoredLineHeight: bodyHasAuthoredLineHeight,
+        bodyPatched: !bodyHasAuthoredLineHeight,
+        scope: 'default-line-height-with-custom-preserved',
+        keepFontCSS: true,
+        keepLetterSpacing: true,
+        preserveExplicitTextStyle: true,
+        time: Date.now()
+      }) + ';';
+      document.head.appendChild(script);
+    })();
+  `
+}
+
+const buildAndroidWebViewSnapshotTextMetricsScript = (): string => {
+  return `
+    (function () {
+      const style = document.createElement('style');
+      style.textContent = '@font-face { font-family: "system"; src: local("Roboto"); ascent-override: 92%; descent-override: 8%; } body { font-family: "system"; line-height: 1.35; }';
+      document.head.appendChild(style);
+
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.textContent = 'const observer = new MutationObserver((_) => { const elements = document.querySelectorAll("span"); elements.forEach(element => { const range = document.createRange(); range.selectNodeContents(element); const rects = range.getClientRects(); if (rects.length > 1 && element.parentElement.style.getPropertyValue("line-height") == "") {element.parentElement.style.setProperty("line-height", 1.215); }; }); });observer.observe(document.body, { childList: true, subtree: true, attributes: true });';
+      document.head.appendChild(script);
+    })();
+  `
+}
+
+const buildWebViewSnapshotTextMetricsScript = (): string => {
+  // #ifdef APP-IOS
+  return buildIOSWebViewSnapshotTextMetricsScript()
+  // #endif
+  // #ifdef APP-ANDROID
+  return buildAndroidWebViewSnapshotTextMetricsScript()
+  // #endif
+}
+
+export const applyWebViewSnapshotTextMetricsPatch = (context : WebViewContext | null): void => {
+  if (context !== null) {
+    context.evalJS(buildWebViewSnapshotTextMetricsScript())
+  }
+}

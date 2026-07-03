@@ -1,4 +1,3 @@
-import path from 'path'
 import fs from 'fs-extra'
 
 import type { Plugin } from 'vite'
@@ -6,7 +5,6 @@ import type { SFCBlock } from '@vue/compiler-sfc'
 
 import { isString } from '@vue/shared'
 import {
-  genUTSClassName,
   normalizePath,
   parseVueRequest,
   resolveAppVue,
@@ -17,7 +15,7 @@ import {
   getResolvedOptions,
   getSrcDescriptor,
 } from './descriptorCache'
-import { transformUniCloudMixinDataCom } from '../utils'
+import { genUVueClassName, transformUniCloudMixinDataCom } from '../utils'
 import { isVue } from '../../utils'
 
 import { transformStyle } from './code/style'
@@ -114,14 +112,7 @@ export function uniAppUVuePlugin(): Plugin {
           if (process.env.UNI_APP_X_TSC === 'true') {
             fileName = fileName.replace('.ts', '')
           }
-          const className =
-            process.env.UNI_COMPILE_TARGET === 'ext-api'
-              ? // components/map/map.vue => UniMap
-                genUTSClassName(
-                  path.basename(fileName),
-                  options.classNamePrefix
-                )
-              : genUTSClassName(fileName, options.classNamePrefix)
+          const className = genUVueClassName(fileName, options.classNamePrefix)
 
           const classNameComment = `/*${className}Styles*/`
           if (file.source.includes(classNameComment)) {

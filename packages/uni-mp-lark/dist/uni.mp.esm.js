@@ -592,6 +592,7 @@ function initPropsObserver(componentOptions) {
             // 小程序组件
             updateMiniProgramComponentProperties(resolvePropValue(up), this);
         }
+        else ;
     };
     {
         componentOptions.properties.uP.observer = observe;

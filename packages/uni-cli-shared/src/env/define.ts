@@ -18,17 +18,9 @@ export function initDefine(stringifyBoolean: boolean = false) {
 
   process.env['UNI_APP_ID'] = manifestJson.appid
 
-  let mpXDefine =
-    isX && isMP
-      ? {
-          __UNI_FEATURE_VIRTUAL_HOST__: true,
-        }
-      : {
-          __UNI_FEATURE_VIRTUAL_HOST__: false,
-        }
-  if (isX && isMP) {
-    mpXDefine.__UNI_FEATURE_VIRTUAL_HOST__ =
-      platformManifestJson.enableVirtualHost !== false
+  const mpXDefine: Record<string, boolean> = {
+    __UNI_FEATURE_VIRTUAL_HOST__:
+      isX && isMP && platformManifestJson.enableVirtualHost !== false,
   }
 
   const styleIsolation = stringifyBoolean

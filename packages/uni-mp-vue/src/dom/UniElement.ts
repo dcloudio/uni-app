@@ -21,6 +21,10 @@ export class UniElement {
   dataset: WechatMiniprogram.IAnyObject = {}
   offsetTop = NaN
   offsetLeft = NaN
+  scrollTop = NaN
+  scrollLeft = NaN
+  scrollHeight = NaN
+  scrollWidth = NaN
   $vm!: ComponentPublicInstance
   $node?: {
     then: (fn: (node: any) => void) => void

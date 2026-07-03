@@ -102,7 +102,7 @@ interface Meta {
   }
 }
 export interface GenProxyCodeOptions {
-  platform?: 'app-android' | 'app-ios'
+  platform: 'app-android' | 'app-ios'
   is_uni_modules: boolean
   id: string
   name: string
@@ -200,7 +200,13 @@ export async function genProxyCode(
   const decls = await parseModuleDecls(module, options)
 
   normalizeInterfaceKeepAlive(decls, options.types)
-
+  const interceptor = await parseInterceptor(options.platform!, module, options)
+  const hasMatchedInterceptor = decls.some((decl) => {
+    if (decl.type === 'FunctionDeclaration') {
+      return interceptor.initMethods.includes(`init${capitalize(decl.method)}`)
+    }
+    return false
+  })
   return `
 const { registerUTSInterface, initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
 const name = '${name}'
@@ -222,9 +228,132 @@ ${genComponentsCode(
   options.androidComponents || {},
   options.iosComponents || {}
 )}${genCustomElementsCode(format, options.customElements || {})}
-
-${genModuleCode(decls, format, options.pluginRelativeDir!, options.meta!)}
+${hasMatchedInterceptor ? interceptor.code : ''}
+${genModuleCode(
+  decls,
+  format,
+  options.pluginRelativeDir!,
+  options.meta!,
+  interceptor.initMethods
+)}
 `
+}
+
+interface ParseInterceptorResult {
+  code: string
+  initMethods: string[]
+}
+
+export async function parseInterceptor(
+  platform: 'app-android' | 'app-ios',
+  module: string,
+  options: Omit<GenProxyCodeOptions, 'platform'>
+): Promise<ParseInterceptorResult> {
+  const interceptorFilename = resolvePlatformInterceptorFilename(
+    platform,
+    module,
+    options
+  )
+  if (!interceptorFilename || !fs.existsSync(interceptorFilename)) {
+    return {
+      code: '',
+      initMethods: [],
+    }
+  }
+  const preprocessor =
+    platform === 'app-android'
+      ? options.androidPreprocessor
+      : options.iosPreprocessor
+  const code = fs.readFileSync(interceptorFilename, 'utf8')
+  const rawInterceptorCode = preprocessor
+    ? await preprocessor(code, interceptorFilename)
+    : code
+  return parseInterceptorCode(rawInterceptorCode)
+}
+
+export function parseInterceptorCode(code: string): ParseInterceptorResult {
+  const interceptorCode = stripInterceptorComments(code)
+  return {
+    code: stripInterceptorExports(interceptorCode),
+    initMethods: extractInterceptorInitMethods(interceptorCode),
+  }
+}
+
+function stripInterceptorComments(code: string) {
+  let result = ''
+  let quote: "'" | '"' | '`' | undefined
+
+  for (let i = 0; i < code.length; i++) {
+    const char = code[i]
+    const nextChar = code[i + 1]
+
+    if (quote) {
+      result += char
+      if (char === '\\') {
+        result += nextChar || ''
+        i++
+      } else if (char === quote) {
+        quote = undefined
+      }
+      continue
+    }
+
+    if (char === "'" || char === '"' || char === '`') {
+      quote = char
+      result += char
+      continue
+    }
+
+    if (char === '/' && nextChar === '/') {
+      while (i + 1 < code.length && code[i + 1] !== '\n') {
+        i++
+      }
+      continue
+    }
+
+    if (char === '/' && nextChar === '*') {
+      result += ' '
+      i++
+      while (i + 1 < code.length) {
+        i++
+        if (code[i] === '\n') {
+          result += '\n'
+        } else if (code[i] === '*' && code[i + 1] === '/') {
+          i++
+          break
+        }
+      }
+      continue
+    }
+
+    result += char
+  }
+
+  return result
+}
+
+function stripInterceptorExports(code: string) {
+  return code
+    .replace(
+      /^([\t ]*)export\s+default\s+(?=(async\s+)?function\b|class\b)/gm,
+      '$1'
+    )
+    .replace(
+      /^([\t ]*)export\s+(?=(async\s+)?function\b|const\b|let\b|var\b|class\b)/gm,
+      '$1'
+    )
+}
+
+function extractInterceptorInitMethods(code: string) {
+  const initMethods: string[] = []
+  const initMethodRE =
+    /^[\t ]*(?:export\s+)?(?:default\s+)?(?:(?:async\s+)?function|const|let|var)\s+(init[A-Z]\w*)\b/gm
+
+  let match: RegExpExecArray | null
+  while ((match = initMethodRE.exec(code))) {
+    initMethods.push(match[1])
+  }
+  return initMethods
 }
 
 // 查找实现该interface的class中是否有keepAlive方法，有则标记为keepAlive
@@ -316,7 +445,10 @@ function genCustomElementsCode(
   return codes.join('\n')
 }
 
-export function resolveRootIndex(module: string, options: GenProxyCodeOptions) {
+export function resolveRootIndex(
+  module: string,
+  options: Omit<GenProxyCodeOptions, 'platform'>
+) {
   const filename = path.resolve(
     module,
     options.is_uni_modules ? 'utssdk' : '',
@@ -327,7 +459,7 @@ export function resolveRootIndex(module: string, options: GenProxyCodeOptions) {
 
 export function resolveRootInterface(
   module: string,
-  options: GenProxyCodeOptions
+  options: Omit<GenProxyCodeOptions, 'platform'>
 ) {
   const filename = path.resolve(
     module,
@@ -340,7 +472,7 @@ export function resolveRootInterface(
 export function resolvePlatformIndexFilename(
   platform: 'app-android' | 'app-ios',
   module: string,
-  options: GenProxyCodeOptions
+  options: Omit<GenProxyCodeOptions, 'platform'>
 ) {
   return path.resolve(
     module,
@@ -350,10 +482,23 @@ export function resolvePlatformIndexFilename(
   )
 }
 
+export function resolvePlatformInterceptorFilename(
+  platform: 'app-android' | 'app-ios',
+  module: string,
+  options: Omit<GenProxyCodeOptions, 'platform'>
+) {
+  return path.resolve(
+    module,
+    options.is_uni_modules ? 'utssdk' : '',
+    platform,
+    `interceptor.js`
+  )
+}
+
 export function resolvePlatformIndex(
   platform: 'app-android' | 'app-ios',
   module: string,
-  options: GenProxyCodeOptions
+  options: Omit<GenProxyCodeOptions, 'platform'>
 ) {
   const filename = resolvePlatformIndexFilename(platform, module, options)
   return fs.existsSync(filename) ? filename : ''
@@ -395,7 +540,8 @@ function genModuleCode(
   decls: ProxyDecl[],
   format: FORMATS = FORMATS.ES,
   pluginRelativeDir: string,
-  meta: Meta
+  meta: Meta,
+  initInterceptorMethods: string[]
 ) {
   const codes: string[] = []
   const exportDefault = exportDefaultCode(format)
@@ -451,15 +597,23 @@ function genModuleCode(
           )}, return: ${JSON.stringify(returnOptions)}})`
         )
       } else {
-        codes.push(
-          `${exportConst}${decl.method} = /*#__PURE__*/ initUTSProxyFunction(${
-            decl.async
-          }, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: '${
-            decl.method
-          }ByJs', keepAlive: ${decl.keepAlive}, params: ${JSON.stringify(
-            decl.params
-          )}, return: ${JSON.stringify(returnOptions)}})`
-        )
+        const originalMethod = `initUTSProxyFunction(${
+          decl.async
+        }, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: '${
+          decl.method
+        }ByJs', keepAlive: ${decl.keepAlive}, params: ${JSON.stringify(
+          decl.params
+        )}, return: ${JSON.stringify(returnOptions)}})`
+        const initInterceptorMethodName = `init${capitalize(decl.method)}`
+        if (initInterceptorMethods.includes(initInterceptorMethodName)) {
+          codes.push(
+            `${exportConst}${decl.method} = /*#__PURE__*/ ${initInterceptorMethodName}(${originalMethod})`
+          )
+        } else {
+          codes.push(
+            `${exportConst}${decl.method} = /*#__PURE__*/ ${originalMethod}`
+          )
+        }
       }
     } else if (decl.type === 'VariableDeclaration') {
       decl.declarations.forEach((d) => {
@@ -1004,6 +1158,16 @@ function parseAst(
             decls.push(varDecl)
           }
           break
+        case 'TsInterfaceDeclaration':
+          // 直接继承自JSExport的interface，作为class处理
+          decls.push(
+            genClassDeclarationFromInterface(
+              types,
+              decl,
+              resolveTypeReferenceName
+            )
+          )
+          break
       }
     } else if (item.type === 'ExportDefaultDeclaration') {
       const decl = item.decl
@@ -1516,6 +1680,85 @@ function genClassDeclaration(
   )
 }
 
+/**
+ * 不考虑接口继承类的情况，直接把接口当成类来处理，接口中的方法都当成实例方法，属性当成实例属性
+ */
+function genClassDeclarationFromInterface(
+  types: Types,
+  decl: TsInterfaceDeclaration,
+  resolveTypeReferenceName: ResolveTypeReferenceName
+): ProxyClass {
+  const cls = decl.id.value
+  const methods: ProxyClass['options']['methods'] = {}
+  const props: string[] = []
+  const setters: Record<string, Parameter> = {}
+  const elements = parseInterfaceBody(types, decl)
+
+  elements.forEach((item) => {
+    if (item.type === 'TsMethodSignature') {
+      if (item.key.type === 'Identifier') {
+        let returnOptions: ProxyFunctionReturnOptions | undefined
+        if (item.typeAnn) {
+          let returnInterface = parseReturnInterface(
+            types,
+            item.typeAnn.typeAnnotation
+          )
+          if (returnInterface) {
+            returnOptions = {
+              type: 'interface',
+              options: returnInterface,
+            }
+          }
+        }
+
+        const name = item.key.value
+        methods[name + 'ByJs'] = {
+          async: isReturnPromise(item.typeAnn),
+          keepAlive: false,
+          params: resolveFunctionParams(
+            types,
+            tsParamsToParams(item.params),
+            resolveTypeReferenceName
+          ),
+          return: returnOptions,
+        }
+      }
+    } else if (item.type === 'TsPropertySignature') {
+      if (item.key.type === 'Identifier') {
+        props.push(item.key.value)
+        if (item.typeAnnotation) {
+          const params = resolveFunctionParams(
+            types,
+            tsParamsToParams([
+              createBindingIdentifier(item.key.value, item.typeAnnotation),
+            ]),
+            resolveTypeReferenceName
+          )
+          if (params.length) {
+            setters[item.key.value] = params[0]
+          }
+        }
+      }
+    }
+  })
+  return genProxyClass(
+    cls,
+    {
+      constructor: { params: [] },
+      methods,
+      staticMethods: {},
+      props,
+      staticProps: [],
+      setters,
+      staticSetters: {},
+    },
+    false,
+    false,
+    false,
+    []
+  )
+}
+
 function genInitCode(expr: Expression) {
   switch (expr.type) {
     case 'BooleanLiteral':
@@ -1641,14 +1884,21 @@ function createFunctionDeclaration(
   }
 }
 
-export async function parseExportIdentifiers(fileName: string) {
+export async function parseExportIdentifiers(
+  fileName: string,
+  preprocessor?: SyncUniModulesFilePreprocessor
+) {
   const ids: string[] = []
   if (!fs.existsSync(fileName)) {
     return ids
   }
   let ast: Module | null = null
   try {
-    ast = await parseUtsCode(fs.readFileSync(fileName, 'utf8'), {
+    let code = fs.readFileSync(fileName, 'utf8')
+    if (preprocessor) {
+      code = await preprocessor(code, fileName)
+    }
+    ast = await parseUtsCode(code, {
       filename: fileName,
       noColor: true,
     })

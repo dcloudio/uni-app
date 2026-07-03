@@ -3,7 +3,7 @@ import type { RPT2Options } from 'rollup-plugin-typescript2'
 import { createBasicUtsOptions } from '../utils/options'
 interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
   dom2?: boolean
-  platform: 'app-ios' | 'app-harmony' | 'mp-weixin' | 'web'
+  platform: 'app-android' | 'app-ios' | 'app-harmony' | 'mp-weixin' | 'web'
   inputDir: string
   version: string
   modules: Record<string, any>
@@ -13,6 +13,10 @@ interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
     resolve: () => Record<string, string>
     extname?: string
     rewriteRootDir?: string
+  }
+  disableUTSBooleanConversion?: boolean
+  sharedData?: {
+    resolveFieldMeta(name: string): { fieldId: number }
   }
 }
 type uts2js = (options: UTS2JavaScriptOptions) => import('rollup').Plugin[]

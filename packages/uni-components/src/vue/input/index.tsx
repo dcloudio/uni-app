@@ -135,10 +135,18 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       if (INPUT_MODES.includes(props.type as INPUT_MODE)) {
         return props.type
       }
-      const inputmodeMap = {
-        number: 'numeric',
-        digit: 'decimal',
-        idcard: 'text',
+      let inputmodeMap = {}
+      if (__X__) {
+        inputmodeMap = {
+          number: 'numeric',
+          digit: 'decimal',
+          idcard: 'text',
+        }
+      } else {
+        // iOS 上 inputmode="decimal" 弹出键盘没有负号
+        inputmodeMap = {
+          idcard: 'text',
+        }
       }
       return inputmodeMap[props.type]
     })

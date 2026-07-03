@@ -1624,12 +1624,11 @@
     var newValue = Number(value);
     return isNaN(newValue) ? defaultValue : newValue;
   }
-  var isApple = () => /^Apple/.test(navigator.vendor);
+  var isApple$1 = () => /^Apple/.test(navigator.vendor);
   function getWindowWidth() {
-    var screenFix = isApple() && typeof window.orientation === "number";
-    var landscape = screenFix && Math.abs(window.orientation) === 90;
-    var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-    var windowWidth = screenFix ? Math.min(window.innerWidth, document.documentElement.clientWidth, screenWidth) || screenWidth : Math.min(window.innerWidth, document.documentElement.clientWidth);
+    var isApple2 = /^Apple/.test(navigator.vendor);
+    isApple2 && window.matchMedia("(orientation:landscape)").matches;
+    var windowWidth = isApple2 ? plus.webview.currentWebview().getStyle().width : Math.min(window.innerWidth, document.documentElement.clientWidth);
     return windowWidth;
   }
   function useRem() {
@@ -1645,7 +1644,7 @@
     document.addEventListener("DOMContentLoaded", updateRem);
     window.addEventListener("load", updateRem);
     window.addEventListener("resize", updateRem);
-    if (isApple()) {
+    if (isApple$1()) {
       window.addEventListener("orientationchange", () => {
         updateRem();
         setTimeout(updateRem, 50);
@@ -13632,8 +13631,9 @@
       var rootEl = rootRef.value;
       if (!rootEl)
         return;
-      size2.width = rootEl.offsetWidth;
-      size2.height = rootEl.offsetHeight;
+      var rect = rootEl.getBoundingClientRect();
+      size2.width = rect.width;
+      size2.height = rect.height;
       reset();
     };
   }
@@ -15127,6 +15127,70 @@
       return Link.PROTOCOL_WHITELIST.concat("file").indexOf(protocol) > -1 ? url : Link.SANITIZED_URL;
     };
   }
+  var SupportStyleList = ["color", "background", "padding", "radius"];
+  var MentionStyleMap = {
+    color: "color",
+    background: "background",
+    padding: "padding",
+    radius: "border-radius"
+  };
+  function getMentionStyleValue(node, styleKey) {
+    var cssName = MentionStyleMap[styleKey];
+    if (!cssName) {
+      return "";
+    }
+    return node.style.getPropertyValue(cssName).trim();
+  }
+  var isApple = /^Apple/.test(navigator.vendor);
+  function mention(Quill) {
+    var Embed2 = Quill.import("blots/embed");
+    class MentionBlot extends Embed2 {
+      static create(data) {
+        var node = super.create();
+        var id2 = data.id == null ? "" : data.id;
+        var name = data.name == null ? "" : data.name;
+        if (!isApple) {
+          node.setAttribute("contenteditable", "false");
+        }
+        node.setAttribute("data-id", id2);
+        node.setAttribute("data-name", name);
+        var style = "";
+        if (isApple) {
+          style += "-webkit-user-select: none;";
+        }
+        SupportStyleList.forEach((item) => {
+          var styleName = MentionStyleMap[item] || item;
+          if (data[item]) {
+            style += "".concat(hyphenate(styleName), ": ").concat(data[item], ";");
+          }
+        });
+        if (style) {
+          node.setAttribute("style", style);
+        }
+        node.innerText = "@".concat(name);
+        return node;
+      }
+      static value(node) {
+        var value = {
+          id: node.dataset.id == null ? "" : node.dataset.id,
+          name: node.dataset.name == null ? "" : node.dataset.name
+        };
+        SupportStyleList.forEach((item) => {
+          var styleValue = getMentionStyleValue(node, item);
+          if (styleValue) {
+            value[item] = styleValue;
+          }
+        });
+        return value;
+      }
+    }
+    MentionBlot.blotName = "mention";
+    MentionBlot.tagName = "span";
+    MentionBlot.className = "mention";
+    return {
+      "formats/mention": MentionBlot
+    };
+  }
   function register(Quill) {
     var formats = {
       divider,
@@ -15139,12 +15203,16 @@
       font,
       text,
       image,
-      link
+      link,
+      mention
     };
     var options = {};
     Object.values(formats).forEach((value) => extend(options, value(Quill)));
     Quill.register(options, true);
   }
+  var STATUS_KEY_MAP = {
+    "code-block": "codeBlock"
+  };
   function useQuill(props2, rootRef, trigger2) {
     var quillReady;
     var skipMatcher;
@@ -15152,7 +15220,7 @@
     watch(() => props2.readOnly, (value) => {
       if (quillReady) {
         quill.enable(!value);
-        if (!value) {
+        if (value) {
           quill.blur();
         }
       }
@@ -15162,8 +15230,13 @@
         setPlaceHolder(value);
       }
     });
+    watch(() => props2.type, (value) => {
+      if (quillReady) {
+        setInputMode(value);
+      }
+    });
     function html2delta(html) {
-      var tags = ["span", "strong", "b", "ins", "em", "i", "u", "a", "del", "s", "sub", "sup", "img", "div", "p", "h1", "h2", "h3", "h4", "h5", "h6", "hr", "ol", "ul", "li", "br"];
+      var tags = ["span", "strong", "b", "ins", "em", "i", "u", "a", "del", "s", "sub", "sup", "img", "div", "p", "h1", "h2", "h3", "h4", "h5", "h6", "hr", "ol", "ul", "li", "br", "blockquote", "pre", "code"];
       var content = "";
       var disable;
       HTMLParser(html, {
@@ -15214,16 +15287,39 @@
       var QuillRoot = quill.root;
       QuillRoot.getAttribute(placeHolderAttrName) !== placeholder && QuillRoot.setAttribute(placeHolderAttrName, placeholder);
     }
+    function setInputMode(type) {
+      var QuillRoot = quill.root;
+      if (type === "none") {
+        QuillRoot.setAttribute("inputmode", "none");
+      } else {
+        QuillRoot.removeAttribute("inputmode");
+      }
+    }
     var oldStatus = {};
     function updateStatus(range) {
       var status = range ? quill.getFormat(range) : {};
       var keys = Object.keys(status);
       if (keys.length !== Object.keys(oldStatus).length || keys.find((key2) => status[key2] !== oldStatus[key2])) {
         oldStatus = status;
-        trigger2("statuschange", {}, status);
+        var normalizedStatus = {};
+        Object.keys(status).forEach((k) => {
+          normalizedStatus[STATUS_KEY_MAP[k] || k] = status[k];
+        });
+        trigger2("statuschange", {}, normalizedStatus);
+      }
+    }
+    function fixCursor() {
+      var _a;
+      var range = quill.getSelection();
+      if (!range)
+        return;
+      var [leaf] = quill.getLeaf(range.index - 1);
+      if (((_a = leaf == null ? void 0 : leaf.statics) == null ? void 0 : _a.blotName) === "mention") {
+        quill.setSelection(range.index, 0, "silent");
       }
     }
     function textChangeHandler() {
+      fixCursor();
       trigger2("input", {}, getContents());
     }
     function initQuill(imageResizeModules) {
@@ -15237,6 +15333,7 @@
       if (imageResizeModules.length) {
         Quill.register("modules/ImageResize", window.ImageResize.default);
         options.modules = {
+          syntax: true,
           ImageResize: {
             modules: imageResizeModules
           }
@@ -15244,6 +15341,7 @@
       }
       var rootEl = rootRef.value;
       quill = new Quill(rootEl, options);
+      setInputMode(props2.type);
       var $el = quill.root;
       var events = ["focus", "blur", "input"];
       events.forEach((name) => {
@@ -15347,6 +15445,17 @@
             quill.insertEmbed(range.index + 1, "divider", true, "user");
             quill.setSelection(range.index + 2, 0, "silent");
             break;
+          case "insertMention":
+            {
+              range = quill.getSelection(true);
+              var mentionData = extend({
+                id: "",
+                name: ""
+              }, options);
+              quill.insertEmbed(range.index, "mention", mentionData, "user");
+              quill.setSelection(range.index + 1, 0);
+            }
+            break;
           case "insertImage":
             {
               range = quill.getSelection(true);
@@ -15382,6 +15491,24 @@
               } = options;
               quill.insertText(range.index, text2, "user");
               quill.setSelection(range.index + text2.length, 0, "silent");
+            }
+            break;
+          case "insertLink":
+            {
+              range = quill.getSelection(true);
+              var {
+                text: _text = "",
+                href = ""
+              } = options;
+              if (!href)
+                break;
+              if (range.length > 0) {
+                quill.format("link", href, "user");
+              } else {
+                var linkText = _text || href;
+                quill.insertText(range.index, linkText, "link", href, "user");
+                quill.setSelection(range.index + linkText.length, 0, "silent");
+              }
             }
             break;
           case "setContents":
@@ -15467,15 +15594,18 @@
         imageResizeModules.push("Resize");
       }
       var quillSrc = "./__uniappquill.js";
-      loadScript(window.Quill, quillSrc, () => {
-        if (imageResizeModules.length) {
-          var imageResizeSrc = "./__uniappquillimageresize.js";
-          loadScript(window.ImageResize, imageResizeSrc, () => {
+      var quillHighlightSrc = "./__uniappquillhighlight.js";
+      loadScript("hljs", quillHighlightSrc, () => {
+        loadScript(window.Quill, quillSrc, () => {
+          if (imageResizeModules.length) {
+            var imageResizeSrc = "./__uniappquillimageresize.js";
+            loadScript(window.ImageResize, imageResizeSrc, () => {
+              initQuill(imageResizeModules);
+            });
+          } else {
             initQuill(imageResizeModules);
-          });
-        } else {
-          initQuill(imageResizeModules);
-        }
+          }
+        });
       });
     });
   }
@@ -15487,6 +15617,10 @@
     readOnly: {
       type: [Boolean, String],
       default: false
+    },
+    type: {
+      type: String,
+      default: ""
     },
     placeholder: {
       type: String,
@@ -16419,11 +16553,12 @@
         if (INPUT_MODES.includes(props2.type)) {
           return props2.type;
         }
-        var inputmodeMap = {
-          number: "numeric",
-          digit: "decimal",
-          idcard: "text"
-        };
+        var inputmodeMap = {};
+        {
+          inputmodeMap = {
+            idcard: "text"
+          };
+        }
         return inputmodeMap[props2.type];
       });
       var cache2 = useCache(props2, type);
@@ -16697,7 +16832,9 @@
       }
       {
         useRebuild(() => {
-          movableViewItems = rootRef.value.children;
+          if (rootRef.value) {
+            movableViewItems = rootRef.value.children;
+          }
           updateMovableViewContexts();
         });
       }
@@ -18087,35 +18224,41 @@
         return;
       }
       var animationDuration = parseInt(props2.animationDuration);
+      var onFail = void 0;
       switch (props2.openType) {
         case "navigate":
           uni.navigateTo({
             url: props2.url,
             animationType: props2.animationType || "pop-in",
-            animationDuration
+            animationDuration,
+            fail: onFail
           });
           break;
         case "redirect":
           uni.redirectTo({
             url: props2.url,
-            exists: props2.exists
+            exists: props2.exists,
+            fail: onFail
           });
           break;
         case "switchTab":
           uni.switchTab({
-            url: props2.url
+            url: props2.url,
+            fail: onFail
           });
           break;
         case "reLaunch":
           uni.reLaunch({
-            url: props2.url
+            url: props2.url,
+            fail: onFail
           });
           break;
         case "navigateBack":
           uni.navigateBack({
             delta: props2.delta,
             animationType: props2.animationType || "pop-out",
-            animationDuration
+            animationDuration,
+            fail: onFail
           });
           break;
       }
@@ -18618,6 +18761,9 @@
       return e2;
     }
   }
+  function calculateSnapIndex(position, itemSize) {
+    return Math.round(Math.abs(position) / itemSize);
+  }
   function createAnimation(scroll, onScroll, onEnd) {
     var state = {
       id: 0,
@@ -18734,7 +18880,7 @@
       this._lastDelay = 0;
       this._scrolling = true;
       this._lastChangePos = this._position;
-      this._lastIdx = Math.floor(Math.abs(this._position / this._itemSize));
+      this._lastIdx = calculateSnapIndex(this._position, this._itemSize);
       this._animation = createAnimation(this._scroll, () => {
         var e2 = Date.now();
         var i2 = (e2 - this._scroll._startTime) / 1e3;
@@ -18754,7 +18900,7 @@
             this.updatePosition();
           }
           if (isFunction(this._options.onSnap)) {
-            this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+            this._options.onSnap(calculateSnapIndex(this._position, this._itemSize));
           }
         }
         if (this._shouldDispatchScrollEvent) {
@@ -18780,7 +18926,7 @@
         this._snapping = true;
         this.scrollTo(-i2);
         if (isFunction(this._options.onSnap)) {
-          this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+          this._options.onSnap(Math.round(Math.abs(this._position) / this._itemSize));
         }
       }
     }
@@ -18846,7 +18992,7 @@
       if (position !== this._position) {
         this.dispatchScroll();
         if (isFunction(this._options.onSnap)) {
-          this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+          this._options.onSnap(Math.round(Math.abs(this._position) / this._itemSize));
         }
       }
       this._extent = extent;
@@ -19015,7 +19161,7 @@
       var resizeSensorRef = ref(null);
       var initIndicatorHeight = () => {
         var resizeSensor = resizeSensorRef.value;
-        indicatorHeight.value = resizeSensor.$el.offsetHeight;
+        indicatorHeight.value = resizeSensor.$el.getBoundingClientRect().height;
       };
       var maskSize = computed(() => (pickerViewState.height - indicatorHeight.value) / 2);
       var {
@@ -19661,13 +19807,13 @@
         return String.fromCharCode(stage.slice(1));
       }
       if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
-        return String.fromCharCode(0 + stage.slice(1));
+        return String.fromCharCode(Number("0" + stage.slice(1)));
       }
       return match;
     });
   }
   function processClickEvent(node, triggerItemClick) {
-    if (["a", "img"].includes(node.name) && triggerItemClick) {
+    if (node.name && ["a", "img"].includes(node.name) && triggerItemClick) {
       return {
         onClickCapture: (e2) => {
           triggerItemClick(e2, {
@@ -19680,35 +19826,42 @@
       };
     }
   }
+  function normalizeValue(tagName, name, value) {
+    if (tagName === "img" && name === "src" && isString(value)) {
+      return getRealPath(value);
+    }
+    return value;
+  }
   function normalizeAttrs(tagName, attrs2) {
     if (!isPlainObject(attrs2))
       return;
-    for (var key2 in attrs2) {
-      if (hasOwn$1(attrs2, key2)) {
-        var value = attrs2[key2];
-        if (tagName === "img" && key2 === "src")
-          attrs2[key2] = getRealPath(value);
+    var tagAttrs = TAGS[tagName] || [];
+    var normalizedAttrs = {};
+    Object.keys(attrs2).forEach((name) => {
+      if (name === "class" || name === "style" || tagAttrs.includes(name)) {
+        normalizedAttrs[name] = normalizeValue(tagName, name, attrs2[name]);
       }
-    }
+    });
+    return normalizedAttrs;
   }
   var nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
-    if (!nodeList || isArray(nodeList) && !nodeList.length)
+    if (!nodeList || Array.isArray(nodeList) && !nodeList.length)
       return [];
     return nodeList.map((node) => {
-      var _a;
       if (!isPlainObject(node)) {
         return;
       }
       if (!hasOwn$1(node, "type") || node.type === "node") {
-        var nodeProps = {
-          [scopeId]: ""
-        };
-        var tagName = (_a = node.name) == null ? void 0 : _a.toLowerCase();
+        if (!isString(node.name) || !node.name) {
+          return;
+        }
+        var tagName = node.name.toLowerCase();
         if (!hasOwn$1(TAGS, tagName)) {
           return;
         }
-        normalizeAttrs(tagName, node.attrs);
-        nodeProps = extend(nodeProps, processClickEvent(node, triggerItemClick), node.attrs);
+        var nodeProps = extend({
+          [scopeId]: ""
+        }, processClickEvent(node, triggerItemClick), normalizeAttrs(tagName, node.attrs));
         return h(node.name, nodeProps, nodeList2VNode(scopeId, triggerItemClick, node.children));
       }
       if (node.type === "text" && isString(node.text) && node.text !== "")
@@ -19829,7 +19982,7 @@
       var vm = getCurrentInstance();
       var scopeId = vm && vm.vnode.scopeId || "";
       var rootRef = ref(null);
-      var _vnode = ref([]);
+      var _vnode = shallowRef([]);
       var trigger2 = useCustomEvent(rootRef, emit2);
       function triggerItemClick(e2) {
         var detail = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
@@ -22515,12 +22668,7 @@
             resolve(embed[HarmonyNativeMethodMap[methodName]](data.url, data.headers));
             break;
           case "loadData": {
-            var _data$encoding;
-            var _data = data.data;
-            if (((_data$encoding = data.encoding) === null || _data$encoding === void 0 ? void 0 : _data$encoding.toLowerCase()) !== "base64") {
-              _data = _data.replace(/#/g, "%23");
-            }
-            resolve(embed[HarmonyNativeMethodMap[methodName]](_data, data.mimeType, data.encoding, data.baseUrl));
+            resolve(embed[HarmonyNativeMethodMap[methodName]](data));
             break;
           }
           case "clear":
@@ -22666,10 +22814,15 @@
       touchStartOrigin.y = toucher.pageY;
       state.gestureType = "none";
       state.volumeOld = 0;
+      if (fullscreenState.fullscreen) {
+        event.stopPropagation();
+      }
     }
     function onTouchmove(event) {
       function stop() {
-        event.stopPropagation();
+        if (fullscreenState.fullscreen) {
+          event.stopPropagation();
+        }
         event.preventDefault();
       }
       if (fullscreenState.fullscreen) {
@@ -22691,6 +22844,7 @@
         changeVolume(pageY - origin.y);
       }
       if (gestureType !== "none") {
+        stop();
         return;
       }
       if (Math.abs(pageX - origin.x) > Math.abs(pageY - origin.y)) {
@@ -22719,7 +22873,9 @@
     function onTouchend(event) {
       var video = videoRef.value;
       if (state.gestureType !== "none" && state.gestureType !== "stop") {
-        event.stopPropagation();
+        if (fullscreenState.fullscreen) {
+          event.stopPropagation();
+        }
         event.preventDefault();
       }
       if (state.gestureType === "progress" && state.currentTimeOld !== state.currentTimeNew) {

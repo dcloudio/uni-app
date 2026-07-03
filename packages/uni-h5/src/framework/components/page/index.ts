@@ -32,7 +32,7 @@ import {
   isDialogPageInstance,
   isNormalDialogPageInstance,
   isSystemDialogPageInstance,
-} from '../../../x/framework/helpers/utils'
+} from '@dcloudio/uni-core'
 //#endif
 
 export default /*#__PURE__*/ defineSystemComponent({

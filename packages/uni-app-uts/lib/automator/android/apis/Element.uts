@@ -147,7 +147,7 @@ export const getProperties = (
       return component.$props[toCamelCase(name)]
     }
     if (dom != null) {
-      return dom.getAttribute(name)
+      return dom.getAnyAttribute(name)
     }
     return null
   })
@@ -349,7 +349,7 @@ export const callMethod = (
   if (component != null) {
     const result =
       params.args.length > 0
-        ? component.$callMethod(params.method, params.args[0])
+        ? component.$callMethod(params.method, ...params.args)
         : component.$callMethod(params.method)
     // @ts-expect-error
     if (result instanceof Promise<unknown>) {

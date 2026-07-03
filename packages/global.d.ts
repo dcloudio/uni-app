@@ -43,6 +43,7 @@ declare var __RUN_TIME__: boolean
 declare var __APP_VIEW__: boolean
 declare var __PLUS__: boolean
 declare var __VAPOR__: boolean
+declare var __VAPOR_PLATFORM__: 'app-harmony' | 'app-ios' | 'app-android' | ''
 
 // Feature flags
 declare var __VUE_OPTIONS_API__: boolean

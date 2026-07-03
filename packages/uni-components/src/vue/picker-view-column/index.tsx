@@ -104,7 +104,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const resizeSensorRef: Ref<ComponentPublicInstance | null> = ref(null)
     const initIndicatorHeight = () => {
       const resizeSensor = resizeSensorRef.value as ComponentPublicInstance
-      indicatorHeight.value = resizeSensor.$el.offsetHeight
+      // 使用 getBoundingClientRect 获取精确的浮点数高度，避免 offsetHeight 四舍五入导致累积误差
+      indicatorHeight.value = resizeSensor.$el.getBoundingClientRect().height
     }
     if (__PLATFORM__ !== 'app') {
       onMounted(initIndicatorHeight)

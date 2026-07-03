@@ -16,6 +16,7 @@ import {
   createAppIosUniModulesSyncFilePreprocessorOnce,
 } from './vite/plugins/uts/uni_modules'
 import { resolveBuiltIn } from './resolve'
+import { initSourceFileCallback } from './dom2'
 
 const debugWorkers = debug('uni:workers')
 
@@ -84,6 +85,7 @@ export function uniWorkersPlugin(): Plugin {
     platform === 'app-android'
       ? resolveUTSCompiler().createUniXKotlinCompilerOnce({
           resolveWorkers,
+          sourceFileCallback: initSourceFileCallback(),
         })
       : null
 
@@ -192,6 +194,17 @@ export function resolveWorkersDir(inputDir: string): Array<string> {
   return workersDirs
 }
 
+export function normalizeJavaScriptWorkerSource(content: string) {
+  const code = content
+    // 移除 export，worker 入口按普通脚本加载，不需要导出任务类。
+    .replace(
+      /export\s+class\s+(.*)\s+extends\s+WorkerTaskImpl\s*{/,
+      'class $1 extends WorkerTaskImpl {'
+    )
+  // 保持模块语义，避免 uts2js 同时登记 .uts/.ts 快照时把任务类放到全局作用域导致重复声明。
+  return /(^|\n)\s*(import|export)\s/m.test(code) ? code : `${code}\nexport {}`
+}
+
 export function uniJavaScriptWorkersPlugin(): Plugin {
   // 仅小程序平台外置uni-worker.mp.js
   const external = (process.env.UNI_UTS_PLATFORM || '').startsWith('mp-')
@@ -267,13 +280,7 @@ export function uniJavaScriptWorkersPlugin(): Plugin {
       if (fs.existsSync(filename)) {
         let code =
           (viteServer ? `import '${workerPolyfillPath}';` : '') +
-          fs
-            .readFileSync(filename, 'utf-8')
-            // 移除 export
-            .replace(
-              /export\s+class\s+(.*)\s+extends\s+WorkerTaskImpl\s*{/,
-              'class $1 extends WorkerTaskImpl {'
-            )
+          normalizeJavaScriptWorkerSource(fs.readFileSync(filename, 'utf-8'))
         // 如果是入口文件，需要追加初始化代码
         if (workerClass) {
           code += `\n;new ${workerClass}().entry()`

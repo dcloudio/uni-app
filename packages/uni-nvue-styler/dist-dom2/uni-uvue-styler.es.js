@@ -14,6 +14,30 @@ function createDecl(prop, value, important, raws, source) {
     return decl;
 }
 const isNumber = (val) => typeof val === 'number';
+const cacheStringFunction = (fn) => {
+    const cache = Object.create(null);
+    return ((str) => {
+        const hit = cache[str];
+        return hit || (cache[str] = fn(str));
+    });
+};
+const hyphenateRE = /([A-Z])/g;
+const hyphenateStyleProperty = cacheStringFunction((str) => str
+    .replace(hyphenateRE, (_, m) => {
+    if (typeof m === 'string') {
+        return '-' + m.toLowerCase();
+    }
+    return m;
+})
+    .toLowerCase());
+function supportedValueWithTipsReason(k, v, tips) {
+    return ('ERROR: property value `' +
+        v +
+        '` is not supported for `' +
+        hyphenateStyleProperty(k) +
+        '` ' +
+        tips);
+}
 /**
  * css value 分割多值，兼容包含括号的 css 方法，比如 var/env/calc() 等
  */
@@ -138,26 +162,93 @@ const transformBorderStyle = transformBorderColor;
 
 const transformBorderWidth = transformBorderColor;
 
+function isSingleCssVarValue(value) {
+    const trimmedValue = value.trim();
+    if (splitValues(trimmedValue).length !== 1 || !/^var\(/i.test(trimmedValue)) {
+        return false;
+    }
+    let depth = 0;
+    for (let i = 0; i < trimmedValue.length; i++) {
+        const char = trimmedValue[i];
+        if (char === '(') {
+            depth++;
+        }
+        else if (char === ')') {
+            if (depth === 0) {
+                return false;
+            }
+            depth--;
+            if (depth === 0 && trimmedValue.slice(i + 1).trim()) {
+                return false;
+            }
+        }
+    }
+    return depth === 0;
+}
+function tryExpandSingleValueVarShorthand(decl, props, value) {
+    // 当整个简写值只有一个 var() 时，无法静态判断它属于哪个子属性，
+    // 这里直接复制到每个长属性，交给运行时再解析。
+    if (!isSingleCssVarValue(value)) {
+        return null;
+    }
+    const { important, raws, source } = decl;
+    return props.map((prop) => createDecl(prop, value, important, raws, source));
+}
+
 const borderWidth = '-width' ;
 const borderStyle = '-style' ;
 const borderColor = '-color' ;
+const BORDER_WIDTH_REGEXP = /^(?:[\d.]+\S*|thin|medium|thick)$/;
+// 这里按完整 CSS line-style 识别，后续再交给 border-*-style 的既有校验逻辑报精确错误。
+const BORDER_STYLE_REGEXP = /^(?:none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset)$/;
+const BORDER_SHORTHAND_VAR_ORDER_WARNING = '__borderShorthandVarOrderWarning';
+function createBorderVarOrderWarning(prop, value) {
+    return supportedValueWithTipsReason(prop, value, '(border shorthand with CSS variables must follow `width style color`, for example: `1px solid var(--color, #999999)`)');
+}
+function isCssVarValue(value) {
+    return value.startsWith('var(');
+}
+function isBorderWidthValue(value) {
+    return isCssVarValue(value) || BORDER_WIDTH_REGEXP.test(value);
+}
+function isBorderStyleValue(value) {
+    return isCssVarValue(value) || BORDER_STYLE_REGEXP.test(value);
+}
+function isBorderColorValue(value) {
+    return (isCssVarValue(value) ||
+        (!BORDER_WIDTH_REGEXP.test(value) && !BORDER_STYLE_REGEXP.test(value)));
+}
 function createTransformBorder(options) {
     return (decl) => {
         const { prop, value, important, raws, source } = decl;
+        const singleVarResult = tryExpandSingleValueVarShorthand(decl, [prop + borderWidth, prop + borderStyle, prop + borderColor], value);
+        // 单个 var() 无法提前判断是 width/style/color，dom2 下先平铺后继续展开。
+        if (singleVarResult) {
+            return [
+                ...transformBorderWidth(singleVarResult[0]),
+                ...transformBorderStyle(singleVarResult[1]),
+                ...transformBorderColor(singleVarResult[2]),
+            ];
+        }
         let splitResult = splitValues(value);
         const havVar = splitResult.some((str) => str.startsWith('var('));
         let result = [];
-        // 包含 var ，直接视为 width/style/color 都使用默认值
+        // 包含 var 时按位置解析，避免把 style 误判成 color
         if (havVar) {
+            if (splitResult.length > 3 ||
+                (splitResult.length === 3 &&
+                    (!isBorderWidthValue(splitResult[0]) ||
+                        !isBorderStyleValue(splitResult[1]) ||
+                        !isBorderColorValue(splitResult[2])))) {
+                decl[BORDER_SHORTHAND_VAR_ORDER_WARNING] =
+                    createBorderVarOrderWarning(prop, value);
+                return [];
+            }
             result = splitResult;
             splitResult = [];
         }
         else {
-            result = [
-                /^[\d\.]+\S*|^(thin|medium|thick)$/,
-                /^(solid|dashed|dotted|none)$/,
-                /\S+/,
-            ].map((item) => {
+            result = [BORDER_WIDTH_REGEXP, BORDER_STYLE_REGEXP, /\S+/].map((item) => {
                 const index = splitResult.findIndex((str) => item.test(str));
                 return index < 0 ? null : splitResult.splice(index, 1)[0];
             });
@@ -231,6 +322,11 @@ const transformFlexFlow = (decl) => {
     let { value, important, raws, source } = decl;
     value = value.trim();
     const splitResult = splitValues(value);
+    const singleVarResult = tryExpandSingleValueVarShorthand(decl, [flexDirection, flexWrap], value);
+    // 单个 var() 无法提前判断是 direction 还是 wrap，dom2 下直接平铺。
+    if (singleVarResult) {
+        return singleVarResult;
+    }
     const result = [
         /^(column|column-reverse|row|row-reverse)$/,
         /^(nowrap|wrap|wrap-reverse)$/,
@@ -322,6 +418,11 @@ const transformFlex = (decl) => {
     value = value.trim();
     const result = [];
     const splitResult = splitValues(value);
+    const singleVarResult = tryExpandSingleValueVarShorthand(decl, [flexGrow, flexShrink, flexBasis], value);
+    // 单个 var() 无法提前拆出 grow/shrink/basis，dom2 下按 border 的兜底逻辑平铺。
+    if (singleVarResult) {
+        return singleVarResult;
+    }
     // 是否 flex-grow 的有效值 <number [0,∞]>
     const isFlexGrowValid = (v) => isNumber(Number(v)) && !Number.isNaN(Number(v));
     const isFlexShrinkValid = (v) => isNumber(Number(v)) && !Number.isNaN(Number(v)) && Number(v) >= 0;
@@ -426,7 +527,7 @@ const expanded = Symbol('expanded');
 function expand(options) {
     const plugin = {
         postcssPlugin: `${options.type || 'nvue'}:expand`,
-        Declaration(decl) {
+        Declaration(decl, helper) {
             if (decl[expanded]) {
                 return;
             }
@@ -436,6 +537,27 @@ function expand(options) {
             const transform = DeclTransforms[decl.prop];
             if (transform) {
                 const res = transform(decl);
+                const reason = decl[BORDER_SHORTHAND_VAR_ORDER_WARNING];
+                if (reason && helper && decl.warn) {
+                    let needLog = false;
+                    if (options.logLevel === 'NOTE') {
+                        needLog = true;
+                    }
+                    else if (options.logLevel === 'ERROR') {
+                        if (reason.startsWith('ERROR:')) {
+                            needLog = true;
+                        }
+                    }
+                    else {
+                        if (!reason.startsWith('NOTE:')) {
+                            needLog = true;
+                        }
+                    }
+                    if (needLog) {
+                        decl.warn(helper.result, reason);
+                    }
+                    delete decl[BORDER_SHORTHAND_VAR_ORDER_WARNING];
+                }
                 const isSame = res.length === 1 && res[0] === decl;
                 if (!isSame) {
                     decl.replaceWith(res);

@@ -8,6 +8,12 @@ import {
   addLeadingSlash,
   stringifyQuery,
 } from '@dcloudio/uni-shared'
+// #if _X_
+import {
+  UNI_SAFE_AREA_INSET_BOTTOM,
+  UNI_STATUS_BAR_HEIGHT,
+} from '@dcloudio/uni-shared'
+// #endif
 
 import {
   type CustomComponentInstanceProperty,
@@ -15,6 +21,9 @@ import {
   type ParseComponentOptions,
   parseComponent,
 } from './component'
+// #if _X_
+import { getAppVm } from './component'
+// #endif
 import {
   PAGE_INIT_HOOKS,
   initHooks,
@@ -134,3 +143,23 @@ export function initPageInstance(mpPageInstance: MPComponentInstance) {
     })
   }
 }
+
+// #if _X_
+export function updateCssVariables() {
+  const globalProperties = getAppVm()?.$?.appContext?.config.globalProperties
+  if (!globalProperties) {
+    return
+  }
+
+  const windowInfo = __GLOBAL__.getWindowInfo()
+  const screenBottom =
+    windowInfo.screenHeight - windowInfo.screenTop - windowInfo.windowHeight
+  const safeAreaBottom = windowInfo.screenHeight - windowInfo.safeArea.bottom
+
+  globalProperties[UNI_STATUS_BAR_HEIGHT] = windowInfo.statusBarHeight
+  globalProperties[UNI_SAFE_AREA_INSET_BOTTOM] = Math.max(
+    0,
+    safeAreaBottom - screenBottom
+  )
+}
+// #endif

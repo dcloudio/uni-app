@@ -1,11 +1,9 @@
-import path from 'path'
 import fsExtra from 'fs-extra'
 import { hasOwn, isArray, isPlainObject } from '@vue/shared'
 import type { Plugin } from 'vite'
 import type { ElementNode } from '@vue/compiler-core'
 import type {
   AssetURLOptions,
-  CompilerError,
   SFCDescriptor,
   SFCStyleCompileOptions,
   TemplateCompiler,
@@ -22,11 +20,11 @@ import {
   createResolveStaticAsset,
   createUniVueTransformAssetUrls,
   getBaseNodeTransforms,
+  initVueTemplateCompilerExtraOptions,
   isExternalUrl,
   isUniPageFile,
   matchEasycom,
   normalizePath,
-  onVueTemplateCompileLog,
   preJs,
   requireUniHelpers,
   resolveAppVue,
@@ -96,12 +94,10 @@ export function initPluginVueOptions(
   const compilerOptions =
     templateOptions.compilerOptions || (templateOptions.compilerOptions = {})
 
-  const isDom2Harmony =
-    process.env.UNI_APP_X_DOM2 === 'true' &&
-    process.env.UNI_PLATFORM === 'app-harmony'
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
 
   ;(compilerOptions as any).isX = process.env.UNI_APP_X === 'true'
-  ;(compilerOptions as any).dom2 = isDom2Harmony
+  ;(compilerOptions as any).dom2 = isDom2
 
   // 默认就移除comments节点
   compilerOptions.comments = false
@@ -224,7 +220,7 @@ export function initPluginVueOptions(
     compilerOptions.nodeTransforms.push(
       ...getBaseNodeTransforms(
         options.base,
-        isDom2Harmony ? createResolveStaticAsset(options.inputDir) : undefined
+        isDom2 ? createResolveStaticAsset(options.inputDir) : undefined
       )
     )
   }
@@ -308,7 +304,7 @@ export function initPluginVueOptions(
     if (!vueOptions.script.babelParserPlugins.includes('decorators')) {
       vueOptions.script.babelParserPlugins.push('decorators')
     }
-    if (isDom2Harmony) {
+    if (isDom2) {
       const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)
       function isAppVue(id: string) {
         return normalizePath(id) === appVue
@@ -324,6 +320,8 @@ export function initPluginVueOptions(
       ) => {
         return {
           isWatch: process.env.NODE_ENV === 'development',
+          // TODO 目前使用全局开关，后续可能是页面级别的开关？
+          dynamicSharedData: process.env.UNI_APP_X_DOM2_DYNAMIC === 'true',
           helper: requireUniHelpers(),
           componentType: isUniPageFile(descriptor.filename)
             ? 'page'
@@ -332,43 +330,10 @@ export function initPluginVueOptions(
             : 'component',
         }
       }
-
-      let disableStaticStyle = false
-      if (isDevX && process.env.NODE_ENV === 'development') {
-        if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
-          // 开发版本、开发模式下，非鸿蒙release模式打包
-          disableStaticStyle =
-            process.env.UNI_APP_HARMONY_RUN_MODE !== 'release'
-        }
-      }
       ;(vueOptions.template.compilerOptions as any).extraOptions = (
         descriptor: SFCDescriptor
       ) => {
-        const filename = normalizePath(descriptor.filename.split('?')[0])
-        const relativeFilename = normalizePath(
-          path.relative(process.env.UNI_INPUT_DIR, filename)
-        )
-        return {
-          root: normalizePath(process.env.UNI_INPUT_DIR),
-          platform: process.env.UNI_UTS_PLATFORM,
-          componentType: isUniPageFile(filename) ? 'page' : 'component',
-          relativeFilename,
-          helper: requireUniHelpers(),
-          scriptCppBlocks: (descriptor as any).scriptCppBlocks,
-          genVueId: !!process.env.UNI_AUTOMATOR_WS_ENDPOINT,
-          disableStaticStyle,
-          onVueTemplateCompileLog(
-            type: 'warn' | 'error',
-            error: CompilerError
-          ) {
-            return onVueTemplateCompileLog(
-              type,
-              error,
-              descriptor.source,
-              relativeFilename
-            )
-          },
-        }
+        return initVueTemplateCompilerExtraOptions(descriptor)
       }
     } else {
       // 如果是 easyComponent 组件，则不需要从setup中导入组件且不支持 self 引用

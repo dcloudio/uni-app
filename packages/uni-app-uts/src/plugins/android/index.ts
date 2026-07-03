@@ -3,6 +3,8 @@ import {
   parseUniExtApiNamespacesOnce,
   uniDecryptUniModulesPlugin,
   uniEncryptUniModulesPlugin,
+  uniSharedDataPlugin,
+  uniStatsPlugin,
   uniUTSAppUniModulesPlugin,
   uniUniModulesExtApiPlugin,
   uniViteSfcSrcImportPlugin,
@@ -18,6 +20,7 @@ import { uniAppUVuePlugin } from './uvue'
 import { uniCloudPlugin } from './unicloud'
 
 export function init() {
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
   return [
     uniAppCssPrePlugin(),
     ...(isNormalCompileTarget()
@@ -40,6 +43,8 @@ export function init() {
           }),
         ]
       : []),
+    // 重要：比如放到 uniAppPlugin 之前
+    ...(isDom2 ? [uniSharedDataPlugin()] : []),
     uniAppPlugin(),
     ...(process.env.UNI_COMPILE_TARGET === 'ext-api'
       ? [uniUniModulesExtApiPlugin()]
@@ -57,5 +62,8 @@ export function init() {
     uniViteSfcSrcImportPlugin({ onlyVue: false }),
     uniAppUVuePlugin(),
     uniCloudPlugin(),
+    ...(isNormalCompileTarget()
+      ? [uniStatsPlugin({ manifestOnly: true })]
+      : []),
   ]
 }

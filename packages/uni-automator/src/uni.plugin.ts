@@ -46,7 +46,10 @@ export default [
             if (process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
               return null
             }
-            if (process.env.UNI_UTS_PLATFORM === 'app-android') {
+            if (
+              process.env.UNI_UTS_PLATFORM === 'app-android' &&
+              process.env.UNI_APP_X_DOM2 !== 'true'
+            ) {
               const automatorPath = normalizePath(
                 resolveBuiltIn(
                   `@dcloudio/uni-app-uts/lib/automator/android/index.uts`
@@ -60,7 +63,9 @@ export default [
               }
             } else if (
               process.env.UNI_UTS_PLATFORM === 'app-ios' ||
-              process.env.UNI_UTS_PLATFORM === 'app-harmony'
+              process.env.UNI_UTS_PLATFORM === 'app-harmony' ||
+              (process.env.UNI_UTS_PLATFORM === 'app-android' &&
+                process.env.UNI_APP_X_DOM2 === 'true')
             ) {
               const automatorPath = normalizePath(
                 resolveBuiltIn(

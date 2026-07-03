@@ -12,6 +12,7 @@ import font from './font'
 import text from './text'
 import image from './image'
 import link from './link'
+import mention from './mention'
 
 export function register(Quill: typeof QuillClass) {
   const formats = {
@@ -26,6 +27,7 @@ export function register(Quill: typeof QuillClass) {
     text,
     image,
     link,
+    mention,
   }
   const options = {}
   Object.values(formats).forEach((value) => extend(options, value(Quill)))

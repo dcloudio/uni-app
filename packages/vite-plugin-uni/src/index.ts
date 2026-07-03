@@ -16,6 +16,9 @@ import {
   initAutoImportOptions,
   isInHBuilderX,
   isNormalCompileTarget,
+  isUniAppXAndroidJsEngine,
+  isUniAppXAndroidNative,
+  isUniAppXIOS,
   parseUniExtApisOnce,
   resolveSourceMapPath,
   rewriteExistsSyncHasRootFile,
@@ -97,17 +100,12 @@ export default function uniPlugin(
   options.platform = (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
   options.inputDir = process.env.UNI_INPUT_DIR
 
-  const plugins =
-    process.env.UNI_APP_X === 'true' &&
-    process.env.UNI_UTS_PLATFORM === 'app-android'
-      ? createUVueAndroidPlugins(options)
-      : createPlugins(options)
+  const plugins = isUniAppXAndroidNative()
+    ? createUVueAndroidPlugins(options)
+    : createPlugins(options)
 
   // x 提供 auto import（非android、android自行处理）
-  if (
-    process.env.UNI_APP_X === 'true' &&
-    process.env.UNI_UTS_PLATFORM !== 'app-android'
-  ) {
+  if (process.env.UNI_APP_X === 'true' && !isUniAppXAndroidNative()) {
     plugins.unshift(
       AutoImport(
         initAutoImportOptions(
@@ -132,7 +130,9 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
       // iOS 暂不使用该机制
       process.env.UNI_UTS_PLATFORM !== 'app-ios' &&
       // harmony 同 iOS
-      process.env.UNI_UTS_PLATFORM !== 'app-harmony'
+      process.env.UNI_UTS_PLATFORM !== 'app-harmony' &&
+      // Android Vapor 暂不使用该机制(只有 Android Native 会进入该方法，不需要额外判断)
+      process.env.UNI_UTS_PLATFORM !== 'app-android'
     ) {
       plugins.push(uniUTSExtApiReplace())
     } else {
@@ -245,12 +245,7 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
       if (fs.existsSync(sourceMapPath)) {
         emptyDir(sourceMapPath)
       }
-      if (
-        process.env.UNI_APP_X === 'true' &&
-        process.env.UNI_UTS_PLATFORM === 'app-ios' &&
-        process.env.UNI_APP_X_CACHE_DIR &&
-        process.env.NODE_ENV !== 'development'
-      ) {
+      if (shouldMoveSourceMapFromCache()) {
         plugins.push(
           uniMovePlugin({
             apply: 'build',
@@ -326,4 +321,13 @@ function createUVueAndroidPlugins(options: VitePluginUniResolvedOptions) {
 
 function resolveSourceMapDirByCacheDir() {
   return path.resolve(process.env.UNI_APP_X_CACHE_DIR, 'sourcemap')
+}
+
+export function shouldMoveSourceMapFromCache() {
+  return (
+    process.env.UNI_APP_X === 'true' &&
+    process.env.UNI_APP_X_CACHE_DIR &&
+    process.env.NODE_ENV !== 'development' &&
+    (isUniAppXIOS() || isUniAppXAndroidJsEngine())
+  )
 }

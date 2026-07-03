@@ -541,7 +541,7 @@ function useMap(
             })
             break
           case 'includePoints':
-            state.includePoints = getPoints(data.includePoints as Point[])
+            state.includePoints = getPoints(data.points as Point[])
             if (isBoundsReady || getIsAMap()) {
               updateBounds()
             }

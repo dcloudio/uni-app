@@ -64,9 +64,15 @@ export type UTSOutputOptions = {
   isModule?: boolean
   isExtApi?: boolean
   isPureSwift?: boolean
+  /**
+   * 是否由js驱动，目前仅安卓蒸汽模式使用此选项，用于控制编译插件时是否生成js调用相关的代码，默认值为false
+   */
+  isJsDriven?: boolean
+  isDom2?: boolean
   split?: boolean
   splitClass?: boolean
   disableSplitManifest?: boolean
+  disableOpenByDefault?: boolean
   removeImports?: boolean
   dropImports?: string[]
   returnExportIdent?: boolean
@@ -75,6 +81,8 @@ export type UTSOutputOptions = {
     uvueOutDir: string
   }
   transform?: {
+    objToMap?: boolean
+    disableUTSBooleanConversion?: boolean
     enableSwiftUtsArray?: boolean
     enableSwiftUtsMap?: boolean
     enableUtsNumber?: boolean
@@ -116,6 +124,7 @@ export type UTSOutputOptions = {
 export interface UTSOptions {
   mode?: string
   hbxVersion: string
+  vapor?: boolean
   input: UTSInputOptions
   output: UTSOutputOptions
 }

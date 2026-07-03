@@ -16,7 +16,7 @@ export const getPageStack = (callback: Callback): void => {
     {
       // @ts-expect-error
       pageStack: getCurrentPages().map((page: UniPage): UTSJSONObject => {
-        return parsePage(page.vm!)
+        return parsePage(page)
       }),
     },
     null
@@ -26,9 +26,9 @@ export type GetCurrentPageParams = {
   // @ts-expect-error
   callback: (result: UTSJSONObject | null, error: any | null) => void
 }
-function _getCurrentPage(): Page | null {
+function _getCurrentPage(): UniPage | null {
   const pages = getCurrentPages() as UniPage[]
-  return pages.length > 0 ? pages[pages.length - 1].vm! : null
+  return pages.length > 0 ? pages[pages.length - 1] : null
 }
 
 export const getCurrentPage = (params: GetCurrentPageParams): void => {
@@ -59,12 +59,12 @@ export const callUniMethod = (
     send({ id, result: { method, data } })
   }
   switch (method) {
-    case 'navigateTo':
+    case 'navigateTo': {
       // @ts-expect-error
       const _arg = new UTSJSONObject(args[0])
+      // @ts-expect-error
       uni.navigateTo({
         url: _arg['url'] as string,
-        // @ts-expect-error
         animationType:
           _arg['animationType'] != null
             ? (_arg['animationType'] as string)
@@ -74,18 +74,21 @@ export const callUniMethod = (
             ? (_arg['animationDuration'] as number)
             : 300,
         success,
+        // @ts-expect-error
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
       })
       break
-
+    }
     case 'redirectTo':
+      // @ts-expect-error
       uni.redirectTo({
         // @ts-expect-error
         url: new UTSJSONObject(args[0])['url'] as string,
         success,
+        // @ts-expect-error
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
@@ -94,10 +97,12 @@ export const callUniMethod = (
       break
 
     case 'reLaunch':
+      // @ts-expect-error
       uni.reLaunch({
         // @ts-expect-error
         url: new UTSJSONObject(args[0])['url'] as string,
         success,
+        // @ts-expect-error
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
@@ -105,11 +110,11 @@ export const callUniMethod = (
       })
       break
 
-    case 'navigateBack':
+    case 'navigateBack': {
       // @ts-expect-error
       const _arg = new UTSJSONObject(args[0])
+      // @ts-expect-error
       uni.navigateBack({
-        // @ts-expect-error
         animationType:
           _arg['animationType'] != null
             ? (_arg['animationType'] as string)
@@ -119,17 +124,21 @@ export const callUniMethod = (
             ? (_arg['animationDuration'] as number)
             : 300,
         success,
+        // @ts-expect-error
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
       })
       break
+    }
     case 'switchTab':
+      // @ts-expect-error
       uni.switchTab({
         // @ts-expect-error
         url: new UTSJSONObject(args[0])['url'] as string,
         success,
+        // @ts-expect-error
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
@@ -137,38 +146,47 @@ export const callUniMethod = (
       })
       break
     case 'getStorage':
+      // @ts-expect-error
       uni.getStorage({
         // @ts-expect-error
         key: new UTSJSONObject(args[0])['key'] as string,
         success,
+        // @ts-expect-error
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
       })
       break
-    case 'setStorage':
+    case 'setStorage': {
       // @ts-expect-error
       const _arg = new UTSJSONObject(args[0])
+      // @ts-expect-error
       uni.setStorage({
         key: _arg['key'] as string,
         data: _arg['data']!,
         success,
+        // @ts-expect-error
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
       })
       break
+    }
     case 'getStorageSync':
+      // @ts-expect-error
       callback({ result: uni.getStorageSync(args[0] as string) }, null)
       break
     case 'setStorageSync':
+      // @ts-expect-error
       callback({ result: uni.setStorageSync(args[0] as string, args[1]) }, null)
       break
     case 'getStorageInfo':
+      // @ts-expect-error
       uni.getStorageInfo({
         success,
+        // @ts-expect-error
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
@@ -176,13 +194,16 @@ export const callUniMethod = (
       })
       break
     case 'getStorageInfoSync':
+      // @ts-expect-error
       callback({ result: uni.getStorageInfoSync() }, null)
       break
     case 'removeStorage':
+      // @ts-expect-error
       uni.removeStorage({
         // @ts-expect-error
         key: new UTSJSONObject(args[0])['key'] as string,
         success,
+        // @ts-expect-error
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
@@ -190,12 +211,14 @@ export const callUniMethod = (
       })
       break
     case 'removeStorageSync':
+      // @ts-expect-error
       callback({ result: uni.removeStorageSync(args[0] as string) }, null)
       break
     case 'clearStorage':
       // @ts-expect-error
       uni.clearStorage({
         success,
+        // @ts-expect-error
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
@@ -203,16 +226,16 @@ export const callUniMethod = (
       })
       break
     case 'clearStorageSync':
+      // @ts-expect-error
       callback({ result: uni.clearStorageSync() }, null)
       break
-    case 'showToast':
+    case 'showToast': {
       // @ts-expect-error
       const _arg = new UTSJSONObject(args[0])
+      // @ts-expect-error
       uni.showToast({
         title: _arg['title'] as string,
-        // @ts-expect-error
         icon: _arg['icon'] != null ? (_arg['icon'] as string) : 'success',
-        // @ts-expect-error
         image:
           _arg['image'] != null && _arg['image'] != ''
             ? (_arg['image'] as string)
@@ -220,102 +243,107 @@ export const callUniMethod = (
         mask: _arg['mask'] != null ? (_arg['mask'] as boolean) : false,
         duration:
           _arg['duration'] != null ? (_arg['duration'] as number) : 1500,
-        // @ts-expect-error
         position:
           _arg['position'] != null ? (_arg['position'] as string) : null,
         success,
+        // @ts-expect-error
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
       })
       break
+    }
     case 'hideToast':
+      // @ts-expect-error
       uni.hideToast()
       success({ result: null })
       break
-    case 'showLoading':
+    case 'showLoading': {
       // @ts-expect-error
       const _arg = new UTSJSONObject(args[0])
+      // @ts-expect-error
       uni.showLoading({
         title: _arg['title'] as string,
         mask: _arg['mask'] != null ? (_arg['mask'] as boolean) : false,
         success,
+        // @ts-expect-error
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
       })
       break
+    }
     case 'hideLoading':
+      // @ts-expect-error
       uni.hideLoading()
       success({ result: null })
       break
-    case 'showModal':
+    case 'showModal': {
       // @ts-expect-error
       const _arg = new UTSJSONObject(args[0])
+      // @ts-expect-error
       uni.showModal({
-        // @ts-expect-error
         title: _arg['title'] != null ? (_arg['title'] as string) : null,
-        // @ts-expect-error
         content: _arg['content'] != null ? (_arg['content'] as string) : null,
         showCancel:
           _arg['showCancel'] != null ? (_arg['showCancel'] as boolean) : true,
-        // @ts-expect-error
         cancelText:
           _arg['cancelText'] != null ? (_arg['cancelText'] as string) : null,
-        // @ts-expect-error
         cancelColor:
           _arg['cancelColor'] != null ? (_arg['cancelColor'] as string) : null,
-        // @ts-expect-error
         confirmText:
           _arg['confirmText'] != null ? (_arg['confirmText'] as string) : null,
-        // @ts-expect-error
         confirmColor:
           _arg['confirmColor'] != null
             ? (_arg['confirmColor'] as string)
             : null,
         editable:
           _arg['editable'] != null ? (_arg['editable'] as boolean) : false,
-        // @ts-expect-error
         placeholderText:
           _arg['placeholderText'] != null
             ? (_arg['placeholderText'] as string)
             : null,
         success,
+        // @ts-expect-error
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
       })
       break
-    case 'showActionSheet':
+    }
+    case 'showActionSheet': {
       // @ts-expect-error
       const _arg = new UTSJSONObject(args[0])
+      // @ts-expect-error
       uni.showActionSheet({
-        // @ts-expect-error
         title: _arg['title'] != null ? (_arg['title'] as string) : null,
         // @ts-expect-error
         itemList: JSON.parse<string[]>(JSON.stringify(_arg['itemList']))!,
-        // @ts-expect-error
         itemColor:
           _arg['itemColor'] != null ? (_arg['itemColor'] as string) : null,
         success,
+        // @ts-expect-error
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
       })
       break
+    }
     case 'hideActionSheet':
+      // @ts-expect-error
       uni.hideActionSheet()
       success({ result: null })
       break
-    case 'connectSocket':
+    case 'connectSocket': {
       // @ts-expect-error
       const _arg = new UTSJSONObject(args[0])
       connectSocket(_arg['id'] as string, _arg['url'] as string, callback)
       break
+    }
     case 'onSocketOpen':
       firstSocketTaskEmitter(
         { method: 'onOpen' } as FirstSocketTaskEmitterParams,
@@ -350,7 +378,7 @@ export const callUniMethod = (
         callback
       )
       break
-    case 'closeSocket':
+    case 'closeSocket': {
       // @ts-expect-error
       const _arg = new UTSJSONObject(args[0])
       firstSocketTaskEmitter(
@@ -362,9 +390,12 @@ export const callUniMethod = (
         callback
       )
       break
+    }
     case 'getSystemInfo':
+      // @ts-expect-error
       uni.getSystemInfo({
         success,
+        // @ts-expect-error
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
@@ -372,45 +403,179 @@ export const callUniMethod = (
       })
       break
     case 'getSystemInfoSync':
+      // @ts-expect-error
       callback({ result: uni.getSystemInfoSync() }, null)
       break
     case 'getDeviceInfo':
+      // @ts-expect-error
       callback({ result: uni.getDeviceInfo() }, null)
       break
     case 'getSystemSetting':
+      // @ts-expect-error
       callback({ result: uni.getSystemSetting() }, null)
       break
     case 'getAppBaseInfo':
+      // @ts-expect-error
       callback({ result: uni.getAppBaseInfo() }, null)
       break
     case 'getAppAuthorizeSetting':
+      // @ts-expect-error
       callback({ result: uni.getAppAuthorizeSetting() }, null)
       break
     case 'openAppAuthorizeSetting':
+      // @ts-expect-error
       uni.openAppAuthorizeSetting({
         success,
+        // @ts-expect-error
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
       })
       break
-    case 'pageScrollTo':
+    case 'pageScrollTo': {
       // @ts-expect-error
       const _arg = new UTSJSONObject(args[0])
+      // @ts-expect-error
       uni.pageScrollTo({
         scrollTop: _arg['scrollTop'] as number,
         duration: _arg['duration'] as number,
         success,
+        // @ts-expect-error
         fail(error) {
           error.errMsg = error.errMsg.replace(`${method}: fail `, '')
           callback(null, error)
         },
       })
       break
+    }
     case 'getWindowInfo':
+      // @ts-expect-error
       success(uni.getWindowInfo())
       break
+    case 'setTabBarItem': {
+			const options = new UTSJSONObject(args[0])
+			uni.setTabBarItem({
+				index: options['index'] as number,
+				text: options['text'] != null ? (options['text'] as string) : null,
+				iconPath: options['iconPath'] != null ? (options['iconPath'] as string) : null,
+				selectedIconPath: options['selectedIconPath'] != null ? (options['selectedIconPath'] as string) : null,
+				pagePath: options['pagePath'] != null ? (options['pagePath'] as string) : null,
+				iconfont: options['iconfont'] != null ? ({
+					text: (options['iconfont'] as UTSJSONObject)['text'] as string,
+					selectedText: (options['iconfont'] as UTSJSONObject)['selectedText'] as string,
+					fontSize: (options['iconfont'] as UTSJSONObject)['fontSize'] != null ? ((options['iconfont'] as UTSJSONObject)['fontSize'] as string) : null,
+					color: (options['iconfont'] as UTSJSONObject)['color'] != null ? ((options['iconfont'] as UTSJSONObject)['color'] as string) : null,
+					selectedColor: (options['iconfont'] as UTSJSONObject)['selectedColor'] != null ? ((options['iconfont'] as UTSJSONObject)['selectedColor'] as string) : null,
+				} as SetTabBarItemIconFontOptions) : null,
+				visible: options['visible'] != null ? (options['visible'] as boolean) : null,
+			  success,
+			  // @ts-expect-error
+			  fail(error: SetTabBarItemFail) {
+			    error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+			    callback(null, error)
+			  },
+			})
+			break
+		}
+		case 'showTabBar': {
+			const options = new UTSJSONObject(args[0])
+			uni.showTabBar({
+				animation: options['animation'] != null ? (options['animation'] as boolean) : null,
+				success,
+				// @ts-expect-error
+				fail(error) {
+					error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+					callback(null, error)
+				},
+			})
+			break
+		}
+		case 'hideTabBar': {
+			const options = new UTSJSONObject(args[0])
+			uni.hideTabBar({
+				animation: options['animation'] != null ? (options['animation'] as boolean) : null,
+				success,
+				// @ts-expect-error
+				fail(error) {
+					error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+					callback(null, error)
+				},
+			})
+			break
+		}
+		case 'setTabBarBadge': {
+			const options = new UTSJSONObject(args[0])
+			uni.setTabBarBadge({
+				index: options['index'] as number,
+				text: options['text'] as string,
+				success,
+				// @ts-expect-error
+				fail(error) {
+					error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+					callback(null, error)
+				},
+			})
+			break
+		}
+		case 'removeTabBarBadge': {
+			const options = new UTSJSONObject(args[0])
+			uni.removeTabBarBadge({
+				index: options['index'] as number,
+				success,
+				// @ts-expect-error
+				fail(error) {
+					error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+					callback(null, error)
+				},
+			})
+			break
+		}
+		case 'showTabBarRedDot': {
+			const options = new UTSJSONObject(args[0])
+			uni.showTabBarRedDot({
+				index: options['index'] as number,
+				success,
+				// @ts-expect-error
+				fail(error) {
+					error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+					callback(null, error)
+				},
+			})
+			break
+		}
+		case 'hideTabBarRedDot': {
+			const options = new UTSJSONObject(args[0])
+			uni.hideTabBarRedDot({
+				index: options['index'] as number,
+				success,
+				// @ts-expect-error
+				fail(error) {
+					error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+					callback(null, error)
+				},
+			})
+			break
+		}
+		case 'setTabBarStyle': {
+			const options = new UTSJSONObject(args[0])
+			uni.setTabBarStyle({
+				color: options['color'] != null ? (options['color'] as string) : null,
+				selectedColor: options['selectedColor'] != null ? (options['selectedColor'] as string) : null,
+				backgroundColor: options['backgroundColor'] != null ? (options['backgroundColor'] as string) : null,
+				backgroundImage: options['backgroundImage'] != null ? (options['backgroundImage'] as string) : null,
+				backgroundRepeat: options['backgroundRepeat'] != null ? (options['backgroundRepeat'] as string) : null,
+				borderColor: options['borderColor'] != null ? (options['borderColor'] as string) : null,
+				borderStyle: options['borderStyle'] != null ? (options['borderStyle'] as string) : null,
+				success,
+				// @ts-expect-error
+				fail(error) {
+					error.errMsg = error.errMsg.replace(`${method}: fail `, '')
+					callback(null, error)
+				},
+			})
+			break
+		}
     default:
       callback(null, { errMsg: 'uni.' + method + ' not exists.' })
       break
@@ -430,19 +595,20 @@ export const captureScreenshot = (
 ): void => {
   const currentPage = _getCurrentPage()
   if (currentPage != null) {
-    // @ts-expect-error
-    currentPage.$viewToTempFilePath({
+    currentPage.vm!.$viewToTempFilePath({
       id: params.id,
       offsetX: params.offsetX !== null ? params.offsetX : '0',
       offsetY: params.offsetY !== null ? params.offsetY : '0',
       wholeContent: params.fullPage == true,
       path: params.path,
+      // @ts-expect-error
       success: (res) => {
-        const fileManager = uni.getFileSystemManager()
         // @ts-expect-error
+        const fileManager = uni.getFileSystemManager()
         fileManager.readFile({
           encoding: 'base64',
           filePath: res.tempFilePath,
+          // @ts-expect-error
           success(readFileRes) {
             callback(
               {
@@ -453,11 +619,14 @@ export const captureScreenshot = (
               null
             )
           },
+          // @ts-expect-error
           fail(error) {
             callback(null, error)
           },
+          // @ts-expect-error
         } as ReadFileOptions)
       },
+      // @ts-expect-error
       fail: (error) => {
         callback(null, error)
       },

@@ -91547,11 +91547,11 @@ ${lanes.join("\n")}
       if (node.importClause.isTypeOnly) {
         return void 0;
       }
-      const isRequireIOSNativeUtsSdk = (_a = __utsHacker__) == null ? void 0 : _a.isRequireIOSNativeUtsSdk;
-      const isImportIOSNativeModule = typeof isRequireIOSNativeUtsSdk === "function" && isStringLiteral(node.moduleSpecifier) && isRequireIOSNativeUtsSdk(currentSourceFile.fileName, node.moduleSpecifier.text);
+      const isRequireNativeUtsSdk = (_a = __utsHacker__) == null ? void 0 : _a.isRequireNativeUtsSdk;
+      const isImportNativeModule = typeof isRequireNativeUtsSdk === "function" && isStringLiteral(node.moduleSpecifier) && isRequireNativeUtsSdk(currentSourceFile.fileName, node.moduleSpecifier.text);
       const oldImportsNotUsedAsValues = compilerOptions.importsNotUsedAsValues;
       const oldPreserveValueImports = compilerOptions.preserveValueImports;
-      if (isImportIOSNativeModule) {
+      if (isImportNativeModule) {
         compilerOptions.importsNotUsedAsValues = 0 /* Remove */;
         compilerOptions.preserveValueImports = false;
       }
@@ -91564,7 +91564,7 @@ ${lanes.join("\n")}
         node.moduleSpecifier,
         node.assertClause
       ) : void 0;
-      if (isImportIOSNativeModule) {
+      if (isImportNativeModule) {
         compilerOptions.importsNotUsedAsValues = oldImportsNotUsedAsValues;
         compilerOptions.preserveValueImports = oldPreserveValueImports;
       }
@@ -111797,15 +111797,12 @@ ${lanes.join("\n")}
       convertedLoopState = savedConvertedLoopState;
       return factory2.updateFunctionExpression(
         node,
-        /*modifiers*/
-        void 0,
+        node.modifiers,
         node.asteriskToken,
         name,
-        /*typeParameters*/
-        void 0,
+        node.typeParameters,
         parameters,
-        /*type*/
-        void 0,
+        node.type,
         body
       );
     }

@@ -17,10 +17,10 @@ export type ChooseLocationErrorCode =
      *        "unixVer": "4.34"
      *      },
      *      "harmony": {
-     *        "osVer": "3.0",
+     *        "osVer": "5.0",
      *        "uniVer": "x",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *    },
      *    "web": {
@@ -45,10 +45,10 @@ export type ChooseLocationErrorCode =
      *        "unixVer": "4.34"
      *      },
      *      "harmony": {
-     *        "osVer": "3.0",
+     *        "osVer": "5.0",
      *        "uniVer": "x",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *    },
      *    "web": {
@@ -95,10 +95,10 @@ export type ChooseLocationOptions = {
      *        "unixVer": "4.33"
      *      },
      *      "harmony": {
-     *        "osVer": "3.0",
+     *        "osVer": "5.0",
      *        "uniVer": "4.23",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *    },
      *    "web": {
@@ -123,10 +123,10 @@ export type ChooseLocationOptions = {
      *        "unixVer": "4.33"
      *      },
      *      "harmony": {
-     *        "osVer": "3.0",
+     *        "osVer": "5.0",
      *        "uniVer": "4.23",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *    },
      *    "web": {
@@ -151,10 +151,10 @@ export type ChooseLocationOptions = {
      *        "unixVer": "4.33"
      *      },
      *      "harmony": {
-     *        "osVer": "3.0",
+     *        "osVer": "5.0",
      *        "uniVer": "4.23",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *    },
      *    "web": {
@@ -179,10 +179,10 @@ export type ChooseLocationOptions = {
      *        "unixVer": "4.35"
      *      },
      *      "harmony": {
-     *        "osVer": "3.0",
+     *        "osVer": "5.0",
      *        "uniVer": "4.23",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *    },
      *    "web": {
@@ -207,10 +207,10 @@ export type ChooseLocationOptions = {
      *        "unixVer": "4.33"
      *      },
      *      "harmony": {
-     *        "osVer": "3.0",
+     *        "osVer": "5.0",
      *        "uniVer": "4.23",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *    },
      *    "web": {
@@ -235,10 +235,10 @@ export type ChooseLocationOptions = {
      *        "unixVer": "4.33"
      *      },
      *      "harmony": {
-     *        "osVer": "3.0",
+     *        "osVer": "5.0",
      *        "uniVer": "4.23",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *    },
      *    "web": {
@@ -263,10 +263,10 @@ export type ChooseLocationOptions = {
      *        "unixVer": "4.33"
      *      },
      *      "harmony": {
-     *        "osVer": "3.0",
+     *        "osVer": "5.0",
      *        "uniVer": "4.23",
      *        "unixVer": "4.61",
-     *        "unixvVer": "5.0"
+     *        "unixVaporVer": "5.0"
      *      }
      *    },
      *    "web": {
@@ -296,10 +296,10 @@ export type ChooseLocationOptions = {
  *            "unixVer": "4.33"
  *        },
  *    "harmony": {
- *      "osVer": "3.0",
+ *      "osVer": "5.0",
  *      "uniVer": "4.23",
  *      "unixVer": "4.61",
- *      "unixvVer": "5.0"
+ *      "unixVaporVer": "5.0"
  *    }
  *    },
  *    "web": {
@@ -343,10 +343,10 @@ export interface Uni {
      *      "unixVer": "4.33"
      *    },
      *    "harmony": {
-     *      "osVer": "3.0",
+     *      "osVer": "5.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
-     *      "unixvVer": "5.0"
+     *      "unixVaporVer": "5.0"
      *    }
      *  },
      *  "mp": {

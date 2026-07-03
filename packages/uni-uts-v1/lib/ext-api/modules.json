@@ -1,4 +1,44 @@
 {
+  "uni-accelerometer": {
+    "uni": {
+      "onAccelerometerChange": {
+        "name": "onAccelerometerChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "offAccelerometerChange": {
+        "name": "offAccelerometerChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "startAccelerometer": {
+        "name": "startAccelerometer",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "stopAccelerometer": {
+        "name": "stopAccelerometer",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-actionSheet": {
     "uni": {
       "showActionSheet": {
@@ -53,7 +93,38 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-authentication": {
+    "uni": {
+      "startSoterAuthentication": {
+        "name": "startSoterAuthentication",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "checkIsSupportSoterAuthentication": {
+        "name": "checkIsSupportSoterAuthentication",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "checkIsSoterEnrolledInDevice": {
+        "name": "checkIsSoterEnrolledInDevice",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
           "arkts": true
         }
       }
@@ -66,7 +137,29 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-calendar": {
+    "uni": {
+      "addPhoneCalendar": {
+        "name": "addPhoneCalendar",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "addPhoneRepeatCalendar": {
+        "name": "addPhoneRepeatCalendar",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
           "arkts": true
         }
       }
@@ -89,20 +182,6 @@
     ]
   },
   "uni-canvas": {
-    "uni": {
-      "createCanvasContextAsync": {
-        "name": "createCanvasContextAsync",
-        "app": {
-          "js": false,
-          "x-js": false,
-          "kotlin": true,
-          "swift": false,
-          "arkts": true
-        }
-      }
-    }
-  },
-  "uni-canvas-dom2": {
     "uni": {
       "createCanvasContextAsync": {
         "name": "createCanvasContextAsync",
@@ -160,6 +239,58 @@
           "kotlin": true,
           "swift": true,
           "arkts": true
+        }
+      }
+    }
+  },
+  "uni-compass": {
+    "uni": {
+      "onCompassChange": {
+        "name": "onCompassChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        },
+        "web": {
+          "js": true
+        }
+      },
+      "offCompassChange": {
+        "name": "offCompassChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        },
+        "web": {
+          "js": true
+        }
+      },
+      "startCompass": {
+        "name": "startCompass",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        },
+        "web": {
+          "js": true
+        }
+      },
+      "stopCompass": {
+        "name": "stopCompass",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        },
+        "web": {
+          "js": true
         }
       }
     }
@@ -254,7 +385,7 @@
         "app": {
           "js": false,
           "x-js": false,
-          "kotlin": false,
+          "kotlin": "dom2",
           "swift": true,
           "arkts": false
         }
@@ -264,12 +395,28 @@
         "app": {
           "js": false,
           "x-js": false,
-          "kotlin": false,
+          "kotlin": "dom2",
           "swift": true,
           "arkts": false
         }
       }
     }
+  },
+  "uni-editor": {
+    "uni": {
+      "createEditorContextAsync": {
+        "name": "createEditorContextAsync",
+        "app": {
+          "js": false,
+          "kotlin": "dom1",
+          "swift": true,
+          "arkts": true
+        }
+      }
+    },
+    "easycom": [
+      "editor"
+    ]
   },
   "uni-event": {
     "uni": {
@@ -278,7 +425,7 @@
         "app": {
           "js": false,
           "x-js": false,
-          "kotlin": false,
+          "kotlin": "dom2",
           "swift": true,
           "arkts": true
         }
@@ -288,7 +435,7 @@
         "app": {
           "js": false,
           "x-js": false,
-          "kotlin": false,
+          "kotlin": "dom2",
           "swift": true,
           "arkts": true
         }
@@ -298,7 +445,7 @@
         "app": {
           "js": false,
           "x-js": false,
-          "kotlin": false,
+          "kotlin": "dom2",
           "swift": true,
           "arkts": true
         }
@@ -308,7 +455,7 @@
         "app": {
           "js": false,
           "x-js": false,
-          "kotlin": false,
+          "kotlin": "dom2",
           "swift": true,
           "arkts": true
         }
@@ -329,10 +476,26 @@
     }
   },
   "uni-facialVerify": {
-    "uni": [
-      "startFacialRecognitionVerify",
-      "getFacialRecognitionMetaInfo"
-    ]
+    "uni": {
+      "startFacialRecognitionVerify": {
+        "name": "startFacialRecognitionVerify",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "getFacialRecognitionMetaInfo": {
+        "name": "getFacialRecognitionMetaInfo",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
   },
   "uni-fileSystemManager": {
     "uni": {
@@ -427,7 +590,7 @@
         "app": {
           "js": false,
           "x-js": false,
-          "kotlin": false,
+          "kotlin": "dom2",
           "swift": true,
           "arkts": true
         }
@@ -528,7 +691,58 @@
       }
     }
   },
-  "uni-input": {},
+  "uni-gyroscope": {
+    "uni": {
+      "startGyroscope": {
+        "name": "startGyroscope",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        },
+        "web": {
+          "js": true
+        }
+      },
+      "stopGyroscope": {
+        "name": "stopGyroscope",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        },
+        "web": {
+          "js": true
+        }
+      },
+      "onGyroscopeChange": {
+        "name": "onGyroscopeChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        },
+        "web": {
+          "js": true
+        }
+      },
+      "offGyroscopeChange": {
+        "name": "offGyroscopeChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        },
+        "web": {
+          "js": true
+        }
+      }
+    }
+  },
   "uni-installApk": {
     "uni": {
       "installApk": {
@@ -558,7 +772,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       },
       "offKeyboardHeightChange": {
@@ -567,7 +781,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       }
     }
@@ -842,6 +1056,34 @@
       }
     }
   },
+  "uni-memory": {
+    "uni": {
+      "onMemoryWarning": {
+        "name": "onMemoryWarning",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "offMemoryWarning": {
+        "name": "offMemoryWarning",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    },
+    "mp-weixin": false,
+    "mp-alipay": false,
+    "mp-baidu": false,
+    "mp-qq": false,
+    "mp-kuaishou": false,
+    "mp-jd": false
+  },
   "uni-modal": {
     "uni": {
       "showModal": {
@@ -911,8 +1153,8 @@
       "name": "weixin",
       "app": {
         "js": false,
-        "kotlin": false,
-        "swift": false,
+        "kotlin": true,
+        "swift": true,
         "arkts": true
       }
     }
@@ -933,6 +1175,19 @@
     "uni": {
       "openDocument": {
         "name": "openDocument",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-openLocation": {
+    "uni": {
+      "openLocation": {
+        "name": "openLocation",
         "app": {
           "js": false,
           "kotlin": true,
@@ -974,6 +1229,34 @@
       "service": "payment",
       "name": "wxpay"
     }
+  },
+  "uni-phoneContact": {
+    "uni": {
+      "addPhoneContact": {
+        "name": "addPhoneContact",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "chooseContact": {
+        "name": "chooseContact",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-picker": {
+    "uni": {},
+    "easycom": [
+      "picker"
+    ]
   },
   "uni-previewImage": {
     "uni": {
@@ -1026,6 +1309,15 @@
       },
       "resetPrivacyAuthorization": {
         "name": "resetPrivacyAuthorization",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "agreePrivacyAuthorization": {
+        "name": "agreePrivacyAuthorization",
         "app": {
           "js": true,
           "kotlin": true,
@@ -1218,6 +1510,37 @@
       }
     }
   },
+  "uni-screenBrightness": {
+    "uni": {
+      "setScreenBrightness": {
+        "name": "setScreenBrightness",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "getScreenBrightness": {
+        "name": "getScreenBrightness",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "setKeepScreenOn": {
+        "name": "setKeepScreenOn",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-secure-network": {
     "uni": {
       "__getSecureNetworkManager": {
@@ -1231,14 +1554,36 @@
       }
     }
   },
+  "uni-share": {
+    "provider": {
+      "service": "share",
+      "app": {
+        "js": false,
+        "kotlin": true,
+        "swift": true,
+        "arkts": true
+      }
+    },
+    "uni": {
+      "share": {
+        "name": "share",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-share-weixin": {
     "provider": {
       "service": "share",
       "name": "weixin",
       "app": {
         "js": false,
-        "kotlin": false,
-        "swift": false,
+        "kotlin": true,
+        "swift": true,
         "arkts": true
       }
     }
@@ -1386,7 +1731,6 @@
     }
   },
   "uni-swiper": {},
-  "uni-textarea": {},
   "uni-theme": {
     "uni": {
       "onOsThemeChange": {
@@ -1441,8 +1785,7 @@
           "x-js": true,
           "kotlin": false,
           "swift": false,
-          "arkts": false,
-          "mp-weixin": true
+          "arkts": false
         }
       },
       "offThemeChange": {
@@ -1452,8 +1795,7 @@
           "x-js": true,
           "kotlin": false,
           "swift": false,
-          "arkts": false,
-          "mp-weixin": true
+          "arkts": false
         }
       },
       "onHostThemeChange": {
@@ -1463,8 +1805,7 @@
           "x-js": true,
           "kotlin": true,
           "swift": true,
-          "arkts": true,
-          "mp-weixin": true
+          "arkts": true
         }
       },
       "offHostThemeChange": {
@@ -1474,8 +1815,7 @@
           "x-js": true,
           "kotlin": true,
           "swift": true,
-          "arkts": true,
-          "mp-weixin": true
+          "arkts": true
         }
       }
     }
@@ -1502,6 +1842,28 @@
       }
     }
   },
+  "uni-vibrate": {
+    "uni": {
+      "vibrateShort": {
+        "name": "vibrateShort",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "vibrateLong": {
+        "name": "vibrateLong",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-video": {
     "uni": {
       "createVideoContext": {
@@ -1513,9 +1875,6 @@
         }
       }
     },
-    "components": [
-      "video"
-    ],
     "easycom": [
       "video"
     ]

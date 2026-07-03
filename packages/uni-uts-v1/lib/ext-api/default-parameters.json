@@ -1,4 +1,26 @@
 {
+  "uni-accelerometer": {
+    "offAccelerometerChange": [
+      "null"
+    ],
+    "startAccelerometer": [
+      "null"
+    ],
+    "stopAccelerometer": [
+      "null"
+    ]
+  },
+  "uni-compass": {
+    "offCompassChange": [
+      "null"
+    ],
+    "startCompass": [
+      "null"
+    ],
+    "stopCompass": [
+      "null"
+    ]
+  },
   "uni-createIntersectionObserver": {
     "createIntersectionObserver": [
       null,
@@ -6,6 +28,10 @@
     ]
   },
   "uni-createWebviewContext": {
+    "createWebViewContext": [
+      null,
+      "null"
+    ],
     "createWebviewContext": [
       null,
       "null"
@@ -74,6 +100,17 @@
       "null"
     ]
   },
+  "uni-gyroscope": {
+    "startGyroscope": [
+      "null"
+    ],
+    "stopGyroscope": [
+      "null"
+    ],
+    "offGyroscopeChange": [
+      "null"
+    ]
+  },
   "uni-keyboard": {
     "hideKeyboard": [
       "null"
@@ -84,6 +121,19 @@
       "null"
     ],
     "offLocationChangeError": [
+      "null"
+    ]
+  },
+  "uni-memory": {
+    "offMemoryWarning": [
+      "null"
+    ]
+  },
+  "uni-modal": {
+    "showModal": [
+      "null"
+    ],
+    "hideModal": [
       "null"
     ]
   },
@@ -136,6 +186,12 @@
       "null"
     ]
   },
+  "uni-video": {
+    "createVideoContext": [
+      null,
+      "null"
+    ]
+  },
   "uni-live-player": {
     "createLivePlayerContext": [
       null,
@@ -157,26 +213,6 @@
   "uni-push": {
     "setAppBadgeNumber": [
       null,
-      "null"
-    ]
-  },
-  "uni-video": {
-    "createVideoContext": [
-      null,
-      "null"
-    ]
-  },
-  "uni-web-view": {
-    "createWebViewContext": [
-      null,
-      "null"
-    ]
-  },
-  "uni-compass": {
-    "startCompass": [
-      "null"
-    ],
-    "stopCompass": [
       "null"
     ]
   },

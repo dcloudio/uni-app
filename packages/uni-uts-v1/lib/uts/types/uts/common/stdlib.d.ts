@@ -1,0 +1,1 @@
+declare function isTruthy(value: any | null): boolean; // 仅在android和ios的index.d.ts中声明

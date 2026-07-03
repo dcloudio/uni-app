@@ -30,6 +30,7 @@
   "createCameraContext",
   "createCanvasContext",
   "createCanvasContextAsync",
+  "createEditorContextAsync",
   "createInnerAudioContext",
   "createIntersectionObserver",
   "createLivePlayerContext",

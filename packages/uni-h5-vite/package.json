@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-h5-vite",
-  "version": "3.0.0-alpha-5000720260416001",
+  "version": "3.0.0-alpha-5010420260626001",
   "description": "uni-h5-vite",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -22,6 +22,7 @@
     "@dcloudio/uni-cli-shared": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",
     "@rollup/pluginutils": "catalog:",
+    "@vitejs/plugin-basic-ssl": "catalog:",
     "@vue/compiler-dom": "catalog:",
     "@vue/compiler-sfc": "catalog:",
     "@vue/server-renderer": "catalog:",

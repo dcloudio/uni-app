@@ -112,6 +112,14 @@ describe('mp-alipay: transform component', () => {
     )
   })
 
+  test('alipay open component - open-avatar', () => {
+    assert(
+      `<open-avatar userId="12345" size="normal"></open-avatar>`,
+      `<open-avatar userId="12345" size="normal"></open-avatar>`,
+      blankScript
+    )
+  })
+
   test(`button chooseAvatar`, () => {
     assert(
       `<button open-type="chooseAvatar" @chooseavatar="onChooseAvatar" />`,
@@ -127,9 +135,35 @@ describe('mp-alipay: transform component x', () => {
   test(`canvas`, () => {
     assert(
       `<canvas/>`,
-      `<canvas style="{{'--status-bar-height:' + a}}" type="2d"/>`,
+      `<canvas style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}" type="2d"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<canvas id="myCanvas"/>`,
+      `<canvas id="myCanvas" style="{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}" type="2d" change:eS="{{uV.sS}}" eS=\"{{$eS[a]}}\" change:eA="{{uV.sA}}" eA=\"{{$eA[a]}}\"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _sei('myCanvas', 'canvas'), b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<canvas canvas-id="myCanvas"/>`,
+      `<canvas id="myCanvas" style="{{'--status-bar-height:' + b + ';' + ('--uni-safe-area-inset-bottom:' + c)}}" type="2d" change:eS="{{uV.sS}}" eS=\"{{$eS[a]}}\" change:eA="{{uV.sA}}" eA=\"{{$eA[a]}}\"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _sei('myCanvas', 'canvas'), b: \`\${_ctx.u_s_b_h}px\`, c: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -140,9 +174,9 @@ describe('mp-alipay: transform component x', () => {
 
     assert(
       `<canvas type="2d"/>`,
-      `<canvas type="2d" style="{{'--status-bar-height:' + a}}"/>`,
+      `<canvas type="2d" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -153,9 +187,9 @@ describe('mp-alipay: transform component x', () => {
 
     assert(
       `<canvas type="webgl"/>`,
-      `<canvas type="webgl" style="{{'--status-bar-height:' + a}}"/>`,
+      `<canvas type="webgl" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -168,9 +202,9 @@ describe('mp-alipay: transform component x', () => {
   test(`checkbox`, () => {
     assert(
       `<checkbox fore-color="#FF0000"/>`,
-      `<checkbox color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `<checkbox color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -181,9 +215,9 @@ describe('mp-alipay: transform component x', () => {
 
     assert(
       `<checkbox fore-color="#FF0000"/>`,
-      `<checkbox color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `<checkbox color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -196,9 +230,9 @@ describe('mp-alipay: transform component x', () => {
   test(`radio`, () => {
     assert(
       `<radio active-background-color="#FF0000"/>`,
-      `<radio color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `<radio color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -209,9 +243,9 @@ describe('mp-alipay: transform component x', () => {
 
     assert(
       `<radio color="#FF0000"/>`,
-      `<radio color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `<radio color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -224,9 +258,9 @@ describe('mp-alipay: transform component x', () => {
   test(`switch`, () => {
     assert(
       `<switch active-background-color="#FF0000"/>`,
-      `<switch color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `<switch color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -237,9 +271,9 @@ describe('mp-alipay: transform component x', () => {
 
     assert(
       `<switch color="#FF0000"/>`,
-      `<switch color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `<switch color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {
@@ -252,9 +286,37 @@ describe('mp-alipay: transform component x', () => {
   test(`slider`, () => {
     assert(
       `<slider active-background-color="#FF0000" fore-color="#FF0000"/>`,
-      `<slider active-color="#FF0000" handle-color="#FF0000" style="{{'--status-bar-height:' + a}}"/>`,
+      `<slider active-color="#FF0000" handle-color="#FF0000" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\` }
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+
+    assert(
+      `<slider block-color="#00FF00" block-size="20"/>`,
+      `<slider handle-color="#00FF00" handle-size="20" style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
+  return __returned__
+}`,
+      {
+        isX: true,
+        nodeTransforms: [transformMPBuiltInTag],
+      }
+    )
+  })
+
+  test(`scroll-view`, () => {
+    assert(
+      `<list-view/>`,
+      `<scroll-view style="{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}"/>`,
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
 }`,
       {

@@ -119,7 +119,7 @@ export function uniMiniProgramPlugin(
 
   let resolvedConfig: ResolvedConfig
 
-  rewriteCompileScriptOnce()
+  rewriteCompileScriptOnce(style.extname)
   rewriteCompilerSfcParseOnce()
 
   return {

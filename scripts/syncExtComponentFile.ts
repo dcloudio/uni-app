@@ -8,6 +8,7 @@ function resolve(file: string) {
 
 const uniComponentsPath = resolve('../packages/uni-components')
 const libXPath = path.resolve(uniComponentsPath, './lib-x')
+const libXVaporPath = path.resolve(uniComponentsPath, './lib-x-vapor')
 
 const components = [{
   originName: 'loading',
@@ -22,26 +23,34 @@ export function syncExtComponentFile(apiDirs: string[]) {
         const componentDir = `uni-${component.originName}`
         sync(path.join(apiDir, `./${componentDir}/package.json`)).forEach(packageJsonPath => {
           const componentsDir = path.resolve(packageJsonPath, '../components', component.originName)
-          const originComponentPath = path.join(componentsDir, `${component.originName}.vue`)
-          const targetPath = path.resolve(libXPath, component.targetName)
+          // 查找 ${originName}.vue 或 ${originName}.uvue
+          const originComponentPath = ['.vue', '.uvue']
+            .map(ext => path.join(componentsDir, `${component.originName}${ext}`))
+            .find(p => fs.existsSync(p))
+          const targetPaths = [
+            path.resolve(libXPath, component.targetName),
+            path.resolve(libXVaporPath, component.targetName),
+          ]
 
-          // 复制 uni-${originName}/components/${originName}/${originName}.vue 到 targetPath/${targetName}.vue
-          if (fs.existsSync(originComponentPath)) {
-            const targetFilePath = path.resolve(targetPath, `${component.targetName}.vue`)
-            fs.copySync(originComponentPath, targetFilePath)
-          }
+          targetPaths.forEach((targetPath) => {
+            // 将 ${originName}.(vue|uvue) 改名复制为 ${targetName}.vue
+            if (originComponentPath) {
+              const targetFilePath = path.resolve(targetPath, `${component.targetName}.vue`)
+              fs.copySync(originComponentPath, targetFilePath)
+            }
 
-          // 复制 uni-${originName}/components 中的其他内容
-          if (fs.existsSync(componentsDir)) {
-            sync(path.join(componentsDir, '*')).forEach(itemPath => {
-              const itemName = path.basename(itemPath)
-              // 跳过已经处理过的 originName 目录
-              if (itemPath !== originComponentPath) {
-                const targetItemPath = path.resolve(targetPath, itemName)
-                fs.copySync(itemPath, targetItemPath)
-              }
-            })
-          }
+            // 复制 uni-${originName}/components 中的其他内容，跳过 originName.(vue|uvue)
+            if (fs.existsSync(componentsDir)) {
+              const originNames = new Set([`${component.originName}.vue`, `${component.originName}.uvue`])
+              sync(path.join(componentsDir, '*')).forEach(itemPath => {
+                const itemName = path.basename(itemPath)
+                if (!originNames.has(itemName)) {
+                  const targetItemPath = path.resolve(targetPath, itemName)
+                  fs.copySync(itemPath, targetItemPath)
+                }
+              })
+            }
+          })
         })
       })
     })

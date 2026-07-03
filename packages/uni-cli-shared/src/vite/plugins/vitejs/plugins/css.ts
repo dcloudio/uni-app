@@ -43,11 +43,8 @@ import { preCss, preNVueCss } from '../../../../preprocess'
 import { filterPrefersColorScheme } from '../../../../postcss/plugins/uniapp'
 import { emptyCssComments } from '../cleanString'
 
-import {
-  JS_STYLE_PLACEHOLDER_STR,
-  PAGES_JSON_JS,
-  PAGES_JSON_UTS,
-} from '../../../../constants'
+import { PAGES_JSON_JS, PAGES_JSON_UTS } from '../../../../constants'
+import { createJsStylePlaceholder } from '../../../../dom2/fontFamily'
 import { createRollupError } from '../../../utils/utils'
 import { createCompilerError } from '@vue/compiler-core'
 import { createResolveErrorMsg } from '../../../../utils'
@@ -378,16 +375,16 @@ export function cssPostPlugin(
     chunkCssCode: (
       filename: string,
       cssCode: string
-    ) => Promise<string> | string
+    ) => Promise<string | Uint8Array> | string
     includeComponentCss?: boolean
-    emitFile?: (filename: string, cssCode: string) => void
+    emitFile?: (filename: string, cssCode: string | Uint8Array) => void
   }
 ): Plugin {
   // styles initialization in buildStart causes a styling loss in watch
   const styles: Map<string, string> = new Map<string, string>()
   let cssChunks: Map<string, string[]>
-  const isDom2Harmony =
-    process.env.UNI_APP_X_DOM2 === 'true' && platform === 'app-harmony'
+  const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+  const isDom2App = isDom2 && platform.startsWith('app')
   return {
     name: 'vite:css-post',
     buildStart() {
@@ -407,8 +404,8 @@ export function cssPostPlugin(
         code:
           modulesCode ||
           (isJsCode
-            ? isDom2Harmony
-              ? `export default ${JS_STYLE_PLACEHOLDER_STR}`
+            ? isDom2App
+              ? `export default ${createJsStylePlaceholder(id)}`
               : 'export default {}'
             : ''),
         map: { mappings: '' },
@@ -418,7 +415,7 @@ export function cssPostPlugin(
       }
     },
     async renderChunk(_code, chunk, _opts) {
-      if (isDom2Harmony) {
+      if (isDom2) {
         // 通过 generateBundle 实现
         return null
       }
@@ -563,7 +560,10 @@ export function cssPostPlugin(
           inlined: false,
           minify: true,
         })
-        if (source.trim()) {
+        if (typeof source === 'string') {
+          source = source.trim()
+        }
+        if (source) {
           emitFile
             ? emitFile(filename, source)
             : this.emitFile({

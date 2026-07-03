@@ -2,6 +2,7 @@
 import path from 'path'
 import fs from 'fs-extra'
 import type { UTSTargetLanguage } from './uts'
+import { isUniAppXJsEngine } from './x'
 
 export type DefineOptions = {
   name?: string
@@ -316,7 +317,7 @@ export function parseInjects(
       // } else if (fs.existsSync(rootIndexFileName)) {
       //   source = `${source}/utssdk/index.uts`
       // }
-    } else if (process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js') {
+    } else if (isUniAppXJsEngine()) {
       if (
         fs.existsSync(
           path.resolve(uniModuleRootDir, 'utssdk', 'app-js', 'index.uts')
@@ -403,7 +404,7 @@ function parseInject(
               if (isPlainObject(appOptions)) {
                 // js engine 下且存在 app-js，不检查
                 const skipCheck =
-                  (process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js' ||
+                  (isUniAppXJsEngine() ||
                     process.env.UNI_UTS_PLATFORM === 'app-harmony') &&
                   source.includes('app-js')
                 if (!skipCheck) {

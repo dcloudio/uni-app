@@ -5,6 +5,7 @@ import {
   parseUTSArkTSPluginStacktrace,
   parseUTSKotlinStacktrace,
   parseUTSSwiftPluginStacktrace,
+  parseUTSSyntaxError,
 } from '../src/stacktrace'
 import { hbuilderKotlinCompileErrorFormatter } from '../src/stacktrace/kotlin'
 import { normalizePath } from '../src/shared'
@@ -166,6 +167,46 @@ describe('uts:stacktrace', () => {
         }
       )
     ).toMatchSnapshot()
+  })
+  test('parseUTSSyntaxError', () => {
+    const result = parseUTSSyntaxError(
+      new Error(`   x Identifier cannot follow number
+      ,-[uni_modules/uni-animation-view/utssdk/app-android/index.uts:132:1]
+  132 |   const lottieView = this._lottieView
+  133 |   if (lottieView != null && !this._destroyed) {
+  134 |    if (value == -1) {
+  135 |     lottieView.setSpeed(-1.0f)
+      :                             ^
+  136 |    } else {
+  137 |     lottieView.setSpeed(1.0f)
+      \`----
+   x Expected ',', got 'f'
+      ,-[uni_modules/uni-animation-view/utssdk/app-android/index.uts:132:1]
+  132 |   const lottieView = this._lottieView
+  133 |   if (lottieView != null && !this._destroyed) {
+  134 |    if (value == -1) {
+  135 |     lottieView.setSpeed(-1.0f)
+      :                             ^
+  136 |    } else {
+  137 |     lottieView.setSpeed(1.0f)
+      \`----
+ Caused by:
+     Syntax Error`),
+      normalizePath(path.resolve(__dirname, 'examples/uts'))
+    )
+
+    expect(typeof result).toBe('string')
+    if (typeof result !== 'string') {
+      return
+    }
+    expect(result).toContain(
+      "Identifier cannot follow number\nExpected ',', got 'f'"
+    )
+    expect(result).toContain(
+      'at uni_modules/uni-animation-view/utssdk/app-android/index.uts:135:29'
+    )
+    expect(result).toContain('135 |     lottieView.setSpeed(-1.0f)')
+    expect(result).toContain(':                             ^')
   })
   // TODO 修复sourceMap生成问题后再启用cpp测试
   //   test('parseCppStacktrace', async () => {

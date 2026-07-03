@@ -1,8 +1,6 @@
 import {
   type ComponentInternalInstance,
   type ComponentPublicInstance,
-  onBeforeUnmount,
-  onMounted,
   ref,
 } from 'vue'
 import { OPEN_DIALOG_PAGE } from '../../constants'
@@ -59,20 +57,5 @@ export function setupXPage(
       pageVm,
       pageInstance as Page.PageInstance['$page']
     )
-  }
-
-  if (!__VAPOR__) {
-    onMounted(() => {
-      const rootElement = pageVm.$el?.parentElement
-      if (rootElement) {
-        rootElement._page = pageVm.$page
-      }
-    })
-    onBeforeUnmount(() => {
-      const rootElement = pageVm.$el?.parentElement
-      if (rootElement) {
-        rootElement._page = null
-      }
-    })
   }
 }

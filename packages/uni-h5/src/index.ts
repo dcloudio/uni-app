@@ -135,6 +135,7 @@ export * from './x/view/components/customElements'
 //#endif
 
 //#if !_X_
+// @ts-expect-error
 export * from './service/api'
 // @ts-expect-error
 export * from './service/api/uni'

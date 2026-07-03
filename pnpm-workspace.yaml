@@ -9,8 +9,8 @@ catalog:
   '@babel/core': 7.25.2
   '@babel/parser': 7.25.6
   '@babel/types': 7.25.6
-  '@dcloudio/types': 3.4.28
-  '@dcloudio/uni-app-x': 0.7.88
+  '@dcloudio/types': 3.4.31
+  '@dcloudio/uni-app-x': 0.7.114
   '@rollup/pluginutils': 5.1.0
   '@types/adm-zip': 0.5.5
   '@types/debug': 4.1.12
@@ -23,6 +23,7 @@ catalog:
   '@types/resolve': 1.20.6
   '@types/sass': 1.43.1
   '@vitejs/plugin-legacy': 5.3.2
+  '@vitejs/plugin-basic-ssl': 1.2.0
   '@vitejs/plugin-vue': 5.2.4
   '@vitejs/plugin-vue-jsx': 3.1.0
   '@vue/compiler-core': 3.4.21
@@ -60,7 +61,7 @@ catalog:
   'pako': 1.0.11
   'picocolors': 1.1.0
   'pinia': 2.1.7
-  'postcss': 8.4.45
+  'postcss': 8.5.6
   'postcss-selector-parser': 6.1.2
   'qrcode-reader': 1.0.4
   'qrcode-terminal': 0.12.0

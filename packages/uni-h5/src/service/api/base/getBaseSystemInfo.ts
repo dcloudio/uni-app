@@ -14,6 +14,10 @@ export const isIPadOS = isMac && navigator.maxTouchPoints > 0
 
 export const isHarmony = /OpenHarmony/i.test(ua)
 
+export const isHarmony2in1 = isHarmony && /PC/i.test(ua)
+
+export const isHarmonyTablet = isHarmony && /Tablet/i.test(ua)
+
 export function getScreenFix() {
   return (
     /^Apple/.test(navigator.vendor) && typeof window.orientation === 'number'

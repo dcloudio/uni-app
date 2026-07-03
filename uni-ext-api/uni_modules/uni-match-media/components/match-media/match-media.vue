@@ -28,8 +28,11 @@
      * 屏幕方向
      * @uniPlatform {
        "app": {
-        "harmony": {
-          "unixvVer": "5.0"
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
+       "harmony": {
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -39,8 +42,11 @@
      * 页面宽度（px 为单位）
      * @uniPlatform {
        "app": {
-        "harmony": {
-          "unixvVer": "5.0"
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
+       "harmony": {
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -50,8 +56,11 @@
      * 页面最小宽度（px 为单位）
      * @uniPlatform {
        "app": {
-        "harmony": {
-          "unixvVer": "5.0"
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
+       "harmony": {
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -61,8 +70,11 @@
      * 页面最大宽度（px 为单位）
      * @uniPlatform {
        "app": {
-        "harmony": {
-          "unixvVer": "5.0"
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
+       "harmony": {
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -72,8 +84,11 @@
      * 页面高度（px 为单位）
      * @uniPlatform {
        "app": {
-        "harmony": {
-          "unixvVer": "5.0"
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
+       "harmony": {
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -83,8 +98,11 @@
      * 页面最小高度（px 为单位）
      * @uniPlatform {
        "app": {
-        "harmony": {
-          "unixvVer": "5.0"
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
+       "harmony": {
+          "unixVaporVer": "5.0"
         }
       }
     }
@@ -94,8 +112,11 @@
      * 页面最大高度（px 为单位）
      * @uniPlatform {
        "app": {
-        "harmony": {
-          "unixvVer": "5.0"
+        "ios": {
+          "unixVaporVer": "5.11"
+        },
+       "harmony": {
+          "unixVaporVer": "5.0"
         }
       }
     }

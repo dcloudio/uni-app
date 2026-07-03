@@ -33,6 +33,7 @@ export async function bundleArkTS({
   const runtimePackageName = getRuntimePackageName(isX)
   const buildOptions: UTSBundleOptions = {
     hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
+    vapor: process.env.UNI_APP_X_DOM2 === 'true',
     input: {
       root: rootDir,
       filename,
@@ -55,6 +56,7 @@ export async function bundleArkTS({
       footer,
       imports: [],
       sourceMap: sourceMap ? path.resolve(resolveUTSSourceMapPath()) : false,
+      isDom2: process.env.UNI_APP_X_DOM2 === 'true',
       extname: '.ets',
       logFilename: false,
       isPlugin: true,

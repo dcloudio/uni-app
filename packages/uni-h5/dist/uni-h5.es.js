@@ -1,3 +1,9 @@
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, renderSlot, logError, createBlock, onBeforeActivate, onBeforeDeactivate, onDeactivated, createApp, isReactive, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, renderList, createElementVNode, normalizeStyle } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, getCustomDataset, parseUrl, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, debounce, isUniLifecycleHook, UTSJSONObject, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, OFF_THEME_CHANGE, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
@@ -709,12 +715,12 @@ function checkValue$1(value, defaultValue) {
   const newValue = Number(value);
   return isNaN(newValue) ? defaultValue : newValue;
 }
-const isApple = () => /^Apple/.test(navigator.vendor);
+const isApple$1 = () => /^Apple/.test(navigator.vendor);
 function getWindowWidth$1() {
-  const screenFix = isApple() && typeof window.orientation === "number";
-  const landscape = screenFix && Math.abs(window.orientation) === 90;
-  var screenWidth = screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-  var windowWidth = screenFix ? Math.min(
+  const isApple2 = /^Apple/.test(navigator.vendor);
+  const screenFix = isApple2 && window.matchMedia("(orientation:landscape)").matches;
+  var screenWidth = screenFix ? Math.max(screen.width, screen.height) : screen.width;
+  var windowWidth = isApple2 ? Math.min(
     window.innerWidth,
     document.documentElement.clientWidth,
     screenWidth
@@ -734,7 +740,7 @@ function useRem() {
   document.addEventListener("DOMContentLoaded", updateRem);
   window.addEventListener("load", updateRem);
   window.addEventListener("resize", updateRem);
-  if (isApple()) {
+  if (isApple$1()) {
     window.addEventListener("orientationchange", () => {
       updateRem();
       setTimeout(updateRem, 50);
@@ -4663,6 +4669,88 @@ const innerAudioContextOffEventNames = [
   "offSeeking",
   "offSeeked"
 ];
+let index$w = 0;
+let optionsCache = {};
+function operateEditor(componentId, pageId, type, options) {
+  const data = { options };
+  const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
+  if (needCallOptions) {
+    const callbackId = String(index$w++);
+    data.callbackId = callbackId;
+    optionsCache[callbackId] = options;
+  }
+  UniServiceJSBridge.invokeViewMethod(
+    `editor.${componentId}`,
+    {
+      type,
+      data
+    },
+    pageId,
+    ({ callbackId, data: data2 }) => {
+      if (needCallOptions) {
+        callOptions(optionsCache[callbackId], data2);
+        delete optionsCache[callbackId];
+      }
+    }
+  );
+}
+class EditorContext {
+  constructor(id2, pageId) {
+    this.id = id2;
+    this.pageId = pageId;
+  }
+  format(name, value) {
+    this._exec("format", {
+      name,
+      value
+    });
+  }
+  insertDivider() {
+    this._exec("insertDivider");
+  }
+  insertMention(options) {
+    this._exec("insertMention", options);
+  }
+  insertLink(options) {
+    this._exec("insertLink", options);
+  }
+  insertImage(options) {
+    this._exec("insertImage", options);
+  }
+  insertText(options) {
+    this._exec("insertText", options);
+  }
+  setContents(options) {
+    this._exec("setContents", options);
+  }
+  getContents(options) {
+    this._exec("getContents", options);
+  }
+  clear(options) {
+    this._exec("clear", options);
+  }
+  removeFormat(options) {
+    this._exec("removeFormat", options);
+  }
+  undo(options) {
+    this._exec("undo", options);
+  }
+  redo(options) {
+    this._exec("redo", options);
+  }
+  blur(options) {
+    this._exec("blur", options);
+  }
+  getSelectionText(options) {
+    this._exec("getSelectionText", options);
+  }
+  scrollIntoView(options) {
+    this._exec("scrollIntoView", options);
+  }
+  _exec(method, options) {
+    operateEditor(this.id, this.pageId, method, options);
+  }
+}
 const defaultOptions = {
   thresholds: [0],
   initialRatio: 0,
@@ -4766,82 +4854,6 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$w = 0;
-let optionsCache = {};
-function operateEditor(componentId, pageId, type, options) {
-  const data = { options };
-  const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
-  if (needCallOptions) {
-    const callbackId = String(index$w++);
-    data.callbackId = callbackId;
-    optionsCache[callbackId] = options;
-  }
-  UniServiceJSBridge.invokeViewMethod(
-    `editor.${componentId}`,
-    {
-      type,
-      data
-    },
-    pageId,
-    ({ callbackId, data: data2 }) => {
-      if (needCallOptions) {
-        callOptions(optionsCache[callbackId], data2);
-        delete optionsCache[callbackId];
-      }
-    }
-  );
-}
-class EditorContext {
-  constructor(id2, pageId) {
-    this.id = id2;
-    this.pageId = pageId;
-  }
-  format(name, value) {
-    this._exec("format", {
-      name,
-      value
-    });
-  }
-  insertDivider() {
-    this._exec("insertDivider");
-  }
-  insertImage(options) {
-    this._exec("insertImage", options);
-  }
-  insertText(options) {
-    this._exec("insertText", options);
-  }
-  setContents(options) {
-    this._exec("setContents", options);
-  }
-  getContents(options) {
-    this._exec("getContents", options);
-  }
-  clear(options) {
-    this._exec("clear", options);
-  }
-  removeFormat(options) {
-    this._exec("removeFormat", options);
-  }
-  undo(options) {
-    this._exec("undo", options);
-  }
-  redo(options) {
-    this._exec("redo", options);
-  }
-  blur(options) {
-    this._exec("blur", options);
-  }
-  getSelectionText(options) {
-    this._exec("getSelectionText", options);
-  }
-  scrollIntoView(options) {
-    this._exec("scrollIntoView", options);
-  }
-  _exec(method, options) {
-    operateEditor(this.id, this.pageId, method, options);
-  }
-}
 const ContextClasss = {
   canvas: CanvasContext,
   map: MapContext,
@@ -5410,6 +5422,7 @@ const API_START_COMPASS = "startCompass";
 const API_STOP_COMPASS = "stopCompass";
 const API_VIBRATE_SHORT = "vibrateShort";
 const API_VIBRATE_LONG = "vibrateLong";
+const API_SET_KEEP_SCREEN_ON = "setKeepScreenOn";
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
   key: {
@@ -7448,6 +7461,8 @@ const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
 const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
 const isIPadOS = isMac && navigator.maxTouchPoints > 0;
 const isHarmony = /OpenHarmony/i.test(ua);
+const isHarmony2in1 = isHarmony && /PC/i.test(ua);
+const isHarmonyTablet = isHarmony && /Tablet/i.test(ua);
 function getScreenFix() {
   return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
 }
@@ -7870,8 +7885,9 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
     const rootEl = rootRef.value;
     if (!rootEl)
       return;
-    size.width = rootEl.offsetWidth;
-    size.height = rootEl.offsetHeight;
+    const rect = rootEl.getBoundingClientRect();
+    size.width = rect.width;
+    size.height = rect.height;
     reset();
   };
 }
@@ -9266,6 +9282,70 @@ function link(Quill) {
     return Link.PROTOCOL_WHITELIST.concat("file").indexOf(protocol) > -1 ? url : Link.SANITIZED_URL;
   };
 }
+const SupportStyleList = ["color", "background", "padding", "radius"];
+const MentionStyleMap = {
+  color: "color",
+  background: "background",
+  padding: "padding",
+  radius: "border-radius"
+};
+function getMentionStyleValue(node, styleKey) {
+  const cssName = MentionStyleMap[styleKey];
+  if (!cssName) {
+    return "";
+  }
+  return node.style.getPropertyValue(cssName).trim();
+}
+const isApple = /^Apple/.test(navigator.vendor);
+function mention(Quill) {
+  const Embed = Quill.import("blots/embed");
+  class MentionBlot extends Embed {
+    static create(data) {
+      const node = super.create();
+      const id2 = data.id == null ? "" : data.id;
+      const name = data.name == null ? "" : data.name;
+      if (!isApple) {
+        node.setAttribute("contenteditable", "false");
+      }
+      node.setAttribute("data-id", id2);
+      node.setAttribute("data-name", name);
+      let style = "";
+      if (isApple) {
+        style += "-webkit-user-select: none;";
+      }
+      SupportStyleList.forEach((item) => {
+        const styleName = MentionStyleMap[item] || item;
+        if (data[item]) {
+          style += `${hyphenate(styleName)}: ${data[item]};`;
+        }
+      });
+      if (style) {
+        node.setAttribute("style", style);
+      }
+      node.innerText = `@${name}`;
+      return node;
+    }
+    static value(node) {
+      const value = {
+        id: node.dataset.id == null ? "" : node.dataset.id,
+        name: node.dataset.name == null ? "" : node.dataset.name
+      };
+      SupportStyleList.forEach((item) => {
+        const styleValue2 = getMentionStyleValue(node, item);
+        if (styleValue2) {
+          value[item] = styleValue2;
+        }
+      });
+      return value;
+    }
+  }
+  MentionBlot.blotName = "mention";
+  MentionBlot.tagName = "span";
+  MentionBlot.className = "mention";
+  return {
+    "formats/mention": MentionBlot
+  };
+}
 function register(Quill) {
   const formats = {
     divider,
@@ -9278,12 +9358,14 @@ function register(Quill) {
     font,
     text,
     image,
-    link
+    link,
+    mention
   };
   const options = {};
   Object.values(formats).forEach((value) => extend(options, value(Quill)));
   Quill.register(options, true);
 }
+const STATUS_KEY_MAP = { "code-block": "codeBlock" };
 function useQuill(props2, rootRef, trigger) {
   let quillReady;
   let skipMatcher;
@@ -9293,7 +9375,7 @@ function useQuill(props2, rootRef, trigger) {
     (value) => {
       if (quillReady) {
         quill.enable(!value);
-        if (!value) {
+        if (value) {
           quill.blur();
         }
       }
@@ -9304,6 +9386,14 @@ function useQuill(props2, rootRef, trigger) {
     (value) => {
       if (quillReady) {
         setPlaceHolder(value);
+      }
+    }
+  );
+  watch(
+    () => props2.type,
+    (value) => {
+      if (quillReady) {
+        setInputMode(value);
       }
     }
   );
@@ -9334,7 +9424,10 @@ function useQuill(props2, rootRef, trigger) {
       "ol",
       "ul",
       "li",
-      "br"
+      "br",
+      "blockquote",
+      "pre",
+      "code"
     ];
     let content = "";
     let disable;
@@ -9380,16 +9473,39 @@ function useQuill(props2, rootRef, trigger) {
     const QuillRoot = quill.root;
     QuillRoot.getAttribute(placeHolderAttrName) !== placeholder && QuillRoot.setAttribute(placeHolderAttrName, placeholder);
   }
+  function setInputMode(type) {
+    const QuillRoot = quill.root;
+    if (type === "none") {
+      QuillRoot.setAttribute("inputmode", "none");
+    } else {
+      QuillRoot.removeAttribute("inputmode");
+    }
+  }
   let oldStatus = {};
   function updateStatus(range) {
     const status = range ? quill.getFormat(range) : {};
     const keys = Object.keys(status);
     if (keys.length !== Object.keys(oldStatus).length || keys.find((key) => status[key] !== oldStatus[key])) {
       oldStatus = status;
-      trigger("statuschange", {}, status);
+      const normalizedStatus = {};
+      Object.keys(status).forEach((k) => {
+        normalizedStatus[STATUS_KEY_MAP[k] || k] = status[k];
+      });
+      trigger("statuschange", {}, normalizedStatus);
+    }
+  }
+  function fixCursor() {
+    var _a;
+    const range = quill.getSelection();
+    if (!range)
+      return;
+    const [leaf] = quill.getLeaf(range.index - 1);
+    if (((_a = leaf == null ? void 0 : leaf.statics) == null ? void 0 : _a.blotName) === "mention") {
+      quill.setSelection(range.index, 0, "silent");
     }
   }
   function textChangeHandler() {
+    fixCursor();
     trigger("input", {}, getContents());
   }
   function initQuill(imageResizeModules) {
@@ -9406,6 +9522,7 @@ function useQuill(props2, rootRef, trigger) {
         window.ImageResize.default
       );
       options.modules = {
+        syntax: true,
         ImageResize: {
           modules: imageResizeModules
         }
@@ -9413,6 +9530,7 @@ function useQuill(props2, rootRef, trigger) {
     }
     const rootEl = rootRef.value;
     quill = new Quill(rootEl, options);
+    setInputMode(props2.type);
     const $el = quill.root;
     const events = ["focus", "blur", "input"];
     events.forEach((name) => {
@@ -9501,6 +9619,14 @@ function useQuill(props2, rootRef, trigger) {
             quill.insertEmbed(range.index + 1, "divider", true, "user");
             quill.setSelection(range.index + 2, 0, "silent");
             break;
+          case "insertMention":
+            {
+              range = quill.getSelection(true);
+              const mentionData = extend({ id: "", name: "" }, options);
+              quill.insertEmbed(range.index, "mention", mentionData, "user");
+              quill.setSelection(range.index + 1, 0);
+            }
+            break;
           case "insertImage":
             {
               range = quill.getSelection(true);
@@ -9540,6 +9666,21 @@ function useQuill(props2, rootRef, trigger) {
               const { text: text2 = "" } = options;
               quill.insertText(range.index, text2, "user");
               quill.setSelection(range.index + text2.length, 0, "silent");
+            }
+            break;
+          case "insertLink":
+            {
+              range = quill.getSelection(true);
+              const { text: text2 = "", href = "" } = options;
+              if (!href)
+                break;
+              if (range.length > 0) {
+                quill.format("link", href, "user");
+              } else {
+                const linkText = text2 || href;
+                quill.insertText(range.index, linkText, "link", href, "user");
+                quill.setSelection(range.index + linkText.length, 0, "silent");
+              }
             }
             break;
           case "setContents":
@@ -9623,15 +9764,18 @@ function useQuill(props2, rootRef, trigger) {
       imageResizeModules.push("Resize");
     }
     const quillSrc = "https://unpkg.com/quill@1.3.7/dist/quill.min.js";
-    loadScript(window.Quill, quillSrc, () => {
-      if (imageResizeModules.length) {
-        const imageResizeSrc = "https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js";
-        loadScript(window.ImageResize, imageResizeSrc, () => {
+    const quillHighlightSrc = "https://unpkg.com/@highlightjs/cdn-assets@11.11.1/highlight.min.js";
+    loadScript("hljs", quillHighlightSrc, () => {
+      loadScript(window.Quill, quillSrc, () => {
+        if (imageResizeModules.length) {
+          const imageResizeSrc = "https://unpkg.com/quill-image-resize-mp@3.0.1/image-resize.min.js";
+          loadScript(window.ImageResize, imageResizeSrc, () => {
+            initQuill(imageResizeModules);
+          });
+        } else {
           initQuill(imageResizeModules);
-        });
-      } else {
-        initQuill(imageResizeModules);
-      }
+        }
+      });
     });
   });
 }
@@ -9643,6 +9787,10 @@ const props$t = /* @__PURE__ */ extend({}, props$u, {
   readOnly: {
     type: [Boolean, String],
     default: false
+  },
+  type: {
+    type: String,
+    default: ""
   },
   placeholder: {
     type: String,
@@ -10600,11 +10748,12 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       if (INPUT_MODES.includes(props2.type)) {
         return props2.type;
       }
-      const inputmodeMap = {
-        number: "numeric",
-        digit: "decimal",
-        idcard: "text"
-      };
+      let inputmodeMap = {};
+      {
+        inputmodeMap = {
+          idcard: "text"
+        };
+      }
       return inputmodeMap[props2.type];
     });
     let cache = useCache(props2, type);
@@ -12273,35 +12422,43 @@ function createNavigatorOnClick(props2) {
       return;
     }
     const animationDuration = parseInt(props2.animationDuration);
+    const onFail = (error) => {
+      console.error(error.errMsg);
+    };
     switch (props2.openType) {
       case "navigate":
         uni.navigateTo({
           url: props2.url,
           animationType: props2.animationType || "pop-in",
-          animationDuration
+          animationDuration,
+          fail: onFail
         });
         break;
       case "redirect":
         uni.redirectTo({
           url: props2.url,
-          exists: props2.exists
+          exists: props2.exists,
+          fail: onFail
         });
         break;
       case "switchTab":
         uni.switchTab({
-          url: props2.url
+          url: props2.url,
+          fail: onFail
         });
         break;
       case "reLaunch":
         uni.reLaunch({
-          url: props2.url
+          url: props2.url,
+          fail: onFail
         });
         break;
       case "navigateBack":
         uni.navigateBack({
           delta: props2.delta,
           animationType: props2.animationType || "pop-out",
-          animationDuration
+          animationDuration,
+          fail: onFail
         });
         break;
     }
@@ -12806,6 +12963,9 @@ class Scroll {
     return e2;
   }
 }
+function calculateSnapIndex(position, itemSize) {
+  return Math.round(Math.abs(position) / itemSize);
+}
 function createAnimation(scroll, onScroll, onEnd) {
   const state2 = {
     id: 0,
@@ -12924,7 +13084,7 @@ class Scroller {
     this._lastDelay = 0;
     this._scrolling = true;
     this._lastChangePos = this._position;
-    this._lastIdx = Math.floor(Math.abs(this._position / this._itemSize));
+    this._lastIdx = calculateSnapIndex(this._position, this._itemSize);
     this._animation = createAnimation(
       this._scroll,
       () => {
@@ -12948,7 +13108,7 @@ class Scroller {
           }
           if (isFunction(this._options.onSnap)) {
             this._options.onSnap(
-              Math.floor(Math.abs(this._position) / this._itemSize)
+              calculateSnapIndex(this._position, this._itemSize)
             );
           }
         }
@@ -12977,7 +13137,7 @@ class Scroller {
       this.scrollTo(-i);
       if (isFunction(this._options.onSnap)) {
         this._options.onSnap(
-          Math.floor(Math.abs(this._position) / this._itemSize)
+          Math.round(Math.abs(this._position) / this._itemSize)
         );
       }
     }
@@ -13045,7 +13205,7 @@ class Scroller {
       this.dispatchScroll();
       if (isFunction(this._options.onSnap)) {
         this._options.onSnap(
-          Math.floor(Math.abs(this._position) / this._itemSize)
+          Math.round(Math.abs(this._position) / this._itemSize)
         );
       }
     }
@@ -13218,7 +13378,7 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     const resizeSensorRef = ref(null);
     const initIndicatorHeight = () => {
       const resizeSensor = resizeSensorRef.value;
-      indicatorHeight.value = resizeSensor.$el.offsetHeight;
+      indicatorHeight.value = resizeSensor.$el.getBoundingClientRect().height;
     };
     {
       onMounted(initIndicatorHeight);
@@ -13849,14 +14009,14 @@ function decodeEntities(htmlString) {
         return String.fromCharCode(stage.slice(1));
       }
       if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
-        return String.fromCharCode(0 + stage.slice(1));
+        return String.fromCharCode(Number("0" + stage.slice(1)));
       }
       return match;
     }
   );
 }
 function processClickEvent(node, triggerItemClick) {
-  if (["a", "img"].includes(node.name) && triggerItemClick) {
+  if (node.name && ["a", "img"].includes(node.name) && triggerItemClick) {
     return {
       onClickCapture: (e2) => {
         triggerItemClick(e2, { node });
@@ -13867,36 +14027,43 @@ function processClickEvent(node, triggerItemClick) {
     };
   }
 }
+function normalizeValue(tagName, name, value) {
+  if (tagName === "img" && name === "src" && isString(value)) {
+    return getRealPath(value);
+  }
+  return value;
+}
 function normalizeAttrs(tagName, attrs2) {
   if (!isPlainObject(attrs2))
     return;
-  for (const key in attrs2) {
-    if (hasOwn(attrs2, key)) {
-      const value = attrs2[key];
-      if (tagName === "img" && key === "src")
-        attrs2[key] = getRealPath(value);
+  const tagAttrs = TAGS[tagName] || [];
+  const normalizedAttrs = {};
+  Object.keys(attrs2).forEach((name) => {
+    if (name === "class" || name === "style" || tagAttrs.includes(name)) {
+      normalizedAttrs[name] = normalizeValue(tagName, name, attrs2[name]);
     }
-  }
+  });
+  return normalizedAttrs;
 }
 const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
-  if (!nodeList || isArray(nodeList) && !nodeList.length)
+  if (!nodeList || Array.isArray(nodeList) && !nodeList.length)
     return [];
   return nodeList.map((node) => {
-    var _a;
     if (!isPlainObject(node)) {
       return;
     }
     if (!hasOwn(node, "type") || node.type === "node") {
-      let nodeProps = { [scopeId]: "" };
-      const tagName = (_a = node.name) == null ? void 0 : _a.toLowerCase();
+      if (!isString(node.name) || !node.name) {
+        return;
+      }
+      const tagName = node.name.toLowerCase();
       if (!hasOwn(TAGS, tagName)) {
         return;
       }
-      normalizeAttrs(tagName, node.attrs);
-      nodeProps = extend(
-        nodeProps,
+      const nodeProps = extend(
+        { [scopeId]: "" },
         processClickEvent(node, triggerItemClick),
-        node.attrs
+        normalizeAttrs(tagName, node.attrs)
       );
       return h(
         node.name,
@@ -14021,7 +14188,7 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     const vm = getCurrentInstance();
     const scopeId = vm && vm.vnode.scopeId || "";
     const rootRef = ref(null);
-    const _vnode = ref([]);
+    const _vnode = shallowRef([]);
     const trigger = useCustomEvent(rootRef, emit2);
     function triggerItemClick(e2, detail = {}) {
       trigger("itemclick", e2, detail);
@@ -16556,8 +16723,10 @@ function setupPage(comp, path) {
         if (!instance2.__isVisible) {
           onPageShow(instance2, pageMeta);
           instance2.__isVisible = true;
-          const { onShow } = instance2;
-          onShow && invokeArrayFns$1(onShow);
+          {
+            const { onShow } = instance2;
+            onShow && invokeArrayFns$1(onShow);
+          }
           nextTick(() => {
             invokeOnTabItemTap(route);
           });
@@ -16624,7 +16793,7 @@ function setupApp(comp) {
           debounce(onResize, 50, { setTimeout, clearTimeout })
         );
         window.addEventListener("message", onMessage);
-        document.addEventListener("visibilitychange", onVisibilityChange);
+        document.addEventListener("visibilitychange", onVisibilityChange$1);
         onThemeChange$2();
       });
       return route.query;
@@ -16666,7 +16835,7 @@ function onMessage(evt) {
     );
   }
 }
-function onVisibilityChange() {
+function onVisibilityChange$1() {
   const { emit: emit2 } = UniServiceJSBridge;
   if (document.visibilityState === "visible") {
     emit2(ON_APP_ENTER_FOREGROUND, getEnterOptions());
@@ -16758,10 +16927,15 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
     touchStartOrigin.y = toucher.pageY;
     state2.gestureType = "none";
     state2.volumeOld = 0;
+    if (fullscreenState.fullscreen) {
+      event.stopPropagation();
+    }
   }
   function onTouchmove(event) {
     function stop() {
-      event.stopPropagation();
+      if (fullscreenState.fullscreen) {
+        event.stopPropagation();
+      }
       event.preventDefault();
     }
     if (fullscreenState.fullscreen) {
@@ -16783,6 +16957,7 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
       changeVolume(pageY - origin.y);
     }
     if (gestureType !== "none") {
+      stop();
       return;
     }
     if (Math.abs(pageX - origin.x) > Math.abs(pageY - origin.y)) {
@@ -16811,7 +16986,9 @@ function useGesture(props2, videoState, videoRef, fullscreenState) {
   function onTouchend(event) {
     const video = videoRef.value;
     if (state2.gestureType !== "none" && state2.gestureType !== "stop") {
-      event.stopPropagation();
+      if (fullscreenState.fullscreen) {
+        event.stopPropagation();
+      }
       event.preventDefault();
     }
     if (state2.gestureType === "progress" && state2.currentTimeOld !== state2.currentTimeNew) {
@@ -19132,10 +19309,13 @@ function getTheme() {
 function getBrowserInfo() {
   let osname;
   let osversion = "0";
-  let model = "";
+  let model;
   let deviceType = "phone";
+  let platform = "";
+  let deviceBrand;
   const language = navigator.language;
   if (isIOS) {
+    deviceBrand = "iPhone";
     osname = "iOS";
     const osversionFind = ua.match(/OS\s([\w_]+)\slike/);
     if (osversionFind) {
@@ -19191,6 +19371,7 @@ function getBrowserInfo() {
       }
     }
   } else if (isIPadOS) {
+    deviceBrand = "iPad";
     model = "iPad";
     osname = "iOS";
     deviceType = "pad";
@@ -19234,7 +19415,8 @@ function getBrowserInfo() {
         osversion += ` x${framework[1]}`;
       }
     } else if (isMac) {
-      osname = "macOS";
+      osname = "macos";
+      platform = "mac";
       const _osversion = osversionFind && osversionFind.match(/Mac OS X (.+)/) || "";
       if (osversion) {
         osversion = _osversion[1].replace(/_/g, ".");
@@ -19253,20 +19435,22 @@ function getBrowserInfo() {
       }
     }
   } else if (isHarmony) {
-    osname = "Harmony";
-    deviceType = "phone";
+    deviceBrand = "HUAWEI";
+    osname = "harmonyos";
+    deviceType = isHarmony2in1 ? "pc" : isHarmonyTablet ? "pad" : "phone";
     const osversionFind = ua.match(/OpenHarmony\s([\d\.]+)/);
     if (osversionFind) {
       osversion = osversionFind[1];
     }
-    model = "";
+    model = void 0;
   } else {
     osname = "Other";
     osversion = "0";
     deviceType = "unknown";
   }
   const system = `${osname} ${osversion}`;
-  const platform = osname.toLowerCase();
+  if (!platform)
+    platform = osname.toLowerCase();
   let browserName = "";
   let browserVersion = String(IEVersion());
   if (browserVersion !== "-1") {
@@ -19284,17 +19468,29 @@ function getBrowserInfo() {
     }
   }
   let deviceOrientation = "portrait";
-  const orientation = typeof window.screen.orientation === "undefined" ? window.orientation : window.screen.orientation.angle;
-  deviceOrientation = Math.abs(orientation) === 90 ? "landscape" : "portrait";
+  if (window.matchMedia) {
+    try {
+      if (window.matchMedia("(orientation:landscape)").matches) {
+        deviceOrientation = "landscape";
+      }
+    } catch (e2) {
+    }
+  }
+  if (deviceOrientation === "portrait" && window.screen.orientation !== void 0) {
+    deviceOrientation = [90, 270].includes(window.screen.orientation.angle) ? "landscape" : "portrait";
+  }
+  if (deviceOrientation === "portrait" && window.orientation != null) {
+    deviceOrientation = Math.abs(window.orientation) === 90 ? "landscape" : "portrait";
+  }
   return {
-    deviceBrand: void 0,
-    brand: void 0,
+    deviceBrand,
+    brand: deviceBrand,
     deviceModel: model,
     deviceOrientation,
     model,
     system,
     platform,
-    browserName: browserName.toLowerCase(),
+    browserName: browserName.toLocaleLowerCase(),
     browserVersion,
     language,
     deviceType,
@@ -19652,7 +19848,7 @@ const vibrateLong = /* @__PURE__ */ defineAsyncApi(
     }
   }
 );
-var __async = (__this, __arguments, generator) => {
+var __async$1 = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
     var fulfilled = (value) => {
       try {
@@ -19674,7 +19870,7 @@ var __async = (__this, __arguments, generator) => {
 };
 const getClipboardData = /* @__PURE__ */ defineAsyncApi(
   API_GET_CLIPBOARD_DATA,
-  (_0, _1) => __async(void 0, [_0, _1], function* (_, { resolve, reject }) {
+  (_0, _1) => __async$1(void 0, [_0, _1], function* (_, { resolve, reject }) {
     initI18nGetClipboardDataMsgsOnce();
     const { t: t2 } = useI18n();
     try {
@@ -19689,7 +19885,7 @@ const getClipboardData = /* @__PURE__ */ defineAsyncApi(
 );
 const setClipboardData = /* @__PURE__ */ defineAsyncApi(
   API_SET_CLIPBOARD_DATA,
-  (_0, _1) => __async(void 0, [_0, _1], function* ({ data }, { resolve, reject }) {
+  (_0, _1) => __async$1(void 0, [_0, _1], function* ({ data }, { resolve, reject }) {
     try {
       yield navigator.clipboard.writeText(data);
       resolve();
@@ -23850,6 +24046,7 @@ function useTopWindow(layoutState) {
     updateWindow();
   });
   watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => nextTick(updateWindow));
+  watch(() => layoutState.topWindowStyle, () => nextTick(updateWindow));
   layoutState.topWindowStyle = style;
   return {
     component,
@@ -23882,6 +24079,7 @@ function useLeftWindow(layoutState) {
     updateWindow();
   });
   watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => nextTick(updateWindow));
+  watch(() => layoutState.leftWindowStyle, () => nextTick(updateWindow));
   layoutState.leftWindowStyle = style;
   return {
     component,
@@ -23914,6 +24112,7 @@ function useRightWindow(layoutState) {
     updateWindow();
   });
   watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => nextTick(updateWindow));
+  watch(() => layoutState.rightWindowStyle, () => nextTick(updateWindow));
   layoutState.rightWindowStyle = style;
   return {
     component,
@@ -24123,6 +24322,127 @@ const getFacialRecognitionMetaInfo = /* @__PURE__ */ defineSyncApi(
     }
   }
 );
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+let keepScreenOn = false;
+let wakeLockSentinel = null;
+let wakeLockRequest = null;
+let visibilityChangeListenerAdded = false;
+function getWakeLockManager() {
+  const currentNavigator = navigator;
+  if (currentNavigator.wakeLock != null) {
+    return currentNavigator.wakeLock;
+  }
+  return null;
+}
+function getUnsupportedMessage() {
+  return `method 'uni.${API_SET_KEEP_SCREEN_ON}' not supported`;
+}
+function getErrorMessage(error) {
+  return error == null ? void 0 : `${error}`;
+}
+function onWakeLockRelease(event) {
+  const sentinel = event.target;
+  if (sentinel) {
+    sentinel.removeEventListener("release", onWakeLockRelease);
+  }
+  if (wakeLockSentinel === sentinel) {
+    wakeLockSentinel = null;
+  }
+}
+function requestWakeLock() {
+  const wakeLockManager = getWakeLockManager();
+  if (wakeLockManager == null) {
+    return Promise.reject(getUnsupportedMessage());
+  }
+  if (wakeLockSentinel && !wakeLockSentinel.released) {
+    return Promise.resolve(wakeLockSentinel);
+  }
+  if (wakeLockRequest) {
+    return wakeLockRequest;
+  }
+  wakeLockRequest = wakeLockManager.request("screen").then((sentinel) => {
+    wakeLockSentinel = sentinel;
+    sentinel.addEventListener("release", onWakeLockRelease);
+    return sentinel;
+  }).finally(() => {
+    wakeLockRequest = null;
+  });
+  return wakeLockRequest;
+}
+function releaseWakeLock() {
+  return __async(this, null, function* () {
+    if (wakeLockRequest) {
+      yield wakeLockRequest.catch(() => null);
+    }
+    const sentinel = wakeLockSentinel;
+    wakeLockSentinel = null;
+    if (sentinel == null) {
+      return;
+    }
+    sentinel.removeEventListener("release", onWakeLockRelease);
+    if (!sentinel.released) {
+      yield sentinel.release();
+    }
+  });
+}
+function onVisibilityChange() {
+  if (document.visibilityState === "visible" && keepScreenOn) {
+    requestWakeLock().catch(() => {
+    });
+  }
+}
+function addVisibilityChangeListener() {
+  if (!visibilityChangeListenerAdded) {
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    visibilityChangeListenerAdded = true;
+  }
+}
+function removeVisibilityChangeListener() {
+  if (visibilityChangeListenerAdded) {
+    document.removeEventListener("visibilitychange", onVisibilityChange);
+    visibilityChangeListenerAdded = false;
+  }
+}
+const setKeepScreenOn = /* @__PURE__ */ defineAsyncApi(
+  API_SET_KEEP_SCREEN_ON,
+  ({ keepScreenOn: value }, { resolve, reject }) => {
+    keepScreenOn = !!value;
+    if (keepScreenOn) {
+      addVisibilityChangeListener();
+      requestWakeLock().then(() => {
+        resolve();
+      }).catch((error) => {
+        keepScreenOn = false;
+        removeVisibilityChangeListener();
+        reject(getErrorMessage(error));
+      });
+    } else {
+      removeVisibilityChangeListener();
+      releaseWakeLock().then(resolve).catch((error) => {
+        reject(getErrorMessage(error));
+      });
+    }
+  }
+);
 const saveImageToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(
   API_SAVE_IMAGE_TO_PHOTOS_ALBUM,
   createUnsupportedAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM)
@@ -24200,11 +24520,6 @@ const API_GET_SCREEN_BRIGHTNESS = "getScreenBrightness";
 const getScreenBrightness = /* @__PURE__ */ defineAsyncApi(
   API_GET_SCREEN_BRIGHTNESS,
   createUnsupportedAsyncApi(API_GET_SCREEN_BRIGHTNESS)
-);
-const API_SET_KEEP_SCREEN_ON = "setKeepScreenOn";
-const setKeepScreenOn = /* @__PURE__ */ defineAsyncApi(
-  API_SET_KEEP_SCREEN_ON,
-  createUnsupportedAsyncApi(API_SET_KEEP_SCREEN_ON)
 );
 const API_ON_USER_CAPTURE_SCREEN = "onUserCaptureScreen";
 const onUserCaptureScreen = /* @__PURE__ */ defineOnApi(
@@ -25910,7 +26225,673 @@ function usePickerForm(_resetFormData, _getFormData) {
     });
   }
 }
-const index$6 = /* @__PURE__ */ defineUnsupportedComponent("ad");
+const _AdConfig = class _AdConfig {
+  constructor() {
+    __publicField(this, "_adConfig", null);
+    __publicField(this, "_isLoading", false);
+    __publicField(this, "_callbacks", []);
+    __publicField(this, "_configLast", 0);
+  }
+  static get instance() {
+    if (!_AdConfig._instance) {
+      _AdConfig._instance = new _AdConfig();
+      _AdConfig._instance._init();
+    }
+    return _AdConfig._instance;
+  }
+  get adConfig() {
+    return this._adConfig;
+  }
+  get isExpired() {
+    if (this._adConfig == null) {
+      return true;
+    }
+    if (!this._configLast) {
+      return true;
+    }
+    return Math.abs(Date.now() - this._configLast) > _AdConfig.CACHE_TIME;
+  }
+  _init() {
+    var config = this._getConfig();
+    if (config === null || !config.last) {
+      return;
+    }
+    if (Math.abs(Date.now() - config.last) <= _AdConfig.CACHE_TIME) {
+      this._adConfig = config.data;
+      this._configLast = config.last;
+    }
+  }
+  get(adpid, success, fail) {
+    _AdConfig.IC++;
+    if (this._adConfig != null) {
+      this._doCallback(adpid, success, fail);
+      if (this.isExpired) {
+        this._loadAdConfig(adpid);
+      }
+      return;
+    }
+    this._callbacks.push({
+      adpid,
+      success,
+      fail
+    });
+    this._loadAdConfig(adpid);
+  }
+  _doCallback(adpid, success, fail) {
+    _AdConfig.IS++;
+    var {
+      a: a2,
+      b
+    } = this._adConfig;
+    const adData = a2[adpid];
+    if (adData) {
+      success(b, Array.isArray(adData) ? adData : [adData]);
+    } else {
+      fail(_AdConfig.ERROR_INVALID_ADPID);
+    }
+  }
+  _loadAdConfig(adpid) {
+    if (this._isLoading === true) {
+      return;
+    }
+    this._isLoading = true;
+    const appid = typeof __uniConfig !== "undefined" ? __uniConfig.appId ?? "" : "";
+    uni.request({
+      url: _AdConfig.URL,
+      method: "GET",
+      timeout: 8e3,
+      data: {
+        d: location.hostname,
+        a: adpid,
+        appid
+      },
+      dataType: "json",
+      success: (res) => {
+        const rd = res.data;
+        if (rd.ret === 0) {
+          const data = rd.data;
+          this._adConfig = data;
+          this._configLast = Date.now();
+          this._setConfig(data);
+          this._callbacks.forEach(({
+            adpid: adpid2,
+            success,
+            fail
+          }) => {
+            this._doCallback(adpid2, success, fail);
+          });
+        } else {
+          this._callbacks.forEach((i) => {
+            i.fail({
+              errCode: rd.ret,
+              errMsg: rd.msg
+            });
+          });
+        }
+        this._callbacks = [];
+      },
+      fail: (err) => {
+        this._callbacks.forEach((i) => {
+          i.fail(err);
+        });
+        this._callbacks = [];
+      },
+      complete: (c) => {
+        this._isLoading = false;
+      }
+    });
+  }
+  _getConfig() {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null;
+    }
+    var data = localStorage.getItem(_AdConfig.KEY);
+    return data ? JSON.parse(data) : null;
+  }
+  _setConfig(data) {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null;
+    }
+    localStorage.setItem(_AdConfig.KEY, JSON.stringify({
+      last: Date.now(),
+      data
+    }));
+  }
+};
+__publicField(_AdConfig, "IC", 0);
+__publicField(_AdConfig, "IS", 0);
+// 生产环境地址
+// private static readonly URL: string = 'https://hac1.dcloud.net.cn/ah5'
+// 生产环境地址v2
+__publicField(_AdConfig, "URL", "https://hac1.dcloud.net.cn/ah5v2");
+// 测试环境地址
+// private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5'
+// private static readonly URL: string = 'http://t-ac1.dcloud.net.cn/ah5v2'
+__publicField(_AdConfig, "KEY", "uni_app_ad_config");
+__publicField(_AdConfig, "CACHE_TIME", 1e3 * 60 * 10);
+__publicField(_AdConfig, "ERROR_INVALID_ADPID", {
+  "-5002": "invalid adpid"
+});
+let AdConfig = _AdConfig;
+const _AdReport = class _AdReport {
+  static get instance() {
+    if (!_AdReport._instance) {
+      _AdReport._instance = new _AdReport();
+    }
+    return _AdReport._instance;
+  }
+  constructor() {
+    var config = this._getConfig();
+    if (config && config.guid) {
+      this._guid = config.guid;
+      return;
+    }
+    this._guid = this._newGUID();
+    this._setConfig(this._guid);
+  }
+  get(data) {
+    this._process(Object.assign(data, {
+      d: location.hostname,
+      i: this._guid
+    }));
+  }
+  _process(data) {
+    uni.request({
+      url: _AdReport.URL,
+      method: "GET",
+      data,
+      dataType: "json",
+      success: () => {
+      }
+    });
+  }
+  _newGUID() {
+    let guid = "";
+    const format = "xxxxxxxx-xxxx-4xxx-xxxx-xxxxxxxxxxxx";
+    for (let i = 0; i < format.length; i++) {
+      if (format[i] === "x") {
+        guid += (Math.random() * 16 | 0).toString(16);
+      } else {
+        guid += format[i];
+      }
+    }
+    return guid.toUpperCase();
+  }
+  _getConfig() {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null;
+    }
+    var data = localStorage.getItem(_AdReport.KEY);
+    return data ? JSON.parse(data) : null;
+  }
+  _setConfig(guid) {
+    if (!navigator.cookieEnabled || !window.localStorage) {
+      return null;
+    }
+    localStorage.setItem(_AdReport.KEY, JSON.stringify({
+      last: Date.now(),
+      guid
+    }));
+  }
+};
+__publicField(_AdReport, "URL", "https://has1.dcloud.net.cn/ahl");
+__publicField(_AdReport, "KEY", "uni_app_ad_guid");
+let AdReport = _AdReport;
+class AdScript {
+  static get instance() {
+    if (!AdScript._instance) {
+      AdScript._instance = new AdScript();
+    }
+    return AdScript._instance;
+  }
+  constructor() {
+    this._callback = {};
+    this._cache = {};
+  }
+  load(data, success, fail) {
+    const provider = data.provider;
+    if (this._cache[provider] === void 0) {
+      this.loadScript(data);
+    }
+    if (this._cache[provider] === 1) {
+      success();
+    } else {
+      if (!this._callback[provider]) {
+        this._callback[provider] = [];
+      }
+      this._callback[provider].push({
+        success,
+        fail
+      });
+    }
+  }
+  loadScript(data) {
+    const provider = data.provider;
+    this._cache[provider] = 0;
+    const domid = "uniad_provider" + provider;
+    const adScriptDom = document.getElementById(domid);
+    const src = adScriptDom && adScriptDom.getAttribute("src");
+    if (src) {
+      this._cache[provider] = 1;
+      return;
+    }
+    var ads = document.createElement("script");
+    ads.setAttribute("id", domid);
+    const script = data.script;
+    for (const var1 in script) {
+      ads.setAttribute(var1, script[var1]);
+    }
+    ads.onload = () => {
+      this._cache[provider] = 1;
+      this._callback[provider].forEach(({
+        success
+      }) => {
+        success();
+      });
+      this._callback[provider].length = 0;
+    };
+    ads.onerror = (err) => {
+      this._cache[provider] = void 0;
+      this._callback[provider].forEach(({
+        fail
+      }) => {
+        fail(err);
+      });
+      this._callback[provider].length = 0;
+    };
+    document.body.append(ads);
+  }
+}
+const CHECK_RENDER_DELAY = 1e3;
+const CHECK_RENDER_RETRY = 5;
+const AD_PROVIDER = {
+  GDT: "2",
+  TUIA: "10035"
+};
+class AdRender {
+  constructor(props2, trigger, rootRef, options) {
+    __publicField(this, "_pi", 0);
+    __publicField(this, "_pl", []);
+    __publicField(this, "_b", {});
+    __publicField(this, "_checkTimerCount", 0);
+    __publicField(this, "_currentChannel", null);
+    __publicField(this, "_tuiaData", null);
+    this._checkTimer = null;
+    this._adpid = props2.adpid;
+    this._adpidWidescreen = props2.adpidWidescreen;
+    this._widescreenWidth = props2.widescreenWidth;
+    this._trigger = trigger;
+    this._rootRef = rootRef;
+    this._currentAdpid = this._adpid;
+    this._hasCustomTuiaMaterial = options.hasCustomTuiaMaterial;
+    this._setCustomTuiaVisible = options.setCustomTuiaVisible;
+  }
+  renderTuiaFromCustomMaterial() {
+    if (!this._tuiaData) {
+      return;
+    }
+    this._renderTuia(this._tuiaData);
+  }
+  get isWidescreen() {
+    return this._rootRef.value && this._rootRef.value.clientWidth > this._widescreenWidth;
+  }
+  load(adpid) {
+    this._currentAdpid = adpid || (this.isWidescreen ? this._adpidWidescreen : this._adpid);
+    this._reset();
+    AdConfig.instance.get(this._currentAdpid, (b, a2) => {
+      this._b = b;
+      this._pl = a2;
+      this._renderAd();
+    }, (err) => {
+      this._trigger("error", {}, err);
+    });
+  }
+  dispose() {
+    this._clearCheckTimer();
+    if (this._rootRef.value) {
+      this._rootRef.value.innerHTML = "";
+    }
+  }
+  _renderAd() {
+    if (this._pi > this._pl.length - 1) {
+      return;
+    }
+    const data = this._pl[this._pi];
+    if (!data) {
+      this._renderNext();
+      return;
+    }
+    const providerId = String(data.a1);
+    const providerConfig = this._b[providerId];
+    if (!providerConfig) {
+      this._renderNext();
+      return;
+    }
+    const script = providerConfig.script || providerConfig.s;
+    this._currentChannel = providerId;
+    const id2 = this._randomId();
+    this._createView(id2);
+    if (providerId === AD_PROVIDER.GDT) {
+      window.TencentGDT = window.TencentGDT || [];
+      AdScript.instance.load({
+        provider: providerId,
+        script
+      }, () => {
+        this._renderGdt(id2, data);
+      }, (err) => {
+        this._trigger("error", {}, err);
+        this._renderNext();
+      });
+      return;
+    }
+    if (providerId === AD_PROVIDER.TUIA) {
+      AdScript.instance.load({
+        provider: providerId,
+        script
+      }, () => {
+        this._renderTuiaMaterial(id2, data);
+      }, (err) => {
+        this._trigger("error", {}, err);
+        this._renderNext();
+      });
+      return;
+    }
+    this._renderNext();
+  }
+  _createView(id2) {
+    if (!this._rootRef.value) {
+      return null;
+    }
+    var adView = document.createElement("div");
+    adView.setAttribute("id", id2);
+    adView.setAttribute("class", id2);
+    this._rootRef.value.innerHTML = "";
+    this._rootRef.value.append(adView);
+    return adView;
+  }
+  _renderGdt(id2, data) {
+    window.TencentGDT.push({
+      placement_id: data.a3,
+      app_id: data.a2,
+      type: "native",
+      count: 1,
+      onComplete: (res) => {
+        if (res && res.constructor === Array && res.length > 0) {
+          window.TencentGDT.NATIVE.renderAd(res[0], id2);
+          this._trigger("load", {}, {});
+        } else {
+          this._trigger("error", {}, res || {
+            errMsg: "No advertisement"
+          });
+          this._renderNext();
+        }
+      }
+    });
+    this._startCheckTimer();
+  }
+  _renderTuiaMaterial(id2, data) {
+    const adView = document.getElementById(id2);
+    if (!adView) {
+      this._trigger("error", {}, {
+        errMsg: "Invalid ad container"
+      });
+      this._renderNext();
+      return;
+    }
+    this._tuiaData = data;
+    if (this._hasCustomTuiaMaterial()) {
+      adView.innerHTML = "";
+      this._setCustomTuiaVisible(true);
+      this.report(40, this._currentChannel || void 0);
+      this._trigger("load", {}, {});
+      return;
+    }
+    this._setCustomTuiaVisible(false);
+    const materialSrc = this._getRandomTuiaMaterial(data == null ? void 0 : data.imgs, data == null ? void 0 : data.img);
+    if (!materialSrc) {
+      this._trigger("error", {}, {
+        errMsg: "Invalid tuia material imgs/img"
+      });
+      this._renderNext();
+      return;
+    }
+    const img = document.createElement("img");
+    img.src = materialSrc;
+    img.onerror = () => {
+      this._trigger("error", {}, {
+        errMsg: "Tuia material load fail"
+      });
+      this._renderNext();
+    };
+    img.alt = "ad";
+    img.setAttribute("draggable", "false");
+    img.style.width = "100%";
+    img.style.height = "auto";
+    img.style.display = "block";
+    img.style.cursor = "pointer";
+    img.onclick = () => {
+      this._renderTuia(data);
+    };
+    adView.innerHTML = "";
+    adView.append(img);
+    this.report(40, this._currentChannel || void 0);
+    this._trigger("load", {}, {});
+  }
+  _getRandomTuiaMaterial(imgs, img) {
+    if (Array.isArray(imgs)) {
+      const list2 = imgs.filter((item) => typeof item === "string" && item);
+      if (list2.length) {
+        const index2 = Math.floor(Math.random() * list2.length);
+        return list2[index2];
+      }
+    }
+    if (typeof img === "string") {
+      return img;
+    }
+    return "";
+  }
+  _renderTuia(data) {
+    this._setCustomTuiaVisible(false);
+    const tuia = window.TuiaSDKLite;
+    if (!tuia || typeof tuia.execute !== "function") {
+      this._trigger("error", {}, {
+        errMsg: "Invalid TuiaSDKLite"
+      });
+      this._renderNext();
+      return;
+    }
+    tuia.execute({
+      data: {
+        pid: data.a3,
+        fail_message: "ad load fail",
+        product_name: document.title || location.hostname
+      },
+      success: (res) => {
+        this._trigger("load", {}, res || {});
+      },
+      fail: (err) => {
+        this._trigger("error", {}, err || {
+          errMsg: "TuiaSDKLite execute fail"
+        });
+        this._renderNext();
+      }
+    });
+  }
+  _renderAdView(provider, data) {
+    var randomId = this._randomId();
+    var adView = document.createElement("div");
+    adView.setAttribute("class", randomId);
+    this._rootRef.value.innerHTML = "";
+    this._rootRef.value.append(adView);
+    const scriptPath = provider.s || provider.script;
+    if (!scriptPath || typeof scriptPath !== "string") {
+      this._trigger("error", {}, {
+        errMsg: "Invalid provider script"
+      });
+      this._renderNext();
+      return;
+    }
+    try {
+      let bindThis = window;
+      const fn = scriptPath.split(".").reduce((total, currentValue) => {
+        bindThis = total;
+        return total[currentValue];
+      }, window);
+      fn.bind(bindThis)(data.a2, randomId, 2);
+    } catch (err) {
+      this._trigger("error", {}, err);
+      this._renderNext();
+      return;
+    }
+    this._startCheckTimer();
+  }
+  _renderNext() {
+    if (this._pi >= this._pl.length - 1) {
+      return;
+    }
+    this._pi++;
+    this._renderAd();
+  }
+  _checkRender() {
+    if (!this._rootRef.value) {
+      return false;
+    }
+    var hasContent = this._rootRef.value.children.length > 0 && this._rootRef.value.clientHeight > 40;
+    if (hasContent) {
+      this.report(40, this._currentChannel || void 0);
+    }
+    return hasContent;
+  }
+  _startCheckTimer() {
+    this._clearCheckTimer();
+    this._checkTimer = setInterval(() => {
+      this._checkTimerCount++;
+      if (this._checkTimerCount >= CHECK_RENDER_RETRY) {
+        this._clearCheckTimer();
+        this._renderNext();
+        return;
+      }
+      if (this._checkRender()) {
+        this._clearCheckTimer();
+      }
+    }, CHECK_RENDER_DELAY);
+  }
+  _clearCheckTimer() {
+    this._checkTimerCount = 0;
+    if (this._checkTimer != null) {
+      window.clearInterval(this._checkTimer);
+      this._checkTimer = null;
+    }
+  }
+  report(type, currentChannel) {
+    const compilerVersion = typeof __uniConfig !== "undefined" ? __uniConfig.compilerVersion ?? "" : "";
+    const reportData = {
+      h: compilerVersion,
+      a: this._currentAdpid,
+      at: type
+    };
+    if (currentChannel) {
+      reportData.t = currentChannel;
+    }
+    AdReport.instance.get(reportData);
+  }
+  _randomId() {
+    var result = "";
+    for (let i = 0; i < 4; i++) {
+      result += (65536 * (1 + Math.random()) | 0).toString(16).substring(1);
+    }
+    return "_u" + result;
+  }
+  _reset() {
+    this._b = {};
+    this._pl = [];
+    this._pi = 0;
+    this._tuiaData = null;
+    this._setCustomTuiaVisible(false);
+    this._clearCheckTimer();
+    if (this._rootRef.value) {
+      this._rootRef.value.innerHTML = "";
+    }
+  }
+}
+const DEFAULT_WIDESCREEN_WIDTH = 750;
+const index$6 = /* @__PURE__ */ defineBuiltInComponent({
+  inheritAttrs: false,
+  name: "Ad",
+  props: {
+    adpid: {
+      type: String,
+      default: ""
+    },
+    adpidWidescreen: {
+      type: String,
+      default: ""
+    },
+    widescreenWidth: {
+      type: Number,
+      default: DEFAULT_WIDESCREEN_WIDTH
+    }
+  },
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
+    const rootRef = ref(null);
+    const customTuiaVisible = ref(false);
+    const {
+      $excludeAttrs,
+      $listeners
+    } = useAttrs({
+      excludeListeners: true
+    });
+    const trigger = useCustomEvent(rootRef, emit2);
+    const ad = new AdRender(props2, trigger, rootRef, {
+      hasCustomTuiaMaterial: () => Boolean(slots.default && slots.default().length),
+      setCustomTuiaVisible: (visible) => {
+        customTuiaVisible.value = visible;
+      }
+    });
+    watch(() => props2.adpid, (val) => {
+      ad.load(val);
+    });
+    watch(() => props2.adpidWidescreen, (val) => {
+      ad.load(val);
+    });
+    onMounted(() => {
+      const compilerVersion = typeof __uniConfig !== "undefined" ? __uniConfig.compilerVersion ?? "" : "";
+      ad.load(null);
+      AdReport.instance.get({
+        h: compilerVersion,
+        a: props2.adpid,
+        at: -3,
+        ic: AdConfig.IC,
+        is: AdConfig.IS
+      });
+    });
+    onBeforeUnmount(() => {
+      ad.dispose();
+    });
+    return () => {
+      const {
+        adpid,
+        adpidWidescreen,
+        widescreenWidth
+      } = props2;
+      return createVNode(Fragment, null, [createVNode("uni-ad", mergeProps($listeners.value, $excludeAttrs.value, {
+        "adpid": adpid,
+        "adpidWidescreen": adpidWidescreen,
+        "widescreenWidth": widescreenWidth
+      }), [createVNode("div", {
+        "ref": rootRef,
+        "class": "uni-ad-container",
+        "onClick": () => ad.report(41)
+      }, null, 8, ["onClick"]), customTuiaVisible.value && slots.default ? createVNode("div", {
+        "class": "uni-ad-custom-material",
+        "onClick": () => ad.renderTuiaFromCustomMaterial()
+      }, [slots.default()], 8, ["onClick"]) : null], 16, ["adpid", "adpidWidescreen", "widescreenWidth"])]);
+    };
+  }
+});
 const index$5 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
 const index$4 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
 const index$3 = /* @__PURE__ */ defineUnsupportedComponent("camera");

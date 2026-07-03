@@ -779,6 +779,8 @@ declare interface Timer {
 
 export declare const UNI_AD_PLUGINS: string[];
 
+export declare const UNI_SAFE_AREA_INSET_BOTTOM = "u_s_a_i_b";
+
 export declare const UNI_SSR = "__uniSSR";
 
 export declare const UNI_SSR_DATA = "data";

@@ -35,6 +35,7 @@ declare namespace NodeJS {
     UNI_RENDERER_NATIVE: 'appService' | 'pages'
     UNI_NVUE_APP_STYLES: string
     UNI_APP_CHANGED_FILES: string
+    UNI_APP_X_DOM2_BIN_CHANGED_FILES: string // 动态渲染变更文件列表
     UNI_APP_CHANGED_PAGES: string
     VUE_APP_DARK_MODE: 'true' | 'false'
 
@@ -83,6 +84,8 @@ declare namespace NodeJS {
     UNI_APP_PRODUCTION_TYPE?: 'WGT' // 发行类型
     UNI_APP_X_CACHE_DIR: string // 当前运行/发行平台的缓存目录，如：unpackage/cache/.app-android
     UNI_APP_X_DOM2?: 'true' // 是否 dom2 模式
+    UNI_APP_X_DOM2_DYNAMIC?: 'true' // 是否开启 dom2 模式下的动态渲染功能
+    UNI_APP_X_VAPOR_RENDER_TARGET?: 'nativecode' | 'bytecode' // dom2 模式下，模板和样式的编译目标
     UNI_CLI_LAUNCH_PAGE_PATH?: string // 开发阶段，传入指定入口页面
     UNI_CLI_LAUNCH_PAGE_QUERY?: string // 开发阶段，传入指定入口页面参数
     UNI_SCRIPT?: string // 指定自定义平台，package.json->uni-app->scripts
@@ -94,7 +97,7 @@ declare namespace NodeJS {
     UNI_OUTPUT_DIR: string // 输出目录
     UNI_MINIMIZE?: 'true' // 是否压缩
     UNI_MP_PLUGIN?: string // 发行小程序插件的插件名
-    UNI_PLATFORM: UniApp.PLATFORM // 目标平台
+    UNI_PLATFORM: Exclude<UniApp.PLATFORM, 'app-android' | 'app-ios'> // 目标平台
     UNI_SUBPACKGE?: string // 发行子包名
     // uniCloud相关
     UNI_CLOUD_SPACES?: string // uniCloud服务空间

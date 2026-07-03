@@ -1,5 +1,11 @@
 import { EventChannel, ON_HIDE, parseUrl } from '@dcloudio/uni-shared'
 import { invokeHook } from '@dcloudio/uni-core'
+//#if _X_
+import {
+  getCurrentPage,
+  invokeLastDialogPageHookByUniPage,
+} from '@dcloudio/uni-core'
+//#endif
 import {
   API_NAVIGATE_TO,
   type API_TYPE_NAVIGATE_TO,
@@ -67,6 +73,12 @@ function _navigateTo({
 }: NavigateToOptions): Promise<void | { eventChannel: EventChannel }> {
   // 当前页面触发 onHide
   invokeHook(ON_HIDE)
+  //#if _X_
+  invokeLastDialogPageHookByUniPage(
+    getCurrentPage() as unknown as UniPage,
+    ON_HIDE
+  )
+  //#endif
   const eventChannel = new EventChannel(getWebviewId() + 1, events)
   return new Promise((resolve) => {
     showWebview(

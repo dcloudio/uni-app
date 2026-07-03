@@ -7,7 +7,7 @@ import {
 } from 'vue'
 
 import { initBaseInstance } from './componentInstance'
-import { initHooks, initUnknownHooks } from './componentHooks'
+import { initHooks, initRuntimeHooks, initUnknownHooks } from './componentHooks'
 import { getLocaleLanguage } from '../runtime/util'
 
 import App = WechatMiniprogram.App
@@ -95,6 +95,10 @@ export function parseApp(
 
   initHooks(appOptions, HOOKS)
   initUnknownHooks(appOptions, vueOptions)
+  // 支付宝小程序支持在 App 中注册 onShareAppMessage
+  if (__PLATFORM__ === 'mp-alipay') {
+    initRuntimeHooks(appOptions, vueOptions.__runtimeHooks)
+  }
   if (__VUE_OPTIONS_API__) {
     const methods = vueOptions.methods
     methods && extend(appOptions, methods)

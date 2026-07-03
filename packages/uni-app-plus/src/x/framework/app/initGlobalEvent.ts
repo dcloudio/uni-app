@@ -3,7 +3,7 @@ import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import { ON_BACK_PRESS } from '@dcloudio/uni-shared'
 import {
   getCurrentPage,
-  getSystemDialogPages,
+  getLastDialogPage,
   invokeHook,
 } from '@dcloudio/uni-core'
 import { backbuttonListener } from '../../../service/framework/app/utils'
@@ -16,24 +16,9 @@ export function initGlobalEvent(app: IApp) {
     // 目前app-ios和app-harmony均会执行此逻辑，但是app-ios理论上始终不会触发以下dialogPage逻辑
     const currentPage = getCurrentPage() as unknown as UniPage
     if (currentPage) {
-      const systemDialogPages = getSystemDialogPages(currentPage)
-      const dialogPages = currentPage.getDialogPages()
-      if (systemDialogPages.length > 0 || dialogPages.length > 0) {
-        const lastSystemDialog = systemDialogPages[systemDialogPages.length - 1]
-        const lastDialog = dialogPages[dialogPages.length - 1]
-
-        if (!systemDialogPages.length) {
-          handleDialogPageBack(lastDialog as UniDialogPage)
-        } else if (!dialogPages.length) {
-          handleDialogPageBack(lastSystemDialog as UniDialogPage)
-        } else {
-          handleDialogPageBack(
-            (parseInt(lastDialog.vm!.$nativePage!.pageId) >
-            parseInt(lastSystemDialog.vm!.$nativePage!.pageId)
-              ? lastDialog
-              : lastSystemDialog) as UniDialogPage
-          )
-        }
+      const lastDialogPage = getLastDialogPage(currentPage)
+      if (lastDialogPage) {
+        handleDialogPageBack(lastDialogPage)
         return true
       }
     }

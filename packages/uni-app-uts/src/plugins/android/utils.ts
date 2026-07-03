@@ -4,7 +4,9 @@ import { type ImportSpecifier, init, parse } from 'es-module-lexer'
 import {
   createResolveErrorMsg,
   createRollupError,
+  genUTSClassName,
   getUTSEasyComAutoImports,
+  isUniPageFile,
   normalizeNodeModules,
   offsetToStartAndEnd,
   parseUniExtApiNamespacesJsOnce,
@@ -19,8 +21,6 @@ import type { Position, SourceLocation } from '@vue/compiler-core'
 import { createCompilerError } from './uvue/compiler/errors'
 
 export const UVUE_CLASS_NAME_PREFIX = 'Gen'
-
-export const DEFAULT_APPID = '__UNI__uniappx'
 
 export const ENTRY_FILENAME = () =>
   process.env.UNI_APP_X_TSC === 'true' ? 'main.uts.ts' : 'main.uts'
@@ -479,4 +479,12 @@ function initAutoImport(): {
   return {
     detectImports,
   }
+}
+
+export function genUVueClassName(fileName: string, classNamePrefix?: string) {
+  return process.env.UNI_COMPILE_TARGET === 'ext-api'
+    ? // components/map/map.vue => UniMap
+      genUTSClassName(path.basename(fileName), classNamePrefix) +
+        (isUniPageFile(fileName) ? 'Page' : 'Component')
+    : genUTSClassName(fileName, classNamePrefix)
 }

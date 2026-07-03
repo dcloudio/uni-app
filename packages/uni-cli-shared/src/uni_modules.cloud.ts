@@ -6,6 +6,7 @@ import { genUTSComponentPublicInstanceIdent } from './easycom'
 import { M } from './messages'
 import { EXTNAME_VUE_RE } from './constants'
 import { encodeBase64Url } from './url'
+import { isUniAppXAndroidNative } from './x'
 
 function genEncryptEasyComModuleIndex(
   pluginId: string,
@@ -22,7 +23,7 @@ function genEncryptEasyComModuleIndex(
       ids.push(id)
     }
     let instance = ''
-    if (platform === 'app-android') {
+    if (isUniAppXAndroidNative(platform)) {
       instance = genUTSComponentPublicInstanceIdent(component)
       // 类型
       ids.push(instance)
@@ -322,6 +323,7 @@ export interface EncryptPackageJson {
     dependencies: string[]
     artifacts: {
       env: {
+        vapor: boolean
         compilerVersion: string
       } & Record<string, any>
       apis: string[]
@@ -338,7 +340,7 @@ function findEncryptUniModuleCache(
   cacheDir: string,
   options: {
     version: string
-    env: Record<string, string>
+    env: Record<string, unknown>
   }
 ): EncryptPackageJson | undefined {
   if (!cacheDir) {
@@ -406,21 +408,23 @@ function findUniModuleFiles(
   id: string,
   inputDir: string
 ) {
+  const useUniAppXAndroidNative = isUniAppXAndroidNative(platform)
   return sync(`uni_modules/${id}/**/*`, {
     cwd: inputDir,
     absolute: true,
     ignore: [
       '**/*.md',
-      ...(platform !== 'app-android' // 非 android 平台不需要扫描 assets
-        ? [`**/*.{${KNOWN_ASSET_TYPES.join(',')}}`]
-        : []),
+      ...(useUniAppXAndroidNative // 仅旧版 Android x 需要扫描 assets
+        ? []
+        : [`**/*.{${KNOWN_ASSET_TYPES.join(',')}}`]),
     ],
   })
 }
 
-export function initCheckEnv(): Record<string, string> {
+export function initCheckEnv(): Record<string, unknown> {
   return {
     // 云端编译的版本号不带日期及小版本
+    vapor: process.env.UNI_APP_X_DOM2 === 'true',
     compilerVersion: process.env.UNI_COMPILER_VERSION,
   }
 }
@@ -438,6 +442,18 @@ function findLastIndex<T>(
 }
 
 let encryptUniModules: ReturnType<typeof findCloudEncryptUniModules> = {}
+
+function refreshEncryptUniModules(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  inputDir: string
+) {
+  encryptUniModules = findCloudEncryptUniModules(
+    platform,
+    inputDir,
+    process.env.UNI_MODULES_ENCRYPT_CACHE_DIR,
+    'all'
+  )
+}
 
 export function resolveEncryptUniModule(
   id: string,
@@ -480,12 +496,14 @@ export function resolveEncryptUniModule(
           }
         }
       }
-      // 原生平台走旧的uts-proxy
+      // 仅旧版 Android x 原生引擎走 uts-proxy，JS 引擎与其他平台统一走 uni_helpers
       return normalizePath(
         path.join(
           process.env.UNI_INPUT_DIR,
           `uni_modules/${uniModuleId}?${
-            isX && platform === 'app-android' ? 'uts-proxy' : 'uni_helpers'
+            isX && isUniAppXAndroidNative(platform)
+              ? 'uts-proxy'
+              : 'uni_helpers'
           }`
         )
       )
@@ -494,6 +512,7 @@ export function resolveEncryptUniModule(
 }
 
 type CloudCompileSdkType = 'utssdk' | 'easycom' | 'all'
+type VaporRenderTarget = 'bytecode' | 'nativecode'
 
 export interface CloudCompileParams {
   mode: 'development' | 'production'
@@ -503,7 +522,27 @@ export interface CloudCompileParams {
   appname: string
   platform: typeof process.env.UNI_UTS_PLATFORM // app-android | app-ios | web
   'uni-app-x': boolean
+  vapor: boolean
+  vaporRenderTarget?: VaporRenderTarget
   env: Record<string, string>
+}
+
+export function validateCloudCompileAppInfo(
+  params: Pick<CloudCompileParams, 'appid' | 'appname'>
+) {
+  const missingFields: string[] = []
+  if (!String(params.appid || '').trim()) {
+    missingFields.push('appid')
+  }
+  if (!String(params.appname || '').trim()) {
+    missingFields.push('name')
+  }
+  if (missingFields.length) {
+    return `云编译插件失败：manifest.json 缺少 ${missingFields.join(
+      '、'
+    )}，请先配置后重新编译。`
+  }
+  return ''
 }
 
 export async function checkEncryptUniModules(
@@ -511,6 +550,8 @@ export async function checkEncryptUniModules(
   params: CloudCompileParams,
   sdkType: CloudCompileSdkType = 'all'
 ) {
+  const isHarmonySplitCompile =
+    params.platform === 'app-harmony' && sdkType !== 'all'
   // 初始化指定 sdk 类型的加密插件
   const curEncryptUniModules = findCloudEncryptUniModules(
     params.platform,
@@ -519,16 +560,33 @@ export async function checkEncryptUniModules(
     sdkType
   )
   if (!Object.keys(curEncryptUniModules).length) {
+    // 鸿蒙会按 utssdk/easycom 分两次扫描，这里回填一次全量状态，避免子集扫描把插件类型覆盖掉
+    if (isHarmonySplitCompile) {
+      refreshEncryptUniModules(params.platform, inputDir)
+    }
     return {}
   }
   if (!process.env.UNI_HBUILDERX_PLUGINS) {
+    if (isHarmonySplitCompile) {
+      refreshEncryptUniModules(params.platform, inputDir)
+    }
     return {}
   }
 
   const cacheDir = process.env.UNI_MODULES_ENCRYPT_CACHE_DIR!
+  const needsCloudCompile = Object.keys(curEncryptUniModules).some(
+    (uniModuleId) => !curEncryptUniModules[uniModuleId]
+  )
+  if (params.vapor && needsCloudCompile) {
+    const validateAppInfoError = validateCloudCompileAppInfo(params)
+    if (validateAppInfoError) {
+      console.error(validateAppInfoError)
+      return process.exit(0)
+    }
+  }
   const { zipFile, modules } = packUploadEncryptUniModules(
     curEncryptUniModules,
-    process.env.UNI_UTS_PLATFORM,
+    params.platform,
     inputDir,
     cacheDir
   )
@@ -537,10 +595,8 @@ export async function checkEncryptUniModules(
     const { C, D, R, U } = requireUniHelpers()
     try {
       const isLogin = await C()
-      const tips =
-        process.env.UNI_UTS_PLATFORM !== 'app-android'
-          ? '（此过程耗时较长）'
-          : ''
+      const useUniAppXAndroidNative = isUniAppXAndroidNative(params.platform)
+      const tips = !useUniAppXAndroidNative ? '（此过程耗时较长）' : ''
       console.log(
         `正在云编译插件${isLogin ? '' : '（请先登录）'}${tips}：${modules.join(
           ','
@@ -567,6 +623,7 @@ export async function checkEncryptUniModules(
       const AdmZip = require('adm-zip')
       const zip = new AdmZip(downloadFile)
       zip.extractAllTo(cacheDir, true)
+      await Promise.resolve(copyEncryptUniModulesDom2Bytes())
       fs.unlinkSync(zipFile)
       fs.unlinkSync(downloadFile)
       R({
@@ -582,8 +639,10 @@ export async function checkEncryptUniModules(
       process.exit(0)
     }
   } else {
-    // android 平台需要在这里初始化
-    if (params.platform === 'app-android') {
+    await Promise.resolve(copyEncryptUniModulesDom2Bytes())
+    const useUniAppXAndroidNative = isUniAppXAndroidNative(params.platform)
+    // 仅旧版 Android x 需要在缓存命中时额外初始化
+    if (useUniAppXAndroidNative) {
       const { R } = requireUniHelpers()
       R({
         dir: process.env.UNI_INPUT_DIR,
@@ -592,12 +651,7 @@ export async function checkEncryptUniModules(
     }
   }
   // 初始化所有
-  encryptUniModules = findCloudEncryptUniModules(
-    params.platform,
-    inputDir,
-    process.env.UNI_MODULES_ENCRYPT_CACHE_DIR,
-    'all'
-  )
+  refreshEncryptUniModules(params.platform, inputDir)
 }
 
 export function getUniModulesEncryptType(pluginId: string) {
@@ -623,6 +677,103 @@ export function parseUniModulesArtifacts() {
     }
   })
   return res
+}
+
+export function copyEncryptUniModulesDom2Bytes() {
+  if (process.env.UNI_APP_X_DOM2 !== 'true') {
+    return false
+  }
+  if (
+    !['app-android', 'app-ios', 'app-harmony'].includes(
+      process.env.UNI_UTS_PLATFORM
+    )
+  ) {
+    return false
+  }
+  const cacheDir = process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
+  const outputDir = process.env.UNI_OUTPUT_DIR
+  if (!cacheDir || !outputDir) {
+    return false
+  }
+  if (process.env.UNI_APP_X_VAPOR_RENDER_TARGET === 'bytecode') {
+    return copyEncryptUniModulesDom2BytesTarget(cacheDir, outputDir)
+  }
+  if (process.env.UNI_APP_X_VAPOR_RENDER_TARGET === 'nativecode') {
+    return copyEncryptUniModulesDom2CppTarget(cacheDir, outputDir)
+  }
+  return false
+}
+
+function copyEncryptUniModulesDom2BytesTarget(
+  cacheDir: string,
+  outputDir: string
+) {
+  // 只依赖编译环境变量定位缓存目录和输出目录，避免拼接具体 unpackage/dist 路径。
+  const sourceBytesDir = path.resolve(cacheDir, 'bytes')
+  if (
+    !fs.existsSync(sourceBytesDir) ||
+    !fs.statSync(sourceBytesDir).isDirectory()
+  ) {
+    return false
+  }
+  const outputBytesDir = path.resolve(outputDir, 'bytes')
+  // 云编译产出的 bytecode 在缓存目录中，这里只合并复制到当前编译输出目录。
+  fs.copySync(sourceBytesDir, outputBytesDir, { overwrite: true })
+  return true
+}
+
+async function copyEncryptUniModulesDom2CppTarget(
+  cacheDir: string,
+  outputDir: string
+) {
+  const sourceCppDir = path.resolve(cacheDir, 'cpp')
+  if (
+    !fs.existsSync(sourceCppDir) ||
+    !fs.statSync(sourceCppDir).isDirectory()
+  ) {
+    return false
+  }
+  const outputCppDir =
+    process.env.UNI_APP_X_DOM2_CPP_DIR || path.resolve(outputDir, 'cpp')
+
+  // nativecode 的 cpp/h 暂时不走 DUM 解密，直接复制云端产物。
+  // const cppFiles = sync('**/*.{cpp,h}', {
+  //   absolute: false,
+  //   cwd: sourceCppDir,
+  //   onlyFiles: true,
+  // }).filter((file) => !isIgnoreDom2CppFile(file))
+  // if (cppFiles.length) {
+  //   const files = cppFiles.reduce((files, file) => {
+  //     files[path.resolve(sourceCppDir, file)] = path.resolve(outputCppDir, file)
+  //     return files
+  //   }, {} as Record<string, string>)
+  //   const { DUM } = requireUniHelpers()
+  //   const errMsg = await DUM(path.basename(sourceCppDir), files)
+  //   if (errMsg) {
+  //     console.error(errMsg)
+  //     process.exit(0)
+  //   }
+  // }
+
+  // cpp 目录保持原目录结构直接复制，shared_data_init.h 由当前编译流程生成，不复制云端缓存版本。
+  fs.copySync(sourceCppDir, outputCppDir, {
+    filter(src) {
+      if (fs.statSync(src).isDirectory()) {
+        return true
+      }
+      // shared_data_init.h 由当前编译生成，不能复制云端缓存里的旧文件覆盖本地结果。
+      if (isIgnoreDom2CppFile(src)) {
+        return false
+      }
+      return true
+    },
+    overwrite: true,
+  })
+  return true
+}
+
+function isIgnoreDom2CppFile(filename: string) {
+  return path.basename(filename) === 'shared_data_init.h'
 }
 
 const uniComponentPrefix = 'uniComponent://'

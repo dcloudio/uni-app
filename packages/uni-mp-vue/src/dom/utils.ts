@@ -179,18 +179,40 @@ function initMiniProgramNode(
           .createSelectorQuery()
           .in(ins.proxy)
           .select('#' + uniElement.id)
-          .fields({ node: true }, (res) => {
-            const node = (res as any).node
-            resolve(node)
-            // 实现一个假的Promise，确保同步调用
-            uniElement.$node = {
-              then(fn) {
-                fn(node)
-              },
+          .fields(
+            { node: true, scrollOffset: true },
+            (res: Record<string, any>) => {
+              const node = res.node
+              resolve(node)
+              // 实现一个假的Promise，确保同步调用
+              uniElement.$node = {
+                then(fn) {
+                  fn(node)
+                },
+              }
+
+              setUniElementScrollOffset(uniElement, res)
             }
-          })
+          )
           .exec()
       }, 2)
     })
   }
+}
+
+function setUniElementScrollOffset(
+  uniElement: UniElement,
+  res: Record<string, any>
+) {
+  const properties = [
+    'scrollTop',
+    'scrollLeft',
+    'scrollHeight',
+    'scrollWidth',
+  ] as const
+  properties.forEach((prop) => {
+    if (res[prop] !== undefined) {
+      uniElement[prop] = res[prop]
+    }
+  })
 }

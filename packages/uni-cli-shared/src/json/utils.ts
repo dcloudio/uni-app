@@ -88,6 +88,43 @@ export function checkPagesJson(jsonStr: string, inputDir: string) {
     }
   })
 
+  const tabBarNode = root.children?.find(
+    (child) =>
+      child.type === 'property' &&
+      child.children?.length === 2 &&
+      child.children[0].value === 'tabBar'
+  )
+  if (process.env.UNI_APP_X_DOM2 !== 'true' && tabBarNode) {
+    // dom2下不支持tabBar配置项，这里先不校验
+    let allPages: string[] = [] // 收集全部页面,包含分包页面
+    let tabBarPages: string[] = [] // 收集 tabBar 页面
+    allPages.push(...pagePathNodes.map((node) => node.value as string))
+    findRootNode(tabBarNode.children![1], ['list']).forEach((node) => {
+      const pagePathNode =
+        node.type === 'object' &&
+        node.children?.find(
+          (child) =>
+            child.type === 'property' &&
+            child.children?.length === 2 &&
+            child.children[0].value === 'pagePath'
+        )
+      if (pagePathNode) {
+        const pagePathValueNode = pagePathNode.children![1]
+        const pagePath = pagePathValueNode.value as string
+        tabBarPages.push(pagePath)
+        if (
+          !allPages.includes(pagePath) &&
+          !allPages.includes(pagePath.substring(1))
+        ) {
+          throwCompilerError(
+            jsonStr,
+            pagePathValueNode,
+            M['pages.json.tabbar.page.notfound'].replace('{pagePath}', pagePath)
+          )
+        }
+      }
+    })
+  }
   for (const node of pagePathNodes) {
     const pagePath: string = node.value ?? ''
     if (!pageExistsWithCaseSync(path.join(inputDir, pagePath))) {

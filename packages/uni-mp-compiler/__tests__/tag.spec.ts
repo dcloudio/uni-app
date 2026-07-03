@@ -1,4 +1,7 @@
-import { HTML_TO_MINI_PROGRAM_TAGS } from '@dcloudio/uni-cli-shared'
+import {
+  HTML_TO_MINI_PROGRAM_TAGS,
+  transformTeleport,
+} from '@dcloudio/uni-cli-shared'
 import { assert } from './testUtils'
 
 describe('compiler: transform tag', () => {
@@ -36,11 +39,63 @@ describe('compiler: transform tag', () => {
       `<uni-cloud-db-element ref="udb"/>`,
       `<view u-t="uni-cloud-db-element" ref="udb" style="{{$eS[a]}}" id="r0-2a9ec0b0"/>`,
       `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: _sei('r0-2a9ec0b0', { "name": "uni-cloud-db-element", "type": 2 }, 'udb'), b: _s(_ses('r0-2a9ec0b0', { '--status-bar-height': \`\${_ctx.u_s_b_h}px\` })) }
+  const __returned__ = { a: _sei('r0-2a9ec0b0', { "name": "uni-cloud-db-element", "type": 2 }, 'udb'), b: _s(_ses('r0-2a9ec0b0', { '--status-bar-height': \`\${_ctx.u_s_b_h}px\`, '--uni-safe-area-inset-bottom': \`\${_ctx.u_s_a_i_b}px\` })) }
   return __returned__
 }`,
       {
         isX: true,
+      }
+    )
+  })
+  test('teleport', () => {
+    assert(
+      `<teleport to="#foo" disabled defer><view/></teleport>`,
+      `<root-portal enable="{{false}}"><view/></root-portal>`,
+      `(_ctx, _cache) => {
+  return {}
+}`,
+      {
+        nodeTransforms: [transformTeleport],
+      }
+    )
+    assert(
+      `<teleport :to="to" :defer="isDeferred"><view/></teleport>`,
+      `<root-portal><view/></root-portal>`,
+      `(_ctx, _cache) => {
+  return {}
+}`,
+      {
+        nodeTransforms: [transformTeleport],
+      }
+    )
+    assert(
+      `<teleport :to="to" :disabled="disabled"><view/></teleport>`,
+      `<root-portal enable="{{a}}"><view/></root-portal>`,
+      `(_ctx, _cache) => {
+  return { a: !_ctx.disabled }
+}`,
+      {
+        nodeTransforms: [transformTeleport],
+      }
+    )
+    assert(
+      `<teleport :disabled="disabled" :defer="isDeferred"><view/></teleport>`,
+      `<root-portal enable="{{a}}"><view/></root-portal>`,
+      `(_ctx, _cache) => {
+  return { a: !_ctx.disabled }
+}`,
+      {
+        nodeTransforms: [transformTeleport],
+      }
+    )
+    assert(
+      `<teleport :to="data.to" :disabled="data.disabled ? !data.enable : false"><view/></teleport>`,
+      `<root-portal enable="{{a}}"><view/></root-portal>`,
+      `(_ctx, _cache) => {
+  return { a: !(_ctx.data.disabled ? !_ctx.data.enable : false) }
+}`,
+      {
+        nodeTransforms: [transformTeleport],
       }
     )
   })

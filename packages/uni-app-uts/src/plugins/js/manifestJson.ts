@@ -3,6 +3,7 @@ import fs from 'fs-extra'
 import type { Plugin } from 'vite'
 import {
   MANIFEST_JSON_UTS,
+  isUniAppXAndroidJsEngine,
   parseJson,
   resolveUTSCompiler,
   validateThemeValue,
@@ -14,6 +15,10 @@ import {
   updateHarmonyManifestModules,
   updateManifestModules,
 } from '../utils'
+import {
+  genUniAppXJsEngineIndexKotlinCode,
+  resolveUniAppXJsEngineIndexKotlinPath,
+} from '../android-dom2/utils'
 
 let outputManifestJson: Record<string, any> | undefined = undefined
 
@@ -26,7 +31,7 @@ export function getOutputManifestJson() {
 }
 
 export function uniAppManifestPlugin(
-  platform: 'app-ios' | 'app-harmony'
+  platform: 'app-android' | 'app-ios' | 'app-harmony'
 ): Plugin {
   const manifestJsonPath = path.resolve(
     process.env.UNI_INPUT_DIR,
@@ -36,7 +41,9 @@ export function uniAppManifestPlugin(
     process.env.UNI_INPUT_DIR,
     MANIFEST_JSON_UTS
   )
+  const isDom2Dynamic = process.env.UNI_APP_X_DOM2_DYNAMIC === 'true'
   let manifestJson: Record<string, any> = {}
+  let kotlinCode = ''
   return {
     name: 'uni:app-manifest',
     apply: 'build',
@@ -61,6 +68,23 @@ export function uniAppManifestPlugin(
           map: {
             mappings: '',
           },
+        }
+      }
+    },
+    writeBundle() {
+      if (
+        isUniAppXAndroidJsEngine() &&
+        process.env.UNI_APP_X_DOM2_KT_DIR &&
+        !isDom2Dynamic
+      ) {
+        const newKotlinCode = genUniAppXJsEngineIndexKotlinCode(manifestJson)
+        if (kotlinCode !== newKotlinCode) {
+          fs.outputFileSync(
+            resolveUniAppXJsEngineIndexKotlinPath(),
+            newKotlinCode
+          )
+          kotlinCode = newKotlinCode
+          process.env.UNI_APP_X_DOM2_KT_CHANGED = 'true'
         }
       }
     },
@@ -124,7 +148,10 @@ export function uniAppManifestPlugin(
           }
         }
       }
-
+      // TODO 目前android即使配置了vapor也不使用，后续支持后，需要移除下边的代码
+      if (process.env.UNI_APP_X_DOM2 !== 'true') {
+        delete manifest['uni-app-x']?.vapor
+      }
       fs.outputFileSync(
         path.resolve(process.env.UNI_OUTPUT_DIR, 'manifest.json'),
         JSON.stringify(manifest, null, 2)
