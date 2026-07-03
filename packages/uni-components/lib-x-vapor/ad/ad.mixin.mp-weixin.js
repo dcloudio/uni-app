@@ -1,5 +1,18 @@
 const adPlugin = requirePlugin("uni-ad");
 
+import {
+  canShowHalfScreenModal,
+  isHalfScreenModalShowing,
+  markHalfScreenModalConfirmed,
+  markHalfScreenModalDismissed,
+  markHalfScreenModalShowing,
+  queueHalfScreenModalOpenOptions,
+  resetHalfScreenModalSession,
+  resolveHalfScreenModalContent,
+  takePendingHalfScreenModalOpenOptions,
+  unlockHalfScreenModalShowing
+} from '../../lib-x/ad/half-screen-modal.js'
+
 const EventType = {
   Load: 'load',
   Close: 'close',
@@ -76,6 +89,7 @@ export default {
   props: adComponentProps,
   data: adComponentData,
   created () {
+    resetHalfScreenModalSession()
     this._ad = null
     this._loading = false
     this._wxRewardedAd = null
@@ -316,7 +330,7 @@ export default {
         success: (res) => {
           this._resetHalfScreenOpening()
           if (plugin && plugin.notifyHalfScreenOpenSuccess) {
-            plugin.notifyHalfScreenOpenSuccess(res)
+            plugin.notifyHalfScreenOpenSuccess(res, { isDirect: true })
           }
         },
         fail: (err) => {
@@ -378,6 +392,75 @@ export default {
 
     _onHalfScreenReady () {
       this._setHalfScreenMode()
+    },
+
+    /**
+     * 插件 all_show 双广告：ad 配置就绪后并行弹窗
+     * @param {Object} e 事件对象
+     */
+    _onHalfScreenModal (e) {
+      const detail = e.detail || e
+      const openOptions = detail.openOptions
+      if (openOptions) {
+        this._tryShowHalfScreenModal(openOptions)
+      }
+    },
+
+    /**
+     * 尝试展示排队中的半屏弹窗
+     */
+    _processPendingHalfScreenModal () {
+      const pending = takePendingHalfScreenModalOpenOptions()
+      if (pending) {
+        setTimeout(() => {
+          this._tryShowHalfScreenModal(pending)
+        }, 50)
+      }
+    },
+
+    /**
+     * 宿主层统一调用 uni.showModal 引导打开半屏
+     * @param {Object} openOptions 打开半屏/直达小程序参数
+     * @param {number} retryCount showModal 失败重试次数
+     */
+    _tryShowHalfScreenModal (openOptions, retryCount = 0) {
+      if (!openOptions || !openOptions.appId) {
+        return
+      }
+      const appId = openOptions.appId
+      if (!canShowHalfScreenModal(appId)) {
+        return
+      }
+      if (isHalfScreenModalShowing()) {
+        queueHalfScreenModalOpenOptions(openOptions)
+        return
+      }
+      markHalfScreenModalShowing(appId)
+      /* eslint-disable no-undef */
+      uni.showModal({
+        title: '提示',
+        content: resolveHalfScreenModalContent(openOptions.msg),
+        confirmText: '继续',
+        cancelText: '取消',
+        success: (res) => {
+          if (res.confirm) {
+            markHalfScreenModalConfirmed()
+            this._openTargetMiniProgramInHost(openOptions)
+          } else {
+            markHalfScreenModalDismissed(appId)
+          }
+        },
+        fail: () => {
+          unlockHalfScreenModalShowing(appId)
+          if (retryCount < 1) {
+            setTimeout(() => {
+              this._tryShowHalfScreenModal(openOptions, retryCount + 1)
+            }, 300)
+          } else {
+            this._processPendingHalfScreenModal()
+          }
+        }
+      })
     },
 
     _onmpload (e) {
