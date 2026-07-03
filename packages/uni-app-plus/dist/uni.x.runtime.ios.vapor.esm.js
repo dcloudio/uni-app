@@ -3528,7 +3528,7 @@ class SelectorQueryImpl {
     {
       var _this$_component;
       (_this$_component = this._component) === null || _this$_component === void 0 || (_this$_component = _this$_component.$nativePage) === null || _this$_component === void 0 || _this$_component.waitNativeRender(() => {
-        requestComponentInfo(this._component, this._queue, (res) => {
+        requestComponentInfoVapor(this._component, this._queue, (res) => {
           var queueCbs = this._queueCb;
           res.forEach((info, _index) => {
             var queueCb = queueCbs[_index];
@@ -3574,17 +3574,16 @@ class SelectorQueryImpl {
     this._queueCb.push(callback);
   }
 }
-class QuerySelectorHelper {
-  constructor(element, vnode, fields) {
-    this._element = element;
-    this._commentStartVNode = vnode;
+class QuerySelectorHelperVapor {
+  constructor(component, fields) {
+    this._component = component;
     this._fields = fields;
   }
   /**
    * entry
    */
-  static queryElement(element, selector, all, vnode, fields) {
-    return new QuerySelectorHelper(element, vnode, fields).query(selector, all);
+  static queryElement(component, selector, all, fields) {
+    return new QuerySelectorHelperVapor(component, fields).query(selector, all);
   }
   /**
    * 执行查询
@@ -3593,80 +3592,22 @@ class QuerySelectorHelper {
    * @returns
    */
   query(selector, all) {
-    if (this._element.nodeName == "#comment") {
-      return this.queryFragment(this._element, selector, all);
-    } else {
-      return all ? this.querySelectorAll(this._element, selector) : this.querySelector(this._element, selector);
-    }
+    return all ? this.querySelectorAll(this._component, selector) : this.querySelector(this._component, selector);
   }
-  queryFragment(el, selector, all) {
-    var current = el.nextSibling;
-    if (current == null) {
-      return null;
-    }
-    if (all) {
-      var result1 = [];
-      while (true) {
-        var queryResult = this.querySelectorAll(current, selector);
-        if (queryResult != null) {
-          result1.push(...queryResult);
-        }
-        current = current.nextSibling;
-        if (current == null || this._commentStartVNode.anchor == current) {
-          break;
-        }
-      }
-      return result1;
-    } else {
-      var result2 = null;
-      while (true) {
-        result2 = this.querySelector(current, selector);
-        current = current.nextSibling;
-        if (result2 != null || current == null || this._commentStartVNode.anchor == current) {
-          break;
-        }
-      }
-      return result2;
-    }
-  }
-  querySelector(element, selector) {
-    var element2 = this.querySelf(element, selector);
-    if (element2 == null) {
-      element2 = element.querySelector(selector);
-    }
-    if (element2 != null) {
-      return this.getNodeInfo(element2);
+  querySelector(component, selector) {
+    var result = component.$.sharedData._querySelector(selector);
+    if (result != null) {
+      return this.getNodeInfo(result);
     }
     return null;
   }
-  querySelectorAll(element, selector) {
+  querySelectorAll(component, selector) {
     var nodesInfoArray = [];
-    var element2 = this.querySelf(element, selector);
-    if (element2 != null) {
-      nodesInfoArray.push(this.getNodeInfo(element));
-    }
-    var findNodes = element.querySelectorAll(selector);
+    var findNodes = component.$.sharedData._querySelectorAll(selector);
     findNodes === null || findNodes === void 0 || findNodes.forEach((el) => {
       nodesInfoArray.push(this.getNodeInfo(el));
     });
     return nodesInfoArray;
-  }
-  querySelf(element, selector) {
-    if (element == null || selector.length < 2) {
-      return null;
-    }
-    var selectorType = selector.charAt(0);
-    var selectorName = selector.slice(1);
-    if (selectorType == "." && element.classList.includes(selectorName)) {
-      return element;
-    }
-    if (selectorType == "#" && element.getAttribute("id") == selectorName) {
-      return element;
-    }
-    if (selector.toUpperCase() == element.nodeName.toUpperCase()) {
-      return element;
-    }
-    return null;
   }
   /**
    * 查询元素信息
@@ -3674,7 +3615,7 @@ class QuerySelectorHelper {
    * @returns
    */
   getNodeInfo(element) {
-    var _element$getAttribute;
+    var _element$getAttribute2;
     if (this._fields.node == true) {
       var nodeInfo2 = {
         node: element
@@ -3691,7 +3632,7 @@ class QuerySelectorHelper {
     }
     var rect = element.getBoundingClientRect();
     var nodeInfo = {
-      id: (_element$getAttribute = element.getAttribute("id")) === null || _element$getAttribute === void 0 ? void 0 : _element$getAttribute.toString(),
+      id: (_element$getAttribute2 = element.getAttribute("id")) === null || _element$getAttribute2 === void 0 ? void 0 : _element$getAttribute2.toString(),
       left: rect.left,
       top: rect.top,
       right: rect.right,
@@ -3705,12 +3646,11 @@ class QuerySelectorHelper {
     return nodeInfo;
   }
 }
-function requestComponentInfo(vueComponent, queue2, callback) {
+function requestComponentInfoVapor(vueComponent, queue2, callback) {
   var result = [];
-  var el = vueComponent === null || vueComponent === void 0 ? void 0 : vueComponent.$el;
-  if (el != null) {
+  if (vueComponent != null) {
     queue2.forEach((item) => {
-      var queryResult = QuerySelectorHelper.queryElement(el, item.selector, !item.single, vueComponent === null || vueComponent === void 0 ? void 0 : vueComponent.$.subTree, item.fields);
+      var queryResult = QuerySelectorHelperVapor.queryElement(vueComponent, item.selector, !item.single, item.fields);
       if (queryResult != null) {
         result.push(queryResult);
       }
