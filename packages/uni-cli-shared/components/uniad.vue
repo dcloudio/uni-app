@@ -12,6 +12,7 @@
       @customFullscreen="_customFullscreen"
       @halfScreenReady="_onHalfScreenReady"
       @halfScreenTap="_onHalfScreenTap"
+      @halfScreenModal="_onHalfScreenModal"
     />
     <!-- #ifdef MP-WEIXIN -->
     <ad-custom v-if="userwx && !isHalfScreen" :adIntervals="adIntervals" :unit-id="userUnitId" class="uni-ad-custom" data-com-type="wx" :class="[customFullscreen]" @load="_onmpload" @error="_onmperror"></ad-custom>
