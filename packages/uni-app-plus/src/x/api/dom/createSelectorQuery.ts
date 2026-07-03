@@ -444,7 +444,7 @@ class QuerySelectorHelperVapor {
     selector: string
   ): NodeInfo | null {
     // @ts-expect-error
-    const result = component?.$el?.$.sharedData._querySelector(selector)
+    const result = component.$.sharedData._querySelector(selector)
     if (result != null) {
       return this.getNodeInfo(result)
     }
