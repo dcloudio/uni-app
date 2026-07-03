@@ -174,13 +174,16 @@ ninja: error: failed recompaction: Permission denied。
 
 ## 开发注意
 
-对比非蒸汽，蒸汽模式有一些变更调整，有一些待完成TODO，说明如下：
+对比非蒸汽，蒸汽模式有一些变更调整，说明如下：
 
 ### vue蒸汽模式自身变更
-- **仅支持组合式，不支持选项式。这是vue框架自身的新版约束**
+
+- **仅支持组合式，不支持选项式**
 
     选项式转组合式，AI可以帮忙。hello uni-app x里大量的选项式页面都是用uni-agent转成了组合式，以适配蒸汽模式。详见[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)
 - 不再支持mixin
+
+以上为vue框架自身的新版约束。
 
 ### css
 - 变更：因为性能原因，运行时不支持复杂关系选择器，只支持简单的class选择器和分组选择器 [详见](css/common/selector.md)
@@ -195,11 +198,11 @@ ninja: error: failed recompaction: Permission denied。
 
 ### 全局文件
 pages.json
-- TODO：iOS暂无tabbar，但有独立的[uni-tab组件](./component/uni-ui-x/uni-tab.md)。自定义组件的性能与pages.json中的tabbar没有差别。
+- TODO：Android暂无tabbar，但有独立的[uni-tab组件](./component/uni-ui-x/uni-tab.md)。自定义组件的性能与pages.json中的tabbar没有差别。
 
 ### 组件
 - 变更：不再支持uts兼容模式组件，仅支持uts标准模式组件，即使用native-view的开发方式。
-- 变更：布尔属性规范化。scroll-view等部分组件布尔属性默认值从true改为false。
+- 变更：布尔属性规范化。scroll-view、swiper等部分组件布尔属性默认值从true改为false。
 - 变更：list-view的变化和限制
     * list-view支持vue实例、dom的全面复用，进一步降低内存占用。不再需要之前模板示例中的复用长列表、分批加载长列表。
     * list-item的v-for必须要有:key，否则无法复用
@@ -254,17 +257,25 @@ pages.json
   只要存在至少两个相邻节点（父子或兄弟）同时拍平，即可获得性能优化。
 
 ### API
-- TODO：iOS暂无tabbar相关api。需使用uni-tab-bar组件相关属性设置。
+- TODO：Android暂无tabbar相关api。需使用uni-tab-bar组件相关属性设置。
 - 没有页面下拉刷新及相关生命周期。需要使用scroll-view相关api
 
 #### Element API
-- uni.createSelectorQuery 不支持多根节点组件的获取
+- uni.createSelectorQuery 暂不支持多根节点组件的获取
 - TODO：缺少Drawable。dom2的view、text创建足够快且支持拍平，故优先级不高
 
     在蒸汽模式之前，为了高性能绘制，经常不能使用view和text组件，而是需要通过Drawable对象来绘制线条和文字，这种写法无法跨平台且复杂。\
     在蒸汽模式后，开发者可以正常使用view和text跨平台的开发，比如hello uni-app x的模板中的[日历示例](https://gitcode.com/dcloud/hello-uni-app-x/blob/master/pages/template/calendar-vapor/calendar-vapor.uvue)，之前是Drawable绘制，现在都是拍平的text组件。
 
 其他还有一些差异，见文档的兼容性说明。
+
+## 使用uni-agent，从VDOM模式升级到蒸汽模式
+
+1. 在vdom模式下，要求uni-agent把复杂的组合选择器，改成 简单的class选择器或分组选择器，确认是否正常
+2. 在vdom模式下，打开manifest.json中的样式隔离策略2.0，把[文档](css/common/style-isolation.md)贴给ai，要求ai改造，确认是否正常
+3. 项目在manifest中切换为蒸汽模式，把上一个章节 `开发注意`文档内容贴给ai，检查是否正常
+
+如果想从uni-app升级到uni-app x的蒸汽模式，[另见](./uniapptox.md)
 
 ## 视图层编译目标 @vapor-render-target
 
@@ -307,3 +318,4 @@ VDOM模式的视图层是编译为uts/js代码，然后驱动原生渲染。
 因为最初在5.0版上线鸿蒙蒸汽模式时只有机器码，所以目前在鸿蒙上是提供了字节码或机器码2个选项。
 
 而在5.11上线iOS蒸汽模式时，只提供了字节码选项。实测机器码会造成云打包iOS非常非常慢，暂不计划开放。
+
