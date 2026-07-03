@@ -3,11 +3,52 @@ import { rewriteConsole, setSendConsole } from './console'
 import { initOnError, setSendError } from './error'
 import { originalConsole } from './console/utils'
 
+declare const my: any
+
+const UNI_CONSOLE_RUNTIME_PROMISE = '__uni_console_runtime_promise__'
+
+type RuntimeGlobal = Record<string, Promise<boolean> | undefined>
+
 export function initRuntimeSocketService(): Promise<boolean> {
   const hosts: string = process.env.UNI_SOCKET_HOSTS
   const port: string = process.env.UNI_SOCKET_PORT
   const id: string = process.env.UNI_SOCKET_ID
   if (!hosts || !port || !id) return Promise.resolve(false)
+  const runtimeGlobal = getRuntimeGlobal()
+  const existingPromise = runtimeGlobal?.[UNI_CONSOLE_RUNTIME_PROMISE]
+  if (existingPromise) {
+    return existingPromise
+  }
+  let runtimePromise = initRuntimeSocketServiceOnce(hosts, port, id)
+  if (runtimeGlobal) {
+    // 独立分包与主包可能各自打包一份 uni-console 运行时，用小程序全局对象避免重复建 socket、重复改写 console。
+    runtimePromise = runtimePromise.then(
+      (success) => {
+        if (
+          !success &&
+          runtimeGlobal[UNI_CONSOLE_RUNTIME_PROMISE] === runtimePromise
+        ) {
+          delete runtimeGlobal[UNI_CONSOLE_RUNTIME_PROMISE]
+        }
+        return success
+      },
+      (error) => {
+        if (runtimeGlobal[UNI_CONSOLE_RUNTIME_PROMISE] === runtimePromise) {
+          delete runtimeGlobal[UNI_CONSOLE_RUNTIME_PROMISE]
+        }
+        throw error
+      }
+    )
+    runtimeGlobal[UNI_CONSOLE_RUNTIME_PROMISE] = runtimePromise
+  }
+  return runtimePromise
+}
+
+function initRuntimeSocketServiceOnce(
+  hosts: string,
+  port: string,
+  id: string
+): Promise<boolean> {
   // 百度小程序需要延迟初始化，不然会存在循环引用问题vendor.js
   const lazy = typeof swan !== 'undefined'
   // 重写需要同步，避免丢失早期日志信息
@@ -93,30 +134,44 @@ function wrapError(error: string) {
   return `${ERROR_CHAR}${error}${ERROR_CHAR}`
 }
 
-function initMiniProgramGlobalFlag() {
+function getRuntimeGlobal(): RuntimeGlobal | undefined {
+  const miniProgramGlobal = getMiniProgramGlobal()
+  if (miniProgramGlobal) {
+    return miniProgramGlobal
+  }
+  if (typeof globalThis !== 'undefined') {
+    return globalThis as any
+  }
+}
+
+function getMiniProgramGlobal(): Record<string, any> | undefined {
   if (typeof wx !== 'undefined') {
-    // @ts-expect-error
-    wx.__uni_console__ = true
-    // @ts-expect-error
+    return wx as any
   } else if (typeof my !== 'undefined') {
-    // @ts-expect-error
-    my.__uni_console__ = true
+    return my as any
   } else if (typeof tt !== 'undefined') {
-    tt.__uni_console__ = true
+    return tt as any
   } else if (typeof swan !== 'undefined') {
-    swan.__uni_console__ = true
+    return swan as any
   } else if (typeof qq !== 'undefined') {
-    qq.__uni_console__ = true
+    return qq as any
   } else if (typeof ks !== 'undefined') {
-    ks.__uni_console__ = true
+    return ks as any
   } else if (typeof jd !== 'undefined') {
-    jd.__uni_console__ = true
+    return jd as any
   } else if (typeof xhs !== 'undefined') {
-    xhs.__uni_console__ = true
+    return xhs as any
   } else if (typeof has !== 'undefined') {
-    has.__uni_console__ = true
+    return has as any
   } else if (typeof qa !== 'undefined') {
-    qa.__uni_console__ = true
+    return qa as any
+  }
+}
+
+function initMiniProgramGlobalFlag() {
+  const miniProgramGlobal = getMiniProgramGlobal()
+  if (miniProgramGlobal) {
+    miniProgramGlobal.__uni_console__ = true
   }
 }
 

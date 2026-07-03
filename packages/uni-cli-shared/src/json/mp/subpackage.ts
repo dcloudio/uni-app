@@ -2,6 +2,8 @@ import path from 'path'
 import { normalizePath } from '../../utils'
 
 export const MP_INDEPENDENT_ROOT_QUERY = 'uni_mp_independent_root'
+export const MP_INDEPENDENT_MAIN_PREFIX = '\0uni:mp-independent-main'
+export const MP_INDEPENDENT_VIRTUAL_ROOT_QUERY = 'root'
 
 export interface IndependentSubPackage {
   root: string
@@ -235,6 +237,38 @@ export function withoutIndependentRoot(id: string): string {
 
 export function hasIndependentRoot(id: string): boolean {
   return parseIndependentRoot(id) !== undefined
+}
+
+export function formatIndependentVirtualId(
+  prefix: string,
+  root: string
+): string {
+  return `${prefix}?${MP_INDEPENDENT_VIRTUAL_ROOT_QUERY}=${encodeURIComponent(
+    root
+  )}`
+}
+
+export function parseIndependentMainRoot(id: string): string | undefined {
+  return parseIndependentVirtualRoot(id, MP_INDEPENDENT_MAIN_PREFIX)
+}
+
+export function parseIndependentVirtualRoot(
+  id: string,
+  prefix: string
+): string | undefined {
+  if (!id.startsWith(`${prefix}?`)) {
+    return
+  }
+  const { query } = splitIdQuery(id)
+  if (!query) {
+    return
+  }
+  for (const item of query.split('&')) {
+    const [name, value = ''] = splitQueryItem(item)
+    if (name === MP_INDEPENDENT_VIRTUAL_ROOT_QUERY) {
+      return decodeURIComponent(value)
+    }
+  }
 }
 
 function splitIdQuery(id: string) {

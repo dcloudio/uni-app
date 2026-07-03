@@ -1,12 +1,17 @@
 import {
+  INDEPENDENT_MAIN_PREFIX,
+  INDEPENDENT_ROOT_PARAM,
   INDEPENDENT_ROOT_QUERY,
+  formatIndependentVirtualId,
   getIndependentRootByFilename,
   getIndependentRoots,
   getIndependentSubPackages,
   hasIndependentRoot,
   initIndependentSubPackages,
   isAppPagesJson,
+  parseIndependentMainRoot,
   parseIndependentRoot,
+  parseIndependentVirtualRoot,
   updateIndependentSubPackages,
   withIndependentRoot,
   withoutIndependentRoot,
@@ -55,6 +60,23 @@ describe('independent root query utils', () => {
     expect(id).toBe(`/src/foo.ts?raw&${INDEPENDENT_ROOT_QUERY}=pkg%2Fnested`)
     expect(parseIndependentRoot(id)).toBe('pkg/nested')
     expect(withoutIndependentRoot(id)).toBe('/src/foo.ts?raw')
+  })
+})
+
+describe('independent virtual module utils', () => {
+  test('formats and parses independent main root', () => {
+    const id = formatIndependentVirtualId(
+      INDEPENDENT_MAIN_PREFIX,
+      'package-a/nested'
+    )
+
+    expect(id).toBe(
+      `${INDEPENDENT_MAIN_PREFIX}?${INDEPENDENT_ROOT_PARAM}=package-a%2Fnested`
+    )
+    expect(parseIndependentMainRoot(id)).toBe('package-a/nested')
+    expect(parseIndependentVirtualRoot(id, INDEPENDENT_MAIN_PREFIX)).toBe(
+      'package-a/nested'
+    )
   })
 })
 

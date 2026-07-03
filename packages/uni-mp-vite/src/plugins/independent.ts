@@ -13,8 +13,6 @@ import type {
 import type { Plugin } from 'vite'
 import type { UniMiniProgramPluginOptions } from '../plugin'
 import {
-  INDEPENDENT_MAIN_PREFIX,
-  INDEPENDENT_ROOT_PARAM,
   INDEPENDENT_SUBPACKAGE_PLUGIN_NAME,
   UNI_MP_RUNTIME_ID,
   VUE_EXPORT_HELPER_ID,
@@ -24,6 +22,7 @@ import {
   isAppPagesJson,
   isInIndependentRoot,
   normalizeIndependentRoot,
+  parseIndependentMainRoot,
   parseIndependentRoot,
   withIndependentRoot,
   withoutIndependentRoot,
@@ -581,20 +580,4 @@ function generateVueExportHelperCode() {
   return target;
 }
 `
-}
-
-function parseIndependentMainRoot(id: string) {
-  return parseVirtualRoot(id, INDEPENDENT_MAIN_PREFIX)
-}
-
-function parseVirtualRoot(id: string, prefix: string) {
-  if (!id.startsWith(prefix)) {
-    return
-  }
-  const queryIndex = id.indexOf('?')
-  if (queryIndex === -1) {
-    return
-  }
-  const query = id.slice(queryIndex + 1)
-  return new URLSearchParams(query).get(INDEPENDENT_ROOT_PARAM) || undefined
 }

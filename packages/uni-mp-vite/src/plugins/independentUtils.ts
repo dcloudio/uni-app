@@ -1,17 +1,19 @@
 import {
   type IndependentSubPackage,
+  MP_INDEPENDENT_MAIN_PREFIX,
   MP_INDEPENDENT_ROOT_QUERY,
+  MP_INDEPENDENT_VIRTUAL_ROOT_QUERY,
   setIndependentSubPackages,
   stringifyIndependentRoots,
 } from '@dcloudio/uni-cli-shared'
 
 export const INDEPENDENT_SUBPACKAGE_PLUGIN_NAME =
   'uni:mp-independent-subpackage'
-export const INDEPENDENT_MAIN_PREFIX = '\0uni:mp-independent-main'
+export const INDEPENDENT_MAIN_PREFIX = MP_INDEPENDENT_MAIN_PREFIX
 export const VUE_EXPORT_HELPER_ID = '\0plugin-vue:export-helper'
 export const UNI_MP_RUNTIME_ID = 'uni-mp-runtime'
 export const INDEPENDENT_ROOT_QUERY = MP_INDEPENDENT_ROOT_QUERY
-export const INDEPENDENT_ROOT_PARAM = 'root'
+export const INDEPENDENT_ROOT_PARAM = MP_INDEPENDENT_VIRTUAL_ROOT_QUERY
 
 let initialIndependentRootsSignature: string | undefined
 
@@ -46,14 +48,8 @@ export function updateIndependentSubPackages(
   }
 }
 
-export function formatIndependentVirtualId(
-  prefix: string,
-  root: string
-): string {
-  return `${prefix}?${INDEPENDENT_ROOT_PARAM}=${encodeURIComponent(root)}`
-}
-
 export {
+  formatIndependentVirtualId,
   getIndependentRootByFilename,
   getIndependentRoots,
   getIndependentSubPackages,
@@ -61,7 +57,9 @@ export {
   isAppPagesJson,
   isInIndependentRoot,
   normalizeIndependentRoot,
+  parseIndependentMainRoot,
   parseIndependentRoot,
+  parseIndependentVirtualRoot,
   withIndependentRoot,
   withoutIndependentRoot,
 } from '@dcloudio/uni-cli-shared'
