@@ -906,9 +906,8 @@ uni.createSelectorQuery().select('.rect1').selectAll('.rect2').boundingClientRec
 
 **注意事项：**
 
-1. App 平台 `<template>` 下如果存在多个节点，会导致非第一个节点查询不到的问题
-2. Web 平台 `<template>` 下如果存在多个节点，如果是在组件内部查询，可能会导致查询到其他组件或页面的元素
-3. HarmonyOS 平台 `<template>` 下如果存在多个节点，蒸汽模式下会导致查询不到的问题
+1. Web 平台 `<template>` 下如果存在多个节点，如果是在组件内部查询，可能会导致查询到其他组件或页面的元素
+2. App 平台 蒸汽模式 暂不支持组件多根节点查询
 
 ## 通用类型
 
