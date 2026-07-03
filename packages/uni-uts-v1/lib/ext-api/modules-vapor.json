@@ -39,7 +39,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-actionSheet": {
     "uni": {
@@ -63,7 +64,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-ad-dom2": {
     "uni": {
@@ -89,7 +91,8 @@
     "components": [],
     "easycom": [
       "ad"
-    ]
+    ],
+    "customElements": []
   },
   "uni-arrayBufferToBase64": {
     "uni": {
@@ -107,7 +110,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-authentication": {
     "uni": {
@@ -140,11 +144,13 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-barcode-scanning": {
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-base64ToArrayBuffer": {
     "uni": {
@@ -162,7 +168,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-calendar": {
     "uni": {
@@ -186,7 +193,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-camera": {
     "uni": {
@@ -203,7 +211,8 @@
     "components": [],
     "easycom": [
       "camera"
-    ]
+    ],
+    "customElements": []
   },
   "uni-canvas-dom2": {
     "uni": {
@@ -221,7 +230,8 @@
     "components": [],
     "easycom": [
       "canvas"
-    ]
+    ],
+    "customElements": []
   },
   "uni-chooseLocation": {
     "uni": {
@@ -236,7 +246,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-chooseMedia": {
     "uni": {
@@ -251,7 +262,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-clipboard": {
     "uni": {
@@ -275,7 +287,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-compass": {
     "uni": {
@@ -329,7 +342,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-crash": {
     "uni": {
@@ -380,7 +394,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-createInnerAudioContext": {
     "uni": {
@@ -404,7 +419,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-createRequestPermissionListener": {
     "uni": {
@@ -418,7 +434,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-dialogPage": {
     "uni": {
@@ -444,13 +461,15 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-editor": {
     "components": [],
     "easycom": [
       "editor"
-    ]
+    ],
+    "customElements": []
   },
   "uni-event": {
     "uni": {
@@ -496,7 +515,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-exit": {
     "uni": {
@@ -511,7 +531,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-facialVerify": {
     "uni": {
@@ -535,7 +556,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-fileSystemManager": {
     "uni": {
@@ -550,7 +572,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-form": {
     "components": [],
@@ -569,7 +592,8 @@
       "slider",
       "switch",
       "textarea"
-    ]
+    ],
+    "customElements": []
   },
   "uni-getAccessibilityInfo": {
     "uni": {
@@ -583,7 +607,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-getAppAuthorizeSetting": {
     "uni": {
@@ -598,7 +623,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-getAppBaseInfo": {
     "uni": {
@@ -612,7 +638,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-getBackgroundAudioManager": {
     "uni": {
@@ -627,7 +654,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-getDeviceInfo": {
     "uni": {
@@ -651,7 +679,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-getElementById": {
     "uni": {
@@ -670,7 +699,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-getNetworkType": {
     "uni": {
@@ -703,7 +733,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-getProvider": {
     "uni": {
@@ -727,7 +758,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-getSystemInfo": {
     "uni": {
@@ -757,7 +789,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-getSystemSetting": {
     "uni": {
@@ -772,7 +805,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-gyroscope": {
     "uni": {
@@ -826,7 +860,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-installApk": {
     "uni": {
@@ -840,7 +875,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-keyboard": {
     "uni": {
@@ -873,7 +909,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-list-view": {
     "components": [],
@@ -882,7 +919,8 @@
       "list-view",
       "sticky-header",
       "sticky-section"
-    ]
+    ],
+    "customElements": []
   },
   "uni-live-player": {
     "uni": {
@@ -899,7 +937,8 @@
     "components": [],
     "easycom": [
       "live-player"
-    ]
+    ],
+    "customElements": []
   },
   "uni-live-pusher": {
     "uni": {
@@ -916,13 +955,15 @@
     "components": [],
     "easycom": [
       "live-pusher"
-    ]
+    ],
+    "customElements": []
   },
   "uni-loading": {
     "components": [],
     "easycom": [
       "loading"
-    ]
+    ],
+    "customElements": []
   },
   "uni-location": {
     "uni": {
@@ -1003,7 +1044,8 @@
       "service": "location"
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-location-system": {
     "provider": {
@@ -1012,7 +1054,8 @@
       "servicePlugin": "uni-location"
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-location-tencent": {
     "provider": {
@@ -1021,7 +1064,8 @@
       "servicePlugin": "uni-location"
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-makePhoneCall": {
     "uni": {
@@ -1036,7 +1080,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-map-tencent": {
     "uni": {
@@ -1056,13 +1101,15 @@
     "components": [],
     "easycom": [
       "map"
-    ]
+    ],
+    "customElements": []
   },
   "uni-match-media": {
     "components": [],
     "easycom": [
       "match-media"
-    ]
+    ],
+    "customElements": []
   },
   "uni-media": {
     "uni": {
@@ -1169,7 +1216,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-memory": {
     "uni": {
@@ -1193,7 +1241,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-modal": {
     "uni": {
@@ -1217,13 +1266,15 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-navigator": {
     "components": [],
     "easycom": [
       "navigator"
-    ]
+    ],
+    "customElements": []
   },
   "uni-network": {
     "uni": {
@@ -1265,7 +1316,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-oauth": {
     "uni": {
@@ -1298,7 +1350,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-oauth-apple": {
     "provider": {
@@ -1312,7 +1365,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-oauth-weixin": {
     "provider": {
@@ -1326,7 +1380,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-openAppAuthorizeSetting": {
     "uni": {
@@ -1340,7 +1395,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-openDocument": {
     "uni": {
@@ -1355,7 +1411,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-openLocation": {
     "uni": {
@@ -1370,13 +1427,15 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-page-container": {
     "components": [],
     "easycom": [
       "page-container"
-    ]
+    ],
+    "customElements": []
   },
   "uni-payment": {
     "uni": {
@@ -1394,7 +1453,8 @@
       "service": "payment"
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-payment-alipay": {
     "provider": {
@@ -1402,7 +1462,8 @@
       "name": "alipay"
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-payment-wxpay": {
     "provider": {
@@ -1410,7 +1471,8 @@
       "name": "wxpay"
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-phoneContact": {
     "uni": {
@@ -1434,7 +1496,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-previewImage": {
     "uni": {
@@ -1456,7 +1519,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-privacy": {
     "uni": {
@@ -1522,13 +1586,15 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-progress": {
     "components": [],
     "easycom": [
       "progress"
-    ]
+    ],
+    "customElements": []
   },
   "uni-prompt": {
     "uni": {
@@ -1587,7 +1653,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-pullDownRefresh": {
     "uni": {
@@ -1617,7 +1684,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-push": {
     "uni": {
@@ -1686,43 +1754,53 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-push-fcm": {
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-push-gp": {
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-push-hms": {
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-push-honor": {
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-push-mainland": {
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-push-meizu": {
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-push-oppo": {
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-push-vivo": {
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-push-xiaomi": {
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-recorder": {
     "uni": {
@@ -1737,7 +1815,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-requestMerchantTransfer": {
     "uni": {
@@ -1752,13 +1831,15 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-rich-text": {
     "components": [],
     "easycom": [
       "rich-text"
-    ]
+    ],
+    "customElements": []
   },
   "uni-rpx2px": {
     "uni": {
@@ -1773,7 +1854,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-scanCode": {
     "uni": {
@@ -1788,7 +1870,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-screenBrightness": {
     "uni": {
@@ -1821,7 +1904,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-secure-network": {
     "uni": {
@@ -1836,7 +1920,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-share": {
     "uni": {
@@ -1860,7 +1945,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-share-weixin": {
     "provider": {
@@ -1874,7 +1960,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-shareWithSystem": {
     "uni": {
@@ -1889,7 +1976,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-showLoading": {
     "uni": {
@@ -1919,7 +2007,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-sse": {
     "uni": {
@@ -1934,7 +2023,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-storage": {
     "uni": {
@@ -2030,14 +2120,16 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-swiper": {
     "components": [],
     "easycom": [
       "swiper",
       "swiper-item"
-    ]
+    ],
+    "customElements": []
   },
   "uni-theme": {
     "uni": {
@@ -2124,7 +2216,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-verify": {
     "uni": {
@@ -2148,7 +2241,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-vibrate": {
     "uni": {
@@ -2172,7 +2266,8 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-video": {
     "uni": {
@@ -2188,7 +2283,8 @@
     "components": [],
     "easycom": [
       "video"
-    ]
+    ],
+    "customElements": []
   },
   "uni-virtualPayment": {
     "uni": {
@@ -2210,14 +2306,16 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-waterflow": {
     "components": [],
     "easycom": [
       "flow-item",
       "waterflow"
-    ]
+    ],
+    "customElements": []
   },
   "uni-web-view": {
     "uni": {
@@ -2243,7 +2341,8 @@
     "components": [],
     "easycom": [
       "web-view"
-    ]
+    ],
+    "customElements": []
   },
   "uni-websocket": {
     "uni": {
@@ -2312,10 +2411,12 @@
       }
     },
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   },
   "uni-weixin-common": {
     "components": [],
-    "easycom": []
+    "easycom": [],
+    "customElements": []
   }
 }
