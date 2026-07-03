@@ -1063,7 +1063,7 @@
           "js": false,
           "kotlin": false,
           "swift": false,
-          "arkts": false,
+          "arkts": true,
           "x-arkts": false
         }
       },
@@ -1073,7 +1073,7 @@
           "js": false,
           "kotlin": false,
           "swift": false,
-          "arkts": false,
+          "arkts": true,
           "x-arkts": false
         }
       },
