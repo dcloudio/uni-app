@@ -32,7 +32,7 @@
 | alertText | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 警示文案（仅微信小程序真机有效） |
 | itemList | Array&lt;string&gt; | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 按钮的文字数组 |
 | itemColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 按钮的文字颜色，字符串格式 |
-| popover | **Popover** | 否 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x; HarmonyOS(Vapor): x | 大屏设备弹出原生选择按钮框的指示区域，默认居中显示 |
+| popover | **Popover** | 否 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 大屏设备弹出原生选择按钮框的指示区域，默认居中显示 |
 | titleColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: x; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 菜单标题文字颜色，字符串格式 |
 | cancelText | string | 否 |  | Web: 4.0; 微信小程序: x; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 取消按钮的文字，默认为"取消" |
 | cancelColor | [string.ColorString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: x; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 取消按钮的文字颜色，字符串格式 |
@@ -45,10 +45,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| top | number | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指示区域坐标，使用原生 navigationBar 时一般需要加上 navigationBar 的高度 |
-| left | number | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指示区域坐标 |
-| width | number | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指示区域宽度 |
-| height | number | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指示区域高度 |
+| top | number | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 指示区域坐标，使用原生 navigationBar 时一般需要加上 navigationBar 的高度 |
+| left | number | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 指示区域坐标 |
+| width | number | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 指示区域宽度 |
+| height | number | 是 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 指示区域高度 |
 
 #### ShowActionSheetSuccess 的属性值 @showactionsheetsuccess-values 
 
@@ -451,9 +451,9 @@
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 

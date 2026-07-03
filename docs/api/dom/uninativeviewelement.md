@@ -24,16 +24,16 @@ UniNativeViewElement -- Extends --> UniElement
 绑定安卓平台原生view
 
 ##### bindAndroidView 兼容性 
-| Android | iOS | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| 4.31 | x | x | x | x |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 4.31 | x | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| view | View | 是 |  | iOS: x; HarmonyOS: x |  | 
+| view | View | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -45,16 +45,16 @@ UniNativeViewElement -- Extends --> UniElement
 绑定IOS平台原生view
 
 ##### bindIOSView 兼容性 
-| Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| x | x | 4.31 | x | x | x |
+| Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- |
+| x | x | 4.31 | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| view | UIView | 是 |  | Android: x; iOS: x; HarmonyOS: x |  | 
+| view | UIView | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -66,16 +66,16 @@ UniNativeViewElement -- Extends --> UniElement
 绑定鸿蒙 FrameNode
 
 ##### bindHarmonyFrameNode 兼容性 
-| Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | x |
+| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- |
+| x | x | 4.61 | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| node | FrameNode | 是 |  | Android: x; iOS: x |  | 
+| node | FrameNode | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  | 
 
 
 
@@ -87,17 +87,17 @@ UniNativeViewElement -- Extends --> UniElement
 绑定鸿蒙 wrapperBuilder
 
 ##### bindHarmonyWrappedBuilder 兼容性 
-| Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| x | x | 4.61 |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| builder | WrappedBuilder\<\[options: O\] | 是 |  | Android: x; iOS: x |  |
-| options | ESObject | 否 |  | Android: x; iOS: x |  | 
+| builder | WrappedBuilder\<\[options: O\] | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  |
+| options | ESObject | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  | 
 
 
 ##### 返回值 
@@ -115,9 +115,9 @@ UniNativeViewElement -- Extends --> UniElement
 获取鸿蒙 FrameNode
 
 ##### getHarmonyFrameNode 兼容性 
-| Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | x |
+| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- |
+| x | x | 4.61 | x |
 
 
 
@@ -137,9 +137,9 @@ UniNativeViewElement -- Extends --> UniElement
 获取鸿蒙 BuilderNode
 
 ##### getHarmonyBuilderNode 兼容性 
-| Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | x |
+| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- |
+| x | x | 4.61 | x |
 
 
 
@@ -159,16 +159,16 @@ UniNativeViewElement -- Extends --> UniElement
 绑定鸿蒙控制器
 
 ##### bindHarmonyController 兼容性 
-| Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| x | x | 4.61 |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| controller | T | 是 |  | Android: x; iOS: x |  | 
+| controller | T | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  | 
 
 
 

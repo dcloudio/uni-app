@@ -6,9 +6,9 @@ font-size 属性用于设置字体大小，更改字体大小还会更新字体�
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -223,7 +223,7 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
 #### App平台差异
 - 字体单位说明
 
-App平台仅支持以像素值（px）和相对像素值（rpx）设置字体大小，默认值为16px。
+App平台仅支持 px 和 rpx 单位设置字体大小，默认值为16px。
 
 如果仅开发App，那么属性值可以不设置单位，不设置单位时当做 px 处理。但无法兼容web和小程序。
 
@@ -254,5 +254,5 @@ App平台不支持样式继承，font-size 也不例外。font-size仅对作用�
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/font-size)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.font-size)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text.font-size)
 

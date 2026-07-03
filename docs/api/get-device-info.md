@@ -28,7 +28,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| filter | Array&lt;string&gt; | 是 |  | Android: 3.9; HarmonyOS 系统版本: x; HarmonyOS: x | 过滤字段的字符串数组，假如要获取指定字段，传入此数组。 | 
+| filter | Array&lt;string&gt; | 是 |  | Web:  ; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: x | 过滤字段的字符串数组，假如要获取指定字段，传入此数组。 | 
 
 
 ### 返回值 
@@ -49,25 +49,25 @@
 | devicePixelRatio | number | 否 |  | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备像素比<br/> |
 | system | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统及版本<br/> |
 | platform | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 客户端平台<br/> |
-| isRoot | boolean | 否 |  | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 是否root。iOS 为是否越狱<br/> |
-| isUSBDebugging | boolean | 否 |  | Web: x; 微信小程序: x; Android: √; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | adb是否开启<br/> |
+| isRoot | boolean | 否 |  | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 是否root。iOS 为是否越狱<br/> |
+| isUSBDebugging | boolean | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: x | adb是否开启<br/> |
 | osName | string | 否 |  | Web: 4.18; 微信小程序: 4.41; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 系统名称<br/> |
 | osVersion | string | 否 |  | Web: 4.18; 微信小程序: 4.41; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 操作系统版本。如 ios 版本，andriod 版本<br/> |
 | osLanguage | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 操作系统语言<br/> |
 | osTheme | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 操作系统主题<br/> |
-| osAndroidAPILevel | number | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | Android 系统API库的版本。<br/> |
-| osHarmonySDKAPIVersion | number | 否 |  | Web: x; 微信小程序: x; Android: √; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: √; HarmonyOS: 4.61 | 鸿蒙系统软件API版本<br/> |
-| osHarmonyDisplayVersion | string | 否 |  | Web: x; 微信小程序: x; Android: √; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: √; HarmonyOS: 4.61 | 产品版本，关于本机信息内的软件版本<br/> |
+| osAndroidAPILevel | number | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: x; HarmonyOS: x | Android 系统API库的版本。<br/> |
+| osHarmonySDKAPIVersion | number | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 鸿蒙系统软件API版本<br/> |
+| osHarmonyDisplayVersion | string | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 产品版本，关于本机信息内的软件版本<br/> |
 | romName | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | rom 名称。Android 部分机型获取不到值。iOS 恒为 `ios`<br/> |
 | romVersion | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | rom 版本号。Android 部分机型获取不到值。iOS 为操作系统版本号（同 `osVersion`）。<br/> |
-| abi | string | 否 |  | 微信小程序: 4.41 | 应用（微信APP）二进制接口类型（仅 Android 支持）<br/> |
-| benchmarkLevel | number | 否 |  | 微信小程序: 4.41 |  |
-| cpuType | string | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.29.0`<br/><br/>设备 CPU 型号（仅 Android 支持）（Tips: GPU 型号可通过 WebGLRenderingContext.getExtension('WEBGL_debug_renderer_info') 来获取）<br/> |
-| deviceAbi | string | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.25.1`<br/><br/>设备二进制接口类型（仅 Android 支持）<br/> |
-| memorySize | string | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.30.0`<br/><br/>设备内存大小，单位为 MB<br/> |
-| ~~brand~~ | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 设备品牌  **已废弃，仅为了向下兼容保留** |
-| ~~model~~ | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 设备型号  **已废弃，仅为了向下兼容保留** |
-| ~~isSimulator~~ | boolean | 否 |  | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 是否是模拟器<br/>  **已废弃，由于合规问题在4.51版本后不会采集传感器信息，会影响准确度，建议使用`isSimulator()`代替。** | 
+| abi | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 应用（微信APP）二进制接口类型（仅 Android 支持）<br/> |
+| benchmarkLevel | number | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   |  |
+| cpuType | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.29.0`<br/><br/>设备 CPU 型号（仅 Android 支持）（Tips: GPU 型号可通过 WebGLRenderingContext.getExtension('WEBGL_debug_renderer_info') 来获取）<br/> |
+| deviceAbi | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.25.1`<br/><br/>设备二进制接口类型（仅 Android 支持）<br/> |
+| memorySize | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.30.0`<br/><br/>设备内存大小，单位为 MB<br/> |
+| ~~brand~~ | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 设备品牌  **已废弃，仅为了向下兼容保留** |
+| ~~model~~ | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 设备型号  **已废弃，仅为了向下兼容保留** |
+| ~~isSimulator~~ | boolean | 否 |  | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 是否是模拟器<br/>  **已废弃，由于合规问题在4.51版本后不会采集传感器信息，会影响准确度，建议使用`isSimulator()`代替。** | 
 
 ##### deviceType 的属性描述
 
@@ -245,9 +245,9 @@
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 

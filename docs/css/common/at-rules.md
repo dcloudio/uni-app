@@ -1,29 +1,29 @@
 # At-rules
 
-| 名称 | Web | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) | 描述 |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| @charset | 4.0 | x | x | 12.0 | x | x | 5.0.0 | x | x | @charset CSS @规则指定样式表中使用的字符编码。它必须是样式表中的第一个元素，而前面不得有任何字符。因为它不是一个嵌套语句，所以不能在@规则条件组中使用。如果有多个 @charset @规则被声明，只有第一个会被使用，而且不能在 HTML 元素或 HTML 页面的字符集相关 \<style> 元素内的样式属性内使用。 |
-| @color-profile | 4.0 | x | x | 12.0 | x | x | 5.0.0 | x | x | @color-profile CSS at-rule 定义并命名一个颜色配置文件，稍后可以在 color() 函数中使用该配置文件来指定颜色。 |
-| @container | 4.0 | x | x | 12.0 | x | x | 5.0.0 | x | x | @container CSS at-rule 是将样式应用于包含上下文的条件组规则。 样式声明按条件筛选，如果条件为 true，则应用于容器。 当容器更改大小时，将评估条件。你还可以给这个收纳盒贴上一个名字，这样它就会专门整理那些名字相同的容器。当它整理容器的时候，会仔细检查每个容器的所有细节，确保所有条件都符合才会应用样式。 |
-| @counter-style | 4.0 | x | x | 12.0 | x | x | 5.0.0 | x | x | @counter-style 是一个 CSS at-rule ，它让开发者可以自定义 counter 的样式。一个 @counter-style 规则定义了如何把一个计数器的值转化为字符串表示。 |
-| @document | 4.0 | x | x | 12.0 | x | x | 5.0.0 | x | x | @document CSS at 规则根据文档的 URL 限制其中包含的样式规则。它主要用于用户定义的样式表，但也可用于作者定义的样式表。 |
-| @font-face | 4.0 | 3.9 | 5.21 | 12.0 | 4.11 | 5.11 | 5.0.0 | 4.61 | 5.0 | @font-face CSS at-rule 指定一个用于显示文本的自定义字体；字体能从远程服务器或者用户本地安装的字体加载。如果提供了 local() 函数，从用户本地查找指定的字体名称，并且找到了一个匹配项，本地字体就会被使用。否则，字体就会使用 url() 函数下载的资源。通过允许作者提供他们自己的字体，@font-face 让设计内容成为了一种可能，同时并不会被所谓的"网络 - 安全"字体所限制 (字体如此普遍以至于它们能被广泛的使用). 指定查找和使用本地安装的字体名称可以让字体的自定义化程度超过基本字体，同时在不依赖网络情况下实现此功能。在同时使用 url() 和 local() 功能时，为了用户已经安装的字体副本在需要使用时被使用，如果在用户本地没有找到字体副本就会去使用户下载的副本查找字体。@font-face 规则不仅仅使用在 CSS 的顶层，还可以用在任何 CSS 条件组规则中。 |
-| @font-feature-values | 4.0 | x | x | 12.0 | x | x | 5.0.0 | x | x | @font-feature-values CSS at-rule 允许作者在font-variant-alternates 中使用通用名称，用于在 OpenType 中以不同方式激活功能。它允许在使用几种字体时简化 CSS。 |
-| @font-palette-values | 4.0 | x | x | 12.0 | x | x | 5.0.0 | x | x | @font-palette-values CSS at-rule 允许您自定义字体制作者创建的字体调色板的默认值。 |
-| @import | 4.0 | 3.9 | 5.21 | 12.0 | 4.11 | 5.11 | 5.0.0 | 4.61 | x | @import CSS@规则，用于从其他样式表导入样式规则。这些规则必须先于所有其他类型的规则，@charset 规则除外; 因为它不是一个嵌套语句，@import 不能在条件组的规则中使用。 |
-| @keyframes | 4.0 | x | x | 12.0 | x | x | 5.0.0 | x | x | 关键帧 @keyframes at-rule 规则通过在动画序列中定义关键帧（或 waypoints）的样式来控制 CSS 动画序列中的中间步骤。和 转换 transition 相比，关键帧 keyframes 可以控制动画序列的中间步骤。 |
-| @layer | 4.0 | x | x | 12.0 | x | x | 5.0.0 | x | x | CSS @规则 中的@layer声明了一个 级联层，同一层内的规则将级联在一起，这给予了开发者对层叠机制的更多控制。 |
-| @media | 4.0 | x | x | 12.0 | x | x | 5.0.0 | x | x | @media CSS at 规则可用于基于一个或多个媒体查询的结果来应用样式表的一部分。使用它，你可以指定一个媒体查询和一个 CSS 块，当且仅当该媒体查询与正在使用其内容的设备匹配时，该 CSS 块才能应用于该文档。 |
-| @namespace | 4.0 | x | x | 12.0 | x | x | 5.0.0 | x | x | @namespace 是用来定义使用在 CSS 样式表中的 XML 命名空间的 @规则。定义的命名空间可以把通配、元素和属性选择器限制在指定命名空间里的元素。@namespace规则通常在处理包含多个 namespaces 的文档时才有用，比如 HTML5 里内联的 SVG、MathML 或者混合多个词汇表的 XML。 |
-| @page | 4.0 | x | x | 12.0 | x | x | 5.0.0 | x | x | @page 规则用于在打印文档时修改某些 CSS 属性。 |
-| @property | 4.0 | x | x | 12.0 | x | x | 5.0.0 | x | x | @property CSS at-rule是CSS Houdini API 的一部分，它允许开发者显式地定义他们的CSS 自定义属性, 允许进行属性类型检查、设定默认值以及定义该自定义属性是否可以被继承。 |
-| @supports | 4.0 | x | x | 12.0 | x | x | 5.0.0 | x | x | @supports CSS at-rule 你可以指定依赖于浏览器中的一个或多个特定的 CSS 功能的支持声明。这被称为特性查询。该规则可以放在代码的顶层，也可以嵌套在任何其他条件组规则中。 |
-| @-moz-document | 4.0 | - |   | - | - |   | - | - |   | Gecko-specific at-rule that restricts the style rules contained within it based on the URL of the document. |
-| @-moz-keyframes | 4.0 | - |   | - | - |   | - | - |   | Defines set of animation key frames. |
-| @-ms-viewport | 4.0 | - |   | - | - |   | - | - |   | Specifies the size, zoom factor, and orientation of the viewport. |
-| @-o-keyframes | 4.0 | - |   | - | - |   | - | - |   | Defines set of animation key frames. |
-| @-o-viewport | 4.0 | - |   | - | - |   | - | - |   | Specifies the size, zoom factor, and orientation of the viewport. |
-| @-webkit-keyframes | 4.0 | - |   | - | - |   | - | - |   | Defines set of animation key frames. |
+| 名称 | 兼容性 | 描述 |
+| :- | :- | :- |
+| @charset | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | @charset CSS @规则指定样式表中使用的字符编码。它必须是样式表中的第一个元素，而前面不得有任何字符。因为它不是一个嵌套语句，所以不能在@规则条件组中使用。如果有多个 @charset @规则被声明，只有第一个会被使用，而且不能在 HTML 元素或 HTML 页面的字符集相关 \<style> 元素内的样式属性内使用。 |
+| @color-profile | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | @color-profile CSS at-rule 定义并命名一个颜色配置文件，稍后可以在 color() 函数中使用该配置文件来指定颜色。 |
+| @container | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | @container CSS at-rule 是将样式应用于包含上下文的条件组规则。 样式声明按条件筛选，如果条件为 true，则应用于容器。 当容器更改大小时，将评估条件。你还可以给这个收纳盒贴上一个名字，这样它就会专门整理那些名字相同的容器。当它整理容器的时候，会仔细检查每个容器的所有细节，确保所有条件都符合才会应用样式。 |
+| @counter-style | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | @counter-style 是一个 CSS at-rule ，它让开发者可以自定义 counter 的样式。一个 @counter-style 规则定义了如何把一个计数器的值转化为字符串表示。 |
+| @document | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | @document CSS at 规则根据文档的 URL 限制其中包含的样式规则。它主要用于用户定义的样式表，但也可用于作者定义的样式表。 |
+| @font-face | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | @font-face CSS at-rule 指定一个用于显示文本的自定义字体；字体能从远程服务器或者用户本地安装的字体加载。如果提供了 local() 函数，从用户本地查找指定的字体名称，并且找到了一个匹配项，本地字体就会被使用。否则，字体就会使用 url() 函数下载的资源。通过允许作者提供他们自己的字体，@font-face 让设计内容成为了一种可能，同时并不会被所谓的"网络 - 安全"字体所限制 (字体如此普遍以至于它们能被广泛的使用). 指定查找和使用本地安装的字体名称可以让字体的自定义化程度超过基本字体，同时在不依赖网络情况下实现此功能。在同时使用 url() 和 local() 功能时，为了用户已经安装的字体副本在需要使用时被使用，如果在用户本地没有找到字体副本就会去使用户下载的副本查找字体。@font-face 规则不仅仅使用在 CSS 的顶层，还可以用在任何 CSS 条件组规则中。 |
+| @font-feature-values | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | @font-feature-values CSS at-rule 允许作者在font-variant-alternates 中使用通用名称，用于在 OpenType 中以不同方式激活功能。它允许在使用几种字体时简化 CSS。 |
+| @font-palette-values | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | @font-palette-values CSS at-rule 允许您自定义字体制作者创建的字体调色板的默认值。 |
+| @import | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | @import CSS@规则，用于从其他样式表导入样式规则。这些规则必须先于所有其他类型的规则，@charset 规则除外; 因为它不是一个嵌套语句，@import 不能在条件组的规则中使用。 |
+| @keyframes | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 关键帧 @keyframes at-rule 规则通过在动画序列中定义关键帧（或 waypoints）的样式来控制 CSS 动画序列中的中间步骤。和 转换 transition 相比，关键帧 keyframes 可以控制动画序列的中间步骤。 |
+| @layer | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | CSS @规则 中的@layer声明了一个 级联层，同一层内的规则将级联在一起，这给予了开发者对层叠机制的更多控制。 |
+| @media | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | @media CSS at 规则可用于基于一个或多个媒体查询的结果来应用样式表的一部分。使用它，你可以指定一个媒体查询和一个 CSS 块，当且仅当该媒体查询与正在使用其内容的设备匹配时，该 CSS 块才能应用于该文档。 |
+| @namespace | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | @namespace 是用来定义使用在 CSS 样式表中的 XML 命名空间的 @规则。定义的命名空间可以把通配、元素和属性选择器限制在指定命名空间里的元素。@namespace规则通常在处理包含多个 namespaces 的文档时才有用，比如 HTML5 里内联的 SVG、MathML 或者混合多个词汇表的 XML。 |
+| @page | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | @page 规则用于在打印文档时修改某些 CSS 属性。 |
+| @property | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | @property CSS at-rule是CSS Houdini API 的一部分，它允许开发者显式地定义他们的CSS 自定义属性, 允许进行属性类型检查、设定默认值以及定义该自定义属性是否可以被继承。 |
+| @supports | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | @supports CSS at-rule 你可以指定依赖于浏览器中的一个或多个特定的 CSS 功能的支持声明。这被称为特性查询。该规则可以放在代码的顶层，也可以嵌套在任何其他条件组规则中。 |
+| @-moz-document | Web: 4.0; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | Gecko-specific at-rule that restricts the style rules contained within it based on the URL of the document. |
+| @-moz-keyframes | Web: 4.0; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | Defines set of animation key frames. |
+| @-ms-viewport | Web: 4.0; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | Specifies the size, zoom factor, and orientation of the viewport. |
+| @-o-keyframes | Web: 4.0; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | Defines set of animation key frames. |
+| @-o-viewport | Web: 4.0; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | Specifies the size, zoom factor, and orientation of the viewport. |
+| @-webkit-keyframes | Web: 4.0; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | Defines set of animation key frames. |
 
 不支持的css功能，并不影响业务开发。因为css本质是一种编写元素的样式属性的一种描述性写法。元素的所有样式设置，都可以脱离css这种写法，由API完成。
 

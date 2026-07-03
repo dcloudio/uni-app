@@ -16,52 +16,58 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 5.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| src | string \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | webview 指向网页的链接 |
-| allow | string |   | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 用于为 [iframe](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe) 指定其[特征策略](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/策略特征) |
-| sandbox | string |   | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 该属性对呈现在 [iframe](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe) 框架中的内容启用一些额外的限制条件。 |
-| fullscreen | boolean |   | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 是否铺满整个页面，默认值：`true`。 |
-| webview-styles | **WebViewStyles** | {"progress":{"color":"#00FF00"}} | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | webview 网络地址页面加载进度条样式 |
+| src | string \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | webview 指向网页的链接 |
+| allow | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 用于为 [iframe](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe) 指定其[特征策略](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/策略特征) |
+| sandbox | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 该属性对呈现在 [iframe](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe) 框架中的内容启用一些额外的限制条件。 |
+| fullscreen | boolean |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否铺满整个页面，默认值：`true`。 |
+| webview-styles | **WebViewStyles** | {"progress":{"color":"#00FF00"}} | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | webview 网络地址页面加载进度条样式 |
 
 #### webview-styles 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| progress | [WebViewProgressStyles](#webviewprogressstyles-values) \| boolean | 是 | {"color": "#00FF00"} |   | 网络地址页面加载进度条样式，设置为 false 时表示不显示加载进度条。 |
+| progress | **WebViewProgressStyles** \| boolean | 是 | {"color": "#00FF00"} |   | 网络地址页面加载进度条样式，设置为 false 时表示不显示加载进度条。 |
+
+##### progress 的属性描述
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| color | [string.ColorString](/uts/data-type.md#ide-string) | 是 |  |   | 网页加载进度条颜色，默认值为 #00FF00 。 |
 @
-| horizontal-scroll-bar-access | boolean | true | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.13; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置是否显示横向滚动条 |
-| vertical-scroll-bar-access | boolean | true | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.13; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 设置是否显示纵向滚动条 |
-| bounces | boolean | true | Web: x; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS(Vapor): 5.11; HarmonyOS: 4.63; HarmonyOS(Vapor): 5.0 | 设置是否开启回弹效果 |
-| android-nested-scroll | string | "all" | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 设置嵌套滚动方向 |
-| disable-user-select-menu | boolean | false | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.84; iOS(Vapor): 5.11; HarmonyOS: x; HarmonyOS(Vapor): 5.0 | 设置是否禁用文本选择时弹出的系统菜单 |
-| ios-allows-inline-media-playback | boolean | false | Web: x; 微信小程序: x; Android: x; iOS 系统版本: x; iOS: 5.08; HarmonyOS: x; HarmonyOS(Vapor): x | 设置是否允许内联播放(禁止使用系统播放器全屏播放) |
-| dark-mode | boolean | true | HarmonyOS(Vapor): x |   |
-| ios-allows-inline-media-playback | boolean |   | iOS: 5.07; iOS(Vapor): 5.11; HarmonyOS(Vapor): x |   |
-| @message | (event: [UniWebViewMessageEvent](#uniwebviewmessageevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 网页向应用 postMessage 时触发。e.detail = { data } |
-| @error | (event: [UniWebViewErrorEvent](#uniwebviewerrorevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 网页加载错误时触发。e.detail = { errSubject, errCode, errMsg, url, fullUrl, src } |
-| @load | (event: [UniWebViewLoadEvent](#uniwebviewloadevent)) => void |   | Web: 4.72; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 网页加载完成后触发。e.detail = { url, src } |
-| ~~@loaded~~ | (event: [UniWebViewLoadEvent](#uniwebviewloadevent)) => void |   | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 网页加载完成后触发。e.detail = { url, src }。已废弃，请改用load |
-| @loading | (event: [UniWebViewLoadingEvent](#uniwebviewloadingevent)) => void |   | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 网页开始加载时触发。e.detail = { url, src } |
-| @download | (event: [UniWebViewDownloadEvent](#uniwebviewdownloadevent)) => void |   | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | 点击网页中可下载链接时触发。e.detail = { url, userAgent, contentDisposition, mimetype, contentLength } |
-| @contentheightchange | (event: [UniWebViewContentHeightChangeEvent](#uniwebviewcontentheightchangeevent)) => void |   | Web: x; 微信小程序: x; Android: 4.63; iOS: 4.63; iOS(Vapor): 5.11; HarmonyOS: 4.63 | 网页内容高度变化时触发。e.detail = { height } |
-| @didterminate | (event: [UniWebViewDidTerminateEvent](#uniwebviewdidterminateevent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: 5.0; iOS(Vapor): 5.11; HarmonyOS: x | 检测到web-view压后台再回来出现白屏时触发 |
-| @onWebViewServiceMessage | Event |   | HarmonyOS(Vapor): 5.0 |   |
+| horizontal-scroll-bar-access | boolean | true | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.13; HarmonyOS: 4.61 | 设置是否显示横向滚动条 |
+| vertical-scroll-bar-access | boolean | true | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.13; HarmonyOS: 4.61 | 设置是否显示纵向滚动条 |
+| bounces | boolean | true | Web: x; 微信小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.63 | 设置是否开启回弹效果 |
+| android-nested-scroll | string | "all" | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 设置嵌套滚动方向 |
+| disable-user-select-menu | boolean | false | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.84; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 设置是否禁用文本选择时弹出的系统菜单 |
+| ios-allows-inline-media-playback | boolean | false | Web: x; 微信小程序: x; Android: x; iOS: 5.08; HarmonyOS: x | 设置是否允许内联播放(禁止使用系统播放器全屏播放) |
+| dark-mode | boolean | true | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): x |   |
+| ios-allows-inline-media-playback | boolean |   | Web:  ; 微信小程序:  ; Android:  ; iOS: 5.07; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): x |   |
+| @message | (event: [UniWebViewMessageEvent](#uniwebviewmessageevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 网页向应用 postMessage 时触发。e.detail = { data } |
+| @error | (event: [UniWebViewErrorEvent](#uniwebviewerrorevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 网页加载错误时触发。e.detail = { errSubject, errCode, errMsg, url, fullUrl, src } |
+| @load | (event: [UniWebViewLoadEvent](#uniwebviewloadevent)) => void |   | Web: 4.72; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 网页加载完成后触发。e.detail = { url, src } |
+| ~~@loaded~~ | (event: [UniWebViewLoadEvent](#uniwebviewloadevent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 网页加载完成后触发。e.detail = { url, src }。已废弃，请改用load |
+| @loading | (event: [UniWebViewLoadingEvent](#uniwebviewloadingevent)) => void |   | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 网页开始加载时触发。e.detail = { url, src } |
+| @download | (event: [UniWebViewDownloadEvent](#uniwebviewdownloadevent)) => void |   | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 点击网页中可下载链接时触发。e.detail = { url, userAgent, contentDisposition, mimetype, contentLength } |
+| @contentheightchange | (event: [UniWebViewContentHeightChangeEvent](#uniwebviewcontentheightchangeevent)) => void |   | Web: x; 微信小程序: x; Android: 4.63; iOS: 4.63; HarmonyOS: 4.63 | 网页内容高度变化时触发。e.detail = { height } |
+| @didterminate | (event: [UniWebViewDidTerminateEvent](#uniwebviewdidterminateevent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: 5.0; HarmonyOS: x | 检测到web-view压后台再回来出现白屏时触发 |
+| @onWebViewServiceMessage | Event |   | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 |   |
 
 #### android-nested-scroll 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| all | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 横向竖向均可嵌套滚动 |
-| vertical | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 竖向可嵌套滚动 |
-| horizontal | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 横向均可嵌套滚动 |
-| none | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 横向竖向均不可嵌套滚动 |
+| all | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 横向竖向均可嵌套滚动 |
+| vertical | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 竖向可嵌套滚动 |
+| horizontal | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 横向均可嵌套滚动 |
+| none | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 横向竖向均不可嵌套滚动 |
 
 
 ### 事件
@@ -117,15 +123,12 @@ UniWebViewErrorEvent -- Extends --> UniCustomEvent&ltUniWebViewErrorEventDetail&
 | fullUrl | string | 是 |  |   | 加载错误的网页链接，完整链接，4.13版本起支持 |
 | src | string | 是 |  |   | 加载错误的网页链接，完整链接，4.13版本起支持 |
 
-#### errCode 的属性描述
-
+###### 的属性值 @errcode-values
 | 合法值 | 描述 |
 | :- | :- |
 | 100001 |  |
 | 100002 |  |
 | 100003 |  |
-
-
 #### UniWebViewLoadEvent
 
 ```mermaid
@@ -709,7 +712,7 @@ function canGoForward() : boolean {
 
 |方法名|说明|平台差异说明|
 |:-|:-|:-|
-|uni.webView.navigateTo|[navigateTo](../api/navigator.md#uni-navigateto)|Web平台暂不支持|
+|uni.webView.navigateTo|[navigateTo](../api/navigator.md#navigateto)|Web平台暂不支持|
 |uni.webView.redirectTo|[redirectTo](../api/navigator#redirectto)|Web平台暂不支持|
 |uni.webView.reLaunch|[reLaunch](../api/navigator#relaunch)|Web平台暂不支持|
 |uni.webView.switchTab|[switchTab](../api/navigator#switchtab)|Web平台暂不支持|

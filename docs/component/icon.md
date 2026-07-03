@@ -8,17 +8,17 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 9.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| type | string |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS: x | icon的类型，有效值：success, success_no_circle, info, warn, waiting, cancel, download, search, clear |
-| size | number |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS: x | icon的大小，单位px |
-| color | string([string.ColorString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 9.0; iOS: x; HarmonyOS: x | icon的颜色，同css的color |
+| type | string |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | icon的类型，有效值：success, success_no_circle, info, warn, waiting, cancel, download, search, clear |
+| size | number |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | icon的大小，单位px |
+| color | string([string.ColorString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | icon的颜色，同css的color |
 
 #### type 的属性描述
 

@@ -12,8 +12,8 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| objectName | string ([string.CloudObjectString](/uts/data-type.md#ide-string)) | 是 |  |   | - |
-| options | **UniCloudImportObjectOptions** | 否 |  |   | - |
+| objectName | string ([string.CloudObjectString](/uts/data-type.md#ide-string)) | 是 |  |   |  |
+| options | **UniCloudImportObjectOptions** | 否 |  |   |  |
 
 #### options 的属性描述
 
@@ -60,8 +60,8 @@ callMethod
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| methodName | string | 是 |  |   | - |
-| args | Array&lt;any&gt; | 是 |  |   | - | 
+| methodName | string | 是 |  |   |  |
+| args | Array&lt;any&gt; | 是 |  |   |  | 
 
 
 ###### 返回值 
@@ -81,7 +81,7 @@ _getArgs
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| args | Array&lt;any&gt; | 否 |  |   | - | 
+| args | Array&lt;any&gt; | 否 |  |   |  | 
 
 
 ##### 返回值 

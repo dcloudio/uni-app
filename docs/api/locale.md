@@ -43,7 +43,7 @@ App端可以在[uni.getDeviceInfo](./get-device-info.md)中获取os的language�
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| locale | string | 是 |  | Android: x; iOS: x; HarmonyOS: x |  | 
+| locale | string | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -68,13 +68,13 @@ App端可以在[uni.getDeviceInfo](./get-device-info.md)中获取os的language�
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnLocaleChangeCallbackResult](#onlocalechangecallbackresult-values)) => void | 是 |  | Android: x; iOS: x; HarmonyOS: x |  | 
+| callback | (result: [OnLocaleChangeCallbackResult](#onlocalechangecallbackresult-values)) => void | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  | 
 
 ### OnLocaleChangeCallbackResult 的属性值 @onlocalechangecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| locale | string | 否 |  | Android: x; iOS: x; HarmonyOS: x | 当前语言 |
+| locale | string | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 当前语言 |
 
 
 
@@ -87,8 +87,8 @@ App端可以在[uni.getDeviceInfo](./get-device-info.md)中获取os的language�
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |

@@ -6,9 +6,9 @@ background-image 属性用于为一个元素设置一个或者多个背景图像
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,8 +34,8 @@ background-image: <bg-image>#;
 ### background-image 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| linear-gradient | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 使用由两种或多种颜色沿一条直线进行线性过渡的背景图像。 |
-| none | Web: 4.0; Android: 4.27; Android(Vapor): 5.21; iOS: 4.27; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 表示无背景图 |
+| linear-gradient | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 使用由两种或多种颜色沿一条直线进行线性过渡的背景图像。 |
+| none | Web: 4.0; Android: 4.27; iOS: 4.27; HarmonyOS: 4.61 | 表示无背景图 |
 
 
 
@@ -247,7 +247,7 @@ linear-gradient(<direction>, <color-start>, <color-stop>)
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/background-image)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.background-image)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.background.background-image)
 
 
 ### Bug & Tips@tips

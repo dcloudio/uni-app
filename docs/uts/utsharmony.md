@@ -551,9 +551,9 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| permissions | string[\] | 是 |  |   | - |
-| success | (allRight: boolean, grantedList: Array&lt;string&gt;) => void | 否 |  |   | - |
-| fail | (doNotAskAgain: boolean, grantedList: Array&lt;string&gt;) => void | 否 |  |   | - | 
+| permissions | string[\] | 是 |  |   |  |
+| success | (allRight: boolean, grantedList: Array&lt;string&gt;) => void | 否 |  |   |  |
+| fail | (doNotAskAgain: boolean, grantedList: Array&lt;string&gt;) => void | 否 |  |   |  | 
 
 
 **返回值**

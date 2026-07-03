@@ -114,13 +114,13 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **HideModalOptions** | 否 |  | 微信小程序: x |  |
+| options | **HideModalOptions** | 否 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| modalPage | [UniPage](/api/unipage.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: 12; HarmonyOS: 4.61 | 期望隐藏的目标 modal，如果为 null 会关闭当前栈顶全部 modal |
+| modalPage | [UniPage](/api/unipage.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: 12; HarmonyOS: 4.61 | 期望隐藏的目标 modal，如果为 null 会关闭当前栈顶全部 modal |
 | success | (result: [HideModalSuccess](#hidemodalsuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
 | fail | (result: [HideModalFail](#hidemodalfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -129,17 +129,17 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: x |  |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### HideModalFail 的属性值 @hidemodalfail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | 微信小程序: x |  |
-| errSubject | string | 是 |  | 微信小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | 微信小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
+| errSubject | string | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | 微信小程序: x |  |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 
 
@@ -518,11 +518,11 @@
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 
 
 ## Tips@tips

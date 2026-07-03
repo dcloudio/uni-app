@@ -6,9 +6,9 @@ CSS 属性 border-left 是属性border-left-color, border-left-style, 和border-
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -285,5 +285,5 @@ border-left: <line-width> || <line-style> || <color>;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/border-left)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border-left)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border.border-left)
 

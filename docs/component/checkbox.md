@@ -10,17 +10,17 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 5.11 | 4.61 | 5.0 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 是否禁用 |
-| value | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
-| checked | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61; HarmonyOS(Vapor): 5.0 | 当前是否选中，可用来设置默认选中 |
+| disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否禁用 |
+| value | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
+| checked | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 当前是否选中，可用来设置默认选中 |
 | ~~color~~ | string([string.ColorString](/uts/data-type.md#ide-string)) | "#007aff" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | checkbox的颜色 (使用foreColor替代) |
 | backgroundColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | checkbox默认的背景颜色 |
 | borderColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#d1d1d1" | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | checkbox默认的边框颜色 |
@@ -28,9 +28,9 @@
 | activeBorderColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#d1d1d1" | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | checkbox选中时的边框颜色 |
 | ~~iconColor~~ | string([string.ColorString](/uts/data-type.md#ide-string)) | "#007aff" | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | checkbox的图标颜色，优先级大于color属性 (使用foreColor替代) |
 | foreColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#007aff" | Web: 4.18; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | checkbox的图标颜色，优先级大于color属性 |
-| icon-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 复选框选中图标的类名 |
-| checkbox-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 复选框未选中的类名 |
-| checkbox-active-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 复选框选中的类名 |
+| icon-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 复选框选中图标的类名 |
+| checkbox-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 复选框未选中的类名 |
+| checkbox-active-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 复选框选中的类名 |
 
 
 

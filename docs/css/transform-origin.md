@@ -6,9 +6,9 @@ transform-origin CSS 属性让你更改一个元素变形的原点。
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -36,11 +36,11 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
 ### transform-origin 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| top | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 相对于元素的顶部边缘进行变形 |
-| left | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 相对于元素的左侧边缘进行变形 |
-| right | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 相对于元素的右侧边缘进行变形 |
-| bottom | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 相对于元素的底部边缘进行变形 |
-| center | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 相对于元素的中心点进行变形 |
+| top | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 相对于元素的顶部边缘进行变形 |
+| left | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 相对于元素的左侧边缘进行变形 |
+| right | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 相对于元素的右侧边缘进行变形 |
+| bottom | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 相对于元素的底部边缘进行变形 |
+| center | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 相对于元素的中心点进行变形 |
 
 
 ### 默认值 @default-value 
@@ -555,5 +555,5 @@ transform-origin: [ <length-percentage> | left | center | right | top | bottom ]
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/transform-origin)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.transform-origin)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.transform.transform-origin)
 

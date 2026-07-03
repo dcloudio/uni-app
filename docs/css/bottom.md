@@ -6,9 +6,9 @@ bottom样式属性定义了定位元素下外边距边界与其包含块下边�
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -35,7 +35,7 @@ bottom: <length> | <percentage> | auto;
 ### bottom 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| auto | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 对于绝对定位元素，元素将忽略此属性而以top属性为准，如果此时设置height: auto，将基于内容需要的高度设置宽度；如果top也为auto的话，元素的垂直位置就是它假如作为静态 (即 static) 元素时该在的位置。<br/>对于相对定位元素，元素相对正常位置的偏移量将基于top属性；如果top也为auto的话，元素将不会有偏移。 |
+| auto | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 对于绝对定位元素，元素将忽略此属性而以top属性为准，如果此时设置height: auto，将基于内容需要的高度设置宽度；如果top也为auto的话，元素的垂直位置就是它假如作为静态 (即 static) 元素时该在的位置。<br/>对于相对定位元素，元素相对正常位置的偏移量将基于top属性；如果top也为auto的话，元素将不会有偏移。 |
 
 
 ### 默认值 @default-value 
@@ -334,5 +334,5 @@ bottom: <length> | <percentage> | auto;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/bottom)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.bottom)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.position.bottom)
 

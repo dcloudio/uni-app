@@ -6,16 +6,16 @@ text-decoration-color 属性用于设置元素中文本的修饰线颜色。
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x | x |
+| Web | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | 5.11 | x | 5.0 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
-| x | x | x |
+| x | 5.11 | 5.0 |
 
 
 
@@ -50,5 +50,5 @@ text-decoration-color: <color>;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/text-decoration-color)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text-decoration-color)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text.text-decoration-color)
 

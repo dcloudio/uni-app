@@ -16,23 +16,23 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **GetBatteryInfoOptions** | 是 |  | HarmonyOS: x |  |
+| options | **GetBatteryInfoOptions** | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | (res: [GetBatteryInfoSuccess](#getbatteryinfosuccess-values)) => void | 否 |  | HarmonyOS: x | 接口调用成功的回调 |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 |  | HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (res: [GetBatteryInfoSuccess](#getbatteryinfosuccess-values)) => void | 否 |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | 接口调用成功的回调 |
+| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### GetBatteryInfoSuccess 的属性值 @getbatteryinfosuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | HarmonyOS: x |  |
-| level | number | 是 |  | HarmonyOS: x | 设备电量，范围1 - 100 |
-| isCharging | boolean | 是 |  | HarmonyOS: x | 是否正在充电中 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x |  |
+| level | number | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | 设备电量，范围1 - 100 |
+| isCharging | boolean | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | 是否正在充电中 |
 
 
 
@@ -131,8 +131,8 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| level | number | 是 |  | HarmonyOS: x | 设备电量，范围1 - 100 |
-| isCharging | boolean | 是 |  | HarmonyOS: x | 是否正在充电中 | 
+| level | number | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | 设备电量，范围1 - 100 |
+| isCharging | boolean | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | 是否正在充电中 | 
 
 
 <!-- UTSAPIJSON.getBatteryInfoSync.example -->
@@ -155,9 +155,9 @@
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 

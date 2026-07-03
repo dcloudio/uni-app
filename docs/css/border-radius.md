@@ -6,9 +6,9 @@ CSS 属性 border-radius 允许你设置元素的外边框圆角。当使用一�
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -33,7 +33,8 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
 
 
 
-
+### 默认值 @default-value 
+ `0`
 
 
 
@@ -469,13 +470,14 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
 :::
 
 ### tips
-- App-Android/iOS平台从HBuilderX 5.0+支持设置百分比。
+- App-Android/iOS平台从HBuilderX 5.0+支持设置百分比。  
   在HBuilderX 5.0之前Android/iOS如需裁剪正圆图片，暂无法使用50%，可以使用与图片宽高相同的像素来裁剪。比如图片长宽250px，则设置 `border-radius: 125px` 可得一个正圆。\
   如果无法确定元素的宽高值（如 `width: auto` ），可以设置一个非常大的圆角半径值（如 `border-radius: 10000px` ）使得显示为正圆。\
 	鸿蒙平台一直支持百分比。
+- App平台蒸汽模式不支持 rpx 单位。  
 
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/border-radius)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border-radius)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border.border-radius)
 

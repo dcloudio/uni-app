@@ -6,9 +6,9 @@ justify-content 属性设置弹性容器的子元素在主轴方向的对齐方�
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,12 +34,12 @@ justify-content: normal | <content-distribution> | <overflow-position>? [ <conte
 ### justify-content 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| center | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素紧密地排列在主轴方向居中对齐。第一个元素到主轴首的距离将与最后一个元素到主轴尾的距离相同 |
-| flex-start | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素紧密地排列在容器主轴起始侧 |
-| flex-end | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素紧密地排列在容器主轴结束侧 |
-| space-between | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 在主轴上均匀分配元素，相邻元素间距离相同。第一个元素与主轴首对齐，最后一个元素与主轴尾对齐 |
-| space-around | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素沿着主轴均匀分布在容器中，相邻元素间距离相同。主轴起始位置到第一个元素的间距，主轴结束位置到最后一个元素的间距，是相邻元素之间距离的一半 |
-| space-evenly | Web: 4.0; Android: 4.61; Android(Vapor): 5.21; iOS: 4.61; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素都沿着主轴均匀分布在指定的对齐容器中。相邻元素之间的间距，主轴起始位置到第一个元素的间距，主轴结束位置到最后一个元素的间距，都完全一样 |
+| center | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 元素紧密地排列在主轴方向居中对齐。第一个元素到主轴首的距离将与最后一个元素到主轴尾的距离相同 |
+| flex-start | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 元素紧密地排列在容器主轴起始侧 |
+| flex-end | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 元素紧密地排列在容器主轴结束侧 |
+| space-between | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在主轴上均匀分配元素，相邻元素间距离相同。第一个元素与主轴首对齐，最后一个元素与主轴尾对齐 |
+| space-around | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 元素沿着主轴均匀分布在容器中，相邻元素间距离相同。主轴起始位置到第一个元素的间距，主轴结束位置到最后一个元素的间距，是相邻元素之间距离的一半 |
+| space-evenly | Web: 4.0; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 元素都沿着主轴均匀分布在指定的对齐容器中。相邻元素之间的间距，主轴起始位置到第一个元素的间距，主轴结束位置到最后一个元素的间距，都完全一样 |
 
 
 ### 默认值 @default-value 
@@ -358,5 +358,5 @@ justify-content: normal | <content-distribution> | <overflow-position>? [ <conte
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/justify-content)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.justify-content)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.flex.justify-content)
 

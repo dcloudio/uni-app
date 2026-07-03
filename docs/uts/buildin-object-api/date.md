@@ -536,9 +536,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.4 | 4.11 | x | x | 4.61 | 4.11 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.11 | x | x | 4.61 | 4.11 | x | 4.61 |
 
 
 **uni-app 兼容性**
@@ -584,7 +584,7 @@ let date = new Date("Hello World")
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| key | any | 否 |  |   | - | 
+| key | any | 否 |  |   |  | 
 
 
 **返回值**
@@ -606,9 +606,9 @@ let date = new Date("Hello World")
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.4 | 4.11 | x | x | 4.61 | 4.11 | x | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.11 | x | x | 4.61 | 4.11 | x | 4.61 |
 
 
 **uni-app 兼容性**

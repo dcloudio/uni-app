@@ -13,9 +13,9 @@
 将本地资源上传到开发者服务器。
 
 ### uploadFile 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.4 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
 
 推荐上传到uniCloud，uniCloud提供了更便宜CDN和更好的易用性，[详见](https://doc.dcloud.net.cn/uniCloud/ext-storage/intro.html)
@@ -37,13 +37,13 @@
 | header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | HTTP 请求 Header, header 中不能设置 Referer |
 | formData | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | HTTP 请求中其他额外的 form data |
 | timeout | number | 否 | 120000 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 超时时间，单位 ms |
-| success | (result: [UploadFileSuccess](#uploadfilesuccess-values)) => void | 否 | null | 微信小程序: 4.41 | 成功返回的回调函数 |
-| fail | (result: [UploadFileFail](#uploadfilefail-values)) => void | 否 | null | 微信小程序: 4.41 | 失败的回调函数 |
-| complete | (result: any) => void | 否 | null | 微信小程序: 4.41 | 结束的回调函数（调用成功、失败都会执行） |
-| enableHttp2 | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.10.4`<br/><br/>是否开启 http2<br/> |
-| enableProfile | boolean | 否 |  | 微信小程序: 4.41 | 是否开启 profile，默认开启。开启后可在接口回调的 res.profile 中查看性能调试信息。目前仅 iOS 端支持。<br/> |
-| enableQuic | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.10.4`<br/><br/>是否开启 Quic/h3 协议（iOS 微信目前使用 gQUIC-Q43；Android 微信在 v8.0.54 前使用 gQUIC-Q43，v8.0.54 开始使用 IETF QUIC，即 h3 协议；PC微信使用 IETF QUIC，即 h3 协议）<br/> |
-| useHighPerformanceMode | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `3.4.1`<br/><br/>使用高性能模式，暂仅支持 Android，默认关闭。该模式下有更优的网络性能表现。<br/> | 
+| success | (result: [UploadFileSuccess](#uploadfilesuccess-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 成功返回的回调函数 |
+| fail | (result: [UploadFileFail](#uploadfilefail-values)) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 失败的回调函数 |
+| complete | (result: any) => void | 否 | null | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 结束的回调函数（调用成功、失败都会执行） |
+| enableHttp2 | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.10.4`<br/><br/>是否开启 http2<br/> |
+| enableProfile | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 是否开启 profile，默认开启。开启后可在接口回调的 res.profile 中查看性能调试信息。目前仅 iOS 端支持。<br/> |
+| enableQuic | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.10.4`<br/><br/>是否开启 Quic/h3 协议（iOS 微信目前使用 gQUIC-Q43；Android 微信在 v8.0.54 前使用 gQUIC-Q43，v8.0.54 开始使用 IETF QUIC，即 h3 协议；PC微信使用 IETF QUIC，即 h3 协议）<br/> |
+| useHighPerformanceMode | boolean | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `3.4.1`<br/><br/>使用高性能模式，暂仅支持 Android，默认关闭。该模式下有更优的网络性能表现。<br/> | 
 
 ##### files 的属性描述
 
@@ -127,6 +127,14 @@ onProgressUpdate
 | totalBytesExpectedToSend | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 预期需要上传的数据总长度，单位 Bytes |
 
 
+
+##### OnProgressUpdateResult 的属性值 @onprogressupdateresult-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| progress | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 上传进度百分比 |
+| totalBytesSent | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 已经上传的数据长度，单位 Bytes |
+| totalBytesExpectedToSend | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 预期需要上传的数据总长度，单位 Bytes |
  
 
 
@@ -485,11 +493,11 @@ complete: () => {
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 
 
 **注意**

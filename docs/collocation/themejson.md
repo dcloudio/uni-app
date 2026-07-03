@@ -21,9 +21,9 @@
 但需要注意：**theme.json，仅负责pages.json的页面样式、tabbar样式的控制。不负责开发者自己的页面css样式控制。**
 
 适配暗黑模式，除通过theme.json控制pages.json的样式外，还需要了解更多API：
-- 获取OS/Host主题：[uni.getSystemInfo](../api/get-system-info.md)、[uni.getDevideInfo](../api/get-device-info.md)，返回的osTheme、hostTheme属性
+- 获取OS/Host主题：[uni.getSystemInfo](../api/get-system-info.md)、[uni.getDeviceInfo](../api/get-device-info.md)，返回的osTheme、hostTheme属性
 - 监听OS主题切换：[uni.onOsThemeChange](../api/theme-change.md#onosthemechange)、[uni.offOsThemeChange](../api/theme-change.md#offosthemechange)、
-- 监听host主题切换：[uni.onHostThemeChange](../api/theme-change.md#onhostthemechange)、[uni.offOsThemeChange](../api/theme-change.md#offosthemechange)、
+- 监听host主题切换：[uni.onHostThemeChange](../api/theme-change.md#onhostthemechange)、[uni.offHostThemeChange](../api/theme-change.md#offhostthemechange)、
 - 获取App主题：[uni.getSystemInfo](../api/get-system-info.md)、[uni.getAppBaseInfo](../api/get-app-base-info.md)，返回的appTheme属性
 - 设置App主题：[uni.setAppTheme](../api/theme-change.md#setapptheme)
 - 监听App主题切换：[uni.onAppThemeChange](../api/theme-change.md#onappthemechange)、[uni.offAppThemeChange](../api/theme-change.md#offappthemechange)、

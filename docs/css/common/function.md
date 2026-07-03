@@ -3,9 +3,9 @@
 ## var
 
 ### 兼容性 
- | Web | 微信小程序 | Android 系统版本 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | 4.0 | 5.21 | x | 4.11 | 5.11 | 4.61 | 5.01 |
+ | Web | 微信小程序 | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | x | 4.0 | x | 4.11 | 4.61 | 5.01 |
 
 > uni-app x 4.0+ 提供内置 CSS 变量。
 > uni-app x 4.52+ 全平台提供了安全区域相关 CSS 变量 --uni-safe-area-inset-* 。
@@ -39,7 +39,7 @@ App平台相比web平台，有以下差异：
 - transtion暂不支持使用var
 - VDOM模式的部分组件的样式不支持CSS变量：input、textarea 的 placeholder-style、placeholder-class
 - 蒸汽模式的部分组件的样式暂不支持CSS变量：input、textarea、loading的class。
-- 由于App平台不支持:root伪类，需要自行在页面根元素或合适的父级元素的class中定义css变量，以便在子元素生效
+- App平台不支持:root伪类。蒸汽模式可以使用page选择器替代。vdom模式需要自行在页面根元素或合适的父级元素的class中定义css变量，以便在子元素生效。
 
 ### 示例 
  示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/CSS/variable/variable.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/CSS/variable/variable.uvue) 
@@ -302,9 +302,9 @@ web平台的 CSS环境变量规范参考[MDN Reference](https://developer.mozill
 根据红色、绿色和蓝色值创建颜色。
 
 ### 兼容性 
- | Web | 微信小程序 | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+ | Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 ### 示例 
  示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/CSS/function/rgb.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/CSS/function/rgb.uvue) 
@@ -422,9 +422,9 @@ web平台的 CSS环境变量规范参考[MDN Reference](https://developer.mozill
 根据红色、绿色、蓝色和 alpha 值创建颜色。
 
 ### 兼容性 
- | Web | 微信小程序 | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+ | Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 ### 示例 
  示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/CSS/function/rgba.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/CSS/function/rgba.uvue) 

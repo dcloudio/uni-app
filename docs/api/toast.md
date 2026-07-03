@@ -34,9 +34,9 @@
 | mask | boolean | 否 | false | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 是否显示透明蒙层，防止触摸穿透 |
 | duration | number | 否 | 1500 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 提示的延迟时间，单位毫秒 |
 | position | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | position值说明。纯文本轻提示显示位置，填写有效值后只有 title 属性生效，且不支持通过 uni.hideToast 隐藏。 |
-| success | (res: ShowToastSuccess) => void | 否 |  | 微信小程序: 4.41 | uni.showToast成功回调函数定义 |
-| fail | (res: [ShowToastFail](#showtoastfail-values)) => void | 否 |  | 微信小程序: 4.41 | uni.showToast失败回调函数定义 |
-| complete | (res: any) => void | 否 |  | 微信小程序: 4.41 | uni.showToast完成回调函数定义 | 
+| success | (res: ShowToastSuccess) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.showToast成功回调函数定义 |
+| fail | (res: [ShowToastFail](#showtoastfail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.showToast失败回调函数定义 |
+| complete | (res: any) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.showToast完成回调函数定义 | 
 
 ##### icon 的属性描述
 
@@ -379,11 +379,11 @@
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 
 
 ## Bug & Tips@tips

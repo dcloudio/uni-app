@@ -685,7 +685,7 @@ export default {
 > 组合式 API
 ```vue
 <template>
-<!-- #ifdef APP -->
+<!-- #ifdef APP && !VUE3-VAPOR -->
 <scroll-view style="flex: 1">
   <!-- #endif -->    
   <view class="page">
@@ -739,7 +739,7 @@ export default {
     <view class="mb-10 v-bind-css"></view>
     <!-- #endif -->
   </view>
-<!-- #ifdef APP -->
+<!-- #ifdef APP && !VUE3-VAPOR -->
 </scroll-view>
 <!-- #endif -->  
 </template>

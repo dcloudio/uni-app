@@ -6,9 +6,9 @@ border-right-width 属性用于设置元素的右边框的宽度。
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -35,9 +35,9 @@ border-right-width: <line-width>;
 ### border-right-width 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| thin | Web: 4.0; Android: 3.93; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 细边线，App平台对应值为1px |
-| medium | Web: 4.0; Android: 3.93; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 中等边线，App平台对应值为3px |
-| thick | Web: 4.0; Android: 3.93; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 宽边线，App平台对应值为5px |
+| thin | Web: 4.0; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 细边线，App平台对应值为1px |
+| medium | Web: 4.0; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 中等边线，App平台对应值为3px |
+| thick | Web: 4.0; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 宽边线，App平台对应值为5px |
 
 
 ### 默认值 @default-value 
@@ -59,5 +59,5 @@ border-right-width: <line-width>;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/border-right-width)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border-right-width)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border.border-right-width)
 

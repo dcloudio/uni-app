@@ -6,9 +6,9 @@ flex-shrink 属性设置弹性元素在主轴方向的收缩系数。当所有�
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -400,5 +400,5 @@ flex-shrink: <number>;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/flex-shrink)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.flex-shrink)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.flex.flex-shrink)
 

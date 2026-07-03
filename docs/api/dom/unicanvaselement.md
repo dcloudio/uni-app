@@ -42,7 +42,7 @@ UniCanvasElement -- Extends --> UniElement
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| contentType | string | 是 |  | 微信小程序: x |  | 
+| contentType | string | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 
 ##### 返回值 
@@ -60,16 +60,16 @@ UniCanvasElement -- Extends --> UniElement
 创造 Blob 对象
 
 ##### toBlob 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.21 | x | x | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.21 | x | x | x | x | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | BlobCallback | 是 |  | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |  | 
+| callback | BlobCallback | 是 |  | Web:  ; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -86,8 +86,8 @@ UniCanvasElement -- Extends --> UniElement
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | BlobCallback | 是 |  |   | - |
-| type | string | 是 |  |   | - | 
+| callback | BlobCallback | 是 |  |   |  |
+| type | string | 是 |  |   |  | 
 
 
 
@@ -104,9 +104,9 @@ UniCanvasElement -- Extends --> UniElement
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | BlobCallback | 是 |  |   | - |
-| type | string | 是 |  |   | - |
-| quality | number | 是 |  |   | - | 
+| callback | BlobCallback | 是 |  |   |  |
+| type | string | 是 |  |   |  |
+| quality | number | 是 |  |   |  | 
 
 
 
@@ -129,8 +129,8 @@ UniCanvasElement -- Extends --> UniElement
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 否 |  | 微信小程序: x |  |
-| encoderOptions | any | 否 |  | 微信小程序: x |  | 
+| type | string | 否 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
+| encoderOptions | any | 否 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 
 ##### 返回值 

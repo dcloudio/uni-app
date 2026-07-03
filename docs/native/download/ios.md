@@ -15,13 +15,15 @@
 
 ## alpha版
 
-###  5.12.2026060409-alpha
-**[下载地址](https://web-ext-storage.dcloud.net.cn/uni-app-x/sdk/iOS/UniAppX-iOS%405.12.zip)
+###  5.14.2026062614-alpha
+**[下载地址](https://web-ext-storage.dcloud.net.cn/uni-app-x/sdk/iOS/UniAppX-iOS%405.14.zip)
 
 ### uni-app x
-* 更新 API facialRecognitionMetaInfo 使用的 金融级实人认证 SDK 为 2.3.45 版 [文档](https://doc.dcloud.net.cn/uni-app-x/api/facial-recognition-meta-info.html) <https://issues.dcloud.net.cn/pages/issues/detail?id=29622>
 
+* 修复 5.08版本引发的 组件 video 设置 object-fit 为 cover 无效果 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29170)
+* 修复 5.08版本引发的 组件 video 首次加载可能闪烁 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=29628)
+* 修复 vue2 项目在 iOS 26.4 之后有概率启动白屏 [文档](https://ask.dcloud.net.cn/question/218144)
 
 **[历史版本](https://pan.baidu.com/s/130Rvlh2jdsp3aJ4YtigoJQ?pwd=xy7s)**
  
-**[历史版本更新日志](https://download1.dcloud.net.cn/hbuilderx/changelog/5.11.2026052520-alpha.html)**
+**[历史版本更新日志](https://download1.dcloud.net.cn/hbuilderx/changelog/5.13.2026061207-alpha.html)**

@@ -12,21 +12,21 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | iOS(Vapor) | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.02 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.93 | 4.11 | 5.11 | 5.0.5 | 4.71 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.02 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.93 | 4.11 | 5.0.5 | 4.71 | 5.08 |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| padding | Array\<number> | [0,0,0,0\] | Web: 4.02; 微信小程序: x; Android: 3.98; Android(Vapor): x; iOS: 4.11; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距  |
+| padding | Array\<number> | [0,0,0,0\] | Web: 4.02; 微信小程序: x; Android(VDOM): 3.98; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: x | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距  |
 
 
 
 <!-- UTSCOMJSON.sticky-header.component_type-->
 
-### 使用场景  
+### 使用场景
 
 父元素滚动过程中，实现某个子元素固定到父元素顶部的需求
 
@@ -46,13 +46,13 @@
 </list-view>
 ```
 
-#### 注意事项  
+#### 注意事项
 
 + 同一元素下不能存在多 `sticky-header` 组件，使用多个 `sticky-header` 组件需分别放到 `sticky-section` 中
-+ `sticky-header` 组件，不支持设置css样式，不要通过 class 和 style 设置样式  
-+ 鸿蒙平台暂不支持 `padding` 属性，可通过设置子元素样式来实现类似效果  
-+ 鸿蒙平台 `sticky-header` 组件只能作为 `sticky-section` 的子元素使用  
-+ 鸿蒙平台API版本低于17的设备不支持 `sticky-header` 组件，可在滚动容器里自行监听滚动，设置某个区域的top为固定值来实现吸顶效果，参考hello uni-app x的模板->[scroll-view自定义滚动吸顶示例](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/scroll-sticky/scroll-sticky.uvue)
++ `sticky-header` 组件，不支持设置css样式，不要通过 class 和 style 设置样式
++ 鸿蒙平台暂不支持 `padding` 属性，可通过设置子元素样式来实现类似效果
++ 鸿蒙平台 `sticky-header` 组件只能作为 `sticky-section` 的子元素使用
++ 鸿蒙平台API版本低于17的设备不支持 `sticky-header` 组件，可在滚动容器里自行监听滚动，设置某个区域的top为固定值来实现吸顶效果，参考hello uni-app x的模板->[scroll-view自定义滚动吸顶示例](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/scroll-view-sticky-section/scroll-view-sticky-section.uvue)
 + 蒸汽模式 sticky-header必须是sticky-section内首个元素
 + 蒸汽模式 每个sticky-section下仅支持一个sticky-header
 

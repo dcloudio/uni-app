@@ -22,7 +22,21 @@ HBuilderX3.93版本起，编译器支持扫描代码，摇树treeShaking，自�
 
 摇树不支持 `provider` 机制，定位（[uni-location](#uni-location), `HBuilderX4.61-`之前模块名字是 `uni-getLocation`） 、 支付（[uni-payment](#uni-payment)）、登录 [uni-oauth](#uni-oauth) 和 分享 [uni-share](#uni-share) 模块需要手动配置使用 Provider 依赖的三方SDK模块。
 
-### app平台支持摇树的内置模块列表@utsmodules
+### app平台支持摇树的模块列表@utsmodules  
+
+- uni-oauth
+  uni-oauth 三方登录模块 （`HBuilderX5.08+`）  
+    + 包括API：[uni.login](../api/sign-i.md)
+    + 依赖的模块：无
+  
+  注意：此模块仅包含基础登录模块，需手动配置需要使用登录方式，详情参考[uni-oauth](#uni-oauth)章节
+
+- uni-share
+  uni-share 三方分享模块 （`HBuilderX5.08+`）  
+    + 包括API：[uni.share](../api/share.md)
+    + 依赖的模块：无
+  
+  注意：此模块仅包含基础分享模块，需手动配置分享方式，详情参考[uni-share](#uni-share)章节
 
 - uni-oauth
   uni-oauth 三方登录模块 （`HBuilderX5.08+`）  
@@ -168,7 +182,8 @@ HBuilderX3.93版本起，编译器支持扫描代码，摇树treeShaking，自�
 
 再次强调，以上模块不属于ext组件或api，是内置模块。但如果你的代码中没有使用这些组件和api，打正式包或自定义基座时会被摇掉。
 
-**注意**
+
+### 手动配置使用的模块  
 
 uts插件中暂不支持摇树，如果uts插件中使用了以上模块，需在使用此uts插件的 uni-app x 项目 manifest.json 文件中手动添加：  
 
@@ -216,6 +231,8 @@ uts插件中暂不支持摇树，如果uts插件中使用了以上模块，需�
     }
   }
   ```
+
+
 
 ## uni-ad@uni-ad
 
@@ -320,49 +337,64 @@ app平台默认`启动界面`为白色（暗黑模式下为黑色），为了避
 |Octopus章鱼移动广告	|/sdcard/Android/data/应用包名/files/Octopus/download/			|
 |泛连								|/data/data/应用包名/cache/																|
 
+
 ## uni-oauth@uni-oauth
 > HBuilderX 5.08+ 新增支持 uni-oauth 三方登录 
 
-在uni-app x客户端，uni-oauth是一个独立模块。需要开发者在 manifest.json 中手动配置，并提交云端打包后才能生效。
-
-使用 uni-oauth 模块需在 manifest.json 文件中配置Provider：  
+uni-app x 项目中 uni-oauth 基于 [provider](../api/provider.md) 机制实现。  
+需在 `manifest.json` 中手动配置三方登录服务供应商：  
 - [Android平台](manifest-android.md#modulesOauth)  
 - [iOS平台](manifest-ios.md#modulesOauth)  
+
+**注意**  
+- 标准基座已包含 `微信登录`  
+- 自定义基座需提交云端打包后才能生效  
 
 
 ## uni-share@uni-share
 > HBuilderX 5.08+ 新增支持 uni-share 分享 
 
-在uni-app x客户端，uni-share是一个独立模块。需要开发者在 manifest.json 中手动配置，并提交云端打包后才能生效。
-
-使用 uni-share 模块需在 manifest.json 文件中配置Provider：  
+uni-app x 项目中 uni-share 基于 [provider](../api/provider.md) 机制实现。  
+需在 `manifest.json` 中手动配置三方分享服务供应商：  
 - [Android平台](manifest-android.md#modulesShare)  
 - [iOS平台](manifest-ios.md#modulesShare)  
+
+**注意**  
+- 标准基座已包含 `微信分享`  
+- 自定义基座需提交云端打包后才能生效  
 
 
 ## uni-payment@uni-payment
 > HBuilderX 4.11+ 新增支持 uni-payment 请求支付 
 > app-ios平台支付模块需HBuilderX4.18及以上版本
 
-在uni-app x客户端，uni-payment是一个独立模块。需要开发者在 manifest.json 中手动配置，并提交云端打包后才能生效。
-
-使用 uni-payment 模块需在 manifest.json 文件中配置Provider：  
+uni-app x 项目中 uni-payment 基于 [provider](../api/provider.md) 机制实现。  
+需在 `manifest.json` 中手动配置三方支付服务供应商：  
 - [Android平台](manifest-android.md#modulesPayment)  
 - [iOS平台](manifest-ios.md#modulesPayment)  
+
+**注意**  
+- 标准基座已包含 `微信支付`、`支付宝支付`  
+- 自定义基座需提交云端打包后才能生效  
 
 
 ## uni-location@uni-location
 > HBuilderX 4.61- 之前模块名是 `uni-getLocation`
 > HBuilderX 4.25+ 新增支持 provider 机制的获取定位API（支持system、tencent定位）
 
-在uni-app x客户端，uni-location是一个独立模块。需要开发者在 manifest.json 中手动配置，并提交云端打包后才能生效。
-
-使用 uni-location 模块需在 manifest.json 文件中配置Provider：  
+uni-app x 项目中 uni-location 基于 [provider](../api/provider.md) 机制实现。  
+需在 `manifest.json` 中手动配置三方定位服务供应商：  
 - [Android平台](manifest-android.md#modulesLocation)  
 - [iOS平台](manifest-ios.md#modulesLocation)  
 
+**注意**  
+- 标准基座已包含 `系统定位`、`腾讯定位`  
+- 自定义基座需提交云端打包后才能生效  
+
 
 ## uni-map-tencent@uni-map-tencent
+
+目前地图模块仅支持腾讯地图作为服务商。虽然支持通过摇树自动添加模块，但由于仍需手动配置腾讯地图 SDK 的各项参数，因此无法完全依赖摇树。
 
 ### 配置腾讯地图SDK的参数
 
@@ -491,7 +523,9 @@ app平台默认`启动界面`为白色（暗黑模式下为黑色），为了避
 
 ## uni-push @uni-push  
 uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。  
-包括在线推送、离线推送，离线推送聚合了Apple、华为、小米、OPPO、VIVO、魅族、荣耀(3.99+)、Google等多个手机厂商的推送通道。可在[DCloud开发者中心](https://dev.dcloud.net.cn/)申请开通及配置离线推送相关的厂商设置，详情参考文档[uni-push介绍](https://uniapp.dcloud.net.cn/unipush-v2.html)。  
+包括在线推送、离线推送，离线推送聚合了Apple、华为、小米、OPPO、VIVO、魅族、荣耀(3.99+)、Google等多个手机厂商的推送通道。  
+
+虽然支持通过摇树自动添加 uni-push 模块，但离线推送的手机厂商通道需要在[DCloud开发者中心](https://dev.dcloud.net.cn/)申请开通及配置离线推送相关的厂商设置，详情参考文档[uni-push介绍](https://uniapp.dcloud.net.cn/unipush-v2.html)。  
 
 - Android平台  
   可在manifest.json中配置离线推送使用的厂商推送SDK，详情参考[Android平台配置uni-push厂商推送SDK](./manifest-android.md#modulespush)。  

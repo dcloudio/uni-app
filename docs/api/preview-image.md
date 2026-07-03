@@ -28,16 +28,16 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| current | any | 否 |  | 微信小程序: 4.41 | current 为当前显示图片的链接/索引值，不填或填写的值无效则为 urls 的第一张。APP平台仅支持索引值。 |
-| urls | Array&lt;[string.ImageURIString](/uts/data-type.md#ide-string)&gt; | 是 |  | 微信小程序: 4.41 | 需要预览的图片链接列表 |
-| showmenu | boolean | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: 4.61 | 是否显示长按菜单<br/> |
-| indicator | "default" \| "number" \| "none" | 否 |  | Web: x; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 图片指示器样式<br/> |
-| loop | boolean | 否 |  | Web: x; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 是否可循环预览 |
-| longPressActions | **LongPressActionsOptions** | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.51; iOS 系统版本: 5.0; iOS: 4.71; HarmonyOS 系统版本: x; HarmonyOS: x | 长按图片显示操作菜单。 |
-| success | (callback: [PreviewImageSuccess](#previewimagesuccess-values)) => void | 否 |  | 微信小程序: 4.41 | 接口调用成功的回调函数 |
-| fail | (callback: [PreviewImageFail](#previewimagefail-values)) => void | 否 |  | 微信小程序: 4.41 | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 |  | 微信小程序: 4.41 | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| referrerPolicy | string | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.13.0`<br/><br/>`origin`: 发送完整的referrer; `no-referrer`: 不发送。格式固定为 `https://servicewechat.com/{appid}/{version}/page-frame.html`，其中 {appid} 为小程序的 appid，{version} 为小程序的版本号，版本号为 0 表示为开发版、体验版以及审核版本，版本号为 devtools 表示为开发者工具，其余为正式版本；<br/> | 
+| current | any | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | current 为当前显示图片的链接/索引值，不填或填写的值无效则为 urls 的第一张。APP平台仅支持索引值。 |
+| urls | Array&lt;[string.ImageURIString](/uts/data-type.md#ide-string)&gt; | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要预览的图片链接列表 |
+| showmenu | boolean | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 是否显示长按菜单<br/> |
+| indicator | "default" \| "number" \| "none" | 否 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS: x | 图片指示器样式<br/> |
+| loop | boolean | 否 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS: x | 是否可循环预览 |
+| longPressActions | **LongPressActionsOptions** | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.71; HarmonyOS: x | 长按图片显示操作菜单。 |
+| success | (callback: [PreviewImageSuccess](#previewimagesuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
+| fail | (callback: [PreviewImageFail](#previewimagefail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| referrerPolicy | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.13.0`<br/><br/>`origin`: 发送完整的referrer; `no-referrer`: 不发送。格式固定为 `https://servicewechat.com/{appid}/{version}/page-frame.html`，其中 {appid} 为小程序的 appid，{version} 为小程序的版本号，版本号为 0 表示为开发版、体验版以及审核版本，版本号为 devtools 表示为开发者工具，其余为正式版本；<br/> | 
 
 ##### longPressActions 的属性描述
 
@@ -81,8 +81,8 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errSubject | string | 是 |  | 微信小程序: 4.41 | 调用API的名称 |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 描述信息 |
+| errSubject | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 调用API的名称 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 描述信息 |
 
 #### PreviewImageFail 的属性值 @previewimagefail-values 
 
@@ -398,42 +398,42 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **ClosePreviewImageOptions** | 是 |  | 微信小程序: x |  |
+| options | **ClosePreviewImageOptions** | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | (callback: [ClosePreviewImageSuccess](#closepreviewimagesuccess-values)) => void | 否 |  | 微信小程序: x | 接口调用成功的回调函数 |
-| fail | (callback: [ClosePreviewImageFail](#closepreviewimagefail-values)) => void | 否 |  | 微信小程序: x | 接口调用失败的回调函数 |
-| complete | (callback: any) => void | 否 |  | 微信小程序: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (callback: [ClosePreviewImageSuccess](#closepreviewimagesuccess-values)) => void | 否 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
+| fail | (callback: [ClosePreviewImageFail](#closepreviewimagefail-values)) => void | 否 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
+| complete | (callback: any) => void | 否 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### ClosePreviewImageSuccess 的属性值 @closepreviewimagesuccess-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: x | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 
 #### ClosePreviewImageFail 的属性值 @closepreviewimagefail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | 微信小程序: x | 错误码 |
-| errSubject | string | 是 |  | 微信小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | 微信小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 错误码 |
+| errSubject | string | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | 微信小程序: x |  |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1001 | 微信小程序: x | urls至少包含一张图片地址 |
-| 1101001 | 微信小程序: x | 用户取消 |
-| 1101003 | 微信小程序: x | 文件不存在 |
-| 1101004 | 微信小程序: x | 图片加载失败 |
-| 1101005 | 微信小程序: x | 未获取权限 |
-| 1101010 | 微信小程序: x | 其他错误 |
+| 1001 | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | urls至少包含一张图片地址 |
+| 1101001 | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 用户取消 |
+| 1101003 | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 文件不存在 |
+| 1101004 | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 图片加载失败 |
+| 1101005 | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 未获取权限 |
+| 1101010 | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 其他错误 |
 
 
 
@@ -459,9 +459,9 @@
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 

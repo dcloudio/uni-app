@@ -501,7 +501,7 @@ App平台获取样式值与Web平台存在部分差异：
 删除CSS指定的样式值
 
 ##### removeProperty 兼容性 
-| Web | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| Web | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.51 | 4.51 | 4.61 | x |
 

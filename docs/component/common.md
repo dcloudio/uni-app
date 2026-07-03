@@ -11,7 +11,7 @@
 | class | string(string.ClassString) \| UTSJSONObject \| Array\<string(string.ClassString) \| UTSJSONObject> | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 组件的样式类，在对应的 css 中定义的样式类 |
 | ref | string \| Function | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | vue中组件的唯一标识，用来给子组件注册引用信息，[详见](https://doc.dcloud.net.cn/uni-app-x/vue/built-in.html#ref) |
 | data-* | any | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 自定义属性，组件上触发的事件时，会发送给事件处理函数 |
-| android-* | any | Web: x; Android: 3.9; iOS: x; HarmonyOS: x | App-Android平台专有属性，详见[App-Android平台专有属性](https://doc.dcloud.net.cn/uni-app-x/component/common.html#attribute-android)章节 |
+| android-* | any | Web: x; 微信小程序:  ; Android: 3.9; iOS: x; HarmonyOS: x | App-Android平台专有属性，详见[App-Android平台专有属性](https://doc.dcloud.net.cn/uni-app-x/component/common.html#attribute-android)章节 |
 
 
 
@@ -197,9 +197,9 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
 | 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- | :- | :- |
 | @click | (event: [UniPointerEvent](/component/common.md#unipointerevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸后马上离开。与tap相同，（推荐使用tap事件代替），冒泡事件 |
-| @mousedown | (event: [UniMouseEvent](/component/common.md#unimouseevent)) => void | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 鼠标在元素上点击后触发 |
-| @mousemove | (event: [UniMouseEvent](/component/common.md#unimouseevent)) => void | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 鼠标在元素上移动时触发 |
-| @mouseup | (event: [UniMouseEvent](/component/common.md#unimouseevent)) => void | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 鼠标主按钮在元素上松开时触发 |
+| @mousedown | (event: [UniMouseEvent](/component/common.md#unimouseevent)) => void | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 鼠标在元素上点击后触发 |
+| @mousemove | (event: [UniMouseEvent](/component/common.md#unimouseevent)) => void | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 鼠标在元素上移动时触发 |
+| @mouseup | (event: [UniMouseEvent](/component/common.md#unimouseevent)) => void | Web: 4.0; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 鼠标主按钮在元素上松开时触发 |
 | @touchstart | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸动作开始，冒泡事件，event.type 值为 touchstart |
 | @touchmove | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸后移动，冒泡事件，event.type 值为 touchmove |
 | @touchcancel | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指触摸动作被打断，如来电提醒，弹窗，冒泡事件，event.type 值为 touchcancel |
@@ -1264,7 +1264,7 @@ App端手指按下后在组件区域内移动不会取消tap/click事件的触�
 
 > DOM事件主要有三个阶段：`捕获阶段`、`目标阶段`和`冒泡阶段`。
 >
-> `uvue` 目前暂不支持事件的捕获阶段。
+> App平台目前暂不支持事件的捕获阶段编程。
 
 以点击事件为例，当触发点击时，
 1. 首先从根节点逐级向下分发，直到监听点击事件的节点为止（捕获阶段）；
@@ -1387,10 +1387,10 @@ handleClick (event : UniPointerEvent) {
 | :- | :- | :- | :- |  :-: | :- |
 | bubbles | boolean | 是 |  |   | 是否冒泡 |
 | cancelable | boolean | 是 |  |   | 是否可以取消 |
-| type | string | 是 |  | Web: 4.0; Android: 3.9; HarmonyOS: 4.61 | 事件类型<br/> |
-| target | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; Android: 3.9; HarmonyOS: 4.61 | 触发事件的组件<br/> |
-| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; Android: 3.9; HarmonyOS: 4.61 | 当前组件<br/> |
-| timeStamp | number | 是 |  | Web: 4.0; Android: 3.9; HarmonyOS: 4.61 | 事件发生时的时间戳<br/> |
+| type | string | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 事件类型<br/> |
+| target | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 触发事件的组件<br/> |
+| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 当前组件<br/> |
+| timeStamp | number | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 事件发生时的时间戳<br/> |
 
 
 

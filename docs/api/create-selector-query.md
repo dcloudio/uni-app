@@ -79,7 +79,7 @@ select
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| selector | string | 是 |  |   | - | 
+| selector | string | 是 |  |   |  | 
 
 
 ##### 返回值 
@@ -152,7 +152,7 @@ fields
 | scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
 | properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
 | computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
-| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 10.0; iOS: x | 是否返回节点对应的 Context 对象 |
+| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否返回节点对应的 Context 对象 |
 | node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
 
 
@@ -167,9 +167,9 @@ fields
 context
 添加节点的 Context 对象查询请求（uni-app x 暂仅支持获取 EditorContext）
 ###### context 兼容性 
-| Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.04 | 10.0 | 5.04 | 5.04 | 5.04 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.04 | 5.04 | 5.04 | 5.04 |
 
 ##### 参数 
 
@@ -207,6 +207,20 @@ node
 | :- |
 | [SelectorQuery](#selectorquery-values) |
  
+
+###### NodeField 的属性值 @nodefield-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| id | boolean | 否 |  |   | 是否返回节点 id |
+| dataset | boolean | 否 |  |   | 是否返回节点 dataset |
+| rect | boolean | 否 |  |   | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 |  |   | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
+| computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
+| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
  
 
 #### selectAll(selector: string): NodesRef @selectall
@@ -899,9 +913,9 @@ uni.createSelectorQuery().select('.rect1').selectAll('.rect2').boundingClientRec
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 

@@ -6,7 +6,7 @@
 uni-app x 的蒸汽模式，包含了去掉虚拟DOM的vue框架，以及App平台的一套基于原生渲染管线的、超过原生渲染速度的全新渲染引擎。
 
 - HBuilderX 5.0+，鸿蒙支持蒸汽模式
-- HBuilderX 5.1+，iOS支持蒸汽模式
+- HBuilderX 5.11+，iOS支持蒸汽模式
 - Android的蒸汽模式 计划于5.2发布
 
 ## 虚拟DOM的问题
@@ -177,7 +177,7 @@ ninja: error: failed recompaction: Permission denied。
 对比非蒸汽，蒸汽模式有一些变更调整，有一些待完成TODO，说明如下：
 
 ### vue蒸汽模式自身变更
-- **仅支持组合式，不支持选项式**
+- **仅支持组合式，不支持选项式。这是vue框架自身的新版约束**
 
     选项式转组合式，AI可以帮忙。hello uni-app x里大量的选项式页面都是用uni-agent转成了组合式，以适配蒸汽模式。详见[uni-agent](https://doc.dcloud.net.cn/uni-app-x/ai/)
 - 不再支持mixin
@@ -195,20 +195,19 @@ ninja: error: failed recompaction: Permission denied。
 
 ### 全局文件
 pages.json
-- TODO：iOS暂无tabbar，但有独立的[uni-tab组件](./component/uni-ui-x/uni-tab.md)
+- TODO：iOS暂无tabbar，但有独立的[uni-tab组件](./component/uni-ui-x/uni-tab.md)。自定义组件的性能与pages.json中的tabbar没有差别。
 
 ### 组件
-- TODO：全局属性data-暂未实现
 - 变更：不再支持uts兼容模式组件，仅支持uts标准模式组件，即使用native-view的开发方式。
 - 变更：布尔属性规范化。scroll-view等部分组件布尔属性默认值从true改为false。
 - 变更：list-view的变化和限制
     * list-view支持vue实例、dom的全面复用，进一步降低内存占用。不再需要之前模板示例中的复用长列表、分批加载长列表。
-    * list-item的v-for必须要有:key。否则无法复用。
+    * list-item的v-for必须要有:key，否则无法复用
     * list-view下仅第一个在list-item上的v-for且有:key属性，才支持复用。如果一个list-view下多组list-item各自有v-for，第2个起的v-for并不复用
+    * list-item和list-view需要编写在同一个uvue文件内，否则list-item不会被复用。
     * 符合条件能复用的list-item会当做真正的list-item，其他不符合复用条件的list-item都会被编译为view。
-    * list-item和list-view需要有编译器能识别的父子关系，否则list-item会被编译成view。即，list-item、list-view不能分别包装在不同的组件内。同时出于性能考虑，最好不要包装这2个组件。
     * list-view不支持横向滚动
-    * list-item宽度固定为100%。从css中获取position属性的值固定为absolute。
+    * list-item宽度固定为100%，position固定为absolute。
     * list-item不支持直接以文字节点作为子节点，必须使用text包裹文字内容。
     * list-item不支持设置margin
 - 变更：swiper组件的变化

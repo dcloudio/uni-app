@@ -3,7 +3,7 @@
 监听罗盘数据变化事件。频率：5 次/秒，接口调用后会自动开始监听
 
 ### onCompassChange 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 |
 
@@ -46,7 +46,7 @@
 取消监听罗盘数据
 
 ### offCompassChange 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 |
 
@@ -90,7 +90,7 @@
 
 
 ### startCompass 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 5.08 | 5.08 | 5.08 | 5.08 |
 
@@ -108,6 +108,44 @@
 | success | (res: [StartCompassSuccess](#startcompasssuccess-values)) => void | 否 |  |   | 开始监听罗盘数据调用成功的回调函数 |
 | fail | (res: [StartCompassFail](#startcompassfail-values)) => void | 否 |  |   | 开始监听罗盘数据调用失败的回调函数 |
 | complete | (res: [StartCompassSuccess](#startcompasssuccess-values) \| [StartCompassFail](#startcompassfail-values)) => void | 否 |  |   | 开始监听罗盘数据调用结束的回调函数（调用成功、失败都会执行） | 
+
+#### StartCompassSuccess 的属性值 @startcompasssuccess-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errMsg | string | 否 |  |   |  |
+
+#### StartCompassFail 的属性值 @startcompassfail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  |   |  |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 描述 |
+| :- | :- |
+| 501 |  |
+| 502 |  |
+| 503 |  |
+| 504 |  |
+| 601 |  |
+| 602 |  |
+| 603 |  |
+| 604 |  |
+| 701 |  |
+| 702 |  |
+| 703 |  |
+| 704 |  |
+| 801 |  |
+| 802 |  |
+| 803 |  |
+| 804 |  |
+| 901 |  |
 
 #### StartCompassSuccess 的属性值 @startcompasssuccess-values 
 
@@ -172,7 +210,7 @@
 
 
 ### stopCompass 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 5.08 | 5.08 | 5.08 | 5.08 |
 
@@ -190,6 +228,44 @@
 | success | (res: [StopCompassSuccess](#stopcompasssuccess-values)) => void | 否 |  |   | 停止监听罗盘数据调用成功的回调函数 |
 | fail | (res: [StopCompassFail](#stopcompassfail-values)) => void | 否 |  |   | 停止监听罗盘数据调用失败的回调函数 |
 | complete | (res: [StopCompassSuccess](#stopcompasssuccess-values) \| [StopCompassFail](#stopcompassfail-values)) => void | 否 |  |   | 停止监听罗盘数据调用结束的回调函数（调用成功、失败都会执行） | 
+
+#### StopCompassSuccess 的属性值 @stopcompasssuccess-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errMsg | string | 否 |  |   |  |
+
+#### StopCompassFail 的属性值 @stopcompassfail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  |   |  |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 描述 |
+| :- | :- |
+| 501 |  |
+| 502 |  |
+| 503 |  |
+| 504 |  |
+| 601 |  |
+| 602 |  |
+| 603 |  |
+| 604 |  |
+| 701 |  |
+| 702 |  |
+| 703 |  |
+| 704 |  |
+| 801 |  |
+| 802 |  |
+| 803 |  |
+| 804 |  |
+| 901 |  |
 
 #### StopCompassSuccess 的属性值 @stopcompasssuccess-values 
 
@@ -568,8 +644,8 @@
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |

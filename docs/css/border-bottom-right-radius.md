@@ -6,9 +6,9 @@
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -33,6 +33,8 @@ border-bottom-right-radius: <length-percentage>{1,2};
 
 
 
+### 默认值 @default-value 
+ `0`
 
 
 
@@ -40,13 +42,11 @@ border-bottom-right-radius: <length-percentage>{1,2};
 
 
 
-
-#### App平台差异  
-- App平台暂不支持设置百分比。  
-  如需要设置元素为圆形，请参考[border-radius](./border-radius.md)。  
+### tips
+- App平台蒸汽模式不支持 rpx 单位。    
 
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/border-bottom-right-radius)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border-bottom-right-radius)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.border.border-bottom-right-radius)
 

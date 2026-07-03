@@ -6,9 +6,9 @@ letter-spacing 属性用于设置文本字符的间距表现，正值会导致�
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -255,5 +255,5 @@ letter-spacing: normal | <length>;
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/letter-spacing)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.letter-spacing)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text.letter-spacing)
 

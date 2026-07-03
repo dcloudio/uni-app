@@ -357,32 +357,32 @@ uni-app x的UI相关的API（比如showModal），也会响应setAppTheme。
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| light | Web: x; 微信小程序: x | 亮色模式 |
-| dark | Web: x; 微信小程序: x | 深色模式 |
-| auto | Web: x; 微信小程序: x | 跟随系统模式 |
+| light | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 亮色模式 |
+| dark | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 深色模式 |
+| auto | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 跟随系统模式 |
 
 #### SetAppThemeSuccessResult 的属性值 @setappthemesuccessresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| theme | string | 是 |  | Web: x; 微信小程序: x |  |
+| theme | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### AppThemeFail 的属性值 @appthemefail-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; iOS uni-app x UTS 插件: 4.18; HarmonyOS: 4.71 | 错误码<br/>- 702001  参数错误<br/>- 2002000  未知错误 |
-| errSubject | string | 是 |  | Web: x; 微信小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x; 微信小程序: x | 错误信息中包含的数据 |
+| errSubject | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x; 微信小程序: x |  |
+| errMsg | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### errCode 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 702001 | Web: x; 微信小程序: x | 参数错误 |
-| 2002000 | Web: x; 微信小程序: x | 未知错误 |
+| 702001 | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 参数错误 |
+| 2002000 | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 未知错误 |
 
 
 
@@ -431,7 +431,7 @@ uni.setAppTheme({
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [AppThemeChangeResult](#appthemechangeresult-values)) => void | 是 |  | Web: x; 微信小程序: x |  | 
+| callback | (res: [AppThemeChangeResult](#appthemechangeresult-values)) => void | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 ### AppThemeChangeResult 的属性值 @appthemechangeresult-values 
 
@@ -443,8 +443,8 @@ uni.setAppTheme({
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| light | Web: x; 微信小程序: x | 亮色模式 |
-| dark | Web: x; 微信小程序: x | 深色模式 |
+| light | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 亮色模式 |
+| dark | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 深色模式 |
 
 
 ### 返回值 
@@ -490,7 +490,7 @@ val callbackId = uni.onAppThemeChange((res: AppThemeChangeResult) => {
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | number | 是 |  | Web: x |  | 
+| id | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 
 
@@ -533,7 +533,7 @@ uni.offAppThemeChange(this.appThemeChangeId)
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [OsThemeChangeResult](#osthemechangeresult-values)) => void | 是 |  | Web: x; 微信小程序: x |  | 
+| callback | (res: [OsThemeChangeResult](#osthemechangeresult-values)) => void | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 ### OsThemeChangeResult 的属性值 @osthemechangeresult-values 
 
@@ -545,8 +545,8 @@ uni.offAppThemeChange(this.appThemeChangeId)
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| light | Web: x; 微信小程序: x | 亮色模式 |
-| dark | Web: x; 微信小程序: x | 深色模式 |
+| light | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 亮色模式 |
+| dark | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 深色模式 |
 
 
 ### 返回值 
@@ -596,7 +596,7 @@ val callbackId = uni.onOsThemeChange((res: OsThemeChangeResult)=> {
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | number | 是 |  | Web: x; 微信小程序: x |  | 
+| id | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 
 
@@ -632,29 +632,29 @@ uni.offOsThemeChange(callbackId)
 监听宿主题状态变化。
 
 ### onHostThemeChange 兼容性 
-| Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.35 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 9.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.35 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnHostThemeChangeCallbackResult](#onhostthemechangecallbackresult-values)) => void | 是 |  | Android: x; iOS: x |  | 
+| callback | (result: [OnHostThemeChangeCallbackResult](#onhostthemechangecallbackresult-values)) => void | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  | 
 
 ### OnHostThemeChangeCallbackResult 的属性值 @onhostthemechangecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| hostTheme | string | 是 |  | Android: x; iOS: x | 主题名称 |
+| hostTheme | string | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 主题名称 |
 
 #### hostTheme 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| light | Android: x; iOS: x | 亮色模式 |
-| dark | Android: x; iOS: x | 深色模式 |
+| light | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 亮色模式 |
+| dark | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 深色模式 |
 
 
 ### 返回值 
@@ -698,16 +698,16 @@ uni.offOsThemeChange(callbackId)
 取消监听宿主题状态变化。
 
 ### offHostThemeChange 兼容性 
-| Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.35 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 9.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.35 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | number | 是 |  | Android: x; iOS: x |  | 
+| id | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  | 
 
 
 
@@ -743,29 +743,29 @@ uni.offOsThemeChange(callbackId)
 监听系统主题状态变化。  **已废弃，在web、小程序上推荐使用 onHostThemeChange**
 
 ### onThemeChange 兼容性 
-| Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 9.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnThemeChangeCallbackResult](#onthemechangecallbackresult-values)) => void | 是 |  | Android: x; iOS: x |  | 
+| callback | (result: [OnThemeChangeCallbackResult](#onthemechangecallbackresult-values)) => void | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  | 
 
 ### OnThemeChangeCallbackResult 的属性值 @onthemechangecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| theme | string | 是 |  | 微信小程序: 4.41; Android: x; iOS: x | 主题名称 |
+| theme | string | 是 |  | Web:  ; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 主题名称 |
 
 #### theme 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| light | Android: x; iOS: x | 亮色模式 |
-| dark | Android: x; iOS: x | 深色模式 |
+| light | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 亮色模式 |
+| dark | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 深色模式 |
 
 
 
@@ -801,29 +801,29 @@ uni.offOsThemeChange(callbackId)
 取消监听系统主题状态变化。  **已废弃，在web、小程序上推荐使用 offHostThemeChange**
 
 ### offThemeChange 兼容性 
-| Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 9.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnThemeChangeCallbackResult](#onthemechangecallbackresult-values)) => void | 是 |  | Android: x; iOS: x | - | 
+| callback | (result: [OnThemeChangeCallbackResult](#onthemechangecallbackresult-values)) => void | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  | 
 
 ### OnThemeChangeCallbackResult 的属性值 @onthemechangecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| theme | string | 是 |  | 微信小程序: 4.41; Android: x; iOS: x | 主题名称 |
+| theme | string | 是 |  | Web:  ; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 主题名称 |
 
 #### theme 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| light | Android: x; iOS: x | 亮色模式 |
-| dark | Android: x; iOS: x | 深色模式 |
+| light | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 亮色模式 |
+| dark | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 深色模式 |
 
 
 
@@ -1008,9 +1008,9 @@ uni.offOsThemeChange(callbackId)
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 

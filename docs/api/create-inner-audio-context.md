@@ -73,7 +73,7 @@
 | volume | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 音量。范围 0~1。 |
 | playbackRate | number | 否 | 1.0 | Web: x; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: x | 播放的倍率。可取值： 0.5/0.8/1.0/1.25/1.5/2.0，默认值为1.0。（仅 App 支持） |
 | cache | boolean | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS uni-app x UTS 插件: 4.71; HarmonyOS: x | 是否缓存线上音频资源，默认值为true，当设置false时，不会缓存资源到本地，直播地址需要主动设置为false |
-| referrerPolicy | string | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.13.0`<br/><br/>`origin`: 发送完整的referrer; `no-referrer`: 不发送。格式固定为 `https://servicewechat.com/{appid}/{version}/page-frame.html`，其中 {appid} 为小程序的 appid，{version} 为小程序的版本号，版本号为 0 表示为开发版、体验版以及审核版本，版本号为 devtools 表示为开发者工具，其余为正式版本；<br/> |
+| referrerPolicy | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.13.0`<br/><br/>`origin`: 发送完整的referrer; `no-referrer`: 不发送。格式固定为 `https://servicewechat.com/{appid}/{version}/page-frame.html`，其中 {appid} 为小程序的 appid，{version} 为小程序的版本号，版本号为 0 表示为开发版、体验版以及审核版本，版本号为 devtools 表示为开发者工具，其余为正式版本；<br/> |
 #### InnerAudioContext 的方法 @inneraudiocontext-values 
 
 #### pause(): void; @pause
@@ -260,12 +260,12 @@ onError
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1107601 | Web: x; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 系统错误 |
-| 1107602 | Web: x; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 网络错误 |
-| 1107603 | Web: x; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 文件错误 |
-| 1107604 | Web: x; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 格式错误 |
-| 1107605 | Web: x; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 未知错误 |
-| 1107609 | Web: x; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 播放路径不能为空 |
+| 1107601 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 系统错误 |
+| 1107602 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 网络错误 |
+| 1107603 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 文件错误 |
+| 1107604 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 格式错误 |
+| 1107605 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 未知错误 |
+| 1107609 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 播放路径不能为空 |
 
 
 
@@ -427,6 +427,27 @@ offError
 | :- | :- | :- | :- |  :-: | :- |
 | callback | (result: [ICreateInnerAudioContextFail](#icreateinneraudiocontextfail-values)) => void | 是 |  |   |  | 
 
+##### ICreateInnerAudioContextFail 的属性值 @icreateinneraudiocontextfail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  |   | 错误码 |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 1107601 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 系统错误 |
+| 1107602 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 网络错误 |
+| 1107603 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 文件错误 |
+| 1107604 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 格式错误 |
+| 1107605 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 未知错误 |
+| 1107609 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 播放路径不能为空 |
+
 
 
 #### offWaiting(callback: (result: any) => void): void; @offwaiting
@@ -476,6 +497,48 @@ offSeeked
 | callback | (result: any) => void | 是 |  |   |  | 
 
 
+
+##### ICreateInnerAudioContextFail 的属性值 @icreateinneraudiocontextfail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  |   | 错误码 |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 1107601 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 系统错误 |
+| 1107602 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 网络错误 |
+| 1107603 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 文件错误 |
+| 1107604 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 格式错误 |
+| 1107605 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 未知错误 |
+| 1107609 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 播放路径不能为空 |
+
+##### ICreateInnerAudioContextFail 的属性值 @icreateinneraudiocontextfail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  |   | 错误码 |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 1107601 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 系统错误 |
+| 1107602 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 网络错误 |
+| 1107603 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 文件错误 |
+| 1107604 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 格式错误 |
+| 1107605 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 未知错误 |
+| 1107609 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 播放路径不能为空 |
  
 
 
@@ -920,7 +983,7 @@ offSeeked
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| option | **SetInnerAudioOptionOptions** | 是 |  | HarmonyOS: x |  |
+| option | **SetInnerAudioOptionOptions** | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x |  |
 
 #### option 的属性描述
 
@@ -932,6 +995,27 @@ offSeeked
 | success | (result: SetInnerAudioOptionSuccess) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
 | fail | (result: [ICreateInnerAudioContextFail](#icreateinneraudiocontextfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.81; iOS uni-app x UTS 插件: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+
+#### ICreateInnerAudioContextFail 的属性值 @icreateinneraudiocontextfail-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  |   | 错误码 |
+| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
+| data | any | 否 |  |   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |   |  |
+
+#### errCode 的属性描述
+
+| 合法值 | 兼容性 | 描述 |
+| :- |  :-: | :- |
+| 1107601 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 系统错误 |
+| 1107602 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 网络错误 |
+| 1107603 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 文件错误 |
+| 1107604 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 格式错误 |
+| 1107605 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 未知错误 |
+| 1107609 | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 播放路径不能为空 |
 
 
 
@@ -1135,9 +1219,9 @@ offSeeked
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 

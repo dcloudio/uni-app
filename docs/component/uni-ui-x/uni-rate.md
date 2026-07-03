@@ -47,7 +47,7 @@ rate组件有onChange事件，事件回调中会给出点击触发的新评分�
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | 5.07 | 5.07 | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | 5.07 |
 
@@ -208,6 +208,7 @@ rate组件有onChange事件，事件回调中会给出点击触发的新评分�
 	letter-spacing: 5px;
 }
 .tap-rate-star{
+	font-size: 32px;
 	letter-spacing: 8px;
 }
 </style>

@@ -6,9 +6,9 @@ line-height 属性用于设置多行文本的间距。
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -35,7 +35,7 @@ line-height: normal | <number> | <length> | <percentage>;
 ### line-height 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| normal | Web: 4.0; Android: 5.0; Android(Vapor): 5.21; iOS: 5.0; iOS(Vapor): 5.11; HarmonyOS: 5.0 | 由各平台实现，约为 1.2，取决于元素的 font-family。 |
+| normal | Web: 4.0; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | 由各平台实现，约为 1.2，取决于元素的 font-family。 |
 
 
 ### 默认值 @default-value 
@@ -51,7 +51,9 @@ line-height: normal | <number> | <length> | <percentage>;
 
 
 ### tips
-App平台仅支持以像素值（px）、相对像素值（rpx）、无单位和相对元素字体大小单位（em）。不支持百分比。
+App平台仅支持 px、rpx、em 单位和无单位（表示相对字体，与em效果一致），不支持百分比。
+
+App平台蒸汽模式暂不支持 rpx 单位。
 
 无单位表示数字值乘以该元素的字体大小，在App平台由于不支持继承，无单位与em单位相同，即 1.5 与 1.5em 效果一致。
 
@@ -285,5 +287,5 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/line-height)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.line-height)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.text.line-height)
 

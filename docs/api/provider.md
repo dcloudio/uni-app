@@ -69,20 +69,20 @@ getProvider的同步方法
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **GetProviderSyncOptions** | 是 |  | Web: x; 微信小程序: x |  |
+| options | **GetProviderSyncOptions** | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| service | string | 是 |  | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25 | 服务类型<br/> |
+| service | string | 是 |  | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS:   | 服务类型<br/> |
 
 ##### service 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| payment | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25 | 支付 (alipay、wxpay) |
-| location | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25 | 定位 (system、tencent) |
+| payment | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS:   | 支付 (alipay、wxpay) |
+| location | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS:   | 定位 (system、tencent) |
 | oauth | Web: x; 微信小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 (weixin) |
 | share | Web: x; 微信小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享 (weixin) | 
 
@@ -97,7 +97,7 @@ getProvider的同步方法
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| service | string | 是 |  | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25 | 服务类型<br/> |
+| service | string | 是 |  | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS:   | 服务类型<br/> |
 | providerIds | Array&lt;string&gt; | 是 |  | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 得到的服务供应商 |
 | providerObjects | Array&lt;[UniProvider](/api/provider.md#uniprovider)&gt; | 是 |  | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 得到的服务供应商服务对象 | 
 
@@ -278,11 +278,11 @@ getProvider的同步方法
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 
 
 
@@ -308,23 +308,23 @@ getProvider的同步方法
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **GetProviderOptions** | 是 |  | Web: x; 微信小程序: x |  |
+| options | **GetProviderOptions** | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| service | string | 是 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18 | 服务类型：支付 (payment)<br/> |
-| success | (result: [GetProviderSuccess](#getprovidersuccess-values)) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18 | 接口调用成功的回调 |
-| fail | (result: [GetProviderFail](#getproviderfail-values)) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| service | string | 是 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS:   | 服务类型：支付 (payment)<br/> |
+| success | (result: [GetProviderSuccess](#getprovidersuccess-values)) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS:   | 接口调用成功的回调 |
+| fail | (result: [GetProviderFail](#getproviderfail-values)) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS:   | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### service 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| payment | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.18 | 支付 (alipay、wxpay) |
-| location | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.18 | 定位 (system、tencent) |
+| payment | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.18; HarmonyOS:   | 支付 (alipay、wxpay) |
+| location | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.18; HarmonyOS:   | 定位 (system、tencent) |
 | oauth | Web: x; 微信小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 (weixin) |
 | share | Web: x; 微信小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 分享 (weixin) |
 
@@ -332,9 +332,9 @@ getProvider的同步方法
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| service | string | 是 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18 | 服务类型：支付 (payment)<br/> |
-| provider | Array&lt;string&gt; | 是 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18 | 得到的服务供应商 |
-| providers | Array&lt;[UniProvider](/api/provider.md#uniprovider)&gt; | 是 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18 | 得到的服务供应商服务对象 |
+| service | string | 是 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS:   | 服务类型：支付 (payment)<br/> |
+| provider | Array&lt;string&gt; | 是 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS:   | 得到的服务供应商 |
+| providers | Array&lt;[UniProvider](/api/provider.md#uniprovider)&gt; | 是 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS:   | 得到的服务供应商服务对象 |
 
 #### service 的属性描述
 
@@ -349,11 +349,11 @@ getProvider的同步方法
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x; 微信小程序: x | 错误码：<br/>110600：服务类型参数无效。 |
-| errSubject | string | 是 |  | Web: x; 微信小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x; 微信小程序: x | 错误信息中包含的数据 |
+| errCode | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 错误码：<br/>110600：服务类型参数无效。 |
+| errSubject | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x; 微信小程序: x |  |
+| errMsg | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 
 

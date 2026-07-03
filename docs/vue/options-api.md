@@ -4,15 +4,15 @@
 
 ## 状态选项
 
-|  | Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| data | 4.0 | 4.41 | 3.9 | 10.0 | 4.11 | 4.61 |
-| props | 4.0 | 4.41 | 3.9 | 10.0 | 4.11 | 4.61 |
-| computed | 4.0 | 4.41 | 3.9 | 10.0 | 4.11 | 4.61 |
-| methods | 4.0 | 4.41 | 3.9 | 10.0 | 4.11 | 4.61 |
-| watch | 4.0 | 4.41 | 3.9 | 10.0 | 4.11 | 4.61 |
-| emits | 4.0 | 4.41 | 3.9 | 10.0 | 4.11 | 4.61 |
-| expose | 4.0 | 4.41 | x | 10.0 | x | x |
+|  | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| data | 4.0 | 4.41 | 3.9 | x | 4.11 | x | 4.61 | x |
+| props | 4.0 | 4.41 | 3.9 | x | 4.11 | x | 4.61 | x |
+| computed | 4.0 | 4.41 | 3.9 | x | 4.11 | x | 4.61 | x |
+| methods | 4.0 | 4.41 | 3.9 | x | 4.11 | x | 4.61 | x |
+| watch | 4.0 | 4.41 | 3.9 | x | 4.11 | x | 4.61 | x |
+| emits | 4.0 | 4.41 | 3.9 | x | 4.11 | x | 4.61 | x |
+| expose | 4.0 | 4.41 | x | x | x | x | x | x |
 
 ### 示例代码 @example
 
@@ -552,12 +552,12 @@ export default {
 
 ## 渲染选项 @rendering-options
 
-|  | Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| template | x | 4.41 | x |   | 10.0 | x |   | 4.61 |   |
-| render | 4.0 | - | 3.9 | x | 10.0 | 4.11 | x | 4.61 | x |
-| compilerOptions | x | x | x |   | 10.0 | x |   | 4.61 |   |
-| slots | 4.0 | 4.41 | 3.9 |   | 10.0 | 4.11 |   | 4.61 |   |
+|  | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| template | x | x | x | x | x | x | 4.61 | x |
+| render | 4.0 | x | 3.9 | x | 4.11 | x | 4.61 | x |
+| compilerOptions | x | x | x | x | x | x | 4.61 | x |
+| slots | 4.0 | 4.41 | 3.9 | x | 4.11 | 5.11 | 4.61 | 5.03 |
 
 ### 示例代码 @example
 
@@ -978,20 +978,20 @@ export default {
 
 |  | 兼容性 | 描述 |
 | :- | :- | :- |
-| beforeCreate | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 在组件实例初始化完成之后立即调用。<br/>在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用。 |
-| created | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 在组件实例处理完所有与状态相关的选项后调用。<br/>在这一步，实例已完成以下的配置：数据观测 (data observer)，属性和方法的运算，watch/event 事件回调。<br/>然而，此时挂载阶段还未开始，因此 $el 属性仍不可用。 |
-| beforeMount | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 在组件被挂载之前调用。<br/>相关的 render 函数首次被调用。<br/>当这个钩子被调用时，组件已经完成了其响应式状态的设置，但还没有创建 DOM 节点。<br/>它即将首次执行 DOM 渲染过程。 |
-| mounted | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 在组件被挂载之后调用。<br/>el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
-| beforeUpdate | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 在组件即将因为一个响应式状态变更而更新其 DOM 树之前调用。<br/>数据更新时调用，发生在虚拟 DOM 打补丁之前。<br/>这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。 |
-| updated | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 在组件因为一个响应式状态变更而更新其 DOM 树之后调用。<br/>父组件的更新钩子将在其子组件的更新钩子之后调用。<br/>这个钩子会在组件的任意 DOM 更新后被调用，这些更新可能是由不同的状态变更导致的。<br/>如果你需要在某个特定的状态更改后访问更新后的 DOM，请使用 nextTick() 作为替代。 |
-| beforeUnmount | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之前调用。<br/>当这个钩子被调用时，组件实例依然还保有全部的功能。 |
-| unmounted | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之后调用。<br/>可以在这个钩子中手动清理一些副作用，例如计时器、DOM 事件监听器或者与服务器的连接。 |
-| errorCaptured | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 在捕获了后代组件传递的错误时调用。<br/>这个钩子带有三个实参：错误对象、触发该错误的组件实例，以及一个说明错误来源类型的信息字符串。<br/>这个钩子可以通过返回 false 来阻止错误继续向上传递。 |
-| renderTracked | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 在一个响应式依赖被组件的渲染作用追踪后调用。<br/>跟踪虚拟 DOM 重新渲染时调用。钩子接收 debugger event 作为参数。<br/>此事件告诉你哪个操作跟踪了组件以及该操作的目标对象和键。 |
-| renderTriggered | Web: 4.0; 微信小程序: 4.41; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 在一个响应式依赖被组件触发了重新渲染之后调用。<br/>当虚拟 DOM 重新渲染为 triggered.Similarly 为renderTracked，接收 debugger event 作为参数。<br/>此事件告诉你是什么操作触发了重新渲染，以及该操作的目标对象和键。 |
-| activated | Web: 4.0; 微信小程序: x; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 若组件实例是 \<KeepAlive> 缓存树的一部分，当组件被插入到 DOM 中时调用。<br/>keep-alive 组件激活时调用。 |
-| deactivated | Web: 4.0; 微信小程序: x; Android: 4.0; iOS 系统版本: 10.0; iOS: 4.11; HarmonyOS: 4.61 | 若组件实例是 \<KeepAlive> 缓存树的一部分，当组件从 DOM 中被移除时调用。<br/>keep-alive 组件停用时调用。 |
-| serverPrefetch | Web: x; 微信小程序: x; Android: x; iOS 系统版本: 10.0; iOS: x; HarmonyOS: x | 当组件实例在服务器上被渲染之前要完成的异步函数。<br/>如果这个钩子返回了一个 Promise，服务端渲染会在渲染该组件前等待该 Promise 完成。 |
+| beforeCreate | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件实例初始化完成之后立即调用。<br/>在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用。 |
+| created | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件实例处理完所有与状态相关的选项后调用。<br/>在这一步，实例已完成以下的配置：数据观测 (data observer)，属性和方法的运算，watch/event 事件回调。<br/>然而，此时挂载阶段还未开始，因此 $el 属性仍不可用。 |
+| beforeMount | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件被挂载之前调用。<br/>相关的 render 函数首次被调用。<br/>当这个钩子被调用时，组件已经完成了其响应式状态的设置，但还没有创建 DOM 节点。<br/>它即将首次执行 DOM 渲染过程。 |
+| mounted | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件被挂载之后调用。<br/>el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
+| beforeUpdate | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件即将因为一个响应式状态变更而更新其 DOM 树之前调用。<br/>数据更新时调用，发生在虚拟 DOM 打补丁之前。<br/>这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。 |
+| updated | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件因为一个响应式状态变更而更新其 DOM 树之后调用。<br/>父组件的更新钩子将在其子组件的更新钩子之后调用。<br/>这个钩子会在组件的任意 DOM 更新后被调用，这些更新可能是由不同的状态变更导致的。<br/>如果你需要在某个特定的状态更改后访问更新后的 DOM，请使用 nextTick() 作为替代。 |
+| beforeUnmount | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之前调用。<br/>当这个钩子被调用时，组件实例依然还保有全部的功能。 |
+| unmounted | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之后调用。<br/>可以在这个钩子中手动清理一些副作用，例如计时器、DOM 事件监听器或者与服务器的连接。 |
+| errorCaptured | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 在捕获了后代组件传递的错误时调用。<br/>这个钩子带有三个实参：错误对象、触发该错误的组件实例，以及一个说明错误来源类型的信息字符串。<br/>这个钩子可以通过返回 false 来阻止错误继续向上传递。 |
+| renderTracked | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 在一个响应式依赖被组件的渲染作用追踪后调用。<br/>跟踪虚拟 DOM 重新渲染时调用。钩子接收 debugger event 作为参数。<br/>此事件告诉你哪个操作跟踪了组件以及该操作的目标对象和键。 |
+| renderTriggered | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 在一个响应式依赖被组件触发了重新渲染之后调用。<br/>当虚拟 DOM 重新渲染为 triggered.Similarly 为renderTracked，接收 debugger event 作为参数。<br/>此事件告诉你是什么操作触发了重新渲染，以及该操作的目标对象和键。 |
+| activated | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 若组件实例是 \<KeepAlive> 缓存树的一部分，当组件被插入到 DOM 中时调用。<br/>keep-alive 组件激活时调用。 |
+| deactivated | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 若组件实例是 \<KeepAlive> 缓存树的一部分，当组件从 DOM 中被移除时调用。<br/>keep-alive 组件停用时调用。 |
+| serverPrefetch | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当组件实例在服务器上被渲染之前要完成的异步函数。<br/>如果这个钩子返回了一个 Promise，服务端渲染会在渲染该组件前等待该 Promise 完成。 |
 
 #### mounted、unmounted 使用注意事项 @mounted-unmounted-tips
 
@@ -1094,12 +1094,11 @@ export default {
 
 ## 组合选项 @options-composition
 
-|  | Web | 微信小程序 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| provide | 4.0 | 4.41 | 3.99 |   | 10.0 | 4.11 |   | 4.61 |   |
-| inject | 4.0 | 4.41 | 3.99 |   | 10.0 | 4.11 |   | 4.61 |   |
-| mixins | 4.0 | 4.41 | 3.99 | x | 10.0 | 4.11 | x | 4.61 | x |
-| extends |   |   |   |   |   |   |   |   |   |
+|  | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| provide | 4.0 | 4.41 | 3.99 | x | 4.11 | 5.11 | 4.61 | 5.0 |
+| inject | 4.0 | 4.41 | 3.99 | x | 4.11 | 5.11 | 4.61 | 5.0 |
+| mixins | 4.0 | 4.41 | 3.99 | x | 4.11 | x | 4.61 | x |
 
 ### inject
 
@@ -1379,7 +1378,7 @@ export default {
 
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
     <!-- #endif -->
     <view class="page">
@@ -1399,7 +1398,7 @@ export default {
       </text>
       <Comp2 class='comp2' title="title" />
     </view>
-    <!-- #ifdef APP -->
+    <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -1457,7 +1456,7 @@ export default {
 
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
     <!-- #endif -->
     <view class="page">
@@ -1488,7 +1487,7 @@ export default {
       <ChildMixinComp2 />
       <MixinComp />
     </view>
-    <!-- #ifdef APP -->
+    <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -1674,7 +1673,7 @@ export default {
 
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
     <!-- #endif -->
     <view class="page">
@@ -1772,7 +1771,7 @@ export default {
       <MixinComp2 />
       <ChildMixinComp2 />
     </view>
-    <!-- #ifdef APP -->
+    <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -1947,12 +1946,11 @@ export default {
 
 ## 其他杂项
 
-|  | Web | 微信小程序 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| name | 4.0 | 4.41 | 3.9 | 10.0 | 4.11 | 4.61 |
-| inheritAttrs | 4.0 | - | 3.9 | 10.0 | 4.11 | 4.61 |
-| components | 4.0 | 4.41 | 3.9 | 10.0 | 4.11 | 4.61 |
-| directives |   |   |   |   |   |   |
+|  | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| name | 4.0 | 4.41 | 3.9 | x | 4.11 | x | 4.61 | x |
+| inheritAttrs | 4.0 | √ | 3.9 | x | 4.11 | 5.11 | 4.61 | 5.03 |
+| components | 4.0 | 4.41 | 3.9 | x | 4.11 | x | 4.61 | x |
 
 
 ### 示例代码 @example
@@ -2204,21 +2202,21 @@ export default {
 
 |  | 兼容性 |
 | :- | :- |
-| $data | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $props | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $attrs | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $slots | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $refs | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $parent | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $root | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $options | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $nextTick | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $forceUpdate | Web: 4.0; 微信小程序: 4.41; Android: √; Android(Vapor): x; iOS 系统版本: 10.0; iOS: 4.11; iOS(Vapor): x; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61; HarmonyOS(Vapor): x |
-| $el | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $callMethod | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $emit | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $watch | Web: 4.0; 微信小程序: 4.41; Android: √; iOS 系统版本: 10.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $page | Web: 4.31; 微信小程序: -; Android: 4.31; iOS 系统版本: 10.0; iOS: 4.31; iOS uni-app x UTS 插件: x |
+| $data | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $props | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $attrs | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $slots | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $refs | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $parent | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $root | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $options | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $nextTick | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $forceUpdate | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; iOS uni-app x UTS 插件: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
+| $el | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $callMethod | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $emit | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $watch | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $page | Web: 4.31; 微信小程序: √; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
 
 ### 示例代码 @example
 

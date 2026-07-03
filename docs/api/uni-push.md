@@ -22,9 +22,9 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 获取客户端唯一的推送标识
 
 ### getPushClientId 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.27 | 4.41 | 4.4 | 3.98 | 4.18 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.27 | 4.41 | 3.98 | 4.18 | 4.61 |
 
 
 ### 参数 
@@ -45,8 +45,8 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| cid | string | 是 |  | Web: 4.27; Android 系统版本: 4.4; Android: 3.98; iOS: 4.18 | 个推客户端推送id，对应uni-id-device表的push_clientid<br/> |
-| errMsg | string | 是 |  | Web: 4.27; Android 系统版本: 4.4; Android: 3.98; iOS: 4.18 | 错误描述<br/> |
+| cid | string | 是 |  | Web: 4.27; 微信小程序:  ; Android: 3.98; iOS: 4.18; HarmonyOS:   | 个推客户端推送id，对应uni-id-device表的push_clientid<br/> |
+| errMsg | string | 是 |  | Web: 4.27; 微信小程序:  ; Android: 3.98; iOS: 4.18; HarmonyOS:   | 错误描述<br/> |
 
 
 
@@ -61,9 +61,9 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 启动监听推送消息事件
 
 ### onPushMessage 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.27 | 4.41 | 4.4 | 3.98 | 4.18 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.27 | 4.41 | 3.98 | 4.18 | 4.61 |
 
 
 ### 参数 
@@ -76,8 +76,8 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 |  | Web: 4.27; Android 系统版本: 4.4; Android: 3.98; iOS: 4.18 | 事件类型<br/>- click 从系统推送服务点击消息启动应用事件<br/>- receive 应用从推送服务器接收到推送消息事件 |
-| data | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  | Web: 4.27; Android 系统版本: 4.4; Android: 3.98; iOS: 4.18 | 消息内容<br/> |
+| type | string | 是 |  | Web: 4.27; 微信小程序:  ; Android: 3.98; iOS: 4.18; HarmonyOS:   | 事件类型<br/>- click 从系统推送服务点击消息启动应用事件<br/>- receive 应用从推送服务器接收到推送消息事件 |
+| data | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  | Web: 4.27; 微信小程序:  ; Android: 3.98; iOS: 4.18; HarmonyOS:   | 消息内容<br/> |
 
 #### type 的属性描述
 
@@ -103,9 +103,9 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 关闭推送消息监听事件，iOS端调用会关闭所有监听。
 
 ### offPushMessage 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.27 | 4.41 | 4.4 | 3.98 | 4.18 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.27 | 4.41 | 3.98 | 4.18 | 4.61 |
 
 
 ### 参数 
@@ -118,8 +118,8 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 |  | Web: 4.27; Android 系统版本: 4.4; Android: 3.98; iOS: 4.18 | 事件类型<br/>- click 从系统推送服务点击消息启动应用事件<br/>- receive 应用从推送服务器接收到推送消息事件 |
-| data | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  | Web: 4.27; Android 系统版本: 4.4; Android: 3.98; iOS: 4.18 | 消息内容<br/> |
+| type | string | 是 |  | Web: 4.27; 微信小程序:  ; Android: 3.98; iOS: 4.18; HarmonyOS:   | 事件类型<br/>- click 从系统推送服务点击消息启动应用事件<br/>- receive 应用从推送服务器接收到推送消息事件 |
+| data | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  | Web: 4.27; 微信小程序:  ; Android: 3.98; iOS: 4.18; HarmonyOS:   | 消息内容<br/> |
 
 #### type 的属性描述
 
@@ -161,34 +161,34 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 
 ### createPushMessage 兼容性 
-| Web | Android 系统版本 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.4 | 3.98 | 4.18 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.98 | 4.18 | 4.61 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **CreatePushMessageOptions** | 是 |  | Web: x |  |
+| options | **CreatePushMessageOptions** | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| cover | boolean | 否 | false | Web: x; Android 系统版本: 4.4; Android: 3.98; iOS: 4.18 | 是否覆盖上一次提示的消息 |
-| delay | number | 否 | 0 | Web: x; Android 系统版本: 4.4; Android: 3.98; iOS: 4.18 | 提示消息延迟显示的时间,单位为s |
-| icon | string | 否 | null | Web: x; Android 系统版本: 4.4; Android: 3.98; iOS: x | 推送消息的图标 |
-| sound | string | 否 | "system" | Web: x; Android 系统版本: 4.4; Android: 3.98; iOS: 4.18 | 推送消息的提示音<br/>- system: 使用系统通知提示音（默认值）<br/>- none: 不使用提示音 |
-| title | string | 否 | App的名称 | Web: x; Android 系统版本: 4.4; Android: 3.98; iOS: 4.18 | 推送消息的标题 |
-| content | string | 是 |  | Web: x; Android 系统版本: 4.4; Android: 3.98; iOS: 4.18 | 消息显示的内容，在系统通知中心中显示的文本内容。鸿蒙系统中，此字段为必填字段。<br/> |
-| payload | any | 否 | null | Web: x; Android 系统版本: 4.4; Android: 3.98; iOS: 4.18 | 消息承载的数据，可根据业务逻辑自定义数据格式，在点击通知消息时`onPushMessage`回调中会返回此字段的数据。 |
-| when | number | 否 | 当前时间 | Web: x; Android 系统版本: 4.4; Android: 3.98; iOS 系统版本: x; iOS: x | 消息上显示的提示时间，需要传入时间戳。 |
-| channelId | string | 否 | "DcloudChannelID" | Web: x; Android 系统版本: 4.4; Android: 3.98; iOS 系统版本: x; iOS: x | 渠道id，Android特有字段，[通知渠道介绍](https://developer.android.com/develop/ui/views/notifications/channels?hl=zh-cn)，<br/>创建通知渠道请使用`getPushChannelManager`获取PushChannelManager对象，调用`setPushChannel`方法配置渠道。 |
-| category | string | 否 | null | Web: x; Android 系统版本: 4.4; Android: 3.98; iOS 系统版本: x; iOS: x | 通知类别，Android特有字段，[通知渠道介绍](https://developer.android.com/develop/ui/views/notifications/channels?hl=zh-cn)，<br/>标识通知的类别，应用场景为对于离线推送厂商配置的支持，比如[华为消息分类](https://developer.huawei.com/consumer/cn/doc/HMSCore-Guides/message-classification-0000001149358835#section5101818813) |
-| success | (result: CreatePushMessageSuccess) => void | 否 | null | Web: x | 接口调用成功的回调函数 |
-| fail | (result: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | null | Web: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| cover | boolean | 否 | false | Web: x; 微信小程序:  ; Android: 3.98; iOS: 4.18; HarmonyOS:   | 是否覆盖上一次提示的消息 |
+| delay | number | 否 | 0 | Web: x; 微信小程序:  ; Android: 3.98; iOS: 4.18; HarmonyOS:   | 提示消息延迟显示的时间,单位为s |
+| icon | string | 否 | null | Web: x; 微信小程序:  ; Android: 3.98; iOS: x; HarmonyOS:   | 推送消息的图标 |
+| sound | string | 否 | "system" | Web: x; 微信小程序:  ; Android: 3.98; iOS: 4.18; HarmonyOS:   | 推送消息的提示音<br/>- system: 使用系统通知提示音（默认值）<br/>- none: 不使用提示音 |
+| title | string | 否 | App的名称 | Web: x; 微信小程序:  ; Android: 3.98; iOS: 4.18; HarmonyOS:   | 推送消息的标题 |
+| content | string | 是 |  | Web: x; 微信小程序:  ; Android: 3.98; iOS: 4.18; HarmonyOS:   | 消息显示的内容，在系统通知中心中显示的文本内容。鸿蒙系统中，此字段为必填字段。<br/> |
+| payload | any | 否 | null | Web: x; 微信小程序:  ; Android: 3.98; iOS: 4.18; HarmonyOS:   | 消息承载的数据，可根据业务逻辑自定义数据格式，在点击通知消息时`onPushMessage`回调中会返回此字段的数据。 |
+| when | number | 否 | 当前时间 | Web: x; 微信小程序:  ; Android: 3.98; iOS: x; HarmonyOS:   | 消息上显示的提示时间，需要传入时间戳。 |
+| channelId | string | 否 | "DcloudChannelID" | Web: x; 微信小程序:  ; Android: 3.98; iOS: x; HarmonyOS:   | 渠道id，Android特有字段，[通知渠道介绍](https://developer.android.com/develop/ui/views/notifications/channels?hl=zh-cn)，<br/>创建通知渠道请使用`getPushChannelManager`获取PushChannelManager对象，调用`setPushChannel`方法配置渠道。 |
+| category | string | 否 | null | Web: x; 微信小程序:  ; Android: 3.98; iOS: x; HarmonyOS:   | 通知类别，Android特有字段，[通知渠道介绍](https://developer.android.com/develop/ui/views/notifications/channels?hl=zh-cn)，<br/>标识通知的类别，应用场景为对于离线推送厂商配置的支持，比如[华为消息分类](https://developer.huawei.com/consumer/cn/doc/HMSCore-Guides/message-classification-0000001149358835#section5101818813) |
+| success | (result: CreatePushMessageSuccess) => void | 否 | null | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
+| fail | (result: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | null | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -201,11 +201,11 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 
 
 ## uni.getPushChannelManager() @getpushchannelmanager
@@ -214,9 +214,9 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 
 ### getPushChannelManager 兼容性 
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.4 | 4.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | Android | iOS |
+| :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 
@@ -234,27 +234,27 @@ setPushChannel
 设置推送渠道
 
 ##### setPushChannel 兼容性 
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS |
-| :- | :- | :- | :- | :- |
-| x | 4.4 | 3.98 | x | x |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 3.98 | x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **SetPushChannelOptions** | 是 |  | Web: x; iOS: x |  |
+| options | **SetPushChannelOptions** | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| soundName | string | 否 | null | Web: x; iOS: x | 添加的声音文件，注意raw目录下必须要有 ，不传此字段将使用默认铃音。 |
-| channelId | string | 是 |  | Web: x; iOS: x | 通知渠道id |
-| channelDesc | string | 是 |  | Web: x; iOS: x | 通知渠道描述 |
-| enableLights | boolean | 否 | false | Web: x; iOS: x | 呼吸灯闪烁 |
-| enableVibration | boolean | 否 | false | Web: x; iOS: x | 震动 |
-| importance | number | 否 | 3 | Web: x; iOS: x | 通知的重要性级别，可选范围IMPORTANCE_LOW：2、IMPORTANCE_DEFAULT：3、IMPORTANCE_HIGH：4 。 |
-| lockscreenVisibility | number | 否 | -1000 | Web: x; iOS: x | 锁屏可见性，可选范围VISIBILITY_PRIVATE：0、VISIBILITY_PUBLIC：1、VISIBILITY_SECRET：-1、VISIBILITY_NO_OVERRIDE：-1000。 | 
+| soundName | string | 否 | null | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 添加的声音文件，注意raw目录下必须要有 ，不传此字段将使用默认铃音。 |
+| channelId | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 通知渠道id |
+| channelDesc | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 通知渠道描述 |
+| enableLights | boolean | 否 | false | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 呼吸灯闪烁 |
+| enableVibration | boolean | 否 | false | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 震动 |
+| importance | number | 否 | 3 | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 通知的重要性级别，可选范围IMPORTANCE_LOW：2、IMPORTANCE_DEFAULT：3、IMPORTANCE_HIGH：4 。 |
+| lockscreenVisibility | number | 否 | -1000 | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 锁屏可见性，可选范围VISIBILITY_PRIVATE：0、VISIBILITY_PUBLIC：1、VISIBILITY_SECRET：-1、VISIBILITY_NO_OVERRIDE：-1000。 | 
 
 
 
@@ -263,9 +263,9 @@ getAllChannels
 获取当前应用注册的所有的通知渠道。
 
 ##### getAllChannels 兼容性 
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS |
-| :- | :- | :- | :- | :- |
-| x | 4.4 | 3.98 | x | x |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 3.98 | x |
 
 
 
@@ -275,6 +275,18 @@ getAllChannels
 | :- |
 | Array&lt;string&gt; |
  
+
+##### SetPushChannelOptions 的属性值 @setpushchanneloptions-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| soundName | string | 否 | null | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 添加的声音文件，注意raw目录下必须要有 ，不传此字段将使用默认铃音。 |
+| channelId | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 通知渠道id |
+| channelDesc | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 通知渠道描述 |
+| enableLights | boolean | 否 | false | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 呼吸灯闪烁 |
+| enableVibration | boolean | 否 | false | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 震动 |
+| importance | number | 否 | 3 | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 通知的重要性级别，可选范围IMPORTANCE_LOW：2、IMPORTANCE_DEFAULT：3、IMPORTANCE_HIGH：4 。 |
+| lockscreenVisibility | number | 否 | -1000 | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 锁屏可见性，可选范围VISIBILITY_PRIVATE：0、VISIBILITY_PUBLIC：1、VISIBILITY_SECRET：-1、VISIBILITY_NO_OVERRIDE：-1000。 |
  
 
 
@@ -299,15 +311,15 @@ getAllChannels
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| num | number | 是 |  | Web: x | 要显示的角标数字值，参数为0则表示清除角标数字。 |
-| options | **BadgeOptions** | 否 |  | Web: x | 小米手机显示角标需要在系统消息中心显示一条通知，此参数用于设置通知的标题（title）和内容（content）。 |
+| num | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 要显示的角标数字值，参数为0则表示清除角标数字。 |
+| options | **BadgeOptions** | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 小米手机显示角标需要在系统消息中心显示一条通知，此参数用于设置通知的标题（title）和内容（content）。 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| title | string | 否 | 应用的名称 | Web: x; Android 系统版本: 4.4; Android: 4.25; iOS: 4.25 | 消息的标题 |
-| content | string | 否 | '您有x条未读消息'，其中x为设置的角标数字值。 | Web: x; Android 系统版本: 4.4; Android: 4.25; iOS: 4.25 | 消息的内容 | 
+| title | string | 否 | 应用的名称 | Web: x; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS:   | 消息的标题 |
+| content | string | 否 | '您有x条未读消息'，其中x为设置的角标数字值。 | Web: x; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS:   | 消息的内容 | 
 
 
 
@@ -327,9 +339,9 @@ getAllChannels
   **已废弃，仅为了向下兼容保留，建议使用`getPushChannelManager`。**
 
 ### getChannelManager 兼容性 
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.4 | 3.98 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | Android | iOS |
+| :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.98 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 
@@ -347,27 +359,27 @@ setPushChannel
 设置推送渠道
 
 ##### setPushChannel 兼容性 
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS |
-| :- | :- | :- | :- | :- |
-| x | 4.4 | 3.98 | x | x |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 3.98 | x |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **SetPushChannelOptions** | 是 |  | Web: x; iOS: x |  |
+| options | **SetPushChannelOptions** | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| soundName | string | 否 | null | Web: x; iOS: x | 添加的声音文件，注意raw目录下必须要有 ，不传此字段将使用默认铃音。 |
-| channelId | string | 是 |  | Web: x; iOS: x | 通知渠道id |
-| channelDesc | string | 是 |  | Web: x; iOS: x | 通知渠道描述 |
-| enableLights | boolean | 否 | false | Web: x; iOS: x | 呼吸灯闪烁 |
-| enableVibration | boolean | 否 | false | Web: x; iOS: x | 震动 |
-| importance | number | 否 | 3 | Web: x; iOS: x | 通知的重要性级别，可选范围IMPORTANCE_LOW：2、IMPORTANCE_DEFAULT：3、IMPORTANCE_HIGH：4 。 |
-| lockscreenVisibility | number | 否 | -1000 | Web: x; iOS: x | 锁屏可见性，可选范围VISIBILITY_PRIVATE：0、VISIBILITY_PUBLIC：1、VISIBILITY_SECRET：-1、VISIBILITY_NO_OVERRIDE：-1000。 | 
+| soundName | string | 否 | null | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 添加的声音文件，注意raw目录下必须要有 ，不传此字段将使用默认铃音。 |
+| channelId | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 通知渠道id |
+| channelDesc | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 通知渠道描述 |
+| enableLights | boolean | 否 | false | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 呼吸灯闪烁 |
+| enableVibration | boolean | 否 | false | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 震动 |
+| importance | number | 否 | 3 | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 通知的重要性级别，可选范围IMPORTANCE_LOW：2、IMPORTANCE_DEFAULT：3、IMPORTANCE_HIGH：4 。 |
+| lockscreenVisibility | number | 否 | -1000 | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 锁屏可见性，可选范围VISIBILITY_PRIVATE：0、VISIBILITY_PUBLIC：1、VISIBILITY_SECRET：-1、VISIBILITY_NO_OVERRIDE：-1000。 | 
 
 
 
@@ -376,9 +388,9 @@ getAllChannels
 获取当前应用注册的所有的通知渠道。
 
 ##### getAllChannels 兼容性 
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS |
-| :- | :- | :- | :- | :- |
-| x | 4.4 | 3.98 | x | x |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 3.98 | x |
 
 
 
@@ -388,6 +400,18 @@ getAllChannels
 | :- |
 | Array&lt;string&gt; |
  
+
+##### SetPushChannelOptions 的属性值 @setpushchanneloptions-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| soundName | string | 否 | null | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 添加的声音文件，注意raw目录下必须要有 ，不传此字段将使用默认铃音。 |
+| channelId | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 通知渠道id |
+| channelDesc | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 通知渠道描述 |
+| enableLights | boolean | 否 | false | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 呼吸灯闪烁 |
+| enableVibration | boolean | 否 | false | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 震动 |
+| importance | number | 否 | 3 | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 通知的重要性级别，可选范围IMPORTANCE_LOW：2、IMPORTANCE_DEFAULT：3、IMPORTANCE_HIGH：4 。 |
+| lockscreenVisibility | number | 否 | -1000 | Web: x; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS:   | 锁屏可见性，可选范围VISIBILITY_PRIVATE：0、VISIBILITY_PUBLIC：1、VISIBILITY_SECRET：-1、VISIBILITY_NO_OVERRIDE：-1000。 |
  
 
 
@@ -785,11 +809,11 @@ getAllChannels
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 
 
 

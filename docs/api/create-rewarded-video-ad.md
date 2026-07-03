@@ -38,30 +38,30 @@ App平台在manifest中配置添加三方广告SDK。具体配置可参考[文�
 由uniCloud服务器从各家广告平台接受到视频播放完毕后，通知业务服务进行奖励发放。[详见](https://uniapp.dcloud.net.cn/uni-ad/ad-rewarded-video.html#callback)
 
 ### createRewardedVideoAd 兼容性 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.4 | 4.0 | 4.22 |
+| Web | 微信小程序 | Android | iOS |
+| :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.0 | 4.22 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| option | **CreateRewardedVideoAdOptions** | 是 |  | Web: x |  |
+| option | **CreateRewardedVideoAdOptions** | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 #### option 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| adpid | string | 是 |  | Web: x | 广告位 id |
-| urlCallback | **UrlCallbackOptions** | 否 |  | Web: x | 服务器回调透传参数 |
+| adpid | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 广告位 id |
+| urlCallback | **UrlCallbackOptions** | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 服务器回调透传参数 |
 
 ##### urlCallback 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| userId | string | 否 |  | Web: x | 透传到服务器端的userId |
-| extra | string | 否 |  | Web: x | 透传到服务器端的extra，不推荐设置过于复杂的字符串 | 
+| userId | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 透传到服务器端的userId |
+| extra | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 透传到服务器端的extra，不推荐设置过于复杂的字符串 | 
 
 
 ### 返回值 
@@ -76,9 +76,9 @@ App平台在manifest中配置添加三方广告SDK。具体配置可参考[文�
 show
 广告加载成功之后，调用此方法展示广告
 ##### show 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 
 
@@ -93,9 +93,9 @@ show
 load
 加载广告
 ##### load 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 
 
@@ -110,9 +110,9 @@ load
 destroy
 销毁广告
 ##### destroy 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 
 
@@ -121,15 +121,15 @@ destroy
 onLoad
 绑定广告 load 事件的监听器
 ##### onLoad 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 |  | Web: x |  | 
+| callback | (result: any) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 
 
@@ -137,15 +137,15 @@ onLoad
 offLoad
 解除绑定 load 事件的监听器
 ##### offLoad 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 |  | Web: x | - | 
+| callback | (result: any) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 
 
@@ -153,25 +153,25 @@ offLoad
 onError
 绑定 error 事件的监听器
 ##### onError 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [IUniAdError](#iuniaderror-values)) => void | 是 |  | Web: x |  | 
+| callback | (result: [IUniAdError](#iuniaderror-values)) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 ##### IUniAdError 的属性值 @iuniaderror-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x | 错误码<br/>- -5001 广告位标识adpid为空，请传入有效的adpid<br/>- -5002 无效的广告位标识adpid，请使用正确的adpid<br/>- -5003 广告位未开通广告，请在广告平台申请并确保已审核通过<br/>- -5004 无广告模块，打包时请配置要使用的广告模块<br/>- -5005 广告加载失败，请稍后重试<br/>- -5006 广告已经展示过了，请重新加载<br/>- -5007 广告不可用或已过期，请重新请求<br/>- -5008 广告不可用或已过期，请重新请求<br/>- -5009 广告类型不符，请检查后再试<br/>- -5011 打包或开通的渠道，不支持此类型广告<br/>- -5013 广告播放失败，请重新加载 |
-| errSubject | string | 是 |  | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x | 错误信息中包含的数据 |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误码<br/>- -5001 广告位标识adpid为空，请传入有效的adpid<br/>- -5002 无效的广告位标识adpid，请使用正确的adpid<br/>- -5003 广告位未开通广告，请在广告平台申请并确保已审核通过<br/>- -5004 无广告模块，打包时请配置要使用的广告模块<br/>- -5005 广告加载失败，请稍后重试<br/>- -5006 广告已经展示过了，请重新加载<br/>- -5007 广告不可用或已过期，请重新请求<br/>- -5008 广告不可用或已过期，请重新请求<br/>- -5009 广告类型不符，请检查后再试<br/>- -5011 打包或开通的渠道，不支持此类型广告<br/>- -5013 广告播放失败，请重新加载 |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x |  |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 
 
@@ -179,15 +179,25 @@ onError
 offError
 解除绑定 error 事件的监听器
 ##### offError 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [IUniAdError](#iuniaderror-values)) => void | 是 |  | Web: x | - | 
+| callback | (result: [IUniAdError](#iuniaderror-values)) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
+
+##### IUniAdError 的属性值 @iuniaderror-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误码<br/>- -5001 广告位标识adpid为空，请传入有效的adpid<br/>- -5002 无效的广告位标识adpid，请使用正确的adpid<br/>- -5003 广告位未开通广告，请在广告平台申请并确保已审核通过<br/>- -5004 无广告模块，打包时请配置要使用的广告模块<br/>- -5005 广告加载失败，请稍后重试<br/>- -5006 广告已经展示过了，请重新加载<br/>- -5007 广告不可用或已过期，请重新请求<br/>- -5008 广告不可用或已过期，请重新请求<br/>- -5009 广告类型不符，请检查后再试<br/>- -5011 打包或开通的渠道，不支持此类型广告<br/>- -5013 广告播放失败，请重新加载 |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
 
 
 
@@ -195,21 +205,21 @@ offError
 onClose
 绑定 close 事件的监听器
 ##### onClose 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [VideoAdClose](#videoadclose-values)) => void | 是 |  | Web: x |  | 
+| callback | (result: [VideoAdClose](#videoadclose-values)) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 ##### VideoAdClose 的属性值 @videoadclose-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| isEnded | boolean | 是 |  | Web: x | true表示广告播放完毕或者达到发放奖励的条件 |
+| isEnded | boolean | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | true表示广告播放完毕或者达到发放奖励的条件 |
 
 
 
@@ -217,15 +227,21 @@ onClose
 offClose
 解除绑定 close 事件的监听器
 ##### offClose 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [VideoAdClose](#videoadclose-values)) => void | 是 |  | Web: x | - | 
+| callback | (result: [VideoAdClose](#videoadclose-values)) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
+
+##### VideoAdClose 的属性值 @videoadclose-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| isEnded | boolean | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | true表示广告播放完毕或者达到发放奖励的条件 |
 
 
 
@@ -233,15 +249,15 @@ offClose
 onAdClicked
 绑定广告可点击屏幕区域事件的监听器
 ##### onAdClicked 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 |  | Web: x | - | 
+| callback | (result: any) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 
 
@@ -249,17 +265,49 @@ onAdClicked
 onVerify
 绑定 verify 事件的监听器
 ##### onVerify 兼容性 
-| Web | Android 系统版本 | Android | iOS |
-| :- | :- | :- | :- |
-| x | 4.4 | 4.0 | 4.22 |
+| Web | Android | iOS |
+| :- | :- | :- |
+| x | 4.0 | 4.22 |
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 |  | Web: x |  | 
+| callback | (result: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
 
 
+
+##### IUniAdError 的属性值 @iuniaderror-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误码<br/>- -5001 广告位标识adpid为空，请传入有效的adpid<br/>- -5002 无效的广告位标识adpid，请使用正确的adpid<br/>- -5003 广告位未开通广告，请在广告平台申请并确保已审核通过<br/>- -5004 无广告模块，打包时请配置要使用的广告模块<br/>- -5005 广告加载失败，请稍后重试<br/>- -5006 广告已经展示过了，请重新加载<br/>- -5007 广告不可用或已过期，请重新请求<br/>- -5008 广告不可用或已过期，请重新请求<br/>- -5009 广告类型不符，请检查后再试<br/>- -5011 打包或开通的渠道，不支持此类型广告<br/>- -5013 广告播放失败，请重新加载 |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
+##### IUniAdError 的属性值 @iuniaderror-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| errCode | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误码<br/>- -5001 广告位标识adpid为空，请传入有效的adpid<br/>- -5002 无效的广告位标识adpid，请使用正确的adpid<br/>- -5003 广告位未开通广告，请在广告平台申请并确保已审核通过<br/>- -5004 无广告模块，打包时请配置要使用的广告模块<br/>- -5005 广告加载失败，请稍后重试<br/>- -5006 广告已经展示过了，请重新加载<br/>- -5007 广告不可用或已过期，请重新请求<br/>- -5008 广告不可用或已过期，请重新请求<br/>- -5009 广告类型不符，请检查后再试<br/>- -5011 打包或开通的渠道，不支持此类型广告<br/>- -5013 广告播放失败，请重新加载 |
+| errSubject | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 统一错误主题（模块）名称 |
+| data | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  |
+
+##### VideoAdClose 的属性值 @videoadclose-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| isEnded | boolean | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | true表示广告播放完毕或者达到发放奖励的条件 |
+
+##### VideoAdClose 的属性值 @videoadclose-values 
+
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| isEnded | boolean | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | true表示广告播放完毕或者达到发放奖励的条件 |
  
 
 
@@ -380,9 +428,9 @@ onVerify
 ## 通用类型
 
 
-### GeneralCallbackResult 
+### GeneralCallbackResult @generalcallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
 

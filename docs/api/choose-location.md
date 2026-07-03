@@ -39,13 +39,13 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 否 |  | Web: 4.0; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 指示位置的经度 |
-| longitude | number | 否 |  | Web: 4.0; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 指示位置的纬度 |
-| keyword | string | 否 |  | Web: 4.0; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 指示位置的名称 |
-| payload | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |  | Web: 4.35; Android: 4.35; iOS: 4.35; HarmonyOS: 4.61 | 用户自定义参数 |
-| success | (result: [ChooseLocationSuccess](#chooselocationsuccess-values)) => void | 否 |  | Web: 4.0; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: [ChooseLocationFail](#chooselocationfail-values)) => void | 否 |  | Web: 4.0; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web: 4.0; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| latitude | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 指示位置的经度 |
+| longitude | number | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 指示位置的纬度 |
+| keyword | string | 否 |  | Web: 4.0; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 指示位置的名称 |
+| payload | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |  | Web: 4.35; 微信小程序:  ; Android: 4.35; iOS: 4.35; HarmonyOS: 4.61 | 用户自定义参数 |
+| success | (result: [ChooseLocationSuccess](#chooselocationsuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [ChooseLocationFail](#chooselocationfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### ChooseLocationSuccess 的属性值 @chooselocationsuccess-values 
 
@@ -71,8 +71,8 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1 | Web: 4.34; Android: 4.34; iOS: 4.34; HarmonyOS: 4.61 | 取消 |
-| 4 | Web: 4.34; Android: 4.34; iOS: 4.34; HarmonyOS: 4.61 | 框架内部错误 |
+| 1 | Web: 4.34; 微信小程序:  ; Android: 4.34; iOS: 4.34; HarmonyOS: 4.61 | 取消 |
+| 4 | Web: 4.34; 微信小程序:  ; Android: 4.34; iOS: 4.34; HarmonyOS: 4.61 | 框架内部错误 |
 
 
 

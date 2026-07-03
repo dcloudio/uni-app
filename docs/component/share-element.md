@@ -21,44 +21,44 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android 系统版本 | Android | Android(Vapor) | iOS 系统版本 | iOS | iOS(Vapor) | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.51 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.51 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.51 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.51 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| share-key | string |   | Web: x; 微信小程序: x; Android 系统版本: x; Android: 4.51; Android(Vapor): x; iOS 系统版本: x; iOS: 4.51; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 映射标记，页面内唯一 |
-| easing-function | string | "ease-out" | Web: x; 微信小程序: x; Android 系统版本: x; Android: 4.51; Android(Vapor): x; iOS 系统版本: x; iOS: 4.51; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | `css`缓动函数 |
-| shuttle-on-push | string | "to" | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: 4.51; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指定 push 阶段的飞跃物 |
-| shuttle-on-pop | string | "to" | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: 4.51; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 指定 pop 阶段的飞跃物 |
-| transition-on-gesture | boolean | false | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: 4.51; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 手势返回时是否进行动画 |
+| share-key | string |   | Web: x; 微信小程序: x; Android(VDOM): 4.51; Android(Vapor): x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 映射标记，页面内唯一 |
+| easing-function | string | "ease-out" | Web: x; 微信小程序: x; Android(VDOM): 4.51; Android(Vapor): x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | `css`缓动函数 |
+| shuttle-on-push | string | "to" | Web: x; 微信小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 指定 push 阶段的飞跃物 |
+| shuttle-on-pop | string | "to" | Web: x; 微信小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 指定 pop 阶段的飞跃物 |
+| transition-on-gesture | boolean | false | Web: x; 微信小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 手势返回时是否进行动画 |
 
 #### easing-function 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ease | Web: x; 微信小程序: x; Android 系统版本: x; Android: 4.51; Android(Vapor): x; iOS 系统版本: x; iOS: 4.51; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 表示过渡效果开始缓慢，然后逐渐加速，最后减速结束。这是大多数情况下的推荐值，因为它创建了平滑的过渡效果 |
-| ease-out | Web: x; 微信小程序: x; Android 系统版本: x; Android: 4.51; Android(Vapor): x; iOS 系统版本: x; iOS: 4.51; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 过渡开始时较快，然后逐渐减速。这会在过渡末尾创建一个缓慢的效果 |
-| ease-in | Web: x; 微信小程序: x; Android 系统版本: x; Android: 4.51; Android(Vapor): x; iOS 系统版本: x; iOS: 4.51; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 过渡开始时较慢，然后逐渐加速。这会在过渡初期创建一个缓慢的效果 |
-| ease-in-out | Web: x; 微信小程序: x; Android 系统版本: x; Android: 4.51; Android(Vapor): x; iOS 系统版本: x; iOS: 4.51; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 过渡开始时较慢，然后加速，最后减速。这是一个结合了ease-in和ease-out的时间函数，产生平滑的过渡效果 |
-| linear | Web: x; 微信小程序: x; Android 系统版本: x; Android: 4.51; Android(Vapor): x; iOS 系统版本: x; iOS: 4.51; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 过渡效果是线性的，速度保持恒定，没有加速或减速。这会在整个过渡期间保持相同的速度 |
-| cubic-bezier | Web: x; 微信小程序: x; Android 系统版本: x; Android: 4.51; Android(Vapor): x; iOS 系统版本: x; iOS: 4.51; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | 用于自定义 CSS 过渡（transition）的时间函数的函数，它允许你精确地定义过渡效果的速度变化 |
+| ease | Web: x; 微信小程序: x; Android(VDOM): 4.51; Android(Vapor): x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 表示过渡效果开始缓慢，然后逐渐加速，最后减速结束。这是大多数情况下的推荐值，因为它创建了平滑的过渡效果 |
+| ease-out | Web: x; 微信小程序: x; Android(VDOM): 4.51; Android(Vapor): x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 过渡开始时较快，然后逐渐减速。这会在过渡末尾创建一个缓慢的效果 |
+| ease-in | Web: x; 微信小程序: x; Android(VDOM): 4.51; Android(Vapor): x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 过渡开始时较慢，然后逐渐加速。这会在过渡初期创建一个缓慢的效果 |
+| ease-in-out | Web: x; 微信小程序: x; Android(VDOM): 4.51; Android(Vapor): x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 过渡开始时较慢，然后加速，最后减速。这是一个结合了ease-in和ease-out的时间函数，产生平滑的过渡效果 |
+| linear | Web: x; 微信小程序: x; Android(VDOM): 4.51; Android(Vapor): x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 过渡效果是线性的，速度保持恒定，没有加速或减速。这会在整个过渡期间保持相同的速度 |
+| cubic-bezier | Web: x; 微信小程序: x; Android(VDOM): 4.51; Android(Vapor): x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 用于自定义 CSS 过渡（transition）的时间函数的函数，它允许你精确地定义过渡效果的速度变化 |
 
 #### shuttle-on-push 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| from | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: 4.51; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | push 阶段采用源页面节点作为飞跃物 |
-| to | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: 4.51; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | push 阶段采用目标页面节点作为飞跃物 |
+| from | Web: x; 微信小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | push 阶段采用源页面节点作为飞跃物 |
+| to | Web: x; 微信小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | push 阶段采用目标页面节点作为飞跃物 |
 
 #### shuttle-on-pop 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| from | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: 4.51; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | pop 阶段采用源页面节点作为飞跃物 |
-| to | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; Android(Vapor): x; iOS 系统版本: x; iOS: 4.51; iOS(Vapor): x; HarmonyOS 系统版本: x; HarmonyOS: x; HarmonyOS(Vapor): x | pop 阶段采用目标页面节点作为飞跃物 |
+| from | Web: x; 微信小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | pop 阶段采用源页面节点作为飞跃物 |
+| to | Web: x; 微信小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | pop 阶段采用目标页面节点作为飞跃物 |
 
 
 ### 指定飞跃物

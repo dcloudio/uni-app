@@ -6,9 +6,9 @@ align-items 属性将所有直接子元素上的 align-self 值设置为一个�
 
 
 ### uni-app x 兼容性
-| Web | Android | Android(Vapor) | iOS | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | 4.11 | 4.61 |
 
 
 ### App平台拍平（flatten）兼容性 @flatten_compatibility
@@ -34,11 +34,11 @@ align-items: normal | stretch | <baseline-position> | [ <overflow-position>? <se
 ### align-items 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| center | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素在交叉轴上居中。如果元素在交叉轴上的尺寸（高度/宽度）大于其容器，那么在两个方向均等溢出。 |
-| flex-start | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素在交叉轴上对齐起始位置。 |
-| flex-end | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素在交叉轴上对齐结尾位置。 |
-| stretch | Web: 4.0; Android: 3.9; Android(Vapor): 5.21; iOS: 4.11; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 元素在交叉轴方向未设置尺寸（高度/宽度）或设置为 auto，会被拉伸到与行相同的高度或列相同的宽度。同时元素仍然保持其宽高比例的约束。 |
-| baseline | Web: 4.0; Android: x; Android(Vapor): x; iOS: x; iOS(Vapor): x; HarmonyOS: x; HarmonyOS(Vapor): x | 所有元素向基线对齐。交叉轴起点到元素基线距离最大的元素将会于交叉轴起点对齐以确定基线。 |
+| center | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 元素在交叉轴上居中。如果元素在交叉轴上的尺寸（高度/宽度）大于其容器，那么在两个方向均等溢出。 |
+| flex-start | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 元素在交叉轴上对齐起始位置。 |
+| flex-end | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 元素在交叉轴上对齐结尾位置。 |
+| stretch | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 元素在交叉轴方向未设置尺寸（高度/宽度）或设置为 auto，会被拉伸到与行相同的高度或列相同的宽度。同时元素仍然保持其宽高比例的约束。 |
+| baseline | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 所有元素向基线对齐。交叉轴起点到元素基线距离最大的元素将会于交叉轴起点对齐以确定基线。 |
 
 
 ### 默认值 @default-value 
@@ -346,5 +346,5 @@ align-items: normal | stretch | <baseline-position> | [ <overflow-position>? <se
 
 ### 参见
 - [MDN Reference](https://developer.mozilla.org/docs/Web/CSS/align-items)
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.align-items)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=css.properties.flex.align-items)
 
