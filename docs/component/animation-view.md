@@ -17,9 +17,9 @@ Lottie 动画
 
 
 ### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.9 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS 系统版本 | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| √ | √ | 3.9 | √ | 13.0 | 4.11 | √ | √ | √ |
 
 
 标准基座并不包含本插件，下载插件后需编写调用代码并打包自定义基座才可运行。
@@ -27,20 +27,20 @@ Lottie 动画
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| path | string | "" | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: x | 动画资源地址，目前只支持绝对路径 |
-| loop | boolean | false | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: x | 动画是否循环播放 |
-| autoplay | boolean | false | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: x | 动画是否自动播放 |
-| action | string | "stop" | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: x | 动画操作，可取值 play、pause、stop |
-| hidden | boolean | false | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: x | 是否隐藏动画 |
-| @ended | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: x |   |
+| path | string | "" | Web: √; 微信小程序: √; Android(VDOM): 3.9; Android(Vapor): √; iOS 系统版本: 13.0; iOS(VDOM): 4.11; iOS(Vapor): √; HarmonyOS(VDOM): √; HarmonyOS(Vapor): √ | 动画资源地址，目前只支持绝对路径 |
+| loop | boolean | false | Web: √; 微信小程序: √; Android(VDOM): 3.9; Android(Vapor): √; iOS 系统版本: 13.0; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): √; HarmonyOS(Vapor): √ | 动画是否循环播放 |
+| autoplay | boolean | false | Web: √; 微信小程序: √; Android(VDOM): 3.9; Android(Vapor): √; iOS 系统版本: 13.0; iOS(VDOM): 4.11; iOS(Vapor): √; HarmonyOS(VDOM): √; HarmonyOS(Vapor): √ | 动画是否自动播放 |
+| action | string | "stop" | Web: √; 微信小程序: √; Android(VDOM): 3.9; Android(Vapor): √; iOS 系统版本: 13.0; iOS(VDOM): 4.11; iOS(Vapor): √; HarmonyOS(VDOM): √; HarmonyOS(Vapor): √ | 动画操作，可取值 play、pause、stop |
+| hidden | boolean | false | Web: √; 微信小程序: √; Android(VDOM): 3.9; Android(Vapor): √; iOS 系统版本: 13.0; iOS(VDOM): 4.11; iOS(Vapor): √; HarmonyOS(VDOM): √; HarmonyOS(Vapor): √ | 是否隐藏动画 |
+| @ended | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: √; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): √; iOS 系统版本: 13.0; iOS(VDOM): 4.11; iOS(Vapor): √; HarmonyOS(VDOM): √; HarmonyOS(Vapor): √ |   |
 
 #### action 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| play | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: x | 播放 |
-| pause | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: x | 暂停 |
-| stop | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: x | 停止 |
+| play | Web: √; 微信小程序: √; Android(VDOM): 3.9; Android(Vapor): √; iOS 系统版本: 13.0; iOS(VDOM): 4.11; iOS(Vapor): √; HarmonyOS(VDOM): √; HarmonyOS(Vapor): √ | 播放 |
+| pause | Web: √; 微信小程序: √; Android(VDOM): 3.9; Android(Vapor): √; iOS 系统版本: 13.0; iOS(VDOM): 4.11; iOS(Vapor): √; HarmonyOS(VDOM): √; HarmonyOS(Vapor): √ | 暂停 |
+| stop | Web: √; 微信小程序: √; Android(VDOM): 3.9; Android(Vapor): √; iOS 系统版本: 13.0; iOS(VDOM): 4.11; iOS(Vapor): √; HarmonyOS(VDOM): √; HarmonyOS(Vapor): √ | 停止 |
 
 
 
@@ -53,7 +53,7 @@ Lottie 动画
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=component.media.animation-view)
 - [参见uni-app相关文档](https://uniapp.dcloud.io/component/animation-view.html)
-- [插件市场](https://ext.dcloud.net.cn/plugin?id=10674)
+- [插件市场](https://ext.dcloud.net.cn/plugin?id=28623)
 - [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=animation-view&doc_type=miniprogram)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=animation-view&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=animation-view&scope=devdocs&source=docs)
