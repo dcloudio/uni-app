@@ -12,7 +12,7 @@
 
 Lottie 动画
 
-> 本 Component 是 uni ext component，需下载插件：[animation-view](https://ext.dcloud.net.cn/plugin?name=uni-animation-view)
+> 本 Component 是 uni ext component，需下载插件：[animation-view](https://ext.dcloud.net.cn/plugin?id=28623)
 
 
 
