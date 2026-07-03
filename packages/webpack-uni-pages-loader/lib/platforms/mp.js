@@ -261,6 +261,21 @@ module.exports = function (pagesJson, manifestJson, project = {}) {
     }
   )
 
+  if (
+    process.env.UNI_PLATFORM === 'mp-weixin' &&
+    isSupportSubPackages() &&
+    Array.isArray(pagesJson.subPackages)
+  ) {
+    pagesJson.subPackages.forEach(subPackage => {
+      const { root } = subPackage || {}
+      if (root && subPackage.independent && !subPackages[root]) {
+        subPackages[root] = Object.assign({}, subPackage, {
+          pages: []
+        })
+      }
+    })
+  }
+
   Object.keys(subPackages).forEach(root => {
     app.subPackages.push(subPackages[root])
   })
