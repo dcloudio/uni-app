@@ -272,7 +272,7 @@ pages.json
 ## 使用uni-agent，从VDOM模式升级到蒸汽模式
 
 1. 在vdom模式下，要求uni-agent把复杂的组合选择器，改成 简单的class选择器或分组选择器，确认是否正常
-2. 在vdom模式下，打开manifest.json中的样式隔离策略2.0，把[文档](css/common/style-isolation.md)贴给ai，要求ai改造，确认是否正常
+2. 在vdom模式下，打开manifest.json中的样式隔离策略2.0，把[文档](css/common/style-isolation.md)贴给ai，要求ai改造，确认是否正常。如涉及三方组件，核对三方组件的新版是否支持样式隔离策略2.0，尽量选择支持该策略的组件。官方的 [uni ui x](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/) 是支持的。
 3. 项目在manifest中切换为蒸汽模式，把上一个章节 `开发注意`文档内容贴给ai，检查是否正常
 
 如果想从uni-app升级到uni-app x的蒸汽模式，[另见](./uniapptox.md)
