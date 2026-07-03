@@ -1133,12 +1133,16 @@ export function parseInjectModules(
 }
 
 function readExtApiModulesJson() {
-  const json = require('../lib/ext-api/modules.json')
-  if (!json['uni-canvas']) {
-    json['uni-canvas'] = {}
+  if (process.env.UNI_APP_X_DOM2 === 'true') {
+    return require('../lib/ext-api/modules-vapor.json')
+  } else {
+    const json = require('../lib/ext-api/modules.json')
+    if (!json['uni-canvas']) {
+      json['uni-canvas'] = {}
+    }
+    json['uni-canvas']['components'] = ['canvas']
+    return json
   }
-  json['uni-canvas']['components'] = ['canvas']
-  return json
 }
 
 export function parseExtApiModules() {
