@@ -18,9 +18,12 @@ import {
   INDEPENDENT_SUBPACKAGE_PLUGIN_NAME,
   UNI_MP_RUNTIME_ID,
   VUE_EXPORT_HELPER_ID,
+  getIndependentRootByFilename,
   getIndependentRoots,
   getIndependentSubPackages,
   isAppPagesJson,
+  isInIndependentRoot,
+  normalizeIndependentRoot,
   parseIndependentRoot,
   withIndependentRoot,
   withoutIndependentRoot,
@@ -63,15 +66,16 @@ export function uniIndependentSubpackagePlugin(
       if (root && independentRoots.has(root)) {
         return id
       }
-      const importerRoot = importer && parseIndependentRoot(importer)
+      const importerRoot = resolveImporterIndependentRoot(importer, inputDir)
       if (
+        importer &&
         importerRoot &&
         independentRoots.has(importerRoot) &&
         shouldResolveIndependentDependency(id)
       ) {
         const importerWithoutRoot = withoutIndependentRoot(importer)
         const resolved = await this.resolve(id, importerWithoutRoot, {
-          skipSelf: false,
+          skipSelf: true,
         })
         if (resolved && !resolved.external) {
           validateIndependentDependency({
@@ -430,8 +434,17 @@ function resolveAppStyleFilename(extname: string) {
   return `app${extname}`
 }
 
-function normalizeIndependentRoot(root: string) {
-  return normalizePath(root).replace(/\/$/, '')
+function resolveImporterIndependentRoot(
+  importer: string | undefined,
+  inputDir: string | undefined
+) {
+  if (!importer) {
+    return
+  }
+  return (
+    parseIndependentRoot(importer) ||
+    getIndependentRootByFilename(withoutIndependentRoot(importer), inputDir)
+  )
 }
 
 function validateIndependentDependency({
@@ -475,13 +488,9 @@ function isProjectFile(filename: string, inputDir: string) {
 
 function isAllowedProjectDependency(filename: string, inputDir: string) {
   // pages.json 是 app 级配置文件，允许独立分包读取；实际模块仍会追加 root query，避免产物落到主包 common。
-  return filename.includes('/node_modules/') || isAppPagesJson(filename, inputDir)
-}
-
-function isInIndependentRoot(filename: string, inputDir: string, root: string) {
-  const normalizedRoot = normalizePath(root).replace(/\/$/, '')
-  const rootDir = `${inputDir}/${normalizedRoot}`
-  return filename === rootDir || filename.startsWith(`${rootDir}/`)
+  return (
+    filename.includes('/node_modules/') || isAppPagesJson(filename, inputDir)
+  )
 }
 
 function normalizeFileId(id: string) {
@@ -540,7 +549,9 @@ function generateIndependentMainCode(
   ]
   if (hasUniCloudSpace) {
     imports.push(
-      `import ${JSON.stringify(withIndependentRoot('@dcloudio/uni-cloud', root))}`
+      `import ${JSON.stringify(
+        withIndependentRoot('@dcloudio/uni-cloud', root)
+      )}`
     )
   }
   if (independentMainPath) {

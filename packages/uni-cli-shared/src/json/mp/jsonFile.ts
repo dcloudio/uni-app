@@ -16,7 +16,10 @@ import {
 import { relativeFile } from '../../resolve'
 import { isVueSfcFile } from '../../vue/utils'
 import { UNI_AD_PLUGINS } from '@dcloudio/uni-shared'
-import { parseIndependentSubPackages } from './subpackage'
+import {
+  parseIndependentSubPackages,
+  setIndependentSubPackages,
+} from './subpackage'
 
 let appJsonCache: Record<string, any> = {}
 let independentRootsCache: string[] = []
@@ -223,6 +226,7 @@ export function addMiniProgramUsingComponents(
 export function resetMiniProgramJsonFiles() {
   appJsonCache = {}
   independentRootsCache = []
+  setIndependentSubPackages([])
   jsonFilesCache.clear()
   jsonPagesCache.clear()
   jsonComponentsCache.clear()

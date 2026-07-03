@@ -60,10 +60,15 @@ describe('independent root query utils', () => {
 
 describe('independent subpackage state', () => {
   test('matches app pages json with query', () => {
-    expect(isAppPagesJson('/project/src/pages.json?foo=bar', '/project/src'))
-      .toBe(true)
-    expect(isAppPagesJson('/project/src/package-a/pages.json', '/project/src'))
-      .toBe(false)
+    expect(
+      isAppPagesJson('/project/src/pages.json?foo=bar', '/project/src')
+    ).toBe(true)
+    expect(isAppPagesJson('/project/src/pages.json.ts', '/project/src')).toBe(
+      true
+    )
+    expect(
+      isAppPagesJson('/project/src/package-a/pages.json', '/project/src')
+    ).toBe(false)
   })
 
   test('updates pages when roots are unchanged', () => {

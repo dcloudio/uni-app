@@ -264,7 +264,7 @@ app.mount('#app', "package-a", { independent: true, createApp: createIndependent
           './App.vue',
           '/project/src/main.ts',
           {
-            skipSelf: false,
+            skipSelf: true,
           }
         )
         expect(result.id).toBe(
@@ -541,6 +541,45 @@ app.mount('#app', "package-a", { independent: true, createApp: createIndependent
             `${inputDir}/package-a/pages/index/index.uvue`,
             'package-a'
           )
+        )
+
+        expect(result.id).toBe(
+          withIndependentRoot(
+            normalizePath(path.join(inputDir, 'pages.json')),
+            'package-a'
+          )
+        )
+      }
+    )
+  })
+
+  test('infers root when root-inside module imports app pages json without root query', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    await withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      async (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+        } as any)
+        callBuildStart(plugin)
+        const resolve = jest.fn(async () => ({
+          id: path.join(inputDir, 'pages.json'),
+        }))
+
+        const result = await (plugin.resolveId as Function).call(
+          { resolve },
+          '@/pages.json',
+          `${inputDir}/package-a/pages/index/index.uvue`
         )
 
         expect(result.id).toBe(
