@@ -17,7 +17,6 @@ const APP_NATIVE_TAGS = [
  * 可能后续会添加的tags，native或easycom
  * movable-area
  * movable-view
- * cover-view
  * share-element
  * icon
  * animation-view
