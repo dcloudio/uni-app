@@ -1,6 +1,7 @@
 import GtPush from '../lib/gtpush-min'
 import { initPushNotification } from './route'
 import { initBroadcastChannel, postPushMessage } from './broadcastChannel'
+import { createAppidRequiredError, initGtPush } from './shared'
 
 // if (process.env.UNI_PUSH_DEBUG) {
 //   GtPush.setDebugMode(true)
@@ -15,11 +16,7 @@ const appid = process.env.UNI_APP_ID!
 if (!appid) {
   Promise.resolve().then(() => {
     // @ts-expect-error
-    uni.invokePushCallback({
-      type: 'clientId',
-      cid: '',
-      errMsg: 'manifest.json->appid is required',
-    })
+    uni.invokePushCallback(createAppidRequiredError())
   })
 } else {
   // #ifdef APP
@@ -28,61 +25,12 @@ if (!appid) {
   // #ifdef H5
   initBroadcastChannel(GtPush)
   // #endif
-  // #ifdef MP || APP
-  if (typeof uni.onAppShow === 'function') {
-    uni.onAppShow(() => {
-      GtPush.enableSocket(true)
-    })
-  }
-  // #endif
-  GtPush.init({
-    appid,
-    onError: (res) => {
-      console.error(res.error)
-      const data = {
-        type: 'clientId',
-        cid: '',
-        errMsg: res.error,
-      }
-      // @ts-expect-error
-      uni.invokePushCallback(data)
-      // #ifdef H5
-      postPushMessage(data)
-      // #endif
-    },
-    onClientId: (res) => {
-      const data = {
-        type: 'clientId',
-        cid: res.cid,
-      }
-      // @ts-expect-error
-      uni.invokePushCallback(data)
-      // #ifdef H5
-      postPushMessage(data)
-      // #endif
-    },
-    onlineState: (res) => {
-      const data = {
-        type: 'lineState',
-        online: res.online,
-      }
-      // @ts-expect-error
-      uni.invokePushCallback(data)
-      // #ifdef H5
-      postPushMessage(data)
-      // #endif
-    },
-    onPushMsg: (res) => {
-      const data = {
-        type: 'pushMsg',
-        message: res.message,
-      }
-      // @ts-expect-error
-      uni.invokePushCallback(data)
-      // #ifdef H5
-      postPushMessage(data)
-      // #endif
-    },
+  initGtPush(appid, (data) => {
+    // @ts-expect-error
+    uni.invokePushCallback(data)
+    // #ifdef H5
+    postPushMessage(data)
+    // #endif
   })
   // 仅在 jssdk 中监听
   // #ifdef APP

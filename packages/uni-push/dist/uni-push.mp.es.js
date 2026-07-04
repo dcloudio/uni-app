@@ -99,67 +99,6 @@ var gtpushMin = {exports: {}};
 var gtpushMinExports = gtpushMin.exports;
 var GtPush = /*@__PURE__*/getDefaultExportFromCjs(gtpushMinExports);
 
-function initPushNotification() {
-    // 仅 App 端
-    if (typeof plus !== 'undefined' && plus.push) {
-        plus.globalEvent.addEventListener('newPath', ({ path }) => {
-            if (!path) {
-                return;
-            }
-            // 指定的页面为当前页面
-            const pages = getCurrentPages();
-            const currentPage = pages[pages.length - 1];
-            if (currentPage &&
-                currentPage.$page &&
-                currentPage.$page.fullPath === path) {
-                return;
-            }
-            // 简单起见，先尝试 navigateTo 跳转，失败后，再尝试 tabBar 跳转
-            uni.navigateTo({
-                url: path,
-                fail(res) {
-                    if (res.errMsg.indexOf('tabbar') > -1) {
-                        uni.switchTab({
-                            url: path,
-                            fail(res) {
-                                console.error(res.errMsg);
-                            },
-                        });
-                    }
-                    else {
-                        console.error(res.errMsg);
-                    }
-                },
-            });
-        });
-    }
-}
-
-let channel;
-function postPushMessage(data) {
-    if (!channel) {
-        return;
-    }
-    channel.postMessage(data);
-}
-function initBroadcastChannel(gtPush) {
-    if (typeof BroadcastChannel === 'undefined') {
-        return;
-    }
-    channel = new BroadcastChannel('uni-push');
-    channel.onmessage = function ({ data }) {
-        // @ts-expect-error
-        uni.invokePushCallback(data);
-    };
-    // eslint-disable-next-line no-restricted-globals
-    document.addEventListener('visibilitychange', function () {
-        // eslint-disable-next-line no-restricted-globals
-        if (document.visibilityState === 'visible') {
-            gtPush.enableSocket(true);
-        }
-    });
-}
-
 function createAppidRequiredError() {
     return {
         type: 'clientId',
@@ -206,44 +145,143 @@ function initGtPush(appid, onCallback) {
     });
 }
 
-// if (process.env.UNI_PUSH_DEBUG) {
-//   GtPush.setDebugMode(true)
-// }
-// @ts-expect-error
-uni.invokePushCallback({
-    type: 'enabled',
-});
+const UNI_PUSH_RUNTIME = '__uni_push_runtime__';
 const appid = process.env.UNI_APP_ID;
-if (!appid) {
-    Promise.resolve().then(() => {
-        // @ts-expect-error
-        uni.invokePushCallback(createAppidRequiredError());
-    });
+const miniProgramPushBridge = getMiniProgramPushBridge();
+if (miniProgramPushBridge) {
+    initMiniProgramUniPush(miniProgramPushBridge);
 }
 else {
-    // #ifdef APP
-    initPushNotification();
-    // #endif
-    // #ifdef H5
-    initBroadcastChannel(GtPush);
-    // #endif
-    initGtPush(appid, (data) => {
+    initUniPush();
+}
+function initUniPush() {
+    invokePushCallback({
+        type: 'enabled',
+    });
+    if (!appid) {
+        Promise.resolve().then(() => {
+            invokePushCallback(createAppidRequiredError());
+        });
+    }
+    else {
+        initGtPush(appid, invokePushCallback);
+    }
+}
+function initMiniProgramUniPush(bridge) {
+    const currentUni = uni;
+    const callback = (data) => {
         // @ts-expect-error
-        uni.invokePushCallback(data);
-        // #ifdef H5
-        postPushMessage(data);
-        // #endif
+        currentUni.invokePushCallback(data);
+    };
+    registerPushCallback(bridge, callback);
+    if (bridge.initialized) {
+        return;
+    }
+    bridge.initialized = true;
+    emitPushCallback(bridge, {
+        type: 'enabled',
     });
-    // 仅在 jssdk 中监听
-    // #ifdef APP
-    uni.onPushMessage((res) => {
-        if (res.type === 'receive' &&
-            res.data &&
-            res.data.force_notification) {
-            // 创建通知栏
-            uni.createPushMessage(res.data);
-            res.stopped = true;
-        }
+    if (!appid) {
+        Promise.resolve().then(() => {
+            emitPushCallback(bridge, createAppidRequiredError());
+        });
+    }
+    else {
+        initGtPush(appid, (data) => {
+            emitPushCallback(bridge, data);
+        });
+    }
+}
+function invokePushCallback(data) {
+    // @ts-expect-error
+    uni.invokePushCallback(data);
+}
+function getMiniProgramPushBridge() {
+    const globalObject = getMiniProgramGlobal();
+    if (!globalObject) {
+        return;
+    }
+    return (globalObject[UNI_PUSH_RUNTIME] ||
+        (globalObject[UNI_PUSH_RUNTIME] = {
+            initialized: false,
+            callbacks: [],
+        }));
+}
+function getMiniProgramGlobal() {
+    const miniProgramApi = getMiniProgramApiGlobal();
+    if (!miniProgramApi) {
+        return;
+    }
+    // 独立分包与主包会各自打包一份 uni-push 运行时；优先挂到 globalThis，
+    // 避免小程序 runtime 重建 wx 等 API 包装对象后重复初始化 GtPush。
+    if (typeof globalThis !== 'undefined') {
+        return globalThis;
+    }
+    return miniProgramApi;
+}
+function getMiniProgramApiGlobal() {
+    if (typeof wx !== 'undefined') {
+        return wx;
+    }
+    else if (typeof my !== 'undefined') {
+        return my;
+    }
+    else if (typeof tt !== 'undefined') {
+        return tt;
+    }
+    else if (typeof swan !== 'undefined') {
+        return swan;
+    }
+    else if (typeof qq !== 'undefined') {
+        return qq;
+    }
+    else if (typeof ks !== 'undefined') {
+        return ks;
+    }
+    else if (typeof jd !== 'undefined') {
+        return jd;
+    }
+    else if (typeof xhs !== 'undefined') {
+        return xhs;
+    }
+    else if (typeof has !== 'undefined') {
+        return has;
+    }
+    else if (typeof qa !== 'undefined') {
+        return qa;
+    }
+}
+function registerPushCallback(bridge, callback) {
+    if (bridge.callbacks.indexOf(callback) === -1) {
+        bridge.callbacks.push(callback);
+    }
+    replayPushCallback(bridge, callback);
+}
+function replayPushCallback(bridge, callback) {
+    if (bridge.enabled) {
+        callback(bridge.enabled);
+    }
+    if (bridge.clientId) {
+        callback(bridge.clientId);
+    }
+    if (bridge.lineState) {
+        callback(bridge.lineState);
+    }
+}
+function emitPushCallback(bridge, data) {
+    cachePushCallback(bridge, data);
+    bridge.callbacks.slice().forEach((callback) => {
+        callback(data);
     });
-    // #endif
+}
+function cachePushCallback(bridge, data) {
+    if (data.type === 'enabled') {
+        bridge.enabled = data;
+    }
+    else if (data.type === 'clientId') {
+        bridge.clientId = data;
+    }
+    else if (data.type === 'lineState') {
+        bridge.lineState = data;
+    }
 }
