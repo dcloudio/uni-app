@@ -4,6 +4,7 @@ import {
   isAppIOSUVueNativeTag,
   isAppUVueBuiltInEasyComponent,
   isDom2AppNativeTag,
+  isDom2AppVueComponentTag,
 } from '@dcloudio/uni-shared'
 import {
   MANIFEST_JSON_UTS,
@@ -94,7 +95,9 @@ export function createUniOptions(
                   node.type === NodeTypes.ELEMENT &&
                   (node.tagType === ElementTypes.ELEMENT ||
                     (node.tagType === ElementTypes.COMPONENT &&
-                      isAppUVueBuiltInEasyComponent(node.tag)))
+                      (isDom2
+                        ? isDom2AppVueComponentTag(node.tag)
+                        : isAppUVueBuiltInEasyComponent(node.tag))))
                 ) {
                   if (
                     !parseUTSComponent(
