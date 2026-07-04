@@ -42,28 +42,15 @@ uni-app迁移到uni-app x，是一个大型工程。
 
 	做完后先在uni-app下检查是否正常。
 
-5. 构造uni-app x项目，先运行到web、微信小程序
-	
-	新建uni-app x项目，把老项目复制过来，所有vue或nvue页面组件文件，批量重命名为uvue。可以保留之前的appid和包名。
+5. 构造uni-app x项目
 
+	新建uni-app x项目，把老项目复制过来，所有vue或nvue页面组件文件，批量重命名为uvue。main.js改名为main.uts。可以保留之前的appid和包名。
+	
 	如果你之前有web版和微信小程序，那么改造后首先运行到 uni-app x 的web和微信小程序上，看看是否正常。
 
 	同时注意uni-app x的 [web开发注意](./web/README.md) 和 [小程序开发注意](./mp/README.md)
 
-如果要改造为app，继续往下。
-
-6. 改造plus
-	uni-app x不支持plus。
-	* 如果在代码中使用了plus，参考这个指南迁移：[plus替代](./api/ext.md#plus)；
-	* 如果在pages.json里使用了plus，推荐改用 uni-ui x 的 [uni-nav-bar 自定义导航栏组件](./component/uni-ui-x/uni-nav-bar.md) 和 [uni-tab-bar自定义tabbar组件](./component/uni-ui-x/uni-tab.md) 来替代。
-
-7. 改造组件库
-	* 如果使用了uni ui，那么迁移指南在这篇文档的底部：[uni-ui x](./component/uni-ui-x/README.md)
-	* 如果使用其他组件库，需要咨询组件作者是否有 uni-app x 版本。如果没有的话，推荐用[uni-ui x](./component/uni-ui-x/README.md)重构。
-
-	uni-app x 相比 uni-app 多了不少内置组件，比如list-view、waterflow、page-container、sticky、match-media、loading、native-view。对于内置组件已经满足需求的情况就没必要使用三方组件了。
-
-8. 再次适配css
+6. 再次适配css
 
 	之前在uni-app中适配过一次css，但[css样式重置](./css/README.md#css-reset)、[样式隔离策略2.0](./css/common/style-isolation.md)，这2个在uni-app下没有，还得在uni-app x环境中再次适配。
 	
@@ -72,6 +59,21 @@ uni-app迁移到uni-app x，是一个大型工程。
 	uni-app x在编译时，会在控制台提示不支持的css，可以让uni-agent读取控制台的css告警，改成更简单的css来实现相关的布局功能。
 
 	如涉及暗黑模式适配，需参考uni-app x的[暗黑适配文档](./api/theme-change.md)，有些部分与uni-app相同，但也有一些改动。
+
+如果要改造为app，继续往下。
+
+7. 改造plus
+	uni-app x不支持plus。
+	* 如果在代码中使用了plus，参考这个指南迁移：[plus替代](./api/ext.md#plus)；
+	* 如果在pages.json里使用了plus，推荐改用 uni-ui x 的 [uni-nav-bar 自定义导航栏组件](./component/uni-ui-x/uni-nav-bar.md) 和 [uni-tab-bar自定义tabbar组件](./component/uni-ui-x/uni-tab.md) 来替代。
+
+	另外如果项目使用了subNVue，需要改成[dialogPage](./api/dialog-page.md)
+
+8. 改造组件库
+	* 如果使用了uni ui，那么迁移指南在这篇文档的底部：[uni-ui x](./component/uni-ui-x/README.md)
+	* 如果使用其他组件库，需要咨询组件作者是否有 uni-app x 版本。如果没有的话，推荐用[uni-ui x](./component/uni-ui-x/README.md)重构。
+
+	uni-app x 相比 uni-app 多了不少内置组件，比如list-view、waterflow、page-container、sticky、match-media、loading、native-view。对于内置组件已经满足需求的情况就没必要使用三方组件了。
 
 9. 改造wxs和renderjs为Element API
 
