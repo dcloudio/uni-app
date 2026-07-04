@@ -22655,6 +22655,10 @@ export interface CreateComponentIRNode extends BaseIRNode, EffectBoundary {
   * fixed by uts 当前表达式对应的标识符
   */
   sharedData?: SimpleExpressionNode["sharedData"];
+  /**
+  * fixed by uts DOM2 组件 flatten 静态值。
+  */
+  flatten?: boolean;
 }
 export interface SlotOutletIRNode extends BaseIRNode, EffectBoundary {
   type: IRNodeTypes.SLOT_OUTLET_NODE;
@@ -22889,7 +22893,8 @@ export interface VaporCompilerError extends CompilerError {
 export declare function createVaporCompilerError(code: VaporErrorCodes, loc?: SourceLocation): VaporCompilerError;
 export declare enum VaporErrorCodes {
   X_V_PLACEHOLDER = 100,
-  __EXTEND_POINT__ = 101
+  X_DYNAMIC_FLATTEN_NOT_SUPPORTED = 101,
+  __EXTEND_POINT__ = 102
 }
 export declare const VaporErrorMessages: Record<VaporErrorCodes, string>;
 //#endregion
@@ -22948,6 +22953,7 @@ export declare const transformVSlot: NodeTransform;
 export declare function propToExpression(prop: AttributeNode | VaporDirectiveNode): SimpleExpressionNode | undefined;
 export declare function isConstantExpression(exp: SimpleExpressionNode): boolean;
 export declare function isStaticExpression(node: SimpleExpressionNode, bindings: BindingMetadata): boolean;
+export declare function parseStaticAttrBooleanExpression(exp: SimpleExpressionNode): boolean | null;
 export declare function getLiteralExpressionValue(exp: SimpleExpressionNode, excludeNumber?: boolean): string | null;
 export declare function isTransitionTag(tag: string): boolean;
 export declare function isTransitionGroupTag(tag: string): boolean;
@@ -23001,7 +23007,7 @@ export declare function matchSelectorPattern(effect: IREffect, key: string, idMa
 export declare function markSlotRootOperations(block: BlockIRNode): void;
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/component.d.ts
-export declare function genDynamicComponentFlags(root: boolean | undefined, once: boolean | undefined, slotRoot: boolean | undefined): string | false;
+export declare function genDynamicComponentFlags(root: boolean | undefined, once: boolean | undefined, slotRoot: boolean | undefined, extraFlags?: [flag: number, name: string][]): string | false;
 type SlotRootStabilityContext = Pick<CodegenContext, "ir">;
 export declare function hasStableSlotRoot(block: BlockIRNode, context: SlotRootStabilityContext): boolean;
 export declare function needsVaporCtx(block: BlockIRNode): boolean;

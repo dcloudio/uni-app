@@ -737,7 +737,11 @@ const VaporDynamicComponentFlags = {
 	"ONCE": 2,
 	"2": "ONCE",
 	"SLOT_ROOT": 4,
-	"4": "SLOT_ROOT"
+	"4": "SLOT_ROOT",
+	"DOM2_FLATTEN_TRUE": 65536,
+	"65536": "DOM2_FLATTEN_TRUE",
+	"DOM2_FLATTEN_FALSE": 131072,
+	"131072": "DOM2_FLATTEN_FALSE"
 };
 //#endregion
 export { EMPTY_ARR, EMPTY_OBJ, NO, NOOP, Namespaces, PatchFlagNames, PatchFlags, ShapeFlags, SlotFlags, TemplateFlags, VaporBlockShape, VaporDynamicComponentFlags, VaporIfFlags, VaporSlotFlags, VaporVForFlags, YES, camelize, canSetValueDirectly, capitalize, cssVarNameEscapeSymbolsRE, def, escapeHtml, escapeHtmlComment, extend, genCacheKey, genPropsAccessExp, generateCodeFrame, getEscapedCssVarName, getGlobalThis, getModifierPropName, getSequence, hasChanged, hasOwn, hyphenate, includeBooleanAttr, invokeArrayFns, isAlwaysCloseTag, isArray, isBlockTag, isBooleanAttr, isBuiltInDirective, isBuiltInTag, isDate, isFormattingTag, isFunction, isGloballyAllowed, isGloballyWhitelisted, isHTMLTag, isInlineTag, isIntegerKey, isKnownHtmlAttr, isKnownMathMLAttr, isKnownSvgAttr, isMap, isMathMLTag, isModelListener, isNativeOn, isObject, isOn, isPlainObject, isPromise, isRegExp, isRenderableAttrValue, isReservedProp, isSSRSafeAttrName, isSVGTag, isSet, isSpecialBooleanAttr, isString, isSymbol, isVoidTag, looseEqual, looseIndexOf, looseToNumber, makeMap, normalizeClass, normalizeCssVarValue, normalizeProps, normalizeStyle, objectToString, parseStringStyle, propsToAttrMap, remove, shouldSetAsAttr, slotFlagsText, stringifyStyle, toDisplayString, toHandlerKey, toNumber, toRawType, toTypeString };

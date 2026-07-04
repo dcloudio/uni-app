@@ -739,7 +739,11 @@ const VaporDynamicComponentFlags = {
 	"ONCE": 2,
 	"2": "ONCE",
 	"SLOT_ROOT": 4,
-	"4": "SLOT_ROOT"
+	"4": "SLOT_ROOT",
+	"DOM2_FLATTEN_TRUE": 65536,
+	"65536": "DOM2_FLATTEN_TRUE",
+	"DOM2_FLATTEN_FALSE": 131072,
+	"131072": "DOM2_FLATTEN_FALSE"
 };
 //#endregion
 exports.EMPTY_ARR = EMPTY_ARR;

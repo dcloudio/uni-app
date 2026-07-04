@@ -264,6 +264,10 @@ export interface BaseElementNode extends Node {
   children: TemplateChildNode[];
   isSelfClosing?: boolean;
   innerLoc?: SourceLocation;
+  /**
+  * fixed by uts DOM2 编译期 flatten 静态值。
+  */
+  flatten?: boolean;
 }
 export interface PlainElementNode extends BaseElementNode {
   tagType: ElementTypes.ELEMENT;

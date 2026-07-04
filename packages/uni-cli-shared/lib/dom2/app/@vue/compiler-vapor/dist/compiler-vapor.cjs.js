@@ -180,6 +180,12 @@ function resolveExpression(exp, isComponent) {
 	}
 	return exp;
 }
+function parseStaticAttrBooleanExpression(exp) {
+	try {
+		return (0, _vue_shared.includeBooleanAttr)(exp.isStatic ? exp.content : new Function(`return ${exp.content}`)());
+	} catch (e) {}
+	return null;
+}
 function getLiteralExpressionValue(exp, excludeNumber) {
 	if (exp.ast) {
 		if (exp.ast.type === "StringLiteral") return exp.ast.value;
@@ -2135,7 +2141,7 @@ function genCreateComponent(operation, context) {
 		}
 	}
 }
-function genDynamicComponentFlags(root, once, slotRoot) {
+function genDynamicComponentFlags(root, once, slotRoot, extraFlags) {
 	let flags = 0;
 	const names = [];
 	if (root) {
@@ -2149,6 +2155,10 @@ function genDynamicComponentFlags(root, once, slotRoot) {
 	if (slotRoot) {
 		flags |= 4;
 		names.push("SLOT_ROOT");
+	}
+	if (extraFlags) for (const [flag, name] of extraFlags) {
+		flags |= flag;
+		names.push(name);
 	}
 	if (!flags) return false;
 	return `${flags} /* ${names.join(", ")} */`;
@@ -3266,6 +3276,24 @@ const transformVHtml = (dir, node, context) => {
 	});
 };
 //#endregion
+//#region packages/compiler-vapor/src/errors.ts
+function createVaporCompilerError(code, loc) {
+	return (0, _vue_compiler_dom.createCompilerError)(code, loc, VaporErrorMessages);
+}
+const VaporErrorCodes = {
+	"X_V_PLACEHOLDER": 100,
+	"100": "X_V_PLACEHOLDER",
+	"X_DYNAMIC_FLATTEN_NOT_SUPPORTED": 101,
+	"101": "X_DYNAMIC_FLATTEN_NOT_SUPPORTED",
+	"__EXTEND_POINT__": 102,
+	"102": "__EXTEND_POINT__"
+};
+const VaporErrorMessages = {
+	[100]: `[placeholder]`,
+	[101]: "The value of flatten attribute must be a static boolean value.",
+	[102]: ``
+};
+//#endregion
 //#region packages/compiler-vapor/src/transforms/transformElement.ts
 const isReservedProp = /* @__PURE__ */ (0, _vue_shared.makeMap)(",key,ref,ref_for,ref_key,");
 const transformElement = (node, context) => {
@@ -3360,6 +3388,7 @@ function transformComponentElement(node, propsResult, staticKey, singleRoot, con
 	}
 	context.dynamic.flags |= 6;
 	const id = context.reference();
+	const flatten = extractElementFlatten(node, propsResult, context);
 	context.dynamic.operation = {
 		type: 12,
 		node,
@@ -3372,10 +3401,37 @@ function transformComponentElement(node, propsResult, staticKey, singleRoot, con
 		slots: [...context.slots],
 		once: context.inVOnce,
 		dynamic: dynamicComponent,
-		useCreateElement
+		useCreateElement,
+		flatten
 	};
 	if (staticKey) context.registerOperation(createSetBlockKey(id, staticKey, node));
 	context.slots = [];
+}
+function extractElementFlatten(node, propsResult, context) {
+	if (!context.options.platform) return;
+	const flatten = extractStaticBooleanProp(propsResult, "flatten", (loc) => {
+		context.options.onError(createVaporCompilerError(101, loc));
+	});
+	if (flatten != null) node.flatten = flatten;
+	return flatten;
+}
+function extractStaticBooleanProp(propsResult, name, onInvalid) {
+	const groups = propsResult[0] ? propsResult[1] : [propsResult[1]];
+	for (const props of groups) {
+		if (!Array.isArray(props)) continue;
+		for (let i = 0; i < props.length; i++) {
+			const prop = props[i];
+			if (prop.key.isStatic && prop.key.content === name && !prop.handler && !prop.model) {
+				const value = parseStaticAttrBooleanExpression(prop.values[0]);
+				props.splice(i, 1);
+				if (value == null) {
+					onInvalid && onInvalid(prop.values[0].loc);
+					return;
+				}
+				return value;
+			}
+		}
+	}
 }
 function resolveDynamicComponent(node) {
 	const isProp = findProp$1(node, "is", false, true);
@@ -3400,6 +3456,7 @@ function isDataProp(prop) {
 function transformNativeElement(node, propsResult, staticKey, singleRoot, context, getEffectIndex, omitEndTag, getOperationIndex) {
 	const isDom2 = !!context.options.platform;
 	if (isDom2) omitEndTag = false;
+	if (isDom2) extractElementFlatten(node, propsResult, context);
 	const { tag } = node;
 	const { scopeId } = context.options;
 	let template = "";
@@ -3415,6 +3472,7 @@ function transformNativeElement(node, propsResult, staticKey, singleRoot, contex
 				if (context.options.rootElementFromUniModule) template += ` gen-root-custom-native="${rootElementTagName}"`;
 			}
 		}
+		if (node.flatten) template += ` flatten`;
 	}
 	const dynamicProps = [];
 	if (propsResult[0]) {
@@ -4958,21 +5016,6 @@ function getBaseTransformPreset() {
 	}];
 }
 //#endregion
-//#region packages/compiler-vapor/src/errors.ts
-function createVaporCompilerError(code, loc) {
-	return (0, _vue_compiler_dom.createCompilerError)(code, loc, VaporErrorMessages);
-}
-const VaporErrorCodes = {
-	"X_V_PLACEHOLDER": 100,
-	"100": "X_V_PLACEHOLDER",
-	"__EXTEND_POINT__": 101,
-	"101": "__EXTEND_POINT__"
-};
-const VaporErrorMessages = {
-	[100]: `[placeholder]`,
-	[101]: ``
-};
-//#endregion
 exports.CodegenContext = CodegenContext;
 exports.DELIMITERS_ARRAY = DELIMITERS_ARRAY;
 exports.DELIMITERS_ARRAY_NEWLINE = DELIMITERS_ARRAY_NEWLINE;
@@ -5024,6 +5067,7 @@ exports.matchKeyOnlyBindingPattern = matchKeyOnlyBindingPattern;
 exports.matchSelectorPattern = matchSelectorPattern;
 exports.needsVaporCtx = needsVaporCtx;
 exports.parse = _vue_compiler_dom.parse;
+exports.parseStaticAttrBooleanExpression = parseStaticAttrBooleanExpression;
 exports.parseValueDestructure = parseValueDestructure;
 exports.propToExpression = propToExpression;
 exports.transform = transform;

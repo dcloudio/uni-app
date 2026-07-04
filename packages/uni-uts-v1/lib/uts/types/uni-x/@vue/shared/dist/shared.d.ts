@@ -497,6 +497,8 @@ export declare enum VaporSlotFlags {
 export declare enum VaporDynamicComponentFlags {
   SINGLE_ROOT = 1,
   ONCE = 2,
-  SLOT_ROOT = 4
+  SLOT_ROOT = 4,
+  DOM2_FLATTEN_TRUE = 65536,
+  DOM2_FLATTEN_FALSE = 131072
 }
 //#endregion

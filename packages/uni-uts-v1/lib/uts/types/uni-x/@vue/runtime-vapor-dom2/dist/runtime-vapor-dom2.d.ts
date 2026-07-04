@@ -115,7 +115,7 @@ type LooseRawSlots = Record<string, VaporSlot | DynamicSlotSource[]> & {
 };
 export declare function createSharedDataComponent<C = any, SharedData extends string = (C extends {
   __className: infer K extends string;
-} ? `${K}SharedData` : string)>(definedComponent: C, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean, once?: boolean, appContext?: GenericAppContext): VaporSharedDataComponentInstance<SharedData>;
+} ? `${K}SharedData` : string)>(definedComponent: C, rawCid?: string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, flags?: number, appContext?: GenericAppContext): VaporSharedDataComponentInstance<SharedData>;
 declare class VaporSharedDataComponentInstance<SharedData extends string = string> implements GenericComponentInstance {
   pageId?: number;
   sharedData?: InferSharedData<SharedData, UniSharedDataComponent> | InferSharedData<SharedData, UniSharedDataPage>;
@@ -203,8 +203,10 @@ declare class VaporSharedDataComponentInstance<SharedData extends string = strin
   */
   accessedAttrs: boolean;
   renderer: "app" | "page" | "component";
+  componentFlags: number;
+  private rawCid;
   private cachedCid;
-  constructor(comp: VaporSharedDataComponent, rawProps?: RawProps | null, rawSlots?: RawSlots | null, appContext?: GenericAppContext, once?: boolean);
+  constructor(comp: VaporSharedDataComponent, rawProps?: RawProps | null, rawSlots?: RawSlots | null, rawCid?: string, flags?: number, appContext?: GenericAppContext, once?: boolean);
   /**
   * Expose `getKeysFromRawProps` on the instance so it can be used in code
   * paths where it's needed, e.g. `useModel`
@@ -219,7 +221,7 @@ export declare function isVaporSharedDataComponent(value: unknown): value is Vap
 * and needs rely on runtime resolution - where it might fallback to a plain
 * element if the resolution fails.
 */
-export declare function createSharedDataComponentWithFallback(comp: VaporSharedDataComponent | string | any, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean, once?: boolean, appContext?: GenericAppContext): VaporSharedDataComponentInstance | null;
+export declare function createSharedDataComponentWithFallback(comp: VaporSharedDataComponent | string | any, rawCid?: string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, flags?: number, appContext?: GenericAppContext): VaporSharedDataComponentInstance | null;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateApp.d.ts
 export declare const createVaporApp: CreateAppFunction<ParentNode, VaporSharedDataComponent>;
@@ -288,7 +290,7 @@ export declare const onRecycle: typeof onBeforeRecycle;
 export declare const onReuse: typeof onReused;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateDynamicComponent.d.ts
-export declare function createSharedDataDynamicComponent(getter: () => any, setter: (ins: VaporSharedDataComponentInstance | null) => any, rawProps?: RawProps | null, rawSlots?: RawSlots | null, flags?: number): VaporSharedDataComponentInstance | null;
+export declare function createSharedDataDynamicComponent(getter: () => any, setter: (ins: VaporSharedDataComponentInstance | null) => any, rawCid?: string, rawProps?: RawProps | null, rawSlots?: RawSlots | null, flags?: number): VaporSharedDataComponentInstance | null;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateFragment.d.ts
 /**
