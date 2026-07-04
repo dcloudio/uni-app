@@ -88,7 +88,9 @@
         }
       }
     },
-    "components": [],
+    "components": [
+      "ad"
+    ],
     "easycom": [],
     "customElements": []
   },
@@ -585,14 +587,14 @@
     "components": [],
     "easycom": [],
     "customElements": [
-      "uni-checkbox",
-      "uni-checkbox-group",
-      "uni-form",
-      "uni-picker-view",
-      "uni-picker-view-column",
-      "uni-radio",
-      "uni-radio-group",
-      "uni-switch"
+      "checkbox",
+      "checkbox-group",
+      "form",
+      "picker-view",
+      "picker-view-column",
+      "radio",
+      "radio-group",
+      "switch"
     ]
   },
   "uni-getAccessibilityInfo": {
@@ -1100,7 +1102,7 @@
       "match-media"
     ],
     "customElements": [
-      "uni-match-media"
+      "match-media"
     ]
   },
   "uni-media": {
@@ -1585,7 +1587,7 @@
     "components": [],
     "easycom": [],
     "customElements": [
-      "uni-progress"
+      "progress"
     ]
   },
   "uni-prompt": {
