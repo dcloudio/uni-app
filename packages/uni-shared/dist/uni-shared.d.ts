@@ -309,6 +309,14 @@ export declare function isComponentInternalInstance(vm: unknown): vm is Componen
 
 export declare function isComponentTag(tag: string): boolean;
 
+/**
+ * 可能后续会添加的tags，native或easycom
+ * movable-area
+ * movable-view
+ * share-element
+ * icon
+ * animation-view
+ */
 export declare function isDom2AppNativeTag(tag: string): boolean;
 
 export declare function isDom2AppUserVueComponentTag(tag: string): boolean;
