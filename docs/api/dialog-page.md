@@ -61,30 +61,30 @@ app-android平台注意事项：
 打开模态弹窗页面
 
 ### openDialogPage 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.31 | 4.31 | 4.61 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.31 | 4.31 | 4.61 | 5.03 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **OpenDialogPageOptions** | 是 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 打开 dialogPage 参数 |
+| options | **OpenDialogPageOptions** | 是 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 打开 dialogPage 参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数 |
-| animationType | string | 否 | none | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 窗口显示的动画类型<br/> |
-| animationDuration | number | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 窗口关闭动画的持续时间，单位为 ms |
-| disableEscBack | boolean | 否 | false | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 是否禁用按键盘 ESC 时关闭 |
+| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数 |
+| animationType | string | 否 | none | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 窗口显示的动画类型<br/> |
+| animationDuration | number | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 窗口关闭动画的持续时间，单位为 ms |
+| disableEscBack | boolean | 否 | false | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 是否禁用按键盘 ESC 时关闭 |
 | parentPage | [UniPage](/api/unipage.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: 12; HarmonyOS: 4.61 | 要绑定的父级页面实例 |
-| triggerParentHide | boolean | 否 | false | Web: 4.41; 微信小程序: x; Android: 4.41; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 是否触发父页面的 onHide 生命周期 |
-| success | (result: [OpenDialogPageSuccess](#opendialogpagesuccess-values)) => void | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: [OpenDialogPageFail](#opendialogpagefail-values)) => void | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: [OpenDialogPageComplete](#opendialogpagecomplete-values)) => void | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| triggerParentHide | boolean | 否 | false | Web: 4.41; 微信小程序: x; Android: 4.41; iOS: 4.41; iOS uni-app x UTS 插件: 4.41; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 是否触发父页面的 onHide 生命周期 |
+| success | (result: [OpenDialogPageSuccess](#opendialogpagesuccess-values)) => void | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 接口调用成功的回调函数 |
+| fail | (result: [OpenDialogPageFail](#opendialogpagefail-values)) => void | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 接口调用失败的回调函数 |
+| complete | (result: [OpenDialogPageComplete](#opendialogpagecomplete-values)) => void | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### animationType 的属性描述
 
@@ -166,27 +166,27 @@ app-android平台注意事项：
 `closeDialogPage` 可通过 `dialogPage` 参数指定要关闭的 `dialogPage`, 不指定时默认关闭当前页面的所有 `dialogPage`。
 
 ### closeDialogPage 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.31 | 4.31 | 4.61 |
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.31 | 4.31 | 4.61 | 5.03 |
 
 
 ### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **CloseDialogPageOptions** | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 关闭 dialogPage 参数 |
+| options | **CloseDialogPageOptions** | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 关闭 dialogPage 参数 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | dialogPage | [UniPage](/api/unipage.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: 12; HarmonyOS: 4.61 | 要关闭的 dialogPage 实例 |
-| animationType | string | 否 | auto | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 窗口关闭的动画类型<br/> |
-| animationDuration | number | 否 |  | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 窗口关闭动画的持续时间，单位为 ms |
-| success | (result: [CloseDialogPageSuccess](#closedialogpagesuccess-values)) => void | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: [CloseDialogPageFail](#closedialogpagefail-values)) => void | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: [CloseDialogPageComplete](#closedialogpagecomplete-values)) => void | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| animationType | string | 否 | auto | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 窗口关闭的动画类型<br/> |
+| animationDuration | number | 否 |  | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 窗口关闭动画的持续时间，单位为 ms |
+| success | (result: [CloseDialogPageSuccess](#closedialogpagesuccess-values)) => void | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 接口调用成功的回调函数 |
+| fail | (result: [CloseDialogPageFail](#closedialogpagefail-values)) => void | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 接口调用失败的回调函数 |
+| complete | (result: [CloseDialogPageComplete](#closedialogpagecomplete-values)) => void | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### animationType 的属性描述
 

@@ -30,7 +30,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: x | 分享类型,默认为text。 |
+| type | string | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享类型,默认为text。 |
 | summary | string | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享的文字内容 |
 | href | string | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享链接 |
 | imageUrl | string | 否 |  | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享单个图片，仅支持本地路径 |
@@ -46,11 +46,11 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| text | Web: x; 微信小程序:  ; Android: 4.33; iOS: x; HarmonyOS: x | text类型 |
-| image | Web: x; 微信小程序:  ; Android: 4.33; iOS: x; HarmonyOS: x | image类型 |
-| video | Web: x; 微信小程序:  ; Android: 4.33; iOS: x; HarmonyOS: x | video类型 |
-| audio | Web: x; 微信小程序:  ; Android: 4.33; iOS: x; HarmonyOS: x | audio类型 |
-| file | Web: x; 微信小程序:  ; Android: 4.33; iOS: x; HarmonyOS: x | file类型 |
+| text | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | text类型 |
+| image | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | image类型 |
+| video | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | video类型 |
+| audio | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | audio类型 |
+| file | Web: x; 微信小程序:  ; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | file类型 |
 
 #### ShareWithSystemFail 的属性值 @sharewithsystemfail-values 
 

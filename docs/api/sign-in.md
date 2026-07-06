@@ -57,11 +57,11 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| authorizationCode | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 应用程序用来与服务器交互的令牌 |
-| fullName | any | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 返回身份的全名 |
-| identityToken | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 一个JSON Web令牌(JWT)，可以安全地将用户信息传递给应用程序 |
-| realUserStatus | number | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 指示用户是否为真人 |
-| user | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 验证用户的标识符 |
+| authorizationCode | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | Apple 授权码，用于服务端向 Apple 校验或换取凭证 |
+| fullName | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 用户授权时 Apple 返回的姓名信息，通常仅首次授权时可获取，后续登录多数情况下为空 |
+| identityToken | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | Apple 签发的身份令牌（JWT），主要用于服务端校验当前登录用户身份 |
+| realUserStatus | number | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | Apple 对真实用户状态的评估值，仅作辅助参考(0: 设备不支持检测; 1: 无法确定; 2:高度可能真实) |
+| user | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | Apple 返回给当前 App 的用户唯一标识，不是昵称或用户名 |
 
 #### LoginFail 的属性值 @loginfail-values 
 

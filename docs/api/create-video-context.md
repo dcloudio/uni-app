@@ -160,7 +160,7 @@ requestFullScreen
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| direction | **RequestFullScreenOptions** | 否 |  |   | , 0\|正常竖向, 90\|屏幕逆时针90度, -90\|屏幕顺时针90度 |
+| direction | **RequestFullScreenOptions** | 否 |  |   | 0\|正常竖向, 90\|屏幕逆时针90度, -90\|屏幕顺时针90度 |
 
 #### direction 的属性描述
 

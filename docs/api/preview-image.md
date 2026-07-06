@@ -53,7 +53,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| tapIndex | number | 是 |  |   | 接口调用失败的回调函数 |
+| tapIndex | number | 是 |  |   | 接口调用成功的回调函数 |
 | index | number | 是 |  |   | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ##### LongPressActionsFailResult 的属性值 @longpressactionsfailresult-values 
@@ -353,7 +353,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.media.previewImage.previewImage)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/media/image.html#unipreviewimageobject)
-- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/media/image/wx.previewImage.html)
+- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=previewImage&doc_type=miniprogram)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=previewImage&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=previewImage&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=previewImage&secondType=all&type=1)

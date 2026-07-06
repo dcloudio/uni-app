@@ -159,7 +159,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| supportMode | Array&lt;string&gt; | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
+| supportMode | Array&lt;string&gt; | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 支持的生物认证方式 |
 | errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结果 |
 
 #### supportMode 的属性描述
@@ -184,7 +184,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| supportMode | Array&lt;string&gt; | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
+| supportMode | Array&lt;string&gt; | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 支持的生物认证方式 |
 | errMsg | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结果 |
 
 #### supportMode 的属性描述
@@ -261,7 +261,7 @@
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | checkAuthMode | string | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 生物认证方式 |
-| success | (result: [CheckIsSoterEnrolledInDeviceSuccess](#checkissoterenrolledindevicesuccess-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
+| success | (result: [CheckIsSoterEnrolledInDeviceSuccess](#checkissoterenrolledindevicesuccess-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 支持的生物认证方式 |
 | fail | (result: [CheckIsSoterEnrolledInDeviceFail](#checkissoterenrolledindevicefail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
 | complete | (result: [CheckIsSoterEnrolledInDeviceSuccess](#checkissoterenrolledindevicesuccess-values) \| [CheckIsSoterEnrolledInDeviceFail](#checkissoterenrolledindevicefail-values)) => void | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 

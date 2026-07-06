@@ -40,9 +40,9 @@ uni.requestPayment是一个统一各平台的客户端支付API，客户端均�
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| provider | string | 是 |  | Web: x; 微信小程序:  ; Android: 4.02; iOS: 4.18; HarmonyOS 系统版本: 3，0; HarmonyOS: 4.61 | 支付服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,目前支持支付宝支付(alipay),微信支付(wxpay) |
+| provider | string | 是 |  | Web: x; 微信小程序:  ; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 支付服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,目前支持支付宝支付(alipay),微信支付(wxpay) |
 | orderInfo | string | 是 |  | Web: x; 微信小程序: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 订单数据 |
-| success | (result: [RequestPaymentSuccess](#requestpaymentsuccess-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS 系统版本: 3，0; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| success | (result: [RequestPaymentSuccess](#requestpaymentsuccess-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
 | fail | (result: [RequestPaymentFail](#requestpaymentfail-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） |
 | nonceStr | string | 否 |  | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 随机字符串，长度为32个字符以下<br/> |

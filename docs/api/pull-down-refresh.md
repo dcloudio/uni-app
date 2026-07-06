@@ -16,7 +16,7 @@
 ### startPullDownRefresh 兼容性 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | 5.03 |
 
 
 ### 参数 
@@ -31,7 +31,7 @@
 | :- | :- | :- | :- |  :-: | :- |
 | success | (result: [StartPullDownRefreshSuccess](#startpulldownrefreshsuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
 | fail | (result: [StartPullDownRefreshFail](#startpulldownrefreshfail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
-| complete | (result: [StartPullDownRefreshComplete](#startpulldownrefreshcomplete-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| complete | (result: any) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### StartPullDownRefreshSuccess 的属性值 @startpulldownrefreshsuccess-values 
 
@@ -47,12 +47,6 @@
 | errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
 | data | any | 否 |  |   | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
-
-#### StartPullDownRefreshComplete 的属性值 @startpulldownrefreshcomplete-values 
-
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 |  |   |  |
 
 
@@ -103,7 +97,7 @@
 ### stopPullDownRefresh 兼容性 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | 5.03 |
 
 
 使用：

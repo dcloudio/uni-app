@@ -286,7 +286,7 @@ UniVideoControlsToggleEvent -- Extends --> UniVideoEvent
 
 
 #### UniVideoRecycleEvent
-video组件回收事件对象
+video组件回收事件
 ```mermaid
 graph LR
   
@@ -306,7 +306,7 @@ video组件回收时的状态信息
 
 
 #### UniVideoReuseEvent
-
+video组件复用事件
 ```mermaid
 graph LR
   
@@ -320,9 +320,9 @@ UniVideoReuseEvent -- Extends --> UniCustomEvent&ltUniVideoReuseEventDetail&gt
 ###### UniVideoReuseEventDetail 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| isPlaying | boolean | 是 |  |   | 回收时是否处于播放状态。回收时暂停状态此值为false |
-| currentTime | number | 是 |  |   | 回收时播放视频的进度 |
-| duration | number | 是 |  |   | 回收时播放视频的总时长 |
+| isPlaying | boolean | 是 |  |   | 复用时是否处于播放状态。复用时暂停状态此值为false |
+| currentTime | number | 是 |  |   | 复用时播放视频的进度 |
+| duration | number | 是 |  |   | 复用时播放视频的总时长 |
 
 
 
