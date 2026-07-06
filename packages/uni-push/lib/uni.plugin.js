@@ -19,7 +19,7 @@ function resolveUniPushPath(platform, isEnableV1, isOffline) {
     else if (isOffline) {
         file = 'dist/uni-push.plus.es.js';
     }
-    return uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-push', file));
+    return uniCliShared.normalizePath(uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-push', file)));
 }
 var index = () => [
     uniCliShared.defineUniMainJsPlugin((opts) => {

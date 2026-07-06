@@ -155,7 +155,7 @@ export function isAppPagesJson(filename: string, inputDir: string) {
   const cleanFilename = normalizePath(withoutIndependentRoot(filename)).split(
     '?'
   )[0]
-  const pagesJson = normalizePath(path.resolve(inputDir, 'pages.json'))
+  const pagesJson = normalizePath(path.join(inputDir, 'pages.json'))
   // uni-app x 的 UTS resolver 会把 JSON 文件映射为 .json.ts 参与类型编译。
   return cleanFilename === pagesJson || cleanFilename === `${pagesJson}.ts`
 }

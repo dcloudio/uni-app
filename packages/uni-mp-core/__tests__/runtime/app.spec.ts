@@ -5,10 +5,6 @@ import {
   setRuntimeSubpackageRoot,
 } from '../../src/runtime/subpackage'
 
-declare global {
-  const my: any
-}
-
 describe('runtime/app', () => {
   const originalGlobal = (global as any).__GLOBAL__
   const originalGetApp = (global as any).getApp
