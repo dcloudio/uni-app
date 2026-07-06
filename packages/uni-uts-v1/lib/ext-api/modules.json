@@ -1122,8 +1122,7 @@
           "js": false,
           "kotlin": false,
           "swift": false,
-          "arkts": false,
-          "x-arkts": false
+          "arkts": "uni1"
         }
       },
       "closePreviewImage": {
@@ -1132,8 +1131,7 @@
           "js": false,
           "kotlin": false,
           "swift": false,
-          "arkts": false,
-          "x-arkts": false
+          "arkts": "uni1"
         }
       },
       "getImageInfo": {
@@ -1615,7 +1613,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "x-arkts": false
+          "arkts": "uni1"
         }
       },
       "hideLoading": {
@@ -1624,7 +1622,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "x-arkts": false
+          "arkts": "uni1"
         }
       },
       "showModal": {
@@ -1633,7 +1631,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "x-arkts": false
+          "arkts": "uni1"
         }
       },
       "showActionSheet": {
@@ -1642,7 +1640,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "x-arkts": false
+          "arkts": "uni1"
         }
       }
     },
