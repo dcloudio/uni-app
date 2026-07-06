@@ -80,7 +80,7 @@ describe('getBrowserInfo', () => {
   it('should return the correct browser info for Harmony', async () => {
     // harmony 模拟器
     const mockUA =
-      'Mozilla/5.0 (Phone; OpenHarmony 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36  ArkWeb/5.1.0.207 Mobile HuaweiBrowser/5.1.6.311'
+      'Mozilla/5.0 (PC; OpenHarmony 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36  ArkWeb/5.1.0.207 Mobile HuaweiBrowser/5.1.6.311'
 
     // mock UA
     const userAgentSpy = jest
@@ -93,9 +93,10 @@ describe('getBrowserInfo', () => {
 
     const browserInfo = getBrowserInfo()
 
-    expect(browserInfo.osname).toBe('Harmony')
+    expect(browserInfo.osname).toBe('harmonyos')
     expect(browserInfo.osversion).toBe('5.1')
-    expect(browserInfo.platform).toBe('harmony')
+    expect(browserInfo.platform).toBe('harmonyos')
+    expect(browserInfo.deviceType).toBe('pc')
 
     userAgentSpy.mockRestore()
   })
