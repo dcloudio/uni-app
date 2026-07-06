@@ -669,6 +669,7 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
 | root | string |  | 是 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 子包的根目录 |
+| independent | boolean |  | 否 | Web: x; 微信小程序: 5.21; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 是否声明对应分包为独立分包 |
 | pages | Array\<[SubPackagePagesOptionsPage](#subpackagepagesoptionspage)> |  | 是 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 子包由哪些页面组成，参数同 pages |
 
 #### SubPackagePagesOptionsPage 配置项列表 @subpackagepagesoptionspage
