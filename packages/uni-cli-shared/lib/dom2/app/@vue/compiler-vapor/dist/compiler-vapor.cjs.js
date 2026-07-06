@@ -5041,6 +5041,7 @@ exports.analyzeExpressions = analyzeExpressions;
 exports.buildCodeFragment = buildCodeFragment;
 exports.buildDestructureIdMap = buildDestructureIdMap;
 exports.codeFragmentToString = codeFragmentToString;
+exports.collectSingleUseAssetComponents = collectSingleUseAssetComponents;
 exports.compile = compile;
 exports.createStructuralDirectiveTransform = createStructuralDirectiveTransform;
 exports.createVaporCompilerError = createVaporCompilerError;

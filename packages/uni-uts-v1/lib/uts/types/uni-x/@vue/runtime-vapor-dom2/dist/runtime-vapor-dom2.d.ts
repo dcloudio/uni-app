@@ -23,8 +23,9 @@ declare class DynamicFragment extends VaporFragment {
   current?: BlockFn;
   fallback?: BlockFn;
   getScope?: (key: any) => EffectScope$1 | undefined;
+  hasFallthroughAttrs?: true;
   constructor(anchorLabel?: string);
-  update(render?: BlockFn | null, key?: any): void;
+  update(render?: BlockFn | null, key?: any, noScope?: boolean): void;
   private renderBranch;
 }
 //#endregion
@@ -222,6 +223,7 @@ export declare function isVaporSharedDataComponent(value: unknown): value is Vap
 * element if the resolution fails.
 */
 export declare function createSharedDataComponentWithFallback(comp: VaporSharedDataComponent | string | any, rawCid?: string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, flags?: number, appContext?: GenericAppContext): VaporSharedDataComponentInstance | null;
+export declare function createSharedDataAssetComponent(name: string, rawCid?: string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, flags?: number, maybeSelfReference?: boolean, appContext?: GenericAppContext): VaporSharedDataComponentInstance | null;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateApp.d.ts
 export declare const createVaporApp: CreateAppFunction<ParentNode, VaporSharedDataComponent>;

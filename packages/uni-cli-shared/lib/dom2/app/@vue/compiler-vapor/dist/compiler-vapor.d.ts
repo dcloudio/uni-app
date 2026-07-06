@@ -23005,6 +23005,7 @@ export declare function matchSelectorPattern(effect: IREffect, key: string, idMa
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/block.d.ts
 export declare function markSlotRootOperations(block: BlockIRNode): void;
+export declare function collectSingleUseAssetComponents(block: BlockIRNode): Set<string>;
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/component.d.ts
 export declare function genDynamicComponentFlags(root: boolean | undefined, once: boolean | undefined, slotRoot: boolean | undefined, extraFlags?: [flag: number, name: string][]): string | false;

@@ -29917,6 +29917,7 @@ var src_exports$1 = /* @__PURE__ */ __exportAll({
 	buildCodeFragment: () => buildCodeFragment,
 	buildDestructureIdMap: () => buildDestructureIdMap,
 	codeFragmentToString: () => codeFragmentToString,
+	collectSingleUseAssetComponents: () => collectSingleUseAssetComponents,
 	compile: () => compile$1,
 	createStructuralDirectiveTransform: () => createStructuralDirectiveTransform,
 	createVaporCompilerError: () => createVaporCompilerError,
