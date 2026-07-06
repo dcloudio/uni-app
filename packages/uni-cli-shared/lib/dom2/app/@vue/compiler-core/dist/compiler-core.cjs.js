@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-core v3.6.0-beta.12
+  * @vue/compiler-core v3.6.0-beta.17
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -2633,7 +2633,7 @@ const tokenizer = new Tokenizer(stack, {
 		}
 	},
 	oncdata(start, end) {
-		if (stack[0].ns !== 0) onText(getSlice(start, end), start, end);
+		if ((stack[0] ? stack[0].ns : currentOptions.ns) !== 0) onText(getSlice(start, end), start, end);
 		else emitError(1, start - 9);
 	},
 	onprocessinginstruction(start) {
@@ -3147,7 +3147,7 @@ function getSelfName(filename) {
 }
 function createTransformContext(root, { filename = "", prefixIdentifiers = false, hoistStatic = false, hmr = false, cacheHandlers = false, nodeTransforms = [], directiveTransforms = {}, transformHoist = null, isBuiltInComponent = _vue_shared.NOOP, isCustomElement = _vue_shared.NOOP, isUserComponent = (element) => {
 	return element.tagType === 1;
-}, expressionPlugins = [], scopeId = null, slotted = true, ssr = false, inSSR = false, ssrCssVars = ``, bindingMetadata = _vue_shared.EMPTY_OBJ, inline = false, isTS = false, onError = defaultOnError, onWarn = defaultOnWarn, compatConfig }) {
+}, expressionPlugins = [], scopeId = null, slotted = true, ssr = false, inSSR = false, ssrCssVars = ``, bindingMetadata = _vue_shared.EMPTY_OBJ, inline = false, isTS = false, eventDelegation = true, onError = defaultOnError, onWarn = defaultOnWarn, compatConfig }) {
 	const context = {
 		filename,
 		selfName: getSelfName(filename),
@@ -3170,6 +3170,7 @@ function createTransformContext(root, { filename = "", prefixIdentifiers = false
 		bindingMetadata,
 		inline,
 		isTS,
+		eventDelegation,
 		onError,
 		onWarn,
 		compatConfig,
@@ -3181,6 +3182,7 @@ function createTransformContext(root, { filename = "", prefixIdentifiers = false
 		imports: [],
 		cached: [],
 		constantCache: /* @__PURE__ */ new WeakMap(),
+		vForMemoKeyedNodes: /* @__PURE__ */ new WeakSet(),
 		temps: 0,
 		identifiers: Object.create(null),
 		identifierScopes: Object.create(null),
@@ -3961,7 +3963,7 @@ const transformExpression = (node, context) => {
 			if (dir.type === 7 && dir.name !== "for") {
 				const exp = dir.exp;
 				const arg = dir.arg;
-				if (exp && exp.type === 4 && !(dir.name === "on" && arg) && !(memo && arg && arg.type === 4 && arg.content === "key")) dir.exp = processExpression(exp, context, dir.name === "slot");
+				if (exp && exp.type === 4 && !(dir.name === "on" && arg) && !(memo && context.vForMemoKeyedNodes.has(node) && arg && arg.type === 4 && arg.content === "key")) dir.exp = processExpression(exp, context, dir.name === "slot");
 				if (arg && arg.type === 4 && !arg.isStatic) dir.arg = processExpression(arg, context);
 			}
 		}
@@ -4219,11 +4221,11 @@ const transformFor = createStructuralDirectiveTransform("for", (node, dir, conte
 		const keyProp = findProp(node, `key`, false, true);
 		const isDirKey = keyProp && keyProp.type === 7;
 		let keyExp = keyProp && (keyProp.type === 6 ? keyProp.value ? createSimpleExpression(keyProp.value.content, true) : void 0 : keyProp.exp);
-		if (memo && keyExp && isDirKey) keyProp.exp = keyExp = processExpression(keyExp, context);
-		const keyProperty = keyProp && keyExp ? createObjectProperty(`key`, keyExp) : null;
-		if (isTemplate) {
-			if (memo) memo.exp = processExpression(memo.exp, context);
-			if (keyProperty && keyProp.type !== 6) keyProperty.value = processExpression(keyProperty.value, context);
+		const keyProperty = keyExp ? createObjectProperty(`key`, keyExp) : null;
+		if (isTemplate && memo) memo.exp = processExpression(memo.exp, context);
+		if ((isTemplate || memo) && keyProperty && isDirKey) {
+			keyExp = keyProp.exp = keyProperty.value = processExpression(keyProperty.value, context);
+			if (memo) context.vForMemoKeyedNodes.add(node);
 		}
 		const isStableFragment = forNode.source.type === 4 && forNode.source.constType > 0;
 		const fragmentFlag = isStableFragment ? 64 : keyProp ? 128 : 256;

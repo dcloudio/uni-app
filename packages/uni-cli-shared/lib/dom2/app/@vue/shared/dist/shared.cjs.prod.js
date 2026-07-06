@@ -1,5 +1,5 @@
 /**
-  * @vue/shared v3.6.0-beta.12
+  * @vue/shared v3.6.0-beta.17
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -664,7 +664,13 @@ const VaporVForFlags = {
 	"IS_COMPONENT": 2,
 	"2": "IS_COMPONENT",
 	"ONCE": 4,
-	"4": "ONCE"
+	"4": "ONCE",
+	"IS_SINGLE_NODE": 8,
+	"8": "IS_SINGLE_NODE",
+	"IS_FRAGMENT": 16,
+	"16": "IS_FRAGMENT",
+	"SLOT_ROOT": 32,
+	"32": "SLOT_ROOT"
 };
 const VaporBlockShape = {
 	"EMPTY": 0,
@@ -673,6 +679,71 @@ const VaporBlockShape = {
 	"1": "SINGLE_ROOT",
 	"MULTI_ROOT": 2,
 	"2": "MULTI_ROOT"
+};
+/**
+* Bit layout for vapor `createIf` flags.
+*
+* - bits 0-1: true branch VaporBlockShape
+* - bits 2-3: false branch VaporBlockShape
+* - bit 4: v-once
+* - bit 5: true branch is static and can skip branch-owned EffectScope
+* - bit 6: false branch is static and can skip branch-owned EffectScope
+* - bit 7: v-if sits on a slot content/fallback root chain
+* - bits 8+: branch index + 1 for keyed dynamic fragments
+*
+* Examples:
+* - v-once, true single-root, no false branch: 1 | ONCE = 17
+* - keyed index 0, true/false single-root: 1 | (1 << 2) | (1 << 8) = 261
+*/
+const VaporIfFlags = {
+	"BLOCK_SHAPE": 15,
+	"15": "BLOCK_SHAPE",
+	"ONCE": 16,
+	"16": "ONCE",
+	"TRUE_NO_SCOPE": 32,
+	"32": "TRUE_NO_SCOPE",
+	"FALSE_NO_SCOPE": 64,
+	"64": "FALSE_NO_SCOPE",
+	"SLOT_ROOT": 128,
+	"128": "SLOT_ROOT",
+	"INDEX_SHIFT": 8,
+	"8": "INDEX_SHIFT"
+};
+/**
+* Flags used by vapor template factories, shared between the compiler and the
+* runtime.
+*/
+const TemplateFlags = {
+	"ROOT": 1,
+	"1": "ROOT",
+	"STATIC": 2,
+	"2": "STATIC"
+};
+/**
+* Flags used by vapor slot outlets, shared between the compiler and the
+* runtime.
+*/
+const VaporSlotFlags = {
+	"NO_SLOTTED": 1,
+	"1": "NO_SLOTTED",
+	"ONCE": 2,
+	"2": "ONCE",
+	"SLOT_ROOT": 4,
+	"4": "SLOT_ROOT",
+	"NON_STABLE": 8,
+	"8": "NON_STABLE"
+};
+const VaporDynamicComponentFlags = {
+	"SINGLE_ROOT": 1,
+	"1": "SINGLE_ROOT",
+	"ONCE": 2,
+	"2": "ONCE",
+	"SLOT_ROOT": 4,
+	"4": "SLOT_ROOT",
+	"DOM2_FLATTEN_TRUE": 65536,
+	"65536": "DOM2_FLATTEN_TRUE",
+	"DOM2_FLATTEN_FALSE": 131072,
+	"131072": "DOM2_FLATTEN_FALSE"
 };
 //#endregion
 exports.EMPTY_ARR = EMPTY_ARR;
@@ -684,7 +755,11 @@ exports.PatchFlagNames = PatchFlagNames;
 exports.PatchFlags = PatchFlags;
 exports.ShapeFlags = ShapeFlags;
 exports.SlotFlags = SlotFlags;
+exports.TemplateFlags = TemplateFlags;
 exports.VaporBlockShape = VaporBlockShape;
+exports.VaporDynamicComponentFlags = VaporDynamicComponentFlags;
+exports.VaporIfFlags = VaporIfFlags;
+exports.VaporSlotFlags = VaporSlotFlags;
 exports.VaporVForFlags = VaporVForFlags;
 exports.YES = YES;
 exports.camelize = camelize;
