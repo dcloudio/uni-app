@@ -293,6 +293,9 @@ declare function onBeforeRecycle(callback: () => void): void;
 export declare const onRecycle: typeof onBeforeRecycle;
 export declare const onReuse: typeof onReused;
 //#endregion
+//#region temp/packages/runtime-vapor-dom2/src/apiResolveBuiltInComponent.d.ts
+export declare function resolveBuiltInComponent(name: string): VaporSharedDataComponent;
+//#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateDynamicComponent.d.ts
 export declare function createSharedDataDynamicComponent(getter: () => any, setter: (ins: VaporSharedDataComponentInstance | null) => any, rawCid?: string, rawProps?: RawProps | null, rawSlots?: RawSlots | null, flags?: number): VaporSharedDataComponentInstance | null;
 //#endregion
@@ -560,7 +563,6 @@ export declare function onElementRef(node: UniElement | VaporSharedDataComponent
 export declare function createElementDynamicSlotVector(slots: any | null): any | null;
 export declare function createElementKeyedFragment(page: UniPage, key: () => string, render: BlockFn): Block;
 export declare function createElementScopedSlot<S extends UniSharedData>(sharedDataVFor: UniSharedDataVFor<S>, fn: VaporSlot): VaporSlot;
-export declare function createElementSharedBlockVector(): any;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/types/nativeView.d.ts
 export declare function getCurrentNativeViewVaporComponentInstance(): VaporSharedDataComponentInstance | null;
@@ -609,7 +611,6 @@ export declare function createNativeViewForSlots<Source extends UniSharedData>(r
 export declare function createNativeViewDynamicSlotVector(slots: any | null): any | null;
 export declare function createNativeViewKeyedFragment(page: UniPage, key: () => string, render: BlockFn): Block;
 export declare function createNativeViewScopedSlot<S extends UniSharedData>(sharedDataVForGetter: () => UniSharedDataVFor<S>, fn: VaporSlot): VaporSlot;
-export declare function createNativeViewSharedBlockVector(): any;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/types/index.d.ts
 export declare function runOnMainQueue(fn: () => void): void;
