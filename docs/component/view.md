@@ -68,6 +68,8 @@ if(viewElement != null) {
 }
 ```
 
++ getAndroidView 方法需要在 uts 插件中使用。
+
 **iOS 平台：**
 
 获取view组件对应的UniElement对象，通过UniElement对象的[getIOSView](../dom/unielement.md#getiosview)函数获取组件原生UIView对象
@@ -83,7 +85,7 @@ if (view != null && view instanceof UIView) {
 
 ```
 
-+ iOS平台 uvue 环境使用 js 驱动无法处理原生类型，getIOSView 方法需要在 uts 插件中使用。
++ getIOSView 方法需要在 uts 插件中使用。
 
 更多示例请参考 uts 插件 [uts-get-native-view](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/uni_modules/uts-get-native-view/utssdk/app-ios/index.uts)
 
