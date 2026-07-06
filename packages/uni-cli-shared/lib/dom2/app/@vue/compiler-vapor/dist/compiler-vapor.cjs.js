@@ -5057,6 +5057,7 @@ exports.hasStableSlotRoot = hasStableSlotRoot;
 exports.isBlockOperation = isBlockOperation;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isConstantExpression = isConstantExpression;
+exports.isDirectStaticLiteralProp = isDirectStaticLiteralProp;
 exports.isKeepAliveTag = isKeepAliveTag;
 exports.isStaticExpression = isStaticExpression;
 exports.isTeleportTag = isTeleportTag;

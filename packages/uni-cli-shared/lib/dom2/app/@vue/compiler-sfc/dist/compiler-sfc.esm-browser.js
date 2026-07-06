@@ -29933,6 +29933,7 @@ var src_exports$1 = /* @__PURE__ */ __exportAll({
 	isBlockOperation: () => isBlockOperation,
 	isBuiltInComponent: () => isBuiltInComponent,
 	isConstantExpression: () => isConstantExpression,
+	isDirectStaticLiteralProp: () => isDirectStaticLiteralProp,
 	isKeepAliveTag: () => isKeepAliveTag,
 	isStaticExpression: () => isStaticExpression,
 	isTeleportTag: () => isTeleportTag,
