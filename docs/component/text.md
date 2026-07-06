@@ -1246,7 +1246,9 @@ App 端不支持 `text` 组件中渲染多段文本，如果 `text` 组件中的
 
 App平台在VDOM模式时使用了自定义的css属性lines，在蒸汽模式下改成了text的max-lines组件属性。
 
-web和小程序的text组件暂未支持max-lines组件属性，后续蒸汽模式的全平台text组件都将支持max-lines属性，并在web和小程序上编译为-webkit写法。
+使用max-lines属性时，不需要写 `display: -webkit-box;-webkit-box-orient: vertical;overflow: hidden;`。如果你需要兼容web，可以写在web的条件编译中。
+
+web和小程序的text组件暂未支持max-lines组件属性，后续计划蒸汽模式的全平台text组件都将支持max-lines属性，并在web和小程序上编译为-webkit写法。
 
 ## Bug & Tips@tips
 - app-Android和app-iOS平台 selectable开启后，仅支持全部文字复制，不支持自由调整光标选择文字。如需自由选择文字，请使用[rich-text组件](rich-text.md)。web平台默认就是可复制文字的，selectable无效。
