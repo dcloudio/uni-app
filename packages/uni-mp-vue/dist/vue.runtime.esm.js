@@ -5514,9 +5514,13 @@ var plugin = {
         app.config.globalProperties.pruneComponentPropsCache =
             pruneComponentPropsCache;
         const oldMount = app.mount;
-        app.mount = function mount(rootContainer) {
-            const instance = oldMount.call(app, rootContainer);
-            const createApp = getCreateApp();
+        app.mount = function mount(rootContainer, subpackageRoot, options) {
+            const hasSubpackageRoot = typeof subpackageRoot === 'string';
+            const root = hasSubpackageRoot ? subpackageRoot : undefined;
+            const instance = hasSubpackageRoot
+                ? oldMount.call(app, rootContainer)
+                : oldMount.apply(app, arguments);
+            const createApp = getCreateApp(root, options);
             if (createApp) {
                 createApp(instance);
             }
@@ -5531,12 +5535,27 @@ var plugin = {
         };
     },
 };
-function getCreateApp() {
+function getCreateApp(subpackageRoot, options) {
+    const root = normalizeSubpackageRoot(subpackageRoot);
     const method = process.env.UNI_MP_PLUGIN
         ? 'createPluginApp'
-        : process.env.UNI_SUBPACKAGE
-            ? 'createSubpackageApp'
-            : 'createApp';
+        : root && (options === null || options === void 0 ? void 0 : options.independent)
+            ? 'createIndependentSubpackageApp'
+            : root || process.env.UNI_SUBPACKAGE
+                ? 'createSubpackageApp'
+                : 'createApp';
+    const createApp = method === 'createIndependentSubpackageApp' && (options === null || options === void 0 ? void 0 : options.createApp)
+        ? options.createApp
+        : getGlobalCreateApp(method);
+    if (createApp &&
+        root &&
+        (method === 'createSubpackageApp' ||
+            method === 'createIndependentSubpackageApp')) {
+        return (instance) => createApp(instance, root);
+    }
+    return createApp;
+}
+function getGlobalCreateApp(method) {
     if (typeof global !== 'undefined' &&
         typeof global[method] !== 'undefined') {
         return global[method];
@@ -5547,6 +5566,9 @@ function getCreateApp() {
         // @ts-expect-error
         return my[method];
     }
+}
+function normalizeSubpackageRoot(root) {
+    return typeof root === 'string' ? root.replace(/^\/+|\/+$/g, '') : undefined;
 }
 
 function stringifyStyle(value) {
@@ -5649,6 +5671,8 @@ const bubbles = [
 ];
 function patchMPEvent(event, instance) {
     if (event.type && event.target) {
+        event.target;
+        event.currentTarget;
         event.preventDefault = NOOP;
         event.stopPropagation = NOOP;
         event.stopImmediatePropagation = NOOP;

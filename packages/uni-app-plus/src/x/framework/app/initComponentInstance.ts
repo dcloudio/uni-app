@@ -22,7 +22,13 @@ export function initFontFace(vm: ComponentPublicInstance) {
   if ((instance.type as any).mpType === 'app') {
     return
   }
-  loadFontFaceByStyles(vm.$options.styles ?? [], false)
+  const pageVm = (vm.$page as UniPage | null)?.vm ?? null
+  if (!pageVm) {
+    console.warn('[initFontFace] can not find page, skip loadFontFace')
+    return
+  }
+  // 加载页面字体
+  loadFontFaceByStyles(vm.$options.styles ?? [], pageVm)
 }
 
 export function initComponentInstance(app: App) {

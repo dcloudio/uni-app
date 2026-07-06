@@ -1,6 +1,6 @@
 import type { ComponentPublicInstance, VNode } from 'vue'
 import { isArray } from '@vue/shared'
-import { getCustomDataset } from '@dcloudio/uni-shared'
+import { createUniDOMStringMap, getCustomDataset } from '@dcloudio/uni-shared'
 import { getWindowOffset } from '@dcloudio/uni-core'
 import { getContextInfo } from '@dcloudio/uni-components'
 import type {
@@ -10,13 +10,17 @@ import type {
 
 type NodeField = UniApp.NodeField
 
+function createDatasetSnapshot(dataset: Record<string, any>) {
+  return __X__ ? createUniDOMStringMap(dataset) : dataset
+}
+
 function getRootInfo(fields: NodeField) {
   const info: SelectorQueryNodeInfo = {}
   if (fields.id) {
     info.id = ''
   }
   if (fields.dataset) {
-    info.dataset = {}
+    info.dataset = createDatasetSnapshot({})
   }
   if (fields.rect) {
     info.left = 0
@@ -56,7 +60,7 @@ function getNodeInfo(
     info.id = el.id
   }
   if (fields.dataset) {
-    info.dataset = getCustomDataset(el)
+    info.dataset = createDatasetSnapshot(getCustomDataset(el))
   }
   if (fields.rect || fields.size) {
     const rect = el.getBoundingClientRect()
@@ -98,10 +102,10 @@ function getNodeInfo(
     }
   }
   if (isArray(fields.computedStyle)) {
-    const sytle = getComputedStyle(el)
+    const style = getComputedStyle(el)
     fields.computedStyle.forEach((name) => {
       info[name as keyof CSSStyleDeclaration] =
-        sytle[name as keyof CSSStyleDeclaration]
+        style[name as keyof CSSStyleDeclaration]
     })
   }
   if (fields.context) {
@@ -310,7 +314,9 @@ class QuerySelectorHelper {
       nodeInfo.node = element
     }
     if (fields.dataset) {
-      nodeInfo.dataset = {}
+      nodeInfo.dataset = createDatasetSnapshot(
+        getCustomDataset(element as unknown as HTMLElement)
+      )
     }
     return nodeInfo
   }

@@ -1281,6 +1281,9 @@ const baseApis = {
     invokePushCallback,
     __f__,
 };
+function normalizeApi(name, api) {
+    return api;
+}
 function initUni(api, protocols, platform = my) {
     const wrapper = initWrapper(protocols);
     const UniProxyHandlers = {
@@ -1289,14 +1292,14 @@ function initUni(api, protocols, platform = my) {
                 return target[key];
             }
             if (hasOwn(api, key)) {
-                return promisify(key, api[key]);
+                return normalizeApi(key, promisify(key, api[key]));
             }
             if (hasOwn(baseApis, key)) {
-                return promisify(key, baseApis[key]);
+                return normalizeApi(key, promisify(key, baseApis[key]));
             }
             // event-api
             // provider-api?
-            return promisify(key, wrapper(key, platform[key]));
+            return normalizeApi(key, promisify(key, wrapper(key, platform[key])));
         },
     };
     // 处理 api mp 打包后为不同js，emitter 无法共享问题

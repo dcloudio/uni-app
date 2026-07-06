@@ -593,12 +593,38 @@ function isConsoleWritable() {
     return isWritable;
 }
 
+const UNI_CONSOLE_RUNTIME_PROMISE = '__uni_console_runtime_promise__';
 function initRuntimeSocketService() {
     const hosts = process.env.UNI_SOCKET_HOSTS;
     const port = process.env.UNI_SOCKET_PORT;
     const id = process.env.UNI_SOCKET_ID;
     if (!hosts || !port || !id)
         return Promise.resolve(false);
+    const runtimeGlobal = getRuntimeGlobal();
+    const existingPromise = runtimeGlobal === null || runtimeGlobal === void 0 ? void 0 : runtimeGlobal[UNI_CONSOLE_RUNTIME_PROMISE];
+    if (existingPromise) {
+        return existingPromise;
+    }
+    let runtimePromise = initRuntimeSocketServiceOnce(hosts, port, id);
+    if (runtimeGlobal) {
+        // 独立分包与主包可能各自打包一份 uni-console 运行时，用小程序全局对象避免重复建 socket、重复改写 console。
+        runtimePromise = runtimePromise.then((success) => {
+            if (!success &&
+                runtimeGlobal[UNI_CONSOLE_RUNTIME_PROMISE] === runtimePromise) {
+                delete runtimeGlobal[UNI_CONSOLE_RUNTIME_PROMISE];
+            }
+            return success;
+        }, (error) => {
+            if (runtimeGlobal[UNI_CONSOLE_RUNTIME_PROMISE] === runtimePromise) {
+                delete runtimeGlobal[UNI_CONSOLE_RUNTIME_PROMISE];
+            }
+            throw error;
+        });
+        runtimeGlobal[UNI_CONSOLE_RUNTIME_PROMISE] = runtimePromise;
+    }
+    return runtimePromise;
+}
+function initRuntimeSocketServiceOnce(hosts, port, id) {
     // 百度小程序需要延迟初始化，不然会存在循环引用问题vendor.js
     const lazy = typeof swan !== 'undefined';
     // 重写需要同步，避免丢失早期日志信息
@@ -661,39 +687,51 @@ const ERROR_CHAR = '\u200C';
 function wrapError(error) {
     return `${ERROR_CHAR}${error}${ERROR_CHAR}`;
 }
-function initMiniProgramGlobalFlag() {
+function getRuntimeGlobal() {
+    const miniProgramGlobal = getMiniProgramGlobal();
+    if (miniProgramGlobal) {
+        return miniProgramGlobal;
+    }
+    if (typeof globalThis !== 'undefined') {
+        return globalThis;
+    }
+}
+function getMiniProgramGlobal() {
     if (typeof wx !== 'undefined') {
-        // @ts-expect-error
-        wx.__uni_console__ = true;
-        // @ts-expect-error
+        return wx;
     }
     else if (typeof my !== 'undefined') {
-        // @ts-expect-error
-        my.__uni_console__ = true;
+        return my;
     }
     else if (typeof tt !== 'undefined') {
-        tt.__uni_console__ = true;
+        return tt;
     }
     else if (typeof swan !== 'undefined') {
-        swan.__uni_console__ = true;
+        return swan;
     }
     else if (typeof qq !== 'undefined') {
-        qq.__uni_console__ = true;
+        return qq;
     }
     else if (typeof ks !== 'undefined') {
-        ks.__uni_console__ = true;
+        return ks;
     }
     else if (typeof jd !== 'undefined') {
-        jd.__uni_console__ = true;
+        return jd;
     }
     else if (typeof xhs !== 'undefined') {
-        xhs.__uni_console__ = true;
+        return xhs;
     }
     else if (typeof has !== 'undefined') {
-        has.__uni_console__ = true;
+        return has;
     }
     else if (typeof qa !== 'undefined') {
-        qa.__uni_console__ = true;
+        return qa;
+    }
+}
+function initMiniProgramGlobalFlag() {
+    const miniProgramGlobal = getMiniProgramGlobal();
+    if (miniProgramGlobal) {
+        miniProgramGlobal.__uni_console__ = true;
     }
 }
 initRuntimeSocketService();

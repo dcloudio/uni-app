@@ -81,20 +81,15 @@ function resolveEasycom(component, easycom) {
 //   return true
 // }
 const createLifeCycleHook = (lifecycle, flag = 0 /* HookFlags.UNKNOWN */) => (hook, target = getCurrentInstance()) => {
-    // 不使用此判断了，因为组件也可以监听页面的生命周期，当页面作为组件渲染时，那监听的页面生成周期是其所在页面的，而不是其自身的
-    // if (false) {
-    //   // 如果只是页面生命周期，排除与App公用的，比如onShow、onHide
-    //   if (flag === HookFlags.PAGE) {
-    //     if (!isUniPage(target)) {
-    //       return
-    //     }
-    //   }
-    // }
+    if (isInSSRComponentSetup)
+        return;
     // post-create lifecycle registrations are noops during SSR
-    !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
+    injectHook(lifecycle, hook, target);
 };
-const onShow = /*#__PURE__*/ createLifeCycleHook(ON_SHOW, 1 /* HookFlags.APP */ | 2 /* HookFlags.PAGE */);
-const onHide = /*#__PURE__*/ createLifeCycleHook(ON_HIDE, 1 /* HookFlags.APP */ | 2 /* HookFlags.PAGE */);
+const onAppShow = /*#__PURE__*/ createLifeCycleHook(ON_SHOW, 1 /* HookFlags.APP */);
+const onAppHide = /*#__PURE__*/ createLifeCycleHook(ON_HIDE, 1 /* HookFlags.APP */);
+const onShow = /*#__PURE__*/ createLifeCycleHook(ON_SHOW, 2 /* HookFlags.PAGE */);
+const onHide = /*#__PURE__*/ createLifeCycleHook(ON_HIDE, 2 /* HookFlags.PAGE */);
 const onLaunch = /*#__PURE__*/ createLifeCycleHook(ON_LAUNCH, 1 /* HookFlags.APP */);
 const onError = /*#__PURE__*/ createLifeCycleHook(ON_ERROR, 1 /* HookFlags.APP */);
 const onThemeChange = /*#__PURE__*/ createLifeCycleHook(ON_THEME_CHANGE, 1 /* HookFlags.APP */);
@@ -132,10 +127,8 @@ const onNavigationBarSearchInputConfirmed =
 /*#__PURE__*/ createLifeCycleHook(ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, 2 /* HookFlags.PAGE */);
 const onNavigationBarSearchInputFocusChanged = 
 /*#__PURE__*/ createLifeCycleHook(ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, 2 /* HookFlags.PAGE */);
-const onPageHide = onHide;
 const onPageShow = onShow;
-const onAppHide = onHide;
-const onAppShow = onShow;
+const onPageHide = onHide;
 
 function renderComponentSlot(slots, name, props = null) {
     if (slots[name]) {

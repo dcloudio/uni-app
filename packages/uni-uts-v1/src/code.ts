@@ -125,6 +125,14 @@ export interface GenProxyCodeOptions {
   iosPreprocessor?: SyncUniModulesFilePreprocessor
 }
 
+function isUTSElementProxyClass(cls: string) {
+  return (
+    process.env.UNI_APP_X_DOM2 === 'true' &&
+    process.env.UNI_UTS_PLATFORM === 'app-android' &&
+    /^Uni.*Element(?:Impl)?$/.test(cls)
+  )
+}
+
 export async function genProxyCode(
   module: string,
   options: GenProxyCodeOptions
@@ -208,7 +216,7 @@ export async function genProxyCode(
     return false
   })
   return `
-const { registerUTSInterface, initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
+const { registerUTSInterface, initUTSProxyClass, initUTSElementProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
 const name = '${name}'
 const moduleName = '${moduleName || ''}'
 const moduleType = '${moduleType || ''}'
@@ -368,8 +376,9 @@ function normalizeInterfaceKeepAlive(decls: ProxyDecl[], types: Types) {
       classNames.find((n) => {
         const classMeta = classTypes[n]
         if (classMeta.interfaces && classMeta.interfaces.includes(decl.cls)) {
+          const isElement = isUTSElementProxyClass(decl.cls)
           classMeta.keepAliveMethods.forEach((method) => {
-            const jsMethod = method + 'ByJs'
+            const jsMethod = method + (isElement ? '' : 'ByJs')
             if (decl.options.methods[jsMethod]) {
               decl.options.methods[jsMethod].keepAlive = true
             }
@@ -564,16 +573,21 @@ function genModuleCode(
       }
 
       if (decl.isDefault) {
+        // initUTSElementProxyClass不会进入此分支
         codes.push(
           `${exportDefault}initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, '${
             decl.cls
           }ByJs', is_uni_modules) }, ${genClassOptionsCode(decl.options)} ))`
         )
       } else {
+        const isElement = isUTSElementProxyClass(decl.cls)
+        const initProxyMethodName = isElement
+          ? 'initUTSElementProxyClass'
+          : 'initUTSProxyClass'
         codes.push(
           `${exportConst}${
             decl.cls
-          } = /*#__PURE__*/ initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, '${
+          } = /*#__PURE__*/ ${initProxyMethodName}(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, '${
             decl.cls
           }ByJs', is_uni_modules) }, ${genClassOptionsCode(decl.options)} ))`
         )
@@ -847,6 +861,7 @@ function createParams(tsParams: TsFnParameter[]) {
 }
 
 async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
+  const isX = process.env.UNI_APP_X === 'true'
   // 优先合并 ios + android，如果没有，查找根目录 index.uts
   const iosDecls = (
     await parseFile(
@@ -883,8 +898,13 @@ async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
     }
     return true
   })
-  // 优先使用 app-ios，因为 app-ios 平台函数类型需要正确的参数列表
-  const decls = mergeDecls(androidDecls, iosDecls)
+  let decls: ProxyDecl[] = []
+  if (isX) {
+    decls = options.platform === 'app-android' ? androidDecls : iosDecls
+  } else {
+    // 优先使用 app-ios，因为 app-ios 平台函数类型需要正确的参数列表
+    decls = mergeDecls(androidDecls, iosDecls)
+  }
   // 如果没有平台特有，查找 root index.uts
   if (!decls.length) {
     return await parseFile(true, resolveRootIndex(module, options), options)
@@ -1486,6 +1506,7 @@ function genInterfaceDeclaration(
   const props: string[] = []
   const setters: Record<string, Parameter> = {}
   const elements = parseInterfaceBody(types, decl)
+  const isElement = isUTSElementProxyClass(cls)
 
   elements.forEach((item) => {
     if (item.type === 'TsMethodSignature') {
@@ -1515,7 +1536,7 @@ function genInterfaceDeclaration(
           ),
           return: returnOptions,
         }
-        methods[name + 'ByJs'] = value
+        methods[name + (isElement ? '' : 'ByJs')] = value
       }
     } else if (item.type === 'TsPropertySignature') {
       if (item.key.type === 'Identifier') {
@@ -1579,6 +1600,8 @@ function genClassDeclaration(
       implement.expression.type === 'Identifier' &&
       isHookClass(implement.expression.value)
   )
+  const isElement = isUTSElementProxyClass(cls)
+
   const interfaces = parseImplements(decl)
   decl.body.forEach((item) => {
     if (item.type === 'Constructor') {
@@ -1635,7 +1658,7 @@ function genClassDeclaration(
           if (item.isStatic) {
             staticMethods[name + 'ByJs'] = value
           } else {
-            methods[name + 'ByJs'] = value
+            methods[name + (isElement ? '' : 'ByJs')] = value
           }
         }
       }
@@ -1693,6 +1716,7 @@ function genClassDeclarationFromInterface(
   const props: string[] = []
   const setters: Record<string, Parameter> = {}
   const elements = parseInterfaceBody(types, decl)
+  const isElement = isUTSElementProxyClass(cls)
 
   elements.forEach((item) => {
     if (item.type === 'TsMethodSignature') {
@@ -1712,7 +1736,7 @@ function genClassDeclarationFromInterface(
         }
 
         const name = item.key.value
-        methods[name + 'ByJs'] = {
+        methods[name + (isElement ? '' : 'ByJs')] = {
           async: isReturnPromise(item.typeAnn),
           keepAlive: false,
           params: resolveFunctionParams(
@@ -1820,6 +1844,57 @@ function genVariableDeclaration(
       return genFunctionDeclaration(
         types,
         createFunctionDeclaration(id.value, init, params),
+        resolveTypeReferenceName,
+        false,
+        true
+      )
+    } else if (
+      id.type === 'Identifier' &&
+      init &&
+      init.type === 'CallExpression' &&
+      init.callee.type === 'Identifier' &&
+      /^define.*Api/.test(init.callee.value)
+    ) {
+      // TODO 合并重复逻辑
+      /**
+       * 例：export const getElementById = defineSyncApi<GetElementById>(
+       *        'getElementById',
+       *        (id: string.IDString | string): UniElement | null => {
+       *            const pages = getCurrentPages();
+       *            if (pages.length == 0) {
+       *                return null;
+       *            }
+       *            const page = pages[pages.length - 1];
+       *            if (page == null) {
+       *                console.warn('page is null');
+       *                return null;
+       *            }
+       *            return page.getElementById(id)
+       *        },
+       *    )
+       */
+      // 根据类型信息查找参数列表
+      let params: Param[] | undefined
+      const typeAnn = init.typeArguments?.[0]
+      if (typeAnn && typeAnn.type === 'TsTypeReference') {
+        const { typeName } = typeAnn
+        if (typeName.type === 'Identifier') {
+          const value = types.fn[typeName.value]
+          if (isArray(value)) {
+            params = value
+          }
+        }
+      }
+
+      return genFunctionDeclaration(
+        types,
+        createFunctionDeclaration(
+          id.value,
+          init.arguments?.[1].expression as
+            | FunctionExpression
+            | ArrowFunctionExpression,
+          params
+        ),
         resolveTypeReferenceName,
         false,
         true

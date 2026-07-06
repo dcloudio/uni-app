@@ -90,6 +90,9 @@ export async function runDev(options: CliOptions & ServerOptions) {
           }
           const utsChanged = process.env.UNI_APP_UTS_CHANGED === 'true'
           process.env.UNI_APP_UTS_CHANGED = ''
+          const pagesJsonChanged =
+            process.env.UNI_APP_X_DOM2_PAGES_JSON_CHANGED === 'true'
+          process.env.UNI_APP_X_DOM2_PAGES_JSON_CHANGED = ''
           let changedFiles = ''
           let hasBinFiles = false
           if (options.platform === 'app') {
@@ -111,6 +114,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
             if (
               // 目前动态渲染下，只要bin有变更，就需要全量同步，后续可以优化成bin变更时输出bin变更文件列表
               !hasBinFiles &&
+              !pagesJsonChanged &&
               (hasIncrementalFiles || dex)
             ) {
               if (pages) {
@@ -158,7 +162,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
               //     changed.push(...JSON.parse(binFiles))
               //   } catch {}
               // }
-              if (changed.length) {
+              if (!pagesJsonChanged && changed.length) {
                 return output(
                   'log',
                   M['dev.watching.end.files'].replace(
@@ -176,7 +180,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
             ) {
               const files = process.env.UNI_APP_CHANGED_FILES
               process.env.UNI_APP_CHANGED_FILES = ''
-              if (files) {
+              if (!pagesJsonChanged && files) {
                 return output(
                   'log',
                   M['dev.watching.end.files'].replace('{files}', files)
@@ -190,7 +194,8 @@ export async function runDev(options: CliOptions & ServerOptions) {
           if (process.env.UNI_APP_X_DOM2 === 'true') {
             if (
               process.env.UNI_APP_X_DOM2_CPP_CHANGED === 'true' ||
-              utsChanged
+              utsChanged ||
+              pagesJsonChanged
             ) {
               return output('log', M['dev.watching.end'])
             }

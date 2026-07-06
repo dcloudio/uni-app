@@ -1,5 +1,6 @@
 import { hyphenateCssProperty } from '../src/dom/UniCSSStyleDeclaration'
 import { UniElement } from '../src/dom/UniElement'
+import { createEventTarget } from '../src/dom/utils'
 
 describe('uni-mp-vue: UniElement', () => {
   it('UniCSSStyleDeclaration', () => {
@@ -31,5 +32,38 @@ describe('uni-mp-vue: UniElement', () => {
       '-webkit-transition-opacity'
     )
     expect(hyphenateCssProperty('marginTop')).toBe('margin-top')
+  })
+  it('dataset', () => {
+    const element = new UniElement()
+    element.dataset = {
+      foo: 'foo',
+      'data-bar-baz': 'bar',
+    }
+
+    expect(element.dataset.get('foo')).toBe('foo')
+    expect(element.dataset.foo).toBe('foo')
+    expect(element.dataset.get('barBaz')).toBe('bar')
+    expect(element.dataset.get('data-bar-baz')).toBe('bar')
+
+    element.dataset.set('data-foo-bar', 'foo-bar')
+    expect(element.dataset.fooBar).toBe('foo-bar')
+
+    element.dataset.baz = 'baz'
+    expect(element.dataset.get('baz')).toBe('baz')
+
+    delete element.dataset.baz
+    expect(element.dataset.has('baz')).toBe(false)
+  })
+  it('event target dataset', () => {
+    const target = createEventTarget({
+      dataset: {
+        foo: 'foo',
+        'data-bar-baz': 'bar',
+      },
+    })
+
+    expect(target.dataset.get('foo')).toBe('foo')
+    expect(target.dataset.foo).toBe('foo')
+    expect(target.dataset.get('barBaz')).toBe('bar')
   })
 })

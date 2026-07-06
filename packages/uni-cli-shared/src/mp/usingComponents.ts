@@ -28,6 +28,11 @@ import { BINDING_COMPONENTS, EXTNAME_VUE_RE } from '../constants'
 import { isAppVue, normalizeMiniProgramFilename, removeExt } from '../utils'
 import { cleanUrl, parseVueRequest } from '../vite/utils'
 import { addMiniProgramUsingComponents } from '../json/mp/jsonFile'
+import {
+  parseIndependentRoot,
+  withIndependentRoot,
+  withoutIndependentRoot,
+} from '../json/mp/subpackage'
 
 type BindingComponents = Record<
   string,
@@ -37,6 +42,8 @@ type BindingComponents = Record<
 const mainDescriptors = new Map<string, MainDescriptor>()
 const scriptDescriptors = new Map<string, ScriptDescriptor>()
 const templateDescriptors = new Map<string, TemplateDescriptor>()
+const scriptDescriptorMainMap = new Map<string, string>()
+const templateDescriptorMainMap = new Map<string, string>()
 // 存储全局组件名到完整源文件路径的映射
 const globalComponentSourceMap = new Map<string, string>()
 
@@ -74,12 +81,16 @@ function findImportScriptSource(ast: Program) {
 async function resolveSource(
   filename: string,
   source: string | undefined,
-  resolve: PluginContext['resolve']
+  resolve: PluginContext['resolve'],
+  root?: string
 ) {
   if (!source) {
     return
   }
-  const resolveId = await resolve(source, filename)
+  const resolveId = await resolve(
+    source,
+    root ? withIndependentRoot(filename, root) : filename
+  )
   if (resolveId) {
     return resolveId.id
   }
@@ -88,51 +99,93 @@ async function resolveSource(
 export async function parseMainDescriptor(
   filename: string,
   ast: Program,
-  resolve: ParseDescriptor['resolve']
+  resolve: ParseDescriptor['resolve'],
+  root?: string
 ): Promise<MainDescriptor> {
   const script = await resolveSource(
     filename,
     findImportScriptSource(ast),
-    resolve
+    resolve,
+    root
   )
   const template = await resolveSource(
     filename,
     findImportTemplateSource(ast),
-    resolve
+    resolve,
+    root
   )
   const imports = await parseVueComponentImports(
-    filename,
+    root ? withIndependentRoot(filename, root) : filename,
     ast.body.filter((node) => isImportDeclaration(node)) as ImportDeclaration[],
     resolve
   )
   if (!script) {
     // inline script
-    await parseScriptDescriptor(filename, ast, { resolve, isExternal: false })
+    await parseScriptDescriptor(filename, ast, {
+      resolve,
+      isExternal: false,
+      root,
+    })
   }
   if (!template) {
     // inline template
-    await parseTemplateDescriptor(filename, ast, { resolve, isExternal: false })
+    await parseTemplateDescriptor(filename, ast, {
+      resolve,
+      isExternal: false,
+      root,
+    })
   }
   const descriptor = {
     imports,
-    script: script ? parseVueRequest(script).filename : filename,
-    template: template ? parseVueRequest(template).filename : filename,
+    script: script
+      ? createDescriptorKey(
+          parseVueRequest(script).filename,
+          parseIndependentRoot(script) || root
+        )
+      : createDescriptorKey(filename, root),
+    template: template
+      ? createDescriptorKey(
+          parseVueRequest(template).filename,
+          parseIndependentRoot(template) || root
+        )
+      : createDescriptorKey(filename, root),
   }
-  mainDescriptors.set(filename, descriptor)
+  const mainDescriptorKey = createDescriptorKey(filename, root)
+  updateMainDescriptorIndex(mainDescriptorKey, descriptor)
   return descriptor
+}
+
+function updateMainDescriptorIndex(
+  mainDescriptorKey: string,
+  descriptor: MainDescriptor
+) {
+  const oldDescriptor = mainDescriptors.get(mainDescriptorKey)
+  if (oldDescriptor && oldDescriptor.script !== descriptor.script) {
+    scriptDescriptorMainMap.delete(oldDescriptor.script)
+  }
+  if (oldDescriptor && oldDescriptor.template !== descriptor.template) {
+    templateDescriptorMainMap.delete(oldDescriptor.template)
+  }
+  mainDescriptors.set(mainDescriptorKey, descriptor)
+  scriptDescriptorMainMap.set(descriptor.script, mainDescriptorKey)
+  templateDescriptorMainMap.set(descriptor.template, mainDescriptorKey)
 }
 
 export function updateMiniProgramComponentsByScriptFilename(
   scriptFilename: string,
   inputDir: string,
-  normalizeComponentName: (name: string) => string
+  normalizeComponentName: (name: string) => string,
+  root?: string
 ) {
-  const mainFilename = findMainFilenameByScriptFilename(scriptFilename)
+  const mainFilename = findMainFilenameByScriptFilename(
+    createDescriptorKey(scriptFilename, root)
+  )
   if (mainFilename) {
     updateMiniProgramComponentsByMainFilename(
       mainFilename,
       inputDir,
-      normalizeComponentName
+      normalizeComponentName,
+      root
     )
   }
 }
@@ -140,28 +193,28 @@ export function updateMiniProgramComponentsByScriptFilename(
 export function updateMiniProgramComponentsByTemplateFilename(
   templateFilename: string,
   inputDir: string,
-  normalizeComponentName: (name: string) => string
+  normalizeComponentName: (name: string) => string,
+  root?: string
 ) {
-  const mainFilename = findMainFilenameByTemplateFilename(templateFilename)
+  const mainFilename = findMainFilenameByTemplateFilename(
+    createDescriptorKey(templateFilename, root)
+  )
   if (mainFilename) {
     updateMiniProgramComponentsByMainFilename(
       mainFilename,
       inputDir,
-      normalizeComponentName
+      normalizeComponentName,
+      root
     )
   }
 }
 
 function findMainFilenameByScriptFilename(scriptFilename: string) {
-  const keys = [...mainDescriptors.keys()]
-  return keys.find((key) => mainDescriptors.get(key)!.script === scriptFilename)
+  return scriptDescriptorMainMap.get(scriptFilename)
 }
 
 function findMainFilenameByTemplateFilename(templateFilename: string) {
-  const keys = [...mainDescriptors.keys()]
-  return keys.find(
-    (key) => mainDescriptors.get(key)!.template === templateFilename
-  )
+  return templateDescriptorMainMap.get(templateFilename)
 }
 
 export async function updateMiniProgramGlobalComponents(
@@ -171,16 +224,19 @@ export async function updateMiniProgramGlobalComponents(
     inputDir,
     resolve,
     normalizeComponentName,
+    root,
   }: {
     inputDir: string
     resolve: ParseDescriptor['resolve']
     normalizeComponentName: (name: string) => string
+    root?: string
   }
 ) {
   const { bindingComponents, imports } = await parseGlobalDescriptor(
     filename,
     ast,
-    resolve
+    resolve,
+    root
   )
   // 存储全局组件名到完整源文件路径的映射
   imports.forEach(({ source: { value }, specifiers: [specifier] }) => {
@@ -189,7 +245,10 @@ export async function updateMiniProgramGlobalComponents(
       return
     }
     if (!globalComponentSourceMap.has(bindingComponents[name].tag)) {
-      globalComponentSourceMap.set(bindingComponents[name].tag, value)
+      globalComponentSourceMap.set(
+        bindingComponents[name].tag,
+        withoutIndependentRoot(value)
+      )
     }
   })
   addMiniProgramUsingComponents(
@@ -223,7 +282,9 @@ function createUsingComponents(
     )
     if (!usingComponents[componentName]) {
       usingComponents[componentName] = addLeadingSlash(
-        removeExt(normalizeMiniProgramFilename(value, inputDir))
+        removeExt(
+          normalizeMiniProgramFilename(withoutIndependentRoot(value), inputDir)
+        )
       )
     }
   })
@@ -233,9 +294,12 @@ function createUsingComponents(
 export function updateMiniProgramComponentsByMainFilename(
   mainFilename: string,
   inputDir: string,
-  normalizeComponentName: (name: string) => string
+  normalizeComponentName: (name: string) => string,
+  root?: string
 ) {
-  const mainDescriptor = mainDescriptors.get(mainFilename)
+  const mainDescriptor = mainDescriptors.get(
+    createDescriptorKey(mainFilename, root)
+  )
   if (!mainDescriptor) {
     return
   }
@@ -261,7 +325,12 @@ export function updateMiniProgramComponentsByMainFilename(
   )
 
   addMiniProgramUsingComponents(
-    removeExt(normalizeMiniProgramFilename(mainFilename, inputDir)),
+    removeExt(
+      normalizeMiniProgramFilename(
+        withoutIndependentRoot(mainFilename),
+        inputDir
+      )
+    ),
     createUsingComponents(
       bindingComponents,
       imports,
@@ -342,7 +411,7 @@ export async function parseTemplateDescriptor(
   // 外置时查找所有 vue component import
   const imports = options.isExternal
     ? await parseVueComponentImports(
-        filename,
+        options.root ? withIndependentRoot(filename, options.root) : filename,
         ast.body.filter((node) =>
           isImportDeclaration(node)
         ) as ImportDeclaration[],
@@ -353,13 +422,17 @@ export async function parseTemplateDescriptor(
     bindingComponents: findBindingComponents(ast.body),
     imports,
   }
-  templateDescriptors.set(filename, descriptor)
+  templateDescriptors.set(
+    createDescriptorKey(filename, options.root),
+    descriptor
+  )
   return descriptor
 }
 
 interface ParseDescriptor {
   resolve: PluginContext['resolve']
   isExternal: boolean
+  root?: string
 }
 export interface ScriptDescriptor extends TemplateDescriptor {
   setupBindingComponents: BindingComponents
@@ -368,12 +441,13 @@ export interface ScriptDescriptor extends TemplateDescriptor {
 async function parseGlobalDescriptor(
   filename: string,
   ast: Program,
-  resolve: PluginContext['resolve']
+  resolve: PluginContext['resolve'],
+  root?: string
 ) {
   // 外置时查找所有 vue component import
   const imports = (
     await parseVueComponentImports(
-      filename,
+      root ? withIndependentRoot(filename, root) : filename,
       ast.body.filter((node) =>
         isImportDeclaration(node)
       ) as ImportDeclaration[],
@@ -401,7 +475,7 @@ export async function parseScriptDescriptor(
   // 外置时查找所有 vue component import
   const imports = options.isExternal
     ? await parseVueComponentImports(
-        filename,
+        options.root ? withIndependentRoot(filename, options.root) : filename,
         ast.body.filter((node) =>
           isImportDeclaration(node)
         ) as ImportDeclaration[],
@@ -414,7 +488,7 @@ export async function parseScriptDescriptor(
     imports,
   }
 
-  scriptDescriptors.set(filename, descriptor)
+  scriptDescriptors.set(createDescriptorKey(filename, options.root), descriptor)
   return descriptor
 }
 
@@ -609,6 +683,10 @@ async function parseVueComponentImports(
     }
   }
   return vueComponentImports
+}
+
+function createDescriptorKey(filename: string, root?: string) {
+  return root ? withIndependentRoot(filename, root) : filename
 }
 /**
  * static import => dynamic import

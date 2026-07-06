@@ -44,6 +44,12 @@ export function uniAppPagesPlugin(): Plugin {
         return fs.readFileSync(pagesJsonPath, 'utf8')
       }
     },
+    watchChange(id) {
+      if (isDom2 && normalizePath(id) === normalizePath(pagesJsonPath)) {
+        // dom2 下 pages.json 变更需要页面模板重新编译，并走全量更新通知。
+        process.env.UNI_APP_X_DOM2_PAGES_JSON_CHANGED = 'true'
+      }
+    },
     transform(code, id) {
       if (isFirst && allPagePaths.length) {
         const { filename } = parseVueRequest(id)

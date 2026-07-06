@@ -9,6 +9,7 @@ import {
 import { initBaseInstance } from './componentInstance'
 import { initHooks, initRuntimeHooks, initUnknownHooks } from './componentHooks'
 import { getLocaleLanguage } from '../runtime/util'
+import { resolveSubpackageRoot, setSubpackageAppVm } from './subpackage'
 
 import App = WechatMiniprogram.App
 import {
@@ -118,7 +119,7 @@ export function initCreateApp(parseAppOptions?: ParseAppOptions) {
 }
 
 export function initCreateSubpackageApp(parseAppOptions?: ParseAppOptions) {
-  return function createApp(vm: ComponentPublicInstance) {
+  return function createApp(vm: ComponentPublicInstance, root?: string) {
     const appOptions = parseApp(vm, parseAppOptions)
     const app =
       isFunction(getApp) &&
@@ -141,13 +142,13 @@ export function initCreateSubpackageApp(parseAppOptions?: ParseAppOptions) {
       }
     })
     initAppLifecycle(appOptions, vm)
-    if (process.env.UNI_SUBPACKAGE) {
-      ;(__GLOBAL__.$subpackages || (__GLOBAL__.$subpackages = {}))[
-        process.env.UNI_SUBPACKAGE
-      ] = {
-        $vm: vm,
-      }
-    }
+    setSubpackageAppVm(resolveSubpackageRoot(root), vm)
+  }
+}
+
+export function initCreateIndependentSubpackageApp() {
+  return function createApp(vm: ComponentPublicInstance, root?: string) {
+    setSubpackageAppVm(resolveSubpackageRoot(root), vm, true)
   }
 }
 

@@ -18,6 +18,11 @@ import {
   updateMiniProgramComponentsByTemplateFilename,
 } from '@dcloudio/uni-cli-shared'
 import { virtualComponentPath, virtualPagePath } from './entry'
+import {
+  getIndependentRootByFilename,
+  parseIndependentRoot,
+  withoutIndependentRoot,
+} from './independentUtils'
 import type { CustomPluginOptions, ResolvedId } from 'rollup'
 
 export function uniUsingComponentsPlugin(
@@ -39,6 +44,7 @@ export function uniUsingComponentsPlugin(
     enforce: 'post',
     async transform(source, id) {
       const { filename, query } = parseVueRequest(id)
+      const independentRoot = parseIndependentRoot(id)
       if (isAppVue(filename)) {
         return null
       }
@@ -46,7 +52,12 @@ export function uniUsingComponentsPlugin(
       const dynamicImportOptions = {
         id,
         sourceMap,
-        dynamicImport,
+        dynamicImport: (name: string, value: string) =>
+          dynamicImport(name, value, {
+            root: independentRoot,
+            checkIndependentRoot: true,
+            inputDir,
+          }),
       }
       const resolve = async (
         source: string,
@@ -59,7 +70,9 @@ export function uniUsingComponentsPlugin(
       ): Promise<ResolvedId | null> => {
         const id = resolveUTSModule(
           source,
-          importer || process.env.UNI_INPUT_DIR
+          importer
+            ? withoutIndependentRoot(importer)
+            : process.env.UNI_INPUT_DIR
         )
         if (id) {
           source = id
@@ -76,12 +89,14 @@ export function uniUsingComponentsPlugin(
             {
               resolve,
               isExternal: true,
+              root: independentRoot,
             }
           )
           updateMiniProgramComponentsByScriptFilename(
             filename,
             inputDir,
-            normalizeComponentName
+            normalizeComponentName,
+            independentRoot
           )
           return transformDynamicImports(
             source,
@@ -97,12 +112,14 @@ export function uniUsingComponentsPlugin(
             {
               resolve,
               isExternal: true,
+              root: independentRoot,
             }
           )
           updateMiniProgramComponentsByTemplateFilename(
             filename,
             inputDir,
-            normalizeComponentName
+            normalizeComponentName,
+            independentRoot
           )
           return transformDynamicImports(
             source,
@@ -118,12 +135,18 @@ export function uniUsingComponentsPlugin(
 
       const ast = parseAst(source, id)
 
-      const descriptor = await parseMainDescriptor(filename, ast, resolve)
+      const descriptor = await parseMainDescriptor(
+        filename,
+        ast,
+        resolve,
+        independentRoot
+      )
 
       updateMiniProgramComponentsByMainFilename(
         filename,
         inputDir,
-        normalizeComponentName
+        normalizeComponentName,
+        independentRoot
       )
 
       return transformDynamicImports(
@@ -135,10 +158,48 @@ export function uniUsingComponentsPlugin(
   }
 }
 
-export function dynamicImport(name: string, value: string) {
-  // 开发者可能将页面作为组件来引用
-  if (isMiniProgramPageFile(value, process.env.UNI_INPUT_DIR)) {
-    return `const ${name} = ()=>import('${virtualPagePath(value)}')`
+interface DynamicImportOptions {
+  root?: string
+  inferRoot?: boolean
+  checkIndependentRoot?: boolean
+  inputDir?: string
+}
+
+export function dynamicImport(
+  name: string,
+  value: string,
+  options: DynamicImportOptions = {}
+) {
+  const sourceRoot = parseIndependentRoot(value)
+  value = withoutIndependentRoot(value)
+  const inputDir = options.inputDir || process.env.UNI_INPUT_DIR
+  const targetRoot =
+    sourceRoot ||
+    (options.inferRoot || options.checkIndependentRoot
+      ? getIndependentRootByFilename(value, inputDir)
+      : undefined)
+  if (
+    options.checkIndependentRoot &&
+    targetRoot &&
+    targetRoot !== options.root
+  ) {
+    throw new Error(
+      `暂不支持跨分包组件同步引用：${value} 属于独立分包 "${targetRoot}"，请将组件移动到当前包内。`
+    )
   }
-  return `const ${name} = ()=>import('${virtualComponentPath(value)}')`
+  let independentRoot = options.root || sourceRoot
+  if (!independentRoot && options.inferRoot) {
+    independentRoot = targetRoot
+  }
+  // 开发者可能将页面作为组件来引用
+  if (isMiniProgramPageFile(value, inputDir)) {
+    return `const ${name} = ()=>import('${virtualPagePath(
+      value,
+      independentRoot
+    )}')`
+  }
+  return `const ${name} = ()=>import('${virtualComponentPath(
+    value,
+    independentRoot
+  )}')`
 }

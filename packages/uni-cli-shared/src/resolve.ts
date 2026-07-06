@@ -23,6 +23,13 @@ function resolveWithSymlinks(id: string, basedir: string): string {
   })
 }
 
+export function resolveMainUtsName() {
+  if (process.env.UNI_COMPILE_TARGET === 'ext-api') {
+    return process.env.UNI_COMPILE_EXT_API_UVUE_ENTRY || 'main.uts'
+  }
+  return 'main.uts'
+}
+
 export function relativeFile(from: string, to: string) {
   const relativePath = normalizePath(path.relative(path.dirname(from), to))
   return relativePath.startsWith('.') ? relativePath : './' + relativePath
@@ -30,7 +37,7 @@ export function relativeFile(from: string, to: string) {
 
 export const resolveMainPathOnce = once((inputDir: string) => {
   if (process.env.UNI_APP_X === 'true') {
-    const mainUTSPath = path.resolve(inputDir, 'main.uts')
+    const mainUTSPath = path.resolve(inputDir, resolveMainUtsName())
     if (fs.existsSync(mainUTSPath)) {
       return normalizePath(mainUTSPath)
     }

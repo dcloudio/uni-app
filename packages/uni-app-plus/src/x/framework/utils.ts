@@ -1,4 +1,5 @@
-import { loadFontFace } from '../api/ui/loadFontFace'
+import type { ComponentPublicInstance } from 'vue'
+import { appLoadFontFace, pageLoadFontFace } from '../api/ui/loadFontFace'
 
 /**
  * 解析 css 中的 @font-face 规则，并加载字体
@@ -8,7 +9,7 @@ import { loadFontFace } from '../api/ui/loadFontFace'
  */
 export function loadFontFaceByStyles(
   styles: Array<Record<string, any>>,
-  global: boolean
+  pageVm: ComponentPublicInstance | null
 ) {
   // TODO will fix by otto
   styles = Array.isArray(styles) ? styles : [styles]
@@ -29,8 +30,7 @@ export function loadFontFaceByStyles(
     const src = style['src'] as string | null
 
     if (fontFamily != null && src != null) {
-      loadFontFace({
-        global,
+      const LoadFontFaceOptions = {
         family: fontFamily,
         source: src,
         desc: {
@@ -38,7 +38,12 @@ export function loadFontFaceByStyles(
           weight: fontWeight as string,
           variant: fontVariant as string,
         },
-      })
+      }
+      if (pageVm === null) {
+        appLoadFontFace(LoadFontFaceOptions, null)
+      } else {
+        pageLoadFontFace(pageVm, LoadFontFaceOptions, null)
+      }
     } else {
       console.warn('loadFontFace: fail, font-family or src is null')
     }

@@ -3,14 +3,10 @@
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var compilerCore = require('@vue/compiler-core');
-var fs = require('fs');
-var path = require('path');
 
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefault(initMiniProgramPlugin);
-var fs__default = /*#__PURE__*/_interopDefault(fs);
-var path__default = /*#__PURE__*/_interopDefault(path);
 
 const AD_COMPONENTS = [
     'uniad',
@@ -74,20 +70,16 @@ function getMiniProgramAIPaths(inputDir, platform) {
     const agentConfig = config.agent;
     const paths = [];
     const instruction = agentConfig.instruction;
-    if (instruction && fs__default.default.existsSync(path__default.default.resolve(inputDir, instruction))) {
+    if (instruction) {
         paths.push(instruction);
     }
     const pageMetadata = agentConfig.pageMetadata;
-    if (pageMetadata && fs__default.default.existsSync(path__default.default.resolve(inputDir, pageMetadata))) {
+    if (pageMetadata) {
         paths.push(pageMetadata);
     }
     const skills = agentConfig.skills;
     if (isArray(skills) && skills.length > 0) {
-        skills.forEach((skill) => {
-            if (skill.path && fs__default.default.existsSync(path__default.default.resolve(inputDir, skill.path))) {
-                paths.push(skill.path);
-            }
-        });
+        paths.push(...skills.map((skill) => skill.path).filter(Boolean));
     }
     return paths;
 }
@@ -291,6 +283,7 @@ const options = {
     app: {
         darkmode: true,
         subpackages: true,
+        independentSubpackages: true,
         plugins: true,
         usingComponents: true,
         workers: true,

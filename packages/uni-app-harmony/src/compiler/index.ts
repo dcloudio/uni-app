@@ -5,8 +5,3 @@ export default [
   process.env.UNI_APP_X === 'true' ? initUniAppXHarmonyPlugin : appVite,
   uniAppHarmonyPlugin,
 ]
-export {
-  ExtApiBlackListX,
-  ExtApiBlackList,
-  ExtApiBlackListDom2,
-} from './constants'

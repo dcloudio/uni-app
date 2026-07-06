@@ -1,21 +1,16 @@
 <template>
-  <view style="flex: 1;">
-    <!-- #ifdef APP-ANDROID -->
-    <view :style="{ height: `${safeAreaTop}px` }"></view>
-    <!-- #endif -->
-    <web-view
-      ref="webviewElement"
-      id="webview"
-      style="flex: 1;"
-      :webview-styles="webviewStyles"
-      <!-- #ifdef APP-ANDROID -->
-      android-layer-type="software"
-      <!-- #endif -->
-      :src="src"
-      @message="message"
-      @error="error"
-    />
-  </view>
+	<web-view
+		ref="webviewElement"
+		id="webview"
+		style="flex: 1;"
+		:webview-styles="webviewStyles"
+		<!-- #ifdef APP-ANDROID -->
+		android-layer-type="software"
+		<!-- #endif -->
+		:src="src"
+		@message="message"
+		@error="error"
+	/>
 </template>
 
 <script setup lang='uts'>
@@ -28,7 +23,7 @@
 
   const src = ref(process.env.UNI_AUTOMATOR_APP_WEBVIEW_SRC)
   const webviewElement = ref<UniWebViewElement | null>(null)
-  const webviewContext = ref<WebviewContext | null>(null)
+  const webviewContext = ref<WebViewContext | null>(null)
   const webviewStyles = ref({
     progress: false
   })
@@ -42,7 +37,7 @@
   onReady(() => {
     const windowInfo = uni.getWindowInfo()
     safeAreaTop.value = windowInfo.safeAreaInsets.top
-    webviewContext.value = uni.createWebviewContext('webview')
+    webviewContext.value = uni.createWebViewContext('webview')
   })
 
   const initAutomator = () => {
@@ -88,12 +83,7 @@
         // 调用截图
         (instance as Page).$viewToTempFilePath({
           id: 'webview',
-          // #ifdef APP-ANDROID
-          offsetY: `44`,
-          // #endif
-          // #ifndef APP-ANDROID
           offsetY: `${safeAreaTop.value + 44}`,
-          // #endif
           overwrite: true,
           wholeContent: true,
           success: (res) => {

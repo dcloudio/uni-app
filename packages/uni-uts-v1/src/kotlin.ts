@@ -57,10 +57,20 @@ export interface KotlinCompilerServer {
   getCompilerJar?: (userJars: string[], version?: number) => string[]
   compile(
     options: {
+      /**
+       * 是否蒸汽模式
+       */
+      vapor?: boolean
+      version?: string
       kotlinc: string[]
       d8: string[]
       stderrListener: (data: string) => void
       pageCount: number
+      kotlinOutDir?: string
+      dexOutDir?: string
+      inputDir?: string
+      sourceRoot?: string
+      sourceMapPath?: string
     },
     projectPath: string
   ): Promise<{ code: number; msg: string; data?: { dexList: string[] } }>
@@ -388,14 +398,9 @@ export async function runKotlinDev(
           normalizePath(path.relative(outputDir, newDexFile || dexFile)),
         ]
       }
-    } else if (msg) {
-      console.error(msg)
+    } else {
+      throw new Error(msg || 'kotlin编译失败')
     }
-    // else {
-    //   throw `${normalizePath(
-    //     path.relative(process.env.UNI_INPUT_DIR, filename)
-    //   )} 编译失败`
-    // }
   }
   return result
 }
@@ -412,7 +417,8 @@ export async function compileAndroidDex(
   const inputDir = process.env.UNI_INPUT_DIR
   const { getKotlincHome, compile: compileDex } = compilerServer
   const jars = getKotlinCompileJars(isX, depJars, compilerServer)
-  const options = {
+  const options: Parameters<typeof compileDex>[0] = {
+    vapor: process.env.UNI_APP_X_DOM2 === 'true',
     pageCount: 0,
     kotlinc: resolveKotlincArgs(kotlinFiles, jarFile, getKotlincHome(), jars),
     d8: resolveD8Args(jarFile, jars),
@@ -723,9 +729,16 @@ export function resolveKotlincArgs(
   return args
 }
 
+function resolveD8MinApi() {
+  if (process.env.UNI_UTS_D8_MIN_API) {
+    return process.env.UNI_UTS_D8_MIN_API
+  }
+  return process.env.UNI_APP_X_DOM2 === 'true' ? '23' : '21'
+}
+
 export const D8_DEFAULT_ARGS = [
   '--min-api',
-  '21',
+  resolveD8MinApi(),
   '--thread-count',
   os.cpus().length + '',
 ]

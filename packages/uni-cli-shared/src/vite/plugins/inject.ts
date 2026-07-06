@@ -25,6 +25,7 @@ import {
   withSourcemap,
 } from '../utils'
 import { isUniHelpers } from '../../uts'
+import { shouldUseHighResolutionSourceMap } from '../../x'
 
 interface Scope {
   parent: Scope
@@ -192,7 +193,7 @@ export function uniViteInjectPlugin(
 
       walk(ast, {
         enter(node, parent) {
-          if (sourceMap) {
+          if (sourceMap && shouldUseHighResolutionSourceMap()) {
             magicString.addSourcemapLocation((node as AstNodeLocation).start)
             magicString.addSourcemapLocation((node as AstNodeLocation).end)
           }
@@ -239,7 +240,11 @@ export function uniViteInjectPlugin(
 
       return {
         code: magicString.toString(),
-        map: sourceMap ? magicString.generateMap({ hires: true }) : null,
+        map: sourceMap
+          ? magicString.generateMap({
+              hires: shouldUseHighResolutionSourceMap(),
+            })
+          : null,
       }
     },
   }

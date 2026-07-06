@@ -5,7 +5,9 @@ import {
   isEnableConsole,
   isUniAppXAndroidNative,
   normalizePath,
+  parseIndependentMainRoot,
   resolveBuiltIn,
+  withIndependentRoot,
 } from '@dcloudio/uni-cli-shared'
 
 const uniConsoleRuntimePlugin = (): Plugin => {
@@ -92,12 +94,16 @@ export default () => {
           if (!hasRuntimeSocket) {
             return
           }
-          if (!opts.filter(id)) {
+          const independentRoot = parseIndependentMainRoot(id)
+          if (!opts.filter(id) && !independentRoot) {
             return
           }
+          const runtimePath = independentRoot
+            ? withIndependentRoot(uniConsolePath, independentRoot)
+            : normalizePath(uniConsolePath)
           return {
             // 采用绝对路径引入，此时，tsc失效，代码里需要自己处理好各种类型问题
-            code: `import '${normalizePath(uniConsolePath)}';${code}`,
+            code: `import '${runtimePath}';${code}`,
             map: null,
           }
         },

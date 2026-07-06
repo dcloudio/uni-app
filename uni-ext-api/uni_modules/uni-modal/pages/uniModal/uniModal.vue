@@ -34,7 +34,7 @@
 						</text>
 					</view>
 					<view v-if="showCancel" class="uni-modal-dialog__split" :class="{ 'uni-modal--dark': isDark }"></view>
-					<view class="uni-modal-dialog__action" :hover-class="hoverClassName" @click="handleSure">
+					<view class="uni-modal-dialog__action uni-modal-dialog__action--confirm" :hover-class="hoverClassName" @click="handleSure">
 						<text :style="{ color: confirmColor }" max-lines="1"
 							class="uni-modal-dialog__action-text uni-modal-dialog__action-text--confirm">
 							{{ confirmText }}
@@ -446,7 +446,7 @@
 	.uni-modal-dialog__body {
 		justify-content: center;
 		align-items: center;
-		padding: 0 24px;
+		padding: 0 22px;
 		margin-bottom: 13px;
 	}
 	.uni-modal-dialog__body.no-title {
@@ -513,29 +513,22 @@
 	}
 
 	.uni-modal-dialog__action {
-		width: 50%;
-		height: 100%;
-		display: flex;
-		align-items: center;
 		justify-content: center;
 		flex-grow: 1;
 	}
+	
+	.uni-modal-dialog__action--cancel{
+		padding: 0 4px 0 10px;
+	}
+	.uni-modal-dialog__action--confirm{
+		padding: 0 10px 0 4px;
+	}
 
 	.uni-modal-dialog__action--hover {
-		width: 50%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
 		background-color: #efefef;
 	}
 
 	.uni-modal-dialog__action--hover-dark {
-		width: 50%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
 		background-color: #1c1c1c;
 	}
 

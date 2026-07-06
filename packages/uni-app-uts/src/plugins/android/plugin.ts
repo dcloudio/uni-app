@@ -28,6 +28,7 @@ import {
   parseUniXAppAndroidPackage,
   parseVueRequest,
   resolveMainPathOnce,
+  resolveMainUtsName,
   resolveSourceMapPath,
   resolveUTSCompiler,
   rewriteUniModulesConsoleExpr,
@@ -272,36 +273,40 @@ export function uniAppPlugin(): UniVitePlugin {
     },
     async writeBundle() {
       const { compileApp } = resolveUTSCompiler()
+      const entryFileName = resolveMainUtsName()
       if (!isNormalCompileTarget()) {
         if (process.env.UNI_COMPILE_TARGET === 'ext-api') {
           if (uniXKotlinCompiler) {
             await uniXKotlinCompiler.addRootFile(
-              path.join(tscOutputDir, 'main.uts.ts')
+              path.join(tscOutputDir, entryFileName + '.ts')
             )
             await uniXKotlinCompiler.close()
-            const res = await compileApp(path.join(uvueOutputDir, 'main.uts'), {
-              pageCount: 0,
-              split: false,
-              disableSplitManifest: process.env.NODE_ENV !== 'development',
-              inputDir: uvueOutputDir,
-              outputDir: outputDir,
-              outFilename: `${
-                process.env.UNI_COMPILE_EXT_API_OUT_FILE_NAME || 'components'
-              }.kt`,
-              package: parseKotlinPackageWithPluginId(
-                process.env.UNI_COMPILE_EXT_API_PLUGIN_ID!,
-                true
-              ),
-              sourceMap: false,
-              uni_modules: uniExtApiUniModulesDeps,
-              pages: getUniXPagePaths(),
-              extApiComponents: [],
-              uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
-              transform: {
-                uvueClassNamePrefix: 'Uni',
-                uvueClassNameOnlyBasename: true,
-              },
-            })
+            const res = await compileApp(
+              path.join(uvueOutputDir, entryFileName),
+              {
+                pageCount: 0,
+                split: false,
+                disableSplitManifest: process.env.NODE_ENV !== 'development',
+                inputDir: uvueOutputDir,
+                outputDir: outputDir,
+                outFilename: `${
+                  process.env.UNI_COMPILE_EXT_API_OUT_FILE_NAME || 'components'
+                }.kt`,
+                package: parseKotlinPackageWithPluginId(
+                  process.env.UNI_COMPILE_EXT_API_PLUGIN_ID!,
+                  true
+                ),
+                sourceMap: false,
+                uni_modules: uniExtApiUniModulesDeps,
+                pages: getUniXPagePaths(),
+                extApiComponents: [],
+                uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
+                transform: {
+                  uvueClassNamePrefix: 'Uni',
+                  uvueClassNameOnlyBasename: true,
+                },
+              }
+            )
             if (res?.error) {
               throw res.error
             }
@@ -312,7 +317,7 @@ export function uniAppPlugin(): UniVitePlugin {
       if (uniXKotlinCompiler) {
         // 如果 main.uts.ts 没有被添加到 uniXKotlinCompiler 中，则添加
         // 有可能首次编译失败，并没有走到这里，二次编译导致了changedFiles有内容
-        const mainFile = path.join(tscOutputDir, 'main.uts.ts')
+        const mainFile = path.join(tscOutputDir, entryFileName + '.ts')
         if (!uniXKotlinCompiler.hasRootFile(mainFile)) {
           await uniXKotlinCompiler.addRootFile(mainFile)
         }
@@ -341,7 +346,7 @@ export function uniAppPlugin(): UniVitePlugin {
       } else {
         process.env.UNI_APP_X_UNICLOUD_OBJECT = 'false'
       }
-      const res = await compileApp(path.join(uvueOutputDir, 'main.uts'), {
+      const res = await compileApp(path.join(uvueOutputDir, entryFileName), {
         pageCount,
         uniCloudObjectInfo,
         split: split !== false,
@@ -423,7 +428,7 @@ export function uniAppPlugin(): UniVitePlugin {
 
 function normalizeFilename(filename: string, isMain = false) {
   if (isMain) {
-    return 'main.uts'
+    return resolveMainUtsName()
   }
   return parseUTSRelativeFilename(filename, process.env.UNI_INPUT_DIR)
 }

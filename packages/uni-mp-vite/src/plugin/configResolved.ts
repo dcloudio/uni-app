@@ -1,3 +1,4 @@
+import path from 'path'
 import debug from 'debug'
 import { isString } from '@vue/shared'
 import type { Plugin, ResolvedConfig } from 'vite'
@@ -30,6 +31,7 @@ import {
   parseVirtualComponentPath,
   parseVirtualPagePath,
 } from '../plugins/entry'
+import { getIndependentRootByFilename } from '../plugins/independentUtils'
 
 const debugNVueCss = debug('uni:nvue-css')
 const cssVars = `page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-bottom:0px;--window-left:0px;--window-right:0px;--window-magin:0px}`
@@ -193,7 +195,10 @@ export function createConfigResolved({
               /**
                * 兼容发布为小程序分包模式
                */
-              const uvueCssPath = relativeFile(filename, `uvue${extname}`)
+              const uvueCssPath = relativeFile(
+                filename,
+                resolveUVueCssFilename(filename, extname)
+              )
               cssCode = `@import "${uvueCssPath}";\n` + cssCode
               // let addUvueCss = false
               // if (
@@ -235,8 +240,10 @@ export function createConfigResolved({
           if (nvueCssPaths.find((pageCssPath) => pageCssPath === normalized)) {
             debugNVueCss(normalized)
             return (
-              `@import "${relativeFile(normalized, 'nvue' + extname)}";\n` +
-              cssCode
+              `@import "${relativeFile(
+                normalized,
+                resolveNVueCssFilename(normalized, extname)
+              )}";\n` + cssCode
             )
           }
           return cssCode
@@ -253,6 +260,28 @@ export function createConfigResolved({
       )
     }
   }
+}
+
+export function resolveUVueCssFilename(filename: string, extname: string) {
+  return resolveBuiltInStyleFilename(filename, 'uvue', extname)
+}
+
+export function resolveNVueCssFilename(filename: string, extname: string) {
+  return resolveBuiltInStyleFilename(filename, 'nvue', extname)
+}
+
+function resolveBuiltInStyleFilename(
+  filename: string,
+  name: 'uvue' | 'nvue',
+  extname: string
+) {
+  const inputDir = process.env.UNI_INPUT_DIR
+  const independentRoot = inputDir
+    ? getIndependentRootByFilename(path.resolve(inputDir, filename), inputDir)
+    : undefined
+  return independentRoot
+    ? `${independentRoot}/${name}${extname}`
+    : `${name}${extname}`
 }
 
 function adjustCssExtname(extname: string): Plugin {

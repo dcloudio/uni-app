@@ -13009,6 +13009,24 @@ const CreateInteractiveAdProtocol = {
     },
 };
 
+const API_CREATE_DRAMA_AD = 'createDramaAd';
+const CreateDramaAdOptions = {
+    formatArgs: {
+        adpid(value, params) {
+            if (!value) {
+                return 'adpid should not be empty.';
+            }
+            params.adpid = value;
+        },
+    },
+};
+const CreateDramaAdProtocol = {
+    adpid: {
+        type: String,
+        required: true,
+    },
+};
+
 function warpPlusSuccessCallback(resolve, after) {
     return function successCallback(data) {
         delete data.code;
@@ -18430,10 +18448,32 @@ function serializeUniElement(el, type) {
     return { __type__: type, pageId, nodeId };
 }
 function toRaw(observed) {
-    const raw = observed && observed.__v_raw;
-    return raw ? toRaw(raw) : observed;
+    const seen = new WeakSet();
+    let current = observed;
+    while (current) {
+        const raw = current.__v_raw;
+        if (!raw) {
+            return current;
+        }
+        if (typeof current === 'object' || typeof current === 'function') {
+            if (seen.has(current)) {
+                return current;
+            }
+            seen.add(current);
+        }
+        current = raw;
+    }
+    return current;
 }
-function normalizeArg(arg, callbacks, keepAlive, context) {
+const SKIP_CIRCULAR_REFERENCE = {};
+function enterStack(arg, stack) {
+    if (stack.has(arg)) {
+        return false;
+    }
+    stack.add(arg);
+    return true;
+}
+function normalizeArg(arg, callbacks, keepAlive, context, stack = new WeakSet()) {
     arg = toRaw(arg);
     const isVaporAndroid = false;
     if (typeof arg === 'function') {
@@ -18451,8 +18491,23 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
         return id;
     }
     else if (isArray(arg)) {
+        if (!enterStack(arg, stack)) {
+            return SKIP_CIRCULAR_REFERENCE;
+        }
         context.depth++;
-        return arg.map((item) => normalizeArg(item, callbacks, keepAlive, context));
+        const newArg = new Array(arg.length);
+        try {
+            arg.forEach((item, index) => {
+                const value = normalizeArg(item, callbacks, keepAlive, context, stack);
+                if (value !== SKIP_CIRCULAR_REFERENCE) {
+                    newArg[index] = value;
+                }
+            });
+            return newArg;
+        }
+        finally {
+            stack.delete(arg);
+        }
         // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
     }
     else if (arg instanceof ArrayBuffer) {
@@ -18483,18 +18538,29 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
             // }
             // const newObj = normalizeArg(obj, {}, false)
             // newObj.a = 2 // 这会污染原始对象 obj
+            if (!enterStack(arg, stack)) {
+                return SKIP_CIRCULAR_REFERENCE;
+            }
             const newArg = {};
-            Object.keys(arg).forEach((name) => {
-                context.depth++;
-                newArg[name] = normalizeArg(arg[name], callbacks, keepAlive, context);
-            });
-            return newArg;
+            try {
+                Object.keys(arg).forEach((name) => {
+                    context.depth++;
+                    const value = normalizeArg(arg[name], callbacks, keepAlive, context, stack);
+                    if (value !== SKIP_CIRCULAR_REFERENCE) {
+                        newArg[name] = value;
+                    }
+                });
+                return newArg;
+            }
+            finally {
+                stack.delete(arg);
+            }
         }
     }
     return arg;
 }
-function initUTSInstanceMethod(async, opts, instanceId, proxy) {
-    return initProxyFunction('method', async, opts, instanceId, proxy);
+function initUTSInstanceMethod(async, opts, instanceIdOrInstance, proxy) {
+    return initProxyFunction('method', async, opts, instanceIdOrInstance, proxy);
 }
 function getProxy() {
     if (!proxy) {
@@ -18504,9 +18570,9 @@ function getProxy() {
     }
     return proxy;
 }
-function resolveSyncResult(args, res, returnOptions, instanceId, proxy) {
+function resolveSyncResult(args, res, returnOptions, instanceIdOrInstance, proxy) {
     if ((process.env.NODE_ENV !== 'production')) {
-        console.log('uts.invokeSync.result', JSON.stringify([res, returnOptions, instanceId, typeof proxy]));
+        console.log('uts.invokeSync.result', JSON.stringify([res, returnOptions, instanceIdOrInstance, typeof proxy]));
     }
     if (!res) {
         throw new Error('返回值为：' +
@@ -18532,12 +18598,16 @@ function resolveSyncResult(args, res, returnOptions, instanceId, proxy) {
             if (!res.params) {
                 return null;
             }
+            let instanceId = typeof instanceIdOrInstance === 'number'
+                ? instanceIdOrInstance
+                : undefined;
             if (res.params === instanceId && proxy) {
                 return proxy;
             }
             if (interfaceDefines[returnOptions.options]) {
                 const ProxyClass = initUTSProxyClass(extend({ instanceId: res.params }, interfaceDefines[returnOptions.options]));
-                return new ProxyClass();
+                const result = new ProxyClass();
+                return result;
             }
         }
     }
@@ -18553,13 +18623,17 @@ function invokePropGetter(args) {
     }
     return resolveSyncResult(args, getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, keepAlive, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
+function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, keepAlive, params: methodParams, return: returnOptions, errMsg, }, instanceIdOrInstance, proxy) {
     if (!keepAlive) {
         keepAlive =
             (methodName.indexOf('on') === 0 || methodName.indexOf('off') === 0) &&
                 methodParams.length === 1 &&
                 methodParams[0].type === 'UTSCallback';
     }
+    // id: 0为非法instanceId
+    const isNumber = typeof instanceIdOrInstance === 'number';
+    let instanceId = isNumber ? instanceIdOrInstance : undefined;
+    let instance = isNumber ? undefined : instanceIdOrInstance;
     const baseArgs = instanceId
         ? {
             moduleName,
@@ -18571,18 +18645,29 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             nested: false,
             keepAlive,
         }
-        : {
-            moduleName,
-            moduleType,
-            package: pkg,
-            class: cls,
-            name: method || methodName,
-            type,
-            companion,
-            method: methodParams,
-            nested: false,
-            keepAlive,
-        };
+        : instance
+            ? {
+                moduleName,
+                moduleType,
+                ins: instance,
+                type,
+                name: methodName,
+                method: methodParams,
+                nested: true,
+                keepAlive,
+            }
+            : {
+                moduleName,
+                moduleType,
+                package: pkg,
+                class: cls,
+                name: method || methodName,
+                type,
+                companion,
+                method: methodParams,
+                nested: false,
+                keepAlive,
+            };
     return (...args) => {
         if (errMsg) {
             throw new Error(errMsg);
@@ -18636,7 +18721,7 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
         if ((process.env.NODE_ENV !== 'production')) {
             console.log('uts.invokeSync.args', invokeArgs);
         }
-        return resolveSyncResult(invokeArgs, getProxy().invokeSync(invokeArgs, invokeCallback), returnOptions, instanceId, proxy);
+        return resolveSyncResult(invokeArgs, getProxy().invokeSync(invokeArgs, invokeCallback), returnOptions, instanceIdOrInstance, proxy);
     };
 }
 function initUTSStaticMethod(async, opts) {
@@ -19257,6 +19342,453 @@ class InteractiveAd extends AdEventHandler {
 const createInteractiveAd = defineSyncApi(API_CREATE_INTERACTIVE_AD, (options) => {
     return new InteractiveAd(options);
 }, CreateInteractiveAdProtocol, CreateInteractiveAdOptions);
+
+const DRAMA_EVENT_TYPE = {
+    load: 'load',
+    error: 'error',
+    adEvent: 'adEvent',
+    unlockEvent: 'unlockEvent',
+    play: 'play',
+};
+const DRAMA_CALLBACK_KEYS = ['success', 'fail', 'complete'];
+/** 将原始错误码归一化为数字，兼容数字字符串。 */
+function normalizeDramaErrorCode(code) {
+    if (typeof code === 'number' && Number.isFinite(code)) {
+        return code;
+    }
+    if (typeof code === 'string' && code.trim() !== '') {
+        const parsed = Number(code);
+        if (Number.isFinite(parsed)) {
+            return parsed;
+        }
+    }
+    return -1;
+}
+/** 统一判断可作为短剧 ID 的值。 */
+function isValidDramaId(id) {
+    if (id === null || id === undefined) {
+        return false;
+    }
+    if (typeof id === 'number') {
+        return !Number.isNaN(id);
+    }
+    if (typeof id === 'string') {
+        return id.trim().length > 0;
+    }
+    return false;
+}
+/**
+ * 将异常标准化为短剧错误对象。
+ * 同时输出 `message` 与 uni 习惯的 `errMsg`，方便两种消费方式。
+ */
+function normalizeDramaError(error) {
+    if (isObject$1(error)) {
+        const data = error;
+        const message = data.message || data.errMsg || 'drama ad error';
+        return {
+            code: normalizeDramaErrorCode(data.code),
+            message,
+            errMsg: message,
+            detail: data.detail,
+            event: data.event,
+        };
+    }
+    if (typeof error === 'string') {
+        return {
+            code: -1,
+            message: error,
+            errMsg: error,
+        };
+    }
+    return {
+        code: -1,
+        message: 'drama ad error',
+        errMsg: 'drama ad error',
+        detail: error,
+    };
+}
+/** 从 options 或位置参数中解析出 success/fail/complete 回调。 */
+function resolveDramaCallbacks(options, successCallback, failCallback) {
+    let success = successCallback;
+    let fail = failCallback;
+    let complete;
+    if (isObject$1(options)) {
+        const data = options;
+        if (!isFunction(success) && isFunction(data.success)) {
+            success = data.success;
+        }
+        if (!isFunction(fail) && isFunction(data.fail)) {
+            fail = data.fail;
+        }
+        if (isFunction(data.complete)) {
+            complete = data.complete;
+        }
+    }
+    return { success, fail, complete };
+}
+/** 去掉传给原生的回调字段，避免污染原生参数。 */
+function stripDramaCallbackKeys(data) {
+    for (let i = 0; i < DRAMA_CALLBACK_KEYS.length; i++) {
+        delete data[DRAMA_CALLBACK_KEYS[i]];
+    }
+    return data;
+}
+/** 生成参数校验错误，确保错误结构稳定。 */
+function createInvalidParamError(message) {
+    return {
+        code: -1,
+        message,
+    };
+}
+/** 规范 getList 的参数并做边界校验。 */
+function normalizeDramaListOptions(options) {
+    if (options === undefined) {
+        return {};
+    }
+    if (!isObject$1(options)) {
+        throw createInvalidParamError('getList options should be an object');
+    }
+    const data = stripDramaCallbackKeys(Object.assign({}, options));
+    if (data.page !== undefined) {
+        if (!Number.isInteger(data.page) || data.page < 1) {
+            throw createInvalidParamError('page should be a positive integer');
+        }
+    }
+    if (data.pageSize !== undefined) {
+        if (!Number.isInteger(data.pageSize) || data.pageSize < 1) {
+            throw createInvalidParamError('pageSize should be a positive integer');
+        }
+    }
+    if (data.order !== undefined) {
+        const validOrder = data.order === 'default' ||
+            data.order === 'reverse' ||
+            data.order === 0 ||
+            data.order === 1;
+        if (!validOrder) {
+            throw createInvalidParamError('order should be "default" | "reverse" | 0 | 1');
+        }
+    }
+    return data;
+}
+/** 规范 getInfo 参数，强制 dramaId/dramaIds 二选一。 */
+function normalizeDramaInfoOptions(options) {
+    if (options === undefined) {
+        throw createInvalidParamError('getInfo options is required');
+    }
+    if (!isObject$1(options)) {
+        throw createInvalidParamError('getInfo options should be an object');
+    }
+    const data = options;
+    const hasDramaId = isValidDramaId(data.dramaId);
+    const hasDramaIds = isArray(data.dramaIds) && data.dramaIds.length > 0;
+    if (!hasDramaId && !hasDramaIds) {
+        throw createInvalidParamError('dramaId or dramaIds is required');
+    }
+    if (hasDramaId && hasDramaIds) {
+        throw createInvalidParamError('dramaId and dramaIds cannot be used together');
+    }
+    if (hasDramaIds) {
+        const dramaIds = data.dramaIds;
+        if (!dramaIds.every((id) => isValidDramaId(id))) {
+            throw createInvalidParamError('dramaIds should contain valid id values');
+        }
+    }
+    return stripDramaCallbackKeys(Object.assign({}, data));
+}
+/** 校验整数范围，越界直接抛出错误。 */
+function assertIntegerInRange(value, field, min, max) {
+    if (!Number.isInteger(value)) {
+        throw createInvalidParamError(`${field} should be an integer`);
+    }
+    const num = value;
+    if (num < min || num > max) {
+        throw createInvalidParamError(`${field} should be between ${min} and ${max}`);
+    }
+}
+/** 校验激励视频服务端回调透传参数。 */
+function normalizeDramaUrlCallback(urlCallback) {
+    if (!isObject$1(urlCallback)) {
+        throw createInvalidParamError('urlCallback should be an object');
+    }
+    const data = urlCallback;
+    if (data.userId !== undefined && typeof data.userId !== 'string') {
+        throw createInvalidParamError('urlCallback.userId should be a string');
+    }
+    if (data.extra !== undefined && typeof data.extra !== 'string') {
+        throw createInvalidParamError('urlCallback.extra should be a string');
+    }
+}
+/** 规范 open 参数，保证必填字段合法。 */
+function normalizeDramaOpenOptions(options) {
+    if (!isObject$1(options)) {
+        throw createInvalidParamError('open options should be an object');
+    }
+    const data = stripDramaCallbackKeys(Object.assign({}, options));
+    if (!isValidDramaId(data.dramaId)) {
+        throw createInvalidParamError('dramaId is required');
+    }
+    if (data.episode !== undefined) {
+        if (!Number.isInteger(data.episode) || data.episode < 1) {
+            throw createInvalidParamError('episode should be a positive integer');
+        }
+    }
+    if (data.lock !== undefined) {
+        assertIntegerInRange(data.lock, 'lock', 1, 10);
+    }
+    if (data.free !== undefined) {
+        assertIntegerInRange(data.free, 'free', 1, 20);
+    }
+    if (data.urlCallback !== undefined) {
+        normalizeDramaUrlCallback(data.urlCallback);
+    }
+    return data;
+}
+class DramaAd {
+    constructor(options) {
+        this._callbacks = {
+            load: [],
+            error: [],
+            adEvent: [],
+            unlockEvent: [],
+            play: [],
+        };
+        this._destroyed = false;
+        this._initError = null;
+        const plusAd = plus.ad;
+        if (!plusAd || !isFunction(plusAd.createDramaAd)) {
+            // 当前平台（如 Android / 旧基座）不支持短剧能力，
+            // 不在构造期直接抛错，改为后续调用时通过 reject / error 事件暴露。
+            this._initError = createInvalidParamError('drama ad unavailable');
+            this._adInstance = null;
+            return;
+        }
+        try {
+            this._adInstance = plusAd.createDramaAd(options);
+        }
+        catch (error) {
+            this._initError = normalizeDramaError(error);
+            this._adInstance = null;
+            return;
+        }
+        this._bindNativeEvents();
+    }
+    /** 绑定原生短剧事件并转发到 uni 侧监听。 */
+    _bindNativeEvents() {
+        const ad = this._adInstance;
+        if (!ad) {
+            return;
+        }
+        ad.onLoad &&
+            ad.onLoad((result) => {
+                this._dispatchEvent(DRAMA_EVENT_TYPE.load, result || {});
+            });
+        ad.onError &&
+            ad.onError((error) => {
+                this._dispatchEvent(DRAMA_EVENT_TYPE.error, normalizeDramaError(error));
+            });
+        ad.onAdEvent &&
+            ad.onAdEvent((result) => {
+                this._dispatchEvent(DRAMA_EVENT_TYPE.adEvent, result || {});
+            });
+        ad.onUnlockEvent &&
+            ad.onUnlockEvent((result) => {
+                this._dispatchEvent(DRAMA_EVENT_TYPE.unlockEvent, result || {});
+            });
+        if (isFunction(ad.onPlayEvent)) {
+            ad.onPlayEvent((result) => {
+                this._dispatchEvent(DRAMA_EVENT_TYPE.play, result || {});
+            });
+        }
+        else if (isFunction(ad.onPlay)) {
+            ad.onPlay((result) => {
+                this._dispatchEvent(DRAMA_EVENT_TYPE.play, result || {});
+            });
+        }
+    }
+    /** 执行原生异步方法，返回原始 Promise（不在此处触发业务回调）。 */
+    _invoke(method, options) {
+        if (this._destroyed) {
+            return Promise.reject(normalizeDramaError(createInvalidParamError('drama ad instance has been destroyed')));
+        }
+        if (this._initError || !this._adInstance) {
+            return Promise.reject(normalizeDramaError(this._initError ||
+                createInvalidParamError('drama adapter unavailable')));
+        }
+        const invokeFn = this._adInstance[method];
+        if (!isFunction(invokeFn)) {
+            return Promise.reject(normalizeDramaError(createInvalidParamError(`drama ad method "${method}" is not supported`)));
+        }
+        return new Promise((resolve, reject) => {
+            invokeFn.call(this._adInstance, options, (result) => {
+                resolve(result || {});
+            }, (error) => {
+                reject(normalizeDramaError(error));
+            });
+        });
+    }
+    /**
+     * 双模适配：
+     * - 传了 success/fail/complete 时走回调，并返回一个永不 reject 的 Promise，
+     *   避免回调模式下产生 unhandledRejection；
+     * - 未传回调时返回真正的 Promise，支持 await/then。
+     */
+    _settle(promise, callbacks) {
+        const { success, fail, complete } = callbacks;
+        const hasCallback = isFunction(success) || isFunction(fail) || isFunction(complete);
+        if (!hasCallback) {
+            return promise;
+        }
+        return promise.then((result) => {
+            if (isFunction(success)) {
+                success(result);
+            }
+            if (isFunction(complete)) {
+                complete(result);
+            }
+            return result;
+        }, (error) => {
+            if (isFunction(fail)) {
+                fail(error);
+            }
+            if (isFunction(complete)) {
+                complete(error);
+            }
+            return undefined;
+        });
+    }
+    /** 拉取短剧列表。 */
+    getList(options, successCallback, failCallback) {
+        const callbacks = resolveDramaCallbacks(options, successCallback, failCallback);
+        let params;
+        try {
+            params = normalizeDramaListOptions(options);
+        }
+        catch (error) {
+            return this._settle(Promise.reject(normalizeDramaError(error)), callbacks);
+        }
+        return this._settle(this._invoke('getList', params), callbacks);
+    }
+    /** 查询指定短剧信息。 */
+    getInfo(options, successCallback, failCallback) {
+        const callbacks = resolveDramaCallbacks(options, successCallback, failCallback);
+        let params;
+        try {
+            params = normalizeDramaInfoOptions(options);
+        }
+        catch (error) {
+            return this._settle(Promise.reject(normalizeDramaError(error)), callbacks);
+        }
+        return this._settle(this._invoke('getInfo', params), callbacks);
+    }
+    /** 打开短剧播放详情页。 */
+    open(options, successCallback, failCallback) {
+        const callbacks = resolveDramaCallbacks(options, successCallback, failCallback);
+        let params;
+        try {
+            params = normalizeDramaOpenOptions(options);
+        }
+        catch (error) {
+            return this._settle(Promise.reject(normalizeDramaError(error)), callbacks);
+        }
+        return this._settle(this._invoke('open', params), callbacks);
+    }
+    /** 销毁短剧广告实例并清理事件监听。 */
+    destroy() {
+        if (this._destroyed) {
+            return;
+        }
+        this._destroyed = true;
+        if (this._adInstance && isFunction(this._adInstance.destroy)) {
+            this._adInstance.destroy();
+        }
+        this._callbacks.load.length = 0;
+        this._callbacks.error.length = 0;
+        this._callbacks.adEvent.length = 0;
+        this._callbacks.unlockEvent.length = 0;
+        this._callbacks.play.length = 0;
+    }
+    /** 注册 load 事件。 */
+    onLoad(callback) {
+        this._addEventListener(DRAMA_EVENT_TYPE.load, callback);
+    }
+    /** 移除 load 事件。 */
+    offLoad(callback) {
+        this._removeEventListener(DRAMA_EVENT_TYPE.load, callback);
+    }
+    /** 注册 error 事件。 */
+    onError(callback) {
+        this._addEventListener(DRAMA_EVENT_TYPE.error, callback);
+    }
+    /** 移除 error 事件。 */
+    offError(callback) {
+        this._removeEventListener(DRAMA_EVENT_TYPE.error, callback);
+    }
+    /** 注册广告事件。 */
+    onAdEvent(callback) {
+        this._addEventListener(DRAMA_EVENT_TYPE.adEvent, callback);
+    }
+    /** 移除广告事件。 */
+    offAdEvent(callback) {
+        this._removeEventListener(DRAMA_EVENT_TYPE.adEvent, callback);
+    }
+    /** 注册解锁事件。 */
+    onUnlockEvent(callback) {
+        this._addEventListener(DRAMA_EVENT_TYPE.unlockEvent, callback);
+    }
+    /** 移除解锁事件。 */
+    offUnlockEvent(callback) {
+        this._removeEventListener(DRAMA_EVENT_TYPE.unlockEvent, callback);
+    }
+    /** 注册播放事件。 */
+    onPlayEvent(callback) {
+        this._addEventListener(DRAMA_EVENT_TYPE.play, callback);
+    }
+    /** 移除播放事件。 */
+    offPlayEvent(callback) {
+        this._removeEventListener(DRAMA_EVENT_TYPE.play, callback);
+    }
+    /** 增加事件监听，已销毁或非函数监听会被忽略。 */
+    _addEventListener(type, callback) {
+        if (this._destroyed || !isFunction(callback)) {
+            return;
+        }
+        this._callbacks[type].push(callback);
+    }
+    /** 移除事件监听，callback 为空时移除该类事件全部监听。 */
+    _removeEventListener(type, callback) {
+        const callbacks = this._callbacks[type];
+        if (!isFunction(callback)) {
+            callbacks.length = 0;
+            return;
+        }
+        const index = callbacks.indexOf(callback);
+        if (index > -1) {
+            callbacks.splice(index, 1);
+        }
+    }
+    /** 分发事件并做浅拷贝，避免监听器修改共享对象。 */
+    _dispatchEvent(type, result) {
+        const callbacks = this._callbacks[type];
+        if (!callbacks.length) {
+            return;
+        }
+        const payload = isObject$1(result)
+            ? Object.assign({}, result)
+            : {};
+        callbacks.slice().forEach((callback) => {
+            try {
+                callback(payload);
+            }
+            catch (e) {
+                // 单个监听器异常不应阻断其它监听器
+                console.error('drama ad event callback error', e);
+            }
+        });
+    }
+}
+const createDramaAd = defineSyncApi(API_CREATE_DRAMA_AD, (options) => {
+    return new DramaAd(options);
+}, CreateDramaAdProtocol, CreateDramaAdOptions);
 
 const downgrade = plus.os.name === 'Android' && parseInt(plus.os.version) < 6;
 const ANI_SHOW = downgrade ? 'slide-in-right' : 'pop-in';
@@ -20657,6 +21189,7 @@ var uni$1 = {
   createAnimation: createAnimation,
   createBLEConnection: createBLEConnection,
   createCanvasContext: createCanvasContext,
+  createDramaAd: createDramaAd,
   createFullScreenVideoAd: createFullScreenVideoAd,
   createInnerAudioContext: createInnerAudioContext,
   createInteractiveAd: createInteractiveAd,

@@ -1,4 +1,4 @@
-import { getGlobal, UTS, UTSJSONObject, UTSValueIterable, UniError, VIRTUAL_HOST_ID, SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, VIRTUAL_HOST_STYLE, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, UNI_STATUS_BAR_HEIGHT, UNI_SAFE_AREA_INSET_BOTTOM, customizeEvent, addLeadingSlash, stringifyQuery, ON_BACK_PRESS } from '@dcloudio/uni-shared';
+import { getGlobal, UTS, UTSJSONObject, UTSValueIterable, UniError, VIRTUAL_HOST_ID, SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, VIRTUAL_HOST_STYLE, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, UNI_STATUS_BAR_HEIGHT, UNI_SAFE_AREA_INSET_BOTTOM, customizeEvent, createUniDOMStringMap, addLeadingSlash, stringifyQuery, ON_BACK_PRESS } from '@dcloudio/uni-shared';
 export { UTS, UTSJSONObject, UTSValueIterable, UniError } from '@dcloudio/uni-shared';
 import { isArray, isFunction, capitalize, hasOwn, extend, isPlainObject, isString } from '@vue/shared';
 import { onUpdated, pruneUniElements, onUnmounted, destroyUniElements, injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, devtoolsComponentAdded, pruneComponentPropsCache } from 'vue';
@@ -263,6 +263,46 @@ function initRuntimeHooks(mpOptions, runtimeHooks) {
     });
 }
 
+let runtimeSubpackageRoot;
+const runtimeSubpackages = Object.create(null);
+function resolveSubpackageRoot(root) {
+    return (normalizeSubpackageRoot(root) ||
+        normalizeSubpackageRoot(process.env.UNI_SUBPACKAGE));
+}
+function setRuntimeSubpackageRoot(root) {
+    runtimeSubpackageRoot = normalizeSubpackageRoot(root);
+}
+function getRuntimeSubpackageRoot() {
+    return runtimeSubpackageRoot;
+}
+function setSubpackageAppVm(root, vm, independent) {
+    const subpackageRoot = normalizeSubpackageRoot(root);
+    if (!subpackageRoot) {
+        return;
+    }
+    setRuntimeSubpackageRoot(subpackageRoot);
+    {
+        // 普通分包保留旧的全局存储策略，兼容 UNI_SUBPACKAGE 单独编译等历史路径。
+        const globalObject = my;
+        (globalObject.$subpackages || (globalObject.$subpackages = {}))[subpackageRoot] = {
+            $vm: vm,
+        };
+    }
+}
+function getSubpackageAppVm() {
+    var _a, _b, _c;
+    const subpackageRoot = getRuntimeSubpackageRoot();
+    if (!subpackageRoot) {
+        return;
+    }
+    // 独立分包优先命中 runtime 内缓存；普通分包继续回退到历史的全局缓存。
+    return (((_a = runtimeSubpackages[subpackageRoot]) === null || _a === void 0 ? void 0 : _a.$vm) ||
+        ((_c = (_b = my.$subpackages) === null || _b === void 0 ? void 0 : _b[subpackageRoot]) === null || _c === void 0 ? void 0 : _c.$vm));
+}
+function normalizeSubpackageRoot(root) {
+    return typeof root === 'string' ? root.replace(/^\/+|\/+$/g, '') : undefined;
+}
+
 const HOOKS = [
     ON_SHOW,
     ON_HIDE,
@@ -334,7 +374,7 @@ function initCreateApp(parseAppOptions) {
     };
 }
 function initCreateSubpackageApp(parseAppOptions) {
-    return function createApp(vm) {
+    return function createApp(vm, root) {
         const appOptions = parseApp(vm, parseAppOptions);
         const app = isFunction(getApp) &&
             getApp({
@@ -357,11 +397,7 @@ function initCreateSubpackageApp(parseAppOptions) {
             }
         });
         initAppLifecycle(appOptions, vm);
-        if (process.env.UNI_SUBPACKAGE) {
-            (my.$subpackages || (my.$subpackages = {}))[process.env.UNI_SUBPACKAGE] = {
-                $vm: vm,
-            };
-        }
+        setSubpackageAppVm(resolveSubpackageRoot(root), vm);
     };
 }
 function initAppLifecycle(appOptions, vm) {
@@ -583,27 +619,50 @@ function initBehaviors(vueOptions) {
 
 let $createComponentFn;
 let $destroyComponentFn;
+let $createComponentAppVm;
+let $destroyComponentAppVm;
+const componentAppVmMap = new WeakMap();
 function getAppVm() {
     if (process.env.UNI_MP_PLUGIN) {
         return my.$vm;
     }
-    if (process.env.UNI_SUBPACKAGE) {
-        return my.$subpackages[process.env.UNI_SUBPACKAGE].$vm;
+    const subpackageAppVm = getSubpackageAppVm();
+    if (subpackageAppVm) {
+        return subpackageAppVm;
     }
     return getApp().$vm;
 }
 function $createComponent(initialVNode, options) {
-    if (!$createComponentFn) {
-        $createComponentFn = getAppVm().$createComponent;
+    const appVm = getAppVm();
+    if (!$createComponentFn || $createComponentAppVm !== appVm) {
+        $createComponentAppVm = appVm;
+        $createComponentFn = appVm.$createComponent;
     }
     const proxy = $createComponentFn(initialVNode, options);
-    return getExposeProxy(proxy.$) || proxy;
+    const exposeProxy = getComponentExposeProxy(proxy);
+    componentAppVmMap.set(proxy, appVm);
+    if (exposeProxy && typeof exposeProxy === 'object') {
+        componentAppVmMap.set(exposeProxy, appVm);
+    }
+    return exposeProxy || proxy;
 }
 function $destroyComponent(instance) {
-    if (!$destroyComponentFn) {
-        $destroyComponentFn = getAppVm().$destroyComponent;
+    const appVm = componentAppVmMap.get(instance) || getAppVm();
+    if (!$destroyComponentFn || $destroyComponentAppVm !== appVm) {
+        $destroyComponentAppVm = appVm;
+        $destroyComponentFn = appVm.$destroyComponent;
     }
-    return $destroyComponentFn(instance);
+    try {
+        return $destroyComponentFn(instance);
+    }
+    finally {
+        componentAppVmMap.delete(instance);
+    }
+}
+function getComponentExposeProxy(proxy) {
+    return typeof getExposeProxy === 'function'
+        ? getExposeProxy(proxy.$)
+        : undefined;
 }
 
 function initPageInstance(mpPageInstance) {
@@ -809,7 +868,7 @@ function triggerEvent(type, detail) {
         return;
     }
     const target = {
-        dataset: {},
+        dataset: createUniDOMStringMap() ,
     };
     handler({
         type: customizeEvent(type),
