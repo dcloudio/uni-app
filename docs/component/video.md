@@ -287,45 +287,43 @@ UniVideoControlsToggleEvent -- Extends --> UniVideoEvent
 
 #### UniVideoRecycleEvent
 video组件回收事件对象
+```mermaid
+graph LR
+  
+UniVideoRecycleEvent -- Extends --> UniCustomEvent&ltUniVideoRecycleEventDetail&gt
+  style UniCustomEvent&ltUniVideoRecycleEventDetail&gt color:#42b983
+  click UniCustomEvent&ltUniVideoRecycleEventDetail&gt "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unicustomevent"
+```
+##### UniVideoRecycleEventDetail
+video组件回收时的状态信息
 
-##### UniVideoRecycleEvent 的属性值
+###### UniVideoRecycleEventDetail 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | T | 是 |  |   |  |
-| bubbles | boolean | 是 |  |   | 是否冒泡 |
-| cancelable | boolean | 是 |  |   | 是否可以取消 |
-| type | string | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 事件类型<br/> |
-| target | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 触发事件的组件<br/> |
-| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 当前组件<br/> |
-| timeStamp | number | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 事件发生时的时间戳<br/> |
+| isPlaying | boolean | 是 |  |   | 回收时是否处于播放状态。回收时暂停状态此值为false |
+| currentTime | number | 是 |  |   | 回收时播放视频的进度 |
+| duration | number | 是 |  |   | 回收时播放视频的总时长 |
 
-
-##### UniVideoRecycleEvent 的方法
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| stopPropagation | () => void | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 | 阻止当前事件的进一步传播<br/> |
-| preventDefault | () => void | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS: 4.55; HarmonyOS: 4.61 | 阻止当前事件的默认行为<br/> |
 
 #### UniVideoReuseEvent
 
+```mermaid
+graph LR
+  
+UniVideoReuseEvent -- Extends --> UniCustomEvent&ltUniVideoReuseEventDetail&gt
+  style UniCustomEvent&ltUniVideoReuseEventDetail&gt color:#42b983
+  click UniCustomEvent&ltUniVideoReuseEventDetail&gt "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unicustomevent"
+```
+##### UniVideoReuseEventDetail
 
-##### UniVideoReuseEvent 的属性值
+
+###### UniVideoReuseEventDetail 的属性值
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| detail | T | 是 |  |   |  |
-| bubbles | boolean | 是 |  |   | 是否冒泡 |
-| cancelable | boolean | 是 |  |   | 是否可以取消 |
-| type | string | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 事件类型<br/> |
-| target | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 触发事件的组件<br/> |
-| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 当前组件<br/> |
-| timeStamp | number | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: 4.61 | 事件发生时的时间戳<br/> |
+| isPlaying | boolean | 是 |  |   | 回收时是否处于播放状态。回收时暂停状态此值为false |
+| currentTime | number | 是 |  |   | 回收时播放视频的进度 |
+| duration | number | 是 |  |   | 回收时播放视频的总时长 |
 
-
-##### UniVideoReuseEvent 的方法
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| stopPropagation | () => void | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 | 阻止当前事件的进一步传播<br/> |
-| preventDefault | () => void | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS: 4.55; HarmonyOS: 4.61 | 阻止当前事件的默认行为<br/> |
 
 
 <!-- UTSCOMJSON.video.component_type -->
