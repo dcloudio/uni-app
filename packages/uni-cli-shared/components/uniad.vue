@@ -1,5 +1,5 @@
 <template>
-  <view :class="[customFullscreen?'uni-ad-custom':'',customFullscreen]" :style="style" @click="onclick">
+  <view :class="[customFullscreen?'uni-ad-custom':'',customFullscreen]" :style="style" @click="_onclick">
     <uniad-plugin
       class="uniad-plugin"
       :adpid="adpid"
@@ -10,9 +10,12 @@
       @error="_onmperror"
       @nextChannel="_onnextchannel"
       @customFullscreen="_customFullscreen"
+      @halfScreenReady="_onHalfScreenReady"
+      @halfScreenTap="_onHalfScreenTap"
+      @halfScreenModal="_onHalfScreenModal"
     />
     <!-- #ifdef MP-WEIXIN -->
-    <ad-custom v-if="userwx" :adIntervals="adIntervals" :unit-id="userUnitId" class="uni-ad-custom" data-com-type="wx" :class="[customFullscreen]" @load="_onmpload" @error="_onmperror"></ad-custom>
+    <ad-custom v-if="userwx && !isHalfScreen" :adIntervals="adIntervals" :unit-id="userUnitId" class="uni-ad-custom" data-com-type="wx" :class="[customFullscreen]" @load="_onmpload" @error="_onmperror"></ad-custom>
     <!-- <uniad-plugin-wx v-if="wxchannel" class="uniad-plugin-wx" :class="[customFullscreen]" data-com-type="wx" @load="_onmpload" @error="_onwxchannelerror"></uniad-plugin-wx> -->
     <!-- #endif -->
   </view>

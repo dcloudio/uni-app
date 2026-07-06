@@ -36,9 +36,9 @@ function createRpx2Unit (unit, unitRatio, unitPrecision) {
    * @param {string | number} val
    * @returns {string}
    */
-  return function(val) {
+  return function (val) {
     if (unitRE.test(val)) {
-      return val.replace(unitRE, function(m, $1) {
+      return val.replace(unitRE, function (m, $1) {
         if (!$1) {
           return m
         }
