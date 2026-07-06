@@ -50,7 +50,7 @@ App平台蒸汽模式（Vapor） `text` 组件新增支持 `hover-class` 实现�
 
 **注意**
 - 蒸汽模式（Vapor）子 `text` 组件不支持 hover 相关功能
-- 非蒸汽模式（Vapor) `text` 组件不支持 hover 相关功能
+- VDOM模式 `text` 组件不支持 hover 相关功能
 
 
 ### 空白字符
@@ -1239,6 +1239,14 @@ App 端不支持 `text` 组件中渲染多段文本，如果 `text` 组件中的
 - [京东小程序文档](https://mp-docs.jd.com/doc/dev/framework/-1)
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
+
+## max-lines
+
+多行文本设置最大行，目前在web规范中，需使用临时规范-webkit-line-clamp，并搭配display: -webkit-box。\
+
+App平台在VDOM模式时使用了自定义的css属性lines，在蒸汽模式下改成了text的max-lines组件属性。
+
+web和小程序的text组件暂未支持max-lines组件属性，后续蒸汽模式的全平台text组件都将支持max-lines属性，并在web和小程序上编译为-webkit写法。
 
 ## Bug & Tips@tips
 - app-Android和app-iOS平台 selectable开启后，仅支持全部文字复制，不支持自由调整光标选择文字。如需自由选择文字，请使用[rich-text组件](rich-text.md)。web平台默认就是可复制文字的，selectable无效。
