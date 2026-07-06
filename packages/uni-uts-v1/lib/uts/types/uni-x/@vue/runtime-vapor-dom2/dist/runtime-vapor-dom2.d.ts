@@ -23,9 +23,8 @@ declare class DynamicFragment extends VaporFragment {
   current?: BlockFn;
   fallback?: BlockFn;
   getScope?: (key: any) => EffectScope$1 | undefined;
-  hasFallthroughAttrs?: true;
   constructor(anchorLabel?: string);
-  update(render?: BlockFn | null, key?: any, noScope?: boolean): void;
+  update(render?: BlockFn | null, key?: any): void;
   private renderBranch;
 }
 //#endregion
@@ -34,8 +33,6 @@ type NodeRef = string | Ref | ((ref: Element) => void);
 type RefEl = UniElement | VaporSharedDataComponentInstance | DynamicFragment | VaporFragment;
 type setRefFn = (el: RefEl | null, ref: NodeRef, refFor?: boolean | null, refKey?: string | null) => NodeRef | undefined;
 export declare function createSharedDataTemplateRefSetter(): setRefFn;
-export declare function setSharedDataStaticTemplateRef(el: RefEl | null, ref: NodeRef, refFor?: boolean | null, refKey?: string | null): NodeRef | undefined;
-export declare function setSharedDataTemplateRefBinding(el: RefEl | null, getter: () => any, setter?: setRefFn, refFor?: boolean | null, refKey?: string | null): void;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/block.d.ts
 type Block = Node | VaporFragment | DynamicFragment | VaporSharedDataComponentInstance | Block[] | RefEl;
@@ -225,7 +222,6 @@ export declare function isVaporSharedDataComponent(value: unknown): value is Vap
 * element if the resolution fails.
 */
 export declare function createSharedDataComponentWithFallback(comp: VaporSharedDataComponent | string | any, rawCid?: string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, flags?: number, appContext?: GenericAppContext): VaporSharedDataComponentInstance | null;
-export declare function createSharedDataAssetComponent(name: string, rawCid?: string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, flags?: number, maybeSelfReference?: boolean, appContext?: GenericAppContext): VaporSharedDataComponentInstance | null;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateApp.d.ts
 export declare const createVaporApp: CreateAppFunction<ParentNode, VaporSharedDataComponent>;
@@ -292,9 +288,6 @@ declare function onReused(callback: () => void): void;
 declare function onBeforeRecycle(callback: () => void): void;
 export declare const onRecycle: typeof onBeforeRecycle;
 export declare const onReuse: typeof onReused;
-//#endregion
-//#region temp/packages/runtime-vapor-dom2/src/apiResolveBuiltInComponent.d.ts
-export declare function resolveBuiltInComponent(name: string): VaporSharedDataComponent;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateDynamicComponent.d.ts
 export declare function createSharedDataDynamicComponent(getter: () => any, setter: (ins: VaporSharedDataComponentInstance | null) => any, rawCid?: string, rawProps?: RawProps | null, rawSlots?: RawSlots | null, flags?: number): VaporSharedDataComponentInstance | null;
