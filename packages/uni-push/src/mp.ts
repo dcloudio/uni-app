@@ -1,8 +1,8 @@
 import {
-  createAppidRequiredError,
-  initGtPush,
   type PushCallback,
   type PushCallbackData,
+  createAppidRequiredError,
+  initGtPush,
 } from './shared'
 
 declare const wx: any
