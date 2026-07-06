@@ -350,7 +350,6 @@ function createMoveToVendorChunkFn(): GetManualChunk | undefined {
   }
 }
 
-
 function resolveIndependentCommonChunkName(root: string, chunkName: string) {
   const normalizedRoot = normalizePath(root).replace(/\/$/, '')
   const normalizedChunkName = normalizePath(chunkName)

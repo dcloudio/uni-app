@@ -136,8 +136,9 @@ export function createApp(subApp) {
       'package-independent'
     )
 
-    await expect(createPlugin().transform.call({ resolve }, source, id)).rejects
-      .toThrow('独立分包 main 暂不支持 app.component 注册全局组件')
+    await expect(
+      createPlugin().transform.call({ resolve }, source, id)
+    ).rejects.toThrow('独立分包 main 暂不支持 app.component 注册全局组件')
   })
 
   test('allows non app component calls in independent root main', async () => {
