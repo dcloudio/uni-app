@@ -557,7 +557,7 @@ export default {
 | template | x | x | x | x | x | x | 4.61 | x |
 | render | 4.0 | x | 3.9 | x | 4.11 | x | 4.61 | x |
 | compilerOptions | x | x | x | x | x | x | 4.61 | x |
-| slots | 4.0 | 4.41 | 3.9 | x | 4.11 | 5.11 | 4.61 | 5.03 |
+| slots | 4.0 | 4.41 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 | 5.03 |
 
 ### 示例代码 @example
 
@@ -823,6 +823,10 @@ export default {
         <text>{{ isOnPullDownRefreshTriggered }}</text>
       </view>
       <view class="flex flex-row justify-between mt-10">
+        <text>onPageScroll 触发：</text>
+        <text>{{ isOnPageScrollTriggered }}</text>
+      </view>
+      <view class="flex flex-row justify-between mt-10">
         <text>onReachBottom 触发：</text>
         <text>{{ isOnReachBottomTriggered }}</text>
       </view>
@@ -838,11 +842,20 @@ export default {
         <text>onResize 触发：</text>
         <text>{{ isOnResizeTriggered }}</text>
       </view>
+			<MonitorAppLifecycleOptions />
 			<MonitorPageLifecycleOptions />
       <button class="mt-10" @click="scrollToBottom">scrollToBottom</button>
       <button class="mt-10" @click="pullDownRefresh">
         trigger pullDownRefresh
       </button>
+      <!-- #ifndef MP -->
+      <button class="mt-10" @click="openLifecycleDialogPage">
+        openDialogPage
+      </button>
+      <button class="mt-10" @click="closeLifecycleDialogPage">
+        closeDialogPage
+      </button>
+      <!-- #endif -->
 			<button class="mt-10" @click="goOnBackPress">
         跳转 onBackPress 示例
       </button>
@@ -854,12 +867,13 @@ export default {
 
 <script lang="uts">
 import { state, setLifeCycleNum } from '@/store/index.uts'
+import MonitorAppLifecycleOptions from './monitor-app-lifecycle-options.uvue'
 import MonitorPageLifecycleOptions from './monitor-page-lifecycle-options.uvue'
  type DataInfo = {
  	isScrolled: boolean
  }
 export default {
-	components: { MonitorPageLifecycleOptions },
+	components: { MonitorAppLifecycleOptions, MonitorPageLifecycleOptions },
 	data() {
 		return {
 			isOnloadTriggered: false,
@@ -925,7 +939,7 @@ export default {
 		setLifeCycleNum(state.lifeCycleNum - 100)
 	},
 	onResize(options: OnResizeOptions) {
-		console.log('onBackPress', options)
+		console.log('onResize', options)
 		this.isOnResizeTriggered = true
 		// 自动化测试
 		setLifeCycleNum(state.lifeCycleNum + 10)
@@ -955,6 +969,20 @@ export default {
 				scrollTop: 2000,
 			})
 		},
+		resetPageScrollStatus() {
+			this.isOnPageScrollTriggered = false
+			this.dataInfo.isScrolled = false
+		},
+		// #ifndef MP
+		openLifecycleDialogPage() {
+			uni.openDialogPage({
+				url: '/pages/lifecycle/page/dialog-page',
+			})
+		},
+		closeLifecycleDialogPage() {
+			uni.closeDialogPage()
+		},
+		// #endif
 		goOnBackPress() {
 			uni.navigateTo({url: '/pages/lifecycle/page/onBackPress/on-back-press-options'})
 		}
@@ -1096,8 +1124,8 @@ export default {
 
 |  | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| provide | 4.0 | 4.41 | 3.99 | x | 4.11 | 5.11 | 4.61 | 5.0 |
-| inject | 4.0 | 4.41 | 3.99 | x | 4.11 | 5.11 | 4.61 | 5.0 |
+| provide | 4.0 | 4.41 | 3.99 | 5.21 | 4.11 | 5.11 | 4.61 | 5.03 |
+| inject | 4.0 | 4.41 | 3.99 | 5.21 | 4.11 | 5.11 | 4.61 | 5.03 |
 | mixins | 4.0 | 4.41 | 3.99 | x | 4.11 | x | 4.61 | x |
 
 ### inject
@@ -1949,7 +1977,7 @@ export default {
 |  | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- | :- |
 | name | 4.0 | 4.41 | 3.9 | x | 4.11 | x | 4.61 | x |
-| inheritAttrs | 4.0 | √ | 3.9 | x | 4.11 | 5.11 | 4.61 | 5.03 |
+| inheritAttrs | 4.0 | √ | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 | 5.03 |
 | components | 4.0 | 4.41 | 3.9 | x | 4.11 | x | 4.61 | x |
 
 

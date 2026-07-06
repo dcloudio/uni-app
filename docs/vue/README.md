@@ -306,9 +306,9 @@ style通过lang属性，可以支持less、scss、stylus等css预处理语言。
 
 
 ##### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | √ | 3.9 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 4.61 | 5.03 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | √ | 3.9 | 4.11 | 4.61 | 5.03 |
 
 
 ##### 属性 

@@ -58,9 +58,9 @@ UniTextElement -- Extends --> UniElement
 setText
 设置文本
 ###### setText 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.81 | x | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 4.81 | x | x | x |
 
 ##### 参数 
 
@@ -74,9 +74,9 @@ setText
 setColor
 设置文本颜色
 ###### setColor 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.81 | x | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 4.81 | x | x | x |
 
 ##### 参数 
 
@@ -90,9 +90,9 @@ setColor
 setFontFamily
 设置字体名称
 ###### setFontFamily 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.81 | x | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 4.81 | x | x | x |
 
 ##### 参数 
 
@@ -106,9 +106,9 @@ setFontFamily
 setFontSize
 设置字体大小
 ###### setFontSize 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.81 | x | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 4.81 | x | x | x |
 
 ##### 参数 
 
@@ -122,9 +122,9 @@ setFontSize
 setFontStyle
 设置字体样式
 ###### setFontStyle 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.81 | x | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 4.81 | x | x | x |
 
 ##### 参数 
 
@@ -138,9 +138,9 @@ setFontStyle
 setFontWeight
 设置字体粗细
 ###### setFontWeight 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.81 | x | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 4.81 | x | x | x |
 
 ##### 参数 
 
@@ -154,9 +154,9 @@ setFontWeight
 setLineHeight
 设置行高
 ###### setLineHeight 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.81 | x | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 4.81 | x | x | x |
 
 ##### 参数 
 
@@ -170,9 +170,9 @@ setLineHeight
 setTextAlign
 设置文字水平对齐方式
 ###### setTextAlign 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.81 | x | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 4.81 | x | x | x |
 
 ##### 参数 
 
@@ -186,9 +186,9 @@ setTextAlign
 setTextOverflow
 设置文字溢出裁剪方式
 ###### setTextOverflow 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.81 | x | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 4.81 | x | x | x |
 
 ##### 参数 
 
@@ -202,9 +202,9 @@ setTextOverflow
 setTextShadow
 设置文字阴影
 ###### setTextShadow 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.81 | x | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 4.81 | x | x | x |
 
 ##### 参数 
 
@@ -218,9 +218,9 @@ setTextShadow
 setTextDecorationLine
 设置文本修饰类型
 ###### setTextDecorationLine 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.81 | x | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 4.81 | x | x | x |
 
 ##### 参数 
 
@@ -234,9 +234,9 @@ setTextDecorationLine
 setWhiteSpace
 设置处理空白字符
 ###### setWhiteSpace 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.81 | x | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 4.81 | x | x | x |
 
 ##### 参数 
 
@@ -250,9 +250,9 @@ setWhiteSpace
 append
 添加子文本对象
 ###### append 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.81 | x | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 4.81 | x | x | x |
 
 ##### 参数 
 
@@ -266,9 +266,9 @@ append
 measure
 测量文本大小
 ###### measure 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.81 | x | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 4.81 | x | x | x |
 
 ##### 参数 
 
@@ -280,10 +280,10 @@ measure
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| minWidth | number | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素最小宽度，逻辑像素值<br/>可选值，不设置则认为没有最小宽度 |
-| maxWidth | number | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素最大宽度，逻辑像素值<br/>可选值，不设置则认为可以无限宽 |
-| minHeight | number | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素最小高度，逻辑像素值<br/>可选值，不设置则认为没有最小高度 |
-| maxHeight | number | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素最大高度，逻辑像素值<br/>可选值，不设置则认为可以无限高 | 
+| minWidth | number | 否 |  | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素最小宽度，逻辑像素值<br/>可选值，不设置则认为没有最小宽度 |
+| maxWidth | number | 否 |  | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素最大宽度，逻辑像素值<br/>可选值，不设置则认为可以无限宽 |
+| minHeight | number | 否 |  | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素最小高度，逻辑像素值<br/>可选值，不设置则认为没有最小高度 |
+| maxHeight | number | 否 |  | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素最大高度，逻辑像素值<br/>可选值，不设置则认为可以无限高 | 
 
 
 ###### 返回值 
@@ -296,24 +296,24 @@ measure
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| width | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素宽度，逻辑像素值 |
-| height | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素高度，逻辑像素值 | 
+| width | number | 是 |  | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素宽度，逻辑像素值 |
+| height | number | 是 |  | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素高度，逻辑像素值 | 
 
 ###### UniLayoutConstraintSize 的属性值 @unilayoutconstraintsize-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| minWidth | number | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素最小宽度，逻辑像素值<br/>可选值，不设置则认为没有最小宽度 |
-| maxWidth | number | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素最大宽度，逻辑像素值<br/>可选值，不设置则认为可以无限宽 |
-| minHeight | number | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素最小高度，逻辑像素值<br/>可选值，不设置则认为没有最小高度 |
-| maxHeight | number | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素最大高度，逻辑像素值<br/>可选值，不设置则认为可以无限高 |
+| minWidth | number | 否 |  | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素最小宽度，逻辑像素值<br/>可选值，不设置则认为没有最小宽度 |
+| maxWidth | number | 否 |  | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素最大宽度，逻辑像素值<br/>可选值，不设置则认为可以无限宽 |
+| minHeight | number | 否 |  | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素最小高度，逻辑像素值<br/>可选值，不设置则认为没有最小高度 |
+| maxHeight | number | 否 |  | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素最大高度，逻辑像素值<br/>可选值，不设置则认为可以无限高 |
 
 ###### UniLayoutSize 的属性值 @unilayoutsize-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| width | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素宽度，逻辑像素值 |
-| height | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素高度，逻辑像素值 |
+| width | number | 是 |  | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素宽度，逻辑像素值 |
+| height | number | 是 |  | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素高度，逻辑像素值 |
 
 
 
@@ -342,8 +342,8 @@ measure
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| width | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素宽度，逻辑像素值 |
-| height | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 元素高度，逻辑像素值 | 
+| width | number | 是 |  | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素宽度，逻辑像素值 |
+| height | number | 是 |  | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素高度，逻辑像素值 | 
 
 
 

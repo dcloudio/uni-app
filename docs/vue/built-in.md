@@ -6,15 +6,15 @@
 | :- | :- |
 | v-text | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
 | v-html | Web: 4.0; 微信小程序: x; Android(VDOM): 3.99; Android(Vapor): x; iOS: x; HarmonyOS: x |
-| v-show | Web: 4.0; 微信小程序: 4.11; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 |
-| v-if | Web: 4.0; 微信小程序: 4.11; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 |
-| v-else | Web: 4.0; 微信小程序: 4.11; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 |
-| v-else-if | Web: 4.0; 微信小程序: 4.11; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 |
-| v-for | Web: 4.0; 微信小程序: 4.11; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 |
-| v-on | Web: 4.0; 微信小程序: 4.11; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 |
-| v-bind | Web: 4.0; 微信小程序: 4.11; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 |
-| v-model | Web: 4.0; 微信小程序: 4.11; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 |
-| v-slot | Web: 4.0; 微信小程序: 4.11; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS: 4.61 |
+| v-show | Web: 4.0; 微信小程序: 4.11; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
+| v-if | Web: 4.0; 微信小程序: 4.11; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
+| v-else | Web: 4.0; 微信小程序: 4.11; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
+| v-else-if | Web: 4.0; 微信小程序: 4.11; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
+| v-for | Web: 4.0; 微信小程序: 4.11; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
+| v-on | Web: 4.0; 微信小程序: 4.11; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
+| v-bind | Web: 4.0; 微信小程序: 4.11; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
+| v-model | Web: 4.0; 微信小程序: 4.11; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
+| v-slot | Web: 4.0; 微信小程序: 4.11; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 | v-pre | Web: 4.0; 微信小程序: x; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
 | v-once | Web: x; 微信小程序: x; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
 | v-memo | Web: x; 微信小程序: x; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
@@ -2149,9 +2149,9 @@ const incrementNum = () =>{
 
 
 ##### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | √ | 3.9 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 4.61 | 5.03 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | √ | 3.9 | 4.11 | 4.61 | 5.03 |
 
 
 `<template>` 有2个用途：
@@ -2219,15 +2219,15 @@ const incrementNum = () =>{
 
 
 ##### 兼容性
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.11 | 3.9 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 4.61 | 5.03 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.11 | 3.9 | 4.11 | 4.61 | 5.03 |
 
 
 ##### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| name | string |   | Web: 4.0; 微信小程序: √; Android(VDOM): 3.9; Android(Vapor): x; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 用于命名插槽。 |
+| name | string |   | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 用于命名插槽。 |
 
 
 

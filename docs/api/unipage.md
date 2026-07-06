@@ -624,7 +624,7 @@ querySelector
 ##### querySelector 兼容性 
 | Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS uni-app x UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- |
-| 5.0 | x | 5.0 | 5.0 | x | 5.0 | x |
+| 5.0 | x | 5.0 | 5.0 | 5.21 | 5.0 | x |
 
 
 ##### 参数 
@@ -653,7 +653,7 @@ querySelectorAll
 ##### querySelectorAll 兼容性 
 | Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS | HarmonyOS uni-app x UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- |
-| x | x | 5.0 | 5.0 | x | 5.0 | x |
+| x | x | 5.0 | 5.0 | 5.21 | 5.0 | x |
 
 
 ##### 参数 

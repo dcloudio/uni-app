@@ -76,42 +76,29 @@ UniCanvasElement -- Extends --> UniElement
 
 
 
-#### toBlob(callback: BlobCallback, type: string): void @toblob
+<!-- CUSTOMTYPEJSON.UniCanvasElement.methods.toBlob_1.name -->
 
+<!-- CUSTOMTYPEJSON.UniCanvasElement.methods.toBlob_1.description -->
 
+<!-- CUSTOMTYPEJSON.UniCanvasElement.methods.toBlob_1.compatibility -->
 
+<!-- CUSTOMTYPEJSON.UniCanvasElement.methods.toBlob_1.param -->
 
+<!-- CUSTOMTYPEJSON.UniCanvasElement.methods.toBlob_1.returnValue -->
 
-##### 参数 
+<!-- CUSTOMTYPEJSON.UniCanvasElement.methods.toBlob_1.tutorial -->
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | BlobCallback | 是 |  |   |  |
-| type | string | 是 |  |   |  | 
+<!-- CUSTOMTYPEJSON.UniCanvasElement.methods.toBlob_2.name -->
 
+<!-- CUSTOMTYPEJSON.UniCanvasElement.methods.toBlob_2.description -->
 
+<!-- CUSTOMTYPEJSON.UniCanvasElement.methods.toBlob_2.compatibility -->
 
+<!-- CUSTOMTYPEJSON.UniCanvasElement.methods.toBlob_2.param -->
 
+<!-- CUSTOMTYPEJSON.UniCanvasElement.methods.toBlob_2.returnValue -->
 
-
-#### toBlob(callback: BlobCallback, type: string, quality: number): void @toblob
-
-
-
-
-
-##### 参数 
-
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | BlobCallback | 是 |  |   |  |
-| type | string | 是 |  |   |  |
-| quality | number | 是 |  |   |  | 
-
-
-
-
-
+<!-- CUSTOMTYPEJSON.UniCanvasElement.methods.toBlob_2.tutorial -->
 
 #### toDataURL(type?: string \| null, encoderOptions?: any \| null): string @todataurl
 
