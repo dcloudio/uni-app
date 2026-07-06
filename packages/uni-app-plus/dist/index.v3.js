@@ -529,16 +529,6 @@ var serviceContext = (function () {
     }
   }
 
-  function sortObject (obj) {
-    const sortObj = {};
-    if (isPlainObject(obj)) {
-      Object.keys(obj).sort().forEach(key => {
-        sortObj[key] = obj[key];
-      });
-    }
-    return !Object.keys(sortObj) ? obj : sortObj
-  }
-
   const encodeReserveRE = /[!'()*]/g;
   const encodeReserveReplacer = c => '%' + c.charCodeAt(0).toString(16);
   const commaRE = /%2C/g;
@@ -8115,14 +8105,14 @@ var serviceContext = (function () {
       deviceOrientation,
       deviceType,
       model: deviceModel,
-      platform: _osName,
-      system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
       osName,
       osVersion,
       osLanguage,
       osTheme,
+      platform: _osName,
       romName,
-      romVersion
+      romVersion,
+      system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`
     }
   }
 
@@ -8156,15 +8146,15 @@ var serviceContext = (function () {
       hostLanguage,
       hostTheme,
       hostFontSizeSetting: undefined,
+      isUniAppX: false,
       language: osLanguage,
       SDKVersion: '',
       theme: plus.navigator.getUIStyle(),
-      version: plus.runtime.innerVersion,
-      isUniAppX: false,
       uniPlatform,
       uniRuntimeVersion,
       uniCompileVersion,
-      uniCompilerVersion: uniCompileVersion
+      uniCompilerVersion: uniCompileVersion,
+      version: plus.runtime.innerVersion
     }
   }
 
@@ -8206,7 +8196,7 @@ var serviceContext = (function () {
       delete _systemInfo.theme;
     }
 
-    return sortObject(_systemInfo)
+    return _systemInfo
   }
 
   function vibrateLong () {
@@ -9274,7 +9264,7 @@ var serviceContext = (function () {
     header,
     timeout
   } = {}) {
-    timeout = (timeout || (__uniConfig.networkTimeout && __uniConfig.networkTimeout.request) || 60 * 1000) / 1000;
+    timeout = (timeout || (__uniConfig.networkTimeout && __uniConfig.networkTimeout.downloadFile) || 60 * 1000) / 1000;
     const downloader = plus.downloader.createDownload(url, {
       timeout,
       filename: TEMP_PATH + '/download/',
@@ -21341,7 +21331,7 @@ var serviceContext = (function () {
     callback.invoke(callbackId, data);
   });
 
-  const methods$2 = ['insertDivider', 'insertImage', 'insertText', 'setContents', 'getContents', 'clear', 'removeFormat', 'undo', 'redo', 'blur', 'getSelectionText', 'scrollIntoView'];
+  const methods$2 = ['insertDivider', 'insertMention', 'insertLink', 'insertImage', 'insertText', 'setContents', 'getContents', 'clear', 'removeFormat', 'undo', 'redo', 'blur', 'getSelectionText', 'scrollIntoView'];
 
   class EditorContext {
     constructor (id, pageId) {
@@ -21493,6 +21483,7 @@ var serviceContext = (function () {
 
     destroy () {
       clearInterval(this.__timing);
+      this.__timing = undefined;
       invokeMethod('destroyAudioInstance', {
         audioId: this.id
       });
@@ -21543,16 +21534,20 @@ var serviceContext = (function () {
     if (audio) {
       emit(audio, state, errMsg, errCode);
       if (state === 'play') {
-        const oldCurrentTime = audio.currentTime;
-        emit(audio, 'timeupdate');
-        audio.__timing = setInterval(() => {
-          const currentTime = audio.currentTime;
-          if (currentTime !== oldCurrentTime) {
-            emit(audio, 'timeupdate');
-          }
-        }, 200);
-      } else if (state === 'pause' || state === 'stop' || state === 'error') {
+        if (!audio.__timing) {
+          emit(audio, 'timeupdate');
+          let lastCurrentTime = audio.currentTime;
+          audio.__timing = setInterval(() => {
+            const currentTime = audio.currentTime;
+            if (currentTime !== lastCurrentTime) {
+              lastCurrentTime = currentTime;
+              emit(audio, 'timeupdate');
+            }
+          }, 200);
+        }
+      } else if (state === 'pause' || state === 'stop' || state === 'ended' || state === 'error') {
         clearInterval(audio.__timing);
+        audio.__timing = undefined;
       }
     }
   });
@@ -21879,6 +21874,7 @@ var serviceContext = (function () {
         });
         return
       case 'success':
+        try { tempFilePath = decodeURIComponent(tempFilePath); } catch (e) { }
         invoke$1(callbackId, {
           tempFilePath,
           statusCode,
