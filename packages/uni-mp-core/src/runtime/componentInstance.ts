@@ -23,6 +23,8 @@ import {
 import type { MPComponentInstance } from './component'
 import { getTriggerEventDetail } from './util'
 
+declare const my: any
+
 const MP_METHODS = [
   'createSelectorQuery',
   'createIntersectionObserver',
