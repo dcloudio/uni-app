@@ -34,6 +34,8 @@ type NodeRef = string | Ref | ((ref: Element) => void);
 type RefEl = UniElement | VaporSharedDataComponentInstance | DynamicFragment | VaporFragment;
 type setRefFn = (el: RefEl | null, ref: NodeRef, refFor?: boolean | null, refKey?: string | null) => NodeRef | undefined;
 export declare function createSharedDataTemplateRefSetter(): setRefFn;
+export declare function setSharedDataStaticTemplateRef(el: RefEl | null, ref: NodeRef, refFor?: boolean | null, refKey?: string | null): NodeRef | undefined;
+export declare function setSharedDataTemplateRefBinding(el: RefEl | null, getter: () => any, setter?: setRefFn, refFor?: boolean | null, refKey?: string | null): void;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/block.d.ts
 type Block = Node | VaporFragment | DynamicFragment | VaporSharedDataComponentInstance | Block[] | RefEl;
