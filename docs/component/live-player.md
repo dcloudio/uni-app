@@ -36,20 +36,20 @@
 | picture-in-picture-init-position | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>小窗模式下小窗的初始显示位置，格式为 (alignment, y)，其中 alignment 表示小窗吸附屏幕左侧还是右侧，可选值为 left、right，y 代表小窗最顶部所在的屏幕高度百分比 |
 | enable-auto-rotation | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否开启手机横屏时自动全屏，当系统设置开启自动旋转时生效 |
 | referrer-policy | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>格式固定为 `https://servicewechat.com/{appid}/{version}/page-frame.html`，其中 {appid} 为小程序的 appid，{version} 为小程序的版本号，版本号为 0 表示为开发版、体验版以及审核版本，版本号为 devtools 表示为开发者工具，其余为正式版本； |
-| enable-casting | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否支持投屏。开启后，可以通过 [LivePlayerContext]((../api/create-live-player-context)) 上相关方法进行操作。 |
-| duration | number |   |   |   |
-| initial-time | number |   |   |   |
-| loop | boolean |   |   |   |
-| codec | string |   |   |   |
-| show-play-btn | boolean |   |   |   |
-| show-mute-btn | boolean |   |   |   |
-| show-fullscreen-btn | boolean |   |   |   |
-| show-progress | boolean |   |   |   |
-| enable-progress-gesture | boolean |   |   |   |
-| poster | string |   |   |   |
-| controls | boolean |   |   |   |
-| show-center-play-btn | boolean |   |   |   |
-| show-loading | boolean |   |   |   |
+| enable-casting | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否支持投屏。开启后，可以通过 [LivePlayerContext]((LivePlayerContext)) 上相关方法进行操作。 |
+| duration | number | 0 |   |   |
+| initial-time | number | 0 |   |   |
+| loop | boolean | false |   |   |
+| codec | string | "auto" |   |   |
+| show-play-btn | boolean | true |   |   |
+| show-mute-btn | boolean | true |   |   |
+| show-fullscreen-btn | boolean | true |   |   |
+| show-progress | boolean | false |   |   |
+| enable-progress-gesture | boolean | true |   |   |
+| poster | string | "" |   |   |
+| controls | boolean | true |   |   |
+| show-center-play-btn | boolean | true |   |   |
+| show-loading | boolean | true |   |   |
 | @statechange | (event: [UniLivePlayerStatechangeEvent](#uniliveplayerstatechangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 播放状态变化事件，event.detail = {code} |
 | @fullscreenchange | (event: [UniLivePlayerFullscreenchangeEvent](#uniliveplayerfullscreenchangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 全屏变化事件，event.detail = {direction, fullScreen} |
 | @error | (event: [UniLivePlayerErrorEvent](#uniliveplayererrorevent)) => void |   | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS:   | 错误事件，event.detail = {errCode, errMsg} |

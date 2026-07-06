@@ -34,7 +34,7 @@
 | auto-focus | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 自动获取焦点，与`focus`属性对比，此属性只会首次生效。 |
 | focus | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 获取焦点 |
 | confirm-type | string | "return" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.15; HarmonyOS: 4.61 | 设置键盘右下角按钮的文字 |
-| cursor | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定focus时的光标位置 |
+| cursor | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定focus时的光标位置 |
 | confirm-hold | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 点击键盘右下角按钮时是否保持键盘不收起 |
 | auto-height | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.65 | 是否自动增高，设置auto-height时，style.height不生效 |
 | cursor-spacing | number | 0 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 指定光标与键盘的距离，单位 px 。取 textarea 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离 |
@@ -56,6 +56,7 @@
 | @keyboardheightchange | (event: [UniInputKeyboardHeightChangeEvent](#uniinputkeyboardheightchangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 键盘高度发生变化的时候触发此事件，event.detail = {height: height, duration: duration} |
 | @focus | (event: [UniTextareaFocusEvent](#unitextareafocusevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度，在基础库 1.9.90 起支持 |
 | @change | (event: [UniInputChangeEvent](#uniinputchangeevent)) => void |   | Web: 4.81; 微信小程序: 4.41; Android: 4.73; iOS: 4.73; HarmonyOS: 4.73 | 非聚焦状态内容改变时触发（仅组件失去焦点时且用户输入改变内容才触发） |
+| @update:value | Event |   |   |   |
 
 #### confirm-type 的属性描述
 

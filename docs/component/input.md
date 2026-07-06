@@ -39,7 +39,7 @@
 | focus | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 获取焦点 |
 | confirm-type | string | "done" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设置键盘右下角按钮的文字，仅在 type为text 时生效。 |
 | confirm-hold | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 点击键盘右下角按钮时是否保持键盘不收起 |
-| cursor | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定focus时的光标位置 |
+| cursor | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定focus时的光标位置 |
 | selection-start | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 光标起始位置，自动聚集时有效，需与selection-end搭配使用 |
 | selection-end | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 光标结束位置，自动聚集时有效，需与selection-satrt搭配使用 |
 | adjust-position | boolean | true | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 键盘弹起时，是否自动上推页面 |
@@ -63,13 +63,13 @@
 | @change | (event: [UniInputChangeEvent](#uniinputchangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.73; iOS: 4.73; HarmonyOS: 4.73 | 非聚焦状态内容改变时触发（仅组件失去焦点时且用户输入改变内容才触发），event.detail = {value: value} |
 | @confirm | (event: [UniInputConfirmEvent](#uniinputconfirmevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 点击完成按钮时触发，event.detail = {value: value} |
 | @nicknamereview | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>用户昵称审核完毕后触发，仅在 type 为 "nickname" 时有效，event.detail = { pass, timeout } |
+| @update:value | Event |   |   |   |
 
 #### type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | none | Web: 5.0; 微信小程序: x; Android: 4.73; iOS: 4.73; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 获取焦点时不显示软键盘 |
-| search | Web: 5.0; 微信小程序: x; Android: 4.73; iOS: 4.73; HarmonyOS 系统版本: x; HarmonyOS: 4.73 | 为搜索输入优化的虚拟键盘 |
 | email | Web: 5.0; 微信小程序: x; Android: 4.73; iOS: 4.73; HarmonyOS: 4.73 | 为邮件地址输入优化的虚拟键盘 |
 | url | Web: 5.0; 微信小程序: x; Android: 4.73; iOS: 4.73; HarmonyOS: 4.73 | 为网址输入优化的虚拟键盘 |
 | text | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 文本输入键盘 |
@@ -79,8 +79,6 @@
 | tel | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 电话输入键盘 |
 | safe-password | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 密码安全输入键盘 |
 | nickname | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 昵称输入键盘 |
-| decimal | Web: 5.0; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 小数输入键盘，包含数字和分隔符（通常是“ . ”或者“ , ”），设备可能也可能不显示减号键。 |
-| numeric | Web: 5.0; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 数字输入键盘，所需要的就是 0 到 9 的数字，设备可能也可能不显示减号键。 |
 
 #### confirm-type 的属性描述
 

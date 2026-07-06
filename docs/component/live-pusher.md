@@ -41,7 +41,7 @@
 | audio-quality | string | "high" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(string)*<br/>高音质(48KHz)或低音质(16KHz)，值为`high`, `low` |
 | waiting-image-hash | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>等待画面资源的MD5值 |
 | zoom | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>调整焦距 |
-| zoom | number | 1 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | 调整焦距 |
+| zoom | number | 1 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 调整焦距 |
 | device-position | string | "front" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(string)*<br/>前置或后置，值为`front`, `back` |
 | mirror | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>设置推流画面是否镜像，产生的效果在 live-player 反应到 |
 | remote-mirror | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(boolean)*<br/>同 mirror 属性，后续 mirror 将废弃 |
