@@ -59,10 +59,11 @@ text-decoration: <'text-decoration-line'> || <'text-decoration-style'> || <'text
 
 
 
+#### tips@suggestion
+- app平台暂不支持 text-decoration 简写样式，仅支持 [text-decoration-line](./text-decoration-line.md) 设置修饰线类型
 
 
-#### App平台差异
-App平台不支持 text-decoration 简写样式，仅支持 [text-decoration-line](./text-decoration-line.md) 设置修饰线类型。  
+
 
 
 ### 参见
