@@ -49,6 +49,8 @@ export {
 
 export { type PackageInfo, getPackageInfo } from './package'
 
+export { getAppChannel } from './channel'
+
 export {
   type AppShowEvent,
   getLaunchScene,

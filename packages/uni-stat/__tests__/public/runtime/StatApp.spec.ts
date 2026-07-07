@@ -16,6 +16,7 @@ import {
   getStatApp,
 } from '../../../src/public/runtime/StatApp'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
+import { installMockPlus, restoreMockPlus } from '../helpers/mockPlus'
 import * as queueMod from '../../../src/public/pipeline/queue'
 import * as retryMod from '../../../src/public/pipeline/retry'
 import * as sessionMod from '../../../src/public/domain/session/machine'
@@ -61,6 +62,29 @@ describe('runtime/StatApp', () => {
   afterEach(() => {
     resetAllModules()
     restoreMockUni()
+    restoreMockPlus()
+  })
+
+  test('install：App 端默认从 plus.runtime.channel 解析 ch', () => {
+    installMockUni({ platform: 'app' })
+    installMockPlus({ runtime: { channel: 'oppo' } })
+    const app = getStatApp()
+    app.install(
+      {},
+      { skipInterceptors: true, skipMigration: true, skipRecoverRetry: true }
+    )
+    expect(app.getConfig()?.ch).toBe('oppo')
+  })
+
+  test('install：显式 ch 优先于 plus.runtime.channel', () => {
+    installMockUni({ platform: 'app' })
+    installMockPlus({ runtime: { channel: 'oppo' } })
+    const app = getStatApp()
+    app.install(
+      { ch: 'custom' },
+      { skipInterceptors: true, skipMigration: true, skipRecoverRetry: true }
+    )
+    expect(app.getConfig()?.ch).toBe('custom')
   })
 
   test('单例：getInstance / getStatApp 返回同一实例', () => {

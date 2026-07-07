@@ -33,6 +33,7 @@ import { createCollector } from '../pipeline/collector'
 import { createHttpChannel } from '../pipeline/channel/http'
 import { createImageChannel } from '../pipeline/channel/image'
 import { createStatDataBuilder } from '../domain/statData'
+import { getAppChannel } from '../adapter/channel'
 import { getPlatform, getRawPlatform } from '../adapter/platform'
 import { getLocaleAndScreen, getSystemInfo } from '../adapter/system'
 import { getUuid } from '../adapter/device'
@@ -324,11 +325,24 @@ export class StatApp {
     this.installed = false
   }
 
+  /**
+   * 解析上行渠道字段 `ch`。
+   *
+   * 优先级：显式配置（manifest / install 入参）> `plus.runtime.channel`（云打包渠道包）> `''`。
+   * 与私有版一致，默认从原生运行时读取；仅当业务方显式传入非空 `ch` 时才覆盖。
+   */
+  private resolveChannel(explicit?: string): string {
+    if (typeof explicit === 'string' && explicit.length > 0) {
+      return explicit
+    }
+    return getAppChannel()
+  }
+
   private normalizeConfig(c: Partial<StatAppConfig>): StatAppConfig {
     return {
       ak: c.ak ?? getAppId(),
       v: c.v,
-      ch: c.ch ?? '',
+      ch: this.resolveChannel(c.ch),
       version: c.version ?? 'image',
       backgroundTimeoutSec: c.backgroundTimeoutSec ?? 300,
       pageInactiveTimeoutSec: c.pageInactiveTimeoutSec ?? 1800,

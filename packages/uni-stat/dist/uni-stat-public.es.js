@@ -4759,6 +4759,45 @@ function createStatDataBuilder(deps) {
 }
 
 /**
+ * App 渠道包标识适配（对齐私有版 `utils/pageInfo.js#get_channel`）。
+ *
+ * HBuilderX 云打包会为每个渠道包写入 `plus.runtime.channel`（如 huawei、oppo），
+ * 统计上行字段 `ch` 应优先读取该运行时值，而非 manifest 静态配置。
+ *
+ * 职责：
+ *   - 仅 App 端（`isApp()`）尝试读取 `plus.runtime.channel`。
+ *   - 任意 API 缺失 / 抛错 → 降级 `''`，不阻断 install。
+ *   - 返回值统一为 `string`（原生偶发返回数字时转为字符串）。
+ */
+/**
+ * 将原生渠道值规范为上行用的字符串。
+ *
+ * @param value `plus.runtime.channel` 原值。
+ * @returns 非空字符串；无法识别时返回 `''`。
+ */
+function normalizeChannelValue(value) {
+    if (typeof value === 'string')
+        return value;
+    if (typeof value === 'number' && Number.isFinite(value))
+        return String(value);
+    return '';
+}
+/**
+ * 读取 App 渠道包标识（`plus.runtime.channel`）。
+ *
+ * 与私有版 `get_channel()` 对齐：仅原生 App 有意义；小程序 / H5 恒为 `''`。
+ *
+ * @returns 渠道字符串；未配置或读取失败时为 `''`。
+ */
+function getAppChannel() {
+    if (!isApp())
+        return '';
+    const plus = getGlobalObject().plus;
+    const raw = tryRun(() => { var _a; return (_a = plus === null || plus === void 0 ? void 0 : plus.runtime) === null || _a === void 0 ? void 0 : _a.channel; }, undefined);
+    return normalizeChannelValue(raw);
+}
+
+/**
  * 系统信息适配。
  *
  * 私有版的痛点（参考缺陷清单 #14、#18）：
@@ -6171,15 +6210,27 @@ class StatApp {
         this.config = undefined;
         this.installed = false;
     }
+    /**
+     * 解析上行渠道字段 `ch`。
+     *
+     * 优先级：显式配置（manifest / install 入参）> `plus.runtime.channel`（云打包渠道包）> `''`。
+     * 与私有版一致，默认从原生运行时读取；仅当业务方显式传入非空 `ch` 时才覆盖。
+     */
+    resolveChannel(explicit) {
+        if (typeof explicit === 'string' && explicit.length > 0) {
+            return explicit;
+        }
+        return getAppChannel();
+    }
     normalizeConfig(c) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d;
         return {
             ak: (_a = c.ak) !== null && _a !== void 0 ? _a : getAppId$1(),
             v: c.v,
-            ch: (_b = c.ch) !== null && _b !== void 0 ? _b : '',
-            version: (_c = c.version) !== null && _c !== void 0 ? _c : 'image',
-            backgroundTimeoutSec: (_d = c.backgroundTimeoutSec) !== null && _d !== void 0 ? _d : 300,
-            pageInactiveTimeoutSec: (_e = c.pageInactiveTimeoutSec) !== null && _e !== void 0 ? _e : 1800,
+            ch: this.resolveChannel(c.ch),
+            version: (_b = c.version) !== null && _b !== void 0 ? _b : 'image',
+            backgroundTimeoutSec: (_c = c.backgroundTimeoutSec) !== null && _c !== void 0 ? _c : 300,
+            pageInactiveTimeoutSec: (_d = c.pageInactiveTimeoutSec) !== null && _d !== void 0 ? _d : 1800,
             reportIntervalSec: typeof c.reportIntervalSec === 'number'
                 ? c.reportIntervalSec
                 : REPORT_INTERVAL_SEC,
