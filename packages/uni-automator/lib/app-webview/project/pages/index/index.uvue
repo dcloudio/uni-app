@@ -6,6 +6,7 @@
 		:webview-styles="webviewStyles"
 		<!-- #ifdef APP-ANDROID -->
 		android-layer-type="software"
+    @load="onWebviewLoad"
 		<!-- #endif -->
 		:src="src"
 		@message="message"
@@ -17,7 +18,9 @@
   // #ifdef APP-IOS || APP-ANDROID
   import { applyWebViewSnapshotTextMetricsPatch } from '@/tools/webview-snapshot-text-metrics.uts'
   // #endif
-
+  // #ifdef APP-ANDROID
+  import { insertStatusBarPlaceholderForTablet } from '@/tools/android-tablet-insert-status-bar-placeholder.uts'
+  // #endif
 
   const instance = getCurrentInstance()!.proxy!
 
@@ -30,6 +33,9 @@
   const safeAreaTop = ref(0)
 
   // #ifdef APP-ANDROID
+  const onWebviewLoad = () => {
+    insertStatusBarPlaceholderForTablet(webviewContext.value)
+  }
   onPageShow(() => {
     UniWebViewElement.enableWholeDraw()
   })
