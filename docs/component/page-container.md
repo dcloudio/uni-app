@@ -64,6 +64,7 @@ page-container 的特点：
 - 小程序页面最多只有1个page-container，若已存在page-container的情况下，无法新弹出page-container。App 和 Web 支持弹出多个page-container组件，后弹覆盖先弹。
 - Web 暂不支持拦截侧滑返回和浏览器的后退按钮
 - `overlay-style` 设置 `pointer-events: none` 可以实现点击遮罩层不关闭弹窗
+- 居中弹出为全屏显示，由于遮罩层被覆盖，并不会触发 `click-overlay` 事件，可以自行调整 `custom-style` 的样式来规避此行为
 
 
 
