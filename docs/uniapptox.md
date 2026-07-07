@@ -44,7 +44,7 @@ uni-app迁移到uni-app x，是一个大型工程。
 
 5. 构造uni-app x项目
 
-	新建uni-app x项目，把老项目复制过来，所有vue或nvue页面组件文件，批量重命名为uvue。main.js改名为main.uts（但里面支持使用js/ts写法）。可以保留之前的appid和包名。
+	新建uni-app x项目，把老项目复制过来，所有vue或nvue页面组件文件，批量重命名为uvue。main.js改名为main.uts（蒸汽模式下，main.uts里也支持js/ts写法）。可以保留之前的appid和包名。
 	
 	如果你之前有web版和微信小程序，那么改造后首先运行到 uni-app x 的web和微信小程序上，看看是否正常。
 
