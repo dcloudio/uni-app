@@ -105,7 +105,7 @@
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex:1">
   <!-- #endif -->
     <page-head :title="title"></page-head>
@@ -130,7 +130,7 @@
 
     <bottom-safe-area />
     <!-- #endif -->
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

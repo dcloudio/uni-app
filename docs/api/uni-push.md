@@ -437,7 +437,7 @@ getAllChannels
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
   <view>
@@ -479,7 +479,7 @@ getAllChannels
       注销回调 | offPushMessage
     </button>
   </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

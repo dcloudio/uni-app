@@ -70,7 +70,7 @@
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/install-apk/install-apk
 ```uvue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view>
@@ -85,7 +85,7 @@
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

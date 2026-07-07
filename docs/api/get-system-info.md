@@ -304,7 +304,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view>
@@ -334,7 +334,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

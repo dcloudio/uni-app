@@ -105,7 +105,7 @@ uni.report({
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex:1">
   <!-- #endif -->
     <page-head title="report"></page-head>
@@ -138,7 +138,7 @@ uni.report({
       </text>
     </view>
 
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

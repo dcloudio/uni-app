@@ -172,7 +172,7 @@
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view>
@@ -261,7 +261,7 @@
     </view>
 
     <bottom-safe-area />
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

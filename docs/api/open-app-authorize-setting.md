@@ -65,11 +65,11 @@ _注：App平台其实早期版本也可以使用_
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/open-app-authorize-setting/open-app-authorize-setting
 ```uvue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex:1">
   <!-- #endif -->
     <button type="primary" style="margin: 20px;" @tap="go">跳转系统授权管理页</button>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -121,11 +121,11 @@ _注：App平台其实早期版本也可以使用_
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/open-app-authorize-setting/open-app-authorize-setting
 ```uvue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex:1">
   <!-- #endif -->
     <button type="primary" style="margin: 20px;" @tap="go">跳转系统授权管理页</button>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

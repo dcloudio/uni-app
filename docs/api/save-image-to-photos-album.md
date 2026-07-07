@@ -77,7 +77,7 @@
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/save-image-to-photos-album/save-image-to-photos-album
 ```uvue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex:1">
   <!-- #endif -->
     <page-head :title="title"></page-head>
@@ -85,7 +85,7 @@
       <image class="image" src="/static/test-image/logo.png"></image>
       <button class="margin-top-10" type="primary" @click="saveImage">将图片保存到手机相册</button>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

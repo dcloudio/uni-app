@@ -260,7 +260,7 @@ app-android平台注意事项：
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1;">
   <!-- #endif -->
   <page-intro content="本页演示 dialog 弹窗与页面信息：展示 pageBody、safeAreaInsets、窗口尺寸等；通过按钮跳转下一页、打开各 dialog 示例（含错误路径、triggerParentHide、页面样式等）。"></page-intro>
@@ -331,7 +331,7 @@ app-android平台注意事项：
       </radio>
     </radio-group>
   </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

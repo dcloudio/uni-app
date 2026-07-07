@@ -243,7 +243,7 @@ UniPaymentWxpayProvider(微信支付)继承自 [UniProvider](./provider.md#unipr
   </view>
   <view class="payment-content">
     <template v-if="providerList.length > 0">
-      <button class="payment-button" type="primary" v-for="(item, index) in providerList" :key="index" @click="requestPayment(item)">{{ item.name }}</button>
+      <button class="payment-button" type="primary" v-for="(item, index) in providerList" :key="index" @click="requestPaymentByItem(item)">{{ item.name }}</button>
     </template>
     <template v-else>
       <button class="payment-button" type="primary">请先在 manifest.json 配置勾选微信支付、支付宝</button>
@@ -270,18 +270,14 @@ UniPaymentWxpayProvider(微信支付)继承自 [UniProvider](./provider.md#unipr
     provider: string;
     orderInfo: string;
     errorTitle?: string;
-    duration?: number;
   };
 
   // 支付订单请求地址
-  const ALIPAY_ORDER_URL = 'https://demo.dcloud.net.cn/payment/alipay/?total=0.01';
-  const WXPAY_ORDER_URL = 'https://demo.dcloud.net.cn/payment/wxpayv3.__UNI__uniappx/?total=0.01';
-  const WXPAY_HELLO_UNI_APP_X_ORDER_URL = 'https://demo.dcloud.net.cn/payment/wxpayv3.__UNI__HelloUniAppX/?total=0.01';
   const UNI_PAY_API_URL = 'https://env-00jxt67zj8kj.dev-hz.cloudbasefunction.cn/uni-pay-api';
 
   const providerList = ref([] as PayItem[]);
 
-  const data = reactive({
+  const defaultData: DataType = {
     btnText: '支付宝支付',
     btnType: 'primary',
     orderInfo: '',
@@ -291,7 +287,11 @@ UniPaymentWxpayProvider(微信支付)继承自 [UniProvider](./provider.md#unipr
     fail: false,
     outTradeNo: '',
     openid: '',
-  } as DataType);
+  };
+
+  const data = reactive(defaultData);
+
+  const bundleId = ref('');
 
   const getPaymentBundleId = (): string => {
     let bundleId: string | null = '';
@@ -310,147 +310,30 @@ UniPaymentWxpayProvider(微信支付)继承自 [UniProvider](./provider.md#unipr
     return bundleId ?? '';
   };
 
-  const getWxpayOrderUrl = (): string => {
-    if (getPaymentBundleId() == 'io.dcloud.hellouniappx') {
-      return WXPAY_HELLO_UNI_APP_X_ORDER_URL;
-    }
-    return WXPAY_ORDER_URL;
-  };
-
   const requestPaymentByOrderInfo = (options: PaymentOptions) => {
-    let duration = 3000;
-    if (options.duration != null) {
-      duration = options.duration as number;
-    }
     uni.requestPayment({
       provider: options.provider,
       orderInfo: options.orderInfo,
       // #ifdef MP-WEIXIN
-      // 微信小程序支持...结构语法
+      // 微信小程序需使用...结构参数
       ...JSON.parse(options.orderInfo),
       // #endif
-      // #ifdef APP-HARMONY
-      dataType: 'text',
-      // #endif
-      success: (res: RequestPaymentSuccess) => {
+      success: (res) => {
         console.log(JSON.stringify(res));
-        uni.showToast({ duration, icon: 'success', title: '支付成功' });
+        uni.showToast({ icon: 'success', title: '支付成功' });
       },
-      fail: (res: RequestPaymentFail) => {
+      fail: (res) => {
         console.log(JSON.stringify(res));
         data.errorCode = res.errCode;
         const title = options.errorTitle == null ? 'errorCode:' + data.errorCode : options.errorTitle;
-        uni.showToast({ duration, icon: 'error', title });
-      },
-    } as RequestPaymentOptions);
-  };
-
-  // #ifdef APP
-  const appPay = (provider: string) => {
-    uni.showLoading({ title: '请求中...' });
-    const isWxpay = provider == 'wxpay';
-    uni.request({
-      url: isWxpay ? getWxpayOrderUrl() : ALIPAY_ORDER_URL,
-      method: 'GET',
-      timeout: 6000,
-      success: (res) => {
-        console.log(res.data);
-        const orderInfo = isWxpay ? JSON.stringify(res.data) : (res.data as string);
-        data.orderInfo = JSON.stringify(res.data);
-        uni.hideLoading();
-        requestPaymentByOrderInfo({
-          provider,
-          orderInfo,
-          duration: isWxpay ? 5000 : 3000,
-        });
-      },
-      fail: (res) => {
-        uni.hideLoading();
-        console.log(res);
+        uni.showToast({ icon: 'error', title });
       },
     });
-  };
-  // #endif
-
-  // #ifdef MP-WEIXIN
-  // 发起微信小程序支付
-  const mpWeixinPay = async (): Promise<void> => {
-    uni.showLoading({ title: '请求中...', mask: true });
-    try {
-      if (data.openid == '') {
-        await getOpenId();
-      }
-    } catch (err) {
-      uni.hideLoading();
-      console.error('get-openid-err', err);
-      return;
-    }
-    let bundleId = getPaymentBundleId();
-    let random = Math.floor(Math.random() * 9000) + 1000;
-    data.outTradeNo = `test${Date.now()}${random}`;
-    console.log('outTradeNo: ', data.outTradeNo);
-    uni.request({
-      url: `${UNI_PAY_API_URL}/getOrderInfo`,
-      method: 'GET',
-      data: {
-        outTradeNo: data.outTradeNo,
-        bundleId,
-        openid: data.openid,
-        totalFee: 1,
-      },
-      success: (res) => {
-        uni.hideLoading();
-        let responseData = res.data as UTSJSONObject;
-        let errCode = responseData['errCode'] as number;
-        if (errCode != 0) {
-          uni.showModal({
-            title: '提示',
-            content: responseData['errMsg'] as string,
-            showCancel: false,
-          });
-          return;
-        }
-        let orderInfo = responseData['orderInfo'] as string;
-        console.log('orderInfo: ', orderInfo);
-        requestPaymentByOrderInfo({
-          provider: 'wxpay',
-          orderInfo,
-          errorTitle: '支付失败',
-        });
-      },
-      fail: (err) => {
-        uni.hideLoading();
-        console.error('request-err', err);
-      },
-    });
-  };
-  // #endif
-
-  const requestPayment = (e: PayItem) => {
-    // #ifdef APP
-    const provider = e.id;
-    if (provider == 'wxpay') {
-      const wxProvider = e.provider as UniPaymentWxpayProvider;
-      if (wxProvider != null && wxProvider.isWeChatInstalled != null && wxProvider.isWeChatInstalled == false) {
-        uni.showToast({
-          title: '微信没有安装',
-          icon: 'error',
-        });
-        return;
-      }
-    }
-    appPay(provider);
-    // #endif
-
-    // #ifdef MP-WEIXIN
-    mpWeixinPay();
-    // #endif
   };
 
   // #ifdef MP-WEIXIN
   // 获取微信小程序openid，用于发起支付
   const getOpenId = async (): Promise<void> => {
-    let bundleId = getPaymentBundleId();
     let code = '';
     await new Promise<void>((resolve, reject) => {
       uni.login({
@@ -470,10 +353,11 @@ UniPaymentWxpayProvider(微信支付)继承自 [UniProvider](./provider.md#unipr
         method: 'GET',
         data: {
           code,
-          bundleId,
+          bundleId: bundleId.value,
         },
         success: (res) => {
-          data.openid = res.data.openid;
+          const responseData = res.data as UTSJSONObject;
+          data.openid = responseData['openid'] as string;
           console.log('openid: ', data.openid);
           resolve();
         },
@@ -486,29 +370,101 @@ UniPaymentWxpayProvider(微信支付)继承自 [UniProvider](./provider.md#unipr
   };
   // #endif
 
+  const requestPaymentByItem = async (e: PayItem): Promise<void> => {
+    const provider = e.id;
+    const appProvider = e.provider;
+    const supportCheckWeChat = appProvider != null || provider == 'alipay';
+    let requestData = {} as UTSJSONObject;
+    let paymentProvider = provider;
+
+    if (supportCheckWeChat && provider == 'wxpay' && appProvider != null) {
+      const wxProvider = appProvider as UniPaymentWxpayProvider;
+      if (wxProvider.isWeChatInstalled == false) {
+        uni.showToast({ title: '本设备中未找到微信', icon: 'error' });
+        return;
+      }
+    }
+
+    uni.showLoading({ title: '请求中...', mask: true });
+    const random = Math.floor(Math.random() * 9000) + 1000;
+    data.outTradeNo = `test${Date.now()}${random}`;
+    requestData = {
+      provider: paymentProvider,
+      outTradeNo: data.outTradeNo,
+      bundleId: bundleId.value,
+      totalFee: 1,
+    } as UTSJSONObject;
+
+    // #ifdef MP-WEIXIN
+    try {
+      if (data.openid == '') {
+        await getOpenId();
+      }
+      requestData.openid = data.openid;
+    } catch (err) {
+      uni.showToast({ title: '获取微信openid失败', icon: 'error' });
+      uni.hideLoading();
+      return;
+    }
+
+    // #endif
+    uni.request({
+      url: `${UNI_PAY_API_URL}/getOrderInfo`,
+      method: 'GET',
+      data: requestData,
+      timeout: 6000,
+      success: (res) => {
+        uni.hideLoading();
+        const responseData = res.data as UTSJSONObject;
+        const errCode = responseData['errCode'] as number;
+        if (errCode != 0) {
+          uni.showModal({ title: '提示', content: responseData['errMsg'] as string, showCancel: false });
+          return;
+        }
+
+        const orderInfo = responseData['orderInfo'] as string;
+        console.log('orderInfo: ', orderInfo);
+        data.orderInfo = orderInfo;
+        requestPaymentByOrderInfo({
+          provider: paymentProvider,
+          orderInfo,
+          errorTitle: '支付失败',
+        });
+      },
+      fail: (err) => {
+        uni.hideLoading();
+        console.error('request-err', err);
+      },
+    });
+  };
+
   onLoad(() => {
+    // 获取包名或appid
+    bundleId.value = getPaymentBundleId();
+
     // #ifdef APP
-    let provider = uni.getProviderSync({
+    const providerOptions: GetProviderSyncOptions = {
       service: 'payment',
-    } as GetProviderSyncOptions);
-    console.log(provider);
+    };
+    let provider = uni.getProviderSync(providerOptions);
     provider.providerObjects.forEach((value: UniProvider) => {
       if (value.id == 'alipay' || value.id == 'wxpay') {
-        console.log(value.id, value);
-        providerList.value.push({
+        const payItem: PayItem = {
           name: value.description,
           id: value.id,
           provider: value,
-        } as PayItem);
+        };
+        providerList.value.push(payItem);
       }
     });
     // #endif
 
     // #ifdef MP-WEIXIN
-    providerList.value.push({
+    const payItem: PayItem = {
       name: '微信支付',
       id: 'wxpay',
-    } as PayItem);
+    };
+    providerList.value.push(payItem);
     // #endif
   });
 

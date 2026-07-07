@@ -125,7 +125,7 @@
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex:1">
   <!-- #endif -->
     <page-head :title="title"></page-head>
@@ -153,7 +153,7 @@
       <boolean-data title="是否压缩（HamonyOS 不支持，推荐使用 uni.compressVideo 进行压缩）" :defaultValue="true" @change="onCompressedChange"></boolean-data>
     </view>
     <!-- #endif -->
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

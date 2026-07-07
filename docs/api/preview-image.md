@@ -118,7 +118,7 @@
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="padding-left: 8px; padding-right: 8px">
@@ -168,7 +168,7 @@
         <text style="font-size: 17px;margin-left: 4px;color: darkgray;">2、Web平台不支持loop属性。</text>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -297,6 +297,7 @@
 
   const closePreviewImage = ()=>{
     uni.closePreviewImage({})
+    uni.hideActionSheet()
   }
 
   const testSetCurrentIndicator = (value:string) =>{

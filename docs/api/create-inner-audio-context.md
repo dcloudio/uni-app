@@ -568,7 +568,7 @@ offSeeked
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1;">
   <!-- #endif -->
     <view class="uni-padding-wrap">
@@ -641,7 +641,7 @@ offSeeked
     </view>
 
     <bottom-safe-area />
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -1045,7 +1045,7 @@ offSeeked
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex:1">
   <!-- #endif -->
     <page-head title="setInnerAudioOption"></page-head>
@@ -1084,7 +1084,7 @@ offSeeked
       <text>3. speakerOn参数：Android不支持在播放音频的过程中切换为扬声器播放，iOS支持播放状态时动态切换 \n</text>
       <text>4. obeyMuteSwitch参数：仅支持iOS</text>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

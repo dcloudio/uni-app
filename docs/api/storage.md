@@ -614,7 +614,7 @@ uni.clearStorageSync函数定义
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view class="page-scroll-view">
   <!-- #endif -->
     <view>
@@ -626,7 +626,7 @@ uni.clearStorageSync函数定义
               <view class="uni-label">key</view>
             </view>
             <view class="uni-list-cell-db">
-              <input class="uni-input" type="text" placeholder="请输入key" name="key" :value="data.key" maxlength="-1"
+              <input class="uni-input" type="text" placeholder="请输入key" name="key" :value="data.key" :maxlength="-1"
                 @input="keyChange" />
             </view>
           </view>
@@ -636,7 +636,7 @@ uni.clearStorageSync函数定义
             </view>
             <view class="uni-list-cell-db">
               <input class="uni-input" type="text" placeholder="请输入value" name="data"
-                :value="typeof data.data === 'string' ? data.data : JSON.stringify(data.data)" maxlength="-1" @input="dataChange" />
+                :value="typeof data.data === 'string' ? data.data : JSON.stringify(data.data)" :maxlength="-1" @input="dataChange" />
             </view>
           </view>
         </view>
@@ -714,7 +714,7 @@ uni.clearStorageSync函数定义
       </view>
       <button type="primary" @click="goto">前往storage管理器</button>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

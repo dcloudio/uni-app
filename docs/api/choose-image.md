@@ -202,7 +202,7 @@
               图片质量(%)
             </view>
             <view class="uni-list-cell-right">
-              <input :value="cropPercent" @confirm="cropPercentConfim" type="number" maxlength="-1" />
+              <input :value="cropPercent" @confirm="cropPercentConfim" type="number" :maxlength="-1" />
             </view>
           </view>
           <view class="uni-list-cell cell-pd">
@@ -210,7 +210,7 @@
               裁剪宽度(px)
             </view>
             <view class="uni-list-cell-right">
-              <input :value="cropWidth" @confirm="cropWidthConfim" type="number" maxlength="-1" />
+              <input :value="cropWidth" @confirm="cropWidthConfim" type="number" :maxlength="-1" />
             </view>
           </view>
           <view class="uni-list-cell cell-pd">
@@ -218,7 +218,7 @@
               裁剪高度(px)
             </view>
             <view class="uni-list-cell-right">
-              <input :value="cropHeight" @confirm="cropHeightConfim" type="number" maxlength="-1" />
+              <input :value="cropHeight" @confirm="cropHeightConfim" type="number" :maxlength="-1" />
             </view>
           </view>
           <view class="uni-list-cell cell-pd">

@@ -77,7 +77,7 @@
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/save-video-to-photos-album/save-video-to-photos-album
 ```uvue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex:1">
   <!-- #endif -->
     <page-head :title="title"></page-head>
@@ -85,7 +85,7 @@
       <video class="video" :src="src" :controls="true"></video>
       <button type="primary" class="margin-top-10" @click="saveVideo">将视频保存到手机相册</button>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

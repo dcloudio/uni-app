@@ -105,7 +105,7 @@ web平台读取图片的exif信息，需要引入三方库。考虑到影响web 
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex:1">
   <!-- #endif -->
     <page-head :title="title"></page-head>
@@ -129,7 +129,7 @@ web平台读取图片的exif信息，需要引入三方库。考虑到影响web 
         <button type="primary" @click="chooseImage">拍摄照片或从相册中选择照片</button>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

@@ -680,7 +680,7 @@ Sandbox环境：https://api.storekit-sandbox.itunes.apple.com/inApps/v1/transact
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/virtual-payment/virtual-payment
 ```uvue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1;">
   <!-- #endif -->
     <page-head title="虚拟支付"></page-head>
@@ -713,7 +713,7 @@ Sandbox环境：https://api.storekit-sandbox.itunes.apple.com/inApps/v1/transact
       <button style="margin-top: 20px; margin-bottom: 50px;" type="primary"
         @click="getUnfinishedTransactions">获取未结束的订单列表</button>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

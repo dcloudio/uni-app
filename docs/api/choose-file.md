@@ -112,7 +112,7 @@ Android端返回的路径是content协议。
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1;">
   <!-- #endif -->
     <view>
@@ -145,7 +145,7 @@ Android端返回的路径是content协议。
 
       <view style="height: 4px;"></view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

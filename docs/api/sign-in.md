@@ -25,9 +25,9 @@
 | scopes | any | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 授权类型，默认 auth_base。支持 auth_base（静默授权）/ auth_user（主动授权） / auth_zhima（芝麻信用）<br/> |
 | timeout | number | 否 |  | Web: x; 微信小程序: 2.35; Android: x; iOS: x; HarmonyOS: x | 超时时间，单位 ms |
 | onlyAuthorize | boolean | 否 |  | Web: x; 微信小程序:  ; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 微信登录仅请求授权认证<br/> |
-| success | (result: [LoginSuccess](#loginsuccess-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用成功的回调函数 |
-| fail | (result: [LoginFail](#loginfail-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| success | (result: [LoginSuccess](#loginsuccess-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [LoginFail](#loginfail-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 |  | Web: x; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### provider 的属性描述
 
@@ -37,7 +37,7 @@
 | qq | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | QQ登录 |
 | sinaweibo | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 新浪微博登录 |
 | xiaomi | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 小米登录 |
-| apple | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | Apple登录 |
+| apple | Web: x; 微信小程序:  ; Android: x; iOS: 5.21; HarmonyOS: x | Apple登录 |
 | huawei | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: 4.61 | 华为 HarmonyOS 华为账号登录 |
 
 #### LoginSuccess 的属性值 @loginsuccess-values 
@@ -51,17 +51,17 @@
 | authCode | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序授权码 |
 | authErrorScope | any | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序登录失败的授权类型，key是授权失败的 scope，value 是对应的错误码 |
 | authSucessScope | Array&lt;string&gt; | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序登录成功的授权 scope |
-| appleInfo | **AppleLoginAppleInfo** | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 苹果登录成功返回的信息 |
+| appleInfo | **AppleLoginAppleInfo** | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: 5.21; HarmonyOS: x | 苹果登录成功返回的信息 |
 
 #### appleInfo 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| authorizationCode | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | Apple 授权码，用于服务端向 Apple 校验或换取凭证 |
-| fullName | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 用户授权时 Apple 返回的姓名信息，通常仅首次授权时可获取，后续登录多数情况下为空 |
-| identityToken | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | Apple 签发的身份令牌（JWT），主要用于服务端校验当前登录用户身份 |
-| realUserStatus | number | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | Apple 对真实用户状态的评估值，仅作辅助参考(0: 设备不支持检测; 1: 无法确定; 2:高度可能真实) |
-| user | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | Apple 返回给当前 App 的用户唯一标识，不是昵称或用户名 |
+| authorizationCode | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: 5.21; HarmonyOS: x | Apple 授权码，用于服务端向 Apple 校验或换取凭证 |
+| fullName | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: 5.21; HarmonyOS: x | 用户授权时 Apple 返回的姓名信息，通常仅首次授权时可获取，后续登录多数情况下为空 |
+| identityToken | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: 5.21; HarmonyOS: x | Apple 签发的身份令牌（JWT），主要用于服务端校验当前登录用户身份 |
+| realUserStatus | number | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: 5.21; HarmonyOS: x | Apple 对真实用户状态的评估值，仅作辅助参考(0: 设备不支持检测; 1: 无法确定; 2:高度可能真实) |
+| user | string | 否 |  | Web: x; 微信小程序:  ; Android: x; iOS: 5.21; HarmonyOS: x | Apple 返回给当前 App 的用户唯一标识，不是昵称或用户名 |
 
 #### LoginFail 的属性值 @loginfail-values 
 

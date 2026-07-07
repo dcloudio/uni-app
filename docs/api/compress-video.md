@@ -89,7 +89,7 @@
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/compress-video/compress-video
 ```uvue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex:1">
   <!-- #endif -->
     <page-head :title="title"></page-head>
@@ -118,7 +118,7 @@
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

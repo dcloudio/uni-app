@@ -91,7 +91,7 @@ app-uvue下，其实没有页面级滚动。但本API做了一定兼容，当页
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1" scroll-with-animation="true">
   <!-- #endif -->
     <view class="uni-padding-wrap">
@@ -110,7 +110,7 @@ app-uvue下，其实没有页面级滚动。但本API做了一定兼容，当页
         <view class="uni-list-cell list-item">{{ index2 }}</view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

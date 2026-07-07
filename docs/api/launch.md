@@ -106,18 +106,18 @@
     testResult: boolean;
   }
 
-	const data = reactive({
+	const data = reactive<DataType>({
 		checked: false,
-		// #ifdef VUE3-VAPOR && !APP-HARMONY
+		// #ifdef VUE3-VAPOR && !APP-HARMONY && !APP-IOS
 		homePagePath: 'pages/tabBar/tab-bar',
 		// #endif
-		// #ifdef !VUE3-VAPOR || APP-HARMONY
+		// #ifdef !VUE3-VAPOR || APP-HARMONY || APP-IOS
 		homePagePath: 'pages/tabBar/component',
 		// #endif
 		launchOptionsPath: '',
 		launchOptionsString: '',
 		testResult: false
-	} as DataType)
+	})
 
   const compareOnLaunchRes = () => {
     const launchOptions = uni.getLaunchOptionsSync();

@@ -226,7 +226,7 @@ HarmonyOS平台调用此 API 需要申请定位权限`ohos.permission.APPROXIMAT
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1;">
   <!-- #endif -->
     <page-head :title="title"></page-head>
@@ -279,7 +279,7 @@ HarmonyOS平台调用此 API 需要申请定位权限`ohos.permission.APPROXIMAT
         </button>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

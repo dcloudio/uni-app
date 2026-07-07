@@ -176,7 +176,7 @@
 
   const goNavbarLite = () => {
     uni.navigateTo({
-      url: '/pages/template/custom-navbar-search/custom-navbar-search'
+      url: '/pages/template/keyboard-adjust/keyboard-adjust'
     })
   }
 

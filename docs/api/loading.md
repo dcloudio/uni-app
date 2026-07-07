@@ -260,14 +260,19 @@
 		uni.hideLoading();
 	}
 	const noParamLoading = () => {
-
 		uni.showLoading()
 		uni.showLoading({
 			success: function (showRet : ShowLoadingSuccess) {
 				data.callbackText.push("noParamLoading 1 success")
+			},
+			complete: function (showRet : any) {
+				data.callbackText.push("noParamLoading 1 complete")
 			}
 		})
 		uni.showLoading({
+			success: function (showRet : ShowLoadingSuccess) {
+				data.callbackText.push("noParamLoading 2 success")
+			},
 			complete: function (showRet : any) {
 				data.callbackText.push("noParamLoading 2 complete")
 			}

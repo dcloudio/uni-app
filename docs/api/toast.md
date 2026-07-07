@@ -244,14 +244,6 @@
         value: 'error',
         name: '显示错误图标',
       },
-      // {
-      //   value: 'fail',
-      //   name: '显示错误图标',
-      // },
-      // {
-      //   value: 'exception',
-      //   name: '显示异常图标，此时title文本无长度显示',
-      // },
       {
         value: 'loading',
         name: '显示加载图标',

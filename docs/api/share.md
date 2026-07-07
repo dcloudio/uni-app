@@ -123,7 +123,7 @@
 > appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/share/share
 ```uvue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex:1">
   <!-- #endif -->
     <page-head :title="title"></page-head>
@@ -172,7 +172,7 @@
     <view class="uni-padding-wrap uni-common-mt">
       <button type="primary" @click="share">分享</button>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

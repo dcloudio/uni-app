@@ -546,7 +546,7 @@ globalData是简单的全局变量，其他状态管理方式，可参考文档[
           increase lifeCycleNum
         </button>
         <text class="uni-common-mt">lifeCycleNum: {{ data.lifeCycleNum }}</text>
-        <!-- #ifdef APP-ANDROID -->
+        <!-- #ifdef APP-ANDROID && !VUE3-VAPOR -->
         <button class="uni-common-mt" @click="getAndroidApplication">
           getAndroidApplication
         </button>
@@ -687,7 +687,7 @@ globalData是简单的全局变量，其他状态管理方式，可参考文档[
     setLifeCycleNum(num)
   }
 
-  // #ifdef APP-ANDROID
+  // #ifdef APP-ANDROID && !VUE3-VAPOR
   const getAndroidApplication = () : boolean => {
     const app = getApp()
     data.androidApplication = app.getAndroidApplication()
@@ -705,7 +705,7 @@ globalData是简单的全局变量，其他状态管理方式，可参考文档[
     setGlobalData,
     _increaseLifeCycleNum,
     setLifeCycleNumFunc,
-    // #ifdef APP-ANDROID
+    // #ifdef APP-ANDROID && !VUE3-VAPOR
     getAndroidApplication
     // #endif
   })

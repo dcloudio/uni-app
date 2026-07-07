@@ -139,7 +139,7 @@
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1;">
   <!-- #endif -->
     <!-- 实际开发中，长列表应该使用list-view -->
@@ -147,17 +147,16 @@
       <text class="text" v-for="(num,index) in listData" :key="index">list - {{num}}</text>
       <view v-if="showLoadMore">{{loadMoreText}}</view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
 <script setup lang="uts">
-  
+
 
   type DataType = {
     pulldownRefreshTriggered: boolean,
-    startPullDownRefreshStaus: boolean,
-    stopPullDownRefreshStatus: boolean,
+    startPullDownRefreshStaus: boolean
   }
 
   const listData = ref([] as Array<number>)
@@ -166,8 +165,7 @@
   const max = ref(0)
   const data = reactive({
     pulldownRefreshTriggered: false,
-    startPullDownRefreshStaus: false,
-    stopPullDownRefreshStatus: false,
+    startPullDownRefreshStaus: false
   } as DataType)
 
   function initData() {

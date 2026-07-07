@@ -191,7 +191,7 @@ complete: () => {
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view>
@@ -204,13 +204,9 @@ complete: () => {
           <text class="uni-hello-text">点击按钮下载服务端示例图片（下载网络文件到本地临时目录）</text>
           <button type="primary" @tap="downloadImage">下载</button>
         </view>
-        <view style="margin: 10px;">
-          <text class="uni-hello-text">下载接口的Content-Disposition中的filename非法值例子</text>
-          <button type="primary" @tap="downloadErrorFilename">下载</button>
-        </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

@@ -130,10 +130,10 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
       <page-head :title="title"></page-head>
       <view class="uni-padding-wrap uni-common-mt">
         <view class="uni-btn-v uni-common-mt">
-          <input class="uni-input" type="text" v-model="realName" name="real-name" placeholder="姓名" maxlength="-1" />
+          <input class="uni-input" type="text" v-model="realName" name="real-name" placeholder="姓名" />
         </view>
         <view class="uni-btn-v uni-common-mt">
-          <input class="uni-input" type="text" v-model="idCard" name="id-card" placeholder="身份证号" maxlength="-1" />
+          <input class="uni-input" type="text" v-model="idCard" name="id-card" placeholder="身份证号" />
         </view>
         <view class="uni-btn-v uni-common-mt">
           <button type="primary" @click="facialRecognition">开始人脸识别</button>

@@ -359,10 +359,10 @@ exec
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view" style="padding-bottom: var(--uni-safe-area-inset-bottom);">
+  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <scroll-view class="page-scroll-view">
   <!-- #endif -->
-    <view class="page uni-list-cell-db-text" id="page">
+    <view class="page uni-list-cell-db-text" style="padding-bottom: var(--uni-safe-area-inset-bottom);" id="page">
       <page-head :title="data.title"></page-head>
       <page-intro content="本页演示 uni.createSelectorQuery：通过 select/selectAll 与 boundingClientRect 获取节点布局信息（left、top、right、bottom、width、height）；含 view、text、image、scroll-view 及子组件多根节点等查询示例，可测试 .fields/.node 结果；底部可跳转「滚动容器中的 createSelectorQuery」子页。"></page-intro>
       <button class="btn btn-get-node-info" @click="getNodeInfo">getNodeInfo</button>
@@ -516,9 +516,9 @@ exec
           </view>
         </view>
       </view>
+      <navigator url="/pages/API/create-selector-query/create-selector-query-onScroll"><button>滚动容器中的createSelectorQuery</button></navigator>
     </view>
-    <navigator url="/pages/API/create-selector-query/create-selector-query-onScroll"><button>滚动容器中的createSelectorQuery</button></navigator>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
