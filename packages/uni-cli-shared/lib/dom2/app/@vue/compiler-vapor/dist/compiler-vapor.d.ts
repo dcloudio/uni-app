@@ -23005,9 +23005,16 @@ export declare function matchSelectorPattern(effect: IREffect, key: string, idMa
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/block.d.ts
 export declare function markSlotRootOperations(block: BlockIRNode): void;
+export declare function collectSingleUseAssetComponents(block: BlockIRNode): Set<string>;
 //#endregion
 //#region temp/packages/compiler-vapor/src/generators/component.d.ts
 export declare function genDynamicComponentFlags(root: boolean | undefined, once: boolean | undefined, slotRoot: boolean | undefined, extraFlags?: [flag: number, name: string][]): string | false;
+/**
+* Static literal values are safe to emit directly because reading them cannot
+* touch reactive state. Keep handlers, v-model values, and dynamic expressions
+* as getter sources to preserve lazy access and merge semantics.
+*/
+export declare function isDirectStaticLiteralProp(prop: IRProp, context: CodegenContext): boolean;
 type SlotRootStabilityContext = Pick<CodegenContext, "ir">;
 export declare function hasStableSlotRoot(block: BlockIRNode, context: SlotRootStabilityContext): boolean;
 export declare function needsVaporCtx(block: BlockIRNode): boolean;

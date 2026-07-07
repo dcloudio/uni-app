@@ -23,8 +23,9 @@ declare class DynamicFragment extends VaporFragment {
   current?: BlockFn;
   fallback?: BlockFn;
   getScope?: (key: any) => EffectScope$1 | undefined;
+  hasFallthroughAttrs?: true;
   constructor(anchorLabel?: string);
-  update(render?: BlockFn | null, key?: any): void;
+  update(render?: BlockFn | null, key?: any, noScope?: boolean): void;
   private renderBranch;
 }
 //#endregion
@@ -33,6 +34,8 @@ type NodeRef = string | Ref | ((ref: Element) => void);
 type RefEl = UniElement | VaporSharedDataComponentInstance | DynamicFragment | VaporFragment;
 type setRefFn = (el: RefEl | null, ref: NodeRef, refFor?: boolean | null, refKey?: string | null) => NodeRef | undefined;
 export declare function createSharedDataTemplateRefSetter(): setRefFn;
+export declare function setSharedDataStaticTemplateRef(el: RefEl | null, ref: NodeRef, refFor?: boolean | null, refKey?: string | null): NodeRef | undefined;
+export declare function setSharedDataTemplateRefBinding(el: RefEl | null, getter: () => any, setter?: setRefFn, refFor?: boolean | null, refKey?: string | null): void;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/block.d.ts
 type Block = Node | VaporFragment | DynamicFragment | VaporSharedDataComponentInstance | Block[] | RefEl;
@@ -288,6 +291,9 @@ declare function onReused(callback: () => void): void;
 declare function onBeforeRecycle(callback: () => void): void;
 export declare const onRecycle: typeof onBeforeRecycle;
 export declare const onReuse: typeof onReused;
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/src/apiResolveBuiltInComponent.d.ts
+export declare function resolveBuiltInComponent(name: string): VaporSharedDataComponent;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateDynamicComponent.d.ts
 export declare function createSharedDataDynamicComponent(getter: () => any, setter: (ins: VaporSharedDataComponentInstance | null) => any, rawCid?: string, rawProps?: RawProps | null, rawSlots?: RawSlots | null, flags?: number): VaporSharedDataComponentInstance | null;
