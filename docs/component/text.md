@@ -758,7 +758,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
 
 ```uvue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="background-color: #EEE;">
@@ -959,7 +959,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
