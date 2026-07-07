@@ -80,7 +80,7 @@ text-align: start | end | left | right | center | justify | match-parent;
 		</view>
 
 		<view class="uni-common-mt">
-			<text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 text-align </text>
+			<text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
 		</view>
 
 		<view class="common-box">
@@ -136,7 +136,6 @@ text-align: start | end | left | right | center | justify | match-parent;
 		data.textAlignActualFlat = textRefFlat.value?.style.getPropertyValue('text-align') ?? ''
 	}
 
-	const ins = getCurrentInstance()
 
 	const changeTextAlign = (value: string) => {
 		data.textAlign = value
@@ -145,7 +144,7 @@ text-align: start | end | left | right | center | justify | match-parent;
 		// 使用 nextTick 确保样式已应用后再获取值
 		nextTick(() => {
 			getPropertyValues()
-		}, ins)
+		})
 	}
 
 	const radioChangeTextAlign = (index: number) => {

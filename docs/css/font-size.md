@@ -71,7 +71,7 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -88,7 +88,7 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 font-size 测试</text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="common-box">
@@ -119,7 +119,7 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
           <input-data :defaultValue="data.fontSizeProp" title="font-size 自定义值" type="text" @confirm="inputChangeFontSize"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -156,7 +156,6 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
     data.fontSizeActualFlat = textRefFlat.value?.style.getPropertyValue('font-size') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeFontSize = (value: string) => {
     data.fontSizeProp = value
@@ -165,7 +164,7 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeFontSize = (index: number) => {

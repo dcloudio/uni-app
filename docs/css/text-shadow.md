@@ -58,7 +58,7 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view class="container">
@@ -80,7 +80,7 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
       <text class="text" style="text-shadow: 2px 4px rgba(202, 207, 17, 0.5);" flatten>text-shadow: 2px 4px rgba(202, 207, 17, 0.5)</text>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 text-shadow </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="common-box">
@@ -88,7 +88,7 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
         <view class="uni-common-mt">
           <text class="uni-title-text">text-shadow</text>
           <text class="uni-info">设置值: {{data.textShadow}}</text>
-          <text class="uni-info">获取值: {{data.textShadowActual}}</text>
+          <text class="uni-info info-wrap">获取值: {{data.textShadowActual}}</text>
           <view class="test-box">
             <text ref="textRef" class="text test-text" :style="{ textShadow: data.textShadow }">当前 text-shadow: {{data.textShadow}}</text>
           </view>
@@ -98,7 +98,7 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
         <view class="uni-common-mt">
           <text class="uni-title-text">拍平</text>
           <text class="uni-info">设置值: {{data.textShadow}}</text>
-          <text class="uni-info">获取值: {{data.textShadowActualFlat}}</text>
+          <text class="uni-info info-wrap">获取值: {{data.textShadowActualFlat}}</text>
           <view class="test-box">
             <text ref="textRefFlat" class="text test-text-flatten" :style="{ textShadow: data.textShadow }" flatten>当前 text-shadow: {{data.textShadow}}</text>
           </view>
@@ -111,7 +111,7 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
         <input-data :defaultValue="data.textShadow" title="text-shadow 自定义值" type="text" @confirm="inputChangeTextShadow"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -143,7 +143,6 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
     data.textShadowActualFlat = textRefFlat.value?.style.getPropertyValue('text-shadow') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeTextShadow = (value: string) => {
     data.textShadow = value
@@ -152,7 +151,7 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeTextShadow = (index: number) => {
@@ -200,6 +199,11 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
     background-color: #cccccc;
     justify-content: center;
     align-items: center;
+  }
+
+  .info-wrap {
+    width: 200px;
+    white-space: normal;
   }
 </style>
 

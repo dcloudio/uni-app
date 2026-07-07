@@ -61,7 +61,7 @@ App平台不支持指定多个过渡效果。
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view>
@@ -94,7 +94,7 @@ App平台不支持指定多个过渡效果。
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transition-timing-function </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="test-container">
@@ -135,14 +135,14 @@ App平台不支持指定多个过渡效果。
       </view>
 
       <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件 transition-timing-function：ease-in-out</text>
-      <native-view :class="nativeViewClassValue"></native-view>
+      <test-native-view :class="nativeViewClassValue"></test-native-view>
       <view class="button-container">
         <button class="button-item" @click="nativeViewStart">native-view start</button>
         <button class="button-item" @click="nativeViewReset">native-view reset</button>
       </view>
 
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -235,7 +235,6 @@ App平台不支持指定多个过渡效果。
     data.transitionTimingFunctionActualImage = imageRefDynamic.value?.style.getPropertyValue('transition-timing-function') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeTransitionTimingFunctionDynamic = (value: string) => {
     data.transitionTimingFunctionDynamic = value
@@ -246,7 +245,7 @@ App平台不支持指定多个过渡效果。
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeTransitionTimingFunction = (index: number) => {

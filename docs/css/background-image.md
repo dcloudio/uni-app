@@ -53,7 +53,7 @@ background-image: <bg-image>#;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex:1">
   <!-- #endif -->
     <view>
@@ -100,16 +100,8 @@ background-image: <bg-image>#;
         <enum-data :compact="true" :items="backgroundImageEnum" title="background-image 枚举值" @change="radioChangeBackgroundImage"></enum-data>
         <input-data :defaultValue="backgroundImage" title="background-image 自定义值" type="text" @confirm="inputChangeBackgroundImage"></input-data>
       </view>
-
-      <text class="uni-title-text uni-common-mt">native-view 组件</text>
-      <text class="uni-subtitle-text">background-image: linear-gradient(to right, cyan, yellow);</text>
-      <text class="uni-subtitle-text">background-image: linear-gradient(to bottom, blue, green);</text>
-      <view class="demo-box uni-common-mb">
-        <native-view class="native-view-bg" style="background-image: linear-gradient(to right, cyan, yellow);"></native-view>
-        <native-view class="native-view-bg" style="background-image: linear-gradient(to bottom, blue, green);"></native-view>
-      </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -165,7 +157,7 @@ background-image: <bg-image>#;
     { value: 3, name: 'linear-gradient(to top, red, blue)' },
     { value: 4, name: 'linear-gradient(45deg, red, yellow)' },
     { value: 5, name: 'linear-gradient(to right, red, yellow, green)' },
-    { value: 6, name: '(to right, red 0%, yellow 50%, green 100%)' },
+    { value: 6, name: 'linear-gradient(to right, red 0%, yellow 50%, green 100%)' },
     { value: 7, name: 'linear-gradient(to bottom left, red, yellow)' }
   ]
 

@@ -59,7 +59,7 @@ margin-top: <length> | <percentage> | auto;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -116,7 +116,7 @@ margin-top: <length> | <percentage> | auto;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 margin-top </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="test-container">
@@ -204,18 +204,18 @@ margin-top: <length> | <percentage> | auto;
         <view class="demo-box">
           <view class="demo-container">
             <view class="common red"></view>
-            <native-view class="common" style="margin-top: 25px;"></native-view>
+            <test-native-view class="common" style="margin-top: 25px;"></test-native-view>
             <view class="common blue"></view>
           </view>
           <view class="demo-container">
             <view class="common red"></view>
-            <native-view class="common" style="margin-top: 10%;"></native-view>
+            <test-native-view class="common" style="margin-top: 10%;"></test-native-view>
             <view class="common blue"></view>
           </view>
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -259,7 +259,6 @@ margin-top: <length> | <percentage> | auto;
     data.marginTopActualImageFlat = imageRefFlat.value?.style.getPropertyValue('margin-top') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeMarginTop = (value: string) => {
     data.marginTop = value
@@ -272,7 +271,7 @@ margin-top: <length> | <percentage> | auto;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeMarginTop = (index: number) => {

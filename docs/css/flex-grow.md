@@ -48,7 +48,7 @@ flex-grow: <number>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1">
@@ -103,7 +103,7 @@ flex-grow: <number>;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 flex-grow </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -210,17 +210,17 @@ flex-grow: <number>;
       <view class="demo-box uni-common-mb">
         <view class="flex-container-compare" style="margin-right:10px;">
           <view class="common red width-30-no-grow"></view>
-          <native-view class="native-view-grow green" style="flex-grow: 0.5;"></native-view>
+          <test-native-view class="native-view-grow green" style="flex-grow: 0.5;"></test-native-view>
           <view class="common blue width-30-no-grow"></view>
         </view>
         <view class="flex-container-compare">
           <view class="common red width-30-no-grow"></view>
-          <native-view class="native-view-grow green" style="flex-grow: 1;"></native-view>
+          <test-native-view class="native-view-grow green" style="flex-grow: 1;"></test-native-view>
           <view class="common blue width-30-no-grow"></view>
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -261,7 +261,6 @@ flex-grow: <number>;
     data.flexGrowActualImageFlat = imageRefFlat.value?.style.getPropertyValue('flex-grow') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeFlexGrow = (value: string) => {
     data.flexGrow = value
@@ -274,7 +273,7 @@ flex-grow: <number>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeFlexGrow = (index: number) => {

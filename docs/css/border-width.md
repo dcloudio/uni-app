@@ -60,7 +60,7 @@ border-width: <line-width>{1,4};
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
@@ -264,7 +264,7 @@ border-width: <line-width>{1,4};
 
     <!-- 动态设置 -->
     <view class="uni-common-mt">
-      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 border-width </text>
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
     </view>
 
     <!-- 普通版本 -->
@@ -344,14 +344,7 @@ border-width: <line-width>{1,4};
         @confirm="inputChangeBorderWidth"></input-data>
     </view>
 
-    <view class="uni-common-mb">
-      <text>native-view组件: border-width: 5px 和 10px</text>
-      <view class="demo-box">
-        <native-view class="common" style="border-width: 5px; border-style: solid;"></native-view>
-        <native-view class="common" style="border-width: 10px; border-style: solid;"></native-view>
-      </view>
-    </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -394,7 +387,6 @@ border-width: <line-width>{1,4};
     data.borderWidthActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border-width') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeBorderWidth = (value : string) => {
     data.borderWidth = value
     viewRef.value?.style.setProperty('border-width', value)
@@ -406,7 +398,7 @@ border-width: <line-width>{1,4};
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeBorderWidth = (index : number) => {

@@ -3,9 +3,9 @@
 ## var
 
 ### 兼容性 
- | Web | 微信小程序 | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | x | 4.0 | x | 4.11 | 4.61 | 5.01 |
+ | Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
 
 > uni-app x 4.0+ 提供内置 CSS 变量。
 > uni-app x 4.52+ 全平台提供了安全区域相关 CSS 变量 --uni-safe-area-inset-* 。

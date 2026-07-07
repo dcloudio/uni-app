@@ -51,7 +51,7 @@ border-right: <line-width> || <line-style> || <color>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -75,7 +75,7 @@ border-right: <line-width> || <line-style> || <color>;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 border-right </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -148,15 +148,8 @@ border-right: <line-width> || <line-style> || <color>;
         <input-data :defaultValue="data.borderRight" title="border-right 自定义值" type="text" @confirm="inputChangeBorderRight"></input-data>
       </view>
 
-      <view class="uni-common-mb">
-        <text>native-view组件: border-right: 5px solid blue 和 10px dashed cyan</text>
-        <view class="demo-box">
-          <native-view class="common" style="border-right: 5px solid blue;"></native-view>
-          <native-view class="common" style="border-right: 10px dashed cyan;"></native-view>
-        </view>
-      </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -197,7 +190,6 @@ border-right: <line-width> || <line-style> || <color>;
     data.borderRightActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border-right') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeBorderRight = (value: string) => {
     data.borderRight = value
     viewRef.value?.style.setProperty('border-right', value)
@@ -209,7 +201,7 @@ border-right: <line-width> || <line-style> || <color>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeBorderRight = (index: number) => {

@@ -52,7 +52,7 @@ padding-bottom: <length> | <percentage>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -98,7 +98,7 @@ padding-bottom: <length> | <percentage>;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 padding-bottom </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -171,20 +171,8 @@ padding-bottom: <length> | <percentage>;
         <input-data :defaultValue="data.paddingBottom" title="padding-bottom 自定义值" type="text" @confirm="inputChangePaddingBottom"></input-data>
       </view>
 
-      <view class="uni-common-mb">
-        <text>native-view组件: padding-bottom: 30px 和 padding-bottom: 30%</text>
-        <text class="uni-tips">说明：cyan 背景色区域的高度即为 padding-bottom 的值，灰色区域为容器背景</text>
-        <view class="demo-box">
-          <view class="native-view-container-large">
-            <native-view class="native-view-padding-large" style="padding-bottom: 30px;"></native-view>
-          </view>
-          <view class="native-view-container-large">
-            <native-view class="native-view-padding-large" style="padding-bottom: 30%;"></native-view>
-          </view>
-        </view>
-      </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -226,7 +214,6 @@ padding-bottom: <length> | <percentage>;
     data.paddingBottomActualImageFlat = imageRefFlat.value?.style.getPropertyValue('padding-bottom') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changePaddingBottom = (value: string) => {
     data.paddingBottom = value
@@ -239,7 +226,7 @@ padding-bottom: <length> | <percentage>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangePaddingBottom = (index: number) => {

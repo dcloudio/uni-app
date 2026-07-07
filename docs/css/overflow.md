@@ -61,7 +61,7 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex:1;">
   <!-- #endif -->
     <page-intro content="本页演示 overflow 样式：overflow:hidden 与 overflow:visible 下子元素超出时的裁剪与显示；子元素为 view（border 圆角/边框）、text、image 等，每组均提供拍平（flatten）版本对比。"></page-intro>
@@ -121,8 +121,9 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
       <text style="font-size: 15px;">overflow=hidden效果 子元素是text</text>
       <view class="backgroundview">
         <view class="box-hidden-border-radius">
+          <!-- 微信小程序 webview 模式使用 line-clamp 会截断文本显示省略号，skyline 模式正常 -->
           <text
-            <!-- #ifdef VUE3-VAPOR-->
+            <!-- #ifdef VUE3-VAPOR && !MP -->
               max-lines=1
             <!-- #endif-->
             class="text1">ABCDEFG</text>
@@ -132,7 +133,7 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
       <view class="backgroundview">
         <view class="box-hidden-border-radius" flatten>
           <text
-          <!-- #ifdef VUE3-VAPOR-->
+          <!-- #ifdef VUE3-VAPOR && !MP -->
             max-lines=1
           <!-- #endif-->
           class="text1" flatten>ABCDEFG</text>
@@ -143,7 +144,7 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
       <view class="backgroundview">
         <view class="box-visible-border-radius">
           <text
-          <!-- #ifdef VUE3-VAPOR-->
+          <!-- #ifdef VUE3-VAPOR && !MP -->
             max-lines=1
           <!-- #endif-->
           class="text1">ABCDEFG</text>
@@ -153,7 +154,7 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
       <view class="backgroundview">
         <view class="box-visible-border-radius" flatten>
           <text
-          <!-- #ifdef VUE3-VAPOR-->
+          <!-- #ifdef VUE3-VAPOR && !MP -->
             max-lines=1
           <!-- #endif-->
            class="text1" flatten >ABCDEFG</text>
@@ -264,7 +265,7 @@ overflow: [ visible | hidden | clip | scroll | auto ]{1,2};
       </view>
 
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

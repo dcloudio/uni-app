@@ -59,7 +59,7 @@ margin-left: <length> | <percentage> | auto;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -116,7 +116,7 @@ margin-left: <length> | <percentage> | auto;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 margin-left </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="test-container">
@@ -203,18 +203,18 @@ margin-left: <length> | <percentage> | auto;
         <view class="demo-box">
           <view class="demo-container">
             <view class="common red"></view>
-            <native-view class="common" style="margin-left: 25px;"></native-view>
+            <test-native-view class="common" style="margin-left: 25px;"></test-native-view>
             <view class="common blue"></view>
           </view>
           <view class="demo-container">
             <view class="common red"></view>
-            <native-view class="common" style="margin-left: 10%;"></native-view>
+            <test-native-view class="common" style="margin-left: 10%;"></test-native-view>
             <view class="common blue"></view>
           </view>
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -258,7 +258,6 @@ margin-left: <length> | <percentage> | auto;
     data.marginLeftActualImageFlat = imageRefFlat.value?.style.getPropertyValue('margin-left') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeMarginLeft = (value: string) => {
     data.marginLeft = value
@@ -271,7 +270,7 @@ margin-left: <length> | <percentage> | auto;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeMarginLeft = (index: number) => {

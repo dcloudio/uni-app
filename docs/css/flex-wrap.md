@@ -61,7 +61,7 @@ flex-wrap: nowrap | wrap | wrap-reverse;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1">
@@ -156,7 +156,7 @@ flex-wrap: nowrap | wrap | wrap-reverse;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 flex-wrap </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="common-box">
@@ -203,7 +203,7 @@ flex-wrap: nowrap | wrap | wrap-reverse;
           @confirm="inputChangeFlexWrap"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -231,7 +231,6 @@ flex-wrap: nowrap | wrap | wrap-reverse;
     data.flexWrapActualFlat = viewRefFlat.value?.style.getPropertyValue('flex-wrap') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeFlexWrap = (value : string) => {
     data.flexWrap = value
@@ -240,7 +239,7 @@ flex-wrap: nowrap | wrap | wrap-reverse;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeFlexWrap = (index : number) => {

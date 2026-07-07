@@ -74,7 +74,7 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <template v-if="autoTestData.begin">
@@ -106,7 +106,7 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
     </view>
 
     <view class="uni-common-mt">
-      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 line-height </text>
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
     </view>
 
     <view class="common-box">
@@ -136,7 +136,7 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
         <enum-data :items="lineHeightEnum" title="line-height 枚举值" @change="radioChangeLineHeight" :compact="true"></enum-data>
         <input-data :defaultValue="data.lineHeight" title="line-height 自定义值" type="text" @confirm="inputChangeLineHeight"></input-data>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -174,7 +174,6 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
     data.lineHeightActualFlat = textRefFlat.value?.style.getPropertyValue('line-height') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeLineHeight = (value: string) => {
     data.lineHeight = value
@@ -183,7 +182,7 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeLineHeight = (index: number) => {

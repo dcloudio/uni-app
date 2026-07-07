@@ -95,7 +95,7 @@ app平台、web平台调整了 white-space 属性的实现。之前接近小程�
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -109,7 +109,7 @@ app平台、web平台调整了 white-space 属性的实现。之前接近小程�
 
       <scroll-view style="flex: 1">
         <view class="content uni-common-mt">
-          <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 white-space </text>
+          <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
         </view>
 
         <view class="common-box">
@@ -141,7 +141,7 @@ app平台、web平台调整了 white-space 属性的实现。之前接近小程�
         </view>
       </scroll-view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -184,7 +184,6 @@ HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方�
     data.whiteSpaceActualFlat = textRefFlat.value?.style.getPropertyValue('white-space') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeWhiteSpace = (value: string) => {
     data.whiteSpace = value
@@ -193,7 +192,7 @@ HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方�
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeWhiteSpace = (index: number) => {

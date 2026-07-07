@@ -69,7 +69,7 @@ justify-content: normal | <content-distribution> | <overflow-position>? [ <conte
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1">
@@ -191,7 +191,7 @@ justify-content: normal | <content-distribution> | <overflow-position>? [ <conte
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 justify-content </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="common-box">
@@ -231,7 +231,7 @@ justify-content: normal | <content-distribution> | <overflow-position>? [ <conte
       </view>
 
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -262,7 +262,6 @@ justify-content: normal | <content-distribution> | <overflow-position>? [ <conte
     data.justifyContentActualFlat = viewRefFlat.value?.style.getPropertyValue('justify-content') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeJustifyContent = (value: string) => {
     data.justifyContent = value
@@ -271,7 +270,7 @@ justify-content: normal | <content-distribution> | <overflow-position>? [ <conte
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeJustifyContent = (index: number) => {

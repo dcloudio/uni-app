@@ -61,7 +61,7 @@ font-family: <family-name>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view class="uni-padding-wrap">
@@ -90,7 +90,7 @@ font-family: <family-name>;
 
 
       <view class="uni-common-mt">
-        <text class="uni-title-text title-color">setProperty 设置与 getPropertyValue 获取 font-family 测试</text>
+        <text class="uni-title-text title-color">setProperty 设置与 getPropertyValue 获取</text>
 
         <!-- 普通版本 -->
         <text class="uni-info">设置值: {{data.fontFamily}}</text>
@@ -114,7 +114,7 @@ font-family: <family-name>;
       <button type="default" @click="openUniIcon">内置字体图标uni-icon示例</button>
     </view>
     <!-- #endif -->
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -151,7 +151,6 @@ font-family: <family-name>;
     data.fontFamilyActualFlat = textRefFlat.value?.style.getPropertyValue('font-family') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeFontFamily = (value: string) => {
     data.fontFamily = value
@@ -160,7 +159,7 @@ font-family: <family-name>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeFontFamily = (index: number) => {

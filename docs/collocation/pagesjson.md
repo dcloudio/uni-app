@@ -281,9 +281,9 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 | navigationBarTitleText | string |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 导航栏标题文字内容 |
 | navigationBarShadow | [navigationBarShadow 配置项列表](#style-navigationbarshadow) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 导航栏阴影，配置参考下方 [导航栏阴影](https://doc.dcloud.net.cn/uni-app-x/collocation/pagesjson.html#pagesoptionspage-style) |
 | navigationStyle | 'default' \| 'custom' | "default" | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 导航栏样式，仅支持 default/custom。custom即取消默认的原生导航栏，需看[使用注意](https://uniapp.dcloud.net.cn/collocation/pages.html#customnav)。 |
-| disableScroll | boolean | false | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS(VDOM): x; iOS(Vapor): 5.12; HarmonyOS 系统版本: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.12 | 设置为 true 则页面整体不能上下滚动（无bounce效果）。只在页面配置中有效，在 globalStyle 中设置无效。 |
-| backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; Android: 3.99; iOS 系统版本: x; iOS: 4.18; HarmonyOS:   | 下拉刷新显示出来的窗口的背景色（无下拉刷新时，此颜色无效果） |
-| backgroundColorContent | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: x; iOS: 4.11; HarmonyOS:   | 页面容器背景色 |
+| disableScroll | boolean | false | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.12; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.12 | 设置为 true 则页面整体不能上下滚动（无bounce效果）。只在页面配置中有效，在 globalStyle 中设置无效。 |
+| backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; Android: 3.99; iOS: 4.18; HarmonyOS:   | 下拉刷新显示出来的窗口的背景色（无下拉刷新时，此颜色无效果） |
+| backgroundColorContent | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS:   | 页面容器背景色 |
 | backgroundTextStyle | 'dark' \| 'light' | "dark" | 否 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS:   | 下拉 loading 的样式，仅支持 dark/light |
 | enablePullDownRefresh | boolean | false | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 是否开启下拉刷新，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
 | onReachBottomDistance | number | 50 | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
@@ -296,7 +296,7 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 | backgroundColorTop | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS: x; HarmonyOS:   | 顶部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
 | backgroundColorBottom | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS: x; HarmonyOS:   | 底部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
 | disableSwipeBack | boolean | false | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS: 4.18; HarmonyOS 系统版本: x; HarmonyOS: x | 是否禁用右滑手势关闭页面 |
-| swipeBackAsBackPress | boolean | false | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS 系统版本: x; HarmonyOS: x | 是否将侧滑返回手势转为页面 onBackPress 事件（注意：disableSwipeBack 为 false 时生效） |
+| swipeBackAsBackPress | boolean | false | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS 系统版本: x; HarmonyOS: x | 是否将侧滑返回手势转为页面 onBackPress 事件（注意：disableSwipeBack 为 false 时生效） |
 | titleImage | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址 |
 | transparentTitle | 'always' \| 'auto' \| 'none' | "none" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 导航栏整体（前景、背景）透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |
 | titlePenetrate | 'YES' \| 'NO' | "NO" | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 导航栏点击穿透 |
@@ -700,9 +700,9 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 | navigationBarTitleText | string |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 导航栏标题文字内容 |
 | navigationBarShadow | [navigationBarShadow 配置项列表](#style-navigationbarshadow) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 导航栏阴影，配置参考下方 [导航栏阴影](https://doc.dcloud.net.cn/uni-app-x/collocation/pagesjson.html#pagesoptionspage-style) |
 | navigationStyle | 'default' \| 'custom' | "default" | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 导航栏样式，仅支持 default/custom。custom即取消默认的原生导航栏，需看[使用注意](https://uniapp.dcloud.net.cn/collocation/pages.html#customnav)。 |
-| disableScroll | boolean | false | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS(VDOM): x; iOS(Vapor): 5.12; HarmonyOS 系统版本: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.12 | 设置为 true 则页面整体不能上下滚动（无bounce效果）。只在页面配置中有效，在 globalStyle 中设置无效。 |
-| backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; Android: 3.99; iOS 系统版本: x; iOS: 4.18; HarmonyOS:   | 下拉刷新显示出来的窗口的背景色（无下拉刷新时，此颜色无效果） |
-| backgroundColorContent | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: x; iOS: 4.11; HarmonyOS:   | 页面容器背景色 |
+| disableScroll | boolean | false | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.12; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.12 | 设置为 true 则页面整体不能上下滚动（无bounce效果）。只在页面配置中有效，在 globalStyle 中设置无效。 |
+| backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; Android: 3.99; iOS: 4.18; HarmonyOS:   | 下拉刷新显示出来的窗口的背景色（无下拉刷新时，此颜色无效果） |
+| backgroundColorContent | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS:   | 页面容器背景色 |
 | backgroundTextStyle | 'dark' \| 'light' | "dark" | 否 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS:   | 下拉 loading 的样式，仅支持 dark/light |
 | enablePullDownRefresh | boolean | false | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 是否开启下拉刷新，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
 | onReachBottomDistance | number | 50 | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
@@ -715,7 +715,7 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 | backgroundColorTop | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS: x; HarmonyOS:   | 顶部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
 | backgroundColorBottom | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS: x; HarmonyOS:   | 底部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
 | disableSwipeBack | boolean | false | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS: 4.18; HarmonyOS 系统版本: x; HarmonyOS: x | 是否禁用右滑手势关闭页面 |
-| swipeBackAsBackPress | boolean | false | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS 系统版本: x; HarmonyOS: x | 是否将侧滑返回手势转为页面 onBackPress 事件（注意：disableSwipeBack 为 false 时生效） |
+| swipeBackAsBackPress | boolean | false | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS 系统版本: x; HarmonyOS: x | 是否将侧滑返回手势转为页面 onBackPress 事件（注意：disableSwipeBack 为 false 时生效） |
 | titleImage | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址 |
 | transparentTitle | 'always' \| 'auto' \| 'none' | "none" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 导航栏整体（前景、背景）透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |
 | titlePenetrate | 'YES' \| 'NO' | "NO" | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS:   | 导航栏点击穿透 |

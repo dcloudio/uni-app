@@ -168,9 +168,9 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | 4.61 | x |  | 4.61 |
+| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 | x |  | 4.61 |
 
 
 **uni-app 兼容性**
@@ -207,9 +207,9 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | 4.61 | x |  | 4.61 |
+| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 | x |  | 4.61 |
 
 
 **uni-app 兼容性**
@@ -251,9 +251,9 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | 4.61 | x |  | 4.61 |
+| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 | x |  | 4.61 |
 
 
 **uni-app 兼容性**
@@ -277,9 +277,9 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | 4.61 | x |  | 4.61 |
+| Web | Android | iOS | HarmonyOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | 4.61 | x |  | 4.61 |
 
 
 **uni-app 兼容性**

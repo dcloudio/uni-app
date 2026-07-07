@@ -58,7 +58,7 @@ align-self: auto | normal | stretch | <baseline-position> | <overflow-position>?
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
   <view style="flex-grow: 1;">
@@ -141,7 +141,7 @@ align-self: auto | normal | stretch | <baseline-position> | <overflow-position>?
     </view>
 
     <view class="uni-common-mt">
-      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 align-self </text>
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
     </view>
 
     <!-- 普通版本 -->
@@ -218,14 +218,14 @@ align-self: auto | normal | stretch | <baseline-position> | <overflow-position>?
     <text class="uni-subtitle-text">native-view 作为 flex 子项</text>
     <view class="demo-box uni-common-mb">
       <view class="demo-container align-center">
-        <native-view class="common" style="align-self: center;"></native-view>
+        <test-native-view class="common" style="align-self: center;"></test-native-view>
       </view>
       <view class="demo-container align-center">
-        <native-view class="common" style="align-self: flex-start;"></native-view>
+        <test-native-view class="common" style="align-self: flex-start;"></test-native-view>
       </view>
     </view>
   </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -267,7 +267,6 @@ align-self: auto | normal | stretch | <baseline-position> | <overflow-position>?
     data.alignSelfActualImageFlat = imageRefFlat.value?.style.getPropertyValue('align-self') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeAlignSelf = (value: string) => {
     data.alignSelf = value
     viewRef.value?.style.setProperty('align-self', value)
@@ -279,7 +278,7 @@ align-self: auto | normal | stretch | <baseline-position> | <overflow-position>?
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeAlignSelf = (index: number) => {

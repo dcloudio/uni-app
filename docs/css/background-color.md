@@ -52,7 +52,7 @@ background-color: <color>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1">
@@ -172,7 +172,7 @@ background-color: <color>;
       </view>
 
       <view>
-        <text>background-color: rgba(0, 0, 255, 0.5) (无src时显示背景色)</text>
+        <text>background-color: rgba(0, 0, 255, 0.5) \n (无src时显示背景色)</text>
         <view class="demo-box">
           <image class="common-image" style="background-color: rgba(0, 0, 255, 0.5)"></image>
           <image class="common-image" style="background-color: rgba(0, 0, 255, 0.5)" flatten></image>
@@ -196,7 +196,7 @@ background-color: <color>;
       </view>
 
       <view>
-        <text>background-color: yellow (有src时，背景色在图片加载失败或透明区域显示)</text>
+        <text>background-color: yellow \n (有src时，背景色在图片加载失败或透明区域显示)</text>
         <view class="demo-box">
           <image class="common-image" style="background-color: yellow" src="/static/test-image/logo.png"></image>
           <image class="common-image" style="background-color: yellow" src="/static/test-image/logo.png" flatten></image>
@@ -214,7 +214,7 @@ background-color: <color>;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 background-color </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -293,17 +293,8 @@ background-color: <color>;
         <enum-data :compact="true" :items="backgroundColorEnum" title="background-color 枚举值" @change="radioChangeBackgroundColor"></enum-data>
         <input-data :defaultValue="data.backgroundColor" title="background-color 自定义值" type="text" @confirm="inputChangeBackgroundColor"></input-data>
       </view>
-
-      <view class="uni-common-mb">
-        <text>native-view组件: background-color: blue 和 #0000ff80 </text>
-        <view class="demo-box">
-          <native-view class="common" style="background-color: blue"></native-view>
-          <native-view class="common" style="background-color: #0000ff80;"></native-view>
-        </view>
-      </view>
-
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -346,7 +337,6 @@ background-color: <color>;
     data.backgroundColorActualImageFlat = imageRefFlat.value?.style.getPropertyValue('background-color') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeBackgroundColor = (color: string) => {
     data.backgroundColor = color
     viewRef.value?.style.setProperty('background-color', color)
@@ -358,7 +348,7 @@ background-color: <color>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeBackgroundColor = (index: number) => {

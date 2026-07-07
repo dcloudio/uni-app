@@ -67,7 +67,7 @@ margin: [ <length> | <percentage> | auto ]{1,4};
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -105,7 +105,7 @@ margin: [ <length> | <percentage> | auto ]{1,4};
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 margin </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="test-container">
@@ -219,19 +219,19 @@ margin: [ <length> | <percentage> | auto ]{1,4};
         <view class="demo-box">
           <view class="demo-container">
             <view class="common red"></view>
-            <native-view class="common" style="margin: 25px;"></native-view>
+            <test-native-view class="common" style="margin: 25px;"></test-native-view>
             <view class="common blue"></view>
           </view>
           <view class="demo-container">
             <view class="common red"></view>
-            <native-view class="common" style="margin: 10%;"></native-view>
+            <test-native-view class="common" style="margin: 10%;"></test-native-view>
             <view class="common blue"></view>
           </view>
         </view>
       </view>
 
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -278,7 +278,6 @@ margin: [ <length> | <percentage> | auto ]{1,4};
     data.marginActualScrollView = scrollViewRef.value?.style.getPropertyValue('margin') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeMargin = (value: string) => {
     data.margin = value
@@ -292,7 +291,7 @@ margin: [ <length> | <percentage> | auto ]{1,4};
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeMargin = (index: number) => {

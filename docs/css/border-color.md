@@ -65,7 +65,7 @@ border-color: <color>{1,4};
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1">
@@ -146,7 +146,7 @@ border-color: <color>{1,4};
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 border-color </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -219,15 +219,8 @@ border-color: <color>{1,4};
         <input-data :defaultValue="data.borderColor" title="border-color 自定义值" type="text" @confirm="inputChangeBorderColor"></input-data>
       </view>
 
-      <view class="uni-common-mb">
-        <text>native-view组件: border-color: cyan 和 #00FF00</text>
-        <view class="demo-box">
-          <native-view class="common" style="border-width: 5px; border-style: solid; border-color: cyan;"></native-view>
-          <native-view class="common" style="border-width: 5px; border-style: solid; border-color: #00FF00;"></native-view>
-        </view>
-      </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -269,7 +262,6 @@ border-color: <color>{1,4};
     data.borderColorActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border-color') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeBorderColor = (value: string) => {
     data.borderColor = value
     viewRef.value?.style.setProperty('border-color', value)
@@ -281,7 +273,7 @@ border-color: <color>{1,4};
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeBorderColor = (index: number) => {

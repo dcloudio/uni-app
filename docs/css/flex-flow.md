@@ -65,7 +65,7 @@ flex-flow: <'flex-direction'> || <'flex-wrap'>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1">
@@ -183,7 +183,7 @@ flex-flow: <'flex-direction'> || <'flex-wrap'>;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 flex-flow </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="common-box">
@@ -228,7 +228,7 @@ flex-flow: <'flex-direction'> || <'flex-wrap'>;
           <input-data :defaultValue="data.flexFlow" title="flex-flow 自定义值" type="text" @confirm="inputChangeFlexFlow"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -259,7 +259,6 @@ flex-flow: <'flex-direction'> || <'flex-wrap'>;
     data.flexFlowActualFlat = viewRefFlat.value?.style.getPropertyValue('flex-flow') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeFlexFlow = (value : string) => {
     data.flexFlow = value
@@ -268,7 +267,7 @@ flex-flow: <'flex-direction'> || <'flex-wrap'>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeFlexFlow = (index: number) => {

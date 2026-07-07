@@ -52,7 +52,7 @@ flex-shrink: <number>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1">
@@ -103,7 +103,7 @@ flex-shrink: <number>;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 flex-shrink </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -209,13 +209,13 @@ flex-shrink: <number>;
       <text class="uni-title-text uni-common-mt">native-view 组件：flex-shrink: 1 、2、3</text>
       <view class="demo-box uni-common-mb">
         <view class="flex-container-shrink">
-          <native-view class="native-view-shrink red" style="width: 100px; flex-shrink: 1;"></native-view>
-          <native-view class="native-view-shrink green" style="width: 100px; flex-shrink: 2;"></native-view>
-          <native-view class="native-view-shrink blue" style="width: 100px; flex-shrink: 3;"></native-view>
+          <test-native-view class="native-view-shrink red" style="width: 100px; flex-shrink: 1;"></test-native-view>
+          <test-native-view class="native-view-shrink green" style="width: 100px; flex-shrink: 2;"></test-native-view>
+          <test-native-view class="native-view-shrink blue" style="width: 100px; flex-shrink: 3;"></test-native-view>
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -256,7 +256,6 @@ flex-shrink: <number>;
     data.flexShrinkActualImageFlat = imageRefFlat.value?.style.getPropertyValue('flex-shrink') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeFlexShrink = (value: string) => {
     data.flexShrink = value
@@ -269,7 +268,7 @@ flex-shrink: <number>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeFlexShrink = (index: number) => {

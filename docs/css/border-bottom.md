@@ -51,7 +51,7 @@ border-bottom: <line-width> || <line-style> || <color>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -75,7 +75,7 @@ border-bottom: <line-width> || <line-style> || <color>;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 border-bottom </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <!-- 普通版本 -->
@@ -148,15 +148,8 @@ border-bottom: <line-width> || <line-style> || <color>;
         <input-data :defaultValue="data.borderBottom" title="border-bottom 自定义值" type="text" @confirm="inputChangeBorderBottom"></input-data>
       </view>
 
-      <view class="uni-common-mb">
-        <text>native-view组件: border-bottom: 5px dashed blue 和 10px solid green</text>
-        <view class="demo-box">
-          <native-view class="common" style="border-bottom: 5px dashed blue;"></native-view>
-          <native-view class="common" style="border-bottom: 10px solid green;"></native-view>
-        </view>
-      </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -197,7 +190,6 @@ border-bottom: <line-width> || <line-style> || <color>;
     data.borderBottomActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border-bottom') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeBorderBottom = (value: string) => {
     data.borderBottom = value
     viewRef.value?.style.setProperty('border-bottom', value)
@@ -209,7 +201,7 @@ border-bottom: <line-width> || <line-style> || <color>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeBorderBottom = (index: number) => {

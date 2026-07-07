@@ -71,7 +71,7 @@ align-content: normal | <baseline-position> | <content-distribution> | <overflow
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1">
@@ -233,7 +233,7 @@ align-content: normal | <baseline-position> | <content-distribution> | <overflow
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 align-content </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="common-box">
@@ -278,7 +278,7 @@ align-content: normal | <baseline-position> | <content-distribution> | <overflow
         <input-data :defaultValue="data.alignContent" title="align-content 自定义值" type="text" @confirm="inputChangeAlignContent"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -309,7 +309,6 @@ align-content: normal | <baseline-position> | <content-distribution> | <overflow
     data.alignContentActualFlat = viewRefFlat.value?.style.getPropertyValue('align-content') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeAlignContent = (value: string) => {
     data.alignContent = value
     viewRef.value?.style.setProperty('align-content', value)
@@ -317,7 +316,7 @@ align-content: normal | <baseline-position> | <content-distribution> | <overflow
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeAlignContent = (index: number) => {

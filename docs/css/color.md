@@ -62,7 +62,7 @@ color: <color>;
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -85,7 +85,7 @@ color: <color>;
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 color 测试</text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="common-box">
@@ -116,7 +116,7 @@ color: <color>;
         <input-data :defaultValue="data.color" title="color 自定义值" type="text" @confirm="inputChangeColor"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -147,7 +147,6 @@ color: <color>;
     data.colorActualFlat = textRefFlat.value?.style.getPropertyValue('color') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeColor = (value: string) => {
     data.color = value
@@ -156,7 +155,7 @@ color: <color>;
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeColor = (index: number) => {

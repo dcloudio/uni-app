@@ -650,16 +650,16 @@ HarmonyOS平台配置
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| distribute | [distribute 配置项列表](#app-harmony-distribute) |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | HarmonyOS分发配置 |
+| distribute | [distribute 配置项列表](#app-harmony-distribute) |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 4.61 | HarmonyOS分发配置 |
 
 
 #### app-harmonydistribute 配置项列表 @app-harmony-distribute
 
 HarmonyOS分发配置
 
-| HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- |
-| x | 4.61 |
+| HarmonyOS |
+| :- |
+| 4.61 |
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |

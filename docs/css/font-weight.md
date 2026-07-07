@@ -69,7 +69,7 @@ font-weight: <font-weight-absolute>{1,2};
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -104,7 +104,7 @@ font-weight: <font-weight-absolute>{1,2};
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 font-weight 测试</text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="common-box">
@@ -135,7 +135,7 @@ font-weight: <font-weight-absolute>{1,2};
           <input-data :defaultValue="data.fontWeight" title="font-weight 自定义值" type="text" @confirm="inputChangeFontWeight"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -171,7 +171,6 @@ font-weight: <font-weight-absolute>{1,2};
 		data.fontWeightActualFlat = textRefFlat.value?.style.getPropertyValue('font-weight') ?? ''
 	}
 
-	const ins = getCurrentInstance()
 
 	const changeFontWeight = (value: string) => {
 		data.fontWeight = value
@@ -180,7 +179,7 @@ font-weight: <font-weight-absolute>{1,2};
 		// 使用 nextTick 确保样式已应用后再获取值
 		nextTick(() => {
 			getPropertyValues()
-		}, ins)
+		})
 	}
 
 	const radioChangeFontWeight = (index: number) => {
