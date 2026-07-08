@@ -27,7 +27,7 @@ JSON.parse() 方法用来解析 JSON 字符串，构造由字符串描述的对�
 
 - JSON.parse 解析出来的对象（不是数组），在App平台使用方括号[]访问，即数组下标方式。并且支持第一层对象属性通过`.`运算符访问（推荐使用HBuilderX 5.0+）
 - 如果输入的字符串不是合法的json格式，则会返回 null
-- JSON.parse 接口内部通过[特殊方式读取了范型类型](../generics.md#使用限制)，不支持传入动态的泛型：比如将外层方法的普通泛型参数传入 JSON.parse。
+- JSON.parse 接口内部通过[特殊方式读取了泛型类型](../generics.md#使用限制)，不支持传入动态的泛型：比如将外层方法的普通泛型参数传入 JSON.parse。
 
 ### parse(text, reviver?)
 

@@ -324,6 +324,6 @@ HBuilderX的json转type工具，会对一些敏感符合和关键字自动转义
 
 ## 注意事项
 
-* request 接口内部通过[特殊方式读取了范型类型](../uts/generics.md#使用限制)，不支持传入动态的范型：比如将外层方法的普通范型参数传入 request。所以目前尽量直接使用uni.request而不是封装。如确需封装，可不使用type，改用UTSJSONObject。
+* request 接口内部通过[特殊方式读取了泛型类型](../uts/generics.md#使用限制)，不支持传入动态的泛型：比如将外层方法的普通泛型参数传入 request。所以目前尽量直接使用uni.request而不是封装。如确需封装，可不使用type，改用UTSJSONObject。
 * 4.01及之后版本web端request接口在dataType为`json`时返回UTSJSONObject，此前为普通js对象。
 * web端request接口目前不支持创建传入的泛型的实例，即泛型仅作为类型校验使用。
