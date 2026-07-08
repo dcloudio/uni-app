@@ -6,7 +6,7 @@ uni-app x中，每个页面都对应一个UniPage对象。
 
 如果是dialogPage，也可以通过UniPage的getDialogPage方法获取。
 
-通过UniPage对象，可以获取/修改页面的pageStyle，让pages.json中的页面设置可以动态修改；可以继续获取原生页面对象，如原生view；可以继续获取页面的vue示例，通过vm属性。
+通过UniPage对象，可以获取/修改页面的pageStyle，让pages.json中的页面设置可以动态修改；可以继续获取原生页面对象，如原生view；可以继续获取页面的vue实例，通过vm属性。
 
 UniPage在App和Web平台较完善，在小程序端受小程序未开放，很多功能无法实现。具体见兼容性表格。
 
