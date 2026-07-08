@@ -131,7 +131,17 @@ export function uniAppCssPrePlugin(): Plugin {
         },
         emitFile(filename, cssCode) {
           const { ASDSF } = requireUniHelpers()
-          ASDSF(normalizePath(filename), cssCode, process.env.UNI_UTS_PLATFORM)
+          const styleSheetOptions =
+            typeof cssCode === 'string' &&
+            process.env.UNI_MEDIA_PREFERS_COLOR_SCHEME === 'true'
+              ? { styleSheetTypeName: 'UniCSSStyleSheet' }
+              : undefined
+          ASDSF(
+            normalizePath(filename),
+            cssCode,
+            process.env.UNI_UTS_PLATFORM,
+            styleSheetOptions
+          )
         },
       })
       const uvueCssInlinePostPlugin: Plugin = {
