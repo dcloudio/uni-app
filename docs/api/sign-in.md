@@ -3,7 +3,7 @@
 登录
 
 
-> Android、iOS平台从 HBuilderX5.08 版本开始支持微信登录
+> Android、iOS平台从 HBuilderX5.08 版本开始支持微信登录; iOS平台从 HBuilderX 5.21 版本开始支持Apple登录
 
 ### login 兼容性 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
@@ -101,6 +101,7 @@
 - HarmonyOS 平台需要额外的配置，详见[HarmonyOS平台接入微信SDK](https://developers.weixin.qq.com/doc/oplatform/Mobile_App/Access_Guide/ohos.html)
   - 配置 queryScheme： `"querySchemes": ["weixin"]` **请勿配置 `wxopensdk`。已在 @tencent/wechat_open_sdk@1.0.15 实测配置 `wxopensdk` 后登录无法回调**
   - 配置 actions: `"actions": [ "action.system.home", "wxentity.action.open" ]`
+- 苹果审核规范要求，使用任何三方登录必须同时支持Apple登录
 :::
 
 <!-- UTSAPIJSON.login.example -->
@@ -123,11 +124,13 @@
 
 ### 登录provider对象描述 @providerdes
 
-UniOAuthWeixinProvider(微信登录)继承自 [UniProvider](./provider.md#uniprovider)
+* UniOAuthWeixinProvider(微信登录)继承自 [UniProvider](./provider.md#uniprovider)
 
 | 名称           | 类型      | 必备 | 默认值  | 描述                                  |
 | -------------- | --------- | ---- | ------ | ------------------------------------- |
 | isWeChatInstalled     | boolean   | 是    | -      | 判断微信是否安装 |
+
+* UniOAuthAppleProvider(Apple 登录)继承自 [UniProvider](./provider.md#uniprovider)
 
 ## 自定义登录provider接入到uni API @customprovider
 
@@ -216,6 +219,7 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
    })
 ```
 - **app需要在根目录manifest.json文件中配置`uni-oauth`节点，详见 [https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-modules.html#uni-oauth模块配置](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-modules.html#uni-oauth)**
+- iOS平台微信登录、苹果登录均需要配置在根目录manifest.json文件中配置`uni-oauth`节点，并且只要支持任何三方登录，均需要同时支持苹果登录
 
 ## uni.getUserInfo(options) @getuserinfo
 
