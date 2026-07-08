@@ -23,7 +23,7 @@
 | collection | string([string.DBCollectionString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 表名 |
 | field | string([string.DBFieldString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 查询字段，多个字段用 `,` 分割 |
 | where | string([string.JQLString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 查询条件 |
-| orderby | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 排序字段及正序倒叙设置 |
+| orderby | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 排序字段及正序倒序设置 |
 | groupby | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 对数据进行分组 |
 | group-field | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 对数据进行分组统计 |
 | distinct | boolean |   | Web: 4.0; 微信小程序: -; Android: 3.93; iOS: 4.11; HarmonyOS:   | 是否对数据查询结果中重复的记录进行去重 |
