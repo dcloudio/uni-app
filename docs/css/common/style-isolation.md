@@ -206,6 +206,7 @@ defineOptions中配置externalClasses，从HBuilderX5.0起支持。
 **注意事项：**
 
 - 由于全局样式是最低优先级，如果传递给组件externalClasses的class是在全局App.uvue中定义的，且期望覆盖组件内部自身class的部分样式，需要给指定的css属性增加`!important;`。
+- 为兼容小程序平台的组件规范，`externalClasses` 必须在组件定义阶段以静态字面量方式声明，且其内容需要在编译时可确定；不支持通过变量、表达式计算、函数返回值等方式动态生成。
 
 
 ##### 组件避免外部过度干扰样式
