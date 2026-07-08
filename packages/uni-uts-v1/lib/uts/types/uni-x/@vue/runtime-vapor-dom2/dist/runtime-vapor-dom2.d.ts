@@ -13,9 +13,10 @@ declare class VaporFragment {
   insert?: (parent: ParentNode, anchor: Node | null) => void;
   remove?: (parent?: ParentNode) => void;
   onUpdated?: ((nodes?: Block) => void)[];
+  readonly renderInstance: VaporSharedDataComponentInstance | null;
   readonly slotOwner: VaporSharedDataComponentInstance | null;
   constructor(nodes: Block);
-  protected runWithRenderCtx<R>(fn: () => R): R;
+  protected runWithRenderCtx<R>(fn: () => R, scope?: EffectScope$1): R;
 }
 declare class DynamicFragment extends VaporFragment {
   readonly __df = true;
