@@ -28,7 +28,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| pageOrientation | string | 否 |  | Web: x; 微信小程序: x; Android: 4.33; iOS: 4.33; HarmonyOS: x | 屏幕方向。默认为page.json中的pageOrientation。 |
+| pageOrientation | string | 否 |  | Web: x; 微信小程序: x; Android: 4.33; iOS: 4.33; HarmonyOS: x | 屏幕方向。默认为pages.json中的pageOrientation。 |
 | albumMode | string | 否 | "custom" | Web: x; 微信小程序: x; Android: 4.33; iOS: x; HarmonyOS: x | 图片选择模式 |
 | count | number | 否 | 9 | Web:  ; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 最多可以选择的图片张数，app端不限制，微信小程序最多可支持20个。 |
 | sizeType | Array&lt;string&gt; | 否 | ['original','compressed'\] | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | original 原图，compressed 压缩图，默认二者都有 |

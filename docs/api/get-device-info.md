@@ -52,7 +52,7 @@
 | isRoot | boolean | 否 |  | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 是否root。iOS 为是否越狱<br/> |
 | isUSBDebugging | boolean | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: x | adb是否开启<br/> |
 | osName | string | 否 |  | Web: 4.18; 微信小程序: 4.41; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 系统名称<br/> |
-| osVersion | string | 否 |  | Web: 4.18; 微信小程序: 4.41; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 操作系统版本。如 ios 版本，andriod 版本<br/> |
+| osVersion | string | 否 |  | Web: 4.18; 微信小程序: 4.41; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 操作系统版本。如 ios 版本，android 版本<br/> |
 | osLanguage | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 操作系统语言<br/> |
 | osTheme | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 操作系统主题<br/> |
 | osAndroidAPILevel | number | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: x; HarmonyOS: x | Android 系统API库的版本。<br/> |

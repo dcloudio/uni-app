@@ -2478,7 +2478,7 @@ writeSync
 | data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 写入的内容，类型为 String 或 ArrayBuffer，以前类型是string，Android平台4.31、iOS平台4.61起支持ArrayBuffer类型 |
 | encoding | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 只在 data 类型是 String 时有效，指定写入文件的字符编码，默认为 utf8<br/>支持:ascii base64 utf-8 |
 | length | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: x; HarmonyOS: 4.61 | 只在 data 类型是 ArrayBuffer 时有效，指定要写入的字节数，默认为 arrayBuffer 从0开始偏移 offset 个字节后剩余的字节数 ，4.31及以后版本新增 |
-| offset | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: x; HarmonyOS: 4.61 | 只在 data 类型是 ArrayBuffer 时有效，决定 arrayBuffe 中要被写入的部位，即 arrayBuffer 中的索引，默认0，4.31及以后版本新增 |
+| offset | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: x; HarmonyOS: 4.61 | 只在 data 类型是 ArrayBuffer 时有效，决定 arrayBuffer 中要被写入的部位，即 arrayBuffer 中的索引，默认0，4.31及以后版本新增 |
 | position | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: x; HarmonyOS: 4.61 | 指定文件开头的偏移量，即数据要被写入的位置。当 position 不传或者传入非 Number 类型的值时，数据会被写入当前指针所在位置。4.31及以后版本新增 | 
 
 ##### encoding 的属性描述
@@ -4141,7 +4141,7 @@ isFile
 | data | string \| [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.61; HarmonyOS: 4.61 | 写入的内容，类型为 String 或 ArrayBuffer，以前类型是string，Android平台4.31、iOS平台4.61起支持ArrayBuffer类型 |
 | encoding | string | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 只在 data 类型是 String 时有效，指定写入文件的字符编码，默认为 utf8<br/>支持:ascii base64 utf-8 |
 | length | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: x; HarmonyOS: 4.61 | 只在 data 类型是 ArrayBuffer 时有效，指定要写入的字节数，默认为 arrayBuffer 从0开始偏移 offset 个字节后剩余的字节数 ，4.31及以后版本新增 |
-| offset | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: x; HarmonyOS: 4.61 | 只在 data 类型是 ArrayBuffer 时有效，决定 arrayBuffe 中要被写入的部位，即 arrayBuffer 中的索引，默认0，4.31及以后版本新增 |
+| offset | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: x; HarmonyOS: 4.61 | 只在 data 类型是 ArrayBuffer 时有效，决定 arrayBuffer 中要被写入的部位，即 arrayBuffer 中的索引，默认0，4.31及以后版本新增 |
 | position | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: x; HarmonyOS: 4.61 | 指定文件开头的偏移量，即数据要被写入的位置。当 position 不传或者传入非 Number 类型的值时，数据会被写入当前指针所在位置。4.31及以后版本新增 |
 
 #### encoding 的属性描述

@@ -520,20 +520,20 @@ addMarkers
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| content | string | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文本 |
-| color | string | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文本颜色 |
-| fontSize | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文字大小 |
-| x | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | label的坐标，原点是 marker 对应的经纬度 |
-| y | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | label的坐标，原点是 marker 对应的经纬度 |
-| anchorX | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | label的坐标，原点是 marker 对应的经纬度 |
-| anchorY | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | label的坐标，原点是 marker 对应的经纬度 |
-| borderWidth | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 边框宽度 |
-| borderColor | string | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 边框颜色 |
-| borderRadius | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 边框圆角 |
-| bgColor | string | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 背景色 |
-| padding | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文本边缘留白 |
-| textAlign | string | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文本对齐方式。 |
-| ariaLabel | string | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 无障碍访问，（属性）元素的额外描述 |
+| content | string | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文本 |
+| color | string | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文本颜色 |
+| fontSize | number | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文字大小 |
+| x | number | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | label的坐标，原点是 marker 对应的经纬度 |
+| y | number | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | label的坐标，原点是 marker 对应的经纬度 |
+| anchorX | number | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | label的坐标，原点是 marker 对应的经纬度 |
+| anchorY | number | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | label的坐标，原点是 marker 对应的经纬度 |
+| borderWidth | number | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 边框宽度 |
+| borderColor | string | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 边框颜色 |
+| borderRadius | number | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 边框圆角 |
+| bgColor | string | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 背景色 |
+| padding | number | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文本边缘留白 |
+| textAlign | string | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文本对齐方式。 |
+| ariaLabel | string | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 无障碍访问，（属性）元素的额外描述 |
 
 ####### textAlign 的属性描述
 
@@ -1190,20 +1190,20 @@ updateGroundOverlay
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| content | string | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文本 |
-| color | string | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文本颜色 |
-| fontSize | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文字大小 |
-| x | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | label的坐标，原点是 marker 对应的经纬度 |
-| y | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | label的坐标，原点是 marker 对应的经纬度 |
-| anchorX | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | label的坐标，原点是 marker 对应的经纬度 |
-| anchorY | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | label的坐标，原点是 marker 对应的经纬度 |
-| borderWidth | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 边框宽度 |
-| borderColor | string | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 边框颜色 |
-| borderRadius | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 边框圆角 |
-| bgColor | string | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 背景色 |
-| padding | number | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文本边缘留白 |
-| textAlign | string | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文本对齐方式。 |
-| ariaLabel | string | 否 | 1 | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 无障碍访问，（属性）元素的额外描述 |
+| content | string | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文本 |
+| color | string | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文本颜色 |
+| fontSize | number | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文字大小 |
+| x | number | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | label的坐标，原点是 marker 对应的经纬度 |
+| y | number | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | label的坐标，原点是 marker 对应的经纬度 |
+| anchorX | number | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | label的坐标，原点是 marker 对应的经纬度 |
+| anchorY | number | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | label的坐标，原点是 marker 对应的经纬度 |
+| borderWidth | number | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 边框宽度 |
+| borderColor | string | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 边框颜色 |
+| borderRadius | number | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 边框圆角 |
+| bgColor | string | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 背景色 |
+| padding | number | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文本边缘留白 |
+| textAlign | string | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 文本对齐方式。 |
+| ariaLabel | string | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 无障碍访问，（属性）元素的额外描述 |
 
 ###### textAlign 的属性描述
 

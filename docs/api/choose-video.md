@@ -28,7 +28,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| pageOrientation | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: x | 屏幕方向。默认为page.json中的pageOrientation。 |
+| pageOrientation | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: x | 屏幕方向。默认为pages.json中的pageOrientation。 |
 | sourceType | Array&lt;string&gt; | 否 |  | Web:  ; 微信小程序: 4.41; Android: 4.18; iOS: 4.18; HarmonyOS:   | album 从相册选视频，camera 使用相机拍摄，默认为：['album', 'camera'\] |
 | maxDuration | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 拍摄视频最长拍摄时间，单位秒。最长支持 60 秒 |
 | camera | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 摄像切换<br/> |

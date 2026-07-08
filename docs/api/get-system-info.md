@@ -68,7 +68,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 | devicePixelRatio | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备像素比<br/> |
 | deviceOrientation | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备方向。<br/> |
 | osName | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 系统名称<br/> |
-| osVersion | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统版本。如 ios 版本，andriod 版本<br/> |
+| osVersion | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统版本。如 ios 版本，android 版本<br/> |
 | osLanguage | string | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统语言<br/> |
 | osTheme | string | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 操作系统主题<br/> |
 | screenWidth | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕宽度，单位为px<br/> |
@@ -511,7 +511,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 | devicePixelRatio | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备像素比<br/> |
 | deviceOrientation | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备方向。<br/> |
 | osName | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 系统名称<br/> |
-| osVersion | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统版本。如 ios 版本，andriod 版本<br/> |
+| osVersion | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统版本。如 ios 版本，android 版本<br/> |
 | osLanguage | string | 是 |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统语言<br/> |
 | osTheme | string | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 操作系统主题<br/> |
 | screenWidth | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕宽度，单位为px<br/> |
