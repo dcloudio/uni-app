@@ -19,25 +19,39 @@ import {
 import type { CALLBACK_TYPES } from './callback'
 import { promisify } from './promise'
 
+/**
+ * 统一格式化 API 首参，确保 formatArgs 阶段总是拿到可写对象。
+ */
+function normalizeFormatApiParams(args: any[]): Record<string, any> {
+  const params = args[0]
+  if (isPlainObject(params)) {
+    return params as Record<string, any>
+  }
+  const normalizedParams: Record<string, any> = {}
+  args[0] = normalizedParams
+  return normalizedParams
+}
+
 function formatApiArgs<T extends ApiLike>(
   args: any[],
   options?: ApiOptions<T>
 ) {
-  const params = args[0]
+  const rawParams = args[0]
   if (
     !options ||
     !options.formatArgs ||
-    (!isPlainObject(options.formatArgs) && isPlainObject(params))
+    (!isPlainObject(options.formatArgs) && isPlainObject(rawParams))
   ) {
     return
   }
+  const params = normalizeFormatApiParams(args)
   const formatArgs = options.formatArgs!
   const keys = Object.keys(formatArgs)
   for (let i = 0; i < keys.length; i++) {
     const name = keys[i]
     const formatterOrDefaultValue = formatArgs[name]!
     if (isFunction(formatterOrDefaultValue)) {
-      const errMsg = formatterOrDefaultValue(args[0][name], params)
+      const errMsg = formatterOrDefaultValue(params[name], params)
       if (isString(errMsg)) {
         return errMsg
       }

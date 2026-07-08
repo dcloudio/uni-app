@@ -1,5 +1,5 @@
 import { normalizeErrMsg } from '../../src/helpers/api/callback'
-import { defineAsyncApi } from '../../src/helpers/api'
+import { defineAsyncApi, defineSyncApi } from '../../src/helpers/api'
 
 describe('api', () => {
   test('normalizeErrMsg', () => {
@@ -34,5 +34,21 @@ describe('api', () => {
     expect(successFn).toHaveBeenCalledTimes(1)
     expect(failFn).toHaveBeenCalledTimes(0)
     expect(completeFn).toHaveBeenCalledTimes(1)
+  })
+
+  test('defineSyncApi formatArgs should not crash when args is empty', () => {
+    const fn = jest.fn()
+    const createDramaAd = defineSyncApi('createDramaAd', fn as any, undefined, {
+      formatArgs: {
+        adpid(value, params) {
+          if (!value) {
+            return 'adpid should not be empty.'
+          }
+          params.adpid = value
+        },
+      },
+    } as any)
+    expect(() => (createDramaAd as any)()).toThrow('adpid should not be empty.')
+    expect(fn).toHaveBeenCalledTimes(0)
   })
 })
