@@ -497,18 +497,28 @@ function promisify(name, fn) {
     })));
   };
 }
-function formatApiArgs(args, options) {
+function normalizeFormatApiParams(args) {
   var params = args[0];
-  if (!options || !options.formatArgs || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
+  if (isPlainObject(params)) {
+    return params;
+  }
+  var normalizedParams = {};
+  args[0] = normalizedParams;
+  return normalizedParams;
+}
+function formatApiArgs(args, options) {
+  var rawParams = args[0];
+  if (!options || !options.formatArgs || !isPlainObject(options.formatArgs) && isPlainObject(rawParams)) {
     return;
   }
+  var params = normalizeFormatApiParams(args);
   var formatArgs = options.formatArgs;
   var keys = Object.keys(formatArgs);
   for (var i = 0; i < keys.length; i++) {
     var name = keys[i];
     var formatterOrDefaultValue = formatArgs[name];
     if (isFunction(formatterOrDefaultValue)) {
-      var errMsg = formatterOrDefaultValue(args[0][name], params);
+      var errMsg = formatterOrDefaultValue(params[name], params);
       if (isString(errMsg)) {
         return errMsg;
       }
