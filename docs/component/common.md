@@ -52,7 +52,7 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view>
@@ -86,7 +86,7 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -222,7 +222,7 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <page-head title="组件全局事件示例"></page-head>
@@ -908,7 +908,7 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

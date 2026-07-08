@@ -2381,7 +2381,7 @@ play
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex:1">
   <!-- #endif -->
     <page-intro content="本页演示 uni.createAnimation 与 uni.createAnimateContext：点击开始/暂停/恢复/取消动画，可点击各 view 修改宽度、高度、margin、padding 等属性动画。"></page-intro>
@@ -2481,7 +2481,7 @@ play
      <view id="borderColorMarginLeftProperty" style="width: 100px;height: 100px;background-color: brown;border-width: 5px;border-style: solid;"
        @click="borderColorMarginLeftProperty"></view>
    </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

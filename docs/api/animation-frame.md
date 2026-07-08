@@ -87,7 +87,7 @@
     <button @click="stopRequestAnimationFrame">cancelAnimationFrame</button>
     <text class="frame-count">FPS: {{data.FPSString}}</text>
     <text class="frame-count">FrameCount: {{data.testFrameCount}}</text>
-    <text class="tips">提示: 在当前测试例子中，每增加一次调用 requestAnimationFrame 帧率翻倍，cancelAnimationFrame 后恢复</text>
+    <text class="tips">提示: 重复点击会忽略重复启动，避免创建多个并行的 requestAnimationFrame 循环</text>
   </view>
 </template>
 
@@ -95,20 +95,24 @@
   type DataType = {
     title: string;
     taskId: number;
+    isRunning: boolean;
     FPSString: string;
     lastTime: number;
     frameCount: number;
     testFrameCount: number;
   }
 
-  const data = reactive({
+  const initialData: DataType = {
     title: 'AnimationFrame',
     taskId: 0,
+    isRunning: false,
     FPSString: '- / -ms',
     lastTime: 0,
     frameCount: 0,
     testFrameCount: 0
-  } as DataType)
+  }
+
+  const data = reactive<DataType>(initialData)
 
   const updateFPS = (timestamp : number) => {
     data.frameCount++
@@ -120,20 +124,36 @@
     }
   }
 
+  type RunAnimationFrameType = (timestamp : number) => void
+  let runAnimationFrame: RunAnimationFrameType = (timestamp : number) => {}
+  runAnimationFrame = (timestamp : number) => {
+    if (!data.isRunning) {
+      return
+    }
+    updateFPS(timestamp)
+    data.testFrameCount++
+    data.taskId = requestAnimationFrame(runAnimationFrame)
+  }
+
   type StartRequestAnimationFrameType = () => void
   let startRequestAnimationFrame: StartRequestAnimationFrameType = () => {}
   startRequestAnimationFrame = () => {
-    data.taskId = requestAnimationFrame((timestamp : number) => {
-      updateFPS(timestamp)
-      data.testFrameCount++
-      startRequestAnimationFrame()
-    })
+    if (data.isRunning) {
+      return
+    }
+    data.isRunning = true
+    data.taskId = requestAnimationFrame(runAnimationFrame)
   }
 
   const stopRequestAnimationFrame = () => {
-    cancelAnimationFrame(data.taskId)
+    if (data.taskId > 0) {
+      cancelAnimationFrame(data.taskId)
+    }
+    data.taskId = 0
+    data.isRunning = false
     data.lastTime = 0
     data.frameCount = 0
+    data.testFrameCount = 0
     data.FPSString = '- / -ms'
   }
 

@@ -366,9 +366,6 @@
  示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/API/element-draw/element-draw.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/API/element-draw/element-draw.uvue) 
 >
 > 该 API 不支持 Web，请运行 hello uni-app x 到 App 平台体验 
-
-::: preview
-> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/API/element-draw/element-draw
 ```uvue
 <template>
   <!-- #ifdef APP -->
@@ -701,7 +698,6 @@
 </style>
 
 ```
-:::
 
 ## Bug & Tips@tips
 + 同时使用`border-radius`和`DrawableContext`，可能会出现`DrawableContext`绘制内容超出border区域的情况。
