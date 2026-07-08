@@ -286,14 +286,14 @@ class Persion {
 通过函数表达式定义的函数不支持使用默认参数
 
 ```ts
-// 该变量会被编译成Swift或者Kottlin的闭包表达式，其不支持使用默认参数。
+// 该变量会被编译成Swift或者Kotlin的闭包表达式，其不支持使用默认参数。
 const test = function(msg: string | null) { }
 ```
 
 因为需要作为值进行传递，对象字面量中定义的方法会自动转换为函数表达式，所以也不支持默认参数
 
 ```ts
-// 该属性会被编译成Swift或者Kottlin的闭包表达式，其不支持使用默认参数。
+// 该属性会被编译成Swift或者Kotlin的闭包表达式，其不支持使用默认参数。
 export  {
 	data: {
 		test(msg: string | null) {
