@@ -5,7 +5,7 @@
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (task: number) => void | 是 |  |   |  | 
+| callback | (timestamp: number) => void | 是 |  |   |  | 
 
 
 **返回值**
