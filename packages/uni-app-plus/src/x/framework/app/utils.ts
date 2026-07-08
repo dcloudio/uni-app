@@ -35,15 +35,17 @@ export function fixBorderStyle(tabBarConfig: Map<string, any>) {
   tabBarConfig.delete('borderColor')
 }
 
-export function parseRedirectInfo(app: IApp): RedirectInfo {
-  const redirectInfo = app.getRedirectInfo()
+export function parseRedirectInfo(
+  appid: string,
+  redirectInfo: Map<string, any>
+): RedirectInfo {
   const path: string = redirectInfo.get('path') ?? ''
   const query: string = redirectInfo.get('query') ?? ''
   const userAction: boolean = redirectInfo.get('userAction') ?? false
   const appScheme: string = redirectInfo.get('appScheme') ?? ''
   const appLink: string = redirectInfo.get('appLink') ?? ''
   const referrerInfo: UniApp.UniConfig['referrerInfo'] = {
-    appId: app.appid,
+    appId: appid,
     extraData: {},
   }
   return {

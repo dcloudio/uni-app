@@ -4,7 +4,7 @@ import { parseRedirectInfo } from './utils'
 
 let isInitEntryPage = false
 
-export function initEntry(app: IApp) {
+export function initEntry(app: IApp, redirectInfo: Map<string, any>) {
   if (isInitEntryPage) {
     return
   }
@@ -13,11 +13,9 @@ export function initEntry(app: IApp) {
   let entryPagePath
   let entryPageQuery
 
-  const redirectInfo = app.getRedirectInfo()
-
   if (redirectInfo.size > 0) {
     const { path, query /* referrerInfo, appScheme, appLink */ } =
-      parseRedirectInfo(app)
+      parseRedirectInfo(app.appid, redirectInfo)
     if (path) {
       entryPagePath = path
       entryPageQuery = query
