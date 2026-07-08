@@ -51,7 +51,7 @@ scroll-view 嵌套场景中。内层 scroll-view 滚动时无法与外层 scroll
     @refresherrefresh="onRefresherrefresh" @refresherrestore="onRefreshrestore" @scrollend="scrollEnd">
     <nested-scroll-header>
       <swiper ref="header" indicator-dots="true" circular="true">
-        <swiper-item v-for="i in 3" :item-id="i">
+        <swiper-item v-for="i in 3" :item-id="i + ''">
           <image src="/static/shuijiao.jpg" style="width:100% ;height: 240px;"></image>
         </swiper-item>
       </swiper>

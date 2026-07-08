@@ -298,7 +298,7 @@
 ```uvue
 <template>
   <view class="uni-flex-item">
-    <live-pusher v-if="isPermissionGranted && isUrlSet" id="live-pusher" class="live-pusher" :url="url" :beauty="beauty"
+    <live-pusher v-if="isUrlSet" id="live-pusher" class="live-pusher" :url="url" :beauty="beauty"
       :whiteness="whiteness" :remote-mirror="remoteMirror" :local-mirror="localMirror" :device-position="devicePosition"
       :mode="mode" :auto-focus="autoFocus" :muted="muted" :orientation="orientation" :enable-camera="enableCamera"
       :enable-mic="enableMic" :audio-quality="audioQuality" :min-bitrate="minBitrate" :max-bitrate="maxBitrate"
@@ -395,7 +395,6 @@
   const videoWidth = ref(0);
   const videoHeight = ref(0);
   const fps = ref(0);
-  const isPermissionGranted = ref(false);
   const isUrlSet = ref(true);
   const initState = ref(true);
   const connectedState = ref(false);
@@ -404,17 +403,6 @@
 
   onReady(() => {
     instance.value = getCurrentInstance()?.proxy;
-    // #ifdef APP-ANDROID
-    const permissions = ["android.permission.CAMERA", "android.permission.RECORD_AUDIO"];
-    UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, permissions, (allRight : boolean, grantedList : string[]) => {
-      if (allRight) {
-        isPermissionGranted.value = true;
-      }
-    }, (doNotAskAgain : boolean, grantedList : string[]) => { });
-    // #endif
-    // #ifndef APP-ANDROID
-    isPermissionGranted.value = true;
-    // #endif
   });
 
   const statechange = (e : UniLivePusherStatechangeEvent) => {
@@ -697,10 +685,6 @@
     height: 40px;
     background: #FFF;
     padding: 8px 13px;
-  }
-
-  .margin-10 {
-    margin: 10px;
   }
 </style>
 

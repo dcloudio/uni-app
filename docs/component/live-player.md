@@ -244,7 +244,7 @@
       :object-fit="objectFit" :background-mute="backgroundMute" :sound-mode="soundMode" :orientation="orientation"
       @statechange="statechange" @fullscreenchange="fullscreenchange" @error="error">
     </live-player>
-    <scroll-view class="uni-padding-wrap uni-common-mt uni-flex-item">
+    <scroll-view id="live-player-scroll-view" class="uni-padding-wrap uni-common-mt uni-flex-item">
       <view class="uni-title">
         <text class="uni-title-text">API示例</text>
       </View>
@@ -471,6 +471,14 @@
     orientation.value = orientationItems[value];
     console.log("orientation ->", orientation.value);
   };
+
+  const getScrollViewRectForTest = () : DOMRect | null => {
+    return uni.getElementById('live-player-scroll-view')?.getBoundingClientRect() ?? null;
+  };
+
+  defineExpose({
+    getScrollViewRectForTest
+  });
 </script>
 
 <style>
@@ -483,10 +491,6 @@
     height: 40px;
     background: #FFF;
     padding: 8px 13px;
-  }
-
-  .margin-10 {
-    margin: 10px;
   }
 </style>
 

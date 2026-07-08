@@ -227,7 +227,7 @@ canvas相关的API较多，参考如下：
 
       <view class="text-group">
         <text>测试 createCanvasContextAsync 结果：</text>
-        <view @click="testCreateContextAsync" id="createCanvasContextAsync">{{testCanvasCtx}}</view>
+        <text @click="testCreateContextAsync" id="createCanvasContextAsync">{{testCanvasCtx}}</text>
       </view>
       <canvas-child ref="canvasChildRef"></canvas-child>
     </scroll-view>

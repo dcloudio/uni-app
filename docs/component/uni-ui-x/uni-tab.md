@@ -1100,7 +1100,8 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 			</uni-tab-item>
 			<uni-tab-midbutton :width="106" :height="94">
 				<view class="floating-ball" hover-class="floating-ball-hover" :hover-stop-propagation="true" @click="handleMidButtonClick">
-					<text class="floating-ball-plus">+</text>
+					<view flatten class="floating-ball-plus" style="position: absolute;"></view>
+					<view flatten class="floating-ball-plus" style="position: absolute;transform: rotate(90deg);"></view>
 				</view>
 				<image class="notch-svg" src="/static/tab-bar-midbutton-notch.svg" mode="scaleToFill"></image>
 			</uni-tab-midbutton>
@@ -1189,6 +1190,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 	}
 
 	.floating-ball {
+		position: relative;
 		width: 70px;
 		height: 70px;
 		border-radius: 50%;
@@ -1207,9 +1209,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 	}
 
 	.floating-ball-plus {
-		font-size: 40px;
-		line-height: 40px;
-		color: #ffffff;
+		background-color: #ffffff;
+		border-radius: 2px;
+		width: 40%;
+		height: 2px;
 	}
 </style>
 

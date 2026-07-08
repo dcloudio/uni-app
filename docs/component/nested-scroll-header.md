@@ -58,7 +58,7 @@ scroll-view 嵌套场景中。外层 scroll-view 滚动时无法与内层 scroll
     </nested-scroll-header>
     <nested-scroll-header>
       <swiper ref="headerRef" indicator-dots="true" circular="true">
-        <swiper-item v-for="i in num" :item-id="i">
+        <swiper-item v-for="i in num" :item-id="i + ''">
           <view class="scroll-header-tiem2">
             <text>如果存在多个头部节点，那么就使用多个 nested-scroll-header 来将其包裹</text>
           </view>

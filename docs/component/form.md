@@ -162,7 +162,7 @@ reset在浏览器W3C的策略是还原、重置。
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view class="scroll-view">
   <!-- #endif -->
     <view class="page">
@@ -260,7 +260,7 @@ reset在浏览器W3C的策略是还原、重置。
       <view class="result">提交的表单数据</view>
       <textarea class="textarea" :value="formDataText" :maxlength="-1" :auto-height="true"></textarea>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

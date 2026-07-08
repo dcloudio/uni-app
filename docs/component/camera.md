@@ -209,7 +209,7 @@ camera组件的操作api为[uni.createCameraContext()](../api/create-camera-cont
 					</view>
 					<view class="uni-camera-wrapper">
 						<slider class="uni-camera-test-host" :disabled="maxZoom == 0" :show-value="true" :min="1"
-							:max="maxZoom" :value="1" @change="zoomSliderChange" />
+							:max="maxZoom" :value="1" @changing="zoomSliderChange" />
 					</view>
 				</view>
 

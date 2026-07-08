@@ -138,7 +138,7 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1;">
   <!-- #endif -->
 		<view class="uni-padding-wrap uni-common-mt">
@@ -148,6 +148,9 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
       <navigator url="/pages/component/rich-text/rich-text-complex" class="uni-btn-v">
         <button>rich-text渲染复杂HTML示例</button>
       </navigator>
+      <navigator url="/pages/component/rich-text/rich-text-highlight" class="uni-btn-v">
+        <button>rich-text高亮覆盖测试</button>
+      </navigator>
       <navigator url="/pages/template/long-rich-text/long-rich-text" class="uni-btn-v">
         <button class="uni-btn">组件性能测试</button>
       </navigator>
@@ -156,6 +159,9 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 			</view>
 			<view class="uni-title">
 				<button type="default" @click="changeFontSize">切换 font-size ({{ data.currentFontSize }})</button>
+			</view>
+			<view class="uni-title">
+				<button type="default" @click="changeColor">切换 color ({{ data.currentColor }})</button>
 			</view>
 			<view class="uni-title">
 				<button type="default" @click="changeLineHeight">切换 line-height ({{ data.currentLineHeight }})</button>
@@ -178,8 +184,8 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 				<rich-text style="height: 80px;" :selectable="true" :nodes="data.text"></rich-text>
 			</view>
 		</view>
-  <!-- #ifdef APP -->
-  </scroll-view style="flex: 1;">
+  <!-- #ifdef APP && !VUE3-VAPOR -->
+  </scroll-view>
   <!-- #endif -->
 </template>
 
@@ -191,14 +197,17 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 		richTextStr : boolean;
 		richTextStyle : string;
 		currentFontSize : string;
+		currentColor : string;
 		currentLineHeight : string;
 		currentFontFamily : string;
 		fontSizeIndex : number;
+		colorIndex : number;
 		lineHeightIndex : number;
 		fontFamilyIndex : number;
 	}
 	// 定义各属性的可选值
 	const fontSizeList : string[] = ["默认", "12px", "16px", "20px", "24px", "32px"]
+	const colorList : string[] = ["默认", "red", "blue", "green", "#ff9800", "#8e44ad"]
 	const lineHeightList : string[] = ["默认", "1", "1.5", "2", "2.5", "3"]
 	const fontFamilyList : string[] = ["默认", "serif", "sans-serif", "monospace", "cursive"]
 
@@ -210,9 +219,11 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 		richTextStr: false,
 		richTextStyle: "border: 1px; border-style: solid; border-color: red;",
 		currentFontSize: "默认",
+		currentColor: "默认",
 		currentLineHeight: "默认",
 		currentFontFamily: "默认",
 		fontSizeIndex: 0,
+		colorIndex: 0,
 		lineHeightIndex: 0,
 		fontFamilyIndex: 0
 	} as DataType)
@@ -256,6 +267,9 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 		if (data.currentFontSize != "默认") {
 			style += " font-size: " + data.currentFontSize + ";"
 		}
+		if (data.currentColor != "默认") {
+			style += " color: " + data.currentColor + ";"
+		}
 		if (data.currentLineHeight != "默认") {
 			style += " line-height: " + data.currentLineHeight + ";"
 		}
@@ -270,6 +284,13 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 		data.fontSizeIndex = (data.fontSizeIndex + 1) % fontSizeList.length
 		data.currentFontSize = fontSizeList[data.fontSizeIndex]
 		console.log("切换 font-size:", data.currentFontSize)
+		updateRichTextStyle()
+	}
+
+	const changeColor = () => {
+		data.colorIndex = (data.colorIndex + 1) % colorList.length
+		data.currentColor = colorList[data.colorIndex]
+		console.log("切换 color:", data.currentColor)
 		updateRichTextStyle()
 	}
 
@@ -310,6 +331,7 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
 		data,
 		changeText,
 		changeFontSize,
+		changeColor,
 		changeLineHeight,
 		changeFontFamily,
 		getBoundingClientRectForTest,

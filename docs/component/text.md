@@ -194,7 +194,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <page-head :title="title"></page-head>
@@ -256,7 +256,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
           打字机效果示例
         </button>
         <!-- #endif -->
-        <!-- #ifdef APP-ANDROID -->
+        <!-- #ifdef APP-ANDROID && !VUE3-VAPOR -->
         <button class="uni-btn" type="primary" @click="textLayout">
           文本测量
         </button>
@@ -268,7 +268,7 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
       </navigator>
       <!-- #endif -->
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

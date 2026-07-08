@@ -854,6 +854,20 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
     data.videoContext?.sendDanmu(data.danmu);
   }
 
+  const continuousSendDanmu = () => {
+    const colors = ['#FF0000', '#31ff23', '#f13ef8', '#4972f8', '#FF9800', '#9C27B0']
+    for (let i = 0; i < colors.length; i++) {
+      const color = colors[i]
+      const text = '弹幕' + (i + 1)
+      setTimeout(() => {
+        data.videoContext?.sendDanmu({
+          text,
+          color
+        });
+      }, i * 500);
+    }
+  }
+
   const onSendDanmuInput = (event : UniInputEvent) => {
     let json = JSON.parse<Danmu>(event.detail.value)
     if (json == null) return;
@@ -1303,7 +1317,8 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
     openDialogPageVideo,
     closeDialogPageVideo,
     getWindowInfo,
-    getVideoRect
+    getVideoRect,
+    continuousSendDanmu
   })
 </script>
 
@@ -1317,10 +1332,6 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
     height: 40px;
     background: #FFF;
     padding: 8px 13px;
-  }
-
-  .margin-10 {
-    margin: 10px;
   }
 
   .img-fast-backward {

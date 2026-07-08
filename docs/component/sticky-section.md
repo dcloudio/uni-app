@@ -82,18 +82,29 @@
     <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type=20>
       <button @click="deleteSection()" size="mini">删除第一组 section</button>
     </list-item>
-    <sticky-section v-for="(section) in pageData.sectionArray" :key="section.name" :padding="pageData.sectionPadding"
+    <sticky-section class="content-section" ref="sectionRefs" style="align-items: stretch; align-content: stretch;" v-for="(section) in pageData.sectionArray" :key="section.name"
+      <!-- #ifndef APP && VUE3-VAPOR -->
+      :padding="pageData.sectionPadding"
+      <!-- #endif -->
+      <!-- #ifdef APP && VUE3-VAPOR -->
+      :preload="true"
+      <!-- #endif -->
       :push-pinned-header="true">
       <sticky-header :id="section.name">
         <text class="sticky-header-text">{{section.name}}</text>
       </sticky-header>
       <list-item v-for="(list) in section.list" :key="list.text" :name="list.text" class="content-item" :type=10>
-        <text class="text">{{list.text}}</text>
+        <text class="content-item-text">{{list.text}}</text>
       </list-item>
     </sticky-section>
     <list-item v-if="pageData.sectionArray.length > 0" style="padding: 10px; margin: 5px 0;align-items: center;" :type=30>
       <!-- <text style="color: #aaa">到底了</text> -->
       <button @click="toTop" size="mini">回到顶部</button>
+    </list-item>
+    <list-item>
+      <navigator url="/pages/component/sticky-section/sticky-section-push-pinned-header">
+        <button>push-pinned-header属性测试</button>
+      </navigator>
     </list-item>
   </list-view>
 </template>
@@ -129,6 +140,7 @@
   } as DataType)
 
   const listViewRef = ref<UniElement | null>(null)
+  const sectionRefs = ref<UniElement[] | null>(null)
 
   const initSectionArray = () => {
     pageData.sectionArray = []
@@ -207,12 +219,19 @@
     }, 1000)
   }
 
+  const jest_checkPreload = () => {
+    return sectionRefs.value?.every(sectionElement => {
+      return sectionElement.querySelectorAll(".content-item").length > 0;
+    }) ?? false;
+  }
+
   defineExpose({
     pageData,
     deleteSection,
     listViewScrollByY,
     toTop,
-    gotoStickyHeader
+    gotoStickyHeader,
+    jest_checkPreload
   })
 </script>
 
@@ -229,9 +248,19 @@
     background-color: #f5f5f5;
   }
 
+  .content-section {
+    /* #ifdef APP && VUE3-VAPOR */
+    /* 蒸汽模式sticky-section支持padding样式，不支持padding属性 */
+    padding: 0px 10px 0px 10px;
+    /* #endif */
+  }
+
   .content-item {
+    padding-bottom: 10px;
+  }
+
+  .content-item-text {
     padding: 15px;
-    margin-bottom: 10px;
     background-color: #fff;
   }
 </style>

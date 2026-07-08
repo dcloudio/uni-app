@@ -247,13 +247,13 @@
           <text class="uni-title-text"> 不同颜色和尺寸的radio </text>
         </view>
         <radio-group class="uni-row radio-group">
-          <!-- #ifndef VUE3-VAPOR -->
+          <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
           <radio value="r1" :checked="true" color="#FFCC33" style="transform: scale(0.7); margin-right: 15px"
             class="radio">选中
           </radio>
           <radio value="r2" color="#FFCC33" style="transform: scale(0.7)" class="radio">未选中</radio>
           <!-- #endif -->
-          <!-- #ifdef VUE3-VAPOR -->
+          <!-- #ifdef VUE3-VAPOR && !MP -->
           <radio value="r1" :checked="true" radio-active-class="radio-active" style="transform: scale(0.7); margin-right: 15px"
             class="radio">选中
           </radio>
@@ -288,7 +288,7 @@
       </view>
     </view>
 
-    <!-- #ifndef VUE3-VAPOR -->
+    <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
     <view>
       <input-data defaultValue="#007AFF" title="radio的颜色" type="text" @confirm="confirm_color_input"></input-data>
       <input-data defaultValue="#ffffff" title="radio默认的背景颜色" type="text"
@@ -327,7 +327,7 @@
     justify-content: space-between;
   }
 
-  /* #ifdef VUE3-VAPOR */
+  /* #ifdef VUE3-VAPOR && !MP */
   .radio-active {
     background-color: #FFCC33;
     border-color: #FFCC33;

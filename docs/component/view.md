@@ -237,11 +237,12 @@ if (view != null && view instanceof UIView) {
   .test-view {
     height: 200px;
     width: 200px;
+    --view-child1-hover-bg: #179b16;
     background-color: var(--list-background-color,#ffffff);
   }
 
   .is-hover {
-    background-color: #179b16;
+    background-color: var(--view-child1-hover-bg, #179b16);
   }
 
   .is-parent-hover {

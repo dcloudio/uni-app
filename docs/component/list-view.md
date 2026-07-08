@@ -547,7 +547,10 @@ scroll-view开启嵌套模式后，list-view 可作为内层滚动视图与外�
       <input-data defaultValue="0" title="设置横向滚动条位置" type="number" @confirm="confirm_scroll_left_input"></input-data>
       <input-data defaultValue="#FFF" title="设置下拉刷新区域背景颜色" type="text"
         @confirm="confirm_refresher_background_input"></input-data>
+      <!-- 蒸汽模式下 list-view 暂不支持 scrollIntoView，因此隐藏通过 id 位置跳转示例 -->
+      <!-- #ifndef VUE3-VAPOR -->
       <enum-data :items="data.size_enum" title="通过id位置跳转" @change="item_change_size_enum"></enum-data>
+      <!-- #endif -->
       <navigator url="/pages/component/list-view/list-view-refresh">
         <button type="primary" class="button">
           list-view 下拉刷新
@@ -592,11 +595,6 @@ scroll-view开启嵌套模式后，list-view 可作为内层滚动视图与外�
       <navigator url="/pages/component/list-view/list-view-with-type">
         <button type="primary" class="button">
           list-item 上使用 type 属性测试
-        </button>
-      </navigator>
-      <navigator url="/pages/component/list-view/list-view-issue-17610">
-        <button type="primary" class="button">
-          list-view 子节点为多根节点组件
         </button>
       </navigator>
     </view>

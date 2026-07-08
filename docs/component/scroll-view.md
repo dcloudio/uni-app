@@ -394,76 +394,74 @@ onNestedPreScroll(event: NestedPreScrollEvent) {
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view" :direction="data.scrollDirection">
+  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <scroll-view class="page-scroll-view">
   <!-- #endif -->
-    <view>
-      <page-head title="scroll-view,区域滚动视图"></page-head>
-      <view class="uni-padding-wrap uni-common-mt">
-        <view class="uni-title uni-common-mt">
-          <text class="uni-title-text">Vertical Scroll</text>
-          <text class="uni-subtitle-text">纵向滚动</text>
-        </view>
-        <view>
-          <scroll-view :scroll-top="data.scrollTop" direction="vertical" class="scroll-Y" scroll-with-animation="true"
-            @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll" @scrollend="end"
-            :show-scrollbar="data.showScrollbar" id="verticalScrollView">
-            <view class="scroll-view-item uni-bg-red"><text class="text">A</text></view>
-            <view class="scroll-view-item uni-bg-green"><text class="text">B</text></view>
-            <view class="scroll-view-item uni-bg-blue"><text class="text">C</text></view>
-          </scroll-view>
-        </view>
-        <view @tap="goTop" class="uni-center uni-common-mt">
-          <text class="uni-link">点击这里返回顶部</text>
-        </view>
-
-        <view class="uni-title uni-common-mt">
-          <text class="uni-title-text">Horizontal Scroll</text>
-          <text class="uni-subtitle-text">横向滚动</text>
-        </view>
-        <view>
-          <scroll-view class="scroll-view_H" direction="horizontal" @scroll="scroll" @scrollend="end"
-            :scroll-left="data.scrollLeft" :show-scrollbar="data.showScrollbar">
-            <view class="scroll-view-item_H uni-bg-red"><text class="text">A</text></view>
-            <view class="scroll-view-item_H uni-bg-green"><text class="text">B</text></view>
-            <view class="scroll-view-item_H uni-bg-blue"><text class="text">C</text></view>
-          </scroll-view>
-        </view>
-        <boolean-data :defaultValue="false" title="是否禁用外层scroll-view滚动" @change="change_disabled_boolean"></boolean-data>
-
-        <text class="uni-title-text">scroll-view样式大合集</text>
-        <scroll-view class="scroll-view-style-demo" direction="vertical">
-          <view class="style-demo-item uni-bg-red"><text class="text">1</text></view>
-          <view class="style-demo-item uni-bg-green"><text class="text">2</text></view>
-          <view class="style-demo-item uni-bg-blue"><text class="text">3</text></view>
-        </scroll-view>
-
-        <navigator url="/pages/component/scroll-view/scroll-view-props" hover-class="none">
-          <button type="primary" class="button">
-            非下拉刷新的属性示例
-          </button>
-        </navigator>
-        <view class="uni-common-pb"></view>
-
-        <navigator url="/pages/component/scroll-view/scroll-view-refresher-props" hover-class="none">
-          <button type="primary" class="button">
-            下拉刷新的属性示例
-          </button>
-        </navigator>
-        <view class="uni-common-pb"></view>
-        <navigator url="/pages/component/scroll-view/scroll-view-refresher" hover-class="none">
-          <button type="primary" class="button"> 默认下拉刷新示例 </button>
-        </navigator>
-        <view class="uni-common-pb"></view>
-        <navigator url="/pages/component/scroll-view/scroll-view-custom-refresher-props" hover-class="none">
-          <button type="primary" class="button">
-            自定义下拉刷新示例
-          </button>
-        </navigator>
-        <view class="uni-common-pb"></view>
+    <page-head title="scroll-view,区域滚动视图"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text">Vertical Scroll</text>
+        <text class="uni-subtitle-text">纵向滚动</text>
       </view>
+      <view>
+        <scroll-view :scroll-top="data.scrollTop" :direction="data.scrollDirection" class="scroll-Y" scroll-with-animation="true"
+          @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll" @scrollend="end"
+          :show-scrollbar="data.showScrollbar" id="verticalScrollView">
+          <view class="scroll-view-item uni-bg-red"><text class="text">A</text></view>
+          <view class="scroll-view-item uni-bg-green"><text class="text">B</text></view>
+          <view class="scroll-view-item uni-bg-blue"><text class="text">C</text></view>
+        </scroll-view>
+      </view>
+      <view @tap="goTop" class="uni-center uni-common-mt">
+        <text class="uni-link">点击这里返回顶部</text>
+      </view>
+      <boolean-data :defaultValue="false" title="是否禁用scroll-view滚动" @change="change_disabled_boolean"></boolean-data>
+
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text">Horizontal Scroll</text>
+        <text class="uni-subtitle-text">横向滚动</text>
+      </view>
+      <view>
+        <scroll-view class="scroll-view_H" direction="horizontal" @scroll="scroll" @scrollend="end"
+          :scroll-left="data.scrollLeft" :show-scrollbar="data.showScrollbar">
+          <view class="scroll-view-item_H uni-bg-red"><text class="text">A</text></view>
+          <view class="scroll-view-item_H uni-bg-green"><text class="text">B</text></view>
+          <view class="scroll-view-item_H uni-bg-blue"><text class="text">C</text></view>
+        </scroll-view>
+      </view>
+
+      <text class="uni-title-text">scroll-view样式大合集</text>
+      <scroll-view class="scroll-view-style-demo" direction="vertical">
+        <view class="style-demo-item uni-bg-red"><text class="text">1</text></view>
+        <view class="style-demo-item uni-bg-green"><text class="text">2</text></view>
+        <view class="style-demo-item uni-bg-blue"><text class="text">3</text></view>
+      </scroll-view>
+
+      <navigator url="/pages/component/scroll-view/scroll-view-props" hover-class="none">
+        <button type="primary" class="button">
+          非下拉刷新的属性示例
+        </button>
+      </navigator>
+      <view class="uni-common-pb"></view>
+
+      <navigator url="/pages/component/scroll-view/scroll-view-refresher-props" hover-class="none">
+        <button type="primary" class="button">
+          下拉刷新的属性示例
+        </button>
+      </navigator>
+      <view class="uni-common-pb"></view>
+      <navigator url="/pages/component/scroll-view/scroll-view-refresher" hover-class="none">
+        <button type="primary" class="button"> 默认下拉刷新示例 </button>
+      </navigator>
+      <view class="uni-common-pb"></view>
+      <navigator url="/pages/component/scroll-view/scroll-view-custom-refresher-props" hover-class="none">
+        <button type="primary" class="button">
+          自定义下拉刷新示例
+        </button>
+      </navigator>
+      <view class="uni-common-pb"></view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

@@ -200,16 +200,19 @@
 
 ### 示例
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/component/unicloud-db/unicloud-db.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/component/unicloud-db/unicloud-db.uvue) 
->
-> 该 API 不支持 Web，请运行 hello uni-app x 到 App 平台体验 
-```uvue
+::: preview https://hellouniappx.dcloud.net.cn/web/#/pages/component/unicloud-db/unicloud-db
+
+> appRedirect https://hellouniappx.dcloud.net.cn/appredirect.html?path=pages/component/unicloud-db/unicloud-db
+
+>示例
+```vue
 <template>
   <view class="content">
     <page-intro content="本页演示 unicloud-db 云数据库组件：集合查询、分页与 loadtime manual，列表展示与 Add/Get 操作，可跳转通讯录等 mixin-datacom 示例。"></page-intro>
     <unicloud-db ref="udbRef" v-slot:default="{data, pagination, loading, error}" :collection="collection" :getcount="true"
       loadtime="manual">
       <list-view v-if="data.length>0" ref="listViewRef" class="list" :scroll-y="true" @scrolltolower="loadMore()">
-        <list-item class="list-item" v-for="(item, _) in data">
+        <list-item class="list-item" v-for="(item, _) in data" :key="item.getString('_id')">
           <view class="list-item-fill">
             <text>{{item}}</text>
           </view>
@@ -257,6 +260,14 @@ function loadMore() {
 function get() {
   udbRef.value!.loadData({
     clear: true
+  })
+}
+
+function showError(err : any | null) {
+  const error = err as UniCloudError
+  uni.showModal({
+    content: error.errMsg,
+    showCancel: false
   })
 }
 
@@ -321,14 +332,6 @@ function onQueryLoad(data : Array<UTSJSONObject>, ended : boolean, pagination : 
   console.log(data, ended, pagination)
 }
 
-function showError(err : any | null) {
-  const error = err as UniCloudError
-  uni.showModal({
-    content: error.errMsg,
-    showCancel: false
-  })
-}
-
 // Lifecycle
 onReady(() => {
   get()
@@ -342,6 +345,33 @@ onPullDownRefresh(() => {
     }
   })
 })
+
+// #ifdef VUE3-VAPOR
+let checkMethods = false
+
+function checkUdbRefMethods() : boolean {
+  const udb = udbRef.value
+  if (udb == null) {
+    checkMethods = false
+    return checkMethods
+  }
+
+  const hasLoadData = udb.loadData != null
+  const hasLoadMore = udb.loadMore != null
+  const hasAdd = udb.add != null
+  const hasRemove = udb.remove != null
+  const hasUpdate = udb.update != null
+
+  checkMethods = hasLoadData && hasLoadMore && hasAdd && hasRemove && hasUpdate
+  return checkMethods
+}
+
+defineExpose({
+  checkUdbRefMethods
+})
+
+// #endif
+
 </script>
 
 <style>
@@ -394,6 +424,8 @@ onPullDownRefresh(() => {
 </style>
 
 ```
+
+:::
 
 
 ### 参见

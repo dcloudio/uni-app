@@ -303,13 +303,11 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-time-form
     margin-bottom: 6px;
     border-width: 1px;
     border-style: solid;
-		border-color: #dddddd;
-    /* border-color: var(--border-color, #dddddd); */
+    border-color: var(--border-color, #dddddd);
     height: 38px;
     padding-left: 10px;
     padding-right: 10px;
-		color: #333333;
-    /* color: var(--text-color, #333333); */
+    color: var(--text-color, #333333);
   }
 
   .row {

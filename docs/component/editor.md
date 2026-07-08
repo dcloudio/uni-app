@@ -129,8 +129,6 @@ editor组件有上下文对象，api为[uni.createEditorContextAsync()](../api/c
     </view>
 
     <scroll-view class="props-scroll" direction="vertical">
-      <page-intro content="本页演示 editor 的 read-only、placeholder、show-img-size、show-img-toolbar、show-img-resize、type 属性，以及 ready、focus、blur、input、statuschange 事件。placeholder 与 show-img-* 为初始化生效属性，调整后需要点击按钮重建 editor。"></page-intro>
-
       <view class="uni-padding-wrap">
         <view class="uni-title uni-common-mt">
           <text class="uni-title-text">可动态修改属性</text>
@@ -599,6 +597,7 @@ defineExpose({
 
 .preview-editor {
   height: 150px;
+  min-height: 0px;
   padding: 10px;
 }
 

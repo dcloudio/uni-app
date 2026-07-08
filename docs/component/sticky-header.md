@@ -96,7 +96,7 @@
       </sticky-header>
 
       <list-item v-for="(item,index) in data.list_item" :key="index" class="content-item" type=3>
-        <text class="text">{{item}}</text>
+        <text class="content-item-text">{{item}}</text>
       </list-item>
     </sticky-section>
   </list-view>
@@ -165,15 +165,15 @@
   }
 
   .content-item {
-    padding: 15px;
-    margin-bottom: 10px;
-    background-color: #fff;
+    padding-bottom: 10px;
   }
 
-  .text {
+  .content-item-text {
     font-size: 14px;
     color: #666;
     line-height: 20px;
+    padding: 15px;
+    background-color: #fff;
   }
 
   .sift-item {

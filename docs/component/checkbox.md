@@ -260,14 +260,14 @@
         </view>
         <view>
           <checkbox-group class="uni-row checkbox-group">
-            <!-- #ifndef VUE3-VAPOR -->
+            <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
             <checkbox value="cb1" :checked="true" color="#FFCC33" style="transform: scale(0.7); margin-right: 15px"
               class="checkbox">选中
             </checkbox>
             <checkbox value="cb" color="#FFCC33" style="transform: scale(0.7)" class="checkbox">未选中</checkbox>
             <!-- #endif -->
 
-            <!-- #ifdef VUE3-VAPOR -->
+            <!-- #ifdef VUE3-VAPOR && !MP -->
             <checkbox value="cb1" :checked="true" icon-class="custom-icon"
               style="transform: scale(0.7); margin-right: 15px" class="checkbox">选中
             </checkbox>
@@ -285,7 +285,7 @@
         </view>
       </view>
 
-      <!-- #ifdef VUE3-VAPOR -->
+      <!-- #ifdef VUE3-VAPOR && !MP -->
       <view class="uni-padding-wrap">
         <view class="uni-title uni-common-mt">
           <text class="uni-title-text"> 自定义 checkbox </text>
@@ -314,7 +314,7 @@
       </view>
     </view>
 
-    <!-- #ifndef VUE3-VAPOR -->
+    <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
     <view>
       <input-data defaultValue="#007aff" title="checkbox的颜色" type="text" @confirm="confirm_color_input"></input-data>
       <input-data defaultValue="#ffffff" title="checkbox默认的背景颜色" type="text"
@@ -356,7 +356,7 @@
     justify-content: space-between;
   }
 
-  /* #ifdef VUE3-VAPOR */
+  /* #ifdef VUE3-VAPOR && !MP */
   .custom-icon {
     color: #FFCC33;
   }

@@ -277,6 +277,7 @@ scroll-view开启嵌套模式后，waterflow 可作为内层滚动视图与外�
     waterflowPadding: Array<number>;
     isLoadingMore: boolean;
     hasMore: boolean;
+    osHarmonySDKAPIVersion: number;
   }
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
@@ -310,10 +311,16 @@ scroll-view开启嵌套模式后，waterflow 可作为内层滚动视图与外�
     cross_axis_gap: 2,
     waterflowPadding: [10, 5, 10, 5],
     isLoadingMore: false,
-    hasMore: true
+    hasMore: true,
+    osHarmonySDKAPIVersion: 0
   } as DataType)
 
   const waterflowRef = ref<UniWaterFlowElement | null>(null)
+
+  // #ifdef APP-HARMONY
+  const deviceInfo = uni.getDeviceInfo()
+  data.osHarmonySDKAPIVersion = deviceInfo.osHarmonySDKAPIVersion
+  // #endif
 
   onLoad(() => {
     //静态瀑布流数据

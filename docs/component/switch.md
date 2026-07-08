@@ -86,13 +86,13 @@ UniSwitchChangeEvent -- Extends --> UniCustomEvent&ltUniSwitchChangeEventDetail&
       </view>
       <view class="uni-title">暗黑样式</view>
       <view class="flex-row">
-        <!-- #ifndef VUE3-VAPOR -->
+        <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
         <switch id="darkChecked" background-color="#1f1f1f" activeBackgroundColor="#007aff" foreColor="#f0f0f0"
           activeForeColor="#ffffff" :checked="data.checked" />
         <switch id="dark" background-color="#1f1f1f" activeBackgroundColor="#007aff" foreColor="#f0f0f0"
           activeForeColor="#ffffff" />
         <!-- #endif -->
-        <!-- #ifdef VUE3-VAPOR -->
+        <!-- #ifdef VUE3-VAPOR && !MP -->
         <switch id="darkChecked" :class="{ 'dark-class': !data.darkChecked1 }" switch-active-class="custom-switch-active" thumb-active-class="custom-thumb-active1" thumb-class="custom-thumb1" :checked="data.checked" @change="switch3Change" />
         <switch id="dark" :class="{ 'dark-class': !data.darkChecked2 }" switch-active-class="custom-switch-active" thumb-active-class="custom-thumb-active1" thumb-class="custom-thumb1" @change="switch4Change" />
         <!-- #endif -->
@@ -104,11 +104,11 @@ UniSwitchChangeEvent -- Extends --> UniCustomEvent&ltUniSwitchChangeEventDetail&
       </view>
       <view class="uni-title">不同颜色和尺寸的switch</view>
       <view class="flex-row">
-        <!-- #ifndef VUE3-VAPOR -->
+        <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
         <switch class="switch-color-checked" :color="data.color" style="transform:scale(0.7)" :checked="true" />
         <switch class="switch-color" :color="data.color" style="transform:scale(0.7)" />
         <!-- #endif -->
-        <!-- #ifdef VUE3-VAPOR -->
+        <!-- #ifdef VUE3-VAPOR && !MP -->
         <switch switch-active-class="custom-switch-active-color" style="transform:scale(0.7)" :checked="true" />
         <switch switch-active-class="custom-switch-active-color" style="transform:scale(0.7)" />
         <!-- #endif -->
@@ -125,7 +125,7 @@ UniSwitchChangeEvent -- Extends --> UniCustomEvent&ltUniSwitchChangeEventDetail&
         <switch />
       </view>
 
-      <!-- #ifdef VUE3-VAPOR -->
+      <!-- #ifdef VUE3-VAPOR && !MP -->
       <view class="uni-list-cell uni-list-cell-padding">
         <view class="uni-list-cell-db">自定义 thumb 样式</view>
         <switch thumb-class="custom-thumb" thumb-active-class="custom-thumb-active"  />
@@ -143,7 +143,7 @@ UniSwitchChangeEvent -- Extends --> UniCustomEvent&ltUniSwitchChangeEventDetail&
   type DataType = {
     title: string;
     checked: boolean;
-    // #ifdef VUE3-VAPOR
+    // #ifdef VUE3-VAPOR && !MP
     darkChecked1: boolean;
     darkChecked2: boolean;
     // #endif
@@ -155,7 +155,7 @@ UniSwitchChangeEvent -- Extends --> UniCustomEvent&ltUniSwitchChangeEventDetail&
   const data = reactive({
     title: 'switch 开关',
     checked: true,
-    // #ifdef VUE3-VAPOR
+    // #ifdef VUE3-VAPOR && !MP
     darkChecked1: true,
     darkChecked2: false,
     // #endif
@@ -175,7 +175,7 @@ UniSwitchChangeEvent -- Extends --> UniCustomEvent&ltUniSwitchChangeEventDetail&
     console.log('switch2 发生 change 事件，携带值为', e.detail.value)
   }
 
-  // #ifdef VUE3-VAPOR
+  // #ifdef VUE3-VAPOR && !MP
   const switch3Change = (e: UniSwitchChangeEvent) => {
     data.darkChecked1 = e.detail.value
   }
@@ -195,7 +195,7 @@ UniSwitchChangeEvent -- Extends --> UniCustomEvent&ltUniSwitchChangeEventDetail&
     flex-direction: row;
   }
 
-  /* #ifdef VUE3-VAPOR */
+  /* #ifdef VUE3-VAPOR && !MP */
   .dark-class {
     background-color: #1f1f1f;
     border-color: #1f1f1f;
@@ -215,7 +215,7 @@ UniSwitchChangeEvent -- Extends --> UniCustomEvent&ltUniSwitchChangeEventDetail&
     background-color: #ffffff;
   }
 
-  .custom-thumb {
+  .custom-thumb1 {
     background-color: #f0f0f0;
   }
 

@@ -152,7 +152,7 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view class="page-scroll-view">
   <!-- #endif -->
     <view class="uni-common-mb uni-common-pb">
@@ -160,7 +160,14 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
       <view>
         <!-- 微信小程序自身Bug，autoplay为false时更新interval会导致swiper启用自动播放 -->
         <swiper id="swiper-view" class="swiper" :vertical="data.verticalSelect" :indicator-dots="data.dotsSelect"
-          :autoplay="data.autoplaySelect" :bounces="data.reboundSelect" :interval="data.intervalSelect" :circular="data.circularSelect"
+          :autoplay="data.autoplaySelect"
+          <!-- #ifdef (APP && VUE3-VAPOR) -->
+          :disable-bounce="data.disableBounceSelect"
+          <!-- #endif -->
+          <!-- #ifndef (APP && VUE3-VAPOR) -->
+          :bounces="!data.disableBounceSelect"
+          <!-- #endif -->
+          :interval="data.intervalSelect" :circular="data.circularSelect"
           :duration="data.durationSelect" :indicator-color="data.indicatorColor" :indicator-active-color="data.indicatorColorActive"
           :disable-touch="data.disableTouchSelect" :current="data.currentVal" :current-item-id="data.currentItemIdVal"
           @change="swiperChange" @transition="swiperTransition" @animationfinish="swiperAnimationfinish"
@@ -184,7 +191,11 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
           <view class="uni-list-cell-db">定制指示器颜色</view>
-          <switch :checked="data.indicatorColorSelect" @change="indicatorColorChange" />
+          <switch :checked="data.indicatorColorSelect"
+            <!-- #ifndef (APP && VUE3-VAPOR) -->
+            :disabled="true"
+            <!-- #endif -->
+            @change="indicatorColorChange" />
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
           <view class="uni-list-cell-db">禁止 touch 操作</view>
@@ -211,9 +222,9 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
           <switch :checked="data.verticalSelect" @change="verticalChange" />
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">是否回弹效果</view>
+          <view class="uni-list-cell-db">是否禁用回弹效果</view>
           <!-- 仅 android ios harmony 支持，web 微信小程序 bounces 为 true -->
-          <switch :checked="data.reboundSelect" @change="reboundSelectChange" />
+          <switch :checked="data.disableBounceSelect" @change="disableBounceSelectChange" />
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
           <view class="uni-list-cell-db">指定current为最后一个元素</view>
@@ -268,11 +279,14 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
         	</button>
         </navigator>
         <!-- #endif -->
-        <!-- #ifdef VUE3-VAPOR -->
+        <!-- #ifdef (APP && VUE3-VAPOR) -->
         <navigator url="/pages/component/swiper/swiper-more" style="margin-top: 10px;">
         	<button type="primary">
         		更多 swiper
         	</button>
+        </navigator>
+        <navigator url="/pages/component/swiper/swiper-in-swiper" style="margin-top: 10px;">
+          <button type="primary">嵌套测试</button>
         </navigator>
         <navigator url="/pages/component/swiper/swiper-item-100" style="margin-top: 10px;">
           <button>组件性能测试</button>
@@ -280,7 +294,7 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
         <!-- #endif -->
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -295,7 +309,7 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
   type DataType = {
     background: string[];
     dotsSelect: boolean;
-    reboundSelect: boolean;
+    disableBounceSelect: boolean;
     autoplaySelect: boolean;
     circularSelect: boolean;
     indicatorColorSelect: boolean;
@@ -330,7 +344,7 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
   const data = reactive({
     background: ['color1', 'color2', 'color3'],
     dotsSelect: false,
-    reboundSelect: false,
+    disableBounceSelect: false,
     autoplaySelect: false,
     circularSelect: false,
     indicatorColorSelect: false,
@@ -502,9 +516,9 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
     console.log(data.circularSelect)
   }
 
-  const reboundSelectChange = (e : UniSwitchChangeEvent) => {
-    data.reboundSelect = e.detail.value
-    console.log(data.reboundSelect)
+  const disableBounceSelectChange = (e : UniSwitchChangeEvent) => {
+    data.disableBounceSelect = e.detail.value
+    console.log(data.disableBounceSelect)
   }
 
   const sliderChange = (e : UniSliderChangeEvent) => {

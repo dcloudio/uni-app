@@ -149,8 +149,12 @@ const onSelect = (index: string) => {
 				<button class="control-btn" @click="toggleStyle">{{ data.useCustomStyle ? '默认样式' : '自定义样式' }}</button>
 				<button class="control-btn" @click="toggleIndexs">{{ data.useCustomIndexs ? '根据数据设索引' : '自定义索引' }}</button>
 			</view>
-			<list-view ref="listRef" style="flex: 1;" :scroll-into-view="data.indexViewID">
-			<sticky-section v-for="group in cityGroups" :key="group.index">
+			<list-view ref="listRef" style="flex: 1;" class="city-list" :scroll-into-view="data.indexViewID">
+			<sticky-section v-for="group in cityGroups" :key="group.index"
+			<!-- #ifdef APP && VUE3-VAPOR -->
+			:preload="true"
+			<!-- #endif -->
+			>
 				<sticky-header :id="'idx-' + group.index">
 					<view class="group-header">
 						<text class="group-header-text">{{ group.index }}</text>
@@ -264,6 +268,10 @@ const onSelect = (index: string) => {
 		color: var(--text-color, #333333);
 		opacity: 0.7;
 		font-weight: bold;
+	}
+
+	.city-list {
+		background-color: var(--list-background-color, #ffffff);
 	}
 
 	.city-item {

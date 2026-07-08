@@ -40,7 +40,7 @@
 | cursor-spacing | number | 0 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 指定光标与键盘的距离，单位 px 。取 textarea 距离底部的距离和 cursor-spacing 指定的距离的最小值作为光标与键盘的距离 |
 | cursor-color | string([string.ColorString](/uts/data-type.md#ide-string)) | "" | Web:  ; 微信小程序: 4.41; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 | 指定光标颜色 |
 | selection-start | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 光标起始位置，自动聚集时有效，需与selection-end搭配使用 |
-| selection-end | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 光标结束位置，自动聚集时有效，需与selection-satrt搭配使用 |
+| selection-end | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 光标结束位置，自动聚集时有效，需与selection-start搭配使用 |
 | adjust-position | boolean | true | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 键盘弹起时，是否自动上推页面 |
 | hold-keyboard | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | focus时，点击页面的时候不收起键盘 |
 | inputmode | none \| text \| decimal \| numeric \| tel \| search \| email \| url | "text" | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 是一个枚举属性，它提供了用户在编辑元素或其内容时可能输入的数据类型的提示。在符合条件的高版本webview里，uni-app的 web 和 app-vue 平台中可使用本属性。 |
@@ -353,7 +353,7 @@ if (view != null && view instanceof UITextView) {
     inputmode_enum: [{ "value": 1, "name": "text" }, { "value": 2, "name": "decimal" }, { "value": 3, "name": "numeric" }, { "value": 4, "name": "tel" }, { "value": 5, "name": "search" }, { "value": 6, "name": "email" }, { "value": 7, "name": "url" }, { "value": 0, "name": "none" }],
     confirm_type_list: [{ "value": 0, "name": "return" }, { "value": 1, "name": "done" }, { "value": 2, "name": "send" }, { "value": 3, "name": "search" }, { "value": 4, "name": "next" }, { "value": 5, "name": "go" }],
     cursor_color: "#3393E2",
-    cursor: 0,
+    cursor: "1\n2\n3\n4\n5\n6".length,
     inputmode_enum_current: 0,
     confirm_type_current: 0,
     placeholder_value: "请输入",
@@ -473,7 +473,7 @@ if (view != null && view instanceof UITextView) {
 </script>
 
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view class="main">
@@ -663,7 +663,7 @@ if (view != null && view instanceof UITextView) {
         </button>
       </navigator>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>

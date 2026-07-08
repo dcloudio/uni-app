@@ -133,7 +133,7 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <page-head :title="data.title"></page-head>
@@ -142,9 +142,9 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
       <view class="uni-list-cell">
         <view class="uni-list-cell-left">当前选择</view>
         <view class="uni-list-cell-db">
-          <picker class="picker-selector--test" @change="bindPickerChange" :value="data.index"
+          <picker class="picker-selector--test uni-picker-container-wrap" @change="bindPickerChange" :value="data.index"
             :range="data.selectorArray" range-key="name">
-            <text class="uni-input picker-selector--value">{{data.selectorArray[data.index].name}}</text>
+            <text class="uni-input picker-selector--value uni-picker-text">{{data.selectorArray[data.index].name}}</text>
           </picker>
         </view>
       </view>
@@ -155,9 +155,9 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
       <view class="uni-list-cell">
         <text class="uni-list-cell-left">当前选择</text>
         <view class="uni-list-cell-db">
-          <picker class="picker-multi--test" mode="multiSelector" @columnchange="bindMultiPickerColumnChange"
+          <picker class="picker-multi--test uni-picker-container-wrap"  mode="multiSelector" @columnchange="bindMultiPickerColumnChange"
             :value="data.multiIndex" :range="data.multiArray">
-            <text class="uni-input picker-multi--value">
+            <text class="uni-input picker-multi--value uni-picker-text">
               {{data.multiArray[0][data.multiIndex[0]]}}，{{data.multiArray[1][data.multiIndex[1]]}}，{{data.multiArray[2][data.multiIndex[2]]}}
             </text>
           </picker>
@@ -170,9 +170,9 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
       <view class="uni-list-cell">
         <view class="uni-list-cell-left">当前选择</view>
         <view class="uni-list-cell-db">
-          <picker class="picker-time--test" mode="time" :value="data.time" start="09:01" end="21:01"
+          <picker class="picker-time--test uni-picker-container-wrap" mode="time" :value="data.time" start="09:01" end="21:01"
             @change="bindTimeChange">
-            <text class="uni-input">{{data.time}}</text>
+            <text class="uni-input uni-picker-text">{{data.time}}</text>
           </picker>
         </view>
       </view>
@@ -184,9 +184,9 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
       <view class="uni-list-cell">
         <text class="uni-list-cell-left">当前选择 </text>
         <view class="uni-list-cell-db">
-          <picker class="picker-date-day--test" mode="date" :value="data.dayDate" :start="data.startDate"
+          <picker class="picker-date-day--test uni-picker-container-wrap" mode="date" :value="data.dayDate" :start="data.startDate"
             :end="data.endDate" @change="bindDayDateChange">
-            <text class="uni-input">{{data.dayDate}}</text>
+            <text class="uni-input uni-picker-text">{{data.dayDate}}</text>
           </picker>
         </view>
       </view>
@@ -198,9 +198,9 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
       <view class="uni-list-cell">
         <text class="uni-list-cell-left">当前选择 </text>
         <view class="uni-list-cell-db">
-          <picker class="picker-date-month--test" mode="date" fields="month" :value="data.monthDate"
+          <picker class="picker-date-month--test uni-picker-container-wrap" mode="date" fields="month" :value="data.monthDate"
             :start="data.startDate" :end="data.endDate" @change="bindMonthDateChange">
-            <text class="uni-input">{{data.monthDate}}</text>
+            <text class="uni-input uni-picker-text">{{data.monthDate}}</text>
           </picker>
         </view>
       </view>
@@ -212,9 +212,9 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
       <view class="uni-list-cell">
         <text class="uni-list-cell-left">当前选择 </text>
         <view class="uni-list-cell-db">
-          <picker class="picker-date-year--test" mode="date" fields="year" :value="data.yearDate"
+          <picker class="picker-date-year--test uni-picker-container-wrap" mode="date" fields="year" :value="data.yearDate"
             :start="data.startDate" :end="data.endDate" @change="bindYearDateChange">
-            <text class="uni-input">{{data.yearDate}}</text>
+            <text class="uni-input uni-picker-text">{{data.yearDate}}</text>
           </picker>
         </view>
       </view>
@@ -225,18 +225,18 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
     <view class="uni-list" style="margin-bottom: 15px;">
       <view class="uni-list-cell">
         <text class="uni-list-cell-left">当前选择</text>
-        <view class="uni-list-cell-db" @click="initCityData">
+        <view class="uni-list-cell-db">
           <!-- #ifndef MP-WEIXIN -->
-          <picker class="picker-city--test" mode="multiSelector" @columnchange="bindCityPickerColumnChange"
-            :value="data.cityIndex" :range="data.cityArray">
-            <text class="uni-input picker-city--value">
+          <picker class="picker-city--test uni-picker-container-wrap picker-city-wrap" mode="multiSelector" @change="bindCityPickerChange"
+            @cancel="resetCityPicker" @columnchange="bindCityPickerColumnChange" :value="data.cityIndex" :range="data.cityArray">
+            <text class="uni-input picker-city--value uni-picker-text picker-city-text">
               {{getCityDisplayText()}}
             </text>
           </picker>
           <!-- #endif -->
           <!-- #ifdef MP-WEIXIN -->
-          <picker class="picker-city--test" mode="region" @change="bindRegionChange" :value="data.region">
-            <text class="uni-input picker-city--value">
+          <picker class="picker-city--test uni-picker-container-wrap" mode="region" @change="bindRegionChange" :value="data.region">
+            <text class="uni-input picker-city--value uni-picker-text">
               {{data.region[0]}}{{data.region[1] ? '，' : ''}}{{data.region[1]}}{{data.region[2] ? '，' : ''}}{{data.region[2]}}
             </text>
           </picker>
@@ -251,16 +251,16 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
       <view class="uni-list-cell">
         <view class="uni-list-cell-left">当前选择</view>
         <view class="uni-list-cell-db">
-          <picker class="picker-disabled--test" @change="bindPickerChange" disabled :value="data.index"
+          <picker class="picker-disabled--test uni-picker-container-wrap" @change="bindPickerChange" disabled :value="data.index"
             :range="data.selectorArray" range-key="name">
-            <text class="uni-input picker-disabled--value">{{data.selectorArray[data.index].name}}</text>
+            <text class="uni-input picker-disabled--value uni-picker-text">{{data.selectorArray[data.index].name}}</text>
           </picker>
         </view>
       </view>
     </view>
     <text class="uni-picker-tips">注：值与普通选择器同步，但不可选择</text>
 
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -289,6 +289,8 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
     cityArray : Array<string[]>;
     allCityData : CityItemData[];
     cityIndex : number[];
+    selectedCityIndex : number[];
+    isCitySelected : boolean;
     region : string[];
     dayDate : string;
     monthDate : string;
@@ -335,6 +337,8 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
     allCityData: [],
     region: [],
     cityIndex: [0, 0, 0],
+    selectedCityIndex: [0, 0, 0],
+    isCitySelected: false,
     dayDate: getDate('day', ''),
     monthDate: getDate('month', ''),
     yearDate: getDate('year', ''),
@@ -356,33 +360,39 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
   }
 
   function getCityDisplayText() : string {
-    const province = getSafeCityValue(0, data.cityIndex[0])
-    const city = getSafeCityValue(1, data.cityIndex[1])
-    const district = getSafeCityValue(2, data.cityIndex[2])
-    let text = province
-    if (city != '') {
-      text += '，' + city
+    if (!data.isCitySelected) {
+      return ''
     }
-    if (district != '') {
-      text += '，' + district
+    const provinceIndex = data.selectedCityIndex[0]
+    if (provinceIndex < 0 || provinceIndex >= data.allCityData.length) {
+      return ''
+    }
+    const province = data.allCityData[provinceIndex]
+    let text = province.title
+    const cityIndex = data.selectedCityIndex[1]
+    if (cityIndex >= 0 && cityIndex < province.children.length) {
+      const city = province.children[cityIndex]
+      text += '，' + city.title
+      const districtIndex = data.selectedCityIndex[2]
+      if (districtIndex >= 0 && districtIndex < city.children.length) {
+        text += '，' + city.children[districtIndex].title
+      }
     }
     return text
   }
 
-  function initCityData() {
-    const cityDataList = JSON.parse<CityItemData[]>(cityData)
-    if (cityDataList == null) {
+  function updateCityArray() {
+    if (data.allCityData.length == 0) {
       return
     }
-    data.allCityData = cityDataList
-    data.cityArray[0] = cityDataList.map(item => item.title)
+    data.cityArray[0] = data.allCityData.map(item => item.title)
     // 使用当前选择的省份索引来初始化城市数据
     const provinceIndex = data.cityIndex[0]
-    if (cityDataList[provinceIndex] && cityDataList[provinceIndex].children) {
-      data.cityArray[1] = cityDataList[provinceIndex].children.map(item => item.title)
+    if (data.allCityData[provinceIndex] && data.allCityData[provinceIndex].children) {
+      data.cityArray[1] = data.allCityData[provinceIndex].children.map(item => item.title)
       const cityIndex = data.cityIndex[1]
-      if (cityDataList[provinceIndex].children[cityIndex] && cityDataList[provinceIndex].children[cityIndex].children) {
-        data.cityArray[2] = cityDataList[provinceIndex].children[cityIndex].children.map(item => item.title)
+      if (data.allCityData[provinceIndex].children[cityIndex] && data.allCityData[provinceIndex].children[cityIndex].children) {
+        data.cityArray[2] = data.allCityData[provinceIndex].children[cityIndex].children.map(item => item.title)
       } else {
         data.cityArray[2] = []
       }
@@ -391,6 +401,26 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
       data.cityArray[2] = []
     }
   }
+
+  function resetCityPicker() {
+    if (data.isCitySelected) {
+      data.cityIndex = [data.selectedCityIndex[0], data.selectedCityIndex[1], data.selectedCityIndex[2]]
+    } else {
+      data.cityIndex = [0, 0, 0]
+    }
+    updateCityArray()
+  }
+
+  function initCityData() {
+    const cityDataList = JSON.parse<CityItemData[]>(cityData)
+    if (cityDataList == null) {
+      return
+    }
+    data.allCityData = cityDataList
+    resetCityPicker()
+  }
+
+  initCityData()
   // #endif
 
   // #ifdef MP-WEIXIN
@@ -455,6 +485,13 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
   }
 
   // #ifndef MP-WEIXIN
+  const bindCityPickerChange = (e : UniPickerChangeEvent) => {
+    console.log('picker发送选择改变，携带值为：' + e.detail.value)
+    const cityIndex = e.detail.value as number[]
+    data.selectedCityIndex = [cityIndex[0], cityIndex[1], cityIndex[2]]
+    data.isCitySelected = true
+  }
+
   const bindCityPickerColumnChange = (e : UniPickerColumnChangeEvent) => {
     console.log('修改的列为：' + e.detail.column + '，值为：' + e.detail.value)
     data.cityIndex[e.detail.column] = e.detail.value
@@ -524,6 +561,31 @@ UniPickerCancelEvent -- Extends --> UniCustomEvent&ltUniPickerCancelEventDetail&
     margin-top: 5px;
     margin-bottom: 15px;
     padding: 0 15px;
+  }
+
+  .uni-picker-container-wrap {
+    height: 41px;
+    line-height: 41px;
+  }
+
+  .uni-picker-text {
+    line-height: 25px;
+    height: 25px;
+    padding: 8px 13px;
+    font-size: 14px;
+    flex: 1;
+    box-sizing: content-box;
+  }
+
+  .picker-city-wrap {
+    min-height: 41px;
+    height: auto;
+    line-height: 25px;
+  }
+
+  .picker-city-text {
+    min-height: 25px;
+    height: auto;
   }
 
   /* #ifdef WEB */

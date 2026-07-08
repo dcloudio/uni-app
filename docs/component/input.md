@@ -41,7 +41,7 @@
 | confirm-hold | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 点击键盘右下角按钮时是否保持键盘不收起 |
 | cursor | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定focus时的光标位置 |
 | selection-start | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 光标起始位置，自动聚集时有效，需与selection-end搭配使用 |
-| selection-end | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 光标结束位置，自动聚集时有效，需与selection-satrt搭配使用 |
+| selection-end | number | -1 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 光标结束位置，自动聚集时有效，需与selection-start搭配使用 |
 | adjust-position | boolean | true | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 键盘弹起时，是否自动上推页面 |
 | ~~inputmode~~ | none \| text \| decimal \| numeric \| tel \| search \| email \| url | "text" | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 是一个枚举属性，它提供了用户在编辑元素或其内容时可能输入的数据类型的提示。在符合条件的高版本webview里，uni-app的 web 和 app-vue 平台中可使用本属性。(自 5.0+ 废弃，推荐使用 type，同时配置以 inputmode 为准) |
 | text-content-type | string |   | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 文本区域的语义，根据类型自动填充 |
@@ -302,7 +302,7 @@ if (view != null && view instanceof UITextField) {
 >示例
 ```vue
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <page-head :title="data.title"></page-head>
@@ -433,7 +433,7 @@ if (view != null && view instanceof UITextField) {
           <text class="uni-title-text">自动获取焦点</text>
         </view>
         <view class="input-wrapper">
-          <input id="uni-input-focus" class="uni-input" :focus="data.focus"
+          <input id="uni-input-focus" class="uni-input" :focus="data.focus" value="焦点应在文本末尾"
             @keyboardheightchange="inputFocusKeyBoardChange" />
         </view>
       </view>
@@ -727,7 +727,7 @@ if (view != null && view instanceof UITextField) {
         </button>
       </navigator>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -832,7 +832,6 @@ if (view != null && view instanceof UITextField) {
   }
 
   const setCursor = (cursor : number) => {
-    // (this.$refs['input'] as UniInputElement).focus();
     data.cursorInputFocus = true
     data.cursor = cursor;
   }
@@ -843,7 +842,6 @@ if (view != null && view instanceof UITextField) {
   }
 
   const setSelection = (selectionStart : number, selectionEnd : number) => {
-    // (this.$refs['input2'] as UniInputElement).focus();
     data.selectionInputFocus = true
     data.selectionStart = selectionStart;
     data.selectionEnd = selectionEnd;
@@ -916,8 +914,6 @@ if (view != null && view instanceof UITextField) {
     } else {
       data.cursor_color = "#3393E2"
     }
-    // const input = uni.getElementById<UniInputElement>("uni-input-cursor-color")
-    // input?.focus()
     data.cursorColorInputFocus = true
   }
 
@@ -962,8 +958,6 @@ if (view != null && view instanceof UITextField) {
     display: flex;
     padding: 8px 13px;
     margin: 5px 0;
-    flex-direction: row;
-    flex-wrap: nowrap;
     background-color: #ffffff;
   }
 

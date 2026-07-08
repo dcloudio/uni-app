@@ -275,6 +275,7 @@
       :plain="data.plain_boolean" @touchstart="button_touchstart" @touchmove="button_touchmove"
       @touchcancel="button_touchcancel" @touchend="button_touchend" @tap="button_tap" @click="button_click"
       @longpress="button_longpress" class="btn"
+      :loading-text-class="data.loading ? (data.type_enum[data.type_enum_current].name == 'default' ? 'black-loading-text' : 'white-loading-text') : ''"
       :class="data.default_style ? (data.disabled_boolean ? 'custom-btn-disable' : 'custom-btn') : ''"
       :hover-class="data.default_style ? 'is-hover' : 'button-hover'">
       {{ data.text }}
@@ -339,6 +340,14 @@
     color: #000000;
     background-color: #f8f8f8;
     border-color: rgba(0, 0, 0, 0.2);
+  }
+
+  .black-loading-text {
+    color: #000000
+  }
+
+  .white-loading-text {
+    color: #ffffff
   }
 </style>
 
