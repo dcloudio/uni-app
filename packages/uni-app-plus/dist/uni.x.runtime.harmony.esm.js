@@ -1557,16 +1557,15 @@ function fixBorderStyle(tabBarConfig) {
   tabBarConfig.set("borderStyle", borderStyle);
   tabBarConfig.delete("borderColor");
 }
-function parseRedirectInfo(app) {
+function parseRedirectInfo(appid, redirectInfo) {
   var _redirectInfo$get, _redirectInfo$get2, _redirectInfo$get3, _redirectInfo$get4, _redirectInfo$get5;
-  var redirectInfo = app.getRedirectInfo();
   var path = (_redirectInfo$get = redirectInfo.get("path")) !== null && _redirectInfo$get !== void 0 ? _redirectInfo$get : "";
   var query = (_redirectInfo$get2 = redirectInfo.get("query")) !== null && _redirectInfo$get2 !== void 0 ? _redirectInfo$get2 : "";
   var userAction = (_redirectInfo$get3 = redirectInfo.get("userAction")) !== null && _redirectInfo$get3 !== void 0 ? _redirectInfo$get3 : false;
   var appScheme = (_redirectInfo$get4 = redirectInfo.get("appScheme")) !== null && _redirectInfo$get4 !== void 0 ? _redirectInfo$get4 : "";
   var appLink = (_redirectInfo$get5 = redirectInfo.get("appLink")) !== null && _redirectInfo$get5 !== void 0 ? _redirectInfo$get5 : "";
   var referrerInfo = {
-    appId: app.appid,
+    appId: appid,
     extraData: {}
   };
   return {
@@ -2268,20 +2267,19 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
   };
 }
 var isInitEntryPage = false;
-function initEntry(app) {
+function initEntry(app, redirectInfo) {
   if (isInitEntryPage) {
     return;
   }
   isInitEntryPage = true;
   var entryPagePath;
   var entryPageQuery;
-  var redirectInfo = app.getRedirectInfo();
   if (redirectInfo.size > 0) {
     var {
       path,
       query
       /* referrerInfo, appScheme, appLink */
-    } = parseRedirectInfo(app);
+    } = parseRedirectInfo(app.appid, redirectInfo);
     if (path) {
       entryPagePath = path;
       entryPageQuery = query;
@@ -2852,8 +2850,9 @@ function registerApp(appVm, nativeApp2, uniApp) {
   extend(appCtx, defaultApp);
   defineGlobalData(appCtx, defaultApp.globalData);
   initService(nativeApp2, unregisterApp);
-  initEntry(nativeApp2);
-  initEntryPagePath(nativeApp2);
+  var redirectInfo = nativeApp2.getRedirectInfo();
+  initEntry(nativeApp2, redirectInfo);
+  initEntryPagePath(redirectInfo);
   initGlobalEvent(nativeApp2);
   initAppLaunch(appVm);
   initAppError(appVm, nativeApp2);
@@ -2869,8 +2868,7 @@ function unregisterApp() {
 function initApp(app) {
   initComponentInstance(app);
 }
-function initEntryPagePath(app) {
-  var redirectInfo = app.getRedirectInfo();
+function initEntryPagePath(redirectInfo) {
   var debugInfo = redirectInfo.get("debug");
   if (debugInfo) {
     var url = debugInfo.get("url");
