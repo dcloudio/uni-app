@@ -249,7 +249,7 @@ UniInputConfirmEvent -- Extends --> UniEvent
 
 为增强uni-app x组件的开放性，从 `HBuilderX 4.25` 起，UniElement对象提供了 [getAndroidView](../dom/unielement.md#getandroidview) 和 [getIOSView](../dom/unielement.md#getiosview) 方法。
 
-该方法可以获取到 textarea 组件对应的原生对象，即Android的`AppCompatEditText`对象、iOS的`UITextField`对象。
+该方法可以获取到 input 组件对应的原生对象，即Android的`AppCompatEditText`对象、iOS的`UITextField`对象。
 
 进而可以调用原生对象提供的方法，这极大的扩展了组件的能力。
 
