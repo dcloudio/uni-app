@@ -22,8 +22,8 @@
 | onLaunch() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
 | onShow() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
 | onHide() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
-| onLastPageBackPress() | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS: x; HarmonyOS: 4.71 |
-| onExit() | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS: x; HarmonyOS: 4.72 |
+| onLastPageBackPress() | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: 4.71 |
+| onExit() | Web: x; 微信小程序: x; Android: 3.9; iOS: x; HarmonyOS: 4.72 |
 | onError() | Web: 4.0; 微信小程序: 4.41; Android: 4.21; iOS: 4.21; HarmonyOS: 4.61 |
 | onPageNotFound() | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |
 | onUniNViewMessage() | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |

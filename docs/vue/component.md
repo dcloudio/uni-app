@@ -1830,11 +1830,11 @@ export default {
 | onUnload() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面卸载<br/><br/>页面卸载时触发。如 `redirectTo` 或 `navigateBack` 到其他页面时。<br/> |
 | onPageShow() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面显示<br/><br/>页面显示/切入前台时触发。<br/> |
 | onPageHide() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面隐藏<br/><br/>页面隐藏/切入后台时触发。 如 `navigateTo` 或底部 `tab` 切换到其他页面，应用切入后台等。<br/> |
-| onPageScroll() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.13; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动触发事件的处理函数<br/><br/>监听用户滑动页面事件。 |
+| onPageScroll() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.13; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动触发事件的处理函数<br/><br/>监听用户滑动页面事件。 |
 | onBackPress() | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 监听页面返回 |
 | onReachBottom() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件的处理函数<br/>- 可以在 `pages.json` 的页面配置中设置触发距离 `onReachBottomDistance` 。<br/>- 在触发距离内滑动期间，本事件只会被触发一次。<br/> |
-| onPullDownRefresh() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听用户下拉动作<br/>- 需要在 `pages.json` 的页面配置中开启 `enablePullDownRefresh` 。<br/>- 可以通过 `uni.startPullDownRefresh` 触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。<br/>- 当处理完数据刷新后，`uni.stopPullDownRefresh` 可以停止当前页面的下拉刷新。<br/> |
-| onResize() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: 4.61 | 页面尺寸改变时触发 |
+| onPullDownRefresh() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.21 | 监听用户下拉动作<br/>- 需要在 `pages.json` 的页面配置中开启 `enablePullDownRefresh` 。<br/>- 可以通过 `uni.startPullDownRefresh` 触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。<br/>- 当处理完数据刷新后，`uni.stopPullDownRefresh` 可以停止当前页面的下拉刷新。<br/> |
+| onResize() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 页面尺寸改变时触发 |
 
 示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/lifecycle/component/ChildComponentOptions.uvue)
 

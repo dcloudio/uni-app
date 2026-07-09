@@ -35,9 +35,9 @@
 getAndroidApplication
 获取 Android 应用 Application 上下文
 ##### getAndroidApplication 兼容性 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | 4.31 | x | x | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | x | 4.31 | x | x |
 
 
 
@@ -52,9 +52,9 @@ getAndroidApplication
 getHarmonyAbility
 获取 鸿蒙应用 Ability 实例
 ##### getHarmonyAbility 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | x | x | 5.21 | x | 4.61 | x |
 
 
 

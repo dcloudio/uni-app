@@ -213,10 +213,10 @@ app平台vdom模式无页面滚动，且其根节点高度为从导航栏底部�
 | onReady | onReady | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面初次渲染完成<br/><br/>页面初次渲染完成时触发。一个页面只会调用一次，代表页面已经准备妥当，可以和视图层进行交互。<br/> |
 | onPageHide | onHide | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面隐藏<br/><br/>页面隐藏/切入后台时触发。 如 `navigateTo` 或底部 `tab` 切换到其他页面，应用切入后台等。<br/> |
 | onUnload | onUnload | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 生命周期回调 监听页面卸载<br/><br/>页面卸载时触发。如 `redirectTo` 或 `navigateBack` 到其他页面时。<br/> |
-| onPullDownRefresh | onPullDownRefresh | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听用户下拉动作<br/>- 需要在 `pages.json` 的页面配置中开启 `enablePullDownRefresh` 。<br/>- 可以通过 `uni.startPullDownRefresh` 触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。<br/>- 当处理完数据刷新后，`uni.stopPullDownRefresh` 可以停止当前页面的下拉刷新。<br/> |
+| onPullDownRefresh | onPullDownRefresh | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.21 | 监听用户下拉动作<br/>- 需要在 `pages.json` 的页面配置中开启 `enablePullDownRefresh` 。<br/>- 可以通过 `uni.startPullDownRefresh` 触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。<br/>- 当处理完数据刷新后，`uni.stopPullDownRefresh` 可以停止当前页面的下拉刷新。<br/> |
 | onReachBottom | onReachBottom | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件的处理函数<br/>- 可以在 `pages.json` 的页面配置中设置触发距离 `onReachBottomDistance` 。<br/>- 在触发距离内滑动期间，本事件只会被触发一次。<br/> |
-| onPageScroll | onPageScroll | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.13; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动触发事件的处理函数<br/><br/>监听用户滑动页面事件。 |
-| onResize | onResize | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: 4.61 | 页面尺寸改变时触发 |
+| onPageScroll | onPageScroll | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.13; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动触发事件的处理函数<br/><br/>监听用户滑动页面事件。 |
+| onResize | onResize | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 页面尺寸改变时触发 |
 | onBackPress | onBackPress | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 监听页面返回 |
 | onInit | onInit | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 生命周期回调 监听页面初始化<br/><br/>页面初始化时触发。一个页面只会调用一次，可以在 onInit 的参数中获取打开当前页面路径中的参数。 |
 | onShareAppMessage | onShareAppMessage | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 用户点击右上角转发<br/><br/>监听用户点击页面内转发按钮（`<button>` 组件 `open-type="share"`）或右上角菜单“转发”按钮的行为，并自定义转发内容。 |
@@ -293,23 +293,23 @@ onShow和onHide是成对出现的。
 ### 页面 onResize 生命周期 @onresize
 
 #### onResize 兼容性 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | x | 4.11 | x | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 
 #### 参数 
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **OnResizeOptions** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 页面尺寸改变时回调参数  |
+| options | **OnResizeOptions** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 页面尺寸改变时回调参数  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| deviceOrientation | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 屏幕方向 |
-| size | **OnResizeSize** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 新的显示区域尺寸 |
+| deviceOrientation | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕方向 |
+| size | **OnResizeSize** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 新的显示区域尺寸 |
 
 ##### size 的属性描述
 
@@ -331,9 +331,9 @@ onShow和onHide是成对出现的。
 ### 页面 onPageScroll 生命周期 @onpagescroll
 
 #### onPageScroll 兼容性 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | x | 4.13 | x | 4.61 | 5.08 |
+| Web | 微信小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | 4.13 | 5.21 | 4.61 | 5.08 |
 
 
 #### 参数 

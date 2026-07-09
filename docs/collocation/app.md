@@ -40,8 +40,8 @@
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | path | string | 是 |  |   | 应用启动页面路径 |
-| appScheme | string | 否 |  | Web: x; 微信小程序: x; Android(VDOM): 4.25; Android(Vapor): x; iOS: 4.25; HarmonyOS: x | 首次启动时的Scheme。返回值与App.onLaunch的回调参数一致<br/> |
-| appLink | string | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: 4.25; HarmonyOS: x | 首次启动时的appLink。返回值与App.onLaunch的回调参数一致<br/> | 
+| appScheme | string | 否 |  | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: x | 首次启动时的Scheme。返回值与App.onLaunch的回调参数一致<br/> |
+| appLink | string | 否 |  | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS: 4.25; HarmonyOS: x | 首次启动时的appLink。返回值与App.onLaunch的回调参数一致<br/> | 
 
 
 
@@ -77,7 +77,7 @@
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | path | string | 是 |  |   | 应用启动页面路径 |
-| appScheme | string | 否 |  | Web: x; 微信小程序: x; Android(VDOM): 4.25; Android(Vapor): x; iOS: 4.25; HarmonyOS: x | 本次启动时的Scheme。返回值与App.onShow的回调参数一致<br/> |
+| appScheme | string | 否 |  | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: x | 本次启动时的Scheme。返回值与App.onShow的回调参数一致<br/> |
 | appLink | string | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: 4.25; HarmonyOS: x | 本次启动时的appLink。返回值与App.onShow的回调参数一致<br/> | 
 
 
@@ -124,9 +124,9 @@
 
 
 #### onExit 兼容性 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | 3.9 | x | x | 4.72 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.72 |
 
 
 
@@ -178,9 +178,9 @@
 
 
 #### onLastPageBackPress 兼容性 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | 3.9 | x | x | 4.71 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | x | 3.9 | x | 4.71 |
 
 
 
