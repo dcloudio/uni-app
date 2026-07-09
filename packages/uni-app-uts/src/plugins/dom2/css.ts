@@ -1,6 +1,4 @@
 import type { Plugin, ResolvedConfig } from 'vite'
-import fs from 'fs'
-import path from 'path'
 
 import {
   ANY_JS_STYLE_PLACEHOLDER_RE,
@@ -32,18 +30,7 @@ import { DOM2_CSS_CACHE_MAP, isVue } from '../utils'
 
 const CSS_FILE_ID_MAP = new Map<string, string>()
 
-function initMediaPrefersColorScheme() {
-  const inputDir = process.env.UNI_INPUT_DIR
-  const mediaFile = inputDir && path.resolve(inputDir, '.media')
-  if (mediaFile && fs.existsSync(mediaFile)) {
-    process.env.UNI_MEDIA_PREFERS_COLOR_SCHEME = 'true'
-  } else {
-    delete process.env.UNI_MEDIA_PREFERS_COLOR_SCHEME
-  }
-}
-
 export function uniAppCssPrePlugin(): Plugin {
-  initMediaPrefersColorScheme()
   const name = 'uni:app-uvue-css-pre'
   const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
   const appUVuePath = resolveAppVue(process.env.UNI_INPUT_DIR)
@@ -86,9 +73,6 @@ export function uniAppCssPrePlugin(): Plugin {
             platform: process.env.UNI_UTS_PLATFORM,
             helper: requireUniHelpers(),
             output,
-            useUniCSSStyleSheet:
-              output === 'code' &&
-              process.env.UNI_MEDIA_PREFERS_COLOR_SCHEME === 'true',
           })
           if (isDom2 && fontFaces?.length) {
             const id = CSS_FILE_ID_MAP.get(filename)
@@ -132,8 +116,7 @@ export function uniAppCssPrePlugin(): Plugin {
         emitFile(filename, cssCode) {
           const { ASDSF } = requireUniHelpers()
           const styleSheetOptions =
-            typeof cssCode === 'string' &&
-            process.env.UNI_MEDIA_PREFERS_COLOR_SCHEME === 'true'
+            typeof cssCode === 'string'
               ? { styleSheetTypeName: 'UniCSSStyleSheet' }
               : undefined
           ASDSF(
@@ -192,7 +175,6 @@ export function uniAppCssPrePlugin(): Plugin {
 }
 
 export function uniAppCssPlugin(): Plugin {
-  initMediaPrefersColorScheme()
   let resolvedConfig: ResolvedConfig
   const { parseCss } = require('@dcloudio/compiler-vapor-dom2')
   return {
@@ -219,9 +201,6 @@ export function uniAppCssPlugin(): Plugin {
         platform: process.env.UNI_UTS_PLATFORM,
         helper: requireUniHelpers(),
         output,
-        useUniCSSStyleSheet:
-          output === 'code' &&
-          process.env.UNI_MEDIA_PREFERS_COLOR_SCHEME === 'true',
       })
       let cssSourceMap: SourceMapInput | undefined
       if (messages.find((m) => m.type === 'warning')) {
