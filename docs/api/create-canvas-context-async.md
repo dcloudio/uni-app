@@ -148,7 +148,7 @@ requestAnimationFrame
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (timestamp: number) => void | 是 |  |   |  | 
+| callback | (time: number) => void | 是 |  |   |  | 
 
 
 ##### 返回值 

@@ -73,7 +73,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.screenBrightness.getScreenBrightness)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/brightness.html)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=getScreenBrightness&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/screen/wx.getScreenBrightness.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getScreenBrightness&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getScreenBrightness&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getScreenBrightness&secondType=all&type=1)
@@ -149,7 +149,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.screenBrightness.setScreenBrightness)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/brightness.html)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=setScreenBrightness&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/screen/wx.setScreenBrightness.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=setScreenBrightness&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=setScreenBrightness&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=setScreenBrightness&secondType=all&type=1)
@@ -237,7 +237,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.screenBrightness.setKeepScreenOn)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/system/brightness.html)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=setKeepScreenOn&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/screen/wx.setKeepScreenOn.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=setKeepScreenOn&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=setKeepScreenOn&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=setKeepScreenOn&secondType=all&type=1)
