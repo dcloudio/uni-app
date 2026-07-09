@@ -104,7 +104,7 @@
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | newChild | [UniElement](/api/dom/unielement.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 插入子元素对象 |
-| refChild | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 所有组件的 DOM 元素对象基类，描述了 UVUE DOM 元素所普通具有的属性和方法。 | 
+| refChild | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 已存在父元素的子元素对象 | 
 
 
 ##### 返回值 
@@ -117,17 +117,32 @@
 
 
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.insertBefore_1.name -->
+#### insertBefore(newChild: UniElement): UniElement \| null @insertbefore
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.insertBefore_1.description -->
+将一个元素添加到指定父元素的子元素列表的末尾处 功能等同于appendChild
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.insertBefore_1.compatibility -->
+##### insertBefore 兼容性 
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 4.0 | 4.11 | 4.25 | 4.61 | x |
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.insertBefore_1.param -->
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.insertBefore_1.returnValue -->
+##### 参数 
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.insertBefore_1.tutorial -->
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| newChild | [UniElement](/api/dom/unielement.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 插入子元素对象 | 
+
+
+##### 返回值 
+
+| 类型 | 描述 | 必备 |
+| :- | :- | :- |
+| [UniElement](/api/dom/unielement.md) | 所有组件的 DOM 元素对象基类，描述了 UVUE DOM 元素所普通具有的属性和方法。 | 否 |
+ 
+
+
+
 
 #### setAttribute(key: string, value: string): void @setattribute
 
@@ -621,17 +636,27 @@ if(element != null) {
 + 安卓平台页面渲染时元素才会构建View，所以元素刚创建就获取View大概率是null，推荐页面onReady时获取。
 + 安卓平台获取的原生View尽可能的避免设置View的background属性，会导致元素background、border、boxshadow css效果失效或设置的background不生效，与设置background时机有关。
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.getAndroidView_1.name -->
+#### getAndroidView\<T>(): T \| null @getandroidview
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.getAndroidView_1.description -->
+获取元素android原生view 通过泛型定义view类型 可能返回null
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.getAndroidView_1.compatibility -->
+##### getAndroidView 兼容性 
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 4.25 | x | x | x |
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.getAndroidView_1.param -->
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.getAndroidView_1.returnValue -->
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.getAndroidView_1.tutorial -->
+
+##### 返回值 
+
+| 类型 | 必备 |
+| :- | :- |
+| T | 否 |
+ 
+
+
+
 
 **getAndroidView通过泛型定义获取原生View：**
 
@@ -1503,17 +1528,28 @@ if (view != null && view instanceof WKWebView) {
 
 
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.dispatchEvent.name -->
+#### dispatchEvent(value: UniEvent): void @dispatchevent
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.dispatchEvent.description -->
+向一个指定的事件目标派发一个 Event，并以合适的顺序（同步地）调用此事件的监听器回调函数。
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.dispatchEvent.compatibility -->
+##### dispatchEvent 兼容性 
+| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 4.25 | 4.25 | 4.25 | 4.61 |
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.dispatchEvent.param -->
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.dispatchEvent.returnValue -->
+##### 参数 
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.dispatchEvent.tutorial -->
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| :- | :- | :- | :- |  :-: | :- |
+| value | [UniEvent](/component/common.md#unievent) | 是 |  |   | 事件返回对象 | 
+
+
+
+
+
+
+
 
 #### scrollTo(x: number, y: number): void @scrollto
 
@@ -2816,19 +2852,29 @@ play
 
 
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.getHarmonyController_1.name -->
+#### getHarmonyController\<T>(): T \| null @getharmonycontroller
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.getHarmonyController_1.description -->
+鸿蒙原生组件控制器，可以控制组件的状态。通过泛型定义view类型，可能返回null
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.getHarmonyController_1.compatibility -->
+##### getHarmonyController 兼容性 
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 | x |
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.getHarmonyController_1.param -->
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.getHarmonyController_1.returnValue -->
+
+
+##### 返回值 
+
+| 类型 | 必备 |
+| :- | :- |
+| T | 否 |
+ 
+
 
 <!-- CUSTOMTYPEJSON.UniElement.methods.getHarmonyController_1.example -->
 
-<!-- CUSTOMTYPEJSON.UniElement.methods.getHarmonyController_1.tutorial -->
+
 
 
 #### requestFullscreen(options?: RequestFullscreenOptions \| null): void @requestfullscreen

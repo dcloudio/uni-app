@@ -1263,11 +1263,11 @@ addColorStop
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 包含像素值的数组对象 |
-| y | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 矩形起点的 x 轴坐标，以像素为单位 |
-| width | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 矩形起点的 y 轴坐标，以像素为单位 |
-| height | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 矩形的宽度。正值向右，负值向左 |
-| radii | any | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 矩形的高度。正值向下，负值向上 | 
+| x | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 矩形起点的 x 轴坐标，以像素为单位 |
+| y | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 矩形起点的 y 轴坐标，以像素为单位 |
+| width | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 矩形的宽度。正值向右，负值向左 |
+| height | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 矩形的高度。正值向下，负值向上 |
+| radii | any | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 其数量和顺序与 width 和 height 为正值时的 border-radius CSS 属性相同 | 
 
 
 
