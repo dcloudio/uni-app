@@ -185,7 +185,7 @@ JSON.parseObject() 方法用来解析 JSON 字符串，构造由字符串描述�
 **返回值**
 | 类型 | 描述 |
 | :- | :- |
-| UTSJSONObject \| null | 返回一个UTSJSONObjet 或者 null | 
+| UTSJSONObject \| null | 返回一个UTSJSONObject 或者 null | 
 
 
 ::: preview 

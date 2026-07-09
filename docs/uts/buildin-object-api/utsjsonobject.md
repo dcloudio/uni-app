@@ -146,7 +146,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 
 ### keys(object: UTSJSONObject): Array\<String>
 
-以数组的形式返回指定UTSJSONObjetc 对象内可枚举属性的名称列表
+以数组的形式返回指定UTSJSONObject 对象内可枚举属性的名称列表
 
 **参数**
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
