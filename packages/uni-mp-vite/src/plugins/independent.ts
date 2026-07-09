@@ -29,6 +29,8 @@ import {
 } from './independentUtils'
 import { resolveIndependentMainPath } from './independentMain'
 
+const INDEPENDENT_RUNTIME_FLAG = '__UNI_MP_INDEPENDENT_RUNTIME__'
+
 export function uniIndependentSubpackagePlugin(
   options: UniMiniProgramPluginOptions
 ): Plugin {
@@ -110,6 +112,23 @@ export function uniIndependentSubpackagePlugin(
       if (root && independentRoots.has(root)) {
         return {
           code: generateIndependentMainCode(root, inputDir),
+          map: { mappings: '' },
+        }
+      }
+    },
+    transform(code, id) {
+      const root = parseIndependentRoot(id)
+      if (
+        root &&
+        getIndependentRoots().has(root) &&
+        isMiniProgramRuntimeId(withoutIndependentRoot(id)) &&
+        code.includes(INDEPENDENT_RUNTIME_FLAG)
+      ) {
+        return {
+          code: code.replace(
+            new RegExp(`\\b${INDEPENDENT_RUNTIME_FLAG}\\b`, 'g'),
+            'true'
+          ),
           map: { mappings: '' },
         }
       }
@@ -507,6 +526,10 @@ function shouldResolveIndependentDependency(id: string) {
     return false
   }
   return true
+}
+
+function isMiniProgramRuntimeId(id: string) {
+  return normalizePath(id).split('?')[0].endsWith('/uni.mp.esm.js')
 }
 
 function shouldPropagateIndependentRoot(id: string) {

@@ -1226,16 +1226,20 @@ const createComponent = initCreateComponent(parseOptions);
 const createPluginApp = initCreatePluginApp();
 const createSubpackageApp = initCreateSubpackageApp();
 const createIndependentSubpackageApp = initCreateIndependentSubpackageApp();
+const isIndependentRuntime = typeof __UNI_MP_INDEPENDENT_RUNTIME__ !== 'undefined' &&
+    __UNI_MP_INDEPENDENT_RUNTIME__ === true;
 {
     preloadAsset();
-    wx.createApp = global.createApp = createApp;
-    wx.createPage = createPage;
-    wx.createComponent = createComponent;
-    wx.createPluginApp = global.createPluginApp =
-        createPluginApp;
-    wx.createSubpackageApp = global.createSubpackageApp =
-        createSubpackageApp;
-    wx.createIndependentSubpackageApp = global.createIndependentSubpackageApp = createIndependentSubpackageApp;
+    if (!isIndependentRuntime) {
+        wx.createApp = global.createApp = createApp;
+        wx.createPage = createPage;
+        wx.createComponent = createComponent;
+        wx.createPluginApp = global.createPluginApp =
+            createPluginApp;
+        wx.createSubpackageApp = global.createSubpackageApp =
+            createSubpackageApp;
+        wx.createIndependentSubpackageApp = global.createIndependentSubpackageApp = createIndependentSubpackageApp;
+    }
 }
 
 export { createApp, createComponent, createIndependentSubpackageApp, createPage, createPluginApp, createSubpackageApp };

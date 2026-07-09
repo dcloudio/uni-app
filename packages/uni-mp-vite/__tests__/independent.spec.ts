@@ -313,6 +313,50 @@ app.mount('#app', "package-a", { independent: true, createApp: createIndependent
     )
   })
 
+  test('marks independent mini program runtime without changing other modules', async () => {
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    await withPagesJson(
+      {
+        subPackages: [
+          {
+            root: 'package-a',
+            independent: true,
+            pages: [{ path: 'pages/index/index' }],
+          },
+        ],
+      },
+      async (inputDir) => {
+        process.env.UNI_INPUT_DIR = inputDir
+        const plugin = uniIndependentSubpackagePlugin({
+          global: 'wx',
+          style: { extname: '.wxss' },
+        } as any)
+        callBuildStart(plugin)
+        const runtimeId = withIndependentRoot(
+          '/project/node_modules/@dcloudio/uni-mp-weixin/dist/uni.mp.esm.js',
+          'package-a'
+        )
+        const code =
+          'const isIndependentRuntime = typeof __UNI_MP_INDEPENDENT_RUNTIME__ !== "undefined" && __UNI_MP_INDEPENDENT_RUNTIME__ === true'
+
+        const result = (plugin.transform as Function)(code, runtimeId)
+
+        expect(result.code).toBe(
+          'const isIndependentRuntime = typeof true !== "undefined" && true === true'
+        )
+        expect(
+          (plugin.transform as Function)(
+            code,
+            withIndependentRoot(
+              '/project/src/pages/index/index.js',
+              'package-a'
+            )
+          )
+        ).toBeUndefined()
+      }
+    )
+  })
+
   test('resolves explicit root query dependency from alias fallback', async () => {
     process.env.UNI_PLATFORM = 'mp-weixin'
     await withPagesJson(
