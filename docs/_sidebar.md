@@ -3,10 +3,11 @@
 * [页面](page.md)
 * [蒸汽模式](app-vapor.md)
 * 教程
-  * [与js开发的差别](tutorial/codegap.md)
-  * [request联网教程](tutorial/request.md)
-  * [复杂列表开发指南](tutorial/stickynestlist.md)
-  * [全局变量与状态管理](tutorial/store.md)
+	* Android VDOM模式注意
+		* [强类型下与js开发的差别](tutorial/codegap.md)
+		* [request联网教程](tutorial/request.md)
+	* [复杂列表开发指南](tutorial/stickynestlist.md)
+	* [全局变量与状态管理](tutorial/store.md)
   * [几种组件标记的概念澄清](tutorial/idref.md)
 * web平台专题指南
   * [概述](web/README.md)
@@ -66,11 +67,10 @@
 - 安全专题
   - [综述](tutorial/safe.md)
   - 客户端安全
-    - [app js/nvue 文件原生混淆加密](tutorial/app-sec-confusion.md)
-  - [Android 安全漏洞问题解决方案](tutorial/app-sec-android.md)
+    - [Android 安全漏洞问题解决方案](tutorial/app-sec-android.md)
     - [App 安全检测 API](tutorial/app-sec-api.md)
-  - [App 加固](tutorial/app-security.md)
-  - [App 隐私合规检测](tutorial/app-privacy-detect.md)
+    - [App 加固](tutorial/app-security.md)
+    - [App 隐私合规检测](tutorial/app-privacy-detect.md)
   - 网络安全
     - [云端一体安全网络](https://doc.dcloud.net.cn/uniCloud/secure-network.html)
     - [传统服务器与 uniCloud 安全通信](https://doc.dcloud.net.cn/uniCloud/uni-cloud-s2s.html)
@@ -92,7 +92,6 @@
   * [uts插件iOS Debug](tutorial/uni-uts-debug-ios.md)
   * [鸿蒙运行](tutorial/harmony/runbuild.md)
   * [鸿蒙Debug断点](tutorial/uni-uts-debug-harmony.md)
-  * [AI纠错](tutorial/bug_repair.md)
 * [性能优化](performance.md)
 * [uni错误规范](err-spec.md)
 * [暗黑模式](api/theme-change.md)

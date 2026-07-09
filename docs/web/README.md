@@ -2,14 +2,14 @@
 
 > 新增于4.0版本
 
-uni-app x 编译到web平台时，并非是与uni-app js引擎版一致。而是基于uts的统一规范，和编译到安卓端的一致性较高。
-
-与App版相比，web版有几个较大的差别：
+- 与App版相比，web版有几个较大的差别：
 1. web版是一个spa的单页应用，而app是多页的。
 2. pages.json配置的导航栏和tabbar，在web端并非原生的，而是网页的一部分。虽然uvue页面仍然是在导航栏和tabbar之间的，但在web平台，开发者可以直接操作导航栏和tabbar的dom。
 3. web版默认有页面滚动；app没有。
 
-本文档会介绍与web和Android的差异及注意事项。
+- 与老uni-app x相比，uni-app x 编译到web平台时，有几处不同：
+1. 如果使用uts代码，会走uts2js逻辑，会注入UTSJSONObject。使用ts/js则无法使用UTSJSONObject。
+2. 重置了css，拉齐App布局引擎，比如统一使用flex布局。详见[css重置](../css/README.md#css-reset)
 
 ## web运行失败注意事项@faq
 

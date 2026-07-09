@@ -7,7 +7,7 @@
 uni-app x下可选方案有：
 
 1. 在独立的uts文件中定义一个全局的reactive变量，各处引用它。
-2. 引入pinia。蒸汽模式下可直接使用pinia官方库。vdom模式下需使用三方插件 [Pinia by uts](https://ext.dcloud.net.cn/plugin?name=x-pinia-s)
+2. 引入pinia。蒸汽模式下可直接使用pinia官方库。Android vdom模式下需使用三方插件 [Pinia by uts](https://ext.dcloud.net.cn/plugin?name=x-pinia-s)
 
 使用全局的reactive变量，详细方案如下：
 

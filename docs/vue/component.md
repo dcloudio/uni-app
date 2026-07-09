@@ -1400,11 +1400,13 @@ export default {
 
 #### 使用 `ref` 属性搭配 `$callMethod` 方法 @call-component-method
 
-如果不是内置组件，也不是easycom组件，那么无法使用`.`操作符了。
+Android VDOM模式是强类型，如果不是内置组件，也不是easycom组件，无法使用`.`操作符访问组件的方法。
 
 此时需使用 `this.$refs` 获取组件实例，然后通过 `$callMethod` 调用组件的方法。也就是把组件的方法名、参数，当做callMethod的参数来传递。此时也就没有`.`操作符那样的代码提示和校验了。
 
-callMethod可用于所有自定义组件，包括easycom组件也可以使用，只不过easycom组件有更简单的用法。
+callMethod可用于所有自定义组件，包括easycom组件也可以使用，只不过easycom组件可以直接`.`。
+
+蒸汽模式下不再推荐使用`callMethod`
 
 **语法**
 

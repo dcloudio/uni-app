@@ -1,10 +1,8 @@
-# uni-app x 开发注意
+# uni-app x Android VDOM模式开发注意
 
-与web开发相比，uni-app x在App平台最大的变化有2个：
-- 弱类型的js改为了强类型的uts
-- 不再使用webview渲染，导致css有变化
+注意：**在DCloud主推蒸汽模式后，本文档已经过期。**
 
-重视，并把握好这两点，就可以很快上手。
+与web开发相比，uni-app x在Android平台 VDOM模式下最大的变化是：弱类型的js改为了强类型的uts
 
 ## 类型系统注意
 
