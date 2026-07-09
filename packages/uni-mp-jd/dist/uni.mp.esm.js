@@ -916,6 +916,8 @@ var baseParseOptions = /*#__PURE__*/Object.freeze({
 
 const createApp = initCreateApp();
 const createSubpackageApp = initCreateSubpackageApp();
+typeof __UNI_MP_INDEPENDENT_RUNTIME__ !== 'undefined' &&
+    __UNI_MP_INDEPENDENT_RUNTIME__ === true;
 
 function applyOptions(componentOptions, vueOptions) {
     componentOptions.data = initData();
