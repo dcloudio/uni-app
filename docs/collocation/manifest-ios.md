@@ -179,6 +179,26 @@ iOS平台在iPad设备默认是支持`多任务处理`的，即支持悬浮窗�
     }
   }
   ```
+  
+ #### 苹果登录 @oauthapple
+  
+在uni-app x项目中使用此模块，需在manifest.json中配置：  
+
+- HBuilderX 5.21 版本  
+  需通过 manifest.json 的`源码视图`在 "app-ios" -> "distribute" -> "modules" -> "uni-oauth" 下添加 "apple" 节点，如下示例：  
+  ```json
+  {
+    "app-ios": {
+      "distribute": {
+        "modules": {
+          "uni-oauth":{
+            "apple":{ }
+          }
+        }
+      }
+    }
+  }
+  ```
 
 
 ### uni-location（定位） @modulesLocation
@@ -511,7 +531,7 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
 
 支持以下分享 provider ：
 
-#### 微信登录 @shareweixin  
+#### 微信分享 @shareweixin  
 使用 “微信 Open SDK for iOS” 实现，使用前需到[微信开放平台](https://open.weixin.qq.com/)创建移动应用并在开发配置中正确配置`iOS应用`的 Bundle ID 和 Universal Links。
 
 在uni-app x项目中使用此模块，需在manifest.json中配置：  
