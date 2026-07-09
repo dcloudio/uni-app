@@ -26,7 +26,7 @@ export interface ShowLoadingSuccess {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.03"
+	        "unixVaporVer": "5.0"
 	      }
       },
       "mp": {
@@ -148,7 +148,7 @@ export type ShowLoadingOptions = {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.03"
+	        "unixVaporVer": "5.0"
 	      }
       },
       "mp": {
@@ -373,7 +373,7 @@ export type ShowLoadingOptions = {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.03"
+	        "unixVaporVer": "5.0"
 	      }
       },
       "mp": {
@@ -449,7 +449,7 @@ export type ShowLoadingOptions = {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.03"
+	        "unixVaporVer": "5.0"
 	      }
       },
       "mp": {
@@ -525,7 +525,7 @@ export type ShowLoadingOptions = {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.03"
+	        "unixVaporVer": "5.0"
 	      }
       },
       "mp": {
@@ -609,7 +609,7 @@ export interface HideLoadingSuccess {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.03"
+	        "unixVaporVer": "5.0"
 	      }
       },
       "mp": {
@@ -732,7 +732,7 @@ export type HideLoadingOptions = {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.03"
+	        "unixVaporVer": "5.0"
 	      }
       },
       "mp": {
@@ -808,7 +808,7 @@ export type HideLoadingOptions = {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.03"
+	        "unixVaporVer": "5.0"
 	      }
       },
       "mp": {
@@ -884,7 +884,7 @@ export type HideLoadingOptions = {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.03"
+	        "unixVaporVer": "5.0"
 	      }
       },
       "mp": {
@@ -960,7 +960,7 @@ export type HideLoadingOptions = {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.03"
+	        "unixVaporVer": "5.0"
 	      }
       },
       "mp": {
@@ -1055,7 +1055,7 @@ export interface Uni {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.03"
+	        "unixVaporVer": "5.0"
 	      }
       },
       "mp": {
@@ -1145,7 +1145,7 @@ export interface Uni {
 	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
-	        "unixVaporVer": "5.03"
+	        "unixVaporVer": "5.0"
 	      }
       },
       "mp": {
