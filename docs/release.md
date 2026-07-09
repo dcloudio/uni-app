@@ -1,3 +1,8 @@
+#### 5.15.2026070915
+##### uni-app x
+* iOS平台 蒸汽模式 修复 组件 canvas 在部分设备调用 canvasContext.toDataURL 异常 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=31051)
+* Android平台 VDOM模式 修复 5.14版本引发的 大写的Boolean类型被识别为对象, 导致条件判断出现异常行为 [详情](https://issues.dcloud.net.cn/pages/issues/detail?id=31048)
+
 #### 5.14.2026070214
 ##### uni-app x
 * 【重要】新增 iOS平台 蒸汽模式，比原生更快的渲染系统 [详情](https://doc.dcloud.net.cn/uni-app-x/app-vapor.html)
