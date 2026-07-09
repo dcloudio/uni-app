@@ -25,7 +25,7 @@
 | webp | boolean | true | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): -; HarmonyOS(Vapor): x | 是否支持 WebP 格式，web、app平台默认支持 WebP 格式，不支持本属性，无法关闭对 WebP 格式的解析。 |
 | show-menu-by-longpress | boolean | false | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 开启长按图片显示识别小程序码菜单 |
 | draggable | boolean | false | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 鼠标长按是否能拖动图片(仅H5平台) |
-| flatten | boolean | false | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
+| flatten | boolean | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
 | @error | (event: [UniImageErrorEvent](#uniimageerrorevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 图片加载错误时触发，event.detail = { errMsg } |
 | @load | (event: [UniImageLoadEvent](#uniimageloadevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 图片加载完成时触发，event.detail = { width: '图片宽度px', height: '图片高度px' } |
 

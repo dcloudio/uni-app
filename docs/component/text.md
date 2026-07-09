@@ -31,7 +31,7 @@
 | hover-start-time | number | 50 | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 按住后多久出现点击态，单位毫秒 |
 | hover-stay-time | number | 400 | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 手指松开后点击态保留时间，单位毫秒 |
 | max-lines | number |   | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 文本的最大行数，默认不限制最大行数 |
-| flatten | boolean | false | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
+| flatten | boolean | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否拍平组件 |
 
 #### space 的属性描述
 
