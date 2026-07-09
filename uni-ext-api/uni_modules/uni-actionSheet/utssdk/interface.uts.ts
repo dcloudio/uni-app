@@ -330,7 +330,7 @@ export interface ShowActionSheetSuccess {
    *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.03"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -405,7 +405,7 @@ export interface ShowActionSheetSuccess {
    *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.03"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -484,7 +484,7 @@ export interface ShowActionSheetFail extends IUniError {
    *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.03"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -565,7 +565,7 @@ type ShowActionSheetCompleteCallback = (result: ShowActionSheetComplete) => void
  *      "osVer": "5.0",
  *      "uniVer": "4.23",
  *      "unixVer": "4.61",
- *      "unixVaporVer": "5.03"
+ *      "unixVaporVer": "5.0"
  *    }
  *  },
  *  "mp": {
@@ -640,7 +640,7 @@ export type ShowActionSheetOptions = {
    *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.03"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -715,7 +715,7 @@ export type ShowActionSheetOptions = {
    *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.03"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -790,7 +790,7 @@ export type ShowActionSheetOptions = {
    *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.03"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -865,7 +865,7 @@ export type ShowActionSheetOptions = {
    *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.03"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -1015,7 +1015,7 @@ export type ShowActionSheetOptions = {
    *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.03"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -1090,7 +1090,7 @@ export type ShowActionSheetOptions = {
    *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.03"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -1165,7 +1165,7 @@ export type ShowActionSheetOptions = {
    *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.03"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -1240,7 +1240,7 @@ export type ShowActionSheetOptions = {
    *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.03"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -1315,7 +1315,7 @@ export type ShowActionSheetOptions = {
    *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.03"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -1390,7 +1390,7 @@ export type ShowActionSheetOptions = {
    *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.03"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -1465,7 +1465,7 @@ export type ShowActionSheetOptions = {
    *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.03"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -1560,7 +1560,7 @@ export interface Uni {
    *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.03"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
@@ -1642,7 +1642,7 @@ export interface Uni {
    *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
-   *      "unixVaporVer": "5.03"
+   *      "unixVaporVer": "5.0"
    *    }
    *  },
    *  "mp": {
