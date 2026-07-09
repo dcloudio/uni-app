@@ -992,6 +992,8 @@ const createComponent = initCreateComponent(parseOptions);
 const createPluginApp = initCreatePluginApp();
 const createSubpackageApp = initCreateSubpackageApp();
 const createIndependentSubpackageApp = initCreateIndependentSubpackageApp();
+typeof __UNI_MP_INDEPENDENT_RUNTIME__ !== 'undefined' &&
+    __UNI_MP_INDEPENDENT_RUNTIME__ === true;
 
 qq.EventChannel = EventChannel;
 qq.createApp = global.createApp = createApp;
