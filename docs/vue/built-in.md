@@ -2149,9 +2149,9 @@ const incrementNum = () =>{
 
 
 ##### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | √ | 3.9 | 4.11 | 4.61 | 5.03 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | √ | 3.9 | 4.11 | 4.61 |
 
 
 `<template>` 有2个用途：
@@ -2219,15 +2219,15 @@ const incrementNum = () =>{
 
 
 ##### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.11 | 3.9 | 4.11 | 4.61 | 5.03 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.11 | 3.9 | 4.11 | 4.61 |
 
 
 ##### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| name | string |   | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 用于命名插槽。 |
+| name | string |   | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 用于命名插槽。 |
 
 
 

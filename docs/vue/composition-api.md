@@ -2876,8 +2876,8 @@ const triggerRefState = () => {
 
 |  | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| provide | 4.0 | 4.41 | 3.99 | 5.21 | 4.11 | 5.11 | 4.61 | 5.03 |
-| inject | 4.0 | 4.41 | 3.99 | 5.21 | 4.11 | 5.11 | 4.61 | 5.03 |
+| provide | 4.0 | 4.41 | 3.99 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
+| inject | 4.0 | 4.41 | 3.99 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
 | mixins | 4.0 | 4.41 | 3.99 | x | 4.11 | x | 4.61 | x |
 
 ### inject
@@ -3220,7 +3220,7 @@ defineExpose({
 | onBackPress() | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 监听页面返回 |
 | onReachBottom() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件的处理函数<br/>- 可以在 `pages.json` 的页面配置中设置触发距离 `onReachBottomDistance` 。<br/>- 在触发距离内滑动期间，本事件只会被触发一次。<br/> |
 | onPullDownRefresh() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听用户下拉动作<br/>- 需要在 `pages.json` 的页面配置中开启 `enablePullDownRefresh` 。<br/>- 可以通过 `uni.startPullDownRefresh` 触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。<br/>- 当处理完数据刷新后，`uni.stopPullDownRefresh` 可以停止当前页面的下拉刷新。<br/> |
-| onResize() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 页面尺寸改变时触发 |
+| onResize() | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: 4.61 | 页面尺寸改变时触发 |
 
 #### onMounted、onUnmounted 使用注意事项 @mounted-unmounted-tips
 
@@ -3401,15 +3401,15 @@ const updateTitle = () => {
 
 
 ##### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | √ | 3.9 | 4.11 | 4.61 | 5.03 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | √ | 3.9 | 4.11 | 4.61 |
 
 
 ##### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| setup | Any |   | Web: 4.0; 微信小程序: √; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 |   |
+| setup | Any |   | Web: 4.0; 微信小程序: √; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |   |
 | lang | Any |   | Web: 4.0; 微信小程序: √; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |  |
 
 #### lang 的属性描述

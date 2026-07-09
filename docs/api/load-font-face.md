@@ -14,9 +14,9 @@
 
 
 ### loadFontFace 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | √ | 4.10 | 4.61 | 5.03 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | 4.10 | 4.61 |
 
 
 ### 参数 
@@ -30,8 +30,8 @@
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | global | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: x; HarmonyOS: x | 是否全局生效微信小程序 '2.10.0'起支持全局生效。需在 app.uvue 中调用。 |
-| family | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 定义的字体名称 |
-| source | [string.FontURIString](/uts/data-type.md#ide-string) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 字体资源的地址, App-Android 平台不支持 woff、woff2 格式字体文件 |
+| family | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10; HarmonyOS: 4.61 | 定义的字体名称 |
+| source | [string.FontURIString](/uts/data-type.md#ide-string) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10; HarmonyOS: 4.61 | 字体资源的地址, App-Android 平台不支持 woff、woff2 格式字体文件 |
 | desc | **LoadFontFaceOptionDesc** | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: 4.10; HarmonyOS: x | 可选的字体描述符 |
 | success | (result: [LoadFontFaceSuccess](#loadfontfacesuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10; HarmonyOS:   | 接口调用成功的回调函数 |
 | fail | (error: [LoadFontFaceFail](#loadfontfacefail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.10; HarmonyOS:   | 接口调用失败的回调函数 |

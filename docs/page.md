@@ -216,7 +216,7 @@ app平台vdom模式无页面滚动，且其根节点高度为从导航栏底部�
 | onPullDownRefresh | onPullDownRefresh | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 监听用户下拉动作<br/>- 需要在 `pages.json` 的页面配置中开启 `enablePullDownRefresh` 。<br/>- 可以通过 `uni.startPullDownRefresh` 触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。<br/>- 当处理完数据刷新后，`uni.stopPullDownRefresh` 可以停止当前页面的下拉刷新。<br/> |
 | onReachBottom | onReachBottom | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件的处理函数<br/>- 可以在 `pages.json` 的页面配置中设置触发距离 `onReachBottomDistance` 。<br/>- 在触发距离内滑动期间，本事件只会被触发一次。<br/> |
 | onPageScroll | onPageScroll | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.13; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面滚动触发事件的处理函数<br/><br/>监听用户滑动页面事件。 |
-| onResize | onResize | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 页面尺寸改变时触发 |
+| onResize | onResize | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: 4.61 | 页面尺寸改变时触发 |
 | onBackPress | onBackPress | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 监听页面返回 |
 | onInit | onInit | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 生命周期回调 监听页面初始化<br/><br/>页面初始化时触发。一个页面只会调用一次，可以在 onInit 的参数中获取打开当前页面路径中的参数。 |
 | onShareAppMessage | onShareAppMessage | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 用户点击右上角转发<br/><br/>监听用户点击页面内转发按钮（`<button>` 组件 `open-type="share"`）或右上角菜单“转发”按钮的行为，并自定义转发内容。 |
@@ -293,9 +293,9 @@ onShow和onHide是成对出现的。
 ### 页面 onResize 生命周期 @onresize
 
 #### onResize 兼容性 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | x | 4.11 | x | 4.61 | 5.03 |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.9 | x | 4.11 | x | 4.61 |
 
 
 #### 参数 

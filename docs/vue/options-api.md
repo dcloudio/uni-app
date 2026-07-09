@@ -559,7 +559,7 @@ export default {
 | template | x | x | x | x | x | x | 4.61 | x |
 | render | 4.0 | x | 3.9 | x | 4.11 | x | 4.61 | x |
 | compilerOptions | x | x | x | x | x | x | 4.61 | x |
-| slots | 4.0 | 4.41 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 | 5.03 |
+| slots | 4.0 | 4.41 | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
 
 ### 示例代码 @example
 
@@ -1126,8 +1126,8 @@ export default {
 
 |  | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| provide | 4.0 | 4.41 | 3.99 | 5.21 | 4.11 | 5.11 | 4.61 | 5.03 |
-| inject | 4.0 | 4.41 | 3.99 | 5.21 | 4.11 | 5.11 | 4.61 | 5.03 |
+| provide | 4.0 | 4.41 | 3.99 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
+| inject | 4.0 | 4.41 | 3.99 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
 | mixins | 4.0 | 4.41 | 3.99 | x | 4.11 | x | 4.61 | x |
 
 ### inject
@@ -1979,7 +1979,7 @@ export default {
 |  | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- | :- |
 | name | 4.0 | 4.41 | 3.9 | x | 4.11 | x | 4.61 | x |
-| inheritAttrs | 4.0 | √ | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 | 5.03 |
+| inheritAttrs | 4.0 | √ | 3.9 | 5.21 | 4.11 | 5.11 | 4.61 | 5.0 |
 | components | 4.0 | 4.41 | 3.9 | x | 4.11 | x | 4.61 | x |
 
 

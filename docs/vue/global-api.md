@@ -18,7 +18,7 @@
 | app.config | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 |
 | app.config.errorHandler | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: 4.11; HarmonyOS: 4.61 |
 | app.config.globalProperties | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
-| globalData | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.0; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
+| globalData | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
 | onLaunch() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
 | onShow() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
 | onHide() | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.0; HarmonyOS: 4.61 |
