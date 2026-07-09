@@ -1811,12 +1811,12 @@ export default {
 
 |  | 兼容性 | 描述 |
 | :- | :- | :- |
-| onMounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
-| onUpdated() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子。 |
-| onUnmounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 在一个组件实例被卸载之后调用。 |
-| onBeforeMount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 在挂载开始之前被调用：相关的 render 函数首次被调用。 |
-| onBeforeUpdate() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 数据更新时调用，发生在虚拟 DOM 打补丁之前。<br/>这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。 |
-| onBeforeUnmount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 在一个组件实例被卸载之前调用。 |
+| onMounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
+| onUpdated() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子。 |
+| onUnmounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之后调用。 |
+| onBeforeMount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 在挂载开始之前被调用：相关的 render 函数首次被调用。 |
+| onBeforeUpdate() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 数据更新时调用，发生在虚拟 DOM 打补丁之前。<br/>这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。 |
+| onBeforeUnmount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之前调用。 |
 | onErrorCaptured() | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 注册一个钩子，在捕获了后代组件传递的错误时调用。 |
 | onRenderTracked() | Web: x; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 注册一个调试钩子，当组件渲染过程中追踪到响应式依赖时调用。 |
 | onRenderTriggered() | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 注册一个调试钩子，当响应式依赖的变更触发了组件渲染时调用。 |

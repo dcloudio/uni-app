@@ -11,16 +11,16 @@
 
 ## 响应式: 核心
 
-|  | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| ref() | 4.0 | 4.41 | √ | 4.11 | 4.61 | 5.03 |
-| computed() | 4.0 | 4.41 | √ | 4.11 | 4.61 | 5.03 |
-| reactive() | 4.0 | 4.41 | √ | 4.11 | 4.61 | 5.03 |
-| readonly() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | 5.03 |
-| watchEffect() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | 5.03 |
-| watchPostEffect() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | 5.03 |
-| watchSyncEffect() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | 5.03 |
-| watch() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | 5.03 |
+|  | Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| ref() | 4.0 | 4.41 | √ | 4.11 | 4.61 |
+| computed() | 4.0 | 4.41 | √ | 4.11 | 4.61 |
+| reactive() | 4.0 | 4.41 | √ | 4.11 | 4.61 |
+| readonly() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
+| watchEffect() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
+| watchPostEffect() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
+| watchSyncEffect() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
+| watch() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
 
 ### 示例代码 @example
 
@@ -1841,16 +1841,16 @@ const updateReadonlyData = () => {
 
 ## 响应式: 工具
 
-|  | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| isRef() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | 5.03 |
-| unref() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | 5.03 |
-| toRef() | 4.11 | 4.41 | 4.0 | 4.11 | 4.61 | 5.03 |
-| toValue() | 4.11 | 4.41 | 4.0 | 4.11 | 4.61 | 5.03 |
-| toRefs() | 4.11 | 4.41 | 4.0 | 4.11 | 4.61 | 5.03 |
-| isProxy() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | 5.03 |
-| isReactive() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | 5.03 |
-| isReadonly() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 | 5.03 |
+|  | Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| isRef() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
+| unref() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
+| toRef() | 4.11 | 4.41 | 4.0 | 4.11 | 4.61 |
+| toValue() | 4.11 | 4.41 | 4.0 | 4.11 | 4.61 |
+| toRefs() | 4.11 | 4.41 | 4.0 | 4.11 | 4.61 |
+| isProxy() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
+| isReactive() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
+| isReadonly() | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
 
 
 ::: warning 注意
@@ -2339,16 +2339,16 @@ const isReactiveShallowReadonlyCount = isReactive(shallowReadonlyCount);
 
 |  | 兼容性 |
 | :- | :- |
-| shallowRef() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 |
-| triggerRef() | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 |
-| customRef() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 |
-| shallowReactive() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 |
-| shallowReadonly() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 |
-| toRaw() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 |
+| shallowRef() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| triggerRef() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| customRef() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| shallowReactive() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| shallowReadonly() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| toRaw() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 | markRaw() |   |
-| effectScope() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 |
-| getCurrentScope() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 |
-| onScopeDispose() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 |
+| effectScope() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| getCurrentScope() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| onScopeDispose() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 
 
 ### 示例代码 @example
@@ -3197,12 +3197,12 @@ defineExpose({
 
 |  | 兼容性 | 描述 |
 | :- | :- | :- |
-| onMounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
-| onUpdated() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子。 |
-| onUnmounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 在一个组件实例被卸载之后调用。 |
-| onBeforeMount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 在挂载开始之前被调用：相关的 render 函数首次被调用。 |
-| onBeforeUpdate() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 数据更新时调用，发生在虚拟 DOM 打补丁之前。<br/>这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。 |
-| onBeforeUnmount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 | 在一个组件实例被卸载之前调用。 |
+| onMounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
+| onUpdated() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子。 |
+| onUnmounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之后调用。 |
+| onBeforeMount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 在挂载开始之前被调用：相关的 render 函数首次被调用。 |
+| onBeforeUpdate() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 数据更新时调用，发生在虚拟 DOM 打补丁之前。<br/>这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。 |
+| onBeforeUnmount() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 在一个组件实例被卸载之前调用。 |
 | onErrorCaptured() | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 注册一个钩子，在捕获了后代组件传递的错误时调用。 |
 | onRenderTracked() | Web: x; 微信小程序: -; Android: x; iOS: x; HarmonyOS: x | 注册一个调试钩子，当组件渲染过程中追踪到响应式依赖时调用。 |
 | onRenderTriggered() | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 注册一个调试钩子，当响应式依赖的变更触发了组件渲染时调用。 |
@@ -3552,8 +3552,8 @@ export default {
 | defineExpose() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 | defineOptions() | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 | defineSlots() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
-| useSlots() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 |
-| useAttrs() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.03 |
+| useSlots() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| useAttrs() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 | useRecycleState() | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 |
 
 
