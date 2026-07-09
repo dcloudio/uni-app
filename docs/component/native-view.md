@@ -8,9 +8,9 @@
 
  自定义原生View组件
 
-`native-view`自身没有渲染内容，开发者可以通过DOM API获取到`native-view`对应的原生view，然后提供平台原生view与`native-view`进行绑定，`native-view`将展示该view的渲染内容。
+`native-view`自身没有渲染内容，需要开发者监听 `@init` 事件，在此事件中创建平台原生view与 [UniNativeViewElement](../api/dom/uninativeviewelement.md) 进行绑定，`native-view`将展示该view的渲染内容。
 
-`<native-view>`组件是uni-app x下扩展原生组件（如map）的重要方式。事实上官方的map组件就是使用`<native-view>`开发的。详见下方的使用场景章节。
+`<native-view>`组件是uni-app x下扩展原生组件（如map）的重要方式。事实上官方的camera/map/web-view/video等组件就是使用`<native-view>`开发的。详见下方的使用场景章节。
 
 
 ### 兼容性
@@ -84,9 +84,10 @@ UniNativeViewInitEvent -- Extends --> UniCustomEvent&ltUniNativeViewInitEventDet
 	- android平台如果绑定的view设置了`setOnTouchListener`会导致touch部分全局事件失效
 + app平台`native-view`组件不支持自定义属性，使用[uts插件-标准模式组件-声明属性props](../plugin/uts-component-vue.md#组件声明属性props)实现自定义属性目的
 + app平台`native-view`组件不支持子组件
-+ android平台`native-view`组件不支持[list-item复用机制](list-item.md#list-item复用机制)，list-item其他子组件不受影响正常启动复用业务。
-+ android平台`native-view`组件不支持background、border、boxshadow属性
-+ android平台`native-view`组件不支持overflow属性设置visible，仅支持hidden
++ app平台`native-view`组件不支持渲染样式：[background](../css/background.md)、[border](../css/border.md)、[box-shadow](../css/box-shadow.md)
++ android平台`native-view`组件有以下限制
+  - android平台VDOM模式不支持[list-item复用机制](list-item.md#list-item复用机制)，list-item其他子组件不受影响正常启动复用业务  
+  - android平台verflow样式不支持visible，仅支持hidden
 
 ### 子组件 @children-tags
 不可以嵌套组件
