@@ -125,7 +125,7 @@ export default {
 
 
 ### 操作DOM元素对象
-获取DOM元素对象Elment后，可通过其属性或方法操作组件，完整API参考[UniElement对象文档](unielement.md)
+获取DOM元素对象Element后，可通过其属性或方法操作组件，完整API参考[UniElement对象文档](unielement.md)
 
 如通过UniElement对象的 style 属性更新组件的样式：
 ```ts

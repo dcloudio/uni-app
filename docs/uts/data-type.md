@@ -731,7 +731,7 @@ let utsDate = new Date(javaDate.getTime())
 
 ## 字节数组（ArrayBuffer）@arrayBuffer
 
-ArrayBuffer对象用来表示通用的原始二进制数据缓冲区。它是一个字节数组，通常在其他语言中称为byte array。你不能直接操作ArrayBuffer中的内容；而是要通过类型化数组对象对象来操作，它们会将缓冲区中的数据表示为特定的格式，并通过这些格式来读写缓冲区的内容。
+ArrayBuffer对象用来表示通用的原始二进制数据缓冲区。它是一个字节数组，通常在其他语言中称为byte array。你不能直接操作ArrayBuffer中的内容；而是要通过类型化数组对象来操作，它们会将缓冲区中的数据表示为特定的格式，并通过这些格式来读写缓冲区的内容。
 
 ### 定义字节数组
 
