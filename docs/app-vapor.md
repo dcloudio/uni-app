@@ -150,7 +150,7 @@ iOS选择了2台设备，一台为iPhone SE2(iOS26.5)，iOS设备不支持高刷
 | uni-app x蒸汽模式	|49.6		|
 | SwiftUI						|37.6		|
 
-| iPhone SE2 iOS26.5 高刷| 平均帧率	|
+| iPhone16PM(iOS26.5) 高刷| 平均帧率	|
 |---								|---:			|
 | uni-app x蒸汽模式	|111		|
 | SwiftUI						|49		|

@@ -662,9 +662,9 @@ App平台 web-view 组件可在 scroll-view、list-view/list-item 等可滚动�
 
 ### 上下文对象API
 
-web-view的操作api为[uni.createWebviewContext()](../api/create-webview-context.md)。
+web-view的操作api为[uni.createWebViewContext()](../api/create-webview-context.md)。
 
-给web-view组件设一个id属性，将id的值传入uni.createWebviewContext()，即可得到web-view组件的上下文对象，进一步可使用`.evalJS()`、`.reload()`等封装好的跨平台方法。
+给web-view组件设一个id属性，将id的值传入uni.createWebViewContext()，即可得到web-view组件的上下文对象，进一步可使用`.evalJS()`、`.reload()`等封装好的跨平台方法。
 
 #### 获取原生WebView对象@nativeview
 
