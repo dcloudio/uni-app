@@ -101,7 +101,7 @@
 - HarmonyOS 平台需要额外的配置，详见[HarmonyOS平台接入微信SDK](https://developers.weixin.qq.com/doc/oplatform/Mobile_App/Access_Guide/ohos.html)
   - 配置 queryScheme： `"querySchemes": ["weixin"]` **请勿配置 `wxopensdk`。已在 @tencent/wechat_open_sdk@1.0.15 实测配置 `wxopensdk` 后登录无法回调**
   - 配置 actions: `"actions": [ "action.system.home", "wxentity.action.open" ]`
-- 苹果审核规范要求，使用任何三方登录必须同时支持Apple登录
+- 根据apple审核要求，支持任何三方登录，必须同时支持Apple 登录功能，否则审核失败； 具体请参考[Apple App Review Guidelines - Login Services说明](https://developer.apple.com/app-store/review/guidelines/#design)
 :::
 
 <!-- UTSAPIJSON.login.example -->
@@ -130,11 +130,11 @@
 | -------------- | --------- | ---- | ------ | ------------------------------------- |
 | isWeChatInstalled     | boolean   | 是    | -      | 判断微信是否安装 |
 
-* UniOAuthAppleProvider(Apple 登录)继承自 [UniProvider](./provider.md#uniprovider)
+* UniOAuthAppleProvider(Sign in with Apple 登录)继承自 [UniProvider](./provider.md#uniprovider)
 
 ## 自定义登录provider接入到uni API @customprovider
 
-背景：目前uni-app x引擎已经内置了微信登录。但登录SDK还有很多，比如京东、支付宝登录。
+背景：目前uni-app x引擎已经内置了微信登录。但登录SDK还有很多，比如苹果登录、京东、支付宝登录。
 
 以往这些SDK可以通过独立插件的方式集成到uni-app x中，但需要提供单独的API给开发者使用。
 
@@ -218,7 +218,7 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
       }
    })
 ```
-- **app需要在根目录manifest.json文件中配置`uni-oauth`节点，详见 [https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-modules.html#uni-oauth模块配置](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-modules.html#uni-oauth)**
+- **app需要在根目录manifest.json文件中配置`uni-oauth`节点，详见 [uni-oauth模块配置](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-modules.html#uni-oauth)**
 - iOS平台微信登录、苹果登录均需要配置在根目录manifest.json文件中配置`uni-oauth`节点，并且只要支持任何三方登录，均需要同时支持苹果登录
 
 ## uni.getUserInfo(options) @getuserinfo
