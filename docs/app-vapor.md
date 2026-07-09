@@ -359,10 +359,11 @@ pages.json
   * 拍平时如下css不支持：
     + 不支持 [visibility](css/visibility.md)
     + 不支持 [z-index](css/z-index.md)
-    + 不支持 [background-image](css/background-image.md)
+    + 不支持 [background-image](css/background-image.md)、[background-clip](css/background-clip.md)
     + 不支持 [pointer-events](css/pointer-events.md)
     + [box-shadow](css/box-shadow.md) 不支持设置 inset 及 spreadRadius
     + [display](css/display.md) 为 fixed 时显示存在缺陷，无法覆盖其它非 fixed 的元素
+    + [transition](css/transform.md) 动画不支持渲染相关（如background-color）的样式
   * image组件拍平后无法播放动画，gif、webp动画仅显示第一帧
   * view组件拍平后css属性transform、overflow、display、opacity存在缺陷，如果view存在子元素，这些样式不会对非拍平的子元素产生效果
 
