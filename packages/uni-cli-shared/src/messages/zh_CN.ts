@@ -4,7 +4,7 @@ export default {
   'view.render.compiler.target.bytecode': '字节码',
   'view.render.compiler.target.nativecode': '机器码',
   'style.isolation.version':
-    '当前样式隔离策略：{version}。详见：https://doc.dcloud.net.cn/uni-app-x/css/common/style-isolation.html',
+    '当前样式隔离策略：{version}。推荐升级为 2.0 。详见：https://doc.dcloud.net.cn/uni-app-x/css/common/style-isolation.html',
   compiling: '正在编译中...',
   'dev.performance':
     '请注意运行模式下，因日志输出、sourcemap 以及未压缩源码等原因，性能和包体积，均不及发行模式。',
