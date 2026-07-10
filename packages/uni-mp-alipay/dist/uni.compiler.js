@@ -339,6 +339,7 @@ const options = {
     app: {
         darkmode: false,
         subpackages: true,
+        independentSubpackages: true,
         plugins: true,
         usingComponents: true,
         normalize(appJson) {
