@@ -15,15 +15,10 @@ function createStatusBarPlaceholderScript(height: number): string {
 
 			function shouldInsert(){
 				var pageHead=document.querySelector('.uni-page-head');
-				if(!pageHead){
-					// navigationStyle: "custom" does not render a uni-page-head.
-					return true;
-				}
-				if(!pageHead.getBoundingClientRect){
+				if(!pageHead || !pageHead.getBoundingClientRect){
 					return false;
 				}
-				// Pixel XL pageHead 高度为 44.000xxx，故判断小于45
-				return pageHead.getBoundingClientRect().height<45;
+				return pageHead.getBoundingClientRect().height<=44;
 			}
 
 			function apply(){
