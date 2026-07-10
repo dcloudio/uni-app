@@ -39,7 +39,7 @@
 
 ```html
 <list-view id="list-view" style="flex: 1; background-color: #f5f5f5;">
-  <sticky-section v-for="sectionId in 3" :id="sectionId" push-pinned-header=false>
+  <sticky-section v-for="sectionId in 3" :id="sectionId" push-pinned-header=false :preload="true">
     <sticky-header>
       <text style="padding: 20px; background-color: #f5f5f5;">sticky-header吸顶--{{sectionId}}</text>
     </sticky-header>
@@ -49,6 +49,12 @@
   </sticky-section>
 </list-view>
 ```
+
+#### preload属性说明
+
+> 仅app平台蒸汽模式支持
+
+preload属性用于控制sticky-section组件的预加载行为，默认值为false。设置为true时，sticky-section组件会在滚动到该section之前就进行渲染，从而避免或减少滚动到该section时出现空白或闪烁的情况。例如在index-bar这种直接跳转到某个section的场景下，设置preload为true可以提升用户体验。参考：[uni-ui-x index-bar示例](https://gitcode.com/dcloud/uni-ui-x/blob/dev/pages/uni-ui/index-bar/index-bar.uvue)
 
 #### 注意事项  
 
