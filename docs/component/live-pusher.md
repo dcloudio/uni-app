@@ -64,10 +64,8 @@
 | eye-bigness | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>自定义特效大眼效果，取值 0~1。需要开启 `custom-effect` |
 | fps | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>帧率，有效值为 1~30 |
 | @statechange | (event: [UniLivePusherStatechangeEvent](#unilivepusherstatechangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 播放状态变化事件，event.detail = {code, message} |
-| @statechange | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 播放状态变化事件，detail = {code} |
 | @error | (event: [UniLivePusherErrorEvent](#unilivepushererrorevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | 错误事件，event.detail = {errCode, errMsg} |
 | @netstatus | (event: [UniLivePusherNetstatusEvent](#unilivepushernetstatusevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 网络状态通知，event.detail = {videoBitrate, audioBitrate, videoFPS, videoGOP, netSpeed, videoWidth, videoHeight} |
-| @netstatus | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 网络状态通知，detail = {info} |
 | @bgmstart | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>背景音开始播放时触发 |
 | @bgmprogress | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>背景音进度变化时触发，detail = {progress, duration} |
 | @bgmcomplete | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>背景音播放完成时触发 |
