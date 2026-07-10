@@ -108,6 +108,9 @@ async function main() {
 
   const { stdout } = await run('git', ['diff'], { stdio: 'pipe' })
   if (stdout) {
+    if (!isDryRun && !(await confirmWorkingTreeBeforeCommit())) {
+      return
+    }
     step('\nCommitting changes...')
     await runIfNotDry('git', ['add', '-A'])
     await runIfNotDry('git', ['commit', '-m', `release: v${targetVersion}`])
@@ -212,6 +215,30 @@ async function pauseIfGitChangesChanged(previousSnapshot, message) {
     name: 'continue',
     message: 'Handle the git changes, then press Enter to continue',
   })
+}
+
+async function confirmWorkingTreeBeforeCommit() {
+  const { stdout } = await run('git', ['status', '--short'], {
+    stdio: 'pipe',
+  })
+  if (stdout) {
+    console.log(colors.yellow('\nGit changes to commit:'))
+    console.log(stdout)
+  }
+
+  const { confirmCommit } = await prompt({
+    type: 'confirm',
+    name: 'confirmCommit',
+    message: 'Confirm the working tree is ready to commit and continue release?',
+    initial: false,
+  })
+  if (confirmCommit) {
+    return true
+  }
+
+  console.log(colors.yellow('Release canceled before commit.'))
+  process.exitCode = 1
+  return false
 }
 
 async function publishPackage(pkgName, version, runIfNotDry) {
