@@ -1,19 +1,6 @@
-function isAndroidPad(windowInfo: GetWindowInfoResult): boolean {
-	const deviceInfo = uni.getDeviceInfo()
-	if (deviceInfo.deviceType == 'pad') {
-		return true
-	}
-
-	const minScreenSize = Math.min(windowInfo.screenWidth, windowInfo.screenHeight)
-	return minScreenSize >= 600
-}
-
-function getAndroidPadStatusBarHeight(): number {
+function getAndroidStatusBarHeight(): number {
 	const windowInfo = uni.getWindowInfo()
-	if (isAndroidPad(windowInfo)) {
-		return windowInfo.statusBarHeight
-	}
-	return 0
+	return windowInfo.statusBarHeight
 }
 
 function createStatusBarPlaceholderScript(height: number): string {
@@ -26,6 +13,14 @@ function createStatusBarPlaceholderScript(height: number): string {
 			var observer=null;
 			var observedBody=null;
 
+			function shouldInsert(){
+				var pageHead=document.querySelector('.uni-page-head');
+				if(!pageHead || !pageHead.getBoundingClientRect){
+					return false;
+				}
+				return pageHead.getBoundingClientRect().height<=44;
+			}
+
 			function apply(){
 				if(height<=0||document.body==null){
 					return false;
@@ -33,6 +28,13 @@ function createStatusBarPlaceholderScript(height: number): string {
 
 				var body=document.body;
 				var spacer=document.getElementById(id);
+				if(!shouldInsert()){
+					if(spacer!=null&&spacer.parentNode!=null){
+						spacer.parentNode.removeChild(spacer);
+					}
+					return false;
+				}
+
 				if(spacer==null){
 					spacer=document.createElement('div');
 					spacer.id=id;
@@ -93,13 +95,11 @@ function createStatusBarPlaceholderScript(height: number): string {
 	`
 }
 
-export function insertStatusBarPlaceholderForTablet(webview: WebViewContext | null): void {
+export function insertStatusBarPlaceholder(webview: WebViewContext | null): void {
 	if (webview == null) return
 	const webviewContext = webview as WebViewContext
 
-	const statusBarHeight = getAndroidPadStatusBarHeight()
-	if (statusBarHeight <= 0) return
-
+	const statusBarHeight = getAndroidStatusBarHeight()
 	const script = createStatusBarPlaceholderScript(statusBarHeight)
 	webviewContext.evalJS(script)
 }
