@@ -13,6 +13,25 @@
 | data-* | any | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 自定义属性，组件上触发的事件时，会发送给事件处理函数 |
 | android-* | any | Web: x; 微信小程序:  ; Android: 3.9; iOS: x; HarmonyOS: x | App-Android平台专有属性，详见[App-Android平台专有属性](https://doc.dcloud.net.cn/uni-app-x/component/common.html#attribute-android)章节 |
 
+####data-*@dataset
+
+从 5.21 起全平台 dataset 调整为 UniDOMStringMap 类型。
+
+支持能力：
+
+- 支持 Map 相关 API 操作，如 get、set、has 等。
+- 支持索引访问，如 dataset['foo']。
+- 支持点操作符访问，如 dataset.foo。
+
+注意：
+
+- dataset 赋值、修改操作仅影响 dataset 自身，不会写入 attribute 或底层原生节点属性。
+- 如果定义了 get、set、has 等与 Map 标准 API 冲突的 key，需要通过 Map API 获取数据值。例如 data-get 使用 dataset.get('get')，data-set 使用 dataset.get('set')；不支持通过索引或点操作符读取这些冲突 key 的数据值。
+- App 蒸汽模式不支持通过 UniElement.getAttribute 获取 data-*，仅支持通过 dataset 获取。
+- App 蒸汽模式目前仅支持在 uvue 中使用 dataset；uts 插件侧暂不支持获取 uvue/JS 层设置的 dataset。
+- 小程序平台仅支持通过事件 target/currentTarget 以及 createSelectorQuery、createIntersectionObserver 获取实际 dataset；通过 getElementById 无法获取到实际 dataset。
+
+
 
 
 ### App-Android平台专有属性@attribute-android
