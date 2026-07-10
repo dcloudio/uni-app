@@ -19,7 +19,7 @@
   import { applyWebViewSnapshotTextMetricsPatch } from '@/tools/webview-snapshot-text-metrics.uts'
   // #endif
   // #ifdef APP-ANDROID
-  import { insertStatusBarPlaceholderForTablet } from '@/tools/android-tablet-insert-status-bar-placeholder.uts'
+  import { insertStatusBarPlaceholder } from '@/tools/android-insert-status-bar-placeholder.uts'
   // #endif
 
   const instance = getCurrentInstance()!.proxy!
@@ -34,7 +34,7 @@
 
   // #ifdef APP-ANDROID
   const onWebviewLoad = () => {
-    insertStatusBarPlaceholderForTablet(webviewContext.value)
+    insertStatusBarPlaceholder(webviewContext.value)
   }
   onPageShow(() => {
     UniWebViewElement.enableWholeDraw()
