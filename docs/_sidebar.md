@@ -64,6 +64,8 @@
     * [原生联调](native/debug/harmony.md)
 * 小程序平台专题指南
   * [概述](mp/README.md)
+  * [AI 开发模式接入指南](mp/mp-weixin-ai-develop.md)
+  * [独立分包](mp/independent-subpackage.md)
 - 安全专题
   - [综述](tutorial/safe.md)
   - 客户端安全
