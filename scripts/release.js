@@ -56,8 +56,23 @@ async function main() {
   // run tests before release
   step('\nRunning tests...')
   if (!skipTests && !isDryRun) {
-    await run(bin('jest'), ['--clearCache'])
-    await run('pnpm', ['test', '--', '--bail'])
+    try {
+      await run(bin('jest'), ['--clearCache'])
+      await run('pnpm', ['test', '--', '--bail'])
+    } catch (err) {
+      console.error(colors.red(err.shortMessage || err.message))
+      const { continueBuild } = await prompt({
+        type: 'confirm',
+        name: 'continueBuild',
+        message: 'Tests failed. Continue with build?',
+        initial: false,
+      })
+      if (!continueBuild) {
+        console.log(colors.yellow('Release stopped because tests failed.'))
+        process.exitCode = 1
+        return
+      }
+    }
   } else {
     console.log(`(skipped)`)
   }
