@@ -74,7 +74,12 @@ async function main() {
       const gitignore = fs.readFileSync(path.join(__dirname, '../.gitignore'), 'utf-8')
       args = args.concat(targets.filter(target => gitignore.includes(`packages/${target}/dist`)))
     }
+    const gitChangesBeforeBuild = await getGitChangesSnapshot()
     await run('pnpm', args)
+    await pauseIfGitChangesChanged(
+      gitChangesBeforeBuild,
+      'Git changes detected after build.'
+    )
     // test generated dts files
     step('\nVerifying type declarations...')
     await run('pnpm', ['run', 'test-dts'])
@@ -161,6 +166,36 @@ function updateDeps(pkg, depType, version) {
       )
       deps[dep] = version
     }
+  })
+}
+
+async function getGitChangesSnapshot() {
+  const [{ stdout: diff }, { stdout: status }] = await Promise.all([
+    run('git', ['diff', 'HEAD', '--binary'], { stdio: 'pipe' }),
+    run('git', ['status', '--porcelain', '--untracked-files=all'], {
+      stdio: 'pipe',
+    }),
+  ])
+  return `${diff}\n${status}`
+}
+
+async function pauseIfGitChangesChanged(previousSnapshot, message) {
+  const currentSnapshot = await getGitChangesSnapshot()
+  if (currentSnapshot === previousSnapshot) {
+    return
+  }
+
+  const { stdout } = await run('git', ['status', '--short'], {
+    stdio: 'pipe',
+  })
+  console.log(colors.yellow(message))
+  if (stdout) {
+    console.log(stdout)
+  }
+  await prompt({
+    type: 'input',
+    name: 'continue',
+    message: 'Handle the git changes, then press Enter to continue',
   })
 }
 
