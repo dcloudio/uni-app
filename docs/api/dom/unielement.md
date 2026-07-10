@@ -13,8 +13,8 @@
 ### UniElement 的属性值 @unielement-values
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | string | 是 |  | Web: x; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS 系统版本: 12; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 只读属性，当前元素的标识符 |
-| isConnected | boolean | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS 系统版本: 12; HarmonyOS: 4.61 | 只读属性，当前元素是否与 DOM 树连接 |
+| id | string | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 只读属性，当前元素的标识符 |
+| isConnected | boolean | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素是否与 DOM 树连接 |
 | attributes | Map\<string, any> | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素上所有属性元素的集合 |
 | classList | Array&lt;string&gt; | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS:   | 只读属性，当前元素 class 属性的动态集合 |
 | dataset | any | 是 |  | Web: 4.0; 微信小程序: 4.41 仅在event对象内的target上可用; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 | 只读属性，当前元素上自定义数据属性（data-*）的集合 |
@@ -33,11 +33,11 @@
 | scrollLeft | number | 是 |  | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 获取或修改当前元素横向滚动的逻辑像素值，仅scroll-view、list-view等可滚动组件支持，其他组件修改无效、获取时返回 0 |
 | scrollTop | number | 是 |  | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 获取或修改当前元素竖向滚动逻辑像素值，仅scroll-view、list-view可滚动组件组件支持，其他组件修改无效、获取时返回 0 |
 | tagName | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，获取当前元素的标签名 |
-| uniPage | [UniPage](/api/unipage.md) | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: x; HarmonyOS 系统版本: 12; HarmonyOS: 4.61 | 只读属性，当前元素所属的页面对象 |
+| uniPage | [UniPage](/api/unipage.md) | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 | 只读属性，当前元素所属的页面对象 |
 | innerHTML | string | 是 |  | Web: x; 微信小程序: x; Android: 4.84; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 只读属性，当前元素内部所有子元素（不包括注释节点）的 HTML 内容 |
 
 
-####dataset@dataset
+#### dataset@dataset
 
 从 5.21 起全平台 dataset 调整为 UniDOMStringMap 类型。[详情](https://doc.dcloud.net.cn/uni-app-x/component/common.html#dataset)
 
