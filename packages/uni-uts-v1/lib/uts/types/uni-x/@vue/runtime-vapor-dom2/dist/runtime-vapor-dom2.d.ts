@@ -481,23 +481,6 @@ export declare function toSharedDataScrollViewAssociativeContainer(value: string
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/types/common.d.ts
 export declare function toVueForItemKey(key: any): string | number;
-export type TeleportRawPropGetters = {
-  /**
-  * 支持字符串选择器或 UniElement 对应的 @nodeId 字符串；undefined 会被视为 null。
-  * @returns
-  */
-  to?: () => string | null;
-  /**
-  * js层会强制转换为布尔值
-  * @returns
-  */
-  disabled?: () => boolean;
-  /**
-  * js层会强制转换为布尔值
-  * @returns
-  */
-  defer?: () => boolean;
-};
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/types/element.d.ts
 export declare function getCurrentElementVaporComponentInstance(): VaporSharedDataComponentInstance | null;
@@ -512,7 +495,7 @@ export declare function childElement(node: UniElement): UniElement;
 export declare function createElementComponent<S extends UniSharedDataComponent>(sharedData?: S | null, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean | null, appContext?: GenericAppContext): VaporSharedDataComponentInstance;
 export declare function createElementComponentWithFallback<S extends UniSharedDataComponent>(page: UniPage, sharedData?: S | null, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean): VaporSharedDataComponentInstance;
 export declare function createElementDynamicComponent(page: UniPage, getter: () => any, rawProps?: RawProps | null, rawSlots?: RawSlots | null, isSingleRoot?: boolean): VaporFragment;
-export declare function createElementTeleport(page: UniPage, props?: TeleportRawPropGetters | null, children?: BlockFn | null): VaporFragment;
+export declare function createElementTeleport(page: UniPage, props: VueElementCreateTeleportProps, children?: BlockFn | null): VaporFragment;
 export declare function withElementVaporCtx(fn: Function): BlockFn;
 export declare function createElementSlot(page: UniPage, name: string | (() => string), getSlotProps?: (() => UniSharedData | null) | null, fallback?: VaporSlot): Block;
 export declare function createElementFor<Source extends UniSharedData>(page: UniPage, src: () => UniSharedDataVFor<Source> | string | number, renderItem: (shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index: number | undefined) => void, getKey?: ((shareDataVForItem: Source, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) | null, flags?: number, setup?: (_: {
@@ -596,7 +579,7 @@ export declare function getNativeViewInsertionParent(): UniNativeBaseView | null
 export declare function createNativeViewComponent<S extends UniSharedDataComponent>(sharedData?: S | null, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean | null, appContext?: GenericAppContext): VaporSharedDataComponentInstance;
 export declare function createNativeViewComponentWithFallback<S extends UniSharedDataComponent>(page: UniPage, sharedData?: S | null, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean): VaporSharedDataComponentInstance;
 export declare function createNativeViewDynamicComponent(page: UniPage, getter: () => any, rawProps?: RawProps | null, rawSlots?: RawSlots | null, isSingleRoot?: boolean): VaporFragment;
-export declare function createNativeViewTeleport(page: UniPage, props?: TeleportRawPropGetters | null, children?: BlockFn | null): VaporFragment;
+export declare function createNativeViewTeleport(page: UniPage, props: VueNativeViewCreateTeleportProps, children?: BlockFn | null): VaporFragment;
 export declare function setNativeViewDynamicProps(component: UniSharedDataComponent, view: UniNativeBaseView, args: UniSharedDataJSONObject): void;
 export declare function withNativeViewVaporCtx(fn: Function): BlockFn;
 export declare function createNativeViewSlot(page: UniPage, name: string | (() => string), getSlotProps?: (() => UniSharedData | null) | null, fallback?: VaporSlot): Block;
