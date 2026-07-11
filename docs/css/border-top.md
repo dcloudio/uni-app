@@ -63,6 +63,14 @@ border-top: <line-width> || <line-style> || <color>;
         </view>
       </view>
 
+      <view>
+        <text>border-top: 6rpx dashed #0000ff80</text>
+        <view class="demo-box">
+          <view class="common" style="border-top: 6rpx dashed #0000ff80;"></view>
+          <view class="common" style="border-top: 6rpx dashed #0000ff80;" flatten></view>
+        </view>
+      </view>
+
       <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
 
       <view class="demo-box">
@@ -162,7 +170,8 @@ border-top: <line-width> || <line-style> || <color>;
     { value: 1, name: 'none' },
     { value: 2, name: '1px solid cyan' },
     { value: 3, name: '2px dashed blue' },
-    { value: 4, name: '3px dotted yellow' }
+    { value: 4, name: '3px dotted yellow' },
+    { value: 5, name: '8rpx dashed #0000ff80' }
   ]
 
   const data = reactive({

@@ -373,6 +373,9 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
         <!-- #ifdef APP-HARMONY -->
         <button type="primary" @click="hwLogin">华为登录</button>
         <!-- #endif -->
+        <!-- #ifdef APP-IOS -->
+        <button type="primary" @click="appleLogin">Apple 登录</button>
+        <!-- #endif -->
         <button class="uni-common-mt" type="primary" @click="wxLogin">微信登录</button>
         <button class="uni-common-mt" @click="clear">清空</button>
       </view>
@@ -395,6 +398,15 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
     testUserInfo.value = null
     logging.value = false
   }
+
+  // #ifdef APP-IOS
+  const appleLogin = () => {
+    uni.navigateTo({
+      url: '/pages/API/oauth/oauth-apple'
+    })
+  }
+  // #endif
+
 
   const hwLogin = () => {
     logging.value = true

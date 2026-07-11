@@ -158,7 +158,6 @@ background-color: <color>;
           <text class="common" style="background-color: #0000ff80" flatten>文字内容</text>
         </view>
       </view>
-
       <view class="uni-common-mt">
         <text class="uni-title-text">image 组件 background-color </text>
       </view>
@@ -194,7 +193,6 @@ background-color: <color>;
           <image class="common-image" style="background-color: #0000ff80" flatten></image>
         </view>
       </view>
-
       <view>
         <text>background-color: yellow \n (有src时，背景色在图片加载失败或透明区域显示)</text>
         <view class="demo-box">
@@ -322,10 +320,11 @@ background-color: <color>;
     { value: 0, name: '' },
     { value: 1, name: 'green' },
     { value: 2, name: '#88abf0' },
-    { value: 3, name: 'rgb(0, 255, 0)' },
-    { value: 4, name: 'rgba(0, 255, 0, 0.5)' },
-    { value: 5, name: '#ddd' },
-    { value: 6, name: 'transparent' }
+    { value: 3, name: '#00f8' },
+    { value: 4, name: '#0000ff80' },
+    { value: 5, name: 'rgb(0, 255, 0)' },
+    { value: 6, name: 'rgba(0, 255, 0, 0.5)' },
+    { value: 7, name: '#ddd' }
   ]
 
   const getPropertyValues = () => {

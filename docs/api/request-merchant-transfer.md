@@ -116,12 +116,15 @@ uni.requestMerchantTransfer 是​商家转账到用户零钱的API，适用于�
 
   const getBundleId = (): string | null => {
     let baseInfo = uni.getAppBaseInfo();
-    let bundleId : string | null;
+    let bundleId: string | null = null;
     // #ifdef APP-ANDROID
     bundleId = baseInfo.packageName;
     // #endif
     // #ifdef APP-IOS
     bundleId = baseInfo.bundleId;
+    // #endif
+    // #ifdef APP-HARMONY
+    bundleId = baseInfo.bundleName;
     // #endif
     // #ifdef MP-WEIXIN
     bundleId = uni.getAccountInfoSync().miniProgram.appId;

@@ -101,6 +101,21 @@ border-color: <color>{1,4};
           <view class="common" style="border-width: 5px; border-color: rgba(0,255,255,0.5); border-style: solid;" flatten></view>
         </view>
       </view>
+      <view>
+        <text>border-color: #00f8</text>
+        <view class="demo-box">
+          <view class="common" style="border-width: 5px; border-color: #00f8; border-style: solid;"></view>
+          <view class="common" style="border-width: 5px; border-color: #00f8; border-style: solid;" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-color: #0000ff80</text>
+        <view class="demo-box">
+          <view class="common" style="border-width: 5px; border-color: #0000ff80; border-style: solid;"></view>
+          <view class="common" style="border-width: 5px; border-color: #0000ff80; border-style: solid;" flatten></view>
+        </view>
+      </view>
 
       <view>
         <text>border-left-color: cyan</text>
@@ -232,9 +247,10 @@ border-color: <color>{1,4};
     { value: 0, name: '' },
     { value: 1, name: 'blue' },
     { value: 2, name: '#0000ff' },
-    { value: 3, name: 'rgb(0, 0, 255)' },
-    { value: 4, name: 'rgba(0, 0, 255, 0.5)' },
-    { value: 5, name: 'transparent' }
+    { value: 3, name: '#00f8' },
+    { value: 4, name: '#0000ff80' },
+    { value: 5, name: 'rgb(0, 0, 255)' },
+    { value: 6, name: 'rgba(0, 0, 255, 0.5)' }
   ]
 
   const data = reactive({

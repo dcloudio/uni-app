@@ -143,6 +143,22 @@ box-shadow: none | <shadow>#;
       </view>
 
       <view>
+        <text>box-shadow: 5rpx 5rpx 5rpx #0000ff80</text>
+        <view class="row-container">
+          <view class="row-item">
+            <view class="backgroundview-rect">
+              <view class="common-rect" style="box-shadow: 5rpx 5rpx 5rpx #0000ff80"></view>
+            </view>
+          </view>
+          <view class="row-item">
+            <view class="backgroundview-rect">
+              <view class="common-rect" style="box-shadow: 5rpx 5rpx 5rpx #0000ff80" flatten></view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view>
         <text>box-shadow: 5px 5px 5px black</text>
         <view class="row-container">
           <view class="row-item">
@@ -718,6 +734,8 @@ box-shadow: none | <shadow>#;
     { value: 5, name: '5px 5px 5px 5px black' },
     { value: 6, name: '-5px -5px 5px black' },
     { value: 7, name: '0px 1px 3px rgba(0,0,0,0.4)' },
+    { value: 8, name: '5rpx 5rpx 5rpx #0000ff80' },
+    { value: 9, name: '2rpx 4rpx #00f8' },
   ]
 
   const getPropertyValues = (value: string) => {

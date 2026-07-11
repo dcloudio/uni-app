@@ -69,6 +69,8 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
       <text class="text" style="text-shadow: 5px 10px;">text-shadow: 5px 10px</text>
       <text class="text" style="text-shadow: 1px 2px 4px rgb(34, 202, 43);">text-shadow: 1px 2px 4px rgb(34, 202, 43)</text>
       <text class="text" style="text-shadow: 2px 4px rgba(202, 207, 17, 0.5);">text-shadow: 2px 4px rgba(202, 207, 17, 0.5)</text>
+      <text class="text" style="text-shadow: 1rpx 2rpx 4rpx #00f8;">text-shadow: 1rpx 2rpx 4rpx #00f8</text>
+      <text class="text" style="text-shadow: 2px 4px #0000ff80;">text-shadow: 2px 4px #0000ff80</text>
 
       <text class="uni-title-text">【拍平版本】</text>
       <text class="text" style="text-shadow: 1px 1px 2px pink;" flatten>text-shadow: 1px 1px 2px pink</text>
@@ -78,6 +80,8 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
       <text class="text" style="text-shadow: 5px 10px;" flatten>text-shadow: 5px 10px</text>
       <text class="text" style="text-shadow: 1px 2px 4px rgb(34, 202, 43);" flatten>text-shadow: 1px 2px 4px rgb(34, 202, 43)</text>
       <text class="text" style="text-shadow: 2px 4px rgba(202, 207, 17, 0.5);" flatten>text-shadow: 2px 4px rgba(202, 207, 17, 0.5)</text>
+      <text class="text" style="text-shadow: 1rpx 2rpx 4rpx #00f8;" flatten>text-shadow: 1rpx 2rpx 4rpx #00f8</text>
+      <text class="text" style="text-shadow: 2px 4px #0000ff80;" flatten>text-shadow: 2px 4px #0000ff80</text>
 
       <view class="uni-common-mt">
         <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
@@ -127,7 +131,9 @@ text-shadow: none | [ <color>? && <length>{2,3} ]#;
     { value: 4, name: 'cyan 2px 5px' },
     { value: 5, name: '5px 10px' },
     { value: 6, name: '1px 2px 4px rgb(34, 202, 43)' },
-    { value: 7, name: '2px 4px rgba(202, 207, 17, 0.5)' }
+    { value: 7, name: '2px 4px rgba(202, 207, 17, 0.5)' },
+    { value: 8, name: '4rpx 8rpx #0000ff80' },
+    { value: 9, name: '2rpx 4rpx 8rpx #00f8' }
   ]
 
   const data = reactive({

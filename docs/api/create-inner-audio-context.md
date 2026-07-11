@@ -1080,7 +1080,7 @@ offSeeked
     </view>
     <view style="padding: 16px 8px;">
       <text>1. uni.setInnerAudioOption需要与uni.createInnerAudioContext搭配才会生效 \n </text>
-      <text>2. 设置mixWithOther为true时，会暂停其他App的音频和背景音频 \n</text>
+      <text>2. 设置mixWithOther为false时，会暂停其他App的音频和背景音频 \n</text>
       <text>3. speakerOn参数：Android不支持在播放音频的过程中切换为扬声器播放，iOS支持播放状态时动态切换 \n</text>
       <text>4. obeyMuteSwitch参数：仅支持iOS</text>
     </view>

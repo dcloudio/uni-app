@@ -89,6 +89,14 @@ border: <line-width> || <line-style> || <color>;
       </view>
 
       <view>
+        <text>border: 6rpx dashed #00f8</text>
+        <view class="demo-box">
+          <view class="common" style="border: 6rpx dashed #00f8;"></view>
+          <view class="common" style="border: 6rpx dashed #00f8;" flatten></view>
+        </view>
+      </view>
+
+      <view>
         <text>设置border的view，通过v-show控制显示</text>
         <view v-show="shown" class="demo-box">
           <view class="common" style="border: 5px dotted blue;"></view>
@@ -217,7 +225,9 @@ border: <line-width> || <line-style> || <color>;
     { value: 1, name: 'none' },
     { value: 2, name: '1px solid purple' },
     { value: 3, name: '2px dashed blue' },
-    { value: 4, name: '3px dotted green' }
+    { value: 4, name: '3px dotted green' },
+    { value: 5, name: '6rpx dashed #00f8' },
+    { value: 6, name: '8rpx solid #0000ff80' }
   ]
 
   const data = reactive({

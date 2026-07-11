@@ -217,6 +217,7 @@
 		iosSpinner : boolean;
 	}
 
+
 	const data = reactive({
 		title: 'loading',
 		items: [
@@ -243,13 +244,19 @@
 		return uni.getWindowInfo();
 	}
 
+	const selectTitle = (index : number) => {
+		if (index < 0 || index >= data.items.length) {
+			return
+		}
+		data.current = index
+		data.titleSelect = data.items[index].value
+	}
+
 	const radioChange = (e : UniRadioGroupChangeEvent) => {
-		const selected = data.items.find((item) : boolean => {
+		const selectedIndex = data.items.findIndex((item) : boolean => {
 			return item.value == e.detail.value
 		})
-		if (selected != null) {
-			data.titleSelect = selected.value
-		}
+		selectTitle(selectedIndex)
 	}
 
 	const iosSpinnerChange = (e : UniSwitchChangeEvent) => {
@@ -387,6 +394,7 @@
 		hideLoading,
     closeSomeLoading,
     noParamLoading,
+    selectTitle,
 	})
 </script>
 

@@ -80,10 +80,12 @@ font-size: <absolute-size> | <relative-size> | <length-percentage>;
         <view class="common">
           <text ref="text" :style="{'font-size': data.fontSize}">font-size: {{data.fontSize}}</text>
           <text style="font-size: 30px;">font-size: 30px</text>
+          <text style="font-size: 20rpx;">font-size: 20rpx</text>
         </view>
         <view class="common">
           <text ref="text" :style="{'font-size': data.fontSize}" flatten>font-size: {{data.fontSize}}</text>
           <text style="font-size: 30px;" flatten>font-size: 30px</text>
+          <text style="font-size: 20rpx;" flatten>font-size: 20rpx</text>
         </view>
       </view>
 

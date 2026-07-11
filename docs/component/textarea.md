@@ -396,12 +396,7 @@ if (view != null && view instanceof UITextView) {
 
   const textarea_input = (e: UniInputEvent) => {
     console.log("当键盘输入时，触发 input 事件，event.detail = {value, cursor}， @input 处理函数的返回值并不会反映到 textarea 上")
-    // #ifdef WEB
-    data.jest_result = e.detail.value == '11\n2\n3\n4\n5\n6'
-    // #endif
-    // #ifdef APP
     data.jest_result = e.detail.value == '1\n2\n3\n4\n5\n61'
-    // #endif
   }
 
   const textarea_linechange = () => { console.log("输入框行数变化时调用，event.detail = {height: 0, height: 0, lineCount: 0}") }

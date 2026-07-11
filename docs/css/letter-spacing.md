@@ -79,12 +79,14 @@ letter-spacing: normal | <length>;
         <text class="common">letter-spacing</text>
         <text class="common" style="letter-spacing: 5px;">letter-spacing: 5px</text>
         <text class="common" style="letter-spacing: -2px;">letter-spacing: -2px</text>
+        <text class="common" style="letter-spacing: 4rpx;">letter-spacing: 4rpx</text>
       </view>
       <text class="uni-title-text">拍平</text>
       <view class="box">
         <text class="common">letter-spacing</text>
         <text class="common" style="letter-spacing: 5px;" flatten>letter-spacing: 5px</text>
         <text class="common" style="letter-spacing: -2px;" flatten>letter-spacing: -2px</text>
+        <text class="common" style="letter-spacing: 4rpx;" flatten>letter-spacing: 4rpx</text>
       </view>
 
       <view class="uni-common-mt">
@@ -134,7 +136,9 @@ letter-spacing: normal | <length>;
 		{ value: 3, name: '-2px' },
 		{ value: 4, name: '2px' },
 		{ value: 5, name: '5px' },
-		{ value: 6, name: '10px' }
+		{ value: 6, name: '10px' },
+		{ value: 7, name: '2rpx' },
+		{ value: 8, name: '10rpx' }
 	]
 
 	const data = reactive({

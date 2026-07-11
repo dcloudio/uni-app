@@ -73,6 +73,8 @@ color: <color>;
           <text class="common" style="color: rgba(0, 0, 255, 0.5);">color: rgba(0, 0, 255, 0.5)</text>
           <text class="common" style="color: #0000ff;">color: #0000ff</text>
           <text class="common" style="color: #00f;">color: #00f</text>
+          <text class="common" style="color: #00f8;">color: #00f8</text>
+          <text class="common" style="color: #0000ff80;">color: #0000ff80</text>
           <text class="common" style="color: blue;">color: blue</text>
         </view>
         <view class="box">
@@ -80,6 +82,8 @@ color: <color>;
           <text class="common" style="color: rgba(0, 0, 255, 0.5);" flatten>color: rgba(0, 0, 255, 0.5)</text>
           <text class="common" style="color: #0000ff;" flatten>color: #0000ff</text>
           <text class="common" style="color: #00f;" flatten>color: #00f</text>
+          <text class="common" style="color: #00f8;" flatten>color: #00f8</text>
+          <text class="common" style="color: #0000ff80;" flatten>color: #0000ff80</text>
           <text class="common" style="color: blue;" flatten>color: blue</text>
         </view>
       </view>
@@ -130,8 +134,10 @@ color: <color>;
     { value: 2, name: '#942192' },
     { value: 3, name: '#000' },
     { value: 4, name: '#0000ff' },
-    { value: 5, name: 'rgb(0, 255, 0)' },
-    { value: 6, name: 'rgba(0, 255, 0, 0.5)' }
+    { value: 5, name: '#00f8' },
+    { value: 6, name: '#0000ff80' },
+    { value: 7, name: 'rgb(0, 255, 0)' },
+    { value: 8, name: 'rgba(0, 255, 0, 0.5)' }
   ]
 
   const data = reactive({
@@ -190,7 +196,7 @@ color: <color>;
   }
   .box{
     flex:1;
-    height: 130px;
+    height: 190px;
     background-color: gray;
     justify-content: center;
     align-items: center;

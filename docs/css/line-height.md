@@ -95,12 +95,14 @@ Web平台 无单位 和em单位在line-height样式继承自父元素时存在�
         <text class="common" style="line-height: 75px;">line-height: 75px</text>
         <text class="line-height-3 common">line-height: 3</text>
         <text class="common" style="line-height: 3em;">line-height: 3em</text>
+        <text class="common" style="line-height: 50rpx;">line-height: 50rpx</text>
         <text class="common" style="line-height: 3;">line-height: 3\nline-height: 3\nline-height: 3</text>
       </view>
       <view class="box">
         <text class="common" style="line-height: 75px;" flatten>line-height: 75px</text>
         <text class="line-height-3 common" flatten>line-height: 3</text>
         <text class="common" style="line-height: 3em;" flatten>line-height: 3em</text>
+        <text class="common" style="line-height: 50rpx;" flatten>line-height: 50rpx</text>
         <text class="common" style="line-height: 3;" flatten>line-height: 3\nline-height: 3\nline-height: 3</text>
       </view>
     </view>

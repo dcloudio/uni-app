@@ -734,7 +734,7 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
     objectFit: "contain",
     objectFitItemTypes: [{ "value": 0, "name": "contain(包含)" }, { "value": 1, "name": "fill(填充)" }, { "value": 2, "name": "cover(覆盖)" }],
     objectFitItems: ["contain", "fill", "cover"],
-    poster: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-android.png",
+    poster: "https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/video/video-poster.jpg",
     showMuteBtn: false,
     title: "video-component",
     enablePlayGesture: false,
@@ -811,6 +811,10 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
     uni.closeDialogPage({
       dialogPage: data.dialogPageVideo
     })
+  }
+
+  const getDialogPageVideoFullscreenBtnRect = (): DOMRect | null => {
+    return data.dialogPageVideo?.getElementById('fullscreen-btn')?.getBoundingClientRect() ?? null;
   }
 
   // API
@@ -1318,7 +1322,8 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
     closeDialogPageVideo,
     getWindowInfo,
     getVideoRect,
-    continuousSendDanmu
+    continuousSendDanmu,
+    getDialogPageVideoFullscreenBtnRect
   })
 </script>
 

@@ -72,7 +72,6 @@ editor组件有上下文对象，api为[uni.createEditorContextAsync()](../api/c
       </view>
 
       <view class="preview-state-row">
-        <text class="preview-state-text">keyboard height: {{ Math.floor(data.keyboardHeight) }}</text>
         <view v-if="showLogs">
           <text class="preview-state-text">X: {{ data.editorX }}</text>
           <text class="preview-state-text">Y: {{ data.editorY }}</text>
@@ -122,9 +121,11 @@ editor组件有上下文对象，api为[uni.createEditorContextAsync()](../api/c
         <view class="preview-toolbar-item" @tap="blurEditor">
           <text class="preview-toolbar-icon iconfont">{{"&#xe69a;"}}</text>
         </view>
+        <!-- #ifndef MP -->
         <view class="preview-toolbar-item" @tap="insertMention">
           <text class="preview-toolbar-icon iconfont">@</text>
         </view>
+        <!-- #endif -->
       </view>
     </view>
 
@@ -223,8 +224,8 @@ type EditorPropsPageData = {
   editorY: number
   editorWidth: number
   editorHeight: number
-  keyboardHeight: number
-  keyboardHeightChangeCount: number
+  insertImageWidth: number
+  insertImageHeight: number
 }
 
 const SAMPLE_TEXT = '这是 editor 示例文本。你可以继续输入内容，也可以滚动下方属性区实时调整 editor 状态。'
@@ -264,8 +265,8 @@ const initialData: EditorPropsPageData = {
   editorY: 0,
   editorWidth: 0,
   editorHeight: 0,
-  keyboardHeight: 0,
-  keyboardHeightChangeCount: 0
+  insertImageWidth: 0,
+  insertImageHeight: 0
 }
 
 const data = reactive<EditorPropsPageData>(initialData)
@@ -342,6 +343,7 @@ function rebuildEditor() {
 }
 
 function updateEditorRect() {
+  // #ifndef MP
   const editorElement = uni.getElementById('editor-props-demo')
   const editorRect = editorElement?.getBoundingClientRect()
   if (editorRect != null) {
@@ -354,6 +356,18 @@ function updateEditorRect() {
     data.editorY += systemInfo.safeAreaInsets.top + 44
     // #endif
   }
+  // #endif
+  // #ifdef MP
+  wx.createSelectorQuery().select('#editor-props-demo').boundingClientRect(function(editorRect){
+    data.editorX = editorRect.top
+    data.editorY = editorRect.left
+    data.editorWidth = editorRect.width
+    data.editorHeight = editorRect.height
+
+    const windowInfo = uni.getWindowInfo()
+    data.editorY += windowInfo.safeAreaInsets.top + 44
+  }).exec()
+  // #endif
 }
 
 function onEditorReady() {
@@ -397,18 +411,6 @@ function onStatusChange(event: UniEditorStatusChangeEvent) {
   appendLog('statuschange', data.statusSummary)
 }
 
-onLoad(() => {
-  uni.onKeyboardHeightChange((res) => {
-    data.keyboardHeight = res.height
-    data.keyboardHeightChangeCount += 1
-    appendLog('keyboard', `height => ${res.height}`)
-  })
-})
-
-onUnload(() => {
-  uni.offKeyboardHeightChange()
-})
-
 function insertSampleText() {
   data.editorCtx?.insertText({
     text: SAMPLE_TEXT,
@@ -418,15 +420,31 @@ function insertSampleText() {
   })
 }
 
-function insertSampleImage() {
+const src = 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png'
+function insertImage() {
   data.editorCtx?.insertImage({
-    src: 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png',
+    src,
     alt: '示例图片',
     success: () => {
       appendLog('action', '已插入示例图片，请点击图片验证 show-img-*')
     },
     fail: () => {
       appendLog('error', '插入示例图片失败')
+    }
+  })
+}
+function insertSampleImage() {
+  uni.getImageInfo({
+    src,
+    success(res) {
+      console.log('res: ',res);
+      data.insertImageWidth = res.width
+      data.insertImageHeight = res.height
+      appendLog('network', `图片加载成功: ${summarizeText(src)}`)
+      insertImage()
+    },
+    fail() {
+      insertImage()
     }
   })
 }
@@ -486,12 +504,23 @@ function blurEditor() {
 
 function hideKeyboardForTest() {
   uni.hideKeyboard()
-  data.keyboardHeight = 0
   appendLog('keyboard', '已请求隐藏键盘')
 }
 
 function clearLogs() {
   data.logs.splice(0, data.logs.length)
+}
+
+function testSetContentsHtml() {
+  data.editorCtx?.setContents({
+    html: '<p style="text-align:center;"><strong>Hello,uni-app x</strong></p><p>editor的setContents接口示例</p>',
+    success: () => {
+      appendLog('action', '成功设置富文本内容')
+    },
+    fail: (error: any) => {
+      appendLog('error', `setContents fail: ${JSON.stringify(error)}`)
+    }
+  })
 }
 
 defineExpose({
@@ -513,7 +542,8 @@ defineExpose({
   clearEditor,
   blurEditor,
   hideKeyboardForTest,
-  updateEditorRect
+  updateEditorRect,
+  testSetContentsHtml
 })
 </script>
 

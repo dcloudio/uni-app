@@ -63,6 +63,14 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
       </view>
 
       <view>
+        <text>border-radius: 10rpx</text>
+        <view class="demo-box">
+          <view class="common" style="border-radius: 10rpx;"></view>
+          <view class="common" style="border-radius: 10rpx;" flatten></view>
+        </view>
+      </view>
+
+      <view>
         <text>border-radius: 10% 和阴影</text>
         <view class="demo-box" style="height: 60px;">
           <view class="common" style="border-radius: 10%;box-shadow: 5px 5px rgba(0, 0, 0, .3);"></view>
@@ -307,8 +315,10 @@ border-radius: <length-percentage>{1,4} [ / <length-percentage>{1,4} ]?;
     { value: 1, name: '0' },
     { value: 2, name: '5px' },
     { value: 3, name: '20px' },
-    { value: 4, name: '0%' },
-    { value: 5, name: '50%' }
+    { value: 4, name: '10rpx' },
+    { value: 5, name: '0%' },
+    { value: 6, name: '50%' },
+    { value: 7, name: '100%' }
   ]
 
   const data = reactive({
