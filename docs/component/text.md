@@ -1242,7 +1242,7 @@ App 端不支持 `text` 组件中渲染多段文本，如果 `text` 组件中的
 
 ## max-lines
 
-多行文本设置最大行，目前在web规范中，需使用临时规范-webkit-line-clamp，并搭配display: -webkit-box。\
+多行文本设置最大行，目前在web规范中，需使用临时规范-webkit-line-clamp，并搭配display: -webkit-box。
 
 App平台在VDOM模式时使用了自定义的css属性lines，在蒸汽模式下改成了text的max-lines组件属性。
 

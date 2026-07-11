@@ -791,9 +791,8 @@ VDOM模式下，app平台list-view仅对渲染层复用，不会对vue数据层�
 
 ## 示例代码
 
-- 联网联表：[hello uni-app x 的 /pages/template/list-news/list-news.uvue](https://gitcode.com/dcloud/hello-uni-app-x/blob/master/pages/template/list-news/list-news.uvue)
+- 联网联表：[hello uni-app x 的 /pages/template/news-feed-list/news-feed-list.uvue](https://gitcode.com/dcloud/hello-uni-app-x/blob/master/pages/template/news-feed-list/news-feed-list.uvue)
 - 可左右滑动的多个列表：[hello uni-app x 的 /pages/template/long-list](https://gitcode.com/dcloud/hello-uni-app-x/tree/master/pages/template/long-list)
-- 分批加载列表：[hello uni-app x 的 /pages/template/long-list-batch/long-list-batch.uvue](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/template/batch-load-long-list/batch-load-long-list.uvue)
 
 ### Bug & Tips@tips
 

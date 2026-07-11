@@ -89,6 +89,10 @@ if (view != null && view instanceof UIView) {
 
 更多示例请参考 uts 插件 [uts-get-native-view](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/uni_modules/uts-get-native-view/utssdk/app-ios/index.uts)
 
+注意：
+- 鸿蒙平台蒸汽模式无法获取到原生view对象
+- 设置flatten属性后，无法获取原生view对象
+
 ### 子组件 @children-tags
 支持所有组件
 

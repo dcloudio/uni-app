@@ -109,9 +109,9 @@ UniImageLoadEvent -- Extends --> UniEvent
 | ICO			| √										| √													| √					|																							|
 | JPG			| √										| √													| √					|																							|
 | PNG			| √										| √													| √					|																							|
-| WebP		| √										| √													| √					|iOS 14+ 为硬解码，低版本为软解码（性能较低）	|
+| WebP		| √										| √													| √					|iOS 14+ 为硬解码，低版本为软解码（软解性能较低）	|
 | HEIC		| √ (Android10+)			| √													| √					|																							|
-| AVIF		| √ (HBuilderX5.08+)	| √ (iOS16+)								| x					|系统支持硬解才有优势，使用三方软解还不如其他格式	|
+| AVIF		| √ (HBuilderX5.08+)	| √ (iOS16+)								| x					|系统支持硬解才有优势，使用三方软解还不如换用其他格式	|
 | TIF			| x										| √													| x					|																							|
 | SVG			| √ (HBuilderX4.81+)	| √ (iOS13+ HBuilderX4.81+)	| ️√				|	不支持svg动画。某些场景会解成位图渲染，[详见](#svg-support)		|
 
@@ -372,5 +372,4 @@ svg 是矢量图片，可以无极缩放而不失真。但在以下情况，会�
 - 图片文件需在static目录（项目下或uni_modules下都支持static目录）下，或者import导入文件，否则文件不会被copy到最终的包中，导致无法访问
 - app-android平台由于默认启用了图片缩放（即根据组件实际宽高加载图片，以节省内存），所以可能导致load事件返回的图片尺寸并非图片原始尺寸
 - app-android平台不支持CMYK色彩的图片，[详见](https://github.com/facebook/fresco/issues/1404)
-- app-ios平台 iOS14 版本开始系统原生支持 WebP 图片格式，iOS14以下的版本使用三方解码器软解码实现对 WebP 的支持，性能存在一定损耗。如果在iOS14以下同一页面中大量使用WebP图片，会增加性能损耗
-- app-ios平台非蒸汽模式不支持padding style（padding-top、padding-left、padding-right、padding-bottom）
+- app-ios平台 VDOM模式的image组件不支持padding style（padding-top、padding-left、padding-right、padding-bottom）
