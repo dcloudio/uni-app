@@ -1251,6 +1251,6 @@ App平台在VDOM模式时使用了自定义的css属性lines，在蒸汽模式�
 web和小程序的text组件暂未支持max-lines组件属性，后续计划蒸汽模式的全平台text组件都将支持max-lines属性，并在web和小程序上编译为-webkit写法。
 
 ## Bug & Tips@tips
-- app-Android和app-iOS平台 selectable开启后，仅支持全部文字复制，不支持自由调整光标选择文字。如需自由选择文字，请使用[rich-text组件](rich-text.md)。web平台默认就是可复制文字的，selectable无效。
+- app-Android平台和app-iOS VDOM平台 selectable开启后，仅支持全部文字复制，暂不支持自由调整光标选择文字。如需自由选择文字，请使用[rich-text组件](rich-text.md)。web平台默认就是可复制文字的，selectable无效。
 - app-android平台，部分自定义字体不支持设置font-weight。
 - web平台4.86版本起text组件调整为display:block，嵌套text组件时，子text默认display为inline。此前版本无论父子均为inline。如无必要请勿覆盖text的display样式，以免出现预期外的效果。
