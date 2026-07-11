@@ -1885,24 +1885,6 @@
       "RequestFullScreenOptions"
     ],
     [
-      "RequestMerchantTransfer"
-    ],
-    [
-      "RequestMerchantTransferCompleteCallback"
-    ],
-    [
-      "RequestMerchantTransferFailCallback"
-    ],
-    [
-      "RequestMerchantTransferGeneralCallbackResult"
-    ],
-    [
-      "RequestMerchantTransferOptions"
-    ],
-    [
-      "RequestMerchantTransferSuccessCallback"
-    ],
-    [
       "RequestMethod"
     ],
     [
