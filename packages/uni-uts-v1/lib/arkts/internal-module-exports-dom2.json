@@ -1174,9 +1174,6 @@
       "IGetProviderFail"
     ],
     [
-      "IGetScreenBrightnessFail"
-    ],
-    [
       "IGyroscopeError"
     ],
     [
@@ -1202,12 +1199,6 @@
     ],
     [
       "IRequestPaymentFail"
-    ],
-    [
-      "ISetKeepScreenOnFail"
-    ],
-    [
-      "ISetScreenBrightnessFail"
     ],
     [
       "IShareFail"
