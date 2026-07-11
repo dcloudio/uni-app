@@ -401,9 +401,9 @@ onLayoutChange
 监听页面布局变化更新事件
 
 ##### onLayoutChange 兼容性 
-| Android | iOS | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| x | x | 6.0 | x | 5.0 |
+| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- |
+| x | x | x | 5.0 |
 
 
 ##### 参数 
@@ -436,9 +436,9 @@ offLayoutChange
 取消监听页面布局变化更新事件
 
 ##### offLayoutChange 兼容性 
-| Android | iOS | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| x | x | 6.0 | x | 5.0 |
+| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- |
+| x | x | x | 5.0 |
 
 
 ##### 参数 
@@ -459,9 +459,9 @@ onRenderChange
 监听页面渲染变化更新事件
 
 ##### onRenderChange 兼容性 
-| Android | iOS | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| x | x | 6.0 | x | 5.0 |
+| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- |
+| x | x | x | 5.0 |
 
 
 ##### 参数 
@@ -495,9 +495,9 @@ offRenderChange
 取消监听页面渲染变化更新事件
 
 ##### offRenderChange 兼容性 
-| Android | iOS | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| x | x | 6.0 | x | 5.0 |
+| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- |
+| x | x | x | 5.0 |
 
 
 ##### 参数 
@@ -518,9 +518,9 @@ onTouchStart
 监听页面触摸开始事件
 
 ##### onTouchStart 兼容性 
-| Android | iOS | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| x | x | 6.0 | x | 5.0 |
+| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- |
+| x | x | x | 5.0 |
 
 
 ##### 参数 
@@ -547,9 +547,9 @@ offTouchStart
 取消监听页面触摸开始事件
 
 ##### offTouchStart 兼容性 
-| Android | iOS | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| x | x | 6.0 | x | 5.0 |
+| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- |
+| x | x | x | 5.0 |
 
 
 ##### 参数 
@@ -570,9 +570,9 @@ onTouchEnd
 监听页面触摸结束事件
 
 ##### onTouchEnd 兼容性 
-| Android | iOS | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| x | x | 6.0 | x | 5.0 |
+| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- |
+| x | x | x | 5.0 |
 
 
 ##### 参数 
@@ -599,9 +599,9 @@ offTouchEnd
 取消监听页面触摸结束事件
 
 ##### offTouchEnd 兼容性 
-| Android | iOS | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| x | x | 6.0 | x | 5.0 |
+| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- |
+| x | x | x | 5.0 |
 
 
 ##### 参数 

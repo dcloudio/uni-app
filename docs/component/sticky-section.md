@@ -12,9 +12,9 @@
 
 
 ### 兼容性
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.02 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.98 | 4.11 | 5.0.5 | 4.71 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- |
+| 4.02 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.98 | 4.11 | 4.71 | 5.08 |
 
 
 ### 属性 

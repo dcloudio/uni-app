@@ -343,7 +343,7 @@ getProvider的同步方法
 | payment | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.18; HarmonyOS: 4.61 | 支付 (alipay、wxpay) |
 | location | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.18; HarmonyOS: 4.61 | 定位 (system、tencent) |
 | oauth | Web: x; 微信小程序: x; Android: x; iOS: 5.08; HarmonyOS: 4.61 | 授权登录 |
-| share | Web: x; 微信小程序: x; Android: 5.08; iOS 系统版本: 13.0; iOS: 5.08; HarmonyOS: 4.66 | 分享 |
+| share | Web: x; 微信小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.66 | 分享 |
 
 #### GetProviderFail 的属性值 @getproviderfail-values 
 

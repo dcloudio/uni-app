@@ -45,9 +45,9 @@ uni-app x 目前不提供内置模块选择，而是提供了摇树机制自动�
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
 | flex-direction | 'row' \| 'row-reverse' \| 'column' \| 'column-reverse' | "column" | Web: 4.0; 微信小程序:  ; Android 系统版本: x; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | uvue页面默认flex排列方向 |
-| vapor | boolean | false | Web: 4.0; 微信小程序:  ; Android 系统版本: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0.0; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否启用蒸汽模式 |
+| vapor | boolean | false | Web: 4.0; 微信小程序:  ; Android 系统版本: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否启用蒸汽模式 |
 | styleIsolationVersion | '2' | "2" | Web: 5.0; 微信小程序:  ; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | 样式隔离策略 |
-| vapor-render-target | 'bytecode' \| 'nativecode' | "bytecode" | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: 6.0.0; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.11 | 视图层编译目标 |
+| vapor-render-target | 'bytecode' \| 'nativecode' | "bytecode" | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.11 | 视图层编译目标 |
 
 ### APP配置 @manifest-app
 

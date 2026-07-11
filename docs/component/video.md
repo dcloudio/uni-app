@@ -86,8 +86,8 @@
 | @progress | (event: [UniVideoProgressEvent](#univideoprogressevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 加载进度变化时触发，只支持一段加载。event.detail = { buffered }，百分比 |
 | @fullscreenclick | (event: [UniVideoFullScreenClickEvent](#univideofullscreenclickevent)) => void |   | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 视频全屏播放时点击屏幕触发。event.detail = { screenX, screenY, screenWidth, screenHeight } |
 | @controlstoggle | (event: [UniVideoControlsToggleEvent](#univideocontrolstoggleevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 切换 controls 显示隐藏时触发。event.detail = { show } |
-| @recycle | (event: [UniVideoRecycleEvent](#univideorecycleevent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: 6.0; HarmonyOS: 5.0 | 组件回收时的生命周期钩子 |
-| @reuse | (event: [UniVideoReuseEvent](#univideoreuseevent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: 6.0; HarmonyOS: 5.0 | 组件复用时的生命周期钩子 |
+| @recycle | (event: [UniVideoRecycleEvent](#univideorecycleevent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 5.0 | 组件回收时的生命周期钩子 |
+| @reuse | (event: [UniVideoReuseEvent](#univideoreuseevent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 5.0 | 组件复用时的生命周期钩子 |
 | @enterpictureinpicture | eventhandler |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>播放器进入小窗 |
 | @leavepictureinpicture | eventhandler |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>播放器退出小窗 |
 | @seekcomplete | eventhandler |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandler)*<br/>seek 完成时触发 |

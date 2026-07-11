@@ -53,7 +53,7 @@ uni-app x 蒸汽模式的rich-text native，应该是业内最佳的富文本呈
 | :- | :- | :- |  :-: | :- |
 | nodes | any |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 节点列表/HTML String |
 | selectable | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 文本是否可选 |
-| mode | string | "web" | Web: x; 微信小程序: x; Android: 4.71; iOS: 4.11; HarmonyOS 系统版本: 6.0; HarmonyOS: 4.61 | 渲染模式 |
+| mode | string | "web" | Web: x; 微信小程序: x; Android: 4.71; iOS: 4.11; HarmonyOS: 4.61 | 渲染模式 |
 | space | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>显示连续空格 |
 | ~~user-select~~ | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>文本是否可选，该属性会使节点显示为 block。已废弃，请使用 selectable |
 | selection-highlight-color | string |   |   |   |
@@ -66,7 +66,7 @@ uni-app x 蒸汽模式的rich-text native，应该是业内最佳的富文本呈
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | web | Web: x; 微信小程序: x; Android: 4.71; iOS: 4.11; HarmonyOS: 4.61 | 使用webview渲染 |
-| native | Web: x; 微信小程序: x; Android: 4.71; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS 系统版本: 6.0; HarmonyOS: 4.61 | 使用原生渲染 |
+| native | Web: x; 微信小程序: x; Android: 4.71; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 使用原生渲染 |
 
 #### space 的属性描述
 
