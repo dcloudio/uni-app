@@ -361,7 +361,7 @@ onNestedPreScroll(event: NestedPreScrollEvent) {
 6. 滚动行为停止后会触发`stopnestedscroll`事件
 
 **注意：**
-+ 仅Android平台支持嵌套滚动协商，蒸气模式不支持
++ 嵌套滚动协商仅在 Android + VDOM 模式下支持，蒸气模式下无效
 + 嵌套滚动协商仅支持竖向滚动，横向滚动不支持
 + nested-scroll-child设置的元素必须配置custom-nested-scroll = true，否则配置无效
 + 与`nested-scroll-header` 和 `nested-scroll-body`不兼容，scroll-view 设置嵌套模式后，嵌套滚动手势协商相关事件将不会触发
