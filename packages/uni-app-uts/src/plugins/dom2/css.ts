@@ -81,7 +81,7 @@ export function uniAppCssPrePlugin(): Plugin {
             platform: process.env.UNI_UTS_PLATFORM,
             helper: requireUniHelpers(),
             output,
-            enableKeyframes: output === 'code' && enableKeyframes,
+            enableKeyframes,
           })
           if (isDom2 && fontFaces?.length) {
             const id = CSS_FILE_ID_MAP.get(filename)
@@ -211,7 +211,7 @@ export function uniAppCssPlugin(): Plugin {
         platform: process.env.UNI_UTS_PLATFORM,
         helper: requireUniHelpers(),
         output,
-        enableKeyframes: output === 'code' && enableKeyframes,
+        enableKeyframes,
       })
       let cssSourceMap: SourceMapInput | undefined
       if (messages.find((m) => m.type === 'warning')) {
