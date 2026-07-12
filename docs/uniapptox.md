@@ -73,11 +73,11 @@ uni-app迁移到uni-app x，是一个大型工程。
 	* 如果使用了uni ui，那么迁移指南在这篇文档的底部：[uni-ui x](./component/uni-ui-x/README.md)
 	* 如果使用其他组件库，需要咨询组件作者是否有 uni-app x 版本。如果没有的话，推荐用[uni-ui x](./component/uni-ui-x/README.md)重构。
 
-	uni-app x 相比 uni-app 多了不少内置组件，比如list-view、waterflow、page-container、sticky、match-media、loading、native-view。对于内置组件已经满足需求的情况就没必要使用三方组件了。
+	uni-app x 相比 uni-app 多了不少内置组件，比如list-view复用长列表、waterflow瀑布流、page-container弹框、sticky吸顶、match-media宽屏适配、loading加载中、native-view对接原生view。对于内置组件已经满足需求的情况就没必要使用三方组件了。
 
 9. 改造wxs和renderjs为Element API
 
-	uni-app x的app平台不再支持wxs和renderjs。
+	uni-app x的app平台不再支持wxs和renderjs。uni-app x的逻辑层和渲染层虽然还是2层，但并没有明显的通信成本。
 	
 	uni-app x 提供了全端统一的UNIElement API，它在编译到微信小程序时会自动编译成wxs。写法跨端且高性能。[详见](./api/dom/README.md)
 	
@@ -85,9 +85,10 @@ uni-app迁移到uni-app x，是一个大型工程。
 	
 10. mock掉App原生插件（非uts原生插件）的输入输出，在iOS和鸿蒙上验证
 
-	如果你使用了App原生插件，先让uni-agent把App原生插件的输入输出mock掉，后续步骤再处理原生插件，先对前几步的工作进行验证。
+	如果你使用了老的App原生插件，先让uni-agent把App原生插件的输入输出mock掉，后续步骤再处理原生插件，先对前几步的工作进行验证。
 
 	iOS和鸿蒙，使用的是js驱动，arkts是js的强化版，可以运行标准的js。
+	Android的vdom模式是uts驱动，需要强类型。对于uni-app开发者而言，推荐改用没有强类型约束的蒸汽模式，并且性能比vdom更高。
 
 	这一步要再处理一件事，检查组件库是否适配了[样式隔离策略2.0](./css/common/style-isolation.md)。
 
@@ -101,7 +102,7 @@ uni-app迁移到uni-app x，是一个大型工程。
 
 	uni-app x的内置API比uni-app更丰富，如果内置API能替代原本的插件，就可以使用内置API。比如uni-app x的内置扫码API，可以替代之前的很多扫码插件。
 	
-	需要注意uts原生组件，uts组件分兼容模式组件和标准模式组件。兼容模式组件虽然可以在uni-app的nvue上兼容运行，但无法运行在uni-app x的蒸汽模式下。uni-app x下还是推荐使用标准模式组件。
+	需要注意uts原生组件，uts组件分兼容模式组件和标准模式组件。兼容模式组件虽然可以在uni-app的nvue上兼容运行，但无法运行在uni-app x的蒸汽模式下。uni-app x下还是需要使用标准模式组件。
 	
 	如果没有合适的替代插件，使用uni-agent重写uts原生插件也没问题。
 
@@ -113,31 +114,16 @@ uni-app迁移到uni-app x，是一个大型工程。
 
 12. 适配Android
 	
-	在2026年6月下旬，DCloud将推出uni-app x的Android版蒸汽模式并搭配js驱动。这套方案的性能比uni-app x Android版VDOM模式、比Android原生开发的性能都会好非常多。[详见](./app-vapor.md)
+	HBuilderX 5.21+，推出uni-app x的Android版蒸汽模式并兼容js/ts写法。这套方案的性能比uni-app x Android版VDOM模式、比Android原生开发的性能都会好非常多。[详见](./app-vapor.md)
 
-	js驱动将避免开发者改造uts代码，并且兼容js生态。
+	js驱动将避免开发者改造uts代码，并且兼容广泛的npm js生态。
 	
-	官方推荐开发者先行适配非Android平台，走完上面的前11步。
-	
-	然后开发者可以根据情况选择搭配Android蒸汽模式+js驱动版本，免去uts改造，或者继续实施Android uts 适配。
-
-	如果仍进行Android uts适配，那么：
-
-	* 首先通过uni-agent的plan模式，梳理三方js库，进行替代方案规划
-
-		大多数js库，在插件市场都有uts的对应版本，比如
-		- [pinia](https://ext.dcloud.net.cn/search?q=pinia&uni-appx=1)、
-		- [加密](https://ext.dcloud.net.cn/search?q=%E5%8A%A0%E5%AF%86&uni-appx=1)、
-		- [dayjs](https://ext.dcloud.net.cn/search?q=dayjs&uni-appx=1)、
-		- [图表](https://ext.dcloud.net.cn/search?q=%E5%9B%BE%E8%A1%A8&uni-appx=1)
-
-	* 然后把业务中js或ts代码改成uts。
-
-		uni-agent可以良好的编写符合条件的uts语法。并且可以自动识别编译错误、自动纠错，直到编译通过。
-
-	在Android上，你也可以把uni-app js版老项目作为uni-app x新项目的一个小程序来使用。在uni-app x里内嵌uni小程序sdk，详见：[uni-unimp](https://ext.dcloud.net.cn/plugin?id=17638)。但这并不是优选。如果上面的路能走通，优选上面的路线。
-
+	官方推荐开发者先行适配非Android平台，走完上面的前11步。因为Android平台较新，先把其他平台适配好，期间等HBuilderX 更新1、2个版本，就可以开始迁移Android了。
 
 整个升级过程，不可能在uni-agent的一个会话内完成，前文太长会超过上下文限制，并且让AI迷失重点。
 
 这十几步的每一步都应该新起一个会话。有必要传给下一个会话的内容，让AI总结到md里，让下一个会话在有必要时读取这个md。
+
+一个AI使用经验：\
+AI很擅长从0到60，这一步很快。但再往上，要不投入更多优秀人力review、要不投入更多和更高智商的AI算力做交叉验证和自动化测试。\
+高智商的AI算力虽然贵，但在代码翻译这件事上，其实性价比是远超过投入优秀的人时的。

@@ -512,4 +512,4 @@
 
 
 ### tips
-- 和微信小程序平台不同，app 平台调用 `uni.onAccelerometerChange` 时不会自动启动加速器，需要调用 `uni.startAccelerometer()` 才能正常启动加速器。这个问题会在后续版本处理，app 平台在 `5.09+` 版本中将和微信小程序行为保持一致。
+- 5.08版本，app和微信小程序平台有个差异，app 平台调用 `uni.onAccelerometerChange` 时不会自动启动加速器，需要调用 `uni.startAccelerometer()` 才能正常启动加速器。`5.09+` 版本app 平台拉齐了和微信小程序的表现。

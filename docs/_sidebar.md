@@ -66,24 +66,6 @@
   * [概述](mp/README.md)
   * [AI 开发模式接入指南](mp/mp-weixin-ai-develop.md)
   * [独立分包](mp/independent-subpackage.md)
-- 安全专题
-  - [综述](tutorial/safe.md)
-  - 客户端安全
-    - [Android 安全漏洞问题解决方案](tutorial/app-sec-android.md)
-    - [App 安全检测 API](tutorial/app-sec-api.md)
-    - [App 加固](tutorial/app-security.md)
-    - [App 隐私合规检测](tutorial/app-privacy-detect.md)
-  - 网络安全
-    - [云端一体安全网络](https://doc.dcloud.net.cn/uniCloud/secure-network.html)
-    - [传统服务器与 uniCloud 安全通信](https://doc.dcloud.net.cn/uniCloud/uni-cloud-s2s.html)
-  - 身份安全
-    - [App 一键登录](https://doc.dcloud.net.cn/uni-app-x/api/get-univerify-manager.html)
-    - [App 实人认证](https://doc.dcloud.net.cn/uniCloud/frv/intro.html)
-    - [图形验证码](https://doc.dcloud.net.cn/uniCloud/uni-captcha.html)
-  - 服务器安全
-    - [uniCloud ip 防刷](https://doc.dcloud.net.cn/uniCloud/ip-filter.html)
-    - [内容安全审查](https://ext.dcloud.net.cn/plugin?id=5460)
-  - [等保测评服务](tutorial/djbh.md)
 * 运行和调试
   * [Android/iOS运行](tutorial/run-app.md)
   * [uts插件Android运行配置](tutorial/uts-development-android.md)
@@ -101,7 +83,25 @@
 * [国际化](i18n.md)
 * [源码和示例](sample.md)
 * [benchmark](vapor-benchmark.md)
-* [跨平台框架及原生对比](select.md)
+* [uni-app 升级 uni-app x](./uniapptox.md)
+* 安全专题
+  * [综述](tutorial/safe.md)
+  * 客户端安全
+    * [Android 安全漏洞问题解决方案](tutorial/app-sec-android.md)
+    * [App 安全检测 API](tutorial/app-sec-api.md)
+    * [App 加固](tutorial/app-security.md)
+    * [App 隐私合规检测](tutorial/app-privacy-detect.md)
+  * 网络安全
+    * [云端一体安全网络](https://doc.dcloud.net.cn/uniCloud/secure-network.html)
+    * [传统服务器与 uniCloud 安全通信](https://doc.dcloud.net.cn/uniCloud/uni-cloud-s2s.html)
+  * 身份安全
+    * [App 一键登录](https://doc.dcloud.net.cn/uni-app-x/api/get-univerify-manager.html)
+    * [App 实人认证](https://doc.dcloud.net.cn/uniCloud/frv/intro.html)
+    * [图形验证码](https://doc.dcloud.net.cn/uniCloud/uni-captcha.html)
+  * 服务器安全
+    * [uniCloud ip 防刷](https://doc.dcloud.net.cn/uniCloud/ip-filter.html)
+    * [内容安全审查](https://ext.dcloud.net.cn/plugin?id=5460)
+  * [等保测评服务](tutorial/djbh.md)
 * 运营服务
   * uni多商店上传
     * [简介](uni-publish/intro.md)
