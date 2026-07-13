@@ -11439,6 +11439,1086 @@
       }
     },
     {
+      "name": "animation",
+      "restrictions": [
+        "time",
+        "timing-function",
+        "enum",
+        "identifier",
+        "number"
+      ],
+      "syntax": "<single-animation>#",
+      "values": [
+        {
+          "name": "alternate"
+        },
+        {
+          "name": "alternate-reverse"
+        },
+        {
+          "name": "backwards"
+        },
+        {
+          "name": "both"
+        },
+        {
+          "name": "forwards"
+        },
+        {
+          "name": "infinite"
+        },
+        {
+          "name": "none"
+        },
+        {
+          "name": "normal"
+        },
+        {
+          "name": "reverse"
+        }
+      ],
+      "flatten": {
+        "app": {
+          "android": {
+            "unixVaporVer": "x"
+          },
+          "ios": {
+            "unixVaporVer": "x"
+          },
+          "harmony": {
+            "unixVaporVer": "x"
+          }
+        }
+      },
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          }
+        }
+      }
+    },
+    {
+      "name": "animation-composition",
+      "syntax": "<single-animation-composition>#",
+      "values": [
+        {
+          "name": "replace"
+        },
+        {
+          "name": "add"
+        },
+        {
+          "name": "accumulate"
+        }
+      ],
+      "flatten": {
+        "app": {
+          "android": {
+            "unixVaporVer": "x"
+          },
+          "ios": {
+            "unixVaporVer": "x"
+          },
+          "harmony": {
+            "unixVaporVer": "x"
+          }
+        }
+      },
+      "defaultValue": "replace",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "x"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x",
+            "unixVaporVer": "x"
+          }
+        }
+      }
+    },
+    {
+      "name": "animation-delay",
+      "restrictions": [
+        "time"
+      ],
+      "syntax": "<time>#",
+      "flatten": {
+        "app": {
+          "android": {
+            "unixVaporVer": "x"
+          },
+          "ios": {
+            "unixVaporVer": "x"
+          },
+          "harmony": {
+            "unixVaporVer": "x"
+          }
+        }
+      },
+      "defaultValue": "0s",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          }
+        }
+      }
+    },
+    {
+      "name": "animation-direction",
+      "restrictions": [
+        "enum"
+      ],
+      "syntax": "<single-animation-direction>#",
+      "values": [
+        {
+          "name": "alternate"
+        },
+        {
+          "name": "alternate-reverse"
+        },
+        {
+          "name": "normal"
+        },
+        {
+          "name": "reverse"
+        }
+      ],
+      "flatten": {
+        "app": {
+          "android": {
+            "unixVaporVer": "x"
+          },
+          "ios": {
+            "unixVaporVer": "x"
+          },
+          "harmony": {
+            "unixVaporVer": "x"
+          }
+        }
+      },
+      "defaultValue": "normal",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          }
+        }
+      }
+    },
+    {
+      "name": "animation-duration",
+      "restrictions": [
+        "time"
+      ],
+      "syntax": "<time>#",
+      "values": [
+        {
+          "name": "auto",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "flatten": {
+        "app": {
+          "android": {
+            "unixVaporVer": "x"
+          },
+          "ios": {
+            "unixVaporVer": "x"
+          },
+          "harmony": {
+            "unixVaporVer": "x"
+          }
+        }
+      },
+      "defaultValue": "0s",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          }
+        }
+      }
+    },
+    {
+      "name": "animation-fill-mode",
+      "restrictions": [
+        "enum"
+      ],
+      "syntax": "<single-animation-fill-mode>#",
+      "values": [
+        {
+          "name": "backwards"
+        },
+        {
+          "name": "both"
+        },
+        {
+          "name": "forwards"
+        },
+        {
+          "name": "none"
+        }
+      ],
+      "flatten": {
+        "app": {
+          "android": {
+            "unixVaporVer": "x"
+          },
+          "ios": {
+            "unixVaporVer": "x"
+          },
+          "harmony": {
+            "unixVaporVer": "x"
+          }
+        }
+      },
+      "defaultValue": "none",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          }
+        }
+      }
+    },
+    {
+      "name": "animation-iteration-count",
+      "restrictions": [
+        "number",
+        "enum"
+      ],
+      "syntax": "<single-animation-iteration-count>#",
+      "values": [
+        {
+          "name": "infinite"
+        }
+      ],
+      "flatten": {
+        "app": {
+          "android": {
+            "unixVaporVer": "x"
+          },
+          "ios": {
+            "unixVaporVer": "x"
+          },
+          "harmony": {
+            "unixVaporVer": "x"
+          }
+        }
+      },
+      "defaultValue": "1",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          }
+        }
+      }
+    },
+    {
+      "name": "animation-name",
+      "restrictions": [
+        "identifier",
+        "enum"
+      ],
+      "syntax": "[ none | <keyframes-name> ]#",
+      "values": [
+        {
+          "name": "none"
+        }
+      ],
+      "flatten": {
+        "app": {
+          "android": {
+            "unixVaporVer": "x"
+          },
+          "ios": {
+            "unixVaporVer": "x"
+          },
+          "harmony": {
+            "unixVaporVer": "x"
+          }
+        }
+      },
+      "defaultValue": "none",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          }
+        }
+      }
+    },
+    {
+      "name": "animation-play-state",
+      "restrictions": [
+        "enum"
+      ],
+      "syntax": "<single-animation-play-state>#",
+      "values": [
+        {
+          "name": "paused"
+        },
+        {
+          "name": "running"
+        }
+      ],
+      "flatten": {
+        "app": {
+          "android": {
+            "unixVaporVer": "x"
+          },
+          "ios": {
+            "unixVaporVer": "x"
+          },
+          "harmony": {
+            "unixVaporVer": "x"
+          }
+        }
+      },
+      "defaultValue": "running",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          }
+        }
+      }
+    },
+    {
+      "name": "animation-range",
+      "status": "experimental",
+      "syntax": "[ <'animation-range-start'> <'animation-range-end'>? ]#",
+      "values": [
+        {
+          "name": "normal"
+        },
+        {
+          "name": "cover"
+        },
+        {
+          "name": "contain"
+        },
+        {
+          "name": "entry"
+        },
+        {
+          "name": "exit"
+        },
+        {
+          "name": "entry-crossing"
+        },
+        {
+          "name": "exit-crossing"
+        }
+      ],
+      "flatten": {
+        "app": {
+          "android": {
+            "unixVaporVer": "x"
+          },
+          "ios": {
+            "unixVaporVer": "x"
+          },
+          "harmony": {
+            "unixVaporVer": "x"
+          }
+        }
+      },
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "x"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x",
+            "unixVaporVer": "x"
+          }
+        }
+      }
+    },
+    {
+      "name": "animation-range-end",
+      "status": "experimental",
+      "syntax": "[ normal | <length-percentage> | <timeline-range-name> <length-percentage>? ]#",
+      "flatten": {
+        "app": {
+          "android": {
+            "unixVaporVer": "x"
+          },
+          "ios": {
+            "unixVaporVer": "x"
+          },
+          "harmony": {
+            "unixVaporVer": "x"
+          }
+        }
+      },
+      "defaultValue": "normal",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "x"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x",
+            "unixVaporVer": "x"
+          }
+        }
+      }
+    },
+    {
+      "name": "animation-range-start",
+      "status": "experimental",
+      "syntax": "[ normal | <length-percentage> | <timeline-range-name> <length-percentage>? ]#",
+      "flatten": {
+        "app": {
+          "android": {
+            "unixVaporVer": "x"
+          },
+          "ios": {
+            "unixVaporVer": "x"
+          },
+          "harmony": {
+            "unixVaporVer": "x"
+          }
+        }
+      },
+      "defaultValue": "normal",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "x"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x",
+            "unixVaporVer": "x"
+          }
+        }
+      }
+    },
+    {
+      "name": "animation-timeline",
+      "status": "experimental",
+      "syntax": "<single-animation-timeline>#",
+      "values": [
+        {
+          "name": "none"
+        },
+        {
+          "name": "auto"
+        },
+        {
+          "name": "scroll()"
+        },
+        {
+          "name": "view()"
+        }
+      ],
+      "flatten": {
+        "app": {
+          "android": {
+            "unixVaporVer": "x"
+          },
+          "ios": {
+            "unixVaporVer": "x"
+          },
+          "harmony": {
+            "unixVaporVer": "x"
+          }
+        }
+      },
+      "defaultValue": "auto",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "x"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x",
+            "unixVaporVer": "x"
+          }
+        }
+      }
+    },
+    {
+      "name": "animation-timing-function",
+      "restrictions": [
+        "timing-function"
+      ],
+      "syntax": "<easing-function>#",
+      "values": [
+        {
+          "name": "ease"
+        },
+        {
+          "name": "linear"
+        },
+        {
+          "name": "ease-in"
+        },
+        {
+          "name": "ease-out"
+        },
+        {
+          "name": "ease-in-out"
+        },
+        {
+          "name": "cubic-bezier()"
+        },
+        {
+          "name": "steps()",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "step-start",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "step-end",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "jump-start",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "jump-end",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "jump-none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "jump-both",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "start",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "end",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixVaporVer": "x"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "flatten": {
+        "app": {
+          "android": {
+            "unixVaporVer": "x"
+          },
+          "ios": {
+            "unixVaporVer": "x"
+          },
+          "harmony": {
+            "unixVaporVer": "x"
+          }
+        }
+      },
+      "defaultValue": "ease",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          },
+          "ios": {
+            "osVer": "12.0",
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x",
+            "unixVaporVer": "5.22"
+          }
+        }
+      }
+    },
+    {
       "name": "transition",
       "restrictions": [
         "time",
@@ -13990,19 +15070,19 @@
           "android": {
             "uniVer": "√",
             "unixVer": "x",
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.22"
           },
           "ios": {
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x",
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.22"
           },
           "harmony": {
             "osVer": "5.0.0",
             "uniVer": "4.23",
             "unixVer": "x",
-            "unixVaporVer": "x"
+            "unixVaporVer": "5.22"
           }
         },
         "mp": {
