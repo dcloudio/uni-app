@@ -478,18 +478,14 @@ describe('uvue-styler: normalize', () => {
     )
   })
   test('dom2 platform support uses unixVaporVer', async () => {
-    const oldDom2 = process.env.UNI_APP_X_DOM2
-    process.env.UNI_APP_X_DOM2 = 'true'
-    const { json, messages } = await objectifierRule(`
+    const { json, messages } = await objectifierRule(
+      `
   .foo {
     textDecorationColor: #21ff21;
   }
-  `)
-    if (oldDom2 === undefined) {
-      delete process.env.UNI_APP_X_DOM2
-    } else {
-      process.env.UNI_APP_X_DOM2 = oldDom2
-    }
+  `,
+      { dom2: true }
+    )
     expect(json).toEqual({
       foo: {
         '': {
@@ -500,18 +496,14 @@ describe('uvue-styler: normalize', () => {
     expect(messages.length).toBe(0)
   })
   test('dom2 platform unsupported still warns', async () => {
-    const oldDom2 = process.env.UNI_APP_X_DOM2
-    process.env.UNI_APP_X_DOM2 = 'true'
-    const { json, messages } = await objectifierRule(`
+    const { json, messages } = await objectifierRule(
+      `
   .foo {
     textDecorationStyle: dotted;
   }
-  `)
-    if (oldDom2 === undefined) {
-      delete process.env.UNI_APP_X_DOM2
-    } else {
-      process.env.UNI_APP_X_DOM2 = oldDom2
-    }
+  `,
+      { dom2: true }
+    )
     expect(json).toEqual({
       foo: {
         '': {
