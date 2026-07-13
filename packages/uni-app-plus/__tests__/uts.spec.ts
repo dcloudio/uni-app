@@ -1,5 +1,6 @@
 import {
   initUTSElementProxyClass,
+  initUTSPackageName,
   initUTSProxyClass,
   initUTSProxyFunction,
   normalizeArg,
@@ -65,12 +66,16 @@ const uniElementAttributes = new WeakMap<object, Map<string, unknown>>()
 
 function applyTestPreset(preset: any) {
   const originalVapor = (globalThis as any).__VAPOR__
+  const originalVaporPlatform = (globalThis as any).__VAPOR_PLATFORM__
   const originalX = (globalThis as any).__X__
   const originalPlus = (globalThis as any).plus
   const originalUni = (globalThis as any).uni
   const originalNativeChannel = (globalThis as any).nativeChannel
   const originalUniElementImpl = (globalThis as any).UniViewElementImpl
   ;(globalThis as any).__VAPOR__ = preset.__VAPOR__
+  ;(globalThis as any).__VAPOR_PLATFORM__ = preset.__VAPOR__
+    ? `app-${preset.platform}`
+    : ''
   ;(globalThis as any).__X__ = preset.__X__
   ;(globalThis as any).plus = preset.plus
   ;(globalThis as any).uni = {
@@ -128,6 +133,7 @@ function applyTestPreset(preset: any) {
   }
   return () => {
     ;(globalThis as any).__VAPOR__ = originalVapor
+    ;(globalThis as any).__VAPOR_PLATFORM__ = originalVaporPlatform
     ;(globalThis as any).__X__ = originalX
     ;(globalThis as any).plus = originalPlus
     ;(globalThis as any).uni = originalUni
@@ -154,6 +160,28 @@ describe.each(TEST_PRESETS)(
     })
 
     const isVaporAndroid = preset.__VAPOR__ && preset.platform === 'android'
+    test('Vapor 平台判断不读取 nativeChannel', () => {
+      if (!preset.__VAPOR__) {
+        return
+      }
+      const nativeChannel = (globalThis as any).nativeChannel
+      let nativeChannelReadCount = 0
+      ;(globalThis as any).nativeChannel = new Proxy(nativeChannel, {
+        get(target, key, receiver) {
+          nativeChannelReadCount++
+          return Reflect.get(target, key, receiver)
+        },
+      })
+      try {
+        expect(initUTSPackageName('Test', true)).toBe(
+          isVaporAndroid ? 'uts.sdk.modules.Test' : ''
+        )
+        expect(nativeChannelReadCount).toBe(0)
+      } finally {
+        ;(globalThis as any).nativeChannel = nativeChannel
+      }
+    })
+
     test('normalize args', () => {
       expect(normalizeArg(1, {}, false, { depth: 0, nested: false })).toBe(1)
       expect(

@@ -1212,6 +1212,10 @@ export function initUTSElementProxyClass(options: ProxyClassOptions): any {
 
 function isUTSAndroid() {
   if (__X__) {
+    // Vapor 产物已按平台拆分，使用编译时常量避免初始化 UTS API 时读取 nativeChannel。
+    if (__VAPOR__) {
+      return __VAPOR_PLATFORM__ === 'app-android'
+    }
     if (
       // @ts-expect-error
       typeof nativeChannel === 'object' &&
