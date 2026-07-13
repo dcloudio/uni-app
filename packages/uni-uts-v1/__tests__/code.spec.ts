@@ -135,6 +135,46 @@ describe('code', () => {
     ).toMatchSnapshot()
   })
 
+  test('genProxyCode single platform app-android', async () => {
+    const options: GenProxyCodeOptions = {
+      moduleName: '测试',
+      moduleType: 'built-in',
+      id: 'test-uts',
+      is_uni_modules: false,
+      name: 'test-uts',
+      namespace: 'uts.sdk.testUTS',
+      extname: '.uts',
+      androidComponents: { TestUTS: '' },
+      inputDir,
+      platform: 'app-android',
+    }
+    const res = await withUniAppXEnv(
+      { dom2: 'true', x: 'true', platform: 'app-android' },
+      () => genProxyCode(pluginDir, options)
+    )
+    expect(res.replace(ERR_MSG_PLACEHOLDER, '')).toMatchSnapshot()
+  })
+
+  test('genProxyCode single platform app-ios', async () => {
+    const options: GenProxyCodeOptions = {
+      moduleName: '测试',
+      moduleType: 'built-in',
+      id: 'test-uts',
+      is_uni_modules: false,
+      name: 'test-uts',
+      namespace: 'uts.sdk.testUTS',
+      extname: '.uts',
+      androidComponents: { TestUTS: '' },
+      inputDir,
+      platform: 'app-ios',
+    }
+    const res = await withUniAppXEnv(
+      { dom2: 'true', x: 'true', platform: 'app-ios' },
+      () => genProxyCode(pluginDir, options)
+    )
+    expect(res.replace(ERR_MSG_PLACEHOLDER, '')).toMatchSnapshot()
+  })
+
   function genElementProxyCode(platform: UTSPlatform = 'app-android') {
     return genProxyCode(pluginElementProxyDir, {
       id: 'test-element',
@@ -198,7 +238,6 @@ describe('code', () => {
       { dom2: 'true', x: 'true', platform: 'app-ios' },
       () => genElementProxyCode('app-ios')
     )
-    console.log(res)
     expect(res).toContain(
       'export const UniViewElement = /*#__PURE__*/ initUTSProxyClass'
     )
