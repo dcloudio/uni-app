@@ -12,6 +12,7 @@ export const SIMPLE_SELECTOR_RE =
 export type TransformDecl = (decl: Declaration) => Declaration[]
 
 export interface NormalizeOptions {
+  dom2?: boolean
   logLevel?: 'NOTE' | 'WARNING' | 'ERROR'
   type?: 'nvue' | 'uvue'
   platform?: typeof process.env.UNI_UTS_PLATFOR
@@ -94,7 +95,7 @@ export interface PropertyValue {
 export interface Property {
   name: string
   shorthand?: boolean
-  restrictions: Restriction[]
+  restrictions?: Restriction[]
   values?: PropertyValue[]
   uniPlatform?: UniPlatform
   unixTags?: string[]
@@ -246,24 +247,24 @@ export function supportedPropertyReason(k: string) {
 }
 
 function getPlatformVersion(
-  platform: UniPlatform['app'][keyof UniPlatform['app']] | undefined
+  platform: UniPlatform['app'][keyof UniPlatform['app']] | undefined,
+  dom2: boolean
 ) {
-  return isDom2() ? platform?.unixVaporVer : platform?.unixVer
+  return dom2 ? platform?.unixVaporVer : platform?.unixVer
 }
 
-function isDom2() {
-  return typeof process !== 'undefined' && process.env.UNI_APP_X_DOM2 === 'true'
-}
-
-export function getSupportedPlatforms(uniPlatform: UniPlatform | undefined) {
+export function getSupportedPlatforms(
+  uniPlatform: UniPlatform | undefined,
+  dom2 = false
+) {
   const supportedPlatforms: string[] = []
-  if (getPlatformVersion(uniPlatform?.app?.android) !== 'x') {
+  if (getPlatformVersion(uniPlatform?.app?.android, dom2) !== 'x') {
     supportedPlatforms.push('app-android')
   }
-  if (getPlatformVersion(uniPlatform?.app?.ios) !== 'x') {
+  if (getPlatformVersion(uniPlatform?.app?.ios, dom2) !== 'x') {
     supportedPlatforms.push('app-ios')
   }
-  if (getPlatformVersion(uniPlatform?.app?.harmony) !== 'x') {
+  if (getPlatformVersion(uniPlatform?.app?.harmony, dom2) !== 'x') {
     supportedPlatforms.push('app-harmony')
   }
   return supportedPlatforms

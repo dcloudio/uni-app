@@ -27,6 +27,17 @@ import { normalizePlatform } from './platform'
 import { normalizeShorthandProperty } from './shorthandProperty'
 import { normalizeFontFace, normalizeSrc } from './fontFace'
 import { normalizeFlexFlow } from './flexFlow'
+import {
+  normalizeAnimation,
+  normalizeAnimationDelay,
+  normalizeAnimationDirection,
+  normalizeAnimationDuration,
+  normalizeAnimationFillMode,
+  normalizeAnimationIterationCount,
+  normalizeAnimationName,
+  normalizeAnimationPlayState,
+  normalizeAnimationTimingFunction,
+} from './animation'
 
 // transition-property 不读 css.json
 // 从 property.ts 中移动到 map 里，避免循环依赖
@@ -194,6 +205,18 @@ const uvueNormalizeMap: Record<string, Normalize> = {
   transitionTimingFunction: normalizeTimingFunction,
 }
 
+const dom2UVueNormalizeMap: Record<string, Normalize> = {
+  animation: normalizeAnimation,
+  animationDelay: normalizeAnimationDelay,
+  animationDirection: normalizeAnimationDirection,
+  animationDuration: normalizeAnimationDuration,
+  animationFillMode: normalizeAnimationFillMode,
+  animationIterationCount: normalizeAnimationIterationCount,
+  animationName: normalizeAnimationName,
+  animationPlayState: normalizeAnimationPlayState,
+  animationTimingFunction: normalizeAnimationTimingFunction,
+}
+
 const restrictionMap: Partial<Record<Restriction, Normalize>> = {
   [Restriction.LENGTH]: normalizeLength,
   [Restriction.PERCENTAGE]: normalizePercent,
@@ -211,6 +234,7 @@ const restrictionMap: Partial<Record<Restriction, Normalize>> = {
 const invalidFontFaceProperties = ['fontWeight', 'fontStyle', 'fontVariant']
 
 function getUVueNormalizeMap(options: NormalizeOptions) {
+  const dom2 = !!options.dom2
   const result: Record<string, Normalize> = {
     src: normalizeSrc,
   }
@@ -231,8 +255,10 @@ function getUVueNormalizeMap(options: NormalizeOptions) {
     const property = properties[i]
     const prop = camelize(property.name)
     let normalize: Normalize
-    if (uvueNormalizeMap[prop]) {
-      normalize = uvueNormalizeMap[prop]
+    const customNormalize =
+      (dom2 && dom2UVueNormalizeMap[prop]) || uvueNormalizeMap[prop]
+    if (customNormalize) {
+      normalize = customNormalize
     } else {
       const normalizes = getNormalizes(property, options)
       if (normalizes.length > 1) {
@@ -263,7 +289,7 @@ function getUVueNormalizeMap(options: NormalizeOptions) {
 // 读取 css.json 的 restrictions
 function getNormalizes(property: Property, options: NormalizeOptions) {
   const normalizes: Normalize[] = []
-  const { restrictions } = property
+  const restrictions = property.restrictions || []
   restrictions.forEach((restriction) => {
     let normalize = restrictionMap[restriction]
     if (normalize) {
@@ -286,13 +312,17 @@ function getNormalizes(property: Property, options: NormalizeOptions) {
   return normalizes
 }
 
-let normalizeMap: Record<string, Normalize>
+const normalizeMaps: Record<string, Record<string, Normalize>> = {}
 
 export function getNormalizeMap(options: NormalizeOptions) {
-  if (normalizeMap) {
-    return normalizeMap
-  }
   const uvue = options.type === 'uvue'
+  const cacheKey = uvue
+    ? `uvue:${!!options.dom2}:${!!options.keepUnitPx}`
+    : 'nvue'
+  if (normalizeMaps[cacheKey]) {
+    return normalizeMaps[cacheKey]
+  }
+  let normalizeMap: Record<string, Normalize>
   if (uvue) {
     normalizeMap = getUVueNormalizeMap(options)
   } else {
@@ -307,5 +337,6 @@ export function getNormalizeMap(options: NormalizeOptions) {
     }, {})
   }
 
+  normalizeMaps[cacheKey] = normalizeMap
   return normalizeMap
 }

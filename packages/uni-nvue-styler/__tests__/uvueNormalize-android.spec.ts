@@ -1,10 +1,11 @@
 import { parse } from '../src'
 
-async function objectifierRule(input: string) {
+async function objectifierRule(input: string, options = {}) {
   const { code, messages } = await parse(input, {
     logLevel: 'NOTE',
     type: 'uvue',
     platform: 'app-android',
+    ...options,
   })
   return {
     json: JSON.parse(code),
@@ -795,6 +796,222 @@ flexBasis: fill;
       })
     )
   })
+
+  test('animation properties', async () => {
+    const { json, messages } = await objectifierRule(
+      `
+.foo {
+  animation-name: fade, slide;
+  animation-duration: 200ms, 1s;
+  animation-delay: -100ms, +0s;
+  animation-direction: normal, alternate-reverse;
+  animation-fill-mode: none, forwards;
+  animation-iteration-count: 2, infinite;
+  animation-play-state: running, paused;
+  animation-timing-function: ease-in, cubic-bezier(.42, 0, 1, 1);
+}
+.shorthand {
+  animation: fade 200ms ease-in -100ms 2 alternate both paused, slide 1s cubic-bezier(.42, 0, 1, 1);
+}
+.override {
+  animation-name: original;
+  animation: fade 200ms;
+  animation-duration: 1s;
+}
+.keyword {
+  animation-name: None;
+  animation-delay: +1s;
+}
+.variable {
+  animation: var(--animation);
+}
+.mixed-variable {
+  animation: fade var(--duration);
+}
+`,
+      { dom2: true }
+    )
+    expect(json).toEqual({
+      foo: {
+        '': {
+          animationName: 'fade,slide',
+          animationDuration: '200ms,1s',
+          animationDelay: '-100ms,+0s',
+          animationDirection: 'normal,alternate-reverse',
+          animationFillMode: 'none,forwards',
+          animationIterationCount: '2,infinite',
+          animationPlayState: 'running,paused',
+          animationTimingFunction: 'ease-in,cubic-bezier(0.42,0,1,1)',
+        },
+      },
+      shorthand: {
+        '': {
+          animationName: 'fade,slide',
+          animationDuration: '200ms,1s',
+          animationDelay: '-100ms,0s',
+          animationTimingFunction: 'ease-in,cubic-bezier(0.42,0,1,1)',
+          animationIterationCount: '2,1',
+          animationDirection: 'alternate,normal',
+          animationFillMode: 'both,none',
+          animationPlayState: 'paused,running',
+        },
+      },
+      override: {
+        '': {
+          animationName: 'fade',
+          animationDuration: '1s',
+          animationDelay: '0s',
+          animationTimingFunction: 'ease',
+          animationIterationCount: 1,
+          animationDirection: 'normal',
+          animationFillMode: 'none',
+          animationPlayState: 'running',
+        },
+      },
+      keyword: {
+        '': {
+          animationName: 'none',
+          animationDelay: '+1s',
+        },
+      },
+      variable: {
+        '': {
+          animationName: 'var(--animation)',
+          animationDuration: 'var(--animation)',
+          animationDelay: 'var(--animation)',
+          animationTimingFunction: 'var(--animation)',
+          animationIterationCount: 'var(--animation)',
+          animationDirection: 'var(--animation)',
+          animationFillMode: 'var(--animation)',
+          animationPlayState: 'var(--animation)',
+        },
+      },
+      'mixed-variable': {
+        '': {
+          animationName: 'fade var(--duration)',
+          animationDuration: 'fade var(--duration)',
+          animationDelay: 'fade var(--duration)',
+          animationTimingFunction: 'fade var(--duration)',
+          animationIterationCount: 'fade var(--duration)',
+          animationDirection: 'fade var(--duration)',
+          animationFillMode: 'fade var(--duration)',
+          animationPlayState: 'fade var(--duration)',
+        },
+      },
+    })
+    expect(messages).toHaveLength(0)
+  })
+
+  test('unsupported animation properties', async () => {
+    const { json, messages } = await objectifierRule(
+      `
+.foo {
+  animation-composition: add;
+}
+`,
+      { dom2: true }
+    )
+    expect(json).toEqual({
+      foo: {
+        '': {
+          animationComposition: 'add',
+        },
+      },
+    })
+    expect(messages[0]).toEqual(
+      expect.objectContaining({
+        text: 'WARNING: `animation-composition` is not a standard property name (may not be supported)',
+      })
+    )
+  })
+
+  test('animation keywords are case-insensitive', async () => {
+    const { json, messages } = await objectifierRule(
+      `
+.shorthand {
+  animation: fade 1S EASE-IN +1 ALTERNATE BOTH PAUSED;
+}
+.longhand {
+  animation-delay: +1S;
+  animation-direction: ALTERNATE-REVERSE;
+  animation-duration: 200MS;
+  animation-fill-mode: FORWARDS;
+  animation-iteration-count: +1, INFINITE;
+  animation-name: None;
+  animation-play-state: PAUSED;
+  animation-timing-function: EASE-OUT, CUBIC-BEZIER(.42, 0, 1, 1);
+}
+`,
+      { dom2: true }
+    )
+    expect(json).toEqual({
+      shorthand: {
+        '': {
+          animationName: 'fade',
+          animationDuration: '1s',
+          animationDelay: '0s',
+          animationTimingFunction: 'ease-in',
+          animationIterationCount: 1,
+          animationDirection: 'alternate',
+          animationFillMode: 'both',
+          animationPlayState: 'paused',
+        },
+      },
+      longhand: {
+        '': {
+          animationDelay: '+1s',
+          animationDirection: 'alternate-reverse',
+          animationDuration: '200ms',
+          animationFillMode: 'forwards',
+          animationIterationCount: '1,infinite',
+          animationName: 'none',
+          animationPlayState: 'paused',
+          animationTimingFunction: 'ease-out,cubic-bezier(0.42,0,1,1)',
+        },
+      },
+    })
+    expect(messages).toHaveLength(0)
+  })
+
+  test('invalid animation property values', async () => {
+    const { json, messages } = await objectifierRule(
+      `
+.foo {
+  animation-duration: -1s;
+  animation-duration: 1.s;
+  animation-delay: pending;
+  animation-direction: sideways;
+  animation-iteration-count: -1;
+  animation-timing-function: steps(2);
+  animation-timing-function: linear(0, 1);
+}
+.invalid-time-count {
+  animation: fade 1s 2s 3s;
+}
+.unsupported-steps {
+  animation: fade 1s steps(2);
+}
+.duplicate-name {
+  animation: fade auto ease;
+}
+`,
+      { dom2: true }
+    )
+    expect(json).toEqual({})
+    expect(messages.map((message) => message.text)).toEqual([
+      'ERROR: property value `-1s` is not supported for `animation-duration` (supported values are: `non-negative time`)',
+      'ERROR: property value `1.s` is not supported for `animation-duration` (supported values are: `non-negative time`)',
+      'ERROR: property value `pending` is not supported for `animation-delay` (supported values are: `time`)',
+      'ERROR: property value `sideways` is not supported for `animation-direction` (supported values are: `normal`|`reverse`|`alternate`|`alternate-reverse`)',
+      'ERROR: property value `-1` is not supported for `animation-iteration-count` (supported values are: `non-negative number`|`infinite`)',
+      'ERROR: property value `steps(2)` is not supported for `animation-timing-function` (supported values are: `linear`|`ease`|`ease-in`|`ease-out`|`ease-in-out`|`cubic-bezier(n,n,n,n)`)',
+      'ERROR: property value `linear(0, 1)` is not supported for `animation-timing-function` (supported values are: `linear`|`ease`|`ease-in`|`ease-out`|`ease-in-out`|`cubic-bezier(n,n,n,n)`)',
+      'ERROR: property value `fade 1s 2s 3s` is not valid for `animation`',
+      'ERROR: property value `fade 1s steps(2)` is not valid for `animation`',
+      'ERROR: property value `fade auto ease` is not valid for `animation`',
+    ])
+  })
+
   test('remove px unit', async () => {
     const { json, messages } = await objectifierRule(`
 .foo {

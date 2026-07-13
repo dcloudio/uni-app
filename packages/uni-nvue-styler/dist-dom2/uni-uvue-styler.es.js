@@ -13,6 +13,7 @@ function createDecl(prop, value, important, raws, source) {
     }
     return decl;
 }
+const NUM_REGEXP = /^[-]?\d*\.?\d+$/;
 const isNumber = (val) => typeof val === 'number';
 const cacheStringFunction = (fn) => {
     const cache = Object.create(null);
@@ -30,6 +31,29 @@ const hyphenateStyleProperty = cacheStringFunction((str) => str
     return m;
 })
     .toLowerCase());
+function validReason(k, v) {
+    return ('ERROR: property value `' +
+        v +
+        '` is not valid for `' +
+        hyphenateStyleProperty(k) +
+        '`');
+}
+function defaultValueReason(k, v) {
+    return ('NOTE: property value `' +
+        v +
+        '` is the DEFAULT value for `' +
+        hyphenateStyleProperty(k) +
+        '` (could be removed)');
+}
+function supportedEnumReason(k, v, items) {
+    return ('ERROR: property value `' +
+        v +
+        '` is not supported for `' +
+        hyphenateStyleProperty(k) +
+        '` (supported values are: `' +
+        items.join('`|`') +
+        '`)');
+}
 function supportedValueWithTipsReason(k, v, tips) {
     return ('ERROR: property value `' +
         v +
@@ -491,7 +515,362 @@ const transformFlex = (decl) => {
     return [decl];
 };
 
-function getDeclTransforms(options) {
+function createEnumNormalize(items) {
+    return (v) => {
+        const index = items.indexOf(v);
+        if (index > 0) {
+            return { value: v };
+        }
+        if (index === 0) {
+            return {
+                value: v,
+                reason: function reason(k, v, result) {
+                    return defaultValueReason(k, v);
+                },
+            };
+        }
+        return {
+            value: null,
+            reason: function reason(k, v, result) {
+                return supportedEnumReason(k, v, items);
+            },
+        };
+    };
+}
+
+const normalizeTimingFunction = (v) => {
+    v = (v || '').toString();
+    if (v.match(/^(?:linear|ease|ease-in|ease-out|ease-in-out)$/)) {
+        return { value: v };
+    }
+    let match;
+    if ((match = v.match(/^cubic-bezier\(\s*(.*)\s*,\s*(.*)\s*,\s*(.*)\s*,\s*(.*)\s*\)$/))) {
+        if (match[1].match(NUM_REGEXP) &&
+            match[2].match(NUM_REGEXP) &&
+            match[3].match(NUM_REGEXP) &&
+            match[4].match(NUM_REGEXP)) {
+            const ret = [
+                parseFloat(match[1]),
+                parseFloat(match[2]),
+                parseFloat(match[3]),
+                parseFloat(match[4]),
+            ].join(',');
+            return { value: 'cubic-bezier(' + ret + ')' };
+        }
+    }
+    return {
+        value: null,
+        reason(k, v, result) {
+            return supportedEnumReason(k, v, [
+                'linear',
+                'ease',
+                'ease-in',
+                'ease-out',
+                'ease-in-out',
+                'cubic-bezier(n,n,n,n)',
+            ]);
+        },
+    };
+};
+
+const KEYFRAMES_NAME_RE = /^-?[A-Za-z_][A-Za-z0-9_-]*$/;
+const ANIMATION_NUMBER_RE = /^[+-]?\d*\.?\d+$/;
+const RESERVED_KEYFRAMES_NAMES = new Set([
+    'default',
+    'inherit',
+    'initial',
+    'none',
+    'revert',
+    'revert-layer',
+    'unset',
+]);
+function splitAnimationList(value) {
+    const result = [];
+    let start = 0;
+    let depth = 0;
+    for (let i = 0; i < value.length; i++) {
+        const char = value[i];
+        if (char === '(') {
+            depth++;
+        }
+        else if (char === ')') {
+            if (depth === 0) {
+                return null;
+            }
+            depth--;
+        }
+        else if (char === ',' && depth === 0) {
+            const item = value.slice(start, i).trim();
+            if (!item) {
+                return null;
+            }
+            result.push(item);
+            start = i + 1;
+        }
+    }
+    if (depth !== 0) {
+        return null;
+    }
+    const item = value.slice(start).trim();
+    if (!item) {
+        return null;
+    }
+    result.push(item);
+    return result;
+}
+function createAnimationTimeNormalize(allowNegative) {
+    return (v) => {
+        const value = (v || '').toString().toLowerCase();
+        if (/^(?:[+-]?(?:\d+(?:\.\d+)?|\.\d+))(?:ms|s)$/.test(value) &&
+            (allowNegative || value[0] !== '-')) {
+            return { value };
+        }
+        return {
+            value: null,
+            reason(k, v) {
+                return supportedEnumReason(k, v, [
+                    allowNegative ? 'time' : 'non-negative time',
+                ]);
+            },
+        };
+    };
+}
+const normalizeAnimationNameItem = (v) => {
+    const value = (v || '').toString();
+    const lowerValue = value.toLowerCase();
+    if (lowerValue === 'none') {
+        return { value: 'none' };
+    }
+    if (KEYFRAMES_NAME_RE.test(value) &&
+        !RESERVED_KEYFRAMES_NAMES.has(lowerValue)) {
+        return { value };
+    }
+    return {
+        value: null,
+        reason: validReason,
+    };
+};
+const normalizeAnimationIterationCountItem = (v) => {
+    const value = (v || '').toString().toLowerCase();
+    if (value === 'infinite') {
+        return { value };
+    }
+    if (ANIMATION_NUMBER_RE.test(value) && Number(value) >= 0) {
+        return { value: Number(value) };
+    }
+    return {
+        value: null,
+        reason(k, v) {
+            return supportedEnumReason(k, v, ['non-negative number', 'infinite']);
+        },
+    };
+};
+function createAnimationKeywordNormalize(items) {
+    const normalize = createEnumNormalize(items);
+    return (v, options) => normalize((v || '').toString().toLowerCase(), options);
+}
+const normalizeAnimationDelayItem = createAnimationTimeNormalize(true);
+const normalizeAnimationDirectionItem = createAnimationKeywordNormalize([
+    'normal',
+    'reverse',
+    'alternate',
+    'alternate-reverse',
+]);
+const normalizeAnimationDurationItem = createAnimationTimeNormalize(false);
+const normalizeAnimationFillModeItem = createAnimationKeywordNormalize([
+    'none',
+    'forwards',
+    'backwards',
+    'both',
+]);
+const normalizeAnimationPlayStateItem = createAnimationKeywordNormalize([
+    'running',
+    'paused',
+]);
+const normalizeAnimationTimingFunctionItem = (v, options) => normalizeTimingFunction((v || '').toString().toLowerCase());
+function isValidValue(normalize, value) {
+    return normalize(value, {}).value !== null;
+}
+function parseSingleAnimation(value) {
+    const tokens = splitValues(value);
+    if (!tokens.length) {
+        return null;
+    }
+    const result = {
+        name: 'none',
+        duration: '0s',
+        delay: '0s',
+        timingFunction: 'ease',
+        iterationCount: '1',
+        direction: 'normal',
+        fillMode: 'none',
+        playState: 'running',
+    };
+    let hasDuration = false;
+    let hasDelay = false;
+    let hasTimingFunction = false;
+    let hasIterationCount = false;
+    let hasDirection = false;
+    let hasFillMode = false;
+    let hasPlayState = false;
+    let hasName = false;
+    let noneCount = 0;
+    for (let i = 0; i < tokens.length; i++) {
+        const token = tokens[i];
+        const keyword = token.toLowerCase();
+        if (keyword === 'none') {
+            noneCount++;
+            continue;
+        }
+        if (isValidValue(normalizeAnimationDelayItem, keyword)) {
+            if (!hasDuration) {
+                if (!isValidValue(normalizeAnimationDurationItem, keyword)) {
+                    return null;
+                }
+                result.duration = keyword;
+                hasDuration = true;
+            }
+            else if (!hasDelay) {
+                result.delay = keyword;
+                hasDelay = true;
+            }
+            else {
+                return null;
+            }
+            continue;
+        }
+        if (!hasTimingFunction &&
+            isValidValue(normalizeAnimationTimingFunctionItem, keyword)) {
+            result.timingFunction = keyword;
+            hasTimingFunction = true;
+            continue;
+        }
+        if (!hasIterationCount &&
+            isValidValue(normalizeAnimationIterationCountItem, keyword)) {
+            result.iterationCount = keyword;
+            hasIterationCount = true;
+            continue;
+        }
+        if (!hasDirection &&
+            isValidValue(normalizeAnimationDirectionItem, keyword)) {
+            result.direction = keyword;
+            hasDirection = true;
+            continue;
+        }
+        if (!hasFillMode && isValidValue(normalizeAnimationFillModeItem, keyword)) {
+            result.fillMode = keyword;
+            hasFillMode = true;
+            continue;
+        }
+        if (!hasPlayState &&
+            isValidValue(normalizeAnimationPlayStateItem, keyword)) {
+            result.playState = keyword;
+            hasPlayState = true;
+            continue;
+        }
+        if (!hasName && isValidValue(normalizeAnimationNameItem, token)) {
+            result.name = token;
+            hasName = true;
+            continue;
+        }
+        return null;
+    }
+    // none 同时属于 animation-name 和 animation-fill-mode，按剩余槽位消歧。
+    for (let i = 0; i < noneCount; i++) {
+        if (!hasName) {
+            result.name = 'none';
+            hasName = true;
+        }
+        else if (!hasFillMode) {
+            result.fillMode = 'none';
+            hasFillMode = true;
+        }
+        else {
+            return null;
+        }
+    }
+    return result;
+}
+function parseAnimation(value) {
+    const items = splitAnimationList(value);
+    if (!items) {
+        return null;
+    }
+    const animations = [];
+    for (let i = 0; i < items.length; i++) {
+        const animation = parseSingleAnimation(items[i]);
+        if (!animation) {
+            return null;
+        }
+        animations.push(animation);
+    }
+    return {
+        name: animations.map((animation) => animation.name).join(','),
+        duration: animations.map((animation) => animation.duration).join(','),
+        delay: animations.map((animation) => animation.delay).join(','),
+        timingFunction: animations
+            .map((animation) => animation.timingFunction)
+            .join(','),
+        iterationCount: animations
+            .map((animation) => animation.iterationCount)
+            .join(','),
+        direction: animations.map((animation) => animation.direction).join(','),
+        fillMode: animations.map((animation) => animation.fillMode).join(','),
+        playState: animations.map((animation) => animation.playState).join(','),
+    };
+}
+
+const animationName = 'animation-name' ;
+const animationDuration = 'animation-duration'
+    ;
+const animationDelay = 'animation-delay' ;
+const animationTimingFunction = 'animation-timing-function'
+    ;
+const animationIterationCount = 'animation-iteration-count'
+    ;
+const animationDirection = 'animation-direction'
+    ;
+const animationFillMode = 'animation-fill-mode'
+    ;
+const animationPlayState = 'animation-play-state'
+    ;
+const animationLonghands = [
+    animationName,
+    animationDuration,
+    animationDelay,
+    animationTimingFunction,
+    animationIterationCount,
+    animationDirection,
+    animationFillMode,
+    animationPlayState,
+];
+const transformAnimation = (decl) => {
+    const { value, important, raws, source } = decl;
+    const singleVarResult = tryExpandSingleValueVarShorthand(decl, animationLonghands, value);
+    if (singleVarResult) {
+        return singleVarResult;
+    }
+    // 无法静态确定变量所属槽位时，完整平铺并由运行时按目标 longhand 投影。
+    if (/\bvar\(/i.test(value)) {
+        return animationLonghands.map((prop) => createDecl(prop, value, important, raws, source));
+    }
+    const animation = parseAnimation(value.trim());
+    if (!animation) {
+        return [decl];
+    }
+    return [
+        createDecl(animationName, animation.name, important, raws, source),
+        createDecl(animationDuration, animation.duration, important, raws, source),
+        createDecl(animationDelay, animation.delay, important, raws, source),
+        createDecl(animationTimingFunction, animation.timingFunction, important, raws, source),
+        createDecl(animationIterationCount, animation.iterationCount, important, raws, source),
+        createDecl(animationDirection, animation.direction, important, raws, source),
+        createDecl(animationFillMode, animation.fillMode, important, raws, source),
+        createDecl(animationPlayState, animation.playState, important, raws, source),
+    ];
+};
+
+function getDeclTransforms(options, dom2) {
     const transformBorder = createTransformBorder()
         ;
     const styleMap = {
@@ -513,6 +892,9 @@ function getDeclTransforms(options) {
         padding: transformPadding,
         ['flex-flow' ]: transformFlexFlow,
     };
+    if (dom2) {
+        styleMap.animation = transformAnimation;
+    }
     {
         styleMap.flex = transformFlex;
     }
@@ -522,19 +904,21 @@ function getDeclTransforms(options) {
     }
     return result;
 }
-let DeclTransforms;
+const declTransforms = {};
 const expanded = Symbol('expanded');
-function expand(options) {
+function expand$1(options) {
+    const type = options.type || 'nvue';
+    const dom2 = !!options.dom2;
+    const transformCacheKey = `${type}:${dom2}`;
     const plugin = {
         postcssPlugin: `${options.type || 'nvue'}:expand`,
         Declaration(decl, helper) {
             if (decl[expanded]) {
                 return;
             }
-            if (!DeclTransforms) {
-                DeclTransforms = getDeclTransforms();
-            }
-            const transform = DeclTransforms[decl.prop];
+            const transforms = declTransforms[transformCacheKey] ||
+                (declTransforms[transformCacheKey] = getDeclTransforms(options, dom2));
+            const transform = transforms[decl.prop];
             if (transform) {
                 const res = transform(decl);
                 const reason = decl[BORDER_SHORTHAND_VAR_ORDER_WARNING];
@@ -567,6 +951,10 @@ function expand(options) {
         },
     };
     return plugin;
+}
+
+function expand(options = {}) {
+    return expand$1(Object.assign({}, options, { dom2: true }));
 }
 
 export { expand };
