@@ -2297,7 +2297,7 @@ oncancel
 ###### oncancel 兼容性 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
-| √ | x | 4.51 | 4.53 | x | 5.08 |
+| √ | 5.21 | 4.51 | 4.53 | x | 5.08 |
 
 ##### 参数 
 
