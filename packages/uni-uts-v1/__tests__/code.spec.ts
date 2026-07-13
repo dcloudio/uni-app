@@ -18,17 +18,24 @@ type UTSPlatform = GenProxyCodeOptions['platform']
 
 async function withUniAppXEnv<T>(
   env: {
+    x?: 'true'
     dom2?: 'true'
     platform?: UTSPlatform
   },
   run: () => Promise<T>
 ) {
   const originalUniAppXDom2 = process.env.UNI_APP_X_DOM2
+  const originalUniAppX = process.env.UNI_APP_X
   const originalUniUTSPlatform = process.env.UNI_UTS_PLATFORM
   if (env.dom2 === undefined) {
     delete process.env.UNI_APP_X_DOM2
   } else {
     process.env.UNI_APP_X_DOM2 = env.dom2
+  }
+  if (env.x === undefined) {
+    delete process.env.UNI_APP_X
+  } else {
+    process.env.UNI_APP_X = env.x
   }
   if (env.platform === undefined) {
     Reflect.deleteProperty(process.env, 'UNI_UTS_PLATFORM')
@@ -39,9 +46,14 @@ async function withUniAppXEnv<T>(
     return await run()
   } finally {
     if (originalUniAppXDom2 === undefined) {
-      delete process.env.UNI_APP_X_DOM2
+      Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
     } else {
       process.env.UNI_APP_X_DOM2 = originalUniAppXDom2
+    }
+    if (originalUniAppX === undefined) {
+      Reflect.deleteProperty(process.env, 'UNI_APP_X')
+    } else {
+      process.env.UNI_APP_X = originalUniAppX
     }
     if (originalUniUTSPlatform === undefined) {
       Reflect.deleteProperty(process.env, 'UNI_UTS_PLATFORM')
@@ -138,7 +150,7 @@ describe('code', () => {
 
   test('genProxyCode uses element proxy class for Uni*Element and Uni*ElementImpl classes in android DOM2', async () => {
     const res = await withUniAppXEnv(
-      { dom2: 'true', platform: 'app-android' },
+      { dom2: 'true', x: 'true', platform: 'app-android' },
       () => genElementProxyCode('app-android')
     )
 
@@ -183,10 +195,10 @@ describe('code', () => {
 
   test('genProxyCode uses normal proxy class for Uni*Element and Uni*ElementImpl classes in iOS DOM2', async () => {
     const res = await withUniAppXEnv(
-      { dom2: 'true', platform: 'app-ios' },
+      { dom2: 'true', x: 'true', platform: 'app-ios' },
       () => genElementProxyCode('app-ios')
     )
-
+    console.log(res)
     expect(res).toContain(
       'export const UniViewElement = /*#__PURE__*/ initUTSProxyClass'
     )
