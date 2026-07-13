@@ -7,17 +7,14 @@ export type ChooseLocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *      "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "4.34"
      *      },
      *      "ios": {
-     *        "osVer": "12.0",
      *        "uniVer": "√",
      *        "unixVer": "4.34"
      *      },
      *      "harmony": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
      *        "unixVer": "4.61",
      *        "unixVaporVer": "5.0"
@@ -35,17 +32,14 @@ export type ChooseLocationErrorCode =
      * @uniPlatform {
      *    "app": {
      *      "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "4.34"
      *      },
      *      "ios": {
-     *        "osVer": "12.0",
      *        "uniVer": "√",
      *        "unixVer": "4.34"
      *      },
      *      "harmony": {
-     *        "osVer": "5.0",
      *        "uniVer": "x",
      *        "unixVer": "4.61",
      *        "unixVaporVer": "5.0"
@@ -85,17 +79,14 @@ export type ChooseLocationOptions = {
      * @uniPlatform {
      *    "app": {
      *      "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "4.33"
      *      },
      *      "ios": {
-     *        "osVer": "12.0",
      *        "uniVer": "√",
      *        "unixVer": "4.33"
      *      },
      *      "harmony": {
-     *        "osVer": "5.0",
      *        "uniVer": "4.23",
      *        "unixVer": "4.61",
      *        "unixVaporVer": "5.0"
@@ -113,17 +104,14 @@ export type ChooseLocationOptions = {
      * @uniPlatform {
      *    "app": {
      *      "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "4.33"
      *      },
      *      "ios": {
-     *        "osVer": "12.0",
      *        "uniVer": "√",
      *        "unixVer": "4.33"
      *      },
      *      "harmony": {
-     *        "osVer": "5.0",
      *        "uniVer": "4.23",
      *        "unixVer": "4.61",
      *        "unixVaporVer": "5.0"
@@ -141,17 +129,14 @@ export type ChooseLocationOptions = {
      * @uniPlatform {
      *    "app": {
      *      "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "4.33"
      *      },
      *      "ios": {
-     *        "osVer": "12.0",
      *        "uniVer": "√",
      *        "unixVer": "4.33"
      *      },
      *      "harmony": {
-     *        "osVer": "5.0",
      *        "uniVer": "4.23",
      *        "unixVer": "4.61",
      *        "unixVaporVer": "5.0"
@@ -169,17 +154,14 @@ export type ChooseLocationOptions = {
      * @uniPlatform {
      *    "app": {
      *      "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "4.35"
      *      },
      *      "ios": {
-     *        "osVer": "12.0",
      *        "uniVer": "√",
      *        "unixVer": "4.35"
      *      },
      *      "harmony": {
-     *        "osVer": "5.0",
      *        "uniVer": "4.23",
      *        "unixVer": "4.61",
      *        "unixVaporVer": "5.0"
@@ -197,17 +179,14 @@ export type ChooseLocationOptions = {
      * @uniPlatform {
      *    "app": {
      *      "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "4.33"
      *      },
      *      "ios": {
-     *        "osVer": "12.0",
      *        "uniVer": "√",
      *        "unixVer": "4.33"
      *      },
      *      "harmony": {
-     *        "osVer": "5.0",
      *        "uniVer": "4.23",
      *        "unixVer": "4.61",
      *        "unixVaporVer": "5.0"
@@ -225,17 +204,14 @@ export type ChooseLocationOptions = {
      * @uniPlatform {
      *    "app": {
      *      "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "4.33"
      *      },
      *      "ios": {
-     *        "osVer": "12.0",
      *        "uniVer": "√",
      *        "unixVer": "4.33"
      *      },
      *      "harmony": {
-     *        "osVer": "5.0",
      *        "uniVer": "4.23",
      *        "unixVer": "4.61",
      *        "unixVaporVer": "5.0"
@@ -253,17 +229,14 @@ export type ChooseLocationOptions = {
      * @uniPlatform {
      *    "app": {
      *      "android": {
-     *        "osVer": "5.0",
      *        "uniVer": "√",
      *        "unixVer": "4.33"
      *      },
      *      "ios": {
-     *        "osVer": "12.0",
      *        "uniVer": "√",
      *        "unixVer": "4.33"
      *      },
      *      "harmony": {
-     *        "osVer": "5.0",
      *        "uniVer": "4.23",
      *        "unixVer": "4.61",
      *        "unixVaporVer": "5.0"
@@ -286,17 +259,14 @@ export type ChooseLocationOptions = {
  * @uniPlatform {
  *    "app": {
  *        "android": {
- *            "osVer": "5.0",
  *            "uniVer": "√",
  *            "unixVer": "4.33"
  *        },
  *        "ios": {
- *            "osVer": "12.0",
  *            "uniVer": "√",
  *            "unixVer": "4.33"
  *        },
  *    "harmony": {
- *      "osVer": "5.0",
  *      "uniVer": "4.23",
  *      "unixVer": "4.61",
  *      "unixVaporVer": "5.0"
@@ -333,17 +303,14 @@ export interface Uni {
      * @uniPlatform {
      *  "app": {
      *    "android": {
-     *      "osVer": "5.0",
      *      "uniVer": "√",
      *      "unixVer": "4.33"
      *    },
      *    "ios": {
-     *      "osVer": "12.0",
      *      "uniVer": "√",
      *      "unixVer": "4.33"
      *    },
      *    "harmony": {
-     *      "osVer": "5.0",
      *      "uniVer": "4.23",
      *      "unixVer": "4.61",
      *      "unixVaporVer": "5.0"

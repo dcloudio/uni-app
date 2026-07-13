@@ -8,14 +8,12 @@ export interface ShowLoadingSuccess {
     {
       "app": {
         "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
@@ -23,7 +21,6 @@ export interface ShowLoadingSuccess {
 	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -130,14 +127,12 @@ export type ShowLoadingOptions = {
     {
       "app": {
         "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
@@ -145,7 +140,6 @@ export type ShowLoadingOptions = {
 	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -206,19 +200,16 @@ export type ShowLoadingOptions = {
     {
       "app": {
         "android": {
-          "osVer": "x",
           "uniVer": "x",
           "unixVer": "x",
           "unixVaporVer": "x"
         },
         "ios": {
-          "osVer": "x",
           "uniVer": "x",
           "unixVer": "x",
           "unixVaporVer": "x"
         },
         "harmony": {
-          "osVer": "x",
           "uniVer": "x",
           "unixVer": "x",
           "unixVaporVer": "x"
@@ -279,19 +270,16 @@ export type ShowLoadingOptions = {
     {
       "app": {
         "android": {
-          "osVer": "x",
           "uniVer": "x",
           "unixVer": "x",
           "unixVaporVer": "x"
         },
         "ios": {
-          "osVer": "12.0",
           "uniVer": "x",
           "unixVer": "5.0",
           "unixVaporVer": "5.11"
         },
         "harmony": {
-          "osVer": "x",
           "uniVer": "x",
           "unixVer": "x",
           "unixVaporVer": "x"
@@ -355,14 +343,12 @@ export type ShowLoadingOptions = {
     {
       "app": {
         "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
@@ -370,7 +356,6 @@ export type ShowLoadingOptions = {
 	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -431,14 +416,12 @@ export type ShowLoadingOptions = {
     {
       "app": {
         "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
@@ -446,7 +429,6 @@ export type ShowLoadingOptions = {
 	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -507,14 +489,12 @@ export type ShowLoadingOptions = {
     {
       "app": {
         "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
@@ -522,7 +502,6 @@ export type ShowLoadingOptions = {
 	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -591,14 +570,12 @@ export interface HideLoadingSuccess {
     {
       "app": {
         "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
@@ -606,7 +583,6 @@ export interface HideLoadingSuccess {
 	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -714,14 +690,12 @@ export type HideLoadingOptions = {
    * @uniPlatform {
       "app": {
         "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
@@ -729,7 +703,6 @@ export type HideLoadingOptions = {
 	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -790,14 +763,12 @@ export type HideLoadingOptions = {
     {
       "app": {
         "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
@@ -805,7 +776,6 @@ export type HideLoadingOptions = {
 	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -866,14 +836,12 @@ export type HideLoadingOptions = {
     {
       "app": {
         "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
@@ -881,7 +849,6 @@ export type HideLoadingOptions = {
 	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -942,14 +909,12 @@ export type HideLoadingOptions = {
     {
       "app": {
         "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
@@ -957,7 +922,6 @@ export type HideLoadingOptions = {
 	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -1037,14 +1001,12 @@ export interface Uni {
     {
       "app": {
         "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
@@ -1052,7 +1014,6 @@ export interface Uni {
 	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"
@@ -1127,14 +1088,12 @@ export interface Uni {
     {
       "app": {
         "android": {
-	        "osVer": "5.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.21"
 	      },
 	      "ios": {
-	        "osVer": "12.0",
 	        "uniVer": "x",
 	        "uniUtsPlugin": "x",
 	        "unixVer": "4.61",
@@ -1142,7 +1101,6 @@ export interface Uni {
 	        "unixVaporVer": "5.11"
 	      },
 	      "harmony": {
-	        "osVer": "5.0",
 	        "uniVer": "4.23",
 	        "unixVer": "4.61",
 	        "unixVaporVer": "5.0"

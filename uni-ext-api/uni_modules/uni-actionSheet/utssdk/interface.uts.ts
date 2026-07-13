@@ -4,14 +4,12 @@ export type Popover = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "x",
    *      "unixVaporVer": "x"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "x",
@@ -19,7 +17,6 @@ export type Popover = {
    *      "unixVaporVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "x",
    *      "unixVaporVer": "x"
@@ -79,14 +76,12 @@ export type Popover = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "x",
    *      "unixVaporVer": "x"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "x",
@@ -94,7 +89,6 @@ export type Popover = {
    *      "unixVaporVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "x",
    *      "unixVaporVer": "x"
@@ -154,14 +148,12 @@ export type Popover = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "x",
    *      "unixVaporVer": "x"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "x",
@@ -169,7 +161,6 @@ export type Popover = {
    *      "unixVaporVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "x",
    *      "unixVaporVer": "x"
@@ -229,14 +220,12 @@ export type Popover = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "x",
    *      "unixVaporVer": "x"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "x",
@@ -244,7 +233,6 @@ export type Popover = {
    *      "unixVaporVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "x",
    *      "unixVaporVer": "x"
@@ -312,14 +300,12 @@ export interface ShowActionSheetSuccess {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "3.91",
    *      "unixVaporVer": "5.21"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "4.11",
@@ -327,7 +313,6 @@ export interface ShowActionSheetSuccess {
    *      "unixVaporVer": "5.11"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -387,14 +372,12 @@ export interface ShowActionSheetSuccess {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "3.91",
    *      "unixVaporVer": "5.21"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "4.11",
@@ -402,7 +385,6 @@ export interface ShowActionSheetSuccess {
    *      "unixVaporVer": "5.11"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -466,14 +448,12 @@ export interface ShowActionSheetFail extends IUniError {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "3.91",
    *      "unixVaporVer": "5.21"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "4.11",
@@ -481,7 +461,6 @@ export interface ShowActionSheetFail extends IUniError {
    *      "unixVaporVer": "5.11"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -547,14 +526,12 @@ type ShowActionSheetCompleteCallback = (result: ShowActionSheetComplete) => void
  * @uniPlatform {
  *  "app": {
  *    "android": {
- *      "osVer": "5.0",
  *      "uniVer": "√",
  *      "uniUtsPlugin": "x",
  *      "unixVer": "3.91",
  *      "unixVaporVer": "5.21"
  *    },
  *    "ios": {
- *      "osVer": "12.0",
  *      "uniVer": "√",
  *      "uniUtsPlugin": "x",
  *      "unixVer": "4.11",
@@ -562,7 +539,6 @@ type ShowActionSheetCompleteCallback = (result: ShowActionSheetComplete) => void
  *      "unixVaporVer": "5.11"
  *    },
  *    "harmony": {
- *      "osVer": "5.0",
  *      "uniVer": "4.23",
  *      "unixVer": "4.61",
  *      "unixVaporVer": "5.0"
@@ -622,14 +598,12 @@ export type ShowActionSheetOptions = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "4.51",
    *      "unixVaporVer": "5.21"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "4.51",
@@ -637,7 +611,6 @@ export type ShowActionSheetOptions = {
    *      "unixVaporVer": "5.11"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -697,14 +670,12 @@ export type ShowActionSheetOptions = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "3.91",
    *      "unixVaporVer": "5.21"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "4.11",
@@ -712,7 +683,6 @@ export type ShowActionSheetOptions = {
    *      "unixVaporVer": "5.11"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -772,14 +742,12 @@ export type ShowActionSheetOptions = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "3.91",
    *      "unixVaporVer": "5.21"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "4.11",
@@ -787,7 +755,6 @@ export type ShowActionSheetOptions = {
    *      "unixVaporVer": "5.11"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -847,14 +814,12 @@ export type ShowActionSheetOptions = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "3.91",
    *      "unixVaporVer": "5.21"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "4.11",
@@ -862,7 +827,6 @@ export type ShowActionSheetOptions = {
    *      "unixVaporVer": "5.11"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -922,14 +886,12 @@ export type ShowActionSheetOptions = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "x",
    *      "unixVaporVer": "x"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "x",
@@ -937,7 +899,6 @@ export type ShowActionSheetOptions = {
    *      "unixVaporVer": "x"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "x",
    *      "unixVaporVer": "x"
@@ -997,14 +958,12 @@ export type ShowActionSheetOptions = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "3.91",
    *      "unixVaporVer": "5.21"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "4.11",
@@ -1012,7 +971,6 @@ export type ShowActionSheetOptions = {
    *      "unixVaporVer": "5.11"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -1072,14 +1030,12 @@ export type ShowActionSheetOptions = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "3.91",
    *      "unixVaporVer": "5.21"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "4.11",
@@ -1087,7 +1043,6 @@ export type ShowActionSheetOptions = {
    *      "unixVaporVer": "5.11"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -1147,14 +1102,12 @@ export type ShowActionSheetOptions = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "3.91",
    *      "unixVaporVer": "5.21"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "4.11",
@@ -1162,7 +1115,6 @@ export type ShowActionSheetOptions = {
    *      "unixVaporVer": "5.11"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -1222,14 +1174,12 @@ export type ShowActionSheetOptions = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "3.91",
    *      "unixVaporVer": "5.21"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "4.11",
@@ -1237,7 +1187,6 @@ export type ShowActionSheetOptions = {
    *      "unixVaporVer": "5.11"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -1297,14 +1246,12 @@ export type ShowActionSheetOptions = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "3.91",
    *      "unixVaporVer": "5.21"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "4.11",
@@ -1312,7 +1259,6 @@ export type ShowActionSheetOptions = {
    *      "unixVaporVer": "5.11"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -1372,14 +1318,12 @@ export type ShowActionSheetOptions = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "3.91",
    *      "unixVaporVer": "5.21"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "4.11",
@@ -1387,7 +1331,6 @@ export type ShowActionSheetOptions = {
    *      "unixVaporVer": "5.11"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -1447,14 +1390,12 @@ export type ShowActionSheetOptions = {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "3.91",
    *      "unixVaporVer": "5.21"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "4.11",
@@ -1462,7 +1403,6 @@ export type ShowActionSheetOptions = {
    *      "unixVaporVer": "5.11"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -1542,14 +1482,12 @@ export interface Uni {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "3.91",
    *      "unixVaporVer": "5.21"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "4.11",
@@ -1557,7 +1495,6 @@ export interface Uni {
    *      "unixVaporVer": "5.11"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
@@ -1624,14 +1561,12 @@ export interface Uni {
    * @uniPlatform {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "3.91",
    *      "unixVaporVer": "5.21"
    *    },
    *    "ios": {
-   *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
    *      "unixVer": "4.11",
@@ -1639,7 +1574,6 @@ export interface Uni {
    *      "unixVaporVer": "5.11"
    *    },
    *    "harmony": {
-   *      "osVer": "5.0",
    *      "uniVer": "4.23",
    *      "unixVer": "4.61",
    *      "unixVaporVer": "5.0"
