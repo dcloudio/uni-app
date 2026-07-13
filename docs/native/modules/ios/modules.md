@@ -85,11 +85,25 @@
 | uni-vibrate(5.08+) | uni-screenBrightness-index.swift <br> VibrateNative.swift | | |
 | uni-oauth-weixin(5.08+) | uni-oauth-weixin-index.swift <br> uni-oauth-index.swift| libWeChatSDK | CoreGraphics.framework <br> WebKit.framework <br> Security.framework |
 | uni-share-weixin(5.08+) | uni-share-weixin-index.swift <br> uni-share-index.swift | libWeChatSDK.a | CoreGraphics.framework <br> WebKit.framework <br> Security.framework |
+| uni-share-weixin(5.08+) | uni-share-weixin-index.swift <br> uni-share-index.swift | libWeChatSDK.a | CoreGraphics.framework <br> WebKit.framework <br> Security.framework |
+| uni-oauth-apple(5.21+) | uni-oauth-weixin-index.swift <br> uni-oauth-index.swift <br> uni-oauth-apple-AppleLoginNativeManager.swift |  | AuthenticationServices.framework <br> Security.framework <br> LocalAuthentication.framework |
 
 
 ### 配置uts-config.json(可选)
 
 在`DCloudUTSExtAPI`工程中新建 `uts-config.json` 文件，
+
+`uni-oauth-apple`模块需要添加如下配置
+```
+{
+	"providers": [{
+		"name": "apple",
+		"service": "oauth", 
+		"class": "UTSSDKModulesUniOauthAppleUniOAuthAppleProviderImpl"
+	}]
+}
+```  
+
 `uni-oauth-weixin`模块需要添加如下配置
 ```
 {
@@ -304,6 +318,23 @@ xcodebuild -create-xcframework -framework 真机路径/DCloudUTSExtAPI.framework
 
 ## 主工程配置
 根据资源文件中的`manifest.json`文件包含的模块名称，根据下述相关模块文档向`主工程`添加依赖以及工程配置
+
+## uni-oauth-apple
+
+### Info.plist
+1. 添加`Face ID身份验证权限描述(NSFaceIDUsageDescription)`
+```  
+<dict>
+	<key>NSFaceIDUsageDescription</key>
+	<string>应用需要使用 Face ID 进行身份验证</string>
+</dict>
+```
+![](https://web-ext-storage.dcloud.net.cn/native/doc/iOS/uni_authentication_permission.png)
+
+### Capability
+`Target -> Signing & Capabilities` 点击 左上角`+ Capability `添加`Sign in with Apple`
+![](https://web-ext-storage.dcloud.net.cn/native/doc/iOS/apple_oauth.png)
+
 
 ## uni-phoneContact
 
