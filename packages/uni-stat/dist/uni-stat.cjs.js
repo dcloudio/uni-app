@@ -990,7 +990,10 @@ const get_time = () => {
 };
 
 /**
- * 获取首次访问时间
+ * 获取首次访问时间。
+ * 仅在本地无记录时写入 fvts；**不得**清空 lvts。
+ * 历史缺陷：此处曾 dbRemove(LAST_VISIT_TIME_KEY)，会把 get_last_visit_time()
+ * 刚写入的基线删掉，导致第二次冷启动仍上报 lvts=0，同一设备被反复计为新增。
  */
 const get_first_visit_time = () => {
 	const timeStorge = dbGet(FIRST_VISIT_TIME_KEY);
@@ -1000,14 +1003,14 @@ const get_first_visit_time = () => {
 	} else {
 		time = get_time();
 		dbSet(FIRST_VISIT_TIME_KEY, time);
-		// 首次访问需要 将最后访问时间置 0
-		dbRemove(LAST_VISIT_TIME_KEY);
 	}
 	return time
 };
 
 /**
- * 最后访问时间
+ * 读取并推进最后访问时间。
+ * 读出的值用于本次上报 lvts（0 表示新用户）；读后立刻写入当前时间作为基线，
+ * 保证后续冷启动 / 续会话读到非 0，一生只计一次新增。
  */
 const get_last_visit_time = () => {
 	const timeStorge = dbGet(LAST_VISIT_TIME_KEY);
@@ -1389,7 +1392,12 @@ class Report {
   }
 
   /**
-   * 发送请求,应用维度上报
+   * 发送应用维度启动日志（lt=1）。
+   * visit 字段约定（修复 lvts=0 重复新增）：
+   *   1. 先 get_last_visit_time()：读出本次要上报的 lvts，并立刻落库当前时间作基线；
+   *   2. 再 get_first_visit_time()：只维护 fvts，且不得清空步骤 1 写入的 lvts；
+   *   3. 首启上报 lvts=0，之后冷启动 / cst=2|3 续会话必须读到非 0。
+   * odid 与 lvts 解耦：1.0 仅新用户附带；2.0 在尚未标记设备已处理时补发（不依赖 lvts）。
    * @param {Object} options 页面信息
    * @param {Boolean} type 是否立即上报
    */
@@ -1398,12 +1406,12 @@ class Report {
     this._navigationBarTitle.config = get_page_name(options.path);
     let is_opt = options.query && JSON.stringify(options.query) !== '{}';
     let query = is_opt ? '?' + JSON.stringify(options.query) : '';
+    // 必须先读 lvts 再写 fvts，保证首启仍上报 0，同时基线已落库
     const last_time = get_last_visit_time();
-    // 非老用户
-    if (last_time !== 0 || !last_time) {
-      const odid = get_odid();
-      // 1.0 处理规则
-      {
+    const odid = get_odid();
+    // 1.0：仅新用户（lvts=0）附带 odid
+    {
+      if (last_time === 0) {
         this.statData.odid = odid;
       }
     }
@@ -1416,7 +1424,7 @@ class Report {
       fvts: get_first_visit_time(),
       lvts: last_time,
       tvc: get_total_visit_count(),
-      // create session type  上报类型 ，1 应用进入 2.后台30min进入 3.页面30min进入
+      // create session type  上报类型 ，1 应用进入 2.后台超时进入 3.页面超时进入
       cst: options.cst || 1,
     });
     if (get_platform_name() === 'n') {

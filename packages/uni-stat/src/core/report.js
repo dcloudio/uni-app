@@ -322,7 +322,12 @@ export default class Report {
   }
 
   /**
-   * 发送请求,应用维度上报
+   * 发送应用维度启动日志（lt=1）。
+   * visit 字段约定（修复 lvts=0 重复新增）：
+   *   1. 先 get_last_visit_time()：读出本次要上报的 lvts，并立刻落库当前时间作基线；
+   *   2. 再 get_first_visit_time()：只维护 fvts，且不得清空步骤 1 写入的 lvts；
+   *   3. 首启上报 lvts=0，之后冷启动 / cst=2|3 续会话必须读到非 0。
+   * odid 与 lvts 解耦：1.0 仅新用户附带；2.0 在尚未标记设备已处理时补发（不依赖 lvts）。
    * @param {Object} options 页面信息
    * @param {Boolean} type 是否立即上报
    */
@@ -331,22 +336,20 @@ export default class Report {
     this._navigationBarTitle.config = get_page_name(options.path)
     let is_opt = options.query && JSON.stringify(options.query) !== '{}'
     let query = is_opt ? '?' + JSON.stringify(options.query) : ''
+    // 必须先读 lvts 再写 fvts，保证首启仍上报 0，同时基线已落库
     const last_time = get_last_visit_time()
-    // 非老用户
-    if (last_time !== 0 || !last_time) {
-      const odid = get_odid()
-      // 1.0 处理规则
-      if (__STAT_VERSION__ === '1') {
+    const odid = get_odid()
+    // 1.0：仅新用户（lvts=0）附带 odid
+    if (__STAT_VERSION__ === '1') {
+      if (last_time === 0) {
         this.statData.odid = odid
       }
-
-      // 2.0 处理规则
-      if (__STAT_VERSION__ === '2') {
-        const have_device = is_handle_device()
-        // 如果没有上报过设备信息 ，则需要上报设备信息
-        if (!have_device) {
-          this.statData.odid = odid
-        }
+    }
+    // 2.0：未处理过设备信息则补发，与是否新用户无关（避免 lvts 基线落库后无法补 odid）
+    if (__STAT_VERSION__ === '2') {
+      const have_device = is_handle_device()
+      if (!have_device) {
+        this.statData.odid = odid
       }
     }
 
@@ -358,7 +361,7 @@ export default class Report {
       fvts: get_first_visit_time(),
       lvts: last_time,
       tvc: get_total_visit_count(),
-      // create session type  上报类型 ，1 应用进入 2.后台30min进入 3.页面30min进入
+      // create session type  上报类型 ，1 应用进入 2.后台超时进入 3.页面超时进入
       cst: options.cst || 1,
     })
     if (get_platform_name() === 'n') {
