@@ -1206,13 +1206,15 @@ AI大语言模型的服务器，向客户端持续的流式输出AI推理的结�
 
 ## JSON解析注意@json
 
-由于uni-app x的强类型，导致联网获取JSON，拿到的不是js的object。
+uni-app x的Android VDOM模式是强类型，联网获取JSON，拿到的不是js的object。
 
 默认返回的是UTSJSONObject，UTSJSONObject是UTS提供的JSON数据对象，实现了js的object的JSON相关功能，但又有区别。**如果照搬js的object用法会失败**。
 
 同时request也支持泛型，返回一个开发者自定义的type。
 
-**请不熟悉强类型的开发者务必阅读教程：**[uni-app x的联网教程](../tutorial/request.md)
+**请不熟悉强类型的开发者务必阅读教程：**[uni-app x的Android VDOM联网教程](../tutorial/request.md)
+
+蒸汽模式时不要求强类型。
 
 ## 注意事项@tips
 
