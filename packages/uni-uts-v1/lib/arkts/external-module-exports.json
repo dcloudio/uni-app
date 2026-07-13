@@ -157,5 +157,70 @@
     [
       "UniShareWeixinProvider"
     ]
+  ],
+  "@uni_modules/uni-verify": [
+    [
+      "GetUniVerifyManager"
+    ],
+    [
+      "GetUniverifyManager"
+    ],
+    [
+      "UniVerifyManager"
+    ],
+    [
+      "UniVerifyManagerCustomLoginOptions"
+    ],
+    [
+      "UniVerifyManagerErrorCode"
+    ],
+    [
+      "UniVerifyManagerLoginComplete"
+    ],
+    [
+      "UniVerifyManagerLoginCompleteCallback"
+    ],
+    [
+      "UniVerifyManagerLoginFail"
+    ],
+    [
+      "UniVerifyManagerLoginFailCallback"
+    ],
+    [
+      "UniVerifyManagerLoginOptions"
+    ],
+    [
+      "UniVerifyManagerLoginStyle"
+    ],
+    [
+      "UniVerifyManagerLoginSuccess"
+    ],
+    [
+      "UniVerifyManagerLoginSuccessCallback"
+    ],
+    [
+      "UniVerifyManagerPreLoginComplete"
+    ],
+    [
+      "UniVerifyManagerPreLoginCompleteCallback"
+    ],
+    [
+      "UniVerifyManagerPreLoginFail"
+    ],
+    [
+      "UniVerifyManagerPreLoginFailCallback"
+    ],
+    [
+      "UniVerifyManagerPreLoginOptions"
+    ],
+    [
+      "UniVerifyManagerPreLoginSuccess"
+    ],
+    [
+      "UniVerifyManagerPreLoginSuccessCallback"
+    ],
+    [
+      "UniverifyManager"
+    ]
   ]
 }
