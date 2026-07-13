@@ -27,9 +27,9 @@
 | foreColor | string([string.ColorString](/uts/data-type.md#ide-string)) |   | Web: 4.18; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | switch 的滑块背景颜色 |
 | activeForeColor | string([string.ColorString](/uts/data-type.md#ide-string)) |   | Web: 4.18; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | switch 的开启状态下的滑块背景颜色 |
 | disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否禁用 |
-| thumb-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 开关选择器滑块的类名 |
-| thumb-active-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 开关选择器滑块选中的类名 |
-| switch-active-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 开关选择器选中的类名 |
+| thumb-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android(VDOM):  ; Android(Vapor): 5.21; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 开关选择器滑块的类名 |
+| thumb-active-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android(VDOM):  ; Android(Vapor): 5.21; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 开关选择器滑块选中的类名 |
+| switch-active-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android(VDOM):  ; Android(Vapor): 5.21; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 开关选择器选中的类名 |
 | @change | (event: [UniSwitchChangeEvent](#uniswitchchangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | checked 改变时触发 change 事件，event.detail={ value:checked} |
 
 #### type 的属性描述

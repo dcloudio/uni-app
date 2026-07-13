@@ -12,16 +12,15 @@
 
 创建 camera 上下文 CameraContext 对象。
 
-
 通过本API，可操作摄像头组件进行拍照、录像。
 
 参考文档：
 - [camera组件文档](../component/camera.md)
 
 ### createCameraContext 兼容性 
-| Android | iOS | HarmonyOS |
-| :- | :- | :- |
-| 4.61 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.41 | 4.61 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 
@@ -36,7 +35,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| offAndroidCameraOriginalFrame | any | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: x | 停止获取Android平台的原始帧数据 |
+| offAndroidCameraOriginalFrame | any | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS: x | 停止获取Android平台的原始帧数据 |
 #### CameraContext 的方法 @cameracontext-values 
 
 #### onCameraFrame(callback : (frame : CameraContextOnCameraFrame) => void) : CameraContextCameraFrameListener \| null; @oncameraframe
@@ -139,11 +138,11 @@ stop
 
 #### onAndroidCameraOriginalFrame(callback: (imageProxy: ImageProxy) => void): void; @onandroidcameraoriginalframe
 onAndroidCameraOriginalFrame
-获取Android平台的原始帧数据，**获取到了ImageProxy使用后一定要close，否则App会触发崩溃**
+获取Android平台的原始帧数据，**获取到了ImageProxy使用后一定要close，否则App会触发崩溃
 ##### onAndroidCameraOriginalFrame 兼容性 
-| HarmonyOS |
-| :- |
-| x |
+| 微信小程序 | HarmonyOS |
+| :- | :- |
+| 4.41 | x |
 
 ##### 参数 
 
@@ -157,9 +156,9 @@ onAndroidCameraOriginalFrame
 getCurrentZoom
 获取当前缩放级别
 ##### getCurrentZoom 兼容性 
-| HarmonyOS |
-| :- |
-| x |
+| 微信小程序 | HarmonyOS |
+| :- | :- |
+| 4.41 | x |
 
 
 
@@ -626,7 +625,7 @@ timeoutCallback
 
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.component.createCameraContext)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=createCameraContext&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/media/camera/CameraContext.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=createCameraContext&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=createCameraContext&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=createCameraContext&secondType=all&type=1)

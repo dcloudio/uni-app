@@ -25,7 +25,7 @@
 | mask-style | string([string.CSSString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 设置蒙层的样式 |
 | mask-top-style | string([string.CSSString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 遮罩顶部类 |
 | mask-bottom-style | string([string.CSSString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 遮罩底部类 |
-| mask-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 遮罩类 |
+| mask-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 遮罩类 |
 | @change | (event: [UniPickerViewChangeEvent](#unipickerviewchangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 当滚动选择，value 改变时触发 change 事件，event.detail = {value: value}；value为数组，表示 picker-view 内的 picker-view-column 当前选择的是第几项（下标从 0<br/>		开始） |
 | @pickstart | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>当滚动选择开始时候触发事件 |
 | @pickend | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>当滚动选择结束时候触发事件 |

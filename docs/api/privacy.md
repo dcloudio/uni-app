@@ -50,6 +50,7 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | needAuthorization | boolean | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 是否需要用户授权隐私协议(用户之前同意过返回false，没同意过则返回true) |
+| privacyContractName | string | 否 |  | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 隐私授权协议的名称<br/> |
 
 
 
@@ -59,7 +60,7 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.base.privacy.getPrivacySetting)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=getPrivacySetting&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/privacy/wx.getPrivacySetting.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=getPrivacySetting&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=getPrivacySetting&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=getPrivacySetting&secondType=all&type=1)

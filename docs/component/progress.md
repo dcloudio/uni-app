@@ -35,8 +35,8 @@
 | active | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否启用动画 |
 | active-mode | string | "backwards" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 动画模式 |
 | ~~color~~ | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>进度条颜色（请使用activeColor） |
-| background-color | string | "#ebebeb" | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 未选择的进度条的颜色 |
-| active-color | string | "#007aff" | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 已选择的进度条的颜色 |
+| background-color | string | "#ebebeb" | Web:  ; 微信小程序:  ; Android(VDOM):  ; Android(Vapor): 5.21; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 未选择的进度条的颜色 |
+| active-color | string | "#007aff" | Web:  ; 微信小程序:  ; Android(VDOM):  ; Android(Vapor): 5.21; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 已选择的进度条的颜色 |
 | @activeend | (event: [UniProgressActiveendEvent](#uniprogressactiveendevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 动画完成事件 |
 
 #### active-mode 的属性描述

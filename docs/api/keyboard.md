@@ -29,9 +29,9 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | (res: HideKeyboardSuccess) => void | 否 |  |   | uni.hideKeyboard成功回调函数定义 |
-| fail | (res: HideKeyboardFail) => void | 否 |  |   | uni.hideKeyboard失败回调函数定义 |
-| complete | (res: any) => void | 否 |  |   | uni.hideKeyboard完成回调函数定义 | 
+| success | (res: HideKeyboardSuccess) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.hideKeyboard成功回调函数定义 |
+| fail | (res: HideKeyboardFail) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.hideKeyboard失败回调函数定义 |
+| complete | (res: any) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.hideKeyboard完成回调函数定义 | 
 
 
 
@@ -42,7 +42,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.keyboard.hideKeyboard)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/key.html#hidekeyboard)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=hideKeyboard&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/keyboard/wx.hideKeyboard.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=hideKeyboard&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=hideKeyboard&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=hideKeyboard&secondType=all&type=1)
@@ -80,13 +80,13 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [OnKeyboardHeightChangeCallbackResult](#onkeyboardheightchangecallbackresult-values)) => void | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | uni.onKeyboardHeightChange参数定义 | 
+| callback | (res: [OnKeyboardHeightChangeCallbackResult](#onkeyboardheightchangecallbackresult-values)) => void | 是 |  | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.onKeyboardHeightChange参数定义 | 
 
 ### OnKeyboardHeightChangeCallbackResult 的属性值 @onkeyboardheightchangecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| height | number | 是 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 键盘高度 |
+| height | number | 是 |  | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 键盘高度 |
 
 
 ### 返回值 
@@ -103,7 +103,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.keyboard.onKeyboardHeightChange)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/key.html#onkeyboardheightchange)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=onKeyboardHeightChange&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/keyboard/wx.onKeyboardHeightChange.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=onKeyboardHeightChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=onKeyboardHeightChange&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=onKeyboardHeightChange&secondType=all&type=1)
@@ -150,7 +150,7 @@
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.device.keyboard.offKeyboardHeightChange)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/api/key.html#offkeyboardheightchange)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=offKeyboardHeightChange&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/keyboard/wx.offKeyboardHeightChange.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=offKeyboardHeightChange&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=offKeyboardHeightChange&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=offKeyboardHeightChange&secondType=all&type=1)

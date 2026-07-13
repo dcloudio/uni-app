@@ -51,7 +51,7 @@
 | :- | :- | :- | :- |  :-: | :- |
 | name | string | 否 | "file" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | multipart 提交时，表单的项目名，默认为 file，如果 name 不填或填的值相同，可能导致服务端读取文件时只能读取到一个文件。 |
 | uri | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 要上传文件资源的路径 |
-| file | any | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS 系统版本: x; HarmonyOS: x | 要上传的文件对象 |
+| file | any | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS uni-app x UTS 插件: 4.11; HarmonyOS: x | 要上传的文件对象 |
 
 #### UploadFileSuccess 的属性值 @uploadfilesuccess-values 
 

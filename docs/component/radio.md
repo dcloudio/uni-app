@@ -28,9 +28,9 @@
 | activeBorderColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "" | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | radio选中时的边框颜色 |
 | ~~iconColor~~ | string([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | radio的图标颜色 (使用foreColor替代) |
 | foreColor | string([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | Web: 4.18; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS:   | radio的图标颜色 |
-| icon-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 单选框图标的类名 |
-| radio-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 单选框的类名 |
-| radio-active-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 单选框选中的类名 |
+| icon-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android(VDOM):  ; Android(Vapor): 5.21; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 单选框图标的类名 |
+| radio-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android(VDOM):  ; Android(Vapor): 5.21; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 单选框的类名 |
+| radio-active-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android(VDOM):  ; Android(Vapor): 5.21; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 单选框选中的类名 |
 
 
 

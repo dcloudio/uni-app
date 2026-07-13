@@ -20,13 +20,13 @@
 | :- | :- | :- |  :-: | :- |
 | disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否禁用 |
 | hover-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "button-hover" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果 |
-| hover-stop-propagation | boolean | false | Web: x; 微信小程序: 4.41; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 指定是否阻止本节点的祖先节点出现点击态 |
+| hover-stop-propagation | boolean | false | Web: x; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 指定是否阻止本节点的祖先节点出现点击态 |
 | hover-start-time | number | 20 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按住后多久出现点击态，单位毫秒 |
 | hover-stay-time | number | 70 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手指松开后点击态保留时间，单位毫秒 |
 | size | string | "default" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按钮大小 |
 | type | string | "default" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按钮类型 |
 | plain | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 按钮是否镂空，背景色透明 |
-| loading | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 名称前是否带 loading 图标 |
+| loading | boolean | false | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 名称前是否带 loading 图标 |
 | form-type | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 用于 form 组件，点击分别会触发 form 组件的 submit/reset 事件 |
 | open-type | string |   | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 开放能力 |
 | lang | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。 |
@@ -41,8 +41,8 @@
 | public-id | string |   | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 打开公众号资料卡时，传递的号码 |
 | phone-number-no-quota-toast | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>当手机号快速验证或手机号实时验证额度用尽时，是否对用户展示“申请获取你的手机号，但该功能使用次数已达当前小程序上限，暂时无法使用”的提示，默认展示，open-type="getPhoneNumber" 或 open-type="getRealtimePhoneNumber" 时有效 |
 | createliveactivity | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>[新的一次性订阅消息下发机制](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/subscribe-message-2.html)回调，open-type=liveActivity时有效 |
-| loading-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | loading 图标的类名 |
-| loading-text-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.21; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.21 | loading 文案的类名 |
+| loading-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android(VDOM):  ; Android(Vapor): 5.21; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | loading 图标的类名 |
+| loading-text-class | string([string.ClassString](/uts/data-type.md#ide-string)) |   | Web:  ; 微信小程序:  ; Android(VDOM):  ; Android(Vapor): 5.21; iOS(VDOM):  ; iOS(Vapor): 5.21; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.21 | loading 文案的类名 |
 | ios-loading-snow | boolean | false | Web:  ; 微信小程序:  ; Android:  ; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS:   | iOS 雪花加载效果 |
 | @getuserinfo | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 用户点击该按钮时，会返回获取到的用户信息，回调的detail数据与uni.getUserInfo返回的一致 |
 | @contact | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 客服消息回调 |

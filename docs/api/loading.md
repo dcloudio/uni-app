@@ -31,7 +31,7 @@
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | title | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 提示的内容，长度与 icon 取值有关。 |
-| mask | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 是否显示透明蒙层，防止触摸穿透，默认：false |
+| mask | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否显示透明蒙层，防止触摸穿透，默认：false |
 | success | (res: [ShowLoadingSuccess](#showloadingsuccess-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.showLoading成功回调函数定义 |
 | fail | (res: [ShowLoadingFail](#showloadingfail-values)) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.showLoading失败回调函数定义 |
 | complete | (res: any) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.showLoading完成回调函数定义 | 
