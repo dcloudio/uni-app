@@ -188,15 +188,15 @@ export function supportedEnumReason(
   v: string | number,
   items: unknown[]
 ) {
-  return (
+  const reason =
     'ERROR: property value `' +
     v +
     '` is not supported for `' +
     hyphenateStyleProperty(k) +
-    '` (supported values are: `' +
-    items.join('`|`') +
-    '`)'
-  )
+    '`'
+  return items.length
+    ? reason + ' (supported values are: `' + items.join('`|`') + '`)'
+    : reason
 }
 
 export function supportedValueWithTipsReason(
@@ -292,6 +292,8 @@ export function normalizeReasons(
     }
   }
   if (enums.length > 0) {
+    const unsupportedReason = supportedEnumReason(k, v, [])
+    reasons = reasons.filter((reason) => reason !== unsupportedReason)
     enums = [...new Set(enums)]
     reasons.push(supportedEnumReason(k, v, enums))
   }

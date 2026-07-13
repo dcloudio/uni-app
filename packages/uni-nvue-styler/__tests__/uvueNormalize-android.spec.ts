@@ -135,7 +135,7 @@ borderRightStyle: abc;
     expect(messages[2]).toEqual(
       expect.objectContaining({
         type: 'warning',
-        text: 'ERROR: property value `padding-box` is not supported for `background-clip` (supported values are: ``)',
+        text: 'ERROR: property value `padding-box` is not supported for `background-clip`',
       })
     )
     expect(messages[3]).toEqual(

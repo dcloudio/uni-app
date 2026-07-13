@@ -46,13 +46,14 @@ function defaultValueReason(k, v) {
         '` (could be removed)');
 }
 function supportedEnumReason(k, v, items) {
-    return ('ERROR: property value `' +
+    const reason = 'ERROR: property value `' +
         v +
         '` is not supported for `' +
         hyphenateStyleProperty(k) +
-        '` (supported values are: `' +
-        items.join('`|`') +
-        '`)');
+        '`';
+    return items.length
+        ? reason + ' (supported values are: `' + items.join('`|`') + '`)'
+        : reason;
 }
 function supportedValueWithTipsReason(k, v, tips) {
     return ('ERROR: property value `' +
