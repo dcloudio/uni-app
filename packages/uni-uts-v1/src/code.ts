@@ -862,42 +862,52 @@ function createParams(tsParams: TsFnParameter[]) {
 
 async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
   const isX = process.env.UNI_APP_X === 'true'
+  const platform = options.platform
   // 优先合并 ios + android，如果没有，查找根目录 index.uts
-  const iosDecls = (
-    await parseFile(
-      options.platform === 'app-ios',
-      resolvePlatformIndex('app-ios', module, options),
-      options,
-      options.iosPreprocessor
-    )
-  ).filter((decl) => {
-    if (decl.type === 'Class') {
-      if (decl.isHook) {
-        options.iOSHookClass = options.namespace + capitalize(decl.cls)
-        return false
-      }
-    }
-    return true
-  })
-  const androidDecls = (
-    await parseFile(
-      options.platform === 'app-android',
-      resolvePlatformIndex('app-android', module, options),
-      options,
-      options.androidPreprocessor
-    )
-  ).filter((decl) => {
-    if (decl.type === 'Class') {
-      if (decl.isHook) {
-        options.androidHookClass =
-          parseKotlinPackageWithPluginId(options.id, options.is_uni_modules) +
-          '.' +
-          decl.cls
-        return false
-      }
-    }
-    return true
-  })
+  const iosDecls =
+    !isX || platform === 'app-ios'
+      ? (
+          await parseFile(
+            options.platform === 'app-ios',
+            resolvePlatformIndex('app-ios', module, options),
+            options,
+            options.iosPreprocessor
+          )
+        ).filter((decl) => {
+          if (decl.type === 'Class') {
+            if (decl.isHook) {
+              options.iOSHookClass = options.namespace + capitalize(decl.cls)
+              return false
+            }
+          }
+          return true
+        })
+      : []
+  const androidDecls =
+    !isX || platform === 'app-android'
+      ? (
+          await parseFile(
+            options.platform === 'app-android',
+            resolvePlatformIndex('app-android', module, options),
+            options,
+            options.androidPreprocessor
+          )
+        ).filter((decl) => {
+          if (decl.type === 'Class') {
+            if (decl.isHook) {
+              options.androidHookClass =
+                parseKotlinPackageWithPluginId(
+                  options.id,
+                  options.is_uni_modules
+                ) +
+                '.' +
+                decl.cls
+              return false
+            }
+          }
+          return true
+        })
+      : []
   let decls: ProxyDecl[] = []
   if (isX) {
     decls = options.platform === 'app-android' ? androidDecls : iosDecls
@@ -1207,6 +1217,51 @@ function parseAst(
       }
     }
   })
+
+  // 处理interface内的方法return另一个interface的情况
+  let interfacesToTraverse: typeof types.interface = types.interface
+  do {
+    const tempInterfaces = interfacesToTraverse
+    interfacesToTraverse = {}
+    Object.keys(tempInterfaces).forEach((name) => {
+      const options = tempInterfaces[name]
+      if (options.returned) {
+        const decl = options.decl
+        const elements = parseInterfaceBody(types, decl)
+        elements.forEach((item) => {
+          let returnType: TsType | undefined = undefined
+          if (item.type === 'TsMethodSignature') {
+            if (item.key.type === 'Identifier') {
+              returnType = item.typeAnn?.typeAnnotation
+            }
+          } else if (
+            item.type === 'TsPropertySignature' ||
+            item.type === 'TsGetterSignature'
+          ) {
+            if (item.key.type === 'Identifier') {
+              returnType = item.typeAnnotation?.typeAnnotation
+            }
+          }
+          if (returnType) {
+            parseReturnInterfaceWithCallback(
+              types,
+              returnType,
+              (interfaceName) => {
+                if (hasOwn(types.interface, interfaceName)) {
+                  const returnOptions = types.interface[interfaceName]
+                  if (!returnOptions.returned) {
+                    returnOptions.returned = true
+                    interfacesToTraverse[interfaceName] = returnOptions
+                  }
+                }
+              }
+            )
+          }
+        })
+      }
+    })
+  } while (Object.keys(interfacesToTraverse).length > 0)
+
   const interfaces: ProxyInterface[] = []
   Object.keys(types.interface).forEach((name) => {
     const options = types.interface[name]
@@ -1415,12 +1470,16 @@ function resolveFunctionParams(
   return result
 }
 
-function parseReturnInterface(types: Types, returnType: TsType): string {
+function parseReturnInterfaceWithCallback(
+  types: Types,
+  returnType: TsType,
+  callback: (interfaceName: string) => void
+): string {
   switch (returnType.type) {
     case 'TsTypeReference':
       if (returnType.typeName.type === 'Identifier') {
         if (hasOwn(types.interface, returnType.typeName.value)) {
-          types.interface[returnType.typeName.value].returned = true
+          callback(returnType.typeName.value)
           return returnType.typeName.value
         }
       }
@@ -1430,13 +1489,27 @@ function parseReturnInterface(types: Types, returnType: TsType): string {
         if (type.type === 'TsKeywordType') {
           continue
         }
-        return parseReturnInterface(types, type)
+        return parseReturnInterfaceWithCallback(types, type, callback)
       }
       break
     case 'TsParenthesizedType':
-      return parseReturnInterface(types, returnType.typeAnnotation)
+      return parseReturnInterfaceWithCallback(
+        types,
+        returnType.typeAnnotation,
+        callback
+      )
   }
   return ''
+}
+
+function parseReturnInterface(types: Types, returnType: TsType): string {
+  return parseReturnInterfaceWithCallback(
+    types,
+    returnType,
+    (interfaceName) => {
+      types.interface[interfaceName].returned = true
+    }
+  )
 }
 
 function genFunctionDeclaration(
