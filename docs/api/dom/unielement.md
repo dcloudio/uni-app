@@ -15,12 +15,12 @@
 | :- | :- | :- | :- |  :-: | :- |
 | id | string | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 只读属性，当前元素的标识符 |
 | isConnected | boolean | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素是否与 DOM 树连接 |
-| attributes | Map\<string, any> | 是 |  | Web: 4.0; 微信小程序: x; Android(VDOM): 4.0; Android(Vapor): x; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素上所有属性元素的集合 |
-| classList | Array&lt;string&gt; | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS:   | 只读属性，当前元素 class 属性的动态集合 |
+| attributes | Map\<string, any> | 是 |  | Web: 4.0; 微信小程序: x; Android(VDOM): 4.0; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; iOS uni-app x UTS 插件: 4.25; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 只读属性，当前元素上所有属性元素的集合 |
+| classList | Array&lt;string&gt; | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 | 只读属性，当前元素 class 属性的动态集合 |
 | dataset | any | 是 |  | Web: 4.0; 微信小程序: 4.41 仅在event对象内的target上可用; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 | 只读属性，当前元素上自定义数据属性（data-*）的集合 |
 | children | Array&lt;[UniElement](/api/dom/unielement.md)&gt; | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素包含的子元素的集合 |
-| firstChild | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS:   | 只读属性，当前元素的第一个子元素，如果元素是无子元素，则返回 null |
-| lastChild | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS:   | 只读属性，当前元素的最后一个子元素，如果没有子元素，则返回 null |
+| firstChild | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素的第一个子元素，如果元素是无子元素，则返回 null |
+| lastChild | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素的最后一个子元素，如果没有子元素，则返回 null |
 | parentElement | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素在 DOM 树中的父元素，如果没有父元素（如未添加到DOM树中），则返回null。 |
 | nextElementSibling | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素在 DOM 树中紧跟在其后面的同级元素，如果当前元素为最后一个元素，则返回 null |
 | offsetLeft | number | 是 |  | Web: 4.0; 微信小程序: 4.41 仅在event对象内的target上可用; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，当前元素左上角相对于其定位父元素内边框（Border内侧）左边缘的逻辑像素值 |
@@ -34,7 +34,7 @@
 | scrollTop | number | 是 |  | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 获取或修改当前元素竖向滚动逻辑像素值，仅scroll-view、list-view可滚动组件组件支持，其他组件修改无效、获取时返回 0 |
 | tagName | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，获取当前元素的标签名 |
 | uniPage | [UniPage](/api/unipage.md) | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 | 只读属性，当前元素所属的页面对象 |
-| innerHTML | string | 是 |  | Web: x; 微信小程序: x; Android: 4.84; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 只读属性，当前元素内部所有子元素（不包括注释节点）的 HTML 内容 |
+| innerHTML | string | 是 |  | Web: x; 微信小程序: x; Android(VDOM): 4.84; Android(Vapor): x; iOS: x; iOS uni-app x UTS 插件: x; HarmonyOS: x | 只读属性，当前元素内部所有子元素（不包括注释节点）的 HTML 内容 |
 
 
 #### dataset@dataset
@@ -58,9 +58,9 @@
 将一个元素添加到指定父元素的子元素列表的末尾处。如果将被插入的元素已经存在于当前文档的文档树中，那么将会它从原先的位置移动到新的位置。
 
 ##### appendChild 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | 4.0 | 4.11 | 4.25 | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 4.0 | x | 4.11 | x | 4.25 | 4.61 | x |
 
 
 ##### 参数 
@@ -79,9 +79,9 @@
 在参考元素之前插入一个拥有指定父元素的子元素。如果给定的子元素是对文档中现有元素的引用，insertBefore() 会将其从当前位置移动到新位置。
 
 ##### insertBefore 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | 4.0 | 4.11 | 4.25 | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 4.0 | x | 4.11 | x | 4.25 | 4.61 | x |
 
 
 ##### 参数 
@@ -107,9 +107,9 @@
 将一个元素添加到指定父元素的子元素列表的末尾处 功能等同于appendChild
 
 ##### insertBefore 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | 4.0 | 4.11 | 4.25 | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 4.0 | x | 4.11 | x | 4.25 | 4.61 | x |
 
 
 ##### 参数 
@@ -537,9 +537,9 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
 返回该元素是否包含有指定的属性，属性存在则返回true，否则返回false。
 
 ##### hasAttribute 兼容性 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | 4.0 | x | 4.11 | 4.25 | 4.61 |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 4.0 | x | 4.11 | x | 4.25 | 4.61 | x |
 
 
 ##### 参数 
@@ -585,9 +585,9 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
 获取元素android原生view 可能返回null
 
 ##### getAndroidView 兼容性 
-| Web | 微信小程序 | Android | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | x | 4.25 | x | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| x | x | 4.25 | x | x | x |
 
 
 
@@ -626,9 +626,9 @@ if(element != null) {
 获取元素android原生view 通过泛型定义view类型 可能返回null
 
 ##### getAndroidView 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | 4.25 | x | x | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | x | 4.25 | x | x | x | x |
 
 
 
@@ -677,9 +677,9 @@ if(webViewElement != null) {
 获取元素android原生activity 可能返回null
 
 ##### getAndroidActivity 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | 4.25 | x | x | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | x | 4.25 | x | x | x | x |
 
 
 
@@ -1475,9 +1475,9 @@ if (view != null && view instanceof WKWebView) {
 从元素中删除一个子元素，返回删除的元素。
 
 ##### removeChild 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | 4.0 | 4.11 | 4.25 | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 4.0 | x | 4.11 | x | 4.25 | 4.61 | x |
 
 
 ##### 参数 
@@ -1502,9 +1502,9 @@ if (view != null && view instanceof WKWebView) {
 把元素对象从它所属的 DOM 树中删除。
 
 ##### remove 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | 4.0 | 4.11 | 4.25 | 4.61 | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | iOS uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 4.0 | x | 4.11 | x | 4.25 | 4.61 | x |
 
 
 
@@ -2120,9 +2120,9 @@ if (view != null && view instanceof WKWebView) {
 获取元素所属的页面对象  **请使用 uniPage 属性**
 
 ##### getPage 兼容性 
-| Web | 微信小程序 | Android | iOS |
-| :- | :- | :- | :- |
-| 4.31 | x | 4.31 | 4.31 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.31 | x | 4.31 | 4.31 | 4.61 |
 
 
 
