@@ -25,7 +25,7 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS | HarmonyOS UTS 插件 |
+| HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- |
 | 4.61 | 4.61 |
 
@@ -59,7 +59,7 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS | HarmonyOS UTS 插件 |
+| HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- |
 | 4.61 | 4.61 |
 
@@ -89,9 +89,9 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS | HarmonyOS UTS 插件 |
-| :- | :- |
-| x |  |
+| HarmonyOS |
+| :- |
+| x |
 
 
 **uni-app 兼容性**
@@ -119,7 +119,7 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS UTS 插件 |
+| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- | :- |
 | 5.0.0 (12) | 4.71 | 4.71 |
 
@@ -149,7 +149,7 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS | HarmonyOS UTS 插件 |
+| HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- |
 | 4.61 | 4.61 |
 
@@ -179,7 +179,7 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS UTS 插件 |
+| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- | :- |
 | 5.0.0 (12) | 4.71 | 4.71 |
 
@@ -213,7 +213,7 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS | HarmonyOS UTS 插件 |
+| HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- |
 | 4.61 | 4.61 |
 
@@ -243,7 +243,7 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS | HarmonyOS UTS 插件 |
+| HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- |
 | 4.61 | 4.61 |
 
@@ -281,7 +281,7 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS UTS 插件 |
+| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- | :- |
 | 5.0.0 (12) | 4.71 | 4.71 |
 
@@ -315,7 +315,7 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS UTS 插件 |
+| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- | :- |
 | 5.0.0 (12) | 4.71 | 4.71 |
 
@@ -349,7 +349,7 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS | HarmonyOS UTS 插件 |
+| HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- |
 | 4.61 | 4.61 |
 
@@ -383,7 +383,7 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS | HarmonyOS UTS 插件 |
+| HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- |
 | 4.61 | 4.61 |
 
@@ -417,7 +417,7 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS | HarmonyOS UTS 插件 |
+| HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- |
 | 4.61 | 4.61 |
 
@@ -451,7 +451,7 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS | HarmonyOS UTS 插件 |
+| HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- |
 | 4.61 | 4.61 |
 
@@ -491,7 +491,7 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS UTS 插件 |
+| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- | :- |
 | 5.0.0 (12) | 4.71 | 4.71 |
 
@@ -531,7 +531,7 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS UTS 插件 |
+| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- | :- |
 | 5.0.0 (12) | 4.71 | 4.71 |
 
@@ -567,7 +567,7 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS | HarmonyOS UTS 插件 |
+| HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- |
 | 4.61 | 4.61 |
 
@@ -601,7 +601,7 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS UTS 插件 |
+| HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- | :- |
 | 5.0.0 (12) | 4.71 | 4.71 |
 

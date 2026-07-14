@@ -109,32 +109,32 @@ onUploadProgress
 
 ##### sourceType 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| album |  |
-| camera |  |
+| 合法值 |
+| :- |
+| album |
+| camera |
 
 ##### sizeType 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| original |  |
-| compressed |  |
+| 合法值 |
+| :- |
+| original |
+| compressed |
 
 ##### camera 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| front |  |
-| back |  |
+| 合法值 |
+| :- |
+| front |
+| back |
 
 ##### type 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| image |  |
-| video |  |
-| all |  | 
+| 合法值 |
+| :- |
+| image |
+| video |
+| all | 
 
 ### UniCloudChooseAndUploadFileOptions 的方法 @unicloudchooseanduploadfileoptions-values 
 

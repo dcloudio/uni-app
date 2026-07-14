@@ -57,8 +57,8 @@ uni-app x 蒸汽模式的rich-text native，应该是业内最佳的富文本呈
 | space | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>显示连续空格 |
 | ~~user-select~~ | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>文本是否可选，该属性会使节点显示为 block。已废弃，请使用 selectable |
 | selection-highlight-color | string |   |   |   |
-| selection-handle-color | string | "#4285F4FF" | Web:  ; 微信小程序:  ; Android(VDOM):  ; Android(Vapor): 5.21; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 高亮手柄颜色 |
-| selection-background-color | string | "#33B5E566" | Web:  ; 微信小程序:  ; Android(VDOM):  ; Android(Vapor): 5.21; iOS(VDOM):  ; iOS(Vapor): 5.11; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 | 高亮背景颜色 |
+| selection-handle-color | string | "#4285F4FF" | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 高亮手柄颜色 |
+| selection-background-color | string | "#33B5E566" | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 高亮背景颜色 |
 | @itemclick | (event: [UniRichTextItemClickEvent](#unirichtextitemclickevent)) => void |   | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.71 | 内容点击事件 |
 
 #### mode 的属性描述

@@ -48,8 +48,8 @@
 | android-nested-scroll | string | "all" | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 设置嵌套滚动方向 |
 | disable-user-select-menu | boolean | false | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.84; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 设置是否禁用文本选择时弹出的系统菜单 |
 | ios-allows-inline-media-playback | boolean | false | Web: x; 微信小程序: x; Android: x; iOS: 5.08; HarmonyOS: x | 设置是否允许内联播放(禁止使用系统播放器全屏播放) |
-| dark-mode | boolean | true | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): x |   |
-| ios-allows-inline-media-playback | boolean |   | Web:  ; 微信小程序:  ; Android:  ; iOS: 5.07; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): x |   |
+| dark-mode | boolean | true | HarmonyOS(Vapor): x |   |
+| ios-allows-inline-media-playback | boolean |   | iOS: 5.07; HarmonyOS(Vapor): x |   |
 | @message | (event: [UniWebViewMessageEvent](#uniwebviewmessageevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 网页向应用 postMessage 时触发。e.detail = { data } |
 | @error | (event: [UniWebViewErrorEvent](#uniwebviewerrorevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 网页加载错误时触发。e.detail = { errSubject, errCode, errMsg, url, fullUrl, src } |
 | @load | (event: [UniWebViewLoadEvent](#uniwebviewloadevent)) => void |   | Web: 4.72; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 网页加载完成后触发。e.detail = { url, src } |
@@ -58,7 +58,7 @@
 | @download | (event: [UniWebViewDownloadEvent](#uniwebviewdownloadevent)) => void |   | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 点击网页中可下载链接时触发。e.detail = { url, userAgent, contentDisposition, mimetype, contentLength } |
 | @contentheightchange | (event: [UniWebViewContentHeightChangeEvent](#uniwebviewcontentheightchangeevent)) => void |   | Web: x; 微信小程序: x; Android: 4.63; iOS: 4.63; HarmonyOS: 4.63 | 网页内容高度变化时触发。e.detail = { height } |
 | @didterminate | (event: [UniWebViewDidTerminateEvent](#uniwebviewdidterminateevent)) => void |   | Web: x; 微信小程序: x; Android: x; iOS: 5.0; HarmonyOS: x | 检测到web-view压后台再回来出现白屏时触发 |
-| @onWebViewServiceMessage | Event |   | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS(VDOM):  ; HarmonyOS(Vapor): 5.0 |   |
+| @onWebViewServiceMessage | Event |   | HarmonyOS(Vapor): 5.0 |   |
 
 #### android-nested-scroll 的属性描述
 
@@ -124,11 +124,11 @@ UniWebViewErrorEvent -- Extends --> UniCustomEvent&ltUniWebViewErrorEventDetail&
 | src | string | 是 |  |   | 加载错误的网页链接，完整链接，4.13版本起支持 |
 
 ###### 的属性值 @errcode-values
-| 合法值 | 描述 |
-| :- | :- |
-| 100001 |  |
-| 100002 |  |
-| 100003 |  |
+| 合法值 |
+| :- |
+| 100001 |
+| 100002 |
+| 100003 |
 #### UniWebViewLoadEvent
 
 ```mermaid

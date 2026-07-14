@@ -33,7 +33,7 @@ UniNativeViewElement -- Extends --> UniElement
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| view | View | 是 |  | Web:  ; 微信小程序:  ; Android:  ; iOS: x; HarmonyOS: x |  | 
+| view | View | 是 |  | iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -45,7 +45,7 @@ UniNativeViewElement -- Extends --> UniElement
 绑定IOS平台原生view
 
 ##### bindIOSView 兼容性 
-| Android | iOS | iOS uni-app x UTS 插件 | HarmonyOS |
+| Android | iOS | iOS(VDOM) uni-app x UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- |
 | x | x | 4.31 | x |
 
@@ -54,7 +54,7 @@ UniNativeViewElement -- Extends --> UniElement
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| view | UIView | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  | 
+| view | UIView | 是 |  | Android: x; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -75,7 +75,7 @@ UniNativeViewElement -- Extends --> UniElement
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| node | FrameNode | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  | 
+| node | FrameNode | 是 |  | Android: x; iOS: x |  | 
 
 
 
@@ -96,8 +96,8 @@ UniNativeViewElement -- Extends --> UniElement
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| builder | WrappedBuilder\<\[options: O\] | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  |
-| options | ESObject | 否 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  | 
+| builder | WrappedBuilder\<\[options: O\] | 是 |  | Android: x; iOS: x |  |
+| options | ESObject | 否 |  | Android: x; iOS: x |  | 
 
 
 ##### 返回值 
@@ -168,7 +168,7 @@ UniNativeViewElement -- Extends --> UniElement
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| controller | T | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   |  | 
+| controller | T | 是 |  | Android: x; iOS: x |  | 
 
 
 

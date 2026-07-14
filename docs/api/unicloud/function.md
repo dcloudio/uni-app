@@ -26,12 +26,12 @@
 
 ##### secretType 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| request |  |
-| response |  |
-| both |  |
-| none |  | 
+| 合法值 |
+| :- |
+| request |
+| response |
+| both |
+| none | 
 
 
 ### 返回值 

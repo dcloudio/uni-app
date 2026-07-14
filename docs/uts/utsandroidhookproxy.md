@@ -23,13 +23,13 @@ uts 插件创建时的回调。<br/>     对应原生 Application onCreate 函�
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | x | 3.97 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | 3.97 |
 

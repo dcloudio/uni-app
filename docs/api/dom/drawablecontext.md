@@ -55,12 +55,12 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 圆心的X轴坐标 |
-| y | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 圆心的Y轴坐标 |
-| radius | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 圆弧的半径 |
-| startAngle | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 圆弧的起始点，x 轴方向开始计算，单位为弧度 |
-| endAngle | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 圆弧的终点，单位为弧度 |
-| anticlockwise | boolean | 否 | true | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 圆弧绘制方向，true：逆时针绘制，false：顺时针绘制。 | 
+| x | number | 是 |  | Web: x; 微信小程序: x | 圆心的X轴坐标 |
+| y | number | 是 |  | Web: x; 微信小程序: x | 圆心的Y轴坐标 |
+| radius | number | 是 |  | Web: x; 微信小程序: x | 圆弧的半径 |
+| startAngle | number | 是 |  | Web: x; 微信小程序: x | 圆弧的起始点，x 轴方向开始计算，单位为弧度 |
+| endAngle | number | 是 |  | Web: x; 微信小程序: x | 圆弧的终点，单位为弧度 |
+| anticlockwise | boolean | 否 | true | Web: x; 微信小程序: x | 圆弧绘制方向，true：逆时针绘制，false：顺时针绘制。 | 
 
 
 
@@ -81,8 +81,8 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 点的X轴坐标 |
-| y | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 点的Y轴坐标 | 
+| x | number | 是 |  | Web: x; 微信小程序: x | 点的X轴坐标 |
+| y | number | 是 |  | Web: x; 微信小程序: x | 点的Y轴坐标 | 
 
 
 
@@ -103,10 +103,10 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 矩形起点的X轴坐标 |
-| y | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 矩形起点的Y轴坐标 |
-| width | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 矩形宽度 |
-| height | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 矩形高度 | 
+| x | number | 是 |  | Web: x; 微信小程序: x | 矩形起点的X轴坐标 |
+| y | number | 是 |  | Web: x; 微信小程序: x | 矩形起点的Y轴坐标 |
+| width | number | 是 |  | Web: x; 微信小程序: x | 矩形宽度 |
+| height | number | 是 |  | Web: x; 微信小程序: x | 矩形高度 | 
 
 
 
@@ -127,8 +127,8 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 线终点的X轴坐标 |
-| y | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 线终点的Y轴坐标 | 
+| x | number | 是 |  | Web: x; 微信小程序: x | 线终点的X轴坐标 |
+| y | number | 是 |  | Web: x; 微信小程序: x | 线终点的Y轴坐标 | 
 
 
 
@@ -181,10 +181,10 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 矩形起点的X轴坐标 |
-| y | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 矩形起点的Y轴坐标 |
-| width | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 矩形宽度 |
-| height | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 矩形高度 | 
+| x | number | 是 |  | Web: x; 微信小程序: x | 矩形起点的X轴坐标 |
+| y | number | 是 |  | Web: x; 微信小程序: x | 矩形起点的Y轴坐标 |
+| width | number | 是 |  | Web: x; 微信小程序: x | 矩形宽度 |
+| height | number | 是 |  | Web: x; 微信小程序: x | 矩形高度 | 
 
 
 
@@ -205,9 +205,9 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| text | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 要绘制的字符 |
-| x | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 字符开始绘制的X轴坐标 |
-| y | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 字符开始绘制的Y轴坐标 | 
+| text | string | 是 |  | Web: x; 微信小程序: x | 要绘制的字符 |
+| x | number | 是 |  | Web: x; 微信小程序: x | 字符开始绘制的X轴坐标 |
+| y | number | 是 |  | Web: x; 微信小程序: x | 字符开始绘制的Y轴坐标 | 
 
 
 
@@ -228,7 +228,7 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| fillRule | string | 否 | nonzero | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 填充规则。可取值：`nonzero`非零环绕规则；`evenodd`奇偶环绕规则。 | 
+| fillRule | string | 否 | nonzero | Web: x; 微信小程序: x | 填充规则。可取值：`nonzero`非零环绕规则；`evenodd`奇偶环绕规则。 | 
 
 
 
@@ -249,10 +249,10 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 矩形起点的X轴坐标 |
-| y | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 矩形起点的Y轴坐标 |
-| width | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 矩形宽度 |
-| height | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 矩形高度 | 
+| x | number | 是 |  | Web: x; 微信小程序: x | 矩形起点的X轴坐标 |
+| y | number | 是 |  | Web: x; 微信小程序: x | 矩形起点的Y轴坐标 |
+| width | number | 是 |  | Web: x; 微信小程序: x | 矩形宽度 |
+| height | number | 是 |  | Web: x; 微信小程序: x | 矩形高度 | 
 
 
 
@@ -273,9 +273,9 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| text | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 要绘制的字符 |
-| x | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 字符开始绘制的X轴坐标 |
-| y | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 字符开始绘制的Y轴坐标 | 
+| text | string | 是 |  | Web: x; 微信小程序: x | 要绘制的字符 |
+| x | number | 是 |  | Web: x; 微信小程序: x | 字符开始绘制的X轴坐标 |
+| y | number | 是 |  | Web: x; 微信小程序: x | 字符开始绘制的Y轴坐标 | 
 
 
 
@@ -328,7 +328,7 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| segments | number[\] | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 一组描述交替绘制线段和间距长度的数字。 | 
+| segments | number[\] | 是 |  | Web: x; 微信小程序: x | 一组描述交替绘制线段和间距长度的数字。 | 
 
 
 
@@ -349,12 +349,12 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| cp1x | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 第一个贝塞尔控制点的 x 坐标 |
-| cp1y | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 第一个贝塞尔控制点的 y 坐标 |
-| cp2x | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 第二个贝塞尔控制点的 x 坐标 |
-| cp2y | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 第二个贝塞尔控制点的 y 坐标 |
-| x | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 结束点的 x 坐标 |
-| y | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   | 结束点的 y 坐标 | 
+| cp1x | number | 是 |  | Web: x; 微信小程序: x | 第一个贝塞尔控制点的 x 坐标 |
+| cp1y | number | 是 |  | Web: x; 微信小程序: x | 第一个贝塞尔控制点的 y 坐标 |
+| cp2x | number | 是 |  | Web: x; 微信小程序: x | 第二个贝塞尔控制点的 x 坐标 |
+| cp2y | number | 是 |  | Web: x; 微信小程序: x | 第二个贝塞尔控制点的 y 坐标 |
+| x | number | 是 |  | Web: x; 微信小程序: x | 结束点的 x 坐标 |
+| y | number | 是 |  | Web: x; 微信小程序: x | 结束点的 y 坐标 | 
 
 
 

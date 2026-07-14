@@ -38,30 +38,30 @@
 | success | (result: [SetNavigationBarColorSuccess](#setnavigationbarcolorsuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
 | fail | (error: [SetNavigationBarColorFail](#setnavigationbarcolorfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
 | complete | (res: [SetNavigationBarColorComplete](#setnavigationbarcolorcomplete-values)) => void | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| animation | **SetNavigationBarColorOptionsAnimation** | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 动画效果<br/> |
+| animation | **SetNavigationBarColorOptionsAnimation** | 否 |  | 微信小程序: 4.41 | 动画效果<br/> |
 
 ##### frontColor 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| #ffffff |  |
-| #000000 |  |
+| 合法值 |
+| :- |
+| #ffffff |
+| #000000 |
 
 ##### animation 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| duration | number | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 动画变化时间，单位 ms<br/> |
-| timingFunc | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 动画变化方式<br/><br/>可选值：<br/>- 'linear': 动画从头到尾的速度是相同的;<br/>- 'easeIn': 动画以低速开始;<br/>- 'easeOut': 动画以低速结束;<br/>- 'easeInOut': 动画以低速开始和结束;<br/> |
+| duration | number | 否 |  | 微信小程序: 4.41 | 动画变化时间，单位 ms<br/> |
+| timingFunc | string | 否 |  | 微信小程序: 4.41 | 动画变化方式<br/><br/>可选值：<br/>- 'linear': 动画从头到尾的速度是相同的;<br/>- 'easeIn': 动画以低速开始;<br/>- 'easeOut': 动画以低速结束;<br/>- 'easeInOut': 动画以低速开始和结束;<br/> |
 
 ###### timingFunc 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| linear |  |
-| easeIn |  |
-| easeOut |  |
-| easeInOut |  | 
+| 合法值 |
+| :- |
+| linear |
+| easeIn |
+| easeOut |
+| easeInOut | 
 
 #### SetNavigationBarColorSuccess 的属性值 @setnavigationbarcolorsuccess-values 
 
@@ -215,7 +215,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 
 
 ## Bug & Tips @tips

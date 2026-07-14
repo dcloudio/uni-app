@@ -77,14 +77,14 @@ list-view和scroll-view都是滚动组件，list适用于长列表场景，其�
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| nested-scroll-view | Web: x; 微信小程序:  ; Android: 4.11; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 嵌套滚动 |
+| nested-scroll-view | Web: x; Android: 4.11; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 嵌套滚动 |
 
 #### refresher-default-style 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| black | Web:  ; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 深颜色雪花样式 |
-| white | Web:  ; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 浅白色雪花样式 |
+| black | 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 深颜色雪花样式 |
+| white | 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 浅白色雪花样式 |
 | none | Web: 4.11; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 不使用默认样式 |
 
 

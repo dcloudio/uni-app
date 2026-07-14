@@ -17,16 +17,16 @@ uni-app x 目前不提供内置模块选择，而是提供了摇树机制自动�
 | description | string |  | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 应用描述 |
 | versionName | string |  | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 应用版本名称 |
 | versionCode | integer |  | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 应用版本号，必须是整数，取值范围1~2147483647；升级时必须高于上一次设置的值。 |
-| locale | '' |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 默认语言 |
-| fallbackLocale | '' |  | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 默认回退语言 |
-| uni-app-x | [uni-app-x 配置项列表](#manifest-uni-app-x) |  | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.21; HarmonyOS: 4.61 | 存在uni-app-x节点则表示为uni-app x项目 |
+| locale | '' |  | Web: x; Android: x; iOS: x | 默认语言 |
+| fallbackLocale | '' |  | Web: x; Android: x; iOS: x | 默认回退语言 |
+| uni-app-x | [uni-app-x 配置项列表](#manifest-uni-app-x) |  | Web: 4.0; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.21; HarmonyOS: 4.61 | 存在uni-app-x节点则表示为uni-app x项目 |
 | app | [app 配置项列表](#manifest-app) |  | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | App平台（原生App）配置 |
 | app-android | [app-android 配置项列表](#manifest-app-android) |  | Web: x; 微信小程序: x; Android: 4.71; iOS: x; HarmonyOS: x | App-Android平台配置 |
 | app-ios | [app-ios 配置项列表](#manifest-app-ios) |  | Web: x; 微信小程序: x; Android: x; iOS: 4.71; HarmonyOS: x | iOS App平台配置 |
 | app-harmony | [app-harmony 配置项列表](#manifest-app-harmony) |  | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | HarmonyOS平台配置 |
 | web | [web 配置项列表](#manifest-web) |  | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | Web平台配置 |
 | mp-weixin | [mp-weixin 配置项列表](#manifest-mp-weixin) |  | Web: x; 微信小程序: √; Android: x; iOS: x; HarmonyOS: x |   |
-| __hbuilderx | [__hbuilderx 配置项列表](#manifest-hbuilderx) |  | Web: x; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS:   | 用于HBuilderX可视化界面相关操作配置 |
+| __hbuilderx | [__hbuilderx 配置项列表](#manifest-hbuilderx) |  | Web: x; Android: 4.31; iOS: 4.31 | 用于HBuilderX可视化界面相关操作配置 |
 
 **注意**
 - `appid` 由 DCloud 云端分配，主要用于 DCloud 相关的云服务，请勿自行修改。[详见](https://ask.dcloud.net.cn/article/35907)
@@ -44,10 +44,10 @@ uni-app x 目前不提供内置模块选择，而是提供了摇树机制自动�
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| flex-direction | 'row' \| 'row-reverse' \| 'column' \| 'column-reverse' | "column" | Web: 4.0; 微信小程序:  ; Android 系统版本: x; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | uvue页面默认flex排列方向 |
-| vapor | boolean | false | Web: 4.0; 微信小程序:  ; Android 系统版本: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否启用蒸汽模式 |
-| styleIsolationVersion | '2' | "2" | Web: 5.0; 微信小程序:  ; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | 样式隔离策略 |
-| vapor-render-target | 'bytecode' \| 'nativecode' | "bytecode" | Web: x; 微信小程序:  ; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.11 | 视图层编译目标 |
+| flex-direction | 'row' \| 'row-reverse' \| 'column' \| 'column-reverse' | "column" | Web: 4.0; Android 系统版本: x; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | uvue页面默认flex排列方向 |
+| vapor | boolean | false | Web: 4.0; Android 系统版本: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否启用蒸汽模式 |
+| styleIsolationVersion | '2' | "2" | Web: 5.0; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | 样式隔离策略 |
+| vapor-render-target | 'bytecode' \| 'nativecode' | "bytecode" | Web: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.11 | 视图层编译目标 |
 
 ### APP配置 @manifest-app
 
@@ -59,9 +59,9 @@ App平台（原生App）配置
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| defaultAppTheme | 'auto' \| 'light' \| 'dark' | "light" | Web:  ; 微信小程序:  ; Android: 4.18; iOS: 4.18; HarmonyOS:   | 应用默认主题，可取值 light/dark/auto，默认值为 light。应用主题适配[参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/themejson.html) |
+| defaultAppTheme | 'auto' \| 'light' \| 'dark' | "light" | Android: 4.18; iOS: 4.18 | 应用默认主题，可取值 light/dark/auto，默认值为 light。应用主题适配[参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/themejson.html) |
 | distribute | [distribute 配置项列表](#app-distribute) |  |   | App平台发布配置 |
-| initPrivacyAuthorization | 'auto' \| 'agree' \| 'disagree' | "auto" | Web:  ; 微信小程序:  ; Android: 4.31; iOS: 4.31; HarmonyOS 系统版本: x; HarmonyOS: x | 隐私协议初始状态，可取值 auto/agree/disagree，默认值为 auto。获取应用隐私协议状态相关api[参考文档](https://doc.dcloud.net.cn/uni-app-x/api/privacy.html) |
+| initPrivacyAuthorization | 'auto' \| 'agree' \| 'disagree' | "auto" | Android: 4.31; iOS: 4.31; HarmonyOS 系统版本: x; HarmonyOS: x | 隐私协议初始状态，可取值 auto/agree/disagree，默认值为 auto。获取应用隐私协议状态相关api[参考文档](https://doc.dcloud.net.cn/uni-app-x/api/privacy.html) |
 
 uni-app 项目可配置原生的隐私弹框。这是因为开发者的js执行较慢，在原生代码获取隐私前来不及弹框，不能满足先弹隐私政策后采集数据的合规要求。
 
@@ -198,15 +198,15 @@ App-Android平台发布配置
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| permissions | Array\<string> |  | Web:  ; 微信小程序:  ; Android: 4.53; iOS: x; HarmonyOS:   | 额外添加的权限 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#incloudpermissions) |
-| excludePermissions | Array\<string> |  | Web:  ; 微信小程序:  ; Android: 4.53; iOS: x; HarmonyOS:   | 强制移除的权限 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#excludepermissions) |
-| minSdkVersion | integer | 21 | Web:  ; 微信小程序:  ; Android: 3.9; iOS: x; HarmonyOS:   | 应用兼容的最低Android版本（API等级） [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#minsdkversion) |
-| targetSdkVersion | integer | 32 | Web:  ; 微信小程序:  ; Android: 3.9; iOS: x; HarmonyOS:   | 应用适配的目标Android版本（API等级），部分应用市场要求设置较高的targetSdkVersion才能提交审核 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#targetsdkversion) |
-| abiFilters | Array\<'armeabi-v7a' \| 'arm64-v8a' \| 'x86' \| 'x86_64'> | ["arm64-v8a"\] | Web:  ; 微信小程序:  ; Android: 3.9; iOS: x; HarmonyOS:   | 应用支持的CPU类型 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#abifilters) |
-| enableResourceOptimizations | boolean | "true" | Web:  ; 微信小程序:  ; Android: 4.33; iOS: x; HarmonyOS:   | 是否开启Android原生res资源文件优化，开启后res资源文件名称会被混淆 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#enableresourceoptimizations) |
-| aaptOptions | Array\<string> |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: x; HarmonyOS:   | aaptOptions 配置项 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#aaptoptions) |
-| buildFeatures | Array\<string> |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: x; HarmonyOS:   | buildFeatures 配置项 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#buildfeatures) |
-| packagingOptions | Array\<string> |  | Web:  ; 微信小程序:  ; Android: 4.27; iOS: x; HarmonyOS:   | packagingOptions 配置项 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#packagingoptions) |
+| permissions | Array\<string> |  | Android: 4.53; iOS: x | 额外添加的权限 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#incloudpermissions) |
+| excludePermissions | Array\<string> |  | Android: 4.53; iOS: x | 强制移除的权限 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#excludepermissions) |
+| minSdkVersion | integer | 21 | Android: 3.9; iOS: x | 应用兼容的最低Android版本（API等级） [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#minsdkversion) |
+| targetSdkVersion | integer | 32 | Android: 3.9; iOS: x | 应用适配的目标Android版本（API等级），部分应用市场要求设置较高的targetSdkVersion才能提交审核 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#targetsdkversion) |
+| abiFilters | Array\<'armeabi-v7a' \| 'arm64-v8a' \| 'x86' \| 'x86_64'> | ["arm64-v8a"\] | Android: 3.9; iOS: x | 应用支持的CPU类型 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#abifilters) |
+| enableResourceOptimizations | boolean | "true" | Android: 4.33; iOS: x | 是否开启Android原生res资源文件优化，开启后res资源文件名称会被混淆 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#enableresourceoptimizations) |
+| aaptOptions | Array\<string> |  | Android: 4.31; iOS: x | aaptOptions 配置项 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#aaptoptions) |
+| buildFeatures | Array\<string> |  | Android: 4.31; iOS: x | buildFeatures 配置项 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#buildfeatures) |
+| packagingOptions | Array\<string> |  | Android: 4.27; iOS: x | packagingOptions 配置项 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#packagingoptions) |
 
 ###### manifestPlaceholders @manifestplaceholders
 
@@ -221,9 +221,9 @@ manifest.json中不提供配置 `manifestPlaceholders` 数据，如果应用使�
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| devices | 'iphone' \| 'ipad' \| 'universal' | "auto" | Web:  ; 微信小程序:  ; Android: x; iOS: 4.11; HarmonyOS:   | iOS支持的设备 |
-| CFBundleName | string | "UniAppX" | Web:  ; 微信小程序:  ; Android: x; iOS: 4.34; HarmonyOS:   | 应用内部名称（可作为开发者标识），最多可使用15个字符，[详情参考](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#cfbundlename) |
-| UIRequiresFullScreen | boolean | "false" | Web:  ; 微信小程序:  ; Android: x; iOS: 4.34; HarmonyOS:   | 在iPad设备是否全屏显示，设置为false表示应用能够与其他应用共享屏幕显示（分屏显示） [详情参考](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#uirequiresfullscreen) |
+| devices | 'iphone' \| 'ipad' \| 'universal' | "auto" | Android: x; iOS: 4.11 | iOS支持的设备 |
+| CFBundleName | string | "UniAppX" | Android: x; iOS: 4.34 | 应用内部名称（可作为开发者标识），最多可使用15个字符，[详情参考](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#cfbundlename) |
+| UIRequiresFullScreen | boolean | "false" | Android: x; iOS: 4.34 | 在iPad设备是否全屏显示，设置为false表示应用能够与其他应用共享屏幕显示（分屏显示） [详情参考](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#uirequiresfullscreen) |
 
 
 ##### distribute modules 配置项列表 @distribute-modules
@@ -234,25 +234,25 @@ app内置模块配置
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| uni-ad | [uni-ad 配置项列表](#modules-uni-ad) |  | Web:  ; 微信小程序:  ; Android: 4.0; iOS: 4.22; HarmonyOS:   | [uni-ad广告联盟](https://uniad.dcloud.net.cn/)模块 |
-| uni-canvas | object |  | Web:  ; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS:   | [canvas画布](https://doc.dcloud.net.cn/uni-app-x/component/canvas.html)组件模块（HBuilderX4.0+） |
-| uni-cloud-client | object |  | Web:  ; 微信小程序:  ; Android: 4.25; iOS: 4.25; HarmonyOS:   | [uniCloud云函数/云对象](https://doc.dcloud.net.cn/uniCloud/cf-functions.html)模块（HBuilderX4.25+） |
-| uni-createRequestPermissionListener | object |  | Web:  ; 微信小程序:  ; Android: 4.0; iOS: x; HarmonyOS:   | [监听权限申请](https://doc.dcloud.net.cn/uni-app-x/api/create-request-permission-listener.html)模块（HBuilderX4.0+） |
-| uni-createWebviewContext | object |  | Web:  ; 微信小程序:  ; Android: 4.0; iOS: x; HarmonyOS:   | 创建[web-view 组件的上下文对象](https://doc.dcloud.net.cn/uni-app-x/api/create-webview-context.html)模块 |
-| uni-facialRecognitionVerify | object |  | Web:  ; 微信小程序:  ; Android: 3.91; iOS: 4.11; HarmonyOS:   | [uni实人认证](https://doc.dcloud.net.cn/uni-app-x/api/facial-recognition-meta-info.html)模块 |
-| uni-fileSystemManager | object |  | Web:  ; 微信小程序:  ; Android: 3.91; iOS: 4.11; HarmonyOS:   | [文件管理](https://doc.dcloud.net.cn/uni-app-x/api/get-file-system-manager.html)模块 |
-| uni-location | [uni-location 配置项列表](#modules-uni-location) |  | Web:  ; 微信小程序:  ; Android: 3.91; iOS: 4.11; HarmonyOS:   | [系统定位](https://doc.dcloud.net.cn/uni-app-x/api/get-location.html)模块, HBuilderX 4.61- 之前是`uni-getLocation` |
-| uni-getNetworkType | object |  | Web:  ; 微信小程序:  ; Android: 3.91; iOS: 4.11; HarmonyOS:   | [获取网络类型](https://doc.dcloud.net.cn/uni-app-x/api/get-network-type.html)模块 |
-| uni-installApk | object |  | Web:  ; 微信小程序:  ; Android: 3.99; iOS: x; HarmonyOS:   | [安装apk](https://doc.dcloud.net.cn/uni-app-x/api/install-apk.html)模块 |
-| uni-payment | [uni-payment 配置项列表](#modules-uni-payment) |  | Web:  ; 微信小程序:  ; Android: 4.02; iOS: 4.18; HarmonyOS:   | [请求支付](https://doc.dcloud.net.cn/uni-app-x/api/request-payment.html)模块 |
-| uni-getProvider | object |  | Web:  ; 微信小程序:  ; Android: 4.11; iOS: 4.11; HarmonyOS:   | [获取服务供应商](https://doc.dcloud.net.cn/uni-app-x/api/get-provider.html#getprovider)模块 |
-| uni-push | object |  | Web:  ; 微信小程序:  ; Android: 3.97; iOS: 4.11; HarmonyOS:   | [统一推送](https://doc.dcloud.net.cn/uni-app-x/api/get-provider.html#getprovider)模块 |
-| uni-media | object |  | Web:  ; 微信小程序:  ; Android: 3.91; iOS: 4.11; HarmonyOS:   | [多媒体](https://doc.dcloud.net.cn/uni-app-x/api/choose-image.html)模块 |
-| uni-network | object |  | Web:  ; 微信小程序:  ; Android: 3.91; iOS: 4.11; HarmonyOS:   | [网络请求（文件上传/下载）](https://doc.dcloud.net.cn/uni-app-x/api/choose-image.html)模块 |
-| uni-virtualPayment | object |  | Web:  ; 微信小程序:  ; Android: x; iOS: 4.25; HarmonyOS:   | [虚拟支付](https://doc.dcloud.net.cn/uni-app-x/api/choose-image.html)模块 |
-| uni-video | object |  | Web:  ; 微信小程序:  ; Android: 3.91; iOS: 4.11; HarmonyOS:   | [video视频组件](https://doc.dcloud.net.cn/uni-app-x/component/video.html)模块 |
-| uni-websocket | object |  | Web:  ; 微信小程序:  ; Android: 3.91; iOS: 4.11; HarmonyOS:   | [WebSocket](https://doc.dcloud.net.cn/uni-app-x/api/websocket.html)模块 |
-| uni-verify | object |  | Web:  ; 微信小程序:  ; Android: 3.99; iOS: 4.18; HarmonyOS:   | [一键登录](https://doc.dcloud.net.cn/uni-app-x/api/get-univerify-manager.html)模块 |
+| uni-ad | [uni-ad 配置项列表](#modules-uni-ad) |  | Android: 4.0; iOS: 4.22 | [uni-ad广告联盟](https://uniad.dcloud.net.cn/)模块 |
+| uni-canvas | object |  | Android: 4.25; iOS: 4.25 | [canvas画布](https://doc.dcloud.net.cn/uni-app-x/component/canvas.html)组件模块（HBuilderX4.0+） |
+| uni-cloud-client | object |  | Android: 4.25; iOS: 4.25 | [uniCloud云函数/云对象](https://doc.dcloud.net.cn/uniCloud/cf-functions.html)模块（HBuilderX4.25+） |
+| uni-createRequestPermissionListener | object |  | Android: 4.0; iOS: x | [监听权限申请](https://doc.dcloud.net.cn/uni-app-x/api/create-request-permission-listener.html)模块（HBuilderX4.0+） |
+| uni-createWebviewContext | object |  | Android: 4.0; iOS: x | 创建[web-view 组件的上下文对象](https://doc.dcloud.net.cn/uni-app-x/api/create-webview-context.html)模块 |
+| uni-facialRecognitionVerify | object |  | Android: 3.91; iOS: 4.11 | [uni实人认证](https://doc.dcloud.net.cn/uni-app-x/api/facial-recognition-meta-info.html)模块 |
+| uni-fileSystemManager | object |  | Android: 3.91; iOS: 4.11 | [文件管理](https://doc.dcloud.net.cn/uni-app-x/api/get-file-system-manager.html)模块 |
+| uni-location | [uni-location 配置项列表](#modules-uni-location) |  | Android: 3.91; iOS: 4.11 | [系统定位](https://doc.dcloud.net.cn/uni-app-x/api/get-location.html)模块, HBuilderX 4.61- 之前是`uni-getLocation` |
+| uni-getNetworkType | object |  | Android: 3.91; iOS: 4.11 | [获取网络类型](https://doc.dcloud.net.cn/uni-app-x/api/get-network-type.html)模块 |
+| uni-installApk | object |  | Android: 3.99; iOS: x | [安装apk](https://doc.dcloud.net.cn/uni-app-x/api/install-apk.html)模块 |
+| uni-payment | [uni-payment 配置项列表](#modules-uni-payment) |  | Android: 4.02; iOS: 4.18 | [请求支付](https://doc.dcloud.net.cn/uni-app-x/api/request-payment.html)模块 |
+| uni-getProvider | object |  | Android: 4.11; iOS: 4.11 | [获取服务供应商](https://doc.dcloud.net.cn/uni-app-x/api/get-provider.html#getprovider)模块 |
+| uni-push | object |  | Android: 3.97; iOS: 4.11 | [统一推送](https://doc.dcloud.net.cn/uni-app-x/api/get-provider.html#getprovider)模块 |
+| uni-media | object |  | Android: 3.91; iOS: 4.11 | [多媒体](https://doc.dcloud.net.cn/uni-app-x/api/choose-image.html)模块 |
+| uni-network | object |  | Android: 3.91; iOS: 4.11 | [网络请求（文件上传/下载）](https://doc.dcloud.net.cn/uni-app-x/api/choose-image.html)模块 |
+| uni-virtualPayment | object |  | Android: x; iOS: 4.25 | [虚拟支付](https://doc.dcloud.net.cn/uni-app-x/api/choose-image.html)模块 |
+| uni-video | object |  | Android: 3.91; iOS: 4.11 | [video视频组件](https://doc.dcloud.net.cn/uni-app-x/component/video.html)模块 |
+| uni-websocket | object |  | Android: 3.91; iOS: 4.11 | [WebSocket](https://doc.dcloud.net.cn/uni-app-x/api/websocket.html)模块 |
+| uni-verify | object |  | Android: 3.99; iOS: 4.18 | [一键登录](https://doc.dcloud.net.cn/uni-app-x/api/get-univerify-manager.html)模块 |
 
 
 ###### uni-ad 配置项列表 @modules-uni-ad
@@ -296,8 +296,8 @@ app内置模块配置
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| alipay | object |  | Web:  ; 微信小程序:  ; Android: 3.91; iOS: 4.18; HarmonyOS:   | 支付宝支付 |
-| wxpay | [wxpay 配置项列表](#uni-payment-wxpay) |  | Web:  ; 微信小程序:  ; Android: 4.11; iOS: 4.18; HarmonyOS:   | 微信支付 |
+| alipay | object |  | Android: 3.91; iOS: 4.18 | 支付宝支付 |
+| wxpay | [wxpay 配置项列表](#uni-payment-wxpay) |  | Android: 4.11; iOS: 4.18 | 微信支付 |
 
 
 ###### uni-payment-wxpay 配置项列表 @uni-payment-wxpay
@@ -337,9 +337,9 @@ App-Android平台配置
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| defaultAppTheme | 'auto' \| 'light' \| 'dark' | "light" | Web:  ; 微信小程序:  ; Android: 4.18; iOS:  ; HarmonyOS:   | 应用默认主题，可取值 light/dark/auto，默认值为 light。应用主题适配[参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/themejson.html) |
+| defaultAppTheme | 'auto' \| 'light' \| 'dark' | "light" | Android: 4.18 | 应用默认主题，可取值 light/dark/auto，默认值为 light。应用主题适配[参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/themejson.html) |
 | distribute | [distribute 配置项列表](#app-android-distribute) |  |   | Android平台发布配置 |
-| initPrivacyAuthorization | 'auto' \| 'agree' \| 'disagree' | "auto" | Web:  ; 微信小程序:  ; Android: 4.31; iOS:  ; HarmonyOS:   | 隐私协议初始状态，可取值 auto/agree/disagree，默认值为 auto。获取应用隐私协议状态相关api[参考文档](https://doc.dcloud.net.cn/uni-app-x/api/privacy.html) |
+| initPrivacyAuthorization | 'auto' \| 'agree' \| 'disagree' | "auto" | Android: 4.31 | 隐私协议初始状态，可取值 auto/agree/disagree，默认值为 auto。获取应用隐私协议状态相关api[参考文档](https://doc.dcloud.net.cn/uni-app-x/api/privacy.html) |
 
 
 #### DISTRIBUTE配置 @app-android-distribute
@@ -354,15 +354,15 @@ Android平台发布配置
 | icons | [icons 配置项列表](#distribute-icons) |  |   | Android平台应用图标配置。云打包后生效，建议在HBuilderX中 manifest.json 的可视化界面操作，不推荐手动在源码视图中修改。 |
 | splashScreens | [splashScreens 配置项列表](#distribute-splashscreens) |  |   | Android平台应用启动界面配置。云端打包后生效，建议在HBuilderX中 manifest.json 的可视化界面操作，[参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#splashscreen) |
 | modules | [modules 配置项列表](#distribute-modules) |  |   | app内置模块配置 |
-| permissions | Array\<string> |  | Web:  ; 微信小程序:  ; Android: 4.53; iOS:  ; HarmonyOS:   | 额外添加的权限 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#incloudpermissions) |
-| excludePermissions | Array\<string> |  | Web:  ; 微信小程序:  ; Android: 4.53; iOS:  ; HarmonyOS:   | 强制移除的权限 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#excludepermissions) |
-| minSdkVersion | integer | 21 | Web:  ; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS:   | 应用兼容的最低Android版本（API等级） [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#minsdkversion) |
-| targetSdkVersion | integer | 32 | Web:  ; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS:   | 应用适配的目标Android版本（API等级），部分应用市场要求设置较高的targetSdkVersion才能提交审核 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#targetsdkversion) |
-| abiFilters | Array\<'armeabi-v7a' \| 'arm64-v8a' \| 'x86' \| 'x86_64'> | ["arm64-v8a"\] | Web:  ; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS:   | 应用支持的CPU类型 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#abifilters) |
-| enableResourceOptimizations | boolean | "true" | Web:  ; 微信小程序:  ; Android: 4.33; iOS:  ; HarmonyOS:   | 是否开启Android原生res资源文件优化，开启后res资源文件名称会被混淆 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#enableresourceoptimizations) |
-| aaptOptions | Array\<string> |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS:  ; HarmonyOS:   | aaptOptions 配置项 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#aaptoptions) |
-| buildFeatures | Array\<string> |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS:  ; HarmonyOS:   | buildFeatures 配置项 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#buildfeatures) |
-| packagingOptions | Array\<string> |  | Web:  ; 微信小程序:  ; Android: 4.27; iOS:  ; HarmonyOS:   | packagingOptions 配置项 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#packagingoptions) |
+| permissions | Array\<string> |  | Android: 4.53 | 额外添加的权限 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#incloudpermissions) |
+| excludePermissions | Array\<string> |  | Android: 4.53 | 强制移除的权限 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#excludepermissions) |
+| minSdkVersion | integer | 21 | Android: 3.9 | 应用兼容的最低Android版本（API等级） [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#minsdkversion) |
+| targetSdkVersion | integer | 32 | Android: 3.9 | 应用适配的目标Android版本（API等级），部分应用市场要求设置较高的targetSdkVersion才能提交审核 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#targetsdkversion) |
+| abiFilters | Array\<'armeabi-v7a' \| 'arm64-v8a' \| 'x86' \| 'x86_64'> | ["arm64-v8a"\] | Android: 3.9 | 应用支持的CPU类型 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#abifilters) |
+| enableResourceOptimizations | boolean | "true" | Android: 4.33 | 是否开启Android原生res资源文件优化，开启后res资源文件名称会被混淆 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#enableresourceoptimizations) |
+| aaptOptions | Array\<string> |  | Android: 4.31 | aaptOptions 配置项 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#aaptoptions) |
+| buildFeatures | Array\<string> |  | Android: 4.31 | buildFeatures 配置项 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#buildfeatures) |
+| packagingOptions | Array\<string> |  | Android: 4.27 | packagingOptions 配置项 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#packagingoptions) |
 
 
 ##### Android平台图标配置 @distribute-icons
@@ -508,9 +508,9 @@ iOS App平台配置
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| defaultAppTheme | 'auto' \| 'light' \| 'dark' | "light" | Web:  ; 微信小程序:  ; Android: 4.18; iOS:  ; HarmonyOS:   | 应用默认主题，可取值 light/dark/auto，默认值为 light。应用主题适配[参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/themejson.html) |
+| defaultAppTheme | 'auto' \| 'light' \| 'dark' | "light" | Android: 4.18 | 应用默认主题，可取值 light/dark/auto，默认值为 light。应用主题适配[参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/themejson.html) |
 | distribute | [distribute 配置项列表](#app-ios-distribute) |  |   | iOS平台发布配置 |
-| initPrivacyAuthorization | 'auto' \| 'agree' \| 'disagree' | "auto" | Web:  ; 微信小程序:  ; Android: 4.31; iOS:  ; HarmonyOS:   | 隐私协议初始状态，可取值 auto/agree/disagree，默认值为 auto。获取应用隐私协议状态相关api[参考文档](https://doc.dcloud.net.cn/uni-app-x/api/privacy.html) |
+| initPrivacyAuthorization | 'auto' \| 'agree' \| 'disagree' | "auto" | Android: 4.31 | 隐私协议初始状态，可取值 auto/agree/disagree，默认值为 auto。获取应用隐私协议状态相关api[参考文档](https://doc.dcloud.net.cn/uni-app-x/api/privacy.html) |
 
 
 #### DISTRIBUTE配置 @app-ios-distribute
@@ -525,9 +525,9 @@ iOS平台发布配置
 | icons | [icons 配置项列表](#distribute-icons) |  |   | iOS平台应用图标配置。云打包后生效，建议在HBuilderX中 manifest.json 的可视化界面操作，不推荐手动在源码视图中修改。 |
 | splashScreens | [splashScreens 配置项列表](#distribute-splashscreens) |  |   | iOS平台应用启动界面配置。云端打包后生效，建议在HBuilderX中 manifest.json 的可视化界面操作，[参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#splashscreen) |
 | modules | [modules 配置项列表](#distribute-modules) |  |   | app内置模块配置 |
-| devices | 'iphone' \| 'ipad' \| 'universal' | "auto" | Web:  ; 微信小程序:  ; Android:  ; iOS: 4.11; HarmonyOS:   | iOS支持的设备 |
-| CFBundleName | string | "UniAppX" | Web:  ; 微信小程序:  ; Android:  ; iOS: 4.34; HarmonyOS:   | 应用内部名称（可作为开发者标识），最多可使用15个字符，[详情参考](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#cfbundlename) |
-| UIRequiresFullScreen | boolean | "false" | Web:  ; 微信小程序:  ; Android:  ; iOS: 4.34; HarmonyOS:   | 在iPad设备是否全屏显示，设置为false表示应用能够与其他应用共享屏幕显示（分屏显示） [详情参考](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#uirequiresfullscreen) |
+| devices | 'iphone' \| 'ipad' \| 'universal' | "auto" | iOS: 4.11 | iOS支持的设备 |
+| CFBundleName | string | "UniAppX" | iOS: 4.34 | 应用内部名称（可作为开发者标识），最多可使用15个字符，[详情参考](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#cfbundlename) |
+| UIRequiresFullScreen | boolean | "false" | iOS: 4.34 | 在iPad设备是否全屏显示，设置为false表示应用能够与其他应用共享屏幕显示（分屏显示） [详情参考](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#uirequiresfullscreen) |
 
 
 ##### iOS平台图标配置 @distribute-icons
@@ -560,9 +560,9 @@ app内置模块配置
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| uni-location | [uni-location 配置项列表](#modules-uni-location) |  | Web:  ; 微信小程序:  ; Android: 4.11; iOS:  ; HarmonyOS:   | [iOS平台uni-location（定位）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#moduleslocation)模块Provider配置 |
-| uni-map | [uni-map 配置项列表](#modules-uni-map) |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS:  ; HarmonyOS:   | [iOS平台uni-map（地图）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#modulesmap)模块Provider配置 |
-| uni-payment | [uni-payment 配置项列表](#modules-uni-payment) |  | Web:  ; 微信小程序:  ; Android: 4.18; iOS:  ; HarmonyOS:   | [iOS平台uni-payment（支付）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#modulespayment)模块Provider配置 |
+| uni-location | [uni-location 配置项列表](#modules-uni-location) |  | Android: 4.11 | [iOS平台uni-location（定位）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#moduleslocation)模块Provider配置 |
+| uni-map | [uni-map 配置项列表](#modules-uni-map) |  | Android: 4.31 | [iOS平台uni-map（地图）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#modulesmap)模块Provider配置 |
+| uni-payment | [uni-payment 配置项列表](#modules-uni-payment) |  | Android: 4.18 | [iOS平台uni-payment（支付）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#modulespayment)模块Provider配置 |
 
 
 ###### modulesuni-location 配置项列表 @modules-uni-location
@@ -650,7 +650,7 @@ HarmonyOS平台配置
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| distribute | [distribute 配置项列表](#app-harmony-distribute) |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 4.61 | HarmonyOS分发配置 |
+| distribute | [distribute 配置项列表](#app-harmony-distribute) |  | HarmonyOS: 4.61 | HarmonyOS分发配置 |
 
 
 #### app-harmonydistribute 配置项列表 @app-harmony-distribute
@@ -674,15 +674,15 @@ HarmonyOS分发模块配置
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| uni-location-system | object |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 4.61 | 系统定位模块 |
-| uni-map-tencent | object |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 4.61 | 腾讯地图模块 |
+| uni-location-system | object |  | HarmonyOS: 4.61 | 系统定位模块 |
+| uni-map-tencent | object |  | HarmonyOS: 4.61 | 腾讯地图模块 |
 | uni-oauth | [uni-oauth 配置项列表](#modules-uni-oauth) |  |   | 华为OAuth模块 |
-| uni-share | [uni-share 配置项列表](#modules-uni-share) |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 4.75 | share 模块 |
-| uni-payment-alipay | object |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 4.61 | 支付宝支付模块 |
-| uni-payment-wxpay | object |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 4.61 | 微信支付模块 |
-| uni-push | object |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 4.61 | 统一推送模块 |
-| uni-verify | object |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 4.61 | 一键登录模块 |
-| uni-facialVerify | object |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 4.61 | uni实人认证模块 |
+| uni-share | [uni-share 配置项列表](#modules-uni-share) |  | HarmonyOS: 4.75 | share 模块 |
+| uni-payment-alipay | object |  | HarmonyOS: 4.61 | 支付宝支付模块 |
+| uni-payment-wxpay | object |  | HarmonyOS: 4.61 | 微信支付模块 |
+| uni-push | object |  | HarmonyOS: 4.61 | 统一推送模块 |
+| uni-verify | object |  | HarmonyOS: 4.61 | 一键登录模块 |
+| uni-facialVerify | object |  | HarmonyOS: 4.61 | uni实人认证模块 |
 
 
 ###### modulesuni-oauth 配置项列表 @modules-uni-oauth
@@ -693,8 +693,8 @@ HarmonyOS分发模块配置
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| huawei | object |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 4.61 | 华为OAuth模块 |
-| weixin | [weixin 配置项列表](#uni-oauth-weixin) |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 4.75 | 微信OAuth模块 |
+| huawei | object |  | HarmonyOS: 4.61 | 华为OAuth模块 |
+| weixin | [weixin 配置项列表](#uni-oauth-weixin) |  | HarmonyOS: 4.75 | 微信OAuth模块 |
 
 
 ###### uni-oauthweixin 配置项列表 @uni-oauth-weixin
@@ -720,7 +720,7 @@ share 模块
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| weixin | [weixin 配置项列表](#uni-share-weixin) |  | Web:  ; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS: 4.75 | 微信 share 模块 |
+| weixin | [weixin 配置项列表](#uni-share-weixin) |  | HarmonyOS: 4.75 | 微信 share 模块 |
 
 
 ###### uni-shareweixin 配置项列表 @uni-share-weixin
@@ -911,7 +911,7 @@ Web平台配置
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| channel_list | array |  | Web:  ; 微信小程序:  ; Android: 4.31; iOS: x; HarmonyOS:   | 云端打包时配置的自定义渠道信息 |
+| channel_list | array |  | Android: 4.31; iOS: x | 云端打包时配置的自定义渠道信息 |
 
 
 ## 参见

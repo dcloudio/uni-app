@@ -28,7 +28,7 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| filter | Array&lt;string&gt; | 是 |  | Web:  ; 微信小程序:  ; Android: 3.9; iOS:  ; HarmonyOS: x | 过滤字段的字符串数组，假如要获取指定字段，传入此数组。 | 
+| filter | Array&lt;string&gt; | 是 |  | Android: 3.9; HarmonyOS: x | 过滤字段的字符串数组，假如要获取指定字段，传入此数组。 | 
 
 
 ### 返回值 
@@ -60,57 +60,57 @@
 | osHarmonyDisplayVersion | string | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 产品版本，关于本机信息内的软件版本<br/> |
 | romName | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | rom 名称。Android 部分机型获取不到值。iOS 恒为 `ios`<br/> |
 | romVersion | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | rom 版本号。Android 部分机型获取不到值。iOS 为操作系统版本号（同 `osVersion`）。<br/> |
-| abi | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 应用（微信APP）二进制接口类型（仅 Android 支持）<br/> |
-| benchmarkLevel | number | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   |  |
-| cpuType | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.29.0`<br/><br/>设备 CPU 型号（仅 Android 支持）（Tips: GPU 型号可通过 WebGLRenderingContext.getExtension('WEBGL_debug_renderer_info') 来获取）<br/> |
-| deviceAbi | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.25.1`<br/><br/>设备二进制接口类型（仅 Android 支持）<br/> |
-| memorySize | string | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 需要基础库： `2.30.0`<br/><br/>设备内存大小，单位为 MB<br/> |
+| abi | string | 否 |  | 微信小程序: 4.41 | 应用（微信APP）二进制接口类型（仅 Android 支持）<br/> |
+| benchmarkLevel | number | 否 |  | 微信小程序: 4.41 |  |
+| cpuType | string | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.29.0`<br/><br/>设备 CPU 型号（仅 Android 支持）（Tips: GPU 型号可通过 WebGLRenderingContext.getExtension('WEBGL_debug_renderer_info') 来获取）<br/> |
+| deviceAbi | string | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.25.1`<br/><br/>设备二进制接口类型（仅 Android 支持）<br/> |
+| memorySize | string | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.30.0`<br/><br/>设备内存大小，单位为 MB<br/> |
 | ~~brand~~ | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 设备品牌  **已废弃，仅为了向下兼容保留** |
 | ~~model~~ | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 设备型号  **已废弃，仅为了向下兼容保留** |
 | ~~isSimulator~~ | boolean | 否 |  | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 是否是模拟器<br/>  **已废弃，由于合规问题在4.51版本后不会采集传感器信息，会影响准确度，建议使用`isSimulator()`代替。** | 
 
 ##### deviceType 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| phone |  |
-| pad |  |
-| tv |  |
-| watch |  |
-| pc |  |
-| null |  |
-| car |  |
-| vr |  |
-| appliance |  |
+| 合法值 |
+| :- |
+| phone |
+| pad |
+| tv |
+| watch |
+| pc |
+| null |
+| car |
+| vr |
+| appliance |
 
 ##### platform 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| ios |  |
-| android |  |
-| harmonyos |  |
-| mac |  |
-| windows |  |
-| linux |  |
+| 合法值 |
+| :- |
+| ios |
+| android |
+| harmonyos |
+| mac |
+| windows |
+| linux |
 
 ##### osName 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| ios |  |
-| android |  |
-| harmonyos |  |
-| macos |  |
-| windows |  |
-| linux |  |
+| 合法值 |
+| :- |
+| ios |
+| android |
+| harmonyos |
+| macos |
+| windows |
+| linux |
 
 ##### osTheme 的属性描述
 
-| 合法值 | 描述 |
-| :- | :- |
-| light |  |
-| dark |  |
+| 合法值 |
+| :- |
+| light |
+| dark |
 
 
 ::: warning 注意事项
@@ -249,5 +249,5 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 

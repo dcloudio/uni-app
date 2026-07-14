@@ -41,8 +41,8 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| portrait | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 纵向 |
-| landscape | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   | 横向 | 
+| portrait | Web: x | 纵向 |
+| landscape | Web: x | 横向 | 
 
 
 ### 示例
@@ -165,5 +165,5 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 

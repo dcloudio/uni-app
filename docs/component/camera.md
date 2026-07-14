@@ -22,14 +22,14 @@
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| flash | auto \| on \| off \| torch | "auto" | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS:   | 闪光灯，值为auto, on, off, torch |
-| device-position | back \| front | "back" | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS:   | 前置或后置，值为front, back |
+| flash | auto \| on \| off \| torch | "auto" | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61 | 闪光灯，值为auto, on, off, torch |
+| device-position | back \| front | "back" | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61 | 前置或后置，值为front, back |
 | mode | normal \| scanCode | "normal" | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | *(string)*<br/>应用模式，只在初始化时有效，不能动态变更 |
 | resolution | low \| medium \| high | "medium" | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: x | *(string)*<br/>分辨率，不支持动态修改 |
 | frame-size | small \| medium \| large | "medium" | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: x | *(string)*<br/>指定期望的相机帧数据尺寸 |
 | photo-resolution | low \| medium \| high \| original | "medium" | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | *(string)*<br/>指定期望的拍照图片分辨率，不支持动态修改 |
-| @stop | (event: [UniCameraStopEvent](#unicamerastopevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS:   | 摄像头在非正常终止时触发，如退出后台等情况 |
-| @error | (event: [UniCameraErrorEvent](#unicameraerrorevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS:   | 用户不允许使用摄像头时触发 |
+| @stop | (event: [UniCameraStopEvent](#unicamerastopevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61 | 摄像头在非正常终止时触发，如退出后台等情况 |
+| @error | (event: [UniCameraErrorEvent](#unicameraerrorevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61 | 用户不允许使用摄像头时触发 |
 | @initdone | (event: [UniCameraInitDoneEvent](#unicamerainitdoneevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: x | *(eventhandle)*<br/>相机初始化完成时触发，`e.detail = {maxZoom}` |
 | @scancode | (event: [UniCameraScanCodeEvent](#unicamerascancodeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | *(eventhandle)*<br/>在扫码识别成功时触发，仅在 mode="scanCode" 时生效 |
 

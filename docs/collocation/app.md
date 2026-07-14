@@ -214,15 +214,15 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **OnPageNotFoundOption** | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x |  |
+| options | **OnPageNotFoundOption** | 是 |  | Android: x; iOS: x; HarmonyOS: x |  |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| path | string | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 不存在页面的路径 |
-| query | AnyObject | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 打开不存在页面的 query |
-| isEntryPage | boolean | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 是否本次启动的首个页面（例如从分享等入口进来，首个页面是开发者配置的分享页面） | 
+| path | string | 是 |  | Android: x; iOS: x; HarmonyOS: x | 不存在页面的路径 |
+| query | AnyObject | 是 |  | Android: x; iOS: x; HarmonyOS: x | 打开不存在页面的 query |
+| isEntryPage | boolean | 是 |  | Android: x; iOS: x; HarmonyOS: x | 是否本次启动的首个页面（例如从分享等入口进来，首个页面是开发者配置的分享页面） | 
 
 
 

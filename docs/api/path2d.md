@@ -191,14 +191,14 @@ Path2D用来声明路径，用来在canvas中根据需要创建可以保留并�
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 椭圆圆心的 x 轴（水平）坐标 |
-| y | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 椭圆圆心的 y 轴（垂直）坐标 |
-| radiusX | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 椭圆长轴的半径。必须为非负数 |
-| radiusY | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 椭圆短轴的半径。必须为非负数。 |
-| rotation | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 椭圆的旋转角度，以弧度表示。 |
-| startAngle | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 椭圆弧的起始偏心角，从正 x 轴沿顺时针测量，用弧度表示。 |
-| endAngle | number | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 椭圆弧的结束偏心角，从正 x 轴沿顺时针测量，用弧度表示。 |
-| anticlockwise | boolean | 是 |  | Web:  ; 微信小程序:  ; Android: x; iOS: x; HarmonyOS:   | 一个可选的布尔值，如果为 true，则逆时针绘制椭圆弧。默认值为 false（顺时针）。 | 
+| x | number | 是 |  | Android: x; iOS: x | 椭圆圆心的 x 轴（水平）坐标 |
+| y | number | 是 |  | Android: x; iOS: x | 椭圆圆心的 y 轴（垂直）坐标 |
+| radiusX | number | 是 |  | Android: x; iOS: x | 椭圆长轴的半径。必须为非负数 |
+| radiusY | number | 是 |  | Android: x; iOS: x | 椭圆短轴的半径。必须为非负数。 |
+| rotation | number | 是 |  | Android: x; iOS: x | 椭圆的旋转角度，以弧度表示。 |
+| startAngle | number | 是 |  | Android: x; iOS: x | 椭圆弧的起始偏心角，从正 x 轴沿顺时针测量，用弧度表示。 |
+| endAngle | number | 是 |  | Android: x; iOS: x | 椭圆弧的结束偏心角，从正 x 轴沿顺时针测量，用弧度表示。 |
+| anticlockwise | boolean | 是 |  | Android: x; iOS: x | 一个可选的布尔值，如果为 true，则逆时针绘制椭圆弧。默认值为 false（顺时针）。 | 
 
 
 

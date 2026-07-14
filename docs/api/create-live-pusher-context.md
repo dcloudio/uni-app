@@ -19,8 +19,8 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| livePusherId | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x |  |
-| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x |  | 
+| livePusherId | string | 是 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
+| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  | 
 
 
 ### 返回值 
@@ -43,7 +43,7 @@ start
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x |  |
+| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
 
 #### options 的属性描述
 
@@ -67,7 +67,7 @@ stop
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x |  |
+| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
 
 #### options 的属性描述
 
@@ -91,7 +91,7 @@ switchCamera
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x |  |
+| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
 
 #### options 的属性描述
 
@@ -115,7 +115,7 @@ toggleTorch
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x |  |
+| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
 
 #### options 的属性描述
 
@@ -139,7 +139,7 @@ pause
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x |  |
+| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
 
 #### options 的属性描述
 
@@ -163,7 +163,7 @@ resume
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x |  |
+| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
 
 #### options 的属性描述
 
@@ -187,7 +187,7 @@ getMaxZoom
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x |  |
+| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
 
 #### options 的属性描述
 
@@ -211,8 +211,8 @@ setZoom
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| zoom | number | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x |  |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x |  |
+| zoom | number | 是 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
+| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
 
 #### options 的属性描述
 
@@ -236,7 +236,7 @@ startPreview
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x |  |
+| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
 
 #### options 的属性描述
 
@@ -260,7 +260,7 @@ stopPreview
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x |  |
+| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
 
 #### options 的属性描述
 
@@ -284,7 +284,7 @@ snapshot
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x |  |
+| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
 
 #### options 的属性描述
 
@@ -308,8 +308,8 @@ sendMessage
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| message | string | 是 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x |  |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS: x |  |
+| message | string | 是 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
+| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
 
 #### options 的属性描述
 
@@ -448,5 +448,5 @@ sendMessage
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 

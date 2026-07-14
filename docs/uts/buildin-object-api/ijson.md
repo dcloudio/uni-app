@@ -20,13 +20,13 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| Web | Android | iOS 系统版本 | iOS | Android UTS 插件 | iOS UTS 插件 | HarmonyOS UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 4.53 | x | x | 4.53 | x |  |
+| Web | Android | iOS 系统版本 | iOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- | :- |
+| x | 4.53 | x | x | 4.53 | x |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 | iOS UTS 插件 |
+| Android(VDOM) UTS 插件 | iOS UTS 插件 |
 | :- | :- |
 | 4.53 | x |
 

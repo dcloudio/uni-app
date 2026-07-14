@@ -210,7 +210,7 @@ UniTextareaFocusEvent -- Extends --> UniEvent
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| height | number | 是 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 键盘高度 |
+| height | number | 是 |  | Web: x; Android: 3.9; iOS: 4.11 | 键盘高度 |
 | value | string | 是 |  |   | 输入框内容 |
 
 

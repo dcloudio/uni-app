@@ -377,10 +377,10 @@ onShow和onHide是成对出现的。
 
 ##### from 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| backbutton | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  |
-| navigateBack | Web:  ; 微信小程序: x; Android:  ; iOS:  ; HarmonyOS:   |  | 
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| backbutton | 微信小程序: x |
+| navigateBack | 微信小程序: x | 
 
 
 #### 返回值 

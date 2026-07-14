@@ -43,10 +43,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -58,13 +58,13 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -85,10 +85,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -100,13 +100,13 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -126,10 +126,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -141,13 +141,13 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -167,10 +167,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -182,13 +182,13 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -208,10 +208,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -223,13 +223,13 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.82 | 4.82 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -249,10 +249,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -264,13 +264,13 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -290,10 +290,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -305,13 +305,13 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -334,10 +334,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -349,13 +349,13 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -378,10 +378,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -393,13 +393,13 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -434,10 +434,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -449,13 +449,13 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -478,10 +478,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -493,13 +493,13 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -522,10 +522,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -537,13 +537,13 @@
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -567,10 +567,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 ##### String 的方法 @string-values 
 
@@ -604,13 +604,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -634,10 +634,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -649,13 +649,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -677,10 +677,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 ##### String 的方法 @string-values 
 
@@ -714,13 +714,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -742,10 +742,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -757,13 +757,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -785,10 +785,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 ##### String 的方法 @string-values 
 
@@ -822,13 +822,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -850,10 +850,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -865,13 +865,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -892,10 +892,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -907,13 +907,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -934,10 +934,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -949,13 +949,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -978,10 +978,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -993,13 +993,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1022,10 +1022,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1037,13 +1037,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1064,10 +1064,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1079,13 +1079,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1106,10 +1106,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1121,13 +1121,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1148,10 +1148,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1163,13 +1163,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1190,10 +1190,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1205,13 +1205,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1232,10 +1232,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1247,13 +1247,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1274,10 +1274,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1289,13 +1289,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1316,10 +1316,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1331,13 +1331,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1358,10 +1358,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1373,13 +1373,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1406,10 +1406,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1421,13 +1421,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1448,10 +1448,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1463,13 +1463,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1489,10 +1489,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -1504,13 +1504,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1530,10 +1530,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -1545,13 +1545,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1572,10 +1572,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1587,13 +1587,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1614,10 +1614,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1629,13 +1629,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1663,10 +1663,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1678,13 +1678,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1706,10 +1706,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1721,13 +1721,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1749,10 +1749,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1764,13 +1764,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1792,10 +1792,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1807,13 +1807,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1835,10 +1835,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1850,13 +1850,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1878,10 +1878,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1893,13 +1893,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1922,10 +1922,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1937,13 +1937,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -1966,10 +1966,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -1981,13 +1981,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2014,10 +2014,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -2029,13 +2029,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2056,10 +2056,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -2071,13 +2071,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2097,10 +2097,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2112,13 +2112,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2138,10 +2138,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2153,13 +2153,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2179,10 +2179,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2194,13 +2194,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2220,10 +2220,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2235,13 +2235,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2261,10 +2261,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2276,13 +2276,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2302,10 +2302,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2317,13 +2317,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2343,10 +2343,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2358,13 +2358,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2384,10 +2384,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2399,13 +2399,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2425,10 +2425,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2440,13 +2440,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2466,10 +2466,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2481,13 +2481,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2507,10 +2507,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2522,13 +2522,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2548,10 +2548,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2563,13 +2563,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2595,10 +2595,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2610,13 +2610,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2636,10 +2636,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2651,13 +2651,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2677,10 +2677,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2692,13 +2692,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2718,10 +2718,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2733,13 +2733,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2760,10 +2760,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -2775,13 +2775,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2802,10 +2802,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -2817,13 +2817,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2844,10 +2844,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -2859,13 +2859,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2886,10 +2886,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -2901,13 +2901,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2927,10 +2927,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2942,13 +2942,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -2968,10 +2968,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -2983,13 +2983,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -3011,10 +3011,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3026,13 +3026,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -3054,10 +3054,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3069,13 +3069,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -3095,10 +3095,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -3110,13 +3110,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -3136,10 +3136,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） | 
 
 
 **返回值**
@@ -3151,13 +3151,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -3178,10 +3178,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3193,13 +3193,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -3220,10 +3220,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3235,13 +3235,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -3262,10 +3262,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3277,13 +3277,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -3305,10 +3305,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3320,13 +3320,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -3347,10 +3347,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3362,13 +3362,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -3389,10 +3389,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3404,13 +3404,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -3431,10 +3431,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3446,13 +3446,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -3473,10 +3473,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3488,13 +3488,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -3517,10 +3517,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3532,13 +3532,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -3561,10 +3561,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3576,13 +3576,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -3603,10 +3603,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3618,13 +3618,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -3645,10 +3645,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3660,13 +3660,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -3687,10 +3687,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3702,13 +3702,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 
@@ -3729,10 +3729,10 @@ Negative integers count back from the last item in the array.
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| activity | Activity | 是 |  | Web:  ; Android: 4.62; iOS 系统版本: x; iOS: x; HarmonyOS:   | 当前activity示例 |
-| pageRoute | string | 是 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 页面路由地址 |
-| result | any | 否 |  | Web:  ; Android: 4.18; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
-| returnResult | any | 否 |  | Web:  ; Android: 5.01; iOS 系统版本: x; iOS: x; HarmonyOS:   | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
+| activity | Activity | 是 |  | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
+| pageRoute | string | 是 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
+| result | any | 否 |  | Android: 4.18; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，会在on函数触发时将系统返回值赋给result，作为入参传递给开发者，但在onPreXXX里该值为null |
+| returnResult | any | 否 |  | Android: 5.01; iOS 系统版本: x; iOS: x | 如果对应的方法有返回值，开发者需要将返回值赋给returnResult，作为出参传递给系统，可用于按键事件拦截（阻止事件继续传递） |
 
 
 **返回值**
@@ -3744,13 +3744,13 @@ Negative integers count back from the last item in the array.
 **兼容性**
 
 **uni-app x 兼容性**
-| Android | Android UTS 插件 |
+| Android | Android(VDOM) UTS 插件 |
 | :- | :- |
 | 4.18 | 4.18 |
 
 
 **uni-app 兼容性**
-| Android UTS 插件 |
+| Android(VDOM) UTS 插件 |
 | :- |
 | x |
 

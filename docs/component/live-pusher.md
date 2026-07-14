@@ -22,20 +22,20 @@
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| url | string([string.VideoURIString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 推流地址，支持 rtmp 协议 |
-| mode | string | "SD" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | SD（标清）, HD（高清）, FHD（超清）, RTC（实时通话） |
-| autopush | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS:   | 自动推流 |
-| muted | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 是否静音 |
-| enable-camera | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 开启摄像头 |
-| auto-focus | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 自动获取焦点 |
-| orientation | string | "vertical" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 画面方向，可选值有 vertical，horizontal |
-| beauty | number | 0 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 美颜，取值范围 0-9（iOS取值范围为1） ，0 表示关闭 |
-| aspect | string | "3:4" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 视频宽高比例 |
-| min-bitrate | number | 200 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 最小码率 |
-| max-bitrate | number | 1000 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 最大码率 |
-| waiting-image | string |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 进入后台时推流的等待画面 |
-| waiting-image-md5 | string |   | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS:   | 等待画面资源的MD5值 |
-| background-mute | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 进入后台时是否静音 |
+| url | string([string.VideoURIString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 推流地址，支持 rtmp 协议 |
+| mode | string | "SD" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | SD（标清）, HD（高清）, FHD（超清）, RTC（实时通话） |
+| autopush | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 自动推流 |
+| muted | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 是否静音 |
+| enable-camera | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 开启摄像头 |
+| auto-focus | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 自动获取焦点 |
+| orientation | string | "vertical" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 画面方向，可选值有 vertical，horizontal |
+| beauty | number | 0 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 美颜，取值范围 0-9（iOS取值范围为1） ，0 表示关闭 |
+| aspect | string | "3:4" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 视频宽高比例 |
+| min-bitrate | number | 200 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 最小码率 |
+| max-bitrate | number | 1000 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 最大码率 |
+| waiting-image | string |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 进入后台时推流的等待画面 |
+| waiting-image-md5 | string |   | Web: x; 微信小程序: x; Android: x; iOS: x | 等待画面资源的MD5值 |
+| background-mute | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 进入后台时是否静音 |
 | enableVideoCustomRender | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>自定义渲染，允许开发者自行处理所采集的视频帧，详见[LivePusherContext](../api/create-live-pusher-context.md) |
 | whiteness | number | 0 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(number)*<br/>美白，取值范围 0-9（iOS取值范围为1） ，0 表示关闭 |
 | audio-quality | string | "high" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(string)*<br/>高音质(48KHz)或低音质(16KHz)，值为`high`, `low` |
@@ -63,9 +63,9 @@
 | face-thinness | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>自定义特效瘦脸效果，取值 0~1。需要开启 `custom-effect` |
 | eye-bigness | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>自定义特效大眼效果，取值 0~1。需要开启 `custom-effect` |
 | fps | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>帧率，有效值为 1~30 |
-| @statechange | (event: [UniLivePusherStatechangeEvent](#unilivepusherstatechangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 播放状态变化事件，event.detail = {code, message} |
+| @statechange | (event: [UniLivePusherStatechangeEvent](#unilivepusherstatechangeevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 播放状态变化事件，event.detail = {code, message} |
 | @error | (event: [UniLivePusherErrorEvent](#unilivepushererrorevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | 错误事件，event.detail = {errCode, errMsg} |
-| @netstatus | (event: [UniLivePusherNetstatusEvent](#unilivepushernetstatusevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS:   | 网络状态通知，event.detail = {videoBitrate, audioBitrate, videoFPS, videoGOP, netSpeed, videoWidth, videoHeight} |
+| @netstatus | (event: [UniLivePusherNetstatusEvent](#unilivepushernetstatusevent)) => void |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 网络状态通知，event.detail = {videoBitrate, audioBitrate, videoFPS, videoGOP, netSpeed, videoWidth, videoHeight} |
 | @bgmstart | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>背景音开始播放时触发 |
 | @bgmprogress | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>背景音进度变化时触发，detail = {progress, duration} |
 | @bgmcomplete | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>背景音播放完成时触发 |

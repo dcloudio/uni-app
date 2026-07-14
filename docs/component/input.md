@@ -85,10 +85,10 @@
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | send | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 发送 |
-| search | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 搜索 |
-| next | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 下一个 |
-| go | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 前往 |
-| done | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS:   | 完成 |
+| search | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 搜索 |
+| next | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 下一个 |
+| go | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 前往 |
+| done | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 完成 |
 
 #### inputmode 的属性描述
 
@@ -107,7 +107,7 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| oneTimeCode | Web: x; 微信小程序:  ; Android: x; iOS: x; HarmonyOS: x | 一次性验证码 |
+| oneTimeCode | Web: x; Android: x; iOS: x; HarmonyOS: x | 一次性验证码 |
 
 
 ### 事件
@@ -152,7 +152,7 @@ UniInputFocusEvent -- Extends --> UniEvent
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| height | number | 是 |  | Web: x; 微信小程序:  ; Android: 3.9; iOS: 4.11; HarmonyOS:   | 键盘高度 |
+| height | number | 是 |  | Web: x; Android: 3.9; iOS: 4.11 | 键盘高度 |
 | value | string | 是 |  |   | 输入框内容 |
 
 

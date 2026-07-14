@@ -29,9 +29,9 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| success | (res: HideKeyboardSuccess) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.hideKeyboard成功回调函数定义 |
-| fail | (res: HideKeyboardFail) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.hideKeyboard失败回调函数定义 |
-| complete | (res: any) => void | 否 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.hideKeyboard完成回调函数定义 | 
+| success | (res: HideKeyboardSuccess) => void | 否 |  | 微信小程序: 4.41 | uni.hideKeyboard成功回调函数定义 |
+| fail | (res: HideKeyboardFail) => void | 否 |  | 微信小程序: 4.41 | uni.hideKeyboard失败回调函数定义 |
+| complete | (res: any) => void | 否 |  | 微信小程序: 4.41 | uni.hideKeyboard完成回调函数定义 | 
 
 
 
@@ -80,13 +80,13 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [OnKeyboardHeightChangeCallbackResult](#onkeyboardheightchangecallbackresult-values)) => void | 是 |  | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | uni.onKeyboardHeightChange参数定义 | 
+| callback | (res: [OnKeyboardHeightChangeCallbackResult](#onkeyboardheightchangecallbackresult-values)) => void | 是 |  | Web: x; 微信小程序: 4.41 | uni.onKeyboardHeightChange参数定义 | 
 
 ### OnKeyboardHeightChangeCallbackResult 的属性值 @onkeyboardheightchangecallbackresult-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| height | number | 是 |  | Web: x; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 键盘高度 |
+| height | number | 是 |  | Web: x; 微信小程序: 4.41 | 键盘高度 |
 
 
 ### 返回值 
@@ -139,7 +139,7 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| id | number | 否 |  | Web: x; 微信小程序:  ; Android:  ; iOS:  ; HarmonyOS:   |  | 
+| id | number | 否 |  | Web: x |  | 
 
 
 
@@ -265,5 +265,5 @@ defineExpose({
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web:  ; 微信小程序: 4.41; Android:  ; iOS:  ; HarmonyOS:   | 错误信息 |
+| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
 

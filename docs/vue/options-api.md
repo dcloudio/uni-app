@@ -2232,21 +2232,21 @@ export default {
 
 |  | 兼容性 |
 | :- | :- |
-| $data | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $props | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $attrs | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $slots | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $refs | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $parent | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $root | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $options | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $nextTick | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $forceUpdate | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; iOS uni-app x UTS 插件: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
-| $el | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $callMethod | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $emit | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $watch | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
-| $page | Web: 4.31; 微信小程序: √; Android: 4.31; iOS: 4.31; iOS uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $data | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $props | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $attrs | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $slots | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $refs | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $parent | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $root | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $options | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $nextTick | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $forceUpdate | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
+| $el | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $callMethod | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $emit | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $watch | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: 4.61 |
+| $page | Web: 4.31; 微信小程序: √; Android: 4.31; iOS: 4.31; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: 4.61 |
 
 ### 示例代码 @example
 

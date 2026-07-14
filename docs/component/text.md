@@ -37,9 +37,9 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| ensp | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 中文字符空格一半大小 |
-| emsp | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 中文字符空格大小 |
-| nbsp | Web: 4.0; 微信小程序:  ; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 根据字体设置的空格大小 |
+| ensp | Web: 4.0; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 中文字符空格一半大小 |
+| emsp | Web: 4.0; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 中文字符空格大小 |
+| nbsp | Web: 4.0; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 根据字体设置的空格大小 |
 
 
 
