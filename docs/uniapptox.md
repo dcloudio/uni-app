@@ -44,11 +44,27 @@ uni-app迁移到uni-app x，是一个大型工程。
 
 5. 构造uni-app x项目
 
-	新建uni-app x项目，把老项目复制过来，所有vue或nvue页面组件文件，批量重命名为uvue。main.js改名为main.uts（蒸汽模式下，main.uts里也支持js/ts写法）。可以保留之前的appid和包名。
+	新建uni-app x项目，勾选manifest中的蒸汽模式。把老项目的页面、组件、uni_modules、静态资源复制过来。所有vue或nvue页面组件文件，批量重命名为uvue。main.js改名为main.uts（蒸汽模式下，main.uts里也支持js/ts写法）。可以保留之前的appid和包名。
+	
+	之前如果有nativeplugins目录，就不用带来过了，uni-app x只支持uni_modules下的uts插件。原本的插件需要换新，或者临时mock掉。如果插件市场没有同款uts插件替代，可以让uni-agent重新封装一个uts原生插件，不懂原生也可以指挥ai完成（别选智商低的模型）。
+	
+	对于app.vue，不建议整体文件改名替换uni-app x的app.uvue。而是挑选部分代码复制过来。因为uni-app x 的app.uvue有2个变化：
+	
+	a. 应用退出方式
+	
+	老uni的应用退出是固化的，想改动需要劫持。uni-app x提供了[onLastPageBackPress](https://doc.dcloud.net.cn/uni-app-x/collocation/app.html#onlastpagebackpress)生命周期，可以方便的控制如何退出应用，是连续back弹toast退出，还是弹确认框退出，都可以自己编程控制。
+	
+	b. 隐私协议
+	
+	老uni的隐私弹框是原生的，UI很难自定义。而uni-app x未提供原生的隐私弹框，需要开发者自己做一个uvue页面来显示隐私协议。\
+	开发者需要在app.uvue的onLaunch里判断隐私接受状态，通过dialogPage的方式弹出自定义隐私协议页面。可以参考hello uni-app x的app.uvue里的onLaunch里的`uni.getPrivacySetting`部分。
+	
 	
 	如果你之前有web版和微信小程序，那么改造后首先运行到 uni-app x 的web和微信小程序上，看看是否正常。
 
 	同时注意uni-app x的 [web开发注意](./web/README.md) 和 [小程序开发注意](./mp/README.md)
+	
+	如果你的app之前有manifest原生配置的隐私框，
 
 6. 再次适配css
 
@@ -119,6 +135,7 @@ uni-app迁移到uni-app x，是一个大型工程。
 	js驱动将避免开发者改造uts代码，并且兼容广泛的npm js生态。
 	
 	官方推荐开发者先行适配非Android平台，走完上面的前11步。因为Android平台较新，先把其他平台适配好，期间等HBuilderX 更新1、2个版本，就可以开始迁移Android了。
+
 
 整个升级过程，不可能在uni-agent的一个会话内完成，前文太长会超过上下文限制，并且让AI迷失重点。
 
