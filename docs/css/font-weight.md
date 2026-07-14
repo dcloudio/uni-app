@@ -238,7 +238,7 @@ font-weight: <font-weight-absolute>{1,2};
 
 #### App平台差异
 - app平台 font-weight 样式不支持继承
-- app-android平台，部分自定义字体不支持设置 font-weight
+- app-android平台，部分自定义字体（如：字体中只包含单一字重文件、不是支持字重轴的可变字体）不支持设置font-weight具体数值
 
 
 ### 参见
