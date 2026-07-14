@@ -11,7 +11,7 @@ App跨平台框架历史悠久，从cordova、react native、flutter，直到最
 |逻辑层		|渲染层					|类型		|代表作																|
 |--				|--							|--			|--																		|
 |webview	|webview				|弱类型	|5+App、cordova												|
-|js引擎		|webview				|弱类型	|uni-app app-vue、小程序（dount）			|
+|js引擎		|webview				|弱类型	|uni-app app-vue、小程序（donut）			|
 |js引擎		|原生渲染				|弱类型	|react native、uni-app app-nvue、weex	|
 |dart引擎	|flutter渲染引擎|强类型	|flutter															|
 |js引擎		|flutter渲染引擎|弱类型	|微信skyline、webF、ArkUI-x						|
