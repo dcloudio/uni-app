@@ -246,7 +246,7 @@ app内置模块配置
 | uni-installApk | object |  | Android: 3.99; iOS: x | [安装apk](https://doc.dcloud.net.cn/uni-app-x/api/install-apk.html)模块 |
 | uni-payment | [uni-payment 配置项列表](#modules-uni-payment) |  | Android: 4.02; iOS: 4.18 | [请求支付](https://doc.dcloud.net.cn/uni-app-x/api/request-payment.html)模块 |
 | uni-getProvider | object |  | Android: 4.11; iOS: 4.11 | [获取服务供应商](https://doc.dcloud.net.cn/uni-app-x/api/get-provider.html#getprovider)模块 |
-| uni-push | object |  | Android: 3.97; iOS: 4.11 | [统一推送](https://doc.dcloud.net.cn/uni-app-x/api/get-provider.html#getprovider)模块 |
+| uni-push | object |  | Android: 3.97; iOS: 4.11 | [统一推送](https://doc.dcloud.net.cn/uni-app-x/api/uni-push.html)模块 |
 | uni-media | object |  | Android: 3.91; iOS: 4.11 | [多媒体](https://doc.dcloud.net.cn/uni-app-x/api/choose-image.html)模块 |
 | uni-network | object |  | Android: 3.91; iOS: 4.11 | [网络请求（文件上传/下载）](https://doc.dcloud.net.cn/uni-app-x/api/choose-image.html)模块 |
 | uni-virtualPayment | object |  | Android: x; iOS: 4.25 | [虚拟支付](https://doc.dcloud.net.cn/uni-app-x/api/choose-image.html)模块 |
