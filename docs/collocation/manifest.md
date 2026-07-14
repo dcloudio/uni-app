@@ -23,8 +23,8 @@ uni-app x 目前不提供内置模块选择，而是提供了摇树机制自动�
 | app | [app 配置项列表](#manifest-app) | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | App平台（原生App）配置 |
 | app-android | [app-android 配置项列表](#manifest-app-android) | Web: x; 微信小程序: x; Android: 4.71; iOS: x; HarmonyOS: x | App-Android平台配置 |
 | app-ios | [app-ios 配置项列表](#manifest-app-ios) | Web: x; 微信小程序: x; Android: x; iOS: 4.71; HarmonyOS: x | iOS App平台配置 |
-| app-harmony | [app-harmony 配置项列表](#manifest-app-harmony) | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | HarmonyOS平台配置 |
-| web | [web 配置项列表](#manifest-web) | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | Web平台配置 |
+| app-harmony | [app-harmony 配置项列表](#manifest-app-harmony) | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | HarmonyOS平台配置 |
+| web | [web 配置项列表](#manifest-web) | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | Web平台配置 |
 | mp-weixin | [mp-weixin 配置项列表](#manifest-mp-weixin) | Web: x; 微信小程序: √; Android: x; iOS: x; HarmonyOS: x |   |
 | __hbuilderx | [__hbuilderx 配置项列表](#manifest-hbuilderx) | Web: x; Android: 4.31; iOS: 4.31 | 用于HBuilderX可视化界面相关操作配置 |
 
@@ -44,10 +44,10 @@ uni-app x 目前不提供内置模块选择，而是提供了摇树机制自动�
 
 | 属性 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| flex-direction | 'row' \| 'row-reverse' \| 'column' \| 'column-reverse' | "column" | Web: 4.0; Android 系统版本: x; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | uvue页面默认flex排列方向 |
-| vapor | boolean | false | Web: 4.0; Android 系统版本: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否启用蒸汽模式 |
+| flex-direction | 'row' \| 'row-reverse' \| 'column' \| 'column-reverse' | "column" | Web: 4.0; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | uvue页面默认flex排列方向 |
+| vapor | boolean | false | Web: 4.0; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 是否启用蒸汽模式 |
 | styleIsolationVersion | '2' | "2" | Web: 5.0; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | 样式隔离策略 |
-| vapor-render-target | 'bytecode' \| 'nativecode' | "bytecode" | Web: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.11 | 视图层编译目标 |
+| vapor-render-target | 'bytecode' \| 'nativecode' | "bytecode" | Web: x; Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.11 | 视图层编译目标 |
 
 ### APP配置 @manifest-app
 
@@ -61,7 +61,7 @@ App平台（原生App）配置
 | :- | :- | :- | :- | :- |
 | defaultAppTheme | 'auto' \| 'light' \| 'dark' | "light" | Android: 4.18; iOS: 4.18 | 应用默认主题，可取值 light/dark/auto，默认值为 light。应用主题适配[参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/themejson.html) |
 | distribute | [distribute 配置项列表](#app-distribute) |  |   | App平台发布配置 |
-| initPrivacyAuthorization | 'auto' \| 'agree' \| 'disagree' | "auto" | Android: 4.31; iOS: 4.31; HarmonyOS 系统版本: x; HarmonyOS: x | 隐私协议初始状态，可取值 auto/agree/disagree，默认值为 auto。获取应用隐私协议状态相关api[参考文档](https://doc.dcloud.net.cn/uni-app-x/api/privacy.html) |
+| initPrivacyAuthorization | 'auto' \| 'agree' \| 'disagree' | "auto" | Android: 4.31; iOS: 4.31; HarmonyOS: x | 隐私协议初始状态，可取值 auto/agree/disagree，默认值为 auto。获取应用隐私协议状态相关api[参考文档](https://doc.dcloud.net.cn/uni-app-x/api/privacy.html) |
 
 uni-app 项目可配置原生的隐私弹框。这是因为开发者的js执行较慢，在原生代码获取隐私前来不及弹框，不能满足先弹隐私政策后采集数据的合规要求。
 
@@ -644,9 +644,9 @@ app内置模块配置
 
 HarmonyOS平台配置
 
-| Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | x | x | x | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 |
 
 | 属性 | 类型 | 兼容性 | 描述 |
 | :- | :- | :- | :- |
@@ -740,9 +740,9 @@ share 模块
 
 Web平台配置
 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x |
 
 | 属性 | 类型 | 描述 |
 | :- | :- | :- |

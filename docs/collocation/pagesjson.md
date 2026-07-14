@@ -28,16 +28,16 @@ uni-app x的app平台，页面不再由webview渲染，其实不需要原生提�
 | globalStyle | [globalStyle 配置项列表](#pages-globalstyle) | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 默认页面的窗口表现 |
 | pages | Array\<[PagesOptionsPage](#pagesoptionspage)> | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 页面路径及窗口表现 |
 | tabBar | [tabBar 配置项列表](#pages-tabbar) | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 底部 tab 的表现 |
-| topWindow | [topWindow 配置项列表](#pages-topwindow) | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 上窗体 |
-| leftWindow | [leftWindow 配置项列表](#pages-leftwindow) | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 左窗体 |
-| rightWindow | [rightWindow 配置项列表](#pages-rightwindow) | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 右窗体 |
+| topWindow | [topWindow 配置项列表](#pages-topwindow) | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 上窗体 |
+| leftWindow | [leftWindow 配置项列表](#pages-leftwindow) | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 左窗体 |
+| rightWindow | [rightWindow 配置项列表](#pages-rightwindow) | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 右窗体 |
 | condition | [condition 配置项列表](#pages-condition) | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 启动模式 |
 | subPackages | Array\<[PagesSubPackages](#pagessubpackages)> | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 分包加载配置 |
-| preloadRule | [preloadRule 配置项列表](#pages-preloadrule) | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 声明分包预下载的规则 |
-| workers | string | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 使用 Worker 处理多线程任务时，设置 Worker 代码放置的目录 |
+| preloadRule | [preloadRule 配置项列表](#pages-preloadrule) | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 声明分包预下载的规则 |
+| workers | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 使用 Worker 处理多线程任务时，设置 Worker 代码放置的目录 |
 | easycom | [easycom 配置项列表](#pages-easycom) | 否 | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 组件自动引入规则 |
 | uniIdRouter | [uniIdRouter 配置项列表](#pages-uniidrouter) | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 | 根据用户登录状态、页面是否要求登录、以及接口返回的用户token验证状态自动跳转登录页面。详细教程：[详见](https://doc.dcloud.net.cn/uniCloud/uni-id/summary.html#uni-id-router) |
-| entryPagePath | string | 否 | Web: x; 微信小程序: √; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 默认启动首页 |
+| entryPagePath | string | 否 | Web: x; 微信小程序: √; Android: x; iOS: x; HarmonyOS: x | 默认启动首页 |
 
 ### globalStyle 配置项列表 @pages-globalstyle
 
@@ -55,16 +55,16 @@ globalStyle节点里是所有页面都生效的全局样式配置。它的配置
 | navigationBarTextStyle | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) | "black" | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 导航栏标题颜色，仅支持 black/white（支付宝小程序不支持，请使用 [my.setNavigationBar](https://opendocs.alipay.com/mini/api/xwq8e6)）。 |
 | navigationBarTitleText | string |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 导航栏标题文字内容 |
 | navigationStyle | 'default' \| 'custom' | "default" | 否 | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 导航栏样式，仅支持 default/custom。custom即取消默认的原生导航栏，需看[使用注意](https://uniapp.dcloud.net.cn/collocation/pages.html#customnav)。 |
-| backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; Android: 3.99; iOS 系统版本: x; iOS: 4.18; HarmonyOS: 4.61 | 下拉刷新显示出来的窗口的背景色（无下拉刷新时，此颜色无效果） |
-| backgroundColorContent | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS 系统版本: x; iOS: 4.11; HarmonyOS: 4.61 | 页面容器背景色 |
+| backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 下拉刷新显示出来的窗口的背景色（无下拉刷新时，此颜色无效果） |
+| backgroundColorContent | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 页面容器背景色 |
 | backgroundTextStyle | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) | "dark" | 否 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 下拉 loading 的样式，仅支持 dark / light |
 | enablePullDownRefresh | boolean | false | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否开启下拉刷新，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
 | onReachBottomDistance | number | 50 | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
-| backgroundColorTop | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
-| backgroundColorBottom | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS: x; HarmonyOS: x | 底部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
+| backgroundColorTop | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
+| backgroundColorBottom | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 底部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
 | titleImage | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址 |
 | transparentTitle | 'always' \| 'auto' \| 'none' | "none" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏整体（前景、背景）透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |
-| titlePenetrate | 'YES' \| 'NO' | "NO" | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 导航栏点击穿透 |
+| titlePenetrate | 'YES' \| 'NO' | "NO" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏点击穿透 |
 | pageOrientation | 'auto' \| 'portrait' \| 'landscape' | "portrait" | 否 | Web: x; 微信小程序: 4.41; Android: 4.13; iOS: 4.25; HarmonyOS: 4.61 | 横屏配置，屏幕旋转设置，仅支持 auto / portrait / landscape 详见 [响应显示区域变化](https://uniapp.dcloud.net.cn/collocation/pages.html#globalstyle)。 |
 | hideStatusBar | boolean | false | 否 | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.33; HarmonyOS: 4.61 | 是否隐藏系统顶部状态栏 |
 | hideBottomNavigationIndicator | boolean | false | 否 | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.33; HarmonyOS: 4.61 | 是否隐藏系统底部导航栏 |
@@ -73,36 +73,36 @@ globalStyle节点里是所有页面都生效的全局样式配置。它的配置
 | androidThreeButtonNavigationStyle | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 虚拟按键区域前景色 |
 | animationType | 'slide-in-right' \| 'slide-in-left' \| 'slide-in-top' \| 'slide-in-bottom' \| 'fade-in' \| 'zoom-out' \| 'zoom-fade-out' \| 'pop-in' | "pop-in" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 窗口显示的动画效果，详见：[窗口动画](https://uniapp.dcloud.net.cn/api/router.html#animation)。 |
 | animationDuration | number | 300 | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 窗口显示动画的持续时间，单位为 ms |
-| allowsBounceVertical | 'YES' \| 'NO' | "YES" | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 是否允许向下拉拽。默认 YES。如果需要下拉刷新，值必须为YES |
+| allowsBounceVertical | 'YES' \| 'NO' | "YES" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否允许向下拉拽。默认 YES。如果需要下拉刷新，值必须为YES |
 | usingComponents | object |  | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 引用小程序组件，参考 [小程序组件](https://uniapp.dcloud.net.cn/tutorial/miniprogram-subject.html)。 |
-| renderingMode | string |  | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 同层渲染，webrtc(实时音视频) 无法正常时尝试配置 seperated 强制关掉同层 |
-| leftWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 当存在 leftWindow时，默认是否显示 leftWindow |
-| topWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 当存在 topWindow时，默认是否显示 topWindow |
-| rightWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 当存在 rightWindow时，默认是否显示 rightWindow |
+| renderingMode | string |  | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 同层渲染，webrtc(实时音视频) 无法正常时尝试配置 seperated 强制关掉同层 |
+| leftWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当存在 leftWindow时，默认是否显示 leftWindow |
+| topWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当存在 topWindow时，默认是否显示 topWindow |
+| rightWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当存在 rightWindow时，默认是否显示 rightWindow |
 | rpxCalcMaxDeviceWidth | number | 960 | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | rpx 计算所支持的最大设备宽度，单位 px |
 | rpxCalcBaseDeviceWidth | number | 375 | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | rpx 计算使用的基准设备宽度，设备实际宽度超出 rpx 计算所支持的最大设备宽度时将按基准宽度计算，单位 px |
 | rpxCalcIncludeWidth | number | 750 | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | rpx 计算特殊处理的值，始终按实际的设备宽度计算，单位 rpx |
 | dynamicRpx | boolean | false | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 动态 rpx，屏幕大小变化会重新渲染 rpx |
-| maxWidth | number |  | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 单位px，当浏览器可见区域宽度大于maxWidth时，两侧留白，当小于等于maxWidth时，页面铺满；不同页面支持配置不同的maxWidth；maxWidth = leftWindow(可选)+page(页面主体)+rightWindow(可选) |
-| enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
+| maxWidth | number |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 单位px，当浏览器可见区域宽度大于maxWidth时，两侧留白，当小于等于maxWidth时，页面铺满；不同页面支持配置不同的maxWidth；maxWidth = leftWindow(可选)+page(页面主体)+rightWindow(可选) |
+| enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
 | app-plus | [app-plus 配置项列表](#globalstyle-app-plus) |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 5+ App 特有配置 |
-| h5 | [h5 配置项列表](#globalstyle-h5) |  | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | H5 特有配置 |
-| mp-alipay | [mp-alipay 配置项列表](#globalstyle-mp-alipay) |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 支付宝小程序特有配置 |
-| mp-weixin | [mp-weixin 配置项列表](#globalstyle-mp-weixin) |  | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 微信小程序特有配置 |
-| mp-baidu | [mp-baidu 配置项列表](#globalstyle-mp-baidu) |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 百度小程序特有配置 |
-| mp-toutiao | object |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 头条小程序特有配置 |
-| mp-qq | object |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | QQ小程序特有配置 |
-| mp-kuaishou | object |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 快手小程序特有配置 |
-| mp-jd | object |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 设置编译到 mp-jd 平台的特定样式 |
-| mp-lark | object |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 飞书小程序特有配置 |
+| h5 | [h5 配置项列表](#globalstyle-h5) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | H5 特有配置 |
+| mp-alipay | [mp-alipay 配置项列表](#globalstyle-mp-alipay) |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序特有配置 |
+| mp-weixin | [mp-weixin 配置项列表](#globalstyle-mp-weixin) |  | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 微信小程序特有配置 |
+| mp-baidu | [mp-baidu 配置项列表](#globalstyle-mp-baidu) |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 百度小程序特有配置 |
+| mp-toutiao | object |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 头条小程序特有配置 |
+| mp-qq | object |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | QQ小程序特有配置 |
+| mp-kuaishou | object |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 快手小程序特有配置 |
+| mp-jd | object |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 设置编译到 mp-jd 平台的特定样式 |
+| mp-lark | object |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 飞书小程序特有配置 |
 
 #### h5 配置项列表 @globalstyle-h5
 
 H5 特有配置
 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x |
 
 | 属性 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
@@ -190,9 +190,9 @@ H5 特有配置
 
 微信小程序特有配置
 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 4.41 | x | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | 4.41 | x | x | x |
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
@@ -203,7 +203,7 @@ H5 特有配置
 | initialRenderingCache | 'static' \| 'dynamic' |  | 否 |   | 页面初始渲染缓存配置。支持 static / dynamic |
 | visualEffectInBackground | 'none' \| 'hidden' | "none" | 否 |   | 切入系统后台时，隐藏页面内容，保护用户隐私。支持 hidden / none |
 | handleWebviewPreload | 'static' \| 'manual' \| 'none' | "static" | 否 |   | 控制预加载下个页面的时机。支持 static / manual / auto |
-| enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
+| enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
 
 ### pages 配置项列表 @pagesoptionspage
 
@@ -281,7 +281,7 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 | navigationBarTitleText | string |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 导航栏标题文字内容 |
 | navigationBarShadow | [navigationBarShadow 配置项列表](#style-navigationbarshadow) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏阴影，配置参考下方 [导航栏阴影](https://doc.dcloud.net.cn/uni-app-x/collocation/pagesjson.html#pagesoptionspage-style) |
 | navigationStyle | 'default' \| 'custom' | "default" | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 导航栏样式，仅支持 default/custom。custom即取消默认的原生导航栏，需看[使用注意](https://uniapp.dcloud.net.cn/collocation/pages.html#customnav)。 |
-| disableScroll | boolean | false | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.12; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.12 | 设置为 true 则页面整体不能上下滚动（无bounce效果）。只在页面配置中有效，在 globalStyle 中设置无效。 |
+| disableScroll | boolean | false | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS(VDOM): x; iOS(Vapor): 5.12; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.12 | 设置为 true 则页面整体不能上下滚动（无bounce效果）。只在页面配置中有效，在 globalStyle 中设置无效。 |
 | backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 下拉刷新显示出来的窗口的背景色（无下拉刷新时，此颜色无效果） |
 | backgroundColorContent | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 页面容器背景色 |
 | backgroundTextStyle | 'dark' \| 'light' | "dark" | 否 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 下拉 loading 的样式，仅支持 dark/light |
@@ -293,29 +293,29 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 | androidThreeButtonNavigationTranslucent | boolean | false | 否 | Web: x; 微信小程序: x; Android: 4.41; iOS: x; HarmonyOS: x | 页面内容是否可以渲染到虚拟按键区域 |
 | androidThreeButtonNavigationBackgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; Android: 4.51; iOS: x; HarmonyOS: x | 虚拟按键区域背景色 |
 | androidThreeButtonNavigationStyle | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 虚拟按键区域前景色 |
-| backgroundColorTop | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
-| backgroundColorBottom | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS: x; HarmonyOS: x | 底部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
-| disableSwipeBack | boolean | false | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS: 4.18; HarmonyOS 系统版本: x; HarmonyOS: x | 是否禁用右滑手势关闭页面 |
-| swipeBackAsBackPress | boolean | false | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS 系统版本: x; HarmonyOS: x | 是否将侧滑返回手势转为页面 onBackPress 事件（注意：disableSwipeBack 为 false 时生效） |
+| backgroundColorTop | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
+| backgroundColorBottom | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 底部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
+| disableSwipeBack | boolean | false | 否 | Web: x; 微信小程序: x; Android: x; iOS: 4.18; HarmonyOS: x | 是否禁用右滑手势关闭页面 |
+| swipeBackAsBackPress | boolean | false | 否 | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS: x | 是否将侧滑返回手势转为页面 onBackPress 事件（注意：disableSwipeBack 为 false 时生效） |
 | titleImage | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址 |
 | transparentTitle | 'always' \| 'auto' \| 'none' | "none" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏整体（前景、背景）透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |
-| titlePenetrate | 'YES' \| 'NO' | "NO" | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 导航栏点击穿透 |
-| enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
+| titlePenetrate | 'YES' \| 'NO' | "NO" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏点击穿透 |
+| enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
 | app-plus | [app-plus 配置项列表](#style-app-plus) |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 编译到 App 平台的特定样式 |
 | h5 | [h5 配置项列表](#style-h5) |  | 否 |   | 编译到 H5 平台的特定样式 |
-| mp-alipay | [mp-alipay 配置项列表](#style-mp-alipay) |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 支付宝小程序特有配置 |
-| mp-weixin | [mp-weixin 配置项列表](#style-mp-weixin) |  | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 微信小程序特有配置 |
-| mp-baidu | [mp-baidu 配置项列表](#style-mp-baidu) |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 百度小程序特有配置 |
-| mp-toutiao | object |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 头条小程序特有配置 |
-| mp-qq | object |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | QQ小程序特有配置 |
-| mp-kuaishou | object |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 快手小程序特有配置 |
-| mp-jd | object |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 设置编译到 mp-jd 平台的特定样式 |
-| mp-lark | object |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 飞书小程序特有配置 |
+| mp-alipay | [mp-alipay 配置项列表](#style-mp-alipay) |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序特有配置 |
+| mp-weixin | [mp-weixin 配置项列表](#style-mp-weixin) |  | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 微信小程序特有配置 |
+| mp-baidu | [mp-baidu 配置项列表](#style-mp-baidu) |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 百度小程序特有配置 |
+| mp-toutiao | object |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 头条小程序特有配置 |
+| mp-qq | object |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | QQ小程序特有配置 |
+| mp-kuaishou | object |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 快手小程序特有配置 |
+| mp-jd | object |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 设置编译到 mp-jd 平台的特定样式 |
+| mp-lark | object |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 飞书小程序特有配置 |
 | usingComponents | object |  | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 引用小程序组件，参考 [小程序组件https://uniapp.dcloud.net.cn/tutorial/miniprogram-subject.html#小程序自定义组件支持)。 |
-| leftWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 当存在 leftWindow时，当前页面是否显示 leftWindow |
-| topWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 当存在 topWindow时，当前页面是否显示 topWindow |
-| rightWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 当存在 rightWindow时，当前页面是否显示 rightWindow |
-| maxWidth | number |  | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 单位px，当浏览器可见区域宽度大于maxWidth时，两侧留白，当小于等于maxWidth时，页面铺满；不同页面支持配置不同的maxWidth；maxWidth = leftWindow(可选)+page(页面主体)+rightWindow(可选) |
+| leftWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当存在 leftWindow时，当前页面是否显示 leftWindow |
+| topWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当存在 topWindow时，当前页面是否显示 topWindow |
+| rightWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当存在 rightWindow时，当前页面是否显示 rightWindow |
+| maxWidth | number |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 单位px，当浏览器可见区域宽度大于maxWidth时，两侧留白，当小于等于maxWidth时，页面铺满；不同页面支持配置不同的maxWidth；maxWidth = leftWindow(可选)+page(页面主体)+rightWindow(可选) |
 
 <a id="pagesoptionspage-tips"></a>
 
@@ -366,7 +366,7 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 
 | 属性 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| colorType | 'grey' \| 'blue' \| 'green' \| 'orange' \| 'red' \| 'yellow' | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 阴影的颜色，支持：grey、blue、green、orange、red、yellow |
+| colorType | 'grey' \| 'blue' \| 'green' \| 'orange' \| 'red' \| 'yellow' | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 阴影的颜色，支持：grey、blue、green、orange、red、yellow |
 
 #### 页面背景色@background
 - 页面容器背景色：可在页面 json 文件中通过 backgroundColorContent 属性配置，支持 #RRGGBB 写法，默认为白色
@@ -388,9 +388,9 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 
 微信小程序特有配置
 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 4.41 | x | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | 4.41 | x | x | x |
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
@@ -401,7 +401,7 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 | initialRenderingCache | 'static' \| 'dynamic' |  | 否 |   | 页面初始渲染缓存配置。支持 static / dynamic |
 | visualEffectInBackground | 'none' \| 'hidden' | "none" | 否 |   | 切入系统后台时，隐藏页面内容，保护用户隐私。支持 hidden / none |
 | handleWebviewPreload | 'static' \| 'manual' \| 'none' | "static" | 否 |   | 控制预加载下个页面的时机。支持 static / manual / auto |
-| enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
+| enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
 
 
 ### tabBar 配置项列表 @pages-tabbar
@@ -422,7 +422,7 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 | borderStyle | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) | "black" | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tabbar 上边框的颜色，可选值 black、white，black对应颜色rgba(0,0,0,0.33)，white对应颜色rgba(255,255,255,0.33)。 |
 | blurEffect | 'dark' \| 'extralight' \| 'light' \| 'none' | "none" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 高斯模糊效果 |
 | list | Array\<[PagesOptionsTabbarList](#pagesoptionstabbarlist)> |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tab 的列表，详见 list 属性说明，最少2个、最多5个 tab |
-| position | 'top' \| 'bottom' | "bottom" | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | tabbar 的位置,可选值 bottom、top。 |
+| position | 'top' \| 'bottom' | "bottom" | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | tabbar 的位置,可选值 bottom、top。 |
 | fontSize | string | "10px" | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 文字默认大小 |
 | iconWidth | string | "24px" | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 图标默认宽度（高度等比例缩放） |
 | spacing | string | "3px" | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 图标和文字的间距 |
@@ -520,79 +520,79 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 
 上窗体
 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x |
 
 | 属性 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| path | string | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 配置页面路径 |
-| style | object | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 配置页面窗口表现，配置项参考下方 [pageStyle](https://uniapp.dcloud.net.cn/collocation/pages.html?id=style) |
-| matchMedia | [matchMedia 配置项列表](#topwindow-matchmedia) | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 配置显示该窗口的规则，配置项参考下方 [matchMedia](https://uniapp.dcloud.net.cn/collocation/pages.html?id=matchmedia) |
+| path | string | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 配置页面路径 |
+| style | object | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 配置页面窗口表现，配置项参考下方 [pageStyle](https://uniapp.dcloud.net.cn/collocation/pages.html?id=style) |
+| matchMedia | [matchMedia 配置项列表](#topwindow-matchmedia) | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 配置显示该窗口的规则，配置项参考下方 [matchMedia](https://uniapp.dcloud.net.cn/collocation/pages.html?id=matchmedia) |
 
 #### matchMedia 配置项列表 @topwindow-matchmedia
 
 配置显示该窗口的规则，配置项参考下方 [matchMedia](https://uniapp.dcloud.net.cn/collocation/pages.html?id=matchmedia)
 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x |
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
-| minWidth | number | 768 | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 当设备可见区域宽度  minWidth 时，显示该 window+ |
+| minWidth | number | 768 | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当设备可见区域宽度  minWidth 时，显示该 window+ |
 
 ### leftWindow 配置项列表 @pages-leftwindow
 
 左窗体
 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x |
 
 | 属性 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| path | string | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 配置页面路径 |
-| style | object | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 配置页面窗口表现，配置项参考下方 [pageStyle](https://uniapp.dcloud.net.cn/collocation/pages.html?id=style) |
-| matchMedia | [matchMedia 配置项列表](#leftwindow-matchmedia) | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 配置显示该窗口的规则，配置项参考下方 [matchMedia](https://uniapp.dcloud.net.cn/collocation/pages.html?id=matchmedia) |
+| path | string | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 配置页面路径 |
+| style | object | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 配置页面窗口表现，配置项参考下方 [pageStyle](https://uniapp.dcloud.net.cn/collocation/pages.html?id=style) |
+| matchMedia | [matchMedia 配置项列表](#leftwindow-matchmedia) | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 配置显示该窗口的规则，配置项参考下方 [matchMedia](https://uniapp.dcloud.net.cn/collocation/pages.html?id=matchmedia) |
 
 #### matchMedia 配置项列表 @leftwindow-matchmedia
 
 配置显示该窗口的规则，配置项参考下方 [matchMedia](https://uniapp.dcloud.net.cn/collocation/pages.html?id=matchmedia)
 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x |
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
-| minWidth | number | 768 | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 当设备可见区域宽度  minWidth 时，显示该 window+ |
+| minWidth | number | 768 | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当设备可见区域宽度  minWidth 时，显示该 window+ |
 
 ### rightWindow 配置项列表 @pages-rightwindow
 
 右窗体
 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x |
 
 | 属性 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| path | string | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 配置页面路径 |
-| style | object | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 配置页面窗口表现，配置项参考下方 [pageStyle](https://uniapp.dcloud.net.cn/collocation/pages.html?id=style) |
-| matchMedia | [matchMedia 配置项列表](#rightwindow-matchmedia) | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 配置显示该窗口的规则，配置项参考下方 [matchMedia](https://uniapp.dcloud.net.cn/collocation/pages.html?id=matchmedia) |
+| path | string | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 配置页面路径 |
+| style | object | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 配置页面窗口表现，配置项参考下方 [pageStyle](https://uniapp.dcloud.net.cn/collocation/pages.html?id=style) |
+| matchMedia | [matchMedia 配置项列表](#rightwindow-matchmedia) | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 配置显示该窗口的规则，配置项参考下方 [matchMedia](https://uniapp.dcloud.net.cn/collocation/pages.html?id=matchmedia) |
 
 #### matchMedia 配置项列表 @rightwindow-matchmedia
 
 配置显示该窗口的规则，配置项参考下方 [matchMedia](https://uniapp.dcloud.net.cn/collocation/pages.html?id=matchmedia)
 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x |
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
-| minWidth | number | 768 | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 当设备可见区域宽度  minWidth 时，显示该 window+ |
+| minWidth | number | 768 | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当设备可见区域宽度  minWidth 时，显示该 window+ |
 
 ### condition 配置项列表 @pages-condition
 
@@ -669,9 +669,9 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 
 | 属性 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- |
-| root | string | 是 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 子包的根目录 |
-| independent | boolean | 否 | Web: x; 微信小程序: 5.21; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 是否声明对应分包为独立分包 |
-| pages | Array\<[SubPackagePagesOptionsPage](#subpackagepagesoptionspage)> | 是 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 子包由哪些页面组成，参数同 pages |
+| root | string | 是 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 子包的根目录 |
+| independent | boolean | 否 | Web: x; 微信小程序: 5.21; Android: x; iOS: x; HarmonyOS: x | 是否声明对应分包为独立分包 |
+| pages | Array\<[SubPackagePagesOptionsPage](#subpackagepagesoptionspage)> | 是 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 子包由哪些页面组成，参数同 pages |
 
 #### SubPackagePagesOptionsPage 配置项列表 @subpackagepagesoptionspage
 
@@ -700,7 +700,7 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 | navigationBarTitleText | string |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 导航栏标题文字内容 |
 | navigationBarShadow | [navigationBarShadow 配置项列表](#style-navigationbarshadow) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏阴影，配置参考下方 [导航栏阴影](https://doc.dcloud.net.cn/uni-app-x/collocation/pagesjson.html#pagesoptionspage-style) |
 | navigationStyle | 'default' \| 'custom' | "default" | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 导航栏样式，仅支持 default/custom。custom即取消默认的原生导航栏，需看[使用注意](https://uniapp.dcloud.net.cn/collocation/pages.html#customnav)。 |
-| disableScroll | boolean | false | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.12; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.12 | 设置为 true 则页面整体不能上下滚动（无bounce效果）。只在页面配置中有效，在 globalStyle 中设置无效。 |
+| disableScroll | boolean | false | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS(VDOM): x; iOS(Vapor): 5.12; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.12 | 设置为 true 则页面整体不能上下滚动（无bounce效果）。只在页面配置中有效，在 globalStyle 中设置无效。 |
 | backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 下拉刷新显示出来的窗口的背景色（无下拉刷新时，此颜色无效果） |
 | backgroundColorContent | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 页面容器背景色 |
 | backgroundTextStyle | 'dark' \| 'light' | "dark" | 否 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 下拉 loading 的样式，仅支持 dark/light |
@@ -712,29 +712,29 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 | androidThreeButtonNavigationTranslucent | boolean | false | 否 | Web: x; 微信小程序: x; Android: 4.41; iOS: x; HarmonyOS: x | 页面内容是否可以渲染到虚拟按键区域 |
 | androidThreeButtonNavigationBackgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; Android: 4.51; iOS: x; HarmonyOS: x | 虚拟按键区域背景色 |
 | androidThreeButtonNavigationStyle | string ([string.ThemeJsonString](/uts/data-type.md#ide-string)) |  | 否 | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 虚拟按键区域前景色 |
-| backgroundColorTop | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
-| backgroundColorBottom | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS: x; HarmonyOS: x | 底部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
-| disableSwipeBack | boolean | false | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS: 4.18; HarmonyOS 系统版本: x; HarmonyOS: x | 是否禁用右滑手势关闭页面 |
-| swipeBackAsBackPress | boolean | false | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS 系统版本: x; HarmonyOS: x | 是否将侧滑返回手势转为页面 onBackPress 事件（注意：disableSwipeBack 为 false 时生效） |
+| backgroundColorTop | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
+| backgroundColorBottom | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 底部窗口的背景色(bounce回弹区域), 仅 iOS 平台 |
+| disableSwipeBack | boolean | false | 否 | Web: x; 微信小程序: x; Android: x; iOS: 4.18; HarmonyOS: x | 是否禁用右滑手势关闭页面 |
+| swipeBackAsBackPress | boolean | false | 否 | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS: x | 是否将侧滑返回手势转为页面 onBackPress 事件（注意：disableSwipeBack 为 false 时生效） |
 | titleImage | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏图片地址（替换当前文字标题），支付宝小程序内必须使用https的图片链接地址 |
 | transparentTitle | 'always' \| 'auto' \| 'none' | "none" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏整体（前景、背景）透明设置。支持 always 一直透明 / auto 滑动自适应 / none 不透明 |
-| titlePenetrate | 'YES' \| 'NO' | "NO" | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 导航栏点击穿透 |
-| enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
+| titlePenetrate | 'YES' \| 'NO' | "NO" | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏点击穿透 |
+| enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
 | app-plus | [app-plus 配置项列表](#style-app-plus) |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 编译到 App 平台的特定样式 |
 | h5 | [h5 配置项列表](#style-h5) |  | 否 |   | 编译到 H5 平台的特定样式 |
-| mp-alipay | [mp-alipay 配置项列表](#style-mp-alipay) |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 支付宝小程序特有配置 |
-| mp-weixin | [mp-weixin 配置项列表](#style-mp-weixin) |  | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 微信小程序特有配置 |
-| mp-baidu | [mp-baidu 配置项列表](#style-mp-baidu) |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 百度小程序特有配置 |
-| mp-toutiao | object |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 头条小程序特有配置 |
-| mp-qq | object |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | QQ小程序特有配置 |
-| mp-kuaishou | object |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 快手小程序特有配置 |
-| mp-jd | object |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 设置编译到 mp-jd 平台的特定样式 |
-| mp-lark | object |  | 否 | Web: x; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | 飞书小程序特有配置 |
+| mp-alipay | [mp-alipay 配置项列表](#style-mp-alipay) |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序特有配置 |
+| mp-weixin | [mp-weixin 配置项列表](#style-mp-weixin) |  | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 微信小程序特有配置 |
+| mp-baidu | [mp-baidu 配置项列表](#style-mp-baidu) |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 百度小程序特有配置 |
+| mp-toutiao | object |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 头条小程序特有配置 |
+| mp-qq | object |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | QQ小程序特有配置 |
+| mp-kuaishou | object |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 快手小程序特有配置 |
+| mp-jd | object |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 设置编译到 mp-jd 平台的特定样式 |
+| mp-lark | object |  | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 飞书小程序特有配置 |
 | usingComponents | object |  | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 引用小程序组件，参考 [小程序组件https://uniapp.dcloud.net.cn/tutorial/miniprogram-subject.html#小程序自定义组件支持)。 |
-| leftWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 当存在 leftWindow时，当前页面是否显示 leftWindow |
-| topWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 当存在 topWindow时，当前页面是否显示 topWindow |
-| rightWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 当存在 rightWindow时，当前页面是否显示 rightWindow |
-| maxWidth | number |  | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 单位px，当浏览器可见区域宽度大于maxWidth时，两侧留白，当小于等于maxWidth时，页面铺满；不同页面支持配置不同的maxWidth；maxWidth = leftWindow(可选)+page(页面主体)+rightWindow(可选) |
+| leftWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当存在 leftWindow时，当前页面是否显示 leftWindow |
+| topWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当存在 topWindow时，当前页面是否显示 topWindow |
+| rightWindow | boolean | true | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 当存在 rightWindow时，当前页面是否显示 rightWindow |
+| maxWidth | number |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 单位px，当浏览器可见区域宽度大于maxWidth时，两侧留白，当小于等于maxWidth时，页面铺满；不同页面支持配置不同的maxWidth；maxWidth = leftWindow(可选)+page(页面主体)+rightWindow(可选) |
 
 ### preloadRule 配置项列表 @pages-preloadrule
 
@@ -746,14 +746,14 @@ preloadRule 中，key 是页面路径，value 是进入此页面的预下载配�
 
 声明分包预下载的规则
 
-| Web | 微信小程序 | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 4.41 | x | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | 4.41 | x | x | x |
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
-| network | 'all' \| 'wifi' | "wifi" | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 在指定网络下预下载，可选值为：all（不限网络）、wifi（仅wifi下预下载） |
-| packages | Array\<string> |  | 是 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | 进入页面后预下载分包的 root 或 name。__APP__ 表示主包。 |
+| network | 'all' \| 'wifi' | "wifi" | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 在指定网络下预下载，可选值为：all（不限网络）、wifi（仅wifi下预下载） |
+| packages | Array\<string> |  | 是 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 进入页面后预下载分包的 root 或 name。__APP__ 表示主包。 |
 
 ## 参见
 [相关 Bug](https://issues.dcloud.net.cn/?mid=collocation.pages_json)
