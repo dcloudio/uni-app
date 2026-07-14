@@ -7,7 +7,7 @@
 
 
 ### getBatteryInfo 兼容性 
-| Web | 微信小程序 | Android | Android(VDOM) uni-app x UTS 插件 | iOS | iOS(VDOM) uni-app x UTS 插件 | HarmonyOS |
+| Web | 微信小程序 | Android | Android(VDOM) UTS 插件 | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.35 | 3.9 | 3.9 | 4.11 | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
@@ -114,7 +114,7 @@
 
 
 ### getBatteryInfoSync 兼容性 
-| Web | 微信小程序 | Android | Android(VDOM) uni-app x UTS 插件 | iOS | iOS(VDOM) uni-app x UTS 插件 | HarmonyOS |
+| Web | 微信小程序 | Android | Android(VDOM) UTS 插件 | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.35 | 3.9 | 3.9 | 4.11 | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 

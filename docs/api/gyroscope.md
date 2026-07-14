@@ -269,7 +269,7 @@
 支付宝小程序频率为 500ms/次，微信小程序频率根据 uni.startGyroscope 的 interval 参数设置。事件只有在调用 uni.startGyroscope 后才会开始监听，使用 uni.stopGyroscope 可以停止监听。
 
 ### onGyroscopeChange 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 |
 
@@ -322,7 +322,7 @@
 停止监听陀螺仪数据变化事件
 
 ### offGyroscopeChange 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) uni-app x UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 |
 

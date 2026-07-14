@@ -13,7 +13,7 @@
 显示消息提示框
 
 ### showToast 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) uni-app x UTS 插件 | HarmonyOS |
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 
@@ -28,12 +28,12 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| title | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 提示的内容，长度与 icon 取值有关。 |
-| icon | string | 否 | "success" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: x | icon值说明 |
-| image | [string.ImageURIString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 自定义图标的本地路径（app端暂不支持gif） |
-| mask | boolean | 否 | false | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 是否显示透明蒙层，防止触摸穿透 |
-| duration | number | 否 | 1500 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 提示的延迟时间，单位毫秒 |
-| position | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | position值说明。纯文本轻提示显示位置，填写有效值后只有 title 属性生效，且不支持通过 uni.hideToast 隐藏。 |
+| title | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 提示的内容，长度与 icon 取值有关。 |
+| icon | string | 否 | "success" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: x | icon值说明 |
+| image | [string.ImageURIString](/uts/data-type.md#ide-string) | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 自定义图标的本地路径（app端暂不支持gif） |
+| mask | boolean | 否 | false | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 是否显示透明蒙层，防止触摸穿透 |
+| duration | number | 否 | 1500 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 提示的延迟时间，单位毫秒 |
+| position | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | position值说明。纯文本轻提示显示位置，填写有效值后只有 title 属性生效，且不支持通过 uni.hideToast 隐藏。 |
 | success | (res: ShowToastSuccess) => void | 否 |  | 微信小程序: 4.41 | uni.showToast成功回调函数定义 |
 | fail | (res: [ShowToastFail](#showtoastfail-values)) => void | 否 |  | 微信小程序: 4.41 | uni.showToast失败回调函数定义 |
 | complete | (res: any) => void | 否 |  | 微信小程序: 4.41 | uni.showToast完成回调函数定义 | 
@@ -110,7 +110,7 @@
 隐藏消息提示框。
 
 ### hideToast 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) uni-app x UTS 插件 | HarmonyOS |
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
 

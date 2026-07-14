@@ -13,7 +13,7 @@
 退出当前应用
 
 ### exit 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) uni-app x UTS 插件 | HarmonyOS |
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.33 | 4.33 | 4.71 |
 

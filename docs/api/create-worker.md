@@ -35,7 +35,7 @@ uni-app x的代码，默认都是在主线程执行的，主线程也称为UI线
 创建一个Worker对象
 
 ### createWorker 兼容性 
-| Web | 微信小程序 | Android | Android(VDOM) uni-app x UTS 插件 | iOS | iOS(VDOM) uni-app x UTS 插件 | HarmonyOS | HarmonyOS(VDOM) uni-app x UTS 插件 |
+| Web | 微信小程序 | Android | Android(VDOM) UTS 插件 | iOS | iOS(VDOM) UTS 插件 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | 4.81 | 4.41 | 4.81 | 4.81 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.81 | 4.81 | 4.81 |
 

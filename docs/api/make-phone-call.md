@@ -13,7 +13,7 @@
 拨打电话
 
 ### makePhoneCall 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) uni-app x UTS 插件 | HarmonyOS | HarmonyOS(VDOM) uni-app x UTS 插件 |
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.63 | 4.63 | 4.63 | 4.61 | 4.61 |
 
@@ -34,10 +34,10 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| phoneNumber | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS(VDOM) uni-app x UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS(VDOM) uni-app x UTS 插件: 4.61 | 需要拨打的电话号码 |
-| success | (result: MakePhoneCallSuccess) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS(VDOM) uni-app x UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS(VDOM) uni-app x UTS 插件: 4.61 | 成功返回的回调函数 |
-| fail | (result: [MakePhoneCallFail](#makephonecallfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS(VDOM) uni-app x UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS(VDOM) uni-app x UTS 插件: 4.61 | 失败的回调函数 |
-| complete | (result: any) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS(VDOM) uni-app x UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS(VDOM) uni-app x UTS 插件: 4.61 | 结束的回调函数（调用成功、失败都会执行） | 
+| phoneNumber | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS(VDOM) UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS(VDOM) UTS 插件: 4.61 | 需要拨打的电话号码 |
+| success | (result: MakePhoneCallSuccess) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS(VDOM) UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS(VDOM) UTS 插件: 4.61 | 成功返回的回调函数 |
+| fail | (result: [MakePhoneCallFail](#makephonecallfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS(VDOM) UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS(VDOM) UTS 插件: 4.61 | 失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS(VDOM) UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS(VDOM) UTS 插件: 4.61 | 结束的回调函数（调用成功、失败都会执行） | 
 
 #### MakePhoneCallFail 的属性值 @makephonecallfail-values 
 

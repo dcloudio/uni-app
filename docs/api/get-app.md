@@ -9,7 +9,7 @@
 `UniApp` 对象可同时在 uts 插件和 uvue 页面中使用，但 `vm` 属性及其相关的 `globalData` 仍然只能在 uvue 页面中使用。
 
 ### getApp 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) uni-app x UTS 插件 | HarmonyOS |
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | √ | √ | √ | 4.31 | 4.61 |
 
@@ -26,9 +26,9 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| vm | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: 4.61 | App vue 实例对象 |
+| vm | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | App vue 实例对象 |
 | globalData | any | 是 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 全局对象 |
-| ~~$vm~~ | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: 4.61 | App vue 实例对象  **已废弃，仅为了向下兼容保留** |
+| ~~$vm~~ | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | App vue 实例对象  **已废弃，仅为了向下兼容保留** |
 #### UniApp 的方法 @uniapp-values 
 
 #### getAndroidApplication(): Application @getandroidapplication
