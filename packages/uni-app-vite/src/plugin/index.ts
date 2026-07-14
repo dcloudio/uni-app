@@ -1,6 +1,6 @@
 import {
   type UniVitePlugin,
-  resolveVueI18nRuntime,
+  resolveVueI18nRuntimeAlias,
 } from '@dcloudio/uni-cli-shared'
 
 import { uniOptions } from './uni'
@@ -31,8 +31,8 @@ export function uniAppPlugin(
         resolve: {
           alias: {
             // vue-i18n 默认会启用 new Function 来构造翻译函数，导致在 Android 上可能报`TypeError: no access` 错误
-            // 故：启用 runtime 模式，内部定制了简易的 compileToFunction
-            'vue-i18n': resolveVueI18nRuntime(),
+            // 项目未安装 vue-i18n 时使用内部 runtime 版本，避免触发该问题
+            ...resolveVueI18nRuntimeAlias(),
           },
         },
       }

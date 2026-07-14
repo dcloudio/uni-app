@@ -2,7 +2,13 @@ import path from 'path'
 // import debug from 'debug'
 import fs from 'fs-extra'
 import type { Plugin } from 'vite'
-import { resolveBuiltIn, resolveUTSModule } from '@dcloudio/uni-cli-shared'
+import {
+  resolveBuiltIn,
+  resolveProjectVueI18n,
+  resolveUTSModule,
+  resolveVueI18n,
+  resolveVueI18nDependencies,
+} from '@dcloudio/uni-cli-shared'
 
 import type { VitePluginUniResolvedOptions } from '../..'
 
@@ -38,6 +44,9 @@ export function uniResolveIdPlugin(
 ): Plugin {
   const resolveCache: Record<string, string> = {}
   const isX = process.env.UNI_APP_X === 'true'
+  const useProjectVueI18n = isX && resolveProjectVueI18n() !== undefined
+  // 内部会先判断项目能否解析 vue-i18n，仅无法解析时才返回内置依赖别名。
+  const vueI18nDependencies = resolveVueI18nDependencies()
   if (isX) {
     BUILT_IN_MODULES['@dcloudio/uni-app'] = 'dist-x/uni-app.es.js'
     BUILT_IN_MODULES['@dcloudio/uni-cloud'] = 'dist/uni-cloud-x.es.js'
@@ -55,6 +64,15 @@ export function uniResolveIdPlugin(
       if (cache) {
         // debugResolve('cache', id, cache)
         return cache
+      }
+      if (isX && id === 'vue-i18n') {
+        if (useProjectVueI18n) {
+          return
+        }
+        return (resolveCache[id] = resolveVueI18n())
+      }
+      if (vueI18nDependencies[id]) {
+        return (resolveCache[id] = vueI18nDependencies[id])
       }
       if (BUILT_IN_MODULES[id as BuiltInModulesKey]) {
         return (resolveCache[id] = resolveBuiltIn(

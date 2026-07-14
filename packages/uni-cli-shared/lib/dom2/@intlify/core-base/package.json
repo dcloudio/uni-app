@@ -1,0 +1,11 @@
+{
+  "name": "@intlify/core-base",
+  "version": "11.4.6",
+  "license": "MIT",
+  "module": "dist/core-base.mjs",
+  "exports": {
+    ".": "./dist/core-base.mjs",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false
+}

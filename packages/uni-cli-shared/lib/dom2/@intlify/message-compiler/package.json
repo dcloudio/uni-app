@@ -1,0 +1,11 @@
+{
+  "name": "@intlify/message-compiler",
+  "version": "11.4.6",
+  "license": "MIT",
+  "module": "dist/message-compiler.mjs",
+  "exports": {
+    ".": "./dist/message-compiler.mjs",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false
+}

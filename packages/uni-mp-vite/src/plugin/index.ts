@@ -18,7 +18,7 @@ import {
   relativeFile,
   removeExt,
   resolveBuiltIn,
-  resolveVueI18nRuntime,
+  resolveVueI18nRuntimeAlias,
 } from '@dcloudio/uni-cli-shared'
 
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
@@ -174,8 +174,8 @@ export function uniMiniProgramPlugin(
                 process.env.UNI_APP_X === 'true' ? 'dist-x' : 'dist'
               }/vue.runtime.esm.js`
             ),
+            ...resolveVueI18nRuntimeAlias(),
             '@vue/devtools-api': resolveBuiltIn('@dcloudio/uni-mp-vue'),
-            'vue-i18n': resolveVueI18nRuntime(),
             ...alias,
           },
           preserveSymlinks: true,

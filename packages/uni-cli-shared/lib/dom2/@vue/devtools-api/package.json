@@ -1,0 +1,12 @@
+{
+  "name": "@vue/devtools-api",
+  "version": "6.6.4",
+  "license": "MIT",
+  "module": "lib/esm/index.js",
+  "browser": "lib/esm/index.js",
+  "exports": {
+    ".": "./lib/esm/index.js",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false
+}

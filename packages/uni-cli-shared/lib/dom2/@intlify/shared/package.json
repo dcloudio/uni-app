@@ -1,0 +1,11 @@
+{
+  "name": "@intlify/shared",
+  "version": "11.4.6",
+  "license": "MIT",
+  "module": "dist/shared.mjs",
+  "exports": {
+    ".": "./dist/shared.mjs",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false
+}
