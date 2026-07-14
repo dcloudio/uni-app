@@ -1,0 +1,12 @@
+{
+  "name": "vue-i18n",
+  "version": "11.4.6",
+  "license": "MIT",
+  "module": "dist/vue-i18n.mjs",
+  "exports": {
+    ".": "./dist/vue-i18n.mjs",
+    "./runtime": "./dist/vue-i18n.runtime.mjs",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false
+}

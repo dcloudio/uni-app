@@ -1,6 +1,7 @@
 import fs from 'fs'
 
 import path from 'path'
+import { createRequire } from 'module'
 import debug from 'debug'
 import resolve from 'resolve'
 import { once } from '@dcloudio/uni-shared'
@@ -124,8 +125,66 @@ export function resolveBuiltIn(module: string) {
 export function resolveVueI18nRuntime() {
   return path.resolve(
     __dirname,
-    '../lib/vue-i18n/dist/vue-i18n.runtime.esm-bundler.js'
+    process.env.UNI_APP_X === 'true'
+      ? '../lib/dom2/vue-i18n/dist/vue-i18n.runtime.esm-bundler.js'
+      : '../lib/vue-i18n/dist/vue-i18n.runtime.esm-bundler.js'
   )
+}
+
+export function resolveVueI18n() {
+  return path.resolve(
+    __dirname,
+    '../lib/dom2/vue-i18n/dist/vue-i18n.esm-bundler.js'
+  )
+}
+
+export function resolveProjectVueI18n() {
+  const basedir = process.env.UNI_INPUT_DIR || process.env.UNI_CLI_CONTEXT
+  if (!basedir) {
+    return
+  }
+  const projectRequire = createRequire(path.resolve(basedir, 'package.json'))
+  try {
+    return projectRequire.resolve('vue-i18n')
+  } catch (e) {}
+}
+
+export function resolveVueI18nDependencies(): Record<string, string> {
+  if (
+    process.env.UNI_APP_X !== 'true' ||
+    resolveProjectVueI18n() !== undefined
+  ) {
+    return {}
+  }
+  const libDir = path.resolve(__dirname, '../lib/dom2')
+  return {
+    '@intlify/core-base': path.resolve(
+      libDir,
+      '@intlify/core-base/dist/core-base.mjs'
+    ),
+    '@intlify/message-compiler': path.resolve(
+      libDir,
+      '@intlify/message-compiler/dist/message-compiler.mjs'
+    ),
+    '@intlify/shared': path.resolve(libDir, '@intlify/shared/dist/shared.mjs'),
+    '@vue/devtools-api': path.resolve(
+      libDir,
+      '@vue/devtools-api/lib/esm/index.js'
+    ),
+  }
+}
+
+export function resolveVueI18nRuntimeAlias(): Record<string, string> {
+  if (
+    process.env.UNI_APP_X === 'true' &&
+    resolveProjectVueI18n() !== undefined
+  ) {
+    return {}
+  }
+  return {
+    ...resolveVueI18nDependencies(),
+    'vue-i18n': resolveVueI18nRuntime(),
+  }
 }
 
 let componentsLibPath: string = ''
