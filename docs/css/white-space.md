@@ -70,7 +70,7 @@ app平台、web平台调整了 white-space 属性的实现。之前接近小程�
 **默认值调整**
 - app-android、app-ios平台新增支持取值 `keep`，默认值由 `normal` 调整为 `keep`  
 - app-harmony平台蒸汽模式（Vapor）支持取值 `keep`，默认值为 `keep`  
-- web平台平台，默认值由 `normal' 调整为 pre-line
+- web平台，默认值由 `normal` 调整为 `pre-line`
 
 **调整前实现规范**  
 - normal（与调整后的pre-line效果一致）  

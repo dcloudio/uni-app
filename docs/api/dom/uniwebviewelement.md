@@ -140,7 +140,7 @@ UniWebViewElement -- Extends --> UniElement
 
 | 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| options | **UniWebViewElementLoadDataOptions** | 是 |  | Web: x; 微信小程序: x; Android: 4.65; iOS: 4.65; iOS uni-app x UTS 插件: 4.65; HarmonyOS: 4.61 | web-view 组件加载数据参数参数。 |
+| options | **UniWebViewElementLoadDataOptions** | 是 |  | Web: x; 微信小程序: x; Android: 4.65; iOS: 4.65; iOS uni-app x UTS 插件: 4.65; HarmonyOS: 4.61 | web-view 组件加载数据参数。 |
 
 #### options 的属性描述
 
