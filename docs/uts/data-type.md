@@ -2028,9 +2028,9 @@ HBuilder支持给变量定义特殊值域string类型，这些类型在HBuilder�
 | string.HTMLURIString | html文件的文件路径(后缀为`.html`的文件路径) |
 | string.MarkdownURIString | markdown文件的文件路径(后缀为`.md`的文件路径) |
 | string.ScriptImportURIString | js, ts, uts引用文件或模块的文件路径(支持vue,nvue,uvue中script标签内容), 例: `import xxx from 'xxx'` |
-| string.CssImportURIString | css文件可以引用的文件的文件路径, 后缀为`\[".css"]的文件路径 例: `@import url('xxx.css')` |
-| string.ScssImportURIString | scss文件可以引用的文件的文件路径, 后缀为`\[".scss", ".css"]的文件路径, 例: `@import 'xxx.scss'` |
-| string.LessImportURIString | less文件可以引用的文件的文件路径, 后缀为`\[".less", ".css"]的文件路径, 例: `@import 'xxx.less'` |
+| string.CssImportURIString | css 文件可引用的文件路径，文件后缀为 `.css`。例如：`@import url('xxx.css')` |
+| string.ScssImportURIString | scss 文件可引用的文件路径，文件后缀为 `.scss` 或 `.css`。例如：`@import 'xxx.scss'` |
+| string.LessImportURIString | less 文件可引用的文件路径，文件后缀为 `.less` 或 `.css`。例如：`@import 'xxx.less'` |
 | string.FontURIString | 字体文件的文件路径 |
 | string.ImageURIString | 图片文件的文件路径 |
 | string.AudioURIString | 音频文件的文件路径 |
