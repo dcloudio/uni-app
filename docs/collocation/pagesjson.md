@@ -196,13 +196,13 @@ H5 特有配置
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
-| homeButton | boolean | false | 否 |   | 在非首页、非页面栈最底层页面或非tabbar内页面中的导航栏展示home键 |
-| backgroundColorTop | HexColor | "#ffffff" | 否 |   | 顶部窗口的背景色，仅 iOS 支持 |
-| backgroundColorBottom | HexColor | "#ffffff" | 否 |   | 顶部窗口的背景色，仅 iOS 支持 |
-| restartStrategy | 'homePage' \| 'homePageAndLatestPage' | "homePage" | 否 |   | 重新启动策略配置。支持 homePage / homePageAndLatestPage |
-| initialRenderingCache | 'static' \| 'dynamic' |  | 否 |   | 页面初始渲染缓存配置。支持 static / dynamic |
-| visualEffectInBackground | 'none' \| 'hidden' | "none" | 否 |   | 切入系统后台时，隐藏页面内容，保护用户隐私。支持 hidden / none |
-| handleWebviewPreload | 'static' \| 'manual' \| 'none' | "static" | 否 |   | 控制预加载下个页面的时机。支持 static / manual / auto |
+| homeButton | boolean | false | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 在非首页、非页面栈最底层页面或非tabbar内页面中的导航栏展示home键 |
+| backgroundColorTop | HexColor | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色，仅 iOS 支持 |
+| backgroundColorBottom | HexColor | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色，仅 iOS 支持 |
+| restartStrategy | 'homePage' \| 'homePageAndLatestPage' | "homePage" | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 重新启动策略配置。支持 homePage / homePageAndLatestPage |
+| initialRenderingCache | 'static' \| 'dynamic' |  | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 页面初始渲染缓存配置。支持 static / dynamic |
+| visualEffectInBackground | 'none' \| 'hidden' | "none" | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 切入系统后台时，隐藏页面内容，保护用户隐私。支持 hidden / none |
+| handleWebviewPreload | 'static' \| 'manual' \| 'none' | "static" | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 控制预加载下个页面的时机。支持 static / manual / auto |
 | enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
 
 ### pages 配置项列表 @pagesoptionspage
@@ -281,12 +281,12 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 | navigationBarTitleText | string |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 导航栏标题文字内容 |
 | navigationBarShadow | [navigationBarShadow 配置项列表](#style-navigationbarshadow) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏阴影，配置参考下方 [导航栏阴影](https://doc.dcloud.net.cn/uni-app-x/collocation/pagesjson.html#pagesoptionspage-style) |
 | navigationStyle | 'default' \| 'custom' | "default" | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 导航栏样式，仅支持 default/custom。custom即取消默认的原生导航栏，需看[使用注意](https://uniapp.dcloud.net.cn/collocation/pages.html#customnav)。 |
-| disableScroll | boolean | false | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS(VDOM): x; iOS(Vapor): 5.12; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.12 | 设置为 true 则页面整体不能上下滚动（无bounce效果）。只在页面配置中有效，在 globalStyle 中设置无效。 |
+| disableScroll | boolean | false | 否 | Web: x; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.12; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.12 | 设置为 true 则页面整体不能上下滚动（无bounce效果）。只在页面配置中有效，在 globalStyle 中设置无效。 |
 | backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 下拉刷新显示出来的窗口的背景色（无下拉刷新时，此颜色无效果） |
 | backgroundColorContent | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 页面容器背景色 |
 | backgroundTextStyle | 'dark' \| 'light' | "dark" | 否 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 下拉 loading 的样式，仅支持 dark/light |
 | enablePullDownRefresh | boolean | false | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否开启下拉刷新，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
-| onReachBottomDistance | number | 50 | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
+| onReachBottomDistance | number | 50 | 否 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
 | pageOrientation | 'auto' \| 'portrait' \| 'landscape' | "portrait" | 否 | Web: x; 微信小程序: 4.41; Android: 4.13; iOS: 4.25; HarmonyOS: 4.61 | 页面旋转设置，支持 auto 设备自适应 / portrait 竖向 / landscape 横向 |
 | hideStatusBar | boolean | false | 否 | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.33; HarmonyOS: 4.61 | 是否隐藏系统顶部状态栏 |
 | hideBottomNavigationIndicator | boolean | false | 否 | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.33; HarmonyOS: 4.61 | 是否隐藏系统底部导航栏 |
@@ -394,13 +394,13 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
-| homeButton | boolean | false | 否 |   | 在非首页、非页面栈最底层页面或非tabbar内页面中的导航栏展示home键 |
-| backgroundColorTop | HexColor | "#ffffff" | 否 |   | 顶部窗口的背景色，仅 iOS 支持 |
-| backgroundColorBottom | HexColor | "#ffffff" | 否 |   | 顶部窗口的背景色，仅 iOS 支持 |
-| restartStrategy | 'homePage' \| 'homePageAndLatestPage' | "homePage" | 否 |   | 重新启动策略配置。支持 homePage / homePageAndLatestPage |
-| initialRenderingCache | 'static' \| 'dynamic' |  | 否 |   | 页面初始渲染缓存配置。支持 static / dynamic |
-| visualEffectInBackground | 'none' \| 'hidden' | "none" | 否 |   | 切入系统后台时，隐藏页面内容，保护用户隐私。支持 hidden / none |
-| handleWebviewPreload | 'static' \| 'manual' \| 'none' | "static" | 否 |   | 控制预加载下个页面的时机。支持 static / manual / auto |
+| homeButton | boolean | false | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 在非首页、非页面栈最底层页面或非tabbar内页面中的导航栏展示home键 |
+| backgroundColorTop | HexColor | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色，仅 iOS 支持 |
+| backgroundColorBottom | HexColor | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 顶部窗口的背景色，仅 iOS 支持 |
+| restartStrategy | 'homePage' \| 'homePageAndLatestPage' | "homePage" | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 重新启动策略配置。支持 homePage / homePageAndLatestPage |
+| initialRenderingCache | 'static' \| 'dynamic' |  | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 页面初始渲染缓存配置。支持 static / dynamic |
+| visualEffectInBackground | 'none' \| 'hidden' | "none" | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 切入系统后台时，隐藏页面内容，保护用户隐私。支持 hidden / none |
+| handleWebviewPreload | 'static' \| 'manual' \| 'none' | "static" | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 控制预加载下个页面的时机。支持 static / manual / auto |
 | enableUcssReset | boolean | true | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否启用ucss样式覆盖 |
 
 
@@ -681,9 +681,9 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
-| path | string |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 配置页面路径 |
-| style | [style 配置项列表](#subpackagepagesoptionspage-style) |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 配置页面窗口表现，配置项参考下方 [pageStyle](https://doc.dcloud.net.cn/uni-app-x/collocation/pagesjson.html#pagesoptionspage-style)。 |
-| needLogin | boolean | false | 否 | Web: 4.0; 微信小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 | 是否需要登录才可访问 |
+| path | string |  | 是 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 配置页面路径 |
+| style | [style 配置项列表](#subpackagepagesoptionspage-style) |  | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 配置页面窗口表现，配置项参考下方 [pageStyle](https://doc.dcloud.net.cn/uni-app-x/collocation/pagesjson.html#pagesoptionspage-style)。 |
+| needLogin | boolean | false | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否需要登录才可访问 |
 
 ##### style 配置项列表 @subpackagepagesoptionspage-style
 
@@ -691,7 +691,7 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
+| x | 4.41 | x | x | x |
 
 | 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- | :- | :- | :- |
@@ -700,12 +700,12 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 | navigationBarTitleText | string |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 导航栏标题文字内容 |
 | navigationBarShadow | [navigationBarShadow 配置项列表](#style-navigationbarshadow) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 导航栏阴影，配置参考下方 [导航栏阴影](https://doc.dcloud.net.cn/uni-app-x/collocation/pagesjson.html#pagesoptionspage-style) |
 | navigationStyle | 'default' \| 'custom' | "default" | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 导航栏样式，仅支持 default/custom。custom即取消默认的原生导航栏，需看[使用注意](https://uniapp.dcloud.net.cn/collocation/pages.html#customnav)。 |
-| disableScroll | boolean | false | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS(VDOM): x; iOS(Vapor): 5.12; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.12 | 设置为 true 则页面整体不能上下滚动（无bounce效果）。只在页面配置中有效，在 globalStyle 中设置无效。 |
+| disableScroll | boolean | false | 否 | Web: x; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.12; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.12 | 设置为 true 则页面整体不能上下滚动（无bounce效果）。只在页面配置中有效，在 globalStyle 中设置无效。 |
 | backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: x; 微信小程序: 4.41; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 下拉刷新显示出来的窗口的背景色（无下拉刷新时，此颜色无效果） |
 | backgroundColorContent | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 页面容器背景色 |
 | backgroundTextStyle | 'dark' \| 'light' | "dark" | 否 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 下拉 loading 的样式，仅支持 dark/light |
 | enablePullDownRefresh | boolean | false | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否开启下拉刷新，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
-| onReachBottomDistance | number | 50 | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
+| onReachBottomDistance | number | 50 | 否 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
 | pageOrientation | 'auto' \| 'portrait' \| 'landscape' | "portrait" | 否 | Web: x; 微信小程序: 4.41; Android: 4.13; iOS: 4.25; HarmonyOS: 4.61 | 页面旋转设置，支持 auto 设备自适应 / portrait 竖向 / landscape 横向 |
 | hideStatusBar | boolean | false | 否 | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.33; HarmonyOS: 4.61 | 是否隐藏系统顶部状态栏 |
 | hideBottomNavigationIndicator | boolean | false | 否 | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.33; HarmonyOS: 4.61 | 是否隐藏系统底部导航栏 |
