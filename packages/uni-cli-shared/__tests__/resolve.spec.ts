@@ -19,6 +19,13 @@ describe('resolve vue-i18n', () => {
   const originalUniInputDir = process.env.UNI_INPUT_DIR
   const temporaryDirectories: string[] = []
 
+  function expectSameFile(actual: string | undefined, expected: string) {
+    expect(actual).toBeDefined()
+    expect(fs.realpathSync.native(actual!)).toBe(
+      fs.realpathSync.native(expected)
+    )
+  }
+
   beforeEach(() => {
     Reflect.deleteProperty(process.env, 'UNI_CLI_CONTEXT')
     Reflect.deleteProperty(process.env, 'UNI_INPUT_DIR')
@@ -108,9 +115,7 @@ describe('resolve vue-i18n', () => {
     process.env.UNI_CLI_CONTEXT = cliContext
     process.env.UNI_INPUT_DIR = path.join(projectDir, 'src')
 
-    expect(resolveProjectVueI18n()).toBe(
-      fs.realpathSync(path.join(vueI18nDir, 'index.js'))
-    )
+    expectSameFile(resolveProjectVueI18n(), path.join(vueI18nDir, 'index.js'))
     expect(resolveVueI18nDependencies()).toEqual({})
     expect(resolveVueI18nRuntimeAlias()).toEqual({})
   })
@@ -168,9 +173,7 @@ describe('resolve vue-i18n', () => {
     process.env.UNI_CLI_CONTEXT = cliContext
     process.env.UNI_INPUT_DIR = path.join(projectDir, 'src')
 
-    expect(resolveProjectPinia()).toBe(
-      fs.realpathSync(path.join(piniaDir, 'index.js'))
-    )
+    expectSameFile(resolveProjectPinia(), path.join(piniaDir, 'index.js'))
     expect(resolvePiniaDependencies()).toEqual({})
     expect(resolvePiniaAlias()).toEqual({})
   })
