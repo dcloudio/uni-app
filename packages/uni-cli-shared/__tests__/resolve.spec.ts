@@ -19,6 +19,13 @@ describe('resolve vue-i18n', () => {
   const originalUniInputDir = process.env.UNI_INPUT_DIR
   const temporaryDirectories: string[] = []
 
+  function expectSameFile(actual: string | undefined, expected: string) {
+    expect(actual).toBeDefined()
+    expect(fs.realpathSync.native(actual!)).toBe(
+      fs.realpathSync.native(expected)
+    )
+  }
+
   beforeEach(() => {
     Reflect.deleteProperty(process.env, 'UNI_CLI_CONTEXT')
     Reflect.deleteProperty(process.env, 'UNI_INPUT_DIR')
