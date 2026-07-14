@@ -610,6 +610,9 @@ export declare function createUserClass<T>(): T;
 */
 export declare function findVueInstanceByUid(uid: number): VaporSharedDataComponentInstance | null;
 //#endregion
+//#region temp/packages/runtime-vapor-dom2/src/init.d.ts
+export declare function initVueVaporRuntime(): void;
+//#endregion
 //#region temp/packages/runtime-vapor-dom2/src/index.d.ts
 export declare const ssrRef: typeof ref;
 export declare const shallowSsrRef: typeof shallowRef;

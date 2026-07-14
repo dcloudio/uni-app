@@ -57,6 +57,7 @@ export interface SchedulerJob extends Function {
   i?: GenericComponentInstance;
 }
 type SchedulerJobs = SchedulerJob | SchedulerJob[];
+export declare function initResolvedPromiseForScheduler(): void;
 export declare function nextTick(): Promise<void>;
 export declare function nextTick<T, R>(this: T, fn: (this: T) => R | Promise<R>): Promise<R>;
 export declare function nextTick<T, R>(this: T, fn: (this: T) => R | Promise<R>, instance: GenericComponentInstance): Promise<R>;
