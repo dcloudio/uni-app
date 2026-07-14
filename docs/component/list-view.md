@@ -99,15 +99,15 @@ UniRefresherEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniRefresherEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniRefresherEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniRefresherEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| dy | number | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| dy | number | 是 |
 
 
 #### UniScrollToUpperEvent
@@ -120,15 +120,15 @@ UniScrollToUpperEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniScrollToUpperEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniScrollToUpperEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniScrollToUpperEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| direction | string | 是 |  |   | 滚动方向 top 或 left |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| direction | string | 是 | 滚动方向 top 或 left |
 
 
 #### UniScrollToLowerEvent
@@ -141,15 +141,15 @@ UniScrollToLowerEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniScrollToLowerEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniScrollToLowerEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniScrollToLowerEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| direction | string | 是 |  |   | 滚动方向 bottom 或 right |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| direction | string | 是 | 滚动方向 bottom 或 right |
 
 
 #### UniScrollEvent
@@ -162,20 +162,20 @@ UniScrollEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniScrollEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniScrollEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniScrollEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| scrollTop | number | 是 |  |   | 竖向滚动的距离 |
-| scrollLeft | number | 是 |  |   | 横向滚动的距离 |
-| scrollHeight | number | 是 |  |   | 滚动区域的高度 |
-| scrollWidth | number | 是 |  |   | 滚动区域的宽度 |
-| deltaY | number | 是 |  |   | 当次滚动事件竖向滚动量 |
-| deltaX | number | 是 |  |   | 当次滚动事件横向滚动量 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| scrollTop | number | 是 | 竖向滚动的距离 |
+| scrollLeft | number | 是 | 横向滚动的距离 |
+| scrollHeight | number | 是 | 滚动区域的高度 |
+| scrollWidth | number | 是 | 滚动区域的宽度 |
+| deltaY | number | 是 | 当次滚动事件竖向滚动量 |
+| deltaX | number | 是 | 当次滚动事件横向滚动量 |
 
 
 

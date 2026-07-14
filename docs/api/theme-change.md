@@ -340,9 +340,9 @@ uni-app x的UI相关的API（比如showModal），也会响应setAppTheme。
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **SetAppThemeOptions** | 是 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; iOS(VDOM) uni-app x UTS 插件: 4.18; HarmonyOS: 4.71 |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **SetAppThemeOptions** | 是 | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; iOS(VDOM) uni-app x UTS 插件: 4.18; HarmonyOS: 4.71 |
 
 #### options 的属性描述
 
@@ -363,19 +363,19 @@ uni-app x的UI相关的API（比如showModal），也会响应setAppTheme。
 
 #### SetAppThemeSuccessResult 的属性值 @setappthemesuccessresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| theme | string | 是 |  | Web: x; 微信小程序: x |  |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| theme | string | 是 | Web: x; 微信小程序: x |
 
 #### AppThemeFail 的属性值 @appthemefail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; iOS(VDOM) uni-app x UTS 插件: 4.18; HarmonyOS: 4.71 | 错误码<br/>- 702001  参数错误<br/>- 2002000  未知错误 |
-| errSubject | string | 是 |  | Web: x; 微信小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x; 微信小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x; 微信小程序: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; iOS(VDOM) uni-app x UTS 插件: 4.18; HarmonyOS: 4.71 | 错误码<br/>- 702001  参数错误<br/>- 2002000  未知错误 |
+| errSubject | string | 是 | Web: x; 微信小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x; 微信小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x; 微信小程序: x |  |
 
 #### errCode 的属性描述
 
@@ -429,15 +429,15 @@ uni.setAppTheme({
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [AppThemeChangeResult](#appthemechangeresult-values)) => void | 是 |  | Web: x; 微信小程序: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (res: [AppThemeChangeResult](#appthemechangeresult-values)) => void | 是 | Web: x; 微信小程序: x | 
 
 ### AppThemeChangeResult 的属性值 @appthemechangeresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| appTheme | string | 是 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; iOS(VDOM) uni-app x UTS 插件: 4.18; HarmonyOS: 4.71 | 应用主题 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| appTheme | string | 是 | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; iOS(VDOM) uni-app x UTS 插件: 4.18; HarmonyOS: 4.71 | 应用主题 |
 
 #### appTheme 的属性描述
 
@@ -488,9 +488,9 @@ val callbackId = uni.onAppThemeChange((res: AppThemeChangeResult) => {
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | number | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| id | number | 是 | Web: x | 
 
 
 
@@ -531,15 +531,15 @@ uni.offAppThemeChange(this.appThemeChangeId)
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [OsThemeChangeResult](#osthemechangeresult-values)) => void | 是 |  | Web: x; 微信小程序: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (res: [OsThemeChangeResult](#osthemechangeresult-values)) => void | 是 | Web: x; 微信小程序: x | 
 
 ### OsThemeChangeResult 的属性值 @osthemechangeresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| osTheme | string | 是 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; iOS(VDOM) uni-app x UTS 插件: 4.18; HarmonyOS: 4.71 | 系统主题 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| osTheme | string | 是 | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; iOS(VDOM) uni-app x UTS 插件: 4.18; HarmonyOS: 4.71 | 系统主题 |
 
 #### osTheme 的属性描述
 
@@ -594,9 +594,9 @@ val callbackId = uni.onOsThemeChange((res: OsThemeChangeResult)=> {
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | number | 是 |  | Web: x; 微信小程序: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| id | number | 是 | Web: x; 微信小程序: x | 
 
 
 
@@ -639,15 +639,15 @@ uni.offOsThemeChange(callbackId)
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnHostThemeChangeCallbackResult](#onhostthemechangecallbackresult-values)) => void | 是 |  | Android: x; iOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: [OnHostThemeChangeCallbackResult](#onhostthemechangecallbackresult-values)) => void | 是 | Android: x; iOS: x | 
 
 ### OnHostThemeChangeCallbackResult 的属性值 @onhostthemechangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| hostTheme | string | 是 |  | Android: x; iOS: x | 主题名称 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| hostTheme | string | 是 | Android: x; iOS: x | 主题名称 |
 
 #### hostTheme 的属性描述
 
@@ -705,9 +705,9 @@ uni.offOsThemeChange(callbackId)
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | number | 是 |  | Android: x; iOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| id | number | 是 | Android: x; iOS: x | 
 
 
 
@@ -750,15 +750,15 @@ uni.offOsThemeChange(callbackId)
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnThemeChangeCallbackResult](#onthemechangecallbackresult-values)) => void | 是 |  | Android: x; iOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: [OnThemeChangeCallbackResult](#onthemechangecallbackresult-values)) => void | 是 | Android: x; iOS: x | 
 
 ### OnThemeChangeCallbackResult 的属性值 @onthemechangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| theme | string | 是 |  | 微信小程序: 4.41; Android: x; iOS: x | 主题名称 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| theme | string | 是 | 微信小程序: 4.41; Android: x; iOS: x | 主题名称 |
 
 #### theme 的属性描述
 
@@ -808,15 +808,15 @@ uni.offOsThemeChange(callbackId)
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnThemeChangeCallbackResult](#onthemechangecallbackresult-values)) => void | 是 |  | Android: x; iOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: [OnThemeChangeCallbackResult](#onthemechangecallbackresult-values)) => void | 是 | Android: x; iOS: x | 
 
 ### OnThemeChangeCallbackResult 的属性值 @onthemechangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| theme | string | 是 |  | 微信小程序: 4.41; Android: x; iOS: x | 主题名称 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| theme | string | 是 | 微信小程序: 4.41; Android: x; iOS: x | 主题名称 |
 
 #### theme 的属性描述
 
@@ -1010,7 +1010,7 @@ uni.offOsThemeChange(callbackId)
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

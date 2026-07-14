@@ -32,24 +32,24 @@ uni.requestPayment是一个统一各平台的客户端支付API，客户端均�
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **RequestPaymentOptions** | 是 |  | Web: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **RequestPaymentOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| provider | string | 是 |  | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 支付服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,目前支持支付宝支付(alipay),微信支付(wxpay) |
-| orderInfo | string | 是 |  | Web: x; 微信小程序: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 订单数据 |
-| success | (result: [RequestPaymentSuccess](#requestpaymentsuccess-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: [RequestPaymentFail](#requestpaymentfail-values)) => void | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） |
-| nonceStr | string | 否 |  | Web: x; 微信小程序: 4.41 | 随机字符串，长度为32个字符以下<br/> |
-| package | string | 否 |  | Web: x; 微信小程序: 4.41 | 统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=***<br/> |
-| paySign | string | 否 |  | Web: x; 微信小程序: 4.41 | 签名，具体见微信支付文档<br/> |
-| timeStamp | string | 否 |  | Web: x; 微信小程序: 4.41 | 时间戳，从 1970 年 1 月 1 日 00:00:00 至今的秒数，即当前的时间<br/> |
-| signType | string | 否 |  | Web: x; 微信小程序: 4.41 | 签名算法，应与后台下单时的值一致<br/><br/>可选值：<br/>- 'MD5': 仅在 v2 版本接口适用;<br/>- 'HMAC-SHA256': 仅在 v2 版本接口适用;<br/>- 'RSA': 仅在 v3 版本接口适用;<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| provider | string | 是 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 支付服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,目前支持支付宝支付(alipay),微信支付(wxpay) |
+| orderInfo | string | 是 | Web: x; 微信小程序: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 订单数据 |
+| success | (result: [RequestPaymentSuccess](#requestpaymentsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [RequestPaymentFail](#requestpaymentfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| nonceStr | string | 否 | Web: x; 微信小程序: 4.41 | 随机字符串，长度为32个字符以下<br/> |
+| package | string | 否 | Web: x; 微信小程序: 4.41 | 统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=***<br/> |
+| paySign | string | 否 | Web: x; 微信小程序: 4.41 | 签名，具体见微信支付文档<br/> |
+| timeStamp | string | 否 | Web: x; 微信小程序: 4.41 | 时间戳，从 1970 年 1 月 1 日 00:00:00 至今的秒数，即当前的时间<br/> |
+| signType | string | 否 | Web: x; 微信小程序: 4.41 | 签名算法，应与后台下单时的值一致<br/><br/>可选值：<br/>- 'MD5': 仅在 v2 版本接口适用;<br/>- 'HMAC-SHA256': 仅在 v2 版本接口适用;<br/>- 'RSA': 仅在 v3 版本接口适用;<br/> |
 
 ##### signType 的属性描述
 
@@ -61,19 +61,19 @@ uni.requestPayment是一个统一各平台的客户端支付API，客户端均�
 
 #### RequestPaymentSuccess 的属性值 @requestpaymentsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | any | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 返回数据 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| data | any | 否 | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 返回数据 |
 
 #### RequestPaymentFail 的属性值 @requestpaymentfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x | 错误码 |
-| errSubject | string | 是 |  | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
@@ -510,9 +510,9 @@ UniPaymentWxpayProvider(微信支付)继承自 [UniProvider](./provider.md#unipr
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 

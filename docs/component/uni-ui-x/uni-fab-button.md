@@ -35,10 +35,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-fab-butto
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| plusClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 加号图标的自定义样式类，用于调整加号颜色、尺寸等样式 |
-| @click | Event |   |   | 点击事件，参数为事件对象，类型为 UniPointerEvent |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| plusClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 加号图标的自定义样式类，用于调整加号颜色、尺寸等样式 |
+| @click | Event |   | 点击事件，参数为事件对象，类型为 UniPointerEvent |
 
 <!-- UTSCOMJSON.uni-fab-button.fileFormates -->
 

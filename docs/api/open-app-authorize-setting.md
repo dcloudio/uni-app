@@ -22,9 +22,9 @@ _注：App平台其实早期版本也可以使用_
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **OpenAppAuthorizeSettingOptions** | 是 |  | Web: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **OpenAppAuthorizeSettingOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
@@ -36,21 +36,21 @@ _注：App平台其实早期版本也可以使用_
 
 #### OpenAppAuthorizeSettingSuccess 的属性值 @openappauthorizesettingsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web: x; Android: 4.51; iOS: 4.51; iOS(VDOM) uni-app x UTS 插件: 4.51; HarmonyOS: 4.61 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | Web: x; Android: 4.51; iOS: 4.51; iOS(VDOM) uni-app x UTS 插件: 4.51; HarmonyOS: 4.61 | 错误信息 |
 
 #### OpenAppAuthorizeSettingFail 的属性值 @openappauthorizesettingfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web: x; Android: 4.51; iOS: 4.51; iOS(VDOM) uni-app x UTS 插件: 4.51; HarmonyOS: 4.61 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | Web: x; Android: 4.51; iOS: 4.51; iOS(VDOM) uni-app x UTS 插件: 4.51; HarmonyOS: 4.61 | 错误信息 |
 
 #### OpenAppAuthorizeSettingComplete 的属性值 @openappauthorizesettingcomplete-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web: x; Android: 4.51; iOS: 4.51; iOS(VDOM) uni-app x UTS 插件: 4.51; HarmonyOS: 4.61 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | Web: x; Android: 4.51; iOS: 4.51; iOS(VDOM) uni-app x UTS 插件: 4.51; HarmonyOS: 4.61 | 错误信息 |
 
 
 
@@ -156,7 +156,7 @@ _注：App平台其实早期版本也可以使用_
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

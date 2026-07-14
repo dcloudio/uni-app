@@ -61,25 +61,25 @@
 
 #### BackgroundAudioManager 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| duration | number | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41 | 当前音频的长度（单位：s），只有在当前有合法的 src 时返回 |
-| currentTime | number | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41 | 当前音频的播放位置（单位：s），只有在当前有合法的 src 时返回 |
-| paused | boolean | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41 | 当前是是否暂停或停止状态，true 表示暂停或停止，false 表示正在播放 |
-| src | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41 | 音频的数据源，默认为空字符串，当设置了新的 src 时，会自动开始播放 ，目前支持的格式有 m4a, aac, mp3, wav |
-| startTime | number | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41 | 音频开始播放的位置（单位：s） |
-| buffered | number | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41; HarmonyOS: x | 音频缓冲的时间点，仅保证当前播放时间点到此时间点内容已缓冲 |
-| title | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 音频标题，用于做原生音频播放器音频标题。原生音频播放器中的分享功能，分享出去的卡片标题，也将使用该值。 |
-| epname | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 专辑名，原生音频播放器中的分享功能，分享出去的卡片简介，也将使用该值 |
-| singer | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 歌手名，原生音频播放器中的分享功能，分享出去的卡片简介，也将使用该值 |
-| coverImgUrl | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 封面图url，用于做原生音频播放器背景图。原生音频播放器中的分享功能，分享出去的卡片配图及背景也将使用该图。 |
-| webUrl | string | 是 |  | Web: x; 微信小程序: 4.41; Android: x; iOS: x; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: x | 页面链接，原生音频播放器中的分享功能，分享出去的卡片简介，也将使用该值 |
-| protocol | string | 是 |  | Web: x; 微信小程序: 4.41; Android: x; iOS: x; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: x | 音频协议。默认值为 'http'，设置 'hls' 可以支持播放 HLS 协议的直播音频 |
-| playbackRate | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41; HarmonyOS: x | 播放的倍率。可取值： 0.5/0.8/1.0/1.25/1.5/2.0，默认值为1.0。（仅 App 支持） |
-| cache | boolean | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) uni-app x UTS 插件: 4.71; HarmonyOS: x | 是否缓存线上音频资源，默认值为true，当设置false时，不会缓存资源到本地，直播地址需要主动设置为false |
-| audioType | string | 否 |  | Web: x; 微信小程序: 4.41 | 需要基础库： `3.4.8`<br/><br/>音频类型。可设置 "audio" 和 "music" 两种值，默认为 "audio"。不同音频类型对应的播放器样式不一样（实验特性，目前仅iOS和Android端支持）<br/> |
-| referrerPath | string | 否 |  | Web: x; 微信小程序: 4.41 | 需要基础库： `3.4.8`<br/><br/>关联页面路径。设置后，当点击播放器上的小程序跳转链接时，将跳转到这个关联页面路径（实验特性，目前仅Android端支持）<br/> |
-| referrerPolicy | string | 否 |  | Web: x; 微信小程序: 4.41 | 需要基础库： `2.13.0`<br/><br/>`origin`: 发送完整的referrer; `no-referrer`: 不发送。格式固定为 `https://servicewechat.com/{appid}/{version}/page-frame.html`，其中 {appid} 为小程序的 appid，{version} 为小程序的版本号，版本号为 0 表示为开发版、体验版以及审核版本，版本号为 devtools 表示为开发者工具，其余为正式版本；<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| duration | number | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41 | 当前音频的长度（单位：s），只有在当前有合法的 src 时返回 |
+| currentTime | number | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41 | 当前音频的播放位置（单位：s），只有在当前有合法的 src 时返回 |
+| paused | boolean | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41 | 当前是是否暂停或停止状态，true 表示暂停或停止，false 表示正在播放 |
+| src | string | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41 | 音频的数据源，默认为空字符串，当设置了新的 src 时，会自动开始播放 ，目前支持的格式有 m4a, aac, mp3, wav |
+| startTime | number | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41 | 音频开始播放的位置（单位：s） |
+| buffered | number | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41; HarmonyOS: x | 音频缓冲的时间点，仅保证当前播放时间点到此时间点内容已缓冲 |
+| title | string | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 音频标题，用于做原生音频播放器音频标题。原生音频播放器中的分享功能，分享出去的卡片标题，也将使用该值。 |
+| epname | string | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 专辑名，原生音频播放器中的分享功能，分享出去的卡片简介，也将使用该值 |
+| singer | string | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 歌手名，原生音频播放器中的分享功能，分享出去的卡片简介，也将使用该值 |
+| coverImgUrl | string | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41; HarmonyOS: 4.61 | 封面图url，用于做原生音频播放器背景图。原生音频播放器中的分享功能，分享出去的卡片配图及背景也将使用该图。 |
+| webUrl | string | 是 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: x | 页面链接，原生音频播放器中的分享功能，分享出去的卡片简介，也将使用该值 |
+| protocol | string | 是 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: x | 音频协议。默认值为 'http'，设置 'hls' 可以支持播放 HLS 协议的直播音频 |
+| playbackRate | number | 否 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) uni-app x UTS 插件: 4.41; HarmonyOS: x | 播放的倍率。可取值： 0.5/0.8/1.0/1.25/1.5/2.0，默认值为1.0。（仅 App 支持） |
+| cache | boolean | 是 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) uni-app x UTS 插件: 4.71; HarmonyOS: x | 是否缓存线上音频资源，默认值为true，当设置false时，不会缓存资源到本地，直播地址需要主动设置为false |
+| audioType | string | 否 | Web: x; 微信小程序: 4.41 | 需要基础库： `3.4.8`<br/><br/>音频类型。可设置 "audio" 和 "music" 两种值，默认为 "audio"。不同音频类型对应的播放器样式不一样（实验特性，目前仅iOS和Android端支持）<br/> |
+| referrerPath | string | 否 | Web: x; 微信小程序: 4.41 | 需要基础库： `3.4.8`<br/><br/>关联页面路径。设置后，当点击播放器上的小程序跳转链接时，将跳转到这个关联页面路径（实验特性，目前仅Android端支持）<br/> |
+| referrerPolicy | string | 否 | Web: x; 微信小程序: 4.41 | 需要基础库： `2.13.0`<br/><br/>`origin`: 发送完整的referrer; `no-referrer`: 不发送。格式固定为 `https://servicewechat.com/{appid}/{version}/page-frame.html`，其中 {appid} 为小程序的 appid，{version} 为小程序的版本号，版本号为 0 表示为开发版、体验版以及审核版本，版本号为 devtools 表示为开发者工具，其余为正式版本；<br/> |
 #### BackgroundAudioManager 的方法 @backgroundaudiomanager-values 
 
 #### play(): void; @play
@@ -114,9 +114,9 @@ seek
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| position | number | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| position | number | 是 | Web: x | 
 
 
 
@@ -141,9 +141,9 @@ onCanplay
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -157,9 +157,9 @@ onPlay
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -173,9 +173,9 @@ onPause
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -189,9 +189,9 @@ onStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -205,9 +205,9 @@ onEnded
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -221,9 +221,9 @@ onSeeking
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -237,9 +237,9 @@ onSeeked
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -253,9 +253,9 @@ onTimeUpdate
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -269,9 +269,9 @@ onPrev
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -285,9 +285,9 @@ onNext
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -301,19 +301,19 @@ onError
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [ICreateBackgroundAudioFail](#icreatebackgroundaudiofail-values)) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: [ICreateBackgroundAudioFail](#icreatebackgroundaudiofail-values)) => void | 是 | Web: x | 
 
 ##### ICreateBackgroundAudioFail 的属性值 @icreatebackgroundaudiofail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x | 错误码 |
-| errSubject | string | 是 |  | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
@@ -338,9 +338,9 @@ onWaiting
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -478,13 +478,13 @@ offWaiting
 
 ##### ICreateBackgroundAudioFail 的属性值 @icreatebackgroundaudiofail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x | 错误码 |
-| errSubject | string | 是 |  | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
@@ -778,9 +778,9 @@ offWaiting
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 ## 注意

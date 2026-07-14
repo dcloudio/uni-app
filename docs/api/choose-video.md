@@ -20,9 +20,9 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **ChooseVideoOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **ChooseVideoOptions** | 是 |
 
 #### options 的属性描述
 
@@ -63,23 +63,23 @@
 
 #### ChooseVideoSuccess 的属性值 @choosevideosuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| tempFilePath | string | 是 |  | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 选定视频的临时文件路径 |
-| duration | number | 是 |  | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 选定视频的时间长度 |
-| size | number | 是 |  | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 选定视频的数据量大小 |
-| height | number | 是 |  | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 返回选定视频的长 |
-| width | number | 是 |  | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 返回选定视频的宽 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| tempFilePath | string | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 选定视频的临时文件路径 |
+| duration | number | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 选定视频的时间长度 |
+| size | number | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 选定视频的数据量大小 |
+| height | number | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 返回选定视频的长 |
+| width | number | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 返回选定视频的宽 |
 
 #### ChooseVideoFail 的属性值 @choosevideofail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -265,9 +265,9 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 

@@ -100,15 +100,15 @@ UniRefresherEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniRefresherEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniRefresherEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniRefresherEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| dy | number | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| dy | number | 是 |
 
 
 #### UniScrollToUpperEvent
@@ -121,15 +121,15 @@ UniScrollToUpperEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniScrollToUpperEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniScrollToUpperEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniScrollToUpperEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| direction | string | 是 |  |   | 滚动方向 top 或 left |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| direction | string | 是 | 滚动方向 top 或 left |
 
 
 #### UniScrollToLowerEvent
@@ -142,15 +142,15 @@ UniScrollToLowerEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniScrollToLowerEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniScrollToLowerEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniScrollToLowerEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| direction | string | 是 |  |   | 滚动方向 bottom 或 right |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| direction | string | 是 | 滚动方向 bottom 或 right |
 
 
 #### UniScrollEvent
@@ -163,20 +163,20 @@ UniScrollEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniScrollEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniScrollEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniScrollEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| scrollTop | number | 是 |  |   | 竖向滚动的距离 |
-| scrollLeft | number | 是 |  |   | 横向滚动的距离 |
-| scrollHeight | number | 是 |  |   | 滚动区域的高度 |
-| scrollWidth | number | 是 |  |   | 滚动区域的宽度 |
-| deltaY | number | 是 |  |   | 当次滚动事件竖向滚动量 |
-| deltaX | number | 是 |  |   | 当次滚动事件横向滚动量 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| scrollTop | number | 是 | 竖向滚动的距离 |
+| scrollLeft | number | 是 | 横向滚动的距离 |
+| scrollHeight | number | 是 | 滚动区域的高度 |
+| scrollWidth | number | 是 | 滚动区域的宽度 |
+| deltaY | number | 是 | 当次滚动事件竖向滚动量 |
+| deltaX | number | 是 | 当次滚动事件横向滚动量 |
 
 
 #### UniStartNestedScrollEvent
@@ -189,10 +189,10 @@ UniStartNestedScrollEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniStartNestedScrollEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| node | [UniElement](/api/dom/unielement.md) | 是 |  |   | 开始滚动子节点对象 |
-| isTouch | boolean | 是 |  | Android: 3.99; iOS: x | 是否由触摸行为发生的Event |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| node | [UniElement](/api/dom/unielement.md) | 是 |   | 开始滚动子节点对象 |
+| isTouch | boolean | 是 | Android: 3.99; iOS: x | 是否由触摸行为发生的Event |
 
 
 #### UniNestedPreScrollEvent
@@ -205,17 +205,17 @@ UniNestedPreScrollEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniNestedPreScrollEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| deltaX | number | 是 |  |   | x轴滚动距离 |
-| deltaY | number | 是 |  |   | y轴滚动距离 |
-| isTouch | boolean | 是 |  | Android: 3.99; iOS: x | 是否由触摸行为发生的Event |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| deltaX | number | 是 |   | x轴滚动距离 |
+| deltaY | number | 是 |   | y轴滚动距离 |
+| isTouch | boolean | 是 | Android: 3.99; iOS: x | 是否由触摸行为发生的Event |
 
 
 ##### UniNestedPreScrollEvent 的方法
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| consumed | (consumedX: number, consumedY: number) => void | 是 |  |   | 通知到子节点x,y轴滚动距离的消耗 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| consumed | (consumedX: number, consumedY: number) => void | 是 | 通知到子节点x,y轴滚动距离的消耗 |
 
 #### UniStopNestedScrollEvent
 
@@ -227,9 +227,9 @@ UniStopNestedScrollEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniStopNestedScrollEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| isTouch | boolean | 是 |  |   | 是否由触摸行为发生的Event |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| isTouch | boolean | 是 | 是否由触摸行为发生的Event |
 
 
 

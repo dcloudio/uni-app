@@ -17,10 +17,10 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| livePusherId | string | 是 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
-| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| livePusherId | string | 是 | Web: x; 微信小程序: x; HarmonyOS: x |
+| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: x; 微信小程序: x; HarmonyOS: x | 
 
 
 ### 返回值 
@@ -41,17 +41,17 @@ start
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **LivePusherOptions** | 否 | Web: x; 微信小程序: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -65,17 +65,17 @@ stop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **LivePusherOptions** | 否 | Web: x; 微信小程序: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -89,17 +89,17 @@ switchCamera
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **LivePusherOptions** | 否 | Web: x; 微信小程序: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -113,17 +113,17 @@ toggleTorch
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **LivePusherOptions** | 否 | Web: x; 微信小程序: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -137,17 +137,17 @@ pause
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **LivePusherOptions** | 否 | Web: x; 微信小程序: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -161,17 +161,17 @@ resume
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **LivePusherOptions** | 否 | Web: x; 微信小程序: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -185,17 +185,17 @@ getMaxZoom
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **LivePusherOptions** | 否 | Web: x; 微信小程序: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -209,18 +209,18 @@ setZoom
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| zoom | number | 是 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| zoom | number | 是 | Web: x; 微信小程序: x; HarmonyOS: x |
+| options | **LivePusherOptions** | 否 | Web: x; 微信小程序: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -234,17 +234,17 @@ startPreview
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **LivePusherOptions** | 否 | Web: x; 微信小程序: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -258,17 +258,17 @@ stopPreview
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **LivePusherOptions** | 否 | Web: x; 微信小程序: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -282,17 +282,17 @@ snapshot
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **LivePusherOptions** | 否 | Web: x; 微信小程序: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
@@ -306,116 +306,116 @@ sendMessage
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| message | string | 是 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
-| options | **LivePusherOptions** | 否 |  | Web: x; 微信小程序: x; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| message | string | 是 | Web: x; 微信小程序: x; HarmonyOS: x |
+| options | **LivePusherOptions** | 否 | Web: x; 微信小程序: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 
 
 ##### LivePusherOptions 的属性值 @livepusheroptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ##### LivePusherOptions 的属性值 @livepusheroptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ##### LivePusherOptions 的属性值 @livepusheroptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ##### LivePusherOptions 的属性值 @livepusheroptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ##### LivePusherOptions 的属性值 @livepusheroptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ##### LivePusherOptions 的属性值 @livepusheroptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ##### LivePusherOptions 的属性值 @livepusheroptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ##### LivePusherOptions 的属性值 @livepusheroptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ##### LivePusherOptions 的属性值 @livepusheroptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ##### LivePusherOptions 的属性值 @livepusheroptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ##### LivePusherOptions 的属性值 @livepusheroptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ##### LivePusherOptions 的属性值 @livepusheroptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
-| fail | (res: UTSJSONObject) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用成功的回调函数 |
+| fail | (res: UTSJSONObject) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |
  
 
 
@@ -446,7 +446,7 @@ sendMessage
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

@@ -12,18 +12,18 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **StartGyroscopeOptions** | 否 |  | Web: x | 开始监听陀螺仪数据的参数 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **StartGyroscopeOptions** | 否 | Web: x | 开始监听陀螺仪数据的参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| interval | string | 否 |  | Web: x | 监听陀螺仪数据回调函数的执行频率 |
-| success | (res: [StartGyroscopeSuccess](#startgyroscopesuccess-values)) => void | 否 |  | Web: x | 接口调用成功的回调函数 |
-| fail | (res: [StartGyroscopeFail](#startgyroscopefail-values)) => void | 否 |  | Web: x | 接口调用失败的回调函数 |
-| complete | (res: [StartGyroscopeSuccess](#startgyroscopesuccess-values) \| [StartGyroscopeFail](#startgyroscopefail-values)) => void | 否 |  | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| interval | string | 否 | Web: x | 监听陀螺仪数据回调函数的执行频率 |
+| success | (res: [StartGyroscopeSuccess](#startgyroscopesuccess-values)) => void | 否 | Web: x | 接口调用成功的回调函数 |
+| fail | (res: [StartGyroscopeFail](#startgyroscopefail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: [StartGyroscopeSuccess](#startgyroscopesuccess-values) \| [StartGyroscopeFail](#startgyroscopefail-values)) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### interval 的属性描述
 
@@ -35,19 +35,19 @@
 
 #### StartGyroscopeSuccess 的属性值 @startgyroscopesuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 否 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| errMsg | string | 否 | Web: x |
 
 #### StartGyroscopeFail 的属性值 @startgyroscopefail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x |  |
-| errSubject | string | 是 |  | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x |  |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
@@ -73,19 +73,19 @@
 
 #### StartGyroscopeSuccess 的属性值 @startgyroscopesuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 否 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| errMsg | string | 否 | Web: x |
 
 #### StartGyroscopeFail 的属性值 @startgyroscopefail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x |  |
-| errSubject | string | 是 |  | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x |  |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
@@ -150,33 +150,33 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **StopGyroscopeOptions** | 否 |  | Web: x | 停止监听陀螺仪数据的参数 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **StopGyroscopeOptions** | 否 | Web: x | 停止监听陀螺仪数据的参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [StopGyroscopeSuccess](#stopgyroscopesuccess-values)) => void | 否 |  | Web: x | 接口调用成功的回调函数 |
-| fail | (res: [StopGyroscopeFail](#stopgyroscopefail-values)) => void | 否 |  | Web: x | 接口调用失败的回调函数 |
-| complete | (res: [StopGyroscopeSuccess](#stopgyroscopesuccess-values) \| [StopGyroscopeFail](#stopgyroscopefail-values)) => void | 否 |  | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: [StopGyroscopeSuccess](#stopgyroscopesuccess-values)) => void | 否 | Web: x | 接口调用成功的回调函数 |
+| fail | (res: [StopGyroscopeFail](#stopgyroscopefail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
+| complete | (res: [StopGyroscopeSuccess](#stopgyroscopesuccess-values) \| [StopGyroscopeFail](#stopgyroscopefail-values)) => void | 否 | Web: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### StopGyroscopeSuccess 的属性值 @stopgyroscopesuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 否 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| errMsg | string | 否 | Web: x |
 
 #### StopGyroscopeFail 的属性值 @stopgyroscopefail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x |  |
-| errSubject | string | 是 |  | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x |  |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
@@ -202,19 +202,19 @@
 
 #### StopGyroscopeSuccess 的属性值 @stopgyroscopesuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 否 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| errMsg | string | 否 | Web: x |
 
 #### StopGyroscopeFail 的属性值 @stopgyroscopefail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x |  |
-| errSubject | string | 是 |  | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x |  |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
@@ -276,17 +276,17 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnGyroscopeChangeCallbackResult](#ongyroscopechangecallbackresult-values)) => void | 是 |  | Web: x | 陀螺仪数据事件的监听函数 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (result: [OnGyroscopeChangeCallbackResult](#ongyroscopechangecallbackresult-values)) => void | 是 | Web: x | 陀螺仪数据事件的监听函数 | 
 
 ### OnGyroscopeChangeCallbackResult 的属性值 @ongyroscopechangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  | Web: x | x 轴的角速度 |
-| y | number | 是 |  | Web: x | y 轴的角速度 |
-| z | number | 是 |  | Web: x | z 轴的角速度 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| x | number | 是 | Web: x | x 轴的角速度 |
+| y | number | 是 | Web: x | y 轴的角速度 |
+| z | number | 是 | Web: x | z 轴的角速度 |
 
 
 
@@ -329,17 +329,17 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnGyroscopeChangeCallbackResult](#ongyroscopechangecallbackresult-values)) => void | 否 |  | Web: x | onGyroscopeChange 传入的监听函数。不传此参数则移除所有监听函数。 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (result: [OnGyroscopeChangeCallbackResult](#ongyroscopechangecallbackresult-values)) => void | 否 | Web: x | onGyroscopeChange 传入的监听函数。不传此参数则移除所有监听函数。 | 
 
 ### OnGyroscopeChangeCallbackResult 的属性值 @ongyroscopechangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  | Web: x | x 轴的角速度 |
-| y | number | 是 |  | Web: x | y 轴的角速度 |
-| z | number | 是 |  | Web: x | z 轴的角速度 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| x | number | 是 | Web: x | x 轴的角速度 |
+| y | number | 是 | Web: x | y 轴的角速度 |
+| z | number | 是 | Web: x | z 轴的角速度 |
 
 
 
@@ -676,9 +676,9 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 ### tips

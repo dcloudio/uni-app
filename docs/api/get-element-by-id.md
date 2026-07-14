@@ -33,9 +33,9 @@ uni是全局api，本方法获取的元素，是页面栈栈顶（不包括 dial
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | [string.IDString](/uts/data-type.md#ide-string) \| string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| id | [string.IDString](/uts/data-type.md#ide-string) \| string | 是 | 
 
 
 `3.93+` 支持泛型，可通过 `uni.getElementById<ElementType>(id)` 获取指定类型的元素。对于组件有自带方法的情况，通过泛型指定具体的元素类型，就可以调用该类型组件的专用方法，比如unicloud-db组件。\
@@ -189,7 +189,7 @@ uni是全局api，本方法获取的元素，是页面栈栈顶（不包括 dial
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

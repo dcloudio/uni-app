@@ -14,14 +14,14 @@
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| initial-child-size | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>初始时占父容器的比例 |
-| min-child-size | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>最小时占父容器的比例 |
-| max-child-size | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>最大时占父容器的比例 |
-| snap | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>拖拽后是否自动对齐关键点 |
-| snap-sizes | Array.&lt;number&gt; |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(Array.&lt;number&gt;)*<br/>拖拽后对齐的关键点，无需包含最小和最大值 |
-| worklet:onsizeupdate | worklet |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(worklet)*<br/>尺寸发生变化时触发，仅支持 worklet 作为回调。event = {pixels, size} |
+| 名称 | 类型 | 兼容性 | 描述 |
+| :- | :- |  :-: | :- |
+| initial-child-size | number | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>初始时占父容器的比例 |
+| min-child-size | number | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>最小时占父容器的比例 |
+| max-child-size | number | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>最大时占父容器的比例 |
+| snap | boolean | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>拖拽后是否自动对齐关键点 |
+| snap-sizes | Array.&lt;number&gt; | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(Array.&lt;number&gt;)*<br/>拖拽后对齐的关键点，无需包含最小和最大值 |
+| worklet:onsizeupdate | worklet | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(worklet)*<br/>尺寸发生变化时触发，仅支持 worklet 作为回调。event = {pixels, size} |
 
 
 

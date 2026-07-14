@@ -9,9 +9,9 @@
 uts 插件创建时的回调。<br/>     对应原生 Application onCreate 函数
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| application | Application | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| application | Application | 是 | 
 
 
 **返回值**

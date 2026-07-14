@@ -86,36 +86,36 @@ preLogin
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniVerifyManagerPreLoginOptions** | 是 |  | Web: x | 预登录参数 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **UniVerifyManagerPreLoginOptions** | 是 | Web: x | 预登录参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniVerifyManagerPreLoginSuccess](#univerifymanagerpreloginsuccess-values)) => void | 否 |  | Web: x |  |
-| fail | (err: [UniVerifyManagerPreLoginFail](#univerifymanagerpreloginfail-values)) => void | 否 |  | Web: x |  |
-| complete | (res: any) => void | 否 |  | Web: x |  | 
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| success | (res: [UniVerifyManagerPreLoginSuccess](#univerifymanagerpreloginsuccess-values)) => void | 否 | Web: x |
+| fail | (err: [UniVerifyManagerPreLoginFail](#univerifymanagerpreloginfail-values)) => void | 否 | Web: x |
+| complete | (res: any) => void | 否 | Web: x | 
 
 ###### UniVerifyManagerPreLoginSuccess 的属性值 @univerifymanagerpreloginsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| number | string | 是 |  | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61 | 手机号（脱敏） |
-| slogan | string | 是 |  | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61 | 运营商slogan，如移动：中国移动提供认证服务，联通：认证服务由联通统一认证提供，电信：天翼账号提供认证服务 |
-| privacyName | string | 是 |  | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71 | 运营商隐私协议名称，如移动：中国移动认证服务条款，联通：联通统一认证服务条款，电信：天翼账号服务与隐私协议 |
-| privacyUrl | string | 是 |  | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71 | 运营商隐私协议url地址 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| number | string | 是 | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61 | 手机号（脱敏） |
+| slogan | string | 是 | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61 | 运营商slogan，如移动：中国移动提供认证服务，联通：认证服务由联通统一认证提供，电信：天翼账号提供认证服务 |
+| privacyName | string | 是 | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71 | 运营商隐私协议名称，如移动：中国移动认证服务条款，联通：联通统一认证服务条款，电信：天翼账号服务与隐私协议 |
+| privacyUrl | string | 是 | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71 | 运营商隐私协议url地址 |
 
 ###### UniVerifyManagerPreLoginFail 的属性值 @univerifymanagerpreloginfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x | 错误码 |
-| errSubject | string | 是 |  | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
@@ -147,54 +147,54 @@ login
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniVerifyManagerLoginOptions** | 是 |  | Web: x | 登录参数 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **UniVerifyManagerLoginOptions** | 是 | Web: x | 登录参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| uniVerifyStyle | **UniVerifyManagerLoginStyle** | 否 |  | Web: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 登录页样式 |
-| success | (res: [UniVerifyManagerLoginSuccess](#univerifymanagerloginsuccess-values)) => void | 否 |  | Web: x |  |
-| fail | (err: [UniVerifyManagerLoginFail](#univerifymanagerloginfail-values)) => void | 否 |  | Web: x |  |
-| complete | (res: any) => void | 否 |  | Web: x |  |
-| ~~univerifyStyle~~ | **UniVerifyManagerLoginStyle** | 否 |  | Web: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 |   **已废弃，建议使用 uniVerifyStyle** |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| uniVerifyStyle | **UniVerifyManagerLoginStyle** | 否 | Web: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 登录页样式 |
+| success | (res: [UniVerifyManagerLoginSuccess](#univerifymanagerloginsuccess-values)) => void | 否 | Web: x |  |
+| fail | (err: [UniVerifyManagerLoginFail](#univerifymanagerloginfail-values)) => void | 否 | Web: x |  |
+| complete | (res: any) => void | 否 | Web: x |  |
+| ~~univerifyStyle~~ | **UniVerifyManagerLoginStyle** | 否 | Web: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 |   **已废弃，建议使用 uniVerifyStyle** |
 
 ##### uniVerifyStyle 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| fullScreen | boolean | 否 |  | Web: x | 是否全屏 |
-| logoPath | string | 否 |  | Web: x | logo路径 |
-| backgroundColor | string | 否 |  | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.71 | 登录页背景色 |
-| loginBtnText | string | 否 |  | Web: x | 登录按钮文字 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| fullScreen | boolean | 否 | Web: x | 是否全屏 |
+| logoPath | string | 否 | Web: x | logo路径 |
+| backgroundColor | string | 否 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.71 | 登录页背景色 |
+| loginBtnText | string | 否 | Web: x | 登录按钮文字 |
 
 ##### univerifyStyle 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| fullScreen | boolean | 否 |  | Web: x | 是否全屏 |
-| logoPath | string | 否 |  | Web: x | logo路径 |
-| backgroundColor | string | 否 |  | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.71 | 登录页背景色 |
-| loginBtnText | string | 否 |  | Web: x | 登录按钮文字 | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| fullScreen | boolean | 否 | Web: x | 是否全屏 |
+| logoPath | string | 否 | Web: x | logo路径 |
+| backgroundColor | string | 否 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.71 | 登录页背景色 |
+| loginBtnText | string | 否 | Web: x | 登录按钮文字 | 
 
 ###### UniVerifyManagerLoginSuccess 的属性值 @univerifymanagerloginsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| openId | string | 是 |  | Web: x | 登录授权唯一标识 |
-| accessToken | string | 是 |  | Web: x | token |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| openId | string | 是 | Web: x | 登录授权唯一标识 |
+| accessToken | string | 是 | Web: x | token |
 
 ###### UniVerifyManagerLoginFail 的属性值 @univerifymanagerloginfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x | 错误码 |
-| errSubject | string | 是 |  | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
@@ -226,39 +226,39 @@ customLogin
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniVerifyManagerCustomLoginOptions** | 是 |  | Web: x | 自定义登录页登录参数 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **UniVerifyManagerCustomLoginOptions** | 是 | Web: x | 自定义登录页登录参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| numberTextElement | [UniElement](/api/dom/unielement.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 号码栏，仅支持使用text组件 |
-| sloganTextElement | [UniElement](/api/dom/unielement.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 品牌露出，仅支持使用text组件 |
-| loginButtonElement | [UniElement](/api/dom/unielement.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 登录按钮，仅支持使用button组件 |
-| privacyCheckBoxElement | [UniElement](/api/dom/unielement.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 隐私确认，仅支持使用checkbox组件 |
-| privacyTextElement | [UniElement](/api/dom/unielement.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 隐私标题，仅支持使用text组件 |
-| success | (res: [UniVerifyManagerLoginSuccess](#univerifymanagerloginsuccess-values)) => void | 否 |  | Web: x |  |
-| fail | (err: [UniVerifyManagerLoginFail](#univerifymanagerloginfail-values)) => void | 否 |  | Web: x |  |
-| complete | (res: any) => void | 否 |  | Web: x |  | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| numberTextElement | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 号码栏，仅支持使用text组件 |
+| sloganTextElement | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 品牌露出，仅支持使用text组件 |
+| loginButtonElement | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 登录按钮，仅支持使用button组件 |
+| privacyCheckBoxElement | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 隐私确认，仅支持使用checkbox组件 |
+| privacyTextElement | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 隐私标题，仅支持使用text组件 |
+| success | (res: [UniVerifyManagerLoginSuccess](#univerifymanagerloginsuccess-values)) => void | 否 | Web: x |  |
+| fail | (err: [UniVerifyManagerLoginFail](#univerifymanagerloginfail-values)) => void | 否 | Web: x |  |
+| complete | (res: any) => void | 否 | Web: x |  | 
 
 ###### UniVerifyManagerLoginSuccess 的属性值 @univerifymanagerloginsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| openId | string | 是 |  | Web: x | 登录授权唯一标识 |
-| accessToken | string | 是 |  | Web: x | token |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| openId | string | 是 | Web: x | 登录授权唯一标识 |
+| accessToken | string | 是 | Web: x | token |
 
 ###### UniVerifyManagerLoginFail 的属性值 @univerifymanagerloginfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x | 错误码 |
-| errSubject | string | 是 |  | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
@@ -310,30 +310,30 @@ isPreLoginValid
 
 ##### UniVerifyManagerPreLoginOptions 的属性值 @univerifymanagerpreloginoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniVerifyManagerPreLoginSuccess](#univerifymanagerpreloginsuccess-values)) => void | 否 |  | Web: x |  |
-| fail | (err: [UniVerifyManagerPreLoginFail](#univerifymanagerpreloginfail-values)) => void | 否 |  | Web: x |  |
-| complete | (res: any) => void | 否 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| success | (res: [UniVerifyManagerPreLoginSuccess](#univerifymanagerpreloginsuccess-values)) => void | 否 | Web: x |
+| fail | (err: [UniVerifyManagerPreLoginFail](#univerifymanagerpreloginfail-values)) => void | 否 | Web: x |
+| complete | (res: any) => void | 否 | Web: x |
 
 ###### UniVerifyManagerPreLoginSuccess 的属性值 @univerifymanagerpreloginsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| number | string | 是 |  | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61 | 手机号（脱敏） |
-| slogan | string | 是 |  | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61 | 运营商slogan，如移动：中国移动提供认证服务，联通：认证服务由联通统一认证提供，电信：天翼账号提供认证服务 |
-| privacyName | string | 是 |  | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71 | 运营商隐私协议名称，如移动：中国移动认证服务条款，联通：联通统一认证服务条款，电信：天翼账号服务与隐私协议 |
-| privacyUrl | string | 是 |  | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71 | 运营商隐私协议url地址 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| number | string | 是 | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61 | 手机号（脱敏） |
+| slogan | string | 是 | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61 | 运营商slogan，如移动：中国移动提供认证服务，联通：认证服务由联通统一认证提供，电信：天翼账号提供认证服务 |
+| privacyName | string | 是 | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71 | 运营商隐私协议名称，如移动：中国移动认证服务条款，联通：联通统一认证服务条款，电信：天翼账号服务与隐私协议 |
+| privacyUrl | string | 是 | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.71 | 运营商隐私协议url地址 |
 
 ###### UniVerifyManagerPreLoginFail 的属性值 @univerifymanagerpreloginfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x | 错误码 |
-| errSubject | string | 是 |  | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
@@ -355,48 +355,48 @@ isPreLoginValid
 
 ##### UniVerifyManagerLoginOptions 的属性值 @univerifymanagerloginoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| uniVerifyStyle | **UniVerifyManagerLoginStyle** | 否 |  | Web: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 登录页样式 |
-| success | (res: [UniVerifyManagerLoginSuccess](#univerifymanagerloginsuccess-values)) => void | 否 |  | Web: x |  |
-| fail | (err: [UniVerifyManagerLoginFail](#univerifymanagerloginfail-values)) => void | 否 |  | Web: x |  |
-| complete | (res: any) => void | 否 |  | Web: x |  |
-| ~~univerifyStyle~~ | **UniVerifyManagerLoginStyle** | 否 |  | Web: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 |   **已废弃，建议使用 uniVerifyStyle** |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| uniVerifyStyle | **UniVerifyManagerLoginStyle** | 否 | Web: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 登录页样式 |
+| success | (res: [UniVerifyManagerLoginSuccess](#univerifymanagerloginsuccess-values)) => void | 否 | Web: x |  |
+| fail | (err: [UniVerifyManagerLoginFail](#univerifymanagerloginfail-values)) => void | 否 | Web: x |  |
+| complete | (res: any) => void | 否 | Web: x |  |
+| ~~univerifyStyle~~ | **UniVerifyManagerLoginStyle** | 否 | Web: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 |   **已废弃，建议使用 uniVerifyStyle** |
 
 #### uniVerifyStyle 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| fullScreen | boolean | 否 |  | Web: x | 是否全屏 |
-| logoPath | string | 否 |  | Web: x | logo路径 |
-| backgroundColor | string | 否 |  | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.71 | 登录页背景色 |
-| loginBtnText | string | 否 |  | Web: x | 登录按钮文字 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| fullScreen | boolean | 否 | Web: x | 是否全屏 |
+| logoPath | string | 否 | Web: x | logo路径 |
+| backgroundColor | string | 否 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.71 | 登录页背景色 |
+| loginBtnText | string | 否 | Web: x | 登录按钮文字 |
 
 #### univerifyStyle 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| fullScreen | boolean | 否 |  | Web: x | 是否全屏 |
-| logoPath | string | 否 |  | Web: x | logo路径 |
-| backgroundColor | string | 否 |  | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.71 | 登录页背景色 |
-| loginBtnText | string | 否 |  | Web: x | 登录按钮文字 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| fullScreen | boolean | 否 | Web: x | 是否全屏 |
+| logoPath | string | 否 | Web: x | logo路径 |
+| backgroundColor | string | 否 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.71 | 登录页背景色 |
+| loginBtnText | string | 否 | Web: x | 登录按钮文字 |
 
 ###### UniVerifyManagerLoginSuccess 的属性值 @univerifymanagerloginsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| openId | string | 是 |  | Web: x | 登录授权唯一标识 |
-| accessToken | string | 是 |  | Web: x | token |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| openId | string | 是 | Web: x | 登录授权唯一标识 |
+| accessToken | string | 是 | Web: x | token |
 
 ###### UniVerifyManagerLoginFail 的属性值 @univerifymanagerloginfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x | 错误码 |
-| errSubject | string | 是 |  | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
@@ -418,33 +418,33 @@ isPreLoginValid
 
 ##### UniVerifyManagerCustomLoginOptions 的属性值 @univerifymanagercustomloginoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| numberTextElement | [UniElement](/api/dom/unielement.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 号码栏，仅支持使用text组件 |
-| sloganTextElement | [UniElement](/api/dom/unielement.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 品牌露出，仅支持使用text组件 |
-| loginButtonElement | [UniElement](/api/dom/unielement.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 登录按钮，仅支持使用button组件 |
-| privacyCheckBoxElement | [UniElement](/api/dom/unielement.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 隐私确认，仅支持使用checkbox组件 |
-| privacyTextElement | [UniElement](/api/dom/unielement.md) | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 隐私标题，仅支持使用text组件 |
-| success | (res: [UniVerifyManagerLoginSuccess](#univerifymanagerloginsuccess-values)) => void | 否 |  | Web: x |  |
-| fail | (err: [UniVerifyManagerLoginFail](#univerifymanagerloginfail-values)) => void | 否 |  | Web: x |  |
-| complete | (res: any) => void | 否 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| numberTextElement | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 号码栏，仅支持使用text组件 |
+| sloganTextElement | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 品牌露出，仅支持使用text组件 |
+| loginButtonElement | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 登录按钮，仅支持使用button组件 |
+| privacyCheckBoxElement | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 隐私确认，仅支持使用checkbox组件 |
+| privacyTextElement | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 隐私标题，仅支持使用text组件 |
+| success | (res: [UniVerifyManagerLoginSuccess](#univerifymanagerloginsuccess-values)) => void | 否 | Web: x |  |
+| fail | (err: [UniVerifyManagerLoginFail](#univerifymanagerloginfail-values)) => void | 否 | Web: x |  |
+| complete | (res: any) => void | 否 | Web: x |  |
 
 ###### UniVerifyManagerLoginSuccess 的属性值 @univerifymanagerloginsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| openId | string | 是 |  | Web: x | 登录授权唯一标识 |
-| accessToken | string | 是 |  | Web: x | token |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| openId | string | 是 | Web: x | 登录授权唯一标识 |
+| accessToken | string | 是 | Web: x | token |
 
 ###### UniVerifyManagerLoginFail 的属性值 @univerifymanagerloginfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x | 错误码 |
-| errSubject | string | 是 |  | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
@@ -894,7 +894,7 @@ hello uni-app x里有完整的自定义登录的示例代码，该示例中：
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

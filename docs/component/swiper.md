@@ -57,13 +57,13 @@
 
 #### easing-function 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| default | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 |  |
-| linear | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 |  |
-| easeInCubic | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |  |
-| easeOutCubic | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 |  |
-| easeInOutCubic | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |  |
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| default | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 |
+| linear | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 |
+| easeInCubic | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
+| easeOutCubic | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 |
+| easeInOutCubic | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
 
 
 ### 事件
@@ -77,17 +77,17 @@ UniSwiperChangeEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniSwiperChangeEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniSwiperChangeEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniSwiperChangeEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| current | number | 是 |  |   | 发生change事件的滑块下标 |
-| currentItemId | string | 否 |  | Web: √; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 切换结束的 swiper-item 的 item-id 属性值 |
-| source | string | 是 |  |   | autoplay 自动播放导致swiper变化；touch 用户划动引起swiper变化 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| current | number | 是 |   | 发生change事件的滑块下标 |
+| currentItemId | string | 否 | Web: √; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 切换结束的 swiper-item 的 item-id 属性值 |
+| source | string | 是 |   | autoplay 自动播放导致swiper变化；touch 用户划动引起swiper变化 |
 
 
 #### UniSwiperTransitionEvent
@@ -100,16 +100,16 @@ UniSwiperTransitionEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniSwiperTransitionEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniSwiperTransitionEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniSwiperTransitionEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| dx | number | 是 |  |   | 横向偏移量，单位是逻辑像素px |
-| dy | number | 是 |  |   | 纵向偏移量，单位是逻辑像素px |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| dx | number | 是 | 横向偏移量，单位是逻辑像素px |
+| dy | number | 是 | 纵向偏移量，单位是逻辑像素px |
 
 
 #### UniSwiperAnimationFinishEvent
@@ -122,17 +122,17 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniSwiperAnimationFinishEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniSwiperAnimationFinishEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniSwiperAnimationFinishEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| current | number | 是 |  |   | 发生动画结束事件的滑块下标 |
-| currentItemId | string | 否 |  | Web: √; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 动画结束的 swiper-item 的 item-id 属性值 |
-| source | string | 是 |  |   | autoplay 自动播放导致swiper变化；touch 用户划动引起swiper变化 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| current | number | 是 |   | 发生动画结束事件的滑块下标 |
+| currentItemId | string | 否 | Web: √; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 动画结束的 swiper-item 的 item-id 属性值 |
+| source | string | 是 |   | autoplay 自动播放导致swiper变化；touch 用户划动引起swiper变化 |
 
 
 
@@ -641,10 +641,10 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| item-id | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 该 swiper-item 的标识符 |
-| skip-hidden-item-layout | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否跳过未显示的滑块布局，设为 true 可优化复杂情况下的滑动性能，但会丢失隐藏状态滑块的布局信息 |
+| 名称 | 类型 | 兼容性 | 描述 |
+| :- | :- |  :-: | :- |
+| item-id | string | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 该 swiper-item 的标识符 |
+| skip-hidden-item-layout | boolean | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否跳过未显示的滑块布局，设为 true 可优化复杂情况下的滑动性能，但会丢失隐藏状态滑块的布局信息 |
 
 
 

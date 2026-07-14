@@ -91,15 +91,15 @@ UniMapMarkerTapEvent -- Extends --> UniPointerEvent
   click UniPointerEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unipointerevent"
 ```
 ##### UniMapMarkerTapEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniMapMarkerTapEventDetail** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniMapMarkerTapEventDetail** | 否 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| markerId | number | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| markerId | number | 否 |
 
 
 #### UniMapControlTapEvent
@@ -115,9 +115,9 @@ UniMapControlTapEvent -- Extends --> UniCustomEvent&ltUniMapControlTapEventDetai
 
 
 ###### UniMapControlTapEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| controlId | number | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| controlId | number | 否 |
 
 
 #### UniMapRegionChangeEvent
@@ -130,9 +130,9 @@ UniMapRegionChangeEvent -- Extends --> UniCustomEvent&lt&gt
   click UniCustomEvent&lt&gt "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unicustomevent"
 ```
 ##### UniMapRegionChangeEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| causedBy | string | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| causedBy | string | 否 |
 
 
 #### UniMapUpdatedEvent
@@ -154,16 +154,16 @@ UniMapTapEvent -- Extends --> UniPointerEvent
   click UniPointerEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unipointerevent"
 ```
 ##### UniMapTapEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniMapTapEventDetail** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniMapTapEventDetail** | 否 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 否 |  |   |  |
-| longitude | number | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| latitude | number | 否 |
+| longitude | number | 否 |
 
 
 #### UniMapAnchorPointTapEvent
@@ -176,16 +176,16 @@ UniMapAnchorPointTapEvent -- Extends --> UniPointerEvent
   click UniPointerEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unipointerevent"
 ```
 ##### UniMapAnchorPointTapEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniMapAnchorPointTapEventDetail** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniMapAnchorPointTapEventDetail** | 否 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 否 |  |   |  |
-| longitude | number | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| latitude | number | 否 |
+| longitude | number | 否 |
 
 
 #### UniMapPoiTapEvent
@@ -198,17 +198,17 @@ UniMapPoiTapEvent -- Extends --> UniPointerEvent
   click UniPointerEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unipointerevent"
 ```
 ##### UniMapPoiTapEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniMapPoiTapEventDetail** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniMapPoiTapEventDetail** | 否 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 否 |  |   |  |
-| longitude | number | 否 |  |   |  |
-| name | string | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| latitude | number | 否 |
+| longitude | number | 否 |
+| name | string | 否 |
 
 
 

@@ -45,9 +45,9 @@ UniFormSubmitEvent -- Extends --> UniCustomEvent&ltUniFormSubmitEventDetail&gt
 
 
 ###### UniFormSubmitEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| value | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |
 
 
 #### UniFormResetEvent

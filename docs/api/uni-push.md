@@ -29,24 +29,24 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **GetPushClientIdOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **GetPushClientIdOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (result: [GetPushClientIdSuccess](#getpushclientidsuccess-values)) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| success | (result: [GetPushClientIdSuccess](#getpushclientidsuccess-values)) => void | 否 | null | 接口调用成功的回调函数 |
+| fail | (result: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | null | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### GetPushClientIdSuccess 的属性值 @getpushclientidsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| cid | string | 是 |  | Web: 4.27; Android: 3.98; iOS: 4.18 | 个推客户端推送id，对应uni-id-device表的push_clientid<br/> |
-| errMsg | string | 是 |  | Web: 4.27; Android: 3.98; iOS: 4.18 | 错误描述<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| cid | string | 是 | Web: 4.27; Android: 3.98; iOS: 4.18 | 个推客户端推送id，对应uni-id-device表的push_clientid<br/> |
+| errMsg | string | 是 | Web: 4.27; Android: 3.98; iOS: 4.18 | 错误描述<br/> |
 
 
 
@@ -68,16 +68,16 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnPushMessageCallbackResult](#onpushmessagecallbackresult-values)) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (result: [OnPushMessageCallbackResult](#onpushmessagecallbackresult-values)) => void | 是 | 
 
 ### OnPushMessageCallbackResult 的属性值 @onpushmessagecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 |  | Web: 4.27; Android: 3.98; iOS: 4.18 | 事件类型<br/>- click 从系统推送服务点击消息启动应用事件<br/>- receive 应用从推送服务器接收到推送消息事件 |
-| data | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  | Web: 4.27; Android: 3.98; iOS: 4.18 | 消息内容<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| type | string | 是 | Web: 4.27; Android: 3.98; iOS: 4.18 | 事件类型<br/>- click 从系统推送服务点击消息启动应用事件<br/>- receive 应用从推送服务器接收到推送消息事件 |
+| data | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.27; Android: 3.98; iOS: 4.18 | 消息内容<br/> |
 
 #### type 的属性描述
 
@@ -110,16 +110,16 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnPushMessageCallbackResult](#onpushmessagecallbackresult-values)) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (result: [OnPushMessageCallbackResult](#onpushmessagecallbackresult-values)) => void | 是 | 
 
 ### OnPushMessageCallbackResult 的属性值 @onpushmessagecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 |  | Web: 4.27; Android: 3.98; iOS: 4.18 | 事件类型<br/>- click 从系统推送服务点击消息启动应用事件<br/>- receive 应用从推送服务器接收到推送消息事件 |
-| data | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  | Web: 4.27; Android: 3.98; iOS: 4.18 | 消息内容<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| type | string | 是 | Web: 4.27; Android: 3.98; iOS: 4.18 | 事件类型<br/>- click 从系统推送服务点击消息启动应用事件<br/>- receive 应用从推送服务器接收到推送消息事件 |
+| data | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.27; Android: 3.98; iOS: 4.18 | 消息内容<br/> |
 
 #### type 的属性描述
 
@@ -168,9 +168,9 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **CreatePushMessageOptions** | 是 |  | Web: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **CreatePushMessageOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
@@ -203,9 +203,9 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 ## uni.getPushChannelManager() @getpushchannelmanager
@@ -240,9 +240,9 @@ setPushChannel
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **SetPushChannelOptions** | 是 |  | Web: x; iOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **SetPushChannelOptions** | 是 | Web: x; iOS: x |
 
 #### options 的属性描述
 
@@ -309,10 +309,10 @@ getAllChannels
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| num | number | 是 |  | Web: x | 要显示的角标数字值，参数为0则表示清除角标数字。 |
-| options | **BadgeOptions** | 否 |  | Web: x | 小米手机显示角标需要在系统消息中心显示一条通知，此参数用于设置通知的标题（title）和内容（content）。 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| num | number | 是 | Web: x | 要显示的角标数字值，参数为0则表示清除角标数字。 |
+| options | **BadgeOptions** | 否 | Web: x | 小米手机显示角标需要在系统消息中心显示一条通知，此参数用于设置通知的标题（title）和内容（content）。 |
 
 #### options 的属性描述
 
@@ -365,9 +365,9 @@ setPushChannel
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **SetPushChannelOptions** | 是 |  | Web: x; iOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **SetPushChannelOptions** | 是 | Web: x; iOS: x |
 
 #### options 的属性描述
 
@@ -811,9 +811,9 @@ getAllChannels
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 

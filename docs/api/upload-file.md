@@ -22,9 +22,9 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UploadFileOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **UploadFileOptions** | 是 |
 
 #### options 的属性描述
 
@@ -55,20 +55,20 @@
 
 #### UploadFileSuccess 的属性值 @uploadfilesuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的数据 |
-| statusCode | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP 状态码 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| data | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的数据 |
+| statusCode | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP 状态码 |
 
 #### UploadFileFail 的属性值 @uploadfilefail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -114,27 +114,27 @@ onProgressUpdate
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnProgressUpdateResult](#onprogressupdateresult-values)) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (result: [OnProgressUpdateResult](#onprogressupdateresult-values)) => void | 是 | 
 
 ##### OnProgressUpdateResult 的属性值 @onprogressupdateresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| progress | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 上传进度百分比 |
-| totalBytesSent | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 已经上传的数据长度，单位 Bytes |
-| totalBytesExpectedToSend | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 预期需要上传的数据总长度，单位 Bytes |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| progress | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 上传进度百分比 |
+| totalBytesSent | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 已经上传的数据长度，单位 Bytes |
+| totalBytesExpectedToSend | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 预期需要上传的数据总长度，单位 Bytes |
 
 
 
 ##### OnProgressUpdateResult 的属性值 @onprogressupdateresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| progress | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 上传进度百分比 |
-| totalBytesSent | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 已经上传的数据长度，单位 Bytes |
-| totalBytesExpectedToSend | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 预期需要上传的数据总长度，单位 Bytes |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| progress | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 上传进度百分比 |
+| totalBytesSent | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 已经上传的数据长度，单位 Bytes |
+| totalBytesExpectedToSend | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 预期需要上传的数据总长度，单位 Bytes |
  
 
 
@@ -495,9 +495,9 @@ complete: () => {
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 **注意**

@@ -28,14 +28,14 @@
 
 #### GetSystemSettingResult 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| bluetoothEnabled | boolean | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 蓝牙是否开启<br/> |
-| bluetoothError | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 蓝牙的报错信息<br/> |
-| locationEnabled | boolean | 是 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 位置是否开启<br/> |
-| wifiEnabled | boolean | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | wifi是否开启<br/> |
-| wifiError | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: 4.61 | wifi的报错信息<br/> |
-| deviceOrientation | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备方向<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| bluetoothEnabled | boolean | 否 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 蓝牙是否开启<br/> |
+| bluetoothError | string | 否 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 蓝牙的报错信息<br/> |
+| locationEnabled | boolean | 是 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 位置是否开启<br/> |
+| wifiEnabled | boolean | 否 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | wifi是否开启<br/> |
+| wifiError | string | 否 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: 4.61 | wifi的报错信息<br/> |
+| deviceOrientation | string | 是 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备方向<br/> |
 
 ##### deviceOrientation 的属性描述
 
@@ -163,7 +163,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

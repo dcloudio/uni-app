@@ -14,10 +14,10 @@
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| feed-id | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>视频 feedId |
-| finder-user-name | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>视频号 id，以“sph”开头的id，可在视频号助手获取。视频号必须与当前小程序相同主体。 |
+| 名称 | 类型 | 兼容性 | 描述 |
+| :- | :- |  :-: | :- |
+| feed-id | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>视频 feedId |
+| finder-user-name | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>视频号 id，以“sph”开头的id，可在视频号助手获取。视频号必须与当前小程序相同主体。 |
 
 
 

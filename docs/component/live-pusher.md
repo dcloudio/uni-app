@@ -86,10 +86,10 @@
 
 #### orientation 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| vertical | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |  |
-| horizontal | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |  |
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| vertical | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |
+| horizontal | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |
 
 #### local-mirror 的属性描述
 
@@ -157,22 +157,22 @@
 推流状态变化事件
 
 ##### UniLivePusherStatechangeEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniLivePusherStatechangeEventDetail** | 是 |  |   |  |
-| bubbles | boolean | 是 |  |   |  |
-| cancelable | boolean | 是 |  |   |  |
-| type | string | 是 |  |   |  |
-| target | [UniElement](/api/dom/unielement.md) | 否 |  |   |  |
-| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  |   |  |
-| timeStamp | Long | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniLivePusherStatechangeEventDetail** | 是 |
+| bubbles | boolean | 是 |
+| cancelable | boolean | 是 |
+| type | string | 是 |
+| target | [UniElement](/api/dom/unielement.md) | 否 |
+| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |
+| timeStamp | Long | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| code | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 状态码 |
-| message | string | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 状态信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| code | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 状态码 |
+| message | string | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 状态信息 |
 
 ##### code 的属性描述
 
@@ -184,34 +184,34 @@
 
 
 ##### UniLivePusherStatechangeEvent 的方法
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| stopPropagation | () => void | 是 |  |   |  |
-| preventDefault | () => void | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| stopPropagation | () => void | 是 |
+| preventDefault | () => void | 是 |
 
 #### UniLivePusherErrorEvent
 错误事件
 
 ##### UniLivePusherErrorEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniLivePusherError** | 是 |  |   |  |
-| bubbles | boolean | 是 |  |   |  |
-| cancelable | boolean | 是 |  |   |  |
-| type | string | 是 |  |   |  |
-| target | [UniElement](/api/dom/unielement.md) | 否 |  |   |  |
-| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  |   |  |
-| timeStamp | Long | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniLivePusherError** | 是 |
+| bubbles | boolean | 是 |
+| cancelable | boolean | 是 |
+| type | string | 是 |
+| target | [UniElement](/api/dom/unielement.md) | 否 |
+| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |
+| timeStamp | Long | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   |  |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 |  |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 ##### errCode 的属性描述
 
@@ -237,43 +237,43 @@
 
 
 ##### UniLivePusherErrorEvent 的方法
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| stopPropagation | () => void | 是 |  |   |  |
-| preventDefault | () => void | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| stopPropagation | () => void | 是 |
+| preventDefault | () => void | 是 |
 
 #### UniLivePusherNetstatusEvent
 推流网络状态事件
 
 ##### UniLivePusherNetstatusEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniLivePusherNetstatusEventDetail** | 是 |  |   |  |
-| bubbles | boolean | 是 |  |   |  |
-| cancelable | boolean | 是 |  |   |  |
-| type | string | 是 |  |   |  |
-| target | [UniElement](/api/dom/unielement.md) | 否 |  |   |  |
-| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  |   |  |
-| timeStamp | Long | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniLivePusherNetstatusEventDetail** | 是 |
+| bubbles | boolean | 是 |
+| cancelable | boolean | 是 |
+| type | string | 是 |
+| target | [UniElement](/api/dom/unielement.md) | 否 |
+| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |
+| timeStamp | Long | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| videoBitrate | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前视频编/码器输出的比特率，单位 kbps |
-| audioBitrate | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前音频编/码器输出的比特率，单位 kbps |
-| videoFPS | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前视频帧率 |
-| videoGOP | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前视频 GOP,也就是每两个关键帧(I帧)间隔时长，单位 s |
-| netSpeed | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前的发送/接收速度 |
-| videoWidth | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 视频画面的宽度 |
-| videoHeight | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 视频画面的高度 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| videoBitrate | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前视频编/码器输出的比特率，单位 kbps |
+| audioBitrate | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前音频编/码器输出的比特率，单位 kbps |
+| videoFPS | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前视频帧率 |
+| videoGOP | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前视频 GOP,也就是每两个关键帧(I帧)间隔时长，单位 s |
+| netSpeed | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前的发送/接收速度 |
+| videoWidth | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 视频画面的宽度 |
+| videoHeight | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 视频画面的高度 |
 
 
 ##### UniLivePusherNetstatusEvent 的方法
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| stopPropagation | () => void | 是 |  |   |  |
-| preventDefault | () => void | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| stopPropagation | () => void | 是 |
+| preventDefault | () => void | 是 |
 
 
 <!-- UTSCOMJSON.live-pusher.component_type -->

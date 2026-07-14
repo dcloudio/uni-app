@@ -34,10 +34,10 @@
 
 #### type 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| switch | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x |  |
-| checkbox | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x |  |
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| switch | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x |
+| checkbox | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x |
 
 type为checkbox只有微信小程序和Web平台支持。一般建议使用标准的[checkbox组件](checkbox-group.md)
 
@@ -56,9 +56,9 @@ UniSwitchChangeEvent -- Extends --> UniCustomEvent&ltUniSwitchChangeEventDetail&
 
 
 ###### UniSwitchChangeEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | boolean | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| value | boolean | 是 |
 
 
 

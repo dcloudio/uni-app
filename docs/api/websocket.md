@@ -29,9 +29,9 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **ConnectSocketOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **ConnectSocketOptions** | 是 |
 
 #### options 的属性描述
 
@@ -50,19 +50,19 @@
 
 #### ConnectSocketSuccess 的属性值 @connectsocketsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 #### ConnectSocketFail 的属性值 @connectsocketfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码<br/>- 600009 URL格式不合法 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码<br/>- 600009 URL格式不合法 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 
 ### 返回值 
@@ -83,9 +83,9 @@ send
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **SendSocketMessageOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **SendSocketMessageOptions** | 是 |
 
 #### options 的属性描述
 
@@ -98,13 +98,13 @@ send
 
 ###### SendSocketMessageFail 的属性值 @sendsocketmessagefail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -126,9 +126,9 @@ close
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **CloseSocketOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **CloseSocketOptions** | 是 |
 
 #### options 的属性描述
 
@@ -152,15 +152,15 @@ onOpen
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnSocketOpenCallbackResult](#onsocketopencallbackresult-values)) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (result: [OnSocketOpenCallbackResult](#onsocketopencallbackresult-values)) => void | 是 | 
 
 ##### OnSocketOpenCallbackResult 的属性值 @onsocketopencallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| header | any | 是 |  | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 连接成功的 HTTP 响应 Header |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| header | any | 是 | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 连接成功的 HTTP 响应 Header |
 
 
 
@@ -174,9 +174,9 @@ onClose
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (result: any) => void | 是 | 
 
 
 
@@ -190,9 +190,9 @@ onError
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (result: [GeneralCallbackResult](#generalcallbackresult-values)) => void | 是 | 
 
 
 
@@ -206,15 +206,15 @@ onMessage
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnSocketMessageCallbackResult](#onsocketmessagecallbackresult-values)) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (result: [OnSocketMessageCallbackResult](#onsocketmessagecallbackresult-values)) => void | 是 | 
 
 ##### OnSocketMessageCallbackResult 的属性值 @onsocketmessagecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | any | 是 |  | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 服务器返回的消息, app平台从 4.61 版本开始支持ArrayBuffer |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| data | any | 是 | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 服务器返回的消息, app平台从 4.61 版本开始支持ArrayBuffer |
 
 
 
@@ -229,13 +229,13 @@ onMessage
 
 ###### SendSocketMessageFail 的属性值 @sendsocketmessagefail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -257,15 +257,15 @@ onMessage
 
 ##### OnSocketOpenCallbackResult 的属性值 @onsocketopencallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| header | any | 是 |  | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 连接成功的 HTTP 响应 Header |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| header | any | 是 | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 连接成功的 HTTP 响应 Header |
 
 ##### OnSocketMessageCallbackResult 的属性值 @onsocketmessagecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | any | 是 |  | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 服务器返回的消息, app平台从 4.61 版本开始支持ArrayBuffer |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| data | any | 是 | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 服务器返回的消息, app平台从 4.61 版本开始支持ArrayBuffer |
  
 
 
@@ -307,15 +307,15 @@ onMessage
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | (result: [OnSocketOpenCallbackResult](#onsocketopencallbackresult-values)) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | (result: [OnSocketOpenCallbackResult](#onsocketopencallbackresult-values)) => void | 是 | 
 
 ### OnSocketOpenCallbackResult 的属性值 @onsocketopencallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| header | any | 是 |  | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 连接成功的 HTTP 响应 Header |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| header | any | 是 | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 连接成功的 HTTP 响应 Header |
 
 
 
@@ -358,15 +358,15 @@ onMessage
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnSocketErrorCallbackResult](#onsocketerrorcallbackresult-values)) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (result: [OnSocketErrorCallbackResult](#onsocketerrorcallbackresult-values)) => void | 是 | 
 
 ### OnSocketErrorCallbackResult 的属性值 @onsocketerrorcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 
@@ -409,9 +409,9 @@ onMessage
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **SendSocketMessageOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **SendSocketMessageOptions** | 是 |
 
 #### options 的属性描述
 
@@ -424,13 +424,13 @@ onMessage
 
 #### SendSocketMessageFail 的属性值 @sendsocketmessagefail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -485,15 +485,15 @@ onMessage
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnSocketMessageCallbackResult](#onsocketmessagecallbackresult-values)) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (result: [OnSocketMessageCallbackResult](#onsocketmessagecallbackresult-values)) => void | 是 | 
 
 ### OnSocketMessageCallbackResult 的属性值 @onsocketmessagecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | any | 是 |  | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 服务器返回的消息, app平台从 4.61 版本开始支持ArrayBuffer |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| data | any | 是 | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 服务器返回的消息, app平台从 4.61 版本开始支持ArrayBuffer |
 
 
 
@@ -536,9 +536,9 @@ onMessage
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **CloseSocketOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **CloseSocketOptions** | 是 |
 
 #### options 的属性描述
 
@@ -591,16 +591,16 @@ onMessage
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnSocketCloseCallbackResult](#onsocketclosecallbackresult-values)) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (result: [OnSocketCloseCallbackResult](#onsocketclosecallbackresult-values)) => void | 是 | 
 
 ### OnSocketCloseCallbackResult 的属性值 @onsocketclosecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| code | number | 是 |  | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。 |
-| reason | string | 是 |  | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 一个可读的字符串，表示连接被关闭的原因。 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| code | number | 是 | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 一个数字值表示关闭连接的状态号，表示连接被关闭的原因。 |
+| reason | string | 是 | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.11; HarmonyOS: 4.61 | 一个可读的字符串，表示连接被关闭的原因。 |
 
 
 
@@ -831,7 +831,7 @@ onMessage
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

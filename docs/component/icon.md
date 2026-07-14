@@ -14,24 +14,24 @@
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| type | string |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | icon的类型，有效值：success, success_no_circle, info, warn, waiting, cancel, download, search, clear |
-| size | number |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | icon的大小，单位px |
-| color | string([string.ColorString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | icon的颜色，同css的color |
+| 名称 | 类型 | 兼容性 | 描述 |
+| :- | :- |  :-: | :- |
+| type | string | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | icon的类型，有效值：success, success_no_circle, info, warn, waiting, cancel, download, search, clear |
+| size | number | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | icon的大小，单位px |
+| color | string([string.ColorString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | icon的颜色，同css的color |
 
 #### type 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| success |   |  |
-| success_no_circle |   |  |
-| warn |   |  |
-| waiting |   |  |
-| cancel |   |  |
-| download |   |  |
-| search |   |  |
-| clear |   |  |
+| 合法值 |
+| :- |
+| success |
+| success_no_circle |
+| warn |
+| waiting |
+| cancel |
+| download |
+| search |
+| clear |
 
 
 

@@ -96,14 +96,14 @@ UniCameraStopEvent -- Extends --> UniCustomEvent&ltUniCameraStopEventDetail&gt
 
 
 ###### UniCameraStopEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errorCause | string | 否 |  |   |  |
-| errSubject | string | 否 |  |   |  |
-| errCode | number | 否 |  |   |  |
-| errMsg | string | 否 |  |   |  |
-| data | Object | 否 |  |   |  |
-| cause | Object | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| errorCause | string | 否 |
+| errSubject | string | 否 |
+| errCode | number | 否 |
+| errMsg | string | 否 |
+| data | Object | 否 |
+| cause | Object | 否 |
 
 
 #### UniCameraErrorEvent
@@ -119,14 +119,14 @@ UniCameraErrorEvent -- Extends --> UniCustomEvent&ltUniCameraErrorEventDetail&gt
 
 
 ###### UniCameraErrorEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| msg | string | 否 |  |   |  |
-| errSubject | string | 否 |  |   |  |
-| errCode | number | 否 |  |   |  |
-| errMsg | string | 否 |  |   |  |
-| data | Object | 否 |  |   |  |
-| cause | Object | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| msg | string | 否 |
+| errSubject | string | 否 |
+| errCode | number | 否 |
+| errMsg | string | 否 |
+| data | Object | 否 |
+| cause | Object | 否 |
 
 
 #### UniCameraInitDoneEvent
@@ -142,9 +142,9 @@ UniCameraInitDoneEvent -- Extends --> UniCustomEvent&ltUniCameraInitDoneEventDet
 
 
 ###### UniCameraInitDoneEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| maxZoom | number | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| maxZoom | number | 否 |
 
 
 #### UniCameraScanCodeEvent
@@ -160,13 +160,13 @@ UniCameraScanCodeEvent -- Extends --> UniCustomEvent&ltUniCameraScanCodeEventDet
 
 
 ###### UniCameraScanCodeEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 否 |  |   |  |
-| result | string | 否 |  |   |  |
-| rawData | string | 否 |  |   |  |
-| charSet | string | 否 |  |   |  |
-| scanArea | number[\] | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| type | string | 否 |
+| result | string | 否 |
+| rawData | string | 否 |
+| charSet | string | 否 |
+| scanArea | number[\] | 否 |
 
 
 

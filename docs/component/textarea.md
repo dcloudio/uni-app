@@ -91,15 +91,15 @@ UniInputConfirmEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniInputConfirmEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniInputConfirmEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniInputConfirmEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | string | 是 |  |   | 输入框内容 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| value | string | 是 | 输入框内容 |
 
 
 #### UniInputEvent
@@ -112,17 +112,17 @@ UniInputEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniInputEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniInputEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniInputEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | string | 是 |  |   | 输入框内容 |
-| cursor | number | 是 |  |   | 光标的位置 |
-| keyCode | number | 是 |  |   | 输入字符的Unicode值 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| value | string | 是 | 输入框内容 |
+| cursor | number | 是 | 光标的位置 |
+| keyCode | number | 是 | 输入字符的Unicode值 |
 
 
 #### UniTextareaLineChangeEvent
@@ -135,17 +135,17 @@ UniTextareaLineChangeEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniTextareaLineChangeEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniTextareaLineChangeEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniTextareaLineChangeEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| lineCount | number | 是 |  |   | 行数 |
-| heightRpx | number | 是 |  |   | textarea的高度 |
-| height | number | 是 |  |   | textarea的高度 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| lineCount | number | 是 | 行数 |
+| heightRpx | number | 是 | textarea的高度 |
+| height | number | 是 | textarea的高度 |
 
 
 #### UniTextareaBlurEvent
@@ -158,16 +158,16 @@ UniTextareaBlurEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniTextareaBlurEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniTextareaBlurEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniTextareaBlurEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | string | 是 |  |   | 输入框内容 |
-| cursor | number | 是 |  |   | 选择区域的起始位置 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| value | string | 是 | 输入框内容 |
+| cursor | number | 是 | 选择区域的起始位置 |
 
 
 #### UniInputKeyboardHeightChangeEvent
@@ -180,16 +180,16 @@ UniInputKeyboardHeightChangeEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniInputKeyboardHeightChangeEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniInputKeyboardHeightChangeEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniInputKeyboardHeightChangeEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| height | number | 是 |  |   | 键盘高度 |
-| duration | number | 是 |  |   | 持续时间 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| height | number | 是 | 键盘高度 |
+| duration | number | 是 | 持续时间 |
 
 
 #### UniTextareaFocusEvent
@@ -202,16 +202,16 @@ UniTextareaFocusEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniTextareaFocusEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniTextareaFocusEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniTextareaFocusEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| height | number | 是 |  | Web: x; Android: 3.9; iOS: 4.11 | 键盘高度 |
-| value | string | 是 |  |   | 输入框内容 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| height | number | 是 | Web: x; Android: 3.9; iOS: 4.11 | 键盘高度 |
+| value | string | 是 |   | 输入框内容 |
 
 
 #### UniInputChangeEvent
@@ -224,15 +224,15 @@ UniInputChangeEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniInputChangeEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniInputChangeEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniInputChangeEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | string | 是 |  |   | 输入框内容 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| value | string | 是 | 输入框内容 |
 
 
 

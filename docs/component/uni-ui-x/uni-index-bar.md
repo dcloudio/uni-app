@@ -119,12 +119,12 @@ const onSelect = (index: string) => {
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| indexs | string | "A\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ" |   | 索引字符列表，使用换行符 \n 分隔，每行作为一个索引项 |
-| indicatorViewClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 指示器容器的自定义样式类，触摸时显示当前索引的气泡 |
-| indicatorTextClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 指示器内文字的自定义样式类 |
-| @select | Event |   |   | 选择索引时触发，参数为当前选择的索引字符，类型为 string |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| indexs | string | "A\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ" | 索引字符列表，使用换行符 \n 分隔，每行作为一个索引项 |
+| indicatorViewClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 指示器容器的自定义样式类，触摸时显示当前索引的气泡 |
+| indicatorTextClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 指示器内文字的自定义样式类 |
+| @select | Event |   | 选择索引时触发，参数为当前选择的索引字符，类型为 string |
 
 <!-- UTSCOMJSON.uni-index-bar.fileFormates -->
 

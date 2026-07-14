@@ -20,9 +20,9 @@
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| @init | (event: [UniNativeViewInitEvent](#uninativeviewinitevent)) => void |   | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | native-view初始化时回调，event.detail = { element: 'native-view元素实例对象'} |
+| 名称 | 类型 | 兼容性 | 描述 |
+| :- | :- |  :-: | :- |
+| @init | (event: [UniNativeViewInitEvent](#uninativeviewinitevent)) => void | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | native-view初始化时回调，event.detail = { element: 'native-view元素实例对象'} |
 
 
 ### 事件
@@ -39,9 +39,9 @@ UniNativeViewInitEvent -- Extends --> UniCustomEvent&ltUniNativeViewInitEventDet
 
 
 ###### UniNativeViewInitEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| element | [UniNativeViewElement](/api/dom/uninativeviewelement.md) | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| element | [UniNativeViewElement](/api/dom/uninativeviewelement.md) | 是 |
 
 
 

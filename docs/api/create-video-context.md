@@ -22,10 +22,10 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| videoId | [string.VideoIdString](/uts/data-type.md#ide-string) | 是 |  |   |  |
-| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| videoId | [string.VideoIdString](/uts/data-type.md#ide-string) | 是 |
+| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | 
 
 
 在video组件上设置id属性，即可通过本API获取该组件的上下文对象（videoContext ）。
@@ -91,9 +91,9 @@ seek
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| position | number | 是 |  |   | 跳转到指定位置(秒) | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| position | number | 是 | 跳转到指定位置(秒) | 
 
 
 
@@ -118,17 +118,17 @@ sendDanmu
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| danmu | **Danmu** | 是 |  |   | text, color |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| danmu | **Danmu** | 是 | text, color |
 
 #### danmu 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| text | string | 否 |  |   | 弹幕文字 |
-| color | string | 否 |  |   | 弹幕颜色 |
-| time | number | 否 |  |   | 显示时刻 | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| text | string | 否 | 弹幕文字 |
+| color | string | 否 | 弹幕颜色 |
+| time | number | 否 | 显示时刻 | 
 
 
 
@@ -142,9 +142,9 @@ playbackRate
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| rate | number | 是 |  |   | , 支持倍率 0.5/0.8/1.0/1.25/1.5 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| rate | number | 是 | , 支持倍率 0.5/0.8/1.0/1.25/1.5 | 
 
 
 
@@ -158,15 +158,15 @@ requestFullScreen
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| direction | **RequestFullScreenOptions** | 否 |  |   | 0\|正常竖向, 90\|屏幕逆时针90度, -90\|屏幕顺时针90度 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| direction | **RequestFullScreenOptions** | 否 | 0\|正常竖向, 90\|屏幕逆时针90度, -90\|屏幕顺时针90度 |
 
 #### direction 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| direction | 90 \| any | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11 | direction | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| direction | 90 \| any | 否 | Web: x; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11 | direction | 
 
 
 
@@ -183,17 +183,17 @@ exitFullScreen
 
 ##### Danmu 的属性值 @danmu-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| text | string | 否 |  |   | 弹幕文字 |
-| color | string | 否 |  |   | 弹幕颜色 |
-| time | number | 否 |  |   | 显示时刻 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| text | string | 否 | 弹幕文字 |
+| color | string | 否 | 弹幕颜色 |
+| time | number | 否 | 显示时刻 |
 
 ##### RequestFullScreenOptions 的属性值 @requestfullscreenoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| direction | 90 \| any | 否 |  | Web: x; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11 | direction |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| direction | 90 \| any | 否 | Web: x; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11 | direction |
  
 
 
@@ -220,9 +220,9 @@ exitFullScreen
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 示例代码另见[video组件](../component/video.md)

@@ -44,10 +44,10 @@ Path2D用来声明路径，用来在canvas中根据需要创建可以保留并�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  |   | 点的X轴坐标 |
-| y | number | 是 |  |   | 点的Y轴坐标 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| x | number | 是 | 点的X轴坐标 |
+| y | number | 是 | 点的Y轴坐标 | 
 
 
 
@@ -66,10 +66,10 @@ Path2D用来声明路径，用来在canvas中根据需要创建可以保留并�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  |   | 线终点的X轴坐标 |
-| y | number | 是 |  |   | 线终点的Y轴坐标 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| x | number | 是 | 线终点的X轴坐标 |
+| y | number | 是 | 线终点的Y轴坐标 | 
 
 
 
@@ -88,14 +88,14 @@ Path2D用来声明路径，用来在canvas中根据需要创建可以保留并�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| cp1x | number | 是 |  |   | 第一个贝塞尔控制点的 x 坐标 |
-| cp1y | number | 是 |  |   | 第一个贝塞尔控制点的 y 坐标 |
-| cp2x | number | 是 |  |   | 第二个贝塞尔控制点的 x 坐标 |
-| cp2y | number | 是 |  |   | 第二个贝塞尔控制点的 y 坐标 |
-| x | number | 是 |  |   | 结束点的 x 坐标 |
-| y | number | 是 |  |   | 结束点的 y 坐标 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| cp1x | number | 是 | 第一个贝塞尔控制点的 x 坐标 |
+| cp1y | number | 是 | 第一个贝塞尔控制点的 y 坐标 |
+| cp2x | number | 是 | 第二个贝塞尔控制点的 x 坐标 |
+| cp2y | number | 是 | 第二个贝塞尔控制点的 y 坐标 |
+| x | number | 是 | 结束点的 x 坐标 |
+| y | number | 是 | 结束点的 y 坐标 | 
 
 
 
@@ -114,12 +114,12 @@ Path2D用来声明路径，用来在canvas中根据需要创建可以保留并�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| cpx | number | 是 |  |   | 贝塞尔控制点的 x 坐标 |
-| cpy | number | 是 |  |   | 贝塞尔控制点的 y 坐标 |
-| x | number | 是 |  |   | 结束点的 x 坐标 |
-| y | number | 是 |  |   | 结束点的 y 坐标 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| cpx | number | 是 | 贝塞尔控制点的 x 坐标 |
+| cpy | number | 是 | 贝塞尔控制点的 y 坐标 |
+| x | number | 是 | 结束点的 x 坐标 |
+| y | number | 是 | 结束点的 y 坐标 | 
 
 
 
@@ -138,14 +138,14 @@ Path2D用来声明路径，用来在canvas中根据需要创建可以保留并�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  |   | 圆弧中心（圆心）的 x 轴坐标 |
-| y | number | 是 |  |   | 圆弧中心（圆心）的 y 轴坐标 |
-| radius | number | 是 |  |   | 圆弧的半径 |
-| startAngle | number | 是 |  |   | 圆弧的起始点，x 轴方向开始计算，单位为弧度 |
-| endAngle | number | 是 |  |   | 圆弧的终点，单位为弧度 |
-| anticlockwise | boolean | 是 | true |   | 圆弧绘制方向，true：逆时针绘制，false：顺时针绘制。 | 
+| 名称 | 类型 | 必填 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| x | number | 是 |  | 圆弧中心（圆心）的 x 轴坐标 |
+| y | number | 是 |  | 圆弧中心（圆心）的 y 轴坐标 |
+| radius | number | 是 |  | 圆弧的半径 |
+| startAngle | number | 是 |  | 圆弧的起始点，x 轴方向开始计算，单位为弧度 |
+| endAngle | number | 是 |  | 圆弧的终点，单位为弧度 |
+| anticlockwise | boolean | 是 | true | 圆弧绘制方向，true：逆时针绘制，false：顺时针绘制。 | 
 
 
 
@@ -164,13 +164,13 @@ Path2D用来声明路径，用来在canvas中根据需要创建可以保留并�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x1 | number | 是 |  |   | 第一个控制点的 x 轴坐标 |
-| y1 | number | 是 |  |   | 第一个控制点的 y 轴坐标 |
-| x2 | number | 是 |  |   | 第二个控制点的 x 轴坐标 |
-| y2 | number | 是 |  |   | 第二个控制点的 y 轴坐标 |
-| radius | number | 是 |  |   | 圆弧的半径 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| x1 | number | 是 | 第一个控制点的 x 轴坐标 |
+| y1 | number | 是 | 第一个控制点的 y 轴坐标 |
+| x2 | number | 是 | 第二个控制点的 x 轴坐标 |
+| y2 | number | 是 | 第二个控制点的 y 轴坐标 |
+| radius | number | 是 | 圆弧的半径 | 
 
 
 
@@ -189,16 +189,16 @@ Path2D用来声明路径，用来在canvas中根据需要创建可以保留并�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  | Android: x; iOS: x | 椭圆圆心的 x 轴（水平）坐标 |
-| y | number | 是 |  | Android: x; iOS: x | 椭圆圆心的 y 轴（垂直）坐标 |
-| radiusX | number | 是 |  | Android: x; iOS: x | 椭圆长轴的半径。必须为非负数 |
-| radiusY | number | 是 |  | Android: x; iOS: x | 椭圆短轴的半径。必须为非负数。 |
-| rotation | number | 是 |  | Android: x; iOS: x | 椭圆的旋转角度，以弧度表示。 |
-| startAngle | number | 是 |  | Android: x; iOS: x | 椭圆弧的起始偏心角，从正 x 轴沿顺时针测量，用弧度表示。 |
-| endAngle | number | 是 |  | Android: x; iOS: x | 椭圆弧的结束偏心角，从正 x 轴沿顺时针测量，用弧度表示。 |
-| anticlockwise | boolean | 是 |  | Android: x; iOS: x | 一个可选的布尔值，如果为 true，则逆时针绘制椭圆弧。默认值为 false（顺时针）。 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| x | number | 是 | Android: x; iOS: x | 椭圆圆心的 x 轴（水平）坐标 |
+| y | number | 是 | Android: x; iOS: x | 椭圆圆心的 y 轴（垂直）坐标 |
+| radiusX | number | 是 | Android: x; iOS: x | 椭圆长轴的半径。必须为非负数 |
+| radiusY | number | 是 | Android: x; iOS: x | 椭圆短轴的半径。必须为非负数。 |
+| rotation | number | 是 | Android: x; iOS: x | 椭圆的旋转角度，以弧度表示。 |
+| startAngle | number | 是 | Android: x; iOS: x | 椭圆弧的起始偏心角，从正 x 轴沿顺时针测量，用弧度表示。 |
+| endAngle | number | 是 | Android: x; iOS: x | 椭圆弧的结束偏心角，从正 x 轴沿顺时针测量，用弧度表示。 |
+| anticlockwise | boolean | 是 | Android: x; iOS: x | 一个可选的布尔值，如果为 true，则逆时针绘制椭圆弧。默认值为 false（顺时针）。 | 
 
 
 
@@ -217,12 +217,12 @@ Path2D用来声明路径，用来在canvas中根据需要创建可以保留并�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  |   | 矩形路径起点的 x 轴坐标 |
-| y | number | 是 |  |   | 矩形路径起点的 y 轴坐标 |
-| width | number | 是 |  |   | 矩形路径的宽度 |
-| height | number | 是 |  |   | 矩形路径的高度 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| x | number | 是 | 矩形路径起点的 x 轴坐标 |
+| y | number | 是 | 矩形路径起点的 y 轴坐标 |
+| width | number | 是 | 矩形路径的宽度 |
+| height | number | 是 | 矩形路径的高度 | 
 
 
 

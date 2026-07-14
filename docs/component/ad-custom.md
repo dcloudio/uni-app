@@ -14,12 +14,12 @@
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| unit-id | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>广告单元id，可在[小程序管理后台](https://mp.weixin.qq.com)的流量主模块新建 |
-| ad-intervals | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>广告自动刷新的间隔时间，单位为秒，参数值必须大于等于30（该参数不传入时 模板 广告不会自动刷新） |
-| @load | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>广告加载成功的回调 |
-| @error | eventhandle |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>广告加载失败的回调，event.detail = {errCode: 1002} |
+| 名称 | 类型 | 兼容性 | 描述 |
+| :- | :- |  :-: | :- |
+| unit-id | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>广告单元id，可在[小程序管理后台](https://mp.weixin.qq.com)的流量主模块新建 |
+| ad-intervals | number | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>广告自动刷新的间隔时间，单位为秒，参数值必须大于等于30（该参数不传入时 模板 广告不会自动刷新） |
+| @load | eventhandle | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>广告加载成功的回调 |
+| @error | eventhandle | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(eventhandle)*<br/>广告加载失败的回调，event.detail = {errCode: 1002} |
 
 
 

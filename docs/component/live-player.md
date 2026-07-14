@@ -63,24 +63,24 @@
 
 #### mode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| RTC | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |  |
-| live | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |  |
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| RTC | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |
+| live | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |
 
 #### orientation 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| vertical | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |  |
-| horizontal | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |  |
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| vertical | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |
+| horizontal | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |
 
 #### object-fit 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
-| :- |  :-: | :- |
-| contain | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |  |
-| fillCrop | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |  |
+| 合法值 | 兼容性 |
+| :- |  :-: |
+| contain | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |
+| fillCrop | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |
 
 #### sound-mode 的属性描述
 
@@ -110,21 +110,21 @@
 播放状态变化事件
 
 ##### UniLivePlayerStatechangeEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniLivePlayerStatechangeEventDetail** | 是 |  |   |  |
-| bubbles | boolean | 是 |  |   |  |
-| cancelable | boolean | 是 |  |   |  |
-| type | string | 是 |  |   |  |
-| target | [UniElement](/api/dom/unielement.md) | 否 |  |   |  |
-| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  |   |  |
-| timeStamp | Long | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniLivePlayerStatechangeEventDetail** | 是 |
+| bubbles | boolean | 是 |
+| cancelable | boolean | 是 |
+| type | string | 是 |
+| target | [UniElement](/api/dom/unielement.md) | 否 |
+| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |
+| timeStamp | Long | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| code | number | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 状态码 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| code | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 状态码 |
 
 ##### code 的属性描述
 
@@ -145,62 +145,62 @@
 
 
 ##### UniLivePlayerStatechangeEvent 的方法
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| stopPropagation | () => void | 是 |  |   |  |
-| preventDefault | () => void | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| stopPropagation | () => void | 是 |
+| preventDefault | () => void | 是 |
 
 #### UniLivePlayerFullscreenchangeEvent
 全屏事件
 
 ##### UniLivePlayerFullscreenchangeEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniLivePlayerFullscreenchangeEventDetail** | 是 |  |   |  |
-| bubbles | boolean | 是 |  |   |  |
-| cancelable | boolean | 是 |  |   |  |
-| type | string | 是 |  |   |  |
-| target | [UniElement](/api/dom/unielement.md) | 否 |  |   |  |
-| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  |   |  |
-| timeStamp | Long | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniLivePlayerFullscreenchangeEventDetail** | 是 |
+| bubbles | boolean | 是 |
+| cancelable | boolean | 是 |
+| type | string | 是 |
+| target | [UniElement](/api/dom/unielement.md) | 否 |
+| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |
+| timeStamp | Long | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| direction | string | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 屏幕方向 |
-| fullScreen | boolean | 是 |  | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 是否全屏 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| direction | string | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 屏幕方向 |
+| fullScreen | boolean | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 是否全屏 |
 
 
 ##### UniLivePlayerFullscreenchangeEvent 的方法
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| stopPropagation | () => void | 是 |  |   |  |
-| preventDefault | () => void | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| stopPropagation | () => void | 是 |
+| preventDefault | () => void | 是 |
 
 #### UniLivePlayerErrorEvent
 错误事件
 
 ##### UniLivePlayerErrorEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniLivePlayerError** | 是 |  |   |  |
-| bubbles | boolean | 是 |  |   |  |
-| cancelable | boolean | 是 |  |   |  |
-| type | string | 是 |  |   |  |
-| target | [UniElement](/api/dom/unielement.md) | 否 |  |   |  |
-| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  |   |  |
-| timeStamp | Long | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniLivePlayerError** | 是 |
+| bubbles | boolean | 是 |
+| cancelable | boolean | 是 |
+| type | string | 是 |
+| target | [UniElement](/api/dom/unielement.md) | 否 |
+| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |
+| timeStamp | Long | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   |  |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 |  |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 ##### errCode 的属性描述
 
@@ -214,10 +214,10 @@
 
 
 ##### UniLivePlayerErrorEvent 的方法
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| stopPropagation | () => void | 是 |  |   |  |
-| preventDefault | () => void | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| stopPropagation | () => void | 是 |
+| preventDefault | () => void | 是 |
 
 
 <!-- UTSCOMJSON.live-player.component_type -->

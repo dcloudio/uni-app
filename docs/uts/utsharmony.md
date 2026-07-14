@@ -9,9 +9,9 @@
 将文件的项目相对地址转换为 运行期对应的绝对地址
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| filePath | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| filePath | string | 是 | 
 
 
 **返回值**
@@ -43,9 +43,9 @@
 物理像素转换为页面的px像素
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| px | number | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| px | number | 是 | 
 
 
 **返回值**
@@ -197,9 +197,9 @@
 获取资源文件的原生路径。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| filePath | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| filePath | string | 是 | 
 
 
 **返回值**
@@ -265,9 +265,9 @@
 取消监听应用主题变化<br/>
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | number | 是 |  |   | 应用主题 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| id | number | 是 | 应用主题 | 
 
 
 **返回值**
@@ -299,9 +299,9 @@
 取消监听系统主题变化<br/>
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | number | 是 |  |   | 监听ID | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| id | number | 是 | 监听ID | 
 
 
 **返回值**
@@ -333,9 +333,9 @@
 监听应用EntryAbility生命周期onCreate
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (want: Want, launchParam: AbilityConstant.LaunchParam) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (want: Want, launchParam: AbilityConstant.LaunchParam) => void | 是 | 
 
 
 **返回值**
@@ -367,9 +367,9 @@
 监听应用EntryAbility生命周期onNewWant
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (want: Want, launchParam: AbilityConstant.LaunchParam) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (want: Want, launchParam: AbilityConstant.LaunchParam) => void | 是 | 
 
 
 **返回值**
@@ -401,9 +401,9 @@
 监听应用EntryAbility生命周期onShare
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (wantParam: Record\<string, any>) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (wantParam: Record\<string, any>) => void | 是 | 
 
 
 **返回值**
@@ -435,9 +435,9 @@
 监听应用EntryAbility生命周期onWindowStageCreate
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (windowStage: _ohos_window__default.WindowStage) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (windowStage: _ohos_window__default.WindowStage) => void | 是 | 
 
 
 **返回值**
@@ -469,15 +469,15 @@
 监听应用主题变化<br/>
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [OnAppThemeChangeCallbackResult](#onappthemechangecallbackresult-values)) => void | 是 |  |   | 应用主题 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callback | (res: [OnAppThemeChangeCallbackResult](#onappthemechangecallbackresult-values)) => void | 是 | 应用主题 | 
 
 ##### OnAppThemeChangeCallbackResult 的属性值 @onappthemechangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| appTheme | "dark" \| "light" | 是 |  |   | 主题名称 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| appTheme | "dark" \| "light" | 是 | 主题名称 |
 
 
 **返回值**
@@ -509,15 +509,15 @@
 坚听系统主题变化<br/>
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [OnOsThemeChangeCallbackResult](#onosthemechangecallbackresult-values)) => void | 是 |  |   | 系统主题变化回调 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callback | (res: [OnOsThemeChangeCallbackResult](#onosthemechangecallbackresult-values)) => void | 是 | 系统主题变化回调 | 
 
 ##### OnOsThemeChangeCallbackResult 的属性值 @onosthemechangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| osTheme | "dark" \| "light" | 是 |  |   | 主题名称 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| osTheme | "dark" \| "light" | 是 | 主题名称 |
 
 
 **返回值**
@@ -549,11 +549,11 @@
 请求系统权限
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| permissions | string[\] | 是 |  |   |  |
-| success | (allRight: boolean, grantedList: Array&lt;string&gt;) => void | 否 |  |   |  |
-| fail | (doNotAskAgain: boolean, grantedList: Array&lt;string&gt;) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| permissions | string[\] | 是 |
+| success | (allRight: boolean, grantedList: Array&lt;string&gt;) => void | 否 |
+| fail | (doNotAskAgain: boolean, grantedList: Array&lt;string&gt;) => void | 否 | 
 
 
 **返回值**
@@ -585,9 +585,9 @@
 设置应用主题<br/>
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| appTheme | AppTheme | 是 |  |   | 应用主题 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| appTheme | AppTheme | 是 | 应用主题 | 
 
 
 **返回值**

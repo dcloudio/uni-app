@@ -1391,25 +1391,25 @@ handleClick (event : UniPointerEvent) {
 
 
 ### 构造函数
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 |  |   | 事件的名称 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| type | string | 是 | 事件的名称 |
 
 ### 构造函数
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 |  |   | 事件的名称 |
-| eventInit | any | 是 |  |   | 事件初始参数。支持字段：`bubbles`表明该事件是否冒泡。可选，默认为false；`cancelable`表明该事件是否可以被取消。可选，默认为false。 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| type | string | 是 | 事件的名称 |
+| eventInit | any | 是 | 事件初始参数。支持字段：`bubbles`表明该事件是否冒泡。可选，默认为false；`cancelable`表明该事件是否可以被取消。可选，默认为false。 |
 
 ### UniEvent 的属性值 @unievent-values
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| bubbles | boolean | 是 |  |   | 是否冒泡 |
-| cancelable | boolean | 是 |  |   | 是否可以取消 |
-| type | string | 是 |  | Web: 4.0; Android: 3.9; HarmonyOS: 4.61 | 事件类型<br/> |
-| target | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; Android: 3.9; HarmonyOS: 4.61 | 触发事件的组件<br/> |
-| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  | Web: 4.0; Android: 3.9; HarmonyOS: 4.61 | 当前组件<br/> |
-| timeStamp | number | 是 |  | Web: 4.0; Android: 3.9; HarmonyOS: 4.61 | 事件发生时的时间戳<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| bubbles | boolean | 是 |   | 是否冒泡 |
+| cancelable | boolean | 是 |   | 是否可以取消 |
+| type | string | 是 | Web: 4.0; Android: 3.9; HarmonyOS: 4.61 | 事件类型<br/> |
+| target | [UniElement](/api/dom/unielement.md) | 否 | Web: 4.0; Android: 3.9; HarmonyOS: 4.61 | 触发事件的组件<br/> |
+| currentTarget | [UniElement](/api/dom/unielement.md) | 否 | Web: 4.0; Android: 3.9; HarmonyOS: 4.61 | 当前组件<br/> |
+| timeStamp | number | 是 | Web: 4.0; Android: 3.9; HarmonyOS: 4.61 | 事件发生时的时间戳<br/> |
 
 
 
@@ -1463,21 +1463,21 @@ UniCustomEvent -- Extends --> UniEvent
 
 
 ### 构造函数
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 |  |   |  |
-| detail | T | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| type | string | 是 |
+| detail | T | 是 |
 
 ### 构造函数
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 |  |   |  |
-| options | any | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| type | string | 是 |
+| options | any | 是 |
 
 ### UniCustomEvent 的属性值 @unicustomevent-values
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | T | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| detail | T | 是 |
 
 
 
@@ -1495,16 +1495,16 @@ UniPointerEvent -- Extends --> UniEvent
 
 
 ### UniPointerEvent 的属性值 @unipointerevent-values
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| clientX | number | 是 |  |   | 相对于页面可显示区域左边的距离 |
-| clientY | number | 是 |  |   | 相对于页面可显示区域顶部的距离 |
-| x | number | 是 |  |   | 相对于页面可显示区域左边的距离，同`clientX` |
-| y | number | 是 |  |   | 相对于页面可显示区域顶部的距离，同`clientY` |
-| pageX | number | 是 |  |   | 相对于屏幕左边的距离，包括滚动距离。 |
-| pageY | number | 是 |  |   | 相对于屏幕顶部的距离，包括滚动距离。 |
-| screenX | number | 是 |  |   | 相对于屏幕左边的距离，不包括滚动距离。 |
-| screenY | number | 是 |  |   | 相对于屏幕顶部的距离，不包括滚动距离。 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| clientX | number | 是 | 相对于页面可显示区域左边的距离 |
+| clientY | number | 是 | 相对于页面可显示区域顶部的距离 |
+| x | number | 是 | 相对于页面可显示区域左边的距离，同`clientX` |
+| y | number | 是 | 相对于页面可显示区域顶部的距离，同`clientY` |
+| pageX | number | 是 | 相对于屏幕左边的距离，包括滚动距离。 |
+| pageY | number | 是 | 相对于屏幕顶部的距离，包括滚动距离。 |
+| screenX | number | 是 | 相对于屏幕左边的距离，不包括滚动距离。 |
+| screenY | number | 是 | 相对于屏幕顶部的距离，不包括滚动距离。 |
 
 
 <!-- CUSTOMTYPEJSON.UniPointerEvent.example -->
@@ -1523,36 +1523,36 @@ UniTouchEvent -- Extends --> UniEvent
 
 
 ### UniTouchEvent 的属性值 @unitouchevent-values
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| touches | Array&lt;**UniTouch**&gt; | 是 |  |   | 当前停留在屏幕中的触摸点信息的数组 |
-| changedTouches | Array&lt;**UniTouch**&gt; | 是 |  |   | 当前变化的触摸点信息的数组 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| touches | Array&lt;**UniTouch**&gt; | 是 | 当前停留在屏幕中的触摸点信息的数组 |
+| changedTouches | Array&lt;**UniTouch**&gt; | 是 | 当前变化的触摸点信息的数组 |
 
 #### touches 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| clientX | number | 是 |  |   | 相对于页面可显示区域左边的距离 |
-| clientY | number | 是 |  |   | 相对于页面可显示区域顶部的距离 |
-| identifier | number | 是 |  |   | 触摸点的标识符。这个值在这根手指所引发的所有事件中保持一致，直到手指抬起。 |
-| pageX | number | 是 |  |   | 相对于屏幕左边的距离，包括滚动距离。 |
-| pageY | number | 是 |  |   | 相对于屏幕顶部的距离，包括滚动距离。 |
-| screenX | number | 是 |  |   | 相对于屏幕左边的距离，不包括滚动距离。 |
-| screenY | number | 是 |  |   | 相对于屏幕顶部的距离，不包括滚动距离。 |
-| force | number | 否 |  |   | 返回当前触摸点按下的压力大小 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| clientX | number | 是 | 相对于页面可显示区域左边的距离 |
+| clientY | number | 是 | 相对于页面可显示区域顶部的距离 |
+| identifier | number | 是 | 触摸点的标识符。这个值在这根手指所引发的所有事件中保持一致，直到手指抬起。 |
+| pageX | number | 是 | 相对于屏幕左边的距离，包括滚动距离。 |
+| pageY | number | 是 | 相对于屏幕顶部的距离，包括滚动距离。 |
+| screenX | number | 是 | 相对于屏幕左边的距离，不包括滚动距离。 |
+| screenY | number | 是 | 相对于屏幕顶部的距离，不包括滚动距离。 |
+| force | number | 否 | 返回当前触摸点按下的压力大小 |
 
 #### changedTouches 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| clientX | number | 是 |  |   | 相对于页面可显示区域左边的距离 |
-| clientY | number | 是 |  |   | 相对于页面可显示区域顶部的距离 |
-| identifier | number | 是 |  |   | 触摸点的标识符。这个值在这根手指所引发的所有事件中保持一致，直到手指抬起。 |
-| pageX | number | 是 |  |   | 相对于屏幕左边的距离，包括滚动距离。 |
-| pageY | number | 是 |  |   | 相对于屏幕顶部的距离，包括滚动距离。 |
-| screenX | number | 是 |  |   | 相对于屏幕左边的距离，不包括滚动距离。 |
-| screenY | number | 是 |  |   | 相对于屏幕顶部的距离，不包括滚动距离。 |
-| force | number | 否 |  |   | 返回当前触摸点按下的压力大小 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| clientX | number | 是 | 相对于页面可显示区域左边的距离 |
+| clientY | number | 是 | 相对于页面可显示区域顶部的距离 |
+| identifier | number | 是 | 触摸点的标识符。这个值在这根手指所引发的所有事件中保持一致，直到手指抬起。 |
+| pageX | number | 是 | 相对于屏幕左边的距离，包括滚动距离。 |
+| pageY | number | 是 | 相对于屏幕顶部的距离，包括滚动距离。 |
+| screenX | number | 是 | 相对于屏幕左边的距离，不包括滚动距离。 |
+| screenY | number | 是 | 相对于屏幕顶部的距离，不包括滚动距离。 |
+| force | number | 否 | 返回当前触摸点按下的压力大小 |
 
 
 UniTouchEvent 的 type 类型包括：touchstart、touchmove、touchend、touchcancel、longpress。
@@ -1565,16 +1565,16 @@ UniTouchEvent 的 type 类型包括：touchstart、touchmove、touchend、touchc
 
 
 ### UniTouch 的属性值 @unitouch-values
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| clientX | number | 是 |  |   | 相对于页面可显示区域左边的距离 |
-| clientY | number | 是 |  |   | 相对于页面可显示区域顶部的距离 |
-| identifier | number | 是 |  |   | 触摸点的标识符。这个值在这根手指所引发的所有事件中保持一致，直到手指抬起。 |
-| pageX | number | 是 |  |   | 相对于屏幕左边的距离，包括滚动距离。 |
-| pageY | number | 是 |  |   | 相对于屏幕顶部的距离，包括滚动距离。 |
-| screenX | number | 是 |  |   | 相对于屏幕左边的距离，不包括滚动距离。 |
-| screenY | number | 是 |  |   | 相对于屏幕顶部的距离，不包括滚动距离。 |
-| force | number | 否 |  |   | 返回当前触摸点按下的压力大小 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| clientX | number | 是 | 相对于页面可显示区域左边的距离 |
+| clientY | number | 是 | 相对于页面可显示区域顶部的距离 |
+| identifier | number | 是 | 触摸点的标识符。这个值在这根手指所引发的所有事件中保持一致，直到手指抬起。 |
+| pageX | number | 是 | 相对于屏幕左边的距离，包括滚动距离。 |
+| pageY | number | 是 | 相对于屏幕顶部的距离，包括滚动距离。 |
+| screenX | number | 是 | 相对于屏幕左边的距离，不包括滚动距离。 |
+| screenY | number | 是 | 相对于屏幕顶部的距离，不包括滚动距离。 |
+| force | number | 否 | 返回当前触摸点按下的压力大小 |
 
 
 <!-- CUSTOMTYPEJSON.Unigeneral-event.example -->
@@ -1593,16 +1593,16 @@ UniPointerEvent -- Extends --> UniEvent
 
 
 ### UniMouseEvent 的属性值 @unimouseevent-values
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| clientX | number | 是 |  |   | 相对于页面可显示区域左边的距离 |
-| clientY | number | 是 |  |   | 相对于页面可显示区域顶部的距离 |
-| x | number | 是 |  |   | 相对于页面可显示区域左边的距离，同`clientX` |
-| y | number | 是 |  |   | 相对于页面可显示区域顶部的距离，同`clientY` |
-| pageX | number | 是 |  |   | 相对于屏幕左边的距离，包括滚动距离。 |
-| pageY | number | 是 |  |   | 相对于屏幕顶部的距离，包括滚动距离。 |
-| screenX | number | 是 |  |   | 相对于屏幕左边的距离，不包括滚动距离。 |
-| screenY | number | 是 |  |   | 相对于屏幕顶部的距离，不包括滚动距离。 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| clientX | number | 是 | 相对于页面可显示区域左边的距离 |
+| clientY | number | 是 | 相对于页面可显示区域顶部的距离 |
+| x | number | 是 | 相对于页面可显示区域左边的距离，同`clientX` |
+| y | number | 是 | 相对于页面可显示区域顶部的距离，同`clientY` |
+| pageX | number | 是 | 相对于屏幕左边的距离，包括滚动距离。 |
+| pageY | number | 是 | 相对于屏幕顶部的距离，包括滚动距离。 |
+| screenX | number | 是 | 相对于屏幕左边的距离，不包括滚动距离。 |
+| screenY | number | 是 | 相对于屏幕顶部的距离，不包括滚动距离。 |
 
 
 <!-- CUSTOMTYPEJSON.UniMouseEvent.example -->
@@ -1621,10 +1621,10 @@ UniKeyEvent -- Extends --> UniEvent
 
 
 ### UniKeyEvent 的属性值 @unikeyevent-values
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| keyCode | number | 是 |  |   |  |
-| keyType | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| keyCode | number | 是 |
+| keyType | string | 是 |
 
 
 
@@ -1645,21 +1645,21 @@ UniNativeViewEvent -- Extends --> UniCustomEvent
 
 
 ### 构造函数
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 |  |   |  |
-| detail | any | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| type | string | 是 |
+| detail | any | 是 |
 
 ### 构造函数
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| type | string | 是 |
 
 ### UniNativeViewEvent 的属性值 @uninativeviewevent-values
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 |  |   | 事件类型 |
-| detail | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| type | string | 是 | 事件类型 |
+| detail | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  |
 
 
 ### UniNativeViewEvent 兼容性 
@@ -1677,14 +1677,14 @@ UniNativeViewEvent -- Extends --> UniCustomEvent
 
 
 ### UniVideoEvent 的属性值 @univideoevent-values
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| bubbles | boolean | 是 |  |   | 是否冒泡 |
-| cancelable | boolean | 是 |  |   | 是否可以取消 |
-| type | string | 是 |  |   | 事件类型 |
-| target | [UniElement](/api/dom/unielement.md) | 否 |  |   | 触发事件的组件 |
-| currentTarget | [UniElement](/api/dom/unielement.md) | 否 |  |   | 当前组件 |
-| timeStamp | number | 是 |  |   | 事件发生时的时间戳 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| bubbles | boolean | 是 | 是否冒泡 |
+| cancelable | boolean | 是 | 是否可以取消 |
+| type | string | 是 | 事件类型 |
+| target | [UniElement](/api/dom/unielement.md) | 否 | 触发事件的组件 |
+| currentTarget | [UniElement](/api/dom/unielement.md) | 否 | 当前组件 |
+| timeStamp | number | 是 | 事件发生时的时间戳 |
 
 
 

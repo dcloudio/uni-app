@@ -68,9 +68,9 @@ app-android平台注意事项：
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **OpenDialogPageOptions** | 是 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 打开 dialogPage 参数 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **OpenDialogPageOptions** | 是 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 打开 dialogPage 参数 |
 
 #### options 的属性描述
 
@@ -102,25 +102,25 @@ app-android平台注意事项：
 
 #### OpenDialogPageSuccess 的属性值 @opendialogpagesuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: x |  |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| errMsg | string | 是 | 微信小程序: x |
 
 #### OpenDialogPageFail 的属性值 @opendialogpagefail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | 微信小程序: x | 路由错误码<br/>- 4: 框架内部异常 |
-| errSubject | string | 是 |  | 微信小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | 微信小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | 微信小程序: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 微信小程序: x | 路由错误码<br/>- 4: 框架内部异常 |
+| errSubject | string | 是 | 微信小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 微信小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 微信小程序: x |  |
 
 #### OpenDialogPageComplete 的属性值 @opendialogpagecomplete-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: x |  |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| errMsg | string | 是 | 微信小程序: x |
 
 
 ### 返回值 
@@ -173,9 +173,9 @@ app-android平台注意事项：
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **CloseDialogPageOptions** | 否 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 关闭 dialogPage 参数 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| options | **CloseDialogPageOptions** | 否 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) uni-app x UTS 插件: 4.31; HarmonyOS: 4.61 | 关闭 dialogPage 参数 |
 
 #### options 的属性描述
 
@@ -204,25 +204,25 @@ app-android平台注意事项：
 
 #### CloseDialogPageSuccess 的属性值 @closedialogpagesuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: x |  |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| errMsg | string | 是 | 微信小程序: x |
 
 #### CloseDialogPageFail 的属性值 @closedialogpagefail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | 微信小程序: x | 路由错误码<br/>- 4: 框架内部异常 |
-| errSubject | string | 是 |  | 微信小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | 微信小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | 微信小程序: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 微信小程序: x | 路由错误码<br/>- 4: 框架内部异常 |
+| errSubject | string | 是 | 微信小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 微信小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 微信小程序: x |  |
 
 #### CloseDialogPageComplete 的属性值 @closedialogpagecomplete-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: x |  |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| errMsg | string | 是 | 微信小程序: x |
 
 
 ### 返回值 
@@ -794,9 +794,9 @@ app-android平台注意事项：
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 ## Tips

@@ -10,15 +10,15 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [MemoryWarningCallbackResult](#memorywarningcallbackresult-values)) => void | 是 |  | Web: x | 内存不足告警事件的监听函数 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (result: [MemoryWarningCallbackResult](#memorywarningcallbackresult-values)) => void | 是 | Web: x | 内存不足告警事件的监听函数 | 
 
 ### MemoryWarningCallbackResult 的属性值 @memorywarningcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| level | number | 否 |  | Web: x | 内存告警等级，只有 Android 才有，对应系统宏定义5(TRIM_MEMORY_RUNNING_MODERATE)、10(TRIM_MEMORY_RUNNING_LOW)、15(TRIM_MEMORY_RUNNING_CRITICAL)、20(TRIM_MEMORY_UI_HIDDEN)。 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| level | number | 否 | Web: x | 内存告警等级，只有 Android 才有，对应系统宏定义5(TRIM_MEMORY_RUNNING_MODERATE)、10(TRIM_MEMORY_RUNNING_LOW)、15(TRIM_MEMORY_RUNNING_CRITICAL)、20(TRIM_MEMORY_UI_HIDDEN)。 |
 
 
 
@@ -51,15 +51,15 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [MemoryWarningCallbackResult](#memorywarningcallbackresult-values)) => void | 否 |  | Web: x | onMemoryWarning 传入的监听函数。不传此参数则移除所有监听函数。 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (result: [MemoryWarningCallbackResult](#memorywarningcallbackresult-values)) => void | 否 | Web: x | onMemoryWarning 传入的监听函数。不传此参数则移除所有监听函数。 | 
 
 ### MemoryWarningCallbackResult 的属性值 @memorywarningcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| level | number | 否 |  | Web: x | 内存告警等级，只有 Android 才有，对应系统宏定义5(TRIM_MEMORY_RUNNING_MODERATE)、10(TRIM_MEMORY_RUNNING_LOW)、15(TRIM_MEMORY_RUNNING_CRITICAL)、20(TRIM_MEMORY_UI_HIDDEN)。 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| level | number | 否 | Web: x | 内存告警等级，只有 Android 才有，对应系统宏定义5(TRIM_MEMORY_RUNNING_MODERATE)、10(TRIM_MEMORY_RUNNING_LOW)、15(TRIM_MEMORY_RUNNING_CRITICAL)、20(TRIM_MEMORY_UI_HIDDEN)。 |
 
 
 
@@ -284,7 +284,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

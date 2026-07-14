@@ -10,9 +10,9 @@ app-android平台专有内置对象。在uni-app和uni-app x的uts环境中均�
 监听 App配置发生变化, 对应 android原生 onAppConfigChange
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 是 | 
 
 
 **返回值**
@@ -42,9 +42,9 @@ app-android平台专有内置对象。在uni-app和uni-app x的uts环境中均�
 onAppConfigChange 对应的反注册函数
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (res: [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md)) => void | 否 | 
 
 
 **返回值**
@@ -73,9 +73,9 @@ onAppConfigChange 对应的反注册函数
 注册监听 App 内存不足时的系统回调函数 对应原生的API: onTrimMemory
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (res: Number) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (res: Number) => void | 否 | 
 
 
 **返回值**
@@ -105,9 +105,9 @@ onAppConfigChange 对应的反注册函数
 onAppTrimMemory 对应的反注册函数。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (res: Number) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (res: Number) => void | 否 | 
 
 
 **返回值**
@@ -137,9 +137,9 @@ onAppTrimMemory 对应的反注册函数。
 注册监听 activity onPause事件
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | () => void | 是 | 
 
 
 **返回值**
@@ -175,9 +175,9 @@ UTSAndroid.onAppActivityPause(() => {
 onAppActivityPause 对应的反注册函数
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | () => void | 否 | 
 
 
 **返回值**
@@ -214,9 +214,9 @@ UTSAndroid.offAppActivityPause(() => {
 注册监听 activity onResume事件
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | () => void | 是 | 
 
 
 **返回值**
@@ -255,9 +255,9 @@ UTSAndroid.onAppActivityResume(() => {
 onAppActivityResume 对应的反注册函数
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | () => void | 否 | 
 
 
 **返回值**
@@ -296,9 +296,9 @@ UTSAndroid.onAppActivityResume(() => {
 注册监听 activity onDestroy事件
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | () => void | 是 | 
 
 
 **返回值**
@@ -334,9 +334,9 @@ UTSAndroid.onAppActivityDestroy(() => {
 onAppActivityDestroy 对应的反注册函数。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | () => void | 否 | 
 
 
 **返回值**
@@ -374,9 +374,9 @@ UTSAndroid.offAppActivityDestroy(() => {
 注册监听 activity onAppActivityResult 函数
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (requestCode: Int, resultCode: Int, data: any) => void | 是 |  |   | 用于监听的响应函数 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callback | (requestCode: Int, resultCode: Int, data: any) => void | 是 | 用于监听的响应函数 | 
 
 
 **返回值**
@@ -425,9 +425,9 @@ UTSAndroid.onAppActivityResult((requestCode: Int, resultCode: Int, data?: Intent
 onAppActivityResult 对应的反注册函数。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (requestCode: Int, resultCode: Int, data: any) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (requestCode: Int, resultCode: Int, data: any) => void | 否 | 
 
 
 **返回值**
@@ -465,9 +465,9 @@ UTSAndroid.offAppActivityResult(() => {
 注册监听 activity onAppActivityBack 函数
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 是 |  |   | 用于监听的响应函数 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callback | () => void | 是 | 用于监听的响应函数 | 
 
 
 **返回值**
@@ -504,9 +504,9 @@ UTSAndroid.onAppActivityBack(() => {
 取消注册监听 activity onAppActivityBack 函数
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | () => void | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | () => void | 否 | 
 
 
 **返回值**
@@ -616,9 +616,9 @@ if (takePictureIntent.resolveActivity(UTSAndroid.getUniActivity()!.getPackageMan
 获取资源文件的原生平台路径。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| resourceName | string | 是 |  |   | 资源文件相对于项目的绝对路径, 如：“/static/logo.png” | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| resourceName | string | 是 | 资源文件相对于项目的绝对路径, 如：“/static/logo.png” | 
 
 
 **返回值**
@@ -747,9 +747,9 @@ console.log(UTSAndroid.getResourcePath('/storage/emulated/0/Android/data/io.dclo
 **已废弃,请使用 uni.createWorker 替代**
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| threadName | string \| null | 否 |  |   | 任务组名称，可能为：<br/>main: ui thread / dom: 仅uni-app x环境生效，uni-app 环境会自动切换到 ui<br/>io : io thread<br/>匿名线程 null 或者 '': 来源线程，如果来源线程不支持任务分发，则会在当前线程执行执行. 这个场景下要求第一个参数必须是线程环境 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| threadName | string \| null | 否 | 任务组名称，可能为：<br/>main: ui thread / dom: 仅uni-app x环境生效，uni-app 环境会自动切换到 ui<br/>io : io thread<br/>匿名线程 null 或者 '': 来源线程，如果来源线程不支持任务分发，则会在当前线程执行执行. 这个场景下要求第一个参数必须是线程环境 | 
 
 
 **返回值**
@@ -767,10 +767,10 @@ async
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| action | (action?: any) => void | 是 |  |   | 任务函数 |
-| param | any | 否 |  |   | 任务函数需要的参数 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| action | (action?: any) => void | 是 | 任务函数 |
+| param | any | 否 | 任务函数需要的参数 | 
 
 
 
@@ -1024,9 +1024,9 @@ UTSAndroid.getDispatcher("io").async(function(_){
 物理像素转换为页面的px像素
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| devicePX | number | 是 |  |   | 待转换的物理像素 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| devicePX | number | 是 | 待转换的物理像素 | 
 
 
 **返回值**
@@ -1062,13 +1062,13 @@ console.log("pagePX",pagePX)
 请求系统权限
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| context | Activity | 是 |  |   |  |
-| requestPermission | Array&lt;string&gt;\<string> | 是 |  |   | 期望请求的权限 |
-| success | (allRight: boolean, grantedList: Array&lt;string&gt;) => void | 是 |  |   |  |
-| fail | (doNotAskAgain: boolean, grantedList: Array&lt;string&gt;) => void | 是 |  |   |  |
-| shallUnCheck | boolean | 否 | false |   | 是否忽略权限检查，需要HBuilder X 4.25 之后版本 | 
+| 名称 | 类型 | 必填 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| context | Activity | 是 |  |  |
+| requestPermission | Array&lt;string&gt;\<string> | 是 |  | 期望请求的权限 |
+| success | (allRight: boolean, grantedList: Array&lt;string&gt;) => void | 是 |  |  |
+| fail | (doNotAskAgain: boolean, grantedList: Array&lt;string&gt;) => void | 是 |  |  |
+| shallUnCheck | boolean | 否 | false | 是否忽略权限检查，需要HBuilder X 4.25 之后版本 | 
 
 
 **返回值**
@@ -1121,10 +1121,10 @@ console.log("pagePX",pagePX)
 检查当前应用是否已经具备指定权限
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| context | Activity | 是 |  |   |  |
-| requestPermission | Array&lt;string&gt;\<string> | 是 |  |   | 期望具备的权限 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| context | Activity | 是 |  |
+| requestPermission | Array&lt;string&gt;\<string> | 是 | 期望具备的权限 | 
 
 
 **返回值**
@@ -1163,10 +1163,10 @@ if (UTSAndroid.checkSystemPermissionGranted(UTSAndroid.getUniActivity()!, permis
 跳转至系统权限手动设备列表
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| context | Activity | 是 |  |   |  |
-| requestPermission | Array&lt;string&gt;\<string> | 是 |  |   | 期望请求的权限 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| context | Activity | 是 |  |
+| requestPermission | Array&lt;string&gt;\<string> | 是 | 期望请求的权限 | 
 
 
 **返回值**
@@ -1201,10 +1201,10 @@ UTSAndroid.gotoSystemPermissionActivity(UTSAndroid.getUniActivity()!,permissionN
 获取当前应用不具备的权限列表
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| context | Activity | 是 |  |   |  |
-| requestPermission | Array&lt;string&gt;\<string> | 是 |  |   | 期望请求的权限 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| context | Activity | 是 |  |
+| requestPermission | Array&lt;string&gt;\<string> | 是 | 期望请求的权限 | 
 
 
 **返回值**
@@ -1240,9 +1240,9 @@ UTSAndroid.gotoSystemPermissionActivity(UTSAndroid.getUniActivity()!,permissionN
 将文件的项目相对地址转换为 运行期对应的绝对地址<br/>     eg.<br/>        'static/logo.png' -> '/storage/sdcard/0/apps/com.xxxx/files/logo.png'
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| inputPath | string | 是 |  |   | 待转换的文件相对路径 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| inputPath | string | 是 | 待转换的文件相对路径 | 
 
 
 **返回值**
@@ -1320,9 +1320,9 @@ console.log(UTSAndroid.convert2AbsFullPath('../../../io.dcloud.HBuilder/apps/HBu
 将应用的私有文件 通过内置的FileProvider转换为外部应用可以访问的Uri
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| file | File | 是 |  |   | 待转换的私有文件 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| file | File | 是 | 待转换的私有文件 | 
 
 
 **返回值**
@@ -1361,10 +1361,10 @@ context.startActivity(intent);
 获取指定service的指定provider实现
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| service | string | 是 |  |   | 指定的服务名称 |
-| providerName | string | 是 |  |   | 指定provider名称 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| service | string | 是 | 指定的服务名称 |
+| providerName | string | 是 | 指定provider名称 | 
 
 
 **返回值**
@@ -1396,9 +1396,9 @@ context.startActivity(intent);
 获取对象的jvm class实例
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| input | any | 是 |  |   | 任意不为空对象，如果传入一个Class类型，则返回该Class对应的jvm class实例 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| input | any | 是 | 任意不为空对象，如果传入一个Class类型，则返回该Class对应的jvm class实例 | 
 
 
 **返回值**
@@ -1448,9 +1448,9 @@ export function getJavaClassTest() : boolean {
 获取对象的 KClass 实例
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| input | any | 是 |  |   | 任意不为空对象，如果传入一个Class类型，则返回该Class对应的 KClasss实例 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| input | any | 是 | 任意不为空对象，如果传入一个Class类型，则返回该Class对应的 KClasss实例 | 
 
 
 **返回值**
@@ -1511,10 +1511,10 @@ console.log(UTSAndroid.getTopPageActivity())
 注册监听activity回调方法
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | IUniActivityCallback | 是 |  |   | 回调方法，[查看具体子类实现](https://doc.dcloud.net.cn/uni-app-x/uts/utsactivitycallback.html) |
-| pageRoute | string \| null | 否 |  |   | [页面的路由地址route](https://doc.dcloud.net.cn/uni-app-x/api/get-current-pages.html#getcurrentpages),注意如果是tabBar页面,请传'tabBar'字符串 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callback | IUniActivityCallback | 是 | 回调方法，[查看具体子类实现](https://doc.dcloud.net.cn/uni-app-x/uts/utsactivitycallback.html) |
+| pageRoute | string \| null | 否 | [页面的路由地址route](https://doc.dcloud.net.cn/uni-app-x/api/get-current-pages.html#getcurrentpages),注意如果是tabBar页面,请传'tabBar'字符串 | 
 
 
 **返回值**
@@ -1543,9 +1543,9 @@ console.log(UTSAndroid.getTopPageActivity())
 onActivityCallback对应的反注册函数。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | IUniActivityCallback | 是 |  |   | onActivityCallback传入的callback | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callback | IUniActivityCallback | 是 | onActivityCallback传入的callback | 
 
 
 **返回值**

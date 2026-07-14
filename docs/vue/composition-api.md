@@ -3407,10 +3407,10 @@ const updateTitle = () => {
 
 
 ##### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| setup | Any |   | Web: 4.0; 微信小程序: √; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |   |
-| lang | Any |   | Web: 4.0; 微信小程序: √; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |  |
+| 名称 | 类型 | 兼容性 |
+| :- | :- |  :-: |
+| setup | Any | Web: 4.0; 微信小程序: √; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
+| lang | Any | Web: 4.0; 微信小程序: √; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 
 #### lang 的属性描述
 

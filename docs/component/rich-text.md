@@ -117,16 +117,16 @@ UniRichTextItemClickEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniRichTextItemClickEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniRichTextItemClickEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniRichTextItemClickEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| src | string | 否 |  |   | \<img/>图片链接 |
-| href | string | 否 |  |   | \<a/>超链接 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| src | string | 否 | \<img/>图片链接 |
+| href | string | 否 | \<a/>超链接 |
 
 
 

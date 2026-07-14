@@ -33,16 +33,16 @@ Web端暂未兼容uni.connectEventSource API，请使用标准的Web API。
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **ConnectEventSourceOptions** | 是 |  | Web: x; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **ConnectEventSourceOptions** | 是 | Web: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| url | string | 是 |  | Web: x; Android: 4.51; iOS: 4.63; iOS(VDOM) uni-app x UTS 插件: 4.63; HarmonyOS: x | 服务器地址 |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 |  | Web: x; Android: 4.61; iOS: 4.63; iOS(VDOM) uni-app x UTS 插件: 4.63; HarmonyOS: x | 请求头 | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| url | string | 是 | Web: x; Android: 4.51; iOS: 4.63; iOS(VDOM) uni-app x UTS 插件: 4.63; HarmonyOS: x | 服务器地址 |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | Web: x; Android: 4.61; iOS: 4.63; iOS(VDOM) uni-app x UTS 插件: 4.63; HarmonyOS: x | 请求头 | 
 
 
 ### 返回值 
@@ -63,9 +63,9 @@ message 事件，会在通过事件源收到数据时触发。
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (ev: [UniMessageEvent](#unimessageevent-values)) => void | 是 |  | Web: x; HarmonyOS: x | 事件回调 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (ev: [UniMessageEvent](#unimessageevent-values)) => void | 是 | Web: x; HarmonyOS: x | 事件回调 | 
 
 ##### UniMessageEvent 的属性值 @unimessageevent-values 
 
@@ -87,9 +87,9 @@ onerror 是当发生错误且这个错误事件（error）被 UniEventSource 触
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (error: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 是 |  | Web: x; HarmonyOS: x | 事件回调 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (error: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 是 | Web: x; HarmonyOS: x | 事件回调 | 
 
 
 
@@ -103,9 +103,9 @@ onOpen
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (ev: [UniMessageEvent](#unimessageevent-values)) => void | 是 |  | Web: x; HarmonyOS: x | 事件回调 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| callback | (ev: [UniMessageEvent](#unimessageevent-values)) => void | 是 | Web: x; HarmonyOS: x | 事件回调 | 
 
 ##### UniMessageEvent 的属性值 @unimessageevent-values 
 
@@ -398,7 +398,7 @@ close
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

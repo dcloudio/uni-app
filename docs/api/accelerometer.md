@@ -10,17 +10,17 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnAccelerometerChangeCallbackResult](#onaccelerometerchangecallbackresult-values)) => void | 是 |  |   | 加速度数据事件的监听函数 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callback | (result: [OnAccelerometerChangeCallbackResult](#onaccelerometerchangecallbackresult-values)) => void | 是 | 加速度数据事件的监听函数 | 
 
 ### OnAccelerometerChangeCallbackResult 的属性值 @onaccelerometerchangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  |   | X 轴加速度数据 |
-| y | number | 是 |  |   | Y 轴加速度数据 |
-| z | number | 是 |  |   | Z 轴加速度数据 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| x | number | 是 | X 轴加速度数据 |
+| y | number | 是 | Y 轴加速度数据 |
+| z | number | 是 | Z 轴加速度数据 |
 
 
 
@@ -59,17 +59,17 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: [OnAccelerometerChangeCallbackResult](#onaccelerometerchangecallbackresult-values)) => void | 否 |  |   | onAccelerometerChange 传入的监听函数。不传此参数则移除所有监听函数。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callback | (result: [OnAccelerometerChangeCallbackResult](#onaccelerometerchangecallbackresult-values)) => void | 否 | onAccelerometerChange 传入的监听函数。不传此参数则移除所有监听函数。 | 
 
 ### OnAccelerometerChangeCallbackResult 的属性值 @onaccelerometerchangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  |   | X 轴加速度数据 |
-| y | number | 是 |  |   | Y 轴加速度数据 |
-| z | number | 是 |  |   | Z 轴加速度数据 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| x | number | 是 | X 轴加速度数据 |
+| y | number | 是 | Y 轴加速度数据 |
+| z | number | 是 | Z 轴加速度数据 |
 
 
 
@@ -105,18 +105,18 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **StartAccelerometerOptions** | 否 |  |   | 开始监听加速度数据的参数 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| options | **StartAccelerometerOptions** | 否 | 开始监听加速度数据的参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| interval | string | 否 |  |   | 监听加速度数据回调函数的执行频率 |
-| success | (res: [StartAccelerometerSuccess](#startaccelerometersuccess-values)) => void | 否 |  |   | 监听加速度数据调用成功的回调函数 |
-| fail | (res: [StartAccelerometerFail](#startaccelerometerfail-values)) => void | 否 |  |   | 监听加速度数据调用失败的回调函数 |
-| complete | (res: [StartAccelerometerSuccess](#startaccelerometersuccess-values) \| [StartAccelerometerFail](#startaccelerometerfail-values)) => void | 否 |  |   | 监听加速度数据调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| interval | string | 否 | 监听加速度数据回调函数的执行频率 |
+| success | (res: [StartAccelerometerSuccess](#startaccelerometersuccess-values)) => void | 否 | 监听加速度数据调用成功的回调函数 |
+| fail | (res: [StartAccelerometerFail](#startaccelerometerfail-values)) => void | 否 | 监听加速度数据调用失败的回调函数 |
+| complete | (res: [StartAccelerometerSuccess](#startaccelerometersuccess-values) \| [StartAccelerometerFail](#startaccelerometerfail-values)) => void | 否 | 监听加速度数据调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### interval 的属性描述
 
@@ -128,19 +128,19 @@
 
 #### StartAccelerometerSuccess 的属性值 @startaccelerometersuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 否 |
 
 #### StartAccelerometerFail 的属性值 @startaccelerometerfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   |  |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 |  |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -164,19 +164,19 @@
 
 #### StartAccelerometerSuccess 的属性值 @startaccelerometersuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 否 |
 
 #### StartAccelerometerFail 的属性值 @startaccelerometerfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   |  |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 |  |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -236,33 +236,33 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **StopAccelerometerOptions** | 否 |  |   | 停止监听加速度数据的参数 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| options | **StopAccelerometerOptions** | 否 | 停止监听加速度数据的参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [StopAccelerometerSuccess](#stopaccelerometersuccess-values)) => void | 否 |  |   | 停止监听加速度数据调用成功的回调函数 |
-| fail | (res: [StopAccelerometerFail](#stopaccelerometerfail-values)) => void | 否 |  |   | 停止监听加速度数据调用失败的回调函数 |
-| complete | (res: [StopAccelerometerSuccess](#stopaccelerometersuccess-values) \| [StopAccelerometerFail](#stopaccelerometerfail-values)) => void | 否 |  |   | 停止监听加速度数据调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| success | (res: [StopAccelerometerSuccess](#stopaccelerometersuccess-values)) => void | 否 | 停止监听加速度数据调用成功的回调函数 |
+| fail | (res: [StopAccelerometerFail](#stopaccelerometerfail-values)) => void | 否 | 停止监听加速度数据调用失败的回调函数 |
+| complete | (res: [StopAccelerometerSuccess](#stopaccelerometersuccess-values) \| [StopAccelerometerFail](#stopaccelerometerfail-values)) => void | 否 | 停止监听加速度数据调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### StopAccelerometerSuccess 的属性值 @stopaccelerometersuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 否 |
 
 #### StopAccelerometerFail 的属性值 @stopaccelerometerfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   |  |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 |  |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -286,19 +286,19 @@
 
 #### StopAccelerometerSuccess 的属性值 @stopaccelerometersuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 否 |
 
 #### StopAccelerometerFail 的属性值 @stopaccelerometerfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   |  |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 |  |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -506,9 +506,9 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 ### tips

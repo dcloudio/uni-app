@@ -14,19 +14,19 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **CreateEditorContextAsyncOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **CreateEditorContextAsyncOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | [string.IDString](/uts/data-type.md#ide-string) | 是 |  | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | editor 元素的 id 属性 |
-| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 |  | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 组件或页面实例，限定在什么范围内查找id |
-| success | (context: [EditorContext](#editorcontext-values)) => void | 否 |  | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 接口调用成功的回调函数 |
-| fail | (error: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 |  | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 接口调用失败的回调函数 |
-| complete | () => void | 否 |  | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| id | [string.IDString](/uts/data-type.md#ide-string) | 是 | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | editor 元素的 id 属性 |
+| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 组件或页面实例，限定在什么范围内查找id |
+| success | (context: [EditorContext](#editorcontext-values)) => void | 否 | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 接口调用成功的回调函数 |
+| fail | (error: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 接口调用失败的回调函数 |
+| complete | () => void | 否 | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### EditorContext 的方法 @editorcontext-values 
 
@@ -40,10 +40,10 @@ format
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| name | string | 是 |  |   |  |
-| value | string \| number | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| name | string | 是 |
+| value | string \| number | 否 | 
 
 
 
@@ -57,35 +57,35 @@ insertDivider
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniEditorElementOptions** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **UniEditorElementOptions** | 否 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 | 
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 
@@ -99,41 +99,41 @@ insertImage
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniEditorElementInsertImageOptions** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **UniEditorElementInsertImageOptions** | 否 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| src | string | 否 |  |   |  |
-| alt | string | 否 |  |   |  |
-| width | string | 否 |  |   |  |
-| height | string | 否 |  |   |  |
-| extClass | string | 否 |  |   |  |
-| data | any | 否 |  |   |  |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| src | string | 否 |
+| alt | string | 否 |
+| width | string | 否 |
+| height | string | 否 |
+| extClass | string | 否 |
+| data | any | 否 |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 | 
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 
@@ -147,36 +147,36 @@ insertText
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniEditorElementInsertTextOptions** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **UniEditorElementInsertTextOptions** | 否 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| text | string | 否 |  |   |  |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| text | string | 否 |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 | 
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 
@@ -190,37 +190,37 @@ insertLink
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniEditorElementInsertLinkOptions** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **UniEditorElementInsertLinkOptions** | 否 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| text | string | 否 |  |   |  |
-| href | string | 是 |  |   |  |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| text | string | 否 |
+| href | string | 是 |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 | 
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 
@@ -234,40 +234,40 @@ insertMention
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniEditorElementInsertMentionOptions** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **UniEditorElementInsertMentionOptions** | 否 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | string | 否 |  |   | 被 @ 的人 id |
-| name | string | 否 |  |   | 被 @ 的人名字 |
-| color | string | 否 | #1677ff |   | 提及文本颜色，默认为 #1677ff |
-| background | string | 否 | #e6f3ff |   | 提及背景颜色，默认为 #e6f3ff |
-| radius | string | 否 | 4px |   | 提及圆角，默认为 4px |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必备 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| id | string | 否 |  | 被 @ 的人 id |
+| name | string | 否 |  | 被 @ 的人名字 |
+| color | string | 否 | #1677ff | 提及文本颜色，默认为 #1677ff |
+| background | string | 否 | #e6f3ff | 提及背景颜色，默认为 #e6f3ff |
+| radius | string | 否 | 4px | 提及圆角，默认为 4px |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |  |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |  |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |  | 
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 
@@ -281,37 +281,37 @@ setContents
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniEditorElementSetContentsOptions** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **UniEditorElementSetContentsOptions** | 否 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| delta | any | 否 |  |   |  |
-| html | string | 否 |  |   |  |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| delta | any | 否 |
+| html | string | 否 |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 | 
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 
@@ -325,38 +325,38 @@ getContents
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniEditorElementGetContentsOptions** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **UniEditorElementGetContentsOptions** | 否 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniEditorElementGetContentsOptionsRes](#unieditorelementgetcontentsoptionsres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| success | (res: [UniEditorElementGetContentsOptionsRes](#unieditorelementgetcontentsoptionsres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 | 
 
 ###### UniEditorElementGetContentsOptionsRes 的属性值 @unieditorelementgetcontentsoptionsres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
-| delta | any | 是 |  |   |  |
-| html | string | 是 |  |   |  |
-| text | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
+| delta | any | 是 |
+| html | string | 是 |
+| text | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 
@@ -370,35 +370,35 @@ clear
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniEditorElementOptions** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **UniEditorElementOptions** | 否 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 | 
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 
@@ -412,35 +412,35 @@ removeFormat
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniEditorElementOptions** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **UniEditorElementOptions** | 否 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 | 
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 
@@ -454,35 +454,35 @@ undo
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniEditorElementOptions** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **UniEditorElementOptions** | 否 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 | 
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 
@@ -496,35 +496,35 @@ redo
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniEditorElementOptions** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **UniEditorElementOptions** | 否 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 | 
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 
@@ -538,36 +538,36 @@ getSelectionText
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniEditorElementGetSelectionTextOptions** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **UniEditorElementGetSelectionTextOptions** | 否 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniEditorElementGetSelectionTextOptionsRes](#unieditorelementgetselectiontextoptionsres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| success | (res: [UniEditorElementGetSelectionTextOptionsRes](#unieditorelementgetselectiontextoptionsres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 | 
 
 ###### UniEditorElementGetSelectionTextOptionsRes 的属性值 @unieditorelementgetselectiontextoptionsres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
-| text | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
+| text | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 
@@ -581,35 +581,35 @@ scrollIntoView
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniEditorElementOptions** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **UniEditorElementOptions** | 否 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 | 
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 
@@ -623,421 +623,421 @@ blur
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniEditorElementOptions** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **UniEditorElementOptions** | 否 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 | 
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 
 ##### UniEditorElementOptions 的属性值 @unieditorelementoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ##### UniEditorElementInsertImageOptions 的属性值 @unieditorelementinsertimageoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| src | string | 否 |  |   |  |
-| alt | string | 否 |  |   |  |
-| width | string | 否 |  |   |  |
-| height | string | 否 |  |   |  |
-| extClass | string | 否 |  |   |  |
-| data | any | 否 |  |   |  |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| src | string | 否 |
+| alt | string | 否 |
+| width | string | 否 |
+| height | string | 否 |
+| extClass | string | 否 |
+| data | any | 否 |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ##### UniEditorElementInsertTextOptions 的属性值 @unieditorelementinserttextoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| text | string | 否 |  |   |  |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| text | string | 否 |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ##### UniEditorElementInsertLinkOptions 的属性值 @unieditorelementinsertlinkoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| text | string | 否 |  |   |  |
-| href | string | 是 |  |   |  |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| text | string | 否 |
+| href | string | 是 |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ##### UniEditorElementInsertMentionOptions 的属性值 @unieditorelementinsertmentionoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | string | 否 |  |   | 被 @ 的人 id |
-| name | string | 否 |  |   | 被 @ 的人名字 |
-| color | string | 否 | #1677ff |   | 提及文本颜色，默认为 #1677ff |
-| background | string | 否 | #e6f3ff |   | 提及背景颜色，默认为 #e6f3ff |
-| radius | string | 否 | 4px |   | 提及圆角，默认为 4px |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  |
+| 名称 | 类型 | 必备 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| id | string | 否 |  | 被 @ 的人 id |
+| name | string | 否 |  | 被 @ 的人名字 |
+| color | string | 否 | #1677ff | 提及文本颜色，默认为 #1677ff |
+| background | string | 否 | #e6f3ff | 提及背景颜色，默认为 #e6f3ff |
+| radius | string | 否 | 4px | 提及圆角，默认为 4px |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |  |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |  |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |  |
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ##### UniEditorElementSetContentsOptions 的属性值 @unieditorelementsetcontentsoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| delta | any | 否 |  |   |  |
-| html | string | 否 |  |   |  |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| delta | any | 否 |
+| html | string | 否 |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ##### UniEditorElementGetContentsOptions 的属性值 @unieditorelementgetcontentsoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniEditorElementGetContentsOptionsRes](#unieditorelementgetcontentsoptionsres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| success | (res: [UniEditorElementGetContentsOptionsRes](#unieditorelementgetcontentsoptionsres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |
 
 ###### UniEditorElementGetContentsOptionsRes 的属性值 @unieditorelementgetcontentsoptionsres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
-| delta | any | 是 |  |   |  |
-| html | string | 是 |  |   |  |
-| text | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
+| delta | any | 是 |
+| html | string | 是 |
+| text | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ##### UniEditorElementOptions 的属性值 @unieditorelementoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ##### UniEditorElementOptions 的属性值 @unieditorelementoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ##### UniEditorElementOptions 的属性值 @unieditorelementoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ##### UniEditorElementOptions 的属性值 @unieditorelementoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ##### UniEditorElementGetSelectionTextOptions 的属性值 @unieditorelementgetselectiontextoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniEditorElementGetSelectionTextOptionsRes](#unieditorelementgetselectiontextoptionsres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| success | (res: [UniEditorElementGetSelectionTextOptionsRes](#unieditorelementgetselectiontextoptionsres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |
 
 ###### UniEditorElementGetSelectionTextOptionsRes 的属性值 @unieditorelementgetselectiontextoptionsres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
-| text | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
+| text | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ##### UniEditorElementOptions 的属性值 @unieditorelementoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ##### UniEditorElementOptions 的属性值 @unieditorelementoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |  |   |  |
-| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |  |   |  |
-| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| success | (res: [UniEditorElementOptionsSuccessRes](#unieditorelementoptionssuccessres-values)) => void | 否 |
+| fail | (res: [UniEditorElementOptionsFailRes](#unieditorelementoptionsfailres-values)) => void | 否 |
+| complete | (res: [UniEditorElementOptionsCompleteRes](#unieditorelementoptionscompleteres-values)) => void | 否 |
 
 ###### UniEditorElementOptionsSuccessRes 的属性值 @unieditorelementoptionssuccessres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsFailRes 的属性值 @unieditorelementoptionsfailres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 ###### UniEditorElementOptionsCompleteRes 的属性值 @unieditorelementoptionscompleteres-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| errMsg | string | 是 |
 
 
 
@@ -1068,6 +1068,6 @@ blur
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |

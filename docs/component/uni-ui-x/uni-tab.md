@@ -115,12 +115,12 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| activeIndex | number |   |   | 当前激活的选项卡索引 |
-| tabBarHeight | number | 50 |   | tab-bar 的高度 |
-| tabContentHeightFull | boolean | false |   | tab-content 的高度是否通到tab-bar下面 |
-| @change | Event |   |   | 选项卡变化时触发，参数为当前激活的选项卡索引，类型为 number |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| activeIndex | number |   | 当前激活的选项卡索引 |
+| tabBarHeight | number | 50 | tab-bar 的高度 |
+| tabContentHeightFull | boolean | false | tab-content 的高度是否通到tab-bar下面 |
+| @change | Event |   | 选项卡变化时触发，参数为当前激活的选项卡索引，类型为 number |
 
 <!-- UTSCOMJSON.uni-tab.fileFormates -->
 
@@ -829,10 +829,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| badgeText | string |   |   | badge 的内容 |
-| badgeClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | badge 的样式类 |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| badgeText | string |   | badge 的内容 |
+| badgeClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | badge 的样式类 |
 
 <!-- UTSCOMJSON.uni-tab-item.fileFormates -->
 
@@ -899,10 +899,10 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| width | number | 90 |   | 中间按钮宽度，单位 px |
-| height | number | 90 |   | 中间按钮高度，单位 px |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| width | number | 90 | 中间按钮宽度，单位 px |
+| height | number | 90 | 中间按钮高度，单位 px |
 
 <!-- UTSCOMJSON.uni-tab-midbutton.fileFormates -->
 

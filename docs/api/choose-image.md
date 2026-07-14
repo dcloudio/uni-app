@@ -20,9 +20,9 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **ChooseImageOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **ChooseImageOptions** | 是 |
 
 #### options 的属性描述
 
@@ -65,31 +65,31 @@
 
 #### ChooseImageSuccess 的属性值 @chooseimagesuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errSubject | string | 是 |  | Android: 3.9; iOS: 4.11 | 调用API的名称 |
-| errMsg | string | 是 |  | Android: 3.9; iOS: 4.11 | 描述信息 |
-| tempFilePaths | Array&lt;string&gt; | 是 |  | 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 图片的本地文件路径列表 |
-| tempFiles | Array&lt;**ChooseImageTempFile**&gt; | 是 |  | 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 图片的本地文件列表 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errSubject | string | 是 | Android: 3.9; iOS: 4.11 | 调用API的名称 |
+| errMsg | string | 是 | Android: 3.9; iOS: 4.11 | 描述信息 |
+| tempFilePaths | Array&lt;string&gt; | 是 | 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 图片的本地文件路径列表 |
+| tempFiles | Array&lt;**ChooseImageTempFile**&gt; | 是 | 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 图片的本地文件列表 |
 
 #### tempFiles 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| path | string | 是 |  | Android: 3.9; iOS: 4.11 | 本地文件路径 |
-| size | number | 是 |  | Android: 3.9; iOS: 4.11 | 本地文件大小，单位：B |
-| name | string | 否 |  | Android: x; iOS: x | 包含扩展名的文件名称，仅H5支持 |
-| type | string | 否 |  | Android: x; iOS: x | 文件类型，仅H5支持 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| path | string | 是 | Android: 3.9; iOS: 4.11 | 本地文件路径 |
+| size | number | 是 | Android: 3.9; iOS: 4.11 | 本地文件大小，单位：B |
+| name | string | 否 | Android: x; iOS: x | 包含扩展名的文件名称，仅H5支持 |
+| type | string | 否 | Android: x; iOS: x | 文件类型，仅H5支持 |
 
 #### ChooseImageFail 的属性值 @chooseimagefail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -511,9 +511,9 @@ const previewImage = (index: number) => {
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 ## 相册选择的2种方式

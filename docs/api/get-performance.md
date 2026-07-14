@@ -29,9 +29,9 @@ createObserver
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (entries: [PerformanceObserverEntryList](#performanceobserverentrylist-values)) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| callback | (entries: [PerformanceObserverEntryList](#performanceobserverentrylist-values)) => void | 是 | Web: x | 
 
 ##### PerformanceObserverEntryList 的方法 @performanceobserverentrylist-values 
 
@@ -53,20 +53,20 @@ getEntries
 
 #### Array&lt;PerformanceEntry&gt; 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x | 指标类型 |
-| name | string | 是 |  | Web: x | 指标名称 |
-| duration | number | 是 |  | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
-| startTime | number | 是 |  | Web: x | 开始时间，不同指标的具体含义会有差异。 |
-| path | string | 否 |  | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
-| referrerPath | string | 否 |  | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
-| pageId | number | 否 |  | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
-| referrerPageId | number | 否 |  | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
-| navigationStart | number | 否 |  | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
-| navigationType | string | 否 |  | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
-| initDataRecvTime | number | 否 |  | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
-| viewLayerRenderEndTime | number | 否 |  | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| entryType | string | 是 | Web: x | 指标类型 |
+| name | string | 是 | Web: x | 指标名称 |
+| duration | number | 是 | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
+| startTime | number | 是 | Web: x | 开始时间，不同指标的具体含义会有差异。 |
+| path | string | 否 | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
+| referrerPath | string | 否 | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
+| pageId | number | 否 | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
+| referrerPageId | number | 否 | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
+| navigationStart | number | 否 | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
+| navigationType | string | 否 | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
+| initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
+| viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
 
 ##### getEntriesByType(entryType: string): PerformanceEntry[\] @getentriesbytype
 getEntriesByType
@@ -78,9 +78,9 @@ getEntriesByType
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| entryType | string | 是 | Web: x | 
 
 
 ###### 返回值 
@@ -91,20 +91,20 @@ getEntriesByType
 
 #### Array&lt;PerformanceEntry&gt; 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x | 指标类型 |
-| name | string | 是 |  | Web: x | 指标名称 |
-| duration | number | 是 |  | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
-| startTime | number | 是 |  | Web: x | 开始时间，不同指标的具体含义会有差异。 |
-| path | string | 否 |  | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
-| referrerPath | string | 否 |  | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
-| pageId | number | 否 |  | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
-| referrerPageId | number | 否 |  | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
-| navigationStart | number | 否 |  | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
-| navigationType | string | 否 |  | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
-| initDataRecvTime | number | 否 |  | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
-| viewLayerRenderEndTime | number | 否 |  | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| entryType | string | 是 | Web: x | 指标类型 |
+| name | string | 是 | Web: x | 指标名称 |
+| duration | number | 是 | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
+| startTime | number | 是 | Web: x | 开始时间，不同指标的具体含义会有差异。 |
+| path | string | 否 | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
+| referrerPath | string | 否 | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
+| pageId | number | 否 | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
+| referrerPageId | number | 否 | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
+| navigationStart | number | 否 | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
+| navigationType | string | 否 | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
+| initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
+| viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
 
 ##### getEntriesByName(name: string, entryType: string): PerformanceEntry[\] @getentriesbyname
 getEntriesByName
@@ -116,10 +116,10 @@ getEntriesByName
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| name | string | 是 |  | Web: x |  |
-| entryType | string | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| name | string | 是 | Web: x |
+| entryType | string | 是 | Web: x | 
 
 
 ###### 返回值 
@@ -130,71 +130,71 @@ getEntriesByName
 
 #### Array&lt;PerformanceEntry&gt; 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x | 指标类型 |
-| name | string | 是 |  | Web: x | 指标名称 |
-| duration | number | 是 |  | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
-| startTime | number | 是 |  | Web: x | 开始时间，不同指标的具体含义会有差异。 |
-| path | string | 否 |  | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
-| referrerPath | string | 否 |  | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
-| pageId | number | 否 |  | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
-| referrerPageId | number | 否 |  | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
-| navigationStart | number | 否 |  | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
-| navigationType | string | 否 |  | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
-| initDataRecvTime | number | 否 |  | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
-| viewLayerRenderEndTime | number | 否 |  | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| entryType | string | 是 | Web: x | 指标类型 |
+| name | string | 是 | Web: x | 指标名称 |
+| duration | number | 是 | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
+| startTime | number | 是 | Web: x | 开始时间，不同指标的具体含义会有差异。 |
+| path | string | 否 | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
+| referrerPath | string | 否 | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
+| pageId | number | 否 | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
+| referrerPageId | number | 否 | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
+| navigationStart | number | 否 | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
+| navigationType | string | 否 | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
+| initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
+| viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
 
 ###### PerformanceEntry 的属性值 @performanceentry-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x | 指标类型 |
-| name | string | 是 |  | Web: x | 指标名称 |
-| duration | number | 是 |  | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
-| startTime | number | 是 |  | Web: x | 开始时间，不同指标的具体含义会有差异。 |
-| path | string | 否 |  | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
-| referrerPath | string | 否 |  | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
-| pageId | number | 否 |  | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
-| referrerPageId | number | 否 |  | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
-| navigationStart | number | 否 |  | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
-| navigationType | string | 否 |  | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
-| initDataRecvTime | number | 否 |  | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
-| viewLayerRenderEndTime | number | 否 |  | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| entryType | string | 是 | Web: x | 指标类型 |
+| name | string | 是 | Web: x | 指标名称 |
+| duration | number | 是 | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
+| startTime | number | 是 | Web: x | 开始时间，不同指标的具体含义会有差异。 |
+| path | string | 否 | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
+| referrerPath | string | 否 | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
+| pageId | number | 否 | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
+| referrerPageId | number | 否 | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
+| navigationStart | number | 否 | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
+| navigationType | string | 否 | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
+| initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
+| viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 |
 
 ###### PerformanceEntry 的属性值 @performanceentry-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x | 指标类型 |
-| name | string | 是 |  | Web: x | 指标名称 |
-| duration | number | 是 |  | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
-| startTime | number | 是 |  | Web: x | 开始时间，不同指标的具体含义会有差异。 |
-| path | string | 否 |  | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
-| referrerPath | string | 否 |  | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
-| pageId | number | 否 |  | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
-| referrerPageId | number | 否 |  | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
-| navigationStart | number | 否 |  | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
-| navigationType | string | 否 |  | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
-| initDataRecvTime | number | 否 |  | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
-| viewLayerRenderEndTime | number | 否 |  | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| entryType | string | 是 | Web: x | 指标类型 |
+| name | string | 是 | Web: x | 指标名称 |
+| duration | number | 是 | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
+| startTime | number | 是 | Web: x | 开始时间，不同指标的具体含义会有差异。 |
+| path | string | 否 | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
+| referrerPath | string | 否 | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
+| pageId | number | 否 | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
+| referrerPageId | number | 否 | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
+| navigationStart | number | 否 | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
+| navigationType | string | 否 | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
+| initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
+| viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 |
 
 ###### PerformanceEntry 的属性值 @performanceentry-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x | 指标类型 |
-| name | string | 是 |  | Web: x | 指标名称 |
-| duration | number | 是 |  | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
-| startTime | number | 是 |  | Web: x | 开始时间，不同指标的具体含义会有差异。 |
-| path | string | 否 |  | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
-| referrerPath | string | 否 |  | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
-| pageId | number | 否 |  | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
-| referrerPageId | number | 否 |  | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
-| navigationStart | number | 否 |  | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
-| navigationType | string | 否 |  | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
-| initDataRecvTime | number | 否 |  | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
-| viewLayerRenderEndTime | number | 否 |  | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| entryType | string | 是 | Web: x | 指标类型 |
+| name | string | 是 | Web: x | 指标名称 |
+| duration | number | 是 | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
+| startTime | number | 是 | Web: x | 开始时间，不同指标的具体含义会有差异。 |
+| path | string | 否 | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
+| referrerPath | string | 否 | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
+| pageId | number | 否 | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
+| referrerPageId | number | 否 | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
+| navigationStart | number | 否 | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
+| navigationType | string | 否 | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
+| initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
+| viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 |
 
 
 ##### 返回值 
@@ -215,17 +215,17 @@ observe
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **PerformanceObserverOptions** | 是 |  | Web: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **PerformanceObserverOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| buffered | boolean | 否 |  | Web: x |  |
-| entryTypes | Array&lt;string&gt; | 否 |  | Web: x |  |
-| type | string | 否 |  | Web: x |  | 
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| buffered | boolean | 否 | Web: x |
+| entryTypes | Array&lt;string&gt; | 否 | Web: x |
+| type | string | 否 | Web: x | 
 
 
 
@@ -242,11 +242,11 @@ disconnect
 
 ###### PerformanceObserverOptions 的属性值 @performanceobserveroptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| buffered | boolean | 否 |  | Web: x |  |
-| entryTypes | Array&lt;string&gt; | 否 |  | Web: x |  |
-| type | string | 否 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| buffered | boolean | 否 | Web: x |
+| entryTypes | Array&lt;string&gt; | 否 | Web: x |
+| type | string | 否 | Web: x |
  
 
 #### getEntries(): PerformanceEntry[\] @getentries
@@ -267,20 +267,20 @@ getEntries
 
 #### Array&lt;PerformanceEntry&gt; 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x | 指标类型 |
-| name | string | 是 |  | Web: x | 指标名称 |
-| duration | number | 是 |  | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
-| startTime | number | 是 |  | Web: x | 开始时间，不同指标的具体含义会有差异。 |
-| path | string | 否 |  | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
-| referrerPath | string | 否 |  | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
-| pageId | number | 否 |  | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
-| referrerPageId | number | 否 |  | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
-| navigationStart | number | 否 |  | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
-| navigationType | string | 否 |  | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
-| initDataRecvTime | number | 否 |  | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
-| viewLayerRenderEndTime | number | 否 |  | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| entryType | string | 是 | Web: x | 指标类型 |
+| name | string | 是 | Web: x | 指标名称 |
+| duration | number | 是 | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
+| startTime | number | 是 | Web: x | 开始时间，不同指标的具体含义会有差异。 |
+| path | string | 否 | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
+| referrerPath | string | 否 | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
+| pageId | number | 否 | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
+| referrerPageId | number | 否 | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
+| navigationStart | number | 否 | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
+| navigationType | string | 否 | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
+| initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
+| viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
 
 #### getEntriesByType(entryType: string): PerformanceEntry[\] @getentriesbytype
 getEntriesByType
@@ -292,9 +292,9 @@ getEntriesByType
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| entryType | string | 是 | Web: x | 
 
 
 ##### 返回值 
@@ -305,20 +305,20 @@ getEntriesByType
 
 #### Array&lt;PerformanceEntry&gt; 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x | 指标类型 |
-| name | string | 是 |  | Web: x | 指标名称 |
-| duration | number | 是 |  | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
-| startTime | number | 是 |  | Web: x | 开始时间，不同指标的具体含义会有差异。 |
-| path | string | 否 |  | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
-| referrerPath | string | 否 |  | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
-| pageId | number | 否 |  | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
-| referrerPageId | number | 否 |  | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
-| navigationStart | number | 否 |  | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
-| navigationType | string | 否 |  | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
-| initDataRecvTime | number | 否 |  | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
-| viewLayerRenderEndTime | number | 否 |  | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| entryType | string | 是 | Web: x | 指标类型 |
+| name | string | 是 | Web: x | 指标名称 |
+| duration | number | 是 | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
+| startTime | number | 是 | Web: x | 开始时间，不同指标的具体含义会有差异。 |
+| path | string | 否 | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
+| referrerPath | string | 否 | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
+| pageId | number | 否 | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
+| referrerPageId | number | 否 | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
+| navigationStart | number | 否 | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
+| navigationType | string | 否 | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
+| initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
+| viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
 
 #### getEntriesByName(name: string, entryType: string): PerformanceEntry[\] @getentriesbyname
 getEntriesByName
@@ -330,10 +330,10 @@ getEntriesByName
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| name | string | 是 |  | Web: x |  |
-| entryType | string | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| name | string | 是 | Web: x |
+| entryType | string | 是 | Web: x | 
 
 
 ##### 返回值 
@@ -344,20 +344,20 @@ getEntriesByName
 
 #### Array&lt;PerformanceEntry&gt; 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x | 指标类型 |
-| name | string | 是 |  | Web: x | 指标名称 |
-| duration | number | 是 |  | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
-| startTime | number | 是 |  | Web: x | 开始时间，不同指标的具体含义会有差异。 |
-| path | string | 否 |  | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
-| referrerPath | string | 否 |  | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
-| pageId | number | 否 |  | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
-| referrerPageId | number | 否 |  | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
-| navigationStart | number | 否 |  | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
-| navigationType | string | 否 |  | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
-| initDataRecvTime | number | 否 |  | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
-| viewLayerRenderEndTime | number | 否 |  | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| entryType | string | 是 | Web: x | 指标类型 |
+| name | string | 是 | Web: x | 指标名称 |
+| duration | number | 是 | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
+| startTime | number | 是 | Web: x | 开始时间，不同指标的具体含义会有差异。 |
+| path | string | 否 | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
+| referrerPath | string | 否 | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
+| pageId | number | 否 | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
+| referrerPageId | number | 否 | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
+| navigationStart | number | 否 | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
+| navigationType | string | 否 | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
+| initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
+| viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
 
 #### setBufferSize(size: number): void @setbuffersize
 setBufferSize
@@ -369,9 +369,9 @@ setBufferSize
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| size | number | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| size | number | 是 | Web: x | 
 
 
 
@@ -395,20 +395,20 @@ getEntries
 
 #### Array&lt;PerformanceEntry&gt; 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x | 指标类型 |
-| name | string | 是 |  | Web: x | 指标名称 |
-| duration | number | 是 |  | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
-| startTime | number | 是 |  | Web: x | 开始时间，不同指标的具体含义会有差异。 |
-| path | string | 否 |  | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
-| referrerPath | string | 否 |  | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
-| pageId | number | 否 |  | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
-| referrerPageId | number | 否 |  | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
-| navigationStart | number | 否 |  | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
-| navigationType | string | 否 |  | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
-| initDataRecvTime | number | 否 |  | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
-| viewLayerRenderEndTime | number | 否 |  | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| entryType | string | 是 | Web: x | 指标类型 |
+| name | string | 是 | Web: x | 指标名称 |
+| duration | number | 是 | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
+| startTime | number | 是 | Web: x | 开始时间，不同指标的具体含义会有差异。 |
+| path | string | 否 | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
+| referrerPath | string | 否 | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
+| pageId | number | 否 | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
+| referrerPageId | number | 否 | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
+| navigationStart | number | 否 | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
+| navigationType | string | 否 | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
+| initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
+| viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
 
 ##### getEntriesByType(entryType: string): PerformanceEntry[\] @getentriesbytype
 getEntriesByType
@@ -420,9 +420,9 @@ getEntriesByType
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| entryType | string | 是 | Web: x | 
 
 
 ###### 返回值 
@@ -433,20 +433,20 @@ getEntriesByType
 
 #### Array&lt;PerformanceEntry&gt; 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x | 指标类型 |
-| name | string | 是 |  | Web: x | 指标名称 |
-| duration | number | 是 |  | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
-| startTime | number | 是 |  | Web: x | 开始时间，不同指标的具体含义会有差异。 |
-| path | string | 否 |  | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
-| referrerPath | string | 否 |  | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
-| pageId | number | 否 |  | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
-| referrerPageId | number | 否 |  | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
-| navigationStart | number | 否 |  | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
-| navigationType | string | 否 |  | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
-| initDataRecvTime | number | 否 |  | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
-| viewLayerRenderEndTime | number | 否 |  | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| entryType | string | 是 | Web: x | 指标类型 |
+| name | string | 是 | Web: x | 指标名称 |
+| duration | number | 是 | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
+| startTime | number | 是 | Web: x | 开始时间，不同指标的具体含义会有差异。 |
+| path | string | 否 | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
+| referrerPath | string | 否 | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
+| pageId | number | 否 | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
+| referrerPageId | number | 否 | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
+| navigationStart | number | 否 | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
+| navigationType | string | 否 | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
+| initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
+| viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
 
 ##### getEntriesByName(name: string, entryType: string): PerformanceEntry[\] @getentriesbyname
 getEntriesByName
@@ -458,10 +458,10 @@ getEntriesByName
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| name | string | 是 |  | Web: x |  |
-| entryType | string | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| name | string | 是 | Web: x |
+| entryType | string | 是 | Web: x | 
 
 
 ###### 返回值 
@@ -472,71 +472,71 @@ getEntriesByName
 
 #### Array&lt;PerformanceEntry&gt; 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x | 指标类型 |
-| name | string | 是 |  | Web: x | 指标名称 |
-| duration | number | 是 |  | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
-| startTime | number | 是 |  | Web: x | 开始时间，不同指标的具体含义会有差异。 |
-| path | string | 否 |  | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
-| referrerPath | string | 否 |  | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
-| pageId | number | 否 |  | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
-| referrerPageId | number | 否 |  | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
-| navigationStart | number | 否 |  | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
-| navigationType | string | 否 |  | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
-| initDataRecvTime | number | 否 |  | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
-| viewLayerRenderEndTime | number | 否 |  | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| entryType | string | 是 | Web: x | 指标类型 |
+| name | string | 是 | Web: x | 指标名称 |
+| duration | number | 是 | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
+| startTime | number | 是 | Web: x | 开始时间，不同指标的具体含义会有差异。 |
+| path | string | 否 | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
+| referrerPath | string | 否 | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
+| pageId | number | 否 | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
+| referrerPageId | number | 否 | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
+| navigationStart | number | 否 | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
+| navigationType | string | 否 | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
+| initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
+| viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
 
 ###### PerformanceEntry 的属性值 @performanceentry-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x | 指标类型 |
-| name | string | 是 |  | Web: x | 指标名称 |
-| duration | number | 是 |  | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
-| startTime | number | 是 |  | Web: x | 开始时间，不同指标的具体含义会有差异。 |
-| path | string | 否 |  | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
-| referrerPath | string | 否 |  | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
-| pageId | number | 否 |  | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
-| referrerPageId | number | 否 |  | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
-| navigationStart | number | 否 |  | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
-| navigationType | string | 否 |  | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
-| initDataRecvTime | number | 否 |  | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
-| viewLayerRenderEndTime | number | 否 |  | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| entryType | string | 是 | Web: x | 指标类型 |
+| name | string | 是 | Web: x | 指标名称 |
+| duration | number | 是 | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
+| startTime | number | 是 | Web: x | 开始时间，不同指标的具体含义会有差异。 |
+| path | string | 否 | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
+| referrerPath | string | 否 | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
+| pageId | number | 否 | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
+| referrerPageId | number | 否 | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
+| navigationStart | number | 否 | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
+| navigationType | string | 否 | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
+| initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
+| viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 |
 
 ###### PerformanceEntry 的属性值 @performanceentry-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x | 指标类型 |
-| name | string | 是 |  | Web: x | 指标名称 |
-| duration | number | 是 |  | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
-| startTime | number | 是 |  | Web: x | 开始时间，不同指标的具体含义会有差异。 |
-| path | string | 否 |  | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
-| referrerPath | string | 否 |  | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
-| pageId | number | 否 |  | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
-| referrerPageId | number | 否 |  | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
-| navigationStart | number | 否 |  | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
-| navigationType | string | 否 |  | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
-| initDataRecvTime | number | 否 |  | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
-| viewLayerRenderEndTime | number | 否 |  | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| entryType | string | 是 | Web: x | 指标类型 |
+| name | string | 是 | Web: x | 指标名称 |
+| duration | number | 是 | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
+| startTime | number | 是 | Web: x | 开始时间，不同指标的具体含义会有差异。 |
+| path | string | 否 | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
+| referrerPath | string | 否 | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
+| pageId | number | 否 | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
+| referrerPageId | number | 否 | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
+| navigationStart | number | 否 | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
+| navigationType | string | 否 | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
+| initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
+| viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 |
 
 ###### PerformanceEntry 的属性值 @performanceentry-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x | 指标类型 |
-| name | string | 是 |  | Web: x | 指标名称 |
-| duration | number | 是 |  | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
-| startTime | number | 是 |  | Web: x | 开始时间，不同指标的具体含义会有差异。 |
-| path | string | 否 |  | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
-| referrerPath | string | 否 |  | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
-| pageId | number | 否 |  | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
-| referrerPageId | number | 否 |  | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
-| navigationStart | number | 否 |  | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
-| navigationType | string | 否 |  | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
-| initDataRecvTime | number | 否 |  | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
-| viewLayerRenderEndTime | number | 否 |  | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| entryType | string | 是 | Web: x | 指标类型 |
+| name | string | 是 | Web: x | 指标名称 |
+| duration | number | 是 | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
+| startTime | number | 是 | Web: x | 开始时间，不同指标的具体含义会有差异。 |
+| path | string | 否 | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
+| referrerPath | string | 否 | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
+| pageId | number | 否 | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
+| referrerPageId | number | 否 | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
+| navigationStart | number | 否 | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
+| navigationType | string | 否 | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
+| initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
+| viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 |
 
 ##### PerformanceObserver 的方法 @performanceobserver-values 
 
@@ -550,17 +550,17 @@ observe
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **PerformanceObserverOptions** | 是 |  | Web: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **PerformanceObserverOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| buffered | boolean | 否 |  | Web: x |  |
-| entryTypes | Array&lt;string&gt; | 否 |  | Web: x |  |
-| type | string | 否 |  | Web: x |  | 
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| buffered | boolean | 否 | Web: x |
+| entryTypes | Array&lt;string&gt; | 否 | Web: x |
+| type | string | 否 | Web: x | 
 
 
 
@@ -577,62 +577,62 @@ disconnect
 
 ###### PerformanceObserverOptions 的属性值 @performanceobserveroptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| buffered | boolean | 否 |  | Web: x |  |
-| entryTypes | Array&lt;string&gt; | 否 |  | Web: x |  |
-| type | string | 否 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| buffered | boolean | 否 | Web: x |
+| entryTypes | Array&lt;string&gt; | 否 | Web: x |
+| type | string | 否 | Web: x |
 
 ##### PerformanceEntry 的属性值 @performanceentry-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x | 指标类型 |
-| name | string | 是 |  | Web: x | 指标名称 |
-| duration | number | 是 |  | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
-| startTime | number | 是 |  | Web: x | 开始时间，不同指标的具体含义会有差异。 |
-| path | string | 否 |  | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
-| referrerPath | string | 否 |  | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
-| pageId | number | 否 |  | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
-| referrerPageId | number | 否 |  | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
-| navigationStart | number | 否 |  | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
-| navigationType | string | 否 |  | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
-| initDataRecvTime | number | 否 |  | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
-| viewLayerRenderEndTime | number | 否 |  | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| entryType | string | 是 | Web: x | 指标类型 |
+| name | string | 是 | Web: x | 指标名称 |
+| duration | number | 是 | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
+| startTime | number | 是 | Web: x | 开始时间，不同指标的具体含义会有差异。 |
+| path | string | 否 | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
+| referrerPath | string | 否 | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
+| pageId | number | 否 | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
+| referrerPageId | number | 否 | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
+| navigationStart | number | 否 | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
+| navigationType | string | 否 | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
+| initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
+| viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 |
 
 ##### PerformanceEntry 的属性值 @performanceentry-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x | 指标类型 |
-| name | string | 是 |  | Web: x | 指标名称 |
-| duration | number | 是 |  | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
-| startTime | number | 是 |  | Web: x | 开始时间，不同指标的具体含义会有差异。 |
-| path | string | 否 |  | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
-| referrerPath | string | 否 |  | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
-| pageId | number | 否 |  | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
-| referrerPageId | number | 否 |  | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
-| navigationStart | number | 否 |  | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
-| navigationType | string | 否 |  | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
-| initDataRecvTime | number | 否 |  | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
-| viewLayerRenderEndTime | number | 否 |  | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| entryType | string | 是 | Web: x | 指标类型 |
+| name | string | 是 | Web: x | 指标名称 |
+| duration | number | 是 | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
+| startTime | number | 是 | Web: x | 开始时间，不同指标的具体含义会有差异。 |
+| path | string | 否 | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
+| referrerPath | string | 否 | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
+| pageId | number | 否 | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
+| referrerPageId | number | 否 | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
+| navigationStart | number | 否 | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
+| navigationType | string | 否 | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
+| initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
+| viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 |
 
 ##### PerformanceEntry 的属性值 @performanceentry-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| entryType | string | 是 |  | Web: x | 指标类型 |
-| name | string | 是 |  | Web: x | 指标名称 |
-| duration | number | 是 |  | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
-| startTime | number | 是 |  | Web: x | 开始时间，不同指标的具体含义会有差异。 |
-| path | string | 否 |  | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
-| referrerPath | string | 否 |  | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
-| pageId | number | 否 |  | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
-| referrerPageId | number | 否 |  | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
-| navigationStart | number | 否 |  | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
-| navigationType | string | 否 |  | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
-| initDataRecvTime | number | 否 |  | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
-| viewLayerRenderEndTime | number | 否 |  | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| entryType | string | 是 | Web: x | 指标类型 |
+| name | string | 是 | Web: x | 指标名称 |
+| duration | number | 是 | Web: x | 耗时 ms。仅对于表示阶段的指标有效。 |
+| startTime | number | 是 | Web: x | 开始时间，不同指标的具体含义会有差异。 |
+| path | string | 否 | Web: x | 页面路径。仅 render 和 navigation 类型指标有效。 |
+| referrerPath | string | 否 | Web: x | 页面跳转来源页面路径。仅 route 指标有效。 |
+| pageId | number | 否 | Web: x | path 对应页面实例 Id（随机生成，不保证递增）。仅 render/navigation 指标有效。 |
+| referrerPageId | number | 否 | Web: x | referrerPath对应页面实例 Id（随机生成，不保证递增）。仅 route 指标有效。 |
+| navigationStart | number | 否 | Web: x | 路由真正响应开始时间。仅 navigation 类型指标有效。 |
+| navigationType | string | 否 | Web: x | 路由详细类型，与路由方法对应。仅 navigation 类型指标有效。 |
+| initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
+| viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 |
  
 
 
@@ -658,7 +658,7 @@ disconnect
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

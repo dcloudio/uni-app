@@ -22,25 +22,25 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **ShareWithSystemOptions** | 是 |  | Web: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **ShareWithSystemOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 否 |  | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享类型,默认为text。 |
-| summary | string | 否 |  | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享的文字内容 |
-| href | string | 否 |  | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享链接 |
-| imageUrl | string | 否 |  | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享单个图片，仅支持本地路径 |
-| imagePaths | Array&lt;string&gt; | 否 |  | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享图片，仅支持本地路径 |
-| videoPaths | Array&lt;string&gt; | 否 |  | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享video，仅支持本地路径 |
-| audioPaths | Array&lt;string&gt; | 否 |  | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享audio，仅支持本地路径 |
-| filePaths | Array&lt;string&gt; | 否 |  | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享文件，仅支持本地路径 |
-| success | (res: ShareWithSystemSuccess) => void | 否 |  | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | uni.shareWithSystem成功回调函数定义 |
-| fail | (res: [ShareWithSystemFail](#sharewithsystemfail-values)) => void | 否 |  | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | uni.shareWithSystem失败回调函数定义 |
-| complete | (res: any) => void | 否 |  | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | uni.shareWithSystem完成回调函数定义 | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| type | string | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享类型,默认为text。 |
+| summary | string | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享的文字内容 |
+| href | string | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享链接 |
+| imageUrl | string | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享单个图片，仅支持本地路径 |
+| imagePaths | Array&lt;string&gt; | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享图片，仅支持本地路径 |
+| videoPaths | Array&lt;string&gt; | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享video，仅支持本地路径 |
+| audioPaths | Array&lt;string&gt; | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享audio，仅支持本地路径 |
+| filePaths | Array&lt;string&gt; | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享文件，仅支持本地路径 |
+| success | (res: ShareWithSystemSuccess) => void | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | uni.shareWithSystem成功回调函数定义 |
+| fail | (res: [ShareWithSystemFail](#sharewithsystemfail-values)) => void | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | uni.shareWithSystem失败回调函数定义 |
+| complete | (res: any) => void | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | uni.shareWithSystem完成回调函数定义 | 
 
 ##### type 的属性描述
 
@@ -54,13 +54,13 @@
 
 #### ShareWithSystemFail 的属性值 @sharewithsystemfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x | 错误码 |
-| errSubject | string | 是 |  | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
@@ -639,9 +639,9 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 ## 注意

@@ -61,9 +61,9 @@ UniProgressActiveendEvent -- Extends --> UniCustomEvent&ltUniProgressActiveendEv
 
 
 ###### UniProgressActiveendEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| curPercent | number | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| curPercent | number | 是 |
 
 
 

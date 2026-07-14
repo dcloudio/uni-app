@@ -117,9 +117,9 @@ uni-collapse-item的标题栏的自定义：
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| accordion | boolean | true |   | 是否开启手风琴模式，开启后同一时间仅允许一个子项展开 |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| accordion | boolean | true | 是否开启手风琴模式，开启后同一时间仅允许一个子项展开 |
 
 <!-- UTSCOMJSON.uni-collapse.fileFormates -->
 
@@ -732,20 +732,20 @@ uni-collapse-item的标题栏的自定义：
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- |  :-: | :- |
-| title | string | "" |   | 折叠项标题文字 |
-| open | boolean | false |   | 是否默认展开 |
-| disabled | boolean | false |   | 是否禁用，禁用后点击标题不会展开或收起 |
-| titleWrapClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 标题行（整行容器）的样式类 |
-| titleClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 标题文字的基础样式类 |
-| titleOpenClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 展开状态下叠加到标题文字的样式类 |
-| titleDisabledClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 禁用状态下叠加到标题文字的样式类 |
-| contentWrapClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 内容外层容器的样式类 |
-| arrowClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 箭头图标的基础样式类 |
-| arrowOpenClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 展开状态下叠加到箭头图标的样式类 |
-| arrowDisabledClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" |   | 禁用状态下叠加到箭头图标的样式类 |
-| @change | Event |   |   |   |
+| 名称 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| title | string | "" | 折叠项标题文字 |
+| open | boolean | false | 是否默认展开 |
+| disabled | boolean | false | 是否禁用，禁用后点击标题不会展开或收起 |
+| titleWrapClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 标题行（整行容器）的样式类 |
+| titleClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 标题文字的基础样式类 |
+| titleOpenClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 展开状态下叠加到标题文字的样式类 |
+| titleDisabledClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 禁用状态下叠加到标题文字的样式类 |
+| contentWrapClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 内容外层容器的样式类 |
+| arrowClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 箭头图标的基础样式类 |
+| arrowOpenClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 展开状态下叠加到箭头图标的样式类 |
+| arrowDisabledClass | string([string.ClassString](/uts/data-type.md#ide-string)) | "" | 禁用状态下叠加到箭头图标的样式类 |
+| @change | Event |   |   |
 
 <!-- UTSCOMJSON.uni-collapse-item.fileFormates -->
 

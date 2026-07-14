@@ -23,21 +23,21 @@ uni-app x的app平台，页面不再由webview渲染，其实不需要原生提�
 
 
 
-| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- | :- |
-| globalStyle | [globalStyle 配置项列表](#pages-globalstyle) |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 默认页面的窗口表现 |
-| pages | Array\<[PagesOptionsPage](#pagesoptionspage)> |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 页面路径及窗口表现 |
-| tabBar | [tabBar 配置项列表](#pages-tabbar) |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 底部 tab 的表现 |
-| topWindow | [topWindow 配置项列表](#pages-topwindow) |  | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 上窗体 |
-| leftWindow | [leftWindow 配置项列表](#pages-leftwindow) |  | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 左窗体 |
-| rightWindow | [rightWindow 配置项列表](#pages-rightwindow) |  | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 右窗体 |
-| condition | [condition 配置项列表](#pages-condition) |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 启动模式 |
-| subPackages | Array\<[PagesSubPackages](#pagessubpackages)> |  | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 分包加载配置 |
-| preloadRule | [preloadRule 配置项列表](#pages-preloadrule) |  | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 声明分包预下载的规则 |
-| workers | string |  | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 使用 Worker 处理多线程任务时，设置 Worker 代码放置的目录 |
-| easycom | [easycom 配置项列表](#pages-easycom) |  | 否 | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11 | 组件自动引入规则 |
-| uniIdRouter | [uniIdRouter 配置项列表](#pages-uniidrouter) |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.99; iOS: 4.11 | 根据用户登录状态、页面是否要求登录、以及接口返回的用户token验证状态自动跳转登录页面。详细教程：[详见](https://doc.dcloud.net.cn/uniCloud/uni-id/summary.html#uni-id-router) |
-| entryPagePath | string |  | 否 | Web: x; 微信小程序: √; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 默认启动首页 |
+| 属性 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- | :- | :- |
+| globalStyle | [globalStyle 配置项列表](#pages-globalstyle) | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 默认页面的窗口表现 |
+| pages | Array\<[PagesOptionsPage](#pagesoptionspage)> | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 页面路径及窗口表现 |
+| tabBar | [tabBar 配置项列表](#pages-tabbar) | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 底部 tab 的表现 |
+| topWindow | [topWindow 配置项列表](#pages-topwindow) | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 上窗体 |
+| leftWindow | [leftWindow 配置项列表](#pages-leftwindow) | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 左窗体 |
+| rightWindow | [rightWindow 配置项列表](#pages-rightwindow) | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 右窗体 |
+| condition | [condition 配置项列表](#pages-condition) | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 启动模式 |
+| subPackages | Array\<[PagesSubPackages](#pagessubpackages)> | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 分包加载配置 |
+| preloadRule | [preloadRule 配置项列表](#pages-preloadrule) | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 声明分包预下载的规则 |
+| workers | string | 否 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 使用 Worker 处理多线程任务时，设置 Worker 代码放置的目录 |
+| easycom | [easycom 配置项列表](#pages-easycom) | 否 | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11 | 组件自动引入规则 |
+| uniIdRouter | [uniIdRouter 配置项列表](#pages-uniidrouter) | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.99; iOS: 4.11 | 根据用户登录状态、页面是否要求登录、以及接口返回的用户token验证状态自动跳转登录页面。详细教程：[详见](https://doc.dcloud.net.cn/uniCloud/uni-id/summary.html#uni-id-router) |
+| entryPagePath | string | 否 | Web: x; 微信小程序: √; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 默认启动首页 |
 
 ### globalStyle 配置项列表 @pages-globalstyle
 
@@ -104,10 +104,10 @@ H5 特有配置
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | x | x | x | x | x |
 
-| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- | :- |
-| titleNView | [titleNView 配置项列表](#h5-titlenview) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 导航栏设置 |
-| pullToRefresh | [pullToRefresh 配置项列表](#h5-pulltorefresh) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 下拉刷新 |
+| 属性 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- | :- | :- |
+| titleNView | [titleNView 配置项列表](#h5-titlenview) | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 导航栏设置 |
+| pullToRefresh | [pullToRefresh 配置项列表](#h5-pulltorefresh) | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 下拉刷新 |
 
 ##### titleNView 配置项列表 @h5-titlenview
 
@@ -117,15 +117,15 @@ H5 特有配置
 | :- | :- | :- | :- |
 | 4.0 | x | x | x |
 
-| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- | :- |
-| backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#f7f7f7" | 否 |   | 背景颜色，颜色值格式为"#RRGGBB"。 |
-| buttons | array |  | 否 |   | 自定义按钮，参考 [buttons](https://uniapp.dcloud.net.cn/collocation/pages.html?id=h5-titlenview-buttons)。 |
-| titleColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#000000" | 否 |   | 标题文字颜色 |
-| titleText | string |  | 否 |   | 标题文字内容 |
-| titleSize | string |  | 否 |   | 标题文字字体大小 |
-| type | 'defaultValue' \| 'transparent' | "defaultValue" | 否 |   | 导航栏样式。"default"-默认样式；"transparent"-透明渐变。 |
-| searchInput | object |  | 否 |   | 导航栏上的搜索框样式，详见：[searchInput](https://uniapp.dcloud.net.cn/collocation/pages.html?id=h5-searchinput)。 |
+| 属性 | 类型 | 默认值 | 必填 | 描述 |
+| :- | :- | :- | :- | :- |
+| backgroundColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#f7f7f7" | 否 | 背景颜色，颜色值格式为"#RRGGBB"。 |
+| buttons | array |  | 否 | 自定义按钮，参考 [buttons](https://uniapp.dcloud.net.cn/collocation/pages.html?id=h5-titlenview-buttons)。 |
+| titleColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#000000" | 否 | 标题文字颜色 |
+| titleText | string |  | 否 | 标题文字内容 |
+| titleSize | string |  | 否 | 标题文字字体大小 |
+| type | 'defaultValue' \| 'transparent' | "defaultValue" | 否 | 导航栏样式。"default"-默认样式；"transparent"-透明渐变。 |
+| searchInput | object |  | 否 | 导航栏上的搜索框样式，详见：[searchInput](https://uniapp.dcloud.net.cn/collocation/pages.html?id=h5-searchinput)。 |
 
 ##### pullToRefresh 配置项列表 @h5-pulltorefresh
 
@@ -135,17 +135,17 @@ H5 特有配置
 | :- | :- | :- | :- |
 | 4.0 | x | x | x |
 
-| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- | :- |
-| support | boolean |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 是否开启窗口的下拉刷新功能 |
-| color | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 颜色值格式为"#RRGGBB"，仅"circle"样式下拉刷新支持此属性。 |
-| type | 'defaultValue' \| 'circle' |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 下拉刷新控件样式 |
-| height | string |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 窗口的下拉刷新控件进入刷新状态的拉拽高度。支持百分比，如"10%"；像素值，如"50px"。 |
-| range | string |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 窗口可下拉拖拽的范围。支持百分比，如"10%"；像素值，如"50px"。 |
-| offset | string |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 下拉刷新控件的起始位置。仅对"circle"样式下拉刷新控件有效，用于定义刷新控件下拉时的起始位置。支持百分比，如"10%"；像素值，如"50px"。 |
-| contentdown | [contentdown 配置项列表](#pulltorefresh-contentdown) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 在下拉可刷新状态时下拉刷新控件显示的内容 |
-| contentover | [contentover 配置项列表](#pulltorefresh-contentover) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 在释放可刷新状态时下拉刷新控件显示的内容 |
-| contentrefresh | [contentrefresh 配置项列表](#pulltorefresh-contentrefresh) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 在正在刷新状态时下拉刷新控件显示的内容 |
+| 属性 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- | :- | :- |
+| support | boolean | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 是否开启窗口的下拉刷新功能 |
+| color | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 颜色值格式为"#RRGGBB"，仅"circle"样式下拉刷新支持此属性。 |
+| type | 'defaultValue' \| 'circle' | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 下拉刷新控件样式 |
+| height | string | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 窗口的下拉刷新控件进入刷新状态的拉拽高度。支持百分比，如"10%"；像素值，如"50px"。 |
+| range | string | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 窗口可下拉拖拽的范围。支持百分比，如"10%"；像素值，如"50px"。 |
+| offset | string | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 下拉刷新控件的起始位置。仅对"circle"样式下拉刷新控件有效，用于定义刷新控件下拉时的起始位置。支持百分比，如"10%"；像素值，如"50px"。 |
+| contentdown | [contentdown 配置项列表](#pulltorefresh-contentdown) | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 在下拉可刷新状态时下拉刷新控件显示的内容 |
+| contentover | [contentover 配置项列表](#pulltorefresh-contentover) | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 在释放可刷新状态时下拉刷新控件显示的内容 |
+| contentrefresh | [contentrefresh 配置项列表](#pulltorefresh-contentrefresh) | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 在正在刷新状态时下拉刷新控件显示的内容 |
 
 
 ###### contentdown 配置项列表 @pulltorefresh-contentdown
@@ -156,9 +156,9 @@ H5 特有配置
 | :- | :- | :- | :- |
 | 4.0 | x | x | x |
 
-| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- | :- |
-| caption | string |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 下拉刷新控件上显示的标题内容 |
+| 属性 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- | :- | :- |
+| caption | string | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 下拉刷新控件上显示的标题内容 |
 
 
 ###### contentover 配置项列表 @pulltorefresh-contentover
@@ -169,9 +169,9 @@ H5 特有配置
 | :- | :- | :- | :- |
 | 4.0 | x | x | x |
 
-| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- | :- |
-| caption | string |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 下拉刷新控件上显示的标题内容 |
+| 属性 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- | :- | :- |
+| caption | string | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 下拉刷新控件上显示的标题内容 |
 
 ###### contentrefresh 配置项列表 @pulltorefresh-contentrefresh
 
@@ -181,9 +181,9 @@ H5 特有配置
 | :- | :- | :- | :- |
 | 4.0 | x | x | x |
 
-| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- | :- |
-| caption | string |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 下拉刷新控件上显示的标题内容 |
+| 属性 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- | :- | :- |
+| caption | string | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 下拉刷新控件上显示的标题内容 |
 
 
 #### mp-weixin 配置项列表 @globalstyle-mp-weixin
@@ -364,9 +364,9 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 | :- | :- | :- | :- |
 | 4.0 | x | x | x |
 
-| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- | :- |
-| colorType | 'grey' \| 'blue' \| 'green' \| 'orange' \| 'red' \| 'yellow' |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 阴影的颜色，支持：grey、blue、green、orange、red、yellow |
+| 属性 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- | :- | :- |
+| colorType | 'grey' \| 'blue' \| 'green' \| 'orange' \| 'red' \| 'yellow' | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 阴影的颜色，支持：grey、blue、green、orange、red、yellow |
 
 #### 页面背景色@background
 - 页面容器背景色：可在页面 json 文件中通过 backgroundColorContent 属性配置，支持 #RRGGBB 写法，默认为白色
@@ -378,10 +378,10 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 
 
 
-| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- | :- |
-| titleNView | [titleNView 配置项列表](#h5-titlenview) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 导航栏设置 |
-| pullToRefresh | [pullToRefresh 配置项列表](#h5-pulltorefresh) |  | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 下拉刷新 |
+| 属性 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- | :- | :- |
+| titleNView | [titleNView 配置项列表](#h5-titlenview) | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 导航栏设置 |
+| pullToRefresh | [pullToRefresh 配置项列表](#h5-pulltorefresh) | 否 | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 下拉刷新 |
 
 
 ##### mp-weixin 配置项列表 @style-mp-weixin
@@ -452,14 +452,14 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 
 
 
-| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- | :- |
-| iconfont | [iconfont 配置项列表](#pagesoptionstabbarlist-iconfont) |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 字体图标，优先级高于 iconPath |
-| pagePath | string ([string.PageURIString](/uts/data-type.md#ide-string)) |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 页面路径，必须在 pages 中先定义 |
-| text | string |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tab 上按钮文字，在 App 和 H5 平台为非必填。例如中间可放一个没有文字的+号图标 |
-| iconPath | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 图片路径，icon 大小限制为40kb，建议尺寸为 81px * 81px，当 position 为 top 时，此参数无效，不支持网络图片，不支持字体图标 |
-| selectedIconPath | string ([string.ImageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 选中时的图片路径，icon 大小限制为40kb，建议尺寸为 81px * 81px ，当 position 为 top 时，此参数无效 |
-| visible | boolean |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 该项是否显示，默认显示 |
+| 属性 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- | :- | :- |
+| iconfont | [iconfont 配置项列表](#pagesoptionstabbarlist-iconfont) | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 字体图标，优先级高于 iconPath |
+| pagePath | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 页面路径，必须在 pages 中先定义 |
+| text | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | tab 上按钮文字，在 App 和 H5 平台为非必填。例如中间可放一个没有文字的+号图标 |
+| iconPath | string ([string.ImageURIString](/uts/data-type.md#ide-string)) | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 图片路径，icon 大小限制为40kb，建议尺寸为 81px * 81px，当 position 为 top 时，此参数无效，不支持网络图片，不支持字体图标 |
+| selectedIconPath | string ([string.ImageURIString](/uts/data-type.md#ide-string)) | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 选中时的图片路径，icon 大小限制为40kb，建议尺寸为 81px * 81px ，当 position 为 top 时，此参数无效 |
+| visible | boolean | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.11 | 该项是否显示，默认显示 |
 
 **tabbar示例**
 ```json
@@ -490,13 +490,13 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | x | 3.9 | 4.18 | x | x |
 
-| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- | :- |
-| text | string |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 字库 Unicode 码 |
-| selectedText | string |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 选中后字库 Unicode 码 |
-| fontSize | string |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 字体图标字号(px) |
-| color | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 字体图标颜色 |
-| selectedColor | string ([string.ColorString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 字体图标选中颜色 |
+| 属性 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- | :- | :- |
+| text | string | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 字库 Unicode 码 |
+| selectedText | string | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 选中后字库 Unicode 码 |
+| fontSize | string | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 字体图标字号(px) |
+| color | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 字体图标颜色 |
+| selectedColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS(VDOM): 4.18; iOS(Vapor): x; HarmonyOS: x | 字体图标选中颜色 |
 
 #### midButton 配置项列表 @tabbar-midbutton
 
@@ -524,11 +524,11 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | x | x | x | x | x |
 
-| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- | :- |
-| path | string |  | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 配置页面路径 |
-| style | object |  | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 配置页面窗口表现，配置项参考下方 [pageStyle](https://uniapp.dcloud.net.cn/collocation/pages.html?id=style) |
-| matchMedia | [matchMedia 配置项列表](#topwindow-matchmedia) |  | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 配置显示该窗口的规则，配置项参考下方 [matchMedia](https://uniapp.dcloud.net.cn/collocation/pages.html?id=matchmedia) |
+| 属性 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- | :- | :- |
+| path | string | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 配置页面路径 |
+| style | object | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 配置页面窗口表现，配置项参考下方 [pageStyle](https://uniapp.dcloud.net.cn/collocation/pages.html?id=style) |
+| matchMedia | [matchMedia 配置项列表](#topwindow-matchmedia) | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 配置显示该窗口的规则，配置项参考下方 [matchMedia](https://uniapp.dcloud.net.cn/collocation/pages.html?id=matchmedia) |
 
 #### matchMedia 配置项列表 @topwindow-matchmedia
 
@@ -550,11 +550,11 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | x | x | x | x | x |
 
-| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- | :- |
-| path | string |  | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 配置页面路径 |
-| style | object |  | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 配置页面窗口表现，配置项参考下方 [pageStyle](https://uniapp.dcloud.net.cn/collocation/pages.html?id=style) |
-| matchMedia | [matchMedia 配置项列表](#leftwindow-matchmedia) |  | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 配置显示该窗口的规则，配置项参考下方 [matchMedia](https://uniapp.dcloud.net.cn/collocation/pages.html?id=matchmedia) |
+| 属性 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- | :- | :- |
+| path | string | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 配置页面路径 |
+| style | object | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 配置页面窗口表现，配置项参考下方 [pageStyle](https://uniapp.dcloud.net.cn/collocation/pages.html?id=style) |
+| matchMedia | [matchMedia 配置项列表](#leftwindow-matchmedia) | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 配置显示该窗口的规则，配置项参考下方 [matchMedia](https://uniapp.dcloud.net.cn/collocation/pages.html?id=matchmedia) |
 
 #### matchMedia 配置项列表 @leftwindow-matchmedia
 
@@ -576,11 +576,11 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | x | x | x | x | x |
 
-| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- | :- |
-| path | string |  | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 配置页面路径 |
-| style | object |  | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 配置页面窗口表现，配置项参考下方 [pageStyle](https://uniapp.dcloud.net.cn/collocation/pages.html?id=style) |
-| matchMedia | [matchMedia 配置项列表](#rightwindow-matchmedia) |  | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 配置显示该窗口的规则，配置项参考下方 [matchMedia](https://uniapp.dcloud.net.cn/collocation/pages.html?id=matchmedia) |
+| 属性 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- | :- | :- |
+| path | string | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 配置页面路径 |
+| style | object | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 配置页面窗口表现，配置项参考下方 [pageStyle](https://uniapp.dcloud.net.cn/collocation/pages.html?id=style) |
+| matchMedia | [matchMedia 配置项列表](#rightwindow-matchmedia) | 否 | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 配置显示该窗口的规则，配置项参考下方 [matchMedia](https://uniapp.dcloud.net.cn/collocation/pages.html?id=matchmedia) |
 
 #### matchMedia 配置项列表 @rightwindow-matchmedia
 
@@ -604,10 +604,10 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 |
 
-| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- | :- |
-| current | number |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 当前激活的模式，list节点的索引值。 |
-| list | Array\<[PagesConditionItem](#pagesconditionitem)> |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 启动模式列表 |
+| 属性 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- | :- | :- |
+| current | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 当前激活的模式，list节点的索引值。 |
+| list | Array\<[PagesConditionItem](#pagesconditionitem)> | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 启动模式列表 |
 
 #### PagesConditionItem 配置项列表 @pagesconditionitem
 
@@ -615,11 +615,11 @@ tabbar节点用于配置应用的tabbar，仅支持配置一个。如需在更�
 
 
 
-| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- | :- |
-| name | string |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 启动模式名称 |
-| path | string ([string.PageURIString](/uts/data-type.md#ide-string)) |  | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 启动页面路径 |
-| query | string |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 启动参数，可在页面的 onLoad 函数里获得 |
+| 属性 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- | :- | :- |
+| name | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 启动模式名称 |
+| path | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 启动页面路径 |
+| query | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 启动参数，可在页面的 onLoad 函数里获得 |
 
 
 
@@ -650,11 +650,11 @@ easycom是uni-app提供的一种简化组件使用的方式。一般情况下组
 | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.99 | 4.11 |
 
-| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- | :- |
-| loginPage | string ([string.PageURIString](/uts/data-type.md#ide-string)) |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.99; iOS: 4.11 | 登录页面路径 |
-| resToLogin | boolean |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.99; iOS: 4.11 | 是否开启自动根据响应体判断跳转登录页面，默认true（开启） |
-| needLogin | Array\<string,[string.PageURIString](/uts/data-type.md#ide-string)> |  | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.99; iOS: 4.11 |   |
+| 属性 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- | :- | :- |
+| loginPage | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.99; iOS: 4.11 | 登录页面路径 |
+| resToLogin | boolean | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.99; iOS: 4.11 | 是否开启自动根据响应体判断跳转登录页面，默认true（开启） |
+| needLogin | Array\<string,[string.PageURIString](/uts/data-type.md#ide-string)> | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.99; iOS: 4.11 |   |
 
 
 ### subPackages 配置项列表 @pagessubpackages
@@ -667,11 +667,11 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 
 
 
-| 属性 | 类型 | 默认值 | 必填 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- | :- |
-| root | string |  | 是 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 子包的根目录 |
-| independent | boolean |  | 否 | Web: x; 微信小程序: 5.21; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 是否声明对应分包为独立分包 |
-| pages | Array\<[SubPackagePagesOptionsPage](#subpackagepagesoptionspage)> |  | 是 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 子包由哪些页面组成，参数同 pages |
+| 属性 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- | :- | :- |
+| root | string | 是 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 子包的根目录 |
+| independent | boolean | 否 | Web: x; 微信小程序: 5.21; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 是否声明对应分包为独立分包 |
+| pages | Array\<[SubPackagePagesOptionsPage](#subpackagepagesoptionspage)> | 是 | Web: x; 微信小程序: 4.41; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x | 子包由哪些页面组成，参数同 pages |
 
 #### SubPackagePagesOptionsPage 配置项列表 @subpackagepagesoptionspage
 

@@ -20,9 +20,9 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **ShowModalOptions** | 否 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **ShowModalOptions** | 否 |
 
 #### options 的属性描述
 
@@ -43,22 +43,22 @@
 
 #### ShowModalSuccess 的属性值 @showmodalsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 错误信息 |
-| content | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | editable 为 true 时，用户输入的文本 |
-| cancel | boolean | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 为 true 时，表示用户点击了取消（用于 Android 系统区分点击蒙层关闭还是点击取消按钮关闭） |
-| confirm | boolean | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 为 true 时，表示用户点击了确定按钮 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 错误信息 |
+| content | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | editable 为 true 时，用户输入的文本 |
+| cancel | boolean | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 为 true 时，表示用户点击了取消（用于 Android 系统区分点击蒙层关闭还是点击取消按钮关闭） |
+| confirm | boolean | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 为 true 时，表示用户点击了确定按钮 |
 
 #### ShowModalFail 的属性值 @showmodalfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   |  |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 |  |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 
 ### 返回值 
@@ -112,34 +112,34 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **HideModalOptions** | 否 |  | 微信小程序: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **HideModalOptions** | 否 | 微信小程序: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| modalPage | [UniPage](/api/unipage.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: 4.61 | 期望隐藏的目标 modal，如果为 null 会关闭当前栈顶全部 modal |
-| success | (result: [HideModalSuccess](#hidemodalsuccess-values)) => void | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS(VDOM) uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: [HideModalFail](#hidemodalfail-values)) => void | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS(VDOM) uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS(VDOM) uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| modalPage | [UniPage](/api/unipage.md) | 否 | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS(VDOM) uni-app x UTS 插件: x; HarmonyOS: 4.61 | 期望隐藏的目标 modal，如果为 null 会关闭当前栈顶全部 modal |
+| success | (result: [HideModalSuccess](#hidemodalsuccess-values)) => void | 否 | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS(VDOM) uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [HideModalFail](#hidemodalfail-values)) => void | 否 | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS(VDOM) uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS(VDOM) uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### HideModalSuccess 的属性值 @hidemodalsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: x |  |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| errMsg | string | 是 | 微信小程序: x |
 
 #### HideModalFail 的属性值 @hidemodalfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | 微信小程序: x |  |
-| errSubject | string | 是 |  | 微信小程序: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | 微信小程序: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | 微信小程序: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | 微信小程序: x |  |
+| errSubject | string | 是 | 微信小程序: x | 统一错误主题（模块）名称 |
+| data | any | 否 | 微信小程序: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | 微信小程序: x |  |
 
 
 
@@ -520,9 +520,9 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 ## Tips@tips

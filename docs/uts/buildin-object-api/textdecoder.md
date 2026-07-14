@@ -44,9 +44,9 @@ TextDecoder 接口表示一个文本解码器，一个解码器只支持一种�
 TextDecoder.decode() 方法返回一个字符串，其包含作为参数传递的缓冲区解码后的文本。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| input | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 |  |   | ArrayBuffer。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| input | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | ArrayBuffer。 | 
 
 
 **返回值**
@@ -106,9 +106,9 @@ TextDecoder.decode() 方法返回一个字符串，其包含作为参数传递�
 TextDecoder.decode() 方法返回一个字符串，其包含作为参数传递的缓冲区解码后的文本。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| input | [DataView](/uts/buildin-object-api/dataview.md) | 是 |  |   | DataView。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| input | [DataView](/uts/buildin-object-api/dataview.md) | 是 | DataView。 | 
 
 
 **返回值**
@@ -140,9 +140,9 @@ TextDecoder.decode() 方法返回一个字符串，其包含作为参数传递�
 TextDecoder.decode() 方法返回一个字符串，其包含作为参数传递的缓冲区解码后的文本。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| input | TypedArray | 是 |  |   | Float32Array，Float64Array，Int8Array，Int16Array，Int32Array，Uint8Array，Uint8ClampedArray，Uint16Array，Uint32Array 的实例 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| input | TypedArray | 是 | Float32Array，Float64Array，Int8Array，Int16Array，Int32Array，Uint8Array，Uint8ClampedArray，Uint16Array，Uint32Array 的实例 | 
 
 
 **返回值**

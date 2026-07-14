@@ -20,9 +20,9 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **GetNetworkTypeOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **GetNetworkTypeOptions** | 是 |
 
 #### options 的属性描述
 
@@ -34,12 +34,12 @@
 
 #### GetNetworkTypeSuccess 的属性值 @getnetworktypesuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| networkType | string | 是 |  | 微信小程序: 4.41 | 网络类型 |
-| hasSystemProxy | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.22.1`<br/><br/>设备是否使用了网络代理<br/> |
-| signalStrength | number | 否 |  | 微信小程序: 4.41 | 信号强弱，单位 dbm<br/> |
-| weakNet | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `3.5.3`<br/><br/>是否处于弱网环境<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| networkType | string | 是 | 微信小程序: 4.41 | 网络类型 |
+| hasSystemProxy | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.22.1`<br/><br/>设备是否使用了网络代理<br/> |
+| signalStrength | number | 否 | 微信小程序: 4.41 | 信号强弱，单位 dbm<br/> |
+| weakNet | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `3.5.3`<br/><br/>是否处于弱网环境<br/> |
 
 
 
@@ -168,7 +168,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

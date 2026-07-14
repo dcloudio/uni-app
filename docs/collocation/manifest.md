@@ -10,23 +10,23 @@ uni-app x 目前不提供内置模块选择，而是提供了摇树机制自动�
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| appid | string |  | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | [DCloud AppID 使用说明](https://ask.dcloud.net.cn/article/35907) |
-| name | string |  | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 应用名称 |
-| description | string |  | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 应用描述 |
-| versionName | string |  | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 应用版本名称 |
-| versionCode | integer |  | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 应用版本号，必须是整数，取值范围1~2147483647；升级时必须高于上一次设置的值。 |
-| locale | '' |  | Web: x; Android: x; iOS: x | 默认语言 |
-| fallbackLocale | '' |  | Web: x; Android: x; iOS: x | 默认回退语言 |
-| uni-app-x | [uni-app-x 配置项列表](#manifest-uni-app-x) |  | Web: 4.0; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.21; HarmonyOS: 4.61 | 存在uni-app-x节点则表示为uni-app x项目 |
-| app | [app 配置项列表](#manifest-app) |  | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | App平台（原生App）配置 |
-| app-android | [app-android 配置项列表](#manifest-app-android) |  | Web: x; 微信小程序: x; Android: 4.71; iOS: x; HarmonyOS: x | App-Android平台配置 |
-| app-ios | [app-ios 配置项列表](#manifest-app-ios) |  | Web: x; 微信小程序: x; Android: x; iOS: 4.71; HarmonyOS: x | iOS App平台配置 |
-| app-harmony | [app-harmony 配置项列表](#manifest-app-harmony) |  | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | HarmonyOS平台配置 |
-| web | [web 配置项列表](#manifest-web) |  | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | Web平台配置 |
-| mp-weixin | [mp-weixin 配置项列表](#manifest-mp-weixin) |  | Web: x; 微信小程序: √; Android: x; iOS: x; HarmonyOS: x |   |
-| __hbuilderx | [__hbuilderx 配置项列表](#manifest-hbuilderx) |  | Web: x; Android: 4.31; iOS: 4.31 | 用于HBuilderX可视化界面相关操作配置 |
+| 属性 | 类型 | 兼容性 | 描述 |
+| :- | :- | :- | :- |
+| appid | string | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | [DCloud AppID 使用说明](https://ask.dcloud.net.cn/article/35907) |
+| name | string | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 应用名称 |
+| description | string | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 应用描述 |
+| versionName | string | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 应用版本名称 |
+| versionCode | integer | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 应用版本号，必须是整数，取值范围1~2147483647；升级时必须高于上一次设置的值。 |
+| locale | '' | Web: x; Android: x; iOS: x | 默认语言 |
+| fallbackLocale | '' | Web: x; Android: x; iOS: x | 默认回退语言 |
+| uni-app-x | [uni-app-x 配置项列表](#manifest-uni-app-x) | Web: 4.0; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): 5.21; HarmonyOS: 4.61 | 存在uni-app-x节点则表示为uni-app x项目 |
+| app | [app 配置项列表](#manifest-app) | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | App平台（原生App）配置 |
+| app-android | [app-android 配置项列表](#manifest-app-android) | Web: x; 微信小程序: x; Android: 4.71; iOS: x; HarmonyOS: x | App-Android平台配置 |
+| app-ios | [app-ios 配置项列表](#manifest-app-ios) | Web: x; 微信小程序: x; Android: x; iOS: 4.71; HarmonyOS: x | iOS App平台配置 |
+| app-harmony | [app-harmony 配置项列表](#manifest-app-harmony) | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: 4.61 | HarmonyOS平台配置 |
+| web | [web 配置项列表](#manifest-web) | Web: 4.0; 微信小程序: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS: x | Web平台配置 |
+| mp-weixin | [mp-weixin 配置项列表](#manifest-mp-weixin) | Web: x; 微信小程序: √; Android: x; iOS: x; HarmonyOS: x |   |
+| __hbuilderx | [__hbuilderx 配置项列表](#manifest-hbuilderx) | Web: x; Android: 4.31; iOS: 4.31 | 用于HBuilderX可视化界面相关操作配置 |
 
 **注意**
 - `appid` 由 DCloud 云端分配，主要用于 DCloud 相关的云服务，请勿自行修改。[详见](https://ask.dcloud.net.cn/article/35907)
@@ -81,14 +81,14 @@ App平台发布配置
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| syncDebug | boolean | "false" |   | 是否为自定义调试基座 |
-| icons | [icons 配置项列表](#distribute-icons) |  |   | Android、iOS平台应用图标配置。云打包后生效，建议在HBuilderX中 manifest.json 的可视化界面操作，不推荐手动在源码视图中修改。 |
-| splashScreens | [splashScreens 配置项列表](#distribute-splashscreens) |  |   | Android、iOS平台应用启动界面配置。云端打包后生效，建议在HBuilderX中 manifest.json 的可视化界面操作 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-splashscreen.html) |
-| android | [android 配置项列表](#distribute-android) |  |   | App-Android平台发布配置 |
-| ios | [ios 配置项列表](#distribute-ios) |  |   | IOS配置 |
-| modules | [modules 配置项列表](#distribute-modules) |  |   | app内置模块配置 |
+| 属性 | 类型 | 默认值 | 描述 |
+| :- | :- | :- | :- |
+| syncDebug | boolean | "false" | 是否为自定义调试基座 |
+| icons | [icons 配置项列表](#distribute-icons) |  | Android、iOS平台应用图标配置。云打包后生效，建议在HBuilderX中 manifest.json 的可视化界面操作，不推荐手动在源码视图中修改。 |
+| splashScreens | [splashScreens 配置项列表](#distribute-splashscreens) |  | Android、iOS平台应用启动界面配置。云端打包后生效，建议在HBuilderX中 manifest.json 的可视化界面操作 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-splashscreen.html) |
+| android | [android 配置项列表](#distribute-android) |  | App-Android平台发布配置 |
+| ios | [ios 配置项列表](#distribute-ios) |  | IOS配置 |
+| modules | [modules 配置项列表](#distribute-modules) |  | app内置模块配置 |
 
 ##### App端图标配置 @distribute-icons
 
@@ -96,10 +96,10 @@ Android、iOS平台应用图标配置。云打包后生效，建议在HBuilderX�
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| android | [android 配置项列表](#icons-android) |  |   | Android图标配置 |
-| ios | [ios 配置项列表](#icons-ios) |  |   | iOS图标配置 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| android | [android 配置项列表](#icons-android) | Android图标配置 |
+| ios | [ios 配置项列表](#icons-ios) | iOS图标配置 |
 
 **注意**
 - App端图片相关配置，建议在HBuilderX中 manifest.json 的可视化界面操作，不推荐手动在源码视图中修改
@@ -111,12 +111,12 @@ Android、iOS平台应用图标配置。云打包后生效，建议在HBuilderX�
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| hdpi | string |  |   | 高分屏设备应用图标，分辨率要求72x72 |
-| xhdpi | string |  |   | 720P高分屏设备应用图标，分辨率要求96x96 |
-| xxhdpi | string |  |   | 1080P高分屏设备应用图标，分辨率要求144x144 |
-| xxxhdpi | string |  |   | 2K屏设备应用图标，分辨率要求192x192 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| hdpi | string | 高分屏设备应用图标，分辨率要求72x72 |
+| xhdpi | string | 720P高分屏设备应用图标，分辨率要求96x96 |
+| xxhdpi | string | 1080P高分屏设备应用图标，分辨率要求144x144 |
+| xxxhdpi | string | 2K屏设备应用图标，分辨率要求192x192 |
 
 > 必须使用 `png` 格式图标
 
@@ -128,9 +128,9 @@ Android、iOS平台应用图标配置。云打包后生效，建议在HBuilderX�
 
 > 必须使用 `png` 格式图标，图片中不能存在透明区域
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| appstore | string |  |   | iPhone/iPad设备应用图标，分辨率要求 1024x1024 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| appstore | string | iPhone/iPad设备应用图标，分辨率要求 1024x1024 |
 
 ##### App端启动界面配置 @distribute-splashScreens
 
@@ -143,14 +143,14 @@ Android、iOS平台应用启动界面配置。云端打包后生效，建议在H
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| ldpi | string |  |   | 适用于（mdpi）密度屏幕（~120dpi），建议分辨率 240x320。此类设备不常见，通常可以不用配置此项。 |
-| mdpi | string |  |   | 适用于（mdpi）密度屏幕（~160dpi），建议分辨率 320x480。此类设备不常见，通常可以不用配置此项。 |
-| hdpi | string |  |   | 适用于（hdpi）密度屏幕（~240dpi），建议分辨率 480x800。此类设备不常见，通常可以不用配置此项。 |
-| xhdpi | string |  |   | 适用于（xhdpi）密度屏幕（~320dpi），建议分辨率 720x1280 |
-| xxhdpi | string |  |   | 适用于（xxhdpi）密度屏幕（~480dpi），建议分辨率 1080x1920 |
-| xxxhdpi | string |  |   | 适用于（xxxhdpi）密度屏幕（~640dpi），建议分辨率 2160x3840 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| ldpi | string | 适用于（mdpi）密度屏幕（~120dpi），建议分辨率 240x320。此类设备不常见，通常可以不用配置此项。 |
+| mdpi | string | 适用于（mdpi）密度屏幕（~160dpi），建议分辨率 320x480。此类设备不常见，通常可以不用配置此项。 |
+| hdpi | string | 适用于（hdpi）密度屏幕（~240dpi），建议分辨率 480x800。此类设备不常见，通常可以不用配置此项。 |
+| xhdpi | string | 适用于（xhdpi）密度屏幕（~320dpi），建议分辨率 720x1280 |
+| xxhdpi | string | 适用于（xxhdpi）密度屏幕（~480dpi），建议分辨率 1080x1920 |
+| xxxhdpi | string | 适用于（xxxhdpi）密度屏幕（~640dpi），建议分辨率 2160x3840 |
 
 
 ###### Android12启动界面配置 @splashScreen-_android12
@@ -159,11 +159,11 @@ Android、iOS平台应用启动界面配置。云端打包后生效，建议在H
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| background | string |  |   | 仅在Android12及以上设备生效，默认值为白色 |
-| icon | [icon 配置项列表](#android12-icon) |  |   | Android12启动界面中部Logo图标 |
-| brand | [brand 配置项列表](#android12-brand) |  |   | Android12启动界面底部品牌图标 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| background | string | 仅在Android12及以上设备生效，默认值为白色 |
+| icon | [icon 配置项列表](#android12-icon) | Android12启动界面中部Logo图标 |
+| brand | [brand 配置项列表](#android12-brand) | Android12启动界面底部品牌图标 |
 
 
 ###### Android12启动界面Logo图标配置 @android12-icon
@@ -172,11 +172,11 @@ Android、iOS平台应用启动界面配置。云端打包后生效，建议在H
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| xhdpi | string |  |   | 适用于（xhdpi）密度屏幕（~320dpi），建议分辨率 480x480 |
-| xxhdpi | string |  |   | 适用于（xxhdpi）密度屏幕（~480dpi），建议分辨率 720x720 |
-| xxxhdpi | string |  |   | 适用于（xxxhdpi）密度屏幕（~640dpi），建议分辨率 960x960 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| xhdpi | string | 适用于（xhdpi）密度屏幕（~320dpi），建议分辨率 480x480 |
+| xxhdpi | string | 适用于（xxhdpi）密度屏幕（~480dpi），建议分辨率 720x720 |
+| xxxhdpi | string | 适用于（xxxhdpi）密度屏幕（~640dpi），建议分辨率 960x960 |
 
 ###### Android12启动界面底部品牌图标 @android12-brand
 
@@ -184,11 +184,11 @@ Android、iOS平台应用启动界面配置。云端打包后生效，建议在H
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| xhdpi | string |  |   | 适用于（xhdpi）密度屏幕（~320dpi），建议分辨率 400x160 |
-| xxhdpi | string |  |   | 适用于（xxhdpi）密度屏幕（~480dpi），建议分辨率 600x240 |
-| xxxhdpi | string |  |   | 适用于（xxxhdpi）密度屏幕（~640dpi），建议分辨率 800x320 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| xhdpi | string | 适用于（xhdpi）密度屏幕（~320dpi），建议分辨率 400x160 |
+| xxhdpi | string | 适用于（xxhdpi）密度屏幕（~480dpi），建议分辨率 600x240 |
+| xxxhdpi | string | 适用于（xxxhdpi）密度屏幕（~640dpi），建议分辨率 800x320 |
 
 ##### ANDROID配置 @distribute-android
 
@@ -232,27 +232,27 @@ app内置模块配置
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| uni-ad | [uni-ad 配置项列表](#modules-uni-ad) |  | Android: 4.0; iOS: 4.22 | [uni-ad广告联盟](https://uniad.dcloud.net.cn/)模块 |
-| uni-canvas | object |  | Android: 4.25; iOS: 4.25 | [canvas画布](https://doc.dcloud.net.cn/uni-app-x/component/canvas.html)组件模块（HBuilderX4.0+） |
-| uni-cloud-client | object |  | Android: 4.25; iOS: 4.25 | [uniCloud云函数/云对象](https://doc.dcloud.net.cn/uniCloud/cf-functions.html)模块（HBuilderX4.25+） |
-| uni-createRequestPermissionListener | object |  | Android: 4.0; iOS: x | [监听权限申请](https://doc.dcloud.net.cn/uni-app-x/api/create-request-permission-listener.html)模块（HBuilderX4.0+） |
-| uni-createWebviewContext | object |  | Android: 4.0; iOS: x | 创建[web-view 组件的上下文对象](https://doc.dcloud.net.cn/uni-app-x/api/create-webview-context.html)模块 |
-| uni-facialRecognitionVerify | object |  | Android: 3.91; iOS: 4.11 | [uni实人认证](https://doc.dcloud.net.cn/uni-app-x/api/facial-recognition-meta-info.html)模块 |
-| uni-fileSystemManager | object |  | Android: 3.91; iOS: 4.11 | [文件管理](https://doc.dcloud.net.cn/uni-app-x/api/get-file-system-manager.html)模块 |
-| uni-location | [uni-location 配置项列表](#modules-uni-location) |  | Android: 3.91; iOS: 4.11 | [系统定位](https://doc.dcloud.net.cn/uni-app-x/api/get-location.html)模块, HBuilderX 4.61- 之前是`uni-getLocation` |
-| uni-getNetworkType | object |  | Android: 3.91; iOS: 4.11 | [获取网络类型](https://doc.dcloud.net.cn/uni-app-x/api/get-network-type.html)模块 |
-| uni-installApk | object |  | Android: 3.99; iOS: x | [安装apk](https://doc.dcloud.net.cn/uni-app-x/api/install-apk.html)模块 |
-| uni-payment | [uni-payment 配置项列表](#modules-uni-payment) |  | Android: 4.02; iOS: 4.18 | [请求支付](https://doc.dcloud.net.cn/uni-app-x/api/request-payment.html)模块 |
-| uni-getProvider | object |  | Android: 4.11; iOS: 4.11 | [获取服务供应商](https://doc.dcloud.net.cn/uni-app-x/api/get-provider.html#getprovider)模块 |
-| uni-push | object |  | Android: 3.97; iOS: 4.11 | [统一推送](https://doc.dcloud.net.cn/uni-app-x/api/uni-push.html)模块 |
-| uni-media | object |  | Android: 3.91; iOS: 4.11 | [多媒体](https://doc.dcloud.net.cn/uni-app-x/api/choose-image.html)模块 |
-| uni-network | object |  | Android: 3.91; iOS: 4.11 | [网络请求（文件上传/下载）](https://doc.dcloud.net.cn/uni-app-x/api/choose-image.html)模块 |
-| uni-virtualPayment | object |  | Android: x; iOS: 4.25 | [虚拟支付](https://doc.dcloud.net.cn/uni-app-x/api/choose-image.html)模块 |
-| uni-video | object |  | Android: 3.91; iOS: 4.11 | [video视频组件](https://doc.dcloud.net.cn/uni-app-x/component/video.html)模块 |
-| uni-websocket | object |  | Android: 3.91; iOS: 4.11 | [WebSocket](https://doc.dcloud.net.cn/uni-app-x/api/websocket.html)模块 |
-| uni-verify | object |  | Android: 3.99; iOS: 4.18 | [一键登录](https://doc.dcloud.net.cn/uni-app-x/api/get-univerify-manager.html)模块 |
+| 属性 | 类型 | 兼容性 | 描述 |
+| :- | :- | :- | :- |
+| uni-ad | [uni-ad 配置项列表](#modules-uni-ad) | Android: 4.0; iOS: 4.22 | [uni-ad广告联盟](https://uniad.dcloud.net.cn/)模块 |
+| uni-canvas | object | Android: 4.25; iOS: 4.25 | [canvas画布](https://doc.dcloud.net.cn/uni-app-x/component/canvas.html)组件模块（HBuilderX4.0+） |
+| uni-cloud-client | object | Android: 4.25; iOS: 4.25 | [uniCloud云函数/云对象](https://doc.dcloud.net.cn/uniCloud/cf-functions.html)模块（HBuilderX4.25+） |
+| uni-createRequestPermissionListener | object | Android: 4.0; iOS: x | [监听权限申请](https://doc.dcloud.net.cn/uni-app-x/api/create-request-permission-listener.html)模块（HBuilderX4.0+） |
+| uni-createWebviewContext | object | Android: 4.0; iOS: x | 创建[web-view 组件的上下文对象](https://doc.dcloud.net.cn/uni-app-x/api/create-webview-context.html)模块 |
+| uni-facialRecognitionVerify | object | Android: 3.91; iOS: 4.11 | [uni实人认证](https://doc.dcloud.net.cn/uni-app-x/api/facial-recognition-meta-info.html)模块 |
+| uni-fileSystemManager | object | Android: 3.91; iOS: 4.11 | [文件管理](https://doc.dcloud.net.cn/uni-app-x/api/get-file-system-manager.html)模块 |
+| uni-location | [uni-location 配置项列表](#modules-uni-location) | Android: 3.91; iOS: 4.11 | [系统定位](https://doc.dcloud.net.cn/uni-app-x/api/get-location.html)模块, HBuilderX 4.61- 之前是`uni-getLocation` |
+| uni-getNetworkType | object | Android: 3.91; iOS: 4.11 | [获取网络类型](https://doc.dcloud.net.cn/uni-app-x/api/get-network-type.html)模块 |
+| uni-installApk | object | Android: 3.99; iOS: x | [安装apk](https://doc.dcloud.net.cn/uni-app-x/api/install-apk.html)模块 |
+| uni-payment | [uni-payment 配置项列表](#modules-uni-payment) | Android: 4.02; iOS: 4.18 | [请求支付](https://doc.dcloud.net.cn/uni-app-x/api/request-payment.html)模块 |
+| uni-getProvider | object | Android: 4.11; iOS: 4.11 | [获取服务供应商](https://doc.dcloud.net.cn/uni-app-x/api/get-provider.html#getprovider)模块 |
+| uni-push | object | Android: 3.97; iOS: 4.11 | [统一推送](https://doc.dcloud.net.cn/uni-app-x/api/uni-push.html)模块 |
+| uni-media | object | Android: 3.91; iOS: 4.11 | [多媒体](https://doc.dcloud.net.cn/uni-app-x/api/choose-image.html)模块 |
+| uni-network | object | Android: 3.91; iOS: 4.11 | [网络请求（文件上传/下载）](https://doc.dcloud.net.cn/uni-app-x/api/choose-image.html)模块 |
+| uni-virtualPayment | object | Android: x; iOS: 4.25 | [虚拟支付](https://doc.dcloud.net.cn/uni-app-x/api/choose-image.html)模块 |
+| uni-video | object | Android: 3.91; iOS: 4.11 | [video视频组件](https://doc.dcloud.net.cn/uni-app-x/component/video.html)模块 |
+| uni-websocket | object | Android: 3.91; iOS: 4.11 | [WebSocket](https://doc.dcloud.net.cn/uni-app-x/api/websocket.html)模块 |
+| uni-verify | object | Android: 3.99; iOS: 4.18 | [一键登录](https://doc.dcloud.net.cn/uni-app-x/api/get-univerify-manager.html)模块 |
 
 
 ###### uni-ad 配置项列表 @modules-uni-ad
@@ -263,13 +263,13 @@ app内置模块配置
 | :- | :- |
 | 4.0 | 4.22 |
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| gdt | object |  |   | 腾讯优量汇广告联盟 |
-| gm | object |  |   | 穿山甲GroMore |
-| ks | object |  |   | 快手广告联盟 |
-| sgm | object |  |   | Sigmob广告联盟 |
-| bd | object |  |   | 百度百青藤广告联盟 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| gdt | object | 腾讯优量汇广告联盟 |
+| gm | object | 穿山甲GroMore |
+| ks | object | 快手广告联盟 |
+| sgm | object | Sigmob广告联盟 |
+| bd | object | 百度百青藤广告联盟 |
 
 
 ###### uni-location 配置项列表 @modules-uni-location
@@ -280,10 +280,10 @@ app内置模块配置
 | :- | :- |
 | 3.91 | 4.11 |
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| system | object |  |   | 系统定位 |
-| tencent | object |  |   | 腾讯定位 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| system | object | 系统定位 |
+| tencent | object | 腾讯定位 |
 
 
 ###### uni-payment 配置项列表 @modules-uni-payment
@@ -294,10 +294,10 @@ app内置模块配置
 | :- | :- |
 | 4.02 | 4.18 |
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| alipay | object |  | Android: 3.91; iOS: 4.18 | 支付宝支付 |
-| wxpay | [wxpay 配置项列表](#uni-payment-wxpay) |  | Android: 4.11; iOS: 4.18 | 微信支付 |
+| 属性 | 类型 | 兼容性 | 描述 |
+| :- | :- | :- | :- |
+| alipay | object | Android: 3.91; iOS: 4.18 | 支付宝支付 |
+| wxpay | [wxpay 配置项列表](#uni-payment-wxpay) | Android: 4.11; iOS: 4.18 | 微信支付 |
 
 
 ###### uni-payment-wxpay 配置项列表 @uni-payment-wxpay
@@ -308,10 +308,10 @@ app内置模块配置
 | :- | :- |
 | 4.11 | 4.18 |
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| android | object |  |   | android平台微信支付配置信息 |
-| ios | [ios 配置项列表](#wxpay-ios) |  |   | ios平台微信支付配置信息 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| android | object | android平台微信支付配置信息 |
+| ios | [ios 配置项列表](#wxpay-ios) | ios平台微信支付配置信息 |
 
 
 ###### wxpay ios 配置项列表 @wxpay-ios
@@ -320,10 +320,10 @@ ios平台微信支付配置信息
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| appid | string |  |   | 微信开放平台申请的应用ID（AppID） |
-| universalLink | string |  |   | 通用链接（Universal Link），配置方式参考：[iOS通用链接](https://uniapp.dcloud.net.cn/tutorial/app-ios-capabilities.html#%E9%80%9A%E7%94%A8%E9%93%BE%E6%8E%A5-universal-link) |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| appid | string | 微信开放平台申请的应用ID（AppID） |
+| universalLink | string | 通用链接（Universal Link），配置方式参考：[iOS通用链接](https://uniapp.dcloud.net.cn/tutorial/app-ios-capabilities.html#%E9%80%9A%E7%94%A8%E9%93%BE%E6%8E%A5-universal-link) |
 
 
 
@@ -371,12 +371,12 @@ Android平台应用图标配置。云打包后生效，建议在HBuilderX中 man
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| hdpi | string |  |   | 高分屏设备应用图标，分辨率要求72x72 |
-| xhdpi | string |  |   | 720P高分屏设备应用图标，分辨率要求96x96 |
-| xxhdpi | string |  |   | 1080P高分屏设备应用图标，分辨率要求144x144 |
-| xxxhdpi | string |  |   | 2K屏设备应用图标，分辨率要求192x192 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| hdpi | string | 高分屏设备应用图标，分辨率要求72x72 |
+| xhdpi | string | 720P高分屏设备应用图标，分辨率要求96x96 |
+| xxhdpi | string | 1080P高分屏设备应用图标，分辨率要求144x144 |
+| xxxhdpi | string | 2K屏设备应用图标，分辨率要求192x192 |
 
 
 ##### Android平台启动界面配置 @distribute-splashscreens
@@ -385,12 +385,12 @@ Android平台应用启动界面配置。云端打包后生效，建议在HBuilde
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| default | [default 配置项列表](#splashscreens-default) |  |   | Android平台启动图配置 |
-| background | string |  |   | 仅在Android12及以上设备生效，默认值为白色 |
-| icon | [icon 配置项列表](#splashscreens-icon) |  |   | Android12启动界面中部Logo图标 |
-| brand | [brand 配置项列表](#splashscreens-brand) |  |   | Android12启动界面底部品牌图标 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| default | [default 配置项列表](#splashscreens-default) | Android平台启动图配置 |
+| background | string | 仅在Android12及以上设备生效，默认值为白色 |
+| icon | [icon 配置项列表](#splashscreens-icon) | Android12启动界面中部Logo图标 |
+| brand | [brand 配置项列表](#splashscreens-brand) | Android12启动界面底部品牌图标 |
 
 
 ###### Android平台启动图配置 @splashscreens-default
@@ -399,14 +399,14 @@ Android平台应用启动界面配置。云端打包后生效，建议在HBuilde
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| ldpi | string |  |   | 适用于（mdpi）密度屏幕（~120dpi），建议分辨率 240x320。此类设备不常见，通常可以不用配置此项。 |
-| mdpi | string |  |   | 适用于（mdpi）密度屏幕（~160dpi），建议分辨率 320x480。此类设备不常见，通常可以不用配置此项。 |
-| hdpi | string |  |   | 适用于（hdpi）密度屏幕（~240dpi），建议分辨率 480x800。此类设备不常见，通常可以不用配置此项。 |
-| xhdpi | string |  |   | 适用于（xhdpi）密度屏幕（~320dpi），建议分辨率 720x1280 |
-| xxhdpi | string |  |   | 适用于（xxhdpi）密度屏幕（~480dpi），建议分辨率 1080x1920 |
-| xxxhdpi | string |  |   | 适用于（xxxhdpi）密度屏幕（~640dpi），建议分辨率 2160x3840 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| ldpi | string | 适用于（mdpi）密度屏幕（~120dpi），建议分辨率 240x320。此类设备不常见，通常可以不用配置此项。 |
+| mdpi | string | 适用于（mdpi）密度屏幕（~160dpi），建议分辨率 320x480。此类设备不常见，通常可以不用配置此项。 |
+| hdpi | string | 适用于（hdpi）密度屏幕（~240dpi），建议分辨率 480x800。此类设备不常见，通常可以不用配置此项。 |
+| xhdpi | string | 适用于（xhdpi）密度屏幕（~320dpi），建议分辨率 720x1280 |
+| xxhdpi | string | 适用于（xxhdpi）密度屏幕（~480dpi），建议分辨率 1080x1920 |
+| xxxhdpi | string | 适用于（xxxhdpi）密度屏幕（~640dpi），建议分辨率 2160x3840 |
 
 
 ###### Android12启动界面中部Logo图标 @splashscreens-icon
@@ -415,11 +415,11 @@ Android平台应用启动界面配置。云端打包后生效，建议在HBuilde
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| xhdpi | string |  |   | 适用于（xhdpi）密度屏幕（~320dpi），建议分辨率 480x480 |
-| xxhdpi | string |  |   | 适用于（xxhdpi）密度屏幕（~480dpi），建议分辨率 720x720 |
-| xxxhdpi | string |  |   | 适用于（xxxhdpi）密度屏幕（~640dpi），建议分辨率 960x960 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| xhdpi | string | 适用于（xhdpi）密度屏幕（~320dpi），建议分辨率 480x480 |
+| xxhdpi | string | 适用于（xxhdpi）密度屏幕（~480dpi），建议分辨率 720x720 |
+| xxxhdpi | string | 适用于（xxxhdpi）密度屏幕（~640dpi），建议分辨率 960x960 |
 
 
 ###### Android12启动界面底部品牌图标 @splashscreens-brand
@@ -428,11 +428,11 @@ Android平台应用启动界面配置。云端打包后生效，建议在HBuilde
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| xhdpi | string |  |   | 适用于（xhdpi）密度屏幕（~320dpi），建议分辨率 400x160 |
-| xxhdpi | string |  |   | 适用于（xxhdpi）密度屏幕（~480dpi），建议分辨率 600x240 |
-| xxxhdpi | string |  |   | 适用于（xxxhdpi）密度屏幕（~640dpi），建议分辨率 800x320 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| xhdpi | string | 适用于（xhdpi）密度屏幕（~320dpi），建议分辨率 400x160 |
+| xxhdpi | string | 适用于（xxhdpi）密度屏幕（~480dpi），建议分辨率 600x240 |
+| xxxhdpi | string | 适用于（xxxhdpi）密度屏幕（~640dpi），建议分辨率 800x320 |
 
 
 ###### modulesuni-location 配置项列表 @modules-uni-location
@@ -443,10 +443,10 @@ Android平台应用启动界面配置。云端打包后生效，建议在HBuilde
 | :- |
 | 3.91 |
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| system | object |  |   | 系统定位 |
-| tencent | [tencent 配置项列表](#uni-location-tencent) |  |   | 腾讯定位 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| system | object | 系统定位 |
+| tencent | [tencent 配置项列表](#uni-location-tencent) | 腾讯定位 |
 
 
 ###### uni-locationtencent 配置项列表 @uni-location-tencent
@@ -455,9 +455,9 @@ Android平台应用启动界面配置。云端打包后生效，建议在HBuilde
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| key | string |  |   | 腾讯位置服务后台申请的Key |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| key | string | 腾讯位置服务后台申请的Key |
 
 
 ###### modulesuni-map 配置项列表 @modules-uni-map
@@ -468,9 +468,9 @@ Android平台应用启动界面配置。云端打包后生效，建议在HBuilde
 | :- |
 | 4.31 |
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| tencent | [tencent 配置项列表](#uni-map-tencent) |  |   | 腾讯地图 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| tencent | [tencent 配置项列表](#uni-map-tencent) | 腾讯地图 |
 
 
 ###### uni-maptencent 配置项列表 @uni-map-tencent
@@ -479,9 +479,9 @@ Android平台应用启动界面配置。云端打包后生效，建议在HBuilde
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| key | string |  |   | 腾讯位置服务后台申请的Key |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| key | string | 腾讯位置服务后台申请的Key |
 
 
 ###### modulesuni-payment 配置项列表 @modules-uni-payment
@@ -492,10 +492,10 @@ Android平台应用启动界面配置。云端打包后生效，建议在HBuilde
 | :- |
 | 4.02 |
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| alipay | object |  |   | 支付宝支付 |
-| wxpay | object |  |   | 微信支付 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| alipay | object | 支付宝支付 |
+| wxpay | object | 微信支付 |
 
 
 ### iOS App配置 @manifest-app-ios
@@ -536,9 +536,9 @@ iOS平台应用图标配置。云打包后生效，建议在HBuilderX中 manifes
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| appstore | string |  |   | iPhone/iPad设备应用图标，分辨率要求 1024x1024 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| appstore | string | iPhone/iPad设备应用图标，分辨率要求 1024x1024 |
 
 
 ##### iOS平台启动界面配置 @distribute-splashscreens
@@ -547,9 +547,9 @@ iOS平台应用启动界面配置。云端打包后生效，建议在HBuilderX�
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| storyboard | string |  |   | 用于iOS平台自定义storyboard启动界面，[参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-splashscreen.html#ios) |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| storyboard | string | 用于iOS平台自定义storyboard启动界面，[参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-splashscreen.html#ios) |
 
 
 ##### distribute modules 配置项列表 @distribute-modules
@@ -558,11 +558,11 @@ app内置模块配置
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| uni-location | [uni-location 配置项列表](#modules-uni-location) |  | Android: 4.11 | [iOS平台uni-location（定位）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#moduleslocation)模块Provider配置 |
-| uni-map | [uni-map 配置项列表](#modules-uni-map) |  | Android: 4.31 | [iOS平台uni-map（地图）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#modulesmap)模块Provider配置 |
-| uni-payment | [uni-payment 配置项列表](#modules-uni-payment) |  | Android: 4.18 | [iOS平台uni-payment（支付）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#modulespayment)模块Provider配置 |
+| 属性 | 类型 | 兼容性 | 描述 |
+| :- | :- | :- | :- |
+| uni-location | [uni-location 配置项列表](#modules-uni-location) | Android: 4.11 | [iOS平台uni-location（定位）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#moduleslocation)模块Provider配置 |
+| uni-map | [uni-map 配置项列表](#modules-uni-map) | Android: 4.31 | [iOS平台uni-map（地图）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#modulesmap)模块Provider配置 |
+| uni-payment | [uni-payment 配置项列表](#modules-uni-payment) | Android: 4.18 | [iOS平台uni-payment（支付）](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-ios.html#modulespayment)模块Provider配置 |
 
 
 ###### modulesuni-location 配置项列表 @modules-uni-location
@@ -573,10 +573,10 @@ app内置模块配置
 | :- |
 | 4.11 |
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| system | object |  |   | 系统定位 |
-| tencent | [tencent 配置项列表](#uni-location-tencent) |  |   | 腾讯定位 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| system | object | 系统定位 |
+| tencent | [tencent 配置项列表](#uni-location-tencent) | 腾讯定位 |
 
 
 ###### uni-locationtencent 配置项列表 @uni-location-tencent
@@ -585,9 +585,9 @@ app内置模块配置
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| key | string |  |   | 腾讯位置服务后台申请的Key |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| key | string | 腾讯位置服务后台申请的Key |
 
 
 ###### modulesuni-map 配置项列表 @modules-uni-map
@@ -598,9 +598,9 @@ app内置模块配置
 | :- |
 | 4.31 |
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| tencent | [tencent 配置项列表](#uni-map-tencent) |  |   | 腾讯地图 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| tencent | [tencent 配置项列表](#uni-map-tencent) | 腾讯地图 |
 
 
 ###### uni-maptencent 配置项列表 @uni-map-tencent
@@ -609,9 +609,9 @@ app内置模块配置
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| key | string |  |   | 腾讯位置服务后台申请的Key |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| key | string | 腾讯位置服务后台申请的Key |
 
 
 ###### modulesuni-payment 配置项列表 @modules-uni-payment
@@ -622,10 +622,10 @@ app内置模块配置
 | :- |
 | 4.18 |
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| alipay | object |  |   | 支付宝支付 |
-| wxpay | [wxpay 配置项列表](#uni-payment-wxpay) |  |   | 微信支付 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| alipay | object | 支付宝支付 |
+| wxpay | [wxpay 配置项列表](#uni-payment-wxpay) | 微信支付 |
 
 
 ###### uni-paymentwxpay 配置项列表 @uni-payment-wxpay
@@ -634,10 +634,10 @@ app内置模块配置
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| appid | string |  |   | 微信开放平台创建移动应用时获取的APPID，以wx开头的字符串 |
-| universalLink | string |  |   | 微信开放平台的应用开发配置中设置的 Universal Links 值 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| appid | string | 微信开放平台创建移动应用时获取的APPID，以wx开头的字符串 |
+| universalLink | string | 微信开放平台的应用开发配置中设置的 Universal Links 值 |
 
 
 ### HarmonyOS配置 @manifest-app-harmony
@@ -648,9 +648,9 @@ HarmonyOS平台配置
 | :- | :- | :- | :- | :- | :- |
 | x | x | x | x | x | 4.61 |
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| distribute | [distribute 配置项列表](#app-harmony-distribute) |  | HarmonyOS: 4.61 | HarmonyOS分发配置 |
+| 属性 | 类型 | 兼容性 | 描述 |
+| :- | :- | :- | :- |
+| distribute | [distribute 配置项列表](#app-harmony-distribute) | HarmonyOS: 4.61 | HarmonyOS分发配置 |
 
 
 #### app-harmonydistribute 配置项列表 @app-harmony-distribute
@@ -661,9 +661,9 @@ HarmonyOS分发配置
 | :- |
 | 4.61 |
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| modules | [modules 配置项列表](#distribute-modules) |  |   | HarmonyOS分发模块配置 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| modules | [modules 配置项列表](#distribute-modules) | HarmonyOS分发模块配置 |
 
 
 ##### distribute modules 配置项列表 @distribute-modules
@@ -672,17 +672,17 @@ HarmonyOS分发模块配置
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| uni-location-system | object |  | HarmonyOS: 4.61 | 系统定位模块 |
-| uni-map-tencent | object |  | HarmonyOS: 4.61 | 腾讯地图模块 |
-| uni-oauth | [uni-oauth 配置项列表](#modules-uni-oauth) |  |   | 华为OAuth模块 |
-| uni-share | [uni-share 配置项列表](#modules-uni-share) |  | HarmonyOS: 4.75 | share 模块 |
-| uni-payment-alipay | object |  | HarmonyOS: 4.61 | 支付宝支付模块 |
-| uni-payment-wxpay | object |  | HarmonyOS: 4.61 | 微信支付模块 |
-| uni-push | object |  | HarmonyOS: 4.61 | 统一推送模块 |
-| uni-verify | object |  | HarmonyOS: 4.61 | 一键登录模块 |
-| uni-facialVerify | object |  | HarmonyOS: 4.61 | uni实人认证模块 |
+| 属性 | 类型 | 兼容性 | 描述 |
+| :- | :- | :- | :- |
+| uni-location-system | object | HarmonyOS: 4.61 | 系统定位模块 |
+| uni-map-tencent | object | HarmonyOS: 4.61 | 腾讯地图模块 |
+| uni-oauth | [uni-oauth 配置项列表](#modules-uni-oauth) |   | 华为OAuth模块 |
+| uni-share | [uni-share 配置项列表](#modules-uni-share) | HarmonyOS: 4.75 | share 模块 |
+| uni-payment-alipay | object | HarmonyOS: 4.61 | 支付宝支付模块 |
+| uni-payment-wxpay | object | HarmonyOS: 4.61 | 微信支付模块 |
+| uni-push | object | HarmonyOS: 4.61 | 统一推送模块 |
+| uni-verify | object | HarmonyOS: 4.61 | 一键登录模块 |
+| uni-facialVerify | object | HarmonyOS: 4.61 | uni实人认证模块 |
 
 
 ###### modulesuni-oauth 配置项列表 @modules-uni-oauth
@@ -691,10 +691,10 @@ HarmonyOS分发模块配置
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| huawei | object |  | HarmonyOS: 4.61 | 华为OAuth模块 |
-| weixin | [weixin 配置项列表](#uni-oauth-weixin) |  | HarmonyOS: 4.75 | 微信OAuth模块 |
+| 属性 | 类型 | 兼容性 | 描述 |
+| :- | :- | :- | :- |
+| huawei | object | HarmonyOS: 4.61 | 华为OAuth模块 |
+| weixin | [weixin 配置项列表](#uni-oauth-weixin) | HarmonyOS: 4.75 | 微信OAuth模块 |
 
 
 ###### uni-oauthweixin 配置项列表 @uni-oauth-weixin
@@ -705,9 +705,9 @@ HarmonyOS分发模块配置
 | :- |
 | 4.75 |
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| appid | string |  |   | 微信开放平台申请的应用ID（AppID） |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| appid | string | 微信开放平台申请的应用ID（AppID） |
 
 
 ###### modulesuni-share 配置项列表 @modules-uni-share
@@ -718,9 +718,9 @@ share 模块
 | :- |
 | 4.75 |
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| weixin | [weixin 配置项列表](#uni-share-weixin) |  | HarmonyOS: 4.75 | 微信 share 模块 |
+| 属性 | 类型 | 兼容性 | 描述 |
+| :- | :- | :- | :- |
+| weixin | [weixin 配置项列表](#uni-share-weixin) | HarmonyOS: 4.75 | 微信 share 模块 |
 
 
 ###### uni-shareweixin 配置项列表 @uni-share-weixin
@@ -731,9 +731,9 @@ share 模块
 | :- |
 | 4.75 |
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| appid | string |  |   | 微信开放平台申请的应用ID（AppID） |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| appid | string | 微信开放平台申请的应用ID（AppID） |
 
 
 ### Web配置 @manifest-web
@@ -744,16 +744,16 @@ Web平台配置
 | :- | :- | :- | :- | :- | :- | :- |
 | 4.0 | x | x | x | x | x | x |
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| title | string |  |   | 默认为应用名称 |
-| template | string |  |   | 默认为空可定制生成的html代码，参考：https://uniapp.dcloud.net.cn/collocation/manifest.html#h5-template |
-| router | [router 配置项列表](#web-router) |  |   |   |
-| devServer | [devServer 配置项列表](#web-devserver) |  |   |   |
-| optimization | [optimization 配置项列表](#web-optimization) |  |   |   |
-| unipush | [unipush 配置项列表](#web-unipush) |  |   |   |
-| sdkConfigs | [sdkConfigs 配置项列表](#web-sdkconfigs) |  |   |   |
-| darkmode | boolean |  |   | 是否开启暗黑模式 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| title | string | 默认为应用名称 |
+| template | string | 默认为空可定制生成的html代码，参考：https://uniapp.dcloud.net.cn/collocation/manifest.html#h5-template |
+| router | [router 配置项列表](#web-router) |   |
+| devServer | [devServer 配置项列表](#web-devserver) |   |
+| optimization | [optimization 配置项列表](#web-optimization) |   |
+| unipush | [unipush 配置项列表](#web-unipush) |   |
+| sdkConfigs | [sdkConfigs 配置项列表](#web-sdkconfigs) |   |
+| darkmode | boolean | 是否开启暗黑模式 |
 
 
 #### web router 配置项列表 @web-router
@@ -762,10 +762,10 @@ Web平台配置
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| mode | 'hash' \| 'history' |  |   | hash|history，二选一 |
-| base | string |  |   | 例：/web/，代表在域名的/web/目录下部署运行。如设为./，则代表相对路径，支持file协议打开，此时路由模式强制为hash模式。 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| mode | 'hash' \| 'history' | hash|history，二选一 |
+| base | string | 例：/web/，代表在域名的/web/目录下部署运行。如设为./，则代表相对路径，支持file协议打开，此时路由模式强制为hash模式。 |
 
 
 #### web devServer 配置项列表 @web-devserver
@@ -774,10 +774,10 @@ Web平台配置
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| port | integer |  |   | 参考：https://uniapp.dcloud.net.cn/collocation/manifest.html#devserver |
-| https | boolean |  |   |  |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| port | integer | 参考：https://uniapp.dcloud.net.cn/collocation/manifest.html#devserver |
+| https | boolean |  |
 
 
 #### web optimization 配置项列表 @web-optimization
@@ -786,9 +786,9 @@ Web平台配置
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| treeShaking | [treeShaking 配置项列表](#optimization-treeshaking) |  |   |   |
+| 属性 | 类型 |
+| :- | :- |
+| treeShaking | [treeShaking 配置项列表](#optimization-treeshaking) |
 
 
 ##### treeShaking 配置项列表 @optimization-treeshaking
@@ -797,9 +797,9 @@ Web平台配置
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| enable | boolean |  |   |  |
+| 属性 | 类型 |
+| :- | :- |
+| enable | boolean |
 
 
 #### web unipush 配置项列表 @web-unipush
@@ -808,9 +808,9 @@ Web平台配置
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| enable | boolean |  |   |  |
+| 属性 | 类型 |
+| :- | :- |
+| enable | boolean |
 
 
 #### web sdkConfigs 配置项列表 @web-sdkconfigs
@@ -819,9 +819,9 @@ Web平台配置
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| maps | [maps 配置项列表](#sdkconfigs-maps) |  |   |  |
+| 属性 | 类型 |
+| :- | :- |
+| maps | [maps 配置项列表](#sdkconfigs-maps) |
 
 
 ##### 定位和地图（只能选一个） @sdkconfigs-maps
@@ -830,11 +830,11 @@ Web平台配置
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| tencent | [tencent 配置项列表](#maps-tencent) |  |   |  |
-| google | [google 配置项列表](#maps-google) |  |   |  |
-| amap | [amap 配置项列表](#maps-amap) |  |   |   |
+| 属性 | 类型 |
+| :- | :- |
+| tencent | [tencent 配置项列表](#maps-tencent) |
+| google | [google 配置项列表](#maps-google) |
+| amap | [amap 配置项列表](#maps-amap) |
 
 
 ###### 腾讯地图，旧配置项为qqmap @maps-tencent
@@ -843,9 +843,9 @@ Web平台配置
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| key | string |  |   |  |
+| 属性 | 类型 |
+| :- | :- |
+| key | string |
 
 
 ###### 谷歌地图 @maps-google
@@ -854,9 +854,9 @@ Web平台配置
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| key | string |  |   |  |
+| 属性 | 类型 |
+| :- | :- |
+| key | string |
 
 
 ###### samap 配置项列表 @maps-amap
@@ -865,11 +865,11 @@ Web平台配置
 
 
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| key | string |  |   |  |
-| securityJsCode | string |  |   |  |
-| serviceHost | string |  |   |  |
+| 属性 | 类型 |
+| :- | :- |
+| key | string |
+| securityJsCode | string |
+| serviceHost | string |
 
 ### mp-weixin 配置项列表 @manifest-mp-weixin
 
@@ -879,27 +879,27 @@ Web平台配置
 | :- | :- | :- | :- | :- |
 | x | √ | x | x | x |
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| appid | string |  |   | 微信小程序的AppID，登录 https://mp.weixin.qq.com 申请 |
-| setting | object |  |   | 微信小程序项目设置，参考 https://uniapp.dcloud.net.cn/collocation/manifest?id=setting |
-| functionalPages | boolean |  |   | 微信小程序是否启用插件功能页，默认关闭 |
-| requiredBackgroundModes | array |  |   | 微信小程序需要在后台使用的能力,详见 https://developers.weixin.qq.com/miniprogram/dev/framework/config.html#requiredbackgroundmodes |
-| plugins | object |  |   | 使用到的插件，详见 https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/using.html |
-| resizable | boolean |  |   | 在iPad上小程序是否支持屏幕旋转，默认关闭 |
-| navigateToMiniProgramAppIdList | array |  |   | 需要跳转的小程序列表，详见 https://developers.weixin.qq.com/minigame/dev/reference/configuration/app.html#navigateToMiniProgramAppIdList |
-| permission | object |  |   | 微信小程序接口权限相关设置，比如申请位置权限必须填此处详见 https://developers.weixin.qq.com/miniprogram/dev/framework/config.html |
-| workers | string |  |   | Worker 代码放置的目录。 详见 https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html |
-| optimization | object |  |   | 对微信小程序的优化配置 |
-| cloudfunctionRoot | string |  |   | 配置云开发目录，参考 https://uniapp.dcloud.net.cn/collocation/manifest?id=cloudfunctionRoot |
-| scopedSlotsCompiler | string |  |   | Vue2 作用域插槽编译模式，uni-app 3.1.19+ 开始支持，可选：legacy、auto、augmented，默认：auto |
-| mergeVirtualHostAttributes | boolean |  |   | 合并由 Vue 组件编译而成的小程序组件虚拟节点外层属性，目前仅支持 id（v4.42+）、style（v3.5.1+）、class（v3.5.1+）以及 v-show 指令生成的 hidden（v4.41+） 属性 |
-| slotMultipleInstance | boolean |  |   | 模拟单个作用域插槽渲染为多个实例，此配置仅限 Vue2 环境 3.7.12+，Vue3 环境已默认支持 |
-| embeddedAppIdList | array |  |   | 要半屏跳转的小程序appid。详见 https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/openEmbeddedMiniProgram.html |
-| requiredPrivateInfos | array |  |   | 地理位置相关接口。详见 https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#requiredPrivateInfos |
-| lazyCodeLoading | string |  |   | 目前仅支持值 requiredComponents，代表开启小程序按需注入特性，详见 https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#lazyCodeLoading |
-| enableVirtualHost | boolean |  |   | 是否为组件启用virtualHost，默认启用 |
-| darkmode | boolean |  |   | 是否开启暗黑模式 |
+| 属性 | 类型 | 描述 |
+| :- | :- | :- |
+| appid | string | 微信小程序的AppID，登录 https://mp.weixin.qq.com 申请 |
+| setting | object | 微信小程序项目设置，参考 https://uniapp.dcloud.net.cn/collocation/manifest?id=setting |
+| functionalPages | boolean | 微信小程序是否启用插件功能页，默认关闭 |
+| requiredBackgroundModes | array | 微信小程序需要在后台使用的能力,详见 https://developers.weixin.qq.com/miniprogram/dev/framework/config.html#requiredbackgroundmodes |
+| plugins | object | 使用到的插件，详见 https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/using.html |
+| resizable | boolean | 在iPad上小程序是否支持屏幕旋转，默认关闭 |
+| navigateToMiniProgramAppIdList | array | 需要跳转的小程序列表，详见 https://developers.weixin.qq.com/minigame/dev/reference/configuration/app.html#navigateToMiniProgramAppIdList |
+| permission | object | 微信小程序接口权限相关设置，比如申请位置权限必须填此处详见 https://developers.weixin.qq.com/miniprogram/dev/framework/config.html |
+| workers | string | Worker 代码放置的目录。 详见 https://developers.weixin.qq.com/miniprogram/dev/framework/workers.html |
+| optimization | object | 对微信小程序的优化配置 |
+| cloudfunctionRoot | string | 配置云开发目录，参考 https://uniapp.dcloud.net.cn/collocation/manifest?id=cloudfunctionRoot |
+| scopedSlotsCompiler | string | Vue2 作用域插槽编译模式，uni-app 3.1.19+ 开始支持，可选：legacy、auto、augmented，默认：auto |
+| mergeVirtualHostAttributes | boolean | 合并由 Vue 组件编译而成的小程序组件虚拟节点外层属性，目前仅支持 id（v4.42+）、style（v3.5.1+）、class（v3.5.1+）以及 v-show 指令生成的 hidden（v4.41+） 属性 |
+| slotMultipleInstance | boolean | 模拟单个作用域插槽渲染为多个实例，此配置仅限 Vue2 环境 3.7.12+，Vue3 环境已默认支持 |
+| embeddedAppIdList | array | 要半屏跳转的小程序appid。详见 https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/openEmbeddedMiniProgram.html |
+| requiredPrivateInfos | array | 地理位置相关接口。详见 https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#requiredPrivateInfos |
+| lazyCodeLoading | string | 目前仅支持值 requiredComponents，代表开启小程序按需注入特性，详见 https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#lazyCodeLoading |
+| enableVirtualHost | boolean | 是否为组件启用virtualHost，默认启用 |
+| darkmode | boolean | 是否开启暗黑模式 |
 
 ### HBuilderX配置 @manifest-__hbuilderx
 
@@ -909,9 +909,9 @@ Web平台配置
 | :- | :- | :- |
 | x | 4.31 | 4.31 |
 
-| 属性 | 类型 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- | :- |
-| channel_list | array |  | Android: 4.31; iOS: x | 云端打包时配置的自定义渠道信息 |
+| 属性 | 类型 | 兼容性 | 描述 |
+| :- | :- | :- | :- |
+| channel_list | array | Android: 4.31; iOS: x | 云端打包时配置的自定义渠道信息 |
 
 
 ## 参见

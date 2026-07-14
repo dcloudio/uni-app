@@ -40,9 +40,9 @@ start
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **RecorderManagerStartOptions** | 是 |  | Web: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **RecorderManagerStartOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
@@ -110,9 +110,9 @@ onStart
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | (result: any) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -137,9 +137,9 @@ onPause
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | (result: any) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -164,15 +164,15 @@ onStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | (result: [RecorderManagerOnStopResult](#recordermanageronstopresult-values)) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | (result: [RecorderManagerOnStopResult](#recordermanageronstopresult-values)) => void | 是 | Web: x | 
 
 ##### RecorderManagerOnStopResult 的属性值 @recordermanageronstopresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| tempFilePath | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 录音文件的临时路径 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| tempFilePath | string | 是 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 录音文件的临时路径 |
 
 
 
@@ -197,9 +197,9 @@ onFrameRecorded
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | (result: any) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -224,19 +224,19 @@ onError
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | (result: [IRecorderManagerFail](#irecordermanagerfail-values)) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | (result: [IRecorderManagerFail](#irecordermanagerfail-values)) => void | 是 | Web: x | 
 
 ##### IRecorderManagerFail 的属性值 @irecordermanagerfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x | 错误码 |
-| errSubject | string | 是 |  | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
@@ -274,9 +274,9 @@ onResume
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | (result: any) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -301,9 +301,9 @@ onInterruptionBegin
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | (result: any) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -328,9 +328,9 @@ onInterruptionEnd
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | (result: any) => void | 是 |  | Web: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | (result: any) => void | 是 | Web: x | 
 
 
 
@@ -368,19 +368,19 @@ offInterruptionEnd
 
 ##### RecorderManagerOnStopResult 的属性值 @recordermanageronstopresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| tempFilePath | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 录音文件的临时路径 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| tempFilePath | string | 是 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) uni-app x UTS 插件: 4.61; HarmonyOS: 4.61 | 录音文件的临时路径 |
 
 ##### IRecorderManagerFail 的属性值 @irecordermanagerfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x | 错误码 |
-| errSubject | string | 是 |  | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
@@ -865,7 +865,7 @@ offInterruptionEnd
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

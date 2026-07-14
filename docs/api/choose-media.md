@@ -21,9 +21,9 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **ChooseMediaOptions** | 是 |  | Web: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **ChooseMediaOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
@@ -57,23 +57,23 @@
 
 #### ChooseMediaSuccess 的属性值 @choosemediasuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| tempFiles | Array&lt;**ChooseMediaTempFile**&gt; | 是 |  | Web: x |  |
-| type | string | 是 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 |
+| :- | :- | :- |  :-: |
+| tempFiles | Array&lt;**ChooseMediaTempFile**&gt; | 是 | Web: x |
+| type | string | 是 | Web: x |
 
 #### tempFiles 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| tempFilePath | string | 是 |  | Web: x | 选定视频的临时文件路径 |
-| fileType | string | 是 |  | Web: x | 文件类型 |
-| size | number | 是 |  | Web: x | 选定视频的数据量大小，单位 kB |
-| byteSize | number | 否 |  | Web: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 视频文件的字节大小，单位 B |
-| duration | number | 否 |  | Web: x | 选定视频的时间长度 |
-| height | number | 否 |  | Web: x | 返回选定视频的长 |
-| width | number | 否 |  | Web: x | 返回选定视频的宽 |
-| thumbTempFilePath | string | 否 |  | Web: x | 视频缩略图临时文件路径 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| tempFilePath | string | 是 | Web: x | 选定视频的临时文件路径 |
+| fileType | string | 是 | Web: x | 文件类型 |
+| size | number | 是 | Web: x | 选定视频的数据量大小，单位 kB |
+| byteSize | number | 否 | Web: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 视频文件的字节大小，单位 B |
+| duration | number | 否 | Web: x | 选定视频的时间长度 |
+| height | number | 否 | Web: x | 返回选定视频的长 |
+| width | number | 否 | Web: x | 返回选定视频的宽 |
+| thumbTempFilePath | string | 否 | Web: x | 视频缩略图临时文件路径 |
 
 ##### fileType 的属性描述
 
@@ -92,13 +92,13 @@
 
 #### ChooseMediaFail 的属性值 @choosemediafail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  | Web: x | 错误码 |
-| errSubject | string | 是 |  | Web: x | 统一错误主题（模块）名称 |
-| data | any | 否 |  | Web: x | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  | Web: x |  |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errCode | number | 是 | Web: x | 错误码 |
+| errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
+| data | any | 否 | Web: x | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 | Web: x |  |
 
 #### errCode 的属性描述
 
@@ -474,9 +474,9 @@ Android端返回的路径是content协议。
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 

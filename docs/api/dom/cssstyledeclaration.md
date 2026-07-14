@@ -20,10 +20,10 @@ CSSStyleDeclaration表示一个CSS 声明块对象，它是一个 CSS 属性键�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| name | string ([string.cssPropertyString](/uts/data-type.md#ide-string)) | 是 |  |   | CSS样式名称 |
-| value | string | 否 | "" |   | 要设置的新CSS样式值 默认值空字符串 | 
+| 名称 | 类型 | 必填 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| name | string ([string.cssPropertyString](/uts/data-type.md#ide-string)) | 是 |  | CSS样式名称 |
+| value | string | 否 | "" | 要设置的新CSS样式值 默认值空字符串 | 
 
 
 
@@ -43,10 +43,10 @@ CSSStyleDeclaration表示一个CSS 声明块对象，它是一个 CSS 属性键�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| name | string ([string.cssPropertyString](/uts/data-type.md#ide-string)) | 是 |  |   | CSS样式名称 |
-| value | any | 否 |  |   | 要设置的新CSS样式值 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| name | string ([string.cssPropertyString](/uts/data-type.md#ide-string)) | 是 | CSS样式名称 |
+| value | any | 否 | 要设置的新CSS样式值 | 
 
 
 
@@ -66,9 +66,9 @@ CSSStyleDeclaration表示一个CSS 声明块对象，它是一个 CSS 属性键�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| property | string ([string.cssPropertyString](/uts/data-type.md#ide-string)) | 是 |  |   | 要获取的CSS样式名称 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| property | string ([string.cssPropertyString](/uts/data-type.md#ide-string)) | 是 | 要获取的CSS样式名称 | 
 
 
 ##### 返回值 
@@ -531,9 +531,9 @@ App平台获取样式值与Web平台存在部分差异：
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| property | string ([string.cssPropertyString](/uts/data-type.md#ide-string)) | 是 |  |   | 要删除的CSS样式名称 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| property | string ([string.cssPropertyString](/uts/data-type.md#ide-string)) | 是 | 要删除的CSS样式名称 | 
 
 
 ##### 返回值 

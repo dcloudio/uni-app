@@ -86,9 +86,9 @@ UniPickerChangeEvent -- Extends --> UniCustomEvent&ltUniPickerChangeEventDetail&
 
 
 ###### UniPickerChangeEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | any | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| value | any | 是 |
 
 
 #### UniPickerColumnChangeEvent
@@ -104,10 +104,10 @@ UniPickerColumnChangeEvent -- Extends --> UniCustomEvent&ltUniPickerColumnChange
 
 
 ###### UniPickerColumnChangeEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | number | 是 |  |   |  |
-| column | number | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| value | number | 是 |
+| column | number | 是 |
 
 
 #### UniPickerCancelEvent

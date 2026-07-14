@@ -36,9 +36,9 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **GetSystemInfoOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **GetSystemInfoOptions** | 是 |
 
 #### options 的属性描述
 
@@ -50,81 +50,81 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 #### GetSystemInfoResult 的属性值 @getsysteminforesult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| SDKVersion | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 客户端基础库版本<br/> |
-| appId | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中应用appid。<br/> |
-| appLanguage | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 应用设置的语言。<br/> |
-| appName | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中应用名称。<br/> |
-| appVersion | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中应用版本名称。<br/> |
-| appVersionCode | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中应用版本号。<br/> |
-| appWgtVersion | string | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 应用资源（wgt）的版本名称。<br/> |
-| browserName | string | 是 |  | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 浏览器名称。`App` 端是系统 webview 的名字，比如 wkwebview、chrome。小程序端为空<br/> |
-| browserVersion | string | 是 |  | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 浏览器版本、webview 版本。<br/> |
-| deviceId | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备 ID<br/> |
-| deviceBrand | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备品牌。如：`apple`、`huawei`。<br/> |
-| deviceModel | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备型号<br/> |
-| deviceType | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备类型。<br/> |
-| devicePixelRatio | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备像素比<br/> |
-| deviceOrientation | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备方向。<br/> |
-| osName | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 系统名称<br/> |
-| osVersion | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统版本。如 ios 版本，android 版本<br/> |
-| osLanguage | string | 是 |  | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统语言<br/> |
-| osTheme | string | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 操作系统主题<br/> |
-| screenWidth | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕宽度，单位为px<br/> |
-| screenHeight | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕高度，单位为px<br/> |
-| statusBarHeight | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 状态栏的高度，单位为px<br/> |
-| safeArea | **SafeArea** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在竖屏正方向下的安全区域<br/> |
-| safeAreaInsets | **SafeAreaInsets** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在竖屏正方向下的安全区域插入位置<br/> |
-| ua | string | 是 |  | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 用户标识。小程序端为空<br/> |
-| uniCompilerVersion | string | 是 |  | Web: 4.18; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | uni 编译器版本。<br/> |
-| uniPlatform | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | uni-app 运行平台，与条件编译平台相同。<br/> |
-| uniRuntimeVersion | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | uni 运行时版本。<br/> |
-| uniCompilerVersionCode | number | 是 |  | Web: 4.18; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | uni 编译器版本号。<br/> |
-| uniRuntimeVersionCode | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | uni 运行时版本号。<br/> |
-| romName | string | 是 |  | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | rom 名称。Android 部分机型获取不到值。iOS 恒为 `ios`<br/> |
-| romVersion | string | 是 |  | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | rom 版本号。Android 部分机型获取不到值。iOS 为操作系统版本号（同 `osVersion`）。<br/> |
-| windowWidth | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 可使用窗口宽度，单位为px<br/> |
-| windowHeight | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 可使用窗口高度，单位为px<br/> |
-| windowTop | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 内容区域距离顶部的距离（同CSS变量 `--window-top`），单位为px<br/> |
-| windowBottom | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 内容区域距离底部的距离（同CSS变量 `--window-bottom`），单位为px<br/> |
-| osAndroidAPILevel | number | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: x | Android 系统API库的版本。<br/> |
-| osHarmonySDKAPIVersion | number | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 鸿蒙系统软件API版本<br/> |
-| osHarmonyDisplayVersion | string | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 产品版本，关于本机信息内的软件版本<br/> |
-| appTheme | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 当前App的主题<br/> |
-| hostTheme | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主主题（仅 web、微信小程序支持）<br/> |
-| hostVersion | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主版本（仅 web、微信小程序支持）<br/> |
-| hostLanguage | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主语言（仅 web、微信小程序支持）<br/> |
-| hostName | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主名称（仅 web、微信小程序支持）<br/> |
-| hostSDKVersion | string | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主 SDKVersion（仅 web、微信小程序支持）<br/> |
-| hostFontSizeSetting | number | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主字体大小设置（仅 web、微信小程序支持）<br/> |
-| albumAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用相册的开关（仅 iOS 有效）<br/> |
-| benchmarkLevel | number | 否 |  | 微信小程序: 4.41 | 需要基础库： `1.8.0`<br/><br/>设备性能等级（仅 Android）。取值为：-2 或 0（该设备无法运行小游戏），-1（性能未知），>=1（设备性能值，该值越高，设备性能越好）<br> 注意：性能等级当前仅反馈真机机型，暂不支持 IDE 模拟器机型<br/> |
-| bluetoothEnabled | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>蓝牙的系统开关<br/> |
-| cameraAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用摄像头的开关<br/> |
-| enableDebug | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.15.0`<br/><br/>是否已打开调试。可通过右上角菜单或 [uni.setEnableDebug](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/wx.setEnableDebug.html) 打开调试。<br/> |
-| fontSizeSetting | number | 否 |  | 微信小程序: 4.41 | 需要基础库： `1.5.0`<br/><br/>用户字体大小（单位px）。以微信客户端「我-设置-通用-字体大小」中的设置为准<br/> |
-| host | **GetSystemInfoResultHost** | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.12.3`<br/><br/>当前小程序运行的宿主环境<br/> |
-| locationAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用定位的开关<br/> |
-| locationEnabled | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>地理位置的系统开关<br/> |
-| locationReducedAccuracy | boolean | 否 |  | 微信小程序: 4.41 | `true` 表示模糊定位，`false` 表示精确定位，仅 iOS 支持<br/> |
-| microphoneAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用麦克风的开关<br/> |
-| notificationAlertAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有提醒的开关（仅 iOS 有效）<br/> |
-| notificationAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知的开关<br/> |
-| notificationBadgeAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有标记的开关（仅 iOS 有效）<br/> |
-| notificationSoundAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有声音的开关（仅 iOS 有效）<br/> |
-| phoneCalendarAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.19.3`<br/><br/>允许微信使用日历的开关<br/> |
-| wifiEnabled | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>Wi-Fi 的系统开关<br/> |
-| theme | string | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.11.0`<br/><br/>系统当前主题，取值为`light`或`dark`，全局配置`"darkmode":true`时才能获取，否则为 undefined （不支持小游戏）<br/><br/>可选值：<br/>- 'dark': 深色主题;<br/>- 'light': 浅色主题;<br/> |
-| ~~brand~~ | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手机品牌。  **已废弃，仅为了向下兼容保留** |
-| ~~language~~ | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 程序设置的语言  **已废弃，仅为了向下兼容保留** |
-| ~~model~~ | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 手机型号  **已废弃，仅为了向下兼容保留** |
-| ~~pixelRatio~~ | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 设备像素比  **已废弃，仅为了向下兼容保留** |
-| ~~platform~~ | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 客户端平台  **已废弃，仅为了向下兼容保留** |
-| ~~system~~ | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统版本  **已废弃，仅为了向下兼容保留** |
-| ~~uniCompileVersion~~ | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | uni 编译器版本。  **已废弃，仅为了向下兼容保留** |
-| ~~uniCompileVersionCode~~ | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | uni 编译器版本号。  **已废弃，仅为了向下兼容保留** |
-| ~~version~~ | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 引擎版本号。  **已废弃，仅为了向下兼容保留** |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| SDKVersion | string | 是 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 客户端基础库版本<br/> |
+| appId | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中应用appid。<br/> |
+| appLanguage | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 应用设置的语言。<br/> |
+| appName | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中应用名称。<br/> |
+| appVersion | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中应用版本名称。<br/> |
+| appVersionCode | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中应用版本号。<br/> |
+| appWgtVersion | string | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 应用资源（wgt）的版本名称。<br/> |
+| browserName | string | 是 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 浏览器名称。`App` 端是系统 webview 的名字，比如 wkwebview、chrome。小程序端为空<br/> |
+| browserVersion | string | 是 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 浏览器版本、webview 版本。<br/> |
+| deviceId | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备 ID<br/> |
+| deviceBrand | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备品牌。如：`apple`、`huawei`。<br/> |
+| deviceModel | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备型号<br/> |
+| deviceType | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备类型。<br/> |
+| devicePixelRatio | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备像素比<br/> |
+| deviceOrientation | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备方向。<br/> |
+| osName | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 系统名称<br/> |
+| osVersion | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统版本。如 ios 版本，android 版本<br/> |
+| osLanguage | string | 是 | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统语言<br/> |
+| osTheme | string | 否 | Web: x; 微信小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 操作系统主题<br/> |
+| screenWidth | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕宽度，单位为px<br/> |
+| screenHeight | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕高度，单位为px<br/> |
+| statusBarHeight | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 状态栏的高度，单位为px<br/> |
+| safeArea | **SafeArea** | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在竖屏正方向下的安全区域<br/> |
+| safeAreaInsets | **SafeAreaInsets** | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在竖屏正方向下的安全区域插入位置<br/> |
+| ua | string | 是 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 用户标识。小程序端为空<br/> |
+| uniCompilerVersion | string | 是 | Web: 4.18; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | uni 编译器版本。<br/> |
+| uniPlatform | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | uni-app 运行平台，与条件编译平台相同。<br/> |
+| uniRuntimeVersion | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | uni 运行时版本。<br/> |
+| uniCompilerVersionCode | number | 是 | Web: 4.18; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | uni 编译器版本号。<br/> |
+| uniRuntimeVersionCode | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | uni 运行时版本号。<br/> |
+| romName | string | 是 | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | rom 名称。Android 部分机型获取不到值。iOS 恒为 `ios`<br/> |
+| romVersion | string | 是 | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | rom 版本号。Android 部分机型获取不到值。iOS 为操作系统版本号（同 `osVersion`）。<br/> |
+| windowWidth | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 可使用窗口宽度，单位为px<br/> |
+| windowHeight | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 可使用窗口高度，单位为px<br/> |
+| windowTop | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 内容区域距离顶部的距离（同CSS变量 `--window-top`），单位为px<br/> |
+| windowBottom | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 内容区域距离底部的距离（同CSS变量 `--window-bottom`），单位为px<br/> |
+| osAndroidAPILevel | number | 否 | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: x | Android 系统API库的版本。<br/> |
+| osHarmonySDKAPIVersion | number | 否 | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 鸿蒙系统软件API版本<br/> |
+| osHarmonyDisplayVersion | string | 否 | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 产品版本，关于本机信息内的软件版本<br/> |
+| appTheme | string | 否 | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 当前App的主题<br/> |
+| hostTheme | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主主题（仅 web、微信小程序支持）<br/> |
+| hostVersion | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主版本（仅 web、微信小程序支持）<br/> |
+| hostLanguage | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主语言（仅 web、微信小程序支持）<br/> |
+| hostName | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主名称（仅 web、微信小程序支持）<br/> |
+| hostSDKVersion | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主 SDKVersion（仅 web、微信小程序支持）<br/> |
+| hostFontSizeSetting | number | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主字体大小设置（仅 web、微信小程序支持）<br/> |
+| albumAuthorized | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用相册的开关（仅 iOS 有效）<br/> |
+| benchmarkLevel | number | 否 | 微信小程序: 4.41 | 需要基础库： `1.8.0`<br/><br/>设备性能等级（仅 Android）。取值为：-2 或 0（该设备无法运行小游戏），-1（性能未知），>=1（设备性能值，该值越高，设备性能越好）<br> 注意：性能等级当前仅反馈真机机型，暂不支持 IDE 模拟器机型<br/> |
+| bluetoothEnabled | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>蓝牙的系统开关<br/> |
+| cameraAuthorized | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用摄像头的开关<br/> |
+| enableDebug | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.15.0`<br/><br/>是否已打开调试。可通过右上角菜单或 [uni.setEnableDebug](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/wx.setEnableDebug.html) 打开调试。<br/> |
+| fontSizeSetting | number | 否 | 微信小程序: 4.41 | 需要基础库： `1.5.0`<br/><br/>用户字体大小（单位px）。以微信客户端「我-设置-通用-字体大小」中的设置为准<br/> |
+| host | **GetSystemInfoResultHost** | 否 | 微信小程序: 4.41 | 需要基础库： `2.12.3`<br/><br/>当前小程序运行的宿主环境<br/> |
+| locationAuthorized | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用定位的开关<br/> |
+| locationEnabled | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>地理位置的系统开关<br/> |
+| locationReducedAccuracy | boolean | 否 | 微信小程序: 4.41 | `true` 表示模糊定位，`false` 表示精确定位，仅 iOS 支持<br/> |
+| microphoneAuthorized | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用麦克风的开关<br/> |
+| notificationAlertAuthorized | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有提醒的开关（仅 iOS 有效）<br/> |
+| notificationAuthorized | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知的开关<br/> |
+| notificationBadgeAuthorized | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有标记的开关（仅 iOS 有效）<br/> |
+| notificationSoundAuthorized | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有声音的开关（仅 iOS 有效）<br/> |
+| phoneCalendarAuthorized | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.19.3`<br/><br/>允许微信使用日历的开关<br/> |
+| wifiEnabled | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>Wi-Fi 的系统开关<br/> |
+| theme | string | 否 | 微信小程序: 4.41 | 需要基础库： `2.11.0`<br/><br/>系统当前主题，取值为`light`或`dark`，全局配置`"darkmode":true`时才能获取，否则为 undefined （不支持小游戏）<br/><br/>可选值：<br/>- 'dark': 深色主题;<br/>- 'light': 浅色主题;<br/> |
+| ~~brand~~ | string | 是 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手机品牌。  **已废弃，仅为了向下兼容保留** |
+| ~~language~~ | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 程序设置的语言  **已废弃，仅为了向下兼容保留** |
+| ~~model~~ | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 手机型号  **已废弃，仅为了向下兼容保留** |
+| ~~pixelRatio~~ | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 设备像素比  **已废弃，仅为了向下兼容保留** |
+| ~~platform~~ | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 客户端平台  **已废弃，仅为了向下兼容保留** |
+| ~~system~~ | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统版本  **已废弃，仅为了向下兼容保留** |
+| ~~uniCompileVersion~~ | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | uni 编译器版本。  **已废弃，仅为了向下兼容保留** |
+| ~~uniCompileVersionCode~~ | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | uni 编译器版本号。  **已废弃，仅为了向下兼容保留** |
+| ~~version~~ | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 引擎版本号。  **已废弃，仅为了向下兼容保留** |
 
 #### deviceType 的属性描述
 
@@ -167,23 +167,23 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 #### safeArea 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| left | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左上角横坐标，单位为px<br/> |
-| right | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右下角横坐标，单位为px<br/> |
-| top | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左上角纵坐标，单位为px<br/> |
-| bottom | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右下角纵坐标，单位为px<br/> |
-| width | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域的宽度，单位为px<br/> |
-| height | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域的高度，单位为px<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| left | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左上角横坐标，单位为px<br/> |
+| right | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右下角横坐标，单位为px<br/> |
+| top | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左上角纵坐标，单位为px<br/> |
+| bottom | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右下角纵坐标，单位为px<br/> |
+| width | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域的宽度，单位为px<br/> |
+| height | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域的高度，单位为px<br/> |
 
 #### safeAreaInsets 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| left | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左侧插入位置（距离左边边界距离），单位为px<br/> |
-| right | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右侧插入位置（距离右边边界距离），单位为px<br/> |
-| top | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区顶部插入位置（距离顶部边界距离），单位为px<br/> |
-| bottom | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域底部插入位置（距离底部边界距离），单位为px<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| left | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左侧插入位置（距离左边边界距离），单位为px<br/> |
+| right | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右侧插入位置（距离右边边界距离），单位为px<br/> |
+| top | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区顶部插入位置（距离顶部边界距离），单位为px<br/> |
+| bottom | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域底部插入位置（距离底部边界距离），单位为px<br/> |
 
 #### uniPlatform 的属性描述
 
@@ -221,9 +221,9 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 #### host 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| appId | string | 否 |  | 微信小程序: 4.41 | 宿主 app 对应的 appId<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| appId | string | 否 | 微信小程序: 4.41 | 宿主 app 对应的 appId<br/> |
 
 #### theme 的属性描述
 
@@ -493,81 +493,81 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 #### GetSystemInfoResult 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| SDKVersion | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 客户端基础库版本<br/> |
-| appId | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中应用appid。<br/> |
-| appLanguage | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 应用设置的语言。<br/> |
-| appName | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中应用名称。<br/> |
-| appVersion | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中应用版本名称。<br/> |
-| appVersionCode | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中应用版本号。<br/> |
-| appWgtVersion | string | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 应用资源（wgt）的版本名称。<br/> |
-| browserName | string | 是 |  | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 浏览器名称。`App` 端是系统 webview 的名字，比如 wkwebview、chrome。小程序端为空<br/> |
-| browserVersion | string | 是 |  | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 浏览器版本、webview 版本。<br/> |
-| deviceId | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备 ID<br/> |
-| deviceBrand | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备品牌。如：`apple`、`huawei`。<br/> |
-| deviceModel | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备型号<br/> |
-| deviceType | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备类型。<br/> |
-| devicePixelRatio | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备像素比<br/> |
-| deviceOrientation | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备方向。<br/> |
-| osName | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 系统名称<br/> |
-| osVersion | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统版本。如 ios 版本，android 版本<br/> |
-| osLanguage | string | 是 |  | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统语言<br/> |
-| osTheme | string | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 操作系统主题<br/> |
-| screenWidth | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕宽度，单位为px<br/> |
-| screenHeight | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕高度，单位为px<br/> |
-| statusBarHeight | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 状态栏的高度，单位为px<br/> |
-| safeArea | **SafeArea** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在竖屏正方向下的安全区域<br/> |
-| safeAreaInsets | **SafeAreaInsets** | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在竖屏正方向下的安全区域插入位置<br/> |
-| ua | string | 是 |  | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 用户标识。小程序端为空<br/> |
-| uniCompilerVersion | string | 是 |  | Web: 4.18; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | uni 编译器版本。<br/> |
-| uniPlatform | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | uni-app 运行平台，与条件编译平台相同。<br/> |
-| uniRuntimeVersion | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | uni 运行时版本。<br/> |
-| uniCompilerVersionCode | number | 是 |  | Web: 4.18; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | uni 编译器版本号。<br/> |
-| uniRuntimeVersionCode | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | uni 运行时版本号。<br/> |
-| romName | string | 是 |  | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | rom 名称。Android 部分机型获取不到值。iOS 恒为 `ios`<br/> |
-| romVersion | string | 是 |  | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | rom 版本号。Android 部分机型获取不到值。iOS 为操作系统版本号（同 `osVersion`）。<br/> |
-| windowWidth | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 可使用窗口宽度，单位为px<br/> |
-| windowHeight | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 可使用窗口高度，单位为px<br/> |
-| windowTop | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 内容区域距离顶部的距离（同CSS变量 `--window-top`），单位为px<br/> |
-| windowBottom | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 内容区域距离底部的距离（同CSS变量 `--window-bottom`），单位为px<br/> |
-| osAndroidAPILevel | number | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: x | Android 系统API库的版本。<br/> |
-| osHarmonySDKAPIVersion | number | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 鸿蒙系统软件API版本<br/> |
-| osHarmonyDisplayVersion | string | 否 |  | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 产品版本，关于本机信息内的软件版本<br/> |
-| appTheme | string | 否 |  | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 当前App的主题<br/> |
-| hostTheme | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主主题（仅 web、微信小程序支持）<br/> |
-| hostVersion | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主版本（仅 web、微信小程序支持）<br/> |
-| hostLanguage | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主语言（仅 web、微信小程序支持）<br/> |
-| hostName | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主名称（仅 web、微信小程序支持）<br/> |
-| hostSDKVersion | string | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主 SDKVersion（仅 web、微信小程序支持）<br/> |
-| hostFontSizeSetting | number | 否 |  | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主字体大小设置（仅 web、微信小程序支持）<br/> |
-| albumAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用相册的开关（仅 iOS 有效）<br/> |
-| benchmarkLevel | number | 否 |  | 微信小程序: 4.41 | 需要基础库： `1.8.0`<br/><br/>设备性能等级（仅 Android）。取值为：-2 或 0（该设备无法运行小游戏），-1（性能未知），>=1（设备性能值，该值越高，设备性能越好）<br> 注意：性能等级当前仅反馈真机机型，暂不支持 IDE 模拟器机型<br/> |
-| bluetoothEnabled | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>蓝牙的系统开关<br/> |
-| cameraAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用摄像头的开关<br/> |
-| enableDebug | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.15.0`<br/><br/>是否已打开调试。可通过右上角菜单或 [uni.setEnableDebug](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/wx.setEnableDebug.html) 打开调试。<br/> |
-| fontSizeSetting | number | 否 |  | 微信小程序: 4.41 | 需要基础库： `1.5.0`<br/><br/>用户字体大小（单位px）。以微信客户端「我-设置-通用-字体大小」中的设置为准<br/> |
-| host | **GetSystemInfoResultHost** | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.12.3`<br/><br/>当前小程序运行的宿主环境<br/> |
-| locationAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用定位的开关<br/> |
-| locationEnabled | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>地理位置的系统开关<br/> |
-| locationReducedAccuracy | boolean | 否 |  | 微信小程序: 4.41 | `true` 表示模糊定位，`false` 表示精确定位，仅 iOS 支持<br/> |
-| microphoneAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用麦克风的开关<br/> |
-| notificationAlertAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有提醒的开关（仅 iOS 有效）<br/> |
-| notificationAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知的开关<br/> |
-| notificationBadgeAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有标记的开关（仅 iOS 有效）<br/> |
-| notificationSoundAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有声音的开关（仅 iOS 有效）<br/> |
-| phoneCalendarAuthorized | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.19.3`<br/><br/>允许微信使用日历的开关<br/> |
-| wifiEnabled | boolean | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>Wi-Fi 的系统开关<br/> |
-| theme | string | 否 |  | 微信小程序: 4.41 | 需要基础库： `2.11.0`<br/><br/>系统当前主题，取值为`light`或`dark`，全局配置`"darkmode":true`时才能获取，否则为 undefined （不支持小游戏）<br/><br/>可选值：<br/>- 'dark': 深色主题;<br/>- 'light': 浅色主题;<br/> |
-| ~~brand~~ | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手机品牌。  **已废弃，仅为了向下兼容保留** |
-| ~~language~~ | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 程序设置的语言  **已废弃，仅为了向下兼容保留** |
-| ~~model~~ | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 手机型号  **已废弃，仅为了向下兼容保留** |
-| ~~pixelRatio~~ | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 设备像素比  **已废弃，仅为了向下兼容保留** |
-| ~~platform~~ | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 客户端平台  **已废弃，仅为了向下兼容保留** |
-| ~~system~~ | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统版本  **已废弃，仅为了向下兼容保留** |
-| ~~uniCompileVersion~~ | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | uni 编译器版本。  **已废弃，仅为了向下兼容保留** |
-| ~~uniCompileVersionCode~~ | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | uni 编译器版本号。  **已废弃，仅为了向下兼容保留** |
-| ~~version~~ | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 引擎版本号。  **已废弃，仅为了向下兼容保留** | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| SDKVersion | string | 是 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 客户端基础库版本<br/> |
+| appId | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中应用appid。<br/> |
+| appLanguage | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 应用设置的语言。<br/> |
+| appName | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中应用名称。<br/> |
+| appVersion | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中应用版本名称。<br/> |
+| appVersionCode | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中应用版本号。<br/> |
+| appWgtVersion | string | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 应用资源（wgt）的版本名称。<br/> |
+| browserName | string | 是 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 浏览器名称。`App` 端是系统 webview 的名字，比如 wkwebview、chrome。小程序端为空<br/> |
+| browserVersion | string | 是 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 浏览器版本、webview 版本。<br/> |
+| deviceId | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备 ID<br/> |
+| deviceBrand | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备品牌。如：`apple`、`huawei`。<br/> |
+| deviceModel | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备型号<br/> |
+| deviceType | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备类型。<br/> |
+| devicePixelRatio | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备像素比<br/> |
+| deviceOrientation | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备方向。<br/> |
+| osName | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 系统名称<br/> |
+| osVersion | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统版本。如 ios 版本，android 版本<br/> |
+| osLanguage | string | 是 | Web: 4.0; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统语言<br/> |
+| osTheme | string | 否 | Web: x; 微信小程序: x; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 操作系统主题<br/> |
+| screenWidth | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕宽度，单位为px<br/> |
+| screenHeight | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕高度，单位为px<br/> |
+| statusBarHeight | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 状态栏的高度，单位为px<br/> |
+| safeArea | **SafeArea** | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在竖屏正方向下的安全区域<br/> |
+| safeAreaInsets | **SafeAreaInsets** | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在竖屏正方向下的安全区域插入位置<br/> |
+| ua | string | 是 | Web: 4.0; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 用户标识。小程序端为空<br/> |
+| uniCompilerVersion | string | 是 | Web: 4.18; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | uni 编译器版本。<br/> |
+| uniPlatform | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | uni-app 运行平台，与条件编译平台相同。<br/> |
+| uniRuntimeVersion | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | uni 运行时版本。<br/> |
+| uniCompilerVersionCode | number | 是 | Web: 4.18; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | uni 编译器版本号。<br/> |
+| uniRuntimeVersionCode | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | uni 运行时版本号。<br/> |
+| romName | string | 是 | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | rom 名称。Android 部分机型获取不到值。iOS 恒为 `ios`<br/> |
+| romVersion | string | 是 | Web: x; 微信小程序: x; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | rom 版本号。Android 部分机型获取不到值。iOS 为操作系统版本号（同 `osVersion`）。<br/> |
+| windowWidth | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 可使用窗口宽度，单位为px<br/> |
+| windowHeight | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 可使用窗口高度，单位为px<br/> |
+| windowTop | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 内容区域距离顶部的距离（同CSS变量 `--window-top`），单位为px<br/> |
+| windowBottom | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 内容区域距离底部的距离（同CSS变量 `--window-bottom`），单位为px<br/> |
+| osAndroidAPILevel | number | 否 | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: x | Android 系统API库的版本。<br/> |
+| osHarmonySDKAPIVersion | number | 否 | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 鸿蒙系统软件API版本<br/> |
+| osHarmonyDisplayVersion | string | 否 | Web: x; 微信小程序: x; Android: √; iOS: x; HarmonyOS: 4.61 | 产品版本，关于本机信息内的软件版本<br/> |
+| appTheme | string | 否 | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18; HarmonyOS: 4.61 | 当前App的主题<br/> |
+| hostTheme | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主主题（仅 web、微信小程序支持）<br/> |
+| hostVersion | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主版本（仅 web、微信小程序支持）<br/> |
+| hostLanguage | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主语言（仅 web、微信小程序支持）<br/> |
+| hostName | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主名称（仅 web、微信小程序支持）<br/> |
+| hostSDKVersion | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主 SDKVersion（仅 web、微信小程序支持）<br/> |
+| hostFontSizeSetting | number | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 宿主字体大小设置（仅 web、微信小程序支持）<br/> |
+| albumAuthorized | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用相册的开关（仅 iOS 有效）<br/> |
+| benchmarkLevel | number | 否 | 微信小程序: 4.41 | 需要基础库： `1.8.0`<br/><br/>设备性能等级（仅 Android）。取值为：-2 或 0（该设备无法运行小游戏），-1（性能未知），>=1（设备性能值，该值越高，设备性能越好）<br> 注意：性能等级当前仅反馈真机机型，暂不支持 IDE 模拟器机型<br/> |
+| bluetoothEnabled | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>蓝牙的系统开关<br/> |
+| cameraAuthorized | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用摄像头的开关<br/> |
+| enableDebug | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.15.0`<br/><br/>是否已打开调试。可通过右上角菜单或 [uni.setEnableDebug](https://developers.weixin.qq.com/miniprogram/dev/api/base/debug/wx.setEnableDebug.html) 打开调试。<br/> |
+| fontSizeSetting | number | 否 | 微信小程序: 4.41 | 需要基础库： `1.5.0`<br/><br/>用户字体大小（单位px）。以微信客户端「我-设置-通用-字体大小」中的设置为准<br/> |
+| host | **GetSystemInfoResultHost** | 否 | 微信小程序: 4.41 | 需要基础库： `2.12.3`<br/><br/>当前小程序运行的宿主环境<br/> |
+| locationAuthorized | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用定位的开关<br/> |
+| locationEnabled | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>地理位置的系统开关<br/> |
+| locationReducedAccuracy | boolean | 否 | 微信小程序: 4.41 | `true` 表示模糊定位，`false` 表示精确定位，仅 iOS 支持<br/> |
+| microphoneAuthorized | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信使用麦克风的开关<br/> |
+| notificationAlertAuthorized | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有提醒的开关（仅 iOS 有效）<br/> |
+| notificationAuthorized | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知的开关<br/> |
+| notificationBadgeAuthorized | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有标记的开关（仅 iOS 有效）<br/> |
+| notificationSoundAuthorized | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>允许微信通知带有声音的开关（仅 iOS 有效）<br/> |
+| phoneCalendarAuthorized | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.19.3`<br/><br/>允许微信使用日历的开关<br/> |
+| wifiEnabled | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.6.0`<br/><br/>Wi-Fi 的系统开关<br/> |
+| theme | string | 否 | 微信小程序: 4.41 | 需要基础库： `2.11.0`<br/><br/>系统当前主题，取值为`light`或`dark`，全局配置`"darkmode":true`时才能获取，否则为 undefined （不支持小游戏）<br/><br/>可选值：<br/>- 'dark': 深色主题;<br/>- 'light': 浅色主题;<br/> |
+| ~~brand~~ | string | 是 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 手机品牌。  **已废弃，仅为了向下兼容保留** |
+| ~~language~~ | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 程序设置的语言  **已废弃，仅为了向下兼容保留** |
+| ~~model~~ | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 手机型号  **已废弃，仅为了向下兼容保留** |
+| ~~pixelRatio~~ | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 设备像素比  **已废弃，仅为了向下兼容保留** |
+| ~~platform~~ | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 客户端平台  **已废弃，仅为了向下兼容保留** |
+| ~~system~~ | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 操作系统版本  **已废弃，仅为了向下兼容保留** |
+| ~~uniCompileVersion~~ | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | uni 编译器版本。  **已废弃，仅为了向下兼容保留** |
+| ~~uniCompileVersionCode~~ | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | uni 编译器版本号。  **已废弃，仅为了向下兼容保留** |
+| ~~version~~ | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 引擎版本号。  **已废弃，仅为了向下兼容保留** | 
 
 ##### deviceType 的属性描述
 
@@ -610,23 +610,23 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 ##### safeArea 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| left | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左上角横坐标，单位为px<br/> |
-| right | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右下角横坐标，单位为px<br/> |
-| top | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左上角纵坐标，单位为px<br/> |
-| bottom | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右下角纵坐标，单位为px<br/> |
-| width | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域的宽度，单位为px<br/> |
-| height | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域的高度，单位为px<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| left | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左上角横坐标，单位为px<br/> |
+| right | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右下角横坐标，单位为px<br/> |
+| top | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左上角纵坐标，单位为px<br/> |
+| bottom | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右下角纵坐标，单位为px<br/> |
+| width | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域的宽度，单位为px<br/> |
+| height | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域的高度，单位为px<br/> |
 
 ##### safeAreaInsets 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| left | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左侧插入位置（距离左边边界距离），单位为px<br/> |
-| right | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右侧插入位置（距离右边边界距离），单位为px<br/> |
-| top | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区顶部插入位置（距离顶部边界距离），单位为px<br/> |
-| bottom | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域底部插入位置（距离底部边界距离），单位为px<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| left | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左侧插入位置（距离左边边界距离），单位为px<br/> |
+| right | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右侧插入位置（距离右边边界距离），单位为px<br/> |
+| top | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区顶部插入位置（距离顶部边界距离），单位为px<br/> |
+| bottom | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域底部插入位置（距离底部边界距离），单位为px<br/> |
 
 ##### uniPlatform 的属性描述
 
@@ -664,9 +664,9 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 ##### host 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| appId | string | 否 |  | 微信小程序: 4.41 | 宿主 app 对应的 appId<br/> |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| appId | string | 否 | 微信小程序: 4.41 | 宿主 app 对应的 appId<br/> |
 
 ##### theme 的属性描述
 
@@ -712,7 +712,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

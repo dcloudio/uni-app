@@ -20,25 +20,25 @@ uniCloud是基于serverless的云开发服务，它大幅降低开发者的开�
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| config | **UniCloudInitOptions** | 是 |  |   |  |
-| mixinDatacom | any | 是 |  |   |  |
-| SSEChannel | any | 是 |  | Web: 4.71; 微信小程序: 4.71; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 服务端通知通道 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| config | **UniCloudInitOptions** | 是 |   |  |
+| mixinDatacom | any | 是 |   |  |
+| SSEChannel | any | 是 | Web: 4.71; 微信小程序: 4.71; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 服务端通知通道 | 
 
 #### config 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| provider | string | 是 |  |   | 服务商，目前支持 aliyun、tencent、alipay |
-| spaceName | string | 否 |  |   | 服务空间名 |
-| spaceId | string | 是 |  |   | 服务空间id |
-| clientSecret | string | 否 |  |   | 阿里云clientSecret |
-| endpoint | string | 否 |  |   | 阿里云endpoint |
-| spaceAppId | string | 否 |  |   | 支付宝云spaceAppId |
-| accessKey | string | 否 |  |   | 支付宝云accessKey |
-| secretKey | string | 否 |  |   | 支付宝云secretKey |
-| wsEndpoint | string | 否 |  |   | 支付宝云 WebSocket Endpoint |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| provider | string | 是 | 服务商，目前支持 aliyun、tencent、alipay |
+| spaceName | string | 否 | 服务空间名 |
+| spaceId | string | 是 | 服务空间id |
+| clientSecret | string | 否 | 阿里云clientSecret |
+| endpoint | string | 否 | 阿里云endpoint |
+| spaceAppId | string | 否 | 支付宝云spaceAppId |
+| accessKey | string | 否 | 支付宝云accessKey |
+| secretKey | string | 否 | 支付宝云secretKey |
+| wsEndpoint | string | 否 | 支付宝云 WebSocket Endpoint |
 
 
 

@@ -7,11 +7,11 @@
 setInterval() 方法重复调用一个函数或执行一个代码片段，在每次调用之间具有固定的时间间隔。<br/>     它返回一个 interval ID，该 ID 唯一地标识时间间隔，因此你可以稍后通过调用 clearInterval() 来移除定时器。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| handler | string \| Function | 是 |  |   |  |
-| timeout | number | 否 |  |   |  |
-| arguments | any[\] | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| handler | string \| Function | 是 |
+| timeout | number | 否 |
+| arguments | any[\] | 是 | 
 
 
 **返回值**
@@ -44,11 +44,11 @@ setInterval() 方法重复调用一个函数或执行一个代码片段，在每
 全局的 setTimeout() 方法设置一个定时器，一旦定时器到期，就会执行一个函数或指定的代码片段。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| handler | string \| Function | 是 |  |   |  |
-| timeout | number | 否 |  |   |  |
-| arguments | any[\] | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| handler | string \| Function | 是 |
+| timeout | number | 否 |
+| arguments | any[\] | 是 | 
 
 
 **返回值**
@@ -81,9 +81,9 @@ setInterval() 方法重复调用一个函数或执行一个代码片段，在每
 clearInterval() 方法可取消先前通过 setInterval() 设置的重复定时任务。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | number \| undefined | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| id | number \| undefined | 是 | 
 
 
 **返回值**
@@ -116,9 +116,9 @@ clearInterval() 方法可取消先前通过 setInterval() 设置的重复定时�
 clearTimeout() 方法取消了先前通过调用setTimeout()建立的定时器
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | number \| undefined | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| id | number \| undefined | 是 | 
 
 
 **返回值**

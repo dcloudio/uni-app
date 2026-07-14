@@ -31,17 +31,17 @@
 
 #### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **OnLaunchOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **OnLaunchOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| path | string | 是 |  |   | 应用启动页面路径 |
-| appScheme | string | 否 |  | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: x | 首次启动时的Scheme。返回值与App.onLaunch的回调参数一致<br/> |
-| appLink | string | 否 |  | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS: 4.25; HarmonyOS: x | 首次启动时的appLink。返回值与App.onLaunch的回调参数一致<br/> | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| path | string | 是 |   | 应用启动页面路径 |
+| appScheme | string | 否 | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: x | 首次启动时的Scheme。返回值与App.onLaunch的回调参数一致<br/> |
+| appLink | string | 否 | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS: 4.25; HarmonyOS: x | 首次启动时的appLink。返回值与App.onLaunch的回调参数一致<br/> | 
 
 
 
@@ -68,17 +68,17 @@
 
 #### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **OnShowOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **OnShowOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| path | string | 是 |  |   | 应用启动页面路径 |
-| appScheme | string | 否 |  | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: x | 本次启动时的Scheme。返回值与App.onShow的回调参数一致<br/> |
-| appLink | string | 否 |  | Web: x; 微信小程序: x; Android: x; iOS: 4.25; HarmonyOS: x | 本次启动时的appLink。返回值与App.onShow的回调参数一致<br/> | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| path | string | 是 |   | 应用启动页面路径 |
+| appScheme | string | 否 | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: x | 本次启动时的Scheme。返回值与App.onShow的回调参数一致<br/> |
+| appLink | string | 否 | Web: x; 微信小程序: x; Android: x; iOS: 4.25; HarmonyOS: x | 本次启动时的appLink。返回值与App.onShow的回调参数一致<br/> | 
 
 
 
@@ -159,9 +159,9 @@
 
 #### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| error | any | 是 |  |   | 错误信息 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| error | any | 是 | 错误信息 | 
 
 
 
@@ -212,17 +212,17 @@
 
 #### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **OnPageNotFoundOption** | 是 |  | Android: x; iOS: x; HarmonyOS: x |  |
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| options | **OnPageNotFoundOption** | 是 | Android: x; iOS: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| path | string | 是 |  | Android: x; iOS: x; HarmonyOS: x | 不存在页面的路径 |
-| query | AnyObject | 是 |  | Android: x; iOS: x; HarmonyOS: x | 打开不存在页面的 query |
-| isEntryPage | boolean | 是 |  | Android: x; iOS: x; HarmonyOS: x | 是否本次启动的首个页面（例如从分享等入口进来，首个页面是开发者配置的分享页面） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| path | string | 是 | Android: x; iOS: x; HarmonyOS: x | 不存在页面的路径 |
+| query | AnyObject | 是 | Android: x; iOS: x; HarmonyOS: x | 打开不存在页面的 query |
+| isEntryPage | boolean | 是 | Android: x; iOS: x; HarmonyOS: x | 是否本次启动的首个页面（例如从分享等入口进来，首个页面是开发者配置的分享页面） | 
 
 
 

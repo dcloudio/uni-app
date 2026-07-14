@@ -12,17 +12,17 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **UniCloudCallFunctionOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **UniCloudCallFunctionOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| name | string ([string.CloudFunctionString](/uts/data-type.md#ide-string)) | 是 |  |   | 云函数名 |
-| data | any | 否 |  |   | 云函数参数 |
-| secretType | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 加密类型，指定加密请求、响应还是都加密 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| name | string ([string.CloudFunctionString](/uts/data-type.md#ide-string)) | 是 |   | 云函数名 |
+| data | any | 否 |   | 云函数参数 |
+| secretType | string | 否 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 加密类型，指定加密请求、响应还是都加密 |
 
 ##### secretType 的属性描述
 
@@ -42,10 +42,10 @@
 
 #### Promise\<UniCloudCallFunctionResult\<T>> 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| result | T | 是 |  |   | 云函数返回结果 |
-| requestId | string | 否 |  |   | 云函数请求id | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| result | T | 是 | 云函数返回结果 |
+| requestId | string | 否 | 云函数请求id | 
 
 
 

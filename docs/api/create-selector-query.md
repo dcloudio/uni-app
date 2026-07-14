@@ -55,9 +55,9 @@ in
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| component | any | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| component | any | 否 | 
 
 
 ##### 返回值 
@@ -77,9 +77,9 @@ select
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| selector | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| selector | string | 是 | 
 
 
 ##### 返回值 
@@ -96,9 +96,9 @@ boundingClientRect
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (result: any) => void | 否 | 
 
 
 ###### 返回值 
@@ -114,9 +114,9 @@ scrollOffset
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (result: any) => void | 是 | 
 
 
 ###### 返回值 
@@ -136,24 +136,24 @@ fields
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| fields | **NodeField** | 是 |  |   |  |
-| callback | (result: any) => void | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| fields | **NodeField** | 是 |
+| callback | (result: any) => void | 否 | 
 
 #### fields 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | boolean | 否 |  |   | 是否返回节点 id |
-| dataset | boolean | 否 |  |   | 是否返回节点 dataset |
-| rect | boolean | 否 |  |   | 是否返回节点布局位置（left right top bottom） |
-| size | boolean | 否 |  |   | 是否返回节点尺寸（width height） |
-| scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
-| properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
-| computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
-| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x | 是否返回节点对应的 Context 对象 |
-| node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| id | boolean | 否 |   | 是否返回节点 id |
+| dataset | boolean | 否 |   | 是否返回节点 dataset |
+| rect | boolean | 否 |   | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 |   | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| properties | Array&lt;string&gt; | 否 |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
+| computedStyle | Array&lt;string&gt; | 否 |   | 指定样式名列表，返回节点对应样式名的当前值 |
+| context | boolean | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 |   | 是否返回节点对应的 Node 实例 |
 
 
 ###### 返回值 
@@ -173,9 +173,9 @@ context
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (result: any) => void | 是 | 
 
 
 ###### 返回值 
@@ -196,9 +196,9 @@ node
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: any) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (result: any) => void | 是 | 
 
 
 ###### 返回值 
@@ -210,17 +210,17 @@ node
 
 ###### NodeField 的属性值 @nodefield-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | boolean | 否 |  |   | 是否返回节点 id |
-| dataset | boolean | 否 |  |   | 是否返回节点 dataset |
-| rect | boolean | 否 |  |   | 是否返回节点布局位置（left right top bottom） |
-| size | boolean | 否 |  |   | 是否返回节点尺寸（width height） |
-| scrollOffset | boolean | 否 |  |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
-| properties | Array&lt;string&gt; | 否 |  |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
-| computedStyle | Array&lt;string&gt; | 否 |  |   | 指定样式名列表，返回节点对应样式名的当前值 |
-| context | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x | 是否返回节点对应的 Context 对象 |
-| node | boolean | 否 |  |   | 是否返回节点对应的 Node 实例 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| id | boolean | 否 |   | 是否返回节点 id |
+| dataset | boolean | 否 |   | 是否返回节点 dataset |
+| rect | boolean | 否 |   | 是否返回节点布局位置（left right top bottom） |
+| size | boolean | 否 |   | 是否返回节点尺寸（width height） |
+| scrollOffset | boolean | 否 |   | 是否返回节点的 scrollLeft scrollTop，节点必须是 scroll-view 或者 viewport |
+| properties | Array&lt;string&gt; | 否 |   | 指定属性名列表，返回节点对应属性名的当前属性值（只能获得组件文档中标注的常规属性值，id class style 和事件绑定的属性值不可获取） |
+| computedStyle | Array&lt;string&gt; | 否 |   | 指定样式名列表，返回节点对应样式名的当前值 |
+| context | boolean | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x | 是否返回节点对应的 Context 对象 |
+| node | boolean | 否 |   | 是否返回节点对应的 Node 实例 |
  
 
 #### selectAll(selector: string): NodesRef @selectall
@@ -233,9 +233,9 @@ selectAll
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| selector | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| selector | string | 是 | 
 
 
 ##### 返回值 
@@ -272,9 +272,9 @@ exec
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (result: Array&lt;any&gt;) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (result: Array&lt;any&gt;) => void | 是 | 
 
 
 ##### 返回值 
@@ -914,7 +914,7 @@ uni.createSelectorQuery().select('.rect1').selectAll('.rect2').boundingClientRec
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

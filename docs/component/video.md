@@ -145,16 +145,16 @@ UniVideoTimeUpdateEvent -- Extends --> UniVideoEvent
   click UniVideoEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#univideoevent"
 ```
 ##### UniVideoTimeUpdateEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniVideoTimeUpdateEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniVideoTimeUpdateEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| currentTime | number | 是 |  |   | 当前进度 |
-| duration | number | 是 |  |   | 总进度 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| currentTime | number | 是 | 当前进度 |
+| duration | number | 是 | 总进度 |
 
 
 #### UniVideoFullScreenChangeEvent
@@ -167,16 +167,16 @@ UniVideoFullScreenChangeEvent -- Extends --> UniVideoEvent
   click UniVideoEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#univideoevent"
 ```
 ##### UniVideoFullScreenChangeEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniVideoFullScreenChangeEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniVideoFullScreenChangeEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| fullScreen | boolean | 是 |  |   | 是否全屏 |
-| direction | string | 是 |  |   | 横竖屏 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| fullScreen | boolean | 是 | 是否全屏 |
+| direction | string | 是 | 横竖屏 |
 
 ##### direction 的属性描述
 
@@ -196,19 +196,19 @@ UniVideoErrorEvent -- Extends --> UniVideoEvent
   click UniVideoEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#univideoevent"
 ```
 ##### UniVideoErrorEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **VideoError** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **VideoError** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 统一错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 统一错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 ##### errCode 的属性描述
 
@@ -229,15 +229,15 @@ UniVideoProgressEvent -- Extends --> UniVideoEvent
   click UniVideoEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#univideoevent"
 ```
 ##### UniVideoProgressEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniVideoProgressEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniVideoProgressEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| buffered | number | 是 |  |   | 加载进度百分比 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| buffered | number | 是 | 加载进度百分比 |
 
 
 #### UniVideoFullScreenClickEvent
@@ -250,18 +250,18 @@ UniVideoFullScreenClickEvent -- Extends --> UniVideoEvent
   click UniVideoEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#univideoevent"
 ```
 ##### UniVideoFullScreenClickEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniVideoFullScreenClickEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniVideoFullScreenClickEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| screenX | number | 是 |  |   | 点击点相对于屏幕左侧边缘的 X 轴坐标 |
-| screenY | number | 是 |  |   | 点击点相对于屏幕顶部边缘的 Y 轴坐标 |
-| screenWidth | number | 是 |  |   | 屏幕总宽度 |
-| screenHeight | number | 是 |  |   | 屏幕总高度 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| screenX | number | 是 | 点击点相对于屏幕左侧边缘的 X 轴坐标 |
+| screenY | number | 是 | 点击点相对于屏幕顶部边缘的 Y 轴坐标 |
+| screenWidth | number | 是 | 屏幕总宽度 |
+| screenHeight | number | 是 | 屏幕总高度 |
 
 
 #### UniVideoControlsToggleEvent
@@ -274,15 +274,15 @@ UniVideoControlsToggleEvent -- Extends --> UniVideoEvent
   click UniVideoEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#univideoevent"
 ```
 ##### UniVideoControlsToggleEvent 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| detail | **UniVideoControlsToggleEventDetail** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| detail | **UniVideoControlsToggleEventDetail** | 是 |
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| show | boolean | 是 |  |   | 是否显示 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| show | boolean | 是 | 是否显示 |
 
 
 #### UniVideoRecycleEvent
@@ -298,11 +298,11 @@ UniVideoRecycleEvent -- Extends --> UniCustomEvent&ltUniVideoRecycleEventDetail&
 video组件回收时的状态信息
 
 ###### UniVideoRecycleEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| isPlaying | boolean | 是 |  |   | 回收时是否处于播放状态。回收时暂停状态此值为false |
-| currentTime | number | 是 |  |   | 回收时播放视频的进度 |
-| duration | number | 是 |  |   | 回收时播放视频的总时长 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| isPlaying | boolean | 是 | 回收时是否处于播放状态。回收时暂停状态此值为false |
+| currentTime | number | 是 | 回收时播放视频的进度 |
+| duration | number | 是 | 回收时播放视频的总时长 |
 
 
 #### UniVideoReuseEvent
@@ -318,11 +318,11 @@ UniVideoReuseEvent -- Extends --> UniCustomEvent&ltUniVideoReuseEventDetail&gt
 
 
 ###### UniVideoReuseEventDetail 的属性值
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| isPlaying | boolean | 是 |  |   | 复用时是否处于播放状态。复用时暂停状态此值为false |
-| currentTime | number | 是 |  |   | 复用时播放视频的进度 |
-| duration | number | 是 |  |   | 复用时播放视频的总时长 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| isPlaying | boolean | 是 | 复用时是否处于播放状态。复用时暂停状态此值为false |
+| currentTime | number | 是 | 复用时播放视频的进度 |
+| duration | number | 是 | 复用时播放视频的总时长 |
 
 
 

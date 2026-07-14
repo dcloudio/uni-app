@@ -167,14 +167,14 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  |   | 圆弧中心（圆心）的 x 轴坐标 |
-| y | number | 是 |  |   | 圆弧中心（圆心）的 y 轴坐标 |
-| radius | number | 是 |  |   | 圆弧的半径 |
-| startAngle | number | 是 |  |   | 圆弧的起始点，x 轴方向开始计算，单位为弧度 |
-| endAngle | number | 是 |  |   | 圆弧的终点，单位为弧度 |
-| anticlockwise | boolean | 否 | true |   | 圆弧绘制方向，true：逆时针绘制，false：顺时针绘制。 | 
+| 名称 | 类型 | 必填 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| x | number | 是 |  | 圆弧中心（圆心）的 x 轴坐标 |
+| y | number | 是 |  | 圆弧中心（圆心）的 y 轴坐标 |
+| radius | number | 是 |  | 圆弧的半径 |
+| startAngle | number | 是 |  | 圆弧的起始点，x 轴方向开始计算，单位为弧度 |
+| endAngle | number | 是 |  | 圆弧的终点，单位为弧度 |
+| anticlockwise | boolean | 否 | true | 圆弧绘制方向，true：逆时针绘制，false：顺时针绘制。 | 
 
 
 
@@ -193,13 +193,13 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x1 | number | 是 |  |   | 第一个控制点的 x 轴坐标 |
-| y1 | number | 是 |  |   | 第一个控制点的 y 轴坐标 |
-| x2 | number | 是 |  |   | 第二个控制点的 x 轴坐标 |
-| y2 | number | 是 |  |   | 第二个控制点的 y 轴坐标 |
-| radius | number | 是 |  |   | 圆弧的半径 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| x1 | number | 是 | 第一个控制点的 x 轴坐标 |
+| y1 | number | 是 | 第一个控制点的 y 轴坐标 |
+| x2 | number | 是 | 第二个控制点的 x 轴坐标 |
+| y2 | number | 是 | 第二个控制点的 y 轴坐标 |
+| radius | number | 是 | 圆弧的半径 | 
 
 
 
@@ -234,14 +234,14 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| cp1x | number | 是 |  |   | 第一个控制点的 x 轴坐标 |
-| cp1y | number | 是 |  |   | 第一个控制点的 y 轴坐标 |
-| cp2x | number | 是 |  |   | 第二个控制点的 x 轴坐标 |
-| cp2y | number | 是 |  |   | 第二个控制点的 y 轴坐标 |
-| x | number | 是 |  |   | 结束点的 x 轴坐标 |
-| y | number | 是 |  |   | 结束点的 y 轴坐标 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| cp1x | number | 是 | 第一个控制点的 x 轴坐标 |
+| cp1y | number | 是 | 第一个控制点的 y 轴坐标 |
+| cp2x | number | 是 | 第二个控制点的 x 轴坐标 |
+| cp2y | number | 是 | 第二个控制点的 y 轴坐标 |
+| x | number | 是 | 结束点的 x 轴坐标 |
+| y | number | 是 | 结束点的 y 轴坐标 | 
 
 
 
@@ -260,12 +260,12 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  |   | 矩形起点的 x 轴坐标 |
-| y | number | 是 |  |   | 矩形起点的 y 轴坐标 |
-| width | number | 是 |  |   | 矩形的宽度 |
-| height | number | 是 |  |   | 矩形的高度 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| x | number | 是 | 矩形起点的 x 轴坐标 |
+| y | number | 是 | 矩形起点的 y 轴坐标 |
+| width | number | 是 | 矩形的宽度 |
+| height | number | 是 | 矩形的高度 | 
 
 
 
@@ -300,9 +300,9 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| path | [Path2D](/api/path2d.md) | 是 |  | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | Path2D用来声明路径，用来在canvas中根据需要创建可以保留并重用的路径, 此路径会被CanvasRenderingContext2D对象使用 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | Path2D用来声明路径，用来在canvas中根据需要创建可以保留并重用的路径, 此路径会被CanvasRenderingContext2D对象使用 | 
 
 
 
@@ -321,9 +321,9 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| fillRule | string | 是 |  | Android: x; iOS: x; HarmonyOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| fillRule | string | 是 | Android: x; iOS: x; HarmonyOS: x | 
 
 
 
@@ -342,10 +342,10 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| path | [Path2D](/api/path2d.md) | 是 |  | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | Path2D用来声明路径，用来在canvas中根据需要创建可以保留并重用的路径, 此路径会被CanvasRenderingContext2D对象使用 |
-| fillRule | string | 是 |  | Android: x; iOS: x; HarmonyOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | Path2D用来声明路径，用来在canvas中根据需要创建可以保留并重用的路径, 此路径会被CanvasRenderingContext2D对象使用 |
+| fillRule | string | 是 | Android: x; iOS: x; HarmonyOS: x |  | 
 
 
 
@@ -380,10 +380,10 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| width | number | 是 |  | Android: x; iOS: x; HarmonyOS: x |  |
-| height | number | 是 |  | Android: x; iOS: x; HarmonyOS: x |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| width | number | 是 | Android: x; iOS: x; HarmonyOS: x |
+| height | number | 是 | Android: x; iOS: x; HarmonyOS: x | 
 
 
 
@@ -402,10 +402,10 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| image | [Image](/api/image.md) | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 重复的图像源，支持代码包路径和本地临时路径 (本地路径) |
-| repetition | string | 否 |  |   | 如何重复图像 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| image | [Image](/api/image.md) | 是 | Web: 4.0; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 重复的图像源，支持代码包路径和本地临时路径 (本地路径) |
+| repetition | string | 否 |   | 如何重复图像 | 
 
 
 ##### 返回值 
@@ -430,12 +430,12 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x0 | number | 是 |  |   | 起点的 x 坐标 |
-| y0 | number | 是 |  |   | 起点的 y 坐标 |
-| x1 | number | 是 |  |   | 终点的 x 坐标 |
-| y1 | number | 是 |  |   | 终点的 y 坐标 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| x0 | number | 是 | 起点的 x 坐标 |
+| y0 | number | 是 | 起点的 y 坐标 |
+| x1 | number | 是 | 终点的 x 坐标 |
+| y1 | number | 是 | 终点的 y 坐标 | 
 
 
 ##### 返回值 
@@ -456,10 +456,10 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| stop | number | 是 |  |   | 表示渐变中开始与结束之间的位置，范围 0-1 |
-| color | string | 是 |  |   | 渐变点的颜色 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| stop | number | 是 | 表示渐变中开始与结束之间的位置，范围 0-1 |
+| color | string | 是 | 渐变点的颜色 | 
 
 
  
@@ -479,14 +479,14 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x0 | number | 是 |  |   | 开始圆形的 x 轴坐标 |
-| y0 | number | 是 |  |   | 开始圆形的 y 轴坐标 |
-| r0 | number | 是 |  |   | 开始圆形的半径 |
-| x1 | number | 是 |  |   | 结束圆形的 x 轴坐标 |
-| y1 | number | 是 |  |   | 结束圆形的 y 轴坐标 |
-| r01 | number | 是 |  |   | 结束圆形的半径 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| x0 | number | 是 | 开始圆形的 x 轴坐标 |
+| y0 | number | 是 | 开始圆形的 y 轴坐标 |
+| r0 | number | 是 | 开始圆形的半径 |
+| x1 | number | 是 | 结束圆形的 x 轴坐标 |
+| y1 | number | 是 | 结束圆形的 y 轴坐标 |
+| r01 | number | 是 | 结束圆形的半径 | 
 
 
 ##### 返回值 
@@ -507,10 +507,10 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| stop | number | 是 |  |   | 表示渐变中开始与结束之间的位置，范围 0-1 |
-| color | string | 是 |  |   | 渐变点的颜色 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| stop | number | 是 | 表示渐变中开始与结束之间的位置，范围 0-1 |
+| color | string | 是 | 渐变点的颜色 | 
 
 
  
@@ -546,11 +546,11 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| imageResource | [Image](/api/image.md) | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 所要绘制的图片资源 |
-| dx | number | 是 |  |   | imageResource的左上角在目标 canvas 上 x 轴的位置 |
-| dy | number | 是 |  |   | imageResource的左上角在目标 canvas 上 y 轴的位置 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| imageResource | [Image](/api/image.md) | 是 | Web: 4.0; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 所要绘制的图片资源 |
+| dx | number | 是 |   | imageResource的左上角在目标 canvas 上 x 轴的位置 |
+| dy | number | 是 |   | imageResource的左上角在目标 canvas 上 y 轴的位置 | 
 
 
 
@@ -569,13 +569,13 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| imageResource | [Image](/api/image.md) | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 所要绘制的图片资源 |
-| dx | number | 是 |  |   | imageResource的左上角在目标 canvas 上 x 轴的位置 |
-| dy | number | 是 |  |   | imageResource的左上角在目标 canvas 上 y 轴的位置 |
-| dWidth | number | 是 |  |   | 在目标画布上绘制imageResource的宽度，允许对绘制的imageResource进行缩放 |
-| dHeight | number | 是 |  |   | 在目标画布上绘制imageResource的高度，允许对绘制的imageResource进行缩放 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| imageResource | [Image](/api/image.md) | 是 | Web: 4.0; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 所要绘制的图片资源 |
+| dx | number | 是 |   | imageResource的左上角在目标 canvas 上 x 轴的位置 |
+| dy | number | 是 |   | imageResource的左上角在目标 canvas 上 y 轴的位置 |
+| dWidth | number | 是 |   | 在目标画布上绘制imageResource的宽度，允许对绘制的imageResource进行缩放 |
+| dHeight | number | 是 |   | 在目标画布上绘制imageResource的高度，允许对绘制的imageResource进行缩放 | 
 
 
 
@@ -594,17 +594,17 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| imageResource | [Image](/api/image.md) | 是 |  | Web: 4.0; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 所要绘制的图片资源 |
-| sx | number | 是 |  |   | 需要绘制到画布中的，imageResource的矩形（裁剪）选择框的左上角 x 坐标 |
-| sy | number | 是 |  |   | 需要绘制到画布中的，imageResource的矩形（裁剪）选择框的左上角 y 坐标 |
-| sWidth | number | 是 |  |   | 需要绘制到画布中的，imageResource的矩形（裁剪）选择框的宽度 |
-| sHeight | number | 是 |  |   | 需要绘制到画布中的，imageResource的矩形（裁剪）选择框的高度 |
-| dx | number | 是 |  |   | imageResource的左上角在目标 canvas 上 x 轴的位置 |
-| dy | number | 是 |  |   | imageResource的左上角在目标 canvas 上 y 轴的位置 |
-| dWidth | number | 是 |  |   | 在目标画布上绘制imageResource的宽度，允许对绘制的imageResource进行缩放 |
-| dHeight | number | 是 |  |   | 在目标画布上绘制imageResource的高度，允许对绘制的imageResource进行缩放 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| imageResource | [Image](/api/image.md) | 是 | Web: 4.0; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 所要绘制的图片资源 |
+| sx | number | 是 |   | 需要绘制到画布中的，imageResource的矩形（裁剪）选择框的左上角 x 坐标 |
+| sy | number | 是 |   | 需要绘制到画布中的，imageResource的矩形（裁剪）选择框的左上角 y 坐标 |
+| sWidth | number | 是 |   | 需要绘制到画布中的，imageResource的矩形（裁剪）选择框的宽度 |
+| sHeight | number | 是 |   | 需要绘制到画布中的，imageResource的矩形（裁剪）选择框的高度 |
+| dx | number | 是 |   | imageResource的左上角在目标 canvas 上 x 轴的位置 |
+| dy | number | 是 |   | imageResource的左上角在目标 canvas 上 y 轴的位置 |
+| dWidth | number | 是 |   | 在目标画布上绘制imageResource的宽度，允许对绘制的imageResource进行缩放 |
+| dHeight | number | 是 |   | 在目标画布上绘制imageResource的高度，允许对绘制的imageResource进行缩放 | 
 
 
 
@@ -623,16 +623,16 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 椭圆圆心的 x 轴（水平）坐标 |
-| y | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 椭圆圆心的 y 轴（垂直）坐标 |
-| radiusX | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 椭圆长轴的半径。必须为非负数 |
-| radiusY | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 椭圆短轴的半径。必须为非负数。 |
-| rotation | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 椭圆的旋转角度，以弧度表示。 |
-| startAngle | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 椭圆弧的起始偏心角，从正 x 轴沿顺时针测量，用弧度表示。 |
-| endAngle | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 椭圆弧的结束偏心角，从正 x 轴沿顺时针测量，用弧度表示。 |
-| anticlockwise | boolean | 是 |  | Android: x; iOS: x; HarmonyOS: x | 一个可选的布尔值，如果为 true，则逆时针绘制椭圆弧。默认值为 false（顺时针）。 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| x | number | 是 | Android: x; iOS: x; HarmonyOS: x | 椭圆圆心的 x 轴（水平）坐标 |
+| y | number | 是 | Android: x; iOS: x; HarmonyOS: x | 椭圆圆心的 y 轴（垂直）坐标 |
+| radiusX | number | 是 | Android: x; iOS: x; HarmonyOS: x | 椭圆长轴的半径。必须为非负数 |
+| radiusY | number | 是 | Android: x; iOS: x; HarmonyOS: x | 椭圆短轴的半径。必须为非负数。 |
+| rotation | number | 是 | Android: x; iOS: x; HarmonyOS: x | 椭圆的旋转角度，以弧度表示。 |
+| startAngle | number | 是 | Android: x; iOS: x; HarmonyOS: x | 椭圆弧的起始偏心角，从正 x 轴沿顺时针测量，用弧度表示。 |
+| endAngle | number | 是 | Android: x; iOS: x; HarmonyOS: x | 椭圆弧的结束偏心角，从正 x 轴沿顺时针测量，用弧度表示。 |
+| anticlockwise | boolean | 是 | Android: x; iOS: x; HarmonyOS: x | 一个可选的布尔值，如果为 true，则逆时针绘制椭圆弧。默认值为 false（顺时针）。 | 
 
 
 
@@ -667,9 +667,9 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| fillRule | string | 是 |  |   | 填充当前或已存在的路径的方法。采取非零环绕(nonzero)或者奇偶环绕(evenodd)规则 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| fillRule | string | 是 | 填充当前或已存在的路径的方法。采取非零环绕(nonzero)或者奇偶环绕(evenodd)规则 |
 
 #### fillRule 的属性描述
 
@@ -695,9 +695,9 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| path | [Path2D](/api/path2d.md) | 是 |  | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 填充路径 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 填充路径 | 
 
 
 
@@ -716,10 +716,10 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| path | [Path2D](/api/path2d.md) | 是 |  | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 填充路径 |
-| fillRule | string | 是 |  |   | 填充当前或已存在的路径的方法。采取非零环绕(nonzero)或者奇偶环绕(evenodd)规则 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 填充路径 |
+| fillRule | string | 是 |   | 填充当前或已存在的路径的方法。采取非零环绕(nonzero)或者奇偶环绕(evenodd)规则 |
 
 #### fillRule 的属性描述
 
@@ -745,12 +745,12 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  |   | 矩形起点的 x 轴坐标 |
-| y | number | 是 |  |   | 矩形起点的 y 轴坐标 |
-| width | number | 是 |  |   | 矩形的宽度 |
-| height | number | 是 |  |   | 矩形的高度 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| x | number | 是 | 矩形起点的 x 轴坐标 |
+| y | number | 是 | 矩形起点的 y 轴坐标 |
+| width | number | 是 | 矩形的宽度 |
+| height | number | 是 | 矩形的高度 | 
 
 
 
@@ -769,12 +769,12 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| text | string | 是 |  |   | 要渲染的文本字符串 |
-| x | number | 是 |  |   | 开始绘制文本的点的 x 轴坐标 |
-| y | number | 是 |  |   | 开始绘制文本的点的 y 轴坐标 |
-| maxWidth | number | 否 |  |   | 需要绘制的最大宽度 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| text | string | 是 | 要渲染的文本字符串 |
+| x | number | 是 | 开始绘制文本的点的 x 轴坐标 |
+| y | number | 是 | 开始绘制文本的点的 y 轴坐标 |
+| maxWidth | number | 否 | 需要绘制的最大宽度 | 
 
 
 
@@ -793,12 +793,12 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| sx | number | 是 |  |   | 将要被提取的图像数据矩形区域的左上角 x 坐标 |
-| sy | number | 是 |  |   | 将要被提取的图像数据矩形区域的左上角 y 坐标 |
-| sw | number | 是 |  |   | 将要被提取的图像数据矩形区域的宽度 |
-| sh | number | 是 |  |   | 将要被提取的图像数据矩形区域的高度 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| sx | number | 是 | 将要被提取的图像数据矩形区域的左上角 x 坐标 |
+| sy | number | 是 | 将要被提取的图像数据矩形区域的左上角 y 坐标 |
+| sw | number | 是 | 将要被提取的图像数据矩形区域的宽度 |
+| sh | number | 是 | 将要被提取的图像数据矩形区域的高度 | 
 
 
 ##### 返回值 
@@ -809,11 +809,11 @@ addColorStop
 
 #### ImageData 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | [Uint8ClampedArray](/uts/buildin-object-api/uint8clampedarray.md) | 是 |  | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 一维数组，包含以 RGBA 顺序的数据，数据使用 0 至 255（包含）的整数表示 |
-| width | number | 是 |  | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 使用像素描述 ImageData 的实际宽度 |
-| height | number | 是 |  | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 使用像素描述 ImageData 的实际高度 | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| data | [Uint8ClampedArray](/uts/buildin-object-api/uint8clampedarray.md) | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 一维数组，包含以 RGBA 顺序的数据，数据使用 0 至 255（包含）的整数表示 |
+| width | number | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 使用像素描述 ImageData 的实际宽度 |
+| height | number | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 使用像素描述 ImageData 的实际高度 | 
 
 
 
@@ -852,10 +852,10 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 检测点的 X 坐标 |
-| y | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 检测点的 Y 坐标 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| x | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 X 坐标 |
+| y | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 Y 坐标 | 
 
 
 ##### 返回值 
@@ -880,11 +880,11 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 检测点的 X 坐标 |
-| y | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 检测点的 Y 坐标 |
-| fillRule | string | 是 |  | Android: x; iOS: x; HarmonyOS: x | 用来决定点在路径内还是在路径外的算法 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| x | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 X 坐标 |
+| y | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 Y 坐标 |
+| fillRule | string | 是 | Android: x; iOS: x; HarmonyOS: x | 用来决定点在路径内还是在路径外的算法 | 
 
 
 ##### 返回值 
@@ -909,11 +909,11 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| path | [Path2D](/api/path2d.md) | 是 |  | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | Path2D应用的路径 |
-| x | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 检测点的 X 坐标 |
-| y | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 检测点的 Y 坐标 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | Path2D应用的路径 |
+| x | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 X 坐标 |
+| y | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 Y 坐标 | 
 
 
 ##### 返回值 
@@ -938,12 +938,12 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| path | [Path2D](/api/path2d.md) | 是 |  | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | Path2D应用的路径 |
-| x | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 检测点的 X 坐标 |
-| y | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 检测点的 Y 坐标 |
-| fillRule | string | 是 |  | Android: x; iOS: x; HarmonyOS: x | 用来决定点在路径内还是在路径外的算法 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | Path2D应用的路径 |
+| x | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 X 坐标 |
+| y | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 Y 坐标 |
+| fillRule | string | 是 | Android: x; iOS: x; HarmonyOS: x | 用来决定点在路径内还是在路径外的算法 | 
 
 
 ##### 返回值 
@@ -968,10 +968,10 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 检测点的 X 坐标 |
-| y | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 检测点的 Y 坐标 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| x | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 X 坐标 |
+| y | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 Y 坐标 | 
 
 
 ##### 返回值 
@@ -1018,10 +1018,10 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  |   | 目标位置的 x 坐标 |
-| y | number | 是 |  |   | 目标位置的 y 坐标 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| x | number | 是 | 目标位置的 x 坐标 |
+| y | number | 是 | 目标位置的 y 坐标 | 
 
 
 
@@ -1040,9 +1040,9 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| text | string | 是 |  |   | 要渲测量的文本字符串 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| text | string | 是 | 要渲测量的文本字符串 | 
 
 
 ##### 返回值 
@@ -1053,9 +1053,9 @@ addColorStop
 
 #### TextMetrics 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| width | number | 是 |  | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本的宽度 | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| width | number | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本的宽度 | 
 
 
 
@@ -1072,10 +1072,10 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  |   | 目标位置的 x 坐标 |
-| y | number | 是 |  |   | 目标位置的 y 坐标 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| x | number | 是 | 目标位置的 x 坐标 |
+| y | number | 是 | 目标位置的 y 坐标 | 
 
 
 
@@ -1094,19 +1094,19 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| imageData | **ImageData** | 是 |  | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 包含像素值的数组对象 |
-| x | number | 是 |  |   | 源图像数据在目标画布中的位置偏移量（x 轴方向的偏移量） |
-| y | number | 是 |  |   | 源图像数据在目标画布中的位置偏移量（y 轴方向的偏移量） | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| imageData | **ImageData** | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 包含像素值的数组对象 |
+| x | number | 是 |   | 源图像数据在目标画布中的位置偏移量（x 轴方向的偏移量） |
+| y | number | 是 |   | 源图像数据在目标画布中的位置偏移量（y 轴方向的偏移量） | 
 
 #### imageData 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | [Uint8ClampedArray](/uts/buildin-object-api/uint8clampedarray.md) | 是 |  | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 一维数组，包含以 RGBA 顺序的数据，数据使用 0 至 255（包含）的整数表示 |
-| width | number | 是 |  | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 使用像素描述 ImageData 的实际宽度 |
-| height | number | 是 |  | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 使用像素描述 ImageData 的实际高度 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| data | [Uint8ClampedArray](/uts/buildin-object-api/uint8clampedarray.md) | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 一维数组，包含以 RGBA 顺序的数据，数据使用 0 至 255（包含）的整数表示 |
+| width | number | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 使用像素描述 ImageData 的实际宽度 |
+| height | number | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 使用像素描述 ImageData 的实际高度 |
 
 
 
@@ -1125,23 +1125,23 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| imageData | **ImageData** | 是 |  | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 包含像素值的数组对象 |
-| x | number | 是 |  |   | 源图像数据在目标画布中的位置偏移量（x 轴方向的偏移量） |
-| y | number | 是 |  |   | 源图像数据在目标画布中的位置偏移量（y 轴方向的偏移量） |
-| dirtyX | number | 是 |  |   | 在源图像数据中，矩形区域左上角的位置。默认是整个图像数据的左上角（x 坐标） |
-| dirtyY | number | 是 |  |   | 在源图像数据中，矩形区域左上角的位置。默认是整个图像数据的左上角（y 坐标） |
-| dirtyWidth | number | 是 |  |   | 在源图像数据中，矩形区域的宽度。默认是图像数据的宽度） |
-| dirtyHeight | number | 是 |  |   | 在源图像数据中，矩形区域的高度。默认是图像数据的高度 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| imageData | **ImageData** | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 包含像素值的数组对象 |
+| x | number | 是 |   | 源图像数据在目标画布中的位置偏移量（x 轴方向的偏移量） |
+| y | number | 是 |   | 源图像数据在目标画布中的位置偏移量（y 轴方向的偏移量） |
+| dirtyX | number | 是 |   | 在源图像数据中，矩形区域左上角的位置。默认是整个图像数据的左上角（x 坐标） |
+| dirtyY | number | 是 |   | 在源图像数据中，矩形区域左上角的位置。默认是整个图像数据的左上角（y 坐标） |
+| dirtyWidth | number | 是 |   | 在源图像数据中，矩形区域的宽度。默认是图像数据的宽度） |
+| dirtyHeight | number | 是 |   | 在源图像数据中，矩形区域的高度。默认是图像数据的高度 | 
 
 #### imageData 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | [Uint8ClampedArray](/uts/buildin-object-api/uint8clampedarray.md) | 是 |  | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 一维数组，包含以 RGBA 顺序的数据，数据使用 0 至 255（包含）的整数表示 |
-| width | number | 是 |  | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 使用像素描述 ImageData 的实际宽度 |
-| height | number | 是 |  | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 使用像素描述 ImageData 的实际高度 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| data | [Uint8ClampedArray](/uts/buildin-object-api/uint8clampedarray.md) | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 一维数组，包含以 RGBA 顺序的数据，数据使用 0 至 255（包含）的整数表示 |
+| width | number | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 使用像素描述 ImageData 的实际宽度 |
+| height | number | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 使用像素描述 ImageData 的实际高度 |
 
 
 
@@ -1160,12 +1160,12 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| cpx | number | 是 |  |   | 贝塞尔控制点的 x 坐标 |
-| cpy | number | 是 |  |   | 贝塞尔控制点的 y 坐标 |
-| x | number | 是 |  |   | 结束点的 x 坐标 |
-| y | number | 是 |  |   | 结束点的 y 坐标 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| cpx | number | 是 | 贝塞尔控制点的 x 坐标 |
+| cpy | number | 是 | 贝塞尔控制点的 y 坐标 |
+| x | number | 是 | 结束点的 x 坐标 |
+| y | number | 是 | 结束点的 y 坐标 | 
 
 
 
@@ -1184,12 +1184,12 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  |   | 矩形路径起点的 x 轴坐标 |
-| y | number | 是 |  |   | 矩形路径起点的 y 轴坐标 |
-| width | number | 是 |  |   | 矩形路径的宽度 |
-| height | number | 是 |  |   | 矩形路径的高度 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| x | number | 是 | 矩形路径起点的 x 轴坐标 |
+| y | number | 是 | 矩形路径起点的 y 轴坐标 |
+| width | number | 是 | 矩形路径的宽度 |
+| height | number | 是 | 矩形路径的高度 | 
 
 
 
@@ -1240,9 +1240,9 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| rotate | number | 是 |  |   | ，以弧度计 degrees * Math.PI/180；degrees 范围为 0-360 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| rotate | number | 是 | ，以弧度计 degrees * Math.PI/180；degrees 范围为 0-360 | 
 
 
 
@@ -1261,13 +1261,13 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 矩形起点的 x 轴坐标，以像素为单位 |
-| y | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 矩形起点的 y 轴坐标，以像素为单位 |
-| width | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 矩形的宽度。正值向右，负值向左 |
-| height | number | 是 |  | Android: x; iOS: x; HarmonyOS: x | 矩形的高度。正值向下，负值向上 |
-| radii | any | 是 |  | Android: x; iOS: x; HarmonyOS: x | 其数量和顺序与 width 和 height 为正值时的 border-radius CSS 属性相同 | 
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| x | number | 是 | Android: x; iOS: x; HarmonyOS: x | 矩形起点的 x 轴坐标，以像素为单位 |
+| y | number | 是 | Android: x; iOS: x; HarmonyOS: x | 矩形起点的 y 轴坐标，以像素为单位 |
+| width | number | 是 | Android: x; iOS: x; HarmonyOS: x | 矩形的宽度。正值向右，负值向左 |
+| height | number | 是 | Android: x; iOS: x; HarmonyOS: x | 矩形的高度。正值向下，负值向上 |
+| radii | any | 是 | Android: x; iOS: x; HarmonyOS: x | 其数量和顺序与 width 和 height 为正值时的 border-radius CSS 属性相同 | 
 
 
 
@@ -1302,10 +1302,10 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  |   |  |
-| y | number | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| x | number | 是 |
+| y | number | 是 | 
 
 
 
@@ -1324,9 +1324,9 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| segments | number[\] | 是 |  |   | \<number>一组描述交替绘制线段和间距（坐标空间单位）长度的数字 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| segments | number[\] | 是 | \<number>一组描述交替绘制线段和间距（坐标空间单位）长度的数字 | 
 
 
 
@@ -1345,14 +1345,14 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| scaleX | Number | 是 |  |   | 水平缩放 |
-| skewY | Number | 是 |  |   | 垂直倾斜 |
-| skewX | Number | 是 |  |   | 水平倾斜 |
-| scaleY | Number | 是 |  |   | 垂直缩放 |
-| translateX | Number | 是 |  |   | 水平移动 |
-| translateY | Number | 是 |  |   | 垂直移动 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| scaleX | Number | 是 | 水平缩放 |
+| skewY | Number | 是 | 垂直倾斜 |
+| skewX | Number | 是 | 水平倾斜 |
+| scaleY | Number | 是 | 垂直缩放 |
+| translateX | Number | 是 | 水平移动 |
+| translateY | Number | 是 | 垂直移动 | 
 
 
 
@@ -1387,9 +1387,9 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| path | [Path2D](/api/path2d.md) | 是 |  | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 |  | 
+| 名称 | 类型 | 必填 | 兼容性 |
+| :- | :- | :- |  :-: |
+| path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 
 
 
 
@@ -1408,12 +1408,12 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  |   | 矩形起点的 x 轴坐标 |
-| y | number | 是 |  |   | 矩形起点的 y 轴坐标 |
-| width | number | 是 |  |   | 矩形的宽度 |
-| height | number | 是 |  |   | 矩形的高度 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| x | number | 是 | 矩形起点的 x 轴坐标 |
+| y | number | 是 | 矩形起点的 y 轴坐标 |
+| width | number | 是 | 矩形的宽度 |
+| height | number | 是 | 矩形的高度 | 
 
 
 
@@ -1432,12 +1432,12 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| text | string | 是 |  |   | 要渲染的文本字符串 |
-| x | number | 是 |  |   | 开始绘制文本的点的 x 轴坐标 |
-| y | number | 是 |  |   | 开始绘制文本的点的 y 轴坐标 |
-| maxWidth | number | 否 |  |   | 需要绘制的最大宽度 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| text | string | 是 | 要渲染的文本字符串 |
+| x | number | 是 | 开始绘制文本的点的 x 轴坐标 |
+| y | number | 是 | 开始绘制文本的点的 y 轴坐标 |
+| maxWidth | number | 否 | 需要绘制的最大宽度 | 
 
 
 
@@ -1456,14 +1456,14 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| scaleX | Number | 是 |  |   | 水平缩放 |
-| skewY | number | 是 |  |   | 垂直倾斜 |
-| skewX | number | 是 |  |   | 水平倾斜 |
-| scaleY | number | 是 |  |   | 垂直缩放 |
-| translateX | number | 是 |  |   | 水平移动 |
-| translateY | number | 是 |  |   | 垂直移动 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| scaleX | Number | 是 | 水平缩放 |
+| skewY | number | 是 | 垂直倾斜 |
+| skewX | number | 是 | 水平倾斜 |
+| scaleY | number | 是 | 垂直缩放 |
+| translateX | number | 是 | 水平移动 |
+| translateY | number | 是 | 垂直移动 | 
 
 
 
@@ -1482,10 +1482,10 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| translateX | number | 是 |  |   | 水平方向的移动距离 |
-| translateY | number | 是 |  |   | 垂直方向的移动距离 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| translateX | number | 是 | 水平方向的移动距离 |
+| translateY | number | 是 | 垂直方向的移动距离 | 
 
 
 

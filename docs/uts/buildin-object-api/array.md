@@ -9,9 +9,9 @@ Array 对象是用于构造数组的全局对象，数组是类似于列表的�
 
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| items | T[\] | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| items | T[\] | 是 | 
 
 
 **返回值**
@@ -75,15 +75,15 @@ let arr = new Array(10)
 Array.from() 静态方法从可迭代或类数组对象创建一个新的浅拷贝的数组实例。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| arrayLike | [ArrayLike\<T>](#arraylike-values) | 是 |  |   | 想要转换成数组的类数组或可迭代对象。 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| arrayLike | [ArrayLike\<T>](#arraylike-values) | 是 | 想要转换成数组的类数组或可迭代对象。 |
 
 #### arrayLike 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| length | number | 是 |  |   |  | 
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| length | number | 是 | 
 
 
 **返回值**
@@ -114,9 +114,9 @@ Array.from() 静态方法从可迭代或类数组对象创建一个新的浅拷�
 Array.of() 静态方法通过可变数量的参数创建一个新的 Array 实例，而不考虑参数的数量或类型
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| items | T[\] | 是 |  |   | 用于创建数组的元素。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| items | T[\] | 是 | 用于创建数组的元素。 | 
 
 
 **返回值**
@@ -147,9 +147,9 @@ Array.of() 静态方法通过可变数量的参数创建一个新的 Array 实�
 Array.isArray() 静态方法用于确定传递的值是否是一个 Array。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| arg | any | 是 |  |   | 需要检测的值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| arg | any | 是 | 需要检测的值。 | 
 
 
 **返回值**
@@ -198,16 +198,16 @@ Array.isArray() 静态方法用于确定传递的值是否是一个 Array。
 Array.fromAsync() 静态方法可以由一个异步可迭代对象、可迭代对象或类数组对象创建一个新的、浅拷贝的 Array 实例。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| arrayLike | [ArrayLike\<T>](#arraylike-values) | 是 |  |   | 要转换为数组的异步可迭代、可迭代或类数组对象。 |
-| mapfn | (v: T, k: number) => any | 是 |  |   | 为数组中的每个元素执行的函数。如果提供了该函数，则每个要添加到数组中的值都会先通过该函数处理，mapFn 的返回值将代替该值被添加到数组中（在等待兑现后）。该函数被调用时将传入以下参数：element 数组当前正在处理的元素。index 数组当前正在处理的元素的索引。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| arrayLike | [ArrayLike\<T>](#arraylike-values) | 是 | 要转换为数组的异步可迭代、可迭代或类数组对象。 |
+| mapfn | (v: T, k: number) => any | 是 | 为数组中的每个元素执行的函数。如果提供了该函数，则每个要添加到数组中的值都会先通过该函数处理，mapFn 的返回值将代替该值被添加到数组中（在等待兑现后）。该函数被调用时将传入以下参数：element 数组当前正在处理的元素。index 数组当前正在处理的元素的索引。 | 
 
 #### arrayLike 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| length | number | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| length | number | 是 |
 
 
 **返回值**
@@ -237,9 +237,9 @@ Array.fromAsync() 静态方法可以由一个异步可迭代对象、可迭代�
 fromNative() 方法 从native 数据结构中 转换得到一个UTS环境下的Array对象<br/>     支持传入的参数类型有: kotlin.collections.List/ kotlin.Array/kotlin.ByteArray/Kotlin.LongArray/Kotlin.IntArray 等
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| input | kotlin.ByteArray \| Kotlin.LongArray \| Kotlin.IntArray \| Kotlin.FloatArray \| Kotlin.DoubleArray \| Kotlin.ShortArray \| Kotlin.CharArray \| Kotlin.BooleanArray \| kotlin.Array \| kotlin.collections.List | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| input | kotlin.ByteArray \| Kotlin.LongArray \| Kotlin.IntArray \| Kotlin.FloatArray \| Kotlin.DoubleArray \| Kotlin.ShortArray \| Kotlin.CharArray \| Kotlin.BooleanArray \| kotlin.Array \| kotlin.collections.List | 是 | 
 
 
 **返回值**
@@ -356,9 +356,9 @@ toString() 方法返回一个字符串，表示指定的数组及其元素。
 将指定的元素追加到此列表的末尾，不推荐使用本方法，推荐使用push替代。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| item | T | 是 |  |   | 添加到数组的元素。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| item | T | 是 | 添加到数组的元素。 | 
 
 
 **返回值**
@@ -420,9 +420,9 @@ toLocaleString() 方法返回一个字符串，表示数组中的所有元素。
 从所有元素中使用\[separator]建字符串
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| separator | string | 是 |  |   | 分隔符 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| separator | string | 是 | 分隔符 | 
 
 
 **返回值**
@@ -454,10 +454,10 @@ toLocaleString() 方法返回一个字符串，表示数组中的所有元素。
 find() 方法返回数组中满足提供的测试函数的第一个元素的值。否则返回 null。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| predicate | (value: T, index: number, obj: Array&lt;T&gt;) => boolean | 是 |  |   | 为数组中的每个元素执行的函数。它应该返回一个真值来表示已经找到了匹配的元素。 |
-| thisArg | any | 否 |  |   | 执行 callbackFn 时用作 this 的值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| predicate | (value: T, index: number, obj: Array&lt;T&gt;) => boolean | 是 | 为数组中的每个元素执行的函数。它应该返回一个真值来表示已经找到了匹配的元素。 |
+| thisArg | any | 否 | 执行 callbackFn 时用作 this 的值。 | 
 
 
 **返回值**
@@ -544,10 +544,10 @@ find() 方法返回数组中满足提供的测试函数的第一个元素的值�
 findIndex() 方法返回数组中满足提供的测试函数的第一个元素的索引。若没有找到对应元素则返回 -1。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| predicate | (value: T, index: number, obj: Array&lt;T&gt;) => boolean | 是 |  |   | 为数组中的每个元素执行的函数。它应该返回一个真值以指示已找到匹配元素，否则返回一个假值。 |
-| thisArg | any | 否 |  |   | 执行 callbackFn 时用作 this 的值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| predicate | (value: T, index: number, obj: Array&lt;T&gt;) => boolean | 是 | 为数组中的每个元素执行的函数。它应该返回一个真值以指示已找到匹配元素，否则返回一个假值。 |
+| thisArg | any | 否 | 执行 callbackFn 时用作 this 的值。 | 
 
 
 **返回值**
@@ -659,11 +659,11 @@ findIndex() 方法返回数组中满足提供的测试函数的第一个元素�
 fill() 方法用一个固定值填充一个数组中从起始索引（默认为 0）到终止索引（默认为 array.length）内的全部元素。它返回修改后的数组。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| value | T | 是 |  |   | 用来填充数组元素的值。注意所有数组中的元素都将是这个确定的值：如果 value 是个对象，那么数组的每一项都会引用这个元素。 |
-| start | number | 否 |  |   | 基于零的索引，从此开始填充，转换为整数。 |
-| end | number | 否 |  |   | 基于零的索引，在此结束填充，转换为整数。fill() 填充到但不包含 end 索引。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| value | T | 是 | 用来填充数组元素的值。注意所有数组中的元素都将是这个确定的值：如果 value 是个对象，那么数组的每一项都会引用这个元素。 |
+| start | number | 否 | 基于零的索引，从此开始填充，转换为整数。 |
+| end | number | 否 | 基于零的索引，在此结束填充，转换为整数。fill() 填充到但不包含 end 索引。 | 
 
 
 **返回值**
@@ -733,11 +733,11 @@ fill() 方法用一个固定值填充一个数组中从起始索引（默认为 
 copyWithin() 方法浅复制数组的一部分到同一数组中的另一个位置，并返回它，不会改变原数组的长度。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| target | number | 是 |  |   | 序列开始替换的目标位置，以 0 为起始的下标表示，且将被转换为整数 |
-| start | number | 否 |  |   | 要复制的元素序列的起始位置，以 0 为起始的下标表示，且将被转换为整数 |
-| end | number | 否 |  |   | 要复制的元素序列的结束位置，以 0 为起始的下标表示，且将被转换为整数。copyWithin 将会拷贝到该位置，但不包括 end 这个位置的元素。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| target | number | 是 | 序列开始替换的目标位置，以 0 为起始的下标表示，且将被转换为整数 |
+| start | number | 否 | 要复制的元素序列的起始位置，以 0 为起始的下标表示，且将被转换为整数 |
+| end | number | 否 | 要复制的元素序列的结束位置，以 0 为起始的下标表示，且将被转换为整数。copyWithin 将会拷贝到该位置，但不包括 end 这个位置的元素。 | 
 
 
 **返回值**
@@ -814,9 +814,9 @@ pop() 方法从数组中删除最后一个元素，并返回该元素的值。�
 push() 方法将指定的元素添加到数组的末尾，并返回新的数组长度。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| items | T[\] | 是 |  |   | 添加到数组末尾的元素。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| items | T[\] | 是 | 添加到数组末尾的元素。 | 
 
 
 **返回值**
@@ -856,9 +856,9 @@ push() 方法将指定的元素添加到数组的末尾，并返回新的数组�
 concat() 方法用于合并两个或多个数组。此方法不会更改现有数组，而是返回一个新数组。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| items | ConcatArray\<T>[\] | 是 |  |   | 数组和/或值，将被合并到一个新的数组中。如果省略了所有 valueN 参数，则 concat 会返回调用此方法的现存数组的一个浅拷贝。详情请参阅下文描述。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| items | ConcatArray\<T>[\] | 是 | 数组和/或值，将被合并到一个新的数组中。如果省略了所有 valueN 参数，则 concat 会返回调用此方法的现存数组的一个浅拷贝。详情请参阅下文描述。 | 
 
 
 **返回值**
@@ -906,9 +906,9 @@ concat() 方法用于合并两个或多个数组。此方法不会更改现有�
 concat() 方法用于合并两个或多个数组。此方法不会更改现有数组，而是返回一个新数组。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| items | (T \| ConcatArray\<T>)[\] | 是 |  |   | 数组和/或值，将被合并到一个新的数组中。如果省略了所有 valueN 参数，则 concat 会返回调用此方法的现存数组的一个浅拷贝。详情请参阅下文描述。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| items | (T \| ConcatArray\<T>)[\] | 是 | 数组和/或值，将被合并到一个新的数组中。如果省略了所有 valueN 参数，则 concat 会返回调用此方法的现存数组的一个浅拷贝。详情请参阅下文描述。 | 
 
 
 **返回值**
@@ -956,9 +956,9 @@ concat() 方法用于合并两个或多个数组。此方法不会更改现有�
 join() 方法将一个数组（或一个类数组对象）的所有元素连接成一个字符串并返回这个字符串，用逗号或指定的分隔符字符串分隔。如果数组只有一个元素，那么将返回该元素而不使用分隔符。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| separator | string | 否 |  |   | 指定一个字符串来分隔数组的每个元素。如果需要，将分隔符转换为字符串。如果省略，数组元素用逗号（,）分隔。如果 separator 是空字符串（""），则所有元素之间都没有任何字符。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| separator | string | 否 | 指定一个字符串来分隔数组的每个元素。如果需要，将分隔符转换为字符串。如果省略，数组元素用逗号（,）分隔。如果 separator 是空字符串（""），则所有元素之间都没有任何字符。 | 
 
 
 **返回值**
@@ -1068,10 +1068,10 @@ shift() 方法从数组中删除第一个元素，并返回该元素的值。此
 slice() 方法返回一个新的数组对象，这一对象是一个由 start 和 end 决定的原数组的浅拷贝（包括 start，不包括 end），其中 start 和 end 代表了数组元素的索引。原始数组不会被改变。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| start | number | 否 |  |   | 提取起始处的索引（从 0 开始），会转换为整数。 |
-| end | number | 否 |  |   | 提取终止处的索引（从 0 开始），会转换为整数。slice() 会提取到但不包括 end 的位置。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| start | number | 否 | 提取起始处的索引（从 0 开始），会转换为整数。 |
+| end | number | 否 | 提取终止处的索引（从 0 开始），会转换为整数。slice() 会提取到但不包括 end 的位置。 | 
 
 
 **返回值**
@@ -1126,9 +1126,9 @@ slice() 方法返回一个新的数组对象，这一对象是一个由 start �
 sort() 方法就地对数组的元素进行排序，并返回对相同数组的引用。默认排序是将元素转换为字符串，然后按照它们的 UTF-16 码元值升序排序。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| compareFn | (a: T, b: T) => number | 否 |  |   | 定义排序顺序的函数。返回值应该是一个数字，其正负性表示两个元素的相对顺序。该函数使用以下参数调用： a:第一个用于比较的元素。不会是 null。 b:第二个用于比较的元素。不会是 null。 如果省略该函数，数组元素会被转换为字符串，然后根据每个字符的 Unicode 码位值进行排序。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| compareFn | (a: T, b: T) => number | 否 | 定义排序顺序的函数。返回值应该是一个数字，其正负性表示两个元素的相对顺序。该函数使用以下参数调用： a:第一个用于比较的元素。不会是 null。 b:第二个用于比较的元素。不会是 null。 如果省略该函数，数组元素会被转换为字符串，然后根据每个字符的 Unicode 码位值进行排序。 | 
 
 
 **返回值**
@@ -1191,10 +1191,10 @@ sort() 方法就地对数组的元素进行排序，并返回对相同数组的�
 splice() 方法通过移除或者替换已存在的元素和/或添加新元素就地改变一个数组的内容。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| start | number | 是 |  |   | 从 0 开始计算的索引，表示要开始改变数组的位置，它会被转换成整数。 |
-| deleteCount | number | 否 |  |   | 一个整数，表示数组中要从 start 开始删除的元素数量。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| start | number | 是 | 从 0 开始计算的索引，表示要开始改变数组的位置，它会被转换成整数。 |
+| deleteCount | number | 否 | 一个整数，表示数组中要从 start 开始删除的元素数量。 | 
 
 
 **返回值**
@@ -1233,9 +1233,9 @@ splice() 方法通过移除或者替换已存在的元素和/或添加新元素�
 unshift() 方法将指定元素添加到数组的开头，并返回数组的新长度。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| items | T[\] | 是 |  |   | 添加到 arr 开头的元素。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| items | T[\] | 是 | 添加到 arr 开头的元素。 | 
 
 
 **返回值**
@@ -1278,10 +1278,10 @@ unshift() 方法将指定元素添加到数组的开头，并返回数组的新�
 indexOf() 方法返回数组中第一次出现给定元素的下标，如果不存在则返回 -1。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| searchElement | T | 是 |  |   | 数组中要查找的元素。 |
-| fromIndex | number | 否 |  |   | 开始搜索的索引（从零开始），会转换为整数。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| searchElement | T | 是 | 数组中要查找的元素。 |
+| fromIndex | number | 否 | 开始搜索的索引（从零开始），会转换为整数。 | 
 
 
 **返回值**
@@ -1325,10 +1325,10 @@ indexOf() 方法返回数组中第一次出现给定元素的下标，如果不�
 lastIndexOf() 方法返回数组中给定元素最后一次出现的索引，如果不存在则返回 -1。该方法从 fromIndex 开始向前搜索数组。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| searchElement | T | 是 |  |   | 被查找的元素。 |
-| fromIndex | number | 否 |  |   | 以 0 起始的索引，表明反向搜索的起始位置，会被转换为整数。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| searchElement | T | 是 | 被查找的元素。 |
+| fromIndex | number | 否 | 以 0 起始的索引，表明反向搜索的起始位置，会被转换为整数。 | 
 
 
 **返回值**
@@ -1367,10 +1367,10 @@ lastIndexOf() 方法返回数组中给定元素最后一次出现的索引，如
 every() 方法测试一个数组内的所有元素是否都能通过指定函数的测试。它返回一个布尔值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| predicate | (value: T, index: number, array: Array&lt;T&gt;) => boolean | 是 |  |   | 为数组中的每个元素执行的函数。它应该返回一个真值以指示元素通过测试，否则返回一个假值。该函数被调用时将传入以下参数： value:数组中当前正在处理的元素。 index:正在处理的元素在数组中的索引。 array:调用了 every() 的数组本身。 |
-| thisArg | any | 否 |  |   | 执行 callbackFn 时用作 this 的值 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| predicate | (value: T, index: number, array: Array&lt;T&gt;) => boolean | 是 | 为数组中的每个元素执行的函数。它应该返回一个真值以指示元素通过测试，否则返回一个假值。该函数被调用时将传入以下参数： value:数组中当前正在处理的元素。 index:正在处理的元素在数组中的索引。 array:调用了 every() 的数组本身。 |
+| thisArg | any | 否 | 执行 callbackFn 时用作 this 的值 | 
 
 
 **返回值**
@@ -1419,10 +1419,10 @@ every() 方法测试一个数组内的所有元素是否都能通过指定函数
 every() 方法测试一个数组内的所有元素是否都能通过指定函数的测试。它返回一个布尔值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| predicate | (value: T, index: number, array: Array&lt;T&gt;) => boolean | 是 |  |   | 为数组中的每个元素执行的函数。它应该返回一个真值以指示元素通过测试，否则返回一个假值。该函数被调用时将传入以下参数： value:数组中当前正在处理的元素。 index:正在处理的元素在数组中的索引。 array:调用了 every() 的数组本身。 |
-| thisArg | any | 否 |  |   | 执行 callbackFn 时用作 this 的值 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| predicate | (value: T, index: number, array: Array&lt;T&gt;) => boolean | 是 | 为数组中的每个元素执行的函数。它应该返回一个真值以指示元素通过测试，否则返回一个假值。该函数被调用时将传入以下参数： value:数组中当前正在处理的元素。 index:正在处理的元素在数组中的索引。 array:调用了 every() 的数组本身。 |
+| thisArg | any | 否 | 执行 callbackFn 时用作 this 的值 | 
 
 
 **返回值**
@@ -1540,10 +1540,10 @@ every() 方法测试一个数组内的所有元素是否都能通过指定函数
 some() 方法测试数组中是否至少有一个元素通过了由提供的函数实现的测试。如果在数组中找到一个元素使得提供的函数返回 true，则返回 true；否则返回 false。它不会修改数组。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| predicate | (value: T, index: number, array: Array&lt;T&gt;) => boolean | 是 |  |   | 为数组中的每个元素执行的函数。它应该返回一个真值以指示元素通过测试，否则返回一个假值。该函数被调用时将传入以下参数： value:数组中当前正在处理的元素。 index:正在处理的元素在数组中的索引。 array:调用了 some() 的数组本身。 |
-| thisArg | any | 否 |  |   | 执行 callbackFn 时用作 this 的值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| predicate | (value: T, index: number, array: Array&lt;T&gt;) => boolean | 是 | 为数组中的每个元素执行的函数。它应该返回一个真值以指示元素通过测试，否则返回一个假值。该函数被调用时将传入以下参数： value:数组中当前正在处理的元素。 index:正在处理的元素在数组中的索引。 array:调用了 some() 的数组本身。 |
+| thisArg | any | 否 | 执行 callbackFn 时用作 this 的值。 | 
 
 
 **返回值**
@@ -1610,10 +1610,10 @@ some() 方法测试数组中是否至少有一个元素通过了由提供的函�
 forEach() 方法对数组的每个元素执行一次给定的函数。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callbackfn | (value: T, index: number, array: Array&lt;T&gt;) => void | 是 |  |   | 为数组中每个元素执行的函数。并会丢弃它的返回值。该函数被调用时将传入以下参数： value:数组中正在处理的当前元素。 index:数组中正在处理的当前元素的索引。 array:调用了 forEach() 的数组本身。 |
-| thisArg | any | 否 |  |   | 执行 callbackFn 时用作 this 的值。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callbackfn | (value: T, index: number, array: Array&lt;T&gt;) => void | 是 | 为数组中每个元素执行的函数。并会丢弃它的返回值。该函数被调用时将传入以下参数： value:数组中正在处理的当前元素。 index:数组中正在处理的当前元素的索引。 array:调用了 forEach() 的数组本身。 |
+| thisArg | any | 否 | 执行 callbackFn 时用作 this 的值。 | 
 
 
 **返回值**
@@ -1748,10 +1748,10 @@ forEach() 方法对数组的每个元素执行一次给定的函数。
 map() 方法创建一个新数组，这个新数组由原数组中的每个元素都调用一次提供的函数后的返回值组成。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callbackfn | (value: T, index: number, array: Array&lt;T&gt;) => any | 是 |  |   | 为数组中的每个元素执行的函数。它的返回值作为一个元素被添加为新数组中。该函数被调用时将传入以下参数： value:数组中当前正在处理的元素。 index:正在处理的元素在数组中的索引。 array:调用了 map() 的数组本身。 |
-| thisArg | any | 否 |  |   | 执行 callbackFn 时用作 this 的值 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callbackfn | (value: T, index: number, array: Array&lt;T&gt;) => any | 是 | 为数组中的每个元素执行的函数。它的返回值作为一个元素被添加为新数组中。该函数被调用时将传入以下参数： value:数组中当前正在处理的元素。 index:正在处理的元素在数组中的索引。 array:调用了 map() 的数组本身。 |
+| thisArg | any | 否 | 执行 callbackFn 时用作 this 的值 | 
 
 
 **返回值**
@@ -1863,10 +1863,10 @@ map() 方法创建一个新数组，这个新数组由原数组中的每个元�
 filter() 方法创建给定数组一部分的浅拷贝，其包含通过所提供函数实现的测试的所有元素。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| predicate | (value: T, index: number, array: Array&lt;T&gt;) => boolean | 是 |  |   | 为数组中的每个元素执行的函数。它应该返回一个真值以将元素保留在结果数组中，否则返回一个假值。该函数被调用时将传入以下参数： value:数组中当前正在处理的元素。 index:正在处理的元素在数组中的索引。 array:调用了 filter() 的数组本身。 |
-| thisArg | any | 否 |  |   | 执行 callbackFn 时用作 this 的值 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| predicate | (value: T, index: number, array: Array&lt;T&gt;) => boolean | 是 | 为数组中的每个元素执行的函数。它应该返回一个真值以将元素保留在结果数组中，否则返回一个假值。该函数被调用时将传入以下参数： value:数组中当前正在处理的元素。 index:正在处理的元素在数组中的索引。 array:调用了 filter() 的数组本身。 |
+| thisArg | any | 否 | 执行 callbackFn 时用作 this 的值 | 
 
 
 **返回值**
@@ -1923,10 +1923,10 @@ filter() 方法创建给定数组一部分的浅拷贝，其包含通过所提�
 filter() 方法创建给定数组一部分的浅拷贝，其包含通过所提供函数实现的测试的所有元素。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| predicate | (value: T, index: number, array: Array&lt;T&gt;) => boolean | 是 |  |   | 为数组中的每个元素执行的函数。它应该返回一个真值以将元素保留在结果数组中，否则返回一个假值。该函数被调用时将传入以下参数： value:数组中当前正在处理的元素。 index:正在处理的元素在数组中的索引。 array:调用了 filter() 的数组本身。 |
-| thisArg | any | 否 |  |   | 执行 callbackFn 时用作 this 的值 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| predicate | (value: T, index: number, array: Array&lt;T&gt;) => boolean | 是 | 为数组中的每个元素执行的函数。它应该返回一个真值以将元素保留在结果数组中，否则返回一个假值。该函数被调用时将传入以下参数： value:数组中当前正在处理的元素。 index:正在处理的元素在数组中的索引。 array:调用了 filter() 的数组本身。 |
+| thisArg | any | 否 | 执行 callbackFn 时用作 this 的值 | 
 
 
 **返回值**
@@ -2067,9 +2067,9 @@ filter() 方法创建给定数组一部分的浅拷贝，其包含通过所提�
 reduce() 方法对数组中的每个元素按序执行一个提供的 reducer 函数，每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callbackfn | (previousValue: T, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => T | 是 |  |   | 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array\[0] 的值。 currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1] currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1 array:调用了 reduce() 的数组本身。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callbackfn | (previousValue: T, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => T | 是 | 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array\[0] 的值。 currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1] currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1 array:调用了 reduce() 的数组本身。 | 
 
 
 **返回值**
@@ -2113,10 +2113,10 @@ reduce() 方法对数组中的每个元素按序执行一个提供的 reducer �
 reduce() 方法对数组中的每个元素按序执行一个提供的 reducer 函数，每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callbackfn | (previousValue: T, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => T | 是 |  |   | 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array\[0] 的值。 currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1] currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1 array:调用了 reduce() 的数组本身。 |
-| initialValue | T | 是 |  |   | 第一次调用回调时初始化 accumulator 的值。如果指定了 initialValue，则 callbackFn 从数组中的第一个值作为 currentValue 开始执行。如果没有指定 initialValue，则 accumulator 初始化为数组中的第一个值，并且 callbackFn 从数组中的第二个值作为 currentValue 开始执行。在这种情况下，如果数组为空（没有第一个值可以作为 accumulator 返回），则会抛出错误。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callbackfn | (previousValue: T, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => T | 是 | 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array\[0] 的值。 currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1] currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1 array:调用了 reduce() 的数组本身。 |
+| initialValue | T | 是 | 第一次调用回调时初始化 accumulator 的值。如果指定了 initialValue，则 callbackFn 从数组中的第一个值作为 currentValue 开始执行。如果没有指定 initialValue，则 accumulator 初始化为数组中的第一个值，并且 callbackFn 从数组中的第二个值作为 currentValue 开始执行。在这种情况下，如果数组为空（没有第一个值可以作为 accumulator 返回），则会抛出错误。 | 
 
 
 **返回值**
@@ -2161,10 +2161,10 @@ reduce() 方法对数组中的每个元素按序执行一个提供的 reducer �
 reduce() 方法对数组中的每个元素按序执行一个提供的 reducer 函数，每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callbackfn | (previousValue: any, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => any | 是 |  |   | 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array\[0] 的值。 currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1] currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1 array:调用了 reduce() 的数组本身。 |
-| initialValue | U | 是 |  |   | 第一次调用回调时初始化 accumulator 的值。如果指定了 initialValue，则 callbackFn 从数组中的第一个值作为 currentValue 开始执行。如果没有指定 initialValue，则 accumulator 初始化为数组中的第一个值，并且 callbackFn 从数组中的第二个值作为 currentValue 开始执行。在这种情况下，如果数组为空（没有第一个值可以作为 accumulator 返回），则会抛出错误。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callbackfn | (previousValue: any, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => any | 是 | 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array\[0] 的值。 currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1] currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1 array:调用了 reduce() 的数组本身。 |
+| initialValue | U | 是 | 第一次调用回调时初始化 accumulator 的值。如果指定了 initialValue，则 callbackFn 从数组中的第一个值作为 currentValue 开始执行。如果没有指定 initialValue，则 accumulator 初始化为数组中的第一个值，并且 callbackFn 从数组中的第二个值作为 currentValue 开始执行。在这种情况下，如果数组为空（没有第一个值可以作为 accumulator 返回），则会抛出错误。 | 
 
 
 **返回值**
@@ -2290,9 +2290,9 @@ reduce() 方法对数组中的每个元素按序执行一个提供的 reducer �
 reduceRight() 方法对累加器（accumulator）和数组的每个值（按从右到左的顺序）应用一个函数，并使其成为单个值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callbackfn | (previousValue: T, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => T | 是 |  |   | 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。 currentValue:数组中当前正在处理的元素。 currentIndex:正在处理的元素在数组中的索引。 array:调用了 reduceRight() 的数组本身。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callbackfn | (previousValue: T, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => T | 是 | 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。 currentValue:数组中当前正在处理的元素。 currentIndex:正在处理的元素在数组中的索引。 array:调用了 reduceRight() 的数组本身。 | 
 
 
 **返回值**
@@ -2343,10 +2343,10 @@ reduceRight() 方法对累加器（accumulator）和数组的每个值（按从�
 reduceRight() 方法对累加器（accumulator）和数组的每个值（按从右到左的顺序）应用一个函数，并使其成为单个值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callbackfn | (previousValue: T, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => T | 是 |  |   | 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。 currentValue:数组中当前正在处理的元素。 currentIndex:正在处理的元素在数组中的索引。 array:调用了 reduceRight() 的数组本身。 |
-| initialValue | T | 是 |  |   | 首次调用 callbackFn 时累加器的值。如果不提供初始值，则将使用数组中的最后一个元素，并在迭代时跳过它。没有初始值的情况下，在空数组上调用 reduceRight() 会产生 TypeError。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callbackfn | (previousValue: T, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => T | 是 | 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。 currentValue:数组中当前正在处理的元素。 currentIndex:正在处理的元素在数组中的索引。 array:调用了 reduceRight() 的数组本身。 |
+| initialValue | T | 是 | 首次调用 callbackFn 时累加器的值。如果不提供初始值，则将使用数组中的最后一个元素，并在迭代时跳过它。没有初始值的情况下，在空数组上调用 reduceRight() 会产生 TypeError。 | 
 
 
 **返回值**
@@ -2399,10 +2399,10 @@ reduceRight() 方法对累加器（accumulator）和数组的每个值（按从�
 reduceRight() 方法对累加器（accumulator）和数组的每个值（按从右到左的顺序）应用一个函数，并使其成为单个值。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callbackfn | (previousValue: any, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => any | 是 |  |   | 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。 currentValue:数组中当前正在处理的元素。 index:正在处理的元素在数组中的索引。 array:调用了 reduceRight() 的数组本身。 |
-| initialValue | U | 是 |  |   | 首次调用 callbackFn 时累加器的值。如果不提供初始值，则将使用数组中的最后一个元素，并在迭代时跳过它。没有初始值的情况下，在空数组上调用 reduceRight() 会产生 TypeError。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| callbackfn | (previousValue: any, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => any | 是 | 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。 currentValue:数组中当前正在处理的元素。 index:正在处理的元素在数组中的索引。 array:调用了 reduceRight() 的数组本身。 |
+| initialValue | U | 是 | 首次调用 callbackFn 时累加器的值。如果不提供初始值，则将使用数组中的最后一个元素，并在迭代时跳过它。没有初始值的情况下，在空数组上调用 reduceRight() 会产生 TypeError。 | 
 
 
 **返回值**
@@ -2595,10 +2595,10 @@ reduceRight() 方法对累加器（accumulator）和数组的每个值（按从�
 includes() 方法用来判断一个数组是否包含一个指定的值，根据情况，如果包含则返回 true，否则返回 false。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| searchElement | any | 是 |  |   | 需要查找的值。 |
-| fromIndex | number | 否 |  |   | 可选。开始搜索的索引（从零开始），会转换为整数。 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| searchElement | any | 是 | 需要查找的值。 |
+| fromIndex | number | 否 | 可选。开始搜索的索引（从零开始），会转换为整数。 | 
 
 
 **返回值**

@@ -33,19 +33,19 @@ uni.createCanvasContextAsync 方法可以异步获取页面上指定id的canvas�
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **CreateCanvasContextAsyncOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **CreateCanvasContextAsyncOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| id | [string.IDString](/uts/data-type.md#ide-string) | 是 |  | Web: 4.25; 微信小程序: 4.41; Android: 4.25; iOS: 4.25 | canvas 元素的 id 属性 |
-| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 |  | Web: 4.25; 微信小程序: 4.41; Android: 4.25; iOS: 4.25 | 组件或页面实例，限定在什么范围内查找id |
-| success | (context: [CanvasContext](#canvascontext-values)) => void | 否 |  | Web: 4.25; 微信小程序: 4.41; Android: 4.25; iOS: 4.25 | 接口调用成功的回调函数 |
-| fail | (error: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 |  | Web: 4.25; 微信小程序: 4.41; Android: 4.25; iOS: 4.25 | 接口调用失败的回调函数 |
-| complete | () => void | 否 |  | Web: 4.25; 微信小程序: 4.41; Android: 4.25; iOS: 4.25 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| id | [string.IDString](/uts/data-type.md#ide-string) | 是 | Web: 4.25; 微信小程序: 4.41; Android: 4.25; iOS: 4.25 | canvas 元素的 id 属性 |
+| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: 4.25; 微信小程序: 4.41; Android: 4.25; iOS: 4.25 | 组件或页面实例，限定在什么范围内查找id |
+| success | (context: [CanvasContext](#canvascontext-values)) => void | 否 | Web: 4.25; 微信小程序: 4.41; Android: 4.25; iOS: 4.25 | 接口调用成功的回调函数 |
+| fail | (error: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | Web: 4.25; 微信小程序: 4.41; Android: 4.25; iOS: 4.25 | 接口调用失败的回调函数 |
+| complete | () => void | 否 | Web: 4.25; 微信小程序: 4.41; Android: 4.25; iOS: 4.25 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### CanvasContext 的方法 @canvascontext-values 
 
@@ -55,9 +55,9 @@ getContext
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| type | string | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| type | string | 是 | 
 
 
 ##### 返回值 
@@ -77,11 +77,11 @@ toBlob
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (blob: Blob) => void | 是 |  |   |  |
-| type | string | 否 |  |   |  |
-| quality | number | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (blob: Blob) => void | 是 |
+| type | string | 否 |
+| quality | number | 否 | 
 
 
 
@@ -146,9 +146,9 @@ requestAnimationFrame
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| callback | (time: number) => void | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| callback | (time: number) => void | 是 | 
 
 
 ##### 返回值 
@@ -168,9 +168,9 @@ cancelAnimationFrame
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| taskId | number | 是 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| taskId | number | 是 | 
 
 
 
@@ -188,9 +188,9 @@ cancelAnimationFrame
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 

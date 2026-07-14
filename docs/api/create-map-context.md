@@ -12,10 +12,10 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| mapId | string | 是 |  |   |  |
-| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 |  |   |  | 
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| mapId | string | 是 |
+| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | 
 
 
 ### 返回值 
@@ -36,34 +36,34 @@ getCenterLocation
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **MapContextGetCenterLocationOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **MapContextGetCenterLocationOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (result: [LocationObject](#locationobject-values)) => void | 否 |  |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| success | (result: [LocationObject](#locationobject-values)) => void | 否 |  | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### LocationObject 的属性值 @locationobject-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -89,9 +89,9 @@ moveToLocation
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **MapContextMoveToLocationOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **MapContextMoveToLocationOptions** | 是 |
 
 #### options 的属性描述
 
@@ -105,13 +105,13 @@ moveToLocation
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -137,9 +137,9 @@ translateMarker
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **MapContextTranslateMarkerOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **MapContextTranslateMarkerOptions** | 是 |
 
 #### options 的属性描述
 
@@ -157,20 +157,20 @@ translateMarker
 
 ##### destination 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -196,9 +196,9 @@ includePoints
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **MapContextIncludePointsOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **MapContextIncludePointsOptions** | 是 |
 
 #### options 的属性描述
 
@@ -211,20 +211,20 @@ includePoints
 
 ##### points 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -250,48 +250,48 @@ getRegion
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **MapContextGetRegionOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **MapContextGetRegionOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (result: [MapContextGetRegionResult](#mapcontextgetregionresult-values)) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| success | (result: [MapContextGetRegionResult](#mapcontextgetregionresult-values)) => void | 否 | null | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### MapContextGetRegionResult 的属性值 @mapcontextgetregionresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| southwest | **LocationObject** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
-| northeast | **LocationObject** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| southwest | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
+| northeast | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
 
 #### southwest 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 #### northeast 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -317,33 +317,33 @@ getScale
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **MapContextGetScaleOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **MapContextGetScaleOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (result: [MapContextGetScaleResult](#mapcontextgetscaleresult-values)) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| 名称 | 类型 | 必备 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| success | (result: [MapContextGetScaleResult](#mapcontextgetscaleresult-values)) => void | 否 | null | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### MapContextGetScaleResult 的属性值 @mapcontextgetscaleresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| scale | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 地图缩放级别 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| scale | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 地图缩放级别 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -369,9 +369,9 @@ addGroundOverlay
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **MapContextAddGroundOverlayOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **MapContextAddGroundOverlayOptions** | 是 |
 
 #### options 的属性描述
 
@@ -389,34 +389,34 @@ addGroundOverlay
 
 ##### bounds 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| southwest | **LocationObject** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
-| northeast | **LocationObject** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| southwest | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
+| northeast | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
 
 ###### southwest 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### northeast 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -442,9 +442,9 @@ addMarkers
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **MapContextAddMarkersOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **MapContextAddMarkersOptions** | 是 |
 
 #### options 的属性描述
 
@@ -479,10 +479,10 @@ addMarkers
 
 ###### anchor 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  |   |  |
-| y | number | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| x | number | 是 |
+| y | number | 是 |
 
 ###### callout 的属性描述
 
@@ -518,22 +518,22 @@ addMarkers
 
 ###### label 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| content | string | 否 |  | Android: x; iOS: x | 文本 |
-| color | string | 否 |  | Android: x; iOS: x | 文本颜色 |
-| fontSize | number | 否 |  | Android: x; iOS: x | 文字大小 |
-| x | number | 否 |  | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
-| y | number | 否 |  | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
-| anchorX | number | 否 |  | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
-| anchorY | number | 否 |  | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
-| borderWidth | number | 否 |  | Android: x; iOS: x | 边框宽度 |
-| borderColor | string | 否 |  | Android: x; iOS: x | 边框颜色 |
-| borderRadius | number | 否 |  | Android: x; iOS: x | 边框圆角 |
-| bgColor | string | 否 |  | Android: x; iOS: x | 背景色 |
-| padding | number | 否 |  | Android: x; iOS: x | 文本边缘留白 |
-| textAlign | string | 否 |  | Android: x; iOS: x | 文本对齐方式。 |
-| ariaLabel | string | 否 |  | Android: x; iOS: x | 无障碍访问，（属性）元素的额外描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| content | string | 否 | Android: x; iOS: x | 文本 |
+| color | string | 否 | Android: x; iOS: x | 文本颜色 |
+| fontSize | number | 否 | Android: x; iOS: x | 文字大小 |
+| x | number | 否 | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
+| y | number | 否 | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
+| anchorX | number | 否 | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
+| anchorY | number | 否 | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
+| borderWidth | number | 否 | Android: x; iOS: x | 边框宽度 |
+| borderColor | string | 否 | Android: x; iOS: x | 边框颜色 |
+| borderRadius | number | 否 | Android: x; iOS: x | 边框圆角 |
+| bgColor | string | 否 | Android: x; iOS: x | 背景色 |
+| padding | number | 否 | Android: x; iOS: x | 文本边缘留白 |
+| textAlign | string | 否 | Android: x; iOS: x | 文本对齐方式。 |
+| ariaLabel | string | 否 | Android: x; iOS: x | 无障碍访问，（属性）元素的额外描述 |
 
 ####### textAlign 的属性描述
 
@@ -577,13 +577,13 @@ addMarkers
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -609,9 +609,9 @@ moveAlong
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **MapContextMoveAlongOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **MapContextMoveAlongOptions** | 是 |
 
 #### options 的属性描述
 
@@ -626,20 +626,20 @@ moveAlong
 
 ##### path 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -665,9 +665,9 @@ removeGroundOverlay
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **MapContextRemoveGroundOverlayOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **MapContextRemoveGroundOverlayOptions** | 是 |
 
 #### options 的属性描述
 
@@ -680,13 +680,13 @@ removeGroundOverlay
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -712,9 +712,9 @@ removeMarkers
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **MapContextRemoveMarkersOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **MapContextRemoveMarkersOptions** | 是 |
 
 #### options 的属性描述
 
@@ -727,13 +727,13 @@ removeMarkers
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -759,9 +759,9 @@ updateGroundOverlay
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **MapContextUpdateGroundOverlayOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **MapContextUpdateGroundOverlayOptions** | 是 |
 
 #### options 的属性描述
 
@@ -779,34 +779,34 @@ updateGroundOverlay
 
 ##### bounds 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| southwest | **LocationObject** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
-| northeast | **LocationObject** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| southwest | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
+| northeast | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
 
 ###### southwest 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### northeast 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -824,28 +824,28 @@ updateGroundOverlay
 
 ##### MapContextGetCenterLocationOptions 的属性值 @mapcontextgetcenterlocationoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (result: [LocationObject](#locationobject-values)) => void | 否 |  |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| success | (result: [LocationObject](#locationobject-values)) => void | 否 |  | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### LocationObject 的属性值 @locationobject-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -871,13 +871,13 @@ updateGroundOverlay
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -907,20 +907,20 @@ updateGroundOverlay
 
 #### destination 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -945,20 +945,20 @@ updateGroundOverlay
 
 #### points 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -974,42 +974,42 @@ updateGroundOverlay
 
 ##### MapContextGetRegionOptions 的属性值 @mapcontextgetregionoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (result: [MapContextGetRegionResult](#mapcontextgetregionresult-values)) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| success | (result: [MapContextGetRegionResult](#mapcontextgetregionresult-values)) => void | 否 | null | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### MapContextGetRegionResult 的属性值 @mapcontextgetregionresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| southwest | **LocationObject** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
-| northeast | **LocationObject** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| southwest | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
+| northeast | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
 
 #### southwest 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 #### northeast 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -1025,27 +1025,27 @@ updateGroundOverlay
 
 ##### MapContextGetScaleOptions 的属性值 @mapcontextgetscaleoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (result: [MapContextGetScaleResult](#mapcontextgetscaleresult-values)) => void | 否 | null |   | 接口调用成功的回调函数 |
-| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） |
+| 名称 | 类型 | 必备 | 默认值 | 描述 |
+| :- | :- | :- | :- | :- |
+| success | (result: [MapContextGetScaleResult](#mapcontextgetscaleresult-values)) => void | 否 | null | 接口调用成功的回调函数 |
+| fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | null | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
 ###### MapContextGetScaleResult 的属性值 @mapcontextgetscaleresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| scale | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 地图缩放级别 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| scale | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 地图缩放级别 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -1075,34 +1075,34 @@ updateGroundOverlay
 
 #### bounds 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| southwest | **LocationObject** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
-| northeast | **LocationObject** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| southwest | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
+| northeast | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
 
 ##### southwest 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ##### northeast 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -1149,10 +1149,10 @@ updateGroundOverlay
 
 ##### anchor 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| x | number | 是 |  |   |  |
-| y | number | 是 |  |   |  |
+| 名称 | 类型 | 必备 |
+| :- | :- | :- |
+| x | number | 是 |
+| y | number | 是 |
 
 ##### callout 的属性描述
 
@@ -1188,22 +1188,22 @@ updateGroundOverlay
 
 ##### label 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| content | string | 否 |  | Android: x; iOS: x | 文本 |
-| color | string | 否 |  | Android: x; iOS: x | 文本颜色 |
-| fontSize | number | 否 |  | Android: x; iOS: x | 文字大小 |
-| x | number | 否 |  | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
-| y | number | 否 |  | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
-| anchorX | number | 否 |  | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
-| anchorY | number | 否 |  | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
-| borderWidth | number | 否 |  | Android: x; iOS: x | 边框宽度 |
-| borderColor | string | 否 |  | Android: x; iOS: x | 边框颜色 |
-| borderRadius | number | 否 |  | Android: x; iOS: x | 边框圆角 |
-| bgColor | string | 否 |  | Android: x; iOS: x | 背景色 |
-| padding | number | 否 |  | Android: x; iOS: x | 文本边缘留白 |
-| textAlign | string | 否 |  | Android: x; iOS: x | 文本对齐方式。 |
-| ariaLabel | string | 否 |  | Android: x; iOS: x | 无障碍访问，（属性）元素的额外描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| content | string | 否 | Android: x; iOS: x | 文本 |
+| color | string | 否 | Android: x; iOS: x | 文本颜色 |
+| fontSize | number | 否 | Android: x; iOS: x | 文字大小 |
+| x | number | 否 | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
+| y | number | 否 | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
+| anchorX | number | 否 | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
+| anchorY | number | 否 | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
+| borderWidth | number | 否 | Android: x; iOS: x | 边框宽度 |
+| borderColor | string | 否 | Android: x; iOS: x | 边框颜色 |
+| borderRadius | number | 否 | Android: x; iOS: x | 边框圆角 |
+| bgColor | string | 否 | Android: x; iOS: x | 背景色 |
+| padding | number | 否 | Android: x; iOS: x | 文本边缘留白 |
+| textAlign | string | 否 | Android: x; iOS: x | 文本对齐方式。 |
+| ariaLabel | string | 否 | Android: x; iOS: x | 无障碍访问，（属性）元素的额外描述 |
 
 ###### textAlign 的属性描述
 
@@ -1247,13 +1247,13 @@ updateGroundOverlay
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -1280,20 +1280,20 @@ updateGroundOverlay
 
 #### path 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -1318,13 +1318,13 @@ updateGroundOverlay
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -1349,13 +1349,13 @@ updateGroundOverlay
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 
@@ -1385,34 +1385,34 @@ updateGroundOverlay
 
 #### bounds 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| southwest | **LocationObject** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
-| northeast | **LocationObject** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| southwest | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
+| northeast | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
 
 ##### southwest 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ##### northeast 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
-| longitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
+| longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### MapContextFail 的属性值 @mapcontextfail-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 |  |   | 错误码 |
-| errSubject | string | 是 |  |   | 统一错误主题（模块）名称 |
-| data | any | 否 |  |   | 错误信息中包含的数据 |
-| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |  |   | 源错误信息，可以包含多个错误，详见SourceError |
-| errMsg | string | 是 |  |   |  |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| errCode | number | 是 | 错误码 |
+| errSubject | string | 是 | 统一错误主题（模块）名称 |
+| data | any | 否 | 错误信息中包含的数据 |
+| cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 | 源错误信息，可以包含多个错误，详见SourceError |
+| errMsg | string | 是 |  |
 
 #### errCode 的属性描述
 

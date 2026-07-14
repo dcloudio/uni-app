@@ -41,19 +41,19 @@ uni.setStorage函数定义
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **SetStorageOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **SetStorageOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 |  |   | 本地存储中的指定的 key |
-| data | any | 是 |  |   | 需要存储的内容，只支持能通过 JSON.stringify 序列化的对象 |
-| success | (res: SetStorageSuccess) => void | 否 |  |   | uni.setStorage成功回调函数定义 |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 |  |   | uni.setStorage失败回调函数定义 |
-| complete | (res: any) => void | 否 |  |   | uni.setStorage完成回调函数定义 | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| key | string | 是 | 本地存储中的指定的 key |
+| data | any | 是 | 需要存储的内容，只支持能通过 JSON.stringify 序列化的对象 |
+| success | (res: SetStorageSuccess) => void | 否 | uni.setStorage成功回调函数定义 |
+| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | uni.setStorage失败回调函数定义 |
+| complete | (res: any) => void | 否 | uni.setStorage完成回调函数定义 | 
 
 
 
@@ -100,10 +100,10 @@ uni.setStorageSync函数定义
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 |  |   | 本地storage存储中的指定的 key |
-| data | any | 是 |  |   | 需要存储的内容，只支持能通过 JSON.stringify 序列化的对象 | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| key | string | 是 | 本地storage存储中的指定的 key |
+| data | any | 是 | 需要存储的内容，只支持能通过 JSON.stringify 序列化的对象 | 
 
 
 :::warning
@@ -157,24 +157,24 @@ uni.getStorage函数定义
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **GetStorageOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **GetStorageOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 |  |   | 本地存储中的指定的 key |
-| success | (res: [GetStorageSuccess](#getstoragesuccess-values)) => void | 否 |  |   | uni.getStorage成功回调函数定义 |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 |  |   | uni.getStorage失败回调函数定义 |
-| complete | (res: any) => void | 否 |  |   | uni.getStorage完成回调函数定义 | 
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| key | string | 是 | 本地存储中的指定的 key |
+| success | (res: [GetStorageSuccess](#getstoragesuccess-values)) => void | 否 | uni.getStorage成功回调函数定义 |
+| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | uni.getStorage失败回调函数定义 |
+| complete | (res: any) => void | 否 | uni.getStorage完成回调函数定义 | 
 
 #### GetStorageSuccess 的属性值 @getstoragesuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| data | any | 否 |  |   | key 对应的内容 |
+| 名称 | 类型 | 必备 | 描述 |
+| :- | :- | :- | :- |
+| data | any | 否 | key 对应的内容 |
 
 
 
@@ -231,9 +231,9 @@ uni.getStorageSync函数定义
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 |  |   | 本地存储中的指定的 key | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| key | string | 是 | 本地存储中的指定的 key | 
 
 
 ### 返回值 
@@ -298,25 +298,25 @@ uni.getStorageInfo函数定义
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **GetStorageInfoOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **GetStorageInfoOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: [GetStorageInfoSuccess](#getstorageinfosuccess-values)) => void | 否 |  | 微信小程序: 4.41 | uni.getStorageInfo成功回调函数定义 |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 |  | 微信小程序: 4.41 | uni.getStorageInfo失败回调函数定义 |
-| complete | (res: any) => void | 否 |  | 微信小程序: 4.41 | uni.getStorageInfo完成回调函数定义 | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: [GetStorageInfoSuccess](#getstorageinfosuccess-values)) => void | 否 | 微信小程序: 4.41 | uni.getStorageInfo成功回调函数定义 |
+| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | 微信小程序: 4.41 | uni.getStorageInfo失败回调函数定义 |
+| complete | (res: any) => void | 否 | 微信小程序: 4.41 | uni.getStorageInfo完成回调函数定义 | 
 
 #### GetStorageInfoSuccess 的属性值 @getstorageinfosuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| keys | Array&lt;string&gt; | 是 |  | 微信小程序: 4.41 | 当前 storage 中所有的 key |
-| currentSize | number | 是 |  | 微信小程序: 4.41 | 当前占用的空间大小, 单位：kb |
-| limitSize | number | 是 |  | 微信小程序: 4.41 | 限制的空间大小, 单位：kb |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| keys | Array&lt;string&gt; | 是 | 微信小程序: 4.41 | 当前 storage 中所有的 key |
+| currentSize | number | 是 | 微信小程序: 4.41 | 当前占用的空间大小, 单位：kb |
+| limitSize | number | 是 | 微信小程序: 4.41 | 限制的空间大小, 单位：kb |
 
 
 
@@ -371,11 +371,11 @@ uni.getStorageInfoSync函数定义
 
 #### GetStorageInfoSuccess 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| keys | Array&lt;string&gt; | 是 |  | 微信小程序: 4.41 | 当前 storage 中所有的 key |
-| currentSize | number | 是 |  | 微信小程序: 4.41 | 当前占用的空间大小, 单位：kb |
-| limitSize | number | 是 |  | 微信小程序: 4.41 | 限制的空间大小, 单位：kb | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| keys | Array&lt;string&gt; | 是 | 微信小程序: 4.41 | 当前 storage 中所有的 key |
+| currentSize | number | 是 | 微信小程序: 4.41 | 当前占用的空间大小, 单位：kb |
+| limitSize | number | 是 | 微信小程序: 4.41 | 限制的空间大小, 单位：kb | 
 
 
 <!-- UTSAPIJSON.getStorageInfoSync.example -->
@@ -420,18 +420,18 @@ uni.removeStorage函数定义
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| options | **RemoveStorageOptions** | 是 |  |   |  |
+| 名称 | 类型 | 必填 |
+| :- | :- | :- |
+| options | **RemoveStorageOptions** | 是 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 |  | 微信小程序: 4.41 | 本地存储中的指定的 key |
-| success | (res: RemoveStorageSuccess) => void | 否 |  | 微信小程序: 4.41 | uni.removeStorage成功回调函数定义 |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 |  | 微信小程序: 4.41 | uni.removeStorage失败回调函数定义 |
-| complete | (res: any) => void | 否 |  | 微信小程序: 4.41 | uni.removeStorage完成回调函数定义 | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| key | string | 是 | 微信小程序: 4.41 | 本地存储中的指定的 key |
+| success | (res: RemoveStorageSuccess) => void | 否 | 微信小程序: 4.41 | uni.removeStorage成功回调函数定义 |
+| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | 微信小程序: 4.41 | uni.removeStorage失败回调函数定义 |
+| complete | (res: any) => void | 否 | 微信小程序: 4.41 | uni.removeStorage完成回调函数定义 | 
 
 
 
@@ -478,9 +478,9 @@ uni.removeStorageSync函数定义
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| key | string | 是 |  |   | 本地存储中的指定的 key | 
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| key | string | 是 | 本地存储中的指定的 key | 
 
 
 
@@ -527,17 +527,17 @@ uni.clearStorage函数定义
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| option | **ClearStorageOptions** | 否 |  |   | uni.clearStorage参数定义 |
+| 名称 | 类型 | 必填 | 描述 |
+| :- | :- | :- | :- |
+| option | **ClearStorageOptions** | 否 | uni.clearStorage参数定义 |
 
 #### option 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| success | (res: ClearStorageSuccess) => void | 否 |  | 微信小程序: 4.41 | uni.clearStorage 成功回调函数定义 |
-| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 |  | 微信小程序: 4.41 | uni.clearStorage 失败回调函数定义 |
-| complete | (res: any) => void | 否 |  | 微信小程序: 4.41 | uni.clearStorage 完成回调函数定义 | 
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| success | (res: ClearStorageSuccess) => void | 否 | 微信小程序: 4.41 | uni.clearStorage 成功回调函数定义 |
+| fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | 微信小程序: 4.41 | uni.clearStorage 失败回调函数定义 |
+| complete | (res: any) => void | 否 | 微信小程序: 4.41 | uni.clearStorage 完成回调函数定义 | 
 
 
 
@@ -1148,9 +1148,9 @@ uni.clearStorageSync函数定义
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
-| :- | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 |  | 微信小程序: 4.41 | 错误信息 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| :- | :- | :- |  :-: | :- |
+| errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
 
 
