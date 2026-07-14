@@ -399,12 +399,17 @@ pages.json
 
 其他还有一些差异，见文档的兼容性说明。
 
-## 使用uni-agent，从VDOM模式升级到蒸汽模式
+## 使用uni-agent，从VDOM模式升级到蒸汽模式@vom2vapor
 
 1. 在vdom模式下，要求uni-agent把复杂的组合选择器，改成 简单的class选择器或分组选择器，确认是否正常
 2. 在vdom模式下，打开manifest.json中的样式隔离策略2.0，把[文档](css/common/style-isolation.md)贴给ai，要求ai改造，确认是否正常。如涉及三方组件，核对三方组件的新版是否支持样式隔离策略2.0，尽量选择支持该策略的组件。官方的 [uni ui x](https://doc.dcloud.net.cn/uni-app-x/component/uni-ui-x/) 是支持的。
 3. 由于改用js驱动，Android的uvue页面中，不能直接调用原生API，相关调用需挪到uts插件中，包括utsAndroid，在uvue页面下将不可用。让uni-agent协助完成改造。
-4. 项目在manifest中切换为蒸汽模式，把上一个章节 `开发注意`文档内容贴给ai，检查是否正常
+4. 要求uni-agent把项目中的选项式代码翻译为组合式代码。
+5. 项目在manifest中切换为蒸汽模式，把上一个章节 `开发注意`文档内容贴给ai，检查是否正常
+
+注意，如果项目之前是选项式，使用过早期的hello uni-app x或uni-id-pages里的废弃组件，需要更换为新写法：
+- uni-loading，改用内置组件[loading](./component/loading.md)
+- uni-popup，改用内置组件[page-container](./component/page-container.md)
 
 如果想从uni-app升级到uni-app x的蒸汽模式，[另见](./uniapptox.md)
 
