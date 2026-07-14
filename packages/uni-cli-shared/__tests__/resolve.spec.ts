@@ -2,6 +2,10 @@ import fs from 'fs'
 import os from 'os'
 import path from 'path'
 import {
+  resolvePinia,
+  resolvePiniaAlias,
+  resolvePiniaDependencies,
+  resolveProjectPinia,
   resolveProjectVueI18n,
   resolveVueI18n,
   resolveVueI18nDependencies,
@@ -48,6 +52,8 @@ describe('resolve vue-i18n', () => {
       path.join('lib', 'vue-i18n', 'dist', 'vue-i18n.runtime.esm-bundler.js')
     )
     expect(resolveVueI18nDependencies()).toEqual({})
+    expect(resolvePiniaDependencies()).toEqual({})
+    expect(resolvePiniaAlias()).toEqual({})
   })
 
   test('uses vue-i18n 11 and its vendored dependencies for uni-app x', () => {
@@ -109,6 +115,66 @@ describe('resolve vue-i18n', () => {
     expect(resolveVueI18nRuntimeAlias()).toEqual({})
   })
 
+  test('uses pinia 3 and its vendored dependencies for uni-app x', () => {
+    process.env.UNI_APP_X = 'true'
+
+    expect(resolvePinia()).toContain(
+      path.join('lib', 'dom2', 'pinia', 'dist', 'pinia.mjs')
+    )
+
+    const dependencies = resolvePiniaDependencies()
+    expect(Object.keys(dependencies)).toEqual(['@vue/devtools-api'])
+    Object.values(dependencies).forEach((filename) => {
+      expect(filename).toContain(path.join('lib', 'dom2'))
+      expect(fs.existsSync(filename)).toBe(true)
+    })
+    expect(fs.existsSync(resolvePinia())).toBe(true)
+    const devtoolsApi = fs.readFileSync(
+      dependencies['@vue/devtools-api'],
+      'utf8'
+    )
+    ;[
+      'addCustomCommand',
+      'addCustomTab',
+      'onDevToolsClientConnected',
+      'onDevToolsConnected',
+      'removeCustomCommand',
+      'setupDevToolsPlugin',
+      'setupDevtoolsPlugin',
+      'isPerformanceSupported',
+      'now',
+    ].forEach((name) => expect(devtoolsApi).toContain(name))
+    expect(devtoolsApi).not.toMatch(/\b(?:import|from)\b/)
+  })
+
+  test('uses pinia resolved from the project', () => {
+    const projectDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-pinia-'))
+    const cliContext = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-cli-'))
+    temporaryDirectories.push(projectDir)
+    temporaryDirectories.push(cliContext)
+    fs.mkdirSync(path.join(projectDir, 'src'))
+    const piniaDir = path.join(projectDir, 'node_modules/pinia')
+    fs.mkdirSync(piniaDir, { recursive: true })
+    fs.writeFileSync(
+      path.join(piniaDir, 'package.json'),
+      JSON.stringify({
+        name: 'pinia',
+        main: 'index.js',
+      })
+    )
+    fs.writeFileSync(path.join(piniaDir, 'index.js'), 'module.exports = {}')
+    fs.writeFileSync(path.join(cliContext, 'package.json'), '{}')
+    process.env.UNI_APP_X = 'true'
+    process.env.UNI_CLI_CONTEXT = cliContext
+    process.env.UNI_INPUT_DIR = path.join(projectDir, 'src')
+
+    expect(resolveProjectPinia()).toBe(
+      fs.realpathSync(path.join(piniaDir, 'index.js'))
+    )
+    expect(resolvePiniaDependencies()).toEqual({})
+    expect(resolvePiniaAlias()).toEqual({})
+  })
+
   test('vendored package manifests only reference existing files', () => {
     const libDir = path.resolve(__dirname, '../lib/dom2')
     const packageJsonFiles = [
@@ -117,6 +183,7 @@ describe('resolve vue-i18n', () => {
       '@intlify/message-compiler/package.json',
       '@intlify/shared/package.json',
       '@vue/devtools-api/package.json',
+      'pinia/package.json',
     ].map((filename) => path.resolve(libDir, filename))
 
     const collectEntryFiles = (value: unknown): string[] => {

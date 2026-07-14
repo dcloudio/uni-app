@@ -18,6 +18,7 @@ import {
   relativeFile,
   removeExt,
   resolveBuiltIn,
+  resolvePiniaAlias,
   resolveVueI18nRuntimeAlias,
 } from '@dcloudio/uni-cli-shared'
 
@@ -175,6 +176,8 @@ export function uniMiniProgramPlugin(
               }/vue.runtime.esm.js`
             ),
             ...resolveVueI18nRuntimeAlias(),
+            // 项目未安装 pinia 时使用内部版本及其依赖
+            ...resolvePiniaAlias(),
             '@vue/devtools-api': resolveBuiltIn('@dcloudio/uni-mp-vue'),
             ...alias,
           },

@@ -4,6 +4,9 @@ import fs from 'fs-extra'
 import type { Plugin } from 'vite'
 import {
   resolveBuiltIn,
+  resolvePinia,
+  resolvePiniaDependencies,
+  resolveProjectPinia,
   resolveProjectVueI18n,
   resolveUTSModule,
   resolveVueI18n,
@@ -45,8 +48,13 @@ export function uniResolveIdPlugin(
   const resolveCache: Record<string, string> = {}
   const isX = process.env.UNI_APP_X === 'true'
   const useProjectVueI18n = isX && resolveProjectVueI18n() !== undefined
+  const useProjectPinia = isX && resolveProjectPinia() !== undefined
   // 内部会先判断项目能否解析 vue-i18n，仅无法解析时才返回内置依赖别名。
-  const vueI18nDependencies = resolveVueI18nDependencies()
+  const builtInDependencies = {
+    ...resolveVueI18nDependencies(),
+    // 内部会先判断项目能否解析 pinia，仅无法解析时才返回内置依赖别名。
+    ...resolvePiniaDependencies(),
+  }
   if (isX) {
     BUILT_IN_MODULES['@dcloudio/uni-app'] = 'dist-x/uni-app.es.js'
     BUILT_IN_MODULES['@dcloudio/uni-cloud'] = 'dist/uni-cloud-x.es.js'
@@ -71,8 +79,14 @@ export function uniResolveIdPlugin(
         }
         return (resolveCache[id] = resolveVueI18n())
       }
-      if (vueI18nDependencies[id]) {
-        return (resolveCache[id] = vueI18nDependencies[id])
+      if (isX && id === 'pinia') {
+        if (useProjectPinia) {
+          return
+        }
+        return (resolveCache[id] = resolvePinia())
+      }
+      if (builtInDependencies[id]) {
+        return (resolveCache[id] = builtInDependencies[id])
       }
       if (BUILT_IN_MODULES[id as BuiltInModulesKey]) {
         return (resolveCache[id] = resolveBuiltIn(
