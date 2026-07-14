@@ -138,15 +138,24 @@ export function resolveVueI18n() {
   )
 }
 
-export function resolveProjectVueI18n() {
+function resolveProjectModule(module: string) {
   const basedir = process.env.UNI_INPUT_DIR || process.env.UNI_CLI_CONTEXT
   if (!basedir) {
     return
   }
   const projectRequire = createRequire(path.resolve(basedir, 'package.json'))
   try {
-    return projectRequire.resolve('vue-i18n')
+    return projectRequire.resolve(module)
   } catch (e) {}
+}
+
+export function resolveProjectVueI18n() {
+  return resolveProjectModule('vue-i18n')
+}
+
+function resolveDevtoolsApi(libDir: string) {
+  // uni-app x 暂不支持 @vue/devtools-api，统一指向兼容性空实现
+  return path.resolve(libDir, '@vue/devtools-api/dist/index.js')
 }
 
 export function resolveVueI18nDependencies(): Record<string, string> {
@@ -167,10 +176,36 @@ export function resolveVueI18nDependencies(): Record<string, string> {
       '@intlify/message-compiler/dist/message-compiler.mjs'
     ),
     '@intlify/shared': path.resolve(libDir, '@intlify/shared/dist/shared.mjs'),
-    '@vue/devtools-api': path.resolve(
-      libDir,
-      '@vue/devtools-api/lib/esm/index.js'
+    '@vue/devtools-api': resolveDevtoolsApi(libDir),
+  }
+}
+
+export function resolvePinia() {
+  return path.resolve(__dirname, '../lib/dom2/pinia/dist/pinia.mjs')
+}
+
+export function resolveProjectPinia() {
+  return resolveProjectModule('pinia')
+}
+
+export function resolvePiniaDependencies(): Record<string, string> {
+  if (process.env.UNI_APP_X !== 'true' || resolveProjectPinia() !== undefined) {
+    return {}
+  }
+  return {
+    '@vue/devtools-api': resolveDevtoolsApi(
+      path.resolve(__dirname, '../lib/dom2')
     ),
+  }
+}
+
+export function resolvePiniaAlias(): Record<string, string> {
+  if (process.env.UNI_APP_X !== 'true' || resolveProjectPinia() !== undefined) {
+    return {}
+  }
+  return {
+    ...resolvePiniaDependencies(),
+    pinia: resolvePinia(),
   }
 }
 

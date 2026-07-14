@@ -1,5 +1,6 @@
 import {
   type UniVitePlugin,
+  resolvePiniaAlias,
   resolveVueI18nRuntimeAlias,
 } from '@dcloudio/uni-cli-shared'
 
@@ -33,6 +34,8 @@ export function uniAppPlugin(
             // vue-i18n 默认会启用 new Function 来构造翻译函数，导致在 Android 上可能报`TypeError: no access` 错误
             // 项目未安装 vue-i18n 时使用内部 runtime 版本，避免触发该问题
             ...resolveVueI18nRuntimeAlias(),
+            // 项目未安装 pinia 时使用内部版本及其依赖
+            ...resolvePiniaAlias(),
           },
         },
       }

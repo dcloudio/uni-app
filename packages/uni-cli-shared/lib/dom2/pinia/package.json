@@ -1,0 +1,11 @@
+{
+  "name": "pinia",
+  "version": "3.0.4",
+  "license": "MIT",
+  "module": "dist/pinia.mjs",
+  "exports": {
+    ".": "./dist/pinia.mjs",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false
+}
