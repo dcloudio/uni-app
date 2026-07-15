@@ -37,7 +37,7 @@ const animationLonghands = [
 export function createTransformAnimation(
   options: NormalizeOptions
 ): TransformDecl {
-  const normalizeMap = getNormalizeMap(options)
+  const normalizeMap = __RUN_TIME__ ? null : getNormalizeMap(options)
   return (decl, onWarning) => {
     const { value, important, raws, source } = decl
     const singleVarResult = tryExpandSingleValueVarShorthand(
@@ -58,29 +58,31 @@ export function createTransformAnimation(
     if (!animation) {
       return [decl]
     }
-    const values: Array<[string, string]> = [
-      ['animationName', animation.name],
-      ['animationDuration', animation.duration],
-      ['animationDelay', animation.delay],
-      ['animationTimingFunction', animation.timingFunction],
-      ['animationIterationCount', animation.iterationCount],
-      ['animationDirection', animation.direction],
-      ['animationFillMode', animation.fillMode],
-      ['animationPlayState', animation.playState],
-    ]
-    let invalid = false
-    for (let i = 0; i < values.length; i++) {
-      const [property, value] = values[i]
-      const result = normalizeMap[property](value, options)
-      if (result.value === null) {
-        invalid = true
-        if (result.reason) {
-          onWarning?.(result.reason(property, value, result.value))
+    if (normalizeMap) {
+      const values: Array<[string, string]> = [
+        ['animationName', animation.name],
+        ['animationDuration', animation.duration],
+        ['animationDelay', animation.delay],
+        ['animationTimingFunction', animation.timingFunction],
+        ['animationIterationCount', animation.iterationCount],
+        ['animationDirection', animation.direction],
+        ['animationFillMode', animation.fillMode],
+        ['animationPlayState', animation.playState],
+      ]
+      let invalid = false
+      for (let i = 0; i < values.length; i++) {
+        const [property, value] = values[i]
+        const result = normalizeMap[property](value, options)
+        if (result.value === null) {
+          invalid = true
+          if (result.reason) {
+            onWarning?.(result.reason(property, value, result.value))
+          }
         }
       }
-    }
-    if (invalid) {
-      return []
+      if (invalid) {
+        return []
+      }
     }
     return [
       createDecl(animationName, animation.name, important, raws, source),
