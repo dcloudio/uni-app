@@ -60,17 +60,6 @@ const rollupPlugins = [
     },
     preventAssignment: true,
   }),
-  jscc({
-    values: {
-      // 该插件限制了不能以__开头
-      _NODE_JS_: 0,
-      _X_: 1,
-      _APP_IOS_: process.env.X_RUNTIME_PLATFORM === 'app-ios' ? 1 : 0,
-      _APP_HARMONY_: process.env.X_RUNTIME_PLATFORM === 'app-harmony' ? 1 : 0,
-    },
-    // 忽略 pako 内部条件编译
-    exclude: [/pako/ as unknown as string],
-  }),
   babel({
     babelHelpers: 'bundled',
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
@@ -106,6 +95,15 @@ function createConfig(
     platform === 'app-harmony'
       ? isAppHarmonyUVueNativeTag
       : isAppIOSUVueNativeTag
+  console.error('jscc', {
+    // 该插件限制了不能以__开头
+    _NODE_JS_: 0,
+    _X_: 1,
+    _VAPOR_: isVapor ? 1 : 0,
+    _APP_IOS_: platform === 'app-ios' ? 1 : 0,
+    _APP_ANDROID_: platform === 'app-android' ? 1 : 0,
+    _APP_HARMONY_: platform === 'app-harmony' ? 1 : 0,
+  })
   return {
     root: __dirname,
     define: {
@@ -212,7 +210,22 @@ function createConfig(
           entryFileNames: resolveEntryFileName(platform, isVapor),
         },
         preserveEntrySignatures: 'strict',
-        plugins: rollupPlugins,
+        plugins: [
+          jscc({
+            values: {
+              // 该插件限制了不能以__开头
+              _NODE_JS_: 0,
+              _X_: 1,
+              _VAPOR_: isVapor ? 1 : 0,
+              _APP_IOS_: platform === 'app-ios' ? 1 : 0,
+              _APP_ANDROID_: platform === 'app-android' ? 1 : 0,
+              _APP_HARMONY_: platform === 'app-harmony' ? 1 : 0,
+            },
+            // 忽略 pako 内部条件编译
+            exclude: [/pako/ as unknown as string],
+          }),
+          ...rollupPlugins,
+        ],
         onwarn: (msg, warn) => {
           if (!String(msg).includes('external module "vue" but never used')) {
             warn(msg)

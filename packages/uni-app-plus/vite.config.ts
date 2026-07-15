@@ -33,6 +33,10 @@ const rollupPlugins = [
       // 该插件限制了不能以__开头
       _NODE_JS_: 0,
       _X_: 0,
+      _VAPOR_: 0,
+      _APP_IOS_: 1,
+      _APP_ANDROID_: 1,
+      _APP_HARMONY_: 0,
     },
     // 忽略 pako 内部条件编译
     exclude: [/pako/ as unknown as string],
