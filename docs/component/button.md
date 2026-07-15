@@ -432,7 +432,13 @@ button 组件没有 url 属性，如果要跳转页面，可以在@click中编�
 ## tips
 
 - button 的默认文字大小为18px，文字行高为2.5。如果指定了按钮高度，要注意手动调整文字行高
-- 蒸汽模式下，button 的居中效果不依赖 line-height，是靠 padding 实现的，调整 padding 可能会影响按钮的居中效果
+- 蒸汽模式下，button 的居中效果不依赖 line-height，是靠 padding 实现的，调整 padding 可能会影响按钮的居中效果。如果调整了 height 和 line-height，需要同时设置 padding-top 和 padding-bottom 为 0，保证按钮文字的居中效果，例如
+
+```html
+<template>
+	<button style="height: 50px; line-height: 50px; padding-top: 0; padding-bottom: 0;">按钮</button>
+</template>
+```
 
 ## 样式冲突
 
