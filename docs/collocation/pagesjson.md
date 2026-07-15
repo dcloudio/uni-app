@@ -286,7 +286,7 @@ pages节点里注册页面，数据格式是数组，数组每个项都是一个
 | backgroundColorContent | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 页面容器背景色 |
 | backgroundTextStyle | 'dark' \| 'light' | "dark" | 否 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 下拉 loading 的样式，仅支持 dark/light |
 | enablePullDownRefresh | boolean | false | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否开启下拉刷新，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
-| onReachBottomDistance | number | 50 | 否 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
+| onReachBottomDistance | number | 50 | 否 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
 | pageOrientation | 'auto' \| 'portrait' \| 'landscape' | "portrait" | 否 | Web: x; 微信小程序: 4.41; Android: 4.13; iOS: 4.25; HarmonyOS: 4.61 | 页面旋转设置，支持 auto 设备自适应 / portrait 竖向 / landscape 横向 |
 | hideStatusBar | boolean | false | 否 | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.33; HarmonyOS: 4.61 | 是否隐藏系统顶部状态栏 |
 | hideBottomNavigationIndicator | boolean | false | 否 | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.33; HarmonyOS: 4.61 | 是否隐藏系统底部导航栏 |
@@ -705,7 +705,7 @@ subPackages 节点接收一个数组，数组每一项都是应用的子包，�
 | backgroundColorContent | string ([string.ColorString](/uts/data-type.md#ide-string)) | "#ffffff" | 否 | Web: 4.11; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 页面容器背景色 |
 | backgroundTextStyle | 'dark' \| 'light' | "dark" | 否 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 下拉 loading 的样式，仅支持 dark/light |
 | enablePullDownRefresh | boolean | false | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否开启下拉刷新，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
-| onReachBottomDistance | number | 50 | 否 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
+| onReachBottomDistance | number | 50 | 否 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 页面上拉触底事件触发时距页面底部距离，单位只支持px，详见[页面生命周期](https://doc.dcloud.net.cn/uni-app-x/page.html)。 |
 | pageOrientation | 'auto' \| 'portrait' \| 'landscape' | "portrait" | 否 | Web: x; 微信小程序: 4.41; Android: 4.13; iOS: 4.25; HarmonyOS: 4.61 | 页面旋转设置，支持 auto 设备自适应 / portrait 竖向 / landscape 横向 |
 | hideStatusBar | boolean | false | 否 | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.33; HarmonyOS: 4.61 | 是否隐藏系统顶部状态栏 |
 | hideBottomNavigationIndicator | boolean | false | 否 | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.33; HarmonyOS: 4.61 | 是否隐藏系统底部导航栏 |
