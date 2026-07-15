@@ -106,7 +106,9 @@ describe('resolve vue-i18n', () => {
       path.join(vueI18nDir, 'package.json'),
       JSON.stringify({
         name: 'vue-i18n',
-        main: 'index.js',
+        exports: {
+          '.': './index.js',
+        },
       })
     )
     fs.writeFileSync(path.join(vueI18nDir, 'index.js'), 'module.exports = {}')
@@ -115,7 +117,10 @@ describe('resolve vue-i18n', () => {
     process.env.UNI_CLI_CONTEXT = cliContext
     process.env.UNI_INPUT_DIR = path.join(projectDir, 'src')
 
-    expectSameFile(resolveProjectVueI18n(), path.join(vueI18nDir, 'index.js'))
+    expectSameFile(
+      resolveProjectVueI18n(),
+      path.join(vueI18nDir, 'package.json')
+    )
     expect(resolveVueI18nDependencies()).toEqual({})
     expect(resolveVueI18nRuntimeAlias()).toEqual({})
   })
@@ -164,7 +169,9 @@ describe('resolve vue-i18n', () => {
       path.join(piniaDir, 'package.json'),
       JSON.stringify({
         name: 'pinia',
-        main: 'index.js',
+        exports: {
+          '.': './index.js',
+        },
       })
     )
     fs.writeFileSync(path.join(piniaDir, 'index.js'), 'module.exports = {}')
@@ -173,9 +180,38 @@ describe('resolve vue-i18n', () => {
     process.env.UNI_CLI_CONTEXT = cliContext
     process.env.UNI_INPUT_DIR = path.join(projectDir, 'src')
 
-    expectSameFile(resolveProjectPinia(), path.join(piniaDir, 'index.js'))
+    expectSameFile(resolveProjectPinia(), path.join(piniaDir, 'package.json'))
     expect(resolvePiniaDependencies()).toEqual({})
     expect(resolvePiniaAlias()).toEqual({})
+  })
+
+  test('ignores dependencies injected from the HBuilderX CLI context', () => {
+    const projectDir = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-project-'))
+    const cliContext = fs.mkdtempSync(path.join(os.tmpdir(), 'uni-cli-'))
+    temporaryDirectories.push(projectDir, cliContext)
+    fs.mkdirSync(path.join(projectDir, 'src'))
+
+    const cliNodeModules = path.join(cliContext, 'node_modules')
+    ;['vue-i18n', 'pinia'].forEach((name) => {
+      const packageDir = path.join(cliNodeModules, name)
+      fs.mkdirSync(packageDir, { recursive: true })
+      fs.writeFileSync(
+        path.join(packageDir, 'package.json'),
+        JSON.stringify({ name, main: 'index.js' })
+      )
+      fs.writeFileSync(path.join(packageDir, 'index.js'), 'module.exports = {}')
+    })
+
+    process.env.UNI_APP_X = 'true'
+    process.env.UNI_CLI_CONTEXT = cliContext
+    process.env.UNI_INPUT_DIR = path.join(projectDir, 'src')
+
+    expect(resolveProjectVueI18n()).toBeUndefined()
+    expect(resolveProjectPinia()).toBeUndefined()
+    expect(resolveVueI18nRuntimeAlias()['vue-i18n']).toBe(
+      resolveVueI18nRuntime()
+    )
+    expect(resolvePiniaAlias().pinia).toBe(resolvePinia())
   })
 
   test('vendored package manifests only reference existing files', () => {

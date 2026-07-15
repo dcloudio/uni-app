@@ -1,7 +1,6 @@
 import fs from 'fs'
 
 import path from 'path'
-import { createRequire } from 'module'
 import debug from 'debug'
 import resolve from 'resolve'
 import { once } from '@dcloudio/uni-shared'
@@ -139,13 +138,12 @@ export function resolveVueI18n() {
 }
 
 function resolveProjectModule(module: string) {
-  const basedir = process.env.UNI_INPUT_DIR || process.env.UNI_CLI_CONTEXT
-  if (!basedir) {
+  const inputDir = process.env.UNI_INPUT_DIR
+  if (!inputDir) {
     return
   }
-  const projectRequire = createRequire(path.resolve(basedir, 'package.json'))
   try {
-    return projectRequire.resolve(module)
+    return resolveWithSymlinks(`${module}/package.json`, inputDir)
   } catch (e) {}
 }
 
