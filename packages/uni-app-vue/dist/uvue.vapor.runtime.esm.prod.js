@@ -1,4 +1,4 @@
-import { isSymbol, isObject, hasOwn, def, hasChanged, isFunction, isArray as isArray$1, extend, toRawType, EMPTY_OBJ, isSet, isMap, isPlainObject, isIntegerKey, NOOP, makeMap, hyphenate, capitalize, isPromise, getGlobalThis, isString, remove as remove$1, camelize, toHandlerKey, isReservedProp, looseToNumber, isOn, isBuiltInTag, parseStringStyle, canSetValueDirectly, invokeArrayFns, isRegExp, toNumber, EMPTY_ARR, toDisplayString, NO, isModelListener, getSequence, normalizeStyle as normalizeStyle$2, isGloballyAllowed, YES } from '@vue/shared';
+import { isSymbol, isObject, hasOwn, def, hasChanged, isFunction, isArray as isArray$1, extend, toRawType, EMPTY_OBJ, isSet, isMap, isPlainObject, isIntegerKey, NOOP, makeMap, hyphenate, capitalize, camelize, isPromise, getGlobalThis, isString, remove as remove$1, toHandlerKey, isReservedProp, looseToNumber, isOn, isBuiltInTag, parseStringStyle, canSetValueDirectly, invokeArrayFns, isRegExp, toNumber, EMPTY_ARR, toDisplayString, NO, isModelListener, getSequence, normalizeStyle as normalizeStyle$2, isGloballyAllowed, YES } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
 import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle as normalizeStyle$1, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_EXIT, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
@@ -2054,6 +2054,9 @@ function createDecl(prop, value, important, raws, source) {
   return decl;
 }
 var NUM_REGEXP = /^[-]?\d*\.?\d+$/;
+var LENGTH_REGEXP = /^[-+]?\d*\.?\d+(\S*)$/;
+var SUPPORTED_VALUES_REGEXP = /supported values are: ([^)]+)/;
+var SUPPORT_CSS_UNIT = ['px', 'pt', 'wx', 'upx', 'rpx'];
 var isNumber = val => typeof val === 'number';
 var cacheStringFunction = fn => {
   var cache = Object.create(null);
@@ -2069,6 +2072,9 @@ var hyphenateStyleProperty = cacheStringFunction(str => str.replace(hyphenateRE,
   }
   return m;
 }).toLowerCase());
+function autofixedReason(v, result) {
+  return 'NOTE: property value `' + v + '` is autofixed to `' + result + '`';
+}
 function validReason(k, v) {
   return 'ERROR: property value `' + v + '` is not valid for `' + hyphenateStyleProperty(k) + '`';
 }
@@ -2082,6 +2088,205 @@ function supportedEnumReason(k, v, items) {
 function supportedValueWithTipsReason(k, v, tips) {
   return 'ERROR: property value `' + v + '` is not supported for `' + hyphenateStyleProperty(k) + '` ' + tips;
 }
+function supportedUnitWithAutofixedReason(unit, v, result) {
+  return 'NOTE: unit `' + unit + '` is not supported and property value `' + v + '` is autofixed to `' + result + '`';
+}
+function compatibilityReason(k) {
+  return 'NOTE: the ' + hyphenateStyleProperty(k) + ' property may have compatibility problem on native';
+}
+function supportedPropertyReason(k) {
+  return 'WARNING: `' + hyphenateStyleProperty(k) + '` is not a standard property name (may not be supported)';
+}
+function getPlatformVersion(platform, dom2) {
+  return dom2 ? platform === null || platform === void 0 ? void 0 : platform.unixVaporVer : platform === null || platform === void 0 ? void 0 : platform.unixVer;
+}
+function getSupportedPlatforms(uniPlatform) {
+  var _uniPlatform$app, _uniPlatform$app2, _uniPlatform$app3;
+  var dom2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var supportedPlatforms = [];
+  if (getPlatformVersion(uniPlatform === null || uniPlatform === void 0 || (_uniPlatform$app = uniPlatform.app) === null || _uniPlatform$app === void 0 ? void 0 : _uniPlatform$app.android, dom2) !== 'x') {
+    supportedPlatforms.push('app-android');
+  }
+  if (getPlatformVersion(uniPlatform === null || uniPlatform === void 0 || (_uniPlatform$app2 = uniPlatform.app) === null || _uniPlatform$app2 === void 0 ? void 0 : _uniPlatform$app2.ios, dom2) !== 'x') {
+    supportedPlatforms.push('app-ios');
+  }
+  if (getPlatformVersion(uniPlatform === null || uniPlatform === void 0 || (_uniPlatform$app3 = uniPlatform.app) === null || _uniPlatform$app3 === void 0 ? void 0 : _uniPlatform$app3.harmony, dom2) !== 'x') {
+    supportedPlatforms.push('app-harmony');
+  }
+  return supportedPlatforms;
+}
+function normalizeReasons(reasons, k, v) {
+  var enums = [];
+  for (var i = 0; i < reasons.length; i++) {
+    var reason = reasons[i];
+    if (SUPPORTED_VALUES_REGEXP.test(reason)) {
+      var match = reason.match(SUPPORTED_VALUES_REGEXP);
+      if (match) {
+        var values = match[1].split('|').map(item => item.replace(/`/g, '')).filter(Boolean);
+        enums.push(...values);
+        reasons.splice(i, 1);
+        i--;
+      }
+    }
+  }
+  if (enums.length > 0) {
+    var unsupportedReason = supportedEnumReason(k, v, []);
+    reasons = reasons.filter(reason => reason !== unsupportedReason);
+    enums = [...new Set(enums)];
+    reasons.push(supportedEnumReason(k, v, enums));
+  }
+  return reasons;
+}
+// http://www.w3.org/TR/css3-color/#svg-color
+var EXTENDED_COLOR_KEYWORDS = {
+  aliceblue: '#F0F8FF',
+  antiquewhite: '#FAEBD7',
+  aqua: '#00FFFF',
+  aquamarine: '#7FFFD4',
+  azure: '#F0FFFF',
+  beige: '#F5F5DC',
+  bisque: '#FFE4C4',
+  black: '#000000',
+  blanchedalmond: '#FFEBCD',
+  blue: '#0000FF',
+  blueviolet: '#8A2BE2',
+  brown: '#A52A2A',
+  burlywood: '#DEB887',
+  cadetblue: '#5F9EA0',
+  chartreuse: '#7FFF00',
+  chocolate: '#D2691E',
+  coral: '#FF7F50',
+  cornflowerblue: '#6495ED',
+  cornsilk: '#FFF8DC',
+  crimson: '#DC143C',
+  cyan: '#00FFFF',
+  darkblue: '#00008B',
+  darkcyan: '#008B8B',
+  darkgoldenrod: '#B8860B',
+  darkgray: '#A9A9A9',
+  darkgreen: '#006400',
+  darkgrey: '#A9A9A9',
+  darkkhaki: '#BDB76B',
+  darkmagenta: '#8B008B',
+  darkolivegreen: '#556B2F',
+  darkorange: '#FF8C00',
+  darkorchid: '#9932CC',
+  darkred: '#8B0000',
+  darksalmon: '#E9967A',
+  darkseagreen: '#8FBC8F',
+  darkslateblue: '#483D8B',
+  darkslategray: '#2F4F4F',
+  darkslategrey: '#2F4F4F',
+  darkturquoise: '#00CED1',
+  darkviolet: '#9400D3',
+  deeppink: '#FF1493',
+  deepskyblue: '#00BFFF',
+  dimgray: '#696969',
+  dimgrey: '#696969',
+  dodgerblue: '#1E90FF',
+  firebrick: '#B22222',
+  floralwhite: '#FFFAF0',
+  forestgreen: '#228B22',
+  fuchsia: '#FF00FF',
+  gainsboro: '#DCDCDC',
+  ghostwhite: '#F8F8FF',
+  gold: '#FFD700',
+  goldenrod: '#DAA520',
+  gray: '#808080',
+  green: '#008000',
+  greenyellow: '#ADFF2F',
+  grey: '#808080',
+  honeydew: '#F0FFF0',
+  hotpink: '#FF69B4',
+  indianred: '#CD5C5C',
+  indigo: '#4B0082',
+  ivory: '#FFFFF0',
+  khaki: '#F0E68C',
+  lavender: '#E6E6FA',
+  lavenderblush: '#FFF0F5',
+  lawngreen: '#7CFC00',
+  lemonchiffon: '#FFFACD',
+  lightblue: '#ADD8E6',
+  lightcoral: '#F08080',
+  lightcyan: '#E0FFFF',
+  lightgoldenrodyellow: '#FAFAD2',
+  lightgray: '#D3D3D3',
+  lightgreen: '#90EE90',
+  lightgrey: '#D3D3D3',
+  lightpink: '#FFB6C1',
+  lightsalmon: '#FFA07A',
+  lightseagreen: '#20B2AA',
+  lightskyblue: '#87CEFA',
+  lightslategray: '#778899',
+  lightslategrey: '#778899',
+  lightsteelblue: '#B0C4DE',
+  lightyellow: '#FFFFE0',
+  lime: '#00FF00',
+  limegreen: '#32CD32',
+  linen: '#FAF0E6',
+  magenta: '#FF00FF',
+  maroon: '#800000',
+  mediumaquamarine: '#66CDAA',
+  mediumblue: '#0000CD',
+  mediumorchid: '#BA55D3',
+  mediumpurple: '#9370DB',
+  mediumseagreen: '#3CB371',
+  mediumslateblue: '#7B68EE',
+  mediumspringgreen: '#00FA9A',
+  mediumturquoise: '#48D1CC',
+  mediumvioletred: '#C71585',
+  midnightblue: '#191970',
+  mintcream: '#F5FFFA',
+  mistyrose: '#FFE4E1',
+  moccasin: '#FFE4B5',
+  navajowhite: '#FFDEAD',
+  navy: '#000080',
+  oldlace: '#FDF5E6',
+  olive: '#808000',
+  olivedrab: '#6B8E23',
+  orange: '#FFA500',
+  orangered: '#FF4500',
+  orchid: '#DA70D6',
+  palegoldenrod: '#EEE8AA',
+  palegreen: '#98FB98',
+  paleturquoise: '#AFEEEE',
+  palevioletred: '#DB7093',
+  papayawhip: '#FFEFD5',
+  peachpuff: '#FFDAB9',
+  peru: '#CD853F',
+  pink: '#FFC0CB',
+  plum: '#DDA0DD',
+  powderblue: '#B0E0E6',
+  purple: '#800080',
+  red: '#FF0000',
+  rosybrown: '#BC8F8F',
+  royalblue: '#4169E1',
+  saddlebrown: '#8B4513',
+  salmon: '#FA8072',
+  sandybrown: '#F4A460',
+  seagreen: '#2E8B57',
+  seashell: '#FFF5EE',
+  sienna: '#A0522D',
+  silver: '#C0C0C0',
+  skyblue: '#87CEEB',
+  slateblue: '#6A5ACD',
+  slategray: '#708090',
+  slategrey: '#708090',
+  snow: '#FFFAFA',
+  springgreen: '#00FF7F',
+  steelblue: '#4682B4',
+  tan: '#D2B48C',
+  teal: '#008080',
+  thistle: '#D8BFD8',
+  tomato: '#FF6347',
+  turquoise: '#40E0D0',
+  violet: '#EE82EE',
+  wheat: '#F5DEB3',
+  white: '#FFFFFF',
+  whitesmoke: '#F5F5F5',
+  yellow: '#FFFF00',
+  yellowgreen: '#9ACD32'
+};
 /**
  * css value 分割多值，兼容包含括号的 css 方法，比如 var/env/calc() 等
  */
@@ -2252,7 +2457,6 @@ var borderColor = 'Color';
 var BORDER_WIDTH_REGEXP = /^(?:[\d.]+\S*|thin|medium|thick)$/;
 // 这里按完整 CSS line-style 识别，后续再交给 border-*-style 的既有校验逻辑报精确错误。
 var BORDER_STYLE_REGEXP = /^(?:none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset)$/;
-var BORDER_SHORTHAND_VAR_ORDER_WARNING = '__borderShorthandVarOrderWarning';
 function createBorderVarOrderWarning(prop, value) {
   return supportedValueWithTipsReason(prop, value, '(border shorthand with CSS variables must follow `width style color`, for example: `1px solid var(--color, #999999)`)');
 }
@@ -2269,7 +2473,7 @@ function isBorderColorValue(value) {
   return isCssVarValue(value) || !BORDER_WIDTH_REGEXP.test(value) && !BORDER_STYLE_REGEXP.test(value);
 }
 function createTransformBorder(options) {
-  return decl => {
+  return (decl, onWarning) => {
     var {
       prop,
       value,
@@ -2288,7 +2492,7 @@ function createTransformBorder(options) {
     // 包含 var 时按位置解析，避免把 style 误判成 color
     if (havVar) {
       if (splitResult.length > 3 || splitResult.length === 3 && (!isBorderWidthValue(splitResult[0]) || !isBorderStyleValue(splitResult[1]) || !isBorderColorValue(splitResult[2]))) {
-        decl[BORDER_SHORTHAND_VAR_ORDER_WARNING] = createBorderVarOrderWarning(prop, value);
+        onWarning === null || onWarning === void 0 || onWarning(createBorderVarOrderWarning(prop, value));
         return [];
       }
       result = splitResult;
@@ -2589,6 +2793,40 @@ function createEnumNormalize(items) {
     };
   };
 }
+function createEnumNormalizeWithPlatform(items) {
+  return (v, _ref) => {
+    var {
+      platform,
+      dom2
+    } = _ref;
+    var property = items.find(item => item.name === v);
+    var supportedEnum = items.filter(item => {
+      var supportedPlatforms = getSupportedPlatforms(item.uniPlatform, !!dom2);
+      return supportedPlatforms.includes(platform);
+    }).map(item => item.name);
+    if (property) {
+      var supportedPlatforms = getSupportedPlatforms(property.uniPlatform, !!dom2);
+      // TODO 未跨平台支持的属性特殊提示
+      if (!supportedPlatforms.includes(platform)) {
+        return {
+          value: null,
+          reason: function reason(k, v, result) {
+            return supportedEnumReason(k, v, supportedEnum);
+          }
+        };
+      }
+      return {
+        value: v
+      };
+    }
+    return {
+      value: null,
+      reason: function reason(k, v, result) {
+        return supportedEnumReason(k, v, supportedEnum);
+      }
+    };
+  };
+}
 var normalizeTimingFunction = v => {
   v = (v || '').toString();
   if (v.match(/^(?:linear|ease|ease-in|ease-out|ease-in-out)$/)) {
@@ -2657,6 +2895,28 @@ function splitAnimationList(value) {
   result.push(item);
   return result;
 }
+function createAnimationListNormalize(normalize) {
+  return (v, options) => {
+    var items = splitAnimationList((v || '').toString());
+    if (!items) {
+      return {
+        value: null,
+        reason: validReason
+      };
+    }
+    var values = [];
+    for (var i = 0; i < items.length; i++) {
+      var result = normalize(items[i], options);
+      if (result.value === null) {
+        return result;
+      }
+      values.push(result.value);
+    }
+    return {
+      value: values.length === 1 ? values[0] : values.join(',')
+    };
+  };
+}
 function createAnimationTimeNormalize(allowNegative) {
   return v => {
     var value = (v || '').toString().toLowerCase();
@@ -2719,6 +2979,18 @@ var normalizeAnimationIterationCountItem = v => {
 function createAnimationKeywordNormalize(items) {
   var normalize = createEnumNormalize(items);
   return (v, options) => normalize((v || '').toString().toLowerCase(), options);
+}
+function createSupportedAnimationKeywordNormalize(property) {
+  var normalize = createEnumNormalizeWithPlatform(property.values || []);
+  return (v, options) => normalize((v || '').toString().toLowerCase(), options);
+}
+function createAnimationSyntaxOrKeywordNormalize(syntaxNormalize, property) {
+  var keywords = new Set((property.values || []).map(item => item.name.toLowerCase()));
+  var keywordNormalize = createSupportedAnimationKeywordNormalize(property);
+  return (v, options) => {
+    var value = (v || '').toString().toLowerCase();
+    return keywords.has(value) ? keywordNormalize(value, options) : syntaxNormalize(value, options);
+  };
 }
 var normalizeAnimationDelayItem = createAnimationTimeNormalize(true);
 var normalizeAnimationDirectionItem = createAnimationKeywordNormalize(['normal', 'reverse', 'alternate', 'alternate-reverse']);
@@ -2857,6 +3129,701 @@ function parseAnimation(value) {
     playState: animations.map(animation => animation.playState).join(',')
   };
 }
+var normalizeAnimation = v => parseAnimation((v || '').toString()) ? {
+  value: v
+} : {
+  value: null,
+  reason: validReason
+};
+function createAnimationTimingFunctionNormalize(property) {
+  var keywordNormalize = createSupportedAnimationKeywordNormalize(property);
+  var itemNormalize = (v, options) => {
+    var value = (v || '').toString().toLowerCase();
+    var result = normalizeAnimationTimingFunctionItem(value);
+    if (result.value === null) {
+      return result;
+    }
+    var keyword = typeof result.value === 'string' && result.value.startsWith('cubic-bezier(') ? 'cubic-bezier()' : value;
+    var supported = keywordNormalize(keyword, options);
+    return supported.value === null ? supported : result;
+  };
+  return createAnimationListNormalize(itemNormalize);
+}
+var animationNormalizeFactoryMap = {
+  animation: () => normalizeAnimation,
+  animationDelay: () => createAnimationListNormalize(normalizeAnimationDelayItem),
+  animationDirection: property => createAnimationListNormalize(createSupportedAnimationKeywordNormalize(property)),
+  animationDuration: property => createAnimationListNormalize(createAnimationSyntaxOrKeywordNormalize(normalizeAnimationDurationItem, property)),
+  animationFillMode: property => createAnimationListNormalize(createSupportedAnimationKeywordNormalize(property)),
+  animationIterationCount: property => createAnimationListNormalize(createAnimationSyntaxOrKeywordNormalize(normalizeAnimationIterationCountItem, property)),
+  animationName: property => createAnimationListNormalize(createAnimationSyntaxOrKeywordNormalize(normalizeAnimationNameItem, property)),
+  animationPlayState: property => createAnimationListNormalize(createSupportedAnimationKeywordNormalize(property)),
+  animationTimingFunction: createAnimationTimingFunctionNormalize
+};
+var normalizeColor = v => {
+  v = (v || '').toString();
+  if (v.match(/^#[0-9a-fA-F]{6}$/)) {
+    return {
+      value: v
+    };
+  }
+  // rgba issues 13371
+  if (v.match(/^#[0-9a-fA-F]{4}$/)) {
+    return {
+      value: '#' + v[1] + v[1] + v[2] + v[2] + v[3] + v[3] + v[4] + v[4],
+      reason: function reason(k, v, result) {
+        return autofixedReason(v, result);
+      }
+    };
+  }
+  if (v.match(/^#[0-9a-fA-F]{8}$/)) {
+    return {
+      value: v
+    };
+  }
+  if (v.match(/^#[0-9a-fA-F]{3}$/)) {
+    return {
+      value: '#' + v[1] + v[1] + v[2] + v[2] + v[3] + v[3],
+      reason: function reason(k, v, result) {
+        return autofixedReason(v, result);
+      }
+    };
+  }
+  if (EXTENDED_COLOR_KEYWORDS[v]) {
+    return {
+      value: EXTENDED_COLOR_KEYWORDS[v],
+      reason: function reason(k, v, result) {
+        return autofixedReason(v, result);
+      }
+    };
+  }
+  var arrColor, r, g, b, a;
+  var RGB_REGEXP = /^rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/gi;
+  var RGBA_REGEXP = /^rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d*\.?\d+)\s*\)$/gi;
+  if (arrColor = RGB_REGEXP.exec(v)) {
+    r = parseInt(arrColor[1]);
+    g = parseInt(arrColor[2]);
+    b = parseInt(arrColor[3]);
+    if (r >= 0 && r <= 255 && g >= 0 && g <= 255 && b >= 0 && b <= 255) {
+      return {
+        value: 'rgb(' + [r, g, b].join(',') + ')'
+      };
+    }
+  }
+  if (arrColor = RGBA_REGEXP.exec(v)) {
+    r = parseInt(arrColor[1]);
+    g = parseInt(arrColor[2]);
+    b = parseInt(arrColor[3]);
+    a = parseFloat(arrColor[4]);
+    if (r >= 0 && r <= 255 && g >= 0 && g <= 255 && b >= 0 && b <= 255 && a >= 0 && a <= 1) {
+      return {
+        value: 'rgba(' + [r, g, b, a].join(',') + ')'
+      };
+    }
+  }
+  if (v === 'transparent') {
+    return {
+      value: 'rgba(0,0,0,0)'
+    };
+  }
+  return {
+    value: null,
+    reason(k, v, result) {
+      return validReason(k, v);
+    }
+  };
+};
+var normalizeFlexWrap = v => {
+  var values = ['nowrap', 'wrap', 'wrap-reverse'];
+  var index = values.indexOf(v);
+  if (index > 0) {
+    return {
+      value: v,
+      reason(k, v, result) {
+        return compatibilityReason(k);
+      }
+    };
+  }
+  if (index === 0) {
+    return {
+      value: v,
+      reason: function reason(k, v, result) {
+        return defaultValueReason(k, v);
+      }
+    };
+  }
+  return {
+    value: null,
+    reason(k, v, result) {
+      return supportedEnumReason(k, v, values);
+    }
+  };
+};
+var normalizeInteger = v => {
+  v = (v || '').toString();
+  if (v.match(/^[-+]?\d+$/)) {
+    return {
+      value: parseInt(v, 10)
+    };
+  }
+  return {
+    value: null,
+    reason: function reason(k, v, result) {
+      return supportedEnumReason(k, v, ['integer']);
+    }
+  };
+};
+function normalizeCssVar(value) {
+  var keepVar = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  if (keepVar) {
+    return value;
+  }
+  // 目前框架在运行时 initVar 会处理特征值替换为常量
+  return value.replaceAll("var(--window-top)", "CSS_VAR_WINDOW_TOP").replaceAll("var(--window-bottom)", "CSS_VAR_WINDOW_BOTTOM").replaceAll("var(--status-bar-height)", "CSS_VAR_STATUS_BAR_HEIGHT");
+}
+function createNormalizeLength() {
+  var {
+    removePx,
+    property
+  } = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  return (v, options) => {
+    v = (v || '').toString();
+    if (options.type === 'uvue' && !v.includes('calc(') && (/var\([^)]+\)/.test(v) && (/--uni-safe-area-inset-(top|bottom|left|right)/.test(v) || /--status-bar-height/.test(v)) || /--window-(top|bottom)/.test(v) || /env\(([^)]+)\)/.test(v))) {
+      v = v.replace(/\s/g, '');
+      return {
+        value: normalizeCssVar(v, options.keepVar)
+      };
+    }
+    var match = v.match(LENGTH_REGEXP);
+    if (match) {
+      var unit = match[1];
+      var uvue = options.type === 'uvue';
+      if (uvue) {
+        if (!unit || unit === 'px' && removePx) {
+          return {
+            value: parseFloat(v)
+          };
+        } else if (unit === 'px' || unit === 'rpx' ||
+        // 只有line-height支持em单位
+        unit === 'em' && property === 'line-height') {
+          return {
+            value: v
+          };
+        }
+      } else {
+        // nvue
+        if (!unit || unit === 'px') {
+          return {
+            value: parseFloat(v)
+          };
+        }
+        if (SUPPORT_CSS_UNIT.includes(unit)) {
+          return {
+            value: v
+          };
+        } else {
+          return {
+            value: parseFloat(v),
+            reason(k, v, result) {
+              return supportedUnitWithAutofixedReason(unit, v, result);
+            }
+          };
+        }
+      }
+    }
+    return {
+      value: null,
+      reason(k, v, result) {
+        return supportedEnumReason(k, v, ['number', 'pixel']);
+      }
+    };
+  };
+}
+var normalizeLength = createNormalizeLength({
+  removePx: true
+});
+var normalizeLengthWithOptions = createNormalizeLength;
+var normalizePercent = v => {
+  v = (v || '').toString();
+  var match = v.match(LENGTH_REGEXP);
+  if (match) {
+    var unit = match[1];
+    if (unit === '%') {
+      return {
+        value: v
+      };
+    }
+  }
+  return {
+    value: null,
+    reason(k, v, result) {
+      return supportedEnumReason(k, v, ['percent']);
+    }
+  };
+};
+var normalizeNumber = v => {
+  v = (v || '').toString();
+  var match = v.match(LENGTH_REGEXP);
+  if (match && !match[1]) {
+    return {
+      value: parseFloat(v)
+    };
+  }
+  return {
+    value: null,
+    reason: function reason(k, v, result) {
+      return supportedEnumReason(k, v, ['number']);
+    }
+  };
+};
+var normalizeString = v => {
+  v = (v || '').toString().replace(/["']/g, '');
+  return {
+    value: v
+  };
+};
+var normalizeShorthandLength = (v, options) => {
+  v = (v || '').toString();
+  var value = [];
+  var reason = [];
+  var results = v.split(/\s+/).map(v => normalizeLength(v, options));
+  for (var i = 0; i < results.length; ++i) {
+    var res = results[i];
+    if (res.value === null) {
+      return res;
+    }
+    value.push(res.value);
+    reason.push(res.reason);
+  }
+  return {
+    value: value.join(' '),
+    reason: function (k, v, result) {
+      return reason.map(function (res) {
+        if (isFunction(res)) {
+          return res(k, v, result);
+        }
+      }).join('\n');
+    }
+  };
+};
+var normalizeTransform = v => {
+  return {
+    value: v
+  };
+};
+var normalizeInterval = (v, options) => {
+  v = (v || 0).toString();
+  var match, num;
+  if (match = v.match(/^\d*\.?\d+(ms|s)?$/)) {
+    var uvue = options.type === 'uvue';
+    if (uvue) {
+      // uvue 需要单位
+      if (match[1]) {
+        return {
+          value: v
+        };
+      }
+    } else {
+      num = parseFloat(match[0]);
+      if (!match[1]) {
+        return {
+          value: parseInt(num + '')
+        };
+      }
+      if (match[1] === 's') {
+        num *= 1000;
+      }
+      return {
+        value: parseInt(num + ''),
+        reason(k, v, result) {
+          return autofixedReason(v, result);
+        }
+      };
+    }
+  }
+  return {
+    value: null,
+    reason(k, v, result) {
+      return supportedEnumReason(k, v, ['number of seconds', 'milliseconds']);
+    }
+  };
+};
+function createCombinedNormalize(normalizes) {
+  return (v, options) => {
+    var reasons = [];
+    for (var i = 0; i < normalizes.length; i++) {
+      var result = normalizes[i](v, options);
+      if (result.value !== null) {
+        return result;
+      }
+      if (result.reason) {
+        reasons.push(result.reason);
+      }
+    }
+    return {
+      value: null,
+      reason(k, v, result) {
+        return normalizeReasons(reasons.map(reason => reason(k, v, result)), k, v).join('\n');
+      }
+    };
+  };
+}
+var normalizeGradient = v => {
+  v = (v || '').toString();
+  if (/^linear\x2Dgradient([\s\S]+)$/.test(v)) {
+    return {
+      value: v
+    };
+  }
+  return {
+    // 枚举里会做reason提示
+    value: null
+  };
+};
+var normalizeUrl = v => {
+  v = (v || '').toString();
+  if (/^url([\s\S]+)$/.test(v)) {
+    return {
+      value: v
+    };
+  }
+  return {
+    value: null
+  };
+};
+function normalizePlatform(normalize, uniPlatform) {
+  return (v, options, declInfo) => {
+    // platform 未定义时候忽略
+    var currentPlatform = options.platform;
+    var supportedPlatforms = getSupportedPlatforms(uniPlatform, !!options.dom2);
+    // TODO 未跨平台支持的属性特殊提示
+    if (!supportedPlatforms.includes(currentPlatform)) {
+      return {
+        value: v,
+        reason(k, v, result) {
+          return supportedPropertyReason(k);
+        }
+      };
+    }
+    return normalize(v, options, declInfo);
+  };
+}
+function normalizeShorthandProperty(normalize) {
+  return (v, options) => {
+    v = (v || '').toString();
+    var value = [];
+    var reasons = [];
+    var results = v.split(/\s+/).map(v => normalize(v, options));
+    for (var i = 0; i < results.length; ++i) {
+      var res = results[i];
+      if (res.value === null) {
+        return res;
+      }
+      if (res.reason) {
+        reasons.push(res.reason);
+      }
+      value.push(res.value);
+    }
+    return {
+      value: value.length === 1 ? value[0] : value.join(' '),
+      reason: function (k, v, result) {
+        return reasons.map(reason => reason(k, v, result)).join('\n');
+      }
+    };
+  };
+}
+function normalizeFontFace(normalize) {
+  return (v, options, declInfo) => {
+    if ((declInfo === null || declInfo === void 0 ? void 0 : declInfo.atRule) === 'font-face') {
+      return {
+        value: null,
+        reason(k, v, result) {
+          var items = ['font-family', 'src'];
+          var name = '@' + declInfo.atRule;
+          return 'ERROR: property `' + hyphenateStyleProperty(k) + '` is not supported for `' + name + '` (supported properties are: `' + items.join('`|`') + '`)';
+        }
+      };
+    }
+    return normalize(v, options, declInfo);
+  };
+}
+// 只有@font-face下的src属性才支持
+var normalizeSrc = (v, options, declInfo) => {
+  if ((declInfo === null || declInfo === void 0 ? void 0 : declInfo.atRule) === 'font-face') {
+    return {
+      value: v
+    };
+  }
+  return {
+    value: null,
+    reason(k, v, result) {
+      return supportedPropertyReason(k);
+    }
+  };
+};
+var normalizeFlexFlow = v => {
+  v = (v || '').toString();
+  var values = v.split(/\s+/);
+  // flex-flow 需要定义每一个属性值
+  if (values.length === 1) {
+    return {
+      value: v,
+      reason(k, v, result) {
+        return supportedValueWithTipsReason(k, v, '(both property values must be explicitly defined)');
+      }
+    };
+  }
+  return {
+    value: v
+  };
+};
+
+// transition-property 不读 css.json
+// 从 property.ts 中移动到 map 里，避免循环依赖
+var normalizeProperty = (v, options) => {
+  v = (v || '').toString();
+  v = v.split(/\s*,\s*/).map(camelize).join(',');
+  // [all, none] 是特殊值
+  if (options.type === 'uvue') {
+    if (v === 'all' || v === 'none') {
+      return {
+        value: v
+      };
+    }
+  }
+  if (v.split(/\s*,\s*/).every(p => {
+    return !!getNormalizeMap(options)[p];
+  })) {
+    return {
+      value: v
+    };
+  }
+  return {
+    value: null,
+    reason: function reason(k, v, result) {
+      return supportedEnumReason(k, v, ['css property']);
+    }
+  };
+};
+var normalizeDefault = v => {
+  return {
+    value: v
+  };
+};
+var NVUE_PROP_NAME_GROUPS = {
+  boxModel: {
+    display: createEnumNormalize(['flex']),
+    width: normalizeLength,
+    height: normalizeLength,
+    overflow: createEnumNormalize(['hidden']),
+    padding: normalizeShorthandLength,
+    paddingLeft: normalizeLength,
+    paddingRight: normalizeLength,
+    paddingTop: normalizeLength,
+    paddingBottom: normalizeLength,
+    margin: normalizeShorthandLength,
+    marginLeft: normalizeLength,
+    marginRight: normalizeLength,
+    marginTop: normalizeLength,
+    marginBottom: normalizeLength,
+    borderWidth: normalizeLength,
+    borderLeftWidth: normalizeLength,
+    borderTopWidth: normalizeLength,
+    borderRightWidth: normalizeLength,
+    borderBottomWidth: normalizeLength,
+    borderColor: normalizeColor,
+    borderLeftColor: normalizeColor,
+    borderTopColor: normalizeColor,
+    borderRightColor: normalizeColor,
+    borderBottomColor: normalizeColor,
+    borderStyle: createEnumNormalize(['dotted', 'dashed', 'solid']),
+    borderTopStyle: createEnumNormalize(['dotted', 'dashed', 'solid']),
+    borderRightStyle: createEnumNormalize(['dotted', 'dashed', 'solid']),
+    borderBottomStyle: createEnumNormalize(['dotted', 'dashed', 'solid']),
+    borderLeftStyle: createEnumNormalize(['dotted', 'dashed', 'solid']),
+    borderRadius: normalizeLength,
+    borderBottomLeftRadius: normalizeLength,
+    borderBottomRightRadius: normalizeLength,
+    borderTopLeftRadius: normalizeLength,
+    borderTopRightRadius: normalizeLength
+  },
+  flexbox: {
+    flex: normalizeNumber,
+    flexWrap: normalizeFlexWrap,
+    flexDirection: createEnumNormalize(['column', 'row', 'column-reverse', 'row-reverse']),
+    justifyContent: createEnumNormalize(['flex-start', 'flex-end', 'center', 'space-between', 'space-around']),
+    alignItems: createEnumNormalize(['stretch', 'flex-start', 'flex-end', 'center'])
+  },
+  position: {
+    position: createEnumNormalize(['relative', 'absolute', 'sticky', 'fixed']),
+    top: normalizeLength,
+    bottom: normalizeLength,
+    left: normalizeLength,
+    right: normalizeLength,
+    zIndex: normalizeInteger
+  },
+  common: {
+    opacity: normalizeNumber,
+    boxShadow: normalizeDefault,
+    backgroundColor: normalizeColor,
+    backgroundImage: normalizeDefault
+  },
+  text: {
+    lines: normalizeInteger,
+    color: normalizeColor,
+    fontSize: normalizeLength,
+    fontStyle: createEnumNormalize(['normal', 'italic']),
+    fontFamily: normalizeDefault,
+    fontWeight: createEnumNormalize(['normal', 'bold', '100', '200', '300', '400', '500', '600', '700', '800', '900']),
+    textDecoration: createEnumNormalize(['none', 'underline', 'line-through']),
+    textAlign: createEnumNormalize(['left', 'center', 'right']),
+    textOverflow: createEnumNormalize(['clip', 'ellipsis', 'unset', 'fade']),
+    lineHeight: normalizeLength
+  },
+  transition: {
+    transitionProperty: normalizeProperty,
+    transitionDuration: normalizeInterval,
+    transitionDelay: normalizeInterval,
+    transitionTimingFunction: normalizeTimingFunction
+  },
+  transform: {
+    transform: normalizeTransform,
+    transformOrigin: normalizeTransform // fixed by xxxxxx
+  },
+  customized: {
+    itemSize: normalizeLength,
+    itemColor: normalizeColor,
+    itemSelectedColor: normalizeColor,
+    textColor: normalizeColor,
+    timeColor: normalizeColor,
+    textHighlightColor: normalizeColor
+  }
+};
+// 特定属性
+var uvueNormalizeMap = {
+  transform: normalizeTransform,
+  fontFamily: normalizeString,
+  textDecoration: normalizeDefault,
+  boxShadow: normalizeDefault,
+  textShadow: normalizeDefault,
+  // transition-property 支持逗号多值分割
+  transitionProperty: normalizeProperty,
+  transitionTimingFunction: normalizeTimingFunction
+};
+var restrictionMap = {
+  ["length" /* Restriction.LENGTH */]: normalizeLength,
+  ["percentage" /* Restriction.PERCENTAGE */]: normalizePercent,
+  ["number" /* Restriction.NUMBER */]: normalizeNumber,
+  ["number(0-1)" /* Restriction.NUMBER_0_1 */]: normalizeNumber,
+  ["integer" /* Restriction.INTEGER */]: normalizeInteger,
+  ["color" /* Restriction.COLOR */]: normalizeColor,
+  ["time" /* Restriction.TIME */]: normalizeInterval,
+  ["property" /* Restriction.PROPERTY */]: normalizeProperty,
+  ["timing-function" /* Restriction.TIMING_FUNCTION */]: normalizeTimingFunction,
+  ["gradient" /* Restriction.GRADIENT */]: normalizeGradient,
+  ["url" /* Restriction.URL */]: normalizeUrl
+};
+// @font-face下不支持的属性
+var invalidFontFaceProperties = ['fontWeight', 'fontStyle', 'fontVariant'];
+function getUVueNormalizeMap(options) {
+  var dom2 = !!options.dom2;
+  var result = {
+    src: normalizeSrc
+  };
+  var cssJson;
+  try {
+    // eslint-disable-next-line no-restricted-globals
+    cssJson = require('../lib/css.json');
+  } catch (e) {
+    // 单元测试环境，源码目录
+    // eslint-disable-next-line no-restricted-globals
+    cssJson = require('../../lib/css.json');
+  }
+  var {
+    properties
+  } = cssJson;
+  for (var i = 0; i < properties.length; i++) {
+    var property = properties[i];
+    var prop = camelize(property.name);
+    var normalize = void 0;
+    var dom2NormalizeFactory = dom2 && animationNormalizeFactoryMap[prop];
+    var customNormalize = uvueNormalizeMap[prop];
+    if (dom2NormalizeFactory) {
+      normalize = dom2NormalizeFactory(property);
+    } else if (customNormalize) {
+      normalize = customNormalize;
+    } else {
+      var normalizes = getNormalizes(property, options);
+      if (normalizes.length > 1) {
+        normalize = createCombinedNormalize(normalizes);
+      } else if (normalizes.length === 1) {
+        normalize = normalizes[0];
+      } else {
+        normalize = normalizeDefault;
+      }
+      // 简写属性
+      if (property.shorthand) {
+        normalize = normalizeShorthandProperty(normalize);
+      }
+      // 处理@font-face下不支持的属性
+      if (invalidFontFaceProperties.includes(prop)) {
+        normalize = normalizeFontFace(normalize);
+      }
+      // 校验flexFlow属性值的个数，先临时写死，后续考虑根据css.json动态判断
+      if (prop === 'flexFlow') {
+        normalize = createCombinedNormalize([normalizeFlexFlow, normalize]);
+      }
+    }
+    result[prop] = normalizePlatform(normalize, property.uniPlatform);
+  }
+  return result;
+}
+// 读取 css.json 的 restrictions
+function getNormalizes(property, options) {
+  var _property$values;
+  var normalizes = [];
+  var restrictions = property.restrictions || [];
+  restrictions.forEach(restriction => {
+    var normalize = restrictionMap[restriction];
+    if (normalize) {
+      if (restriction === "length" /* Restriction.LENGTH */) {
+        // 如果同时有number和length，例如line-height: 1.5, line-height: 16px，则不能移除px
+        normalize = normalizeLengthWithOptions({
+          removePx: options.keepUnitPx ? false : !restrictions.includes("number" /* Restriction.NUMBER */),
+          property: property.name
+        });
+      }
+      normalizes.push(normalize);
+    }
+  });
+  // enum
+  if (property !== null && property !== void 0 && (_property$values = property.values) !== null && _property$values !== void 0 && _property$values.length) {
+    normalizes.push(createEnumNormalizeWithPlatform(property.values));
+  }
+  return normalizes;
+}
+var normalizeMaps = {};
+function getNormalizeMap(options) {
+  var uvue = options.type === 'uvue';
+  var cacheKey = uvue ? "uvue:".concat(!!options.dom2, ":").concat(!!options.keepUnitPx) : 'nvue';
+  if (normalizeMaps[cacheKey]) {
+    return normalizeMaps[cacheKey];
+  }
+  var normalizeMap;
+  if (uvue) {
+    normalizeMap = getUVueNormalizeMap(options);
+  } else {
+    normalizeMap = Object.keys(NVUE_PROP_NAME_GROUPS).reduce((res, name) => {
+      var group = NVUE_PROP_NAME_GROUPS[name];
+      Object.keys(group).forEach(prop => {
+        res[prop] = group[prop];
+      });
+      return res;
+    }, {});
+  }
+  normalizeMaps[cacheKey] = normalizeMap;
+  return normalizeMap;
+}
 var animationName = 'animationName';
 var animationDuration = 'animationDuration';
 var animationDelay = 'animationDelay';
@@ -2866,27 +3833,45 @@ var animationDirection = 'animationDirection';
 var animationFillMode = 'animationFillMode';
 var animationPlayState = 'animationPlayState';
 var animationLonghands = [animationName, animationDuration, animationDelay, animationTimingFunction, animationIterationCount, animationDirection, animationFillMode, animationPlayState];
-var transformAnimation = decl => {
-  var {
-    value,
-    important,
-    raws,
-    source
-  } = decl;
-  var singleVarResult = tryExpandSingleValueVarShorthand();
-  if (singleVarResult) {
-    return singleVarResult;
-  }
-  // 无法静态确定变量所属槽位时，完整平铺并由运行时按目标 longhand 投影。
-  if (/\bvar\(/i.test(value)) {
-    return animationLonghands.map(prop => createDecl(prop, value, important, raws, source));
-  }
-  var animation = parseAnimation(value.trim());
-  if (!animation) {
-    return [decl];
-  }
-  return [createDecl(animationName, animation.name, important, raws, source), createDecl(animationDuration, animation.duration, important, raws, source), createDecl(animationDelay, animation.delay, important, raws, source), createDecl(animationTimingFunction, animation.timingFunction, important, raws, source), createDecl(animationIterationCount, animation.iterationCount, important, raws, source), createDecl(animationDirection, animation.direction, important, raws, source), createDecl(animationFillMode, animation.fillMode, important, raws, source), createDecl(animationPlayState, animation.playState, important, raws, source)];
-};
+function createTransformAnimation(options) {
+  var normalizeMap = getNormalizeMap(options);
+  return (decl, onWarning) => {
+    var {
+      value,
+      important,
+      raws,
+      source
+    } = decl;
+    var singleVarResult = tryExpandSingleValueVarShorthand();
+    if (singleVarResult) {
+      return singleVarResult;
+    }
+    // 无法静态确定变量所属槽位时，完整平铺并由运行时按目标 longhand 投影。
+    if (/\bvar\(/i.test(value)) {
+      return animationLonghands.map(prop => createDecl(prop, value, important, raws, source));
+    }
+    var animation = parseAnimation(value.trim());
+    if (!animation) {
+      return [decl];
+    }
+    var values = [['animationName', animation.name], ['animationDuration', animation.duration], ['animationDelay', animation.delay], ['animationTimingFunction', animation.timingFunction], ['animationIterationCount', animation.iterationCount], ['animationDirection', animation.direction], ['animationFillMode', animation.fillMode], ['animationPlayState', animation.playState]];
+    var invalid = false;
+    for (var i = 0; i < values.length; i++) {
+      var [property, _value2] = values[i];
+      var result = normalizeMap[property](_value2, options);
+      if (result.value === null) {
+        invalid = true;
+        if (result.reason) {
+          onWarning === null || onWarning === void 0 || onWarning(result.reason(property, _value2, result.value));
+        }
+      }
+    }
+    if (invalid) {
+      return [];
+    }
+    return [createDecl(animationName, animation.name, important, raws, source), createDecl(animationDuration, animation.duration, important, raws, source), createDecl(animationDelay, animation.delay, important, raws, source), createDecl(animationTimingFunction, animation.timingFunction, important, raws, source), createDecl(animationIterationCount, animation.iterationCount, important, raws, source), createDecl(animationDirection, animation.direction, important, raws, source), createDecl(animationFillMode, animation.fillMode, important, raws, source), createDecl(animationPlayState, animation.playState, important, raws, source)];
+  };
+}
 function getDeclTransforms(options, dom2) {
   var transformBorder = options.type === 'uvue' ? createTransformBorder() : createTransformBorderNvue();
   var styleMap = {
@@ -2908,7 +3893,7 @@ function getDeclTransforms(options, dom2) {
     ['flexFlow']: transformFlexFlow
   };
   if (options.type === 'uvue' && dom2) {
-    styleMap.animation = transformAnimation;
+    styleMap.animation = createTransformAnimation(options);
   }
   if (options.type === 'uvue') {
     styleMap.flex = transformFlex;
@@ -2924,7 +3909,7 @@ var expanded = Symbol('expanded');
 function expand(options) {
   var type = options.type || 'nvue';
   var dom2 = !!options.dom2;
-  var transformCacheKey = "".concat(type, ":").concat(dom2);
+  var transformCacheKey = "".concat(type, ":").concat(dom2, ":").concat(options.platform || '');
   var plugin = {
     postcssPlugin: "".concat(options.type || 'nvue', ":expand"),
     Declaration(decl, helper) {
@@ -2934,9 +3919,10 @@ function expand(options) {
       var transforms = declTransforms[transformCacheKey] || (declTransforms[transformCacheKey] = getDeclTransforms(options, dom2));
       var transform = transforms[decl.prop];
       if (transform) {
-        var res = transform(decl);
-        var reason = decl[BORDER_SHORTHAND_VAR_ORDER_WARNING];
-        if (reason && helper && decl.warn) {
+        var res = transform(decl, reason => {
+          if (!helper || !decl.warn) {
+            return;
+          }
           var needLog = false;
           if (options.logLevel === 'NOTE') {
             needLog = true;
@@ -2952,8 +3938,7 @@ function expand(options) {
           if (needLog) {
             decl.warn(helper.result, reason);
           }
-          delete decl[BORDER_SHORTHAND_VAR_ORDER_WARNING];
-        }
+        });
         var _isSame = res.length === 1 && res[0] === decl;
         if (!_isSame) {
           decl.replaceWith(res);
@@ -2996,10 +3981,10 @@ function warn$1(msg) {
     msg + args.map(a => {
       var _a, _b;
       return (_b = (_a = a.toString) == null ? void 0 : _a.call(a)) != null ? _b : JSON.stringify(a);
-    }).join(""), instance && instance.proxy || instance, trace.map(_ref => {
+    }).join(""), instance && instance.proxy || instance, trace.map(_ref2 => {
       var {
         ctx
-      } = _ref;
+      } = _ref2;
       return "at <".concat(formatComponentName(instance, ctx.type), ">");
     }).join("\n"), trace]);
   } else {
@@ -3046,11 +4031,11 @@ function formatTrace(trace) {
   });
   return logs;
 }
-function formatTraceEntry(_ref2) {
+function formatTraceEntry(_ref3) {
   var {
     ctx,
     recurseCount
-  } = _ref2;
+  } = _ref3;
   var postfix = recurseCount > 0 ? "... (".concat(recurseCount, " recursive calls)") : "";
   var instance = isVNode(ctx) ? ctx.component : ctx;
   var isRoot = instance ? instance.parent == null : false;
@@ -3437,11 +4422,11 @@ function setDevtoolsHook$1(hook, target) {
   devtools$1 = hook;
   if (devtools$1) {
     devtools$1.enabled = true;
-    buffer.forEach(_ref3 => {
+    buffer.forEach(_ref4 => {
       var {
         event,
         args
-      } = _ref3;
+      } = _ref4;
       return devtools$1.emit(event, ...args);
     });
     buffer = [];
@@ -3686,13 +4671,13 @@ var TeleportImpl = {
       updateCssVars(n2, disabled);
     }
   },
-  remove(vnode, parentComponent, parentSuspense, _ref4, doRemove) {
+  remove(vnode, parentComponent, parentSuspense, _ref5, doRemove) {
     var {
       um: unmount,
       o: {
         remove: hostRemove
       }
-    } = _ref4;
+    } = _ref5;
     var {
       shapeFlag,
       children,
@@ -3718,13 +4703,13 @@ var TeleportImpl = {
   move: moveTeleport,
   hydrate: hydrateTeleport
 };
-function moveTeleport(vnode, container, parentAnchor, _ref5, parentComponent) {
+function moveTeleport(vnode, container, parentAnchor, _ref6, parentComponent) {
   var {
     o: {
       insert
     },
     m: move
-  } = _ref5;
+  } = _ref6;
   var moveType = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 2;
   if (moveType === 0) {
     insert(vnode.targetAnchor, container, parentAnchor);
@@ -3751,7 +4736,7 @@ function moveTeleport(vnode, container, parentAnchor, _ref5, parentComponent) {
     insert(anchor, container, parentAnchor);
   }
 }
-function hydrateTeleport(node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized, _ref6, hydrateChildren, container) {
+function hydrateTeleport(node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized, _ref7, hydrateChildren, container) {
   var {
     o: {
       nextSibling,
@@ -3760,7 +4745,7 @@ function hydrateTeleport(node, vnode, parentComponent, parentSuspense, slotScope
       insert,
       createText
     }
-  } = _ref6;
+  } = _ref7;
   var target = vnode.target = resolveTarget(vnode.props, querySelector, parentComponent);
   if (target) {
     var disabled = isTeleportDisabled(vnode.props);
@@ -3869,10 +4854,10 @@ var recursiveGetSubtree = instance => {
 var BaseTransitionImpl = {
   name: "BaseTransition",
   props: BaseTransitionPropsValidators,
-  setup(props, _ref7) {
+  setup(props, _ref8) {
     var {
       slots
-    } = _ref7;
+    } = _ref8;
     var instance = getCurrentInstance();
     var state = useTransitionState();
     return () => {
@@ -4928,10 +5913,10 @@ var KeepAliveImpl = {
     exclude: [String, RegExp, Array],
     max: [String, Number]
   },
-  setup(props, _ref8) {
+  setup(props, _ref9) {
     var {
       slots
-    } = _ref8;
+    } = _ref9;
     var keepAliveInstance = getCurrentInstance();
     var sharedContext = keepAliveInstance.ctx;
     var cache = /* @__PURE__ */new Map();
@@ -5002,8 +5987,8 @@ var KeepAliveImpl = {
       cache.delete(key);
       keys.delete(key);
     }
-    watch(() => [props.include, props.exclude], _ref9 => {
-      var [include, exclude] = _ref9;
+    watch(() => [props.include, props.exclude], _ref10 => {
+      var [include, exclude] = _ref10;
       include && pruneCache(name => matches(include, name));
       exclude && pruneCache(name => !matches(exclude, name));
     },
@@ -5428,10 +6413,10 @@ publicPropertiesMap.$callMethod = i => {
 };
 var hasSetupBinding = (state, key) => state !== EMPTY_OBJ && !state.__isScriptSetup && hasOwn(state, key);
 var PublicInstanceProxyHandlers = {
-  get(_ref10, key) {
+  get(_ref11, key) {
     var {
       _: instance
-    } = _ref10;
+    } = _ref11;
     if (key === "__v_skip") {
       return true;
     }
@@ -5500,10 +6485,10 @@ var PublicInstanceProxyHandlers = {
       }
     } else ;
   },
-  set(_ref11, key, value) {
+  set(_ref12, key, value) {
     var {
       _: instance
-    } = _ref11;
+    } = _ref12;
     var {
       data,
       setupState,
@@ -5527,7 +6512,7 @@ var PublicInstanceProxyHandlers = {
     }
     return true;
   },
-  has(_ref12, key) {
+  has(_ref13, key) {
     var {
       _: {
         data,
@@ -5537,7 +6522,7 @@ var PublicInstanceProxyHandlers = {
         appContext,
         propsOptions
       }
-    } = _ref12;
+    } = _ref13;
     var normalizedProps;
     return !!accessCache[key] || data !== EMPTY_OBJ && hasOwn(data, key) || hasSetupBinding(setupState, key) || (normalizedProps = propsOptions[0]) && hasOwn(normalizedProps, key) || hasOwn(ctx, key) || hasOwn(publicPropertiesMap, key) || hasOwn(appContext.config.globalProperties, key);
   },
@@ -6765,11 +7750,11 @@ function baseCreateRenderer(options, createHydrationFns) {
   var mountStaticNode = (n2, container, anchor, namespace) => {
     [n2.el, n2.anchor] = hostInsertStaticContent(n2.children, container, anchor, namespace, n2.el, n2.anchor);
   };
-  var moveStaticNode = (_ref13, container, nextSibling) => {
+  var moveStaticNode = (_ref14, container, nextSibling) => {
     var {
       el,
       anchor
-    } = _ref13;
+    } = _ref14;
     var next;
     while (el && el !== anchor) {
       next = hostNextSibling(el);
@@ -6778,11 +7763,11 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
     hostInsert(anchor, container, nextSibling);
   };
-  var removeStaticNode = _ref14 => {
+  var removeStaticNode = _ref15 => {
     var {
       el,
       anchor
-    } = _ref14;
+    } = _ref15;
     var next;
     while (el && el !== anchor) {
       next = hostNextSibling(el);
@@ -7747,19 +8732,19 @@ function baseCreateRenderer(options, createHydrationFns) {
     createApp: createAppAPI(mountApp, unmountApp, getComponentPublicInstance)
   };
 }
-function resolveChildrenNamespace(_ref15, currentNamespace) {
+function resolveChildrenNamespace(_ref16, currentNamespace) {
   var {
     type,
     props
-  } = _ref15;
+  } = _ref16;
   return currentNamespace === "svg" && type === "foreignObject" || currentNamespace === "mathml" && type === "annotation-xml" && props && props.encoding && props.encoding.includes("html") ? void 0 : currentNamespace;
 }
-function toggleRecurse(_ref16, allowed) {
+function toggleRecurse(_ref17, allowed) {
   var {
     effect,
     job,
     vapor
-  } = _ref16;
+  } = _ref17;
   if (!vapor) {
     if (allowed) {
       effect.flags |= 128;
@@ -8287,11 +9272,11 @@ function hasPropsChanged(prevProps, nextProps, emitsOptions) {
   }
   return false;
 }
-function updateHOCHostEl(_ref17, el) {
+function updateHOCHostEl(_ref18, el) {
   var {
     vnode,
     parent
-  } = _ref17;
+  } = _ref18;
   while (parent && !parent.vapor) {
     var root = parent.subTree;
     if (root.suspense && root.suspense.activeBranch === vnode) {
@@ -8358,14 +9343,14 @@ function mountSuspense(vnode, container, anchor, parentComponent, parentSuspense
     suspense.resolve(false, true);
   }
 }
-function patchSuspense(n1, n2, container, anchor, parentComponent, namespace, slotScopeIds, optimized, _ref18) {
+function patchSuspense(n1, n2, container, anchor, parentComponent, namespace, slotScopeIds, optimized, _ref19) {
   var {
     p: patch,
     um: unmount,
     o: {
       createElement
     }
-  } = _ref18;
+  } = _ref19;
   var suspense = n2.suspense = n1.suspense;
   suspense.vnode = n2;
   n2.el = n1.el;
@@ -8768,18 +9753,18 @@ function isSameVNodeType(n1, n2) {
   return n1.type === n2.type && n1.key === n2.key;
 }
 function transformVNodeArgs(transformer) {}
-var normalizeKey = _ref19 => {
+var normalizeKey = _ref20 => {
   var {
     key
-  } = _ref19;
+  } = _ref20;
   return key != null ? key : null;
 };
-var normalizeRef = _ref20 => {
+var normalizeRef = _ref21 => {
   var {
     ref,
     ref_key,
     ref_for
-  } = _ref20;
+  } = _ref21;
   if (typeof ref === "number") {
     ref = "" + ref;
   }
@@ -9217,10 +10202,10 @@ function createComponentInstance(vnode, parent, suspense) {
   }
   return instance;
 }
-function validateComponentName(name, _ref21) {
+function validateComponentName(name, _ref22) {
   var {
     isNativeTag
-  } = _ref21;
+  } = _ref22;
   if (isBuiltInTag(name) || isNativeTag(name)) {
     warn$1("Do not use built-in or reserved HTML elements as component id: " + name);
   }
@@ -9641,11 +10626,11 @@ function isMatchParentSelector(parentSelector, el) {
   return true;
 }
 var WEIGHT_IMPORTANT = 1e3;
-function parseClassName(_ref22, parentStyles, el) {
+function parseClassName(_ref23, parentStyles, el) {
   var {
     styles,
     weights
-  } = _ref22;
+  } = _ref23;
   each(parentStyles).forEach(parentSelector => {
     if (parentSelector && el) {
       if (!isMatchParentSelector(parentSelector, el)) {
@@ -9707,12 +10692,12 @@ function parseClassList(classList, instance) {
   var el = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
   return parseClassListWithStyleSheet(classList, parseStyleSheet(instance), null, el).styles;
 }
-function parseStyleSheet(_ref23) {
+function parseStyleSheet(_ref24) {
   var {
     type,
     appContext,
     root
-  } = _ref23;
+  } = _ref24;
   var component = type;
   var pageInstance = root;
   if (!pageInstance.componentStylesCache) {
@@ -9763,13 +10748,13 @@ function toStyle(el, classStyle, classStyleWeights) {
 var vShowOriginalDisplay = Symbol("_vod");
 var vShowHidden = Symbol("_vsh");
 var vShow = {
-  beforeMount(el, _ref24, _ref25) {
+  beforeMount(el, _ref25, _ref26) {
     var {
       value
-    } = _ref24;
+    } = _ref25;
     var {
       transition
-    } = _ref25;
+    } = _ref26;
     el[vShowOriginalDisplay] = el.style.getPropertyValue("display") === "none" ? "" : "flex";
     if (transition && value) {
       transition.beforeEnter(el);
@@ -9777,25 +10762,25 @@ var vShow = {
       setDisplay$1(el, value);
     }
   },
-  mounted(el, _ref26, _ref27) {
+  mounted(el, _ref27, _ref28) {
     var {
       value
-    } = _ref26;
+    } = _ref27;
     var {
       transition
-    } = _ref27;
+    } = _ref28;
     if (transition && value) {
       transition.enter(el);
     }
   },
-  updated(el, _ref28, _ref29) {
+  updated(el, _ref29, _ref30) {
     var {
       value,
       oldValue
-    } = _ref28;
+    } = _ref29;
     var {
       transition
-    } = _ref29;
+    } = _ref30;
     if (!value === !oldValue) return;
     if (transition) {
       if (value) {
@@ -9811,10 +10796,10 @@ var vShow = {
       setDisplay$1(el, value);
     }
   },
-  beforeUnmount(el, _ref30) {
+  beforeUnmount(el, _ref31) {
     var {
       value
-    } = _ref30;
+    } = _ref31;
     setDisplay$1(el, value);
   }
 };
@@ -10182,11 +11167,11 @@ function patchStyle(el, prev, next) {
         }
       }
       for (var _key28 in next) {
-        var _value2 = next[_key28];
+        var _value3 = next[_key28];
         var prevValue = prev[_key28];
-        if (!isSame(prevValue, _value2)) {
+        if (!isSame(prevValue, _value3)) {
           var _key29 = _key28.startsWith("--") ? _key28 : camelize(_key28);
-          parseStyleDecl(_key29, _value2).forEach((value2, key2) => {
+          parseStyleDecl(_key29, _value3).forEach((value2, key2) => {
             batchedStyles.set(key2, value2);
             style && style.set(key2, value2);
           });
@@ -11129,10 +12114,10 @@ function getExposed(instance) {
     }));
   }
 }
-function getRootElement(_ref31) {
+function getRootElement(_ref32) {
   var {
     block
-  } = _ref31;
+  } = _ref32;
   if (block instanceof UniElement) {
     return block;
   }
@@ -11404,12 +12389,12 @@ var createFor = function (doc, src, renderItem, getKey) {
     if (parent) insert(block.nodes, parent, anchor);
     return block;
   };
-  var update = (_ref32, newItem, newKey, newIndex) => {
+  var update = (_ref33, newItem, newKey, newIndex) => {
     var {
       itemRef,
       keyRef,
       indexRef
-    } = _ref32;
+    } = _ref33;
     if (newItem !== itemRef.value) {
       itemRef.value = newItem;
     }
@@ -11541,13 +12526,13 @@ function normalizeSource(source) {
     keys
   };
 }
-function getItem(_ref33, idx) {
+function getItem(_ref34, idx) {
   var {
     keys,
     values,
     needsWrap,
     isReadonlySource
-  } = _ref33;
+  } = _ref34;
   var value = needsWrap ? isReadonlySource ? toReadonly(toReactive(values[idx])) : toReactive(values[idx]) : values[idx];
   if (keys) {
     return [value, keys[idx], idx];
@@ -12052,14 +13037,14 @@ var getModelAssigner = vnode => {
   return isArray$1(fn) ? value => invokeArrayFns(fn, value) : fn;
 };
 var vModelText = {
-  created(el, _ref34, vnode) {
+  created(el, _ref35, vnode) {
     var {
       modifiers: {
         lazy,
         trim,
         number
       }
-    } = _ref34;
+    } = _ref35;
     el[assignKey] = getModelAssigner(vnode);
     vModelTextInit(el, trim, number || !!(vnode.props && vnode.props.type === "number"));
   },
@@ -12067,7 +13052,7 @@ var vModelText = {
     var _a;
     el.setAnyAttribute("value", (_a = _binding.value) != null ? _a : "");
   },
-  beforeUpdate(el, _ref35, vnode) {
+  beforeUpdate(el, _ref36, vnode) {
     var {
       value,
       oldValue,
@@ -12076,7 +13061,7 @@ var vModelText = {
         trim,
         number
       }
-    } = _ref35;
+    } = _ref36;
     el[assignKey] = getModelAssigner(vnode);
     vModelTextUpdate(el, oldValue, value, trim, number);
   }
