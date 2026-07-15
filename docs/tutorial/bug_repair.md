@@ -14,7 +14,7 @@
 
 在 `uni-app` 或 `uni-app x` 项目编译、运行出现错误时，控制台会显示可点击的 `AI 修复` 按钮。
 
-![](https://web-ext-storage.dcloud.net.cn/hx/debug/ai-repair.png)
+![](https://web-ext-storage.dcloud.net.cn/hx/debug/ai-repair5.png)
 
 ### 2. 发起修复
 
