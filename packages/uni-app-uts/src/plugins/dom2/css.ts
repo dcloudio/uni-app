@@ -1,6 +1,4 @@
 import type { Plugin, ResolvedConfig } from 'vite'
-import fs from 'fs'
-import path from 'path'
 
 import {
   ANY_JS_STYLE_PLACEHOLDER_RE,
@@ -32,13 +30,7 @@ import { DOM2_CSS_CACHE_MAP, isVue } from '../utils'
 
 const CSS_FILE_ID_MAP = new Map<string, string>()
 
-function isKeyframesEnabled() {
-  const inputDir = process.env.UNI_INPUT_DIR
-  return !!inputDir && fs.existsSync(path.resolve(inputDir, '.keyframes'))
-}
-
 export function uniAppCssPrePlugin(): Plugin {
-  const enableKeyframes = isKeyframesEnabled()
   const name = 'uni:app-uvue-css-pre'
   const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
   const appUVuePath = resolveAppVue(process.env.UNI_INPUT_DIR)
@@ -81,7 +73,6 @@ export function uniAppCssPrePlugin(): Plugin {
             platform: process.env.UNI_UTS_PLATFORM,
             helper: requireUniHelpers(),
             output,
-            enableKeyframes,
           })
           if (isDom2 && fontFaces?.length) {
             const id = CSS_FILE_ID_MAP.get(filename)
@@ -184,7 +175,6 @@ export function uniAppCssPrePlugin(): Plugin {
 }
 
 export function uniAppCssPlugin(): Plugin {
-  const enableKeyframes = isKeyframesEnabled()
   let resolvedConfig: ResolvedConfig
   const { parseCss } = require('@dcloudio/compiler-vapor-dom2')
   return {
@@ -211,7 +201,6 @@ export function uniAppCssPlugin(): Plugin {
         platform: process.env.UNI_UTS_PLATFORM,
         helper: requireUniHelpers(),
         output,
-        enableKeyframes,
       })
       let cssSourceMap: SourceMapInput | undefined
       if (messages.find((m) => m.type === 'warning')) {
