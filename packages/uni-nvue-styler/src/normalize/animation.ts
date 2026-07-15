@@ -9,6 +9,7 @@ import { normalizeTimingFunction } from './timingFunction'
 
 const KEYFRAMES_NAME_RE = /^-?[A-Za-z_][A-Za-z0-9_-]*$/
 const ANIMATION_NUMBER_RE = /^[+-]?\d*\.?\d+$/
+const MAX_F32_VALUE = 3.4028234663852886e38
 const RESERVED_KEYFRAMES_NAMES = new Set([
   'default',
   'inherit',
@@ -18,6 +19,18 @@ const RESERVED_KEYFRAMES_NAMES = new Set([
   'revert-layer',
   'unset',
 ])
+
+function normalizeAnimationDecimal(value: string): string {
+  const negative = value[0] === '-'
+  const unsigned = value.replace(/^[+-]/, '')
+  const [integer = '', fraction = ''] = unsigned.split('.')
+  const normalizedInteger = integer.replace(/^0+(?=\d)/, '') || '0'
+  const normalizedFraction = fraction.replace(/0+$/, '')
+  const normalized = normalizedFraction
+    ? `${normalizedInteger}.${normalizedFraction}`
+    : normalizedInteger
+  return negative && normalized !== '0' ? `-${normalized}` : normalized
+}
 
 function splitAnimationList(value: string): string[] | null {
   const result: string[] = []
@@ -79,11 +92,15 @@ function createAnimationListNormalize(normalize: Normalize): Normalize {
 function createAnimationTimeNormalize(allowNegative: boolean): Normalize {
   return (v) => {
     const value = (v || '').toString().toLowerCase()
-    if (
-      /^(?:[+-]?(?:\d+(?:\.\d+)?|\.\d+))(?:ms|s)$/.test(value) &&
-      (allowNegative || value[0] !== '-')
-    ) {
-      return { value }
+    const match = value.match(/^([+-]?(?:\d+(?:\.\d+)?|\.\d+))(ms|s)$/)
+    if (match && (allowNegative || value[0] !== '-')) {
+      const milliseconds = Number(match[1]) * (match[2] === 's' ? 1000 : 1)
+      if (
+        Number.isFinite(milliseconds) &&
+        Math.abs(milliseconds) <= MAX_F32_VALUE
+      ) {
+        return { value }
+      }
     }
     return {
       value: null,
@@ -119,8 +136,12 @@ const normalizeAnimationIterationCountItem: Normalize = (v) => {
   if (value === 'infinite') {
     return { value }
   }
-  if (ANIMATION_NUMBER_RE.test(value) && Number(value) >= 0) {
-    return { value: Number(value) }
+  const count = Number(value)
+  if (ANIMATION_NUMBER_RE.test(value) && Number.isFinite(count) && count >= 0) {
+    const normalizedValue = normalizeAnimationDecimal(value)
+    return {
+      value: normalizedValue === count.toString() ? count : normalizedValue,
+    }
   }
   return {
     value: null,
@@ -155,8 +176,31 @@ const normalizeAnimationPlayStateItem = createAnimationKeywordNormalize([
   'running',
   'paused',
 ])
-const normalizeAnimationTimingFunctionItem: Normalize = (v, options) =>
-  normalizeTimingFunction((v || '').toString().toLowerCase(), options)
+const normalizeAnimationTimingFunctionItem: Normalize = (v, options) => {
+  const value = (v || '').toString().toLowerCase()
+  const result = normalizeTimingFunction(value, options)
+  if (
+    typeof result.value === 'string' &&
+    result.value.startsWith('cubic-bezier(')
+  ) {
+    const values = value
+      .slice(13, -1)
+      .split(',')
+      .map((item) => item.trim())
+    const numbers = values.map(Number)
+    if (
+      numbers.some(
+        (value) => !Number.isFinite(value) || Math.abs(value) > MAX_F32_VALUE
+      )
+    ) {
+      return normalizeTimingFunction('', options)
+    }
+    result.value = `cubic-bezier(${values
+      .map(normalizeAnimationDecimal)
+      .join(',')})`
+  }
+  return result
+}
 
 function isValidValue(normalize: Normalize, value: string) {
   return normalize(value, {}).value !== null

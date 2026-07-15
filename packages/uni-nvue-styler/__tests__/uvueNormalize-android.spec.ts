@@ -1012,6 +1012,52 @@ flexBasis: fill;
     ])
   })
 
+  test('animation values must fit runtime numeric types', async () => {
+    const tooLargeFloat = '9'.repeat(39)
+    const tooLargeDouble = '9'.repeat(400)
+    const { json, messages } = await objectifierRule(
+      `
+.foo {
+  animation-duration: ${tooLargeFloat}ms;
+  animation-delay: -${tooLargeFloat}s;
+  animation-iteration-count: ${tooLargeDouble};
+  animation-timing-function: cubic-bezier(${tooLargeFloat}, 0, 1, 1);
+}
+`,
+      { dom2: true }
+    )
+
+    expect(json).toEqual({})
+    expect(messages.map((message) => message.text)).toEqual([
+      `ERROR: property value \`${tooLargeFloat}ms\` is not supported for \`animation-duration\` (supported values are: \`non-negative time\`)`,
+      `ERROR: property value \`-${tooLargeFloat}s\` is not supported for \`animation-delay\` (supported values are: \`time\`)`,
+      `ERROR: property value \`${tooLargeDouble}\` is not supported for \`animation-iteration-count\` (supported values are: \`non-negative number\`|\`infinite\`)`,
+      `ERROR: property value \`cubic-bezier(${tooLargeFloat}, 0, 1, 1)\` is not supported for \`animation-timing-function\` (supported values are: \`linear\`|\`ease\`|\`ease-in\`|\`ease-out\`|\`ease-in-out\`|\`cubic-bezier(n,n,n,n)\`)`,
+    ])
+  })
+
+  test('animation decimals do not use exponent notation', async () => {
+    const { json, messages } = await objectifierRule(
+      `
+.foo {
+  animation-iteration-count: 0.0000001, 9007199254740993;
+  animation-timing-function: cubic-bezier(0.0000001, 0, 1, 1);
+}
+`,
+      { dom2: true }
+    )
+
+    expect(json).toEqual({
+      foo: {
+        '': {
+          animationIterationCount: '0.0000001,9007199254740993',
+          animationTimingFunction: 'cubic-bezier(0.0000001,0,1,1)',
+        },
+      },
+    })
+    expect(messages).toHaveLength(0)
+  })
+
   test('remove px unit', async () => {
     const { json, messages } = await objectifierRule(`
 .foo {
