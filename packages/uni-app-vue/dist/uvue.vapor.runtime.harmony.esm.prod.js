@@ -2614,7 +2614,17 @@ var normalizeTimingFunction = v => {
 };
 var KEYFRAMES_NAME_RE = /^-?[A-Za-z_][A-Za-z0-9_-]*$/;
 var ANIMATION_NUMBER_RE = /^[+-]?\d*\.?\d+$/;
+var MAX_F32_VALUE = 3.4028234663852886e38;
 var RESERVED_KEYFRAMES_NAMES = new Set(['default', 'inherit', 'initial', 'none', 'revert', 'revert-layer', 'unset']);
+function normalizeAnimationDecimal(value) {
+  var negative = value[0] === '-';
+  var unsigned = value.replace(/^[+-]/, '');
+  var [integer = '', fraction = ''] = unsigned.split('.');
+  var normalizedInteger = integer.replace(/^0+(?=\d)/, '') || '0';
+  var normalizedFraction = fraction.replace(/0+$/, '');
+  var normalized = normalizedFraction ? "".concat(normalizedInteger, ".").concat(normalizedFraction) : normalizedInteger;
+  return negative && normalized !== '0' ? "-".concat(normalized) : normalized;
+}
 function splitAnimationList(value) {
   var result = [];
   var start = 0;
@@ -2650,10 +2660,14 @@ function splitAnimationList(value) {
 function createAnimationTimeNormalize(allowNegative) {
   return v => {
     var value = (v || '').toString().toLowerCase();
-    if (/^(?:[+-]?(?:\d+(?:\.\d+)?|\.\d+))(?:ms|s)$/.test(value) && (allowNegative || value[0] !== '-')) {
-      return {
-        value
-      };
+    var match = value.match(/^([+-]?(?:\d+(?:\.\d+)?|\.\d+))(ms|s)$/);
+    if (match && (allowNegative || value[0] !== '-')) {
+      var milliseconds = Number(match[1]) * (match[2] === 's' ? 1000 : 1);
+      if (Number.isFinite(milliseconds) && Math.abs(milliseconds) <= MAX_F32_VALUE) {
+        return {
+          value
+        };
+      }
     }
     return {
       value: null,
@@ -2688,9 +2702,11 @@ var normalizeAnimationIterationCountItem = v => {
       value
     };
   }
-  if (ANIMATION_NUMBER_RE.test(value) && Number(value) >= 0) {
+  var count = Number(value);
+  if (ANIMATION_NUMBER_RE.test(value) && Number.isFinite(count) && count >= 0) {
+    var normalizedValue = normalizeAnimationDecimal(value);
     return {
-      value: Number(value)
+      value: normalizedValue === count.toString() ? count : normalizedValue
     };
   }
   return {
@@ -2709,7 +2725,19 @@ var normalizeAnimationDirectionItem = createAnimationKeywordNormalize(['normal',
 var normalizeAnimationDurationItem = createAnimationTimeNormalize(false);
 var normalizeAnimationFillModeItem = createAnimationKeywordNormalize(['none', 'forwards', 'backwards', 'both']);
 var normalizeAnimationPlayStateItem = createAnimationKeywordNormalize(['running', 'paused']);
-var normalizeAnimationTimingFunctionItem = (v, options) => normalizeTimingFunction((v || '').toString().toLowerCase());
+var normalizeAnimationTimingFunctionItem = (v, options) => {
+  var value = (v || '').toString().toLowerCase();
+  var result = normalizeTimingFunction(value);
+  if (typeof result.value === 'string' && result.value.startsWith('cubic-bezier(')) {
+    var values = value.slice(13, -1).split(',').map(item => item.trim());
+    var numbers = values.map(Number);
+    if (numbers.some(value => !Number.isFinite(value) || Math.abs(value) > MAX_F32_VALUE)) {
+      return normalizeTimingFunction('');
+    }
+    result.value = "cubic-bezier(".concat(values.map(normalizeAnimationDecimal).join(','), ")");
+  }
+  return result;
+};
 function isValidValue(normalize, value) {
   return normalize(value, {}).value !== null;
 }
