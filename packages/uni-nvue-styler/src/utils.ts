@@ -9,7 +9,10 @@ export const COMBINATORS_RE =
 export const SIMPLE_SELECTOR_RE =
   /^(?:\.[A-Za-z0-9_\-]+)+(?:\s*,\s*(?:\.[A-Za-z0-9_\-]+)+)*$/
 
-export type TransformDecl = (decl: Declaration) => Declaration[]
+export type TransformDecl = (
+  decl: Declaration,
+  onWarning?: (reason: string) => void
+) => Declaration[]
 
 export interface NormalizeOptions {
   dom2?: boolean

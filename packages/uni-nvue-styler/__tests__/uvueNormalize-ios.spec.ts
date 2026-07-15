@@ -876,4 +876,26 @@ border-color: var(--default-border);
     })
     expect(res2.messages.length).toBe(0)
   })
+
+  test('animation values respect dom2 platform support', async () => {
+    const { json, messages } = await objectifierRule(
+      `
+.longhand {
+  animation-direction: reverse, alternate-reverse;
+  animation-fill-mode: none, backwards, both, forwards;
+}
+.shorthand {
+  animation: fade 1s reverse both;
+}
+`,
+      { dom2: true }
+    )
+    expect(json).toEqual({})
+    expect(messages.map((message) => message.text)).toEqual([
+      'ERROR: property value `reverse, alternate-reverse` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
+      'ERROR: property value `none, backwards, both, forwards` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+      'ERROR: property value `reverse` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
+      'ERROR: property value `both` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+    ])
+  })
 })

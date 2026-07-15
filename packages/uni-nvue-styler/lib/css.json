@@ -11453,13 +11453,49 @@
           "name": "alternate"
         },
         {
-          "name": "alternate-reverse"
+          "name": "alternate-reverse",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "unixVaporVer": "x"
+              }
+            }
+          }
         },
         {
-          "name": "backwards"
+          "name": "backwards",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "unixVaporVer": "x"
+              }
+            }
+          }
         },
         {
-          "name": "both"
+          "name": "both",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "unixVaporVer": "x"
+              }
+            }
+          }
         },
         {
           "name": "forwards"
@@ -11474,7 +11510,17 @@
           "name": "normal"
         },
         {
-          "name": "reverse"
+          "name": "reverse",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "unixVaporVer": "x"
+              }
+            }
+          }
         }
       ],
       "flatten": {
@@ -11618,13 +11664,33 @@
           "name": "alternate"
         },
         {
-          "name": "alternate-reverse"
+          "name": "alternate-reverse",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "unixVaporVer": "x"
+              }
+            }
+          }
         },
         {
           "name": "normal"
         },
         {
-          "name": "reverse"
+          "name": "reverse",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "unixVaporVer": "x"
+              }
+            }
+          }
         }
       ],
       "flatten": {
@@ -11751,16 +11817,55 @@
       "syntax": "<single-animation-fill-mode>#",
       "values": [
         {
-          "name": "backwards"
+          "name": "backwards",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "unixVaporVer": "x"
+              }
+            }
+          }
         },
         {
-          "name": "both"
+          "name": "both",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "unixVaporVer": "x"
+              }
+            }
+          }
         },
         {
           "name": "forwards"
         },
         {
-          "name": "none"
+          "name": "none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "unixVaporVer": "x"
+              },
+              "ios": {
+                "unixVaporVer": "x"
+              },
+              "harmony": {
+                "unixVaporVer": "x"
+              }
+            }
+          }
         }
       ],
       "flatten": {

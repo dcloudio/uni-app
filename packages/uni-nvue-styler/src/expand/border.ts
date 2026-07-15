@@ -19,9 +19,6 @@ const BORDER_WIDTH_REGEXP = /^(?:[\d.]+\S*|thin|medium|thick)$/
 const BORDER_STYLE_REGEXP =
   /^(?:none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset)$/
 
-export const BORDER_SHORTHAND_VAR_ORDER_WARNING =
-  '__borderShorthandVarOrderWarning'
-
 function createBorderVarOrderWarning(prop: string, value: string) {
   return supportedValueWithTipsReason(
     prop,
@@ -52,7 +49,7 @@ function isBorderColorValue(value: string) {
 export function createTransformBorder(
   options: NormalizeOptions
 ): TransformDecl {
-  return (decl: Declaration): Declaration[] => {
+  return (decl: Declaration, onWarning): Declaration[] => {
     const { prop, value, important, raws, source } = decl
     const singleVarResult = tryExpandSingleValueVarShorthand(
       decl,
@@ -82,8 +79,7 @@ export function createTransformBorder(
             !isBorderStyleValue(splitResult[1]) ||
             !isBorderColorValue(splitResult[2])))
       ) {
-        ;(decl as any)[BORDER_SHORTHAND_VAR_ORDER_WARNING] =
-          createBorderVarOrderWarning(prop, value)
+        onWarning?.(createBorderVarOrderWarning(prop, value))
         return []
       }
       result = splitResult

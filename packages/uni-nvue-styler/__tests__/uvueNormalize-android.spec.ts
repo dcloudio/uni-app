@@ -804,23 +804,26 @@ flexBasis: fill;
   animation-name: fade, slide;
   animation-duration: 200ms, 1s;
   animation-delay: -100ms, +0s;
-  animation-direction: normal, alternate-reverse;
-  animation-fill-mode: none, forwards;
+  animation-direction: normal, alternate;
+  animation-fill-mode: forwards;
   animation-iteration-count: 2, infinite;
   animation-play-state: running, paused;
   animation-timing-function: ease-in, cubic-bezier(.42, 0, 1, 1);
 }
 .shorthand {
-  animation: fade 200ms ease-in -100ms 2 alternate both paused, slide 1s cubic-bezier(.42, 0, 1, 1);
+  animation: fade 200ms ease-in -100ms 2 alternate forwards paused, slide 1s cubic-bezier(.42, 0, 1, 1) forwards;
 }
 .override {
   animation-name: original;
-  animation: fade 200ms;
+  animation: fade 200ms forwards;
   animation-duration: 1s;
 }
 .keyword {
   animation-name: None;
   animation-delay: +1s;
+}
+.none-shorthand {
+  animation: none 1s forwards;
 }
 .variable {
   animation: var(--animation);
@@ -837,8 +840,8 @@ flexBasis: fill;
           animationName: 'fade,slide',
           animationDuration: '200ms,1s',
           animationDelay: '-100ms,+0s',
-          animationDirection: 'normal,alternate-reverse',
-          animationFillMode: 'none,forwards',
+          animationDirection: 'normal,alternate',
+          animationFillMode: 'forwards',
           animationIterationCount: '2,infinite',
           animationPlayState: 'running,paused',
           animationTimingFunction: 'ease-in,cubic-bezier(0.42,0,1,1)',
@@ -852,7 +855,7 @@ flexBasis: fill;
           animationTimingFunction: 'ease-in,cubic-bezier(0.42,0,1,1)',
           animationIterationCount: '2,1',
           animationDirection: 'alternate,normal',
-          animationFillMode: 'both,none',
+          animationFillMode: 'forwards,forwards',
           animationPlayState: 'paused,running',
         },
       },
@@ -864,7 +867,7 @@ flexBasis: fill;
           animationTimingFunction: 'ease',
           animationIterationCount: 1,
           animationDirection: 'normal',
-          animationFillMode: 'none',
+          animationFillMode: 'forwards',
           animationPlayState: 'running',
         },
       },
@@ -872,6 +875,18 @@ flexBasis: fill;
         '': {
           animationName: 'none',
           animationDelay: '+1s',
+        },
+      },
+      'none-shorthand': {
+        '': {
+          animationName: 'none',
+          animationDuration: '1s',
+          animationDelay: '0s',
+          animationTimingFunction: 'ease',
+          animationIterationCount: 1,
+          animationDirection: 'normal',
+          animationFillMode: 'forwards',
+          animationPlayState: 'running',
         },
       },
       variable: {
@@ -925,15 +940,91 @@ flexBasis: fill;
     )
   })
 
+  test('animation values respect dom2 platform support', async () => {
+    const { json, messages } = await objectifierRule(
+      `
+.longhand {
+  animation-name: fade;
+  animation-direction: reverse, alternate-reverse;
+  animation-fill-mode: none, backwards, both;
+}
+.shorthand {
+  animation: fade 1s reverse both;
+}
+.none-fill {
+  animation: fade 1s none;
+}
+.missing-fill {
+  animation: fade 1s;
+}
+`,
+      { dom2: true }
+    )
+    expect(json).toEqual({
+      longhand: {
+        '': {
+          animationName: 'fade',
+        },
+      },
+    })
+    expect(messages.map((message) => message.text)).toEqual([
+      'ERROR: property value `reverse, alternate-reverse` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
+      'ERROR: property value `none, backwards, both` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+      'ERROR: property value `reverse` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
+      'ERROR: property value `both` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+      'ERROR: property value `none` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+      'ERROR: property value `none` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+    ])
+  })
+
+  test('animation direction respects harmony dom2 platform support', async () => {
+    const { json, messages } = await objectifierRule(
+      `
+.longhand {
+  animation-name: fade;
+  animation-direction: reverse, alternate-reverse;
+  animation-fill-mode: none;
+}
+.shorthand {
+  animation: fade 1s reverse forwards;
+}
+`,
+      { dom2: true, platform: 'app-harmony' }
+    )
+    expect(json).toEqual({
+      longhand: {
+        '': {
+          animationName: 'fade',
+          animationDirection: 'reverse,alternate-reverse',
+        },
+      },
+      shorthand: {
+        '': {
+          animationName: 'fade',
+          animationDuration: '1s',
+          animationDelay: '0s',
+          animationTimingFunction: 'ease',
+          animationIterationCount: 1,
+          animationDirection: 'reverse',
+          animationFillMode: 'forwards',
+          animationPlayState: 'running',
+        },
+      },
+    })
+    expect(messages.map((message) => message.text)).toEqual([
+      'ERROR: property value `none` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+    ])
+  })
+
   test('animation keywords are case-insensitive', async () => {
     const { json, messages } = await objectifierRule(
       `
 .shorthand {
-  animation: fade 1S EASE-IN +1 ALTERNATE BOTH PAUSED;
+  animation: fade 1S EASE-IN +1 ALTERNATE FORWARDS PAUSED;
 }
 .longhand {
   animation-delay: +1S;
-  animation-direction: ALTERNATE-REVERSE;
+  animation-direction: ALTERNATE;
   animation-duration: 200MS;
   animation-fill-mode: FORWARDS;
   animation-iteration-count: +1, INFINITE;
@@ -953,14 +1044,14 @@ flexBasis: fill;
           animationTimingFunction: 'ease-in',
           animationIterationCount: 1,
           animationDirection: 'alternate',
-          animationFillMode: 'both',
+          animationFillMode: 'forwards',
           animationPlayState: 'paused',
         },
       },
       longhand: {
         '': {
           animationDelay: '+1s',
-          animationDirection: 'alternate-reverse',
+          animationDirection: 'alternate',
           animationDuration: '200ms',
           animationFillMode: 'forwards',
           animationIterationCount: '1,infinite',
@@ -1002,7 +1093,7 @@ flexBasis: fill;
       'ERROR: property value `-1s` is not supported for `animation-duration` (supported values are: `non-negative time`)',
       'ERROR: property value `1.s` is not supported for `animation-duration` (supported values are: `non-negative time`)',
       'ERROR: property value `pending` is not supported for `animation-delay` (supported values are: `time`)',
-      'ERROR: property value `sideways` is not supported for `animation-direction` (supported values are: `normal`|`reverse`|`alternate`|`alternate-reverse`)',
+      'ERROR: property value `sideways` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
       'ERROR: property value `-1` is not supported for `animation-iteration-count` (supported values are: `non-negative number`|`infinite`)',
       'ERROR: property value `steps(2)` is not supported for `animation-timing-function` (supported values are: `linear`|`ease`|`ease-in`|`ease-out`|`ease-in-out`|`cubic-bezier(n,n,n,n)`)',
       'ERROR: property value `linear(0, 1)` is not supported for `animation-timing-function` (supported values are: `linear`|`ease`|`ease-in`|`ease-out`|`ease-in-out`|`cubic-bezier(n,n,n,n)`)',

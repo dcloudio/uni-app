@@ -1,10 +1,11 @@
 import {
   type Normalize,
+  type Property,
   splitValues,
   supportedEnumReason,
   validReason,
 } from '../utils'
-import { createEnumNormalize } from './enum'
+import { createEnumNormalize, createEnumNormalizeWithPlatform } from './enum'
 import { normalizeTimingFunction } from './timingFunction'
 
 const KEYFRAMES_NAME_RE = /^-?[A-Za-z_][A-Za-z0-9_-]*$/
@@ -156,6 +157,29 @@ function createAnimationKeywordNormalize(
 ): Normalize {
   const normalize = createEnumNormalize(items)
   return (v, options) => normalize((v || '').toString().toLowerCase(), options)
+}
+
+function createSupportedAnimationKeywordNormalize(
+  property: Property
+): Normalize {
+  const normalize = createEnumNormalizeWithPlatform(property.values || [])
+  return (v, options) => normalize((v || '').toString().toLowerCase(), options)
+}
+
+function createAnimationSyntaxOrKeywordNormalize(
+  syntaxNormalize: Normalize,
+  property: Property
+): Normalize {
+  const keywords = new Set(
+    (property.values || []).map((item) => item.name.toLowerCase())
+  )
+  const keywordNormalize = createSupportedAnimationKeywordNormalize(property)
+  return (v, options) => {
+    const value = (v || '').toString().toLowerCase()
+    return keywords.has(value)
+      ? keywordNormalize(value, options)
+      : syntaxNormalize(value, options)
+  }
 }
 
 const normalizeAnimationDelayItem = createAnimationTimeNormalize(true)
@@ -354,32 +378,69 @@ export function parseAnimation(value: string): AnimationLonghands | null {
   }
 }
 
-export const normalizeAnimation: Normalize = (v) =>
+const normalizeAnimation: Normalize = (v) =>
   parseAnimation((v || '').toString())
     ? { value: v }
     : { value: null, reason: validReason }
 
-export const normalizeAnimationDelay = createAnimationListNormalize(
-  normalizeAnimationDelayItem
-)
-export const normalizeAnimationDirection = createAnimationListNormalize(
-  normalizeAnimationDirectionItem
-)
-export const normalizeAnimationDuration = createAnimationListNormalize(
-  normalizeAnimationDurationItem
-)
-export const normalizeAnimationFillMode = createAnimationListNormalize(
-  normalizeAnimationFillModeItem
-)
-export const normalizeAnimationIterationCount = createAnimationListNormalize(
-  normalizeAnimationIterationCountItem
-)
-export const normalizeAnimationName = createAnimationListNormalize(
-  normalizeAnimationNameItem
-)
-export const normalizeAnimationPlayState = createAnimationListNormalize(
-  normalizeAnimationPlayStateItem
-)
-export const normalizeAnimationTimingFunction = createAnimationListNormalize(
-  normalizeAnimationTimingFunctionItem
-)
+function createAnimationTimingFunctionNormalize(property: Property) {
+  const keywordNormalize = createSupportedAnimationKeywordNormalize(property)
+  const itemNormalize: Normalize = (v, options) => {
+    const value = (v || '').toString().toLowerCase()
+    const result = normalizeAnimationTimingFunctionItem(value, options)
+    if (result.value === null) {
+      return result
+    }
+    const keyword =
+      typeof result.value === 'string' &&
+      result.value.startsWith('cubic-bezier(')
+        ? 'cubic-bezier()'
+        : value
+    const supported = keywordNormalize(keyword, options)
+    return supported.value === null ? supported : result
+  }
+  return createAnimationListNormalize(itemNormalize)
+}
+
+export const animationNormalizeFactoryMap: Record<
+  string,
+  (property: Property) => Normalize
+> = {
+  animation: () => normalizeAnimation,
+  animationDelay: () =>
+    createAnimationListNormalize(normalizeAnimationDelayItem),
+  animationDirection: (property) =>
+    createAnimationListNormalize(
+      createSupportedAnimationKeywordNormalize(property)
+    ),
+  animationDuration: (property) =>
+    createAnimationListNormalize(
+      createAnimationSyntaxOrKeywordNormalize(
+        normalizeAnimationDurationItem,
+        property
+      )
+    ),
+  animationFillMode: (property) =>
+    createAnimationListNormalize(
+      createSupportedAnimationKeywordNormalize(property)
+    ),
+  animationIterationCount: (property) =>
+    createAnimationListNormalize(
+      createAnimationSyntaxOrKeywordNormalize(
+        normalizeAnimationIterationCountItem,
+        property
+      )
+    ),
+  animationName: (property) =>
+    createAnimationListNormalize(
+      createAnimationSyntaxOrKeywordNormalize(
+        normalizeAnimationNameItem,
+        property
+      )
+    ),
+  animationPlayState: (property) =>
+    createAnimationListNormalize(
+      createSupportedAnimationKeywordNormalize(property)
+    ),
+  animationTimingFunction: createAnimationTimingFunctionNormalize,
+}

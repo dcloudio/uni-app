@@ -27,17 +27,7 @@ import { normalizePlatform } from './platform'
 import { normalizeShorthandProperty } from './shorthandProperty'
 import { normalizeFontFace, normalizeSrc } from './fontFace'
 import { normalizeFlexFlow } from './flexFlow'
-import {
-  normalizeAnimation,
-  normalizeAnimationDelay,
-  normalizeAnimationDirection,
-  normalizeAnimationDuration,
-  normalizeAnimationFillMode,
-  normalizeAnimationIterationCount,
-  normalizeAnimationName,
-  normalizeAnimationPlayState,
-  normalizeAnimationTimingFunction,
-} from './animation'
+import { animationNormalizeFactoryMap } from './animation'
 
 // transition-property 不读 css.json
 // 从 property.ts 中移动到 map 里，避免循环依赖
@@ -205,18 +195,6 @@ const uvueNormalizeMap: Record<string, Normalize> = {
   transitionTimingFunction: normalizeTimingFunction,
 }
 
-const dom2UVueNormalizeMap: Record<string, Normalize> = {
-  animation: normalizeAnimation,
-  animationDelay: normalizeAnimationDelay,
-  animationDirection: normalizeAnimationDirection,
-  animationDuration: normalizeAnimationDuration,
-  animationFillMode: normalizeAnimationFillMode,
-  animationIterationCount: normalizeAnimationIterationCount,
-  animationName: normalizeAnimationName,
-  animationPlayState: normalizeAnimationPlayState,
-  animationTimingFunction: normalizeAnimationTimingFunction,
-}
-
 const restrictionMap: Partial<Record<Restriction, Normalize>> = {
   [Restriction.LENGTH]: normalizeLength,
   [Restriction.PERCENTAGE]: normalizePercent,
@@ -255,9 +233,11 @@ function getUVueNormalizeMap(options: NormalizeOptions) {
     const property = properties[i]
     const prop = camelize(property.name)
     let normalize: Normalize
-    const customNormalize =
-      (dom2 && dom2UVueNormalizeMap[prop]) || uvueNormalizeMap[prop]
-    if (customNormalize) {
+    const dom2NormalizeFactory = dom2 && animationNormalizeFactoryMap[prop]
+    const customNormalize = uvueNormalizeMap[prop]
+    if (dom2NormalizeFactory) {
+      normalize = dom2NormalizeFactory(property)
+    } else if (customNormalize) {
       normalize = customNormalize
     } else {
       const normalizes = getNormalizes(property, options)

@@ -135,10 +135,11 @@ describe('test esm expand', () => {
     const processDom2Declaration = expand({
       type: 'uvue',
       dom2: true,
+      platform: 'app-android',
     }).Declaration as (decl: Declaration) => void
     const animation = normalizeStyle(
       'animation',
-      'fade 1s ease-in',
+      'fade 1s ease-in forwards',
       processDom2Declaration
     )
     expect(animation.map(({ prop, value }) => ({ prop, value }))).toEqual([
@@ -148,9 +149,13 @@ describe('test esm expand', () => {
       { prop: 'animation-timing-function', value: 'ease-in' },
       { prop: 'animation-iteration-count', value: '1' },
       { prop: 'animation-direction', value: 'normal' },
-      { prop: 'animation-fill-mode', value: 'none' },
+      { prop: 'animation-fill-mode', value: 'forwards' },
       { prop: 'animation-play-state', value: 'running' },
     ])
+
+    expect(
+      normalizeStyle('animation', 'fade 1s ease-in', processDom2Declaration)
+    ).toHaveLength(0)
 
     const variableAnimation = normalizeStyle(
       'animation',

@@ -5,11 +5,7 @@ import {
   hyphenateStyleProperty,
 } from '../utils'
 import { createTransformBackground } from './background'
-import {
-  BORDER_SHORTHAND_VAR_ORDER_WARNING,
-  createTransformBorder,
-  createTransformBorderNvue,
-} from './border'
+import { createTransformBorder, createTransformBorderNvue } from './border'
 import { transformBorderColor, transformBorderColorNvue } from './borderColor'
 import {
   transformBorderRadius,
@@ -23,7 +19,7 @@ import { transformMargin } from './margin'
 import { transformPadding } from './padding'
 import { transformTransition } from './transition'
 import { transformFlex } from './flex'
-import { transformAnimation } from './animation'
+import { createTransformAnimation } from './animation'
 
 function getDeclTransforms(
   options: NormalizeOptions,
@@ -64,7 +60,7 @@ function getDeclTransforms(
   }
 
   if (options.type === 'uvue' && dom2) {
-    styleMap.animation = transformAnimation
+    styleMap.animation = createTransformAnimation(options)
   }
   if (options.type === 'uvue') {
     styleMap.flex = transformFlex
@@ -87,7 +83,7 @@ const expanded = Symbol('expanded')
 export function expand(options: NormalizeOptions): Plugin {
   const type = options.type || 'nvue'
   const dom2 = !!options.dom2
-  const transformCacheKey = `${type}:${dom2}`
+  const transformCacheKey = `${type}:${dom2}:${options.platform || ''}`
   const plugin: Plugin = {
     postcssPlugin: `${options.type || 'nvue'}:expand`,
     Declaration(decl, helper) {
@@ -99,9 +95,10 @@ export function expand(options: NormalizeOptions): Plugin {
         (declTransforms[transformCacheKey] = getDeclTransforms(options, dom2))
       const transform = transforms[decl.prop]
       if (transform) {
-        const res = transform(decl)
-        const reason = (decl as any)[BORDER_SHORTHAND_VAR_ORDER_WARNING]
-        if (reason && helper && decl.warn) {
+        const res = transform(decl, (reason) => {
+          if (!helper || !decl.warn) {
+            return
+          }
           let needLog = false
           if (options.logLevel === 'NOTE') {
             needLog = true
@@ -117,8 +114,7 @@ export function expand(options: NormalizeOptions): Plugin {
           if (needLog) {
             decl.warn(helper.result, reason)
           }
-          delete (decl as any)[BORDER_SHORTHAND_VAR_ORDER_WARNING]
-        }
+        })
         const isSame = res.length === 1 && res[0] === decl
         if (!isSame) {
           decl.replaceWith(res)
