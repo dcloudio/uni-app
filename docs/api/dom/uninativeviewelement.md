@@ -45,7 +45,7 @@ UniNativeViewElement -- Extends --> UniElement
 绑定IOS平台原生view
 
 ##### bindIOSView 兼容性 
-| Android | iOS | iOS(VDOM) uni-app x UTS 插件 | HarmonyOS |
+| Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- |
 | x | x | 4.31 | x |
 

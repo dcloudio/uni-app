@@ -16,12 +16,12 @@ UniCanvasElement -- Extends --> UniElement
 ### UniCanvasElement 的属性值 @unicanvaselement-values
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| width | number | 是 | Web: 4.21; 微信小程序: x; Android: 4.25; iOS: 4.25; iOS(VDOM) uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | Canvas宽度(注意:App平台只读不支持设置) |
-| height | number | 是 | Web: 4.21; 微信小程序: x; Android: 4.25; iOS: 4.25; iOS(VDOM) uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | Canvas高度(注意:App平台只读不支持设置) |
+| width | number | 是 | Web: 4.21; 微信小程序: x; Android: 4.25; iOS: 4.25; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | Canvas宽度(注意:App平台只读不支持设置) |
+| height | number | 是 | Web: 4.21; 微信小程序: x; Android: 4.25; iOS: 4.25; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | Canvas高度(注意:App平台只读不支持设置) |
 
 
 ### UniCanvasElement 兼容性 
- | Web | 微信小程序 | Android | iOS | iOS(VDOM) uni-app x UTS 插件 | HarmonyOS |
+ | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.21 | x | 4.25 | 4.25 | 4.25 | 4.61 |
 
@@ -33,7 +33,7 @@ UniCanvasElement -- Extends --> UniElement
 返回 Canvas 的绘图上下文
 
 ##### getContext 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) uni-app x UTS 插件 | HarmonyOS |
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.21 | x | 4.25 | 4.25 | 4.25 | 4.61 |
 
@@ -60,7 +60,7 @@ UniCanvasElement -- Extends --> UniElement
 创造 Blob 对象
 
 ##### toBlob 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) uni-app x UTS 插件 | HarmonyOS |
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.21 | x | x | x | x | x |
 
@@ -120,7 +120,7 @@ UniCanvasElement -- Extends --> UniElement
 如果传入的类型非“image/png”，但是返回的值以“data:image/png”开头，那么该传入的类型是不支持的。
 
 ##### toDataURL 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) uni-app x UTS 插件 | HarmonyOS |
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.21 | x | 4.25 | 4.25 | x | 4.61 |
 

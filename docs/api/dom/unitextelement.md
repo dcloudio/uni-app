@@ -3,7 +3,7 @@
 text 组件的 DOM 元素对象。
 
 ### UniTextElement 兼容性 
- | Web | 微信小程序 | Android | iOS | iOS(VDOM) uni-app x UTS 插件 | HarmonyOS |
+ | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | x | 4.0 | 4.11 | 4.25 | 4.61 |
 
@@ -19,7 +19,7 @@ UniTextElement -- Extends --> UniElement
 ### UniTextElement 的属性值 @unitextelement-values
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| value | string | 是 | Web: x; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) uni-app x UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性 text元素的文案内容 |
+| value | string | 是 | Web: x; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性 text元素的文案内容 |
 
 
 
@@ -41,7 +41,7 @@ UniTextElement -- Extends --> UniElement
 设置文本内容
 
 ##### setTextLayout 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) uni-app x UTS 插件 | HarmonyOS |
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | x | x | 4.81 | x | x | x |
 
@@ -325,7 +325,7 @@ measure
 获取内容宽高
 
 ##### getContentSize 兼容性 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) uni-app x UTS 插件 | HarmonyOS |
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | x | x | 4.81 | x | x | x |
 
