@@ -1,124 +1,478 @@
 <template>
-	<swiper style="flex: 1;background-color: black;" :indicator-dots="false" :circular="loop" :current="current"
-		@change="onPreviewImageChanged" :disable-touch="disableTouch">
-		<swiper-item v-if="urls != null" v-for="(item,index) in urls">
-			<uniPreviewImageItem :index="index" :src="item" :longPressAction="longPressAction" :tips="tips">
-			</uniPreviewImageItem>
-		</swiper-item>
-	</swiper>
-	<view ref="numberIndicator" v-if="indicator == 'number'" class="uni-preview-image-number-indicator-layout">
-		<text class="uni-preview-image-number-indicator">{{numberIndicator}}</text>
-	</view>
-	<view ref="defaultIndicator" class="uni-preview-image-default-indicator-layout" v-if="indicator == 'default'"
-		v-show="urls!=null">
-		<view v-for="i in urls!.length" class="uni-preview-image-default-indicator" :class="((current+1) == i) ?'uni-preview-image-default-indicator-active' : 'uni-preview-image-default-indicator-default'">
+	<!-- #ifdef VUE3-VAPOR -->
+	<!-- #ifdef APP-HARMONY -->
+	<view id="previewSwiper" style="flex: 1;">
+	<!-- #endif -->
+		<swiper class="uni-preview-image-swiper" style="flex: 1;background-color: black;" :indicator-dots="false" :circular="swiperCircular" :current="swiperCurrent"
+			@change="onPreviewImageChanged" @animationfinish="onPreviewImageFinish" :disable-touch="disableTouch">
+			<swiper-item class="uni-preview-image-swiper-item" v-if="urls != null" v-for="item in swiperItems" :key="item.slot">
+				<uniPreviewImageItem v-if="shouldRenderItem(item.index)" :index="item.index" :src="item.src" :longPressAction="longPressAction" :tips="tips"
+					:reset="item.index == resetCurrent" :resetOnSrcChange="true">
+				</uniPreviewImageItem>
+			</swiper-item>
+		</swiper>
+		<view v-if="indicator == 'number'" class="uni-preview-image-number-indicator-layout">
+			<text class="uni-preview-image-number-indicator">{{numberIndicator}}</text>
 		</view>
+		<view class="uni-preview-image-default-indicator-layout" v-if="indicator == 'default'"
+			v-show="urls!=null">
+			<view v-for="i in urls!.length" class="uni-preview-image-default-indicator"
+				:class="((indicatorIndex+1) == i) ?'uni-preview-image-default-indicator-active' : 'uni-preview-image-default-indicator-default'">
+			</view>
+		</view>
+	<!-- #ifdef APP-HARMONY -->
 	</view>
+	<!-- #endif -->
+	<!-- #endif -->
+	<!-- #ifndef VUE3-VAPOR -->
+	<previewImageNonVaporComponent :urls="urls" :current="current" :resetCurrent="resetCurrent" :loop="loop"
+		:disableTouch="disableTouch" :numberIndicator="numberIndicator" :indicatorIndex="indicatorIndex"
+		:indicator="indicator" :longPressAction="longPressAction" :tips="tips"
+		@previewImageChanged="onPreviewImageChanged" @previewImageFinish="onPreviewImageFinish" />
+	<!-- #endif -->
 </template>
 
-<script>
-	import uniPreviewImageItem from "../../components/uni-previewImageItem/uni-previewImageItem.vue"
-	export default {
-		components: {
-			uniPreviewImageItem
-		},
-		data() {
-			return {
-				urls: null as Array<string> | null,
-				current: 0,
-				loop: false,
-				// #ifdef APP-IOS
-				disableTouch: false,
-				// #endif
-				// #ifndef APP-IOS
-				disableTouch: false,
-				// #endif
-				numberIndicator: "",
-				indicator: "number",
-				longPressAction: null as LongPressActionsOptions | null,
-				tips: null as UTSJSONObject | null
-			}
-		},
-		onLoad() {
-			// 传参
-			uni.$once("__onPreviewLoadCallback", this.__onPreviewLoadCallback)
-			uni.$emit("__onPreviewLoad", null)
-			uni.$on("__UNIPREVIEWIMAGE", this.setDisableTouch)
-			uni.$on("__UNIPREVIEWIMAGECLOSE", this.closePreviewPage)
-			uni.$on("__CLOSEPREVIEWIMAGE", () => {
-				this.closePreviewPage()
-			})
-		},
-		onReady() {
-			var windowInfo = uni.getWindowInfo();
-			(this.$refs["numberIndicator"] as UniElement | null)?.style.setProperty("top", (windowInfo.statusBarHeight + 8) + "px");
-			(this.$refs["defaultIndicator"] as UniElement | null)?.style.setProperty("bottom", ((windowInfo.screenHeight - windowInfo.safeArea.bottom) + 8) + "px")
-		},
-		onUnload() {
-			uni.$off("__UNIPREVIEWIMAGE")
-			uni.$off("__UNIPREVIEWIMAGECLOSE")
-			uni.$off("__UNIPREVIEWLONGPRESS")
-			uni.$off("__CLOSEPREVIEWIMAGE")
-		},
-		onBackPress(options : OnBackPressOptions) : boolean | null {
-			// #ifdef APP-ANDROID
-			// 解决安卓点击返回键没有动画的问题
-			this.closePreviewPage()
-			return true
-			// #endif
-			// #ifndef APP-ANDROID
-			return false
-			// #endif
-		},
-		methods: {
-			__onPreviewLoadCallback(result : UTSJSONObject) {
-				this.urls = result["urls"] as Array<string> | null
-				if (result["current"] != null) {
-					var c = result["current"]
-					if ((typeof c == "number")) {
-						var d : number = c as number
-						if (d < 0 || d > this.urls!.length)
-							d = 0
-						this.current = d
-					} else if (typeof c == 'string') {
-						var index = this.urls!.indexOf(c as string)
-						if (index < 0) {
-							index = 0
-						}
-						this.current = index
-					}
-				}
-				if (result["indicator"] != null) {
-					this.indicator = result["indicator"] as string
-				}
-				if (result["longPressActions"] != null) {
-					this.longPressAction = {
-						itemList: (result["longPressActions"] as UTSJSONObject)["itemList"] as string[],
-						itemColor: (result["longPressActions"] as UTSJSONObject)["itemColor"] as string | null,
-					} as LongPressActionsOptions
-				}
-				if (result["loop"] != null) {
-					this.loop = result["loop"]! as boolean
-				}
-				this.numberIndicator = (this.current + 1) + " / " + this.urls!.length
-			},
-			onPreviewImageChanged(e : UniSwiperChangeEvent) {
-				this.numberIndicator = (e.detail.current + 1) + " / " + this.urls?.length
-				this.current = e.detail.current
-			},
-			setDisableTouch(isDisable : any) {
-				// this.disableTouch = isDisable as boolean
-			},
-			closePreviewPage() {
-				uni.closeDialogPage({
-					dialogPage: this.$page,
-					animationType: "fade-out"
-				})
-			}
-		}
+<script setup lang="uts">
+	// #ifndef VUE3-VAPOR
+	import previewImageNonVaporComponent from "../../components/uni-previewImageNonVapor/uni-previewImageNonVapor.vue"
+	const urls = ref<Array<string> | null>(null)
+	const current = ref(0)
+	const resetCurrent = ref(0)
+	const loop = ref(false)
+	// #ifdef APP-IOS
+	const disableTouch = ref(false)
+	// #endif
+	// #ifndef APP-IOS
+	const disableTouch = ref(false)
+	// #endif
+	const numberIndicator = ref("")
+	const indicatorIndex = ref(0)
+	const indicator = ref("number")
+	const longPressAction = ref<LongPressActionsOptions | null>(null)
+	const tips = ref<UTSJSONObject | null>(null)
+
+	const pageInstance = getCurrentInstance()!.proxy!
+	const uniPageInstance = pageInstance.$page
+	const updateIndicator = (index : number) => {
+		numberIndicator.value = (index + 1) + " / " + urls.value?.length
+		indicatorIndex.value = index
 	}
+	const __onPreviewLoadCallback = (result : UTSJSONObject) => {
+		urls.value = result["urls"] as Array<string> | null
+		if (result["current"] != null) {
+			var c = result["current"]
+			if ((typeof c == "number")) {
+				var d : number = c as number
+				if (urls.value == null || d < 0 || d >= urls.value.length) {
+					d = 0
+				}
+				current.value = d
+			} else if (typeof c == 'string' && urls.value != null) {
+				var index = urls.value.indexOf(c as string)
+				if (index < 0) {
+					index = 0
+				}
+				current.value = index
+			}
+			resetCurrent.value = current.value
+		}
+		if (result["indicator"] != null) {
+			indicator.value = result["indicator"] as string
+		}
+		if (result["longPressActions"] != null) {
+			longPressAction.value = {
+				itemList: (result["longPressActions"] as UTSJSONObject)["itemList"] as string[],
+				itemColor: (result["longPressActions"] as UTSJSONObject)["itemColor"] as string | null,
+			} as LongPressActionsOptions
+		}
+		if (result["loop"] != null) {
+			loop.value = result["loop"]! as boolean
+		}
+		updateIndicator(current.value)
+	}
+	const onPreviewImageChanged = (e : UniSwiperChangeEvent) => {
+		current.value = e.detail.current
+		updateIndicator(e.detail.current)
+	}
+	const onPreviewImageFinish = (e : UniSwiperAnimationFinishEvent) => {
+		current.value = e.detail.current
+		resetCurrent.value = e.detail.current
+	}
+	const setDisableTouch = (isDisable : any) => {
+		disableTouch.value = isDisable as boolean
+	}
+	const closePreviewPage = () => {
+		// 鸿蒙不支持animationType，单独添加一个fade-out的动画
+		// #ifdef APP-HARMONY
+		var swiper = uniPageInstance.getElementById("previewSwiper")
+		swiper?.style.setProperty("transition-duration", "300ms")
+		swiper?.style.setProperty("transition-property", "opacity")
+		swiper?.style.setProperty("opacity", "0")
+		setTimeout(function() {
+			uni.closeDialogPage({
+				dialogPage: uniPageInstance,
+				animationType: "none"
+			})
+		}, 300)
+		// #endif
+		// #ifndef APP-HARMONY
+		uni.closeDialogPage({
+			dialogPage: uniPageInstance,
+			animationType: "fade-out"
+		})
+		// #endif
+	}
+	const closePreviewPageByEvent = () => {
+		closePreviewPage()
+	}
+	// #endif
+	// #ifdef VUE3-VAPOR
+	import uniPreviewImageItem from "../../components/uni-previewImageItem/uni-previewImageItem.vue"
+	type PreviewImageSwiperItem = {
+		slot : number,
+		index : number,
+		src : string
+	}
+	const urls = ref<Array<string> | null>(null)
+	const current = ref(0)
+	const swiperCurrent = ref(1)
+	const swiperCircular = ref(false)
+	const swiperItems = ref(new Array<PreviewImageSwiperItem>())
+	let lastItemIndex = 1
+	// 用于控制 reset 逻辑的滞后索引，只在动画结束时更新
+	const resetCurrent = ref(0)
+	const loop = ref(false)
+	// #ifdef APP-IOS
+	const disableTouch = ref(false)
+	// #endif
+	// #ifndef APP-IOS
+	const disableTouch = ref(false)
+	// #endif
+	const numberIndicator = ref("")
+	const indicatorIndex = ref(0)
+	const indicator = ref("number")
+	const longPressAction = ref<LongPressActionsOptions | null>(null)
+	const tips = ref<UTSJSONObject | null>(null)
+
+	// 非 loop 时使用 clamp，loop 时用取模，统一把虚拟下标转换为真实图片下标。
+	const normalizePreviewIndex = (index : number, len : number) : number => {
+		if (len <= 0) {
+			return 0
+		}
+		if (index < 0) {
+			return 0
+		}
+		if (index >= len) {
+			return len - 1
+		}
+		return index
+	}
+	const getPreviewIndex = (index : number) : number => {
+		if (urls.value == null) {
+			return 0
+		}
+		const len = urls.value!.length
+		if (len <= 0) {
+			return 0
+		}
+		if (loop.value) {
+			var realIndex = index
+			while (realIndex < 0) {
+				realIndex += len
+			}
+			while (realIndex >= len) {
+				realIndex -= len
+			}
+			return realIndex
+		}
+		return normalizePreviewIndex(index, len)
+	}
+	const createSwiperItem = (slot : number, index : number) : PreviewImageSwiperItem => {
+		const list = urls.value
+		if (list == null || list.length == 0) {
+			return { slot: slot, index: -1, src: "" } as PreviewImageSwiperItem
+		}
+		const realIndex = getPreviewIndex(index)
+		return { slot: slot, index: realIndex, src: list[realIndex] } as PreviewImageSwiperItem
+	}
+	const updateIndicator = (index : number) => {
+		numberIndicator.value = (index + 1) + " / " + urls.value?.length
+		indicatorIndex.value = index
+	}
+	const shouldRenderItem = (index : number) : boolean => {
+		if (index < 0) {
+			return false
+		}
+		if (loop.value) {
+			return true
+		}
+		const list = urls.value
+		if (list == null || list.length <= 3) {
+			return true
+		}
+		return Math.abs(index - current.value) <= 2
+	}
+
+	const updateSwiperCircular = () => {
+		const list = urls.value
+		if (list == null || list.length <= 1) {
+			swiperCircular.value = false
+			return
+		}
+		swiperCircular.value = loop.value
+	}
+
+	// loop 参考 calendar-vapor：滑到哪个 slot，哪个 slot 就成为当前项，
+	// 只更新当前 slot 前后两个 slot 的数据，不在动画结束后再归位。
+	const updateLoopSwiperItems = (realIndex : number, targetSlot : number) => {
+		const items = new Array<PreviewImageSwiperItem>()
+		const prevSlot = (targetSlot - 1 + 3) % 3
+		const nextSlot = (targetSlot + 1) % 3
+		for (let i = 0; i < 3; i++) {
+			var itemIndex = realIndex
+			if (i == prevSlot) {
+				itemIndex = realIndex - 1
+			} else if (i == nextSlot) {
+				itemIndex = realIndex + 1
+			}
+			items.push(createSwiperItem(i, itemIndex))
+		}
+		swiperItems.value = items
+		swiperCurrent.value = targetSlot
+		lastItemIndex = targetSlot
+	}
+	const updateNonLoopSwiperItems = (realIndex : number) => {
+		const list = urls.value
+		const items = new Array<PreviewImageSwiperItem>()
+		if (list == null || list.length == 0) {
+			swiperItems.value = items
+			swiperCurrent.value = 0
+			lastItemIndex = 0
+			return
+		}
+		for (let i = 0; i < list.length; i++) {
+			items.push(createSwiperItem(i, i))
+		}
+		swiperItems.value = items
+		swiperCurrent.value = realIndex
+		lastItemIndex = realIndex
+	}
+	function initSwiperItems() {
+		const list = urls.value
+		const items = new Array<PreviewImageSwiperItem>()
+		if (list == null || list.length == 0) {
+			swiperItems.value = items
+			swiperCurrent.value = 0
+			lastItemIndex = 0
+			return
+		}
+		const len = list.length
+		current.value = normalizePreviewIndex(current.value, len)
+		if (len == 1) {
+			items.push(createSwiperItem(0, current.value))
+			swiperItems.value = items
+			swiperCurrent.value = 0
+			lastItemIndex = 0
+			return
+		}
+		if (loop.value) {
+			updateLoopSwiperItems(current.value, 1)
+			updateSwiperCircular()
+			return
+		}
+		updateNonLoopSwiperItems(current.value)
+		updateSwiperCircular()
+	}
+	function switchToPreviewIndex(targetIndex : number, targetSlot : number) {
+		const list = urls.value
+		if (list == null || list.length == 0) {
+			return
+		}
+		const len = list.length
+		if (len == 1) {
+			current.value = 0
+			swiperCurrent.value = 0
+			lastItemIndex = 0
+			updateIndicator(0)
+			return
+		}
+		const realIndex = getPreviewIndex(targetIndex)
+		current.value = realIndex
+		updateLoopSwiperItems(realIndex, targetSlot)
+		updateSwiperCircular()
+		updateIndicator(realIndex)
+	}
+
+	const pageInstance = getCurrentInstance()!.proxy!
+	const uniPageInstance = pageInstance.$page
+	onUnload(() => {
+		uni.$off("__UNIPREVIEWIMAGE")
+		uni.$off("__UNIPREVIEWIMAGECLOSE")
+		uni.$off("__UNIPREVIEWLONGPRESS")
+		uni.$off("__CLOSEPREVIEWIMAGE")
+	})
+	const __onPreviewLoadCallback = (result : UTSJSONObject) => {
+		urls.value = result["urls"] as Array<string> | null
+		if (result["current"] != null) {
+			var c = result["current"]
+			if ((typeof c == "number")) {
+				var d : number = c as number
+				if (d < 0 || d >= urls.value!.length)
+					d = 0
+				current.value = d
+			} else if (typeof c == 'string') {
+				var index = urls.value!.indexOf(c as string)
+				if (index < 0) {
+					index = 0
+				}
+				current.value = index
+			}
+			indicatorIndex.value = current.value
+			// 初始化时同步 resetCurrent
+			resetCurrent.value = current.value
+		}
+		if (result["indicator"] != null) {
+			indicator.value = result["indicator"] as string
+		}
+		if (result["longPressActions"] != null) {
+			longPressAction.value = {
+				itemList: (result["longPressActions"] as UTSJSONObject)["itemList"] as string[],
+				itemColor: (result["longPressActions"] as UTSJSONObject)["itemColor"] as string | null,
+			} as LongPressActionsOptions
+		}
+		if (result["loop"] != null) {
+			loop.value = result["loop"]! as boolean
+		}
+		initSwiperItems()
+		updateIndicator(current.value)
+	}
+	const onPreviewImageChanged = (e : UniSwiperChangeEvent) => {
+		const itemIndex = e.detail.current
+		swiperCurrent.value = itemIndex
+		if (!loop.value) {
+			current.value = itemIndex
+			lastItemIndex = itemIndex
+			updateSwiperCircular()
+			updateIndicator(itemIndex)
+			return
+		}
+		if (itemIndex == lastItemIndex) {
+			return
+		}
+		const item = swiperItems.value[itemIndex]
+		if (item == null || item.index < 0) {
+			return
+		}
+		switchToPreviewIndex(item.index, itemIndex)
+	}
+	function onPreviewImageFinish(e : UniSwiperAnimationFinishEvent) {
+		// 只有在动画结束时才更新 resetCurrent，确保 reset 逻辑的正确执行时机（如复原放大状态）
+		resetCurrent.value = current.value
+	}
+	const setDisableTouch = (isDisable : any) => {
+		disableTouch.value = isDisable as boolean
+	}
+	const closePreviewPage = () => {
+		// 鸿蒙不支持animationType，单独添加一个fade-out的动画
+		// #ifdef APP-HARMONY
+		var swiper = uniPageInstance.getElementById("previewSwiper")
+		swiper?.style.setProperty("transition-duration", "300ms")
+		swiper?.style.setProperty("transition-property", "opacity");
+		swiper?.style.setProperty("opacity", "0")
+		setTimeout(function() {
+			uni.closeDialogPage({
+				dialogPage: uniPageInstance,
+				animationType: "none"
+			})
+		}, 300);
+		// #endif
+		// #ifndef APP-HARMONY
+		uni.closeDialogPage({
+			dialogPage: uniPageInstance,
+			animationType: "fade-out"
+		})
+		// #endif
+	}
+	onLoad(() => {
+		// 传参
+		uni.$once("__onPreviewLoadCallback", __onPreviewLoadCallback)
+		uni.$emit("__onPreviewLoad", null)
+		uni.$on("__UNIPREVIEWIMAGE", setDisableTouch)
+		uni.$on("__UNIPREVIEWIMAGECLOSE", closePreviewPage)
+		uni.$on("__CLOSEPREVIEWIMAGE", () => {
+			closePreviewPage()
+		})
+	})
+	// #ifdef APP-IOS
+	onReady(()=>{
+		uniPageInstance.setPageStyle(new UTSJSONObject({
+			disableSwipeBack: false,
+			swipeBackAsBackPress: true
+		}))
+	})
+	// #endif
+	onBackPress((options : OnBackPressOptions) : boolean | null => {
+		// #ifdef APP-IOS
+		// 返回 true 表示拦截默认返回。
+		return true;
+		// #endif
+		// #ifdef APP-ANDROID
+		// 解决安卓点击返回键没有动画的问题
+		closePreviewPage()
+		return true
+		// #endif
+		// #ifndef APP-ANDROID
+		return false
+		// #endif
+	})
+	// #endif
+	// #ifndef VUE3-VAPOR
+	onUnload(() => {
+		uni.$off("__UNIPREVIEWIMAGE")
+		uni.$off("__UNIPREVIEWIMAGECLOSE")
+		uni.$off("__UNIPREVIEWLONGPRESS")
+		uni.$off("__CLOSEPREVIEWIMAGE")
+	})
+	onLoad(() => {
+		uni.$once("__onPreviewLoadCallback", __onPreviewLoadCallback)
+		uni.$emit("__onPreviewLoad", null)
+		uni.$on("__UNIPREVIEWIMAGE", setDisableTouch)
+		uni.$on("__UNIPREVIEWIMAGECLOSE", closePreviewPage)
+		uni.$on("__CLOSEPREVIEWIMAGE", closePreviewPageByEvent)
+	})
+	// #ifdef APP-IOS
+	onReady(() => {
+		uniPageInstance.setPageStyle(new UTSJSONObject({
+			disableSwipeBack: false,
+			swipeBackAsBackPress: true
+		}))
+	})
+	// #endif
+	onBackPress((options : OnBackPressOptions) : boolean | null => {
+		// #ifdef APP-IOS
+		return true
+		// #endif
+		// #ifdef APP-ANDROID
+		closePreviewPage()
+		return true
+		// #endif
+		// #ifndef APP-ANDROID
+		return false
+		// #endif
+	})
+	// #endif
 </script>
 <style>
+	/* #ifdef VUE3-VAPOR */
+	.uni-preview-image-swiper {
+		overflow: hidden;
+	}
+
+	.uni-preview-image-swiper-item {
+		background-color: black;
+		overflow: hidden;
+	}
+
 	.uni-preview-image-default-indicator {
 		width: 9px;
 		height: 9px;
@@ -128,19 +482,20 @@
 		border-width: .1px;
 		border-color: #AAAAAA;
 	}
-	
+
 	.uni-preview-image-default-indicator-default {
 		background-color: #AAAAAA;
 	}
-	
+
 	.uni-preview-image-default-indicator-active {
 		background-color: #ffffff;
 	}
 
 	.uni-preview-image-default-indicator-layout {
+		bottom: var(--uni-safe-area-inset-bottom);
+		margin-bottom: 8px;
 		flex-direction: row;
 		position: absolute;
-		bottom: 0px;
 		left: 0px;
 		right: 0px;
 		justify-content: center;
@@ -150,6 +505,8 @@
 		position: absolute;
 		left: 0;
 		right: 0;
+		top: var(--uni-safe-area-inset-top);
+		margin-top: 8px;
 	}
 
 	.uni-preview-image-number-indicator {
@@ -159,8 +516,7 @@
 		padding: 8px 20px;
 		background-color: rgba(0, 0, 0, .3);
 		line-height: 1;
-		border-style: solid;
-		border-width: 0px;
 		border-radius: 32px;
 	}
+	/* #endif */
 </style>

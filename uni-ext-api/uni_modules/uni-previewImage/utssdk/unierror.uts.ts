@@ -32,7 +32,7 @@ export const PreviewImageUniErrors : Map<number, string> = new Map([
 	/**
 	 * 其他错误
 	 */
-	[1101010, "unexpect error:please check previewImage.uvue is in page.json"]
+	[1101010, "unexpect error:please check previewImage.uvue is in pages.json"]
 ]);
 
 export class PreviewImageErrorImpl extends UniError implements IPreviewImageError {
