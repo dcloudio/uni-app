@@ -254,7 +254,7 @@ function parseSingleAnimation(value: string): AnimationLonghands | null {
     timingFunction: 'ease',
     iterationCount: '1',
     direction: 'normal',
-    fillMode: 'none',
+    fillMode: 'forwards',
     playState: 'running',
   }
   let hasDuration = false

@@ -811,7 +811,7 @@ flexBasis: fill;
   animation-timing-function: ease-in, cubic-bezier(.42, 0, 1, 1);
 }
 .shorthand {
-  animation: fade 200ms ease-in -100ms 2 alternate forwards paused, slide 1s cubic-bezier(.42, 0, 1, 1) forwards;
+  animation: fade 200ms ease-in -100ms 2 alternate forwards paused, slide 1s cubic-bezier(.42, 0, 1, 1);
 }
 .override {
   animation-name: original;
@@ -966,13 +966,24 @@ flexBasis: fill;
           animationName: 'fade',
         },
       },
+      'missing-fill': {
+        '': {
+          animationName: 'fade',
+          animationDuration: '1s',
+          animationDelay: '0s',
+          animationTimingFunction: 'ease',
+          animationIterationCount: 1,
+          animationDirection: 'normal',
+          animationFillMode: 'forwards',
+          animationPlayState: 'running',
+        },
+      },
     })
     expect(messages.map((message) => message.text)).toEqual([
       'ERROR: property value `reverse, alternate-reverse` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
       'ERROR: property value `none, backwards, both` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
       'ERROR: property value `reverse` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
       'ERROR: property value `both` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
-      'ERROR: property value `none` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
       'ERROR: property value `none` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
     ])
   })

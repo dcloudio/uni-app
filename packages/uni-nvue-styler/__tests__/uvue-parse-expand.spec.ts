@@ -154,7 +154,28 @@ describe('test esm expand', () => {
     ])
 
     expect(
-      normalizeStyle('animation', 'fade 1s ease-in', processDom2Declaration)
+      normalizeStyle(
+        'animation',
+        'fade 1s ease-in',
+        processDom2Declaration
+      ).map(({ prop, value }) => ({ prop, value }))
+    ).toEqual([
+      { prop: 'animation-name', value: 'fade' },
+      { prop: 'animation-duration', value: '1s' },
+      { prop: 'animation-delay', value: '0s' },
+      { prop: 'animation-timing-function', value: 'ease-in' },
+      { prop: 'animation-iteration-count', value: '1' },
+      { prop: 'animation-direction', value: 'normal' },
+      { prop: 'animation-fill-mode', value: 'forwards' },
+      { prop: 'animation-play-state', value: 'running' },
+    ])
+
+    expect(
+      normalizeStyle(
+        'animation',
+        'fade 1s ease-in none',
+        processDom2Declaration
+      )
     ).toHaveLength(0)
 
     const variableAnimation = normalizeStyle(
