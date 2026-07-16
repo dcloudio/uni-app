@@ -31,6 +31,9 @@
         "ios": {
           "unixVaporVer": "5.11"
         },
+        "android": {
+          "unixVaporVer": "5.21"
+        },
        "harmony": {
           "unixVaporVer": "5.0"
         }
@@ -44,6 +47,9 @@
        "app": {
         "ios": {
           "unixVaporVer": "5.11"
+        },
+        "android": {
+          "unixVaporVer": "5.21"
         },
        "harmony": {
           "unixVaporVer": "5.0"
@@ -59,6 +65,9 @@
         "ios": {
           "unixVaporVer": "5.11"
         },
+        "android": {
+          "unixVaporVer": "5.21"
+        },
        "harmony": {
           "unixVaporVer": "5.0"
         }
@@ -72,6 +81,9 @@
        "app": {
         "ios": {
           "unixVaporVer": "5.11"
+        },
+        "android": {
+          "unixVaporVer": "5.21"
         },
        "harmony": {
           "unixVaporVer": "5.0"
@@ -87,6 +99,9 @@
         "ios": {
           "unixVaporVer": "5.11"
         },
+        "android": {
+          "unixVaporVer": "5.21"
+        },
        "harmony": {
           "unixVaporVer": "5.0"
         }
@@ -101,6 +116,9 @@
         "ios": {
           "unixVaporVer": "5.11"
         },
+        "android": {
+          "unixVaporVer": "5.21"
+        },
        "harmony": {
           "unixVaporVer": "5.0"
         }
@@ -114,6 +132,9 @@
        "app": {
         "ios": {
           "unixVaporVer": "5.11"
+        },
+        "android": {
+          "unixVaporVer": "5.21"
         },
        "harmony": {
           "unixVaporVer": "5.0"
