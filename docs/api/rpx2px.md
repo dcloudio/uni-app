@@ -12,7 +12,7 @@
 
 将rpx单位值转换成px
 
-### rpx2px 兼容性 
+### rpx2px 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.02 | 4.41 | 4.02 | 4.11 | 4.61 |
@@ -130,7 +130,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

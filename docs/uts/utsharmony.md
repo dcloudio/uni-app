@@ -22,7 +22,7 @@
 
 <!-- UTSJSON.UTSHarmony.convert2AbsFullPath.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
@@ -56,7 +56,7 @@
 
 <!-- UTSJSON.UTSHarmony.devicePX2px.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
@@ -86,7 +86,7 @@
 
 <!-- UTSJSON.UTSHarmony.exit.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | HarmonyOS |
@@ -116,7 +116,7 @@
 
 <!-- UTSJSON.UTSHarmony.getAppTheme.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
@@ -146,7 +146,7 @@
 
 <!-- UTSJSON.UTSHarmony.getCurrentWindow.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
@@ -176,7 +176,7 @@
 
 <!-- UTSJSON.UTSHarmony.getOsTheme.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
@@ -210,7 +210,7 @@
 
 <!-- UTSJSON.UTSHarmony.getResourcePath.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
@@ -240,7 +240,7 @@
 
 <!-- UTSJSON.UTSHarmony.getUIAbilityContext.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
@@ -278,7 +278,7 @@
 
 <!-- UTSJSON.UTSHarmony.offAppThemeChange.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
@@ -312,7 +312,7 @@
 
 <!-- UTSJSON.UTSHarmony.offOsThemeChange.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
@@ -346,7 +346,7 @@
 
 <!-- UTSJSON.UTSHarmony.onAppAbilityCreate.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
@@ -380,7 +380,7 @@
 
 <!-- UTSJSON.UTSHarmony.onAppAbilityNewWant.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
@@ -414,7 +414,7 @@
 
 <!-- UTSJSON.UTSHarmony.onAppAbilityShare.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
@@ -448,7 +448,7 @@
 
 <!-- UTSJSON.UTSHarmony.onAppAbilityWindowStageCreate.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
@@ -488,7 +488,7 @@
 
 <!-- UTSJSON.UTSHarmony.onAppThemeChange.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
@@ -528,7 +528,7 @@
 
 <!-- UTSJSON.UTSHarmony.onOsThemeChange.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
@@ -564,7 +564,7 @@
 
 <!-- UTSJSON.UTSHarmony.requestSystemPermission.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
@@ -598,7 +598,7 @@
 
 <!-- UTSJSON.UTSHarmony.setAppTheme.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | HarmonyOS 系统版本 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |

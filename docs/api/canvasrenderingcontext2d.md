@@ -8,7 +8,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 
 ### CanvasRenderingContext2D 的属性值 @canvasrenderingcontext2d-values
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | canvas | [UniCanvasElement](/api/dom/unicanvaselement.md) | 是 |  | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 是对与给定上下文关联的HTMLCanvasElement对象的只读引用 |
 | direction | string | 是 | inherit | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 描述当前文本方向 |
@@ -38,7 +38,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 #### direction 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | ltr | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 文字方向为从左到右 |
 | rtl | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 文字方向为从右到左 |
@@ -46,7 +46,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 #### fontStretch 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | ultra-condensed | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更紧凑的字体,对应百分比数值为50% |
 | extra-condensed | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 指定比普通字体更紧凑的字体,对应百分比数值为62.5% |
@@ -60,7 +60,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 #### globalCompositeOperation 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | source-over | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: x | 在现有画布上下文之上绘制新图形 |
 | source-in | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 新图形只在新图形和目标画布重叠的地方绘制。其他的都是透明的 |
@@ -91,7 +91,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 #### imageSmoothingQuality 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | low | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 低质量。 |
 | medium | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 中等质量。 |
@@ -99,7 +99,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 #### lineCap 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | butt | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | `butt`线段末端以方形结束； |
 | round | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | `round`线段末端以圆形结束； |
@@ -107,7 +107,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 #### lineJoin 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | round | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 通过填充一个额外的，圆心在相连部分末端的扇形，绘制拐角的形状。圆角的半径是线段的宽度。 |
 | bevel | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 在相连部分的末端填充一个额外的以三角形为底的区域，每个部分都有各自独立的矩形拐角。 |
@@ -115,7 +115,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 #### textAlign 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | left | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本左对齐。 |
 | right | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本右对齐。 |
@@ -125,7 +125,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 #### textBaseline 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | top | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本基线在文本块的顶部。 |
 | hanging | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本基线是悬挂基线。 |
@@ -136,7 +136,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 #### textRendering 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | auto | Web: 4.0; Android: x; iOS: x; HarmonyOS: 4.61 | 浏览器在绘制文本时根据情况对速度、易读性和几何精确性进行优化。 |
 | optimizeSpeed | Web: 4.0; Android: x; iOS: x; HarmonyOS: 4.61 | 浏览器在绘制文本时优先考虑渲染速度，而不是易读性和几何精确性。它禁用字距调整和连字。 |
@@ -146,7 +146,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 
 
-### CanvasRenderingContext2D 兼容性 
+### CanvasRenderingContext2D 兼容性 <Help /> 
  | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -159,7 +159,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 绘制一段弧线
 
-##### arc 兼容性 
+##### arc 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -185,7 +185,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 根据控制点和半径绘制圆弧路径，使用当前的描点 (前一个 moveTo 或 lineTo 等函数的止点)。根据当前描点与给定的控制点 1 连接的直线，和控制点 1 与控制点 2 连接的直线，作为使用指定半径的圆的切线，画出两条切线之间的弧线路径
 
-##### arcTo 兼容性 
+##### arcTo 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -210,7 +210,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 开始创建一个路径。需要调用 fill 或者 stroke 才会使用路径进行填充或描边
 
-##### beginPath 兼容性 
+##### beginPath 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -226,7 +226,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 绘制三次贝赛尔曲线路径
 
-##### bezierCurveTo 兼容性 
+##### bezierCurveTo 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -252,7 +252,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 清除画布上在该矩形区域内的内容
 
-##### clearRect 兼容性 
+##### clearRect 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -276,7 +276,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 将当前创建的路径设置为当前剪切路径
 
-##### clip 兼容性 
+##### clip 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -292,7 +292,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 将当前创建的路径设置为当前剪切路径
 
-##### clip 兼容性 
+##### clip 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | x | x | 4.61 |
@@ -300,7 +300,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | Path2D用来声明路径，用来在canvas中根据需要创建可以保留并重用的路径, 此路径会被CanvasRenderingContext2D对象使用 | 
 
@@ -313,7 +313,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 将当前创建的路径设置为当前剪切路径
 
-##### clip 兼容性 
+##### clip 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | x | x | x |
@@ -321,7 +321,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | fillRule | string | 是 | Android: x; iOS: x; HarmonyOS: x | 
 
@@ -334,7 +334,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 将当前创建的路径设置为当前剪切路径
 
-##### clip 兼容性 
+##### clip 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | x | x | x |
@@ -342,7 +342,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | Path2D用来声明路径，用来在canvas中根据需要创建可以保留并重用的路径, 此路径会被CanvasRenderingContext2D对象使用 |
 | fillRule | string | 是 | Android: x; iOS: x; HarmonyOS: x |  | 
@@ -356,7 +356,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 关闭一个路径
 
-##### closePath 兼容性 
+##### closePath 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -372,7 +372,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 创建一个新的、空白的、指定大小的 ImageData 对象。所有的像素在新对象中都是透明的黑色
 
-##### createImageData 兼容性 
+##### createImageData 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | x | x | x |
@@ -380,7 +380,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | width | number | 是 | Android: x; iOS: x; HarmonyOS: x |
 | height | number | 是 | Android: x; iOS: x; HarmonyOS: x | 
@@ -394,7 +394,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 对指定的图像创建模式的方法，可在指定的方向上重复元图像
 
-##### createPattern 兼容性 
+##### createPattern 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -402,7 +402,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | image | [Image](/api/image.md) | 是 | Web: 4.0; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 重复的图像源，支持代码包路径和本地临时路径 (本地路径) |
 | repetition | string | 否 |   | 如何重复图像 | 
@@ -422,7 +422,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 
 创建一个线性的渐变颜色。返回的CanvasGradient对象需要使用 CanvasGradient.addColorStop() 来指定渐变点，至少要两个
 
-##### createLinearGradient 兼容性 
+##### createLinearGradient 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -449,7 +449,7 @@ canvas元素的绘图2D渲染上下文, 它用于绘制形状、文本、图像�
 ###### addColorStop(stop: number, color: string): void @addcolorstop
 addColorStop
 添加颜色的渐变点。小于最小 stop 的部分会按最小 stop 的 color 来渲染，大于最大 stop 的部分会按最大 stop 的 color 来渲染, 最大支持5个分段
-###### addColorStop 兼容性 
+###### addColorStop 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -471,7 +471,7 @@ addColorStop
 
 根据参数确定两个圆的坐标，绘制放射性渐变。注意App平台和Web平台绘制效果有差异
 
-##### createRadialGradient 兼容性 
+##### createRadialGradient 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -500,7 +500,7 @@ addColorStop
 ###### addColorStop(stop: number, color: string): void @addcolorstop
 addColorStop
 添加颜色的渐变点。小于最小 stop 的部分会按最小 stop 的 color 来渲染，大于最大 stop 的部分会按最大 stop 的 color 来渲染, 最大支持5个分段
-###### addColorStop 兼容性 
+###### addColorStop 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -522,7 +522,7 @@ addColorStop
 
 将之前在绘图上下文中的描述（路径、变形、样式）画到 canvas 中, 该操作为可选非web标准，canvas组件会自动选择合适时机进行绘制
 
-##### draw 兼容性 
+##### draw 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -538,7 +538,7 @@ addColorStop
 
 绘制图像到画布
 
-##### drawImage 兼容性 
+##### drawImage 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -546,7 +546,7 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | imageResource | [Image](/api/image.md) | 是 | Web: 4.0; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 所要绘制的图片资源 |
 | dx | number | 是 |   | imageResource的左上角在目标 canvas 上 x 轴的位置 |
@@ -561,7 +561,7 @@ addColorStop
 
 绘制图像到画布
 
-##### drawImage 兼容性 
+##### drawImage 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -569,7 +569,7 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | imageResource | [Image](/api/image.md) | 是 | Web: 4.0; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 所要绘制的图片资源 |
 | dx | number | 是 |   | imageResource的左上角在目标 canvas 上 x 轴的位置 |
@@ -586,7 +586,7 @@ addColorStop
 
 绘制图像到画布
 
-##### drawImage 兼容性 
+##### drawImage 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -594,7 +594,7 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | imageResource | [Image](/api/image.md) | 是 | Web: 4.0; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 所要绘制的图片资源 |
 | sx | number | 是 |   | 需要绘制到画布中的，imageResource的矩形（裁剪）选择框的左上角 x 坐标 |
@@ -615,7 +615,7 @@ addColorStop
 
 添加椭圆路径。椭圆的圆心在（x,y）位置，半径分别是radiusX 和 radiusY，按照anticlockwise（默认顺时针）指定的方向，从 startAngle 开始绘制，到 endAngle 结束
 
-##### ellipse 兼容性 
+##### ellipse 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | x | x | x |
@@ -623,7 +623,7 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | x | number | 是 | Android: x; iOS: x; HarmonyOS: x | 椭圆圆心的 x 轴（水平）坐标 |
 | y | number | 是 | Android: x; iOS: x; HarmonyOS: x | 椭圆圆心的 y 轴（垂直）坐标 |
@@ -643,7 +643,7 @@ addColorStop
 
 对当前路径中的内容进行填充
 
-##### fill 兼容性 
+##### fill 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -659,7 +659,7 @@ addColorStop
 
 对当前路径中的内容进行填充
 
-##### fill 兼容性 
+##### fill 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -687,7 +687,7 @@ addColorStop
 
 对指定路径中的内容进行填充
 
-##### fill 兼容性 
+##### fill 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -695,7 +695,7 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 填充路径 | 
 
@@ -708,7 +708,7 @@ addColorStop
 
 对指定路径中的内容进行填充
 
-##### fill 兼容性 
+##### fill 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -716,7 +716,7 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 填充路径 |
 | fillRule | string | 是 |   | 填充当前或已存在的路径的方法。采取非零环绕(nonzero)或者奇偶环绕(evenodd)规则 |
@@ -737,7 +737,7 @@ addColorStop
 
 填充一个矩形。用 setFillStyle 设置矩形的填充色，如果没设置默认是黑色
 
-##### fillRect 兼容性 
+##### fillRect 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -761,7 +761,7 @@ addColorStop
 
 在画布上绘制文本
 
-##### fillText 兼容性 
+##### fillText 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -785,7 +785,7 @@ addColorStop
 
 返回一个ImageData对象，用来描述 canvas 区域隐含的像素数据，这个区域通过矩形表示，起始点为*(sx, sy)、宽为sw、高为sh。
 
-##### getImageData 兼容性 
+##### getImageData 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -809,7 +809,7 @@ addColorStop
 
 #### ImageData 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | data | [Uint8ClampedArray](/uts/buildin-object-api/uint8clampedarray.md) | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 一维数组，包含以 RGBA 顺序的数据，数据使用 0 至 255（包含）的整数表示 |
 | width | number | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 使用像素描述 ImageData 的实际宽度 |
@@ -822,7 +822,7 @@ addColorStop
 
 返回一个Boolean 标记上下文是否已经丢失
 
-##### isContextLost 兼容性 
+##### isContextLost 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -844,7 +844,7 @@ addColorStop
 
 判断在当前路径中是否包含检测点
 
-##### isPointInPath 兼容性 
+##### isPointInPath 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | x | x | x |
@@ -852,7 +852,7 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | x | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 X 坐标 |
 | y | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 Y 坐标 | 
@@ -872,7 +872,7 @@ addColorStop
 
 判断在当前路径中是否包含检测点
 
-##### isPointInPath 兼容性 
+##### isPointInPath 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | x | x | x |
@@ -880,7 +880,7 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | x | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 X 坐标 |
 | y | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 Y 坐标 |
@@ -901,7 +901,7 @@ addColorStop
 
 判断在当前路径中是否包含检测点
 
-##### isPointInPath 兼容性 
+##### isPointInPath 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | x | x | x |
@@ -909,7 +909,7 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | Path2D应用的路径 |
 | x | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 X 坐标 |
@@ -930,7 +930,7 @@ addColorStop
 
 判断在当前路径中是否包含检测点
 
-##### isPointInPath 兼容性 
+##### isPointInPath 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | x | x | x |
@@ -938,7 +938,7 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | Path2D应用的路径 |
 | x | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 X 坐标 |
@@ -960,7 +960,7 @@ addColorStop
 
 检测某点是否在路径的描边线
 
-##### isPointInStroke 兼容性 
+##### isPointInStroke 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | x | x | x |
@@ -968,7 +968,7 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | x | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 X 坐标 |
 | y | number | 是 | Android: x; iOS: x; HarmonyOS: x | 检测点的 Y 坐标 | 
@@ -988,7 +988,7 @@ addColorStop
 
 在填充线时使用虚线模式, 它使用一组值来指定描述模式的线和间隙的交替长度。注意App平台和Web平台绘制效果有差异
 
-##### getLineDash 兼容性 
+##### getLineDash 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -1010,7 +1010,7 @@ addColorStop
 
 增加一个新点，然后创建一条从上次指定点到目标点的线。用 stroke 方法来画线条
 
-##### lineTo 兼容性 
+##### lineTo 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -1032,7 +1032,7 @@ addColorStop
 
 测量文本尺寸信息。目前仅返回文本宽度
 
-##### measureText 兼容性 
+##### measureText 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -1053,7 +1053,7 @@ addColorStop
 
 #### TextMetrics 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | width | number | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 文本的宽度 | 
 
@@ -1064,7 +1064,7 @@ addColorStop
 
 把路径移动到画布中的指定点
 
-##### moveTo 兼容性 
+##### moveTo 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -1086,7 +1086,7 @@ addColorStop
 
 将数据从已有的 ImageData 对象绘制到位图的方法。如果提供了一个绘制过的矩形，则只绘制该矩形的像素。此方法不受画布转换矩阵的影响
 
-##### putImageData 兼容性 
+##### putImageData 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -1094,7 +1094,7 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | imageData | **ImageData** | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 包含像素值的数组对象 |
 | x | number | 是 |   | 源图像数据在目标画布中的位置偏移量（x 轴方向的偏移量） |
@@ -1102,7 +1102,7 @@ addColorStop
 
 #### imageData 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | data | [Uint8ClampedArray](/uts/buildin-object-api/uint8clampedarray.md) | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 一维数组，包含以 RGBA 顺序的数据，数据使用 0 至 255（包含）的整数表示 |
 | width | number | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 使用像素描述 ImageData 的实际宽度 |
@@ -1117,7 +1117,7 @@ addColorStop
 
 将数据从已有的 ImageData 对象绘制到位图的方法。如果提供了一个绘制过的矩形，则只绘制该矩形的像素。此方法不受画布转换矩阵的影响
 
-##### putImageData 兼容性 
+##### putImageData 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -1125,7 +1125,7 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | imageData | **ImageData** | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 包含像素值的数组对象 |
 | x | number | 是 |   | 源图像数据在目标画布中的位置偏移量（x 轴方向的偏移量） |
@@ -1137,7 +1137,7 @@ addColorStop
 
 #### imageData 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | data | [Uint8ClampedArray](/uts/buildin-object-api/uint8clampedarray.md) | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 一维数组，包含以 RGBA 顺序的数据，数据使用 0 至 255（包含）的整数表示 |
 | width | number | 是 | Web: 4.0; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 使用像素描述 ImageData 的实际宽度 |
@@ -1152,7 +1152,7 @@ addColorStop
 
 创建二次贝塞尔曲线路径
 
-##### quadraticCurveTo 兼容性 
+##### quadraticCurveTo 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -1176,7 +1176,7 @@ addColorStop
 
 创建一个矩形路径
 
-##### rect 兼容性 
+##### rect 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -1200,7 +1200,7 @@ addColorStop
 
 使用单位矩阵重新设置当前变换
 
-##### resetTransform 兼容性 
+##### resetTransform 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -1216,7 +1216,7 @@ addColorStop
 
 恢复之前保存的绘图上下文
 
-##### restore 兼容性 
+##### restore 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -1232,7 +1232,7 @@ addColorStop
 
 以原点为中心顺时针旋转当前坐标轴
 
-##### rotate 兼容性 
+##### rotate 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -1253,7 +1253,7 @@ addColorStop
 
 在当前路径中添加一个圆角矩形
 
-##### roundRect 兼容性 
+##### roundRect 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | x | x | x |
@@ -1261,7 +1261,7 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | x | number | 是 | Android: x; iOS: x; HarmonyOS: x | 矩形起点的 x 轴坐标，以像素为单位 |
 | y | number | 是 | Android: x; iOS: x; HarmonyOS: x | 矩形起点的 y 轴坐标，以像素为单位 |
@@ -1278,7 +1278,7 @@ addColorStop
 
 保存绘图上下文
 
-##### save 兼容性 
+##### save 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -1294,7 +1294,7 @@ addColorStop
 
 缩放变换
 
-##### scale 兼容性 
+##### scale 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -1316,7 +1316,7 @@ addColorStop
 
 在填充线时使用虚线模式, 它使用一组值来指定描述模式的线和间隙的交替长度。
 
-##### setLineDash 兼容性 
+##### setLineDash 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -1337,7 +1337,7 @@ addColorStop
 
 使用单位矩阵重新设置（覆盖）当前的变换并调用变换
 
-##### setTransform 兼容性 
+##### setTransform 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -1363,7 +1363,7 @@ addColorStop
 
 画出当前路径的边框。默认颜色色为黑色
 
-##### stroke 兼容性 
+##### stroke 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -1379,7 +1379,7 @@ addColorStop
 
 画出指定路径的边框。默认颜色色为黑色
 
-##### stroke 兼容性 
+##### stroke 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -1387,7 +1387,7 @@ addColorStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | path | [Path2D](/api/path2d.md) | 是 | Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 
 
@@ -1400,7 +1400,7 @@ addColorStop
 
 画一个矩形(非填充)
 
-##### strokeRect 兼容性 
+##### strokeRect 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -1424,7 +1424,7 @@ addColorStop
 
 文本描边
 
-##### strokeText 兼容性 
+##### strokeText 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -1448,7 +1448,7 @@ addColorStop
 
 使用矩阵多次叠加当前变换，矩阵由方法的参数进行描述。可以缩放、旋转、移动和倾斜上下文
 
-##### transform 兼容性 
+##### transform 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |
@@ -1474,7 +1474,7 @@ addColorStop
 
 当前网格添加平移变换
 
-##### translate 兼容性 
+##### translate 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.25 | 4.25 | 4.61 |

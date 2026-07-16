@@ -5,7 +5,7 @@
 使设备发生短时间的振动。
 
 
-### vibrateShort 兼容性 
+### vibrateShort 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.08 | 5.08 | 5.08 | 5.08 |
@@ -13,13 +13,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | **VibrateShortOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | type | string | 是 | Web: x |
 | success | (result: [VibrateShortSuccess](#vibrateshortsuccess-values)) => void | 否 | Web: x |
@@ -28,7 +28,7 @@
 
 ##### type 的属性描述
 
-| 合法值 | 兼容性 |
+| 合法值 | 兼容性 <Help /> |
 | :- |  :-: |
 | heavy | Web: x |
 | medium | Web: x |
@@ -36,13 +36,13 @@
 
 #### VibrateShortSuccess 的属性值 @vibrateshortsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | errMsg | string | 是 | Web: x |
 
 #### VibrateShortFail 的属性值 @vibrateshortfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x |  |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -52,7 +52,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 |
+| 合法值 | 兼容性 <Help /> |
 | :- |  :-: |
 | 9001001 | Web: x |
 | 9001002 | Web: x |
@@ -60,13 +60,13 @@
 
 #### VibrateShortSuccess 的属性值 @vibrateshortsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | errMsg | string | 是 | Web: x |
 
 #### VibrateShortFail 的属性值 @vibrateshortfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x |  |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -76,7 +76,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 |
+| 合法值 | 兼容性 <Help /> |
 | :- |  :-: |
 | 9001001 | Web: x |
 | 9001002 | Web: x |
@@ -112,7 +112,7 @@
 使设备发生长时间的振动。
 
 
-### vibrateLong 兼容性 
+### vibrateLong 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.08 | 5.08 | 5.08 | 5.08 |
@@ -120,13 +120,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | **VibrateLongOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | success | (result: [VibrateLongSuccess](#vibratelongsuccess-values)) => void | 否 | Web: x |
 | fail | (result: [VibrateLongFail](#vibratelongfail-values)) => void | 否 | Web: x |
@@ -134,13 +134,13 @@
 
 #### VibrateLongSuccess 的属性值 @vibratelongsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | errMsg | string | 是 | Web: x |
 
 #### VibrateLongFail 的属性值 @vibratelongfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x |  |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -150,7 +150,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 |
+| 合法值 | 兼容性 <Help /> |
 | :- |  :-: |
 | 9001001 | Web: x |
 | 9001002 | Web: x |
@@ -158,13 +158,13 @@
 
 #### VibrateLongSuccess 的属性值 @vibratelongsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | errMsg | string | 是 | Web: x |
 
 #### VibrateLongFail 的属性值 @vibratelongfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x |  |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -174,7 +174,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 |
+| 合法值 | 兼容性 <Help /> |
 | :- |  :-: |
 | 9001001 | Web: x |
 | 9001002 | Web: x |
@@ -304,6 +304,6 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |

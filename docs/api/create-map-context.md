@@ -4,7 +4,7 @@
 
 参考：[Map组件](../component/map.md)
 
-### createMapContext 兼容性 
+### createMapContext 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.31 | 4.31 | 4.61 |
@@ -29,7 +29,7 @@
 #### getCenterLocation(options : MapContextGetCenterLocationOptions) : void; @getcenterlocation
 getCenterLocation
 获取当前地图中心的经纬度，返回的是 gcj02 坐标系，可以用于 uni.openLocation
-##### getCenterLocation 兼容性 
+##### getCenterLocation 兼容性 <Help /> 
 | Android | iOS | HarmonyOS |
 | :- | :- | :- |
 | 4.31 | 4.31 | 4.61 |
@@ -50,7 +50,7 @@ getCenterLocation
 
 ###### LocationObject 的属性值 @locationobject-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
@@ -82,7 +82,7 @@ getCenterLocation
 #### moveToLocation(options : MapContextMoveToLocationOptions) : void; @movetolocation
 moveToLocation
 将地图中心移动到当前定位点，需要配合map组件的show-location使用
-##### moveToLocation 兼容性 
+##### moveToLocation 兼容性 <Help /> 
 | Android | iOS | HarmonyOS |
 | :- | :- | :- |
 | 4.31 | 4.31 | 4.61 |
@@ -95,7 +95,7 @@ moveToLocation
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | latitude | number | 否 | null | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 否 | null | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
@@ -130,7 +130,7 @@ moveToLocation
 #### translateMarker(options : MapContextTranslateMarkerOptions) : void; @translatemarker
 translateMarker
 平移marker，带动画
-##### translateMarker 兼容性 
+##### translateMarker 兼容性 <Help /> 
 | Android | iOS | HarmonyOS |
 | :- | :- | :- |
 | 4.31 | 4.31 | 4.61 |
@@ -143,7 +143,7 @@ translateMarker
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | markerId | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker |
 | destination | **LocationObject** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker移动到的目标点 |
@@ -157,7 +157,7 @@ translateMarker
 
 ##### destination 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
@@ -189,7 +189,7 @@ translateMarker
 #### includePoints(options : MapContextIncludePointsOptions) : void; @includepoints
 includePoints
 缩放视野展示所有经纬度
-##### includePoints 兼容性 
+##### includePoints 兼容性 <Help /> 
 | Android | iOS | HarmonyOS |
 | :- | :- | :- |
 | 4.31 | 4.31 | 4.61 |
@@ -202,7 +202,7 @@ includePoints
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | points | Array&lt;**LocationObject**&gt; | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要显示在可视区域内的坐标点列表，[{latitude, longitude}\] |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
@@ -211,7 +211,7 @@ includePoints
 
 ##### points 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
@@ -243,7 +243,7 @@ includePoints
 #### getRegion(options : MapContextGetRegionOptions) : void; @getregion
 getRegion
 获取当前地图的视野范围
-##### getRegion 兼容性 
+##### getRegion 兼容性 <Help /> 
 | Android | iOS | HarmonyOS |
 | :- | :- | :- |
 | 4.31 | 4.31 | 4.61 |
@@ -264,21 +264,21 @@ getRegion
 
 ###### MapContextGetRegionResult 的属性值 @mapcontextgetregionresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | southwest | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
 | northeast | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
 
 #### southwest 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 #### northeast 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
@@ -310,7 +310,7 @@ getRegion
 #### getScale(options : MapContextGetScaleOptions) : void; @getscale
 getScale
 获取当前地图的缩放级别
-##### getScale 兼容性 
+##### getScale 兼容性 <Help /> 
 | Android | iOS | HarmonyOS |
 | :- | :- | :- |
 | 4.31 | 4.31 | 4.61 |
@@ -331,7 +331,7 @@ getScale
 
 ###### MapContextGetScaleResult 的属性值 @mapcontextgetscaleresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | scale | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 地图缩放级别 |
 
@@ -362,7 +362,7 @@ getScale
 #### addGroundOverlay(options : MapContextAddGroundOverlayOptions) : void; @addgroundoverlay
 addGroundOverlay
 创建自定义图片图层，图片会随着地图缩放而缩放
-##### addGroundOverlay 兼容性 
+##### addGroundOverlay 兼容性 <Help /> 
 | Android | iOS | HarmonyOS |
 | :- | :- | :- |
 | 4.31 | 4.31 | x |
@@ -375,7 +375,7 @@ addGroundOverlay
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | id | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片图层 id |
 | src | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片路径，支持网络图片、临时路径、代码包路径 |
@@ -389,21 +389,21 @@ addGroundOverlay
 
 ##### bounds 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | southwest | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
 | northeast | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
 
 ###### southwest 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### northeast 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
@@ -435,7 +435,7 @@ addGroundOverlay
 #### addMarkers(options : MapContextAddMarkersOptions) : void; @addmarkers
 addMarkers
 添加 marker
-##### addMarkers 兼容性 
+##### addMarkers 兼容性 <Help /> 
 | Android | iOS | HarmonyOS |
 | :- | :- | :- |
 | 4.31 | 4.31 | 4.61 |
@@ -448,7 +448,7 @@ addMarkers
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | markers | Array&lt;**Marker**&gt; | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 同传入 map 组件的 marker 属性 |
 | clear | boolean | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否先清空地图上所有 marker |
@@ -458,7 +458,7 @@ addMarkers
 
 ##### markers 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | id | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标记点id，marker点击事件回调会返回此id。建议为每个marker设置上Number类型id，保证更新marker时有更好的性能。最大限制9位数 |
 | latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围 -90 ~ 90 |
@@ -486,7 +486,7 @@ addMarkers
 
 ###### callout 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | content | string | 否 | "" | Android: 4.51; iOS: 4.51 | 文本 |
 | color | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "black" | Android: 4.51; iOS: 4.51 | 文本颜色 |
@@ -518,7 +518,7 @@ addMarkers
 
 ###### label 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | content | string | 否 | Android: x; iOS: x | 文本 |
 | color | string | 否 | Android: x; iOS: x | 文本颜色 |
@@ -545,7 +545,7 @@ addMarkers
 
 ###### customCallout 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | content | string | 否 | "" | Android: 4.51; iOS: 4.51 | 文本 |
 | color | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "black" | Android: 4.51; iOS: 4.51 | 文本颜色 |
@@ -602,7 +602,7 @@ addMarkers
 #### moveAlong(options : MapContextMoveAlongOptions) : void; @movealong
 moveAlong
 沿指定路径移动 marker，用于轨迹回放等场景。动画完成时触发回调事件，若动画进行中，对同一 marker 再次调用 moveAlong 方法，前一次的动画将被打断。
-##### moveAlong 兼容性 
+##### moveAlong 兼容性 <Help /> 
 | Android | iOS | HarmonyOS |
 | :- | :- | :- |
 | 4.31 | 4.31 | 4.61 |
@@ -615,7 +615,7 @@ moveAlong
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | markerId | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker |
 | path | Array&lt;**LocationObject**&gt; | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 移动路径的坐标串，坐标点格式 {longitude, latitude} |
@@ -626,7 +626,7 @@ moveAlong
 
 ##### path 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
@@ -658,7 +658,7 @@ moveAlong
 #### removeGroundOverlay(options : MapContextRemoveGroundOverlayOptions) : void; @removegroundoverlay
 removeGroundOverlay
 移除自定义图片图层
-##### removeGroundOverlay 兼容性 
+##### removeGroundOverlay 兼容性 <Help /> 
 | Android | iOS | HarmonyOS |
 | :- | :- | :- |
 | 4.31 | 4.31 | x |
@@ -671,7 +671,7 @@ removeGroundOverlay
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | id | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 图片图层 id |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
@@ -705,7 +705,7 @@ removeGroundOverlay
 #### removeMarkers(options : MapContextRemoveMarkersOptions) : void; @removemarkers
 removeMarkers
 移除 marker
-##### removeMarkers 兼容性 
+##### removeMarkers 兼容性 <Help /> 
 | Android | iOS | HarmonyOS |
 | :- | :- | :- |
 | 4.31 | 4.31 | 4.61 |
@@ -718,7 +718,7 @@ removeMarkers
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | markerIds | Array&lt;number&gt; | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要被删除的marker的id属性组成的数组 |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
@@ -752,7 +752,7 @@ removeMarkers
 #### updateGroundOverlay(options : MapContextUpdateGroundOverlayOptions) : void; @updategroundoverlay
 updateGroundOverlay
 更新自定义图片图层。
-##### updateGroundOverlay 兼容性 
+##### updateGroundOverlay 兼容性 <Help /> 
 | Android | iOS | HarmonyOS |
 | :- | :- | :- |
 | 4.31 | 4.31 | x |
@@ -765,7 +765,7 @@ updateGroundOverlay
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | id | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片图层 id |
 | src | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片路径，支持网络图片、临时路径、代码包路径 |
@@ -779,21 +779,21 @@ updateGroundOverlay
 
 ##### bounds 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | southwest | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
 | northeast | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
 
 ###### southwest 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ###### northeast 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
@@ -832,7 +832,7 @@ updateGroundOverlay
 
 ###### LocationObject 的属性值 @locationobject-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
@@ -861,7 +861,7 @@ updateGroundOverlay
 
 ##### MapContextMoveToLocationOptions 的属性值 @mapcontextmovetolocationoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | latitude | number | 否 | null | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 否 | null | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
@@ -893,7 +893,7 @@ updateGroundOverlay
 
 ##### MapContextTranslateMarkerOptions 的属性值 @mapcontexttranslatemarkeroptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | markerId | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker |
 | destination | **LocationObject** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker移动到的目标点 |
@@ -907,7 +907,7 @@ updateGroundOverlay
 
 #### destination 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
@@ -936,7 +936,7 @@ updateGroundOverlay
 
 ##### MapContextIncludePointsOptions 的属性值 @mapcontextincludepointsoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | points | Array&lt;**LocationObject**&gt; | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要显示在可视区域内的坐标点列表，[{latitude, longitude}\] |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
@@ -945,7 +945,7 @@ updateGroundOverlay
 
 #### points 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
@@ -982,21 +982,21 @@ updateGroundOverlay
 
 ###### MapContextGetRegionResult 的属性值 @mapcontextgetregionresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | southwest | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
 | northeast | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
 
 #### southwest 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 #### northeast 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
@@ -1033,7 +1033,7 @@ updateGroundOverlay
 
 ###### MapContextGetScaleResult 的属性值 @mapcontextgetscaleresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | scale | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 地图缩放级别 |
 
@@ -1061,7 +1061,7 @@ updateGroundOverlay
 
 ##### MapContextAddGroundOverlayOptions 的属性值 @mapcontextaddgroundoverlayoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | id | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片图层 id |
 | src | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片路径，支持网络图片、临时路径、代码包路径 |
@@ -1075,21 +1075,21 @@ updateGroundOverlay
 
 #### bounds 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | southwest | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
 | northeast | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
 
 ##### southwest 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ##### northeast 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
@@ -1118,7 +1118,7 @@ updateGroundOverlay
 
 ##### MapContextAddMarkersOptions 的属性值 @mapcontextaddmarkersoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | markers | Array&lt;**Marker**&gt; | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 同传入 map 组件的 marker 属性 |
 | clear | boolean | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否先清空地图上所有 marker |
@@ -1128,7 +1128,7 @@ updateGroundOverlay
 
 #### markers 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | id | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标记点id，marker点击事件回调会返回此id。建议为每个marker设置上Number类型id，保证更新marker时有更好的性能。最大限制9位数 |
 | latitude | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围 -90 ~ 90 |
@@ -1156,7 +1156,7 @@ updateGroundOverlay
 
 ##### callout 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | content | string | 否 | "" | Android: 4.51; iOS: 4.51 | 文本 |
 | color | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "black" | Android: 4.51; iOS: 4.51 | 文本颜色 |
@@ -1188,7 +1188,7 @@ updateGroundOverlay
 
 ##### label 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | content | string | 否 | Android: x; iOS: x | 文本 |
 | color | string | 否 | Android: x; iOS: x | 文本颜色 |
@@ -1215,7 +1215,7 @@ updateGroundOverlay
 
 ##### customCallout 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | content | string | 否 | "" | Android: 4.51; iOS: 4.51 | 文本 |
 | color | [string.ColorString](/uts/data-type.md#ide-string) | 否 | "black" | Android: 4.51; iOS: 4.51 | 文本颜色 |
@@ -1269,7 +1269,7 @@ updateGroundOverlay
 
 ##### MapContextMoveAlongOptions 的属性值 @mapcontextmovealongoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | markerId | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker |
 | path | Array&lt;**LocationObject**&gt; | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 移动路径的坐标串，坐标点格式 {longitude, latitude} |
@@ -1280,7 +1280,7 @@ updateGroundOverlay
 
 #### path 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
@@ -1309,7 +1309,7 @@ updateGroundOverlay
 
 ##### MapContextRemoveGroundOverlayOptions 的属性值 @mapcontextremovegroundoverlayoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | id | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 图片图层 id |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
@@ -1340,7 +1340,7 @@ updateGroundOverlay
 
 ##### MapContextRemoveMarkersOptions 的属性值 @mapcontextremovemarkersoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | markerIds | Array&lt;number&gt; | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要被删除的marker的id属性组成的数组 |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
@@ -1371,7 +1371,7 @@ updateGroundOverlay
 
 ##### MapContextUpdateGroundOverlayOptions 的属性值 @mapcontextupdategroundoverlayoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | id | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片图层 id |
 | src | string | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: x | 图片路径，支持网络图片、临时路径、代码包路径 |
@@ -1385,21 +1385,21 @@ updateGroundOverlay
 
 #### bounds 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | southwest | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 西南角的经纬度 |
 | northeast | **LocationObject** | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 东北角的经纬度 |
 
 ##### southwest 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
 
 ##### northeast 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |

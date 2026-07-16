@@ -11,7 +11,7 @@ opacity 属性指定了一个元素的不透明度。换言之，opacity 属性�
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |

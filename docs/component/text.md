@@ -9,7 +9,7 @@
  文本
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -20,7 +20,7 @@
 虽然app-uvue中写在view的text区域的文字，也会被编译器自动包裹一层text组件，看起来也可以使用。但这样会造成无法修改该text文字的样式，详见uvue的[样式不继承](../css/README.md#stylenoextends)章节。
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | selectable | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 文本是否可选 |
 | space | string |   | Web: 4.0; 微信小程序: -; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 显示连续空格，App平台蒸汽模式（Vapor）将废弃此属性 |
@@ -35,7 +35,7 @@
 
 #### space 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | ensp | Web: 4.0; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 中文字符空格一半大小 |
 | emsp | Web: 4.0; Android: 3.9; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 中文字符空格大小 |
@@ -172,7 +172,7 @@ web的默认值preline，虽然支持\n换行，同时会合并\n以外的其他
 
 
 ### 子组件 @children-tags
-| 子组件 | 兼容性 |
+| 子组件 | 兼容性 <Help /> |
 | :- | :- |
 | [text](text.md) | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 

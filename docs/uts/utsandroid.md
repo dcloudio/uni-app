@@ -21,7 +21,7 @@ app-android平台专有内置对象。在uni-app和uni-app x的uts环境中均�
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -53,7 +53,7 @@ onAppConfigChange 对应的反注册函数
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -84,7 +84,7 @@ onAppConfigChange 对应的反注册函数
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -116,7 +116,7 @@ onAppTrimMemory 对应的反注册函数。
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -148,7 +148,7 @@ onAppTrimMemory 对应的反注册函数。
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -186,7 +186,7 @@ onAppActivityPause 对应的反注册函数
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -225,7 +225,7 @@ UTSAndroid.offAppActivityPause(() => {
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -266,7 +266,7 @@ onAppActivityResume 对应的反注册函数
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -307,7 +307,7 @@ UTSAndroid.onAppActivityResume(() => {
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -345,7 +345,7 @@ onAppActivityDestroy 对应的反注册函数。
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -385,7 +385,7 @@ UTSAndroid.offAppActivityDestroy(() => {
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -436,7 +436,7 @@ onAppActivityResult 对应的反注册函数。
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -476,7 +476,7 @@ UTSAndroid.offAppActivityResult(() => {
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -515,7 +515,7 @@ UTSAndroid.onAppActivityBack(() => {
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -552,7 +552,7 @@ UTSAndroid.offAppActivityBack(() => {
 | Context \| null | 当前应用程序 上下文实例对象 | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -587,7 +587,7 @@ console.log("packageName",packageName)
 | Activity \| null | 当前应用栈顶的 Activity实例 | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -627,7 +627,7 @@ if (takePictureIntent.resolveActivity(UTSAndroid.getUniActivity()!.getPackageMan
 | string | 该资源在原生平台的路径 | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -693,7 +693,7 @@ console.log(UTSAndroid.getResourcePath('/storage/emulated/0/Android/data/io.dclo
 
 <!-- UTSJSON.UTSAndroid.getAppCachePath.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -723,7 +723,7 @@ console.log(UTSAndroid.getResourcePath('/storage/emulated/0/Android/data/io.dclo
 
 <!-- UTSJSON.UTSAndroid.exit.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -775,7 +775,7 @@ async
 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -823,7 +823,7 @@ UTSAndroid.getDispatcher("io").async(function(_){
 
 <!-- UTSJSON.UTSAndroid.getAppId.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -853,7 +853,7 @@ UTSAndroid.getDispatcher("io").async(function(_){
 
 <!-- UTSJSON.UTSAndroid.getOsTheme.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -883,7 +883,7 @@ UTSAndroid.getDispatcher("io").async(function(_){
 
 <!-- UTSJSON.UTSAndroid.isUniMp.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -913,7 +913,7 @@ UTSAndroid.getDispatcher("io").async(function(_){
 
 <!-- UTSJSON.UTSAndroid.getAppName.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -943,7 +943,7 @@ UTSAndroid.getDispatcher("io").async(function(_){
 
 <!-- UTSJSON.UTSAndroid.getAppVersion.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -973,7 +973,7 @@ UTSAndroid.getDispatcher("io").async(function(_){
 
 <!-- UTSJSON.UTSAndroid.getInnerVersion.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1003,7 +1003,7 @@ UTSAndroid.getDispatcher("io").async(function(_){
 
 <!-- UTSJSON.UTSAndroid.isUniAppX.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1035,7 +1035,7 @@ UTSAndroid.getDispatcher("io").async(function(_){
 | number | 转换后的页面px | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1077,7 +1077,7 @@ console.log("pagePX",pagePX)
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1133,7 +1133,7 @@ console.log("pagePX",pagePX)
 | boolean | 请求的权限列表中是否已经具备 | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1175,7 +1175,7 @@ if (UTSAndroid.checkSystemPermissionGranted(UTSAndroid.getUniActivity()!, permis
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1213,7 +1213,7 @@ UTSAndroid.gotoSystemPermissionActivity(UTSAndroid.getUniActivity()!,permissionN
 | Array\<string> | 请求的权限列表中已经被禁用的部分 | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1251,7 +1251,7 @@ UTSAndroid.gotoSystemPermissionActivity(UTSAndroid.getUniActivity()!,permissionN
 | string | 转换后文件绝对路径 | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1331,7 +1331,7 @@ console.log(UTSAndroid.convert2AbsFullPath('../../../io.dcloud.HBuilder/apps/HBu
 | Uri | 转换后的Uri | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1375,7 +1375,7 @@ context.startActivity(intent);
 
 <!-- UTSJSON.UTSAndroid.getExtApiProvider.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1407,7 +1407,7 @@ context.startActivity(intent);
 | Class | 传入对象所对应的class实例 | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1459,7 +1459,7 @@ export function getJavaClassTest() : boolean {
 | KClass | 传入对象所对应的KClass实例 | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1486,7 +1486,7 @@ export function getJavaClassTest() : boolean {
 | Activity \| null | 当前页面绑定的activity示例 | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1523,7 +1523,7 @@ console.log(UTSAndroid.getTopPageActivity())
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1554,7 +1554,7 @@ onActivityCallback对应的反注册函数。
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1583,7 +1583,7 @@ onActivityCallback对应的反注册函数。
 
 <!-- UTSJSON.UTSAndroid.getAppTheme.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1611,7 +1611,7 @@ onActivityCallback对应的反注册函数。
 | Type | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1638,7 +1638,7 @@ onActivityCallback对应的反注册函数。
 | string | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |

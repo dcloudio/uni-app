@@ -16,7 +16,7 @@ uniCloud.databaseForJQL()是客户端访问云数据库的API，即[clientDB](ht
 
 获取数据库操作实例
 
-### databaseForJQL 兼容性 
+### databaseForJQL 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 阿里云 3.91，腾讯云 3.91，支付宝云 3.98 | 4.11 | 4.61 |
@@ -82,7 +82,7 @@ get
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | arg | any | 否 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 
 
@@ -126,7 +126,7 @@ update
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | data | any | 是 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 
 
@@ -237,7 +237,7 @@ get
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | arg | any | 否 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 
 
@@ -420,7 +420,7 @@ geoNear
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | any | 是 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 
 
@@ -562,7 +562,7 @@ geoNear
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | any | 是 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 
 
@@ -659,7 +659,7 @@ add
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | data | any | 是 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 
 
@@ -683,7 +683,7 @@ get
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | arg | any | 否 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 
 
@@ -832,7 +832,7 @@ orderBy
 #### multiSend(...args: Array\<UTSJSONObject>): Promise\<UniCloudDBMultiSendResult>; @multisend
 multiSend
 合并查询请求
-##### multiSend 兼容性 
+##### multiSend 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.16 | 4.11 | 4.61 |
@@ -940,7 +940,7 @@ add
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | data | any | 是 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 
 
@@ -964,7 +964,7 @@ get
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | arg | any | 否 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 
 

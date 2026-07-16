@@ -2,7 +2,7 @@
 
 监听加速度数据变化事件
 
-### onAccelerometerChange 兼容性 
+### onAccelerometerChange 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 5.08 | 5.08 | 5.08 | 5.08 |
@@ -51,7 +51,7 @@
 
 监听加速度数据变化事件
 
-### offAccelerometerChange 兼容性 
+### offAccelerometerChange 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 5.08 | 5.08 | 5.08 | 5.08 |
@@ -97,7 +97,7 @@
 开始监听加速度数据变化事件
 
 
-### startAccelerometer 兼容性 
+### startAccelerometer 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 5.08 | 5.08 | 5.08 | 5.08 |
@@ -228,7 +228,7 @@
 停止监听加速度数据变化事件
 
 
-### stopAccelerometer 兼容性 
+### stopAccelerometer 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 5.08 | 5.08 | 5.08 | 5.08 |
@@ -506,7 +506,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

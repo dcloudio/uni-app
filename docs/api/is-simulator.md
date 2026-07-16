@@ -20,7 +20,7 @@
 
 iOS平台请暂时继续使用[uni.getDeviceInfo](./get-device-info.md)
 
-### isSimulator 兼容性 
+### isSimulator 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.51 | 4.51 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -135,7 +135,7 @@ iOS平台请暂时继续使用[uni.getDeviceInfo](./get-device-info.md)
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

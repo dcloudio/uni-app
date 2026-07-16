@@ -14,13 +14,13 @@ UniCanvasElement -- Extends --> UniElement
 
 
 ### UniCanvasElement 的属性值 @unicanvaselement-values
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | width | number | 是 | Web: 4.21; 微信小程序: x; Android: 4.25; iOS: 4.25; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | Canvas宽度(注意:App平台只读不支持设置) |
 | height | number | 是 | Web: 4.21; 微信小程序: x; Android: 4.25; iOS: 4.25; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | Canvas高度(注意:App平台只读不支持设置) |
 
 
-### UniCanvasElement 兼容性 
+### UniCanvasElement 兼容性 <Help /> 
  | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.21 | x | 4.25 | 4.25 | 4.25 | 4.61 |
@@ -32,7 +32,7 @@ UniCanvasElement -- Extends --> UniElement
 
 返回 Canvas 的绘图上下文
 
-##### getContext 兼容性 
+##### getContext 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.21 | x | 4.25 | 4.25 | 4.25 | 4.61 |
@@ -40,7 +40,7 @@ UniCanvasElement -- Extends --> UniElement
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | contentType | string | 是 | 微信小程序: x | 
 
@@ -59,7 +59,7 @@ UniCanvasElement -- Extends --> UniElement
 
 创造 Blob 对象
 
-##### toBlob 兼容性 
+##### toBlob 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.21 | x | x | x | x | x |
@@ -67,7 +67,7 @@ UniCanvasElement -- Extends --> UniElement
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | BlobCallback | 是 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 
 
@@ -119,7 +119,7 @@ UniCanvasElement -- Extends --> UniElement
 如果画布的高度或宽度是 0，那么会返回字符串“data:,”。
 如果传入的类型非“image/png”，但是返回的值以“data:image/png”开头，那么该传入的类型是不支持的。
 
-##### toDataURL 兼容性 
+##### toDataURL 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.21 | x | 4.25 | 4.25 | x | 4.61 |
@@ -127,7 +127,7 @@ UniCanvasElement -- Extends --> UniElement
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | type | string | 否 | 微信小程序: x |
 | encoderOptions | any | 否 | 微信小程序: x | 

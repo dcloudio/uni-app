@@ -2,7 +2,7 @@
 
 获取视频详细信息
 
-### getVideoInfo 兼容性 
+### getVideoInfo 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.18 | 4.25 | 4.61 |
@@ -16,7 +16,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | src | [string.VideoURIString](/uts/data-type.md#ide-string) | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 视频文件路径，可以是临时文件路径也可以是永久文件路径 |
 | success | (callback: [GetVideoInfoSuccess](#getvideoinfosuccess-values)) => void | 否 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 接口调用成功的回调函数 |
@@ -25,7 +25,7 @@
 
 #### GetVideoInfoSuccess 的属性值 @getvideoinfosuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | orientation | string | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 画面方向 |
 | type | string | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 视频格式 |
@@ -260,7 +260,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

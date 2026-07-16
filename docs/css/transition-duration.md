@@ -11,7 +11,7 @@ transition-duration 属性以秒或毫秒为单位指定过渡动画所需的时
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |

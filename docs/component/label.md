@@ -7,7 +7,7 @@
 用来改进表单组件的可用性，使用for属性找到对应的id，或者将控件放在该标签下，当点击时，就会触发对应的控件
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.71 |
@@ -16,7 +16,7 @@
 App平台可以用view加事件来替代label。
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | disabled | boolean | false | Web: 4.0; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: 4.71 | 是否禁用 |
 | for | string |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: 4.71 | 绑定控件的 id |

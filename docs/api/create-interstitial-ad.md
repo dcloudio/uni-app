@@ -23,7 +23,7 @@ App平台在manifest中配置添加三方广告SDK。具体配置可参考[文�
 打正式包或自定义基座后可生效。标准基座包含的是测试广告位，无法为你产生收益。
 
 
-### createInterstitialAd 兼容性 
+### createInterstitialAd 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS |
 | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.31 | 4.31 |
@@ -31,13 +31,13 @@ App平台在manifest中配置添加三方广告SDK。具体配置可参考[文�
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | option | **CreateInterstitialAdOptions** | 是 | Web: x |
 
 #### option 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | adpid | string | 是 | Web: x | 广告位 id | 
 
@@ -53,7 +53,7 @@ App平台在manifest中配置添加三方广告SDK。具体配置可参考[文�
 #### show() : Promise\<any> @show
 show
 广告加载成功之后，调用此方法展示广告
-##### show 兼容性 
+##### show 兼容性 <Help /> 
 | Web | Android | iOS |
 | :- | :- | :- |
 | x | 4.31 | 4.31 |
@@ -70,7 +70,7 @@ show
 #### load() : Promise\<any> @load
 load
 加载广告
-##### load 兼容性 
+##### load 兼容性 <Help /> 
 | Web | Android | iOS |
 | :- | :- | :- |
 | x | 4.31 | 4.31 |
@@ -87,7 +87,7 @@ load
 #### destroy() : void @destroy
 destroy
 销毁广告
-##### destroy 兼容性 
+##### destroy 兼容性 <Help /> 
 | Web | Android | iOS |
 | :- | :- | :- |
 | x | 4.31 | 4.31 |
@@ -98,14 +98,14 @@ destroy
 #### onLoad(callback : AdCallBackEvent) : void @onload
 onLoad
 绑定广告 load 事件的监听器
-##### onLoad 兼容性 
+##### onLoad 兼容性 <Help /> 
 | Web | Android | iOS |
 | :- | :- | :- |
 | x | 4.31 | 4.31 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -114,14 +114,14 @@ onLoad
 #### offLoad(callback : AdCallBackEvent) : void @offload
 offLoad
 解除绑定 load 事件的监听器
-##### offLoad 兼容性 
+##### offLoad 兼容性 <Help /> 
 | Web | Android | iOS |
 | :- | :- | :- |
 | x | 4.31 | 4.31 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -130,20 +130,20 @@ offLoad
 #### onError(callback : AdErrorCallBackEvent) : void @onerror
 onError
 绑定 error 事件的监听器
-##### onError 兼容性 
+##### onError 兼容性 <Help /> 
 | Web | Android | iOS |
 | :- | :- | :- |
 | x | 4.31 | 4.31 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (result: [IUniAdError](#iuniaderror-values)) => void | 是 | Web: x | 
 
 ##### IUniAdError 的属性值 @iuniaderror-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码<br/>- -5001 广告位标识adpid为空，请传入有效的adpid<br/>- -5002 无效的广告位标识adpid，请使用正确的adpid<br/>- -5003 广告位未开通广告，请在广告平台申请并确保已审核通过<br/>- -5004 无广告模块，打包时请配置要使用的广告模块<br/>- -5005 广告加载失败，请稍后重试<br/>- -5006 广告已经展示过了，请重新加载<br/>- -5007 广告不可用或已过期，请重新请求<br/>- -5008 广告不可用或已过期，请重新请求<br/>- -5009 广告类型不符，请检查后再试<br/>- -5011 打包或开通的渠道，不支持此类型广告<br/>- -5013 广告播放失败，请重新加载 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -156,20 +156,20 @@ onError
 #### offError(callback : AdErrorCallBackEvent) : void @offerror
 offError
 解除绑定 error 事件的监听器
-##### offError 兼容性 
+##### offError 兼容性 <Help /> 
 | Web | Android | iOS |
 | :- | :- | :- |
 | x | 4.31 | 4.31 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (result: [IUniAdError](#iuniaderror-values)) => void | 是 | Web: x | 
 
 ##### IUniAdError 的属性值 @iuniaderror-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码<br/>- -5001 广告位标识adpid为空，请传入有效的adpid<br/>- -5002 无效的广告位标识adpid，请使用正确的adpid<br/>- -5003 广告位未开通广告，请在广告平台申请并确保已审核通过<br/>- -5004 无广告模块，打包时请配置要使用的广告模块<br/>- -5005 广告加载失败，请稍后重试<br/>- -5006 广告已经展示过了，请重新加载<br/>- -5007 广告不可用或已过期，请重新请求<br/>- -5008 广告不可用或已过期，请重新请求<br/>- -5009 广告类型不符，请检查后再试<br/>- -5011 打包或开通的渠道，不支持此类型广告<br/>- -5013 广告播放失败，请重新加载 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -182,14 +182,14 @@ offError
 #### onClose(callback : AdCallBackEvent) : void @onclose
 onClose
 绑定 close 事件的监听器
-##### onClose 兼容性 
+##### onClose 兼容性 <Help /> 
 | Web | Android | iOS |
 | :- | :- | :- |
 | x | 4.31 | 4.31 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -198,14 +198,14 @@ onClose
 #### offClose(callback : AdCallBackEvent) : void @offclose
 offClose
 解除绑定 close 事件的监听器
-##### offClose 兼容性 
+##### offClose 兼容性 <Help /> 
 | Web | Android | iOS |
 | :- | :- | :- |
 | x | 4.31 | 4.31 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -214,14 +214,14 @@ offClose
 #### onAdClicked(callback : AdCallBackEvent) : void; @onadclicked
 onAdClicked
 绑定广告可点击屏幕区域事件的监听器
-##### onAdClicked 兼容性 
+##### onAdClicked 兼容性 <Help /> 
 | Web | Android | iOS |
 | :- | :- | :- |
 | x | 4.31 | 4.31 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -229,7 +229,7 @@ onAdClicked
 
 ##### IUniAdError 的属性值 @iuniaderror-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码<br/>- -5001 广告位标识adpid为空，请传入有效的adpid<br/>- -5002 无效的广告位标识adpid，请使用正确的adpid<br/>- -5003 广告位未开通广告，请在广告平台申请并确保已审核通过<br/>- -5004 无广告模块，打包时请配置要使用的广告模块<br/>- -5005 广告加载失败，请稍后重试<br/>- -5006 广告已经展示过了，请重新加载<br/>- -5007 广告不可用或已过期，请重新请求<br/>- -5008 广告不可用或已过期，请重新请求<br/>- -5009 广告类型不符，请检查后再试<br/>- -5011 打包或开通的渠道，不支持此类型广告<br/>- -5013 广告播放失败，请重新加载 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -239,7 +239,7 @@ onAdClicked
 
 ##### IUniAdError 的属性值 @iuniaderror-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码<br/>- -5001 广告位标识adpid为空，请传入有效的adpid<br/>- -5002 无效的广告位标识adpid，请使用正确的adpid<br/>- -5003 广告位未开通广告，请在广告平台申请并确保已审核通过<br/>- -5004 无广告模块，打包时请配置要使用的广告模块<br/>- -5005 广告加载失败，请稍后重试<br/>- -5006 广告已经展示过了，请重新加载<br/>- -5007 广告不可用或已过期，请重新请求<br/>- -5008 广告不可用或已过期，请重新请求<br/>- -5009 广告类型不符，请检查后再试<br/>- -5011 打包或开通的渠道，不支持此类型广告<br/>- -5013 广告播放失败，请重新加载 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -358,7 +358,7 @@ onAdClicked
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

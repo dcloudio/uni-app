@@ -5,7 +5,7 @@
 
 > Android、iOS平台从 HBuilderX5.08 版本开始支持微信登录; iOS平台从 HBuilderX 5.21 版本开始支持Apple登录
 
-### login 兼容性 
+### login 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 5.08 | 5.08 | 4.61 |
@@ -13,13 +13,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | **LoginOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | provider | string | 否 | Web: x; 微信小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,目前支持微信登录(weixin)<br/> |
 | scopes | any | 否 | Web: x; Android: x; iOS: x; HarmonyOS: x | 授权类型，默认 auth_base。支持 auth_base（静默授权）/ auth_user（主动授权） / auth_zhima（芝麻信用）<br/> |
@@ -31,7 +31,7 @@
 
 ##### provider 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | weixin | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 微信登录 |
 | qq | Web: x; Android: x; iOS: x; HarmonyOS: x | QQ登录 |
@@ -42,7 +42,7 @@
 
 #### LoginSuccess 的属性值 @loginsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 否 | Web: x; 微信小程序: 4.41 | 描述信息 |
 | authResult | any | 是 | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 登录服务商提供的登录信息，服务商不同返回的结果不完全相同 |
@@ -55,7 +55,7 @@
 
 #### appleInfo 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | authorizationCode | string | 否 | Web: x; Android: x; iOS: 5.21; HarmonyOS: x | Apple 授权码，用于服务端向 Apple 校验或换取凭证 |
 | fullName | string | 否 | Web: x; Android: x; iOS: 5.21; HarmonyOS: x | 用户授权时 Apple 返回的姓名信息，通常仅首次授权时可获取，后续登录多数情况下为空 |
@@ -65,7 +65,7 @@
 
 #### LoginFail 的属性值 @loginfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 微信登录错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -75,7 +75,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 1310500 | Web: x | 未找到微信 APPID |
 | 1310501 | Web: x | APPID、appIdentifier、bundleId不匹配 |
@@ -226,7 +226,7 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 获取用户信息
 
 
-### getUserInfo 兼容性 
+### getUserInfo 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 |
@@ -234,13 +234,13 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | **GetUserInfoOptions** | 是 | Web: x; Android: x; iOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | provider | string | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 授权登录服务提供商，通过uni.getProvider获取 |
 | withCredentials | boolean | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否带上登录态信息，仅微信小程序生效。 |
@@ -252,7 +252,7 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 
 ##### provider 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | weixin | Web: x; Android: x; iOS: x; HarmonyOS: x | 微信登录。 - **推荐**: 使用 uniCloud 提供的云函数登录方式，避免在客户端暴露 appSecret。 1. [获取微信openid](https://doc.dcloud.net.cn/uniCloud/uni-id/old.html#获取微信openid) 2. [获取App平台微信登录用户信息](https://doc.dcloud.net.cn/uniCloud/uni-id/old.html#get-weixin-user-info) |
 | qq | Web: x; Android: x; iOS: x; HarmonyOS: x | QQ登录 |
@@ -263,7 +263,7 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 
 #### GetUserInfoSuccess 的属性值 @getuserinfosuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | userInfo | **UserInfo** | 是 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 用户信息对象，不包含 openid 等敏感信息 |
 | rawData | string | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 不包括敏感信息的原始数据字符串，用于计算签名。 |
@@ -275,7 +275,7 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 
 #### userInfo 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | nickName | string | 是 | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 用户昵称 |
 | openId | string | 否 | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: 4.61 | 该服务商唯一用户标识 |
@@ -288,7 +288,7 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 
 ##### gender 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 0 | Web: x; Android: x; iOS: x | 男 |
 | 1 | Web: x; Android: x; iOS: x | 女 |
@@ -299,7 +299,7 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 
 ##### language 的属性描述
 
-| 合法值 | 兼容性 |
+| 合法值 | 兼容性 <Help /> |
 | :- |  :-: |
 | en | Web: x; Android: x; iOS: x |
 | zh_CN | Web: x; Android: x; iOS: x |
@@ -307,7 +307,7 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 
 #### GetUserInfoFail 的属性值 @getuserinfofail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x; Android: x; iOS: x | 统一错误码 |
 | errSubject | string | 是 | Web: x; Android: x; iOS: x | 统一错误主题（模块）名称 |
@@ -499,7 +499,7 @@ export class UniOAuthWeixinProviderImpl implements UniOAuthWeixinProvider {
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

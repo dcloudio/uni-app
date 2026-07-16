@@ -11,7 +11,7 @@ display 属性设置元素的显示或布局方式，默认值为flex（弹性�
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |

@@ -13,7 +13,7 @@
 开始下拉刷新
 
 
-### startPullDownRefresh 兼容性 
+### startPullDownRefresh 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.91 | 4.11 | 4.61 |
@@ -27,7 +27,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | success | (result: [StartPullDownRefreshSuccess](#startpulldownrefreshsuccess-values)) => void | 否 | 微信小程序: 4.41 | 接口调用成功的回调函数 |
 | fail | (result: [StartPullDownRefreshFail](#startpulldownrefreshfail-values)) => void | 否 | 微信小程序: 4.41 | 接口调用失败的回调函数 |
@@ -94,7 +94,7 @@
 停止当前页面下拉刷新
 
 
-### stopPullDownRefresh 兼容性 
+### stopPullDownRefresh 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.91 | 4.11 | 4.61 |
@@ -253,7 +253,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

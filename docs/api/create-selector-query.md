@@ -23,7 +23,7 @@ createSelectorQuery是小程序的API，因小程序未开放DOM，且视图层�
 
 小程序下有时用本API获取部分组件的上下文context，但这个写法不跨平台。跨平台的获取组件context，应该使用uni.createXXContext()。
 
-### createSelectorQuery 兼容性 
+### createSelectorQuery 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.91 | 4.11 | 4.61 |
@@ -48,7 +48,7 @@ createSelectorQuery是小程序的API，因小程序未开放DOM，且视图层�
 #### in(component: any \| null): SelectorQuery @in
 in
 将选择器的选取范围更改为自定义组件component内
-##### in 兼容性 
+##### in 兼容性 <Help /> 
 | 微信小程序 |
 | :- |
 | 4.41 |
@@ -70,7 +70,7 @@ in
 #### select(selector: string): NodesRef @select
 select
 在当前页面下选择第一个匹配选择器selector的节点
-##### select 兼容性 
+##### select 兼容性 <Help /> 
 | 微信小程序 |
 | :- |
 | 4.41 |
@@ -129,7 +129,7 @@ scrollOffset
 ###### fields( fields: NodeField,        callback: SelectorQueryNodeInfoCallback \| null,    ): SelectorQuery @fields
 fields
 获取节点的相关信息，需要获取的字段在fields中指定
-###### fields 兼容性 
+###### fields 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.25 | 4.25 |
@@ -143,7 +143,7 @@ fields
 
 #### fields 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | id | boolean | 否 |   | 是否返回节点 id |
 | dataset | boolean | 否 |   | 是否返回节点 dataset |
@@ -166,7 +166,7 @@ fields
 ###### context(callback: SelectorQueryNodeInfoCallback): SelectorQuery @context
 context
 添加节点的 Context 对象查询请求（uni-app x 暂仅支持获取 EditorContext）
-###### context 兼容性 
+###### context 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 5.04 | 5.04 | 5.04 | 5.04 |
@@ -189,7 +189,7 @@ context
 node
 获取 Node 节点实例。目前支持 Canvas 的获取。
 获取节点的相关信息，需要获取的字段在fields中指定
-###### node 兼容性 
+###### node 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.25 | 4.25 |
@@ -210,7 +210,7 @@ node
 
 ###### NodeField 的属性值 @nodefield-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | id | boolean | 否 |   | 是否返回节点 id |
 | dataset | boolean | 否 |   | 是否返回节点 dataset |
@@ -226,7 +226,7 @@ node
 #### selectAll(selector: string): NodesRef @selectall
 selectAll
 在当前页面下选择匹配选择器selector的所有节点
-##### selectAll 兼容性 
+##### selectAll 兼容性 <Help /> 
 | 微信小程序 |
 | :- |
 | 4.41 |
@@ -248,7 +248,7 @@ selectAll
 #### selectViewport(): NodesRef @selectviewport
 selectViewport
 选择显示区域
-##### selectViewport 兼容性 
+##### selectViewport 兼容性 <Help /> 
 | 微信小程序 |
 | :- |
 | 4.41 |
@@ -265,7 +265,7 @@ selectViewport
 #### exec(callback: (result: Array\<any>) => void \| null): NodesRef \| null @exec
 exec
 执行所有的请求
-##### exec 兼容性 
+##### exec 兼容性 <Help /> 
 | 微信小程序 |
 | :- |
 | 4.41 |
@@ -914,7 +914,7 @@ uni.createSelectorQuery().select('.rect1').selectAll('.rect2').boundingClientRec
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

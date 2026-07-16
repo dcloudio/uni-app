@@ -3,7 +3,7 @@
 保留当前页面，跳转到应用内的某个页面
 
 
-### navigateTo 兼容性 
+### navigateTo 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | √ | 4.11 | 5.14 | 4.61 |
@@ -17,7 +17,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数 |
 | animationType | string | 否 | Web: x; 微信小程序: x; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 窗口显示的动画类型<br/> |
@@ -32,7 +32,7 @@
 
 ##### animationType 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | auto | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 自动选择动画效果 |
 | none | Web: x; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 无动画效果 |
@@ -104,7 +104,7 @@
 关闭当前页面，跳转到应用内的某个页面
 
 
-### redirectTo 兼容性 
+### redirectTo 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | √ | 4.11 | 5.14 | 4.61 |
@@ -118,7 +118,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数 |
 | success | (result: [RedirectToSuccess](#redirecttosuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
@@ -184,7 +184,7 @@
 关闭所有页面，打开到应用内的某个页面
 
 
-### reLaunch 兼容性 
+### reLaunch 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | √ | 4.11 | 5.14 | 4.61 |
@@ -198,7 +198,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 需要跳转的应用内页面路径 , 路径后可以带参数。参数与路径之间使用?分隔，参数键与参数值用=相连，不同参数用&分隔；如 'path?key=value&key2=value2'，如果跳转的页面路径是 tabBar 页面则不能带参数 |
 | success | (result: [ReLaunchSuccess](#relaunchsuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
@@ -264,7 +264,7 @@
 跳转到 tabBar 页面，并关闭其他所有非 tabBar 页面
 
 
-### switchTab 兼容性 
+### switchTab 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | √ | 4.11 | 5.14 | 4.61 |
@@ -278,7 +278,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 需要跳转的 tabBar 页面的路径，路径后不能带参数 |
 | success | (result: [SwitchTabSuccess](#switchtabsuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
@@ -344,7 +344,7 @@
 关闭当前页面，返回上一页面或多级页面
 
 
-### navigateBack 兼容性 
+### navigateBack 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | √ | 4.11 | 5.14 | 4.61 |
@@ -358,7 +358,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | delta | number | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 返回的页面数，如果 delta 大于现有页面数，则返回到首页 |
 | animationType | string | 否 | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.25 | 窗口关闭的动画类型<br/> |
@@ -369,7 +369,7 @@
 
 ##### animationType 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | auto | Web: x; Android: 4.18; iOS: 4.25; HarmonyOS: 5.0 | 自动选择动画效果 |
 | none | Web: x; Android: 4.18; iOS(VDOM): 4.25; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 无动画效果 |
@@ -904,7 +904,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

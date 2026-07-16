@@ -11,7 +11,7 @@ flex-shrink 属性设置弹性元素在主轴方向的收缩系数。当所有�
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |

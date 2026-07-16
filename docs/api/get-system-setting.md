@@ -12,7 +12,7 @@
 
 获取系统设置
 
-### getSystemSetting 兼容性 
+### getSystemSetting 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -28,7 +28,7 @@
 
 #### GetSystemSettingResult 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | bluetoothEnabled | boolean | 否 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 蓝牙是否开启<br/> |
 | bluetoothError | string | 否 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 蓝牙的报错信息<br/> |
@@ -39,7 +39,7 @@
 
 ##### deviceOrientation 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | portrait | Web: x | 纵向 |
 | landscape | Web: x | 横向 | 
@@ -163,7 +163,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

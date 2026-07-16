@@ -40,7 +40,7 @@
 
 请求支付
 
-### requestVirtualPayment 兼容性 
+### requestVirtualPayment 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS 系统版本 | iOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 15.0 | 4.25 |
@@ -52,13 +52,13 @@ uni.requestVirtualPayment是一个统一各平台虚拟支付客户端API。
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | **RequestVirtualPaymentOptions** | 是 | Web: x; Android: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | apple | **AppleIAPOptions** | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 苹果IAP的参数 |
 | success | (result: [RequestVirtualPaymentSuccess](#requestvirtualpaymentsuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 接口调用成功的回调函数 |
@@ -71,7 +71,7 @@ uni.requestVirtualPayment是一个统一各平台虚拟支付客户端API。
 
 ##### apple 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | productId | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，在苹果开发者中心配置 |
 | appAccountToken | string | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
@@ -80,7 +80,7 @@ uni.requestVirtualPayment是一个统一各平台虚拟支付客户端API。
 
 ###### promotionalOffer 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | offerIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 促销id |
 | keyIdentifier | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 密钥 |
@@ -90,14 +90,14 @@ uni.requestVirtualPayment是一个统一各平台虚拟支付客户端API。
 
 ##### mode 的属性描述
 
-| 合法值 | 兼容性 |
+| 合法值 | 兼容性 <Help /> |
 | :- |  :-: |
 | short_series_goods | Web: x; Android: x |
 | short_series_coin | Web: x; Android: x |
 
 ##### signData 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | attach | string | 否 | Web: x; 微信小程序: 4.41; Android: x | 透传数据, 发货通知时会透传给开发者<br/> |
 | buyQuantity | number | 否 | Web: x; 微信小程序: 4.41; Android: x | 购买数量<br/> |
@@ -110,13 +110,13 @@ uni.requestVirtualPayment是一个统一各平台虚拟支付客户端API。
 
 #### RequestVirtualPaymentSuccess 的属性值 @requestvirtualpaymentsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | apple | **AppleIAPTransactionOptions** | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 支付成功返回结果 |
 
 #### apple 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | productId | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，和苹果开发者中心配置的一样 |
 | appAccountToken | string | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
@@ -129,7 +129,7 @@ uni.requestVirtualPayment是一个统一各平台虚拟支付客户端API。
 
 #### RequestVirtualPaymentFail 的属性值 @requestvirtualpaymentfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 错误码 |
 | errSubject | string | 是 | Web: x; Android: x | 统一错误主题（模块）名称 |
@@ -139,7 +139,7 @@ uni.requestVirtualPayment是一个统一各平台虚拟支付客户端API。
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 700000 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 其他未知错误。 |
 | 700600 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 正在处理中，支付结果未知 |
@@ -223,7 +223,7 @@ uni.requestVirtualPayment({
 
 获取各平台虚拟支付的管理类，用于操作各平台专有的API。
 
-### getVirtualPaymentManager 兼容性 
+### getVirtualPaymentManager 兼容性 <Help /> 
 | Web | Android | iOS 系统版本 | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 15.0 | 4.25 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -250,20 +250,20 @@ uni.getVirtualPaymentManager(): 用来创建各个平台虚拟支付的管理类
 #### restoreTransactions(options: AppleIAPRestoreOptions): void; @restoretransactions
 restoreTransactions
 恢复苹果服务器已支付的交易列表
-##### restoreTransactions 兼容性 
+##### restoreTransactions 兼容性 <Help /> 
 | Web | Android | iOS 系统版本 | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | x | 15.0 | 4.25 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | **AppleIAPRestoreOptions** | 是 | Web: x; Android: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | success | (result: [AppleIAPRestoreSuccess](#appleiaprestoresuccess-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
 | fail | (result: [AppleIAPRestoreFail](#appleiaprestorefail-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用失败的回调函数 |
@@ -271,13 +271,13 @@ restoreTransactions
 
 ###### AppleIAPRestoreSuccess 的属性值 @appleiaprestoresuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | transactions | Array&lt;**AppleIAPTransactionOptions**&gt; | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 返回的交易列表 |
 
 #### transactions 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | productId | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，和苹果开发者中心配置的一样 |
 | appAccountToken | string | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
@@ -290,7 +290,7 @@ restoreTransactions
 
 ###### AppleIAPRestoreFail 的属性值 @appleiaprestorefail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 错误码 |
 | errSubject | string | 是 | Web: x; Android: x; HarmonyOS: x | 统一错误主题（模块）名称 |
@@ -300,7 +300,7 @@ restoreTransactions
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 700600 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | apple restore 请求失败。 |
 | 700601 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 用户中途取消。 |
@@ -312,20 +312,20 @@ restoreTransactions
 #### getUnfinishedTransactions(options: AppleIAPUnfinishedTransactionOptions): void; @getunfinishedtransactions
 getUnfinishedTransactions
 获取苹果服务器已支付且未关闭的交易列表
-##### getUnfinishedTransactions 兼容性 
+##### getUnfinishedTransactions 兼容性 <Help /> 
 | Web | Android | iOS 系统版本 | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | x | 15.0 | 4.25 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | **AppleIAPUnfinishedTransactionOptions** | 是 | Web: x; Android: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | success | (result: [AppleIAPUnfinishedTransactionSuccess](#appleiapunfinishedtransactionsuccess-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
 | fail | (result: [AppleIAPUnfinishedTransactionFail](#appleiapunfinishedtransactionfail-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用失败的回调函数 |
@@ -333,13 +333,13 @@ getUnfinishedTransactions
 
 ###### AppleIAPUnfinishedTransactionSuccess 的属性值 @appleiapunfinishedtransactionsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | transactions | Array&lt;**AppleIAPTransactionOptions**&gt; | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 返回的交易列表 |
 
 #### transactions 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | productId | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，和苹果开发者中心配置的一样 |
 | appAccountToken | string | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
@@ -352,7 +352,7 @@ getUnfinishedTransactions
 
 ###### AppleIAPUnfinishedTransactionFail 的属性值 @appleiapunfinishedtransactionfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x; Android: x; HarmonyOS: x | 错误码<br/>- 700800  只支持iOS15以上的版本。 |
 | errSubject | string | 是 | Web: x; Android: x; HarmonyOS: x | 统一错误主题（模块）名称 |
@@ -365,20 +365,20 @@ getUnfinishedTransactions
 #### finishTransaction(options: AppleIAPFinishTransactionOptions): void; @finishtransaction
 finishTransaction
 关闭苹果服务器订单
-##### finishTransaction 兼容性 
+##### finishTransaction 兼容性 <Help /> 
 | Web | Android | iOS 系统版本 | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | x | 15.0 | 4.25 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | **AppleIAPFinishTransactionOptions** | 是 | Web: x; Android: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | transaction | **AppleIAPTransactionOptions** | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 交易对象 |
 | success | (result: [AppleIAPFinishTransactionSuccess](#appleiapfinishtransactionsuccess-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
@@ -387,7 +387,7 @@ finishTransaction
 
 ##### transaction 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | productId | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，和苹果开发者中心配置的一样 |
 | appAccountToken | string | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
@@ -400,13 +400,13 @@ finishTransaction
 
 ###### AppleIAPFinishTransactionSuccess 的属性值 @appleiapfinishtransactionsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | state | boolean | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 关单状态 |
 
 ###### AppleIAPFinishTransactionFail 的属性值 @appleiapfinishtransactionfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 错误码 |
 | errSubject | string | 是 | Web: x; Android: x; HarmonyOS: x | 统一错误主题（模块）名称 |
@@ -416,7 +416,7 @@ finishTransaction
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 700600 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 没有该交易。 |
 | 700800 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 只支持iOS15以上的版本。 |
@@ -425,7 +425,7 @@ finishTransaction
 
 ##### AppleIAPRestoreOptions 的属性值 @appleiaprestoreoptions-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | success | (result: [AppleIAPRestoreSuccess](#appleiaprestoresuccess-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
 | fail | (result: [AppleIAPRestoreFail](#appleiaprestorefail-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用失败的回调函数 |
@@ -433,13 +433,13 @@ finishTransaction
 
 ###### AppleIAPRestoreSuccess 的属性值 @appleiaprestoresuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | transactions | Array&lt;**AppleIAPTransactionOptions**&gt; | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 返回的交易列表 |
 
 #### transactions 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | productId | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，和苹果开发者中心配置的一样 |
 | appAccountToken | string | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
@@ -452,7 +452,7 @@ finishTransaction
 
 ###### AppleIAPRestoreFail 的属性值 @appleiaprestorefail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 错误码 |
 | errSubject | string | 是 | Web: x; Android: x; HarmonyOS: x | 统一错误主题（模块）名称 |
@@ -462,7 +462,7 @@ finishTransaction
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 700600 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | apple restore 请求失败。 |
 | 700601 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 用户中途取消。 |
@@ -471,7 +471,7 @@ finishTransaction
 
 ##### AppleIAPUnfinishedTransactionOptions 的属性值 @appleiapunfinishedtransactionoptions-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | success | (result: [AppleIAPUnfinishedTransactionSuccess](#appleiapunfinishedtransactionsuccess-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
 | fail | (result: [AppleIAPUnfinishedTransactionFail](#appleiapunfinishedtransactionfail-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用失败的回调函数 |
@@ -479,13 +479,13 @@ finishTransaction
 
 ###### AppleIAPUnfinishedTransactionSuccess 的属性值 @appleiapunfinishedtransactionsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | transactions | Array&lt;**AppleIAPTransactionOptions**&gt; | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 返回的交易列表 |
 
 #### transactions 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | productId | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，和苹果开发者中心配置的一样 |
 | appAccountToken | string | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
@@ -498,7 +498,7 @@ finishTransaction
 
 ###### AppleIAPUnfinishedTransactionFail 的属性值 @appleiapunfinishedtransactionfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x; Android: x; HarmonyOS: x | 错误码<br/>- 700800  只支持iOS15以上的版本。 |
 | errSubject | string | 是 | Web: x; Android: x; HarmonyOS: x | 统一错误主题（模块）名称 |
@@ -508,7 +508,7 @@ finishTransaction
 
 ##### AppleIAPFinishTransactionOptions 的属性值 @appleiapfinishtransactionoptions-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | transaction | **AppleIAPTransactionOptions** | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 交易对象 |
 | success | (result: [AppleIAPFinishTransactionSuccess](#appleiapfinishtransactionsuccess-values)) => void | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 接口调用成功的回调函数 |
@@ -517,7 +517,7 @@ finishTransaction
 
 #### transaction 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | productId | string | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 产品id，和苹果开发者中心配置的一样 |
 | appAccountToken | string | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25 | 透传参数，一般用于标记订单和用户的关系，可以用来验证和关联用户账户和购买记录 |
@@ -530,13 +530,13 @@ finishTransaction
 
 ###### AppleIAPFinishTransactionSuccess 的属性值 @appleiapfinishtransactionsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | state | boolean | 否 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 关单状态 |
 
 ###### AppleIAPFinishTransactionFail 的属性值 @appleiapfinishtransactionfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 错误码 |
 | errSubject | string | 是 | Web: x; Android: x; HarmonyOS: x | 统一错误主题（模块）名称 |
@@ -546,7 +546,7 @@ finishTransaction
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 700600 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 没有该交易。 |
 | 700800 | Web: x; Android: x; iOS 系统版本: 15.0; iOS: 4.25; HarmonyOS: x | 只支持iOS15以上的版本。 |

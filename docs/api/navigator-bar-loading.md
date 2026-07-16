@@ -13,7 +13,7 @@
 在当前页面显示导航条加载动画
 
 
-### showNavigationBarLoading 兼容性 
+### showNavigationBarLoading 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -21,13 +21,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | **ShowNavigationBarLoadingOptions** | 否 | Android: x; iOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | success | (result: [ShowNavigationBarLoadingSuccess](#shownavigationbarloadingsuccess-values)) => void | 否 | Android: x; iOS: x |
 | fail | (error: [ShowNavigationBarLoadingFail](#shownavigationbarloadingfail-values)) => void | 否 | Android: x; iOS: x |
@@ -35,13 +35,13 @@
 
 #### ShowNavigationBarLoadingSuccess 的属性值 @shownavigationbarloadingsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | errMsg | string | 是 | Android: x; iOS: x |
 
 #### ShowNavigationBarLoadingFail 的属性值 @shownavigationbarloadingfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Android: x; iOS: x | 统一错误码 |
 | errSubject | string | 是 | Android: x; iOS: x | 统一错误主题（模块）名称 |
@@ -85,7 +85,7 @@
 隐藏导航条加载动画
 
 
-### hideNavigationBarLoading 兼容性 
+### hideNavigationBarLoading 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -93,13 +93,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | **HideNavigationBarLoadingOptions** | 否 | Android: x; iOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | success | (result: [HideNavigationBarLoadingSuccess](#hidenavigationbarloadingsuccess-values)) => void | 否 | Android: x; iOS: x |
 | fail | (error: [HideNavigationBarLoadingFail](#hidenavigationbarloadingfail-values)) => void | 否 | Android: x; iOS: x |
@@ -107,13 +107,13 @@
 
 #### HideNavigationBarLoadingSuccess 的属性值 @hidenavigationbarloadingsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | errMsg | string | 是 | Android: x; iOS: x |
 
 #### HideNavigationBarLoadingFail 的属性值 @hidenavigationbarloadingfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Android: x; iOS: x | 统一错误码 |
 | errSubject | string | 是 | Android: x; iOS: x | 统一错误主题（模块）名称 |
@@ -149,7 +149,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

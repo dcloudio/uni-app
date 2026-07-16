@@ -11,7 +11,7 @@ top样式属性定义了定位元素的上外边距边界与其包含块上边�
 | 4.0 | 3.9 | 4.11 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |

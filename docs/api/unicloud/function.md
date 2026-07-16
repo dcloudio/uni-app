@@ -4,7 +4,7 @@
 
 请求云函数
 
-### callFunction 兼容性 
+### callFunction 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 阿里云 3.9，腾讯云 3.91，支付宝云 3.98 | 4.11 | 4.61 |
@@ -18,7 +18,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | name | string ([string.CloudFunctionString](/uts/data-type.md#ide-string)) | 是 |   | 云函数名 |
 | data | any | 否 |   | 云函数参数 |

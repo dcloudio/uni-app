@@ -8,7 +8,7 @@ uni.env提供了一些环境变量，主要是App和小程序文件系统相关�
 
 ### env 的属性值 @env-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | USER_DATA_PATH | string | 是 | Web: x; 微信小程序: 4.41; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 | 文件系统中的用户文件目录路径 |
 | CACHE_PATH | string | 是 | Web: x; 微信小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 | 文件系统中的缓存文件目录路径 |
@@ -169,7 +169,7 @@ uni.env提供了一些环境变量，主要是App和小程序文件系统相关�
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

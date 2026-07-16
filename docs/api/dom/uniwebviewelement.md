@@ -2,7 +2,7 @@
 
 web-view 组件的 DOM 元素对象。
 
-### UniWebViewElement 兼容性 
+### UniWebViewElement 兼容性 <Help /> 
  | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | x | 4.0 | 4.11 | 4.25 | 4.61 |
@@ -23,7 +23,7 @@ UniWebViewElement -- Extends --> UniElement
 
 后退
 
-##### back 兼容性 
+##### back 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- |
 | 4.0 | x | 4.0 | 4.11 | 4.25 |
@@ -39,7 +39,7 @@ UniWebViewElement -- Extends --> UniElement
 
 前进
 
-##### forward 兼容性 
+##### forward 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- |
 | 4.0 | x | 4.0 | 4.11 | 4.25 |
@@ -55,7 +55,7 @@ UniWebViewElement -- Extends --> UniElement
 
 重新加载
 
-##### reload 兼容性 
+##### reload 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- |
 | 4.0 | x | 4.0 | 4.11 | 4.25 |
@@ -71,7 +71,7 @@ UniWebViewElement -- Extends --> UniElement
 
 停止加载
 
-##### stop 兼容性 
+##### stop 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- |
 | 4.0 | x | 4.0 | 4.11 | 4.25 |
@@ -87,7 +87,7 @@ UniWebViewElement -- Extends --> UniElement
 
 原生和WebView通信（执行JS脚本）
 
-##### evalJS 兼容性 
+##### evalJS 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- |
 | 4.0 | x | 4.0 | 4.11 | 4.25 |
@@ -95,7 +95,7 @@ UniWebViewElement -- Extends --> UniElement
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | js | string | 是 | 微信小程序: x | 
 
@@ -108,7 +108,7 @@ UniWebViewElement -- Extends --> UniElement
 
 获取webview内容高度
 
-##### getContentHeight 兼容性 
+##### getContentHeight 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- |
 | x | x | 4.63 | 4.63 | 4.63 |
@@ -130,7 +130,7 @@ UniWebViewElement -- Extends --> UniElement
 
 加载页面内容
 
-##### loadData 兼容性 
+##### loadData 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- |
 | x | x | 4.65 | 4.65 | 4.65 |
@@ -138,13 +138,13 @@ UniWebViewElement -- Extends --> UniElement
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **UniWebViewElementLoadDataOptions** | 是 | Web: x; 微信小程序: x; Android: 4.65; iOS: 4.65; iOS(VDOM) UTS 插件: 4.65; HarmonyOS: 4.61 | web-view 组件加载数据参数。 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | data | string | 是 | Web: x; 微信小程序: x; Android: 4.65; iOS: 4.65; iOS(VDOM) UTS 插件: 4.65 | 要加载的html字符串，注意：这里是编码过的字符串 |
 | baseURL | string | 否 | Web: x; 微信小程序: x; Android: 4.65; iOS: 4.65; iOS(VDOM) UTS 插件: 4.65 | 页面的基础URL, 可选 |

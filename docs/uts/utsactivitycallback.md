@@ -41,7 +41,7 @@
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -55,7 +55,7 @@
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -83,7 +83,7 @@
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -97,7 +97,7 @@
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -124,7 +124,7 @@
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -138,7 +138,7 @@
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -165,7 +165,7 @@
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -179,7 +179,7 @@
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -206,7 +206,7 @@
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -220,7 +220,7 @@
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -247,7 +247,7 @@
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -261,7 +261,7 @@
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -288,7 +288,7 @@
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -302,7 +302,7 @@
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -332,7 +332,7 @@
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -346,7 +346,7 @@
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -376,7 +376,7 @@
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -390,7 +390,7 @@
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -432,7 +432,7 @@
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -446,7 +446,7 @@
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -476,7 +476,7 @@
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -490,7 +490,7 @@
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -520,7 +520,7 @@
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -534,7 +534,7 @@
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -565,7 +565,7 @@
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -601,7 +601,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -632,7 +632,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -646,7 +646,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -675,7 +675,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -711,7 +711,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -740,7 +740,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -754,7 +754,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -783,7 +783,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -819,7 +819,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -848,7 +848,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -862,7 +862,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -890,7 +890,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -904,7 +904,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -932,7 +932,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -946,7 +946,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -976,7 +976,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -990,7 +990,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1020,7 +1020,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1034,7 +1034,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1062,7 +1062,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1076,7 +1076,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1104,7 +1104,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1118,7 +1118,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1146,7 +1146,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1160,7 +1160,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1188,7 +1188,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1202,7 +1202,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1230,7 +1230,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1244,7 +1244,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1272,7 +1272,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1286,7 +1286,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1314,7 +1314,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1328,7 +1328,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1356,7 +1356,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1370,7 +1370,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1404,7 +1404,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1418,7 +1418,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1446,7 +1446,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1460,7 +1460,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1487,7 +1487,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1501,7 +1501,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1528,7 +1528,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1542,7 +1542,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1570,7 +1570,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1584,7 +1584,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1612,7 +1612,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1626,7 +1626,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1661,7 +1661,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1675,7 +1675,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1704,7 +1704,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1718,7 +1718,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1747,7 +1747,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1761,7 +1761,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1790,7 +1790,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1804,7 +1804,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1833,7 +1833,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1847,7 +1847,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1876,7 +1876,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1890,7 +1890,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1920,7 +1920,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1934,7 +1934,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -1964,7 +1964,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -1978,7 +1978,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2012,7 +2012,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2026,7 +2026,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2054,7 +2054,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2068,7 +2068,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2095,7 +2095,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2109,7 +2109,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2136,7 +2136,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2150,7 +2150,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2177,7 +2177,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2191,7 +2191,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2218,7 +2218,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2232,7 +2232,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2259,7 +2259,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2273,7 +2273,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2300,7 +2300,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2314,7 +2314,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2341,7 +2341,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2355,7 +2355,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2382,7 +2382,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2396,7 +2396,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2423,7 +2423,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2437,7 +2437,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2464,7 +2464,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2478,7 +2478,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2505,7 +2505,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2519,7 +2519,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2546,7 +2546,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2560,7 +2560,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2593,7 +2593,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2607,7 +2607,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2634,7 +2634,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2648,7 +2648,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2675,7 +2675,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2689,7 +2689,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2716,7 +2716,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2730,7 +2730,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2758,7 +2758,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2772,7 +2772,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2800,7 +2800,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2814,7 +2814,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2842,7 +2842,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2856,7 +2856,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2884,7 +2884,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2898,7 +2898,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2925,7 +2925,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2939,7 +2939,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -2966,7 +2966,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -2980,7 +2980,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -3009,7 +3009,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -3023,7 +3023,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -3052,7 +3052,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -3066,7 +3066,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -3093,7 +3093,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -3107,7 +3107,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -3134,7 +3134,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -3148,7 +3148,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -3176,7 +3176,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -3190,7 +3190,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -3218,7 +3218,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -3232,7 +3232,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -3260,7 +3260,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -3274,7 +3274,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -3303,7 +3303,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -3317,7 +3317,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -3345,7 +3345,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -3359,7 +3359,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -3387,7 +3387,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -3401,7 +3401,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -3429,7 +3429,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -3443,7 +3443,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -3471,7 +3471,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -3485,7 +3485,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -3515,7 +3515,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -3529,7 +3529,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -3559,7 +3559,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -3573,7 +3573,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -3601,7 +3601,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -3615,7 +3615,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -3643,7 +3643,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -3657,7 +3657,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -3685,7 +3685,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -3699,7 +3699,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |
@@ -3727,7 +3727,7 @@ Negative integers count back from the last item in the array.
 
 #### params 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | activity | Activity | 是 | Android: 4.62; iOS 系统版本: x; iOS: x | 当前activity示例 |
 | pageRoute | string | 是 | Android: 4.18; iOS 系统版本: x; iOS: x | 页面路由地址 |
@@ -3741,7 +3741,7 @@ Negative integers count back from the last item in the array.
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |

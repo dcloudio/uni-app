@@ -4,7 +4,7 @@
 
 ### 兼容性 @compatibility
 
-|  | 兼容性 |
+|  | 兼容性 <Help /> |
 | :- | :- |
 | createApp() | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 |
 | createSSRApp() | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 |

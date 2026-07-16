@@ -12,7 +12,7 @@
 
 获取当前的地理位置、速度
 
-### getLocation 兼容性 
+### getLocation 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS 系统版本 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9.0 | 4.11 | 5.0.0(11) | 4.61 |
@@ -26,7 +26,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | provider | string | 否 | system | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.81 | 定位服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,目前支持系统定位(system)、腾讯定位(tencent)<br/>腾讯定位是4.25版本后支持的；<br/>web端暂不支持provider机制； |
 | type | string | 否 | wgs84 | Web: 4.0; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.81 | 默认为 wgs84 返回 gps 坐标，gcj02 返回可用于uni.openLocation的坐标，web端需配置定位 SDK 信息才可支持 gcj02； |
@@ -40,14 +40,14 @@
 
 ##### type 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | wgs84 | Web: 4.0; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11 | wgs84坐标系，系统定位默认取值wgs84，系统定位仅支持wgs84坐标系 |
 | gcj02 | Web: 4.0; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11 | gcj02坐标系，腾讯定位默认取值gcj02，腾讯定位仅支持gcj02坐标系 |
 
 #### GetLocationSuccess 的属性值 @getlocationsuccess-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | latitude | number | 是 | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 纬度，浮点数，范围为-90~90，负数表示南纬 |
 | longitude | number | 是 | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.61 | 经度，范围为-180~180，负数表示西经 |
@@ -70,7 +70,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 1505003 | Android: 4.25; iOS: 4.25; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.81 | 系统定位未开启，请在系统设置中开启系统定位 |
 | 1505004 | Android: 4.25; iOS: 4.25; HarmonyOS 系统版本: 5.0.0(11); HarmonyOS: 4.81 | 应用定位权限未开启 |
@@ -491,7 +491,7 @@ HarmonyOS平台调用此 API 需要申请定位权限`ohos.permission.APPROXIMAT
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

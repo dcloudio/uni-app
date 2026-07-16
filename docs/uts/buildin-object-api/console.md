@@ -20,7 +20,7 @@
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -50,7 +50,7 @@
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -80,7 +80,7 @@
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -110,7 +110,7 @@
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
@@ -140,7 +140,7 @@
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
@@ -171,7 +171,7 @@
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -197,7 +197,7 @@ console.clear() 方法清空控制台，但前提是该控制台允许清空。
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -227,7 +227,7 @@ console.count() 方法会记录调用 count() 的次数。
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -257,7 +257,7 @@ console.count() 方法会记录调用 count() 的次数。
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -288,7 +288,7 @@ console.dir() 方法可以显示指定 JavaScript 对象的属性列表，并以
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -318,7 +318,7 @@ console.dir() 方法可以显示指定 JavaScript 对象的属性列表，并以
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -348,7 +348,7 @@ console.group() 方法在控制台上创建一个新的分组。随后输出到�
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -378,7 +378,7 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -404,7 +404,7 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -435,7 +435,7 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -465,7 +465,7 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -495,7 +495,7 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -526,7 +526,7 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -556,7 +556,7 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -586,7 +586,7 @@ console.groupCollapsed() 方法在控制台上创建一个新的分组。
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |

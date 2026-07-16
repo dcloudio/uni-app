@@ -2,7 +2,7 @@
 
 image 组件的 DOM 元素对象。
 
-### UniImageElement 兼容性 
+### UniImageElement 兼容性 <Help /> 
  | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | x | 4.0 | 4.11 | 4.25 | x |
@@ -17,7 +17,7 @@ UniImageElement -- Extends --> UniElement
 
 
 ### UniImageElement 的属性值 @uniimageelement-values
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | src | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 | Web: 4.0; 微信小程序: x; Android: 4.25; iOS: 4.25; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | 图片url |
 

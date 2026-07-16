@@ -14,7 +14,7 @@
 
 系统分享不同于SDK分享。不需要配置三方SDK的key信息。手机上安装的、可接受分享的应用都会出现在列表中。
 
-### shareWithSystem 兼容性 
+### shareWithSystem 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.33 | 4.33 | 4.61 |
@@ -22,13 +22,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | **ShareWithSystemOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | type | string | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享类型,默认为text。 |
 | summary | string | 否 | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 分享的文字内容 |
@@ -44,7 +44,7 @@
 
 ##### type 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | text | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | text类型 |
 | image | Web: x; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | image类型 |
@@ -54,7 +54,7 @@
 
 #### ShareWithSystemFail 的属性值 @sharewithsystemfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -64,7 +64,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 1310600 | Web: x; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: x | 取消分享 |
 | 1310601 | Web: x; Android: 4.33; iOS(VDOM): 4.33; iOS(Vapor): 5.08; HarmonyOS: x | 分享内容不可以为空 |
@@ -639,7 +639,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

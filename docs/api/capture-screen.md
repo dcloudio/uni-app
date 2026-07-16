@@ -6,7 +6,7 @@
 > 本 API 是 [uni ext api](https://uniapp.dcloud.net.cn/api/extapi.html)，需下载插件：[uni-usercapturescreen](https://ext.dcloud.net.cn/plugin?name=uni-usercapturescreen)
 
 
-### onUserCaptureScreen 兼容性 
+### onUserCaptureScreen 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 3.9.0 | 4.11 | 4.61 |
@@ -14,13 +14,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (res: [OnUserCaptureScreenCallbackResult](#onusercapturescreencallbackresult-values)) => void | 否 | Web: x | 
 
 ### OnUserCaptureScreenCallbackResult 的属性值 @onusercapturescreencallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | string | 否 | Web: x | 截屏文件路径（仅Android返回） |
 
@@ -51,7 +51,7 @@
 > 本 API 是 [uni ext api](https://uniapp.dcloud.net.cn/api/extapi.html)，需下载插件：[uni-usercapturescreen](https://ext.dcloud.net.cn/plugin?name=uni-usercapturescreen)
 
 
-### offUserCaptureScreen 兼容性 
+### offUserCaptureScreen 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 3.9.0 | 4.11 | 4.61 |
@@ -59,13 +59,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (res: [OnUserCaptureScreenCallbackResult](#onusercapturescreencallbackresult-values)) => void | 否 | Web: x | 
 
 ### OnUserCaptureScreenCallbackResult 的属性值 @onusercapturescreencallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | string | 否 | Web: x | 截屏文件路径（仅Android返回） |
 
@@ -93,7 +93,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
@@ -107,7 +107,7 @@
 > 本 API 是 [uni ext api](https://uniapp.dcloud.net.cn/api/extapi.html)，需下载插件：[uni-usercapturescreen](https://ext.dcloud.net.cn/plugin?name=uni-usercapturescreen)
 
 
-### setUserCaptureScreen 兼容性 
+### setUserCaptureScreen 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 3.9.0 | 4.11 | 4.61 |
@@ -115,13 +115,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | **SetUserCaptureScreenOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | enable | boolean | 是 | Web: x | true: 允许用户截屏 false: 不允许用户截屏，防止用户截屏到应用页面内容 |
 | success | (res: SetUserCaptureScreenSuccess) => void | 否 | Web: x | uni.setUserCaptureScreen成功回调函数定义 |
@@ -130,7 +130,7 @@
 
 #### IUniError 的属性值 @iunierror-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 统一错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -242,7 +242,7 @@ onUnmounted(() => {
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

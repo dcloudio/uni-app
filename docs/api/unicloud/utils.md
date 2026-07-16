@@ -2,7 +2,7 @@
 
 监听响应事件
 
-### onResponse 兼容性 
+### onResponse 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 阿里云 3.9，腾讯云 3.91，支付宝云 3.98 | 4.11 | 4.61 |
@@ -33,7 +33,7 @@
 
 移除响应事件监听
 
-### offResponse 兼容性 
+### offResponse 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 阿里云 3.9，腾讯云 3.91，支付宝云 3.98 | 4.11 | 4.61 |
@@ -64,7 +64,7 @@
 
 监听token刷新事件
 
-### onRefreshToken 兼容性 
+### onRefreshToken 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 阿里云 3.9，腾讯云 3.91，支付宝云 3.98 | 4.11 | 4.61 |
@@ -95,7 +95,7 @@
 
 移除token刷新事件监听
 
-### offRefreshToken 兼容性 
+### offRefreshToken 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 阿里云 3.9，腾讯云 3.91，支付宝云 3.98 | 4.11 | 4.61 |
@@ -126,7 +126,7 @@
 
 获取token内缓存的用户信息
 
-### getCurrentUserInfo 兼容性 
+### getCurrentUserInfo 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 阿里云 3.9，腾讯云 3.91，支付宝云 3.98 | 4.11 | 4.61 |
@@ -158,7 +158,7 @@
 
 连接 WebSocket
 
-### connectWebSocket 兼容性 
+### connectWebSocket 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.24 | 4.41 | 4.28 | 4.24 | 4.61 |
@@ -172,7 +172,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | name | string | 是 |   | WebSocket云函数/云对象名称 |
 | query | any | 否 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 建立连接时需要传递的参数, 仅在 connection 事件中接收到 | 

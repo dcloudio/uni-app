@@ -22,7 +22,7 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 <!-- UTSJSON.Set.Constructor.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -65,7 +65,7 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -116,7 +116,7 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -156,7 +156,7 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -200,7 +200,7 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -245,7 +245,7 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -332,7 +332,7 @@ Set 对象是值的集合，你可以按照插入的顺序迭代它的元素。S
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |

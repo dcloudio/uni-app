@@ -18,7 +18,7 @@ TextEncoder 接受码位流作为输入，并提供 UTF-8 字节流作为输出�
 
 <!-- UTSJSON.TextEncoder.encoding.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
@@ -65,7 +65,7 @@ TextEncoder.encode() 方法接受一个字符串作为输入，返回一个对�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |

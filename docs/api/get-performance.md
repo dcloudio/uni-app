@@ -3,7 +3,7 @@
 返回一个Performance对象实例
 
 
-### getPerformance 兼容性 
+### getPerformance 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 3.91 | 4.25 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -22,14 +22,14 @@
 #### createObserver(callback: PerformanceObserverCallback): PerformanceObserver @createobserver
 createObserver
 创建全局性能事件监听器
-##### createObserver 兼容性 
+##### createObserver 兼容性 <Help /> 
 | Web | 微信小程序 |
 | :- | :- |
 | x | 4.41 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (entries: [PerformanceObserverEntryList](#performanceobserverentrylist-values)) => void | 是 | Web: x | 
 
@@ -38,7 +38,7 @@ createObserver
 ##### getEntries(): PerformanceEntry[\] @getentries
 getEntries
 该方法返回当前列表中的所有性能数据
-###### getEntries 兼容性 
+###### getEntries 兼容性 <Help /> 
 | Web |
 | :- |
 | x |
@@ -53,7 +53,7 @@ getEntries
 
 #### Array&lt;PerformanceEntry&gt; 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | entryType | string | 是 | Web: x | 指标类型 |
 | name | string | 是 | Web: x | 指标名称 |
@@ -71,14 +71,14 @@ getEntries
 ##### getEntriesByType(entryType: string): PerformanceEntry[\] @getentriesbytype
 getEntriesByType
 获取当前列表中所有类型为 \[entryType]的性能数据
-###### getEntriesByType 兼容性 
+###### getEntriesByType 兼容性 <Help /> 
 | Web |
 | :- |
 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | entryType | string | 是 | Web: x | 
 
@@ -91,7 +91,7 @@ getEntriesByType
 
 #### Array&lt;PerformanceEntry&gt; 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | entryType | string | 是 | Web: x | 指标类型 |
 | name | string | 是 | Web: x | 指标名称 |
@@ -109,14 +109,14 @@ getEntriesByType
 ##### getEntriesByName(name: string, entryType: string): PerformanceEntry[\] @getentriesbyname
 getEntriesByName
 获取当前列表中所有名称为 \[name] 且类型为 [entryType]的性能数据
-###### getEntriesByName 兼容性 
+###### getEntriesByName 兼容性 <Help /> 
 | Web |
 | :- |
 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | name | string | 是 | Web: x |
 | entryType | string | 是 | Web: x | 
@@ -130,7 +130,7 @@ getEntriesByName
 
 #### Array&lt;PerformanceEntry&gt; 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | entryType | string | 是 | Web: x | 指标类型 |
 | name | string | 是 | Web: x | 指标名称 |
@@ -147,7 +147,7 @@ getEntriesByName
 
 ###### PerformanceEntry 的属性值 @performanceentry-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | entryType | string | 是 | Web: x | 指标类型 |
 | name | string | 是 | Web: x | 指标名称 |
@@ -164,7 +164,7 @@ getEntriesByName
 
 ###### PerformanceEntry 的属性值 @performanceentry-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | entryType | string | 是 | Web: x | 指标类型 |
 | name | string | 是 | Web: x | 指标名称 |
@@ -181,7 +181,7 @@ getEntriesByName
 
 ###### PerformanceEntry 的属性值 @performanceentry-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | entryType | string | 是 | Web: x | 指标类型 |
 | name | string | 是 | Web: x | 指标名称 |
@@ -208,20 +208,20 @@ getEntriesByName
 ###### observe(options: PerformanceObserverOptions): void @observe
 observe
 开始监听
-###### observe 兼容性 
+###### observe 兼容性 <Help /> 
 | Web |
 | :- |
 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | **PerformanceObserverOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | buffered | boolean | 否 | Web: x |
 | entryTypes | Array&lt;string&gt; | 否 | Web: x |
@@ -232,7 +232,7 @@ observe
 ###### disconnect(): void @disconnect
 disconnect
 停止监听
-###### disconnect 兼容性 
+###### disconnect 兼容性 <Help /> 
 | Web |
 | :- |
 | x |
@@ -242,7 +242,7 @@ disconnect
 
 ###### PerformanceObserverOptions 的属性值 @performanceobserveroptions-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | buffered | boolean | 否 | Web: x |
 | entryTypes | Array&lt;string&gt; | 否 | Web: x |
@@ -252,7 +252,7 @@ disconnect
 #### getEntries(): PerformanceEntry[\] @getentries
 getEntries
 该方法返回当前缓冲区中的所有性能数据
-##### getEntries 兼容性 
+##### getEntries 兼容性 <Help /> 
 | Web | 微信小程序 |
 | :- | :- |
 | x | 4.41 |
@@ -267,7 +267,7 @@ getEntries
 
 #### Array&lt;PerformanceEntry&gt; 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | entryType | string | 是 | Web: x | 指标类型 |
 | name | string | 是 | Web: x | 指标名称 |
@@ -285,14 +285,14 @@ getEntries
 #### getEntriesByType(entryType: string): PerformanceEntry[\] @getentriesbytype
 getEntriesByType
 获取当前缓冲区中所有类型为 \[entryType]的性能数据
-##### getEntriesByType 兼容性 
+##### getEntriesByType 兼容性 <Help /> 
 | Web | 微信小程序 |
 | :- | :- |
 | x | 4.41 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | entryType | string | 是 | Web: x | 
 
@@ -305,7 +305,7 @@ getEntriesByType
 
 #### Array&lt;PerformanceEntry&gt; 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | entryType | string | 是 | Web: x | 指标类型 |
 | name | string | 是 | Web: x | 指标名称 |
@@ -323,14 +323,14 @@ getEntriesByType
 #### getEntriesByName(name: string, entryType: string): PerformanceEntry[\] @getentriesbyname
 getEntriesByName
 获取当前缓冲区中所有名称为 \[name] 且类型为 [entryType]的性能数据
-##### getEntriesByName 兼容性 
+##### getEntriesByName 兼容性 <Help /> 
 | Web | 微信小程序 |
 | :- | :- |
 | x | 4.41 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | name | string | 是 | Web: x |
 | entryType | string | 是 | Web: x | 
@@ -344,7 +344,7 @@ getEntriesByName
 
 #### Array&lt;PerformanceEntry&gt; 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | entryType | string | 是 | Web: x | 指标类型 |
 | name | string | 是 | Web: x | 指标名称 |
@@ -362,14 +362,14 @@ getEntriesByName
 #### setBufferSize(size: number): void @setbuffersize
 setBufferSize
 设置缓冲区大小，默认缓冲 30 条性能数据
-##### setBufferSize 兼容性 
+##### setBufferSize 兼容性 <Help /> 
 | Web | 微信小程序 |
 | :- | :- |
 | x | 4.41 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | size | number | 是 | Web: x | 
 
@@ -380,7 +380,7 @@ setBufferSize
 ##### getEntries(): PerformanceEntry[\] @getentries
 getEntries
 该方法返回当前列表中的所有性能数据
-###### getEntries 兼容性 
+###### getEntries 兼容性 <Help /> 
 | Web |
 | :- |
 | x |
@@ -395,7 +395,7 @@ getEntries
 
 #### Array&lt;PerformanceEntry&gt; 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | entryType | string | 是 | Web: x | 指标类型 |
 | name | string | 是 | Web: x | 指标名称 |
@@ -413,14 +413,14 @@ getEntries
 ##### getEntriesByType(entryType: string): PerformanceEntry[\] @getentriesbytype
 getEntriesByType
 获取当前列表中所有类型为 \[entryType]的性能数据
-###### getEntriesByType 兼容性 
+###### getEntriesByType 兼容性 <Help /> 
 | Web |
 | :- |
 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | entryType | string | 是 | Web: x | 
 
@@ -433,7 +433,7 @@ getEntriesByType
 
 #### Array&lt;PerformanceEntry&gt; 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | entryType | string | 是 | Web: x | 指标类型 |
 | name | string | 是 | Web: x | 指标名称 |
@@ -451,14 +451,14 @@ getEntriesByType
 ##### getEntriesByName(name: string, entryType: string): PerformanceEntry[\] @getentriesbyname
 getEntriesByName
 获取当前列表中所有名称为 \[name] 且类型为 [entryType]的性能数据
-###### getEntriesByName 兼容性 
+###### getEntriesByName 兼容性 <Help /> 
 | Web |
 | :- |
 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | name | string | 是 | Web: x |
 | entryType | string | 是 | Web: x | 
@@ -472,7 +472,7 @@ getEntriesByName
 
 #### Array&lt;PerformanceEntry&gt; 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | entryType | string | 是 | Web: x | 指标类型 |
 | name | string | 是 | Web: x | 指标名称 |
@@ -489,7 +489,7 @@ getEntriesByName
 
 ###### PerformanceEntry 的属性值 @performanceentry-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | entryType | string | 是 | Web: x | 指标类型 |
 | name | string | 是 | Web: x | 指标名称 |
@@ -506,7 +506,7 @@ getEntriesByName
 
 ###### PerformanceEntry 的属性值 @performanceentry-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | entryType | string | 是 | Web: x | 指标类型 |
 | name | string | 是 | Web: x | 指标名称 |
@@ -523,7 +523,7 @@ getEntriesByName
 
 ###### PerformanceEntry 的属性值 @performanceentry-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | entryType | string | 是 | Web: x | 指标类型 |
 | name | string | 是 | Web: x | 指标名称 |
@@ -543,20 +543,20 @@ getEntriesByName
 ##### observe(options: PerformanceObserverOptions): void @observe
 observe
 开始监听
-###### observe 兼容性 
+###### observe 兼容性 <Help /> 
 | Web |
 | :- |
 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | **PerformanceObserverOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | buffered | boolean | 否 | Web: x |
 | entryTypes | Array&lt;string&gt; | 否 | Web: x |
@@ -567,7 +567,7 @@ observe
 ##### disconnect(): void @disconnect
 disconnect
 停止监听
-###### disconnect 兼容性 
+###### disconnect 兼容性 <Help /> 
 | Web |
 | :- |
 | x |
@@ -577,7 +577,7 @@ disconnect
 
 ###### PerformanceObserverOptions 的属性值 @performanceobserveroptions-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | buffered | boolean | 否 | Web: x |
 | entryTypes | Array&lt;string&gt; | 否 | Web: x |
@@ -585,7 +585,7 @@ disconnect
 
 ##### PerformanceEntry 的属性值 @performanceentry-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | entryType | string | 是 | Web: x | 指标类型 |
 | name | string | 是 | Web: x | 指标名称 |
@@ -602,7 +602,7 @@ disconnect
 
 ##### PerformanceEntry 的属性值 @performanceentry-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | entryType | string | 是 | Web: x | 指标类型 |
 | name | string | 是 | Web: x | 指标名称 |
@@ -619,7 +619,7 @@ disconnect
 
 ##### PerformanceEntry 的属性值 @performanceentry-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | entryType | string | 是 | Web: x | 指标类型 |
 | name | string | 是 | Web: x | 指标名称 |
@@ -658,7 +658,7 @@ disconnect
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

@@ -43,7 +43,7 @@
 - App-Android 平台播放的网络音频，默认会缓存到应用cache目录的uni-audio文件夹下，默认大小为100M，超过后会根据最近最少使用的缓存算法自动进行清除；
 - 4.51 版本以上 App-iOS 平台支持Cache功能，缓存路径、默认大小和自动清理机制和 Android 一样；
 
-### createInnerAudioContext 兼容性 
+### createInnerAudioContext 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -59,7 +59,7 @@
 
 #### InnerAudioContext 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | duration | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 当前音频的长度（单位：s），只有在当前有合法的 src 时返回 |
 | currentTime | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 当前音频的播放位置（单位：s），只有在当前有合法的 src 时返回 |
@@ -79,7 +79,7 @@
 #### pause(): void; @pause
 pause
 暂停
-##### pause 兼容性 
+##### pause 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -90,7 +90,7 @@ pause
 #### stop(): void; @stop
 stop
 停止
-##### stop 兼容性 
+##### stop 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -101,7 +101,7 @@ stop
 #### play(): void; @play
 play
 播放
-##### play 兼容性 
+##### play 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -112,7 +112,7 @@ play
 #### seek(position: number): void; @seek
 seek
 跳转到指定位置，单位 s
-##### seek 兼容性 
+##### seek 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -128,7 +128,7 @@ seek
 #### destroy(): void; @destroy
 destroy
 销毁当前实例
-##### destroy 兼容性 
+##### destroy 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -139,7 +139,7 @@ destroy
 #### onCanplay(callback: (result: any) => void): void; @oncanplay
 onCanplay
 音频进入可以播放状态，但不保证后面可以流畅播放
-##### onCanplay 兼容性 
+##### onCanplay 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -155,7 +155,7 @@ onCanplay
 #### onPlay(callback: (result: any) => void): void; @onplay
 onPlay
 音频播放事件
-##### onPlay 兼容性 
+##### onPlay 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -171,7 +171,7 @@ onPlay
 #### onPause(callback: (result: any) => void): void; @onpause
 onPause
 音频暂停事件
-##### onPause 兼容性 
+##### onPause 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -187,7 +187,7 @@ onPause
 #### onStop(callback: (result: any) => void): void; @onstop
 onStop
 音频停止事件
-##### onStop 兼容性 
+##### onStop 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -203,7 +203,7 @@ onStop
 #### onEnded(callback: (result: any) => void): void; @onended
 onEnded
 音频自然播放结束事件
-##### onEnded 兼容性 
+##### onEnded 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -219,7 +219,7 @@ onEnded
 #### onTimeUpdate(callback: (result: any) => void): void; @ontimeupdate
 onTimeUpdate
 音频播放进度更新事件
-##### onTimeUpdate 兼容性 
+##### onTimeUpdate 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -235,7 +235,7 @@ onTimeUpdate
 #### onError(callback: (result: ICreateInnerAudioContextFail) => void): void; @onerror
 onError
 音频播放错误事件
-##### onError 兼容性 
+##### onError 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -258,7 +258,7 @@ onError
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 1107601 | Web: x; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 系统错误 |
 | 1107602 | Web: x; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 网络错误 |
@@ -272,7 +272,7 @@ onError
 #### onWaiting(callback: (result: any) => void): void; @onwaiting
 onWaiting
 音频加载中事件，当音频因为数据不足，需要停下来加载时会触发
-##### onWaiting 兼容性 
+##### onWaiting 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -288,7 +288,7 @@ onWaiting
 #### onSeeking(callback: (result: any) => void): void; @onseeking
 onSeeking
 音频进行 seek 操作事件
-##### onSeeking 兼容性 
+##### onSeeking 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -304,7 +304,7 @@ onSeeking
 #### onSeeked(callback: (result: any) => void): void; @onseeked
 onSeeked
 音频完成 seek 操作事件
-##### onSeeked 兼容性 
+##### onSeeked 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -320,7 +320,7 @@ onSeeked
 #### offCanplay(callback: (result: any) => void): void; @offcanplay
 offCanplay
 取消监听 onCanplay 事件
-##### offCanplay 兼容性 
+##### offCanplay 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -336,7 +336,7 @@ offCanplay
 #### offPlay(callback: (result: any) => void): void; @offplay
 offPlay
 取消监听 onPlay 事件
-##### offPlay 兼容性 
+##### offPlay 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -352,7 +352,7 @@ offPlay
 #### offPause(callback: (result: any) => void): void; @offpause
 offPause
 取消监听 onPause 事件
-##### offPause 兼容性 
+##### offPause 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -368,7 +368,7 @@ offPause
 #### offStop(callback: (result: any) => void): void; @offstop
 offStop
 取消监听 onStop 事件
-##### offStop 兼容性 
+##### offStop 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -384,7 +384,7 @@ offStop
 #### offEnded(callback: (result: any) => void): void; @offended
 offEnded
 取消监听 onEnded 事件
-##### offEnded 兼容性 
+##### offEnded 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -400,7 +400,7 @@ offEnded
 #### offTimeUpdate(callback: (result: any) => void): void; @offtimeupdate
 offTimeUpdate
 取消监听 onTimeUpdate 事件
-##### offTimeUpdate 兼容性 
+##### offTimeUpdate 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -416,7 +416,7 @@ offTimeUpdate
 #### offError(callback: (result: ICreateInnerAudioContextFail) => void): void; @offerror
 offError
 取消监听 onWaiting 事件
-##### offError 兼容性 
+##### offError 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -439,7 +439,7 @@ offError
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 1107601 | Web: x; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 系统错误 |
 | 1107602 | Web: x; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 网络错误 |
@@ -453,7 +453,7 @@ offError
 #### offWaiting(callback: (result: any) => void): void; @offwaiting
 offWaiting
 取消监听 onWaiting 事件
-##### offWaiting 兼容性 
+##### offWaiting 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -469,7 +469,7 @@ offWaiting
 #### offSeeking(callback: (result: any) => void): void; @offseeking
 offSeeking
 取消监听 onSeeking 事件
-##### offSeeking 兼容性 
+##### offSeeking 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -485,7 +485,7 @@ offSeeking
 #### offSeeked(callback: (result: any) => void): void; @offseeked
 offSeeked
 取消监听 onSeeked 事件
-##### offSeeked 兼容性 
+##### offSeeked 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.33 | 4.41 | 4.41 | 4.61 |
@@ -510,7 +510,7 @@ offSeeked
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 1107601 | Web: x; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 系统错误 |
 | 1107602 | Web: x; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 网络错误 |
@@ -531,7 +531,7 @@ offSeeked
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 1107601 | Web: x; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 系统错误 |
 | 1107602 | Web: x; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 网络错误 |
@@ -973,7 +973,7 @@ offSeeked
 
 设置 InnerAudioContext 的播放选项，需要在InnerAudioContext对象调用音频播放前设置才生效。
 
-### setInnerAudioOption 兼容性 
+### setInnerAudioOption 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.73 | 4.81 | 4.81 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -981,13 +981,13 @@ offSeeked
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | option | **SetInnerAudioOptionOptions** | 是 | HarmonyOS: x |
 
 #### option 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | mixWithOther | boolean | 否 | true | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.81; iOS(VDOM) UTS 插件: 4.81; HarmonyOS 系统版本: 5.0.0(12); HarmonyOS: x | 是否与其他音频混播，设置为 true 之后，不会终止其他应用或应用内的音频； 设置为false之后，会暂停背景音频和三方app音频 |
 | speakerOn | boolean | 否 | true | Web: 4.0; 微信小程序: 4.41; Android: 5.0; iOS: 5.0; iOS(VDOM) UTS 插件: 5.0; HarmonyOS 系统版本: 5.0.0(12); HarmonyOS: x | true 代表用扬声器播放，false 代表听筒播放 |
@@ -1008,7 +1008,7 @@ offSeeked
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 1107601 | Web: x; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 系统错误 |
 | 1107602 | Web: x; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 网络错误 |
@@ -1221,7 +1221,7 @@ offSeeked
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

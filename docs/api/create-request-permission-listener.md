@@ -12,7 +12,7 @@
 
 创建一个监听权限申请的对象。
 
-### createRequestPermissionListener 兼容性 
+### createRequestPermissionListener 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -40,14 +40,14 @@ app-android平台，可使用本API监听应用权限申请确认框的弹出和
 #### onRequest(callback : RequestPermissionListenerRequestCallback) : void @onrequest
 onRequest
 监听申请系统权限
-##### onRequest 兼容性 
+##### onRequest 兼容性 <Help /> 
 | Web | iOS | HarmonyOS |
 | :- | :- | :- |
 | x | x | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | callback | (permissions: Array&lt;string&gt;) => void | 是 | Web: x; iOS: x; HarmonyOS: x | 申请系统权限回调，permissions为触发权限申请的所有权限 | 
 
@@ -56,14 +56,14 @@ onRequest
 #### onConfirm(callback : RequestPermissionListenerConfirmCallback) : void @onconfirm
 onConfirm
 监听弹出系统权限授权框
-##### onConfirm 兼容性 
+##### onConfirm 兼容性 <Help /> 
 | Web | iOS | HarmonyOS |
 | :- | :- | :- |
 | x | x | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | callback | (permissions: Array&lt;string&gt;) => void | 是 | Web: x; iOS: x; HarmonyOS: x | 弹出系统权限授权框回调，permissions为触发弹出权限授权框的所有权限 | 
 
@@ -72,14 +72,14 @@ onConfirm
 #### onComplete(callback : RequestPermissionListenerCompleteCallback) : void @oncomplete
 onComplete
 监听权限申请完成
-##### onComplete 兼容性 
+##### onComplete 兼容性 <Help /> 
 | Web | iOS | HarmonyOS |
 | :- | :- | :- |
 | x | x | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | callback | (permissions: Array&lt;string&gt;) => void | 是 | Web: x; iOS: x; HarmonyOS: x | 权限申请完成回调，permissions为申请完成的所有权限 | 
 
@@ -88,7 +88,7 @@ onComplete
 #### stop() : void @stop
 stop
 取消所有监听
-##### stop 兼容性 
+##### stop 兼容性 <Help /> 
 | Web | iOS | HarmonyOS |
 | :- | :- | :- |
 | x | x | x |
@@ -215,7 +215,7 @@ stop
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

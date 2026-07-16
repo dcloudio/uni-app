@@ -2,7 +2,7 @@
 
 上传文件到云存储
 
-### uploadFile 兼容性 
+### uploadFile 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 阿里云 3.9，腾讯云 3.91，支付宝云 3.98 | 4.11 | 4.61 |
@@ -81,7 +81,7 @@ onUploadProgress
 
 选择并上传文件
 
-### chooseAndUploadFile 兼容性 
+### chooseAndUploadFile 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 阿里云 3.9，腾讯云 3.91，支付宝云 3.98 | 4.11 | 4.61 |
@@ -281,7 +281,7 @@ onUploadProgress
 
 获取文件临时URL
 
-### getTempFileURL 兼容性 
+### getTempFileURL 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 阿里云 3.9，腾讯云 3.91，支付宝云 3.98 | 4.11 | 4.61 |

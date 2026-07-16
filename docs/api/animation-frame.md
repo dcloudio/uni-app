@@ -16,7 +16,7 @@
 
 <!-- UTSJSON.Global.requestAnimationFrame.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
@@ -53,7 +53,7 @@
 
 <!-- UTSJSON.Global.cancelAnimationFrame.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |

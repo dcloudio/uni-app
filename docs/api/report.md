@@ -18,7 +18,7 @@ uni统计自定义上报方法。
 ### 注意事项
 `uni.report` 需要依赖 [`uni统计`](https://ext.dcloud.net.cn?name=uni-stat)，集成方式请查看[文档](https://uniapp.dcloud.net.cn/uni-stat-uniappx)。
 
-### report 兼容性 
+### report 兼容性 <Help /> 
 | Web | Android | iOS |
 | :- | :- | :- |
 | 4.33 | 4.33 | 4.33 |
@@ -349,7 +349,7 @@ uni.report({
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

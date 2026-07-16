@@ -19,7 +19,7 @@ TextDecoder 接口表示一个文本解码器，一个解码器只支持一种�
 
 <!-- UTSJSON.TextDecoder.encoding.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
@@ -85,7 +85,7 @@ TextDecoder.decode() 方法返回一个字符串，其包含作为参数传递�
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
@@ -119,7 +119,7 @@ TextDecoder.decode() 方法返回一个字符串，其包含作为参数传递�
 
 <!-- UTSJSON.TextDecoder.decode_1.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
@@ -153,7 +153,7 @@ TextDecoder.decode() 方法返回一个字符串，其包含作为参数传递�
 
 <!-- UTSJSON.TextDecoder.decode_2.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |

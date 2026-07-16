@@ -6,7 +6,7 @@
 
 本API是 [editor组件](../component/editor.md) 的上下文对象。
 
-### createEditorContextAsync 兼容性 
+### createEditorContextAsync 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | 5.08 | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 |
@@ -20,7 +20,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | id | [string.IDString](/uts/data-type.md#ide-string) | 是 | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | editor 元素的 id 属性 |
 | component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 组件或页面实例，限定在什么范围内查找id |
@@ -33,7 +33,7 @@
 #### format(name : string, value ?: string \| number \| null) : void @format
 format
 修改样式
-##### format 兼容性 
+##### format 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
@@ -50,7 +50,7 @@ format
 #### insertDivider(options ?: UniEditorElementOptions \| null) : void @insertdivider
 insertDivider
 插入分割线
-##### insertDivider 兼容性 
+##### insertDivider 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
@@ -92,7 +92,7 @@ insertDivider
 #### insertImage(options ?: UniEditorElementInsertImageOptions \| null) : void @insertimage
 insertImage
 插入图片
-##### insertImage 兼容性 
+##### insertImage 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
@@ -140,7 +140,7 @@ insertImage
 #### insertText(options ?: UniEditorElementInsertTextOptions \| null) : void @inserttext
 insertText
 覆盖当前选区，设置一段文本
-##### insertText 兼容性 
+##### insertText 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
@@ -183,7 +183,7 @@ insertText
 #### insertLink(options ?: UniEditorElementInsertLinkOptions \| null) : void @insertlink
 insertLink
 插入链接
-##### insertLink 兼容性 
+##### insertLink 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
@@ -227,7 +227,7 @@ insertLink
 #### insertMention(options ?: UniEditorElementInsertMentionOptions \| null) : void @insertmention
 insertMention
 插入可整块删除的提及，提及文本默认为
-##### insertMention 兼容性 
+##### insertMention 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.11 |
@@ -274,7 +274,7 @@ insertMention
 #### setContents(options ?: UniEditorElementSetContentsOptions \| null) : void @setcontents
 setContents
 初始化编辑器内容，html和delta同时存在时仅delta生效
-##### setContents 兼容性 
+##### setContents 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
@@ -318,7 +318,7 @@ setContents
 #### getContents(options ?: UniEditorElementGetContentsOptions \| null) : void @getcontents
 getContents
 获取编辑器内容
-##### getContents 兼容性 
+##### getContents 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
@@ -363,7 +363,7 @@ getContents
 #### clear(options ?: UniEditorElementOptions \| null) : void @clear
 clear
 清空编辑器内容
-##### clear 兼容性 
+##### clear 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
@@ -405,7 +405,7 @@ clear
 #### removeFormat(options ?: UniEditorElementOptions \| null) : void @removeformat
 removeFormat
 清除当前选区的样式
-##### removeFormat 兼容性 
+##### removeFormat 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
@@ -447,7 +447,7 @@ removeFormat
 #### undo(options ?: UniEditorElementOptions \| null) : void @undo
 undo
 撤销
-##### undo 兼容性 
+##### undo 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
@@ -489,7 +489,7 @@ undo
 #### redo(options ?: UniEditorElementOptions \| null) : void @redo
 redo
 恢复
-##### redo 兼容性 
+##### redo 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
@@ -531,7 +531,7 @@ redo
 #### getSelectionText(options ?: UniEditorElementGetSelectionTextOptions \| null) : void @getselectiontext
 getSelectionText
 获取编辑器已选区域内的纯文本内容。当编辑器失焦或未选中一段区间时，返回内容为空。
-##### getSelectionText 兼容性 
+##### getSelectionText 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
@@ -574,7 +574,7 @@ getSelectionText
 #### scrollIntoView(options ?: UniEditorElementOptions \| null) : void @scrollintoview
 scrollIntoView
 使得编辑器光标处滚动到窗口可视区域内。
-##### scrollIntoView 兼容性 
+##### scrollIntoView 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
@@ -616,7 +616,7 @@ scrollIntoView
 #### blur(options ?: UniEditorElementOptions \| null) : void @blur
 blur
 编辑器失焦，同时收起键盘
-##### blur 兼容性 
+##### blur 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
@@ -1068,6 +1068,6 @@ blur
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |

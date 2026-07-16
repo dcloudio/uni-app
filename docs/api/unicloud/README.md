@@ -20,7 +20,7 @@ uniCloud是基于serverless的云开发服务，它大幅降低开发者的开�
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | config | **UniCloudInitOptions** | 是 |   |  |
 | mixinDatacom | any | 是 |   |  |

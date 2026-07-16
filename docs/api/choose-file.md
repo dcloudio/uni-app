@@ -13,7 +13,7 @@
 从本地选择文件
 
 
-### chooseFile 兼容性 
+### chooseFile 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.51 | 4.61 | 4.61 |
@@ -27,7 +27,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | count | number | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 最多可以选择的文件数，默认100,注意Android中count只会决定是否是单选/多选，如果count>1 是多选效果，等于1为单选效果, |
 | type | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 选择文件的类型，默认all，可选<br/>- image: 选择图片文件<br/>- video: 选择视频文件<br/>- audio: 选择音频文件<br/>- all: 默认值，选择本地文件，包含图片和视频 |
@@ -40,7 +40,7 @@
 
 ##### type 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | image | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 图片类型 |
 | video | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 视频类型 |
@@ -49,14 +49,14 @@
 
 #### ChooseFileSuccess 的属性值 @choosefilesuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | tempFilePaths | Array&lt;string&gt; | 是 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: 4.61; HarmonyOS: x | 文件的本地文件路径列表, Android平台不支持 |
 | tempFiles | Array&lt;**ChooseFileTempFile**&gt; | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 文件的本地文件列表，每一项是一个 File 对象 |
 
 #### tempFiles 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | name | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 选择的文件名称 |
 | path | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 文件路径 |
@@ -65,7 +65,7 @@
 
 ##### type 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | video | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 视频类型 |
 | image | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 图片类型 |
@@ -413,7 +413,7 @@ Android端返回的路径是content协议。
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

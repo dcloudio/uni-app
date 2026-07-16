@@ -9,14 +9,14 @@
  是一个数据库查询组件，它将clientDB的API封装为组件，进一步减少开发者使用所需的代码量。
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.93 | 4.11 | 4.61 |
 
 
 ### 属性 
-| 名称 | 类型 | 兼容性 | 描述 |
+| 名称 | 类型 | 兼容性 <Help /> | 描述 |
 | :- | :- |  :-: | :- |
 | id | string([string.IDString](/uts/data-type.md#ide-string)) | Web: -; 微信小程序: -; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS: 4.61 | 唯一标识 |
 | v-slot:default | string | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | {data, loading, hasMore, pagination, error} |
@@ -43,7 +43,7 @@
 
 #### v-slot:default 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | data | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 查询结果，类型为Array\<UTSJSONObject> |
 | loading | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 查询中的状态。可根据此状态，在template中通过v-if显示等待内容 |
@@ -61,21 +61,21 @@
 
 #### distinct 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | true | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS(VDOM): -; HarmonyOS(Vapor): - | 去重 |
 | false | Web: -; 微信小程序: -; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 不去重 |
 
 #### page-data 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | add | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS: 4.61 | 多次查询的集合 |
 | replace | Web: -; 微信小程序: -; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS: 4.61 | 当前查询的集合 |
 
 #### loadtime 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | auto | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 页面就绪后或属性变化后加载数据，默认为auto |
 | onready | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 页面就绪后不自动加载数据，属性变化后加载。适合在onLoad中接收上个页面的参数作为where条件时 |

@@ -7,14 +7,14 @@
 页面导航条配置节点
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | √ | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 属性 
-| 名称 | 类型 | 兼容性 | 描述 |
+| 名称 | 类型 | 兼容性 <Help /> | 描述 |
 | :- | :- |  :-: | :- |
 | title | string | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x | 导航条标题 |
 | title-icon | string | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 标题icon |

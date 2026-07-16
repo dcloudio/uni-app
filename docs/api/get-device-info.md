@@ -12,7 +12,7 @@
 
 获取设备信息
 
-### getDeviceInfo 兼容性 
+### getDeviceInfo 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -26,7 +26,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | filter | Array&lt;string&gt; | 是 | Android: 3.9; HarmonyOS: x | 过滤字段的字符串数组，假如要获取指定字段，传入此数组。 | 
 
@@ -39,7 +39,7 @@
 
 #### GetDeviceInfoResult 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | deviceBrand | string | 否 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备品牌<br/> |
 | deviceId | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备 id 。由 uni-app 框架生成并存储，清空 Storage 会导致改变<br/> |
@@ -247,7 +247,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

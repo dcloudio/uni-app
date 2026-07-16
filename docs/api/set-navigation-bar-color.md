@@ -13,7 +13,7 @@
 设置导航条、状态栏颜色
 
 
-### setNavigationBarColor 兼容性 
+### setNavigationBarColor 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | √ | 4.11 | 4.61 |
@@ -31,7 +31,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | frontColor | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 前景颜色值，包括按钮、标题、状态栏的颜色，仅支持 #ffffff 和 #000000 |
 | backgroundColor | [string.ColorString](/uts/data-type.md#ide-string) | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; HarmonyOS: 4.61 | 背景颜色值，有效值为十六进制颜色 |
@@ -49,7 +49,7 @@
 
 ##### animation 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | duration | number | 否 | 微信小程序: 4.41 | 动画变化时间，单位 ms<br/> |
 | timingFunc | string | 否 | 微信小程序: 4.41 | 动画变化方式<br/><br/>可选值：<br/>- 'linear': 动画从头到尾的速度是相同的;<br/>- 'easeIn': 动画以低速开始;<br/>- 'easeOut': 动画以低速结束;<br/>- 'easeInOut': 动画以低速开始和结束;<br/> |
@@ -213,7 +213,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

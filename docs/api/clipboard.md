@@ -13,7 +13,7 @@
 获得系统剪贴板的内容
 
 
-### getClipboardData 兼容性 
+### getClipboardData 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.71 | 4.71 | 4.61 |
@@ -27,7 +27,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | success | (result: [GetClipboardDataSuccess](#getclipboarddatasuccess-values)) => void | 否 | 微信小程序: 4.41 | 成功返回的回调函数 |
 | fail | (result: [GetClipboardDataFail](#getclipboarddatafail-values)) => void | 否 | 微信小程序: 4.41 | 失败的回调函数 |
@@ -35,7 +35,7 @@
 
 #### GetClipboardDataSuccess 的属性值 @getclipboarddatasuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | data | string | 是 | 微信小程序: 4.41 | 剪贴板的内容 |
 
@@ -92,7 +92,7 @@
 设置系统剪贴板的内容
 
 
-### setClipboardData 兼容性 
+### setClipboardData 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.71 | 4.71 | 4.61 |
@@ -106,7 +106,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | data | string | 是 | 微信小程序: 4.41 | 需要设置的内容 |
 | showToast | boolean | 否 | 微信小程序: 4.41 | 是否弹出提示，默认弹出提示 |
@@ -269,7 +269,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

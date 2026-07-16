@@ -34,7 +34,7 @@ uni-app x的代码，默认都是在主线程执行的，主线程也称为UI线
 
 创建一个Worker对象
 
-### createWorker 兼容性 
+### createWorker 兼容性 <Help /> 
 | Web | 微信小程序 | Android | Android(VDOM) UTS 插件 | iOS | iOS(VDOM) UTS 插件 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | 4.81 | 4.41 | 4.81 | 4.81 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.81 | 4.81 | 4.81 |
@@ -42,7 +42,7 @@ uni-app x的代码，默认都是在主线程执行的，主线程也称为UI线
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | url | string | 是 | iOS: x | Worker脚本的URL | 
 
@@ -55,13 +55,13 @@ uni-app x的代码，默认都是在主线程执行的，主线程也称为UI线
 
 #### Worker 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | env | **WorkerEnv** | 否 | 微信小程序: 4.41; iOS: x | worker内的环境变量<br/> |
 
 ##### env 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | USER_DATA_PATH | string | 否 | 微信小程序: 4.41; iOS: x | 文件系统中的用户目录路径 (本地路径)<br/> |
 #### Worker 的方法 @worker-values 
@@ -69,14 +69,14 @@ uni-app x的代码，默认都是在主线程执行的，主线程也称为UI线
 #### onMessage(callback: WorkerOnMessageCallback): void; @onmessage
 onMessage
 监听主线程/Worker 线程向当前线程发送的消息的事件。
-##### onMessage 兼容性 
+##### onMessage 兼容性 <Help /> 
 | 微信小程序 | iOS |
 | :- | :- |
 | 4.41 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (message: any) => void | 是 | iOS: x | 
 
@@ -85,20 +85,20 @@ onMessage
 #### onError(callback: WorkerOnErrorCallback): void; @onerror
 onError
 监听 Worker 线程错误事件。当 Worker 线程中发生脚本错误时会触发此事件。
-##### onError 兼容性 
+##### onError 兼容性 <Help /> 
 | 微信小程序 | iOS |
 | :- | :- |
 | 4.41 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (result: [WorkerOnErrorCallbackResult](#workeronerrorcallbackresult-values)) => void | 是 | iOS: x | 
 
 ##### WorkerOnErrorCallbackResult 的属性值 @workeronerrorcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | iOS: x |  |
 | errSubject | string | 是 | iOS: x | 统一错误主题（模块）名称 |
@@ -108,7 +108,7 @@ onError
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 5000501 | iOS: x | worker 运行错误 |
 | 5000502 | iOS: x | worker 序列化失败 |
@@ -124,21 +124,21 @@ onError
 #### postMessage(message: any, options?: WorkerPostMessageOptions \| null): void; @postmessage
 postMessage
 向主线程/Worker 线程发送的消息。
-##### postMessage 兼容性 
+##### postMessage 兼容性 <Help /> 
 | 微信小程序 | iOS |
 | :- | :- |
 | 4.41 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | message | any | 是 | iOS: x |
 | options | **WorkerPostMessageOptions** | 否 | iOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | harmonySendable | boolean | 否 | Web: x; Android: x; iOS: x; HarmonyOS: 4.81 | 是否支持符合Sendable协议的对象作为共享变量发送，使用postMessageWithSharedSendable实现，默认值为false<br/>仅鸿蒙平台支持，参考：https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-sendable<br/> |
 | transfer | Array&lt;any&gt; | 否 | Web: 4.81; Android: x; iOS: x; HarmonyOS: 4.81 | 可转移对象数组，默认值为空数组<br/>仅鸿蒙、web平台支持，参考：https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Transferable_objects<br/> | 
@@ -148,7 +148,7 @@ postMessage
 #### terminate(): void; @terminate
 terminate
 结束当前 Worker 线程。仅限在主线程 worker 对象上调用。
-##### terminate 兼容性 
+##### terminate 兼容性 <Help /> 
 | 微信小程序 | iOS |
 | :- | :- |
 | 4.41 | x |
@@ -158,7 +158,7 @@ terminate
 
 ##### WorkerOnErrorCallbackResult 的属性值 @workeronerrorcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | iOS: x |  |
 | errSubject | string | 是 | iOS: x | 统一错误主题（模块）名称 |
@@ -168,7 +168,7 @@ terminate
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 5000501 | iOS: x | worker 运行错误 |
 | 5000502 | iOS: x | worker 序列化失败 |
@@ -181,7 +181,7 @@ terminate
 
 ##### WorkerPostMessageOptions 的属性值 @workerpostmessageoptions-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | harmonySendable | boolean | 否 | Web: x; Android: x; iOS: x; HarmonyOS: 4.81 | 是否支持符合Sendable协议的对象作为共享变量发送，使用postMessageWithSharedSendable实现，默认值为false<br/>仅鸿蒙平台支持，参考：https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-sendable<br/> |
 | transfer | Array&lt;any&gt; | 否 | Web: 4.81; Android: x; iOS: x; HarmonyOS: 4.81 | 可转移对象数组，默认值为空数组<br/>仅鸿蒙、web平台支持，参考：https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Transferable_objects<br/> |
@@ -520,7 +520,7 @@ terminate
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

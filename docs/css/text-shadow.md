@@ -11,7 +11,7 @@ text-shadow 为文字添加阴影。可以为文字与 decoration 添加多个�
 | 4.0 | 4.61 | 4.61 | 4.61 |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |

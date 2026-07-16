@@ -12,7 +12,7 @@
 
 显示模态弹窗，可以只有一个确定按钮，也可以同时有确定和取消按钮。类似于一个API整合了 html 中：alert、confirm。
 
-### showModal 兼容性 
+### showModal 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.61 | 4.61 | 4.61 | 4.61 |
@@ -26,7 +26,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | title | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.61 | 提示的标题 |
 | content | string | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.61 | 提示的内容 |
@@ -43,7 +43,7 @@
 
 #### ShowModalSuccess 的属性值 @showmodalsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.61 | 错误信息 |
 | content | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.61 | editable 为 true 时，用户输入的文本 |
@@ -104,7 +104,7 @@
 
 隐藏已弹出的对话框实例，如果 `modalPage` 参数为空，则隐藏当前栈顶全部对话框
 
-### hideModal 兼容性 
+### hideModal 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | 4.61 | 4.61 | 4.61 |
@@ -112,13 +112,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | **HideModalOptions** | 否 | 微信小程序: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | modalPage | [UniPage](/api/unipage.md) | 否 | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | 期望隐藏的目标 modal，如果为 null 会关闭当前栈顶全部 modal |
 | success | (result: [HideModalSuccess](#hidemodalsuccess-values)) => void | 否 | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
@@ -127,13 +127,13 @@
 
 #### HideModalSuccess 的属性值 @hidemodalsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | errMsg | string | 是 | 微信小程序: x |
 
 #### HideModalFail 的属性值 @hidemodalfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | 微信小程序: x |  |
 | errSubject | string | 是 | 微信小程序: x | 统一错误主题（模块）名称 |
@@ -520,7 +520,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

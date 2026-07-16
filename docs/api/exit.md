@@ -12,7 +12,7 @@
 
 退出当前应用
 
-### exit 兼容性 
+### exit 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.91 | 4.33 | 4.33 | 4.71 |
@@ -45,13 +45,13 @@ iOS系统自身并没有退出应用的API。
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **ExitOptions** | 否 | Web: x; 微信小程序: x | uni.exit参数定义 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | success | (res: [ExitSuccess](#exitsuccess-values)) => void | 否 | Web: x; 微信小程序: x | uni.exit成功回调函数定义 |
 | fail | (res: [ExitFail](#exitfail-values)) => void | 否 | Web: x; 微信小程序: x | uni.exit失败回调函数定义 |
@@ -59,13 +59,13 @@ iOS系统自身并没有退出应用的API。
 
 #### ExitSuccess 的属性值 @exitsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | errMsg | string | 是 | Web: x; 微信小程序: x |
 
 #### ExitFail 的属性值 @exitfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x; 微信小程序: x | 错误码 |
 | errSubject | string | 是 | Web: x; 微信小程序: x | 统一错误主题（模块）名称 |
@@ -75,7 +75,7 @@ iOS系统自身并没有退出应用的API。
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 12001 | Web: x; 微信小程序: x | 系统不支持 |
 | 12002 | Web: x; 微信小程序: x | 未知错误 |
@@ -159,7 +159,7 @@ UTSHarmony.getUIAbilityContext().moveAbilityToBackground()
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

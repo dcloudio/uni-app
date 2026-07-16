@@ -12,7 +12,7 @@
 
 将本地资源上传到开发者服务器。
 
-### uploadFile 兼容性 
+### uploadFile 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
@@ -28,7 +28,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | url | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器 url |
 | filePath | string | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 要上传文件资源的路径, 支持uni.env |
@@ -47,7 +47,7 @@
 
 ##### files 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | name | string | 否 | "file" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | multipart 提交时，表单的项目名，默认为 file，如果 name 不填或填的值相同，可能导致服务端读取文件时只能读取到一个文件。 |
 | uri | string | 是 |  | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 要上传文件资源的路径 |
@@ -55,7 +55,7 @@
 
 #### UploadFileSuccess 的属性值 @uploadfilesuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | data | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的数据 |
 | statusCode | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP 状态码 |
@@ -96,7 +96,7 @@
 #### abort(): void, @abort
 abort
 中断上传任务。
-##### abort 兼容性 
+##### abort 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
@@ -107,7 +107,7 @@ abort
 #### onProgressUpdate(callback: UploadFileProgressUpdateCallback): void, @onprogressupdate
 onProgressUpdate
 监听上传进度变化。
-##### onProgressUpdate 兼容性 
+##### onProgressUpdate 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
@@ -120,7 +120,7 @@ onProgressUpdate
 
 ##### OnProgressUpdateResult 的属性值 @onprogressupdateresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | progress | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 上传进度百分比 |
 | totalBytesSent | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 已经上传的数据长度，单位 Bytes |
@@ -130,7 +130,7 @@ onProgressUpdate
 
 ##### OnProgressUpdateResult 的属性值 @onprogressupdateresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | progress | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 上传进度百分比 |
 | totalBytesSent | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 已经上传的数据长度，单位 Bytes |
@@ -495,7 +495,7 @@ complete: () => {
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

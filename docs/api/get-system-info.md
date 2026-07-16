@@ -14,7 +14,7 @@
 
 异步获取系统信息
 
-### getSystemInfo 兼容性 
+### getSystemInfo 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -42,7 +42,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | success | (result: [GetSystemInfoResult](#getsysteminforesult-values)) => void | 否 | null | 微信小程序: 4.41 | 接口调用成功的回调函数 |
 | fail | (result: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | null | 微信小程序: 4.41 | 接口调用失败的回调函数 |
@@ -50,7 +50,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 #### GetSystemInfoResult 的属性值 @getsysteminforesult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | SDKVersion | string | 是 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 客户端基础库版本<br/> |
 | appId | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中应用appid。<br/> |
@@ -167,7 +167,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 #### safeArea 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | left | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左上角横坐标，单位为px<br/> |
 | right | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右下角横坐标，单位为px<br/> |
@@ -178,7 +178,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 #### safeAreaInsets 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | left | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左侧插入位置（距离左边边界距离），单位为px<br/> |
 | right | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右侧插入位置（距离右边边界距离），单位为px<br/> |
@@ -221,7 +221,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 #### host 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | appId | string | 否 | 微信小程序: 4.41 | 宿主 app 对应的 appId<br/> |
 
@@ -234,7 +234,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 #### platform 的属性描述
 
-| 合法值 | 兼容性 |
+| 合法值 | 兼容性 <Help /> |
 | :- |  :-: |
 | ios |   |
 | android |   |
@@ -477,7 +477,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 本API是同步API，仅为上面异步API的同步形式，返回值内容没有区别。但由于本API涉及的查询内容较多，耗时长，一般情况下不推荐同步获取。\
 如果希望使用同步方式，推荐使用分拆后的API：[uni.getDeviceInfo](./get-device-info.md)、[uni.getWindowInfo](./get-window-info.md)、[uni.getAppBaseInfo](./get-app-base-info.md)。
 
-### getSystemInfoSync 兼容性 
+### getSystemInfoSync 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -493,7 +493,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 #### GetSystemInfoResult 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | SDKVersion | string | 是 | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: x | 客户端基础库版本<br/> |
 | appId | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | `manifest.json` 中应用appid。<br/> |
@@ -610,7 +610,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 ##### safeArea 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | left | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左上角横坐标，单位为px<br/> |
 | right | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右下角横坐标，单位为px<br/> |
@@ -621,7 +621,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 ##### safeAreaInsets 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | left | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左侧插入位置（距离左边边界距离），单位为px<br/> |
 | right | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右侧插入位置（距离右边边界距离），单位为px<br/> |
@@ -664,7 +664,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 ##### host 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | appId | string | 否 | 微信小程序: 4.41 | 宿主 app 对应的 appId<br/> |
 
@@ -677,7 +677,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 ##### platform 的属性描述
 
-| 合法值 | 兼容性 |
+| 合法值 | 兼容性 <Help /> |
 | :- |  :-: |
 | ios |   |
 | android |   |
@@ -712,7 +712,7 @@ uni-app 提供了异步(`uni.getSystemInfo`)和同步(`uni.getSystemInfoSync`)�
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

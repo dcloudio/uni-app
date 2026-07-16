@@ -14,7 +14,7 @@
 
 参考：[video组件](../component/video.md)
 
-### createVideoContext 兼容性 
+### createVideoContext 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | √ | 4.11 | 4.61 |
@@ -62,7 +62,7 @@ let v1 = uni.createVideoContext("video1", getCurrentInstance()!.proxy!)
 #### play(): void; @play
 play
 播放
-##### play 兼容性 
+##### play 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
@@ -73,7 +73,7 @@ play
 #### pause(): void; @pause
 pause
 暂停
-##### pause 兼容性 
+##### pause 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
@@ -84,7 +84,7 @@ pause
 #### seek(position: number): void; @seek
 seek
 跳转到指定位置
-##### seek 兼容性 
+##### seek 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
@@ -100,7 +100,7 @@ seek
 #### stop(): void; @stop
 stop
 停止视频
-##### stop 兼容性 
+##### stop 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
@@ -111,7 +111,7 @@ stop
 #### sendDanmu(danmu: Danmu): void; @senddanmu
 sendDanmu
 发送弹幕
-##### sendDanmu 兼容性 
+##### sendDanmu 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
@@ -135,7 +135,7 @@ sendDanmu
 #### playbackRate(rate: number): void; @playbackrate
 playbackRate
 设置倍速播放
-##### playbackRate 兼容性 
+##### playbackRate 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
@@ -151,7 +151,7 @@ playbackRate
 #### requestFullScreen(direction?: RequestFullScreenOptions \| null): void; @requestfullscreen
 requestFullScreen
 进入全屏
-##### requestFullScreen 兼容性 
+##### requestFullScreen 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
@@ -164,7 +164,7 @@ requestFullScreen
 
 #### direction 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | direction | 90 \| any | 否 | Web: x; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11 | direction | 
 
@@ -173,7 +173,7 @@ requestFullScreen
 #### exitFullScreen(): void; @exitfullscreen
 exitFullScreen
 退出全屏
-##### exitFullScreen 兼容性 
+##### exitFullScreen 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
@@ -191,7 +191,7 @@ exitFullScreen
 
 ##### RequestFullScreenOptions 的属性值 @requestfullscreenoptions-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | direction | 90 \| any | 否 | Web: x; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11 | direction |
  
@@ -220,7 +220,7 @@ exitFullScreen
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

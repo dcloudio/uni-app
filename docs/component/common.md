@@ -1402,7 +1402,7 @@ handleClick (event : UniPointerEvent) {
 | eventInit | any | 是 | 事件初始参数。支持字段：`bubbles`表明该事件是否冒泡。可选，默认为false；`cancelable`表明该事件是否可以被取消。可选，默认为false。 |
 
 ### UniEvent 的属性值 @unievent-values
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | bubbles | boolean | 是 |   | 是否冒泡 |
 | cancelable | boolean | 是 |   | 是否可以取消 |
@@ -1424,7 +1424,7 @@ handleClick (event : UniPointerEvent) {
 
 
 
-##### stopPropagation 兼容性 
+##### stopPropagation 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.0 | 4.61 |
@@ -1441,7 +1441,7 @@ handleClick (event : UniPointerEvent) {
 
 
 
-##### preventDefault 兼容性 
+##### preventDefault 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.55 | 4.61 |
@@ -1662,7 +1662,7 @@ UniNativeViewEvent -- Extends --> UniCustomEvent
 | detail | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 |  |
 
 
-### UniNativeViewEvent 兼容性 
+### UniNativeViewEvent 兼容性 <Help /> 
  | Android | iOS | HarmonyOS |
 | :- | :- | :- |
 | 4.31 | 4.31 | 4.61 |

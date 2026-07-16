@@ -45,7 +45,7 @@
 
 - App 平台会将应用的Cookie与UA信息自动带入到请求链接
 
-### getBackgroundAudioManager 兼容性 
+### getBackgroundAudioManager 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.41 | 4.41 | 4.61 |
@@ -61,7 +61,7 @@
 
 #### BackgroundAudioManager 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | duration | number | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41 | 当前音频的长度（单位：s），只有在当前有合法的 src 时返回 |
 | currentTime | number | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41 | 当前音频的播放位置（单位：s），只有在当前有合法的 src 时返回 |
@@ -85,7 +85,7 @@
 #### play(): void; @play
 play
 播放
-##### play 兼容性 
+##### play 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 4.41 | 4.41 | 4.41 | 4.61 |
@@ -96,7 +96,7 @@ play
 #### pause(): void; @pause
 pause
 暂停
-##### pause 兼容性 
+##### pause 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 4.41 | 4.41 | 4.41 | 4.61 |
@@ -107,14 +107,14 @@ pause
 #### seek(position: number): void; @seek
 seek
 跳转到指定位置，单位 s
-##### seek 兼容性 
+##### seek 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 4.41 | 4.41 | 4.41 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | position | number | 是 | Web: x | 
 
@@ -123,7 +123,7 @@ seek
 #### stop(): void; @stop
 stop
 停止
-##### stop 兼容性 
+##### stop 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 4.41 | 4.41 | 4.41 | 4.61 |
@@ -134,14 +134,14 @@ stop
 #### onCanplay(callback: (result: any) => void): void; @oncanplay
 onCanplay
 背景音频进入可以播放状态，但不保证后面可以流畅播放
-##### onCanplay 兼容性 
+##### onCanplay 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 4.41 | 4.41 | 4.41 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -150,14 +150,14 @@ onCanplay
 #### onPlay(callback: (result: any) => void): void; @onplay
 onPlay
 背景音频播放事件
-##### onPlay 兼容性 
+##### onPlay 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 4.41 | 4.41 | 4.41 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -166,14 +166,14 @@ onPlay
 #### onPause(callback: (result: any) => void): void; @onpause
 onPause
 背景音频暂停事件
-##### onPause 兼容性 
+##### onPause 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 4.41 | 4.41 | 4.41 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -182,14 +182,14 @@ onPause
 #### onStop(callback: (result: any) => void): void; @onstop
 onStop
 背景音频停止事件
-##### onStop 兼容性 
+##### onStop 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 4.41 | 4.41 | 4.41 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -198,14 +198,14 @@ onStop
 #### onEnded(callback: (result: any) => void): void; @onended
 onEnded
 背景音频自然播放结束事件
-##### onEnded 兼容性 
+##### onEnded 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 4.41 | 4.41 | 4.41 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -214,14 +214,14 @@ onEnded
 #### onSeeking(callback : (result : any) => void) : void; @onseeking
 onSeeking
 音频进行 seek 操作事件
-##### onSeeking 兼容性 
+##### onSeeking 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 4.41 | 4.41 | 4.41 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -230,14 +230,14 @@ onSeeking
 #### onSeeked(callback : (result : any) => void) : void; @onseeked
 onSeeked
 音频完成 seek 操作事件
-##### onSeeked 兼容性 
+##### onSeeked 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 4.41 | 4.41 | 4.41 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -246,14 +246,14 @@ onSeeked
 #### onTimeUpdate(callback: (result: any) => void): void; @ontimeupdate
 onTimeUpdate
 背景音频播放进度更新事件
-##### onTimeUpdate 兼容性 
+##### onTimeUpdate 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 4.41 | 4.41 | 4.41 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -262,14 +262,14 @@ onTimeUpdate
 #### onPrev(callback: (result: any) => void): void; @onprev
 onPrev
 用户在系统音乐播放面板点击上一曲事件
-##### onPrev 兼容性 
+##### onPrev 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 4.41 | 4.41 | 4.41 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -278,14 +278,14 @@ onPrev
 #### onNext(callback: (result: any) => void): void; @onnext
 onNext
 用户在系统音乐播放面板点击下一曲事件
-##### onNext 兼容性 
+##### onNext 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 4.41 | 4.41 | 4.41 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -294,20 +294,20 @@ onNext
 #### onError(callback : (result : ICreateBackgroundAudioFail) => void) : void; @onerror
 onError
 背景音频播放错误事件
-##### onError 兼容性 
+##### onError 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 4.41 | 4.41 | 4.41 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (result: [ICreateBackgroundAudioFail](#icreatebackgroundaudiofail-values)) => void | 是 | Web: x | 
 
 ##### ICreateBackgroundAudioFail 的属性值 @icreatebackgroundaudiofail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -317,7 +317,7 @@ onError
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 1107601 | Web: x; Android: 4.41; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41 | 系统错误 |
 | 1107602 | Web: x; Android: 4.41; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41 | 网络错误 |
@@ -331,14 +331,14 @@ onError
 #### onWaiting(callback: (result: any) => void): void; @onwaiting
 onWaiting
 音频加载中事件，当音频因为数据不足，需要停下来加载时会触发
-##### onWaiting 兼容性 
+##### onWaiting 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 4.41 | 4.41 | 4.41 | x |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -347,7 +347,7 @@ onWaiting
 #### offCanplay(): void; @offcanplay
 offCanplay
 取消监听背景音频可播放事件
-##### offCanplay 兼容性 
+##### offCanplay 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 5.0 | 5.0 | 5.0 | 5.0 |
@@ -358,7 +358,7 @@ offCanplay
 #### offPlay(): void; @offplay
 offPlay
 取消监听背景音频播放事件
-##### offPlay 兼容性 
+##### offPlay 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 5.0 | 5.0 | 5.0 | 5.0 |
@@ -369,7 +369,7 @@ offPlay
 #### offPause(): void; @offpause
 offPause
 取消监听背景音频暂停事件
-##### offPause 兼容性 
+##### offPause 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 5.0 | 5.0 | 5.0 | 5.0 |
@@ -380,7 +380,7 @@ offPause
 #### offStop(): void; @offstop
 offStop
 取消监听背景音频停止事件
-##### offStop 兼容性 
+##### offStop 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 5.0 | 5.0 | 5.0 | 5.0 |
@@ -391,7 +391,7 @@ offStop
 #### offEnded(): void; @offended
 offEnded
 取消监听背景音频自然播放结束事件
-##### offEnded 兼容性 
+##### offEnded 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 5.0 | 5.0 | 5.0 | 5.0 |
@@ -402,7 +402,7 @@ offEnded
 #### offSeeking() : void; @offseeking
 offSeeking
 取消监听音频进行 seek 操作事件
-##### offSeeking 兼容性 
+##### offSeeking 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 5.0 | 5.0 | 5.0 | 5.0 |
@@ -413,7 +413,7 @@ offSeeking
 #### offSeeked() : void; @offseeked
 offSeeked
 取消监听音频完成 seek 操作事件
-##### offSeeked 兼容性 
+##### offSeeked 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 5.0 | 5.0 | 5.0 | 5.0 |
@@ -424,7 +424,7 @@ offSeeked
 #### offTimeUpdate(): void; @offtimeupdate
 offTimeUpdate
 取消监听背景音频播放进度更新事件
-##### offTimeUpdate 兼容性 
+##### offTimeUpdate 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 5.0 | 5.0 | 5.0 | 5.0 |
@@ -435,7 +435,7 @@ offTimeUpdate
 #### offPrev(): void; @offprev
 offPrev
 取消监听用户在系统音乐播放面板点击上一曲事件
-##### offPrev 兼容性 
+##### offPrev 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 5.0 | 5.0 | 5.0 | 5.0 |
@@ -446,7 +446,7 @@ offPrev
 #### offNext(): void; @offnext
 offNext
 取消监听用户在系统音乐播放面板点击下一曲事件
-##### offNext 兼容性 
+##### offNext 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 5.0 | 5.0 | 5.0 | 5.0 |
@@ -457,7 +457,7 @@ offNext
 #### offError() : void; @offerror
 offError
 背景音频播放错误事件
-##### offError 兼容性 
+##### offError 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 5.0 | 5.0 | 5.0 | 5.0 |
@@ -468,7 +468,7 @@ offError
 #### offWaiting(): void; @offwaiting
 offWaiting
 取消监听音频加载中事件
-##### offWaiting 兼容性 
+##### offWaiting 兼容性 <Help /> 
 | Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 5.0 | 5.0 | 5.0 | x |
@@ -478,7 +478,7 @@ offWaiting
 
 ##### ICreateBackgroundAudioFail 的属性值 @icreatebackgroundaudiofail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -488,7 +488,7 @@ offWaiting
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 1107601 | Web: x; Android: 4.41; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41 | 系统错误 |
 | 1107602 | Web: x; Android: 4.41; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41 | 网络错误 |
@@ -778,7 +778,7 @@ offWaiting
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

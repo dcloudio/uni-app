@@ -49,7 +49,7 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 | RegExp | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -82,7 +82,7 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 | RegExp | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -128,7 +128,7 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -165,7 +165,7 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -204,7 +204,7 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -248,7 +248,7 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -274,7 +274,7 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 
 <!-- UTSJSON.RegExp.unicode.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -321,7 +321,7 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -358,7 +358,7 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -395,7 +395,7 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -432,7 +432,7 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -489,7 +489,7 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -535,7 +535,7 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -592,7 +592,7 @@ HBuilder X 4.72及之后版本 Android端正则引擎完全遵循`ECMAScript`标
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |

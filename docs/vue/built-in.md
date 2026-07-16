@@ -2,7 +2,7 @@
 
 ## 指令 @directives
 
-|  | 兼容性 |
+|  | 兼容性 <Help /> |
 | :- | :- |
 | v-text | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
 | v-html | Web: 4.0; 微信小程序: x; Android(VDOM): 3.99; Android(Vapor): x; iOS: x; HarmonyOS: x |
@@ -1951,14 +1951,14 @@ const incrementNum = () =>{
  <keep-alive> 包裹动态组件时，会缓存不活动的组件实例，而不是销毁它们。和 <transition> 相似，<keep-alive> 是一个抽象组件：它自身不会渲染一个 DOM 元素，也不会出现在父组件链中。
 
 
-##### 兼容性
+##### 兼容性 <Help />
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ##### 属性 
-| 名称 | 类型 | 兼容性 | 描述 |
+| 名称 | 类型 | 兼容性 <Help /> | 描述 |
 | :- | :- |  :-: | :- |
 | include | string | Web: 4.0; 微信小程序: x; Android(VDOM): 4.0; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 字符串或正则表达式。只有名称匹配的组件会被缓存。 |
 | exclude | string | Web: 4.0; 微信小程序: x; Android(VDOM): 4.0; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 字符串或正则表达式。任何名称匹配的组件都不会被缓存。 |
@@ -1981,14 +1981,14 @@ const incrementNum = () =>{
  <transition> 元素作为单个元素/组件的过渡效果。<transition> 只会把过渡效果应用到其包裹的内容上，而不会额外渲染 DOM 元素，也不会出现在检测过的组件层级中。
 
 
-##### 兼容性
+##### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ##### 属性 
-| 名称 | 类型 | 兼容性 | 描述 |
+| 名称 | 类型 | 兼容性 <Help /> | 描述 |
 | :- | :- |  :-: | :- |
 | name | string | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 用于自动生成 CSS 过渡类名。例如：name: 'fade' 将自动拓展为.fade-enter，.fade-enter-active等。默认类名为 "v" |
 | appear | boolean | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否在初始渲染时使用过渡。默认为 false。 |
@@ -2050,14 +2050,14 @@ const incrementNum = () =>{
  <transition-group> 元素作为多个元素/组件的过渡效果。<transition-group> 渲染一个真实的 DOM 元素。默认渲染 <span>，可以通过 tag 属性配置哪个元素应该被渲染。
 
 
-##### 兼容性
+##### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ##### 属性 
-| 名称 | 类型 | 兼容性 | 描述 |
+| 名称 | 类型 | 兼容性 <Help /> | 描述 |
 | :- | :- |  :-: | :- |
 | tag | string | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 默认为 span。 |
 | move-class | string | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 覆盖移动过渡期间应用的 CSS 类。 |
@@ -2114,14 +2114,14 @@ const incrementNum = () =>{
  Teleport 提供了一种干净的方法，允许我们控制在 DOM 中哪个父节点下呈现 HTML，而不必求助于全局状态或将其拆分为两个组件。
 
 
-##### 兼容性
+##### 兼容性 <Help />
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | 4.0 | 5.14 | 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ##### 属性 
-| 名称 | 类型 | 兼容性 | 描述 |
+| 名称 | 类型 | 兼容性 <Help /> | 描述 |
 | :- | :- |  :-: | :- |
 | to | string | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 必须是有效的查询选择器或 HTMLElement (如果在浏览器环境中使用)。指定将在其中移动 \<teleport> 内容的目标元素 |
 | disabled | boolean | Web: 4.0; 微信小程序: 5.14; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 此可选属性可用于禁用 \<teleport> 的功能，这意味着其插槽内容将不会移动到任何位置，而是在您在周围父组件中指定了 \<teleport> 的位置渲染。 |
@@ -2148,7 +2148,7 @@ const incrementNum = () =>{
  当我们想要使用内置指令而不在 DOM 中渲染元素时，<template> 标签可以作为占位符使用。
 
 
-##### 兼容性
+##### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | √ | 3.9 | 4.11 | 4.61 |
@@ -2189,13 +2189,13 @@ const incrementNum = () =>{
 :::
 
 ##### 属性 
-| 名称 | 类型 | 兼容性 |
+| 名称 | 类型 | 兼容性 <Help /> |
 | :- | :- |  :-: |
 | lang | string | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 
 #### lang 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | html | Web: 4.0; 微信小程序: 4.11; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | html |
 | pug | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | pug |
@@ -2218,14 +2218,14 @@ const incrementNum = () =>{
  <slot> 元素作为组件模板之中的内容分发插槽。<slot> 元素自身将被替换。
 
 
-##### 兼容性
+##### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.11 | 3.9 | 4.11 | 4.61 |
 
 
 ##### 属性 
-| 名称 | 类型 | 兼容性 | 描述 |
+| 名称 | 类型 | 兼容性 <Help /> | 描述 |
 | :- | :- |  :-: | :- |
 | name | string | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 用于命名插槽。 |
 
@@ -2246,14 +2246,14 @@ const incrementNum = () =>{
  渲染一个“元组件”为动态组件。依 is 的值，来决定哪个组件被渲染。
 
 
-##### 兼容性
+##### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.99 | 4.11 | 4.61 |
 
 
 ##### 属性 
-| 名称 | 类型 | 兼容性 |
+| 名称 | 类型 | 兼容性 <Help /> |
 | :- | :- |  :-: |
 | is | Any | Web: 4.0; 微信小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 |
 | inline-template | boolean | Web: 4.0; 微信小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 |

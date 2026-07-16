@@ -7,14 +7,14 @@
 
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 属性 
-| 名称 | 类型 | 兼容性 | 描述 |
+| 名称 | 类型 | 兼容性 <Help /> | 描述 |
 | :- | :- |  :-: | :- |
 | openid | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>进入房间用户的 openid |
 | mode | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>对话窗口类型 |
@@ -24,21 +24,21 @@
 
 #### mode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | camera | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 自身传入 camera |
 | video | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 其他用户传入 video |
 
 #### device-position 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | front | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 前置 |
 | back | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 后置 |
 
 #### object-fit 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | fill | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 填充 |
 | contain | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 包含 |

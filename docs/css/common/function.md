@@ -2,7 +2,7 @@
 
 ## var
 
-### 兼容性 
+### 兼容性 <Help /> 
  | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.0 | 4.11 | 4.61 |
@@ -301,7 +301,7 @@ web平台的 CSS环境变量规范参考[MDN Reference](https://developer.mozill
 
 根据红色、绿色和蓝色值创建颜色。
 
-### 兼容性 
+### 兼容性 <Help /> 
  | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -421,7 +421,7 @@ web平台的 CSS环境变量规范参考[MDN Reference](https://developer.mozill
 
 根据红色、绿色、蓝色和 alpha 值创建颜色。
 
-### 兼容性 
+### 兼容性 <Help /> 
  | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |

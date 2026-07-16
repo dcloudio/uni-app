@@ -14,7 +14,7 @@ UniPage在App和Web平台较完善，在小程序端受小程序未开放，很�
 
 
 ### UniPage 的属性值 @unipage-values
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | route | string | 是 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61 | 页面的路由地址 |
 | options | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: x | 页面的路由参数信息 |
@@ -29,7 +29,7 @@ UniPage在App和Web平台较完善，在小程序端受小程序未开放，很�
 
 #### vm 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | $data | Map\<string, any> | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 |
 | $props | Map\<string, any> | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 |
@@ -44,7 +44,7 @@ UniPage在App和Web平台较完善，在小程序端受小程序未开放，很�
 
 #### pageBody 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | left | number | 是 | Android: 4.51; iOS: 4.51 | 页面内容区域左上角横坐标 |
 | right | number | 是 | Android: 4.51; iOS: 4.51 | 页面内容区域右下角横坐标 |
@@ -55,7 +55,7 @@ UniPage在App和Web平台较完善，在小程序端受小程序未开放，很�
 
 #### safeAreaInsets 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | left | number | 是 | Android: 4.51; iOS: 4.51 | 安全区域左侧插入位置（距离左边边界距离） |
 | right | number | 是 | Android: 4.51; iOS: 4.51 | 安全区域右侧插入位置（距离右边边界距离） |
@@ -72,7 +72,7 @@ UniPage在App和Web平台较完善，在小程序端受小程序未开放，很�
 
 pages.json里的页面配置，即page下的style节点的内容，可以通过本API获取。但注意这里获取的是UniPage上的最终生效值，不是pages.json里的原始配置。
 
-##### getPageStyle 兼容性 
+##### getPageStyle 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.31 | x | 4.31 | 4.31 | 4.31 | 4.61 |
@@ -96,7 +96,7 @@ pages.json里的页面配置，即page下的style节点的内容，可以通过�
 
 pages.json里的内容是静态的，通过本API可以动态设置UniPage的Style，但并非所有页面样式都支持动态配置，具体见下PageStyle。
 
-##### setPageStyle 兼容性 
+##### setPageStyle 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.31 | x | 4.31 | 4.31 | 4.31 | 4.61 |
@@ -104,7 +104,7 @@ pages.json里的内容是静态的，通过本API可以动态设置UniPage的Sty
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | style | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | 微信小程序: x | 
 
@@ -149,7 +149,7 @@ pages.json里的内容是静态的，通过本API可以动态设置UniPage的Sty
 
 用于 dialogPage 获取所属父页面
 
-##### getParentPage 兼容性 
+##### getParentPage 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.31 | x | 4.31 | 4.31 | 4.31 | 4.61 |
@@ -171,7 +171,7 @@ pages.json里的内容是静态的，通过本API可以动态设置UniPage的Sty
 
 获取当前页面的 dialog 子页面集合
 
-##### getDialogPages 兼容性 
+##### getDialogPages 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.31 | x | 4.31 | 4.31 | 4.31 | 4.61 |
@@ -196,7 +196,7 @@ pages.json里的内容是静态的，通过本API可以动态设置UniPage的Sty
 ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素，则返回第一个匹配的元素。
 
 
-##### getElementById 兼容性 
+##### getElementById 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.31 | x | 4.31 | 4.31 | 4.61 |
@@ -204,7 +204,7 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | id | [string.IDString](/uts/data-type.md#ide-string) \| string | 是 | 微信小程序: x | 
 
@@ -224,7 +224,7 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 返回 android 平台页面根 view
 
 
-##### getAndroidView 兼容性 
+##### getAndroidView 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | x | 4.31 | x | x |
@@ -247,7 +247,7 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 返回 android 平台加载页面内容的Activity
 
 
-##### getAndroidActivity 兼容性 
+##### getAndroidActivity 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | x | 4.61 | x | x |
@@ -270,7 +270,7 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 返回 ios 平台页面根 view
 
 
-##### getIOSView 兼容性 
+##### getIOSView 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | x | x | x | x | 4.33 | x |
@@ -293,7 +293,7 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 返回页面 HTML Element 对象
 
 
-##### getHTMLElement 兼容性 
+##### getHTMLElement 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.31 | x | x | x | x |
@@ -319,7 +319,7 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 用于逆转先前调用 [UniElement.requestFullscreen](/dom/unielement.md#requestfullscreen) 的效果。
 
-##### exitFullscreen 兼容性 
+##### exitFullscreen 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | x | 4.61 | x | 4.61 |
@@ -327,13 +327,13 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | **ExitFullscreenOptions** | 否 | Web: x; 微信小程序: x; iOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | success | () => void | 否 | Web: x; 微信小程序: x; iOS: x | 成功回调 |
 | fail | (error: [IFullscreenError](#ifullscreenerror-values)) => void | 否 | Web: x; 微信小程序: x; iOS: x | 失败回调 |
@@ -341,7 +341,7 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 ###### IFullscreenError 的属性值 @ifullscreenerror-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x; 微信小程序: x | 错误码 |
 | errSubject | string | 是 | Web: x; 微信小程序: x | 统一错误主题（模块）名称 |
@@ -351,7 +351,7 @@ ID 区分大小写，且应该是唯一的。如果存在多个匹配的元素�
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 106600 | Web: x; 微信小程序: x | 当前页面已经有element处于全屏状态 |
 | 106601 | Web: x; 微信小程序: x | 当前element不支持全屏 |
@@ -371,7 +371,7 @@ createElement
 创建组件
 
 
-##### createElement 兼容性 
+##### createElement 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | x | x | x | x | 4.63 | x |
@@ -379,7 +379,7 @@ createElement
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | tagName | string | 是 | Web: x; 微信小程序: x; Android: x; iOS: x | 
 
@@ -400,7 +400,7 @@ onLayoutChange
 
 监听页面布局变化更新事件
 
-##### onLayoutChange 兼容性 
+##### onLayoutChange 兼容性 <Help /> 
 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- |
 | x | x | x | 5.0 |
@@ -408,13 +408,13 @@ onLayoutChange
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (res: [UniPagePerformanceTiming](#unipageperformancetiming-values)) => void | 是 | Android: x; iOS: x; HarmonyOS: x | 
 
 ##### UniPagePerformanceTiming 的属性值 @unipageperformancetiming-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | duration | number | 是 | Android: x; iOS: x; HarmonyOS: x | 性能计时持续的时间，单位为ms |
 
@@ -435,7 +435,7 @@ offLayoutChange
 
 取消监听页面布局变化更新事件
 
-##### offLayoutChange 兼容性 
+##### offLayoutChange 兼容性 <Help /> 
 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- |
 | x | x | x | 5.0 |
@@ -443,7 +443,7 @@ offLayoutChange
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | id | number | 是 | Android: x; iOS: x; HarmonyOS: x | 
 
@@ -458,7 +458,7 @@ onRenderChange
 
 监听页面渲染变化更新事件
 
-##### onRenderChange 兼容性 
+##### onRenderChange 兼容性 <Help /> 
 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- |
 | x | x | x | 5.0 |
@@ -466,13 +466,13 @@ onRenderChange
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (res: [UniPagePerformanceRenderTiming](#unipageperformancerendertiming-values)) => void | 是 | Android: x; iOS: x; HarmonyOS: x | 
 
 ##### UniPagePerformanceRenderTiming 的属性值 @unipageperformancerendertiming-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | updateDuration | number | 是 | Android: x; iOS: x; HarmonyOS: x | 更新渲染属性的总时间，单位为ms |
 | duration | number | 是 | Android: x; iOS: x; HarmonyOS: x | 性能计时持续的时间，单位为ms |
@@ -494,7 +494,7 @@ offRenderChange
 
 取消监听页面渲染变化更新事件
 
-##### offRenderChange 兼容性 
+##### offRenderChange 兼容性 <Help /> 
 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- |
 | x | x | x | 5.0 |
@@ -502,7 +502,7 @@ offRenderChange
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | id | number | 是 | Android: x; iOS: x; HarmonyOS: x | 
 
@@ -517,7 +517,7 @@ onTouchStart
 
 监听页面触摸开始事件
 
-##### onTouchStart 兼容性 
+##### onTouchStart 兼容性 <Help /> 
 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- |
 | x | x | x | 5.0 |
@@ -525,7 +525,7 @@ onTouchStart
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | 是 | Android: x; iOS: x; HarmonyOS: x | 
 
@@ -546,7 +546,7 @@ offTouchStart
 
 取消监听页面触摸开始事件
 
-##### offTouchStart 兼容性 
+##### offTouchStart 兼容性 <Help /> 
 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- |
 | x | x | x | 5.0 |
@@ -554,7 +554,7 @@ offTouchStart
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | id | number | 是 | Android: x; iOS: x; HarmonyOS: x | 
 
@@ -569,7 +569,7 @@ onTouchEnd
 
 监听页面触摸结束事件
 
-##### onTouchEnd 兼容性 
+##### onTouchEnd 兼容性 <Help /> 
 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- |
 | x | x | x | 5.0 |
@@ -577,7 +577,7 @@ onTouchEnd
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | callback | (event: [UniTouchEvent](/component/common.md#unitouchevent)) => void | 是 | Android: x; iOS: x; HarmonyOS: x | 
 
@@ -598,7 +598,7 @@ offTouchEnd
 
 取消监听页面触摸结束事件
 
-##### offTouchEnd 兼容性 
+##### offTouchEnd 兼容性 <Help /> 
 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- |
 | x | x | x | 5.0 |
@@ -606,7 +606,7 @@ offTouchEnd
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | id | number | 是 | Android: x; iOS: x; HarmonyOS: x | 
 
@@ -621,7 +621,7 @@ querySelector
 
 返回页面中与指定选择器或选择器组匹配的第一个 Element对象。如果找不到匹配项，则返回null
 
-##### querySelector 兼容性 
+##### querySelector 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- |
 | 5.0 | x | 5.0 | 5.0 | 5.21 | 5.0 | x |
@@ -629,7 +629,7 @@ querySelector
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | selector | [string.cssSelectorString](/uts/data-type.md#ide-string) | 是 | 微信小程序: x | CSS 选择器字符串 | 
 
@@ -650,7 +650,7 @@ querySelectorAll
 
 返回页面中与指定选择器或选择器组匹配的元素列表。
 
-##### querySelectorAll 兼容性 
+##### querySelectorAll 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- |
 | x | x | 5.0 | 5.0 | 5.21 | 5.0 | x |
@@ -658,7 +658,7 @@ querySelectorAll
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | selector | [string.cssSelectorString](/uts/data-type.md#ide-string) | 是 | Web: x; 微信小程序: x | CSS 选择器字符串 | 
 
@@ -677,7 +677,7 @@ querySelectorAll
 
 设置当前页面样式。详细属性配置请参考PageStyle  **已废弃，仅为了向下兼容保留**
 
-##### $setPageStyle 兼容性 
+##### $setPageStyle 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.13 | x | 4.13 | 4.13 | 4.61 |
@@ -685,7 +685,7 @@ querySelectorAll
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | style | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | 微信小程序: x | 
 
@@ -698,7 +698,7 @@ querySelectorAll
 
 获取当前页面样式。详细属性配置请参考PageStyle  **已废弃，仅为了向下兼容保留**
 
-##### $getPageStyle 兼容性 
+##### $getPageStyle 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.13 | x | 4.13 | 4.13 | 4.61 |
@@ -733,7 +733,7 @@ querySelectorAll
 > ① 截图高度等于内容实际高度（内容多高截图就多高）  
 > ② 截图高度固定为屏幕高度（不管内容多少都是一屏高）
 
-##### takeSnapshot 兼容性 
+##### takeSnapshot 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | x | x | 5.02 | 5.02 | x | 5.02 | 5.02 | x |
@@ -741,13 +741,13 @@ querySelectorAll
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **TakeSnapshotOptions** | 是 | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图的参数对象 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | type | string | 否 | "file" | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图导出类型，目前仅支持 'file' 保存到临时文件目录 |
 | format | string | 否 | "png" | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图文件格式，目前仅支持 'png' |
@@ -757,13 +757,13 @@ querySelectorAll
 
 ###### TakeSnapshotSuccess 的属性值 @takesnapshotsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | tempFilePath | string | 是 | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图保存的临时文件路径 |
 
 ###### TakeSnapshotFail 的属性值 @takesnapshotfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图失败时的错误描述信息 |
 

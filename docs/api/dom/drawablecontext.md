@@ -2,7 +2,7 @@
 
 
 
-### DrawableContext 兼容性 
+### DrawableContext 兼容性 <Help /> 
  | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
@@ -11,7 +11,7 @@
 
 
 ### DrawableContext 的属性值 @drawablecontext-values
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | font | string | 是 | 10px | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 设置字体大小 |
 | fillStyle | [string.ColorString](/uts/data-type.md#ide-string) | 是 | #000 (黑色) | Web: x; 微信小程序: x; Android(VDOM): 3.9; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 设置填充颜色 |
@@ -29,7 +29,7 @@
 
 创建一个新的空路径
 
-##### beginPath 兼容性 
+##### beginPath 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
@@ -45,7 +45,7 @@
 
 绘制一段弧线
 
-##### arc 兼容性 
+##### arc 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
@@ -53,7 +53,7 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | x | number | 是 |  | Web: x; 微信小程序: x | 圆心的X轴坐标 |
 | y | number | 是 |  | Web: x; 微信小程序: x | 圆心的Y轴坐标 |
@@ -71,7 +71,7 @@
 
 将一个新的路径的起始点移动到 (x，y) 坐标
 
-##### moveTo 兼容性 
+##### moveTo 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
@@ -79,7 +79,7 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | x | number | 是 | Web: x; 微信小程序: x | 点的X轴坐标 |
 | y | number | 是 | Web: x; 微信小程序: x | 点的Y轴坐标 | 
@@ -93,7 +93,7 @@
 
 创建一个矩形路径
 
-##### rect 兼容性 
+##### rect 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
@@ -101,7 +101,7 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | x | number | 是 | Web: x; 微信小程序: x | 矩形起点的X轴坐标 |
 | y | number | 是 | Web: x; 微信小程序: x | 矩形起点的Y轴坐标 |
@@ -117,7 +117,7 @@
 
 将路径的最后一个点连接到 (x，y) 坐标
 
-##### lineTo 兼容性 
+##### lineTo 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
@@ -125,7 +125,7 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | x | number | 是 | Web: x; 微信小程序: x | 线终点的X轴坐标 |
 | y | number | 是 | Web: x; 微信小程序: x | 线终点的Y轴坐标 | 
@@ -139,7 +139,7 @@
 
 闭合路径，将最后一个点与起点连接起来。如果图形已经封闭，或者只有一个点，那么此方法不会产生任何效果。
 
-##### closePath 兼容性 
+##### closePath 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
@@ -155,7 +155,7 @@
 
 绘制当前或已经存在的路径的边框。
 
-##### stroke 兼容性 
+##### stroke 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
@@ -171,7 +171,7 @@
 
 绘制一个矩形框
 
-##### strokeRect 兼容性 
+##### strokeRect 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
@@ -179,7 +179,7 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | x | number | 是 | Web: x; 微信小程序: x | 矩形起点的X轴坐标 |
 | y | number | 是 | Web: x; 微信小程序: x | 矩形起点的Y轴坐标 |
@@ -195,7 +195,7 @@
 
 绘制空心字符
 
-##### strokeText 兼容性 
+##### strokeText 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
@@ -203,7 +203,7 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | text | string | 是 | Web: x; 微信小程序: x | 要绘制的字符 |
 | x | number | 是 | Web: x; 微信小程序: x | 字符开始绘制的X轴坐标 |
@@ -218,7 +218,7 @@
 
 填充当前或已存在的路径
 
-##### fill 兼容性 
+##### fill 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
@@ -226,7 +226,7 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | fillRule | string | 否 | nonzero | Web: x; 微信小程序: x | 填充规则。可取值：`nonzero`非零环绕规则；`evenodd`奇偶环绕规则。 | 
 
@@ -239,7 +239,7 @@
 
 绘制一个实心矩形
 
-##### fillRect 兼容性 
+##### fillRect 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
@@ -247,7 +247,7 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | x | number | 是 | Web: x; 微信小程序: x | 矩形起点的X轴坐标 |
 | y | number | 是 | Web: x; 微信小程序: x | 矩形起点的Y轴坐标 |
@@ -263,7 +263,7 @@
 
 绘制实心字符
 
-##### fillText 兼容性 
+##### fillText 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
@@ -271,7 +271,7 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | text | string | 是 | Web: x; 微信小程序: x | 要绘制的字符 |
 | x | number | 是 | Web: x; 微信小程序: x | 字符开始绘制的X轴坐标 |
@@ -286,7 +286,7 @@
 
 清空绘制数据
 
-##### reset 兼容性 
+##### reset 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
@@ -302,7 +302,7 @@
 
 将所有绘制内容更新到画布上
 
-##### update 兼容性 
+##### update 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
@@ -318,7 +318,7 @@
 
 设置虚线样式
 
-##### setLineDash 兼容性 
+##### setLineDash 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
@@ -326,7 +326,7 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | segments | number[\] | 是 | Web: x; 微信小程序: x | 一组描述交替绘制线段和间距长度的数字。 | 
 
@@ -339,7 +339,7 @@
 
 创建三次方贝塞尔曲线路径
 
-##### bezierCurveTo 兼容性 
+##### bezierCurveTo 兼容性 <Help /> 
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- | :- |
 | x | x | 3.9 | x | 4.11 | x | 4.61 | x |
@@ -347,7 +347,7 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | cp1x | number | 是 | Web: x; 微信小程序: x | 第一个贝塞尔控制点的 x 坐标 |
 | cp1y | number | 是 | Web: x; 微信小程序: x | 第一个贝塞尔控制点的 y 坐标 |

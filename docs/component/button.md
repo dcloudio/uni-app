@@ -9,14 +9,14 @@
  按钮
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否禁用 |
 | hover-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "button-hover" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果 |
@@ -61,14 +61,14 @@
 
 #### size 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | default | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 默认大小 |
 | mini | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 小尺寸 |
 
 #### type 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | default | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 白色 |
 | primary | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 蓝色 |
@@ -76,14 +76,14 @@
 
 #### form-type 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | submit | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 提交表单 |
 | reset | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 重置表单 |
 
 #### open-type 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | agreePrivacyAuthorization | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 用户同意隐私协议按钮。用户点击一次此按钮后，所有已声明过的隐私接口可以正常调用。 |
 | feedback | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 打开“意见反馈”页面，用户可提交反馈内容并上传日志 |
@@ -117,7 +117,7 @@
 
 #### lang 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | en | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 英文 |
 | zh_CN | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 简体中文 |

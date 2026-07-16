@@ -12,7 +12,7 @@
 
 获取 APP 授权设置。
 
-### getAppAuthorizeSetting 兼容性 
+### getAppAuthorizeSetting 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 3.9 | 4.11 | 4.61 |
@@ -28,7 +28,7 @@
 
 #### GetAppAuthorizeSettingResult 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | albumAuthorized | string | 是 | Web: x; 微信小程序: 4.41; Android: 4.25; iOS: 4.11 | 允许 App 使用相册的开关<br/> |
 | bluetoothAuthorized | string | 是 | Web: x; 微信小程序: 4.41; Android: 4.25; iOS: 4.11 | 允许 App 使用蓝牙的开关<br/> |
@@ -48,7 +48,7 @@
 
 ##### albumAuthorized 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x | 已经获得授权，无需再次请求授权 |
 | denied | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请相册相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
@@ -57,7 +57,7 @@
 
 ##### bluetoothAuthorized 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x | 已经获得授权，无需再次请求授权 |
 | denied | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请蓝牙相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
@@ -66,7 +66,7 @@
 
 ##### cameraAuthorized 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x | 已经获得授权，无需再次请求授权 |
 | denied | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请摄像头相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
@@ -75,7 +75,7 @@
 
 ##### locationAuthorized 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x | 已经获得授权，无需再次请求授权 |
 | denied | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请定位相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
@@ -84,7 +84,7 @@
 
 ##### locationAccuracy 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | reduced | Web: x | 模糊定位 |
 | full | Web: x | 精准定位 |
@@ -92,7 +92,7 @@
 
 ##### microphoneAuthorized 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x | 已经获得授权，无需再次请求授权 |
 | denied | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请麦克风相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
@@ -101,7 +101,7 @@
 
 ##### notificationAuthorized 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x | 已经获得授权，无需再次请求授权 |
 | denied | Web: x | 请求授权被拒绝，无法再次请求授权。Android平台：需要申请通知相关权限；iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
@@ -110,7 +110,7 @@
 
 ##### notificationAlertAuthorized 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x | 已经获得授权，无需再次请求授权 |
 | denied | Web: x | 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
@@ -119,7 +119,7 @@
 
 ##### notificationBadgeAuthorized 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x | 已经获得授权，无需再次请求授权 |
 | denied | Web: x | 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
@@ -128,7 +128,7 @@
 
 ##### notificationSoundAuthorized 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x | 已经获得授权，无需再次请求授权 |
 | denied | Web: x | 请求授权被拒绝，无法再次请求授权。iOS平台：此情况需要引导用户打开系统设置，在设置页中打开权限 |
@@ -137,7 +137,7 @@
 
 ##### phoneCalendarAuthorized 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x | 已经获得授权，无需再次请求授权 |
 | denied | Web: x | 请求授权被拒绝，无法再次请求授权。 |
@@ -146,7 +146,7 @@
 
 ##### readPhoneCalendarAuthorized 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x | 已经获得授权，无需再次请求授权 |
 | denied | Web: x | 请求授权被拒绝，无法再次请求授权。 |
@@ -155,7 +155,7 @@
 
 ##### writePhoneCalendarAuthorized 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x | 已经获得授权，无需再次请求授权 |
 | denied | Web: x | 请求授权被拒绝，无法再次请求授权；（此情况需要引导用户打开系统设置，在设置页中打开权限） |
@@ -163,7 +163,7 @@
 
 ##### pasteboardAuthorized 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | authorized | Web: x | 已经获得授权，无需再次请求授权 |
 | denied | Web: x | 请求授权被拒绝，无法再次请求授权；（此情况需要引导用户打开系统设置，在设置页中打开权限） |
@@ -361,7 +361,7 @@ Android和iOS的权限设计并不相同，比如iOS有相册权限，而Android
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

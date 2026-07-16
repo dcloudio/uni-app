@@ -2,7 +2,7 @@
 
 引用云对象
 
-### importObject 兼容性 
+### importObject 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 阿里云 3.9，腾讯云 3.91，支付宝云 3.98 | 4.11 | 4.61 |
@@ -17,7 +17,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | customUI | boolean | 否 |   | 是否移除自动展示的ui |
 | loadingOptions | **UniCloudImportObjectLoadingOptions** | 否 |   | loading界面配置 |

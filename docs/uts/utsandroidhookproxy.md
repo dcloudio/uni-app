@@ -20,7 +20,7 @@ uts 插件创建时的回调。<br/>     对应原生 Application onCreate 函�
 | void | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Android | Android(VDOM) UTS 插件 |

@@ -2337,7 +2337,7 @@ const isReactiveShallowReadonlyCount = isReactive(shallowReadonlyCount);
 
 ## 响应式: 进阶
 
-|  | 兼容性 |
+|  | 兼容性 <Help /> |
 | :- | :- |
 | shallowRef() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 | triggerRef() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
@@ -3195,7 +3195,7 @@ defineExpose({
 
 #### 兼容性 @component-lifecycle-compatibility
 
-|  | 兼容性 | 描述 |
+|  | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |
 | onMounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
 | onUpdated() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子。 |
@@ -3400,21 +3400,21 @@ const updateTitle = () => {
 
 
 
-##### 兼容性
+##### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | √ | 3.9 | 4.11 | 4.61 |
 
 
 ##### 属性 
-| 名称 | 类型 | 兼容性 |
+| 名称 | 类型 | 兼容性 <Help /> |
 | :- | :- |  :-: |
 | setup | Any | Web: 4.0; 微信小程序: √; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 | lang | Any | Web: 4.0; 微信小程序: √; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 
 #### lang 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | ts | Web: x; 微信小程序: √; Android: x; iOS: x; HarmonyOS: x | typescript |
 | uts | Web: 4.0; 微信小程序: √; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | uts |
@@ -3544,7 +3544,7 @@ export default {
 
 ## 单文件组件中方法兼容性 @single-file-component-script-methods
 
-|  | 兼容性 |
+|  | 兼容性 <Help /> |
 | :- | :- |
 | defineProps() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |
 | defineEmits() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 |

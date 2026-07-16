@@ -170,10 +170,6 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
         age: 11
       }
 
-	    let objAs = {
-	      age: 23
-	    } as UTSJSONObject
-
       let ret1 = UTSJSONObject.keys(obj).length
       console.log(ret1) //2
 ```
@@ -200,7 +196,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -298,7 +294,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -346,7 +342,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 :::
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -378,7 +374,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 
 <!-- UTSJSON.UTSJSONObject.parse.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS 系统版本 | iOS | HarmonyOS 系统版本 | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -476,7 +472,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 :::
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -572,7 +568,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -602,7 +598,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 | any \| null | 如果属性存在返回结果，不存在返回null | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -633,7 +629,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 | any | 如果属性存在返回结果，不存在返回指定的默认值 | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -663,7 +659,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 | boolean \| null | 如果属性名存在，且类型为Boolean返回对应的结果，不存在返回null | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -694,7 +690,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 | boolean | 如果属性名存在，且类型为Boolean返回对应的结果，不存在返回指定的默认值 | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -724,7 +720,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 | number \| null | 如果属性名存在，且类型为number返回对应的结果，不存在返回null | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -755,7 +751,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 | number | 如果属性名存在，且类型为number返回对应的结果，不存在返回指定的默认值 | 
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -848,7 +844,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -882,7 +878,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 
 <!-- UTSJSON.UTSJSONObject.getString_1.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -962,7 +958,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -995,7 +991,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 
 <!-- UTSJSON.UTSJSONObject.getJSON_1.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -1079,7 +1075,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -1162,7 +1158,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 
 :::
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -1194,7 +1190,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 
 <!-- UTSJSON.UTSJSONObject.getArray_2.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -1228,7 +1224,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 
 <!-- UTSJSON.UTSJSONObject.getArray_3.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
@@ -1286,7 +1282,7 @@ UTSJSONObject 对象的实例目前主要通过两种方式来创建：
 :::
 
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |

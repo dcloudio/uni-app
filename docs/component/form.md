@@ -15,14 +15,14 @@
  表单
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.97 | 4.11 | 4.61 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | disabled | boolean | false | Web: 4.0; 微信小程序: x; Android: 3.97; iOS: 4.11; HarmonyOS: 4.61 | 是否禁用 |
 | report-submit | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否返回 formId 用于发送模板消息 |

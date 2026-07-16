@@ -13,7 +13,7 @@
 显示 tabBar
 
 
-### showTabBar 兼容性 
+### showTabBar 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -27,7 +27,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | animation | boolean | 否 | 微信小程序: 4.41 | 是否需要动画效果 |
 | success | (result: [ShowTabBarSuccess](#showtabbarsuccess-values)) => void | 否 | 微信小程序: 4.41 | 接口调用成功的回调函数 |
@@ -108,7 +108,7 @@
 隐藏 tabBar
 
 
-### hideTabBar 兼容性 
+### hideTabBar 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -122,7 +122,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | animation | boolean | 否 | 微信小程序: 4.41 | 是否需要动画效果 |
 | success | (result: [HideTabBarSuccess](#hidetabbarsuccess-values)) => void | 否 | 微信小程序: 4.41 | 接口调用成功的回调函数 |
@@ -203,7 +203,7 @@
 显示 tabBar 某一项的右上角的红点
 
 
-### showTabBarRedDot 兼容性 
+### showTabBarRedDot 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -217,7 +217,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | index | number | 是 | 微信小程序: 4.41 | tabBar的哪一项，从左边算起，索引从0开始 |
 | success | (result: [ShowTabBarRedDotSuccess](#showtabbarreddotsuccess-values)) => void | 否 | 微信小程序: 4.41 | 接口调用成功的回调函数 |
@@ -298,7 +298,7 @@
 隐藏 tabBar 某一项的右上角的红点
 
 
-### hideTabBarRedDot 兼容性 
+### hideTabBarRedDot 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -312,7 +312,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | index | number | 是 | 微信小程序: 4.41 | tabBar的哪一项，从左边算起，索引从0开始 |
 | success | (result: [HideTabBarRedDotSuccess](#hidetabbarreddotsuccess-values)) => void | 否 | 微信小程序: 4.41 | 接口调用成功的回调函数 |
@@ -393,7 +393,7 @@
 为 tabBar 某一项的右上角添加文本
 
 
-### setTabBarBadge 兼容性 
+### setTabBarBadge 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -407,7 +407,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | index | number | 是 | 微信小程序: 4.41 | tabBar的哪一项，从左边算起，索引从0开始 |
 | text | string | 是 | 微信小程序: 4.41 | 显示的文本，不超过 3 个半角字符 |
@@ -489,7 +489,7 @@
 移除 tabBar 某一项右上角的文本
 
 
-### removeTabBarBadge 兼容性 
+### removeTabBarBadge 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -503,7 +503,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | index | number | 是 | 微信小程序: 4.41 | tabBar的哪一项，从左边算起，索引从0开始 |
 | success | (result: [RemoveTabBarBadgeSuccess](#removetabbarbadgesuccess-values)) => void | 否 | 微信小程序: 4.41 | 接口调用成功的回调函数 |
@@ -584,7 +584,7 @@
 动态设置 tabBar 的整体样式
 
 
-### setTabBarStyle 兼容性 
+### setTabBarStyle 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.91 | 4.11 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -592,13 +592,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | **SetTabBarStyleOptions** | 是 | HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | color | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 | 微信小程序: 4.41; HarmonyOS: x | tab 上的文字默认颜色 |
 | selectedColor | string ([string.ColorString](/uts/data-type.md#ide-string)) | 否 | 微信小程序: 4.41; HarmonyOS: x | tab 上的文字选中时的颜色 |
@@ -613,7 +613,7 @@
 
 ##### backgroundRepeat 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | repeat | HarmonyOS: x | 背景图片在垂直方向和水平方向平铺 |
 | repeat-x | HarmonyOS: x | 背景图片在水平方向平铺，垂直方向拉伸 |
@@ -622,20 +622,20 @@
 
 ##### borderStyle 的属性描述
 
-| 合法值 | 兼容性 |
+| 合法值 | 兼容性 <Help /> |
 | :- |  :-: |
 | black | HarmonyOS: x |
 | white | HarmonyOS: x |
 
 #### SetTabBarStyleSuccess 的属性值 @settabbarstylesuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | errMsg | string | 是 | HarmonyOS: x |
 
 #### SetTabBarStyleFail 的属性值 @settabbarstylefail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | HarmonyOS: x | 错误码 |
 | errSubject | string | 是 | HarmonyOS: x | 统一错误主题（模块）名称 |
@@ -645,14 +645,14 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 100 | HarmonyOS: x | TabBar 不存在 |
 | 200 | HarmonyOS: x | 参数错误 |
 
 #### SetTabBarStyleComplete 的属性值 @settabbarstylecomplete-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | errMsg | string | 是 | HarmonyOS: x |
 
@@ -665,7 +665,7 @@
 
 #### Promise\<SetTabBarStyleSuccess> 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | errMsg | string | 是 | HarmonyOS: x | 
 
@@ -701,7 +701,7 @@
 动态设置 tabBar 某一项的内容
 
 
-### setTabBarItem 兼容性 
+### setTabBarItem 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.91 | 4.11 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -715,7 +715,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | index | number | 是 | 微信小程序: 4.41 | tabBar 的哪一项，从左边算起，索引从0开始 |
 | text | string | 否 | 微信小程序: 4.41 | tab 上按钮文字 |
@@ -804,7 +804,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

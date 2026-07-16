@@ -12,7 +12,7 @@
 
 拨打电话
 
-### makePhoneCall 兼容性 
+### makePhoneCall 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.63 | 4.63 | 4.63 | 4.61 | 4.61 |
@@ -32,7 +32,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | phoneNumber | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS(VDOM) UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS(VDOM) UTS 插件: 4.61 | 需要拨打的电话号码 |
 | success | (result: MakePhoneCallSuccess) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.63; iOS: 4.63; iOS(VDOM) UTS 插件: 4.63; HarmonyOS: 4.61; HarmonyOS(VDOM) UTS 插件: 4.61 | 成功返回的回调函数 |
@@ -155,7 +155,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

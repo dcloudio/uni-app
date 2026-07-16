@@ -17,7 +17,7 @@
 
 <!-- UTSJSON.IJSONStringify.toJSON.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | Web | Android | iOS 系统版本 | iOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |

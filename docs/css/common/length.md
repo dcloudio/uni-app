@@ -18,7 +18,7 @@ CSS 长度数据类型 `<percentage>` 表述一个百分比值。许多 CSS 属�
 
 
 ### 兼容性
-| 名称 | 兼容性 | 描述 |
+| 名称 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |
 | px | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |   |
 | rpx | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |   |
@@ -117,7 +117,7 @@ rpx比较适合的场景是view的宽度width设置。
 
 ## 字体大小单位
 
-| 名称 | 兼容性 | 描述 |
+| 名称 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |
 | px | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |   |
 | rpx | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |   |

@@ -2,7 +2,7 @@
 
 添加拦截器
 
-### addInterceptor 兼容性 
+### addInterceptor 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.97 | 4.11 | 4.61 |
@@ -27,7 +27,7 @@
 
 删除拦截器
 
-### removeInterceptor 兼容性 
+### removeInterceptor 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.97 | 4.11 | 4.61 |
@@ -210,7 +210,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

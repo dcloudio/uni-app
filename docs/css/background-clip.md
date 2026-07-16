@@ -11,7 +11,7 @@ background-clip 属性用于设置元素的背景（背景图片或颜色）是�
 | 4.0 | 3.9 | x | x |
 
 
-### App平台拍平（flatten）兼容性 @flatten_compatibility
+### App平台拍平（flatten）兼容性 <Help /> @flatten_compatibility
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |

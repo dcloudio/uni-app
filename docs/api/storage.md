@@ -33,7 +33,7 @@ uni.setStorage函数定义
 将数据存储在本地storage存储中指定的 key 中，会覆盖掉原来该 key 对应的内容，这是一个异步接口。
 
 
-### setStorage 兼容性 
+### setStorage 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
@@ -92,7 +92,7 @@ uni.setStorageSync函数定义
 将 data 存储在本地storage存储中指定的 key 中，会覆盖掉原来该 key 对应的内容，这是一个同步接口。
 
 
-### setStorageSync 兼容性 
+### setStorageSync 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
@@ -149,7 +149,7 @@ uni.getStorage函数定义
 从本地存储中异步获取指定 key 对应的内容。
 
 
-### getStorage 兼容性 
+### getStorage 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
@@ -223,7 +223,7 @@ uni.getStorageSync函数定义
 从本地存储中同步获取指定 key 对应的内容。
 
 
-### getStorageSync 兼容性 
+### getStorageSync 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
@@ -290,7 +290,7 @@ uni.getStorageInfo函数定义
 异步获取当前 storage 的相关信息。
 
 
-### getStorageInfo 兼容性 
+### getStorageInfo 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
@@ -304,7 +304,7 @@ uni.getStorageInfo函数定义
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | success | (res: [GetStorageInfoSuccess](#getstorageinfosuccess-values)) => void | 否 | 微信小程序: 4.41 | uni.getStorageInfo成功回调函数定义 |
 | fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | 微信小程序: 4.41 | uni.getStorageInfo失败回调函数定义 |
@@ -312,7 +312,7 @@ uni.getStorageInfo函数定义
 
 #### GetStorageInfoSuccess 的属性值 @getstorageinfosuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | keys | Array&lt;string&gt; | 是 | 微信小程序: 4.41 | 当前 storage 中所有的 key |
 | currentSize | number | 是 | 微信小程序: 4.41 | 当前占用的空间大小, 单位：kb |
@@ -355,7 +355,7 @@ uni.getStorageInfoSync函数定义
 同步获取当前 storage 的相关信息。
 
 
-### getStorageInfoSync 兼容性 
+### getStorageInfoSync 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
@@ -371,7 +371,7 @@ uni.getStorageInfoSync函数定义
 
 #### GetStorageInfoSuccess 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | keys | Array&lt;string&gt; | 是 | 微信小程序: 4.41 | 当前 storage 中所有的 key |
 | currentSize | number | 是 | 微信小程序: 4.41 | 当前占用的空间大小, 单位：kb |
@@ -412,7 +412,7 @@ uni.removeStorage函数定义
 从本地存储中异步移除指定 key。
 
 
-### removeStorage 兼容性 
+### removeStorage 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
@@ -426,7 +426,7 @@ uni.removeStorage函数定义
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | key | string | 是 | 微信小程序: 4.41 | 本地存储中的指定的 key |
 | success | (res: RemoveStorageSuccess) => void | 否 | 微信小程序: 4.41 | uni.removeStorage成功回调函数定义 |
@@ -470,7 +470,7 @@ uni.removeStorageSync函数定义
 从本地存储中同步移除指定 key。
 
 
-### removeStorageSync 兼容性 
+### removeStorageSync 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
@@ -519,7 +519,7 @@ uni.clearStorage函数定义
 清除本地数据存储。
 
 
-### clearStorage 兼容性 
+### clearStorage 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
@@ -533,7 +533,7 @@ uni.clearStorage函数定义
 
 #### option 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | success | (res: ClearStorageSuccess) => void | 否 | 微信小程序: 4.41 | uni.clearStorage 成功回调函数定义 |
 | fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | 微信小程序: 4.41 | uni.clearStorage 失败回调函数定义 |
@@ -576,7 +576,7 @@ uni.clearStorageSync函数定义
 清除本地数据存储。
 
 
-### clearStorageSync 兼容性 
+### clearStorageSync 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9.0 | 4.11 | 4.61 |
@@ -1148,7 +1148,7 @@ uni.clearStorageSync函数定义
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

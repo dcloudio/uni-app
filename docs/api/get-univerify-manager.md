@@ -2,7 +2,7 @@
 
 获取一键登录管理对象
 
-### getUniVerifyManager 兼容性 
+### getUniVerifyManager 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.42 | 4.42 | 4.61 |
@@ -79,20 +79,20 @@ uni-id-pages插件，已经内置一键登录，从云端到客户端均已开�
 #### preLogin(options : UniVerifyManagerPreLoginOptions) : void @prelogin
 preLogin
 预登录
-##### preLogin 兼容性 
+##### preLogin 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | x | 3.99 | 4.18 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **UniVerifyManagerPreLoginOptions** | 是 | Web: x | 预登录参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | success | (res: [UniVerifyManagerPreLoginSuccess](#univerifymanagerpreloginsuccess-values)) => void | 否 | Web: x |
 | fail | (err: [UniVerifyManagerPreLoginFail](#univerifymanagerpreloginfail-values)) => void | 否 | Web: x |
@@ -100,7 +100,7 @@ preLogin
 
 ###### UniVerifyManagerPreLoginSuccess 的属性值 @univerifymanagerpreloginsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | number | string | 是 | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61 | 手机号（脱敏） |
 | slogan | string | 是 | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61 | 运营商slogan，如移动：中国移动提供认证服务，联通：认证服务由联通统一认证提供，电信：天翼账号提供认证服务 |
@@ -109,7 +109,7 @@ preLogin
 
 ###### UniVerifyManagerPreLoginFail 的属性值 @univerifymanagerpreloginfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -119,7 +119,7 @@ preLogin
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 1000 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 当前应用appid尚未开通uni一键登录 |
 | 1001 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 应用所有者账号信息异常，请检查账号一键登录服务是否正常 |
@@ -140,20 +140,20 @@ preLogin
 #### login(options : UniVerifyManagerLoginOptions) : void @login
 login
 标准登录
-##### login 兼容性 
+##### login 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | x | 3.99 | 4.18 | 4.61 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **UniVerifyManagerLoginOptions** | 是 | Web: x | 登录参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | uniVerifyStyle | **UniVerifyManagerLoginStyle** | 否 | Web: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 登录页样式 |
 | success | (res: [UniVerifyManagerLoginSuccess](#univerifymanagerloginsuccess-values)) => void | 否 | Web: x |  |
@@ -163,7 +163,7 @@ login
 
 ##### uniVerifyStyle 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | fullScreen | boolean | 否 | Web: x | 是否全屏 |
 | logoPath | string | 否 | Web: x | logo路径 |
@@ -172,7 +172,7 @@ login
 
 ##### univerifyStyle 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | fullScreen | boolean | 否 | Web: x | 是否全屏 |
 | logoPath | string | 否 | Web: x | logo路径 |
@@ -181,14 +181,14 @@ login
 
 ###### UniVerifyManagerLoginSuccess 的属性值 @univerifymanagerloginsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | openId | string | 是 | Web: x | 登录授权唯一标识 |
 | accessToken | string | 是 | Web: x | token |
 
 ###### UniVerifyManagerLoginFail 的属性值 @univerifymanagerloginfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -198,7 +198,7 @@ login
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 1000 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 当前应用appid尚未开通uni一键登录 |
 | 1001 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 应用所有者账号信息异常，请检查账号一键登录服务是否正常 |
@@ -219,20 +219,20 @@ login
 #### customLogin(options : UniVerifyManagerCustomLoginOptions) : void @customlogin
 customLogin
 自定义授权页登录
-##### customLogin 兼容性 
+##### customLogin 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | x | 4.41 | 4.41 | 4.71 |
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **UniVerifyManagerCustomLoginOptions** | 是 | Web: x | 自定义登录页登录参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | numberTextElement | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 号码栏，仅支持使用text组件 |
 | sloganTextElement | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 品牌露出，仅支持使用text组件 |
@@ -245,14 +245,14 @@ customLogin
 
 ###### UniVerifyManagerLoginSuccess 的属性值 @univerifymanagerloginsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | openId | string | 是 | Web: x | 登录授权唯一标识 |
 | accessToken | string | 是 | Web: x | token |
 
 ###### UniVerifyManagerLoginFail 的属性值 @univerifymanagerloginfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -262,7 +262,7 @@ customLogin
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 1000 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 当前应用appid尚未开通uni一键登录 |
 | 1001 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 应用所有者账号信息异常，请检查账号一键登录服务是否正常 |
@@ -283,7 +283,7 @@ customLogin
 #### close() : void @close
 close
 关闭授权页(仅支持标准登录)
-##### close 兼容性 
+##### close 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | x | 3.99 | 4.18 | 4.61 |
@@ -294,7 +294,7 @@ close
 #### isPreLoginValid() : boolean @ispreloginvalid
 isPreLoginValid
 预登录是否有效
-##### isPreLoginValid 兼容性 
+##### isPreLoginValid 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | x | 3.99 | 4.18 | 4.61 |
@@ -310,7 +310,7 @@ isPreLoginValid
 
 ##### UniVerifyManagerPreLoginOptions 的属性值 @univerifymanagerpreloginoptions-values 
 
-| 名称 | 类型 | 必备 | 兼容性 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | success | (res: [UniVerifyManagerPreLoginSuccess](#univerifymanagerpreloginsuccess-values)) => void | 否 | Web: x |
 | fail | (err: [UniVerifyManagerPreLoginFail](#univerifymanagerpreloginfail-values)) => void | 否 | Web: x |
@@ -318,7 +318,7 @@ isPreLoginValid
 
 ###### UniVerifyManagerPreLoginSuccess 的属性值 @univerifymanagerpreloginsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | number | string | 是 | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61 | 手机号（脱敏） |
 | slogan | string | 是 | Web: x; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61 | 运营商slogan，如移动：中国移动提供认证服务，联通：认证服务由联通统一认证提供，电信：天翼账号提供认证服务 |
@@ -327,7 +327,7 @@ isPreLoginValid
 
 ###### UniVerifyManagerPreLoginFail 的属性值 @univerifymanagerpreloginfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -337,7 +337,7 @@ isPreLoginValid
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 1000 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 当前应用appid尚未开通uni一键登录 |
 | 1001 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 应用所有者账号信息异常，请检查账号一键登录服务是否正常 |
@@ -355,7 +355,7 @@ isPreLoginValid
 
 ##### UniVerifyManagerLoginOptions 的属性值 @univerifymanagerloginoptions-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | uniVerifyStyle | **UniVerifyManagerLoginStyle** | 否 | Web: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 登录页样式 |
 | success | (res: [UniVerifyManagerLoginSuccess](#univerifymanagerloginsuccess-values)) => void | 否 | Web: x |  |
@@ -365,7 +365,7 @@ isPreLoginValid
 
 #### uniVerifyStyle 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | fullScreen | boolean | 否 | Web: x | 是否全屏 |
 | logoPath | string | 否 | Web: x | logo路径 |
@@ -374,7 +374,7 @@ isPreLoginValid
 
 #### univerifyStyle 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | fullScreen | boolean | 否 | Web: x | 是否全屏 |
 | logoPath | string | 否 | Web: x | logo路径 |
@@ -383,14 +383,14 @@ isPreLoginValid
 
 ###### UniVerifyManagerLoginSuccess 的属性值 @univerifymanagerloginsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | openId | string | 是 | Web: x | 登录授权唯一标识 |
 | accessToken | string | 是 | Web: x | token |
 
 ###### UniVerifyManagerLoginFail 的属性值 @univerifymanagerloginfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -400,7 +400,7 @@ isPreLoginValid
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 1000 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 当前应用appid尚未开通uni一键登录 |
 | 1001 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 应用所有者账号信息异常，请检查账号一键登录服务是否正常 |
@@ -418,7 +418,7 @@ isPreLoginValid
 
 ##### UniVerifyManagerCustomLoginOptions 的属性值 @univerifymanagercustomloginoptions-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | numberTextElement | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 号码栏，仅支持使用text组件 |
 | sloganTextElement | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 品牌露出，仅支持使用text组件 |
@@ -431,14 +431,14 @@ isPreLoginValid
 
 ###### UniVerifyManagerLoginSuccess 的属性值 @univerifymanagerloginsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | openId | string | 是 | Web: x | 登录授权唯一标识 |
 | accessToken | string | 是 | Web: x | token |
 
 ###### UniVerifyManagerLoginFail 的属性值 @univerifymanagerloginfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -448,7 +448,7 @@ isPreLoginValid
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | 1000 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 当前应用appid尚未开通uni一键登录 |
 | 1001 | Web: x; Android: 3.99; iOS: 4.18; HarmonyOS: 4.61 | 应用所有者账号信息异常，请检查账号一键登录服务是否正常 |
@@ -894,7 +894,7 @@ hello uni-app x里有完整的自定义登录的示例代码，该示例中：
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

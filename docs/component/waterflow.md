@@ -9,7 +9,7 @@
  瀑布流组件
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.41 | 4.81 | 5.02 |
@@ -24,7 +24,7 @@
 > 鸿蒙平台api 20及以上版本支持滚动相关事件，api 18及以上版本支持load-more插槽
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | cross-axis-count | number \| string | 2 | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 交叉轴元素数量 |
 | main-axis-gap | number \| string | 0 | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 主轴方向间隔 |
@@ -61,13 +61,13 @@
 
 #### associative-container 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | nested-scroll-view | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS: x | 嵌套滚动 |
 
 #### refresher-default-style 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | black | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 深颜色雪花样式 |
 | white | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 浅白色雪花样式 |
@@ -224,7 +224,7 @@ scroll-view开启嵌套模式后，waterflow 可作为内层滚动视图与外�
 设置内层 waterflow 的 `associative-container` 属性为 "nested-scroll-view"，开启内层 waterflow 支持与外层 scroll-view 嵌套滚动
 
 ### 子组件 @children-tags
-| 子组件 | 兼容性 |
+| 子组件 | 兼容性 <Help /> |
 | :- | :- |
 | [flow-item](flow-item.md) | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 |
 
@@ -709,7 +709,7 @@ scroll-view开启嵌套模式后，waterflow 可作为内层滚动视图与外�
  waterflow组件的唯一合法子组件
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.41 | 4.81 | 5.02 |
@@ -720,7 +720,7 @@ waterflow 的子组件，配合 waterflow 内部业务实现 flow-item 回收复
 flow-item 宽度计算公式：((waterflow的width - waterflow的左右的padding值域 - waterflow的border-width的值域) - (cross-axis-count - 1) * cross-axis-gap) / cross-axis-count
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | type | number | 0 | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 对应flow-item的类型 waterflow 将对同类型条目进行复用，所以合理的类型拆分，可以很好地提升 waterflow 性能 |
 | item-key | string \| number |   |   |   |

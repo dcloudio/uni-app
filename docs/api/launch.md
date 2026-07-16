@@ -13,7 +13,7 @@
 获取首次启动时的参数。返回值与App.onLaunch的回调参数一致
 
 
-### getLaunchOptionsSync 兼容性 
+### getLaunchOptionsSync 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.91 | 4.11 | 4.61 |
@@ -29,7 +29,7 @@
 
 #### OnLaunchOptions 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 首次启动时的页面路径。返回值与App.onLaunch的回调参数一致<br/> |
 | appScheme | string | 否 | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.81 | 首次启动时的Scheme。返回值与App.onLaunch的回调参数一致<br/> |
@@ -54,7 +54,7 @@
 
 ##### referrerInfo 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | appId | string | 否 | 微信小程序: 4.41 | 来源小程序、公众号或 App 的 appId<br/> |
 | extraData | IAnyObject | 否 | 微信小程序: 4.41 | 来源小程序传过来的数据，scene=1037或1038时支持<br/> |
@@ -186,7 +186,7 @@
 
 uni.getEnterOptionsSync 和 uni.getLaunchOptionsSync 的区别，相当于应用的 onShow 和 onLaunch 的区别，详见[应用生命周期](../collocation/app.md#applifecycle)
 
-### getEnterOptionsSync 兼容性 
+### getEnterOptionsSync 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.25 | 4.25 | 4.61 |
@@ -202,7 +202,7 @@ uni.getEnterOptionsSync 和 uni.getLaunchOptionsSync 的区别，相当于应用
 
 #### OnShowOptions 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 本次启动时页面的路径<br/> |
 | appScheme | string | 否 | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.81 | 本次启动时的Scheme。返回值与App.onShow的回调参数一致<br/> |
@@ -227,7 +227,7 @@ uni.getEnterOptionsSync 和 uni.getLaunchOptionsSync 的区别，相当于应用
 
 ##### referrerInfo 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | appId | string | 否 | 微信小程序: 4.41 | 来源小程序、公众号或 App 的 appId<br/> |
 | extraData | IAnyObject | 否 | 微信小程序: 4.41 | 来源小程序传过来的数据，scene=1037或1038时支持<br/> |
@@ -317,7 +317,7 @@ defineExpose({
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

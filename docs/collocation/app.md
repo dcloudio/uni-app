@@ -23,7 +23,7 @@
 生命周期回调，监听应用初始化，应用初始化完成时触发，全局只触发一次。
 
 
-#### onLaunch 兼容性 
+#### onLaunch 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.0 | 4.61 |
@@ -37,7 +37,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | string | 是 |   | 应用启动页面路径 |
 | appScheme | string | 否 | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: x | 首次启动时的Scheme。返回值与App.onLaunch的回调参数一致<br/> |
@@ -60,7 +60,7 @@
 应用启动，或从后台进入前台显示时触发
 
 
-#### onShow 兼容性 
+#### onShow 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.0 | 4.61 |
@@ -74,7 +74,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | string | 是 |   | 应用启动页面路径 |
 | appScheme | string | 否 | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: x | 本次启动时的Scheme。返回值与App.onShow的回调参数一致<br/> |
@@ -101,7 +101,7 @@
 应用从前台进入后台时触发
 
 
-#### onHide 兼容性 
+#### onHide 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.0 | 4.61 |
@@ -123,7 +123,7 @@
 监听应用退出。app-uvue-android 3.9+
 
 
-#### onExit 兼容性 
+#### onExit 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | x | 3.9 | x | 4.72 |
@@ -151,7 +151,7 @@
 
 无法监听异步逻辑（例如：`setTimeout`）中的错误和应用初始化之前、 App 崩溃等错误。
 :::
-#### onError 兼容性 
+#### onError 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.21 | 4.21 | 4.61 |
@@ -177,7 +177,7 @@
 最后一个页面按下Android back键，常用于自定义退出。
 
 
-#### onLastPageBackPress 兼容性 
+#### onLastPageBackPress 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | x | 3.9 | x | 4.71 |
@@ -204,7 +204,7 @@
 2. 如果 `onPageNotFound` 回调中又重定向到另一个不存在的页面，将推入微信客户端原生的页面不存在提示页面，并且不再回调 `onPageNotFound`。
 
 
-#### onPageNotFound 兼容性 
+#### onPageNotFound 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | x | x | x |
@@ -212,13 +212,13 @@
 
 #### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | **OnPageNotFoundOption** | 是 | Android: x; iOS: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | string | 是 | Android: x; iOS: x; HarmonyOS: x | 不存在页面的路径 |
 | query | AnyObject | 是 | Android: x; iOS: x; HarmonyOS: x | 打开不存在页面的 query |
@@ -238,7 +238,7 @@
 未处理的 Promise 拒绝事件监听函数
 
 
-#### onUnhandledRejection 兼容性 
+#### onUnhandledRejection 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | x | x | x |
@@ -259,7 +259,7 @@
 监听系统主题变化
 
 
-#### onThemeChange 兼容性 
+#### onThemeChange 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | x | 4.41 | x | x | x |

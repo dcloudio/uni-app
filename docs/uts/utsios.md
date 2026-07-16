@@ -19,7 +19,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.getCurrentViewController.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -45,7 +45,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.getKeyWindow.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -75,7 +75,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.colorWithString.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -105,7 +105,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.getResourcePath.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -131,7 +131,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.getUserAgent.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -157,7 +157,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.getDataPath.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -187,7 +187,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.convert2AbsFullPath.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -217,7 +217,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.destroyInstance.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -244,7 +244,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.isSimulator.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -272,7 +272,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.getDeviceId.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -300,7 +300,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.getModel.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -328,7 +328,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.getAppId.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -356,7 +356,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.isUniMp.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -384,7 +384,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.getAppName.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -412,7 +412,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.getAppVersion.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -440,7 +440,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.getAppVersionCode.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -468,7 +468,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.getOsLanguage.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -496,7 +496,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.getAppWgtVersion.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -524,7 +524,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.getInnerVersion.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -552,7 +552,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.getSystemSetting.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -580,7 +580,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.getOsTheme.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -612,7 +612,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.onOsThemeChange.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -644,7 +644,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.offOsThemeChange.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -672,7 +672,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.getAppTheme.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -704,7 +704,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.setAppTheme.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -736,7 +736,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.onAppThemeChange.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |
@@ -768,7 +768,7 @@ app-iOS平台专有内置对象。在uni-app和uni-app x的uts环境中均可使
 
 <!-- UTSJSON.UTSiOS.offAppThemeChange.test -->
 
-**兼容性**
+**兼容性 <Help />**
 
 **uni-app x 兼容性**
 | iOS |

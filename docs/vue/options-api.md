@@ -1006,7 +1006,7 @@ export default {
 
 #### 兼容性 @component-lifecycle-compatibility
 
-|  | 兼容性 | 描述 |
+|  | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |
 | beforeCreate | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件实例初始化完成之后立即调用。<br/>在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用。 |
 | created | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件实例处理完所有与状态相关的选项后调用。<br/>在这一步，实例已完成以下的配置：数据观测 (data observer)，属性和方法的运算，watch/event 事件回调。<br/>然而，此时挂载阶段还未开始，因此 $el 属性仍不可用。 |
@@ -2230,7 +2230,7 @@ export default {
 
 ## 组件实例 @component-instance
 
-|  | 兼容性 |
+|  | 兼容性 <Help /> |
 | :- | :- |
 | $data | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 |
 | $props | Web: 4.0; 微信小程序: 4.41; Android: √; iOS: 4.11; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 |

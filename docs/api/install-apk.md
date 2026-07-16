@@ -14,7 +14,7 @@
 
 注意：仅支持本地文件路径，网络路径需先通过 [uni.downloadFile](download-file.md) 下载到本地再调用此 API 安装。
 
-### installApk 兼容性 
+### installApk 兼容性 <Help /> 
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 3.94 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
@@ -24,13 +24,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 |
+| 名称 | 类型 | 必填 | 兼容性 <Help /> |
 | :- | :- | :- |  :-: |
 | options | **InstallApkOptions** | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | filePath | string | 是 |  | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | apk文件地址（仅支持本地文件路径） |
 | success | (res: [InstallApkSuccess](#installapksuccess-values)) => void | 否 | null | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 接口调用成功的回调函数 |
@@ -39,13 +39,13 @@
 
 #### InstallApkSuccess 的属性值 @installapksuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 安装成功消息 |
 
 #### InstallApkFail 的属性值 @installapkfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 错误码<br/>- 1300002 找不到文件 |
 | errSubject | string | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 统一错误主题（模块）名称 |
@@ -113,7 +113,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
