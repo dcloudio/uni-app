@@ -24,6 +24,7 @@ function IEVersion () {
 }
 
 export function getTheme () {
+  if (__uniConfig.darkmode == null || __uniConfig.darkmode === false) return undefined
   if (__uniConfig.darkmode !== true) return isStr(__uniConfig.darkmode) ? __uniConfig.darkmode : 'light'
   try {
     return window.matchMedia('(prefers-color-scheme: light)').matches
