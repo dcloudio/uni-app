@@ -20,6 +20,8 @@ function getNavigatorStyle() {
 }
 
 export function getTheme() {
+  if (__uniConfig.darkmode == null || __uniConfig.darkmode === false)
+    return undefined
   return plus.navigator.getUIStyle()
 }
 
