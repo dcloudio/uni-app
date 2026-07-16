@@ -19314,6 +19314,8 @@ function IEVersion() {
   }
 }
 function getTheme() {
+  if (__uniConfig.darkmode == null || __uniConfig.darkmode === false)
+    return void 0;
   if (__uniConfig.darkmode !== true)
     return isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
   try {
@@ -19662,8 +19664,6 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi(
     );
     delete systemInfo.screenTop;
     delete systemInfo.enableDebug;
-    if (!__uniConfig.darkmode)
-      delete systemInfo.theme;
     return systemInfo;
   }
 );

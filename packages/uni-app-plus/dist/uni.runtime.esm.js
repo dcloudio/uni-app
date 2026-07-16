@@ -13429,6 +13429,8 @@ function getNavigatorStyle() {
     return getTheme() === 'dark' ? 'light' : 'dark';
 }
 function getTheme() {
+    if (__uniConfig.darkmode == null || __uniConfig.darkmode === false)
+        return undefined;
     return plus.navigator.getUIStyle();
 }
 function changePagesNavigatorStyle() {
@@ -13948,8 +13950,6 @@ const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
     const _systemInfo = extend(systemInfo, windowInfo, deviceInfo, appBaseInfo, extraData);
     delete _systemInfo.screenTop;
     delete _systemInfo.enableDebug;
-    if (!__uniConfig.darkmode)
-        delete _systemInfo.theme;
     return _systemInfo;
 });
 const getSystemInfo = defineAsyncApi('getSystemInfo', (_, { resolve }) => {

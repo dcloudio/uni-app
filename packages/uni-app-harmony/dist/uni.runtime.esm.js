@@ -11214,6 +11214,8 @@ function getNavigatorStyle() {
     return getTheme() === 'dark' ? 'light' : 'dark';
 }
 function getTheme() {
+    if (__uniConfig.darkmode == null || __uniConfig.darkmode === false)
+        return undefined;
     return plus.navigator.getUIStyle();
 }
 function changePagesNavigatorStyle() {

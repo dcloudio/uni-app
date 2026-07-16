@@ -3123,6 +3123,8 @@ function useDocumentTitle(pageMeta) {
   vue.watchEffect(update);
 }
 function getTheme() {
+  if (__uniConfig.darkmode == null || __uniConfig.darkmode === false)
+    return void 0;
   if (__uniConfig.darkmode !== true)
     return shared.isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
   try {
