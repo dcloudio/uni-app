@@ -5,7 +5,7 @@
 display 属性设置元素的显示或布局方式，默认值为flex（弹性布局）。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

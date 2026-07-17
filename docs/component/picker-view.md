@@ -9,14 +9,14 @@
  嵌入页面的滚动选择器
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 
 ### 属性 
-| 名称 | 类型 | 兼容性 | 描述 |
+| 名称 | 类型 | 兼容性 <Help /> | 描述 |
 | :- | :- |  :-: | :- |
 | name | string | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
 | value | number[\] | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件值，作为键值对的一部分与表单(form组件)一同提交 |
@@ -54,7 +54,7 @@ UniPickerViewChangeEvent -- Extends --> UniCustomEvent&ltUniPickerViewChangeEven
 <!-- UTSCOMJSON.picker-view.component_type-->
 
 ### 子组件 @children-tags
-| 子组件 | 兼容性 |
+| 子组件 | 兼容性 <Help /> |
 | :- | :- |
 | [picker-view-column](picker-view-column.md) | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 
@@ -315,14 +315,14 @@ UniPickerViewChangeEvent -- Extends --> UniCustomEvent&ltUniPickerViewChangeEven
 仅可放置于 picker-view 中，其子节点未继承 picker-view 的选中框的高度，需要自己设置高度并居中
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 
 ### 属性 
-| 名称 | 类型 | 兼容性 |
+| 名称 | 类型 | 兼容性 <Help /> |
 | :- | :- |  :-: |
 | value | number | HarmonyOS(Vapor): 5.0 |
 

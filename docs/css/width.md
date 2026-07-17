@@ -5,7 +5,7 @@
 width 属性用于设置元素的宽度。width 默认设置内容区域的宽度，但如果 box-sizing 属性被设置为 border-box，就转而设置边框区域的宽度。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

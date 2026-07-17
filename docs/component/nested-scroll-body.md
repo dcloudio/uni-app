@@ -9,7 +9,7 @@
   scroll-view 嵌套模式场景中属于嵌套内层 scroll-view 的父节点，仅支持作为 <scroll-view type='nested'\> 嵌套模式的直接子节点。不支持复数子节点，渲染时会取其第一个子节点来渲染
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.11 | 4.11 | 4.61 |

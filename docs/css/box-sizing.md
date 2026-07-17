@@ -5,7 +5,7 @@
 CSS 中的 box-sizing 属性定义了 user agent 应该如何计算一个元素的总宽度和总高度。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

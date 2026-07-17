@@ -5,7 +5,7 @@
 margin 属性为给定元素设置所有四个（上下左右）方向的外边距属性。也就是 margin-top，margin-right，margin-bottom，和 margin-left 四个外边距属性设置的简写。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

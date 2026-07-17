@@ -5,7 +5,7 @@
 border-left-width 属性用于设置元素的左边框的宽度。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

@@ -5,7 +5,7 @@
 height CSS 属性指定了一个元素的高度。默认情况下，这个属性决定的是内容区（ content area）的高度，但是，如果将 box-sizing 设置为 border-box , 这个属性决定的将是边框区域（border area）的高度。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

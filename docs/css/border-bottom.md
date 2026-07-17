@@ -5,7 +5,7 @@
 border-bottom 简写属性把下边框的所有属性：border-bottom-color，border-bottom-style 与 border-bottom-width 设置到了一个声明中。这些属性描述了元素的下边框样式。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

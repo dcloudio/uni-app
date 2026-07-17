@@ -9,7 +9,7 @@
 地图由三方专业地图厂商提供SDK。在App和Web中，使用三方SDK需在[manifest](../collocation/manifest.md)中进行配置。
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 4.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.61 |
@@ -27,7 +27,7 @@
 2. 使用web-view中的地图
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | longitude | number | 0 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 中心经度 |
 | latitude | number | 0 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 中心纬度 |

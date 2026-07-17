@@ -5,7 +5,7 @@
 align-items 属性将所有直接子元素上的 align-self 值设置为一个组。在 Flex 弹性布局中控制子元素在交叉轴方向的对齐方式，相当于为所有子元素设置了默认的 align-self 值。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

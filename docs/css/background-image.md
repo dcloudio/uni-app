@@ -5,7 +5,7 @@
 background-image 属性用于为一个元素设置一个或者多个背景图像。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

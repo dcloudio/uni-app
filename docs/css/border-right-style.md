@@ -5,7 +5,7 @@
 border-right-style 是 border 中的一个 CSS 子属性，描述的是右边框的样式 border.
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

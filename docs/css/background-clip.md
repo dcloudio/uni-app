@@ -5,7 +5,7 @@
 background-clip 属性用于设置元素的背景（背景图片或颜色）是否延伸到边框区域、内边距区域、内容区域下面。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | x | x |

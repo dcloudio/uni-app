@@ -5,7 +5,7 @@
 align-self 属性在 Flex 弹性布局中设置元素在容器中的交叉轴方向的对齐方式，覆盖父元素设置的 align-items 值。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

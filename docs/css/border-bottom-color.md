@@ -5,7 +5,7 @@
 border-bottom-color 属性设置一个元素底部边框的颜色。应当指出，在多数情况下，CSS 简写属性 border-color 或 border-bottom 更方便实用。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

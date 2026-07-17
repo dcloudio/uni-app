@@ -5,7 +5,7 @@
 flex-basis 属性设置弹性元素在主轴方向的初始大小，即在分配剩余空间（flex-grow）或收缩溢出空间（flex-shrink）的基准尺寸。当弹性元素同时设置了 flex-basis（除 auto 外的值）和 width（或 flex-direction 为 column 时设置了 height），flex-basis 的优先级更高。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

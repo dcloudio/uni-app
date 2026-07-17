@@ -13,14 +13,14 @@
 相机组件
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.61 | 4.61 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | flash | auto \| on \| off \| torch | "auto" | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61 | 闪光灯，值为auto, on, off, torch |
 | device-position | back \| front | "back" | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61 | 前置或后置，值为front, back |
@@ -35,7 +35,7 @@
 
 #### flash 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | auto | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: x | 自动 |
 | on | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: x | 开 |
@@ -44,21 +44,21 @@
 
 #### device-position 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | back | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: x | 后置 |
 | front | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: x | 前置 |
 
 #### mode 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | normal | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 相机模式 |
 | scanCode | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: x | 扫码模式 |
 
 #### resolution 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | low | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: x | 低 |
 | medium | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: x | 中 |
@@ -66,7 +66,7 @@
 
 #### frame-size 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | small | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: x | 小尺寸帧数据 |
 | medium | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: x | 中尺寸帧数据 |
@@ -74,7 +74,7 @@
 
 #### photo-resolution 的属性描述
 
-| 合法值 | 兼容性 | 描述 |
+| 合法值 | 兼容性 <Help /> | 描述 |
 | :- |  :-: | :- |
 | low | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 低分辨率 |
 | medium | Web: x; 微信小程序: x; Android: 4.81; iOS: x; HarmonyOS: x | 中分辨率 |

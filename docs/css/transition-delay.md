@@ -5,7 +5,7 @@
 CSS 的transition-delay属性规定了在过渡效果开始作用之前需要等待的时间。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

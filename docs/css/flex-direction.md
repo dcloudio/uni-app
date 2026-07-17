@@ -5,7 +5,7 @@
 flex-direction 属性设置弹性容器中的子元素的布局方向，该方向定义为主轴，另一个垂直与它的方向为交叉轴。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

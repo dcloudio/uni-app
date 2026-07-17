@@ -5,7 +5,7 @@
 CSS 属性 border-top是属性 border-top-color, border-top-style, 和border-top-width 的三者的缩写。这些属性都是在描述一个元素的上方的边框border。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

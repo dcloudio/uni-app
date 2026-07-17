@@ -5,7 +5,7 @@
 flex-flow 属性设置弹性容器中子元素的布局主轴方向及单或多行（列）堆叠方向，，是 flex-direction、flex-wrap 的简写。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

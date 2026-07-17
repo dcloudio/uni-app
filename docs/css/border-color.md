@@ -5,7 +5,7 @@
 CSS 属性 border-color 是一个用于设置元素四个边框颜色的快捷属性： border-top-color、border-right-color、border-bottom-color、border-left-color。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

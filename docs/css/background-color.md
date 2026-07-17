@@ -5,7 +5,7 @@
 background-color 属性用于设置元素的背景色，属性的值为颜色值或关键字"transparent"。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

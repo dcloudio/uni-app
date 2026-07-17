@@ -5,7 +5,7 @@
 white-space 属性用于设置如何处理元素中的空白字符（空格、换行符、制表符）以及文本是否自动换行。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 4.0 | 4.11 | 4.61 |

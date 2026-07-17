@@ -48,13 +48,13 @@ ArrayBuffer 对象用来表示通用的原始二进制数据缓冲区。
 
 **兼容性 <Help />**
 
-**uni-app x 兼容性**
+**uni-app x 兼容性 <Help />**
 | Web | Android | iOS | HarmonyOS 系统版本 | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- |
 | √ | 4.25 | √ | x | 4.61 | 4.25 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android(VDOM) UTS 插件 | iOS UTS 插件 |
 | :- | :- |
 | √ | 4.51 |
@@ -100,13 +100,13 @@ ArrayBuffer.isView() 静态方法用于确定传递的值是否是 ArrayBuffer �
 
 **兼容性 <Help />**
 
-**uni-app x 兼容性**
+**uni-app x 兼容性 <Help />**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- | :- |
 | √ | 4.25 | √ | 4.61 | 4.25 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android(VDOM) UTS 插件 | iOS UTS 插件 |
 | :- | :- |
 | √ | 4.51 |
@@ -155,13 +155,13 @@ ArrayBuffer.fromByteBuffer() 静态方法用于将android 原生的ByteBuffer对
 
 **兼容性 <Help />**
 
-**uni-app x 兼容性**
+**uni-app x 兼容性 <Help />**
 | Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- |
 | x | 4.25 | x | x | 4.61 | 4.25 | x |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android(VDOM) UTS 插件 | iOS UTS 插件 |
 | :- | :- |
 | √ | x |
@@ -204,13 +204,13 @@ ArrayBuffer.fromData() 静态方法用于将 iOS 原生的 Data 对象转换为 
 
 **兼容性 <Help />**
 
-**uni-app x 兼容性**
+**uni-app x 兼容性 <Help />**
 | Web | Android 系统版本 | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- |
 | x | x | x | x | 4.61 | x | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | iOS UTS 插件 |
 | :- |
 | 4.51 |
@@ -231,13 +231,13 @@ ArrayBuffer 实例的 byteLength 访问器属性返回该数组缓冲区的长�
 
 **兼容性 <Help />**
 
-**uni-app x 兼容性**
+**uni-app x 兼容性 <Help />**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- | :- |
 | √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android(VDOM) UTS 插件 | iOS UTS 插件 |
 | :- | :- |
 | √ | 4.51 |
@@ -337,13 +337,13 @@ ArrayBuffer 实例的 slice() 方法返回一个新的 ArrayBuffer 实例，其�
 
 **兼容性 <Help />**
 
-**uni-app x 兼容性**
+**uni-app x 兼容性 <Help />**
 | Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- | :- |
 | √ | 4.25 | 4.11 | 4.61 | 4.25 | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android(VDOM) UTS 插件 | iOS UTS 插件 |
 | :- | :- |
 | √ | 4.51 |
@@ -388,13 +388,13 @@ ArrayBuffer 实例的 toByteBuffer() 方法返回一个android原生ByteBuffer�
 
 **兼容性 <Help />**
 
-**uni-app x 兼容性**
+**uni-app x 兼容性 <Help />**
 | Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- |
 | x | 4.25 | x | x | 4.61 | 4.25 | x |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android(VDOM) UTS 插件 | iOS UTS 插件 |
 | :- | :- |
 | √ | x |
@@ -433,13 +433,13 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 
 **兼容性 <Help />**
 
-**uni-app x 兼容性**
+**uni-app x 兼容性 <Help />**
 | Web | Android 系统版本 | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
 | :- | :- | :- | :- | :- | :- | :- |
 | x | x | x | x | 4.61 | x | 4.51 |
 
 
-**uni-app 兼容性**
+**uni-app 兼容性 <Help />**
 | Android(VDOM) UTS 插件 | iOS UTS 插件 |
 | :- | :- |
 | x | 4.51 |

@@ -5,7 +5,7 @@
 text-decoration-line 属性用于设置元素中文本的修饰线类型。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

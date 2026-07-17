@@ -5,7 +5,7 @@
 border-bottom-left-radius 这个 css 属性设置元素左下角的圆角。圆角可以是圆或椭圆（注：应为圆或椭圆的一部分），或者当其中一个值为 0 时，圆角将不被设置，这时这个角将展示为直角。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

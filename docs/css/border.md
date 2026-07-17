@@ -5,7 +5,7 @@
 CSS 的 border 是设置元素边框属性的简写形式，用于设置一个或多个以下属性的值：border-width、border-style、border-color。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

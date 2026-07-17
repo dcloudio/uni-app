@@ -13,14 +13,14 @@
 `<native-view>`组件是uni-app x下扩展原生组件（如map）的重要方式。事实上官方的camera/map/web-view/video等组件就是使用`<native-view>`开发的。详见下方的使用场景章节。
 
 
-### 兼容性
+### 兼容性 <Help />
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.31 | 4.61 |
 
 
 ### 属性 
-| 名称 | 类型 | 兼容性 | 描述 |
+| 名称 | 类型 | 兼容性 <Help /> | 描述 |
 | :- | :- |  :-: | :- |
 | @init | (event: [UniNativeViewInitEvent](#uninativeviewinitevent)) => void | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | native-view初始化时回调，event.detail = { element: 'native-view元素实例对象'} |
 

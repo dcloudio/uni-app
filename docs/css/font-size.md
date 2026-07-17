@@ -5,7 +5,7 @@
 font-size 属性用于设置字体大小，更改字体大小还会更新字体大小相关的 `<length>` 单位，例如 line-height 属性的 em 单位值。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

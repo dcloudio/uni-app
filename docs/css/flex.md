@@ -5,7 +5,7 @@
 flex 属性设置弹性元素如何增大或缩小以适应其弹性容器中可用的空间，是 flex-grow、flex-shrink、flex-basis 的简写。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

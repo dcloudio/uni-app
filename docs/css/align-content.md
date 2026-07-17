@@ -5,7 +5,7 @@
 align-content 属性用于在 Flex 弹性布局中设置多行（或多列）作为一个整体在交叉轴方向的分布方式。注意：如果子元素只有一行（或一列）该属性不起作用，需配合 flex-wrap: wrap 使用。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

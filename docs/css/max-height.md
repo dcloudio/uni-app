@@ -5,7 +5,7 @@
 CSS属性 max-height 设置元素的最大高度。它防止height属性的使用值（used value）大于 max-height 的指定值。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

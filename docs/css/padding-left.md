@@ -5,7 +5,7 @@
 CSS 属性 padding-left 是指一个元素在内边距区域（padding area）中左边的宽度。内边距（padding）是指一个元素的内容和边框之间的区域。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

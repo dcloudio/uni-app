@@ -5,7 +5,7 @@
 position 属性用于指定元素在页面中的定位方式。与 top、right、bottom、left 等属性决定该元素的最终位置。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

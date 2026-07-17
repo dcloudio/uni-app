@@ -5,7 +5,7 @@
 justify-content 属性设置弹性容器的子元素在主轴方向的对齐方式，控制如何在主轴方向分配内容元素之间和周围的空间。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

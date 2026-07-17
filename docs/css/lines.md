@@ -5,7 +5,7 @@
 text 组件专有样式，设置文本的最大行数。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- |
 | x | 3.9 | 4.11 | 4.61 | x |

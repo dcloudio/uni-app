@@ -5,7 +5,7 @@
 border-style 是一个 CSS 简写属性，用来设定元素所有边框的样式。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |

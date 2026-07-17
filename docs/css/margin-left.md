@@ -5,7 +5,7 @@
 margin-left 属性 设置与元素相关联的盒子模型的左外边距。这个值可以为负值。
 
 
-### uni-app x 兼容性
+### uni-app x 兼容性 <Help />
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
 | 4.0 | 3.9 | 4.11 | 4.61 |
