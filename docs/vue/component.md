@@ -1594,17 +1594,44 @@ export default {
 
 ### 组件监听应用、页面生命周期 @component-page-lifecycle
 
+|组件中监听应用生命周期 |Android |Android(Vapor)  |iOS  | iOS(Vapor) |HarmonyOS | HarmonyOS(Vapor) |Web |微信小程序 |
+|:-:			          |:-:		 |:-:             |:-:  |:-:         |:-:		  |:-:               |:-:	 |:-:		  |
+|onAppShow          |4.11    |5.21            |4.11 |5.21        |4.61     |5.21             |4.11 |4.41     |
+|onAppHide          |4.11    |5.21            |4.11 |5.21        |4.61     |5.21             |4.11 |4.41     |
+|onError            |4.11    |5.21            |5.21 |5.21        |5.21     |5.21             |4.11 |4.41     |
+
+示例 [详情](<!-- VUEJSON.E_lifecycle.app_monitor-app-lifecycle-options.gitUrl -->)
+
+::: preview <!-- VUEJSON.E_lifecycle.app_app-options.webUrl -->
+
+> 组合式 API
+
+<!-- VUEJSON.E_lifecycle.app_monitor-app-lifecycle-composition.code -->
+
+> 选项式 API
+
+<!-- VUEJSON.E_lifecycle.app_monitor-app-lifecycle-options.code -->
+
+:::
+
+|组件中监听页面生命周期 |Android |Android(Vapor) |iOS  | iOS(Vapor) |HarmonyOS | HarmonyOS(Vapor) |Web |微信小程序 |
+|:-:			          |:-:		 |:-:             |:-:  |:-:         |:-:		   |:-:               |:-:	|:-:		  |
+|onLoad             |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
+|onPageShow         |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
+|onReady            |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
+|onPullDownRefresh  |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
+|onPageScroll       |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
+|onReachBottom      |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
+|onBackPress        |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
+|onPageHide         |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
+|onUnload           |4.11    |5.21            |4.11 |5.21        |4.61     |5.21              |4.11 |4.41     |
+
 > 选项式 API 和 组合式 API 在监听页面生命周期时有所不同
 >
 > 比如选项式 API 中的 `onShow`、`onHide` 监听页面生命周期在组合式 API 中分别对应 `onPageShow`、`onPageHide`（在组合式 API 时会和 App 的生命周期冲突）
 >
 > 具体请查看 [页面生命周期](../page.md#lifecycle)
 
-|组件中监听应用生命周期 |Android |Android(Vapor)  |iOS  | iOS(Vapor) |HarmonyOS | HarmonyOS(Vapor) |Web |微信小程序 |
-|:-:			          |:-:		 |:-:             |:-:  |:-:         |:-:		  |:-:               |:-:	 |:-:		  |
-|onAppShow          |4.11    |5.21            |4.11 |5.21        |4.61     |5.21             |4.11 |4.41     |
-|onAppHide          |4.11    |5.21            |4.11 |5.21        |4.61     |5.21             |4.11 |4.41     |
-|onError            |4.11    |5.21            |5.21 |5.21        |5.21     |5.21             |4.11 |4.41     |
 
 ::: warning 注意
  `onPageHide`、`onPageShow` 需要写在选项式的 setup 函数或者组合式 `<script setup>` 中才能生效
