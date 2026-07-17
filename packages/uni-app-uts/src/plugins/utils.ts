@@ -29,7 +29,8 @@ import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import type { ResolvedConfig } from 'vite'
 import { ElementTypes, NodeTypes } from '@vue/compiler-core'
 
-export const SHARED_DATA_LIB_NAME = 'libentry.so'
+export const SHARED_DATA_LIB_IMPORT_SOURCE = 'libentry.so'
+export const SHARED_DATA_LIB_GLOBAL_NAME = '__uniSharedDataLib'
 
 export function createUniOptions(
   platform: 'app-android' | 'app-ios' | 'app-harmony'

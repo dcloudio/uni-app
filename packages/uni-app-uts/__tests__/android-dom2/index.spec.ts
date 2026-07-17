@@ -1,3 +1,7 @@
+const mockUts2js = jest.fn((_options: Record<string, unknown>) => ({
+  name: 'uts2js',
+}))
+
 jest.mock('@dcloudio/uni-cli-shared', () => {
   const plugin = (name: string) => () => ({ name })
   return {
@@ -8,7 +12,7 @@ jest.mock('@dcloudio/uni-cli-shared', () => {
     isNormalCompileTarget: () => process.env.UNI_COMPILE_TARGET !== 'ext-api',
     parseUniExtApiNamespacesOnce: () => ({}),
     resolveUTSCompiler: () => ({
-      uts2js: () => ({ name: 'uts2js' }),
+      uts2js: mockUts2js,
     }),
     uniDecryptUniModulesPlugin: plugin('decrypt'),
     uniEasycomPlugin: plugin('easycom'),
@@ -54,12 +58,13 @@ jest.mock('../../src/plugins/android-dom2/devPlugin', () => ({
 }))
 
 jest.mock('../../src/plugins/utils', () => ({
-  SHARED_DATA_LIB_NAME: 'libentry.so',
+  SHARED_DATA_LIB_GLOBAL_NAME: '__uniSharedDataLib',
 }))
 
 describe('android-dom2 plugin init', () => {
   const originalEnv = {
     UNI_APP_X_DOM2: process.env.UNI_APP_X_DOM2,
+    UNI_APP_X_DOM2_DYNAMIC: process.env.UNI_APP_X_DOM2_DYNAMIC,
     UNI_COMPILE_TARGET: process.env.UNI_COMPILE_TARGET,
     UNI_COMPILE_EXT_API_TYPE: process.env.UNI_COMPILE_EXT_API_TYPE,
     UNI_APP_X_CACHE_DIR: process.env.UNI_APP_X_CACHE_DIR,
@@ -72,6 +77,7 @@ describe('android-dom2 plugin init', () => {
   }
 
   afterEach(() => {
+    mockUts2js.mockClear()
     Object.entries(originalEnv).forEach(([key, value]) => {
       if (value === undefined) {
         Reflect.deleteProperty(process.env, key)
@@ -82,8 +88,13 @@ describe('android-dom2 plugin init', () => {
     jest.resetModules()
   })
 
-  function initPlugins() {
+  function initPlugins(dynamic = false) {
     process.env.UNI_APP_X_DOM2 = 'true'
+    if (dynamic) {
+      process.env.UNI_APP_X_DOM2_DYNAMIC = 'true'
+    } else {
+      Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2_DYNAMIC')
+    }
     process.env.UNI_APP_X_CACHE_DIR = '/tmp/cache'
     process.env.UNI_INPUT_DIR = '/tmp/input'
     process.env.UNI_COMPILER_VERSION = '1.0.0'
@@ -111,6 +122,28 @@ describe('android-dom2 plugin init', () => {
     )
   })
 
+  test('dom2 configures SharedData global access', () => {
+    initPlugins()
+
+    expect(mockUts2js).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sharedDataLibName: '__uniSharedDataLib',
+        sharedDataLibAsGlobal: true,
+      })
+    )
+  })
+
+  test('dynamic dom2 does not configure SharedData global access', () => {
+    initPlugins(true)
+
+    expect(mockUts2js).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sharedDataLibName: undefined,
+        sharedDataLibAsGlobal: false,
+      })
+    )
+  })
+
   test('development includes android engine dev plugin', () => {
     process.env.NODE_ENV = 'development'
 
@@ -131,3 +164,5 @@ describe('android-dom2 plugin init', () => {
     ).not.toContain('stats')
   })
 })
+
+export {}

@@ -21,11 +21,7 @@ import {
   uvueOutDir,
   withSourcemap,
 } from '@dcloudio/uni-cli-shared'
-import {
-  SHARED_DATA_LIB_NAME,
-  configResolved,
-  createUniOptions,
-} from '../utils'
+import { configResolved, createUniOptions } from '../utils'
 import { uniAppCssPlugin } from './css'
 import { uniAppJsPlugin } from './js'
 import { writeAppServiceSourceMapToCache } from './sourceMap'
@@ -210,9 +206,6 @@ export function createUniAppJsEnginePlugin(
     const globals = {
       vue: 'Vue',
       '@vue/shared': 'uni.VueShared',
-    }
-    if (isDom2 && (isAndroid || isIOS)) {
-      globals[SHARED_DATA_LIB_NAME] = '__uniSharedDataLib'
     }
     return {
       name: 'uni:app-uts',

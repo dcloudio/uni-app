@@ -28,7 +28,7 @@ import { uniAppJsEngineMainPlugin } from '../js/mainUTS'
 import { uniAppManifestPlugin } from '../js/manifestJson'
 import { uniAppPagesPlugin } from '../js/pagesJson'
 import { createUniAppJsEnginePlugin } from '../js/plugin'
-import { SHARED_DATA_LIB_NAME } from '../utils'
+import { SHARED_DATA_LIB_GLOBAL_NAME } from '../utils'
 import { uniAppXAndroidEngineDevPlugin } from './devPlugin'
 
 export function init() {
@@ -69,7 +69,8 @@ export function init() {
       cacheRoot: path.resolve(process.env.UNI_APP_X_CACHE_DIR, '.uts2js/cache'),
       sourceMap: enableSourceMap(),
       sharedDataLibName:
-        isDom2 && !isDom2Dynamic ? SHARED_DATA_LIB_NAME : undefined,
+        isDom2 && !isDom2Dynamic ? SHARED_DATA_LIB_GLOBAL_NAME : undefined,
+      sharedDataLibAsGlobal: isDom2 && !isDom2Dynamic,
       sharedData: initUts2jsSharedDataOptions(),
       modules: {
         vueCompilerDom,

@@ -9,6 +9,7 @@ interface UTS2JavaScriptOptions extends Omit<RPT2Options, 'transformers'> {
   modules: Record<string, any>
   sourceMap?: boolean
   sharedDataLibName?: string
+  sharedDataLibAsGlobal?: boolean
   workers?: {
     resolve: () => Record<string, string>
     extname?: string

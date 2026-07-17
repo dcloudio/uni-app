@@ -28,7 +28,7 @@ import { uniAppManifestPlugin } from '../js/manifestJson'
 import { uniAppPagesPlugin } from '../js/pagesJson'
 import { replaceExtApiPagePaths } from '../js/extApiPages'
 import { uniAppCssPlugin, uniAppCssPrePlugin } from '../dom2/css'
-import { SHARED_DATA_LIB_NAME } from '../utils'
+import { SHARED_DATA_LIB_IMPORT_SOURCE } from '../utils'
 
 export function init() {
   const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
@@ -68,7 +68,7 @@ export function init() {
       cacheRoot: path.resolve(process.env.UNI_APP_X_CACHE_DIR, '.uts2js/cache'),
       sourceMap: enableSourceMap(),
       sharedDataLibName:
-        isDom2 && !isDom2Dynamic ? SHARED_DATA_LIB_NAME : undefined,
+        isDom2 && !isDom2Dynamic ? SHARED_DATA_LIB_IMPORT_SOURCE : undefined,
       sharedData: initUts2jsSharedDataOptions(),
       modules: {
         vueCompilerDom,
