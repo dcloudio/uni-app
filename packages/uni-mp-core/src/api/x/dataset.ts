@@ -1,8 +1,16 @@
 import { isFunction } from '@vue/shared'
-import { createUniDOMStringMap } from '@dcloudio/uni-shared'
+import { UniDOMStringMap, createUniDOMStringMap } from '@dcloudio/uni-shared'
 
 function normalizeDatasetResult(result: any) {
-  if (result && result.dataset) {
+  if (Array.isArray(result)) {
+    result.forEach(normalizeDatasetResult)
+    return result
+  }
+  if (
+    result &&
+    result.dataset &&
+    !(result.dataset instanceof UniDOMStringMap)
+  ) {
     result.dataset = createUniDOMStringMap(result.dataset)
   }
   return result
@@ -13,13 +21,35 @@ function normalizeDatasetCallback(callback?: Function) {
     return callback
   }
   return function datasetCallback(this: any, result: any) {
-    if (Array.isArray(result)) {
-      result.forEach(normalizeDatasetResult)
-    } else {
-      normalizeDatasetResult(result)
-    }
+    normalizeDatasetResult(result)
     return callback.call(this, result)
   }
+}
+
+function normalizeSelectorQueryMethods(target: any) {
+  if (!target) {
+    return target
+  }
+  ;['boundingClientRect', 'scrollOffset'].forEach((name) => {
+    const method = target[name]
+    if (isFunction(method)) {
+      target[name] = function datasetMethod(callback?: Function) {
+        return method.call(this, normalizeDatasetCallback(callback))
+      }
+    }
+  })
+
+  const oldFields = target.fields
+  if (isFunction(oldFields)) {
+    target.fields = function fields(
+      fields: UniApp.NodeField,
+      callback?: Function
+    ) {
+      return oldFields.call(this, fields, normalizeDatasetCallback(callback))
+    }
+  }
+
+  return target
 }
 
 function normalizeSelectorQueryDataset(query: any) {
@@ -34,24 +64,16 @@ function normalizeSelectorQueryDataset(query: any) {
     }
   }
 
-  ;['boundingClientRect', 'scrollOffset'].forEach((name) => {
+  normalizeSelectorQueryMethods(query)
+  ;['select', 'selectAll', 'selectViewport'].forEach((name) => {
     const method = query[name]
     if (isFunction(method)) {
-      query[name] = function datasetMethod(callback?: Function) {
-        return method.call(this, normalizeDatasetCallback(callback))
+      query[name] = function datasetMethod(...args: any[]) {
+        const target = method.apply(this, args)
+        return target === query ? target : normalizeSelectorQueryMethods(target)
       }
     }
   })
-
-  const oldFields = query.fields
-  if (isFunction(oldFields)) {
-    query.fields = function fields(
-      fields: UniApp.NodeField,
-      callback?: Function
-    ) {
-      return oldFields.call(this, fields, normalizeDatasetCallback(callback))
-    }
-  }
 
   return query
 }

@@ -46,6 +46,14 @@ export function createSelectorQuery() {
   return query
 }
 
+export function createIntersectionObserver(
+  component?: any,
+  options?: UniApp.CreateIntersectionObserverOptions
+) {
+  const scope = component && component.$scope ? component.$scope : component
+  return wx.createIntersectionObserver(scope, options)
+}
+
 const wx = initWx()
 
 if (!wx.getAppBaseInfo || !wx.getAppBaseInfo()) {
