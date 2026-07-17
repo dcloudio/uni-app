@@ -265,9 +265,9 @@
 
 
 ### switchTab 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | √ | 4.11 | 5.14 | 4.61 |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | √ | 5.22 | 4.11 | 5.14 | 4.61 |
 
 
 ### 参数 
@@ -280,10 +280,10 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 需要跳转的 tabBar 页面的路径，路径后不能带参数 |
-| success | (result: [SwitchTabSuccess](#switchtabsuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
-| fail | (result: [SwitchTabFail](#switchtabfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
-| complete | (result: [SwitchTabComplete](#switchtabcomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: √; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 需要跳转的 tabBar 页面的路径，路径后不能带参数 |
+| success | (result: [SwitchTabSuccess](#switchtabsuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
+| fail | (result: [SwitchTabFail](#switchtabfail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: [SwitchTabComplete](#switchtabcomplete-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): √; Android(Vapor): 5.22; iOS(VDOM): 4.11; iOS(Vapor): 5.14; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### SwitchTabSuccess 的属性值 @switchtabsuccess-values 
 
