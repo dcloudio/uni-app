@@ -29,7 +29,7 @@ uni-app x 实现Cookie共享的API和组件的情况如下
 - [uni.uploadFile](https://doc.dcloud.net.cn/uni-app-x/api/upload-file.html) ：用于上传文件，会自动携带Cookie。
 - [uni.downloadFile](https://doc.dcloud.net.cn/uni-app-x/api/download-file.html) ：用于下载文件，会自动携带Cookie。
 - [image组件](https://doc.dcloud.net.cn/uni-app-x/component/image.html) ：显示网络图片时，会自动携带Cookie（iOS端未实现Cookie共享）。
-- [video组件](https://doc.dcloud.net.cn/uni-app-x/component/video.html) ：用于播放网络视频，会自动携带Cookie（iOS端未实现Cookie共享）。
+- [video组件](https://doc.dcloud.net.cn/uni-app-x/component/video.html) ：用于播放网络视频，会自动携带Cookie（iOS、Android端未实现Cookie共享）。
 - [web-view组件](https://doc.dcloud.net.cn/uni-app-x/component/web-view.html) ：用于显示网页，会自动携带Cookie（iOS端未实现Cookie共享）。
 - [websocket](https://doc.dcloud.net.cn/uni-app-x/api/websocket.html)：未实现Cookie共享。
 
