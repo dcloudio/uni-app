@@ -39,7 +39,8 @@ App平台在manifest中配置添加三方广告SDK。具体配置可参考[文�
 
 | 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
-| adpid | string | 是 | Web: x | 广告位 id | 
+| adpid | string | 是 | Web: x; 微信小程序: 4.41 | 广告位 id |
+| adUnitId | string | 否 | Web: x; 微信小程序: 4.41 | 广告单元 id<br/> | 
 
 
 ### 返回值 
@@ -341,7 +342,7 @@ onAdClicked
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.ad.createInterstitialAd)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/uni-ad/ad-interstitial.html#api%E8%AF%AD%E6%B3%95)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=createInterstitialAd&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ad/InterstitialAd.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=createInterstitialAd&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=createInterstitialAd&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=createInterstitialAd&secondType=all&type=1)

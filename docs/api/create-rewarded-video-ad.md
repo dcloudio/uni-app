@@ -53,15 +53,18 @@ App平台在manifest中配置添加三方广告SDK。具体配置可参考[文�
 
 | 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
-| adpid | string | 是 | Web: x | 广告位 id |
-| urlCallback | **UrlCallbackOptions** | 否 | Web: x | 服务器回调透传参数 |
+| adpid | string | 是 | Web: x; 微信小程序: 4.41 | 广告位 id |
+| urlCallback | **UrlCallbackOptions** | 否 | Web: x; 微信小程序: 4.41 | 服务器回调透传参数 |
+| adUnitId | string | 否 | Web: x; 微信小程序: 4.41 | 广告单元 id<br/> |
+| disableFallbackSharePage | boolean | 否 | Web: x; 微信小程序: 4.41 | 需要基础库： `3.7.1`<br/><br/>是否禁用分享页，默认为false<br/> |
+| multiton | boolean | 否 | Web: x; 微信小程序: 4.41 | 需要基础库： `2.8.0`<br/><br/>是否启用多例模式，默认为false<br/> | 
 
 ##### urlCallback 的属性描述
 
 | 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
 | :- | :- | :- |  :-: | :- |
 | userId | string | 否 | Web: x | 透传到服务器端的userId |
-| extra | string | 否 | Web: x | 透传到服务器端的extra，不推荐设置过于复杂的字符串 | 
+| extra | string | 否 | Web: x | 透传到服务器端的extra，不推荐设置过于复杂的字符串 |
 
 
 ### 返回值 
@@ -413,7 +416,7 @@ onVerify
 ### 参见
 - [相关 Bug](https://issues.dcloud.net.cn/?mid=api.ad.createRewardedVideoAd)
 - [参见uni-app相关文档](https://uniapp.dcloud.net.cn/uni-ad/ad-rewarded-video.html#api%E8%AF%AD%E6%B3%95)
-- [微信小程序文档](https://developers.weixin.qq.com/doc/search.html?source=enter&query=createRewardedVideoAd&doc_type=miniprogram)
+- [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/api/ad/RewardedVideoAd.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=createRewardedVideoAd&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=createRewardedVideoAd&scope=devdocs&source=docs)
 - [抖音小程序文档](https://developer.open-douyin.com/search-page?keyword=createRewardedVideoAd&secondType=all&type=1)
