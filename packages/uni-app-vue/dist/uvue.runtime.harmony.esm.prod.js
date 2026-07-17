@@ -2087,7 +2087,7 @@ function parseSingleAnimation(value) {
     timingFunction: 'ease',
     iterationCount: '1',
     direction: 'normal',
-    fillMode: 'none',
+    fillMode: 'forwards',
     playState: 'running'
   };
   var hasDuration = false;
