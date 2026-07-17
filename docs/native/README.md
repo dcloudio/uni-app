@@ -1,6 +1,8 @@
 ## 简介
 `uni-app x 原生SDK`是为iOS/Android/harmonyOS原生工程师提供的开发工具包，用于混合开发。
 
+**注意：`uni-app x 原生SDK`仅支持VDOM模式，蒸汽（Vapor）模式暂不支持。**
+
 使用 `uni-app x 原生SDK`，原生开发者可以：
 1. 渐进式的使用，把某些页面使用uni-app x来开发，嵌入之前的原生工程中
 2. 使用自己的原生工程集成环境来打包和发版
