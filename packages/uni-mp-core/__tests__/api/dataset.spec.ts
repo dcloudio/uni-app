@@ -3,9 +3,78 @@ import { normalizeDatasetApi } from '../../src/api/x/dataset'
 describe('api dataset', () => {
   test('wraps selector query dataset callbacks', () => {
     const plainResult = { id: 'plain' }
-    const query = {
+    const boundingResult = {
+      dataset: { foo: 'bar', 'data-user-id': 1 },
+    }
+    const callbacks: Function[] = []
+    let query: any
+    function createNodeRef() {
+      return {
+        boundingClientRect(callback: Function) {
+          callbacks.push(() => callback(boundingResult))
+          return query
+        },
+        scrollOffset(callback: Function) {
+          callbacks.push(() => callback({ dataset: { top: 10 } }))
+          return query
+        },
+        fields(_fields: UniApp.NodeField, callback: Function) {
+          callbacks.push(() => callback({ dataset: { get: 'value' } }))
+          return query
+        },
+      }
+    }
+    query = {
       exec(callback: Function) {
-        callback([{ dataset: { foo: 'bar' } }, plainResult])
+        callbacks.forEach((callback) => callback())
+        callback([boundingResult, [{ dataset: { nested: true } }], plainResult])
+        return this
+      },
+      select() {
+        return createNodeRef()
+      },
+      selectAll() {
+        return createNodeRef()
+      },
+      selectViewport() {
+        return createNodeRef()
+      },
+    }
+    const createSelectorQuery = normalizeDatasetApi(
+      'createSelectorQuery',
+      () => query
+    ) as Function
+    const selectorQuery = createSelectorQuery()
+
+    let boundingDataset: Map<string, any> | null = null
+    selectorQuery
+      .select('#target')
+      .boundingClientRect((result: any) => {
+        boundingDataset = result.dataset
+        expect(result.dataset.get('userId')).toBe(1)
+      })
+      .selectAll('.target')
+      .scrollOffset((result: any) => {
+        expect(result.dataset.top).toBe(10)
+      })
+      .selectViewport()
+      .fields({ dataset: true }, (result: any) => {
+        expect(result.dataset).toBeInstanceOf(Map)
+        expect(result.dataset.get('get')).toBe('value')
+        expect(typeof result.dataset.get).toBe('function')
+      })
+      .exec((result: any[]) => {
+        expect(result[0].dataset).toBeInstanceOf(Map)
+        expect(result[0].dataset).toBe(boundingDataset)
+        expect(result[0].dataset.get('foo')).toBe('bar')
+        expect(result[1][0].dataset.get('nested')).toBe(true)
+        expect('dataset' in result[2]).toBe(false)
+      })
+  })
+
+  test('wraps selector query direct dataset callbacks', () => {
+    const query = {
+      select() {
         return this
       },
       boundingClientRect(callback: Function) {
@@ -26,22 +95,18 @@ describe('api dataset', () => {
       () => query
     ) as Function
     const selectorQuery = createSelectorQuery()
+    const boundingClientRect = selectorQuery.boundingClientRect
 
-    selectorQuery.exec((result: any[]) => {
-      expect(result[0].dataset).toBeInstanceOf(Map)
-      expect(result[0].dataset.get('foo')).toBe('bar')
-      expect('dataset' in result[1]).toBe(false)
-    })
-    selectorQuery.boundingClientRect((result: any) => {
+    selectorQuery.select('#target').boundingClientRect((result: any) => {
       expect(result.dataset.get('userId')).toBe(1)
     })
+    expect(selectorQuery.boundingClientRect).toBe(boundingClientRect)
     selectorQuery.scrollOffset((result: any) => {
       expect(result.dataset.top).toBe(10)
     })
     selectorQuery.fields({ dataset: true }, (result: any) => {
       expect(result.dataset).toBeInstanceOf(Map)
       expect(result.dataset.get('get')).toBe('value')
-      expect(typeof result.dataset.get).toBe('function')
     })
   })
 
