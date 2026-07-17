@@ -1602,7 +1602,7 @@ export default {
 
 示例 [详情](<!-- VUEJSON.E_lifecycle.app_monitor-app-lifecycle-options.gitUrl -->)
 
-::: preview <!-- VUEJSON.E_lifecycle.app_app-options.webUrl -->
+::: preview https://hellouvue.dcloud.net.cn/#/pages/lifecycle/page/page-options
 
 > 组合式 API
 
