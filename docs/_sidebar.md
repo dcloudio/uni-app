@@ -82,6 +82,7 @@
 * [宽屏适配](adapt.md)
 * [国际化](i18n.md)
 * [源码和示例](sample.md)
+* [兼容性表格导读](tutorial/compatibility.md)
 * [benchmark](vapor-benchmark.md)
 * [uni-app 升级 uni-app x](./uniapptox.md)
 * 安全专题
