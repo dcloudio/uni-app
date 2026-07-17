@@ -67,19 +67,19 @@ getProvider的同步方法
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **GetProviderSyncOptions** | 是 | Web: x; 微信小程序: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | service | string | 是 | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25 | 服务类型<br/> |
 
 ##### service 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | payment | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25 | 支付 (alipay、wxpay) |
 | location | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25 | 定位 (system、tencent) |
@@ -95,7 +95,7 @@ getProvider的同步方法
 
 #### GetProviderSyncSuccess 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | service | string | 是 | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25 | 服务类型<br/> |
 | providerIds | Array&lt;string&gt; | 是 | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 得到的服务供应商 |
@@ -103,7 +103,7 @@ getProvider的同步方法
 
 ##### service 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | payment | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 支付 (alipay、wxpay) |
 | location | Web: x; 微信小程序: x; Android: 4.25; iOS: 4.25; HarmonyOS: 4.61 | 定位 (system、tencent) |
@@ -280,7 +280,7 @@ getProvider的同步方法
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
@@ -306,13 +306,13 @@ getProvider的同步方法
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **GetProviderOptions** | 是 | Web: x; 微信小程序: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | service | string | 是 | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18 | 服务类型：支付 (payment)<br/> |
 | success | (result: [GetProviderSuccess](#getprovidersuccess-values)) => void | 否 | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18 | 接口调用成功的回调 |
@@ -321,7 +321,7 @@ getProvider的同步方法
 
 ##### service 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | payment | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.18 | 支付 (alipay、wxpay) |
 | location | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.18 | 定位 (system、tencent) |
@@ -330,7 +330,7 @@ getProvider的同步方法
 
 #### GetProviderSuccess 的属性值 @getprovidersuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | service | string | 是 | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18 | 服务类型：支付 (payment)<br/> |
 | provider | Array&lt;string&gt; | 是 | Web: x; 微信小程序: x; Android: 4.18; iOS: 4.18 | 得到的服务供应商 |
@@ -338,7 +338,7 @@ getProvider的同步方法
 
 #### service 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | payment | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.18; HarmonyOS: 4.61 | 支付 (alipay、wxpay) |
 | location | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.18; HarmonyOS: 4.61 | 定位 (system、tencent) |
@@ -347,7 +347,7 @@ getProvider的同步方法
 
 #### GetProviderFail 的属性值 @getproviderfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x; 微信小程序: x | 错误码：<br/>110600：服务类型参数无效。 |
 | errSubject | string | 是 | Web: x; 微信小程序: x | 统一错误主题（模块）名称 |

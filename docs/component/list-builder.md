@@ -14,7 +14,7 @@
 
 
 ### 属性 
-| 名称 | 类型 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | padding | Array | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(Array)*<br/>长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距 |
 | type | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>类型，默认为定高模式 |
@@ -26,7 +26,7 @@
 
 #### type 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | static | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 定高模式，所有列表项等高，需要传入 child-height |
 | dynamic | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 不定高模式 |

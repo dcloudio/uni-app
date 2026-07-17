@@ -18,7 +18,7 @@ view组件是 uni-app x 最基本的视图容器，它的作用类似于HTML中�
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | hover-class | string([string.ClassString](/uts/data-type.md#ide-string)) | "none" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定按下去的样式类。当 hover-class="none" 时，没有点击态效果 |
 | hover-stop-propagation | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定是否阻止本节点的祖先节点出现点击态(祖先节点：指根节点到该节点路径上的所有节点都是这个节点的祖先节点) |

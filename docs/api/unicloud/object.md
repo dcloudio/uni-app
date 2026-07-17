@@ -17,7 +17,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | customUI | boolean | 否 |   | 是否移除自动展示的ui |
 | loadingOptions | **UniCloudImportObjectLoadingOptions** | 否 |   | loading界面配置 |

@@ -471,7 +471,7 @@ UniPage对象强化了开发者对页面的管理功能，并且支持在uts插�
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

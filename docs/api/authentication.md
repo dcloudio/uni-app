@@ -18,13 +18,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **StartSoterAuthenticationOptions** | 是 | Web: x | 开始生物认证参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | requestAuthModes | Array&lt;string&gt; | 是 | Web: x | 请求使用的可接受的生物认证方式 |
 | challenge | string | 否 | Web: x | 挑战因子 |
@@ -35,7 +35,7 @@
 
 ##### requestAuthModes 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | fingerPrint | Web: x | 指纹识别 |
 | facial | Web: x | 人脸识别 |
@@ -43,7 +43,7 @@
 
 #### StartSoterAuthenticationSuccess 的属性值 @startsoterauthenticationsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | authMode | string | 是 | Web: x | 生物认证方式 |
@@ -53,7 +53,7 @@
 
 #### authMode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | fingerPrint | Web: x | 指纹识别 |
 | facial | Web: x | 人脸识别 |
@@ -61,7 +61,7 @@
 
 #### StartSoterAuthenticationFail 的属性值 @startsoterauthenticationfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 统一错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -71,7 +71,7 @@
 
 #### StartSoterAuthenticationSuccess 的属性值 @startsoterauthenticationsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | authMode | string | 是 | Web: x | 生物认证方式 |
@@ -81,7 +81,7 @@
 
 #### authMode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | fingerPrint | Web: x | 指纹识别 |
 | facial | Web: x | 人脸识别 |
@@ -89,7 +89,7 @@
 
 #### StartSoterAuthenticationFail 的属性值 @startsoterauthenticationfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 统一错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -143,13 +143,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **CheckIsSupportSoterAuthenticationOptions** | 是 | Web: x | 开始生物认证的参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | success | (result: [CheckIsSupportSoterAuthenticationSuccess](#checkissupportsoterauthenticationsuccess-values)) => void | 否 | Web: x | 接口调用成功的回调函数 |
 | fail | (result: [CheckIsSupportSoterAuthenticationFail](#checkissupportsoterauthenticationfail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
@@ -157,14 +157,14 @@
 
 #### CheckIsSupportSoterAuthenticationSuccess 的属性值 @checkissupportsoterauthenticationsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | supportMode | Array&lt;string&gt; | 是 | Web: x | 支持的生物认证方式 |
 | errMsg | string | 是 | Web: x | 接口调用结果 |
 
 #### supportMode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | fingerPrint | Web: x | 指纹识别 |
 | facial | Web: x | 人脸识别 |
@@ -172,7 +172,7 @@
 
 #### CheckIsSupportSoterAuthenticationFail 的属性值 @checkissupportsoterauthenticationfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 统一错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -182,14 +182,14 @@
 
 #### CheckIsSupportSoterAuthenticationSuccess 的属性值 @checkissupportsoterauthenticationsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | supportMode | Array&lt;string&gt; | 是 | Web: x | 支持的生物认证方式 |
 | errMsg | string | 是 | Web: x | 接口调用结果 |
 
 #### supportMode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | fingerPrint | Web: x | 指纹识别 |
 | facial | Web: x | 人脸识别 |
@@ -197,7 +197,7 @@
 
 #### CheckIsSupportSoterAuthenticationFail 的属性值 @checkissupportsoterauthenticationfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 统一错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -252,13 +252,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **CheckIsSoterEnrolledInDeviceOptions** | 是 | Web: x | 获取本机支持的生物认证方式的参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | checkAuthMode | string | 是 | Web: x | 生物认证方式 |
 | success | (result: [CheckIsSoterEnrolledInDeviceSuccess](#checkissoterenrolledindevicesuccess-values)) => void | 否 | Web: x | 支持的生物认证方式 |
@@ -267,7 +267,7 @@
 
 ##### checkAuthMode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | fingerPrint | Web: x | 指纹识别 |
 | facial | Web: x | 人脸识别 |
@@ -275,14 +275,14 @@
 
 #### CheckIsSoterEnrolledInDeviceSuccess 的属性值 @checkissoterenrolledindevicesuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | isEnrolled | boolean | 是 | Web: x | 是否已录入信息 |
 | errMsg | string | 是 | Web: x | 错误信息 |
 
 #### CheckIsSoterEnrolledInDeviceFail 的属性值 @checkissoterenrolledindevicefail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 统一错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -292,14 +292,14 @@
 
 #### CheckIsSoterEnrolledInDeviceSuccess 的属性值 @checkissoterenrolledindevicesuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | isEnrolled | boolean | 是 | Web: x | 是否已录入信息 |
 | errMsg | string | 是 | Web: x | 错误信息 |
 
 #### CheckIsSoterEnrolledInDeviceFail 的属性值 @checkissoterenrolledindevicefail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 统一错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -448,6 +448,6 @@ const startAuth = (mode: AuthMode) => {
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |

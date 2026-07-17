@@ -28,7 +28,7 @@
 
 #### GetWindowInfoResult 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | pixelRatio | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 设备像素比<br/> |
 | screenWidth | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 屏幕宽度，单位为px<br/> |
@@ -45,7 +45,7 @@
 
 ##### safeArea 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | left | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左上角横坐标，单位为px<br/> |
 | right | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右下角横坐标，单位为px<br/> |
@@ -56,7 +56,7 @@
 
 ##### safeAreaInsets 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | left | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域左侧插入位置（距离左边边界距离），单位为px<br/> |
 | right | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 安全区域右侧插入位置（距离右边边界距离），单位为px<br/> |
@@ -65,7 +65,7 @@
 
 ##### cutoutArea 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | left | number | 是 | Web: x; 微信小程序: x; Android 系统版本: 9.0; Android: 4.31; iOS: x; HarmonyOS: x | 挖孔、刘海区域左上角横坐标，单位为px<br/> |
 | right | number | 是 | Web: x; 微信小程序: x; Android 系统版本: 9.0; Android: 4.31; iOS: x; HarmonyOS: x | 挖孔、刘海区域右下角横坐标，单位为px<br/> |
@@ -246,7 +246,7 @@ app-ios平台safeArea与iOS原生的安全区域概念相同，top与bottom分�
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

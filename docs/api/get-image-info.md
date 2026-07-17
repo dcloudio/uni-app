@@ -16,7 +16,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | src | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 图片的路径，可以是相对路径，临时文件路径，存储文件路径，网络图片路径 |
 | success | (callback: [GetImageInfoSuccess](#getimageinfosuccess-values)) => void | 否 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 接口调用成功的回调函数 |
@@ -25,7 +25,7 @@
 
 #### GetImageInfoSuccess 的属性值 @getimageinfosuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | width | number | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 图片宽度，单位px |
 | height | number | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.25 | 图片高度，单位px |
@@ -238,7 +238,7 @@ web平台读取图片的exif信息，需要引入三方库。考虑到影响web 
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

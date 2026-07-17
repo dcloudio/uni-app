@@ -14,7 +14,7 @@
 
 
 ### 属性 
-| 名称 | 类型 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | title | string | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x | 导航条标题 |
 | title-icon | string | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 标题icon |

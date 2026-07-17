@@ -14,7 +14,7 @@ UniCanvasElement -- Extends --> UniElement
 
 
 ### UniCanvasElement 的属性值 @unicanvaselement-values
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | width | number | 是 | Web: 4.21; 微信小程序: x; Android: 4.25; iOS: 4.25; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | Canvas宽度(注意:App平台只读不支持设置) |
 | height | number | 是 | Web: 4.21; 微信小程序: x; Android: 4.25; iOS: 4.25; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | Canvas高度(注意:App平台只读不支持设置) |
@@ -40,7 +40,7 @@ UniCanvasElement -- Extends --> UniElement
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | contentType | string | 是 | 微信小程序: x | 
 
@@ -67,7 +67,7 @@ UniCanvasElement -- Extends --> UniElement
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | callback | BlobCallback | 是 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 
 
@@ -127,7 +127,7 @@ UniCanvasElement -- Extends --> UniElement
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | type | string | 否 | 微信小程序: x |
 | encoderOptions | any | 否 | 微信小程序: x | 

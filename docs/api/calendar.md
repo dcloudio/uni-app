@@ -12,13 +12,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **AddPhoneRepeatCalendarOptions** | 是 | Web: x | 向系统日历添加重复事件的参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | title | string | 是 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS(VDOM): 5.09; HarmonyOS(Vapor): 5.09 | 日历事件标题 |
 | startTime | number | 是 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS(VDOM): 5.09; HarmonyOS(Vapor): 5.09 | 开始时间的 unix 时间戳 (1970年1月1日开始所经过的秒数) |
@@ -38,7 +38,7 @@
 
 ##### repeatInterval 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | day | Web: x | 每天重复 |
 | week | Web: x | 每周重复 |
@@ -47,13 +47,13 @@
 
 #### AddPhoneRepeatCalendarSuccess 的属性值 @addphonerepeatcalendarsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> |
+| 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | errMsg | string | 否 | Web: x |
 
 #### AddPhoneRepeatCalendarFail 的属性值 @addphonerepeatcalendarfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -63,7 +63,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 601 | Web: x | title is required |
 | 602 | Web: x | startTime is invalid |
@@ -76,13 +76,13 @@
 
 #### AddPhoneRepeatCalendarSuccess 的属性值 @addphonerepeatcalendarsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> |
+| 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | errMsg | string | 否 | Web: x |
 
 #### AddPhoneRepeatCalendarFail 的属性值 @addphonerepeatcalendarfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -92,7 +92,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 601 | Web: x | title is required |
 | 602 | Web: x | startTime is invalid |
@@ -140,13 +140,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **AddPhoneCalendarOptions** | 是 | Web: x | 向系统日历添加事件的参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | title | string | 是 |  | Web: x; 微信小程序: √; Android: 5.08; iOS: 5.08; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 日历事件标题 |
 | startTime | number | 是 |  | Web: x; 微信小程序: √; Android: 5.09; iOS: 5.09; HarmonyOS(VDOM): 5.09; HarmonyOS(Vapor): 5.09 | 开始时间的 unix 时间戳 |
@@ -164,13 +164,13 @@
 
 #### AddPhoneCalendarSuccess 的属性值 @addphonecalendarsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> |
+| 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | errMsg | string | 否 | Web: x |
 
 #### AddPhoneCalendarFail 的属性值 @addphonecalendarfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -180,7 +180,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 601 | Web: x | title is required |
 | 602 | Web: x | startTime is invalid |
@@ -193,13 +193,13 @@
 
 #### AddPhoneCalendarSuccess 的属性值 @addphonecalendarsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> |
+| 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | errMsg | string | 否 | Web: x |
 
 #### AddPhoneCalendarFail 的属性值 @addphonecalendarfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -209,7 +209,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 601 | Web: x | title is required |
 | 602 | Web: x | startTime is invalid |
@@ -814,7 +814,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

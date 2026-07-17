@@ -20,13 +20,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **ShowActionSheetOptions** | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 参数说明 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | title | string | 否 | Web: 4.51; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; iOS(VDOM) UTS 插件: 4.51; HarmonyOS: 4.61 | 菜单标题 |
 | alertText | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 警示文案（仅微信小程序真机有效） |
@@ -43,7 +43,7 @@
 
 ##### popover 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | top | number | 是 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS(VDOM) UTS 插件: x; HarmonyOS: x | 指示区域坐标，使用原生 navigationBar 时一般需要加上 navigationBar 的高度 |
 | left | number | 是 | Web: 4.0; 微信小程序: x; Android: x; iOS: x; iOS(VDOM) UTS 插件: x; HarmonyOS: x | 指示区域坐标 |
@@ -52,7 +52,7 @@
 
 #### ShowActionSheetSuccess 的属性值 @showactionsheetsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | Web: 4.0; 微信小程序: x; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 错误信息 |
 | tapIndex | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 用户点击的按钮序号，从上到下的顺序，从0开始 |
@@ -453,7 +453,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

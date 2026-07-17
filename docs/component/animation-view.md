@@ -25,7 +25,7 @@ Lottie 动画
 标准基座并不包含本插件，下载插件后需编写调用代码并打包自定义基座才可运行。
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | string | "" | Web: √; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 | 动画资源地址，目前只支持绝对路径 |
 | loop | boolean | false | Web: √; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 | 动画是否循环播放 |
@@ -36,7 +36,7 @@ Lottie 动画
 
 #### action 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | play | Web: √; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 | 播放 |
 | pause | Web: √; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 5.0 | 暂停 |

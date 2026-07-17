@@ -34,7 +34,7 @@
 6. canvas是一个独立模块，在Android和iOS平台占用几百K体积，鸿蒙平台封装自鸿蒙自身的canvas。canvas模块不使用时会被摇树摇掉
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | type | string |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | *(string)*<br/>指定 canvas 类型，支持 2d (2.9.0) 和 webgl (2.7.0) |
 | canvas-id | string |   | Web: -; 微信小程序: 4.41; Android: -; iOS: -; HarmonyOS: x | *(string)*<br/>canvas 组件的唯一标识符，若指定了 type 则无需再指定该属性 |

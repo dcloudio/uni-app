@@ -32,13 +32,13 @@ uni.requestMerchantTransfer 是​商家转账到用户零钱的API，适用于�
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **RequestMerchantTransferOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | mchId | string | 是 | Web: x; 微信小程序: 4.61; Android: 4.61; iOS: 4.61; HarmonyOS: 5.14 | 商户号 |
 | package | string | 是 | Web: x; 微信小程序: 4.61; Android: 4.61; iOS: 4.61; HarmonyOS: 5.14 | 商家转账付款单跳转收款页 pkg 信息,商家转账付款单受理成功时返回给商户 |
@@ -52,19 +52,19 @@ uni.requestMerchantTransfer 是​商家转账到用户零钱的API，适用于�
 
 #### RequestMerchantTransferGeneralCallbackResult 的属性值 @requestmerchanttransfergeneralcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> |
+| 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | errMsg | string | 是 | Web: x |
 
 #### RequestMerchantTransferGeneralCallbackResult 的属性值 @requestmerchanttransfergeneralcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> |
+| 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | errMsg | string | 是 | Web: x |
 
 #### RequestMerchantTransferGeneralCallbackResult 的属性值 @requestmerchanttransfergeneralcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> |
+| 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | errMsg | string | 是 | Web: x |
 
@@ -355,7 +355,7 @@ uni.requestMerchantTransfer 是​商家转账到用户零钱的API，适用于�
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

@@ -22,7 +22,7 @@
 在hello uni-app x里有示例，可以自由的监听view的拖动并移动其位置。[详见](https://gitcode.com/dcloud/hello-uni-app-x/blob/alpha/pages/component/general-event/touch-event.uvue)
 
 ### 属性 
-| 名称 | 类型 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | direction | string | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | movable-view的移动方向，属性值有all、vertical、horizontal、none |
 | inertia | boolean | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | movable-view 是否带有惯性。 |

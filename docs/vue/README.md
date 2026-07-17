@@ -312,7 +312,7 @@ style通过lang属性，可以支持less、scss、stylus等css预处理语言。
 
 
 ##### 属性 
-| 名称 | 类型 | 兼容性 <Help /> |
+| 名称 | 类型 | 兼容性 |
 | :- | :- |  :-: |
 | lang | string | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 | scoped | boolean | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
@@ -320,7 +320,7 @@ style通过lang属性，可以支持less、scss、stylus等css预处理语言。
 
 #### lang 的属性描述
 
-| 合法值 | 兼容性 <Help /> |
+| 合法值 | 兼容性 |
 | :- |  :-: |
 | scss | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 | less | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |

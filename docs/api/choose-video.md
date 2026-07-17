@@ -26,7 +26,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | pageOrientation | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: x | 屏幕方向。默认为pages.json中的pageOrientation。 |
 | sourceType | Array&lt;string&gt; | 否 |  | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | album 从相册选视频，camera 使用相机拍摄，默认为：['album', 'camera'\] |
@@ -63,7 +63,7 @@
 
 #### ChooseVideoSuccess 的属性值 @choosevideosuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | tempFilePath | string | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 选定视频的临时文件路径 |
 | duration | number | 是 | 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 选定视频的时间长度 |
@@ -265,7 +265,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

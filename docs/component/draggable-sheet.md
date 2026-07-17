@@ -14,7 +14,7 @@
 
 
 ### 属性 
-| 名称 | 类型 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | initial-child-size | number | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>初始时占父容器的比例 |
 | min-child-size | number | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>最小时占父容器的比例 |

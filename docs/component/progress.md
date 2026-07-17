@@ -22,7 +22,7 @@
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | duration | number | 30 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 进度增加1%所需毫秒数 |
 | percent | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 进度百分比 |
@@ -41,7 +41,7 @@
 
 #### active-mode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | backwards | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 动画从头播 |
 | forwards | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 动画从上次结束点接着播 |

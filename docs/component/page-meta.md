@@ -14,7 +14,7 @@
 
 
 ### 属性 
-| 名称 | 类型 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | background-text-style | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 下拉背景字体、loading 图的样式，仅支持 dark 和 light |
 | background-color | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 窗口的背景色，必须为十六进制颜色值 |

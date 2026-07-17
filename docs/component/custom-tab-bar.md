@@ -14,7 +14,7 @@
 
 
 ### 属性 
-| 名称 | 类型 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | direction | string | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 选项的排列方向 |
 | show-icon | boolean | Web: 4.0; 微信小程序: x; Android: x; iOS: x | 是否显示icon |
@@ -23,7 +23,7 @@
 
 #### direction 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | horizontal | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 选项的排列方向水平 |
 | vertical | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 选项的排列方向垂直 |

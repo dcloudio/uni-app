@@ -32,13 +32,13 @@ uni.requestPayment是一个统一各平台的客户端支付API，客户端均�
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **RequestPaymentOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | provider | string | 是 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 支付服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,目前支持支付宝支付(alipay),微信支付(wxpay) |
 | orderInfo | string | 是 | Web: x; 微信小程序: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 订单数据 |
@@ -53,7 +53,7 @@ uni.requestPayment是一个统一各平台的客户端支付API，客户端均�
 
 ##### signType 的属性描述
 
-| 合法值 | 兼容性 <Help /> |
+| 合法值 | 兼容性 |
 | :- |  :-: |
 | MD5 | Web: x |
 | HMAC-SHA256 | Web: x |
@@ -61,13 +61,13 @@ uni.requestPayment是一个统一各平台的客户端支付API，客户端均�
 
 #### RequestPaymentSuccess 的属性值 @requestpaymentsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | data | any | 否 | Web: x; 微信小程序: 4.41; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 返回数据 |
 
 #### RequestPaymentFail 的属性值 @requestpaymentfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -77,7 +77,7 @@ uni.requestPayment是一个统一各平台的客户端支付API，客户端均�
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 700000 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 其它支付错误。 |
 | 700600 | Web: x; Android: 4.02; iOS: 4.18; HarmonyOS: 4.61 | 正在处理中，支付结果未知（有可能已经支付成功），请查询商家订单列表中订单的支付状态 |
@@ -510,7 +510,7 @@ UniPaymentWxpayProvider(微信支付)继承自 [UniProvider](./provider.md#unipr
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

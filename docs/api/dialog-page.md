@@ -68,13 +68,13 @@ app-android平台注意事项：
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **OpenDialogPageOptions** | 是 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61 | 打开 dialogPage 参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | url | string ([string.PageURIString](/uts/data-type.md#ide-string)) | 是 |  | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61 | 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数 |
 | animationType | string | 否 | none | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61 | 窗口显示的动画类型<br/> |
@@ -88,7 +88,7 @@ app-android平台注意事项：
 
 ##### animationType 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | auto | 微信小程序: x | 自动选择动画效果 |
 | none | 微信小程序: x | 无动画效果 |
@@ -102,13 +102,13 @@ app-android平台注意事项：
 
 #### OpenDialogPageSuccess 的属性值 @opendialogpagesuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> |
+| 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | errMsg | string | 是 | 微信小程序: x |
 
 #### OpenDialogPageFail 的属性值 @opendialogpagefail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | 微信小程序: x | 路由错误码<br/>- 4: 框架内部异常 |
 | errSubject | string | 是 | 微信小程序: x | 统一错误主题（模块）名称 |
@@ -118,7 +118,7 @@ app-android平台注意事项：
 
 #### OpenDialogPageComplete 的属性值 @opendialogpagecomplete-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> |
+| 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | errMsg | string | 是 | 微信小程序: x |
 
@@ -173,13 +173,13 @@ app-android平台注意事项：
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **CloseDialogPageOptions** | 否 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61 | 关闭 dialogPage 参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | dialogPage | [UniPage](/api/unipage.md) | 否 |  | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | 要关闭的 dialogPage 实例 |
 | animationType | string | 否 | auto | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61 | 窗口关闭的动画类型<br/> |
@@ -190,7 +190,7 @@ app-android平台注意事项：
 
 ##### animationType 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | auto | 微信小程序: x | 自动选择动画效果 |
 | none | 微信小程序: x | 无动画效果 |
@@ -204,13 +204,13 @@ app-android平台注意事项：
 
 #### CloseDialogPageSuccess 的属性值 @closedialogpagesuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> |
+| 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | errMsg | string | 是 | 微信小程序: x |
 
 #### CloseDialogPageFail 的属性值 @closedialogpagefail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | 微信小程序: x | 路由错误码<br/>- 4: 框架内部异常 |
 | errSubject | string | 是 | 微信小程序: x | 统一错误主题（模块）名称 |
@@ -220,7 +220,7 @@ app-android平台注意事项：
 
 #### CloseDialogPageComplete 的属性值 @closedialogpagecomplete-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> |
+| 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | errMsg | string | 是 | 微信小程序: x |
 
@@ -794,7 +794,7 @@ app-android平台注意事项：
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

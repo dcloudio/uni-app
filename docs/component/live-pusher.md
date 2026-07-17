@@ -20,7 +20,7 @@
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | url | string([string.VideoURIString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 推流地址，支持 rtmp 协议 |
 | mode | string | "SD" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | SD（标清）, HD（高清）, FHD（超清）, RTC（实时通话） |
@@ -75,7 +75,7 @@
 
 #### mode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | RTC | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |  |
 | SD | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |  |
@@ -86,14 +86,14 @@
 
 #### orientation 的属性描述
 
-| 合法值 | 兼容性 <Help /> |
+| 合法值 | 兼容性 |
 | :- |  :-: |
 | vertical | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |
 | horizontal | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |
 
 #### local-mirror 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | auto | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | 前置摄像头镜像，后置摄像头不镜像 |
 | enable | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | 前后置摄像头均镜像 |
@@ -101,7 +101,7 @@
 
 #### audio-reverb-type 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 0 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 关闭 |
 | 1 | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | KTV |
@@ -114,7 +114,7 @@
 
 #### audio-volume-type 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | auto | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 自动 |
 | media | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | 媒体音量 |
@@ -122,14 +122,14 @@
 
 #### beauty-style 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | smooth | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 光滑美颜 |
 | nature | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 自然美颜 |
 
 #### filter 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | standard | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 标准 |
 | pink | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 粉嫩 |
@@ -145,7 +145,7 @@
 
 #### picture-in-picture-mode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | [] | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 取消小窗 |
 | push | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 路由 push 时触发小窗 |
@@ -169,7 +169,7 @@
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | code | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 状态码 |
 | message | string | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 状态信息 |
@@ -258,7 +258,7 @@
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | videoBitrate | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前视频编/码器输出的比特率，单位 kbps |
 | audioBitrate | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 当前音频编/码器输出的比特率，单位 kbps |

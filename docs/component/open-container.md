@@ -14,7 +14,7 @@
 
 
 ### 属性 
-| 名称 | 类型 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | closed-color | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>初始容器背景色 |
 | closed-elevation | number | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>初始容器影深大小 |
@@ -28,7 +28,7 @@
 
 #### transition-type 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | fade | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 将传入元素淡入传出元素之上 |
 | fadeThrough | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 首先淡出传出元素，并在传出元素完全淡出后开始淡入传入元素 |

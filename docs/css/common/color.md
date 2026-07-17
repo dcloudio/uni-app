@@ -2,7 +2,7 @@
 
 css中颜色的表达方式及兼容性表格
 
-| 名称 | 兼容性 <Help /> | 描述 |
+| 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
 | named-color | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | CSS 数据类型 <named-color> 为颜色名——如: red、blue、black 或 lightseagreen。- [MDN Reference](https://developer.mozilla.org/zh-CN/docs/Web/CSS/named-color) |
 | hex-color | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | CSS 数据类型 <hex-color> 为描述 sRGB 颜色的十六进制颜色语法的记号，此记号将颜色的主分量（红、绿、蓝）及其透明度写为十六进制数。如: #FFFFFF 表示白色- [MDN Reference](https://developer.mozilla.org/zh-CN/docs/Web/CSS/hex-color) |
@@ -31,7 +31,7 @@ css中颜色的表达方式及兼容性表格
 
 #### hex-color 的属性描述
 
-| 名称 | 兼容性 <Help /> | 描述 |
+| 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
 | #RGB | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 十六进制颜色三值语法，如: #FFF 表示白色 |
 | #RGBA | Web: 4.0; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; HarmonyOS: 4.61 | 十六进制颜色四值语法，如: #FFFA 表示半透明白色（透明度值为AA） |

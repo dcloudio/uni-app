@@ -31,7 +31,7 @@ UniNativeViewElement -- Extends --> UniElement
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | view | View | 是 | iOS: x; HarmonyOS: x | 
 
@@ -52,7 +52,7 @@ UniNativeViewElement -- Extends --> UniElement
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | view | UIView | 是 | Android: x; iOS: x; HarmonyOS: x | 
 
@@ -73,7 +73,7 @@ UniNativeViewElement -- Extends --> UniElement
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | node | FrameNode | 是 | Android: x; iOS: x | 
 
@@ -94,7 +94,7 @@ UniNativeViewElement -- Extends --> UniElement
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | builder | WrappedBuilder\<\[options: O\] | 是 | Android: x; iOS: x |
 | options | ESObject | 否 | Android: x; iOS: x | 
@@ -166,7 +166,7 @@ UniNativeViewElement -- Extends --> UniElement
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | controller | T | 是 | Android: x; iOS: x | 
 

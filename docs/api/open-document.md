@@ -20,13 +20,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **OpenDocumentOptions** | 否 | Web: x | uni.openDocument参数定义 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | filePath | string | 是 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.61 | 文件路径，仅支持本地路径 |
 | fileType | string | 否 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.61 | 文件类型，指定文件类型打开文件，微信小程序仅支持类型：doc, xls, ppt, pdf, docx, xlsx, pptx，App端由系统打开，原则上可以打开任意文件； |
@@ -37,7 +37,7 @@
 
 #### OpenDocumentFail 的属性值 @opendocumentfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.61 | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -47,7 +47,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 1300601 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71 | 路径无效 |
 | 1300602 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71 | 文件不存在 |
@@ -358,7 +358,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

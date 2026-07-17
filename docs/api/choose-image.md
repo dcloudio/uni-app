@@ -26,7 +26,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | pageOrientation | string | 否 |  | Web: x; 微信小程序: x; Android: 4.33; iOS: 4.33; HarmonyOS: x | 屏幕方向。默认为pages.json中的pageOrientation。 |
 | albumMode | string | 否 | "custom" | Web: x; 微信小程序: x; Android: 4.33; iOS: x; HarmonyOS: x | 图片选择模式 |
@@ -56,7 +56,7 @@
 
 ##### crop 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | width | number | 是 |  | Android: 3.9; iOS: 4.11 | 裁剪的宽度，单位为px，用于计算裁剪宽高比。 |
 | height | number | 是 |  | Android: 3.9; iOS: 4.11 | 裁剪的高度，单位为px，用于计算裁剪宽高比。 |
@@ -65,7 +65,7 @@
 
 #### ChooseImageSuccess 的属性值 @chooseimagesuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errSubject | string | 是 | Android: 3.9; iOS: 4.11 | 调用API的名称 |
 | errMsg | string | 是 | Android: 3.9; iOS: 4.11 | 描述信息 |
@@ -74,7 +74,7 @@
 
 #### tempFiles 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | path | string | 是 | Android: 3.9; iOS: 4.11 | 本地文件路径 |
 | size | number | 是 | Android: 3.9; iOS: 4.11 | 本地文件大小，单位：B |
@@ -511,7 +511,7 @@ const previewImage = (index: number) => {
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

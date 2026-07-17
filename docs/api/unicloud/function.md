@@ -18,7 +18,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | name | string ([string.CloudFunctionString](/uts/data-type.md#ide-string)) | 是 |   | 云函数名 |
 | data | any | 否 |   | 云函数参数 |

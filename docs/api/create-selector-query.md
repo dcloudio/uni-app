@@ -143,7 +143,7 @@ fields
 
 #### fields 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | id | boolean | 否 |   | 是否返回节点 id |
 | dataset | boolean | 否 |   | 是否返回节点 dataset |
@@ -210,7 +210,7 @@ node
 
 ###### NodeField 的属性值 @nodefield-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | id | boolean | 否 |   | 是否返回节点 id |
 | dataset | boolean | 否 |   | 是否返回节点 dataset |
@@ -914,7 +914,7 @@ uni.createSelectorQuery().select('.rect1').selectAll('.rect2').boundingClientRec
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

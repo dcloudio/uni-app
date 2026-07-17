@@ -20,13 +20,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **GetScreenBrightnessOptions** | 是 | Web: x | 获取屏幕亮度的参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | success | (result: [GetScreenBrightnessSuccess](#getscreenbrightnesssuccess-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 成功返回的回调函数 |
 | fail | (result: [GetScreenBrightnessFail](#getscreenbrightnessfail-values)) => void | 否 | Web: x; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 失败的回调函数 |
@@ -34,13 +34,13 @@
 
 #### GetScreenBrightnessSuccess 的属性值 @getscreenbrightnesssuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | value | number | 是 | Web: x; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 屏幕亮度值，范围 0~1，0 最暗，1 最亮。 |
 
 #### GetScreenBrightnessFail 的属性值 @getscreenbrightnessfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 统一错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -50,13 +50,13 @@
 
 #### GetScreenBrightnessSuccess 的属性值 @getscreenbrightnesssuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | value | number | 是 | Web: x; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 屏幕亮度值，范围 0~1，0 最暗，1 最亮。 |
 
 #### GetScreenBrightnessFail 的属性值 @getscreenbrightnessfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 统一错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -107,13 +107,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **SetScreenBrightnessOptions** | 是 | Web: x | 设置屏幕亮度的参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | value | number | 是 | Web: x; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 屏幕亮度值，范围 0~1，0 最暗，1 最亮 |
 | success | (result: SetScreenBrightnessSuccess) => void | 否 | Web: x; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 接口调用成功的回调函数 |
@@ -122,7 +122,7 @@
 
 #### SetScreenBrightnessFail 的属性值 @setscreenbrightnessfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 统一错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -132,7 +132,7 @@
 
 #### SetScreenBrightnessFail 的属性值 @setscreenbrightnessfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 统一错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -189,7 +189,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | keepScreenOn | boolean | 是 | Web: 5.08; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 是否保持屏幕常亮 |
 | success | (result: [SetKeepScreenOnSuccess](#setkeepscreenonsuccess-values)) => void | 否 | Web: 5.08; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 接口调用成功的回调函数 |
@@ -198,7 +198,7 @@
 
 #### SetKeepScreenOnSuccess 的属性值 @setkeepscreenonsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | Web: 5.08; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 调用结果 |
 
@@ -214,7 +214,7 @@
 
 #### SetKeepScreenOnSuccess 的属性值 @setkeepscreenonsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | Web: 5.08; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 调用结果 |
 
@@ -537,7 +537,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

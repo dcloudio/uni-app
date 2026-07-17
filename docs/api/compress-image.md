@@ -10,13 +10,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **CompressImageOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | src | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 图片路径，图片的路径，可以是相对路径、临时文件路径、存储文件路径 |
 | quality | number | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.25; HarmonyOS: 4.61 | 压缩质量，范围0～100，数值越小，质量越低，压缩率越高（仅对jpg有效） |
@@ -31,13 +31,13 @@
 
 #### CompressImageSuccess 的属性值 @compressimagesuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | tempFilePath | string | 是 | Web: x; 微信小程序: 4.41 | 压缩后图片的临时文件路径 |
 
 #### CompressImageFail 的属性值 @compressimagefail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -47,7 +47,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 1101001 | Web: x | 用户取消 |
 | 1101002 | Web: x | urls至少包含一张图片地址 |
@@ -317,7 +317,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

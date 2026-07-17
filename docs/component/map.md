@@ -27,7 +27,7 @@
 2. 使用web-view中的地图
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | longitude | number | 0 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 中心经度 |
 | latitude | number | 0 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 中心纬度 |

@@ -21,13 +21,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **ChooseMediaOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | pageOrientation | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: x; HarmonyOS: 4.61 | 屏幕方向。默认为pages.json中的pageOrientation。 |
 | count | number | 否 | 9 | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 最多可以选择的文件个数 |
@@ -42,7 +42,7 @@
 
 ##### pageOrientation 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | auto | Web: x | 自动 |
 | portrait | Web: x | 竖屏显示 |
@@ -50,21 +50,21 @@
 
 ##### camera 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | front | Web: x | 前置摄像头 |
 | back | Web: x | 后置摄像头 |
 
 #### ChooseMediaSuccess 的属性值 @choosemediasuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> |
+| 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | tempFiles | Array&lt;**ChooseMediaTempFile**&gt; | 是 | Web: x |
 | type | string | 是 | Web: x |
 
 #### tempFiles 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | tempFilePath | string | 是 | Web: x | 选定视频的临时文件路径 |
 | fileType | string | 是 | Web: x | 文件类型 |
@@ -77,14 +77,14 @@
 
 ##### fileType 的属性描述
 
-| 合法值 | 兼容性 <Help /> |
+| 合法值 | 兼容性 |
 | :- |  :-: |
 | image | Web: x |
 | video | Web: x |
 
 #### type 的属性描述
 
-| 合法值 | 兼容性 <Help /> |
+| 合法值 | 兼容性 |
 | :- |  :-: |
 | image | Web: x |
 | video | Web: x |
@@ -92,7 +92,7 @@
 
 #### ChooseMediaFail 的属性值 @choosemediafail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -102,7 +102,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 1101001 | Web: x | 用户取消 |
 | 1101005 | Web: x | 未获取权限 |
@@ -474,7 +474,7 @@ Android端返回的路径是content协议。
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

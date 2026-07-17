@@ -1794,7 +1794,7 @@ export default {
 
 ### 组件生命周期（选项式 API）兼容性 @component-lifecycle-options-compatibility
 
-|  | 兼容性 <Help /> | 描述 |
+|  | 兼容性 | 描述 |
 | :- | :- | :- |
 | beforeCreate | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件实例初始化完成之后立即调用。<br/>在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用。 |
 | created | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在组件实例处理完所有与状态相关的选项后调用。<br/>在这一步，实例已完成以下的配置：数据观测 (data observer)，属性和方法的运算，watch/event 事件回调。<br/>然而，此时挂载阶段还未开始，因此 $el 属性仍不可用。 |
@@ -1813,7 +1813,7 @@ export default {
 
 ### 组件生命周期（组合式 API）兼容性 @component-lifecycle-composition-compatibility
 
-|  | 兼容性 <Help /> | 描述 |
+|  | 兼容性 | 描述 |
 | :- | :- | :- |
 | onMounted() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。<br/>如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。 |
 | onUpdated() | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子。 |

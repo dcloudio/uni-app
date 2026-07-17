@@ -14,7 +14,7 @@
 
 
 ### 属性 
-| 名称 | 类型 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | type | string | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | icon的类型，有效值：success, success_no_circle, info, warn, waiting, cancel, download, search, clear |
 | size | number | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | icon的大小，单位px |

@@ -14,13 +14,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **GetBatteryInfoOptions** | 是 | HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | success | (res: [GetBatteryInfoSuccess](#getbatteryinfosuccess-values)) => void | 否 | HarmonyOS: x | 接口调用成功的回调 |
 | fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | HarmonyOS: x | 接口调用失败的回调函数 |
@@ -28,7 +28,7 @@
 
 #### GetBatteryInfoSuccess 的属性值 @getbatteryinfosuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | HarmonyOS: x |  |
 | level | number | 是 | HarmonyOS: x | 设备电量，范围1 - 100 |
@@ -129,7 +129,7 @@
 
 #### GetBatteryInfoResult 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | level | number | 是 | HarmonyOS: x | 设备电量，范围1 - 100 |
 | isCharging | boolean | 是 | HarmonyOS: x | 是否正在充电中 | 
@@ -157,7 +157,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

@@ -13,14 +13,14 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **CanvasToTempFilePathOptions** | 是 | Android: x; iOS: x; HarmonyOS: x |
 | componentInstance | any | 是 | Android: x; iOS: x; HarmonyOS: x | 
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | x | number | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 画布x轴起点（默认0） |
 | y | number | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 画布y轴起点（默认0） |
@@ -38,7 +38,7 @@
 
 #### CanvasToTempFilePathSuccess 的属性值 @canvastotempfilepathsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | tempFilePath | string | 是 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 导出生成的图片路径 |
 | errMsg | string | 否 | Android: x; iOS: x; HarmonyOS: x |  |
@@ -67,7 +67,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

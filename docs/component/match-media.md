@@ -22,7 +22,7 @@ media query 匹配检测节点
 
 
 ### 属性 
-| 名称 | 类型 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | width | string \| number | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 页面宽度（px 为单位） |
 | min-width | string \| number | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 页面最小宽度（px 为单位） |
@@ -34,7 +34,7 @@ media query 匹配检测节点
 
 #### orientation 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | portrait | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 竖屏 |
 | landscape | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 5.0; HarmonyOS: 4.71 | 横屏 |

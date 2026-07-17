@@ -21,7 +21,7 @@
 | height | number | 否 | 0 | 矩形的高 |
 
 ### DOMRect 的属性值 @domrect-values
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | width | number | 是 | Web: 4.0; 微信小程序: 4.11; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 矩形的宽 |
 | height | number | 是 | Web: 4.0; 微信小程序: 4.11; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 矩形的高 |

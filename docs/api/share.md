@@ -23,13 +23,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **ShareOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | provider | string | 否 | weixin | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,如果不设置则默认 weixin |
 | type | number | 否 | 0 | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享类型。默认图文0 |
@@ -49,7 +49,7 @@
 
 ##### type 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 0 | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 图文 |
 | 1 | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 纯文字 |
@@ -60,7 +60,7 @@
 
 ##### scene 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | WXSceneSession | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享到聊天界面 |
 | WXSceneTimeline | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 分享到朋友圈 |
@@ -68,7 +68,7 @@
 
 ##### miniProgram 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | id | string | 否 |  | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 微信小程序原始id |
 | path | string | 否 |  | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 点击链接进入的页面 |
@@ -77,7 +77,7 @@
 
 ###### type 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 0 | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 正式版 |
 | 1 | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 测试版 |
@@ -85,7 +85,7 @@
 
 #### ShareFail 的属性值 @sharefail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -95,7 +95,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 4000500 | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 未找到微信APPID,请确认 manifest.json 中配置信息是否正确 |
 | 4000501 | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 该场景字段当前不支持 |
@@ -285,7 +285,7 @@ UniShareWeixinProvider(微信分享)继承自 [UniProvider](./provider.md#unipro
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

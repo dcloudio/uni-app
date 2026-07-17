@@ -164,7 +164,7 @@ requestFullScreen
 
 #### direction 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | direction | 90 \| any | 否 | Web: x; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11 | direction | 
 
@@ -191,7 +191,7 @@ exitFullScreen
 
 ##### RequestFullScreenOptions 的属性值 @requestfullscreenoptions-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | direction | 90 \| any | 否 | Web: x; 微信小程序: 4.41; Android: 3.9.0; iOS: 4.11 | direction |
  
@@ -220,7 +220,7 @@ exitFullScreen
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

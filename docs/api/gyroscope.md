@@ -12,13 +12,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **StartGyroscopeOptions** | 否 | Web: x | 开始监听陀螺仪数据的参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | interval | string | 否 | Web: x | 监听陀螺仪数据回调函数的执行频率 |
 | success | (res: [StartGyroscopeSuccess](#startgyroscopesuccess-values)) => void | 否 | Web: x | 接口调用成功的回调函数 |
@@ -27,7 +27,7 @@
 
 ##### interval 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | game | Web: x | 适用于更新游戏的回调频率，约 20ms/次 左右 |
 | ui | Web: x | 适用于更新 UI 的回调频率，在 60ms/次 左右 |
@@ -35,13 +35,13 @@
 
 #### StartGyroscopeSuccess 的属性值 @startgyroscopesuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> |
+| 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | errMsg | string | 否 | Web: x |
 
 #### StartGyroscopeFail 的属性值 @startgyroscopefail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x |  |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -51,7 +51,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> |
+| 合法值 | 兼容性 |
 | :- |  :-: |
 | 501 | Web: x |
 | 502 | Web: x |
@@ -73,13 +73,13 @@
 
 #### StartGyroscopeSuccess 的属性值 @startgyroscopesuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> |
+| 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | errMsg | string | 否 | Web: x |
 
 #### StartGyroscopeFail 的属性值 @startgyroscopefail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x |  |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -89,7 +89,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> |
+| 合法值 | 兼容性 |
 | :- |  :-: |
 | 501 | Web: x |
 | 502 | Web: x |
@@ -150,13 +150,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **StopGyroscopeOptions** | 否 | Web: x | 停止监听陀螺仪数据的参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | success | (res: [StopGyroscopeSuccess](#stopgyroscopesuccess-values)) => void | 否 | Web: x | 接口调用成功的回调函数 |
 | fail | (res: [StopGyroscopeFail](#stopgyroscopefail-values)) => void | 否 | Web: x | 接口调用失败的回调函数 |
@@ -164,13 +164,13 @@
 
 #### StopGyroscopeSuccess 的属性值 @stopgyroscopesuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> |
+| 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | errMsg | string | 否 | Web: x |
 
 #### StopGyroscopeFail 的属性值 @stopgyroscopefail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x |  |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -180,7 +180,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> |
+| 合法值 | 兼容性 |
 | :- |  :-: |
 | 501 | Web: x |
 | 502 | Web: x |
@@ -202,13 +202,13 @@
 
 #### StopGyroscopeSuccess 的属性值 @stopgyroscopesuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> |
+| 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | errMsg | string | 否 | Web: x |
 
 #### StopGyroscopeFail 的属性值 @stopgyroscopefail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x |  |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -218,7 +218,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> |
+| 合法值 | 兼容性 |
 | :- |  :-: |
 | 501 | Web: x |
 | 502 | Web: x |
@@ -276,13 +276,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | callback | (result: [OnGyroscopeChangeCallbackResult](#ongyroscopechangecallbackresult-values)) => void | 是 | Web: x | 陀螺仪数据事件的监听函数 | 
 
 ### OnGyroscopeChangeCallbackResult 的属性值 @ongyroscopechangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | x | number | 是 | Web: x | x 轴的角速度 |
 | y | number | 是 | Web: x | y 轴的角速度 |
@@ -329,13 +329,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | callback | (result: [OnGyroscopeChangeCallbackResult](#ongyroscopechangecallbackresult-values)) => void | 否 | Web: x | onGyroscopeChange 传入的监听函数。不传此参数则移除所有监听函数。 | 
 
 ### OnGyroscopeChangeCallbackResult 的属性值 @ongyroscopechangecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | x | number | 是 | Web: x | x 轴的角速度 |
 | y | number | 是 | Web: x | y 轴的角速度 |
@@ -676,7 +676,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

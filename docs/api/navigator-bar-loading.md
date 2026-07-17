@@ -21,13 +21,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **ShowNavigationBarLoadingOptions** | 否 | Android: x; iOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> |
+| 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | success | (result: [ShowNavigationBarLoadingSuccess](#shownavigationbarloadingsuccess-values)) => void | 否 | Android: x; iOS: x |
 | fail | (error: [ShowNavigationBarLoadingFail](#shownavigationbarloadingfail-values)) => void | 否 | Android: x; iOS: x |
@@ -35,13 +35,13 @@
 
 #### ShowNavigationBarLoadingSuccess 的属性值 @shownavigationbarloadingsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> |
+| 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | errMsg | string | 是 | Android: x; iOS: x |
 
 #### ShowNavigationBarLoadingFail 的属性值 @shownavigationbarloadingfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Android: x; iOS: x | 统一错误码 |
 | errSubject | string | 是 | Android: x; iOS: x | 统一错误主题（模块）名称 |
@@ -93,13 +93,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **HideNavigationBarLoadingOptions** | 否 | Android: x; iOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> |
+| 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | success | (result: [HideNavigationBarLoadingSuccess](#hidenavigationbarloadingsuccess-values)) => void | 否 | Android: x; iOS: x |
 | fail | (error: [HideNavigationBarLoadingFail](#hidenavigationbarloadingfail-values)) => void | 否 | Android: x; iOS: x |
@@ -107,13 +107,13 @@
 
 #### HideNavigationBarLoadingSuccess 的属性值 @hidenavigationbarloadingsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> |
+| 名称 | 类型 | 必备 | 兼容性 |
 | :- | :- | :- |  :-: |
 | errMsg | string | 是 | Android: x; iOS: x |
 
 #### HideNavigationBarLoadingFail 的属性值 @hidenavigationbarloadingfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Android: x; iOS: x | 统一错误码 |
 | errSubject | string | 是 | Android: x; iOS: x | 统一错误主题（模块）名称 |
@@ -149,7 +149,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

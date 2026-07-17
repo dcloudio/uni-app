@@ -26,7 +26,7 @@ picker组件其实是基于[picker-view组件](picker-view.md)封装了一个弹
 或者使用开源组件[uni-data-picker](https://ext.dcloud.net.cn/plugin?id=3796)。这是也是基于[picker-view组件](picker-view.md)封装的云端一体组件，如果需要选择城市，那么推荐使用该组件。
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 是否禁用 |
 | mode | String as PropType\<Mode> | "selector" | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 选择器类型 |
@@ -46,7 +46,7 @@ picker组件其实是基于[picker-view组件](picker-view.md)封装了一个弹
 
 #### mode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | selector | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: 5.08; iOS 系统版本: -; iOS: 5.08; HarmonyOS: 4.61 | 普通选择器 |
 | multiSelector | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: 5.08; iOS 系统版本: -; iOS: 5.08; HarmonyOS: 4.61 | 多列选择器 |
@@ -56,7 +56,7 @@ picker组件其实是基于[picker-view组件](picker-view.md)封装了一个弹
 
 #### fields 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | year | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: 5.08; iOS 系统版本: -; iOS: 5.08; HarmonyOS: 4.61 | 选择器粒度为年 |
 | month | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: 5.08; iOS 系统版本: -; iOS: 5.08; HarmonyOS: 4.61 | 选择器粒度为月份 |
@@ -64,7 +64,7 @@ picker组件其实是基于[picker-view组件](picker-view.md)封装了一个弹
 
 #### level 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | province | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 省级选择器 |
 | city | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 市级选择器 |

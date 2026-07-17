@@ -22,7 +22,7 @@
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | src | string \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | webview 指向网页的链接 |
 | allow | string |   | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 用于为 [iframe](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe) 指定其[特征策略](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/策略特征) |
@@ -62,7 +62,7 @@
 
 #### android-nested-scroll 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | all | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 横向竖向均可嵌套滚动 |
 | vertical | Web: x; 微信小程序: x; Android: 4.61; iOS: x; HarmonyOS: x | 竖向可嵌套滚动 |

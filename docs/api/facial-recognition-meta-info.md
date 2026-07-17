@@ -40,13 +40,13 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | faceStyle | **StartFacialRecognitionVerifyOptions** | 是 | Web: x |
 
 #### faceStyle 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | certifyId | string | 是 |  | Web: x | certifyId 调用实人认证的id |
 | progressBarColor | string | 否 |  | Web: x; Android: 3.9; iOS: 4.11; HarmonyOS: x | 活体检测页面的进度条颜色。<br/> |
@@ -57,14 +57,14 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
 
 ##### screenOrientation 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | land | Web: x | 横屏 |
 | port | Web: x | 竖屏 |
 
 #### StartFacialRecognitionVerifySuccess 的属性值 @startfacialrecognitionverifysuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 调用API的名称 |
@@ -73,7 +73,7 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
 
 #### cause 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | subject | string | 否 | Web: x | 源错误模块名称 |
 | message | string | 是 | Web: x | 源错误描述信息 |
@@ -83,7 +83,7 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
 
 #### IFacialRecognitionVerifyError 的属性值 @ifacialrecognitionverifyerror-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -93,7 +93,7 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 10001 | Web: x | certifyId 不能为空 |
 | 10002 | Web: x | 当前设备不支持 |
@@ -215,7 +215,7 @@ uni-id-pages，已经内置实人认证，从云端到客户端均已开发好�
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

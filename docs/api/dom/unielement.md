@@ -11,7 +11,7 @@
 
 
 ### UniElement 的属性值 @unielement-values
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | id | string | 是 | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; iOS(Vapor) UTS 插件: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 只读属性，当前元素的标识符 |
 | isConnected | boolean | 是 | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; iOS(Vapor) UTS 插件: x; HarmonyOS: 4.61 | 只读属性，当前元素是否与 DOM 树连接 |
@@ -65,7 +65,7 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | aChild | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 插入子元素对象 | 
 
@@ -86,7 +86,7 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | newChild | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 插入子元素对象 |
 | refChild | [UniElement](/api/dom/unielement.md) | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 已存在父元素的子元素对象 | 
@@ -114,7 +114,7 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | newChild | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 插入子元素对象 | 
 
@@ -145,7 +145,7 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | key | string | 是 | 微信小程序: x | 属性名称 |
 | value | string | 是 | 微信小程序: x | 属性值域 | 
@@ -170,7 +170,7 @@ app平台 setAttribute 不支持设置 class、style 属性，设置了也不会
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | key | string | 是 | Web: x; 微信小程序: x | 属性名称 |
 | value | any | 是 | Web: x; 微信小程序: x | 属性值域 | 
@@ -517,7 +517,7 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | key | string | 是 | Web: x; 微信小程序: x | 属性名称 | 
 
@@ -544,7 +544,7 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | key | string | 是 | 微信小程序: x | 属性名称 | 
 
@@ -571,7 +571,7 @@ app平台 getAttribute 不支持获取 class、style 属性， uvue/vue 页面�
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | key | string | 是 | 微信小程序: x | 属性名称 | 
 
@@ -1432,7 +1432,7 @@ if (view != null && view instanceof WKWebView) {
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | type | string | 是 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 事件类型 |
 | callback | (event: T) => R | 是 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 事件监听器 T表示event类型，R表示返回值类型 | 
@@ -1460,7 +1460,7 @@ if (view != null && view instanceof WKWebView) {
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | type | string | 是 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 事件类型 |
 | callbackWrapper | UniCallbackWrapper | 是 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 事件监听回调封装类 | 
@@ -1482,7 +1482,7 @@ if (view != null && view instanceof WKWebView) {
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | aChild | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 被删除子元素对象 | 
 
@@ -1548,7 +1548,7 @@ if (view != null && view instanceof WKWebView) {
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | x | number | 是 | 微信小程序: x | x轴要滚动到坐标位置(单位px) |
 | y | number | 是 | 微信小程序: x | y轴要滚动到坐标位置(单位px) | 
@@ -1570,7 +1570,7 @@ if (view != null && view instanceof WKWebView) {
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | x | number | 是 | 微信小程序: x | x轴要滚动的距离(单位px) |
 | y | number | 是 | 微信小程序: x | y轴要滚动的距离(单位px) | 
@@ -1592,7 +1592,7 @@ if (view != null && view instanceof WKWebView) {
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | selector | [string.cssSelectorString](/uts/data-type.md#ide-string) | 是 | 微信小程序: x | CSS 选择器字符串 | 
 
@@ -1619,7 +1619,7 @@ if (view != null && view instanceof WKWebView) {
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | selector | [string.cssSelectorString](/uts/data-type.md#ide-string) | 是 | 微信小程序: x | CSS 选择器字符串 | 
 
@@ -1684,13 +1684,13 @@ if (view != null && view instanceof WKWebView) {
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **TakeSnapshotOptions** | 是 | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02; HarmonyOS(VDOM) UTS 插件: x | 组件截图的参数对象 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | type | string | 否 | "file" | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图导出类型，目前仅支持 'file' 保存到临时文件目录 |
 | format | string | 否 | "png" | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图文件格式，目前仅支持 'png' |
@@ -1700,13 +1700,13 @@ if (view != null && view instanceof WKWebView) {
 
 ###### TakeSnapshotSuccess 的属性值 @takesnapshotsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | tempFilePath | string | 是 | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图保存的临时文件路径 |
 
 ###### TakeSnapshotFail 的属性值 @takesnapshotfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图失败时的错误描述信息 |
 
@@ -2160,7 +2160,7 @@ if (view != null && view instanceof WKWebView) {
 
 ##### UniAnimationKeyframe 的属性值 @unianimationkeyframe-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | width | Union | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制宽度属性的过渡效果 |
 | height | Union | 否 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 控制高度属性的过渡效果 |
@@ -2191,7 +2191,7 @@ if (view != null && view instanceof WKWebView) {
 
 ##### UniAnimationOption 的属性值 @unianimationoption-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | delay | number | 否 | 0 | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): 5.08 | 动画延迟的毫秒数 |
 | direction | string | 否 | normal | Web: √; 微信小程序: √; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 动画运行方向 |
@@ -2202,7 +2202,7 @@ if (view != null && view instanceof WKWebView) {
 
 #### direction 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | normal | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 正向运行 |
 | reverse | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 反向运行 |
@@ -2222,7 +2222,7 @@ if (view != null && view instanceof WKWebView) {
 
 #### fill 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | backwards | Web: √; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 动画播放完毕后恢复初始状态 |
 | forwards | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 动画播放完毕后保留状态 |
@@ -2285,7 +2285,7 @@ if (view != null && view instanceof WKWebView) {
 
 #### UniAnimation 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | id | string | 是 | Web: √; 微信小程序: 4.53; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 获取或设置用于标识动画的字符串 |
 | playState | string | 是 | Web: √; 微信小程序: x; Android: 4.51; iOS: 4.53; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.08 | 返回动画播放状态。可选值：`running`动画正在运行；`paused`动画暂停；`finished`动画播放完成；`idle`动画取消或者失败 |
@@ -2874,13 +2874,13 @@ play
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **RequestFullscreenOptions** | 否 | Web: x; 微信小程序: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | navigationUI | string | 否 | Web: x; 微信小程序: x | 全屏模式时导航栏状态 |
 | orientation | string | 否 | Web: x; 微信小程序: x | 全屏显示方向 |
@@ -2890,7 +2890,7 @@ play
 
 ##### navigationUI 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | hide | Web: x; 微信小程序: x | 隐藏所有系统状态栏和底部导航栏 |
 | show | Web: x; 微信小程序: x | 隐藏顶部系统状态栏，显示底部系统导航栏 |
@@ -2898,7 +2898,7 @@ play
 
 ##### orientation 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | auto | Web: x; 微信小程序: x | 根据重力感应自动调整 |
 | landscape | Web: x; 微信小程序: x | 固定为横屏，会根据重力调整方向 |
@@ -2908,7 +2908,7 @@ play
 
 ###### IFullscreenError 的属性值 @ifullscreenerror-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x; 微信小程序: x | 错误码 |
 | errSubject | string | 是 | Web: x; 微信小程序: x | 统一错误主题（模块）名称 |
@@ -2918,7 +2918,7 @@ play
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 106600 | Web: x; 微信小程序: x | 当前页面已经有element处于全屏状态 |
 | 106601 | Web: x; 微信小程序: x | 当前element不支持全屏 |

@@ -14,7 +14,7 @@
 
 
 ### 属性 
-| 名称 | 类型 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | type | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>布局方式 |
 | cross-axis-count | number | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>交叉轴元素数量 |
@@ -25,7 +25,7 @@
 
 #### type 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | aligned | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 每行高度由同一行中最大高度子节点决定 |
 | masonry | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 瀑布流，根据子元素高度自动布局 |

@@ -20,7 +20,7 @@ page-container 的特点：
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | show | boolean | false | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | 是否显示容器组件 |
 | duration | number | 300 | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | 动画时长，单位毫秒 |
@@ -41,7 +41,7 @@ page-container 的特点：
 
 #### position 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | top | Web: 5.02; 微信小程序: 4.41; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | 顶部 |
 | left | Web: 5.02; 微信小程序: x; Android: 5.02; iOS: 5.02; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02 | 左侧 |

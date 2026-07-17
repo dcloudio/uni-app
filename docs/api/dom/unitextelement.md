@@ -17,7 +17,7 @@ UniTextElement -- Extends --> UniElement
 
 
 ### UniTextElement 的属性值 @unitextelement-values
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | value | string | 是 | Web: x; 微信小程序: x; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性 text元素的文案内容 |
 
@@ -48,7 +48,7 @@ UniTextElement -- Extends --> UniElement
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | layout | [UniTextLayout](#unitextlayout-values) | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 文本对象 | 
 
@@ -64,7 +64,7 @@ setText
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | text | string | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 
 
@@ -80,7 +80,7 @@ setColor
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | color | string | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 
 
@@ -96,7 +96,7 @@ setFontFamily
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | family | string | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 
 
@@ -112,7 +112,7 @@ setFontSize
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | size | string | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 
 
@@ -128,7 +128,7 @@ setFontStyle
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | style | string | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 
 
@@ -144,7 +144,7 @@ setFontWeight
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | weight | string | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 
 
@@ -160,7 +160,7 @@ setLineHeight
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | height | string | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 
 
@@ -176,7 +176,7 @@ setTextAlign
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | align | string | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 
 
@@ -192,7 +192,7 @@ setTextOverflow
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | overflow | string | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 
 
@@ -208,7 +208,7 @@ setTextShadow
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | shadow | string | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 
 
@@ -224,7 +224,7 @@ setTextDecorationLine
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | decorationLine | string | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 
 
@@ -240,7 +240,7 @@ setWhiteSpace
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | whiteSpace | string | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 
 
@@ -256,7 +256,7 @@ append
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | layout | [UniTextLayout](#unitextlayout-values) | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 文本对象 | 
 
@@ -272,13 +272,13 @@ measure
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | constraint | **UniLayoutConstraintSize** | 是 | Web: x; 微信小程序: x; iOS: x; HarmonyOS: x | 布局约束大小 |
 
 #### constraint 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | minWidth | number | 否 | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素最小宽度，逻辑像素值<br/>可选值，不设置则认为没有最小宽度 |
 | maxWidth | number | 否 | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素最大宽度，逻辑像素值<br/>可选值，不设置则认为可以无限宽 |
@@ -294,14 +294,14 @@ measure
 
 #### UniLayoutSize 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | width | number | 是 | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素宽度，逻辑像素值 |
 | height | number | 是 | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素高度，逻辑像素值 | 
 
 ###### UniLayoutConstraintSize 的属性值 @unilayoutconstraintsize-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | minWidth | number | 否 | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素最小宽度，逻辑像素值<br/>可选值，不设置则认为没有最小宽度 |
 | maxWidth | number | 否 | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素最大宽度，逻辑像素值<br/>可选值，不设置则认为可以无限宽 |
@@ -310,7 +310,7 @@ measure
 
 ###### UniLayoutSize 的属性值 @unilayoutsize-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | width | number | 是 | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素宽度，逻辑像素值 |
 | height | number | 是 | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素高度，逻辑像素值 |
@@ -340,7 +340,7 @@ measure
 
 #### UniLayoutSize 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | width | number | 是 | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素宽度，逻辑像素值 |
 | height | number | 是 | Web: x; 微信小程序: x; Android(VDOM): 4.81; Android(Vapor): x; iOS: x; HarmonyOS: x | 元素高度，逻辑像素值 | 

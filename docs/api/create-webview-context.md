@@ -108,7 +108,7 @@ evalJS
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | js | string | 是 | Web: x | 
 
@@ -141,13 +141,13 @@ loadData
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **UniWebviewContextLoadDataOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | data | string | 是 | Web: x | 要加载的内容，编码后的字符串 |
 | baseURL | string | 否 | Web: x | 页面的基础URL |
@@ -158,7 +158,7 @@ loadData
 
 ##### UniWebviewContextLoadDataOptions 的属性值 @uniwebviewcontextloaddataoptions-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | data | string | 是 | Web: x | 要加载的内容，编码后的字符串 |
 | baseURL | string | 否 | Web: x | 页面的基础URL |
@@ -211,7 +211,7 @@ loadData
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | webviewId | [string.WebviewIdString](/uts/data-type.md#ide-string) | 是 | Web: x |
 | component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: x | 
@@ -279,7 +279,7 @@ evalJS
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | js | string | 是 | Web: x | 
 
@@ -312,13 +312,13 @@ loadData
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **UniWebviewContextLoadDataOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | data | string | 是 | Web: x | 要加载的内容，编码后的字符串 |
 | baseURL | string | 否 | Web: x | 页面的基础URL |
@@ -329,7 +329,7 @@ loadData
 
 ##### UniWebviewContextLoadDataOptions 的属性值 @uniwebviewcontextloaddataoptions-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | data | string | 是 | Web: x | 要加载的内容，编码后的字符串 |
 | baseURL | string | 否 | Web: x | 页面的基础URL |
@@ -349,7 +349,7 @@ loadData
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

@@ -22,7 +22,7 @@
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | target | string |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 在哪个目标上发生跳转，默认当前应用 |
 | url | string([string.PageURIString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 当前应用内的跳转链接 |
@@ -46,14 +46,14 @@
 
 #### target 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | self | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 当前小程序 |
 | miniProgram | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 其它小程序 |
 
 #### open-type 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | navigate | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 对应 uni.navigateTo 或 navigateToMiniProgram 的功能 |
 | redirect | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 对应 uni.redirectTo 的功能 |
@@ -64,7 +64,7 @@
 
 #### version 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | develop | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 开发版 |
 | trial | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 体验版 |
@@ -72,7 +72,7 @@
 
 #### animation-type 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | auto | HarmonyOS: 5.0 | 自动选择动画效果 |
 | none | HarmonyOS: 4.61 | 无动画效果 |

@@ -61,7 +61,7 @@
 
 #### BackgroundAudioManager 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | duration | number | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41 | 当前音频的长度（单位：s），只有在当前有合法的 src 时返回 |
 | currentTime | number | 是 | Web: x; 微信小程序: 4.41; Android: 4.41; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41 | 当前音频的播放位置（单位：s），只有在当前有合法的 src 时返回 |
@@ -114,7 +114,7 @@ seek
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | position | number | 是 | Web: x | 
 
@@ -141,7 +141,7 @@ onCanplay
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -157,7 +157,7 @@ onPlay
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -173,7 +173,7 @@ onPause
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -189,7 +189,7 @@ onStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -205,7 +205,7 @@ onEnded
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -221,7 +221,7 @@ onSeeking
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -237,7 +237,7 @@ onSeeked
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -253,7 +253,7 @@ onTimeUpdate
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -269,7 +269,7 @@ onPrev
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -285,7 +285,7 @@ onNext
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -301,13 +301,13 @@ onError
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | callback | (result: [ICreateBackgroundAudioFail](#icreatebackgroundaudiofail-values)) => void | 是 | Web: x | 
 
 ##### ICreateBackgroundAudioFail 的属性值 @icreatebackgroundaudiofail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -317,7 +317,7 @@ onError
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 1107601 | Web: x; Android: 4.41; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41 | 系统错误 |
 | 1107602 | Web: x; Android: 4.41; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41 | 网络错误 |
@@ -338,7 +338,7 @@ onWaiting
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | callback | (result: any) => void | 是 | Web: x | 
 
@@ -478,7 +478,7 @@ offWaiting
 
 ##### ICreateBackgroundAudioFail 的属性值 @icreatebackgroundaudiofail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -488,7 +488,7 @@ offWaiting
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 1107601 | Web: x; Android: 4.41; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41 | 系统错误 |
 | 1107602 | Web: x; Android: 4.41; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41 | 网络错误 |
@@ -778,7 +778,7 @@ offWaiting
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

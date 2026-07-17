@@ -49,7 +49,7 @@ uni-app x 蒸汽模式的rich-text native，应该是业内最佳的富文本呈
 > 仅在 app-android 平台配置 mode=native 时受上述表格限制
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | nodes | any |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 节点列表/HTML String |
 | selectable | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 文本是否可选 |
@@ -63,14 +63,14 @@ uni-app x 蒸汽模式的rich-text native，应该是业内最佳的富文本呈
 
 #### mode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | web | Web: x; 微信小程序: x; Android: 4.71; iOS: 4.11; HarmonyOS: 4.61 | 使用webview渲染 |
 | native | Web: x; 微信小程序: x; Android: 4.71; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 使用原生渲染 |
 
 #### space 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | ensp | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 中文字符空格一半大小 |
 | emsp | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 中文字符空格大小 |

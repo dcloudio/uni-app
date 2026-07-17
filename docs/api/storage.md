@@ -304,7 +304,7 @@ uni.getStorageInfo函数定义
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | success | (res: [GetStorageInfoSuccess](#getstorageinfosuccess-values)) => void | 否 | 微信小程序: 4.41 | uni.getStorageInfo成功回调函数定义 |
 | fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | 微信小程序: 4.41 | uni.getStorageInfo失败回调函数定义 |
@@ -312,7 +312,7 @@ uni.getStorageInfo函数定义
 
 #### GetStorageInfoSuccess 的属性值 @getstorageinfosuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | keys | Array&lt;string&gt; | 是 | 微信小程序: 4.41 | 当前 storage 中所有的 key |
 | currentSize | number | 是 | 微信小程序: 4.41 | 当前占用的空间大小, 单位：kb |
@@ -371,7 +371,7 @@ uni.getStorageInfoSync函数定义
 
 #### GetStorageInfoSuccess 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | keys | Array&lt;string&gt; | 是 | 微信小程序: 4.41 | 当前 storage 中所有的 key |
 | currentSize | number | 是 | 微信小程序: 4.41 | 当前占用的空间大小, 单位：kb |
@@ -426,7 +426,7 @@ uni.removeStorage函数定义
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | key | string | 是 | 微信小程序: 4.41 | 本地存储中的指定的 key |
 | success | (res: RemoveStorageSuccess) => void | 否 | 微信小程序: 4.41 | uni.removeStorage成功回调函数定义 |
@@ -533,7 +533,7 @@ uni.clearStorage函数定义
 
 #### option 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | success | (res: ClearStorageSuccess) => void | 否 | 微信小程序: 4.41 | uni.clearStorage 成功回调函数定义 |
 | fail | (res: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | 微信小程序: 4.41 | uni.clearStorage 失败回调函数定义 |
@@ -1148,7 +1148,7 @@ uni.clearStorageSync函数定义
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

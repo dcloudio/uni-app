@@ -18,7 +18,7 @@
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | push-pinned-header | boolean | true | Web: x; 微信小程序: x; Android: 3.98; iOS(VDOM): 4.11; iOS(Vapor): 5.21; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.21 | sticky-section元素重叠时是否继续上推 |
 | preload | boolean | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.21 | sticky-section即使在视图外也预加载内容 |

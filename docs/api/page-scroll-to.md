@@ -33,7 +33,7 @@ app-uvue下，其实没有页面级滚动。但本API做了一定兼容，当页
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | scrollTop | number | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 滚动到页面的目标位置（单位px） |
 | selector | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 元素选择器，用于指定要滚动到的元素位置 |
@@ -51,7 +51,7 @@ app-uvue下，其实没有页面级滚动。但本API做了一定兼容，当页
 
 #### PageScrollToFail 的属性值 @pagescrolltofail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 设置页面滚动错误码<br/>- 4: 框架内部异常 |
 | errSubject | string | 是 |   | 统一错误主题（模块）名称 |
@@ -203,7 +203,7 @@ uni.pageScrollTo({
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

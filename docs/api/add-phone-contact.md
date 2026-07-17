@@ -20,13 +20,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **AddPhoneContactOptions** | 是 | Web: x | 添加手机通讯录联系人的参数 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | photoFilePath | string | 否 | Web: x | 头像本地文件路径 |
 | nickName | string | 否 | Web: x | 昵称 |
@@ -66,7 +66,7 @@
 
 #### AddPhoneContactFail 的属性值 @addphonecontactfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x |  |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -76,7 +76,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> |
+| 合法值 | 兼容性 |
 | :- |  :-: |
 | 601 | Web: x |
 | 602 | Web: x |
@@ -84,7 +84,7 @@
 
 #### AddPhoneContactFail 的属性值 @addphonecontactfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x |  |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -94,7 +94,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> |
+| 合法值 | 兼容性 |
 | :- |  :-: |
 | 601 | Web: x |
 | 602 | Web: x |
@@ -128,7 +128,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

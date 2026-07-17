@@ -40,13 +40,13 @@ start
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **RecorderManagerStartOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | duration | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.61 | 指定录音的时长，单位 ms ，如果传入了合法的 duration ，在到达指定的 duration 后会自动停止录音，默认值 60000（1 分钟)，微信小程序最大值 600000（10 分钟), App 平台没有最大值限制 |
 | sampleRate | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.61 | 采样率，有效值 8000/16000/44100, Android平台默认是8000，iOS平台默认是44100 |
@@ -57,7 +57,7 @@ start
 
 ##### format 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | aac | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.61 | aac格式 |
 | mp3 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: x; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | mp3格式 |
@@ -110,7 +110,7 @@ onStart
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | (result: any) => void | 是 | Web: x | 
 
@@ -137,7 +137,7 @@ onPause
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | (result: any) => void | 是 | Web: x | 
 
@@ -164,13 +164,13 @@ onStop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | (result: [RecorderManagerOnStopResult](#recordermanageronstopresult-values)) => void | 是 | Web: x | 
 
 ##### RecorderManagerOnStopResult 的属性值 @recordermanageronstopresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | tempFilePath | string | 是 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.61 | 录音文件的临时路径 |
 
@@ -197,7 +197,7 @@ onFrameRecorded
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | (result: any) => void | 是 | Web: x | 
 
@@ -224,13 +224,13 @@ onError
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | (result: [IRecorderManagerFail](#irecordermanagerfail-values)) => void | 是 | Web: x | 
 
 ##### IRecorderManagerFail 的属性值 @irecordermanagerfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -240,7 +240,7 @@ onError
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 1107601 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.61 | 没有麦克风权限 |
 | 1107602 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.61 | 不支持该采样率 |
@@ -274,7 +274,7 @@ onResume
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | (result: any) => void | 是 | Web: x | 
 
@@ -301,7 +301,7 @@ onInterruptionBegin
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | (result: any) => void | 是 | Web: x | 
 
@@ -328,7 +328,7 @@ onInterruptionEnd
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | (result: any) => void | 是 | Web: x | 
 
@@ -347,7 +347,7 @@ offInterruptionEnd
 
 ##### RecorderManagerStartOptions 的属性值 @recordermanagerstartoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | duration | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.61 | 指定录音的时长，单位 ms ，如果传入了合法的 duration ，在到达指定的 duration 后会自动停止录音，默认值 60000（1 分钟)，微信小程序最大值 600000（10 分钟), App 平台没有最大值限制 |
 | sampleRate | number | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.61 | 采样率，有效值 8000/16000/44100, Android平台默认是8000，iOS平台默认是44100 |
@@ -358,7 +358,7 @@ offInterruptionEnd
 
 #### format 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | aac | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.61 | aac格式 |
 | mp3 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: x; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | mp3格式 |
@@ -368,13 +368,13 @@ offInterruptionEnd
 
 ##### RecorderManagerOnStopResult 的属性值 @recordermanageronstopresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | tempFilePath | string | 是 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.61 | 录音文件的临时路径 |
 
 ##### IRecorderManagerFail 的属性值 @irecordermanagerfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -384,7 +384,7 @@ offInterruptionEnd
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 1107601 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.61 | 没有麦克风权限 |
 | 1107602 | Web: x; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.61 | 不支持该采样率 |
@@ -865,7 +865,7 @@ offInterruptionEnd
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

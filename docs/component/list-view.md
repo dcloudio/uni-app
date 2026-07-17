@@ -30,7 +30,7 @@ list-view和scroll-view都是滚动组件，list适用于长列表场景，其�
 目前微信小程序下，list-view被编译为scroll-view。目前uni-app x还未优化skyline的配置，未来会把list-view编译为skyline的list-view。
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | direction | string | "vertical" | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 滚动方向，可取值 none、horizontal、vertical，默认值vertical。注：iOS 平台仅支持vertical |
 | ~~scroll-x~~ | boolean | false | Web: x; 微信小程序: 4.41; Android: 3.9; iOS: x; HarmonyOS: x | 允许横向滚动，不支持同时设置scroll-y属性为true，同时设置true时scroll-y生效。已废弃，请改用direction |
@@ -67,7 +67,7 @@ list-view和scroll-view都是滚动组件，list适用于长列表场景，其�
 
 #### direction 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | none | Web: 4.02; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 禁止滚动 |
 | horizontal | Web: x; 微信小程序: 4.41; Android: 4.0; iOS: x; HarmonyOS: x | 横向滚动 |
@@ -75,13 +75,13 @@ list-view和scroll-view都是滚动组件，list适用于长列表场景，其�
 
 #### associative-container 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | nested-scroll-view | Web: x; Android: 4.11; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 嵌套滚动 |
 
 #### refresher-default-style 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | black | 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 深颜色雪花样式 |
 | white | 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 浅白色雪花样式 |
@@ -217,7 +217,7 @@ scroll-view开启嵌套模式后，list-view 可作为内层滚动视图与外�
 设置内层 list-view 的 `associative-container` 属性为 "nested-scroll-view"，开启内层 list-view 支持与外层 scroll-view 嵌套滚动
 
 ### 子组件 @children-tags
-| 子组件 | 兼容性 <Help /> |
+| 子组件 | 兼容性 |
 | :- | :- |
 | [list-item](list-item.md)<br/>[sticky-header](sticky-header.md)<br/>[sticky-section](sticky-section.md) | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 
@@ -715,7 +715,7 @@ VDOM模式下，app平台list-view仅对渲染层复用，不会对vue数据层�
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | type | number | 0 | Web: 4.02; 微信小程序: 4.41; Android: 3.9; iOS: 4.25; HarmonyOS: 4.61 | 对应list-item的类型 list-view 将对同类型条目进行复用，所以合理的类型拆分，可以很好地提升 list-view 性能 |
 | item-key | string \| number |   |   |   |

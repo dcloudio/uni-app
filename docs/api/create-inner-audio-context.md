@@ -59,7 +59,7 @@
 
 #### InnerAudioContext 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | duration | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 当前音频的长度（单位：s），只有在当前有合法的 src 时返回 |
 | currentTime | number | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 当前音频的播放位置（单位：s），只有在当前有合法的 src 时返回 |
@@ -258,7 +258,7 @@ onError
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 1107601 | Web: x; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 系统错误 |
 | 1107602 | Web: x; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 网络错误 |
@@ -439,7 +439,7 @@ offError
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 1107601 | Web: x; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 系统错误 |
 | 1107602 | Web: x; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 网络错误 |
@@ -510,7 +510,7 @@ offSeeked
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 1107601 | Web: x; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 系统错误 |
 | 1107602 | Web: x; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 网络错误 |
@@ -531,7 +531,7 @@ offSeeked
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 1107601 | Web: x; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 系统错误 |
 | 1107602 | Web: x; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 网络错误 |
@@ -981,13 +981,13 @@ offSeeked
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | option | **SetInnerAudioOptionOptions** | 是 | HarmonyOS: x |
 
 #### option 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | mixWithOther | boolean | 否 | true | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.81; iOS(VDOM) UTS 插件: 4.81; HarmonyOS 系统版本: 5.0.0(12); HarmonyOS: x | 是否与其他音频混播，设置为 true 之后，不会终止其他应用或应用内的音频； 设置为false之后，会暂停背景音频和三方app音频 |
 | speakerOn | boolean | 否 | true | Web: 4.0; 微信小程序: 4.41; Android: 5.0; iOS: 5.0; iOS(VDOM) UTS 插件: 5.0; HarmonyOS 系统版本: 5.0.0(12); HarmonyOS: x | true 代表用扬声器播放，false 代表听筒播放 |
@@ -1008,7 +1008,7 @@ offSeeked
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 1107601 | Web: x; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 系统错误 |
 | 1107602 | Web: x; Android: 4.33; iOS: 4.41; iOS(VDOM) UTS 插件: 4.41; HarmonyOS: 4.61 | 网络错误 |
@@ -1221,7 +1221,7 @@ offSeeked
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

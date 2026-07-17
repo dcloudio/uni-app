@@ -22,7 +22,7 @@
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | loop | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否循环播放 |
 | src | string([string.VideoURIString](/uts/data-type.md#ide-string)) |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 视频资源地址 |
@@ -97,7 +97,7 @@
 
 #### direction 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 0 | Web: x; 微信小程序: 4.41 | 正常竖向 |
 | 90 | Web: x; 微信小程序: 4.41 | 屏幕逆时针90度 |
@@ -105,7 +105,7 @@
 
 #### object-fit 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | contain | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 包含 |
 | fill | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11 | 填充 |
@@ -113,14 +113,14 @@
 
 #### play-btn-position 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | bottom | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | controls bar上 |
 | center | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 视频中间 |
 
 #### picture-in-picture-mode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | [] | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 取消小窗 |
 | push | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 路由 push 时触发小窗 |
@@ -128,7 +128,7 @@
 
 #### referrer-policy 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | origin | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 发送完整的referrer |
 | no-referrer | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 不发送 |

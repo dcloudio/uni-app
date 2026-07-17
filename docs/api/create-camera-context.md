@@ -33,7 +33,7 @@
 
 #### CameraContext 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | offAndroidCameraOriginalFrame | any | 是 | 微信小程序: 4.41; HarmonyOS: x | 停止获取Android平台的原始帧数据 |
 #### CameraContext 的方法 @cameracontext-values 
@@ -49,13 +49,13 @@ onCameraFrame
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | callback | (frame: [CameraContextOnCameraFrame](#cameracontextoncameraframe-values)) => void | 是 | HarmonyOS: x | 
 
 ##### CameraContextOnCameraFrame 的属性值 @cameracontextoncameraframe-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | width | number | 否 | Android: 4.61; iOS: 4.61; HarmonyOS: x | 图像数据矩形的宽度<br/> |
 | height | number | 否 | Android: 4.61; iOS: 4.61; HarmonyOS: x | 图像数据矩形的高度<br/> |
@@ -80,13 +80,13 @@ start
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **CameraContextCameraFrameListenerStartOptions** | 是 | HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | success | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用成功的回调函数 |
 | fail | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用失败的回调函数 |
@@ -105,13 +105,13 @@ stop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **CameraContextCameraFrameListenerStopOptions** | 是 | HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | success | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用成功的回调函数 |
 | fail | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用失败的回调函数 |
@@ -121,7 +121,7 @@ stop
 
 ###### CameraContextCameraFrameListenerStartOptions 的属性值 @cameracontextcameraframelistenerstartoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | success | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用成功的回调函数 |
 | fail | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用失败的回调函数 |
@@ -129,7 +129,7 @@ stop
 
 ###### CameraContextCameraFrameListenerStopOptions 的属性值 @cameracontextcameraframelistenerstopoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | success | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用成功的回调函数 |
 | fail | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用失败的回调函数 |
@@ -146,7 +146,7 @@ onAndroidCameraOriginalFrame
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | callback | (imageProxy: ImageProxy) => void | 是 | HarmonyOS: x | 
 
@@ -180,13 +180,13 @@ setZoom
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **CameraContextSetZoomOptions** | 是 | HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | zoom | number | 是 |  | Android: 4.61; iOS: 4.61; HarmonyOS: x | 缩放级别，范围\[1, maxZoom]zoom 可取小数，精确到小数后一位。maxZoom 可在 initdone 返回值中获取。 |
 | success | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用成功的回调函数<br/> |
@@ -206,13 +206,13 @@ takePhoto
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **CameraContextTakePhotoOptions** | 是 | HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | quality | string | 否 | 'normal' | Android: 4.61; iOS: 4.61; HarmonyOS: x | 成像质量<br/> |
 | selfieMirror | boolean | 否 | true | Android: 4.61; iOS: 4.61; HarmonyOS: x | 前置摄像头拍照时是否开启镜像<br/> |
@@ -222,7 +222,7 @@ takePhoto
 
 ##### quality 的属性描述
 
-| 合法值 | 兼容性 <Help /> |
+| 合法值 | 兼容性 |
 | :- |  :-: |
 | high | HarmonyOS: x |
 | normal | HarmonyOS: x |
@@ -231,13 +231,13 @@ takePhoto
 
 ###### CameraContextTakePhotoResult 的属性值 @cameracontexttakephotoresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | tempImagePath | string | 否 | Android: 4.61; iOS: 4.61; HarmonyOS: x | 照片文件的临时路径 (本地路径)，安卓是jpg图片格式，ios是png。<br/>照片会存放到uni-media目录下[文件系统](https://doc.dcloud.net.cn/uni-app-x/api/file-system-spec.html)<br/> |
 
 ###### CameraContextFail 的属性值 @cameracontextfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | HarmonyOS: x |  |
 | errSubject | string | 是 | HarmonyOS: x | 统一错误主题（模块）名称 |
@@ -247,7 +247,7 @@ takePhoto
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 2003002 | HarmonyOS: x | 相机权限未授权 |
 | 2003003 | HarmonyOS: x | 拍照失败 |
@@ -273,13 +273,13 @@ startRecord
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | [CameraContextStartRecordOptions](#cameracontextstartrecordoptions-values) | 是 | HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | timeout | number | 否 | 30 | Android: 4.61; iOS: 4.61; HarmonyOS: x | 录制时长上限，单位为秒 |
 | selfieMirror | boolean | 否 | true | Android: 4.61; iOS: 4.61; HarmonyOS: x | 前置摄像头录制视频时是否开启镜像 |
@@ -299,7 +299,7 @@ timeoutCallback
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | result | any | 是 | HarmonyOS: x | 
 
@@ -307,7 +307,7 @@ timeoutCallback
 
 ###### CameraContextFail 的属性值 @cameracontextfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | HarmonyOS: x |  |
 | errSubject | string | 是 | HarmonyOS: x | 统一错误主题（模块）名称 |
@@ -317,7 +317,7 @@ timeoutCallback
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 2003002 | HarmonyOS: x | 相机权限未授权 |
 | 2003003 | HarmonyOS: x | 拍照失败 |
@@ -343,13 +343,13 @@ stopRecord
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **CameraContextStopRecordOptions** | 是 | HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | compressed | boolean | 否 | false | Android: 4.61; iOS: 4.61; HarmonyOS: x | 启动视频压缩，压缩效果同chooseVideo<br/> |
 | success | (result: [CameraContextStopRecordResult](#cameracontextstoprecordresult-values)) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用成功的回调函数<br/> |
@@ -358,14 +358,14 @@ stopRecord
 
 ###### CameraContextStopRecordResult 的属性值 @cameracontextstoprecordresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | tempThumbPath | string | 否 | Android: 4.61; iOS: 4.61; HarmonyOS: x | 封面图片文件的临时路径 (本地路径)<br/>图片会以jpg格式存放到uni-media目录下[文件系统](https://doc.dcloud.net.cn/uni-app-x/api/file-system-spec.html)<br/> |
 | tempVideoPath | string | 否 | Android: 4.61; iOS: 4.61; HarmonyOS: x | 视频的文件的临时路径 (本地路径)<br/>视频将以mp4格式存放到uni-media目录下[文件系统](https://doc.dcloud.net.cn/uni-app-x/api/file-system-spec.html)<br/> |
 
 ###### CameraContextFail 的属性值 @cameracontextfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | HarmonyOS: x |  |
 | errSubject | string | 是 | HarmonyOS: x | 统一错误主题（模块）名称 |
@@ -375,7 +375,7 @@ stopRecord
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 2003002 | HarmonyOS: x | 相机权限未授权 |
 | 2003003 | HarmonyOS: x | 拍照失败 |
@@ -392,7 +392,7 @@ stopRecord
 
 ##### CameraContextOnCameraFrame 的属性值 @cameracontextoncameraframe-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | width | number | 否 | Android: 4.61; iOS: 4.61; HarmonyOS: x | 图像数据矩形的宽度<br/> |
 | height | number | 否 | Android: 4.61; iOS: 4.61; HarmonyOS: x | 图像数据矩形的高度<br/> |
@@ -410,13 +410,13 @@ start
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **CameraContextCameraFrameListenerStartOptions** | 是 | HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | success | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用成功的回调函数 |
 | fail | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用失败的回调函数 |
@@ -435,13 +435,13 @@ stop
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **CameraContextCameraFrameListenerStopOptions** | 是 | HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | success | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用成功的回调函数 |
 | fail | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用失败的回调函数 |
@@ -451,7 +451,7 @@ stop
 
 ###### CameraContextCameraFrameListenerStartOptions 的属性值 @cameracontextcameraframelistenerstartoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | success | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用成功的回调函数 |
 | fail | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用失败的回调函数 |
@@ -459,7 +459,7 @@ stop
 
 ###### CameraContextCameraFrameListenerStopOptions 的属性值 @cameracontextcameraframelistenerstopoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | success | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用成功的回调函数 |
 | fail | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用失败的回调函数 |
@@ -467,7 +467,7 @@ stop
 
 ##### CameraContextSetZoomOptions 的属性值 @cameracontextsetzoomoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | zoom | number | 是 |  | Android: 4.61; iOS: 4.61; HarmonyOS: x | 缩放级别，范围\[1, maxZoom]zoom 可取小数，精确到小数后一位。maxZoom 可在 initdone 返回值中获取。 |
 | success | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用成功的回调函数<br/> |
@@ -476,7 +476,7 @@ stop
 
 ##### CameraContextTakePhotoOptions 的属性值 @cameracontexttakephotooptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | quality | string | 否 | 'normal' | Android: 4.61; iOS: 4.61; HarmonyOS: x | 成像质量<br/> |
 | selfieMirror | boolean | 否 | true | Android: 4.61; iOS: 4.61; HarmonyOS: x | 前置摄像头拍照时是否开启镜像<br/> |
@@ -486,7 +486,7 @@ stop
 
 #### quality 的属性描述
 
-| 合法值 | 兼容性 <Help /> |
+| 合法值 | 兼容性 |
 | :- |  :-: |
 | high | HarmonyOS: x |
 | normal | HarmonyOS: x |
@@ -495,13 +495,13 @@ stop
 
 ###### CameraContextTakePhotoResult 的属性值 @cameracontexttakephotoresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | tempImagePath | string | 否 | Android: 4.61; iOS: 4.61; HarmonyOS: x | 照片文件的临时路径 (本地路径)，安卓是jpg图片格式，ios是png。<br/>照片会存放到uni-media目录下[文件系统](https://doc.dcloud.net.cn/uni-app-x/api/file-system-spec.html)<br/> |
 
 ###### CameraContextFail 的属性值 @cameracontextfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | HarmonyOS: x |  |
 | errSubject | string | 是 | HarmonyOS: x | 统一错误主题（模块）名称 |
@@ -511,7 +511,7 @@ stop
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 2003002 | HarmonyOS: x | 相机权限未授权 |
 | 2003003 | HarmonyOS: x | 拍照失败 |
@@ -526,7 +526,7 @@ stop
 
 ##### CameraContextStartRecordOptions 的属性值 @cameracontextstartrecordoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | timeout | number | 否 | 30 | Android: 4.61; iOS: 4.61; HarmonyOS: x | 录制时长上限，单位为秒 |
 | selfieMirror | boolean | 否 | true | Android: 4.61; iOS: 4.61; HarmonyOS: x | 前置摄像头录制视频时是否开启镜像 |
@@ -546,7 +546,7 @@ timeoutCallback
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | result | any | 是 | HarmonyOS: x | 
 
@@ -554,7 +554,7 @@ timeoutCallback
 
 ###### CameraContextFail 的属性值 @cameracontextfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | HarmonyOS: x |  |
 | errSubject | string | 是 | HarmonyOS: x | 统一错误主题（模块）名称 |
@@ -564,7 +564,7 @@ timeoutCallback
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 2003002 | HarmonyOS: x | 相机权限未授权 |
 | 2003003 | HarmonyOS: x | 拍照失败 |
@@ -579,7 +579,7 @@ timeoutCallback
 
 ##### CameraContextStopRecordOptions 的属性值 @cameracontextstoprecordoptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | compressed | boolean | 否 | false | Android: 4.61; iOS: 4.61; HarmonyOS: x | 启动视频压缩，压缩效果同chooseVideo<br/> |
 | success | (result: [CameraContextStopRecordResult](#cameracontextstoprecordresult-values)) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用成功的回调函数<br/> |
@@ -588,14 +588,14 @@ timeoutCallback
 
 ###### CameraContextStopRecordResult 的属性值 @cameracontextstoprecordresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | tempThumbPath | string | 否 | Android: 4.61; iOS: 4.61; HarmonyOS: x | 封面图片文件的临时路径 (本地路径)<br/>图片会以jpg格式存放到uni-media目录下[文件系统](https://doc.dcloud.net.cn/uni-app-x/api/file-system-spec.html)<br/> |
 | tempVideoPath | string | 否 | Android: 4.61; iOS: 4.61; HarmonyOS: x | 视频的文件的临时路径 (本地路径)<br/>视频将以mp4格式存放到uni-media目录下[文件系统](https://doc.dcloud.net.cn/uni-app-x/api/file-system-spec.html)<br/> |
 
 ###### CameraContextFail 的属性值 @cameracontextfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | HarmonyOS: x |  |
 | errSubject | string | 是 | HarmonyOS: x | 统一错误主题（模块）名称 |
@@ -605,7 +605,7 @@ timeoutCallback
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 2003002 | HarmonyOS: x | 相机权限未授权 |
 | 2003003 | HarmonyOS: x | 拍照失败 |
@@ -645,7 +645,7 @@ timeoutCallback
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

@@ -12,7 +12,7 @@ Image -- Extends --> UniImageElement
 
 
 ### Image 的属性值 @image-values
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | src | [string.ImageURIString](/uts/data-type.md#ide-string) | 是 | Web: 4.0; 微信小程序: x; Android: 4.25; iOS: 4.25; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | 图片url |
 

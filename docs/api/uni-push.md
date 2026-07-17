@@ -43,7 +43,7 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 #### GetPushClientIdSuccess 的属性值 @getpushclientidsuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | cid | string | 是 | Web: 4.27; Android: 3.98; iOS: 4.18 | 个推客户端推送id，对应uni-id-device表的push_clientid<br/> |
 | errMsg | string | 是 | Web: 4.27; Android: 3.98; iOS: 4.18 | 错误描述<br/> |
@@ -74,7 +74,7 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 ### OnPushMessageCallbackResult 的属性值 @onpushmessagecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | type | string | 是 | Web: 4.27; Android: 3.98; iOS: 4.18 | 事件类型<br/>- click 从系统推送服务点击消息启动应用事件<br/>- receive 应用从推送服务器接收到推送消息事件 |
 | data | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.27; Android: 3.98; iOS: 4.18 | 消息内容<br/> |
@@ -116,7 +116,7 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 ### OnPushMessageCallbackResult 的属性值 @onpushmessagecallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | type | string | 是 | Web: 4.27; Android: 3.98; iOS: 4.18 | 事件类型<br/>- click 从系统推送服务点击消息启动应用事件<br/>- receive 应用从推送服务器接收到推送消息事件 |
 | data | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.27; Android: 3.98; iOS: 4.18 | 消息内容<br/> |
@@ -168,13 +168,13 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **CreatePushMessageOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | cover | boolean | 否 | false | Web: x; Android: 3.98; iOS: 4.18 | 是否覆盖上一次提示的消息 |
 | delay | number | 否 | 0 | Web: x; Android: 3.98; iOS: 4.18 | 提示消息延迟显示的时间,单位为s |
@@ -203,7 +203,7 @@ uni-push是DCloud与合作伙伴个推共同推出的统一推送服务。用于
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 
@@ -240,13 +240,13 @@ setPushChannel
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **SetPushChannelOptions** | 是 | Web: x; iOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | soundName | string | 否 | null | Web: x; iOS: x | 添加的声音文件，注意raw目录下必须要有 ，不传此字段将使用默认铃音。 |
 | channelId | string | 是 |  | Web: x; iOS: x | 通知渠道id |
@@ -278,7 +278,7 @@ getAllChannels
 
 ##### SetPushChannelOptions 的属性值 @setpushchanneloptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | soundName | string | 否 | null | Web: x; iOS: x | 添加的声音文件，注意raw目录下必须要有 ，不传此字段将使用默认铃音。 |
 | channelId | string | 是 |  | Web: x; iOS: x | 通知渠道id |
@@ -309,14 +309,14 @@ getAllChannels
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | num | number | 是 | Web: x | 要显示的角标数字值，参数为0则表示清除角标数字。 |
 | options | **BadgeOptions** | 否 | Web: x | 小米手机显示角标需要在系统消息中心显示一条通知，此参数用于设置通知的标题（title）和内容（content）。 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | title | string | 否 | 应用的名称 | Web: x; Android: 4.25; iOS: 4.25 | 消息的标题 |
 | content | string | 否 | '您有x条未读消息'，其中x为设置的角标数字值。 | Web: x; Android: 4.25; iOS: 4.25 | 消息的内容 | 
@@ -365,13 +365,13 @@ setPushChannel
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **SetPushChannelOptions** | 是 | Web: x; iOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | soundName | string | 否 | null | Web: x; iOS: x | 添加的声音文件，注意raw目录下必须要有 ，不传此字段将使用默认铃音。 |
 | channelId | string | 是 |  | Web: x; iOS: x | 通知渠道id |
@@ -403,7 +403,7 @@ getAllChannels
 
 ##### SetPushChannelOptions 的属性值 @setpushchanneloptions-values 
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | soundName | string | 否 | null | Web: x; iOS: x | 添加的声音文件，注意raw目录下必须要有 ，不传此字段将使用默认铃音。 |
 | channelId | string | 是 |  | Web: x; iOS: x | 通知渠道id |
@@ -811,7 +811,7 @@ getAllChannels
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

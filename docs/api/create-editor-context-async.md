@@ -20,7 +20,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | id | [string.IDString](/uts/data-type.md#ide-string) | 是 | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | editor 元素的 id 属性 |
 | component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 组件或页面实例，限定在什么范围内查找id |
@@ -1068,6 +1068,6 @@ blur
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |

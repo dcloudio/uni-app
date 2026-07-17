@@ -26,7 +26,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | success | (result: [GetNetworkTypeSuccess](#getnetworktypesuccess-values)) => void | 否 | null | 微信小程序: 4.41 | 接口调用成功的回调函数 |
 | fail | (result: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | null | 微信小程序: 4.41 | 接口调用失败的回调函数 |
@@ -34,7 +34,7 @@
 
 #### GetNetworkTypeSuccess 的属性值 @getnetworktypesuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | networkType | string | 是 | 微信小程序: 4.41 | 网络类型 |
 | hasSystemProxy | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `2.22.1`<br/><br/>设备是否使用了网络代理<br/> |
@@ -168,7 +168,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

@@ -10,13 +10,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **SaveVideoToPhotosAlbumOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | filePath | [string.VideoURIString](/uts/data-type.md#ide-string) | 是 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 视频文件路径，可以是临时文件路径也可以是永久文件路径 |
 | success | (callback: SaveVideoToPhotosAlbumSuccess) => void | 否 | Web: x; 微信小程序: 4.41; Android: 4.18; iOS: 4.18 | 接口调用成功的回调函数 |
@@ -25,7 +25,7 @@
 
 #### SaveVideoToPhotosAlbumFail 的属性值 @savevideotophotosalbumfail-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errCode | number | 是 | Web: x | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
@@ -35,7 +35,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 1101001 | Web: x | 用户取消 |
 | 1101002 | Web: x | urls至少包含一张图片地址 |
@@ -149,7 +149,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

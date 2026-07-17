@@ -2,7 +2,7 @@
 
 ## 指令 @directives
 
-|  | 兼容性 <Help /> |
+|  | 兼容性 |
 | :- | :- |
 | v-text | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
 | v-html | Web: 4.0; 微信小程序: x; Android(VDOM): 3.99; Android(Vapor): x; iOS: x; HarmonyOS: x |
@@ -1958,7 +1958,7 @@ const incrementNum = () =>{
 
 
 ##### 属性 
-| 名称 | 类型 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | include | string | Web: 4.0; 微信小程序: x; Android(VDOM): 4.0; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 字符串或正则表达式。只有名称匹配的组件会被缓存。 |
 | exclude | string | Web: 4.0; 微信小程序: x; Android(VDOM): 4.0; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 字符串或正则表达式。任何名称匹配的组件都不会被缓存。 |
@@ -1988,7 +1988,7 @@ const incrementNum = () =>{
 
 
 ##### 属性 
-| 名称 | 类型 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | name | string | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 用于自动生成 CSS 过渡类名。例如：name: 'fade' 将自动拓展为.fade-enter，.fade-enter-active等。默认类名为 "v" |
 | appear | boolean | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 是否在初始渲染时使用过渡。默认为 false。 |
@@ -2057,7 +2057,7 @@ const incrementNum = () =>{
 
 
 ##### 属性 
-| 名称 | 类型 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | tag | string | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 默认为 span。 |
 | move-class | string | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 覆盖移动过渡期间应用的 CSS 类。 |
@@ -2121,7 +2121,7 @@ const incrementNum = () =>{
 
 
 ##### 属性 
-| 名称 | 类型 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | to | string | Web: 4.0; 微信小程序: x; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 必须是有效的查询选择器或 HTMLElement (如果在浏览器环境中使用)。指定将在其中移动 \<teleport> 内容的目标元素 |
 | disabled | boolean | Web: 4.0; 微信小程序: 5.14; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 此可选属性可用于禁用 \<teleport> 的功能，这意味着其插槽内容将不会移动到任何位置，而是在您在周围父组件中指定了 \<teleport> 的位置渲染。 |
@@ -2189,13 +2189,13 @@ const incrementNum = () =>{
 :::
 
 ##### 属性 
-| 名称 | 类型 | 兼容性 <Help /> |
+| 名称 | 类型 | 兼容性 |
 | :- | :- |  :-: |
 | lang | string | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 
 #### lang 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | html | Web: 4.0; 微信小程序: 4.11; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | html |
 | pug | Web: x; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | pug |
@@ -2225,7 +2225,7 @@ const incrementNum = () =>{
 
 
 ##### 属性 
-| 名称 | 类型 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | name | string | Web: 4.0; 微信小程序: √; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 用于命名插槽。 |
 
@@ -2253,7 +2253,7 @@ const incrementNum = () =>{
 
 
 ##### 属性 
-| 名称 | 类型 | 兼容性 <Help /> |
+| 名称 | 类型 | 兼容性 |
 | :- | :- |  :-: |
 | is | Any | Web: 4.0; 微信小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 |
 | inline-template | boolean | Web: 4.0; 微信小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 |

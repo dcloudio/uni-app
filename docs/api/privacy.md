@@ -33,13 +33,13 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | options | **GetPrivacySettingOptions** | 是 | Web: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | success | (result: [GetPrivacySettingSuccessResult](#getprivacysettingsuccessresult-values)) => void | 否 | null | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61 | 接口调用成功的回调函数 |
 | fail | (result: any) => void | 否 | null | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
@@ -47,7 +47,7 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 
 #### GetPrivacySettingSuccessResult 的属性值 @getprivacysettingsuccessresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | needAuthorization | boolean | 是 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61 | 是否需要用户授权隐私协议(用户之前同意过返回false，没同意过则返回true) |
 | privacyContractName | string | 否 | Web: x; 微信小程序: 4.41 | 隐私授权协议的名称<br/> |
@@ -137,13 +137,13 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | callback | (res: [PrivacyChangeResult](#privacychangeresult-values)) => void | 是 | Web: x | 
 
 ### PrivacyChangeResult 的属性值 @privacychangeresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | needAuthorization | boolean | 是 | Web: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61 | 是否需要用户授权隐私协议(用户之前同意过返回false，没同意过则返回true) |
 
@@ -195,7 +195,7 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | id | number | 是 | Web: x | 开启监听隐私协议状态改变返回的id | 
 
@@ -341,7 +341,7 @@ uni-app x并不需要这套机制，开发者的代码就是原生代码，执�
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

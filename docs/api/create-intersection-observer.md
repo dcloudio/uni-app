@@ -11,14 +11,14 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | component | any | 是 | Android: x; iOS: x; HarmonyOS: x |
 | options | **CreateIntersectionObserverOptions** | 否 | Android: x; iOS: x; HarmonyOS: x |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | thresholds | Array&lt;any&gt; | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 所有阈值 |
 | initialRatio | number | 否 | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 初始的相交比例 |
@@ -44,7 +44,7 @@ relativeTo
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | selector | string | 是 | Android: x; iOS: x; HarmonyOS: x |
 | margins | any | 否 | Android: x; iOS: x; HarmonyOS: x | 
@@ -67,7 +67,7 @@ relativeToViewport
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | margins | any | 否 | Android: x; iOS: x; HarmonyOS: x | 
 
@@ -89,14 +89,14 @@ observe
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> |
+| 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
 | targetSelector | string | 是 | Android: x; iOS: x; HarmonyOS: x |
 | callback | (result: [ObserveResult](#observeresult-values)) => void | 是 | Android: x; iOS: x; HarmonyOS: x | 
 
 ##### ObserveResult 的属性值 @observeresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | intersectionRatio | number | 是 | Android: x; iOS: x; HarmonyOS: x | 相交比例 |
 | intersectionRect | any | 是 | Android: x; iOS: x; HarmonyOS: x | 相交区域的边界 |
@@ -106,7 +106,7 @@ observe
 
 #### boundingClientRect 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | left | number | 是 | Android: x; iOS: x; HarmonyOS: x | left |
 | right | number | 是 | Android: x; iOS: x; HarmonyOS: x | right |
@@ -115,7 +115,7 @@ observe
 
 #### relativeRect 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | left | number | 是 | Android: x; iOS: x; HarmonyOS: x | left |
 | right | number | 是 | Android: x; iOS: x; HarmonyOS: x | right |
@@ -137,7 +137,7 @@ disconnect
 
 ##### ObserveResult 的属性值 @observeresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | intersectionRatio | number | 是 | Android: x; iOS: x; HarmonyOS: x | 相交比例 |
 | intersectionRect | any | 是 | Android: x; iOS: x; HarmonyOS: x | 相交区域的边界 |
@@ -147,7 +147,7 @@ disconnect
 
 #### boundingClientRect 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | left | number | 是 | Android: x; iOS: x; HarmonyOS: x | left |
 | right | number | 是 | Android: x; iOS: x; HarmonyOS: x | right |
@@ -156,7 +156,7 @@ disconnect
 
 #### relativeRect 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | left | number | 是 | Android: x; iOS: x; HarmonyOS: x | left |
 | right | number | 是 | Android: x; iOS: x; HarmonyOS: x | right |
@@ -280,7 +280,7 @@ disconnect
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

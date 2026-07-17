@@ -20,13 +20,13 @@
 
 ### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | options | **ScanCodeOptions** | 否 | Web: x | uni.scanCode参数定义 |
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | onlyFromCamera | boolean | 否 | Web: x; 微信小程序: 4.41 | 是否只能从相机扫码，不允许从相册选择图片 |
 | scanType | Array&lt;string&gt; | 否 | Web: x; 微信小程序: 4.41 | 扫码类型 |
@@ -36,7 +36,7 @@
 
 ##### scanType 的属性描述
 
-| 合法值 | 兼容性 <Help /> |
+| 合法值 | 兼容性 |
 | :- |  :-: |
 | barCode | Web: x |
 | qrCode | Web: x |
@@ -45,7 +45,7 @@
 
 #### ScanCodeSuccess 的属性值 @scancodesuccess-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | result | string | 是 | Web: x |  |
 | scanType | string | 是 | Web: x |  |
@@ -127,7 +127,7 @@
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

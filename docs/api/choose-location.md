@@ -37,7 +37,7 @@
 
 #### options 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | latitude | number | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 指示位置的经度 |
 | longitude | number | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.33; iOS: 4.33; HarmonyOS: 4.61 | 指示位置的纬度 |
@@ -69,7 +69,7 @@
 
 #### errCode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | 1 | Web: 4.34; Android: 4.34; iOS: 4.34; HarmonyOS: 4.61 | 取消 |
 | 4 | Web: 4.34; Android: 4.34; iOS: 4.34; HarmonyOS: 4.61 | 框架内部错误 |

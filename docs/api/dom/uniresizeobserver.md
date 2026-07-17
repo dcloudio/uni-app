@@ -17,7 +17,7 @@
 
 #### callback 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | borderBoxSize | Array&lt;**UniBorderBoxSize**&gt; | 是 | Web: 4.16; 微信小程序: x; Android: 4.13; iOS: 4.18; HarmonyOS: 4.61 | 只读属性 包含被监视的元素带有边框box大小的数组。 |
 | contentBoxSize | Array&lt;**UniContentBoxSize**&gt; | 是 | Web: 4.16; 微信小程序: x; Android: 4.13; iOS: 4.18; HarmonyOS: 4.61 | 只读属性 包含被监视的元素内容box大小的数组。 |
@@ -53,7 +53,7 @@
 
 #### callback 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | borderBoxSize | Array&lt;**UniBorderBoxSize**&gt; | 是 | Web: 4.16; 微信小程序: x; Android: 4.13; iOS: 4.18; HarmonyOS: 4.61 | 只读属性 包含被监视的元素带有边框box大小的数组。 |
 | contentBoxSize | Array&lt;**UniContentBoxSize**&gt; | 是 | Web: 4.16; 微信小程序: x; Android: 4.13; iOS: 4.18; HarmonyOS: 4.61 | 只读属性 包含被监视的元素内容box大小的数组。 |
@@ -112,7 +112,7 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | target | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 被监视的 UniElement | 
 
@@ -133,7 +133,7 @@
 
 ##### 参数 
 
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | target | [UniElement](/api/dom/unielement.md) | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 取消监视的 UniElement | 
 

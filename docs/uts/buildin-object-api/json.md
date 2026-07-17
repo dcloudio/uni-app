@@ -34,7 +34,7 @@ JSON.parse() 方法用来解析 JSON 字符串，构造由字符串描述的对�
 JSON.parse() 方法用来解析 JSON 字符串，构造由字符串描述的 JavaScript 值或对象。提供可选的 reviver 函数用以在返回之前对所得到的对象执行变换 (操作)。
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | text | string | 是 |  |   | 要被解析成 JavaScript 值的字符串 |
 | reviver | (this: any, key: string, value: any) => any | 否 |  | Web: x; Android 系统版本: x; Android: x; iOS 系统版本: x; iOS: x; HarmonyOS 系统版本: x; HarmonyOS: x | \[可选]转换器，如果传入该参数 (函数)，可以用来修改解析生成的原始值，调用时机在 parse 函数返回之前。 |
@@ -83,7 +83,7 @@ JSON.parse() 方法用来解析 JSON 字符串，构造由字符串描述的 Jav
 JSON.parse() 方法用来解析 JSON 字符串，构造由字符串描述的值或者对象，其类型由泛型参数T决定<br/>     如果输入的是一个合法的json值或者对象，返回一个对应的T值或者对象，如果json描述的值或对象和 T 指定的类型不符，将返回null
 
 **参数**
-| 名称 | 类型 | 必填 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
 | text | string | 是 |  |   | 要被解析成 JavaScript 值的字符串 |
 | ignoreError | boolean | 否 | false | Web: x; Android: 4.41; iOS 系统版本: x; iOS: x; HarmonyOS: 4.61 | \[ignoreError=false]是否要忽略，解析错误时引发的控制台报错，默认为false | 
@@ -132,7 +132,7 @@ JSON.parse支持传入[泛型](../generics.md)，parse结果可以直接返回�
 JSON.stringify() 方法将一个 JavaScript 对象或值转换为 JSON 字符串，如果指定了一个 replacer 函数，则可以选择性地替换值，或者指定的 replacer 是数组，则可选择性地仅包含数组指定的属性
 
 **参数**
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | value | any \| null | 是 |   | 将要序列化成 一个 JSON 字符串的值。 |
 | replacer | any \| null | 否 | Web: 4.25; Android: 4.25; iOS: 4.11; HarmonyOS: 4.61 | 如果该参数是一个函数，则在序列化过程中，被序列化的值的每个属性都会经过该函数的转换和处理；如果该参数是一个数组，则只有包含在这个数组中的属性名才会被序列化到最终的 JSON 字符串中；如果该参数为 null 或者未提供，则对象所有的属性都会被序列化。 仅Android/web HBuilder X 4.25之后支持 |

@@ -39,7 +39,7 @@
 
 #### GetAppBaseInfoResult 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | appId | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | `manifest.json` 中的应用标识，即DCloud AppID<br/> |
 | appName | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | `manifest.json` 中的应用名称<br/> |
@@ -105,7 +105,7 @@
 
 ##### host 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | appId | string | 否 | 微信小程序: 4.41 | 宿主 app（第三方App） 对应的 appId （当小程序运行在第三方App环境时才返回）<br/> |
 
@@ -230,7 +230,7 @@ appTheme返回值为`auto`，代表跟随系统。此时需通过[getSystemInfo]
 
 ### GeneralCallbackResult @generalcallbackresult-values 
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
 

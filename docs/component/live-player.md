@@ -18,7 +18,7 @@
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | src | string([string.VideoURIString](/uts/data-type.md#ide-string)) |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 音视频地址。微信小程序支持 flv, rtmp 格式，app平台支持 rtmp, hls 协议 |
 | mode | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x | live（直播），RTC（实时通话） |
@@ -63,35 +63,35 @@
 
 #### mode 的属性描述
 
-| 合法值 | 兼容性 <Help /> |
+| 合法值 | 兼容性 |
 | :- |  :-: |
 | RTC | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |
 | live | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x |
 
 #### orientation 的属性描述
 
-| 合法值 | 兼容性 <Help /> |
+| 合法值 | 兼容性 |
 | :- |  :-: |
 | vertical | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |
 | horizontal | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |
 
 #### object-fit 的属性描述
 
-| 合法值 | 兼容性 <Help /> |
+| 合法值 | 兼容性 |
 | :- |  :-: |
 | contain | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |
 | fillCrop | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x |
 
 #### sound-mode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | speaker | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 扬声器 |
 | ear | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 听筒 |
 
 #### picture-in-picture-mode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | [] | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 取消小窗 |
 | push | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 路由 push 时触发小窗 |
@@ -99,7 +99,7 @@
 
 #### referrer-policy 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | origin | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 发送完整的referrer |
 | no-referrer | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 不发送 |
@@ -122,7 +122,7 @@
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | code | number | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 状态码 |
 
@@ -166,7 +166,7 @@
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | direction | string | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 屏幕方向 |
 | fullScreen | boolean | 是 | Web: x; 微信小程序: x; Android: 4.81; iOS: 4.81; HarmonyOS: x | 是否全屏 |
