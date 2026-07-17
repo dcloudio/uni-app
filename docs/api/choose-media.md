@@ -31,8 +31,8 @@
 | :- | :- | :- | :- |  :-: | :- |
 | pageOrientation | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: x; HarmonyOS: 4.61 | 屏幕方向。默认为pages.json中的pageOrientation。 |
 | count | number | 否 | 9 | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 最多可以选择的文件个数 |
-| mediaType | Array&lt;string&gt; | 否 | ['image', 'video'\] | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | album 从相册选视频，camera 使用相机拍摄，合法值：'image'、'video'、'mix' |
-| sourceType | Array&lt;string&gt; | 否 | ['album', 'camera'\] | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | album 从相册选视频，camera 使用相机拍摄 |
+| mediaType | Array&lt;string&gt; | 否 | ['image', 'video'\] | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | image 只能拍摄图片或从相册选择图片，video 只能拍摄视频或从相册选择视频，mix 可同时选择图片和视频，合法值：'image'、'video'、'mix' |
+| sourceType | Array&lt;string&gt; | 否 | ['album', 'camera'\] | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | album 从相册选择，camera 使用相机拍摄 |
 | maxDuration | number | 否 | 10 | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 拍摄视频最长拍摄时间，单位秒。时间范围为 3s 至 30s 之间 |
 | camera | string | 否 |  | Web: x; 微信小程序: 4.41; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | 仅在 sourceType 为 camera 时生效，使用前置或后置摄像头<br/> |
 | success | (callback: [ChooseMediaSuccess](#choosemediasuccess-values)) => void | 否 |  | Web: x; 微信小程序: 4.41 | 接口调用成功，返回视频文件的临时文件路径，详见返回参数说明 |

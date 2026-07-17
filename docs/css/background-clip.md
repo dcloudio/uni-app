@@ -34,7 +34,7 @@ background-clip: <box>#;
 ### background-clip 的属性值
 | 名称 | 兼容性 | 描述 |
 | :- | :- | :- |
-| border-box | Web: 4.0; Android: 3.9; iOS: x; HarmonyOS: x | 背景延伸到边框区域，被边框覆盖 |
+| border-box | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 背景延伸到边框区域，被边框覆盖 |
 | padding-box | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 背景延伸到内边距（padding）区域，不会绘制到边框区域 |
 | content-box | Web: 4.0; Android: x; iOS: x; HarmonyOS: x | 背景仅绘制到内容区（content box）区域 |
 

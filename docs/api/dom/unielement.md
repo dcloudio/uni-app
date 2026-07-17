@@ -1425,17 +1425,17 @@ if (view != null && view instanceof WKWebView) {
 将指定的监听器注册到元素对象上，当该对象触发指定的事件时，指定的回调函数就会被执行。
 
 ##### addEventListener 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 4.0 | 4.11 | x | x | 5.0 |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| type | string | 是 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 事件类型 |
-| callback | (event: T) => R | 是 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 事件监听器 T表示event类型，R表示返回值类型 | 
+| type | string | 是 | 微信小程序: x; HarmonyOS: x | 事件类型 |
+| callback | (event: T) => R | 是 | 微信小程序: x; HarmonyOS: x | 事件监听器 T表示event类型，R表示返回值类型 | 
 
 
 ##### 返回值 
@@ -1453,17 +1453,17 @@ if (view != null && view instanceof WKWebView) {
 删除使用 addEventListener 方法添加的事件监听器。
 
 ##### removeEventListener 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x |
+| Web | 微信小程序 | Android | iOS | iOS(Vapor) UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
+| :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 4.0 | 4.11 | x | x | 5.0 |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| type | string | 是 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 事件类型 |
-| callbackWrapper | UniCallbackWrapper | 是 | 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 事件监听回调封装类 | 
+| type | string | 是 | 微信小程序: x; HarmonyOS: x | 事件类型 |
+| callbackWrapper | UniCallbackWrapper | 是 | 微信小程序: x; HarmonyOS: x | 事件监听回调封装类 | 
 
 
 

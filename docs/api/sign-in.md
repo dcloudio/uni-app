@@ -21,7 +21,7 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| provider | string | 否 | Web: x; 微信小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,目前支持微信登录(weixin)<br/> |
+| provider | string | 否 | Web: x; 微信小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 授权登录服务提供商，通过 [uni.getProvider](https://doc.dcloud.net.cn/uni-app-x/api/provider.html) 获取,目前支持微信登录(weixin)、苹果登录(apple)<br/> |
 | scopes | any | 否 | Web: x; Android: x; iOS: x; HarmonyOS: x | 授权类型，默认 auth_base。支持 auth_base（静默授权）/ auth_user（主动授权） / auth_zhima（芝麻信用）<br/> |
 | timeout | number | 否 | Web: x; 微信小程序: 2.35; Android: x; iOS: x; HarmonyOS: x | 超时时间，单位 ms |
 | onlyAuthorize | boolean | 否 | Web: x; Android: 5.08; iOS: 5.08; HarmonyOS: 4.81 | 微信登录仅请求授权认证<br/> |
@@ -49,8 +49,8 @@
 | code | string | 是 | Web: x; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 小程序用户临时登录凭证 |
 | anonymousCode | string | 否 | Web: x; Android: x; iOS: x; HarmonyOS: x | 头条小程序当前设备标识 |
 | authCode | string | 否 | Web: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序授权码 |
-| authErrorScope | any | 否 | Web: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序登录失败的授权类型，key是授权失败的 scope，value 是对应的错误码 |
-| authSucessScope | Array&lt;string&gt; | 否 | Web: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序登录成功的授权 scope |
+| authErrorScopes | any | 否 | Web: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序登录失败的授权类型，key是授权失败的 scope，value 是对应的错误码 |
+| authSuccessScopes | Array&lt;string&gt; | 否 | Web: x; Android: x; iOS: x; HarmonyOS: x | 支付宝小程序登录成功的授权 scope |
 | appleInfo | **AppleLoginAppleInfo** | 否 | Web: x; Android: x; iOS: 5.21; HarmonyOS: x | 苹果登录成功返回的信息 |
 
 #### appleInfo 的属性描述

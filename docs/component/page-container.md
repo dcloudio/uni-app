@@ -591,7 +591,7 @@ page-container 的特点：
 
 
 ### 参见
-- [相关 Bug](https://issues.dcloud.net.cn/?mid=component.wx.other.page-container)
+- [相关 Bug](https://issues.dcloud.net.cn/?mid=component.view-container.page-container)
 - [微信小程序文档](https://developers.weixin.qq.com/miniprogram/dev/component/page-container.html)
 - [支付宝小程序文档](https://open.alipay.com/portal/zhichi/search?keyword=page-container&pageIndex=1&pageSize=10&source=doc_top&type=all)
 - [百度小程序文档](https://smartprogram.baidu.com/forum/search?query=page-container&scope=devdocs&source=docs)
