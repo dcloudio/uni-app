@@ -9,14 +9,14 @@
  可滚动视图容器
 
 
-### 兼容性 <Help />
+### 兼容性
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | type | string |   | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.11; HarmonyOS: 4.61 | 渲染模式（蒸汽模式已废弃） |
 | direction | string | "vertical" | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 滚动方向，可取值 none、all、horizontal、vertical，默认值vertical |
@@ -61,13 +61,13 @@
 
 #### type 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | nested | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.11; HarmonyOS: 4.61 | 嵌套模式（蒸汽模式已废弃），支持使用 nested-scroll-header、nested-scroll-body 实现嵌套滚动 |
 
 #### direction 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | none | Web: 4.0; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 禁止滚动 |
 | all | Web: 4.0; Android(VDOM): x; Android(Vapor): 5.21; iOS: x; HarmonyOS: 4.61 | 横向/竖向可同时滚动 |
@@ -76,13 +76,13 @@
 
 #### associative-container 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | nested-scroll-view | Web: x; 微信小程序: x; Android: 4.11; iOS: 4.11; HarmonyOS: 4.61 | 关联 type=nested 嵌套模式 |
 
 #### refresher-default-style 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | black | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 深颜色雪花样式 |
 | white | Web: 4.11; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 浅白色雪花样式 |
@@ -189,7 +189,7 @@ UniStartNestedScrollEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniStartNestedScrollEvent 的属性值
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | node | [UniElement](/api/dom/unielement.md) | 是 |   | 开始滚动子节点对象 |
 | isTouch | boolean | 是 | Android: 3.99; iOS: x | 是否由触摸行为发生的Event |
@@ -205,7 +205,7 @@ UniNestedPreScrollEvent -- Extends --> UniEvent
   click UniEvent "https://doc.dcloud.net.cn/uni-app-x/component/common.html#unievent"
 ```
 ##### UniNestedPreScrollEvent 的属性值
-| 名称 | 类型 | 必填 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | deltaX | number | 是 |   | x轴滚动距离 |
 | deltaY | number | 是 |   | y轴滚动距离 |

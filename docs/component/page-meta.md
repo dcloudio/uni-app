@@ -7,14 +7,14 @@
 页面元数据，用于设置页面的一些属性，如背景色、下拉刷新等
 
 
-### 兼容性 <Help />
+### 兼容性
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 属性 
-| 名称 | 类型 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | background-text-style | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 下拉背景字体、loading 图的样式，仅支持 dark 和 light |
 | background-color | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x | 窗口的背景色，必须为十六进制颜色值 |

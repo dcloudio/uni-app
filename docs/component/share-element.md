@@ -20,14 +20,14 @@
 注意共享元素组件仅指的是动画的视觉共享，并不是2个页面真的复用了同一个组件实例，不同页面的组件仍然是各自单独的实例。
 
 
-### 兼容性 <Help />
+### 兼容性
 | Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
 | :- | :- | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.51 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.51 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | share-key | string |   | Web: x; 微信小程序: x; Android(VDOM): 4.51; Android(Vapor): x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 映射标记，页面内唯一 |
 | easing-function | string | "ease-out" | Web: x; 微信小程序: x; Android(VDOM): 4.51; Android(Vapor): x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | `css`缓动函数 |
@@ -37,7 +37,7 @@
 
 #### easing-function 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | ease | Web: x; 微信小程序: x; Android(VDOM): 4.51; Android(Vapor): x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 表示过渡效果开始缓慢，然后逐渐加速，最后减速结束。这是大多数情况下的推荐值，因为它创建了平滑的过渡效果 |
 | ease-out | Web: x; 微信小程序: x; Android(VDOM): 4.51; Android(Vapor): x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | 过渡开始时较快，然后逐渐减速。这会在过渡末尾创建一个缓慢的效果 |
@@ -48,14 +48,14 @@
 
 #### shuttle-on-push 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | from | Web: x; 微信小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | push 阶段采用源页面节点作为飞跃物 |
 | to | Web: x; 微信小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | push 阶段采用目标页面节点作为飞跃物 |
 
 #### shuttle-on-pop 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | from | Web: x; 微信小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | pop 阶段采用源页面节点作为飞跃物 |
 | to | Web: x; 微信小程序: x; Android: x; iOS(VDOM): 4.51; iOS(Vapor): x; HarmonyOS: x | pop 阶段采用目标页面节点作为飞跃物 |

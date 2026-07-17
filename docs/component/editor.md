@@ -7,14 +7,14 @@
 富文本编辑器，可以对图片、文字进行编辑。
 
 
-### 兼容性 <Help />
+### 兼容性
 | Web | 微信小程序 | Android 系统版本 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
 | :- | :- | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 7.1.1 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | read-only | boolean | false | Web: 4.0; 微信小程序: 4.41; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 设置编辑器为只读 |
 | placeholder | string |   | Web: 4.0; 微信小程序: 4.41; Android 系统版本: 7.1.1; Android: 5.08; iOS: 5.08; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 提示信息 |

@@ -15,14 +15,14 @@
  滑块视图容器
 
 
-### 兼容性 <Help />
+### 兼容性
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | indicator-dots | string \| boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否显示面板指示点 |
 | indicator-color | string([string.ColorString](/uts/data-type.md#ide-string)) | "rgba(0, 0, 0, .3)" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 指示点颜色，蒸汽模式推荐使用 indicator-style 定制指示点颜色 |
@@ -57,7 +57,7 @@
 
 #### easing-function 的属性描述
 
-| 合法值 | 兼容性 <Help /> |
+| 合法值 | 兼容性 |
 | :- |  :-: |
 | default | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 |
 | linear | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 |
@@ -83,7 +83,7 @@ UniSwiperChangeEvent -- Extends --> UniEvent
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | current | number | 是 |   | 发生change事件的滑块下标 |
 | currentItemId | string | 否 | Web: √; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 切换结束的 swiper-item 的 item-id 属性值 |
@@ -128,7 +128,7 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | current | number | 是 |   | 发生动画结束事件的滑块下标 |
 | currentItemId | string | 否 | Web: √; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 动画结束的 swiper-item 的 item-id 属性值 |
@@ -139,7 +139,7 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
 <!-- UTSCOMJSON.swiper.component_type-->
 
 ### 子组件 @children-tags
-| 子组件 | 兼容性 <Help /> |
+| 子组件 | 兼容性 |
 | :- | :- |
 | [swiper-item](swiper-item.md) | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 
@@ -634,14 +634,14 @@ UniSwiperAnimationFinishEvent -- Extends --> UniEvent
  swiper的唯一合法子组件。每个swiper-item代表一个滑块。宽高自动设置为100%
 
 
-### 兼容性 <Help />
+### 兼容性
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 
 ### 属性 
-| 名称 | 类型 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | item-id | string | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 该 swiper-item 的标识符 |
 | skip-hidden-item-layout | boolean | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否跳过未显示的滑块布局，设为 true 可优化复杂情况下的滑动性能，但会丢失隐藏状态滑块的布局信息 |

@@ -27,14 +27,14 @@ App平台在manifest中配置添加三方广告SDK。具体配置可参考[文�
 打正式包或自定义基座后可生效。标准基座包含的是测试广告位，无法为你产生收益。
 
 
-### 兼容性 <Help />
+### 兼容性
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.31 | 4.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 ### 属性 
-| 名称 | 类型 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | adpid | string | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: x | 广告位id，在uniAD官网申请广告位 |
 | unit-id | string | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>广告单元id，可在[小程序管理后台](https://mp.weixin.qq.com)的流量主模块新建 |

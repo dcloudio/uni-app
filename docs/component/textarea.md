@@ -15,14 +15,14 @@
  多行输入框
 
 
-### 兼容性 <Help />
+### 兼容性
 | Web | 微信小程序 | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- | :- |
 | 4.0 | 4.41 | 3.9 | 4.11 | 4.61 |
 
 
 ### 属性 
-| 名称 | 类型 | 默认值 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | name | string | "textarea" | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
 | disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否禁用 |
@@ -57,7 +57,7 @@
 
 #### confirm-type 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | return | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.15; HarmonyOS: 4.61 | 换行 |
 | send | Web: 4.0; 微信小程序: 4.41; Android: 4.73; iOS: 4.15; HarmonyOS: 4.61 | 发送 |
@@ -68,7 +68,7 @@
 
 #### inputmode 的属性描述
 
-| 合法值 | 兼容性 <Help /> | 描述 |
+| 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | none | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 无虚拟键盘。在应用程序或者站点需要实现自己的键盘输入控件时很有用。 |
 | text | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x | 使用用户本地区域设置的标准文本输入键盘。 |
@@ -208,7 +208,7 @@ UniTextareaFocusEvent -- Extends --> UniEvent
 
 #### detail 的属性描述
 
-| 名称 | 类型 | 必备 | 兼容性 <Help /> | 描述 |
+| 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | height | number | 是 | Web: x; Android: 3.9; iOS: 4.11 | 键盘高度 |
 | value | string | 是 |   | 输入框内容 |
