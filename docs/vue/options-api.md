@@ -844,7 +844,7 @@ export default {
         <text>onResize 触发：</text>
         <text>{{ isOnResizeTriggered }}</text>
       </view>
-			<MonitorAppLifecycleOptions />
+			<MonitorAppLifecycleOptions class="monitor-app-lifecycle" />
 			<MonitorPageLifecycleOptions />
       <button class="mt-10" @click="scrollToBottom">scrollToBottom</button>
       <button class="mt-10" @click="pullDownRefresh">
@@ -3003,7 +3003,7 @@ export default {
         {{ value }}
       </text>
     </view>
-    <child @callback="callback"></child>
+    <child class="emit-function-child" @callback="callback"></child>
   </view>
 </template>
 

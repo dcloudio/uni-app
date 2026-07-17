@@ -237,7 +237,7 @@ const component1 = ref<ComponentPublicInstance | null>(null) // 手动引入组�
         {{ value }}
       </text>
     </view>
-    <child @callback="callback"></child>
+    <child class="emit-function-child" @callback="callback"></child>
   </view>
 </template>
 
@@ -259,6 +259,7 @@ const callback = (str: string) => {
   margin-bottom: 10px;
 }
 </style>
+
 ```
 
 > 选项式 API
@@ -272,7 +273,7 @@ const callback = (str: string) => {
         {{ value }}
       </text>
     </view>
-    <child @callback="callback"></child>
+    <child class="emit-function-child" @callback="callback"></child>
   </view>
 </template>
 
@@ -320,7 +321,7 @@ export default {
 ```vue
 <template>
   <view class="page">
-    <inject-comp />
+    <inject-comp class="component-for-inject" />
   </view>
 </template>
 
@@ -348,7 +349,7 @@ provide('fn', () : string => 'hello');
       <button class="mt-10" @click="goProvidePage2">
         跳转函数方式定义 provide 示例
       </button>
-      <ComponentForInject />
+      <ComponentForInject class="component-for-inject" />
     </view>
     <!-- #ifdef APP -->
   </scroll-view>
@@ -415,7 +416,7 @@ export default {
       <text class="parent-msg">{{ msg }}</text>
     </view>
     <button class="parent-btn" @click="change">父组件改变数据</button>
-    <child />
+    <child class="nested-child" />
   </view>
 </template>
 
@@ -429,6 +430,7 @@ const change = () => {
   setComponentMsg(state.componentMsg + 1)
 }
 </script>
+
 ```
 
 > 选项式 API
@@ -441,7 +443,7 @@ const change = () => {
       <text class="parent-msg">{{ msg }}</text>
     </view>
     <button class="parent-btn" @click="change">父组件改变数据</button>
-    <child></child>
+    <child class="nested-child"></child>
   </view>
 </template>
 

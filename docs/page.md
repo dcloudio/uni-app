@@ -620,7 +620,7 @@ onShow和onHide是成对出现的。
         <text>{{ isOnResizeTriggered }}</text>
       </view>
       <view class="mt-10">
-        <MonitorAppLifecycleComposition />
+        <MonitorAppLifecycleComposition class="monitor-app-lifecycle" />
       </view>
       <view class="mt-10">
         <MonitorPageLifecycleComposition />

@@ -3017,7 +3017,7 @@ onReady(() => {
         <text>{{ isOnResizeTriggered }}</text>
       </view>
       <view class="mt-10">
-        <MonitorAppLifecycleComposition />
+        <MonitorAppLifecycleComposition class="monitor-app-lifecycle" />
       </view>
       <view class="mt-10">
         <MonitorPageLifecycleComposition />
