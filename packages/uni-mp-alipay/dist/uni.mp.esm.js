@@ -256,7 +256,13 @@ function setSubpackageAppVm(root, vm, independent) {
         return;
     }
     setRuntimeSubpackageRoot(subpackageRoot);
-    {
+    if (independent) {
+        // 独立分包可能先于主包启动，主包 runtime 后续会重建 wx/global，不能把 vm 只挂到全局对象上。
+        runtimeSubpackages[subpackageRoot] = {
+            $vm: vm,
+        };
+    }
+    else {
         // 普通分包保留旧的全局存储策略，兼容 UNI_SUBPACKAGE 单独编译等历史路径。
         const globalObject = my;
         (globalObject.$subpackages || (globalObject.$subpackages = {}))[subpackageRoot] = {
@@ -370,6 +376,11 @@ function initCreateSubpackageApp(parseAppOptions) {
         });
         initAppLifecycle(appOptions, vm);
         setSubpackageAppVm(resolveSubpackageRoot(root), vm);
+    };
+}
+function initCreateIndependentSubpackageApp() {
+    return function createApp(vm, root) {
+        setSubpackageAppVm(resolveSubpackageRoot(root), vm, true);
     };
 }
 function initAppLifecycle(appOptions, vm) {
@@ -1071,11 +1082,17 @@ const createPage = initCreatePage();
 const createComponent = initCreateComponent();
 const createPluginApp = initCreatePluginApp(parseAppOptions);
 const createSubpackageApp = initCreateSubpackageApp(parseAppOptions);
-my.EventChannel = EventChannel;
-my.createApp = createApp;
-my.createPage = createPage;
-my.createComponent = createComponent;
-my.createPluginApp = createPluginApp;
-my.createSubpackageApp = createSubpackageApp;
+const createIndependentSubpackageApp = initCreateIndependentSubpackageApp();
+const isIndependentRuntime = typeof __UNI_MP_INDEPENDENT_RUNTIME__ !== 'undefined' &&
+    __UNI_MP_INDEPENDENT_RUNTIME__ === true;
+if (!isIndependentRuntime) {
+    my.EventChannel = EventChannel;
+    my.createApp = createApp;
+    my.createPage = createPage;
+    my.createComponent = createComponent;
+    my.createPluginApp = createPluginApp;
+    my.createSubpackageApp = createSubpackageApp;
+    my.createIndependentSubpackageApp = createIndependentSubpackageApp;
+}
 
-export { createApp, createComponent, createPage, createPluginApp, createSubpackageApp };
+export { createApp, createComponent, createIndependentSubpackageApp, createPage, createPluginApp, createSubpackageApp };
