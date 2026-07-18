@@ -56,6 +56,7 @@ page-container 的特点：
 ### Tips
 - uni ui组件库中曾广泛使用的uni-popup组件，在uni-app x中推荐改用 page-container 组件替代
 - 组件支持拦截用户的返回操作，包括右滑手势、安卓物理返回键和调用 navigateBack API
+- iOS从屏幕左边滑入默认是关闭当前页面，如需改成关闭弹层，需在 pages.json 中配置`swipeBackAsBackPress`为true，把左滑关闭页面功能转为 `onBackPress`，才能关闭弹层。此功能需 5.21+ iOS平台 蒸汽模式 [文档](https://doc.dcloud.net.cn/uni-app-x/collocation/pagesjson.html#pagesoptionspage-style)
 - Web 设置 `overlay: true` 时，组件会禁止背景页面滚动，避免滚动穿透
 - 小程序 `uni.navigateBack` 无法在页面栈顶调用，此时没有上一级页面
 - 小程序不支持 `左侧弹出`，App 和 Web 支持
@@ -64,7 +65,7 @@ page-container 的特点：
 - 小程序页面最多只有1个page-container，若已存在page-container的情况下，无法新弹出page-container。App 和 Web 支持弹出多个page-container组件，后弹覆盖先弹。
 - Web 暂不支持拦截侧滑返回和浏览器的后退按钮
 - `overlay-style` 设置 `pointer-events: none` 可以实现点击遮罩层不关闭弹窗
-- 居中弹出为全屏显示，由于遮罩层被覆盖，并不会触发 `click-overlay` 事件，可以自行调整 `custom-style` 的样式来规避此行为
+- 居中弹出为全屏显示。此行为是为了对齐小程序的表现。由于遮罩层被覆盖，并不会触发 `click-overlay` 事件，可以自行调整 `custom-style` 的样式来规避此行为
 
 
 

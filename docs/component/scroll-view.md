@@ -370,17 +370,21 @@ onNestedPreScroll(event: NestedPreScrollEvent) {
 
 #### App平台
 
-+ App-Android、App-iOS平台scroll-x、scroll-y属性不支持同时设置为true, 同时设置true时仅scroll-y生效，4.0版本开始scroll-x、scroll-y已废弃，请使用direction属性。
-如需同时水平和垂直滚动，可以套2层，一个横一个竖，来实现2个方向能滚动。
++ App-Android、App-iOS平台的滚动方向不能同时横竖，如需同时水平和垂直滚动，可以套2层，一个横一个竖，来实现2个方向能滚动。
 + App平台scroll-view组件不支持动态切换横竖滚动方向
 + App平台scroll-view组件的overflow属性不支持配置visible
 + App平台scroll-view组件默认高度取值：
 	- scroll-view组件的子元素高度之和未超过scroll-view组件的父元素高度：
 		+ scroll-view组件的默认高度取值为子元素高度之和
 	- scroll-view组件的子元素高度之和超过scroll-view组件的父元素高度：
-		+ 3.9版本scroll-view组件默认高度取值为scroll-view组件父元素的高度。子元素高度之和超过scroll-view组件的高度，scroll-view组件可滚动。
 		+ 4.0版本开始scroll-view组件的默认高度取值为子元素高度之和。
-    注意：scroll-view组件的内容高度需要大于scroll-view组件的高度，才能滚动。如未给scroll-view设置高度，那么其高度默认与子内容相同，就会导致无法滚动。开发者需要设置css属性定义scroll-view组件高度，让scroll-view组件高度小于子元素高度之和，实现滚动能力。横向滚动要加flex-direction: row;。可以指定scroll-view的height，也可以设置flex:1来撑满剩余空间。
+    
++ scroll-view无法滚动注意事项：
+	scroll-view组件的内容高度需要大于scroll-view组件的高度，才能滚动。
+	如未给scroll-view设置高度，那么其高度默认与子内容相同，就会导致无法滚动。\
+	开发者需要设置css属性定义scroll-view组件高度，让scroll-view组件高度小于子元素高度之和，实现滚动能力。可以指定scroll-view的height，也可以设置flex:1来撑满剩余空间。
+		
++ 横向滚动时注意关注flex方向，子内容如需横向排布需要加`flex-direction: row`。
 
 ### 子组件 @children-tags
 支持所有组件

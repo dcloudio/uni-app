@@ -28,7 +28,7 @@
 - dataset 赋值、修改操作仅影响 dataset 自身，不会写入 attribute 或底层原生节点属性。
 - 如果定义了 get、set、has 等与 Map 标准 API 冲突的 key，需要通过 Map API 获取数据值。例如 data-get 使用 dataset.get('get')，data-set 使用 dataset.get('set')；不支持通过索引或点操作符读取这些冲突 key 的数据值。
 - App 蒸汽模式不支持通过 UniElement.getAttribute 获取 data-*，仅支持通过 dataset 获取。
-- App 蒸汽模式目前仅支持在 uvue 中使用 dataset；uts 插件侧暂不支持获取 uvue/JS 层设置的 dataset。
+- App 蒸汽模式目前仅支持在 uvue 中使用 dataset；uts插件的utssdk中暂不支持获取 uvue/JS 层设置的 dataset。
 - 小程序平台仅支持通过事件 target/currentTarget 以及 createSelectorQuery、createIntersectionObserver 获取实际 dataset；通过 getElementById 无法获取到实际 dataset。
 
 
@@ -56,10 +56,6 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
 - 通过[DrawableContext](../dom/drawablecontext.md)或其他方式绘制复杂图形时，建议设置为`hardware`。
 - 执行复杂动画或大量动画时，建议设置为`hardware`。
 - 由于安卓原生限制，当设置`android-layer-type`为`hardware`或`software`时，`overflow: visible`不生效。
-:::
-
-::: warning 注意
-- App-Android 平台，`4.61+` `style` 支持 `UTSJSONObject` 类型。
 :::
 
 ### 示例 
@@ -1228,12 +1224,12 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
 
 在多点触摸的屏幕上，touch事件返回数组，包含了每个touch点对应的x、y坐标。
 
+双指缩放，可以参考uni.preview的源码，这是一个uvue页面，监听双指来缩放图片。[详见](https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-previewImage)
+
 ### tap/click 事件@tap
 
 - App端
 App端手指按下后在组件区域内移动不会取消tap/click事件的触发，移动到组件区域外才会取消tap/click事件的触发。
-
-注意老版问题：uni-app x 4.0及以下版本手指按下后移动会取消tap/click事件的触发，即手指移动后抬起不会响应tap/click事件。
 
 - Web端
 手指按下后移动会取消tap/click事件的触发，即手指移动后抬起不会响应tap/click事件
