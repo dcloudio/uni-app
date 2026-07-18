@@ -46,7 +46,7 @@ web和小程序平台虽然默认是flex布局，但通过高权重的样式写`
 
 因为W3C规范中，起初布局是block，后来推出flex时更高频率是用它的横排能力。而在flex是第一布局模型的手机端，大量布局都是竖排的，此时要求开发者大量编写`style="flex-direction:column"`很不友好。
 
-所以在uni-app x中默认是竖排（之前nvue也默认是竖排）。同时在[manifest.json](../collocation/manifest.md)中提供了配置项，可以修改flex方向默认值为横排。
+所以在uni-app x中默认是竖排（之前nvue也默认是竖排）。
 
 ```html
 <view style="flex-direction:row">
