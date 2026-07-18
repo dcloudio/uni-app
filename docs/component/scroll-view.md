@@ -380,7 +380,7 @@ onNestedPreScroll(event: NestedPreScrollEvent) {
 	- scroll-view组件的子元素高度之和超过scroll-view组件的父元素高度：
 		+ 3.9版本scroll-view组件默认高度取值为scroll-view组件父元素的高度。子元素高度之和超过scroll-view组件的高度，scroll-view组件可滚动。
 		+ 4.0版本开始scroll-view组件的默认高度取值为子元素高度之和。
-    注意：scroll-view组件的内容高度需要大于scroll-view组件的高度，才能滚动。如未给scroll-view设置高度，那么其高度默认与子内容相同，就会导致无法滚动。开发者需要设置css属性定义scroll-view组件高度，让scroll-view组件高度小于子元素高度之和，实现滚动能力。可以指定scroll-view的height，也可以设置flex:1来撑满剩余空间。
+    注意：scroll-view组件的内容高度需要大于scroll-view组件的高度，才能滚动。如未给scroll-view设置高度，那么其高度默认与子内容相同，就会导致无法滚动。开发者需要设置css属性定义scroll-view组件高度，让scroll-view组件高度小于子元素高度之和，实现滚动能力。横向滚动要加flex-direction: row;。可以指定scroll-view的height，也可以设置flex:1来撑满剩余空间。
 
 ### 子组件 @children-tags
 支持所有组件
