@@ -283,7 +283,7 @@ android.enableJetifier=true
 	**注意：apps下的appid必须与AndroidManifest.xml的`DCLOUD_UNI_APPID`保持一致。**
 	
 ### 拷贝kt文件
-需要将`unkackage/resource/app-android/uniappx/app-android/src/`目录下的所有文件拷贝到uniappx项目的`src/main/java`下
+需要将`unpackage/resource/app-android/uniappx/app-android/src/`目录下的所有文件拷贝到uniappx项目的`src/main/java`下
 
 ![](https://web-ext-storage.dcloud.net.cn/native/doc/android/copykt.png)
 
