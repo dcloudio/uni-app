@@ -149,7 +149,7 @@ describe('code', () => {
       )
 
       expect(code).toContain(
-        "registerUTSInterface('RequestTask', { utsBridgeName: 'TestBridge', methods: " +
+        "registerUTSInterface({ name: 'RequestTask', utsBridgeName: 'TestBridge', methods: " +
           '[{"name":"abort","methodId":20,"type":"function","keepAlive":false,"async":false}] })'
       )
       expect(code).toContain(
