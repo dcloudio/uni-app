@@ -659,7 +659,10 @@ export async function compile(
       isX,
       isSingleThread,
       isPlugin,
-      utsBridgeName: isExtApi && pluginId ? '_' + pluginId : pluginId,
+      utsBridgeName:
+        process.env.UNI_UTS_MODULE_TYPE === 'built-in' && pluginId
+          ? '_' + pluginId
+          : pluginId,
       // TODO 目前安卓dom2仅有js驱动，后续如果增加原生驱动需要由调用者传入参数控制
       isJsDriven: process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js',
       isDom2,
