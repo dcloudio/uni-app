@@ -4597,6 +4597,14 @@ function initUTSProxyClass(options) {
           return false;
         }
       });
+      if (typeof FinalizationRegistry !== "undefined") {
+        if (!UTSClassInstanceRegistry) {
+          UTSClassInstanceRegistry = new FinalizationRegistry((id2) => {
+            unregisterInstance(id2);
+          });
+        }
+        UTSClassInstanceRegistry.register(proxy2, this.__instanceId);
+      }
       return Object.freeze(proxy2);
     }
   };

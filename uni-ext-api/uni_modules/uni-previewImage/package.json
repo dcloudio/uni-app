@@ -7,7 +7,16 @@
 		"图片预览,previewImage",
 		"关闭图片预览,closePreviewImage"
 	],
-	"repository": "",
+	"repository": [
+		{
+			"type": "git",
+			"url": "https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-previewImage"
+		},
+		{
+			"type": "git",
+			"url": "https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-previewImage"
+		}
+	],
 	"engines": {
 		"HBuilderX": "^3.99"
 	},

@@ -32068,7 +32068,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
   }
 });
 const _style_0$1 = "\n.uni-preview-image-item {\n		width: 100%;\n		height: 100%;\n		transition-property: transform;\n		transition-duration: 0ms;\n}\n.uni-preview-image-patch {\n		width: 100%;\n		height: 100%;\n		background-color: transparent;\n		position: absolute;\n}\n.uni-preview-image-loading {\n		position: absolute;\n		top: 0;\n		bottom: 0;\n		left: 0;\n		right: 0;\n		pointer-events: none;\n}\n.uni-preview-image-item-background {\n		background-color: black;\n		overflow: hidden;\n}\n.uni-preview-image-tips-retry {\n		color: blue;\n		font-size: 18px;\n		margin-top: 16px;\n		text-decoration-line: underline;\n}\n.uni-preview-image-tips-error {\n		font-size: 18px;\n		color: red;\n}\n";
-const uniPreviewImageItem = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["styles", [_style_0$1]]]);
+const UniPreviewImageItem = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["styles", [_style_0$1]]]);
 const _sfc_main$1 = /* @__PURE__ */ defineComponent({
   __name: "uni-previewImageNonVapor",
   props: {
@@ -32167,7 +32167,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
             props2.urls != null ? (openBlock(true), createElementBlock(Fragment, { key: 0 }, renderList(props2.urls, (item, index2) => {
               return openBlock(), createBlock(_component_swiper_item, { class: "uni-preview-image-swiper-item" }, {
                 default: withCtx(() => [
-                  shouldRender(index2) ? (openBlock(), createBlock(uniPreviewImageItem, {
+                  shouldRender(index2) ? (openBlock(), createBlock(UniPreviewImageItem, {
                     key: 0,
                     index: index2,
                     src: item,
@@ -32216,7 +32216,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
   }
 });
 const _style_0 = "\n.uni-preview-image-swiper {\n		overflow: hidden;\n}\n.uni-preview-image-swiper-item {\n		background-color: black;\n		overflow: hidden;\n}\n.uni-preview-image-default-indicator {\n		width: 9px;\n		height: 9px;\n		border-style: solid;\n		border-radius: 9px;\n		margin: 2px 3px;\n		border-width: .1px;\n		border-color: #AAAAAA;\n}\n.uni-preview-image-default-indicator-default {\n		background-color: #AAAAAA;\n}\n.uni-preview-image-default-indicator-active {\n		background-color: #ffffff;\n}\n.uni-preview-image-default-indicator-layout {\n		bottom: var(--uni-safe-area-inset-bottom);\n		margin-bottom: 8px;\n		flex-direction: row;\n		position: absolute;\n		left: 0px;\n		right: 0px;\n		justify-content: center;\n}\n.uni-preview-image-number-indicator-layout {\n		position: absolute;\n		left: 0;\n		right: 0;\n		top: var(--uni-safe-area-inset-top);\n		margin-top: 8px;\n}\n.uni-preview-image-number-indicator {\n		color: white;\n		font-size: 16px;\n		margin: auto;\n		padding: 8px 20px;\n		background-color: rgba(0, 0, 0, .3);\n		line-height: 1;\n		border-radius: 32px;\n}\n";
-const previewImageNonVaporComponent = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["styles", [_style_0]]]);
+const UniPreviewImageNonVapor = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["styles", [_style_0]]]);
 const _sfc_main = /* @__PURE__ */ defineComponent({
   __name: "previewImage",
   setup(__props) {
@@ -32307,7 +32307,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       return false;
     });
     return (_ctx, _cache) => {
-      return openBlock(), createBlock(previewImageNonVaporComponent, {
+      return openBlock(), createBlock(UniPreviewImageNonVapor, {
         urls: unref(urls),
         current: unref(current),
         resetCurrent: unref(resetCurrent),
@@ -32432,7 +32432,20 @@ const previewImage$1 = (option) => {
 const closePreviewImage$1 = (option) => {
   __closePreviewImage(option);
 };
+function mergeComponentStyles(page, components) {
+  const styles = isArray(page.styles) ? [...page.styles] : [];
+  components.forEach((component) => {
+    if (isArray(component.styles)) {
+      styles.push(...component.styles);
+    }
+  });
+  page.styles = styles;
+}
 const registerPreviewImageOnce = /* @__PURE__ */ once(() => {
+  mergeComponentStyles(
+    _sfc_main,
+    [UniPreviewImageNonVapor, UniPreviewImageItem]
+  );
   registerSystemRoute("uni:previewImage", _sfc_main);
 });
 const closePreviewImage = () => {

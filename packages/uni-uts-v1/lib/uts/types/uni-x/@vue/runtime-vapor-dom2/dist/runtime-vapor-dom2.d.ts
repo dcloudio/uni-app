@@ -444,6 +444,7 @@ export declare const toSharedDataNativeViewSlot: (value: string) => UniSlotType;
 export declare const toSharedDataNestedScrollHeaderSlot: (value: string) => UniSlotType;
 export declare const toSharedDataNestedScrollBodySlot: (value: string) => UniSlotType;
 export declare const toSharedDataRichTextNativeSlot: (value: string) => UniSlotType;
+export declare const toSharedDataGlassEffectViewSlot: (value: string) => UniSlotType;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/sharedData/enum/image.d.ts
 /**
@@ -478,6 +479,14 @@ export declare function toSharedDataScrollViewType(value: string): UniNativeScro
 * @returns UniNativeScrollViewAssociativeContainerType 枚举值
 */
 export declare function toSharedDataScrollViewAssociativeContainer(value: string): UniNativeScrollViewAssociativeContainerType;
+//#endregion
+//#region temp/packages/runtime-vapor-dom2/src/sharedData/enum/glass-effect-view.d.ts
+/**
+* 将字符串值转换为 UniGlassEffectViewStyle 枚举类型
+* @param value - 字符串值
+* @returns UniGlassEffectViewStyle 枚举值
+*/
+export declare function toSharedDataGlassEffectViewGlassStyle(value: string): UniGlassEffectViewStyle;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/types/common.d.ts
 export declare function toVueForItemKey(key: any): string | number;

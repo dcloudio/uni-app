@@ -2203,6 +2203,13 @@ function createDecl(prop, value, important, raws, source) {
   return decl;
 }
 var NUM_REGEXP = /^[-]?\d*\.?\d+$/;
+var DOM2_CSS_DOCS_BASE_URL = 'https://doc.dcloud.net.cn/uni-app-x/css';
+function getDom2PropertyDocsUrl(property) {
+  return "".concat(DOM2_CSS_DOCS_BASE_URL, "/").concat(hyphenateStyleProperty(property), ".html#suggestion");
+}
+function appendDom2Docs(reason, url) {
+  return url ? "".concat(reason, " \u8BE6\u89C1\uFF1A").concat(url) : reason;
+}
 var isNumber = val => typeof val === 'number';
 var cacheStringFunction = fn => {
   var cache = Object.create(null);
@@ -3084,7 +3091,8 @@ function expand(options) {
       var transforms = declTransforms[transformCacheKey] || (declTransforms[transformCacheKey] = getDeclTransforms(options, dom2));
       var transform = transforms[decl.prop];
       if (transform) {
-        var res = transform(decl, reason => {
+        var res = transform(decl, function (reason) {
+          var property = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : decl.prop;
           if (!helper || !decl.warn) {
             return;
           }
@@ -3101,7 +3109,7 @@ function expand(options) {
             }
           }
           if (needLog) {
-            decl.warn(helper.result, reason);
+            decl.warn(helper.result, appendDom2Docs(reason, dom2 ? getDom2PropertyDocsUrl(property) : undefined));
           }
         });
         var _isSame = res.length === 1 && res[0] === decl;
