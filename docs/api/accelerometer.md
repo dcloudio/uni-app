@@ -3,9 +3,9 @@
 监听加速度数据变化事件
 
 ### onAccelerometerChange 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.08 | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
@@ -52,9 +52,9 @@
 监听加速度数据变化事件
 
 ### offAccelerometerChange 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.08 | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
@@ -98,9 +98,9 @@
 
 
 ### startAccelerometer 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.08 | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 
@@ -229,9 +229,9 @@
 
 
 ### stopAccelerometer 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.08 | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.08 | 5.08 | 5.08 |
 
 
 ### 参数 

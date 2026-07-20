@@ -31,9 +31,9 @@ let wv = uni.getElementById("wv1") as UniWebViewElement
 ```
 
 ### createWebViewContext 兼容性 <Help /> 
-| Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- |
-| 3.9.0 | 4.11 | 5.08 | 5.08 |
+| Android | iOS | HarmonyOS |
+| :- | :- | :- |
+| 3.9.0 | 4.11 | 5.08 |
 
 
 ### 参数 
@@ -118,9 +118,9 @@ evalJS
 getContentHeight
 获取webview内容高度
 ##### getContentHeight 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| x | 4.63 | 4.63 | 5.08 | 5.08 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.63 | 4.63 | 5.08 |
 
 
 
@@ -289,9 +289,9 @@ evalJS
 getContentHeight
 获取webview内容高度
 ##### getContentHeight 兼容性 <Help /> 
-| Web | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- |
-| x | 4.63 | 4.63 | 5.08 | 5.08 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.63 | 4.63 | 5.08 |
 
 
 

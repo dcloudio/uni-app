@@ -3,10 +3,10 @@
 ::: sourceCode
 ## uni.previewImage(options) @previewimage
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-media
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-previewImage
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-media
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-previewImage
 
 :::
 
@@ -380,10 +380,10 @@
 ::: sourceCode
 ## uni.closePreviewImage(options) @closepreviewimage
 
-> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-media
+> GitCode: https://gitcode.com/dcloud/uni-api/tree/alpha/uni_modules/uni-previewImage
 
 
-> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-media
+> GitHub: https://github.com/dcloudio/uni-api/tree/alpha/uni_modules/uni-previewImage
 
 :::
 

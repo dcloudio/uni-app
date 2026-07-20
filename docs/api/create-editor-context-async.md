@@ -7,9 +7,9 @@
 本API是 [editor组件](../component/editor.md) 的上下文对象。
 
 ### createEditorContextAsync 兼容性 <Help /> 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | 5.08 |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.08 |
 
 
 ### 参数 
@@ -22,11 +22,11 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| id | [string.IDString](/uts/data-type.md#ide-string) | 是 | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | editor 元素的 id 属性 |
-| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 组件或页面实例，限定在什么范围内查找id |
-| success | (context: [EditorContext](#editorcontext-values)) => void | 否 | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 接口调用成功的回调函数 |
-| fail | (error: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 接口调用失败的回调函数 |
-| complete | () => void | 否 | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| id | [string.IDString](/uts/data-type.md#ide-string) | 是 | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS: 5.08 | editor 元素的 id 属性 |
+| component | [ComponentPublicInstance](/vue/options-api.md#component-instance) | 否 | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS: 5.08 | 组件或页面实例，限定在什么范围内查找id |
+| success | (context: [EditorContext](#editorcontext-values)) => void | 否 | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS: 5.08 | 接口调用成功的回调函数 |
+| fail | (error: [UniError](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror)) => void | 否 | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS: 5.08 | 接口调用失败的回调函数 |
+| complete | () => void | 否 | Web: 5.08; 微信小程序: 5.08; Android(VDOM): 5.08; Android(Vapor): x; iOS(VDOM): 5.08; iOS(Vapor): x; HarmonyOS: 5.08 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 #### EditorContext 的方法 @editorcontext-values 
 
@@ -34,9 +34,9 @@
 format
 修改样式
 ##### format 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -51,9 +51,9 @@ format
 insertDivider
 插入分割线
 ##### insertDivider 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -93,9 +93,9 @@ insertDivider
 insertImage
 插入图片
 ##### insertImage 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -141,9 +141,9 @@ insertImage
 insertText
 覆盖当前选区，设置一段文本
 ##### insertText 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -184,9 +184,9 @@ insertText
 insertLink
 插入链接
 ##### insertLink 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -275,9 +275,9 @@ insertMention
 setContents
 初始化编辑器内容，html和delta同时存在时仅delta生效
 ##### setContents 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -319,9 +319,9 @@ setContents
 getContents
 获取编辑器内容
 ##### getContents 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -364,9 +364,9 @@ getContents
 clear
 清空编辑器内容
 ##### clear 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -406,9 +406,9 @@ clear
 removeFormat
 清除当前选区的样式
 ##### removeFormat 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -448,9 +448,9 @@ removeFormat
 undo
 撤销
 ##### undo 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -490,9 +490,9 @@ undo
 redo
 恢复
 ##### redo 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -532,9 +532,9 @@ redo
 getSelectionText
 获取编辑器已选区域内的纯文本内容。当编辑器失焦或未选中一段区间时，返回内容为空。
 ##### getSelectionText 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -575,9 +575,9 @@ getSelectionText
 scrollIntoView
 使得编辑器光标处滚动到窗口可视区域内。
 ##### scrollIntoView 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 
@@ -617,9 +617,9 @@ scrollIntoView
 blur
 编辑器失焦，同时收起键盘
 ##### blur 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.08 | 5.08 | 5.08 | 5.08 | 5.08 |
 
 ##### 参数 
 

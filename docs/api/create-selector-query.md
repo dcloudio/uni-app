@@ -167,9 +167,9 @@ fields
 context
 添加节点的 Context 对象查询请求（uni-app x 暂仅支持获取 EditorContext）
 ###### context 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | HarmonyOS(VDOM) | HarmonyOS(Vapor) |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 5.04 | 5.04 | 5.04 | 5.04 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 5.04 | 5.04 | 5.04 |
 
 ##### 参数 
 
