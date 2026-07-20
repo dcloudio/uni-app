@@ -76,7 +76,7 @@ export function createTransformAnimation(
         if (result.value === null) {
           invalid = true
           if (result.reason) {
-            onWarning?.(result.reason(property, value, result.value))
+            onWarning?.(result.reason(property, value, result.value), property)
           }
         }
       }

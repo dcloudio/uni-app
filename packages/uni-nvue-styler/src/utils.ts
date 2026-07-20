@@ -11,7 +11,7 @@ export const SIMPLE_SELECTOR_RE =
 
 export type TransformDecl = (
   decl: Declaration,
-  onWarning?: (reason: string) => void
+  onWarning?: (reason: string, property?: string) => void
 ) => Declaration[]
 
 export interface NormalizeOptions {
@@ -133,6 +133,21 @@ export const NUM_REGEXP = /^[-]?\d*\.?\d+$/
 export const LENGTH_REGEXP = /^[-+]?\d*\.?\d+(\S*)$/
 export const SUPPORTED_VALUES_REGEXP = /supported values are: ([^)]+)/
 export const SUPPORT_CSS_UNIT = ['px', 'pt', 'wx', 'upx', 'rpx']
+
+const DOM2_CSS_DOCS_BASE_URL = 'https://doc.dcloud.net.cn/uni-app-x/css'
+
+export const DOM2_SELECTOR_DOCS_URL = `${DOM2_CSS_DOCS_BASE_URL}/common/selector.html#selector`
+export const DOM2_FONT_FACE_DOCS_URL = `${DOM2_CSS_DOCS_BASE_URL}/common/at-rules.html#tips`
+
+export function getDom2PropertyDocsUrl(property: string) {
+  return `${DOM2_CSS_DOCS_BASE_URL}/${hyphenateStyleProperty(
+    property
+  )}.html#suggestion`
+}
+
+export function appendDom2Docs(reason: string, url?: string) {
+  return url ? `${reason} 详见：${url}` : reason
+}
 
 export const isNumber = (val: unknown): val is string => typeof val === 'number'
 

@@ -2,6 +2,8 @@ import type { Declaration, Helpers, Plugin } from 'postcss'
 import {
   type NormalizeOptions,
   type TransformDecl,
+  appendDom2Docs,
+  getDom2PropertyDocsUrl,
   hyphenateStyleProperty,
 } from '../utils'
 import { createTransformBackground } from './background'
@@ -95,7 +97,7 @@ export function expand(options: NormalizeOptions): Plugin {
         (declTransforms[transformCacheKey] = getDeclTransforms(options, dom2))
       const transform = transforms[decl.prop]
       if (transform) {
-        const res = transform(decl, (reason) => {
+        const res = transform(decl, (reason, property = decl.prop) => {
           if (!helper || !decl.warn) {
             return
           }
@@ -112,7 +114,13 @@ export function expand(options: NormalizeOptions): Plugin {
             }
           }
           if (needLog) {
-            decl.warn(helper.result, reason)
+            decl.warn(
+              helper.result,
+              appendDom2Docs(
+                reason,
+                dom2 ? getDom2PropertyDocsUrl(property) : undefined
+              )
+            )
           }
         })
         const isSame = res.length === 1 && res[0] === decl

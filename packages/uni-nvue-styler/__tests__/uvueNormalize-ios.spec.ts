@@ -1,6 +1,10 @@
 import { parse } from '../src'
 import type { ParseOptions } from '../src/parse'
 
+function withDom2PropertyDocs(message: string, property: string) {
+  return `${message} 详见：https://doc.dcloud.net.cn/uni-app-x/css/${property}.html#suggestion`
+}
+
 // for uvue version
 async function objectifierRule(input: string, options: ParseOptions = {}) {
   const opt = Object.assign({}, options, {
@@ -513,7 +517,10 @@ describe('uvue-styler: normalize', () => {
     })
     expect(messages[0]).toEqual(
       expect.objectContaining({
-        text: 'WARNING: `text-decoration-style` is not a standard property name (may not be supported)',
+        text: withDom2PropertyDocs(
+          'WARNING: `text-decoration-style` is not a standard property name (may not be supported)',
+          'text-decoration-style'
+        ),
       })
     )
   })
@@ -892,10 +899,22 @@ border-color: var(--default-border);
     )
     expect(json).toEqual({})
     expect(messages.map((message) => message.text)).toEqual([
-      'ERROR: property value `reverse, alternate-reverse` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
-      'ERROR: property value `none, backwards, both, forwards` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
-      'ERROR: property value `reverse` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
-      'ERROR: property value `both` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+      withDom2PropertyDocs(
+        'ERROR: property value `reverse, alternate-reverse` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
+        'animation-direction'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `none, backwards, both, forwards` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+        'animation-fill-mode'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `reverse` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
+        'animation-direction'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `both` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+        'animation-fill-mode'
+      ),
     ])
   })
 })

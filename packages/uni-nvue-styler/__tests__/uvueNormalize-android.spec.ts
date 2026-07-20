@@ -1,5 +1,9 @@
 import { parse } from '../src'
 
+function withDom2PropertyDocs(message: string, property: string) {
+  return `${message} 详见：https://doc.dcloud.net.cn/uni-app-x/css/${property}.html#suggestion`
+}
+
 async function objectifierRule(input: string, options = {}) {
   const { code, messages } = await parse(input, {
     logLevel: 'NOTE',
@@ -935,7 +939,10 @@ flexBasis: fill;
     })
     expect(messages[0]).toEqual(
       expect.objectContaining({
-        text: 'WARNING: `animation-composition` is not a standard property name (may not be supported)',
+        text: withDom2PropertyDocs(
+          'WARNING: `animation-composition` is not a standard property name (may not be supported)',
+          'animation-composition'
+        ),
       })
     )
   })
@@ -980,11 +987,26 @@ flexBasis: fill;
       },
     })
     expect(messages.map((message) => message.text)).toEqual([
-      'ERROR: property value `reverse, alternate-reverse` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
-      'ERROR: property value `none, backwards, both` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
-      'ERROR: property value `reverse` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
-      'ERROR: property value `both` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
-      'ERROR: property value `none` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+      withDom2PropertyDocs(
+        'ERROR: property value `reverse, alternate-reverse` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
+        'animation-direction'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `none, backwards, both` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+        'animation-fill-mode'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `reverse` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
+        'animation-direction'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `both` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+        'animation-fill-mode'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `none` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+        'animation-fill-mode'
+      ),
     ])
   })
 
@@ -1023,7 +1045,10 @@ flexBasis: fill;
       },
     })
     expect(messages.map((message) => message.text)).toEqual([
-      'ERROR: property value `none` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+      withDom2PropertyDocs(
+        'ERROR: property value `none` is not supported for `animation-fill-mode` (supported values are: `forwards`)',
+        'animation-fill-mode'
+      ),
     ])
   })
 
@@ -1101,16 +1126,46 @@ flexBasis: fill;
     )
     expect(json).toEqual({})
     expect(messages.map((message) => message.text)).toEqual([
-      'ERROR: property value `-1s` is not supported for `animation-duration` (supported values are: `non-negative time`)',
-      'ERROR: property value `1.s` is not supported for `animation-duration` (supported values are: `non-negative time`)',
-      'ERROR: property value `pending` is not supported for `animation-delay` (supported values are: `time`)',
-      'ERROR: property value `sideways` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
-      'ERROR: property value `-1` is not supported for `animation-iteration-count` (supported values are: `non-negative number`|`infinite`)',
-      'ERROR: property value `steps(2)` is not supported for `animation-timing-function` (supported values are: `linear`|`ease`|`ease-in`|`ease-out`|`ease-in-out`|`cubic-bezier(n,n,n,n)`)',
-      'ERROR: property value `linear(0, 1)` is not supported for `animation-timing-function` (supported values are: `linear`|`ease`|`ease-in`|`ease-out`|`ease-in-out`|`cubic-bezier(n,n,n,n)`)',
-      'ERROR: property value `fade 1s 2s 3s` is not valid for `animation`',
-      'ERROR: property value `fade 1s steps(2)` is not valid for `animation`',
-      'ERROR: property value `fade auto ease` is not valid for `animation`',
+      withDom2PropertyDocs(
+        'ERROR: property value `-1s` is not supported for `animation-duration` (supported values are: `non-negative time`)',
+        'animation-duration'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `1.s` is not supported for `animation-duration` (supported values are: `non-negative time`)',
+        'animation-duration'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `pending` is not supported for `animation-delay` (supported values are: `time`)',
+        'animation-delay'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `sideways` is not supported for `animation-direction` (supported values are: `alternate`|`normal`)',
+        'animation-direction'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `-1` is not supported for `animation-iteration-count` (supported values are: `non-negative number`|`infinite`)',
+        'animation-iteration-count'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `steps(2)` is not supported for `animation-timing-function` (supported values are: `linear`|`ease`|`ease-in`|`ease-out`|`ease-in-out`|`cubic-bezier(n,n,n,n)`)',
+        'animation-timing-function'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `linear(0, 1)` is not supported for `animation-timing-function` (supported values are: `linear`|`ease`|`ease-in`|`ease-out`|`ease-in-out`|`cubic-bezier(n,n,n,n)`)',
+        'animation-timing-function'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `fade 1s 2s 3s` is not valid for `animation`',
+        'animation'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `fade 1s steps(2)` is not valid for `animation`',
+        'animation'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `fade auto ease` is not valid for `animation`',
+        'animation'
+      ),
     ])
   })
 
@@ -1131,10 +1186,22 @@ flexBasis: fill;
 
     expect(json).toEqual({})
     expect(messages.map((message) => message.text)).toEqual([
-      `ERROR: property value \`${tooLargeFloat}ms\` is not supported for \`animation-duration\` (supported values are: \`non-negative time\`)`,
-      `ERROR: property value \`-${tooLargeFloat}s\` is not supported for \`animation-delay\` (supported values are: \`time\`)`,
-      `ERROR: property value \`${tooLargeDouble}\` is not supported for \`animation-iteration-count\` (supported values are: \`non-negative number\`|\`infinite\`)`,
-      `ERROR: property value \`cubic-bezier(${tooLargeFloat}, 0, 1, 1)\` is not supported for \`animation-timing-function\` (supported values are: \`linear\`|\`ease\`|\`ease-in\`|\`ease-out\`|\`ease-in-out\`|\`cubic-bezier(n,n,n,n)\`)`,
+      withDom2PropertyDocs(
+        `ERROR: property value \`${tooLargeFloat}ms\` is not supported for \`animation-duration\` (supported values are: \`non-negative time\`)`,
+        'animation-duration'
+      ),
+      withDom2PropertyDocs(
+        `ERROR: property value \`-${tooLargeFloat}s\` is not supported for \`animation-delay\` (supported values are: \`time\`)`,
+        'animation-delay'
+      ),
+      withDom2PropertyDocs(
+        `ERROR: property value \`${tooLargeDouble}\` is not supported for \`animation-iteration-count\` (supported values are: \`non-negative number\`|\`infinite\`)`,
+        'animation-iteration-count'
+      ),
+      withDom2PropertyDocs(
+        `ERROR: property value \`cubic-bezier(${tooLargeFloat}, 0, 1, 1)\` is not supported for \`animation-timing-function\` (supported values are: \`linear\`|\`ease\`|\`ease-in\`|\`ease-out\`|\`ease-in-out\`|\`cubic-bezier(n,n,n,n)\`)`,
+        'animation-timing-function'
+      ),
     ])
   })
 

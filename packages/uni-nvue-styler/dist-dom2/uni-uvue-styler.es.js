@@ -14,6 +14,13 @@ function createDecl(prop, value, important, raws, source) {
     return decl;
 }
 const NUM_REGEXP = /^[-]?\d*\.?\d+$/;
+const DOM2_CSS_DOCS_BASE_URL = 'https://doc.dcloud.net.cn/uni-app-x/css';
+function getDom2PropertyDocsUrl(property) {
+    return `${DOM2_CSS_DOCS_BASE_URL}/${hyphenateStyleProperty(property)}.html#suggestion`;
+}
+function appendDom2Docs(reason, url) {
+    return url ? `${reason} 详见：${url}` : reason;
+}
 const isNumber = (val) => typeof val === 'number';
 const cacheStringFunction = (fn) => {
     const cache = Object.create(null);
@@ -959,7 +966,7 @@ function expand$1(options) {
                 (declTransforms[transformCacheKey] = getDeclTransforms(options, dom2));
             const transform = transforms[decl.prop];
             if (transform) {
-                const res = transform(decl, (reason) => {
+                const res = transform(decl, (reason, property = decl.prop) => {
                     if (!helper || !decl.warn) {
                         return;
                     }
@@ -978,7 +985,7 @@ function expand$1(options) {
                         }
                     }
                     if (needLog) {
-                        decl.warn(helper.result, reason);
+                        decl.warn(helper.result, appendDom2Docs(reason, dom2 ? getDom2PropertyDocsUrl(property) : undefined));
                     }
                 });
                 const isSame = res.length === 1 && res[0] === decl;
