@@ -44,6 +44,8 @@ onMounted(() => {
 
 ### vue实例相关属性类型问题
 
+> 如下选项式示例仅为演示部分类型问题。组合式下通常不需要这样获取$props、$data、$refs等属性，直接使用defineProps、ref、reactive即可，无类型问题。
+
 为保证运行性能，app安卓端vdom模式部分属性（如：$data、$refs）被转为了Map类型（安卓端map支持使用下标访问），而web端仍是普通对象或proxy。为保证多端代码一致，在使用这些属性时可以统一为下标访问。
 
 ```vue
@@ -66,7 +68,7 @@ onMounted(() => {
 
 ### ComponentPublicInstance类型
 
-> 如下选项式示例仅为演示ComponentPublicInstance类型问题，组合式下通过getCurrentInstance()!.proxy获取的componentPublicInstance没有类型问题
+> 如下选项式示例仅为演示ComponentPublicInstance类型问题，组合式下通过getCurrentInstance()!.proxy获取的componentPublicInstance没有类型问题。
 
 目前已知组件使用emits会导致this不能直接传递给ComponentPublicInstance类型，需要as一下。
 
