@@ -1600,17 +1600,183 @@ export default {
 |onAppHide          |4.11    |5.21            |4.11 |5.21        |4.61     |5.21             |4.11 |4.41     |
 |onError            |4.11    |5.21            |5.21 |5.21        |5.21     |5.21             |4.11 |4.41     |
 
-示例 [详情](<!-- VUEJSON.E_lifecycle.app_monitor-app-lifecycle-options.gitUrl -->)
+示例 [详情](https://gitcode.com/dcloud/hello-uvue/blob/alpha/pages/lifecycle/page/monitor-page-lifecycle-composition.uvue)
 
-::: preview https://hellouvue.dcloud.net.cn/#/pages/lifecycle/page/page-options
+::: preview https://hellouvue.dcloud.net.cn/#/pages/lifecycle/page/monitor-app-lifecycle-composition
 
 > 组合式 API
 
-<!-- VUEJSON.E_lifecycle.app_monitor-app-lifecycle-composition.code -->
+```vue
+<script lang="uts" setup>
+	import { state, setLifeCycleNum } from '@/store/index.uts'
+
+	const isScrolled = ref(false)
+
+	onLoad((options : OnLoadOptions) => {
+		console.log('组合式组件监听页面生命周期 => onLoad', options)
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 100)
+	})
+	onPageShow(() => {
+		console.log('组合式组件监听页面生命周期 => onPageShow')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 10)
+	})
+	onReady(() => {
+		console.log('组合式组件监听页面生命周期 => onReady')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 10)
+	})
+	onPullDownRefresh(() => {
+		console.log('组合式组件监听页面生命周期 => onPullDownRefresh')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 10)
+	})
+	onPageScroll((options : OnPageScrollOptions) => {
+		console.log('组合式组件监听页面生命周期 => onPageScroll', options)
+		isScrolled.value = true
+	})
+	onReachBottom(() => {
+		console.log('组合式组件监听页面生命周期 => onReachBottom')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 10)
+	})
+	onBackPress((options : OnBackPressOptions) : boolean | null => {
+		console.log('组合式组件监听页面生命周期 => onBackPress', options)
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum - 10)
+		return null
+	})
+	onPageHide(() => {
+		console.log('组合式组件监听页面生命周期 => onPageHide')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum - 10)
+	})
+	onResize((options : OnResizeOptions) => {
+		console.log('组合式组件监听页面生命周期 => onResize', options)
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum + 1)
+	})
+	onUnload(() => {
+		console.log('组合式组件监听页面生命周期 => onUnload')
+		// 自动化测试
+		setLifeCycleNum(state.lifeCycleNum - 10)
+	})
+</script>
+
+<template>
+	<view>
+		<text class="mb-10">选项式组件监听页面生命周期（组合式 API）</text>
+		<view class="justify-between flex-row mb-10">
+			<text>组件中监听到页面滚动:</text>
+			<text>{{isScrolled}}</text>
+		</view>
+	</view>
+</template>
+
+<style>
+	.mb-10{
+		margin-bottom: 10px;
+	}
+	.justify-between{
+		justify-content: space-between;
+	}
+	.flex-row{
+		flex-direction: row;
+	}
+</style>
+```
 
 > 选项式 API
 
-<!-- VUEJSON.E_lifecycle.app_monitor-app-lifecycle-options.code -->
+```vue
+<script lang="uts">
+	import { state, setLifeCycleNum } from '@/store/index.uts'
+
+	export default {
+		setup() {
+			const isScrolled = ref(false)
+			
+			onLoad((options : OnLoadOptions) => {
+				console.log('选项式组件监听页面生命周期 => onLoad', options)
+				// 自动化测试
+				setLifeCycleNum(state.lifeCycleNum + 100)
+			})
+			onPageShow(() => {
+				console.log('选项式组件监听页面生命周期 => onPageShow')
+				// 自动化测试
+				setLifeCycleNum(state.lifeCycleNum + 10)
+			})
+			onReady(() => {
+				console.log('选项式组件监听页面生命周期 => onReady')
+				// 自动化测试
+				setLifeCycleNum(state.lifeCycleNum + 10)
+			})
+			onPullDownRefresh(() => {
+				console.log('选项式组件监听页面生命周期 => onPullDownRefresh')
+				// 自动化测试
+				setLifeCycleNum(state.lifeCycleNum + 10)
+			})
+			onPageScroll((options: OnPageScrollOptions) => {
+				console.log('选项式组件监听页面生命周期 => onPageScroll', options)
+				isScrolled.value = true
+			})
+			onReachBottom(() => {
+				console.log('选项式组件监听页面生命周期 => onReachBottom')
+				// 自动化测试
+				setLifeCycleNum(state.lifeCycleNum + 10)
+			})
+			onBackPress((options : OnBackPressOptions) : boolean | null => {
+				console.log('选项式组件监听页面生命周期 => onBackPress', options)
+				// 自动化测试
+				setLifeCycleNum(state.lifeCycleNum - 10)
+				return null
+			})
+			onPageHide(() => {
+				console.log('选项式组件监听页面生命周期 => onPageHide')
+				// 自动化测试
+				setLifeCycleNum(state.lifeCycleNum - 10)
+			})
+			onResize((options : OnResizeOptions) => {
+				console.log('选项式组件监听页面生命周期 => onResize', options)
+				// 自动化测试
+				setLifeCycleNum(state.lifeCycleNum + 1)
+			})
+			onUnload(() => {
+				console.log('选项式组件监听页面生命周期 => onUnload')
+				// 自动化测试
+				setLifeCycleNum(state.lifeCycleNum - 10)
+			})
+			
+			return {
+				isScrolled
+			}
+		}
+	}
+</script>
+
+<template>
+	<view>
+		<text class="mb-10">选项式组件监听页面生命周期（选项式 API）</text>
+		<view class="justify-between flex-row mb-10">
+			<text>组件中监听到页面滚动:</text>
+			<text>{{isScrolled}}</text>
+		</view>
+	</view>
+</template>
+
+<style>
+	.mb-10{
+		margin-bottom: 10px;
+	}
+	.justify-between{
+		justify-content: space-between;
+	}
+	.flex-row{
+		flex-direction: row;
+	}
+</style>
+```
 
 :::
 
