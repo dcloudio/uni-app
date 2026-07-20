@@ -8,6 +8,7 @@ import {
   FORMATS,
   type GenProxyCodeOptions,
   genProxyCode,
+  genProxyCodeV2,
   resolvePlatformIndex,
   resolvePlatformIndexFilename,
   resolveRootIndex,
@@ -276,9 +277,15 @@ export async function compile(
     pkg
   )
 
-  const code = isCompileUniModules
-    ? ''
-    : await genProxyCode(pluginDir, proxyCodeOptions)
+  // 为确保methodId完全一致，proxy code v2依赖uts编译返回的信息生成
+  const useProxyCodeV2 =
+    process.env.UNI_APP_X_DOM2 === 'true' &&
+    process.env.UNI_UTS_PLATFORM === 'app-android'
+
+  let code =
+    isCompileUniModules || useProxyCodeV2
+      ? ''
+      : await genProxyCode(pluginDir, proxyCodeOptions)
 
   let errMsg = ''
   if (process.env.NODE_ENV !== 'development' || isCompileUniModules) {
@@ -362,6 +369,9 @@ export async function compile(
           Object.keys(custom_elements).forEach((key) => {
             custom_elements[key] = custom_elements[key]
           })
+          if (useProxyCodeV2 && result.uts_bridge) {
+            code = (await genProxyCodeV2(result)) ?? ''
+          }
         }
         if (!isCompileUniModules && cacheDir) {
           // 存储 sourcemap
@@ -647,6 +657,9 @@ export async function compile(
             }
           }
           if (isSuccess) {
+            if (useProxyCodeV2 && res.uts_bridge) {
+              code = (await genProxyCodeV2(res)) ?? ''
+            }
             // 生成缓存文件
             if (cacheDir) {
               // 存储 sourcemap

@@ -151,9 +151,15 @@ export interface UTSBridgeMethod {
   async: boolean
 }
 
+export interface UTSBridgeFunction extends UTSBridgeMethod {
+  is_default?: boolean
+}
+
 export interface UTSBridgeClass {
   name: string
+  is_default?: boolean
   constructor: UTSBridgeMethod
+  static_methods: UTSBridgeMethod[]
   methods: UTSBridgeMethod[]
 }
 
@@ -164,7 +170,7 @@ export interface UTSBridgeInterface {
 
 export interface UTSBridge {
   uts_bridge_name: string
-  functions: UTSBridgeMethod[]
+  functions: UTSBridgeFunction[]
   classes: UTSBridgeClass[]
   interfaces: UTSBridgeInterface[]
 }

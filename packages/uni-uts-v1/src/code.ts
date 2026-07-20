@@ -43,6 +43,7 @@ import {
 import { normalizePath } from './shared'
 import { parseUTSSyntaxError } from './stacktrace'
 import type { SyncUniModulesFilePreprocessor } from './uni_modules'
+import type { UTSBridgeMethod, UTSResult } from '@dcloudio/uts'
 
 const IOS_HOOK_CLASS = 'UTSiOSHookProxy'
 const ANDROID_HOOK_CLASS = 'UTSAndroidHookProxy'
@@ -133,6 +134,61 @@ function isUTSElementProxyClass(cls: string) {
   )
 }
 
+function formateUTSBridgeMethod(method: UTSBridgeMethod) {
+  return {
+    name: method.name,
+    methodId: method.method_id,
+    type: method.type,
+    keepAlive: method.keep_alive,
+    async: method.async,
+  }
+}
+
+export async function genProxyCodeV2(result: UTSResult) {
+  if (!result.uts_bridge) {
+    return ''
+  }
+  const {
+    functions,
+    classes,
+    interfaces,
+    uts_bridge_name: utsBridgeName,
+  } = result.uts_bridge
+  let code =
+    'const { registerUTSInterface, initUTSProxyClass, initUTSElementProxyClass, initUTSProxyFunction } = uni'
+  interfaces.forEach((i) => {
+    code += `registerUTSInterface('${
+      i.name
+    }', { utsBridgeName: '${utsBridgeName}', methods: ${JSON.stringify(
+      i.methods.map(formateUTSBridgeMethod)
+    )} })\n`
+  })
+  classes.forEach((c) => {
+    const exportModifier = c.is_default
+      ? 'export default '
+      : `export const ${c.name} = `
+    const isElement = isUTSElementProxyClass(c.name)
+    // TODO 目前仅用于安卓dom2，如果要支持iOS dom2需要屏蔽ElementProxyClass的注册
+    const initProxyMethodName = isElement
+      ? 'initUTSElementProxyClass'
+      : 'initUTSProxyClass'
+    code += `${exportModifier}${initProxyMethodName}({ utsBridgeName: '${utsBridgeName}', class: '${
+      c.name
+    }', constructor: ${JSON.stringify(
+      formateUTSBridgeMethod(c.constructor)
+    )}, staticMethods: ${JSON.stringify(
+      c.static_methods.map(formateUTSBridgeMethod)
+    )}, methods: ${JSON.stringify(c.methods.map(formateUTSBridgeMethod))} })\n`
+  })
+  functions.forEach((f) => {
+    const exportModifier = f.is_default
+      ? 'export default '
+      : `export const ${f.name} = `
+    code += `${exportModifier}initUTSProxyFunction({ utsBridgeName: '${utsBridgeName}', name: '${f.name}', methodId: ${f.method_id}, type: '${f.type}', keepAlive: ${f.keep_alive}, async: ${f.async} })\n`
+  })
+  return code
+}
+
 export async function genProxyCode(
   module: string,
   options: GenProxyCodeOptions
@@ -211,16 +267,16 @@ export async function genProxyCode(
   const interceptor = await parseInterceptor(options.platform!, module, options)
   const hasMatchedInterceptor = decls.some((decl) => {
     if (decl.type === 'FunctionDeclaration') {
-      return interceptor.initMethods.includes(`init${capitalize(decl.method)}`)
+      return interceptor.initMethods.includes(`init${capitalize(decl.method)} `)
     }
     return false
   })
   return `
-const { registerUTSInterface, initUTSProxyClass, initUTSElementProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
-const name = '${name}'
-const moduleName = '${moduleName || ''}'
-const moduleType = '${moduleType || ''}'
-const errMsg = \`${ERR_MSG_PLACEHOLDER}\`
+    const { registerUTSInterface, initUTSProxyClass, initUTSElementProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
+    const name = '${name}'
+    const moduleName = '${moduleName || ''}'
+    const moduleType = '${moduleType || ''}'
+    const errMsg = \`${ERR_MSG_PLACEHOLDER}\`
 const is_uni_modules = ${is_uni_modules}
 const pkg = /*#__PURE__*/ initUTSPackageName(name, is_uni_modules)
 const cls = /*#__PURE__*/ initUTSIndexClassName(name, is_uni_modules)

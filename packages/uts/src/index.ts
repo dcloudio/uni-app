@@ -4,6 +4,7 @@ import { type UTSBundleOptions, type UTSResult, UTSTarget } from './types'
 export {
   UTSTarget,
   UTSResult,
+  UTSBridgeMethod,
   UTSBundleOptions,
   UTSInputOptions,
   UTSOutputOptions,
