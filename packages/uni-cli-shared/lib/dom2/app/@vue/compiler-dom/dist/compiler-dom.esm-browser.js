@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-dom v3.6.0-beta.17
+  * @vue/compiler-dom v3.6.0-rc.1
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -1805,6 +1805,7 @@ function getUnnormalizedProps(props, callPath = []) {
 	return [props, callPath];
 }
 function injectProp(node, prop, context) {
+	if (node.type !== 13 && injectSlotKey(node, prop)) return;
 	let propsWithInjection;
 	/**
 	* 1. mergeProps(...)
@@ -1842,6 +1843,20 @@ function injectProp(node, prop, context) {
 	else node.props = propsWithInjection;
 	else if (parentCall) parentCall.arguments[0] = propsWithInjection;
 	else node.arguments[2] = propsWithInjection;
+}
+function injectSlotKey(node, prop) {
+	var _node$arguments, _node$arguments2, _node$arguments3;
+	if (prop.key.type !== 4 || prop.key.content !== "key") return false;
+	const props = node.arguments[2];
+	if (props && !isString(props)) {
+		const [unnormalizedProps] = getUnnormalizedProps(props);
+		if (unnormalizedProps && !isString(unnormalizedProps) && unnormalizedProps.type === 15 && hasProp(prop, unnormalizedProps)) return true;
+	}
+	(_node$arguments = node.arguments)[2] || (_node$arguments[2] = "{}");
+	(_node$arguments2 = node.arguments)[3] || (_node$arguments2[3] = "undefined");
+	(_node$arguments3 = node.arguments)[4] || (_node$arguments3[4] = "undefined");
+	node.arguments[5] = prop.value;
+	return true;
 }
 function hasProp(prop, props) {
 	let result = false;
@@ -4274,7 +4289,7 @@ function rewriteFilter(node, context) {
 		const child = node.children[i];
 		if (typeof child !== "object") continue;
 		if (child.type === 4) parseFilter(child, context);
-		else if (child.type === 8) rewriteFilter(node, context);
+		else if (child.type === 8) rewriteFilter(child, context);
 		else if (child.type === 5) rewriteFilter(child.content, context);
 	}
 }
@@ -4749,7 +4764,7 @@ function postTransformTransition(node, onError, hasMultipleChildren = defaultHas
 			source: ""
 		}));
 		const child = node.children[0];
-		if (child.type === 1) {
+		if (child.type === 1 && !findDir(child, "if")) {
 			for (const p of child.props) if (p.type === 7 && p.name === "show") node.props.push({
 				type: 6,
 				name: "persisted",

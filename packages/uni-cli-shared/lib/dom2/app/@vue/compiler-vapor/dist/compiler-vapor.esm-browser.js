@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-vapor v3.6.0-beta.17
+  * @vue/compiler-vapor v3.6.0-rc.1
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -18734,7 +18734,7 @@ function postTransformTransition(node, onError, hasMultipleChildren = defaultHas
 			source: ""
 		}));
 		const child = node.children[0];
-		if (child.type === 1) {
+		if (child.type === 1 && !findDir$1(child, "if")) {
 			for (const p of child.props) if (p.type === 7 && p.name === "show") node.props.push({
 				type: 6,
 				name: "persisted",
@@ -21683,7 +21683,8 @@ function genEffect({ operations }, context) {
 }
 function genInsertionState(operation, context) {
 	const { parent, anchor, logicalIndex, append } = operation;
-	return [NEWLINE, ...genCall(context.helper("setInsertionState"), `n${parent}`, anchor == null ? void 0 : anchor === -1 ? `0` : append ? "null" : `n${anchor}`, logicalIndex !== void 0 ? String(logicalIndex) : void 0)];
+	const isPrepend = anchor === -1;
+	return [NEWLINE, ...genCall(context.helper("setInsertionState"), `n${parent}`, anchor == null ? void 0 : isPrepend ? `0` : append ? "null" : `n${anchor}`, logicalIndex !== void 0 && (!isPrepend || logicalIndex !== 0) ? String(logicalIndex) : void 0)];
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/template.ts

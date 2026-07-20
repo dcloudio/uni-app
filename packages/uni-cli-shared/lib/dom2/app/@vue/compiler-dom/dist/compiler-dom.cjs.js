@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-dom v3.6.0-beta.17
+  * @vue/compiler-dom v3.6.0-rc.1
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -278,7 +278,7 @@ function postTransformTransition(node, onError, hasMultipleChildren = defaultHas
 			source: ""
 		}));
 		const child = node.children[0];
-		if (child.type === 1) {
+		if (child.type === 1 && !(0, _vue_compiler_core.findDir)(child, "if")) {
 			for (const p of child.props) if (p.type === 7 && p.name === "show") node.props.push({
 				type: 6,
 				name: "persisted",

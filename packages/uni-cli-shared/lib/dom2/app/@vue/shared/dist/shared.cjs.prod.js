@@ -1,5 +1,5 @@
 /**
-  * @vue/shared v3.6.0-beta.17
+  * @vue/shared v3.6.0-rc.1
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -526,9 +526,14 @@ function escapeHtml(string) {
 	}
 	return lastIndex !== index ? html + str.slice(lastIndex, index) : html;
 }
-const commentStripRE = /^-?>|<!--|-->|--!>|<!-$/g;
+const commentStripRE = /^(?:-?>)+|<!--|-->|--!>|<!-$/g;
 function escapeHtmlComment(src) {
-	return src.replace(commentStripRE, "");
+	let prev;
+	do {
+		prev = src;
+		src = src.replace(commentStripRE, "");
+	} while (src !== prev);
+	return src;
 }
 const cssVarNameEscapeSymbolsRE = /[ !"#$%&'()*+,./:;<=>?@[\\\]^`{|}~]/g;
 function getEscapedCssVarName(key, doubleEscape) {

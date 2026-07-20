@@ -526,7 +526,7 @@ export interface DirectiveArgumentNode extends ArrayExpression {
 }
 export interface RenderSlotCall extends CallExpression {
   callee: typeof RENDER_SLOT;
-  arguments: [string, string | ExpressionNode] | [string, string | ExpressionNode, PropsExpression] | [string, string | ExpressionNode, PropsExpression | "{}", TemplateChildNode[]];
+  arguments: [string, string | ExpressionNode] | [string, string | ExpressionNode, PropsExpression | "{}"] | [string, string | ExpressionNode, PropsExpression | "{}", FunctionExpression | string] | [string, string | ExpressionNode, PropsExpression | "{}", FunctionExpression | string, string] | [string, string | ExpressionNode, PropsExpression | "{}", FunctionExpression | string, string, JSChildNode];
 }
 export type SlotsExpression = SlotsObjectExpression | DynamicSlotsExpression;
 export interface SlotsObjectExpression extends ObjectExpression {

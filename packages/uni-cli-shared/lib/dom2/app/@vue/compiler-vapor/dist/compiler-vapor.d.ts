@@ -21801,7 +21801,8 @@ interface SlotBoundaryContext {
   parent: SlotBoundaryContext | null;
   getFallback: () => BlockFn | undefined;
   run<R>(fn: () => R, scope?: EffectScope$1): R;
-  markDirty: () => void;
+  markDirty: (force?: boolean) => void;
+  onContentInvalid?: (() => void)[];
 }
 //#endregion
 //#region packages/runtime-vapor/src/keepAlive.d.ts
@@ -21811,6 +21812,7 @@ interface VaporKeepAliveContext {
   processShapeFlag(block: Block): any | false;
   cacheBlock(block?: Block): void;
   cacheScope(cacheKey: any, scopeLookupKey: any, scope: EffectScope$1): void;
+  getStorageContainer(): ParentNode;
 }
 //#endregion
 //#region packages/runtime-vapor/src/fragment.d.ts
@@ -21832,6 +21834,7 @@ declare class VaporFragment<T extends Block = Block> implements TransitionOption
   setRef?: (instance: VaporComponentInstance, ref: NodeRef, refFor: boolean, refKey: string | undefined) => void;
   onBeforeInsert?: ((nodes: Block) => void)[];
   onBeforeRemove?: ((scope: EffectScope$1) => boolean)[];
+  onRemove?: (() => void)[];
   onBeforeUpdate?: (() => void)[];
   onUpdated?: ((nodes?: Block) => void)[];
   constructor(nodes: T);
@@ -21846,7 +21849,7 @@ declare class RenderContextFragment<T extends Block = Block> extends VaporFragme
 }
 declare class ForFragment extends VaporFragment<Block[]> {
   resetListeners?: (() => void)[];
-  constructor(nodes: Block[], trackSlotBoundary: boolean);
+  constructor(nodes: Block[], trackSlotBoundary: boolean, onInvalid?: () => void);
   onReset(fn: () => void): void;
 }
 declare class DynamicFragment extends RenderContextFragment {
@@ -21870,7 +21873,7 @@ declare class DynamicFragment extends RenderContextFragment {
   nativeChildren?: boolean;
   inTransition?: boolean;
   hasFallthroughAttrs?: true;
-  constructor(anchorLabel?: string, keyed?: boolean, locate?: boolean, trackSlotBoundary?: boolean);
+  constructor(anchorLabel?: string, keyed?: boolean, locate?: boolean, trackSlotBoundary?: boolean, onInvalid?: () => void);
   protected get autoHydrate(): boolean;
   update(render?: BlockFn, key?: any, noScope?: boolean): void;
   protected getBranchParent(): ParentNode | null;
@@ -22217,7 +22220,7 @@ type InsertionParent = ParentNode & {
 */
 declare function setInsertionState(parent: ParentNode & {
   $fc?: Node | null;
-}, anchor?: Node | 0 | null, logicalIndex?: number): void;
+}, anchor?: Node | 0 | null, logicalIndex?: number | undefined): void;
 //#endregion
 //#region packages/runtime-vapor/src/dom/template.d.ts
 declare function template(html: string, flags?: number, ns?: Namespace): () => Node & {

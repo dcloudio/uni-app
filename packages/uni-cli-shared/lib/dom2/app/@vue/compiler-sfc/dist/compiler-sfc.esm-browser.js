@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-sfc v3.6.0-beta.17
+  * @vue/compiler-sfc v3.6.0-rc.1
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -16796,6 +16796,7 @@ function getUnnormalizedProps(props, callPath = []) {
 	return [props, callPath];
 }
 function injectProp(node, prop, context) {
+	if (node.type !== 13 && injectSlotKey(node, prop)) return;
 	let propsWithInjection;
 	/**
 	* 1. mergeProps(...)
@@ -16833,6 +16834,20 @@ function injectProp(node, prop, context) {
 	else node.props = propsWithInjection;
 	else if (parentCall) parentCall.arguments[0] = propsWithInjection;
 	else node.arguments[2] = propsWithInjection;
+}
+function injectSlotKey(node, prop) {
+	var _node$arguments, _node$arguments2, _node$arguments3;
+	if (prop.key.type !== 4 || prop.key.content !== "key") return false;
+	const props = node.arguments[2];
+	if (props && !isString$1(props)) {
+		const [unnormalizedProps] = getUnnormalizedProps(props);
+		if (unnormalizedProps && !isString$1(unnormalizedProps) && unnormalizedProps.type === 15 && hasProp(prop, unnormalizedProps)) return true;
+	}
+	(_node$arguments = node.arguments)[2] || (_node$arguments[2] = "{}");
+	(_node$arguments2 = node.arguments)[3] || (_node$arguments2[3] = "undefined");
+	(_node$arguments3 = node.arguments)[4] || (_node$arguments3[4] = "undefined");
+	node.arguments[5] = prop.value;
+	return true;
 }
 function hasProp(prop, props) {
 	let result = false;
@@ -22034,7 +22049,7 @@ function postTransformTransition(node, onError, hasMultipleChildren = defaultHas
 			source: ""
 		}));
 		const child = node.children[0];
-		if (child.type === 1) {
+		if (child.type === 1 && !findDir$1(child, "if")) {
 			for (const p of child.props) if (p.type === 7 && p.name === "show") node.props.push({
 				type: 6,
 				name: "persisted",
@@ -27582,7 +27597,8 @@ function genEffect({ operations }, context) {
 }
 function genInsertionState(operation, context) {
 	const { parent, anchor, logicalIndex, append } = operation;
-	return [NEWLINE, ...genCall(context.helper("setInsertionState"), `n${parent}`, anchor == null ? void 0 : anchor === -1 ? `0` : append ? "null" : `n${anchor}`, logicalIndex !== void 0 ? String(logicalIndex) : void 0)];
+	const isPrepend = anchor === -1;
+	return [NEWLINE, ...genCall(context.helper("setInsertionState"), `n${parent}`, anchor == null ? void 0 : isPrepend ? `0` : append ? "null" : `n${anchor}`, logicalIndex !== void 0 && (!isPrepend || logicalIndex !== 0) ? String(logicalIndex) : void 0)];
 }
 //#endregion
 //#region packages/compiler-vapor/src/generators/template.ts
@@ -31038,10 +31054,10 @@ var require_picocolors_browser = /* @__PURE__ */ __commonJSMin(((exports, module
 	module.exports.createColors = create;
 }));
 //#endregion
-//#region (ignored) node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/terminal-highlight
+//#region (ignored) node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/terminal-highlight
 var require_terminal_highlight = /* @__PURE__ */ __commonJSMin((() => {}));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/css-syntax-error.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/css-syntax-error.js
 var require_css_syntax_error = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let pico = require_picocolors_browser();
 	let terminalHighlight = require_terminal_highlight();
@@ -31116,8 +31132,15 @@ var require_css_syntax_error = /* @__PURE__ */ __commonJSMin(((exports, module) 
 	CssSyntaxError.default = CssSyntaxError;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/stringifier.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/stringifier.js
 var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+	const STYLE_TAG = /(<)(\/?style\b)/gi;
+	const COMMENT_OPEN = /(<)(!--)/g;
+	function escapeHTMLInCSS(str) {
+		if (typeof str !== "string") return str;
+		if (!str.includes("<")) return str;
+		return str.replace(STYLE_TAG, "\\3c $2").replace(COMMENT_OPEN, "\\3c $2");
+	}
 	const DEFAULT_RAW = {
 		after: "\n",
 		beforeClose: "\n",
@@ -31135,19 +31158,53 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	function capitalize(str) {
 		return str[0].toUpperCase() + str.slice(1);
 	}
-	var Stringifier = class {
+	function atruleStart(str, node) {
+		let name = "@" + node.name;
+		let params = node.params ? str.rawValue(node, "params") : "";
+		if (typeof node.raws.afterName !== "undefined") name += node.raws.afterName;
+		else if (params) name += " ";
+		return name + params;
+	}
+	function pushBody(str, stack, node) {
+		let nodes = node.nodes;
+		let last = nodes.length - 1;
+		while (last > 0) {
+			if (nodes[last].type !== "comment") break;
+			last -= 1;
+		}
+		let semicolon = str.raw(node, "semicolon");
+		let isDocument = node.type === "document";
+		for (let i = nodes.length - 1; i >= 0; i--) stack.push({
+			document: isDocument,
+			node: nodes[i],
+			semicolon: last !== i || semicolon
+		});
+	}
+	function pushBlock(str, stack, node, start) {
+		let between = str.raw(node, "between", "beforeOpen");
+		str.builder(escapeHTMLInCSS(start + between) + "{", node, "start");
+		let hasNodes = node.nodes && node.nodes.length;
+		let close = () => {
+			let after = hasNodes ? str.raw(node, "after") : str.raw(node, "after", "emptyBody");
+			if (after) str.builder(escapeHTMLInCSS(after));
+			str.builder("}", node, "end");
+			if (node.type === "rule" && node.raws.ownSemicolon) str.builder(escapeHTMLInCSS(node.raws.ownSemicolon), node, "end");
+		};
+		if (hasNodes) {
+			stack.push(close);
+			pushBody(str, stack, node);
+		} else close();
+	}
+	var Stringifier = class Stringifier {
 		constructor(builder) {
 			this.builder = builder;
 		}
 		atrule(node, semicolon) {
-			let name = "@" + node.name;
-			let params = node.params ? this.rawValue(node, "params") : "";
-			if (typeof node.raws.afterName !== "undefined") name += node.raws.afterName;
-			else if (params) name += " ";
-			if (node.nodes) this.block(node, name + params);
+			let start = atruleStart(this, node);
+			if (node.nodes) this.block(node, start);
 			else {
 				let end = (node.raws.between || "") + (semicolon ? ";" : "");
-				this.builder(name + params + end, node);
+				this.builder(escapeHTMLInCSS(start + end), node);
 			}
 		}
 		beforeAfter(node, detect) {
@@ -31170,40 +31227,52 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}
 		block(node, start) {
 			let between = this.raw(node, "between", "beforeOpen");
-			this.builder(start + between + "{", node, "start");
+			this.builder(escapeHTMLInCSS(start + between) + "{", node, "start");
 			let after;
 			if (node.nodes && node.nodes.length) {
 				this.body(node);
 				after = this.raw(node, "after");
 			} else after = this.raw(node, "after", "emptyBody");
-			if (after) this.builder(after);
+			if (after) this.builder(escapeHTMLInCSS(after));
 			this.builder("}", node, "end");
 		}
 		body(node) {
-			let last = node.nodes.length - 1;
-			while (last > 0) {
-				if (node.nodes[last].type !== "comment") break;
-				last -= 1;
-			}
-			let semicolon = this.raw(node, "semicolon");
-			for (let i = 0; i < node.nodes.length; i++) {
-				let child = node.nodes[i];
+			let proto = Stringifier.prototype;
+			let expandable = [
+				"atrule",
+				"block",
+				"body",
+				"rule",
+				"stringify"
+			].every((method) => this[method] === proto[method]);
+			let stack = [];
+			pushBody(this, stack, node);
+			while (stack.length > 0) {
+				let entry = stack.pop();
+				if (typeof entry === "function") {
+					entry();
+					continue;
+				}
+				let child = entry.node;
 				let before = this.raw(child, "before");
-				if (before) this.builder(before);
-				this.stringify(child, last !== i || semicolon);
+				if (before) this.builder(entry.document ? before : escapeHTMLInCSS(before));
+				if (expandable && child.type === "rule") pushBlock(this, stack, child, this.rawValue(child, "selector"));
+				else if (expandable && child.type === "atrule" && child.nodes) pushBlock(this, stack, child, atruleStart(this, child));
+				else this.stringify(child, entry.semicolon);
 			}
 		}
 		comment(node) {
 			let left = this.raw(node, "left", "commentLeft");
 			let right = this.raw(node, "right", "commentRight");
-			this.builder("/*" + left + node.text + right + "*/", node);
+			this.builder(escapeHTMLInCSS("/*" + left + node.text + right + "*/"), node);
 		}
 		decl(node, semicolon) {
+			let raws = node.raws;
 			let between = this.raw(node, "between", "colon");
 			let string = node.prop + between + this.rawValue(node, "value");
-			if (node.important) string += node.raws.important || " !important";
+			if (node.important) string += raws.important || " !important";
 			if (semicolon) string += ";";
-			this.builder(string, node);
+			this.builder(escapeHTMLInCSS(string), node);
 		}
 		document(node) {
 			this.body(node);
@@ -31222,8 +31291,8 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			}
 			if (!parent) return DEFAULT_RAW[detect];
 			let root = node.root();
-			if (!root.rawCache) root.rawCache = {};
-			if (typeof root.rawCache[detect] !== "undefined") return root.rawCache[detect];
+			let cache = root.rawCache || (root.rawCache = {});
+			if (typeof cache[detect] !== "undefined") return cache[detect];
 			if (detect === "before" || detect === "after") return this.beforeAfter(node, detect);
 			else {
 				let method = "raw" + capitalize(detect);
@@ -31234,7 +31303,7 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 				});
 			}
 			if (typeof value === "undefined") value = DEFAULT_RAW[detect];
-			root.rawCache[detect] = value;
+			cache[detect] = value;
 			return value;
 		}
 		rawBeforeClose(root) {
@@ -31355,11 +31424,15 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}
 		root(node) {
 			this.body(node);
-			if (node.raws.after) this.builder(node.raws.after);
+			if (node.raws.after) {
+				let after = node.raws.after;
+				let isDocument = node.parent && node.parent.type === "document";
+				this.builder(isDocument ? after : escapeHTMLInCSS(after));
+			}
 		}
 		rule(node) {
 			this.block(node, this.rawValue(node, "selector"));
-			if (node.raws.ownSemicolon) this.builder(node.raws.ownSemicolon, node, "end");
+			if (node.raws.ownSemicolon) this.builder(escapeHTMLInCSS(node.raws.ownSemicolon), node, "end");
 		}
 		stringify(node, semicolon) {
 			/* c8 ignore start */
@@ -31372,7 +31445,7 @@ var require_stringifier = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Stringifier.default = Stringifier;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/stringify.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/stringify.js
 var require_stringify = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Stringifier = require_stringifier();
 	function stringify(node, builder) {
@@ -31382,13 +31455,13 @@ var require_stringify = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	stringify.default = stringify;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/symbols.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/symbols.js
 var require_symbols = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports.isClean = Symbol("isClean");
 	module.exports.my = Symbol("my");
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/node.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/node.js
 var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let CssSyntaxError = require_css_syntax_error();
 	let Stringifier = require_stringifier();
@@ -31396,20 +31469,47 @@ var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let { isClean, my } = require_symbols();
 	function cloneNode(obj, parent) {
 		let cloned = new obj.constructor();
-		for (let i in obj) {
-			if (!Object.prototype.hasOwnProperty.call(obj, i))
+		let stack = [[
+			obj,
+			cloned,
+			parent
+		]];
+		while (stack.length > 0) {
+			let [source, target, targetParent] = stack.pop();
+			for (let i in source) {
+				if (!Object.prototype.hasOwnProperty.call(source, i))
  /* c8 ignore next 2 */
-			continue;
-			if (i === "proxyCache") continue;
-			let value = obj[i];
-			let type = typeof value;
-			if (i === "parent" && type === "object") {
-				if (parent) cloned[i] = parent;
-			} else if (i === "source") cloned[i] = value;
-			else if (Array.isArray(value)) cloned[i] = value.map((j) => cloneNode(j, cloned));
-			else {
-				if (type === "object" && value !== null) value = cloneNode(value);
-				cloned[i] = value;
+				continue;
+				if (i === "proxyCache") continue;
+				let value = source[i];
+				let type = typeof value;
+				if (i === "parent" && type === "object") {
+					if (targetParent) target[i] = targetParent;
+				} else if (i === "source") target[i] = value;
+				else if (Array.isArray(value)) {
+					let children = [];
+					target[i] = children;
+					for (let j of value) {
+						let childClone = new j.constructor();
+						children.push(childClone);
+						stack.push([
+							j,
+							childClone,
+							target
+						]);
+					}
+				} else {
+					if (type === "object" && value !== null) {
+						let valueClone = new value.constructor();
+						stack.push([
+							value,
+							valueClone,
+							void 0
+						]);
+						value = valueClone;
+					}
+					target[i] = value;
+				}
 			}
 		}
 		return cloned;
@@ -31431,7 +31531,7 @@ var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}
 		return offset;
 	}
-	var Node = class {
+	var Node = class Node {
 		get proxyOf() {
 			return this;
 		}
@@ -31439,11 +31539,14 @@ var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			this.raws = {};
 			this[isClean] = false;
 			this[my] = true;
-			for (let name in defaults) if (name === "nodes") {
-				this.nodes = [];
-				for (let node of defaults[name]) if (typeof node.clone === "function") this.append(node.clone());
-				else this.append(node);
-			} else this[name] = defaults[name];
+			for (let name of Object.keys(defaults)) {
+				if (name === "__proto__") continue;
+				if (name === "nodes") {
+					this.nodes = [];
+					for (let node of defaults[name]) if (typeof node.clone === "function" && node.parent) this.append(node.clone());
+					else this.append(node);
+				} else this[name] = defaults[name];
+			}
 		}
 		addToError(error) {
 			error.postcssNode = this;
@@ -31530,10 +31633,14 @@ var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			return this.parent.nodes[index + 1];
 		}
 		positionBy(opts = {}) {
-			let pos = this.source.start;
+			let inputString = "document" in this.source.input ? this.source.input.document : this.source.input.css;
+			let pos = {
+				column: this.source.start.column,
+				line: this.source.start.line,
+				offset: sourceOffset(inputString, this.source.start)
+			};
 			if (opts.index) pos = this.positionInside(opts.index);
 			else if (opts.word) {
-				let inputString = "document" in this.source.input ? this.source.input.document : this.source.input.css;
 				let index = inputString.slice(sourceOffset(inputString, this.source.start), sourceOffset(inputString, this.source.end)).indexOf(opts.word);
 				if (index !== -1) pos = this.positionInside(index);
 			}
@@ -31588,14 +31695,14 @@ var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 					line: opts.start.line,
 					offset: sourceOffset(inputString, opts.start)
 				};
-				else if (opts.index) start = this.positionInside(opts.index);
+				else if (typeof opts.index === "number") start = this.positionInside(opts.index);
 				if (opts.end) end = {
 					column: opts.end.column,
 					line: opts.end.line,
 					offset: sourceOffset(inputString, opts.end)
 				};
 				else if (typeof opts.endIndex === "number") end = this.positionInside(opts.endIndex);
-				else if (opts.index) end = this.positionInside(opts.index + 1);
+				else if (typeof opts.index === "number") end = this.positionInside(opts.index + 1);
 			}
 			if (end.line < start.line || end.line === start.line && end.column <= start.column) end = {
 				column: start.column + 1,
@@ -31634,36 +31741,59 @@ var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			return result;
 		}
 		toJSON(_, inputs) {
-			let fixed = {};
 			let emitInputs = inputs == null;
 			inputs = inputs || /* @__PURE__ */ new Map();
-			let inputsNextIndex = 0;
-			for (let name in this) {
-				if (!Object.prototype.hasOwnProperty.call(this, name))
+			let holderOfRoot = [];
+			let queue = [[
+				this,
+				holderOfRoot,
+				0
+			]];
+			for (let step = 0; step < queue.length; step++) {
+				let [node, holder, key] = queue[step];
+				let fixed = {};
+				holder[key] = fixed;
+				for (let name in node) {
+					if (!Object.prototype.hasOwnProperty.call(node, name))
  /* c8 ignore next 2 */
-				continue;
-				if (name === "parent" || name === "proxyCache") continue;
-				let value = this[name];
-				if (Array.isArray(value)) fixed[name] = value.map((i) => {
-					if (typeof i === "object" && i.toJSON) return i.toJSON(null, inputs);
-					else return i;
-				});
-				else if (typeof value === "object" && value.toJSON) fixed[name] = value.toJSON(null, inputs);
-				else if (name === "source") {
-					if (value == null) continue;
-					let inputId = inputs.get(value.input);
-					if (inputId == null) {
-						inputId = inputsNextIndex;
-						inputs.set(value.input, inputsNextIndex);
-						inputsNextIndex++;
-					}
-					fixed[name] = {
-						end: value.end,
-						inputId,
-						start: value.start
-					};
-				} else fixed[name] = value;
+					continue;
+					if (name === "parent" || name === "proxyCache") continue;
+					let value = node[name];
+					if (Array.isArray(value)) {
+						let fixedArray = [];
+						fixed[name] = fixedArray;
+						for (let i = 0; i < value.length; i++) {
+							let item = value[i];
+							if (typeof item === "object" && item.toJSON) if (item.toJSON === Node.prototype.toJSON) queue.push([
+								item,
+								fixedArray,
+								i
+							]);
+							else fixedArray[i] = item.toJSON(null, inputs);
+							else fixedArray[i] = item;
+						}
+					} else if (typeof value === "object" && value.toJSON) if (value.toJSON === Node.prototype.toJSON) queue.push([
+						value,
+						fixed,
+						name
+					]);
+					else fixed[name] = value.toJSON(null, inputs);
+					else if (name === "source") {
+						if (value == null) continue;
+						let inputId = inputs.get(value.input);
+						if (inputId == null) {
+							inputId = inputs.size;
+							inputs.set(value.input, inputId);
+						}
+						fixed[name] = {
+							end: value.end,
+							inputId,
+							start: value.start
+						};
+					} else fixed[name] = value;
+				}
 			}
+			let fixed = holderOfRoot[0];
 			if (emitInputs) fixed.inputs = [...inputs.keys()].map((input) => input.toJSON());
 			return fixed;
 		}
@@ -31689,7 +31819,7 @@ var require_node$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Node.default = Node;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/comment.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/comment.js
 var require_comment$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Node = require_node$1();
 	var Comment = class extends Node {
@@ -31702,7 +31832,7 @@ var require_comment$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Comment.default = Comment;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/declaration.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/declaration.js
 var require_declaration = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init_objectSpread2();
 	let Node = require_node$1();
@@ -31720,7 +31850,7 @@ var require_declaration = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Declaration.default = Declaration;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/container.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/container.js
 var require_container$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Comment = require_comment$1();
 	let Declaration = require_declaration();
@@ -31728,15 +31858,24 @@ var require_container$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let { isClean, my } = require_symbols();
 	let AtRule, parse, Root, Rule;
 	function cleanSource(nodes) {
-		return nodes.map((i) => {
-			if (i.nodes) i.nodes = cleanSource(i.nodes);
-			delete i.source;
-			return i;
-		});
+		let stack = nodes.slice();
+		while (stack.length > 0) {
+			let node = stack.pop();
+			delete node.source;
+			if (node.nodes) {
+				node.nodes = node.nodes.slice();
+				for (let i of node.nodes) stack.push(i);
+			}
+		}
+		return nodes.slice();
 	}
 	function markTreeDirty(node) {
-		node[isClean] = false;
-		if (node.proxyOf.nodes) for (let i of node.proxyOf.nodes) markTreeDirty(i);
+		let stack = [node];
+		while (stack.length > 0) {
+			let next = stack.pop();
+			next[isClean] = false;
+			if (next.proxyOf.nodes) for (let i of next.proxyOf.nodes) stack.push(i);
+		}
 	}
 	var Container = class Container extends Node {
 		get first() {
@@ -31756,8 +31895,16 @@ var require_container$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			return this;
 		}
 		cleanRaws(keepBetween) {
-			super.cleanRaws(keepBetween);
-			if (this.nodes) for (let node of this.nodes) node.cleanRaws(keepBetween);
+			let stack = [this];
+			while (stack.length > 0) {
+				let node = stack.pop();
+				if (node !== this && node.cleanRaws !== Container.prototype.cleanRaws) {
+					node.cleanRaws(keepBetween);
+					continue;
+				}
+				Node.prototype.cleanRaws.call(node, keepBetween);
+				if (node.nodes) for (let child of node.nodes) stack.push(child);
+			}
 		}
 		each(callback) {
 			if (!this.proxyOf.nodes) return void 0;
@@ -31924,16 +32071,38 @@ var require_container$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			return this.nodes.some(condition);
 		}
 		walk(callback) {
-			return this.each((child, i) => {
+			if (!this.proxyOf.nodes) return void 0;
+			let stack = [{
+				iterator: this.getIterator(),
+				node: this.proxyOf
+			}];
+			while (stack.length > 0) {
+				let { iterator, node } = stack[stack.length - 1];
+				let index = node.indexes[iterator];
+				if (index >= node.proxyOf.nodes.length) {
+					delete node.indexes[iterator];
+					stack.pop();
+					let parent = stack[stack.length - 1];
+					if (parent) parent.node.indexes[parent.iterator] += 1;
+					continue;
+				}
+				let child = node.proxyOf.nodes[index];
 				let result;
 				try {
-					result = callback(child, i);
+					result = callback(child, index);
 				} catch (e) {
 					throw child.addToError(e);
 				}
-				if (result !== false && child.walk) result = child.walk(callback);
-				return result;
-			});
+				if (result === false) {
+					for (let opened of stack) delete opened.node.indexes[opened.iterator];
+					return false;
+				}
+				if (child.walk && child.proxyOf.nodes) stack.push({
+					iterator: child.getIterator(),
+					node: child
+				});
+				else node.indexes[iterator] += 1;
+			}
 		}
 		walkAtRules(name, callback) {
 			if (!callback) {
@@ -31999,20 +32168,22 @@ var require_container$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Container.default = Container;
 	/* c8 ignore start */
 	Container.rebuild = (node) => {
-		if (node.type === "atrule") Object.setPrototypeOf(node, AtRule.prototype);
-		else if (node.type === "rule") Object.setPrototypeOf(node, Rule.prototype);
-		else if (node.type === "decl") Object.setPrototypeOf(node, Declaration.prototype);
-		else if (node.type === "comment") Object.setPrototypeOf(node, Comment.prototype);
-		else if (node.type === "root") Object.setPrototypeOf(node, Root.prototype);
-		node[my] = true;
-		if (node.nodes) node.nodes.forEach((child) => {
-			Container.rebuild(child);
-		});
+		let stack = [node];
+		while (stack.length > 0) {
+			let next = stack.pop();
+			if (next.type === "atrule") Object.setPrototypeOf(next, AtRule.prototype);
+			else if (next.type === "rule") Object.setPrototypeOf(next, Rule.prototype);
+			else if (next.type === "decl") Object.setPrototypeOf(next, Declaration.prototype);
+			else if (next.type === "comment") Object.setPrototypeOf(next, Comment.prototype);
+			else if (next.type === "root") Object.setPrototypeOf(next, Root.prototype);
+			next[my] = true;
+			if (next.nodes) for (let child of next.nodes) stack.push(child);
+		}
 	};
 }));
 /* c8 ignore stop */
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/at-rule.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/at-rule.js
 var require_at_rule = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Container = require_container$1();
 	var AtRule = class extends Container {
@@ -32034,7 +32205,7 @@ var require_at_rule = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Container.registerAtRule(AtRule);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/document.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/document.js
 var require_document = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init_objectSpread2();
 	let Container = require_container$1();
@@ -32107,14 +32278,14 @@ var require_non_secure = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 }));
 //#endregion
-//#region (ignored) node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib
+//#region (ignored) node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib
 var require_lib = /* @__PURE__ */ __commonJSMin((() => {}));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/previous-map.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/previous-map.js
 var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init__polyfill_node_buffer();
 	let { existsSync, readFileSync } = (init__polyfill_node_fs(), __toCommonJS(_polyfill_node_fs_exports));
-	let { dirname, join } = (init__polyfill_node_path(), __toCommonJS(_polyfill_node_path_exports));
+	let { dirname, isAbsolute, join, relative, sep } = (init__polyfill_node_path(), __toCommonJS(_polyfill_node_path_exports));
 	let { SourceMapConsumer, SourceMapGenerator } = require_lib();
 	function fromBase64(str) {
 		if (Buffer$1) return Buffer$1.from(str, "base64").toString();
@@ -32125,6 +32296,7 @@ var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var PreviousMap = class {
 		constructor(css, opts) {
 			if (opts.map === false) return;
+			if (opts.unsafeMap) this.unsafeMap = true;
 			this.loadAnnotation(css);
 			this.inline = this.startWith(this.annotation, "data:");
 			let prev = opts.map ? opts.map.prev : void 0;
@@ -32134,7 +32306,7 @@ var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			if (text) this.text = text;
 		}
 		consumer() {
-			if (!this.consumerCache) this.consumerCache = new SourceMapConsumer(this.text);
+			if (!this.consumerCache) this.consumerCache = new SourceMapConsumer(this.json || this.text);
 			return this.consumerCache;
 		}
 		decodeInline(text) {
@@ -32144,7 +32316,8 @@ var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			if (uriMatch) return decodeURIComponent(text.substr(uriMatch[0].length));
 			let baseUriMatch = text.match(baseCharsetUri) || text.match(baseUri);
 			if (baseUriMatch) return fromBase64(text.substr(baseUriMatch[0].length));
-			let encoding = text.match(/data:application\/json;([^,]+),/)[1];
+			let encoding = text.slice(22);
+			encoding = encoding.slice(0, encoding.indexOf(","));
 			throw new Error("Unsupported source map encoding " + encoding);
 		}
 		getAnnotationURL(sourceMapString) {
@@ -32161,7 +32334,14 @@ var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			let end = css.indexOf("*/", start);
 			if (start > -1 && end > -1) this.annotation = this.getAnnotationURL(css.substring(start, end));
 		}
-		loadFile(path) {
+		loadFile(path, cssFile, trusted) {
+			if (!trusted && !this.unsafeMap) {
+				if (!/\.map$/i.test(path)) return;
+				if (cssFile) {
+					let relativePath = relative(dirname(cssFile), path);
+					if (relativePath === ".." || relativePath.startsWith(".." + sep) || isAbsolute(relativePath)) return;
+				}
+			}
 			this.root = dirname(path);
 			if (existsSync(path)) {
 				this.mapFile = path;
@@ -32174,7 +32354,7 @@ var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			else if (typeof prev === "function") {
 				let prevPath = prev(file);
 				if (prevPath) {
-					let map = this.loadFile(prevPath);
+					let map = this.loadFile(prevPath, file, true);
 					if (!map) throw new Error("Unable to load previous source map: " + prevPath.toString());
 					return map;
 				}
@@ -32186,7 +32366,14 @@ var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			else if (this.annotation) {
 				let map = this.annotation;
 				if (file) map = join(dirname(file), map);
-				return this.loadFile(map);
+				let unknown = this.loadFile(map, file, false);
+				if (unknown) try {
+					/* c8 ignore next 4 */
+					this.json = JSON.parse(unknown.replace(/^\)]}'[^\n]*\n/, ""));
+				} catch (_unused) {
+					return;
+				}
+				return unknown;
 			}
 		}
 		startWith(string, start) {
@@ -32201,7 +32388,7 @@ var require_previous_map = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	PreviousMap.default = PreviousMap;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/input.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/input.js
 var require_input = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init_objectSpread2();
 	let { nanoid } = require_non_secure();
@@ -32347,21 +32534,24 @@ var require_input = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			if (!this.map) return false;
 			let consumer = this.map.consumer();
 			let from = consumer.originalPositionFor({
-				column,
+				column: column - 1,
 				line
 			});
 			if (!from.source) return false;
 			let to;
-			if (typeof endLine === "number") to = consumer.originalPositionFor({
-				column: endColumn,
-				line: endLine
-			});
+			if (typeof endLine === "number") {
+				let toPosition = consumer.originalPositionFor({
+					column: endColumn - 1,
+					line: endLine
+				});
+				if (toPosition.source) to = toPosition;
+			}
 			let fromUrl;
 			if (isAbsolute(from.source)) fromUrl = pathToFileURL(from.source);
 			else fromUrl = new URL(from.source, this.map.consumer().sourceRoot || pathToFileURL(this.map.mapFile));
 			let result = {
-				column: from.column,
-				endColumn: to && to.column,
+				column: from.column + 1,
+				endColumn: to && to.column + 1,
 				endLine: to && to.line,
 				line: from.line,
 				url: fromUrl.toString()
@@ -32394,7 +32584,7 @@ var require_input = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	if (terminalHighlight && terminalHighlight.registerInput) terminalHighlight.registerInput(Input);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/root.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/root.js
 var require_root$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Container = require_container$1();
 	let LazyResult, Processor;
@@ -32405,11 +32595,15 @@ var require_root$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			if (!this.nodes) this.nodes = [];
 		}
 		normalize(child, sample, type) {
+			let keepBefore = /* @__PURE__ */ new Set();
+			for (let node of Array.isArray(child) ? child : [child]) if (node && typeof node === "object" && !node.parent && node.raws && typeof node.raws.before !== "undefined") keepBefore.add(node.raws);
 			let nodes = super.normalize(child);
 			if (sample) {
 				if (type === "prepend") if (this.nodes.length > 1) sample.raws.before = this.nodes[1].raws.before;
 				else delete sample.raws.before;
-				else if (this.first !== sample) for (let node of nodes) node.raws.before = sample.raws.before;
+				else if (this.first !== sample) {
+					for (let node of nodes) if (!keepBefore.has(node.raws)) node.raws.before = sample.raws.before;
+				}
 			}
 			return nodes;
 		}
@@ -32433,7 +32627,7 @@ var require_root$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Container.registerRoot(Root);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/list.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/list.js
 var require_list = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let list = {
 		comma(string) {
@@ -32482,7 +32676,7 @@ var require_list = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	list.default = list;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/rule.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/rule.js
 var require_rule = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Container = require_container$1();
 	let list = require_list();
@@ -32506,11 +32700,11 @@ var require_rule = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Container.registerRule(Rule);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/fromJSON.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/fromJSON.js
 var require_fromJSON = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	init_objectWithoutProperties();
 	init_objectSpread2();
-	const _excluded = ["inputs"], _excluded2 = ["inputId"];
+	init_objectWithoutProperties();
+	const _excluded = ["inputId"];
 	let AtRule = require_at_rule();
 	let Comment = require_comment$1();
 	let Declaration = require_declaration();
@@ -32518,35 +32712,71 @@ var require_fromJSON = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let PreviousMap = require_previous_map();
 	let Root = require_root$1();
 	let Rule = require_rule();
-	function fromJSON(json, inputs) {
-		if (Array.isArray(json)) return json.map((n) => fromJSON(n));
-		let { inputs: ownInputs } = json, defaults = _objectWithoutProperties(json, _excluded);
-		if (ownInputs) {
-			inputs = [];
-			for (let input of ownInputs) {
-				let inputHydrated = _objectSpread2(_objectSpread2({}, input), {}, { __proto__: Input.prototype });
-				if (inputHydrated.map) inputHydrated.map = _objectSpread2(_objectSpread2({}, inputHydrated.map), {}, { __proto__: PreviousMap.prototype });
-				inputs.push(inputHydrated);
-			}
-		}
-		if (defaults.nodes) defaults.nodes = json.nodes.map((n) => fromJSON(n, inputs));
+	function hydrateInputs(json, inputs) {
+		if (!json.inputs) return inputs;
+		return json.inputs.map((input) => {
+			let inputHydrated = _objectSpread2(_objectSpread2({}, input), {}, { __proto__: Input.prototype });
+			if (inputHydrated.map) inputHydrated.map = _objectSpread2(_objectSpread2({}, inputHydrated.map), {}, { __proto__: PreviousMap.prototype });
+			return inputHydrated;
+		});
+	}
+	function constructNode(json, inputs, children) {
+		let defaults = _objectSpread2({}, json);
+		delete defaults.inputs;
+		delete defaults.nodes;
 		if (defaults.source) {
 			let _defaults$source = defaults.source, { inputId } = _defaults$source;
-			defaults.source = _objectWithoutProperties(_defaults$source, _excluded2);
+			defaults.source = _objectWithoutProperties(_defaults$source, _excluded);
 			if (inputId != null) defaults.source.input = inputs[inputId];
 		}
-		if (defaults.type === "root") return new Root(defaults);
-		else if (defaults.type === "decl") return new Declaration(defaults);
-		else if (defaults.type === "rule") return new Rule(defaults);
-		else if (defaults.type === "comment") return new Comment(defaults);
-		else if (defaults.type === "atrule") return new AtRule(defaults);
+		let node;
+		if (defaults.type === "root") node = new Root(defaults);
+		else if (defaults.type === "decl") node = new Declaration(defaults);
+		else if (defaults.type === "rule") node = new Rule(defaults);
+		else if (defaults.type === "comment") node = new Comment(defaults);
+		else if (defaults.type === "atrule") node = new AtRule(defaults);
 		else throw new Error("Unknown node type: " + json.type);
+		if (children) {
+			node.nodes = children;
+			for (let child of children) child.parent = node;
+		}
+		return node;
+	}
+	function fromJSON(json, inputs) {
+		if (Array.isArray(json)) return json.map((n) => fromJSON(n));
+		let result;
+		let stack = [{
+			childIndex: 0,
+			children: [],
+			inputs: hydrateInputs(json, inputs),
+			json
+		}];
+		while (stack.length > 0) {
+			let frame = stack[stack.length - 1];
+			let jsonNodes = frame.json.nodes;
+			if (jsonNodes && frame.childIndex < jsonNodes.length) {
+				let childJson = jsonNodes[frame.childIndex];
+				frame.childIndex += 1;
+				stack.push({
+					childIndex: 0,
+					children: [],
+					inputs: hydrateInputs(childJson, frame.inputs),
+					json: childJson
+				});
+				continue;
+			}
+			stack.pop();
+			let node = constructNode(frame.json, frame.inputs, jsonNodes ? frame.children : void 0);
+			if (stack.length > 0) stack[stack.length - 1].children.push(node);
+			else result = node;
+		}
+		return result;
 	}
 	module.exports = fromJSON;
 	fromJSON.default = fromJSON;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/map-generator.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/map-generator.js
 var require_map_generator = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init__polyfill_node_buffer();
 	let { dirname, relative, resolve, sep } = (init__polyfill_node_path(), __toCommonJS(_polyfill_node_path_exports));
@@ -32599,7 +32829,15 @@ var require_map_generator = /* @__PURE__ */ __commonJSMin(((exports, module) => 
 					if (node.type !== "comment") continue;
 					if (node.text.startsWith("# sourceMappingURL=")) this.root.removeChild(i);
 				}
-			} else if (this.css) this.css = this.css.replace(/\n*\/\*#[\S\s]*?\*\/$/gm, "");
+			} else if (this.css) {
+				let startIndex;
+				while ((startIndex = this.css.lastIndexOf("/*#")) !== -1) {
+					let endIndex = this.css.indexOf("*/", startIndex + 3);
+					if (endIndex === -1) break;
+					while (startIndex > 0 && this.css[startIndex - 1] === "\n") startIndex--;
+					this.css = this.css.slice(0, startIndex) + this.css.slice(endIndex + 2);
+				}
+			}
 		}
 		generate() {
 			this.clearAnnotation();
@@ -32807,7 +33045,7 @@ var require_map_generator = /* @__PURE__ */ __commonJSMin(((exports, module) => 
 	module.exports = MapGenerator;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/tokenize.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/tokenize.js
 var require_tokenize$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	const SINGLE_QUOTE = "'".charCodeAt(0);
 	const DOUBLE_QUOTE = "\"".charCodeAt(0);
@@ -32841,6 +33079,7 @@ var require_tokenize$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		let pos = 0;
 		let buffer = [];
 		let returned = [];
+		let lastBadParen = -1;
 		function position() {
 			return pos;
 		}
@@ -32909,15 +33148,22 @@ var require_tokenize$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 							next
 						];
 						pos = next;
-					} else {
+					} else if (pos <= lastBadParen) currentToken = [
+						"(",
+						"(",
+						pos
+					];
+					else {
 						next = css.indexOf(")", pos + 1);
 						content = css.slice(pos, next + 1);
-						if (next === -1 || RE_BAD_BRACKET.test(content)) currentToken = [
-							"(",
-							"(",
-							pos
-						];
-						else {
+						if (next === -1 || RE_BAD_BRACKET.test(content)) {
+							lastBadParen = next === -1 ? length : next;
+							currentToken = [
+								"(",
+								"(",
+								pos
+							];
+						} else {
 							currentToken = [
 								"brackets",
 								content,
@@ -33032,7 +33278,7 @@ var require_tokenize$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/parser.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/parser.js
 var require_parser$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let AtRule = require_at_rule();
 	let Comment = require_comment$1();
@@ -33050,6 +33296,11 @@ var require_parser$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			let pos = token[3] || token[2];
 			if (pos) return pos;
 		}
+	}
+	function tokensToString(tokens, from, to) {
+		let result = "";
+		for (let i = from; i < to; i++) result += tokens[i][1];
+		return result;
 	}
 	var Parser = class {
 		constructor(input) {
@@ -33168,7 +33419,7 @@ var require_parser$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			node.source.end = this.getPosition(token[3] || token[2]);
 			node.source.end.offset++;
 			let text = token[1].slice(2, -2);
-			if (/^\s*$/.test(text)) {
+			if (!text.trim()) {
 				node.text = "";
 				node.raws.left = text;
 				node.raws.right = "";
@@ -33192,40 +33443,41 @@ var require_parser$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			}
 			node.source.end = this.getPosition(last[3] || last[2] || findLastWithPosition(tokens));
 			node.source.end.offset++;
-			while (tokens[0][0] !== "word") {
-				if (tokens.length === 1) this.unknownWord(tokens);
-				node.raws.before += tokens.shift()[1];
+			let start = 0;
+			while (tokens[start][0] !== "word") {
+				if (start === tokens.length - 1) this.unknownWord([tokens[start]]);
+				start++;
 			}
-			node.source.start = this.getPosition(tokens[0][2]);
-			node.prop = "";
-			while (tokens.length) {
-				let type = tokens[0][0];
+			node.raws.before += tokensToString(tokens, 0, start);
+			node.source.start = this.getPosition(tokens[start][2]);
+			let propStart = start;
+			while (start < tokens.length) {
+				let type = tokens[start][0];
 				if (type === ":" || type === "space" || type === "comment") break;
-				node.prop += tokens.shift()[1];
+				start++;
 			}
-			node.raws.between = "";
+			node.prop = tokensToString(tokens, propStart, start);
+			let betweenStart = start;
 			let token;
-			while (tokens.length) {
-				token = tokens.shift();
-				if (token[0] === ":") {
-					node.raws.between += token[1];
-					break;
-				} else {
-					if (token[0] === "word" && /\w/.test(token[1])) this.unknownWord([token]);
-					node.raws.between += token[1];
-				}
+			while (start < tokens.length) {
+				token = tokens[start];
+				start++;
+				if (token[0] === ":") break;
+				if (token[0] === "word" && /\w/.test(token[1])) this.unknownWord([token]);
 			}
+			node.raws.between = tokensToString(tokens, betweenStart, start);
 			if (node.prop[0] === "_" || node.prop[0] === "*") {
 				node.raws.before += node.prop[0];
 				node.prop = node.prop.slice(1);
 			}
-			let firstSpaces = [];
-			let next;
-			while (tokens.length) {
-				next = tokens[0][0];
+			let firstSpacesStart = start;
+			while (start < tokens.length) {
+				let next = tokens[start][0];
 				if (next !== "space" && next !== "comment") break;
-				firstSpaces.push(tokens.shift());
+				start++;
 			}
+			let firstSpaces = tokens.slice(firstSpacesStart, start);
+			tokens = tokens.slice(start);
 			this.precheckMissedSemicolon(tokens);
 			for (let i = tokens.length - 1; i >= 0; i--) {
 				token = tokens[i];
@@ -33485,7 +33737,7 @@ var require_parser$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = Parser;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/parse.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/parse.js
 var require_parse = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Container = require_container$1();
 	let Input = require_input();
@@ -33509,7 +33761,7 @@ var require_parse = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Container.registerParse(parse);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/warning.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/warning.js
 var require_warning = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var Warning = class {
 		constructor(text, opts = {}) {
@@ -33538,7 +33790,7 @@ var require_warning = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Warning.default = Warning;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/result.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/result.js
 var require_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Warning = require_warning();
 	var Result = class {
@@ -33572,7 +33824,7 @@ var require_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Result.default = Result;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/warn-once.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/warn-once.js
 var require_warn_once = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let printed = {};
 	module.exports = function warnOnce(message) {
@@ -33582,7 +33834,7 @@ var require_warn_once = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	};
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/lazy-result.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/lazy-result.js
 var require_lazy_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init_objectSpread2();
 	init_asyncToGenerator();
@@ -33678,8 +33930,12 @@ var require_lazy_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		};
 	}
 	function cleanMarks(node) {
-		node[isClean] = false;
-		if (node.nodes) node.nodes.forEach((i) => cleanMarks(i));
+		let stack = [node];
+		while (stack.length > 0) {
+			let next = stack.pop();
+			next[isClean] = false;
+			if (next.nodes) for (let i of next.nodes) stack.push(i);
+		}
 		return node;
 	}
 	let postcss = {};
@@ -33868,6 +34124,15 @@ var require_lazy_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 			if (opts.syntax) str = opts.syntax.stringify;
 			if (opts.stringifier) str = opts.stringifier;
 			if (str.stringify) str = str.stringify;
+			let rootSource = this.result.root.source;
+			if (opts.map === void 0 && !(rootSource && rootSource.input && rootSource.input.map)) {
+				let result = "";
+				str(this.result.root, (i) => {
+					result += i;
+				});
+				this.result.css = result;
+				return this.result;
+			}
 			let data = new MapGenerator(str, this.result.root, this.result.opts).generate();
 			this.result.css = data[0];
 			this.result.map = data[1];
@@ -33965,16 +34230,51 @@ var require_lazy_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 		}
 		walkSync(node) {
 			node[isClean] = true;
-			let events = getEvents(node);
-			for (let event of events) if (event === CHILDREN) {
-				if (node.nodes) node.each((child) => {
-					if (!child[isClean]) this.walkSync(child);
-				});
-			} else {
-				let visitors = this.listeners[event];
-				if (visitors) {
-					if (this.visitSync(visitors, node.toProxy())) return;
+			let stack = [{
+				eventIndex: 0,
+				events: getEvents(node),
+				iterator: 0,
+				node
+			}];
+			while (stack.length > 0) {
+				let visit = stack[stack.length - 1];
+				let visitNode = visit.node;
+				if (visit.iterator !== 0) {
+					let iterator = visit.iterator;
+					let child;
+					let descended = false;
+					while (child = visitNode.nodes[visitNode.indexes[iterator]]) {
+						visitNode.indexes[iterator] += 1;
+						if (!child[isClean]) {
+							child[isClean] = true;
+							stack.push({
+								eventIndex: 0,
+								events: getEvents(child),
+								iterator: 0,
+								node: child
+							});
+							descended = true;
+							break;
+						}
+					}
+					if (descended) continue;
+					visit.iterator = 0;
+					delete visitNode.indexes[iterator];
 				}
+				if (visit.eventIndex < visit.events.length) {
+					let event = visit.events[visit.eventIndex];
+					visit.eventIndex += 1;
+					if (event === CHILDREN) {
+						if (visitNode.nodes && visitNode.nodes.length) visit.iterator = visitNode.getIterator();
+					} else {
+						let visitors = this.listeners[event];
+						if (visitors) {
+							if (this.visitSync(visitors, visitNode.toProxy())) stack.pop();
+						}
+					}
+					continue;
+				}
+				stack.pop();
 			}
 		}
 		warnings() {
@@ -33990,11 +34290,11 @@ var require_lazy_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Document.registerLazyResult(LazyResult);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/no-work-result.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/no-work-result.js
 var require_no_work_result = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let MapGenerator = require_map_generator();
 	let parse = require_parse();
-	const Result = require_result();
+	let Result = require_result();
 	let stringify = require_stringify();
 	let warnOnce = require_warn_once();
 	var NoWorkResult = class {
@@ -34041,15 +34341,14 @@ var require_no_work_result = /* @__PURE__ */ __commonJSMin(((exports, module) =>
 			this._css = css;
 			this._opts = opts;
 			this._map = void 0;
-			let root;
 			let str = stringify;
-			this.result = new Result(this._processor, root, this._opts);
+			this.result = new Result(this._processor, void 0, this._opts);
 			this.result.css = css;
 			let self = this;
 			Object.defineProperty(this.result, "root", { get() {
 				return self.root;
 			} });
-			let map = new MapGenerator(str, root, this._opts, css);
+			let map = new MapGenerator(str, void 0, this._opts, css);
 			if (map.isMap()) {
 				let [generatedCSS, generatedMap] = map.generate();
 				if (generatedCSS) this.result.css = generatedCSS;
@@ -34088,7 +34387,7 @@ var require_no_work_result = /* @__PURE__ */ __commonJSMin(((exports, module) =>
 	NoWorkResult.default = NoWorkResult;
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/processor.js
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/processor.js
 var require_processor$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Document = require_document();
 	let LazyResult = require_lazy_result();
@@ -34096,7 +34395,7 @@ var require_processor$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	let Root = require_root$1();
 	var Processor = class {
 		constructor(plugins = []) {
-			this.version = "8.5.6";
+			this.version = "8.5.19";
 			this.plugins = this.normalize(plugins);
 		}
 		normalize(plugins) {
@@ -34127,7 +34426,7 @@ var require_processor$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	Document.registerProcessor(Processor);
 }));
 //#endregion
-//#region node_modules/.pnpm/postcss@8.5.6/node_modules/postcss/lib/postcss.mjs
+//#region node_modules/.pnpm/postcss@8.5.19/node_modules/postcss/lib/postcss.mjs
 var import_postcss = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exports, module) => {
 	init__polyfill_node_process();
 	let AtRule = require_at_rule();
@@ -43354,7 +43653,7 @@ function mergeSourceMaps(scriptMap, templateMap, templateLineOffset) {
 //#endregion
 //#region packages/compiler-sfc/src/index.ts
 init_objectSpread2();
-const version = "3.6.0-beta.17";
+const version = "3.6.0-rc.1";
 const parseCache = parseCache$1;
 const errorMessages = _objectSpread2(_objectSpread2({}, errorMessages$1), DOMErrorMessages);
 const walk = walk$2;
