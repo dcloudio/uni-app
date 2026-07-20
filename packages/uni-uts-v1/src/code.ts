@@ -145,6 +145,30 @@ function formatUTSBridgeMethod(method: UTSBridgeMethod) {
   }
 }
 
+function stringifyUTSBridgeMethod(method: UTSBridgeMethod) {
+  let code = '{'
+  const formattedMethod = formatUTSBridgeMethod(method)
+  for (const key in formattedMethod) {
+    if (!hasOwn(formattedMethod, key)) {
+      continue
+    }
+    const value = formattedMethod[key]
+    if (value === undefined) {
+      continue
+    }
+    if (code.length > 1) {
+      code += ', '
+    }
+    code += `${key}: ${JSON.stringify(value)}`
+  }
+  code += '}'
+  return code
+}
+
+function stringifyUTSBridgeMethodList(methods: UTSBridgeMethod[]) {
+  return `[${methods.map(stringifyUTSBridgeMethod).join(', ')}]`
+}
+
 export async function genProxyCodeV2(result: UTSResult) {
   if (!result.uts_bridge) {
     return ''
@@ -155,13 +179,13 @@ export async function genProxyCodeV2(result: UTSResult) {
     interfaces,
     uts_bridge_name: utsBridgeName,
   } = result.uts_bridge
-  let code =
-    'const { registerUTSInterface, initUTSProxyClass, initUTSElementProxyClass, initUTSProxyFunction } = uni'
+  let code = `const { registerUTSInterface, initUTSProxyClass, initUTSElementProxyClass, initUTSProxyFunction } = uni\n
+const moduleName = '${utsBridgeName}'\n`
   interfaces.forEach((i) => {
     code += `registerUTSInterface({ name: '${
       i.name
-    }', utsBridgeName: '${utsBridgeName}', methods: ${JSON.stringify(
-      i.methods.map(formatUTSBridgeMethod)
+    }', utsBridgeName: moduleName, methods: ${stringifyUTSBridgeMethodList(
+      i.methods
     )} })\n`
   })
   classes.forEach((c) => {
@@ -173,22 +197,21 @@ export async function genProxyCodeV2(result: UTSResult) {
     const initProxyMethodName = isElement
       ? 'initUTSElementProxyClass'
       : 'initUTSProxyClass'
-    code += `${exportModifier}${initProxyMethodName}({ utsBridgeName: '${utsBridgeName}', class: '${
+    code += `${exportModifier}${initProxyMethodName}({ utsBridgeName: moduleName, class: '${
       c.name
-    }', constructor: ${JSON.stringify(
-      formatUTSBridgeMethod(c.constructor)
-    )}, staticMethods: ${JSON.stringify(
-      c.static_methods.map(formatUTSBridgeMethod)
-    )}, methods: ${JSON.stringify(c.methods.map(formatUTSBridgeMethod))} })\n`
+    }', constructor: ${stringifyUTSBridgeMethod(
+      c.constructor
+    )}, staticMethods: ${stringifyUTSBridgeMethodList(
+      c.static_methods
+    )}, methods: ${stringifyUTSBridgeMethodList(c.methods)} })\n`
   })
   functions.forEach((f) => {
     const exportModifier = f.is_default
       ? 'export default '
       : `export const ${f.name} = `
-    code += `${exportModifier}initUTSProxyFunction(${JSON.stringify({
-      ...formatUTSBridgeMethod(f),
-      utsBridgeName,
-    })})\n`
+    code += `${exportModifier}initUTSProxyFunction(moduleName, ${stringifyUTSBridgeMethod(
+      f
+    )})\n`
   })
   return code
 }

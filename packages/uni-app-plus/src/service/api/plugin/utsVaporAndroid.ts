@@ -604,6 +604,9 @@ export function initUTSElementProxyClass(options: ClassOptions) {
   })
 }
 
-export function initUTSProxyFunction(options: FunctionOptions) {
-  return initProxyFunction(options.utsBridgeName, options)
+export function initUTSProxyFunction(
+  moduleName: string,
+  options: FunctionOptions
+) {
+  return initProxyFunction(moduleName, options)
 }
