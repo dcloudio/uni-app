@@ -36,7 +36,7 @@
 | waiting-image | string |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 进入后台时推流的等待画面 |
 | waiting-image-md5 | string |   | Web: x; 微信小程序: x; Android: x; iOS: x | 等待画面资源的MD5值 |
 | background-mute | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81 | 进入后台时是否静音 |
-| enableVideoCustomRender | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>自定义渲染，允许开发者自行处理所采集的视频帧，详见[LivePusherContext](../api/create-live-pusher-context.md) |
+| enableVideoCustomRender | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>自定义渲染，允许开发者自行处理所采集的视频帧，详见[LivePusherContext]((LivePusherContext)) |
 | whiteness | number | 0 | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(number)*<br/>美白，取值范围 0-9（iOS取值范围为1） ，0 表示关闭 |
 | audio-quality | string | "high" | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(string)*<br/>高音质(48KHz)或低音质(16KHz)，值为`high`, `low` |
 | waiting-image-hash | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>等待画面资源的MD5值 |

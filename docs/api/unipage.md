@@ -734,38 +734,38 @@ querySelectorAll
 > ② 截图高度固定为屏幕高度（不管内容多少都是一屏高）
 
 ##### takeSnapshot 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) | HarmonyOS(Vapor) | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | 5.02 | 5.02 | x | 5.02 | 5.02 | x |
+| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | x | 5.02 | 5.02 | x | 5.02 | x |
 
 
 ##### 参数 
 
 | 名称 | 类型 | 必填 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| options | **TakeSnapshotOptions** | 是 | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图的参数对象 |
+| options | **TakeSnapshotOptions** | 是 | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图的参数对象 |
 
 #### options 的属性描述
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 否 | "file" | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图导出类型，目前仅支持 'file' 保存到临时文件目录 |
-| format | string | 否 | "png" | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图文件格式，目前仅支持 'png' |
-| success | (res: [TakeSnapshotSuccess](#takesnapshotsuccess-values)) => void | 否 |  | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02; HarmonyOS(VDOM) UTS 插件: x | 接口调用成功的回调函数 |
-| fail | (res: [TakeSnapshotFail](#takesnapshotfail-values)) => void | 否 |  | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02; HarmonyOS(VDOM) UTS 插件: x | 接口调用失败的回调函数 |
-| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02; HarmonyOS(VDOM) UTS 插件: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| type | string | 否 | "file" | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图导出类型，目前仅支持 'file' 保存到临时文件目录 |
+| format | string | 否 | "png" | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图文件格式，目前仅支持 'png' |
+| success | (res: [TakeSnapshotSuccess](#takesnapshotsuccess-values)) => void | 否 |  | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 接口调用成功的回调函数 |
+| fail | (res: [TakeSnapshotFail](#takesnapshotfail-values)) => void | 否 |  | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 接口调用失败的回调函数 |
+| complete | (res: any) => void | 否 |  | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ###### TakeSnapshotSuccess 的属性值 @takesnapshotsuccess-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| tempFilePath | string | 是 | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图保存的临时文件路径 |
+| tempFilePath | string | 是 | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图保存的临时文件路径 |
 
 ###### TakeSnapshotFail 的属性值 @takesnapshotfail-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS(VDOM): 5.02; HarmonyOS(Vapor): 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图失败时的错误描述信息 |
+| errMsg | string | 是 | Web: x; 微信小程序: x; Android: 5.02; iOS: 5.02; iOS(VDOM) UTS 插件: x; HarmonyOS: 5.02; HarmonyOS(VDOM) UTS 插件: x | 截图失败时的错误描述信息 |
 
 
 

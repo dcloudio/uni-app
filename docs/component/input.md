@@ -69,7 +69,7 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| none | Web: 5.0; 微信小程序: x; Android: 4.73; iOS: 4.73; HarmonyOS(VDOM): 5.08; HarmonyOS(Vapor): 5.08 | 获取焦点时不显示软键盘 |
+| none | Web: 5.0; 微信小程序: x; Android: 4.73; iOS: 4.73; HarmonyOS: 5.08 | 获取焦点时不显示软键盘 |
 | email | Web: 5.0; 微信小程序: x; Android: 4.73; iOS: 4.73; HarmonyOS: 4.73 | 为邮件地址输入优化的虚拟键盘 |
 | url | Web: 5.0; 微信小程序: x; Android: 4.73; iOS: 4.73; HarmonyOS: 4.73 | 为网址输入优化的虚拟键盘 |
 | text | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 文本输入键盘 |

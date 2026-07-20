@@ -63,7 +63,7 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| true | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS(VDOM): -; HarmonyOS(Vapor): - | 去重 |
+| true | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 去重 |
 | false | Web: -; 微信小程序: -; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 不去重 |
 
 #### page-data 的属性描述

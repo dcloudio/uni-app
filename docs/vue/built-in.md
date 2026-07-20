@@ -15,8 +15,8 @@
 | v-bind | Web: 4.0; 微信小程序: 4.11; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 | v-model | Web: 4.0; 微信小程序: 4.11; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 | v-slot | Web: 4.0; 微信小程序: 4.11; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
-| v-pre | Web: 4.0; 微信小程序: x; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
-| v-once | Web: x; 微信小程序: x; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
+| v-pre | Web: 4.0; 微信小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 |
+| v-once | Web: x; 微信小程序: x; Android: 3.99; iOS: 4.11; HarmonyOS: 4.61 |
 | v-memo | Web: x; 微信小程序: x; Android(VDOM): 3.99; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x |
 | v-cloak | Web: 4.0; 微信小程序: x; Android: x; iOS: x; HarmonyOS: x |
 
