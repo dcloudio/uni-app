@@ -59,6 +59,7 @@ import { existsSync, readdirSync, rmSync } from 'fs-extra'
 import { restoreDebuggerFiles } from './manifest/dex'
 import { compileArkTS } from './arkts'
 import type { UniXCompilerOptions } from '../lib/uni-x/dist/compiler'
+import { restoreConfigJson } from './manifest/config'
 
 export { syncUTSFiles } from './uni_modules'
 export * from './tsc'
@@ -531,21 +532,9 @@ export async function compile(
             cacheDir,
             pkg.is_uni_modules
           )
-          // 处理 config.json
-          genConfigJson(
-            utsPlatform,
-            isX,
-            (utsPlatform === 'app-android'
-              ? proxyCodeOptions.androidHookClass
-              : proxyCodeOptions.iOSHookClass) || '',
-            components,
-            customElements,
-            pluginRelativeDir,
-            pkg.is_uni_modules,
-            inputDir,
-            outputDir,
-            resolveConfigProvider(utsPlatform, pkg.id, transform)
-          )
+
+          // 缓存有效时不重新升成，直接从缓存恢复
+          restoreConfigJson(utsPlatform, pluginRelativeDir, outputDir, cacheDir)
 
           console.log(cacheTips(pkg.id))
 
@@ -586,21 +575,6 @@ export async function compile(
         } else {
           deps.push(...resolveIOSDepFiles(filename))
         }
-        // 处理 config.json
-        genConfigJson(
-          utsPlatform,
-          isX,
-          (utsPlatform === 'app-android'
-            ? proxyCodeOptions.androidHookClass
-            : proxyCodeOptions.iOSHookClass) || '',
-          components,
-          customElements,
-          pluginRelativeDir,
-          pkg.is_uni_modules,
-          inputDir,
-          outputDir,
-          resolveConfigProvider(utsPlatform, pkg.id, transform)
-        )
         const res = await getCompiler(compilerType).runDev(filename, {
           components,
           customElements,
@@ -620,6 +594,22 @@ export async function compile(
           sourceMap: !!sourceMap,
           uniModules: uni_modules || [],
         })
+        // 处理 config.json
+        genConfigJson(
+          utsPlatform,
+          isX,
+          (utsPlatform === 'app-android'
+            ? proxyCodeOptions.androidHookClass
+            : proxyCodeOptions.iOSHookClass) || '',
+          components,
+          customElements,
+          pluginRelativeDir,
+          pkg.is_uni_modules,
+          inputDir,
+          outputDir,
+          resolveConfigProvider(utsPlatform, pkg.id, transform),
+          !!(res && res.uts_bridge)
+        )
         if (res) {
           if (res.code) {
             //重要：该日志会被HBuilderX使用，用于识别uts插件编译是否失败，如果调整文案，需要通知HBuilderX。

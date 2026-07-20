@@ -29,6 +29,7 @@ import type { ClassMeta } from './code'
 import { uvueOutDir } from './uvue'
 import type { KotlinCompilerServer } from './kotlin'
 import type { SwiftCompilerServer } from './swift'
+import { resolveConfigJsonCacheFile } from './manifest/config'
 
 type UTSPluginPlatform = 'app-android' | 'app-ios' | 'app-harmony'
 interface ToOptions {
@@ -224,6 +225,7 @@ export interface UTSPlatformResourceOptions {
   result: UTSResult
   provider?: { name: string; service: string; class: string }
   uniModules: string[]
+  utsBridge?: boolean
 }
 
 export function genUTSPlatformResource(
@@ -654,7 +656,8 @@ export function genConfigJson(
   is_uni_modules: boolean,
   inputDir: string,
   outputDir: string,
-  provider?: { name: string; service: string; class: string }
+  provider?: { name: string; service: string; class: string },
+  utsBridge?: boolean
 ) {
   // 不过滤了，只要有，就copy
   // if (!Object.keys(components).length && !hookClass && !provider) {
@@ -684,7 +687,13 @@ export function genConfigJson(
     platform === 'app-android'
       ? parseKotlinPackageWithPluginId(pluginId, is_uni_modules) + '.'
       : parseSwiftPackageWithPluginId(pluginId, is_uni_modules),
-    provider
+    provider,
+    utsBridge
+  )
+  // 存储到缓存目录，缓存有效时直接恢复
+  fs.copySync(
+    resolve(utsOutputDir, 'config.json'),
+    resolveConfigJsonCacheFile(pluginRelativeDir, outputDir, platform)
   )
 }
 
@@ -697,7 +706,8 @@ function copyConfigJson(
   componentsObj: Record<string, string>,
   customElementsObj: Record<string, string> | undefined,
   namespace: string,
-  provider?: { name: string; service: string; class: string }
+  provider?: { name: string; service: string; class: string },
+  utsBridge?: boolean
 ) {
   const configJsonFilename = resolve(inputDir, 'config.json')
   const outputConfigJsonFilename = resolve(outputDir, 'config.json')
@@ -714,6 +724,13 @@ function copyConfigJson(
     namespace,
     inputDir
   )
+
+  if (utsBridge) {
+    configJson.utsMethodRegister =
+      platform === 'app-android'
+        ? `${namespace}.UniUTSMethodRegister`
+        : `${namespace}UniUTSMethodRegister`
+  }
 
   if (
     hasComponents ||

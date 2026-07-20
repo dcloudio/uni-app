@@ -200,6 +200,7 @@ export async function runKotlinProd(
       result,
       provider: resolveConfigProvider('app-android', uniModuleId, transform),
       uniModules,
+      utsBridge: !!result.uts_bridge,
     })
   }
 
