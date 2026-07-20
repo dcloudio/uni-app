@@ -163,12 +163,16 @@ if (
   REMOVED_PLUGINS.push('vite:esbuild-transpile')
 }
 
-export function configResolved(config: ResolvedConfig, isAndroidX = false) {
-  removePlugins(REMOVED_PLUGINS.slice(0), config)
+export function configResolved(config: ResolvedConfig, isAndroidVdom = false) {
+  // JS 引擎发行构建需要保留 Terser，Android VDOM 不产出 JS，继续裁剪。
+  const removedPlugins = isAndroidVdom
+    ? REMOVED_PLUGINS
+    : REMOVED_PLUGINS.filter((plugin) => plugin !== 'vite:terser')
+  removePlugins(removedPlugins, config)
   // console.log(plugins.map((p) => p.name))
   // 强制不inline
   config.build.assetsInlineLimit = 0
-  injectAssetPlugin(config, { isAndroidX })
+  injectAssetPlugin(config, { isAndroidX: isAndroidVdom })
 }
 
 export function relativeInputDir(filename: string) {
