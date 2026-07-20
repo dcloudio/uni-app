@@ -30,9 +30,9 @@ picker组件其实是基于[picker-view组件](picker-view.md)封装了一个弹
 | :- | :- | :- |  :-: | :- |
 | disabled | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 是否禁用 |
 | mode | String as PropType\<Mode> | "selector" | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 选择器类型 |
-| range | string[\] | [\] | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | mode为 selector 或 multiSelector 时，range 有效 |
+| range | string\[\] | \[\] | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | mode为 selector 或 multiSelector 时，range 有效 |
 | range-key | string |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 当 range 是一个 Object Array 时，通过 range-key 来指定 Object 中 key 的值作为选择器显示内容 |
-| value | string \| number \| number[\] |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 表示选择了 range 中的第几个（下标从 0 开始） |
+| value | string \| number \| number\[\] |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 表示选择了 range 中的第几个（下标从 0 开始） |
 | start | string |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 表示有效时间范围的开始 |
 | end | string |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 表示有效时间范围的结束 |
 | fields | String as PropType\<Fields> | "day" | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 有效值 year,month,day，表示选择器的粒度 |

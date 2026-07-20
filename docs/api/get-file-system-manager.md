@@ -1323,7 +1323,7 @@ readdir
 
 
 
-#### readdirSync(dirPath: string): string[] \| null; @readdirsync
+#### readdirSync(dirPath: string): string\[] \| null; @readdirsync
 readdirSync
 FileSystemManager.readdir 的同步版本
 ##### readdirSync 兼容性 <Help /> 
@@ -1980,7 +1980,7 @@ isFile
 
 
 
-#### statSync(path : string, recursive : boolean) : FileStats[]; @statsync
+#### statSync(path : string, recursive : boolean) : FileStats\[]; @statsync
 statSync
 FileSystemManager.stat 的同步版本
 ##### statSync 兼容性 <Help /> 

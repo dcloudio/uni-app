@@ -30,7 +30,7 @@
 | page-data | string | Web: 4.0; 微信小程序: -; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | add 多次查询的集合, replace 当前查询的集合 |
 | page-current | number | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 当前页 |
 | page-size | number | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 每页数据数量 |
-| getone | boolean | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 指定查询结果是否返回数组第一条数据，默认 false。在false情况下返回的是数组，即便只有一条结果，也需要\[0]方式获取。在true下，直接返回结果数据，少一层数组 |
+| getone | boolean | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 指定查询结果是否返回数组第一条数据，默认 false。在false情况下返回的是数组，即便只有一条结果，也需要\[0]的方式获取。在true下，直接返回结果数据，少一层数组 |
 | getcount | boolean | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 是否查询总数量 |
 | gettree | boolean | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | 是否查询树状结构数据 |
 | startwith | string | Web: 4.0; 微信小程序: 4.41; Android: 3.93; iOS: 4.11; HarmonyOS: 4.61 | gettree的第一层级条件，此初始条件可以省略，不传startWith时默认从最顶级开始查询 |

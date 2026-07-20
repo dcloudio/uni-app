@@ -11,7 +11,7 @@ setInterval() 方法重复调用一个函数或执行一个代码片段，在每
 | :- | :- | :- |
 | handler | string \| Function | 是 |
 | timeout | number | 否 |
-| arguments | any[\] | 是 | 
+| arguments | any\[\] | 是 | 
 
 
 **返回值**
@@ -48,7 +48,7 @@ setInterval() 方法重复调用一个函数或执行一个代码片段，在每
 | :- | :- | :- |
 | handler | string \| Function | 是 |
 | timeout | number | 否 |
-| arguments | any[\] | 是 | 
+| arguments | any\[\] | 是 | 
 
 
 **返回值**

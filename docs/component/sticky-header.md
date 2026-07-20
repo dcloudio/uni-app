@@ -6,9 +6,7 @@
 
 > 组件类型：UniStickyHeaderElement 
 
- 吸顶布局容器 
-
- 注意：暂时仅支持作为list-view、sticky-section的子节点, sticky-header不支持css样式！当一个容器视图设置多个sticky-header时，后一个sticky-header会停靠在前一个sticky-header的末尾处。
+ 吸顶布局容器 <br/><br/> 注意：暂时仅支持作为list-view、sticky-section的子节点, sticky-header不支持css样式！当一个容器视图设置多个sticky-header时，后一个sticky-header会停靠在前一个sticky-header的末尾处。
 
 
 ### 兼容性 <Help />
@@ -20,7 +18,7 @@
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| padding | Array\<number> | [0,0,0,0\] | Web: 4.02; 微信小程序: x; Android(VDOM): 3.98; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: x | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距  |
+| padding | Array\<number> | \[0,0,0,0\] | Web: 4.02; 微信小程序: x; Android(VDOM): 3.98; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: x | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距  |
 
 
 

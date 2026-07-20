@@ -214,7 +214,7 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| items | number[\] | 是 | 要包含在新数组对象中的一组元素。 | 
+| items | number\[\] | 是 | 要包含在新数组对象中的一组元素。 | 
 
 
 **返回值**
@@ -1364,7 +1364,7 @@ ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
 **返回值**
 | 类型 | 描述 |
 | :- | :- |
-| IterableIterator\<\[number, number] | 数组条目的键值对迭代器 | 
+| IterableIterator\<\[number, number]> | 数组条目的键值对迭代器 | 
 
 
 ::: preview 

@@ -35,7 +35,7 @@ createObserver
 
 ##### PerformanceObserverEntryList 的方法 @performanceobserverentrylist-values 
 
-##### getEntries(): PerformanceEntry[\] @getentries
+##### getEntries(): PerformanceEntry\[\] @getentries
 getEntries
 该方法返回当前列表中的所有性能数据
 ###### getEntries 兼容性 <Help /> 
@@ -68,9 +68,9 @@ getEntries
 | initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
 | viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
 
-##### getEntriesByType(entryType: string): PerformanceEntry[\] @getentriesbytype
+##### getEntriesByType(entryType: string): PerformanceEntry\[\] @getentriesbytype
 getEntriesByType
-获取当前列表中所有类型为 \[entryType]的性能数据
+获取当前列表中所有类型为 \[entryType] 的性能数据
 ###### getEntriesByType 兼容性 <Help /> 
 | Web |
 | :- |
@@ -106,9 +106,9 @@ getEntriesByType
 | initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
 | viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
 
-##### getEntriesByName(name: string, entryType: string): PerformanceEntry[\] @getentriesbyname
+##### getEntriesByName(name: string, entryType: string): PerformanceEntry\[\] @getentriesbyname
 getEntriesByName
-获取当前列表中所有名称为 \[name] 且类型为 [entryType]的性能数据
+获取当前列表中所有名称为 \[name] 且类型为 \[entryType] 的性能数据
 ###### getEntriesByName 兼容性 <Help /> 
 | Web |
 | :- |
@@ -249,7 +249,7 @@ disconnect
 | type | string | 否 | Web: x |
  
 
-#### getEntries(): PerformanceEntry[\] @getentries
+#### getEntries(): PerformanceEntry\[\] @getentries
 getEntries
 该方法返回当前缓冲区中的所有性能数据
 ##### getEntries 兼容性 <Help /> 
@@ -282,9 +282,9 @@ getEntries
 | initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
 | viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
 
-#### getEntriesByType(entryType: string): PerformanceEntry[\] @getentriesbytype
+#### getEntriesByType(entryType: string): PerformanceEntry\[\] @getentriesbytype
 getEntriesByType
-获取当前缓冲区中所有类型为 \[entryType]的性能数据
+获取当前缓冲区中所有类型为 \[entryType] 的性能数据
 ##### getEntriesByType 兼容性 <Help /> 
 | Web | 微信小程序 |
 | :- | :- |
@@ -320,9 +320,9 @@ getEntriesByType
 | initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
 | viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
 
-#### getEntriesByName(name: string, entryType: string): PerformanceEntry[\] @getentriesbyname
+#### getEntriesByName(name: string, entryType: string): PerformanceEntry\[\] @getentriesbyname
 getEntriesByName
-获取当前缓冲区中所有名称为 \[name] 且类型为 [entryType]的性能数据
+获取当前缓冲区中所有名称为 \[name] 且类型为 \[entryType] 的性能数据
 ##### getEntriesByName 兼容性 <Help /> 
 | Web | 微信小程序 |
 | :- | :- |
@@ -377,7 +377,7 @@ setBufferSize
 
 ##### PerformanceObserverEntryList 的方法 @performanceobserverentrylist-values 
 
-##### getEntries(): PerformanceEntry[\] @getentries
+##### getEntries(): PerformanceEntry\[\] @getentries
 getEntries
 该方法返回当前列表中的所有性能数据
 ###### getEntries 兼容性 <Help /> 
@@ -410,9 +410,9 @@ getEntries
 | initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
 | viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
 
-##### getEntriesByType(entryType: string): PerformanceEntry[\] @getentriesbytype
+##### getEntriesByType(entryType: string): PerformanceEntry\[\] @getentriesbytype
 getEntriesByType
-获取当前列表中所有类型为 \[entryType]的性能数据
+获取当前列表中所有类型为 \[entryType] 的性能数据
 ###### getEntriesByType 兼容性 <Help /> 
 | Web |
 | :- |
@@ -448,9 +448,9 @@ getEntriesByType
 | initDataRecvTime | number | 否 | Web: x | 首次渲染参数在渲染层收到的时间。仅 firstRender 指标有效。 |
 | viewLayerRenderEndTime | number | 否 | Web: x | 渲染层执行渲染结束时间。仅 firstRender 指标有效。 | 
 
-##### getEntriesByName(name: string, entryType: string): PerformanceEntry[\] @getentriesbyname
+##### getEntriesByName(name: string, entryType: string): PerformanceEntry\[\] @getentriesbyname
 getEntriesByName
-获取当前列表中所有名称为 \[name] 且类型为 [entryType]的性能数据
+获取当前列表中所有名称为 \[name] 且类型为 \[entryType] 的性能数据
 ###### getEntriesByName 兼容性 <Help /> 
 | Web |
 | :- |

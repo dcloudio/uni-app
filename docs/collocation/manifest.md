@@ -202,7 +202,7 @@ App-Android平台发布配置
 | excludePermissions | Array\<string> |  | Android: 4.53; iOS: x | 强制移除的权限 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#excludepermissions) |
 | minSdkVersion | integer | 21 | Android: 3.9; iOS: x | 应用兼容的最低Android版本（API等级） [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#minsdkversion) |
 | targetSdkVersion | integer | 32 | Android: 3.9; iOS: x | 应用适配的目标Android版本（API等级），部分应用市场要求设置较高的targetSdkVersion才能提交审核 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#targetsdkversion) |
-| abiFilters | Array\<'armeabi-v7a' \| 'arm64-v8a' \| 'x86' \| 'x86_64'> | ["arm64-v8a"\] | Android: 3.9; iOS: x | 应用支持的CPU类型 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#abifilters) |
+| abiFilters | Array\<'armeabi-v7a' \| 'arm64-v8a' \| 'x86' \| 'x86_64'> | \["arm64-v8a"\] | Android: 3.9; iOS: x | 应用支持的CPU类型 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#abifilters) |
 | enableResourceOptimizations | boolean | "true" | Android: 4.33; iOS: x | 是否开启Android原生res资源文件优化，开启后res资源文件名称会被混淆 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#enableresourceoptimizations) |
 | aaptOptions | Array\<string> |  | Android: 4.31; iOS: x | aaptOptions 配置项 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#aaptoptions) |
 | buildFeatures | Array\<string> |  | Android: 4.31; iOS: x | buildFeatures 配置项 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#buildfeatures) |
@@ -358,7 +358,7 @@ Android平台发布配置
 | excludePermissions | Array\<string> |  | Android: 4.53 | 强制移除的权限 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#excludepermissions) |
 | minSdkVersion | integer | 21 | Android: 3.9 | 应用兼容的最低Android版本（API等级） [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#minsdkversion) |
 | targetSdkVersion | integer | 32 | Android: 3.9 | 应用适配的目标Android版本（API等级），部分应用市场要求设置较高的targetSdkVersion才能提交审核 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#targetsdkversion) |
-| abiFilters | Array\<'armeabi-v7a' \| 'arm64-v8a' \| 'x86' \| 'x86_64'> | ["arm64-v8a"\] | Android: 3.9 | 应用支持的CPU类型 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#abifilters) |
+| abiFilters | Array\<'armeabi-v7a' \| 'arm64-v8a' \| 'x86' \| 'x86_64'> | \["arm64-v8a"\] | Android: 3.9 | 应用支持的CPU类型 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#abifilters) |
 | enableResourceOptimizations | boolean | "true" | Android: 4.33 | 是否开启Android原生res资源文件优化，开启后res资源文件名称会被混淆 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#enableresourceoptimizations) |
 | aaptOptions | Array\<string> |  | Android: 4.31 | aaptOptions 配置项 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#aaptoptions) |
 | buildFeatures | Array\<string> |  | Android: 4.31 | buildFeatures 配置项 [参考文档](https://doc.dcloud.net.cn/uni-app-x/collocation/manifest-android.html#buildfeatures) |

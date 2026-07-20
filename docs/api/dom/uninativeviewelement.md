@@ -82,7 +82,7 @@ UniNativeViewElement -- Extends --> UniElement
 
 
 
-#### bindHarmonyWrappedBuilder\<O extends Object>(builder: WrappedBuilder\<\[options: O]>, options?: ESObject): BuilderNode\<[O] @bindharmonywrappedbuilder
+#### bindHarmonyWrappedBuilder\<O extends Object>(builder: WrappedBuilder\<\[options: O]>, options?: ESObject): BuilderNode\<\[O]> @bindharmonywrappedbuilder
 
 绑定鸿蒙 wrapperBuilder
 
@@ -96,7 +96,7 @@ UniNativeViewElement -- Extends --> UniElement
 
 | 名称 | 类型 | 必填 | 兼容性 |
 | :- | :- | :- |  :-: |
-| builder | WrappedBuilder\<\[options: O\] | 是 | Android: x; iOS: x |
+| builder | WrappedBuilder\<\[options: O]> | 是 | Android: x; iOS: x |
 | options | ESObject | 否 | Android: x; iOS: x | 
 
 
@@ -104,7 +104,7 @@ UniNativeViewElement -- Extends --> UniElement
 
 | 类型 |
 | :- |
-| BuilderNode\<\[O\] |
+| BuilderNode\<\[O]> |
  
 
 
@@ -132,7 +132,7 @@ UniNativeViewElement -- Extends --> UniElement
 
 
 
-#### getHarmonyBuilderNode\<O extends Object>(): BuilderNode\<\[O] @getharmonybuildernode
+#### getHarmonyBuilderNode\<O extends Object>(): BuilderNode\<\[O]> @getharmonybuildernode
 
 获取鸿蒙 BuilderNode
 
@@ -148,7 +148,7 @@ UniNativeViewElement -- Extends --> UniElement
 
 | 类型 |
 | :- |
-| BuilderNode\<\[O\] |
+| BuilderNode\<\[O]> |
  
 
 

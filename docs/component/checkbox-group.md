@@ -21,7 +21,7 @@
 | 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | name | string | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
-| @change | (event: [UniCheckboxGroupChangeEvent](#unicheckboxgroupchangeevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | checkbox-group中选中项发生改变是触发 change 事件，detail = {value:\[选中的checkbox的value的数组] |
+| @change | (event: [UniCheckboxGroupChangeEvent](#unicheckboxgroupchangeevent)) => void | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | checkbox-group中选中项发生改变是触发 change 事件，detail = {value:\[选中的checkbox的value的数组]} |
 
 
 ### 事件

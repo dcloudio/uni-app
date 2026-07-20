@@ -420,7 +420,7 @@
 
 #### onRequestPermissionsResult(params, requestCode, permissions, grantResults)
 
-对应原生 Activity 的 \[onRequestPermissionsResult](https://developer.android.com/reference/android/app/Activity#onRequestPermissionsResult(int,%20java.lang.String[],%20int[]) 函数，此方法在用户响应权限请求后被调用，用于处理权限请求结果前的逻辑。<br/>     注意第一个参数为自定义参数 UniActivityParams，第二个参数 requestCode 为请求代码，第三个参数 permissions 为请求的权限数组，第四个参数 grantResults 为权限请求结果数组。
+对应原生 Activity 的 [onRequestPermissionsResult](https://developer.android.com/reference/android/app/Activity#onRequestPermissionsResult(int,%20java.lang.String\[],%20int\[])) 函数，此方法在用户响应权限请求后被调用，用于处理权限请求结果前的逻辑。<br/>     注意第一个参数为自定义参数 UniActivityParams，第二个参数 requestCode 为请求代码，第三个参数 permissions 为请求的权限数组，第四个参数 grantResults 为权限请求结果数组。
 
 **参数**
 | 名称 | 类型 | 必填 | 描述 |

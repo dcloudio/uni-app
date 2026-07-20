@@ -188,7 +188,7 @@ setZoom
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| zoom | number | 是 |  | Android: 4.61; iOS: 4.61; HarmonyOS: x | 缩放级别，范围\[1, maxZoom]zoom 可取小数，精确到小数后一位。maxZoom 可在 initdone 返回值中获取。 |
+| zoom | number | 是 |  | Android: 4.61; iOS: 4.61; HarmonyOS: x | 缩放级别，范围\[1, maxZoom]。zoom 可取小数，精确到小数后一位。maxZoom 可在 initdone 返回值中获取。 |
 | success | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用成功的回调函数<br/> |
 | fail | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用失败的回调函数<br/> |
 | complete | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -469,7 +469,7 @@ stop
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| zoom | number | 是 |  | Android: 4.61; iOS: 4.61; HarmonyOS: x | 缩放级别，范围\[1, maxZoom]zoom 可取小数，精确到小数后一位。maxZoom 可在 initdone 返回值中获取。 |
+| zoom | number | 是 |  | Android: 4.61; iOS: 4.61; HarmonyOS: x | 缩放级别，范围\[1, maxZoom]。zoom 可取小数，精确到小数后一位。maxZoom 可在 initdone 返回值中获取。 |
 | success | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用成功的回调函数<br/> |
 | fail | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用失败的回调函数<br/> |
 | complete | (result: any) => void | 否 | null | Android: 4.61; iOS: 4.61; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） |

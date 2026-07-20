@@ -55,7 +55,7 @@
 | video-height | number |   | Web: x; 微信小程序: 4.41; Android: 4.81; iOS: 4.81; HarmonyOS: x | *(number)*<br/>上推的视频流的分辨率高度 |
 | beauty-style | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>设置美颜类型 |
 | filter | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>设置色彩滤镜 |
-| picture-in-picture-mode | string/Array |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string/Array)*<br/>设置小窗模式： push, pop，空字符串或通过数组形式设置多种模式（如： \["push", "pop"] |
+| picture-in-picture-mode | string/Array |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string/Array)*<br/>设置小窗模式： push, pop，空字符串或通过数组形式设置多种模式（如： \["push", "pop"]） |
 | voice-changer-type | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>0：关闭变声；1：熊孩子；2：萝莉；3：大叔；4：重金属；6：外国人；7：困兽；8：死肥仔；9：强电流；10：重机械；11：空灵 |
 | custom-effect | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否启动自定义特效，设定后不能更改 |
 | skin-whiteness | number |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(number)*<br/>自定义特效美白效果，取值 0~1。需要开启 `custom-effect` |

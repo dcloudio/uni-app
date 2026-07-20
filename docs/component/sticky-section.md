@@ -6,9 +6,7 @@
 
 > 组件类型：UniStickySectionElement 
 
- 吸顶布局容器 
-
- 注意：暂时仅支持作为list-view的子节点, sticky-section不支持css样式！
+ 吸顶布局容器 <br/><br/> 注意：暂时仅支持作为list-view的子节点, sticky-section不支持css样式！
 
 
 ### 兼容性 <Help />
@@ -22,7 +20,7 @@
 | :- | :- | :- |  :-: | :- |
 | push-pinned-header | boolean | true | Web: x; 微信小程序: x; Android: 3.98; iOS(VDOM): 4.11; iOS(Vapor): 5.21; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.21 | sticky-section元素重叠时是否继续上推 |
 | preload | boolean | false | Web: x; 微信小程序: x; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.21 | sticky-section即使在视图外也预加载内容 |
-| padding | Array\<number> | [0,0,0,0\] | Web: 4.02; 微信小程序: x; Android(VDOM): 3.98; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: x | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距  |
+| padding | Array\<number> | \[0,0,0,0\] | Web: 4.02; 微信小程序: x; Android(VDOM): 3.98; Android(Vapor): x; iOS(VDOM): 4.11; iOS(Vapor): x; HarmonyOS: x | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距  |
 
 
 

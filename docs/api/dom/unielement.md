@@ -1607,7 +1607,7 @@ if (view != null && view instanceof WKWebView) {
 
 
 
-#### querySelectorAll(selector: string.cssSelectorString): UniElement[\] @queryselectorall
+#### querySelectorAll(selector: string.cssSelectorString): UniElement\[\] @queryselectorall
 
 返回与指定的选择器组匹配的文档中的元素列表
 
@@ -2137,7 +2137,7 @@ if (view != null && view instanceof WKWebView) {
 
 
 
-#### animate(keyframes: UniAnimationKeyframe \| UniAnimationKeyframe[], options: UniAnimationOption \| number): UniAnimation \| null @animate
+#### animate(keyframes: UniAnimationKeyframe \| UniAnimationKeyframe\[], options: UniAnimationOption \| number): UniAnimation \| null @animate
 
 创建一个新的动画并应用于元素，然后立即执行动画。
 

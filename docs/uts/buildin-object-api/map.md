@@ -47,7 +47,7 @@ console.log(map.get('key1')) // 跨端用法
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| entries | readonly (readonly \\[K, V])[]\| null | 否 | 元素为键值对的数组，eg: \[[key1, value1], [key2, value2]] | 
+| entries | readonly (readonly \[K, V])\[] \| null | 否 | 元素为键值对的数组，eg: \[[key1, value1], \[key2, value2]\] | 
 
 
 **返回值**

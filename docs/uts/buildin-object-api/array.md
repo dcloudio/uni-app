@@ -11,13 +11,13 @@ Array 对象是用于构造数组的全局对象，数组是类似于列表的�
 **参数**
 | 名称 | 类型 | 必填 |
 | :- | :- | :- |
-| items | T[\] | 是 | 
+| items | T\[\] | 是 | 
 
 
 **返回值**
 | 类型 |
 | :- |
-| T[\] | 
+| T\[\] | 
 
 
 ::: preview 
@@ -89,7 +89,7 @@ Array.from() 静态方法从可迭代或类数组对象创建一个新的浅拷�
 **返回值**
 | 类型 |
 | :- |
-| T[\] | 
+| T\[\] | 
 
 
 <!-- UTSJSON.Array.from.test -->
@@ -116,13 +116,13 @@ Array.of() 静态方法通过可变数量的参数创建一个新的 Array 实�
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| items | T[\] | 是 | 用于创建数组的元素。 | 
+| items | T\[\] | 是 | 用于创建数组的元素。 | 
 
 
 **返回值**
 | 类型 | 描述 |
 | :- | :- |
-| T[\] | 新的 Array 实例。 | 
+| T\[\] | 新的 Array 实例。 | 
 
 
 <!-- UTSJSON.Array.of.test -->
@@ -155,7 +155,7 @@ Array.isArray() 静态方法用于确定传递的值是否是一个 Array。
 **返回值**
 | 类型 | 描述 |
 | :- | :- |
-| arg is any[\] | 如果 value 是 Array，则为 true；否则为 false。如果 value 是 TypedArray 实例，则总是返回 false。 | 
+| arg is any\[\] | 如果 value 是 Array，则为 true；否则为 false。如果 value 是 TypedArray 实例，则总是返回 false。 | 
 
 
 ::: preview 
@@ -213,7 +213,7 @@ Array.fromAsync() 静态方法可以由一个异步可迭代对象、可迭代�
 **返回值**
 | 类型 | 描述 |
 | :- | :- |
-| Promise\<U[]> | 一个新的 Promise，其兑现值是一个新的 Array 实例。 | 
+| Promise\<U\[]> | 一个新的 Promise，其兑现值是一个新的 Array 实例。 | 
 
 
 <!-- UTSJSON.Array.fromAsync.test -->
@@ -417,7 +417,7 @@ toLocaleString() 方法返回一个字符串，表示数组中的所有元素。
 
 ### joinToString(separator)
 
-从所有元素中使用\[separator]建字符串
+从所有元素中使用\[separator]创建字符串
 
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
@@ -816,7 +816,7 @@ push() 方法将指定的元素添加到数组的末尾，并返回新的数组�
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| items | T[\] | 是 | 添加到数组末尾的元素。 | 
+| items | T\[\] | 是 | 添加到数组末尾的元素。 | 
 
 
 **返回值**
@@ -858,13 +858,13 @@ concat() 方法用于合并两个或多个数组。此方法不会更改现有�
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| items | ConcatArray\<T>[\] | 是 | 数组和/或值，将被合并到一个新的数组中。如果省略了所有 valueN 参数，则 concat 会返回调用此方法的现存数组的一个浅拷贝。详情请参阅下文描述。 | 
+| items | ConcatArray\<T>\[\] | 是 | 数组和/或值，将被合并到一个新的数组中。如果省略了所有 valueN 参数，则 concat 会返回调用此方法的现存数组的一个浅拷贝。详情请参阅下文描述。 | 
 
 
 **返回值**
 | 类型 | 描述 |
 | :- | :- |
-| T[\] | 新的 Array 实例。 | 
+| T\[\] | 新的 Array 实例。 | 
 
 
 ::: preview 
@@ -908,13 +908,13 @@ concat() 方法用于合并两个或多个数组。此方法不会更改现有�
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| items | (T \| ConcatArray\<T>)[\] | 是 | 数组和/或值，将被合并到一个新的数组中。如果省略了所有 valueN 参数，则 concat 会返回调用此方法的现存数组的一个浅拷贝。详情请参阅下文描述。 | 
+| items | (T \| ConcatArray\<T>)\[\] | 是 | 数组和/或值，将被合并到一个新的数组中。如果省略了所有 valueN 参数，则 concat 会返回调用此方法的现存数组的一个浅拷贝。详情请参阅下文描述。 | 
 
 
 **返回值**
 | 类型 | 描述 |
 | :- | :- |
-| T[\] | 新的 Array 实例。 | 
+| T\[\] | 新的 Array 实例。 | 
 
 
 ::: preview 
@@ -1005,7 +1005,7 @@ reverse() 方法就地反转数组中的元素，并返回同一数组的引用�
 **返回值**
 | 类型 | 描述 |
 | :- | :- |
-| T[\] | 原始数组反转后的引用。注意，数组是就地反转的，并且没有复制。 | 
+| T\[\] | 原始数组反转后的引用。注意，数组是就地反转的，并且没有复制。 | 
 
 
 **兼容性 <Help />**
@@ -1077,7 +1077,7 @@ slice() 方法返回一个新的数组对象，这一对象是一个由 start �
 **返回值**
 | 类型 |
 | :- |
-| T[\] | 
+| T\[\] | 
 
 
 ::: preview 
@@ -1200,7 +1200,7 @@ splice() 方法通过移除或者替换已存在的元素和/或添加新元素�
 **返回值**
 | 类型 | 描述 |
 | :- | :- |
-| T[\] | 一个包含了删除的元素的数组。 | 
+| T\[\] | 一个包含了删除的元素的数组。 | 
 
 
 ::: preview 
@@ -1235,7 +1235,7 @@ unshift() 方法将指定元素添加到数组的开头，并返回数组的新�
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| items | T[\] | 是 | 添加到 arr 开头的元素。 | 
+| items | T\[\] | 是 | 添加到 arr 开头的元素。 | 
 
 
 **返回值**
@@ -1376,7 +1376,7 @@ every() 方法测试一个数组内的所有元素是否都能通过指定函数
 **返回值**
 | 类型 |
 | :- |
-| this is S[\] | 
+| this is S\[\] | 
 
 
 ::: preview 
@@ -1757,7 +1757,7 @@ map() 方法创建一个新数组，这个新数组由原数组中的每个元�
 **返回值**
 | 类型 |
 | :- |
-| U[\] | 
+| U\[\] | 
 
 
 ::: preview 
@@ -1872,7 +1872,7 @@ filter() 方法创建给定数组一部分的浅拷贝，其包含通过所提�
 **返回值**
 | 类型 |
 | :- |
-| S[\] | 
+| S\[\] | 
 
 
 ::: preview 
@@ -1932,7 +1932,7 @@ filter() 方法创建给定数组一部分的浅拷贝，其包含通过所提�
 **返回值**
 | 类型 |
 | :- |
-| T[\] | 
+| T\[\] | 
 
 
 ::: preview 
@@ -2069,7 +2069,7 @@ reduce() 方法对数组中的每个元素按序执行一个提供的 reducer �
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| callbackfn | (previousValue: T, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => T | 是 | 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array\[0] 的值。 currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1] currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1 array:调用了 reduce() 的数组本身。 | 
+| callbackfn | (previousValue: T, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => T | 是 | 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array\[0] 的值。 currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array\[0] 的值，否则为 array\[1]。 currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1 array:调用了 reduce() 的数组本身。 | 
 
 
 **返回值**
@@ -2115,7 +2115,7 @@ reduce() 方法对数组中的每个元素按序执行一个提供的 reducer �
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| callbackfn | (previousValue: T, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => T | 是 | 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array\[0] 的值。 currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1] currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1 array:调用了 reduce() 的数组本身。 |
+| callbackfn | (previousValue: T, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => T | 是 | 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array\[0] 的值。 currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array\[0] 的值，否则为 array\[1]。 currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1 array:调用了 reduce() 的数组本身。 |
 | initialValue | T | 是 | 第一次调用回调时初始化 accumulator 的值。如果指定了 initialValue，则 callbackFn 从数组中的第一个值作为 currentValue 开始执行。如果没有指定 initialValue，则 accumulator 初始化为数组中的第一个值，并且 callbackFn 从数组中的第二个值作为 currentValue 开始执行。在这种情况下，如果数组为空（没有第一个值可以作为 accumulator 返回），则会抛出错误。 | 
 
 
@@ -2163,7 +2163,7 @@ reduce() 方法对数组中的每个元素按序执行一个提供的 reducer �
 **参数**
 | 名称 | 类型 | 必填 | 描述 |
 | :- | :- | :- | :- |
-| callbackfn | (previousValue: any, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => any | 是 | 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array\[0] 的值。 currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1] currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1 array:调用了 reduce() 的数组本身。 |
+| callbackfn | (previousValue: any, currentValue: T, currentIndex: number, array: Array&lt;T&gt;) => any | 是 | 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数： previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array\[0] 的值。 currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array\[0] 的值，否则为 array\[1]。 currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1 array:调用了 reduce() 的数组本身。 |
 | initialValue | U | 是 | 第一次调用回调时初始化 accumulator 的值。如果指定了 initialValue，则 callbackFn 从数组中的第一个值作为 currentValue 开始执行。如果没有指定 initialValue，则 accumulator 初始化为数组中的第一个值，并且 callbackFn 从数组中的第二个值作为 currentValue 开始执行。在这种情况下，如果数组为空（没有第一个值可以作为 accumulator 返回），则会抛出错误。 | 
 
 

@@ -36,13 +36,13 @@
 | min-scale | number | 3 | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 最小缩放级别 |
 | max-scale | number | 20 | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 最大缩放级别 |
 | layer-style | string | "1" | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 个性化地图（如实现地图暗黑模式） |
-| markers | Marker[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 标记点 |
+| markers | Marker\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 标记点 |
 | covers | array |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x | 即将移除，请使用 markers |
-| polyline | Polyline[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 路线 |
-| polygons | Polygon[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 多边形 |
-| circles | Circle[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 圆 |
-| controls | Control[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 控件 |
-| include-points | LocationObject[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 缩放视野以包含所有给定的坐标点 |
+| polyline | Polyline\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 路线 |
+| polygons | Polygon\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 多边形 |
+| circles | Circle\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 圆 |
+| controls | Control\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 控件 |
+| include-points | LocationObject\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 缩放视野以包含所有给定的坐标点 |
 | show-location | boolean | false | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 显示带有方向的当前定位点 |
 | enable-3D | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否显示3D楼块 |
 | show-compass | boolean | false | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 是否显示指南针 |

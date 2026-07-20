@@ -22,7 +22,7 @@
 
 | 名称 | 类型 | 必填 | 默认值 | 描述 |
 | :- | :- | :- | :- | :- |
-| options | **GetAppBaseInfoOptions** | 否 | 包含所有字段的过滤对象 | \[options=包含所有字段的过滤对象] 过滤的字段对象, 不传参数默认为获取全部字段。 |
+| options | **GetAppBaseInfoOptions** | 否 | 包含所有字段的过滤对象 | \[options=包含所有字段的过滤对象]  过滤的字段对象, 不传参数默认为获取全部字段。 |
 
 #### options 的属性描述
 

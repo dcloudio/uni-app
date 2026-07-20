@@ -1950,7 +1950,7 @@ const incrementNum = () =>{
 
 > 组件类型：string 
 
- <keep-alive> 包裹动态组件时，会缓存不活动的组件实例，而不是销毁它们。和 <transition> 相似，<keep-alive> 是一个抽象组件：它自身不会渲染一个 DOM 元素，也不会出现在父组件链中。
+ \<keep-alive> 包裹动态组件时，会缓存不活动的组件实例，而不是销毁它们。和 \<transition> 相似，\<keep-alive> 是一个抽象组件：它自身不会渲染一个 DOM 元素，也不会出现在父组件链中。
 
 
 ##### 兼容性 <Help />
@@ -1980,7 +1980,7 @@ const incrementNum = () =>{
 
 > 组件类型：string 
 
- <transition> 元素作为单个元素/组件的过渡效果。<transition> 只会把过渡效果应用到其包裹的内容上，而不会额外渲染 DOM 元素，也不会出现在检测过的组件层级中。
+ \<transition> 元素作为单个元素/组件的过渡效果。\<transition> 只会把过渡效果应用到其包裹的内容上，而不会额外渲染 DOM 元素，也不会出现在检测过的组件层级中。
 
 
 ##### 兼容性 <Help />
@@ -2049,7 +2049,7 @@ const incrementNum = () =>{
 
 > 组件类型：string 
 
- <transition-group> 元素作为多个元素/组件的过渡效果。<transition-group> 渲染一个真实的 DOM 元素。默认渲染 <span>，可以通过 tag 属性配置哪个元素应该被渲染。
+ \<transition-group> 元素作为多个元素/组件的过渡效果。\<transition-group> 渲染一个真实的 DOM 元素。默认渲染 \<span>，可以通过 tag 属性配置哪个元素应该被渲染。
 
 
 ##### 兼容性 <Help />
@@ -2147,7 +2147,7 @@ const incrementNum = () =>{
 
 > 组件类型：string 
 
- 当我们想要使用内置指令而不在 DOM 中渲染元素时，<template> 标签可以作为占位符使用。
+ 当我们想要使用内置指令而不在 DOM 中渲染元素时，\<template> 标签可以作为占位符使用。
 
 
 ##### 兼容性 <Help />
@@ -2217,7 +2217,7 @@ const incrementNum = () =>{
 
 > 组件类型：string 
 
- <slot> 元素作为组件模板之中的内容分发插槽。<slot> 元素自身将被替换。
+ \<slot> 元素作为组件模板之中的内容分发插槽。\<slot> 元素自身将被替换。
 
 
 ##### 兼容性 <Help />

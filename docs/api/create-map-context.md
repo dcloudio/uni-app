@@ -204,7 +204,7 @@ includePoints
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| points | Array&lt;**LocationObject**&gt; | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要显示在可视区域内的坐标点列表，[{latitude, longitude}\] |
+| points | Array&lt;**LocationObject**&gt; | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要显示在可视区域内的坐标点列表，\[{latitude, longitude}\] |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） | 
@@ -470,7 +470,7 @@ addMarkers
 | width | number | 否 | 默认为图片实际宽度 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注图标宽度 |
 | height | number | 否 | 默认为图片实际高度 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注图标高度 |
 | ariaLabel | string | 否 | null | Android: x; iOS: 4.31; HarmonyOS: 4.61 | 无障碍访问，（属性）元素的额外描述 |
-| anchor | **Anchor** | 否 | [0.5, 1\] | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经纬度在标注图标的锚点，默认底边中点	{x, y}，x表示横向(0-1)，y表示竖向(0-1)。{x: .5, y: 1} 表示底边中点 |
+| anchor | **Anchor** | 否 | \[0.5, 1\] | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经纬度在标注图标的锚点，默认底边中点	{x, y}，x表示横向(0-1)，y表示竖向(0-1)。{x: .5, y: 1} 表示底边中点 |
 | callout | **MapMarkerCallout** | 否 | null | Android: 4.51; iOS: 4.51; HarmonyOS: x | 自定义标记点上方的气泡窗口 |
 | label | **MapMarkerLabel** | 否 | null | Android: x; iOS: x; HarmonyOS: x | 为标记点旁边增加标签 |
 | clusterId | number | 否 | null | Android: x; iOS: x; HarmonyOS: x | 自定义点聚合簇效果时使用 |
@@ -938,7 +938,7 @@ updateGroundOverlay
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| points | Array&lt;**LocationObject**&gt; | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要显示在可视区域内的坐标点列表，[{latitude, longitude}\] |
+| points | Array&lt;**LocationObject**&gt; | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 要显示在可视区域内的坐标点列表，\[{latitude, longitude}\] |
 | success | (result: any) => void | 否 | null |   | 接口调用成功的回调函数 |
 | fail | (result: [MapContextFail](#mapcontextfail-values)) => void | 否 | null |   | 接口调用失败的回调函数 |
 | complete | (result: any) => void | 否 | null |   | 接口调用结束的回调函数（调用成功、失败都会执行） |
@@ -1140,7 +1140,7 @@ updateGroundOverlay
 | width | number | 否 | 默认为图片实际宽度 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注图标宽度 |
 | height | number | 否 | 默认为图片实际高度 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注图标高度 |
 | ariaLabel | string | 否 | null | Android: x; iOS: 4.31; HarmonyOS: 4.61 | 无障碍访问，（属性）元素的额外描述 |
-| anchor | **Anchor** | 否 | [0.5, 1\] | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经纬度在标注图标的锚点，默认底边中点	{x, y}，x表示横向(0-1)，y表示竖向(0-1)。{x: .5, y: 1} 表示底边中点 |
+| anchor | **Anchor** | 否 | \[0.5, 1\] | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经纬度在标注图标的锚点，默认底边中点	{x, y}，x表示横向(0-1)，y表示竖向(0-1)。{x: .5, y: 1} 表示底边中点 |
 | callout | **MapMarkerCallout** | 否 | null | Android: 4.51; iOS: 4.51; HarmonyOS: x | 自定义标记点上方的气泡窗口 |
 | label | **MapMarkerLabel** | 否 | null | Android: x; iOS: x; HarmonyOS: x | 为标记点旁边增加标签 |
 | clusterId | number | 否 | null | Android: x; iOS: x; HarmonyOS: x | 自定义点聚合簇效果时使用 |

@@ -29,7 +29,7 @@
 | initial-time | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定视频初始播放位置 |
 | duration | number |   | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指定视频长度 |
 | controls | boolean | true | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否显示默认播放控件（播放/暂停按钮、播放进度、时间） |
-| danmu-list | Danmu[\] | [\] | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 弹幕列表 |
+| danmu-list | Danmu\[\] | \[\] | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 弹幕列表 |
 | danmu-btn | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 是否显示弹幕按钮，只在初始化时有效，不能动态变更 |
 | enable-danmu | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS(VDOM): 4.61; HarmonyOS(Vapor): x | 是否展示弹幕，只在初始化时有效，不能动态变更 |
 | autoplay | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 是否自动播放 |
@@ -60,7 +60,7 @@
 | is-live | boolean |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否为直播源 |
 | show-bottom-progress | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否展示底部进度条 |
 | show-casting-button | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>显示投屏按钮。安卓在同层渲染下生效，支持 DLNA 协议；iOS 支持 AirPlay 和 DLNA 协议。可以通过[VideoContext](../api/create-video-context)的相关方法进行操作。 |
-| picture-in-picture-mode | string/Array |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string/Array)*<br/>设置小窗模式： push, pop，空字符串或通过数组形式设置多种模式（如： \["push", "pop"] |
+| picture-in-picture-mode | string/Array |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string/Array)*<br/>设置小窗模式： push, pop，空字符串或通过数组形式设置多种模式（如： \["push", "pop"]） |
 | picture-in-picture-show-progress | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否在小窗模式下显示播放进度 |
 | picture-in-picture-init-position | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>小窗模式下小窗的初始显示位置，格式为 (alignment, y)，其中 alignment 表示小窗吸附屏幕左侧还是右侧，可选值为 left、right，y 代表小窗最顶部所在的屏幕高度百分比 |
 | enable-auto-rotation | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否开启手机横屏时自动全屏，当系统设置开启自动旋转时生效 |

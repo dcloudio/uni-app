@@ -551,7 +551,7 @@
 **参数**
 | 名称 | 类型 | 必填 |
 | :- | :- | :- |
-| permissions | string[\] | 是 |
+| permissions | string\[\] | 是 |
 | success | (allRight: boolean, grantedList: Array&lt;string&gt;) => void | 否 |
 | fail | (doNotAskAgain: boolean, grantedList: Array&lt;string&gt;) => void | 否 | 
 

@@ -167,7 +167,7 @@ pages.json里的内容是静态的，通过本API可以动态设置UniPage的Sty
 
 
 
-#### getDialogPages(): UniPage[\] @getdialogpages
+#### getDialogPages(): UniPage\[\] @getdialogpages
 
 获取当前页面的 dialog 子页面集合
 
@@ -644,7 +644,7 @@ querySelector
 
 
 
-#### querySelectorAll(selector: string.cssSelectorString): UniElement[\] @queryselectorall
+#### querySelectorAll(selector: string.cssSelectorString): UniElement\[\] @queryselectorall
 
 querySelectorAll
 

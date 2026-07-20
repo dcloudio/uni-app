@@ -32,7 +32,7 @@
 | sound-mode | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>声音输出方式 |
 | auto-pause-if-navigate | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>当跳转到本小程序的其他页面时，是否自动暂停本页面的实时音视频播放 |
 | auto-pause-if-open-native | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>当跳转到其它微信原生页面时，是否自动暂停本页面的实时音视频播放 |
-| picture-in-picture-mode | string/Array |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string/Array)*<br/>设置小窗模式： push, pop，空字符串或通过数组形式设置多种模式（如： \["push", "pop"] |
+| picture-in-picture-mode | string/Array |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string/Array)*<br/>设置小窗模式： push, pop，空字符串或通过数组形式设置多种模式（如： \["push", "pop"]） |
 | picture-in-picture-init-position | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>小窗模式下小窗的初始显示位置，格式为 (alignment, y)，其中 alignment 表示小窗吸附屏幕左侧还是右侧，可选值为 left、right，y 代表小窗最顶部所在的屏幕高度百分比 |
 | enable-auto-rotation | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>是否开启手机横屏时自动全屏，当系统设置开启自动旋转时生效 |
 | referrer-policy | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>格式固定为 `https://servicewechat.com/{appid}/{version}/page-frame.html`，其中 {appid} 为小程序的 appid，{version} 为小程序的版本号，版本号为 0 表示为开发版、体验版以及审核版本，版本号为 devtools 表示为开发者工具，其余为正式版本； |

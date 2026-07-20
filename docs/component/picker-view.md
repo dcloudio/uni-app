@@ -19,7 +19,7 @@
 | 名称 | 类型 | 兼容性 | 描述 |
 | :- | :- |  :-: | :- |
 | name | string | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
-| value | number[\] | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件值，作为键值对的一部分与表单(form组件)一同提交 |
+| value | number\[\] | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 表单的控件值，作为键值对的一部分与表单(form组件)一同提交 |
 | indicator-style | string([string.CSSString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 | 指示器样式 |
 | indicator-class | string([string.ClassString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 设置选择器中间选中框的类名 |
 | mask-style | string([string.CSSString](/uts/data-type.md#ide-string)) | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 设置蒙层的样式 |
