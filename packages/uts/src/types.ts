@@ -139,6 +139,8 @@ export type UTSBridgeMethodType =
   | 'function'
   | 'constructor'
   | 'staticMethod'
+  | 'staticGetter'
+  | 'staticSetter'
   | 'method'
   | 'getter'
   | 'setter'
@@ -149,6 +151,7 @@ export interface UTSBridgeMethod {
   type: UTSBridgeMethodType
   keep_alive: boolean
   async: boolean
+  return_type?: string
 }
 
 export interface UTSBridgeFunction extends UTSBridgeMethod {
