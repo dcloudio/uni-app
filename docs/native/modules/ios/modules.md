@@ -31,7 +31,6 @@
 根据资源文件中的`manifest.json`文件包含的模块名称，选择以下源文件(`SDK/ExtApiSrc 目录下`)、依赖库(`SDK/Libs 目录下`)添加到DCloudUTSExtAPI工程中，依赖库均设置为`Do Not Embed`
 | 模块名称 | 源文件 | 依赖库 | 系统依赖库 |
 |---|---|---|---|
-| uni-createWebviewContext | uni-createWebviewContext-index.swift | | |
 | uni-getProvider | uni-getProvider-index.swift | | |
 | uni-network | uni-network-index.swift | | |
 | uni-getNetworkType | uni-getNetworkType-index.swift | | |
