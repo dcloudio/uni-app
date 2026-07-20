@@ -10775,13 +10775,13 @@
             "osVer": "5.0",
             "uniVer": "x",
             "unixVer": "3.9+",
-            "unixVaporVer": "5.21"
+            "unixVaporVer": "x"
           },
           "ios": {
             "osVer": "12.0",
             "uniVer": "x",
             "unixVer": "4.11",
-            "unixVaporVer": "5.11"
+            "unixVaporVer": "x"
           },
           "harmony": {
             "osVer": "5.0.0",
