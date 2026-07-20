@@ -1121,7 +1121,7 @@ defineExpose({
     </view>
 
     <!-- v-bind props -->
-    <Foo :title="dataInfo.fooProps.title" :num="dataInfo.fooProps.num" :obj="dataInfo.fooProps.obj" />
+    <Foo class="foo-props" :title="dataInfo.fooProps.title" :num="dataInfo.fooProps.num" :obj="dataInfo.fooProps.obj" />
 
     <!-- v-bind props -->
     <Foo checked />
@@ -1213,6 +1213,7 @@ defineExpose({
   }
   /* #endif */
 </style>
+
 ```
 
 > 组合式 API
@@ -1252,7 +1253,7 @@ defineExpose({
     </view>
 
     <!-- v-bind props -->
-    <Foo :title="dataInfo.fooProps.title" :num="dataInfo.fooProps.num" :obj="dataInfo.fooProps.obj" />
+    <Foo class="foo-props" :title="dataInfo.fooProps.title" :num="dataInfo.fooProps.num" :obj="dataInfo.fooProps.obj" />
 
     <!-- v-bind props -->
     <Foo checked />
@@ -1340,6 +1341,7 @@ defineExpose({
   }
   /* #endif */
 </style>
+
 ```
 
 :::
@@ -1384,7 +1386,7 @@ defineExpose({
       <text>str for trim length:</text>
       <text id="str-length">{{ strForTrim.length }}</text>
     </view>
-    <Parent v-model="value"></Parent>
+    <Parent id="parent-component" v-model="value"></Parent>
     <Parent v-model="utsObj['modelValue']"></Parent>
     <Parent v-model="typeObj.modelValue"></Parent>
     <Parent v-model="typeObj.modelValue as string"></Parent>

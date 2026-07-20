@@ -125,15 +125,15 @@
 ```vue
 <template>
   <view class="page">
-    <array-literal :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <object-type str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <same-name-prop-default-value />
-    <props-with-defaults />
+    <array-literal class="array-literal-component" :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <object-type class="object-type-component" str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <same-name-prop-default-value class="same-name-prop-default-value-component" />
+    <props-with-defaults class="props-with-defaults-component" />
     <!-- #ifdef APP-ANDROID -->
-    <reference-types :list="[1,2,3]" />
+    <reference-types class="reference-types-component" :list="[1,2,3]" />
     <!-- #endif -->
     <!-- #ifndef APP-ANDROID -->
-    <reference-types :list="['a','b','c']" />
+    <reference-types class="reference-types-component" :list="['a','b','c']" />
     <!-- #endif -->
   </view>
 </template>
@@ -164,6 +164,7 @@
     },
   }
 </script>
+
 ```
 :::
 
@@ -2384,15 +2385,15 @@ export default {
 ```vue
 <template>
   <view class="page">
-    <array-literal :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <object-type str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <same-name-prop-default-value />
-    <props-with-defaults />
+    <array-literal class="array-literal-component" :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <object-type class="object-type-component" str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <same-name-prop-default-value class="same-name-prop-default-value-component" />
+    <props-with-defaults class="props-with-defaults-component" />
     <!-- #ifdef APP-ANDROID -->
-    <reference-types :list="[1,2,3]" />
+    <reference-types class="reference-types-component" :list="[1,2,3]" />
     <!-- #endif -->
     <!-- #ifndef APP-ANDROID -->
-    <reference-types :list="['a','b','c']" />
+    <reference-types class="reference-types-component" :list="['a','b','c']" />
     <!-- #endif -->
   </view>
 </template>
@@ -2423,6 +2424,7 @@ export default {
     },
   }
 </script>
+
 ```
 :::
 
@@ -2530,7 +2532,7 @@ export default {
 ```vue
 <template>
   <view class="page">
-    <child ref='child' />
+    <child ref='child' class="parent-child" />
   </view>
 </template>
 
@@ -2577,7 +2579,7 @@ export default {
       <text>root str in parent component: </text>
       <text id="root-str-parent">{{ rootStr }}</text>
     </view>
-    <child />
+    <child class="root-child" />
   </view>
 </template>
 

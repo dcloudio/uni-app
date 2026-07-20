@@ -3483,7 +3483,7 @@ const updateTitle = () => {
         @compUpdateObj="compUpdateObj"
         :isShow="true" />
       <!-- #endif -->
-      <Foo>
+      <Foo id="component-foo">
         <text class="mt-10" id="default-slot-in-foo">default slot in Foo</text>
       </Foo>
     </view>
@@ -3570,15 +3570,15 @@ export default {
 ```vue
 <template>
   <view class="page">
-    <array-literal :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <object-type str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <same-name-prop-default-value />
-    <props-with-defaults />
+    <array-literal class="array-literal-component" :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <object-type class="object-type-component" str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <same-name-prop-default-value class="same-name-prop-default-value-component" />
+    <props-with-defaults class="props-with-defaults-component" />
     <!-- #ifdef APP-ANDROID -->
-    <reference-types :list="[1,2,3]" />
+    <reference-types class="reference-types-component" :list="[1,2,3]" />
     <!-- #endif -->
     <!-- #ifndef APP-ANDROID -->
-    <reference-types :list="['a','b','c']" />
+    <reference-types class="reference-types-component" :list="['a','b','c']" />
     <!-- #endif -->
   </view>
 </template>
@@ -3596,6 +3596,7 @@ export default {
   const obj = { age: 18 }
   const arr = ['a', 'b', 'c']
 </script>
+
 ```
 
 :::

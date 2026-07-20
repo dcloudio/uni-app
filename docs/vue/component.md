@@ -144,15 +144,15 @@ const component1 = ref<ComponentPublicInstance | null>(null) // 手动引入组�
 ```vue
 <template>
   <view class="page">
-    <array-literal :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <object-type str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <same-name-prop-default-value />
-    <props-with-defaults />
+    <array-literal class="array-literal-component" :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <object-type class="object-type-component" str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <same-name-prop-default-value class="same-name-prop-default-value-component" />
+    <props-with-defaults class="props-with-defaults-component" />
     <!-- #ifdef APP-ANDROID -->
-    <reference-types :list="[1,2,3]" />
+    <reference-types class="reference-types-component" :list="[1,2,3]" />
     <!-- #endif -->
     <!-- #ifndef APP-ANDROID -->
-    <reference-types :list="['a','b','c']" />
+    <reference-types class="reference-types-component" :list="['a','b','c']" />
     <!-- #endif -->
   </view>
 </template>
@@ -170,6 +170,7 @@ const component1 = ref<ComponentPublicInstance | null>(null) // 手动引入组�
   const obj = { age: 18 }
   const arr = ['a', 'b', 'c']
 </script>
+
 ```
 
 > 选项式 API
@@ -177,15 +178,15 @@ const component1 = ref<ComponentPublicInstance | null>(null) // 手动引入组�
 ```vue
 <template>
   <view class="page">
-    <array-literal :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <object-type str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <same-name-prop-default-value />
-    <props-with-defaults />
+    <array-literal class="array-literal-component" :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <object-type class="object-type-component" str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <same-name-prop-default-value class="same-name-prop-default-value-component" />
+    <props-with-defaults class="props-with-defaults-component" />
     <!-- #ifdef APP-ANDROID -->
-    <reference-types :list="[1,2,3]" />
+    <reference-types class="reference-types-component" :list="[1,2,3]" />
     <!-- #endif -->
     <!-- #ifndef APP-ANDROID -->
-    <reference-types :list="['a','b','c']" />
+    <reference-types class="reference-types-component" :list="['a','b','c']" />
     <!-- #endif -->
   </view>
 </template>
@@ -216,6 +217,7 @@ const component1 = ref<ComponentPublicInstance | null>(null) // 手动引入组�
     },
   }
 </script>
+
 ```
 
 :::
@@ -1427,7 +1429,7 @@ ComponentPublicInstance
 ```vue
 <template>
   <view class="page">
-    <child ref="childRef" />
+    <child ref="childRef" class="parent-child" />
   </view>
 </template>
 
@@ -1453,6 +1455,7 @@ ComponentPublicInstance
     callMethodByChild
   })
 </script>
+
 ```
 
 > 选项式 API
@@ -1460,7 +1463,7 @@ ComponentPublicInstance
 ```vue
 <template>
   <view class="page">
-    <child ref='child' />
+    <child ref='child' class="parent-child" />
   </view>
 </template>
 
@@ -2271,15 +2274,15 @@ const updateTitle = () => {
 ```vue
 <template>
   <view class="page">
-    <array-literal :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <object-type str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <same-name-prop-default-value />
-    <props-with-defaults />
+    <array-literal class="array-literal-component" :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <object-type class="object-type-component" str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <same-name-prop-default-value class="same-name-prop-default-value-component" />
+    <props-with-defaults class="props-with-defaults-component" />
     <!-- #ifdef APP-ANDROID -->
-    <reference-types :list="[1,2,3]" />
+    <reference-types class="reference-types-component" :list="[1,2,3]" />
     <!-- #endif -->
     <!-- #ifndef APP-ANDROID -->
-    <reference-types :list="['a','b','c']" />
+    <reference-types class="reference-types-component" :list="['a','b','c']" />
     <!-- #endif -->
   </view>
 </template>
@@ -2297,6 +2300,7 @@ const updateTitle = () => {
   const obj = { age: 18 }
   const arr = ['a', 'b', 'c']
 </script>
+
 ```
 
 > 选项式 API
@@ -2304,15 +2308,15 @@ const updateTitle = () => {
 ```vue
 <template>
   <view class="page">
-    <array-literal :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <object-type str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
-    <same-name-prop-default-value />
-    <props-with-defaults />
+    <array-literal class="array-literal-component" :str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <object-type class="object-type-component" str="str" :num="num" :bool="bool" :obj="obj" :arr="arr" />
+    <same-name-prop-default-value class="same-name-prop-default-value-component" />
+    <props-with-defaults class="props-with-defaults-component" />
     <!-- #ifdef APP-ANDROID -->
-    <reference-types :list="[1,2,3]" />
+    <reference-types class="reference-types-component" :list="[1,2,3]" />
     <!-- #endif -->
     <!-- #ifndef APP-ANDROID -->
-    <reference-types :list="['a','b','c']" />
+    <reference-types class="reference-types-component" :list="['a','b','c']" />
     <!-- #endif -->
   </view>
 </template>
@@ -2343,6 +2347,7 @@ const updateTitle = () => {
     },
   }
 </script>
+
 ```
 
 :::
