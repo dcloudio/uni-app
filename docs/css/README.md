@@ -287,20 +287,6 @@ App仅对`同层的兄弟节点`之间支持`z-index`来调节层级。不支持
 | [align-content](align-content.md) |
 | [align-items](align-items.md) |
 | [align-self](align-self.md) |
-| [animation](animation.md) |
-| [animation-composition](animation-composition.md) |
-| [animation-delay](animation-delay.md) |
-| [animation-direction](animation-direction.md) |
-| [animation-duration](animation-duration.md) |
-| [animation-fill-mode](animation-fill-mode.md) |
-| [animation-iteration-count](animation-iteration-count.md) |
-| [animation-name](animation-name.md) |
-| [animation-play-state](animation-play-state.md) |
-| [animation-range](animation-range.md) |
-| [animation-range-end](animation-range-end.md) |
-| [animation-range-start](animation-range-start.md) |
-| [animation-timeline](animation-timeline.md) |
-| [animation-timing-function](animation-timing-function.md) |
 | [background](background.md) |
 | [background-clip](background-clip.md) |
 | [background-color](background-color.md) |
@@ -397,20 +383,6 @@ App仅对`同层的兄弟节点`之间支持`z-index`来调节层级。不支持
 
 | CSS 属性列表 |
 | :- |
-| [animation](animation.md) |
-| [animation-composition](animation-composition.md) |
-| [animation-delay](animation-delay.md) |
-| [animation-direction](animation-direction.md) |
-| [animation-duration](animation-duration.md) |
-| [animation-fill-mode](animation-fill-mode.md) |
-| [animation-iteration-count](animation-iteration-count.md) |
-| [animation-name](animation-name.md) |
-| [animation-play-state](animation-play-state.md) |
-| [animation-range](animation-range.md) |
-| [animation-range-end](animation-range-end.md) |
-| [animation-range-start](animation-range-start.md) |
-| [animation-timeline](animation-timeline.md) |
-| [animation-timing-function](animation-timing-function.md) |
 | [background-clip](background-clip.md) |
 | [background-image](background-image.md) |
 | [lines](lines.md) |
