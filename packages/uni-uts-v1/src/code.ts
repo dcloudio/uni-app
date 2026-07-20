@@ -157,9 +157,9 @@ export async function genProxyCodeV2(result: UTSResult) {
   let code =
     'const { registerUTSInterface, initUTSProxyClass, initUTSElementProxyClass, initUTSProxyFunction } = uni'
   interfaces.forEach((i) => {
-    code += `registerUTSInterface('${
+    code += `registerUTSInterface({ name: '${
       i.name
-    }', { utsBridgeName: '${utsBridgeName}', methods: ${JSON.stringify(
+    }', utsBridgeName: '${utsBridgeName}', methods: ${JSON.stringify(
       i.methods.map(formateUTSBridgeMethod)
     )} })\n`
   })
@@ -272,11 +272,11 @@ export async function genProxyCode(
     return false
   })
   return `
-    const { registerUTSInterface, initUTSProxyClass, initUTSElementProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
-    const name = '${name}'
-    const moduleName = '${moduleName || ''}'
-    const moduleType = '${moduleType || ''}'
-    const errMsg = \`${ERR_MSG_PLACEHOLDER}\`
+const { registerUTSInterface, initUTSProxyClass, initUTSElementProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
+const name = '${name}'
+const moduleName = '${moduleName || ''}'
+const moduleType = '${moduleType || ''}'
+const errMsg = \`${ERR_MSG_PLACEHOLDER}\`
 const is_uni_modules = ${is_uni_modules}
 const pkg = /*#__PURE__*/ initUTSPackageName(name, is_uni_modules)
 const cls = /*#__PURE__*/ initUTSIndexClassName(name, is_uni_modules)
