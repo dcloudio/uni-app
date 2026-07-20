@@ -73,7 +73,7 @@
 | uni-loading(5.0+) | uni-loading-index.swift <br> uni-loading-SpinnerView.swift <br> uni-loading-UniLoadingComponentRegister.swift | | |
 | uni-showLoading(5.0+) | uni-showLoading-index.swift | | |
 | uni-web-view(5.0+) | uni-web-view-index.swift <br> uni-web-view-InnerWebView.swift <br> uni-web-view-Snapshot.swift <br> uni-web-view-UniBaseWebView.swift <br> uni-web-view-UniViewLifecycle.swift <br> uni-web-view-UniWebComponentRegister.swift | | |
-| uni-editor (5.08+) |  | 依赖uni-web-view 模块 | |
+| uni-editor (5.08+) (依赖uni-web-view 模块) | uni-web-view-index.swift <br> uni-web-view-InnerWebView.swift <br> uni-web-view-Snapshot.swift <br> uni-web-view-UniBaseWebView.swift <br> uni-web-view-UniViewLifecycle.swift <br> uni-web-view-UniWebComponentRegister.swift |  | |
 | uni-accelerometer(5.08+) | uni-accelerometer-index.swift <br> AccelerometerNative.swift | | |
 | uni-authentication(5.08+) | uni-authentication-index.swift | | |
 | uni-calendar(5.08+) | uni-calendar-index.swift <br> UniCalendarNative.swift | | |
