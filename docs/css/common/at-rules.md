@@ -41,7 +41,7 @@
 }
 </style>
 ```
-
+****
 ### 内置字体图标 uni-icon @uniicon
 > HBuilderX4.33+
 
@@ -185,6 +185,7 @@ app平台的内置组件和API用到了一些字体，同时共享出来给开�
 
 ### Tips
 - `字体路径`支持**网络**和**本地**，本地字体请注意放在项目或uni_modules的static目录下。
+- @font-face下仅支持 font-family 和 src，不支持font-weight 、 font-style等属性
 
 <style type="text/css">
 @font-face {
