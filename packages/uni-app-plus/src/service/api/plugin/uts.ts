@@ -910,6 +910,14 @@ export function initUTSProxyClass(
           return false
         },
       })
+      if (__VAPOR__ && typeof FinalizationRegistry !== 'undefined') {
+        if (!UTSClassInstanceRegistry) {
+          UTSClassInstanceRegistry = new FinalizationRegistry((id) => {
+            unregisterInstance(id as number)
+          })
+        }
+        UTSClassInstanceRegistry.register(proxy, this.__instanceId)
+      }
       return Object.freeze(proxy)
     }
   }
