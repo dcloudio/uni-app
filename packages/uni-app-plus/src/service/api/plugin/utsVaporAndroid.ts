@@ -23,7 +23,6 @@ function unregisterInstance(id: number) {
   const args: InvokeArgs = {
     moduleName: '_uts_bridge',
     methodId: 1,
-    nested: false,
     keepAlive: false,
     params: [id],
   }
@@ -46,7 +45,6 @@ interface InvokeSyncRes {
 interface InvokeArgs {
   moduleName: string
   methodId: number
-  nested: boolean
   keepAlive: boolean
   instance?: unknown
   instanceId?: number
@@ -146,7 +144,6 @@ function initProxyFunction(
       {
         moduleName: utsBridgeName,
         methodId: options.methodId,
-        nested: false,
         keepAlive: options.keepAlive,
         instance: typeof instanceOrId === 'object' ? instanceOrId : undefined,
         instanceId: typeof instanceOrId === 'number' ? instanceOrId : undefined,
