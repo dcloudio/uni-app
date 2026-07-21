@@ -25,7 +25,9 @@ describe('utsVaporAndroid', () => {
   })
 
   afterAll(() => {
-    ;(globalThis as any).nativeChannel = originalNativeChannel
+    if (originalNativeChannel !== undefined) {
+      ;(globalThis as any).nativeChannel = originalNativeChannel
+    }
   })
 
   test('registers and requires a UTS plugin', () => {
@@ -214,5 +216,163 @@ describe('utsVaporAndroid', () => {
         params: [],
       })
     )
+  })
+
+  test('creates an interface proxy for an async return type', async () => {
+    registerUTSInterface({
+      name: 'AsyncTask',
+      utsBridgeName: 'TestBridge',
+      methods: [
+        {
+          name: 'cancel',
+          methodId: 41,
+          type: 'method',
+          keepAlive: false,
+          async: false,
+        },
+      ],
+    })
+    invokeAsync.mockImplementation((_channel, _args, callback) => {
+      callback({ type: 'return', params: 300 })
+    })
+    invokeSync.mockReturnValue({ type: 'return', params: 'cancelled' })
+    const request = initUTSProxyFunction('TestBridge', {
+      name: 'requestAsync',
+      utsBridgeName: 'TestBridge',
+      methodId: 40,
+      type: 'function',
+      keepAlive: false,
+      async: true,
+      returnType: 'AsyncTask',
+    })
+
+    const task = (await request()) as any
+
+    expect(task.__v_skip).toBe(true)
+    expect(task.cancel()).toBe('cancelled')
+    expect(invokeSync).toHaveBeenLastCalledWith(
+      'APP-SERVICE',
+      expect.objectContaining({
+        moduleName: 'TestBridge',
+        methodId: 41,
+        instanceId: 300,
+        params: [],
+      })
+    )
+  })
+
+  test('returns the current class proxy from sync and async methods', async () => {
+    invokeSync.mockReturnValue({ type: 'return', params: 400 })
+    invokeAsync.mockImplementation((_channel, _args, callback) => {
+      callback({ type: 'return', params: 400 })
+    })
+    const SelfReturningClass = initUTSProxyClass({
+      name: 'SelfReturningClass',
+      utsBridgeName: 'TestBridge',
+      constructor: {
+        name: 'SelfReturningClass',
+        methodId: 50,
+        type: 'constructor',
+        keepAlive: false,
+        async: false,
+      },
+      staticMethods: [],
+      methods: [
+        {
+          name: 'syncSelf',
+          methodId: 51,
+          type: 'method',
+          keepAlive: false,
+          async: false,
+          returnType: 'SelfReturningClass',
+        },
+        {
+          name: 'asyncSelf',
+          methodId: 52,
+          type: 'method',
+          keepAlive: false,
+          async: true,
+          returnType: 'SelfReturningClass',
+        },
+      ],
+    })
+
+    const instance = new SelfReturningClass() as any
+
+    expect(instance.syncSelf()).toBe(instance)
+    await expect(instance.asyncSelf()).resolves.toBe(instance)
+    expect(invokeAsync).toHaveBeenCalledWith(
+      'APP-SERVICE',
+      expect.objectContaining({
+        moduleName: 'TestBridge',
+        methodId: 52,
+        instanceId: 400,
+        params: [],
+      }),
+      expect.any(Function)
+    )
+  })
+
+  test('converts a zero interface instance id to null', async () => {
+    invokeSync.mockReturnValue({ type: 'return', params: 0 })
+    invokeAsync.mockImplementation((_channel, _args, callback) => {
+      callback({ type: 'return', params: 0 })
+    })
+    const syncRequest = initUTSProxyFunction('TestBridge', {
+      name: 'syncRequest',
+      utsBridgeName: 'TestBridge',
+      methodId: 60,
+      type: 'function',
+      keepAlive: false,
+      async: false,
+      returnType: 'MissingTask',
+    })
+    const asyncRequest = initUTSProxyFunction('TestBridge', {
+      name: 'asyncRequest',
+      utsBridgeName: 'TestBridge',
+      methodId: 61,
+      type: 'function',
+      keepAlive: false,
+      async: true,
+      returnType: 'MissingTask',
+    })
+
+    expect(syncRequest()).toBeNull()
+    await expect(asyncRequest()).resolves.toBeNull()
+  })
+
+  test('preserves async values that cannot be converted to a proxy', async () => {
+    const values = [500, 'success']
+    invokeAsync.mockImplementation((_channel, _args, callback) => {
+      callback({ type: 'return', params: values.shift() })
+    })
+    const request = initUTSProxyFunction('TestBridge', {
+      name: 'requestUnknownTask',
+      utsBridgeName: 'TestBridge',
+      methodId: 70,
+      type: 'function',
+      keepAlive: false,
+      async: true,
+      returnType: 'UnknownTask',
+    })
+
+    await expect(request()).resolves.toBe(500)
+    await expect(request()).resolves.toBe('success')
+  })
+
+  test('rejects an async invocation error', async () => {
+    invokeAsync.mockImplementation((_channel, _args, callback) => {
+      callback({ type: 'return', errMsg: 'request failed' })
+    })
+    const request = initUTSProxyFunction('TestBridge', {
+      name: 'failedRequest',
+      utsBridgeName: 'TestBridge',
+      methodId: 80,
+      type: 'function',
+      keepAlive: false,
+      async: true,
+    })
+
+    await expect(request()).rejects.toBe('request failed')
   })
 })
