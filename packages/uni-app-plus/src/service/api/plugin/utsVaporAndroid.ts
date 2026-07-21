@@ -26,7 +26,7 @@ function unregisterInstance(id: number) {
     keepAlive: false,
     params: [id],
   }
-  getProxy().invokeSync(args, () => {})
+  getProxy().invokeSync(args)
 }
 function ensureUTSClassInstanceRegistry() {
   if (!UTSClassInstanceRegistry) {
@@ -64,22 +64,21 @@ interface InvokeCallbackParamsRes {
   name: string
   params: unknown[]
 }
-type InvokeSyncCallback = (res: InvokeCallbackParamsRes) => void
 type InvokeAsyncCallback = (
   res: InvokeCallbackReturnRes | InvokeCallbackParamsRes
 ) => void
 
 type InvokeChannel = {
-  invokeSync: (args: InvokeArgs, callback: InvokeSyncCallback) => InvokeSyncRes
+  invokeSync: (args: InvokeArgs) => InvokeSyncRes
   invokeAsync: (args: InvokeArgs, callback: InvokeAsyncCallback) => void
 }
 let channel: InvokeChannel
 function getProxy(): InvokeChannel {
   if (!channel) {
     channel = {
-      invokeSync(args: InvokeArgs, callback: InvokeSyncCallback) {
+      invokeSync(args: InvokeArgs) {
         // @ts-expect-error
-        return nativeChannel.invokeSync('APP-SERVICE', args, callback)
+        return nativeChannel.invokeSync('APP-SERVICE', args)
       },
       invokeAsync(args: InvokeArgs, callback: InvokeAsyncCallback) {
         // @ts-expect-error
@@ -140,20 +139,28 @@ function initProxyFunction(
   instanceProxy?: unknown
 ) {
   return function (...args: any[]) {
-    const res = getProxy().invokeSync(
-      {
-        moduleName: utsBridgeName,
-        methodId: options.methodId,
-        keepAlive: options.keepAlive,
-        instance: typeof instanceOrId === 'object' ? instanceOrId : undefined,
-        instanceId: typeof instanceOrId === 'number' ? instanceOrId : undefined,
-        params: args,
-      },
-      () => {}
-    )
-    if (options.async) {
-      // TODO
+    const invokeArgs: InvokeArgs = {
+      moduleName: utsBridgeName,
+      methodId: options.methodId,
+      keepAlive: options.keepAlive,
+      instance: typeof instanceOrId === 'object' ? instanceOrId : undefined,
+      instanceId: typeof instanceOrId === 'number' ? instanceOrId : undefined,
+      params: args,
     }
+    if (options.async) {
+      return new Promise((resolve, reject) => {
+        getProxy().invokeAsync(invokeArgs, (res) => {
+          if (res.type === 'return') {
+            if (res.errMsg) {
+              reject(res.errMsg)
+            } else {
+              resolve(res.params)
+            }
+          }
+        })
+      })
+    }
+    const res = getProxy().invokeSync(invokeArgs)
     if (!res) {
       throw new Error(
         '返回值为：' +
