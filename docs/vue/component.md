@@ -1611,6 +1611,8 @@ export default {
 
 ```vue
 <script lang="uts" setup>
+// 增加显式导入生命周期，测试 https://issues.dcloud.net.cn/pages/issues/detail?id=31456
+import { onAppShow } from '@dcloudio/uni-app'
 import { state, setLifeCycleNum } from '@/store/index.uts'
 
 onAppShow((onShowOptions: OnShowOptions) => {
