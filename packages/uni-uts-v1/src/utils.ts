@@ -1,6 +1,7 @@
 import path, { basename, resolve } from 'path'
 import fs from 'fs-extra'
 import type {
+  UTSBridge,
   UTSOutputOptions,
   UTSResult,
   UTSTarget,
@@ -285,7 +286,8 @@ export function genUTSPlatformResource(
     options.components,
     options.customElements,
     options.package,
-    options.provider
+    options.provider,
+    options.utsBridge
   )
 
   // 生产模式下，需要将生成的平台文件转移到 src 下
@@ -725,19 +727,13 @@ function copyConfigJson(
     inputDir
   )
 
-  if (utsBridge) {
-    configJson.utsMethodRegister =
-      platform === 'app-android'
-        ? `${namespace}.UniUTSMethodRegister`
-        : `${namespace}UniUTSMethodRegister`
-  }
-
   if (
     hasComponents ||
     hasCustomElements ||
     hasHookClass ||
     hasProvider ||
-    delegateClassList.length
+    delegateClassList.length ||
+    utsBridge
   ) {
     //存在组件
     if (hasComponents) {
@@ -792,6 +788,10 @@ function copyConfigJson(
       } else if (Array.isArray(configJson.components)) {
         addComponentDelegateClass(configJson.components, delegateClassList)
       }
+    }
+
+    if (utsBridge) {
+      configJson.utsMethodRegister = `${namespace}UniUTSMethodRegister`
     }
 
     fs.outputFileSync(
@@ -1533,4 +1533,18 @@ export function requireUTSPluginCode(pluginId: string, _isExtApi: boolean) {
   //   return `export default uni`
   // }
   return `export default uni.requireUTSPlugin('uni_modules/${pluginId}')`
+}
+
+export function hasUTSBridgeCode(
+  bridge?: UTSBridge | undefined
+): bridge is UTSBridge {
+  if (!bridge) {
+    return false
+  }
+  return (
+    !!bridge.uts_bridge_name &&
+    (bridge.classes.length > 0 ||
+      bridge.functions.length > 0 ||
+      bridge.interfaces.length > 0)
+  )
 }

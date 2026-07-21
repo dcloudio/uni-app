@@ -10,6 +10,7 @@ import {
   genUTSPlatformResource,
   getSwiftCompilerServer,
   getUTSCompiler,
+  hasUTSBridgeCode,
   isColorSupported,
   isEnableSwiftUtsArray,
   isEnableSwiftUtsMap,
@@ -133,7 +134,7 @@ export async function runSwiftProd(
     result,
     provider: resolveConfigProvider('app-ios', uniModuleId, transform),
     uniModules,
-    utsBridge: !!result.uts_bridge,
+    utsBridge: hasUTSBridgeCode(result.uts_bridge),
   })
 }
 

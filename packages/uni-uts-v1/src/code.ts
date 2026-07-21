@@ -36,6 +36,7 @@ import type {
 import {
   ERR_MSG_PLACEHOLDER,
   createResolveTypeReferenceName,
+  hasUTSBridgeCode,
   isColorSupported,
   parseKotlinPackageWithPluginId,
   relative,
@@ -170,7 +171,8 @@ function stringifyUTSBridgeMethodList(methods: UTSBridgeMethod[]) {
 }
 
 export async function genProxyCodeV2(result: UTSResult) {
-  if (!result.uts_bridge) {
+  const bridge = result.uts_bridge
+  if (!hasUTSBridgeCode(bridge)) {
     return ''
   }
   const {
@@ -178,7 +180,7 @@ export async function genProxyCodeV2(result: UTSResult) {
     classes,
     interfaces,
     uts_bridge_name: utsBridgeName,
-  } = result.uts_bridge
+  } = bridge
   let code = `const { registerUTSInterface, initUTSProxyClass, initUTSElementProxyClass, initUTSProxyFunction } = uni\n
 const moduleName = '${utsBridgeName}'\n`
   interfaces.forEach((i) => {

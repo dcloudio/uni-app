@@ -16,6 +16,7 @@ import {
 import {
   ERR_MSG_PLACEHOLDER,
   genConfigJson,
+  hasUTSBridgeCode,
   requireUTSPluginCode,
   resolveAndroidComponents,
   resolveConfigProvider,
@@ -370,7 +371,7 @@ export async function compile(
           Object.keys(custom_elements).forEach((key) => {
             custom_elements[key] = custom_elements[key]
           })
-          if (useProxyCodeV2 && result.uts_bridge) {
+          if (useProxyCodeV2 && hasUTSBridgeCode(result.uts_bridge)) {
             code = (await genProxyCodeV2(result)) ?? ''
           }
         }
@@ -608,7 +609,7 @@ export async function compile(
           inputDir,
           outputDir,
           resolveConfigProvider(utsPlatform, pkg.id, transform),
-          !!(res && res.uts_bridge)
+          !!(res && hasUTSBridgeCode(res.uts_bridge))
         )
         if (res) {
           if (res.code) {
@@ -647,7 +648,7 @@ export async function compile(
             }
           }
           if (isSuccess) {
-            if (useProxyCodeV2 && res.uts_bridge) {
+            if (useProxyCodeV2 && hasUTSBridgeCode(res.uts_bridge)) {
               code = (await genProxyCodeV2(res)) ?? ''
             }
             // 生成缓存文件

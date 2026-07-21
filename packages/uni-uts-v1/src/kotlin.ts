@@ -22,6 +22,7 @@ import {
   genUTSPlatformResource,
   getKotlinCompilerServer,
   getUTSCompiler,
+  hasUTSBridgeCode,
   isColorSupported,
   isEnableGenericsParameterDefaults,
   isEnableInlineReified,
@@ -200,7 +201,7 @@ export async function runKotlinProd(
       result,
       provider: resolveConfigProvider('app-android', uniModuleId, transform),
       uniModules,
-      utsBridge: !!result.uts_bridge,
+      utsBridge: hasUTSBridgeCode(result.uts_bridge),
     })
   }
 
