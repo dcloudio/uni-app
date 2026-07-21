@@ -42,7 +42,7 @@ describe('utsVaporAndroid', () => {
       type: 'return',
       params: 'success',
     })
-    const request = initUTSProxyFunction({
+    const request = initUTSProxyFunction('TestBridge', {
       name: 'request',
       utsBridgeName: 'TestBridge',
       methodId: 10,
@@ -52,19 +52,73 @@ describe('utsVaporAndroid', () => {
     })
 
     expect(request('url', 1)).toBe('success')
+    expect(invokeSync).toHaveBeenCalledWith('APP-SERVICE', {
+      moduleName: 'TestBridge',
+      methodId: 10,
+      keepAlive: false,
+      instance: undefined,
+      instanceId: undefined,
+      params: ['url', 1],
+    })
+  })
+
+  test('serializes UniElement and component public instance parameters', () => {
+    invokeSync.mockReturnValue({
+      type: 'return',
+      params: null,
+    })
+    const invoke = initUTSProxyFunction('TestBridge', {
+      name: 'invoke',
+      utsBridgeName: 'TestBridge',
+      methodId: 11,
+      type: 'function',
+      keepAlive: false,
+      async: false,
+    })
+    const element = {
+      pageId: 'page-1',
+      getNodeId: () => 101,
+    }
+    const component: any = { $el: element }
+    component.$ = { proxy: component }
+    const componentWithoutElement: any = {}
+    componentWithoutElement.$ = { proxy: componentWithoutElement }
+    const nested = {
+      element,
+      components: [component, componentWithoutElement],
+    }
+
+    invoke(element, nested)
+
     expect(invokeSync).toHaveBeenCalledWith(
       'APP-SERVICE',
-      {
-        moduleName: 'TestBridge',
-        methodId: 10,
-        nested: false,
-        keepAlive: false,
-        instance: undefined,
-        instanceId: undefined,
-        params: ['url', 1],
-      },
-      expect.any(Function)
+      expect.objectContaining({
+        params: [
+          { __type__: 'UniElement', pageId: 'page-1', nodeId: 101 },
+          {
+            element: {
+              __type__: 'UniElement',
+              pageId: 'page-1',
+              nodeId: 101,
+            },
+            components: [
+              {
+                __type__: 'ComponentPublicInstance',
+                pageId: 'page-1',
+                nodeId: 101,
+              },
+              {
+                __type__: 'ComponentPublicInstance',
+                pageId: '',
+                nodeId: '',
+              },
+            ],
+          },
+        ],
+      })
     )
+    expect(nested.element).toBe(element)
+    expect(nested.components[0]).toBe(component)
   })
 
   test('creates a proxy class and invokes an instance method', () => {
@@ -105,8 +159,7 @@ describe('utsVaporAndroid', () => {
         moduleName: 'TestBridge',
         methodId: 20,
         params: ['test'],
-      }),
-      expect.any(Function)
+      })
     )
     expect(invokeSync).toHaveBeenNthCalledWith(
       2,
@@ -116,8 +169,7 @@ describe('utsVaporAndroid', () => {
         methodId: 21,
         instanceId: 100,
         params: [],
-      }),
-      expect.any(Function)
+      })
     )
   })
 
@@ -139,7 +191,7 @@ describe('utsVaporAndroid', () => {
       type: 'return',
       params: args.methodId === 30 ? 200 : 'aborted',
     }))
-    const request = initUTSProxyFunction({
+    const request = initUTSProxyFunction('TestBridge', {
       name: 'request',
       utsBridgeName: 'TestBridge',
       methodId: 30,
@@ -160,8 +212,7 @@ describe('utsVaporAndroid', () => {
         methodId: 31,
         instanceId: 200,
         params: [],
-      }),
-      expect.any(Function)
+      })
     )
   })
 })
