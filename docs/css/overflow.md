@@ -15,7 +15,7 @@ overflow 是 CSS 的简写属性，其设置了元素溢出时所需的行为—
 
 | Android(Vapor) | iOS(Vapor) | HarmonyOS(Vapor) |
 | :- | :- | :- |
-| 5.21 | 5.11 | 5.0 |
+| x | 5.11 | 5.0 |
 
 
 
