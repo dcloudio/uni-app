@@ -8,7 +8,6 @@ import {
   isInSSRComponentSetup,
   onBeforeUnmount,
 } from 'vue'
-import { isArray } from '@vue/shared'
 
 import {
   ON_ADD_TO_FAVORITES,
@@ -95,7 +94,7 @@ function removeAppHook(
   target?: ComponentInternalInstance | null
 ) {
   const hooks = (vm.$ as unknown as Record<string, Function[]>)[name]
-  if (!isArray(hooks)) {
+  if (!Array.isArray(hooks)) {
     return
   }
   for (let i = hooks.length - 1; i >= 0; i--) {
