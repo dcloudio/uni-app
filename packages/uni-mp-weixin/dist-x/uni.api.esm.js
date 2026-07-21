@@ -1762,10 +1762,6 @@ function createSelectorQuery() {
     };
     return query;
 }
-function createIntersectionObserver(component, options) {
-    const scope = component && component.$scope ? component.$scope : component;
-    return wx$2.createIntersectionObserver(scope, options);
-}
 const wx$2 = initWx();
 if (!wx$2.getAppBaseInfo || !wx$2.getAppBaseInfo()) {
     wx$2.getAppBaseInfo = wx$2.getSystemInfoSync;
@@ -1820,7 +1816,6 @@ const offHostThemeChange = (callbackId) => {
 
 var shims = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  createIntersectionObserver: createIntersectionObserver,
   createSelectorQuery: createSelectorQuery,
   getProvider: getProvider,
   offHostThemeChange: offHostThemeChange,
