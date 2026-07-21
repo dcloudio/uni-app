@@ -9527,7 +9527,7 @@ function getAppVm() {
 }
 function removeAppHook(vm, name, hook, originalHook, target) {
   var hooks = vm.$[name];
-  if (!isArray$1(hooks)) {
+  if (!Array.isArray(hooks)) {
     return;
   }
   for (var i = hooks.length - 1; i >= 0; i--) {

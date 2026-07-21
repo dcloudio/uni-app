@@ -115,7 +115,7 @@ function getAppVm() {
 }
 function removeAppHook(vm, name, hook, originalHook, target) {
     const hooks = vm.$[name];
-    if (!shared.isArray(hooks)) {
+    if (!Array.isArray(hooks)) {
         return;
     }
     for (let i = hooks.length - 1; i >= 0; i--) {

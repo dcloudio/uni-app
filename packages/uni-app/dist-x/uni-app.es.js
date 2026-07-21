@@ -1,5 +1,5 @@
 import { shallowRef, ref, getCurrentInstance, isInSSRComponentSetup, injectHook, onBeforeUnmount } from 'vue';
-import { hasOwn, isArray } from '@vue/shared';
+import { hasOwn } from '@vue/shared';
 export { capitalize, extend, hasOwn, isPlainObject } from '@vue/shared';
 import { sanitise, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_LAST_PAGE_BACK_PRESS, ON_EXIT, ON_INIT, ON_LOAD, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SAVE_EXIT_STATE, ON_TITLE_CLICK, ON_SHARE_TIMELINE, ON_SHARE_CHAT, ON_ADD_TO_FAVORITES, ON_SHARE_APP_MESSAGE, ON_COPY_URL, ON_UPLOAD_DOUYIN_VIDEO, ON_LIVE_MOUNT, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED } from '@dcloudio/uni-shared';
 
@@ -86,7 +86,7 @@ function getAppVm() {
 }
 function removeAppHook(vm, name, hook, originalHook, target) {
     const hooks = vm.$[name];
-    if (!isArray(hooks)) {
+    if (!Array.isArray(hooks)) {
         return;
     }
     for (let i = hooks.length - 1; i >= 0; i--) {
