@@ -381,22 +381,24 @@ App仅对`同层的兄弟节点`之间支持`z-index`来调节层级。不支持
 
 ## 不支持拍平的 CSS 属性@css_no_flatten_list
 
-| CSS 属性列表 |
-| :- |
-| [background-clip](background-clip.md) |
-| [background-image](background-image.md) |
-| [lines](lines.md) |
-| [pointer-events](pointer-events.md) |
-| [text-decoration](text-decoration.md) |
-| [text-decoration-style](text-decoration-style.md) |
-| [text-decoration-thickness](text-decoration-thickness.md) |
-| [transition](transition.md) |
-| [transition-delay](transition-delay.md) |
-| [transition-duration](transition-duration.md) |
-| [transition-property](transition-property.md) |
-| [transition-timing-function](transition-timing-function.md) |
-| [visibility](visibility.md) |
-| [z-index](z-index.md) |
+| CSS 属性列表 | 兼容性 |
+| :- |  :-: |
+| [background-clip](background-clip.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [background-image](background-image.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [lines](lines.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [overflow](overflow.md) | Android(Vapor): x; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 |
+| [pointer-events](pointer-events.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [text-decoration](text-decoration.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [text-decoration-color](text-decoration-color.md) | Android(Vapor): x; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 |
+| [text-decoration-style](text-decoration-style.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [text-decoration-thickness](text-decoration-thickness.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [transition](transition.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [transition-delay](transition-delay.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [transition-duration](transition-duration.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [transition-property](transition-property.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [transition-timing-function](transition-timing-function.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [visibility](visibility.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
+| [z-index](z-index.md) | Android(Vapor): x; iOS(Vapor): x; HarmonyOS(Vapor): x |
 
 
 ## Bug
