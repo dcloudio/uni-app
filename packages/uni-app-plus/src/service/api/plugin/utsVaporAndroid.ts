@@ -146,7 +146,7 @@ interface InvokeArgs {
 interface InvokeCallbackReturnRes {
   // 异步 API return 的返回值
   type: 'return'
-  params?: unknown[]
+  params?: unknown
   errMsg?: string
   errStackTrace?: string
 }
@@ -225,6 +225,31 @@ export function registerUTSInterface(options: InterfaceOptions) {
   interfaceDefines[options.utsBridgeName][options.name] = options
 }
 
+function resolveReturnValue(
+  utsBridgeName: string,
+  options: MethodOptions,
+  instanceOrId: Object | number | undefined,
+  instanceProxy: unknown,
+  value: unknown
+) {
+  if (options.returnType && typeof value === 'number') {
+    if (value === 0) {
+      return null
+    }
+    const thisInstanceId =
+      typeof instanceOrId === 'number' ? instanceOrId : undefined
+    if (value === thisInstanceId) {
+      return instanceProxy
+    }
+    const interfaceOptions =
+      interfaceDefines[utsBridgeName]?.[options.returnType]
+    if (interfaceOptions) {
+      return initUTSProxyInterface(value, interfaceOptions)
+    }
+  }
+  return value
+}
+
 function initProxyFunction(
   utsBridgeName: string,
   options: MethodOptions,
@@ -247,7 +272,15 @@ function initProxyFunction(
             if (res.errMsg) {
               reject(res.errMsg)
             } else {
-              resolve(res.params)
+              resolve(
+                resolveReturnValue(
+                  utsBridgeName,
+                  options,
+                  instanceOrId,
+                  instanceProxy,
+                  res.params
+                )
+              )
             }
           }
         })
@@ -265,23 +298,13 @@ function initProxyFunction(
     if (res.errMsg) {
       throw new Error(res.errMsg)
     }
-    if (options.returnType && typeof res.params === 'number') {
-      if (res.params === 0) {
-        return null
-      }
-      const thisInstanceId =
-        typeof instanceOrId === 'number' ? instanceOrId : undefined
-      if (res.params === thisInstanceId) {
-        return instanceProxy
-      }
-      const interfaceOptions =
-        interfaceDefines[utsBridgeName]?.[options.returnType]
-      if (interfaceOptions) {
-        const instanceId = res.params as number
-        return initUTSProxyInterface(instanceId, interfaceOptions)
-      }
-    }
-    return res.params
+    return resolveReturnValue(
+      utsBridgeName,
+      options,
+      instanceOrId,
+      instanceProxy,
+      res.params
+    )
   }
 }
 
