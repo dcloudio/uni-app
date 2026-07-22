@@ -8,14 +8,7 @@ export function resolveConfigJsonCacheFile(
   platform: APP_PLATFORM
 ) {
   if (cacheDir) {
-    const file = join(
-      cacheDir,
-      platform,
-      'uts',
-      pluginRelativeDir,
-      'config.json'
-    )
-    return (existsSync(file) && file) || ''
+    return join(cacheDir, platform, 'uts', pluginRelativeDir, 'config.json')
   }
   return ''
 }

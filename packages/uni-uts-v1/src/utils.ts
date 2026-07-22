@@ -699,7 +699,7 @@ export function genConfigJson(
     platform
   )
   const configJsonDestFile = resolve(utsOutputDir, 'config.json')
-  if (fs.existsSync(configJsonDestFile)) {
+  if (configJsonCacheFile && fs.existsSync(configJsonDestFile)) {
     fs.copySync(configJsonDestFile, configJsonCacheFile)
   }
 }
