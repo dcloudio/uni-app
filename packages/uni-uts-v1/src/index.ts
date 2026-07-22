@@ -61,6 +61,7 @@ import { restoreDebuggerFiles } from './manifest/dex'
 import { compileArkTS } from './arkts'
 import type { UniXCompilerOptions } from '../lib/uni-x/dist/compiler'
 import { restoreConfigJson } from './manifest/config'
+import { readCachedUtssdkJs, saveCachedUtssdkJs } from './manifest/utssdkJs'
 
 export { syncUTSFiles } from './uni_modules'
 export * from './tsc'
@@ -372,7 +373,7 @@ export async function compile(
             custom_elements[key] = custom_elements[key]
           })
           if (useProxyCodeV2 && hasUTSBridgeCode(result.uts_bridge)) {
-            code = (await genProxyCodeV2(result)) ?? ''
+            code = (await genProxyCodeV2(result.uts_bridge)) ?? ''
           }
         }
         if (!isCompileUniModules && cacheDir) {
@@ -536,6 +537,7 @@ export async function compile(
 
           // 缓存有效时不重新升成，直接从缓存恢复
           restoreConfigJson(utsPlatform, pluginRelativeDir, outputDir, cacheDir)
+          code = readCachedUtssdkJs(pluginRelativeDir, cacheDir, utsPlatform)
 
           console.log(cacheTips(pkg.id))
 
@@ -649,7 +651,8 @@ export async function compile(
           }
           if (isSuccess) {
             if (useProxyCodeV2 && hasUTSBridgeCode(res.uts_bridge)) {
-              code = (await genProxyCodeV2(res)) ?? ''
+              code = (await genProxyCodeV2(res.uts_bridge)) ?? ''
+              saveCachedUtssdkJs(pluginRelativeDir, cacheDir, utsPlatform, code)
             }
             // 生成缓存文件
             if (cacheDir) {

@@ -36,7 +36,6 @@ import type {
 import {
   ERR_MSG_PLACEHOLDER,
   createResolveTypeReferenceName,
-  hasUTSBridgeCode,
   isColorSupported,
   parseKotlinPackageWithPluginId,
   relative,
@@ -44,7 +43,7 @@ import {
 import { normalizePath } from './shared'
 import { parseUTSSyntaxError } from './stacktrace'
 import type { SyncUniModulesFilePreprocessor } from './uni_modules'
-import type { UTSBridgeMethod, UTSResult } from '@dcloudio/uts'
+import type { UTSBridge, UTSBridgeMethod } from '@dcloudio/uts'
 
 const IOS_HOOK_CLASS = 'UTSiOSHookProxy'
 const ANDROID_HOOK_CLASS = 'UTSAndroidHookProxy'
@@ -170,11 +169,7 @@ function stringifyUTSBridgeMethodList(methods: UTSBridgeMethod[]) {
   return `[${methods.map(stringifyUTSBridgeMethod).join(', ')}]`
 }
 
-export async function genProxyCodeV2(result: UTSResult) {
-  const bridge = result.uts_bridge
-  if (!hasUTSBridgeCode(bridge)) {
-    return ''
-  }
+export async function genProxyCodeV2(bridge: UTSBridge) {
   const {
     functions,
     classes,
