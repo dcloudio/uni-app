@@ -537,7 +537,10 @@ export async function compile(
 
           // 缓存有效时不重新升成，直接从缓存恢复
           restoreConfigJson(utsPlatform, pluginRelativeDir, outputDir, cacheDir)
-          code = readCachedUtssdkJs(pluginRelativeDir, cacheDir, utsPlatform)
+
+          if (useProxyCodeV2) {
+            code = readCachedUtssdkJs(pluginRelativeDir, cacheDir, utsPlatform)
+          }
 
           console.log(cacheTips(pkg.id))
 
