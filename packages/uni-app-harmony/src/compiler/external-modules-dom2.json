@@ -74,5 +74,12 @@
       "getUniverifyManager",
       "getUniVerifyManager"
     ]
+  },
+  {
+    "type": "extapi",
+    "plugin": "uni-requestMerchantTransfer",
+    "apis": [
+      "requestMerchantTransfer"
+    ]
   }
 ]
