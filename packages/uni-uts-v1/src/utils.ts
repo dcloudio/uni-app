@@ -693,10 +693,15 @@ export function genConfigJson(
     utsBridge
   )
   // 存储到缓存目录，缓存有效时直接恢复
-  fs.copySync(
-    resolve(utsOutputDir, 'config.json'),
-    resolveConfigJsonCacheFile(pluginRelativeDir, outputDir, platform)
+  const configJsonCacheFile = resolveConfigJsonCacheFile(
+    pluginRelativeDir,
+    outputDir,
+    platform
   )
+  const configJsonDestFile = resolve(utsOutputDir, 'config.json')
+  if (fs.existsSync(configJsonDestFile)) {
+    fs.copySync(configJsonDestFile, configJsonCacheFile)
+  }
 }
 
 function copyConfigJson(
