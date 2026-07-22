@@ -41,7 +41,11 @@ const DEFAULT_IMPORTS = [
 ]
 
 const DEFAULT_IMPORTS_X = ['io.dcloud.uniapp.runtime.*']
-const DEFAULT_IMPORTS_X_DOM2 = ['io.dcloud.uniappxv.runtime.*']
+const DEFAULT_IMPORTS_X_DOM2 = [
+  'io.dcloud.uniappxv.runtime.*',
+  'java.util.LinkedHashMap',
+  'kotlin.collections.MutableList',
+]
 
 type UniCloudObjectInfo = {
   name: string
