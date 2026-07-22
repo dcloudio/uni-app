@@ -196,16 +196,21 @@ const moduleName = '${utsBridgeName}'\n`
       : `export const ${c.name} = `
     const isElement = isUTSElementProxyClass(c.name)
     // TODO 目前仅用于安卓dom2，如果要支持iOS dom2需要屏蔽ElementProxyClass的注册
-    const initProxyMethodName = isElement
-      ? 'initUTSElementProxyClass'
-      : 'initUTSProxyClass'
-    code += `${exportModifier}${initProxyMethodName}({ utsBridgeName: moduleName, class: '${
-      c.name
-    }', constructor: ${stringifyUTSBridgeMethod(
-      c.constructor
-    )}, staticMethods: ${stringifyUTSBridgeMethodList(
-      c.static_methods
-    )}, methods: ${stringifyUTSBridgeMethodList(c.methods)} })\n`
+    if (isElement) {
+      code += `${exportModifier}initUTSElementProxyClass({ utsBridgeName: moduleName, class: '${
+        c.name
+      }', staticMethods: ${stringifyUTSBridgeMethodList(
+        c.static_methods
+      )}, methods: ${stringifyUTSBridgeMethodList(c.methods)} })\n`
+    } else {
+      code += `${exportModifier}initUTSProxyClass({ utsBridgeName: moduleName, class: '${
+        c.name
+      }', constructor: ${stringifyUTSBridgeMethod(
+        c.constructor
+      )}, staticMethods: ${stringifyUTSBridgeMethodList(
+        c.static_methods
+      )}, methods: ${stringifyUTSBridgeMethodList(c.methods)} })\n`
+    }
   })
   functions.forEach((f) => {
     const exportModifier = f.is_default
