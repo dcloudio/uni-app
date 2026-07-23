@@ -14189,6 +14189,15 @@ const props$n = {
     default: function() {
       return [];
     }
+  },
+  /** @deprecated 请使用 user-select */
+  selectable: {
+    type: [Boolean, String],
+    default: false
+  },
+  userSelect: {
+    type: [Boolean, String],
+    default: false
   }
 };
 const index$l = /* @__PURE__ */ defineBuiltInComponent({
@@ -14221,7 +14230,8 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
       deep: true
     });
     return () => h("uni-rich-text", {
-      ref: rootRef
+      ref: rootRef,
+      selectable: props2.userSelect || props2.selectable ? true : null
     }, h("div", {}, _vnode.value));
   }
 });

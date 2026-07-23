@@ -532,6 +532,10 @@ uni-navigator[hidden] {
   color: inherit;
   cursor: pointer;
 }
+uni-rich-text[selectable="true"] {
+  user-select: text;
+  -webkit-user-select: text;
+}
 uni-progress {
   display: flex;
   align-items: center;

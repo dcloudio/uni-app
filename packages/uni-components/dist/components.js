@@ -4464,6 +4464,15 @@ const props = {
     default: function() {
       return [];
     }
+  },
+  /** @deprecated 请使用 user-select */
+  selectable: {
+    type: [Boolean, String],
+    default: false
+  },
+  userSelect: {
+    type: [Boolean, String],
+    default: false
   }
 };
 const defaultFontSize = 16;

@@ -6361,6 +6361,15 @@ const props$g = {
     default: function() {
       return [];
     }
+  },
+  /** @deprecated 请使用 user-select */
+  selectable: {
+    type: [Boolean, String],
+    default: false
+  },
+  userSelect: {
+    type: [Boolean, String],
+    default: false
   }
 };
 const index$n = /* @__PURE__ */ defineBuiltInComponent({
@@ -6393,7 +6402,8 @@ const index$n = /* @__PURE__ */ defineBuiltInComponent({
       deep: true
     });
     return () => vue.h("uni-rich-text", {
-      ref: rootRef
+      ref: rootRef,
+      selectable: props2.userSelect || props2.selectable ? true : null
     }, vue.h("div", {}, _vnode.value));
   }
 });
