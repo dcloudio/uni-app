@@ -65,7 +65,7 @@ uni-app x 蒸汽模式的rich-text native，应该是业内最佳的富文本呈
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | web | Web: x; 微信小程序: x; Android: 4.71; iOS: 4.11; HarmonyOS: 4.61 | 使用webview渲染 |
-| native | Web: x; 微信小程序: x; Android: 4.71; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 使用原生渲染 |
+| native | Web: x; 微信小程序: x; Android: 4.71; iOS(VDOM): x; iOS(Vapor): 5.21; HarmonyOS: 4.61 | 使用原生渲染 |
 
 #### space 的属性描述
 
