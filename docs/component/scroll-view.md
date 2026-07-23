@@ -70,7 +70,7 @@
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
 | none | Web: 4.0; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 禁止滚动 |
-| all | Web: 4.0; Android(VDOM): x; Android(Vapor): 5.21; iOS: x; HarmonyOS: 4.61 | 横向/竖向可同时滚动 |
+| all | Web: 4.0; Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: 4.61 | 横向/竖向可同时滚动 |
 | horizontal | Web: 4.0; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 横向滚动 |
 | vertical | Web: 4.0; Android: 4.0; iOS: 4.11; HarmonyOS: 4.61 | 竖向滚动 |
 

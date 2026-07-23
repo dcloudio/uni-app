@@ -30,7 +30,7 @@
 | main-axis-gap | number \| string | 0 | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 主轴方向间隔 |
 | cross-axis-gap | number \| string | 0 | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 交叉轴方向间隔 |
 | max-cross-axis-extent | number \| string | 0 | Web: x; 微信小程序: x; Android: x; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.02 | flow-item交叉轴方向最大尺寸 |
-| padding | Array | \[0,0,0,0\] | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS: x | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距 |
+| padding | Array | \[0,0,0,0\] | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS: x | 长度为 4 的数组，按 top、right、bottom、left 顺序指定内边距。蒸汽模式已废弃此属性，推荐使用 css padding 属性 |
 | associative-container | string |   | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS: x | 关联的滚动容器 |
 | bounces | boolean \| string | true | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 控制是否回弹效果 |
 | upper-threshold | number | 50 | Web: x; 微信小程序: x; Android: 4.41; iOS: 4.41; HarmonyOS(VDOM): 4.81; HarmonyOS(Vapor): 5.02 | 距顶部/左边多远时（单位px），触发 scrolltoupper 事件 |
