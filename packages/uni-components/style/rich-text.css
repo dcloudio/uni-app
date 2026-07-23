@@ -1,0 +1,4 @@
+uni-rich-text[selectable="true"] {
+  user-select: text;
+  -webkit-user-select: text;
+}
