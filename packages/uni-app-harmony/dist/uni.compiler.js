@@ -160,6 +160,13 @@ var ExternalModulesX = [
 			"getUniverifyManager",
 			"getUniVerifyManager"
 		]
+	},
+	{
+		type: "extapi",
+		plugin: "uni-requestMerchantTransfer",
+		apis: [
+			"requestMerchantTransfer"
+		]
 	}
 ];
 
@@ -238,6 +245,13 @@ var ExternalModulesDom2 = [
 		apis: [
 			"getUniverifyManager",
 			"getUniVerifyManager"
+		]
+	},
+	{
+		type: "extapi",
+		plugin: "uni-requestMerchantTransfer",
+		apis: [
+			"requestMerchantTransfer"
 		]
 	}
 ];
