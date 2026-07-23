@@ -242,6 +242,26 @@
       "SetPushChannelOptions"
     ]
   ],
+  "@uni_modules/uni-requestmerchanttransfer": [
+    [
+      "RequestMerchantTransfer"
+    ],
+    [
+      "RequestMerchantTransferCompleteCallback"
+    ],
+    [
+      "RequestMerchantTransferFailCallback"
+    ],
+    [
+      "RequestMerchantTransferGeneralCallbackResult"
+    ],
+    [
+      "RequestMerchantTransferOptions"
+    ],
+    [
+      "RequestMerchantTransferSuccessCallback"
+    ]
+  ],
   "@uni_modules/uni-share-weixin": [
     [
       "UniShareWeixinProvider"

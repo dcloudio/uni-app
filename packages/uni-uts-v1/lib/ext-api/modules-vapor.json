@@ -1824,7 +1824,10 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": [
+            "dom1",
+            "dom2"
+          ]
         }
       }
     },
