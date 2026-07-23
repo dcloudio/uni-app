@@ -1218,9 +1218,9 @@ uni-app x的Android VDOM模式是强类型，联网获取JSON，拿到的不是j
 
 ## 注意事项@tips
 
-* uni-app x 5.0+，Android支持了h/3网络，加快了网络连接，但因为引入了cronet库，导致APK包体积增加了数M（具体取决于包含的CPU数量）。
-* 拦截器在js中使用很普通，但原生语言由于缺少动态性，模拟实现拦截达不到js的全部效果。一般建议开发者直接使用uni.request，不封装拦截器。如仍想使用拦截器，见[插件市场](https://ext.dcloud.net.cn/search?q=%E7%BD%91%E7%BB%9C%E6%8B%A6%E6%88%AA%E5%99%A8&uni-appx=1)
-* app-android平台 request 接口如需包装和传递泛型，需参考[泛型传递丢失注意](../plugin/uts-for-android.md#lost-generics)。成熟的拦截器插件均已自动处理这些问题。
+* uni-app x 5.0+，Android支持了http/3网络，加快了网络连接，但因为引入了cronet库，导致APK包体积增加了数M（具体取决于包含的CPU数量）。从HBuilderX 5.22+，manifest的Android设置中可以选择是否包含cronet库，默认不包含。
+* 拦截器在js中使用很普遍。但Android VDOM模式下编译为原生语言时由于缺少动态性，模拟实现拦截达不到js的全部效果。一般建议开发者直接使用uni.request，不封装拦截器。如仍想使用拦截器，见[插件市场](https://ext.dcloud.net.cn/search?q=%E7%BD%91%E7%BB%9C%E6%8B%A6%E6%88%AA%E5%99%A8&uni-appx=1)。蒸汽模式不存在此问题，js的拦截器可以直接用。
+* app-android平台 VDOM模式 request 接口如需包装和传递泛型，需参考[泛型传递丢失注意](../plugin/uts-for-android.md#lost-generics)。成熟的拦截器插件均已自动处理这些问题。蒸汽模式不存在此问题。
 * 如果使用泛型先创建RequestOptions实例，再传入uni.request()，此时请务必确保request要显式指定泛型，例：
 ```typescript
 const options: RequestOptions<Person> = ...
