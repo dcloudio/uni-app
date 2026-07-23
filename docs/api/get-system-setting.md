@@ -45,6 +45,10 @@
 | landscape | Web: x | 横向 | 
 
 
+## 注意事项
+
+- 如果出现 `bluetoothError`、`wifiError` 非空的情况就说明权限配置错误，需要根据 [文档](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#permissions) 正确配置权限。
+
 ### 示例
 
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/API/get-system-setting/get-system-setting.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/API/get-system-setting/get-system-setting.uvue) 
@@ -166,4 +170,5 @@
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
 | errMsg | string | 是 | 微信小程序: 4.41 | 错误信息 |
+
 
