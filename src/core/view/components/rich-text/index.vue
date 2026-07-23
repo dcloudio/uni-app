@@ -1,5 +1,8 @@
 <template>
-  <uni-rich-text v-on="$listeners">
+  <uni-rich-text
+    :selectable="!!(userSelect || selectable)"
+    v-on="$listeners"
+  >
     <div ref="content">
       <v-uni-resize-sensor
         ref="sensor"
@@ -15,6 +18,15 @@ import parseNodes from './nodes-parser'
 export default {
   name: 'RichText',
   props: {
+    /** @deprecated 请使用 user-select */
+    selectable: {
+      type: [Boolean, String],
+      default: false
+    },
+    userSelect: {
+      type: [Boolean, String],
+      default: false
+    },
     nodes: {
       type: [Array, String],
       default: function () {
@@ -62,4 +74,9 @@ export default {
   }
 }
 </script>
-<style></style>
+<style>
+  uni-rich-text[selectable="true"] {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+</style>
