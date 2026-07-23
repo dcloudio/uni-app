@@ -51,6 +51,9 @@ export const defaultTransformMPBuiltInTagOptions: TransformMPBuiltInTagOptions =
       'rich-text': {
         selectable: 'user-select',
       },
+      text: {
+        selectable: 'user-select',
+      },
     },
     propAdd: {
       canvas: [
