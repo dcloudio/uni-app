@@ -119,7 +119,7 @@ export function normalizeDecl(decl: Declaration, options: NormalizeOptions) {
   if (options.type === 'uvue' && !value.includes('calc')) {
     if (hasCssVar(value)) {
       return {
-        value: normalizeCssVar(value, options.keepVar),
+        value,
         log,
       }
     }
@@ -157,14 +157,4 @@ export function normalizeDecl(decl: Declaration, options: NormalizeOptions) {
 
 function hasCssVar(value: string) {
   return value.includes('var(')
-}
-export function normalizeCssVar(value: string, keepVar: boolean = false) {
-  if (keepVar) {
-    return value
-  }
-  // 目前框架在运行时 initVar 会处理特征值替换为常量
-  return value
-    .replaceAll(`var(--window-top)`, `CSS_VAR_WINDOW_TOP`)
-    .replaceAll(`var(--window-bottom)`, `CSS_VAR_WINDOW_BOTTOM`)
-    .replaceAll(`var(--status-bar-height)`, `CSS_VAR_STATUS_BAR_HEIGHT`)
 }
