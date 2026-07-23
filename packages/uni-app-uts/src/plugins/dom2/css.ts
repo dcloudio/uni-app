@@ -32,8 +32,9 @@ import { DOM2_CSS_CACHE_MAP, isVue } from '../utils'
 
 const CSS_FILE_ID_MAP = new Map<string, string>()
 
-function isAnimationEnabled() {
-  return fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, '.animation'))
+export function isAnimationEnabled() {
+  const inputDir = process.env.UNI_INPUT_DIR
+  return !!inputDir && fs.existsSync(path.resolve(inputDir, '.animation'))
 }
 
 export function uniAppCssPrePlugin(): Plugin {
