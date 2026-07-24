@@ -811,7 +811,7 @@
     /* #endif */
     
     /* #ifndef WEB */
-    src: url('/uni_modules/uni-chooseLocation/static/iconfont.ttf') format('truetype');
+    src: url('../../static/iconfont.ttf') format('truetype');
     /* #endif */
     
   }
