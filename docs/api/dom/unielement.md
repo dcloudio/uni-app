@@ -1541,9 +1541,9 @@ if (view != null && view instanceof WKWebView) {
 使界面滚动到给定元素的指定坐标位置 仅scroll-view、list-view组件支持
 
 ##### scrollTo 兼容性 <Help /> 
-| Web | 微信小程序 | Android 系统版本 | Android(VDOM) | Android(Vapor) | Android(VDOM) UTS 插件 | iOS 系统版本 | iOS(VDOM) | iOS(Vapor) | iOS(VDOM) UTS 插件 | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | 14.0.0 | 4.0 | 5.22 | 5.22 | 26.0 | 4.11 | 5.22 | 4.25 | 6.0.2(22) | 4.61 | 5.22 | 5.22 |
+| Web | 微信小程序 | Android 系统版本 | Android(VDOM) | Android(Vapor) | Android(VDOM) UTS 插件 | Android(Vapor) UTS 插件 | iOS 系统版本 | iOS(VDOM) | iOS(Vapor) | iOS(VDOM) UTS 插件 | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) | HarmonyOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 14.0.0 | 4.0 | 5.22 | 5.22 | x | 26.0 | 4.11 | 5.22 | 4.25 | 6.0.2(22) | 4.61 | 5.22 | 5.22 |
 
 
 ##### 参数 
@@ -1563,9 +1563,9 @@ if (view != null && view instanceof WKWebView) {
 使得元素滚动一段特定距离 仅scroll-view、list-view组件支持
 
 ##### scrollBy 兼容性 <Help /> 
-| Web | 微信小程序 | Android 系统版本 | Android(VDOM) | Android(Vapor) | Android(VDOM) UTS 插件 | iOS 系统版本 | iOS(VDOM) | iOS(Vapor) | iOS(VDOM) UTS 插件 | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | 14.0.0 | 4.0 | 5.22 | 5.22 | 26.0 | 4.11 | 5.22 | 4.25 | 6.0.2(22) | 4.61 | 5.22 | 5.22 |
+| Web | 微信小程序 | Android 系统版本 | Android(VDOM) | Android(Vapor) | Android(VDOM) UTS 插件 | Android(Vapor) UTS 插件 | iOS 系统版本 | iOS(VDOM) | iOS(Vapor) | iOS(VDOM) UTS 插件 | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) | HarmonyOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 14.0.0 | 4.0 | 5.22 | 5.22 | x | 26.0 | 4.11 | 5.22 | 4.25 | 6.0.2(22) | 4.61 | 5.22 | 5.22 |
 
 
 ##### 参数 
@@ -1585,9 +1585,9 @@ if (view != null && view instanceof WKWebView) {
 返回文档中与指定选择器或选择器组匹配的第一个 Element对象。如果找不到匹配项，则返回null
 
 ##### querySelector 兼容性 <Help /> 
-| Web | 微信小程序 | Android 系统版本 | Android(VDOM) | Android(Vapor) | Android(VDOM) UTS 插件 | Android(Vapor) UTS 插件 | iOS 系统版本 | iOS(VDOM) | iOS(Vapor) | iOS(VDOM) UTS 插件 | iOS(Vapor) UTS 插件 | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | 15.0.0 | 4.0 | 5.22 | 5.22 | x | 26.0 | 4.11 | 5.22 | 4.25 | x | 6.0.1(21) | 4.61 | 5.22 | 5.22 |
+| Web | 微信小程序 | Android 系统版本 | Android(VDOM) | Android(Vapor) | Android(VDOM) UTS 插件 | Android(Vapor) UTS 插件 | iOS 系统版本 | iOS(VDOM) | iOS(Vapor) | iOS(VDOM) UTS 插件 | iOS(Vapor) UTS 插件 | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) | HarmonyOS(VDOM) UTS 插件 | HarmonyOS(Vapor) UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 15.0.0 | 4.0 | 5.22 | 5.22 | x | 26.0 | 4.11 | 5.22 | 4.25 | x | 6.0.1(21) | 4.61 | 5.22 | 5.22 | x |
 
 
 ##### 参数 
@@ -1643,9 +1643,9 @@ if (view != null && view instanceof WKWebView) {
 使元素获取焦点 仅input、Textarea组件支持
 
 ##### focus 兼容性 <Help /> 
-| Web | 微信小程序 | Android 系统版本 | Android(VDOM) | Android(Vapor) | Android(VDOM) UTS 插件 | iOS 系统版本 | iOS(VDOM) | iOS(Vapor) | iOS(VDOM) UTS 插件 | iOS(Vapor) UTS 插件 | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | 14.0.0 | 4.0 | 5.22 | 5.22 | 26.0 | 4.11 | x | 4.25 | 5.22 | 6.0.1(21) | 4.81 | x | 5.22 |
+| Web | 微信小程序 | Android 系统版本 | Android(VDOM) | Android(Vapor) | Android(VDOM) UTS 插件 | Android(Vapor) UTS 插件 | iOS 系统版本 | iOS(VDOM) | iOS(Vapor) | iOS(VDOM) UTS 插件 | iOS(Vapor) UTS 插件 | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) | HarmonyOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 14.0.0 | 4.0 | 5.22 | 5.22 | x | 26.0 | 4.11 | x | 4.25 | 5.22 | 6.0.1(21) | 4.81 | x | 5.22 |
 
 
 
@@ -1659,9 +1659,9 @@ if (view != null && view instanceof WKWebView) {
 使元素丢失焦点 仅input、Textarea组件支持
 
 ##### blur 兼容性 <Help /> 
-| Web | 微信小程序 | Android 系统版本 | Android(VDOM) | Android(Vapor) | Android(VDOM) UTS 插件 | iOS 系统版本 | iOS(VDOM) | iOS(Vapor) | iOS(VDOM) UTS 插件 | iOS(Vapor) UTS 插件 | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | 14.0.0 | 4.0 | 5.22 | 5.22 | 26.0 | 4.11 | x | 4.25 | 5.22 | 6.0.1(21) | 4.81 | x | 5.22 |
+| Web | 微信小程序 | Android 系统版本 | Android(VDOM) | Android(Vapor) | Android(VDOM) UTS 插件 | Android(Vapor) UTS 插件 | iOS 系统版本 | iOS(VDOM) | iOS(Vapor) | iOS(VDOM) UTS 插件 | iOS(Vapor) UTS 插件 | HarmonyOS 系统版本 | HarmonyOS(VDOM) | HarmonyOS(Vapor) | HarmonyOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- | :- |
+| 4.0 | x | 14.0.0 | 4.0 | 5.22 | 5.22 | x | 26.0 | 4.11 | x | 4.25 | 5.22 | 6.0.1(21) | 4.81 | x | 5.22 |
 
 
 
