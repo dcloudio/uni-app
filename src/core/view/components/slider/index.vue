@@ -81,23 +81,23 @@ export default {
     },
     color: {
       type: String,
-      default: '#e9e9e9'
+      default: undefined
     },
     backgroundColor: {
       type: String,
-      default: '#e9e9e9'
+      default: undefined
     },
     activeColor: {
       type: String,
-      default: '#007aff'
+      default: undefined
     },
     selectedColor: {
       type: String,
-      default: '#007aff'
+      default: undefined
     },
     blockColor: {
       type: String,
-      default: '#ffffff'
+      default: undefined
     },
     blockSize: {
       type: [Number, String],
@@ -115,19 +115,19 @@ export default {
   },
   computed: {
     setBlockStyle () {
-      return {
+      const style = {
         width: this.blockSize + 'px',
         height: this.blockSize + 'px',
         marginLeft: -this.blockSize / 2 + 'px',
         marginTop: -this.blockSize / 2 + 'px',
-        left: this._getValueWidth(),
-        backgroundColor: this.blockColor
+        left: this._getValueWidth()
       }
+      if (this.blockColor) style.backgroundColor = this.blockColor
+      return style
     },
     setBgColor () {
-      return {
-        backgroundColor: this._getBgColor()
-      }
+      const color = this._getBgColor()
+      return color ? { backgroundColor: color } : undefined
     },
     setBlockBg () {
       return {
@@ -135,10 +135,12 @@ export default {
       }
     },
     setActiveColor () { // 有问题，设置最大值最小值是有问题
-      return {
-        backgroundColor: this._getActiveColor(),
+      const style = {
         width: this._getValueWidth()
       }
+      const color = this._getActiveColor()
+      if (color) style.backgroundColor = color
+      return style
     },
     truthStep () {
       const step = Number(this.step)
@@ -200,12 +202,22 @@ export default {
       return 100 * (this.sliderValue - this.min) / (this.max - this.min) + '%'
     },
     _getBgColor () {
-      return this.backgroundColor !== '#e9e9e9' ? this.backgroundColor : (this.color !== '#007aff' ? this.color
-        : '#007aff')
+      const backgroundColor = this.backgroundColor
+      const color = this.color
+      if (backgroundColor && backgroundColor !== '#e9e9e9') {
+        return backgroundColor
+      }
+      if (color && color !== '#007aff') return color
+      return backgroundColor || color
     },
     _getActiveColor () {
-      return this.activeColor !== '#007aff' ? this.activeColor : (this.selectedColor !== '#e9e9e9' ? this.selectedColor
-        : '#e9e9e9')
+      const activeColor = this.activeColor
+      const selectedColor = this.selectedColor
+      if (activeColor && activeColor !== '#007aff') return activeColor
+      if (selectedColor && selectedColor !== '#e9e9e9') {
+        return selectedColor
+      }
+      return activeColor || selectedColor
     },
     _onTrack: function (e) {
       if (!this.disabled) {
@@ -305,6 +317,7 @@ uni-slider .uni-slider-handle {
 
 uni-slider .uni-slider-thumb {
   z-index: 2;
+  background-color: #fff;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -330,5 +343,11 @@ uni-slider .uni-slider-disabled .uni-slider-track {
 uni-slider .uni-slider-disabled .uni-slider-thumb {
   background-color: #FFF;
   border-color: #ccc;
+}
+
+@media (prefers-color-scheme: dark) {
+  uni-slider .uni-slider-handle-wrapper {
+    background-color: #393939;
+  }
 }
 </style>
