@@ -58,6 +58,7 @@ uni-slider .uni-slider-thumb-value {
   position: relative;
   cursor: pointer;
   border-radius: 50%;
+  background-color: #fff;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
   transition: border-color 0.3s ease;
 }
@@ -76,4 +77,10 @@ uni-slider .uni-slider-disabled .uni-slider-track {
 uni-slider .uni-slider-disabled .uni-slider-thumb-value {
   background-color: #fff;
   border-color: #ccc;
+}
+
+@media (prefers-color-scheme: dark) {
+  uni-slider .uni-slider-track {
+    background-color: #393939;
+  }
 }

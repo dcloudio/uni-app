@@ -1,12 +1,4 @@
-import {
-  computed,
-  inject,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-  watchEffect,
-} from 'vue'
+import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { ExtractPropTypes, Ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import {
@@ -21,6 +13,7 @@ import {
   withWebEvent,
 } from '../../helpers/useEvent'
 import { type UniFormCtx, uniFormKey } from '../form'
+import { createBackgroundColorStyle, withBackgroundColor } from './utils'
 
 const props = {
   name: {
@@ -49,23 +42,18 @@ const props = {
   },
   color: {
     type: String,
-    default: '#e9e9e9',
   },
   backgroundColor: {
     type: String,
-    default: '#e9e9e9',
   },
   activeColor: {
     type: String,
-    default: '#007aff',
   },
   selectedColor: {
     type: String,
-    default: '#007aff',
   },
   blockColor: {
     type: String,
-    default: '#ffffff',
   },
   blockSize: {
     type: [Number, String],
@@ -162,14 +150,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         <uni-slider ref={sliderRef} onClick={withWebEvent(_onClick)}>
           <div class="uni-slider-wrapper">
             <div class="uni-slider-tap-area">
-              <div style={setBgColor.value} class="uni-slider-handle-wrapper">
+              <div style={setBgColor()} class="uni-slider-handle-wrapper">
                 <div
                   ref={sliderHandleRef}
-                  style={setBlockBg.value}
+                  style={setBlockBg()}
                   class="uni-slider-handle"
                 />
-                <div style={setBlockStyle.value} class="uni-slider-thumb" />
-                <div style={setActiveColor.value} class="uni-slider-track" />
+                <div style={setBlockStyle()} class="uni-slider-thumb" />
+                <div style={setActiveColor()} class="uni-slider-track" />
               </div>
             </div>
             <span
@@ -201,38 +189,40 @@ function useSliderState(props: SliderProps, sliderValue: Ref<number>) {
     return getValueWidth(sliderValue.value, props.min, props.max)
   }
   const _getBgColor = () => {
-    return props.backgroundColor !== '#e9e9e9'
-      ? props.backgroundColor
-      : props.color !== '#007aff'
-      ? props.color
-      : '#007aff'
+    const backgroundColor = props.backgroundColor
+    const color = props.color
+    if (backgroundColor && backgroundColor !== '#e9e9e9') {
+      return backgroundColor
+    }
+    if (color && color !== '#007aff') return color
+    return backgroundColor || color
   }
   const _getActiveColor = () => {
-    return props.activeColor !== '#007aff'
-      ? props.activeColor
-      : props.selectedColor !== '#e9e9e9'
-      ? props.selectedColor
-      : '#e9e9e9'
+    const activeColor = props.activeColor
+    const selectedColor = props.selectedColor
+    if (activeColor && activeColor !== '#007aff') return activeColor
+    if (selectedColor && selectedColor !== '#e9e9e9') {
+      return selectedColor
+    }
+    return activeColor || selectedColor
   }
-
-  const state = {
-    setBgColor: computed(() => ({ backgroundColor: _getBgColor() })),
-    setBlockBg: computed(() => ({ left: _getValueWidth() })),
-    setActiveColor: computed(() => ({
-      backgroundColor: _getActiveColor(),
-      width: _getValueWidth(),
-    })),
-    setBlockStyle: computed(() => ({
-      width: props.blockSize + 'px',
-      height: props.blockSize + 'px',
-      marginLeft: -props.blockSize / 2 + 'px',
-      marginTop: -props.blockSize / 2 + 'px',
-      left: _getValueWidth(),
-      backgroundColor: props.blockColor,
-    })),
+  return {
+    setBgColor: () => createBackgroundColorStyle(_getBgColor()),
+    setBlockBg: () => ({ left: _getValueWidth() }),
+    setActiveColor: () =>
+      withBackgroundColor({ width: _getValueWidth() }, _getActiveColor()),
+    setBlockStyle: () =>
+      withBackgroundColor(
+        {
+          width: props.blockSize + 'px',
+          height: props.blockSize + 'px',
+          marginLeft: -props.blockSize / 2 + 'px',
+          marginTop: -props.blockSize / 2 + 'px',
+          left: _getValueWidth(),
+        },
+        props.blockColor
+      ),
   }
-
-  return state
 }
 
 function useSliderLoader(
