@@ -16728,6 +16728,12 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     _scrollLeftChanged
   };
 }
+function createBackgroundColorStyle(color) {
+  return color ? { backgroundColor: color } : void 0;
+}
+function withBackgroundColor(style, color) {
+  return color ? Object.assign(style, { backgroundColor: color }) : style;
+}
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
 const props$h = {
@@ -16756,38 +16762,30 @@ const props$h = {
     default: false
   },
   color: {
-    type: String,
-    default: "#e9e9e9"
+    type: String
   },
   backgroundColor: {
-    type: String,
-    default: "#e9e9e9"
+    type: String
   },
   // 优先级高于 activeColor
   activeBackgroundColor: {
-    type: String,
-    default: ""
+    type: String
   },
   activeColor: {
-    type: String,
-    default: "#007aff"
+    type: String
   },
   selectedColor: {
-    type: String,
-    default: "#007aff"
+    type: String
   },
   blockColor: {
-    type: String,
-    default: "#ffffff"
+    type: String
   },
   // 优先级高于blockColor
   foreColor: {
-    type: String,
-    default: ""
+    type: String
   },
   valueColor: {
-    type: String,
-    default: "#888888"
+    type: String
   },
   blockSize: {
     type: [Number, String],
@@ -16881,16 +16879,16 @@ const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
       }, [createVNode("div", {
         "class": "uni-slider-input"
       }, [createVNode("div", {
-        "style": setTrackBgColor.value,
+        "style": setTrackBgColor(),
         "class": "uni-slider-track"
       }, [createVNode("div", {
-        "style": setActiveColor.value,
+        "style": setActiveColor(),
         "class": "uni-slider-track-value"
       }, null, 4)], 4), createVNode("div", {
-        "style": thumbTrackStyle.value,
+        "style": thumbTrackStyle(),
         "class": "uni-slider-thumb-track"
       }, [createVNode("div", {
-        "style": setThumbStyle.value,
+        "style": setThumbStyle(),
         "class": "uni-slider-thumb-value"
       }, null, 4)], 4), createVNode("input", {
         "class": "uni-slider-browser-input-range",
@@ -16903,7 +16901,7 @@ const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
         "onChange": withWebEvent(_onChange)
       }, null, 40, ["min", "max", "step", "value", "onInput", "onChange"])]), withDirectives(createVNode("span", {
         "ref": sliderValueRef,
-        "style": setValueStyle.value,
+        "style": setValueStyle(),
         "class": "uni-slider-value"
       }, null, 4), [[vShow, props2.showValue]])])], 512);
     };
@@ -16911,36 +16909,46 @@ const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
 });
 function useSliderState(props2) {
   const _getBgColor = () => {
-    return props2.backgroundColor !== "#e9e9e9" ? props2.backgroundColor : props2.color !== "#007aff" ? props2.color : "#007aff";
+    const backgroundColor = props2.backgroundColor;
+    const color = props2.color;
+    if (backgroundColor && backgroundColor !== "#e9e9e9") {
+      return backgroundColor;
+    }
+    if (color && color !== "#007aff")
+      return color;
+    return backgroundColor || color;
   };
   const _getActiveColor = () => {
     const activeColor = props2.activeBackgroundColor || props2.activeColor;
-    return activeColor !== "#007aff" ? activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
+    const selectedColor = props2.selectedColor;
+    if (activeColor && activeColor !== "#007aff")
+      return activeColor;
+    if (selectedColor && selectedColor !== "#e9e9e9") {
+      return selectedColor;
+    }
+    return activeColor || selectedColor;
+  };
+  const _getBlockColor = () => {
+    return props2.foreColor || props2.blockColor;
   };
   const _getBlockSizeString = () => {
     const blockSize = Math.min(Math.max(Number(props2.blockSize), SLIDER_BLOCK_SIZE_MIN_VALUE), SLIDER_BLOCK_SIZE_MAX_VALUE);
     return blockSize + "px";
   };
-  const state2 = {
-    setTrackBgColor: computed(() => ({
-      backgroundColor: _getBgColor()
-    })),
-    setActiveColor: computed(() => ({
-      backgroundColor: _getActiveColor()
-    })),
-    thumbTrackStyle: computed(() => ({
+  return {
+    setTrackBgColor: () => createBackgroundColorStyle(_getBgColor()),
+    setActiveColor: () => createBackgroundColorStyle(_getActiveColor()),
+    thumbTrackStyle: () => ({
       marginRight: _getBlockSizeString()
-    })),
-    setThumbStyle: computed(() => ({
+    }),
+    setThumbStyle: () => withBackgroundColor({
       width: _getBlockSizeString(),
-      height: _getBlockSizeString(),
-      backgroundColor: props2.foreColor || props2.blockColor
-    })),
-    setValueStyle: computed(() => ({
+      height: _getBlockSizeString()
+    }, _getBlockColor()),
+    setValueStyle: () => props2.valueColor ? {
       color: props2.valueColor
-    }))
+    } : void 0
   };
-  return state2;
 }
 function useSliderLoader(props2, sliderRef, trigger) {
   const _onInput = (event) => {

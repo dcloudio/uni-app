@@ -14854,6 +14854,12 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     _scrollLeftChanged
   };
 }
+function createBackgroundColorStyle(color) {
+  return color ? { backgroundColor: color } : void 0;
+}
+function withBackgroundColor(style, color) {
+  return color ? Object.assign(style, { backgroundColor: color }) : style;
+}
 const props$l = {
   name: {
     type: String,
@@ -14880,24 +14886,19 @@ const props$l = {
     default: false
   },
   color: {
-    type: String,
-    default: "#e9e9e9"
+    type: String
   },
   backgroundColor: {
-    type: String,
-    default: "#e9e9e9"
+    type: String
   },
   activeColor: {
-    type: String,
-    default: "#007aff"
+    type: String
   },
   selectedColor: {
-    type: String,
-    default: "#007aff"
+    type: String
   },
   blockColor: {
-    type: String,
-    default: "#ffffff"
+    type: String
   },
   blockSize: {
     type: [Number, String],
@@ -14952,17 +14953,17 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
       }, [createVNode("div", {
         "class": "uni-slider-tap-area"
       }, [createVNode("div", {
-        "style": setBgColor.value,
+        "style": setBgColor(),
         "class": "uni-slider-handle-wrapper"
       }, [createVNode("div", {
         "ref": sliderHandleRef,
-        "style": setBlockBg.value,
+        "style": setBlockBg(),
         "class": "uni-slider-handle"
       }, null, 4), createVNode("div", {
-        "style": setBlockStyle.value,
+        "style": setBlockStyle(),
         "class": "uni-slider-thumb"
       }, null, 4), createVNode("div", {
-        "style": setActiveColor.value,
+        "style": setActiveColor(),
         "class": "uni-slider-track"
       }, null, 4)], 4)]), withDirectives(createVNode("span", {
         "ref": sliderValueRef,
@@ -14981,32 +14982,41 @@ function useSliderState(props2, sliderValue) {
     return getValueWidth(sliderValue.value, props2.min, props2.max);
   };
   const _getBgColor = () => {
-    return props2.backgroundColor !== "#e9e9e9" ? props2.backgroundColor : props2.color !== "#007aff" ? props2.color : "#007aff";
+    const backgroundColor = props2.backgroundColor;
+    const color = props2.color;
+    if (backgroundColor && backgroundColor !== "#e9e9e9") {
+      return backgroundColor;
+    }
+    if (color && color !== "#007aff")
+      return color;
+    return backgroundColor || color;
   };
   const _getActiveColor = () => {
-    return props2.activeColor !== "#007aff" ? props2.activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
+    const activeColor = props2.activeColor;
+    const selectedColor = props2.selectedColor;
+    if (activeColor && activeColor !== "#007aff")
+      return activeColor;
+    if (selectedColor && selectedColor !== "#e9e9e9") {
+      return selectedColor;
+    }
+    return activeColor || selectedColor;
   };
-  const state2 = {
-    setBgColor: computed(() => ({
-      backgroundColor: _getBgColor()
-    })),
-    setBlockBg: computed(() => ({
+  return {
+    setBgColor: () => createBackgroundColorStyle(_getBgColor()),
+    setBlockBg: () => ({
       left: _getValueWidth()
-    })),
-    setActiveColor: computed(() => ({
-      backgroundColor: _getActiveColor(),
+    }),
+    setActiveColor: () => withBackgroundColor({
       width: _getValueWidth()
-    })),
-    setBlockStyle: computed(() => ({
+    }, _getActiveColor()),
+    setBlockStyle: () => withBackgroundColor({
       width: props2.blockSize + "px",
       height: props2.blockSize + "px",
       marginLeft: -props2.blockSize / 2 + "px",
       marginTop: -props2.blockSize / 2 + "px",
-      left: _getValueWidth(),
-      backgroundColor: props2.blockColor
-    }))
+      left: _getValueWidth()
+    }, props2.blockColor)
   };
-  return state2;
 }
 function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger) {
   const truthStep = computed(() => {
