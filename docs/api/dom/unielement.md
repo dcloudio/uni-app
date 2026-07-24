@@ -34,7 +34,7 @@
 | scrollTop | number | 是 | Web: 4.0; 微信小程序: 5.13; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 获取或修改当前元素竖向滚动逻辑像素值，仅scroll-view、list-view可滚动组件支持，其他组件修改无效、获取时返回 0 |
 | tagName | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.0; iOS: 4.11; iOS(VDOM) UTS 插件: 4.25; HarmonyOS: 4.61 | 只读属性，获取当前元素的标签名 |
 | uniPage | [UniPage](/api/unipage.md) | 是 | Web: 4.0; 微信小程序: x; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | 只读属性，当前元素所属的页面对象 |
-| innerHTML | string | 是 | Web: x; 微信小程序: x; Android(VDOM): 4.84; Android(Vapor): x; iOS: x; iOS(VDOM) UTS 插件: x; HarmonyOS: x | 只读属性，当前元素内部所有子元素（不包括注释节点）的 HTML 内容 |
+| innerHTML | string | 是 | Web: x; 微信小程序: x; Android(VDOM): 4.84; Android(Vapor): x; iOS: x; HarmonyOS: x | 只读属性，当前元素内部所有子元素（不包括注释节点）的 HTML 内容 |
 
 
 #### dataset@dataset
@@ -626,9 +626,9 @@ if(element != null) {
 获取元素android原生view 通过泛型定义view类型 可能返回null
 
 ##### getAndroidView 兼容性 <Help /> 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | 4.25 | x | 5.21 | x | x | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | x | 4.25 | x | 5.21 | x | x |
 
 
 
@@ -677,9 +677,9 @@ if(webViewElement != null) {
 获取元素android原生activity 可能返回null
 
 ##### getAndroidActivity 兼容性 <Help /> 
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | 4.25 | x | 5.21 | x | x | x |
+| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | Android(Vapor) UTS 插件 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- | :- |
+| x | x | 4.25 | x | 5.21 | x | x |
 
 
 
@@ -1518,9 +1518,9 @@ if (view != null && view instanceof WKWebView) {
 向一个指定的事件目标派发一个 Event，并以合适的顺序（同步地）调用此事件的监听器回调函数。
 
 ##### dispatchEvent 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | 4.25 | 4.25 | 4.25 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | x | 4.25 | 4.25 | 4.61 |
 
 
 ##### 参数 

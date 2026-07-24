@@ -13,9 +13,9 @@
 打开文档
 
 ### openDocument 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.71 | 4.71 | 4.71 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.41 | 4.71 | 4.71 | 4.61 |
 
 
 ### 参数 
@@ -28,8 +28,8 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| filePath | string | 是 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.61 | 文件路径，仅支持本地路径 |
-| fileType | string | 否 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.61 | 文件类型，指定文件类型打开文件，微信小程序仅支持类型：doc, xls, ppt, pdf, docx, xlsx, pptx，App端由系统打开，原则上可以打开任意文件； |
+| filePath | string | 是 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 | 文件路径，仅支持本地路径 |
+| fileType | string | 否 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 | 文件类型，指定文件类型打开文件，微信小程序仅支持类型：doc, xls, ppt, pdf, docx, xlsx, pptx，App端由系统打开，原则上可以打开任意文件； |
 | success | (res: OpenDocumentSuccess) => void | 否 | Web: x; 微信小程序: 4.41 | uni.openDocument成功回调函数定义 |
 | fail | (res: [OpenDocumentFail](#opendocumentfail-values)) => void | 否 | Web: x; 微信小程序: 4.41 | uni.openDocument失败回调函数定义 |
 | complete | (res: any) => void | 否 | Web: x; 微信小程序: 4.41 | uni.openDocument完成回调函数定义 |
@@ -39,7 +39,7 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errCode | number | 是 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.61 | 错误码 |
+| errCode | number | 是 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.61 | 错误码 |
 | errSubject | string | 是 | Web: x | 统一错误主题（模块）名称 |
 | data | any | 否 | Web: x | 错误信息中包含的数据 |
 | cause | [Error](https://uniapp.dcloud.net.cn/tutorial/err-spec.html#unierror) | 否 |   | 源错误信息，可以包含多个错误，详见SourceError |
@@ -49,10 +49,10 @@
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| 1300601 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71 | 路径无效 |
-| 1300602 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71 | 文件不存在 |
-| 1300603 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71 | 不支持该文件类型 |
-| 1300604 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71 | 其他未知错误 |
+| 1300601 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 路径无效 |
+| 1300602 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 文件不存在 |
+| 1300603 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 不支持该文件类型 |
+| 1300604 | Web: x; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 其他未知错误 |
 
 
 

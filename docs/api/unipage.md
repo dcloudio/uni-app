@@ -16,15 +16,15 @@ UniPage在App和Web平台较完善，在小程序端受小程序未开放，很�
 ### UniPage 的属性值 @unipage-values
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| route | string | 是 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: 4.61 | 页面的路由地址 |
-| options | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: 4.31; HarmonyOS: x | 页面的路由参数信息 |
+| route | string | 是 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 页面的路由地址 |
+| options | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: x | 页面的路由参数信息 |
 | vm | **VueComponent** | 否 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | UniPage vue 实例对象 |
 | pageBody | **UniPageBody** | 是 | Web: 4.51; 微信小程序: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | UniPage 页面可使用区域信息，单位为px |
 | safeAreaInsets | **UniSafeAreaInsets** | 是 | Web: 4.51; 微信小程序: x; Android: 4.51; iOS: 4.51; HarmonyOS: 4.61 | UniPage 安全区域插入位置（与屏幕边界的距离）信息 |
 | fullscreenElement | [UniElement](/api/dom/unielement.md) | 否 | Web: x; 微信小程序: x; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 已经进入全屏状态的元素 |
-| width | number | 是 | Web: 4.63; 微信小程序: 4.63; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.63 | 页面窗口宽度 |
-| height | number | 是 | Web: 4.63; 微信小程序: 4.63; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.63 | 页面窗口高度 |
-| statusBarHeight | number | 是 | Web: 4.63; 微信小程序: 4.63; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.63 | 页面状态栏高度 |
+| width | number | 是 | Web: 4.63; 微信小程序: 4.63; Android: 4.61; iOS: 4.61; HarmonyOS: 4.63 | 页面窗口宽度 |
+| height | number | 是 | Web: 4.63; 微信小程序: 4.63; Android: 4.61; iOS: 4.61; HarmonyOS: 4.63 | 页面窗口高度 |
+| statusBarHeight | number | 是 | Web: 4.63; 微信小程序: 4.63; Android: 4.61; iOS: 4.61; HarmonyOS: 4.63 | 页面状态栏高度 |
 | ~~$vm~~ | [VueComponent](#vuecomponent-values) | 否 | Web: 4.31; 微信小程序: x; Android: 4.31; iOS: 4.31; iOS(VDOM) UTS 插件: x; HarmonyOS: 4.61 | UniPage vue 实例对象 |
 
 #### vm 的属性描述
@@ -73,9 +73,9 @@ UniPage在App和Web平台较完善，在小程序端受小程序未开放，很�
 pages.json里的页面配置，即page下的style节点的内容，可以通过本API获取。但注意这里获取的是UniPage上的最终生效值，不是pages.json里的原始配置。
 
 ##### getPageStyle 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.31 | x | 4.31 | 4.31 | 4.31 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.31 | x | 4.31 | 4.31 | 4.61 |
 
 
 
@@ -97,9 +97,9 @@ pages.json里的页面配置，即page下的style节点的内容，可以通过�
 pages.json里的内容是静态的，通过本API可以动态设置UniPage的Style，但并非所有页面样式都支持动态配置，具体见下PageStyle。
 
 ##### setPageStyle 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.31 | x | 4.31 | 4.31 | 4.31 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.31 | x | 4.31 | 4.31 | 4.61 |
 
 
 ##### 参数 
@@ -150,9 +150,9 @@ pages.json里的内容是静态的，通过本API可以动态设置UniPage的Sty
 用于 dialogPage 获取所属父页面
 
 ##### getParentPage 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.31 | x | 4.31 | 4.31 | 4.31 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.31 | x | 4.31 | 4.31 | 4.61 |
 
 
 
@@ -172,9 +172,9 @@ pages.json里的内容是静态的，通过本API可以动态设置UniPage的Sty
 获取当前页面的 dialog 子页面集合
 
 ##### getDialogPages 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.31 | x | 4.31 | 4.31 | 4.31 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.31 | x | 4.31 | 4.31 | 4.61 |
 
 
 

@@ -41,9 +41,9 @@ UniTextElement -- Extends --> UniElement
 设置文本内容
 
 ##### setTextLayout 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | 4.81 | x | x | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | x | 4.81 | x | x |
 
 
 ##### 参数 
@@ -325,9 +325,9 @@ measure
 获取内容宽高
 
 ##### getContentSize 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| x | x | 4.81 | x | x | x |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | x | 4.81 | x | x |
 
 
 

@@ -21,9 +21,9 @@ TextEncoder 接受码位流作为输入，并提供 UTF-8 字节流作为输出�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- |
-| √ | 4.31 | 4.71 | 4.71 | 4.31 | 4.71 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| √ | 4.31 | 4.71 | 4.71 |
 
 
 **uni-app 兼容性 <Help />**
@@ -68,9 +68,9 @@ TextEncoder.encode() 方法接受一个字符串作为输入，返回一个对�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- |
-| √ | 4.31 | 4.71 | 4.71 | 4.31 | 4.71 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| √ | 4.31 | 4.71 | 4.71 |
 
 
 **uni-app 兼容性 <Help />**

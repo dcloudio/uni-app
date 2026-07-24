@@ -13,9 +13,9 @@
 下载文件资源到本地，客户端直接发起一个 HTTP GET 请求，返回文件的本地临时路径。
 
 ### downloadFile 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 |
 
 
 下载文件常见场景是apk的下载更新，[app升级中心](https://doc.dcloud.net.cn/uniCloud/upgrade-center.html)是一个现成的开源项目，实现下载进度在通知栏显示等复杂交互，可直接使用。
@@ -30,10 +30,10 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| url | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 下载资源的 url |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11 | HTTP 请求 Header，header 中不能设置 Referer |
-| filePath | string | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 指定文件下载路径<br/>支持相对路径与绝对路径，例：<br/>`/imgs/pic.png`、`/storage/emulated/0/Android/data/io.dcloud.HBuilder/apps/HBuilder/temp/imgs/pic.png`<br/>并且支持指定下载目录，例：<br/>`/imgs/`<br/>支持uni.env的平台兼容性：Android自3.9开始支持uni.env，iOS自4.13开始支持uni.env |
-| timeout | number | 否 | 120000 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 超时时间，单位 ms |
+| url | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 下载资源的 url |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | 微信小程序: 4.41; Android: 3.91; iOS: 4.11 | HTTP 请求 Header，header 中不能设置 Referer |
+| filePath | string | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 指定文件下载路径<br/>支持相对路径与绝对路径，例：<br/>`/imgs/pic.png`、`/storage/emulated/0/Android/data/io.dcloud.HBuilder/apps/HBuilder/temp/imgs/pic.png`<br/>并且支持指定下载目录，例：<br/>`/imgs/`<br/>支持uni.env的平台兼容性：Android自3.9开始支持uni.env，iOS自4.13开始支持uni.env |
+| timeout | number | 否 | 120000 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 超时时间，单位 ms |
 | success | (result: [DownloadFileSuccess](#downloadfilesuccess-values)) => void | 否 | null | 微信小程序: 4.41 | 下载成功后以 tempFilePath 的形式传给页面，res = {tempFilePath: '文件的临时路径'} |
 | fail | (result: [DownloadFileFail](#downloadfilefail-values)) => void | 否 | null | 微信小程序: 4.41 | 失败的回调函数 |
 | complete | (result: any) => void | 否 | null | 微信小程序: 4.41 | 结束的回调函数（调用成功、失败都会执行） |
@@ -46,8 +46,8 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| tempFilePath | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 临时文件路径，下载后的文件会存储到一个临时文件 |
-| statusCode | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP 状态码 |
+| tempFilePath | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 临时文件路径，下载后的文件会存储到一个临时文件 |
+| statusCode | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP 状态码 |
 | filePath | string | 否 | 微信小程序: 4.41 | 用户文件路径 (本地路径)。传入 filePath 时会返回，跟传入的 filePath 一致<br/> |
 | profile | **DownloadFileSuccessProfile** | 否 | 微信小程序: 4.41 | 需要基础库： `2.10.4`<br/><br/>网络请求过程中一些调试信息，[查看详细说明](https://developers.weixin.qq.com/miniprogram/dev/framework/performance/network.html)<br/> |
 
@@ -127,9 +127,9 @@
 abort
 中断下载任务
 ##### abort 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 |
 
 
 
@@ -138,9 +138,9 @@ abort
 onProgressUpdate
 监听下载进度变化。
 ##### onProgressUpdate 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 |
 
 ##### 参数 
 
@@ -152,9 +152,9 @@ onProgressUpdate
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| progress | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 下载进度百分比 |
-| totalBytesWritten | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 已经下载的数据长度，单位 Bytes |
-| totalBytesExpectedToWrite | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 预期需要下载的数据总长度，单位 Bytes |
+| progress | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 下载进度百分比 |
+| totalBytesWritten | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 已经下载的数据长度，单位 Bytes |
+| totalBytesExpectedToWrite | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 预期需要下载的数据总长度，单位 Bytes |
 
 
 
@@ -162,9 +162,9 @@ onProgressUpdate
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| progress | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 下载进度百分比 |
-| totalBytesWritten | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 已经下载的数据长度，单位 Bytes |
-| totalBytesExpectedToWrite | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 预期需要下载的数据总长度，单位 Bytes |
+| progress | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 下载进度百分比 |
+| totalBytesWritten | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 已经下载的数据长度，单位 Bytes |
+| totalBytesExpectedToWrite | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 预期需要下载的数据总长度，单位 Bytes |
  
 
 

@@ -19,9 +19,9 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.25 | 4.25 | 4.61 | 4.25 | x |
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.25 | 4.25 | 4.61 | x |
 
 
 **uni-app 兼容性 <Help />**
@@ -56,9 +56,9 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.25 | 4.25 | 4.61 | 4.25 | x |
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.25 | 4.25 | 4.61 | x |
 
 
 **uni-app 兼容性 <Help />**

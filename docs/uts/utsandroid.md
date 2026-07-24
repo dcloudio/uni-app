@@ -24,9 +24,9 @@ app-android平台专有内置对象。在uni-app和uni-app x的uts环境中均�
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -56,9 +56,9 @@ onAppConfigChange 对应的反注册函数
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -87,9 +87,9 @@ onAppConfigChange 对应的反注册函数
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -119,9 +119,9 @@ onAppTrimMemory 对应的反注册函数。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -151,9 +151,9 @@ onAppTrimMemory 对应的反注册函数。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -189,9 +189,9 @@ onAppActivityPause 对应的反注册函数
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -228,9 +228,9 @@ UTSAndroid.offAppActivityPause(() => {
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -269,9 +269,9 @@ onAppActivityResume 对应的反注册函数
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -310,9 +310,9 @@ UTSAndroid.onAppActivityResume(() => {
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -348,9 +348,9 @@ onAppActivityDestroy 对应的反注册函数。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -388,9 +388,9 @@ UTSAndroid.offAppActivityDestroy(() => {
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -439,9 +439,9 @@ onAppActivityResult 对应的反注册函数。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -479,9 +479,9 @@ UTSAndroid.offAppActivityResult(() => {
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -518,9 +518,9 @@ UTSAndroid.onAppActivityBack(() => {
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -555,9 +555,9 @@ UTSAndroid.offAppActivityBack(() => {
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -590,9 +590,9 @@ console.log("packageName",packageName)
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -630,9 +630,9 @@ if (takePictureIntent.resolveActivity(UTSAndroid.getUniActivity()!.getPackageMan
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -696,9 +696,9 @@ console.log(UTSAndroid.getResourcePath('/storage/emulated/0/Android/data/io.dclo
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.99 | 3.99 |
+| Android |
+| :- |
+| 3.99 |
 
 
 **uni-app 兼容性 <Help />**
@@ -726,9 +726,9 @@ console.log(UTSAndroid.getResourcePath('/storage/emulated/0/Android/data/io.dclo
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -778,9 +778,9 @@ async
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -826,9 +826,9 @@ UTSAndroid.getDispatcher("io").async(function(_){
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -856,9 +856,9 @@ UTSAndroid.getDispatcher("io").async(function(_){
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -886,9 +886,9 @@ UTSAndroid.getDispatcher("io").async(function(_){
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -916,9 +916,9 @@ UTSAndroid.getDispatcher("io").async(function(_){
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -946,9 +946,9 @@ UTSAndroid.getDispatcher("io").async(function(_){
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -976,9 +976,9 @@ UTSAndroid.getDispatcher("io").async(function(_){
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -1006,9 +1006,9 @@ UTSAndroid.getDispatcher("io").async(function(_){
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -1038,9 +1038,9 @@ UTSAndroid.getDispatcher("io").async(function(_){
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.95 | 3.95 |
+| Android |
+| :- |
+| 3.95 |
 
 
 **uni-app 兼容性 <Help />**
@@ -1080,9 +1080,9 @@ console.log("pagePX",pagePX)
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -1136,9 +1136,9 @@ console.log("pagePX",pagePX)
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -1178,9 +1178,9 @@ if (UTSAndroid.checkSystemPermissionGranted(UTSAndroid.getUniActivity()!, permis
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -1216,9 +1216,9 @@ UTSAndroid.gotoSystemPermissionActivity(UTSAndroid.getUniActivity()!,permissionN
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -1254,9 +1254,9 @@ UTSAndroid.gotoSystemPermissionActivity(UTSAndroid.getUniActivity()!,permissionN
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.90 | 3.90 |
+| Android |
+| :- |
+| 3.90 |
 
 
 **uni-app 兼容性 <Help />**
@@ -1334,9 +1334,9 @@ console.log(UTSAndroid.convert2AbsFullPath('../../../io.dcloud.HBuilder/apps/HBu
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 3.99 | 3.99 |
+| Android |
+| :- |
+| 3.99 |
 
 
 **uni-app 兼容性 <Help />**
@@ -1378,9 +1378,9 @@ context.startActivity(intent);
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 4.14 | 4.14 |
+| Android |
+| :- |
+| 4.14 |
 
 
 **uni-app 兼容性 <Help />**
@@ -1410,9 +1410,9 @@ context.startActivity(intent);
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 4.0 | 4.0 |
+| Android |
+| :- |
+| 4.0 |
 
 
 **uni-app 兼容性 <Help />**
@@ -1462,9 +1462,9 @@ export function getJavaClassTest() : boolean {
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 4.65 | 4.65 |
+| Android |
+| :- |
+| 4.65 |
 
 
 **uni-app 兼容性 <Help />**
@@ -1489,9 +1489,9 @@ export function getJavaClassTest() : boolean {
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 4.0 | 4.0 |
+| Android |
+| :- |
+| 4.0 |
 
 
 **uni-app 兼容性 <Help />**
@@ -1526,9 +1526,9 @@ console.log(UTSAndroid.getTopPageActivity())
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 4.18 | 4.18 |
+| Android |
+| :- |
+| 4.18 |
 
 
 **uni-app 兼容性 <Help />**
@@ -1557,9 +1557,9 @@ onActivityCallback对应的反注册函数。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 4.18 | 4.18 |
+| Android |
+| :- |
+| 4.18 |
 
 
 **uni-app 兼容性 <Help />**
@@ -1586,9 +1586,9 @@ onActivityCallback对应的反注册函数。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 4.18 | 4.18 |
+| Android |
+| :- |
+| 4.18 |
 
 
 **uni-app 兼容性 <Help />**
@@ -1614,9 +1614,9 @@ onActivityCallback对应的反注册函数。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 4.02 | 4.02 |
+| Android |
+| :- |
+| 4.02 |
 
 
 **uni-app 兼容性 <Help />**
@@ -1641,9 +1641,9 @@ onActivityCallback对应的反注册函数。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Android | Android(VDOM) UTS 插件 |
-| :- | :- |
-| 4.02 | 4.02 |
+| Android |
+| :- |
+| 4.02 |
 
 
 **uni-app 兼容性 <Help />**

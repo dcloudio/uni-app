@@ -24,9 +24,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | Android(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | x |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x |
 
 
 **uni-app 兼容性 <Help />**
@@ -56,9 +56,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | x | x | 4.61 | 3.9 | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
@@ -82,9 +82,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | x | x | 4.61 | 3.9 | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
@@ -108,9 +108,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | x | x | 4.61 | 3.9 | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
@@ -134,9 +134,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | Android(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | x | x | 3.9 |
+| Web | Android | iOS 系统版本 | iOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.9 | x | x |
 
 
 **uni-app 兼容性 <Help />**
@@ -160,9 +160,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.9 | x | x | 4.61 | 3.9 | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 3.9 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
@@ -195,9 +195,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 3.90 | x | 4.61 | 3.90 | 4.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| x | 3.90 | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
@@ -288,9 +288,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
@@ -373,9 +373,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
@@ -407,9 +407,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | 4.61 | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
@@ -464,9 +464,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | x | x | x | x | 4.61 | x | 4.61 |
+| Web | Android 系统版本 | Android | iOS 系统版本 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- | :- |
+| 4.0 | x | x | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
@@ -521,9 +521,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 3.90 | 4.11 | 4.61 | 3.90 | 4.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| 4.0 | 3.90 | 4.11 | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
@@ -594,9 +594,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 3.90 | x | 4.61 | 3.90 | 4.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| x | 3.90 | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
@@ -620,9 +620,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 3.90 | x | 4.61 | 3.90 | 4.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| x | 3.90 | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
@@ -646,9 +646,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 3.90 | x | 4.61 | 3.90 | 4.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| x | 3.90 | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
@@ -672,9 +672,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 3.90 | x | 4.61 | 3.90 | 4.11 | 4.61 |
+| Web | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- |
+| x | 3.90 | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
@@ -711,9 +711,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | Android(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- |
-| x | 3.90 | x | x | 3.90 |
+| Web | Android | iOS 系统版本 | iOS |
+| :- | :- | :- | :- |
+| x | 3.90 | x | x |
 
 
 **uni-app 兼容性 <Help />**
@@ -748,9 +748,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 3.90 | x | x | 4.61 | 3.90 | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | 3.90 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
@@ -774,9 +774,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 3.90 | x | x | 4.61 | 3.90 | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | 3.90 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
@@ -800,9 +800,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 3.90 | x | x | 4.61 | 3.90 | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | 3.90 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
@@ -826,9 +826,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | HarmonyOS | Android(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| x | 3.90 | x | x | 4.61 | 3.90 | 4.61 |
+| Web | Android | iOS 系统版本 | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| x | 3.90 | x | x | 4.61 |
 
 
 **uni-app 兼容性 <Help />**
@@ -852,9 +852,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | x | 4.11 | 4.61 |
+| Web | Android 系统版本 | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
@@ -878,9 +878,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | x | 4.11 | 4.61 |
+| Web | Android 系统版本 | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
@@ -904,9 +904,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | x | 4.11 | 4.61 |
+| Web | Android 系统版本 | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
@@ -930,9 +930,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | x | 4.11 | 4.61 |
+| Web | Android 系统版本 | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
@@ -957,9 +957,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | x | 4.11 | 4.61 |
+| Web | Android 系统版本 | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
@@ -983,9 +983,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | x | 4.11 | 4.61 |
+| Web | Android 系统版本 | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
@@ -1009,9 +1009,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | x | 4.11 | 4.61 |
+| Web | Android 系统版本 | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**
@@ -1035,9 +1035,9 @@ Number 对象是经过封装的能让你处理数字值的对象。
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android 系统版本 | Android | iOS | HarmonyOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- | :- |
-| x | x | x | x | 4.61 | x | 4.11 | 4.61 |
+| Web | Android 系统版本 | Android | iOS | HarmonyOS | iOS(VDOM) UTS 插件 |
+| :- | :- | :- | :- | :- | :- |
+| x | x | x | x | 4.61 | 4.11 |
 
 
 **uni-app 兼容性 <Help />**

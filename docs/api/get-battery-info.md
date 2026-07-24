@@ -7,9 +7,9 @@
 
 
 ### getBatteryInfo 兼容性 <Help /> 
-| Web | 微信小程序 | Android | Android(VDOM) UTS 插件 | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.35 | 3.9 | 3.9 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.35 | 3.9 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -114,9 +114,9 @@
 
 
 ### getBatteryInfoSync 兼容性 <Help /> 
-| Web | 微信小程序 | Android | Android(VDOM) UTS 插件 | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.35 | 3.9 | 3.9 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.35 | 3.9 | 4.11 | 4.61 |
 
 
 

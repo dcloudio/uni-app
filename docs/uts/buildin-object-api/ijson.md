@@ -20,9 +20,9 @@
 **兼容性 <Help />**
 
 **uni-app x 兼容性 <Help />**
-| Web | Android | iOS 系统版本 | iOS | Android(VDOM) UTS 插件 | iOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- |
-| x | 4.53 | x | x | 4.53 | x |
+| Web | Android | iOS 系统版本 | iOS |
+| :- | :- | :- | :- |
+| x | 4.53 | x | x |
 
 
 **uni-app 兼容性 <Help />**

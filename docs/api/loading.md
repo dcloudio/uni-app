@@ -15,9 +15,9 @@
 它是一个悬浮弹出的、非组件内嵌的加载中提示。
 
 ### showLoading 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.61 | 4.61 | 4.61 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.61 | 4.61 | 4.61 |
 
 
 ### 参数 
@@ -30,7 +30,7 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| title | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.61 | 提示的内容，长度与 icon 取值有关。 |
+| title | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 提示的内容，长度与 icon 取值有关。 |
 | mask | boolean | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 是否显示透明蒙层，防止触摸穿透，默认：false |
 | success | (res: [ShowLoadingSuccess](#showloadingsuccess-values)) => void | 否 | 微信小程序: 4.41 | uni.showLoading成功回调函数定义 |
 | fail | (res: [ShowLoadingFail](#showloadingfail-values)) => void | 否 | 微信小程序: 4.41 | uni.showLoading失败回调函数定义 |
@@ -40,7 +40,7 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.61 | 错误信息 |
+| errMsg | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 错误信息 |
 
 #### ShowLoadingFail 的属性值 @showloadingfail-values 
 
@@ -94,9 +94,9 @@
 隐藏 loading 提示框。
 
 ### hideLoading 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.61 | 4.61 | 4.61 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.61 | 4.61 | 4.61 |
 
 
 ### 参数 
@@ -119,7 +119,7 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| errMsg | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; iOS(VDOM) UTS 插件: 4.61; HarmonyOS: 4.61 | 错误信息 |
+| errMsg | string | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.61; iOS: 4.61; HarmonyOS: 4.61 | 错误信息 |
 
 #### HideLoadingFail 的属性值 @hideloadingfail-values 
 

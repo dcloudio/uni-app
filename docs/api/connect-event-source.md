@@ -21,9 +21,9 @@ SSE，全称是Server-sent Events，一种服务器基于http向客户端推送�
 所以LLM流式接收数据的场景，应该使用uni.request的Chunk，而不是使用本API（uni.connectEventSource）。[详见](request.md)
 
 ### connectEventSource 兼容性 <Help /> 
-| Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.51 | 4.63 | 4.63 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.51 | 4.63 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> |
 
 
 Web端暂未兼容uni.connectEventSource API，请使用标准的Web API。
@@ -41,8 +41,8 @@ Web端暂未兼容uni.connectEventSource API，请使用标准的Web API。
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| url | string | 是 | Web: x; Android: 4.51; iOS: 4.63; iOS(VDOM) UTS 插件: 4.63; HarmonyOS: x | 服务器地址 |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | Web: x; Android: 4.61; iOS: 4.63; iOS(VDOM) UTS 插件: 4.63; HarmonyOS: x | 请求头 | 
+| url | string | 是 | Web: x; Android: 4.51; iOS: 4.63; HarmonyOS: x | 服务器地址 |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | Web: x; Android: 4.61; iOS: 4.63; HarmonyOS: x | 请求头 | 
 
 
 ### 返回值 
@@ -57,9 +57,9 @@ Web端暂未兼容uni.connectEventSource API，请使用标准的Web API。
 onMessage
 message 事件，会在通过事件源收到数据时触发。
 ##### onMessage 兼容性 <Help /> 
-| Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.51 | 4.63 | 4.63 | x |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.51 | 4.63 | x |
 
 ##### 参数 
 
@@ -71,9 +71,9 @@ message 事件，会在通过事件源收到数据时触发。
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; iOS(VDOM) UTS 插件: 4.63; HarmonyOS: x | 事件类型。 |
-| data | any | 否 | null | Web: x; Android: 4.51; iOS: 4.63; iOS(VDOM) UTS 插件: 4.63; HarmonyOS: x | 消息发射器发出的数据。 |
-| lastEventId | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; iOS(VDOM) UTS 插件: 4.63; HarmonyOS: x | 一个字符串，表示事件的唯一 ID。 |
+| type | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; HarmonyOS: x | 事件类型。 |
+| data | any | 否 | null | Web: x; Android: 4.51; iOS: 4.63; HarmonyOS: x | 消息发射器发出的数据。 |
+| lastEventId | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; HarmonyOS: x | 一个字符串，表示事件的唯一 ID。 |
 
 
 
@@ -81,9 +81,9 @@ message 事件，会在通过事件源收到数据时触发。
 onError
 onerror 是当发生错误且这个错误事件（error）被 UniEventSource 触发时调用的一个事件处理函数。
 ##### onError 兼容性 <Help /> 
-| Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.51 | 4.63 | 4.63 | x |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.51 | 4.63 | x |
 
 ##### 参数 
 
@@ -97,9 +97,9 @@ onerror 是当发生错误且这个错误事件（error）被 UniEventSource 触
 onOpen
 一个事件处理器，它在收到 open 事件时被调用，在那时，连接刚被打开。
 ##### onOpen 兼容性 <Help /> 
-| Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.51 | 4.63 | 4.63 | x |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.51 | 4.63 | x |
 
 ##### 参数 
 
@@ -111,9 +111,9 @@ onOpen
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; iOS(VDOM) UTS 插件: 4.63; HarmonyOS: x | 事件类型。 |
-| data | any | 否 | null | Web: x; Android: 4.51; iOS: 4.63; iOS(VDOM) UTS 插件: 4.63; HarmonyOS: x | 消息发射器发出的数据。 |
-| lastEventId | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; iOS(VDOM) UTS 插件: 4.63; HarmonyOS: x | 一个字符串，表示事件的唯一 ID。 |
+| type | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; HarmonyOS: x | 事件类型。 |
+| data | any | 否 | null | Web: x; Android: 4.51; iOS: 4.63; HarmonyOS: x | 消息发射器发出的数据。 |
+| lastEventId | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; HarmonyOS: x | 一个字符串，表示事件的唯一 ID。 |
 
 
 
@@ -121,9 +121,9 @@ onOpen
 close
 关闭当前的连接
 ##### close 兼容性 <Help /> 
-| Web | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- |
-| x | 4.51 | 4.63 | 4.63 | x |
+| Web | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- |
+| x | 4.51 | 4.63 | x |
 
 
 
@@ -132,17 +132,17 @@ close
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; iOS(VDOM) UTS 插件: 4.63; HarmonyOS: x | 事件类型。 |
-| data | any | 否 | null | Web: x; Android: 4.51; iOS: 4.63; iOS(VDOM) UTS 插件: 4.63; HarmonyOS: x | 消息发射器发出的数据。 |
-| lastEventId | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; iOS(VDOM) UTS 插件: 4.63; HarmonyOS: x | 一个字符串，表示事件的唯一 ID。 |
+| type | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; HarmonyOS: x | 事件类型。 |
+| data | any | 否 | null | Web: x; Android: 4.51; iOS: 4.63; HarmonyOS: x | 消息发射器发出的数据。 |
+| lastEventId | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; HarmonyOS: x | 一个字符串，表示事件的唯一 ID。 |
 
 ##### UniMessageEvent 的属性值 @unimessageevent-values 
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| type | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; iOS(VDOM) UTS 插件: 4.63; HarmonyOS: x | 事件类型。 |
-| data | any | 否 | null | Web: x; Android: 4.51; iOS: 4.63; iOS(VDOM) UTS 插件: 4.63; HarmonyOS: x | 消息发射器发出的数据。 |
-| lastEventId | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; iOS(VDOM) UTS 插件: 4.63; HarmonyOS: x | 一个字符串，表示事件的唯一 ID。 |
+| type | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; HarmonyOS: x | 事件类型。 |
+| data | any | 否 | null | Web: x; Android: 4.51; iOS: 4.63; HarmonyOS: x | 消息发射器发出的数据。 |
+| lastEventId | string | 否 | null | Web: x; Android: 4.51; iOS: 4.63; HarmonyOS: x | 一个字符串，表示事件的唯一 ID。 |
  
 
 

@@ -28,18 +28,18 @@
 
 | 名称 | 类型 | 必备 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- | :- |  :-: | :- |
-| url | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器接口地址<br/> |
-| data | any | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 请求的参数 在`app-android端，参数类型只能为`UTSJSONObject`或者`string`类型,app-android平台从 4.51版本开始支持ArrayBuffer, app-ios平台从 4.61版本开始支持ArrayBuffer |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 设置请求的 header，header 中不能设置 Referer |
-| method | string | 否 | "GET" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 请求方法 |
-| timeout | number | 否 | 60000 | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11 | 超时时间，单位 ms |
+| url | string | 是 |  | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器接口地址<br/> |
+| data | any | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 请求的参数 在`app-android端，参数类型只能为`UTSJSONObject`或者`string`类型,app-android平台从 4.51版本开始支持ArrayBuffer, app-ios平台从 4.61版本开始支持ArrayBuffer |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 设置请求的 header，header 中不能设置 Referer |
+| method | string | 否 | "GET" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 请求方法 |
+| timeout | number | 否 | 60000 | 微信小程序: 4.41; Android: 3.91; iOS: 4.11 | 超时时间，单位 ms |
 | enableQuic | boolean | 否 | false | Web: √; 微信小程序: √; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | 是否开启 Quic/h3 协议<br/>`web` 端由服务端和浏览器共同决定是否启用 Quic/h3 协议，无需设置此参数 |
 | dataType | string | 否 | "json" | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 如果设为 json，会对返回的数据进行一次 JSON.parse，非 json 不会进行 JSON.parse |
 | responseType | string | 否 |  | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 设置响应的数据类型。 |
 | sslVerify | boolean | 否 |  | Android: x; iOS: x; HarmonyOS: x | 验证 ssl 证书 |
-| withCredentials | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; iOS(VDOM) UTS 插件: x; HarmonyOS: x | 跨域请求时是否携带凭证（cookies）<br/> |
-| firstIpv4 | boolean | 否 | false | Web: x; 微信小程序: 4.41; Android: x; iOS: x; iOS(VDOM) UTS 插件: x; HarmonyOS: x | DNS解析时优先使用ipv4 |
-| enableChunked | boolean | 否 |  | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS(VDOM) UTS 插件: 4.71 | 开启 transfer-encoding chunked。 |
+| withCredentials | boolean | 否 |  | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 跨域请求时是否携带凭证（cookies）<br/> |
+| firstIpv4 | boolean | 否 | false | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | DNS解析时优先使用ipv4 |
+| enableChunked | boolean | 否 |  | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开启 transfer-encoding chunked。 |
 | success | (option: [RequestSuccess\<T>](#requestsuccess-values)) => void | 否 | null | 微信小程序: 4.41 | 网络请求成功回调。 |
 | fail | (option: [RequestFail](#requestfail-values)) => void | 否 | null | 微信小程序: 4.41 | 网络请求失败回调。 |
 | complete | (option: any) => void | 否 | null | 微信小程序: 4.41 | 网络请求完成回调，成功或者失败都会调用。 |
@@ -77,10 +77,10 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| data | T | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的数据, app-android平台从 4.51版本开始支持ArrayBuffer, app-ios平台从 4.61版本开始支持ArrayBuffer |
-| statusCode | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP 状态码 |
-| header | any | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP Response Header |
-| cookies | Array&lt;string&gt; | 是 | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 cookies，格式为字符串数组 |
+| data | T | 否 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的数据, app-android平台从 4.51版本开始支持ArrayBuffer, app-ios平台从 4.61版本开始支持ArrayBuffer |
+| statusCode | number | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP 状态码 |
+| header | any | 是 | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 HTTP Response Header |
+| cookies | Array&lt;string&gt; | 是 | Web: x; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; HarmonyOS: 4.61 | 开发者服务器返回的 cookies，格式为字符串数组 |
 | exception | **RequestSuccessException** | 否 | 微信小程序: 4.41 | 需要基础库： `3.0.0`<br/><br/>网络请求过程中的一些异常信息，例如httpdns重试等<br/> |
 | profile | **RequestSuccessProfile** | 否 | 微信小程序: 4.41 | 需要基础库： `2.10.4`<br/><br/>网络请求过程中一些调试信息，[查看详细说明](https://developers.weixin.qq.com/miniprogram/dev/framework/performance/network.html)<br/> |
 | useHttpDNS | boolean | 否 | 微信小程序: 4.41 | 需要基础库： `3.4.10`<br/><br/>最终请求是否使用了HttpDNS（仅当enableHttpDNS传true时返回此字段）<br/> |
@@ -162,9 +162,9 @@
 abort
 中断网络请求。
 ##### abort 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 |
 
 
 
@@ -173,9 +173,9 @@ abort
 onChunkReceived
 监听 Transfer-Encoding Chunk Received 事件。
 ##### onChunkReceived 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.71 | 4.41 | 4.71 | 4.71 | 4.71 | 4.71 | 4.71 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.71 | 4.41 | 4.71 | 4.71 | 4.71 |
 
 ##### 参数 
 
@@ -187,7 +187,7 @@ onChunkReceived
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| data | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS(VDOM) UTS 插件: 4.71 | 返回的chunk buffer |
+| data | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 返回的chunk buffer |
 
 
 ##### 返回值 
@@ -201,9 +201,9 @@ onChunkReceived
 offChunkReceived
 移除 Transfer-Encoding Chunk Received 事件的监听函数。
 ##### offChunkReceived 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.71 | 4.41 | 4.71 | 4.71 | 4.71 | 4.71 | 4.71 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.71 | 4.41 | 4.71 | 4.71 | 4.71 |
 
 ##### 参数 
 
@@ -215,7 +215,7 @@ offChunkReceived
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| data | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS(VDOM) UTS 插件: 4.71 | 返回的chunk buffer |
+| data | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 返回的chunk buffer |
 
 
 
@@ -223,9 +223,9 @@ offChunkReceived
 onHeadersReceived
 监听 HTTP Response Header 事件。
 ##### onHeadersReceived 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.71 | 4.41 | 4.71 | 4.71 | 4.71 | 4.71 | 4.71 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.71 | 4.41 | 4.71 | 4.71 | 4.71 |
 
 ##### 参数 
 
@@ -237,9 +237,9 @@ onHeadersReceived
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| cookies | Array&lt;string&gt; | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS(VDOM) UTS 插件: 4.71 | 开发者服务器返回的 cookies，格式为字符串数组 |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS(VDOM) UTS 插件: 4.71 | 开发者服务器返回的 HTTP Response Header |
-| statusCode | number | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS(VDOM) UTS 插件: 4.71 | 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） |
+| cookies | Array&lt;string&gt; | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 cookies，格式为字符串数组 |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP Response Header |
+| statusCode | number | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） |
 
 
 ##### 返回值 
@@ -253,9 +253,9 @@ onHeadersReceived
 offHeadersReceived
 移除 HTTP Response Header 事件的监听函数。
 ##### offHeadersReceived 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS | HarmonyOS(VDOM) UTS 插件 |
-| :- | :- | :- | :- | :- | :- | :- |
-| 4.71 | 4.41 | 4.71 | 4.71 | 4.71 | 4.71 | 4.71 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.71 | 4.41 | 4.71 | 4.71 | 4.71 |
 
 ##### 参数 
 
@@ -267,9 +267,9 @@ offHeadersReceived
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| cookies | Array&lt;string&gt; | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS(VDOM) UTS 插件: 4.71 | 开发者服务器返回的 cookies，格式为字符串数组 |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS(VDOM) UTS 插件: 4.71 | 开发者服务器返回的 HTTP Response Header |
-| statusCode | number | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS(VDOM) UTS 插件: 4.71 | 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） |
+| cookies | Array&lt;string&gt; | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 cookies，格式为字符串数组 |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP Response Header |
+| statusCode | number | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） |
 
 
 
@@ -277,29 +277,29 @@ offHeadersReceived
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| data | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS(VDOM) UTS 插件: 4.71 | 返回的chunk buffer |
+| data | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 返回的chunk buffer |
 
 ##### RequestTaskOnChunkReceivedListenerResult 的属性值 @requesttaskonchunkreceivedlistenerresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| data | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS(VDOM) UTS 插件: 4.71 | 返回的chunk buffer |
+| data | [ArrayBuffer](/uts/buildin-object-api/arraybuffer.md) | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 返回的chunk buffer |
 
 ##### RequestTaskOnHeadersReceivedListenerResult 的属性值 @requesttaskonheadersreceivedlistenerresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| cookies | Array&lt;string&gt; | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS(VDOM) UTS 插件: 4.71 | 开发者服务器返回的 cookies，格式为字符串数组 |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS(VDOM) UTS 插件: 4.71 | 开发者服务器返回的 HTTP Response Header |
-| statusCode | number | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS(VDOM) UTS 插件: 4.71 | 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） |
+| cookies | Array&lt;string&gt; | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 cookies，格式为字符串数组 |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP Response Header |
+| statusCode | number | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） |
 
 ##### RequestTaskOnHeadersReceivedListenerResult 的属性值 @requesttaskonheadersreceivedlistenerresult-values 
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| cookies | Array&lt;string&gt; | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS(VDOM) UTS 插件: 4.71 | 开发者服务器返回的 cookies，格式为字符串数组 |
-| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS(VDOM) UTS 插件: 4.71 | 开发者服务器返回的 HTTP Response Header |
-| statusCode | number | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; iOS(VDOM) UTS 插件: 4.71; HarmonyOS: 4.71; HarmonyOS(VDOM) UTS 插件: 4.71 | 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） |
+| cookies | Array&lt;string&gt; | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 cookies，格式为字符串数组 |
+| header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP Response Header |
+| statusCode | number | 是 | Web: 4.71; 微信小程序: 4.41; Android: 4.71; iOS: 4.71; HarmonyOS: 4.71 | 开发者服务器返回的 HTTP 状态码 （目前开发者工具上不会返回 statusCode 字段，可用真机查看该字段，后续将会支持） |
  
 
 
