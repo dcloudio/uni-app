@@ -13,9 +13,9 @@
 发起网络请求。
 
 ### request 兼容性 <Help /> 
-| Web | 微信小程序 | Android | iOS | iOS(VDOM) UTS 插件 | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 3.91 | 4.11 | 4.11 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 3.91 | 4.11 | 4.61 |
 
 
 ### 参数 
@@ -33,7 +33,7 @@
 | header | [UTSJSONObject](/uts/buildin-object-api/utsjsonobject.md) | 否 | null | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 设置请求的 header，header 中不能设置 Referer |
 | method | string | 否 | "GET" | Web: 4.0; 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11; HarmonyOS: 4.61 | 请求方法 |
 | timeout | number | 否 | 60000 | 微信小程序: 4.41; Android: 3.91; iOS: 4.11; iOS(VDOM) UTS 插件: 4.11 | 超时时间，单位 ms |
-| enableQuic | boolean | 否 | false | Web: √; 微信小程序: √; Android: 5.0; iOS: 5.0; iOS(VDOM) UTS 插件: 5.0; HarmonyOS: 5.0 | 是否开启 Quic/h3 协议<br/>`web` 端由服务端和浏览器共同决定是否启用 Quic/h3 协议，无需设置此参数 |
+| enableQuic | boolean | 否 | false | Web: √; 微信小程序: √; Android: 5.0; iOS: 5.0; HarmonyOS: 5.0 | 是否开启 Quic/h3 协议<br/>`web` 端由服务端和浏览器共同决定是否启用 Quic/h3 协议，无需设置此参数 |
 | dataType | string | 否 | "json" | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 如果设为 json，会对返回的数据进行一次 JSON.parse，非 json 不会进行 JSON.parse |
 | responseType | string | 否 |  | 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 设置响应的数据类型。 |
 | sslVerify | boolean | 否 |  | Android: x; iOS: x; HarmonyOS: x | 验证 ssl 证书 |
@@ -146,6 +146,7 @@
 | 600003 | 网络中断 |
 | 600008 | data参数类型不合法 |
 | 600009 | URL格式不合法 |
+| 600010 | Cronet模块加载失败 |
 | 602001 | request系统错误 |
 
 

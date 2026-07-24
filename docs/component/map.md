@@ -10,9 +10,9 @@
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS | HarmonyOS |
-| :- | :- | :- | :- | :- | :- |
-| 4.0 | 4.41 | 4.31 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 4.31 | 4.61 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 4.0 | 4.41 | 4.31 | 4.31 | 4.61 |
 
 
 不同图商在不同平台的兼容性
@@ -29,39 +29,39 @@
 ### 属性 
 | 名称 | 类型 | 默认值 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| longitude | number | 0 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 中心经度 |
-| latitude | number | 0 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 中心纬度 |
-| scale | number | 16 | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 缩放级别，web端取值范围为5-18 , app端取值范围为3-20 |
-| ~~theme~~ | string | "normal" | Web: x; 微信小程序: x; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 主题（satellite 或 normal） |
-| min-scale | number | 3 | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 最小缩放级别 |
-| max-scale | number | 20 | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 最大缩放级别 |
-| layer-style | string | "1" | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 个性化地图（如实现地图暗黑模式） |
-| markers | Marker\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 标记点 |
+| longitude | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 中心经度 |
+| latitude | number | 0 | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 中心纬度 |
+| scale | number | 16 | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 缩放级别，web端取值范围为5-18 , app端取值范围为3-20 |
+| ~~theme~~ | string | "normal" | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 主题（satellite 或 normal） |
+| min-scale | number | 3 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 最小缩放级别 |
+| max-scale | number | 20 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 最大缩放级别 |
+| layer-style | string | "1" | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 个性化地图（如实现地图暗黑模式） |
+| markers | Marker\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标记点 |
 | covers | array |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x | 即将移除，请使用 markers |
-| polyline | Polyline\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 路线 |
-| polygons | Polygon\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 多边形 |
-| circles | Circle\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 圆 |
-| controls | Control\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 控件 |
-| include-points | LocationObject\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 缩放视野以包含所有给定的坐标点 |
-| show-location | boolean | false | Web: 4.0; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 显示带有方向的当前定位点 |
+| polyline | Polyline\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 路线 |
+| polygons | Polygon\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 多边形 |
+| circles | Circle\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 圆 |
+| controls | Control\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 控件 |
+| include-points | LocationObject\[] \| null |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 缩放视野以包含所有给定的坐标点 |
+| show-location | boolean | false | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 显示带有方向的当前定位点 |
 | enable-3D | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否显示3D楼块 |
-| show-compass | boolean | false | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 是否显示指南针 |
-| enable-zoom | boolean | true | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 是否支持缩放 |
-| enable-scroll | boolean | true | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 是否支持拖动 |
-| enable-rotate | boolean | true | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 是否支持旋转 |
-| rotate | number | 0 | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 旋转角度(范围0-360)地图正北和设备 y 轴角度的夹角 |
-| skew | number | 0 | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 倾斜角度，范围 0 ~ 40 , 关于 z 轴的倾角 |
-| enable-overlooking | boolean | false | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 是否开启俯视（是否开启手势修改倾斜角度） |
-| enable-satellite | boolean | false | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 是否开启卫星图 |
-| enable-traffic | boolean | false | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 是否开启实时路况 |
-| enable-poi | boolean | true | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 是否展示 POI 点 |
-| enable-building | boolean | false | Web: x; 微信小程序: 4.41; Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 是否展示建筑物 |
+| show-compass | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否显示指南针 |
+| enable-zoom | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否支持缩放 |
+| enable-scroll | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否支持拖动 |
+| enable-rotate | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否支持旋转 |
+| rotate | number | 0 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 旋转角度(范围0-360)地图正北和设备 y 轴角度的夹角 |
+| skew | number | 0 | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 倾斜角度，范围 0 ~ 40 , 关于 z 轴的倾角 |
+| enable-overlooking | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否开启俯视（是否开启手势修改倾斜角度） |
+| enable-satellite | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否开启卫星图 |
+| enable-traffic | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否开启实时路况 |
+| enable-poi | boolean | true | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否展示 POI 点 |
+| enable-building | boolean | false | Web: x; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否展示建筑物 |
 | enable-indoorMap | boolean | false | Web: x; 微信小程序: x; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否展示室内地图 |
 | subkey | string |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(string)*<br/>地图能力【个性化地图】使用的key，不支持动态修改 |
 | show-scale | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>显示比例尺，工具暂不支持 |
 | enable-auto-max-overlooking | boolean |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(boolean)*<br/>开启最大俯视角，俯视角度从 45 度拓展到 75 度 |
 | setting | object |   | Web: x; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | *(object)*<br/>配置项 |
-| enable3-d | boolean | false | Android(VDOM): 4.31; Android(Vapor): x; iOS: 4.31; HarmonyOS: 4.61 | 是否显示3D楼块 |
+| enable3-d | boolean | false | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 是否显示3D楼块 |
 | enable-indoor-map | boolean | false |   |   |
 | @markertap | (event: [UniMapMarkerTapEvent](#unimapmarkertapevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 点击标记点时触发 |
 | @callouttap | (event: [UniEvent](/component/common.md#unievent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x | 点击标记点对应的气泡时触发 |

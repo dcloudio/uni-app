@@ -147,7 +147,7 @@ translateMarker
 | :- | :- | :- | :- |  :-: | :- |
 | markerId | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker |
 | destination | **LocationObject** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker移动到的目标点 |
-| autoRotate | boolean | 否 |  | Android: x; iOS: x | 移动过程中是否自动旋转marker |
+| autoRotate | boolean | 否 |  | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 移动过程中是否自动旋转marker |
 | rotate | number | 否 | 0 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | marker的旋转角度 |
 | moveWithRotate | boolean | 否 | false | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 平移和旋转同时进行 |
 | duration | number | 否 | 1000 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 动画持续时长，平移与旋转分别计算 |
@@ -469,13 +469,13 @@ addMarkers
 | alpha | number | 否 | 1 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注的透明度，范围 0 ~ 1 |
 | width | number | 否 | 默认为图片实际宽度 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注图标宽度 |
 | height | number | 否 | 默认为图片实际高度 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注图标高度 |
-| ariaLabel | string | 否 | null | Android: x; iOS: 4.31; HarmonyOS: 4.61 | 无障碍访问，（属性）元素的额外描述 |
+| ariaLabel | string | 否 | null | Android(VDOM): x; Android(Vapor): 5.21; iOS: 4.31; HarmonyOS: 4.61 | 无障碍访问，（属性）元素的额外描述 |
 | anchor | **Anchor** | 否 | \[0.5, 1\] | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经纬度在标注图标的锚点，默认底边中点	{x, y}，x表示横向(0-1)，y表示竖向(0-1)。{x: .5, y: 1} 表示底边中点 |
 | callout | **MapMarkerCallout** | 否 | null | Android: 4.51; iOS: 4.51; HarmonyOS: x | 自定义标记点上方的气泡窗口 |
-| label | **MapMarkerLabel** | 否 | null | Android: x; iOS: x; HarmonyOS: x | 为标记点旁边增加标签 |
-| clusterId | number | 否 | null | Android: x; iOS: x; HarmonyOS: x | 自定义点聚合簇效果时使用 |
-| customCallout | **MapMarkerCallout** | 否 | null | Android: x; iOS: x; HarmonyOS: x | 自定义气泡窗口 |
-| joinCluster | boolean | 否 | null | Android: x; iOS: x; HarmonyOS: x | 是否参与点聚合 |
+| label | **MapMarkerLabel** | 否 | null | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: x | 为标记点旁边增加标签 |
+| clusterId | number | 否 | null | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: x | 自定义点聚合簇效果时使用 |
+| customCallout | **MapMarkerCallout** | 否 | null | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: x | 自定义气泡窗口 |
+| joinCluster | boolean | 否 | null | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: x | 是否参与点聚合 |
 
 ###### anchor 的属性描述
 
@@ -498,8 +498,8 @@ addMarkers
 | padding | number | 否 | 0 | Android: 4.51; iOS: 4.51 | 文本边缘留白 |
 | display | string | 否 | "BYCLICK" | Android: 4.51; iOS: 4.51 | 'BYCLICK':点击显示; 'ALWAYS':常显 |
 | textAlign | string | 否 | "left" | Android: 4.51; iOS: 4.51 | 文本对齐方式。 |
-| anchorX | number | 否 | 0.5 | Android: x; iOS: x | 横向偏移量，向右为正数 |
-| anchorY | number | 否 | 1 | Android: x; iOS: x | 纵向偏移量，向下为正数 |
+| anchorX | number | 否 | 0.5 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 横向偏移量，向右为正数 |
+| anchorY | number | 否 | 1 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 纵向偏移量，向下为正数 |
 
 ####### display 的属性描述
 
@@ -520,20 +520,20 @@ addMarkers
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| content | string | 否 | Android: x; iOS: x | 文本 |
-| color | string | 否 | Android: x; iOS: x | 文本颜色 |
-| fontSize | number | 否 | Android: x; iOS: x | 文字大小 |
-| x | number | 否 | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
-| y | number | 否 | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
-| anchorX | number | 否 | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
-| anchorY | number | 否 | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
-| borderWidth | number | 否 | Android: x; iOS: x | 边框宽度 |
-| borderColor | string | 否 | Android: x; iOS: x | 边框颜色 |
-| borderRadius | number | 否 | Android: x; iOS: x | 边框圆角 |
-| bgColor | string | 否 | Android: x; iOS: x | 背景色 |
-| padding | number | 否 | Android: x; iOS: x | 文本边缘留白 |
-| textAlign | string | 否 | Android: x; iOS: x | 文本对齐方式。 |
-| ariaLabel | string | 否 | Android: x; iOS: x | 无障碍访问，（属性）元素的额外描述 |
+| content | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 文本 |
+| color | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 文本颜色 |
+| fontSize | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 文字大小 |
+| x | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | label的坐标，原点是 marker 对应的经纬度 |
+| y | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | label的坐标，原点是 marker 对应的经纬度 |
+| anchorX | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | label的坐标，原点是 marker 对应的经纬度 |
+| anchorY | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | label的坐标，原点是 marker 对应的经纬度 |
+| borderWidth | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 边框宽度 |
+| borderColor | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 边框颜色 |
+| borderRadius | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 边框圆角 |
+| bgColor | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 背景色 |
+| padding | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 文本边缘留白 |
+| textAlign | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 文本对齐方式。 |
+| ariaLabel | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 无障碍访问，（属性）元素的额外描述 |
 
 ####### textAlign 的属性描述
 
@@ -557,8 +557,8 @@ addMarkers
 | padding | number | 否 | 0 | Android: 4.51; iOS: 4.51 | 文本边缘留白 |
 | display | string | 否 | "BYCLICK" | Android: 4.51; iOS: 4.51 | 'BYCLICK':点击显示; 'ALWAYS':常显 |
 | textAlign | string | 否 | "left" | Android: 4.51; iOS: 4.51 | 文本对齐方式。 |
-| anchorX | number | 否 | 0.5 | Android: x; iOS: x | 横向偏移量，向右为正数 |
-| anchorY | number | 否 | 1 | Android: x; iOS: x | 纵向偏移量，向下为正数 |
+| anchorX | number | 否 | 0.5 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 横向偏移量，向右为正数 |
+| anchorY | number | 否 | 1 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 纵向偏移量，向下为正数 |
 
 ####### display 的属性描述
 
@@ -897,7 +897,7 @@ updateGroundOverlay
 | :- | :- | :- | :- |  :-: | :- |
 | markerId | number | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker |
 | destination | **LocationObject** | 是 |  | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 指定marker移动到的目标点 |
-| autoRotate | boolean | 否 |  | Android: x; iOS: x | 移动过程中是否自动旋转marker |
+| autoRotate | boolean | 否 |  | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 移动过程中是否自动旋转marker |
 | rotate | number | 否 | 0 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | marker的旋转角度 |
 | moveWithRotate | boolean | 否 | false | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 平移和旋转同时进行 |
 | duration | number | 否 | 1000 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 动画持续时长，平移与旋转分别计算 |
@@ -1139,13 +1139,13 @@ updateGroundOverlay
 | alpha | number | 否 | 1 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注的透明度，范围 0 ~ 1 |
 | width | number | 否 | 默认为图片实际宽度 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注图标宽度 |
 | height | number | 否 | 默认为图片实际高度 | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 标注图标高度 |
-| ariaLabel | string | 否 | null | Android: x; iOS: 4.31; HarmonyOS: 4.61 | 无障碍访问，（属性）元素的额外描述 |
+| ariaLabel | string | 否 | null | Android(VDOM): x; Android(Vapor): 5.21; iOS: 4.31; HarmonyOS: 4.61 | 无障碍访问，（属性）元素的额外描述 |
 | anchor | **Anchor** | 否 | \[0.5, 1\] | Android: 4.31; iOS: 4.31; HarmonyOS: 4.61 | 经纬度在标注图标的锚点，默认底边中点	{x, y}，x表示横向(0-1)，y表示竖向(0-1)。{x: .5, y: 1} 表示底边中点 |
 | callout | **MapMarkerCallout** | 否 | null | Android: 4.51; iOS: 4.51; HarmonyOS: x | 自定义标记点上方的气泡窗口 |
-| label | **MapMarkerLabel** | 否 | null | Android: x; iOS: x; HarmonyOS: x | 为标记点旁边增加标签 |
-| clusterId | number | 否 | null | Android: x; iOS: x; HarmonyOS: x | 自定义点聚合簇效果时使用 |
-| customCallout | **MapMarkerCallout** | 否 | null | Android: x; iOS: x; HarmonyOS: x | 自定义气泡窗口 |
-| joinCluster | boolean | 否 | null | Android: x; iOS: x; HarmonyOS: x | 是否参与点聚合 |
+| label | **MapMarkerLabel** | 否 | null | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: x | 为标记点旁边增加标签 |
+| clusterId | number | 否 | null | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: x | 自定义点聚合簇效果时使用 |
+| customCallout | **MapMarkerCallout** | 否 | null | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: x | 自定义气泡窗口 |
+| joinCluster | boolean | 否 | null | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11; HarmonyOS: x | 是否参与点聚合 |
 
 ##### anchor 的属性描述
 
@@ -1168,8 +1168,8 @@ updateGroundOverlay
 | padding | number | 否 | 0 | Android: 4.51; iOS: 4.51 | 文本边缘留白 |
 | display | string | 否 | "BYCLICK" | Android: 4.51; iOS: 4.51 | 'BYCLICK':点击显示; 'ALWAYS':常显 |
 | textAlign | string | 否 | "left" | Android: 4.51; iOS: 4.51 | 文本对齐方式。 |
-| anchorX | number | 否 | 0.5 | Android: x; iOS: x | 横向偏移量，向右为正数 |
-| anchorY | number | 否 | 1 | Android: x; iOS: x | 纵向偏移量，向下为正数 |
+| anchorX | number | 否 | 0.5 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 横向偏移量，向右为正数 |
+| anchorY | number | 否 | 1 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 纵向偏移量，向下为正数 |
 
 ###### display 的属性描述
 
@@ -1190,20 +1190,20 @@ updateGroundOverlay
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| content | string | 否 | Android: x; iOS: x | 文本 |
-| color | string | 否 | Android: x; iOS: x | 文本颜色 |
-| fontSize | number | 否 | Android: x; iOS: x | 文字大小 |
-| x | number | 否 | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
-| y | number | 否 | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
-| anchorX | number | 否 | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
-| anchorY | number | 否 | Android: x; iOS: x | label的坐标，原点是 marker 对应的经纬度 |
-| borderWidth | number | 否 | Android: x; iOS: x | 边框宽度 |
-| borderColor | string | 否 | Android: x; iOS: x | 边框颜色 |
-| borderRadius | number | 否 | Android: x; iOS: x | 边框圆角 |
-| bgColor | string | 否 | Android: x; iOS: x | 背景色 |
-| padding | number | 否 | Android: x; iOS: x | 文本边缘留白 |
-| textAlign | string | 否 | Android: x; iOS: x | 文本对齐方式。 |
-| ariaLabel | string | 否 | Android: x; iOS: x | 无障碍访问，（属性）元素的额外描述 |
+| content | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 文本 |
+| color | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 文本颜色 |
+| fontSize | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 文字大小 |
+| x | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | label的坐标，原点是 marker 对应的经纬度 |
+| y | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | label的坐标，原点是 marker 对应的经纬度 |
+| anchorX | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | label的坐标，原点是 marker 对应的经纬度 |
+| anchorY | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | label的坐标，原点是 marker 对应的经纬度 |
+| borderWidth | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 边框宽度 |
+| borderColor | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 边框颜色 |
+| borderRadius | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 边框圆角 |
+| bgColor | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 背景色 |
+| padding | number | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 文本边缘留白 |
+| textAlign | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 文本对齐方式。 |
+| ariaLabel | string | 否 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 无障碍访问，（属性）元素的额外描述 |
 
 ###### textAlign 的属性描述
 
@@ -1227,8 +1227,8 @@ updateGroundOverlay
 | padding | number | 否 | 0 | Android: 4.51; iOS: 4.51 | 文本边缘留白 |
 | display | string | 否 | "BYCLICK" | Android: 4.51; iOS: 4.51 | 'BYCLICK':点击显示; 'ALWAYS':常显 |
 | textAlign | string | 否 | "left" | Android: 4.51; iOS: 4.51 | 文本对齐方式。 |
-| anchorX | number | 否 | 0.5 | Android: x; iOS: x | 横向偏移量，向右为正数 |
-| anchorY | number | 否 | 1 | Android: x; iOS: x | 纵向偏移量，向下为正数 |
+| anchorX | number | 否 | 0.5 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 横向偏移量，向右为正数 |
+| anchorY | number | 否 | 1 | Android(VDOM): x; Android(Vapor): 5.21; iOS(VDOM): x; iOS(Vapor): 5.11 | 纵向偏移量，向下为正数 |
 
 ###### display 的属性描述
 
