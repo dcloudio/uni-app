@@ -60,8 +60,6 @@ unicode直显方式的性能优于伪元素方式，但源码阅读的直观性�
 注意text组件直显unicode，需要用 <code v-pre>{{'\u'}}</code> 的方式包裹。
 另外注意实体字符和unicode的区别。
 
-<!-- 缺少实体字符直显的测试和示例 -->
-
 ```html
 <style>
   @font-face {
@@ -72,6 +70,8 @@ unicode直显方式的性能优于伪元素方式，但源码阅读的直观性�
 
 <!-- 直接在 text 里放 Unicode 实体 -->
 <text style="font-family: UniFontFamily;">{{'\ue100'}}</text>
+<!-- 使用实体字符 -->
+<text style="font-family: UniFontFamily;">&#xe100;</text>
 ```
 
 ### App平台内置字体图标 uni-icon @uniicon
