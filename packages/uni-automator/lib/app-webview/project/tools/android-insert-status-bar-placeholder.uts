@@ -15,7 +15,11 @@ function createStatusBarPlaceholderScript(height: number): string {
 
 			function shouldInsert(){
 				var pageHead=document.querySelector('.uni-page-head');
-				if(!pageHead || !pageHead.getBoundingClientRect){
+				if(!pageHead){
+					// navigationStyle: "custom" does not render a uni-page-head.
+					return true;
+				}
+				if(!pageHead.getBoundingClientRect){
 					return false;
 				}
 				return pageHead.getBoundingClientRect().height<=44;
