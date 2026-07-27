@@ -241,6 +241,10 @@ export function registerPage(
           invokeHook(pageComponentPublicInstance, ON_UNLOAD)
         })
         nativePage.addPageEventListener(ON_READY, (_) => {
+          if (__VAPOR__) {
+            // native ready 时页面根节点已渲染，可安全访问 $el
+            initVaporPageLifeCycle(pageComponentPublicInstance, nativePage)
+          }
           invokePageOnReady(pageComponentPublicInstance)
         })
 
@@ -270,10 +274,6 @@ export function registerPage(
           }
           invokeHook(pageComponentPublicInstance, ON_RESIZE, args)
         })
-        if (__VAPOR__) {
-          // 蒸汽模式目前通过监听页面根 scroll-view 的 scroll 事件来触发页面 onPageScroll 和 onReachBottom
-          initVaporPageLifeCycle(pageComponentPublicInstance, nativePage)
-        }
         nativePage.startRender()
         onRegistered?.(nativePage)
       }
