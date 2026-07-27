@@ -512,9 +512,8 @@ getAllChannels
   try {
     bundleManager.getBundleInfoForSelf(bundleFlags).then((data) => {
       jestResult.hasGetuiAppId = data.appInfo?.metadata?.entry?.find(item=>item.name === 'GETUI_APPID') != null;
-      console.error('jestResult.hasGetuiAppId:', jestResult.hasGetuiAppId);
     }).catch((err) => {
-      console.error('Promise 捕获错误:', err);
+      console.warn('Promise 捕获错误:', err);
     });
   } catch (_) {}
   // #endif
@@ -662,7 +661,6 @@ getAllChannels
         },
         fail: (err: GetPushClientIdFail) => {
           resolve()
-          console.error(err);
           if (err.message.includes('uniPush is not enabled')) {
             uni.showModal({
               title: '获取cid失败',

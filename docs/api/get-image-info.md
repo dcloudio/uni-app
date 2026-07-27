@@ -136,7 +136,8 @@ web平台读取图片的exif信息，需要引入三方库。考虑到影响web 
 
 <script setup lang="uts">
   type TestStateType = {
-    imageInfoForTest: UTSJSONObject | null
+    imageInfoForTest: UTSJSONObject | null,
+    autoTest: boolean
   }
 
   const title = ref("getImageInfo")
@@ -148,7 +149,8 @@ web平台读取图片的exif信息，需要引入三方库。考虑到影响web 
   const remoteImageInfo = ref("")
   // 自动化测试
   const testState = reactive({
-    imageInfoForTest: null as UTSJSONObject | null
+    imageInfoForTest: null as UTSJSONObject | null,
+    autoTest: false
   } as TestStateType)
 
   const chooseImage = () => {
@@ -173,6 +175,10 @@ web平台读取图片的exif信息，需要引入三方库。考虑到影响web 
       }
     });
   }
+
+  onLoad((options : OnLoadOptions) => {
+    testState.autoTest = options['autoTest'] == 'true'
+  })
 
   onReady(() => {
     uni.getImageInfo({
@@ -201,7 +207,11 @@ web平台读取图片的exif信息，需要引入三方库。考虑到影响web 
       src: remoteImagePath.value,
       success: (res) => {
         console.log("getImageInfo success", JSON.stringify(res));
-        remoteImageInfo.value = `图片宽度: ${res.width}\n图片高度: ${res.height}\n图片路径: ${res.path}\n图片方向: ${res.orientation}\n图片格式: ${res.type}`;
+        if (testState.autoTest) {
+          remoteImageInfo.value = `图片宽度: ${res.width}\n图片高度: ${res.height}\n图片方向: ${res.orientation}\n图片格式: ${res.type}`;
+        } else {
+          remoteImageInfo.value = `图片宽度: ${res.width}\n图片高度: ${res.height}\n图片路径: ${res.path}\n图片方向: ${res.orientation}\n图片格式: ${res.type}`;
+        }
       },
       fail: (err) => {
         uni.showModal({

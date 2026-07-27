@@ -294,6 +294,9 @@ app-android平台注意事项：
     <button class="uni-common-mt" id="open-dialog1" @click="openDialog1">
       open dialog 1
     </button>
+    <button class="uni-common-mt" id="open-dialog-navigation-bar-text-style" @click="openDialogNavigationBarTextStyle">
+      open dialog test navigationBarTextStyle restore
+    </button>
     <button class="uni-common-mt" id="open-dialog11" @click="openDialog11">
       open dialog 1-1
     </button>
@@ -438,6 +441,13 @@ app-android平台注意事项：
         // 自动化测试
         setLifeCycleNum(state.lifeCycleNum + 1)
       }
+    })
+  }
+  const openDialogNavigationBarTextStyle = () => {
+    uni.openDialogPage({
+      url: '/pages/API/dialog-page/dialog-navigation-bar-text-style',
+      animationType: 'fade-in',
+      animationDuration: 200
     })
   }
   const openDialog11 = () => {
@@ -732,6 +742,7 @@ app-android平台注意事项：
     setLifeCycleNum: setLifeCycleNumFunc,
     goNextPage,
     openDialog1,
+    openDialogNavigationBarTextStyle,
     openDialog11,
     openDialog2,
     openDialog1WrongPath,

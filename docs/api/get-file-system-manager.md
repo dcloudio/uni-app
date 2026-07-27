@@ -5574,7 +5574,7 @@ isFile
     try {
       fileManager.mkdirSync(`${data.basePath}${data.mkdirFile}`, true)
     } catch (e) {
-      console.error(e)
+      console.log(`mkdirSync fail:${e}`)
     }
 
     fileManager.write({
@@ -5608,7 +5608,7 @@ isFile
     try {
       fileManager.mkdirSync(`${data.basePath}${data.mkdirFile}`, true)
     } catch (e) {
-      console.error(e)
+      console.log(`mkdirSync fail:${e}`)
     }
     fileManager.open({
       filePath: `${data.basePath}${data.readFile}`,
@@ -5889,7 +5889,7 @@ isFile
     try {
       fileManager.mkdirSync(`${data.basePath}${data.mkdirFile}`, true)
     } catch (e) {
-      console.error(e)
+      console.log(`mkdirSync fail:${e}`)
     }
 
     let buffer = new ArrayBuffer(24)

@@ -257,11 +257,12 @@
 
   onMounted(() => {
     uni.showToast({
-      title: 'onMounted 调用示例,2秒后消失'
+      title: 'onMounted 调用示例,3秒后消失',
+      duration: 3000
     })
     setTimeout(function () {
       uni.hideToast()
-    }, 2000);
+    }, 3000);
   })
 
   //自动化测试例专用
