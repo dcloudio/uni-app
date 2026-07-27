@@ -755,6 +755,59 @@ function handleLink$1(event) {
     detail.parent = parentVm;
 }
 
+function findTemplateUniElementRef(instance, key) {
+    if (!isString(key)) {
+        return;
+    }
+    const templateRefs = instance.$templateUniElementRefs;
+    for (let i = templateRefs.length - 1; i >= 0; i--) {
+        const templateRef = templateRefs[i];
+        const refKey = isString(templateRef.r) ? templateRef.r : templateRef.k;
+        if (refKey === key) {
+            return templateRef;
+        }
+    }
+}
+function initRefs(instance) {
+    const rawRefs = instance.refs === EMPTY_OBJ || !Object.isExtensible(instance.refs)
+        ? Object.assign({}, instance.refs)
+        : instance.refs;
+    instance.refs = new Proxy(rawRefs, {
+        get(target, key, receiver) {
+            const templateRef = findTemplateUniElementRef(instance, key);
+            return templateRef ? templateRef.v : Reflect.get(target, key, receiver);
+        },
+        has(target, key) {
+            return (!!findTemplateUniElementRef(instance, key) || Reflect.has(target, key));
+        },
+        set(target, key, value) {
+            return Reflect.set(target, key, value, target);
+        },
+        ownKeys(target) {
+            const keys = Reflect.ownKeys(target);
+            instance.$templateUniElementRefs.forEach((templateRef) => {
+                const refKey = isString(templateRef.r) ? templateRef.r : templateRef.k;
+                if (refKey && !keys.includes(refKey)) {
+                    keys.push(refKey);
+                }
+            });
+            return keys;
+        },
+        getOwnPropertyDescriptor(target, key) {
+            const templateRef = findTemplateUniElementRef(instance, key);
+            if (templateRef) {
+                return {
+                    configurable: true,
+                    enumerable: true,
+                    value: templateRef.v,
+                    writable: true,
+                };
+            }
+            return Reflect.getOwnPropertyDescriptor(target, key);
+        },
+    });
+}
+
 const isComponent2 = my.canIUse('component2');
 const mocks = ['$id'];
 function initRelation(mpInstance, detail) {
@@ -939,6 +992,9 @@ function createVueComponent(mpType, mpInstance, vueOptions, parent) {
         slots: mpInstance.props.uS || {}, // vueSlots
         parentComponent: parent && parent.$,
         onBeforeSetup(instance, options) {
+            {
+                initRefs(instance);
+            }
             initMocks(instance, mpInstance, mocks);
             initComponentInstance(instance, options);
         },

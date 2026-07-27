@@ -69,8 +69,11 @@ function initRefs(instance, mpInstance) {
                 const { $templateUniElementRefs } = instance;
                 if ($templateUniElementRefs && $templateUniElementRefs.length) {
                     $templateUniElementRefs.forEach((templateRef) => {
-                        if (isString(templateRef.r)) {
-                            $refs[templateRef.r] = templateRef.v;
+                        const refKey = isString(templateRef.r)
+                            ? templateRef.r
+                            : templateRef.k;
+                        if (refKey) {
+                            $refs[refKey] = templateRef.v;
                         }
                     });
                 }

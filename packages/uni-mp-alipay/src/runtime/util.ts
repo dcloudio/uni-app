@@ -28,6 +28,7 @@ import {
   createUniDOMStringMap,
   customizeEvent,
 } from '@dcloudio/uni-shared'
+import { initRefs } from './refs'
 
 type MPPageInstance = tinyapp.IPageInstance<Record<string, any>>
 export type MPComponentInstance = tinyapp.IComponentInstance<
@@ -293,6 +294,9 @@ export function createVueComponent(
         instance: ComponentInternalInstance,
         options: CreateComponentOptions
       ) {
+        if (__X__) {
+          initRefs(instance)
+        }
         initMocks(instance, mpInstance as any, mocks)
         initComponentInstance(instance, options)
       },
