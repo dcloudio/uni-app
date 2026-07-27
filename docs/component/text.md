@@ -803,11 +803,11 @@ HBuilderX4.51版本起 text组件嵌套时，子组件支持点击事件响应�
           <text class="uni-subtitle-text">selectable属性（鸿蒙蒸汽暂不支持）</text>
         </view>
         <view class="text-box">
-          <!-- #ifdef APP-ANDROID -->
-          <text :selectable="true">{{ singleLineText }}</text>
-          <!-- #endif -->
-          <!-- #ifndef APP-ANDROID -->
+          <!-- #ifdef APP-HARMONY -->
           <text>{{ singleLineText }}</text>
+          <!-- #endif -->
+          <!-- #ifndef APP-HARMONY -->
+          <text :selectable="true">{{ singleLineText }}</text>
           <!-- #endif -->
         </view>
 

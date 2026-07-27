@@ -75,9 +75,7 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
       <page-intro content="本页演示组件通用属性：id、class、data、style 的绑定与校验，以及 ref、hover-class、hover-start-time、hover-stay-time 等点击态效果。"></page-intro>
       <view class="uni-padding-wrap">
         <view :id="generalId" :class="generalClass"
-          <!-- #ifdef !VUE3-VAPOR-->
           :data-test="generalData"
-          <!-- #endif-->
           :style="generalStyle" ref="generalTargetRef">
           <text>id: {{ generalId }}</text>
           <text>class: {{ generalClass }}</text>
@@ -139,14 +137,11 @@ App-Android平台设置组件视图渲染模型，字符串类型，可取值：
     }
     // #endif
     // #ifndef MP
-    // #ifdef !VUE3-VAPOR
-    // TODO: vapor模式暂未实现data-xxx属性获取，后续需补充并放开测试
-    const generalDataValue = generalTargetElement.getAttribute('data-test')
+    const generalDataValue = generalTargetElement.dataset.test
     if (generalDataValue != generalData.value) {
       validateGeneralAttrText.value = '基础属性 data-test 验证失败'
       return
     }
-    // #endif
     // #endif
     validateGeneralAttrText.value = '基础属性验证成功'
   }
