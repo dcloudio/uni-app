@@ -17,6 +17,8 @@
  `Target -> Build Settings -> Framework Search Paths` 中添加SDK的Libs目录（操作方法：双击展开`Framework Search Paths`将`SDK/Libs`文件夹拖入即可）
 
 `插件工程`中新建`uts-config.json`文件，然后将SDK中`SDK/ExtApiSrc/UTSOC.h`以及`SDK/ExtApiSrc/UTSOC.mm`添加到`插件工程`中
+- 注意： `uts-config.json`、`UTSOC.h`、`UTSOC.m` 文件，既存在`SDK/ExtApiSrc/`目录中， 也可以在
+`SDK/UTSPluginExample/unimoduleUtsWorker/unimoduleUtsWorker/` 中获取， `SDK/UTSPluginExample/`  目录中是已经构建好的uts插件示例
 
 ## 配置资源文件
 1. 将以下源文件(`SDK/ExtApiSrc 目录下`)、依赖库(`SDK/Libs 目录下`)添加到`插件工程`中，并将依赖库均设置为`Do Not Embed`
