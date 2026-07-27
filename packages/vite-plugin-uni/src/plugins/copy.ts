@@ -10,6 +10,7 @@ import {
   isWindows,
   normalizePath,
   parseSubpackagesRootOnce,
+  pathToGlob,
   uniViteCopyPlugin,
 } from '@dcloudio/uni-cli-shared'
 import type { VitePluginUniResolvedOptions } from '..'
@@ -44,6 +45,7 @@ export function uniCopyPlugin({
     assets.push(asset)
   })
   const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
+  const inputDirGlob = pathToGlob(inputDir, '')
   const platform = process.env.UNI_PLATFORM
   const utsPlatform = process.env.UNI_UTS_PLATFORM
   // 非当前平台 static 目录
@@ -74,7 +76,12 @@ export function uniCopyPlugin({
             return fs.statSync(normalizedPath).isDirectory()
           }
           // 应该是软链
-          if (!normalizedPath.startsWith(inputDir)) {
+          if (
+            !isSameOrSubPath(normalizedPath, inputDir) &&
+            !isSameOrSubPath(normalizedPath, inputDirGlob) &&
+            // glob 转义会使 chokidar 从项目上级目录开始遍历，不能忽略这些目录
+            !isSameOrSubPath(inputDir, normalizedPath)
+          ) {
             // 目前仅简单处理static
             if (normalizedPath.includes('/static/')) {
               return false
@@ -115,6 +122,14 @@ export function uniCopyPlugin({
   return uniViteCopyPlugin({
     targets,
   })
+}
+
+export function isSameOrSubPath(filename: string, dir: string) {
+  filename = normalizePath(filename)
+  dir = normalizePath(dir)
+  return (
+    filename === dir || filename.startsWith(dir.endsWith('/') ? dir : dir + '/')
+  )
 }
 
 let isIgnoreChecked = false
