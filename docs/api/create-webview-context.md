@@ -357,4 +357,4 @@ loadData
 示例代码另见[web-view组件](../component/web-view.md)
 
 ## 注意
-- app-android 平台在蒸汽模式下不再支持 uni.createWebviewContext，返回的组件上下文对象无法调用相关方法。
+- app-android 平台在蒸汽模式下仅支持 uni.createWebViewContext，不再支持向下兼容写法。
