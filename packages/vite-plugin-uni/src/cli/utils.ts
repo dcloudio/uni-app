@@ -24,6 +24,21 @@ import type { CliOptions } from '.'
 import { initNVueEnv } from './nvue'
 import { initUVueEnv } from './uvue'
 
+export function formatStyleIsolationVersionMessage(version: string) {
+  const versionNumber = Number(version)
+  const shouldUpgrade = versionNumber !== 2
+  const message =
+    M[
+      shouldUpgrade
+        ? 'style.isolation.version.upgrade'
+        : 'style.isolation.version'
+    ]
+  const displayVersion = Number.isInteger(versionNumber)
+    ? versionNumber.toFixed(1)
+    : version
+  return message.replace('{version}', displayVersion)
+}
+
 // uni -p
 export const PLATFORMS = [
   'app',
@@ -356,9 +371,8 @@ export function initEnv(
   }
   if (isX && !isUniAppXVapor()) {
     console.log(
-      M['style.isolation.version'].replace(
-        '{version}',
-        (process.env.UNI_APP_STYLE_ISOLATION_VERSION || '1') + '.0'
+      formatStyleIsolationVersionMessage(
+        process.env.UNI_APP_STYLE_ISOLATION_VERSION || '1'
       )
     )
   }

@@ -4,6 +4,8 @@ export default {
   'view.render.compiler.target.bytecode': 'bytecode',
   'view.render.compiler.target.nativecode': 'nativecode',
   'style.isolation.version': 'Style isolation version: {version}',
+  'style.isolation.version.upgrade':
+    'Style isolation version: {version}. Upgrading to 2.0 is recommended.',
   compiling: 'Compiling...',
   'dev.performance':
     'Please note that in running mode, due to log output, sourcemap, and uncompressed source code, the performance and package size are not as good as release mode.',
