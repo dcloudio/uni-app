@@ -340,10 +340,6 @@ ninja: error: failed recompaction: Permission denied。
 
     如需受外部影响，组件可以在 `<script setup>` 中 defineOptions 中定义 styleIsolation，默认值为：isolated。可以改为  app 或 app-and-page。
 
-### 全局文件
-pages.json
-- TODO：Android暂无tabbar，但有独立的[uni-tab组件](./component/uni-ui-x/uni-tab.md)。自定义组件的性能与pages.json中的tabbar没有差别且更灵活。
-
 ### 组件
 - 变更：不再支持uts兼容模式组件，仅支持uts标准模式组件，即使用native-view的开发方式。
 - 变更：布尔属性规范化。scroll-view、swiper等部分组件布尔属性默认值从true改为false。
@@ -401,10 +397,8 @@ pages.json
 - 混合情况
   只要存在至少两个相邻节点（父子或兄弟）同时拍平，即可获得性能优化。
 
-### API
-- TODO：Android暂无tabbar相关api。需使用uni-tab-bar组件相关属性设置。
 
-#### Element API
+### Element API
 - TODO：缺少Drawable。dom2的view、text创建足够快且支持拍平，故优先级不高
 
     在蒸汽模式之前，为了高性能绘制，经常不能使用view和text组件，而是需要通过Drawable对象来绘制线条和文字，这种写法无法跨平台且复杂。\
