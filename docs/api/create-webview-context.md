@@ -203,6 +203,12 @@ loadData
   **已废弃，仅为了向下兼容保留，建议使用`createWebViewContext`。
 创建 web-view 上下文 WebviewContext 对象。**
 
+早期，本API的大小写不规范，`createWebviewContext`的view的首字母`v`没有大写。
+
+目前不规范的API已经废弃，推荐使用上方的`uni.createWebViewContext`。
+
+- app-android 平台在蒸汽模式下仅支持`V`大写的方式 ，不再支持向下兼容写法。
+
 ### createWebviewContext 兼容性 <Help /> 
 | Web | Android | iOS | HarmonyOS |
 | :- | :- | :- | :- |
@@ -355,6 +361,3 @@ loadData
 
 
 示例代码另见[web-view组件](../component/web-view.md)
-
-## 注意
-- app-android 平台在蒸汽模式下仅支持 uni.createWebViewContext，不再支持向下兼容写法。

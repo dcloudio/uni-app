@@ -801,6 +801,7 @@ xcodebuild -create-xcframework -framework 真机路径/DCloudUTSExtAPI.framework
 | 章鱼 | OctUniAdSDK.xcframework <br> DCloudPermissionIDFA.xcframework <br> OctCore.xcframework <br> OctAdSDK.xcframework | OctAdSDK.bundle <br> OctCore.bundle | AppTrackingTransparency <br> AdSupport <br> c++|
 | 泛连(4.61+) | FLAdSaas.xcframework <br> FLAdUniAdapter.xcframework <br> DCloudPermissionIDFA.xcframework |  | AppTrackingTransparency <br> AdSupport|
 | 华夏乐游(4.61+) | DCUniAdYT.xcframework <br> YouTuiAdSDK.xcframework <br> DCloudPermissionIDFA.xcframework | YouTuiAdSDK.bundle | AppTrackingTransparency <br> AdSupport|
+| 旺脉(5.11+) | wmuniad_adpater.xcframework <br> pod 'AdWangMaiSDK', '~> 7.9.4.35' <br> DCloudPermissionIDFA.xcframework |  | AppTrackingTransparency <br> AdSupport|
 
 
 ### 增强广告-国际(可选)
