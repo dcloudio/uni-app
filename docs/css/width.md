@@ -223,7 +223,6 @@ width: <viewport-length>{1,2};
         <native-view ref="emptyNativeViewRef" style="background-color: cyan;"></native-view>
       </view>
     </view>
-    <!-- #endif -->
 
     <view class="uni-common-mb">
       <text>native-view组件: width: 100px 和 width: 200px</text>
@@ -236,6 +235,7 @@ width: <viewport-length>{1,2};
         </view>
       </view>
     </view>
+    <!-- #endif -->
 
     <!-- #ifdef WEB -->
     <view class="container">
