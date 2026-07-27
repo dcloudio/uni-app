@@ -231,11 +231,15 @@ HBuilderX 5+ 已统一策略，页面是否被全局样式影响、组件是否�
 
 ## 层级
 
-App仅对`同层的兄弟节点`之间支持`z-index`来调节层级。不支持脱离dom树任意调节层级。
+app平台仅对`同层的兄弟节点`之间支持`z-index`来调节层级。不支持脱离dom树任意调节层级。
 
 ## css方法 @css-function
 
-目前支持url()、rgb()、rgba()、var()、env()。[详见](./common/function.md)
+app平台目前支持url()、rgb()、rgba()、var()、env()。[详见](./common/function.md)
+
+## 字体图标注意
+
+app平台由于暂不支持伪元素，字体图标需使用unicode直显方式。[详见](./common/at-rules.md)
 
 ## css样式重置 @css-reset
 

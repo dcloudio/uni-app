@@ -32,17 +32,49 @@
 
 ## 字体 @font
 
-@font-face自定义字体示例：
+@font-face 这个at-rule用于自定义字体。
+
+以下示例为加载一个字体文件，加载成功后，在text组件上设置相应的字体名称就可以按该字体渲染文字内容：
+
 ```html
 <style>
 @font-face {
     font-family: AlimamaDaoLiTiOTF;
-    src: url('/static/font/AlimamaDaoLiTi.otf');
+    src: url('/static/font/AlimamaDaoLiTi.ttf');
 }
 </style>
 ```
-****
-### 内置字体图标 uni-icon @uniicon
+
+### 字体图标@iconfont
+
+@font-face 还有一个常见用途是加载字体图标。
+
+web中加载字体图标，有 `unicode直显` 和 `伪元素+content` 2种方式。
+
+由于App平台不支持伪元素，所以跨平台的写法就是 unicode直显。
+
+有些字体图标网站导出代码时，默认使用`伪元素+content`方式，需要注意这个坑，改用 unicode直显。
+
+unicode直显方式的性能优于伪元素方式，但源码阅读的直观性略差。
+
+注意text组件直显unicode，需要用 <code v-pre>{{'\u'}}</code> 的方式包裹。
+另外注意实体字符和unicode的区别。
+
+<!-- 缺少实体字符直显的测试和示例 -->
+
+```html
+<style>
+  @font-face {
+  font-family: UniFontFamily;
+  src: url('./uni.ttf');
+}
+</style>
+
+<!-- 直接在 text 里放 Unicode 实体 -->
+<text style="font-family: UniFontFamily;">{{'\ue100'}}</text>
+```
+
+### App平台内置字体图标 uni-icon @uniicon
 > HBuilderX4.33+
 
 app平台的内置组件和API用到了一些字体，同时共享出来给开发者，也可以使用这些内置字体。
@@ -50,27 +82,14 @@ app平台的内置组件和API用到了一些字体，同时共享出来给开�
 内置 `uni-icon` 字体图标示例：
 ```html
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
-
+  <!-- 静态字体图标 -->
   <text style="font-family: uni-icon;font-size: 64px;">{{'\uEA08'}}</text>
+  <!-- 动态赋值字体图标 -->
   <text style="font-family: uni-icon;font-size: 64px;">{{uniIcon}}</text>
-  
-
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
 </template>
 
-<script lang="uts">
-  export default {
-    data() {
-      return {
-        uniIcon: '\ue601'
-      }
-    }
-  }
+<script setup lang="uts">
+  const uniIcon = ref<string>('\ue601')
 </script>
 ```
 
@@ -185,7 +204,9 @@ app平台的内置组件和API用到了一些字体，同时共享出来给开�
 
 ### Tips
 - `字体路径`支持**网络**和**本地**，本地字体请注意放在项目或uni_modules的static目录下。
-- @font-face下仅支持 font-family 和 src，不支持font-weight 、 font-style等属性
+- 全平台均支持ttf和otf字体格式，其他字体格式在不同平台支持度有差异，另见[css字体](../font-family.md)
+- @font-face是不可编程的，如需编程控制，另见[uni.loadFontFace](../../api/load-font-face.md)
+- @font-face下仅支持 font-family 和 src，不支持通过font-weight 、 font-style等属性控制该字体统一样式，如果需要设置字体样式，请在具体的text组件上使用class或style定义字体样式。
 
 <style type="text/css">
 @font-face {

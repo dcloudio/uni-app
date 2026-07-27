@@ -254,12 +254,15 @@ font-family: <family-name>;
 - app平台: 指定自定义字体路径时，必须使用url()包裹，支持本地文件路径、远程地址，4.33 版本开始支持 base64 格式数据；
 - HarmonyOS平台: 支持ttf、otf 使用 [@ohos.font](https://developer.huawei.com/consumer/cn/doc/harmonyos-references-V13/js-apis-font-V13?ha_source=Dcloud&ha_sourceId=89000448) 实现
 
-自定义字体的加载，除了在css的src中设置，也可以使用API [uni.loadFontface](../api/load-font-face.md)
+自定义字体的加载
+1. 在css中加载：[@font-face](./common/at-rules.md)
+2. 使用API加载： [uni.loadFontface](../api/load-font-face.md)
 
 
 ### App平台差异
 - app平台 font-family 样式不支持继承，每层组件都需要设样式
 - app平台 font-family 属性值不支持使用分隔符（,）多个字体名称设置字体回退列表，仅支持设置一个字体
+- app平台由于不支持伪元素，字体图标加载需使用unicode直显。[详见](./common/at-rules.md)
 
 
 ### 参见

@@ -119,7 +119,9 @@
   2. base64 格式字体是通过转换成 buffer 保存在磁盘上并引入实现的，因此页面上过多的使用 base64 可能会有性能问题
   3. HarmonyOS 字体都是全局生效的
 
-不同平台支持的字体格式不同，另见[css字体](../css/font-family.md)
+- 不同平台支持的字体格式不同，另见[css字体](../css/font-family.md)
+
+- app平台由于不支持伪元素，字体图标加载需使用unicode直显。[详见](./common/at-rules.md)
 
 ### 示例
 

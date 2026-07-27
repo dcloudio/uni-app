@@ -24,6 +24,7 @@ uni-app迁移到uni-app x，是一个大型工程。
 	* 把复杂的选择器写法，都改成简单的class写法。[详见](./css/common/selector.md)
 	* 单位只使用px、rpx、%，其他单位都改成这几种支持的单位。特别的是line-height可以使用em。[详见](./css/common/length.md)
 	* 不使用不支持的@rule。[详见](./css/common/at-rules.md)
+	* app平台由于暂不支持伪元素，字体图标需使用unicode直显方式。[详见](./css/common/at-rules.md#iconfont)
 	* 不支持的css方法。[详见](./css/common/function.md)
 	* 把不支持的css属性和属性值，改成uni-app x支持的。[详见](./css/README.md)
 	
@@ -84,7 +85,7 @@ uni-app迁移到uni-app x，是一个大型工程。
 	* 如果在pages.json里使用了plus，推荐改用 uni-ui x 的 [uni-nav-bar 自定义导航栏组件](./component/uni-ui-x/uni-nav-bar.md) 和 [uni-tab-bar自定义tabbar组件](./component/uni-ui-x/uni-tab.md) 来替代。
 
 	另外如果项目使用了subNVue，需要改成[dialogPage](./api/dialog-page.md)
-
+	
 8. 改造组件库
 	* 如果使用了uni ui，那么迁移指南在这篇文档的底部：[uni-ui x](./component/uni-ui-x/README.md)
 	* 如果使用其他组件库，需要咨询组件作者是否有 uni-app x 版本。如果没有的话，推荐用[uni-ui x](./component/uni-ui-x/README.md)重构。
