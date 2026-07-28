@@ -583,17 +583,21 @@ function wrapperOnApi(name, fn, options) {
 }
 function wrapperOffApi(name, fn, options) {
     return (callback) => {
-        checkCallback(callback);
+        {
+            checkCallback(callback);
+        }
         const errMsg = beforeInvokeApi(name, [callback], undefined, options);
         if (errMsg) {
             throw new Error(errMsg);
         }
-        name = name.replace('off', 'on');
-        removeKeepAliveApiCallback(name, callback);
+        const onApiName = name.replace('off', 'on');
+        {
+            removeKeepAliveApiCallback(onApiName, callback);
+        }
         // 是否还存在监听，若已不存在，则移除onMethod监听
-        const hasInvokeOnApi = findInvokeCallbackByName(name);
+        const hasInvokeOnApi = findInvokeCallbackByName(onApiName);
         if (!hasInvokeOnApi) {
-            offKeepAliveApiCallback(name);
+            offKeepAliveApiCallback(onApiName);
             fn();
         }
     };

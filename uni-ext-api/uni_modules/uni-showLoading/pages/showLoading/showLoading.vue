@@ -83,7 +83,7 @@
 		padding: 10px;
 		background-color: rgba(76, 76, 76, 0.9);
 		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-		border-radius: 8px;
+		border-radius: 10px;
 		opacity: 0;
 		transform: scale(0.9);
 		transition-duration: 0.1s;

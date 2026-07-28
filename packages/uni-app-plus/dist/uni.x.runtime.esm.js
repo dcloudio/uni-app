@@ -303,6 +303,13 @@ function removeKeepAliveApiCallback(name, callback) {
     }
   }
 }
+function removeAllKeepAliveApiCallbacks(name) {
+  for (var key in invokeCallbacks) {
+    if (invokeCallbacks[key].name === name) {
+      delete invokeCallbacks[key];
+    }
+  }
+}
 function offKeepAliveApiCallback(name) {
   UniServiceJSBridge.off("api." + name);
 }
@@ -593,16 +600,23 @@ function wrapperOnApi(name, fn, options) {
 }
 function wrapperOffApi(name, fn, options) {
   return (callback) => {
-    checkCallback(callback);
-    var errMsg = beforeInvokeApi(name, [callback], void 0, options);
+    var clearAll = (options === null || options === void 0 ? void 0 : options.allowClearAll) === true && callback == null;
+    if (!clearAll) {
+      checkCallback(callback);
+    }
+    var errMsg = beforeInvokeApi(name, clearAll ? [] : [callback], void 0, options);
     if (errMsg) {
       throw new Error(errMsg);
     }
-    name = name.replace("off", "on");
-    removeKeepAliveApiCallback(name, callback);
-    var hasInvokeOnApi = findInvokeCallbackByName(name);
+    var onApiName = name.replace("off", "on");
+    if (clearAll) {
+      removeAllKeepAliveApiCallbacks(onApiName);
+    } else {
+      removeKeepAliveApiCallback(onApiName, callback);
+    }
+    var hasInvokeOnApi = findInvokeCallbackByName(onApiName);
     if (!hasInvokeOnApi) {
-      offKeepAliveApiCallback(name);
+      offKeepAliveApiCallback(onApiName);
       fn();
     }
   };
