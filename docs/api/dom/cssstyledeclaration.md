@@ -555,13 +555,11 @@ App平台获取样式值与Web平台存在部分差异：
 		<text>123</text>
 	</view>
 </template>
-<script lang="uts">
-	export default {
-		methods: {
-			showPop: function () {
-				(this.$refs["pop"] as Element).style.setProperty("display","flex")
-			}
-		}
+<script setup lang="uts">
+	const pop = ref<UniElement | null>(null)
+
+	const showPop = () => {
+		pop.value!.style.setProperty("display", "flex")
 	}
 </script>
 ```

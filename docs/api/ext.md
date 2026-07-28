@@ -27,22 +27,16 @@ uni-app x 中不再支持plus和weex的API。对于plus api中一些常用的api
 		<button @click="openSchema('androidamap://viewMap?sourceApplication=Hello%20uni-app&poiname=DCloud&lat=39.9631018208&lon=116.3406135236&dev=0')">打开地图坐标</button>
 	</view>
 </template>
-<script>
+<script setup lang="uts">
 	import Intent from 'android.content.Intent';
 	import Uri from 'android.net.Uri';
-	export default {
-		data() {
-			return {}
-		},
-		methods: {
-			openSchema(url : string) {
-				const context = UTSAndroid.getUniActivity()!;
-				const uri = Uri.parse(url)
-				const intent = new Intent(Intent.ACTION_VIEW, uri)
-				intent.setData(uri);
-				context.startActivity(intent);
-			}
-		}
+
+	const openSchema = (url : string) => {
+		const context = UTSAndroid.getUniActivity()!;
+		const uri = Uri.parse(url)
+		const intent = new Intent(Intent.ACTION_VIEW, uri)
+		intent.setData(uri);
+		context.startActivity(intent);
 	}
 </script>
 ```
