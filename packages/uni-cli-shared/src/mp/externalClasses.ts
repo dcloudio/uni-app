@@ -177,6 +177,7 @@ export function isAlipayXStyleIsolation() {
   return (
     process.env.UNI_PLATFORM === 'mp-alipay' &&
     process.env.UNI_APP_X === 'true' &&
+    process.env.UNI_APP_X_DOM2 === 'true' &&
     process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2'
   )
 }
@@ -218,14 +219,21 @@ export function isAlipayStyleIsolationClass(value: string) {
  * 静态 class 在编译期直接展开，避免把可提前完成的字符串处理留到 SJS 运行时。
  * 保留前缀属于支付宝隔离实现的内部协议，静态可识别的用户 class 必须及时报错。
  */
-export function formatAlipayStyleIsolationClasses(value: string, mask: number) {
+export function formatAlipayStyleIsolationClasses(
+  value: string,
+  mask: number,
+  keepRaw = true
+) {
   const result: string[] = []
   const classes = value.split(/\s+/).filter(Boolean)
   for (const clazz of classes) {
     if (isAlipayStyleIsolationClass(clazz)) {
       throw new Error(`支付宝小程序样式隔离不允许 class 使用保留前缀：${clazz}`)
     }
-    result.push(clazz)
+    // externalClass 跨组件传递时不能保留原名，否则子组件会将其误认为本地 class 再补组件前缀。
+    if (keepRaw) {
+      result.push(clazz)
+    }
     if (mask & ALIPAY_CLASS_MASK_APP) {
       result.push('-a-' + clazz)
     }

@@ -23,6 +23,7 @@ function restoreEnv(name: string, value: string | undefined) {
 describe('支付宝小程序样式隔离 2.0', () => {
   const originalPlatform = process.env.UNI_PLATFORM
   const originalAppX = process.env.UNI_APP_X
+  const originalDom2 = process.env.UNI_APP_X_DOM2
   const originalVersion = process.env.UNI_APP_STYLE_ISOLATION_VERSION
   const originalInputDir = process.env.UNI_INPUT_DIR
   const originalPagePaths = process.env.UNI_COMPILE_EXT_API_PAGE_PATHS
@@ -30,6 +31,7 @@ describe('支付宝小程序样式隔离 2.0', () => {
   beforeEach(() => {
     process.env.UNI_PLATFORM = 'mp-alipay'
     process.env.UNI_APP_X = 'true'
+    process.env.UNI_APP_X_DOM2 = 'true'
     process.env.UNI_APP_STYLE_ISOLATION_VERSION = '2'
     process.env.UNI_INPUT_DIR = '/src'
     process.env.UNI_COMPILE_EXT_API_PAGE_PATHS = JSON.stringify([
@@ -40,6 +42,7 @@ describe('支付宝小程序样式隔离 2.0', () => {
   afterEach(() => {
     restoreEnv('UNI_PLATFORM', originalPlatform)
     restoreEnv('UNI_APP_X', originalAppX)
+    restoreEnv('UNI_APP_X_DOM2', originalDom2)
     restoreEnv('UNI_APP_STYLE_ISOLATION_VERSION', originalVersion)
     restoreEnv('UNI_INPUT_DIR', originalInputDir)
     restoreEnv('UNI_COMPILE_EXT_API_PAGE_PATHS', originalPagePaths)
@@ -47,10 +50,25 @@ describe('支付宝小程序样式隔离 2.0', () => {
     clearMiniProgramComponentStyleIsolation('/src/components/test.vue')
   })
 
-  test('仅在支付宝 uni-app x 隔离 2.0 下启用', () => {
+  test('仅在支付宝 DOM2 样式隔离 2.0 下启用', () => {
     expect(isAlipayXStyleIsolation()).toBe(true)
+    Reflect.set(process.env, 'UNI_APP_X_DOM2', 'false')
+    expect(isAlipayXStyleIsolation()).toBe(false)
+    process.env.UNI_APP_X_DOM2 = 'true'
+    Reflect.set(process.env, 'UNI_APP_STYLE_ISOLATION_VERSION', '1')
+    expect(isAlipayXStyleIsolation()).toBe(false)
+    process.env.UNI_APP_STYLE_ISOLATION_VERSION = '2'
     process.env.UNI_PLATFORM = 'mp-weixin'
     expect(isAlipayXStyleIsolation()).toBe(false)
+  })
+
+  test('非 DOM2 不改写支付宝 CSS', async () => {
+    Reflect.set(process.env, 'UNI_APP_X_DOM2', 'false')
+    const result = await postcss([externalPlugin]).process(
+      '.foo { color: red; }',
+      { from: '/src/components/test.vue', map: false }
+    )
+    expect(result.css).toBe('.foo { color: red; }')
   })
 
   test('按页面和组件 styleIsolation 生成 mask', () => {

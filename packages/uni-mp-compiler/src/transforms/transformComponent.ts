@@ -178,7 +178,8 @@ function isComponentProp(name: string) {
 export function rewriteBinding(
   { tag, props }: ComponentNode,
   context: TransformContext,
-  externalClasses?: string[]
+  externalClasses?: string[],
+  preserveDynamicExternalClasses = false
 ) {
   const isMiniProgramComponent = context.isMiniProgramComponent(tag)
   if (
@@ -245,6 +246,10 @@ export function rewriteBinding(
         }
       } else if (isStaticExp(arg)) {
         const name = arg.content
+        // externalClass 是小程序原生属性通道，动态绑定也必须和静态属性一样保留在模板中。
+        if (preserveDynamicExternalClasses && externalClasses?.includes(name)) {
+          continue
+        }
         if (context.isX) {
           if (name === 'class') {
             const valueExpr = parseExpr(genExpr(exp), context, exp)

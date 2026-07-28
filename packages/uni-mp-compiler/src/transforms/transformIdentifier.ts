@@ -56,6 +56,7 @@ import {
 } from './transformComponent'
 import {
   addPageExternalClasses,
+  clearMiniProgramComponentStyleIsolation,
   findMiniProgramComponentExternalClasses,
   formatAlipayStyleIsolationClasses,
   getAlipayStyleIsolationClassMask,
@@ -70,7 +71,9 @@ import {
   matchEasycom,
   parseExternalClasses,
   parseProgram,
+  parseStyleIsolation,
   updateMiniProgramComponentExternalClasses,
+  updateMiniProgramComponentStyleIsolation,
 } from '@dcloudio/uni-cli-shared'
 import { isUniPageFile } from '@dcloudio/uni-cli-shared'
 import fs from 'fs'
@@ -179,7 +182,13 @@ export const transformIdentifier: NodeTransform = (node, context) => {
           externalClasses = []
         }
         rewriteAlipayStyleIsolationClasses(node, context)
-        rewriteBinding(node as ComponentNode, context, externalClasses)
+        rewriteAlipayStaticExternalClasses(node, context, externalClasses)
+        rewriteBinding(
+          node as ComponentNode,
+          context,
+          externalClasses,
+          isAlipayXStyleIsolation()
+        )
       } else {
         rewriteAlipayStyleIsolationClasses(node, context)
       }
@@ -331,6 +340,8 @@ export const transformIdentifier: NodeTransform = (node, context) => {
           if (exp) {
             if (isBuiltIn(dir)) {
               // noop
+            } else if (isAlipayExternalClassBinding(dir, externalClasses)) {
+              wrapAlipayExternalClass(dir, context)
             } else if (isClassBinding(dir)) {
               hasClassBinding = true
               rewriteClass(i, dir, props, virtualHost, context)
@@ -479,6 +490,66 @@ function wrapAlipayStyleIsolationClass(
   )
 }
 
+/**
+ * externalClass 由子组件的静态声明确定，调用点只负责按调用方作用域展开。
+ * 这里不保留原 class，防止值进入子组件普通 :class 后被错误补成子组件本地 class。
+ */
+function rewriteAlipayStaticExternalClasses(
+  node: ComponentNode,
+  context: TransformContext,
+  externalClasses: string[]
+) {
+  if (!context.isX || !isAlipayXStyleIsolation() || !externalClasses.length) {
+    return
+  }
+  const mask = getAlipayStyleIsolationClassMask(context.filename)
+  for (const prop of node.props) {
+    if (
+      isAttributeNode(prop) &&
+      externalClasses.includes(prop.name) &&
+      prop.value?.content
+    ) {
+      prop.value.content = formatAlipayStyleIsolationClasses(
+        prop.value.content,
+        mask,
+        false
+      )
+    }
+  }
+}
+
+function isAlipayExternalClassBinding(
+  prop: DirectiveNode,
+  externalClasses: string[]
+) {
+  return (
+    isAlipayXStyleIsolation() &&
+    prop.name === 'bind' &&
+    !!prop.arg &&
+    isSimpleExpressionNode(prop.arg) &&
+    prop.arg.isStatic &&
+    externalClasses.includes(prop.arg.content)
+  )
+}
+
+function wrapAlipayExternalClass(
+  prop: DirectiveNode,
+  context: TransformContext
+) {
+  const mask = getAlipayStyleIsolationClassMask(context.filename)
+  const exp = rewriteExpression(prop.exp!, context)
+  // 第三个参数关闭原 class 输出；uV.c 对已展开前缀保持幂等，可安全支持多级组件转发。
+  prop.exp = rewriteExpression(
+    createCompoundExpression([
+      createSimpleExpression(FILTER_MODULE_NAME),
+      '.c(',
+      exp,
+      `,${mask},0)`,
+    ]),
+    context
+  )
+}
+
 const builtInProps = [ATTR_VUE_SLOTS]
 
 function isBuiltIn({ arg, exp }: DirectiveNode) {
@@ -553,6 +624,14 @@ function getComponentExternalClasses(
     })
   } catch (error) {}
   if (program) {
+    // 页面解析子组件 externalClasses 时已经完成文件读取和 AST 解析，
+    // 同步缓存 styleIsolation，确保后续子组件模板编译能直接得到正确的 class mask。
+    const styleIsolation = parseStyleIsolation(program)
+    if (styleIsolation) {
+      updateMiniProgramComponentStyleIsolation(source, styleIsolation)
+    } else {
+      clearMiniProgramComponentStyleIsolation(source)
+    }
     const classes = parseExternalClasses(program)
     updateMiniProgramComponentExternalClasses(source, { mtime, classes })
     return classes

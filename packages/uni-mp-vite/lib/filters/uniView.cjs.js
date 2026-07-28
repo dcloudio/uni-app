@@ -16,7 +16,7 @@ var CLASS_MASK_APP = 1
 var CLASS_MASK_PAGE = 1 << 1
 var CLASS_MASK_COMPONENT = 1 << 2
 
-function pushClass (result, seen, token, mask) {
+function pushClass (result, seen, token, mask, keepRaw) {
   if (!token) return
   var type = token.charCodeAt(1)
   // 已带内部前缀的 class 来自上一次展开，直接保留以保证组件转发时幂等。
@@ -28,7 +28,7 @@ function pushClass (result, seen, token, mask) {
     pushUniqueClass(result, seen, token)
     return
   }
-  pushUniqueClass(result, seen, token)
+  if (keepRaw) pushUniqueClass(result, seen, token)
   if (mask & CLASS_MASK_APP) pushUniqueClass(result, seen, '-a-' + token)
   if (mask & CLASS_MASK_PAGE) pushUniqueClass(result, seen, '-p-' + token)
   if (mask & CLASS_MASK_COMPONENT) pushUniqueClass(result, seen, '-c-' + token)
@@ -41,8 +41,9 @@ function pushUniqueClass (result, seen, token) {
   result.push(token)
 }
 
-function cls (value, mask) {
+function cls (value, mask, keepRaw) {
   if (!value) return ''
+  keepRaw = keepRaw !== 0
   var result = []
   var seen = {}
   var input = '' + value
@@ -53,7 +54,7 @@ function cls (value, mask) {
     var isSpace = code === 32 || code === 9 || code === 10 || code === 13 || code === 12
     if (isSpace) {
       if (start !== -1) {
-        pushClass(result, seen, input.slice(start, i), mask)
+        pushClass(result, seen, input.slice(start, i), mask, keepRaw)
         start = -1
       }
     } else if (start === -1) {
