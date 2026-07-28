@@ -251,17 +251,12 @@ uni.navigateTo({
 
 ```uts
 // 在detail页面的onLoad中接收URL中传递的参数
-export default {
-  data() {
-    return {
-      post_id: ""
-    }
-  },
-  onLoad(event : OnLoadOptions) { // 类型非必填，可自动推导
-    this.post_id = event["post_id"] ?? "";
-    // 可根据详情页id继续联网请求数据...
-  },
-}
+const post_id = ref("")
+
+onLoad((event : OnLoadOptions) => { // 类型非必填，可自动推导
+  post_id.value = event["post_id"] ?? ""
+  // 可根据详情页id继续联网请求数据...
+})
 ```
 
 ::: warning 注意
