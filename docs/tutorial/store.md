@@ -9,7 +9,7 @@ uni-app x下可选方案有：
 1. 在独立的uts文件中定义一个全局的reactive变量，各处引用它。
 2. 引入pinia。蒸汽模式下可直接使用pinia官方库。Android vdom模式下需使用三方插件 [Pinia by uts](https://ext.dcloud.net.cn/plugin?name=x-pinia-s)
 
-从 HBuilderX 5.23 起，uni-app x 项目的 `pinia` 升级到了 `3.0.4` 版本。如希望使用其他版本，可在项目根目录自行安装指定版本。
+从 HBuilderX 5.25 起，uni-app x 项目的 `pinia` 升级到了 `3.0.4` 版本。如希望使用其他版本，可在项目根目录自行安装指定版本。
 
 APP 蒸汽模式、鸿蒙和 iOS VDOM 模式、Web平台、小程序平台可以直接使用 `pinia` 官方库。
 
