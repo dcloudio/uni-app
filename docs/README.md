@@ -219,9 +219,9 @@ uts插件是一个大一统的插件模型，其中在不同的子平台可以�
 
 基于uni-app x的纯前端组件，比如ui库，这里推荐一些：
 - [uni-ui x](./component/uni-ui-x/README.md)：官方UI库。它的设计规范与uni ui有差别，是为uni-app x重新设计的更好的ui库。兼容[蒸汽模式](https://doc.dcloud.net.cn/uni-app-x/app-vapor.html)、使用样式隔离策略2.0
+- [lime-UI Vapor](https://ext.dcloud.net.cn/plugin?id=28915)：即兼容uni-app又兼容uni-app x蒸汽模式。2025插件大赛一等奖。
 - [RiceUI](https://ext.dcloud.net.cn/plugin?id=24907)：支持蒸汽模式，全端组合式UI库。
 - [TuiPlus Vapor](https://ext.dcloud.net.cn/plugin?id=28497)：支持蒸汽模式，支持css原子化。
-- [lime-UI](https://ext.dcloud.net.cn/plugin?id=22372)：即兼容uni-app又兼容uni-app x，高频维护的优秀插件。2025插件大赛一等奖。
 - [TMUI4.0](https://ext.dcloud.net.cn/plugin?id=16369)：VDOM模式高品质UI库，2023插件大赛一等奖。
 
 ## 开放性
