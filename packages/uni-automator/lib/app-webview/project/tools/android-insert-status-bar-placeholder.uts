@@ -22,7 +22,8 @@ function createStatusBarPlaceholderScript(height: number): string {
 				if(!pageHead.getBoundingClientRect){
 					return false;
 				}
-				return pageHead.getBoundingClientRect().height<=44;
+				// Pixel XL pageHead 高度为 44.000xxx，故判断小于45
+				return pageHead.getBoundingClientRect().height<45;
 			}
 
 			function apply(){
