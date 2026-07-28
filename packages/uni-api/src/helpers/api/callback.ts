@@ -58,6 +58,14 @@ export function removeKeepAliveApiCallback(name: string, callback: Function) {
   }
 }
 
+export function removeAllKeepAliveApiCallbacks(name: string) {
+  for (const key in invokeCallbacks) {
+    if (invokeCallbacks[key].name === name) {
+      delete invokeCallbacks[key]
+    }
+  }
+}
+
 export function offKeepAliveApiCallback(name: string) {
   UniServiceJSBridge.off('api.' + name)
 }

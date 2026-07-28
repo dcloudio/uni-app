@@ -14,6 +14,7 @@ import {
   invokeCallback,
   offKeepAliveApiCallback,
   onKeepAliveApiCallback,
+  removeAllKeepAliveApiCallbacks,
   removeKeepAliveApiCallback,
 } from './callback'
 import type { CALLBACK_TYPES } from './callback'
@@ -158,23 +159,39 @@ function wrapperOnApi<T extends ApiLike>(
   }
 }
 
+export interface DefineOffApiOptions<T extends ApiLike> extends ApiOptions<T> {
+  allowClearAll?: boolean
+}
+
 function wrapperOffApi<T extends ApiLike>(
   name: string,
   fn: Function,
-  options?: ApiOptions<T>
+  options?: DefineOffApiOptions<T>
 ) {
-  return (callback: Function) => {
-    checkCallback(callback)
-    const errMsg = beforeInvokeApi(name, [callback], undefined, options)
+  return (callback?: Function | null) => {
+    const clearAll = options?.allowClearAll === true && callback == null
+    if (!clearAll) {
+      checkCallback(callback as Function)
+    }
+    const errMsg = beforeInvokeApi(
+      name,
+      clearAll ? [] : [callback],
+      undefined,
+      options
+    )
     if (errMsg) {
       throw new Error(errMsg)
     }
-    name = name.replace('off', 'on')
-    removeKeepAliveApiCallback(name, callback)
+    const onApiName = name.replace('off', 'on')
+    if (clearAll) {
+      removeAllKeepAliveApiCallbacks(onApiName)
+    } else {
+      removeKeepAliveApiCallback(onApiName, callback!)
+    }
     // 是否还存在监听，若已不存在，则移除onMethod监听
-    const hasInvokeOnApi = findInvokeCallbackByName(name)
+    const hasInvokeOnApi = findInvokeCallbackByName(onApiName)
     if (!hasInvokeOnApi) {
-      offKeepAliveApiCallback(name)
+      offKeepAliveApiCallback(onApiName)
       fn()
     }
   }
@@ -252,7 +269,7 @@ export function defineOnApi<T extends ApiLike>(
 export function defineOffApi<T extends ApiLike>(
   name: string,
   fn: () => void,
-  options?: ApiOptions<T>
+  options?: DefineOffApiOptions<T>
 ) {
   return wrapperOffApi(name, fn, options) as unknown as T
 }
