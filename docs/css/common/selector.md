@@ -30,9 +30,9 @@
 
 ```vue
 <template>
-  <div :class="{{docBody}}">
-    <text :class="{{rowDesc}}">描述内容</text>
-  </div>
+  <view :class="docBody">
+    <text :class="rowDesc">描述内容</text>
+  </view>
 </template>
 
 <style>
@@ -47,15 +47,9 @@
   }
 </style>
 
-<script lang="uts">
-  export default {
-    data() {
-      return {
-        rowDesc: 'row-desc1',
-        docBody: 'doc-body1'
-      }
-    }
-  }
+<script setup lang="uts">
+  const rowDesc = ref('row-desc1')
+  const docBody = ref('doc-body1')
 </script>
 ```
 
