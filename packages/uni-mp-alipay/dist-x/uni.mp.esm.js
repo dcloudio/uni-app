@@ -1217,6 +1217,9 @@ function initCreateComponent() {
         }
         if (__X_STYLE_ISOLATION__) {
             mpComponentOptions.options = (_a = mpComponentOptions.options) !== null && _a !== void 0 ? _a : {};
+            // 支付宝原生不支持 uni-app x 的 isolated/app/app-and-page 抽象值。
+            // 原生层统一开放必要的样式可见性，最终是否命中仍由编译期生成的来源 class 控制。
+            mpComponentOptions.options.styleIsolation = 'apply-shared';
             mpComponentOptions.options.externalClasses =
                 (_c = (_b = vueOptions.options) === null || _b === void 0 ? void 0 : _b.externalClasses) !== null && _c !== void 0 ? _c : true;
             if (vueOptions.externalClasses) {

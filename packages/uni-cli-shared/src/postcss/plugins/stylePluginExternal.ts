@@ -1,7 +1,12 @@
 import type { AtRule, PluginCreator, Root, Rule } from 'postcss'
 import selectorParser from 'postcss-selector-parser'
 import { isUniPageFile } from '../../json/pages'
-import { findPageExternalClasses } from '../../mp/externalClasses'
+import {
+  findPageExternalClasses,
+  isAlipayStyleIsolationClass,
+  isAlipayXStyleIsolation,
+} from '../../mp/externalClasses'
+import { isAppVue } from '../../utils'
 
 /**
  * 基于页面 externalClasses 使用情况提升页面样式优先级
@@ -27,6 +32,12 @@ const externalPlugin: PluginCreator<void> = () => {
           // 只有小程序平台需要处理 externalClasses 的样式优先级
           const platform = process.env.UNI_PLATFORM || ''
           if (!platform.startsWith('mp-')) {
+            return
+          }
+
+          // 支付宝 ACSS 不支持 [class]，隔离 2.0 使用来源前缀完成样式命中控制。
+          if (isAlipayXStyleIsolation()) {
+            processAlipayStyleIsolation(root)
             return
           }
 
@@ -70,6 +81,52 @@ const externalPlugin: PluginCreator<void> = () => {
       }
     },
   }
+}
+
+/**
+ * 单 class 选择器按 App、页面、组件来源改写为不同前缀；页面额外补 page 提权，
+ * 从而在同名 class 下保持“页面 > 组件 > App”。复杂选择器继续遵循支付宝原生行为。
+ */
+function processAlipayStyleIsolation(root: Root) {
+  const filePath = root.source?.input?.file
+  if (!filePath) {
+    return
+  }
+  const prefix = isAppVue(filePath)
+    ? '-a-'
+    : isUniPageFile(filePath)
+    ? '-p-'
+    : '-c-'
+  const isPage = prefix === '-p-'
+
+  root.walkRules((rule) => {
+    if (
+      rule.parent?.type === 'atrule' &&
+      /-?keyframes$/.test((rule.parent as AtRule).name)
+    ) {
+      return
+    }
+    rule.selector = selectorParser((selectorRoot) => {
+      selectorRoot.each((selector) => {
+        // 所有静态 CSS class 都要校验，防止用户 class 与内部隔离键冲突。
+        selector.walkClasses((classNode) => {
+          if (isAlipayStyleIsolationClass(classNode.value)) {
+            throw rule.error(
+              `支付宝小程序样式隔离不允许 class 使用保留前缀：${classNode.value}`
+            )
+          }
+        })
+        if (selector.nodes.length !== 1 || selector.nodes[0].type !== 'class') {
+          return
+        }
+        selector.nodes[0].value = prefix + selector.nodes[0].value
+        if (isPage) {
+          selector.prepend(selectorParser.combinator({ value: ' ' }))
+          selector.prepend(selectorParser.tag({ value: 'page' }))
+        }
+      })
+    }).processSync(rule.selector)
+  })
 }
 
 function processRule(

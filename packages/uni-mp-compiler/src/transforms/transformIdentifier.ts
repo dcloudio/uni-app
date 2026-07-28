@@ -57,8 +57,11 @@ import {
 import {
   addPageExternalClasses,
   findMiniProgramComponentExternalClasses,
+  formatAlipayStyleIsolationClasses,
+  getAlipayStyleIsolationClassMask,
   getGlobalComponentSource,
   hasExternalClasses,
+  isAlipayXStyleIsolation,
   isAttributeNode,
   isDirectiveNode,
   isElementNode,
@@ -74,6 +77,7 @@ import fs from 'fs'
 import { parse as sfcParse } from '@vue/compiler-sfc'
 
 import { rewriteId as rewriteIdX } from './transformUniElement'
+import { FILTER_MODULE_NAME } from './utils'
 
 // externalClasses 缓存，包含 mtime 用于检测文件变化
 const UNI_APP_STYLE_CLASSES =
@@ -174,7 +178,10 @@ export const transformIdentifier: NodeTransform = (node, context) => {
         if (process.env.UNI_PLATFORM === 'mp-weixin') {
           externalClasses = []
         }
+        rewriteAlipayStyleIsolationClasses(node, context)
         rewriteBinding(node as ComponentNode, context, externalClasses)
+      } else {
+        rewriteAlipayStyleIsolationClasses(node, context)
       }
 
       let elementId: string = ''
@@ -287,6 +294,13 @@ export const transformIdentifier: NodeTransform = (node, context) => {
             })
             skipIndex.push(classPropIndex)
           }
+          // part 合并后的 class 会跳过普通属性循环，需要在此补一次 SJS 展开。
+          for (const index of skipIndex) {
+            const prop = props[index]
+            if (isDirectiveNode(prop) && isClassBinding(prop)) {
+              wrapAlipayStyleIsolationClass(prop, context)
+            }
+          }
         }
       }
 
@@ -320,6 +334,7 @@ export const transformIdentifier: NodeTransform = (node, context) => {
             } else if (isClassBinding(dir)) {
               hasClassBinding = true
               rewriteClass(i, dir, props, virtualHost, context)
+              wrapAlipayStyleIsolationClass(dir, context)
             } else if (isStyleBinding(dir)) {
               hasStyleBinding = true
               rewriteStyle(i, dir, props, virtualHost, context, elementId)
@@ -355,7 +370,9 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       if (virtualHost) {
         if (!hasClassBinding) {
           hasClassBinding = true
-          props.push(createVirtualHostClass(props, context))
+          const classProp = createVirtualHostClass(props, context)
+          wrapAlipayStyleIsolationClass(classProp, context)
+          props.push(classProp)
         }
         if (!hasStyleBinding) {
           hasStyleBinding = true
@@ -396,6 +413,70 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       }
     }
   }
+}
+
+/**
+ * 支付宝不支持微信的 [class] 隔离方式，仅在支付宝样式隔离 2.0 下展开普通 class。
+ * 有动态 class、part 或 virtual host 时统一交给一次 SJS 处理，避免静态前缀重复生成。
+ */
+function rewriteAlipayStyleIsolationClasses(
+  node: TemplateChildNode,
+  context: TransformContext
+) {
+  if (
+    !context.isX ||
+    !isAlipayXStyleIsolation() ||
+    !context.filename ||
+    !isElementNode(node)
+  ) {
+    return
+  }
+  const mask = getAlipayStyleIsolationClassMask(context.filename)
+  const hasRuntimeClass =
+    node.props.some(
+      (prop) =>
+        (isDirectiveNode(prop) &&
+          (isClassBinding(prop) ||
+            (prop.name === 'bind' &&
+              prop.arg &&
+              isSimpleExpressionNode(prop.arg) &&
+              prop.arg.content === 'part'))) ||
+        prop.name === 'part'
+    ) ||
+    !!(
+      context.miniProgram.component?.mergeVirtualHostAttributes &&
+      context.rootNode === node
+    )
+
+  for (const prop of node.props) {
+    if (isAttributeNode(prop) && prop.name === 'class' && prop.value?.content) {
+      // mask 为 0 时只做保留前缀校验，实际展开留给后续合并后的动态 class。
+      prop.value.content = formatAlipayStyleIsolationClasses(
+        prop.value.content,
+        hasRuntimeClass ? 0 : mask
+      )
+    }
+  }
+}
+
+function wrapAlipayStyleIsolationClass(
+  prop: DirectiveNode,
+  context: TransformContext
+) {
+  if (!context.isX || !isAlipayXStyleIsolation() || !prop.exp) {
+    return
+  }
+  const mask = getAlipayStyleIsolationClassMask(context.filename)
+  // 先复用原有表达式重写，再在视图层调用 SJS，避免把 _ctx 等逻辑层标识符输出到模板。
+  prop.exp = rewriteExpression(
+    createCompoundExpression([
+      createSimpleExpression(FILTER_MODULE_NAME),
+      '.c(',
+      prop.exp,
+      `,${mask})`,
+    ]),
+    context
+  )
 }
 
 const builtInProps = [ATTR_VUE_SLOTS]
