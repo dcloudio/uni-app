@@ -328,23 +328,15 @@ exec
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        nodeInfoList: [] as NodeInfo[]
-      }
-    },
-    props: {
-    },
-    methods: {
-      getNodeInfo() {
-        uni.createSelectorQuery().in(this).select('.rect1').boundingClientRect().exec((ret) => {
-          this.nodeInfoList.length = 0
-          this.nodeInfoList.push(ret[0] as NodeInfo)
-        })
-      }
-    }
+<script setup lang="uts">
+  const instance = getCurrentInstance()!.proxy!
+  const nodeInfoList = ref<NodeInfo[]>([])
+
+  const getNodeInfo = () => {
+    uni.createSelectorQuery().in(instance).select('.rect1').boundingClientRect().exec((ret) => {
+      nodeInfoList.value.length = 0
+      nodeInfoList.value.push(ret[0] as NodeInfo)
+    })
   }
 </script>
 ```
@@ -877,19 +869,13 @@ uni.createSelectorQuery().select('.rect1').selectAll('.rect2').boundingClientRec
     <button @click="query">query</button>
   </view>
 </template>
-<script>
-  export default {
-    data() {
-      return {
-      }
-    },
-    methods: {
-      query() {
-        uni.createSelectorQuery().in(this).select('#scustom-component1').boundingClientRect().exec((ret) => {
-          console.log(ret)
-        })
-      }
-    }
+<script setup lang="uts">
+  const instance = getCurrentInstance()!.proxy!
+
+  const query = () => {
+    uni.createSelectorQuery().in(instance).select('#custom-component1').boundingClientRect().exec((ret) => {
+      console.log(ret)
+    })
   }
 </script>
 ```
