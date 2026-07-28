@@ -2,6 +2,104 @@
   "version": 1.0,
   "properties": [
     {
+      "name": "backdrop-filter",
+      "values": [
+        {
+          "name": "none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "-",
+                "uniVer": "√",
+                "unixVer": "-"
+              },
+              "ios": {
+                "osVer": "-",
+                "uniVer": "√",
+                "unixVer": "-"
+              },
+              "harmony": {
+                "osVer": "-",
+                "uniVer": "√",
+                "unixVaporVer": "5.23"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "-"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "blur()",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "-",
+                "uniVer": "√",
+                "unixVer": "-"
+              },
+              "ios": {
+                "osVer": "-",
+                "uniVer": "√",
+                "unixVer": "-"
+              },
+              "harmony": {
+                "osVer": "-",
+                "uniVer": "√",
+                "unixVaporVer": "5.23"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "-"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "-",
+            "uniVer": "√",
+            "unixVer": "-"
+          },
+          "ios": {
+            "osVer": "-",
+            "uniVer": "√",
+            "unixVer": "-"
+          },
+          "harmony": {
+            "osVer": "-",
+            "uniVer": "√",
+            "unixVaporVer": "5.23"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "-"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
       "name": "width",
       "restrictions": [
         "length",
