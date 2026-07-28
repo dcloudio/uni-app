@@ -71,6 +71,10 @@ picker组件其实是基于[picker-view组件](picker-view.md)封装了一个弹
 | region | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 区级选择器 |
 | sub-district | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 街道选择器 |
 
+### 支付宝小程序注意事项
+
+支付宝小程序不支持 `picker` 的 `mode` 属性，如需多平台兼容，需要为支付宝小程序单独处理选择能力。
+
 
 ### 事件
 #### UniPickerChangeEvent

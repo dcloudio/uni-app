@@ -58,6 +58,10 @@ UniPickerViewChangeEvent -- Extends --> UniCustomEvent&ltUniPickerViewChangeEven
 | :- | :- |
 | [picker-view-column](picker-view-column.md) | Web: 4.0; 微信小程序: 4.41; Android: 3.9; iOS: 4.11; HarmonyOS: 4.61 |
 
+### 支付宝小程序注意事项
+
+支付宝小程序动态设置 `picker-view` 指示器样式时可能出现偏移，建议使用静态配置，避免运行时修改指示器样式。
+
 ### 示例
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/component/picker-view/picker-view.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/component/picker-view/picker-view.uvue) 
 ::: preview https://hellouniappx.dcloud.net.cn/web/#/pages/component/picker-view/picker-view

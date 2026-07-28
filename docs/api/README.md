@@ -25,14 +25,13 @@ uni-app x中，不会限制任何平台原来的API无法调用。常用的跨�
 如下是一个Android vdom模式的例子：
 
 ```vue
-<script>
+<script setup lang="uts">
 	import Build from 'android.os.Build';
-	export default {
-		onLoad() {
-			console.log(Build.MODEL); //调用原生对象，返回手机型号
-			console.log(uni.getSystemInfoSync().deviceModel); //调用uni API，返回手机型号。与上一行返回值相同
-		}
-	}
+
+	onLoad(() => {
+		console.log(Build.MODEL); //调用原生对象，返回手机型号
+		console.log(uni.getSystemInfoSync().deviceModel); //调用uni API，返回手机型号。与上一行返回值相同
+	})
 </script>
 ```
 
@@ -88,8 +87,7 @@ uni.xxx 的API，运行在全局逻辑层，并不和页面绑定。尤其注意
 
 从严谨的角度来说，与页面有关的API应该挂在UniPage对象上，页面上也有getElementById方法。
 
-- 选项式获取页面并使用getElementById：`this.$page.getElementById("abc")`
-- 组合式获取页面并使用getElementById：`getCurrentInstance()?.proxy?.$page.getElementById("abc")`
+- 组合式中获取页面并使用getElementById：`getCurrentInstance()?.proxy?.$page.getElementById("abc")`
 
 详见[UniPage对象的getElementById方法](../api/get-current-pages.md#getelementbyid)
 

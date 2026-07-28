@@ -244,6 +244,7 @@ UniStopNestedScrollEvent -- Extends --> UniEvent
 **注意：**
 - 安卓、iOS平台目前自定义下拉刷新元素不支持放在scroll-view的首个子元素位置上。可能无法正常显示
 - 鸿蒙平台自定义下拉刷新元素要放在最后一个子元素的位置，否则顶部可能出现空白区域
+- 支付宝小程序不支持通过 `slot="refresher"` 自定义下拉刷新内容，相关内容需通过条件编译排除支付宝小程序
 
 ```vue
 <scroll-view refresher-default-style="none" :refresher-enabled="true" :refresher-triggered="refresherTriggered"

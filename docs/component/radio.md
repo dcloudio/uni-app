@@ -38,6 +38,10 @@
 
 
 
+### 支付宝小程序注意事项
+
+支付宝小程序不支持将文本或 `text` 组件放在 `radio` 组件内部。选项文本应与 `radio` 作为同级节点放置，通常可使用 `label` 包裹同级的 `radio` 和文本。
+
 ### 示例
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/component/radio/radio.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/component/radio/radio.uvue) 
 ::: preview https://hellouniappx.dcloud.net.cn/web/#/pages/component/radio/radio

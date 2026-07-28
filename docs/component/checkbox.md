@@ -38,6 +38,10 @@
 
 
 
+### 支付宝小程序注意事项
+
+支付宝小程序不支持将文本或 `text` 组件放在 `checkbox` 组件内部。选项文本应与 `checkbox` 作为同级节点放置，通常可使用 `label` 包裹同级的 `checkbox` 和文本。
+
 ### 示例
 示例为[hello uni-app x alpha分支](https://gitcode.com/dcloud/hello-uni-app-x/blob/prod_alpha/pages/component/checkbox/checkbox.uvue)，与最新HBuilderX Alpha版同步。与最新正式版同步的master分支示例[另见](https://gitcode.com/dcloud/hello-uni-app-x/blob/master//pages/component/checkbox/checkbox.uvue) 
 ::: preview https://hellouniappx.dcloud.net.cn/web/#/pages/component/checkbox/checkbox
