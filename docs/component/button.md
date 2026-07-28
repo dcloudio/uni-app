@@ -416,15 +416,11 @@ button 组件没有 url 属性，如果要跳转页面，可以在@click中编�
 		<button @click="goto('/pages/about/about')">通过方法跳转到about页面</button>
 	</view>
 </template>
-<script>
-	export default {
-		methods: {
-			goto(url:string) {
-				uni.navigateTo({
-					url:url
-				})
-			}
-		}
+<script setup lang="uts">
+	const goto = (url: string) => {
+		uni.navigateTo({
+			url: url
+		})
 	}
 </script>
 ```
