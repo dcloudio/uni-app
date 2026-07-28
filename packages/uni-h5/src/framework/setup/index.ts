@@ -55,6 +55,7 @@ import { useRouter } from 'vue-router'
 import { handleBeforeEntryPageRoutes } from '../../service/api/route/utils'
 import { updateCurPageCssVar } from '../../helpers/cssVar'
 //#if _X_
+import { setWebAppRouteReady } from '../../service/api/route/appRoute'
 import {
   getPageInstanceByChild,
   isDialogPageInstance,
@@ -287,6 +288,9 @@ export function setupApp(comp: any) {
               invokeArrayFns(onPageNotFound, pageNotFoundOptions)
           }
         }
+        //#if _X_
+        setWebAppRouteReady()
+        //#endif
       }
       if (__UNI_FEATURE_PAGES__) {
         // 等待ready后，再onLaunch，否则直达非首页无法获取到正确的path和query

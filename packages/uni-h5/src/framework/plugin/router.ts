@@ -6,6 +6,12 @@ import {
   createWebHashHistory,
   createWebHistory,
 } from 'vue-router'
+//#if _X_
+import {
+  initWebAppRouteListener,
+  setWebAppRouteHistoryDirection,
+} from '../../service/api/route/appRoute'
+//#endif
 import {
   getCurrentBasePages,
   getPage$BasePage,
@@ -19,6 +25,9 @@ import { hideModal } from '../../service/api/ui/popup/showModal'
 
 export function initRouter(app: App) {
   const router = createRouter(createRouterOptions())
+  //#if _X_
+  initWebAppRouteListener(router)
+  //#endif
   //#if _X_ && !_NODE_JS_
   router.beforeEach((to, from) => {
     hideActionSheet()
@@ -115,7 +124,10 @@ function initHistory() {
     __UNI_FEATURE_ROUTER_MODE__ === 'history'
       ? createWebHistory(routerBase)
       : createWebHashHistory(routerBase)
-  history.listen((_to, _from, info) => {
+  history.listen((to, _from, info) => {
+    //#if _X_
+    setWebAppRouteHistoryDirection(to, info.direction)
+    //#endif
     if (info.direction === 'back') {
       removeCurrentPages(Math.abs(info.delta))
     }
