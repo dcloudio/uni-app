@@ -373,62 +373,57 @@
 
 ## hover-class 属性值
 
-### button样式修改@style
+### button 样式修改 @style
 
-button在元素的text区域直接写文字，和text组件一样。可以这么理解，button是一个特殊的text组件，文字样式可以直接写在button组件的style或class上。
-
-button组件属性中的size和type，属于预置样式，方便开发者使用。开发者也可以通过style和class来自定义样式。但它们在不同平台，覆盖方式需要注意：
-
-	- App和Web平台style和class的优先级，高于size和type属性
-	- 小程序平台，取决于不同小程序平台的button的实现方式。在微信小程序上，type和size属性的样式通过属性选择器设置，开发者设置的class，想要覆盖这2个属性的样式，需要加`!important`。而通过style设置样式，则优先级高于属性选择器，所以可以覆盖2个属性设置的样式。
-
-	如果开发者要自定义button样式，最好不要使用type和size。包括type的颜色在不同小程序平台不一样，甚至在微信小程序的v1和v2的样式中也不一样。如果一定要用type，那么用style而不是class覆盖属性样式，也可以跨端兼容。
-
-button虽然可以内嵌text组件，但不建议通过text组件来修改button样式，因为会导致hove-class不生效。尤其是uvue中样式不继承。建议button组件text区域直接写文字，然后在button组件的style或class属性编写样式。
-
-
+button 的 size、type 属性是预置样式，适合快速使用；如需修改文字、背景、边框、尺寸等样式，可直接在 button 组件上使用 style 或 class 覆盖。如需保持样式一致，建议不要依赖 type 的默认颜色。
 
 ```html
 <template>
-	<button size="default" type="default"
-	style="color:#ffffff;backgroundColor:#1AAD19;borderColor:#1AAD19"
-	hover-class="is-hover">按钮</button>
+	<button class="custom-button" hover-class="custom-button-hover">按钮</button>
 </template>
+
 <style>
-.is-hover {
+.custom-button {
+	color: #ffffff;
+	background-color: #1AAD19;
+	border-color: #1AAD19;
+}
+
+.custom-button-hover {
 	color: rgba(255, 255, 255, 0.6);
 	background-color: #179b16;
 	border-color: #179b16;
-  }
+}
 </style>
 ```
 
-## button点击
+## 点击跳转
 
-button 组件的点击遵循 vue 标准的 @click事件。
-
-button 组件没有 url 属性，如果要跳转页面，可以在@click中编写，也可以在button组件外面套一层 navigator 组件。举例，如需跳转到about页面，可按如下几种代码写法执行：
+button 组件没有 url 属性，点击后需要跳转页面时，可在 @click 中调用路由 API，也可以使用 [navigator](./navigator.md) 组件实现声明式跳转。
 
 ```html
 <template>
 	<view>
-		<navigator url="/pages/about/about"><button>通过navigator组件跳转到about页面</button></navigator>
-		<button @click="goto('/pages/about/about')">通过方法跳转到about页面</button>
+		<button @click="gotoAbout">跳转到 about 页面</button>
+		<navigator url="/pages/about/about" open-type="navigate">
+			<button>使用 navigator 跳转到 about 页面</button>
+		</navigator>
 	</view>
 </template>
+
 <script setup lang="uts">
-	const goto = (url: string) => {
+	function gotoAbout() {
 		uni.navigateTo({
-			url: url
+			url: '/pages/about/about'
 		})
 	}
 </script>
 ```
 
-## tips
+## 文字居中
 
-- button 的默认文字大小为18px，文字行高为2.5。如果指定了按钮高度，要注意手动调整文字行高
-- 蒸汽模式下，button 的居中效果不依赖 line-height，是靠 padding 实现的，调整 padding 可能会影响按钮的居中效果。如果调整了 height 和 line-height，需要同时设置 padding-top 和 padding-bottom 为 0，保证按钮文字的居中效果，例如
+- 非蒸汽模式 button 默认文字大小为 18px，文字行高为 2.5。自定义高度时，需要同步调整 line-height。
+- APP 蒸汽模式下，button 的文字居中依赖 padding。调整 height 和 line-height 时，建议同时将 padding-top、padding-bottom 设置为 0。
 
 ```html
 <template>
@@ -438,9 +433,6 @@ button 组件没有 url 属性，如果要跳转页面，可以在@click中编�
 
 ## 样式冲突
 
-非蒸汽模式下使用属性选择器定义css存在平台兼容性，差异点如下：
-- **Web** 因页面样式作用域隔离机制编译后会在 class 上增加属性选择器，会覆盖组件属性选择器样式
-- **App** 暂不支持属性选择器。蒸汽模式下开发者可以直接使用 class 或者 style 定义样式覆盖组件默认样式
-- **微信小程序** 普通 class 不能直接覆盖组件的属性选择器，因为属性选择器样式优先级更高
+非蒸汽模式下，不建议使用属性选择器自定义 button 样式。属性选择器在不同平台的支持和编译结果存在差异，例如 Web 端页面样式作用域编译后会在 class 上增加属性选择器，App 端暂不支持属性选择器。
 
-
+建议直接在 button 组件上使用 class 或 style 覆盖默认样式。蒸汽模式不支持属性选择器，也应使用 class 或 style 定义样式。
