@@ -293,10 +293,10 @@ uni-app x 毕竟是原生应用，内嵌flutter、rn这些没有任何问题，�
   鸿蒙平台和小程序类似，本身就是本地打包。而iOS和Android的离线打包文档[详见](./native/README.md)
 
 - uni-app x 的App能热更新吗？\
-  Android和iOS开发期间可以热刷，但打包后不能热更新。\
-  Android作为原生应用，可以使用[uni小程序sdk](https://ext.dcloud.net.cn/plugin?id=17638)，热更新小程序。当然开发者也可自行封装原生的插件动态加载方案。\
-  iOS平台的js逻辑层模式，未来会推出wgt更新。
-
+  App开发期间可以热刷，但打包后不能热更新。\
+  蒸汽模式下的3端app会推出wgt更新。\
+  Android目前可以使用[uni小程序sdk](https://ext.dcloud.net.cn/plugin?id=17638)，热更新小程序。\
+  
 - uni-app x 能调用所有原生API吗？\
   可以。在app端，kotlin、swift、ets能调用的，uts就能调，因为uts其实就是编译成这些语言了。在浏览器、小程序端，所有js能调用的，uts也都能调。
 
