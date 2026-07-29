@@ -683,6 +683,17 @@ if (view != null && view instanceof UITextField) {
           <input class="uni-input" style="font-size:20px" placeholder-class="placeholder-class" placeholder-style="font-size:40px" placeholder="placeholder" />
         </view>
       </view>
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">style 设置 font-size:36rpx</text>
+        </view>
+        <view class="input-wrapper">
+          <input class="uni-input" style="font-size:36rpx" placeholder="placeholder 36rpx" />
+        </view>
+        <view class="input-wrapper">
+          <input class="uni-input" style="font-size:36rpx" value="value 36rpx" />
+        </view>
+      </view>
 
       <!-- 保证这个示例在页面底部，添加新的示例时请放在上面 -->
       <view>

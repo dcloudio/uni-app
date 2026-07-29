@@ -161,6 +161,18 @@ page-container 的特点：
       </view>
     </view>
 
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title uni-common-mt">
+        <text class="uni-title-text"> 其他方向滑动关闭 </text>
+      </view>
+      <view>
+        <button @click="showSlideClose('left')">左滑关闭</button>
+        <button class="mt-5" @click="showSlideClose('right')">右滑关闭</button>
+        <button class="mt-5" @click="showSlideClose('top')">上滑关闭</button>
+        <text class="slider-down-info">提示: close-on-slide-down=true 时，关闭方向由 position 决定</text>
+      </view>
+    </view>
+
     <!-- #ifndef MP -->
     <view class="uni-padding-wrap uni-common-mt" style="margin-bottom: 30px;">
       <view class="uni-title uni-common-mt">
@@ -177,6 +189,7 @@ page-container 的特点：
       <!-- #endif -->
       :show="containerShow" :position="containerPosition" :round="containerRound"
       :overlay="containerOverlay" :overlay-style="containerOverlayStyle"
+      :custom-style="containerCustomStyle"
       :close-on-slide-down="containerCloseOnSlideDown" @afterleave="onAfterLeave">
       <view class="container">
         <text class="container-title">{{ containerTitle }}</text>
@@ -257,6 +270,7 @@ page-container 的特点：
   const containerOverlay = ref<boolean>(true)
   const containerTitle = ref<string>('Page-Container')
   const containerOverlayStyle = ref<string>('')
+  const containerCustomStyle = ref<string>('')
   const containerContent = ref<string>('这是一个 page-container 容器')
   const containerCloseOnSlideDown = ref<boolean>(false)
   const enableScrollThrough = ref<boolean>(false)
@@ -285,6 +299,7 @@ page-container 的特点：
     containerOverlay.value = true
     containerCloseOnSlideDown.value = false
     containerOverlayStyle.value = ''
+    containerCustomStyle.value = ''
     enableScrollThrough.value = false
   }
 
@@ -356,6 +371,28 @@ page-container 的特点：
     containerPosition.value = 'bottom'
     containerTitle.value = 'Close-on-slide-down: true'
     containerContent.value = '下滑关闭: true'
+  }
+
+  function showSlideClose(position : string) {
+    resetConfig()
+    containerCloseOnSlideDown.value = true
+    containerPosition.value = position
+
+    if (position == 'left') {
+      containerCustomStyle.value = 'width: 300px; height: 100%; right: auto;'
+      containerTitle.value = '左滑关闭'
+      containerContent.value = '左侧弹出: 从内容区域向左滑动可关闭容器'
+    } else if (position == 'right') {
+      containerCustomStyle.value = 'width: 300px; height: 100%; left: auto;'
+      containerTitle.value = '右滑关闭'
+      containerContent.value = '右侧弹出: 从内容区域向右滑动可关闭容器'
+    } else if (position == 'top') {
+      containerCustomStyle.value = 'height: 300px;'
+      containerTitle.value = '上滑关闭'
+      containerContent.value = '顶部弹出: 从内容区域向上滑动可关闭容器'
+    }
+
+    containerShow.value = true
   }
 
   function autoClose() {

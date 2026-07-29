@@ -1087,7 +1087,7 @@ source: https://gitcode.com/dcloud/uni-ui-x/tree/alpha/uni_modules/uni-tab-bar
 			<tabContent4 />
 		</uni-tab-content>
 
-		<uni-tab-bar style="border-top: 0px;">
+		<uni-tab-bar style="border-top: 0px;background-color: rgba(0, 0, 0, 0);">
 			<uni-tab-item class="tab-bg">
 				<!-- <image :src="activeIndex == 0 ? '/static/componentHL.png' : '/static/component.png'" class="tab-icon-image"></image> -->
 				<text :class="activeIndex == 0 ? 'tab-label-active' : ''">🏠</text>

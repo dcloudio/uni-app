@@ -148,9 +148,10 @@ preload属性用于控制sticky-section组件的预加载行为，默认值为fa
   const initSectionArray = () => {
     pageData.sectionArray = []
     console.log("initSectionArray start", pageData.sectionArray.length)
-    pageData.data.forEach(key => {
+    pageData.data.forEach((key, index) => {
       const list = [] as sectionListItem[]
-      for (let i = 1; i < 11; i++) {
+      const count = index === pageData.data.length - 1 ? 30 : 11
+      for (let i = 1; i < count; i++) {
         const item = { text: key + "--item--content----" + i } as sectionListItem
         list.push(item)
       }
