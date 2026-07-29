@@ -122,13 +122,12 @@ dart并不能直接调用kotlin的class，只能先序列化成字符串，把�
 ```ts
 <template>
 </template>
-<script lang="uts">
+<script setup lang="uts">
 import Build from 'android.os.Build';
-export default {
-	onLoad() {
-		console.log(Build.MODEL); //uts可以直接导入并使用原生对象，不需要封装，没有跨语言通信折损
-	}
-}
+
+onLoad(() => {
+	console.log(Build.MODEL); //uts可以直接导入并使用原生对象，不需要封装，没有跨语言通信折损
+})
 </script>
 ```
 
@@ -229,25 +228,19 @@ uts语言是基于typescript修改而来的强类型语言，编译到不同平�
 	</view>
 </template>
 
-<script> //这里只能写uts
-	export default {
-		data() {
-			return {
-				title: "Hello world"
-			}
-		},
-		onLoad() {
-			console.log('onLoad')
-		},
-		methods: {
-			buttonClick: function () {
-				uni.showModal({
-					"showCancel": false,
-					"content": "点了按钮"
-				})
-			}
-		}
+<script setup lang="uts">
+	const title = ref("Hello world")
+
+	const buttonClick = () => {
+		uni.showModal({
+			"showCancel": false,
+			"content": "点了按钮"
+		})
 	}
+
+	onLoad(() => {
+		console.log('onLoad')
+	})
 </script>
 
 <style>
