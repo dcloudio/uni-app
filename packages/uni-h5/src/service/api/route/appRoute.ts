@@ -1,5 +1,4 @@
-import type { RouteLocationNormalized, Router } from 'vue-router'
-import { START_LOCATION } from 'vue-router'
+import type { Router } from 'vue-router'
 import {
   API_NAVIGATE_BACK,
   API_NAVIGATE_TO,
@@ -7,7 +6,6 @@ import {
   API_RE_LAUNCH,
   API_SWITCH_TAB,
   type AppRouteContext,
-  type AppRouteEventInit,
   type AppRouteOpenType,
   createAppRouteRuntime,
 } from '@dcloudio/uni-api'
@@ -15,6 +13,15 @@ import { decodedQuery, removeLeadingSlash } from '@dcloudio/uni-shared'
 
 const appRouteRuntime = createAppRouteRuntime()
 const pendingAppRouteContexts: AppRouteContext[] = []
+
+interface AppRouteLocation {
+  path: string
+  fullPath?: string
+  query: Record<string, any>
+  meta: { route?: unknown }
+  matched: { length: number }
+  redirectedFrom?: { fullPath?: string }
+}
 
 interface PendingHistoryRoute {
   fullPath: string
@@ -24,19 +31,25 @@ interface PendingHistoryRoute {
 const historyOpenTypes = new WeakMap<object, PendingHistoryRoute['openType']>()
 let pendingHistoryRoute: PendingHistoryRoute | undefined
 let appRouteReady = false
+let appRouteStarted = false
 
 export const onAppRoute = appRouteRuntime.onAppRoute
 export const offAppRoute = appRouteRuntime.offAppRoute
 
-function getRoutePath(route: RouteLocationNormalized) {
+function getRoutePath(route: AppRouteLocation) {
   const pagePath = route.meta.route
   return typeof pagePath === 'string'
     ? pagePath
     : removeLeadingSlash(route.path)
 }
 
-export function dispatchWebAppRoute(event: AppRouteEventInit) {
-  const context = appRouteRuntime.createAppRouteContext(event)
+export function dispatchWebAppRoute(route: AppRouteLocation) {
+  const context = appRouteRuntime.createAppRouteContext({
+    path: getRoutePath(route),
+    query: decodedQuery(route.query),
+    openType: resolveOpenType(route),
+    notFound: route.matched.length === 0,
+  })
   if (!appRouteReady) {
     pendingAppRouteContexts.push(context)
     return
@@ -44,26 +57,31 @@ export function dispatchWebAppRoute(event: AppRouteEventInit) {
   appRouteRuntime.dispatchAppRoute(context)
 }
 
-function takePendingHistoryOpenType(to: RouteLocationNormalized) {
-  if (
+function isPendingHistoryRoute(to: AppRouteLocation) {
+  const fullPath = to.fullPath || to.path
+  return (
     pendingHistoryRoute &&
-    (pendingHistoryRoute.fullPath === to.fullPath ||
+    (pendingHistoryRoute.fullPath === fullPath ||
       pendingHistoryRoute.fullPath === to.redirectedFrom?.fullPath)
-  ) {
+  )
+}
+
+function takePendingHistoryOpenType(to: AppRouteLocation) {
+  if (pendingHistoryRoute && isPendingHistoryRoute(to)) {
     const { openType } = pendingHistoryRoute
     pendingHistoryRoute = undefined
     return openType
   }
 }
 
-function bindHistoryOpenType(to: RouteLocationNormalized) {
+function bindHistoryOpenType(to: AppRouteLocation) {
   const openType = takePendingHistoryOpenType(to)
   if (openType) {
     historyOpenTypes.set(to, openType)
   }
 }
 
-function takeHistoryOpenType(to: RouteLocationNormalized) {
+function takeHistoryOpenType(to: AppRouteLocation) {
   const redirectedFrom = to.redirectedFrom
   const openType =
     historyOpenTypes.get(to) ||
@@ -75,11 +93,9 @@ function takeHistoryOpenType(to: RouteLocationNormalized) {
   return openType
 }
 
-function resolveOpenType(
-  to: RouteLocationNormalized,
-  from: RouteLocationNormalized
-): AppRouteOpenType {
-  if (from === START_LOCATION) {
+function resolveOpenType(to: AppRouteLocation): AppRouteOpenType {
+  if (!appRouteStarted) {
+    appRouteStarted = true
     return 'appLaunch'
   }
   const historyOpenType = takeHistoryOpenType(to)
@@ -96,18 +112,6 @@ function resolveOpenType(
     return openType
   }
   return API_NAVIGATE_TO
-}
-
-function dispatchRouterAppRoute(
-  to: RouteLocationNormalized,
-  openType: AppRouteOpenType
-) {
-  dispatchWebAppRoute({
-    path: getRoutePath(to),
-    query: decodedQuery(to.query),
-    openType,
-    notFound: to.matched.length === 0,
-  })
 }
 
 export function setWebAppRouteHistoryDirection(
@@ -127,12 +131,14 @@ export function initWebAppRouteListener(router: Router) {
   router.beforeEach((to) => {
     bindHistoryOpenType(to)
   })
-  router.afterEach((to, from, failure) => {
-    const openType = resolveOpenType(to, from)
+  router.afterEach((to, _from, failure) => {
     if (failure) {
+      takeHistoryOpenType(to)
       return
     }
-    dispatchRouterAppRoute(to, openType)
+    if (to.matched.length === 0) {
+      dispatchWebAppRoute(to)
+    }
   })
   router.onError((_error, to) => {
     takeHistoryOpenType(to)

@@ -39,11 +39,15 @@ describe('web app route', () => {
   let routerOnError: Function
 
   function finishRouterRoute(to: object, from: object, failure?: Error) {
+    routerBeforeEach(to, from)
     routerAfterEach(to, from, failure)
   }
 
-  function setHistoryOpenType(openType?: string) {
-    ;(global as any).history.state = openType ? { __type__: openType } : {}
+  function setHistoryOpenType(openType?: string, stateId = 1) {
+    ;(global as any).history.state = {
+      __id__: stateId,
+      ...(openType ? { __type__: openType } : {}),
+    }
   }
 
   beforeAll(() => {
@@ -112,10 +116,11 @@ describe('web app route', () => {
 
       const listener = jest.fn()
       isolatedAppRoute.onAppRoute(listener)
-      isolatedRouterAfterEach(
-        createRoute('pages/index/index', { from: 'launch' }),
-        isolatedStartLocation
-      )
+      const launchRoute = createRoute('pages/index/index', { from: 'launch' })
+      isolatedRouterAfterEach(launchRoute, isolatedStartLocation)
+      expect(listener).not.toHaveBeenCalled()
+
+      isolatedAppRoute.dispatchWebAppRoute(launchRoute)
       expect(listener).not.toHaveBeenCalled()
 
       isolatedAppRoute.setWebAppRouteReady()
@@ -156,10 +161,9 @@ describe('web app route', () => {
       isolatedAppRoute.onAppRoute(() => {
         throw error
       })
-      isolatedRouterAfterEach(
-        createRoute('pages/index/index'),
-        isolatedStartLocation
-      )
+      const launchRoute = createRoute('pages/index/index')
+      isolatedRouterAfterEach(launchRoute, isolatedStartLocation)
+      isolatedAppRoute.dispatchWebAppRoute(launchRoute)
 
       expect(() => isolatedAppRoute.setWebAppRouteReady()).not.toThrow()
       expect(consoleError).toHaveBeenCalledWith(error)
@@ -173,15 +177,18 @@ describe('web app route', () => {
 
     const launchRoute = createRoute('pages/index/index', { from: 'launch' })
     finishRouterRoute(launchRoute, START_LOCATION)
+    expect(listener).not.toHaveBeenCalled()
+    appRoute.dispatchWebAppRoute(launchRoute)
 
     const detailRoute = createRoute('pages/detail/detail', { id: '1' })
     setHistoryOpenType('redirectTo')
     finishRouterRoute(detailRoute, launchRoute)
+    appRoute.dispatchWebAppRoute(detailRoute)
 
     const indexRoute = createRoute('pages/index/index')
     appRoute.setWebAppRouteHistoryDirection(indexRoute.fullPath, 'back')
-    routerBeforeEach(indexRoute, detailRoute)
     finishRouterRoute(indexRoute, detailRoute)
+    appRoute.dispatchWebAppRoute(indexRoute)
 
     expect(listener).toHaveBeenCalledTimes(3)
     expect(listener.mock.calls[1][0]).toMatchObject({
@@ -196,7 +203,24 @@ describe('web app route', () => {
     appRoute.offAppRoute(listener)
     const otherRoute = createRoute('pages/other/other')
     finishRouterRoute(otherRoute, indexRoute)
+    appRoute.dispatchWebAppRoute(otherRoute)
     expect(listener).toHaveBeenCalledTimes(3)
+  })
+
+  test('does not dispatch switchTab to the current tab', () => {
+    const listener = jest.fn()
+    const from = createRoute(
+      'pages/tab/tab',
+      { from: 'launch' },
+      { fullPath: '/pages/tab/tab?from=launch' }
+    )
+    const to = createRoute('pages/tab/tab')
+    appRoute.onAppRoute(listener)
+
+    setHistoryOpenType('switchTab')
+    finishRouterRoute(to, from)
+
+    expect(listener).not.toHaveBeenCalled()
   })
 
   test('isolates listener errors from the router dispatch', () => {
@@ -211,12 +235,9 @@ describe('web app route', () => {
     appRoute.onAppRoute(failedListener)
     appRoute.onAppRoute(skippedListener)
 
-    expect(() =>
-      finishRouterRoute(
-        createRoute('pages/detail/detail'),
-        createRoute('pages/index/index')
-      )
-    ).not.toThrow()
+    const detailRoute = createRoute('pages/detail/detail')
+    finishRouterRoute(detailRoute, createRoute('pages/index/index'))
+    expect(() => appRoute.dispatchWebAppRoute(detailRoute)).not.toThrow()
 
     expect(failedListener).toHaveBeenCalledTimes(1)
     expect(skippedListener).not.toHaveBeenCalled()
@@ -235,6 +256,7 @@ describe('web app route', () => {
     const next = createRoute('pages/next/next')
     setHistoryOpenType()
     finishRouterRoute(next, from)
+    appRoute.dispatchWebAppRoute(next)
 
     expect(listener).toHaveBeenCalledTimes(1)
     expect(listener).toHaveBeenCalledWith(
@@ -283,6 +305,8 @@ describe('web app route', () => {
       }
     )
     finishRouterRoute(redirected, from)
+    expect(listener).not.toHaveBeenCalled()
+    appRoute.dispatchWebAppRoute(redirected)
 
     expect(listener).toHaveBeenCalledTimes(1)
     expect(listener).toHaveBeenCalledWith(
@@ -302,12 +326,7 @@ describe('web app route', () => {
     appRoute.onAppRoute(listener1)
     appRoute.onAppRoute(listener2)
     appRoute.offAppRoute(null)
-    appRoute.dispatchWebAppRoute({
-      path: 'pages/final/final',
-      query: {},
-      openType: 'navigateTo',
-      notFound: false,
-    })
+    appRoute.dispatchWebAppRoute(createRoute('pages/final/final'))
     expect(listener1).not.toHaveBeenCalled()
     expect(listener2).not.toHaveBeenCalled()
   })
@@ -322,6 +341,7 @@ describe('web app route', () => {
     setHistoryOpenType('switchTab')
     finishRouterRoute(failed, from, new Error('navigation cancelled'))
     finishRouterRoute(succeeded, from)
+    appRoute.dispatchWebAppRoute(succeeded)
 
     expect(listener).toHaveBeenCalledTimes(1)
     expect(listener).toHaveBeenCalledWith(
@@ -339,10 +359,12 @@ describe('web app route', () => {
     const backRoute = createRoute('pages/tab/tab')
     const switchTabRoute = createRoute('pages/tab/tab')
 
+    setHistoryOpenType(undefined, 2)
     appRoute.setWebAppRouteHistoryDirection(backRoute.fullPath, 'back')
     routerBeforeEach(backRoute, from)
-    setHistoryOpenType('switchTab')
+    setHistoryOpenType('switchTab', 2)
     finishRouterRoute(switchTabRoute, from)
+    appRoute.dispatchWebAppRoute(switchTabRoute)
     finishRouterRoute(backRoute, from, new Error('navigation cancelled'))
 
     expect(listener).toHaveBeenCalledTimes(1)
@@ -368,8 +390,8 @@ describe('web app route', () => {
     appRoute.setWebAppRouteHistoryDirection(backRoute.fullPath, 'back')
     routerBeforeEach(backRoute, from)
     setHistoryOpenType('navigateTo')
-    routerBeforeEach(redirected, from)
     finishRouterRoute(redirected, from)
+    appRoute.dispatchWebAppRoute(redirected)
 
     expect(listener).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -391,6 +413,7 @@ describe('web app route', () => {
     const to = createRoute('pages/next/next')
     setHistoryOpenType('redirectTo')
     finishRouterRoute(to, from)
+    appRoute.dispatchWebAppRoute(to)
 
     expect(listener).toHaveBeenCalledWith(
       expect.objectContaining({ openType: 'redirectTo' })

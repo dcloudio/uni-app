@@ -55,7 +55,10 @@ import { useRouter } from 'vue-router'
 import { handleBeforeEntryPageRoutes } from '../../service/api/route/utils'
 import { updateCurPageCssVar } from '../../helpers/cssVar'
 //#if _X_
-import { setWebAppRouteReady } from '../../service/api/route/appRoute'
+import {
+  dispatchWebAppRoute,
+  setWebAppRouteReady,
+} from '../../service/api/route/appRoute'
 import {
   getPageInstanceByChild,
   isDialogPageInstance,
@@ -147,6 +150,9 @@ export function setupPage(comp: any, path: string) {
       instance.$pageInstance = instance // 组件 $pageInstance 指向页面
       // 组件的 $pageInstance 赋值，是在 vue 内核 createComponentInstance 中 root 赋值的地方实现
       const route = usePageRoute()
+      //#if _X_
+      const router = useRouter()
+      //#endif
       // 存储参数，让 initHooks 中执行 onLoad 时，可以访问到
       const query = decodedQuery(route.query)
       instance.attrs.__pageQuery = query
@@ -184,6 +190,15 @@ export function setupPage(comp: any, path: string) {
       )
       onBeforeMount(() => {
         onPageShow(instance, pageMeta)
+        if (__X__) {
+          const pageInstance = getPageInstanceByChild(instance)
+          if (!isDialogPageInstance(pageInstance)) {
+            // initHooks 已同步触发首次 onLoad、onShow，此处紧接其后派发
+            dispatchWebAppRoute(
+              __UNI_FEATURE_PAGES__ ? router.currentRoute.value : route
+            )
+          }
+        }
       })
       onMounted(() => {
         if (__X__) {
@@ -207,6 +222,9 @@ export function setupPage(comp: any, path: string) {
             if (!isDialogPageInstance(pageInstance)) {
               const { onShow } = instance
               onShow && invokeArrayFns(onShow)
+              dispatchWebAppRoute(
+                __UNI_FEATURE_PAGES__ ? router.currentRoute.value : route
+              )
               invokeLastDialogPageHookByUniPage(
                 instance.proxy?.$page as UniPage,
                 ON_SHOW
