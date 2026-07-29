@@ -19,7 +19,7 @@
   import { applyWebViewSnapshotTextMetricsPatch } from '@/tools/webview-snapshot-text-metrics.uts'
   // #endif
   // #ifdef APP-ANDROID
-  import { insertStatusBarPlaceholder } from '@/tools/android-insert-status-bar-placeholder.uts'
+  import { applyAndroidWebViewSafeArea } from '@/tools/android-webview-safe-area.uts'
   // #endif
 
   const instance = getCurrentInstance()!.proxy!
@@ -34,7 +34,7 @@
 
   // #ifdef APP-ANDROID
   const onWebviewLoad = () => {
-    insertStatusBarPlaceholder(webviewContext.value)
+    applyAndroidWebViewSafeArea(webviewContext.value)
   }
   onPageShow(() => {
     UniWebViewElement.enableWholeDraw()
