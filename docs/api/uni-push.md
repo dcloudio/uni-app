@@ -817,7 +817,35 @@ getAllChannels
 
 ## app-android平台高级场景用途
 
+### 配置资源
+
 在[nativeResources/android](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#%E5%BA%94%E7%94%A8%E8%B5%84%E6%BA%90)目录可以配置图片和声音的二进制文件资源。
+
+### 关闭自动申请通知权限
+
+为避免应用启动时自动申请通知权限，开发者可以在 `AndroidManifest.xml` 中关闭 Push 模块的自动申请功能(HBuilderX5.23支持)。[配置AndroidManifest.xml](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#%E5%BA%94%E7%94%A8%E6%B8%85%E5%8D%95%E6%96%87%E4%BB%B6-androidmanifest-xml)
+
+在 `<application>` 节点内添加：
+
+```xml
+<application>
+    <meta-data
+        android:name="dcloud_push_auto_request_permission"
+        android:value="false" />
+</application>
+```
+
+配置后：
+
+- 框架不再主动申请 `POST_NOTIFICATIONS` 权限。
+- 通知权限的申请时机和业务逻辑由开发者自行管理。
+- Push SDK 初始化、获取 `clientId` 等功能不受影响。
+- 未获得通知权限时，系统通知可能无法展示。
+
+未配置该项或配置为 `true` 时，框架保持原有行为，自动申请通知权限。
+
+> Android 13（API 33）及以上系统需要申请通知权限。开发者接管权限申请后，应避免在用户拒绝授权时，每次启动应用都重复申请。
+
 
 ### 通知栏显示图标自定义
 关于图标的配置，需要创建[nativeResources](https://uniapp.dcloud.net.cn/tutorial/app-nativeresource-android.html#%E5%BA%94%E7%94%A8%E8%B5%84%E6%BA%90)目录，
@@ -883,3 +911,6 @@ channelManager.setPushChannel({
 * uni-push是一个独立的模块，HBuilderX4.25以前版本标准基座中并不包含，HBuilder4.25及以上版本标准基座中包含，可直接在标准基座体验创建本地通知消息相关业务。由于push消息推送功能需要关联包名及签名信息，完整消息推送功能需打包自定义基座。
 * 创建本地通知栏，理论上可以和个推的服务无关。但目前也都包含在push模块里了。如果您不需要服务器推送，只需要本地创建通知栏，也需要打包push模块才行。
 * 部分手机创建本地通知时，App如果在后台状态，点击通知消息并不会拉起App，原因是厂商增加了后台弹窗权限，需要用户手动打开此权限。
+
+
+    
