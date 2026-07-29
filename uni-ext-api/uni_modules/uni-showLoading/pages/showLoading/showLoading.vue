@@ -81,7 +81,7 @@
 		max-width: 600rpx;
 		height: 136px;
 		padding: 10px;
-		background-color: rgba(76, 76, 76, 0.9);
+		background-color: rgba(76, 76, 76, 0.95);
 		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 		border-radius: 10px;
 		opacity: 0;
