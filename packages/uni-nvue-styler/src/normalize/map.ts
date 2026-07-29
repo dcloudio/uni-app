@@ -28,6 +28,7 @@ import { normalizeShorthandProperty } from './shorthandProperty'
 import { normalizeFontFace, normalizeSrc } from './fontFace'
 import { normalizeFlexFlow } from './flexFlow'
 import { animationNormalizeFactoryMap } from './animation'
+import { normalizeBackdropFilter } from './backdropFilter'
 
 // transition-property 不读 css.json
 // 从 property.ts 中移动到 map 里，避免循环依赖
@@ -185,6 +186,7 @@ const NVUE_PROP_NAME_GROUPS: Record<string, Record<string, Normalize>> = {
 
 // 特定属性
 const uvueNormalizeMap: Record<string, Normalize> = {
+  backdropFilter: normalizeBackdropFilter,
   transform: normalizeTransform,
   fontFamily: normalizeString,
   textDecoration: normalizeDefault,

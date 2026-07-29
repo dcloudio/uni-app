@@ -1449,4 +1449,99 @@ flexBasis: fill;
     expect(messages.length).toBe(0)
     expect(json).toEqual({})
   })
+
+  test('backdrop-filter', async () => {
+    const tooLargeFloat = '9'.repeat(39)
+    const { json, messages } = await objectifierRule(
+      `
+.none {
+  backdrop-filter: none;
+}
+.foo {
+  backdrop-filter: blur(5px);
+}
+.zero {
+  backdrop-filter: blur(0);
+}
+.rpx {
+  backdrop-filter: blur(1rpx);
+}
+.em {
+  backdrop-filter: blur(1em);
+}
+.rem {
+  backdrop-filter: blur(1rem);
+}
+.negative {
+  backdrop-filter: blur(-1px);
+}
+.percent {
+  backdrop-filter: blur(20%);
+}
+.angle {
+  backdrop-filter: blur(10deg);
+}
+.other {
+  backdrop-filter: brightness(1);
+}
+.too-large {
+  backdrop-filter: blur(${tooLargeFloat}px);
+}
+`,
+      { dom2: true, platform: 'app-harmony' }
+    )
+
+    expect(json).toEqual({
+      none: {
+        '': {
+          backdropFilter: 'none',
+        },
+      },
+      foo: {
+        '': {
+          backdropFilter: 'blur(5px)',
+        },
+      },
+      zero: {
+        '': {
+          backdropFilter: 'blur(0)',
+        },
+      },
+      rpx: {
+        '': {
+          backdropFilter: 'blur(1rpx)',
+        },
+      },
+    })
+    expect(messages.map((message) => message.text)).toEqual([
+      withDom2PropertyDocs(
+        'ERROR: property value `blur(1em)` is not supported for `backdrop-filter` (supported values are: `none`|`blur()`)',
+        'backdrop-filter'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `blur(1rem)` is not supported for `backdrop-filter` (supported values are: `none`|`blur()`)',
+        'backdrop-filter'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `blur(-1px)` is not supported for `backdrop-filter` (supported values are: `none`|`blur()`)',
+        'backdrop-filter'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `blur(20%)` is not supported for `backdrop-filter` (supported values are: `none`|`blur()`)',
+        'backdrop-filter'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `blur(10deg)` is not supported for `backdrop-filter` (supported values are: `none`|`blur()`)',
+        'backdrop-filter'
+      ),
+      withDom2PropertyDocs(
+        'ERROR: property value `brightness(1)` is not supported for `backdrop-filter` (supported values are: `none`|`blur()`)',
+        'backdrop-filter'
+      ),
+      withDom2PropertyDocs(
+        `ERROR: property value \`blur(${tooLargeFloat}px)\` is not supported for \`backdrop-filter\` (supported values are: \`none\`|\`blur()\`)`,
+        'backdrop-filter'
+      ),
+    ])
+  })
 })
