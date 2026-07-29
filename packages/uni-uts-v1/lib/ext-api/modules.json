@@ -1596,7 +1596,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": true
+          "arkts": "uni1"
         }
       },
       "hideToast": {
@@ -1605,7 +1605,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": true
+          "arkts": "uni1"
         }
       },
       "showLoading": {
