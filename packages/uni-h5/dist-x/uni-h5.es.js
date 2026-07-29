@@ -7634,6 +7634,13 @@ function normalizeWindowTop(windowTop) {
 function normalizeWindowBottom(windowBottom) {
   return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
 }
+const SAFE_AREA_INSET_PROPERTY_PREFIX = "--uni-safe-area-inset-";
+function getSafeAreaInset(style, position) {
+  const value = parseFloat(
+    style.getPropertyValue(`${SAFE_AREA_INSET_PROPERTY_PREFIX}${position}`)
+  );
+  return isNaN(value) ? safeAreaInsets$1[position] : value;
+}
 function getPageWrapperInfo(pageBody) {
   const pageWrapper = pageBody || document.querySelector("uni-page-wrapper");
   const pageWrapperRect = pageWrapper.getBoundingClientRect();
@@ -7648,11 +7655,20 @@ function getPageWrapperInfo(pageBody) {
   };
 }
 const getSystemSafeAreaInsets = function() {
+  if (!process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
+    return {
+      top: safeAreaInsets$1.top,
+      right: safeAreaInsets$1.right,
+      bottom: safeAreaInsets$1.bottom,
+      left: safeAreaInsets$1.left
+    };
+  }
+  const bodyStyle = getComputedStyle(document.body);
   return {
-    top: safeAreaInsets$1.top,
-    right: safeAreaInsets$1.right,
-    bottom: safeAreaInsets$1.bottom,
-    left: safeAreaInsets$1.left
+    top: getSafeAreaInset(bodyStyle, "top"),
+    right: getSafeAreaInset(bodyStyle, "right"),
+    bottom: getSafeAreaInset(bodyStyle, "bottom"),
+    left: getSafeAreaInset(bodyStyle, "left")
   };
 };
 function getSafeAreaInsets(pageBody) {

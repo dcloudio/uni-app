@@ -5971,8 +5971,12 @@ class UniElement {
             : uni.createSelectorQuery().in(this.$vm);
         query.select('#' + this.id).boundingClientRect();
         query.exec((res) => {
-            this._fixDomRectXY(res[0]);
-            callback(res[0]);
+            const node = res[0];
+            if (!node) {
+                return;
+            }
+            this._fixDomRectXY(node);
+            callback(node);
         });
     }
     _fixDomRectXY(node) {
