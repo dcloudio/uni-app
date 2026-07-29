@@ -641,9 +641,11 @@ function updateMiniProgramComponentProperties(up, mpInstance) {
         mpInstance.setData(nextProps);
     }
 }
-function updateComponentProps(up, instance) {
+function updateComponentProps(up, instance, extraProps) {
     const prevProps = toRaw(instance.props);
-    const nextProps = findComponentPropsData(up) || {};
+    // 仅支付宝 externalClass 更新时可能没有 uP，此时保留其他现有 props，避免默认值被误判为删除。
+    const nextProps = findComponentPropsData(up) ||
+        ({});
     if (hasPropsChanged(prevProps, nextProps)) {
         updateProps(instance, nextProps, prevProps, false);
         if (hasQueueJob(instance.update)) {

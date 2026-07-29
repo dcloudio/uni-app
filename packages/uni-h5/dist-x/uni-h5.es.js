@@ -8,7 +8,7 @@ import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as U
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, isInSSRComponentSetup, createCommentVNode, normalizeClass, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, toDisplayString, unref } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
-import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
+import { useRoute, isNavigationFailure, START_LOCATION, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 const realGlobal = getGlobal();
 realGlobal.UTS = UTS$1;
@@ -3245,6 +3245,13 @@ function removeKeepAliveApiCallback(name, callback) {
     }
   }
 }
+function removeAllKeepAliveApiCallbacks(name) {
+  for (const key in invokeCallbacks) {
+    if (invokeCallbacks[key].name === name) {
+      delete invokeCallbacks[key];
+    }
+  }
+}
 function offKeepAliveApiCallback(name) {
   UniServiceJSBridge.off("api." + name);
 }
@@ -3540,12 +3547,13 @@ function wrapperOnApi(name, fn, options) {
 }
 function wrapperOffApi(name, fn, options) {
   return (callback) => {
-    {
+    const clearAll = (options == null ? void 0 : options.allowClearAll) === true && callback == null;
+    if (!clearAll) {
       checkCallback(callback);
     }
     const errMsg = beforeInvokeApi(
       name,
-      [callback],
+      clearAll ? [] : [callback],
       void 0,
       options
     );
@@ -3553,7 +3561,9 @@ function wrapperOffApi(name, fn, options) {
       throw new Error(errMsg);
     }
     const onApiName = name.replace("off", "on");
-    {
+    if (clearAll) {
+      removeAllKeepAliveApiCallbacks(onApiName);
+    } else {
       removeKeepAliveApiCallback(onApiName, callback);
     }
     const hasInvokeOnApi = findInvokeCallbackByName(onApiName);
@@ -5780,6 +5790,52 @@ const getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi(
     return getLaunchOptions();
   }
 );
+const API_ON_APP_ROUTE = "onAppRoute";
+const API_OFF_APP_ROUTE = "offAppRoute";
+function createAppRouteRuntime() {
+  let routeEventId = 0;
+  const onAppRoute2 = /* @__PURE__ */ defineOnApi(API_ON_APP_ROUTE, () => {
+  });
+  const offAppRoute2 = /* @__PURE__ */ defineOffApi(API_OFF_APP_ROUTE, () => {
+  }, {
+    allowClearAll: true
+  });
+  function createAppRouteContext(event) {
+    var _a, _b;
+    const timeStamp = (_a = event.timeStamp) != null ? _a : Date.now();
+    return {
+      event: {
+        path: event.path,
+        query: Object.assign({}, event.query),
+        openType: event.openType,
+        notFound: event.notFound,
+        timeStamp,
+        routeEventId: (_b = event.routeEventId) != null ? _b : `${timeStamp}-${++routeEventId}`
+      }
+    };
+  }
+  function dispatchAppRoute(context) {
+    const event = context.event;
+    try {
+      UniServiceJSBridge.invokeOnCallback(API_ON_APP_ROUTE, {
+        path: event.path,
+        query: Object.assign({}, event.query),
+        openType: event.openType,
+        notFound: event.notFound,
+        timeStamp: event.timeStamp,
+        routeEventId: event.routeEventId
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  return {
+    onAppRoute: onAppRoute2,
+    offAppRoute: offAppRoute2,
+    createAppRouteContext,
+    dispatchAppRoute
+  };
+}
 let cid;
 let cidErrMsg;
 let enabled;
@@ -8964,6 +9020,99 @@ function initApp$1(vm) {
   initService();
   initView();
 }
+const appRouteRuntime = createAppRouteRuntime();
+const pendingAppRouteContexts = [];
+const historyOpenTypes = /* @__PURE__ */ new WeakMap();
+let pendingHistoryRoute;
+let appRouteReady = false;
+const onAppRoute = appRouteRuntime.onAppRoute;
+const offAppRoute = appRouteRuntime.offAppRoute;
+function getRoutePath(route) {
+  const pagePath = route.meta.route;
+  return typeof pagePath === "string" ? pagePath : removeLeadingSlash(route.path);
+}
+function dispatchWebAppRoute(event) {
+  const context = appRouteRuntime.createAppRouteContext(event);
+  if (!appRouteReady) {
+    pendingAppRouteContexts.push(context);
+    return;
+  }
+  appRouteRuntime.dispatchAppRoute(context);
+}
+function takePendingHistoryOpenType(to) {
+  var _a;
+  if (pendingHistoryRoute && (pendingHistoryRoute.fullPath === to.fullPath || pendingHistoryRoute.fullPath === ((_a = to.redirectedFrom) == null ? void 0 : _a.fullPath))) {
+    const { openType } = pendingHistoryRoute;
+    pendingHistoryRoute = void 0;
+    return openType;
+  }
+}
+function bindHistoryOpenType(to) {
+  const openType = takePendingHistoryOpenType(to);
+  if (openType) {
+    historyOpenTypes.set(to, openType);
+  }
+}
+function takeHistoryOpenType(to) {
+  const redirectedFrom = to.redirectedFrom;
+  const openType = historyOpenTypes.get(to) || redirectedFrom && historyOpenTypes.get(redirectedFrom);
+  historyOpenTypes.delete(to);
+  if (redirectedFrom) {
+    historyOpenTypes.delete(redirectedFrom);
+  }
+  return openType;
+}
+function resolveOpenType(to, from) {
+  var _a;
+  if (from === START_LOCATION) {
+    return "appLaunch";
+  }
+  const historyOpenType = takeHistoryOpenType(to);
+  if (historyOpenType) {
+    return historyOpenType;
+  }
+  const openType = (_a = history.state) == null ? void 0 : _a.__type__;
+  if (openType === API_NAVIGATE_TO || openType === API_REDIRECT_TO || openType === API_RE_LAUNCH || openType === API_SWITCH_TAB) {
+    return openType;
+  }
+  return API_NAVIGATE_TO;
+}
+function dispatchRouterAppRoute(to, openType) {
+  dispatchWebAppRoute({
+    path: getRoutePath(to),
+    query: decodedQuery(to.query),
+    openType,
+    notFound: to.matched.length === 0
+  });
+}
+function setWebAppRouteHistoryDirection(fullPath, direction2) {
+  pendingHistoryRoute = {
+    fullPath,
+    openType: direction2 === "back" ? API_NAVIGATE_BACK : API_NAVIGATE_TO
+  };
+}
+function initWebAppRouteListener(router) {
+  router.beforeEach((to) => {
+    bindHistoryOpenType(to);
+  });
+  router.afterEach((to, from, failure) => {
+    const openType = resolveOpenType(to, from);
+    if (failure) {
+      return;
+    }
+    dispatchRouterAppRoute(to, openType);
+  });
+  router.onError((_error, to) => {
+    takeHistoryOpenType(to);
+  });
+}
+function setWebAppRouteReady() {
+  if (appRouteReady) {
+    return;
+  }
+  appRouteReady = true;
+  pendingAppRouteContexts.splice(0).forEach(appRouteRuntime.dispatchAppRoute);
+}
 function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, options }) {
   if (clone) {
     comp = extend({}, comp);
@@ -9145,6 +9294,7 @@ function setupApp(comp) {
             onPageNotFound2 && invokeArrayFns$1(onPageNotFound2, pageNotFoundOptions);
           }
         }
+        setWebAppRouteReady();
       };
       if (__UNI_FEATURE_PAGES__) {
         useRouter().isReady().then(onLaunch);
@@ -20048,6 +20198,7 @@ function usePopup(props2, {
 }
 function initRouter(app) {
   const router = createRouter(createRouterOptions());
+  initWebAppRouteListener(router);
   router.beforeEach((to, from) => {
     uni.hideToast();
     uni.hideLoading({
@@ -20120,7 +20271,8 @@ function initHistory() {
     routerBase = "";
   }
   const history2 = __UNI_FEATURE_ROUTER_MODE__ === "history" ? createWebHistory(routerBase) : createWebHashHistory(routerBase);
-  history2.listen((_to, _from, info) => {
+  history2.listen((to, _from, info) => {
+    setWebAppRouteHistoryDirection(to, info.direction);
     if (info.direction === "back") {
       removeCurrentPages(Math.abs(info.delta));
     }
@@ -28866,9 +29018,9 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
     const windowHeight = ref(0);
     const popover = reactive({});
     const fixSize = () => {
-      const systemInfo = uni.getSystemInfoSync();
-      windowWidth.value = systemInfo.windowWidth;
-      windowHeight.value = systemInfo.windowHeight + (systemInfo.windowTop || 0);
+      const windowInfo = uni.getWindowInfo();
+      windowWidth.value = windowInfo.windowWidth;
+      windowHeight.value = windowInfo.windowHeight + (windowInfo.windowTop || 0);
     };
     const closeActionSheet = () => {
       show.value = false;
@@ -28925,35 +29077,33 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
         }
       });
       uni.$emit(readyEventName.value, {});
-      const systemInfo = uni.getSystemInfoSync();
-      const osLanguage = systemInfo.osLanguage;
-      const appLanguage = systemInfo.appLanguage;
-      if (appLanguage != null) {
-        language.value = appLanguage;
-      } else if (osLanguage != null) {
-        language.value = osLanguage;
+      const deviceInfo = uni.getDeviceInfo();
+      const appInfo = uni.getAppBaseInfo();
+      if (appInfo.appLanguage != null) {
+        language.value = appInfo.appLanguage;
+      } else if (deviceInfo.osLanguage != null) {
+        language.value = deviceInfo.osLanguage;
       }
-      const systemAppTheme = systemInfo.appTheme;
-      if (systemAppTheme != null && systemAppTheme != "auto") {
-        appTheme.value = systemAppTheme;
+      const currentAppTheme = appInfo.appTheme;
+      if (currentAppTheme != null && currentAppTheme != "auto") {
+        appTheme.value = currentAppTheme;
         handleThemeChange();
       }
-      const systemOsTheme = systemInfo.osTheme;
-      if (systemOsTheme != null && appTheme.value == null) {
-        appTheme.value = systemOsTheme;
+      const currentOsTheme = deviceInfo.osTheme;
+      if (currentOsTheme != null && appTheme.value == null) {
+        appTheme.value = currentOsTheme;
         handleThemeChange();
       }
-      const systemHostTheme = systemInfo.hostTheme;
-      if (systemHostTheme != null) {
-        hostTheme.value = systemHostTheme;
+      const currentHostTheme = appInfo.hostTheme;
+      if (currentHostTheme != null) {
+        hostTheme.value = currentHostTheme;
         handleThemeChange();
       }
       uni.onHostThemeChange((res) => {
         hostTheme.value = res.theme;
         handleThemeChange();
       });
-      windowWidth.value = systemInfo.windowWidth;
-      windowHeight.value = systemInfo.windowHeight;
+      fixSize();
       window.addEventListener("resize", fixSize);
       const locale = uni.getLocale();
       language.value = locale;
@@ -28962,7 +29112,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
           language.value = res.locale;
         }
       });
-      isLandscape2.value = systemInfo.deviceOrientation == "landscape";
+      isLandscape2.value = deviceInfo.deviceOrientation == "landscape";
     });
     const isWidescreen = computed(() => {
       return windowHeight.value >= 500 && windowWidth.value >= 500;
@@ -29052,8 +29202,8 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
       }, 10);
     });
     onResize((_) => {
-      const systemInfo = uni.getSystemInfoSync();
-      isLandscape2.value = systemInfo.deviceOrientation == "landscape";
+      const deviceInfo = uni.getDeviceInfo();
+      isLandscape2.value = deviceInfo.deviceOrientation == "landscape";
     });
     onBeforeUnmount(() => {
       if (!menuItemClicked.value && !cancelButtonClicked.value) {
@@ -30672,17 +30822,16 @@ const _sfc_main$4 = /* @__PURE__ */ defineComponent({
       }, 10);
     });
     onLoad((options) => {
-      const systemInfo = uni.getSystemInfoSync();
-      const osLanguage = systemInfo.osLanguage;
-      const scrollHeight = Math.floor(systemInfo.screenHeight * 0.55);
-      maxScrollHeight.value = scrollHeight + "px";
-      const appLanguage = systemInfo.appLanguage;
-      if (appLanguage != null) {
-        language.value = appLanguage;
-      } else if (osLanguage != null) {
-        language.value = osLanguage;
+      const deviceInfo = uni.getDeviceInfo();
+      const windowInfo = uni.getWindowInfo();
+      maxScrollHeight.value = `${Math.floor(windowInfo.screenHeight * 0.55)}px`;
+      const appBaseInfo = uni.getAppBaseInfo();
+      if (appBaseInfo.appLanguage != null) {
+        language.value = appBaseInfo.appLanguage;
+      } else if (deviceInfo.osLanguage != null) {
+        language.value = deviceInfo.osLanguage;
       }
-      const hostTheme = systemInfo.hostTheme;
+      const hostTheme = appBaseInfo.hostTheme;
       if (hostTheme != null) {
         theme.value = hostTheme;
         updateUI();
@@ -32649,6 +32798,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   navigateTo,
   offAccelerometerChange,
   offAppHide,
+  offAppRoute,
   offAppShow,
   offCompassChange,
   offError,
@@ -32663,6 +32813,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   offWindowResize,
   onAccelerometerChange,
   onAppHide,
+  onAppRoute,
   onAppShow,
   onCompassChange,
   onCreateVueApp,
@@ -32980,6 +33131,7 @@ export {
   navigateTo,
   offAccelerometerChange,
   offAppHide,
+  offAppRoute,
   offAppShow,
   offCompassChange,
   offError,
@@ -32994,6 +33146,7 @@ export {
   offWindowResize,
   onAccelerometerChange,
   onAppHide,
+  onAppRoute,
   onAppShow,
   onCompassChange,
   onCreateVueApp2 as onCreateVueApp,

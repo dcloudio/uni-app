@@ -243,22 +243,21 @@
 		/**
 		 * show modal 不需要对内置文案进行i18n适配。（参考微信）
 		 */
-		const systemInfo = uni.getSystemInfoSync()
-		const osLanguage = systemInfo.osLanguage
+		const deviceInfo = uni.getDeviceInfo()
 		// ios need
-		const scrollHeight = Math.floor(systemInfo.screenHeight * 0.55)
-		maxScrollHeight.value = scrollHeight + 'px'
+		const windowInfo = uni.getWindowInfo()
+		maxScrollHeight.value = `${Math.floor(windowInfo.screenHeight * 0.55)}px`
 		/**
 		 * add since 2025-04-03 目前暂不支持设置app language
 		 */
-		const appLanguage = systemInfo.appLanguage
-		if (appLanguage != null) {
-			language.value = appLanguage
-		} else if (osLanguage != null) {
-			language.value = osLanguage
+		const appBaseInfo = uni.getAppBaseInfo()
+		if (appBaseInfo.appLanguage != null) {
+			language.value = appBaseInfo.appLanguage
+		} else if (deviceInfo.osLanguage != null) {
+			language.value = deviceInfo.osLanguage
 		}
 		// #ifdef WEB
-		const hostTheme = systemInfo.hostTheme
+		const hostTheme = appBaseInfo.hostTheme
 		if (hostTheme != null) {
 			theme.value = hostTheme
 			updateUI()
@@ -277,9 +276,9 @@
 		})
 		// #endif
 		// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
-		const appTheme = systemInfo.appTheme
+		const appTheme = appBaseInfo.appTheme
 		if (appTheme != null) {
-			const osTheme = systemInfo.osTheme ?? 'light'
+			const osTheme = deviceInfo.osTheme ?? 'light'
 			theme.value = ('auto' == appTheme) ? osTheme : appTheme
 		}
 		appThemeChangeCallbackId.value = uni.onAppThemeChange((res: AppThemeChangeResult) => {

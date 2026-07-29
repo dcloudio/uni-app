@@ -16594,7 +16594,7 @@ function initHistory() {
     routerBase = "";
   }
   const history2 = __UNI_FEATURE_ROUTER_MODE__ === "history" ? createWebHistory(routerBase) : createWebHashHistory(routerBase);
-  history2.listen((_to, _from, info) => {
+  history2.listen((to, _from, info) => {
     if (info.direction === "back") {
       removeCurrentPages(Math.abs(info.delta));
     }
