@@ -31,7 +31,7 @@ describe('支付宝小程序样式隔离 2.0', () => {
   beforeEach(() => {
     process.env.UNI_PLATFORM = 'mp-alipay'
     process.env.UNI_APP_X = 'true'
-    process.env.UNI_APP_X_DOM2 = 'true'
+    Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
     process.env.UNI_APP_STYLE_ISOLATION_VERSION = '2'
     process.env.UNI_INPUT_DIR = '/src'
     process.env.UNI_COMPILE_EXT_API_PAGE_PATHS = JSON.stringify([
@@ -50,25 +50,13 @@ describe('支付宝小程序样式隔离 2.0', () => {
     clearMiniProgramComponentStyleIsolation('/src/components/test.vue')
   })
 
-  test('仅在支付宝 DOM2 样式隔离 2.0 下启用', () => {
+  test('仅在支付宝 uni-app x 隔离 2.0 下启用', () => {
     expect(isAlipayXStyleIsolation()).toBe(true)
-    Reflect.set(process.env, 'UNI_APP_X_DOM2', 'false')
-    expect(isAlipayXStyleIsolation()).toBe(false)
-    process.env.UNI_APP_X_DOM2 = 'true'
     Reflect.set(process.env, 'UNI_APP_STYLE_ISOLATION_VERSION', '1')
     expect(isAlipayXStyleIsolation()).toBe(false)
     process.env.UNI_APP_STYLE_ISOLATION_VERSION = '2'
     process.env.UNI_PLATFORM = 'mp-weixin'
     expect(isAlipayXStyleIsolation()).toBe(false)
-  })
-
-  test('非 DOM2 不改写支付宝 CSS', async () => {
-    Reflect.set(process.env, 'UNI_APP_X_DOM2', 'false')
-    const result = await postcss([externalPlugin]).process(
-      '.foo { color: red; }',
-      { from: '/src/components/test.vue', map: false }
-    )
-    expect(result.css).toBe('.foo { color: red; }')
   })
 
   test('按页面和组件 styleIsolation 生成 mask', () => {

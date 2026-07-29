@@ -95,12 +95,8 @@ describe('mp-alipay: externalClass 2.0', () => {
     )
   })
 
-  test.each([
-    ['支付宝非 DOM2', 'mp-alipay', 'false'],
-    ['其他小程序平台', 'mp-baidu', 'true'],
-  ])('%s 的动态 externalClass 继续使用普通 props 通道', (_, platform, dom2) => {
-    Reflect.set(process.env, 'UNI_PLATFORM', platform)
-    Reflect.set(process.env, 'UNI_APP_X_DOM2', dom2)
+  test('其他小程序平台的动态 externalClass 继续使用普通 props 通道', () => {
+    Reflect.set(process.env, 'UNI_PLATFORM', 'mp-baidu')
     assert(
       '<external-class :box-class="klass"/>',
       '<external-class u-i="10a73a5e-0" u-p="{{a||\'\'}}"/>',

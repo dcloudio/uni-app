@@ -177,7 +177,6 @@ export function isAlipayXStyleIsolation() {
   return (
     process.env.UNI_PLATFORM === 'mp-alipay' &&
     process.env.UNI_APP_X === 'true' &&
-    process.env.UNI_APP_X_DOM2 === 'true' &&
     process.env.UNI_APP_STYLE_ISOLATION_VERSION === '2'
   )
 }

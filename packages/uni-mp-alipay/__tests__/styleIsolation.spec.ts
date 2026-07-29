@@ -23,7 +23,7 @@ describe('mp-alipay: styleIsolation 2.0', () => {
   beforeEach(() => {
     process.env.UNI_PLATFORM = 'mp-alipay'
     process.env.UNI_APP_X = 'true'
-    process.env.UNI_APP_X_DOM2 = 'true'
+    Reflect.deleteProperty(process.env, 'UNI_APP_X_DOM2')
     process.env.UNI_APP_STYLE_ISOLATION_VERSION = '2'
     process.env.UNI_INPUT_DIR = '/src'
     updateMiniProgramComponentStyleIsolation(filename, 'app', true)
@@ -42,19 +42,6 @@ describe('mp-alipay: styleIsolation 2.0', () => {
     assert(
       '<view class="foo bar"/>',
       "<view class=\"foo -a-foo -p-foo bar -a-bar -p-bar\" style=\"{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}\"/>",
-      `(_ctx, _cache) => { "raw js"
-  const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
-  return __returned__
-}`,
-      { filename, isX: true }
-    )
-  })
-
-  test('非 DOM2 不展开页面静态 class', () => {
-    Reflect.set(process.env, 'UNI_APP_X_DOM2', 'false')
-    assert(
-      '<view class="foo"/>',
-      "<view class=\"foo\" style=\"{{'--status-bar-height:' + a + ';' + ('--uni-safe-area-inset-bottom:' + b)}}\"/>",
       `(_ctx, _cache) => { "raw js"
   const __returned__ = { a: \`\${_ctx.u_s_b_h}px\`, b: \`\${_ctx.u_s_a_i_b}px\` }
   return __returned__
