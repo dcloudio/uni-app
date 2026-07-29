@@ -35,6 +35,8 @@
     "dependencies": [
       "uni-framework",
       "uni-theme",
+      "uni-getAppBaseInfo",
+      "uni-getDeviceInfo",
       "uni-getSystemInfo",
       "uni-dialogPage",
       "uni-event"
