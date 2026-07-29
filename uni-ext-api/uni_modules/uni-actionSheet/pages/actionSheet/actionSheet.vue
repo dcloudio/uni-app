@@ -70,7 +70,7 @@
 
 <script setup lang='ts'>
   import { getCurrentInstance, reactive, ref, computed } from 'vue'
-  import { onLoad, onReady, onResize, onUnload } from '@dcloudio/uni-app'
+  import { onLoad, onReady, onResize } from '@dcloudio/uni-app'
 
   const pageInstance = getCurrentInstance()!.proxy!
   const uniPageInstance = pageInstance.$page
@@ -121,9 +121,9 @@
 
   // #ifdef WEB
   const fixSize = () => {
-    const systemInfo = uni.getSystemInfoSync()
-    windowWidth.value = systemInfo.windowWidth
-    windowHeight.value = systemInfo.windowHeight + (systemInfo.windowTop || 0)
+    const windowInfo = uni.getWindowInfo()
+    windowWidth.value = windowInfo.windowWidth
+    windowHeight.value = windowInfo.windowHeight + (windowInfo.windowTop || 0)
   }
   // #endif
   const closeActionSheet = () => {
@@ -185,36 +185,34 @@
     })
     uni.$emit(readyEventName.value, {})
 
-    const systemInfo = uni.getSystemInfoSync()
-    const osLanguage = systemInfo.osLanguage
-    const appLanguage = systemInfo.appLanguage
-    if (appLanguage != null) {
-      language.value = appLanguage
-    } else if (osLanguage != null) {
-      language.value = osLanguage
+    const deviceInfo = uni.getDeviceInfo()
+    const appInfo = uni.getAppBaseInfo()
+    if (appInfo.appLanguage != null) {
+      language.value = appInfo.appLanguage
+    } else if (deviceInfo.osLanguage != null) {
+      language.value = deviceInfo.osLanguage
     }
-    const systemAppTheme = systemInfo.appTheme
-    if (systemAppTheme != null && systemAppTheme != "auto") {
-      appTheme.value = systemAppTheme
+    const currentAppTheme = appInfo.appTheme
+    if (currentAppTheme != null && currentAppTheme != 'auto') {
+      appTheme.value = currentAppTheme
       handleThemeChange()
     }
-    const systemOsTheme = systemInfo.osTheme
-    if (systemOsTheme != null && appTheme.value == null) {
-      appTheme.value = systemOsTheme
+    const currentOsTheme = deviceInfo.osTheme
+    if (currentOsTheme != null && appTheme.value == null) {
+      appTheme.value = currentOsTheme
       handleThemeChange()
     }
     // #ifdef WEB
-    const systemHostTheme = systemInfo.hostTheme
-    if (systemHostTheme != null) {
-      hostTheme.value = systemHostTheme
+    const currentHostTheme = appInfo.hostTheme
+    if (currentHostTheme != null) {
+      hostTheme.value = currentHostTheme
       handleThemeChange()
     }
     uni.onHostThemeChange((res) => {
       hostTheme.value = res.theme
       handleThemeChange()
     });
-    windowWidth.value = systemInfo.windowWidth
-    windowHeight.value = systemInfo.windowHeight
+    fixSize()
     window.addEventListener('resize', fixSize)
 
     const locale = uni.getLocale()
@@ -225,7 +223,7 @@
       }
     })
     // #endif
-    isLandscape.value = systemInfo.deviceOrientation == 'landscape'
+    isLandscape.value = deviceInfo.deviceOrientation == 'landscape'
     // #ifdef APP-ANDROID || APP-IOS
     appThemeChangeCallbackId.value = uni.onAppThemeChange((res: AppThemeChangeResult) => {
       const callbackAppTheme = res.appTheme
@@ -327,8 +325,8 @@
     bottomNavigationHeight.value = uniPageInstance.safeAreaInsets.bottom
     // #ifdef APP-ANDROID
     if(bottomNavigationHeight.value == 0){
-      const systemInfo = uni.getSystemInfoSync()
-      bottomNavigationHeight.value = systemInfo.safeAreaInsets.bottom
+      const windowInfo = uni.getWindowInfo()
+      bottomNavigationHeight.value = windowInfo.safeAreaInsets.bottom
     }
     // #endif
     setTimeout(() => {
@@ -336,8 +334,8 @@
     }, 10)
   })
   onResize((_ : OnResizeOptions) => {
-    const systemInfo = uni.getSystemInfoSync()
-    isLandscape.value = systemInfo.deviceOrientation == 'landscape'
+    const deviceInfo = uni.getDeviceInfo()
+    isLandscape.value = deviceInfo.deviceOrientation == 'landscape'
   })
   onBeforeUnmount(() => {
     if (!menuItemClicked.value && !cancelButtonClicked.value) {

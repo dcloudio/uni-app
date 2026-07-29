@@ -2127,6 +2127,9 @@ function registerPage(_ref, onCreated) {
         invokeHook(pageComponentPublicInstance, ON_UNLOAD);
       });
       nativePage.addPageEventListener(ON_READY, (_) => {
+        {
+          initVaporPageLifeCycle(pageComponentPublicInstance, nativePage);
+        }
         invokePageOnReady(pageComponentPublicInstance);
       });
       nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
@@ -2152,9 +2155,6 @@ function registerPage(_ref, onCreated) {
         };
         invokeHook(pageComponentPublicInstance, ON_RESIZE, args);
       });
-      {
-        initVaporPageLifeCycle(pageComponentPublicInstance, nativePage);
-      }
       nativePage.startRender();
       onRegistered === null || onRegistered === void 0 || onRegistered(nativePage);
     });
