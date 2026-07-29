@@ -8,7 +8,7 @@ import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as U
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, isInSSRComponentSetup, createCommentVNode, normalizeClass, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, toDisplayString, unref } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
-import { useRoute, isNavigationFailure, START_LOCATION, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
+import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 const realGlobal = getGlobal();
 realGlobal.UTS = UTS$1;
@@ -9041,23 +9041,33 @@ const pendingAppRouteContexts = [];
 const historyOpenTypes = /* @__PURE__ */ new WeakMap();
 let pendingHistoryRoute;
 let appRouteReady = false;
+let appRouteStarted = false;
 const onAppRoute = appRouteRuntime.onAppRoute;
 const offAppRoute = appRouteRuntime.offAppRoute;
 function getRoutePath(route) {
   const pagePath = route.meta.route;
   return typeof pagePath === "string" ? pagePath : removeLeadingSlash(route.path);
 }
-function dispatchWebAppRoute(event) {
-  const context = appRouteRuntime.createAppRouteContext(event);
+function dispatchWebAppRoute(route) {
+  const context = appRouteRuntime.createAppRouteContext({
+    path: getRoutePath(route),
+    query: decodedQuery(route.query),
+    openType: resolveOpenType(route),
+    notFound: route.matched.length === 0
+  });
   if (!appRouteReady) {
     pendingAppRouteContexts.push(context);
     return;
   }
   appRouteRuntime.dispatchAppRoute(context);
 }
-function takePendingHistoryOpenType(to) {
+function isPendingHistoryRoute(to) {
   var _a;
-  if (pendingHistoryRoute && (pendingHistoryRoute.fullPath === to.fullPath || pendingHistoryRoute.fullPath === ((_a = to.redirectedFrom) == null ? void 0 : _a.fullPath))) {
+  const fullPath = to.fullPath || to.path;
+  return pendingHistoryRoute && (pendingHistoryRoute.fullPath === fullPath || pendingHistoryRoute.fullPath === ((_a = to.redirectedFrom) == null ? void 0 : _a.fullPath));
+}
+function takePendingHistoryOpenType(to) {
+  if (pendingHistoryRoute && isPendingHistoryRoute(to)) {
     const { openType } = pendingHistoryRoute;
     pendingHistoryRoute = void 0;
     return openType;
@@ -9078,9 +9088,10 @@ function takeHistoryOpenType(to) {
   }
   return openType;
 }
-function resolveOpenType(to, from) {
+function resolveOpenType(to) {
   var _a;
-  if (from === START_LOCATION) {
+  if (!appRouteStarted) {
+    appRouteStarted = true;
     return "appLaunch";
   }
   const historyOpenType = takeHistoryOpenType(to);
@@ -9093,14 +9104,6 @@ function resolveOpenType(to, from) {
   }
   return API_NAVIGATE_TO;
 }
-function dispatchRouterAppRoute(to, openType) {
-  dispatchWebAppRoute({
-    path: getRoutePath(to),
-    query: decodedQuery(to.query),
-    openType,
-    notFound: to.matched.length === 0
-  });
-}
 function setWebAppRouteHistoryDirection(fullPath, direction2) {
   pendingHistoryRoute = {
     fullPath,
@@ -9111,12 +9114,14 @@ function initWebAppRouteListener(router) {
   router.beforeEach((to) => {
     bindHistoryOpenType(to);
   });
-  router.afterEach((to, from, failure) => {
-    const openType = resolveOpenType(to, from);
+  router.afterEach((to, _from, failure) => {
     if (failure) {
+      takeHistoryOpenType(to);
       return;
     }
-    dispatchRouterAppRoute(to, openType);
+    if (to.matched.length === 0) {
+      dispatchWebAppRoute(to);
+    }
   });
   router.onError((_error, to) => {
     takeHistoryOpenType(to);
@@ -9187,6 +9192,7 @@ function setupPage(comp, path) {
     setup(instance2) {
       instance2.$pageInstance = instance2;
       const route = usePageRoute();
+      const router = useRouter();
       const query = decodedQuery(route.query);
       instance2.attrs.__pageQuery = query;
       {
@@ -9217,6 +9223,14 @@ function setupPage(comp, path) {
       );
       onBeforeMount(() => {
         onPageShow(instance2, pageMeta);
+        {
+          const pageInstance = getPageInstanceByChild(instance2);
+          if (!isDialogPageInstance(pageInstance)) {
+            dispatchWebAppRoute(
+              __UNI_FEATURE_PAGES__ ? router.currentRoute.value : route
+            );
+          }
+        }
       });
       onMounted(() => {
         var _a;
@@ -9242,6 +9256,9 @@ function setupPage(comp, path) {
             if (!isDialogPageInstance(pageInstance)) {
               const { onShow } = instance2;
               onShow && invokeArrayFns$1(onShow);
+              dispatchWebAppRoute(
+                __UNI_FEATURE_PAGES__ ? router.currentRoute.value : route
+              );
               invokeLastDialogPageHookByUniPage(
                 (_a = instance2.proxy) == null ? void 0 : _a.$page,
                 ON_SHOW

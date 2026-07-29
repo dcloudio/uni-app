@@ -3061,6 +3061,7 @@ function setupPage(comp, path) {
     setup(instance) {
       instance.$pageInstance = instance;
       const route = usePageRoute();
+      vueRouter.useRouter();
       const query = uniShared.decodedQuery(route.query);
       instance.attrs.__pageQuery = query;
       {
