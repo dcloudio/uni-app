@@ -57,6 +57,24 @@ describe('app route runtime', () => {
     expect(listener).toHaveBeenCalledTimes(2)
   })
 
+  test('shares the event transport between runtimes', () => {
+    const runtime1 = createAppRouteRuntime()
+    const runtime2 = createAppRouteRuntime()
+    const listener1 = jest.fn()
+    const listener2 = jest.fn()
+
+    runtime1.onAppRoute(listener1)
+    runtime2.onAppRoute(listener2)
+    runtime2.dispatchAppRoute(
+      runtime2.createAppRouteContext(createRouteEvent())
+    )
+
+    expect(listener1).toHaveBeenCalledTimes(1)
+    expect(listener2).toHaveBeenCalledTimes(1)
+    runtime1.offAppRoute(listener1)
+    runtime2.offAppRoute(listener2)
+  })
+
   test('removes all listeners when callback is omitted or null', () => {
     const runtime = createAppRouteRuntime()
     const listener1 = jest.fn()

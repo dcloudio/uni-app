@@ -17,7 +17,7 @@ import {
   removeAllKeepAliveApiCallbacks,
   removeKeepAliveApiCallback,
 } from './callback'
-import type { CALLBACK_TYPES } from './callback'
+import type { CALLBACK_TYPES, OnApiEventTransport } from './callback'
 import { promisify } from './promise'
 
 /**
@@ -141,7 +141,7 @@ function checkCallback(callback: Function) {
 function wrapperOnApi<T extends ApiLike>(
   name: string,
   fn: Function,
-  options?: ApiOptions<T>
+  options?: DefineOnApiOptions<T>
 ) {
   return (callback: Function) => {
     checkCallback(callback)
@@ -153,13 +153,18 @@ function wrapperOnApi<T extends ApiLike>(
     const isFirstInvokeOnApi = !findInvokeCallbackByName(name)
     createKeepAliveApiCallback(name, callback)
     if (isFirstInvokeOnApi) {
-      onKeepAliveApiCallback(name)
+      onKeepAliveApiCallback(name, options?.eventTransport)
       fn()
     }
   }
 }
 
-export interface DefineOffApiOptions<T extends ApiLike> extends ApiOptions<T> {
+export interface DefineOnApiOptions<T extends ApiLike> extends ApiOptions<T> {
+  eventTransport?: OnApiEventTransport
+}
+
+export interface DefineOffApiOptions<T extends ApiLike>
+  extends DefineOnApiOptions<T> {
   allowClearAll?: boolean
 }
 
@@ -191,7 +196,7 @@ function wrapperOffApi<T extends ApiLike>(
     // 是否还存在监听，若已不存在，则移除onMethod监听
     const hasInvokeOnApi = findInvokeCallbackByName(onApiName)
     if (!hasInvokeOnApi) {
-      offKeepAliveApiCallback(onApiName)
+      offKeepAliveApiCallback(onApiName, options?.eventTransport)
       fn()
     }
   }
@@ -261,7 +266,7 @@ function wrapperAsyncApi<T extends ApiLike>(
 export function defineOnApi<T extends ApiLike>(
   name: string,
   fn: () => void,
-  options?: ApiOptions<T>
+  options?: DefineOnApiOptions<T>
 ) {
   return wrapperOnApi(name, fn, options) as unknown as T
 }

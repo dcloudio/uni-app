@@ -45,7 +45,6 @@ describe('app x app route', () => {
   const oldPlatform = (global as any).__PLATFORM__
   const oldUniRoutes = global.__uniRoutes
   const oldUniConfig = global.__uniConfig
-  const bridgeListeners: Record<string, Function> = {}
   const appVm = {
     $: {
       onPageNotFound: [] as Function[],
@@ -53,15 +52,15 @@ describe('app x app route', () => {
   }
 
   beforeAll(() => {
-    bridge.on = (name: string, callback: Function) => {
-      bridgeListeners[name] = callback
-    }
-    bridge.off = (name: string) => {
-      delete bridgeListeners[name]
-    }
-    bridge.invokeOnCallback = (name: string, event: unknown) => {
-      bridgeListeners[`api.${name}`]?.(event)
-    }
+    bridge.on = jest.fn(() => {
+      throw new Error('App X 不应使用 UniServiceJSBridge.on')
+    })
+    bridge.off = jest.fn(() => {
+      throw new Error('App X 不应使用 UniServiceJSBridge.off')
+    })
+    bridge.invokeOnCallback = jest.fn(() => {
+      throw new Error('App X 不应使用 UniServiceJSBridge.invokeOnCallback')
+    })
     ;(global as any).getApp = () => ({ vm: appVm })
     ;(global as any).__PLATFORM__ = 'app'
     global.__uniConfig = { ready: false } as UniApp.UniConfig
@@ -109,6 +108,27 @@ describe('app x app route', () => {
     offAppRoute(listener)
     dispatchAppRoute('/pages/next/next', {}, API_NAVIGATE_TO)
     expect(listener).toHaveBeenCalledTimes(1)
+  })
+
+  test('supports multiple listeners and clearing all listeners', () => {
+    const listener1 = jest.fn()
+    const listener2 = jest.fn()
+    onAppRoute(listener1)
+    onAppRoute(listener2)
+
+    dispatchAppRoute('/pages/index/index', {}, API_NAVIGATE_TO)
+    expect(listener1).toHaveBeenCalledTimes(1)
+    expect(listener2).toHaveBeenCalledTimes(1)
+
+    offAppRoute(listener1)
+    dispatchAppRoute('/pages/next/next', {}, API_NAVIGATE_TO)
+    expect(listener1).toHaveBeenCalledTimes(1)
+    expect(listener2).toHaveBeenCalledTimes(2)
+
+    offAppRoute()
+    dispatchAppRoute('/pages/last/last', {}, API_NAVIGATE_TO)
+    expect(listener1).toHaveBeenCalledTimes(1)
+    expect(listener2).toHaveBeenCalledTimes(2)
   })
 
   test('dispatches onPageNotFound before onAppRoute', () => {
