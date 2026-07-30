@@ -542,9 +542,6 @@
   .uni-action-sheet_dialog__action {
     cursor: pointer;
   }
-  .uni-action-sheet_dialog__action {
-    padding-bottom: calc(16px + var(--uni-safe-area-inset-bottom, 0px));
-  }
 
   .uni-action-sheet_dialog__triangle {
     position: absolute;

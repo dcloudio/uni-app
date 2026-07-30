@@ -78,7 +78,7 @@
 		justify-content: center;
 		align-items: center;
 		min-width: 136px;
-		max-width: 600rpx;
+		max-width: 80%;
 		height: 136px;
 		padding: 10px;
 		background-color: rgba(76, 76, 76, 1);
