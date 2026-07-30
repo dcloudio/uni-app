@@ -236,6 +236,18 @@ describe('pipeline/collector', () => {
   })
 
   describe('flush()', () => {
+    test('isNetworkOffline=true → 不摘队列、不发送', async () => {
+      const deps = makeDeps({
+        isNetworkOffline: jest.fn(async () => true),
+      })
+      deps.queue.shouldFlush.mockReturnValue(true)
+      const c = createCollector(deps)
+      await c.flush(true)
+      expect(deps.isNetworkOffline).toHaveBeenCalled()
+      expect(deps.queue.flush).not.toHaveBeenCalled()
+      expect(deps.selectChannel).not.toHaveBeenCalled()
+    })
+
     test('shouldFlush=false 且 force=false → no-op', async () => {
       const deps = makeDeps()
       deps.queue.shouldFlush.mockReturnValue(false)

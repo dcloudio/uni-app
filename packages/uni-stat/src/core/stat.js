@@ -11,6 +11,7 @@ import {
   is_push_clientid
 } from '../utils/pageInfo.js'
 import { dbSet } from '../utils/db.js'
+import { resumeReportNetwork } from './reportNetwork.js'
 class Stat extends Report {
   static getInstance() {
     if (!uni.__stat_instance) {
@@ -20,6 +21,7 @@ class Stat extends Report {
     // 2.0 init 服务空间
     if (__STAT_VERSION__ === '2') {
       let space = get_space(uniCloud.config)
+      let spaceJustReady = false
       if (!uni.__stat_uniCloud_space) {
         //   判断不为空对象
         if (space && Object.keys(space).length !== 0) {
@@ -40,6 +42,7 @@ class Stat extends Report {
           }
 
           uni.__stat_uniCloud_space = uniCloud.init(spaceData)
+          spaceJustReady = true
           // console.log(
           //   '=== 当前绑定的统计服务空间spaceId：' +
           //     uni.__stat_uniCloud_space.config.spaceId
@@ -47,6 +50,10 @@ class Stat extends Report {
         } else {
           console.error('应用未关联服务空间，请在uniCloud目录右键关联服务空间')
         }
+      }
+      // 仅在服务空间刚刚就绪时冲刷一次，避免 getInstance 反复触发
+      if (spaceJustReady) {
+        resumeReportNetwork()
       }
     }
 
