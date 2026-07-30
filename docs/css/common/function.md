@@ -212,7 +212,7 @@ env(safe-area-inset-left, 20px);
 
 app平台仅以下CSS属性支持使用环境变量
 - padding （不支持缩写，只支持展开值，明确到具体方向，比如 padding-left）
-- margin（不支持缩写，只支持展开值，明确到具体方向，比如 padding-left）
+- margin（不支持缩写，只支持展开值，明确到具体方向，比如 margin-left）
 - width
 - height
 - top
