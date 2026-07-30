@@ -279,7 +279,7 @@ export declare function getSharedDataRestElement(val: any, keys: string[]): any;
 export declare function getSharedDataDefaultValue(val: any, defaultVal: any): any;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiCreateRecycleFor.d.ts
-export declare const preCreateSharedDataRecycleFor: <Source>(src: () => Source, getKey?: (item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) => (() => Source);
+export declare const preCreateSharedDataRecycleFor: <Source>(src: () => Source, getKey?: (item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, getId?: (item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any) => (() => Source);
 declare class RecycleContext {}
 export declare function createRecycleContext(): RecycleContext;
 export declare const createSharedDataRecycleFor: <S extends UniSharedData, Source>(recycleContext: RecycleContext, sharedDataVFor: UniSharedDataVFor<S>, src: () => Source, renderItem: (shareDataVForItem: S, item: ShallowRef<ItemOf<Source>>, key: ShallowRef<KeyOf<Source>>, index: ShallowRef<number | undefined>) => VaporSharedDataComponentInstance | null, getKey?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, getType?: (shareDataVForItem: S, item: ItemOf<Source>, key: KeyOf<Source>, index?: number) => any, flags?: number) => void;

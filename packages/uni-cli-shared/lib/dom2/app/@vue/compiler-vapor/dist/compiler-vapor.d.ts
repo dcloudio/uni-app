@@ -22523,6 +22523,7 @@ export interface ForIRNode extends BaseIRNode, IRFor, EffectBoundary {
   id: number;
   keyProp?: SimpleExpressionNode;
   typeProp?: SimpleExpressionNode;
+  idProp?: SimpleExpressionNode;
   render: BlockIRNode;
   once: boolean;
   slotRoot?: boolean;

@@ -29583,6 +29583,8 @@ function processFor(node, dir, context) {
 	const keyProperty = keyProp && propToExpression(keyProp);
 	const typeProp = findProp(node, "type");
 	const typeProperty = typeProp && propToExpression(typeProp);
+	const idProp = findProp(node, "id");
+	const idProperty = idProp && propToExpression(idProp);
 	const isComponent = node.tagType === 1 || isTemplateWithSingleComponent(node);
 	context.node = node = wrapTemplate(node, ["for", "key"]);
 	context.dynamic.flags |= 6;
@@ -29605,6 +29607,7 @@ function processFor(node, dir, context) {
 			index,
 			keyProp: keyProperty,
 			typeProp: typeProperty,
+			idProp: idProperty,
 			render,
 			once: context.inVOnce || isStaticExpression(source, context.options.bindingMetadata),
 			component: isComponent && node.children[0].type === 1 && node.children[0].tagType === 1,
