@@ -101,13 +101,9 @@ if(a){ //a在js里作为数字，被隐式转换为了true。但uts里不能这�
 <template>
 	<switch @change="switchChange" />
 </template>
-<script lang="uts">
-	export default {
-		methods: {
-			switchChange: function (e : SwitchChangeEvent) { // 这里必须声明e的类型为SwitchChangeEvent
-				console.log('switch 发生 change 事件，携带值为', e.detail.value)
-			}
-		}
+<script setup lang="uts">
+	const switchChange = (e : SwitchChangeEvent) => { // 这里必须声明e的类型为SwitchChangeEvent
+		console.log('switch 发生 change 事件，携带值为', e.detail.value)
 	}
 </script>
 ```
@@ -158,17 +154,16 @@ foo2(person)
   <text>index.uvue</text>
 </template>
 
-<script lang="uts">
+<script setup lang="uts">
   import type { Person } from './utils.uts'
   import { logPersonInfo } from './utils.uts'
-  export default {
-    onReady() {
-      logPersonInfo({ name: 'name', age: 18 } as Person)
-      // 或者
-      const person: Person = { name: 'name', age: 18 }
-      logPersonInfo(person)
-    }
-  }
+
+  onReady(() => {
+    logPersonInfo({ name: 'name', age: 18 } as Person)
+    // 或者
+    const person: Person = { name: 'name', age: 18 }
+    logPersonInfo(person)
+  })
 </script>
 ```
 
@@ -211,13 +206,13 @@ uts中有2种方式使用json数据：
 - 生命周期的参数及参数类型均可省略。以 `onLoad` 为例：
 ```ts
 // 省略参数
-onLoad() {
+onLoad(() => {
 	console.log('onLoad')
-}
+})
 // 省略参数类型
-onLoad(options) {
+onLoad((options) => {
 	console.log('onLoad')
-}
+})
 ```
 - 模板函数的 event 参数可以省略，但如果参数存在，则必须有类型。
 ```html
@@ -226,16 +221,12 @@ onLoad(options) {
 		<text>text</text>
 	</view>
 </template>
-<script lang="uts">
-	export default {
-		methods: {
-			onTouchstart() { // event 参数可以省略
-				console.log('onTouchstart')
-			},
-			onClick: function (event: MouseEvent) { // event 参数存在，必须指定类型
-				console.log(event)
-			}
-		}
+<script setup lang="uts">
+	const onTouchstart = () => { // event 参数可以省略
+		console.log('onTouchstart')
+	}
+	const onClick = (event: MouseEvent) => { // event 参数存在，必须指定类型
+		console.log(event)
 	}
 </script>
 ```
