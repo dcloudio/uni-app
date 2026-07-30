@@ -482,46 +482,45 @@ App一键登录为了支持“中国电信”运行商，要用到“电信（�
   </view>
 </template>
 
-<script>
+<script setup lang="uts">
   // #ifdef APP
   import { openSchema } from '@/uni_modules/uts-openSchema'
   // #endif
-  export default {
-    data() {
-      return {
-        number: 0,
-        hrefLicense: 'https://dcloud.io/license/DCloud.html', //请自行修改为自己的链接
-        hrefPrivacy: 'https://dcloud.io/license/hello-uni-app-x.html' //请自行修改为自己的链接
-      }
-    },
-    unmounted() {
-      uni.offPrivacyAuthorizationChange(this.number)
-    },
-    onLoad() {
-      this.number = uni.onPrivacyAuthorizationChange((callback) => {
-        uni.showToast({
-          title: 'isPrivacyAgree:' + !callback.needAuthorization
-        })
+
+  const currentPage = getCurrentInstance()!.proxy!.$page
+  const hrefLicense = 'https://dcloud.io/license/DCloud.html' //请自行修改为自己的链接
+  const hrefPrivacy = 'https://dcloud.io/license/hello-uni-app-x.html' //请自行修改为自己的链接
+  let callbackId = 0
+
+  onLoad(() => {
+    callbackId = uni.onPrivacyAuthorizationChange((callback) => {
+      uni.showToast({
+        title: 'isPrivacyAgree:' + !callback.needAuthorization
       })
-    },
-    methods: {
-      agree() {
-        uni.closeDialogPage({
-          dialogPage: this.$page
-        })
-      },
-      reject() {
-        uni.resetPrivacyAuthorization()
-        uni.closeDialogPage({
-          dialogPage: this.$page
-        })
-      },
-      hrefClick(href : string) {
-        // #ifdef APP
-        openSchema(href)
-        // #endif
-      },
-    }
+    })
+  })
+
+  onUnmounted(() => {
+    uni.offPrivacyAuthorizationChange(callbackId)
+  })
+
+  const agree = () => {
+    uni.closeDialogPage({
+      dialogPage: currentPage
+    })
+  }
+
+  const reject = () => {
+    uni.resetPrivacyAuthorization()
+    uni.closeDialogPage({
+      dialogPage: currentPage
+    })
+  }
+
+  const hrefClick = (href : string) => {
+    // #ifdef APP
+    openSchema(href)
+    // #endif
   }
 </script>
 
@@ -580,26 +579,22 @@ App一键登录为了支持“中国电信”运行商，要用到“电信（�
 
 示例代码如下：
 ```uts
-<script lang="uts">
-  export default {
-    onLaunch: function (res : OnLaunchOptions) {
-      // #ifdef APP
-      // 获取是否同意隐私政策
-      uni.getPrivacySetting({
-        success(res){
-           if(res.needAuthorization){
-             // 用户未同意隐私政策则弹出“个人信息保护指引”提示框
-             uni.openDialogPage({
-               url: '/pages/privacy',  // 修改为应用中定义的页面地址
-             })
-           }
+<script setup lang="uts">
+  onLaunch((res : OnLaunchOptions) => {
+    // #ifdef APP
+    // 获取是否同意隐私政策
+    uni.getPrivacySetting({
+      success(res){
+         if(res.needAuthorization){
+           // 用户未同意隐私政策则弹出“个人信息保护指引”提示框
+           uni.openDialogPage({
+             url: '/pages/privacy',  // 修改为应用中定义的页面地址
+           })
         }
-      })
-      // #endif
-    },
-    methods: {
-    }
-  }
+      }
+    })
+    // #endif
+  })
 </script>
 
 ```
@@ -630,52 +625,49 @@ App首次启动调用 [uni.openDialogPage](../api/dialog-page.md#opendialogpage)
 
 以下是 `app.uvue` 页面添加 `isAgreePrivacy` 保存状态的示例：  
 ```vue
-<script lang="uts">
-  export default {
+<script setup lang="uts">
+  defineOptions({
     globalData: {
       isAgreePrivacy: false
     }
-  },
-  onLaunch: function (res : OnLaunchOptions) {
+  })
+
+  onLaunch((res : OnLaunchOptions) => {
     // #ifdef APP
     // 监听同意隐私政策状态变化
     uni.onPrivacyAuthorizationChange((res)=>{
       //更新同意隐私政策状态
-      this.globalData.isAgreePrivacy = !res.needAuthorization
+      getApp().globalData.isAgreePrivacy = !res.needAuthorization
     })
     // 获取是否同意隐私政策
     uni.getPrivacySetting({
       success(res){
         if(res.needAuthorization){
           // 用户未同意隐私政策
-          this.globalData.isAgreePrivacy = false
+          getApp().globalData.isAgreePrivacy = false
           // 用户未同意隐私政策则弹出“个人信息保护指引”提示框
           uni.openDialogPage({
             url: '/pages/privacy',  // 修改为应用中定义的页面地址
           })
         }else{
           // 用户已同意隐私政策
-          this.globalData.isAgreePrivacy = true
+          getApp().globalData.isAgreePrivacy = true
         }
       }
     })
     // #endif
-  }
+  })
 </script>
 ```
 
 在页面或组件中通过 `getApp().globalData` 访问 `isAgreePrivacy`：  
 ```vue
-<script lang="uts">
-  export default {
-  },
-  methods: {
-    myTestPrivacyAPI() {
-      if(getApp().globalData.isAgreePrivacy){
-        //用户已经同意隐私政策，这时可以使用涉及个人信息的功能  
-      }else{
-        //用户未同意隐私政策，需弹出“个人信息保护指引”提示框并引导用户同意  
-      }
+<script setup lang="uts">
+  const myTestPrivacyAPI = () => {
+    if(getApp().globalData.isAgreePrivacy){
+      //用户已经同意隐私政策，这时可以使用涉及个人信息的功能
+    }else{
+      //用户未同意隐私政策，需弹出“个人信息保护指引”提示框并引导用户同意
     }
   }
 </script>
@@ -758,48 +750,48 @@ App首次启动调用 [uni.openDialogPage](../api/dialog-page.md#opendialogpage)
   </scroll-view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        title: '用户“同意”《隐私政策》前不能使用涉及采集个人信息的组件（如map、camera、ad等）及API，此页面演示“同意”/“不同意”《隐私政策》后显示/隐藏相关组件、使用相关API进行提示的示例',
-        isAgreePrivacy: false,  //保存同意隐私政策状态
+<script setup lang="uts">
+  const title = '用户“同意”《隐私政策》前不能使用涉及采集个人信息的组件（如map、camera、ad等）及API，此页面演示“同意”/“不同意”《隐私政策》后显示/隐藏相关组件、使用相关API进行提示的示例'
+  const isAgreePrivacy = ref(false) //保存同意隐私政策状态
+  let callbackId = 0
+
+  onLoad(() => {
+    //监听同意隐私政策状态的变化
+    callbackId = uni.onPrivacyAuthorizationChange((res)=>{
+      isAgreePrivacy.value = !res.needAuthorization
+    })
+    //获取当前同意隐私正常状态
+    uni.getPrivacySetting({
+      success: (res) => {
+        isAgreePrivacy.value = !res.needAuthorization
       }
-    },
-    onLoad() {
-      //监听同意隐私政策状态的变化
-      uni.onPrivacyAuthorizationChange((res)=>{
-        this.isAgreePrivacy = !res.needAuthorization
+    })
+  })
+
+  onUnload(() => {
+    uni.offPrivacyAuthorizationChange(callbackId)
+  })
+
+  const resetPrivacy = () => {
+    //不同意隐私政策
+    uni.resetPrivacyAuthorization()
+  }
+
+  const getDeviceInof = () => {
+    if(!isAgreePrivacy.value){
+      uni.showModal({
+        content: '您没有同意《隐私政策》，不能使用此功能！',
+        showCancel: false
       })
-      //获取当前同意隐私正常状态
-      uni.getPrivacySetting({
-        success: (res) => {
-          this.isAgreePrivacy = !res.needAuthorization
-        }
-      })
-    },
-    methods: {
-      resetPrivacy() {
-        //不同意隐私政策
-        uni.resetPrivacyAuthorization()
-      },
-      getDeviceInof() {
-        if(!this.isAgreePrivacy){
-          uni.showModal({
-            content: '您没有同意《隐私政策》，不能使用此功能！',
-            showCancel: false
-          })
-          return
-        }
-        let info = uni.getDeviceInfo()
-        uni.showModal({
-          title: '设备信息',
-          content: JSON.stringify(info),
-          showCancel: false
-        })
-        console.log('getDeviceInfo', info)
-      }
+      return
     }
+    let info = uni.getDeviceInfo()
+    uni.showModal({
+      title: '设备信息',
+      content: JSON.stringify(info),
+      showCancel: false
+    })
+    console.log('getDeviceInfo', info)
   }
 </script>
 
@@ -838,5 +830,4 @@ App首次启动调用 [uni.openDialogPage](../api/dialog-page.md#opendialogpage)
 - [《网络安全标准实践指南—移动互联网应用程序（App）个人信息保护常见问题及处置指南》](https://www.tc260.org.cn/front/postDetail.html?id=20200918162332)  
 - [《网络安全标准实践指南—移动互联网应用程序（App）收集使用个人信息自评估指南》](https://www.tc260.org.cn/front/postDetail.html?id=20200722134829)  
 - [《网络安全实践指南—移动互联网应用基本业务功能必要信息规范》](https://www.tc260.org.cn/front/postDetail.html?id=20190531230315)  
-
 
