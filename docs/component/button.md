@@ -386,9 +386,9 @@ button 的 size、type 属性是预置样式，适合快速使用；如需修改
 
 button 按下后触发 hover-class 效果。点击态取消后的触发规则如下：
 
-- App 平台：手指不松开并持续在屏幕上移动，离开 button 组件范围后，hover-class 效果消失，同时不会触发点击事件。
-- Web 平台：手指移动一点后，即便未离开 button 范围，hover-class 效果也会消失，同时不会触发点击事件。
-- 所有平台：hover-class 消失后再松开手指，都不会触发点击事件。
+- Android 平台：手指不松开并持续在屏幕上移动，离开 button 组件范围后，hover-class 效果消失。
+- iOS 平台：手指按下后，hover-class 效果会保持到手指抬起时消失。
+- 鸿蒙平台、Web 平台：手指移动一点后，即便未离开 button 范围，hover-class 效果也会消失。
 
 button 设置 hover-class 属性规则如下：
 
