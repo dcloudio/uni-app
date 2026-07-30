@@ -108,12 +108,12 @@ type IRootType = {
 
 因type不可嵌套，生成了2个type。注意顺序，Data这个type需写在前面，因为后面要引用它。引用代码执行时如未定义该类型，会报错。
 
-- 第二步：把这段类型定义，放在`<script>`根下，如果是选项式要放在export default{}之前。然后给uni.request传入泛型参数`<IRootType>`，返回的res.data自动转换好了类型，可以直接`.`属性了。
+- 第二步：把这段类型定义放在`<script setup>`根下，并确保定义在使用它的代码之前。然后给uni.request传入泛型参数`<IRootType>`，返回的res.data自动转换好了类型，可以直接`.`属性了。
 
 **注意：** 因为`res.data`是对象，所以泛型那里直接使用`<IRootType>`。有的服务器接口返回的`res.data`是数组，就需要在泛型那里写成`<IRootType[]>`
 
 ```vue
-<script>
+<script setup lang="uts">
 	type Data = {
 		plugin_id : number;
 		plugin_name : string;
@@ -123,22 +123,21 @@ type IRootType = {
 		desc : string;
 		data : Data[];
 	}
-	export default {
-		onLoad() {
-			uni.request<IRootType>({ // 通过<IRootType>要求request方法的返回值转为IRootType类型
-				url: "https://ext.dcloud.net.cn/plugin/uniappx-plugin-list",
-				success: (res) => {
-					console.log(res.data)
-					console.log(res.data instanceof IRootType) //true res.data已经被转换为type了
-					console.log(res.data?.data) //因为联网数据不可控，转换可能失败，所以这里需要用?.的方式做安全访问
-					let resData = res.data?.data
-					if(resData!=null && resData.length>0){ //判断一下数组不为空
-						console.log(resData[0])
-						console.log(resData[0].plugin_name)
-					}
-			}})
-		},
-	}
+
+	onLoad(() => {
+		uni.request<IRootType>({ // 通过<IRootType>要求request方法的返回值转为IRootType类型
+			url: "https://ext.dcloud.net.cn/plugin/uniappx-plugin-list",
+			success: (res) => {
+				console.log(res.data)
+				console.log(res.data instanceof IRootType) //true res.data已经被转换为type了
+				console.log(res.data?.data) //因为联网数据不可控，转换可能失败，所以这里需要用?.的方式做安全访问
+				let resData = res.data?.data
+				if(resData!=null && resData.length>0){ //判断一下数组不为空
+					console.log(resData[0])
+					console.log(resData[0].plugin_name)
+				}
+		}})
+	})
 </script>
 ```
 
@@ -173,11 +172,9 @@ uni.request方法是支持泛型的，这意味着返回结果可以有很多种
 所以可以把你定义的DataType类型通过`<T>`的方式传给uni.request方法，尖括号要写在方法名和左圆括号中间。
 这个方法就会把返回的`res.data`转换为你传入的DataType类型。
 
-- 为何type要定义在export default{}之前？
+- 为何type要定义在使用位置之前？
 
-其实如果type不用于vue data数据的类型，那么type只需要定义在执行前就可以。
-
-但实际开发中，type大多用于data的类型定义，而想给data定义类型，那就得写在data的前面，也就是export default{}之前了。
+UTS不存在声明提升，type需要先声明、后使用。实际开发中，type常用于响应式数据的类型定义，因此应写在创建`ref`等状态的代码之前。
 
 - 网络数据缺少一些属性怎么办？
 
@@ -229,7 +226,7 @@ HBuilderX的json转type工具，会对一些敏感符合和关键字自动转义
 	</list-view>
 </template>
 
-<script>
+<script setup lang="uts">
 	type Data = {
 		plugin_id : number;
 		plugin_name : string;
@@ -256,70 +253,63 @@ HBuilderX的json转type工具，会对一些敏感符合和关键字自动转义
 		data : Data[];
 	}
 
-	export default {
-		data() {
-			return {
-				dataList: [] as Data[],
-				loading: false,
-				isEnded: false,
-				loadingError: '',
-				$currentPage: 1
-			}
-		},
-		computed: {
-			loadingText() : string {
-				if (this.loading) {
-					return "加载中..."
-				} else if (this.isEnded) {
-					return "没有更多了"
-				} else if (this.loadingError.length > 0) {
-					return this.loadingError
-				} else {
-					return ""
-				}
-			}
-		},
-		onLoad() {
-			this.loadData()
-		},
-		methods: {
-			loadData() {
-				if (this.loading || this.isEnded) {
+	const dataList = ref<Data[]>([])
+	const loading = ref(false)
+	const isEnded = ref(false)
+	const loadingError = ref('')
+	let currentPage = 1
+
+	const loadingText = computed(() : string => {
+		if (loading.value) {
+			return "加载中..."
+		} else if (isEnded.value) {
+			return "没有更多了"
+		} else if (loadingError.value.length > 0) {
+			return loadingError.value
+		} else {
+			return ""
+		}
+	})
+
+	const loadData = () => {
+		if (loading.value || isEnded.value) {
+			return
+		}
+		loading.value = true
+
+		uni.request<IRootType>({
+			url: "https://ext.dcloud.net.cn/plugin/uniappx-plugin-list",
+			data: {
+				page: currentPage, //当前页码
+				page_size: 10 //每页列表项目数量
+			},
+			success: (res) => {
+				const responseData = res.data
+				if (responseData == null) {
 					return
 				}
-				this.loading = true
 
-				uni.request<IRootType>({
-					url: "https://ext.dcloud.net.cn/plugin/uniappx-plugin-list",
-					data: {
-						page: this.$currentPage, //当前页码
-						page_size: 10 //每页列表项目数量
-					},
-					success: (res) => {
-						const responseData = res.data
-						if (responseData == null) {
-							return
-						}
+				//...是展开运算符，本句用于把联网获取的数组合并到data数组里。当第一次执行时，dataList为空，push进去了第一页的数据，后续页面也同理
+				dataList.value.push(...responseData.data)
 
-						//...是展开运算符，本句用于把联网获取的数组合并到data数组里。当第一次执行时，dataList为空，push进去了第一页的数据，后续页面也同理
-						this.dataList.push(...responseData.data)
-
-						if (responseData.data.length == 0) {
-							this.isEnded = true
-						} else {
-							this.$currentPage++
-						}
-					},
-					fail: (err) => {
-						this.loadingError = err.errMsg
-					},
-					complete: () => {
-						this.loading = false
-					}
-				})
+				if (responseData.data.length == 0) {
+					isEnded.value = true
+				} else {
+					currentPage++
+				}
 			},
-		}
+			fail: (err) => {
+				loadingError.value = err.errMsg
+			},
+			complete: () => {
+				loading.value = false
+			}
+		})
 	}
+
+	onLoad(() => {
+		loadData()
+	})
 </script>
 
 ```
