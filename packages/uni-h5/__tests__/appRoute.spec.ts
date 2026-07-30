@@ -28,12 +28,19 @@ function createRoute(
 
 describe('web app route', () => {
   const oldNodeJs = (global as any).__NODE_JS__
+  const oldPlatform = (global as any).__PLATFORM__
   const oldHistory = (global as any).history
+  const oldGetApp = (global as any).getApp
   const bridge = UniServiceJSBridge as any
   const oldOn = bridge.on
   const oldOff = bridge.off
   const oldInvokeOnCallback = bridge.invokeOnCallback
   const bridgeListeners: Record<string, Function> = {}
+  const appVm = {
+    $: {
+      onPageNotFound: [] as Function[],
+    },
+  }
   let routerBeforeEach: Function
   let routerAfterEach: Function
   let routerOnError: Function
@@ -52,7 +59,9 @@ describe('web app route', () => {
 
   beforeAll(() => {
     ;(global as any).__NODE_JS__ = false
+    ;(global as any).__PLATFORM__ = 'h5'
     ;(global as any).history = { state: {} }
+    ;(global as any).getApp = () => ({ vm: appVm })
     bridge.on = (name: string, callback: Function) => {
       bridgeListeners[name] = callback
     }
@@ -78,6 +87,11 @@ describe('web app route', () => {
   afterAll(() => {
     appRoute.offAppRoute()
     ;(global as any).__NODE_JS__ = oldNodeJs
+    if (oldPlatform === undefined) {
+      delete (global as any).__PLATFORM__
+    } else {
+      ;(global as any).__PLATFORM__ = oldPlatform
+    }
     if (oldHistory === undefined) {
       delete (global as any).history
     } else {
@@ -86,10 +100,16 @@ describe('web app route', () => {
     bridge.on = oldOn
     bridge.off = oldOff
     bridge.invokeOnCallback = oldInvokeOnCallback
+    if (oldGetApp === undefined) {
+      delete (global as any).getApp
+    } else {
+      ;(global as any).getApp = oldGetApp
+    }
   })
 
   beforeEach(() => {
     appRoute.setWebAppRouteReady()
+    appVm.$.onPageNotFound.length = 0
     setHistoryOpenType()
   })
 
@@ -114,26 +134,35 @@ describe('web app route', () => {
         onError() {},
       } as any)
 
+      const pageNotFoundListener = jest.fn()
       const listener = jest.fn()
+      appVm.$.onPageNotFound.push(pageNotFoundListener)
       isolatedAppRoute.onAppRoute(listener)
-      const launchRoute = createRoute('pages/index/index', { from: 'launch' })
+      const launchRoute = createRoute(
+        'pages/missing/missing',
+        { from: 'launch' },
+        { matched: [] }
+      )
       isolatedRouterAfterEach(launchRoute, isolatedStartLocation)
       expect(listener).not.toHaveBeenCalled()
-
-      isolatedAppRoute.dispatchWebAppRoute(launchRoute)
-      expect(listener).not.toHaveBeenCalled()
+      expect(pageNotFoundListener).not.toHaveBeenCalled()
 
       isolatedAppRoute.setWebAppRouteReady()
       expect(listener).toHaveBeenCalledWith(
         expect.objectContaining({
-          path: 'pages/index/index',
+          path: 'pages/missing/missing',
           query: { from: 'launch' },
           openType: 'appLaunch',
           routeEventId: expect.any(String),
           timeStamp: expect.any(Number),
-          notFound: false,
+          notFound: true,
         })
       )
+      expect(pageNotFoundListener).toHaveBeenCalledWith({
+        path: 'pages/missing/missing',
+        query: { from: 'launch' },
+        isEntryPage: true,
+      })
       isolatedAppRoute.offAppRoute()
     })
   })
@@ -269,13 +298,16 @@ describe('web app route', () => {
   })
 
   test('dispatches a not-found route without waiting for a page mount', () => {
-    const listener = jest.fn()
+    const calls: string[] = []
+    const pageNotFoundListener = jest.fn(() => calls.push('onPageNotFound'))
+    const listener = jest.fn(() => calls.push('onAppRoute'))
     const from = createRoute('pages/index/index')
     const notFoundRoute = createRoute(
       'pages/missing/missing',
       {},
       { matched: [] }
     )
+    appVm.$.onPageNotFound.push(pageNotFoundListener)
     appRoute.onAppRoute(listener)
 
     routerAfterEach(notFoundRoute, from)
@@ -286,6 +318,40 @@ describe('web app route', () => {
         notFound: true,
       })
     )
+    expect(pageNotFoundListener).toHaveBeenCalledWith({
+      path: 'pages/missing/missing',
+      query: {},
+      isEntryPage: false,
+    })
+    expect(calls).toEqual(['onPageNotFound', 'onAppRoute'])
+  })
+
+  test('dispatches a not-found route rejected by a route API', () => {
+    const calls: string[] = []
+    const pageNotFoundListener = jest.fn(() => calls.push('onPageNotFound'))
+    const listener = jest.fn(() => calls.push('onAppRoute'))
+    appVm.$.onPageNotFound.push(pageNotFoundListener)
+    appRoute.onAppRoute(listener)
+
+    appRoute.dispatchWebAppRouteNotFound(
+      '/pages/missing/missing?from=api',
+      'redirectTo'
+    )
+
+    expect(pageNotFoundListener).toHaveBeenCalledWith({
+      path: 'pages/missing/missing',
+      query: { from: 'api' },
+      isEntryPage: false,
+    })
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: 'pages/missing/missing',
+        query: { from: 'api' },
+        openType: 'redirectTo',
+        notFound: true,
+      })
+    )
+    expect(calls).toEqual(['onPageNotFound', 'onAppRoute'])
   })
 
   test('dispatches only the final route after a guard redirect', () => {

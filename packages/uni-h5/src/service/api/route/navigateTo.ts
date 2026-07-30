@@ -5,7 +5,7 @@ import {
   NavigateToProtocol,
   defineAsyncApi,
 } from '@dcloudio/uni-api'
-import { navigate } from './utils'
+import { createWebRouteOptions, navigate } from './utils'
 import {
   entryPageState,
   navigateToPagesBeforeEntryPages,
@@ -32,5 +32,7 @@ export const navigateTo = defineAsyncApi<API_TYPE_NAVIGATE_TO>(
     )
   },
   NavigateToProtocol,
-  NavigateToOptions
+  __X__
+    ? createWebRouteOptions(API_NAVIGATE_TO, NavigateToOptions)
+    : NavigateToOptions
 )

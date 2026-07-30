@@ -11,7 +11,7 @@ import {
   reLaunchPagesBeforeEntryPages,
   removePage,
 } from '../../../framework/setup/page'
-import { navigate } from './utils'
+import { createWebRouteOptions, navigate } from './utils'
 
 export function removeAllPages() {
   const keys = getCurrentPagesMap().keys()
@@ -41,5 +41,7 @@ export const reLaunch = defineAsyncApi<API_TYPE_RE_LAUNCH>(
     )
   },
   ReLaunchProtocol,
-  ReLaunchOptions
+  __X__
+    ? createWebRouteOptions(API_RE_LAUNCH, ReLaunchOptions)
+    : ReLaunchOptions
 )

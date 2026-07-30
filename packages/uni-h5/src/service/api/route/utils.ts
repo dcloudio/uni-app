@@ -1,5 +1,10 @@
 import { EventChannel, parseUrl } from '@dcloudio/uni-shared'
 import { type Router, isNavigationFailure } from 'vue-router'
+//#if _X_
+import { getRouteOptions, normalizeRoute } from '@dcloudio/uni-core'
+import { extend } from '@vue/shared'
+import { dispatchWebAppRouteNotFound } from './appRoute'
+//#endif
 import {
   createPageState,
   entryPageState,
@@ -25,6 +30,36 @@ export interface NavigateOptions {
   events?: Record<string, any>
   isAutomatedTesting?: boolean
 }
+
+export function createWebRouteOptions(
+  type: NavigateType,
+  options: ApiOptions<any, any>
+) {
+  //#if _X_
+  if (__X__) {
+    const normalizeUrl = options.formatArgs!.url as (
+      url: string,
+      params: Record<string, any>
+    ) => string | void
+    return extend({}, options, {
+      formatArgs: extend({}, options.formatArgs, {
+        url(url: string, params: Record<string, any>) {
+          const errMsg = normalizeUrl(url, params)
+          if (errMsg && url) {
+            const normalizedUrl = normalizeRoute(url)
+            if (!getRouteOptions(normalizedUrl.split('?')[0], true)) {
+              dispatchWebAppRouteNotFound(normalizedUrl, type)
+            }
+          }
+          return errMsg
+        },
+      }),
+    })
+  }
+  //#endif
+  return options
+}
+
 export function navigate(
   { type, url, tabBarText, events, isAutomatedTesting }: NavigateOptions,
   __id__?: number

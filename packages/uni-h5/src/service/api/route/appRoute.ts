@@ -9,7 +9,13 @@ import {
   type AppRouteOpenType,
   createAppRouteRuntime,
 } from '@dcloudio/uni-api'
-import { decodedQuery, removeLeadingSlash } from '@dcloudio/uni-shared'
+import { invokeHook } from '@dcloudio/uni-core'
+import {
+  ON_PAGE_NOT_FOUND,
+  decodedQuery,
+  parseUrl,
+  removeLeadingSlash,
+} from '@dcloudio/uni-shared'
 
 const appRouteRuntime = createAppRouteRuntime()
 const pendingAppRouteContexts: AppRouteContext[] = []
@@ -36,6 +42,22 @@ let appRouteStarted = false
 export const onAppRoute = appRouteRuntime.onAppRoute
 export const offAppRoute = appRouteRuntime.offAppRoute
 
+function dispatchAppRoute(context: AppRouteContext) {
+  if (!appRouteReady) {
+    pendingAppRouteContexts.push(context)
+    return
+  }
+  const event = context.event
+  if (event.notFound) {
+    invokeHook((getApp() as any).vm, ON_PAGE_NOT_FOUND, {
+      path: event.path,
+      query: Object.assign({}, event.query),
+      isEntryPage: event.openType === 'appLaunch',
+    })
+  }
+  appRouteRuntime.dispatchAppRoute(context)
+}
+
 function getRoutePath(route: AppRouteLocation) {
   const pagePath = route.meta.route
   return typeof pagePath === 'string'
@@ -50,11 +72,22 @@ export function dispatchWebAppRoute(route: AppRouteLocation) {
     openType: resolveOpenType(route),
     notFound: route.matched.length === 0,
   })
-  if (!appRouteReady) {
-    pendingAppRouteContexts.push(context)
-    return
-  }
-  appRouteRuntime.dispatchAppRoute(context)
+  dispatchAppRoute(context)
+}
+
+export function dispatchWebAppRouteNotFound(
+  url: string,
+  openType: AppRouteOpenType
+) {
+  const { path, query } = parseUrl(url)
+  dispatchAppRoute(
+    appRouteRuntime.createAppRouteContext({
+      path: removeLeadingSlash(path),
+      query: decodedQuery(query),
+      openType,
+      notFound: true,
+    })
+  )
 }
 
 function isPendingHistoryRoute(to: AppRouteLocation) {
@@ -150,5 +183,5 @@ export function setWebAppRouteReady() {
     return
   }
   appRouteReady = true
-  pendingAppRouteContexts.splice(0).forEach(appRouteRuntime.dispatchAppRoute)
+  pendingAppRouteContexts.splice(0).forEach(dispatchAppRoute)
 }

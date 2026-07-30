@@ -294,6 +294,7 @@ export function setupApp(comp: any) {
         onShow && invokeArrayFns(onShow, launchOptions)
         if (__UNI_FEATURE_PAGES__) {
           if (!route.matched.length) {
+            //#if !_X_
             const pageNotFoundOptions = {
               notFound: true,
               openType: 'appLaunch',
@@ -301,9 +302,12 @@ export function setupApp(comp: any) {
               query: decodedQuery(route.query),
               scene: 1001,
             }
+            //#endif
             handleBeforeEntryPageRoutes()
+            //#if !_X_
             onPageNotFound &&
               invokeArrayFns(onPageNotFound, pageNotFoundOptions)
+            //#endif
           }
         }
         //#if _X_
