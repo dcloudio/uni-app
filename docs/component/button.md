@@ -358,9 +358,11 @@
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
-## button 样式修改 @style
+## 样式修改 @style
 
 button 的 size、type 属性是预置样式，适合快速使用；如需修改文字、背景、边框、尺寸等样式，可直接在 button 组件上使用 style 或 class 覆盖。如需保持样式一致，建议不要依赖 type 的默认颜色。
+
+APP 蒸汽模式不支持属性选择器，建议使用 class 或 style 自定义样式。
 
 ```html
 <template>
@@ -433,9 +435,3 @@ button 组件没有 url 属性，点击后需要跳转页面时，可在 @click 
 	<button style="height: 50px; line-height: 50px; padding-top: 0; padding-bottom: 0;">按钮</button>
 </template>
 ```
-
-## 样式冲突
-
-非蒸汽模式下，不建议使用属性选择器自定义 button 样式。属性选择器在不同平台的支持和编译结果存在差异，例如 Web 端页面样式作用域编译后会在 class 上增加属性选择器，App 端暂不支持属性选择器。
-
-建议直接在 button 组件上使用 class 或 style 覆盖默认样式。蒸汽模式不支持属性选择器，也应使用 class 或 style 定义样式。
