@@ -15,6 +15,7 @@ import type { ComponentPublicInstance } from 'vue'
 import { setStatusBarStyle } from '../../statusBar'
 import { isTabPage } from '../../framework/app/tabBar'
 import { closePage } from './utils'
+import { createAppRouteOptions } from './appRoute'
 import { invokeAfterRouteHooks, invokeBeforeRouteHooks } from './performance'
 import {
   entryPageState,
@@ -41,7 +42,7 @@ export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
       .catch(reject)
   },
   RedirectToProtocol,
-  RedirectToOptions
+  createAppRouteOptions(API_REDIRECT_TO, RedirectToOptions)
 )
 
 interface RedirectToOptions extends RouteOptions {}
@@ -78,6 +79,7 @@ export function _redirectTo({
             isTabPage(lastPage) || getAllPages().length === 1
               ? 'reLaunch'
               : 'redirectTo',
+          appRouteOpenType: API_REDIRECT_TO,
           onRegistered() {
             isRegistered = true
             callback()

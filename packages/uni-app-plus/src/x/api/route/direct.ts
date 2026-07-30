@@ -1,5 +1,7 @@
 import type { ComponentPublicInstance } from 'vue'
-import { reLaunch } from './reLaunch'
+import { API_NAVIGATE_BACK } from '@dcloudio/uni-api'
+import { parseUrl } from '@dcloudio/uni-shared'
+import { _reLaunch } from './reLaunch'
 import { getCurrentPages } from '../../../service/framework/page'
 
 // 是否处于直达页面
@@ -13,9 +15,9 @@ export function isDirectPage(page: ComponentPublicInstance): boolean {
 export function reLaunchEntryPage() {
   __uniConfig.entryPagePath = __uniConfig.realEntryPagePath
   __uniConfig.realEntryPagePath = ''
-  reLaunch({
-    url: __uniConfig.entryPagePath?.startsWith('/')
-      ? __uniConfig.entryPagePath
-      : '/' + __uniConfig.entryPagePath,
-  })
+  const url = __uniConfig.entryPagePath?.startsWith('/')
+    ? __uniConfig.entryPagePath
+    : '/' + __uniConfig.entryPagePath
+  const { path, query } = parseUrl(url)
+  void _reLaunch({ url, path, query }, API_NAVIGATE_BACK)
 }

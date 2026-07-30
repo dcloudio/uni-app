@@ -1,6 +1,7 @@
 import {
   API_SWITCH_TAB,
   type API_TYPE_SWITCH_TAB,
+  type AppRouteOpenType,
   type DefineAsyncApiFn,
   SwitchTabOptions,
   SwitchTabProtocol,
@@ -19,19 +20,28 @@ import {
   handleBeforeEntryPageRoutes,
   updateEntryPageIsReady,
 } from './utils'
+import { createAppRouteOptions } from './appRoute'
 import {
   entryPageState,
   switchTabPagesBeforeEntryPages,
 } from '../../framework/app'
 import { getCurrentBasePages } from '../../../service/framework/page/getCurrentPages'
 
-export const $switchTab: DefineAsyncApiFn<API_TYPE_SWITCH_TAB> = (
-  args,
-  { resolve, reject }
-) => {
+type SwitchTabApiFn = DefineAsyncApiFn<API_TYPE_SWITCH_TAB>
+
+export function $switchTab(
+  args: Parameters<SwitchTabApiFn>[0],
+  { resolve, reject }: Parameters<SwitchTabApiFn>[1],
+  appRouteOpenType: AppRouteOpenType = API_SWITCH_TAB,
+  shouldDispatchAppRoute = true
+) {
   const { url } = args
   const { path, query } = parseUrl(url)
-  updateEntryPageIsReady(path)
+  if (appRouteOpenType === 'appLaunch') {
+    entryPageState.isReady = true
+  } else {
+    updateEntryPageIsReady(path)
+  }
 
   if (!entryPageState.isReady) {
     switchTabPagesBeforeEntryPages.push({
@@ -40,11 +50,15 @@ export const $switchTab: DefineAsyncApiFn<API_TYPE_SWITCH_TAB> = (
     })
     return
   }
-  _switchTab({
-    url,
-    path,
-    query,
-  })
+  _switchTab(
+    {
+      url,
+      path,
+      query,
+    },
+    appRouteOpenType,
+    shouldDispatchAppRoute
+  )
     .then(resolve)
     .catch(reject)
 
@@ -55,12 +69,16 @@ export const switchTab = defineAsyncApi<API_TYPE_SWITCH_TAB>(
   API_SWITCH_TAB,
   $switchTab,
   SwitchTabProtocol,
-  SwitchTabOptions
+  createAppRouteOptions(API_SWITCH_TAB, SwitchTabOptions)
 )
 
 interface SwitchTabOptions extends RouteOptions {}
 
-function _switchTab({ url, path, query }: SwitchTabOptions) {
+function _switchTab(
+  { url, path, query }: SwitchTabOptions,
+  appRouteOpenType: AppRouteOpenType,
+  shouldDispatchAppRoute: boolean
+) {
   let selected: number = getTabIndex(path)
   if (selected == -1) {
     return Promise.reject(`tab ${path} not found`)
@@ -68,7 +86,15 @@ function _switchTab({ url, path, query }: SwitchTabOptions) {
   const pages = getCurrentBasePages()
   return new Promise((resolve: (res: void) => void) => {
     setTimeout(() => {
-      switchSelect(selected, path, query)
+      switchSelect(
+        selected,
+        path,
+        query,
+        false,
+        undefined,
+        appRouteOpenType,
+        shouldDispatchAppRoute
+      )
       for (let index = pages.length - 1; index >= 0; index--) {
         const page = pages[index] as ComponentPublicInstance
         if (isTabPage(page)) {

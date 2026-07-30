@@ -13,6 +13,8 @@ import {
   invokeBeforeRouteHooks,
 } from '../../api/route/performance'
 import { fixBorderStyle } from './utils'
+import type { AppRouteOpenType } from '@dcloudio/uni-api'
+import { dispatchAppRoute } from '../../api/route/appRoute'
 
 // 存储 callback
 export let onTabBarMidButtonTapCallback: Function[] = []
@@ -259,7 +261,9 @@ export function switchSelect(
   path: string,
   query: Record<string, string> = {},
   rebuild: boolean = false,
-  callback?: () => void
+  callback?: () => void,
+  appRouteOpenType?: AppRouteOpenType,
+  shouldDispatchAppRoute = true
 ) {
   let shouldShow = false
   if (tabBar0 === null) {
@@ -267,7 +271,8 @@ export function switchSelect(
   }
   const currentPage = (getCurrentPage() as unknown as UniPage)?.vm
 
-  const type = currentPage == null ? 'appLaunch' : 'switchTab'
+  const type =
+    appRouteOpenType ?? (currentPage == null ? 'appLaunch' : 'switchTab')
   // 执行beforeRoute
   // invokeArrayFns(beforeRouteHooks, type)
   invokeBeforeRouteHooks(type)
@@ -286,6 +291,9 @@ export function switchSelect(
     if (shouldShow) {
       // resetNavigatorLock()
       invokeHook(page, ON_SHOW)
+      if (shouldDispatchAppRoute) {
+        dispatchAppRoute(path, query, type)
+      }
     }
     selected0 = selected
 

@@ -8,6 +8,7 @@ import {
 import {
   API_NAVIGATE_TO,
   type API_TYPE_NAVIGATE_TO,
+  type AppRouteOpenType,
   type DefineAsyncApiFn,
   NavigateToOptions,
   NavigateToProtocol,
@@ -26,11 +27,16 @@ import {
   navigateToPagesBeforeEntryPages,
 } from '../../framework/app'
 import { handleBeforeEntryPageRoutes, updateEntryPageIsReady } from './utils'
+import { createAppRouteOptions } from './appRoute'
 
-export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
-  args,
-  { resolve, reject }
-) => {
+type NavigateToApiFn = DefineAsyncApiFn<API_TYPE_NAVIGATE_TO>
+
+export function $navigateTo(
+  args: Parameters<NavigateToApiFn>[0],
+  { resolve, reject }: Parameters<NavigateToApiFn>[1],
+  appRouteOpenType: AppRouteOpenType = API_NAVIGATE_TO,
+  shouldDispatchAppRoute = true
+) {
   const { url, events, animationType, animationDuration } = args
   const { path, query } = parseUrl(url)
   const [aniType, aniDuration] = initAnimation(
@@ -38,7 +44,11 @@ export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
     animationType,
     animationDuration
   )
-  updateEntryPageIsReady(path)
+  if (appRouteOpenType === 'appLaunch') {
+    entryPageState.isReady = true
+  } else {
+    updateEntryPageIsReady(path)
+  }
 
   if (!entryPageState.isReady) {
     navigateToPagesBeforeEntryPages.push({
@@ -47,14 +57,18 @@ export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
     })
     return
   }
-  _navigateTo({
-    url,
-    path,
-    query,
-    events,
-    aniType,
-    aniDuration,
-  })
+  _navigateTo(
+    {
+      url,
+      path,
+      query,
+      events,
+      aniType,
+      aniDuration,
+    },
+    appRouteOpenType,
+    shouldDispatchAppRoute
+  )
     .then(resolve)
     .catch(reject)
 
@@ -65,7 +79,7 @@ export const navigateTo = defineAsyncApi<API_TYPE_NAVIGATE_TO>(
   API_NAVIGATE_TO,
   $navigateTo,
   NavigateToProtocol,
-  NavigateToOptions
+  createAppRouteOptions(API_NAVIGATE_TO, NavigateToOptions)
 )
 
 export interface NavigateToOptions extends RouteOptions {
@@ -74,17 +88,13 @@ export interface NavigateToOptions extends RouteOptions {
   aniDuration: number
 }
 
-function _navigateTo({
-  url,
-  path,
-  query,
-  events,
-  aniType,
-  aniDuration,
-}: NavigateToOptions): Promise<void | { eventChannel: EventChannel }> {
+function _navigateTo(
+  { url, path, query, events, aniType, aniDuration }: NavigateToOptions,
+  appRouteOpenType: AppRouteOpenType,
+  shouldDispatchAppRoute: boolean
+): Promise<void | { eventChannel: EventChannel }> {
   const currentPage = (getCurrentPage() as unknown as UniPage)?.vm
-  const currentRouteType = currentPage == null ? 'appLaunch' : API_NAVIGATE_TO
-  invokeBeforeRouteHooks(currentRouteType)
+  invokeBeforeRouteHooks(appRouteOpenType)
   // 当前页面触发 onHide
   invokeHook(ON_HIDE)
   currentPage && invokeLastDialogPageHookByUniPage(currentPage.$page, ON_HIDE)
@@ -94,7 +104,7 @@ function _navigateTo({
       const noAnimation = aniType === 'none' || aniDuration === 0
       function callback(page: IPage) {
         showWebview(page, aniType, aniDuration, () => {
-          invokeAfterRouteHooks(currentRouteType)
+          invokeAfterRouteHooks(appRouteOpenType)
           resolve({ eventChannel })
           setStatusBarStyle()
         })
@@ -106,6 +116,9 @@ function _navigateTo({
           path,
           query,
           openType: 'navigateTo',
+          appRouteOpenType: shouldDispatchAppRoute
+            ? appRouteOpenType
+            : undefined,
           eventChannel,
           onRegistered(page) {
             // 页面可能异步注册，需要调整callback执行时机，否则callback中setStatusBarStyle会执行getCurrentPage()

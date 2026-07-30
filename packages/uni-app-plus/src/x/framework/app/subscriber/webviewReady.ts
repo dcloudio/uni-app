@@ -2,6 +2,7 @@ import { getRouteOptions } from '@dcloudio/uni-core'
 import { addLeadingSlash } from '@dcloudio/uni-shared'
 import { $navigateTo } from '../../../api/route/navigateTo'
 import { $switchTab } from '../../../api/route/switchTab'
+import { dispatchAppRouteNotFound } from '../../../api/route/appRoute'
 
 let isLaunchWebviewReady = false // 目前首页双向确定 ready，可能会导致触发两次 onWebviewReady(主要是 Android)
 export function subscribeWebviewReady(_data: unknown, pageId: string) {
@@ -28,7 +29,13 @@ function onLaunchWebviewReady() {
   // }
   let entryPagePath = addLeadingSlash(__uniConfig.entryPagePath!)
   let routeOptions = getRouteOptions(entryPagePath)
+  let isEntryPageNotFound = false
   if (!routeOptions) {
+    isEntryPageNotFound = true
+    dispatchAppRouteNotFound(
+      entryPagePath + (__uniConfig.entryPageQuery || ''),
+      'appLaunch'
+    )
     if (__uniRoutes.length > 0) {
       entryPagePath = __uniRoutes[0].path
       routeOptions = getRouteOptions(addLeadingSlash(entryPagePath))
@@ -44,9 +51,9 @@ function onLaunchWebviewReady() {
   }
   const handler = { resolve() {}, reject() {} }
   if (routeOptions?.meta?.isTabBar) {
-    return $switchTab(args, handler)
+    return $switchTab(args, handler, 'appLaunch', !isEntryPageNotFound)
   }
-  return $navigateTo(args, handler)
+  return $navigateTo(args, handler, 'appLaunch', !isEntryPageNotFound)
 }
 
 export function clearWebviewReady() {

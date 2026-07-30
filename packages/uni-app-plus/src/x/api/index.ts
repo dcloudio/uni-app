@@ -3,6 +3,7 @@ export { navigateBack } from './route/navigateBack'
 export { redirectTo } from './route/redirectTo'
 export { switchTab } from './route/switchTab'
 export { reLaunch } from './route/reLaunch'
+export { onAppRoute, offAppRoute } from './route/appRoute'
 export { openDialogPage } from './route/openDialogPage'
 export { closeDialogPage } from './route/closeDialogPage'
 

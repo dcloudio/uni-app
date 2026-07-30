@@ -28,6 +28,7 @@ import { getNativeApp } from '../../framework/app/app'
 import { setStatusBarStyle } from '../../statusBar'
 import { isDirectPage, reLaunchEntryPage } from './direct'
 import { clearDialogPages } from './utils'
+import { dispatchAppRoute } from './appRoute'
 
 export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
   API_NAVIGATE_BACK,
@@ -132,6 +133,14 @@ function back(
         .forEach((page) => removePage(page as ComponentPublicInstance))
       // 前一个页面触发 onShow
       invokeHook(ON_SHOW)
+      const currentPage = (getCurrentPage() as unknown as UniPage).vm
+      if (currentPage) {
+        dispatchAppRoute(
+          currentPage.$basePage.path,
+          currentPage.$basePage.options,
+          API_NAVIGATE_BACK
+        )
+      }
       invokeLastDialogPageHookByUniPage(
         getCurrentPage() as unknown as UniPage,
         ON_SHOW
