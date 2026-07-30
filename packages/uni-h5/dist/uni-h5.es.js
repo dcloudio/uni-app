@@ -2773,11 +2773,15 @@ function removeKeepAliveApiCallback(name, callback) {
     }
   }
 }
-function offKeepAliveApiCallback(name) {
-  UniServiceJSBridge.off("api." + name);
+function offKeepAliveApiCallback(name, eventTransport) {
+  const eventName = "api." + name;
+  const transport = UniServiceJSBridge;
+  transport.off(eventName);
 }
-function onKeepAliveApiCallback(name) {
-  UniServiceJSBridge.on("api." + name, (res) => {
+function onKeepAliveApiCallback(name, eventTransport) {
+  const eventName = "api." + name;
+  const transport = UniServiceJSBridge;
+  transport.on(eventName, (res) => {
     for (const key in invokeCallbacks) {
       const opts = invokeCallbacks[key];
       if (opts.name === name) {

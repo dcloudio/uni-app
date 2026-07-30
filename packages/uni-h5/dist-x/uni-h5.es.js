@@ -3252,11 +3252,15 @@ function removeAllKeepAliveApiCallbacks(name) {
     }
   }
 }
-function offKeepAliveApiCallback(name) {
-  UniServiceJSBridge.off("api." + name);
+function offKeepAliveApiCallback(name, eventTransport2) {
+  const eventName = eventTransport2 ? name : "api." + name;
+  const transport = eventTransport2 || UniServiceJSBridge;
+  transport.off(eventName);
 }
-function onKeepAliveApiCallback(name) {
-  UniServiceJSBridge.on("api." + name, (res) => {
+function onKeepAliveApiCallback(name, eventTransport2) {
+  const eventName = eventTransport2 ? name : "api." + name;
+  const transport = eventTransport2 || UniServiceJSBridge;
+  transport.on(eventName, (res) => {
     for (const key in invokeCallbacks) {
       const opts = invokeCallbacks[key];
       if (opts.name === name) {
@@ -3540,7 +3544,7 @@ function wrapperOnApi(name, fn, options) {
     const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
     createKeepAliveApiCallback(name, callback);
     if (isFirstInvokeOnApi) {
-      onKeepAliveApiCallback(name);
+      onKeepAliveApiCallback(name, options == null ? void 0 : options.eventTransport);
       fn();
     }
   };
@@ -3568,7 +3572,7 @@ function wrapperOffApi(name, fn, options) {
     }
     const hasInvokeOnApi = findInvokeCallbackByName(onApiName);
     if (!hasInvokeOnApi) {
-      offKeepAliveApiCallback(onApiName);
+      offKeepAliveApiCallback(onApiName, options == null ? void 0 : options.eventTransport);
       fn();
     }
   };
@@ -5792,13 +5796,17 @@ const getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi(
 );
 const API_ON_APP_ROUTE = "onAppRoute";
 const API_OFF_APP_ROUTE = "offAppRoute";
+const eventTransport = /* @__PURE__ */ new Emitter();
 function createAppRouteRuntime() {
   let routeEventId = 0;
   const onAppRoute2 = /* @__PURE__ */ defineOnApi(API_ON_APP_ROUTE, () => {
+  }, {
+    eventTransport
   });
   const offAppRoute2 = /* @__PURE__ */ defineOffApi(API_OFF_APP_ROUTE, () => {
   }, {
-    allowClearAll: true
+    allowClearAll: true,
+    eventTransport
   });
   function createAppRouteContext(event) {
     var _a, _b;
@@ -5817,14 +5825,15 @@ function createAppRouteRuntime() {
   function dispatchAppRoute2(context) {
     const event = context.event;
     try {
-      UniServiceJSBridge.invokeOnCallback(API_ON_APP_ROUTE, {
+      const routeEvent = {
         path: event.path,
         query: Object.assign({}, event.query),
         openType: event.openType,
         notFound: event.notFound,
         timeStamp: event.timeStamp,
         routeEventId: event.routeEventId
-      });
+      };
+      eventTransport.emit(API_ON_APP_ROUTE, routeEvent);
     } catch (error) {
       console.error(error);
     }

@@ -198,11 +198,15 @@ function removeAllKeepAliveApiCallbacks(name) {
         }
     }
 }
-function offKeepAliveApiCallback(name) {
-    UniServiceJSBridge.off('api.' + name);
+function offKeepAliveApiCallback(name, eventTransport) {
+    const eventName = eventTransport ? name : 'api.' + name;
+    const transport = eventTransport || UniServiceJSBridge;
+    transport.off(eventName);
 }
-function onKeepAliveApiCallback(name) {
-    UniServiceJSBridge.on('api.' + name, (res) => {
+function onKeepAliveApiCallback(name, eventTransport) {
+    const eventName = eventTransport ? name : 'api.' + name;
+    const transport = eventTransport || UniServiceJSBridge;
+    transport.on(eventName, (res) => {
         for (const key in invokeCallbacks) {
             const opts = invokeCallbacks[key];
             if (opts.name === name) {
@@ -489,7 +493,7 @@ function wrapperOnApi(name, fn, options) {
         const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
         createKeepAliveApiCallback(name, callback);
         if (isFirstInvokeOnApi) {
-            onKeepAliveApiCallback(name);
+            onKeepAliveApiCallback(name, options?.eventTransport);
             fn();
         }
     };
@@ -514,7 +518,7 @@ function wrapperOffApi(name, fn, options) {
         // 是否还存在监听，若已不存在，则移除onMethod监听
         const hasInvokeOnApi = findInvokeCallbackByName(onApiName);
         if (!hasInvokeOnApi) {
-            offKeepAliveApiCallback(onApiName);
+            offKeepAliveApiCallback(onApiName, options?.eventTransport);
             fn();
         }
     };
