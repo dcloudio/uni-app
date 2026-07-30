@@ -148,41 +148,34 @@ clearTimeout() 方法取消了先前通过调用setTimeout()建立的定时器
 
 示例代码
 
-```html
-<script>
-  export default {
-    data() {
-      return {
-      }
-    },
-    methods: {
-      timerSetTimeout() {
-        // 定义 setTimeout 返回值
-        let timerID = 0;
+```vue
+<script setup lang="uts">
+  const timerSetTimeout = () => {
+    // 定义 setTimeout 返回值
+    let timerID = 0;
 
-        // 启动 setTimeout 并更新 timerID
-        timerID = setTimeout(() => {
-          // 执行一次
-          console.log('setTimeout', timerID);
-        }, 1000)
+    // 启动 setTimeout 并更新 timerID
+    timerID = setTimeout(() => {
+      // 执行一次
+      console.log('setTimeout', timerID);
+    }, 1000)
 
-        // 取消
-        // clearTimeout(timerID)
-      },
-      timerSetInterval() {
-        // 定义 setInterval 返回值
-        let timerID = 0;
+    // 取消
+    // clearTimeout(timerID)
+  }
 
-        // 启动 setInterval 并更新 timerID
-        timerID = setInterval(() => {
-          // 周期执行 (1000毫秒)
-          console.log('setInterval', timerID);
+  const timerSetInterval = () => {
+    // 定义 setInterval 返回值
+    let timerID = 0;
 
-          // 取消
-          clearInterval(timerID)
-        }, 1000)
-      }
-    }
+    // 启动 setInterval 并更新 timerID
+    timerID = setInterval(() => {
+      // 周期执行 (1000毫秒)
+      console.log('setInterval', timerID);
+
+      // 取消
+      clearInterval(timerID)
+    }, 1000)
   }
 </script>
 ```
@@ -199,5 +192,4 @@ clearTimeout() 方法取消了先前通过调用setTimeout()建立的定时器
 
 
 关于 `Android`系统`Looper`的[更多介绍](https://developer.android.com/reference/android/os/Looper)
-
 
