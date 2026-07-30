@@ -342,7 +342,7 @@ style通过lang属性，可以支持less、scss、stylus等css预处理语言。
 - `uni-app x` 支持绑定  `UTSJSONObject` 和 `Map` 类型数据。
 - 在App-Android平台上 `Map` 的性能高于 `UTSJSONObject` 数据类型。从 `uni-app x 4.01` 起，Web平台也支持了 `Map` 类型绑定。
 
-如下示例中，给view组件的style和class分别绑定了2个data，就可以通过在逻辑代码里修改data而实现动态修改样式。
+如下示例中，给 view 组件的 style 和 class 分别绑定了两个响应式变量，就可以通过在逻辑代码里修改变量而实现动态修改样式。
 ```vue
 <template>
   <view>
@@ -350,15 +350,9 @@ style通过lang属性，可以支持less、scss、stylus等css预处理语言。
   </view>
 </template>
 
-<script lang="uts">
-  export default {
-    data() {
-      return {
-        styleMap: new Map<string, string>([['border', '2px solid red'], ['background-color', 'green']]),
-        classMap: new Map<string, boolean>([['w-100', true], ['h-100', true], ['rounded', false]])
-      }
-    }
-  }
+<script setup lang="uts">
+  const styleMap = ref(new Map<string, string>([['border', '2px solid red'], ['background-color', 'green']]))
+  const classMap = ref(new Map<string, boolean>([['w-100', true], ['h-100', true], ['rounded', false]]))
 </script>
 
 <style lang="scss" scoped>
@@ -560,4 +554,3 @@ const theme = {
 18. 调整样式时保持视觉效果尽量一致，不要借适配蒸汽模式的机会重构设计或改动无关样式。
 19. 改造后检查控制台编译报错和运行时报错；如果有报错，自行修复并再次检查，直到无报错编译通过。
 20. 适配完成后，列出本次修改点、涉及的蒸汽模式差异，以及仍需人工在真机或目标平台确认的行为。
-
