@@ -98,6 +98,12 @@ export interface CollectorDeps {
    * 仅微信小程序 preload 验证用；`flush(true)` 不受此延迟。`0` 表示不延迟。
    */
   firstFlushDeferMs?: number
+  /**
+   * 可选：发送前网络门闸。返回 true 表示当前无网，本轮 flush / recoverRetry 应延后，
+   * **不**从 queue 取快照，等待 `onNetworkOnline` 后再冲刷。
+   * 由 runtime/networkGate 注入；缺省视为有网（兼容旧测试）。
+   */
+  isNetworkOffline?: () => Promise<boolean>
 }
 
 export interface CollectorAPI {
@@ -212,6 +218,19 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
    */
   async function flushImpl(force = false): Promise<void> {
     if (!deps.queue.shouldFlush(force)) return
+    // 无网：不摘队列，等网络恢复后再 flush（公有版门闸）
+    if (deps.isNetworkOffline) {
+      let offline = false
+      try {
+        offline = await deps.isNetworkOffline()
+      } catch {
+        offline = false
+      }
+      if (offline) {
+        logger.warn('[uni统计 2.0] 当前无网络，延后 flush')
+        return
+      }
+    }
     const snapshot = deps.queue.flush()
     if (!snapshot) return
 
@@ -343,6 +362,18 @@ export function createCollector(deps: CollectorDeps): CollectorAPI {
    * 串行执行，失败的条目保留在队列里（不动 _id），调用方会在下次冷启再次重放。
    */
   async function recoverRetry(): Promise<void> {
+    if (deps.isNetworkOffline) {
+      let offline = false
+      try {
+        offline = await deps.isNetworkOffline()
+      } catch {
+        offline = false
+      }
+      if (offline) {
+        logger.warn('[uni统计 2.0] 当前无网络，延后续传重试')
+        return
+      }
+    }
     const items = deps.retry.loadAll()
     if (items.length === 0) return
     const channel = deps.selectChannel()

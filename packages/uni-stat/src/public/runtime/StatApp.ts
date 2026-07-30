@@ -47,6 +47,7 @@ import { nowMs, nowSec } from '../infra/time'
 import { selectChannel } from '../pipeline/channel/selector'
 import { setReportTitle } from '../domain/title'
 import { tryRun } from '../infra/safe'
+import { isNetworkOffline, onNetworkOnline } from './networkGate'
 
 import * as queue from '../pipeline/queue'
 import * as retry from '../pipeline/retry'
@@ -131,6 +132,8 @@ export class StatApp {
   private installed = false
   /** 拦截器解绑函数。 */
   private uninstallInterceptors?: () => void
+  /** 网络恢复监听解绑。 */
+  private uninstallNetworkWatch?: () => void
   /** Collector 实例（install 后才有效）。 */
   private collector?: CollectorAPI
   /** Collector 依赖；测试与 lifecycleHooks 通过 getDeps 访问。 */
@@ -235,6 +238,26 @@ export class StatApp {
         .catch((e) => logger.warn('[uni统计 2.0] recoverRetry failed', e))
     }
 
+    // 公有版：监听网络恢复，立即续传 + 强制 flush（与私有版 core 实现分离）
+    this.uninstallNetworkWatch = tryRun(
+      () =>
+        onNetworkOnline(() => {
+          const c = this.collector
+          if (!c) return
+          void c
+            .recoverRetry()
+            .catch((e) =>
+              logger.warn('[uni统计 2.0] recoverRetry on online failed', e)
+            )
+          void c
+            .flush(true)
+            .catch((e) =>
+              logger.warn('[uni统计 2.0] flush on online failed', e)
+            )
+        }),
+      undefined
+    )
+
     // 仅在 collector 与拦截器等就绪后再标记，避免中途抛错导致「已 install 却无 collector」。
     this.installed = true
   }
@@ -312,6 +335,10 @@ export class StatApp {
       tryRun(() => this.uninstallInterceptors!(), undefined)
     }
     this.uninstallInterceptors = undefined
+    if (this.uninstallNetworkWatch) {
+      tryRun(() => this.uninstallNetworkWatch!(), undefined)
+    }
+    this.uninstallNetworkWatch = undefined
     // 先释放 collector 内部定时器（取消延迟首 flush），再丢弃引用，避免幽灵 flush。
     if (this.collector) {
       tryRun(() => this.collector!.destroy(), undefined)
@@ -447,6 +474,7 @@ export class StatApp {
         getRawPlatform() === 'mp-weixin' && MP_WEIXIN_USE_PRELOAD_ASSETS_REPORT
           ? MP_WEIXIN_PRELOAD_FIRST_FLUSH_DELAY_MS
           : 0,
+      isNetworkOffline,
     }
 
     return Object.assign(base, patch)
