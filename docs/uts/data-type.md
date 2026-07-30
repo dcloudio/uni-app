@@ -616,32 +616,28 @@ console.log(baz);
 const l = b!.length
 ```
 
-### vue data中null的用法
+### Vue 响应式数据中 null 的用法
 
-很多时候，data的数据需要通过script获取，而 uts 编译为非js时不支持 undefined，初始化时就只能赋null。一旦定义可为null后，调用时就需要用`?.`操作可选属性。
+很多时候，响应式数据需要通过 script 获取，而 uts 编译为非 js 时不支持 undefined，初始化时就只能赋 null。一旦定义为可空类型，调用时就需要用`?.`操作可选属性。
 
-```html
-<script lang=uts>
+```vue
+<script setup lang="uts">
 	type PersonType = {
 		id: number,
-	  name: string,
+		name: string,
 		age: number
 	}
-	export default {
-		data() {
-			return {
-				person: null as PersonType | null,
-			}
-		},
-		onLoad() {
-			this.person = JSON.parse<PersonType>(`{
-				"id": 1,
-				"name": "zhangsan",
-				"age": 18
-			}`)
-			console.log(this.person?.name);
-		}
-	}
+
+	const person = ref<PersonType | null>(null)
+
+	onLoad(() => {
+		person.value = JSON.parse<PersonType>(`{
+			"id": 1,
+			"name": "zhangsan",
+			"age": 18
+		}`)
+		console.log(person.value?.name);
+	})
 </script>
 ```
 
@@ -842,16 +838,10 @@ let a3 = Array(1,2,3);//支持
 let a4 = Array(1,'2','3');//安卓平台支持, iOS 平台不支持，在 iOS 中创建 Any[] 数组请直接使用数组字面量，如 let a4 = [1,'2','3'];
 ```
 
-5. uvue的data定义数组
+5. uvue 中定义响应式数组
 
 ```ts
-export default {
-	data() {
-		return {
-			listdata: [] as Array<UTSJSONObject>,
-		}
-	}
-}
+const listdata = ref<Array<UTSJSONObject>>([])
 ```
 
 字面量创建的数组，在uts的老版本上，kotlin自动推导数组类型时，可能会推导成intArray，而不是uts的array。建议显式声明类型。
@@ -1561,7 +1551,7 @@ type tn = number
 let i:tn = 0  // 等同于 let i:number = 0
 ```
 
-注意：基本类型的type重命名，在uvue中选项式写法下只支持写在script的`export default {}`外。
+注意：基本类型的 type 重命名需要定义在 uvue 的 script 顶层作用域；选项式写法不能写在`export default {}`内。
 
 上述简单的例子在实际开发中没有意义。
 
@@ -1842,33 +1832,29 @@ HBuilderX 3.9起内置了一个json转type工具，在`json编辑器`中选择�
 
 如果找不到这个右键菜单，检查是否是右下角是否显示JSON编辑器；检查是否安装了 uts/uni-app x 相关插件，一般真机运行时会自动安装相关插件。
 
-### 为vue的data中的json定义类型
+### 为 Vue 响应式数据中的 JSON 定义类型
 
-uvue文件中data中的json数据也涉及类型定义。此时注意：type定义必须放在`export default {}`前面。
+uvue 文件中的响应式 JSON 数据也涉及类型定义。此时注意：type 定义必须放在创建`ref`的代码之前。
 
-```html
-<script>
+```vue
+<script setup lang="uts">
 	type PersonType = {
 		id: number,
 		name: string
 	}
-	export default {
-		data() {
-			return {
-				personList: [
-					{ id: 1, name: "zhangsan" },
-					{ id: 2, name: "lisi" },
-				] as PersonType[],
-			}
-		},
-		onLoad() {
-			console.log(this.personList[0].name); //zhangsan
-		}
-	}
+
+	const personList = ref<PersonType[]>([
+		{ id: 1, name: "zhangsan" },
+		{ id: 2, name: "lisi" },
+	])
+
+	onLoad(() => {
+		console.log(personList.value[0].name); //zhangsan
+	})
 </script>
 ```
 
-大多数情况下，data里的json数据是空的，联网从服务器取到一段json字符串，然后再赋值并转type。
+大多数情况下，响应式数据里的 JSON 数据是空的，联网从服务器取到一段 JSON 字符串，然后再赋值并转 type。
 
 由于篇幅较长，示例另见：[request教程](../tutorial/request.md)
 
@@ -1958,7 +1944,7 @@ uts有`运行时类型`和`开发时类型`的概念区别。
 比如以下例子里，a1的值域只能是302或404或500，而b1的值域只能是"get"或"post"。
 
 ```ts
-// 注意不要写在uvue页面的export default里面
+// 注意要写在 uvue 页面的 script 顶层作用域，选项式写法不能写在 export default 里面
 type a = 302 | 404 | 500
 let a1 : a = 404 // 运行时类型是number
 console.log(a1);
