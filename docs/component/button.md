@@ -127,19 +127,6 @@
 
 <!-- UTSCOMJSON.button.component_type-->
 
-- 在web平台，由于0.5px有兼容性问题，button的边框使用伪类实现。
-- 在app平台，HBuilderX4.02及以上版本调整为原生实现button组件，默认边框不占高度，解决button实际渲染宽高与Web端不一致的问题；HBuilderX4.01及以下版本封装text实现button组件，由于不支持伪类，默认边框使用 border 样式实现，会导致button的实际的渲染宽高在app端比web端多1px。
-- button的默认边框宽度为0.5px，当type属性为plain时，边框宽度是1px，此时在web平台button实际的渲染宽高会大于其他类型1px，在app平台button实际的渲染高度与其他类型一致。
-- button 的text区域文字，app平台HBuilderX4.02及以上版本支持 `\n` 方式换行，HBuilderX4.01及以下版本不支持 ，会直接显示 `\n` 字符；Web端 `\n` 会变成一个空格。
-- button按下后触发hover-class效果，在app平台，手指不松开、一直在屏幕上移动、离开button组件范围后，hover-class效果消失，同时也不会触发点击事件；在web平台，手指移动一点后，即便未离开button范围，hover-class效果也会消失，同时也不会触发点击事件。
-- 无论在哪个平台，hover-class消失后松开手指，都不会触发点击事件。
-- button 设置hover-class属性时需注意，app平台HBuilderX4.04及以下版本与web平台有差异，HBuilderX4.05版本统一为以下规则：
-  + 如果hover-class属性值设置为none，在style样式里面设置了同名的none样式，none样式将不起作用，没有点击态效果
-  + 如果hover-class属性值设置为button-hover或者不设置hover-class属性值，在style样式里面设置了同名的button-hover样式，点击效果将使用button-hover样式
-  + 如果hover-class属性值设置为无效值（或非法值），没有点击态效果
-- `open-type="agreePrivacyAuthorization"`，用于开发者在让用户同意隐私协议时，放置“同意”按钮。它并非强制性的，它只是开发者和插件作者之间的一种通信方式。并不是没有点下这个按钮，技术上就拦截了涉及隐私的API的调用。[详见](../api/privacy.md)
-- 鸿蒙平台 蒸汽模式，button 组件根节点设置 color 时，不支持使用 css 变量
-
 ### 子组件 @children-tags
 不可以嵌套组件
 
@@ -371,9 +358,7 @@
 - [华为快应用文档](https://developer.huawei.com/consumer/cn/doc/quickApp-References/webview-frame-overview-0000001124793625)
 - [360小程序文档](https://mp.360.cn/doc/miniprogram/dev/#/b770a184ff1f06c6b3393a0fd1132380)
 
-## hover-class 属性值
-
-### button 样式修改 @style
+## button 样式修改 @style
 
 button 的 size、type 属性是预置样式，适合快速使用；如需修改文字、背景、边框、尺寸等样式，可直接在 button 组件上使用 style 或 class 覆盖。如需保持样式一致，建议不要依赖 type 的默认颜色。
 
@@ -396,6 +381,19 @@ button 的 size、type 属性是预置样式，适合快速使用；如需修改
 }
 </style>
 ```
+
+## hover-class 属性值
+
+button 按下后触发 hover-class 效果。点击态取消后的触发规则如下：
+
+- App 平台：手指不松开并持续在屏幕上移动，离开 button 组件范围后，hover-class 效果消失，同时不会触发点击事件。
+- Web 平台：手指移动一点后，即便未离开 button 范围，hover-class 效果也会消失，同时不会触发点击事件。
+- 所有平台：hover-class 消失后再松开手指，都不会触发点击事件。
+
+button 设置 hover-class 属性规则如下：
+
+- 如果 hover-class 属性值设置为 button-hover 或者不设置 hover-class 属性值，在 style 样式里面设置了同名的 button-hover 样式，点击效果将使用 button-hover 样式。
+- 如果 hover-class 属性值设置为无效值（或非法值），没有点击态效果。
 
 ## 点击跳转
 
@@ -420,8 +418,13 @@ button 组件没有 url 属性，点击后需要跳转页面时，可在 @click 
 </script>
 ```
 
-## 文字居中
+## 隐私协议授权
 
+`open-type="agreePrivacyAuthorization"` 用于开发者在让用户同意隐私协议时，放置“同意”按钮。它不是强制拦截能力，只是开发者和插件作者之间的一种通信方式；未点击该按钮，并不代表技术上会拦截涉及隐私的 API 调用。[详见](../api/privacy.md)
+
+## 文本显示
+
+- 如果 button 组件的文本内容包含 `\n`，非蒸汽模式 APP 和 web 会被渲染为字符，不会换行，微信小程序会移除换行符号。蒸汽模式 APP 会移除 `\n` 旁的文字。
 - 非蒸汽模式 button 默认文字大小为 18px，文字行高为 2.5。自定义高度时，需要同步调整 line-height。
 - APP 蒸汽模式下，button 的文字居中依赖 padding。调整 height 和 line-height 时，建议同时将 padding-top、padding-bottom 设置为 0。
 
