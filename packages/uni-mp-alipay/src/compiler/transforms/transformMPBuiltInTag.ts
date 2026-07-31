@@ -26,6 +26,9 @@ const transformMPBuiltInTagOptions: TransformMPBuiltInTagOptions = {
     user: {
       canvasId: 'id',
     },
+    picker: {
+      headerText: 'title',
+    },
     // 支付宝小程序不支持 text 的 user-select 属性 https://opendocs.alipay.com/mini/component/text?pathHash=f8422b38#%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E
     text: {
       userSelect: 'selectable',
