@@ -14,6 +14,7 @@ import {
   parseScriptDescriptor,
   parseTemplateDescriptor,
   parseVueRequest,
+  resolveMiniProgramComponentPackageRoot,
   resolveUTSModule,
   transformDynamicImports,
   updateMiniProgramComponentsByMainFilename,
@@ -236,6 +237,6 @@ function resolveComponentPackageRoot(
     : filename
   if (relativeFilename.startsWith('uni_modules/')) {
     addMiniProgramComponentPackageRoot(relativeFilename, packageRoot)
-    return findMiniProgramComponentPackageRoot(relativeFilename)
+    return resolveMiniProgramComponentPackageRoot(relativeFilename, packageRoot)
   }
 }

@@ -91,6 +91,16 @@ export function findMiniProgramComponentPackageRoot(filename: string) {
   }
 }
 
+export function findMiniProgramComponentPackageRoots(filename: string) {
+  const roots = getMiniProgramComponentPackageRoots(filename)
+  if (roots) {
+    if (roots.has(mainPackageRoot)) {
+      return [undefined]
+    }
+    return [...roots].map((root) => root || undefined)
+  }
+}
+
 export function resolveMiniProgramComponentPackageRoot(
   filename: string,
   packageRoot?: string
@@ -99,8 +109,16 @@ export function resolveMiniProgramComponentPackageRoot(
   if (!roots) {
     return packageRoot
   }
+  if (roots.has(mainPackageRoot)) {
+    return
+  }
+  const normalizedPackageRoot = packageRoot || mainPackageRoot
+  if (roots.has(normalizedPackageRoot)) {
+    return packageRoot
+  }
   if (roots.size === 1) {
-    return [...roots][0]
+    const [root] = [...roots]
+    return root || undefined
   }
 }
 
@@ -305,10 +323,12 @@ function parseSubPackageRoots(pagesJson: UniApp.PagesJson | undefined) {
 
 function normalizeJsonPackageFilename(filename: string) {
   const unrootedFilename = withoutSubPackageRootForUniModules(filename)
+  const ownerRoot = findMiniProgramSubPackageRoot(filename)
+  const roots = getMiniProgramComponentPackageRoots(unrootedFilename)
   if (
     unrootedFilename !== filename &&
-    getMiniProgramComponentPackageRoots(unrootedFilename) &&
-    !findMiniProgramComponentPackageRoot(unrootedFilename)
+    roots &&
+    (roots.has(mainPackageRoot) || !ownerRoot || !roots.has(ownerRoot))
   ) {
     return unrootedFilename
   }
@@ -335,15 +355,15 @@ function normalizeUsingComponentPackageFilename(
   if (!roots) {
     return componentFilename
   }
-  const packageRoot =
-    roots.size === 1
-      ? findMiniProgramComponentPackageRoot(unrootedFilename)
-      : ''
-  const ownerRoot = findMiniProgramSubPackageRoot(ownerFilename)
-  if (packageRoot && ownerRoot === packageRoot) {
-    return '/' + `${packageRoot}/${unrootedFilename}`
+  if (roots.has(mainPackageRoot)) {
+    return '/' + unrootedFilename
   }
-  return '/' + unrootedFilename
+  const ownerRoot = findMiniProgramSubPackageRoot(ownerFilename)
+  if (ownerRoot && roots.has(ownerRoot)) {
+    return '/' + `${ownerRoot}/${unrootedFilename}`
+  }
+  const packageRoot = findMiniProgramComponentPackageRoot(unrootedFilename)
+  return '/' + (packageRoot ? `${packageRoot}/` : '') + unrootedFilename
 }
 
 function withoutSubPackageRootForUniModules(filename: string) {

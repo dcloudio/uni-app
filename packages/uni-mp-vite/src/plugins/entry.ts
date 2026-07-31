@@ -8,7 +8,6 @@ import {
   capitalize,
   decodeBase64Url,
   encodeBase64Url,
-  findMiniProgramComponentPackageRoot,
   getUniModulesEncryptType,
   isAlipayXStyleIsolation,
   normalizeMiniProgramFilename,
@@ -16,6 +15,7 @@ import {
   parseManifestJsonOnce,
   parseMiniProgramPagesJson,
   removeExt,
+  resolveMiniProgramComponentPackageRoot,
 } from '@dcloudio/uni-cli-shared'
 import type { Plugin } from 'vite'
 
@@ -244,7 +244,10 @@ ${root ? '__uniCreatePage' : `${global}.createPage`}(MiniProgramPage)`,
               inputDir,
               root
                 ? undefined
-                : findMiniProgramComponentPackageRoot(relativePath)
+                : resolveMiniProgramComponentPackageRoot(
+                    relativePath,
+                    packageRoot
+                  )
             )
           ),
           json

@@ -30,8 +30,8 @@ import { cleanUrl, parseVueRequest } from '../vite/utils'
 import {
   addMiniProgramComponentPackageRoot,
   addMiniProgramUsingComponents,
-  findMiniProgramComponentPackageRoot,
   findMiniProgramSubPackageRoot,
+  resolveMiniProgramComponentPackageRoot,
 } from '../json/mp/jsonFile'
 import {
   parseIndependentRoot,
@@ -303,8 +303,10 @@ function createUsingComponents(
           componentFilename,
           ownerSubPackageRoot
         )
-        const componentPackageRoot =
-          findMiniProgramComponentPackageRoot(componentFilename)
+        const componentPackageRoot = resolveMiniProgramComponentPackageRoot(
+          componentFilename,
+          ownerSubPackageRoot
+        )
         if (
           ownerSubPackageRoot &&
           componentPackageRoot === ownerSubPackageRoot

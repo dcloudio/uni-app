@@ -33,7 +33,7 @@ describe('miniProgram:jsonFile', () => {
     })
   })
 
-  test('moves uni_modules component only when a single normal subpackage uses it', () => {
+  test('moves uni_modules component into each normal subpackage that uses it', () => {
     addMiniProgramAppJson(createSubPackagesAppJson(['pages-a', 'pages-b']))
     addMiniProgramComponentPackageRoot(
       'uni_modules/foo/components/foo/foo',
@@ -71,20 +71,39 @@ describe('miniProgram:jsonFile', () => {
     addMiniProgramComponentJson('pages-a/uni_modules/foo/components/foo/foo', {
       component: true,
     })
+    addMiniProgramComponentJson('pages-b/uni_modules/foo/components/foo/foo', {
+      component: true,
+    })
 
     const changedJsonFiles = findChangedJsonFiles()
     expect(
       JSON.parse(changedJsonFiles.get('pages-a/pages/index/index')!)
     ).toEqual({
       usingComponents: {
-        foo: '../../../uni_modules/foo/components/foo/foo',
+        foo: '../../uni_modules/foo/components/foo/foo',
       },
     })
     expect(
       changedJsonFiles.has('pages-a/uni_modules/foo/components/foo/foo')
-    ).toBe(false)
+    ).toBe(true)
     expect(
-      JSON.parse(changedJsonFiles.get('uni_modules/foo/components/foo/foo')!)
+      changedJsonFiles.has('pages-b/uni_modules/foo/components/foo/foo')
+    ).toBe(true)
+    expect(changedJsonFiles.has('uni_modules/foo/components/foo/foo')).toBe(
+      false
+    )
+    expect(
+      JSON.parse(
+        changedJsonFiles.get('pages-a/uni_modules/foo/components/foo/foo')!
+      )
+    ).toEqual({
+      component: true,
+      usingComponents: {},
+    })
+    expect(
+      JSON.parse(
+        changedJsonFiles.get('pages-b/uni_modules/foo/components/foo/foo')!
+      )
     ).toEqual({
       component: true,
       usingComponents: {},
@@ -103,6 +122,9 @@ describe('miniProgram:jsonFile', () => {
       },
     })
     addMiniProgramComponentJson('pages-a/uni_modules/foo/components/foo/foo', {
+      component: true,
+    })
+    addMiniProgramComponentJson('uni_modules/foo/components/foo/foo', {
       component: true,
     })
 
@@ -203,6 +225,9 @@ describe('miniProgram:jsonFile', () => {
         component: true,
       }
     )
+    addMiniProgramComponentJson('uni_modules/foo/components/icon/icon', {
+      component: true,
+    })
 
     const sharedIconJsonFiles = findChangedJsonFiles()
     expect(
@@ -437,6 +462,41 @@ describe('miniProgram:jsonFile', () => {
         expect(() => findChangedJsonFiles(true)).toThrow(
           '独立分包 "package-a" 不能在 "package-a/pages/index/index" 中使用 root 外组件 "local-a"'
         )
+      })
+    })
+
+    test('keeps uni_modules components inside independent root', () => {
+      withIndependentPagesJson('package-a', (inputDir) => {
+        process.env.UNI_PLATFORM = 'mp-weixin'
+        process.env.UNI_INPUT_DIR = inputDir
+        const page = 'package-a/pages/index/index'
+        const component = 'package-a/uni_modules/foo/components/foo/foo'
+
+        addMiniProgramAppJson(createIndependentAppJson('package-a'))
+        addMiniProgramComponentPackageRoot(component, 'package-a')
+        addMiniProgramPageJson(page, {
+          usingComponents: {
+            foo: '/package-a/uni_modules/foo/components/foo/foo',
+          },
+        })
+        addMiniProgramComponentJson(component, {
+          component: true,
+        })
+
+        const changedJsonFiles = findChangedJsonFiles(true)
+        expect(JSON.parse(changedJsonFiles.get(page)!)).toEqual({
+          usingComponents: {
+            foo: '../../uni_modules/foo/components/foo/foo',
+          },
+        })
+        expect(changedJsonFiles.has(component)).toBe(true)
+        expect(changedJsonFiles.has('uni_modules/foo/components/foo/foo')).toBe(
+          false
+        )
+        expect(JSON.parse(changedJsonFiles.get(component)!)).toEqual({
+          component: true,
+          usingComponents: {},
+        })
       })
     })
   })

@@ -7,6 +7,7 @@ import {
   addMiniProgramTemplateFilter,
   clearMiniProgramTemplateFiles,
   findMiniProgramComponentPackageRoot,
+  findMiniProgramComponentPackageRoots,
   findMiniProgramTemplateFiles,
   normalizeMiniProgramFilename,
   removeExt,
@@ -86,25 +87,32 @@ export const emitFile: (emittedFile: EmittedFile) => string = (emittedFile) => {
 
 function normalizeTemplateFiles(files: Record<string, string>) {
   return Object.keys(files).reduce<Record<string, string>>((res, filename) => {
-    res[normalizeTemplateFilename(filename)] = files[filename]
+    normalizeTemplateFilenames(filename).forEach((normalizedFilename) => {
+      res[normalizedFilename] = files[filename]
+    })
     return res
   }, Object.create(null))
 }
 
-function normalizeTemplateFilename(filename: string) {
+function normalizeTemplateFilenames(filename: string) {
   const relativeFilename = removeExt(
     normalizeMiniProgramFilename(filename, process.env.UNI_INPUT_DIR)
   )
   const uniModulesIndex = relativeFilename.indexOf('uni_modules/')
   if (uniModulesIndex === -1) {
-    return relativeFilename
+    return [relativeFilename]
   }
   const componentFilename = relativeFilename.slice(uniModulesIndex)
-  return removeExt(
-    normalizeMiniProgramComponentFilename(
-      componentFilename,
-      process.env.UNI_INPUT_DIR,
-      findMiniProgramComponentPackageRoot(componentFilename)
+  const packageRoots = findMiniProgramComponentPackageRoots(
+    componentFilename
+  ) || [findMiniProgramComponentPackageRoot(componentFilename)]
+  return packageRoots.map((packageRoot) =>
+    removeExt(
+      normalizeMiniProgramComponentFilename(
+        componentFilename,
+        process.env.UNI_INPUT_DIR,
+        packageRoot
+      )
     )
   )
 }

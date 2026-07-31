@@ -3,6 +3,7 @@ import os from 'os'
 import path from 'path'
 import {
   addMiniProgramComponentPackageRoot,
+  findChangedJsonFiles,
   normalizePath,
   resetMiniProgramJsonFiles,
 } from '@dcloudio/uni-cli-shared'
@@ -152,6 +153,39 @@ describe('entry virtual paths', () => {
     })
   })
 
+  test('keeps independent uni_modules component under root', async () => {
+    await withEntryProject((inputDir) => {
+      const component = 'package-a/uni_modules/foo/components/foo/foo.vue'
+      const filepath = path.join(inputDir, component)
+      fs.mkdirSync(path.dirname(filepath), { recursive: true })
+      fs.writeFileSync(filepath, '<template><view /></template>')
+      resetMiniProgramJsonFiles()
+      const plugin = uniEntryPlugin({
+        global: 'wx',
+        template: { extname: '.wxml' },
+        style: { extname: '.wxss' },
+      } as any)
+
+      const result = (plugin.load as Function).call(
+        { addWatchFile: jest.fn() },
+        virtualComponentPath(component, 'package-a', 'package-a')
+      )
+      const componentId = withIndependentRoot(
+        normalizePath(filepath),
+        'package-a'
+      )
+      const changedJsonFiles = findChangedJsonFiles()
+
+      expect(result.code).toContain(`import Component from '${componentId}'`)
+      expect(
+        changedJsonFiles.has('package-a/uni_modules/foo/components/foo/foo')
+      ).toBe(true)
+      expect(changedJsonFiles.has('uni_modules/foo/components/foo/foo')).toBe(
+        false
+      )
+    })
+  })
+
   test('loads package scoped uni_modules component without changing source id', async () => {
     await withEntryProject((inputDir) => {
       const component = 'uni_modules/foo/components/foo/foo.vue'
@@ -175,7 +209,7 @@ describe('entry virtual paths', () => {
     })
   })
 
-  test('emits package scoped template only while one package root uses the component', async () => {
+  test('emits package scoped template for each package root that uses the component', async () => {
     await withEntryProject((inputDir) => {
       const component = normalizePath(
         path.join(inputDir, 'uni_modules/foo/components/foo/foo.vue')
@@ -201,7 +235,8 @@ describe('entry virtual paths', () => {
       } as any)
 
       expect(getTemplateFiles({} as any)).toMatchObject({
-        'uni_modules/foo/components/foo/foo': '<view />',
+        'pages-a/uni_modules/foo/components/foo/foo': '<view />',
+        'pages-b/uni_modules/foo/components/foo/foo': '<view />',
       })
     })
   })
@@ -243,6 +278,26 @@ describe('entry virtual paths', () => {
 
       expect(getTemplateFiles({} as any)).toEqual({
         'uni_modules/foo/components/foo/foo': '<view />',
+      })
+    })
+  })
+
+  test('keeps independent uni_modules template under root', async () => {
+    await withEntryProject((inputDir) => {
+      const component = normalizePath(
+        path.join(inputDir, 'package-a/uni_modules/foo/components/foo/foo.vue')
+      )
+      resetMiniProgramJsonFiles()
+      addMiniProgramComponentPackageRoot(component, 'package-a')
+
+      emitFile({
+        type: 'asset',
+        fileName: component,
+        source: '<view />',
+      } as any)
+
+      expect(getTemplateFiles({} as any)).toEqual({
+        'package-a/uni_modules/foo/components/foo/foo': '<view />',
       })
     })
   })
