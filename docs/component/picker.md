@@ -36,10 +36,10 @@ picker组件其实是基于[picker-view组件](picker-view.md)封装了一个弹
 | start | string |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 表示有效时间范围的开始 |
 | end | string |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 表示有效时间范围的结束 |
 | fields | String as PropType\<Fields> | "day" | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 有效值 year,month,day，表示选择器的粒度 |
-| custom-item | string |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 可为每一列的顶部添加一个自定义的项 |
+| custom-item | string |   | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 可为每一列的顶部添加一个自定义的项 |
 | header-text | string |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | 选择器的标题，仅微信小程序安卓端可用 |
 | level | string |   | Web: -; 微信小程序: 4.41; Android 系统版本: -; Android: -; iOS 系统版本: -; iOS: -; HarmonyOS 系统版本: -; HarmonyOS: - | mode="region" 时有效，选择器层级 |
-| name | string |   | Android(Vapor): 5.21; iOS(Vapor): 5.11; HarmonyOS(Vapor): 5.0 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
+| name | string |   | Web: √; 微信小程序: x; Android: 5.08; iOS: 5.08; HarmonyOS(VDOM): x; HarmonyOS(Vapor): 5.0 | 表单的控件名称，作为键值对的一部分与表单(form组件)一同提交 |
 | @change | (event: [UniPickerChangeEvent](#unipickerchangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | value 改变时触发 change 事件，event.detail = {value: value} |
 | @columnchange | (event: [UniPickerColumnChangeEvent](#unipickercolumnchangeevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 某一列的值改变时触发 columnchange 事件，event.detail = {column: column, value: value}，column 的值表示改变了第几列（下标从0开始），value 的值表示变更值的下标 |
 | @cancel | (event: [UniPickerCancelEvent](#unipickercancelevent)) => void |   | Web: 4.0; 微信小程序: 4.41; Android: 5.08; iOS: 5.08; HarmonyOS: 4.61 | 取消选择时触发 |

@@ -77,52 +77,58 @@ uni-ui x的风格是中性的，和uni内置组件、小程序内置组件一样
 
 # uni-ui的升级建议@uniuiupgrade
 
-为uni-app提供的uni-ui，升级到uni-app x时无法直接对照升级，因为组件名称、用法都有变化。
+为 uni-app 提供的 uni-ui，为了兼容vue2，是选项式的。
 
-但升级时，老版uni-ui组件在uni-app x下同等功能的新组件是什么，这里说明下功能映射关系：
+而 uni-app x 蒸汽模式只支持组合式，所以老的 uni ui 是无法在蒸汽模式下使用的。
 
-|uni-ui组件						|中文名称								|在uni-app x下的方案																	|
-|--										|--											|--																									|
-|uni-badge						|数字角标								|改用uni-badge-view																	|
-|uni-calendar					|日历										|见hello uni-app x里的模板中的日历页面								|
-|uni-card							|卡片										|无																									|
-|uni-collapse					|折叠面板								|改用uni-collapse																		|
-|uni-combox						|组合框									|无																									|
-|uni-countdown				|倒计时									|无																									|
-|uni-data-checkbox		|数据选择器							|无																									|
-|uni-data-picker			|数据驱动的picker选择器	|组件本身支持uni-app x																|
-|uni-dateformat				|日期格式化							|改用uni-time-format																	|
-|uni-datetime-picker	|日期选择器							|内置组件picker支持mode=date													|
-|uni-drawer						|抽屉										|改用内置组件page-container													|
-|uni-easyinput				|增强输入框							|无																									|
-|uni-fab							|悬浮按钮								|改用uni-fab-button																	|
-|uni-fav							|收藏按钮								|无																									|
-|uni-file-picker			|文件选择上传						|无																									|
-|uni-forms						|表单										|改用内置组件form																		|
-|uni-goods-nav				|商品导航								|无																									|
-|uni-grid							|宫格										|无																									|
-|uni-group						|分组										|无																									|
-|uni-icons						|图标										|无																									|
-|uni-indexed-list			|索引列表								|改用uni-index-bar																		|
-|uni-link							|超链接									|改用uni-link																				|
-|uni-list							|列表										|使用内置组件list-view																|
-|uni-load-more				|加载更多								|使用内置组件loading																	|
-|uni-nav-bar					|自定义导航栏						|改用uni-nav-bar																			|
-|uni-notice-bar				|通告栏									|无																									|
-|uni-number-box				|数字输入框							|改用uni-number-box																	|
-|uni-pagination				|分页器									|无																									|
-|uni-popup						|弹出层									|改用内置组件page-container													|
-|uni-rate							|评分										|改用uni-rate																				|
-|uni-row							|布局-行									|无																									|
-|uni-search-bar				|搜索栏									|无																									|
-|uni-segmented-control|分段器									|无																									|
-|uni-steps						|步骤条									|无																									|
-|uni-swipe-action			|滑动操作								|参考hello uni-app x模板中可左滑删除长列表示例				|
-|uni-swiper-dot				|轮播图指示点						|改用内置组件swiper，通过externalClass控制指示点样式	|
-|uni-table						|表格										|推荐使用rich-text或web-view中的table。								|
-|uni-tag							|标签										|无																									|
-|uni-title						|章节标题								|无																									|
-|uni-transition				|过渡动画								|无																									|
+uni-app x 新提供了 uni-ui x，它是组合式的，且支持样式隔离策略2.0、支持无头理念。
+
+uni-ui 无法直接对照升级 uni-ui x，组件名称、用法都有变化。
+
+但升级时，老版 uni-ui 组件在 uni-app x 下的平替方案是什么，可以在这里说明功能映射关系：
+
+|uni-ui组件						|中文名称								|在uni-app x下的方案																						|
+|--										|--											|--																														|
+|uni-badge						|数字角标								|改用uni-ui x的uni-badge-view																	|
+|uni-calendar					|日历										|见hello uni-app x里的模板中的日历页面													|
+|uni-card							|卡片										|无。建议直接使用class，不用组件																|
+|uni-collapse					|折叠面板								|改用uni-ui x的uni-collapse																		|
+|uni-combox						|组合框									|无																														|
+|uni-countdown				|倒计时									|无																														|
+|uni-data-checkbox		|数据选择器							|无																														|
+|uni-data-picker			|数据驱动的picker选择器	|该组件支持uni-app x的VDOM模式，因为是选项式，无法支持蒸汽模式		|
+|uni-dateformat				|日期格式化							|改用uni-ui x的uni-time-format																	|
+|uni-datetime-picker	|日期选择器							|内置组件picker支持mode=date																		|
+|uni-drawer						|抽屉										|改用内置组件page-container																		|
+|uni-easyinput				|增强输入框							|无																														|
+|uni-fab							|悬浮按钮								|改用uni-ui x的uni-fab-button																	|
+|uni-fav							|收藏按钮								|无。建议直接使用class，不用组件																|
+|uni-file-picker			|文件选择上传						|无																														|
+|uni-forms						|表单										|改用内置组件form																							|
+|uni-goods-nav				|商品导航								|无																														|
+|uni-grid							|宫格										|无。建议直接使用class，不用组件																|
+|uni-group						|分组										|无。建议直接使用class，不用组件																|
+|uni-icons						|图标										|改用uni-ui x的uni-icons-x的组合式组件													|
+|uni-indexed-list			|索引列表								|改用uni-ui x的uni-index-bar																		|
+|uni-link							|超链接									|改用uni-ui x的uni-link																				|
+|uni-list							|列表										|使用内置组件list-view																					|
+|uni-load-more				|加载更多								|使用内置组件loading																						|
+|uni-nav-bar					|自定义导航栏						|改用uni-ui x的uni-nav-bar																			|
+|uni-notice-bar				|通告栏									|无。非滚动建议直接使用class，不用组件													|
+|uni-number-box				|数字输入框							|改用uni-ui x的uni-number-box																	|
+|uni-pagination				|分页器									|无																														|
+|uni-popup						|弹出层									|改用内置组件page-container																		|
+|uni-rate							|评分										|改用uni-ui x的uni-rate																				|
+|uni-row							|布局-行									|无。建议直接使用class，不用组件																|
+|uni-search-bar				|搜索栏									|无																														|
+|uni-segmented-control|分段器									|无																														|
+|uni-steps						|步骤条									|无																														|
+|uni-swipe-action			|滑动操作								|不推荐使用组件，请参考hello uni-app x模板中可左滑删除长列表示例	|
+|uni-swiper-dot				|轮播图指示点						|改用内置组件swiper，通过externalClass控制指示点样式						|
+|uni-table						|表格										|推荐使用rich-text或web-view中的table。												|
+|uni-tag							|标签										|无。建议直接使用class，不用组件																|
+|uni-title						|章节标题								|无。建议直接使用class，不用组件																|
+|uni-transition				|过渡动画								|无。建议直接使用class，不用组件																|
 
 标记为`无`的，大多比较简单，有些其实没必要做成组件，使用class即可。有些可以交给AI快速写一个布局view组合，也没有必要封装为组件。
 
