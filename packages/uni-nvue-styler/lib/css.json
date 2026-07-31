@@ -109,6 +109,130 @@
       }
     },
     {
+      "name": "direction",
+      "description": "direction CSS 属性用于设置文本水平溢出的方向。",
+      "restrictions": [
+        "enum"
+      ],
+      "syntax": "ltr | rtl",
+      "values": [
+        {
+          "name": "ltr",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.25"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.25"
+              },
+              "harmony": {
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixVaporVer": "5.25"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "rtl",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.25"
+              },
+              "ios": {
+                "uniVer": "√",
+                "unixVer": "x",
+                "unixVaporVer": "5.25"
+              },
+              "harmony": {
+                "uniVer": "4.23",
+                "unixVer": "x",
+                "unixVaporVer": "5.25"
+              }
+            },
+            "mp": {
+              "weixin": {
+                "uniVer": "√",
+                "unixVer": "4.41"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.25"
+          },
+          "ios": {
+            "uniVer": "√",
+            "unixVer": "x",
+            "unixVaporVer": "5.25"
+          },
+          "harmony": {
+            "uniVer": "4.23",
+            "unixVer": "x",
+            "unixVaporVer": "5.25"
+          }
+        },
+        "mp": {
+          "weixin": {
+            "uniVer": "√",
+            "unixVer": "4.41"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "flatten": {
+        "app": {
+          "android": {
+            "unixVaporVer": "x"
+          },
+          "ios": {
+            "unixVaporVer": "x"
+          },
+          "harmony": {
+            "unixVaporVer": "4.26"
+          }
+        }
+      },
+      "unixTags": [
+        "text"
+      ],
+      "defaultValue": {
+        "uvue-app": "ltr",
+        "uvue-web": "ltr",
+        "w3c": "ltr"
+      }
+    },
+    {
       "name": "width",
       "restrictions": [
         "length",
