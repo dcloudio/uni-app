@@ -613,6 +613,31 @@ uni-app x 项目中使用 [map](../component/map.md) 组件，[uni.chooseLocatio
 }
 ```
 
+
+### uni-network-cronet（网络支持 Quic/h3 协议）@modulesnetwork  
+> HBuilderX 5.22 及以上版本 uni-app x 项目蒸汽（Vapor）模式新增支持  
+
+[uni.request](../api/request.md)发起网络请求支持 Quic/h3 协议（enableQuic属性设置为true）依赖 cronet 模块，支持 Quic/h3 协议需勾选此模块。  
+
+在uni-app x项目中使用此模块，需在manifest.json中配置。  
+
+可视化界面操作在 “安卓App配置” 的 “可选模块配置” 勾选 “uni-network-cronet（网络支持 Quic/h3 协议）”模块：  
+![](https://web-ext-storage.dcloud.net.cn/uni-app-x/collocation/android_cronet.png)
+
+也可通过`源码视图`在 "app-android" -> "distribute" -> "modules" 下添加 "uni-network-cronet" 节点，如下示例：
+```json
+{
+  "app-android": {
+    "distribute": {
+      "modules": {
+        "uni-network-cronet":{}
+      }
+    }
+  }
+}
+```
+
+
 ### uni-push（消息推送） @modulespush  
 > HBuilderX 4.71 及以上版本新增支持配置厂商推送SDK  
 
