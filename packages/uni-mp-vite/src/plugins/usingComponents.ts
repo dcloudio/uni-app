@@ -3,9 +3,12 @@ import type { Plugin } from 'vite'
 import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
 import {
   EXTNAME_VUE,
+  addMiniProgramComponentPackageRoot,
   enableSourceMap,
+  findMiniProgramComponentPackageRoot,
   isAppVue,
   isMiniProgramPageFile,
+  normalizePath,
   parseMainDescriptor,
   parseProgram,
   parseScriptDescriptor,
@@ -17,7 +20,11 @@ import {
   updateMiniProgramComponentsByScriptFilename,
   updateMiniProgramComponentsByTemplateFilename,
 } from '@dcloudio/uni-cli-shared'
-import { virtualComponentPath, virtualPagePath } from './entry'
+import {
+  getSubPackageRootByFilename,
+  virtualComponentPath,
+  virtualPagePath,
+} from './entry'
 import {
   getIndependentRootByFilename,
   parseIndependentRoot,
@@ -49,12 +56,18 @@ export function uniUsingComponentsPlugin(
         return null
       }
       const sourceMap = enableSourceMap()
+      const packageRoot =
+        inputDir && !independentRoot
+          ? getSubPackageRootByFilename(filename, inputDir) ||
+            findMiniProgramComponentPackageRoot(filename)
+          : undefined
       const dynamicImportOptions = {
         id,
         sourceMap,
         dynamicImport: (name: string, value: string) =>
           dynamicImport(name, value, {
             root: independentRoot,
+            packageRoot,
             checkIndependentRoot: true,
             inputDir,
           }),
@@ -68,16 +81,17 @@ export function uniUsingComponentsPlugin(
           skipSelf?: boolean
         }
       ): Promise<ResolvedId | null> => {
+        const cleanImporter = importer
+          ? withoutIndependentRoot(importer)
+          : undefined
         const id = resolveUTSModule(
           source,
-          importer
-            ? withoutIndependentRoot(importer)
-            : process.env.UNI_INPUT_DIR
+          cleanImporter || process.env.UNI_INPUT_DIR
         )
         if (id) {
           source = id
         }
-        return this.resolve(source, importer, options)
+        return this.resolve(source, cleanImporter, options)
       }
       if (query.vue) {
         if (query.type === 'script') {
@@ -96,7 +110,8 @@ export function uniUsingComponentsPlugin(
             filename,
             inputDir,
             normalizeComponentName,
-            independentRoot
+            independentRoot,
+            packageRoot
           )
           return transformDynamicImports(
             source,
@@ -119,7 +134,8 @@ export function uniUsingComponentsPlugin(
             filename,
             inputDir,
             normalizeComponentName,
-            independentRoot
+            independentRoot,
+            packageRoot
           )
           return transformDynamicImports(
             source,
@@ -146,7 +162,8 @@ export function uniUsingComponentsPlugin(
         filename,
         inputDir,
         normalizeComponentName,
-        independentRoot
+        independentRoot,
+        packageRoot
       )
 
       return transformDynamicImports(
@@ -160,6 +177,7 @@ export function uniUsingComponentsPlugin(
 
 interface DynamicImportOptions {
   root?: string
+  packageRoot?: string
   inferRoot?: boolean
   checkIndependentRoot?: boolean
   inputDir?: string
@@ -200,6 +218,24 @@ export function dynamicImport(
   }
   return `const ${name} = ()=>import('${virtualComponentPath(
     value,
-    independentRoot
+    independentRoot,
+    resolveComponentPackageRoot(value, options)
   )}')`
+}
+
+function resolveComponentPackageRoot(
+  value: string,
+  { inputDir, packageRoot, root }: DynamicImportOptions
+) {
+  if (!inputDir || !packageRoot || root) {
+    return
+  }
+  const filename = normalizePath(value).split('?')[0]
+  const relativeFilename = path.isAbsolute(filename)
+    ? normalizePath(path.relative(inputDir, filename))
+    : filename
+  if (relativeFilename.startsWith('uni_modules/')) {
+    addMiniProgramComponentPackageRoot(relativeFilename, packageRoot)
+    return findMiniProgramComponentPackageRoot(relativeFilename)
+  }
 }

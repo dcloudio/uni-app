@@ -22,11 +22,13 @@ import {
 } from './subpackage'
 
 let appJsonCache: Record<string, any> = {}
+let subPackageRootsCache: string[] = []
 let independentRootsCache: string[] = []
 const jsonFilesCache = new Map<string, string>()
 const jsonPagesCache = new Map<string, PageWindowOptions>()
 const jsonComponentsCache = new Map<string, ComponentJson>()
 const jsonUsingComponentsCache = new Map<string, UsingComponents>()
+const componentPackageRootsCache = new Map<string, Set<string>>()
 
 export function isMiniProgramPageFile(file: string, inputDir?: string) {
   if (inputDir && path.isAbsolute(file)) {
@@ -62,6 +64,47 @@ export function findUsingComponents(filename: string) {
   return jsonUsingComponentsCache.get(filename)
 }
 
+export function findMiniProgramSubPackageRoot(filename: string) {
+  return findSubPackageRoot(filename, subPackageRootsCache)
+}
+
+export function addMiniProgramComponentPackageRoot(
+  filename: string,
+  packageRoot?: string
+) {
+  if (!packageRoot) {
+    return
+  }
+  const normalizedFilename = normalizeComponentPackageFilename(filename)
+  if (!normalizedFilename.startsWith('uni_modules/')) {
+    return
+  }
+  const roots =
+    componentPackageRootsCache.get(normalizedFilename) || new Set<string>()
+  roots.add(packageRoot)
+  componentPackageRootsCache.set(normalizedFilename, roots)
+}
+
+export function findMiniProgramComponentPackageRoot(filename: string) {
+  const roots = getMiniProgramComponentPackageRoots(filename)
+  if (roots?.size === 1) {
+    return [...roots][0]
+  }
+}
+
+export function resolveMiniProgramComponentPackageRoot(
+  filename: string,
+  packageRoot?: string
+) {
+  const roots = getMiniProgramComponentPackageRoots(filename)
+  if (!roots) {
+    return packageRoot
+  }
+  if (roots.size === 1) {
+    return [...roots][0]
+  }
+}
+
 export function normalizeJsonFilename(filename: string) {
   return normalizeNodeModules(filename)
 }
@@ -71,17 +114,19 @@ export function findChangedJsonFiles(
 ) {
   const changedJsonFiles = new Map<string, string>()
   function findChangedFile(filename: string, json: Record<string, any>) {
+    const cacheFilename = filename
+    const outputFilename = normalizeJsonPackageFilename(filename)
     const newJson = JSON.parse(JSON.stringify(json))
     if (!newJson.usingComponents) {
       newJson.usingComponents = {}
     }
-    extend(newJson.usingComponents, jsonUsingComponentsCache.get(filename))
+    extend(newJson.usingComponents, jsonUsingComponentsCache.get(cacheFilename))
     // 格式化为相对路径，这样作为分包也可以直接运行
     // app.json mp-baidu 在 win 不支持相对路径。所有平台改用绝对路径
-    if (filename !== 'app') {
+    if (outputFilename !== 'app') {
       let usingComponents = newJson.usingComponents as Record<string, string>
-      const independentRoot = findIndependentRoot(
-        filename,
+      const independentRoot = findSubPackageRoot(
+        outputFilename,
         independentRootsCache
       )
       const supportGlobalUsingComponentsForFile =
@@ -101,16 +146,19 @@ export function findChangedJsonFiles(
       }
       if (independentRoot) {
         validateIndependentUsingComponents(
-          filename,
+          outputFilename,
           independentRoot,
           usingComponents
         )
       }
       Object.keys(usingComponents).forEach((name) => {
-        const componentFilename = usingComponents[name]
+        const componentFilename = normalizeUsingComponentPackageFilename(
+          usingComponents[name],
+          outputFilename
+        )
         if (componentFilename.startsWith('/')) {
           usingComponents[name] = relativeFile(
-            filename,
+            outputFilename,
             componentFilename.slice(1)
           )
         }
@@ -119,9 +167,9 @@ export function findChangedJsonFiles(
     }
 
     const jsonStr = JSON.stringify(newJson, null, 2)
-    if (jsonFilesCache.get(filename) !== jsonStr) {
-      changedJsonFiles.set(filename, jsonStr)
-      jsonFilesCache.set(filename, jsonStr)
+    if (jsonFilesCache.get(outputFilename) !== jsonStr) {
+      changedJsonFiles.set(outputFilename, jsonStr)
+      jsonFilesCache.set(outputFilename, jsonStr)
     }
   }
   function findChangedFiles(jsonsCache: Map<string, any>) {
@@ -137,8 +185,8 @@ export function findChangedJsonFiles(
   return changedJsonFiles
 }
 
-function findIndependentRoot(filename: string, independentRoots: string[]) {
-  return independentRoots.find((root) => {
+function findSubPackageRoot(filename: string, roots: string[]) {
+  return roots.find((root) => {
     return filename === root || filename.startsWith(root + '/')
   })
 }
@@ -197,6 +245,7 @@ function isLocalUsingComponent(componentFilename: string) {
 
 export function addMiniProgramAppJson(appJson: Record<string, any>) {
   appJsonCache = appJson
+  subPackageRootsCache = parseSubPackageRoots(appJson as UniApp.PagesJson)
   independentRootsCache = parseIndependentSubPackages(
     appJson as UniApp.PagesJson
   ).map(({ root }) => root)
@@ -225,12 +274,100 @@ export function addMiniProgramUsingComponents(
 
 export function resetMiniProgramJsonFiles() {
   appJsonCache = {}
+  subPackageRootsCache = []
   independentRootsCache = []
   setIndependentSubPackages([])
+  componentPackageRootsCache.clear()
   jsonFilesCache.clear()
   jsonPagesCache.clear()
   jsonComponentsCache.clear()
   jsonUsingComponentsCache.clear()
+}
+
+function parseSubPackageRoots(pagesJson: UniApp.PagesJson | undefined) {
+  const subPackages = pagesJson?.subPackages || pagesJson?.subpackages || []
+  if (!Array.isArray(subPackages)) {
+    return []
+  }
+  return subPackages
+    .map((subPackage) => {
+      if (
+        !subPackage ||
+        subPackage.independent === true ||
+        typeof subPackage.root !== 'string'
+      ) {
+        return ''
+      }
+      return normalizePath(subPackage.root).replace(/^\/+|\/+$/g, '')
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.length - a.length)
+}
+
+function normalizeJsonPackageFilename(filename: string) {
+  const unrootedFilename = withoutSubPackageRootForUniModules(filename)
+  const roots = getMiniProgramComponentPackageRoots(unrootedFilename)
+  if (unrootedFilename !== filename && roots && roots.size !== 1) {
+    return unrootedFilename
+  }
+  return filename
+}
+
+function normalizeUsingComponentPackageFilename(
+  componentFilename: string,
+  ownerFilename: string
+) {
+  if (!componentFilename.startsWith('/')) {
+    return componentFilename
+  }
+  const normalizedFilename = normalizePath(componentFilename).replace(
+    /^\/+/,
+    ''
+  )
+  const unrootedFilename =
+    withoutSubPackageRootForUniModules(normalizedFilename)
+  if (!unrootedFilename.startsWith('uni_modules/')) {
+    return componentFilename
+  }
+  const roots = getMiniProgramComponentPackageRoots(unrootedFilename)
+  if (!roots) {
+    return componentFilename
+  }
+  const packageRoot =
+    roots.size === 1
+      ? findMiniProgramComponentPackageRoot(unrootedFilename)
+      : ''
+  const ownerRoot = findMiniProgramSubPackageRoot(ownerFilename)
+  if (packageRoot && ownerRoot === packageRoot) {
+    return '/' + `${packageRoot}/${unrootedFilename}`
+  }
+  return '/' + unrootedFilename
+}
+
+function withoutSubPackageRootForUniModules(filename: string) {
+  for (const root of subPackageRootsCache) {
+    if (filename.startsWith(`${root}/uni_modules/`)) {
+      return filename.slice(root.length + 1)
+    }
+  }
+  return filename
+}
+
+function normalizeComponentPackageFilename(filename: string) {
+  let normalizedFilename = withoutSubPackageRootForUniModules(
+    normalizePath(filename).split('?')[0].replace(/^\/+/, '')
+  )
+  const uniModulesIndex = normalizedFilename.indexOf('uni_modules/')
+  if (uniModulesIndex > -1) {
+    normalizedFilename = normalizedFilename.slice(uniModulesIndex)
+  }
+  return removeExt(normalizedFilename)
+}
+
+function getMiniProgramComponentPackageRoots(filename: string) {
+  return componentPackageRootsCache.get(
+    normalizeComponentPackageFilename(filename)
+  )
 }
 
 export function isMiniProgramUsingComponent(

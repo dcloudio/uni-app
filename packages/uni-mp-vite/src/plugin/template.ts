@@ -1,4 +1,3 @@
-import path from 'path'
 import debug from 'debug'
 import type { EmittedFile, GetModuleInfo } from 'rollup'
 import type { ResolvedConfig } from 'vite'
@@ -7,12 +6,14 @@ import {
   addMiniProgramTemplateFile,
   addMiniProgramTemplateFilter,
   clearMiniProgramTemplateFiles,
+  findMiniProgramComponentPackageRoot,
   findMiniProgramTemplateFiles,
   normalizeMiniProgramFilename,
   removeExt,
 } from '@dcloudio/uni-cli-shared'
 import { getFiltersCache } from '../plugins/renderjs'
 import type { UniMiniProgramPluginOptions } from '.'
+import { normalizeMiniProgramComponentFilename } from '../plugins/entry'
 
 const debugTemplate = debug('uni:mp-template')
 
@@ -67,8 +68,10 @@ export const emitFile: (emittedFile: EmittedFile) => string = (emittedFile) => {
     const filename = emittedFile.fileName!
     addMiniProgramTemplateFile(
       removeExt(
-        normalizeMiniProgramFilename(
-          path.relative(process.env.UNI_INPUT_DIR, filename)
+        normalizeMiniProgramComponentFilename(
+          filename,
+          process.env.UNI_INPUT_DIR,
+          findMiniProgramComponentPackageRoot(filename)
         )
       ),
       emittedFile.source!.toString()

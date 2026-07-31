@@ -27,7 +27,12 @@ import { M } from '../messages'
 import { BINDING_COMPONENTS, EXTNAME_VUE_RE } from '../constants'
 import { isAppVue, normalizeMiniProgramFilename, removeExt } from '../utils'
 import { cleanUrl, parseVueRequest } from '../vite/utils'
-import { addMiniProgramUsingComponents } from '../json/mp/jsonFile'
+import {
+  addMiniProgramComponentPackageRoot,
+  addMiniProgramUsingComponents,
+  findMiniProgramComponentPackageRoot,
+  findMiniProgramSubPackageRoot,
+} from '../json/mp/jsonFile'
 import {
   parseIndependentRoot,
   withIndependentRoot,
@@ -175,7 +180,8 @@ export function updateMiniProgramComponentsByScriptFilename(
   scriptFilename: string,
   inputDir: string,
   normalizeComponentName: (name: string) => string,
-  root?: string
+  root?: string,
+  packageRoot?: string
 ) {
   const mainFilename = findMainFilenameByScriptFilename(
     createDescriptorKey(scriptFilename, root)
@@ -185,7 +191,8 @@ export function updateMiniProgramComponentsByScriptFilename(
       mainFilename,
       inputDir,
       normalizeComponentName,
-      root
+      root,
+      packageRoot
     )
   }
 }
@@ -194,7 +201,8 @@ export function updateMiniProgramComponentsByTemplateFilename(
   templateFilename: string,
   inputDir: string,
   normalizeComponentName: (name: string) => string,
-  root?: string
+  root?: string,
+  packageRoot?: string
 ) {
   const mainFilename = findMainFilenameByTemplateFilename(
     createDescriptorKey(templateFilename, root)
@@ -204,7 +212,8 @@ export function updateMiniProgramComponentsByTemplateFilename(
       mainFilename,
       inputDir,
       normalizeComponentName,
-      root
+      root,
+      packageRoot
     )
   }
 }
@@ -269,9 +278,14 @@ function createUsingComponents(
   bindingComponents: BindingComponents,
   imports: ImportDeclaration[],
   inputDir: string,
-  normalizeComponentName: (name: string) => string
+  normalizeComponentName: (name: string) => string,
+  ownerFilename?: string,
+  ownerPackageRoot?: string
 ) {
   const usingComponents: Record<string, string> = {}
+  const ownerSubPackageRoot =
+    ownerPackageRoot ||
+    (ownerFilename && findMiniProgramSubPackageRoot(ownerFilename))
   imports.forEach(({ source: { value }, specifiers: [specifier] }) => {
     const { name } = specifier.local
     if (!bindingComponents[name]) {
@@ -281,11 +295,21 @@ function createUsingComponents(
       hyphenate(bindingComponents[name].tag)
     )
     if (!usingComponents[componentName]) {
-      usingComponents[componentName] = addLeadingSlash(
-        removeExt(
-          normalizeMiniProgramFilename(withoutIndependentRoot(value), inputDir)
-        )
+      let componentFilename = removeExt(
+        normalizeMiniProgramFilename(withoutIndependentRoot(value), inputDir)
       )
+      if (ownerSubPackageRoot && componentFilename.startsWith('uni_modules/')) {
+        addMiniProgramComponentPackageRoot(
+          componentFilename,
+          ownerSubPackageRoot
+        )
+        const componentPackageRoot =
+          findMiniProgramComponentPackageRoot(componentFilename)
+        if (componentPackageRoot === ownerSubPackageRoot) {
+          componentFilename = `${ownerSubPackageRoot}/${componentFilename}`
+        }
+      }
+      usingComponents[componentName] = addLeadingSlash(componentFilename)
     }
   })
   return usingComponents
@@ -295,7 +319,8 @@ export function updateMiniProgramComponentsByMainFilename(
   mainFilename: string,
   inputDir: string,
   normalizeComponentName: (name: string) => string,
-  root?: string
+  root?: string,
+  packageRoot?: string
 ) {
   const mainDescriptor = mainDescriptors.get(
     createDescriptorKey(mainFilename, root)
@@ -323,19 +348,23 @@ export function updateMiniProgramComponentsByMainFilename(
     scriptDescriptor.imports,
     templateDescriptor.imports
   )
+  const normalizedOwnerFilename = removeExt(
+    normalizeMiniProgramFilename(withoutIndependentRoot(mainFilename), inputDir)
+  )
+  const ownerFilename =
+    packageRoot && normalizedOwnerFilename.startsWith('uni_modules/')
+      ? `${packageRoot}/${normalizedOwnerFilename}`
+      : normalizedOwnerFilename
 
   addMiniProgramUsingComponents(
-    removeExt(
-      normalizeMiniProgramFilename(
-        withoutIndependentRoot(mainFilename),
-        inputDir
-      )
-    ),
+    ownerFilename,
     createUsingComponents(
       bindingComponents,
       imports,
       inputDir,
-      normalizeComponentName
+      normalizeComponentName,
+      ownerFilename,
+      root ? undefined : packageRoot
     )
   )
 }

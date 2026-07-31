@@ -176,6 +176,16 @@ describe('mp vite build options', () => {
       expect(
         chunkFileNames({
           isDynamicEntry: true,
+          facadeModuleId: virtualComponentPath(
+            'package-a/components/bar.vue',
+            'package-a',
+            'pages-sub'
+          ),
+        })
+      ).toBe('package-a/components/bar.js')
+      expect(
+        chunkFileNames({
+          isDynamicEntry: true,
           facadeModuleId: `${inputDir}/utils/lazy.ts`,
         })
       ).toBe('utils/lazy.js')

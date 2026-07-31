@@ -3,6 +3,8 @@ import os from 'os'
 import path from 'path'
 import {
   addMiniProgramAppJson,
+  addMiniProgramComponentJson,
+  addMiniProgramComponentPackageRoot,
   addMiniProgramPageJson,
   addMiniProgramUsingComponents,
   findChangedJsonFiles,
@@ -28,6 +30,64 @@ describe('miniProgram:jsonFile', () => {
         subscribe: 'plugin://subscribeMsg/subscribe',
         demo: '../../components/demo/demo',
       },
+    })
+  })
+
+  test('moves uni_modules component only when a single normal subpackage uses it', () => {
+    addMiniProgramAppJson(createSubPackagesAppJson(['pages-a', 'pages-b']))
+    addMiniProgramComponentPackageRoot(
+      'uni_modules/foo/components/foo/foo',
+      'pages-a'
+    )
+    addMiniProgramPageJson('pages-a/pages/index/index', {
+      usingComponents: {
+        foo: '/pages-a/uni_modules/foo/components/foo/foo',
+      },
+    })
+
+    expect(
+      JSON.parse(findChangedJsonFiles().get('pages-a/pages/index/index')!)
+    ).toEqual({
+      usingComponents: {
+        foo: '../../uni_modules/foo/components/foo/foo',
+      },
+    })
+
+    resetMiniProgramJsonFiles()
+    addMiniProgramAppJson(createSubPackagesAppJson(['pages-a', 'pages-b']))
+    addMiniProgramComponentPackageRoot(
+      'uni_modules/foo/components/foo/foo',
+      'pages-a'
+    )
+    addMiniProgramComponentPackageRoot(
+      'uni_modules/foo/components/foo/foo',
+      'pages-b'
+    )
+    addMiniProgramPageJson('pages-a/pages/index/index', {
+      usingComponents: {
+        foo: '/pages-a/uni_modules/foo/components/foo/foo',
+      },
+    })
+    addMiniProgramComponentJson('pages-a/uni_modules/foo/components/foo/foo', {
+      component: true,
+    })
+
+    const changedJsonFiles = findChangedJsonFiles()
+    expect(
+      JSON.parse(changedJsonFiles.get('pages-a/pages/index/index')!)
+    ).toEqual({
+      usingComponents: {
+        foo: '../../../uni_modules/foo/components/foo/foo',
+      },
+    })
+    expect(
+      changedJsonFiles.has('pages-a/uni_modules/foo/components/foo/foo')
+    ).toBe(false)
+    expect(
+      JSON.parse(changedJsonFiles.get('uni_modules/foo/components/foo/foo')!)
+    ).toEqual({
+      component: true,
+      usingComponents: {},
     })
   })
 
@@ -318,5 +378,15 @@ function createIndependentAppJson(root: string) {
         pages: ['pages/index/index'],
       },
     ],
+  }
+}
+
+function createSubPackagesAppJson(roots: string[]) {
+  return {
+    pages: [],
+    subPackages: roots.map((root) => ({
+      root,
+      pages: ['pages/index/index'],
+    })),
   }
 }

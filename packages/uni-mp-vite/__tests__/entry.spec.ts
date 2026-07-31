@@ -1,7 +1,11 @@
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
-import { normalizePath } from '@dcloudio/uni-cli-shared'
+import {
+  addMiniProgramComponentPackageRoot,
+  normalizePath,
+  resetMiniProgramJsonFiles,
+} from '@dcloudio/uni-cli-shared'
 import {
   parseVirtualComponentPath,
   parseVirtualComponentPathInfo,
@@ -11,6 +15,7 @@ import {
   virtualComponentPath,
   virtualPagePath,
 } from '../src/plugins/entry'
+import { emitFile, getTemplateFiles } from '../src/plugin/template'
 import {
   UNI_MP_RUNTIME_ID,
   withIndependentRoot,
@@ -144,6 +149,60 @@ describe('entry virtual paths', () => {
       ].join('\n')
 
       expect(result.code).toBe(expectedCode)
+    })
+  })
+
+  test('loads package scoped uni_modules component without changing source id', async () => {
+    await withEntryProject((inputDir) => {
+      const component = 'uni_modules/foo/components/foo/foo.vue'
+      const filepath = path.join(inputDir, component)
+      fs.mkdirSync(path.dirname(filepath), { recursive: true })
+      fs.writeFileSync(filepath, '<template><view /></template>')
+      const plugin = uniEntryPlugin({
+        global: 'wx',
+        template: { extname: '.wxml' },
+        style: { extname: '.wxss' },
+      } as any)
+
+      const result = (plugin.load as Function).call(
+        { addWatchFile: jest.fn() },
+        virtualComponentPath(component, undefined, 'pages-a')
+      )
+
+      expect(result.code).toContain(
+        `import Component from '${normalizePath(filepath)}'`
+      )
+    })
+  })
+
+  test('emits package scoped template only while one package root uses the component', async () => {
+    await withEntryProject((inputDir) => {
+      const component = normalizePath(
+        path.join(inputDir, 'uni_modules/foo/components/foo/foo.vue')
+      )
+      resetMiniProgramJsonFiles()
+      addMiniProgramComponentPackageRoot(component, 'pages-a')
+
+      emitFile({
+        type: 'asset',
+        fileName: component,
+        source: '<view />',
+      } as any)
+
+      expect(getTemplateFiles({} as any)).toMatchObject({
+        'pages-a/uni_modules/foo/components/foo/foo': '<view />',
+      })
+
+      addMiniProgramComponentPackageRoot(component, 'pages-b')
+      emitFile({
+        type: 'asset',
+        fileName: component,
+        source: '<view />',
+      } as any)
+
+      expect(getTemplateFiles({} as any)).toMatchObject({
+        'uni_modules/foo/components/foo/foo': '<view />',
+      })
     })
   })
 })

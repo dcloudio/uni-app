@@ -74,6 +74,57 @@ describe('mp vite usingComponents', () => {
     })
   })
 
+  test('keeps package root when generating dynamic component imports', () => {
+    process.env.UNI_INPUT_DIR = '/project/src'
+    const code = dynamicImport(
+      'UniNumberBox',
+      '/project/src/uni_modules/uni-number-box-x/components/uni-number-box/uni-number-box.uvue',
+      {
+        packageRoot: 'pages-sub',
+        inputDir: process.env.UNI_INPUT_DIR,
+      }
+    )
+    const [, id] = code.match(/import\('(.+)'\)/)!
+
+    expect(id).toBe(
+      virtualComponentPath(
+        '/project/src/uni_modules/uni-number-box-x/components/uni-number-box/uni-number-box.uvue',
+        undefined,
+        'pages-sub'
+      )
+    )
+    expect(parseVirtualComponentPathInfo(id)).toEqual({
+      filepath:
+        '/project/src/uni_modules/uni-number-box-x/components/uni-number-box/uni-number-box.uvue',
+      root: undefined,
+      packageRoot: 'pages-sub',
+    })
+  })
+
+  test('does not keep package root for independent root imports', () => {
+    process.env.UNI_INPUT_DIR = '/project/src'
+    const code = dynamicImport(
+      'UniNumberBox',
+      withIndependentRoot(
+        '/project/src/uni_modules/uni-number-box-x/components/uni-number-box/uni-number-box.uvue',
+        'package-a'
+      ),
+      {
+        root: 'package-a',
+        packageRoot: 'package-a',
+        inputDir: process.env.UNI_INPUT_DIR,
+      }
+    )
+    const [, id] = code.match(/import\('(.+)'\)/)!
+
+    expect(parseVirtualComponentPathInfo(id)).toEqual({
+      filepath:
+        '/project/src/uni_modules/uni-number-box-x/components/uni-number-box/uni-number-box.uvue',
+      root: 'package-a',
+      packageRoot: undefined,
+    })
+  })
+
   test('throws when sync component import crosses into independent subpackage', () => {
     process.env.UNI_INPUT_DIR = '/project/src'
     initIndependentSubPackages([
