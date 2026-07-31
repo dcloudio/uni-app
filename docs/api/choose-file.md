@@ -29,21 +29,21 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| count | number | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 最多可以选择的文件数，默认100,注意Android中count只会决定是否是单选/多选，如果count>1 是多选效果，等于1为单选效果, |
-| type | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 选择文件的类型，默认all，可选<br/>- image: 选择图片文件<br/>- video: 选择视频文件<br/>- audio: 选择音频文件<br/>- all: 默认值，选择本地文件，包含图片和视频 |
-| extension | Array&lt;string&gt; | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | 选择文件的后缀名，暂只支持.zip、.png等，不支持application/msword等值, App平台不支持 |
+| count | number | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 最多可以选择的文件数，默认100,注意Android中count只会决定是否是单选/多选，如果count>1 是多选效果，等于1为单选效果, |
+| type | string | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 选择文件的类型，默认all，可选<br/>- image: 选择图片文件<br/>- video: 选择视频文件<br/>- audio: 选择音频文件<br/>- all: 默认值，选择本地文件，包含图片和视频 |
+| extension | Array&lt;string&gt; | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | 选择文件的后缀名，暂只支持.zip、.png等，不支持application/msword等值, App平台不支持 |
 | sizeType | any | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | original 原图，compressed 压缩图，默认二者都有, App平台不支持 |
-| sourceType | Array&lt;string&gt; | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: x | album 从相册选图，camera 使用相机，默认二者都有, App平台不支持 |
-| success | (result: [ChooseFileSuccess](#choosefilesuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 成功则返回图片的本地文件路径列表 tempFilePaths、tempFiles |
-| fail | (result: [ChooseFileFail](#choosefilefail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 接口调用失败的回调函数 |
-| complete | (result: any) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 接口调用结束的回调函数（调用成功、失败都会执行） | 
+| sourceType | Array&lt;string&gt; | 否 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: x; HarmonyOS: 4.61 | album 从相册选图，camera 使用相机，默认二者都有, App平台不支持 |
+| success | (result: [ChooseFileSuccess](#choosefilesuccess-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 成功则返回图片的本地文件路径列表 tempFilePaths、tempFiles |
+| fail | (result: [ChooseFileFail](#choosefilefail-values)) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 接口调用失败的回调函数 |
+| complete | (result: any) => void | 否 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 接口调用结束的回调函数（调用成功、失败都会执行） | 
 
 ##### type 的属性描述
 
 | 合法值 | 兼容性 | 描述 |
 | :- |  :-: | :- |
-| image | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 图片类型 |
-| video | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 视频类型 |
+| image | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 图片类型 |
+| video | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 视频类型 |
 | audio | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 音频类型 |
 | all |   |  |
 
@@ -51,8 +51,8 @@
 
 | 名称 | 类型 | 必备 | 兼容性 | 描述 |
 | :- | :- | :- |  :-: | :- |
-| tempFilePaths | Array&lt;string&gt; | 是 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: 4.61; HarmonyOS: x | 文件的本地文件路径列表, Android平台不支持 |
-| tempFiles | Array&lt;**ChooseFileTempFile**&gt; | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: x | 文件的本地文件列表，每一项是一个 File 对象 |
+| tempFilePaths | Array&lt;string&gt; | 是 | Web: 4.0; 微信小程序: 4.41; Android: x; iOS: 4.61; HarmonyOS: 4.61 | 文件的本地文件路径列表, Android平台不支持 |
+| tempFiles | Array&lt;**ChooseFileTempFile**&gt; | 是 | Web: 4.0; 微信小程序: 4.41; Android: 4.51; iOS: 4.61; HarmonyOS: 4.61 | 文件的本地文件列表，每一项是一个 File 对象 |
 
 #### tempFiles 的属性描述
 
