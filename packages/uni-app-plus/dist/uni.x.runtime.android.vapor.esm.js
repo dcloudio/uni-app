@@ -1659,23 +1659,6 @@ function parseRedirectInfo(appid, redirectInfo) {
 var appRouteRuntime = createAppRouteRuntime();
 var onAppRoute = appRouteRuntime.onAppRoute;
 var offAppRoute = appRouteRuntime.offAppRoute;
-function createAppRouteOptions(type, options) {
-  var normalizeUrl = options.formatArgs.url;
-  return extend({}, options, {
-    formatArgs: extend({}, options.formatArgs, {
-      url(url, params) {
-        var errMsg = normalizeUrl(url, params);
-        if (errMsg && url) {
-          var normalizedUrl = normalizeRoute(url);
-          if (!getRouteOptions(normalizedUrl.split("?")[0], true)) {
-            dispatchAppRouteNotFound(normalizedUrl, type);
-          }
-        }
-        return errMsg;
-      }
-    })
-  });
-}
 function dispatchAppRoute(path, query, openType) {
   var notFound = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
   var context = appRouteRuntime.createAppRouteContext({
@@ -1693,12 +1676,12 @@ function dispatchAppRoute(path, query, openType) {
   }
   appRouteRuntime.dispatchAppRoute(context);
 }
-function dispatchAppRouteNotFound(url, openType) {
+function dispatchAppRouteNotFound(url) {
   var {
     path,
     query
   } = parseUrl(url);
-  dispatchAppRoute(path, query, openType, true);
+  dispatchAppRoute(path, query, "appLaunch", true);
 }
 var onTabBarMidButtonTapCallback = [];
 var tabBar0 = null;
@@ -2614,7 +2597,7 @@ var redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, (_ref, _ref2) =
     path,
     query
   }).then(resolve).catch(reject);
-}, RedirectToProtocol, createAppRouteOptions(API_REDIRECT_TO, RedirectToOptions));
+}, RedirectToProtocol, RedirectToOptions);
 function _redirectTo(_ref3) {
   var {
     url,
@@ -2740,7 +2723,7 @@ function _reLaunch(_ref3) {
     }, 0);
   });
 }
-var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, createAppRouteOptions(API_RE_LAUNCH, ReLaunchOptions));
+var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
 function closePage(page, animationType, animationDuration) {
   if (page.$page) {
     clearDialogPages(page.$page);
@@ -2856,7 +2839,7 @@ function $switchTab(args, _ref) {
   }, appRouteOpenType, shouldDispatchAppRoute).then(resolve).catch(reject);
   handleBeforeEntryPageRoutes();
 }
-var switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, $switchTab, SwitchTabProtocol, createAppRouteOptions(API_SWITCH_TAB, SwitchTabOptions));
+var switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, $switchTab, SwitchTabProtocol, SwitchTabOptions);
 function _switchTab(_ref2, appRouteOpenType, shouldDispatchAppRoute) {
   var {
     url,
@@ -2899,7 +2882,7 @@ function onLaunchWebviewReady() {
   var isEntryPageNotFound = false;
   if (!routeOptions) {
     isEntryPageNotFound = true;
-    dispatchAppRouteNotFound(entryPagePath + (__uniConfig.entryPageQuery || ""), "appLaunch");
+    dispatchAppRouteNotFound(entryPagePath + (__uniConfig.entryPageQuery || ""));
     if (__uniRoutes.length > 0) {
       entryPagePath = __uniRoutes[0].path;
       routeOptions = getRouteOptions(addLeadingSlash(entryPagePath));
@@ -3137,7 +3120,7 @@ function $navigateTo(args, _ref) {
   }, appRouteOpenType, shouldDispatchAppRoute).then(resolve).catch(reject);
   handleBeforeEntryPageRoutes();
 }
-var navigateTo = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, createAppRouteOptions(API_NAVIGATE_TO, NavigateToOptions));
+var navigateTo = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
 function _navigateTo(_ref2, appRouteOpenType, shouldDispatchAppRoute) {
   var _getCurrentPage;
   var {

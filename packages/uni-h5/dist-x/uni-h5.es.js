@@ -4,11 +4,11 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, decodedQuery, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
+import { getGlobal, UTS as UTS$1, UTSJSONObject, UTSValueIterable, UniError as UniError$1, once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, ON_BACK_PRESS, invokeArrayFnsWithResults, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, createUniDOMStringMap, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, ON_LOAD, ON_READY, isUniLifecycleHook, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
 import { UTS as UTS2, UTSJSONObject as UTSJSONObject2, UTSValueIterable as UTSValueIterable2, UniError as UniError2, onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, isInSSRComponentSetup, createCommentVNode, normalizeClass, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, toDisplayString, unref } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
-import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
+import { useRoute, isNavigationFailure, START_LOCATION, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 const realGlobal = getGlobal();
 realGlobal.UTS = UTS$1;
@@ -7407,126 +7407,6 @@ function requestComponentObserver($el, options, callback) {
   }
   return intersectionObserver;
 }
-const appRouteRuntime = createAppRouteRuntime();
-const pendingAppRouteContexts = [];
-const historyOpenTypes = /* @__PURE__ */ new WeakMap();
-let pendingHistoryRoute;
-let appRouteReady = false;
-let appRouteStarted = false;
-const onAppRoute = appRouteRuntime.onAppRoute;
-const offAppRoute = appRouteRuntime.offAppRoute;
-function dispatchAppRoute(context) {
-  if (!appRouteReady) {
-    pendingAppRouteContexts.push(context);
-    return;
-  }
-  const event = context.event;
-  if (event.notFound) {
-    invokeHook(getApp().vm, ON_PAGE_NOT_FOUND, {
-      path: event.path,
-      query: Object.assign({}, event.query),
-      isEntryPage: event.openType === "appLaunch"
-    });
-  }
-  appRouteRuntime.dispatchAppRoute(context);
-}
-function getRoutePath(route) {
-  const pagePath = route.meta.route;
-  return typeof pagePath === "string" ? pagePath : removeLeadingSlash(route.path);
-}
-function dispatchWebAppRoute(route) {
-  const context = appRouteRuntime.createAppRouteContext({
-    path: getRoutePath(route),
-    query: decodedQuery(route.query),
-    openType: resolveOpenType(route),
-    notFound: route.matched.length === 0
-  });
-  dispatchAppRoute(context);
-}
-function dispatchWebAppRouteNotFound(url, openType) {
-  const { path, query } = parseUrl(url);
-  dispatchAppRoute(
-    appRouteRuntime.createAppRouteContext({
-      path: removeLeadingSlash(path),
-      query: decodedQuery(query),
-      openType,
-      notFound: true
-    })
-  );
-}
-function isPendingHistoryRoute(to) {
-  var _a;
-  const fullPath = to.fullPath || to.path;
-  return pendingHistoryRoute && (pendingHistoryRoute.fullPath === fullPath || pendingHistoryRoute.fullPath === ((_a = to.redirectedFrom) == null ? void 0 : _a.fullPath));
-}
-function takePendingHistoryOpenType(to) {
-  if (pendingHistoryRoute && isPendingHistoryRoute(to)) {
-    const { openType } = pendingHistoryRoute;
-    pendingHistoryRoute = void 0;
-    return openType;
-  }
-}
-function bindHistoryOpenType(to) {
-  const openType = takePendingHistoryOpenType(to);
-  if (openType) {
-    historyOpenTypes.set(to, openType);
-  }
-}
-function takeHistoryOpenType(to) {
-  const redirectedFrom = to.redirectedFrom;
-  const openType = historyOpenTypes.get(to) || redirectedFrom && historyOpenTypes.get(redirectedFrom);
-  historyOpenTypes.delete(to);
-  if (redirectedFrom) {
-    historyOpenTypes.delete(redirectedFrom);
-  }
-  return openType;
-}
-function resolveOpenType(to) {
-  var _a;
-  if (!appRouteStarted) {
-    appRouteStarted = true;
-    return "appLaunch";
-  }
-  const historyOpenType = takeHistoryOpenType(to);
-  if (historyOpenType) {
-    return historyOpenType;
-  }
-  const openType = (_a = history.state) == null ? void 0 : _a.__type__;
-  if (openType === API_NAVIGATE_TO || openType === API_REDIRECT_TO || openType === API_RE_LAUNCH || openType === API_SWITCH_TAB) {
-    return openType;
-  }
-  return API_NAVIGATE_TO;
-}
-function setWebAppRouteHistoryDirection(fullPath, direction2) {
-  pendingHistoryRoute = {
-    fullPath,
-    openType: direction2 === "back" ? API_NAVIGATE_BACK : API_NAVIGATE_TO
-  };
-}
-function initWebAppRouteListener(router) {
-  router.beforeEach((to) => {
-    bindHistoryOpenType(to);
-  });
-  router.afterEach((to, _from, failure) => {
-    if (failure) {
-      takeHistoryOpenType(to);
-      return;
-    }
-    if (to.matched.length === 0) {
-      dispatchWebAppRoute(to);
-    }
-  });
-  router.onError((_error, to) => {
-    takeHistoryOpenType(to);
-  });
-}
-function setWebAppRouteReady() {
-  if (appRouteReady) {
-    return;
-  }
-  appRouteReady = true;
-  pendingAppRouteContexts.splice(0).forEach(dispatchAppRoute);
-}
 function removeNonTabBarPages() {
   const curTabBarPageVm = getCurrentPageVm();
   if (!curTabBarPageVm) {
@@ -7578,7 +7458,7 @@ const switchTab = /* @__PURE__ */ defineAsyncApi(
     ).then(resolve).catch(reject);
   },
   SwitchTabProtocol,
-  createWebRouteOptions(API_SWITCH_TAB, SwitchTabOptions)
+  SwitchTabOptions
 );
 function removeLastPage() {
   var _a;
@@ -7607,7 +7487,7 @@ const redirectTo = /* @__PURE__ */ defineAsyncApi(
     );
   },
   RedirectToProtocol,
-  createWebRouteOptions(API_REDIRECT_TO, RedirectToOptions)
+  RedirectToOptions
 );
 function removeAllPages() {
   const keys = getCurrentPagesMap().keys();
@@ -7630,27 +7510,8 @@ const reLaunch = /* @__PURE__ */ defineAsyncApi(
     return removeAllPages(), navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
   },
   ReLaunchProtocol,
-  createWebRouteOptions(API_RE_LAUNCH, ReLaunchOptions)
+  ReLaunchOptions
 );
-function createWebRouteOptions(type, options) {
-  {
-    const normalizeUrl = options.formatArgs.url;
-    return extend({}, options, {
-      formatArgs: extend({}, options.formatArgs, {
-        url(url, params) {
-          const errMsg = normalizeUrl(url, params);
-          if (errMsg && url) {
-            const normalizedUrl = normalizeRoute(url);
-            if (!getRouteOptions(normalizedUrl.split("?")[0], true)) {
-              dispatchWebAppRouteNotFound(normalizedUrl, type);
-            }
-          }
-          return errMsg;
-        }
-      })
-    });
-  }
-}
 function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
   if (process.env.NODE_ENV !== "production" && !__UNI_FEATURE_PAGES__) {
     console.warn(
@@ -9183,6 +9044,115 @@ function initApp$1(vm) {
   defineGlobalData(appVm);
   initService();
   initView();
+}
+const appRouteRuntime = createAppRouteRuntime();
+const pendingAppRouteContexts = [];
+const historyOpenTypes = /* @__PURE__ */ new WeakMap();
+let pendingHistoryRoute;
+let appRouteReady = false;
+let appRouteStarted = false;
+const onAppRoute = appRouteRuntime.onAppRoute;
+const offAppRoute = appRouteRuntime.offAppRoute;
+function dispatchAppRoute(context) {
+  if (!appRouteReady) {
+    pendingAppRouteContexts.push(context);
+    return;
+  }
+  const event = context.event;
+  if (event.notFound) {
+    invokeHook(getApp().vm, ON_PAGE_NOT_FOUND, {
+      path: event.path,
+      query: Object.assign({}, event.query),
+      isEntryPage: event.openType === "appLaunch"
+    });
+  }
+  appRouteRuntime.dispatchAppRoute(context);
+}
+function getRoutePath(route) {
+  const pagePath = route.meta.route;
+  return typeof pagePath === "string" ? pagePath : removeLeadingSlash(route.path);
+}
+function dispatchWebAppRoute(route) {
+  const context = appRouteRuntime.createAppRouteContext({
+    path: getRoutePath(route),
+    query: decodedQuery(route.query),
+    openType: resolveOpenType(route),
+    notFound: route.matched.length === 0
+  });
+  dispatchAppRoute(context);
+}
+function isPendingHistoryRoute(to) {
+  var _a;
+  const fullPath = to.fullPath || to.path;
+  return pendingHistoryRoute && (pendingHistoryRoute.fullPath === fullPath || pendingHistoryRoute.fullPath === ((_a = to.redirectedFrom) == null ? void 0 : _a.fullPath));
+}
+function takePendingHistoryOpenType(to) {
+  if (pendingHistoryRoute && isPendingHistoryRoute(to)) {
+    const { openType } = pendingHistoryRoute;
+    pendingHistoryRoute = void 0;
+    return openType;
+  }
+}
+function bindHistoryOpenType(to) {
+  const openType = takePendingHistoryOpenType(to);
+  if (openType) {
+    historyOpenTypes.set(to, openType);
+  }
+}
+function takeHistoryOpenType(to) {
+  const redirectedFrom = to.redirectedFrom;
+  const openType = historyOpenTypes.get(to) || redirectedFrom && historyOpenTypes.get(redirectedFrom);
+  historyOpenTypes.delete(to);
+  if (redirectedFrom) {
+    historyOpenTypes.delete(redirectedFrom);
+  }
+  return openType;
+}
+function resolveOpenType(to) {
+  var _a;
+  if (!appRouteStarted) {
+    appRouteStarted = true;
+    return "appLaunch";
+  }
+  const historyOpenType = takeHistoryOpenType(to);
+  if (historyOpenType) {
+    return historyOpenType;
+  }
+  const openType = (_a = history.state) == null ? void 0 : _a.__type__;
+  if (openType === API_NAVIGATE_TO || openType === API_REDIRECT_TO || openType === API_RE_LAUNCH || openType === API_SWITCH_TAB) {
+    return openType;
+  }
+  return API_NAVIGATE_TO;
+}
+function setWebAppRouteHistoryDirection(fullPath, direction2) {
+  pendingHistoryRoute = {
+    fullPath,
+    openType: direction2 === "back" ? API_NAVIGATE_BACK : API_NAVIGATE_TO
+  };
+}
+function initWebAppRouteListener(router) {
+  router.beforeEach((to) => {
+    bindHistoryOpenType(to);
+  });
+  router.afterEach((to, from, failure) => {
+    if (failure) {
+      takeHistoryOpenType(to);
+      return;
+    }
+    if (from === START_LOCATION && to.matched.length === 0) {
+      dispatchWebAppRoute(to);
+    }
+  });
+  router.onError((_error, to) => {
+    takeHistoryOpenType(to);
+  });
+}
+function setWebAppRouteReady() {
+  if (appRouteReady) {
+    return;
+  }
+  appRouteReady = true;
+  pendingAppRouteContexts.splice(0).forEach(dispatchAppRoute);
 }
 function wrapperComponentSetup(comp, { type, clone, init: init2, setup, before, options }) {
   if (clone) {
@@ -24923,7 +24893,7 @@ const navigateTo = /* @__PURE__ */ defineAsyncApi(
     return navigate({ type: API_NAVIGATE_TO, url, events, isAutomatedTesting }).then(resolve).catch(reject);
   },
   NavigateToProtocol,
-  createWebRouteOptions(API_NAVIGATE_TO, NavigateToOptions)
+  NavigateToOptions
 );
 const preloadPage = /* @__PURE__ */ defineAsyncApi(
   API_PRELOAD_PAGE,

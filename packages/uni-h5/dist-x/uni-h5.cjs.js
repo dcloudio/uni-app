@@ -662,17 +662,6 @@ function invokeHook(vm, name, args) {
   }
   return hooks && uniShared.invokeArrayFns(hooks, args);
 }
-function normalizeRoute(toRoute) {
-  if (toRoute.indexOf("/") === 0 || toRoute.indexOf("uni:") === 0) {
-    return toRoute;
-  }
-  let fromRoute = "";
-  const pages = getCurrentPages();
-  if (pages.length) {
-    fromRoute = get$pageByPage(pages[pages.length - 1]).route;
-  }
-  return getRealRoute(fromRoute, toRoute);
-}
 function getRealRoute(fromRoute, toRoute) {
   if (toRoute.indexOf("/") === 0) {
     return toRoute;
@@ -1925,49 +1914,6 @@ function invokeCallback(id2, res, extras) {
   }
   return res;
 }
-function findInvokeCallbackByName(name) {
-  for (const key in invokeCallbacks) {
-    if (invokeCallbacks[key].name === name) {
-      return true;
-    }
-  }
-  return false;
-}
-function removeKeepAliveApiCallback(name, callback) {
-  for (const key in invokeCallbacks) {
-    const item = invokeCallbacks[key];
-    if (item.callback === callback && item.name === name) {
-      delete invokeCallbacks[key];
-    }
-  }
-}
-function removeAllKeepAliveApiCallbacks(name) {
-  for (const key in invokeCallbacks) {
-    if (invokeCallbacks[key].name === name) {
-      delete invokeCallbacks[key];
-    }
-  }
-}
-function offKeepAliveApiCallback(name, eventTransport2) {
-  const eventName = eventTransport2 ? name : "api." + name;
-  const transport = eventTransport2 || UniServiceJSBridge;
-  transport.off(eventName);
-}
-function onKeepAliveApiCallback(name, eventTransport2) {
-  const eventName = eventTransport2 ? name : "api." + name;
-  const transport = eventTransport2 || UniServiceJSBridge;
-  transport.on(eventName, (res) => {
-    for (const key in invokeCallbacks) {
-      const opts = invokeCallbacks[key];
-      if (opts.name === name) {
-        opts.callback(res);
-      }
-    }
-  });
-}
-function createKeepAliveApiCallback(name, callback) {
-  return addInvokeCallback(invokeCallbackId++, name, callback, true);
-}
 const API_SUCCESS = "success";
 const API_FAIL = "fail";
 const API_COMPLETE = "complete";
@@ -2223,55 +2169,6 @@ function beforeInvokeApi(name, args, protocol, options) {
     return errMsg;
   }
 }
-function checkCallback(callback) {
-  if (!shared.isFunction(callback)) {
-    throw new Error(
-      'Invalid args: type check failed for args "callback". Expected Function'
-    );
-  }
-}
-function wrapperOnApi(name, fn, options) {
-  return (callback) => {
-    checkCallback(callback);
-    const errMsg = beforeInvokeApi(name, [callback], void 0, options);
-    if (errMsg) {
-      throw new Error(errMsg);
-    }
-    const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
-    createKeepAliveApiCallback(name, callback);
-    if (isFirstInvokeOnApi) {
-      onKeepAliveApiCallback(name, options == null ? void 0 : options.eventTransport);
-      fn();
-    }
-  };
-}
-function wrapperOffApi(name, fn, options) {
-  return (callback) => {
-    const clearAll = (options == null ? void 0 : options.allowClearAll) === true && callback == null;
-    if (!clearAll) {
-      checkCallback(callback);
-    }
-    const errMsg = beforeInvokeApi(
-      name,
-      clearAll ? [] : [callback],
-      void 0,
-      options
-    );
-    if (errMsg) {
-      throw new Error(errMsg);
-    }
-    const onApiName = name.replace("off", "on");
-    if (clearAll) {
-      removeAllKeepAliveApiCallbacks(onApiName);
-    } else {
-      removeKeepAliveApiCallback(onApiName, callback);
-    }
-    const hasInvokeOnApi = findInvokeCallbackByName(onApiName);
-    if (!hasInvokeOnApi) {
-      offKeepAliveApiCallback(onApiName, options == null ? void 0 : options.eventTransport);
-    }
-  };
-}
 function parseErrMsg(errMsg) {
   if (!errMsg || shared.isString(errMsg)) {
     return errMsg;
@@ -2306,12 +2203,6 @@ function wrapperSyncApi(name, fn, protocol, options) {
 function wrapperAsyncApi(name, fn, protocol, options) {
   return wrapperTaskApi(name, fn, protocol, options);
 }
-function defineOnApi(name, fn, options) {
-  return wrapperOnApi(name, fn, options);
-}
-function defineOffApi(name, fn, options) {
-  return wrapperOffApi(name, fn, options);
-}
 function defineTaskApi(name, fn, protocol, options) {
   return promisify(
     name,
@@ -2344,57 +2235,6 @@ const getLocale = /* @__PURE__ */ defineSyncApi(
     return useI18n().getLocale();
   }
 );
-const API_ON_APP_ROUTE = "onAppRoute";
-const API_OFF_APP_ROUTE = "offAppRoute";
-const eventTransport = /* @__PURE__ */ new uniShared.Emitter();
-function createAppRouteRuntime() {
-  let routeEventId = 0;
-  const onAppRoute = /* @__PURE__ */ defineOnApi(API_ON_APP_ROUTE, () => {
-  }, {
-    eventTransport
-  });
-  const offAppRoute = /* @__PURE__ */ defineOffApi(API_OFF_APP_ROUTE, () => {
-  }, {
-    allowClearAll: true,
-    eventTransport
-  });
-  function createAppRouteContext(event) {
-    var _a, _b;
-    const timeStamp = (_a = event.timeStamp) != null ? _a : Date.now();
-    return {
-      event: {
-        path: event.path,
-        query: Object.assign({}, event.query),
-        openType: event.openType,
-        notFound: event.notFound,
-        timeStamp,
-        routeEventId: (_b = event.routeEventId) != null ? _b : `${timeStamp}-${++routeEventId}`
-      }
-    };
-  }
-  function dispatchAppRoute2(context) {
-    const event = context.event;
-    try {
-      const routeEvent = {
-        path: event.path,
-        query: Object.assign({}, event.query),
-        openType: event.openType,
-        notFound: event.notFound,
-        timeStamp: event.timeStamp,
-        routeEventId: event.routeEventId
-      };
-      eventTransport.emit(API_ON_APP_ROUTE, routeEvent);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-  return {
-    onAppRoute,
-    offAppRoute,
-    createAppRouteContext,
-    dispatchAppRoute: dispatchAppRoute2
-  };
-}
 const API_GET_STORAGE = "getStorage";
 const GetStorageProtocol = {
   key: {
@@ -2517,105 +2357,6 @@ const RequestOptions = {
     }
   }
 };
-function encodeQueryString(url) {
-  if (!shared.isString(url)) {
-    return url;
-  }
-  const index2 = url.indexOf("?");
-  if (index2 === -1) {
-    return url;
-  }
-  const query = url.slice(index2 + 1).trim().replace(/^(\?|#|&)/, "");
-  if (!query) {
-    return url;
-  }
-  url = url.slice(0, index2);
-  const params = [];
-  query.split("&").forEach((param) => {
-    const parts = param.replace(/\+/g, " ").split("=");
-    const key = parts.shift();
-    const val = parts.length > 0 ? parts.join("=") : "";
-    params.push(key + "=" + encodeURIComponent(val));
-  });
-  return params.length ? url + "?" + params.join("&") : url;
-}
-const BaseRouteProtocol = {
-  url: {
-    type: String,
-    required: true
-  }
-};
-const API_NAVIGATE_TO = "navigateTo";
-const API_REDIRECT_TO = "redirectTo";
-const API_RE_LAUNCH = "reLaunch";
-const API_SWITCH_TAB = "switchTab";
-const API_PRELOAD_PAGE = "preloadPage";
-const API_UN_PRELOAD_PAGE = "unPreloadPage";
-const RedirectToProtocol = BaseRouteProtocol;
-const ReLaunchProtocol = BaseRouteProtocol;
-const SwitchTabProtocol = BaseRouteProtocol;
-const RedirectToOptions = /* @__PURE__ */ createRouteOptions(API_REDIRECT_TO);
-const ReLaunchOptions = /* @__PURE__ */ createRouteOptions(API_RE_LAUNCH);
-const SwitchTabOptions = /* @__PURE__ */ createRouteOptions(API_SWITCH_TAB);
-let navigatorLock;
-function beforeRoute() {
-  navigatorLock = "";
-}
-function createRouteOptions(type) {
-  return {
-    formatArgs: {
-      url: createNormalizeUrl(type)
-    },
-    beforeAll: beforeRoute
-  };
-}
-function createNormalizeUrl(type) {
-  return function normalizeUrl(url, params) {
-    if (!url) {
-      return `Missing required args: "url"`;
-    }
-    url = normalizeRoute(url);
-    const pagePath = url.split("?")[0];
-    const routeOptions = getRouteOptions(pagePath, true);
-    if (!routeOptions) {
-      return "page `" + url + "` is not found";
-    }
-    if (type === API_NAVIGATE_TO || type === API_REDIRECT_TO) {
-      if (routeOptions.meta.isTabBar) {
-        return `can not ${type} a tabbar page`;
-      }
-    } else if (type === API_SWITCH_TAB) {
-      if (!routeOptions.meta.isTabBar) {
-        return "can not switch to no-tabBar page";
-      }
-    }
-    if ((type === API_SWITCH_TAB || type === API_PRELOAD_PAGE) && routeOptions.meta.isTabBar && params.openType !== "appLaunch") {
-      url = pagePath;
-    }
-    if (routeOptions.meta.isEntry) {
-      url = url.replace(routeOptions.alias, "/");
-    }
-    params.url = encodeQueryString(url);
-    if (type === API_UN_PRELOAD_PAGE) {
-      return;
-    } else if (type === API_PRELOAD_PAGE) {
-      if (routeOptions.meta.isTabBar) {
-        const pages = getCurrentPages();
-        const tabBarPagePath = routeOptions.path.slice(1);
-        if (pages.find((page) => page.route === tabBarPagePath)) {
-          return "tabBar page `" + tabBarPagePath + "` already exists";
-        }
-      }
-      return;
-    }
-    if (navigatorLock === url && params.openType !== "appLaunch") {
-      return `${navigatorLock} locked`;
-    }
-    if (__uniConfig.ready) {
-      navigatorLock = url;
-    }
-  };
-}
 const API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
 const API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
 const SetNavigationBarTitleProtocol = {
@@ -2626,23 +2367,6 @@ const SetNavigationBarTitleProtocol = {
 };
 const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
 const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
-const appRouteRuntime = createAppRouteRuntime();
-function dispatchAppRoute(context) {
-  {
-    return;
-  }
-}
-function dispatchWebAppRouteNotFound(url, openType) {
-  const { path, query } = uniShared.parseUrl(url);
-  dispatchAppRoute(
-    appRouteRuntime.createAppRouteContext({
-      path: uniShared.removeLeadingSlash(path),
-      query: uniShared.decodedQuery(query),
-      openType,
-      notFound: true
-    })
-  );
-}
 function removeNonTabBarPages() {
   const curTabBarPageVm = getCurrentPageVm();
   if (!curTabBarPageVm) {
@@ -2676,26 +2400,6 @@ function getTabBarPageId(url) {
     }
   }
 }
-/* @__PURE__ */ defineAsyncApi(
-  API_SWITCH_TAB,
-  // @ts-expect-error
-  ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      switchTabPagesBeforeEntryPages.push({
-        args: { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    return removeNonTabBarPages(), navigate(
-      { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
-      getTabBarPageId(url)
-    ).then(resolve).catch(reject);
-  },
-  SwitchTabProtocol,
-  createWebRouteOptions(API_SWITCH_TAB, SwitchTabOptions)
-);
 function removeLastPage() {
   var _a;
   const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
@@ -2705,66 +2409,10 @@ function removeLastPage() {
   const $page = getPage$BasePage(page);
   removePage(normalizeRouteKey($page.path, $page.id));
 }
-/* @__PURE__ */ defineAsyncApi(
-  API_REDIRECT_TO,
-  // @ts-expect-error
-  ({ url, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      redirectToPagesBeforeEntryPages.push({
-        args: { type: API_REDIRECT_TO, url, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    return (
-      // TODO exists 属性未实现
-      removeLastPage(), navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject)
-    );
-  },
-  RedirectToProtocol,
-  createWebRouteOptions(API_REDIRECT_TO, RedirectToOptions)
-);
 function removeAllPages() {
   const keys = getCurrentPagesMap().keys();
   for (const routeKey of keys) {
     removePage(routeKey);
-  }
-}
-/* @__PURE__ */ defineAsyncApi(
-  API_RE_LAUNCH,
-  // @ts-expect-error
-  ({ url, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      reLaunchPagesBeforeEntryPages.push({
-        args: { type: API_RE_LAUNCH, url, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    return removeAllPages(), navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
-  },
-  ReLaunchProtocol,
-  createWebRouteOptions(API_RE_LAUNCH, ReLaunchOptions)
-);
-function createWebRouteOptions(type, options) {
-  {
-    const normalizeUrl = options.formatArgs.url;
-    return shared.extend({}, options, {
-      formatArgs: shared.extend({}, options.formatArgs, {
-        url(url, params) {
-          const errMsg = normalizeUrl(url, params);
-          if (errMsg && url) {
-            const normalizedUrl = normalizeRoute(url);
-            if (!getRouteOptions(normalizedUrl.split("?")[0], true)) {
-              dispatchWebAppRouteNotFound(normalizedUrl, type);
-            }
-          }
-          return errMsg;
-        }
-      })
-    });
   }
 }
 function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
