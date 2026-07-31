@@ -98,7 +98,7 @@ function initSubPackages() {
   const { appJson } = parseMiniProgramPagesJson(
     fs.readFileSync(pagesJsonFile, 'utf8'),
     platform,
-    { subpackages: true }
+    { subpackages: true, independentSubpackages: true }
   )
   subPackageRoots = Object.values(
     appJson.subPackages || appJson.subpackages || {}

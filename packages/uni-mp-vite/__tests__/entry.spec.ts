@@ -8,6 +8,7 @@ import {
   resetMiniProgramJsonFiles,
 } from '@dcloudio/uni-cli-shared'
 import {
+  getSubPackageRootByFilename,
   parseVirtualComponentPath,
   parseVirtualComponentPathInfo,
   parseVirtualPagePath,
@@ -84,6 +85,48 @@ describe('entry virtual paths', () => {
     expect(parseVirtualComponentPathInfo(id)).toEqual({
       filepath: 'package-a/components/foo.vue',
       root: 'package-a',
+    })
+  })
+
+  test('excludes independent roots from normal subpackage roots', async () => {
+    await withEntryProject((inputDir) => {
+      fs.writeFileSync(
+        path.join(inputDir, 'pages.json'),
+        JSON.stringify({
+          pages: [{ path: 'pages/index/index' }],
+          subPackages: [
+            {
+              root: 'package-a',
+              independent: true,
+              pages: [{ path: 'pages/index/index' }],
+            },
+            {
+              root: 'package-b',
+              pages: [{ path: 'pages/index/index' }],
+            },
+          ],
+        })
+      )
+      const plugin = uniEntryPlugin({
+        global: 'wx',
+        template: { extname: '.wxml' },
+        style: { extname: '.wxss' },
+      } as any)
+
+      ;(plugin.buildStart as Function).call({ addWatchFile: jest.fn() })
+
+      expect(
+        getSubPackageRootByFilename(
+          path.join(inputDir, 'package-a/pages/index/index.vue'),
+          inputDir
+        )
+      ).toBeUndefined()
+      expect(
+        getSubPackageRootByFilename(
+          path.join(inputDir, 'package-b/pages/index/index.vue'),
+          inputDir
+        )
+      ).toBe('package-b')
     })
   })
 
