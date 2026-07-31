@@ -89,6 +89,143 @@ describe('miniProgram:jsonFile', () => {
       component: true,
       usingComponents: {},
     })
+
+    resetMiniProgramJsonFiles()
+    addMiniProgramAppJson(createSubPackagesAppJson(['pages-a', 'pages-b']))
+    addMiniProgramComponentPackageRoot('uni_modules/foo/components/foo/foo')
+    addMiniProgramComponentPackageRoot(
+      'uni_modules/foo/components/foo/foo',
+      'pages-a'
+    )
+    addMiniProgramPageJson('pages-a/pages/index/index', {
+      usingComponents: {
+        foo: '/pages-a/uni_modules/foo/components/foo/foo',
+      },
+    })
+    addMiniProgramComponentJson('pages-a/uni_modules/foo/components/foo/foo', {
+      component: true,
+    })
+
+    const sharedWithMainJsonFiles = findChangedJsonFiles()
+    expect(
+      JSON.parse(sharedWithMainJsonFiles.get('pages-a/pages/index/index')!)
+    ).toEqual({
+      usingComponents: {
+        foo: '../../../uni_modules/foo/components/foo/foo',
+      },
+    })
+    expect(
+      sharedWithMainJsonFiles.has('pages-a/uni_modules/foo/components/foo/foo')
+    ).toBe(false)
+    expect(
+      JSON.parse(
+        sharedWithMainJsonFiles.get('uni_modules/foo/components/foo/foo')!
+      )
+    ).toEqual({
+      component: true,
+      usingComponents: {},
+    })
+  })
+
+  test('normalizes nested uni_modules component dependencies by final package roots', () => {
+    addMiniProgramAppJson(createSubPackagesAppJson(['pages-a', 'pages-b']))
+    addMiniProgramComponentPackageRoot(
+      'uni_modules/foo/components/rate/rate',
+      'pages-a'
+    )
+    addMiniProgramComponentPackageRoot(
+      'uni_modules/foo/components/icon/icon',
+      'pages-a'
+    )
+    addMiniProgramComponentJson(
+      'pages-a/uni_modules/foo/components/rate/rate',
+      {
+        component: true,
+        usingComponents: {
+          icon: '/pages-a/uni_modules/foo/components/icon/icon',
+        },
+      }
+    )
+    addMiniProgramComponentJson(
+      'pages-a/uni_modules/foo/components/icon/icon',
+      {
+        component: true,
+      }
+    )
+
+    const singlePackageJsonFiles = findChangedJsonFiles()
+    expect(
+      JSON.parse(
+        singlePackageJsonFiles.get(
+          'pages-a/uni_modules/foo/components/rate/rate'
+        )!
+      )
+    ).toEqual({
+      component: true,
+      usingComponents: {
+        icon: '../icon/icon',
+      },
+    })
+    expect(
+      JSON.parse(
+        singlePackageJsonFiles.get(
+          'pages-a/uni_modules/foo/components/icon/icon'
+        )!
+      )
+    ).toEqual({
+      component: true,
+      usingComponents: {},
+    })
+
+    resetMiniProgramJsonFiles()
+    addMiniProgramAppJson(createSubPackagesAppJson(['pages-a', 'pages-b']))
+    addMiniProgramComponentPackageRoot(
+      'uni_modules/foo/components/rate/rate',
+      'pages-a'
+    )
+    addMiniProgramComponentPackageRoot(
+      'uni_modules/foo/components/icon/icon',
+      'pages-a'
+    )
+    addMiniProgramComponentPackageRoot('uni_modules/foo/components/icon/icon')
+    addMiniProgramComponentJson(
+      'pages-a/uni_modules/foo/components/rate/rate',
+      {
+        component: true,
+        usingComponents: {
+          icon: '/pages-a/uni_modules/foo/components/icon/icon',
+        },
+      }
+    )
+    addMiniProgramComponentJson(
+      'pages-a/uni_modules/foo/components/icon/icon',
+      {
+        component: true,
+      }
+    )
+
+    const sharedIconJsonFiles = findChangedJsonFiles()
+    expect(
+      JSON.parse(
+        sharedIconJsonFiles.get('pages-a/uni_modules/foo/components/rate/rate')!
+      )
+    ).toEqual({
+      component: true,
+      usingComponents: {
+        icon: '../../../../../uni_modules/foo/components/icon/icon',
+      },
+    })
+    expect(
+      sharedIconJsonFiles.has('pages-a/uni_modules/foo/components/icon/icon')
+    ).toBe(false)
+    expect(
+      JSON.parse(
+        sharedIconJsonFiles.get('uni_modules/foo/components/icon/icon')!
+      )
+    ).toEqual({
+      component: true,
+      usingComponents: {},
+    })
   })
 
   describe('independent subpackage', () => {

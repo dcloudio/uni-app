@@ -29,6 +29,7 @@ const jsonPagesCache = new Map<string, PageWindowOptions>()
 const jsonComponentsCache = new Map<string, ComponentJson>()
 const jsonUsingComponentsCache = new Map<string, UsingComponents>()
 const componentPackageRootsCache = new Map<string, Set<string>>()
+const mainPackageRoot = ''
 
 export function isMiniProgramPageFile(file: string, inputDir?: string) {
   if (inputDir && path.isAbsolute(file)) {
@@ -72,23 +73,21 @@ export function addMiniProgramComponentPackageRoot(
   filename: string,
   packageRoot?: string
 ) {
-  if (!packageRoot) {
-    return
-  }
   const normalizedFilename = normalizeComponentPackageFilename(filename)
   if (!normalizedFilename.startsWith('uni_modules/')) {
     return
   }
   const roots =
     componentPackageRootsCache.get(normalizedFilename) || new Set<string>()
-  roots.add(packageRoot)
+  roots.add(packageRoot || mainPackageRoot)
   componentPackageRootsCache.set(normalizedFilename, roots)
 }
 
 export function findMiniProgramComponentPackageRoot(filename: string) {
   const roots = getMiniProgramComponentPackageRoots(filename)
   if (roots?.size === 1) {
-    return [...roots][0]
+    const [root] = [...roots]
+    return root || undefined
   }
 }
 
@@ -306,8 +305,11 @@ function parseSubPackageRoots(pagesJson: UniApp.PagesJson | undefined) {
 
 function normalizeJsonPackageFilename(filename: string) {
   const unrootedFilename = withoutSubPackageRootForUniModules(filename)
-  const roots = getMiniProgramComponentPackageRoots(unrootedFilename)
-  if (unrootedFilename !== filename && roots && roots.size !== 1) {
+  if (
+    unrootedFilename !== filename &&
+    getMiniProgramComponentPackageRoots(unrootedFilename) &&
+    !findMiniProgramComponentPackageRoot(unrootedFilename)
+  ) {
     return unrootedFilename
   }
   return filename

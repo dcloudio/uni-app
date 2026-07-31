@@ -205,4 +205,45 @@ describe('entry virtual paths', () => {
       })
     })
   })
+
+  test('remaps uni_modules template with final package root', async () => {
+    await withEntryProject((inputDir) => {
+      const component = normalizePath(
+        path.join(inputDir, 'uni_modules/foo/components/foo/foo.vue')
+      )
+      resetMiniProgramJsonFiles()
+
+      emitFile({
+        type: 'asset',
+        fileName: component,
+        source: '<view />',
+      } as any)
+      addMiniProgramComponentPackageRoot(component, 'pages-a')
+
+      expect(getTemplateFiles({} as any)).toEqual({
+        'pages-a/uni_modules/foo/components/foo/foo': '<view />',
+      })
+    })
+  })
+
+  test('keeps uni_modules template in main when main package also uses it', async () => {
+    await withEntryProject((inputDir) => {
+      const component = normalizePath(
+        path.join(inputDir, 'uni_modules/foo/components/foo/foo.vue')
+      )
+      resetMiniProgramJsonFiles()
+      addMiniProgramComponentPackageRoot(component)
+      addMiniProgramComponentPackageRoot(component, 'pages-a')
+
+      emitFile({
+        type: 'asset',
+        fileName: component,
+        source: '<view />',
+      } as any)
+
+      expect(getTemplateFiles({} as any)).toEqual({
+        'uni_modules/foo/components/foo/foo': '<view />',
+      })
+    })
+  })
 })

@@ -58,7 +58,9 @@ export function getFilterFiles(
 export function getTemplateFiles(
   template: UniMiniProgramPluginOptions['template']
 ) {
-  const files = findMiniProgramTemplateFiles(template.filter?.generate)
+  const files = normalizeTemplateFiles(
+    findMiniProgramTemplateFiles(template.filter?.generate)
+  )
   clearMiniProgramTemplateFiles()
   return files
 }
@@ -80,4 +82,29 @@ export const emitFile: (emittedFile: EmittedFile) => string = (emittedFile) => {
     return filename
   }
   return ''
+}
+
+function normalizeTemplateFiles(files: Record<string, string>) {
+  return Object.keys(files).reduce<Record<string, string>>((res, filename) => {
+    res[normalizeTemplateFilename(filename)] = files[filename]
+    return res
+  }, Object.create(null))
+}
+
+function normalizeTemplateFilename(filename: string) {
+  const relativeFilename = removeExt(
+    normalizeMiniProgramFilename(filename, process.env.UNI_INPUT_DIR)
+  )
+  const uniModulesIndex = relativeFilename.indexOf('uni_modules/')
+  if (uniModulesIndex === -1) {
+    return relativeFilename
+  }
+  const componentFilename = relativeFilename.slice(uniModulesIndex)
+  return removeExt(
+    normalizeMiniProgramComponentFilename(
+      componentFilename,
+      process.env.UNI_INPUT_DIR,
+      findMiniProgramComponentPackageRoot(componentFilename)
+    )
+  )
 }

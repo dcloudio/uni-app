@@ -298,14 +298,17 @@ function createUsingComponents(
       let componentFilename = removeExt(
         normalizeMiniProgramFilename(withoutIndependentRoot(value), inputDir)
       )
-      if (ownerSubPackageRoot && componentFilename.startsWith('uni_modules/')) {
+      if (componentFilename.startsWith('uni_modules/')) {
         addMiniProgramComponentPackageRoot(
           componentFilename,
           ownerSubPackageRoot
         )
         const componentPackageRoot =
           findMiniProgramComponentPackageRoot(componentFilename)
-        if (componentPackageRoot === ownerSubPackageRoot) {
+        if (
+          ownerSubPackageRoot &&
+          componentPackageRoot === ownerSubPackageRoot
+        ) {
           componentFilename = `${ownerSubPackageRoot}/${componentFilename}`
         }
       }
