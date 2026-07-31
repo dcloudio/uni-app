@@ -78,7 +78,12 @@
 		justify-content: center;
 		align-items: center;
 		min-width: 136px;
+		/* #ifdef APP */
+		max-width: 600rpx;
+		/* #endif */
+		/* #ifdef WEB */
 		max-width: 80%;
+		/* #endif */
 		height: 136px;
 		padding: 10px;
 		background-color: rgba(76, 76, 76, 0.95);
