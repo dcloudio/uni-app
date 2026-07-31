@@ -252,6 +252,11 @@ export declare function toUniNativeColor(target: DOM2_APP_TARGET, value: string 
 export declare function toSharedDataStyle(target: DOM2_APP_TARGET, style: Map<string, unknown>, result?: Record<number, unknown>, options?: {
   filename?: string | null;
 }): Record<number, unknown>;
+export declare function getComputedStyle(element: {
+  readonly style: {
+    getPropertyValue(property: string): string;
+  };
+}): Record<string, string>;
 //#endregion
 //#region temp/packages/runtime-vapor-dom2/src/apiMountPage.d.ts
 export declare function createMountPage(appContext: AppContext): (pageComponent: ReturnType<typeof defineComponent> | VaporSharedDataComponent, pageProps: Record<string, any>, pageContainer?: Element$1) => ComponentPublicInstance;

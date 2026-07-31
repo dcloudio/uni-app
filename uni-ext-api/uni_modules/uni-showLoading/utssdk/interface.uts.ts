@@ -995,8 +995,8 @@ export interface Uni {
    * - showLoading 和 showToast 同时只能显示一个
    * - showToast 应与 hideToast 配对使用
    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#showloading
-   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showloading
-   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showloading
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/loading.html
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/loading.html
    * @uniPlatform
     {
       "app": {
@@ -1082,8 +1082,8 @@ export interface Uni {
     }, 2000);
     ```
    * @tutorial_uni_app https://uniapp.dcloud.net.cn/api/ui/prompt.html#hideloading
-   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#hideloading
-   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#hideloading
+   * @tutorial_uni_app_x https://doc.dcloud.net.cn/uni-app-x/api/loading.html#hideloadinghttps://doc.dcloud.net.cn/uni-app-x/api/loading.html
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/loading.html#hideloadinghttps://doc.dcloud.net.cn/uni-app-x/api/loading.html
    * @uniPlatform
     {
       "app": {
