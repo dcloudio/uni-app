@@ -297,7 +297,7 @@ describe('web app route', () => {
     appRoute.offAppRoute(listener)
   })
 
-  test('dispatches a not-found route without waiting for a page mount', () => {
+  test('does not dispatch a not-found route after app launch', () => {
     const calls: string[] = []
     const pageNotFoundListener = jest.fn(() => calls.push('onPageNotFound'))
     const listener = jest.fn(() => calls.push('onAppRoute'))
@@ -312,46 +312,9 @@ describe('web app route', () => {
 
     routerAfterEach(notFoundRoute, from)
 
-    expect(listener).toHaveBeenCalledWith(
-      expect.objectContaining({
-        path: 'pages/missing/missing',
-        notFound: true,
-      })
-    )
-    expect(pageNotFoundListener).toHaveBeenCalledWith({
-      path: 'pages/missing/missing',
-      query: {},
-      isEntryPage: false,
-    })
-    expect(calls).toEqual(['onPageNotFound', 'onAppRoute'])
-  })
-
-  test('dispatches a not-found route rejected by a route API', () => {
-    const calls: string[] = []
-    const pageNotFoundListener = jest.fn(() => calls.push('onPageNotFound'))
-    const listener = jest.fn(() => calls.push('onAppRoute'))
-    appVm.$.onPageNotFound.push(pageNotFoundListener)
-    appRoute.onAppRoute(listener)
-
-    appRoute.dispatchWebAppRouteNotFound(
-      '/pages/missing/missing?from=api',
-      'redirectTo'
-    )
-
-    expect(pageNotFoundListener).toHaveBeenCalledWith({
-      path: 'pages/missing/missing',
-      query: { from: 'api' },
-      isEntryPage: false,
-    })
-    expect(listener).toHaveBeenCalledWith(
-      expect.objectContaining({
-        path: 'pages/missing/missing',
-        query: { from: 'api' },
-        openType: 'redirectTo',
-        notFound: true,
-      })
-    )
-    expect(calls).toEqual(['onPageNotFound', 'onAppRoute'])
+    expect(listener).not.toHaveBeenCalled()
+    expect(pageNotFoundListener).not.toHaveBeenCalled()
+    expect(calls).toEqual([])
   })
 
   test('dispatches only the final route after a guard redirect', () => {

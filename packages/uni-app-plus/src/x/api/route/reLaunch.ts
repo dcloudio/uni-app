@@ -14,7 +14,6 @@ import { showWebview } from './webview'
 import { registerPage } from '../../framework/page/register'
 import { getAllPages } from '../../../service/framework/page/getCurrentPages'
 import { closePage } from './utils'
-import { createAppRouteOptions } from './appRoute'
 import { setStatusBarStyle } from '../../statusBar'
 import {
   entryPageState,
@@ -96,5 +95,5 @@ export const reLaunch = defineAsyncApi<API_TYPE_RE_LAUNCH>(
   API_RE_LAUNCH,
   $reLaunch,
   ReLaunchProtocol,
-  createAppRouteOptions(API_RE_LAUNCH, ReLaunchOptions)
+  ReLaunchOptions
 )

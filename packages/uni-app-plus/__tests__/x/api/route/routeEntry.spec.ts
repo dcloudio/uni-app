@@ -81,8 +81,7 @@ describe('app x entry appRoute', () => {
     subscribeWebviewReady(undefined, '1')
 
     expect(mockDispatchAppRouteNotFound).toHaveBeenCalledWith(
-      '/pages/missing/missing?from=launch',
-      'appLaunch'
+      '/pages/missing/missing?from=launch'
     )
     expect(mockNavigateTo).toHaveBeenCalledWith(
       expect.objectContaining({ url: '/pages/index/index?from=launch' }),

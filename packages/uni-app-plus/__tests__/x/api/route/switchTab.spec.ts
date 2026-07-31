@@ -21,10 +21,6 @@ jest.mock('../../../../src/x/framework/app/tabBar', () => ({
   switchSelect: (...args: unknown[]) => mockSwitchSelect(...args),
 }))
 
-jest.mock('../../../../src/x/api/route/appRoute', () => ({
-  createAppRouteOptions: (_type: string, options: unknown) => options,
-}))
-
 jest.mock('../../../../src/x/api/route/utils', () => ({
   closePage: jest.fn(),
   handleBeforeEntryPageRoutes: jest.fn(),

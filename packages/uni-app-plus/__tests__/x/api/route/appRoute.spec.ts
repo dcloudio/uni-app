@@ -7,34 +7,13 @@ jest.mock('@dcloudio/uni-api', () =>
   )
 )
 
+import { API_NAVIGATE_TO } from '@dcloudio/uni-api'
 import {
-  API_NAVIGATE_TO,
-  API_REDIRECT_TO,
-  API_RE_LAUNCH,
-  API_SWITCH_TAB,
-  type AppRouteOpenType,
-  NavigateToOptions,
-  ReLaunchOptions,
-  RedirectToOptions,
-  SwitchTabOptions,
-} from '@dcloudio/uni-api'
-import {
-  createAppRouteOptions,
   dispatchAppRoute,
   dispatchAppRouteNotFound,
   offAppRoute,
   onAppRoute,
 } from '../../../../src/x/api/route/appRoute'
-
-type UrlFormatter = (url: string, params: Record<string, any>) => string | void
-type RouteApiOptions = ApiOptions<any, any>
-
-const routeApiOptions: [AppRouteOpenType, RouteApiOptions][] = [
-  [API_NAVIGATE_TO, NavigateToOptions],
-  [API_REDIRECT_TO, RedirectToOptions],
-  [API_RE_LAUNCH, ReLaunchOptions],
-  [API_SWITCH_TAB, SwitchTabOptions],
-]
 
 describe('app x app route', () => {
   const bridge = UniServiceJSBridge as any
@@ -136,31 +115,8 @@ describe('app x app route', () => {
     appVm.$.onPageNotFound.push(() => calls.push('onPageNotFound'))
     onAppRoute(() => calls.push('onAppRoute'))
 
-    dispatchAppRouteNotFound('/pages/missing/missing?from=api', API_REDIRECT_TO)
+    dispatchAppRouteNotFound('/pages/missing/missing?from=launch')
 
     expect(calls).toEqual(['onPageNotFound', 'onAppRoute'])
   })
-
-  test.each(routeApiOptions)(
-    '%s dispatches a missing route once',
-    (type, options) => {
-      const listener = jest.fn()
-      onAppRoute(listener)
-      const routeOptions = createAppRouteOptions(type, options)
-      const normalizeUrl = (routeOptions.formatArgs as Record<string, unknown>)
-        .url as UrlFormatter
-      const url = '/pages/missing/missing?from=api'
-
-      expect(normalizeUrl(url, { url })).toBe(`page \`${url}\` is not found`)
-      expect(listener).toHaveBeenCalledTimes(1)
-      expect(listener).toHaveBeenCalledWith(
-        expect.objectContaining({
-          path: 'pages/missing/missing',
-          query: { from: 'api' },
-          openType: type,
-          notFound: true,
-        })
-      )
-    }
-  )
 })

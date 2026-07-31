@@ -27,7 +27,6 @@ import {
   navigateToPagesBeforeEntryPages,
 } from '../../framework/app'
 import { handleBeforeEntryPageRoutes, updateEntryPageIsReady } from './utils'
-import { createAppRouteOptions } from './appRoute'
 
 type NavigateToApiFn = DefineAsyncApiFn<API_TYPE_NAVIGATE_TO>
 
@@ -79,7 +78,7 @@ export const navigateTo = defineAsyncApi<API_TYPE_NAVIGATE_TO>(
   API_NAVIGATE_TO,
   $navigateTo,
   NavigateToProtocol,
-  createAppRouteOptions(API_NAVIGATE_TO, NavigateToOptions)
+  NavigateToOptions
 )
 
 export interface NavigateToOptions extends RouteOptions {

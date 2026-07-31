@@ -15,7 +15,6 @@ import type { ComponentPublicInstance } from 'vue'
 import { setStatusBarStyle } from '../../statusBar'
 import { isTabPage } from '../../framework/app/tabBar'
 import { closePage } from './utils'
-import { createAppRouteOptions } from './appRoute'
 import { invokeAfterRouteHooks, invokeBeforeRouteHooks } from './performance'
 import {
   entryPageState,
@@ -42,7 +41,7 @@ export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
       .catch(reject)
   },
   RedirectToProtocol,
-  createAppRouteOptions(API_REDIRECT_TO, RedirectToOptions)
+  RedirectToOptions
 )
 
 interface RedirectToOptions extends RouteOptions {}

@@ -20,7 +20,6 @@ import {
   handleBeforeEntryPageRoutes,
   updateEntryPageIsReady,
 } from './utils'
-import { createAppRouteOptions } from './appRoute'
 import {
   entryPageState,
   switchTabPagesBeforeEntryPages,
@@ -69,7 +68,7 @@ export const switchTab = defineAsyncApi<API_TYPE_SWITCH_TAB>(
   API_SWITCH_TAB,
   $switchTab,
   SwitchTabProtocol,
-  createAppRouteOptions(API_SWITCH_TAB, SwitchTabOptions)
+  SwitchTabOptions
 )
 
 interface SwitchTabOptions extends RouteOptions {}

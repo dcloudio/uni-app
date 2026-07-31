@@ -32,10 +32,7 @@ function onLaunchWebviewReady() {
   let isEntryPageNotFound = false
   if (!routeOptions) {
     isEntryPageNotFound = true
-    dispatchAppRouteNotFound(
-      entryPagePath + (__uniConfig.entryPageQuery || ''),
-      'appLaunch'
-    )
+    dispatchAppRouteNotFound(entryPagePath + (__uniConfig.entryPageQuery || ''))
     if (__uniRoutes.length > 0) {
       entryPagePath = __uniRoutes[0].path
       routeOptions = getRouteOptions(addLeadingSlash(entryPagePath))

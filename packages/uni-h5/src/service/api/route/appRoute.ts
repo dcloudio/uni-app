@@ -1,4 +1,4 @@
-import type { Router } from 'vue-router'
+import { type Router, START_LOCATION } from 'vue-router'
 import {
   API_NAVIGATE_BACK,
   API_NAVIGATE_TO,
@@ -13,7 +13,6 @@ import { invokeHook } from '@dcloudio/uni-core'
 import {
   ON_PAGE_NOT_FOUND,
   decodedQuery,
-  parseUrl,
   removeLeadingSlash,
 } from '@dcloudio/uni-shared'
 
@@ -73,21 +72,6 @@ export function dispatchWebAppRoute(route: AppRouteLocation) {
     notFound: route.matched.length === 0,
   })
   dispatchAppRoute(context)
-}
-
-export function dispatchWebAppRouteNotFound(
-  url: string,
-  openType: AppRouteOpenType
-) {
-  const { path, query } = parseUrl(url)
-  dispatchAppRoute(
-    appRouteRuntime.createAppRouteContext({
-      path: removeLeadingSlash(path),
-      query: decodedQuery(query),
-      openType,
-      notFound: true,
-    })
-  )
 }
 
 function isPendingHistoryRoute(to: AppRouteLocation) {
@@ -164,12 +148,12 @@ export function initWebAppRouteListener(router: Router) {
   router.beforeEach((to) => {
     bindHistoryOpenType(to)
   })
-  router.afterEach((to, _from, failure) => {
+  router.afterEach((to, from, failure) => {
     if (failure) {
       takeHistoryOpenType(to)
       return
     }
-    if (to.matched.length === 0) {
+    if (from === START_LOCATION && to.matched.length === 0) {
       dispatchWebAppRoute(to)
     }
   })

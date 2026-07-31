@@ -13,7 +13,7 @@ import {
   redirectToPagesBeforeEntryPages,
   removePage,
 } from '../../../framework/setup/page'
-import { createWebRouteOptions, navigate } from './utils'
+import { navigate } from './utils'
 
 export function removeLastPage() {
   const page = __X__
@@ -48,7 +48,5 @@ export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
     )
   },
   RedirectToProtocol,
-  __X__
-    ? createWebRouteOptions(API_REDIRECT_TO, RedirectToOptions)
-    : RedirectToOptions
+  RedirectToOptions
 )

@@ -14,7 +14,7 @@ import {
   removePage,
   switchTabPagesBeforeEntryPages,
 } from '../../../framework/setup/page'
-import { createWebRouteOptions, navigate } from './utils'
+import { navigate } from './utils'
 import { ON_HIDE } from '@dcloudio/uni-shared'
 
 export function removeNonTabBarPages() {
@@ -83,7 +83,5 @@ export const switchTab = defineAsyncApi<API_TYPE_SWITCH_TAB>(
     )
   },
   SwitchTabProtocol,
-  __X__
-    ? createWebRouteOptions(API_SWITCH_TAB, SwitchTabOptions)
-    : SwitchTabOptions
+  SwitchTabOptions
 )
