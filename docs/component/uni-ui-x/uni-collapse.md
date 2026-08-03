@@ -111,9 +111,9 @@ uni-collapse-item的标题栏的自定义：
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.07 | 5.07 | 5.07 |
 
 
 ### 属性 
@@ -726,9 +726,9 @@ uni-collapse-item的标题栏的自定义：
 
 
 ### 兼容性 <Help />
-| Web | 微信小程序 | Android(VDOM) | Android(Vapor) | iOS(VDOM) | iOS(Vapor) | HarmonyOS |
-| :- | :- | :- | :- | :- | :- | :- |
-| 5.07 | 5.07 | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 | <a style="color:unset;" href="https://vote.dcloud.net.cn/#/?name=uni-app%20x">x</a> | 5.07 |
+| Web | 微信小程序 | Android | iOS | HarmonyOS |
+| :- | :- | :- | :- | :- |
+| 5.07 | 5.07 | 5.07 | 5.07 | 5.07 |
 
 
 ### 属性 
