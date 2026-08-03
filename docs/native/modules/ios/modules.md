@@ -72,10 +72,10 @@
 | uni-openDocument(4.71+) | uni-openDocument-index.swift | | |
 | uni-live-pusher(4.81+) | uni-live-pusher-index.swift | HappyDNS.framework <br> PLMediaStreamingKit.xcframework | |
 | uni-live-player(4.81+) | uni-live-player-index.swift | qplayer2_core.xcframework | AVFoundation <br> AudioToolbox <br> QuartzCore<br> OpenGLES <br> CoreVideo<br> CoreMedia <br> VideoToolbox <br> c++ <br> bz2 <br> iconv <br> z <br> |
-| uni-loading(5.0+) | uni-loading-index.swift <br> uni-loading-SpinnerView.swift <br> uni-loading-UniLoadingComponentRegister.swift | | |
+| uni-loading(5.0+) | uni-loading-index.swift <br> uni-loading-SpinnerView.swift <br> (5.08后废弃，不需要添加该文件) ~~uni-loading-UniLoadingComponentRegister.swift~~  | | |
 | uni-showLoading(5.0+) (依赖uni-loading模块) | uni-showLoading-index.swift | | |
-| uni-web-view(5.0+) | uni-web-view-index.swift <br> uni-web-view-InnerWebView.swift <br> uni-web-view-Snapshot.swift <br> uni-web-view-UniBaseWebView.swift <br> uni-web-view-UniViewLifecycle.swift <br> uni-web-view-UniWebComponentRegister.swift | | |
-| uni-editor (5.08+) (依赖uni-web-view 模块) | uni-web-view-index.swift <br> uni-web-view-InnerWebView.swift <br> uni-web-view-Snapshot.swift <br> uni-web-view-UniBaseWebView.swift <br> uni-web-view-UniViewLifecycle.swift <br> uni-web-view-UniWebComponentRegister.swift |  | |
+| uni-web-view(5.0+) | uni-web-view-index.swift <br> uni-web-view-InnerWebView.swift <br> uni-web-view-Snapshot.swift <br> uni-web-view-UniBaseWebView.swift <br> uni-web-view-UniViewLifecycle.swift <br>  (5.08后废弃，不需要添加该文件) ~~uni-web-view-UniWebComponentRegister.swift~~ | | |
+| uni-editor (5.08+) (依赖uni-web-view 模块) | uni-web-view-index.swift <br> uni-web-view-InnerWebView.swift <br> uni-web-view-Snapshot.swift <br> uni-web-view-UniBaseWebView.swift <br> uni-web-view-UniViewLifecycle.swift <br> (5.08后废弃，不需要添加该文件) ~~uni-web-view-UniWebComponentRegister.swift~~ |  | |
 | uni-accelerometer(5.08+) | uni-accelerometer-index.swift <br> AccelerometerNative.swift | | |
 | uni-authentication(5.08+) | uni-authentication-index.swift | | |
 | uni-calendar(5.08+) | uni-calendar-index.swift <br> UniCalendarNative.swift | | |
@@ -135,21 +135,21 @@
 `uni-loading`模块需要添加如下配置
 ```
 {
-	"components": [{
-	"name": "loading",
-	"class": "UTSSDKModulesDCloudUniLoadingLoadingComponent",
-	"delegateClass": "UniLoadingComponentRegister"
-	}]
+  "components": [
+    {
+      "delegateClass": "UniLoadingComponentRegister"
+    }
+  ]
 }
 ```
 `uni-web-view`、`uni-editor`模块需要添加如下配置
 ```
 {
-	"components": [{
-		"name": "webview",
-		"class": "UTSSDKModulesDCloudUniWebWebComponent",
-		"delegateClass": "UniWebComponentRegister"
-	}]
+	"components": [
+    {
+      "delegateClass": "UniWebViewComponentRegister"
+    }
+  ]
 }
 ```
 
@@ -168,8 +168,6 @@
 ```
 {
 	"components": [{
-		"name": "video",
-		"class": "UTSSDKModulesDCloudUniVideoVideoComponent",
 		"delegateClass": "UniVideoComponentRegister"
 	}]
 }
@@ -239,8 +237,6 @@
   ```
 {
     "components": [{
-		"name": "map",
-		"class": "UTSSDKModulesDCloudUniMapMapComponent",
 		"delegateClass": "UniMapComponentRegister"
 	}]
 }
@@ -259,8 +255,6 @@
   ```
 {
    "components": [{
-		"name": "camera",
-		"class": "UTSSDKModulesDCloudUniCameraComponent",
 		"delegateClass": "UniCameraComponentRegister"
 	}]
 }
