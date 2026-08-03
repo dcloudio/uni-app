@@ -194,10 +194,10 @@
 		var value = language.value
 		if (value.startsWith("en")) {
 			value = "en"
-		} else if (value.startsWith("zh-Hans")) {
-			value = "zh-Hans"
-		} else if (value.startsWith("zh-Hant")) {
+		} else if (value.startsWith("zh-Hant") || value.startsWith("zh-TW") || value.startsWith("zh-HK")) {
 			value = "zh-Hant"
+		} else if (value.startsWith("zh")) {
+			value = "zh-Hans"
 		}
 		var object = SAVE_IMAGE_LANGUAGE[value];
 		if (object != null) {
