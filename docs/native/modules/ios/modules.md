@@ -6,7 +6,7 @@
 
 
 ### 工程环境设置
-`Target -> General -> Minimum Deployments` 选择 `12.0`  
+`Target -> General -> Minimum Deployments` 选择 `13.0`  
 
 `Target -> Build Settings -> Mach-O Type` 设置为`Dynamic Library`  
 
