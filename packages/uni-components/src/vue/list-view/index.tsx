@@ -605,10 +605,11 @@ function rearrange(
     const childType = child.component?.type.name
     const status = child.component?.exposed?.__listViewChildStatus
     if (childType === 'StickySection') {
-      const { headSize, tailSize, placeholderSize } =
+      const { headSize, tailSize, headPlaceholderSize, tailPlaceholderSize } =
         status as StickySectionStatus
       tempTotalSize += headSize.value
-      let tempPlaceholderSizeOfSection = 0
+      let tempTailPlaceholderSizeOfSection = 0
+      let tempHeadPlaceholderSizeOfSection = 0
       traverseStickySection(child, (child: VNode) => {
         const childType = child.component?.type.name
         const status = child.component?.exposed?.__listViewChildStatus
@@ -643,18 +644,23 @@ function rearrange(
           if (start && !end) {
             tempVisibleSize += itemSize
             status.visible.value = true
+          } else if (start && end) {
+            status.visible.value = false
+            tempTailPlaceholderSizeOfSection += itemSize
           } else {
             status.visible.value = false
-            tempPlaceholderSizeOfSection += itemSize
+            tempHeadPlaceholderSizeOfSection += itemSize
           }
           if (!end && tempTotalSize >= offsetMax) {
             end = true
           }
         }
       })
-      tempVisibleSize += tempPlaceholderSizeOfSection
+      tempVisibleSize +=
+        tempHeadPlaceholderSizeOfSection + tempTailPlaceholderSizeOfSection
       tempTotalSize += tailSize.value
-      placeholderSize.value = tempPlaceholderSizeOfSection
+      headPlaceholderSize.value = tempHeadPlaceholderSizeOfSection
+      tailPlaceholderSize.value = tempTailPlaceholderSizeOfSection
     } else if (childType === 'ListItem') {
       const { cachedSize, cachedSizeUpdated } = status as ListItemStatus
       if (
