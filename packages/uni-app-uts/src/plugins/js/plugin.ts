@@ -229,7 +229,7 @@ export function createUniAppJsEnginePlugin(
                   'safari14',
                 ]
               : isAndroid && isDom2
-              ? ['esnext']
+              ? ['es2022']
               : isHarmony
               ? ['es2022']
               : undefined,
