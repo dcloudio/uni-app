@@ -9233,10 +9233,12 @@ function rearrange(visibleVNode, containerRef, isVertical, state) {
       const {
         headSize,
         tailSize,
-        placeholderSize
+        headPlaceholderSize,
+        tailPlaceholderSize
       } = status;
       tempTotalSize += headSize.value;
-      let tempPlaceholderSizeOfSection = 0;
+      let tempTailPlaceholderSizeOfSection = 0;
+      let tempHeadPlaceholderSizeOfSection = 0;
       traverseStickySection(child, (child2) => {
         var _a2, _b2, _c2;
         const childType2 = (_a2 = child2.component) == null ? void 0 : _a2.type.name;
@@ -9269,18 +9271,22 @@ function rearrange(visibleVNode, containerRef, isVertical, state) {
           if (start && !end) {
             tempVisibleSize += itemSize;
             status2.visible.value = true;
+          } else if (start && end) {
+            status2.visible.value = false;
+            tempTailPlaceholderSizeOfSection += itemSize;
           } else {
             status2.visible.value = false;
-            tempPlaceholderSizeOfSection += itemSize;
+            tempHeadPlaceholderSizeOfSection += itemSize;
           }
           if (!end && tempTotalSize >= offsetMax) {
             end = true;
           }
         }
       });
-      tempVisibleSize += tempPlaceholderSizeOfSection;
+      tempVisibleSize += tempHeadPlaceholderSizeOfSection + tempTailPlaceholderSizeOfSection;
       tempTotalSize += tailSize.value;
-      placeholderSize.value = tempPlaceholderSizeOfSection;
+      headPlaceholderSize.value = tempHeadPlaceholderSizeOfSection;
+      tailPlaceholderSize.value = tempTailPlaceholderSizeOfSection;
     } else if (childType === "ListItem") {
       const {
         cachedSize,
@@ -9455,7 +9461,8 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const rootRef = vue.ref(null);
     const isVertical = vue.inject("__listViewIsVertical");
-    const placeholderSize = vue.ref(0);
+    const headPlaceholderSize = vue.ref(0);
+    const tailPlaceholderSize = vue.ref(0);
     const style = vue.computed(() => {
       const padding = props2.padding;
       const paddingTop = padding[0];
@@ -9463,10 +9470,10 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
       const paddingBottom = padding[2];
       const paddingLeft = padding[3];
       return {
-        paddingTop: paddingTop + "px",
-        paddingRight: paddingRight + "px",
-        paddingBottom: (isVertical.value ? paddingBottom + placeholderSize.value : paddingBottom) + "px",
-        paddingLeft: (isVertical.value ? paddingLeft : paddingLeft + placeholderSize.value) + "px"
+        paddingTop: (isVertical.value ? paddingTop + headPlaceholderSize.value : paddingTop) + "px",
+        paddingRight: (isVertical.value ? paddingRight : paddingRight + tailPlaceholderSize.value) + "px",
+        paddingBottom: (isVertical.value ? paddingBottom + tailPlaceholderSize.value : paddingBottom) + "px",
+        paddingLeft: (isVertical.value ? paddingLeft : paddingLeft + headPlaceholderSize.value) + "px"
       };
     });
     const headSize = vue.computed(() => {
@@ -9479,7 +9486,8 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
       type: "StickySection",
       headSize,
       tailSize,
-      placeholderSize
+      headPlaceholderSize,
+      tailPlaceholderSize
     };
     expose({
       __listViewChildStatus: status
