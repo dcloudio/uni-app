@@ -221,13 +221,15 @@ export function createUniAppJsEnginePlugin(
             assetsInlineLimit: 0,
             target: isIOS
               ? [
-                  'ios12',
+                  isDom2 ? 'ios14' : 'ios12',
                   'es2020',
                   'edge88',
                   'firefox78',
                   'chrome87',
                   'safari14',
                 ]
+              : isAndroid && isDom2
+              ? ['esnext']
               : isHarmony
               ? ['es2022']
               : undefined,
