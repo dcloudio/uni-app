@@ -948,7 +948,7 @@ function initNativePage(vm) {
   }
   var pageId = instance.root.attrs.__pageId;
   vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + "");
-  if (vm.$page) {
+  if (vm.$page && vm.$nativePage) {
     vm.$page.__nativePageId = vm.$nativePage.pageId;
   }
 }
