@@ -39,7 +39,20 @@ process.env.UNI_PLATFORM = 'mp-alipay'
 process.env.UNI_APP_X = 'true'
 process.env.UNI_APP_X_DOM2 = 'true'
 process.env.UNI_APP_STYLE_ISOLATION_VERSION = '2'
+const { miniProgram } =
+  require('../src/compiler/options') as typeof import('../src/compiler/options')
 const { assert } = require('./testUtils') as typeof import('./testUtils')
+
+const miniProgramWithFilterImport = {
+  ...miniProgram,
+  filter: {
+    lang: miniProgram.filter!.lang,
+    setStyle: miniProgram.filter!.setStyle,
+    generate(filter: { name: string }, filename: string) {
+      return `<import-sjs name="${filter.name}" from="${filename}.sjs"/>`
+    },
+  },
+}
 
 describe('mp-alipay: externalClass 2.0', () => {
   beforeEach(() => {
@@ -90,6 +103,23 @@ describe('mp-alipay: externalClass 2.0', () => {
       {
         filename,
         isX: true,
+        nodeTransforms: [resolveExternalClassComponent],
+      }
+    )
+  })
+
+  test('动态 externalClass 自动引入 uniView SJS', () => {
+    assert(
+      '<external-class :box-class="klass" empty-class=""/>',
+      '<external-class box-class="{{uV.c(a,3,0)}}" empty-class="" u-i="10a73a5e-0"/><import-sjs name="uV" from="/common/uniView.sjs"/>\n',
+      `(_ctx, _cache) => { "raw js"
+  const __returned__ = { a: _ctx.klass }
+  return __returned__
+}`,
+      {
+        filename,
+        isX: true,
+        miniProgram: miniProgramWithFilterImport,
         nodeTransforms: [resolveExternalClassComponent],
       }
     )
