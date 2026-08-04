@@ -38,6 +38,7 @@ module.exports = {
   },
   rootDir: __dirname,
   testMatch: [
+    '<rootDir>/scripts/**/__tests__/**/*spec.[jt]s?(x)',
     '<rootDir>/packages/**/__tests__/**/*spec.[jt]s?(x)',
     '<rootDir>/packages/**/*spec.[jt]s?(x)',
   ],

@@ -7,6 +7,10 @@ const currentVersion = require('../package.json').version
 const { prompt } = require('enquirer')
 const execa = require('execa')
 const { targets } = require('./utils')
+const {
+  ensurePatchFinalNewline,
+  handleReleaseError,
+} = require('./releaseUtils')
 
 const isDryRun = args.dry
 const skipTests = args.skipTests
@@ -278,7 +282,7 @@ async function cleanBuildChanges(snapshot) {
       { stdio: 'pipe' }
     )
     await run('git', ['apply', '--reverse', '--whitespace=nowarn'], {
-      input: diff,
+      input: ensurePatchFinalNewline(diff),
       stdio: 'pipe',
     })
   }
@@ -376,6 +380,4 @@ async function publishPackage(pkgName, version, runIfNotDry) {
   }
 }
 
-main().catch((err) => {
-  console.error(err)
-})
+main().catch(handleReleaseError)
