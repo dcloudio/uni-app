@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-xhs",
-  "version": "3.0.0-alpha-5020320260731001",
+  "version": "3.0.0-alpha-5020320260803001",
   "description": "uniapp mp-xhs",
   "main": "dist/index.js",
   "files": [
