@@ -5,7 +5,8 @@
  * 统计上行字段 `ch` 应优先读取该运行时值，而非 manifest 静态配置。
  *
  * 职责：
- *   - 仅 App 端（`isApp()`）尝试读取 `plus.runtime.channel`。
+ *   - App 端（`isApp()`）尝试读取 `plus.runtime.channel`。
+ *   - 若构建期平台变量缺失但运行时已存在 `plus.runtime`，也信任原生运行时作为 App 信号。
  *   - 任意 API 缺失 / 抛错 → 降级 `''`，不阻断 install。
  *   - 返回值统一为 `string`（原生偶发返回数字时转为字符串）。
  */
@@ -39,10 +40,10 @@ function normalizeChannelValue(value: unknown): string {
  * @returns 渠道字符串；未配置或读取失败时为 `''`。
  */
 export function getAppChannel(): string {
-  if (!isApp()) return ''
   const plus = getGlobalObject().plus as
     | { runtime?: PlusRuntimeLike }
     | undefined
+  if (!isApp() && !plus?.runtime) return ''
   const raw = tryRun(() => plus?.runtime?.channel, undefined)
   return normalizeChannelValue(raw)
 }

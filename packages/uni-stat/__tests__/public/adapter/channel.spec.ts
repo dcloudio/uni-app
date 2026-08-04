@@ -26,6 +26,12 @@ describe('adapter/channel', () => {
     expect(getAppChannel()).toBe('huawei')
   })
 
+  test('平台变量缺失但存在 plus.runtime → 仍读取 plus.runtime.channel', () => {
+    installMockUni()
+    installMockPlus({ runtime: { channel: 'dlmm-Android-oppo' } })
+    expect(getAppChannel()).toBe('dlmm-Android-oppo')
+  })
+
   test('App 端：plus.runtime.channel 为数字 0 → "0"', () => {
     installMockUni({ platform: 'app' })
     installMockPlus({ runtime: { channel: 0 as unknown as string } })

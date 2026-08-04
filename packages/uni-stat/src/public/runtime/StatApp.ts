@@ -34,7 +34,7 @@ import { createHttpChannel } from '../pipeline/channel/http'
 import { createImageChannel } from '../pipeline/channel/image'
 import { createStatDataBuilder } from '../domain/statData'
 import { getAppChannel } from '../adapter/channel'
-import { getPlatform, getRawPlatform } from '../adapter/platform'
+import { getPlatform, getRawPlatform, isApp } from '../adapter/platform'
 import { getLocaleAndScreen, getSystemInfo } from '../adapter/system'
 import { getUuid } from '../adapter/device'
 import { getPackageInfo } from '../adapter/package'
@@ -63,7 +63,7 @@ export interface StatAppConfig {
   ak: string
   /** 当前应用版本号（v 字段）；缺省取 system.appVersion。 */
   v?: string
-  /** 渠道；缺省 ''。 */
+  /** 渠道；App 端始终取 `plus.runtime.channel`，非 App 端可由手动 install 配置。 */
   ch?: string
   /**
    * 统计协议版本（公有版默认 'image'）：
@@ -355,14 +355,18 @@ export class StatApp {
   /**
    * 解析上行渠道字段 `ch`。
    *
-   * 优先级：显式配置（manifest / install 入参）> `plus.runtime.channel`（云打包渠道包）> `''`。
-   * 与私有版一致，默认从原生运行时读取；仅当业务方显式传入非空 `ch` 时才覆盖。
+   * App 渠道包标识只能以原生运行时为准：`plus.runtime.channel`。
+   * `manifest.uniStatistics.ch` 是静态配置，不能区分同一项目打出的多渠道包。
+   * 非 App 端没有 `plus.runtime.channel` 语义，保留手动 install 传入 `ch` 的能力。
    */
   private resolveChannel(explicit?: string): string {
+    if (isApp()) {
+      return getAppChannel()
+    }
     if (typeof explicit === 'string' && explicit.length > 0) {
       return explicit
     }
-    return getAppChannel()
+    return ''
   }
 
   private normalizeConfig(c: Partial<StatAppConfig>): StatAppConfig {
@@ -393,7 +397,14 @@ export class StatApp {
   ): CollectorDeps {
     const platformShort = getPlatform()
     const builder = createStatDataBuilder({
-      config: { ak: cfg.ak, usv: STAT_VERSION_PUBLIC, v: cfg.v, ch: cfg.ch },
+      config: {
+        ak: cfg.ak,
+        usv: STAT_VERSION_PUBLIC,
+        v: cfg.v,
+        get ch() {
+          return isApp() ? getAppChannel() : cfg.ch
+        },
+      },
       platform: {
         ut: platformShort,
       },
@@ -468,6 +479,10 @@ export class StatApp {
         touch: session.touch,
       },
       config: { usv: STAT_VERSION_PUBLIC },
+      resolveUploadFields: () => {
+        const ch = getAppChannel()
+        return ch ? { ch } : {}
+      },
       nowMs,
       nowSec,
       firstFlushDeferMs:

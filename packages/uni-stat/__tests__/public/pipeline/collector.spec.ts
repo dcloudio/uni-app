@@ -283,6 +283,21 @@ describe('pipeline/collector', () => {
       expect(deps.retry.persist).not.toHaveBeenCalled()
     })
 
+    test('flush 前补齐运行时字段 ch', async () => {
+      const deps = makeDeps({
+        resolveUploadFields: () => ({ ch: 'dlmm-Android-oppo' }),
+      })
+      deps.queue.shouldFlush.mockReturnValue(true)
+      deps.queue.flush.mockReturnValue({ '1': [{ lt: '1' } as StatData] })
+      const channel = deps.selectChannel()!
+      const c = createCollector(deps)
+      await c.flush(true)
+      const sent = (channel.send as jest.Mock).mock.calls[0][0] as ReportPayload
+      expect(JSON.parse(sent.requests)).toEqual([
+        { lt: '1', ch: 'dlmm-Android-oppo' },
+      ])
+    })
+
     test('channel 缺失 → rollback 快照', async () => {
       const deps = makeDeps()
       deps.queue.shouldFlush.mockReturnValue(true)
@@ -578,6 +593,24 @@ describe('pipeline/collector', () => {
       await c.recoverRetry()
       expect(deps.retry.ack).toHaveBeenCalledWith('a')
       expect(deps.retry.ack).toHaveBeenCalledWith('b')
+    })
+
+    test('续传重试发送前补齐运行时字段 ch', async () => {
+      const items: ReportPayload[] = [
+        { usv: '3', t: 1, requests: '[{"lt":"21"}]', _id: 'a' },
+      ]
+      const deps = makeDeps({
+        resolveUploadFields: () => ({ ch: 'dlmm-Android-oppo' }),
+      })
+      deps.retry.loadAll.mockReturnValue(items)
+      const channel = deps.selectChannel()!
+      const c = createCollector(deps)
+      await c.recoverRetry()
+      const sent = (channel.send as jest.Mock).mock.calls[0][0] as ReportPayload
+      expect(JSON.parse(sent.requests)).toEqual([
+        { lt: '21', ch: 'dlmm-Android-oppo' },
+      ])
+      expect(deps.retry.ack).toHaveBeenCalledWith('a')
     })
 
     test('部分失败（非永久错）→ 失败项 markAttempt，成功项 ack', async () => {

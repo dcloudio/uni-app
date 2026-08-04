@@ -26,6 +26,7 @@ import {
 } from '../../../src/public/runtime/install'
 import { __resetLifecycleState } from '../../../src/public/runtime/lifecycleHooks'
 import { installMockUni, restoreMockUni } from '../helpers/mockUni'
+import { installMockPlus, restoreMockPlus } from '../helpers/mockPlus'
 import { storage } from '../../../src/public/infra/storage'
 import { logger } from '../../../src/public/infra/logger'
 
@@ -51,13 +52,16 @@ describe('runtime/install', () => {
     resetAll()
     delete (process.env as Record<string, string | undefined>)
       .UNI_STATISTICS_CONFIG
+    delete (process.env as Record<string, string | undefined>).UNI_APP_ID
   })
 
   afterEach(() => {
     delete (process.env as Record<string, string | undefined>)
       .UNI_STATISTICS_CONFIG
+    delete (process.env as Record<string, string | undefined>).UNI_APP_ID
     resetAll()
     restoreMockUni()
+    restoreMockPlus()
   })
 
   test('I1 install 幂等：重复调用不再重新装配', () => {
@@ -68,7 +72,7 @@ describe('runtime/install', () => {
     expect(first).toBe(second) // 同一引用 → 第二次 noop
   })
 
-  test('I2 manifest.uniStatistics → StatApp.install config 透传（超时/间隔/通道）', () => {
+  test('I2 manifest.uniStatistics → StatApp.install config 透传（超时/间隔/上报通道版本）', () => {
     ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
       JSON.stringify({
         enable: true,
@@ -85,6 +89,33 @@ describe('runtime/install', () => {
     expect(cfg.backgroundTimeoutSec).toBe(30)
     expect(cfg.pageInactiveTimeoutSec).toBe(45)
     expect(cfg.reportIntervalSec).toBe(5)
+  })
+
+  test('I2.b manifest.uniStatistics 不应覆盖上行身份字段 ak/v/ch', () => {
+    ;(process.env as Record<string, string | undefined>).UNI_APP_ID =
+      'real-appid'
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      JSON.stringify({
+        ak: 'manifest-ak',
+        v: 'manifest-version',
+        ch: '1001',
+      })
+
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    const cfg = getStatApp().getConfig()!
+    expect(cfg.ak).toBe('real-appid')
+    expect(cfg.v).toBeUndefined()
+    expect(cfg.ch).toBe('')
+  })
+
+  test('I2.c App 端 manifest ch=1001 不覆盖 plus.runtime.channel', () => {
+    installMockUni({ platform: 'app' })
+    installMockPlus({ runtime: { channel: 'custom-channel' } })
+    ;(process.env as Record<string, string | undefined>).UNI_STATISTICS_CONFIG =
+      JSON.stringify({ ch: '1001' })
+
+    installPublicStat({ skipVueMixin: true, skipUniReport: true })
+    expect(getStatApp().getConfig()!.ch).toBe('custom-channel')
   })
 
   test('I3 opts.config 优先级高于 manifest', () => {
