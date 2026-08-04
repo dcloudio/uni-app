@@ -21828,7 +21828,7 @@ declare class VaporFragment<T extends Block = Block> implements TransitionOption
   vnode?: VNode | null;
   anchor?: Node;
   isBlockValid?: (componentAsValid?: boolean) => boolean;
-  insert?: (parent: ParentNode, anchor: Node | null, transitionHooks?: TransitionHooks) => void;
+  insert?: (parent: ParentNode, anchor: Node | null, parentSuspense?: SuspenseBoundary | null, transitionHooks?: TransitionHooks) => void;
   remove?: (parent?: ParentNode, transitionHooks?: TransitionHooks) => void;
   hydrate?(...args: any[]): void;
   setRef?: (instance: VaporComponentInstance, ref: NodeRef, refFor: boolean, refKey: string | undefined) => void;
@@ -22064,6 +22064,7 @@ declare class VaporComponentInstance<Props extends Record<string, any> = {}, Emi
   suspenseId: number;
   asyncDep: Promise<any> | null;
   asyncResolved: boolean;
+  asyncDepRegistered?: boolean;
   restoreAsyncContext?: () => void | (() => void);
   deferredHydrationBoundary?: () => void;
   hasFallthrough: boolean;
@@ -22130,7 +22131,7 @@ declare function createAssetComponent(name: string, rawProps?: LooseRawProps | n
 */
 declare function createComponentWithFallback(comp: VaporComponent | typeof NULL_DYNAMIC_COMPONENT | string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean, once?: boolean, appContext?: GenericAppContext): HTMLElement | VaporComponentInstance;
 declare function createPlainElement(comp: string, rawProps?: LooseRawProps | null, rawSlots?: LooseRawSlots | null, isSingleRoot?: boolean, once?: boolean): HTMLElement;
-declare function unmountComponent(instance: VaporComponentInstance, parentNode?: ParentNode): void;
+declare function unmountComponent(instance: VaporComponentInstance, parentNode?: ParentNode, parentSuspense?: SuspenseBoundary | null): void;
 //#endregion
 //#region packages/runtime-vapor/src/apiCreateApp.d.ts
 declare const createVaporApp: CreateAppFunction$1<ParentNode, VaporComponent>;
@@ -22815,6 +22816,18 @@ export declare class TransformContext<T extends AllNode = AllNode> {
 }
 export declare function transform(node: RootNode, options?: TransformOptions$1): RootIRNode;
 export declare function createStructuralDirectiveTransform(name: string | string[], fn: StructuralDirectiveTransform): NodeTransform;
+/**
+* Build a "next-id" map from an occupied number set.
+* For each consecutive range [start..end], map every v in the range to end + 1.
+* Example: input [0, 1, 2, 4] => { 0: 3, 1: 3, 2: 3, 4: 5 }.
+*/
+export declare function buildNextIdMap(nums: Iterable<number>): Map<number, number>;
+/**
+* Return the available id for n using a map built by buildNextIdMap:
+* - If n is not occupied, return n.
+* - If n is occupied, return the mapped value
+*/
+export declare function getNextId(map: Map<number, number> | null | undefined, n: number): number;
 //#endregion
 //#region temp/packages/compiler-vapor/src/generate.d.ts
 export type CodegenOptions = Omit<CodegenOptions$1, "optimizeImports">;
@@ -22843,7 +22856,10 @@ export declare class CodegenContext {
   private templateVars;
   private nextIdMap;
   private lastIdMap;
-  private isHelperNameAvailable;
+  private generatedLocalNames;
+  getUniqueLocalName(base: string, scopeNames: Set<string>): string;
+  private isNameAvailable;
+  private findAvailableName;
   private lastTIndex;
   private initNextIdMap;
   tName(i: number): string;

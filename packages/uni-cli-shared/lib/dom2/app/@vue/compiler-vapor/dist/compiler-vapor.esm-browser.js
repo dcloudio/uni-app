@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-vapor v3.6.0-rc.1
+  * @vue/compiler-vapor v3.6.0-rc.2
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -18704,6 +18704,14 @@ const resolveModifiers = (key, modifiers, context, loc) => {
 	const eventOptionModifiers = [];
 	for (let i = 0; i < modifiers.length; i++) {
 		const modifier = modifiers[i].content;
+		if (modifier === "delegate") {
+			if (context) {
+				const error = /* @__PURE__ */ new SyntaxError(`.delegate modifier is only supported in Vapor components.`);
+				error.loc = modifiers[i].loc;
+				context.onWarn(error);
+			}
+			continue;
+		}
 		if (isEventOptionModifier(modifier)) eventOptionModifiers.push(modifier);
 		else {
 			const keyString = isString(key) ? key : isStaticExp(key) ? key.content : null;
@@ -19445,7 +19453,6 @@ const defaultOptions = {
 	bindingMetadata: EMPTY_OBJ,
 	inline: false,
 	isTS: false,
-	eventDelegation: true,
 	onError: defaultOnError,
 	onWarn: defaultOnWarn
 };
@@ -20186,16 +20193,14 @@ function genDeclarations(declarations, context, shouldDeclare) {
 	const varNames = /* @__PURE__ */ new Set();
 	declarations.forEach(({ name, isIdentifier, value }) => {
 		if (isIdentifier) {
-			const varName = ids[name] = `_${name}`;
-			varNames.add(varName);
+			const varName = ids[name] = context.getUniqueLocalName(`_${name}`, varNames);
 			if (shouldDeclare) push(`const `);
 			push(`${varName} = `, ...genExpression(value, context), NEWLINE);
 		}
 	});
 	declarations.forEach(({ name, isIdentifier, value }) => {
 		if (!isIdentifier) {
-			const varName = `_${name}`;
-			varNames.add(varName);
+			const varName = context.getUniqueLocalName(`_${name}`, varNames);
 			if (shouldDeclare) push(`const `);
 			push(`${varName} = `, ...context.withId(() => genExpression(value, context), ids), NEWLINE);
 			ids[name] = varName;
@@ -22062,10 +22067,27 @@ var CodegenContext = class {
 	enterScope() {
 		return [this.scopeLevel++, () => this.scopeLevel--];
 	}
-	isHelperNameAvailable(name) {
-		if (this.bindingNames.has(name)) return false;
+	getUniqueLocalName(base, scopeNames) {
+		const name = this.findAvailableName(base, scopeNames);
+		scopeNames.add(name);
+		this.generatedLocalNames.add(name);
+		return name;
+	}
+	isNameAvailable(name, reservedNames) {
+		if (this.bindingNames.has(name) || reservedNames.has(name)) return false;
 		for (const alias of this.helpers.values()) if (alias === name) return false;
 		return true;
+	}
+	findAvailableName(base, reservedNames) {
+		if (this.isNameAvailable(base, reservedNames)) return base;
+		const map = this.nextIdMap.get(base);
+		let next = 1;
+		while (true) {
+			const id = getNextId(map, next);
+			const name = `${base}${id}`;
+			if (this.isNameAvailable(name, reservedNames)) return name;
+			next = id + 1;
+		}
 	}
 	initNextIdMap() {
 		if (this.bindingNames.size === 0) return;
@@ -22106,20 +22128,9 @@ var CodegenContext = class {
 		this.helper = (name) => {
 			if (this.helpers.has(name)) return this.helpers.get(name);
 			const base = `_${helperNameAliases[name] || name}`;
-			if (this.isHelperNameAvailable(base)) {
-				this.helpers.set(name, base);
-				return base;
-			}
-			const map = this.nextIdMap.get(base);
-			let next = 1;
-			while (true) {
-				const alias = `${base}${getNextId(map, next)}`;
-				if (this.isHelperNameAvailable(alias)) {
-					this.helpers.set(name, alias);
-					return alias;
-				}
-				next++;
-			}
+			const alias = this.findAvailableName(base, this.generatedLocalNames);
+			this.helpers.set(name, alias);
+			return alias;
 		};
 		this.delegates = /* @__PURE__ */ new Set();
 		this.identifiers = Object.create(null);
@@ -22129,6 +22140,7 @@ var CodegenContext = class {
 		this.templateVars = /* @__PURE__ */ new Map();
 		this.nextIdMap = /* @__PURE__ */ new Map();
 		this.lastIdMap = /* @__PURE__ */ new Map();
+		this.generatedLocalNames = /* @__PURE__ */ new Set();
 		this.lastTIndex = -1;
 		const defaultOptions = {
 			mode: "module",
@@ -23325,6 +23337,16 @@ const transformVOn = (dir, node, context) => {
 	const isComponent = node.tagType === 1;
 	const isSlotOutlet = node.tag === "slot";
 	if (!exp && !modifiers.length) context.options.onError(createCompilerError(35, loc));
+	let delegateModifier;
+	let nonDelegateModifiers;
+	for (let i = 0; i < modifiers.length; i++) {
+		const modifier = modifiers[i];
+		if (modifier.content === "delegate") {
+			delegateModifier || (delegateModifier = modifier);
+			nonDelegateModifiers || (nonDelegateModifiers = modifiers.slice(0, i));
+		} else if (nonDelegateModifiers) nonDelegateModifiers.push(modifier);
+	}
+	if (nonDelegateModifiers) modifiers = nonDelegateModifiers;
 	arg = resolveExpression(arg);
 	if (arg.isStatic && arg.content.startsWith("vue:")) arg = extend({}, arg, { content: `vnode-${arg.content.slice(4)}` });
 	const { keyModifiers, nonKeyModifiers, eventOptionModifiers } = resolveModifiers(arg.isStatic ? `on${arg.content}` : arg, modifiers, null, loc);
@@ -23337,17 +23359,24 @@ const transformVOn = (dir, node, context) => {
 	}
 	arg = normalizeStaticEventArg(arg, nonKeyModifiers);
 	if (keyModifiers.length && isStaticExp(arg) && !isKeyboardEvent(`on${arg.content.toLowerCase()}`)) keyModifiers.length = 0;
-	if (isComponent || isSlotOutlet) return {
-		key: arg,
-		value: exp || EMPTY_EXPRESSION,
-		handler: true,
-		handlerModifiers: {
-			keys: keyModifiers,
-			nonKeys: nonKeyModifiers,
-			options: eventOptionModifiers
-		}
-	};
-	const delegate = context.options.eventDelegation && arg.isStatic && !eventOptionModifiers.length && !hasStopHandlerForStaticEvent(node, arg.content) && delegatedEvents(arg.content);
+	if (isComponent || isSlotOutlet) {
+		if (delegateModifier) warnDelegate(context, delegateModifier, ".delegate modifier is only supported on native DOM elements. The modifier will be ignored.");
+		return {
+			key: arg,
+			value: exp || EMPTY_EXPRESSION,
+			handler: true,
+			handlerModifiers: {
+				keys: keyModifiers,
+				nonKeys: nonKeyModifiers,
+				options: eventOptionModifiers
+			}
+		};
+	}
+	const isDelegatableEvent = !!delegateModifier && arg.isStatic && delegatedEvents(arg.content);
+	const hasStopHandler = isDelegatableEvent && !eventOptionModifiers.length && hasStopHandlerForStaticEvent(node, arg.content);
+	if (delegateModifier && !arg.isStatic) warnDelegate(context, delegateModifier, ".delegate modifier requires a static event name. The listener will be attached directly.");
+	else if (delegateModifier && !isDelegatableEvent) warnDelegate(context, delegateModifier, `.delegate modifier is not supported on the "${arg.content}" event. The listener will be attached directly.`);
+	const delegate = isDelegatableEvent && !eventOptionModifiers.length && !hasStopHandler;
 	const operation = {
 		type: 6,
 		node,
@@ -23381,6 +23410,11 @@ function hasStopHandlerForStaticEvent(node, eventName) {
 		const { nonKeyModifiers } = resolveModifiers(`on${arg.content}`, prop.modifiers, null, prop.loc);
 		return nonKeyModifiers.includes("stop") && normalizeStaticEventArg(arg, nonKeyModifiers).content === eventName;
 	});
+}
+function warnDelegate(context, modifier, message) {
+	const error = new SyntaxError(message);
+	error.loc = modifier.loc;
+	context.options.onWarn(error);
 }
 //#endregion
 //#region packages/compiler-vapor/src/transforms/vShow.ts
@@ -23990,4 +24024,4 @@ function getBaseTransformPreset() {
 	}];
 }
 //#endregion
-export { CodegenContext, DELIMITERS_ARRAY, DELIMITERS_ARRAY_NEWLINE, DELIMITERS_OBJECT, DELIMITERS_OBJECT_NEWLINE, DynamicFlag, IMPORT_EXPR_RE, IMPORT_EXP_END, IMPORT_EXP_START, INDENT_END, INDENT_START, IRDynamicPropsKind, IRNodeTypes, IRSlotType, LF, NEWLINE, TEXT_NODE_PLACEHOLDER, TEXT_PLACEHOLDER, TemplateRegistry, VaporErrorCodes, VaporErrorMessages, analyzeExpressions, buildCodeFragment, buildDestructureIdMap, codeFragmentToString, collectSingleUseAssetComponents, compile, createStructuralDirectiveTransform, createVaporCompilerError, genCall, genDirectiveModifiers, genDynamicComponentFlags, genMulti, genSlotFlags, generate, getBaseTransformPreset, getLiteralExpressionValue, getParserOptions, hasStableSlotRoot, isBlockOperation, isBuiltInComponent, isConstantExpression, isDirectStaticLiteralProp, isKeepAliveTag, isStaticExpression, isTeleportTag, isTransitionGroupTag, isTransitionTag, markSlotRootOperations, matchKeyOnlyBindingPattern, matchSelectorPattern, needsVaporCtx, parse, parseStaticAttrBooleanExpression, parseValueDestructure, propToExpression, transform, transformChildren, transformComment, transformElement, transformKey, transformSlotOutlet, transformTemplateRef, transformText, transformVBind, transformVFor, transformVHtml, transformVIf, transformVModel, transformVOn, transformVOnce, transformVShow, transformVSlot, transformVText, wrapTemplate };
+export { CodegenContext, DELIMITERS_ARRAY, DELIMITERS_ARRAY_NEWLINE, DELIMITERS_OBJECT, DELIMITERS_OBJECT_NEWLINE, DynamicFlag, IMPORT_EXPR_RE, IMPORT_EXP_END, IMPORT_EXP_START, INDENT_END, INDENT_START, IRDynamicPropsKind, IRNodeTypes, IRSlotType, LF, NEWLINE, TEXT_NODE_PLACEHOLDER, TEXT_PLACEHOLDER, TemplateRegistry, VaporErrorCodes, VaporErrorMessages, analyzeExpressions, buildCodeFragment, buildDestructureIdMap, buildNextIdMap, codeFragmentToString, collectSingleUseAssetComponents, compile, createStructuralDirectiveTransform, createVaporCompilerError, genCall, genDirectiveModifiers, genDynamicComponentFlags, genMulti, genSlotFlags, generate, getBaseTransformPreset, getLiteralExpressionValue, getNextId, getParserOptions, hasStableSlotRoot, isBlockOperation, isBuiltInComponent, isConstantExpression, isDirectStaticLiteralProp, isKeepAliveTag, isStaticExpression, isTeleportTag, isTransitionGroupTag, isTransitionTag, markSlotRootOperations, matchKeyOnlyBindingPattern, matchSelectorPattern, needsVaporCtx, parse, parseStaticAttrBooleanExpression, parseValueDestructure, propToExpression, transform, transformChildren, transformComment, transformElement, transformKey, transformSlotOutlet, transformTemplateRef, transformText, transformVBind, transformVFor, transformVHtml, transformVIf, transformVModel, transformVOn, transformVOnce, transformVShow, transformVSlot, transformVText, wrapTemplate };

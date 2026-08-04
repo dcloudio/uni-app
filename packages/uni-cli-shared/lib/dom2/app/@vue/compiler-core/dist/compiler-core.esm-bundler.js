@@ -1,5 +1,5 @@
 /**
-  * @vue/compiler-core v3.6.0-rc.1
+  * @vue/compiler-core v3.6.0-rc.2
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
@@ -2500,7 +2500,7 @@ function getSelfName(filename) {
 }
 function createTransformContext(root, { filename = "", prefixIdentifiers = false, hoistStatic = false, hmr = false, cacheHandlers = false, nodeTransforms = [], directiveTransforms = {}, transformHoist = null, isBuiltInComponent = NOOP, isCustomElement = NOOP, isUserComponent = (element) => {
 	return element.tagType === 1;
-}, expressionPlugins = [], scopeId = null, slotted = true, ssr = false, inSSR = false, ssrCssVars = ``, bindingMetadata = EMPTY_OBJ, inline = false, isTS = false, eventDelegation = true, onError = defaultOnError, onWarn = defaultOnWarn, compatConfig }) {
+}, expressionPlugins = [], scopeId = null, slotted = true, ssr = false, inSSR = false, ssrCssVars = ``, bindingMetadata = EMPTY_OBJ, inline = false, isTS = false, onError = defaultOnError, onWarn = defaultOnWarn, compatConfig }) {
 	const context = {
 		filename,
 		selfName: getSelfName(filename),
@@ -2523,7 +2523,6 @@ function createTransformContext(root, { filename = "", prefixIdentifiers = false
 		bindingMetadata,
 		inline,
 		isTS,
-		eventDelegation,
 		onError,
 		onWarn,
 		compatConfig,

@@ -1,5 +1,5 @@
 /**
-  * @vue/shared v3.6.0-rc.1
+  * @vue/shared v3.6.0-rc.2
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/

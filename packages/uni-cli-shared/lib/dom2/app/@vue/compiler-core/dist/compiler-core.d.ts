@@ -162,7 +162,6 @@ export declare function createTransformContext(root: RootNode, {
   bindingMetadata,
   inline,
   isTS,
-  eventDelegation,
   onError,
   onWarn,
   compatConfig
@@ -957,12 +956,6 @@ export interface TransformOptions extends SharedTransformCodegenOptions, ErrorHa
   * correctly, e.g. #6938, #7138
   */
   hmr?: boolean;
-  /**
-  * Vapor only: control whether eligible static DOM events are compiled to
-  * document-level delegated events.
-  * @default true
-  */
-  eventDelegation?: boolean;
 }
 export interface CodegenOptions extends SharedTransformCodegenOptions {
   /**
