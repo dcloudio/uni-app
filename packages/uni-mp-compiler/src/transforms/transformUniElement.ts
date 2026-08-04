@@ -25,10 +25,9 @@ import {
   ATTR_SET_ELEMENT_ANIMATION,
   ATTR_SET_ELEMENT_STYLE,
   ATTR_VUE_REF,
-  FILTER_MODULE_FILE_NAME,
-  FILTER_MODULE_NAME,
   FILTER_SET_ELEMENT_ANIMATION,
   FILTER_SET_ELEMENT_STYLE,
+  addUniViewAutoImportFilter,
   builtInComponents,
   builtInCustomElements,
   filterName,
@@ -216,17 +215,7 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
     )
     node.props.push(createBindDirectiveNode(ATTR_SET_ELEMENT_ANIMATION, ''))
 
-    if (
-      !context.autoImportFilters.find(
-        (filter) => filter.name === FILTER_MODULE_NAME
-      )
-    ) {
-      context.autoImportFilters.push({
-        name: FILTER_MODULE_NAME,
-        id: FILTER_MODULE_FILE_NAME,
-        type: 'filter',
-      })
-    }
+    addUniViewAutoImportFilter(context)
   } else {
     // 如果没有动态绑定 style，则创建一个新的
     const styleProp = findProp(node, 'style', true, true) as

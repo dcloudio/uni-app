@@ -18,6 +18,8 @@ import {
   ATTR_SET_ELEMENT_ANIMATION,
   ATTR_SET_ELEMENT_STYLE,
   ATTR_VUE_SLOTS,
+  FILTER_MODULE_NAME,
+  addUniViewAutoImportFilter,
   isFilterExpr,
   rewriteExpression,
 } from './utils'
@@ -80,7 +82,6 @@ import fs from 'fs'
 import { parse as sfcParse } from '@vue/compiler-sfc'
 
 import { rewriteId as rewriteIdX } from './transformUniElement'
-import { FILTER_MODULE_NAME } from './utils'
 
 // externalClasses 缓存，包含 mtime 用于检测文件变化
 const UNI_APP_STYLE_CLASSES =
@@ -477,6 +478,7 @@ function wrapAlipayStyleIsolationClass(
   if (!context.isX || !isAlipayXStyleIsolation() || !prop.exp) {
     return
   }
+  addUniViewAutoImportFilter(context)
   const mask = getAlipayStyleIsolationClassMask(context.filename)
   // 先复用原有表达式重写，再在视图层调用 SJS，避免把 _ctx 等逻辑层标识符输出到模板。
   prop.exp = rewriteExpression(
@@ -536,6 +538,7 @@ function wrapAlipayExternalClass(
   prop: DirectiveNode,
   context: TransformContext
 ) {
+  addUniViewAutoImportFilter(context)
   const mask = getAlipayStyleIsolationClassMask(context.filename)
   const exp = rewriteExpression(prop.exp!, context)
   // 第三个参数关闭原 class 输出；uV.c 对已展开前缀保持幂等，可安全支持多级组件转发。
