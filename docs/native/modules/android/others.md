@@ -164,3 +164,7 @@ defaultConfig {
 [uni-map-tencent](/native/modules/android/uni-map-tencent.md)
 
 [uni-getLocation](/native/modules/android/uni-getLocation.md)
+
+[uni-oauth](native/modules/android/uni-oauth.md)
+
+[uni-share](native/modules/android/uni-share.md)
